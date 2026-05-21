@@ -3,6 +3,9 @@ import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import Timeline from "../components/Timeline.astro";
+import GitHubWidget from "../components/GitHubWidget.astro";
+import LinkedInWidget from "../components/LinkedInWidget.astro";
+import YouTubeWidget from "../components/YouTubeWidget.astro";
 ---
 
 <Layout>
@@ -150,6 +153,24 @@ import Timeline from "../components/Timeline.astro";
           tags={["Knowledge Management", "Graph Database", "Mind Mapping", "SaaS"]}
           accentColor="blue"
         />
+      </div>
+    </section>
+
+    <!-- Activity & Feeds Section -->
+    <section id="activity" class="py-16 md:py-24 border-t border-white/5 scroll-mt-20">
+      <div class="mb-12">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">
+          Activity & Feeds
+        </h2>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
+          Recent updates, professional networks, code repositories, and video tutorials across my digital ecosystem.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+        <GitHubWidget />
+        <LinkedInWidget />
+        <YouTubeWidget />
       </div>
     </section>
 

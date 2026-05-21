@@ -1,0 +1,8 @@
+{
+  "name": "delta-dynamics",
+  "description": "A low-poly ecosystem simulator featuring real-time dynamic terrain, GPU-accelerated water flow, resource management, and local LLM integration for AI entity behavior. Built with React, Three.js, and Web-LLM.",
+  "html_url": "https://github.com/ghackenberg/delta-dynamics",
+  "stargazers_count": 1,
+  "language": "TypeScript",
+  "social_preview": "https://opengraph.githubassets.com/4e6e9ae5bd02d555ffb2ee24fb9ad656fc17dd91fd7bd0c1098f54fde37432d4/ghackenberg/delta-dynamics"
+}

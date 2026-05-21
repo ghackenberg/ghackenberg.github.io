@@ -1,0 +1,8 @@
+{
+  "name": "agentbrick",
+  "description": "Build and refine LDraw models using LangChain agents and LangGraph workflows.",
+  "html_url": "https://github.com/ghackenberg/agentbrick",
+  "stargazers_count": 7,
+  "language": "Python",
+  "social_preview": "https://repository-images.githubusercontent.com/1151474999/151d036c-e2ed-40b2-ae92-963ffddd60ae"
+}

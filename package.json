@@ -9,11 +9,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "sync": "node scripts/sync.js",
     "astro": "astro"
   },
   "dependencies": {
+    "@octokit/core": "^7.0.6",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.6",
+    "googleapis": "^172.0.0",
     "tailwindcss": "^4.3.0"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "name": "ghackenberg.github.io",
+  "description": "Personal portfolio and website of Georg Hackenberg, built using Astro and Tailwind CSS v4. Deployed on GitHub Pages.",
+  "html_url": "https://github.com/ghackenberg/ghackenberg.github.io",
+  "stargazers_count": 1,
+  "language": "Astro",
+  "social_preview": "https://opengraph.githubassets.com/306db69de0f8efe34f48d15810313b707c27041d77d514bbf8f1c51b73960c09/ghackenberg/ghackenberg.github.io"
+}
