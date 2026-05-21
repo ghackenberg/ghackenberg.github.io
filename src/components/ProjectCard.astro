@@ -1,0 +1,109 @@
+---
+interface Props {
+  title: string;
+  tagline: string;
+  description: string;
+  href: string;
+  tags: string[];
+  accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
+}
+
+const { 
+  title, 
+  tagline, 
+  description, 
+  href, 
+  tags, 
+  accentColor = 'blue' 
+} = Astro.props;
+
+// Dynamically assign classes based on color-coding preferences
+const colorClasses = {
+  blue: {
+    border: 'hover:border-brand-blue/40 border-white/5',
+    glow: 'group-hover:bg-brand-blue/10',
+    tagBg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20',
+    linkText: 'text-brand-blue hover:text-brand-blue/80',
+    btnBg: 'bg-brand-blue/10 text-brand-blue hover:bg-brand-blue/25',
+    iconColor: 'text-brand-blue'
+  },
+  yellow: {
+    border: 'hover:border-brand-yellow/40 border-white/5',
+    glow: 'group-hover:bg-brand-yellow/10',
+    tagBg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20',
+    linkText: 'text-brand-yellow hover:text-brand-yellow/80',
+    btnBg: 'bg-brand-yellow/10 text-brand-yellow hover:bg-brand-yellow/25',
+    iconColor: 'text-brand-yellow'
+  },
+  purple: {
+    border: 'hover:border-brand-purple/40 border-white/5',
+    glow: 'group-hover:bg-brand-purple/10',
+    tagBg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20',
+    linkText: 'text-brand-purple hover:text-brand-purple/80',
+    btnBg: 'bg-brand-purple/10 text-brand-purple hover:bg-brand-purple/25',
+    iconColor: 'text-brand-purple'
+  },
+  green: {
+    border: 'hover:border-brand-green/40 border-white/5',
+    glow: 'group-hover:bg-brand-green/10',
+    tagBg: 'bg-brand-green/10 text-brand-green border-brand-green/20',
+    linkText: 'text-brand-green hover:text-brand-green/80',
+    btnBg: 'bg-brand-green/10 text-brand-green hover:bg-brand-green/25',
+    iconColor: 'text-brand-green'
+  }
+}[accentColor];
+---
+
+<div class={`glass-card p-6 md:p-8 rounded-2xl border flex flex-col justify-between group overflow-hidden relative ${colorClasses.border}`}>
+  <!-- Interactive Glow Element -->
+  <div class={`absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${colorClasses.glow}`}></div>
+  
+  <div>
+    <!-- Header -->
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <h3 class="text-xl md:text-2xl font-bold text-white tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all duration-300">
+          {title}
+        </h3>
+        <p class={`text-sm font-semibold tracking-wide mt-1 uppercase ${colorClasses.iconColor}`}>
+          {tagline}
+        </p>
+      </div>
+      
+      <!-- Arrow Icon -->
+      <a href={href} target="_blank" rel="noopener noreferrer" class={`p-2 rounded-xl transition-all duration-300 ${colorClasses.btnBg}`} aria-label={`Visit ${title}`}>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"></path>
+        </svg>
+      </a>
+    </div>
+    
+    <!-- Description -->
+    <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-6 font-normal">
+      {description}
+    </p>
+  </div>
+
+  <!-- Tech tags & actions footer -->
+  <div class="mt-auto">
+    <div class="flex flex-wrap gap-2 mb-6">
+      {tags.map(tag => (
+        <span class={`text-xs px-3 py-1 rounded-full border font-medium ${colorClasses.tagBg}`}>
+          {tag}
+        </span>
+      ))}
+    </div>
+    
+    <a 
+      href={href} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      class={`inline-flex items-center text-sm font-bold tracking-wide group-hover:translate-x-1 transition-transform duration-300 ${colorClasses.linkText}`}
+    >
+      Learn more
+      <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+      </svg>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Dr. Georg Hackenberg | Professor & Software Engineer", 
+  description = "Personal website of Dr. Georg Hackenberg, Professor for Industrial Informatics, software engineer, entrepreneur, and developer of CADdrive and Mentawise." 
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ghackenberg.github.io/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    <!-- Plausible Analytics -->
+    <script defer data-domain="ghackenberg.github.io" src="https://analytics.mentawise.com/js/script.js"></script>
+
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-950 text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">
+    
+    <!-- Background glowing orbs for premium dark mode visual aesthetic -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+      <div class="bg-glow-orb bg-brand-blue w-[40vw] h-[40vw] top-[-10%] left-[-10%]"></div>
+      <div class="bg-glow-orb bg-brand-purple w-[35vw] h-[35vw] top-[40%] right-[-10%]" style="animation-delay: -3s;"></div>
+      <div class="bg-glow-orb bg-brand-yellow w-[30vw] h-[30vw] bottom-[10%] left-[10%]" style="animation-delay: -6s;"></div>
+      <div class="bg-glow-orb bg-brand-green w-[30vw] h-[30vw] top-[20%] left-[50%]" style="animation-delay: -9s;"></div>
+    </div>
+
+    <!-- Main site wrapper -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+      <slot />
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,114 @@
+---
+const navItems = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Projects", href: "#projects" },
+  { label: "Experience", href: "#experience" },
+  { label: "Contact", href: "#contact" }
+];
+---
+
+<header class="sticky top-0 left-0 right-0 z-50 transition-all duration-300 w-full glass-panel border-b border-white/5 py-4">
+  <div class="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between">
+    
+    <!-- Logo / Brand -->
+    <a href="#home" class="flex items-center space-x-2 group">
+      <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow group-hover:opacity-80 transition-opacity">
+        GH.
+      </span>
+      <span class="font-semibold text-sm text-gray-300 hidden sm:inline-block tracking-wide group-hover:text-white transition-colors">
+        Georg Hackenberg
+      </span>
+    </a>
+
+    <!-- Desktop Navigation Links -->
+    <nav class="hidden md:flex items-center space-x-8">
+      {navItems.map(item => (
+        <a 
+          href={item.href} 
+          class="text-sm font-medium text-gray-400 hover:text-white hover:scale-105 transition-all duration-200"
+        >
+          {item.label}
+        </a>
+      ))}
+      <a 
+        href="#contact" 
+        class="text-xs font-semibold px-4 py-2 rounded-full bg-brand-blue/10 hover:bg-brand-blue/20 text-brand-blue border border-brand-blue/30 transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/10 hover:scale-105"
+      >
+        Get In Touch
+      </a>
+    </nav>
+
+    <!-- Mobile Menu Button -->
+    <button 
+      id="mobile-menu-btn" 
+      class="md:hidden text-gray-400 hover:text-white focus:outline-none p-1"
+      aria-label="Toggle Menu"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path id="hamburger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div 
+    id="mobile-menu" 
+    class="hidden md:hidden glass-panel border-t border-white/5 absolute top-full left-0 right-0 py-4 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
+  >
+    {navItems.map(item => (
+      <a 
+        href={item.href} 
+        class="text-base font-medium text-gray-300 hover:text-white transition-colors py-1 block"
+      >
+        {item.label}
+      </a>
+    ))}
+    <a 
+      href="#contact" 
+      class="text-sm font-semibold text-center py-2.5 rounded-lg bg-brand-blue text-white shadow-lg shadow-brand-blue/20 hover:bg-brand-blue/95 transition-all block"
+    >
+      Get In Touch
+    </a>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const hamburger = document.getElementById('hamburger-icon');
+  const closeIcon = document.getElementById('close-icon');
+  
+  if (btn && menu && hamburger && closeIcon) {
+    btn.addEventListener('click', () => {
+      const isExpanded = menu.classList.toggle('hidden');
+      hamburger.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+    });
+
+    // Close menu when a link is clicked
+    const links = menu.querySelectorAll('a');
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.add('hidden');
+        hamburger.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      });
+    });
+  }
+
+  // Header scroll dynamic visual styling
+  window.addEventListener('scroll', () => {
+    const header = document.querySelector('header');
+    if (header) {
+      if (window.scrollY > 50) {
+        header.classList.remove('py-4');
+        header.classList.add('py-3', 'bg-gray-950/90', 'shadow-lg');
+      } else {
+        header.classList.remove('py-3', 'bg-gray-950/90', 'shadow-lg');
+        header.classList.add('py-4');
+      }
+    }
+  });
+</script>

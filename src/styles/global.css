@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-blue: #3b82f6;     /* Deep Work, Steward Development, Software Engineering */
+  --color-brand-yellow: #f59e0b;   /* Meetings, Academic, External partners (FH Wels) */
+  --color-brand-purple: #a855f7;   /* Strategy, Briefings */
+  --color-brand-green: #10b981;    /* Personal, Regeneration, Sport */
+  
+  --font-sans: "Outfit", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+  }
+  
+  body {
+    background-color: #030712; /* Tailwind gray-950 */
+    color: #f3f4f6; /* Tailwind gray-100 */
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(31, 41, 55, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Background Glowing Orbs */
+.bg-glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  animation: pulse-slow 12s infinite alternate;
+}
+
+@keyframes pulse-slow {
+  0% {
+    transform: scale(1) translate(0px, 0px);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1.1) translate(20px, -20px);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(0.9) translate(-20px, 20px);
+    opacity: 0.12;
+  }
+}

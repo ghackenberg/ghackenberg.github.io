@@ -1,0 +1,81 @@
+---
+const timelineEvents = [
+  {
+    period: "2019 - Present",
+    title: "Professor for Industrial Informatics",
+    institution: "University of Applied Sciences Upper Austria, School of Engineering (FH OÖ, Wels)",
+    description: "Teaching software engineering, industrial informatics, and distributed systems. Conducting research on interactive systems, knowledge management, and software architecture.",
+    color: "yellow",
+    location: "Wels, Austria"
+  },
+  {
+    period: "2019 - Present",
+    title: "Area Manager for Information Technology",
+    institution: "University of Applied Sciences Upper Austria",
+    description: "Leading strategic planning, curriculum development, and institutional coordination for academic programs in the IT sector.",
+    color: "purple",
+    location: "Wels, Austria"
+  },
+  {
+    period: "2021 - Present",
+    title: "Co-Founder & Lead Engineer",
+    institution: "CADdrive & Mentawise",
+    description: "Developing CADdrive (a modern product design platform for schools/universities) and Mentawise (an innovative knowledge management and graph-based visual database solution).",
+    color: "blue",
+    location: "Bavaria & Upper Austria"
+  },
+  {
+    period: "Prior Academic & Industry Career",
+    title: "Doctoral Researcher & Software Engineer",
+    institution: "Technical University of Munich (TUM) & Industry Partners",
+    description: "Completed Dr. rer. nat. in Computer Science. Researched industrial informatics, software testing, and model-driven systems engineering. Partnered with enterprise software firms.",
+    color: "blue",
+    location: "Munich, Germany"
+  }
+];
+
+// Helper to resolve color classes for timeline items
+const dotColors = {
+  blue: 'bg-brand-blue ring-brand-blue/30',
+  yellow: 'bg-brand-yellow ring-brand-yellow/30',
+  purple: 'bg-brand-purple ring-brand-purple/30',
+  green: 'bg-brand-green ring-brand-green/30'
+};
+---
+
+<div class="relative border-l border-gray-800 ml-4 md:ml-6 pl-8 py-2 space-y-12">
+  {timelineEvents.map(event => (
+    <div class="relative group">
+      <!-- Dot indicator with gradient ring -->
+      <span class={`absolute -left-[41px] top-1.5 w-5 h-5 rounded-full ring-4 transition-all duration-300 group-hover:scale-125 ${dotColors[event.color]}`}></span>
+      
+      <!-- Event info -->
+      <div class="glass-card p-6 rounded-2xl border border-white/5 hover:border-white/10 transition-all duration-300">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300 w-fit">
+            {event.period}
+          </span>
+          <span class="text-xs text-gray-500 font-medium flex items-center">
+            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            {event.location}
+          </span>
+        </div>
+        
+        <h3 class="text-lg md:text-xl font-bold text-white tracking-tight mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all">
+          {event.title}
+        </h3>
+        
+        <p class="text-sm font-semibold text-gray-400 mb-4 tracking-wide">
+          {event.institution}
+        </p>
+        
+        <p class="text-gray-400 text-sm md:text-base leading-relaxed font-normal">
+          {event.description}
+        </p>
+      </div>
+    </div>
+  ))}
+</div>
