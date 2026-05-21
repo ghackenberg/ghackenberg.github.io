@@ -41,55 +41,79 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
 });
 ---
 
-<div class="glass-card p-6 rounded-3xl border border-white/5 h-full flex flex-col justify-between relative overflow-hidden group">
-  <div class="absolute top-0 left-0 right-0 h-1 bg-brand-purple opacity-50 group-hover:opacity-100 transition-opacity"></div>
+<div class="glass-card p-6 md:p-8 rounded-3xl border border-white/5 h-full relative overflow-hidden group">
+  <div class="absolute top-0 left-0 right-0 h-1.5 bg-brand-purple opacity-50 group-hover:opacity-100 transition-opacity"></div>
   
-  <div>
-    <!-- Widget Header -->
-    <div class="flex items-center justify-between mb-5">
-      <div class="flex items-center space-x-2">
-        <svg class="w-6 h-6 text-brand-purple" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
-        </svg>
-        <span class="text-sm font-semibold tracking-wider uppercase text-brand-purple">LinkedIn Feed</span>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+    <!-- Left column: Profile info & stats -->
+    <div class="lg:col-span-4 flex flex-col justify-between">
+      <div>
+        <!-- Widget Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <svg class="w-7 h-7 text-brand-purple shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+            </svg>
+            <span class="text-base font-bold tracking-wider uppercase text-brand-purple">LinkedIn Feed</span>
+          </div>
+          <span class="text-[10px] text-brand-purple bg-brand-purple/10 border border-brand-purple/20 font-medium px-2 py-0.5 rounded-full whitespace-nowrap">
+            Sync: {buildDateStr}
+          </span>
+        </div>
+
+        <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+          Connect with me to stay updated on educational projects, university teaching, and software developments.
+        </p>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="bg-white/5 border border-white/5 rounded-2xl py-3 text-center">
+            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Posts</p>
+            <p class="text-xl font-bold text-white font-mono mt-1">{profile.posts || "24"}</p>
+          </div>
+          <div class="bg-white/5 border border-white/5 rounded-2xl py-3 text-center">
+            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Followers</p>
+            <p class="text-xl font-bold text-white font-mono mt-1">{profile.followers || "850+"}</p>
+          </div>
+        </div>
       </div>
-      <span class="text-[10px] text-brand-purple bg-brand-purple/10 border border-brand-purple/20 font-medium px-2 py-0.5 rounded-full">
-        Sync: {buildDateStr}
-      </span>
+
+      <!-- Bottom CTA Button (Moved inside left col) -->
+      <div class="pt-6 border-t border-white/5 mt-auto">
+        <a 
+          href="https://www.linkedin.com/in/georghackenberg/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="w-full flex items-center justify-center space-x-2 py-3 text-sm font-semibold rounded-xl bg-brand-purple/10 hover:bg-brand-purple/25 text-brand-purple border border-brand-purple/20 hover:border-brand-purple/40 transition-all duration-300"
+        >
+          <span>Connect on LinkedIn</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+          </svg>
+        </a>
+      </div>
     </div>
 
-    <!-- LinkedIn Stats Grid -->
-    <div class="grid grid-cols-2 gap-2.5 mb-5">
-      <div class="bg-white/5 border border-white/5 rounded-xl py-2 text-center">
-        <p class="text-[10px] text-gray-500 font-medium font-sans">Posts</p>
-        <p class="text-sm font-bold text-white font-mono mt-0.5">{profile.posts || "24"}</p>
-      </div>
-      <div class="bg-white/5 border border-white/5 rounded-xl py-2 text-center">
-        <p class="text-[10px] text-gray-500 font-medium font-sans">Followers</p>
-        <p class="text-sm font-bold text-white font-mono mt-0.5">{profile.followers || "850+"}</p>
-      </div>
-    </div>
-
-    <!-- Content Collection Simulated Feed -->
-    <div class="space-y-3">
-      <p class="text-xs font-semibold text-gray-400 tracking-wider uppercase mb-1">Recent Posts</p>
+    <!-- Right column: Simulated Feed -->
+    <div class="lg:col-span-8 flex flex-col justify-center">
+      <p class="text-xs font-semibold text-gray-400 tracking-wider uppercase mb-3.5">Recent Posts</p>
       
       {!hasPosts && (
-        <div class="text-center py-6 bg-white/5 border border-white/5 rounded-2xl">
-          <p class="text-xs text-gray-500 font-sans">No recent posts found.</p>
+        <div class="text-center py-10 bg-white/5 border border-white/5 rounded-2xl">
+          <p class="text-sm text-gray-500 font-sans">No recent posts found.</p>
         </div>
       )}
 
       {hasPosts && (
-        <div class="space-y-2.5">
+        <div class="space-y-3">
           {formattedPosts.map((post) => (
             <a 
               href={post.url || "https://www.linkedin.com/in/georghackenberg/recent-activity/all/"}
               target="_blank" 
               rel="noopener noreferrer"
-              class="w-full flex items-stretch space-x-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-purple/30 transition-all duration-300 group/item cursor-pointer overflow-hidden"
+              class="w-full flex items-stretch space-x-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-purple/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-1 pr-4"
             >
-              <div class="relative w-24 shrink-0 bg-gray-900 border-r border-white/5 group-hover/item:border-brand-purple/30 flex items-center justify-center overflow-hidden">
+              <div class="relative w-28 sm:w-32 shrink-0 bg-gray-900 border-r border-white/5 group-hover/item:border-brand-purple/30 flex items-center justify-center overflow-hidden rounded-l-xl">
                 {post.image ? (
                   <>
                     <img 
@@ -102,17 +126,17 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
                 ) : (
                   <>
                     <div class="absolute inset-0 bg-gradient-to-br from-purple-900/60 to-indigo-950/80 z-10"></div>
-                    <svg class="w-5 h-5 text-brand-purple/50 group-hover/item:text-brand-purple/80 transition-colors z-20" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-brand-purple/50 group-hover/item:text-brand-purple/80 transition-colors z-20" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                     </svg>
                   </>
                 )}
               </div>
-              <div class="flex-grow min-w-0 py-2.5 pr-2.5 select-none">
-                <p class="text-xs font-normal text-gray-200 group-hover/item:text-brand-purple transition-colors line-clamp-3 font-sans leading-snug">
+              <div class="flex-grow min-w-0 py-3.5 pr-2.5 select-none">
+                <p class="text-xs sm:text-sm font-normal text-gray-200 group-hover/item:text-brand-purple transition-colors line-clamp-3 font-sans leading-relaxed">
                   {post.text}
                 </p>
-                <div class="flex items-center space-x-1.5 text-[9px] text-gray-500 mt-1 font-medium select-none">
+                <div class="flex items-center space-x-2 text-xs text-gray-500 mt-2.5 font-medium select-none">
                   <span>👍 {post.likes}</span>
                   <span>&bull;</span>
                   <span>💬 {post.comments}</span>
@@ -125,21 +149,6 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
         </div>
       )}
     </div>
-  </div>
-
-  <!-- Bottom CTA Button -->
-  <div class="mt-6 pt-4 border-t border-white/5">
-    <a 
-      href="https://www.linkedin.com/in/georghackenberg/" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      class="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-semibold rounded-xl bg-brand-purple/10 hover:bg-brand-purple/20 text-brand-purple border border-brand-purple/20 hover:border-brand-purple/30 transition-all duration-300"
-    >
-      <span>Connect on LinkedIn</span>
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-      </svg>
-    </a>
   </div>
 </div>
 

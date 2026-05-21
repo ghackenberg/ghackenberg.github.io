@@ -190,10 +190,54 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
         </p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-        <GitHubWidget />
-        <LinkedInWidget />
-        <YouTubeWidget />
+      <!-- Tabs Navigation -->
+      <div class="flex flex-wrap gap-3 mb-8 border-b border-white/5 pb-5 relative z-20">
+        <button 
+          id="tab-github" 
+          class="feed-tab-btn active px-5 py-3 rounded-xl text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
+          data-tab="github"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+          </svg>
+          <span>GitHub</span>
+          <span class="tab-progress absolute bottom-0 left-0 h-0.5 w-0 bg-current opacity-70"></span>
+        </button>
+        <button 
+          id="tab-linkedin" 
+          class="feed-tab-btn px-5 py-3 rounded-xl text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
+          data-tab="linkedin"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+          </svg>
+          <span>LinkedIn</span>
+          <span class="tab-progress absolute bottom-0 left-0 h-0.5 w-0 bg-current opacity-70"></span>
+        </button>
+        <button 
+          id="tab-youtube" 
+          class="feed-tab-btn px-5 py-3 rounded-xl text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
+          data-tab="youtube"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+          <span>YouTube</span>
+          <span class="tab-progress absolute bottom-0 left-0 h-0.5 w-0 bg-current opacity-70"></span>
+        </button>
+      </div>
+
+      <!-- Tab Content Panels -->
+      <div class="relative w-full z-10">
+        <div id="panel-github" class="feed-panel transition-all duration-300">
+          <GitHubWidget />
+        </div>
+        <div id="panel-linkedin" class="feed-panel transition-all duration-300 hidden opacity-0">
+          <LinkedInWidget />
+        </div>
+        <div id="panel-youtube" class="feed-panel transition-all duration-300 hidden opacity-0">
+          <YouTubeWidget />
+        </div>
       </div>
     </section>
 
@@ -350,6 +394,79 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
   </footer>
 </Layout>
 
+<style>
+  /* Tab Buttons Base Styling */
+  .feed-tab-btn {
+    position: relative;
+    overflow: hidden;
+    background: rgba(31, 41, 55, 0.4);
+    border-color: rgba(255, 255, 255, 0.05);
+    color: #9ca3af; /* text-gray-400 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Tab Progress Bar Indicator */
+  .tab-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background-color: currentColor;
+    opacity: 0.7;
+    transition: none;
+  }
+
+  .feed-tab-btn.active.animating .tab-progress {
+    animation: tab-progress-grow 8s linear forwards;
+  }
+
+  @keyframes tab-progress-grow {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  /* GitHub Active */
+  .feed-tab-btn[data-tab="github"].active {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
+  }
+  .feed-tab-btn[data-tab="github"]:hover:not(.active) {
+    border-color: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+  }
+
+  /* LinkedIn Active */
+  .feed-tab-btn[data-tab="linkedin"].active {
+    background: rgba(168, 85, 247, 0.1);
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #a855f7;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25);
+  }
+  .feed-tab-btn[data-tab="linkedin"]:hover:not(.active) {
+    border-color: rgba(168, 85, 247, 0.2);
+    color: #c084fc;
+  }
+
+  /* YouTube Active */
+  .feed-tab-btn[data-tab="youtube"].active {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #10b981;
+    box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.25);
+  }
+  .feed-tab-btn[data-tab="youtube"]:hover:not(.active) {
+    border-color: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+  }
+</style>
+
 <script>
   // Copy to Clipboard logic for contact button
   const copyBtn = document.getElementById('copy-email-btn');
@@ -377,5 +494,110 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
         console.error('Failed to copy text: ', err);
       });
     });
+  }
+
+  // Tab switching and auto-rotation logic for activity feeds
+  const tabs = document.querySelectorAll('.feed-tab-btn');
+  const panels = document.querySelectorAll('.feed-panel');
+
+  const ROTATE_INTERVAL = 8000; // 8 seconds per tab
+  const PAUSE_DURATION = 15000; // 15 seconds pause on manual select
+
+  let resumeTimeout = null;
+  let activeTabId = 'github'; // default active tab ID
+
+  // Map of tab ID to tab button
+  const tabMap = {};
+  tabs.forEach(tab => {
+    const tabId = tab.getAttribute('data-tab');
+    if (tabId) tabMap[tabId] = tab;
+  });
+
+  // Ordered list of tab IDs for cycling
+  const tabSequence = ['github', 'linkedin', 'youtube'];
+
+  function switchTab(targetTabId, isManual = false) {
+    if (activeTabId === targetTabId && !isManual) return;
+
+    // 1. Clear any active progress animation
+    tabs.forEach(t => t.classList.remove('active', 'animating'));
+
+    // Get target tab element
+    const targetTabEl = tabMap[targetTabId];
+    if (!targetTabEl) return;
+
+    // Add active class to target tab
+    targetTabEl.classList.add('active');
+    activeTabId = targetTabId;
+
+    // Update panels
+    panels.forEach(panel => {
+      const panelId = panel.getAttribute('id');
+      if (panelId === `panel-${targetTabId}`) {
+        panel.classList.remove('hidden');
+        void panel.offsetWidth; // Force layout reflow
+        panel.classList.remove('opacity-0');
+      } else {
+        panel.classList.add('opacity-0');
+        panel.classList.add('hidden');
+      }
+    });
+
+    if (isManual) {
+      // User clicked manually -> pause auto rotation
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+
+      // Start a timeout to resume auto rotation after 15 seconds
+      resumeTimeout = setTimeout(() => {
+        startProgress(targetTabEl);
+      }, PAUSE_DURATION);
+    } else {
+      // Auto transition -> start progress bar animation immediately on the new tab
+      startProgress(targetTabEl);
+    }
+  }
+
+  function startProgress(tabEl) {
+    // Stop any existing progress animations first
+    tabs.forEach(t => {
+      t.classList.remove('animating');
+    });
+
+    // Force layout reflow to ensure animation restarts
+    void tabEl.offsetWidth;
+
+    // Start progress bar animation on the current tab
+    tabEl.classList.add('animating');
+  }
+
+  // Set up event listeners for manual clicks
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetTabId = tab.getAttribute('data-tab');
+      if (targetTabId) {
+        switchTab(targetTabId, true);
+      }
+    });
+  });
+
+  // Set up progress bar animationend listeners to cycle to next tab
+  tabs.forEach(tab => {
+    const progressIndicator = tab.querySelector('.tab-progress');
+    if (progressIndicator) {
+      progressIndicator.addEventListener('animationend', () => {
+        // Find next tab in sequence
+        const currentIndex = tabSequence.indexOf(activeTabId);
+        const nextIndex = (currentIndex + 1) % tabSequence.length;
+        const nextTabId = tabSequence[nextIndex];
+
+        switchTab(nextTabId, false);
+      });
+    }
+  });
+
+  // Initialize auto-rotation on page load
+  const initialActiveTab = tabMap[activeTabId];
+  if (initialActiveTab) {
+    startProgress(initialActiveTab);
   }
 </script>
