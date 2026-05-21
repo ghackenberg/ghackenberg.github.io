@@ -17,40 +17,63 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
     
     <!-- Hero Section -->
     <section id="home" class="min-h-[75vh] flex flex-col justify-center py-12 md:py-20 relative">
-      <div class="max-w-3xl">
-        <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-6 tracking-wider uppercase">
-          Welcome to my profile
-        </span>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
         
-        <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6">
-          Hi, I am <br class="sm:hidden" />
-          <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow">
-            Georg Hackenberg
+        <!-- Text Content -->
+        <div class="lg:col-span-7 flex flex-col justify-center order-2 lg:order-1">
+          <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-6 tracking-wider uppercase self-start">
+            Welcome to my profile
           </span>
-        </h1>
-        
-        <p class="text-xl sm:text-2xl font-bold text-gray-300 mb-8 leading-normal tracking-wide">
-          Professor for Industrial Informatics &bull; Entrepreneur &bull; Software Engineer
-        </p>
-        
-        <p class="text-gray-400 text-base sm:text-lg leading-relaxed mb-10 font-normal">
-          I am a computer science professor, software engineer, and entrepreneur from Bavaria, Germany living in Upper Austria. On this page you can find details about my software projects, academic teaching, and core focuses. I am passionate about engineering modern software platforms, building rich knowledge graph architectures, and training the next generation of engineers.
-        </p>
-        
-        <div class="flex flex-wrap gap-4">
-          <a 
-            href="#projects" 
-            class="px-6 py-3.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105"
-          >
-            Explore Projects
-          </a>
-          <a 
-            href="#contact" 
-            class="px-6 py-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-white font-semibold transition-all duration-300 hover:bg-white/10 hover:scale-105"
-          >
-            Get in Touch
-          </a>
+          
+          <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+            Hi, I am <br class="sm:hidden" />
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow">
+              Georg Hackenberg
+            </span>
+          </h1>
+          
+          <p class="text-xl sm:text-2xl font-bold text-gray-300 mb-8 leading-normal tracking-wide">
+            Professor for Industrial Informatics &bull; Entrepreneur &bull; Software Engineer
+          </p>
+          
+          <p class="text-gray-400 text-base sm:text-lg leading-relaxed mb-10 font-normal">
+            I am a computer science professor, software engineer, and entrepreneur from Bavaria, Germany living in Upper Austria. On this page you can find details about my software projects, academic teaching, and core focuses. I am passionate about engineering modern software platforms, building rich knowledge graph architectures, and training the next generation of engineers.
+          </p>
+          
+          <div class="flex flex-wrap gap-4">
+            <a 
+              href="#projects" 
+              class="px-6 py-3.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105"
+            >
+              Explore Projects
+            </a>
+            <a 
+              href="#contact" 
+              class="px-6 py-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-white font-semibold transition-all duration-300 hover:bg-white/10 hover:scale-105"
+            >
+              Get in Touch
+            </a>
+          </div>
         </div>
+        
+        <!-- Profile Photo -->
+        <div class="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
+          <div class="relative w-72 h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
+            <!-- Large glowing ambient sphere behind the transparent portrait -->
+            <div class="absolute -inset-10 bg-gradient-to-tr from-brand-blue via-brand-purple to-brand-yellow rounded-full opacity-35 blur-3xl group-hover:opacity-50 group-hover:scale-110 transition-all duration-700"></div>
+            
+            <!-- Large floating headshot blending directly with background, clipped to a full circle -->
+            <div class="relative w-full h-full rounded-full overflow-hidden select-none pointer-events-none">
+              <img 
+                src={`${import.meta.env.BASE_URL}images/comic_profile.png`}
+                alt="Georg Hackenberg"
+                class="w-full h-full object-cover transform group-hover:scale-[1.04] group-hover:-translate-y-2 transition-all duration-700 ease-out mix-blend-screen"
+                style="mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 70%); -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 70%);"
+              />
+            </div>
+          </div>
+        </div>
+        
       </div>
     </section>
 
