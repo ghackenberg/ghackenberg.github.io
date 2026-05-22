@@ -31,6 +31,32 @@ let slidesUrl = pub.data.slides;
 if (slidesUrl && slidesUrl.startsWith("//")) {
   slidesUrl = "https:" + slidesUrl;
 }
+
+function getPublisherDomain(url: string | undefined): string {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    let hostname = parsed.hostname;
+    if (hostname.startsWith("www.")) {
+      hostname = hostname.substring(4);
+    }
+    if (hostname === "doi.org") {
+      const path = parsed.pathname;
+      if (path.includes("10.1109")) return "ieeexplore.ieee.org";
+      if (path.includes("10.1145") || path.includes("10.5555")) return "dl.acm.org";
+      if (path.includes("10.1007")) return "link.springer.com";
+      if (path.includes("10.1016")) return "sciencedirect.com";
+      if (path.includes("10.1117")) return "spiedigitallibrary.org";
+      if (path.includes("10.3139")) return "hanser-elibrary.com";
+      if (path.includes("10.1515")) return "degruyter.com";
+      if (path.includes("10.5220")) return "scitepress.org";
+      if (path.includes("10.1017")) return "cambridge.org";
+    }
+    return hostname;
+  } catch (e) {
+    return "Publisher Page";
+  }
+}
 ---
 
 <Layout title={`${pub.data.title} | Publications | Dr. Georg Hackenberg`} description={pub.data.abstract?.substring(0, 160)}>
@@ -61,7 +87,7 @@ if (slidesUrl && slidesUrl.startsWith("//")) {
         <span>{pub.data.pubDate}</span>
       </p>
 
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2 items-center">
         {pub.data.tags.map(tag => (
           <a 
             href={`/publications/tags/${tag}`}
@@ -70,6 +96,17 @@ if (slidesUrl && slidesUrl.startsWith("//")) {
             #{tag}
           </a>
         ))}
+        {pub.data.publisherUrl && (
+          <a 
+            href={pub.data.publisherUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="ml-auto px-3 py-1.5 rounded-xl text-xs font-semibold bg-brand-blue/10 border border-brand-blue/20 text-brand-blue hover:bg-brand-blue/20 transition-all duration-200 flex items-center space-x-1"
+          >
+            <span>{getPublisherDomain(pub.data.publisherUrl)}</span>
+            <span>↗</span>
+          </a>
+        )}
       </div>
     </header>
 

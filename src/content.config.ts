@@ -94,6 +94,7 @@ const publications = defineCollection({
     bibtex: z.string().optional(),
     slides: z.string().optional(),
     icon: z.string().optional(),
+    publisherUrl: z.string().optional(),
   }),
 });
 

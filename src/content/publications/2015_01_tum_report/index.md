@@ -13,5 +13,6 @@ bibtex: |
     year={2015},
     institution={TUM Technische Universität München, Institut für Informatik}
   }
+publisherUrl: "https://mediatum.ub.tum.de/1253882"
 ---
 

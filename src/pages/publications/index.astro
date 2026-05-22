@@ -23,6 +23,32 @@ publications.forEach((pub) => {
 });
 
 const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
+
+function getPublisherDomain(url: string | undefined): string {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    let hostname = parsed.hostname;
+    if (hostname.startsWith("www.")) {
+      hostname = hostname.substring(4);
+    }
+    if (hostname === "doi.org") {
+      const path = parsed.pathname;
+      if (path.includes("10.1109")) return "ieeexplore.ieee.org";
+      if (path.includes("10.1145") || path.includes("10.5555")) return "dl.acm.org";
+      if (path.includes("10.1007")) return "link.springer.com";
+      if (path.includes("10.1016")) return "sciencedirect.com";
+      if (path.includes("10.1117")) return "spiedigitallibrary.org";
+      if (path.includes("10.3139")) return "hanser-elibrary.com";
+      if (path.includes("10.1515")) return "degruyter.com";
+      if (path.includes("10.5220")) return "scitepress.org";
+      if (path.includes("10.1017")) return "cambridge.org";
+    }
+    return hostname;
+  } catch (e) {
+    return "Publisher Page";
+  }
+}
 ---
 
 <Layout title="Publications | Dr. Georg Hackenberg" description="Academic publications, conference papers, and research presentations by Dr. Georg Hackenberg.">
@@ -119,7 +145,7 @@ const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
                         <span>{pub.data.pubDate}</span>
                       </p>
 
-                      <div class="flex flex-wrap gap-2 items-center">
+                      <div class="flex flex-wrap gap-2 items-center w-full">
                         {pub.data.tags.map(tag => (
                           <a 
                             href={`/publications/tags/${tag}`}
@@ -128,13 +154,26 @@ const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
                             #{tag}
                           </a>
                         ))}
-                        <a 
-                          href={`/publications/${pub.id}`} 
-                          class="text-xs font-semibold text-brand-yellow hover:text-brand-yellow/85 ml-auto flex items-center space-x-1"
-                        >
-                          <span>Abstract &amp; BibTeX</span>
-                          <span>&rarr;</span>
-                        </a>
+                        <div class="ml-auto flex items-center space-x-4">
+                          {pub.data.publisherUrl && (
+                            <a 
+                              href={pub.data.publisherUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-xs font-semibold text-brand-blue hover:text-brand-blue/85 flex items-center space-x-1"
+                            >
+                              <span>{getPublisherDomain(pub.data.publisherUrl)}</span>
+                              <span>↗</span>
+                            </a>
+                          )}
+                          <a 
+                            href={`/publications/${pub.id}`} 
+                            class="text-xs font-semibold text-brand-yellow hover:text-brand-yellow/85 flex items-center space-x-1"
+                          >
+                            <span>Abstract &amp; BibTeX</span>
+                            <span>&rarr;</span>
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>

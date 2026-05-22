@@ -19,6 +19,7 @@ bibtex: |
     pages={1482-1489},
     publisher={Elsevier}
   }
+publisherUrl: "https://doi.org/10.1016/j.ifacol.2015.06.296"
 ---
 
 Various drivers, especially increasing market dynamics, force industrial enterprises to evolve their production facilities ever more frequently. Analyzing the impact of changed requirements on the production facilities early in the engineering process would facilitate the estimation of resulting costs and therefore reduce project risk. In industrial practice, requirements specifications are typically textual lists and only structured by a table of contents; an analysis of the impact of changes within the requirements specification is extensive, as no documented information is available about how the requirements and other elements of the requirements specification depend on each other.

@@ -8,6 +8,7 @@ tags: ["manufacturing system","system engineering","system verification"]
 bibtex: "@article{\r\n\ttitle = \"Efficient Impact Analysis of Changes in the Requirements of Manufacturing Automation Systems \",\r\n\tjournal = \"IFAC-PapersOnLine \",\r\n\tvolume = \"48\",\r\n\tnumber = \"3\",\r\n\tpages = \"1482 - 1489\",\r\n\tyear = \"2015\",\r\n\tnote = \"15th \\{IFAC\\} Symposium on Information Control Problems in ManufacturingINCOM 2015 \",\r\n\tissn = \"2405-8963\",\r\n\tdoi = \"http://dx.doi.org/10.1016/j.ifacol.2015.06.296\",\r\n\turl = \"http://www.sciencedirect.com/science/article/pii/S2405896315005352\",\r\n\tauthor = \"Sabine Teufl and Georg Hackenberg\"\r\n}"
 slides: ""
 icon: "/publications/2015_05_incom/pre_selection.png"
+publisherUrl: "https://doi.org/10.1016/j.ifacol.2015.06.296"
 ---
 
 Various drivers, especially increasing market dynamics, force industrial enterprises to evolve their production facilities ever more frequently. Analyzing the impact of changed requirements on the production facilities early in the engineering process would facilitate the estimation of resulting costs and therefore reduce project risk. In industrial practice, requirements specifcations are typically textual lists and only structured by a table of contents; an analysis of the impact of changes within the requirements specifcation is extensive, as no documented information is available about how the requirements and other elements of the requirements specifcation depend on each other.

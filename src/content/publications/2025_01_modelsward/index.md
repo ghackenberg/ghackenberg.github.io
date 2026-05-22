@@ -19,6 +19,7 @@ bibtex: |
     booktitle={MODELSWARD},
     pages={234-241}
   }
+publisherUrl: "https://doi.org/10.5220/0013183200003896"
 ---
 
 Intelligent Transportation Systems (ITS) promote new transportation paradigms such as connected and autonomous vehicles (CAV), multi-modal and demand-responsive transport systems, and enable the transportation electrification by sustainable operation of electric vehicles. Methods and tools are needed to explore the possible design space for emerging transportation paradigms, which support evaluation of system design alternatives and verification of system properties. In this work, we propose a model-and simulation-based systems engineering framework for capturing design decisions and evaluating control strategies for ITS design. In addition to capturing and evaluating different design decisions, the proposed solution allows users to guide design decisions by systematic comparison and evaluation of system configurations and control strategies.
