@@ -60,7 +60,10 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
         <div class="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
           <div class="relative w-64 h-64 min-[360px]:w-72 min-[360px]:h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
             <!-- Large floating headshot blending directly with background, clipped to a full circle -->
-            <div class="relative w-full h-full rounded-full overflow-hidden select-none pointer-events-none">
+            <div 
+              class="relative w-full h-full rounded-full overflow-hidden select-none pointer-events-none"
+              style="-webkit-mask-image: -webkit-radial-gradient(white, black); mask-image: radial-gradient(circle, white 100%, transparent 100%); -webkit-backface-visibility: hidden; backface-visibility: hidden; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0);"
+            >
               <img 
                 src={`${import.meta.env.BASE_URL}images/comic_profile.png`}
                 alt="Georg Hackenberg"
