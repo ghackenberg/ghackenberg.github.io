@@ -6,7 +6,6 @@
 import { getEntry, getCollection } from "astro:content";
 
 interface GitHubProfile {
-  public_repos: number;
   followers: number;
 }
 
@@ -17,6 +16,8 @@ interface GitHubRepo {
   stargazers_count: number;
   language: string;
   social_preview?: string;
+  updatedAt?: string;
+  pushedAt?: string;
 }
 
 let profile: GitHubProfile | null = null;
@@ -32,7 +33,12 @@ try {
 
   const reposCollection = await getCollection("github-repos");
   if (reposCollection && reposCollection.length > 0) {
-    repos = reposCollection.map(entry => entry.data) as any;
+    const rawRepos = reposCollection.map(entry => entry.data) as any;
+    repos = rawRepos.sort((a: any, b: any) => {
+      const dateA = a.pushedAt ? new Date(a.pushedAt).getTime() : (a.updatedAt ? new Date(a.updatedAt).getTime() : 0);
+      const dateB = b.pushedAt ? new Date(b.pushedAt).getTime() : (b.updatedAt ? new Date(b.updatedAt).getTime() : 0);
+      return dateB - dateA;
+    });
   }
 
   if (!profile || repos.length === 0) {
@@ -188,7 +194,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
           <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="bg-white/5 border border-white/5 rounded-2xl py-3 text-center">
               <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Repositories</p>
-              <p class="text-xl font-bold text-white font-mono mt-1">{profile.public_repos}</p>
+              <p class="text-xl font-bold text-white font-mono mt-1">{repos.length}</p>
             </div>
             <div class="bg-white/5 border border-white/5 rounded-2xl py-3 text-center">
               <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Followers</p>

@@ -1,0 +1,10 @@
+{
+  "title": "Ball Physics Simulation in Web Browser with JavaScript/SVG/VML",
+  "id": "pG4gF7uO_Sg",
+  "published": "193 months ago",
+  "publishedAt": "2010-06-28T09:07:20Z",
+  "thumbnail": "https://i.ytimg.com/vi/pG4gF7uO_Sg/hqdefault.jpg",
+  "description": "Source location: http://www.hyperkit-software.com/projects/jsphysics/index.html! In this video I demonstrate the simulation of ball physics using JavaScript and vector graphics standards SVG (for Firefox/Opera/Safari) respectively VML (Internet Explorer). The demo is based on a small linear algebra library that includes vector/matrix functionality. The vector graphics standard is also encapsulated behind a custom JavaScript API. The lines are used for debugging the physics simulation results.",
+  "views": "1.6k",
+  "likes": "3"
+}

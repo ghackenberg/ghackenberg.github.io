@@ -17,7 +17,6 @@ const linkedinProfile = defineCollection({
   loader: glob({ base: './src/content/feeds/linkedin', pattern: 'profile.json' }),
   schema: z.object({
     followers: z.string().optional(),
-    posts: z.string().optional(),
     postIds: z.array(z.string()).optional(),
   }),
 });
@@ -25,7 +24,6 @@ const linkedinProfile = defineCollection({
 const githubProfile = defineCollection({
   loader: glob({ base: './src/content/feeds/github', pattern: 'profile.json' }),
   schema: z.object({
-    public_repos: z.number(),
     followers: z.number(),
   }),
 });
@@ -39,6 +37,8 @@ const githubRepos = defineCollection({
     stargazers_count: z.number(),
     language: z.string(),
     social_preview: z.string().optional(),
+    updatedAt: z.string().optional(),
+    pushedAt: z.string().optional(),
   }),
 });
 
@@ -46,7 +46,6 @@ const youtubeProfile = defineCollection({
   loader: glob({ base: './src/content/feeds/youtube', pattern: 'profile.json' }),
   schema: z.object({
     subscribers: z.string(),
-    videos: z.string(),
   }),
 });
 
@@ -56,6 +55,7 @@ const youtubeVideos = defineCollection({
     title: z.string(),
     id: z.string(),
     published: z.string(),
+    publishedAt: z.string().optional(),
     thumbnail: z.string().optional(),
     description: z.string(),
     views: z.string(),

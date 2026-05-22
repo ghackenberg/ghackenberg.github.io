@@ -49,7 +49,6 @@ async function syncGitHub() {
     throw new Error(`Profile fetch responded with status ${profileRes.status}`);
   }
   const profile = {
-    public_repos: profileRes.data.public_repos,
     followers: profileRes.data.followers
   };
 
@@ -58,38 +57,58 @@ async function syncGitHub() {
     throw new Error("GITHUB_TOKEN environment variable is required for GitHub GraphQL sync");
   }
 
-  const reposRes = await octokit.graphql(
-    `query ($username: String!, $limit: Int!) {
-      user(login: $username) {
-        repositories(first: $limit, orderBy: {field: UPDATED_AT, direction: DESC}, privacy: PUBLIC) {
-          nodes {
-            name
-            description
-            url
-            stargazerCount
-            primaryLanguage {
-              name
+  let repos = [];
+  let hasNextPage = true;
+  let cursor = null;
+
+  while (hasNextPage) {
+    const reposRes = await octokit.graphql(
+      `query ($username: String!, $cursor: String) {
+        user(login: $username) {
+          repositories(first: 100, after: $cursor, orderBy: {field: PUSHED_AT, direction: DESC}, privacy: PUBLIC) {
+            pageInfo {
+              hasNextPage
+              endCursor
             }
-            openGraphImageUrl
+            nodes {
+              name
+              description
+              url
+              stargazerCount
+              primaryLanguage {
+                name
+              }
+              openGraphImageUrl
+              updatedAt
+              pushedAt
+            }
           }
         }
+      }`,
+      {
+        username,
+        cursor
       }
-    }`,
-    {
-      username,
-      limit: 6
-    }
-  );
+    );
 
-  const nodes = reposRes.user?.repositories?.nodes || [];
-  const repos = nodes.map(repo => ({
-    name: repo.name,
-    description: repo.description || "No description provided.",
-    html_url: repo.url,
-    stargazers_count: repo.stargazerCount || 0,
-    language: repo.primaryLanguage?.name || "Web",
-    social_preview: repo.openGraphImageUrl || ""
-  }));
+    const connection = reposRes.user?.repositories;
+    const nodes = connection?.nodes || [];
+    for (const repo of nodes) {
+      repos.push({
+        name: repo.name,
+        description: repo.description || "No description provided.",
+        html_url: repo.url,
+        stargazers_count: repo.stargazerCount || 0,
+        language: repo.primaryLanguage?.name || "Web",
+        social_preview: repo.openGraphImageUrl || "",
+        updatedAt: repo.updatedAt || "",
+        pushedAt: repo.pushedAt || ""
+      });
+    }
+
+    hasNextPage = connection?.pageInfo?.hasNextPage || false;
+    cursor = connection?.pageInfo?.endCursor || null;
+  }
 
   // Write out collection data
   const profileDir = path.resolve(process.cwd(), "src/content/feeds/github");
@@ -132,8 +151,7 @@ async function syncYouTube() {
 
   const rawSubs = parseInt(item.statistics?.subscriberCount || "0");
   const stats = {
-    subscribers: rawSubs >= 1000 ? `${(rawSubs / 1000).toFixed(1)}k+` : rawSubs.toString(),
-    videos: item.statistics?.videoCount || "0"
+    subscribers: rawSubs >= 1000 ? `${(rawSubs / 1000).toFixed(1)}k+` : rawSubs.toString()
   };
 
   const uploadsPlaylistId = item.contentDetails?.relatedPlaylists?.uploads;
@@ -141,41 +159,55 @@ async function syncYouTube() {
     throw new Error("Uploads playlist not found for channel");
   }
 
-  // Fetch playlist items (latest 3 uploads)
-  const playlistRes = await youtube.playlistItems.list({
-    part: ["snippet"],
-    playlistId: uploadsPlaylistId,
-    maxResults: 3
-  });
+  // Fetch playlist items (all uploads)
+  let playlistItems = [];
+  let nextPageToken = undefined;
+
+  do {
+    const playlistRes = await youtube.playlistItems.list({
+      part: ["snippet"],
+      playlistId: uploadsPlaylistId,
+      maxResults: 50,
+      pageToken: nextPageToken
+    });
+
+    if (playlistRes.data.items && playlistRes.data.items.length > 0) {
+      playlistItems.push(...playlistRes.data.items);
+    }
+    nextPageToken = playlistRes.data.nextPageToken;
+  } while (nextPageToken);
 
   let videos = [];
-  if (playlistRes.data.items && playlistRes.data.items.length > 0) {
-    const videoIds = playlistRes.data.items.map(v => v.snippet?.resourceId?.videoId).filter(Boolean);
+  if (playlistItems.length > 0) {
+    const videoIds = playlistItems.map(v => v.snippet?.resourceId?.videoId).filter(Boolean);
 
-    // Fetch video metrics (likes and views)
+    // Fetch video metrics (likes and views) in chunks of 50
     const statsMap = {};
-    try {
-      const videoDetailsRes = await youtube.videos.list({
-        part: ["statistics"],
-        id: videoIds
-      });
-      if (videoDetailsRes.data.items) {
-        for (const videoDetail of videoDetailsRes.data.items) {
-          if (videoDetail.id) {
-            const rViews = parseInt(videoDetail.statistics?.viewCount || "0");
-            const rLikes = parseInt(videoDetail.statistics?.likeCount || "0");
-            statsMap[videoDetail.id] = {
-              views: rViews >= 1000 ? `${(rViews / 1000).toFixed(1)}k` : rViews.toString(),
-              likes: rLikes >= 1000 ? `${(rLikes / 1000).toFixed(0)}` : rLikes.toString()
-            };
+    for (let i = 0; i < videoIds.length; i += 50) {
+      const chunk = videoIds.slice(i, i + 50);
+      try {
+        const videoDetailsRes = await youtube.videos.list({
+          part: ["statistics"],
+          id: chunk
+        });
+        if (videoDetailsRes.data.items) {
+          for (const videoDetail of videoDetailsRes.data.items) {
+            if (videoDetail.id) {
+              const rViews = parseInt(videoDetail.statistics?.viewCount || "0");
+              const rLikes = parseInt(videoDetail.statistics?.likeCount || "0");
+              statsMap[videoDetail.id] = {
+                views: rViews >= 1000 ? `${(rViews / 1000).toFixed(1)}k` : rViews.toString(),
+                likes: rLikes >= 1000 ? `${(rLikes / 1000).toFixed(0)}` : rLikes.toString()
+              };
+            }
           }
         }
+      } catch (e) {
+        console.warn(`! Failed to fetch video stats for chunk starting at ${i}, falling back to 0.`);
       }
-    } catch (e) {
-      console.warn("! Failed to fetch individual video stats, falling back to 0.");
     }
 
-    videos = playlistRes.data.items.map(video => {
+    videos = playlistItems.map(video => {
       const pubDate = new Date(video.snippet?.publishedAt || Date.now());
       const diffDays = Math.ceil(Math.abs(Date.now() - pubDate.getTime()) / (1000 * 60 * 60 * 24));
       const relativeDate = diffDays > 30 ? `${Math.floor(diffDays / 30)} months ago` : `${diffDays} days ago`;
@@ -187,6 +219,7 @@ async function syncYouTube() {
         title: video.snippet?.title || "No Title",
         id: vidId,
         published: relativeDate,
+        publishedAt: video.snippet?.publishedAt || new Date().toISOString(),
         thumbnail: video.snippet?.thumbnails?.high?.url || `https://img.youtube.com/vi/${vidId}/hqdefault.jpg`,
         description: video.snippet?.description || "",
         views: vidStats.views,
@@ -243,11 +276,20 @@ async function syncLinkedIn() {
 
   console.log(`Syncing ${idsToSync.length} LinkedIn posts (out of ${postIds.length} total)...`);
 
-  for (const id of idsToSync) {
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  for (let idx = 0; idx < idsToSync.length; idx++) {
+    const id = idsToSync[idx];
     const filename = `${id}.md`;
     const url = `https://www.linkedin.com/feed/update/urn:li:activity:${id}`;
     const filePath = path.join(postsDir, filename);
     const fileExists = fs.existsSync(filePath);
+
+    if (idx > 0) {
+      const waitMs = Math.floor(2000 + Math.random() * 3000);
+      console.log(`Waiting ${waitMs}ms to simulate natural delay...`);
+      await delay(waitMs);
+    }
 
     console.log(`Syncing LinkedIn post URN ID: ${id} -> ${filename}`);
     try {

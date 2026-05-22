@@ -9,6 +9,7 @@ interface YouTubeVideo {
   title: string;
   id: string;
   published: string;
+  publishedAt?: string;
   thumbnail: string;
   description: string;
   views: string;
@@ -17,7 +18,6 @@ interface YouTubeVideo {
 
 interface YouTubeStats {
   subscribers: string;
-  videos: string;
 }
 
 let videos: YouTubeVideo[] = [];
@@ -33,7 +33,12 @@ try {
 
   const videosCollection = await getCollection("youtube-videos");
   if (videosCollection && videosCollection.length > 0) {
-    videos = videosCollection.map(entry => entry.data);
+    const rawVideos = videosCollection.map(entry => entry.data);
+    videos = rawVideos.sort((a, b) => {
+      const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      return dateB - dateA;
+    });
   }
 
   if (!stats || videos.length === 0) {
@@ -173,7 +178,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
           <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="bg-white/5 border border-white/5 rounded-2xl py-3 text-center">
               <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Videos</p>
-              <p class="text-xl font-bold text-white font-mono mt-1">{stats.videos}</p>
+              <p class="text-xl font-bold text-white font-mono mt-1">{videos.length}</p>
             </div>
             <div class="bg-white/5 border border-white/5 rounded-2xl py-3 text-center">
               <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Subscribers</p>
@@ -202,7 +207,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
       <div class="lg:col-span-8 flex flex-col justify-center">
         <p class="text-xs font-semibold text-gray-400 tracking-wider uppercase mb-3.5">Recent Videos</p>
         <div class="space-y-3">
-          {videos.map((video) => (
+          {videos.slice(0, 3).map((video) => (
             <a 
               href={`https://youtube.com/watch?v=${video.id}`}
               target="_blank" 
