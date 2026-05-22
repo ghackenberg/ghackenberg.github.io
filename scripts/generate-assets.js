@@ -15,6 +15,14 @@ const server = http.createServer((req, res) => {
   if (filePath === publicDir || fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
     filePath = path.join(filePath, 'index.html');
   }
+
+  // Fallback to src/assets/images if file is not found in public directory
+  if ((!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) && urlPath.startsWith('/images/')) {
+    const fallbackPath = path.join(__dirname, '../src/assets/images', path.basename(urlPath));
+    if (fs.existsSync(fallbackPath) && fs.statSync(fallbackPath).isFile()) {
+      filePath = fallbackPath;
+    }
+  }
   
   const ext = path.extname(filePath).toLowerCase();
   const mimeTypes = {
@@ -104,7 +112,11 @@ server.listen(PORT, async () => {
     await capture(`${baseUrl}/icon-generator.html?mode=maskable`, 512, 512, path.join(publicDir, 'icon-512x512-maskable.png'));
     
     // 3. Generate Social Sharing Banner (1200x630)
-    await capture(`${baseUrl}/og-template.html`, 1200, 630, path.join(publicDir, 'images/og-share-preview.png'));
+    const srcImagesDir = path.resolve(__dirname, '../src/assets/images');
+    if (!fs.existsSync(srcImagesDir)) {
+      fs.mkdirSync(srcImagesDir, { recursive: true });
+    }
+    await capture(`${baseUrl}/og-template.html`, 1200, 630, path.join(srcImagesDir, 'og-share-preview.png'));
     
     await browser.close();
     console.log('[Asset Generator] All assets compiled successfully!');

@@ -16,7 +16,9 @@
   }
   
   body {
-    background-color: #030712; /* Tailwind gray-950 */
+    background-color: #030712;
+    background-image: radial-gradient(circle at 50% 0%, #12244a 0%, #030712 100%);
+    background-repeat: no-repeat;
     color: #f3f4f6; /* Tailwind gray-100 */
     overflow-x: hidden;
   }
@@ -61,10 +63,10 @@
 }
 
 .glass-card {
-  background: rgba(31, 41, 55, 0.4);
+  background: rgba(37, 49, 78, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -79,7 +81,7 @@
   position: absolute;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.15;
+  opacity: 0.28;
   pointer-events: none;
   z-index: 0;
   animation: pulse-slow 12s infinite alternate;
@@ -88,14 +90,14 @@
 @keyframes pulse-slow {
   0% {
     transform: scale(1) translate(0px, 0px);
-    opacity: 0.15;
+    opacity: 0.28;
   }
   50% {
     transform: scale(1.1) translate(20px, -20px);
-    opacity: 0.2;
+    opacity: 0.38;
   }
   100% {
     transform: scale(0.9) translate(-20px, 20px);
-    opacity: 0.12;
+    opacity: 0.22;
   }
 }

@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import { getImage } from "astro:assets";
+import defaultOgImage from "../assets/images/og-share-preview.png";
 
 interface Props {
   title?: string;
@@ -22,9 +24,18 @@ const {
 // Build canonical URL
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
+// Optimize default OG image at build time
+const optimizedOgImage = await getImage({
+  src: defaultOgImage,
+  format: 'jpeg',
+  width: 1200,
+  height: 630,
+  quality: 85
+});
+
 // Build absolute OG image URL
 const resolvedImageURL = new URL(
-  image || `${import.meta.env.BASE_URL}images/og-share-preview.png`,
+  image || optimizedOgImage.src,
   Astro.site
 );
 
@@ -105,7 +116,7 @@ if (pubDate) {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
 
-  <body class="bg-gray-950 text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">
+  <body class="text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">
     
     <!-- Background glowing orbs for premium dark mode visual aesthetic -->
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">

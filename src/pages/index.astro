@@ -6,6 +6,15 @@ import Timeline from "../components/Timeline.astro";
 import GitHubWidget from "../components/GitHubWidget.astro";
 import LinkedInWidget from "../components/LinkedInWidget.astro";
 import YouTubeWidget from "../components/YouTubeWidget.astro";
+import { getImage } from "astro:assets";
+import profileImage from "../assets/images/comic-profile.png";
+
+const optimizedProfile = await getImage({
+  src: profileImage,
+  format: "webp",
+  width: 960,
+  quality: 85
+});
 ---
 
 <Layout>
@@ -59,35 +68,34 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
         <!-- Profile Photo -->
         <div class="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
           <div class="relative w-64 h-64 min-[360px]:w-72 min-[360px]:h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
+            <!-- Ambient back glow -->
+            <div class="absolute inset-8 rounded-full bg-gradient-to-tr from-brand-blue via-brand-purple to-brand-yellow opacity-30 blur-3xl transition-all duration-700 group-hover:opacity-75 group-hover:scale-110 pointer-events-none z-0"></div>
+
             <!-- Large floating headshot inside SVG to avoid WebKit subpixel clipping artifacts -->
-            <svg viewBox="0 0 100 100" class="w-full h-full select-none pointer-events-none">
+            <svg viewBox="0 0 100 100" class="w-full h-full select-none pointer-events-none relative z-10">
               <defs>
-                <!-- SVG ClipPath for perfect circular crop -->
-                <clipPath id="circleClip">
-                  <circle cx="50" cy="50" r="50" />
-                </clipPath>
-                <!-- SVG RadialGradient for soft fadeout matching original design -->
-                <radialGradient id="fadeGradient" cx="50%" cy="45%" r="75%">
-                  <stop offset="35%" stop-color="#fff" stop-opacity="1" />
-                  <stop offset="70%" stop-color="#fff" stop-opacity="0" />
+                <!-- SVG RadialGradient for soft bottom fadeout, keeping top head sharp -->
+                <radialGradient id="fadeGradient" cx="50%" cy="30%" r="70%">
+                  <stop offset="55%" stop-color="#fff" stop-opacity="1" />
+                  <stop offset="95%" stop-color="#fff" stop-opacity="0" />
                 </radialGradient>
                 <!-- SVG Mask applying the gradient -->
                 <mask id="fadeMask">
                   <rect x="0" y="0" width="100%" height="100%" fill="url(#fadeGradient)" />
                 </mask>
               </defs>
-              <!-- Group using the clip path for circular boundary -->
-              <g clip-path="url(#circleClip)">
-                <!-- Image inside clip and using mask for vignette blend -->
+              <!-- Group using mask for vignette blend without clipping boundaries -->
+              <g>
+                <!-- Image inside using mask for vignette blend -->
                 <image
-                  href={`${import.meta.env.BASE_URL}images/comic_profile.png`}
+                  href={optimizedProfile.src}
                   x="0"
                   y="0"
                   width="100"
                   height="100"
                   preserveAspectRatio="xMidYMid slice"
                   mask="url(#fadeMask)"
-                  class="profile-svg-image mix-blend-screen"
+                  class="profile-svg-image"
                 />
               </g>
             </svg>
