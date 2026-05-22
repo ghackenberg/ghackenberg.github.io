@@ -32,20 +32,31 @@ const tags = Array.from(
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Tag Filter Cloud -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
-        <div class="glass-card p-6 rounded-2xl border border-white/5">
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col max-h-[300px] lg:max-h-[calc(100vh-10rem)]">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
             <span>🏷️</span>
             <span>Tags</span>
           </h3>
-          <div class="flex flex-wrap gap-2">
+          <div class="mb-3 relative shrink-0">
+            <input 
+              type="text" 
+              id="tag-search" 
+              placeholder="Search tags..." 
+              class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 pl-8 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
+            />
+            <span class="absolute left-2.5 top-2 text-[10px] text-gray-500">🔍</span>
+          </div>
+          <div class="flex flex-wrap gap-2 overflow-y-auto pr-1 custom-scrollbar-thin flex-grow">
             {tags.map(tag => (
               <a 
                 href={`/posts/tags/${tag}`}
+                data-tag={tag}
                 class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-blue/30 transition-all duration-200"
               >
                 #{tag}
               </a>
             ))}
+            <p id="no-tags-message" class="text-xs text-gray-500 italic py-2 hidden w-full text-center">No matching tags</p>
           </div>
         </div>
       </div>
@@ -117,4 +128,33 @@ const tags = Array.from(
       </div>
     </div>
   </main>
+
+  <script>
+    const searchInput = document.getElementById('tag-search') as HTMLInputElement | null;
+    const tagLinks = document.querySelectorAll('[data-tag]');
+    const noTagsMessage = document.getElementById('no-tags-message');
+
+    searchInput?.addEventListener('input', (e) => {
+      const query = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      tagLinks.forEach(link => {
+        const tag = link.getAttribute('data-tag')?.toLowerCase() || '';
+        if (tag.includes(query)) {
+          link.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          link.classList.add('hidden');
+        }
+      });
+
+      if (noTagsMessage) {
+        if (visibleCount === 0 && query !== '') {
+          noTagsMessage.classList.remove('hidden');
+        } else {
+          noTagsMessage.classList.add('hidden');
+        }
+      }
+    });
+  </script>
 </Layout>
