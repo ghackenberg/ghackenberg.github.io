@@ -1,13 +1,21 @@
 ---
-title: "From Conception to Refinement in Mechatronic Systems Engineering"
-pubDate: "17-18 January 2015"
-book: "Mechatronics and Robotics Engineering (ICMRE 2015), 2015 International Conference on"
-author: "<strong>Georg Hackenberg</strong>, Christoph Richter and Michael Zaeh"
-abstract: "The complexity of mechatronic systems increases constantly due to market requirements. Traditional engineering approaches have troubles coping with the desired functionality. A major problem is the early and continuous integration and coordination of engineering disciplines (i.e. mechanic, electric, and software). To address this situation and to enable a concurrent engineering of participating disciplines, a model-based approach to early conception and subsequent refinement of mechatronic systems is proposed in this paper. This approach allows specifying a high-level mechatronic concept within a single editor and the refinement of this concept by integrating it with established engineering tools. In particular, the paper outlines the technical and methodical integration of discipline-specific tools such that refinement steps can be tested automatically and continuously. The suitability of the approach is shown along selected examples. Finally, the paper finishes with a reflection on the current state and an outlook on future research activities."
-tags: ["manufacturing system","system engineering","system design","system implementation","system verification"]
-bibtex: "@inproceedings{Hackenberg2015,\r\n\ttitle={From Conception to Refinement in Mechatronics Systems Engineering},\r\n\tauthor={Hackenberg, Georg and Richter, Christoph and Zaeh, Michael F.},\r\n\tbooktitle={Proceedings of the International Conference on Mechatronics and Robotics Engineering, Kuala Lumpur},\r\n\tyear={2015}\r\n}"
-slides: "//www.slideshare.net/slideshow/embed_code/key/1Py7CsXjrVMhUS"
-icon: "/publications/2015_01_icmre/examples.png"
+title: "From Conception to Refinement in Mechatronics Systems Engineering"
+pubDate: "2015"
+book: "Proceedings of the International Conference on Mechatronics and Robotics Engineering, Kuala Lumpur"
+author: "<strong>Georg Hackenberg</strong>, Christoph Richter and Michael F Zaeh"
+abstract: |-
+  The complexity of mechatronic systems increases constantly due to market requirements. Traditional engineering approaches have troubles coping with the desired functionality. A major problem is the early and continuous integration and coordination of engineering disciplines (ie mechanic, electric, and software). To address this situation and to enable a concurrent engineering of participating disciplines, a model-based approach to early conception and subsequent refinement of mechatronic systems is proposed in this paper. This approach allows specifying a high-level mechatronic concept within a single editor and the refinement of this concept by integrating it with established engineering tools. In particular, the paper outlines the technical and methodical integration of discipline-specific tools such that refinement steps can be tested automatically and continuously. The suitability of the approach is shown along …
+tags:
+  - "system engineering"
+  - "system design"
+  - "mechatronic system"
+bibtex: |
+  @INPROCEEDINGS{hackenberg2015from,
+    author={Georg Hackenberg and Christoph Richter and Michael F Zaeh},
+    title={From Conception to Refinement in Mechatronics Systems Engineering},
+    year={2015},
+    booktitle={Proceedings of the International Conference on Mechatronics and Robotics Engineering, Kuala Lumpur}
+  }
 ---
 
-The complexity of mechatronic systems increases constantly due to market requirements. Traditional engineering approaches have troubles coping with the desired functionality. A major problem is the early and continuous integration and coordination of engineering disciplines (i.e. mechanic, electric, and software). To address this situation and to enable a concurrent engineering of participating disciplines, a model-based approach to early conception and subsequent refinement of mechatronic systems is proposed in this paper. This approach allows specifying a high-level mechatronic concept within a single editor and the refinement of this concept by integrating it with established engineering tools. In particular, the paper outlines the technical and methodical integration of discipline-specific tools such that refinement steps can be tested automatically and continuously. The suitability of the approach is shown along selected examples. Finally, the paper finishes with a reflection on the current state and an outlook on future research activities.
+The complexity of mechatronic systems increases constantly due to market requirements. Traditional engineering approaches have troubles coping with the desired functionality. A major problem is the early and continuous integration and coordination of engineering disciplines (ie mechanic, electric, and software). To address this situation and to enable a concurrent engineering of participating disciplines, a model-based approach to early conception and subsequent refinement of mechatronic systems is proposed in this paper. This approach allows specifying a high-level mechatronic concept within a single editor and the refinement of this concept by integrating it with established engineering tools. In particular, the paper outlines the technical and methodical integration of discipline-specific tools such that refinement steps can be tested automatically and continuously. The suitability of the approach is shown along …
