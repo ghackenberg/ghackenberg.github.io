@@ -6,13 +6,8 @@ tags: ["teaching", "dynamic-programming"]
 icon: "/posts/2012_06_19_smart_grid_research_initiative/screenshot.png"
 ---
 
-<p>
-			To keep this article short I will only provide a screenshot and a link to the new website.
-			The web design is a custom development of our group.
-			We tried to make navigation simple and give short taglines that convey our ideas and philosophies.
-		</p>
-		<p style="text-align: center;">
-			<a href="http://smartgrid.in.tum.de/" title="Smart grid website screenshot">
-				<img src="/posts/2012_06_19_smart_grid_research_initiative/screenshot.png" style="width: 100%;"/>
-			</a>
-		</p>
+To keep this article short I will only provide a screenshot and a link to the new website.
+The web design is a custom development of our group.
+We tried to make navigation simple and give short taglines that convey our ideas and philosophies.
+
+[![](/posts/2012_06_19_smart_grid_research_initiative/screenshot.png)](http://smartgrid.in.tum.de/)

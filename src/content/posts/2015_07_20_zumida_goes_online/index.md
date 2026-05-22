@@ -6,11 +6,6 @@ tags: ["hyperkit-software", "zumida", "knowledge-management", "data-visualizatio
 icon: "/posts/2015_07_20_zumida_goes_online/screenshot.jpg"
 ---
 
-<p>
-			Here is a screenshot of the website. On the left side you find the original Wikipedia article. In the center you find a visualization of the first six links visible in the article. On the right side you find a discussion area for feedback.
-		</p>
-		<p>
-			<a href="http://www.zumida.com">
-				<img src="/posts/2015_07_20_zumida_goes_online/screenshot.jpg" style="width: 100%;"/>
-			</a>
-		</p>
+Here is a screenshot of the website. On the left side you find the original Wikipedia article. In the center you find a visualization of the first six links visible in the article. On the right side you find a discussion area for feedback.
+
+[![](/posts/2015_07_20_zumida_goes_online/screenshot.jpg)](http://www.zumida.com)

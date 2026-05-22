@@ -6,48 +6,21 @@ tags: ["youtube-video", "data-visualization"]
 icon: "/posts/2011_02_02_cubic_interpolation_demo/screenshot.png"
 ---
 
-<p style="text-align: center;">
-			<iframe title="YouTube video player" class="youtube-player" type="text/html" width="100%" height="80%" src="//www.youtube.com/embed/D4REuPPg4o4?rel=0" frameborder="0" allowFullScreen="yes">
-				<!-- empty -->
-			</iframe>
-		</p>
-		<p>
-			In the above visualization the colors of the 3D points have a specific meaning, which is explained in the following table:
-		</p>
-		<table class="default">
-			<thead>
-				<tr>
-					<th>Color</th>
-					<th>Description</th>
-					<th>Example</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td style="font-weight: bold; color: red;">Red</td>
-					<td>Measured data point</td>
-					<td>Measured brightness of pixel <code>(x,y)</code> in a digital image</td>
-				</tr>
-				<tr>
-					<td style="font-weight: bold; color: green;">Green</td>
-					<td>Interpolated data point along one axis</td>
-					<td>Estimated brightness between pixel <code>(x,y)</code> and <code>(x+1,y)</code><br/><span style="color: gray;">Note the change only along the <code>x</code> dimension!</span></td>
-				</tr>
-				<tr>
-					<td style="font-weight: bold; color: blue;">Blue</td>
-					<td>Interpolated data point along two axes</td>
-					<td>Estimated brightness between pixel <code>(x,y)</code> and <code>(x+1,y+1)</code><br/><span style="color: gray;">Note the change both along the <code>x</code> and the <code>y</code> dimension!</span></td>
-				</tr>
-			</tbody>
-		</table>
-		<p>
-			The math behind the visualiuation is explained in the Wikipedia articles <a class="web" href="http://en.wikipedia.org/wiki/Cubic_interpolation">Cubic interpolation</a> and <a class="web" href="http://en.wikipedia.org/wiki/Bicubic_interpolation">Bicubic interpolation</a>.
-			The concept of <em>bicubic interpolation</em> hereby refers to problems with two input variables, such as the <code>x</code> and <code>y</code> dimensions in the above example.
-			In these cases the basic cubic interpolation method is applied two times in a row, first along the <code>x</code> dimension using measured samples, then along the <code>y</code> dimension using the previously obtained estimates.
-			The details of this procedure a well explained in the corresponding Wikipedia entries.
-		</p>
-		<p>
-			What you should probably take from this article are two things:
-			(1) a visual understanding of cubic interpolation and (2) a feeling for when this method is applicable.
-			Also, if questions are open please do not hesitate to ask, and I will try to make my best to eliminate all certainties <code>;)</code>.
-		</p>
+<iframe title="YouTube video player" src="//www.youtube.com/embed/D4REuPPg4o4?rel=0" frameborder="0" allowfullscreen="yes"></iframe>
+
+In the above visualization the colors of the 3D points have a specific meaning, which is explained in the following table:
+
+| Color | Description | Example |
+| :--- | :--- | :--- |
+| <span class="font-bold text-red-500">Red</span> | Measured data point | Measured brightness of pixel `(x,y)` in a digital image |
+| <span class="font-bold text-green-500">Green</span> | Interpolated data point along one axis | Estimated brightness between pixel `(x,y)` and `(x+1,y)` <br> <span class="text-xs text-gray-400">Note the change only along the `x` dimension!</span> |
+| <span class="font-bold text-blue-500">Blue</span> | Interpolated data point along two axes | Estimated brightness between pixel `(x,y)` and `(x+1,y+1)` <br> <span class="text-xs text-gray-400">Note the change both along the `x` and the `y` dimension!</span> |
+
+The math behind the visualiuation is explained in the Wikipedia articles [Cubic interpolation](http://en.wikipedia.org/wiki/Cubic_interpolation) and [Bicubic interpolation](http://en.wikipedia.org/wiki/Bicubic_interpolation).
+The concept of *bicubic interpolation* hereby refers to problems with two input variables, such as the `x` and `y` dimensions in the above example.
+In these cases the basic cubic interpolation method is applied two times in a row, first along the `x` dimension using measured samples, then along the `y` dimension using the previously obtained estimates.
+The details of this procedure a well explained in the corresponding Wikipedia entries.
+
+What you should probably take from this article are two things:
+(1) a visual understanding of cubic interpolation and (2) a feeling for when this method is applicable.
+Also, if questions are open please do not hesitate to ask, and I will try to make my best to eliminate all certainties `;)`.

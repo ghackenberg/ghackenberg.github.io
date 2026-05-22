@@ -6,16 +6,11 @@ tags: ["computer-vision", "data-visualization"]
 icon: "/posts/2009_03_24_augmented_reality_framework_screenshots/screenshot.png"
 ---
 
-<p>
-			Here is a screenshot where we apply different image processing steps sequentially and display each of the intermediate frame buffers for comparison:
-		</p>
-		<p style="text-align: center;">
-			<a href="/posts/2009_03_24_augmented_reality_framework_screenshots/screenshot.png"><img src="/posts/2009_03_24_augmented_reality_framework_screenshots/screenshot.png" style="width: 75%;"/></a>
-		</p>
-		<p>
-			As next steps we planned to extract straight lines from the image for detecting the square marker shapes.
-		</p>
-		<p>
-			This term I participated in the lecture <em>Computer Vision</em> held by <em>Prof. Bastian Leibe</em>.
-			So my knowledge about this area has increased since quite a bit.
-		</p>
+Here is a screenshot where we apply different image processing steps sequentially and display each of the intermediate frame buffers for comparison:
+
+[![](/posts/2009_03_24_augmented_reality_framework_screenshots/screenshot.png)](/posts/2009_03_24_augmented_reality_framework_screenshots/screenshot.png)
+
+As next steps we planned to extract straight lines from the image for detecting the square marker shapes.
+
+This term I participated in the lecture *Computer Vision* held by *Prof. Bastian Leibe*.
+So my knowledge about this area has increased since quite a bit.

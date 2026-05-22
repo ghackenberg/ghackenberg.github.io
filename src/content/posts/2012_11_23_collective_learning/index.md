@@ -6,16 +6,12 @@ tags: ["dynamic-programming", "machine-learning", "data-visualization"]
 icon: "/posts/2012_11_23_collective_learning/screenshot.png"
 ---
 
-<p>
-			The following diagram shows how the learning algorithm performs for a number of problem scales.
-			The horizontal axis shows the problem scale.
-			The depth axis shows configuration parameters for the learning algorithm.
-			The vertical axis finally shows the number of steps after which the individuals converge to a stable behavior.
-		</p>
-		<p>
-			<img src="/posts/2012_11_23_collective_learning/screenshot.png" style="width: 100%;"/>
-		</p>
-		<p>
-			These are just first results.
-			Stay tuned for more detailed explanations and practical applications!
-		</p>
+The following diagram shows how the learning algorithm performs for a number of problem scales.
+The horizontal axis shows the problem scale.
+The depth axis shows configuration parameters for the learning algorithm.
+The vertical axis finally shows the number of steps after which the individuals converge to a stable behavior.
+
+![](/posts/2012_11_23_collective_learning/screenshot.png)
+
+These are just first results.
+Stay tuned for more detailed explanations and practical applications!

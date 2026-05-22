@@ -6,11 +6,6 @@ tags: ["hyperkit-software", "knowledge-management", "data-visualization"]
 icon: "/posts/2015_07_27_hyperkit_software_goes_online/screenshot.jpg"
 ---
 
-<p>
-			Here is a screenshot of the website. Check it out to get more information about our technologies, our products, our customers and our team! We would be happy to do projects with you some day! ;)
-		</p>
-		<p>
-			<a href="http://www.hyperkit-software.com">
-				<img src="/posts/2015_07_27_hyperkit_software_goes_online/screenshot.jpg" style="width: 100%;"/>
-			</a>
-		</p>
+Here is a screenshot of the website. Check it out to get more information about our technologies, our products, our customers and our team! We would be happy to do projects with you some day! ;)
+
+[![](/posts/2015_07_27_hyperkit_software_goes_online/screenshot.jpg)](http://www.hyperkit-software.com)

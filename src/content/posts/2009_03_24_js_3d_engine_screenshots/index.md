@@ -6,17 +6,13 @@ tags: ["computer-graphics", "hyperkit-software", "zumida"]
 icon: "/posts/2009_03_24_js_3d_engine_screenshots/firefox.gif"
 ---
 
-<p>
-			I tested the system on different browsers.
-			Sadly, Internet Explorer does not provide native SVG support.
-			But with the new HTML 5 standard things might change due to the <em>canvas</em> element.
-			Here are sample screenshots from Firefox and Opera browsers (note that other browsers such as Microsoft Internet Explorer, Safari, and Opera are supported in principle as well):
-		</p>
-		<p style="text-align: center;">
-			<img src="/posts/2009_03_24_js_3d_engine_screenshots/firefox.gif" style="height: 30em; margin-right: 1em;"/>
-			<img src="/posts/2009_03_24_js_3d_engine_screenshots/opera.gif" style="height: 30em;"/>
-		</p>
-		<p>
-			In this example real-time rotation was realized.
-			Maybe, in a more comprehensive article I will present the techniques and some performance evaluations.
-		</p>
+I tested the system on different browsers.
+Sadly, Internet Explorer does not provide native SVG support.
+But with the new HTML 5 standard things might change due to the *canvas* element.
+Here are sample screenshots from Firefox and Opera browsers (note that other browsers such as Microsoft Internet Explorer, Safari, and Opera are supported in principle as well):
+
+![](/posts/2009_03_24_js_3d_engine_screenshots/firefox.gif)
+![](/posts/2009_03_24_js_3d_engine_screenshots/opera.gif)
+
+In this example real-time rotation was realized.
+Maybe, in a more comprehensive article I will present the techniques and some performance evaluations.

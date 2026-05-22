@@ -6,22 +6,14 @@ tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interfa
 icon: "/posts/2011_07_29_official_3dmt_websites/fraunhofer.png"
 ---
 
-<p>
-			First, there is one single page providing all important online information from <em>screenshots</em> to <em>videos</em> to <em>papers</em> to <em>presentations</em> to <em>links</em>, which you can find at <a class="web" href="http://3dmt.georg-hackenberg.de">3DMT (at) Georg Hackenberg (dot) de</a>.
-			This website has also been submitted to the <a class="web" href="http://www.nottingham.ac.uk/jvrc2011/index.aspx">2011 Joint Virtual Reality Conference (JVRC)</a> <em>WOW-factor competition</em> from which we expect intersting and valuable expert feedback.
-			Second, there is the <a class="web" href="http://www.fit.fraunhofer.de/fb/cscw/projects/3d-multi-touch_en.html">Fraunhofer FIT project website</a> which provides further institute-related information about the project.
-		</p>
-		<p style="text-align: center;">
-			<a href="http://3dmt.georg-hackenberg.de" title="Georg Hackenberg 3D Multi-Touch Website">
-				<img src="/posts/2011_07_29_official_3dmt_websites/hackenberg.png" style="height: 16em; margin-right: 1em;"/>
-			</a>
-			<a href="http://www.fit.fraunhofer.de/fb/cscw/projects/3d-multi-touch_en.html" title="Fraunhofer FIT 3D Multi-Touch Project Website">
-				<img src="/posts/2011_07_29_official_3dmt_websites/fraunhofer.png" style="height: 16em;"/>
-			</a>
-		</p>
-		<p>
-			We hope these two public website will make it easier for you to get the information you need and to get in touch about collaborations and other forms of involvement around the topic of <em>3D interaction</em>.
-			We believe it is just the beginning of this branch of technology and there is great potential for solutions and products on a quickly emerging market.
-			So better jump on the train!
-			<code>;-)</code> 
-		</p>
+First, there is one single page providing all important online information from *screenshots* to *videos* to *papers* to *presentations* to *links*, which you can find at [3DMT (at) Georg Hackenberg (dot) de](http://3dmt.georg-hackenberg.de).
+This website has also been submitted to the [2011 Joint Virtual Reality Conference (JVRC)](http://www.nottingham.ac.uk/jvrc2011/index.aspx) *WOW-factor competition* from which we expect intersting and valuable expert feedback.
+Second, there is the [Fraunhofer FIT project website](http://www.fit.fraunhofer.de/fb/cscw/projects/3d-multi-touch_en.html) which provides further institute-related information about the project.
+
+[![](/posts/2011_07_29_official_3dmt_websites/hackenberg.png)](http://3dmt.georg-hackenberg.de)
+[![](/posts/2011_07_29_official_3dmt_websites/fraunhofer.png)](http://www.fit.fraunhofer.de/fb/cscw/projects/3d-multi-touch_en.html)
+
+We hope these two public website will make it easier for you to get the information you need and to get in touch about collaborations and other forms of involvement around the topic of *3D interaction*.
+We believe it is just the beginning of this branch of technology and there is great potential for solutions and products on a quickly emerging market.
+So better jump on the train!
+`;-)`

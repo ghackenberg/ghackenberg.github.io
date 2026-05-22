@@ -6,14 +6,8 @@ tags: ["teaching", "dynamic-programming"]
 icon: "/posts/2012_04_16_smart_grid_seminar/website.png"
 ---
 
-<p>
-			For now you can find more information about the seminar on the <a class="web" href="http://www4.in.tum.de/lehre/seminare/SS12/sesgs/index.shtml">seminar webpage</a>:
-		</p>
-		<p>
-			<a href="http://www4.in.tum.de/lehre/seminare/SS12/sesgs/index.shtml">
-				<img src="/posts/2012_04_16_smart_grid_seminar/website.png" style="width: 100%"/>
-			</a>
-		</p>
-		<p>
-			Stay tuned on our smart grid learning and teaching activities! 
-		</p>
+For now you can find more information about the seminar on the [seminar webpage](http://www4.in.tum.de/lehre/seminare/SS12/sesgs/index.shtml):
+
+[![](/posts/2012_04_16_smart_grid_seminar/website.png)](http://www4.in.tum.de/lehre/seminare/SS12/sesgs/index.shtml)
+
+Stay tuned on our smart grid learning and teaching activities!
