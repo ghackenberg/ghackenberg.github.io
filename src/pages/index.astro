@@ -58,9 +58,12 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
         
         <!-- Profile Photo -->
         <div class="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
-          <div class="relative w-72 h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
+          <div class="relative w-64 h-64 min-[360px]:w-72 min-[360px]:h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
             <!-- Large glowing ambient sphere behind the transparent portrait -->
-            <div class="absolute -inset-10 bg-gradient-to-tr from-brand-blue via-brand-purple to-brand-yellow rounded-full opacity-35 blur-3xl group-hover:opacity-50 group-hover:scale-110 transition-all duration-700"></div>
+            <div 
+              class="absolute max-sm:-inset-6 sm:-inset-10 bg-gradient-to-tr from-brand-blue via-brand-purple to-brand-yellow rounded-full opacity-35 blur-2xl sm:blur-3xl group-hover:opacity-50 group-hover:scale-110 transition-all duration-700 transform-gpu"
+              style="will-change: transform, filter, opacity; backface-visibility: hidden; transform: translate3d(0, 0, 0);"
+            ></div>
             
             <!-- Large floating headshot blending directly with background, clipped to a full circle -->
             <div class="relative w-full h-full rounded-full overflow-hidden select-none pointer-events-none">
@@ -191,10 +194,10 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
       </div>
 
       <!-- Tabs Navigation -->
-      <div class="flex flex-wrap gap-3 mb-8 border-b border-white/5 pb-5 relative z-20">
+      <div class="flex flex-wrap gap-2 sm:gap-3 mb-8 border-b border-white/5 pb-5 relative z-20">
         <button 
           id="tab-github" 
-          class="feed-tab-btn active px-5 py-3 rounded-xl text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
+          class="feed-tab-btn active px-3 py-2 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
           data-tab="github"
         >
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -205,7 +208,7 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
         </button>
         <button 
           id="tab-linkedin" 
-          class="feed-tab-btn px-5 py-3 rounded-xl text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
+          class="feed-tab-btn px-3 py-2 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
           data-tab="linkedin"
         >
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -216,7 +219,7 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
         </button>
         <button 
           id="tab-youtube" 
-          class="feed-tab-btn px-5 py-3 rounded-xl text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
+          class="feed-tab-btn px-3 py-2 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
           data-tab="youtube"
         >
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -228,14 +231,23 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
       </div>
 
       <!-- Tab Content Panels -->
-      <div class="relative w-full z-10">
-        <div id="panel-github" class="feed-panel transition-all duration-300">
+      <div class="relative w-full z-10 grid grid-cols-1 grid-rows-1 overflow-hidden">
+        <div 
+          id="panel-github" 
+          class="feed-panel col-start-1 row-start-1 transform-gpu opacity-100 pointer-events-auto z-10"
+        >
           <GitHubWidget />
         </div>
-        <div id="panel-linkedin" class="feed-panel transition-all duration-300 hidden opacity-0">
+        <div 
+          id="panel-linkedin" 
+          class="feed-panel col-start-1 row-start-1 transform-gpu opacity-0 pointer-events-none z-0"
+        >
           <LinkedInWidget />
         </div>
-        <div id="panel-youtube" class="feed-panel transition-all duration-300 hidden opacity-0">
+        <div 
+          id="panel-youtube" 
+          class="feed-panel col-start-1 row-start-1 transform-gpu opacity-0 pointer-events-none z-0"
+        >
           <YouTubeWidget />
         </div>
       </div>
@@ -465,6 +477,79 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
     border-color: rgba(16, 185, 129, 0.2);
     color: #34d399;
   }
+
+  /* Feed Panels Slide Animations */
+  .feed-panel {
+    will-change: opacity, transform, translate, scale;
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      translate: 4rem 0;
+      scale: 0.98;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+  }
+
+  @keyframes slideOutLeft {
+    from {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+    to {
+      opacity: 0;
+      translate: -4rem 0;
+      scale: 0.98;
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      translate: -4rem 0;
+      scale: 0.98;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+    to {
+      opacity: 0;
+      translate: 4rem 0;
+      scale: 0.98;
+    }
+  }
+
+  .panel-slide-in-right {
+    animation: slideInRight 3.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .panel-slide-out-left {
+    animation: slideOutLeft 3.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .panel-slide-in-left {
+    animation: slideInLeft 3.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .panel-slide-out-right {
+    animation: slideOutRight 3.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
 </style>
 
 <script>
@@ -528,18 +613,41 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
 
     // Add active class to target tab
     targetTabEl.classList.add('active');
+
+    // Calculate transition direction (forward or backward)
+    const currentIndex = tabSequence.indexOf(activeTabId);
+    const targetIndex = tabSequence.indexOf(targetTabId);
+    
+    let isForward = true;
+    if (currentIndex === 2 && targetIndex === 0) {
+      isForward = true; // Wrap-around from last to first is forward
+    } else if (currentIndex === 0 && targetIndex === 2) {
+      isForward = false; // Wrap-around from first to last is backward
+    } else {
+      isForward = targetIndex > currentIndex;
+    }
+
+    const previousTabId = activeTabId;
     activeTabId = targetTabId;
 
-    // Update panels
+    // Update panels using keyed slide animations (directional slide & cross-fade)
     panels.forEach(panel => {
       const panelId = panel.getAttribute('id');
+      
+      // Reset animation and interaction baseline classes
+      panel.className = 'feed-panel col-start-1 row-start-1 transform-gpu';
+      
       if (panelId === `panel-${targetTabId}`) {
-        panel.classList.remove('hidden');
-        void panel.offsetWidth; // Force layout reflow
-        panel.classList.remove('opacity-0');
+        // Target active panel: animate in
+        panel.classList.add(isForward ? 'panel-slide-in-right' : 'panel-slide-in-left');
+        panel.classList.add('pointer-events-auto', 'z-10');
+      } else if (panelId === `panel-${previousTabId}`) {
+        // Previous active panel: animate out
+        panel.classList.add(isForward ? 'panel-slide-out-left' : 'panel-slide-out-right');
+        panel.classList.add('pointer-events-none', 'z-0');
       } else {
-        panel.classList.add('opacity-0');
-        panel.classList.add('hidden');
+        // All other non-active panels: hide instantly
+        panel.classList.add('opacity-0', 'pointer-events-none', 'z-0');
       }
     });
 

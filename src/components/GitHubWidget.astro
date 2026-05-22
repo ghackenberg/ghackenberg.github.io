@@ -67,7 +67,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
 
 {buildError ? (
   <!-- GitHub Error Card -->
-  <div class="glass-card p-6 rounded-3xl border border-red-500/20 h-full flex flex-col justify-between relative overflow-hidden group">
+  <div class="glass-card p-4 sm:p-6 rounded-3xl border border-red-500/20 h-full flex flex-col justify-between relative overflow-hidden group">
     <!-- Accent line for error state -->
     <div class="absolute top-0 left-0 right-0 h-1 bg-red-500/80"></div>
     
@@ -113,7 +113,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
   </div>
 ) : syncRequired ? (
   <!-- GitHub Sync Required Card -->
-  <div class="glass-card p-6 rounded-3xl border border-yellow-500/20 h-full flex flex-col justify-between relative overflow-hidden group">
+  <div class="glass-card p-4 sm:p-6 rounded-3xl border border-yellow-500/20 h-full flex flex-col justify-between relative overflow-hidden group">
     <!-- Accent line for sync required state -->
     <div class="absolute top-0 left-0 right-0 h-1 bg-yellow-500/80"></div>
     
@@ -159,7 +159,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
   </div>
 ) : profile && (
   <!-- GitHub Active Content Card -->
-  <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/5 h-full relative overflow-hidden group">
+  <div class="glass-card p-4 sm:p-6 md:p-8 rounded-3xl border border-white/5 h-full relative overflow-hidden group">
     <!-- Brand accent header color block -->
     <div class="absolute top-0 left-0 right-0 h-1.5 bg-brand-blue opacity-50 group-hover:opacity-100 transition-opacity"></div>
     
@@ -222,9 +222,9 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
               href={repo.html_url} 
               target="_blank" 
               rel="noopener noreferrer"
-              class="w-full flex items-stretch space-x-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-1 pr-4"
+              class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0 sm:p-1 sm:pr-4"
             >
-              <div class="relative w-28 sm:w-32 shrink-0 bg-gray-900 border-r border-white/5 group-hover/item:border-brand-blue/30 flex items-center justify-center overflow-hidden rounded-l-xl">
+              <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-28 md:w-32 shrink-0 bg-gray-900 border-b sm:border-b-0 sm:border-r border-white/5 group-hover/item:border-brand-blue/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-t-none sm:rounded-l-xl">
                 {repo.social_preview && !repo.social_preview.includes("avatars.githubusercontent.com") ? (
                   <>
                     <img 
@@ -243,7 +243,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
                   </>
                 )}
               </div>
-              <div class="flex-grow min-w-0 py-3.5 pr-2.5 select-none">
+              <div class="flex-grow min-w-0 p-4 sm:py-3.5 sm:px-0 sm:pl-4 sm:pr-2.5 select-none">
                 <p class="text-sm sm:text-base font-bold text-white group-hover/item:text-brand-blue transition-colors line-clamp-1 font-mono leading-snug">
                   {repo.name}
                 </p>
