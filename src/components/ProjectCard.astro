@@ -54,7 +54,12 @@ const colorClasses = {
 }[accentColor];
 ---
 
-<div class={`glass-card p-6 md:p-8 rounded-2xl border flex flex-col justify-between group overflow-hidden relative ${colorClasses.border}`}>
+<a 
+  href={href} 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  class={`glass-card p-6 md:p-8 rounded-2xl border flex flex-col justify-between group overflow-hidden relative cursor-pointer ${colorClasses.border}`}
+>
   <!-- Interactive Glow Element -->
   <div class={`absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${colorClasses.glow}`}></div>
   
@@ -71,11 +76,11 @@ const colorClasses = {
       </div>
       
       <!-- Arrow Icon -->
-      <a href={href} target="_blank" rel="noopener noreferrer" class={`p-2 rounded-xl transition-all duration-300 ${colorClasses.btnBg}`} aria-label={`Visit ${title}`}>
+      <div class={`p-2 rounded-xl transition-all duration-300 ${colorClasses.btnBg}`} aria-label={`Visit ${title}`}>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"></path>
         </svg>
-      </a>
+      </div>
     </div>
     
     <!-- Description -->
@@ -94,16 +99,13 @@ const colorClasses = {
       ))}
     </div>
     
-    <a 
-      href={href} 
-      target="_blank" 
-      rel="noopener noreferrer" 
+    <span 
       class={`inline-flex items-center text-sm font-bold tracking-wide group-hover:translate-x-1 transition-transform duration-300 ${colorClasses.linkText}`}
     >
       Learn more
       <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
       </svg>
-    </a>
+    </span>
   </div>
-</div>
+</a>

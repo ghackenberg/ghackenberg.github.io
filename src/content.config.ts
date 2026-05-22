@@ -129,6 +129,19 @@ const experiences = defineCollection({
   }),
 });
 
+const products = defineCollection({
+  loader: glob({ base: './src/content/products', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    title: z.string(),
+    tagline: z.string(),
+    description: z.string(),
+    href: z.string().url(),
+    tags: z.array(z.string()).default([]),
+    accentColor: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
+    order: z.number().default(0),
+  }),
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -140,5 +153,6 @@ export const collections = {
   'publications': publications,
   'visualizations': visualizations,
   'experiences': experiences,
+  'products': products,
 };
 
