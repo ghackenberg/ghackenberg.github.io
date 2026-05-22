@@ -2,7 +2,7 @@
 title: "Second report on smart grid simualtion."
 pubDate: "2012-04-18"
 description: "We are not there yet, but we are making good progress! That's probably the message of this second report on smart grid simulation (see first report). This artic..."
-tags: ["dynamic programming"]
+tags: ["dynamic-programming"]
 icon: "/posts/2012_04_19_smart_grid_simulation_report/screenshot.png"
 ---
 

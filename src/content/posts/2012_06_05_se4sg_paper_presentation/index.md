@@ -2,7 +2,7 @@
 title: "My SE4SG Presentation"
 pubDate: "2012-06-04"
 description: "I just uploaded my presentation slides for the SE4SG workshop to slideshare to give you the opportunity to review my talk. I hope everybody enjoyed the presenta..."
-tags: ["conference","slideshare presentation"]
+tags: ["conference", "slideshare-presentation"]
 icon: "/posts/2012_06_05_se4sg_paper_presentation/title.png"
 ---
 

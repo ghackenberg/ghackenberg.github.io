@@ -15,12 +15,13 @@ export async function getStaticPaths() {
       .sort((a, b) => b.id.localeCompare(a.id));
     return {
       params: { tag },
-      props: { pubs: filteredPubs, tag },
+      props: { pubs: filteredPubs },
     };
   });
 }
 
-const { pubs, tag } = Astro.props;
+const { pubs } = Astro.props;
+const { tag } = Astro.params;
 
 function getPublisherDomain(url: string | undefined): string {
   if (!url) return "";

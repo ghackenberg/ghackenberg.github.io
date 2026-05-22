@@ -2,7 +2,7 @@
 title: "3D Multi-Touch Product Vision"
 pubDate: "2011-01-26"
 description: "As you might know I was developing a prototype for 3D multi-touch interaction during my Master thesis at Fraunhofer FIT. Lately I had the chance to talk with a ..."
-tags: ["drawing","motion capture","gesture recognition","computer vision","user interface"]
+tags: ["drawing", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
 icon: "/posts/2011_01_27_3dmt_product_vision/pencil_drawing.jpg"
 ---
 

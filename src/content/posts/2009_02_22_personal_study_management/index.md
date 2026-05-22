@@ -2,7 +2,7 @@
 title: "Personal Study Management."
 pubDate: "2009-02-21"
 description: "Over my past years of study, I developed a system for organizing my learning. It helps me staying focused and having an overview over my progress. In this artic..."
-tags: ["hyperkit software","data visualization"]
+tags: ["hyperkit-software", "data-visualization"]
 icon: "/posts/2009_02_22_personal_study_management/plan.png"
 ---
 

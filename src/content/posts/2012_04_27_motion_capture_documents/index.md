@@ -2,7 +2,7 @@
 title: "3D Motion Capture Documents from my PhD Studies at EPFL."
 pubDate: "2012-04-26"
 description: "Recently while browsing some folders on my hard disk I discovered relicts from my time in Lausanne, Switzerland. Somehow, for me this is an interesting and exci..."
-tags: ["motion capture"]
+tags: ["motion-capture"]
 icon: "/posts/2012_04_27_motion_capture_documents/interface_list.png"
 ---
 

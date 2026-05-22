@@ -2,7 +2,7 @@
 title: "True Emergent Refrigerator Behavior"
 pubDate: "2012-08-09"
 description: "We are moving towards larger scale problems! In the past we worked on modeling, optimizing and exploring behavior of up to 20 refrigerators. Computational bound..."
-tags: ["dynamic programming","data visualization"]
+tags: ["dynamic-programming", "data-visualization"]
 icon: "/posts/2012_08_10_emergent_refrigerator_behavior/diagram.png"
 ---
 

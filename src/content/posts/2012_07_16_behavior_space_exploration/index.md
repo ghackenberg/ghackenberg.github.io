@@ -2,7 +2,7 @@
 title: "How to Scale Refrigerator Powering Strategies"
 pubDate: "2012-07-15"
 description: "When it comes to an array of heterogeneous refrigerators, control optimization becomes a real challenge. In this article I demonstrate how a possible strategy c..."
-tags: ["dynamic programming","data visualization","youtube video"]
+tags: ["dynamic-programming", "data-visualization", "youtube-video"]
 icon: "/posts/2012_07_16_behavior_space_exploration/screenshot.png"
 ---
 

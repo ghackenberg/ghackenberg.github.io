@@ -6,7 +6,7 @@ author: "Christoph Richter, <strong>Georg Hackenberg</strong> and Michael F Zäh
 abstract: |-
   Die Modularisierung von Maschinen und Anlagen wird auf Grund einer wachsenden Kundenindividualität und Variantenvielfalt zu einem entscheidenden Faktor, um an globalisierten Märkten erfolgreich zu sein. Während disziplinspezifische Modularisierungsansätze, die beispielsweise eine Wiederverwendung mechanischer Baugruppen ermöglichen, bereits etabliert sind, mangelt es noch an einer ganzheitlichen mechatronischen Modularisierung. Diese ist allerdings erforderlich, um dem zunehmend mechatronischen Charakter von Maschinen und Anlagen gerecht zu werden. Im folgenden Beitrag wird eine Methode vorgestellt, mit der mechatronische Module durch den Aufbau eines interdisziplinären Maschinenmodells entwickelt werden können.
 tags:
-  - "manufacturing system"
+  - "manufacturing-system"
 bibtex: |
   @ARTICLE{richter2013modellbasierte,
     author={Christoph Richter and Georg Hackenberg and Michael F Zäh},

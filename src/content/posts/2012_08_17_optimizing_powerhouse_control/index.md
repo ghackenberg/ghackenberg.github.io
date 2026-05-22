@@ -2,7 +2,7 @@
 title: "Optimizing Powerhouse Control"
 pubDate: "2012-08-16"
 description: "To meet the hard power balance contraint the use of conventional power plants and powerhouses is probably inevitable even in a smart grid. For this reason we ex..."
-tags: ["dynamic programming","data visualization"]
+tags: ["dynamic-programming", "data-visualization"]
 icon: "/posts/2012_08_17_optimizing_powerhouse_control/balance.png"
 ---
 

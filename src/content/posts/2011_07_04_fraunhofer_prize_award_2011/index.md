@@ -2,7 +2,7 @@
 title: "Fraunhofer Prize Award 2011"
 pubDate: "2011-07-03"
 description: "After finishing graduate classes at RWTH Aachen University I decided to go to Fraunhofer FIT, a non-profit R&amp;D organization at the interface between science..."
-tags: ["award","motion capture","gesture recognition","user interface","computer vision"]
+tags: ["award", "motion-capture", "gesture-recognition", "user-interface", "computer-vision"]
 icon: "/posts/2011_07_04_fraunhofer_prize_award_2011/hugo_geiger.png"
 ---
 

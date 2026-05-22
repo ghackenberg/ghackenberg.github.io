@@ -2,7 +2,7 @@
 title: "From Sketch to Prototype"
 pubDate: "2011-06-05"
 description: "I have been long thinking how to reorganize my website to migrate from a pure blogging system to a more complete personal portfolio while keeping an original bu..."
-tags: ["blog","user interface","drawing"]
+tags: ["blog", "user-interface", "drawing"]
 icon: "/posts/2011_06_06_from_sketch_to_prototype/backgrounds.png"
 ---
 

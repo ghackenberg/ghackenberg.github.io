@@ -2,7 +2,7 @@
 title: "Ajax/PHP Distributed Event Bus."
 pubDate: "2010-01-04"
 description: "How to synchronize the users of your web site or web application? How to propagate events from one browser or client to the next? This article demonstrates a fi..."
-tags: ["youtube video","hyperkit software"]
+tags: ["youtube-video", "hyperkit-software"]
 icon: "/posts/2010_01_05_ajax_php_distributed_event_bus/architecture.png"
 ---
 

@@ -2,7 +2,7 @@
 title: "Algorithm Debugging using OpenGL."
 pubDate: "2009-07-20"
 description: "Currently, I am working on my thesis in the area of Computer Vision. The algorithms are quite complex and difficult to debug. Therefore, I implemented a simple ..."
-tags: ["data visualization","computer vision"]
+tags: ["data-visualization", "computer-vision"]
 icon: "/posts/2009_07_21_opengl_debugging_grid_3d/interface.png"
 ---
 

@@ -2,7 +2,7 @@
 title: "A tool for analyzing data from welding experiments"
 pubDate: "2016-09-18"
 description: "Some time ago a friend of mine, Prof. Gerard Wilhelm, asked me to develop a tool for analyzing data from his welding experiments. In this post I want to share s..."
-tags: ["data visualization","hyperkit software"]
+tags: ["data-visualization", "hyperkit-software"]
 icon: "/posts/2016_09_19_experiment_data_analysis/screenshot.png"
 ---
 

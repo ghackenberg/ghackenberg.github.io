@@ -2,7 +2,7 @@
 title: "From Layout to Animation"
 pubDate: "2011-06-15"
 description: "In a previous article The Evolution of a Functional Prototype I demonstrated how to transform sketches into prototypes backed by database content and applicatio..."
-tags: ["blog","user interface","drawing","youtube video"]
+tags: ["blog", "user-interface", "drawing", "youtube-video"]
 icon: "/posts/2011_06_16_from_layout_to_animation/screenshot.png"
 ---
 

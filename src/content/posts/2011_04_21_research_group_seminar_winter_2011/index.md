@@ -2,7 +2,7 @@
 title: "Research Group Seminar Winter 2011"
 pubDate: "2011-04-20"
 description: "Beginning of this week the research group I currently work at was going onto a two day seminar trip onto the country side south of Munich. Since we are a very l..."
-tags: ["motion capture","gesture recognition","computer vision","user interface","slideshare presentation"]
+tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interface", "slideshare-presentation"]
 icon: "/posts/2011_04_21_research_group_seminar_winter_2011/screenshot.png"
 ---
 

@@ -2,7 +2,7 @@
 title: "Machine Learning: Model and Trace"
 pubDate: "2012-12-19"
 description: "The machine learning approach is progressing: This article provides a glance into one of our machine learning models as well as behavior after training. The res..."
-tags: ["dynamic programming","machine learning","data visualization"]
+tags: ["dynamic-programming", "machine-learning", "data-visualization"]
 icon: "/posts/2012_12_20_machine_learning_experiment/model.png"
 ---
 

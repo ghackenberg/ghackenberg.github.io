@@ -2,7 +2,7 @@
 title: "MaCon YouTube Video"
 pubDate: "2015-12-01"
 description: "In the last days, I prepared a YouTube video demonstrating MaCon: A tool for consistent cross-discipline conception of manufacturing systems. The video explains..."
-tags: ["manufacturing engineering","user interface","youtube video"]
+tags: ["manufacturing-engineering", "user-interface", "youtube-video"]
 icon: "/posts/2015_12_02_macon_youtube_video/screenshot.png"
 ---
 

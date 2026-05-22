@@ -2,7 +2,7 @@
 title: "Guided Behavior Space Exploration"
 pubDate: "2013-01-15"
 description: "Previously, our results showed that we are able to generate high quality goal-oriented behavior for models including up to 20 components. This article demonstra..."
-tags: ["dynamic programming","data visualization"]
+tags: ["dynamic-programming", "data-visualization"]
 icon: "/posts/2013_01_16_guided_exploration/balance-20.png"
 ---
 

@@ -2,7 +2,7 @@
 title: "XML Template Engine using PHP."
 pubDate: "2010-01-03"
 description: "After the success of JSP and JSP tag libraries in the Java world, I was searching for a similar mechanism in PHP. Since the search was not successful and I shar..."
-tags: ["hyperkit software"]
+tags: ["hyperkit-software"]
 icon: "/posts/2010_01_04_php_xml_template_engine/sample.png"
 ---
 

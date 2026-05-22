@@ -2,7 +2,7 @@
 title: "Teaser: Smart Traffic Control"
 pubDate: "2013-12-17"
 description: "Besides our original topics such as distributed and smart fride control we have worked on another interesting issue: Smart traffic control. By smart traffic con..."
-tags: ["dynamic programming","traffic control","data visualization"]
+tags: ["dynamic-programming", "traffic-control", "data-visualization"]
 icon: "/posts/2013_12_18_smart_traffic_control/graph.png"
 ---
 

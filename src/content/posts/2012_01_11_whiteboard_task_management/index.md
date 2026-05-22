@@ -2,7 +2,7 @@
 title: "Effective Task Management with Whiteboard and Stickers"
 pubDate: "2011-01-10"
 description: "At my new job alongside their PhD thesis everybody is involved in a number of research projects both public funded and with industry cooperation. In many situat..."
-tags: ["task management","hyperkit software"]
+tags: ["task-management", "hyperkit-software"]
 icon: "/posts/2012_01_11_whiteboard_task_management/photo.jpg"
 ---
 

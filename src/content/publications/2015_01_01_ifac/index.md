@@ -6,8 +6,8 @@ author: "Sabine Teufl and <strong>Georg Hackenberg</strong>"
 abstract: |-
   Various drivers, especially increasing market dynamics, force industrial enterprises to evolve their production facilities ever more frequently. Analyzing the impact of changed requirements on the production facilities early in the engineering process would facilitate the estimation of resulting costs and therefore reduce project risk. In industrial practice, requirements specifications are typically textual lists and only structured by a table of contents; an analysis of the impact of changes within the requirements specification is extensive, as no documented information is available about how the requirements and other elements of the requirements specification depend on each other.
 tags:
-  - "system analysis"
-  - "manufacturing system"
+  - "system-analysis"
+  - "manufacturing-system"
 bibtex: |
   @ARTICLE{teufl2015efficient,
     author={Sabine Teufl and Georg Hackenberg},

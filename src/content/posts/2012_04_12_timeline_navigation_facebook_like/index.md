@@ -2,7 +2,7 @@
 title: "Introducing Timeline Navigation and Facebook Like"
 pubDate: "2012-04-11"
 description: "To improve the usability of my blog I worked on two new features: (1) The timeline navigation and (2) the Facebook like button. When reading an article, the tim..."
-tags: ["blog","user interface"]
+tags: ["blog", "user-interface"]
 icon: "/posts/2012_04_12_timeline_navigation_facebook_like/facebook.png"
 ---
 

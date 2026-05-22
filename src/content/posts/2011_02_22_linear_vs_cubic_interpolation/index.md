@@ -2,7 +2,7 @@
 title: "Linear vs. Cubic Interpolation"
 pubDate: "2011-02-21"
 description: "After talking with some non-computer scientists about my previous visualization of cubic interpolation I found out that the concept is difficult to understand i..."
-tags: ["youtube video","data visualization"]
+tags: ["youtube-video", "data-visualization"]
 icon: "/posts/2011_02_22_linear_vs_cubic_interpolation/screenshot.png"
 ---
 

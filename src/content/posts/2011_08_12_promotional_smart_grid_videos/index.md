@@ -2,7 +2,7 @@
 title: "Promotional Smart Grid Videos"
 pubDate: "2011-08-11"
 description: "Currently I am working hard to understand ongoing efforts for revolutionizing the energy supply systems across the globe. In a recent article - a View onto the ..."
-tags: ["youtube video","drawing"]
+tags: ["youtube-video", "drawing"]
 icon: "/posts/2011_08_12_promotional_smart_grid_videos/youtube_research.jpg"
 ---
 

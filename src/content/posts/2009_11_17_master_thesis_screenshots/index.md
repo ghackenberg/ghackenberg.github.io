@@ -2,7 +2,7 @@
 title: "Master Thesis Screenshots!"
 pubDate: "2009-11-10"
 description: "Get ready for the newest and freshest screenshots of my 3D hand tracking application. These pictures show some results of my six month work at Fraunhofer Insitu..."
-tags: ["motion capture","computer vision","data visualization"]
+tags: ["motion-capture", "computer-vision", "data-visualization"]
 icon: "/posts/2009_11_17_master_thesis_screenshots/default.jpg"
 ---
 

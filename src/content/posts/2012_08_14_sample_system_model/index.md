@@ -2,7 +2,7 @@
 title: "Sample System Model (Graph Output)"
 pubDate: "2012-08-13"
 description: "To demonstrate the models we are working with here is some sample output from our tool. The engine transforms structural model information in a custom graph for..."
-tags: ["dynamic programming","data visualization"]
+tags: ["dynamic-programming", "data-visualization"]
 icon: "/posts/2012_08_14_sample_system_model/graph.png"
 ---
 

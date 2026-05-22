@@ -2,7 +2,7 @@
 title: "zumida goes online!"
 pubDate: "2015-07-19"
 description: "I am happy to announce the launch of www.zumida.com! We invented zumida to revolutionize corporate and public knowledge exploration. Check it out and give us fe..."
-tags: ["hyperkit software","zumida","knowledge management","data visualization","user interface"]
+tags: ["hyperkit-software", "zumida", "knowledge-management", "data-visualization", "user-interface"]
 icon: "/posts/2015_07_20_zumida_goes_online/screenshot.jpg"
 ---
 

@@ -2,7 +2,7 @@
 title: "3D Cubic Interpolation Video"
 pubDate: "2011-02-01"
 description: "Cubic interpolation is a popular technique in many branches of computer science. For example, it is used when having a time series of numbers and estimating the..."
-tags: ["youtube video","data visualization"]
+tags: ["youtube-video", "data-visualization"]
 icon: "/posts/2011_02_02_cubic_interpolation_demo/screenshot.png"
 ---
 
