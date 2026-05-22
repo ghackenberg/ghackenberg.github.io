@@ -624,6 +624,8 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
 
   let resumeTimeout = null;
   let activeTabId = 'github'; // default active tab ID
+  let rotationInitialized = false;
+  let observerInstance = null;
 
   // Map of tab ID to tab button
   const tabMap = {};
@@ -637,6 +639,14 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
 
   function switchTab(targetTabId, isManual = false) {
     if (activeTabId === targetTabId && !isManual) return;
+
+    if (!rotationInitialized) {
+      rotationInitialized = true;
+      if (observerInstance) {
+        observerInstance.disconnect();
+        observerInstance = null;
+      }
+    }
 
     // 1. Clear any active progress animation
     tabs.forEach(t => t.classList.remove('active', 'animating'));
@@ -737,9 +747,31 @@ import YouTubeWidget from "../components/YouTubeWidget.astro";
     }
   });
 
-  // Initialize auto-rotation on page load
-  const initialActiveTab = tabMap[activeTabId];
-  if (initialActiveTab) {
-    startProgress(initialActiveTab);
+  // Initialize auto-rotation when the widget becomes visible on screen
+  const widget = document.querySelector('.social-feed-widget');
+  if (widget && 'IntersectionObserver' in window) {
+    observerInstance = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !rotationInitialized) {
+          rotationInitialized = true;
+          const initialActiveTab = tabMap[activeTabId];
+          if (initialActiveTab) {
+            startProgress(initialActiveTab);
+          }
+          if (observerInstance) {
+            observerInstance.disconnect();
+            observerInstance = null;
+          }
+        }
+      });
+    }, { threshold: 0.15 });
+    observerInstance.observe(widget);
+  } else {
+    // Fallback if IntersectionObserver is not supported or widget not found
+    rotationInitialized = true;
+    const initialActiveTab = tabMap[activeTabId];
+    if (initialActiveTab) {
+      startProgress(initialActiveTab);
+    }
   }
 </script>
