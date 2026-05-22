@@ -220,32 +220,36 @@ async function syncLinkedIn() {
   const profileContent = fs.readFileSync(profilePath, 'utf8');
   const profileData = JSON.parse(profileContent);
 
-  const postUrls = profileData.postUrls || [];
-  if (postUrls.length === 0) {
-    console.log("No postUrls configured in LinkedIn profile. Skipping posts sync.");
+  const postIds = profileData.postIds || [];
+  if (postIds.length === 0) {
+    console.log("No postIds configured in LinkedIn profile. Skipping posts sync.");
     return;
   }
 
   const postsDir = path.resolve(process.cwd(), "src/content/feeds/linkedin/posts");
-  clearAndCreateDir(postsDir);
+  if (!fs.existsSync(postsDir)) {
+    fs.mkdirSync(postsDir, { recursive: true });
+  }
 
-  // Helper to derive filename from URL
-  function getFilenameFromUrl(url) {
-    try {
-      const parsedUrl = new URL(url);
-      const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-      const lastPart = pathParts[pathParts.length - 1];
-      let name = lastPart.replace(/^georghackenberg_/, '').replace(/-activity-\d+.*$/, '');
-      name = decodeURIComponent(name).normalize("NFKC").toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-');
-      return `${name || 'linkedin-post'}.md`;
-    } catch (e) {
-      return `linkedin-post-${Date.now()}.md`;
+  // Sync the first 3 posts (newest) and any posts that do not exist on disk
+  const idsToSync = [];
+  for (let i = 0; i < postIds.length; i++) {
+    const id = postIds[i];
+    const filePath = path.join(postsDir, `${id}.md`);
+    if (i < 3 || !fs.existsSync(filePath)) {
+      idsToSync.push(id);
     }
   }
 
-  for (const url of postUrls) {
-    const filename = getFilenameFromUrl(url);
-    console.log(`Fetching LinkedIn post URL: ${url} -> ${filename}`);
+  console.log(`Syncing ${idsToSync.length} LinkedIn posts (out of ${postIds.length} total)...`);
+
+  for (const id of idsToSync) {
+    const filename = `${id}.md`;
+    const url = `https://www.linkedin.com/feed/update/urn:li:activity:${id}`;
+    const filePath = path.join(postsDir, filename);
+    const fileExists = fs.existsSync(filePath);
+
+    console.log(`Syncing LinkedIn post URN ID: ${id} -> ${filename}`);
     try {
       const res = await fetch(url, {
         headers: {
@@ -330,11 +334,15 @@ ${imageUrl ? `image: ${imageUrl}\n` : ''}url: ${url}
 ${bodyText}
 `;
 
-      fs.writeFileSync(path.join(postsDir, filename), mdContent, "utf8");
-      console.log(`✓ Generated ${filename}`);
+      fs.writeFileSync(filePath, mdContent, "utf8");
+      console.log(`✓ Generated/updated ${filename}`);
     } catch (e) {
-      console.error(`❌ Failed to sync LinkedIn post ${url}:`, e.message || e);
-      throw e;
+      if (fileExists) {
+        console.warn(`⚠️ Failed to update LinkedIn post ${id}, retaining existing file. Error: ${e.message || e}`);
+      } else {
+        console.error(`❌ Failed to sync new LinkedIn post ${id}:`, e.message || e);
+        throw e;
+      }
     }
   }
 }

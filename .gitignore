@@ -23,3 +23,8 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 temp-old-website/
+
+# temporary and scratch files
+temp.html
+scratch/
+

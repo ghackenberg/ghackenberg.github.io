@@ -18,7 +18,7 @@ const linkedinProfile = defineCollection({
   schema: z.object({
     followers: z.string().optional(),
     posts: z.string().optional(),
-    postUrls: z.array(z.string()).optional(),
+    postIds: z.array(z.string()).optional(),
   }),
 });
 
