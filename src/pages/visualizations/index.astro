@@ -25,7 +25,7 @@ const visualizations = await getCollection("visualizations");
     <!-- Visualizations Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       {visualizations.map(vis => (
-        <div class="glass-card rounded-3xl border border-white/5 overflow-hidden flex flex-col h-full group">
+        <div class="glass-card rounded-3xl border border-white/5 overflow-hidden flex flex-col h-full group relative cursor-pointer hover:border-brand-purple/30">
           <!-- Screenshot -->
           <div class="aspect-video w-full overflow-hidden border-b border-white/5 bg-gray-900 flex items-center justify-center relative">
             {vis.data.screenshot && (
@@ -56,7 +56,7 @@ const visualizations = await getCollection("visualizations");
 
             <a 
               href={`/visualizations/${vis.id}`}
-              class="px-5 py-3 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-white font-semibold text-center text-sm transition-all duration-300 hover:bg-white/10"
+              class="px-5 py-3 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-white font-semibold text-center text-sm transition-all duration-300 hover:bg-white/10 after:absolute after:inset-0 after:z-10"
             >
               Launch Visualization &rarr;
             </a>

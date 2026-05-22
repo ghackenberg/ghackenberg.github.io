@@ -74,7 +74,7 @@ function getPublisherDomain(url: string | undefined): string {
     <!-- Publications List -->
     <div class="space-y-6">
       {pubs.map(pub => (
-        <div class="glass-card p-6 rounded-2xl border border-white/5 group flex flex-col md:flex-row gap-6 items-start">
+        <div class="glass-card p-6 rounded-2xl border border-white/5 group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-yellow/30">
           <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shrink-0 border border-white/10 bg-gray-900/50 flex items-center justify-center text-white/30 group-hover:text-brand-yellow/80 group-hover:border-brand-yellow/30 transition-all duration-300">
             {pub.data.icon ? (
               <img 
@@ -96,7 +96,7 @@ function getPublisherDomain(url: string | undefined): string {
             </span>
             
             <h2 class="text-lg font-bold text-white mb-2 group-hover:text-brand-yellow transition-colors leading-snug">
-              <a href={`/publications/${pub.id}`}>
+              <a href={`/publications/${pub.id}`} class="after:absolute after:inset-0 after:z-10">
                 {pub.data.title}
               </a>
             </h2>
@@ -114,12 +114,12 @@ function getPublisherDomain(url: string | undefined): string {
               {pub.data.tags.map(t => (
                 <a 
                   href={`/publications/tags/${t}`}
-                  class={`text-xs font-medium ${t === tag ? 'text-brand-yellow' : 'text-gray-500 hover:text-white'} transition-colors`}
+                  class={`text-xs font-medium ${t === tag ? 'text-brand-yellow' : 'text-gray-500 hover:text-white'} transition-colors relative z-20`}
                 >
                   #{t}
                 </a>
               ))}
-              <div class="ml-auto flex items-center space-x-4">
+              <div class="ml-auto flex items-center space-x-4 relative z-20">
                 {pub.data.publisherUrl && (
                   <a 
                     href={pub.data.publisherUrl}
