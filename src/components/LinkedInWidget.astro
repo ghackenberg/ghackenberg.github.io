@@ -6,7 +6,7 @@
 import { getCollection, getEntry } from "astro:content";
 
 // Fetch profile metrics from collection
-const profileEntry = await getEntry("linkedin-profile", "georghackenberg");
+const profileEntry = await getEntry("linkedin-profile", "profile");
 const profile = profileEntry?.data || {
   followers: "850+",
   posts: "24"

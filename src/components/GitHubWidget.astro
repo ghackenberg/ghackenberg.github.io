@@ -25,7 +25,7 @@ let buildError: string | null = null;
 let syncRequired = false;
 
 try {
-  const profileEntry = await getEntry("github-profile", "ghackenberg");
+  const profileEntry = await getEntry("github-profile", "profile");
   if (profileEntry) {
     profile = profileEntry.data;
   }

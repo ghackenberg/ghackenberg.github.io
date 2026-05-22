@@ -2,7 +2,7 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const linkedinPosts = defineCollection({
-  loader: glob({ base: './src/content/linkedin-posts', pattern: '**/*.{md,mdx}' }),
+  loader: glob({ base: './src/content/feeds/linkedin/posts', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     pubDate: z.coerce.date(),
     likes: z.number().default(0),
@@ -14,7 +14,7 @@ const linkedinPosts = defineCollection({
 });
 
 const linkedinProfile = defineCollection({
-  loader: glob({ base: './src/content/linkedin-profile', pattern: '**/*.json' }),
+  loader: glob({ base: './src/content/feeds/linkedin', pattern: 'profile.json' }),
   schema: z.object({
     followers: z.string().optional(),
     posts: z.string().optional(),
@@ -23,7 +23,7 @@ const linkedinProfile = defineCollection({
 });
 
 const githubProfile = defineCollection({
-  loader: glob({ base: './src/content/github-profile', pattern: '**/*.json' }),
+  loader: glob({ base: './src/content/feeds/github', pattern: 'profile.json' }),
   schema: z.object({
     public_repos: z.number(),
     followers: z.number(),
@@ -31,7 +31,7 @@ const githubProfile = defineCollection({
 });
 
 const githubRepos = defineCollection({
-  loader: glob({ base: './src/content/github-repos', pattern: '**/*.json' }),
+  loader: glob({ base: './src/content/feeds/github/repositories', pattern: '**/*.json' }),
   schema: z.object({
     name: z.string(),
     description: z.string(),
@@ -43,7 +43,7 @@ const githubRepos = defineCollection({
 });
 
 const youtubeProfile = defineCollection({
-  loader: glob({ base: './src/content/youtube-profile', pattern: '**/*.json' }),
+  loader: glob({ base: './src/content/feeds/youtube', pattern: 'profile.json' }),
   schema: z.object({
     subscribers: z.string(),
     videos: z.string(),
@@ -51,7 +51,7 @@ const youtubeProfile = defineCollection({
 });
 
 const youtubeVideos = defineCollection({
-  loader: glob({ base: './src/content/youtube-videos', pattern: '**/*.json' }),
+  loader: glob({ base: './src/content/feeds/youtube/videos', pattern: '**/*.json' }),
   schema: z.object({
     title: z.string(),
     id: z.string(),

@@ -92,13 +92,13 @@ async function syncGitHub() {
   }));
 
   // Write out collection data
-  const profileDir = path.resolve(process.cwd(), "src/content/github-profile");
-  const reposDir = path.resolve(process.cwd(), "src/content/github-repos");
+  const profileDir = path.resolve(process.cwd(), "src/content/feeds/github");
+  const reposDir = path.resolve(process.cwd(), "src/content/feeds/github/repositories");
 
   clearAndCreateDir(profileDir);
   clearAndCreateDir(reposDir);
 
-  fs.writeFileSync(path.join(profileDir, `${username}.json`), JSON.stringify(profile, null, 2), "utf8");
+  fs.writeFileSync(path.join(profileDir, "profile.json"), JSON.stringify(profile, null, 2), "utf8");
   for (const repo of repos) {
     const safeName = repo.name.replace(/[^a-zA-Z0-9_-]/g, "_");
     fs.writeFileSync(path.join(reposDir, `${safeName}.json`), JSON.stringify(repo, null, 2), "utf8");
@@ -196,13 +196,13 @@ async function syncYouTube() {
   }
 
   // Write out collection data
-  const profileDir = path.resolve(process.cwd(), "src/content/youtube-profile");
-  const videosDir = path.resolve(process.cwd(), "src/content/youtube-videos");
+  const profileDir = path.resolve(process.cwd(), "src/content/feeds/youtube");
+  const videosDir = path.resolve(process.cwd(), "src/content/feeds/youtube/videos");
 
   clearAndCreateDir(profileDir);
   clearAndCreateDir(videosDir);
 
-  fs.writeFileSync(path.join(profileDir, "georghackenberg.json"), JSON.stringify(stats, null, 2), "utf8");
+  fs.writeFileSync(path.join(profileDir, "profile.json"), JSON.stringify(stats, null, 2), "utf8");
   for (const video of videos) {
     fs.writeFileSync(path.join(videosDir, `${video.id}.json`), JSON.stringify(video, null, 2), "utf8");
   }
@@ -212,7 +212,7 @@ async function syncYouTube() {
 async function syncLinkedIn() {
   console.log("Syncing LinkedIn posts...");
 
-  const profilePath = path.resolve(process.cwd(), "src/content/linkedin-profile/georghackenberg.json");
+  const profilePath = path.resolve(process.cwd(), "src/content/feeds/linkedin/profile.json");
   if (!fs.existsSync(profilePath)) {
     throw new Error(`LinkedIn profile file not found at ${profilePath}`);
   }
@@ -226,7 +226,7 @@ async function syncLinkedIn() {
     return;
   }
 
-  const postsDir = path.resolve(process.cwd(), "src/content/linkedin-posts");
+  const postsDir = path.resolve(process.cwd(), "src/content/feeds/linkedin/posts");
   clearAndCreateDir(postsDir);
 
   // Helper to derive filename from URL

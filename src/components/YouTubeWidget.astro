@@ -26,7 +26,7 @@ let buildError: string | null = null;
 let syncRequired = false;
 
 try {
-  const profileEntry = await getEntry("youtube-profile", "georghackenberg");
+  const profileEntry = await getEntry("youtube-profile", "profile");
   if (profileEntry) {
     stats = profileEntry.data;
   }
