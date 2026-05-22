@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "sync": "node scripts/sync.js",
+    "generate-assets": "node scripts/generate-assets.js",
     "astro": "astro"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
-    "cheerio": "^1.2.0"
+    "cheerio": "^1.2.0",
+    "puppeteer": "^25.0.4"
   }
 }

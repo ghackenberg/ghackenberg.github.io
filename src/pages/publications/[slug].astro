@@ -59,7 +59,13 @@ function getPublisherDomain(url: string | undefined): string {
 }
 ---
 
-<Layout title={`${pub.data.title} | Publications | Dr. Georg Hackenberg`} description={pub.data.abstract?.substring(0, 160)}>
+<Layout 
+  title={`${pub.data.title} | Publications | Dr. Georg Hackenberg`} 
+  description={pub.data.abstract?.substring(0, 160)}
+  type="article"
+  pubDate={pub.data.pubDate}
+  tags={pub.data.tags}
+>
   <Navbar />
 
   <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">

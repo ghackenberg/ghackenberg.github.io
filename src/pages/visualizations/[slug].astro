@@ -7,11 +7,11 @@ export async function getStaticPaths() {
   const visualizations = await getCollection("visualizations");
   return visualizations.map(vis => ({
     params: { slug: vis.id },
-    props: { type: vis.id, title: vis.data.title }
+    props: { type: vis.id, title: vis.data.title, screenshot: vis.data.screenshot }
   }));
 }
 
-const { type, title } = Astro.props;
+const { type, title, screenshot } = Astro.props;
 
 const posts = await getCollection("posts");
 const publications = await getCollection("publications");
@@ -173,7 +173,11 @@ const payload = {
 };
 ---
 
-<Layout title={`${title} | Dr. Georg Hackenberg`} description={`Interactive network graph showing relationships between blog posts, publications, and tags using ${title}.`}>
+<Layout 
+  title={`${title} | Dr. Georg Hackenberg`} 
+  description={`Interactive network graph showing relationships between blog posts, publications, and tags using ${title}.`}
+  image={screenshot?.src}
+>
   <Navbar />
 
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16 w-full relative z-10 flex flex-col h-[calc(100vh-80px)]">
