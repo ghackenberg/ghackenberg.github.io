@@ -18,5 +18,8 @@
     "astro": "^6.3.6",
     "googleapis": "^172.0.0",
     "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "cheerio": "^1.2.0"
   }
 }

@@ -113,6 +113,22 @@ const visualizations = defineCollection({
   }),
 });
 
+const experiences = defineCollection({
+  loader: glob({ base: './src/content/experiences', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    title: z.string(),
+    company: z.string(),
+    employmentType: z.string().optional(),
+    startMonth: z.number(),
+    startYear: z.number(),
+    endMonth: z.number().nullable().optional(),
+    endYear: z.number().nullable().optional(),
+    location: z.string().optional(),
+    color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
+    order: z.number().optional(),
+  }),
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -123,5 +139,6 @@ export const collections = {
   'posts': posts,
   'publications': publications,
   'visualizations': visualizations,
+  'experiences': experiences,
 };
 

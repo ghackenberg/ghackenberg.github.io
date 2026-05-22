@@ -1,81 +1,574 @@
 ---
-const timelineEvents = [
-  {
-    period: "2019 - Present",
-    title: "Professor for Industrial Informatics",
-    institution: "University of Applied Sciences Upper Austria, School of Engineering (FH OÖ, Wels)",
-    description: "Teaching software engineering, industrial informatics, and distributed systems. Conducting research on interactive systems, knowledge management, and software architecture.",
-    color: "yellow",
-    location: "Wels, Austria"
-  },
-  {
-    period: "2019 - Present",
-    title: "Area Manager for Information Technology",
-    institution: "University of Applied Sciences Upper Austria",
-    description: "Leading strategic planning, curriculum development, and institutional coordination for academic programs in the IT sector.",
-    color: "purple",
-    location: "Wels, Austria"
-  },
-  {
-    period: "2021 - Present",
-    title: "Co-Founder & Lead Engineer",
-    institution: "CADdrive & Mentawise",
-    description: "Developing CADdrive (a modern product design platform for schools/universities) and Mentawise (an innovative knowledge management and graph-based visual database solution).",
-    color: "blue",
-    location: "Bavaria & Upper Austria"
-  },
-  {
-    period: "Prior Academic & Industry Career",
-    title: "Doctoral Researcher & Software Engineer",
-    institution: "Technical University of Munich (TUM) & Industry Partners",
-    description: "Completed Dr. rer. nat. in Computer Science. Researched industrial informatics, software testing, and model-driven systems engineering. Partnered with enterprise software firms.",
-    color: "blue",
-    location: "Munich, Germany"
-  }
-];
+import { getCollection, render } from 'astro:content';
 
-// Helper to resolve color classes for timeline items
-const dotColors = {
-  blue: 'bg-brand-blue ring-brand-blue/30',
-  yellow: 'bg-brand-yellow ring-brand-yellow/30',
-  purple: 'bg-brand-purple ring-brand-purple/30',
-  green: 'bg-brand-green ring-brand-green/30'
+const experiences = await getCollection('experiences');
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// Helper to calculate and format duration
+function getDurationStr(totalMonths: number) {
+  const years = Math.floor(totalMonths / 12);
+  const remainingMonths = totalMonths % 12;
+  let durationStr = "";
+  if (years > 0) {
+    durationStr += `${years} yr${years > 1 ? 's' : ''}`;
+  }
+  if (remainingMonths > 0) {
+    if (durationStr) durationStr += " ";
+    durationStr += `${remainingMonths} mo${remainingMonths > 1 ? 's' : ''}`;
+  }
+  return durationStr;
+}
+
+// Process and compile details for all roles
+const processedRoles = await Promise.all(experiences.map(async (entry) => {
+  const { Content } = await render(entry);
+  
+  const startMonth = entry.data.startMonth;
+  const startYear = entry.data.startYear;
+  const endMonth = entry.data.endMonth ?? null;
+  const endYear = entry.data.endYear ?? null;
+  
+  const startDate = new Date(startYear, startMonth - 1);
+  const endDate = endYear ? new Date(endYear, endMonth! - 1) : new Date();
+  
+  const startStr = `${monthNames[startMonth - 1]} ${startYear}`;
+  const endStr = endYear ? `${monthNames[endMonth! - 1]} ${endYear}` : "Present";
+  
+  const totalMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth()) + 1;
+  const durationStr = getDurationStr(totalMonths);
+  const displayPeriod = `${startStr} - ${endStr} · ${durationStr}`;
+  
+  return {
+    id: entry.id,
+    title: entry.data.title,
+    company: entry.data.company,
+    employmentType: entry.data.employmentType,
+    startMonth,
+    startYear,
+    endMonth,
+    endYear,
+    location: entry.data.location,
+    color: entry.data.color || 'blue',
+    order: entry.data.order ?? 0,
+    Content,
+    startDate,
+    endDate,
+    isCurrent: !endYear,
+    totalMonths,
+    displayPeriod,
+    durationStr
+  };
+}));
+
+// Group roles by company name
+const groupsMap: Record<string, typeof processedRoles> = {};
+processedRoles.forEach(role => {
+  if (!groupsMap[role.company]) {
+    groupsMap[role.company] = [];
+  }
+  groupsMap[role.company].push(role);
+});
+
+// Build company group objects with aggregated durations and proper inner sorting
+const companyGroups = Object.entries(groupsMap).map(([companyName, roles]) => {
+  // Sort roles inside the company (newest first)
+  roles.sort((a, b) => {
+    if (a.isCurrent && !b.isCurrent) return -1;
+    if (!a.isCurrent && b.isCurrent) return 1;
+    
+    if (!a.isCurrent && !b.isCurrent) {
+      if (a.endYear !== b.endYear) {
+        return (b.endYear ?? 0) - (a.endYear ?? 0);
+      }
+      if (a.endMonth !== b.endMonth) {
+        return (b.endMonth ?? 0) - (a.endMonth ?? 0);
+      }
+    }
+    
+    if (a.startYear !== b.startYear) {
+      return b.startYear - a.startYear;
+    }
+    return b.startMonth - a.startMonth;
+  });
+  
+  // Calculate company-wide min/max dates for total tenure duration
+  let minStartDate = roles[0].startDate;
+  let maxEndDate = roles[0].endDate;
+  let isCurrent = false;
+  
+  roles.forEach(r => {
+    if (r.startDate < minStartDate) {
+      minStartDate = r.startDate;
+    }
+    if (r.isCurrent) {
+      isCurrent = true;
+      maxEndDate = new Date();
+    } else if (!isCurrent && r.endDate > maxEndDate) {
+      maxEndDate = r.endDate;
+    }
+  });
+  
+  const minStartYear = roles[roles.length - 1].startYear;
+  const minStartMonth = roles[roles.length - 1].startMonth;
+  
+  let maxEndYear: number | null = null;
+  let maxEndMonth: number | null = null;
+  
+  if (!isCurrent) {
+    let latestRole = roles[0];
+    roles.forEach(r => {
+      if (r.endYear && (!latestRole.endYear || r.endYear > latestRole.endYear || (r.endYear === latestRole.endYear && (r.endMonth ?? 0) > (latestRole.endMonth ?? 0)))) {
+        latestRole = r;
+      }
+    });
+    maxEndYear = latestRole.endYear;
+    maxEndMonth = latestRole.endMonth;
+  }
+  
+  const startStr = `${monthNames[minStartMonth - 1]} ${minStartYear}`;
+  const endStr = isCurrent ? "Present" : `${monthNames[maxEndMonth! - 1]} ${maxEndYear}`;
+  
+  const totalMonths = (maxEndDate.getFullYear() - minStartDate.getFullYear()) * 12 + (maxEndDate.getMonth() - minStartDate.getMonth()) + 1;
+  const totalDurationStr = getDurationStr(totalMonths);
+  const companyPeriodStr = `${startStr} - ${endStr} · ${totalDurationStr}`;
+  
+  const location = roles[0].location;
+  const color = roles[0].color; // Color of the newest active role
+  
+  return {
+    company: companyName,
+    roles,
+    companyPeriodStr,
+    location,
+    color,
+    isCurrent,
+    maxEndDate
+  };
+});
+
+// Sort company groups: ongoing first (newest start first), then past groups (newest end first)
+companyGroups.sort((a, b) => {
+  if (a.isCurrent && !b.isCurrent) return -1;
+  if (!a.isCurrent && b.isCurrent) return 1;
+  
+  if (a.isCurrent && b.isCurrent) {
+    return b.roles[0].startDate.getTime() - a.roles[0].startDate.getTime();
+  }
+  
+  return b.maxEndDate.getTime() - a.maxEndDate.getTime();
+});
+
+const cardBorderColors = {
+  blue: 'hover:border-brand-blue/30 border-white/5',
+  yellow: 'hover:border-brand-yellow/30 border-white/5',
+  purple: 'hover:border-brand-purple/30 border-white/5',
+  green: 'hover:border-brand-green/30 border-white/5'
 };
+
+const cardGlows = {
+  blue: 'bg-brand-blue/5',
+  yellow: 'bg-brand-yellow/5',
+  purple: 'bg-brand-purple/5',
+  green: 'bg-brand-green/5'
+};
+
+const roleDotColors = {
+  blue: 'border-brand-blue group-hover/role:ring-4 group-hover/role:ring-brand-blue/20',
+  yellow: 'border-brand-yellow group-hover/role:ring-4 group-hover/role:ring-brand-yellow/20',
+  purple: 'border-brand-purple group-hover/role:ring-4 group-hover/role:ring-brand-purple/20',
+  green: 'border-brand-green group-hover/role:ring-4 group-hover/role:ring-brand-green/20'
+};
+
+const colors = {
+  blue: '#3b82f6',
+  yellow: '#f59e0b',
+  purple: '#a855f7',
+  green: '#10b981'
+};
+
+function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard: boolean = false, isLastCard: boolean = false) {
+  const color = colors[groupColor as keyof typeof colors] || '#3b82f6';
+  
+  if (isFirstCard && isLastCard) {
+    return `linear-gradient(to bottom, ${color} 0%, ${color} 100%)`;
+  }
+  if (isFirstCard) {
+    return `linear-gradient(to bottom, ${color} 0%, rgba(255, 255, 255, 0.8) 100%)`;
+  }
+  if (isLastCard) {
+    return `linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, ${color} 100%)`;
+  }
+  
+  if (rolesCount === 1) {
+    return `linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, ${color} 40%, rgba(255, 255, 255, 0.8) 100%)`;
+  } else {
+    return `linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, ${color} 30%, ${color} 70%, rgba(255, 255, 255, 0.8) 100%)`;
+  }
+}
 ---
 
-<div class="relative border-l border-gray-800 ml-4 md:ml-6 pl-8 py-2 space-y-12">
-  {timelineEvents.map(event => (
-    <div class="relative group">
-      <!-- Dot indicator with gradient ring -->
-      <span class={`absolute -left-[41px] top-1.5 w-5 h-5 rounded-full ring-4 transition-all duration-300 group-hover:scale-125 ${dotColors[event.color]}`}></span>
-      
-      <!-- Event info -->
-      <div class="glass-card p-6 rounded-2xl border border-white/5 hover:border-white/10 transition-all duration-300">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300 w-fit">
-            {event.period}
-          </span>
-          <span class="text-xs text-gray-500 font-medium flex items-center">
-            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+<div data-timeline-container class="relative space-y-8 py-2">
+  <!-- Continuous background white line -->
+  <div class="absolute left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-white/10 z-0 pointer-events-none rounded-full"></div>
+  {companyGroups.map((group, index) => {
+    const isLast = index === companyGroups.length - 1;
+    // Determine the SVG logo or image to render
+    const nameLower = group.company.toLowerCase();
+    const isSelfEmployed = nameLower.includes('georg hackenberg');
+    
+    let svgContent = '';
+    if (!isSelfEmployed) {
+      if (nameLower.includes('fh oö') || nameLower.includes('fh upper austria')) {
+        svgContent = `
+          <defs>
+            <linearGradient id="fhGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff4b4b" />
+              <stop offset="100%" stop-color="#a80000" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#fhGrad)" />
+          <text x="50" y="65" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="44" fill="#ffffff" text-anchor="middle" letter-spacing="-3">FH</text>
+        `;
+      } else if (nameLower.includes('reply')) {
+        svgContent = `
+          <defs>
+            <linearGradient id="replyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff7e40" />
+              <stop offset="100%" stop-color="#e63c00" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#replyGrad)" />
+          <text x="50" y="66" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="48" fill="#ffffff" text-anchor="middle">R</text>
+        `;
+      } else if (nameLower.includes('münchen') || nameLower.includes('tum') || nameLower.includes('munich')) {
+        svgContent = `
+          <defs>
+            <linearGradient id="tumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3070b3" />
+              <stop offset="100%" stop-color="#0a2a5c" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#tumGrad)" />
+          <text x="50" y="64" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="34" fill="#ffffff" text-anchor="middle" letter-spacing="-1">TUM</text>
+        `;
+      } else if (nameLower.includes('epfl')) {
+        svgContent = `
+          <defs>
+            <linearGradient id="epflGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff3b30" />
+              <stop offset="100%" stop-color="#b80000" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#epflGrad)" />
+          <text x="50" y="63" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="32" fill="#ffffff" text-anchor="middle" letter-spacing="-2">EPFL</text>
+        `;
+      } else if (nameLower.includes('fraunhofer')) {
+        svgContent = `
+          <defs>
+            <linearGradient id="fraunhoferGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34d399" />
+              <stop offset="100%" stop-color="#047857" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#fraunhoferGrad)" />
+          <g stroke="white" stroke-width="4" stroke-linecap="round" fill="none">
+            <path d="M30 70 C30 50, 50 30, 70 30" />
+            <path d="M40 70 C40 55, 55 40, 70 40" />
+            <path d="M50 70 C50 60, 60 50, 70 50" />
+          </g>
+          <text x="50" y="85" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="14" fill="#ffffff" text-anchor="middle" letter-spacing="1">FIT</text>
+        `;
+      } else if (nameLower.includes('rwth') || nameLower.includes('aachen')) {
+        svgContent = `
+          <defs>
+            <linearGradient id="rwthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e40af" />
+              <stop offset="100%" stop-color="#1e3a8a" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#rwthGrad)" />
+          <text x="50" y="63" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="30" fill="#ffffff" text-anchor="middle" letter-spacing="-1.5">RWTH</text>
+        `;
+      } else if (nameLower.includes('siemens')) {
+        svgContent = `
+          <defs>
+            <linearGradient id="siemensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00a3a3" />
+              <stop offset="100%" stop-color="#005c5c" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#siemensGrad)" />
+          <text x="50" y="66" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="52" fill="#ffffff" text-anchor="middle" letter-spacing="-2">S</text>
+        `;
+      } else if (nameLower.includes('mannheim')) {
+        svgContent = `
+          <defs>
+            <linearGradient id="mannheimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e3a8a" />
+              <stop offset="100%" stop-color="#0f172a" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#mannheimGrad)" />
+          <path d="M30 45 L50 35 L70 45 L70 65 L30 65 Z" fill="none" stroke="#fbbf24" stroke-width="4" stroke-linejoin="round" />
+          <path d="M40 65 L40 55 L60 55 L60 65" fill="none" stroke="#fbbf24" stroke-width="4" />
+          <text x="50" y="82" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="800" font-size="14" fill="#fbbf24" text-anchor="middle">UNI MA</text>
+        `;
+      } else {
+        svgContent = `
+          <defs>
+            <linearGradient id="defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4b5563" />
+              <stop offset="100%" stop-color="#1f2937" />
+            </linearGradient>
+          </defs>
+          <rect width="100" height="100" rx="24" fill="url(#defaultGrad)" />
+          <path d="M50 25 L80 40 L50 55 L20 40 Z" fill="none" stroke="#ffffff" stroke-width="4" />
+          <path d="M30 45 V65 C30 70, 50 75, 50 75 C50 75, 70 70, 70 65 V45" fill="none" stroke="#ffffff" stroke-width="4" />
+        `;
+      }
+    }
+
+    return (
+      <div class="relative group rounded-2xl">
+        <!-- Interactive Glow Element -->
+        <div class={`absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${cardGlows[group.color]}`}></div>
+        
+        <div class={`glass-card relative p-6 rounded-2xl border transition-all duration-300 ${cardBorderColors[group.color]}`}>
+          <!-- Continuous Lifeline Segment -->
+          {index === 0 && (
+            <svg
+              data-lifeline-dashed-top
+              class="absolute left-[48px] -translate-x-1/2 top-0 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-visible"
+              style="height: 104px;"
+            >
+              <defs>
+                <linearGradient id="dash-grad-top" x1="0" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="rgba(255, 255, 255, 0.8)" />
+                  <stop offset="100%" stop-color={colors[group.color as keyof typeof colors] || '#3b82f6'} />
+                </linearGradient>
+              </defs>
+              <line x1="1" y1="0" x2="1" y2="100%" stroke="url(#dash-grad-top)" stroke-width="2" stroke-dasharray="4,4" />
             </svg>
-            {event.location}
-          </span>
+          )}
+          <div 
+            data-lifeline-segment
+            data-color={group.color}
+            style={`top: ${index === 0 ? '104px' : '0px'}; bottom: ${index === companyGroups.length - 1 ? '104px' : '0px'}; background: ${getFallbackGradient(group.color, group.roles.length, index === 0, index === companyGroups.length - 1)}`}
+            class="absolute left-[48px] -translate-x-1/2 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300"
+          ></div>
+          {index === companyGroups.length - 1 && (
+            <svg
+              data-lifeline-dashed-bottom
+              class="absolute left-[48px] -translate-x-1/2 bottom-0 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-visible"
+              style="height: 104px;"
+            >
+              <defs>
+                <linearGradient id="dash-grad-bottom" x1="0" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color={colors[group.color as keyof typeof colors] || '#3b82f6'} />
+                  <stop offset="100%" stop-color="rgba(255, 255, 255, 0.8)" />
+                </linearGradient>
+              </defs>
+              <line x1="1" y1="0" x2="1" y2="100%" stroke="url(#dash-grad-bottom)" stroke-width="2" stroke-dasharray="4,4" />
+            </svg>
+          )}
+
+            <div>
+              <!-- Company Header -->
+              <div class="flex gap-5 items-start mb-6">
+                <!-- Logo Container -->
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-950 border border-white/10 shrink-0 overflow-hidden shadow-inner relative z-20">
+                  {isSelfEmployed ? (
+                    <img src="/favicon.svg" alt={group.company} class="w-7 h-7 object-contain" />
+                  ) : (
+                    <svg viewBox="0 0 100 100" class="w-full h-full" set:html={svgContent}></svg>
+                  )}
+                </div>
+                
+                <div class="min-w-0">
+                  <h3 class="text-lg md:text-xl font-bold text-white tracking-tight mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all">
+                    {group.company}
+                  </h3>
+                  <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs font-semibold text-gray-400">
+                    <span class="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300">
+                      {group.companyPeriodStr}
+                    </span>
+                    {group.location && (
+                      <span class="text-gray-500 font-medium flex items-center">
+                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        {group.location}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Nested Sub-Roles -->
+              <div class="relative pl-7 ml-6 space-y-8">
+                {group.roles.map(role => (
+                  <div class="relative group/role">
+                    <!-- Inline node dot on nested timeline -->
+                    <span 
+                      data-role-dot
+                      data-color={role.color}
+                      class={`absolute -left-[35px] top-1.5 w-3.5 h-3.5 rounded-full bg-gray-900 border-2 z-20 transition-all duration-300 group-hover/role:scale-110 ${roleDotColors[role.color]}`}
+                    ></span>
+                    
+                    <div class="w-full min-w-0">
+                      <h4 class="text-base font-bold text-white mb-1 group-hover/role:text-transparent group-hover/role:bg-clip-text group-hover/role:bg-gradient-to-r group-hover/role:from-white group-hover/role:to-gray-300 transition-all">
+                        {role.title}
+                      </h4>
+                      <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs text-gray-500 font-semibold mb-3">
+                        <span class="text-gray-400">{role.displayPeriod}</span>
+                        {role.employmentType && (
+                          <>
+                            <span>&bull;</span>
+                            <span>{role.employmentType}</span>
+                          </>
+                        )}
+                        {role.location && role.location !== group.location && (
+                          <>
+                            <span>&bull;</span>
+                            <span>{role.location}</span>
+                          </>
+                        )}
+                      </div>
+                      <div class="text-gray-400 text-sm md:text-base leading-relaxed font-normal prose prose-invert max-w-none">
+                        <role.Content />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <h3 class="text-lg md:text-xl font-bold text-white tracking-tight mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all">
-          {event.title}
-        </h3>
-        
-        <p class="text-sm font-semibold text-gray-400 mb-4 tracking-wide">
-          {event.institution}
-        </p>
-        
-        <p class="text-gray-400 text-sm md:text-base leading-relaxed font-normal">
-          {event.description}
-        </p>
-      </div>
-    </div>
-  ))}
+      );
+  })}
 </div>
+
+<script>
+  const colors = {
+    blue: '#3b82f6',
+    yellow: '#f59e0b',
+    purple: '#a855f7',
+    green: '#10b981'
+  };
+
+  function updateLifelineGradients() {
+    const container = document.querySelector('[data-timeline-container]');
+    if (!container) return;
+    const cards = container.querySelectorAll('.glass-card');
+    cards.forEach((card, cardIndex) => {
+      const segment = card.querySelector('[data-lifeline-segment]') as HTMLElement;
+      if (!segment) return;
+
+      const dots = card.querySelectorAll('[data-role-dot]');
+      const cardRect = card.getBoundingClientRect();
+      const cardHeight = cardRect.height;
+      
+      if (cardHeight <= 0) return;
+
+      const isFirstCard = cardIndex === 0;
+      const isLastCard = cardIndex === cards.length - 1;
+
+      let firstDotCenterYFromCardTop = 0;
+      let lastDotCenterYFromCardTop = 0;
+      if (dots.length > 0) {
+        const firstDotRect = dots[0].getBoundingClientRect();
+        firstDotCenterYFromCardTop = firstDotRect.top + firstDotRect.height / 2 - cardRect.top;
+
+        const lastDotRect = dots[dots.length - 1].getBoundingClientRect();
+        lastDotCenterYFromCardTop = lastDotRect.top + lastDotRect.height / 2 - cardRect.top;
+      }
+
+      // 1. Position and scale dashed top/bottom lines
+      if (isFirstCard) {
+        const dashedTop = card.querySelector('[data-lifeline-dashed-top]') as HTMLElement;
+        if (dashedTop) {
+          dashedTop.style.height = `${firstDotCenterYFromCardTop}px`;
+          const firstDotColorKey = dots.length > 0 ? (dots[0].getAttribute('data-color') || 'blue') : 'blue';
+          const firstDotColor = colors[firstDotColorKey as keyof typeof colors] || colors.blue;
+          
+          const stop = dashedTop.querySelector('linearGradient stop[offset="100%"]');
+          if (stop) {
+            stop.setAttribute('stop-color', firstDotColor);
+          }
+        }
+      }
+      if (isLastCard) {
+        const dashedBottom = card.querySelector('[data-lifeline-dashed-bottom]') as HTMLElement;
+        if (dashedBottom) {
+          dashedBottom.style.top = `${lastDotCenterYFromCardTop}px`;
+          dashedBottom.style.height = `${cardHeight - lastDotCenterYFromCardTop}px`;
+          const lastDotColorKey = dots.length > 0 ? (dots[dots.length - 1].getAttribute('data-color') || 'blue') : 'blue';
+          const lastDotColor = colors[lastDotColorKey as keyof typeof colors] || colors.blue;
+          
+          const stop = dashedBottom.querySelector('linearGradient stop[offset="0%"]');
+          if (stop) {
+            stop.setAttribute('stop-color', lastDotColor);
+          }
+        }
+      }
+
+      // 2. Position and scale solid segment
+      const segmentTop = isFirstCard ? firstDotCenterYFromCardTop : 0;
+      const segmentBottom = isLastCard ? lastDotCenterYFromCardTop : cardHeight;
+      const segmentHeight = segmentBottom - segmentTop;
+
+      segment.style.top = `${segmentTop}px`;
+      segment.style.bottom = `${cardHeight - segmentBottom}px`;
+
+      if (segmentHeight <= 0) {
+        const colorKey = segment.getAttribute('data-color') || 'blue';
+        const color = colors[colorKey as keyof typeof colors] || colors.blue;
+        segment.style.background = color;
+        return;
+      }
+
+      // 3. Build gradient stops
+      const stops: string[] = [];
+      
+      if (!isFirstCard) {
+        // Start with white at top
+        stops.push('rgba(255, 255, 255, 0.8) 0%');
+      }
+
+      dots.forEach((dot, dotIndex) => {
+        const dotRect = dot.getBoundingClientRect();
+        const dotCenterY = dotRect.top + dotRect.height / 2;
+        const relativeY = dotCenterY - (cardRect.top + segmentTop);
+        const percent = Math.max(0, Math.min(100, (relativeY / segmentHeight) * 100));
+        const colorKey = dot.getAttribute('data-color') || segment.getAttribute('data-color') || 'blue';
+        const color = colors[colorKey as keyof typeof colors] || colors.blue;
+        
+        if (isFirstCard && dotIndex === 0) {
+          stops.push(`${color} 0%`);
+        } else if (isLastCard && dotIndex === dots.length - 1) {
+          stops.push(`${color} 100%`);
+        } else {
+          stops.push(`${color} ${percent.toFixed(1)}%`);
+        }
+      });
+
+      if (!isLastCard) {
+        // End with white at bottom
+        stops.push('rgba(255, 255, 255, 0.8) 100%');
+      }
+
+      // Apply the gradient
+      segment.style.background = `linear-gradient(to bottom, ${stops.join(', ')})`;
+    });
+  }
+
+  // Run on DOM load and Astro page load
+  document.addEventListener('DOMContentLoaded', updateLifelineGradients);
+  document.addEventListener('astro:page-load', updateLifelineGradients);
+  // Run immediately in case DOM is already ready
+  updateLifelineGradients();
+  // Update on window resize to ensure correct coordinates
+  window.addEventListener('resize', updateLifelineGradients);
+</script>
