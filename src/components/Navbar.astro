@@ -1,11 +1,13 @@
 ---
 const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Activity", href: "#activity" },
-  { label: "Experience", href: "#experience" },
-  { label: "Contact", href: "#contact" }
+  { label: "Home", href: "/#home" },
+  { label: "About", href: "/#about" },
+  { label: "Projects", href: "/#projects" },
+  { label: "Activity", href: "/#activity" },
+  { label: "Experience", href: "/#experience" },
+  { label: "Blog", href: "/posts" },
+  { label: "Publications", href: "/publications" },
+  { label: "Visualizations", href: "/visualizations" }
 ];
 ---
 
@@ -13,7 +15,7 @@ const navItems = [
   <div class="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between">
     
     <!-- Logo / Brand -->
-    <a href="#home" class="flex items-center space-x-2 group">
+    <a href="/#home" class="flex items-center space-x-2 group">
       <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow group-hover:opacity-80 transition-opacity">
         GH.
       </span>
@@ -23,17 +25,17 @@ const navItems = [
     </a>
 
     <!-- Desktop Navigation Links -->
-    <nav class="hidden md:flex items-center space-x-8">
+    <nav class="hidden md:flex items-center space-x-6">
       {navItems.map(item => (
         <a 
           href={item.href} 
-          class="text-sm font-medium text-gray-400 hover:text-white hover:scale-105 transition-all duration-200"
+          class="text-xs lg:text-sm font-medium text-gray-400 hover:text-white hover:scale-105 transition-all duration-200"
         >
           {item.label}
         </a>
       ))}
       <a 
-        href="#contact" 
+        href="/#contact" 
         class="text-xs font-semibold px-4 py-2 rounded-full bg-brand-blue/10 hover:bg-brand-blue/20 text-brand-blue border border-brand-blue/30 transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/10 hover:scale-105"
       >
         Get In Touch
@@ -67,7 +69,7 @@ const navItems = [
       </a>
     ))}
     <a 
-      href="#contact" 
+      href="/#contact" 
       class="text-sm font-semibold text-center py-2.5 rounded-lg bg-brand-blue text-white shadow-lg shadow-brand-blue/20 hover:bg-brand-blue/95 transition-all block"
     >
       Get In Touch

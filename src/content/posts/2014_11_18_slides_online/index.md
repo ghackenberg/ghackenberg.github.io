@@ -1,0 +1,14 @@
+---
+title: "Publication slides online now!"
+pubDate: "2014-11-17"
+description: "To complete the publications section of my website I recently added slides, abstracts and BibTEX entries. Note that the slides are hosted on slideshare, a free ..."
+tags: ["blog"]
+icon: "/posts/2014_11_18_slides_online/screenshot.png"
+---
+
+<p>
+			The following screenshot shows one example publication including the new slides section. The slides section is followed by the abstract and bibtex sections. I decided to give preference to the slides section because it is the more entertaining content.
+		</p>
+		<p>
+			<img src="/posts/2014_11_18_slides_online/screenshot.png" style="width: 100%;"/>
+		</p>

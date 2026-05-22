@@ -1,0 +1,195 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const pubs = await getCollection("publications");
+  return pubs.map((pub) => ({
+    params: { slug: pub.id },
+    props: { pub },
+  }));
+}
+
+const { pub } = Astro.props;
+const { Content } = await render(pub);
+
+// Get related publications
+const allPubs = await getCollection("publications");
+const relatedPubs = allPubs
+  .filter((p) => p.id !== pub.id)
+  .map((p) => {
+    const commonTags = p.data.tags.filter((t) => pub.data.tags.includes(t)).length;
+    return { pub: p, commonTags };
+  })
+  .sort((a, b) => b.commonTags - a.commonTags || b.pub.id.localeCompare(a.pub.id))
+  .slice(0, 3)
+  .map((x) => x.pub);
+
+// Format slides URL
+let slidesUrl = pub.data.slides;
+if (slidesUrl && slidesUrl.startsWith("//")) {
+  slidesUrl = "https:" + slidesUrl;
+}
+---
+
+<Layout title={`${pub.data.title} | Publications | Dr. Georg Hackenberg`} description={pub.data.abstract?.substring(0, 160)}>
+  <Navbar />
+
+  <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Back Button -->
+    <a 
+      href="/publications" 
+      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white transition-all mb-8"
+    >
+      <span>&larr;</span>
+      <span>Back to Publications</span>
+    </a>
+
+    <!-- Publication Header -->
+    <header class="mb-10 pb-8 border-b border-white/5">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+        {pub.data.title}
+      </h1>
+
+      <p class="text-gray-300 text-base md:text-lg mb-4 font-normal">
+        <span set:html={pub.data.author} />
+      </p>
+
+      <p class="text-gray-400 text-sm mb-6 font-normal italic">
+        {pub.data.book && <span>{pub.data.book}, </span>}
+        <span>{pub.data.pubDate}</span>
+      </p>
+
+      <div class="flex flex-wrap gap-2">
+        {pub.data.tags.map(tag => (
+          <a 
+            href={`/publications/tags/${tag}`}
+            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-yellow/30 transition-all duration-200"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    </header>
+
+    <!-- Content Sections -->
+    <div class="space-y-12 mb-16">
+      
+      <!-- Abstract -->
+      {pub.data.abstract && (
+        <section class="glass-card p-6 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-yellow via-brand-purple to-brand-blue"></div>
+          
+          <h2 class="text-2xl font-bold text-white mb-6 tracking-tight">
+            Abstract
+          </h2>
+          <p class="text-gray-300 text-base leading-relaxed font-normal">
+            {pub.data.abstract}
+          </p>
+        </section>
+      )}
+
+      <!-- Embedded Slides -->
+      {slidesUrl && (
+        <section class="glass-card p-6 md:p-8 rounded-3xl border border-white/5">
+          <h2 class="text-2xl font-bold text-white mb-6 tracking-tight">
+            Presentation Slides
+          </h2>
+          <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-white/10 bg-black">
+            <iframe 
+              src={slidesUrl} 
+              frameborder="0" 
+              marginwidth="0" 
+              marginheight="0" 
+              scrolling="no" 
+              allowfullscreen="yes" 
+              class="absolute top-0 left-0 w-full h-full"
+            >
+              Loading presentation...
+            </iframe>
+          </div>
+        </section>
+      )}
+
+      <!-- BibTeX Citation -->
+      {pub.data.bibtex && (
+        <section class="glass-card p-6 md:p-8 rounded-3xl border border-white/5 relative">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-white tracking-tight">
+              BibTeX Citation
+            </h2>
+            
+            <button 
+              id="copy-bibtex-btn"
+              class="px-4 py-2 text-xs font-semibold rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200 flex items-center space-x-2"
+            >
+              <svg id="copy-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+              </svg>
+              <span id="copy-btn-text">Copy Citation</span>
+            </button>
+          </div>
+          
+          <pre id="bibtex-content" class="bg-gray-950/80 p-5 rounded-xl border border-white/5 text-gray-300 font-mono text-xs overflow-x-auto leading-relaxed select-all">{pub.data.bibtex}</pre>
+        </section>
+      )}
+
+    </div>
+
+    <!-- Related Publications -->
+    {relatedPubs.length > 0 && (
+      <section class="border-t border-white/5 pt-16">
+        <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">
+          You might also be interested in
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedPubs.map(p => (
+            <a href={`/publications/${p.id}`} class="glass-card p-5 rounded-2xl border border-white/5 group flex flex-col h-full justify-between">
+              <div>
+                <span class="text-[10px] font-semibold text-brand-yellow/80 block mb-2">
+                  {p.id.substring(0, 4)}
+                </span>
+                <h3 class="text-sm font-bold text-white group-hover:text-brand-yellow transition-colors line-clamp-3 mb-2 leading-snug">
+                  {p.data.title}
+                </h3>
+              </div>
+              <span class="text-xs font-semibold text-brand-yellow/80 mt-4 flex items-center space-x-1 group-hover:translate-x-1 transition-transform">
+                <span>View publication</span>
+                <span>&rarr;</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </main>
+</Layout>
+
+<script>
+  // Copy Bibtex logic
+  const copyBtn = document.getElementById('copy-bibtex-btn');
+  const bibtexContent = document.getElementById('bibtex-content');
+  const copyBtnText = document.getElementById('copy-btn-text');
+
+  if (copyBtn && bibtexContent && copyBtnText) {
+    copyBtn.addEventListener('click', () => {
+      const text = bibtexContent.textContent?.trim() || '';
+      navigator.clipboard.writeText(text).then(() => {
+        // Visual feedback
+        copyBtnText.textContent = 'Copied!';
+        copyBtn.classList.remove('bg-white/5', 'text-gray-300', 'border-white/10');
+        copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+        
+        // Reset after 2.5 seconds
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy Citation';
+          copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+          copyBtn.classList.add('bg-white/5', 'text-gray-300', 'border-white/10');
+        }, 2500);
+      }).catch(err => {
+        console.error('Failed to copy citation: ', err);
+      });
+    });
+  }
+</script>

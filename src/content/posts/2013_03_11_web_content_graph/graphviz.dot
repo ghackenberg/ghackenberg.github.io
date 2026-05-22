@@ -1,0 +1,1218 @@
+
+graph G
+
+
+{
+
+
+
+
+
+
+
+
+
+"/articles/2012_05_22_website_launched_today/" [label = "Website launched today!", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_05_22_website_launched_today/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_05_31_leaving_to_icse_tomorrow/" [label = "Leaving to ICSE tomorrow!", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_05_31_leaving_to_icse_tomorrow/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_06_04_se4sg_workshop_report/" [label = "SE4SG Workshop Report", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_06_04_se4sg_workshop_report/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_06_05_se4sg_paper_presentation/" [label = "My SE4SG Presentation", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_06_05_se4sg_paper_presentation/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_06_11_visualizing_grid_simulation/" [label = "Visualizing our Smart Grid Simulation", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_06_11_visualizing_grid_simulation/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_06_11_visualizing_grid_simulation/" -- "/topics/system_visualization/";
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_06_29_MSE_Kolloquium/" [label = "MSE Colloquium at TUM", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_06_29_MSE_Kolloquium/" -- "/people/bytschkow/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_07_03_mse_follow_up/" [label = "Follow-Up on Denis' MSE Article", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_07_03_mse_follow_up/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_07_13_refrigerator_optimization_results/" [label = "Using Solar Energy to Power Refrigerators", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_07_13_refrigerator_optimization_results/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_07_13_refrigerator_optimization_results/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/articles/2012_07_13_refrigerator_optimization_results/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2012_07_16_behavior_space_exploration/" [label = "How to Scale Refrigerator Powering Strategies", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_07_16_behavior_space_exploration/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_07_16_behavior_space_exploration/" -- "/topics/emergent_properties/";
+
+
+
+"/articles/2012_07_16_behavior_space_exploration/" -- "/topics/system_visualization/";
+
+
+
+
+
+"/articles/2012_07_16_behavior_space_exploration/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2012_08_03_visualization_studio/" [label = "Visualization Studio for Systems Engineers", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_08_03_visualization_studio/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_08_03_visualization_studio/" -- "/topics/system_visualization/";
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_08_10_emergent_refrigerator_behavior/" [label = "True Emergent Refrigerator Behavior", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_08_10_emergent_refrigerator_behavior/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_08_10_emergent_refrigerator_behavior/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/articles/2012_08_10_emergent_refrigerator_behavior/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2012_08_14_sample_system_model/" [label = "Sample System Model (Graph Output)", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_08_14_sample_system_model/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_08_14_sample_system_model/" -- "/topics/emergent_properties/";
+
+
+
+"/articles/2012_08_14_sample_system_model/" -- "/topics/system_visualization/";
+
+
+
+
+
+"/articles/2012_08_14_sample_system_model/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2012_08_17_optimizing_powerhouse_control/" [label = "Optimizing Powerhouse Control", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_08_17_optimizing_powerhouse_control/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_08_17_optimizing_powerhouse_control/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/articles/2012_08_17_optimizing_powerhouse_control/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2012_08_20_using_energy_storage/" [label = "Using Energy Storage", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_08_20_using_energy_storage/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_08_20_using_energy_storage/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/articles/2012_08_20_using_energy_storage/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2012_08_24_bachelor_Thesis_Elias_Abud/" [label = "Design and Implementation of a Simulator for Households in Smart Grids", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_08_24_bachelor_Thesis_Elias_Abud/" -- "/people/koutsoumpas/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_08_30_meet_energycity/" [label = "Meet EnergyCity - A Virtual Testbed for Smartness", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_08_30_meet_energycity/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_08_30_meet_energycity/" -- "/topics/system_visualization/";
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2012_10_17_getting_closer/" [label = "Getting Closer to Actual Balance", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_10_17_getting_closer/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_10_17_getting_closer/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/articles/2012_10_17_getting_closer/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2012_11_23_collective_learning/" [label = "Collective Learning - A New Approach", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_11_23_collective_learning/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_11_23_collective_learning/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/articles/2012_11_23_collective_learning/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2012_12_20_machine_learning_experiment/" [label = "Machine Learning: Model and Trace", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2012_12_20_machine_learning_experiment/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2012_12_20_machine_learning_experiment/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/articles/2012_12_20_machine_learning_experiment/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2013_01_16_guided_exploration/" [label = "Guided Behavior Space Exploration", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2013_01_16_guided_exploration/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2013_01_16_guided_exploration/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/articles/2013_01_16_guided_exploration/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/articles/2013_02_19_interactive_visualization/" [label = "Model Visualization for Windows and Android", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2013_02_19_interactive_visualization/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2013_02_19_interactive_visualization/" -- "/topics/system_visualization/";
+
+
+
+
+
+
+
+
+
+
+
+"/articles/2013_03_11_web_content_graph/" [label = "Reviewing the last year of smart grid research", style = "filled", shape = rect, fillcolor = "#33CCFF"];
+
+
+
+"/articles/2013_03_11_web_content_graph/" -- "/people/hackenberg/";
+
+
+
+
+
+"/articles/2013_03_11_web_content_graph/" -- "/topics/emergent_properties/";
+
+
+
+"/articles/2013_03_11_web_content_graph/" -- "/topics/reference_architectures/";
+
+
+
+"/articles/2013_03_11_web_content_graph/" -- "/topics/system_visualization/";
+
+
+
+
+
+"/articles/2013_03_11_web_content_graph/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/people/bytschkow/" [label = "Denis Bytschkow", style = "filled", shape = circle, fillcolor = "#FFCC99"];
+
+
+
+
+
+"/people/bytschkow/" -- "/topics/emergent_properties/";
+
+
+
+"/people/bytschkow/" -- "/topics/system_visualization/";
+
+
+
+
+
+
+
+
+
+"/people/gupta/" [label = "Pragya K. Gupta", style = "filled", shape = circle, fillcolor = "#FFCC99"];
+
+
+
+
+
+
+
+
+
+
+
+"/people/hackenberg/" [label = "Georg Hackenberg", style = "filled", shape = circle, fillcolor = "#FFCC99"];
+
+
+
+
+
+"/people/hackenberg/" -- "/topics/emergent_properties/";
+
+
+
+"/people/hackenberg/" -- "/topics/system_visualization/";
+
+
+
+
+
+
+
+
+
+"/people/irlbeck/" [label = "Maximilian Irlbeck", style = "filled", shape = circle, fillcolor = "#FFCC99"];
+
+
+
+
+
+"/people/irlbeck/" -- "/topics/system_visualization/";
+
+
+
+"/people/irlbeck/" -- "/topics/reference_architectures/";
+
+
+
+
+
+
+
+
+
+"/people/koutsoumpas/" [label = "Vasileios Koutsoumpas", style = "filled", shape = circle, fillcolor = "#FFCC99"];
+
+
+
+
+
+"/people/koutsoumpas/" -- "/topics/reference_architectures/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/topics/emergent_properties/" [label = "Behavioral Goals", style = "filled", shape = folder, fillcolor = "#66FF66"];
+
+
+
+
+
+
+
+"/topics/reference_architectures/" [label = "Reference Architectures", style = "filled", shape = folder, fillcolor = "#66FF66"];
+
+
+
+
+
+
+
+"/topics/system_visualization/" [label = "System Visualizations", style = "filled", shape = folder, fillcolor = "#66FF66"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/projects/2008_e-energy/" [label = "E-Energy: Smart energy systems made in Germany", style = "filled", shape = house, fillcolor = "#CC99CC"];
+
+
+
+
+
+"/projects/2008_e-energy/" -- "/topics/reference_architectures/";
+
+
+
+
+
+
+
+"/projects/2008_e-energy/" -- "/people/irlbeck/";
+
+
+
+
+
+
+
+"/projects/2008_e-energy/" -- "/people/koutsoumpas/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/projects/2009_EIT_ICT/" [label = "EIT ICT Labs - Smart Energy Systems", style = "filled", shape = house, fillcolor = "#CC99CC"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/projects/2009_EIT_ICT/" -- "/people/gupta/";
+
+
+
+
+
+
+
+"/projects/2009_EIT_ICT/" -- "/people/bytschkow/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/projects/2010_fortiss_demonstrator/" [label = "Fortiss Micro Grid Demonstrator", style = "filled", shape = house, fillcolor = "#CC99CC"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/projects/2010_fortiss_demonstrator/" -- "/people/gupta/";
+
+
+
+
+
+
+
+"/projects/2010_fortiss_demonstrator/" -- "/people/bytschkow/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/projects/2012_energyfocus/" [label = "EnergyFOCUS: Explorative Systems Engineering", style = "filled", shape = house, fillcolor = "#CC99CC"];
+
+
+
+
+
+"/projects/2012_energyfocus/" -- "/topics/emergent_properties/";
+
+
+
+"/projects/2012_energyfocus/" -- "/topics/system_visualization/";
+
+
+
+
+
+
+
+"/projects/2012_energyfocus/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+"/projects/2012_energyfocus/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/publications/2011_Technik_Bayern/" [label = "Herausforderungen fuer die IKT. Smart Grid - Markt, Integration, Technik", style = "filled", shape = note, fillcolor = "#99FFCC"];
+
+
+
+
+
+
+
+
+
+
+
+"/publications/2011_Technik_Bayern/" -- "/people/bytschkow/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/publications/2012_agenda_CPS/" [label = "Acatech STUDIE: AgendaCPS - Integrierte Forschungsagenda Cyber-Physical Systems", style = "filled", shape = note, fillcolor = "#99FFCC"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/publications/2012_agenda_CPS/" -- "/people/bytschkow/";
+
+
+
+
+
+
+
+"/publications/2012_agenda_CPS/" -- "/topics/emergent_properties/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/publications/2012_se4sg_fortiss/" [label = "Establishing a Smart Grid Node Architecture and Demonstrator in an Office Environment Using the SOA Approach", style = "filled", shape = note, fillcolor = "#99FFCC"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/publications/2012_se4sg_fortiss/" -- "/people/bytschkow/";
+
+
+
+
+
+
+
+"/publications/2012_se4sg_fortiss/" -- "/people/gupta/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/publications/2012_se4sg_fortiss/" -- "/projects/2010_fortiss_demonstrator/";
+
+
+
+"/publications/2012_se4sg_fortiss/" -- "/projects/2009_EIT_ICT/";
+
+
+
+
+
+
+
+
+
+"/publications/2012_se4sg_hikb/" [label = "Applying Formal Software Engineering Techniques to Smart Grids", style = "filled", shape = note, fillcolor = "#99FFCC"];
+
+
+
+
+
+
+
+"/publications/2012_se4sg_hikb/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+"/publications/2012_se4sg_hikb/" -- "/people/irlbeck/";
+
+
+
+
+
+
+
+"/publications/2012_se4sg_hikb/" -- "/people/koutsoumpas/";
+
+
+
+
+
+
+
+"/publications/2012_se4sg_hikb/" -- "/people/bytschkow/";
+
+
+
+
+
+
+
+
+
+"/publications/2012_se4sg_hikb/" -- "/tools/xtream/";
+
+
+
+
+
+"/publications/2012_se4sg_hikb/" -- "/projects/2012_energyfocus/";
+
+
+
+
+
+
+
+
+
+"/publications/2012_tum_mse_colloquium_h/" [label = "Formal Smart Energy System Engineering Method", style = "filled", shape = note, fillcolor = "#99FFCC"];
+
+
+
+
+
+
+
+"/publications/2012_tum_mse_colloquium_h/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+
+
+
+
+"/publications/2012_tum_mse_colloquium_h/" -- "/projects/2012_energyfocus/";
+
+
+
+
+
+
+
+
+
+"/publications/2012_xm_hb/" [label = "Towards Early Emergent Property Understanding", style = "filled", shape = note, fillcolor = "#99FFCC"];
+
+
+
+
+
+
+
+"/publications/2012_xm_hb/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+"/publications/2012_xm_hb/" -- "/people/bytschkow/";
+
+
+
+
+
+
+
+"/publications/2012_xm_hb/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/publications/2012_xm_hb/" -- "/tools/xtream/";
+
+
+
+
+
+"/publications/2012_xm_hb/" -- "/projects/2012_energyfocus/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/tools/xtream/" [label = "Xtream: Stream-Functional Modeling Framework", style = "filled", shape = component, fillcolor = "#009966"];
+
+
+
+
+
+"/tools/xtream/" -- "/topics/emergent_properties/";
+
+
+
+
+
+"/tools/xtream/" -- "/people/hackenberg/";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/activities/2011_winter_seminar_seamless/" [label = "Seminar: Seamless Model-Based Development", style = "filled", shape = parallelogram, fillcolor = "#CC0033"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/activities/2012_summer_seminar_smart_grid/" [label = "Seminar: Smart Grid and Software Engineering", style = "filled", shape = parallelogram, fillcolor = "#CC0033"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+"/activities/2012_winter_lab_testbed/" [label = "Lab: Virtual Smart Grid Testbed", style = "filled", shape = parallelogram, fillcolor = "#CC0033"];
+
+
+
+
+
+"/activities/2012_winter_lab_testbed/" -- "/topics/emergent_properties/";
+
+
+
+"/activities/2012_winter_lab_testbed/" -- "/topics/system_visualization/";
+
+
+
+
+
+"/activities/2012_winter_lab_testbed/" -- "/tools/xtream/";
+
+
+
+
+
+
+
+
+
+"/activities/2013_eenergy_congress/" [label = "E-Energy Final Congress", style = "filled", shape = parallelogram, fillcolor = "#CC0033"];
+
+
+
+
+
+"/activities/2013_eenergy_congress/" -- "/topics/reference_architectures/";
+
+
+
+
+
+
+
+
+
+
+
+}

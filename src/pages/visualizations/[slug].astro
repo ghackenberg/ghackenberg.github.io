@@ -1,0 +1,518 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const visualizations = await getCollection("visualizations");
+  return visualizations.map(vis => ({
+    params: { slug: vis.id },
+    props: { type: vis.id, title: vis.data.title }
+  }));
+}
+
+const { type, title } = Astro.props;
+
+const posts = await getCollection("posts");
+const publications = await getCollection("publications");
+
+// Calculate tags
+const tagPosts: Record<string, number> = {};
+posts.forEach(p => {
+  p.data.tags.forEach(t => {
+    tagPosts[t] = (tagPosts[t] || 0) + 1;
+  });
+});
+
+const tagPubs: Record<string, number> = {};
+publications.forEach(p => {
+  p.data.tags.forEach(t => {
+    tagPubs[t] = (tagPubs[t] || 0) + 1;
+  });
+});
+
+const allTags = Array.from(new Set([...Object.keys(tagPosts), ...Object.keys(tagPubs)]));
+
+// Prepare payload for Cytoscape
+const cytoscapeElements = [];
+allTags.forEach(tag => {
+  const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
+  cytoscapeElements.push({
+    data: {
+      id: tag,
+      name: tag,
+      color: "#3b82f6", // Blue
+      size: (Math.log(count) + 1) * 15 + 10
+    }
+  });
+});
+
+posts.forEach(post => {
+  const path = `/posts/${post.id}`;
+  cytoscapeElements.push({
+    data: {
+      id: path,
+      name: post.data.title,
+      color: "#10b981", // Green
+      size: 15
+    }
+  });
+  post.data.tags.forEach(tag => {
+    cytoscapeElements.push({
+      data: {
+        id: `${path}--${tag}`,
+        source: path,
+        target: tag
+      }
+    });
+  });
+});
+
+publications.forEach(pub => {
+  const path = `/publications/${pub.id}`;
+  cytoscapeElements.push({
+    data: {
+      id: path,
+      name: pub.data.title,
+      color: "#f59e0b", // Yellow
+      size: 15
+    }
+  });
+  pub.data.tags.forEach(tag => {
+    cytoscapeElements.push({
+      data: {
+        id: `${path}--${tag}`,
+        source: path,
+        target: tag
+      }
+    });
+  });
+});
+
+// Prepare payload for D3
+const d3Nodes = [];
+const d3Connections = [];
+allTags.forEach(tag => {
+  const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
+  d3Nodes.push({ id: tag, name: tag, size: Math.log(count) + 1, group: 0 });
+});
+posts.forEach(post => {
+  const path = `/posts/${post.id}`;
+  d3Nodes.push({ id: path, name: post.data.title, size: 1, group: 1 });
+  post.data.tags.forEach(tag => {
+    d3Connections.push({ sourceId: path, targetId: tag });
+  });
+});
+publications.forEach(pub => {
+  const path = `/publications/${pub.id}`;
+  d3Nodes.push({ id: path, name: pub.data.title, size: 1, group: 2 });
+  pub.data.tags.forEach(tag => {
+    d3Connections.push({ sourceId: path, targetId: tag });
+  });
+});
+
+// Prepare payload for Sigma
+const sigmaNodes = [];
+const sigmaEdges = [];
+allTags.forEach(tag => {
+  const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
+  sigmaNodes.push({
+    id: tag,
+    label: tag,
+    x: Math.random(),
+    y: Math.random(),
+    size: Math.log(count) + 1,
+    color: "#3b82f6"
+  });
+});
+posts.forEach(post => {
+  const path = `/posts/${post.id}`;
+  sigmaNodes.push({
+    id: path,
+    label: post.data.title,
+    x: Math.random(),
+    y: Math.random(),
+    size: 1,
+    color: "#10b981"
+  });
+  post.data.tags.forEach(tag => {
+    sigmaEdges.push({
+      id: `${path}--${tag}`,
+      source: path,
+      target: tag,
+      size: 1,
+      color: "rgba(255,255,255,0.07)"
+    });
+  });
+});
+publications.forEach(pub => {
+  const path = `/publications/${pub.id}`;
+  sigmaNodes.push({
+    id: path,
+    label: pub.data.title,
+    x: Math.random(),
+    y: Math.random(),
+    size: 1,
+    color: "#f59e0b"
+  });
+  pub.data.tags.forEach(tag => {
+    sigmaEdges.push({
+      id: `${path}--${tag}`,
+      source: path,
+      target: tag,
+      size: 1,
+      color: "rgba(255,255,255,0.07)"
+    });
+  });
+});
+
+const payload = {
+  cytoscape: { elements: cytoscapeElements },
+  d3: { nodes: d3Nodes, connections: d3Connections },
+  sigma: { nodes: sigmaNodes, edges: sigmaEdges }
+};
+---
+
+<Layout title={`${title} | Dr. Georg Hackenberg`} description={`Interactive network graph showing relationships between blog posts, publications, and tags using ${title}.`}>
+  <Navbar />
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16 w-full relative z-10 flex flex-col h-[calc(100vh-80px)]">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 shrink-0">
+      <div>
+        <a 
+          href="/visualizations" 
+          class="inline-flex items-center space-x-1.5 text-[10px] font-bold text-gray-400 hover:text-white uppercase tracking-wider mb-2"
+        >
+          <span>&larr;</span>
+          <span>Visualizations</span>
+        </a>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          {title}
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 font-semibold tracking-wide uppercase">
+            Interactive
+          </span>
+        </h1>
+      </div>
+
+      <!-- Engine Selector Tabs -->
+      <div class="flex bg-white/5 border border-white/5 p-1 rounded-xl self-start sm:self-auto">
+        <a 
+          href="/visualizations/cytoscape" 
+          class={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${type === 'cytoscape' ? 'bg-brand-blue text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+        >
+          Cytoscape
+        </a>
+        <a 
+          href="/visualizations/d3" 
+          class={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${type === 'd3' ? 'bg-brand-purple text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+        >
+          D3
+        </a>
+        <a 
+          href="/visualizations/sigma" 
+          class={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${type === 'sigma' ? 'bg-brand-green text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+        >
+          Sigma
+        </a>
+      </div>
+    </div>
+
+    <!-- Graph Panel Area -->
+    <div class="flex-grow w-full relative min-h-[450px] rounded-3xl border border-white/5 bg-gray-950/60 backdrop-blur-md overflow-hidden flex flex-col md:flex-row shadow-2xl">
+      <!-- Sidebar Legend & Control -->
+      <div class="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/5 p-5 shrink-0 bg-gray-950/40 relative z-20 flex flex-col justify-between">
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Graph Legend</h3>
+            <div class="space-y-2.5">
+              <div class="flex items-center space-x-3 text-xs">
+                <span class="w-3.5 h-3.5 rounded-full bg-brand-blue border border-white/20 shadow-lg shadow-brand-blue/20"></span>
+                <span class="text-gray-300 font-medium">Topic Tags (blue)</span>
+              </div>
+              <div class="flex items-center space-x-3 text-xs">
+                <span class="w-3.5 h-3.5 rounded-full bg-brand-green border border-white/20 shadow-lg shadow-brand-green/20"></span>
+                <span class="text-gray-300 font-medium">Blog Posts (green)</span>
+              </div>
+              <div class="flex items-center space-x-3 text-xs">
+                <span class="w-3.5 h-3.5 rounded-full bg-brand-yellow border border-white/20 shadow-lg shadow-brand-yellow/20"></span>
+                <span class="text-gray-300 font-medium">Publications (yellow)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-white/5 pt-4">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2.5">Interaction</h3>
+            <ul class="space-y-1.5 text-xs text-gray-400 list-disc pl-4 font-normal leading-relaxed">
+              <li>Drag nodes to rearrange them</li>
+              <li>Pinch/scroll wheel to zoom</li>
+              <li>Click / Double-click a post or publication node to navigate directly to it</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pt-6 text-[10px] text-gray-500 font-medium">
+          Built with {title} &amp; Astro.
+        </div>
+      </div>
+
+      <!-- Graph Rendering Canvas -->
+      <div id="canvas" class="flex-grow w-full h-full relative z-10">
+        <!-- Render Loading Placeholder -->
+        <div id="canvas-loading" class="absolute inset-0 flex items-center justify-center bg-gray-950/80 z-30 transition-opacity duration-300">
+          <div class="flex flex-col items-center space-y-4">
+            <div class="w-8 h-8 rounded-full border-2 border-brand-purple/20 border-t-brand-purple animate-spin"></div>
+            <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Loading Network Graph...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Load Graph Libraries -->
+  {type === "cytoscape" && (
+    <script is:inline src="/scripts/cytoscape.min.js"></script>
+  )}
+  {type === "d3" && (
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+  )}
+  {type === "sigma" && (
+    <>
+      <script is:inline src="/scripts/sigma.min.js"></script>
+      <script is:inline src="/scripts/sigma.layout.forceAtlas2.min.js"></script>
+    </>
+  )}
+
+  <!-- Inject Graph Boot Scripts -->
+  <script is:inline define:vars={{ type, payload }}>
+    window.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('canvas');
+      const loading = document.getElementById('canvas-loading');
+      if (!container) return;
+
+      setTimeout(() => {
+        try {
+          if (type === 'cytoscape') {
+            initCytoscape();
+          } else if (type === 'd3') {
+            initD3();
+          } else if (type === 'sigma') {
+            initSigma();
+          }
+        } catch (e) {
+          console.error("Failed to load visualization: ", e);
+        } finally {
+          if (loading) {
+            loading.style.opacity = '0';
+            setTimeout(() => loading.remove(), 300);
+          }
+        }
+      }, 100);
+
+      function initCytoscape() {
+        const cy = cytoscape({
+          container: container,
+          elements: payload.cytoscape.elements,
+          style: [
+            {
+              selector: 'node',
+              style: {
+                'background-color': 'data(color)',
+                'label': 'data(name)',
+                'width': 'data(size)',
+                'height': 'data(size)',
+                'color': '#f3f4f6',
+                'font-size': '10px',
+                'font-family': 'Outfit, Inter, sans-serif',
+                'font-weight': '600',
+                'text-valign': 'center',
+                'text-halign': 'right',
+                'text-margin-x': 4,
+                'border-width': '2px',
+                'border-color': '#030712',
+                'overlay-opacity': 0,
+                'transition-property': 'background-color, border-color, width, height',
+                'transition-duration': '0.2s'
+              }
+            },
+            {
+              selector: 'edge',
+              style: {
+                'width': 1.5,
+                'line-color': 'rgba(255,255,255,0.06)',
+                'target-arrow-color': 'rgba(255,255,255,0.1)',
+                'curve-style': 'bezier'
+              }
+            },
+            {
+              selector: 'node:selected',
+              style: {
+                'border-width': '3px',
+                'border-color': '#a855f7'
+              }
+            }
+          ],
+          layout: {
+            name: 'cose',
+            idealEdgeLength: 100,
+            nodeOverlap: 20,
+            refresh: 20,
+            fit: true,
+            padding: 30,
+            randomize: true,
+            componentSpacing: 100,
+            nodeRepulsion: 400000,
+            edgeElasticity: 100,
+            nestingFactor: 5,
+            gravity: 80,
+            numIter: 1000,
+            initialTemp: 200,
+            coolingFactor: 0.95,
+            minTemp: 1.0
+          }
+        });
+
+        // Click to navigate
+        cy.on('tap', 'node', function(evt) {
+          const node = evt.target;
+          const id = node.id();
+          if (id.startsWith('/posts/') || id.startsWith('/publications/')) {
+            window.location.href = id;
+          }
+        });
+      }
+
+      function initD3() {
+        const width = container.offsetWidth;
+        const height = container.offsetHeight;
+        
+        const nodes = payload.d3.nodes;
+        // Randomize initial node positions to prevent massive clumping in the center
+        nodes.forEach(n => {
+          n.x = Math.random() * width;
+          n.y = Math.random() * height;
+        });
+
+        // Map connecting sourceId and targetId strings to actual indices
+        const links = payload.d3.connections.map(c => ({
+          source: nodes.findIndex(n => n.id === c.sourceId),
+          target: nodes.findIndex(n => n.id === c.targetId)
+        })).filter(l => l.source !== -1 && l.target !== -1);
+
+        const svg = d3.select("#canvas").append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .call(d3.behavior.zoom().scaleExtent([0.3, 8]).on("zoom", function () {
+            svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+          }))
+          .append("g");
+
+        const svgGroup = svg.append("g");
+
+        const force = d3.layout.force()
+          .nodes(nodes)
+          .links(links)
+          .charge(-250)
+          .linkDistance(90)
+          .size([width, height])
+          .start();
+
+        const link = svgGroup.selectAll(".link")
+          .data(links)
+          .enter().append("line")
+          .style("stroke", "rgba(255,255,255,0.06)")
+          .style("stroke-width", "1px");
+
+        const node = svgGroup.selectAll(".node")
+          .data(nodes)
+          .enter().append("g")
+          .call(force.drag);
+
+        const colors = ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
+        
+        node.append("circle")
+          .attr("r", d => d.size * 6 + 4)
+          .style("fill", d => colors[d.group])
+          .style("stroke", "#030712")
+          .style("stroke-width", "1.5px");
+
+        node.append("text")
+          .attr("dx", d => d.size * 6 + 8)
+          .attr("dy", ".35em")
+          .text(d => d.name)
+          .style("fill", "#9ca3af")
+          .style("font-size", "9px")
+          .style("font-family", "Outfit, Inter, sans-serif")
+          .style("font-weight", "500")
+          .style("pointer-events", "none");
+
+        // Double click to navigate
+        node.on("dblclick", function(d) {
+          if (d.id.startsWith('/posts/') || d.id.startsWith('/publications/')) {
+            window.location.href = d.id;
+          }
+        });
+
+        force.on("tick", function() {
+          link.attr("x1", d => d.source.x)
+              .attr("y1", d => d.source.y)
+              .attr("x2", d => d.target.x)
+              .attr("y2", d => d.target.y);
+
+          node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+      }
+
+      function initSigma() {
+        const s = new sigma({
+          graph: {
+            nodes: payload.sigma.nodes,
+            edges: payload.sigma.edges
+          },
+          renderer: {
+            container: container,
+            type: 'canvas'
+          },
+          settings: {
+            defaultNodeColor: '#3b82f6',
+            defaultLabelColor: '#f3f4f6',
+            defaultLabelSize: 10,
+            labelThreshold: 5,
+            edgeColor: 'default',
+            defaultEdgeColor: 'rgba(255,255,255,0.06)',
+            minNodeSize: 4,
+            maxNodeSize: 15,
+            minEdgeSize: 0.5,
+            maxEdgeSize: 1.5,
+            zoomMin: 0.1,
+            zoomMax: 3
+          }
+        });
+
+        s.startForceAtlas2({
+          worker: true,
+          barnesHutOptimize: false
+        });
+
+        // Stop layout calculation after 5 seconds to conserve CPU
+        setTimeout(() => {
+          s.stopForceAtlas2();
+        }, 5000);
+
+        s.bind('clickNode', function(e) {
+          const id = e.data.node.id;
+          if (id.startsWith('/posts/') || id.startsWith('/publications/')) {
+            window.location.href = id;
+          }
+        });
+      }
+    });
+  </script>
+</Layout>
+
+<style>
+  /* Ensure canvas takes all available dimensions */
+  #canvas {
+    outline: none;
+  }
+</style>

@@ -1,0 +1,134 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection } from "astro:content";
+
+const publications = (await getCollection("publications")).sort(
+  (a, b) => b.id.localeCompare(a.id)
+);
+
+// Collect all unique tags for a tag cloud
+const tags = Array.from(
+  new Set(publications.flatMap((pub) => pub.data.tags || []))
+).sort();
+
+// Group by year
+const groupedByYear: Record<string, typeof publications> = {};
+publications.forEach((pub) => {
+  const year = pub.id.substring(0, 4);
+  if (!groupedByYear[year]) {
+    groupedByYear[year] = [];
+  }
+  groupedByYear[year].push(pub);
+});
+
+const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
+---
+
+<Layout title="Publications | Dr. Georg Hackenberg" description="Academic publications, conference papers, and research presentations by Dr. Georg Hackenberg.">
+  <Navbar />
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <div class="mb-12">
+      <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-yellow/10 text-brand-yellow border border-brand-yellow/20 mb-6 tracking-wider uppercase">
+        Academic Research
+      </span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+        Peer-Reviewed <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-yellow via-brand-purple to-brand-blue">Publications</span>
+      </h1>
+      <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+        A list of international conference papers, workshop reports, journals, and presentations focusing on gesture control, software engineering, and smart grids.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Tag Cloud -->
+      <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
+        <div class="glass-card p-6 rounded-2xl border border-white/5">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+            <span>🏷️</span>
+            <span>Research Tags</span>
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            {tags.map(tag => (
+              <a 
+                href={`/publications/tags/${tag}`}
+                class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-yellow/30 transition-all duration-200"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Grouped Publications list -->
+      <div class="lg:col-span-9 order-2 lg:order-1 space-y-12">
+        {years.length === 0 ? (
+          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No publications found.</p>
+        ) : (
+          years.map(year => (
+            <section class="space-y-4">
+              <h2 class="text-2xl font-extrabold text-white border-b border-white/5 pb-2 tracking-tight">
+                {year}
+              </h2>
+              <div class="space-y-4">
+                {groupedByYear[year].map(pub => (
+                  <div class="glass-card p-6 rounded-2xl border border-white/5 group flex flex-col md:flex-row gap-6 items-start">
+                    <!-- Icon -->
+                    {pub.data.icon && (
+                      <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shrink-0 border border-white/10 bg-gray-900/50 flex items-center justify-center">
+                        <img 
+                          src={pub.data.icon} 
+                          alt="" 
+                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+
+                    <!-- Details -->
+                    <div class="flex-grow">
+                      <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-yellow transition-colors leading-snug">
+                        <a href={`/publications/${pub.id}`}>
+                          {pub.data.title}
+                        </a>
+                      </h3>
+                      
+                      <p class="text-gray-300 text-sm mb-2 font-normal">
+                        <span set:html={pub.data.author} />
+                      </p>
+
+                      <p class="text-gray-400 text-xs mb-4 font-normal italic">
+                        {pub.data.book && <span>{pub.data.book}, </span>}
+                        <span>{pub.data.pubDate}</span>
+                      </p>
+
+                      <div class="flex flex-wrap gap-2 items-center">
+                        {pub.data.tags.map(tag => (
+                          <a 
+                            href={`/publications/tags/${tag}`}
+                            class="text-xs font-medium text-gray-500 hover:text-white transition-colors"
+                          >
+                            #{tag}
+                          </a>
+                        ))}
+                        <a 
+                          href={`/publications/${pub.id}`} 
+                          class="text-xs font-semibold text-brand-yellow hover:text-brand-yellow/85 ml-auto flex items-center space-x-1"
+                        >
+                          <span>Abstract &amp; BibTeX</span>
+                          <span>&rarr;</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))
+        )}
+      </div>
+    </div>
+  </main>
+</Layout>

@@ -63,6 +63,55 @@ const youtubeVideos = defineCollection({
   }),
 });
 
+const posts = defineCollection({
+  loader: glob({
+    base: './src/content/posts',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: z.object({
+    title: z.string(),
+    pubDate: z.coerce.date(),
+    description: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    icon: z.string().optional(),
+  }),
+});
+
+const publications = defineCollection({
+  loader: glob({
+    base: './src/content/publications',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: z.object({
+    title: z.string(),
+    pubDate: z.string(),
+    book: z.string().optional(),
+    author: z.string(),
+    abstract: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    bibtex: z.string().optional(),
+    slides: z.string().optional(),
+    icon: z.string().optional(),
+  }),
+});
+
+const visualizations = defineCollection({
+  loader: glob({
+    base: './src/content/visualizations',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    description: z.string(),
+    screenshot: image().optional(),
+    colorClass: z.string(),
+    badgeColor: z.string(),
+  }),
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -70,4 +119,8 @@ export const collections = {
   'github-repos': githubRepos,
   'youtube-profile': youtubeProfile,
   'youtube-videos': youtubeVideos,
+  'posts': posts,
+  'publications': publications,
+  'visualizations': visualizations,
 };
+

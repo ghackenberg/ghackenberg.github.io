@@ -1,0 +1,40 @@
+---
+title: "Reviewing the last year of smart grid research"
+pubDate: "2013-03-10"
+description: "In the past year we have spent quite some effort on giving our smart grid research activties a shape. One of our big milestones was to establish this website as..."
+tags: ["data visualization","zumida"]
+icon: "/posts/2013_03_11_web_content_graph/full.png"
+---
+
+<p>
+	        For understanding the contents we generated a respective graph representation.
+	        Nodes represent content items, while edges represent their interconnections.
+	        The graph is finally layouted and rendered with yFiles, a free and powerful software for graph structures.
+	        The first graph includes everything but the blog articles to reduce the graph size.
+	        We can identify three lines of research, (a) the one centered around <a href="http://smartgrid.in.tum.de/topics/reference_architectures/">reference architectures</a> and <a href="http://smartgrid.in.tum.de/projects/2008_e-energy/">E-Energy</a>, (b) the one centered around <a href="http://smartgrid.in.tum.de/topics/emergent_properties/">behavioral goal modeling</a> and <a href="http://smartgrid.in.tum.de/tools/xtream/">Xtream</a>, and (c) the one centered around the <a href="http://smartgrid.in.tum.de/projects/2010_fortiss_demonstrator">fortiss living lab</a>. 
+	    </p>
+		<p>
+		    <img src="/posts/2013_03_11_web_content_graph/reduced.png" style="width: 100%;"/>
+		</p>
+		<p>
+		    The second graph also includes the blog articles.
+		    Clearly, most content is centered around <a href="http://smartgrid.in.tum.de/topics/emergent_properties/">behavioral goal modeling</a> and <a href="http://smartgrid.in.tum.de/topics/system_visualization/">system visualization</a>.
+		    In the other areas we intend to provide more content about our activities and research progress in the coming months.
+		    We hope the content will help gaining a clearer picture of our topics and their connection.
+		</p>
+		<p>
+		    <img src="/posts/2013_03_11_web_content_graph/full.png" style="width: 100%;"/>
+		</p>
+		<p>
+		    Here again the same graph with Graphviz as the underlying data format and layout engine.
+		    Both tools are integrated seamlessly into our web content management system to support intuitive graphical content analysis.
+		    As a side note: In the future we intend to integate a live content graph view into our website showing always up-to-date results. 
+		</p>
+		<p>
+		    <img src="/posts/2013_03_11_web_content_graph/graphviz.png" style="width: 100%;"/>
+		</p>
+		<p>
+		    From the graph visualizations it becomes what topics are covered with respective content at the moment and what areas we need to work on.
+		    A goal could be to span the smart grid topic space and fill the gaps in between.
+		    From this procedure we expect to get a clear map of our domain projected onto our interests.
+		</p>
