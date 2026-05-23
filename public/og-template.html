@@ -17,7 +17,7 @@
       padding: 0;
       width: 1200px;
       height: 630px;
-      background: radial-gradient(circle at 18% 18%, #111e3b 0%, #030712 100%);
+      background: radial-gradient(circle at 50% 0%, #12244a 0%, #030712 100%);
       font-family: "Inter", sans-serif;
       color: #f3f4f6;
       overflow: hidden;
@@ -108,14 +108,52 @@
       letter-spacing: -1.5px;
     }
 
-    .title {
+    .roles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 0 0 45px 0;
+    }
+
+    .role-item {
       font-family: "Outfit", sans-serif;
       font-weight: 600;
-      font-size: 32px;
-      color: #3b82f6; /* Brand Blue */
-      margin: 0 0 45px 0;
-      letter-spacing: -0.5px;
-      white-space: nowrap;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      line-height: 1.2;
+    }
+
+    .role-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .role-professor {
+      color: #f59e0b; /* Yellow */
+    }
+    .role-professor .role-dot {
+      background-color: #f59e0b;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+    }
+
+    .role-engineer {
+      color: #3b82f6; /* Blue */
+    }
+    .role-engineer .role-dot {
+      background-color: #3b82f6;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+    }
+
+    .role-entrepreneur {
+      color: #a855f7; /* Purple */
+    }
+    .role-entrepreneur .role-dot {
+      background-color: #a855f7;
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
     }
 
     .website-url {
@@ -154,11 +192,24 @@
       z-index: 10;
     }
 
+    .profile-glow {
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #a855f7, #f59e0b);
+      filter: blur(60px);
+      opacity: 0.95;
+      z-index: 5;
+    }
+
     .profile-svg {
       width: 100%;
       height: 100%;
       user-select: none;
       pointer-events: none;
+      position: relative;
+      z-index: 10;
     }
 
     .profile-svg-image {
@@ -176,9 +227,22 @@
   <div class="container">
     <!-- Left Section -->
     <div class="content-left">
-      <img src="favicon.svg" alt="GH." class="brand-logo" />
       <h1 class="name">Dr. Georg Hackenberg</h1>
-      <p class="title">Professor for Industrial Informatics</p>
+      
+      <div class="roles-list">
+        <div class="role-item role-professor">
+          <span class="role-dot"></span>
+          <span>Professor for Industrial Informatics</span>
+        </div>
+        <div class="role-item role-engineer">
+          <span class="role-dot"></span>
+          <span>Software Engineer</span>
+        </div>
+        <div class="role-item role-entrepreneur">
+          <span class="role-dot"></span>
+          <span>Entrepreneur</span>
+        </div>
+      </div>
       
       <div class="website-url">
         <svg class="github-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -190,6 +254,7 @@
 
     <!-- Right Section -->
     <div class="profile-card-container">
+      <div class="profile-glow"></div>
       <svg viewBox="0 0 100 100" class="profile-svg">
         <defs>
           <!-- SVG RadialGradient for soft bottom fadeout, keeping top head sharp -->
