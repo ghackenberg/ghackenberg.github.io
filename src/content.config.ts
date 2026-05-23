@@ -110,6 +110,7 @@ const visualizations = defineCollection({
     screenshot: image().optional(),
     colorClass: z.string(),
     badgeColor: z.string(),
+    pubDate: z.coerce.date().optional(),
   }),
 });
 
@@ -145,6 +146,7 @@ const projects = defineCollection({
     order: z.number().default(0),
     repoName: z.string().optional(),
     screenshot: image().optional(),
+    pubDate: z.coerce.date().optional(),
   }),
 });
 
@@ -162,6 +164,7 @@ const courses = defineCollection({
     terms: z.array(z.string()).default([]),
     language: z.enum(['de', 'en']).default('de'),
     screenshot: image().optional(),
+    pubDate: z.coerce.date().optional(),
   }),
 });
 

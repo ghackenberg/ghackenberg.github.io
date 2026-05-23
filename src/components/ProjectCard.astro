@@ -54,6 +54,13 @@ const colorClasses = {
     iconColor: 'text-brand-green'
   }
 }[accentColor];
+
+const dotColorClass = {
+  blue: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)]',
+  yellow: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]',
+  purple: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]',
+  green: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)]'
+}[accentColor];
 ---
 
 <a 
@@ -109,10 +116,15 @@ const colorClasses = {
   <div class="p-6 md:p-8 flex flex-col flex-grow border-t border-white/5">
     <div class="flex-grow flex flex-col">
       <!-- Header -->
-      <div class="flex items-start justify-between mb-4">
-        <div>
-          <h3 class="text-xl md:text-2xl font-bold text-white tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all duration-300">
+      <div class="flex items-start justify-between mb-4 w-full">
+        <div class="w-full">
+          <h3 class="relative pr-6 text-xl md:text-2xl font-bold text-white tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all duration-300">
             {title}
+            <span 
+              class={`unread-dot hidden absolute top-[0.625em] -translate-y-1/2 right-0 w-2.5 h-2.5 rounded-full ${dotColorClass}`} 
+              data-item-url={href}
+              title="Unread project"
+            ></span>
           </h3>
           <p class={`text-sm font-semibold tracking-wide mt-1 uppercase ${colorClasses.iconColor}`}>
             {tagline}

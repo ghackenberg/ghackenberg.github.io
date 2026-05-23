@@ -1,11 +1,11 @@
 ---
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Blog", href: "/posts" },
-  { label: "Courses", href: "/courses" },
-  { label: "Projects", href: "/projects" },
-  { label: "Publications", href: "/publications" },
-  { label: "Visualizations", href: "/visualizations" }
+  { label: "Posts", href: "/posts", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
+  { label: "Courses", href: "/courses", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
+  { label: "Projects", href: "/projects", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
+  { label: "Publications", href: "/publications", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
+  { label: "Visualizations", href: "/visualizations", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" }
 ];
 ---
 
@@ -27,9 +27,16 @@ const navItems = [
       {navItems.map(item => (
         <a 
           href={item.href} 
-          class="text-xs lg:text-sm font-medium text-gray-400 hover:text-white hover:scale-105 transition-all duration-200"
+          class="text-xs lg:text-sm font-medium text-gray-400 hover:text-white hover:scale-105 transition-all duration-200 flex items-center gap-1.5"
         >
-          {item.label}
+          <span>{item.label}</span>
+          {item.badgeColor && (
+            <span 
+              class={`nav-badge hidden px-1.5 py-0.5 text-[9px] font-extrabold rounded-full ${item.badgeColor} shadow-md`}
+              data-section={item.href.replace(/^\//, '')}
+            >
+            </span>
+          )}
         </a>
       ))}
       <a 
@@ -61,9 +68,16 @@ const navItems = [
     {navItems.map(item => (
       <a 
         href={item.href} 
-        class="text-base font-medium text-gray-300 hover:text-white transition-colors py-1 block"
+        class="text-base font-medium text-gray-300 hover:text-white transition-colors py-1 flex items-center justify-between"
       >
-        {item.label}
+        <span>{item.label}</span>
+        {item.badgeColor && (
+          <span 
+            class={`nav-badge hidden px-2 py-0.5 text-[10px] font-extrabold rounded-full ${item.badgeColor} shadow-md`}
+            data-section={item.href.replace(/^\//, '')}
+          >
+          </span>
+        )}
       </a>
     ))}
     <a 

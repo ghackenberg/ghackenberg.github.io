@@ -92,10 +92,15 @@ function getPublisherDomain(url: string | undefined): string {
 
   <!-- Details -->
   <div class="flex-grow flex flex-col h-full w-full">
-    <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-yellow transition-colors leading-snug">
+    <h3 class="relative pr-6 text-lg font-bold text-white mb-2 group-hover:text-brand-yellow transition-colors leading-snug">
       <a href={`/publications/${id}`} class="after:absolute after:inset-0 after:z-10">
         {title}
       </a>
+      <span 
+        class="unread-dot hidden absolute top-[0.625em] -translate-y-1/2 right-0 w-2.5 h-2.5 rounded-full bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]" 
+        data-item-url={`/publications/${id}`}
+        title="Unread publication"
+      ></span>
     </h3>
     
     <p class="text-gray-300 text-sm mb-2 font-normal">
