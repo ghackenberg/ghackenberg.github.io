@@ -96,6 +96,11 @@ async function initNotifications() {
   // 2. Fetch the manifest and update navbar badges
   const manifest = await fetchManifest();
   if (manifest) {
+    try {
+      localStorage.setItem(MANIFEST_CACHE_KEY, JSON.stringify(manifest));
+    } catch (e) {
+      console.error('Failed to cache content manifest', e);
+    }
     SECTIONS.forEach(section => {
       const items = manifest[section as keyof ContentManifest] || [];
       // If the user has never visited this section, treat lastVisit as 0 (counting all items as new/unread)

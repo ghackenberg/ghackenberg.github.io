@@ -136,5 +136,72 @@ if (pubDate) {
       <slot />
     </div>
 
+    <!-- Synchronous initialization of notifications to prevent badge/dot flickering -->
+    <script is:inline>
+      (function() {
+        const STORAGE_KEY = 'gh_site_notifications_v1';
+        const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
+        const SECTIONS = ['posts', 'courses', 'projects', 'publications', 'visualizations'];
+        
+        function normalizePath(path) {
+          let n = path.replace(/\/$/, '');
+          return n.startsWith('/') ? n : '/' + n;
+        }
+        
+        let state = { lastVisitedSections: {}, visitedItems: {} };
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored) state = JSON.parse(stored);
+        } catch(e) {}
+        
+        // 1. Update unread dots synchronously
+        const unreadDots = document.querySelectorAll('.unread-dot');
+        unreadDots.forEach(dot => {
+          const rawUrl = dot.getAttribute('data-item-url');
+          if (rawUrl) {
+            const itemUrl = normalizePath(rawUrl);
+            const isVisited = !!state.visitedItems[itemUrl];
+            if (!isVisited) {
+              dot.classList.remove('hidden');
+            } else {
+              dot.classList.add('hidden');
+            }
+          }
+        });
+        
+        // 2. Update navbar badges synchronously using cached manifest
+        let manifest = null;
+        try {
+          const cached = localStorage.getItem(MANIFEST_CACHE_KEY);
+          if (cached) manifest = JSON.parse(cached);
+        } catch(e) {}
+        
+        if (manifest) {
+          SECTIONS.forEach(section => {
+            const items = manifest[section] || [];
+            const lastVisit = state.lastVisitedSections[section] !== undefined
+              ? state.lastVisitedSections[section]
+              : 0;
+            
+            const newItemsCount = items.filter(item => {
+              const itemUrl = normalizePath(item.url);
+              const isNew = lastVisit === 0 ? true : item.date > lastVisit;
+              const isUnvisited = !state.visitedItems[itemUrl];
+              return isNew && isUnvisited;
+            }).length;
+            
+            const badges = document.querySelectorAll('.nav-badge[data-section="' + section + '"]');
+            badges.forEach(badge => {
+              if (newItemsCount > 0) {
+                badge.textContent = String(newItemsCount);
+                badge.classList.remove('hidden');
+              } else {
+                badge.classList.add('hidden');
+              }
+            });
+          });
+        }
+      })();
+    </script>
   </body>
 </html>
