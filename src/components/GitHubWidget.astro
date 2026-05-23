@@ -15,7 +15,7 @@ interface GitHubRepo {
   html_url: string;
   stargazers_count: number;
   language: string;
-  social_preview?: string;
+  social_preview?: any;
   updatedAt?: string;
   pushedAt?: string;
 }
@@ -231,34 +231,15 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
               class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0 sm:p-1 sm:pr-4"
             >
               <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-28 md:w-32 shrink-0 bg-gray-900 border-b sm:border-b-0 sm:border-r border-white/5 group-hover/item:border-brand-blue/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-t-none sm:rounded-l-xl">
-                {repo.social_preview && !repo.social_preview.includes("avatars.githubusercontent.com") ? (
-                  <svg 
-                    class="absolute inset-0 w-full h-full group-hover/item:scale-105 transition-transform duration-300 z-0 will-change-transform pointer-events-none" 
-                    viewBox="0 0 100 100" 
-                    preserveAspectRatio="none"
-                  >
-                    <defs>
-                      <linearGradient id={`grad-git-${repo.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#111827" stop-opacity="1" />
-                        <stop offset="100%" stop-color="#0b1329" stop-opacity="0.2" />
-                      </linearGradient>
-                    </defs>
-                    <image 
-                      href={repo.social_preview} 
-                      x="0" 
-                      y="0" 
-                      width="100" 
-                      height="100" 
-                      preserveAspectRatio="xMidYMid slice" 
+                {repo.social_preview ? (
+                  <>
+                    <img 
+                      src={repo.social_preview.src} 
+                      alt=""
+                      class="absolute inset-0 w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-300 z-0 will-change-transform pointer-events-none" 
                     />
-                    <rect 
-                      x="0" 
-                      y="0" 
-                      width="100" 
-                      height="100" 
-                      fill={`url(#grad-git-${repo.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
-                    />
-                  </svg>
+                    <div class="absolute inset-0 bg-gradient-to-br from-[#111827] to-[#0b1329]/20 z-10 pointer-events-none"></div>
+                  </>
                 ) : (
                   <>
                     <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-blue-950/70 z-10"></div>

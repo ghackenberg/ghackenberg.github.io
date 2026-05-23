@@ -2,13 +2,17 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const linkedinPosts = defineCollection({
-  loader: glob({ base: './src/content/feeds/linkedin/posts', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
+  loader: glob({
+    base: './src/content/feeds/linkedin/posts',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
     pubDate: z.coerce.date(),
     likes: z.number().default(0),
     comments: z.number().default(0),
     shares: z.number().default(0),
-    image: z.string().optional(),
+    image: image().nullable().optional(),
     url: z.string().optional(),
   }),
 });
@@ -29,14 +33,18 @@ const githubProfile = defineCollection({
 });
 
 const githubRepos = defineCollection({
-  loader: glob({ base: './src/content/feeds/github/repositories', pattern: '**/*.json' }),
-  schema: z.object({
+  loader: glob({
+    base: './src/content/feeds/github/repositories',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
     name: z.string(),
     description: z.string(),
     html_url: z.string(),
     stargazers_count: z.number(),
     language: z.string(),
-    social_preview: z.string().optional(),
+    social_preview: image().nullable().optional(),
     updatedAt: z.string().optional(),
     pushedAt: z.string().optional(),
   }),
@@ -50,13 +58,17 @@ const youtubeProfile = defineCollection({
 });
 
 const youtubeVideos = defineCollection({
-  loader: glob({ base: './src/content/feeds/youtube/videos', pattern: '**/*.json' }),
-  schema: z.object({
+  loader: glob({
+    base: './src/content/feeds/youtube/videos',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
     title: z.string(),
     id: z.string(),
     published: z.string(),
     publishedAt: z.string().optional(),
-    thumbnail: z.string().optional(),
+    thumbnail: image().nullable().optional(),
     description: z.string(),
     views: z.string(),
     likes: z.string(),

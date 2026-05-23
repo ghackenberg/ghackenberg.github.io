@@ -14,10 +14,10 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 
-// Dynamically fetch the referenced repository entry if provided
 let repo = null;
 if (project.data.repoName) {
-  const repoEntry = await getEntry("github-repos", project.data.repoName);
+  const repos = await getCollection("github-repos");
+  const repoEntry = repos.find(r => r.id.toLowerCase() === project.data.repoName.toLowerCase());
   repo = repoEntry?.data;
 }
 

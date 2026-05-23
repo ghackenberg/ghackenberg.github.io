@@ -15,7 +15,8 @@ const { course } = Astro.props;
 const { Content } = await render(course);
 
 // Dynamically fetch the referenced repository entry
-const repoEntry = await getEntry("github-repos", course.data.repoName);
+const repos = await getCollection("github-repos");
+const repoEntry = repos.find(r => r.id.toLowerCase() === course.data.repoName.toLowerCase());
 const repo = repoEntry?.data;
 
 // Language colors
