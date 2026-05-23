@@ -1,0 +1,306 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection, getEntry, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+// Dynamically fetch the referenced repository entry if provided
+let repo = null;
+if (project.data.repoName) {
+  const repoEntry = await getEntry("github-repos", project.data.repoName);
+  repo = repoEntry?.data;
+}
+
+// Language colors for GitHub stats
+const languageColors: Record<string, string> = {
+  TypeScript: "bg-blue-400",
+  JavaScript: "bg-yellow-400",
+  HTML: "bg-orange-500",
+  CSS: "bg-purple-400",
+  Astro: "bg-rose-500",
+  Python: "bg-blue-500",
+  Vue: "bg-emerald-500",
+  React: "bg-sky-400",
+  C: "bg-gray-400",
+  "C++": "bg-pink-500",
+  Java: "bg-red-400",
+  "C#": "bg-violet-500",
+  TeX: "bg-emerald-600",
+  Mermaid: "bg-teal-400",
+  "Jupyter Notebook": "bg-amber-600"
+};
+
+const accentColor = project.data.accentColor || 'blue';
+
+// Dynamically assign styling tokens matching the Strategic Focus Areas
+const colorClasses = {
+  blue: {
+    text: 'text-brand-blue',
+    border: 'border-brand-blue/20',
+    bg: 'bg-brand-blue/10',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30',
+    hoverText: 'hover:text-brand-blue',
+    glow: 'from-brand-blue to-brand-purple'
+  },
+  yellow: {
+    text: 'text-brand-yellow',
+    border: 'border-brand-yellow/20',
+    bg: 'bg-brand-yellow/10',
+    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950',
+    hoverText: 'hover:text-brand-yellow',
+    glow: 'from-brand-yellow to-brand-purple'
+  },
+  purple: {
+    text: 'text-brand-purple',
+    border: 'border-brand-purple/20',
+    bg: 'bg-brand-purple/10',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30',
+    hoverText: 'hover:text-brand-purple',
+    glow: 'from-brand-purple to-brand-blue'
+  },
+  green: {
+    text: 'text-brand-green',
+    border: 'border-brand-green/20',
+    bg: 'bg-brand-green/10',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30',
+    hoverText: 'hover:text-brand-green',
+    glow: 'from-brand-green to-brand-blue'
+  }
+}[accentColor];
+
+const tech = repo?.language ?? "Web";
+const starCount = repo?.stargazers_count ?? 0;
+const lastUpdated = repo?.pushedAt || repo?.updatedAt;
+const formattedDate = lastUpdated 
+  ? new Date(lastUpdated).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+  : "";
+---
+
+<Layout 
+  title={`${project.data.title} | Projects | Dr. Georg Hackenberg`} 
+  description={project.data.description}
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Back Button -->
+    <a 
+      href="/projects" 
+      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white transition-all mb-8 cursor-pointer"
+    >
+      <span>&larr;</span>
+      <span>Back to Projects</span>
+    </a>
+
+    <!-- Title Header -->
+    <header class="mb-12 pb-10 border-b border-white/5 relative">
+      <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded ${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border} mb-4 uppercase tracking-wider`}>
+        {project.data.tagline}
+      </span>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
+        {project.data.title}
+      </h1>
+      <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
+        {project.data.description}
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Main Content (Column 1 - Project details & Markdown text) -->
+      <div class="lg:col-span-8 space-y-12">
+        <!-- Render screenshot if defined -->
+        {project.data.screenshot && (
+          <div class="glass-card rounded-3xl border border-white/5 overflow-hidden bg-gray-950 relative aspect-video">
+            <img 
+              src={project.data.screenshot.src} 
+              alt={`${project.data.title} screenshot`}
+              class="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
+        <!-- Detail / Content block -->
+        <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 project-content">
+          <h2 class="text-xl font-bold text-white mb-6 tracking-tight flex items-center space-x-2">
+            <span>🚀</span>
+            <span>Project Details & Focus</span>
+          </h2>
+          
+          <!-- Render markdown body if there is one; otherwise show tagline description -->
+          {project.body ? (
+            <Content />
+          ) : (
+            <div class="space-y-4">
+              <p>
+                {project.data.title} is a dedicated solution designed with the core principles of reliability, usability, and modern architecture. It addresses critical needs in {project.data.tags.slice(0, 3).join(", ").toLowerCase()} systems.
+              </p>
+              <h3 class="text-white font-bold mt-6 mb-2">Key Areas of Focus:</h3>
+              <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                {project.data.tags.map(tag => (
+                  <li><strong>{tag}</strong>: Implementation of standards, optimized performance, and interdisciplinary support.</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      </div>
+
+      <!-- Sidebar Metadata & GitHub Repo (Column 2) -->
+      <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
+        <!-- Project Actions & Info Card -->
+        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden">
+          <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
+          
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+            <span>ℹ️</span>
+            <span>Project Info</span>
+          </h3>
+
+          <div class="mb-6 space-y-4">
+            <div>
+              <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-1.5">Project Type</p>
+              <div class="flex flex-wrap gap-1.5">
+                {project.data.tags.map(tag => (
+                  <span class={`text-[10px] px-2.5 py-0.5 rounded-full border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-medium`}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <a 
+            href={project.data.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`w-full py-3.5 px-4 rounded-xl text-center text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-2 cursor-pointer ${colorClasses.btnBg}`}
+          >
+            <span>Visit Website</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Linked GitHub Repository Card (if available) -->
+        {repo ? (
+          <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col group overflow-hidden relative">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-brand-blue opacity-60"></div>
+            
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+              <svg class="w-5 h-5 text-brand-blue shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+              </svg>
+              <span>GitHub Repo</span>
+            </h3>
+
+            <p class="text-sm font-mono font-bold text-white break-all leading-tight mb-2">
+              {repo.name}
+            </p>
+            
+            <p class="text-gray-400 text-xs leading-normal mb-4 line-clamp-3">
+              {repo.description}
+            </p>
+
+            <div class="space-y-2.5 border-t border-white/5 pt-3.5 mb-4 text-xs text-gray-400">
+              <div class="flex items-center justify-between">
+                <span>Language:</span>
+                <div class="flex items-center space-x-1.5">
+                  <span class={`w-2.5 h-2.5 rounded-full ${languageColors[tech] || 'bg-gray-400'}`}></span>
+                  <span class="text-white font-semibold">{tech}</span>
+                </div>
+              </div>
+              {starCount > 0 && (
+                <div class="flex items-center justify-between">
+                  <span>Stars:</span>
+                  <span class="text-white font-semibold">⭐ {starCount}</span>
+                </div>
+              )}
+              {formattedDate && (
+                <div class="flex items-center justify-between">
+                  <span>Last Synced Push:</span>
+                  <span class="text-white font-medium">{formattedDate}</span>
+                </div>
+              )}
+            </div>
+
+            <div class="border-t border-white/5 pt-4 mt-auto">
+              <a 
+                href={repo.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center text-sm font-bold text-brand-yellow hover:text-brand-yellow/80 transition-colors group/link cursor-pointer"
+              >
+                <span>Explore Codebase</span>
+                <svg class="w-4 h-4 ml-1.5 transform group-hover/link:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        ) : (
+          <div class="glass-card p-6 rounded-2xl border border-white/5 text-center text-xs text-gray-500 py-8">
+            ⚠️ Synced repository info not available.
+          </div>
+        )}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  /* Markdown content layout styling */
+  .project-content :global(h2) {
+    font-size: 1.25rem;
+    font-weight: 850;
+    color: white;
+    margin-top: 2.25rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.025em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.5rem;
+  }
+  .project-content :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .project-content :global(h3) {
+    font-size: 1.1rem;
+    font-weight: 750;
+    color: white;
+    margin-top: 1.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .project-content :global(p) {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: #9ca3af; /* text-gray-400 */
+    margin-bottom: 1.5rem;
+  }
+  .project-content :global(ul) {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #9ca3af;
+  }
+  .project-content :global(li) {
+    margin-bottom: 0.6rem;
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+  .project-content :global(ol) {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #9ca3af;
+  }
+</style>

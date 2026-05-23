@@ -6,4 +6,5 @@ href: "https://ghackenberg.github.io/delta-dynamics/"
 tags: ["React", "Three.js", "Web-LLM", "Simulation", "AI"]
 accentColor: "blue"
 order: 3
+repoName: "delta-dynamics"
 ---

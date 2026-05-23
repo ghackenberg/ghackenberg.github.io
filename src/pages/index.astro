@@ -17,8 +17,8 @@ const optimizedProfile = await getImage({
   quality: 85
 });
 
-const products = await getCollection("products");
-const sortedProducts = products.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const projects = await getCollection("projects");
+const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 ---
 
 <Layout>
@@ -183,22 +183,22 @@ const sortedProducts = products.sort((a, b) => (a.data.order ?? 0) - (b.data.ord
     <section id="projects" class="py-16 md:py-24 border-t border-white/5 scroll-mt-20">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">
-          Software Products
+          Software Projects
         </h2>
         <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
-          Active platforms and tools designed to optimize product styling, engineering, and visual intelligence.
+          Active software systems, frameworks, and tools designed to optimize product engineering, styling, and visual intelligence.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {sortedProducts.map(product => (
+        {sortedProjects.map(project => (
           <ProjectCard 
-            title={product.data.title}
-            tagline={product.data.tagline}
-            description={product.data.description}
-            href={product.data.href}
-            tags={product.data.tags}
-            accentColor={product.data.accentColor}
+            title={project.data.title}
+            tagline={project.data.tagline}
+            description={project.data.description}
+            href={`/projects/${project.id}`}
+            tags={project.data.tags}
+            accentColor={project.data.accentColor}
           />
         ))}
       </div>

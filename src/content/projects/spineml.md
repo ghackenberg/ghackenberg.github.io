@@ -6,4 +6,5 @@ href: "https://github.com/ghackenberg/SpineML"
 tags: ["Python", "Optimization", "Simulation", "Factory Layout", "Scheduling"]
 accentColor: "blue"
 order: 4
+repoName: "spineml"
 ---

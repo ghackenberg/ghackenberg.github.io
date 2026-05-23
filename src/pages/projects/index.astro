@@ -1,0 +1,167 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const projects = await getCollection("projects");
+const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+// Extract unique tags from all projects
+const tagsSet = new Set<string>();
+for (const project of projects) {
+  if (project.data.tags) {
+    project.data.tags.forEach(tag => tagsSet.add(tag));
+  }
+}
+const allTags = Array.from(tagsSet).sort();
+---
+
+<Layout title="Projects | Dr. Georg Hackenberg" description="Explore software projects, systems, frameworks, and open-source contributions created by Dr. Georg Hackenberg.">
+  <Navbar />
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Header -->
+    <div class="mb-12">
+      <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-6 tracking-wider uppercase">
+        Software Engineering & Systems
+      </span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+        Software <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow">Projects</span>
+      </h1>
+      <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+        Active platforms, frameworks, and tools designed to optimize product design, engineering, knowledge graphs, and real-time physical simulation.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Filters Sidebar (Column 1) -->
+      <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
+        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
+            <span>⚙️</span>
+            <span>Filter Projects</span>
+          </h3>
+
+          <!-- Text Search -->
+          <div class="mb-4">
+            <label for="project-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="project-search" 
+                placeholder="Search projects..." 
+                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 pl-8 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
+              />
+              <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
+            </div>
+          </div>
+
+          <!-- Technologies / Tags dropdown -->
+          <div class="mb-2">
+            <label for="tag-filter" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Filter by Tag</label>
+            <select 
+              id="tag-filter" 
+              class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-blue/50 transition-all duration-200 cursor-pointer"
+            >
+              <option value="all" class="bg-gray-900">All Tags</option>
+              {allTags.map(tag => (
+                <option value={tag} class="bg-gray-900">{tag}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects Grid (Column 2) -->
+      <div class="lg:col-span-9 order-2 lg:order-1">
+        {sortedProjects.length === 0 ? (
+          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No projects defined.</p>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-grid">
+            {sortedProjects.map(project => {
+              const tagsJoined = (project.data.tags || []).join(" ").toLowerCase();
+              return (
+                <div 
+                  class="project-wrapper"
+                  data-title={project.data.title.toLowerCase()}
+                  data-tagline={project.data.tagline.toLowerCase()}
+                  data-desc={project.data.description.toLowerCase()}
+                  data-tags={tagsJoined}
+                >
+                  <ProjectCard 
+                    title={project.data.title}
+                    tagline={project.data.tagline}
+                    description={project.data.description}
+                    href={`/projects/${project.id}`}
+                    tags={project.data.tags}
+                    accentColor={project.data.accentColor}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <p id="no-projects-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+          No projects match your selected filter criteria.
+        </p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  let searchQuery = '';
+  let activeTag = 'all';
+
+  const searchInput = document.getElementById('project-search') as HTMLInputElement | null;
+  const tagSelect = document.getElementById('tag-filter') as HTMLSelectElement | null;
+  const projectWrappers = document.querySelectorAll('.project-wrapper');
+  const noProjectsMessage = document.getElementById('no-projects-message');
+
+  function updateFilters() {
+    let visibleCount = 0;
+
+    projectWrappers.forEach(wrapper => {
+      const title = wrapper.getAttribute('data-title') || '';
+      const tagline = wrapper.getAttribute('data-tagline') || '';
+      const desc = wrapper.getAttribute('data-desc') || '';
+      const tags = wrapper.getAttribute('data-tags') || '';
+
+      const matchesSearch = 
+        title.includes(searchQuery) || 
+        tagline.includes(searchQuery) || 
+        desc.includes(searchQuery) || 
+        tags.includes(searchQuery);
+
+      const matchesTag = activeTag === 'all' || tags.includes(activeTag.toLowerCase());
+
+      if (matchesSearch && matchesTag) {
+        wrapper.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        wrapper.classList.add('hidden');
+      }
+    });
+
+    if (noProjectsMessage) {
+      if (visibleCount === 0) {
+        noProjectsMessage.classList.remove('hidden');
+      } else {
+        noProjectsMessage.classList.add('hidden');
+      }
+    }
+  }
+
+  // Bind Search Input
+  searchInput?.addEventListener('input', (e) => {
+    searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
+    updateFilters();
+  });
+
+  // Bind Tag Filter dropdown
+  tagSelect?.addEventListener('change', (e) => {
+    activeTag = (e.target as HTMLSelectElement).value;
+    updateFilters();
+  });
+</script>

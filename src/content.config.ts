@@ -129,9 +129,9 @@ const experiences = defineCollection({
   }),
 });
 
-const products = defineCollection({
-  loader: glob({ base: './src/content/products', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
+const projects = defineCollection({
+  loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
+  schema: ({ image }) => z.object({
     title: z.string(),
     tagline: z.string(),
     description: z.string(),
@@ -139,6 +139,8 @@ const products = defineCollection({
     tags: z.array(z.string()).default([]),
     accentColor: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),
+    repoName: z.string().optional(),
+    screenshot: image().optional(),
   }),
 });
 
@@ -170,7 +172,7 @@ export const collections = {
   'publications': publications,
   'visualizations': visualizations,
   'experiences': experiences,
-  'products': products,
+  'projects': projects,
   'courses': courses,
 };
 
