@@ -19,7 +19,8 @@ const navItems = [
 ];
 ---
 
-<header class="sticky top-0 left-0 right-0 z-50 transition-all duration-300 w-full glass-panel border-b border-white/5 py-4">
+<div class="sticky top-0 left-0 right-0 z-50 w-full">
+  <header class="transition-all duration-300 w-full glass-panel border-b border-white/5 py-4">
   <div class="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between">
     
     <!-- Logo / Brand -->
@@ -27,7 +28,7 @@ const navItems = [
       <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow group-hover:opacity-80 transition-opacity">
         GH.
       </span>
-      <span class="font-semibold text-sm text-gray-300 hidden sm:inline-block tracking-wide group-hover:text-white transition-colors">
+      <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-white transition-colors nav-logo-name">
         Georg Hackenberg
       </span>
     </a>
@@ -80,10 +81,12 @@ const navItems = [
     </button>
   </div>
 
+  </header>
+
   <!-- Mobile Dropdown Menu -->
   <div 
     id="mobile-menu" 
-    class="hidden md:hidden glass-panel border-t border-white/5 absolute top-full left-0 right-0 py-4 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
+    class="hidden md:hidden glass-panel border-b border-white/5 absolute top-full left-0 right-0 py-6 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
   >
     {navItems.map(item => {
       const active = isActive(item.href);
@@ -114,7 +117,7 @@ const navItems = [
       Get In Touch
     </a>
   </div>
-</header>
+</div>
 
 <script>
   const btn = document.getElementById('mobile-menu-btn');

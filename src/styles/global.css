@@ -107,3 +107,23 @@
     opacity: 0.22;
   }
 }
+
+/* Responsive Logo Name Visibility */
+.nav-logo-name {
+  display: none !important;
+}
+@media (min-width: 480px) {
+  .nav-logo-name {
+    display: inline-block !important;
+  }
+}
+@media (min-width: 768px) {
+  .nav-logo-name {
+    display: none !important;
+  }
+}
+@media (min-width: 900px) {
+  .nav-logo-name {
+    display: inline-block !important;
+  }
+}

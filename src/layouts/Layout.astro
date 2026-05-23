@@ -134,6 +134,82 @@ if (pubDate) {
     <!-- Main site wrapper -->
     <div class="relative z-10 flex flex-col min-h-screen">
       <slot />
+
+      <!-- Footer -->
+      <footer class="w-full glass-panel border-t border-white/5 py-12 md:py-16 text-sm text-gray-400 mt-auto relative z-10">
+        <div class="max-w-6xl mx-auto px-4 md:px-8">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pb-10 border-b border-white/5">
+            
+            <!-- Brand Column -->
+            <div class="md:col-span-5 flex flex-col space-y-4">
+              <a href="/" class="flex items-center space-x-2 group self-start">
+                <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow">
+                  GH.
+                </span>
+                <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-white transition-colors">
+                  Georg Hackenberg
+                </span>
+              </a>
+              <p class="text-xs text-gray-500 leading-relaxed max-w-sm">
+                Professor for Industrial Informatics, software engineer, and researcher passionate about knowledge graph architectures, model-based system validation, and engineering modern software platforms.
+              </p>
+            </div>
+            
+            <!-- Navigation Column -->
+            <div class="md:col-span-3 flex flex-col space-y-3">
+              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Navigation</span>
+              <ul class="space-y-2 text-xs">
+                <li>
+                  <a href="/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Home</a>
+                </li>
+                <li>
+                  <a href="/posts" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Posts</a>
+                </li>
+                <li>
+                  <a href="/courses" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Courses</a>
+                </li>
+                <li>
+                  <a href="/projects" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Projects</a>
+                </li>
+                <li>
+                  <a href="/publications" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Publications</a>
+                </li>
+                <li>
+                  <a href="/visualizations" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Visualizations</a>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Contact/Institution Column -->
+            <div class="md:col-span-4 flex flex-col space-y-3">
+              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Contact & Institution</span>
+              <p class="text-xs text-gray-500 leading-relaxed">
+                University of Applied Sciences Upper Austria<br />
+                School of Engineering<br />
+                Stelzhamerstrasse 23, 4600 Wels, Austria
+              </p>
+              <a 
+                href="mailto:georg.hackenberg@fh-wels.at" 
+                class="text-xs text-brand-blue hover:text-brand-blue/90 hover:underline select-all font-mono self-start"
+              >
+                georg.hackenberg@fh-wels.at
+              </a>
+            </div>
+            
+          </div>
+          
+          <!-- Footer Bottom -->
+          <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+            <p>&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
+            <div class="flex items-center space-x-6">
+              <a href="https://github.com/ghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="GitHub">GitHub</a>
+              <a href="https://www.linkedin.com/in/georghackenberg/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="LinkedIn">LinkedIn</a>
+              <a href="https://youtube.com/@georghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="YouTube">YouTube</a>
+              <a href="#" class="hover:text-white transition-colors">Back to top</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
 
     <!-- Synchronous initialization of notifications to prevent badge/dot flickering -->
