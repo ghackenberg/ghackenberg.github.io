@@ -6,4 +6,5 @@ href: "https://mentawise.com"
 tags: ["Knowledge Management", "Graph Database", "Mind Mapping", "SaaS"]
 accentColor: "blue"
 order: 2
+screenshot: "./preview.png"
 ---

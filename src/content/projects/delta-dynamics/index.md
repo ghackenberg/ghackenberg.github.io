@@ -7,4 +7,5 @@ tags: ["React", "Three.js", "Web-LLM", "Simulation", "AI"]
 accentColor: "blue"
 order: 3
 repoName: "delta-dynamics"
+screenshot: "./preview.png"
 ---

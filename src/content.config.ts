@@ -130,7 +130,11 @@ const experiences = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
+  loader: glob({
+    base: './src/content/projects',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
   schema: ({ image }) => z.object({
     title: z.string(),
     tagline: z.string(),

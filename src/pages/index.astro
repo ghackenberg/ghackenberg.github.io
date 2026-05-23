@@ -199,6 +199,7 @@ const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.ord
             href={`/projects/${project.id}`}
             tags={project.data.tags}
             accentColor={project.data.accentColor}
+            screenshot={project.data.screenshot}
           />
         ))}
       </div>

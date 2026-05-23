@@ -7,4 +7,5 @@ tags: ["Python", "Optimization", "Simulation", "Factory Layout", "Scheduling"]
 accentColor: "blue"
 order: 4
 repoName: "spineml"
+screenshot: "./preview.png"
 ---
