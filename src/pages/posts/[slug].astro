@@ -25,11 +25,15 @@ const relatedPosts = allPosts
   .sort((a, b) => b.commonTags - a.commonTags || b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf())
   .slice(0, 3)
   .map((x) => x.post);
+
+const seoDescription = post.data.description 
+  ? post.data.description.replace(/\s+/g, " ").trim().substring(0, 156)
+  : `${post.data.title} - A blog post by Dr. Georg Hackenberg on topics like ${post.data.tags.join(", ")}.`;
 ---
 
 <Layout 
-  title={`${post.data.title} | Dr. Georg Hackenberg`} 
-  description={post.data.description}
+  title={`${post.data.title} | Blog | Dr. Georg Hackenberg`} 
+  description={seoDescription}
   type="article"
   pubDate={post.data.pubDate}
   tags={post.data.tags}

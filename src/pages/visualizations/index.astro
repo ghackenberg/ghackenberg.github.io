@@ -7,7 +7,10 @@ import VisualizationCard from "../../components/VisualizationCard.astro";
 const visualizations = await getCollection("visualizations");
 ---
 
-<Layout title="Visualizations | Dr. Georg Hackenberg" description="Interactive graph visualizations showing relationships between articles, publications, and tags on Georg Hackenberg's website.">
+<Layout 
+  title="Interactive Data Visualizations | Dr. Georg Hackenberg" 
+  description="Explore the relationships between different blog posts, publications, and topics on Dr. Georg Hackenberg's website through interactive real-time graphs."
+>
   <Navbar />
 
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">

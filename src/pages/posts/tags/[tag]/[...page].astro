@@ -47,7 +47,10 @@ const getPageUrl = (pageNum: number | string) => {
 };
 ---
 
-<Layout title={page.currentPage > 1 ? `Posts tagged #${tag} - Page ${page.currentPage} | Dr. Georg Hackenberg` : `Posts tagged #${tag} | Dr. Georg Hackenberg`} description={`List of blog posts tagged with #${tag}`}>
+<Layout 
+  title={page.currentPage > 1 ? `Blog Posts on #${tag} - Page ${page.currentPage} | Dr. Georg Hackenberg` : `Blog Posts on #${tag} | Dr. Georg Hackenberg`} 
+  description={page.currentPage > 1 ? `Browse blog articles and computer science insights tagged with #${tag} by Dr. Georg Hackenberg (Page ${page.currentPage}).` : `Browse blog articles and computer science insights tagged with #${tag} by Dr. Georg Hackenberg.`}
+>
   <Navbar />
 
   <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">

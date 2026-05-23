@@ -57,11 +57,18 @@ function getPublisherDomain(url: string | undefined): string {
     return "Publisher Page";
   }
 }
+
+const cleanAbstract = pub.data.abstract 
+  ? pub.data.abstract.replace(/\s+/g, " ").trim()
+  : "";
+const seoDescription = cleanAbstract.length > 156 
+  ? `${cleanAbstract.substring(0, 153)}...` 
+  : cleanAbstract || `Academic research publication by Dr. Georg Hackenberg: "${pub.data.title}"`;
 ---
 
 <Layout 
-  title={`${pub.data.title} | Publications | Dr. Georg Hackenberg`} 
-  description={pub.data.abstract?.substring(0, 160)}
+  title={`${pub.data.title} | Research Publications | Dr. Georg Hackenberg`} 
+  description={seoDescription}
   type="article"
   pubDate={pub.data.pubDate}
   tags={pub.data.tags}

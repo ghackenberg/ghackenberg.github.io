@@ -21,7 +21,10 @@ const projects = await getCollection("projects");
 const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 ---
 
-<Layout>
+<Layout 
+  title="Dr. Georg Hackenberg | Professor & Software Engineer" 
+  description="Explore the portfolio, academic lectures, research publications, and computer science insights of Dr. Georg Hackenberg, Professor for Industrial Informatics."
+>
   <!-- Navbar -->
   <Navbar />
 

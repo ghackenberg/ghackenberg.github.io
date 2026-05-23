@@ -27,7 +27,10 @@ const { tag } = Astro.params;
 
 ---
 
-<Layout title={`Publications tagged #${tag} | Dr. Georg Hackenberg`} description={`List of publications tagged with #${tag}`}>
+<Layout 
+  title={`Research Publications on #${tag} | Dr. Georg Hackenberg`} 
+  description={`Explore peer-reviewed research papers and presentations by Dr. Georg Hackenberg tagged with the topic #${tag}.`}
+>
   <Navbar />
 
   <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
