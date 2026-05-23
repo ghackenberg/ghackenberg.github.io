@@ -73,7 +73,7 @@ const sortedProducts = products.sort((a, b) => (a.data.order ?? 0) - (b.data.ord
         <div class="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
           <div class="relative w-64 h-64 min-[360px]:w-72 min-[360px]:h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
             <!-- Ambient back glow -->
-            <div class="absolute inset-8 rounded-full bg-gradient-to-tr from-brand-blue via-brand-purple to-brand-yellow opacity-30 blur-3xl transition-all duration-700 group-hover:opacity-75 group-hover:scale-110 pointer-events-none z-0"></div>
+            <div class="absolute inset-8 rounded-full bg-gradient-to-tr from-brand-blue via-brand-purple to-brand-yellow opacity-30 blur-3xl transition-[opacity,transform] duration-700 group-hover:opacity-75 group-hover:scale-110 pointer-events-none z-0 hero-glow-fix"></div>
 
             <!-- Large floating headshot inside SVG to avoid WebKit subpixel clipping artifacts -->
             <svg viewBox="0 0 100 100" class="w-full h-full select-none pointer-events-none relative z-10">
@@ -588,6 +588,14 @@ const sortedProducts = products.sort((a, b) => (a.data.order ?? 0) - (b.data.ord
   }
   .group:hover .profile-svg-image {
     transform: scale(1.04) translateY(-2px);
+  }
+
+  /* Fix WebKit/Safari rendering glitch for the blurred glow element on load */
+  .hero-glow-fix {
+    will-change: filter, transform, opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
   }
 </style>
 
