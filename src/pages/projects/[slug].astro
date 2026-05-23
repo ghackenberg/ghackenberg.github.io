@@ -118,17 +118,6 @@ const formattedDate = lastUpdated
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Main Content (Column 1 - Project details & Markdown text) -->
       <div class="lg:col-span-8 space-y-12">
-        <!-- Render screenshot if defined -->
-        {project.data.screenshot && (
-          <div class="glass-card rounded-3xl border border-white/5 overflow-hidden bg-gray-950 relative aspect-video">
-            <img 
-              src={project.data.screenshot.src} 
-              alt={`${project.data.title} screenshot`}
-              class="w-full h-full object-cover"
-            />
-          </div>
-        )}
-
         <!-- Detail / Content block -->
         <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 project-content">
           <h2 class="text-xl font-bold text-white mb-6 tracking-tight flex items-center space-x-2">
