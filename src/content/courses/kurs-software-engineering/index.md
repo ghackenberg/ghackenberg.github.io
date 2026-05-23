@@ -9,6 +9,7 @@ learningGoals:
 terms:
   - "Summer Term 2025"
 language: "de"
+screenshot: "./preview.png"
 ---
 
 Herzlich willkommen zum Kurs **Software Engineering**! Softwareentwicklung ist weit mehr als nur Code zu schreiben – es ist ein strukturierter Ingenieursprozess zur Lösung komplexer Probleme.

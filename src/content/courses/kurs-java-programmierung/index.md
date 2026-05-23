@@ -10,6 +10,7 @@ terms:
   - "Winter Term 2024/25"
   - "Winter Term 2025/26"
 language: "de"
+screenshot: "./preview.png"
 ---
 
 Herzlich willkommen zum Kurs **Java-Programmierung**! Java gehört weltweit zu den wichtigsten und stabilsten Programmiersprachen für Unternehmenssoftware und mobile Systeme.

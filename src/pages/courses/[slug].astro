@@ -61,6 +61,17 @@ const formattedDate = lastUpdated
       <span>Back to Courses</span>
     </a>
 
+    {course.data.screenshot && (
+      <div class="w-full aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 mb-10 relative">
+        <img 
+          src={course.data.screenshot.src} 
+          alt={course.data.title} 
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent"></div>
+      </div>
+    )}
+
     <!-- Title Header -->
     <header class="mb-12 pb-10 border-b border-white/5">
       <span class="inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded bg-brand-yellow/10 text-brand-yellow border border-brand-yellow/20 mb-4 uppercase tracking-wider">

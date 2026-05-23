@@ -9,6 +9,7 @@ learningGoals:
 terms:
   - "Winter Term 2025/26"
 language: "de"
+screenshot: "./preview.png"
 ---
 
 Herzlich willkommen zum Kurs **Systems Engineering**! Bei der Entwicklung komplexer physikalisch-digitaler Systeme ist die interdisziplinäre Systemsicht unerlässlich.

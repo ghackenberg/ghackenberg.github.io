@@ -150,10 +150,10 @@ const languageColors: Record<string, string> = {
                 >
                   <!-- Card Header Banner (Preview or Placeholder) -->
                   <div class="aspect-video w-full overflow-hidden border-b border-white/5 bg-gray-950 flex items-center justify-center relative">
-                    {socialPreview && !socialPreview.includes("avatars.githubusercontent.com") ? (
+                    {course.data.screenshot ? (
                       <>
                         <img 
-                          src={socialPreview} 
+                          src={course.data.screenshot.src} 
                           alt={`${course.data.title} preview`} 
                           class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 z-0"
                           loading="lazy"

@@ -10,6 +10,7 @@ terms:
   - "Summer Term 2024"
   - "Summer Term 2025"
 language: "en"
+screenshot: "./preview.png"
 ---
 
 Welcome to the **Mobile & Cloud Development** course! This curriculum equips you with the skills to architect and implement modern full-stack systems.

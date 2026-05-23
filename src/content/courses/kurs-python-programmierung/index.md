@@ -9,6 +9,7 @@ learningGoals:
 terms:
   - "Winter Term 2025/26"
 language: "de"
+screenshot: "./preview.png"
 ---
 
 Herzlich willkommen zum Kurs **Python-Programmierung**! Python zeichnet sich durch seine hervorragende Lesbarkeit und vielseitige Einsetzbarkeit aus.

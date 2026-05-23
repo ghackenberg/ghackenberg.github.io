@@ -9,6 +9,7 @@ learningGoals:
 terms:
   - "Winter Term 2024/25"
 language: "de"
+screenshot: "./preview.png"
 ---
 
 Herzlich willkommen zum Kurs **Web-Programmierung mit TypeScript & Firebase**! Moderne Web-Anwendungen erfordern robuste Programmiersprachen und flexible Cloud-Backends.
