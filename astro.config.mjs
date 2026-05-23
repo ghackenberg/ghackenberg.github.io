@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -75,6 +76,13 @@ function copyContentAssets() {
           };
           copyFiles(srcDir);
         }
+
+        // Copy sitemap-index.xml to sitemap.xml for better Google Search Console compatibility
+        const sitemapIndexSrc = path.join(outDir, 'sitemap-index.xml');
+        const sitemapDest = path.join(outDir, 'sitemap.xml');
+        if (fs.existsSync(sitemapIndexSrc)) {
+          fs.copyFileSync(sitemapIndexSrc, sitemapDest);
+        }
       }
     }
   };
@@ -83,7 +91,7 @@ function copyContentAssets() {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://ghackenberg.github.io',
-  integrations: [copyContentAssets()],
+  integrations: [sitemap(), copyContentAssets()],
   vite: {
     plugins: [tailwindcss()],
   },
