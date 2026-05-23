@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="legacy-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.02" />
+    </linearGradient>
+    <linearGradient id="modern-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.02" />
+    </linearGradient>
+    
+    <linearGradient id="yellow-stroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <linearGradient id="blue-purple-stroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    
+    <!-- Glow Filters -->
+    <filter id="glow-y" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-bp" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <marker id="arr-gray" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#4b5563" />
+    </marker>
+    <marker id="arr-yellow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b" />
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#3b82f6" />
+    </marker>
+  </defs>
+  
+  <!-- Main Background -->
+  <rect width="800" height="380" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+  
+  <!-- LEFT PANEL: PHP LEGACY -->
+  <g transform="translate(25, 25)">
+    <!-- Panel border & bg -->
+    <rect width="350" height="330" rx="12" fill="url(#legacy-header)" stroke="rgba(245, 158, 11, 0.2)" stroke-width="1.5" />
+    
+    <!-- Title -->
+    <text x="175" y="30" fill="#f59e0b" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="700" letter-spacing="1.5" text-anchor="middle">LEGACY PHP ARCHITECTURE</text>
+    <text x="175" y="45" fill="#6b7280" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500" text-anchor="middle">(Dynamic Server-Side Rendering)</text>
+    
+    <!-- Flow boxes -->
+    <!-- Client -->
+    <rect x="100" y="70" width="150" height="40" rx="6" fill="#1f2937" stroke="#4b5563" stroke-width="1" />
+    <text x="175" y="94" fill="#e5e7eb" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle">Client Browser</text>
+    
+    <!-- Apache/PHP -->
+    <rect x="75" y="150" width="200" height="70" rx="8" fill="#111827" stroke="url(#yellow-stroke)" stroke-width="1.5" filter="url(#glow-y)" />
+    <text x="175" y="174" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Apache Web Server</text>
+    <text x="175" y="192" fill="#f59e0b" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="bold" text-anchor="middle">PHP Custom Template Engine</text>
+    <text x="175" y="206" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500" text-anchor="middle">Compiles on every request</text>
+    
+    <!-- Data Source -->
+    <rect x="90" y="260" width="170" height="50" rx="6" fill="#1f2937" stroke="#4b5563" stroke-width="1" />
+    <text x="175" y="280" fill="#e5e7eb" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle">Filesystem Database</text>
+    <text x="175" y="295" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500" text-anchor="middle">XML / PHP Array Data</text>
+    
+    <!-- Connections -->
+    <path d="M 160 110 L 160 150" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arr-yellow)" />
+    <path d="M 190 150 L 190 110" stroke="#9ca3af" stroke-dasharray="3,3" stroke-width="1.2" marker-end="url(#arr-gray)" />
+    
+    <path d="M 160 220 L 160 260" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arr-yellow)" />
+    <path d="M 190 260 L 190 220" stroke="#9ca3af" stroke-dasharray="3,3" stroke-width="1.2" marker-end="url(#arr-gray)" />
+  </g>
+  
+  <!-- RIGHT PANEL: ASTRO -->
+  <g transform="translate(425, 25)">
+    <!-- Panel border & bg -->
+    <rect width="350" height="330" rx="12" fill="url(#modern-header)" stroke="rgba(59, 130, 246, 0.2)" stroke-width="1.5" />
+    
+    <!-- Title -->
+    <text x="175" y="30" fill="#3b82f6" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="700" letter-spacing="1.5" text-anchor="middle">MODERN ASTRO + TS</text>
+    <text x="175" y="45" fill="#6b7280" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500" text-anchor="middle">(Decoupled Static Build / CDN)</text>
+    
+    <!-- Flow boxes -->
+    <!-- Client -->
+    <rect x="100" y="70" width="150" height="40" rx="6" fill="#1f2937" stroke="#4b5563" stroke-width="1" />
+    <text x="175" y="94" fill="#e5e7eb" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle">Client Browser</text>
+    
+    <!-- GitHub Pages CDN -->
+    <rect x="75" y="150" width="200" height="60" rx="8" fill="#111827" stroke="url(#blue-purple-stroke)" stroke-width="1.5" filter="url(#glow-bp)" />
+    <text x="175" y="174" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="13" font-weight="bold" text-anchor="middle">GitHub Pages CDN</text>
+    <text x="175" y="192" fill="#3b82f6" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Pre-compiled Static Assets</text>
+    
+    <!-- Astro compiler -->
+    <rect x="90" y="250" width="170" height="60" rx="6" fill="#1f2937" stroke="#4b5563" stroke-width="1" />
+    <text x="175" y="268" fill="#a855f7" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Astro + TS Local Build</text>
+    <text x="175" y="284" fill="#e5e7eb" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500" text-anchor="middle">Content Collections (.md)</text>
+    <text x="175" y="296" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500" text-anchor="middle">Type-safe TypeScript verification</text>
+    
+    <!-- Connections -->
+    <path d="M 160 110 L 160 150" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr-blue)" />
+    <path d="M 190 150 L 190 110" stroke="#9ca3af" stroke-dasharray="3,3" stroke-width="1.2" marker-end="url(#arr-gray)" />
+    
+    <path d="M 175 250 L 175 210" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arr-blue)" />
+    <text x="180" y="234" fill="#a855f7" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="bold">Build / Push</text>
+  </g>
+</svg>
