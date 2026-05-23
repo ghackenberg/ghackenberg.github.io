@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="100%" height="100%">
+  <defs>
+    <!-- Card Gradients -->
+    <linearGradient id="card-hover-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.01" />
+    </linearGradient>
+    <linearGradient id="card-normal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.03" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.005" />
+    </linearGradient>
+    
+    <!-- Glow Filters -->
+    <filter id="glow-badge-green" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-badge-yellow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-dot-blue" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Browser Container -->
+  <rect width="800" height="400" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+  
+  <!-- Browser Header Bar -->
+  <rect x="0" y="0" width="800" height="60" rx="16" fill="#030712" />
+  <!-- Corner Clipping helper (since top of header needs to match browser border radius) -->
+  <path d="M 0 16 A 16 16 0 0 1 16 0 L 784 0 A 16 16 0 0 1 800 16 L 800 60 L 0 60 Z" fill="#030712" />
+  <line x1="0" y1="60" x2="800" y2="60" stroke="rgba(255, 255, 255, 0.06)" stroke-width="1" />
+
+  <!-- Logo/Title -->
+  <text x="30" y="36" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="15" font-weight="800">DR. GEORG HACKENBERG</text>
+
+  <!-- Navbar Items -->
+  <g font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="600" letter-spacing="0.5">
+    <text x="330" y="35" fill="#9ca3af">Home</text>
+    
+    <!-- Blog (With Active color & Badge) -->
+    <text x="390" y="35" fill="#3b82f6" font-weight="bold">Blog</text>
+    <circle cx="422" cy="31" r="7" fill="#10b981" filter="url(#glow-badge-green)" />
+    <text x="422" y="35" fill="#ffffff" font-size="8.5" font-weight="900" text-anchor="middle">2</text>
+    
+    <!-- Projects -->
+    <text x="450" y="35" fill="#9ca3af">Projects</text>
+    
+    <!-- Courses (With Badge) -->
+    <text x="520" y="35" fill="#9ca3af">Courses</text>
+    <circle cx="580" cy="31" r="7" fill="#f59e0b" filter="url(#glow-badge-yellow)" />
+    <text x="580" y="35" fill="#ffffff" font-size="8.5" font-weight="900" text-anchor="middle">1</text>
+    
+    <!-- Publications -->
+    <text x="610" y="35" fill="#9ca3af">Publications</text>
+    
+    <!-- Visualizations -->
+    <text x="700" y="35" fill="#9ca3af">Visuals</text>
+  </g>
+
+  <!-- CONTENT CARDS CONTAINER -->
+  <g transform="translate(30, 85)">
+    <!-- GRID TITLE -->
+    <text x="0" y="20" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="16" font-weight="700">Latest Blog Posts</text>
+    
+    <!-- CARD 1 (UNREAD) -->
+    <g transform="translate(0, 35)">
+      <!-- Card background & outline -->
+      <rect width="740" height="110" rx="12" fill="url(#card-hover-grad)" stroke="rgba(59, 130, 246, 0.15)" stroke-width="1.2" />
+      
+      <!-- Icon representation -->
+      <rect x="20" y="20" width="70" height="70" rx="8" fill="#111827" stroke="rgba(255,255,255,0.06)" />
+      <circle cx="55" cy="55" r="12" fill="#3b82f6" opacity="0.3" />
+      <circle cx="55" cy="55" r="6" fill="#3b82f6" />
+      
+      <!-- Meta details -->
+      <text x="110" y="35" fill="#3b82f6" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="0.5">MAY 23, 2026</text>
+      
+      <!-- Unread Indicator Dot -->
+      <circle cx="195" cy="31" r="4.5" fill="#3b82f6" filter="url(#glow-dot-blue)" />
+      <text x="206" y="35" fill="#60a5fa" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="700">NEW</text>
+      
+      <!-- Title -->
+      <text x="110" y="56" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Flicker-Free Client-Side State Loading</text>
+      
+      <!-- Description snippet -->
+      <text x="110" y="75" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="500">Eliminating client-side layout jumps and badge flickering using a lightweight cache layer...</text>
+
+      <!-- Tags -->
+      <text x="110" y="93" fill="#6b7280" font-family="'Outfit', 'Inter', sans-serif" font-size="9.5" font-weight="600">#web-development  #ux-design  #astro</text>
+    </g>
+
+    <!-- CARD 2 (READ / NO INDICATORS) -->
+    <g transform="translate(0, 160)">
+      <!-- Card background & outline -->
+      <rect width="740" height="110" rx="12" fill="url(#card-normal-grad)" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1" />
+      
+      <!-- Icon representation -->
+      <rect x="20" y="20" width="70" height="70" rx="8" fill="#111827" stroke="rgba(255,255,255,0.06)" />
+      <polygon points="55,42 67,64 43,64" fill="#a855f7" opacity="0.3" />
+      <polygon points="55,48 63,62 47,62" fill="#a855f7" />
+
+      <!-- Meta details -->
+      <text x="110" y="35" fill="#a855f7" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="0.5">MAY 23, 2026</text>
+      
+      <!-- Title -->
+      <text x="110" y="56" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Relaunching My Personal Website with Astro &amp; TypeScript</text>
+      
+      <!-- Description snippet -->
+      <text x="110" y="75" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="500">How I migrated over a decade of blog posts and content collections to a fully type-safe compiler...</text>
+
+      <!-- Tags -->
+      <text x="110" y="93" fill="#6b7280" font-family="'Outfit', 'Inter', sans-serif" font-size="9.5" font-weight="600">#astro  #typescript  #ai-migration</text>
+    </g>
+  </g>
+</svg>

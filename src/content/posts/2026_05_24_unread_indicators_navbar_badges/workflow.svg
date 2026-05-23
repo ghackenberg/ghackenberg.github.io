@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 270" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="grad-sync" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="grad-paint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="grad-async" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <linearGradient id="grad-gray" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#374151" />
+      <stop offset="100%" stop-color="#1f2937" />
+    </linearGradient>
+    
+    <!-- Glow Filters -->
+    <filter id="glow-sync-light" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-paint-light" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-async-light" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Arrow Markers -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#4b5563" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#3b82f6" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#a855f7" />
+    </marker>
+  </defs>
+  
+  <!-- Background Card -->
+  <rect width="800" height="270" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+  
+  <!-- Flow Timeline Line -->
+  <line x1="80" y1="135" x2="720" y2="135" stroke="#1f2937" stroke-width="4" stroke-dasharray="2,6" />
+  
+  <!-- STEP 1: INITIAL LOAD -->
+  <g transform="translate(40, 50)">
+    <!-- Box -->
+    <rect x="0" y="0" width="130" height="70" rx="10" fill="url(#grad-gray)" stroke="#4b5563" stroke-width="1.2" />
+    <text x="65" y="25" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1" text-anchor="middle">STEP 1</text>
+    <text x="65" y="44" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Page Request</text>
+    <text x="65" y="58" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500" text-anchor="middle">DOM starts building</text>
+    
+    <!-- Connect and Node -->
+    <path d="M 130 35 L 180 35" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow)" />
+    <circle cx="65" cy="85" r="5" fill="#4b5563" />
+  </g>
+  
+  <!-- STEP 2: SYNC INLINE PAINT -->
+  <g transform="translate(210, 50)">
+    <!-- Box -->
+    <rect x="0" y="0" width="150" height="70" rx="10" fill="url(#grad-gray)" stroke="#3b82f6" stroke-width="1.5" filter="url(#glow-sync-light)" />
+    <text x="75" y="25" fill="#60a5fa" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1" text-anchor="middle">STEP 2 (SYNC)</text>
+    <text x="75" y="44" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Cached Render</text>
+    <text x="75" y="58" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500" text-anchor="middle">Inlined script checks Cache</text>
+    
+    <!-- Connect and Node -->
+    <path d="M 150 35 L 195 35" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow-blue)" />
+    <circle cx="75" cy="85" r="5" fill="#3b82f6" />
+  </g>
+
+  <!-- STEP 3: FLICKER-FREE PAINT -->
+  <g transform="translate(400, 50)">
+    <!-- Box -->
+    <rect x="0" y="0" width="140" height="70" rx="10" fill="url(#grad-gray)" stroke="#10b981" stroke-width="1.5" filter="url(#glow-paint-light)" />
+    <text x="70" y="25" fill="#34d399" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1" text-anchor="middle">STEP 3 (DOM PAINT)</text>
+    <text x="70" y="44" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Flicker-Free UI</text>
+    <text x="70" y="58" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500" text-anchor="middle">DOM displays immediately</text>
+    
+    <!-- Connect and Node -->
+    <path d="M 140 35 L 190 35" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)" />
+    <circle cx="70" cy="85" r="5" fill="#10b981" />
+  </g>
+
+  <!-- STEP 4: ASYNC BACKGROUND SYNC -->
+  <g transform="translate(620, 50)">
+    <!-- Box -->
+    <rect x="0" y="0" width="140" height="70" rx="10" fill="url(#grad-gray)" stroke="#a855f7" stroke-width="1.5" filter="url(#glow-async-light)" />
+    <text x="70" y="25" fill="#c084fc" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1" text-anchor="middle">STEP 4 (ASYNC)</text>
+    <text x="70" y="44" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Background Sync</text>
+    <text x="70" y="58" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500" text-anchor="middle">Fetches &amp; stores fresh manifest</text>
+    
+    <!-- Node -->
+    <circle cx="70" cy="85" r="5" fill="#a855f7" />
+  </g>
+  
+  <!-- FLOW LOGIC PATHS (BOTTOM CONTAINER) -->
+  <g transform="translate(40, 160)">
+    <rect width="720" height="85" rx="10" fill="rgba(31, 41, 55, 0.4)" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1.2" />
+    
+    <!-- Sync Script Details -->
+    <g transform="translate(15, 12)">
+      <rect width="210" height="60" rx="6" fill="#111827" stroke="#3b82f6" stroke-width="1" />
+      <text x="15" y="20" fill="#e5e7eb" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="bold">Inline Sync Script Tasks:</text>
+      <text x="15" y="38" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500">• Instantly shows cached unread dots</text>
+      <text x="15" y="50" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500">• Displays cached navigation counts</text>
+    </g>
+    
+    <!-- Path Tracking Detail -->
+    <g transform="translate(245, 12)">
+      <rect width="230" height="60" rx="6" fill="#111827" stroke="#10b981" stroke-width="1" />
+      <text x="15" y="20" fill="#e5e7eb" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="bold">Route Tracking Logic:</text>
+      <text x="15" y="38" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500">• If pathname is a list (e.g. /posts), mark section read</text>
+      <text x="15" y="50" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500">• If pathname is detail (e.g. /posts/slug), mark item read</text>
+    </g>
+
+    <!-- Async Sync Details -->
+    <g transform="translate(495, 12)">
+      <rect width="210" height="60" rx="6" fill="#111827" stroke="#a855f7" stroke-width="1" />
+      <text x="15" y="20" fill="#e5e7eb" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="bold">Async Manifest Sync Tasks:</text>
+      <text x="15" y="38" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500">• Pulls fresh content manifest dynamically</text>
+      <text x="15" y="50" fill="#9ca3af" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500">• Updates local storage cache for next page load</text>
+    </g>
+  </g>
+</svg>
