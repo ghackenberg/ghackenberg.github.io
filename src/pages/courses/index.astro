@@ -174,8 +174,8 @@ const languageColors: Record<string, string> = {
                   </div>
 
                   <!-- Details -->
-                  <div class="p-6 flex flex-col flex-grow justify-between border-t border-white/5">
-                    <div>
+                  <div class="p-6 flex flex-col flex-grow border-t border-white/5">
+                    <div class="flex-grow flex flex-col">
                       <h2 class="text-lg font-bold text-white mb-2.5 group-hover:text-brand-yellow transition-colors leading-tight">
                         <a href={`/courses/${course.id}`} class="after:absolute after:inset-0 after:z-10">
                           {course.data.title}
@@ -183,7 +183,7 @@ const languageColors: Record<string, string> = {
                       </h2>
 
                       {course.data.description && (
-                        <p class="text-gray-400 text-xs leading-relaxed mb-6 font-normal line-clamp-3">
+                        <p class="text-gray-400 text-xs leading-relaxed mb-6 font-normal line-clamp-3 flex-grow">
                           {course.data.description}
                         </p>
                       )}

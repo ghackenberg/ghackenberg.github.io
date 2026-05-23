@@ -58,7 +58,7 @@ const colorClasses = {
 
 <a 
   href={href} 
-  class={`glass-card rounded-2xl border flex flex-col justify-between group overflow-hidden relative cursor-pointer ${colorClasses.border}`}
+  class={`glass-card h-full rounded-2xl border flex flex-col group overflow-hidden relative cursor-pointer ${colorClasses.border}`}
 >
   <!-- Interactive Glow Element -->
   <div class={`absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${colorClasses.glow}`}></div>
@@ -84,8 +84,8 @@ const colorClasses = {
   </div>
 
   <!-- Content Padding Wrapper -->
-  <div class="p-6 md:p-8 flex flex-col flex-grow justify-between border-t border-white/5">
-    <div>
+  <div class="p-6 md:p-8 flex flex-col flex-grow border-t border-white/5">
+    <div class="flex-grow flex flex-col">
       <!-- Header -->
       <div class="flex items-start justify-between mb-4">
         <div>
@@ -99,7 +99,7 @@ const colorClasses = {
       </div>
       
       <!-- Description -->
-      <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-6 font-normal">
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-6 font-normal flex-grow">
         {description}
       </p>
     </div>
