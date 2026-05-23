@@ -27,7 +27,7 @@ function copyContentAssets() {
     hooks: {
       'astro:server:setup': ({ server }) => {
         server.middlewares.use((req, res, next) => {
-          const match = req.url?.match(/^\/(posts|publications|visualizations)\/(.+)$/);
+          const match = req.url?.match(/^\/(posts|publications|visualizations|courses)\/(.+)$/);
           if (match) {
             const [_, collection, rest] = match;
             const cleanRest = rest.split('?')[0];
@@ -45,7 +45,7 @@ function copyContentAssets() {
       },
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
-        const collections = ['posts', 'publications', 'visualizations'];
+        const collections = ['posts', 'publications', 'visualizations', 'courses'];
         for (const col of collections) {
           const srcDir = path.resolve('src/content', col);
           if (!fs.existsSync(srcDir)) continue;

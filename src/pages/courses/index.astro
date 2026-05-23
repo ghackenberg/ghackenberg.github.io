@@ -1,0 +1,310 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection } from "astro:content";
+
+const courses = await getCollection("courses");
+const repos = await getCollection("github-repos");
+
+// Map repoName to repo data for quick access
+const repoMap = new Map();
+for (const repo of repos) {
+  repoMap.set(repo.id, repo.data);
+}
+
+// Extract unique technologies/languages from course repos
+const techLanguagesSet = new Set<string>();
+for (const course of courses) {
+  const repo = repoMap.get(course.data.repoName);
+  if (repo && repo.language) {
+    techLanguagesSet.add(repo.language);
+  }
+}
+const techLanguages = Array.from(techLanguagesSet).sort();
+
+// Language badge colors
+const languageColors: Record<string, string> = {
+  TypeScript: "bg-blue-400",
+  JavaScript: "bg-yellow-400",
+  HTML: "bg-orange-500",
+  CSS: "bg-purple-400",
+  Astro: "bg-rose-500",
+  Python: "bg-blue-500",
+  Vue: "bg-emerald-500",
+  React: "bg-sky-400",
+  C: "bg-gray-400",
+  "C++": "bg-pink-500",
+  Java: "bg-red-400",
+  "C#": "bg-violet-500",
+  TeX: "bg-emerald-600",
+  Mermaid: "bg-teal-400",
+  "Jupyter Notebook": "bg-amber-600"
+};
+---
+
+<Layout title="Courses | Dr. Georg Hackenberg" description="Overview of academic courses in Computer Science and Industrial Informatics taught by Dr. Georg Hackenberg at FH Upper Austria.">
+  <Navbar />
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Header -->
+    <div class="mb-12">
+      <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-yellow/10 text-brand-yellow border border-brand-yellow/20 mb-6 tracking-wider uppercase">
+        Academic & Teaching
+      </span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+        University <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-yellow via-brand-purple to-brand-blue">Lectures</span>
+      </h1>
+      <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+        Explore materials, code repositories, and syllabus details for the courses I teach at the University of Applied Sciences Upper Austria (Fakultät für Technik und angewandte Naturwissenschaften, Wels).
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Filters Sidebar (Column 1) -->
+      <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
+        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
+            <span>⚙️</span>
+            <span>Filter Catalog</span>
+          </h3>
+
+          <!-- Text Search -->
+          <div class="mb-4">
+            <label for="course-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="course-search" 
+                placeholder="Search lectures..." 
+                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 pl-8 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50 transition-all duration-200"
+              />
+              <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
+            </div>
+          </div>
+
+          <!-- Instruction Language -->
+          <div class="mb-4">
+            <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Instruction Language</span>
+            <div class="flex flex-wrap gap-2">
+              <button 
+                id="lang-btn-all" 
+                class="lang-filter-btn active px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                data-lang="all"
+              >
+                All
+              </button>
+              <button 
+                id="lang-btn-de" 
+                class="lang-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                data-lang="de"
+              >
+                Deutsch (DE)
+              </button>
+              <button 
+                id="lang-btn-en" 
+                class="lang-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                data-lang="en"
+              >
+                English (EN)
+              </button>
+            </div>
+          </div>
+
+          <!-- Programming Language / Tech -->
+          <div class="mb-2">
+            <label for="tech-filter" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Primary Technology</label>
+            <select 
+              id="tech-filter" 
+              class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-yellow/50 transition-all duration-200 cursor-pointer"
+            >
+              <option value="all" class="bg-gray-900">All Technologies</option>
+              {techLanguages.map(tech => (
+                <option value={tech} class="bg-gray-900">{tech}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses Grid (Column 2) -->
+      <div class="lg:col-span-9 order-2 lg:order-1">
+        {courses.length === 0 ? (
+          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No courses defined.</p>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="courses-grid">
+            {courses.map(course => {
+              const repo = repoMap.get(course.data.repoName);
+              const starCount = repo?.stargazers_count ?? 0;
+              const tech = repo?.language ?? "Web";
+              const socialPreview = repo?.social_preview;
+              const goalsJoined = (course.data.learningGoals || []).join(" ").toLowerCase();
+
+              return (
+                <div 
+                  class="course-card glass-card rounded-2xl border border-white/5 flex flex-col h-full group relative overflow-hidden cursor-pointer hover:border-brand-yellow/30"
+                  data-title={course.data.title.toLowerCase()}
+                  data-desc={(course.data.description || "").toLowerCase()}
+                  data-goals={goalsJoined}
+                  data-lang={course.data.language}
+                  data-tech={tech}
+                >
+                  <!-- Card Header Banner (Preview or Placeholder) -->
+                  <div class="aspect-video w-full overflow-hidden border-b border-white/5 bg-gray-950 flex items-center justify-center relative">
+                    {socialPreview && !socialPreview.includes("avatars.githubusercontent.com") ? (
+                      <>
+                        <img 
+                          src={socialPreview} 
+                          alt={`${course.data.title} preview`} 
+                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 z-0"
+                          loading="lazy"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent z-10"></div>
+                      </>
+                    ) : (
+                      <>
+                        <!-- Premium gradient placeholder for missing preview -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-yellow/20 via-brand-purple/5 to-blue-950/40 group-hover:scale-105 transition-transform duration-500 z-0"></div>
+                        <div class="text-4xl select-none relative z-10 filter opacity-60 group-hover:scale-110 transition-transform duration-500">
+                          🎓
+                        </div>
+                      </>
+                    )}
+
+                    <!-- Instruction language badge -->
+                    <span class="absolute top-4 right-4 z-20 inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-gray-950/80 text-white border border-white/10 uppercase select-none">
+                      {course.data.language === 'de' ? '🇩🇪 DE' : '🇬🇧 EN'}
+                    </span>
+                  </div>
+
+                  <!-- Details -->
+                  <div class="p-6 flex flex-col flex-grow justify-between">
+                    <div>
+                      <h2 class="text-lg font-bold text-white mb-2.5 group-hover:text-brand-yellow transition-colors leading-tight">
+                        <a href={`/courses/${course.id}`} class="after:absolute after:inset-0 after:z-10">
+                          {course.data.title}
+                        </a>
+                      </h2>
+
+                      {course.data.description && (
+                        <p class="text-gray-400 text-xs leading-relaxed mb-6 font-normal line-clamp-3">
+                          {course.data.description}
+                        </p>
+                      )}
+                    </div>
+
+                    <!-- Card footer: Tech language + Stars -->
+                    <div class="flex items-center justify-between text-xs text-gray-500 border-t border-white/5 pt-4 mt-auto z-20">
+                      <div class="flex items-center space-x-1.5">
+                        <span class={`w-2.5 h-2.5 rounded-full ${languageColors[tech] || 'bg-gray-400'}`}></span>
+                        <span class="font-medium">{tech}</span>
+                      </div>
+                      {starCount > 0 && (
+                        <span class="font-semibold flex items-center space-x-1">
+                          <span>⭐</span>
+                          <span>{starCount}</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <p id="no-courses-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+          No courses match your selected filter criteria.
+        </p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  /* Custom filter active states matching design guidelines */
+  .lang-filter-btn {
+    position: relative;
+    background: rgba(31, 41, 55, 0.4);
+    border-color: rgba(255, 255, 255, 0.05);
+    color: #9ca3af; /* text-gray-400 */
+  }
+
+  .lang-filter-btn.active {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #f59e0b; /* brand-yellow */
+    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25);
+  }
+
+  .lang-filter-btn:hover:not(.active) {
+    border-color: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+  }
+</style>
+
+<script>
+  let activeLang = 'all';
+  let searchQuery = '';
+  let activeTech = 'all';
+
+  const searchInput = document.getElementById('course-search') as HTMLInputElement | null;
+  const techSelect = document.getElementById('tech-filter') as HTMLSelectElement | null;
+  const langButtons = document.querySelectorAll('.lang-filter-btn');
+  const courseCards = document.querySelectorAll('.course-card');
+  const noCoursesMessage = document.getElementById('no-courses-message');
+
+  function updateFilters() {
+    let visibleCount = 0;
+
+    courseCards.forEach(card => {
+      const cardTitle = card.getAttribute('data-title') || '';
+      const cardDesc = card.getAttribute('data-desc') || '';
+      const cardGoals = card.getAttribute('data-goals') || '';
+      const cardLang = card.getAttribute('data-lang') || '';
+      const cardTech = card.getAttribute('data-tech') || '';
+
+      const matchesSearch = 
+        cardTitle.includes(searchQuery) || 
+        cardDesc.includes(searchQuery) || 
+        cardGoals.includes(searchQuery);
+      const matchesLang = activeLang === 'all' || cardLang === activeLang;
+      const matchesTech = activeTech === 'all' || cardTech === activeTech;
+
+      if (matchesSearch && matchesLang && matchesTech) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    if (noCoursesMessage) {
+      if (visibleCount === 0) {
+        noCoursesMessage.classList.remove('hidden');
+      } else {
+        noCoursesMessage.classList.add('hidden');
+      }
+    }
+  }
+
+  // Bind Search Input
+  searchInput?.addEventListener('input', (e) => {
+    searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
+    updateFilters();
+  });
+
+  // Bind Tech Dropdown Select
+  techSelect?.addEventListener('change', (e) => {
+    activeTech = (e.target as HTMLSelectElement).value;
+    updateFilters();
+  });
+
+  // Bind Instruction Language buttons
+  langButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      langButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeLang = btn.getAttribute('data-lang') || 'all';
+      updateFilters();
+    });
+  });
+</script>

@@ -142,6 +142,18 @@ const products = defineCollection({
   }),
 });
 
+const courses = defineCollection({
+  loader: glob({ base: './src/content/courses', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    repoName: z.string(),
+    learningGoals: z.array(z.string()).default([]),
+    terms: z.array(z.string()).default([]),
+    language: z.enum(['de', 'en']).default('de'),
+  }),
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -154,5 +166,6 @@ export const collections = {
   'visualizations': visualizations,
   'experiences': experiences,
   'products': products,
+  'courses': courses,
 };
 
