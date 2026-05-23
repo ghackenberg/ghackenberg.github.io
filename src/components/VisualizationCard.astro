@@ -22,12 +22,34 @@ const {
   <!-- Screenshot -->
   <div class="aspect-video w-full overflow-hidden bg-gray-900 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
     {screenshot && (
-      <img 
-        src={screenshot.src} 
-        alt={title} 
-        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 z-0"
-        loading="lazy"
-      />
+      <svg 
+        class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 will-change-transform pointer-events-none" 
+        viewBox="0 0 160 90" 
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id={`grad-vis-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+            <stop offset="60%" stop-color="#000000" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.85" />
+          </linearGradient>
+        </defs>
+        <image 
+          href={screenshot.src} 
+          x="0" 
+          y="0" 
+          width="160" 
+          height="90" 
+          preserveAspectRatio="xMidYMid slice" 
+        />
+        <rect 
+          x="0" 
+          y="0" 
+          width="160" 
+          height="90.5" 
+          fill={`url(#grad-vis-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
+        />
+      </svg>
     )}
   </div>
 
