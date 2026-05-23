@@ -114,26 +114,15 @@ const formattedDate = lastUpdated
       <!-- Sidebar Metadata & GitHub Repo (Column 2) -->
       <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
         <!-- Course Info Card -->
-        <div class="glass-card rounded-2xl border border-white/5 overflow-hidden flex flex-col">
-          {course.data.screenshot && (
-            <div class="aspect-video w-full overflow-hidden border-b border-white/5 bg-gray-950 relative">
-              <img 
-                src={course.data.screenshot.src} 
-                alt={course.data.title} 
-                class="absolute inset-0 w-full h-full object-cover"
-              />
-            </div>
-          )}
-          <div class="p-6">
-            <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
-              <span>ℹ️</span>
-              <span>Course Info</span>
-            </h3>
-            <div class="mb-2">
-              <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-1.5">Institution</p>
-              <p class="text-sm text-gray-300 font-semibold leading-tight">FH Upper Austria</p>
-              <p class="text-xs text-gray-400 font-normal mt-0.5">Campus Wels</p>
-            </div>
+        <div class="glass-card p-6 rounded-2xl border border-white/5">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+            <span>ℹ️</span>
+            <span>Course Info</span>
+          </h3>
+          <div class="mb-2">
+            <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-1.5">Institution</p>
+            <p class="text-sm text-gray-300 font-semibold leading-tight">FH Upper Austria</p>
+            <p class="text-xs text-gray-400 font-normal mt-0.5">Campus Wels</p>
           </div>
         </div>
 
