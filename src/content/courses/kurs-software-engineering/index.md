@@ -1,6 +1,6 @@
 ---
 title: "Software Engineering"
-description: "Einsteigerkurs in das Thema Software Engineering mit praktischen Beispielen in der Programmiersprache C#."
+description: "Praxisorientierter Einsteigerkurs in das Software Engineering. Lernen Sie agile Methoden, UML-Design und automatisierte Tests in C# kennen."
 repoName: "kurs-software-engineering"
 learningGoals:
   - "Beherrschen agiler Methoden (Scrum, Kanban) und Phasen des Software-Lebenszyklus."

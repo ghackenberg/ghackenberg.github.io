@@ -1,7 +1,7 @@
 ---
 title: "Relaunching my personal website on GitHub Pages with Astro and TypeScript"
 pubDate: "2026-05-23"
-description: "I've relaunched my website! In this post I detail the modern architecture with Astro, the TypeScript content collections, and how I successfully automated the migration of all legacy content from a custom PHP template engine using Google Antigravity and Gemini 3.5 Flash (High)."
+description: "Discover how I relaunched my personal website on GitHub Pages using Astro, TypeScript, and Google Antigravity to automate legacy PHP content migration."
 tags: ["web-development", "astro", "typescript", "gemini", "ai-migration", "github-pages"]
 icon: "/posts/2026_05_23_website_relaunch_astro_typescript/icon.png"
 ---
