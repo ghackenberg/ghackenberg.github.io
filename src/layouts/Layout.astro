@@ -125,11 +125,93 @@ if (pubDate) {
     
     <!-- Background glowing orbs for premium dark mode visual aesthetic -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      <div class="bg-glow-orb bg-brand-blue w-[40vw] h-[40vw] top-[-10%] left-[-10%]"></div>
-      <div class="bg-glow-orb bg-brand-purple w-[35vw] h-[35vw] top-[40%] right-[-10%]" style="animation-delay: -3s;"></div>
-      <div class="bg-glow-orb bg-brand-yellow w-[30vw] h-[30vw] bottom-[10%] left-[10%]" style="animation-delay: -6s;"></div>
-      <div class="bg-glow-orb bg-brand-green w-[30vw] h-[30vw] top-[20%] left-[50%]" style="animation-delay: -9s;"></div>
+      <div class="orb-wrapper absolute inset-0" data-speed-y="0.12" data-speed-x="0.06" data-scale="0.15" data-mouse-x="-30" data-mouse-y="-30">
+        <div class="bg-glow-orb bg-brand-blue w-[45vw] h-[40vw] top-[-10%] left-[-10%]"></div>
+      </div>
+      <div class="orb-wrapper absolute inset-0" data-speed-y="-0.1" data-speed-x="-0.06" data-scale="-0.08" data-mouse-x="40" data-mouse-y="40">
+        <div class="bg-glow-orb bg-brand-purple w-[40vw] h-[35vw] top-[40%] right-[-10%]" style="animation-delay: -3s;"></div>
+      </div>
+      <div class="orb-wrapper absolute inset-0" data-speed-y="0.08" data-speed-x="-0.08" data-scale="0.05" data-mouse-x="30" data-mouse-y="30">
+        <div class="bg-glow-orb bg-brand-green w-[35vw] h-[30vw] top-[20%] left-[50%]" style="animation-delay: -9s;"></div>
+      </div>
     </div>
+
+    <script>
+      // Scroll and mouse/touch interactive background glowing orbs
+      const wrappers = document.querySelectorAll('.orb-wrapper');
+      
+      let targetScrollY = window.scrollY;
+      let currentScrollY = window.scrollY;
+      
+      let targetMouseX = 0.5; // normalized 0 to 1
+      let targetMouseY = 0.5; // normalized 0 to 1
+      let currentMouseX = 0.5;
+      let currentMouseY = 0.5;
+      
+      // Update target scroll position
+      window.addEventListener('scroll', () => {
+        targetScrollY = window.scrollY || document.documentElement.scrollTop;
+      }, { passive: true });
+      
+      // Update target mouse position (normalized around center)
+      window.addEventListener('mousemove', (e) => {
+        targetMouseX = e.clientX / window.innerWidth;
+        targetMouseY = e.clientY / window.innerHeight;
+      }, { passive: true });
+
+      // Update target touch position (normalized around center)
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) {
+          targetMouseX = e.touches[0].clientX / window.innerWidth;
+          targetMouseY = e.touches[0].clientY / window.innerHeight;
+        }
+      }, { passive: true });
+      
+      function render() {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        
+        // Linear interpolation (lerp) for smooth easing
+        const scrollLerp = 0.08;
+        const mouseLerp = 0.08;
+        
+        currentScrollY += (targetScrollY - currentScrollY) * scrollLerp;
+        currentMouseX += (targetMouseX - currentMouseX) * mouseLerp;
+        currentMouseY += (targetMouseY - currentMouseY) * mouseLerp;
+        
+        const scrollPct = maxScroll > 0 ? currentScrollY / maxScroll : 0;
+        
+        // normalized offset from center (-0.5 to 0.5)
+        const normMouseX = currentMouseX - 0.5;
+        const normMouseY = currentMouseY - 0.5;
+        
+        wrappers.forEach(wrapper => {
+          const speedY = parseFloat(wrapper.getAttribute('data-speed-y') || '0');
+          const speedX = parseFloat(wrapper.getAttribute('data-speed-x') || '0');
+          const scaleDelta = parseFloat(wrapper.getAttribute('data-scale') || '0');
+          const mouseFactorX = parseFloat(wrapper.getAttribute('data-mouse-x') || '0');
+          const mouseFactorY = parseFloat(wrapper.getAttribute('data-mouse-y') || '0');
+          
+          // Scroll drift translation
+          const scrollYShift = currentScrollY * speedY;
+          const scrollXShift = currentScrollY * speedX;
+          
+          // Mouse/Touch drift translation (scaled by factor)
+          const mouseXShift = normMouseX * mouseFactorX * 8; 
+          const mouseYShift = normMouseY * mouseFactorY * 8;
+          
+          const totalX = scrollXShift + mouseXShift;
+          const totalY = scrollYShift + mouseYShift;
+          const scale = 1 + (scrollPct * scaleDelta);
+          
+          (wrapper as HTMLElement).style.transform = `translate3d(${totalX}px, ${totalY}px, 0) scale(${scale})`;
+        });
+        
+        requestAnimationFrame(render);
+      }
+      
+      // Start the animation loop
+      requestAnimationFrame(render);
+    </script>
 
     <!-- Main site wrapper -->
     <div class="relative z-10 flex flex-col min-h-screen">

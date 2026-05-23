@@ -27,35 +27,29 @@
     /* Glow orbs matching the website layout */
     .bg-glow-orb {
       position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
-      opacity: 0.3;
+      border-radius: 60% 40% 55% 45%;
+      filter: blur(12vw);
+      opacity: 0.28;
       pointer-events: none;
     }
     .orb-blue {
       background-color: #3b82f6;
-      width: 500px;
+      width: 600px;
       height: 500px;
       top: -150px;
       left: -150px;
     }
     .orb-purple {
       background-color: #a855f7;
-      width: 450px;
+      width: 550px;
       height: 450px;
       top: 200px;
       right: -100px;
     }
-    .orb-yellow {
-      background-color: #f59e0b;
-      width: 350px;
-      height: 350px;
-      bottom: -50px;
-      left: 150px;
-    }
+
     .orb-green {
       background-color: #10b981;
-      width: 400px;
+      width: 500px;
       height: 400px;
       top: 50px;
       left: 600px;
@@ -197,7 +191,7 @@
       width: 440px;
       height: 440px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #3b82f6, #a855f7, #f59e0b);
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
       filter: blur(60px);
       opacity: 0.95;
       z-index: 5;
@@ -217,10 +211,8 @@
   </style>
 </head>
 <body>
-  <!-- Decorative Glow Orbs -->
   <div class="bg-glow-orb orb-blue"></div>
   <div class="bg-glow-orb orb-purple"></div>
-  <div class="bg-glow-orb orb-yellow"></div>
   <div class="bg-glow-orb orb-green"></div>
 
   <!-- Container -->

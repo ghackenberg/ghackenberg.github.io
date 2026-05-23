@@ -85,9 +85,9 @@
 /* Background Glowing Orbs */
 .bg-glow-orb {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.28;
+  border-radius: 60% 40% 55% 45%;
+  filter: blur(10vw);
+  opacity: 0.26;
   pointer-events: none;
   z-index: 0;
   animation: pulse-slow 12s infinite alternate;
