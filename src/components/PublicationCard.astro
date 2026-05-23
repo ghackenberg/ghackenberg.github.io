@@ -53,6 +53,9 @@ function getPublisherDomain(url: string | undefined): string {
 ---
 
 <div class="glass-card p-6 rounded-2xl border border-white/5 group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-yellow/30 h-full w-full">
+  <!-- Absolute overlay link for card clickability -->
+  <a href={`/publications/${id}`} class="absolute inset-0 z-10" aria-label={title}></a>
+
   <!-- Icon -->
   <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shrink-0 border border-white/10 bg-gray-900/50 flex items-center justify-center text-white/30 group-hover:text-brand-yellow/80 group-hover:border-brand-yellow/30 transition-all duration-300 relative">
     {icon ? (
@@ -93,9 +96,7 @@ function getPublisherDomain(url: string | undefined): string {
   <!-- Details -->
   <div class="flex-grow flex flex-col h-full w-full">
     <h3 class="relative pr-6 text-lg font-bold text-white mb-2 group-hover:text-brand-yellow transition-colors leading-snug">
-      <a href={`/publications/${id}`} class="after:absolute after:inset-0 after:z-10">
-        {title}
-      </a>
+      {title}
       <span 
         class="unread-dot hidden absolute top-[0.625em] -translate-y-1/2 right-0 w-2.5 h-2.5 rounded-full bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]" 
         data-item-url={`/publications/${id}`}
@@ -127,19 +128,18 @@ function getPublisherDomain(url: string | undefined): string {
             href={publisherUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="text-xs font-semibold text-brand-blue hover:text-brand-blue/85 flex items-center space-x-1"
+            class="text-xs font-semibold text-brand-blue hover:text-brand-blue/85 flex items-center space-x-1 relative z-20"
           >
             <span>{getPublisherDomain(publisherUrl)}</span>
             <span>↗</span>
           </a>
         )}
-        <a 
-          href={`/publications/${id}`} 
-          class="text-xs font-semibold text-brand-yellow hover:text-brand-yellow/85 flex items-center space-x-1"
+        <span 
+          class="text-xs font-semibold text-brand-yellow group-hover:text-brand-yellow/85 flex items-center space-x-1 transition-colors duration-300 cursor-pointer"
         >
           <span>{linkLabel}</span>
           <span>&rarr;</span>
-        </a>
+        </span>
       </div>
     </div>
   </div>

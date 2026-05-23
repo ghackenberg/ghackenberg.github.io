@@ -1,4 +1,14 @@
 ---
+const { pathname } = Astro.url;
+const normalizedPathname = pathname.replace(/\/$/, "") || "/";
+
+const isActive = (href: string) => {
+  if (href === "/") {
+    return normalizedPathname === "/";
+  }
+  return normalizedPathname.startsWith(href);
+};
+
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Posts", href: "/posts", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
@@ -24,21 +34,31 @@ const navItems = [
 
     <!-- Desktop Navigation Links -->
     <nav class="hidden md:flex items-center space-x-6">
-      {navItems.map(item => (
-        <a 
-          href={item.href} 
-          class="text-xs lg:text-sm font-medium text-gray-400 hover:text-white hover:scale-105 transition-all duration-200 flex items-center gap-1.5"
-        >
-          <span>{item.label}</span>
-          {item.badgeColor && (
-            <span 
-              class={`nav-badge hidden px-1.5 py-0.5 text-[9px] font-extrabold rounded-full ${item.badgeColor} shadow-md`}
-              data-section={item.href.replace(/^\//, '')}
-            >
-            </span>
-          )}
-        </a>
-      ))}
+      {navItems.map(item => {
+        const active = isActive(item.href);
+        return (
+          <a 
+            href={item.href} 
+            class={`relative py-1 text-xs lg:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 hover:scale-105 ${
+              active 
+                ? "text-brand-blue font-semibold" 
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            <span>{item.label}</span>
+            {item.badgeColor && (
+              <span 
+                class={`nav-badge hidden px-1.5 py-0.5 text-[9px] font-extrabold rounded-full ${item.badgeColor} shadow-md`}
+                data-section={item.href.replace(/^\//, '')}
+              >
+              </span>
+            )}
+            {active && (
+              <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-blue rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
+            )}
+          </a>
+        );
+      })}
       <a 
         href="/#contact" 
         class="text-xs font-semibold px-4 py-2 rounded-full bg-brand-blue/10 hover:bg-brand-blue/20 text-brand-blue border border-brand-blue/30 transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/10 hover:scale-105"
@@ -65,21 +85,28 @@ const navItems = [
     id="mobile-menu" 
     class="hidden md:hidden glass-panel border-t border-white/5 absolute top-full left-0 right-0 py-4 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
   >
-    {navItems.map(item => (
-      <a 
-        href={item.href} 
-        class="text-base font-medium text-gray-300 hover:text-white transition-colors py-1 flex items-center justify-between"
-      >
-        <span>{item.label}</span>
-        {item.badgeColor && (
-          <span 
-            class={`nav-badge hidden px-2 py-0.5 text-[10px] font-extrabold rounded-full ${item.badgeColor} shadow-md`}
-            data-section={item.href.replace(/^\//, '')}
-          >
-          </span>
-        )}
-      </a>
-    ))}
+    {navItems.map(item => {
+      const active = isActive(item.href);
+      return (
+        <a 
+          href={item.href} 
+          class={`text-base font-medium transition-colors py-1 flex items-center justify-between ${
+            active 
+              ? "text-brand-blue font-semibold border-l-2 border-brand-blue pl-3 -ml-3" 
+              : "text-gray-300 hover:text-white"
+          }`}
+        >
+          <span>{item.label}</span>
+          {item.badgeColor && (
+            <span 
+              class={`nav-badge hidden px-2 py-0.5 text-[10px] font-extrabold rounded-full ${item.badgeColor} shadow-md`}
+              data-section={item.href.replace(/^\//, '')}
+            >
+            </span>
+          )}
+        </a>
+      );
+    })}
     <a 
       href="/#contact" 
       class="text-sm font-semibold text-center py-2.5 rounded-lg bg-brand-blue text-white shadow-lg shadow-brand-blue/20 hover:bg-brand-blue/95 transition-all block"
