@@ -104,7 +104,7 @@ const seoDescription = cleanAbstract.length > 156
         {pub.data.tags.map(tag => (
           <a 
             href={`/publications/tags/${tag}`}
-            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-yellow/30 transition-all duration-200"
+            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-purple/30 transition-all duration-200"
           >
             #{tag}
           </a>
@@ -129,7 +129,7 @@ const seoDescription = cleanAbstract.length > 156
       <!-- Abstract -->
       {pub.data.abstract && (
         <section class="glass-card p-6 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
-          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-yellow via-brand-purple to-brand-blue"></div>
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-purple via-brand-blue to-brand-yellow"></div>
           
           <h2 class="text-2xl font-bold text-white mb-6 tracking-tight">
             Abstract
@@ -197,14 +197,14 @@ const seoDescription = cleanAbstract.length > 156
           {relatedPubs.map(p => (
             <a href={`/publications/${p.id}`} class="glass-card p-5 rounded-2xl border border-white/5 group flex flex-col h-full justify-between">
               <div>
-                <span class="text-[10px] font-semibold text-brand-yellow/80 block mb-2">
+                <span class="text-[10px] font-semibold text-brand-purple/80 block mb-2">
                   {p.id.substring(0, 4)}
                 </span>
-                <h3 class="text-sm font-bold text-white group-hover:text-brand-yellow transition-colors line-clamp-3 mb-2 leading-snug">
+                <h3 class="text-sm font-bold text-white group-hover:text-brand-purple transition-colors line-clamp-3 mb-2 leading-snug">
                   {p.data.title}
                 </h3>
               </div>
-              <span class="text-xs font-semibold text-brand-yellow/80 mt-4 flex items-center space-x-1 group-hover:translate-x-1 transition-transform">
+              <span class="text-xs font-semibold text-brand-purple/80 mt-4 flex items-center space-x-1 group-hover:translate-x-1 transition-transform">
                 <span>View publication</span>
                 <span>&rarr;</span>
               </span>
