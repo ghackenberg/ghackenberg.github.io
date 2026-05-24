@@ -254,6 +254,9 @@ if (pubDate) {
                   <a href="/projects" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Projects</a>
                 </li>
                 <li>
+                  <a href="/services" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Services</a>
+                </li>
+                <li>
                   <a href="/publications" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Publications</a>
                 </li>
                 <li>
@@ -299,7 +302,7 @@ if (pubDate) {
       (function() {
         const STORAGE_KEY = 'gh_site_notifications_v1';
         const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
-        const SECTIONS = ['posts', 'courses', 'projects', 'publications', 'visualizations'];
+        const SECTIONS = ['posts', 'courses', 'projects', 'services', 'publications', 'visualizations'];
         
         function normalizePath(path) {
           let n = path.replace(/\/$/, '');

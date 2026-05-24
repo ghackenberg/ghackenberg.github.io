@@ -37,6 +37,7 @@ export async function GET() {
   const projects = await getCollection("projects");
   const publications = await getCollection("publications");
   const visualizations = await getCollection("visualizations");
+  const services = await getCollection("services");
 
   const manifest = {
     posts: posts.map(p => ({
@@ -63,6 +64,11 @@ export async function GET() {
       id: v.id,
       url: `/visualizations/${v.id}`,
       date: parseItemDate(v.id, v.data.pubDate)
+    })),
+    services: services.map(s => ({
+      id: s.id,
+      url: `/services#${s.id}`,
+      date: parseItemDate(s.id, s.data.pubDate)
     }))
   };
 

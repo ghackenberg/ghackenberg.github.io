@@ -130,12 +130,12 @@
     display: inline-block !important;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .nav-logo-name {
     display: none !important;
   }
 }
-@media (min-width: 900px) {
+@media (min-width: 1200px) {
   .nav-logo-name {
     display: inline-block !important;
   }

@@ -14,6 +14,7 @@ const navItems = [
   { label: "Posts", href: "/posts", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
   { label: "Courses", href: "/courses", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
   { label: "Projects", href: "/projects", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
+  { label: "Services", href: "/services", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
   { label: "Publications", href: "/publications", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
   { label: "Visualizations", href: "/visualizations", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" }
 ];
@@ -34,7 +35,7 @@ const navItems = [
     </a>
 
     <!-- Desktop Navigation Links -->
-    <nav class="hidden md:flex items-center space-x-6">
+    <nav class="hidden lg:flex items-center space-x-6">
       {navItems.map(item => {
         const active = isActive(item.href);
         return (
@@ -71,7 +72,7 @@ const navItems = [
     <!-- Mobile Menu Button -->
     <button 
       id="mobile-menu-btn" 
-      class="md:hidden text-gray-400 hover:text-white focus:outline-none p-1"
+      class="lg:hidden text-gray-400 hover:text-white focus:outline-none p-1"
       aria-label="Toggle Menu"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -86,7 +87,7 @@ const navItems = [
   <!-- Mobile Dropdown Menu -->
   <div 
     id="mobile-menu" 
-    class="hidden md:hidden glass-panel border-b border-white/5 absolute top-full left-0 right-0 py-6 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
+    class="hidden lg:hidden glass-panel border-b border-white/5 absolute top-full left-0 right-0 py-6 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
   >
     {navItems.map(item => {
       const active = isActive(item.href);

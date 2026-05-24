@@ -180,6 +180,26 @@ const courses = defineCollection({
   }),
 });
 
+const services = defineCollection({
+  loader: glob({
+    base: './src/content/services',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: z.object({
+    title: z.string(),
+    interestTitle: z.string(),
+    interestTagline: z.string(),
+    interestDescription: z.string(),
+    icon: z.string(),
+    color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
+    order: z.number().default(0),
+    ctaText: z.string().default('Inquire Now'),
+    highlights: z.array(z.string()).default([]),
+    pubDate: z.coerce.date().optional(),
+  })
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -193,5 +213,7 @@ export const collections = {
   'experiences': experiences,
   'projects': projects,
   'courses': courses,
+  'services': services,
 };
+
 
