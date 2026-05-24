@@ -1,8 +1,8 @@
 ---
-title: "Corporate Training & Guest Lectures"
-interestTitle: "Computer Simulation"
-interestTagline: "Discrete Event Systems & Layout Modeling"
-interestDescription: "Modeling manufacturing layouts, logistics workflows, and natural environments. Running discrete-event simulations and optimization algorithms."
+title: "Corporate Training"
+interestTitle: "Tech Education"
+interestTagline: "Software Engineering & Computer Simulation"
+interestDescription: "Delivering custom corporate workshops and guest lectures. Training engineering teams in TypeScript, Astro, modern software architectures, and simulation systems."
 icon: "🎓"
 color: "yellow"
 order: 2

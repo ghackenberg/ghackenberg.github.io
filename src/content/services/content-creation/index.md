@@ -1,8 +1,8 @@
 ---
-title: "Sponsorship & Tech Content Creation"
-interestTitle: "User Experience"
-interestTagline: "Interactive Visualizations & Interface Design"
-interestDescription: "Crafting premium, responsive user interfaces with dynamic layouts, smooth animations, and interactive graph network renderings that make complex data intuitive."
+title: "Content Creation"
+interestTitle: "Tech Publishing"
+interestTagline: "LinkedIn, YouTube & Technical Web Publishing"
+interestDescription: "Publishing deep-dive technical videos, educational tutorials, and codebase showcases for a dedicated developer audience across YouTube, LinkedIn, and web platforms."
 icon: "🌐"
 color: "green"
 order: 4
@@ -31,7 +31,7 @@ pubDate: 2026-05-24
 
 As an educator and content creator, I maintain an active presence on YouTube, GitHub, and LinkedIn, sharing insights about software engineering, layout simulations, and modern web developer stacks.
 
-I partner with software providers, cloud platforms, database developers, and productivity tool startups to create clear, highly polished, and educational developer content. By combining my UX design standards with high-quality teaching, I showcase your tool's real-world value to a dedicated developer audience.
+I partner with software providers, cloud platforms, database developers, and productivity tool startups to create clear, highly polished, and educational developer content. By combining senior engineering depth with high-quality production, I showcase your tool's real-world value to a dedicated developer audience.
 
 #### How we can work together:
 *   **Sponsored Tutorials:** Creating highly polished video walkthroughs on YouTube, showcasing how to build real products using your tool or framework (e.g., interactive visual networks or backend configurations).

@@ -1,8 +1,8 @@
 ---
-title: "R&D Prototyping: Concept to MVP"
+title: "R&D Prototyping"
 interestTitle: "Software Engineering"
-interestTagline: "Modern Architectures & Web Platforms"
-interestDescription: "Architecting high-performance web systems using Astro, TypeScript, and modern engineering patterns. Designing modular, scalable platforms."
+interestTagline: "High-Performance Web Apps & MVPs"
+interestDescription: "Translating algorithms and scientific concepts into interactive web systems. Engineering production-ready web dashboards, custom tools, and high-fidelity MVPs."
 icon: "💻"
 color: "blue"
 order: 1
