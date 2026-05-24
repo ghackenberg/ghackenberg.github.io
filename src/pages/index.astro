@@ -57,6 +57,37 @@ const colorMappings = {
     bullet: 'text-brand-green',
   }
 };
+
+const professionalInterests = [
+  {
+    icon: "💻",
+    color: "blue" as const,
+    title: "Software Engineering",
+    tagline: "Architectures & Web Platforms",
+    description: "Architecting high-performance web systems using Astro and TypeScript. Designing modular, type-safe, and highly scalable enterprise platforms."
+  },
+  {
+    icon: "🎓",
+    color: "yellow" as const,
+    title: "Computer Simulation",
+    tagline: "Systems & Layout Modeling",
+    description: "Modeling manufacturing layouts, logistics workflows, and natural systems. Running discrete-event simulations and optimization algorithms."
+  },
+  {
+    icon: "🎯",
+    color: "purple" as const,
+    title: "Artificial Intelligence",
+    tagline: "Generative AI & Agent Systems",
+    description: "Integrating Large Language Models locally in web applications. Developing autonomous AI agents, semantic search, and reasoning engines."
+  },
+  {
+    icon: "🌐",
+    color: "green" as const,
+    title: "User Experience",
+    tagline: "Visualizations & UI Designs",
+    description: "Crafting premium, responsive user interfaces with smooth animations, custom layout dynamics, and interactive graph network visualizations."
+  }
+];
 ---
 
 <Layout 
@@ -163,20 +194,20 @@ const colorMappings = {
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {sortedServices.map(service => {
-          const mapping = colorMappings[service.data.color];
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {professionalInterests.map(interest => {
+          const mapping = colorMappings[interest.color];
           return (
             <div class={`glass-card p-6 rounded-2xl border ${mapping.border} group`}>
               <div class={`w-10 h-10 rounded-xl flex items-center justify-center mb-6 font-bold text-lg border ${mapping.bg}`}>
-                {service.data.icon}
+                {interest.icon}
               </div>
-              <h3 class={`text-lg font-bold text-white mb-2 group-hover:text-brand-${service.data.color} transition-colors`}>
-                {service.data.interestTitle}
+              <h3 class={`text-lg font-bold text-white mb-2 group-hover:text-brand-${interest.color} transition-colors`}>
+                {interest.title}
               </h3>
-              <p class={`text-[10px] font-semibold uppercase tracking-wider mb-3 ${mapping.text}`}>{service.data.interestTagline}</p>
-              <p class="text-gray-400 text-sm leading-relaxed font-normal">
-                {service.data.interestDescription}
+              <p class={`text-[10px] font-semibold uppercase tracking-wider mb-3 ${mapping.text}`}>{interest.tagline}</p>
+              <p class="text-gray-400 text-sm leading-relaxed font-normal min-h-[96px] sm:min-h-[115px] md:min-h-[96px]">
+                {interest.description}
               </p>
             </div>
           );
