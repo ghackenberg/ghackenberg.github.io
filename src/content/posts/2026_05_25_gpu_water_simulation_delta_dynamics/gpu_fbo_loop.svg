@@ -1,0 +1,95 @@
+<svg viewBox="0 0 950 480" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .bg { fill: #0f172a; }
+    .title { font-family: 'Inter', system-ui, sans-serif; font-size: 20px; font-weight: 700; fill: #f8fafc; }
+    .label { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 500; fill: #94a3b8; }
+    .header { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #ffffff; }
+    .code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; fill: #38bdf8; font-weight: bold; }
+    .arrow-text { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; fill: #cbd5e1; font-weight: bold; }
+    .flow-line { fill: none; stroke-width: 2; marker-end: url(#arrow-head); }
+    .swap-line { fill: none; stroke: #e11d48; stroke-dasharray: 4 4; stroke-width: 2.5; marker-end: url(#arrow-rose); }
+  </style>
+
+  <rect width="100%" height="100%" class="bg" rx="12" />
+
+  <!-- Title -->
+  <text x="30" y="40" class="title">GPGPU Simulation Loop: FBO Ping-Ponging</text>
+
+  <!-- Render Target A (Left) -->
+  <g transform="translate(40, 80)">
+    <rect width="220" height="220" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5" rx="8" />
+    <rect width="220" height="35" fill="#38bdf8" rx="8" clip-path="polygon(0 0, 220 0, 220 35, 0 35)" />
+    <text x="110" y="23" class="header" fill="#0f172a" text-anchor="middle">Render Target A</text>
+    
+    <text x="20" y="60" class="label">Input Texture: <tspan class="code" fill="#60a5fa">uWater</tspan></text>
+    <text x="20" y="95" class="code" fill="#f87171">R: sL <tspan fill="#64748b">(Surface Level)</tspan></text>
+    <text x="20" y="120" class="code" fill="#4ade80">G: gw <tspan fill="#64748b">(Groundwater)</tspan></text>
+    <text x="20" y="145" class="code" fill="#60a5fa">B: sw <tspan fill="#64748b">(Surface Depth)</tspan></text>
+    <text x="20" y="170" class="code" fill="#c084fc">A: visualSL <tspan fill="#64748b">(Extrapolated)</tspan></text>
+  </g>
+
+  <!-- Fragment Shader (Middle) -->
+  <g transform="translate(360, 80)">
+    <rect width="220" height="220" fill="#2e1065" stroke="#c084fc" stroke-width="2.5" rx="8" />
+    <rect width="220" height="35" fill="#c084fc" rx="8" clip-path="polygon(0 0, 220 0, 220 35, 0 35)" />
+    <text x="110" y="23" class="header" fill="#0f172a" text-anchor="middle">WebGL Shader</text>
+    <text x="110" y="55" class="label" text-anchor="middle">simulation.frag</text>
+    
+    <text x="110" y="95" class="label" text-anchor="middle" fill="#e2e8f0">Inputs (Uniforms):</text>
+    <text x="110" y="120" class="code" fill="#a78bfa" text-anchor="middle">uTerrainSurface</text>
+    <text x="110" y="140" class="code" fill="#a78bfa" text-anchor="middle">uTerrainLayers</text>
+    <text x="110" y="165" class="code" fill="#a78bfa" text-anchor="middle">uRain, uSeaLevel, uTime</text>
+  </g>
+
+  <!-- Render Target B (Right) -->
+  <g transform="translate(680, 80)">
+    <rect width="220" height="220" fill="#1e293b" stroke="#22c55e" stroke-width="2.5" rx="8" />
+    <rect width="220" height="35" fill="#22c55e" rx="8" clip-path="polygon(0 0, 220 0, 220 35, 0 35)" />
+    <text x="110" y="23" class="header" fill="#0f172a" text-anchor="middle">Render Target B</text>
+    
+    <text x="20" y="60" class="label">Framebuffer Output</text>
+    <text x="20" y="90" class="code" fill="#34d399">gl_FragColor = vec4(</text>
+    <text x="40" y="112" class="code" fill="#f87171">  sL_new,</text>
+    <text x="40" y="134" class="code" fill="#4ade80">  gw_new,</text>
+    <text x="40" y="156" class="code" fill="#60a5fa">  sw_new,</text>
+    <text x="40" y="178" class="code" fill="#c084fc">  visualSL_new</text>
+    <text x="20" y="200" class="code" fill="#34d399">);</text>
+  </g>
+
+  <!-- Data Flow Lines -->
+  <!-- Target A -> Shader -->
+  <path d="M 260 190 L 350 190" class="flow-line" stroke="#60a5fa" />
+  <text x="305" y="180" class="arrow-text" text-anchor="middle">Read</text>
+
+  <!-- Shader -> Target B -->
+  <path d="M 580 190 L 670 190" class="flow-line" stroke="#22c55e" />
+  <text x="625" y="180" class="arrow-text" text-anchor="middle">Write</text>
+
+  <!-- Swap / Ping-Pong curved line (bottom) -->
+  <path d="M 790 300 C 790 370, 150 370, 150 300" class="swap-line" />
+  <text x="470" y="360" class="arrow-text" fill="#e11d48" text-anchor="middle">SWAP (A &lt;=&gt; B) AFTER EACH STEP</text>
+
+  <!-- CPU/Main Thread (Sub-diagram / Logic sync) -->
+  <g transform="translate(300, 400)">
+    <rect width="340" height="50" fill="#020617" stroke="#475569" stroke-width="1.5" rx="6" />
+    <text x="170" y="20" class="header" fill="#f1f5f9" font-size="13px" text-anchor="middle">CPU Game Loop (Main Thread)</text>
+    <text x="170" y="38" class="code" fill="#94a3b8" font-size="10px" text-anchor="middle">waterSystem.readBack() via readRenderTargetPixels()</text>
+  </g>
+
+  <!-- CPU Readback arrows -->
+  <path d="M 90 300 L 90 415 C 90 425, 280 425, 300 425" fill="none" stroke="#94a3b8" stroke-dasharray="2 2" marker-end="url(#arrow-grey)" />
+  <text x="105" y="350" class="arrow-text" fill="#94a3b8">Sync to logic (e.g. entities)</text>
+
+  <!-- Definitions of markers -->
+  <defs>
+    <marker id="arrow-head" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#f8fafc" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#e11d48" />
+    </marker>
+    <marker id="arrow-grey" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+</svg>
