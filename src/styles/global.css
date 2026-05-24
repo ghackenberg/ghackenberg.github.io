@@ -6,6 +6,19 @@
   --color-brand-purple: #a855f7;   /* Strategy, Briefings */
   --color-brand-green: #10b981;    /* Personal, Regeneration, Sport */
   
+  /* Shifted, cool slate-blue theme gray overrides for high contrast readability */
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f8fafc; /* Map gray-100 to Slate 50 */
+  --color-gray-200: #f1f5f9; /* Map gray-200 to Slate 100 */
+  --color-gray-300: #e2e8f0; /* Map gray-300 to Slate 200 */
+  --color-gray-400: #cbd5e1; /* Map gray-400 to Slate 300 */
+  --color-gray-500: #94a3b8; /* Map gray-500 to Slate 400 */
+  --color-gray-600: #64748b; /* Map gray-600 to Slate 500 */
+  --color-gray-700: #475569; /* Map gray-700 to Slate 600 */
+  --color-gray-800: #334155; /* Map gray-800 to Slate 700 */
+  --color-gray-900: #1e293b; /* Map gray-900 to Slate 800 */
+  --color-gray-950: #020617; /* Map gray-950 to Slate 950 */
+  
   --font-sans: "Outfit", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -17,7 +30,7 @@
   
   body {
     background-color: #030712;
-    background-image: radial-gradient(circle at 50% 0%, #12244a 0%, #030712 100%);
+    background-image: radial-gradient(circle at 50% 0%, #060c20 0%, #030712 100%);
     background-repeat: no-repeat;
     color: #f3f4f6; /* Tailwind gray-100 */
     overflow-x: hidden;
@@ -86,8 +99,8 @@
 .bg-glow-orb {
   position: absolute;
   border-radius: 60% 40% 55% 45%;
-  filter: blur(10vw);
-  opacity: 0.26;
+  filter: blur(14vmax);
+  opacity: 0.18;
   pointer-events: none;
   z-index: 0;
   animation: pulse-slow 12s infinite alternate;
@@ -96,15 +109,15 @@
 @keyframes pulse-slow {
   0% {
     transform: scale(1) translate(0px, 0px);
-    opacity: 0.28;
+    opacity: 0.20;
   }
   50% {
     transform: scale(1.1) translate(20px, -20px);
-    opacity: 0.38;
+    opacity: 0.28;
   }
   100% {
     transform: scale(0.9) translate(-20px, 20px);
-    opacity: 0.22;
+    opacity: 0.14;
   }
 }
 
@@ -126,4 +139,29 @@
   .nav-logo-name {
     display: inline-block !important;
   }
+}
+
+/* Premium high-contrast styling for status/category badges */
+.bg-brand-blue\/10.text-brand-blue {
+  color: #60a5fa !important; /* Tailwind blue-400 */
+  border-color: rgba(96, 165, 250, 0.3) !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+.bg-brand-yellow\/10.text-brand-yellow {
+  color: #fbbf24 !important; /* Tailwind amber-400 */
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+.bg-brand-purple\/10.text-brand-purple {
+  color: #c084fc !important; /* Tailwind purple-400 */
+  border-color: rgba(192, 132, 252, 0.3) !important;
+  background-color: rgba(168, 85, 247, 0.15) !important;
+}
+
+.bg-brand-green\/10.text-brand-green {
+  color: #34d399 !important; /* Tailwind emerald-400 */
+  border-color: rgba(52, 211, 153, 0.3) !important;
+  background-color: rgba(16, 185, 129, 0.15) !important;
 }
