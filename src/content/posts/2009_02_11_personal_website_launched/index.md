@@ -3,9 +3,8 @@ title: "Personal Website launched!"
 pubDate: "2009-02-10"
 description: "Hey everyone! I am happy, you made it to this site :). It is my first try to get something up and running. So I hope, you'll like it. I'll try my best to get so..."
 tags: ["blog"]
-icon: "/posts/2009_02_11_personal_website_launched/icon.png"
+icon: "./icon.png"
 ---
-
 Here's a little about my person:
 My name is Georg Hackenberg.
 I am 25 years old and I am studying computer science at the [RWTH Aachen University](http://www.rwth-aachen.de).

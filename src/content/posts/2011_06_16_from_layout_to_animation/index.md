@@ -3,15 +3,14 @@ title: "From Layout to Animation"
 pubDate: "2011-06-15"
 description: "In a previous article The Evolution of a Functional Prototype I demonstrated how to transform sketches into prototypes backed by database content and applicatio..."
 tags: ["blog", "user-interface", "drawing", "youtube-video"]
-icon: "/posts/2011_06_16_from_layout_to_animation/screenshot.png"
+icon: "./screenshot.png"
 ---
-
 To provide some context for this article here are the images from my previous post that illustrate the change from whiteboard sketch to functional prototype.
 You can see how the sketch ideas are transformed into a more formal HTML description of layout and content.
 
-[![](/posts/2011_06_16_from_layout_to_animation/../2011_06_11_functional_prototype_evolution/start.jpg)](/posts/2011_06_16_from_layout_to_animation/../2011_06_11_functional_prototype_evolution/start.jpg)
-[![](/posts/2011_06_16_from_layout_to_animation/../2011_06_11_functional_prototype_evolution/intermediate.png)](/posts/2011_06_16_from_layout_to_animation/../2011_06_11_functional_prototype_evolution/intermediate.png)
-[![](/posts/2011_06_16_from_layout_to_animation/../2011_06_11_functional_prototype_evolution/end.png)](/posts/2011_06_16_from_layout_to_animation/../2011_06_11_functional_prototype_evolution/end.png)
+[![../2011 06 11 functional prototype evolution/start illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/start.jpg)](./../2011_06_11_functional_prototype_evolution/start.jpg)
+[![../2011 06 11 functional prototype evolution/intermediate illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/intermediate.png)](./../2011_06_11_functional_prototype_evolution/intermediate.png)
+[![../2011 06 11 functional prototype evolution/end illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/end.png)](./../2011_06_11_functional_prototype_evolution/end.png)
 
 Since the interface only displays navigation structures the question is how to integrate the actual contents.
 I.e. what should happen if the user clicks one of the links in the navigational interface, and how to get back from the content (e.g. blog article) to the navigation.

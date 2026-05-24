@@ -3,25 +3,24 @@ title: "Visualizing Software Systems"
 pubDate: "2011-06-07"
 description: "One problem computer science has compared to many other technical disciplines such as physics or architecture is to create and communicate mental pictures of th..."
 tags: ["drawing"]
-icon: "/posts/2011_06_08_visualizing_software_systems/crawler.png"
+icon: "./crawler.png"
 ---
-
 We start with illustrations that are close to the real-world and move to more abstract representations of interesting system aspects.
 
-[![](/posts/2011_06_08_visualizing_software_systems/hardware.png)](/posts/2011_06_08_visualizing_software_systems/hardware.png)
+[![Hardware illustration from Visualizing Software Systems](./hardware.png)](./hardware.png)
 
 The previous pictures illustrates the hardware components needed for running the [3D Multi-Touch Prototype](/article/2010_06_27_master_thesis_video/index.html) I developed during my Master thesis at *Fraunhofer FIT*.
 This type of illustration should be easy to understand as it shows real-world objects (tripod, camera, PC, flat-screen) and their connectivity (USB cable between camera and PC, HDMI cable between PC and flat-screen).
 What the picture does not say is what type of software is running on the PC for getting the hand skeleton on screen.
 For this purpose I created the following illustration.
 
-[![](/posts/2011_06_08_visualizing_software_systems/process.png)](/posts/2011_06_08_visualizing_software_systems/process.png)
+[![Process illustration from Visualizing Software Systems](./process.png)](./process.png)
 
 This second picture illustrates the process how to get from the camera image to a classified hand gesture.
 Here a certain flow of information and control is in the center of our observation.
 To support this point of view the items are arranged sequentially as opposed to the previous picture, where a spacial arrangement was used instead.
 
-[![](/posts/2011_06_08_visualizing_software_systems/crawler.png)](/posts/2011_06_08_visualizing_software_systems/crawler.png)
+[![Crawler illustration from Visualizing Software Systems](./crawler.png)](./crawler.png)
 
 The last picture is a rather incomplete illustration of the system architecture of a [Web Crawler Engine](http://www.hyperkit-software.com/projects/webcrawler/index.html) I developed to collect information about real estate offers in a certain region.
 Here the idea is to show the role of the crawler engine (the gear) as a mediator between the users (human icons) and the real estate websites (house icons).

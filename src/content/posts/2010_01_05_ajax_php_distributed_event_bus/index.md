@@ -3,9 +3,8 @@ title: "Ajax/PHP Distributed Event Bus."
 pubDate: "2010-01-04"
 description: "How to synchronize the users of your web site or web application? How to propagate events from one browser or client to the next? This article demonstrates a fi..."
 tags: ["youtube-video", "hyperkit-software"]
-icon: "/posts/2010_01_05_ajax_php_distributed_event_bus/architecture.png"
+icon: "./architecture.png"
 ---
-
 The solution for user synchronization and event propagation is a so-called distributed event bus.
 The idea of this bus is, to provide a component where several clients can connect for publishing and recieving events.
 The component guarantees that any event propagated will also be recieved by all clients interested.
@@ -25,12 +24,12 @@ Both comunicate via the *HTTP* protocol, which is the standard protocol for web 
 This protocol is also used by *AJAX* for reloading page fragments from the server or uploading content from the client without the need of reloading the entire page.
 Finally, for each entity the individual subcomponents are depicted which I will discuss later.
 
-[![](/posts/2010_01_05_ajax_php_distributed_event_bus/architecture.png)](/posts/2010_01_05_ajax_php_distributed_event_bus/architecture.png)
+[![Architecture illustration from Ajax/PHP Distributed Event Bus.](./architecture.png)](./architecture.png)
 
 Now, let's have a look at each subcomponent in isolation.
 From this presentation I hope to give the best possible insight into the system.
 If you have further questions, do not hesitate to send me a message or comment on this article.
-![](/posts/2010_01_05_ajax_php_distributed_event_bus/channel.png)
+![Channel illustration from Ajax/PHP Distributed Event Bus.](./channel.png)
 The **channel** is the heart of the system.
 It is stored on the server and basically denotes a regular XML file storing all events in a circular log file fashion.
 *Circular log file* means, that only a maximum number of entries is stored.
@@ -58,7 +57,7 @@ The core of the client deployment is a general *JavaScript API* which allows to 
 The skeleton of the current implementation is presented in the following figure.
 Most implementation details are removed for clarity of the illustration.
 
-[![](/posts/2010_01_05_ajax_php_distributed_event_bus/javascript.png)](/posts/2010_01_05_ajax_php_distributed_event_bus/javascript.png)
+[![Javascript illustration from Ajax/PHP Distributed Event Bus.](./javascript.png)](./javascript.png)
 
 The first thing to notice is the `client` variable.
 It holds the randomly generated ID of the current client.
@@ -83,7 +82,7 @@ The last thing left is the actual client code which utilizes the *JavaScript API
 For demonstration purposes I provide a truncated code snippet which hopefully explains the basic principles.
 The snippet is taken from the demo chat application shown in the initial video sequence.
 
-[![](/posts/2010_01_05_ajax_php_distributed_event_bus/client.png)](/posts/2010_01_05_ajax_php_distributed_event_bus/client.png)
+[![Client illustration from Ajax/PHP Distributed Event Bus.](./client.png)](./client.png)
 
 Again, first a word about the variable `timestamp`.
 Initially, it holds the server timestamp when the page was delivered to the client.

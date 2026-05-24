@@ -3,9 +3,8 @@ title: "A complete MaCon project in 4:30 minutes"
 pubDate: "2015-12-16"
 description: "The MaCon approach covers a wide range of engineering tasks for manufacturing systems, from requirements analysis, to system design, to component and system tes..."
 tags: ["manufacturing-engineering", "user-interface", "youtube-video"]
-icon: "/posts/2015_12_12_complete_macon_project_fast_motion/screenshot.png"
+icon: "./screenshot.png"
 ---
-
 The video shows the complete modeling and simulation workflow for a (mechatronic) transport module or conveyor belt.
 The video covers everything from requirements over scenario, subcomponent, and behavior to (geometrical) part modeling.
 Four simulation runs are used to validate the model and to check the semantic consistency between scenario and system behavior.

@@ -3,13 +3,12 @@ title: "Algorithm Debugging using OpenGL."
 pubDate: "2009-07-20"
 description: "Currently, I am working on my thesis in the area of Computer Vision. The algorithms are quite complex and difficult to debug. Therefore, I implemented a simple ..."
 tags: ["data-visualization", "computer-vision"]
-icon: "/posts/2009_07_21_opengl_debugging_grid_3d/interface.png"
+icon: "./interface.png"
 ---
-
 First I want to give you an impression on how the debugger looks like.
 The following screenshot shows the debugger setup for an applications which captures video streams from two connected USB cameras:
 
-[![](/posts/2009_07_21_opengl_debugging_grid_3d/single.png?width=1000&height=400)](/posts/2009_07_21_opengl_debugging_grid_3d/single.png)
+[![Single illustration from Algorithm Debugging using OpenGL.](./single.png)](./single.png)
 
 The grid cells to the left show the original images captured from the video devices.
 The next column shows the edge images for the original images, i.e. image data is reduced to locations where high color differences are found.
@@ -24,7 +23,7 @@ The example demonstrates different types of debuggers which I implemented for my
 Generally, debuggers have to inherit from the abstract base class `Debugger`.
 The interface is shown in the following figure:
 
-[![](/posts/2009_07_21_opengl_debugging_grid_3d/interface.png)](/posts/2009_07_21_opengl_debugging_grid_3d/interface.png)
+[![Interface illustration from Algorithm Debugging using OpenGL.](./interface.png)](./interface.png)
 
 Basically, only a single virtual function has to be implemented: `draw`.
 The function `draw` takes one argument, the side length of the cube which it renders to.
@@ -37,7 +36,7 @@ Finally, instances of the `Debugger` objects have to be added to the `screen`.
 The `screen` provides a data structure for storing the debuggging grid and rendering the components.
 The following figure shows how to add fill the screen:
 
-[![](/posts/2009_07_21_opengl_debugging_grid_3d/setup.png)](/posts/2009_07_21_opengl_debugging_grid_3d/setup.png)
+[![Setup illustration from Algorithm Debugging using OpenGL.](./setup.png)](./setup.png)
 
 Here, I use a loop for adding different layers of `Debugger` objects by alternating the `z`-coordinate.
 For each debugger, the `x`, `y` and `z` coordinates of the target cell have to be specified.
@@ -47,7 +46,7 @@ Cells, for which no entry is given are left blank during rendering.
 Finally, let's see what happens when we render five layers of the given debugger setup.
 The result is given in the following screenshot:
 
-[![](/posts/2009_07_21_opengl_debugging_grid_3d/multiple.png?width=1000&height=400)](/posts/2009_07_21_opengl_debugging_grid_3d/multiple.png)
+[![Multiple illustration from Algorithm Debugging using OpenGL.](./multiple.png)](./multiple.png)
 
 As you can see, the cells are replicated along the `z`-axis.
 Alternatively, different types of debuggers could have been placed instead, i.e. my test case is a bit arbitrary.

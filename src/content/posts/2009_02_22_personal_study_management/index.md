@@ -3,12 +3,11 @@ title: "Personal Study Management."
 pubDate: "2009-02-21"
 description: "Over my past years of study, I developed a system for organizing my learning. It helps me staying focused and having an overview over my progress. In this artic..."
 tags: ["hyperkit-software", "data-visualization"]
-icon: "/posts/2009_02_22_personal_study_management/plan.png"
+icon: "./plan.png"
 ---
-
 <div class="flow-root my-6">
   <a href="/posts/2009_02_22_personal_study_management/plan.png" class="float-right ml-6 mb-4 max-w-[50%] block">
-    <img src="/posts/2009_02_22_personal_study_management/plan.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./plan.png" alt="Plan detail from Personal Study Management." loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   The basic idea is, to have a table of the chapters, which have to be studied, their size and the overall percentage of progress after finishing it.
   In the picture to the right I have posted a schedule which I created for my *eLearning* exam last year.
@@ -32,7 +31,7 @@ But *HTML* did the trick for now.
 
 Here is now the *XML* code which was used for specifying the *eLearning* learn plan from above:
 
-[![XML code](/posts/2009_02_22_personal_study_management/xml.png)](/posts/2009_02_22_personal_study_management/xml.png)
+[![XML code](./xml.png)](./xml.png)
 
 As you can see, I can specify the course and its structure in terms of *chapters* and *sections*.
 For chapters and sections I can provide information about the number of pages.
@@ -44,7 +43,7 @@ The stylesheet I cannot present in full length, as it covers around 150 lines of
 Most of the code is responsible for generating correct percentage number in different cases.
 Here is now a small excerpt:
 
-[![XSL excerpt](/posts/2009_02_22_personal_study_management/xsl.png)](/posts/2009_02_22_personal_study_management/xsl.png)
+[![XSL excerpt](./xsl.png)](./xsl.png)
 
 What you should basically take from this code listing is, that an *HTML* document is generated on the fly.
 For generating this document, I have to do mainly percentage calculations.

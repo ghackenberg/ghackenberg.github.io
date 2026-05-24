@@ -3,9 +3,8 @@ title: "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3"
 pubDate: "2015-12-20"
 description: "Recently, I added tags to my blog posts and scientific publications. The tags allow me to connect my articles based on keywords and topics. I use the tags to im..."
 tags: ["blog", "data-visualization", "zumida", "hyperkit-software"]
-icon: "/posts/2015_12_21_javascript_graph_libraries_cytoscape_sigma_d3/cytoscape.png"
+icon: "./cytoscape.png"
 ---
-
 The implementation with all three JavaScript libraries was straight forward.
 In all three cases, I had to convert the tag information into a proprietary [JSON](http://www.json.org/) format.
 Converting the tag information into the proprietary format took me less than 30 minutes coding and less and 100 lines of code per JavaScript library.
@@ -15,9 +14,9 @@ Then, each JavaScript library requires its own configuration of the display styl
 Furthermore, the library provides a stream processing API, which can be exploited for advanced style manipulations.
 However, [D3](http://d3js.org/) also requires extra code for rendering the graph layout, which can be omitted in [Cytoscape](http://js.cytoscape.org/) and [Sigma](http://sigmajs.org/). Here are the visualization results for the individual JavaScript libraries (**click to run in your browser**):
 
-[![](/posts/2015_12_21_javascript_graph_libraries_cytoscape_sigma_d3/cytoscape.png?width=500&height=400)](/visualizations/cytoscape/)
-[![](/posts/2015_12_21_javascript_graph_libraries_cytoscape_sigma_d3/sigma.png?width=500&height=400)](/visualizations/sigma/)
-[![](/posts/2015_12_21_javascript_graph_libraries_cytoscape_sigma_d3/d3.png?width=500&height=400)](/visualizations/d3/)
+[![Cytoscape illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./cytoscape.png)](/visualizations/cytoscape/)
+[![Sigma illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./sigma.png)](/visualizations/sigma/)
+[![D3 illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./d3.png)](/visualizations/d3/)
 
 From this first experience with using those three libraries I want to make a first conclusion on in which situation to use which of the JavaScript libraries.
 Please note that my experience is limited to getting started knowledge about the presented libraries only.

@@ -3,9 +3,8 @@ title: "A new zumida video is out on YouTube!"
 pubDate: "2017-03-04"
 description: "Now, that zumida has emerged into a mature platform, it is time to present the first public video. See zumida in action, from registration to content creation a..."
 tags: ["data-visualization", "hyperkit-software", "zumida", "user-interface", "knowledge-management"]
-icon: "/posts/2017_03_05_zumida_video/intro.png"
+icon: "./intro.png"
 ---
-
 The following screencast is the first public video of the zumida social mind mapping platform.
 In this video we demonstrate the following steps:
 (1)~Registering a new user on the zumida platform,

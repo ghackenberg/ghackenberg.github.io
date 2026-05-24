@@ -3,10 +3,9 @@ title: "3D Multi-Touch Product Vision"
 pubDate: "2011-01-26"
 description: "As you might know I was developing a prototype for 3D multi-touch interaction during my Master thesis at Fraunhofer FIT. Lately I had the chance to talk with a ..."
 tags: ["drawing", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
-icon: "/posts/2011_01_27_3dmt_product_vision/pencil_drawing.jpg"
+icon: "./pencil_drawing.jpg"
 ---
-
-[![](/posts/2011_01_27_3dmt_product_vision/pencil_drawing.jpg)](/posts/2011_01_27_3dmt_product_vision/pencil_drawing.jpg)
+[![Pencil drawing illustration from 3D Multi-Touch Product Vision](./pencil_drawing.jpg)](./pencil_drawing.jpg)
 
 All in all the setting is inspired by Osca's profession: **Drawing**.
 However, we not only had *artistic* but also *technical drawings* in mind, i.e. a mixture of Photoshop style and CAD style applications.

@@ -3,12 +3,11 @@ title: "Lightweight Blog Implementation."
 pubDate: "2009-02-16"
 description: "In this article I describe how this website is created. You get a good insight into the techniques and technologies used. And maybe you get good ideas for your ..."
 tags: ["blog"]
-icon: "/posts/2009_02_17_lightweight_blog_implementation/article.png"
+icon: "./article.png"
 ---
-
 <div class="flow-root my-6">
   <a href="/posts/2009_02_17_lightweight_blog_implementation/svn.png" class="float-right ml-6 mb-4 max-w-[40%] block">
-    <img src="/posts/2009_02_17_lightweight_blog_implementation/svn.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./svn.png" alt="Svn detail from Lightweight Blog Implementation." loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   The general infrastructure of the online publication system is depicted in the figure to the right.
   Most importantly, I have a *Subversion* repository installed on my *Apache* web server which is accessible via *WebDAV*.
@@ -31,14 +30,14 @@ The posts for each category are stored within a separate folder.
 To generate the media lists, these folders are traveresed and the contents are extracted.
 Here is a code fragment from the index page:
 
-[![Index fragment](/posts/2009_02_17_lightweight_blog_implementation/index.png)](/posts/2009_02_17_lightweight_blog_implementation/index.png)
+[![Index fragment](./index.png)](./index.png)
 
 The function `listMedia` takes the path of the folder and the style to use as a parameter.
 In return, it generates `li` HTML list items containing a reference to the article and some meta information.
 You can also see the link to the *RSS* feed.
 The feed resuses the function `listMedia` with a different style as shown in the next example:
 
-[![RSS fragment](/posts/2009_02_17_lightweight_blog_implementation/rss.png)](/posts/2009_02_17_lightweight_blog_implementation/rss.png)
+[![RSS fragment](./rss.png)](./rss.png)
 
 Here, the function generates `item` elements for the *RSS* feed.
 The feeds for the other media types are implemented in the same way.
@@ -50,7 +49,7 @@ Having seen how articles are listed, we now have a look at the articles themselv
 Articles basically are just simple HTML pages stored in a category folder.
 The following code listing shows an example taken from this website:
 
-[![Article fragment](/posts/2009_02_17_lightweight_blog_implementation/article.png)](/posts/2009_02_17_lightweight_blog_implementation/article.png)
+[![Article fragment](./article.png)](./article.png)
 
 Each article has to define a *title*, a *date* and a *tagline*.
 These information items are considered as meta-data and displayed in media listings such as the front page and the *RSS* feeds.
@@ -61,7 +60,7 @@ Additionally, articles provide the means for posting comments by any user on the
 Therefore, the HTML structures for representing the comments as well as a post form are included at the bottom of the page.
 Here is an example from the previously discussed article example:
 
-[![Comments fragment](/posts/2009_02_17_lightweight_blog_implementation/comments.png)](/posts/2009_02_17_lightweight_blog_implementation/comments.png)
+[![Comments fragment](./comments.png)](./comments.png)
 
 The comment part of articles is contained within a dedicated `div` fragment.
 The fragment basically contains an ordered list (represented as an `ol` element) for storing the individual posts by different users.
@@ -74,7 +73,7 @@ Basically, a script is executed checking the integrity of the data and initiatin
 Additionally, an email is sent to those users which have specified an email address within their post.
 The following code fragment shows what happens after sending this email:
 
-[![Commenting fragment](/posts/2009_02_17_lightweight_blog_implementation/commenting.png)](/posts/2009_02_17_lightweight_blog_implementation/commenting.png)
+[![Commenting fragment](./commenting.png)](./commenting.png)
 
 In the first lines, a new HTML fragment is created from the comment which conforms to the structure shown before.
 Then this fragment is inserted into the article using the function `preg_replace` (this function is *regular expression* based).

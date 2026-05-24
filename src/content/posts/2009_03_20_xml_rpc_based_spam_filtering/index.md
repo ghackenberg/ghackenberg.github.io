@@ -3,9 +3,8 @@ title: "XML-RPC based Spam Filtering."
 pubDate: "2009-03-19"
 description: "To prevent my blog from being spammed, I recently integrated a spam filtering service. The service is offered by blogspam (dot) net, it's entirely open source a..."
 tags: ["blog"]
-icon: "/posts/2009_03_20_xml_rpc_based_spam_filtering/http_post.png"
+icon: "./http_post.png"
 ---
-
 You might wonder, why I decided to implement my own XML-RPC HTTP client, because there are already packages out there which solve that problem.
 Well of course, first of all I like doing stuff my self (such as implementing my own blog `:)`).
 But also I was really considering to use an available package for doing that.
@@ -21,13 +20,13 @@ This is quite nice, but it's not at all what I wanna do.
 Second, it provides methods for generating XML-RPC fragments which can be passed via HTTP to invoke remote services.
 Here is an example:
 
-[![](/posts/2009_03_20_xml_rpc_based_spam_filtering/php_encode.png)](/posts/2009_03_20_xml_rpc_based_spam_filtering/php_encode.png)
+[![Php encode illustration from XML-RPC based Spam Filtering.](./php_encode.png)](./php_encode.png)
 
 In the previous figure, I show how to generate an XML-RPC request to a method called `testComment`.
 This method expects the parameters `ip` for the IP of the user posting the comment, `email` for the email address provided by the user, `name` for the name entered by the user and `comment` for the comment content posted.
 The function call `xmlrpc_encode_request` will generate the following XML fragment:
 
-[![](/posts/2009_03_20_xml_rpc_based_spam_filtering/xml_rpc_request.png)](/posts/2009_03_20_xml_rpc_based_spam_filtering/xml_rpc_request.png)
+[![Xml rpc request illustration from XML-RPC based Spam Filtering.](./xml_rpc_request.png)](./xml_rpc_request.png)
 
 The XML format is specified by the XML-RPC standard.
 The recipient can use it to derive which method to call and which parameters to pass.
@@ -39,7 +38,7 @@ For sending HTTP requests I use the method `fsockopen` which is provided by PHP 
 Then I construct the HTTP message which should be sent and write it to the socket.
 Here is the corresponding code fragment:
 
-[![](/posts/2009_03_20_xml_rpc_based_spam_filtering/http_post.png)](/posts/2009_03_20_xml_rpc_based_spam_filtering/http_post.png)
+[![Http post illustration from XML-RPC based Spam Filtering.](./http_post.png)](./http_post.png)
 
 So what's happening is that first the socket is opened to the host `test.blogspam.net` on port `8888`
 Then the HTTP request is sent.
@@ -49,13 +48,13 @@ After writing the request this will cause the web service to immediately write t
 Now we have to read and parse the response for getting the answer by the service.
 First let's get the bytes from the stream:
 
-[![](/posts/2009_03_20_xml_rpc_based_spam_filtering/read_socket.png)](/posts/2009_03_20_xml_rpc_based_spam_filtering/read_socket.png)
+[![Read socket illustration from XML-RPC based Spam Filtering.](./read_socket.png)](./read_socket.png)
 
 We read from the stream until the end of the stream is reached, i.e. no byte data is left.
 Then we close the socket and free all resources.
 So here is what the HTTP response looks like:
 
-[![](/posts/2009_03_20_xml_rpc_based_spam_filtering/http_response.png)](/posts/2009_03_20_xml_rpc_based_spam_filtering/http_response.png)
+[![Http response illustration from XML-RPC based Spam Filtering.](./http_response.png)](./http_response.png)
 
 The response contains the usual HTTP header and the response body.
 The header gives information about the HTTP status and other header variables such as `Content-Length` or `Content-Type`.

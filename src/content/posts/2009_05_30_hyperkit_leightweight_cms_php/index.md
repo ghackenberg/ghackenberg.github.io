@@ -3,9 +3,8 @@ title: "HyperKit - A lightweight CMS written in PHP."
 pubDate: "2009-05-29"
 description: "Recently, I helped a friend of mine who is starting his own business with his website. I searched for a lightweight content management system which provides eno..."
 tags: ["hyperkit-software", "user-interface"]
-icon: "/posts/2009_05_30_hyperkit_leightweight_cms_php/setup.jpg"
+icon: "./setup.jpg"
 ---
-
 Content management has been a topic for several years now.
 I remember working with my first CMS when I was 18.
 Back then, I was working for a marketing agency in my local town.
@@ -29,7 +28,7 @@ When installed from scratch, HyperKit does not provide any collection except the
 Each content added to the setup collection is transformed into a collection on it's own.
 To illustrate this, I have taken a screenshot from the official [HyperKit website](http://www.hyperkit-software.com) backend.
 
-[![](/posts/2009_05_30_hyperkit_leightweight_cms_php/setup.jpg)](/posts/2009_05_30_hyperkit_leightweight_cms_php/setup.jpg)
+[![Setup illustration from HyperKit - A lightweight CMS written in PHP.](./setup.jpg)](./setup.jpg)
 
 The screen shows the HyperKit backend.
 The user currently opened the setup collection.

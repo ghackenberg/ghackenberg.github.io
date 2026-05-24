@@ -3,9 +3,8 @@ title: "Linear vs. Cubic Interpolation"
 pubDate: "2011-02-21"
 description: "After talking with some non-computer scientists about my previous visualization of cubic interpolation I found out that the concept is difficult to understand i..."
 tags: ["youtube-video", "data-visualization"]
-icon: "/posts/2011_02_22_linear_vs_cubic_interpolation/screenshot.png"
+icon: "./screenshot.png"
 ---
-
 <iframe title="YouTube video player" src="//www.youtube.com/embed/EMNpxfWo9go?rel=0" frameborder="0" allowfullscreen="yes"></iframe>
 
 To give a short explanation: Again the red dots represent measured data points, for example temperature, lightness, air pressure, etc.

@@ -3,17 +3,16 @@ title: "Blog Cover Interface"
 pubDate: "2011-06-29"
 description: "In the previous post I demonstrated Animated Article Tiles, a new type of interface for blogs. One problem people had using the interface was that the images/ti..."
 tags: ["blog", "data-visualization", "user-interface"]
-icon: "/posts/2011_06_30_blog_cover_interface/screenshot_one.png"
+icon: "./screenshot_one.png"
 ---
-
 This new concept essentially means that only one article at a time is being displayed.
 For the displayed article all information (date, title, tagline, and images) is provided.
 Through the `(p)`revious and `(n)`ext keys the user can switch between the articles.
 Interaction with the mouse is not necessary.
 To make the interface more attractive the images are provided both as thumbnails below the article tagline and as a slideshow in the right part of the interface.
 
-[![](/posts/2011_06_30_blog_cover_interface/screenshot_one.png)](/posts/2011_06_30_blog_cover_interface/screenshot_one.png)
-[![](/posts/2011_06_30_blog_cover_interface/screenshot_two.png)](/posts/2011_06_30_blog_cover_interface/screenshot_two.png)
+[![Screenshot one illustration from Blog Cover Interface](./screenshot_one.png)](./screenshot_one.png)
+[![Screenshot two illustration from Blog Cover Interface](./screenshot_two.png)](./screenshot_two.png)
 
 The idea was actually inspired by two concepts: The article tiles and the standard cover flow.
 In the future it might be interesting to extend the interface with a flow-style animation when switching between articles.

@@ -114,7 +114,12 @@ const colorMappings = {
         <div class="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
           <div class="relative w-64 h-64 min-[360px]:w-72 min-[360px]:h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
             <!-- Large floating headshot inside SVG to avoid WebKit subpixel clipping artifacts -->
-            <svg viewBox="0 0 100 100" class="w-full h-full select-none pointer-events-none relative z-10">
+            <svg 
+              viewBox="0 0 100 100" 
+              class="w-full h-full select-none pointer-events-none relative z-10"
+              role="img"
+              aria-label="Dr. Georg Hackenberg - Profile Headshot"
+            >
               <defs>
                 <!-- SVG RadialGradient for soft bottom fadeout, keeping top head sharp -->
                 <radialGradient id="fadeGradient" cx="50%" cy="30%" r="70%">

@@ -3,9 +3,8 @@ title: "Master Thesis Video."
 pubDate: "2010-06-26"
 description: "After finally completing my Master Thesis project at Fraunhofer FIT me and some friends took some time to prepare a demonstration video. The video is now availa..."
 tags: ["youtube-video", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
-icon: "/posts/2010_06_27_master_thesis_video/screenshot.png"
+icon: "./screenshot.png"
 ---
-
 As a short introduction: During my Master Thesis I worked on barehanded human-computer interaction in 3D.
 More figuratively speaking I was working on enabling the user to manipulate virtual 3D content using barehand motion and gestures.
 The resulting system has shown to be quite responsive, however it is certainly still in prototyping stage.

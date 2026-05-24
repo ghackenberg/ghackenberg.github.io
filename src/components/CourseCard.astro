@@ -47,6 +47,8 @@ const languageColors: Record<string, string> = {
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 will-change-transform pointer-events-none" 
         viewBox="0 0 160 90" 
         preserveAspectRatio="none"
+        role="img"
+        aria-label={`Course preview: ${title}`}
       >
         <defs>
           <linearGradient id={`grad-course-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">

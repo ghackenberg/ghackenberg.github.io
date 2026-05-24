@@ -3,9 +3,8 @@ title: "Visualization Studio for Systems Engineers"
 pubDate: "2012-08-02"
 description: "Seeing is understanding. This is especially true when engineering the structure and behavior of complex systems. Understanding whatever models you built is the ..."
 tags: ["dynamic-programming", "data-visualization", "youtube-video"]
-icon: "/posts/2012_08_03_visualization_studio/screenshot.png"
+icon: "./screenshot.png"
 ---
-
 The prototype is created with HTML, JavaScript and Google Charts.
 For using these tools we created an exporter from our custom simulation and exploration software to JavaScript.
 The visualization is currently static since we concentrated on building the basic infrastructure.

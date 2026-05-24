@@ -3,14 +3,13 @@ title: "3D Multi-Touch with Computer Vision"
 pubDate: "2011-07-13"
 description: "Some time ago I was working on free hand 3D gesture interfaces similar to Microsoft Kinect. What this work essentially means is collecting digital camera images..."
 tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
-icon: "/posts/2011_07_14_3dmt_computer_vision/candidates.png"
+icon: "./candidates.png"
 ---
-
 Some time ago I was working on free hand 3D gesture interfaces similar to Microsoft Kinect. What this work essentially means is collecting digital camera images...
 
 <div class="flow-root my-8">
   <a href="/posts/2011_07_14_3dmt_computer_vision/regions.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="/posts/2011_07_14_3dmt_computer_vision/regions.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./regions.png" alt="Regions detail from 3D Multi-Touch with Computer Vision" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   <p class="text-gray-300 leading-relaxed pt-2">
     This **first** visualization illustrates how the original image contents are segmented into regions of consistent depth.
@@ -20,7 +19,7 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 
 <div class="flow-root my-8">
   <a href="/posts/2011_07_14_3dmt_computer_vision/distances.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="/posts/2011_07_14_3dmt_computer_vision/distances.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./distances.png" alt="Distances detail from 3D Multi-Touch with Computer Vision" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   <p class="text-gray-300 leading-relaxed pt-2">
     This **second** visualization illustrates the process of calculating for each pixel the distance to the closest depth discontinuity.
@@ -30,7 +29,7 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 
 <div class="flow-root my-8">
   <a href="/posts/2011_07_14_3dmt_computer_vision/tips.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="/posts/2011_07_14_3dmt_computer_vision/tips.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./tips.png" alt="Tips detail from 3D Multi-Touch with Computer Vision" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   <p class="text-gray-300 leading-relaxed pt-2">
     This **third** visualization illustrates the process of finding candidates for finger tips in the image.
@@ -41,7 +40,7 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 
 <div class="flow-root my-8">
   <a href="/posts/2011_07_14_3dmt_computer_vision/pipes.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="/posts/2011_07_14_3dmt_computer_vision/pipes.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./pipes.png" alt="Pipes detail from 3D Multi-Touch with Computer Vision" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   <p class="text-gray-300 leading-relaxed pt-2">
     This **fourth** visualization illustrates the process of finding the fingers (or finger pipes as we call it) in the image.
@@ -51,7 +50,7 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 
 <div class="flow-root my-8">
   <a href="/posts/2011_07_14_3dmt_computer_vision/topologies.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="/posts/2011_07_14_3dmt_computer_vision/topologies.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./topologies.png" alt="Topologies detail from 3D Multi-Touch with Computer Vision" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   <p class="text-gray-300 leading-relaxed pt-2">
     This **fifth** visualization illustrates the process of estimating the skeleton of the objects that are visible in the camera image.
@@ -61,7 +60,7 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 
 <div class="flow-root my-8">
   <a href="/posts/2011_07_14_3dmt_computer_vision/fingers.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="/posts/2011_07_14_3dmt_computer_vision/fingers.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./fingers.png" alt="Fingers detail from 3D Multi-Touch with Computer Vision" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   <p class="text-gray-300 leading-relaxed pt-2">
     This **sixth** visualization illustrates the process of extracting finger-like structures from the image contents.
@@ -71,7 +70,7 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 
 <div class="flow-root my-8">
   <a href="/posts/2011_07_14_3dmt_computer_vision/candidates.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="/posts/2011_07_14_3dmt_computer_vision/candidates.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./candidates.png" alt="Candidates detail from 3D Multi-Touch with Computer Vision" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   <p class="text-gray-300 leading-relaxed pt-2">
     This **seventh** visualization illustrates the process of grouping various image features to candidates for the hand recognition and tracking step.
@@ -81,7 +80,7 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 
 <div class="flow-root my-8">
   <a href="/posts/2011_07_14_3dmt_computer_vision/tracking.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="/posts/2011_07_14_3dmt_computer_vision/tracking.png" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
+    <img src="./tracking.png" alt="Tracking detail from 3D Multi-Touch with Computer Vision" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
   </a>
   <p class="text-gray-300 leading-relaxed pt-2">
     This **eighth** visualization illustrates the process of tracking hand appearances over time across the image plane.

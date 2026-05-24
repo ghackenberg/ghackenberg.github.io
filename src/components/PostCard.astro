@@ -4,7 +4,7 @@ interface Props {
   title: string;
   description?: string;
   pubDate: Date;
-  icon?: string;
+  icon?: any;
   tags: string[];
   activeTag?: string;
 }
@@ -27,6 +27,8 @@ const {
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-300 z-0 will-change-transform pointer-events-none" 
         viewBox="0 0 100 100" 
         preserveAspectRatio="none"
+        role="img"
+        aria-label={`Post icon: ${title}`}
       >
         <defs>
           <linearGradient id={`grad-post-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="1" y2="1">
@@ -35,7 +37,7 @@ const {
           </linearGradient>
         </defs>
         <image 
-          href={icon} 
+          href={typeof icon === 'string' ? icon : (icon?.src || '')} 
           x="0" 
           y="0" 
           width="100" 

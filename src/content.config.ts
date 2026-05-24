@@ -81,12 +81,12 @@ const posts = defineCollection({
     pattern: '**/index.{md,mdx}',
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     pubDate: z.coerce.date(),
     description: z.string().optional(),
     tags: z.array(z.string()).default([]),
-    icon: z.string().optional(),
+    icon: image().optional(),
   }),
 });
 

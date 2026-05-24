@@ -3,9 +3,8 @@ title: "Relaunching my personal website on GitHub Pages with Astro and TypeScrip
 pubDate: "2026-05-23"
 description: "Discover how I relaunched my personal website on GitHub Pages using Astro, TypeScript, and Google Antigravity to automate legacy PHP content migration."
 tags: ["web-development", "astro", "typescript", "gemini", "ai-migration", "github-pages"]
-icon: "/posts/2026_05_23_website_relaunch_astro_typescript/icon.png"
+icon: "./icon.png"
 ---
-
 After many years of running my personal website on a custom, server-side template engine, I have officially relaunched it! The new website is a fully static application built with **Astro** and **TypeScript**, hosted entirely on **GitHub Pages**. 
 
 This modernization represents a massive leap forward in load performance, developer experience, type-safety, and security. However, migrating over a decade of blog posts, publication records, and course materials was a daunting task. Here is the story of how I successfully automated this migration using **Google Antigravity** powered by **Gemini 3.5 Flash (High)**.
@@ -28,7 +27,7 @@ To automate the migration, I leveraged **Google Antigravity** running **Gemini 3
 
 Here is the migration workflow in detail:
 
-![Migration Workflow](/posts/2026_05_23_website_relaunch_astro_typescript/workflow.svg)
+![Migration Workflow](./workflow.svg)
 
 1. **Legacy Source**: The migration script extracted raw XML and PHP content from my original database.
 2. **AI Translation**: Using Google Antigravity's agentic workspace tools, Gemini 3.5 Flash analyzed the structure of my old files, mapped attributes (e.g., date formats, tag arrays, image assets), and converted them into clean markdown/frontmatter.
@@ -40,7 +39,7 @@ Everything ran completely smoothly in a matter of minutes, preserving all format
 
 The new setup completely decouples the content creation and compilation step from the content delivery step. The architecture below showcases the contrast between the old dynamic approach and the modern, static CDN-driven approach:
 
-![Architecture Comparison](/posts/2026_05_23_website_relaunch_astro_typescript/architecture.svg)
+![Architecture Comparison](./architecture.svg)
 
 - **Old (Left)**: The client had to wait for Apache to compile the PHP template engine and retrieve values from the filesystem on every request.
 - **New (Right)**: The compiler runs locally or via CI/CD. The build output is a folder of optimized HTML, CSS, and JS files served directly from the GitHub Pages CDN.
