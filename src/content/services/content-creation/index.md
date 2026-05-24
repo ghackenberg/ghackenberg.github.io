@@ -1,39 +1,39 @@
 ---
 title: "Content Creation"
-interestTitle: "Tech Publishing"
-interestTagline: "LinkedIn, YouTube & Technical Web Publishing"
-interestDescription: "Publishing deep-dive technical videos, educational tutorials, and codebase showcases for a dedicated developer audience across YouTube, LinkedIn, and web platforms."
+interestTitle: "Content Creation"
+interestTagline: "Websites, Graphics & Media Campaigns"
+interestDescription: "Designing high-performance business websites, crafting developer resources, and scripting professional media campaigns directly for your brand's own platforms."
 icon: "🌐"
 color: "green"
 order: 4
-ctaText: "Discuss Sponsorship"
+ctaText: "Discuss Content Creation"
 highlights:
-  - "Sponsored YouTube video tutorials and visual coding walkthroughs"
-  - "Deep-dive technical blog posts and step-by-step developer guides"
-  - "Developer Relations (DevRel) partnerships, tool reviews, and SDK audits"
-  - "Promotional open-source code templates and showcase applications"
+  - "Custom business website design, engineering, and deployment"
+  - "Technical copywriting, documentation formatting, and developer blogs"
+  - "Social media graphics, banner designs, and campaign planning"
+  - "Explainer animations, technical drawings, and vector flowcharts"
 previewImage: "./preview.png"
 methodologyDiagram: "./methodology.svg"
-methodologyDescription: "Our developer relation content pipeline connects technical tools with real-world users: we perform deep-dive tool evaluations, design step-by-step tutorial scripts, bootstrap showcase repositories on GitHub, and publish high-quality visual walkthroughs across developer media channels."
+methodologyDescription: "Our content creation process delivers tailored digital assets for your brand: we perform initial briefing analysis, create graphic design layouts and text drafts, build or produce final assets, and run final quality checks before launch."
 methodologyPhases:
-  - title: "SDK & Tool Evaluation"
-    description: "We audit your developer tooling, API libraries, and onboarding documentation. By acting as a senior developer using the SDK for the first time, we identify Developer Experience (DX) friction points."
-  - title: "Educational Content Design"
-    description: "We design structured tutorial paths and deep-dive technical guides. We script videos and write blog posts that avoid superficial overviews, focusing instead on real-world engineering concepts."
-  - title: "Code Bootstrapping"
-    description: "We build high-quality, open-source boilerplate projects on GitHub. These showcases demonstrate production-ready SDK configurations and provide clear templates for developers to fork and extend."
-  - title: "Media Release & Launch"
-    description: "We publish the educational videos and technical articles across active developer channels (YouTube, LinkedIn, and GitHub). We drive developer engagement by presenting your tool's actual utility."
+  - title: "Briefing & Specs"
+    description: "We align on your brand identity, target audience, and business goals. We define exactly what assets are needed, whether it is a modern website, documentation, or social graphics."
+  - title: "Design & Copywriting"
+    description: "We create high-fidelity website layouts, copy drafts, and graphic concepts. You receive early wireframes and outlines to ensure absolute alignment before final production."
+  - title: "Asset Production"
+    description: "We build the custom website, write final technical copies, and assemble all graphics and media files. We keep codebases modular, fast, and fully responsive."
+  - title: "Review & Handoff"
+    description: "We run final QA checks on web responsiveness and copy tone. We launch or deliver production-ready assets with complete source files and easy-to-use documentation."
 pubDate: 2026-05-24
 ---
 
-### Connecting Developers with Exceptional Tooling
+### Professional Digital Assets and Web Engineering
 
-As an educator and content creator, I maintain an active presence on YouTube, GitHub, and LinkedIn, sharing insights about software engineering, layout simulations, and modern web developer stacks.
+Building a modern online presence requires high-quality design, senior software engineering depth, and sharp technical copywriting.
 
-I partner with software providers, cloud platforms, database developers, and productivity tool startups to create clear, highly polished, and educational developer content. By combining senior engineering depth with high-quality production, I showcase your tool's real-world value to a dedicated developer audience.
+I help companies, educational organizations, and technical startups design and build custom websites, write detailed developer resources, and plan visual media campaigns. By combining my university-level teaching standards with clean coding practices, I deliver professional content that communicates your message with absolute clarity.
 
 #### How we can work together:
-*   **Sponsored Tutorials:** Creating highly polished video walkthroughs on YouTube, showcasing how to build real products using your tool or framework (e.g., interactive visual networks or backend configurations).
-*   **Developer Experience (DX) Audits:** Reviewing your SDKs, APIs, and documentation from a senior developer's perspective and creating companion projects to simplify onboarding.
-*   **Co-Branded Open-Source Tooling:** Building open-source templates and example repositories using your technology stack to drive developer engagement on GitHub.
+*   **Custom Web Design & Development:** Engineering fast, responsive, and visually stunning websites or portfolio pages matching your corporate brand guidelines.
+*   **Technical Copywriting & Documentation:** Writing clear, structured developer manuals, tutorial series, or whitepapers that simplify complex engineering setups.
+*   **Social Media Campaign Planning:** Creating customized technical graphics, vector diagrams, and banners for your LinkedIn updates, product releases, or educational campaigns.
