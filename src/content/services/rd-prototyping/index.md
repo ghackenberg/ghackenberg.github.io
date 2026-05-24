@@ -12,6 +12,18 @@ highlights:
   - "Interactive dashboards and graph visualizations (D3.js, Canvas, SVG)"
   - "Algorithm translation from Python/MATLAB to high-performance JS/WebAssembly"
   - "Type-safe database integrations and schema-driven API architectures"
+previewImage: "./preview.png"
+methodologyDiagram: "./methodology.svg"
+methodologyDescription: "Our prototyping workflow accelerates scientific innovation into production-ready software: starting with concept ideation, we design a modular system architecture, build performance-optimized core calculations in JavaScript/WebAssembly, and deliver an interactive, high-fidelity Minimum Viable Product (MVP)."
+methodologyPhases:
+  - title: "Concept & Scope"
+    description: "We translate your scientific formulas, mathematical logic, or draft Python scripts into clear software requirements. We define the prototype boundary to maximize early usability."
+  - title: "Modular Architecture"
+    description: "We architect a type-safe system using modern web patterns. By establishing structured schemas, modular API endpoints, and clean data contracts, we construct a codebase that is highly scalable."
+  - title: "Runtime Optimization"
+    description: "We engineer performance-critical calculations for the browser environment. Using compiled Rust/C++ compiled via WebAssembly and optimized canvas loops, we ensure the prototype runs fluidly at 60fps."
+  - title: "MVP Delivery"
+    description: "We package the prototype into a polished, responsive web dashboard ready for stakeholder demos. You receive a clean repository with documentation, serving as a solid blueprint for full-scale development."
 pubDate: 2026-05-24
 ---
 

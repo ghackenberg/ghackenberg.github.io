@@ -12,6 +12,18 @@ highlights:
   - "Deep-dive technical blog posts and step-by-step developer guides"
   - "Developer Relations (DevRel) partnerships, tool reviews, and SDK audits"
   - "Promotional open-source code templates and showcase applications"
+previewImage: "./preview.png"
+methodologyDiagram: "./methodology.svg"
+methodologyDescription: "Our developer relation content pipeline connects technical tools with real-world users: we perform deep-dive tool evaluations, design step-by-step tutorial scripts, bootstrap showcase repositories on GitHub, and publish high-quality visual walkthroughs across developer media channels."
+methodologyPhases:
+  - title: "SDK & Tool Evaluation"
+    description: "We audit your developer tooling, API libraries, and onboarding documentation. By acting as a senior developer using the SDK for the first time, we identify Developer Experience (DX) friction points."
+  - title: "Educational Content Design"
+    description: "We design structured tutorial paths and deep-dive technical guides. We script videos and write blog posts that avoid superficial overviews, focusing instead on real-world engineering concepts."
+  - title: "Code Bootstrapping"
+    description: "We build high-quality, open-source boilerplate projects on GitHub. These showcases demonstrate production-ready SDK configurations and provide clear templates for developers to fork and extend."
+  - title: "Media Release & Launch"
+    description: "We publish the educational videos and technical articles across active developer channels (YouTube, LinkedIn, and GitHub). We drive developer engagement by presenting your tool's actual utility."
 pubDate: 2026-05-24
 ---
 

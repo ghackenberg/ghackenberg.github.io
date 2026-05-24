@@ -1,17 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
-import { getCollection, render } from "astro:content";
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-
-const servicesWithContent = await Promise.all(
-  sortedServices.map(async (service) => {
-    const { Content } = await render(service);
-    return { service, Content };
-  })
-);
 
 const colorClasses = {
   blue: {
@@ -71,64 +65,110 @@ const colorClasses = {
 
     <!-- Services Detailed List -->
     <div class="space-y-16">
-      {servicesWithContent.map(({ service, Content }) => {
+      {sortedServices.map((service) => {
         const classes = colorClasses[service.data.color];
         return (
-          <section id={service.id} class="scroll-mt-24 relative">
-            <div class="glass-card p-8 md:p-12 rounded-3xl border border-white/5 relative overflow-hidden">
+          <section id={service.id} class="scroll-mt-24 relative group">
+            <div class="glass-card rounded-3xl border border-white/5 relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 items-stretch p-0">
               <!-- Top accent color line -->
-              <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${classes.glow}`}></div>
+              <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${classes.glow} z-20`}></div>
               
-              <!-- Card Header -->
-              <div class="flex flex-wrap items-center gap-4 mb-8">
-                <div class={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl border ${classes.bg}`}>
-                  {service.data.icon}
-                </div>
-                <div>
-                  <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none">
-                    {service.data.title}
-                  </h2>
-                  <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-1.5">
-                    Complementary to {service.data.interestTitle}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Two Column Layout: Main Content vs Highlights & CTA -->
-              <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                <!-- Main markdown text (Left) -->
-                <div class="lg:col-span-8 service-content">
-                  <Content />
-                </div>
-
-                <!-- Highlights & CTA (Right) -->
-                <div class="lg:col-span-4 lg:sticky lg:top-24">
-                  <div class="glass-card p-6 rounded-2xl border border-white/5 relative overflow-hidden bg-white/[0.01]">
-                    <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${classes.glow}`}></div>
-                    
-                    <h4 class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-4">Core Focus Areas</h4>
-                    
-                    <ul class="space-y-3 mb-8">
-                      {service.data.highlights.map(item => (
-                        <li class="text-[11px] text-gray-300 flex items-start gap-2 leading-relaxed">
-                          <span class={`font-bold select-none ${classes.text}`}>&bull;</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <a
-                      href="#contact-services"
-                      data-subject={`Inquiry: ${service.data.title}`}
-                      class={`w-full py-3 px-4 rounded-xl text-center text-xs font-semibold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger ${classes.btnBg}`}
-                    >
-                      <span>{service.data.ctaText}</span>
-                      <span>&rarr;</span>
-                    </a>
+              <!-- Info Column (Left) -->
+              <div class="p-8 md:p-10 lg:col-span-7 flex flex-col justify-center space-y-6 relative z-10">
+                <!-- Header -->
+                <div class="flex items-center gap-4">
+                  <div class={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl border ${classes.bg}`}>
+                    {service.data.icon}
+                  </div>
+                  <div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none">
+                      {service.data.title}
+                    </h2>
+                    <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-1.5">
+                      Complementary to {service.data.interestTitle}
+                    </p>
                   </div>
                 </div>
 
+                <!-- Tagline Description -->
+                <div class="space-y-3">
+                  <p class="text-brand-yellow/90 font-bold text-xs uppercase tracking-wider">
+                    {service.data.interestTagline}
+                  </p>
+                  <p class="text-gray-300 text-sm leading-relaxed font-normal">
+                    {service.data.interestDescription}
+                  </p>
+                </div>
+
+                <!-- Highlights List -->
+                <div>
+                  <h4 class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Key Focus Areas</h4>
+                  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+                    {service.data.highlights.map(item => (
+                      <li class="text-[11px] text-gray-400 flex items-start gap-2 leading-relaxed">
+                        <span class={`font-bold select-none ${classes.text}`}>&bull;</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <!-- CTA buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                  <a
+                    href={`/services/${service.id}`}
+                    class="px-5 py-3 rounded-xl text-center text-xs font-semibold bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 transition-all duration-300 flex items-center justify-center space-x-1.5 cursor-pointer"
+                  >
+                    <span>View Details & Methodology</span>
+                    <span>&rarr;</span>
+                  </a>
+                  
+                  <a
+                    href="#contact-services"
+                    data-subject={`Inquiry: ${service.data.title}`}
+                    class={`px-5 py-3 rounded-xl text-center text-xs font-semibold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger ${classes.btnBg}`}
+                  >
+                    <span>{service.data.ctaText}</span>
+                    <span>&rarr;</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Preview Image Column (Right) -->
+              <div class="lg:col-span-5 relative min-h-[240px] sm:min-h-[320px] lg:min-h-full w-full overflow-hidden bg-gray-950/40">
+                {service.data.previewImage && (
+                  <svg 
+                    class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 will-change-transform pointer-events-none" 
+                    viewBox={`0 0 ${service.data.previewImage.width} ${service.data.previewImage.height}`} 
+                    preserveAspectRatio="xMidYMid slice"
+                    role="img"
+                    aria-label={`Service preview: ${service.data.title}`}
+                  >
+                    <defs>
+                      <linearGradient id={`grad-service-${service.id}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+                        <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
+                        <stop offset="100%" stop-color="#000000" stop-opacity="0.75" />
+                      </linearGradient>
+                    </defs>
+                    <image 
+                      href={service.data.previewImage.src} 
+                      x="0" 
+                      y="0" 
+                      width={service.data.previewImage.width} 
+                      height={service.data.previewImage.height} 
+                      preserveAspectRatio="xMidYMid slice" 
+                    />
+                    <rect 
+                      x="0" 
+                      y="0" 
+                      width={service.data.previewImage.width} 
+                      height={service.data.previewImage.height + 0.5} 
+                      fill={`url(#grad-service-${service.id})`} 
+                    />
+                  </svg>
+                )}
+                <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-l from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
               </div>
 
             </div>

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 580" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="grad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <linearGradient id="grad-gray" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+    <!-- Glow Filters -->
+    <filter id="glow-purple-light" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Arrow Markers -->
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#a855f7" />
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569" />
+    </marker>
+  </defs>
+  
+  <!-- Background Card -->
+  <rect width="500" height="580" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+  
+  <!-- Vertical Timeline Line -->
+  <line x1="50" y1="40" x2="50" y2="540" stroke="#1e293b" stroke-width="4" stroke-dasharray="2,6" />
+  
+  <!-- Timeline Flow Arrows -->
+  <path d="M 50 75 L 50 185" stroke="#a855f7" stroke-width="2" stroke-dasharray="0" marker-end="url(#arrow-purple)" />
+  <path d="M 50 205 L 50 315" stroke="#a855f7" stroke-width="2" stroke-dasharray="0" marker-end="url(#arrow-purple)" />
+  <path d="M 50 335 L 50 445" stroke="#475569" stroke-width="2" stroke-dasharray="0" marker-end="url(#arrow-gray)" />
+
+  <!-- STEP 1: TECHNOLOGY AUDIT -->
+  <g>
+    <!-- Node Circle -->
+    <circle cx="50" cy="70" r="8" fill="#0f172a" stroke="#475569" stroke-width="2" />
+    <circle cx="50" cy="70" r="4" fill="#475569" />
+    
+    <!-- Content Card -->
+    <g transform="translate(90, 20)">
+      <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#475569" stroke-width="1.2" />
+      <text x="20" y="28" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 1</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Technology Audit</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Independent codebase evaluation for investors</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Assess patent potential &amp; IP uniqueness</text>
+    </g>
+  </g>
+
+  <!-- STEP 2: ARCHITECTURE ASSESSMENT -->
+  <g>
+    <!-- Node Circle -->
+    <circle cx="50" cy="200" r="10" fill="#0f172a" stroke="#a855f7" stroke-width="2.5" filter="url(#glow-purple-light)" />
+    <circle cx="50" cy="200" r="5" fill="#a855f7" />
+    
+    <!-- Content Card -->
+    <g transform="translate(90, 150)">
+      <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#a855f7" stroke-width="1.5" filter="url(#glow-purple-light)" />
+      <text x="20" y="28" fill="#c084fc" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 2</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Architecture Review</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Analyze model boundaries &amp; database schemas</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Audit backend scalability capacities</text>
+    </g>
+  </g>
+
+  <!-- STEP 3: PRIVACY & AI ROADMAP -->
+  <g>
+    <!-- Node Circle -->
+    <circle cx="50" cy="330" r="10" fill="#0f172a" stroke="#a855f7" stroke-width="2.5" filter="url(#glow-purple-light)" />
+    <circle cx="50" cy="330" r="5" fill="#a855f7" />
+    
+    <!-- Content Card -->
+    <g transform="translate(90, 280)">
+      <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#a855f7" stroke-width="1.5" filter="url(#glow-purple-light)" />
+      <text x="20" y="28" fill="#c084fc" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 3</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">AI Privacy Roadmap</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Secure offline local LLM weight hosting</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Design protected RAG semantic pipelines</text>
+    </g>
+  </g>
+
+  <!-- STEP 4: TECH VALIDATION -->
+  <g>
+    <!-- Node Circle -->
+    <circle cx="50" cy="460" r="8" fill="#0f172a" stroke="#475569" stroke-width="2" />
+    <circle cx="50" cy="460" r="4" fill="#475569" />
+    
+    <!-- Content Card -->
+    <g transform="translate(90, 410)">
+      <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#475569" stroke-width="1.2" />
+      <text x="20" y="28" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 4</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Tech Validation</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Deliver independent advisory validation report</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Present technical review findings to board</text>
+    </g>
+  </g>
+</svg>

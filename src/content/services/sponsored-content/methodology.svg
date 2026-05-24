@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 580" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="grad-green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="grad-gray" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+    <!-- Glow Filters -->
+    <filter id="glow-green-light" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Arrow Markers -->
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569" />
+    </marker>
+  </defs>
+  
+  <!-- Background Card -->
+  <rect width="500" height="580" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+  
+  <!-- Vertical Timeline Line -->
+  <line x1="50" y1="40" x2="50" y2="540" stroke="#1e293b" stroke-width="4" stroke-dasharray="2,6" />
+  
+  <!-- Timeline Flow Arrows -->
+  <path d="M 50 75 L 50 185" stroke="#10b981" stroke-width="2" stroke-dasharray="0" marker-end="url(#arrow-green)" />
+  <path d="M 50 205 L 50 315" stroke="#10b981" stroke-width="2" stroke-dasharray="0" marker-end="url(#arrow-green)" />
+  <path d="M 50 335 L 50 445" stroke="#475569" stroke-width="2" stroke-dasharray="0" marker-end="url(#arrow-gray)" />
+
+  <!-- STEP 1: TOOL EVALUATION -->
+  <g>
+    <!-- Node Circle -->
+    <circle cx="50" cy="70" r="8" fill="#0f172a" stroke="#475569" stroke-width="2" />
+    <circle cx="50" cy="70" r="4" fill="#475569" />
+    
+    <!-- Content Card -->
+    <g transform="translate(90, 20)">
+      <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#475569" stroke-width="1.2" />
+      <text x="20" y="28" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 1</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Tool Evaluation</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Map API &amp; SDK codebase capabilities</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Identify developer experience (DX) friction</text>
+    </g>
+  </g>
+
+  <!-- STEP 2: CONTENT DESIGN -->
+  <g>
+    <!-- Node Circle -->
+    <circle cx="50" cy="200" r="10" fill="#0f172a" stroke="#10b981" stroke-width="2.5" filter="url(#glow-green-light)" />
+    <circle cx="50" cy="200" r="5" fill="#10b981" />
+    
+    <!-- Content Card -->
+    <g transform="translate(90, 150)">
+      <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#10b981" stroke-width="1.5" filter="url(#glow-green-light)" />
+      <text x="20" y="28" fill="#34d399" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 2</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Content Design</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Script step-by-step developer guides</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Plan visual animations &amp; visual coding logic</text>
+    </g>
+  </g>
+
+  <!-- STEP 3: CODE BOOTSTRAP -->
+  <g>
+    <!-- Node Circle -->
+    <circle cx="50" cy="330" r="10" fill="#0f172a" stroke="#10b981" stroke-width="2.5" filter="url(#glow-green-light)" />
+    <circle cx="50" cy="330" r="5" fill="#10b981" />
+    
+    <!-- Content Card -->
+    <g transform="translate(90, 280)">
+      <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#10b981" stroke-width="1.5" filter="url(#glow-green-light)" />
+      <text x="20" y="28" fill="#34d399" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 3</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Code Bootstrapping</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Create clean demo templates on GitHub</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• ConfigureSDK setups for developer cloning</text>
+    </g>
+  </g>
+
+  <!-- STEP 4: MEDIA RELEASE -->
+  <g>
+    <!-- Node Circle -->
+    <circle cx="50" cy="460" r="8" fill="#0f172a" stroke="#475569" stroke-width="2" />
+    <circle cx="50" cy="460" r="4" fill="#475569" />
+    
+    <!-- Content Card -->
+    <g transform="translate(90, 410)">
+      <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#475569" stroke-width="1.2" />
+      <text x="20" y="28" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 4</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Media Release</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Release high-quality YouTube tutorial videos</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Publish repositories &amp; share on LinkedIn</text>
+    </g>
+  </g>
+</svg>

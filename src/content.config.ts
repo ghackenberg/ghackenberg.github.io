@@ -186,7 +186,7 @@ const services = defineCollection({
     pattern: '**/index.{md,mdx}',
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     interestTitle: z.string(),
     interestTagline: z.string(),
@@ -197,6 +197,13 @@ const services = defineCollection({
     ctaText: z.string().default('Inquire Now'),
     highlights: z.array(z.string()).default([]),
     pubDate: z.coerce.date().optional(),
+    previewImage: image().optional(),
+    methodologyDiagram: image().optional(),
+    methodologyDescription: z.string().optional(),
+    methodologyPhases: z.array(z.object({
+      title: z.string(),
+      description: z.string(),
+    })).optional(),
   })
 });
 

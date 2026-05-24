@@ -67,7 +67,7 @@ export async function GET() {
     })),
     services: services.map(s => ({
       id: s.id,
-      url: `/services#${s.id}`,
+      url: `/services/${s.id}`,
       date: parseItemDate(s.id, s.data.pubDate)
     }))
   };

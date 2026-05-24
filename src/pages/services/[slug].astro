@@ -1,0 +1,325 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+
+export async function getStaticPaths() {
+  const services = await getCollection("services");
+  return services.map((service) => ({
+    params: { slug: service.id },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const { Content } = await render(service);
+
+const colorClasses = {
+  blue: {
+    text: 'text-brand-blue',
+    border: 'border-brand-blue/20',
+    bg: 'bg-brand-blue/10',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white',
+    hoverText: 'hover:text-brand-blue',
+    glow: 'from-brand-blue to-brand-purple',
+    leftBorder: 'border-brand-blue'
+  },
+  yellow: {
+    text: 'text-brand-yellow',
+    border: 'border-brand-yellow/20',
+    bg: 'bg-brand-yellow/10',
+    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
+    hoverText: 'hover:text-brand-yellow',
+    glow: 'from-brand-yellow to-brand-purple',
+    leftBorder: 'border-brand-yellow'
+  },
+  purple: {
+    text: 'text-brand-purple',
+    border: 'border-brand-purple/20',
+    bg: 'bg-brand-purple/10',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white',
+    hoverText: 'hover:text-brand-purple',
+    glow: 'from-brand-purple to-brand-blue',
+    leftBorder: 'border-brand-purple'
+  },
+  green: {
+    text: 'text-brand-green',
+    border: 'border-brand-green/20',
+    bg: 'bg-brand-green/10',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white',
+    hoverText: 'hover:text-brand-green',
+    glow: 'from-brand-green to-brand-blue',
+    leftBorder: 'border-brand-green'
+  }
+}[service.data.color];
+---
+
+<Layout 
+  title={`${service.data.title} | Professional Services | Dr. Georg Hackenberg`} 
+  description={service.data.interestDescription}
+  image={service.data.previewImage?.src}
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Back Button -->
+    <a 
+      href="/services" 
+      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white transition-all mb-8 cursor-pointer"
+    >
+      <span>&larr;</span>
+      <span>Back to Services</span>
+    </a>
+
+    <!-- Header -->
+    <header class="mb-12 pb-10 border-b border-white/5 relative">
+      <div class="flex items-center gap-3 mb-4">
+        <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} uppercase tracking-wider`}>
+          {service.data.icon} &nbsp; {service.data.interestTitle}
+        </span>
+        <span class="text-xs text-gray-500 font-medium">/ Professional Service</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
+        {service.data.title}
+      </h1>
+      <p class="text-brand-yellow font-bold text-xs uppercase tracking-wider mb-2">
+        {service.data.interestTagline}
+      </p>
+      <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
+        {service.data.interestDescription}
+      </p>
+    </header>
+
+    <!-- Main Content & Sidebar -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left Column: Details & Methodology Diagram -->
+      <div class="lg:col-span-8 space-y-12">
+        <!-- Service Text -->
+        <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content">
+          <Content />
+        </section>
+
+        <!-- Methodology Diagram Section -->
+        {service.data.methodologyDiagram && (
+          <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 space-y-6">
+            <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
+              <span>📊</span>
+              <span>Our Collaboration Methodology</span>
+            </h2>
+            <p class="text-gray-400 text-xs leading-relaxed font-normal">
+              A structured, step-by-step framework to ensure reliable, high-quality, and scalable project outcomes.
+            </p>
+            <div class="rounded-2xl border border-white/5 bg-gray-950/40 p-4 flex items-center justify-center relative">
+              <Image 
+                src={service.data.methodologyDiagram} 
+                alt={`${service.data.title} methodology flowchart`}
+                width={800}
+                height={500}
+                class="w-full max-w-lg mx-auto h-auto rounded-xl block"
+              />
+            </div>
+            {service.data.methodologyDescription && (
+              <div class={`pl-4 border-l-2 ${colorClasses.leftBorder} mt-4`}>
+                <p class="text-xs text-gray-300 leading-relaxed font-normal">
+                  {service.data.methodologyDescription}
+                </p>
+              </div>
+            )}
+            {service.data.methodologyPhases && (
+              <div class="mt-8 space-y-4 pt-6 border-t border-white/5">
+                <h3 class="text-xs font-extrabold uppercase tracking-widest text-gray-400">Detailed Phase Breakdown</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {service.data.methodologyPhases.map((phase, idx) => (
+                    <div class="space-y-1.5">
+                      <div class="flex items-center space-x-2">
+                        <span class={`w-5 h-5 rounded-full ${colorClasses.bg} border ${colorClasses.border} text-[10px] font-extrabold flex items-center justify-center ${colorClasses.text}`}>
+                          {idx + 1}
+                        </span>
+                        <h4 class="text-xs font-bold text-white uppercase tracking-wider">{phase.title}</h4>
+                      </div>
+                      <p class="text-xs text-gray-400 leading-relaxed pl-7">
+                        {phase.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+      </div>
+
+      <!-- Right Column: Sidebar Focus Areas & CTA -->
+      <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
+        <!-- Focus Areas Info Card -->
+        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden">
+          <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
+          
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+            <span>ℹ️</span>
+            <span>Focus Areas</span>
+          </h3>
+
+          <ul class="space-y-3.5 mb-8">
+            {service.data.highlights.map(item => (
+              <li class="text-[11px] text-gray-300 flex items-start gap-2 leading-relaxed">
+                <span class={`font-bold select-none ${colorClasses.text}`}>&bull;</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <a 
+            href="#contact-services"
+            data-subject={`Inquiry: ${service.data.title}`}
+            class={`w-full py-3.5 px-4 rounded-xl text-center text-xs font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger ${colorClasses.btnBg}`}
+          >
+            <span>{service.data.ctaText}</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact & Booking Section -->
+    <section id="contact-services" class="py-16 mt-16 border-t border-white/5 scroll-mt-24">
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-yellow/10 text-brand-yellow border border-brand-yellow/20 mb-4 uppercase tracking-wider">
+          Let's Collaborate
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">
+          Start a Conversation
+        </h2>
+        <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+          Write directly to discuss custom setups, corporate workshops, strategic advisory, or prototype developments.
+        </p>
+      </div>
+
+      <div class="max-w-2xl mx-auto">
+        <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow"></div>
+          
+          <h3 class="text-lg font-bold text-white mb-6">Contact & Booking Inquiry</h3>
+          
+          <div class="space-y-6">
+            <div class="flex items-start space-x-4">
+              <div class="text-brand-blue mt-1.5 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"></path>
+                </svg>
+              </div>
+              <div class="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Send an email request to</p>
+                  <p id="services-email-text" class="text-white font-mono font-medium mt-0.5 select-all text-sm sm:text-base">georg.hackenberg@fh-wels.at</p>
+                </div>
+                <button 
+                  id="services-copy-email-btn"
+                  class="px-4 py-2 text-xs font-semibold rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
+                >
+                  <span id="services-copy-btn-text">Copy Email</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
+              <p>Typically responding within 2 business days.</p>
+              <a 
+                id="direct-mail-link"
+                href={`mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry:%20${encodeURIComponent(service.data.title)}`}
+                class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
+              >
+                Open Email Client &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  /* Markdown content styling for service layouts */
+  .service-content :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: white;
+    margin-top: 1.85rem;
+    margin-bottom: 0.85rem;
+    letter-spacing: -0.015em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.35rem;
+  }
+  .service-content :global(h3:first-child) {
+    margin-top: 0;
+  }
+  .service-content :global(h4) {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: white;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .service-content :global(p) {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: #cbd5e1; /* slate-300 for premium contrast */
+    margin-bottom: 1.25rem;
+  }
+  .service-content :global(ul) {
+    list-style-type: disc;
+    padding-left: 1.25rem;
+    margin-bottom: 1.25rem;
+    color: #cbd5e1;
+  }
+  .service-content :global(li) {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .service-content :global(li strong) {
+    color: white;
+  }
+</style>
+
+<script>
+  // Add listeners to inquiry triggers to pre-fill email client link subject
+  const triggers = document.querySelectorAll('.inquiry-trigger');
+  const directMailLink = document.getElementById('direct-mail-link') as HTMLAnchorElement | null;
+  
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const subject = trigger.getAttribute('data-subject');
+      if (directMailLink && subject) {
+        directMailLink.href = `mailto:georg.hackenberg@fh-wels.at?subject=${encodeURIComponent(subject)}`;
+      }
+    });
+  });
+
+  // Copy Email Logic
+  const copyBtn = document.getElementById('services-copy-email-btn');
+  const emailText = document.getElementById('services-email-text');
+  const copyBtnText = document.getElementById('services-copy-btn-text');
+
+  if (copyBtn && emailText && copyBtnText) {
+    copyBtn.addEventListener('click', () => {
+      const email = emailText.textContent?.trim() || 'georg.hackenberg@fh-wels.at';
+      
+      navigator.clipboard.writeText(email).then(() => {
+        copyBtnText.textContent = 'Copied!';
+        copyBtn.classList.remove('bg-white/5', 'text-gray-300', 'border-white/10');
+        copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+        
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy Email';
+          copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+          copyBtn.classList.add('bg-white/5', 'text-gray-300', 'border-white/10');
+        }, 2500);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    });
+  }
+</script>

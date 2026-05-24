@@ -12,6 +12,18 @@ highlights:
   - "Local LLM feasibility, hosting setups, and privacy impact evaluations"
   - "Strategic design of semantic databases, knowledge graphs, and RAG pipelines"
   - "Research validation for emerging software products and funding proposals"
+previewImage: "./preview.png"
+methodologyDiagram: "./methodology.svg"
+methodologyDescription: "Our tech advisory framework ensures deep-tech validation and secure execution: we perform technology audits and architecture reviews, structure local AI/LLM hosting privacy roadmaps, and validate system designs for emerging software products and strategic due diligence."
+methodologyPhases:
+  - title: "Technology Audit"
+    description: "We conduct deep architectural reviews and codebase audits for venture capital firms and investors. We validate the technical viability of startup codebases and verify IP uniqueness before funding rounds."
+  - title: "Architecture Review"
+    description: "We assess software designs, database schemas, and infrastructure plans. We identify bottleneck patterns and scalability limitations to ensure the platform is ready for enterprise adoption."
+  - title: "Privacy & AI Roadmap"
+    description: "We design privacy-first integration plans for Large Language Models. We structure roadmaps for running open-weight models locally, setting up semantic search databases (RAG), and designing secure AI agent pipelines."
+  - title: "Validation & Report"
+    description: "We deliver an independent, peer-reviewed technical advisory report. We present our findings and recommendations to boards, executives, or investment committees, translating deep technical audit metrics into strategic business insights."
 pubDate: 2026-05-24
 ---
 
