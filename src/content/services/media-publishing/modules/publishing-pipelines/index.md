@@ -14,12 +14,37 @@ methodologyDescription: "Our pipeline setup process integrates software engineer
 methodologyPhases:
   - title: "Architecture Audit"
     description: "We evaluate your current content stack, marketing tools, or developer documentation setups to define optimal data integrations."
+    inputs:
+      - "Access to current content management systems (CMS)"
+      - "Sample raw manuscripts"
+      - "Target format specifications"
+    deliverables:
+      - "Audit report of pipeline bottlenecks"
+      - "Proposed pipeline architecture"
   - title: "Pipeline Blueprint"
     description: "We draft system integration schemas showing how templates, markdown assets, and mailing lists will synchronize automatically."
+    inputs:
+      - "API credentials/tokens"
+      - "Conversion mapping tables"
+    deliverables:
+      - "Automated compilation scripts (Python/Node.js)"
+      - "Local conversion test suite"
   - title: "Development & Coding"
     description: "We write automated rendering scripts, configure headless CMS interfaces, set up newsletter triggers, and write core copy."
+    inputs:
+      - "CI/CD server/GitHub Actions access"
+      - "Webhook URL targets"
+    deliverables:
+      - "Working automated CI/CD pipeline"
+      - "Pipeline status notification system"
   - title: "Integration & Launch"
     description: "We run end-to-end delivery tests, verify analytics tracking, and deploy the automated publishing system to production."
+    inputs:
+      - "Review session schedule"
+      - "Operational feedback"
+    deliverables:
+      - "Developer handover documentation"
+      - "Pipeline administration guide"
 order: 3
 previewImage: "./preview.png"
 pubDate: 2026-05-25

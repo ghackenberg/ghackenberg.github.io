@@ -14,12 +14,37 @@ methodologyDescription: "Our visualization workflow guarantees fluid user intera
 methodologyPhases:
   - title: "Data Mapping"
     description: "We analyze your system structures, network connections, or database relationships to establish clean data inputs."
+    inputs:
+      - "Sample CSV, JSON, or database exports"
+      - "Visual goals brief"
+      - "Dashboard constraint parameters"
+    deliverables:
+      - "Data parsing roadmap"
+      - "Initial chart sketch drafts"
   - title: "Render Blueprint"
     description: "We determine the best rendering technology (SVG for documents, HTML5 Canvas for performance, WebGL for 3D/large graphs)."
+    inputs:
+      - "User feedback on layout drawings"
+      - "Interactive user stories"
+    deliverables:
+      - "High-fidelity layout mockups"
+      - "Interactive click flows plan"
   - title: "Layout Simulation"
     description: "We code custom layout algorithms, force-directed networks, or grid alignments to present data cleanly."
+    inputs:
+      - "Final clean data feed URL/API"
+      - "UI theme palettes"
+    deliverables:
+      - "Interactive D3.js or Three.js component code"
+      - "Custom responsive visualization canvas"
   - title: "Interaction Tuning"
     description: "We add click events, drag-and-drop mechanics, zoom features, and micro-animations for an active user experience."
+    inputs:
+      - "Integration host website codes"
+      - "Target device/browser requirements"
+    deliverables:
+      - "Optimized rendering loops speed report"
+      - "Integration instruction handbook"
 order: 3
 previewImage: "./preview.png"
 pubDate: 2026-05-25

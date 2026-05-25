@@ -220,6 +220,8 @@ const modules = defineCollection({
     methodologyPhases: z.array(z.object({
       title: z.string(),
       description: z.string(),
+      inputs: z.array(z.string()).optional(),
+      deliverables: z.array(z.string()).optional(),
     })).optional(),
     order: z.number().default(0),
     pubDate: z.coerce.date().optional(),

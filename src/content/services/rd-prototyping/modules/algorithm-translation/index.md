@@ -14,12 +14,36 @@ methodologyDescription: "Our translation pipeline guarantees near-native executi
 methodologyPhases:
   - title: "Math Evaluation"
     description: "We audit your mathematical formulas, MATLAB loops, or Python script calculations to plan structural optimizations."
+    inputs:
+      - "Original Python/MATLAB scripts"
+      - "Mathematical equations/formula specs"
+      - "1-hour math alignment session"
+    deliverables:
+      - "Feasibility & profiling analysis report"
+      - "Target code language proposal"
   - title: "Porting & Mapping"
     description: "We rewrite the algorithms into native TypeScript or organize compile-ready C++/Rust project setups."
+    inputs:
+      - "Sample input & expected output test datasets"
+      - "Edge-case math specifications"
+    deliverables:
+      - "Type-safe TypeScript codebase"
+      - "Native web numeric algorithms"
   - title: "Wasm Compilation"
     description: "We compile performance-critical calculation blocks to WebAssembly, ensuring high-speed numeric execution."
+    inputs:
+      - "Performance target constraints"
+      - "C++/Rust code fragments (if any)"
+    deliverables:
+      - "Compiled WebAssembly binary output"
+      - "WebAssembly JS-glue layer setup"
   - title: "Profile & QA"
     description: "We run browser performance profiles, check accuracy outputs against the original math scripts, and verify execution times."
+    inputs:
+      - "Client benchmark environment specifications"
+    deliverables:
+      - "Browser runtime speed profiles report"
+      - "Differential validation test suite results"
 order: 2
 previewImage: "./preview.png"
 pubDate: 2026-05-25

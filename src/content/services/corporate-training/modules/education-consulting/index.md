@@ -14,12 +14,39 @@ methodologyDescription: "Our educational consulting framework builds structured 
 methodologyPhases:
   - title: "Needs Assessment"
     description: "We audit your current computer science curricula, onboarding structures, or university cooperation objectives."
+    inputs:
+      - "Current course syllabus documents"
+      - "Instructor profiles & qualifications"
+      - "Accreditation guidelines"
+    deliverables:
+      - "Audit scorecard"
+      - "Curriculum gap analysis report"
   - title: "Strategic Roadmap"
     description: "We design structured learning pathways, matching academic standards with industry-focused engineering requirements."
+    inputs:
+      - "Target learner profiles"
+      - "Key learning outcomes"
+      - "Scheduling & credit limits"
+    deliverables:
+      - "Modular course tree structure"
+      - "Program specification document"
   - title: "Program Design"
     description: "We write course syllabi, set up collaboration frameworks, and establish thesis review criteria."
+    inputs:
+      - "LMS access (e.g. Moodle)"
+      - "Selected course materials"
+      - "Staff scheduling calendar"
+    deliverables:
+      - "LMS template configurations"
+      - "Instructor delivery guidelines"
   - title: "Launch & Review"
     description: "We assist in program rollout, validate first student outputs, and review curriculum feedback loops."
+    inputs:
+      - "First run feedback surveys"
+      - "Sample student project submissions"
+    deliverables:
+      - "Post-delivery feedback summary"
+      - "Curriculum refinement recommendations"
 order: 3
 previewImage: "./preview.png"
 pubDate: 2026-05-25

@@ -115,7 +115,14 @@ const colorClasses = {
 
         <!-- HTML/CSS Methodology Timeline Section -->
         {module.data.methodologyPhases && (
-          <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 space-y-8">
+          <section 
+            class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 space-y-8"
+            style={`
+              --glow-border: ${colorClasses.glowBorder};
+              --glow-text: ${colorClasses.glowText};
+              --glow-shadow: ${colorClasses.glowShadow};
+            `}
+          >
             <div class="flex items-center justify-between flex-wrap gap-4">
               <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
                 <span>📊</span>
@@ -133,31 +140,22 @@ const colorClasses = {
             )}
 
             {/* Timeline Diagram container */}
-            <div 
-              class="relative pl-8 sm:pl-0 sm:grid sm:grid-cols-4 gap-6 pt-4"
-              style={`
-                --glow-border: ${colorClasses.glowBorder};
-                --glow-text: ${colorClasses.glowText};
-                --glow-shadow: ${colorClasses.glowShadow};
-              `}
-            >
+            <div class="relative pl-3 pr-3 sm:pl-0 sm:pr-0 sm:grid sm:grid-cols-4 gap-6 pt-4">
               {module.data.methodologyPhases.map((phase, idx) => {
-                // Determine if this is an active (middle) phase to highlight, or just let all of them highlight on hover
-                // For premium look, we give step 2 and 3 a default theme glow, and let hover trigger others
                 const isSignatureStep = idx === 1 || idx === 2;
                 return (
-                  <div class="relative flex flex-col items-start sm:items-center text-left sm:text-center space-y-4 pb-8 sm:pb-0 z-10 group/phase">
+                  <div class="relative flex flex-row sm:flex-col items-start sm:items-center text-left sm:text-center gap-4 sm:gap-0 sm:space-y-4 pb-8 sm:pb-0 z-10 group/phase">
                     
                     {/* Connecting line for desktop (from center of current node to center of next node) */}
                     {idx < 3 && (
-                      <div class="hidden sm:block absolute top-[19px] left-[50%] w-[calc(100%+1.5rem)] h-0.5 z-0 pointer-events-none">
+                      <div class="hidden sm:block absolute sm:top-[20px] left-[50%] w-[calc(100%+1.5rem)] h-0.5 z-0 pointer-events-none">
                         <div class={`w-full h-full bg-gradient-to-r ${colorClasses.glow} opacity-30`}></div>
                       </div>
                     )}
 
                     {/* Connecting line for mobile (from center of current node to center of next node) */}
                     {idx < 3 && (
-                      <div class="sm:hidden absolute top-[20px] left-[19px] w-0.5 h-full z-0 pointer-events-none">
+                      <div class="sm:hidden absolute top-[20px] left-[20px] w-0.5 h-full z-0 pointer-events-none">
                         <div class={`w-full h-full bg-gradient-to-b ${colorClasses.glow} opacity-30`}></div>
                       </div>
                     )}
@@ -169,13 +167,13 @@ const colorClasses = {
                           ? 'border-transparent text-white' 
                           : 'border-white/10 text-gray-500 group-hover/phase:border-white/20 group-hover/phase:text-gray-300'
                       }`}
-                      style={isSignatureStep ? 'border-color: var(--glow-border); color: var(--glow-text); box-shadow: 0 0 15px -3px var(--glow-shadow); bg-color: rgba(255,255,255,0.01)' : ''}
+                      style={isSignatureStep ? 'border-color: var(--glow-border); color: var(--glow-text); box-shadow: 0 0 15px -3px var(--glow-shadow);' : ''}
                     >
                       {String(idx + 1).padStart(2, '0')}
                     </div>
 
                     {/* Text block */}
-                    <div class="space-y-1.5 sm:px-2">
+                    <div class="space-y-1.5 sm:px-2 flex-1">
                       <h4 class="text-xs font-bold text-white uppercase tracking-wider leading-tight">
                         {phase.title}
                       </h4>
@@ -185,6 +183,94 @@ const colorClasses = {
                     </div>
 
                   </div>
+                );
+              })}
+            </div>
+
+            {/* Phase specifications cards vertical stack */}
+            <div class="border-t border-white/5 pt-8 mt-8 space-y-6">
+              {module.data.methodologyPhases.map((phase, idx) => {
+                const hasInputs = phase.inputs && phase.inputs.length > 0;
+                const hasDeliverables = phase.deliverables && phase.deliverables.length > 0;
+                
+                return (
+                  <>
+                    <div class="glass-card p-6 md:p-8 rounded-2xl border border-white/5 bg-white/[0.01] relative overflow-hidden group hover:border-white/10 transition-all duration-300">
+                      {/* Glow indicator at the left side */}
+                      <div class={`absolute top-0 bottom-0 left-0 w-[3px] bg-gradient-to-b ${colorClasses.glow} opacity-40 group-hover:opacity-75 transition-opacity`}></div>
+                      
+                      <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                        <div>
+                          <p class={`text-[10px] font-bold uppercase tracking-widest ${colorClasses.text} mb-1`}>
+                            Phase {String(idx + 1).padStart(2, '0')} specifications
+                          </p>
+                          <h3 class="text-base font-extrabold text-white tracking-tight">
+                            {phase.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <p class="text-xs text-gray-300 leading-relaxed mb-6 font-normal">
+                         {phase.description}
+                      </p>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
+                        {/* Inputs Column */}
+                        <div class="space-y-3">
+                          <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                            <span class="text-sm">📥</span>
+                            <span>What you provide / invest</span>
+                          </h4>
+                          {hasInputs ? (
+                            <ul class="space-y-2">
+                              {phase.inputs.map(input => (
+                                <li class="text-[11px] text-gray-400 flex items-start gap-2.5 leading-relaxed font-normal">
+                                  <span class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style="background-color: var(--glow-text)"></span>
+                                  <span>{input}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p class="text-[11px] text-gray-500 italic">No specific inputs required.</p>
+                          )}
+                        </div>
+
+                        {/* Deliverables Column */}
+                        <div class="space-y-3">
+                          <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                            <span class="text-sm">📤</span>
+                            <span>What you receive / deliverables</span>
+                          </h4>
+                          {hasDeliverables ? (
+                            <ul class="space-y-2">
+                              {phase.deliverables.map(deliv => (
+                                <li class="text-[11px] text-gray-300 flex items-start gap-2.5 leading-relaxed font-normal">
+                                  <svg class={`w-3.5 h-3.5 mt-0.5 shrink-0 ${colorClasses.text}`} fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+                                  </svg>
+                                  <span>{deliv}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p class="text-[11px] text-gray-500 italic">No direct deliverables for this stage.</p>
+                          )}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Sequential transition arrow */}
+                    {idx < 3 && (
+                      <div class="flex justify-center py-2 relative z-10">
+                        <div class="w-8 h-8 rounded-full border border-white/5 bg-white/[0.02] flex items-center justify-center text-gray-500 shadow-inner">
+                          <svg class={`w-4 h-4 ${colorClasses.text}`} fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 );
               })}
             </div>

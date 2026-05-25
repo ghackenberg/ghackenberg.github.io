@@ -14,12 +14,35 @@ methodologyDescription: "Our technical due diligence process audits codebases an
 methodologyPhases:
   - title: "Scope Definition"
     description: "We align on the investment thesis, target platforms, and specific risk focus areas (e.g. security, scalability, technical debt)."
+    inputs:
+      - "Target system source repositories"
+      - "Technical architecture charts"
+      - "Known system issues list"
+    deliverables:
+      - "Audit scoping plan"
+      - "Due diligence checklist"
   - title: "Codebase Review"
     description: "We audit repository structures, code styles, test coverages, dependency trees, and deployment setups."
+    inputs:
+      - "Developer/architect team interview slots"
+      - "Deployment environment logs"
+    deliverables:
+      - "Code quality review report"
+      - "System architectural design audit"
   - title: "Architecture Review"
     description: "We review cloud infrastructure topologies, database schemas, and API design models for scalability."
+    inputs:
+      - "Internal security guidelines"
+      - "Third-party penetration test reports"
+    deliverables:
+      - "Security and compliance gap analysis scorecard"
   - title: "Audit Reporting"
     description: "We deliver an independent due diligence audit report highlighting technical risks, strengths, and roadmap recommendations."
+    inputs:
+      - "Draft report feedback from management"
+    deliverables:
+      - "Signed Executive Due Diligence report PDF"
+      - "Actionable architectural improvement recommendations"
 order: 1
 previewImage: "./preview.png"
 pubDate: 2026-05-25

@@ -14,12 +14,36 @@ methodologyDescription: "Our technical feasibility assessments evaluate emerging
 methodologyPhases:
   - title: "Tech Briefing"
     description: "We define the emerging technology target (e.g. hosting a local LLM) and your performance and privacy constraints."
+    inputs:
+      - "Core business targets description"
+      - "Privacy constraints parameters"
+      - "Primary technology candidates"
+    deliverables:
+      - "Technology briefing goals"
+      - "Sizing constraints profile"
   - title: "Requirement Mapping"
     description: "We map hardware specifications, model parameter sizes, network bandwidths, and security boundaries."
+    inputs:
+      - "Current server/compute infrastructure specs"
+      - "Representative data samples"
+    deliverables:
+      - "Hardware sizing & specification map"
+      - "Security boundary diagram"
   - title: "Calculation & Run"
     description: "We run benchmark simulations, calculate hardware and latency costs, and verify data privacy compliance."
+    inputs:
+      - "Cloud/hardware cost thresholds"
+      - "Model sizing constraints"
+    deliverables:
+      - "Benchmark execution speed projections"
+      - "Computational cost-benefit sheets"
   - title: "Strategic Advisory"
     description: "We deliver an independent feasibility study report outlining recommended paths, hardware profiles, and risk mitigations."
+    inputs:
+      - "Review session feedback"
+    deliverables:
+      - "Independent Feasibility Study report PDF"
+      - "Recommended technology roadmap options"
 order: 2
 previewImage: "./preview.png"
 pubDate: 2026-05-25

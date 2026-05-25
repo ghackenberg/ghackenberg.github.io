@@ -14,12 +14,36 @@ methodologyDescription: "Our web development and hosting lifecycle guarantees a 
 methodologyPhases:
   - title: "Audits & Briefing"
     description: "We align on your website goals, visual design preferences, and required features (e.g. contact forms, CMS backend, booking integrations)."
+    inputs:
+      - "Design assets / Brand guide"
+      - "Core website content text"
+      - "Feature wish-list"
+    deliverables:
+      - "Site map architecture"
+      - "Visual design brief doc"
   - title: "Layout & Wireframes"
     description: "We design early website structure blueprints and mockup layouts. You review drafts to ensure brand alignment before we code."
+    inputs:
+      - "Feedback on site map layout"
+      - "Color palette selections"
+    deliverables:
+      - "Interactive Figma/HTML wireframe link"
+      - "Home page mockup preview"
   - title: "Development & Setup"
     description: "We code a fast, responsive site using modern frameworks and configure secure hosting environments on premium servers."
+    inputs:
+      - "Domain registrar access credentials"
+      - "Hosting provider setup logins"
+    deliverables:
+      - "Production Astro deployment"
+      - "Lighthouse & SEO audit reports"
   - title: "Release & Maintenance"
     description: "We launch the site, link custom domains, set up SSL security, and implement automated weekly maintenance checks."
+    inputs:
+      - "Review of post-launch adjustments list"
+    deliverables:
+      - "Admin login credentials package"
+      - "30-day post-launch support handbook"
 order: 1
 previewImage: "./preview.png"
 pubDate: 2026-05-25

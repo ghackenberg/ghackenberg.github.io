@@ -14,12 +14,37 @@ methodologyDescription: "Our MVP bootstrapping workflow turns concept logic into
 methodologyPhases:
   - title: "Concept & Scope"
     description: "We translate your formula drafts, database tables, or backend python scripts into clear UI and system requirements."
+    inputs:
+      - "Product requirements brief"
+      - "Feature prioritization goals"
+      - "1-hour scope workshop"
+    deliverables:
+      - "Functional requirement specification"
+      - "MVP database entity diagram"
   - title: "Architecture Blueprint"
     description: "We establish a type-safe system using modern web layers, database schemas, and structured API data contracts."
+    inputs:
+      - "Existing corporate stack guidelines"
+      - "Third-party system APIs list"
+    deliverables:
+      - "Architectural stack blueprint"
+      - "Recommended cloud hosting service estimates"
   - title: "Web Engineering"
     description: "We code the frontend dashboard and backend endpoints using performance-optimized TypeScript and component libraries."
+    inputs:
+      - "Bi-weekly alignment feedback"
+      - "UI copy texts & branding images"
+    deliverables:
+      - "Working staging MVP application"
+      - "Fully versioned GitHub repo"
   - title: "Delivery & Docs"
     description: "We hand over a clean, fully documented GitHub repository ready for board demos or further team expansion."
+    inputs:
+      - "DNS zone file configuration logins"
+      - "Analytics tracking IDs"
+    deliverables:
+      - "Deployed live MVP web application"
+      - "System operator handbook"
 order: 1
 previewImage: "./preview.png"
 pubDate: 2026-05-25

@@ -14,12 +14,36 @@ methodologyDescription: "Our web development training follows a hands-on, syllab
 methodologyPhases:
   - title: "Skill Audit"
     description: "We evaluate your engineering team's current technical levels and establish a custom-tailored workshop syllabus."
+    inputs:
+      - "Team technology stack profile"
+      - "Sample internal code snippet"
+      - "Key skill gaps to address"
+    deliverables:
+      - "Custom workshop syllabus outline"
+      - "Prerequisite reading list"
   - title: "Syllabus Design"
     description: "We build custom code exercises and presentation slides specifically aligned with your product's technology stack."
+    inputs:
+      - "Participant GitHub accounts"
+      - "List of target framework features"
+    deliverables:
+      - "Custom GitHub sandbox template repo"
+      - "Pre-configured Dev Container setup"
   - title: "Hands-on Labs"
     description: "We run interactive live coding sessions, providing real-time architectural reviews and code optimization tips."
+    inputs:
+      - "2 to 4 hours workshop slots"
+      - "Interactive Q&A participation"
+    deliverables:
+      - "Recorded presentation video link"
+      - "Completed codebase live-demo branch"
   - title: "Code Handoff"
     description: "We deliver all training codebases, slides, and exercise solutions with clean documentation for your team's reference."
+    inputs:
+      - "Review of team's post-workshop code adjustments"
+    deliverables:
+      - "Cheat-sheet resource cards"
+      - "30-day asynchronous Q&A support access"
 order: 1
 previewImage: "./preview.png"
 pubDate: 2026-05-25

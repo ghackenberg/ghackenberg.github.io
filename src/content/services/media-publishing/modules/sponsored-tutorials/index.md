@@ -14,12 +14,35 @@ methodologyDescription: "Our sponsored tutorial production pipeline ensures deep
 methodologyPhases:
   - title: "Tool Audit & Specs"
     description: "We audit your developer tooling or API library. We identify potential Developer Experience (DX) onboarding friction points to highlight in the video."
+    inputs:
+      - "Developer API access tokens"
+      - "Product manuals / documentation"
+      - "Target marketing keywords"
+    deliverables:
+      - "Tutorial concept outline"
+      - "Selected developer search keywords"
   - title: "Syllabus & Scripts"
     description: "We design a detailed tutorial path and video script that avoids superficial overviews, focusing on real-world software engineering concepts."
+    inputs:
+      - "Outline feedback"
+      - "Technical assets/images"
+    deliverables:
+      - "Complete markdown draft article"
+      - "High-res screen recordings/images"
   - title: "Video Production"
     description: "We record and edit the video walkthrough in high quality, highlighting your tool's actual utility, config steps, and UI panels."
+    inputs:
+      - "Docker/hosting environment configurations"
+    deliverables:
+      - "Fully functional GitHub repository sandbox"
+      - "Embedded code block validations"
   - title: "Launch & Promotion"
     description: "We publish the tutorial on YouTube and drive developer engagement by distributing summaries and links across active developer channels."
+    inputs:
+      - "Brand assets/marketing copy approvals"
+    deliverables:
+      - "Published live tutorial link"
+      - "Social media promotion package"
 order: 2
 previewImage: "./preview.png"
 pubDate: 2026-05-25

@@ -14,12 +14,35 @@ methodologyDescription: "Our technical report lifecycle delivers independent, re
 methodologyPhases:
   - title: "Topic Assessment"
     description: "We define the scope, targets, and criteria of the validation study or technical expert report."
+    inputs:
+      - "Core statements / algorithms to validate"
+      - "Target journals/funding guidelines"
+      - "Review timeline target"
+    deliverables:
+      - "Scoping memorandum"
+      - "Verification criteria checklist"
   - title: "Research & Audit"
     description: "We conduct literature reviews, audit codebase calculations, check security logs, and verify math logic."
+    inputs:
+      - "Mathematical formulas or software codes"
+      - "Academic research references list"
+    deliverables:
+      - "Literature review synthesis document"
+      - "Algorithm audit logs summary"
   - title: "Report Drafting"
     description: "We write the technical assessment, structuring academic evidence and compiling benchmark results."
+    inputs:
+      - "Internal benchmarking stats"
+      - "Corporate history details"
+    deliverables:
+      - "Draft evaluation report"
+      - "Formatted evidence appendices"
   - title: "Validation"
     description: "We perform a final peer review check on all claims and deliver the signed, authoritative validation report."
+    inputs:
+      - "Author feedback revisions"
+    deliverables:
+      - "Signed Independent Academic Validation Report PDF"
 order: 3
 previewImage: "./preview.png"
 pubDate: 2026-05-25
