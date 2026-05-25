@@ -15,7 +15,8 @@ const colorClasses = {
     hoverBorder: 'hover:border-brand-blue/40',
     bg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white',
-    glow: 'from-brand-blue to-brand-purple'
+    glow: 'from-brand-blue to-brand-purple',
+    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)]'
   },
   yellow: {
     text: 'text-brand-yellow',
@@ -23,7 +24,8 @@ const colorClasses = {
     hoverBorder: 'hover:border-brand-yellow/40',
     bg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
-    glow: 'from-brand-yellow to-brand-purple'
+    glow: 'from-brand-yellow to-brand-purple',
+    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]'
   },
   purple: {
     text: 'text-brand-purple',
@@ -31,7 +33,8 @@ const colorClasses = {
     hoverBorder: 'hover:border-brand-purple/40',
     bg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white',
-    glow: 'from-brand-purple to-brand-blue'
+    glow: 'from-brand-purple to-brand-blue',
+    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]'
   },
   green: {
     text: 'text-brand-green',
@@ -39,7 +42,8 @@ const colorClasses = {
     hoverBorder: 'hover:border-brand-green/40',
     bg: 'bg-brand-green/10 text-brand-green border-brand-green/20',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white',
-    glow: 'from-brand-green to-brand-blue'
+    glow: 'from-brand-green to-brand-blue',
+    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)]'
   }
 };
 ---
@@ -89,8 +93,13 @@ const colorClasses = {
                     {service.data.icon}
                   </div>
                   <div>
-                    <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none">
-                      {service.data.title}
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none flex items-center gap-2 relative">
+                      <span>{service.data.title}</span>
+                      <span 
+                        class={`unread-dot hidden w-2.5 h-2.5 rounded-full ${classes.dot}`}
+                        data-item-url={`/services/${service.id}`}
+                        title="Unread service"
+                      ></span>
                     </h2>
                     <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-1.5">
                       Category: {service.data.category}
@@ -118,9 +127,14 @@ const colorClasses = {
                       .map(m => (
                         <a
                           href={`/services/${service.id}/${m.id.split('/').pop()}`}
-                          class={`px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all duration-300 hover:scale-[1.02] cursor-pointer hover:border-brand-${service.data.color}/40 bg-white/[0.02] border-white/5 text-gray-300 hover:text-white`}
+                          class={`px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all duration-300 hover:scale-[1.02] cursor-pointer hover:border-brand-${service.data.color}/40 bg-white/[0.02] border-white/5 text-gray-300 hover:text-white flex items-center gap-1.5`}
                         >
-                          {m.data.title}
+                          <span>{m.data.title}</span>
+                          <span 
+                            class={`unread-dot hidden w-1.5 h-1.5 rounded-full ${classes.dot}`}
+                            data-item-url={`/services/${service.id}/${m.id.split('/').pop()}`}
+                            title="Unread module"
+                          ></span>
                         </a>
                       ))
                     }

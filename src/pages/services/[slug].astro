@@ -28,7 +28,8 @@ const colorClasses = {
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white',
     hoverText: 'hover:text-brand-blue',
     glow: 'from-brand-blue to-brand-purple',
-    leftBorder: 'border-brand-blue'
+    leftBorder: 'border-brand-blue',
+    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)]'
   },
   yellow: {
     text: 'text-brand-yellow',
@@ -37,7 +38,8 @@ const colorClasses = {
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-yellow',
     glow: 'from-brand-yellow to-brand-purple',
-    leftBorder: 'border-brand-yellow'
+    leftBorder: 'border-brand-yellow',
+    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]'
   },
   purple: {
     text: 'text-brand-purple',
@@ -46,7 +48,8 @@ const colorClasses = {
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white',
     hoverText: 'hover:text-brand-purple',
     glow: 'from-brand-purple to-brand-blue',
-    leftBorder: 'border-brand-purple'
+    leftBorder: 'border-brand-purple',
+    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]'
   },
   green: {
     text: 'text-brand-green',
@@ -55,7 +58,8 @@ const colorClasses = {
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white',
     hoverText: 'hover:text-brand-green',
     glow: 'from-brand-green to-brand-blue',
-    leftBorder: 'border-brand-green'
+    leftBorder: 'border-brand-green',
+    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)]'
   }
 }[service.data.color];
 ---
@@ -131,11 +135,16 @@ const colorClasses = {
                   {/* Accent bar */}
                   <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow} z-20`}></div>
                   
-                  {/* Info Column */}
+                  <!-- Info Column -->
                   <div class="p-6 sm:p-8 sm:col-span-8 flex flex-col justify-center space-y-4 relative z-10 text-left">
                     <div class="flex items-center justify-between gap-3">
-                      <h3 class="text-lg font-bold text-white uppercase tracking-wider leading-none mt-0">
-                        {module.data.title}
+                      <h3 class="text-lg font-bold text-white uppercase tracking-wider leading-none mt-0 flex items-center gap-2">
+                        <span>{module.data.title}</span>
+                        <span 
+                          class={`unread-dot hidden w-2 h-2 rounded-full ${colorClasses.dot}`}
+                          data-item-url={`/services/${service.id}/${moduleSlug}`}
+                          title="Unread module"
+                        ></span>
                       </h3>
                       {module.data.badge && (
                         <span class={`text-[9px] px-2 py-0.5 rounded-full font-mono font-medium ${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border}`}>
@@ -199,6 +208,11 @@ const colorClasses = {
                   >
                     <span class={`font-bold select-none ${colorClasses.text}`}>&bull;</span>
                     <span>{module.data.title}</span>
+                    <span 
+                      class={`unread-dot hidden w-1.5 h-1.5 rounded-full ${colorClasses.dot}`}
+                      data-item-url={`/services/${service.id}/${moduleSlug}`}
+                      title="Unread module"
+                    ></span>
                   </a>
                 </li>
               );
