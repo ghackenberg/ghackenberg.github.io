@@ -1,24 +1,25 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/Navbar.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
 import { getCollection, render } from "astro:content";
-import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
+  const modules = await getCollection("modules");
   const services = await getCollection("services");
-  return services.map((service) => ({
-    params: { slug: service.id },
-    props: { service },
-  }));
+  
+  return modules.map((module) => {
+    const [serviceSlug, moduleSlug] = module.id.split('/');
+    const parentService = services.find((s) => s.id === serviceSlug);
+    
+    return {
+      params: { slug: serviceSlug, moduleSlug: moduleSlug },
+      props: { module, parentService },
+    };
+  });
 }
 
-const { service } = Astro.props;
-const { Content } = await render(service);
-
-const allModules = await getCollection("modules");
-const serviceModules = allModules
-  .filter((m) => m.data.serviceId === service.id)
-  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const { module, parentService } = Astro.props;
+const { Content } = await render(module);
 
 const colorClasses = {
   blue: {
@@ -26,191 +27,197 @@ const colorClasses = {
     border: 'border-brand-blue/20',
     bg: 'bg-brand-blue/10',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white',
-    hoverText: 'hover:text-brand-blue',
     glow: 'from-brand-blue to-brand-purple',
-    leftBorder: 'border-brand-blue'
+    leftBorder: 'border-brand-blue',
+    glowBorder: 'rgba(59, 130, 246, 0.3)',
+    glowText: '#60a5fa',
+    glowShadow: 'rgba(59, 130, 246, 0.25)',
   },
   yellow: {
     text: 'text-brand-yellow',
     border: 'border-brand-yellow/20',
     bg: 'bg-brand-yellow/10',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
-    hoverText: 'hover:text-brand-yellow',
     glow: 'from-brand-yellow to-brand-purple',
-    leftBorder: 'border-brand-yellow'
+    leftBorder: 'border-brand-yellow',
+    glowBorder: 'rgba(245, 158, 11, 0.3)',
+    glowText: '#fbbf24',
+    glowShadow: 'rgba(245, 158, 11, 0.25)',
   },
   purple: {
     text: 'text-brand-purple',
     border: 'border-brand-purple/20',
     bg: 'bg-brand-purple/10',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white',
-    hoverText: 'hover:text-brand-purple',
     glow: 'from-brand-purple to-brand-blue',
-    leftBorder: 'border-brand-purple'
+    leftBorder: 'border-brand-purple',
+    glowBorder: 'rgba(168, 85, 247, 0.3)',
+    glowText: '#c084fc',
+    glowShadow: 'rgba(168, 85, 247, 0.25)',
   },
   green: {
     text: 'text-brand-green',
     border: 'border-brand-green/20',
     bg: 'bg-brand-green/10',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white',
-    hoverText: 'hover:text-brand-green',
     glow: 'from-brand-green to-brand-blue',
-    leftBorder: 'border-brand-green'
+    leftBorder: 'border-brand-green',
+    glowBorder: 'rgba(16, 185, 129, 0.3)',
+    glowText: '#34d399',
+    glowShadow: 'rgba(16, 185, 129, 0.25)',
   }
-}[service.data.color];
+}[parentService.data.color];
 ---
 
 <Layout 
-  title={`${service.data.title} | Professional Services | Dr. Georg Hackenberg`} 
-  description={service.data.description}
-  image={service.data.previewImage?.src}
+  title={`${module.data.title} | ${parentService.data.title} | Dr. Georg Hackenberg`} 
+  description={module.data.description}
+  image={module.data.previewImage?.src}
 >
   <Navbar />
 
   <main class="flex-grow max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <!-- Back Button -->
     <a 
-      href="/services" 
+      href={`/services/${parentService.id}`} 
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
-      <span>Back to Services</span>
+      <span>Back to {parentService.data.title}</span>
     </a>
 
     <!-- Header -->
     <header class="mb-12 pb-10 border-b border-white/5 relative">
       <div class="flex items-center gap-3 mb-4">
         <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} uppercase tracking-wider`}>
-          {service.data.icon} &nbsp; {service.data.category}
+          {parentService.data.icon} &nbsp; {module.data.badge || 'Module'} &bull; {parentService.data.category}
         </span>
       </div>
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
-        {service.data.title}
+        {module.data.title}
       </h1>
       <p class="text-brand-yellow font-bold text-xs uppercase tracking-wider mb-2">
-        {service.data.tagline}
+        {module.data.tagline}
       </p>
       <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
-        {service.data.description}
+        {module.data.description}
       </p>
     </header>
 
     <!-- Main Content & Sidebar -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Left Column: Service details and Modules List -->
+      <!-- Left Column: Details & Methodology Flowchart -->
       <div class="lg:col-span-8 space-y-12">
-        <!-- Service Text -->
+        <!-- Module Text Content -->
         <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content">
           <Content />
         </section>
 
-        <!-- Service Modules Section -->
-        <section class="space-y-6">
-          <div class="flex items-center justify-between flex-wrap gap-4">
-            <h2 class="text-2xl font-extrabold text-white tracking-tight flex items-center space-x-2">
-              <span>📦</span>
-              <span>Available Service Modules</span>
-            </h2>
-            <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} uppercase tracking-wider`}>
-              Modular Selection
-            </span>
-          </div>
-          
-          <p class="text-gray-400 text-sm leading-relaxed font-normal">
-            Each service module represents a concrete building block that can be booked individually or combined into a comprehensive custom package.
-          </p>
+        <!-- HTML/CSS Methodology Timeline Section -->
+        {module.data.methodologyPhases && (
+          <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 space-y-8">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+              <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
+                <span>📊</span>
+                <span>Our Collaboration Methodology</span>
+              </h2>
+              <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} uppercase tracking-wider`}>
+                4-Stage Workflow
+              </span>
+            </div>
+            
+            {module.data.methodologyDescription && (
+              <p class="text-gray-400 text-xs leading-relaxed font-normal">
+                {module.data.methodologyDescription}
+              </p>
+            )}
 
-          <div class="space-y-6">
-            {serviceModules.map((module) => {
-              const moduleSlug = module.id.split('/').pop();
-              return (
-                <a 
-                  href={`/services/${service.id}/${moduleSlug}`}
-                  class="glass-card rounded-2xl border border-white/5 relative overflow-hidden flex flex-col sm:grid sm:grid-cols-12 items-stretch p-0 hover:border-white/10 transition-colors group cursor-pointer block no-underline"
-                >
-                  {/* Accent bar */}
-                  <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow} z-20`}></div>
-                  
-                  {/* Info Column */}
-                  <div class="p-6 sm:p-8 sm:col-span-8 flex flex-col justify-center space-y-4 relative z-10 text-left">
-                    <div class="flex items-center justify-between gap-3">
-                      <h3 class="text-lg font-bold text-white uppercase tracking-wider leading-none mt-0">
-                        {module.data.title}
-                      </h3>
-                      {module.data.badge && (
-                        <span class={`text-[9px] px-2 py-0.5 rounded-full font-mono font-medium ${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border}`}>
-                          {module.data.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p class="text-brand-yellow font-bold text-[10px] uppercase tracking-wider leading-none">
-                      {module.data.tagline}
-                    </p>
-                    <p class="text-gray-400 text-xs leading-relaxed font-normal">
-                      {module.data.description}
-                    </p>
-                    <div>
-                      <span 
-                        class={`inline-flex items-center space-x-1.5 text-xs font-semibold px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white group-hover:bg-white/10 group-hover:border-white/20 transition-all`}
-                      >
-                        <span>Explore Module & Methodology</span>
-                        <span>&rarr;</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Preview Image Column */}
-                  <div class="sm:col-span-4 relative min-h-[160px] sm:min-h-full w-full overflow-hidden bg-gray-950/40">
-                    {module.data.previewImage && (
-                      <img 
-                        src={module.data.previewImage.src} 
-                        alt={`${module.data.title} preview`}
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
-                      />
+            {/* Timeline Diagram container */}
+            <div 
+              class="relative pl-8 sm:pl-0 sm:grid sm:grid-cols-4 gap-6 pt-4"
+              style={`
+                --glow-border: ${colorClasses.glowBorder};
+                --glow-text: ${colorClasses.glowText};
+                --glow-shadow: ${colorClasses.glowShadow};
+              `}
+            >
+              {module.data.methodologyPhases.map((phase, idx) => {
+                // Determine if this is an active (middle) phase to highlight, or just let all of them highlight on hover
+                // For premium look, we give step 2 and 3 a default theme glow, and let hover trigger others
+                const isSignatureStep = idx === 1 || idx === 2;
+                return (
+                  <div class="relative flex flex-col items-start sm:items-center text-left sm:text-center space-y-4 pb-8 sm:pb-0 z-10 group/phase">
+                    
+                    {/* Connecting line for desktop (from center of current node to center of next node) */}
+                    {idx < 3 && (
+                      <div class="hidden sm:block absolute top-[19px] left-[50%] w-[calc(100%+1.5rem)] h-0.5 z-0 pointer-events-none">
+                        <div class={`w-full h-full bg-gradient-to-r ${colorClasses.glow} opacity-30`}></div>
+                      </div>
                     )}
-                    <div class="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-l from-gray-950/40 via-transparent to-transparent pointer-events-none"></div>
+
+                    {/* Connecting line for mobile (from center of current node to center of next node) */}
+                    {idx < 3 && (
+                      <div class="sm:hidden absolute top-[20px] left-[19px] w-0.5 h-full z-0 pointer-events-none">
+                        <div class={`w-full h-full bg-gradient-to-b ${colorClasses.glow} opacity-30`}></div>
+                      </div>
+                    )}
+
+                    {/* Number node */}
+                    <div 
+                      class={`w-10 h-10 rounded-full flex items-center justify-center font-mono font-bold text-xs border transition-all duration-300 bg-gray-950 z-10 ${
+                        isSignatureStep 
+                          ? 'border-transparent text-white' 
+                          : 'border-white/10 text-gray-500 group-hover/phase:border-white/20 group-hover/phase:text-gray-300'
+                      }`}
+                      style={isSignatureStep ? 'border-color: var(--glow-border); color: var(--glow-text); box-shadow: 0 0 15px -3px var(--glow-shadow); bg-color: rgba(255,255,255,0.01)' : ''}
+                    >
+                      {String(idx + 1).padStart(2, '0')}
+                    </div>
+
+                    {/* Text block */}
+                    <div class="space-y-1.5 sm:px-2">
+                      <h4 class="text-xs font-bold text-white uppercase tracking-wider leading-tight">
+                        {phase.title}
+                      </h4>
+                      <p class="text-[10px] text-gray-400 leading-relaxed font-normal">
+                        {phase.description}
+                      </p>
+                    </div>
+
                   </div>
-                </a>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
 
-      <!-- Right Column: Sidebar modules quick links & Bundle CTA -->
+      {/* Right Column: Sidebar highlights & booking */}
       <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
-        <!-- Service Modules Quick Links -->
+        <!-- Highlights list card -->
         <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden">
           <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
           
           <h3 class="text-sm font-extrabold uppercase tracking-widest text-white mb-4 flex items-center space-x-2">
-            <span>📦</span>
-            <span>Modules</span>
+            <span>ℹ️</span>
+            <span>Focus Areas</span>
           </h3>
 
-          <ul class="space-y-3.5 mb-6">
-            {serviceModules.map(module => {
-              const moduleSlug = module.id.split('/').pop();
-              return (
-                <li class="text-[11px] text-gray-300 leading-relaxed">
-                  <a 
-                    href={`/services/${service.id}/${moduleSlug}`}
-                    class={`flex items-center space-x-2 hover:text-white transition-colors`}
-                  >
-                    <span class={`font-bold select-none ${colorClasses.text}`}>&bull;</span>
-                    <span>{module.data.title}</span>
-                  </a>
-                </li>
-              );
-            })}
+          <ul class="space-y-3.5 mb-8">
+            {module.data.highlights.map(item => (
+              <li class="text-[11px] text-gray-300 flex items-start gap-2 leading-relaxed">
+                <span class={`font-bold select-none ${colorClasses.text}`}>&bull;</span>
+                <span>{item}</span>
+              </li>
+            ))}
           </ul>
 
           <a 
             href="#contact-services"
-            data-subject={`Inquiry: ${service.data.title}`}
-            class={`w-full py-3 px-4 rounded-xl text-center text-xs font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger ${colorClasses.btnBg}`}
+            data-subject={`Inquiry: ${parentService.data.title} - ${module.data.title}`}
+            class={`w-full py-3.5 px-4 rounded-xl text-center text-xs font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger ${colorClasses.btnBg}`}
           >
-            <span>{service.data.ctaText}</span>
+            <span>{module.data.ctaText}</span>
             <span>&rarr;</span>
           </a>
         </div>
@@ -223,13 +230,13 @@ const colorClasses = {
             <span>Bundle rate</span>
           </h3>
           <p class="text-[11px] text-gray-400 leading-relaxed mb-0">
-            Combine two or more modules across any services for a unified project delivery and a bundle discount rate. Reach out in the contact form to discuss a custom arrangement.
+            Combine this module with any other modules (e.g. Websites & Hosting + corporate simulations) for a custom bundle rate. Reach out below to request a tailored quote.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Contact & Booking Section -->
+    <!-- Contact Section -->
     <section id="contact-services" class="py-16 mt-16 border-t border-white/5 scroll-mt-24">
       <div class="max-w-3xl mx-auto text-center mb-12">
         <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-yellow/10 text-brand-yellow border border-brand-yellow/20 mb-4 uppercase tracking-wider">
@@ -239,7 +246,7 @@ const colorClasses = {
           Start a Conversation
         </h2>
         <p class="text-gray-400 text-sm md:text-base leading-relaxed">
-          Write directly to discuss custom setups, corporate workshops, strategic advisory, or media publishing.
+          Write directly to request an inquiry about the {module.data.title} module or custom bundle options.
         </p>
       </div>
 
@@ -274,7 +281,7 @@ const colorClasses = {
               <p>Typically responding within 2 business days.</p>
               <a 
                 id="direct-mail-link"
-                href={`mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry:%20${encodeURIComponent(service.data.title)}`}
+                href={`mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry:%20${encodeURIComponent(parentService.data.title)}%20-%20${encodeURIComponent(module.data.title)}`}
                 class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
               >
                 Open Email Client &rarr;
@@ -312,7 +319,7 @@ const colorClasses = {
   .service-content :global(p) {
     font-size: 0.875rem;
     line-height: 1.7;
-    color: #cbd5e1; /* slate-300 for premium contrast */
+    color: #cbd5e1;
     margin-bottom: 1.25rem;
   }
   .service-content :global(ul) {

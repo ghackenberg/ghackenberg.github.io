@@ -39,17 +39,23 @@ All non-screenshot images must follow a **stylized comic-book/vector illustratio
 *   **Aesthetic**: Vibrant accent glows matching the service color (e.g., Yellow for Corporate Training, Blue for R&D Prototyping). Must be a single visual composition with no nested image-in-image components or white margins.
 *   **Format**: 16:9 ratio, flat PNG.
 
-### B. Methodology & Technical Diagrams
+### B. Service Module Previews
+*   **Subject**: A single, focused visual metaphor representing the specific module's core utility (e.g., a glowing server rack for hosting, a fountain pen for copywriting, a camera lens for tutorials).
+*   **Style**: Centered flat vector comic icon or emblem on a dark slate background (`#0b1329` or `#030712`).
+*   **Aesthetic**: Bold cel-shading, prominent ink borders, halftone dot shading, and custom colored accent glows matching the parent service. No nested images or margins.
+*   **Format**: 16:9 ratio, flat PNG.
+
+### C. Methodology & Technical Diagrams
 *   **Subject**: Flowcharts, step-by-step processes, or system architectures.
 *   **Style**: Highly polished technical SVG diagrams matching the blog post schematics. Solid dark background card `#0b1329` with round corners (`rx="16"`), a thin border stroke (`rgba(255, 255, 255, 0.08)`), and step groups connected by dashed flowlines and color-coded arrow markers.
 *   **Aesthetic**: Crisp typography using `'Outfit', 'Inter', sans-serif`. Focus nodes colored with the respective service theme accent. Detail summary cards placed at the bottom for technical context.
 *   **Format**: Inline vector SVG files (`.svg`) placed in the service collection folder. PNGs are forbidden for this category.
 
-### C. Course Preview Images
+### D. Course Preview Images
 *   **Subject**: Educational topics, specific programming languages, or tools (e.g. Kotlin, WebGL, CAD).
 *   **Style**: Clean vector design with prominent tech logos surrounded by hand-drawn comic elements.
 *   **Format**: 16:9 ratio.
 
-### D. Blog Post Featured Images
+### E. Blog Post Featured Images
 *   **Subject**: Article specific technical concepts (e.g., WebGL water flow, unread indicators).
 *   **Style**: High-quality technical vector illustrations or schematics with clean comic outlines.

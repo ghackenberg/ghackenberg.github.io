@@ -183,27 +183,47 @@ const courses = defineCollection({
 const services = defineCollection({
   loader: glob({
     base: './src/content/services',
-    pattern: '**/index.{md,mdx}',
+    pattern: '*/index.{md,mdx}',
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    interestTitle: z.string(),
-    interestTagline: z.string(),
-    interestDescription: z.string(),
+    category: z.string(),
+    tagline: z.string(),
+    description: z.string(),
     icon: z.string(),
     color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),
     ctaText: z.string().default('Inquire Now'),
-    highlights: z.array(z.string()).default([]),
     pubDate: z.coerce.date().optional(),
     previewImage: image().optional(),
-    methodologyDiagram: image().optional(),
+  })
+});
+
+const modules = defineCollection({
+  loader: glob({
+    base: './src/content/services',
+    pattern: '*/modules/*/index.{md,mdx}',
+    generateId: ({ entry }) => {
+      return entry.replace(/\/index\.(md|mdx)$/, '').replace('/modules/', '/');
+    }
+  }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    serviceId: z.string(),
+    badge: z.string().optional(),
+    tagline: z.string(),
+    description: z.string(),
+    ctaText: z.string().default('Inquire about this Module'),
+    highlights: z.array(z.string()).default([]),
     methodologyDescription: z.string().optional(),
     methodologyPhases: z.array(z.object({
       title: z.string(),
       description: z.string(),
     })).optional(),
+    order: z.number().default(0),
+    pubDate: z.coerce.date().optional(),
+    previewImage: image().optional(),
   })
 });
 
@@ -221,6 +241,7 @@ export const collections = {
   'projects': projects,
   'courses': courses,
   'services': services,
+  'modules': modules,
 };
 
 

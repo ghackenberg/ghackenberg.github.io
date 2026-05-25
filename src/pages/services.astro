@@ -6,6 +6,7 @@ import { Image } from "astro:assets";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const modules = await getCollection("modules");
 
 const colorClasses = {
   blue: {
@@ -45,7 +46,7 @@ const colorClasses = {
 
 <Layout 
   title="Professional Services | Dr. Georg Hackenberg" 
-  description="Explore technical consulting, custom R&D prototyping, corporate training bootcamps, and scientific advisory services offered by Dr. Georg Hackenberg."
+  description="Explore custom R&D prototyping, corporate training bootcamps, scientific advisory, and media publishing services offered by Dr. Georg Hackenberg."
 >
   <Navbar />
 
@@ -92,7 +93,7 @@ const colorClasses = {
                       {service.data.title}
                     </h2>
                     <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-1.5">
-                      Complementary to {service.data.interestTitle}
+                      Category: {service.data.category}
                     </p>
                   </div>
                 </div>
@@ -100,24 +101,30 @@ const colorClasses = {
                 <!-- Tagline Description -->
                 <div class="space-y-3">
                   <p class="text-brand-yellow/90 font-bold text-xs uppercase tracking-wider">
-                    {service.data.interestTagline}
+                    {service.data.tagline}
                   </p>
                   <p class="text-gray-300 text-sm leading-relaxed font-normal">
-                    {service.data.interestDescription}
+                    {service.data.description}
                   </p>
                 </div>
 
-                <!-- Highlights List -->
+                <!-- Modules List -->
                 <div>
-                  <h4 class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Key Focus Areas</h4>
-                  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
-                    {service.data.highlights.map(item => (
-                      <li class="text-[11px] text-gray-400 flex items-start gap-2 leading-relaxed">
-                        <span class={`font-bold select-none ${classes.text}`}>&bull;</span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <h4 class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Service Modules</h4>
+                  <div class="flex flex-wrap gap-2.5">
+                    {modules
+                      .filter(m => m.data.serviceId === service.id)
+                      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+                      .map(m => (
+                        <a
+                          href={`/services/${service.id}/${m.id.split('/').pop()}`}
+                          class={`px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all duration-300 hover:scale-[1.02] cursor-pointer hover:border-brand-${service.data.color}/40 bg-white/[0.02] border-white/5 text-gray-300 hover:text-white`}
+                        >
+                          {m.data.title}
+                        </a>
+                      ))
+                    }
+                  </div>
                 </div>
 
                 <!-- CTA buttons -->

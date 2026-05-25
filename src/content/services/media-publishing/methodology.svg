@@ -36,7 +36,7 @@
   <path d="M 50 205 L 50 315" stroke="#10b981" stroke-width="2" stroke-dasharray="0" marker-end="url(#arrow-green)" />
   <path d="M 50 335 L 50 445" stroke="#475569" stroke-width="2" stroke-dasharray="0" marker-end="url(#arrow-gray)" />
  
-  <!-- STEP 1: BRIEFING & SPECS -->
+  <!-- STEP 1: AUDITS & BRIEFING -->
   <g>
     <!-- Node Circle -->
     <circle cx="50" cy="70" r="8" fill="#0f172a" stroke="#475569" stroke-width="2" />
@@ -46,13 +46,13 @@
     <g transform="translate(90, 20)">
       <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#475569" stroke-width="1.2" />
       <text x="20" y="28" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 1</text>
-      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Briefing &amp; Specs</text>
-      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Define brand goals &amp; content scopes</text>
-      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Align on target formats &amp; deliverables</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Audits &amp; Briefing</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Align on websites, scopes, or campaigns</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Evaluate tooling and developer experience</text>
     </g>
   </g>
  
-  <!-- STEP 2: DESIGN & COPYWRITING -->
+  <!-- STEP 2: LAYOUT & BLUEPRINT -->
   <g>
     <!-- Node Circle -->
     <circle cx="50" cy="200" r="10" fill="#0f172a" stroke="#10b981" stroke-width="2.5" filter="url(#glow-green-light)" />
@@ -62,13 +62,13 @@
     <g transform="translate(90, 150)">
       <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#10b981" stroke-width="1.5" filter="url(#glow-green-light)" />
       <text x="20" y="28" fill="#34d399" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 2</text>
-      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Design &amp; Copywriting</text>
-      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Design high-fidelity visual layouts</text>
-      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Write professional technical copy drafts</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Layout &amp; Blueprint</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Design site wireframes &amp; layout concepts</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Draft tutorial syllabi &amp; scripting outlines</text>
     </g>
   </g>
  
-  <!-- STEP 3: ASSET PRODUCTION -->
+  <!-- STEP 3: CODING & PRODUCTION -->
   <g>
     <!-- Node Circle -->
     <circle cx="50" cy="330" r="10" fill="#0f172a" stroke="#10b981" stroke-width="2.5" filter="url(#glow-green-light)" />
@@ -78,13 +78,13 @@
     <g transform="translate(90, 280)">
       <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#10b981" stroke-width="1.5" filter="url(#glow-green-light)" />
       <text x="20" y="28" fill="#34d399" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 3</text>
-      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Asset Production</text>
-      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Build custom responsive websites</text>
-      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Produce final graphics and media files</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Coding &amp; Production</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Develop websites &amp; configure web hosting</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Produce sponsored videos &amp; draft copies</text>
     </g>
   </g>
  
-  <!-- STEP 4: REVIEW & HANDOFF -->
+  <!-- STEP 4: RELEASE & HOSTING -->
   <g>
     <!-- Node Circle -->
     <circle cx="50" cy="460" r="8" fill="#0f172a" stroke="#475569" stroke-width="2" />
@@ -94,9 +94,9 @@
     <g transform="translate(90, 410)">
       <rect width="380" height="100" rx="10" fill="url(#grad-gray)" stroke="#475569" stroke-width="1.2" />
       <text x="20" y="28" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1">PHASE 4</text>
-      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Review &amp; Handoff</text>
-      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Perform quality audits &amp; visual checks</text>
-      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Deliver source files and documentation</text>
+      <text x="20" y="48" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="bold">Release &amp; Hosting</text>
+      <text x="20" y="68" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Deploy websites &amp; verify custom domains</text>
+      <text x="20" y="84" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="500">• Publish tutorials &amp; launch media campaigns</text>
     </g>
   </g>
 </svg>

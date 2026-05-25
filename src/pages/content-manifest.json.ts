@@ -38,6 +38,7 @@ export async function GET() {
   const publications = await getCollection("publications");
   const visualizations = await getCollection("visualizations");
   const services = await getCollection("services");
+  const modules = await getCollection("modules");
 
   const manifest = {
     posts: posts.map(p => ({
@@ -65,11 +66,18 @@ export async function GET() {
       url: `/visualizations/${v.id}`,
       date: parseItemDate(v.id, v.data.pubDate)
     })),
-    services: services.map(s => ({
-      id: s.id,
-      url: `/services/${s.id}`,
-      date: parseItemDate(s.id, s.data.pubDate)
-    }))
+    services: [
+      ...services.map(s => ({
+        id: s.id,
+        url: `/services/${s.id}`,
+        date: parseItemDate(s.id, s.data.pubDate)
+      })),
+      ...modules.map(m => ({
+        id: m.id,
+        url: `/services/${m.data.serviceId}/${m.id.split('/').pop()}`,
+        date: parseItemDate(m.id, m.data.pubDate)
+      }))
+    ]
   };
 
   return new Response(JSON.stringify(manifest), {

@@ -83,8 +83,11 @@ async function initNotifications() {
     const section = parts[0];
     state.lastVisitedSections[section] = Date.now();
     saveStorageState(state);
-  } else if (parts.length === 2 && SECTIONS.includes(parts[0])) {
-    // We are on a detail page (e.g. /posts/some-post-slug)
+  } else if (
+    (parts.length === 2 && SECTIONS.includes(parts[0])) ||
+    (parts.length === 3 && parts[0] === 'services')
+  ) {
+    // We are on a detail page (e.g. /posts/some-post-slug or /services/slug/module-slug)
     // Exclude auxiliary paths like tags or pages if any
     const section = parts[0];
     const subpath = parts[1];
