@@ -15,8 +15,8 @@ const navItems = [
   { label: "Courses", href: "/courses", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
   { label: "Projects", href: "/projects", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
   { label: "Services", href: "/services", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
-  { label: "Publications", href: "/publications", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
-  { label: "Visualizations", href: "/visualizations", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" }
+  { label: "Papers", href: "/publications", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
+  { label: "Demos", href: "/visualizations", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" }
 ];
 ---
 
@@ -35,13 +35,13 @@ const navItems = [
     </a>
 
     <!-- Desktop Navigation Links -->
-    <nav class="hidden lg:flex items-center space-x-6">
+    <nav class="hidden nav:flex items-center space-x-6">
       {navItems.map(item => {
         const active = isActive(item.href);
         return (
           <a 
             href={item.href} 
-            class={`relative py-1 text-xs lg:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 hover:scale-105 ${
+            class={`relative py-1 text-xs nav:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 hover:scale-105 ${
               active 
                 ? "text-brand-blue font-semibold" 
                 : "text-gray-400 hover:text-white"
@@ -84,7 +84,7 @@ const navItems = [
     </nav>
 
     <!-- Theme Toggle Mobile -->
-    <div class="flex items-center space-x-2 lg:hidden">
+    <div class="flex items-center space-x-2 nav:hidden">
       <button 
         id="theme-toggle-mobile" 
         class="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-all cursor-pointer mr-1" 
@@ -117,7 +117,7 @@ const navItems = [
   <!-- Mobile Dropdown Menu -->
   <div 
     id="mobile-menu" 
-    class="hidden lg:hidden glass-panel border-b border-white/5 absolute top-full left-0 right-0 py-6 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
+    class="hidden nav:hidden glass-panel border-b border-white/5 absolute top-full left-0 right-0 py-6 px-6 flex flex-col space-y-4 shadow-xl shadow-black/30"
   >
     {navItems.map(item => {
       const active = isActive(item.href);

@@ -22,6 +22,7 @@
   --color-gray-950: #020617; /* Map gray-950 to Slate 950 */
   
   --font-sans: "Outfit", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --breakpoint-nav: 1120px;
 }
 
 @layer base {
@@ -259,17 +260,7 @@
 .nav-logo-name {
   display: none !important;
 }
-@media (min-width: 480px) {
-  .nav-logo-name {
-    display: inline-block !important;
-  }
-}
-@media (min-width: 1024px) {
-  .nav-logo-name {
-    display: none !important;
-  }
-}
-@media (min-width: 1200px) {
+@media (min-width: 380px) {
   .nav-logo-name {
     display: inline-block !important;
   }
