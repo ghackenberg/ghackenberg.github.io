@@ -26,6 +26,7 @@
     "cheerio": "^1.2.0",
     "chrome-launcher": "^1.2.1",
     "lighthouse": "^13.3.0",
-    "puppeteer": "^25.0.4"
+    "puppeteer": "^25.0.4",
+    "quickjs-wasi": "^2.2.0"
   }
 }
