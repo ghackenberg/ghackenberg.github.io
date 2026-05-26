@@ -1,0 +1,127 @@
+---
+// [slug].astro
+// Dynamic route to compile slides for a specific LinkedIn post carousel.
+// Accessible locally at http://localhost:8099/feeds/linkedin/[slug]
+
+import { getCollection } from 'astro:content';
+import fs from 'fs';
+import path from 'path';
+import CarouselLayout from '../../../layouts/CarouselLayout.astro';
+import CoverSlide from '../../../components/carousel/CoverSlide.astro';
+import ContentSlide from '../../../components/carousel/ContentSlide.astro';
+import FeaturesSlide from '../../../components/carousel/FeaturesSlide.astro';
+import OutroSlide from '../../../components/carousel/OutroSlide.astro';
+
+export async function getStaticPaths() {
+  // Only compile these pages during local development (so Puppeteer can print them).
+  // Prevent them from being built into the production website bundle.
+  if (import.meta.env.PROD) {
+    return [];
+  }
+
+  const allSlides = await getCollection('linkedin-slides');
+
+  return allSlides.map((entry) => ({
+    params: { slug: entry.id },
+    props: {
+      slides: entry.data.slides,
+      folderName: entry.id,
+      carouselTitle: entry.data.title
+    }
+  }));
+}
+
+const { slug } = Astro.params;
+const { slides, folderName, carouselTitle } = Astro.props;
+
+const pageTitle = carouselTitle || `LinkedIn Carousel - ${slug}`;
+
+// Helper to check if a screenshot exists in the folder and return its source-relative path
+function getScreenshotPath(screenshotUrl: string | undefined) {
+  if (!screenshotUrl) return undefined;
+  
+  // Map URLs to standard screenshot basenames
+  let name = 'shot-home.png';
+  if (screenshotUrl.includes('courses')) name = 'shot-courses.png';
+  else if (screenshotUrl.includes('projects')) name = 'shot-projects.png';
+
+  const localPath = path.join(process.cwd(), 'src', 'content', 'feeds', 'linkedin', 'posts', folderName, name);
+  if (fs.existsSync(localPath)) {
+    // Return relative source path for Vite resolution
+    return `/src/content/feeds/linkedin/posts/${folderName}/${name}`;
+  }
+  return undefined;
+}
+---
+
+<CarouselLayout title={pageTitle}>
+  {slides.map((slide: any, idx: number) => {
+    const total = slides.length;
+    const index = idx + 1;
+    const screenshotPath = getScreenshotPath(slide.screenshotUrl);
+
+    switch (slide.type) {
+      case 'cover':
+        return (
+          <CoverSlide
+            theme={slide.theme}
+            category={slide.category}
+            domain={slide.domain}
+            title1={slide.title1}
+            title2={slide.title2}
+            subtitle={slide.subtitle}
+            screenshotPath={screenshotPath}
+            screenshotAlign={slide.screenshotAlign}
+            index={index}
+            total={total}
+          />
+        );
+      case 'content':
+        return (
+          <ContentSlide
+            theme={slide.theme}
+            category={slide.category}
+            headerLabel={slide.headerLabel}
+            title1={slide.title1}
+            title2={slide.title2}
+            description={slide.description}
+            screenshotPath={screenshotPath}
+            screenshotAlign={slide.screenshotAlign}
+            index={index}
+            total={total}
+          />
+        );
+      case 'features':
+        return (
+          <FeaturesSlide
+            theme={slide.theme}
+            category={slide.category}
+            headerLabel={slide.headerLabel}
+            title1={slide.title1}
+            title2={slide.title2}
+            features={slide.features}
+            index={index}
+            total={total}
+          />
+        );
+      case 'outro':
+        return (
+          <OutroSlide
+            theme={slide.theme}
+            category={slide.category}
+            headerLabel={slide.headerLabel}
+            title1={slide.title1}
+            title2={slide.title2}
+            description={slide.description}
+            icon={slide.icon}
+            ctaLabel={slide.ctaLabel}
+            footerLabel={slide.footerLabel}
+            index={index}
+            total={total}
+          />
+        );
+      default:
+        return null;
+    }
+  })}
+</CarouselLayout>

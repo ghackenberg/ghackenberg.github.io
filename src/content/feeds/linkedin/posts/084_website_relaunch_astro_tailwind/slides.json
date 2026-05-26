@@ -1,0 +1,75 @@
+{
+  "title": "Website Relaunch Walkthrough",
+  "slides": [
+    {
+      "type": "cover",
+      "theme": "emerald",
+      "category": "Personal Portfolio",
+      "domain": "ghackenberg.github.io",
+      "title1": "I completely rebuilt <br/>my website ",
+      "title2": "from scratch.",
+      "subtitle": "A fast, version-controlled resources hub for my students, engineering colleagues, and industry partners. Fully open source.",
+      "screenshotUrl": "/",
+      "screenshotAlign": "top"
+    },
+    {
+      "type": "content",
+      "theme": "purple",
+      "category": "1. Lectures & Education",
+      "headerLabel": "Courses Catalog",
+      "title1": "A Unified Hub for my ",
+      "title2": "Teaching Materials",
+      "description": "An interactive catalog of my courses at FH Upper Austria—covering Systems Engineering, Agile Product Design, and Data Analysis.",
+      "screenshotUrl": "/courses",
+      "screenshotAlign": "top"
+    },
+    {
+      "type": "content",
+      "theme": "cyan",
+      "category": "2. Research & Visualizations",
+      "headerLabel": "Interactive Demos",
+      "title1": "Interactive ",
+      "title2": "Projects & Demos",
+      "description": "Direct access to visual tools like k-means clustering, Monte Carlo simulations, and open-source projects like CADdrive and Mentawise.",
+      "screenshotUrl": "/projects",
+      "screenshotAlign": "top"
+    },
+    {
+      "type": "features",
+      "theme": "amber",
+      "category": "3. Architecture Details",
+      "headerLabel": "Under The Hood",
+      "title1": "Built as an ",
+      "title2": "Offline-First Feed Database",
+      "features": [
+        {
+          "title": "Astro & Tailwind v4",
+          "description": "Pre-rendered static HTML with maximum load performance and modern v4 styling engine."
+        },
+        {
+          "title": "Content Collections",
+          "description": "All posts and videos are stored locally as Markdown files serving as the master database."
+        },
+        {
+          "title": "Build-time Sync",
+          "description": "A Node script queries APIs and merges engagement metrics into local files."
+        },
+        {
+          "title": "Fully Open Source",
+          "description": "The entire site setup, config, and script history is hosted publicly on GitHub Pages."
+        }
+      ]
+    },
+    {
+      "type": "outro",
+      "theme": "emerald",
+      "category": "Open Source",
+      "headerLabel": "Try It Out",
+      "title1": "Explore the Site & Code",
+      "description": "Inspect the source files, clone the setup, or check out my lecture slides directly.",
+      "icon": "globe",
+      "ctaLabel": "ghackenberg.github.io",
+      "footerLabel": "Link in the comments! 👇"
+    }
+  ]
+}

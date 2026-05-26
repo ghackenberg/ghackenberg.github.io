@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "sync": "node scripts/sync.js",
+    "generate-carousel": "node scripts/generate-carousel.js",
     "generate-assets": "node scripts/generate-assets.js",
     "lighthouse": "node scripts/run-lighthouse.js",
     "astro": "astro"
