@@ -10,6 +10,8 @@ const modules = await getCollection("modules");
 
 const optimizedServices = await Promise.all(
   sortedServices.map(async (service) => {
+    let optimizedImageSrc = undefined;
+
     if (service.data.previewImage) {
       const optimized = await getImage({
         src: service.data.previewImage,
@@ -17,12 +19,13 @@ const optimizedServices = await Promise.all(
         width: 800,
         quality: 80
       });
-      return {
-        ...service,
-        optimizedImageSrc: optimized.src
-      };
+      optimizedImageSrc = optimized.src;
     }
-    return service;
+
+    return {
+      ...service,
+      optimizedImageSrc
+    };
   })
 );
 
@@ -79,7 +82,7 @@ const colorClasses = {
         Professional Collaboration
       </span>
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
-        Professional <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-blue to-brand-green">Services</span>
+        Professional <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-purple to-purple-400 light:to-purple-700">Services</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Bridging the gap between academic research, software engineering, and corporate strategy. Discover tailorable workshops, R&D prototyping, and advisory setups.
@@ -191,10 +194,15 @@ const colorClasses = {
                     aria-label={`Service preview: ${service.data.title}`}
                   >
                     <defs>
-                      <linearGradient id={`grad-service-${service.id}`} x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id={`grad-service-dark-${service.id}`} x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="#000000" stop-opacity="0" />
                         <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
                         <stop offset="100%" stop-color="#000000" stop-opacity="0.75" />
+                      </linearGradient>
+                      <linearGradient id={`grad-service-light-${service.id}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+                        <stop offset="50%" stop-color="#000000" stop-opacity="0.10" />
+                        <stop offset="100%" stop-color="#000000" stop-opacity="0.40" />
                       </linearGradient>
                     </defs>
                     <image 
@@ -210,7 +218,16 @@ const colorClasses = {
                       y="0" 
                       width={service.data.previewImage.width} 
                       height={service.data.previewImage.height + 0.5} 
-                      fill={`url(#grad-service-${service.id})`} 
+                      class="block light:hidden"
+                      fill={`url(#grad-service-dark-${service.id})`} 
+                    />
+                    <rect 
+                      x="0" 
+                      y="0" 
+                      width={service.data.previewImage.width} 
+                      height={service.data.previewImage.height + 0.5} 
+                      class="hidden light:block"
+                      fill={`url(#grad-service-light-${service.id})`} 
                     />
                   </svg>
                 )}

@@ -162,10 +162,10 @@ const colorClasses = {
 
                     {/* Number node */}
                     <div 
-                      class={`w-10 h-10 rounded-full flex items-center justify-center font-mono font-bold text-xs border transition-all duration-300 bg-gray-950 z-10 ${
+                      class={`methodology-step-node w-10 h-10 rounded-full flex items-center justify-center font-mono font-bold text-xs border transition-all duration-300 z-10 ${
                         isSignatureStep 
-                          ? 'border-transparent text-white' 
-                          : 'border-white/10 text-gray-500 group-hover/phase:border-white/20 group-hover/phase:text-gray-300'
+                          ? 'text-white' 
+                          : 'text-gray-500 group-hover/phase:text-gray-300'
                       }`}
                       style={isSignatureStep ? 'border-color: var(--glow-border); color: var(--glow-text); box-shadow: 0 0 15px -3px var(--glow-shadow);' : ''}
                     >
@@ -424,6 +424,28 @@ const colorClasses = {
   }
   .service-content :global(> *:last-child) {
     margin-bottom: 0;
+  }
+
+  .methodology-step-node {
+    background-color: #020617;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .group\/phase:hover .methodology-step-node:not([style*="border-color"]) {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Methodology step node overrides for light mode */
+  :global(.light) .methodology-step-node {
+    background-color: #ffffff !important;
+  }
+
+  :global(.light) .methodology-step-node:not([style*="border-color"]) {
+    border-color: rgba(15, 23, 42, 0.15) !important;
+  }
+
+  :global(.light) .group\/phase:hover .methodology-step-node:not([style*="border-color"]) {
+    border-color: rgba(15, 23, 42, 0.3) !important;
   }
 </style>
 

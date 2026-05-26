@@ -68,7 +68,7 @@ const languageColors: Record<string, string> = {
         Academic & Teaching
       </span>
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
-        University <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-yellow via-brand-purple to-brand-blue">Lectures</span>
+        University <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-yellow to-amber-400 light:to-amber-700">Lectures</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Explore materials, code repositories, and syllabus details for the courses I teach at the University of Applied Sciences Upper Austria (Fakultät für Technik und angewandte Naturwissenschaften, Wels).
@@ -205,6 +205,41 @@ const languageColors: Record<string, string> = {
   .lang-filter-btn:hover:not(.active) {
     border-color: rgba(245, 158, 11, 0.2);
     color: #fbbf24;
+  }
+
+  /* Light mode overrides */
+  :global(.light) .lang-filter-btn {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569; /* slate-600 */
+  }
+
+  :global(.light) .lang-filter-btn.active {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #b45309; /* amber-700 */
+    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2);
+  }
+
+  :global(.light) .lang-filter-btn:hover:not(.active) {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #d97706; /* amber-600 */
+  }
+
+  :global(.light) #tech-filter {
+    background-color: #ffffff;
+    border-color: rgba(15, 23, 42, 0.12);
+    color: #0f172a;
+  }
+
+  :global(.light) #tech-filter option {
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+
+  :global(.light) #tech-filter:focus {
+    border-color: rgba(245, 158, 11, 0.6);
   }
 </style>
 

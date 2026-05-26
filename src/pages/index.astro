@@ -113,7 +113,7 @@ const professionalInterests = [
           
           <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
             Hi, I am <br class="sm:hidden" />
-            <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow">
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-blue-400 light:to-blue-700">
               Georg Hackenberg
             </span>
           </h1>
@@ -237,6 +237,7 @@ const professionalInterests = [
             tags={project.data.tags}
             accentColor={project.data.accentColor}
             screenshot={project.data.screenshot}
+            screenshotLight={project.data.screenshotLight}
           />
         ))}
       </div>
@@ -471,6 +472,12 @@ const professionalInterests = [
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  :global(.light) .feed-tab-btn {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569;
+  }
+
   /* Tab Progress Bar Indicator */
   .tab-progress {
     position: absolute;
@@ -512,6 +519,10 @@ const professionalInterests = [
     border-color: rgba(59, 130, 246, 0.2);
     color: #60a5fa;
   }
+  :global(.light) .feed-tab-btn[data-tab="github"]:hover:not(.active) {
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+  }
 
   /* LinkedIn Active */
   .feed-tab-btn[data-tab="linkedin"].active {
@@ -524,6 +535,10 @@ const professionalInterests = [
     border-color: rgba(168, 85, 247, 0.2);
     color: #c084fc;
   }
+  :global(.light) .feed-tab-btn[data-tab="linkedin"]:hover:not(.active) {
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #a855f7;
+  }
 
   /* YouTube Active */
   .feed-tab-btn[data-tab="youtube"].active {
@@ -535,6 +550,10 @@ const professionalInterests = [
   .feed-tab-btn[data-tab="youtube"]:hover:not(.active) {
     border-color: rgba(16, 185, 129, 0.2);
     color: #34d399;
+  }
+  :global(.light) .feed-tab-btn[data-tab="youtube"]:hover:not(.active) {
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #10b981;
   }
 
   /* Feed Panels Slide Animations */

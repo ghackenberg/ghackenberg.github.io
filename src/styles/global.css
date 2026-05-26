@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant light (&:where(.light, .light *));
+
 @theme {
   --color-brand-blue: #3b82f6;     /* Deep Work, Steward Development, Software Engineering */
   --color-brand-yellow: #f59e0b;   /* Meetings, Academic, External partners (FH Wels) */
@@ -34,6 +36,90 @@
     background-repeat: no-repeat;
     color: #f3f4f6; /* Tailwind gray-100 */
     overflow-x: hidden;
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @variant light {
+      background-color: #f8fafc;
+      background-image: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 100%);
+      color: #0f172a; /* Slate 900 */
+    }
+  }
+
+  /* Global utility class overrides for light mode */
+  .light {
+    h1, h2, h3, h4, h5, h6, 
+    .text-white, 
+    .text-gray-100 {
+      color: #0f172a !important;
+    }
+    p, 
+    .text-gray-300, 
+    .text-gray-400 {
+      color: #334155 !important;
+    }
+    .text-gray-500 {
+      color: #64748b !important;
+    }
+    .border-white\/5, 
+    .border-white\/10 {
+      border-color: rgba(15, 23, 42, 0.08) !important;
+    }
+    .bg-white\/5 {
+      background-color: rgba(15, 23, 42, 0.04) !important;
+    }
+    .hover\:bg-white\/10:hover {
+      background-color: rgba(15, 23, 42, 0.08) !important;
+    }
+    .hover\:border-white\/20:hover {
+      border-color: rgba(15, 23, 42, 0.15) !important;
+    }
+    .bg-gray-950\/90 {
+      background-color: rgba(255, 255, 255, 0.9) !important;
+    }
+    .bg-gray-950\/80 {
+      background-color: rgba(255, 255, 255, 0.9) !important;
+    }
+    .bg-gray-950\/60 {
+      background-color: rgba(255, 255, 255, 0.6) !important;
+    }
+    .bg-gray-950\/40,
+    .bg-gray-950 {
+      background-color: rgba(15, 23, 42, 0.02) !important;
+    }
+    .text-gray-300.hover\:text-white:hover {
+      color: #0f172a !important;
+    }
+    .text-gray-400.hover\:text-white:hover {
+      color: #0f172a !important;
+    }
+
+    /* Markdown article content overrides for high-contrast light mode */
+    .service-content strong,
+    .service-content b,
+    .syllabus-content strong,
+    .syllabus-content b,
+    .post-body strong,
+    .post-body b,
+    .project-content strong,
+    .project-content b {
+      color: #0f172a !important;
+    }
+
+    .service-content ul,
+    .service-content ol,
+    .service-content li,
+    .syllabus-content ul,
+    .syllabus-content ol,
+    .syllabus-content li,
+    .post-body ul,
+    .post-body ol,
+    .post-body li,
+    .project-content ul,
+    .project-content ol,
+    .project-content li {
+      color: #334155 !important;
+    }
   }
 }
 
@@ -43,13 +129,27 @@
 }
 ::-webkit-scrollbar-track {
   background: #030712;
+  transition: background-color 0.5s ease;
+
+  @variant light {
+    background: #f1f5f9;
+  }
 }
 ::-webkit-scrollbar-thumb {
   background: #1f2937;
   border-radius: 5px;
+  transition: background-color 0.5s ease;
+
+  @variant light {
+    background: #cbd5e1;
+  }
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #374151;
+
+  @variant light {
+    background: #94a3b8;
+  }
 }
 
 /* Custom Scrollbar for tag lists / sidebars */
@@ -62,9 +162,17 @@
 .custom-scrollbar-thin::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
+
+  @variant light {
+    background: rgba(15, 23, 42, 0.1);
+  }
 }
 .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+
+  @variant light {
+    background: rgba(15, 23, 42, 0.2);
+  }
 }
 
 /* Glassmorphism utility */
@@ -73,6 +181,13 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @variant light {
+    background: rgba(255, 255, 255, 0.75);
+    border-color: rgba(15, 23, 42, 0.08);
+  }
 }
 
 .glass-card {
@@ -85,14 +200,24 @@
   -webkit-backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
   will-change: transform, border-color, box-shadow;
-  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @variant light {
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(15, 23, 42, 0.06);
+  }
 }
 
 .glass-card:hover {
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
   transform: translate3d(0, -2px, 0);
+
+  @variant light {
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.1);
+  }
 }
 
 /* Background Glowing Orbs */
@@ -104,6 +229,11 @@
   pointer-events: none;
   z-index: 0;
   animation: pulse-slow 12s infinite alternate;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @variant light {
+    opacity: 0.08;
+  }
 }
 
 @keyframes pulse-slow {
@@ -146,22 +276,55 @@
   color: #60a5fa !important; /* Tailwind blue-400 */
   border-color: rgba(96, 165, 250, 0.3) !important;
   background-color: rgba(59, 130, 246, 0.15) !important;
+
+  @variant light {
+    color: #1d4ed8 !important; /* blue-700 */
+    border-color: rgba(59, 130, 246, 0.25) !important;
+    background-color: rgba(59, 130, 246, 0.1) !important;
+  }
 }
 
 .bg-brand-yellow\/10.text-brand-yellow {
   color: #fbbf24 !important; /* Tailwind amber-400 */
   border-color: rgba(251, 191, 36, 0.3) !important;
   background-color: rgba(245, 158, 11, 0.15) !important;
+
+  @variant light {
+    color: #b45309 !important; /* amber-700 */
+    border-color: rgba(245, 158, 11, 0.3) !important;
+    background-color: rgba(245, 158, 11, 0.1) !important;
+  }
 }
 
 .bg-brand-purple\/10.text-brand-purple {
   color: #c084fc !important; /* Tailwind purple-400 */
   border-color: rgba(192, 132, 252, 0.3) !important;
   background-color: rgba(168, 85, 247, 0.15) !important;
+
+  @variant light {
+    color: #7e22ce !important; /* purple-700 */
+    border-color: rgba(168, 85, 247, 0.25) !important;
+    background-color: rgba(168, 85, 247, 0.1) !important;
+  }
 }
 
 .bg-brand-green\/10.text-brand-green {
   color: #34d399 !important; /* Tailwind emerald-400 */
   border-color: rgba(52, 211, 153, 0.3) !important;
   background-color: rgba(16, 185, 129, 0.15) !important;
+
+  @variant light {
+    color: #047857 !important; /* emerald-700 */
+    border-color: rgba(16, 185, 129, 0.25) !important;
+    background-color: rgba(16, 185, 129, 0.1) !important;
+  }
 }
+
+/* Timeline lifeline dashed SVG lines in light mode */
+.light [data-lifeline-dashed-top] stop[offset="0%"] {
+  stop-color: #f8fafc !important;
+}
+.light [data-lifeline-dashed-bottom] stop[offset="100%"] {
+  stop-color: #f8fafc !important;
+}
+

@@ -30,7 +30,7 @@ const allTags = Array.from(tagsSet).sort();
         Tools & Systems
       </span>
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
-        Software <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow">Projects</span>
+        Software <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-blue-400 light:to-blue-700">Projects</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Active platforms, frameworks, and tools designed to optimize product design, engineering, knowledge graphs, and real-time physical simulation.
@@ -100,6 +100,7 @@ const allTags = Array.from(tagsSet).sort();
                     tags={project.data.tags}
                     accentColor={project.data.accentColor}
                     screenshot={project.data.screenshot}
+                    screenshotLight={project.data.screenshotLight}
                   />
                 </div>
               );
@@ -169,3 +170,21 @@ const allTags = Array.from(tagsSet).sort();
     updateFilters();
   });
 </script>
+
+<style>
+  /* Light mode overrides for tag filter dropdown */
+  :global(.light) #tag-filter {
+    background-color: #ffffff;
+    border-color: rgba(15, 23, 42, 0.12);
+    color: #0f172a;
+  }
+
+  :global(.light) #tag-filter option {
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+
+  :global(.light) #tag-filter:focus {
+    border-color: rgba(59, 130, 246, 0.6); /* brand-blue */
+  }
+</style>

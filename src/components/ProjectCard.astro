@@ -9,6 +9,7 @@ interface Props {
   tags: string[];
   accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
   screenshot?: any;
+  screenshotLight?: any;
 }
 
 const { 
@@ -18,11 +19,19 @@ const {
   href, 
   tags, 
   accentColor = 'blue',
-  screenshot
+  screenshot,
+  screenshotLight
 } = Astro.props;
 
 const optimizedScreenshot = screenshot ? await getImage({
   src: screenshot,
+  format: 'webp',
+  width: 640,
+  quality: 80
+}) : null;
+
+const optimizedScreenshotLight = screenshotLight ? await getImage({
+  src: screenshotLight,
   format: 'webp',
   width: 640,
   quality: 80
@@ -90,10 +99,15 @@ const dotColorClass = {
         aria-label={`Project preview: ${title}`}
       >
         <defs>
-          <linearGradient id={`grad-project-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={`grad-project-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#000000" stop-opacity="0" />
             <stop offset="60%" stop-color="#000000" stop-opacity="0.25" />
             <stop offset="100%" stop-color="#000000" stop-opacity="0.85" />
+          </linearGradient>
+          <linearGradient id={`grad-project-light-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+            <stop offset="60%" stop-color="#000000" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
           </linearGradient>
         </defs>
         <image 
@@ -109,13 +123,22 @@ const dotColorClass = {
           y="0" 
           width="160" 
           height="90.5" 
-          fill={`url(#grad-project-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
+          class="block light:hidden"
+          fill={`url(#grad-project-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
+        />
+        <rect 
+          x="0" 
+          y="0" 
+          width="160" 
+          height="90.5" 
+          class="hidden light:block"
+          fill={`url(#grad-project-light-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
         />
       </svg>
     ) : (
       <>
         <!-- Premium gradient placeholder for missing preview -->
-        <div class={`absolute inset-0 bg-gradient-to-br from-brand-${accentColor}/20 via-brand-purple/5 to-blue-950/40 group-hover:scale-105 transition-transform duration-500 z-0`}></div>
+        <div class={`absolute inset-0 bg-gradient-to-br from-brand-${accentColor}/20 via-brand-purple/5 to-blue-950/40 light:to-slate-100/40 group-hover:scale-105 transition-transform duration-500 z-0`}></div>
         <div class="text-4xl select-none relative z-10 filter opacity-60 group-hover:scale-110 transition-transform duration-500">
           🚀
         </div>

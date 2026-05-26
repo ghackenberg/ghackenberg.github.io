@@ -1,0 +1,87 @@
+---
+// [slug].astro
+// Dynamic route to compile single highlight images for LinkedIn posts.
+// Accessible locally at http://localhost:8099/feeds/linkedin/image/[slug]
+
+import { getCollection } from 'astro:content';
+import fs from 'fs';
+import path from 'path';
+import SingleImageLayout from '../../../../layouts/SingleImageLayout.astro';
+
+export async function getStaticPaths() {
+  if (import.meta.env.PROD) {
+    return [];
+  }
+
+  const allImages = await getCollection('linkedin-images');
+
+  return allImages.map((entry) => ({
+    params: { slug: entry.id },
+    props: {
+      imageConfig: entry.data,
+      folderName: entry.id
+    }
+  }));
+}
+
+const { slug } = Astro.params;
+const { imageConfig, folderName } = Astro.props;
+
+const {
+  title,
+  category = "WebGL Architecture",
+  headerLabel = "ghackenberg.github.io",
+  theme = "cyan",
+  title1,
+  title2,
+  description,
+  diagramUrl
+} = imageConfig;
+
+// Resolve dynamic SVG diagram path relative to the post folder
+function getDiagramPath(url: string) {
+  if (!url) return undefined;
+  const localPath = path.join(process.cwd(), 'src', 'content', 'feeds', 'linkedin', 'posts', folderName, url);
+  if (fs.existsSync(localPath)) {
+    return `/src/content/feeds/linkedin/posts/${folderName}/${url}`;
+  }
+  return undefined;
+}
+
+const resolvedDiagramPath = getDiagramPath(diagramUrl);
+
+const themeMap = {
+  emerald: 'from-emerald-400 to-cyan-400',
+  purple: 'from-purple-400 to-pink-400',
+  cyan: 'from-cyan-400 to-blue-400',
+  amber: 'from-amber-400 to-orange-400'
+};
+
+const textGradient = themeMap[theme as keyof typeof themeMap] || themeMap.cyan;
+---
+
+<SingleImageLayout
+  title={title}
+  category={category}
+  headerLabel={headerLabel}
+  theme={theme}
+>
+  <div class="space-y-6 flex flex-col justify-center w-full">
+    <!-- Titles & Description -->
+    <div class="space-y-4">
+      <h1 class="text-5xl font-extrabold tracking-tight text-white leading-[1.15] font-['Outfit']">
+        <span set:html={title1}></span>{title2 && <>{" "}<span class={`text-transparent bg-clip-text bg-gradient-to-r ${textGradient}`} set:html={title2}></span></>}
+      </h1>
+      <p class="text-lg text-gray-300 max-w-3xl leading-relaxed">
+        {description}
+      </p>
+    </div>
+
+    <!-- Centered Diagram Box (Glassmorphic) -->
+    {resolvedDiagramPath && (
+      <div class="rounded-2xl border border-white/10 bg-zinc-950/40 shadow-2xl backdrop-blur-sm overflow-hidden w-full flex items-center justify-center p-6 mt-4 h-[460px]">
+        <img src={resolvedDiagramPath} class="max-w-full max-h-full object-contain" alt="Diagram" />
+      </div>
+    )}
+  </div>
+</SingleImageLayout>

@@ -210,7 +210,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
 
 <div data-timeline-container class="relative space-y-8 py-2">
   <!-- Continuous background white line -->
-  <div class="absolute left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-white/10 z-0 pointer-events-none rounded-full"></div>
+  <div class="absolute left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-white/10 light:bg-slate-200 z-0 pointer-events-none rounded-full"></div>
   {companyGroups.map((group, index) => {
     const isLast = index === companyGroups.length - 1;
     // Determine the SVG logo or image to render
@@ -414,7 +414,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
                     <span 
                       data-role-dot
                       data-color={role.color}
-                      class={`absolute -left-[35px] top-1.5 w-3.5 h-3.5 rounded-full bg-gray-900 border-2 z-20 transition-all duration-300 group-hover/role:scale-110 ${roleDotColors[role.color]}`}
+                      class={`absolute -left-[35px] top-1.5 w-3.5 h-3.5 rounded-full bg-gray-900 light:bg-white border-2 z-20 transition-all duration-300 group-hover/role:scale-110 ${roleDotColors[role.color]}`}
                     ></span>
                     
                     <div class="w-full min-w-0">
@@ -531,10 +531,12 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
 
       // 3. Build gradient stops
       const stops: string[] = [];
+      const isLight = document.documentElement.classList.contains('light');
+      const fadeColor = isLight ? 'rgba(248, 250, 252, 0.8)' : 'rgba(255, 255, 255, 0.8)';
       
       if (!isFirstCard) {
-        // Start with white at top
-        stops.push('rgba(255, 255, 255, 0.8) 0%');
+        // Start with white/light-gray at top
+        stops.push(`${fadeColor} 0%`);
       }
 
       dots.forEach((dot, dotIndex) => {
@@ -555,8 +557,8 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
       });
 
       if (!isLastCard) {
-        // End with white at bottom
-        stops.push('rgba(255, 255, 255, 0.8) 100%');
+        // End with white/light-gray at bottom
+        stops.push(`${fadeColor} 100%`);
       }
 
       // Apply the gradient
@@ -567,6 +569,8 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
   // Run on DOM load and Astro page load
   document.addEventListener('DOMContentLoaded', updateLifelineGradients);
   document.addEventListener('astro:page-load', updateLifelineGradients);
+  // Listen for theme toggle events
+  window.addEventListener('theme-changed', updateLifelineGradients);
   // Run immediately in case DOM is already ready
   updateLifelineGradients();
   // Update on window resize to ensure correct coordinates

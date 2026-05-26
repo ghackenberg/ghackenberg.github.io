@@ -129,45 +129,49 @@ async function run() {
 
   try {
     for (const page of urlsToAudit) {
-      const url = `${baseUrl}${page.path}`;
-      console.log(`Auditing: ${url}...`);
+      for (const theme of ['dark', 'light']) {
+        const suffix = theme === 'light' ? '?theme=light' : '?theme=dark';
+        const url = `${baseUrl}${page.path}${suffix}`;
+        console.log(`Auditing (${theme} mode): ${url}...`);
 
-      const options = {
-        logLevel: 'info',
-        output: ['html', 'json'],
-        port: chrome.port,
-      };
+        const options = {
+          logLevel: 'info',
+          output: ['html', 'json'],
+          port: chrome.port,
+        };
 
-      const runnerResult = await lighthouse(url, options);
+        const runnerResult = await lighthouse(url, options);
 
-      const htmlReport = runnerResult.report[0];
-      const jsonReport = runnerResult.report[1];
-      const lhr = runnerResult.lhr;
+        const htmlReport = runnerResult.report[0];
+        const jsonReport = runnerResult.report[1];
+        const lhr = runnerResult.lhr;
 
-      // Save reports
-      fs.writeFileSync(path.join(reportsDir, `${page.name}.html`), htmlReport);
-      fs.writeFileSync(path.join(reportsDir, `${page.name}.json`), jsonReport);
+        // Save reports
+        fs.writeFileSync(path.join(reportsDir, `${page.name}_${theme}.html`), htmlReport);
+        fs.writeFileSync(path.join(reportsDir, `${page.name}_${theme}.json`), jsonReport);
 
-      const scores = {
-        performance: Math.round((lhr.categories.performance?.score || 0) * 100),
-        accessibility: Math.round((lhr.categories.accessibility?.score || 0) * 100),
-        bestPractices: Math.round((lhr.categories['best-practices']?.score || 0) * 100),
-        seo: Math.round((lhr.categories.seo?.score || 0) * 100),
-      };
+        const scores = {
+          performance: Math.round((lhr.categories.performance?.score || 0) * 100),
+          accessibility: Math.round((lhr.categories.accessibility?.score || 0) * 100),
+          bestPractices: Math.round((lhr.categories['best-practices']?.score || 0) * 100),
+          seo: Math.round((lhr.categories.seo?.score || 0) * 100),
+        };
 
-      resultsSummary.push({
-        name: page.name,
-        path: page.path,
-        scores
-      });
+        resultsSummary.push({
+          name: page.name,
+          path: page.path,
+          theme,
+          scores
+        });
 
-      if (
-        scores.performance < minRequiredScore ||
-        scores.accessibility < minRequiredScore ||
-        scores.bestPractices < minRequiredScore ||
-        scores.seo < minRequiredScore
-      ) {
-        thresholdFailed = true;
+        if (
+          scores.performance < minRequiredScore ||
+          scores.accessibility < minRequiredScore ||
+          scores.bestPractices < minRequiredScore ||
+          scores.seo < minRequiredScore
+        ) {
+          thresholdFailed = true;
+        }
       }
     }
   } catch (err) {
@@ -185,18 +189,30 @@ async function run() {
   }
 
   // Display results summary
-  console.log('\n==================================================');
-  console.log(' LIGHTHOUSE AUDIT SCORES SUMMARY');
-  console.log('==================================================');
-  for (const page of resultsSummary) {
-    console.log(`\nPage: ${page.name} (${page.path})`);
-    console.log(`--------------------------------------------------`);
-    console.log(`  Performance:     ${colorScore(page.scores.performance)}`);
-    console.log(`  Accessibility:   ${colorScore(page.scores.accessibility)}`);
-    console.log(`  Best Practices:  ${colorScore(page.scores.bestPractices)}`);
-    console.log(`  SEO:             ${colorScore(page.scores.seo)}`);
+  console.log('\n========================================================================');
+  console.log(' LIGHTHOUSE AUDIT SCORES SUMMARY (DARK vs LIGHT)');
+  console.log('========================================================================');
+  
+  // Group results by page path/name
+  const groupedResults = {};
+  for (const r of resultsSummary) {
+    if (!groupedResults[r.name]) {
+      groupedResults[r.name] = { path: r.path, dark: null, light: null };
+    }
+    groupedResults[r.name][r.theme] = r.scores;
   }
-  console.log('\n==================================================');
+
+  for (const [name, data] of Object.entries(groupedResults)) {
+    console.log(`\nPage: ${name} (${data.path})`);
+    console.log(`------------------------------------------------------------------------`);
+    console.log(`  Metric           | Dark Mode          | Light Mode`);
+    console.log(`-------------------|--------------------|-------------------`);
+    console.log(`  Performance      | ${formatScoreCell(data.dark?.performance)}                | ${formatScoreCell(data.light?.performance)}`);
+    console.log(`  Accessibility    | ${formatScoreCell(data.dark?.accessibility)}                | ${formatScoreCell(data.light?.accessibility)}`);
+    console.log(`  Best Practices   | ${formatScoreCell(data.dark?.bestPractices)}                | ${formatScoreCell(data.light?.bestPractices)}`);
+    console.log(`  SEO              | ${formatScoreCell(data.dark?.seo)}                | ${formatScoreCell(data.light?.seo)}`);
+  }
+  console.log('\n========================================================================');
   console.log(`Reports saved in: ${reportsDir}`);
 
   // Exit with error if threshold failed and we are in CI / assertions are enabled
@@ -208,14 +224,15 @@ async function run() {
   process.exit(0);
 }
 
-function colorScore(score) {
-  const reset = '\x1b[0m';
+function formatScoreCell(score) {
+  if (score === undefined || score === null) return 'N/A';
+  const scoreStr = String(score).padEnd(3);
   if (score >= 90) {
-    return `\x1b[32m${score}\x1b[0m`; // Green
+    return `\x1b[32m${scoreStr}\x1b[0m`; // Green
   } else if (score >= 50) {
-    return `\x1b[33m${score}\x1b[0m`; // Yellow
+    return `\x1b[33m${scoreStr}\x1b[0m`; // Yellow
   } else {
-    return `\x1b[31m${score}\x1b[0m`; // Red
+    return `\x1b[31m${scoreStr}\x1b[0m`; // Red
   }
 }
 

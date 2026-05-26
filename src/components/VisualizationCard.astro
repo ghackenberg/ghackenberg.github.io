@@ -30,10 +30,15 @@ const {
         aria-label={`Visualization preview: ${title}`}
       >
         <defs>
-          <linearGradient id={`grad-vis-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={`grad-vis-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#000000" stop-opacity="0" />
             <stop offset="60%" stop-color="#000000" stop-opacity="0.25" />
             <stop offset="100%" stop-color="#000000" stop-opacity="0.85" />
+          </linearGradient>
+          <linearGradient id={`grad-vis-light-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+            <stop offset="60%" stop-color="#000000" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
           </linearGradient>
         </defs>
         <image 
@@ -49,7 +54,16 @@ const {
           y="0" 
           width="160" 
           height="90.5" 
-          fill={`url(#grad-vis-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
+          class="block light:hidden"
+          fill={`url(#grad-vis-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
+        />
+        <rect 
+          x="0" 
+          y="0" 
+          width="160" 
+          height="90.5" 
+          class="hidden light:block"
+          fill={`url(#grad-vis-light-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
         />
       </svg>
     )}
