@@ -87,6 +87,10 @@
     .bg-gray-950 {
       background-color: rgba(15, 23, 42, 0.02) !important;
     }
+    .timeline-logo-container {
+      background-color: #ffffff !important;
+      border-color: rgba(15, 23, 42, 0.12) !important;
+    }
     .text-gray-300.hover\:text-white:hover {
       color: #0f172a !important;
     }
