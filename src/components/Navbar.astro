@@ -180,9 +180,9 @@ const navItems = [
     if (header) {
       if (window.scrollY > 50) {
         header.classList.remove('py-4');
-        header.classList.add('py-3', 'bg-gray-950/90', 'shadow-lg');
+        header.classList.add('py-3', 'navbar-scrolled', 'shadow-lg');
       } else {
-        header.classList.remove('py-3', 'bg-gray-950/90', 'shadow-lg');
+        header.classList.remove('py-3', 'navbar-scrolled', 'shadow-lg');
         header.classList.add('py-4');
       }
     }
