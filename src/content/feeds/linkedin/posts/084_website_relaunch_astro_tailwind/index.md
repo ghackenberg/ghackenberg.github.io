@@ -6,21 +6,17 @@ comments: 0
 shares: 0
 image: "./image.jpg"
 ---
-My digital home just got a major upgrade! 🚀
+I recently spent some time redesigning and rebuilding my personal website to serve as a fast, version-controlled resources hub for my students, colleagues, and project partners.
 
-I have spent the last few weeks completely redesigning and rebuilding my personal website, and it is now live.
+Rather than maintaining a static portfolio, the goal was to consolidate university course materials, software prototypes, and digital feeds in one unified place.
 
-Instead of a standard static portfolio, I wanted a fast, version-controlled resources hub for my students, colleagues, and industry partners.
-
-I put together a quick carousel detailing the new features, the pedagogical catalog, and the engineering details under the hood. 
-
-Here is a quick look:
-📖 Course Catalog (FH Upper Austria)
-🛠️ Interactive Projects & Coding Visualizations
+I put together a short slide deck highlighting the main additions and the technical setup behind it:
+📖 Consolidated Course Catalog (FH Upper Austria)
+🛠️ Interactive Project Demos & Code Visualizations
 🔄 Unified, offline-first Feed System (YouTube, LinkedIn, GitHub)
 
-Check out the slides below for the walkthrough! 
+The code is fully open-source and hosted on GitHub. Let me know what you think!
 
-👇 The link to the website and the open-source GitHub repository is in the first comment!
+👇 Link to the website and repository is in the first comment.
 
-#softwareengineering #webdevelopment #astrojs #opensource #education #highereducation
+#softwareengineering #webdevelopment #astrojs #opensource #education
