@@ -1,0 +1,131 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+---
+
+<Layout 
+  title="Impressum | Dr. Georg Hackenberg" 
+  description="Offizielles Impressum von Dr. Georg Hackenberg (IT-Dienstleistungen) gemäß § 5 ECG, § 14 UGB, § 345 GewO und § 25 Mediengesetz."
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Header -->
+    <div class="mb-12">
+      <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-6 tracking-wider uppercase">
+        Rechtliche Angaben
+      </span>
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+        Impressum
+      </h1>
+      <p class="text-gray-400 text-sm md:text-base max-w-xl font-normal leading-relaxed">
+        Offizielle Anbieterkennzeichnung gemäß den österreichischen gesetzlichen Vorschriften (ECG, UGB, GewO und Mediengesetz).
+      </p>
+    </div>
+
+    <!-- Main Content Panel -->
+    <div class="glass-card rounded-3xl border border-white/5 overflow-hidden p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8 relative">
+      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-blue to-brand-purple"></div>
+
+      <!-- Section: General Information -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div>
+          <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3">Diensteanbieter & Medieninhaber</h2>
+          <p class="text-white font-semibold text-lg">Dr. rer. nat. Georg Hackenberg BSc MSc</p>
+          <p class="text-gray-400 text-sm mt-1">IT-Dienstleister / Software Engineer & Professor</p>
+        </div>
+        
+        <div>
+          <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3">Firmensitz / Anschrift</h2>
+          <p class="text-gray-300 text-sm leading-relaxed">
+            Edthof 13a<br />
+            4645 Grünau im Almtal<br />
+            Österreich
+          </p>
+        </div>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: Contact Details -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div>
+          <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3">Kontakt</h2>
+          <div class="space-y-3 text-sm text-gray-300">
+            <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
+              <span class="text-gray-500 font-medium min-w-[70px]">Telefon:</span>
+              <a href="tel:+436648048444066" class="hover:text-white transition-colors select-all font-mono break-all">+43 664 80484 44066</a>
+            </p>
+            <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
+              <span class="text-gray-500 font-medium min-w-[70px]">E-Mail:</span>
+              <a href="mailto:georg.hackenberg@fh-wels.at" class="hover:text-white transition-colors select-all font-mono break-all">georg.hackenberg@fh-wels.at</a>
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3">Umsatzsteuer-Status</h2>
+          <p class="text-gray-300 text-sm leading-relaxed">
+            Umsatzsteuerbefreit aufgrund der Kleinunternehmerregelung gemäß § 6 Abs. 1 Art. 27 UStG.
+          </p>
+        </div>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: Professional & Trade Information -->
+      <div class="space-y-4">
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue">Gewerberechtliche Angaben</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-300">
+          <div>
+            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Unternehmensgegenstand</p>
+            <p class="mt-1">Dienstleistungen in der automatischen Datenverarbeitung und Informationstechnik</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Kammermitgliedschaft</p>
+            <p class="mt-1">Mitglied der Wirtschaftskammer Oberösterreich (WKOÖ)<br />Fachgruppe UBIT (Unternehmensberatung, Buchhaltung und Informationstechnologie)</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Aufsichtsbehörde (Gewerbebehörde)</p>
+            <p class="mt-1">Bezirkshauptmannschaft Gmunden</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Berufsbezeichnung & Verleihungsstaat</p>
+            <p class="mt-1">IT-Dienstleister (verliehen in Österreich)</p>
+          </div>
+        </div>
+        <div class="pt-2 text-xs text-gray-400">
+          <p>
+            Es gilt die österreichische <strong class="text-gray-300">Gewerbeordnung 1994 (GewO)</strong> in der jeweils aktuellen Fassung, abrufbar im Rechtsinformationssystem des Bundes (RIS) unter <a href="https://www.ris.bka.gv.at" target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline break-all">www.ris.bka.gv.at</a>.
+          </p>
+        </div>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: ODR / Arbitration -->
+      <div class="space-y-3">
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue">Online-Streitbeilegung</h2>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Verbraucher haben die Möglichkeit, Beschwerden an die Online-Streitbeilegungsplattform der Europäischen Kommission zu richten: 
+          <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline select-all font-mono break-all block sm:inline mt-1 sm:mt-0">https://ec.europa.eu/consumers/odr</a>. 
+          Sie können allfällige Beschwerden auch an die oben angegebene E-Mail-Adresse richten. Wir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+        </p>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: Blattlinie / Legal Disclaimers -->
+      <div class="space-y-4 text-xs text-gray-500 leading-relaxed">
+        <div>
+          <h3 class="font-bold text-gray-400 mb-1">Blattlinie / Ausrichtung der Website</h3>
+          <p>Diese Website dient der Präsentation der wissenschaftlichen Lehre, Publikationen, IT-Projekte und Dienstleistungen von Dr. Georg Hackenberg.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-400 mb-1">Urheberrechtshinweis</h3>
+          <p>Die Inhalte dieser Website (Texte, Grafiken, Programmiercode) unterliegen dem Urheberrecht. Jede Vervielfältigung, Verbreitung oder öffentliche Wiedergabe bedarf der vorherigen schriftlichen Zustimmung des Medieninhabers.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

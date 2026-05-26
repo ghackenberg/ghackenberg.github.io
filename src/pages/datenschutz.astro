@@ -1,0 +1,154 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+---
+
+<Layout 
+  title="Datenschutzerklärung | Dr. Georg Hackenberg" 
+  description="Datenschutzerklärung von Dr. Georg Hackenberg gemäß EU-Datenschutz-Grundverordnung (DSGVO)."
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Header -->
+    <div class="mb-12">
+      <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple border border-brand-purple/20 mb-6 tracking-wider uppercase">
+        Datenschutz
+      </span>
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+        Datenschutzerklärung
+      </h1>
+      <p class="text-gray-400 text-sm md:text-base max-w-xl font-normal leading-relaxed">
+        Informationen darüber, wie wir personenbezogene Daten auf dieser Website verarbeiten, schützen und welche Rechte Ihnen gemäß DSGVO zustehen.
+      </p>
+    </div>
+
+    <!-- Main Content Panel -->
+    <div class="glass-card rounded-3xl border border-white/5 overflow-hidden p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8 relative">
+      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-purple to-brand-blue"></div>
+
+      <!-- Section: Controller -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple mb-3">1. Verantwortlicher</h2>
+        <div class="text-sm text-gray-300">
+          <p class="text-white font-semibold">Dr. rer. nat. Georg Hackenberg BSc MSc</p>
+          <p>Edthof 13a</p>
+          <p>4645 Grünau im Almtal, Österreich</p>
+          <p class="mt-2 flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
+            <span class="text-gray-500 font-medium">E-Mail:</span>
+            <a href="mailto:georg.hackenberg@fh-wels.at" class="text-brand-purple hover:underline font-mono break-all">georg.hackenberg@fh-wels.at</a>
+          </p>
+        </div>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: Web Hosting / Server Logs -->
+      <div class="space-y-3">
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">2. Webhosting & Server-Logfiles</h2>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          Diese Website wird auf <strong class="text-white">GitHub Pages</strong> (GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA) gehostet. Bei jedem Zugriff auf diese Website erfasst der Webserver automatisch Informationen, die Ihr Browser an uns übermittelt. Dies umfasst:
+        </p>
+        <ul class="list-disc pl-5 text-xs text-gray-400 space-y-1">
+          <li>IP-Adresse des zugreifenden Geräts</li>
+          <li>Datum und Uhrzeit des Zugriffs</li>
+          <li>Name und URL der abgerufenen Datei</li>
+          <li>Website, von der aus der Zugriff erfolgt (Referrer-URL)</li>
+          <li>Verwendeter Browser und ggf. das Betriebssystem Ihres Rechners</li>
+        </ul>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Diese Daten sind für den technischen Betrieb, die Sicherheit und die Stabilität der Website erforderlich. Die Verarbeitung erfolgt auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO). GitHub Pages verarbeitet diese Daten in unserem Auftrag und unterliegt den Standardvertragsklauseln der EU zur Gewährleistung des Datenschutzniveaus bei der Datenübermittlung in Drittstaaten.
+        </p>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: Analytics -->
+      <div class="space-y-3">
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">3. Web-Analyse (Plausible Analytics)</h2>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Wir nutzen auf dieser Website <strong class="text-white">Plausible Analytics</strong>, einen datenschutzfreundlichen Webanalysedienst der Plausible Insights OÜ (Västriku tn 2, Tartu 50403, Estland). 
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Plausible Analytics verwendet <strong class="text-white">keine Cookies</strong> und speichert keine Daten auf Ihrem Endgerät. Es werden keine personenbezogenen Daten erfasst, mit denen einzelne Besucher identifiziert werden können. IP-Adressen werden unmittelbar nach dem Zugriff kryptografisch in eine anonyme Kennzahl (Hash-Wert) umgewandelt, die sich täglich ändert. Es findet keine Nachverfolgung über mehrere Tage hinweg oder über andere Websites statt. Die Erfassung erfolgt ausschließlich zur statistischen Auswertung und Optimierung unseres Online-Angebots auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO).
+        </p>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: E-Mail Inquiries -->
+      <div class="space-y-3">
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">4. Kontaktaufnahme per E-Mail</h2>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Wenn Sie uns per E-Mail (z. B. für eine Projekt- oder Buchungsanfrage) kontaktieren, werden die von Ihnen gemachten Angaben (Name, E-Mail-Adresse sowie der Inhalt der Nachricht) zur Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert.
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Die Verarbeitung dieser Daten erfolgt zur Durchführung vorvertraglicher Maßnahmen bzw. zur Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) oder auf Grundlage unseres berechtigten Interesses an einer effektiven Bearbeitung Ihrer Anfrage (Art. 6 Abs. 1 lit. f DSGVO). Die Daten werden gelöscht, sobald sie für den Zweck ihrer Erhebung nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
+        </p>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: User Rights -->
+      <div class="space-y-3">
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">5. Ihre Rechte gemäß DSGVO</h2>
+        <p class="text-gray-300 text-sm leading-relaxed">
+          Ihnen stehen als betroffene Person bezüglich Ihrer bei uns verarbeiteten Daten folgende gesetzliche Rechte zu:
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-400">
+          <div>
+            <strong class="text-gray-300">Recht auf Auskunft (Art. 15 DSGVO):</strong> Sie können Auskunft darüber verlangen, ob und welche personenbezogenen Daten wir über Sie verarbeiten.
+          </div>
+          <div>
+            <strong class="text-gray-300">Recht auf Berichtigung (Art. 16 DSGVO):</strong> Sie können die unverzügliche Richtigstellung unrichtiger oder die Vervollständigung unvollständiger Daten verlangen.
+          </div>
+          <div>
+            <strong class="text-gray-300">Recht auf Löschung (Art. 17 DSGVO):</strong> Sie können unter bestimmten Umständen die Löschung Ihrer bei uns gespeicherten Daten verlangen.
+          </div>
+          <div>
+            <strong class="text-gray-300">Recht auf Einschränkung (Art. 18 DSGVO):</strong> Sie können die Einschränkung der Verarbeitung verlangen, falls die Richtigkeit bestritten wird oder die Verarbeitung unrechtmäßig ist.
+          </div>
+          <div>
+            <strong class="text-gray-300">Recht auf Datenübertragbarkeit (Art. 20 DSGVO):</strong> Sie können verlangen, Ihre Daten in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten.
+          </div>
+          <div>
+            <strong class="text-gray-300">Recht auf Widerspruch (Art. 21 DSGVO):</strong> Gegen Verarbeitungen, die auf berechtigtem Interesse beruhen, können Sie jederzeit Widerspruch einlegen.
+          </div>
+        </div>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed pt-2">
+          Zur Ausübung dieser Rechte kontaktieren Sie uns bitte per E-Mail unter <a href="mailto:georg.hackenberg@fh-wels.at" class="text-brand-purple hover:underline font-mono break-all">georg.hackenberg@fh-wels.at</a>. 
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Wenn Sie glauben, dass die Verarbeitung Ihrer Daten gegen das Datenschutzrecht verstößt oder Ihre datenschutzrechtlichen Ansprüche verletzt worden sind, haben Sie das Recht auf Beschwerde bei einer Aufsichtsbehörde. In Österreich ist dies die:
+        </p>
+        
+        <div class="p-4 bg-white/[0.02] border border-white/5 rounded-2xl text-xs text-gray-300 max-w-full sm:max-w-md space-y-1.5 overflow-hidden">
+          <p class="font-bold text-sm text-white">Österreichische Datenschutzbehörde</p>
+          <p>Barichgasse 40-42, 1030 Wien</p>
+          <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
+            <span class="text-gray-500 font-medium">Telefon:</span>
+            <a href="tel:+431521520" class="hover:text-white transition-colors font-mono break-all">+43 1 52 152-0</a>
+          </p>
+          <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
+            <span class="text-gray-500 font-medium">E-Mail:</span>
+            <a href="mailto:dsb@dsb.gv.at" class="hover:text-white transition-colors font-mono break-all">dsb@dsb.gv.at</a>
+          </p>
+          <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
+            <span class="text-gray-500 font-medium">Web:</span>
+            <a href="https://www.dsb.gv.at" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors font-mono break-all">www.dsb.gv.at</a>
+          </p>
+        </div>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section: Cookies Disclaimer -->
+      <div class="space-y-2 text-xs text-gray-500 leading-relaxed">
+        <h3 class="font-bold text-gray-400">Hinweis zu Cookies</h3>
+        <p>
+          Diese Website verwendet keine Tracking- oder Werbecookies und führt kein Profiling durch. Es ist kein Cookie-Einwilligungsbanner (Cookie-Banner) erforderlich, da keine zustimmungspflichtigen Cookies gesetzt werden.
+        </p>
+      </div>
+    </div>
+  </main>
+</Layout>
