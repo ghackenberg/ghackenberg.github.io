@@ -5,6 +5,7 @@
 
 import { getCollection, getEntry } from "astro:content";
 import { Image } from "astro:assets";
+import { formatCount } from "../scripts/format";
 
 // Fetch profile metrics from collection
 const profileEntry = await getEntry("linkedin-profile", "profile");
@@ -14,8 +15,13 @@ const profile = profileEntry?.data || {
 
 // Fetch and sort posts by date descending, limit to 3, and pre-format
 const posts = await getCollection("linkedin-posts");
-const formattedPosts = posts
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+const publishedPosts = posts.filter(entry => entry.data.id);
+const formattedPosts = publishedPosts
+  .sort((a, b) => {
+    const dateA = a.data.pubDate ? a.data.pubDate.getTime() : 0;
+    const dateB = b.data.pubDate ? b.data.pubDate.getTime() : 0;
+    return dateB - dateA;
+  })
   .slice(0, 3)
   .map((entry) => {
     // Extract the first paragraph (separated by double newlines)
@@ -30,7 +36,7 @@ const formattedPosts = posts
       comments: entry.data.comments,
       pubDate: entry.data.pubDate,
       image: entry.data.image,
-      url: entry.data.url
+      url: entry.data.id ? `https://www.linkedin.com/feed/update/urn:li:activity:${entry.data.id}` : undefined
     };
   });
 const hasPosts = formattedPosts.length > 0;
@@ -139,9 +145,9 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
                   {post.text}
                 </p>
                 <div class="flex items-center space-x-2 text-xs text-gray-500 mt-2.5 font-medium select-none">
-                  <span>👍 {post.likes}</span>
+                  <span>👍 {formatCount(post.likes)}</span>
                   <span>&bull;</span>
-                  <span>💬 {post.comments}</span>
+                  <span>💬 {formatCount(post.comments)}</span>
                   <span>&bull;</span>
                   <span>{new Date(post.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
                 </div>

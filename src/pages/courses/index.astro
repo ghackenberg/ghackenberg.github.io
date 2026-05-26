@@ -150,9 +150,9 @@ const languageColors: Record<string, string> = {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="courses-grid">
             {courses.map(course => {
               const repo = repoMap.get(course.data.repoName);
-              const starCount = repo?.stargazers_count ?? 0;
+              const starCount = repo?.stars ?? 0;
               const tech = repo?.language ?? "Web";
-              const socialPreview = repo?.social_preview;
+              const socialPreview = repo?.image;
               const goalsJoined = (course.data.learningGoals || []).join(" ").toLowerCase();
 
               return (

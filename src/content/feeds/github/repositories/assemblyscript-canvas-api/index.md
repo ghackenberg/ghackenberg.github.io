@@ -1,10 +1,10 @@
 ---
-name: "assemblyscript-canvas-api"
+title: "assemblyscript-canvas-api"
 description: "Boilerplate project exposing the Native HTML 5 Canvas API to AssemblyScript and the generated WebAssembly into React."
 html_url: "https://github.com/ghackenberg/assemblyscript-canvas-api"
-stargazers_count: 1
+stars: 1
 language: "TypeScript"
-social_preview: "./image.png"
+image: "./image.png"
 updatedAt: "2024-04-13T18:28:26Z"
-pushedAt: "2024-04-13T18:43:06Z"
+pubDate: 2024-04-13T18:43:06Z
 ---

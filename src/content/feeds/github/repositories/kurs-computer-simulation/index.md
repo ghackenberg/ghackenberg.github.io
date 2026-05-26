@@ -1,10 +1,10 @@
 ---
-name: "kurs-computer-simulation"
+title: "kurs-computer-simulation"
 description: "Unterlagen für meinen Kurs in Computer-Simulation an der Fakultät für Technik und angewandte Naturwissenschaften der FH OÖ."
 html_url: "https://github.com/ghackenberg/kurs-computer-simulation"
-stargazers_count: 6
+stars: 6
 language: "C#"
-social_preview: "./image.png"
+image: "./image.png"
 updatedAt: "2026-01-28T10:15:38Z"
-pushedAt: "2026-01-28T10:15:33Z"
+pubDate: 2026-01-28T10:15:33Z
 ---

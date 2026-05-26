@@ -85,6 +85,97 @@ async function downloadImage(url, destDir) {
   }
 }
 
+// Helper: Slugify text
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+// Helper: Parse frontmatter and body
+function parseMarkdown(filePath) {
+  const content = fs.readFileSync(filePath, 'utf8');
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if (!match) return { frontmatter: {}, body: content, hasFrontmatter: false };
+  const fmText = match[1];
+  const body = match[2];
+  const frontmatter = {};
+  for (const line of fmText.split('\n')) {
+    const idx = line.indexOf(':');
+    if (idx !== -1) {
+      const key = line.slice(0, idx).trim();
+      let val = line.slice(idx + 1).trim();
+      const isQuoted = (val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"));
+      if (isQuoted) {
+        val = val.slice(1, -1);
+      }
+
+      let parsedVal = val;
+      if (val === 'null') {
+        parsedVal = null;
+      } else if (val === 'true') {
+        parsedVal = true;
+      } else if (val === 'false') {
+        parsedVal = false;
+      } else if (/^\d+$/.test(val)) {
+        if (key !== 'id') {
+          parsedVal = parseInt(val, 10);
+        }
+      } else if (/^\d+\.\d+$/.test(val)) {
+        if (key !== 'id') {
+          parsedVal = parseFloat(val);
+        }
+      }
+      frontmatter[key] = parsedVal;
+    }
+  }
+  return { frontmatter, body, hasFrontmatter: true };
+}
+
+// Helper: Stringify frontmatter and body
+function stringifyMarkdown(frontmatter, body) {
+  const fmLines = [];
+  for (const [key, val] of Object.entries(frontmatter)) {
+    if (val === null || val === undefined) {
+      fmLines.push(`${key}: null`);
+    } else if (typeof val === 'string') {
+      fmLines.push(`${key}: ${JSON.stringify(val)}`);
+    } else {
+      fmLines.push(`${key}: ${val}`);
+    }
+  }
+  const trimmedBody = body.trimStart();
+  return `---\n${fmLines.join('\n')}\n---\n${trimmedBody}`;
+}
+
+// Helper: Merge new metrics/fields into frontmatter of an existing file
+function mergeFrontmatter(filePath, newFields) {
+  if (!fs.existsSync(filePath)) return false;
+  const { frontmatter, body } = parseMarkdown(filePath);
+  const mergedFrontmatter = { ...frontmatter, ...newFields };
+  const newContent = stringifyMarkdown(mergedFrontmatter, body);
+  fs.writeFileSync(filePath, newContent, 'utf8');
+  return true;
+}
+
+// Helper: Scan collection directory and find index.md file matching target platform ID
+function findFileByPlatformId(collectionDir, platformId) {
+  if (!fs.existsSync(collectionDir)) return null;
+  const folders = fs.readdirSync(collectionDir).filter(f => fs.statSync(path.join(collectionDir, f)).isDirectory());
+  for (const folder of folders) {
+    const indexPath = path.join(collectionDir, folder, 'index.md');
+    if (fs.existsSync(indexPath)) {
+      const { frontmatter } = parseMarkdown(indexPath);
+      if (frontmatter.id === platformId) {
+        return indexPath;
+      }
+    }
+  }
+  return null;
+}
+
 async function syncGitHub() {
   const username = "ghackenberg";
   const token = process.env.GITHUB_TOKEN;
@@ -187,15 +278,17 @@ async function syncGitHub() {
       localExt = await downloadImage(repo.social_preview, repoDir);
     }
 
+    const pubDateStr = repo.pushedAt || repo.updatedAt || new Date().toISOString();
+
     const mdContent = `---
-name: ${JSON.stringify(repo.name)}
+title: ${JSON.stringify(repo.name)}
 description: ${JSON.stringify(repo.description)}
 html_url: ${JSON.stringify(repo.html_url)}
-stargazers_count: ${repo.stargazers_count}
+stars: ${repo.stargazers_count}
 language: ${JSON.stringify(repo.language)}
-social_preview: ${localExt ? `"./image${localExt}"` : "null"}
+image: ${localExt ? `"./image${localExt}"` : "null"}
 updatedAt: ${JSON.stringify(repo.updatedAt)}
-pushedAt: ${JSON.stringify(repo.pushedAt)}
+pubDate: ${pubDateStr}
 ---
 `;
     fs.writeFileSync(path.join(repoDir, "index.md"), mdContent, "utf8");
@@ -268,7 +361,7 @@ async function syncYouTube() {
   if (playlistItems.length > 0) {
     const videoIds = playlistItems.map(v => v.snippet?.resourceId?.videoId).filter(Boolean);
 
-    // Fetch video metrics (likes and views) in chunks of 50
+    // Fetch video metrics in chunks of 50
     const statsMap = {};
     for (let i = 0; i < videoIds.length; i += 50) {
       const chunk = videoIds.slice(i, i + 50);
@@ -280,11 +373,11 @@ async function syncYouTube() {
         if (videoDetailsRes.data.items) {
           for (const videoDetail of videoDetailsRes.data.items) {
             if (videoDetail.id) {
-              const rViews = parseInt(videoDetail.statistics?.viewCount || "0");
-              const rLikes = parseInt(videoDetail.statistics?.likeCount || "0");
+              const rViews = parseInt(videoDetail.statistics?.viewCount || "0", 10);
+              const rLikes = parseInt(videoDetail.statistics?.likeCount || "0", 10);
               statsMap[videoDetail.id] = {
-                views: rViews >= 1000 ? `${(rViews / 1000).toFixed(1)}k` : rViews.toString(),
-                likes: rLikes >= 1000 ? `${(rLikes / 1000).toFixed(0)}` : rLikes.toString()
+                views: rViews,
+                likes: rLikes
               };
             }
           }
@@ -295,17 +388,12 @@ async function syncYouTube() {
     }
 
     videos = playlistItems.map(video => {
-      const pubDate = new Date(video.snippet?.publishedAt || Date.now());
-      const diffDays = Math.ceil(Math.abs(Date.now() - pubDate.getTime()) / (1000 * 60 * 60 * 24));
-      const relativeDate = diffDays > 30 ? `${Math.floor(diffDays / 30)} months ago` : `${diffDays} days ago`;
-
       const vidId = video.snippet?.resourceId?.videoId || "";
-      const vidStats = statsMap[vidId] || { views: "0", likes: "0" };
+      const vidStats = statsMap[vidId] || { views: 0, likes: 0 };
 
       return {
         title: video.snippet?.title || "No Title",
         id: vidId,
-        published: relativeDate,
         publishedAt: video.snippet?.publishedAt || new Date().toISOString(),
         thumbnail: video.snippet?.thumbnails?.high?.url || `https://img.youtube.com/vi/${vidId}/hqdefault.jpg`,
         description: video.snippet?.description || "",
@@ -315,136 +403,98 @@ async function syncYouTube() {
     });
   }
 
-  // Write out collection data
+  // Write out channel profile JSON
   const profileDir = path.resolve(process.cwd(), "src/content/feeds/youtube");
   const videosDir = path.resolve(process.cwd(), "src/content/feeds/youtube/videos");
 
-  clearAndCreateDir(profileDir);
+  if (!fs.existsSync(profileDir)) {
+    fs.mkdirSync(profileDir, { recursive: true });
+  }
+  fs.writeFileSync(path.join(profileDir, "profile.json"), JSON.stringify(stats, null, 2), "utf8");
+
   if (!fs.existsSync(videosDir)) {
     fs.mkdirSync(videosDir, { recursive: true });
   }
 
-  fs.writeFileSync(path.join(profileDir, "profile.json"), JSON.stringify(stats, null, 2), "utf8");
-
-  const activeVideoDirs = new Set();
+  // Sync videos
   for (const video of videos) {
-    activeVideoDirs.add(video.id);
+    const existingFilePath = findFileByPlatformId(videosDir, video.id);
+    if (existingFilePath) {
+      console.log(`Updating YouTube video ${video.id} stats in ${path.relative(process.cwd(), existingFilePath)}`);
+      mergeFrontmatter(existingFilePath, {
+        views: video.views,
+        likes: video.likes,
+        pubDate: video.publishedAt
+      });
+    } else {
+      // Create new video entry
+      const folders = fs.readdirSync(videosDir).filter(f => fs.statSync(path.join(videosDir, f)).isDirectory());
+      const nextIndex = String(folders.length + 1).padStart(3, '0');
+      const slug = slugify(video.title) || 'youtube_video';
+      const newDirName = `${nextIndex}_${slug}`;
+      const newVideoDir = path.join(videosDir, newDirName);
 
-    const videoDir = path.join(videosDir, video.id);
-    if (!fs.existsSync(videoDir)) {
-      fs.mkdirSync(videoDir, { recursive: true });
-    }
+      fs.mkdirSync(newVideoDir, { recursive: true });
 
-    let localExt = null;
-    if (video.thumbnail) {
-      localExt = await downloadImage(video.thumbnail, videoDir);
-    }
+      let localExt = null;
+      if (video.thumbnail) {
+        localExt = await downloadImage(video.thumbnail, newVideoDir);
+      }
 
-    const mdContent = `---
+      console.log(`New YouTube video detected. Creating folder: ${newDirName}`);
+
+      const mdContent = `---
 title: ${JSON.stringify(video.title)}
 id: ${JSON.stringify(video.id)}
-published: ${JSON.stringify(video.published)}
-publishedAt: ${JSON.stringify(video.publishedAt)}
-thumbnail: ${localExt ? `"./image${localExt}"` : "null"}
+pubDate: ${JSON.stringify(video.publishedAt)}
+image: ${localExt ? `"./image${localExt}"` : "null"}
 description: ${JSON.stringify(video.description)}
-views: ${JSON.stringify(video.views)}
-likes: ${JSON.stringify(video.likes)}
+views: ${video.views}
+likes: ${video.likes}
 ---
 `;
-    fs.writeFileSync(path.join(videoDir, "index.md"), mdContent, "utf8");
-  }
-
-  // Prune deleted videos
-  const existingVideoDirs = fs.readdirSync(videosDir).filter(f => fs.statSync(path.join(videosDir, f)).isDirectory());
-  for (const dirName of existingVideoDirs) {
-    if (!activeVideoDirs.has(dirName)) {
-      console.log(`Pruning deleted video directory: ${dirName}`);
-      fs.rmSync(path.join(videosDir, dirName), { recursive: true, force: true });
+      fs.writeFileSync(path.join(newVideoDir, "index.md"), mdContent, "utf8");
     }
   }
-  console.log(`✓ YouTube sync completed: 1 profile, ${videos.length} videos.`);
+
+  // PRUNING IS REMOVED as requested.
+  console.log(`✓ YouTube sync completed: 1 profile, ${videos.length} videos synced.`);
 }
 
 async function syncLinkedIn() {
   console.log("Syncing LinkedIn posts...");
-
-  const profilePath = path.resolve(process.cwd(), "src/content/feeds/linkedin/profile.json");
-  if (!fs.existsSync(profilePath)) {
-    throw new Error(`LinkedIn profile file not found at ${profilePath}`);
-  }
-
-  const profileContent = fs.readFileSync(profilePath, 'utf8');
-  const profileData = JSON.parse(profileContent);
-
-  const postIds = profileData.postIds || [];
-  if (postIds.length === 0) {
-    console.log("No postIds configured in LinkedIn profile. Skipping posts sync.");
-    return;
-  }
 
   const postsDir = path.resolve(process.cwd(), "src/content/feeds/linkedin/posts");
   if (!fs.existsSync(postsDir)) {
     fs.mkdirSync(postsDir, { recursive: true });
   }
 
-  // 1. Migrate flat .md files to folder/index.md structure
-  const files = fs.readdirSync(postsDir);
-  for (const file of files) {
-    if (file.endsWith(".md") && file !== "index.md") {
-      const id = path.basename(file, ".md");
-      const oldPath = path.join(postsDir, file);
-      const newDir = path.join(postsDir, id);
-      const newPath = path.join(newDir, "index.md");
-
-      console.log(`Migrating legacy LinkedIn post file: ${file} -> ${id}/index.md`);
-      if (!fs.existsSync(newDir)) {
-        fs.mkdirSync(newDir, { recursive: true });
-      }
-      fs.renameSync(oldPath, newPath);
-    }
-  }
-
-  // 2. Download remote images for any existing folder-structured posts
-  const postDirs = fs.readdirSync(postsDir).filter(f => fs.statSync(path.join(postsDir, f)).isDirectory());
-  for (const id of postDirs) {
-    const itemDir = path.join(postsDir, id);
-    const indexPath = path.join(itemDir, "index.md");
+  // Scan existing folders/index.md files to find URN IDs to sync
+  const existingPosts = [];
+  const folders = fs.readdirSync(postsDir).filter(f => fs.statSync(path.join(postsDir, f)).isDirectory());
+  for (const folder of folders) {
+    const indexPath = path.join(postsDir, folder, 'index.md');
     if (fs.existsSync(indexPath)) {
-      let content = fs.readFileSync(indexPath, "utf8");
-      const match = content.match(/^image:\s*["']?(https?:\/\/[^"'\r\n]+)["']?/m);
-      if (match) {
-        const remoteUrl = match[1];
-        console.log(`Found remote image for existing LinkedIn post ${id}: ${remoteUrl}`);
-        const ext = await downloadImage(remoteUrl, itemDir);
-        if (ext) {
-          content = content.replace(match[0], `image: "./image${ext}"`);
-          fs.writeFileSync(indexPath, content, "utf8");
-          console.log(`✓ Updated image path in ${id}/index.md to ./image${ext}`);
-        }
+      const { frontmatter } = parseMarkdown(indexPath);
+      if (frontmatter.id) {
+        existingPosts.push({ id: frontmatter.id, filePath: indexPath });
       }
     }
   }
 
-  // Sync the first 3 posts (newest) and any posts that do not exist on disk
-  const idsToSync = [];
-  for (let i = 0; i < postIds.length; i++) {
-    const id = postIds[i];
-    const itemDir = path.join(postsDir, id);
-    const indexPath = path.join(itemDir, "index.md");
-    if (i < 3 || !fs.existsSync(indexPath)) {
-      idsToSync.push(id);
-    }
+  if (existingPosts.length === 0) {
+    console.log("No published LinkedIn posts found (no folders with id in frontmatter). Skipping posts sync.");
+    return;
   }
 
-  console.log(`Syncing ${idsToSync.length} LinkedIn posts (out of ${postIds.length} total)...`);
+  console.log(`Syncing metrics for ${existingPosts.length} LinkedIn posts...`);
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  for (let idx = 0; idx < idsToSync.length; idx++) {
-    const id = idsToSync[idx];
-    const itemDir = path.join(postsDir, id);
-    const filePath = path.join(itemDir, "index.md");
-    const fileExists = fs.existsSync(filePath);
+  for (let idx = 0; idx < existingPosts.length; idx++) {
+    const post = existingPosts[idx];
+    const id = post.id;
+    const filePath = post.filePath;
 
     if (idx > 0) {
       const waitMs = Math.floor(2000 + Math.random() * 3000);
@@ -452,7 +502,7 @@ async function syncLinkedIn() {
       await delay(waitMs);
     }
 
-    console.log(`Syncing LinkedIn post URN ID: ${id} -> ${id}/index.md`);
+    console.log(`Syncing LinkedIn post URN ID: ${id} -> ${path.relative(process.cwd(), filePath)}`);
     try {
       const url = `https://www.linkedin.com/feed/update/urn:li:activity:${id}`;
       const res = await fetch(url, {
@@ -503,72 +553,28 @@ async function syncLinkedIn() {
       }
 
       // Extract date and format as YYYY-MM-DD
-      let pubDateStr = new Date().toISOString().split('T')[0];
+      let pubDateStr = new Date().toISOString();
       if (postData.datePublished) {
         try {
-          pubDateStr = new Date(postData.datePublished).toISOString().split('T')[0];
+          pubDateStr = new Date(postData.datePublished).toISOString();
         } catch (e) {
           console.warn(`! Failed to parse datePublished: ${postData.datePublished}`);
         }
       }
 
-      // Extract image URL
-      let imageUrl = "";
-      if (postData.image) {
-        if (Array.isArray(postData.image) && postData.image.length > 0) {
-          const imgObj = postData.image[0];
-          imageUrl = typeof imgObj === "string" ? imgObj : (imgObj.url || "");
-        } else if (typeof postData.image === "object") {
-          imageUrl = postData.image.url || "";
-        } else if (typeof postData.image === "string") {
-          imageUrl = postData.image;
-        }
-      }
-
-      if (!fs.existsSync(itemDir)) {
-        fs.mkdirSync(itemDir, { recursive: true });
-      }
-
-      let localExt = null;
-      if (imageUrl) {
-        localExt = await downloadImage(imageUrl, itemDir);
-      }
-
-      const bodyText = postData.articleBody || "";
-
-      // Construct markdown content with YAML frontmatter
-      const mdContent = `---
-pubDate: ${pubDateStr}
-likes: ${likes}
-comments: ${comments}
-shares: 0
-image: ${localExt ? `"./image${localExt}"` : "null"}
-url: ${url}
----
-${bodyText}
-`;
-
-      fs.writeFileSync(filePath, mdContent, "utf8");
-      console.log(`✓ Generated/updated ${id}/index.md`);
+      // Merge metrics back
+      mergeFrontmatter(filePath, {
+        likes: likes,
+        comments: comments,
+        pubDate: pubDateStr
+      });
+      console.log(`✓ Updated metrics in ${path.relative(process.cwd(), filePath)}`);
     } catch (e) {
-      if (fileExists) {
-        console.warn(`⚠️ Failed to update LinkedIn post ${id}, retaining existing file. Error: ${e.message || e}`);
-      } else {
-        console.error(`❌ Failed to sync new LinkedIn post ${id}:`, e.message || e);
-        throw e;
-      }
+      console.warn(`⚠️ Failed to update LinkedIn post ${id}. Error: ${e.message || e}`);
     }
   }
 
-  // Prune deleted LinkedIn posts
-  const activePostIds = new Set(postIds);
-  const existingPostDirs = fs.readdirSync(postsDir).filter(f => fs.statSync(path.join(postsDir, f)).isDirectory());
-  for (const dirName of existingPostDirs) {
-    if (!activePostIds.has(dirName)) {
-      console.log(`Pruning deleted LinkedIn post directory: ${dirName}`);
-      fs.rmSync(path.join(postsDir, dirName), { recursive: true, force: true });
-    }
-  }
+  // PRUNING IS REMOVED as requested.
 }
 
 async function main() {

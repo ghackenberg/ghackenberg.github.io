@@ -8,12 +8,12 @@ const linkedinPosts = defineCollection({
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
   schema: ({ image }) => z.object({
-    pubDate: z.coerce.date(),
+    id: z.string().optional().nullable(),
+    pubDate: z.coerce.date().optional().nullable().default(() => new Date()),
     likes: z.number().default(0),
     comments: z.number().default(0),
     shares: z.number().default(0),
     image: image().nullable().optional(),
-    url: z.string().optional(),
   }),
 });
 
@@ -21,7 +21,6 @@ const linkedinProfile = defineCollection({
   loader: glob({ base: './src/content/feeds/linkedin', pattern: 'profile.json' }),
   schema: z.object({
     followers: z.string().optional(),
-    postIds: z.array(z.string()).optional(),
   }),
 });
 
@@ -39,14 +38,14 @@ const githubRepos = defineCollection({
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
   schema: ({ image }) => z.object({
-    name: z.string(),
+    title: z.string(),
     description: z.string(),
     html_url: z.string(),
-    stargazers_count: z.number(),
+    stars: z.number(),
     language: z.string(),
-    social_preview: image().nullable().optional(),
+    image: image().nullable().optional(),
     updatedAt: z.string().optional(),
-    pushedAt: z.string().optional(),
+    pubDate: z.coerce.date(),
   }),
 });
 
@@ -65,13 +64,12 @@ const youtubeVideos = defineCollection({
   }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    id: z.string(),
-    published: z.string(),
-    publishedAt: z.string().optional(),
-    thumbnail: image().nullable().optional(),
-    description: z.string(),
-    views: z.string(),
-    likes: z.string(),
+    id: z.string().optional().nullable(),
+    pubDate: z.coerce.date().optional().nullable().default(() => new Date()),
+    image: image().nullable().optional(),
+    description: z.string().optional().nullable().default(''),
+    views: z.number().default(0),
+    likes: z.number().default(0),
   }),
 });
 

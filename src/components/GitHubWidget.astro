@@ -11,14 +11,14 @@ interface GitHubProfile {
 }
 
 interface GitHubRepo {
-  name: string;
+  title: string;
   description: string;
   html_url: string;
-  stargazers_count: number;
+  stars: number;
   language: string;
-  social_preview?: any;
+  image?: any;
+  pubDate: Date;
   updatedAt?: string;
-  pushedAt?: string;
 }
 
 let profile: GitHubProfile | null = null;
@@ -34,10 +34,21 @@ try {
 
   const reposCollection = await getCollection("github-repos");
   if (reposCollection && reposCollection.length > 0) {
-    const rawRepos = reposCollection.map(entry => entry.data) as any;
-    repos = rawRepos.sort((a: any, b: any) => {
-      const dateA = a.pushedAt ? new Date(a.pushedAt).getTime() : (a.updatedAt ? new Date(a.updatedAt).getTime() : 0);
-      const dateB = b.pushedAt ? new Date(b.pushedAt).getTime() : (b.updatedAt ? new Date(b.updatedAt).getTime() : 0);
+    const rawRepos = reposCollection.map(entry => {
+      return {
+        title: entry.data.title,
+        description: entry.data.description,
+        html_url: entry.data.html_url,
+        stars: entry.data.stars,
+        language: entry.data.language,
+        image: entry.data.image,
+        pubDate: entry.data.pubDate,
+        updatedAt: entry.data.updatedAt
+      };
+    });
+    repos = rawRepos.sort((a, b) => {
+      const dateA = a.pubDate ? a.pubDate.getTime() : 0;
+      const dateB = b.pubDate ? b.pubDate.getTime() : 0;
       return dateB - dateA;
     });
   }
@@ -232,10 +243,10 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
               class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0 sm:p-1 sm:pr-4"
             >
               <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-28 md:w-32 shrink-0 bg-gray-900 border-b sm:border-b-0 sm:border-r border-white/5 group-hover/item:border-brand-blue/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-t-none sm:rounded-l-xl">
-                {repo.social_preview ? (
+                {repo.image ? (
                   <>
                     <Image 
-                      src={repo.social_preview} 
+                      src={repo.image} 
                       alt=""
                       width={480}
                       height={270}
@@ -254,7 +265,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
               </div>
               <div class="flex-grow min-w-0 p-4 sm:py-3.5 sm:px-0 sm:pl-4 sm:pr-2.5 select-none">
                 <p class="text-sm sm:text-base font-bold text-white group-hover/item:text-brand-blue transition-colors line-clamp-1 font-mono leading-snug">
-                  {repo.name}
+                  {repo.title}
                 </p>
                 <p class="text-xs sm:text-sm text-gray-400 line-clamp-2 mt-1 leading-relaxed font-sans font-normal">
                   {repo.description}
@@ -265,7 +276,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
                     <span>{repo.language}</span>
                   </div>
                   <span>&bull;</span>
-                  <span>⭐ {repo.stargazers_count}</span>
+                  <span>⭐ {repo.stars}</span>
                 </div>
               </div>
             </a>
