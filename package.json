@@ -29,5 +29,10 @@
     "lighthouse": "^13.3.0",
     "puppeteer": "^25.0.4",
     "quickjs-wasi": "^2.2.0"
-  }
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "not dead"
+  ]
 }
