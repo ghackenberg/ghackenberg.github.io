@@ -1,9 +1,0 @@
----
-title: "Interactive knowledge graph visualization with HTML Canvas and JavaScript integrated with Wikipedia"
-id: "b--G6sOWtcY"
-pubDate: "2015-07-23T19:43:29Z"
-image: "./image.jpg"
-description: "This video demonstrates a concept for an interactive knowledge graph visualization and exploration interface built for and running in the Web Browser. The interactive graph visualization engine is written in plain JavaScript using the HTML Canvas API. The knowledge graph itself is stored as custom JavaScript object graph, but can be imported from other knowledge graph formats such as GraphML."
-views: 122
-likes: 0
----

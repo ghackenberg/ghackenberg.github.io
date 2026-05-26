@@ -36,7 +36,7 @@ try {
   if (reposCollection && reposCollection.length > 0) {
     const rawRepos = reposCollection.map(entry => {
       return {
-        title: entry.data.title,
+        title: entry.id,
         description: entry.data.description,
         html_url: entry.data.html_url,
         stars: entry.data.stars,

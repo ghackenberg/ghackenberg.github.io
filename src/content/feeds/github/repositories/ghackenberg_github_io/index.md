@@ -1,10 +1,9 @@
 ---
-title: "ghackenberg.github.io"
 description: "Personal portfolio and website of Georg Hackenberg, built using Astro and Tailwind CSS v4. Deployed on GitHub Pages."
 html_url: "https://github.com/ghackenberg/ghackenberg.github.io"
 stars: 1
 language: "Astro"
 image: "./image.png"
 updatedAt: "2026-05-26T10:22:10Z"
-pubDate: 2026-05-26T10:22:06Z
+pubDate: "2026-05-26T10:22:06Z"
 ---

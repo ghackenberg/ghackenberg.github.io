@@ -8,7 +8,6 @@ const linkedinPosts = defineCollection({
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
   schema: ({ image }) => z.object({
-    id: z.string().optional().nullable(),
     pubDate: z.coerce.date().optional().nullable().default(() => new Date()),
     likes: z.number().default(0),
     comments: z.number().default(0),
@@ -39,7 +38,6 @@ const githubRepos = defineCollection({
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
   schema: ({ image }) => z.object({
-    title: z.string(),
     description: z.string(),
     html_url: z.string(),
     stars: z.number(),
@@ -65,7 +63,6 @@ const youtubeVideos = defineCollection({
   }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    id: z.string().optional().nullable(),
     pubDate: z.coerce.date().optional().nullable().default(() => new Date()),
     image: image().nullable().optional(),
     description: z.string().optional().nullable().default(''),

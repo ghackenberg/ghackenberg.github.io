@@ -15,7 +15,7 @@ const profile = profileEntry?.data || {
 
 // Fetch and sort posts by date descending, limit to 3, and pre-format
 const posts = await getCollection("linkedin-posts");
-const publishedPosts = posts.filter(entry => entry.data.id);
+const publishedPosts = posts.filter(entry => entry.id);
 const formattedPosts = publishedPosts
   .sort((a, b) => {
     const dateA = a.data.pubDate ? a.data.pubDate.getTime() : 0;
@@ -36,7 +36,7 @@ const formattedPosts = publishedPosts
       comments: entry.data.comments,
       pubDate: entry.data.pubDate,
       image: entry.data.image,
-      url: entry.data.id ? `https://www.linkedin.com/feed/update/urn:li:activity:${entry.data.id}` : undefined
+      url: entry.id ? `https://www.linkedin.com/feed/update/urn:li:activity:${entry.id}` : undefined
     };
   });
 const hasPosts = formattedPosts.length > 0;

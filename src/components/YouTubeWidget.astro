@@ -34,11 +34,11 @@ try {
 
   const videosCollection = await getCollection("youtube-videos");
   if (videosCollection && videosCollection.length > 0) {
-    const publishedVideos = videosCollection.filter(entry => entry.data.id);
+    const publishedVideos = videosCollection.filter(entry => entry.id);
     const rawVideos = publishedVideos.map(entry => {
       return {
         title: entry.data.title,
-        id: entry.data.id,
+        id: entry.id,
         pubDate: entry.data.pubDate,
         image: entry.data.image,
         description: entry.data.description || "",

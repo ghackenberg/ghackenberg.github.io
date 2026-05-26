@@ -1,9 +1,0 @@
----
-title: "AJAX Distributed Event Bus Prototype"
-id: "q4Ay6ZP5cqQ"
-pubDate: "2010-06-26T09:29:44Z"
-image: "./image.jpg"
-description: "In this video I demonstrate a basic application of a distributed event bus prototype that I have developed some time ago. On the client side the system uses JavaScript/AJAX to push and poll events to and from the server. On the server side PHP is used to store and provide the event information on demand."
-views: 835
-likes: 2
----

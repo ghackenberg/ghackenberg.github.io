@@ -1,9 +1,0 @@
----
-title: "Time management and progress control with CADdrive Milestones"
-id: "8453tdBD_MU"
-pubDate: "2025-05-14T12:13:04Z"
-image: "./image.jpg"
-description: "In this eighth video of our 2025 tutorial series we explain how to create and manage milestones with defined start and end times as well as a selection of issues. Milestones are a means for time management in longer-running projects and help tracking progress during sprint execution."
-views: 5
-likes: 0
----

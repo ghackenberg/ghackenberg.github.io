@@ -287,7 +287,6 @@ async function syncGitHub() {
     const pubDateStr = repo.pushedAt || repo.updatedAt || new Date().toISOString();
 
     const mdContent = `---
-title: ${JSON.stringify(repo.name)}
 description: ${JSON.stringify(repo.description)}
 html_url: ${JSON.stringify(repo.html_url)}
 stars: ${repo.stargazers_count}
@@ -424,8 +423,9 @@ async function syncYouTube() {
 
   // Sync videos
   for (const video of videos) {
-    const existingFilePath = findFileByPlatformId(videosDir, video.id);
-    if (existingFilePath) {
+    const videoDir = path.join(videosDir, video.id);
+    const existingFilePath = path.join(videoDir, "index.md");
+    if (fs.existsSync(existingFilePath)) {
       console.log(`Updating YouTube video ${video.id} stats in ${path.relative(process.cwd(), existingFilePath)}`);
       mergeFrontmatter(existingFilePath, {
         views: video.views,
@@ -434,24 +434,17 @@ async function syncYouTube() {
       });
     } else {
       // Create new video entry
-      const folders = fs.readdirSync(videosDir).filter(f => fs.statSync(path.join(videosDir, f)).isDirectory());
-      const nextIndex = String(folders.length + 1).padStart(3, '0');
-      const slug = slugify(video.title) || 'youtube_video';
-      const newDirName = `${nextIndex}_${slug}`;
-      const newVideoDir = path.join(videosDir, newDirName);
-
-      fs.mkdirSync(newVideoDir, { recursive: true });
+      fs.mkdirSync(videoDir, { recursive: true });
 
       let localExt = null;
       if (video.thumbnail) {
-        localExt = await downloadImage(video.thumbnail, newVideoDir);
+        localExt = await downloadImage(video.thumbnail, videoDir);
       }
 
-      console.log(`New YouTube video detected. Creating folder: ${newDirName}`);
+      console.log(`New YouTube video detected. Creating folder: ${video.id}`);
 
       const mdContent = `---
 title: ${JSON.stringify(video.title)}
-id: ${JSON.stringify(video.id)}
 pubDate: ${JSON.stringify(video.publishedAt)}
 image: ${localExt ? `"./image${localExt}"` : "null"}
 description: ${JSON.stringify(video.description)}
@@ -459,7 +452,7 @@ views: ${video.views}
 likes: ${video.likes}
 ---
 `;
-      fs.writeFileSync(path.join(newVideoDir, "index.md"), mdContent, "utf8");
+      fs.writeFileSync(existingFilePath, mdContent, "utf8");
     }
   }
 
@@ -468,15 +461,8 @@ likes: ${video.likes}
   const activeVideoIds = new Set(videos.map(v => v.id));
   const existingVideoDirs = fs.readdirSync(videosDir).filter(f => fs.statSync(path.join(videosDir, f)).isDirectory());
   for (const dirName of existingVideoDirs) {
-    const indexPath = path.join(videosDir, dirName, 'index.md');
-    if (fs.existsSync(indexPath)) {
-      const { frontmatter } = parseMarkdown(indexPath);
-      if (frontmatter.id && !activeVideoIds.has(frontmatter.id)) {
-        console.log(`Pruning deleted YouTube video directory: ${dirName} (id: ${frontmatter.id})`);
-        fs.rmSync(path.join(videosDir, dirName), { recursive: true, force: true });
-      }
-    } else {
-      console.log(`Pruning directory without index.md: ${dirName}`);
+    if (!activeVideoIds.has(dirName)) {
+      console.log(`Pruning deleted YouTube video directory: ${dirName}`);
       fs.rmSync(path.join(videosDir, dirName), { recursive: true, force: true });
     }
   }
@@ -508,15 +494,11 @@ async function syncLinkedIn() {
 
   // Determine which posts to sync (newest 3 or any that do not exist on disk)
   const idsToSync = [];
-  const idToFilePathMap = {};
 
   for (let i = 0; i < postIds.length; i++) {
     const id = postIds[i];
-    const filePath = findFileByPlatformId(postsDir, id);
-    if (filePath) {
-      idToFilePathMap[id] = filePath;
-    }
-    if (i < 3 || !filePath) {
+    const filePath = path.join(postsDir, id, "index.md");
+    if (i < 3 || !fs.existsSync(filePath)) {
       idsToSync.push(id);
     }
   }
@@ -527,9 +509,8 @@ async function syncLinkedIn() {
 
   for (let idx = 0; idx < idsToSync.length; idx++) {
     const id = idsToSync[idx];
-    const existingFilePath = idToFilePathMap[id] || findFileByPlatformId(postsDir, id);
-    const itemDir = existingFilePath ? path.dirname(existingFilePath) : path.join(postsDir, id);
-    const filePath = existingFilePath || path.join(itemDir, "index.md");
+    const itemDir = path.join(postsDir, id);
+    const filePath = path.join(itemDir, "index.md");
     const fileExists = fs.existsSync(filePath);
 
     if (idx > 0) {
@@ -630,7 +611,6 @@ async function syncLinkedIn() {
         const bodyText = postData.articleBody || "";
 
         const mdContent = `---
-id: ${JSON.stringify(id)}
 pubDate: ${JSON.stringify(pubDateStr)}
 likes: ${likes}
 comments: ${comments}
@@ -657,15 +637,8 @@ ${bodyText}
   const activePostIds = new Set(postIds);
   const existingPostDirs = fs.readdirSync(postsDir).filter(f => fs.statSync(path.join(postsDir, f)).isDirectory());
   for (const dirName of existingPostDirs) {
-    const indexPath = path.join(postsDir, dirName, 'index.md');
-    if (fs.existsSync(indexPath)) {
-      const { frontmatter } = parseMarkdown(indexPath);
-      if (frontmatter.id && !activePostIds.has(frontmatter.id)) {
-        console.log(`Pruning deleted LinkedIn post directory: ${dirName} (id: ${frontmatter.id})`);
-        fs.rmSync(path.join(postsDir, dirName), { recursive: true, force: true });
-      }
-    } else {
-      console.log(`Pruning directory without index.md: ${dirName}`);
+    if (!activePostIds.has(dirName)) {
+      console.log(`Pruning deleted LinkedIn post directory: ${dirName}`);
       fs.rmSync(path.join(postsDir, dirName), { recursive: true, force: true });
     }
   }
