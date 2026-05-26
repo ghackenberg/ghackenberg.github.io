@@ -221,7 +221,7 @@ async function syncGitHub() {
                 name
               }
               openGraphImageUrl
-              updatedAt
+              createdAt
               pushedAt
             }
           }
@@ -239,11 +239,11 @@ async function syncGitHub() {
       repos.push({
         name: repo.name,
         description: repo.description || "No description provided.",
-        html_url: repo.url,
+        url: repo.url,
         stargazers_count: repo.stargazerCount || 0,
         language: repo.primaryLanguage?.name || "Web",
         social_preview: repo.openGraphImageUrl || "",
-        updatedAt: repo.updatedAt || "",
+        createdAt: repo.createdAt || "",
         pushedAt: repo.pushedAt || ""
       });
     }
@@ -284,16 +284,17 @@ async function syncGitHub() {
       localExt = await downloadImage(repo.social_preview, repoDir);
     }
 
-    const pubDateStr = repo.pushedAt || repo.updatedAt || new Date().toISOString();
+    const pubDateStr = repo.createdAt || new Date().toISOString();
+    const pushDateStr = repo.pushedAt || new Date().toISOString();
 
     const mdContent = `---
 description: ${JSON.stringify(repo.description)}
-html_url: ${JSON.stringify(repo.html_url)}
+url: ${JSON.stringify(repo.url)}
 stars: ${repo.stargazers_count}
 language: ${JSON.stringify(repo.language)}
 image: ${localExt ? `"./image${localExt}"` : "null"}
-updatedAt: ${JSON.stringify(repo.updatedAt)}
 pubDate: ${pubDateStr}
+pushDate: ${pushDateStr}
 ---
 `;
     fs.writeFileSync(path.join(repoDir, "index.md"), mdContent, "utf8");

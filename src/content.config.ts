@@ -39,12 +39,12 @@ const githubRepos = defineCollection({
   }),
   schema: ({ image }) => z.object({
     description: z.string(),
-    html_url: z.string(),
+    url: z.string(),
     stars: z.number(),
     language: z.string(),
     image: image().nullable().optional(),
-    updatedAt: z.string().optional(),
     pubDate: z.coerce.date(),
+    pushDate: z.coerce.date(),
   }),
 });
 

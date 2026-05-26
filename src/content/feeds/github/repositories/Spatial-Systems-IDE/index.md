@@ -1,9 +1,9 @@
 ---
 description: "Integrated Development Environment (IDE) for Spatio-Temporal Systems"
-html_url: "https://github.com/ghackenberg/Spatial-Systems-IDE"
+url: "https://github.com/ghackenberg/Spatial-Systems-IDE"
 stars: 1
 language: "Java"
 image: "./image.png"
-updatedAt: "2025-03-30T10:50:13Z"
-pubDate: "2025-03-30T10:50:11Z"
+pubDate: 2024-07-31T09:47:41Z
+pushDate: 2025-03-30T10:50:11Z
 ---

@@ -13,12 +13,12 @@ interface GitHubProfile {
 interface GitHubRepo {
   title: string;
   description: string;
-  html_url: string;
+  url: string;
   stars: number;
   language: string;
   image?: any;
   pubDate: Date;
-  updatedAt?: string;
+  pushDate: Date;
 }
 
 let profile: GitHubProfile | null = null;
@@ -38,17 +38,17 @@ try {
       return {
         title: entry.id,
         description: entry.data.description,
-        html_url: entry.data.html_url,
+        url: entry.data.url,
         stars: entry.data.stars,
         language: entry.data.language,
         image: entry.data.image,
         pubDate: entry.data.pubDate,
-        updatedAt: entry.data.updatedAt
+        pushDate: entry.data.pushDate
       };
     });
     repos = rawRepos.sort((a, b) => {
-      const dateA = a.pubDate ? new Date(a.pubDate).getTime() : 0;
-      const dateB = b.pubDate ? new Date(b.pubDate).getTime() : 0;
+      const dateA = a.pushDate ? new Date(a.pushDate).getTime() : 0;
+      const dateB = b.pushDate ? new Date(b.pushDate).getTime() : 0;
       return dateB - dateA;
     });
   }
@@ -237,7 +237,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
         <div class="space-y-3">
           {repos.slice(0, 3).map((repo) => (
             <a 
-              href={repo.html_url} 
+              href={repo.url} 
               target="_blank" 
               rel="noopener noreferrer"
               class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0"
