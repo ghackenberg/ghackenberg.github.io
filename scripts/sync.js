@@ -256,7 +256,9 @@ async function syncGitHub() {
   const profileDir = path.resolve(process.cwd(), "src/content/feeds/github");
   const reposDir = path.resolve(process.cwd(), "src/content/feeds/github/repositories");
 
-  clearAndCreateDir(profileDir);
+  if (!fs.existsSync(profileDir)) {
+    fs.mkdirSync(profileDir, { recursive: true });
+  }
   if (!fs.existsSync(reposDir)) {
     fs.mkdirSync(reposDir, { recursive: true });
   }
@@ -273,8 +275,12 @@ async function syncGitHub() {
       fs.mkdirSync(repoDir, { recursive: true });
     }
 
-    let localExt = null;
-    if (repo.social_preview && !repo.social_preview.includes("avatars.githubusercontent.com")) {
+    let localExt = findExistingImage(repoDir);
+    if (!localExt && repo.social_preview && !repo.social_preview.includes("avatars.githubusercontent.com")) {
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      const waitMs = Math.floor(1000 + Math.random() * 1500);
+      console.log(`Downloading new social preview image for ${repo.name}, waiting ${waitMs}ms first...`);
+      await delay(waitMs);
       localExt = await downloadImage(repo.social_preview, repoDir);
     }
 
@@ -457,44 +463,74 @@ likes: ${video.likes}
     }
   }
 
-  // PRUNING IS REMOVED as requested.
+  // Prune deleted YouTube videos
+  console.log("Pruning deleted YouTube videos...");
+  const activeVideoIds = new Set(videos.map(v => v.id));
+  const existingVideoDirs = fs.readdirSync(videosDir).filter(f => fs.statSync(path.join(videosDir, f)).isDirectory());
+  for (const dirName of existingVideoDirs) {
+    const indexPath = path.join(videosDir, dirName, 'index.md');
+    if (fs.existsSync(indexPath)) {
+      const { frontmatter } = parseMarkdown(indexPath);
+      if (frontmatter.id && !activeVideoIds.has(frontmatter.id)) {
+        console.log(`Pruning deleted YouTube video directory: ${dirName} (id: ${frontmatter.id})`);
+        fs.rmSync(path.join(videosDir, dirName), { recursive: true, force: true });
+      }
+    } else {
+      console.log(`Pruning directory without index.md: ${dirName}`);
+      fs.rmSync(path.join(videosDir, dirName), { recursive: true, force: true });
+    }
+  }
+
   console.log(`✓ YouTube sync completed: 1 profile, ${videos.length} videos synced.`);
 }
 
 async function syncLinkedIn() {
   console.log("Syncing LinkedIn posts...");
 
+  const profilePath = path.resolve(process.cwd(), "src/content/feeds/linkedin/profile.json");
+  if (!fs.existsSync(profilePath)) {
+    throw new Error(`LinkedIn profile file not found at ${profilePath}`);
+  }
+
+  const profileContent = fs.readFileSync(profilePath, 'utf8');
+  const profileData = JSON.parse(profileContent);
+
+  const postIds = profileData.postIds || [];
+  if (postIds.length === 0) {
+    console.log("No postIds configured in LinkedIn profile. Skipping posts sync.");
+    return;
+  }
+
   const postsDir = path.resolve(process.cwd(), "src/content/feeds/linkedin/posts");
   if (!fs.existsSync(postsDir)) {
     fs.mkdirSync(postsDir, { recursive: true });
   }
 
-  // Scan existing folders/index.md files to find URN IDs to sync
-  const existingPosts = [];
-  const folders = fs.readdirSync(postsDir).filter(f => fs.statSync(path.join(postsDir, f)).isDirectory());
-  for (const folder of folders) {
-    const indexPath = path.join(postsDir, folder, 'index.md');
-    if (fs.existsSync(indexPath)) {
-      const { frontmatter } = parseMarkdown(indexPath);
-      if (frontmatter.id) {
-        existingPosts.push({ id: frontmatter.id, filePath: indexPath });
-      }
+  // Determine which posts to sync (newest 3 or any that do not exist on disk)
+  const idsToSync = [];
+  const idToFilePathMap = {};
+
+  for (let i = 0; i < postIds.length; i++) {
+    const id = postIds[i];
+    const filePath = findFileByPlatformId(postsDir, id);
+    if (filePath) {
+      idToFilePathMap[id] = filePath;
+    }
+    if (i < 3 || !filePath) {
+      idsToSync.push(id);
     }
   }
 
-  if (existingPosts.length === 0) {
-    console.log("No published LinkedIn posts found (no folders with id in frontmatter). Skipping posts sync.");
-    return;
-  }
-
-  console.log(`Syncing metrics for ${existingPosts.length} LinkedIn posts...`);
+  console.log(`Syncing ${idsToSync.length} LinkedIn posts (out of ${postIds.length} total)...`);
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  for (let idx = 0; idx < existingPosts.length; idx++) {
-    const post = existingPosts[idx];
-    const id = post.id;
-    const filePath = post.filePath;
+  for (let idx = 0; idx < idsToSync.length; idx++) {
+    const id = idsToSync[idx];
+    const existingFilePath = idToFilePathMap[id] || findFileByPlatformId(postsDir, id);
+    const itemDir = existingFilePath ? path.dirname(existingFilePath) : path.join(postsDir, id);
+    const filePath = existingFilePath || path.join(itemDir, "index.md");
+    const fileExists = fs.existsSync(filePath);
 
     if (idx > 0) {
       const waitMs = Math.floor(2000 + Math.random() * 3000);
@@ -562,19 +598,77 @@ async function syncLinkedIn() {
         }
       }
 
-      // Merge metrics back
-      mergeFrontmatter(filePath, {
-        likes: likes,
-        comments: comments,
-        pubDate: pubDateStr
-      });
-      console.log(`✓ Updated metrics in ${path.relative(process.cwd(), filePath)}`);
+      if (fileExists) {
+        mergeFrontmatter(filePath, {
+          likes: likes,
+          comments: comments,
+          pubDate: pubDateStr
+        });
+        console.log(`✓ Updated metrics in ${path.relative(process.cwd(), filePath)}`);
+      } else {
+        if (!fs.existsSync(itemDir)) {
+          fs.mkdirSync(itemDir, { recursive: true });
+        }
+
+        let imageUrl = "";
+        if (postData.image) {
+          if (Array.isArray(postData.image) && postData.image.length > 0) {
+            const imgObj = postData.image[0];
+            imageUrl = typeof imgObj === "string" ? imgObj : (imgObj.url || "");
+          } else if (typeof postData.image === "object") {
+            imageUrl = postData.image.url || "";
+          } else if (typeof postData.image === "string") {
+            imageUrl = postData.image;
+          }
+        }
+
+        let localExt = null;
+        if (imageUrl) {
+          localExt = await downloadImage(imageUrl, itemDir);
+        }
+
+        const bodyText = postData.articleBody || "";
+
+        const mdContent = `---
+id: ${JSON.stringify(id)}
+pubDate: ${JSON.stringify(pubDateStr)}
+likes: ${likes}
+comments: ${comments}
+shares: 0
+image: ${localExt ? `"./image${localExt}"` : "null"}
+---
+${bodyText}
+`;
+        fs.writeFileSync(filePath, mdContent, "utf8");
+        console.log(`✓ Generated new post in ${path.relative(process.cwd(), filePath)}`);
+      }
     } catch (e) {
-      console.warn(`⚠️ Failed to update LinkedIn post ${id}. Error: ${e.message || e}`);
+      if (fileExists) {
+        console.warn(`⚠️ Failed to update LinkedIn post ${id}, retaining existing file. Error: ${e.message || e}`);
+      } else {
+        console.error(`❌ Failed to sync new LinkedIn post ${id}:`, e.message || e);
+        throw e;
+      }
     }
   }
 
-  // PRUNING IS REMOVED as requested.
+  // Prune deleted LinkedIn posts
+  console.log("Pruning deleted LinkedIn posts...");
+  const activePostIds = new Set(postIds);
+  const existingPostDirs = fs.readdirSync(postsDir).filter(f => fs.statSync(path.join(postsDir, f)).isDirectory());
+  for (const dirName of existingPostDirs) {
+    const indexPath = path.join(postsDir, dirName, 'index.md');
+    if (fs.existsSync(indexPath)) {
+      const { frontmatter } = parseMarkdown(indexPath);
+      if (frontmatter.id && !activePostIds.has(frontmatter.id)) {
+        console.log(`Pruning deleted LinkedIn post directory: ${dirName} (id: ${frontmatter.id})`);
+        fs.rmSync(path.join(postsDir, dirName), { recursive: true, force: true });
+      }
+    } else {
+      console.log(`Pruning directory without index.md: ${dirName}`);
+      fs.rmSync(path.join(postsDir, dirName), { recursive: true, force: true });
+    }
+  }
 }
 
 async function main() {

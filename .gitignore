@@ -31,3 +31,6 @@ scratch/
 # Lighthouse reports
 lighthouse-reports/
 
+# decoupled social media files
+temp-social-media-tools/
+

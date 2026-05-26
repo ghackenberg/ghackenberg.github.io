@@ -47,8 +47,8 @@ try {
       };
     });
     repos = rawRepos.sort((a, b) => {
-      const dateA = a.updatedAt ? new Date(a.updatedAt).getTime() : (a.pubDate ? a.pubDate.getTime() : 0);
-      const dateB = b.updatedAt ? new Date(b.updatedAt).getTime() : (b.pubDate ? b.pubDate.getTime() : 0);
+      const dateA = a.pubDate ? new Date(a.pubDate).getTime() : 0;
+      const dateB = b.pubDate ? new Date(b.pubDate).getTime() : 0;
       return dateB - dateA;
     });
   }

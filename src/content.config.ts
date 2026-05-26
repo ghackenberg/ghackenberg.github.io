@@ -17,69 +17,11 @@ const linkedinPosts = defineCollection({
   }),
 });
 
-const linkedinSlides = defineCollection({
-  loader: glob({
-    base: './src/content/feeds/linkedin/posts',
-    pattern: '**/slides.json',
-    generateId: ({ entry }) => entry.replace(/\/slides\.json$/, '')
-  }),
-  schema: z.object({
-    title: z.string(),
-    slides: z.array(z.discriminatedUnion('type', [
-      z.object({
-        type: z.literal('cover'),
-        theme: z.enum(['emerald', 'purple', 'cyan', 'amber']).default('emerald'),
-        category: z.string().optional(),
-        domain: z.string().optional(),
-        title1: z.string(),
-        title2: z.string().optional(),
-        subtitle: z.string().optional(),
-        screenshotUrl: z.string().optional(),
-        screenshotAlign: z.enum(['top', 'center', 'bottom']).default('top'),
-      }),
-      z.object({
-        type: z.literal('content'),
-        theme: z.enum(['emerald', 'purple', 'cyan', 'amber']).default('emerald'),
-        category: z.string(),
-        headerLabel: z.string().optional(),
-        title1: z.string(),
-        title2: z.string().optional(),
-        description: z.string(),
-        screenshotUrl: z.string().optional(),
-        screenshotAlign: z.enum(['top', 'center', 'bottom']).default('top'),
-      }),
-      z.object({
-        type: z.literal('features'),
-        theme: z.enum(['emerald', 'purple', 'cyan', 'amber']).default('emerald'),
-        category: z.string(),
-        headerLabel: z.string().optional(),
-        title1: z.string(),
-        title2: z.string().optional(),
-        features: z.array(z.object({
-          title: z.string(),
-          description: z.string(),
-        })),
-      }),
-      z.object({
-        type: z.literal('outro'),
-        theme: z.enum(['emerald', 'purple', 'cyan', 'amber']).default('emerald'),
-        category: z.string().optional(),
-        headerLabel: z.string().optional(),
-        title1: z.string(),
-        title2: z.string().optional(),
-        description: z.string(),
-        icon: z.string().optional(),
-        ctaLabel: z.string().optional(),
-        footerLabel: z.string().optional(),
-      })
-    ]))
-  })
-});
-
 const linkedinProfile = defineCollection({
   loader: glob({ base: './src/content/feeds/linkedin', pattern: 'profile.json' }),
   schema: z.object({
     followers: z.string().optional(),
+    postIds: z.array(z.string()).optional(),
   }),
 });
 
@@ -288,7 +230,6 @@ const modules = defineCollection({
 
 export const collections = {
   'linkedin-posts': linkedinPosts,
-  'linkedin-slides': linkedinSlides,
   'linkedin-profile': linkedinProfile,
   'github-profile': githubProfile,
   'github-repos': githubRepos,

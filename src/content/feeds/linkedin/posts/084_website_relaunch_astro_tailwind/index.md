@@ -1,8 +1,8 @@
 ---
 id: "7464985031875223552"
 pubDate: "2026-05-26T10:25:24.292Z"
-likes: 5
-comments: 0
+likes: 25
+comments: 2
 shares: 0
 image: "./image.jpg"
 ---
