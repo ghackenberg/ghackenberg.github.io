@@ -51,13 +51,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Industrial Simulation Masterclasses for Logistics and Engineering
+## Industrial Simulation Masterclasses for Logistics and Engineering
 
 Optimizing factory layouts, production cycles, and shipping queues requires rigorous mathematical models and discrete-event simulation algorithms.
 
 I train industrial engineers, logistics planners, and software developers in simulation modeling. We work through real-world layout optimization scenarios, build custom simulation loops, and evaluate system bottlenecks, giving your team the skills to build and run custom simulation runs independently.
 
-#### What we cover:
+### What we cover:
 *   **Discrete Event Simulation:** Building queue models, resource selectors, and event-based execution loops.
 *   **Layout Modeling:** Simulating factory layouts, conveyor systems, and logistics warehouses.
 *   **Bottleneck Analysis:** Custom optimization algorithms and data export pipelines for throughput analysis.

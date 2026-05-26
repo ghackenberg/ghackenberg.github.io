@@ -11,7 +11,7 @@ previewImage: "./preview.png"
 pubDate: 2026-05-24
 ---
 
-### Research-Backed Strategy and Engineering Integrity
+## Research-Backed Strategy and Engineering Integrity
 
 Navigating modern technology landscapes requires a bridge between academic research, engineering execution, and high-level corporate strategy.
 

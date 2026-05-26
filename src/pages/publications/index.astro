@@ -49,10 +49,10 @@ const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
       <!-- Tag Cloud -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
         <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col max-h-[300px] lg:max-h-[calc(100vh-10rem)]">
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
+          <h2 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
             <span>🏷️</span>
             <span>Research Tags</span>
-          </h3>
+          </h2>
           <div class="mb-3 relative shrink-0">
             <input 
               type="text" 
@@ -62,12 +62,12 @@ const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
             />
             <span class="absolute left-2.5 top-2 text-[10px] text-gray-500">🔍</span>
           </div>
-          <div class="flex flex-wrap gap-2 overflow-y-auto pr-1 custom-scrollbar-thin flex-grow">
+          <div class="flex flex-wrap gap-2.5 overflow-y-auto pr-1 custom-scrollbar-thin flex-grow">
             {tags.map(tag => (
               <a 
                 href={`/publications/tags/${tag}`}
                 data-tag={tag}
-                class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-purple/30 transition-all duration-200"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-purple/30 transition-all duration-200"
               >
                 #{tag}
               </a>

@@ -49,13 +49,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Bringing Complex Computations to the Browser
+## Bringing Complex Computations to the Browser
 
 Running data calculations or mathematical simulations traditionally required heavy backend servers or desktop licenses (like MATLAB).
 
 I optimize and port these calculations to run natively inside the client's web browser. By compiling calculations to WebAssembly or writing highly optimized JavaScript math operations, I eliminate the need for expensive computing servers and provide instant, zero-latency feedback for your users.
 
-#### How we can work together:
+### How we can work together:
 *   **Wasm Porting:** Compiling complex C/C++ or Rust simulation engines to WebAssembly to execute heavy calculations at near-native speeds.
 *   **Code Migration:** Re-engineering scientific calculations from MATLAB, Python, or R into clean, type-safe TypeScript.
 *   **Performance Auditing:** Profiling and refactoring slow JavaScript loops, memory bottlenecks, and numeric calculation scripts.

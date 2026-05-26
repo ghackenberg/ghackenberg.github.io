@@ -25,7 +25,7 @@ const colorClasses = {
     text: 'text-brand-blue',
     border: 'border-brand-blue/20',
     bg: 'bg-brand-blue/10',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-blue',
     glow: 'from-brand-blue to-brand-purple',
     leftBorder: 'border-brand-blue',
@@ -45,7 +45,7 @@ const colorClasses = {
     text: 'text-brand-purple',
     border: 'border-brand-purple/20',
     bg: 'bg-brand-purple/10',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-purple',
     glow: 'from-brand-purple to-brand-blue',
     leftBorder: 'border-brand-purple',
@@ -55,7 +55,7 @@ const colorClasses = {
     text: 'text-brand-green',
     border: 'border-brand-green/20',
     bg: 'bg-brand-green/10',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-green',
     glow: 'from-brand-green to-brand-blue',
     leftBorder: 'border-brand-green',
@@ -171,9 +171,11 @@ const colorClasses = {
                   {/* Preview Image Column */}
                   <div class="sm:col-span-4 relative min-h-[160px] sm:min-h-full w-full overflow-hidden bg-gray-950/40">
                     {module.data.previewImage && (
-                      <img 
-                        src={module.data.previewImage.src} 
+                      <Image 
+                        src={module.data.previewImage} 
                         alt={`${module.data.title} preview`}
+                        width={480}
+                        height={320}
                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
                       />
                     )}
@@ -289,7 +291,7 @@ const colorClasses = {
               <a 
                 id="direct-mail-link"
                 href={`mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry:%20${encodeURIComponent(service.data.title)}`}
-                class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
+                class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-gray-950 font-bold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
               >
                 Open Email Client &rarr;
               </a>
@@ -303,7 +305,7 @@ const colorClasses = {
 
 <style>
   /* Markdown content styling for service layouts */
-  .service-content :global(h3) {
+  .service-content :global(h2) {
     font-size: 1.25rem;
     font-weight: 800;
     color: white;
@@ -313,10 +315,10 @@ const colorClasses = {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-bottom: 0.35rem;
   }
-  .service-content :global(h3:first-child) {
+  .service-content :global(h2:first-child) {
     margin-top: 0;
   }
-  .service-content :global(h4) {
+  .service-content :global(h3) {
     font-size: 1.05rem;
     font-weight: 700;
     color: white;

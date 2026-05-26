@@ -50,13 +50,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Translating Complex Data into Clear Interactive Layouts
+## Translating Complex Data into Clear Interactive Layouts
 
 Complex data grids, system hierarchies, and network configurations are incredibly difficult to understand in standard text lists.
 
 I engineer custom, interactive visual systems directly for the web. By utilizing D3.js, HTML5 Canvas, and specialized mathematical layouts, I create node-link editors, dynamic flowcharts, and performance-optimized layouts that let users interact with, edit, and explore your data models in real time.
 
-#### How we can work together:
+### How we can work together:
 *   **Custom Graph Editors:** Building drag-and-drop network diagram editors, system configuration canvases, or layout planners.
 *   **High-Performance Canvas Rendering:** Designing custom rendering loops to display thousands of nodes and connections at 60fps.
 *   **Dynamic Data Visuals:** Integrating customized bar, line, and flow charts using D3.js with responsive resizing.

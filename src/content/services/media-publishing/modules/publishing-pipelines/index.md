@@ -50,13 +50,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Automating Content Production and Distribution
+## Automating Content Production and Distribution
 
 Modern content delivery relies on engineering depth. To maintain blogs, documentation, and email campaigns efficiently, you need automated pipelines that reduce manual editing and keep formatting consistent.
 
 I help organizations build custom, code-driven content production pipelines, integrate marketing automation, and launch structured newsletter campaigns. By using static site generators, headless CMS tools, and automated email workflows, I build systems that allow your team to write content in simple markdown and have it automatically formatting, rendering, and publishing across your channels.
 
-#### What we handle:
+### What we handle:
 *   **Content Frameworks:** Bootstrapping documentation sites, user manuals, and blog systems using markdown-based static generators.
 *   **Marketing Automation:** Designing triggered workflows, sync scripts, and contact segmentation to automate user onboarding emails.
 *   **Newsletter Distribution:** Setting up templates and campaigns to send regular updates to your subscribers with automated analytics.

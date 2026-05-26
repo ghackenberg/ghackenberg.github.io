@@ -26,7 +26,7 @@ const colorClasses = {
     text: 'text-brand-blue',
     border: 'border-brand-blue/20',
     bg: 'bg-brand-blue/10',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
     glow: 'from-brand-blue to-brand-purple',
     leftBorder: 'border-brand-blue',
     glowBorder: 'rgba(59, 130, 246, 0.3)',
@@ -48,7 +48,7 @@ const colorClasses = {
     text: 'text-brand-purple',
     border: 'border-brand-purple/20',
     bg: 'bg-brand-purple/10',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
     glow: 'from-brand-purple to-brand-blue',
     leftBorder: 'border-brand-purple',
     glowBorder: 'rgba(168, 85, 247, 0.3)',
@@ -59,7 +59,7 @@ const colorClasses = {
     text: 'text-brand-green',
     border: 'border-brand-green/20',
     bg: 'bg-brand-green/10',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
     glow: 'from-brand-green to-brand-blue',
     leftBorder: 'border-brand-green',
     glowBorder: 'rgba(16, 185, 129, 0.3)',
@@ -174,9 +174,9 @@ const colorClasses = {
 
                     {/* Text block */}
                     <div class="space-y-1.5 sm:px-2 flex-1">
-                      <h4 class="text-xs font-bold text-white uppercase tracking-wider leading-tight">
+                      <h3 class="text-xs font-bold text-white uppercase tracking-wider leading-tight">
                         {phase.title}
-                      </h4>
+                      </h3>
                       <p class="text-[10px] text-gray-400 leading-relaxed font-normal">
                         {phase.description}
                       </p>
@@ -284,10 +284,10 @@ const colorClasses = {
         <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden">
           <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
           
-          <h3 class="text-sm font-extrabold uppercase tracking-widest text-white mb-4 flex items-center space-x-2">
+          <h2 class="text-sm font-extrabold uppercase tracking-widest text-white mb-4 flex items-center space-x-2">
             <span>ℹ️</span>
             <span>Focus Areas</span>
-          </h3>
+          </h2>
 
           <ul class="space-y-3.5 mb-8">
             {module.data.highlights.map(item => (
@@ -311,10 +311,10 @@ const colorClasses = {
         {/* Bundle Notice Card */}
         <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden bg-brand-yellow/5">
           <div class="absolute top-0 left-0 right-0 h-1 bg-brand-yellow/30"></div>
-          <h3 class="text-sm font-extrabold uppercase tracking-widest text-brand-yellow mb-3 flex items-center space-x-2">
+          <h2 class="text-sm font-extrabold uppercase tracking-widest text-brand-yellow mb-3 flex items-center space-x-2">
             <span>💡</span>
             <span>Bundle rate</span>
-          </h3>
+          </h2>
           <p class="text-[11px] text-gray-400 leading-relaxed mb-0">
             Combine this module with any other modules (e.g. Websites & Hosting + corporate simulations) for a custom bundle rate. Reach out below to request a tailored quote.
           </p>
@@ -340,7 +340,7 @@ const colorClasses = {
         <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
           <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow"></div>
           
-          <h3 class="text-lg font-bold text-white mb-6">Contact & Booking Inquiry</h3>
+          <h2 class="text-lg font-bold text-white mb-6">Contact & Booking Inquiry</h2>
           
           <div class="space-y-6">
             <div class="flex items-start space-x-4">
@@ -368,7 +368,7 @@ const colorClasses = {
               <a 
                 id="direct-mail-link"
                 href={`mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry:%20${encodeURIComponent(parentService.data.title)}%20-%20${encodeURIComponent(module.data.title)}`}
-                class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
+                class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-gray-950 font-bold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
               >
                 Open Email Client &rarr;
               </a>
@@ -382,7 +382,7 @@ const colorClasses = {
 
 <style>
   /* Markdown content styling for service layouts */
-  .service-content :global(h3) {
+  .service-content :global(h2) {
     font-size: 1.25rem;
     font-weight: 800;
     color: white;
@@ -392,10 +392,10 @@ const colorClasses = {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-bottom: 0.35rem;
   }
-  .service-content :global(h3:first-child) {
+  .service-content :global(h2:first-child) {
     margin-top: 0;
   }
-  .service-content :global(h4) {
+  .service-content :global(h3) {
     font-size: 1.05rem;
     font-weight: 700;
     color: white;

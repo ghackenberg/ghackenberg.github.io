@@ -48,13 +48,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Authoritative codebase audits for investors and venture funds
+## Authoritative codebase audits for investors and venture funds
 
 Venture capital firms, angel investors, and companies facing M&A need to validate that a startup's software platform is technically sound, scalable, and free of critical intellectual property risks.
 
 I conduct independent codebase audits and infrastructure reviews. Drawing from my academic computer science background and past industrial tenure as an IoT Business Unit Manager, I review repositories, profile database schemas, evaluate cloud architectures, and deliver clear, authoritative reports that translate deep code metrics into actionable business decisions.
 
-#### What we evaluate:
+### What we evaluate:
 *   **Code Quality & Debt:** Analyzing test coverage, package structures, dependency risks, and software architectural styling.
 *   **Infrastructure & Scalability:** Auditing server workloads, database performance, microservices setups, and cloud configurations.
 *   **Security & Licensing:** Checking for outdated third-party libraries and general software security holes.

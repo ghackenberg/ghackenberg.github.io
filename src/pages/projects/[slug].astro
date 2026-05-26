@@ -48,7 +48,7 @@ const colorClasses = {
     text: 'text-brand-blue',
     border: 'border-brand-blue/20',
     bg: 'bg-brand-blue/10',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-blue',
     glow: 'from-brand-blue to-brand-purple'
   },
@@ -56,7 +56,7 @@ const colorClasses = {
     text: 'text-brand-yellow',
     border: 'border-brand-yellow/20',
     bg: 'bg-brand-yellow/10',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950',
+    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-yellow',
     glow: 'from-brand-yellow to-brand-purple'
   },
@@ -64,7 +64,7 @@ const colorClasses = {
     text: 'text-brand-purple',
     border: 'border-brand-purple/20',
     bg: 'bg-brand-purple/10',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-purple',
     glow: 'from-brand-purple to-brand-blue'
   },
@@ -72,7 +72,7 @@ const colorClasses = {
     text: 'text-brand-green',
     border: 'border-brand-green/20',
     bg: 'bg-brand-green/10',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-green',
     glow: 'from-brand-green to-brand-blue'
   }
@@ -173,7 +173,7 @@ const formattedDate = lastUpdated
             href={project.data.href}
             target="_blank"
             rel="noopener noreferrer"
-            class={`w-full py-3.5 px-4 rounded-xl text-center text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-2 cursor-pointer ${colorClasses.btnBg}`}
+            class={`w-full py-3.5 px-4 rounded-xl text-center text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-2 cursor-pointer ${colorClasses.btnBg}`}
           >
             <span>Visit Website</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

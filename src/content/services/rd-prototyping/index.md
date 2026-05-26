@@ -11,7 +11,7 @@ previewImage: "./preview.png"
 pubDate: 2026-05-24
 ---
 
-### Accelerating Scientific Innovation into Production-Ready Code
+## Accelerating Scientific Innovation into Production-Ready Code
 
 As both an active researcher and a hands-on software engineer, I bridge the gap between academic theory, algorithmic proofs-of-concept, and scalable, user-friendly software. 
 

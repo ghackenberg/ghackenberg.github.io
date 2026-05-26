@@ -10,6 +10,8 @@ interface Props {
   type?: "website" | "article";
   pubDate?: Date | string;
   tags?: string[];
+  hasMath?: boolean;
+  preloadImage?: string;
 }
 
 const { 
@@ -18,7 +20,9 @@ const {
   image,
   type = "website",
   pubDate,
-  tags = []
+  tags = [],
+  hasMath = false,
+  preloadImage
 } = Astro.props;
 
 // Build canonical URL
@@ -75,6 +79,9 @@ if (pubDate) {
     <meta name="google-site-verification" content="Cp7mdJpXJfZMzl80PESVj2Xb1uG37nSQB1rW0IqYYYw" />
     
     <!-- Primary SEO Meta Tags -->
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />
+    )}
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
@@ -118,12 +125,20 @@ if (pubDate) {
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=optional" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=optional" media="print" onload="this.media='all'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=optional" rel="stylesheet" />
+    </noscript>
 
     <!-- KaTeX Math Rendering -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { delimiters: [ { left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false } ] });"></script>
+    {hasMath && (
+      <>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { delimiters: [ { left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false } ] });"></script>
+      </>
+    )}
   </head>
 
   <body class="text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">

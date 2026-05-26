@@ -48,13 +48,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Authoritative independent evaluation reports with academic integrity
+## Authoritative independent evaluation reports with academic integrity
 
 Corporate boards, startup projects seeking public research grants, and legal disputes require independent, objective, and scientifically rigorous technical validations that carry weight.
 
 Leveraging my PhD background, peer-reviewed publication record, and active university computer science research, I write authoritative technical reports and expert evaluations. I provide unbiased assessments of algorithms, system code, and data flows, translating deep computer science structures into clear, validated evidence.
 
-#### What we deliver:
+### What we deliver:
 *   **Grant & Funding Validations:** Expert reports verifying that software project methodologies align with state-of-the-art academic computer science.
 *   **Expert Board Opinions:** Independent assessments of technical arguments, system designs, or software architectures for executive teams.
 *   **Algorithm Auditing:** Peer-reviewed evaluations verifying algorithm accuracy, runtime complexity, and scientific correctness.

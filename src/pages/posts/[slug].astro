@@ -37,6 +37,7 @@ const seoDescription = post.data.description
   type="article"
   pubDate={post.data.pubDate}
   tags={post.data.tags}
+  hasMath={post.body ? (post.body.includes('$$') || /\$[^\$\s][^\$]*\$/.test(post.body)) : false}
 >
   <Navbar />
 

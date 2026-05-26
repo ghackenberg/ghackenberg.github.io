@@ -49,13 +49,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Scientific feasibility validation for emerging technologies
+## Scientific feasibility validation for emerging technologies
 
 Integrating cutting-edge tech like local Large Language Models (LLMs), autonomous agents, or complex IoT networks presents significant risks. Companies face high setup costs, computational latency bottlenecks, and complex privacy compliance.
 
 I run independent, research-backed feasibility studies. By combining my academic research in artificial intelligence and simulation with industrial systems engineering experience, I calculate hardware requirements, evaluate privacy impacts, and benchmark performance to help your team make informed technology roadmap decisions.
 
-#### What we analyze:
+### What we analyze:
 *   **Local LLM Integrations:** Calculating hardware footprint (VRAM/RAM), model accuracy tradeoffs, and offline data privacy boundaries.
 *   **IoT & Edge Computing:** Mapping sensor latency, communication payloads, edge gateway computing limits, and cloud synchronizations.
 *   **Technical Risk Auditing:** Identifying compute bottlenecks, licensing restrictions, and operational pricing models.

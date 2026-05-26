@@ -49,13 +49,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Standardizing Your Corporate Web Footprint
+## Standardizing Your Corporate Web Footprint
 
 A premium corporate website is more than just a page—it is your business's primary tool for building trust and scaling operations.
 
 I help general businesses, local agencies, and professionals build, host, and maintain custom web experiences. Rather than relying on rigid site builders, I engineer lightweight, highly responsive sites tailored to your visual guidelines. I handle everything from early layouts to server deployment and ongoing monthly updates, allowing you to focus completely on your core operations.
 
-#### What we handle:
+### What we handle:
 *   **Visual Web Design:** Custom UI/UX engineering tailored to your business, avoiding bloated pre-made templates.
 *   **Web Development:** Fast, responsive frontend coding (HTML5, Tailwind/CSS, TypeScript) optimized for speed and SEO.
 *   **Secure Server Hosting:** Premium cloud hosting configurations with SSL certificates, automated backups, and daily security checks.

@@ -50,13 +50,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Translating Ideas into Interactive Software Blueprints
+## Translating Ideas into Interactive Software Blueprints
 
 Many organizations struggle to share mathematical logic, raw databases, or backend scripting in a way that partners and clients can easily use.
 
 I package your software logic into visually stunning, high-performance web-based prototypes and Minimum Viable Products (MVPs). By building clean codebases with Astro and TypeScript, I deliver systems that serve as a solid, scalable foundation for your engineering team to take over.
 
-#### How we can work together:
+### How we can work together:
 *   **Proof-of-Concept Web Apps:** Bootstrapping interactive dashboards, data tables, and input panels to let users play with your backend logic.
 *   **Type-Safe Database Integrations:** Configuring relational databases, schema-driven configurations, and fast query APIs.
 *   **Modular Codebase Setup:** Providing a highly structured, scalable template repository complete with documentation and CI/CD blueprints.

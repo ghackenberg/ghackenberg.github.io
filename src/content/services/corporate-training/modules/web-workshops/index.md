@@ -49,13 +49,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Training Engineering Teams in Modern Web Technologies
+## Training Engineering Teams in Modern Web Technologies
 
 The web ecosystem changes rapidly. To keep codebases modular, type-safe, and highly performant, engineering teams must master modern component design, Astro page layouts, and clean TypeScript patterns.
 
 I deliver highly structured, hands-on corporate workshops customized directly to your team's product stack. Drawing from my academic teaching standards and senior development background, I help your engineers adopt best coding practices, perform bundle size optimizations, and build fast, responsive interfaces.
 
-#### What we cover:
+### What we cover:
 *   **Astro & Frontend Frameworks:** Mastering static page generation, server-side rendering, and island architectures.
 *   **TypeScript Best Practices:** Setting up type-safe configurations, schema checking, and clean structural data modeling.
 *   **Performance Optimization:** Identifying render bottlenecks, bundle optimization, and canvas/layout speed tuning.

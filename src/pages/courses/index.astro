@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import { getCollection } from "astro:content";
+import { getImage } from "astro:assets";
 import CourseCard from "../../components/CourseCard.astro";
 
 const courses = await getCollection("courses");
@@ -22,6 +23,16 @@ for (const course of courses) {
   }
 }
 const techLanguages = Array.from(techLanguagesSet).sort();
+
+// Find the first course's screenshot to preload for LCP
+const firstCourse = courses[0];
+const firstCourseScreenshot = firstCourse?.data.screenshot;
+const optimizedFirstScreenshot = firstCourseScreenshot ? await getImage({
+  src: firstCourseScreenshot,
+  format: 'webp',
+  width: 480,
+  quality: 80
+}) : null;
 
 // Language badge colors
 const languageColors: Record<string, string> = {
@@ -46,6 +57,7 @@ const languageColors: Record<string, string> = {
 <Layout 
   title="Academic Courses & Teaching | Dr. Georg Hackenberg" 
   description="Explore syllabus materials, repositories, and teaching resources for Computer Science & Industrial Informatics courses taught by Dr. Georg Hackenberg."
+  preloadImage={optimizedFirstScreenshot?.src}
 >
   <Navbar />
 
@@ -67,10 +79,10 @@ const languageColors: Record<string, string> = {
       <!-- Filters Sidebar (Column 1) -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
         <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col">
-          <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
+          <h2 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
             <span>⚙️</span>
             <span>Filter Catalog</span>
-          </h3>
+          </h2>
 
           <!-- Text Search -->
           <div class="mb-4">

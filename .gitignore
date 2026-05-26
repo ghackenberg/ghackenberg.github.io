@@ -28,3 +28,6 @@ temp-old-website/
 temp.html
 scratch/
 
+# Lighthouse reports
+lighthouse-reports/
+

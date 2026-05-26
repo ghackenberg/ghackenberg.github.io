@@ -2,11 +2,29 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 const modules = await getCollection("modules");
+
+const optimizedServices = await Promise.all(
+  sortedServices.map(async (service) => {
+    if (service.data.previewImage) {
+      const optimized = await getImage({
+        src: service.data.previewImage,
+        format: "webp",
+        width: 800,
+        quality: 80
+      });
+      return {
+        ...service,
+        optimizedImageSrc: optimized.src
+      };
+    }
+    return service;
+  })
+);
 
 const colorClasses = {
   blue: {
@@ -14,7 +32,7 @@ const colorClasses = {
     border: 'border-brand-blue/20',
     hoverBorder: 'hover:border-brand-blue/40',
     bg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
     glow: 'from-brand-blue to-brand-purple',
     dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)]'
   },
@@ -32,7 +50,7 @@ const colorClasses = {
     border: 'border-brand-purple/20',
     hoverBorder: 'hover:border-brand-purple/40',
     bg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
     glow: 'from-brand-purple to-brand-blue',
     dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]'
   },
@@ -41,7 +59,7 @@ const colorClasses = {
     border: 'border-brand-green/20',
     hoverBorder: 'hover:border-brand-green/40',
     bg: 'bg-brand-green/10 text-brand-green border-brand-green/20',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
     glow: 'from-brand-green to-brand-blue',
     dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)]'
   }
@@ -70,7 +88,7 @@ const colorClasses = {
 
     <!-- Services Detailed List -->
     <div class="space-y-16">
-      {sortedServices.map((service) => {
+      {optimizedServices.map((service) => {
         const classes = colorClasses[service.data.color];
         return (
           <section id={service.id} class="scroll-mt-24 relative group">
@@ -119,7 +137,7 @@ const colorClasses = {
 
                 <!-- Modules List -->
                 <div>
-                  <h4 class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Service Modules</h4>
+                  <h3 class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Service Modules</h3>
                   <div class="flex flex-wrap gap-2.5">
                     {modules
                       .filter(m => m.data.serviceId === service.id)
@@ -180,7 +198,7 @@ const colorClasses = {
                       </linearGradient>
                     </defs>
                     <image 
-                      href={service.data.previewImage.src} 
+                      href={service.optimizedImageSrc || service.data.previewImage.src} 
                       x="0" 
                       y="0" 
                       width={service.data.previewImage.width} 
@@ -251,7 +269,7 @@ const colorClasses = {
               <a 
                 id="direct-mail-link"
                 href="mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry"
-                class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
+                class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-gray-950 font-bold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
               >
                 Open Email Client &rarr;
               </a>

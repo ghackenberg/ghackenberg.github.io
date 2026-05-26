@@ -52,13 +52,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Bridging classroom theory and enterprise requirements
+## Bridging classroom theory and enterprise requirements
 
 Designing technical curricula that keep up with modern software development standards is incredibly challenging. Universities want academic rigor, while corporate partners require direct, hands-on engineering capability.
 
 Leveraging my role as a full computer science professor and department head alongside my corporate background, I advise universities, academies, and business HR departments. I help design modern technical curricula, structure cooperative university-industry frameworks, and set up clear onboarding tracks that turn students into capable junior engineers.
 
-#### What we handle:
+### What we handle:
 *   **Curriculum Development:** Designing course paths, lecture structures, and hands-on grading criteria for software engineering.
 *   **Cooperation Frameworks:** Setting up joint research projects, internship guidelines, and sponsored master's thesis workflows.
 *   **HR Onboarding Paths:** Structuring technical training bootcamps and developer onboarding materials for companies.

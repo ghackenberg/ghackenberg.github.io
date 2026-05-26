@@ -203,19 +203,19 @@ const payload = {
       <div class="flex bg-white/5 border border-white/5 p-1 rounded-xl self-start sm:self-auto">
         <a 
           href="/visualizations/cytoscape" 
-          class={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${type === 'cytoscape' ? 'bg-brand-blue text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'cytoscape' ? 'bg-brand-blue text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
         >
           Cytoscape
         </a>
         <a 
           href="/visualizations/d3" 
-          class={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${type === 'd3' ? 'bg-brand-purple text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'd3' ? 'bg-brand-purple text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
         >
           D3
         </a>
         <a 
           href="/visualizations/sigma" 
-          class={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${type === 'sigma' ? 'bg-brand-green text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'sigma' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
         >
           Sigma
         </a>
@@ -228,7 +228,7 @@ const payload = {
       <div class="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/5 p-5 shrink-0 bg-gray-950/40 relative z-20 flex flex-col justify-between">
         <div class="space-y-6">
           <div>
-            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Graph Legend</h3>
+            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Graph Legend</h2>
             <div class="space-y-2.5">
               <div class="flex items-center space-x-3 text-xs">
                 <span class="w-3.5 h-3.5 rounded-full bg-brand-blue border border-white/20 shadow-lg shadow-brand-blue/20"></span>
@@ -246,7 +246,7 @@ const payload = {
           </div>
 
           <div class="border-t border-white/5 pt-4">
-            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2.5">Interaction</h3>
+            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2.5">Interaction</h2>
             <ul class="space-y-1.5 text-xs text-gray-400 list-disc pl-4 font-normal leading-relaxed">
               <li>Drag nodes to rearrange them</li>
               <li>Pinch/scroll wheel to zoom</li>

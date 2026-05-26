@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "sync": "node scripts/sync.js",
     "generate-assets": "node scripts/generate-assets.js",
+    "lighthouse": "node scripts/run-lighthouse.js",
     "astro": "astro"
   },
   "dependencies": {
@@ -23,6 +24,8 @@
   },
   "devDependencies": {
     "cheerio": "^1.2.0",
+    "chrome-launcher": "^1.2.1",
+    "lighthouse": "^13.3.0",
     "puppeteer": "^25.0.4"
   }
 }

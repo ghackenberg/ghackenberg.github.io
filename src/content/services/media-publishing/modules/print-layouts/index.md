@@ -51,13 +51,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Styling Professional Print and Corporate Identity Materials
+## Styling Professional Print and Corporate Identity Materials
 
 Even in a digital world, physical touchpoints like books, corporate manuals, and business cards carry significant weight. Achieving a premium look requires rigorous grids, clean typography pairings, and a solid understanding of print specifications.
 
 I design cohesive brand identity assets and format high-quality print layouts. Whether you are publishing an academic textbook, designing corporate brochures, or styling premium business cards, I manage the visual design and pre-press setup to ensure your physical materials match your digital excellence.
 
-#### What we handle:
+### What we handle:
 *   **Book Layouts & Typesetting:** Formatting text, lists, code snippets, and custom illustrations for physical books, reports, or brochures.
 *   **Corporate Design:** Developing brand stylesheets, logo applications, typography grids, and digital templates.
 *   **Stationery & Business Cards:** Designing professional stationery, business cards, and flyers that align with your corporate style.

@@ -1,4 +1,6 @@
 ---
+import { getImage } from "astro:assets";
+
 interface Props {
   title: string;
   description?: string;
@@ -18,6 +20,13 @@ const {
   tech, 
   starCount = 0 
 } = Astro.props;
+
+const optimizedScreenshot = screenshot ? await getImage({
+  src: screenshot,
+  format: 'webp',
+  width: 480,
+  quality: 80
+}) : null;
 
 // Language colors from courses page
 const languageColors: Record<string, string> = {
@@ -58,7 +67,7 @@ const languageColors: Record<string, string> = {
           </linearGradient>
         </defs>
         <image 
-          href={screenshot.src} 
+          href={optimizedScreenshot ? optimizedScreenshot.src : (screenshot.src || screenshot)} 
           x="0" 
           y="0" 
           width="160" 

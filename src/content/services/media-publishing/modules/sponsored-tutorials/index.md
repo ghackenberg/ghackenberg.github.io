@@ -48,13 +48,13 @@ previewImage: "./preview.png"
 pubDate: 2026-05-25
 ---
 
-### Connecting Developers with High-Value Tech Tooling
+## Connecting Developers with High-Value Tech Tooling
 
 Building developer trust requires technical depth and high-quality educational materials that show, rather than tell.
 
 I partner with software providers, cloud platforms, database developers, and developer-tooling startups to create highly polished, educational video content. By combining senior engineering expertise with university-level teaching standards, I showcase your tool's real-world value to a dedicated developer audience.
 
-#### What we handle:
+### What we handle:
 *   **Sponsored Walkthroughs:** Custom video tutorials on YouTube showing developers how to build production-ready projects with your tooling.
 *   **Developer Experience Audits:** In-depth reviews of your API or SDK from a senior developer's perspective, highlighting DX improvements.
 *   **Co-Branded Educational Campaigns:** Custom visual animations and tutorial series designed to explain your core technical features simply.

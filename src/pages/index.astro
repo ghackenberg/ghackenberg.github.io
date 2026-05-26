@@ -13,8 +13,8 @@ import { getCollection } from "astro:content";
 const optimizedProfile = await getImage({
   src: profileImage,
   format: "webp",
-  width: 960,
-  quality: 85
+  width: 600,
+  quality: 80
 });
 
 const projects = await getCollection("projects");
@@ -93,6 +93,7 @@ const professionalInterests = [
 <Layout 
   title="Dr. Georg Hackenberg | Professor & Software Engineer" 
   description="Explore the portfolio, academic lectures, research publications, and computer science insights of Dr. Georg Hackenberg, Professor for Industrial Informatics."
+  preloadImage={optimizedProfile.src}
 >
   <!-- Navbar -->
   <Navbar />
@@ -128,7 +129,7 @@ const professionalInterests = [
           <div class="flex flex-wrap gap-4">
             <a 
               href="#projects" 
-              class="px-6 py-3.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105"
+              class="px-6 py-3.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-gray-950 font-bold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105"
             >
               Explore Projects
             </a>

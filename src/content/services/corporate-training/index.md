@@ -11,7 +11,7 @@ previewImage: "./preview.png"
 pubDate: 2026-05-24
 ---
 
-### Academic Expertise Tailored for Professional Teams
+## Academic Expertise Tailored for Professional Teams
 
 With my double role as a Full Professor and Head of Computer Science alongside my industry background, I offer highly engaging, structured, and scientifically rigorous training programs for businesses and educational institutions.
 

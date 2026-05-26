@@ -1,4 +1,6 @@
 ---
+import { getImage } from "astro:assets";
+
 interface Props {
   id: string;
   title: string;
@@ -18,6 +20,13 @@ const {
   tags, 
   activeTag 
 } = Astro.props;
+
+const optimizedIcon = icon ? await getImage({
+  src: icon,
+  format: 'webp',
+  width: 192,
+  quality: 80
+}) : null;
 ---
 
 <article class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row gap-6 items-start group relative cursor-pointer hover:border-brand-blue/30 h-full w-full">
@@ -37,7 +46,7 @@ const {
           </linearGradient>
         </defs>
         <image 
-          href={typeof icon === 'string' ? icon : (icon?.src || '')} 
+          href={optimizedIcon ? optimizedIcon.src : (typeof icon === 'string' ? icon : (icon?.src || ''))} 
           x="0" 
           y="0" 
           width="100" 
