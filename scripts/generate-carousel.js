@@ -83,6 +83,13 @@ async function main() {
     await page.goto(carouselUrl, { waitUntil: 'networkidle2' });
     await delay(1500); // Wait for fonts and Tailwind to compile
 
+    // Capture cover screenshot as preview image (image.jpg)
+    await page.setViewport({ width: 1080, height: 1080 });
+    const coverShotPath = path.join(postDir, 'image.jpg');
+    console.log(`Capturing carousel cover preview image...`);
+    await page.screenshot({ path: coverShotPath, type: 'jpeg', quality: 90 });
+    console.log(`Saved cover preview image: image.jpg`);
+
     console.log(`Printing LinkedIn PDF Carousel to: ${path.relative(process.cwd(), outputPdfPath)}...`);
     await page.pdf({
       path: outputPdfPath,
@@ -93,8 +100,9 @@ async function main() {
     });
 
     await browser.close();
-    console.log(`\n✅ Carousel PDF generated successfully!`);
-    console.log(`Saved: ${path.relative(process.cwd(), outputPdfPath)}`);
+    console.log(`\n✅ Carousel PDF and preview image generated successfully!`);
+    console.log(`Saved PDF: ${path.relative(process.cwd(), outputPdfPath)}`);
+    console.log(`Saved image: ${path.relative(process.cwd(), coverShotPath)}`);
 
   } catch (err) {
     console.error("❌ Error generating carousel:", err);
