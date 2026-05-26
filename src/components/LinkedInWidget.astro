@@ -117,9 +117,9 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
               href={post.url || "https://www.linkedin.com/in/georghackenberg/recent-activity/all/"}
               target="_blank" 
               rel="noopener noreferrer"
-              class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-purple/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0 sm:p-1 sm:pr-4"
+              class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-brand-purple/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0"
             >
-              <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-28 md:w-32 shrink-0 bg-gray-900 light:bg-slate-100 border-b sm:border-b-0 sm:border-r border-white/5 group-hover/item:border-brand-purple/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-t-none sm:rounded-l-xl">
+              <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-28 md:w-32 shrink-0 bg-gray-900 light:bg-slate-100 border-b sm:border-b-0 sm:border-r border-white/5 group-hover/item:border-brand-purple/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl">
                 {post.image ? (
                   <>
                     <Image 
@@ -140,7 +140,7 @@ const buildDateStr = new Date().toLocaleDateString("en-US", {
                   </>
                 )}
               </div>
-              <div class="flex-grow min-w-0 p-4 sm:py-3.5 sm:px-0 sm:pl-4 sm:pr-2.5 select-none">
+              <div class="flex-grow min-w-0 p-4 sm:py-3.5 sm:pl-4 sm:pr-4 select-none">
                 <p class="text-xs sm:text-sm font-normal text-gray-200 group-hover/item:text-brand-purple transition-colors line-clamp-3 font-sans leading-relaxed">
                   {post.text}
                 </p>
