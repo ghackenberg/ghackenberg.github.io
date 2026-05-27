@@ -8,4 +8,11 @@ accentColor: "blue"
 order: 1
 repoName: "caddrive"
 screenshot: "./preview.png"
+screenshots:
+  - image: "./screenshot1.png"
+    title: "CADdrive Home Page"
+    description: "Welcome screen of the web-based collaborative CAD platform."
+  - image: "./screenshot2.png"
+    title: "Interactive CAD Overview"
+    description: "Detailed description of school and university collaborative project tools."
 ---

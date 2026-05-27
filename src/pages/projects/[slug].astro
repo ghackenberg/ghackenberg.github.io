@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import { getCollection, getEntry, render } from "astro:content";
+import { getImage } from "astro:assets";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -13,6 +14,29 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+
+const optimizedMainScreenshot = project.data.screenshot ? await getImage({
+  src: project.data.screenshot,
+  format: 'webp',
+  width: 1200,
+  quality: 85
+}) : null;
+
+const optimizedScreenshots = await Promise.all(
+  (project.data.screenshots || []).map(async (shot) => {
+    const opt = await getImage({
+      src: shot.image,
+      format: 'webp',
+      width: 1000,
+      quality: 85
+    });
+    return {
+      src: opt.src,
+      title: shot.title,
+      description: shot.description
+    };
+  })
+);
 
 let repo = null;
 if (project.data.repoName) {
@@ -89,7 +113,7 @@ const formattedDate = lastUpdated
 <Layout 
   title={`${project.data.title} | Software Projects | Dr. Georg Hackenberg`} 
   description={project.data.description}
-  image={project.data.screenshot?.src}
+  image={optimizedMainScreenshot?.src}
 >
   <Navbar />
 
@@ -140,6 +164,55 @@ const formattedDate = lastUpdated
             </div>
           )}
         </section>
+
+        <!-- Screenshots Gallery Section -->
+        {optimizedScreenshots && optimizedScreenshots.length > 0 && (
+          <section class="space-y-6">
+            <h2 class="text-2xl font-bold tracking-tight flex items-center space-x-2.5">
+              <span>📸</span>
+              <span>Screenshots & Interface</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {optimizedScreenshots.map((shot, index) => (
+                <div 
+                  class={`glass-card rounded-2xl border border-white/5 overflow-hidden group cursor-pointer relative transition-all duration-300 hover:scale-[1.02] hover:border-brand-${accentColor}/30 hover:shadow-lg hover:shadow-brand-${accentColor}/5 flex flex-col`}
+                  data-screenshot-index={index}
+                >
+                  <!-- Image Area -->
+                  <div class="aspect-video w-full overflow-hidden relative bg-black/40">
+                    <img 
+                      src={shot.src} 
+                      alt={shot.title} 
+                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <!-- Hover Zoom Indicator -->
+                    <div class="absolute inset-0 bg-black/50 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                      <div class="p-3 rounded-full bg-white/10 border border-white/20 text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.604 10.604zM10.5 7.5v6m3-3h-6"></path>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Title & Description Area -->
+                  <div class="p-5 border-t border-white/5 flex-grow flex flex-col justify-between">
+                    <div>
+                      <h3 class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans">
+                        {shot.title}
+                      </h3>
+                      {shot.description && (
+                        <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed font-sans">
+                          {shot.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       <!-- Sidebar Metadata & GitHub Repo (Column 2) -->
@@ -243,7 +316,166 @@ const formattedDate = lastUpdated
       </div>
     </div>
   </main>
+
+  <!-- Lightbox Modal -->
+  <div 
+    id="lightbox-modal" 
+    class="fixed inset-0 z-50 flex flex-col justify-between p-4 md:p-8 bg-black/95 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 hidden"
+    role="dialog"
+    aria-modal="true"
+  >
+    <!-- Top bar (Close button & counter) -->
+    <div class="flex justify-between items-center w-full z-10">
+      <div id="lightbox-counter" class="text-xs font-mono text-gray-400">
+        0 / 0
+      </div>
+      <button 
+        id="lightbox-close" 
+        class="p-2.5 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+        aria-label="Close lightbox"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Main View Area (Image container) -->
+    <div class="flex items-center justify-center flex-grow w-full my-2 relative overflow-hidden">
+      <div class="w-full h-full flex items-center justify-center select-none">
+        <img 
+          id="lightbox-image" 
+          src="" 
+          alt="" 
+          class="max-w-[85vw] max-h-[60vh] md:max-h-[70vh] object-contain rounded-lg shadow-2xl scale-95 opacity-0 transition-all duration-300"
+        />
+      </div>
+    </div>
+
+    <!-- Navigation Buttons (Absolute children of the modal) -->
+    <!-- Prev Button -->
+    <button 
+      id="lightbox-prev" 
+      class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/60 hover:bg-black/80 md:bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+      aria-label="Previous image"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
+      </svg>
+    </button>
+
+    <!-- Next Button -->
+    <button 
+      id="lightbox-next" 
+      class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/60 hover:bg-black/80 md:bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+      aria-label="Next image"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+      </svg>
+    </button>
+
+    <!-- Bottom Captions Area -->
+    <div class="w-full text-center max-w-2xl mx-auto z-10 pb-4">
+      <h4 id="lightbox-title" class="text-base md:text-lg font-bold mb-1 font-sans"></h4>
+      <p id="lightbox-desc" class="text-xs md:text-sm text-gray-400 max-h-20 overflow-y-auto font-sans"></p>
+    </div>
+  </div>
 </Layout>
+
+<script define:vars={{ optimizedScreenshots }}>
+  document.addEventListener("DOMContentLoaded", () => {
+    let currentIndex = 0;
+    const modal = document.getElementById("lightbox-modal");
+    const img = document.getElementById("lightbox-image");
+    const title = document.getElementById("lightbox-title");
+    const desc = document.getElementById("lightbox-desc");
+    const counter = document.getElementById("lightbox-counter");
+    const closeBtn = document.getElementById("lightbox-close");
+    const prevBtn = document.getElementById("lightbox-prev");
+    const nextBtn = document.getElementById("lightbox-next");
+
+    if (!modal || !img || !optimizedScreenshots || optimizedScreenshots.length === 0) return;
+
+    function openLightbox(index) {
+      currentIndex = index;
+      updateLightbox();
+      modal.classList.remove("hidden");
+      setTimeout(() => {
+        modal.classList.remove("opacity-0", "pointer-events-none");
+        modal.classList.add("opacity-100", "pointer-events-auto");
+      }, 10);
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+      modal.classList.remove("opacity-100", "pointer-events-auto");
+      modal.classList.add("opacity-0", "pointer-events-none");
+      document.body.style.overflow = "";
+      setTimeout(() => {
+        modal.classList.add("hidden");
+        img.src = "";
+        img.classList.remove("scale-100", "opacity-100");
+        img.classList.add("scale-95", "opacity-0");
+      }, 300);
+    }
+
+    function updateLightbox() {
+      const current = optimizedScreenshots[currentIndex];
+      if (!current) return;
+
+      img.classList.remove("scale-100", "opacity-100");
+      img.classList.add("scale-95", "opacity-0");
+
+      setTimeout(() => {
+        img.src = current.src;
+        img.alt = current.title;
+        title.textContent = current.title;
+        desc.textContent = current.description || "";
+        counter.textContent = `${currentIndex + 1} / ${optimizedScreenshots.length}`;
+
+        setTimeout(() => {
+          img.classList.remove("scale-95", "opacity-0");
+          img.classList.add("scale-100", "opacity-100");
+        }, 50);
+      }, 150);
+    }
+
+    function prevImage() {
+      currentIndex = (currentIndex - 1 + optimizedScreenshots.length) % optimizedScreenshots.length;
+      updateLightbox();
+    }
+
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % optimizedScreenshots.length;
+      updateLightbox();
+    }
+
+    document.querySelectorAll("[data-screenshot-index]").forEach(card => {
+      card.addEventListener("click", () => {
+        const index = parseInt(card.getAttribute("data-screenshot-index") || "0", 10);
+        openLightbox(index);
+      });
+    });
+
+    closeBtn.addEventListener("click", closeLightbox);
+    prevBtn.addEventListener("click", (e) => { e.stopPropagation(); prevImage(); });
+    nextBtn.addEventListener("click", (e) => { e.stopPropagation(); nextImage(); });
+
+    document.addEventListener("keydown", (e) => {
+      if (modal.classList.contains("hidden")) return;
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") prevImage();
+      else if (e.key === "ArrowRight") nextImage();
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (!e.target.closest("img") && !e.target.closest("button") && !e.target.closest("#lightbox-desc")) {
+        closeLightbox();
+      }
+    });
+  });
+</script>
 
 <style>
   /* Markdown content layout styling */
@@ -294,5 +526,49 @@ const formattedDate = lastUpdated
     margin-bottom: 1.5rem;
     color: var(--color-text-main);
     transition: color 0.5s ease;
+  }
+
+  /* Lightbox styling */
+  #lightbox-modal {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #lightbox-modal.opacity-0 {
+    opacity: 0;
+  }
+  #lightbox-modal.opacity-100 {
+    opacity: 1;
+  }
+  #lightbox-image {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+  }
+  #lightbox-image.scale-95 {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  #lightbox-image.scale-100 {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  /* Lightbox text and element readability in all modes */
+  #lightbox-modal h4,
+  #lightbox-modal #lightbox-title {
+    color: #ffffff !important;
+  }
+  #lightbox-modal p,
+  #lightbox-modal #lightbox-desc {
+    color: #9ca3af !important;
+  }
+  #lightbox-modal #lightbox-counter {
+    color: #9ca3af !important;
+  }
+  #lightbox-modal button {
+    color: #9ca3af !important;
+  }
+  #lightbox-modal button:hover {
+    color: #ffffff !important;
+  }
+  #lightbox-modal svg {
+    color: inherit !important;
   }
 </style>

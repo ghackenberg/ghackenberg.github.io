@@ -8,4 +8,11 @@ accentColor: "blue"
 order: 3
 repoName: "delta-dynamics"
 screenshot: "./preview.png"
+screenshots:
+  - image: "./screenshot1.png"
+    title: "Ecosystem Simulation View"
+    description: "Low-poly terrain visualization with active resource flows and LLM-driven AI agents."
+  - image: "./screenshot2.png"
+    title: "Terrain Editor UI"
+    description: "Interactive tools to manipulate topography, water flow vectors, and simulation parameters."
 ---
