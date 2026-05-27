@@ -382,9 +382,17 @@ if (pubDate) {
           </div>
           
           <!-- Footer Bottom -->
-          <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-            <p>&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
-            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2">
+          <div class="pt-8 flex flex-col lg:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+            <div class="flex flex-col items-center lg:items-start gap-1">
+              <p>&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
+              <p class="text-[10px] text-gray-500/70 mt-0.5">
+                Built with 
+                <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors font-medium">Astro</a>, 
+                <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors font-medium">Tailwind CSS</a> & 
+                <span class="font-semibold bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow bg-clip-text text-transparent">Antigravity</span>
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center justify-center lg:justify-end gap-x-6 gap-y-2">
               <a href="/impressum" class="hover:text-white transition-colors">Impressum</a>
               <a href="/datenschutz" class="hover:text-white transition-colors">Datenschutz</a>
               <a href="https://github.com/ghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="GitHub">GitHub</a>
