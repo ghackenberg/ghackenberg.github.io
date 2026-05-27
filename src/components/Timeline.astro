@@ -209,8 +209,8 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
 ---
 
 <div data-timeline-container class="relative space-y-8 py-2">
-  <!-- Continuous background white line -->
-  <div class="absolute left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-white/10 light:bg-gray-400 z-0 pointer-events-none rounded-full"></div>
+  <!-- Continuous background line -->
+  <div class="absolute left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-white/10 light:bg-gray-700 z-0 pointer-events-none rounded-full"></div>
   {companyGroups.map((group, index) => {
     const isLast = index === companyGroups.length - 1;
     // Determine the SVG logo or image to render
@@ -532,7 +532,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
       // 3. Build gradient stops
       const stops: string[] = [];
       const isLight = document.documentElement.classList.contains('light');
-      const fadeColor = isLight ? 'rgba(15, 23, 42, 0.6)' : 'rgba(255, 255, 255, 0.8)';
+      const fadeColor = isLight ? 'rgba(15, 23, 42, 0.2)' : 'rgba(255, 255, 255, 0.8)';
       
       if (!isFirstCard) {
         // Start with fadeColor at top
