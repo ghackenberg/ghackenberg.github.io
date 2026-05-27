@@ -1,4 +1,6 @@
 ---
+import { getImage } from "astro:assets";
+
 interface Props {
   title: string;
   description: string;
@@ -16,6 +18,13 @@ const {
   badgeColor, 
   screenshot 
 } = Astro.props;
+
+const optimizedScreenshot = screenshot ? await getImage({
+  src: screenshot,
+  format: 'webp',
+  width: 640,
+  quality: 80
+}) : null;
 ---
 
 <div class="glass-card rounded-2xl border border-white/5 overflow-hidden flex flex-col h-full group relative cursor-pointer hover:border-brand-green/30">
@@ -42,7 +51,7 @@ const {
           </linearGradient>
         </defs>
         <image 
-          href={screenshot.src} 
+          href={optimizedScreenshot ? optimizedScreenshot.src : ''} 
           x="0" 
           y="0" 
           width="160" 

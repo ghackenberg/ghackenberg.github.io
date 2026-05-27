@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import { getCollection } from "astro:content";
+import { getImage } from "astro:assets";
 
 export async function getStaticPaths() {
   const visualizations = await getCollection("visualizations");
@@ -12,6 +13,13 @@ export async function getStaticPaths() {
 }
 
 const { type, title, screenshot } = Astro.props;
+
+const optimizedScreenshot = screenshot ? await getImage({
+  src: screenshot,
+  format: 'webp',
+  width: 1200,
+  quality: 85
+}) : null;
 
 const posts = await getCollection("posts");
 const publications = await getCollection("publications");
@@ -179,7 +187,7 @@ const payload = {
 <Layout 
   title={`${title} Graph Visualization | Dr. Georg Hackenberg`} 
   description={`An interactive network diagram mapping the connections between blog posts, academic publications, and tags on Dr. Georg Hackenberg's website using ${title}.`}
-  image={screenshot?.src}
+  image={optimizedScreenshot?.src}
 >
   <Navbar />
 
