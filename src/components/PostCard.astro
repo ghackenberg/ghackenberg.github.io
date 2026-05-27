@@ -94,7 +94,7 @@ const optimizedIcon = icon ? await getImage({
       ></span>
     </div>
     
-    <h2 class="text-xl font-bold text-white mb-3 group-hover:text-brand-blue transition-colors">
+    <h2 class="text-xl font-bold text-gray-100 mb-3 group-hover:text-brand-blue transition-colors">
       <a href={`/posts/${id}`} class="after:absolute after:inset-0 after:z-10">
         {title}
       </a>
@@ -110,7 +110,7 @@ const optimizedIcon = icon ? await getImage({
       {tags.map(tag => (
         <a 
           href={`/posts/tags/${tag}`}
-          class={`text-xs font-medium ${tag === activeTag ? 'text-brand-blue' : 'text-gray-500 hover:text-white'} transition-colors relative z-20`}
+          class={`text-xs font-medium ${tag === activeTag ? 'text-brand-blue' : 'text-gray-500 hover:text-gray-100'} transition-colors relative z-20`}
         >
           #{tag}
         </a>

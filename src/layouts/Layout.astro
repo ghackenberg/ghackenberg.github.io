@@ -140,8 +140,10 @@ if (pubDate) {
       </>
     )}
 
-    <!-- Theme Detection and Initialization (avoid FOUC) -->
     <script is:inline>
+      // Add no-transitions class to prevent theme transition animation on load
+      document.documentElement.classList.add('no-transitions');
+
       (function() {
         const urlParams = new URLSearchParams(window.location.search);
         const themeParam = urlParams.get('theme');
@@ -167,6 +169,52 @@ if (pubDate) {
             document.documentElement.classList.remove('light');
           }
         }
+      })();
+
+      // Remove no-transitions once the page is loaded, stylesheets are applied, and laid out
+      (function() {
+        function enableTransitions() {
+          if (!document.documentElement.classList.contains('no-transitions')) return;
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              document.documentElement.classList.remove('no-transitions');
+            });
+          });
+        }
+
+        // Wait for stylesheets to load
+        const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+        let pending = links.length;
+
+        if (pending === 0) {
+          // If in development mode, style tags might be injected dynamically, so add a small delay
+          setTimeout(enableTransitions, 100);
+        } else {
+          links.forEach(link => {
+            try {
+              if (link.sheet) {
+                pending--;
+                return;
+              }
+            } catch (e) {}
+
+            link.addEventListener('load', () => {
+              pending--;
+              if (pending === 0) enableTransitions();
+            });
+            link.addEventListener('error', () => {
+              pending--;
+              if (pending === 0) enableTransitions();
+            });
+          });
+          if (pending === 0) {
+            enableTransitions();
+          }
+        }
+
+        // Fallbacks to guarantee transition enablement
+        window.addEventListener('load', enableTransitions);
+        setTimeout(enableTransitions, 1500);
       })();
     </script>
   </head>

@@ -52,7 +52,7 @@ const getPageUrl = (pageNum: number | string) => {
       <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-6 tracking-wider uppercase">
         Digital Log
       </span>
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
         Computer Science <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600">Blog</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
@@ -64,7 +64,7 @@ const getPageUrl = (pageNum: number | string) => {
       <!-- Tag Filter Cloud -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
         <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col max-h-[300px] lg:max-h-[calc(100vh-10rem)]">
-          <h2 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
+          <h2 class="text-lg font-bold mb-4 flex items-center space-x-2 shrink-0">
             <span>🏷️</span>
             <span>Tags</span>
           </h2>
@@ -73,7 +73,7 @@ const getPageUrl = (pageNum: number | string) => {
               type="text" 
               id="tag-search" 
               placeholder="Search tags..." 
-              class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 pl-8 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
+              class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
             />
             <span class="absolute left-2.5 top-2 text-[10px] text-gray-500">🔍</span>
           </div>
@@ -143,7 +143,7 @@ const getPageUrl = (pageNum: number | string) => {
                 const isCurrent = num === page.currentPage;
                 return isCurrent ? (
                   <span 
-                    class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-brand-blue to-brand-purple shadow-lg shadow-brand-blue/20 cursor-default select-none min-w-[38px] text-center"
+                    class="px-3.5 py-2 rounded-xl text-sm font-bold text-gray-950 bg-gradient-to-r from-brand-blue to-brand-purple shadow-lg shadow-brand-blue/20 cursor-default select-none min-w-[38px] text-center"
                     aria-current="page"
                   >
                     {num}

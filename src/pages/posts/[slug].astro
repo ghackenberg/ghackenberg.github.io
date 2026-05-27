@@ -63,7 +63,7 @@ const seoDescription = post.data.description
         </time>
       </div>
 
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
         {post.data.title}
       </h1>
 
@@ -90,7 +90,7 @@ const seoDescription = post.data.description
     <!-- Related Posts -->
     {relatedPosts.length > 0 && (
       <section class="border-t border-white/5 pt-16">
-        <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">
+        <h2 class="text-2xl font-bold mb-8 tracking-tight">
           You might also be interested in
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -104,7 +104,7 @@ const seoDescription = post.data.description
                     day: "numeric"
                   })}
                 </time>
-                <h3 class="text-sm font-bold text-white group-hover:text-brand-blue transition-colors line-clamp-2 mb-2">
+                <h3 class="text-sm font-bold group-hover:text-brand-blue transition-colors line-clamp-2 mb-2">
                   {p.data.title}
                 </h3>
               </div>
@@ -125,13 +125,14 @@ const seoDescription = post.data.description
   .post-body :global(h2) {
     font-size: 1.75rem;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--color-text-heading);
     margin-top: 3rem;
     margin-bottom: 1.25rem;
     letter-spacing: -0.02em;
     line-height: 1.3;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--color-border-subtle);
     padding-bottom: 0.5rem;
+    transition: color 0.5s ease, border-color 0.5s ease;
   }
   .post-body :global(h2:first-child) {
     margin-top: 0;
@@ -139,17 +140,19 @@ const seoDescription = post.data.description
   .post-body :global(h3) {
     font-size: 1.375rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--color-text-heading);
     margin-top: 2.25rem;
     margin-bottom: 1rem;
     letter-spacing: -0.01em;
     line-height: 1.4;
+    transition: color 0.5s ease;
   }
   .post-body :global(p) {
     margin-bottom: 1.5rem;
     line-height: 1.8;
-    color: #d1d5db; /* gray-300 */
+    color: var(--color-text-main);
     font-size: 1.0625rem;
+    transition: color 0.5s ease;
   }
   .post-body :global(p:last-child) {
     margin-bottom: 0;
@@ -163,12 +166,13 @@ const seoDescription = post.data.description
     color: #60a5fa;
   }
   .post-body :global(strong) {
-    color: #ffffff;
+    color: var(--color-text-heading);
     font-weight: 700;
+    transition: color 0.5s ease;
   }
   .post-body :global(img) {
     border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-border-medium);
     max-width: 100%;
     height: auto;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
@@ -179,6 +183,9 @@ const seoDescription = post.data.description
   .post-body :global(img:hover) {
     border-color: rgba(255, 255, 255, 0.2);
     transform: scale(1.01);
+  }
+  :global(.light) .post-body :global(img:hover) {
+    border-color: rgba(15, 23, 42, 0.2);
   }
   /* Center block images */
   .post-body :global(p > img:only-child),
@@ -191,15 +198,18 @@ const seoDescription = post.data.description
     width: 100%;
     aspect-ratio: 16 / 9;
     border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-border-medium);
     margin: 2.5rem auto;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
     background: rgba(17, 24, 39, 0.4);
     display: block;
   }
+  :global(.light) .post-body :global(iframe) {
+    background: rgba(255, 255, 255, 0.4);
+  }
   .post-body :global(pre) {
     background: rgba(3, 7, 18, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-border-subtle);
     border-radius: 0.75rem;
     padding: 1.25rem;
     overflow-x: auto;
@@ -208,17 +218,23 @@ const seoDescription = post.data.description
     margin-bottom: 1.5rem;
     color: #e5e7eb;
   }
+  :global(.light) .post-body :global(pre) {
+    background: rgba(255, 255, 255, 0.6);
+    color: #1e293b;
+  }
   .post-body :global(ul) {
     list-style-type: disc;
     padding-left: 1.5rem;
     margin-bottom: 1.5rem;
-    color: #d1d5db;
+    color: var(--color-text-main);
+    transition: color 0.5s ease;
   }
   .post-body :global(ol) {
     list-style-type: decimal;
     padding-left: 1.5rem;
     margin-bottom: 1.5rem;
-    color: #d1d5db;
+    color: var(--color-text-main);
+    transition: color 0.5s ease;
   }
   .post-body :global(li) {
     margin-bottom: 0.5rem;
@@ -232,20 +248,28 @@ const seoDescription = post.data.description
     background: rgba(37, 49, 78, 0.25);
     border-radius: 1rem;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--color-border-subtle);
+  }
+  :global(.light) .post-body :global(table) {
+    background: rgba(15, 23, 42, 0.03);
   }
   .post-body :global(th) {
     background: rgba(255, 255, 255, 0.05);
     padding: 0.875rem 1.25rem;
     text-align: left;
     font-weight: 700;
-    color: #ffffff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-heading);
+    border-bottom: 1px solid var(--color-border-medium);
+    transition: color 0.5s ease, border-color 0.5s ease;
+  }
+  :global(.light) .post-body :global(th) {
+    background: rgba(15, 23, 42, 0.05);
   }
   .post-body :global(td) {
     padding: 0.875rem 1.25rem;
-    color: #d1d5db;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--color-text-main);
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: color 0.5s ease, border-color 0.5s ease;
   }
   .post-body :global(tr:last-child td) {
     border-bottom: none;

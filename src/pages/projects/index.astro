@@ -29,7 +29,7 @@ const allTags = Array.from(tagsSet).sort();
       <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-6 tracking-wider uppercase">
         Tools & Systems
       </span>
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
         Software <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600">Projects</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
@@ -41,7 +41,7 @@ const allTags = Array.from(tagsSet).sort();
       <!-- Filters Sidebar (Column 1) -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
         <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col">
-          <h2 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
+          <h2 class="text-lg font-bold mb-4 flex items-center space-x-2 shrink-0">
             <span>⚙️</span>
             <span>Filter Projects</span>
           </h2>
@@ -54,7 +54,7 @@ const allTags = Array.from(tagsSet).sort();
                 type="text" 
                 id="project-search" 
                 placeholder="Search projects..." 
-                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 pl-8 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
+                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
               />
               <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
             </div>
@@ -65,7 +65,7 @@ const allTags = Array.from(tagsSet).sort();
             <label for="tag-filter" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Filter by Tag</label>
             <select 
               id="tag-filter" 
-              class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-blue/50 transition-all duration-200 cursor-pointer"
+              class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-blue/50 transition-all duration-200 cursor-pointer"
             >
               <option value="all" class="bg-gray-900">All Tags</option>
               {allTags.map(tag => (
@@ -116,58 +116,20 @@ const allTags = Array.from(tagsSet).sort();
 </Layout>
 
 <script>
-  let searchQuery = '';
-  let activeTag = 'all';
+  import { ClientListFilter } from "../../scripts/filter";
 
-  const searchInput = document.getElementById('project-search') as HTMLInputElement | null;
-  const tagSelect = document.getElementById('tag-filter') as HTMLSelectElement | null;
-  const projectWrappers = document.querySelectorAll('.project-wrapper');
-  const noProjectsMessage = document.getElementById('no-projects-message');
-
-  function updateFilters() {
-    let visibleCount = 0;
-
-    projectWrappers.forEach(wrapper => {
-      const title = wrapper.getAttribute('data-title') || '';
-      const tagline = wrapper.getAttribute('data-tagline') || '';
-      const desc = wrapper.getAttribute('data-desc') || '';
-      const tags = wrapper.getAttribute('data-tags') || '';
-
-      const matchesSearch = 
-        title.includes(searchQuery) || 
-        tagline.includes(searchQuery) || 
-        desc.includes(searchQuery) || 
-        tags.includes(searchQuery);
-
-      const matchesTag = activeTag === 'all' || tags.includes(activeTag.toLowerCase());
-
-      if (matchesSearch && matchesTag) {
-        wrapper.classList.remove('hidden');
-        visibleCount++;
-      } else {
-        wrapper.classList.add('hidden');
+  new ClientListFilter({
+    itemSelector: ".project-wrapper",
+    searchFieldSelector: "#project-search",
+    searchDataAttributes: ["data-title", "data-tagline", "data-desc", "data-tags"],
+    dropdownFilters: [
+      {
+        selectSelector: "#tag-filter",
+        dataAttribute: "data-tags",
+        matchType: "includes"
       }
-    });
-
-    if (noProjectsMessage) {
-      if (visibleCount === 0) {
-        noProjectsMessage.classList.remove('hidden');
-      } else {
-        noProjectsMessage.classList.add('hidden');
-      }
-    }
-  }
-
-  // Bind Search Input
-  searchInput?.addEventListener('input', (e) => {
-    searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
-    updateFilters();
-  });
-
-  // Bind Tag Filter dropdown
-  tagSelect?.addEventListener('change', (e) => {
-    activeTag = (e.target as HTMLSelectElement).value;
-    updateFilters();
+    ],
+    noResultsSelector: "#no-projects-message"
   });
 </script>
 

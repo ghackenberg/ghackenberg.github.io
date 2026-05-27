@@ -29,7 +29,7 @@ const navItems = [
       <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow group-hover:opacity-80 transition-opacity">
         GH.
       </span>
-      <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-white transition-colors nav-logo-name">
+      <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors nav-logo-name">
         Georg Hackenberg
       </span>
     </a>
@@ -44,7 +44,7 @@ const navItems = [
             class={`relative py-1 text-xs nav:text-sm font-medium transition-all duration-200 flex items-center gap-1.5 hover:scale-105 ${
               active 
                 ? "text-brand-blue font-semibold" 
-                : "text-gray-400 hover:text-white"
+                : "text-gray-400 hover:text-gray-100"
             }`}
           >
             <span>{item.label}</span>
@@ -87,7 +87,7 @@ const navItems = [
     <div class="flex items-center space-x-2 nav:hidden">
       <button 
         id="theme-toggle-mobile" 
-        class="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-all cursor-pointer mr-1" 
+        class="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all cursor-pointer mr-1" 
         aria-label="Toggle theme"
       >
         <svg class="w-4.5 h-4.5 hidden light:block text-slate-600 hover:text-slate-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -101,7 +101,7 @@ const navItems = [
       <!-- Mobile Menu Button -->
       <button 
         id="mobile-menu-btn" 
-        class="text-gray-400 hover:text-white focus:outline-none p-1"
+        class="text-gray-400 hover:text-gray-100 focus:outline-none p-1"
         aria-label="Toggle Menu"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -127,7 +127,7 @@ const navItems = [
           class={`text-base font-medium transition-colors py-1 flex items-center justify-between ${
             active 
               ? "text-brand-blue font-semibold border-l-2 border-brand-blue pl-3 -ml-3" 
-              : "text-gray-300 hover:text-white"
+              : "text-gray-300 hover:text-gray-100"
           }`}
         >
           <span>{item.label}</span>

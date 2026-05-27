@@ -110,7 +110,7 @@ function getPublisherDomain(url: string | undefined): string {
 
   <!-- Details -->
   <div class="flex-grow flex flex-col h-full w-full">
-    <h3 class="relative pr-6 text-lg font-bold text-white mb-2 group-hover:text-brand-purple transition-colors leading-snug">
+    <h3 class="relative pr-6 text-lg font-bold text-gray-100 mb-2 group-hover:text-brand-purple transition-colors leading-snug">
       {title}
       <span 
         class="unread-dot hidden absolute top-[0.625em] -translate-y-1/2 right-0 w-2.5 h-2.5 rounded-full bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]" 
@@ -132,7 +132,7 @@ function getPublisherDomain(url: string | undefined): string {
       {tags.map(tag => (
         <a 
           href={`/publications/tags/${tag}`}
-          class={`text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 ${tag === activeTag ? 'text-brand-purple border-brand-purple/30 bg-brand-purple/5' : 'text-gray-400 hover:text-white hover:border-white/10'} transition-all duration-200 relative z-20`}
+          class={`text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 ${tag === activeTag ? 'text-brand-purple border-brand-purple/30 bg-brand-purple/5' : 'text-gray-400 hover:text-gray-100 hover:border-white/10'} transition-all duration-200 relative z-20`}
         >
           #{tag}
         </a>

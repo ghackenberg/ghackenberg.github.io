@@ -67,7 +67,7 @@ const getPageUrl = (pageNum: number | string) => {
       <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-6 tracking-wider uppercase">
         Tag Filter
       </span>
-      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-6">
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-6">
         Posts tagged <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600">#{tag}</span>
       </h1>
     </div>
@@ -119,7 +119,7 @@ const getPageUrl = (pageNum: number | string) => {
               const isCurrent = num === page.currentPage;
               return isCurrent ? (
                 <span 
-                  class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-brand-blue to-brand-purple shadow-lg shadow-brand-blue/20 cursor-default select-none min-w-[38px] text-center"
+                  class="px-3.5 py-2 rounded-xl text-sm font-bold text-gray-950 bg-gradient-to-r from-brand-blue to-brand-purple shadow-lg shadow-brand-blue/20 cursor-default select-none min-w-[38px] text-center"
                   aria-current="page"
                 >
                   {num}

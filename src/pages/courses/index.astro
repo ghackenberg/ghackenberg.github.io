@@ -67,7 +67,7 @@ const languageColors: Record<string, string> = {
       <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-yellow/10 text-brand-yellow border border-brand-yellow/20 mb-6 tracking-wider uppercase">
         Academic & Teaching
       </span>
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
         University <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-yellow to-orange-500 light:to-orange-600">Lectures</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
@@ -79,7 +79,7 @@ const languageColors: Record<string, string> = {
       <!-- Filters Sidebar (Column 1) -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
         <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col">
-          <h2 class="text-lg font-bold text-white mb-4 flex items-center space-x-2 shrink-0">
+          <h2 class="text-lg font-bold mb-4 flex items-center space-x-2 shrink-0">
             <span>⚙️</span>
             <span>Filter Catalog</span>
           </h2>
@@ -92,7 +92,7 @@ const languageColors: Record<string, string> = {
                 type="text" 
                 id="course-search" 
                 placeholder="Search lectures..." 
-                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 pl-8 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50 transition-all duration-200"
+                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50 transition-all duration-200"
               />
               <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
             </div>
@@ -131,7 +131,7 @@ const languageColors: Record<string, string> = {
             <label for="tech-filter" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Primary Technology</label>
             <select 
               id="tech-filter" 
-              class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-yellow/50 transition-all duration-200 cursor-pointer"
+              class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-yellow/50 transition-all duration-200 cursor-pointer"
             >
               <option value="all" class="bg-gray-900">All Technologies</option>
               {techLanguages.map(tech => (
@@ -244,69 +244,27 @@ const languageColors: Record<string, string> = {
 </style>
 
 <script>
-  let activeLang = 'all';
-  let searchQuery = '';
-  let activeTech = 'all';
+  import { ClientListFilter } from "../../scripts/filter";
 
-  const searchInput = document.getElementById('course-search') as HTMLInputElement | null;
-  const techSelect = document.getElementById('tech-filter') as HTMLSelectElement | null;
-  const langButtons = document.querySelectorAll('.lang-filter-btn');
-  const courseCards = document.querySelectorAll('.course-card');
-  const noCoursesMessage = document.getElementById('no-courses-message');
-
-  function updateFilters() {
-    let visibleCount = 0;
-
-    courseCards.forEach(card => {
-      const cardTitle = card.getAttribute('data-title') || '';
-      const cardDesc = card.getAttribute('data-desc') || '';
-      const cardGoals = card.getAttribute('data-goals') || '';
-      const cardLang = card.getAttribute('data-lang') || '';
-      const cardTech = card.getAttribute('data-tech') || '';
-
-      const matchesSearch = 
-        cardTitle.includes(searchQuery) || 
-        cardDesc.includes(searchQuery) || 
-        cardGoals.includes(searchQuery);
-      const matchesLang = activeLang === 'all' || cardLang === activeLang;
-      const matchesTech = activeTech === 'all' || cardTech === activeTech;
-
-      if (matchesSearch && matchesLang && matchesTech) {
-        card.classList.remove('hidden');
-        visibleCount++;
-      } else {
-        card.classList.add('hidden');
+  new ClientListFilter({
+    itemSelector: ".course-card",
+    searchFieldSelector: "#course-search",
+    searchDataAttributes: ["data-title", "data-desc", "data-goals"],
+    dropdownFilters: [
+      {
+        selectSelector: "#tech-filter",
+        dataAttribute: "data-tech",
+        matchType: "exact"
       }
-    });
-
-    if (noCoursesMessage) {
-      if (visibleCount === 0) {
-        noCoursesMessage.classList.remove('hidden');
-      } else {
-        noCoursesMessage.classList.add('hidden');
+    ],
+    buttonFilters: [
+      {
+        buttonSelector: ".lang-filter-btn",
+        dataAttribute: "data-lang",
+        defaultValue: "all",
+        activeClass: "active"
       }
-    }
-  }
-
-  // Bind Search Input
-  searchInput?.addEventListener('input', (e) => {
-    searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
-    updateFilters();
-  });
-
-  // Bind Tech Dropdown Select
-  techSelect?.addEventListener('change', (e) => {
-    activeTech = (e.target as HTMLSelectElement).value;
-    updateFilters();
-  });
-
-  // Bind Instruction Language buttons
-  langButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      langButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeLang = btn.getAttribute('data-lang') || 'all';
-      updateFilters();
-    });
+    ],
+    noResultsSelector: "#no-courses-message"
   });
 </script>

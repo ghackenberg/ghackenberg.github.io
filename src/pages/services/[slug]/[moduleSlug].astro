@@ -97,7 +97,7 @@ const colorClasses = {
 
     <!-- Header -->
     <header class="mb-12 pb-10 border-b border-white/5 relative">
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
         {module.data.title}
       </h1>
       <p class={`${colorClasses.text} font-bold text-xs uppercase tracking-wider mb-2`}>
@@ -121,13 +121,13 @@ const colorClasses = {
         <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
             <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Est. Duration</span>
-            <span class="text-xs font-bold text-white light:text-slate-900 mt-0.5">
+            <span class="text-xs font-bold mt-0.5">
               {module.data.duration || 'Flexible Plan'}
             </span>
           </div>
           <div class="px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
             <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Delivery Mode</span>
-            <span class="text-xs font-bold text-white light:text-slate-900 mt-0.5">
+            <span class="text-xs font-bold mt-0.5">
               {module.data.delivery || 'Collaborative'}
             </span>
           </div>
@@ -144,11 +144,11 @@ const colorClasses = {
 
         <!-- Service Scope & Key Capabilities Section -->
         <section class="space-y-4">
-          <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
+          <h2 class="text-xl font-extrabold tracking-tight flex items-center space-x-2">
             <span>🎯</span>
             <span>Service Scope & Key Capabilities</span>
           </h2>
-          <p class="text-gray-400 text-sm leading-relaxed font-normal light:text-slate-600">
+          <p class="text-gray-400 text-sm leading-relaxed font-normal max-w-2xl light:text-slate-600">
             This module covers the following targeted topics and key expert competencies:
           </p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -168,7 +168,7 @@ const colorClasses = {
         <!-- Engagement Requirements & Deliverables Dashboard -->
         <section class="space-y-6">
           <div class="space-y-2">
-            <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
+            <h2 class="text-xl font-extrabold tracking-tight flex items-center space-x-2">
               <span>📦</span>
               <span>Specifications: Inputs & Deliverables</span>
             </h2>
@@ -187,7 +187,7 @@ const colorClasses = {
                 <div class="flex items-center gap-3">
                   <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-white/5 border border-white/10 text-base light:bg-slate-100 light:border-slate-200">📥</span>
                   <div>
-                    <h3 class="text-sm font-extrabold text-white light:text-slate-900 uppercase tracking-wider mt-0 mb-0.5">
+                    <h3 class="text-sm font-extrabold uppercase tracking-wider mt-0 mb-0.5">
                       Required Client Inputs
                     </h3>
                     <p class="text-[10px] text-gray-500 font-medium">To be provided to initiate development</p>
@@ -218,7 +218,7 @@ const colorClasses = {
                 <div class="flex items-center gap-3">
                   <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-white/5 border border-white/10 text-base light:bg-slate-100 light:border-slate-200">📤</span>
                   <div>
-                    <h3 class="text-sm font-extrabold text-white light:text-slate-900 uppercase tracking-wider mt-0 mb-0.5">
+                    <h3 class="text-sm font-extrabold uppercase tracking-wider mt-0 mb-0.5">
                       Guaranteed Deliverables
                     </h3>
                     <p class="text-[10px] text-gray-400 light:text-slate-500 font-medium">Outcome packages included in the scope</p>
@@ -255,7 +255,7 @@ const colorClasses = {
             `}
           >
             <div class="space-y-2">
-              <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
+              <h2 class="text-xl font-extrabold tracking-tight flex items-center space-x-2">
                 <span>📋</span>
                 <span>Project Plan & Execution Phases</span>
               </h2>
@@ -291,7 +291,7 @@ const colorClasses = {
                     </div>
 
                     <div class="space-y-1.5 flex-grow">
-                      <h3 class={`text-xs sm:text-sm font-extrabold text-white uppercase tracking-wider leading-tight ${colorClasses.phaseHover} transition-colors mt-0.5 light:text-slate-900`}>
+                      <h3 class={`text-xs sm:text-sm font-extrabold uppercase tracking-wider leading-tight ${colorClasses.phaseHover} transition-colors mt-0.5`}>
                         {phase.title}
                       </h3>
                       <p class="text-xs text-gray-400 leading-relaxed font-normal group-hover/phase:text-gray-300 transition-colors max-w-3xl light:text-slate-600 light:group-hover/phase:text-slate-800">
@@ -312,7 +312,7 @@ const colorClasses = {
         <span class={`inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} mb-4 uppercase tracking-wider`}>
           Let's Collaborate
         </span>
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">
+        <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
           Start a Conversation
         </h2>
         <p class="text-gray-400 text-sm md:text-base leading-relaxed">
@@ -324,7 +324,7 @@ const colorClasses = {
         <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
           <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${colorClasses.glow}`}></div>
           
-          <h2 class="text-lg font-bold text-white mb-6">Contact & Booking Inquiry</h2>
+          <h2 class="text-lg font-bold mb-6">Contact & Booking Inquiry</h2>
           
           <div class="space-y-6">
             <div class="flex items-start space-x-4">
@@ -336,7 +336,7 @@ const colorClasses = {
               <div class="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Send an email request to</p>
-                  <p id="services-email-text" class="text-white font-mono font-medium mt-0.5 select-all text-sm sm:text-base">georg.hackenberg@fh-wels.at</p>
+                  <p id="services-email-text" class="font-mono font-medium mt-0.5 select-all text-sm sm:text-base">georg.hackenberg@fh-wels.at</p>
                 </div>
                 <button 
                   id="services-copy-email-btn"
@@ -347,7 +347,8 @@ const colorClasses = {
               </div>
             </div>
             
-            <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
+            <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400 mb-0">
+text-gray-400">
               <p>Typically responding within 2 business days.</p>
               <a 
                 id="direct-mail-link"
@@ -369,12 +370,13 @@ const colorClasses = {
   .service-content :global(h2) {
     font-size: 1.25rem;
     font-weight: 800;
-    color: white;
+    color: var(--color-text-heading);
     margin-top: 1.85rem;
     margin-bottom: 0.85rem;
     letter-spacing: -0.015em;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--color-border-subtle);
     padding-bottom: 0.35rem;
+    transition: color 0.5s ease, border-color 0.5s ease;
   }
   .service-content :global(h2:first-child) {
     margin-top: 0;
@@ -382,27 +384,27 @@ const colorClasses = {
   .service-content :global(h3) {
     font-size: 1.05rem;
     font-weight: 700;
-    color: white;
+    color: var(--color-text-heading);
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
+    transition: color 0.5s ease;
   }
   .service-content :global(p) {
     font-size: 0.875rem;
     line-height: 1.7;
-    color: #cbd5e1;
+    color: var(--color-text-main);
     margin-bottom: 1.25rem;
+    transition: color 0.5s ease;
   }
   .service-content :global(p:first-of-type) {
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.6;
-    color: white;
+    color: var(--color-text-heading);
     border-left: 3px solid var(--glow-text, #a855f7);
     padding-left: 1rem;
     margin-bottom: 1.5rem;
-  }
-  :global(.light) .service-content :global(p:first-of-type) {
-    color: #0f172a;
+    transition: color 0.5s ease, border-color 0.5s ease;
   }
   .service-content :global(ul) {
     list-style-type: none;
@@ -425,9 +427,17 @@ const colorClasses = {
     gap: 0.75rem;
     transition: border-color 0.2s ease, background-color 0.2s ease;
   }
+  :global(.light) .service-content :global(li) {
+    background: rgba(15, 23, 42, 0.02);
+    border-color: rgba(15, 23, 42, 0.06);
+  }
   .service-content :global(li:hover) {
     border-color: rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.03);
+  }
+  :global(.light) .service-content :global(li:hover) {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.1);
   }
   .service-content :global(li::before) {
     content: "→";
@@ -435,16 +445,9 @@ const colorClasses = {
     font-weight: bold;
     flex-shrink: 0;
   }
-  :global(.light) .service-content :global(li) {
-    background: rgba(15, 23, 42, 0.02);
-    border-color: rgba(15, 23, 42, 0.06);
-  }
-  :global(.light) .service-content :global(li:hover) {
-    background: rgba(15, 23, 42, 0.04);
-    border-color: rgba(15, 23, 42, 0.1);
-  }
   .service-content :global(li strong) {
-    color: white;
+    color: var(--color-text-heading);
+    transition: color 0.5s ease;
   }
   .service-content :global(> *:last-child) {
     margin-bottom: 0;
