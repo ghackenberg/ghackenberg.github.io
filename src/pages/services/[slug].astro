@@ -22,44 +22,44 @@ const serviceModules = allModules
 
 const colorClasses = {
   blue: {
-    text: 'text-brand-blue',
-    border: 'border-brand-blue/20',
-    bg: 'bg-brand-blue/10',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
-    hoverText: 'hover:text-brand-blue',
+    text: 'text-brand-blue light:text-blue-700',
+    border: 'border-brand-blue/20 light:border-blue-200',
+    bg: 'bg-brand-blue/10 light:bg-blue-50/50',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
+    hoverText: 'hover:text-brand-blue light:hover:text-blue-700',
     glow: 'from-brand-blue to-brand-purple',
-    leftBorder: 'border-brand-blue',
-    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)]'
+    leftBorder: 'border-brand-blue light:border-blue-600',
+    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)] light:shadow-[0_0_4px_rgba(29,78,216,0.4)]'
   },
   yellow: {
-    text: 'text-brand-yellow',
-    border: 'border-brand-yellow/20',
-    bg: 'bg-brand-yellow/10',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
-    hoverText: 'hover:text-brand-yellow',
+    text: 'text-brand-yellow light:text-amber-800',
+    border: 'border-brand-yellow/20 light:border-amber-200',
+    bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
+    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold light:bg-amber-600 light:hover:bg-amber-700 light:text-white',
+    hoverText: 'hover:text-brand-yellow light:hover:text-amber-800',
     glow: 'from-brand-yellow to-brand-purple',
-    leftBorder: 'border-brand-yellow',
-    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]'
+    leftBorder: 'border-brand-yellow light:border-amber-600',
+    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)] light:shadow-[0_0_4px_rgba(180,83,9,0.4)]'
   },
   purple: {
-    text: 'text-brand-purple',
-    border: 'border-brand-purple/20',
-    bg: 'bg-brand-purple/10',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
-    hoverText: 'hover:text-brand-purple',
+    text: 'text-brand-purple light:text-purple-700',
+    border: 'border-brand-purple/20 light:border-purple-200',
+    bg: 'bg-brand-purple/10 light:bg-purple-50/50',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
+    hoverText: 'hover:text-brand-purple light:hover:text-purple-700',
     glow: 'from-brand-purple to-brand-blue',
-    leftBorder: 'border-brand-purple',
-    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]'
+    leftBorder: 'border-brand-purple light:border-purple-600',
+    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]'
   },
   green: {
-    text: 'text-brand-green',
-    border: 'border-brand-green/20',
-    bg: 'bg-brand-green/10',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
-    hoverText: 'hover:text-brand-green',
+    text: 'text-brand-green light:text-emerald-700',
+    border: 'border-brand-green/20 light:border-emerald-200',
+    bg: 'bg-brand-green/10 light:bg-emerald-50/50',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold light:bg-emerald-600 light:hover:bg-emerald-700 light:text-white',
+    hoverText: 'hover:text-brand-green light:hover:text-emerald-700',
     glow: 'from-brand-green to-brand-blue',
-    leftBorder: 'border-brand-green',
-    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)]'
+    leftBorder: 'border-brand-green light:border-emerald-600',
+    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)] light:shadow-[0_0_4px_rgba(4,120,87,0.4)]'
   }
 }[service.data.color];
 ---
@@ -71,7 +71,7 @@ const colorClasses = {
 >
   <Navbar />
 
-  <main class="flex-grow max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <!-- Back Button -->
     <a 
       href="/services" 
@@ -91,34 +91,38 @@ const colorClasses = {
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
         {service.data.title}
       </h1>
-      <p class="text-brand-yellow font-bold text-xs uppercase tracking-wider mb-2">
+      <p class="text-brand-yellow light:text-amber-700 font-bold text-xs uppercase tracking-wider mb-2">
         {service.data.tagline}
       </p>
       <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
         {service.data.description}
       </p>
+      
+      <div class="flex flex-wrap gap-4 mt-6">
+        <a
+          href="#contact-services"
+          data-subject={`Inquiry: ${service.data.title}`}
+          class={`px-6 py-3 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger min-h-[44px] ${colorClasses.btnBg}`}
+        >
+          <span>{service.data.ctaText}</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
     </header>
 
-    <!-- Main Content & Sidebar -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Left Column: Service details and Modules List -->
-      <div class="lg:col-span-8 space-y-12">
+    <!-- Main Content -->
+    <div class="space-y-12">
         <!-- Service Text -->
-        <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content">
+        <section class={`glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content theme-${service.data.color}`}>
           <Content />
         </section>
 
         <!-- Service Modules Section -->
         <section class="space-y-6">
-          <div class="flex items-center justify-between flex-wrap gap-4">
-            <h2 class="text-2xl font-extrabold text-white tracking-tight flex items-center space-x-2">
-              <span>📦</span>
-              <span>Available Service Modules</span>
-            </h2>
-            <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} uppercase tracking-wider`}>
-              Modular Selection
-            </span>
-          </div>
+          <h2 class="text-2xl font-extrabold text-white tracking-tight flex items-center space-x-2">
+            <span>📦</span>
+            <span>Available Service Modules</span>
+          </h2>
           
           <p class="text-gray-400 text-sm leading-relaxed font-normal">
             Each service module represents a concrete building block that can be booked individually or combined into a comprehensive custom package.
@@ -152,7 +156,7 @@ const colorClasses = {
                         </span>
                       )}
                     </div>
-                    <p class="text-brand-yellow font-bold text-[10px] uppercase tracking-wider leading-none">
+                    <p class="text-brand-yellow light:text-amber-700 font-bold text-[10px] uppercase tracking-wider leading-none">
                       {module.data.tagline}
                     </p>
                     <p class="text-gray-400 text-xs leading-relaxed font-normal">
@@ -186,63 +190,6 @@ const colorClasses = {
             })}
           </div>
         </section>
-      </div>
-
-      <!-- Right Column: Sidebar modules quick links & Bundle CTA -->
-      <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
-        <!-- Service Modules Quick Links -->
-        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden">
-          <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
-          
-          <h3 class="text-sm font-extrabold uppercase tracking-widest text-white mb-4 flex items-center space-x-2">
-            <span>📦</span>
-            <span>Modules</span>
-          </h3>
-
-          <ul class="space-y-3.5 mb-6">
-            {serviceModules.map(module => {
-              const moduleSlug = module.id.split('/').pop();
-              return (
-                <li class="text-[11px] text-gray-300 leading-relaxed">
-                  <a 
-                    href={`/services/${service.id}/${moduleSlug}`}
-                    class={`flex items-center space-x-2 hover:text-white transition-colors`}
-                  >
-                    <span class={`font-bold select-none ${colorClasses.text}`}>&bull;</span>
-                    <span>{module.data.title}</span>
-                    <span 
-                      class={`unread-dot hidden w-1.5 h-1.5 rounded-full ${colorClasses.dot}`}
-                      data-item-url={`/services/${service.id}/${moduleSlug}`}
-                      title="Unread module"
-                    ></span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-
-          <a 
-            href="#contact-services"
-            data-subject={`Inquiry: ${service.data.title}`}
-            class={`w-full py-3 px-4 rounded-xl text-center text-xs font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger ${colorClasses.btnBg}`}
-          >
-            <span>{service.data.ctaText}</span>
-            <span>&rarr;</span>
-          </a>
-        </div>
-
-        {/* Bundle Notice Card */}
-        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden bg-brand-yellow/5">
-          <div class="absolute top-0 left-0 right-0 h-1 bg-brand-yellow/30"></div>
-          <h3 class="text-sm font-extrabold uppercase tracking-widest text-brand-yellow mb-3 flex items-center space-x-2">
-            <span>💡</span>
-            <span>Bundle rate</span>
-          </h3>
-          <p class="text-[11px] text-gray-400 leading-relaxed mb-0">
-            Combine two or more modules across any services for a unified project delivery and a bundle discount rate. Reach out in the contact form to discuss a custom arrangement.
-          </p>
-        </div>
-      </div>
     </div>
 
     <!-- Contact & Booking Section -->
@@ -331,16 +278,56 @@ const colorClasses = {
     color: #cbd5e1; /* slate-300 for premium contrast */
     margin-bottom: 1.25rem;
   }
+  .service-content :global(p:first-of-type) {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: white;
+    border-left: 3px solid var(--glow-text, #a855f7);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  :global(.light) .service-content :global(p:first-of-type) {
+    color: #0f172a;
+  }
   .service-content :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.25rem;
-    margin-bottom: 1.25rem;
-    color: #cbd5e1;
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
   }
   .service-content :global(li) {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
     font-size: 0.875rem;
     line-height: 1.6;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .service-content :global(li:hover) {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .service-content :global(li::before) {
+    content: "→";
+    color: var(--glow-text, #a855f7);
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  :global(.light) .service-content :global(li) {
+    background: rgba(15, 23, 42, 0.02);
+    border-color: rgba(15, 23, 42, 0.06);
+  }
+  :global(.light) .service-content :global(li:hover) {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.1);
   }
   .service-content :global(li strong) {
     color: white;
@@ -348,6 +335,16 @@ const colorClasses = {
   .service-content :global(> *:last-child) {
     margin-bottom: 0;
   }
+
+  .theme-blue { --glow-text: #60a5fa; }
+  .theme-yellow { --glow-text: #fbbf24; }
+  .theme-purple { --glow-text: #c084fc; }
+  .theme-green { --glow-text: #34d399; }
+
+  :global(.light) .theme-blue { --glow-text: #1d4ed8; }
+  :global(.light) .theme-yellow { --glow-text: #b45309; }
+  :global(.light) .theme-purple { --glow-text: #7e22ce; }
+  :global(.light) .theme-green { --glow-text: #047857; }
 </style>
 
 <script>

@@ -23,48 +23,52 @@ const { Content } = await render(module);
 
 const colorClasses = {
   blue: {
-    text: 'text-brand-blue',
-    border: 'border-brand-blue/20',
-    bg: 'bg-brand-blue/10',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
+    text: 'text-brand-blue light:text-blue-700',
+    border: 'border-brand-blue/20 light:border-blue-200',
+    bg: 'bg-brand-blue/10 light:bg-blue-50/50',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
     glow: 'from-brand-blue to-brand-purple',
-    leftBorder: 'border-brand-blue',
+    leftBorder: 'border-brand-blue light:border-blue-600',
     glowBorder: 'rgba(59, 130, 246, 0.3)',
     glowText: '#60a5fa',
     glowShadow: 'rgba(59, 130, 246, 0.25)',
+    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)] light:shadow-[0_0_4px_rgba(29,78,216,0.4)]',
   },
   yellow: {
-    text: 'text-brand-yellow',
-    border: 'border-brand-yellow/20',
-    bg: 'bg-brand-yellow/10',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
+    text: 'text-brand-yellow light:text-amber-800',
+    border: 'border-brand-yellow/20 light:border-amber-200',
+    bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
+    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold light:bg-amber-600 light:hover:bg-amber-700 light:text-white',
     glow: 'from-brand-yellow to-brand-purple',
-    leftBorder: 'border-brand-yellow',
+    leftBorder: 'border-brand-yellow light:border-amber-600',
     glowBorder: 'rgba(245, 158, 11, 0.3)',
     glowText: '#fbbf24',
     glowShadow: 'rgba(245, 158, 11, 0.25)',
+    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)] light:shadow-[0_0_4px_rgba(180,83,9,0.4)]',
   },
   purple: {
-    text: 'text-brand-purple',
-    border: 'border-brand-purple/20',
-    bg: 'bg-brand-purple/10',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
+    text: 'text-brand-purple light:text-purple-700',
+    border: 'border-brand-purple/20 light:border-purple-200',
+    bg: 'bg-brand-purple/10 light:bg-purple-50/50',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
     glow: 'from-brand-purple to-brand-blue',
-    leftBorder: 'border-brand-purple',
+    leftBorder: 'border-brand-purple light:border-purple-600',
     glowBorder: 'rgba(168, 85, 247, 0.3)',
     glowText: '#c084fc',
     glowShadow: 'rgba(168, 85, 247, 0.25)',
+    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]',
   },
   green: {
-    text: 'text-brand-green',
-    border: 'border-brand-green/20',
-    bg: 'bg-brand-green/10',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
+    text: 'text-brand-green light:text-emerald-700',
+    border: 'border-brand-green/20 light:border-emerald-200',
+    bg: 'bg-brand-green/10 light:bg-emerald-50/50',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold light:bg-emerald-600 light:hover:bg-emerald-700 light:text-white',
     glow: 'from-brand-green to-brand-blue',
-    leftBorder: 'border-brand-green',
+    leftBorder: 'border-brand-green light:border-emerald-600',
     glowBorder: 'rgba(16, 185, 129, 0.3)',
     glowText: '#34d399',
     glowShadow: 'rgba(16, 185, 129, 0.25)',
+    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)] light:shadow-[0_0_4px_rgba(4,120,87,0.4)]',
   }
 }[parentService.data.color];
 
@@ -77,7 +81,7 @@ const colorClasses = {
 >
   <Navbar />
 
-  <main class="flex-grow max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <!-- Back Button -->
     <a 
       href={`/services/${parentService.id}`} 
@@ -97,230 +101,210 @@ const colorClasses = {
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
         {module.data.title}
       </h1>
-      <p class="text-brand-yellow font-bold text-xs uppercase tracking-wider mb-2">
+      <p class="text-brand-yellow light:text-amber-700 font-bold text-xs uppercase tracking-wider mb-2">
         {module.data.tagline}
       </p>
       <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
         {module.data.description}
       </p>
+      
+      <div class="flex flex-col sm:flex-row sm:items-stretch gap-6 mt-8 pt-8 border-t border-white/5">
+        <a
+          href="#contact-services"
+          data-subject={`Inquiry: ${parentService.data.title} - ${module.data.title}`}
+          class={`px-6 py-3 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger min-h-[48px] shrink-0 ${colorClasses.btnBg}`}
+        >
+          <span>{module.data.ctaText}</span>
+          <span>&rarr;</span>
+        </a>
+        
+        {/* Quick Specs Grid */}
+        <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
+            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Est. Duration</span>
+            <span class="text-xs font-bold text-white light:text-slate-900 mt-0.5">
+              {module.data.duration || 'Flexible Plan'}
+            </span>
+          </div>
+          <div class="px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
+            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Delivery Mode</span>
+            <span class="text-xs font-bold text-white light:text-slate-900 mt-0.5">
+              {module.data.delivery || 'Collaborative'}
+            </span>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <!-- Main Content & Sidebar -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Left Column: Details & Methodology Flowchart -->
-      <div class="lg:col-span-8 space-y-12">
+    <!-- Main Content -->
+    <div class="space-y-16">
         <!-- Module Text Content -->
-        <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content">
+        <section class={`glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content theme-${parentService.data.color}`}>
           <Content />
         </section>
 
-        <!-- HTML/CSS Methodology Timeline Section -->
+        <!-- Service Scope & Key Capabilities Section -->
+        <section class="space-y-4">
+          <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
+            <span>🎯</span>
+            <span>Service Scope & Key Capabilities</span>
+          </h2>
+          <p class="text-gray-400 text-sm leading-relaxed font-normal light:text-slate-600">
+            This module covers the following targeted topics and key expert competencies:
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {module.data.highlights.map(item => (
+              <div class="p-5 rounded-2xl border border-white/5 bg-white/[0.015] hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 flex items-start gap-3.5 group light:bg-slate-50/50 light:border-slate-200 light:hover:bg-slate-50 light:hover:border-slate-300">
+                <div class="mt-[7px] shrink-0">
+                  <span class={`flex w-2 h-2 rounded-full ${colorClasses.dot} transition-transform group-hover:scale-125`}></span>
+                </div>
+                <span class="text-xs sm:text-sm font-semibold text-gray-300 light:text-slate-800 leading-relaxed">
+                  {item}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Engagement Requirements & Deliverables Dashboard -->
+        <section class="space-y-6">
+          <div class="space-y-2">
+            <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
+              <span>📦</span>
+              <span>Specifications: Inputs & Deliverables</span>
+            </h2>
+            <p class="text-gray-400 text-sm leading-relaxed font-normal max-w-2xl light:text-slate-600">
+              A clear breakdown of the resource inputs required from your side and the concrete deliverables you will receive as the output of this service module:
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Inputs Card - Required Resources */}
+            <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/5 bg-white/[0.01] relative overflow-hidden flex flex-col justify-between group hover:border-white/10 transition-all duration-300 light:bg-slate-50/30 light:border-slate-200 light:hover:border-slate-300">
+              {/* Highlight Left Accent Border */}
+              <div class="absolute top-0 bottom-0 left-0 w-[4px] bg-slate-500 opacity-40 group-hover:opacity-75 transition-opacity"></div>
+              
+              <div class="space-y-6">
+                <div class="flex items-center gap-3">
+                  <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-white/5 border border-white/10 text-base light:bg-slate-100 light:border-slate-200">📥</span>
+                  <div>
+                    <h3 class="text-sm font-extrabold text-white light:text-slate-900 uppercase tracking-wider mt-0 mb-0.5">
+                      Required Client Inputs
+                    </h3>
+                    <p class="text-[10px] text-gray-500 font-medium">To be provided to initiate development</p>
+                  </div>
+                </div>
+
+                {module.data.inputs && module.data.inputs.length > 0 ? (
+                  <ul class="space-y-3.5">
+                    {module.data.inputs.map(item => (
+                      <li class="text-xs text-gray-400 light:text-slate-600 flex items-start gap-3 leading-relaxed font-normal">
+                        <span class="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-gray-500 light:bg-slate-400"></span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="text-xs text-gray-500 italic">No specific inputs required.</p>
+                )}
+              </div>
+            </div>
+
+            {/* Outputs Card - Guaranteed Deliverables */}
+            <div class="glass-card p-6 md:p-8 rounded-3xl border border-white/5 bg-white/[0.015] relative overflow-hidden flex flex-col justify-between group hover:border-white/10 transition-all duration-300 light:bg-slate-50/50 light:border-slate-200 light:hover:border-slate-300 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+              {/* Glowing Gradient Left Accent Border */}
+              <div class={`absolute top-0 bottom-0 left-0 w-[4px] bg-gradient-to-b ${colorClasses.glow} opacity-60 group-hover:opacity-100 transition-opacity`}></div>
+              
+              <div class="space-y-6">
+                <div class="flex items-center gap-3">
+                  <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-white/5 border border-white/10 text-base light:bg-slate-100 light:border-slate-200">📤</span>
+                  <div>
+                    <h3 class="text-sm font-extrabold text-white light:text-slate-900 uppercase tracking-wider mt-0 mb-0.5">
+                      Guaranteed Deliverables
+                    </h3>
+                    <p class="text-[10px] text-gray-400 light:text-slate-500 font-medium">Outcome packages included in the scope</p>
+                  </div>
+                </div>
+
+                {module.data.outputs && module.data.outputs.length > 0 ? (
+                  <ul class="space-y-3.5">
+                    {module.data.outputs.map(item => (
+                      <li class="text-xs text-gray-300 light:text-slate-800 flex items-start gap-3 leading-relaxed font-normal">
+                        <svg class={`w-4 h-4 mt-0.5 shrink-0 ${colorClasses.text}`} fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+                        </svg>
+                        <span class="font-medium">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="text-xs text-gray-500 italic">No direct deliverables.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Project Plan & Execution Phases Section -->
         {module.data.methodologyPhases && (
           <section 
-            class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 space-y-8"
+            class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 space-y-8 light:bg-slate-50/20 light:border-slate-200"
             style={`
               --glow-border: ${colorClasses.glowBorder};
               --glow-text: ${colorClasses.glowText};
               --glow-shadow: ${colorClasses.glowShadow};
             `}
           >
-            <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="space-y-2">
               <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center space-x-2">
-                <span>📊</span>
-                <span>Our Collaboration Methodology</span>
+                <span>📋</span>
+                <span>Project Plan & Execution Phases</span>
               </h2>
-              <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} uppercase tracking-wider`}>
-                4-Stage Workflow
-              </span>
+              {module.data.methodologyDescription && (
+                <p class="text-gray-400 text-sm leading-relaxed font-normal light:text-slate-600">
+                  {module.data.methodologyDescription}
+                </p>
+              )}
             </div>
             
-            {module.data.methodologyDescription && (
-              <p class="text-gray-400 text-xs leading-relaxed font-normal">
-                {module.data.methodologyDescription}
-              </p>
-            )}
-
-            {/* Timeline Diagram container */}
-            <div class="relative pl-3 pr-3 sm:pl-0 sm:pr-0 sm:grid sm:grid-cols-4 gap-6 pt-4">
+            {/* Vertical Timeline container */}
+            <div class="relative pl-8 sm:pl-10 pt-2">
               {module.data.methodologyPhases.map((phase, idx) => {
-                const isSignatureStep = idx === 1 || idx === 2;
+                const isFirst = idx === 0;
+                const isLast = idx === module.data.methodologyPhases.length - 1;
+                
                 return (
-                  <div class="relative flex flex-row sm:flex-col items-start sm:items-center text-left sm:text-center gap-4 sm:gap-0 sm:space-y-4 pb-8 sm:pb-0 z-10 group/phase">
-                    
-                    {/* Connecting line for desktop (from center of current node to center of next node) */}
-                    {idx < 3 && (
-                      <div class="hidden sm:block absolute sm:top-[20px] left-[50%] w-[calc(100%+1.5rem)] h-0.5 z-0 pointer-events-none">
-                        <div class={`w-full h-full bg-gradient-to-r ${colorClasses.glow} opacity-30`}></div>
-                      </div>
-                    )}
-
-                    {/* Connecting line for mobile (from center of current node to center of next node) */}
-                    {idx < 3 && (
-                      <div class="sm:hidden absolute top-[20px] left-[20px] w-0.5 h-full z-0 pointer-events-none">
-                        <div class={`w-full h-full bg-gradient-to-b ${colorClasses.glow} opacity-30`}></div>
-                      </div>
-                    )}
-
-                    {/* Number node */}
+                  <div class={`relative z-10 group/phase ${isLast ? '' : 'pb-8'}`}>
+                    {/* Vertical Line Segment */}
                     <div 
-                      class={`methodology-step-node w-10 h-10 rounded-full flex items-center justify-center font-mono font-bold text-xs border transition-all duration-300 z-10 ${
-                        isSignatureStep 
-                          ? 'text-white' 
-                          : 'text-gray-500 group-hover/phase:text-gray-300'
-                      }`}
-                      style={isSignatureStep ? 'border-color: var(--glow-border); color: var(--glow-text); box-shadow: 0 0 15px -3px var(--glow-shadow);' : ''}
+                      class={`absolute -left-[21px] sm:-left-[25px] w-0.5 bg-gradient-to-b ${colorClasses.glow} opacity-20`}
+                      style={`
+                        top: ${isFirst ? '10px' : '0px'};
+                        bottom: ${isLast ? 'calc(100% - 10px)' : '0px'};
+                      `}
+                    ></div>
+
+                    {/* Circle Node on Timeline */}
+                    <div 
+                      class={`absolute -left-[32px] sm:-left-[36px] top-[-2px] w-6 h-6 rounded-full flex items-center justify-center font-mono font-bold text-[10px] border transition-all duration-300 methodology-step-node`}
                     >
                       {String(idx + 1).padStart(2, '0')}
                     </div>
 
-                    {/* Text block */}
-                    <div class="space-y-1.5 sm:px-2 flex-1">
-                      <h3 class="text-xs font-bold text-white uppercase tracking-wider leading-tight">
+                    <div class="space-y-1.5 flex-grow">
+                      <h3 class="text-xs sm:text-sm font-extrabold text-white uppercase tracking-wider leading-tight group-hover/phase:text-brand-yellow transition-colors mt-0.5 light:text-slate-900 light:group-hover/phase:text-amber-800">
                         {phase.title}
                       </h3>
-                      <p class="text-[10px] text-gray-400 leading-relaxed font-normal">
+                      <p class="text-xs text-gray-400 leading-relaxed font-normal group-hover/phase:text-gray-300 transition-colors max-w-3xl light:text-slate-600 light:group-hover/phase:text-slate-800">
                         {phase.description}
                       </p>
                     </div>
-
                   </div>
-                );
-              })}
-            </div>
-
-            {/* Phase specifications cards vertical stack */}
-            <div class="border-t border-white/5 pt-8 mt-8 space-y-6">
-              {module.data.methodologyPhases.map((phase, idx) => {
-                const hasInputs = phase.inputs && phase.inputs.length > 0;
-                const hasDeliverables = phase.deliverables && phase.deliverables.length > 0;
-                
-                return (
-                  <>
-                    <div class="glass-card p-6 md:p-8 rounded-2xl border border-white/5 bg-white/[0.01] relative overflow-hidden group hover:border-white/10 transition-all duration-300">
-                      {/* Glow indicator at the left side */}
-                      <div class={`absolute top-0 bottom-0 left-0 w-[3px] bg-gradient-to-b ${colorClasses.glow} opacity-40 group-hover:opacity-75 transition-opacity`}></div>
-                      
-                      <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
-                        <div>
-                          <p class={`text-[10px] font-bold uppercase tracking-widest ${colorClasses.text} mb-1`}>
-                            Phase {String(idx + 1).padStart(2, '0')} specifications
-                          </p>
-                          <h3 class="text-base font-extrabold text-white tracking-tight">
-                            {phase.title}
-                          </h3>
-                        </div>
-                      </div>
-
-                      <p class="text-xs text-gray-300 leading-relaxed mb-6 font-normal">
-                         {phase.description}
-                      </p>
-
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
-                        {/* Inputs Column */}
-                        <div class="space-y-3">
-                          <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                            <span class="text-sm">📥</span>
-                            <span>What you provide / invest</span>
-                          </h4>
-                          {hasInputs ? (
-                            <ul class="space-y-2">
-                              {phase.inputs.map(input => (
-                                <li class="text-[11px] text-gray-400 flex items-start gap-2.5 leading-relaxed font-normal">
-                                  <span class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style="background-color: var(--glow-text)"></span>
-                                  <span>{input}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p class="text-[11px] text-gray-500 italic">No specific inputs required.</p>
-                          )}
-                        </div>
-
-                        {/* Deliverables Column */}
-                        <div class="space-y-3">
-                          <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                            <span class="text-sm">📤</span>
-                            <span>What you receive / deliverables</span>
-                          </h4>
-                          {hasDeliverables ? (
-                            <ul class="space-y-2">
-                              {phase.deliverables.map(deliv => (
-                                <li class="text-[11px] text-gray-300 flex items-start gap-2.5 leading-relaxed font-normal">
-                                  <svg class={`w-3.5 h-3.5 mt-0.5 shrink-0 ${colorClasses.text}`} fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
-                                  </svg>
-                                  <span>{deliv}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p class="text-[11px] text-gray-500 italic">No direct deliverables for this stage.</p>
-                          )}
-                        </div>
-                      </div>
-
-                    </div>
-
-                    {/* Sequential transition arrow */}
-                    {idx < 3 && (
-                      <div class="flex justify-center py-2 relative z-10">
-                        <div class="w-8 h-8 rounded-full border border-white/5 bg-white/[0.02] flex items-center justify-center text-gray-500 shadow-inner">
-                          <svg class={`w-4 h-4 ${colorClasses.text}`} fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75"></path>
-                          </svg>
-                        </div>
-                      </div>
-                    )}
-                  </>
                 );
               })}
             </div>
           </section>
         )}
-      </div>
-
-      {/* Right Column: Sidebar highlights & booking */}
-      <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
-        <!-- Highlights list card -->
-        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden">
-          <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
-          
-          <h2 class="text-sm font-extrabold uppercase tracking-widest text-white mb-4 flex items-center space-x-2">
-            <span>ℹ️</span>
-            <span>Focus Areas</span>
-          </h2>
-
-          <ul class="space-y-3.5 mb-8">
-            {module.data.highlights.map(item => (
-              <li class="text-[11px] text-gray-300 flex items-start gap-2 leading-relaxed">
-                <span class={`font-bold select-none ${colorClasses.text}`}>&bull;</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-
-          <a 
-            href="#contact-services"
-            data-subject={`Inquiry: ${parentService.data.title} - ${module.data.title}`}
-            class={`w-full py-3.5 px-4 rounded-xl text-center text-xs font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger ${colorClasses.btnBg}`}
-          >
-            <span>{module.data.ctaText}</span>
-            <span>&rarr;</span>
-          </a>
-        </div>
-
-        {/* Bundle Notice Card */}
-        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden bg-brand-yellow/5">
-          <div class="absolute top-0 left-0 right-0 h-1 bg-brand-yellow/30"></div>
-          <h2 class="text-sm font-extrabold uppercase tracking-widest text-brand-yellow mb-3 flex items-center space-x-2">
-            <span>💡</span>
-            <span>Bundle rate</span>
-          </h2>
-          <p class="text-[11px] text-gray-400 leading-relaxed mb-0">
-            Combine this module with any other modules (e.g. Websites & Hosting + corporate simulations) for a custom bundle rate. Reach out below to request a tailored quote.
-          </p>
-        </div>
-      </div>
     </div>
 
     <!-- Contact Section -->
@@ -409,16 +393,56 @@ const colorClasses = {
     color: #cbd5e1;
     margin-bottom: 1.25rem;
   }
+  .service-content :global(p:first-of-type) {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: white;
+    border-left: 3px solid var(--glow-text, #a855f7);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  :global(.light) .service-content :global(p:first-of-type) {
+    color: #0f172a;
+  }
   .service-content :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.25rem;
-    margin-bottom: 1.25rem;
-    color: #cbd5e1;
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
   }
   .service-content :global(li) {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
     font-size: 0.875rem;
     line-height: 1.6;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .service-content :global(li:hover) {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .service-content :global(li::before) {
+    content: "→";
+    color: var(--glow-text, #a855f7);
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  :global(.light) .service-content :global(li) {
+    background: rgba(15, 23, 42, 0.02);
+    border-color: rgba(15, 23, 42, 0.06);
+  }
+  :global(.light) .service-content :global(li:hover) {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.1);
   }
   .service-content :global(li strong) {
     color: white;
@@ -430,27 +454,72 @@ const colorClasses = {
   .methodology-step-node {
     background-color: #020617;
     border-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
   }
 
-  .group\/phase:hover .methodology-step-node:not([style*="border-color"]) {
-    border-color: rgba(255, 255, 255, 0.2);
+  .group\/phase:hover .methodology-step-node {
+    border-color: var(--glow-text) !important;
+    color: var(--glow-text) !important;
+    box-shadow: 0 0 10px -3px var(--glow-shadow);
   }
 
-  /* Methodology step node overrides for light mode */
   :global(.light) .methodology-step-node {
     background-color: #ffffff !important;
-  }
-
-  :global(.light) .methodology-step-node:not([style*="border-color"]) {
     border-color: rgba(15, 23, 42, 0.15) !important;
+    color: #475569;
   }
 
-  :global(.light) .group\/phase:hover .methodology-step-node:not([style*="border-color"]) {
-    border-color: rgba(15, 23, 42, 0.3) !important;
+  :global(.light) .group\/phase:hover .methodology-step-node {
+    border-color: var(--glow-text) !important;
+    color: var(--glow-text) !important;
+  }
+
+  .theme-blue {
+    --glow-border: rgba(59, 130, 246, 0.3);
+    --glow-text: #60a5fa;
+    --glow-shadow: rgba(59, 130, 246, 0.25);
+  }
+  .theme-yellow {
+    --glow-border: rgba(245, 158, 11, 0.3);
+    --glow-text: #fbbf24;
+    --glow-shadow: rgba(245, 158, 11, 0.25);
+  }
+  .theme-purple {
+    --glow-border: rgba(168, 85, 247, 0.3);
+    --glow-text: #c084fc;
+    --glow-shadow: rgba(168, 85, 247, 0.25);
+  }
+  .theme-green {
+    --glow-border: rgba(16, 185, 129, 0.3);
+    --glow-text: #34d399;
+    --glow-shadow: rgba(16, 185, 129, 0.25);
+  }
+
+  :global(.light) .theme-blue {
+    --glow-border: rgba(29, 78, 216, 0.25);
+    --glow-text: #1d4ed8;
+    --glow-shadow: rgba(29, 78, 216, 0.15);
+  }
+  :global(.light) .theme-yellow {
+    --glow-border: rgba(180, 83, 9, 0.25);
+    --glow-text: #b45309;
+    --glow-shadow: rgba(180, 83, 9, 0.15);
+  }
+  :global(.light) .theme-purple {
+    --glow-border: rgba(109, 40, 217, 0.25);
+    --glow-text: #6d28d9;
+    --glow-shadow: rgba(109, 40, 217, 0.15);
+  }
+  :global(.light) .theme-green {
+    --glow-border: rgba(4, 120, 87, 0.25);
+    --glow-text: #047857;
+    --glow-shadow: rgba(4, 120, 87, 0.15);
   }
 </style>
 
 <script>
+
+
   // Add listeners to inquiry triggers to pre-fill email client link subject
   const triggers = document.querySelectorAll('.inquiry-trigger');
   const directMailLink = document.getElementById('direct-mail-link') as HTMLAnchorElement | null;

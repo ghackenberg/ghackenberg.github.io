@@ -31,40 +31,44 @@ const optimizedServices = await Promise.all(
 
 const colorClasses = {
   blue: {
-    text: 'text-brand-blue',
-    border: 'border-brand-blue/20',
-    hoverBorder: 'hover:border-brand-blue/40',
-    bg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
+    text: 'text-brand-blue light:text-blue-700',
+    border: 'border-brand-blue/20 light:border-blue-200',
+    hoverBorder: 'hover:border-brand-blue/40 light:hover:border-blue-300',
+    bg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20 light:bg-blue-50/50 light:text-blue-700 light:border-blue-200',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
     glow: 'from-brand-blue to-brand-purple',
-    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)]'
+    hoverText: 'group-hover:text-brand-blue light:group-hover:text-blue-600',
+    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)] light:shadow-[0_0_4px_rgba(29,78,216,0.4)]'
   },
   yellow: {
-    text: 'text-brand-yellow',
-    border: 'border-brand-yellow/20',
-    hoverBorder: 'hover:border-brand-yellow/40',
-    bg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
+    text: 'text-brand-yellow light:text-amber-800',
+    border: 'border-brand-yellow/20 light:border-amber-200',
+    hoverBorder: 'hover:border-brand-yellow/40 light:hover:border-amber-300',
+    bg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20 light:bg-amber-50/50 light:text-amber-800 light:border-amber-200',
+    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold light:bg-amber-600 light:hover:bg-amber-700 light:text-white',
     glow: 'from-brand-yellow to-brand-purple',
-    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]'
+    hoverText: 'group-hover:text-brand-yellow light:group-hover:text-amber-700',
+    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)] light:shadow-[0_0_4px_rgba(180,83,9,0.4)]'
   },
   purple: {
-    text: 'text-brand-purple',
-    border: 'border-brand-purple/20',
-    hoverBorder: 'hover:border-brand-purple/40',
-    bg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
+    text: 'text-brand-purple light:text-purple-700',
+    border: 'border-brand-purple/20 light:border-purple-200',
+    hoverBorder: 'hover:border-brand-purple/40 light:hover:border-purple-300',
+    bg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20 light:bg-purple-50/50 light:text-purple-700 light:border-purple-200',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
     glow: 'from-brand-purple to-brand-blue',
-    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]'
+    hoverText: 'group-hover:text-brand-purple light:group-hover:text-purple-600',
+    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]'
   },
   green: {
-    text: 'text-brand-green',
-    border: 'border-brand-green/20',
-    hoverBorder: 'hover:border-brand-green/40',
-    bg: 'bg-brand-green/10 text-brand-green border-brand-green/20',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
+    text: 'text-brand-green light:text-emerald-700',
+    border: 'border-brand-green/20 light:border-emerald-200',
+    hoverBorder: 'hover:border-brand-green/40 light:hover:border-emerald-300',
+    bg: 'bg-brand-green/10 text-brand-green border-brand-green/20 light:bg-emerald-50/50 light:text-emerald-700 light:border-emerald-200',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold light:bg-emerald-600 light:hover:bg-emerald-700 light:text-white',
     glow: 'from-brand-green to-brand-blue',
-    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)]'
+    hoverText: 'group-hover:text-brand-green light:group-hover:text-emerald-700',
+    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)] light:shadow-[0_0_4px_rgba(4,120,87,0.4)]'
   }
 };
 ---
@@ -89,6 +93,23 @@ const colorClasses = {
       </p>
     </div>
 
+    <!-- Category Navigation Filter -->
+    <div class="mb-12 glass-card p-4 rounded-2xl border border-white/5 flex flex-wrap items-center gap-3 relative z-20">
+      <span class="text-xs font-bold uppercase tracking-wider text-gray-500 mr-2">Jump to category:</span>
+      <a href="#rd-prototyping" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 light:text-gray-600 light:border-gray-200 light:bg-gray-50 light:hover:text-gray-900 light:hover:bg-gray-100 transition-all duration-300 flex items-center justify-center min-h-[44px]">
+        💻 Software Engineering
+      </a>
+      <a href="#corporate-training" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 light:text-gray-600 light:border-gray-200 light:bg-gray-50 light:hover:text-gray-900 light:hover:bg-gray-100 transition-all duration-300 flex items-center justify-center min-h-[44px]">
+        🎓 Tech Education
+      </a>
+      <a href="#scientific-advisory" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 light:text-gray-600 light:border-gray-200 light:bg-gray-50 light:hover:text-gray-900 light:hover:bg-gray-100 transition-all duration-300 flex items-center justify-center min-h-[44px]">
+        🎯 Strategic Advisory
+      </a>
+      <a href="#media-publishing" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 light:text-gray-600 light:border-gray-200 light:bg-gray-50 light:hover:text-gray-900 light:hover:bg-gray-100 transition-all duration-300 flex items-center justify-center min-h-[44px]">
+        🌐 Media & Hosting
+      </a>
+    </div>
+
     <!-- Services Detailed List -->
     <div class="space-y-16">
       {optimizedServices.map((service) => {
@@ -98,7 +119,7 @@ const colorClasses = {
             <div class="glass-card rounded-3xl border border-white/5 relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 items-stretch p-0">
               <!-- Top accent color line -->
               <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${classes.glow} z-20`}></div>
-              
+
               <!-- Card Clickable Overlay Link -->
               <a 
                 href={`/services/${service.id}`} 
@@ -107,14 +128,14 @@ const colorClasses = {
               ></a>
 
               <!-- Info Column (Left) -->
-              <div class="p-8 md:p-10 lg:col-span-7 flex flex-col justify-center space-y-6 relative z-0">
+              <div class="p-8 md:p-10 lg:col-span-7 flex flex-col justify-center space-y-6 relative">
                 <!-- Header -->
                 <div class="flex items-center gap-4">
                   <div class={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl border ${classes.bg}`}>
                     {service.data.icon}
                   </div>
                   <div>
-                    <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none flex items-center gap-2 relative">
+                    <h2 class={`text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none flex items-center gap-2 relative transition-colors ${classes.hoverText}`}>
                       <span>{service.data.title}</span>
                       <span 
                         class={`unread-dot hidden w-2.5 h-2.5 rounded-full ${classes.dot}`}
@@ -130,7 +151,7 @@ const colorClasses = {
 
                 <!-- Tagline Description -->
                 <div class="space-y-3">
-                  <p class="text-brand-yellow/90 font-bold text-xs uppercase tracking-wider">
+                  <p class="text-brand-yellow/90 light:text-amber-700 font-bold text-xs uppercase tracking-wider">
                     {service.data.tagline}
                   </p>
                   <p class="text-gray-300 text-sm leading-relaxed font-normal">
@@ -138,35 +159,11 @@ const colorClasses = {
                   </p>
                 </div>
 
-                <!-- Modules List -->
-                <div>
-                  <h3 class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Service Modules</h3>
-                  <div class="flex flex-wrap gap-2.5">
-                    {modules
-                      .filter(m => m.data.serviceId === service.id)
-                      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
-                      .map(m => (
-                        <a
-                          href={`/services/${service.id}/${m.id.split('/').pop()}`}
-                          class={`px-3 py-1.5 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition-all duration-300 hover:scale-[1.02] cursor-pointer hover:border-brand-${service.data.color}/40 bg-white/[0.02] border-white/5 text-gray-300 hover:text-white flex items-center gap-1.5`}
-                        >
-                          <span>{m.data.title}</span>
-                          <span 
-                            class={`unread-dot hidden w-1.5 h-1.5 rounded-full ${classes.dot}`}
-                            data-item-url={`/services/${service.id}/${m.id.split('/').pop()}`}
-                            title="Unread module"
-                          ></span>
-                        </a>
-                      ))
-                    }
-                  </div>
-                </div>
-
                 <!-- CTA buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 pt-2 relative z-20">
                   <a
                     href={`/services/${service.id}`}
-                    class="px-5 py-3 rounded-xl text-center text-xs font-semibold bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 transition-all duration-300 flex items-center justify-center space-x-1.5 cursor-pointer"
+                    class="px-5 py-3 rounded-xl text-center text-xs font-semibold bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 transition-all duration-300 flex items-center justify-center space-x-1.5 cursor-pointer min-h-[44px]"
                   >
                     <span>View Details & Methodology</span>
                     <span>&rarr;</span>
@@ -175,7 +172,7 @@ const colorClasses = {
                   <a
                     href="#contact-services"
                     data-subject={`Inquiry: ${service.data.title}`}
-                    class={`px-5 py-3 rounded-xl text-center text-xs font-semibold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger ${classes.btnBg}`}
+                    class={`px-5 py-3 rounded-xl text-center text-xs font-semibold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger min-h-[44px] ${classes.btnBg}`}
                   >
                     <span>{service.data.ctaText}</span>
                     <span>&rarr;</span>
