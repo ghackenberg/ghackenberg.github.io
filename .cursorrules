@@ -1,0 +1,9 @@
+# AI Coding Agent Rules & Guidelines
+
+When working in this repository, always follow these rules:
+
+## GitHub Permalinks for Code References
+* All code and source file links inside blog posts or user-facing documentation must be formatted as **GitHub permalinks containing the specific commit hash** rather than local file system URLs (`file://`).
+* Example structure:
+  `https://github.com/ghackenberg/ghackenberg.github.io/blob/<commit_hash>/src/...`
+* Never commit local absolute file paths (e.g. `file:///c:/Users/...`) in markdown documents. Always resolve the repository remote URL and target commit to build permalinks.
