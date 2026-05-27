@@ -169,7 +169,9 @@ publications.forEach(pub => {
 const payload = {
   cytoscape: { elements: cytoscapeElements },
   d3: { nodes: d3Nodes, connections: d3Connections },
-  sigma: { nodes: sigmaNodes, edges: sigmaEdges }
+  sigma: { nodes: sigmaNodes, edges: sigmaEdges },
+  "3d-force": { nodes: d3Nodes, connections: d3Connections },
+  "vis-network": { nodes: d3Nodes, connections: d3Connections }
 };
 
 ---
@@ -203,7 +205,7 @@ const payload = {
       </div>
 
       <!-- Engine Selector Tabs -->
-      <div class="flex bg-white/5 border border-white/5 p-1 rounded-xl self-start sm:self-auto">
+      <div class="flex flex-wrap gap-1 bg-white/5 border border-white/5 p-1 rounded-xl self-start sm:self-auto">
         <a 
           href="/visualizations/cytoscape" 
           class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'cytoscape' ? 'bg-brand-blue text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
@@ -221,6 +223,18 @@ const payload = {
           class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'sigma' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
         >
           Sigma
+        </a>
+        <a 
+          href="/visualizations/3d-force" 
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === '3d-force' ? 'bg-brand-yellow text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+        >
+          3D Force
+        </a>
+        <a 
+          href="/visualizations/vis-network" 
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'vis-network' ? 'bg-brand-blue text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+        >
+          Vis.js
         </a>
       </div>
     </div>
@@ -276,22 +290,17 @@ const payload = {
     </div>
   </main>
 
-  <!-- Load Graph Libraries -->
-  {type === "cytoscape" && (
-    <script is:inline src="/scripts/cytoscape.min.js"></script>
-  )}
-  {type === "d3" && (
-    <script is:inline src="/scripts/d3.min.js"></script>
-  )}
-  {type === "sigma" && (
-    <>
-      <script is:inline src="/scripts/sigma.min.js"></script>
-      <script is:inline src="/scripts/sigma.layout.forceAtlas2.min.js"></script>
-    </>
-  )}
+  <!-- Expose Astro variables to global scope for client script -->
+  <script is:inline define:vars={{ type, payload }}>
+    window.GRAPH_TYPE = type;
+    window.GRAPH_PAYLOAD = payload;
+  </script>
 
   <!-- Inject Graph Boot Scripts -->
-  <script is:inline define:vars={{ type, payload }}>
+  <script type="module" is:inline>
+    const type = window.GRAPH_TYPE;
+    const payload = window.GRAPH_PAYLOAD;
+
     window.addEventListener('DOMContentLoaded', () => {
       const container = document.getElementById('canvas');
       const loading = document.getElementById('canvas-loading');
@@ -299,7 +308,7 @@ const payload = {
 
       let activeInstance = null;
 
-      function runInit() {
+      async function runInit() {
         if (activeInstance) {
           if (typeof activeInstance.destroy === 'function') {
             activeInstance.destroy();
@@ -312,19 +321,36 @@ const payload = {
 
         try {
           if (type === 'cytoscape') {
-            activeInstance = initCytoscape();
+            const { default: cytoscape } = await import('https://cdn.jsdelivr.net/npm/cytoscape@3.31.0/+esm');
+            activeInstance = initCytoscape(cytoscape);
           } else if (type === 'd3') {
-            activeInstance = initD3();
+            const d3 = await import('https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm');
+            activeInstance = initD3(d3);
           } else if (type === 'sigma') {
-            activeInstance = initSigma();
+            const [
+              { Sigma },
+              { Graph },
+              { default: forceAtlas2 }
+            ] = await Promise.all([
+              import('https://cdn.jsdelivr.net/npm/sigma@2.4.0/+esm'),
+              import('https://cdn.jsdelivr.net/npm/graphology@0.25.4/+esm'),
+              import('https://cdn.jsdelivr.net/npm/graphology-layout-forceatlas2@0.10.1/+esm')
+            ]);
+            activeInstance = initSigma(Sigma, Graph, forceAtlas2);
+          } else if (type === '3d-force') {
+            const { default: ForceGraph3D } = await import('https://cdn.jsdelivr.net/npm/3d-force-graph@1.73.0/+esm');
+            activeInstance = init3DForce(ForceGraph3D);
+          } else if (type === 'vis-network') {
+            const vis = await import('https://unpkg.com/vis-network@9.1.9/standalone/esm/index.js');
+            activeInstance = initVisNetwork(vis);
           }
         } catch (e) {
           console.error("Failed to load visualization: ", e);
         }
       }
 
-      setTimeout(() => {
-        runInit();
+      setTimeout(async () => {
+        await runInit();
         if (loading) {
           loading.style.opacity = '0';
           setTimeout(() => loading.remove(), 300);
@@ -333,7 +359,7 @@ const payload = {
 
       window.addEventListener('theme-changed', runInit);
 
-      function initCytoscape() {
+      function initCytoscape(cytoscape) {
         const isLight = document.documentElement.classList.contains('light');
         const cy = cytoscape({
           container: container,
@@ -397,7 +423,6 @@ const payload = {
           }
         });
 
-        // Click to navigate
         cy.on('tap', 'node', function(evt) {
           const node = evt.target;
           const id = node.id();
@@ -409,41 +434,40 @@ const payload = {
         return cy;
       }
 
-      function initD3() {
+      function initD3(d3) {
         const isLight = document.documentElement.classList.contains('light');
         const width = container.offsetWidth;
         const height = container.offsetHeight;
         
-        const nodes = payload.d3.nodes;
-        // Randomize initial node positions to prevent massive clumping in the center
+        const nodes = payload.d3.nodes.map(n => ({ ...n }));
         nodes.forEach(n => {
           n.x = Math.random() * width;
           n.y = Math.random() * height;
         });
 
-        // Map connecting sourceId and targetId strings to actual indices
         const links = payload.d3.connections.map(c => ({
-          source: nodes.findIndex(n => n.id === c.sourceId),
-          target: nodes.findIndex(n => n.id === c.targetId)
-        })).filter(l => l.source !== -1 && l.target !== -1);
+          source: c.sourceId,
+          target: c.targetId
+        })).filter(l => nodes.some(n => n.id === l.source) && nodes.some(n => n.id === l.target));
 
         const svg = d3.select("#canvas").append("svg")
           .attr("width", width)
-          .attr("height", height)
-          .call(d3.behavior.zoom().scaleExtent([0.3, 8]).on("zoom", function () {
-            svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-          }))
-          .append("g");
+          .attr("height", height);
 
         const svgGroup = svg.append("g");
 
-        const force = d3.layout.force()
-          .nodes(nodes)
-          .links(links)
-          .charge(-250)
-          .linkDistance(90)
-          .size([width, height])
-          .start();
+        const zoom = d3.zoom()
+          .scaleExtent([0.3, 8])
+          .on("zoom", (event) => {
+            svgGroup.attr("transform", event.transform);
+          });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+          .force("link", d3.forceLink(links).id(d => d.id).distance(90))
+          .force("charge", d3.forceManyBody().strength(-250))
+          .force("center", d3.forceCenter(width / 2, height / 2));
 
         const link = svgGroup.selectAll(".link")
           .data(links)
@@ -454,7 +478,21 @@ const payload = {
         const node = svgGroup.selectAll(".node")
           .data(nodes)
           .enter().append("g")
-          .call(force.drag);
+          .call(d3.drag()
+            .on("start", (event, d) => {
+              if (!event.active) simulation.alphaTarget(0.3).restart();
+              d.fx = d.x;
+              d.fy = d.y;
+            })
+            .on("drag", (event, d) => {
+              d.fx = event.x;
+              d.fy = event.y;
+            })
+            .on("end", (event, d) => {
+              if (!event.active) simulation.alphaTarget(0);
+              d.fx = null;
+              d.fy = null;
+            }));
 
         const colors = ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
         
@@ -474,14 +512,13 @@ const payload = {
           .style("font-weight", "500")
           .style("pointer-events", "none");
 
-        // Double click to navigate
-        node.on("dblclick", function(d) {
+        node.on("dblclick", (event, d) => {
           if (d.id.startsWith('/posts/') || d.id.startsWith('/publications/')) {
             window.location.href = d.id;
           }
         });
 
-        force.on("tick", function() {
+        simulation.on("tick", () => {
           link.attr("x1", d => d.source.x)
               .attr("y1", d => d.source.y)
               .attr("x2", d => d.target.x)
@@ -492,66 +529,224 @@ const payload = {
 
         return {
           destroy: () => {
-            force.stop();
+            simulation.stop();
           }
         };
       }
 
-      function initSigma() {
+      function initSigma(Sigma, Graph, forceAtlas2) {
         const isLight = document.documentElement.classList.contains('light');
+        const graph = new Graph();
         
-        // Dynamically override edges color on the client-side for Sigma in light mode
-        const edges = payload.sigma.edges.map(e => ({
-          ...e,
-          color: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.07)'
-        }));
+        const nodes = payload.sigma.nodes;
+        const edges = payload.sigma.edges;
 
-        const s = new sigma({
-          graph: {
-            nodes: payload.sigma.nodes,
-            edges: edges
-          },
-          renderer: {
-            container: container,
-            type: 'canvas'
-          },
+        nodes.forEach(n => {
+          graph.addNode(n.id, {
+            label: n.label,
+            x: n.x,
+            y: n.y,
+            size: n.size * 3 + 2,
+            color: n.color
+          });
+        });
+
+        edges.forEach(e => {
+          graph.addEdge(e.source, e.target, {
+            size: 1,
+            color: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)'
+          });
+        });
+
+        forceAtlas2.assign(graph, {
+          iterations: 100,
           settings: {
-            defaultNodeColor: '#3b82f6',
-            defaultLabelColor: isLight ? '#0f172a' : '#f3f4f6',
-            defaultLabelSize: 10,
-            labelThreshold: 5,
-            edgeColor: 'default',
-            defaultEdgeColor: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)',
-            minNodeSize: 4,
-            maxNodeSize: 15,
-            minEdgeSize: 0.5,
-            maxEdgeSize: 1.5,
-            zoomMin: 0.1,
-            zoomMax: 3
+            gravity: 1
           }
         });
 
-        s.startForceAtlas2({
-          worker: true,
-          barnesHutOptimize: false
+        const s = new Sigma(graph, container, {
+          defaultNodeColor: '#3b82f6',
+          defaultEdgeColor: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)',
+          labelColor: { color: isLight ? '#0f172a' : '#f3f4f6' },
+          labelFont: 'Outfit, Inter, sans-serif',
+          labelSize: 10
         });
 
-        // Stop layout calculation after 5 seconds to conserve CPU
-        const forceTimeout = setTimeout(() => {
-          s.stopForceAtlas2();
-        }, 5000);
-
-        s.bind('clickNode', function(e) {
-          const id = e.data.node.id;
-          if (id.startsWith('/posts/') || id.startsWith('/publications/')) {
-            window.location.href = id;
+        s.on('clickNode', ({ node }) => {
+          if (node.startsWith('/posts/') || node.startsWith('/publications/')) {
+            window.location.href = node;
           }
         });
 
         return {
           kill: () => {
-            clearTimeout(forceTimeout);
             s.kill();
+          }
+        };
+      }
+
+      function init3DForce(ForceGraph3D) {
+        const isLight = document.documentElement.classList.contains('light');
+        const nodes = payload['3d-force'].nodes;
+        const connections = payload['3d-force'].connections;
+        const colors = ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
+        
+        const gData = {
+          nodes: nodes.map(n => ({
+            id: n.id,
+            name: n.name,
+            val: n.size * 5 + 3,
+            color: colors[n.group]
+          })),
+          links: connections.map(c => ({
+            source: c.sourceId,
+            target: c.targetId
+          }))
+        };
+
+        const Graph = ForceGraph3D()(container)
+          .graphData(gData)
+          .backgroundColor(isLight ? '#f8fafc' : '#090d16')
+          .showNavInfo(false)
+          .nodeLabel('name')
+          .nodeVal('val')
+          .nodeColor('color')
+          .linkColor(isLight ? () => 'rgba(15, 23, 42, 0.15)' : () => 'rgba(255,255,255,0.08)')
+          .linkWidth(1.2)
+          .linkDirectionalParticles(2)
+          .linkDirectionalParticleWidth(1.5)
+          .linkDirectionalParticleSpeed(0.006)
+          .onNodeClick(node => {
+            if (node.id.startsWith('/posts/') || node.id.startsWith('/publications/')) {
+              window.location.href = node.id;
+            }
+          });
+
+        Graph.d3Force('charge').strength(-120);
+
+        const resizeObserver = new ResizeObserver(entries => {
+          for (let entry of entries) {
+            const { width, height } = entry.contentRect;
+            Graph.width(width).height(height);
+          }
+        });
+        resizeObserver.observe(container);
+
+        return {
+          destroy: () => {
+            resizeObserver.disconnect();
+            if (Graph) {
+              Graph.pauseAnimation();
+              Graph.graphData({ nodes: [], links: [] });
+            }
+          }
+        };
+      }
+
+      function initVisNetwork(vis) {
+        const isLight = document.documentElement.classList.contains('light');
+        const nodes = payload['vis-network'].nodes;
+        const connections = payload['vis-network'].connections;
+        
+        const colors = [
+          { 
+            background: '#3b82f6', 
+            border: isLight ? '#2563eb' : '#60a5fa', 
+            highlight: { background: '#2563eb', border: '#1d4ed8' } 
+          },
+          { 
+            background: '#10b981', 
+            border: isLight ? '#059669' : '#34d399', 
+            highlight: { background: '#059669', border: '#047857' } 
+          },
+          { 
+            background: '#f59e0b', 
+            border: isLight ? '#d97706' : '#fbbf24', 
+            highlight: { background: '#d97706', border: '#b45309' } 
+          }
+        ];
+
+        const visNodes = new vis.DataSet(nodes.map(n => ({
+          id: n.id,
+          label: n.name,
+          value: n.size * 6 + 4,
+          color: colors[n.group],
+          font: {
+            color: isLight ? '#334155' : '#e2e8f0',
+            size: 11,
+            face: 'Outfit, Inter, sans-serif'
+          }
+        })));
+
+        const visEdges = new vis.DataSet(connections.map(c => ({
+          from: c.sourceId,
+          to: c.targetId,
+          color: {
+            color: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.08)',
+            highlight: isLight ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255,255,255,0.25)'
+          }
+        })));
+
+        const data = {
+          nodes: visNodes,
+          edges: visEdges
+        };
+
+        const options = {
+          nodes: {
+            shape: 'dot',
+            scaling: {
+              min: 8,
+              max: 20
+            },
+            borderWidth: 1.5,
+            borderWidthSelected: 3
+          },
+          edges: {
+            width: 1,
+            smooth: {
+              type: 'continuous',
+              forceDirection: 'none',
+              roundness: 0.5
+            }
+          },
+          physics: {
+            solver: 'forceAtlas2Based',
+            forceAtlas2Based: {
+              gravitationalConstant: -50,
+              centralGravity: 0.01,
+              springLength: 80,
+              springConstant: 0.08,
+              damping: 0.4
+            },
+            stabilization: {
+              iterations: 150,
+              updateInterval: 25
+            }
+          },
+          interaction: {
+            hover: true,
+            tooltipDelay: 200,
+            zoomView: true,
+            dragView: true
+          }
+        };
+
+        const network = new vis.Network(container, data, options);
+
+        network.on("click", function (params) {
+          if (params.nodes.length > 0) {
+            const id = params.nodes[0];
+            if (id.startsWith('/posts/') || id.startsWith('/publications/')) {
+              window.location.href = id;
+            }
+          }
+        });
+
+        return {
+          destroy: () => {
+            network.destroy();
           }
         };
       }
