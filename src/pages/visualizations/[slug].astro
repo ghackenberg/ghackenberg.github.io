@@ -262,6 +262,24 @@ const payload = {
             </div>
           </div>
 
+          <!-- Layout Selector Section -->
+          <div class="border-t border-white/5 pt-4">
+            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2.5">Layout Mode</h2>
+            <div class="relative">
+              <select 
+                id="layout-selector"
+                class="w-full px-3 py-2 text-xs rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-200 light:bg-slate-900/5 light:border-slate-900/10 light:hover:border-slate-900/20 light:text-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-green/50 light:focus:ring-brand-green/30 cursor-pointer appearance-none"
+              >
+                <!-- Options will be populated dynamically by the engine -->
+              </select>
+              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400 light:text-slate-500">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
           <div class="border-t border-white/5 pt-4">
             <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2.5">Interaction</h2>
             <ul class="space-y-1.5 text-xs text-gray-400 list-disc pl-4 font-normal leading-relaxed">
@@ -297,13 +315,14 @@ const payload = {
   </script>
 
   <!-- Inject Graph Boot Scripts -->
-  <script type="module" is:inline>
+  <script>
     const type = window.GRAPH_TYPE;
     const payload = window.GRAPH_PAYLOAD;
 
     window.addEventListener('DOMContentLoaded', () => {
       const container = document.getElementById('canvas');
       const loading = document.getElementById('canvas-loading');
+      const selector = document.getElementById('layout-selector');
       if (!container) return;
 
       let activeInstance = null;
@@ -312,43 +331,71 @@ const payload = {
         if (activeInstance) {
           if (typeof activeInstance.destroy === 'function') {
             activeInstance.destroy();
-          } else if (typeof activeInstance.kill === 'function') {
-            activeInstance.kill();
           }
           activeInstance = null;
         }
         container.innerHTML = '';
 
         try {
-          if (type === 'cytoscape') {
-            const { default: cytoscape } = await import('https://cdn.jsdelivr.net/npm/cytoscape@3.31.0/+esm');
-            activeInstance = initCytoscape(cytoscape);
-          } else if (type === 'd3') {
-            const d3 = await import('https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm');
-            activeInstance = initD3(d3);
-          } else if (type === 'sigma') {
-            const [
-              { Sigma },
-              { Graph },
-              { default: forceAtlas2 }
-            ] = await Promise.all([
-              import('https://cdn.jsdelivr.net/npm/sigma@2.4.0/+esm'),
-              import('https://cdn.jsdelivr.net/npm/graphology@0.25.4/+esm'),
-              import('https://cdn.jsdelivr.net/npm/graphology-layout-forceatlas2@0.10.1/+esm')
-            ]);
-            activeInstance = initSigma(Sigma, Graph, forceAtlas2);
-          } else if (type === '3d-force') {
-            const { default: ForceGraph3D } = await import('https://cdn.jsdelivr.net/npm/3d-force-graph@1.73.0/+esm');
-            activeInstance = init3DForce(ForceGraph3D);
-          } else if (type === 'vis-network') {
-            const vis = await import('https://unpkg.com/vis-network@9.1.9/standalone/esm/index.js');
-            activeInstance = initVisNetwork(vis);
+          let engineModule;
+          switch (type) {
+            case 'cytoscape':
+              engineModule = await import('../../content/visualizations/cytoscape/engine.js');
+              break;
+            case 'd3':
+              engineModule = await import('../../content/visualizations/d3/engine.js');
+              break;
+            case 'sigma':
+              engineModule = await import('../../content/visualizations/sigma/engine.js');
+              break;
+            case '3d-force':
+              engineModule = await import('../../content/visualizations/3d-force/engine.js');
+              break;
+            case 'vis-network':
+              engineModule = await import('../../content/visualizations/vis-network/engine.js');
+              break;
+            default:
+              throw new Error(`Unknown visualization type: ${type}`);
           }
+
+          const engine = engineModule.default;
+          
+          // Determine layout from query parameters
+          const params = new URLSearchParams(window.location.search);
+          let currentLayout = params.get('layout');
+          
+          // Verify layout is supported by the engine, else fallback to default
+          const supportsLayout = engine.layouts.some(l => l.id === currentLayout);
+          if (!currentLayout || !supportsLayout) {
+            currentLayout = engine.layouts[0].id;
+          }
+
+          // Populate the layout dropdown
+          if (selector) {
+            const isLightMode = document.documentElement.classList.contains('light');
+            selector.innerHTML = '';
+            engine.layouts.forEach(l => {
+              const option = document.createElement('option');
+              option.value = l.id;
+              option.textContent = l.label;
+              option.style.backgroundColor = isLightMode ? '#ffffff' : '#030712';
+              option.style.color = isLightMode ? '#0f172a' : '#ffffff';
+              selector.appendChild(option);
+            });
+            selector.value = currentLayout;
+          }
+
+          // Initialize engine
+          const isLight = document.documentElement.classList.contains('light');
+          activeInstance = await engine.init(container, payload, currentLayout, isLight);
+          window.activeInstance = activeInstance;
+
         } catch (e) {
           console.error("Failed to load visualization: ", e);
         }
       }
 
+      // Initialize on load
       setTimeout(async () => {
         await runInit();
         if (loading) {
@@ -357,399 +404,36 @@ const payload = {
         }
       }, 100);
 
-      window.addEventListener('theme-changed', runInit);
-
-      function initCytoscape(cytoscape) {
-        const isLight = document.documentElement.classList.contains('light');
-        const cy = cytoscape({
-          container: container,
-          elements: payload.cytoscape.elements,
-          style: [
-            {
-              selector: 'node',
-              style: {
-                'background-color': 'data(color)',
-                'label': 'data(name)',
-                'width': 'data(size)',
-                'height': 'data(size)',
-                'color': isLight ? '#0f172a' : '#f3f4f6',
-                'font-size': '10px',
-                'font-family': 'Outfit, Inter, sans-serif',
-                'font-weight': '600',
-                'text-valign': 'center',
-                'text-halign': 'right',
-                'text-margin-x': 4,
-                'border-width': '2px',
-                'border-color': isLight ? '#ffffff' : '#030712',
-                'overlay-opacity': 0,
-                'transition-property': 'background-color, border-color, width, height',
-                'transition-duration': '0.2s'
-              }
-            },
-            {
-              selector: 'edge',
-              style: {
-                'width': 1.5,
-                'line-color': isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)',
-                'target-arrow-color': isLight ? 'rgba(15, 23, 42, 0.12)' : 'rgba(255,255,255,0.1)',
-                'curve-style': 'bezier'
-              }
-            },
-            {
-              selector: 'node:selected',
-              style: {
-                'border-width': '3px',
-                'border-color': '#10b981'
-              }
-            }
-          ],
-          layout: {
-            name: 'cose',
-            idealEdgeLength: 100,
-            nodeOverlap: 20,
-            refresh: 20,
-            fit: true,
-            padding: 30,
-            randomize: true,
-            componentSpacing: 100,
-            nodeRepulsion: 400000,
-            edgeElasticity: 100,
-            nestingFactor: 5,
-            gravity: 80,
-            numIter: 1000,
-            initialTemp: 200,
-            coolingFactor: 0.95,
-            minTemp: 1.0
+      // Handle layout change
+      if (selector) {
+        selector.addEventListener('change', (e) => {
+          const newLayout = e.target.value;
+          if (activeInstance) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('layout', newLayout);
+            window.history.pushState({}, '', url.toString());
+            
+            const isLight = document.documentElement.classList.contains('light');
+            activeInstance.updateLayout(newLayout, isLight);
           }
         });
-
-        cy.on('tap', 'node', function(evt) {
-          const node = evt.target;
-          const id = node.id();
-          if (id.startsWith('/posts/') || id.startsWith('/publications/')) {
-            window.location.href = id;
-          }
-        });
-
-        return cy;
       }
 
-      function initD3(d3) {
+      // Handle theme change dynamically without reloading canvas
+      window.addEventListener('theme-changed', () => {
         const isLight = document.documentElement.classList.contains('light');
-        const width = container.offsetWidth;
-        const height = container.offsetHeight;
-        
-        const nodes = payload.d3.nodes.map(n => ({ ...n }));
-        nodes.forEach(n => {
-          n.x = Math.random() * width;
-          n.y = Math.random() * height;
-        });
-
-        const links = payload.d3.connections.map(c => ({
-          source: c.sourceId,
-          target: c.targetId
-        })).filter(l => nodes.some(n => n.id === l.source) && nodes.some(n => n.id === l.target));
-
-        const svg = d3.select("#canvas").append("svg")
-          .attr("width", width)
-          .attr("height", height);
-
-        const svgGroup = svg.append("g");
-
-        const zoom = d3.zoom()
-          .scaleExtent([0.3, 8])
-          .on("zoom", (event) => {
-            svgGroup.attr("transform", event.transform);
+        if (selector) {
+          Array.from(selector.options).forEach(option => {
+            option.style.backgroundColor = isLight ? '#ffffff' : '#030712';
+            option.style.color = isLight ? '#0f172a' : '#ffffff';
           });
-
-        svg.call(zoom);
-
-        const simulation = d3.forceSimulation(nodes)
-          .force("link", d3.forceLink(links).id(d => d.id).distance(90))
-          .force("charge", d3.forceManyBody().strength(-250))
-          .force("center", d3.forceCenter(width / 2, height / 2));
-
-        const link = svgGroup.selectAll(".link")
-          .data(links)
-          .enter().append("line")
-          .style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)")
-          .style("stroke-width", "1px");
-
-        const node = svgGroup.selectAll(".node")
-          .data(nodes)
-          .enter().append("g")
-          .call(d3.drag()
-            .on("start", (event, d) => {
-              if (!event.active) simulation.alphaTarget(0.3).restart();
-              d.fx = d.x;
-              d.fy = d.y;
-            })
-            .on("drag", (event, d) => {
-              d.fx = event.x;
-              d.fy = event.y;
-            })
-            .on("end", (event, d) => {
-              if (!event.active) simulation.alphaTarget(0);
-              d.fx = null;
-              d.fy = null;
-            }));
-
-        const colors = ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
-        
-        node.append("circle")
-          .attr("r", d => d.size * 6 + 4)
-          .style("fill", d => colors[d.group])
-          .style("stroke", isLight ? "#ffffff" : "#030712")
-          .style("stroke-width", "1.5px");
-
-        node.append("text")
-          .attr("dx", d => d.size * 6 + 8)
-          .attr("dy", ".35em")
-          .text(d => d.name)
-          .style("fill", isLight ? "#334155" : "#9ca3af")
-          .style("font-size", "9px")
-          .style("font-family", "Outfit, Inter, sans-serif")
-          .style("font-weight", "500")
-          .style("pointer-events", "none");
-
-        node.on("dblclick", (event, d) => {
-          if (d.id.startsWith('/posts/') || d.id.startsWith('/publications/')) {
-            window.location.href = d.id;
-          }
-        });
-
-        simulation.on("tick", () => {
-          link.attr("x1", d => d.source.x)
-              .attr("y1", d => d.source.y)
-              .attr("x2", d => d.target.x)
-              .attr("y2", d => d.target.y);
-
-          node.attr("transform", d => `translate(${d.x},${d.y})`);
-        });
-
-        return {
-          destroy: () => {
-            simulation.stop();
-          }
-        };
-      }
-
-      function initSigma(Sigma, Graph, forceAtlas2) {
-        const isLight = document.documentElement.classList.contains('light');
-        const graph = new Graph();
-        
-        const nodes = payload.sigma.nodes;
-        const edges = payload.sigma.edges;
-
-        nodes.forEach(n => {
-          graph.addNode(n.id, {
-            label: n.label,
-            x: n.x,
-            y: n.y,
-            size: n.size * 3 + 2,
-            color: n.color
-          });
-        });
-
-        edges.forEach(e => {
-          graph.addEdge(e.source, e.target, {
-            size: 1,
-            color: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)'
-          });
-        });
-
-        forceAtlas2.assign(graph, {
-          iterations: 100,
-          settings: {
-            gravity: 1
-          }
-        });
-
-        const s = new Sigma(graph, container, {
-          defaultNodeColor: '#3b82f6',
-          defaultEdgeColor: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)',
-          labelColor: { color: isLight ? '#0f172a' : '#f3f4f6' },
-          labelFont: 'Outfit, Inter, sans-serif',
-          labelSize: 10
-        });
-
-        s.on('clickNode', ({ node }) => {
-          if (node.startsWith('/posts/') || node.startsWith('/publications/')) {
-            window.location.href = node;
-          }
-        });
-
-        return {
-          kill: () => {
-            s.kill();
-          }
-        };
-      }
-
-      function init3DForce(ForceGraph3D) {
-        const isLight = document.documentElement.classList.contains('light');
-        const nodes = payload['3d-force'].nodes;
-        const connections = payload['3d-force'].connections;
-        const colors = ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
-        
-        const gData = {
-          nodes: nodes.map(n => ({
-            id: n.id,
-            name: n.name,
-            val: n.size * 5 + 3,
-            color: colors[n.group]
-          })),
-          links: connections.map(c => ({
-            source: c.sourceId,
-            target: c.targetId
-          }))
-        };
-
-        const Graph = ForceGraph3D()(container)
-          .graphData(gData)
-          .backgroundColor(isLight ? '#f8fafc' : '#090d16')
-          .showNavInfo(false)
-          .nodeLabel('name')
-          .nodeVal('val')
-          .nodeColor('color')
-          .linkColor(isLight ? () => 'rgba(15, 23, 42, 0.15)' : () => 'rgba(255,255,255,0.08)')
-          .linkWidth(1.2)
-          .linkDirectionalParticles(2)
-          .linkDirectionalParticleWidth(1.5)
-          .linkDirectionalParticleSpeed(0.006)
-          .onNodeClick(node => {
-            if (node.id.startsWith('/posts/') || node.id.startsWith('/publications/')) {
-              window.location.href = node.id;
-            }
-          });
-
-        Graph.d3Force('charge').strength(-120);
-
-        const resizeObserver = new ResizeObserver(entries => {
-          for (let entry of entries) {
-            const { width, height } = entry.contentRect;
-            Graph.width(width).height(height);
-          }
-        });
-        resizeObserver.observe(container);
-
-        return {
-          destroy: () => {
-            resizeObserver.disconnect();
-            if (Graph) {
-              Graph.pauseAnimation();
-              Graph.graphData({ nodes: [], links: [] });
-            }
-          }
-        };
-      }
-
-      function initVisNetwork(vis) {
-        const isLight = document.documentElement.classList.contains('light');
-        const nodes = payload['vis-network'].nodes;
-        const connections = payload['vis-network'].connections;
-        
-        const colors = [
-          { 
-            background: '#3b82f6', 
-            border: isLight ? '#2563eb' : '#60a5fa', 
-            highlight: { background: '#2563eb', border: '#1d4ed8' } 
-          },
-          { 
-            background: '#10b981', 
-            border: isLight ? '#059669' : '#34d399', 
-            highlight: { background: '#059669', border: '#047857' } 
-          },
-          { 
-            background: '#f59e0b', 
-            border: isLight ? '#d97706' : '#fbbf24', 
-            highlight: { background: '#d97706', border: '#b45309' } 
-          }
-        ];
-
-        const visNodes = new vis.DataSet(nodes.map(n => ({
-          id: n.id,
-          label: n.name,
-          value: n.size * 6 + 4,
-          color: colors[n.group],
-          font: {
-            color: isLight ? '#334155' : '#e2e8f0',
-            size: 11,
-            face: 'Outfit, Inter, sans-serif'
-          }
-        })));
-
-        const visEdges = new vis.DataSet(connections.map(c => ({
-          from: c.sourceId,
-          to: c.targetId,
-          color: {
-            color: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.08)',
-            highlight: isLight ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255,255,255,0.25)'
-          }
-        })));
-
-        const data = {
-          nodes: visNodes,
-          edges: visEdges
-        };
-
-        const options = {
-          nodes: {
-            shape: 'dot',
-            scaling: {
-              min: 8,
-              max: 20
-            },
-            borderWidth: 1.5,
-            borderWidthSelected: 3
-          },
-          edges: {
-            width: 1,
-            smooth: {
-              type: 'continuous',
-              forceDirection: 'none',
-              roundness: 0.5
-            }
-          },
-          physics: {
-            solver: 'forceAtlas2Based',
-            forceAtlas2Based: {
-              gravitationalConstant: -50,
-              centralGravity: 0.01,
-              springLength: 80,
-              springConstant: 0.08,
-              damping: 0.4
-            },
-            stabilization: {
-              iterations: 150,
-              updateInterval: 25
-            }
-          },
-          interaction: {
-            hover: true,
-            tooltipDelay: 200,
-            zoomView: true,
-            dragView: true
-          }
-        };
-
-        const network = new vis.Network(container, data, options);
-
-        network.on("click", function (params) {
-          if (params.nodes.length > 0) {
-            const id = params.nodes[0];
-            if (id.startsWith('/posts/') || id.startsWith('/publications/')) {
-              window.location.href = id;
-            }
-          }
-        });
-
-        return {
-          destroy: () => {
-            network.destroy();
-          }
-        };
-      }
+        }
+        if (activeInstance) {
+          const params = new URLSearchParams(window.location.search);
+          const currentLayout = params.get('layout') || activeInstance.layouts[0].id;
+          activeInstance.updateLayout(currentLayout, isLight);
+        }
+      });
     });
   </script>
 </Layout>
