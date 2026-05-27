@@ -50,7 +50,7 @@ const colorClasses = {
     bg: 'bg-brand-blue/10',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-blue',
-    glow: 'from-brand-blue to-brand-purple'
+    glow: 'from-brand-blue to-blue-400 light:to-blue-700'
   },
   yellow: {
     text: 'text-brand-yellow',
@@ -58,7 +58,7 @@ const colorClasses = {
     bg: 'bg-brand-yellow/10',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-yellow',
-    glow: 'from-brand-yellow to-brand-purple'
+    glow: 'from-brand-yellow to-amber-400 light:to-amber-700'
   },
   purple: {
     text: 'text-brand-purple',
@@ -66,7 +66,7 @@ const colorClasses = {
     bg: 'bg-brand-purple/10',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-purple',
-    glow: 'from-brand-purple to-brand-blue'
+    glow: 'from-brand-purple to-purple-400 light:to-purple-700'
   },
   green: {
     text: 'text-brand-green',
@@ -74,7 +74,7 @@ const colorClasses = {
     bg: 'bg-brand-green/10',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-green',
-    glow: 'from-brand-green to-brand-blue'
+    glow: 'from-brand-green to-emerald-400 light:to-emerald-700'
   }
 }[accentColor];
 
@@ -105,9 +105,6 @@ const formattedDate = lastUpdated
 
     <!-- Title Header -->
     <header class="mb-12 pb-10 border-b border-white/5 relative">
-      <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded ${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border} mb-4 uppercase tracking-wider`}>
-        {project.data.tagline}
-      </span>
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
         {project.data.title}
       </h1>

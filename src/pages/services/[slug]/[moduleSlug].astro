@@ -27,7 +27,7 @@ const colorClasses = {
     border: 'border-brand-blue/20 light:border-blue-200',
     bg: 'bg-brand-blue/10 light:bg-blue-50/50',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
-    glow: 'from-brand-blue to-brand-purple',
+    glow: 'from-brand-blue to-blue-400 light:to-blue-700',
     leftBorder: 'border-brand-blue light:border-blue-600',
     glowBorder: 'rgba(59, 130, 246, 0.3)',
     glowText: '#60a5fa',
@@ -39,7 +39,7 @@ const colorClasses = {
     border: 'border-brand-yellow/20 light:border-amber-200',
     bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold light:bg-amber-600 light:hover:bg-amber-700 light:text-white',
-    glow: 'from-brand-yellow to-brand-purple',
+    glow: 'from-brand-yellow to-amber-400 light:to-amber-700',
     leftBorder: 'border-brand-yellow light:border-amber-600',
     glowBorder: 'rgba(245, 158, 11, 0.3)',
     glowText: '#fbbf24',
@@ -51,7 +51,7 @@ const colorClasses = {
     border: 'border-brand-purple/20 light:border-purple-200',
     bg: 'bg-brand-purple/10 light:bg-purple-50/50',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
-    glow: 'from-brand-purple to-brand-blue',
+    glow: 'from-brand-purple to-purple-400 light:to-purple-700',
     leftBorder: 'border-brand-purple light:border-purple-600',
     glowBorder: 'rgba(168, 85, 247, 0.3)',
     glowText: '#c084fc',
@@ -63,7 +63,7 @@ const colorClasses = {
     border: 'border-brand-green/20 light:border-emerald-200',
     bg: 'bg-brand-green/10 light:bg-emerald-50/50',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold light:bg-emerald-600 light:hover:bg-emerald-700 light:text-white',
-    glow: 'from-brand-green to-brand-blue',
+    glow: 'from-brand-green to-emerald-400 light:to-emerald-700',
     leftBorder: 'border-brand-green light:border-emerald-600',
     glowBorder: 'rgba(16, 185, 129, 0.3)',
     glowText: '#34d399',
@@ -93,11 +93,6 @@ const colorClasses = {
 
     <!-- Header -->
     <header class="mb-12 pb-10 border-b border-white/5 relative">
-      <div class="flex items-center gap-3 mb-4">
-        <span class={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} uppercase tracking-wider`}>
-          {parentService.data.icon} &nbsp; {module.data.badge || 'Module'} &bull; {parentService.data.category}
-        </span>
-      </div>
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
         {module.data.title}
       </h1>

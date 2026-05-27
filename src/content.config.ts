@@ -184,7 +184,7 @@ const services = defineCollection({
   }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    category: z.string(),
+    category: z.string().optional(),
     tagline: z.string(),
     description: z.string(),
     icon: z.string(),
