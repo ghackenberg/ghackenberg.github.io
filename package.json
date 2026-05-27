@@ -1,7 +1,15 @@
 {
-  "name": "temp-astro",
+  "name": "ghackenberg.github.io",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "Personal portfolio website of Dr. Georg Hackenberg",
+  "author": "Georg Hackenberg <georg.hackenberg@fh-wels.at> (https://ghackenberg.github.io)",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghackenberg/ghackenberg.github.io.git"
+  },
+  "homepage": "https://ghackenberg.github.io",
   "engines": {
     "node": ">=22.12.0"
   },
