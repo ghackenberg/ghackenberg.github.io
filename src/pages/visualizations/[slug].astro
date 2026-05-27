@@ -171,6 +171,7 @@ const payload = {
   d3: { nodes: d3Nodes, connections: d3Connections },
   sigma: { nodes: sigmaNodes, edges: sigmaEdges }
 };
+
 ---
 
 <Layout 
@@ -181,16 +182,18 @@ const payload = {
   <Navbar />
 
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16 w-full relative z-10 flex flex-col h-[calc(100vh-80px)]">
+    <!-- Back Button -->
+    <a 
+      href="/visualizations" 
+      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white transition-all mb-8 cursor-pointer self-start"
+    >
+      <span>&larr;</span>
+      <span>Back to Visualizations</span>
+    </a>
+
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 shrink-0">
       <div>
-        <a 
-          href="/visualizations" 
-          class="inline-flex items-center space-x-1.5 text-[10px] font-bold text-gray-400 hover:text-white uppercase tracking-wider mb-2"
-        >
-          <span>&larr;</span>
-          <span>Visualizations</span>
-        </a>
         <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
           {title}
           <span class="text-xs px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 font-semibold tracking-wide uppercase">
