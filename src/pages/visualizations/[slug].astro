@@ -187,7 +187,7 @@ const payload = {
     <!-- Back Button -->
     <a 
       href="/visualizations" 
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white transition-all mb-8 cursor-pointer self-start"
+      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-green/10 border border-brand-green/20 hover:border-brand-green/30 text-brand-green transition-all mb-8 cursor-pointer self-start"
     >
       <span>&larr;</span>
       <span>Back to Visualizations</span>
@@ -208,13 +208,13 @@ const payload = {
       <div class="flex flex-wrap gap-1 bg-white/5 border border-white/5 p-1 rounded-xl self-start sm:self-auto">
         <a 
           href="/visualizations/cytoscape" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'cytoscape' ? 'bg-brand-blue text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'cytoscape' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
         >
           Cytoscape
         </a>
         <a 
           href="/visualizations/d3" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'd3' ? 'bg-brand-purple text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'd3' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
         >
           D3
         </a>
@@ -226,13 +226,13 @@ const payload = {
         </a>
         <a 
           href="/visualizations/3d-force" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === '3d-force' ? 'bg-brand-yellow text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === '3d-force' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
         >
           3D Force
         </a>
         <a 
           href="/visualizations/vis-network" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'vis-network' ? 'bg-brand-blue text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'vis-network' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
         >
           Vis.js
         </a>

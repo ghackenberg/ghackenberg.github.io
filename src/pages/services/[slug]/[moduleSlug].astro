@@ -27,48 +27,52 @@ const colorClasses = {
     border: 'border-brand-blue/20 light:border-blue-200',
     bg: 'bg-brand-blue/10 light:bg-blue-50/50',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
-    glow: 'from-brand-blue to-blue-400 light:to-blue-700',
+    glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
     leftBorder: 'border-brand-blue light:border-blue-600',
     glowBorder: 'rgba(59, 130, 246, 0.3)',
     glowText: '#60a5fa',
     glowShadow: 'rgba(59, 130, 246, 0.25)',
     dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)] light:shadow-[0_0_4px_rgba(29,78,216,0.4)]',
+    phaseHover: 'group-hover/phase:text-brand-blue light:group-hover/phase:text-blue-700',
   },
   yellow: {
     text: 'text-brand-yellow light:text-amber-800',
     border: 'border-brand-yellow/20 light:border-amber-200',
     bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold light:bg-amber-600 light:hover:bg-amber-700 light:text-white',
-    glow: 'from-brand-yellow to-amber-400 light:to-amber-700',
+    glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
     leftBorder: 'border-brand-yellow light:border-amber-600',
     glowBorder: 'rgba(245, 158, 11, 0.3)',
     glowText: '#fbbf24',
     glowShadow: 'rgba(245, 158, 11, 0.25)',
     dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)] light:shadow-[0_0_4px_rgba(180,83,9,0.4)]',
+    phaseHover: 'group-hover/phase:text-brand-yellow light:group-hover/phase:text-amber-800',
   },
   purple: {
     text: 'text-brand-purple light:text-purple-700',
     border: 'border-brand-purple/20 light:border-purple-200',
     bg: 'bg-brand-purple/10 light:bg-purple-50/50',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
-    glow: 'from-brand-purple to-purple-400 light:to-purple-700',
+    glow: 'from-brand-purple to-pink-500 light:to-pink-600',
     leftBorder: 'border-brand-purple light:border-purple-600',
     glowBorder: 'rgba(168, 85, 247, 0.3)',
     glowText: '#c084fc',
     glowShadow: 'rgba(168, 85, 247, 0.25)',
     dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]',
+    phaseHover: 'group-hover/phase:text-brand-purple light:group-hover/phase:text-purple-700',
   },
   green: {
     text: 'text-brand-green light:text-emerald-700',
     border: 'border-brand-green/20 light:border-emerald-200',
     bg: 'bg-brand-green/10 light:bg-emerald-50/50',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold light:bg-emerald-600 light:hover:bg-emerald-700 light:text-white',
-    glow: 'from-brand-green to-emerald-400 light:to-emerald-700',
+    glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
     leftBorder: 'border-brand-green light:border-emerald-600',
     glowBorder: 'rgba(16, 185, 129, 0.3)',
     glowText: '#34d399',
     glowShadow: 'rgba(16, 185, 129, 0.25)',
     dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)] light:shadow-[0_0_4px_rgba(4,120,87,0.4)]',
+    phaseHover: 'group-hover/phase:text-brand-green light:group-hover/phase:text-emerald-700',
   }
 }[parentService.data.color];
 
@@ -85,7 +89,7 @@ const colorClasses = {
     <!-- Back Button -->
     <a 
       href={`/services/${parentService.id}`} 
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white transition-all mb-8 cursor-pointer"
+      class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${parentService.data.color}/10 border border-brand-${parentService.data.color}/20 hover:border-brand-${parentService.data.color}/30 text-brand-${parentService.data.color} transition-all mb-8 cursor-pointer`}
     >
       <span>&larr;</span>
       <span>Back to {parentService.data.title}</span>
@@ -96,7 +100,7 @@ const colorClasses = {
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
         {module.data.title}
       </h1>
-      <p class="text-brand-yellow light:text-amber-700 font-bold text-xs uppercase tracking-wider mb-2">
+      <p class={`${colorClasses.text} font-bold text-xs uppercase tracking-wider mb-2`}>
         {module.data.tagline}
       </p>
       <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
@@ -287,7 +291,7 @@ const colorClasses = {
                     </div>
 
                     <div class="space-y-1.5 flex-grow">
-                      <h3 class="text-xs sm:text-sm font-extrabold text-white uppercase tracking-wider leading-tight group-hover/phase:text-brand-yellow transition-colors mt-0.5 light:text-slate-900 light:group-hover/phase:text-amber-800">
+                      <h3 class={`text-xs sm:text-sm font-extrabold text-white uppercase tracking-wider leading-tight ${colorClasses.phaseHover} transition-colors mt-0.5 light:text-slate-900`}>
                         {phase.title}
                       </h3>
                       <p class="text-xs text-gray-400 leading-relaxed font-normal group-hover/phase:text-gray-300 transition-colors max-w-3xl light:text-slate-600 light:group-hover/phase:text-slate-800">
@@ -305,7 +309,7 @@ const colorClasses = {
     <!-- Contact Section -->
     <section id="contact-services" class="py-16 mt-16 border-t border-white/5 scroll-mt-24">
       <div class="max-w-3xl mx-auto text-center mb-12">
-        <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-yellow/10 text-brand-yellow border border-brand-yellow/20 mb-4 uppercase tracking-wider">
+        <span class={`inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} mb-4 uppercase tracking-wider`}>
           Let's Collaborate
         </span>
         <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">
@@ -318,13 +322,13 @@ const colorClasses = {
 
       <div class="max-w-2xl mx-auto">
         <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
-          <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow"></div>
+          <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${colorClasses.glow}`}></div>
           
           <h2 class="text-lg font-bold text-white mb-6">Contact & Booking Inquiry</h2>
           
           <div class="space-y-6">
             <div class="flex items-start space-x-4">
-              <div class="text-brand-blue mt-1.5 shrink-0">
+              <div class={`${colorClasses.text} mt-1.5 shrink-0`}>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"></path>
                 </svg>
@@ -348,7 +352,7 @@ const colorClasses = {
               <a 
                 id="direct-mail-link"
                 href={`mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry:%20${encodeURIComponent(parentService.data.title)}%20-%20${encodeURIComponent(module.data.title)}`}
-                class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-gray-950 font-bold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-blue/20"
+                class={`px-5 py-2.5 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-md ${colorClasses.btnBg}`}
               >
                 Open Email Client &rarr;
               </a>

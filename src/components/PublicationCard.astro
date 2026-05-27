@@ -52,12 +52,12 @@ function getPublisherDomain(url: string | undefined): string {
 }
 ---
 
-<div class="glass-card p-6 rounded-2xl border border-white/5 group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-yellow/30 h-full w-full">
+<div class="glass-card p-6 rounded-2xl border border-white/5 group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-purple/30 h-full w-full">
   <!-- Absolute overlay link for card clickability -->
   <a href={`/publications/${id}`} class="absolute inset-0 z-10" aria-label={title}></a>
 
   <!-- Icon -->
-  <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shrink-0 border border-white/10 bg-gray-900/50 flex items-center justify-center text-white/30 group-hover:text-brand-yellow/80 group-hover:border-brand-yellow/30 transition-all duration-300 relative">
+  <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shrink-0 border border-white/10 bg-gray-900/50 flex items-center justify-center text-white/30 group-hover:text-brand-purple/80 group-hover:border-brand-purple/30 transition-all duration-300 relative">
     {icon ? (
       <svg 
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-300 z-0 will-change-transform pointer-events-none" 
@@ -110,10 +110,10 @@ function getPublisherDomain(url: string | undefined): string {
 
   <!-- Details -->
   <div class="flex-grow flex flex-col h-full w-full">
-    <h3 class="relative pr-6 text-lg font-bold text-white mb-2 group-hover:text-brand-yellow transition-colors leading-snug">
+    <h3 class="relative pr-6 text-lg font-bold text-white mb-2 group-hover:text-brand-purple transition-colors leading-snug">
       {title}
       <span 
-        class="unread-dot hidden absolute top-[0.625em] -translate-y-1/2 right-0 w-2.5 h-2.5 rounded-full bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]" 
+        class="unread-dot hidden absolute top-[0.625em] -translate-y-1/2 right-0 w-2.5 h-2.5 rounded-full bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]" 
         data-item-url={`/publications/${id}`}
         title="Unread publication"
       ></span>
@@ -132,7 +132,7 @@ function getPublisherDomain(url: string | undefined): string {
       {tags.map(tag => (
         <a 
           href={`/publications/tags/${tag}`}
-          class={`text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 ${tag === activeTag ? 'text-brand-yellow border-brand-yellow/30 bg-brand-yellow/5' : 'text-gray-400 hover:text-white hover:border-white/10'} transition-all duration-200 relative z-20`}
+          class={`text-[11px] px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 ${tag === activeTag ? 'text-brand-purple border-brand-purple/30 bg-brand-purple/5' : 'text-gray-400 hover:text-white hover:border-white/10'} transition-all duration-200 relative z-20`}
         >
           #{tag}
         </a>
@@ -143,14 +143,14 @@ function getPublisherDomain(url: string | undefined): string {
             href={publisherUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="text-xs font-semibold text-brand-blue hover:text-brand-blue/85 flex items-center space-x-1 relative z-20 py-1"
+            class="text-xs font-semibold text-brand-purple hover:text-brand-purple/85 flex items-center space-x-1 relative z-20 py-1"
           >
             <span>{getPublisherDomain(publisherUrl)}</span>
             <span>↗</span>
           </a>
         )}
         <span 
-          class="text-xs font-semibold text-brand-yellow group-hover:text-brand-yellow/85 flex items-center space-x-1 transition-colors duration-300 cursor-pointer py-1"
+          class="text-xs font-semibold text-brand-purple group-hover:text-brand-purple/85 flex items-center space-x-1 transition-colors duration-300 cursor-pointer py-1"
         >
           <span>{linkLabel}</span>
           <span>&rarr;</span>

@@ -50,7 +50,7 @@ const colorClasses = {
     bg: 'bg-brand-blue/10',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-blue',
-    glow: 'from-brand-blue to-blue-400 light:to-blue-700'
+    glow: 'from-brand-blue to-indigo-500 light:to-indigo-600'
   },
   yellow: {
     text: 'text-brand-yellow',
@@ -58,7 +58,7 @@ const colorClasses = {
     bg: 'bg-brand-yellow/10',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-yellow',
-    glow: 'from-brand-yellow to-amber-400 light:to-amber-700'
+    glow: 'from-brand-yellow to-orange-500 light:to-orange-600'
   },
   purple: {
     text: 'text-brand-purple',
@@ -66,7 +66,7 @@ const colorClasses = {
     bg: 'bg-brand-purple/10',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-purple',
-    glow: 'from-brand-purple to-purple-400 light:to-purple-700'
+    glow: 'from-brand-purple to-pink-500 light:to-pink-600'
   },
   green: {
     text: 'text-brand-green',
@@ -74,7 +74,7 @@ const colorClasses = {
     bg: 'bg-brand-green/10',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold',
     hoverText: 'hover:text-brand-green',
-    glow: 'from-brand-green to-emerald-400 light:to-emerald-700'
+    glow: 'from-brand-green to-cyan-500 light:to-cyan-600'
   }
 }[accentColor];
 
@@ -97,7 +97,7 @@ const formattedDate = lastUpdated
     <!-- Back Button -->
     <a 
       href="/projects" 
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white transition-all mb-8 cursor-pointer"
+      class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${accentColor}/10 border border-brand-${accentColor}/20 hover:border-brand-${accentColor}/30 text-brand-${accentColor} transition-all mb-8 cursor-pointer`}
     >
       <span>&larr;</span>
       <span>Back to Projects</span>
@@ -182,10 +182,10 @@ const formattedDate = lastUpdated
         <!-- Linked GitHub Repository Card (if available) -->
         {repo ? (
           <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col group overflow-hidden relative">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-brand-blue opacity-60"></div>
+            <div class={`absolute top-0 left-0 right-0 h-1 bg-brand-${accentColor} opacity-60`}></div>
             
             <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
-              <svg class="w-5 h-5 text-brand-blue shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <svg class={`w-5 h-5 text-brand-${accentColor} shrink-0`} fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
               </svg>
               <span>GitHub Repo</span>
@@ -226,7 +226,7 @@ const formattedDate = lastUpdated
                 href={repo.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center text-sm font-bold text-brand-yellow hover:text-brand-yellow/80 transition-colors group/link cursor-pointer"
+                class={`inline-flex items-center text-sm font-bold ${colorClasses.linkText} transition-colors group/link cursor-pointer`}
               >
                 <span>Explore Codebase</span>
                 <svg class="w-4 h-4 ml-1.5 transform group-hover/link:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
