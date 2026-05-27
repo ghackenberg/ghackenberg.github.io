@@ -67,7 +67,7 @@ const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
               <a 
                 href={`/publications/tags/${tag}`}
                 data-tag={tag}
-                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-purple/30 transition-all duration-200"
+                class="tag-link px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-200"
               >
                 #{tag}
               </a>
@@ -138,3 +138,26 @@ const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
     });
   </script>
 </Layout>
+
+<style>
+  .tag-link {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
+  }
+  .tag-link:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+    color: #c084fc;
+    background: rgba(168, 85, 247, 0.08);
+  }
+  :global(.light) .tag-link {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569;
+  }
+  :global(.light) .tag-link:hover {
+    background: rgba(168, 85, 247, 0.06);
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #7e22ce;
+  }
+</style>
