@@ -297,26 +297,44 @@ const payload = {
       const loading = document.getElementById('canvas-loading');
       if (!container) return;
 
-      setTimeout(() => {
+      let activeInstance = null;
+
+      function runInit() {
+        if (activeInstance) {
+          if (typeof activeInstance.destroy === 'function') {
+            activeInstance.destroy();
+          } else if (typeof activeInstance.kill === 'function') {
+            activeInstance.kill();
+          }
+          activeInstance = null;
+        }
+        container.innerHTML = '';
+
         try {
           if (type === 'cytoscape') {
-            initCytoscape();
+            activeInstance = initCytoscape();
           } else if (type === 'd3') {
-            initD3();
+            activeInstance = initD3();
           } else if (type === 'sigma') {
-            initSigma();
+            activeInstance = initSigma();
           }
         } catch (e) {
           console.error("Failed to load visualization: ", e);
-        } finally {
-          if (loading) {
-            loading.style.opacity = '0';
-            setTimeout(() => loading.remove(), 300);
-          }
+        }
+      }
+
+      setTimeout(() => {
+        runInit();
+        if (loading) {
+          loading.style.opacity = '0';
+          setTimeout(() => loading.remove(), 300);
         }
       }, 100);
 
+      window.addEventListener('theme-changed', runInit);
+
       function initCytoscape() {
+        const isLight = document.documentElement.classList.contains('light');
         const cy = cytoscape({
           container: container,
           elements: payload.cytoscape.elements,
@@ -328,7 +346,7 @@ const payload = {
                 'label': 'data(name)',
                 'width': 'data(size)',
                 'height': 'data(size)',
-                'color': '#f3f4f6',
+                'color': isLight ? '#0f172a' : '#f3f4f6',
                 'font-size': '10px',
                 'font-family': 'Outfit, Inter, sans-serif',
                 'font-weight': '600',
@@ -336,7 +354,7 @@ const payload = {
                 'text-halign': 'right',
                 'text-margin-x': 4,
                 'border-width': '2px',
-                'border-color': '#030712',
+                'border-color': isLight ? '#ffffff' : '#030712',
                 'overlay-opacity': 0,
                 'transition-property': 'background-color, border-color, width, height',
                 'transition-duration': '0.2s'
@@ -346,8 +364,8 @@ const payload = {
               selector: 'edge',
               style: {
                 'width': 1.5,
-                'line-color': 'rgba(255,255,255,0.06)',
-                'target-arrow-color': 'rgba(255,255,255,0.1)',
+                'line-color': isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)',
+                'target-arrow-color': isLight ? 'rgba(15, 23, 42, 0.12)' : 'rgba(255,255,255,0.1)',
                 'curve-style': 'bezier'
               }
             },
@@ -387,9 +405,12 @@ const payload = {
             window.location.href = id;
           }
         });
+
+        return cy;
       }
 
       function initD3() {
+        const isLight = document.documentElement.classList.contains('light');
         const width = container.offsetWidth;
         const height = container.offsetHeight;
         
@@ -427,7 +448,7 @@ const payload = {
         const link = svgGroup.selectAll(".link")
           .data(links)
           .enter().append("line")
-          .style("stroke", "rgba(255,255,255,0.06)")
+          .style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)")
           .style("stroke-width", "1px");
 
         const node = svgGroup.selectAll(".node")
@@ -440,14 +461,14 @@ const payload = {
         node.append("circle")
           .attr("r", d => d.size * 6 + 4)
           .style("fill", d => colors[d.group])
-          .style("stroke", "#030712")
+          .style("stroke", isLight ? "#ffffff" : "#030712")
           .style("stroke-width", "1.5px");
 
         node.append("text")
           .attr("dx", d => d.size * 6 + 8)
           .attr("dy", ".35em")
           .text(d => d.name)
-          .style("fill", "#9ca3af")
+          .style("fill", isLight ? "#334155" : "#9ca3af")
           .style("font-size", "9px")
           .style("font-family", "Outfit, Inter, sans-serif")
           .style("font-weight", "500")
@@ -468,13 +489,27 @@ const payload = {
 
           node.attr("transform", d => `translate(${d.x},${d.y})`);
         });
+
+        return {
+          destroy: () => {
+            force.stop();
+          }
+        };
       }
 
       function initSigma() {
+        const isLight = document.documentElement.classList.contains('light');
+        
+        // Dynamically override edges color on the client-side for Sigma in light mode
+        const edges = payload.sigma.edges.map(e => ({
+          ...e,
+          color: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.07)'
+        }));
+
         const s = new sigma({
           graph: {
             nodes: payload.sigma.nodes,
-            edges: payload.sigma.edges
+            edges: edges
           },
           renderer: {
             container: container,
@@ -482,11 +517,11 @@ const payload = {
           },
           settings: {
             defaultNodeColor: '#3b82f6',
-            defaultLabelColor: '#f3f4f6',
+            defaultLabelColor: isLight ? '#0f172a' : '#f3f4f6',
             defaultLabelSize: 10,
             labelThreshold: 5,
             edgeColor: 'default',
-            defaultEdgeColor: 'rgba(255,255,255,0.06)',
+            defaultEdgeColor: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)',
             minNodeSize: 4,
             maxNodeSize: 15,
             minEdgeSize: 0.5,
@@ -502,7 +537,7 @@ const payload = {
         });
 
         // Stop layout calculation after 5 seconds to conserve CPU
-        setTimeout(() => {
+        const forceTimeout = setTimeout(() => {
           s.stopForceAtlas2();
         }, 5000);
 
@@ -512,6 +547,13 @@ const payload = {
             window.location.href = id;
           }
         });
+
+        return {
+          kill: () => {
+            clearTimeout(forceTimeout);
+            s.kill();
+          }
+        };
       }
     });
   </script>
