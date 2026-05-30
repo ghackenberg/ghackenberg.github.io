@@ -210,7 +210,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
 
 <div data-timeline-container class="relative space-y-8 py-2">
   <!-- Continuous background line -->
-  <div class="absolute left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-element-border-medium z-0 pointer-events-none rounded-full"></div>
+  <div class="absolute left-[41px] sm:left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-element-border-medium z-0 pointer-events-none rounded-full"></div>
   {companyGroups.map((group, index) => {
     const isLast = index === companyGroups.length - 1;
     // Determine the SVG logo or image to render
@@ -339,7 +339,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
           {index === 0 && (
             <svg
               data-lifeline-dashed-top
-              class="absolute left-[32px] sm:left-[48px] -translate-x-1/2 top-0 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-visible"
+              class="absolute left-[40px] sm:left-[48px] -translate-x-1/2 top-0 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-visible"
               style="height: 104px;"
             >
               <defs>
@@ -355,12 +355,12 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
             data-lifeline-segment
             data-color={group.color}
             style={`top: ${index === 0 ? '104px' : '0px'}; bottom: ${index === companyGroups.length - 1 ? '104px' : '0px'}; background: ${getFallbackGradient(group.color, group.roles.length, index === 0, index === companyGroups.length - 1)}`}
-            class="absolute left-[32px] sm:left-[48px] -translate-x-1/2 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300"
+            class="absolute left-[40px] sm:left-[48px] -translate-x-1/2 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300"
           ></div>
           {index === companyGroups.length - 1 && (
             <svg
               data-lifeline-dashed-bottom
-              class="absolute left-[32px] sm:left-[48px] -translate-x-1/2 bottom-0 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-visible"
+              class="absolute left-[40px] sm:left-[48px] -translate-x-1/2 bottom-0 w-[2px] z-10 opacity-25 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-visible"
               style="height: 104px;"
             >
               <defs>
@@ -407,7 +407,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
               </div>
               
               <!-- Nested Sub-Roles -->
-              <div class="relative pl-5 ml-4 sm:pl-7 sm:ml-6 space-y-8">
+              <div class="relative pl-7 ml-4 sm:pl-7 sm:ml-6 space-y-8">
                 {group.roles.map(role => (
                   <div class="relative group/role">
                     <!-- Inline node dot on nested timeline -->
