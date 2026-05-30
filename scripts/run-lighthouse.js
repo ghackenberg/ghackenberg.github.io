@@ -126,6 +126,7 @@ async function run() {
   const resultsSummary = [];
   let thresholdFailed = false;
   const minRequiredScore = process.env.LH_MIN_SCORE ? parseInt(process.env.LH_MIN_SCORE, 10) : 90;
+  const minA11yScore = process.env.LH_MIN_A11Y_SCORE ? parseInt(process.env.LH_MIN_A11Y_SCORE, 10) : 98;
 
   try {
     for (const page of urlsToAudit) {
@@ -166,7 +167,7 @@ async function run() {
 
         if (
           scores.performance < minRequiredScore ||
-          scores.accessibility < minRequiredScore ||
+          scores.accessibility < minA11yScore ||
           scores.bestPractices < minRequiredScore ||
           scores.seo < minRequiredScore
         ) {
@@ -217,7 +218,7 @@ async function run() {
 
   // Exit with error if threshold failed and we are in CI / assertions are enabled
   if (thresholdFailed && (process.env.CI || process.env.LH_ASSERT)) {
-    console.error(`\n[Assertion Failed] One or more scores fell below the required threshold of ${minRequiredScore}.`);
+    console.error(`\n[Assertion Failed] One or more scores fell below thresholds (General: ${minRequiredScore}, A11y: ${minA11yScore}).`);
     process.exit(1);
   }
 

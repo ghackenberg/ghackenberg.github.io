@@ -96,12 +96,31 @@ export default {
       this.nodeElements.attr("transform", d => `translate(${d.x},${d.y})`);
     });
 
+    this.currentLayout = layout;
+    this.isLight = isLight;
     this.updateLayout(layout, isLight);
+
+    // Bind ResizeObserver to handle SVG resizing dynamically
+    this.resizeObserver = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        this.width = width;
+        this.height = height;
+        if (this.svg) {
+          this.svg.attr("width", this.width).attr("height", this.height);
+          this.updateLayout(this.currentLayout, this.isLight);
+        }
+      }
+    });
+    this.resizeObserver.observe(container);
+
     return this;
   },
 
   updateLayout(layout, isLight) {
     if (!this.simulation) return;
+    this.currentLayout = layout;
+    this.isLight = isLight;
 
     // Apply color update to D3 texts and circles based on theme
     this.linkElements.style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)");
@@ -143,20 +162,39 @@ export default {
       const posts = this.nodes.filter(n => n.group === 1);
       const publications = this.nodes.filter(n => n.group === 2);
 
-      tags.forEach((n, idx) => {
-        n.targetX = this.width / 2;
-        n.targetY = (idx + 1) * (this.height / (tags.length + 1));
-      });
+      const isMobile = this.width < 768 || window.innerWidth < 768;
 
-      posts.forEach((n, idx) => {
-        n.targetX = this.width / 4;
-        n.targetY = (idx + 1) * (this.height / (posts.length + 1));
-      });
+      if (isMobile) {
+        posts.forEach((n, idx) => {
+          n.targetX = (idx + 1) * (this.width / (posts.length + 1));
+          n.targetY = this.height / 4;
+        });
 
-      publications.forEach((n, idx) => {
-        n.targetX = (3 * this.width) / 4;
-        n.targetY = (idx + 1) * (this.height / (publications.length + 1));
-      });
+        tags.forEach((n, idx) => {
+          n.targetX = (idx + 1) * (this.width / (tags.length + 1));
+          n.targetY = this.height / 2;
+        });
+
+        publications.forEach((n, idx) => {
+          n.targetX = (idx + 1) * (this.width / (publications.length + 1));
+          n.targetY = 3 * this.height / 4;
+        });
+      } else {
+        tags.forEach((n, idx) => {
+          n.targetX = this.width / 2;
+          n.targetY = (idx + 1) * (this.height / (tags.length + 1));
+        });
+
+        posts.forEach((n, idx) => {
+          n.targetX = this.width / 4;
+          n.targetY = (idx + 1) * (this.height / (posts.length + 1));
+        });
+
+        publications.forEach((n, idx) => {
+          n.targetX = (3 * this.width) / 4;
+          n.targetY = (idx + 1) * (this.height / (publications.length + 1));
+        });
+      }
 
       // Apply columnar forces
       this.simulation
@@ -183,6 +221,10 @@ export default {
   },
 
   destroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
     if (this.simulation) {
       this.simulation.stop();
       this.simulation = null;

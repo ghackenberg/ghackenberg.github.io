@@ -37,7 +37,7 @@ const colorMappings = {
     backBorder: 'border-brand-yellow/20 bg-brand-yellow/5',
     text: 'text-brand-yellow',
     bg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20',
-    button: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 text-gray-950',
+    button: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 text-gray-950 light:text-gray-50',
     bullet: 'text-brand-yellow',
   },
   purple: {
@@ -129,7 +129,7 @@ const professionalInterests = [
           <div class="flex flex-wrap gap-4">
             <a 
               href="#projects" 
-              class="px-6 py-3.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-gray-950 font-bold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105"
+              class="px-6 py-3.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-slate-950 font-bold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105"
             >
               Explore Projects
             </a>
@@ -192,9 +192,9 @@ const professionalInterests = [
         <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-blue bg-brand-blue/10 border border-brand-blue/20 px-2.5 py-1 rounded-full uppercase mb-3">
           Site Architecture
         </span>
-        <h3 class="text-2xl md:text-3xl font-extrabold text-gray-100 mb-3 tracking-tight">
+        <h2 class="text-2xl md:text-3xl font-extrabold text-gray-100 mb-3 tracking-tight">
           Built with Cutting-Edge Technologies
-        </h3>
+        </h2>
         <p class="text-gray-400 text-sm md:text-base leading-relaxed font-normal">
           This personal portfolio is engineered as a modern, high-performance web platform. Built using framework-agnostic compiler design, componentized styling systems, and agentic AI tooling to deliver optimized delivery speeds and visual quality.
         </p>
@@ -307,7 +307,7 @@ const professionalInterests = [
         {professionalInterests.map(interest => {
           const mapping = colorMappings[interest.color];
           return (
-            <div class={`glass-card p-6 rounded-2xl border ${mapping.border} group`}>
+            <div class={`glass-card p-6 rounded-2xl border ${mapping.border} group flex flex-col h-full`}>
               <div class={`w-10 h-10 rounded-xl flex items-center justify-center mb-6 font-bold text-lg border ${mapping.bg}`}>
                 {interest.icon}
               </div>
@@ -315,7 +315,7 @@ const professionalInterests = [
                 {interest.title}
               </h3>
               <p class={`text-[10px] font-semibold uppercase tracking-wider mb-3 ${mapping.text}`}>{interest.tagline}</p>
-              <p class="text-gray-400 text-sm leading-relaxed font-normal min-h-[96px] sm:min-h-[115px] md:min-h-[96px]">
+              <p class="text-gray-400 text-sm leading-relaxed font-normal flex-grow">
                 {interest.description}
               </p>
             </div>
@@ -405,19 +405,19 @@ const professionalInterests = [
         <div class="relative z-10 grid grid-cols-1 grid-rows-1 overflow-hidden p-6 -m-6">
           <div 
             id="panel-github" 
-            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-100 pointer-events-auto z-10"
+            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-100 pointer-events-auto relative z-10"
           >
             <GitHubWidget />
           </div>
           <div 
             id="panel-linkedin" 
-            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-0 pointer-events-none z-0"
+            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-0 pointer-events-none absolute inset-0 w-full h-full z-0"
           >
             <LinkedInWidget />
           </div>
           <div 
             id="panel-youtube" 
-            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-0 pointer-events-none z-0"
+            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-0 pointer-events-none absolute inset-0 w-full h-full z-0"
           >
             <YouTubeWidget />
           </div>
@@ -845,14 +845,14 @@ const professionalInterests = [
       if (panelId === `panel-${targetTabId}`) {
         // Target active panel: animate in
         panel.classList.add(isForward ? 'panel-slide-in-right' : 'panel-slide-in-left');
-        panel.classList.add('pointer-events-auto', 'z-10');
+        panel.classList.add('pointer-events-auto', 'relative', 'z-10');
       } else if (panelId === `panel-${previousTabId}`) {
         // Previous active panel: animate out
         panel.classList.add(isForward ? 'panel-slide-out-left' : 'panel-slide-out-right');
-        panel.classList.add('pointer-events-none', 'z-0');
+        panel.classList.add('pointer-events-none', 'absolute', 'inset-0', 'w-full', 'h-full', 'z-0');
       } else {
         // All other non-active panels: hide instantly
-        panel.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+        panel.classList.add('opacity-0', 'pointer-events-none', 'absolute', 'inset-0', 'w-full', 'h-full', 'z-0');
       }
     });
 

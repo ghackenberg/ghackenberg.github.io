@@ -193,7 +193,7 @@ const seoDescription = cleanAbstract.length > 156
         <h2 class="text-2xl font-bold text-gray-100 mb-8 tracking-tight">
           You might also be interested in
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {relatedPubs.map(p => (
             <a href={`/publications/${p.id}`} class="glass-card p-5 rounded-2xl border border-element-border group flex flex-col h-full justify-between">
               <div>

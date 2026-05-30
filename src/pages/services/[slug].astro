@@ -25,7 +25,7 @@ const colorClasses = {
     text: 'text-brand-blue light:text-blue-700',
     border: 'border-brand-blue/20 light:border-blue-200',
     bg: 'bg-brand-blue/10 light:bg-blue-50/50',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-gray-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-slate-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
     hoverText: 'hover:text-brand-blue light:hover:text-blue-700',
     glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
     leftBorder: 'border-brand-blue light:border-blue-600',
@@ -35,7 +35,7 @@ const colorClasses = {
     text: 'text-brand-yellow light:text-amber-800',
     border: 'border-brand-yellow/20 light:border-amber-200',
     bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-gray-950 font-bold light:bg-amber-600 light:hover:bg-amber-700 light:text-white',
+    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white',
     hoverText: 'hover:text-brand-yellow light:hover:text-amber-800',
     glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
     leftBorder: 'border-brand-yellow light:border-amber-600',
@@ -45,7 +45,7 @@ const colorClasses = {
     text: 'text-brand-purple light:text-purple-700',
     border: 'border-brand-purple/20 light:border-purple-200',
     bg: 'bg-brand-purple/10 light:bg-purple-50/50',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-gray-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
     hoverText: 'hover:text-brand-purple light:hover:text-purple-700',
     glow: 'from-brand-purple to-pink-500 light:to-pink-600',
     leftBorder: 'border-brand-purple light:border-purple-600',
@@ -55,7 +55,7 @@ const colorClasses = {
     text: 'text-brand-green light:text-emerald-700',
     border: 'border-brand-green/20 light:border-emerald-200',
     bg: 'bg-brand-green/10 light:bg-emerald-50/50',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-gray-950 font-bold light:bg-emerald-600 light:hover:bg-emerald-700 light:text-white',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-slate-950 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white',
     hoverText: 'hover:text-brand-green light:hover:text-emerald-700',
     glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
     leftBorder: 'border-brand-green light:border-emerald-600',
@@ -108,7 +108,7 @@ const colorClasses = {
     <!-- Main Content -->
     <div class="space-y-12">
         <!-- Service Text -->
-        <section class={`glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content theme-${service.data.color}`}>
+        <section class={`glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content theme-${service.data.color} prose-custom`}>
           <Content />
         </section>
 
@@ -129,13 +129,13 @@ const colorClasses = {
               return (
                 <a 
                   href={`/services/${service.id}/${moduleSlug}`}
-                  class="glass-card rounded-2xl border border-white/5 relative overflow-hidden flex flex-col sm:grid sm:grid-cols-12 items-stretch p-0 hover:border-white/10 transition-colors group cursor-pointer block no-underline"
+                  class="glass-card rounded-2xl border border-white/5 relative overflow-hidden flex flex-col md:grid md:grid-cols-12 items-stretch p-0 hover:border-white/10 transition-colors group cursor-pointer block no-underline"
                 >
                   {/* Accent bar */}
                   <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow} z-20`}></div>
                   
                   <!-- Info Column -->
-                  <div class="p-6 sm:p-8 sm:col-span-8 flex flex-col justify-center space-y-4 relative z-10 text-left">
+                  <div class="p-6 sm:p-8 md:col-span-8 flex flex-col justify-center space-y-4 relative z-10 text-left">
                     <div class="flex items-center gap-3">
                       <h3 class="text-lg font-bold uppercase tracking-wider leading-none mt-0 flex items-center gap-2">
                         <span>{module.data.title}</span>
@@ -177,7 +177,7 @@ const colorClasses = {
                   </div>
 
                   {/* Preview Image Column */}
-                  <div class="sm:col-span-4 relative min-h-[160px] sm:min-h-full w-full overflow-hidden bg-gray-950/40">
+                  <div class="md:col-span-4 relative min-h-[160px] md:min-h-full w-full overflow-hidden bg-gray-950/40">
                     {module.data.previewImage && (
                       <Image 
                         src={module.data.previewImage} 

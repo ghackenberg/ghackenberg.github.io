@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant light (&:where(.light, .light *));
+@custom-variant light (.light &, .light&);
 
 /* Prevent transition flicker on initial page load */
 .no-transitions,
@@ -91,6 +91,11 @@
   html {
     scroll-behavior: smooth;
     font-family: var(--font-sans);
+    color-scheme: dark;
+  }
+
+  html.light {
+    color-scheme: light;
   }
   
   body {
@@ -209,26 +214,26 @@
 ::-webkit-scrollbar-track {
   background: #030712;
   transition: background-color 0.5s ease;
-
-  @variant light {
-    background: #f1f5f9;
-  }
+}
+html.light::-webkit-scrollbar-track,
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
   background: #1f2937;
   border-radius: 5px;
   transition: background-color 0.5s ease;
-
-  @variant light {
-    background: #cbd5e1;
-  }
+}
+html.light::-webkit-scrollbar-thumb,
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #374151;
-
-  @variant light {
-    background: #94a3b8;
-  }
+}
+html.light::-webkit-scrollbar-thumb:hover,
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Custom Scrollbar for tag lists / sidebars */
@@ -241,17 +246,15 @@
 .custom-scrollbar-thin::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-
-  @variant light {
-    background: rgba(15, 23, 42, 0.1);
-  }
+}
+html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.1);
 }
 .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
-
-  @variant light {
-    background: rgba(15, 23, 42, 0.2);
-  }
+}
+html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.2);
 }
 
 /* Glassmorphism utility */
@@ -396,5 +399,82 @@
 }
 .light [data-lifeline-dashed-bottom] stop[offset="100%"] {
   stop-color: #f8fafc !important;
+}
+
+/* Prevent KaTeX math blocks from breaking horizontal layout responsiveness */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Float responsive resets for narrow mobile screen widths */
+@media (max-width: 640px) {
+  .prose-custom .float-left,
+  .prose-custom .float-right,
+  .post-body .float-left,
+  .post-body .float-right,
+  .project-content .float-left,
+  .project-content .float-right {
+    float: none !important;
+    margin: 0 auto 1.5rem auto !important;
+    display: block !important;
+    max-width: 100% !important;
+    width: auto !important;
+    height: auto !important;
+  }
+}
+
+/* Shared Markdown article styles for responsive content resizing */
+.prose-custom {
+  /* Responsive tables */
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+  }
+  table th, table td {
+    border: 1px solid var(--color-border-medium);
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+  table th {
+    background-color: var(--color-element-bg);
+    font-weight: 600;
+  }
+  
+  /* Responsive iframes and embeds */
+  iframe, video, embed {
+    max-width: 100%;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16/9;
+    border-radius: 1rem;
+    border: 1px solid var(--color-border-subtle);
+    margin: 1.5rem 0;
+  }
+  
+  /* Responsive images */
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    margin: 1.5rem auto;
+    display: block;
+  }
+
+  /* Pre blocks */
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
 }
 

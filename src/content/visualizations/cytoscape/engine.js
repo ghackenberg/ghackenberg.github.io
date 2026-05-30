@@ -61,13 +61,29 @@ export default {
       }
     });
 
+    // Cache parameters for ResizeObserver
+    this.currentLayout = layout;
+    this.isLight = isLight;
+
     // Run initial layout
     this.updateLayout(layout, isLight);
+
+    // Bind ResizeObserver to handle container size changes dynamically
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.cy) {
+        this.cy.resize();
+        this.updateLayout(this.currentLayout, this.isLight);
+      }
+    });
+    this.resizeObserver.observe(container);
+
     return this;
   },
 
   updateLayout(layout, isLight) {
     if (!this.cy) return;
+    this.currentLayout = layout;
+    this.isLight = isLight;
 
     // Apply color update to node labels based on theme
     this.cy.style().selector('node').style({
@@ -95,27 +111,51 @@ export default {
       const publications = nodes.filter(n => n.data('color') === '#f59e0b');
 
       const pos = {};
+      const isMobile = width < 768 || window.innerWidth < 768;
       
-      tags.forEach((n, idx) => {
-        pos[n.id()] = {
-          x: width / 2,
-          y: (idx + 1) * (height / (tags.length + 1))
-        };
-      });
+      if (isMobile) {
+        posts.forEach((n, idx) => {
+          pos[n.id()] = {
+            x: (idx + 1) * (width / (posts.length + 1)),
+            y: height / 4
+          };
+        });
 
-      posts.forEach((n, idx) => {
-        pos[n.id()] = {
-          x: width / 4,
-          y: (idx + 1) * (height / (posts.length + 1))
-        };
-      });
+        tags.forEach((n, idx) => {
+          pos[n.id()] = {
+            x: (idx + 1) * (width / (tags.length + 1)),
+            y: height / 2
+          };
+        });
 
-      publications.forEach((n, idx) => {
-        pos[n.id()] = {
-          x: 3 * width / 4,
-          y: (idx + 1) * (height / (publications.length + 1))
-        };
-      });
+        publications.forEach((n, idx) => {
+          pos[n.id()] = {
+            x: (idx + 1) * (width / (publications.length + 1)),
+            y: 3 * height / 4
+          };
+        });
+      } else {
+        tags.forEach((n, idx) => {
+          pos[n.id()] = {
+            x: width / 2,
+            y: (idx + 1) * (height / (tags.length + 1))
+          };
+        });
+
+        posts.forEach((n, idx) => {
+          pos[n.id()] = {
+            x: width / 4,
+            y: (idx + 1) * (height / (posts.length + 1))
+          };
+        });
+
+        publications.forEach((n, idx) => {
+          pos[n.id()] = {
+            x: 3 * width / 4,
+            y: (idx + 1) * (height / (publications.length + 1))
+          };
+        });
+      }
 
       this.cy.layout({
         name: 'preset',
@@ -146,6 +186,10 @@ export default {
   },
 
   destroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
     if (this.cy) {
       this.cy.destroy();
       this.cy = null;

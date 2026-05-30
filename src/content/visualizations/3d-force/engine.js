@@ -107,31 +107,59 @@ export default {
       const posts = this.nodes.filter(n => n.group === 1);
       const publications = this.nodes.filter(n => n.group === 2);
 
+      const isMobile = window.innerWidth < 768;
       const heightFactor = 25;
+      const widthFactor = 25;
 
-      tags.forEach((n, idx) => {
-        targets[n.id] = {
-          x: 0,
-          y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0,
-          z: 0
-        };
-      });
+      if (isMobile) {
+        posts.forEach((n, idx) => {
+          targets[n.id] = {
+            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * widthFactor : 0,
+            y: -110,
+            z: 0
+          };
+        });
 
-      posts.forEach((n, idx) => {
-        targets[n.id] = {
-          x: -110,
-          y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0,
-          z: 0
-        };
-      });
+        tags.forEach((n, idx) => {
+          targets[n.id] = {
+            x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * widthFactor : 0,
+            y: 0,
+            z: 0
+          };
+        });
 
-      publications.forEach((n, idx) => {
-        targets[n.id] = {
-          x: 110,
-          y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0,
-          z: 0
-        };
-      });
+        publications.forEach((n, idx) => {
+          targets[n.id] = {
+            x: publications.length > 1 ? (idx - (publications.length - 1) / 2) * widthFactor : 0,
+            y: 110,
+            z: 0
+          };
+        });
+      } else {
+        tags.forEach((n, idx) => {
+          targets[n.id] = {
+            x: 0,
+            y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0,
+            z: 0
+          };
+        });
+
+        posts.forEach((n, idx) => {
+          targets[n.id] = {
+            x: -110,
+            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0,
+            z: 0
+          };
+        });
+
+        publications.forEach((n, idx) => {
+          targets[n.id] = {
+            x: 110,
+            y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0,
+            z: 0
+          };
+        });
+      }
 
       this.animateTo(targets);
 

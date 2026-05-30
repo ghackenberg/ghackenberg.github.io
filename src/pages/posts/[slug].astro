@@ -80,7 +80,7 @@ const seoDescription = post.data.description
     </header>
 
     <!-- Post Body -->
-    <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-white/5 mb-16 relative overflow-hidden">
+    <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-white/5 mb-16 relative overflow-hidden prose-custom">
       <!-- Top accent line -->
       <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600"></div>
       
@@ -93,7 +93,7 @@ const seoDescription = post.data.description
         <h2 class="text-2xl font-bold mb-8 tracking-tight">
           You might also be interested in
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {relatedPosts.map(p => (
             <a href={`/posts/${p.id}`} class="glass-card p-5 rounded-2xl border border-white/5 group flex flex-col h-full justify-between">
               <div>

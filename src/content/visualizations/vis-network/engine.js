@@ -113,13 +113,26 @@ export default {
       }
     });
 
+    this.currentLayout = layout;
+    this.isLight = isLight;
     this.updateLayout(layout, isLight);
+
+    // Bind ResizeObserver to handle network container changes dynamically
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.network) {
+        this.network.redraw();
+        this.network.fit();
+      }
+    });
+    this.resizeObserver.observe(container);
 
     return this;
   },
 
   updateLayout(layout, isLight) {
     if (!this.network) return;
+    this.currentLayout = layout;
+    this.isLight = isLight;
 
     // Apply color update to node labels and edges based on theme
     const colors = [
@@ -200,28 +213,53 @@ export default {
       const posts = this.nodes.filter(n => n.group === 1);
       const publications = this.nodes.filter(n => n.group === 2);
 
+      const isMobile = window.innerWidth < 768;
       const heightFactor = 45;
+      const widthFactor = 45;
 
-      tags.forEach((n, idx) => {
-        targets[n.id] = {
-          x: 0,
-          y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0
-        };
-      });
+      if (isMobile) {
+        posts.forEach((n, idx) => {
+          targets[n.id] = {
+            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * widthFactor : 0,
+            y: -250
+          };
+        });
 
-      posts.forEach((n, idx) => {
-        targets[n.id] = {
-          x: -250,
-          y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0
-        };
-      });
+        tags.forEach((n, idx) => {
+          targets[n.id] = {
+            x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * widthFactor : 0,
+            y: 0
+          };
+        });
 
-      publications.forEach((n, idx) => {
-        targets[n.id] = {
-          x: 250,
-          y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0
-        };
-      });
+        publications.forEach((n, idx) => {
+          targets[n.id] = {
+            x: publications.length > 1 ? (idx - (publications.length - 1) / 2) * widthFactor : 0,
+            y: 250
+          };
+        });
+      } else {
+        tags.forEach((n, idx) => {
+          targets[n.id] = {
+            x: 0,
+            y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        posts.forEach((n, idx) => {
+          targets[n.id] = {
+            x: -250,
+            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        publications.forEach((n, idx) => {
+          targets[n.id] = {
+            x: 250,
+            y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0
+          };
+        });
+      }
 
       this.animateTo(targets);
 
@@ -272,6 +310,10 @@ export default {
   },
 
   destroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }

@@ -56,6 +56,8 @@ export default {
       }
     });
 
+    this.currentLayout = layout;
+    this.isLight = isLight;
     this.updateLayout(layout, isLight);
     
     // Zoom to fit the graph
@@ -65,11 +67,22 @@ export default {
       }
     }, 100);
 
+    // Bind ResizeObserver to handle container size changes dynamically
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.sigma) {
+        this.sigma.refresh();
+        this.sigma.getCamera().animatedReset();
+      }
+    });
+    this.resizeObserver.observe(container);
+
     return this;
   },
 
   updateLayout(layout, isLight) {
     if (!this.graph || !this.sigma) return;
+    this.currentLayout = layout;
+    this.isLight = isLight;
 
     // Apply color update to node labels and edges based on theme
     const edgeColor = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
@@ -113,26 +126,51 @@ export default {
       const posts = nodes.filter(n => this.graph.getNodeAttribute(n, 'color') === '#10b981');
       const publications = nodes.filter(n => this.graph.getNodeAttribute(n, 'color') === '#f59e0b');
 
-      tags.forEach((n, idx) => {
-        targets[n] = {
-          x: 0,
-          y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * (20 / (tags.length - 1)) : 0
-        };
-      });
+      const isMobile = window.innerWidth < 768;
 
-      posts.forEach((n, idx) => {
-        targets[n] = {
-          x: -8,
-          y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * (20 / (posts.length - 1)) : 0
-        };
-      });
+      if (isMobile) {
+        posts.forEach((n, idx) => {
+          targets[n] = {
+            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * (20 / (posts.length - 1)) : 0,
+            y: -8
+          };
+        });
 
-      publications.forEach((n, idx) => {
-        targets[n] = {
-          x: 8,
-          y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * (20 / (publications.length - 1)) : 0
-        };
-      });
+        tags.forEach((n, idx) => {
+          targets[n] = {
+            x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * (20 / (tags.length - 1)) : 0,
+            y: 0
+          };
+        });
+
+        publications.forEach((n, idx) => {
+          targets[n] = {
+            x: publications.length > 1 ? (idx - (publications.length - 1) / 2) * (20 / (publications.length - 1)) : 0,
+            y: 8
+          };
+        });
+      } else {
+        tags.forEach((n, idx) => {
+          targets[n] = {
+            x: 0,
+            y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * (20 / (tags.length - 1)) : 0
+          };
+        });
+
+        posts.forEach((n, idx) => {
+          targets[n] = {
+            x: -8,
+            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * (20 / (posts.length - 1)) : 0
+          };
+        });
+
+        publications.forEach((n, idx) => {
+          targets[n] = {
+            x: 8,
+            y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * (20 / (publications.length - 1)) : 0
+          };
+        });
+      }
 
       this.animateTo(targets);
 
@@ -221,6 +259,10 @@ export default {
   },
 
   destroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
