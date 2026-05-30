@@ -1,0 +1,509 @@
+---
+// Background.astro
+// Premium vector-style sky background with responsive day/night transitions,
+// client-side astronomical moon phase rendering, twinkling starfield, shooting stars,
+// floating clouds, and scroll/mouse parallax effects on atmospheric elements.
+---
+<div class="background-container fixed inset-0 overflow-hidden pointer-events-none z-0 select-none">
+  <!-- 1. Sky Gradients -->
+  <div class="sky-bg sky-bg-night"></div>
+  <div class="sky-bg sky-bg-day"></div>
+
+  <!-- 2. Twinkling Stars (Dark Mode Only) -->
+  <svg id="bg-layer-stars" class="stars-svg absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+    <g id="sparkling-stars" class="transition-opacity duration-700"></g>
+  </svg>
+
+  <!-- 3. Shooting Stars (Dark Mode Only) -->
+  <div class="shooting-stars-container absolute inset-0">
+    <div class="shooting-star shooting-star-1"></div>
+    <div class="shooting-star shooting-star-2"></div>
+    <div class="shooting-star shooting-star-3"></div>
+  </div>
+
+  <!-- 4. Floating Clouds (Light Mode Only) -->
+  <div id="bg-layer-clouds" class="clouds-container absolute inset-0 overflow-hidden">
+    <div class="cloud cloud-1">
+      <svg width="160" height="30" viewBox="0 0 160 30" fill="currentColor">
+        <path d="M 10 20 A 8 8 0 0 1 22 10 A 12 12 0 0 1 65 8 A 20 20 0 0 1 115 12 A 10 10 0 0 1 145 15 A 6 6 0 0 1 152 20 A 8 8 0 0 1 144 26 L 10 26 Z" />
+      </svg>
+    </div>
+    <div class="cloud cloud-2">
+      <svg width="150" height="60" viewBox="0 0 100 40" fill="currentColor">
+        <path d="M 15 30 A 12 12 0 0 1 25 15 A 16 16 0 0 1 55 12 A 14 14 0 0 1 78 20 A 10 10 0 0 1 90 30 A 8 8 0 0 1 82 38 L 15 38 Z" />
+      </svg>
+    </div>
+    <div class="cloud cloud-3">
+      <svg width="140" height="60" viewBox="0 0 120 50" fill="currentColor">
+        <path d="M 20 38 A 12 12 0 0 1 28 20 A 18 18 0 0 1 62 10 A 15 15 0 0 1 88 18 A 12 12 0 0 1 105 30 A 10 10 0 0 1 100 45 L 20 45 Z" />
+      </svg>
+    </div>
+    <div class="cloud cloud-4">
+      <svg width="90" height="40" viewBox="0 0 70 30" fill="currentColor">
+        <path d="M 10 22 A 8 8 0 0 1 16 10 A 10 10 0 0 1 38 8 A 8 8 0 0 1 55 15 A 7 7 0 0 1 62 22 A 6 6 0 0 1 56 28 L 10 28 Z" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- 5. Interactive Ambient Glowing Orbs -->
+  <div class="orbs-container absolute inset-0">
+    <div class="orb-wrapper bg-glow-wrapper-1" data-speed-y="0.12" data-speed-x="0.06" data-scale="0.15" data-mouse-x="-30" data-mouse-y="-30">
+      <div class="bg-glow-orb bg-brand-blue w-[55vmax] h-[55vmax] top-[-15%] left-[-15%]"></div>
+    </div>
+    <div class="orb-wrapper bg-glow-wrapper-2" data-speed-y="-0.1" data-speed-x="-0.06" data-scale="-0.08" data-mouse-x="40" data-mouse-y="40">
+      <div class="bg-glow-orb bg-brand-purple w-[50vmax] h-[50vmax] top-[40%] right-[-15%]" style="animation-delay: -3s;"></div>
+    </div>
+    <div class="orb-wrapper bg-glow-wrapper-3" data-speed-y="0.08" data-speed-x="-0.08" data-scale="0.05" data-mouse-x="30" data-mouse-y="30">
+      <div class="bg-glow-orb bg-brand-green w-[45vmax] h-[45vmax] top-[20%] left-[45%]" style="animation-delay: -9s;"></div>
+    </div>
+  </div>
+
+  <!-- 6. Celestial Layer (Sun / Moon) -->
+  <div id="bg-layer-celestial" class="celestial-layer absolute top-[12vh] right-[15vw] w-[140px] h-[140px]">
+    <!-- The Sun (Day) -->
+    <div class="sun-element absolute inset-0 transition-opacity duration-1000">
+      <svg class="w-full h-full" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="sun-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fef08a" stop-opacity="1" />
+            <stop offset="20%" stop-color="#fef08a" stop-opacity="0.8" />
+            <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <circle cx="50%" cy="50%" r="48" fill="url(#sun-glow)" class="sun-glow-ring" />
+        <circle cx="50%" cy="50%" r="20" fill="#ffffff" />
+      </svg>
+    </div>
+
+    <!-- The Moon (Night) -->
+    <div class="moon-element absolute inset-0 transition-opacity duration-1000">
+      <svg class="w-full h-full" viewBox="0 0 120 120">
+        <defs>
+          <!-- Moon Glow Gradient -->
+          <radialGradient id="moon-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.4" />
+            <stop offset="35%" stop-color="#60a5fa" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
+          </radialGradient>
+          <!-- Illuminated Moon Face Gradient -->
+          <linearGradient id="moon-face" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fffbeb" />
+            <stop offset="100%" stop-color="#cbd5e1" />
+          </linearGradient>
+        </defs>
+        
+        <!-- Ambient Moon Glow -->
+        <circle cx="60" cy="60" r="50" fill="url(#moon-glow)" class="moon-glow-ring" />
+        
+        <!-- Dark Side / Earthshine of the Moon (Subtly visible outline) -->
+        <circle cx="60" cy="60" r="28" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.07" stroke-width="0.5" />
+        
+        <!-- Illuminated Moon Phase (Updated dynamically by JS) -->
+        <g transform="translate(32, 32)">
+          <path id="moon-phase-path" d="" fill="url(#moon-face)" filter="drop-shadow(0 0 6px rgba(191, 219, 254, 0.8))" />
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Base Container */
+  .background-container {
+    width: 100%;
+    height: 100vh;
+  }
+
+  /* Sky Gradients */
+  .sky-bg {
+    position: absolute;
+    inset: 0;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+  .sky-bg-night {
+    background: linear-gradient(to bottom, #020408 0%, #050b18 45%, #0c152a 100%);
+    opacity: 1;
+  }
+  .sky-bg-day {
+    background: linear-gradient(to bottom, #7dd3fc 0%, #bae6fd 50%, #f8fafc 100%);
+    opacity: 0;
+  }
+  :global(.light) .sky-bg-night {
+    opacity: 0;
+  }
+  :global(.light) .sky-bg-day {
+    opacity: 1;
+  }
+
+  /* Orbs container visibility rules */
+  .bg-glow-orb {
+    position: absolute;
+    border-radius: 60% 40% 55% 45%;
+    filter: blur(14vmax);
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+    animation: pulse-slow 12s infinite alternate;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  :global(.light) .bg-glow-orb {
+    opacity: 0.04;
+  }
+  @keyframes pulse-slow {
+    0% {
+      transform: scale(1) translate(0px, 0px);
+      opacity: 0.20;
+    }
+    50% {
+      transform: scale(1.1) translate(20px, -20px);
+      opacity: 0.28;
+    }
+    100% {
+      transform: scale(0.9) translate(-20px, 20px);
+      opacity: 0.14;
+    }
+  }
+
+  /* Twinkling Stars */
+  .stars-svg {
+    pointer-events: none;
+    will-change: transform;
+  }
+  :global(.light) .stars-svg {
+    opacity: 0;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Twinkling CSS animation */
+  :global(@keyframes twinkle) {
+    0%, 100% { opacity: 0.25; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.25); }
+  }
+
+  /* Shooting Stars */
+  .shooting-stars-container {
+    pointer-events: none;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+  }
+  :global(.light) .shooting-stars-container {
+    opacity: 0;
+  }
+  .shooting-star {
+    position: absolute;
+    width: 80px;
+    height: 1.5px;
+    background: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .shooting-star-1 {
+    top: 8%;
+    left: 70%;
+    animation: shoot-1 16s infinite ease-in-out;
+  }
+  .shooting-star-2 {
+    top: 22%;
+    left: 55%;
+    animation: shoot-2 20s infinite ease-in-out;
+    animation-delay: 5s;
+  }
+  .shooting-star-3 {
+    top: 4%;
+    left: 85%;
+    animation: shoot-3 24s infinite ease-in-out;
+    animation-delay: 11s;
+  }
+  @keyframes shoot-1 {
+    0% { transform: rotate(-35deg) translateX(0) scaleX(0); opacity: 0; }
+    1% { opacity: 0.85; transform: rotate(-35deg) translateX(0) scaleX(1); }
+    3% { transform: rotate(-35deg) translateX(-350px) scaleX(1); opacity: 0; }
+    100% { transform: rotate(-35deg) translateX(-350px) scaleX(0); opacity: 0; }
+  }
+  @keyframes shoot-2 {
+    0% { transform: rotate(-38deg) translateX(0) scaleX(0); opacity: 0; }
+    1% { opacity: 0.75; transform: rotate(-38deg) translateX(0) scaleX(1); }
+    3% { transform: rotate(-38deg) translateX(-280px) scaleX(1); opacity: 0; }
+    100% { transform: rotate(-38deg) translateX(-280px) scaleX(0); opacity: 0; }
+  }
+  @keyframes shoot-3 {
+    0% { transform: rotate(-32deg) translateX(0) scaleX(0); opacity: 0; }
+    1% { opacity: 0.9; transform: rotate(-32deg) translateX(0) scaleX(1); }
+    3.5% { transform: rotate(-32deg) translateX(-420px) scaleX(1); opacity: 0; }
+    100% { transform: rotate(-32deg) translateX(-420px) scaleX(0); opacity: 0; }
+  }
+
+  /* Floating Clouds */
+  .clouds-container {
+    pointer-events: none;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    will-change: transform;
+  }
+  :global(.light) .clouds-container {
+    opacity: 0.45;
+  }
+  .cloud {
+    position: absolute;
+    color: #ffffff;
+    pointer-events: none;
+  }
+  .cloud-1 {
+    top: 6%;
+    animation: float-cloud-anim 110s linear infinite;
+    animation-delay: -20s;
+  }
+  .cloud-2 {
+    top: 18%;
+    animation: float-cloud-anim 150s linear infinite;
+    animation-delay: -80s;
+  }
+  .cloud-3 {
+    top: 24%;
+    animation: float-cloud-anim 180s linear infinite;
+    animation-delay: -135s;
+  }
+  .cloud-4 {
+    top: 11%;
+    animation: float-cloud-anim 95s linear infinite;
+    animation-delay: -45s;
+  }
+  @keyframes float-cloud-anim {
+    0% { transform: translate3d(-180px, 0, 0); }
+    100% { transform: translate3d(105vw, 0, 0); }
+  }
+
+  /* Celestial Layer */
+  .celestial-layer {
+    pointer-events: none;
+    will-change: transform;
+  }
+  .sun-element {
+    opacity: 0;
+  }
+  .moon-element {
+    opacity: 1;
+  }
+  :global(.light) .sun-element {
+    opacity: 1;
+  }
+  :global(.light) .moon-element {
+    opacity: 0;
+  }
+
+  /* Sun Breathing animation */
+  .sun-glow-ring {
+    transform-origin: center;
+    animation: sun-glow-pulse 8s infinite ease-in-out;
+  }
+  @keyframes sun-glow-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.06); opacity: 0.85; }
+  }
+
+  /* Moon Breathing animation */
+  .moon-glow-ring {
+    transform-origin: center;
+    animation: moon-glow-pulse 10s infinite ease-in-out;
+  }
+  @keyframes moon-glow-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.04); opacity: 0.95; }
+  }
+</style>
+
+<script>
+  function initBackground() {
+    const celestialLayer = document.getElementById('bg-layer-celestial');
+    const starsLayer = document.getElementById('bg-layer-stars');
+    const cloudsLayer = document.getElementById('bg-layer-clouds');
+    const wrappers = document.querySelectorAll('.orb-wrapper');
+
+    if (!celestialLayer && !starsLayer && !cloudsLayer && wrappers.length === 0) {
+      return;
+    }
+
+    let targetScrollY = window.scrollY;
+    let currentScrollY = window.scrollY;
+    
+    let targetMouseX = 0.5; // normalized 0 to 1
+    let targetMouseY = 0.5;
+    let currentMouseX = 0.5;
+    let currentMouseY = 0.5;
+
+    let ticking = false;
+
+    // Scroll listener
+    const onScroll = () => {
+      targetScrollY = window.scrollY || document.documentElement.scrollTop;
+      requestTick();
+    };
+
+    // Mouse movement listener
+    const onMouseMove = (e: MouseEvent) => {
+      targetMouseX = e.clientX / window.innerWidth;
+      targetMouseY = e.clientY / window.innerHeight;
+      requestTick();
+    };
+
+    // Touch listener for mobile
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches && e.touches[0]) {
+        targetMouseX = e.touches[0].clientX / window.innerWidth;
+        targetMouseY = e.touches[0].clientY / window.innerHeight;
+        requestTick();
+      }
+    };
+
+    const requestTick = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateFrame);
+        ticking = true;
+      }
+    };
+
+    const updateFrame = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      
+      const scrollLerp = 0.08;
+      const mouseLerp = 0.08;
+
+      currentScrollY += (targetScrollY - currentScrollY) * scrollLerp;
+      currentMouseX += (targetMouseX - currentMouseX) * mouseLerp;
+      currentMouseY += (targetMouseY - currentMouseY) * mouseLerp;
+
+      const scrollPct = maxScroll > 0 ? currentScrollY / maxScroll : 0;
+      
+      // Normalized offset from center (-0.5 to 0.5)
+      const normMouseX = currentMouseX - 0.5;
+      const normMouseY = currentMouseY - 0.5;
+
+      // 1. Celestial & Sky Parallax (Scroll Only)
+      if (celestialLayer) {
+        celestialLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.05}px, 0)`;
+      }
+      if (starsLayer) {
+        starsLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.03}px, 0)`;
+      }
+      if (cloudsLayer) {
+        cloudsLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.08}px, 0)`;
+      }
+
+      // 2. Orbs Parallax & Mouse Interactivity (Scroll + Mouse/Touch)
+      wrappers.forEach(wrapper => {
+        const speedY = parseFloat(wrapper.getAttribute('data-speed-y') || '0');
+        const speedX = parseFloat(wrapper.getAttribute('data-speed-x') || '0');
+        const scaleDelta = parseFloat(wrapper.getAttribute('data-scale') || '0');
+        const mouseFactorX = parseFloat(wrapper.getAttribute('data-mouse-x') || '0');
+        const mouseFactorY = parseFloat(wrapper.getAttribute('data-mouse-y') || '0');
+        
+        // Scroll drift translation
+        const scrollYShift = currentScrollY * speedY;
+        const scrollXShift = currentScrollY * speedX;
+        
+        // Mouse/Touch drift translation (scaled by factor)
+        const mouseXShift = normMouseX * mouseFactorX * 8; 
+        const mouseYShift = normMouseY * mouseFactorY * 8;
+        
+        const totalX = scrollXShift + mouseXShift;
+        const totalY = scrollYShift + mouseYShift;
+        const scale = 1 + (scrollPct * scaleDelta);
+        
+        (wrapper as HTMLElement).style.transform = `translate3d(${totalX}px, ${totalY}px, 0) scale(${scale})`;
+      });
+
+      const scrollDiff = Math.abs(targetScrollY - currentScrollY);
+      const mouseDiffX = Math.abs(targetMouseX - currentMouseX);
+      const mouseDiffY = Math.abs(targetMouseY - currentMouseY);
+
+      // Keep animation loop ticking if there's any active movement
+      if (scrollDiff > 0.05 || mouseDiffX > 0.001 || mouseDiffY > 0.001) {
+        requestAnimationFrame(updateFrame);
+      } else {
+        ticking = false;
+      }
+    };
+
+    // Attach listeners
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+
+    // Initial frame run
+    requestTick();
+
+    // Starfield Generator
+    const starsGroup = document.getElementById('sparkling-stars');
+    if (starsGroup) {
+      starsGroup.innerHTML = '';
+      const numStars = 70;
+      for (let i = 0; i < numStars; i++) {
+        const cx = Math.random() * 100; // percent
+        const cy = Math.random() * 65;  // upper 65% of sky
+        const r = Math.random() * 1.1 + 0.5; // size between 0.5px and 1.6px
+        const delay = Math.random() * 6; // staggered delay
+        const duration = Math.random() * 3 + 2.5; // star twinkle speed
+        
+        const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        star.setAttribute('cx', `${cx}%`);
+        star.setAttribute('cy', `${cy}%`);
+        star.setAttribute('r', r.toString());
+        star.setAttribute('fill', '#ffffff');
+        star.setAttribute('opacity', (Math.random() * 0.6 + 0.3).toString());
+        
+        // CSS Twinkle styling
+        star.style.transformOrigin = `${cx}% ${cy}%`;
+        star.style.transformBox = 'fill-box';
+        star.style.animation = `twinkle ${duration}s infinite ease-in-out ${delay}s`;
+        
+        starsGroup.appendChild(star);
+      }
+    }
+
+    // Dynamic Moon Phase SVG Renderer
+    const moonPathElement = document.getElementById('moon-phase-path');
+    if (moonPathElement) {
+      const now = new Date();
+      const knownNewMoon = new Date(Date.UTC(2000, 0, 6, 18, 14, 0));
+      const diffMs = now.getTime() - knownNewMoon.getTime();
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      const lunarPeriod = 29.530588853;
+      const age = diffDays % lunarPeriod;
+      const ageDays = age < 0 ? age + lunarPeriod : age;
+      const phase = ageDays / lunarPeriod;
+
+      // Calculate path inside a 56x56 frame (R=28, Center = 28, 28)
+      let path = "";
+      if (phase <= 0.015 || phase >= 0.985) {
+        path = ""; // New Moon
+      } else if (phase >= 0.485 && phase <= 0.515) {
+        path = "M 28 0 A 28 28 0 1 1 28 56 A 28 28 0 1 1 28 0 Z"; // Full Moon
+      } else {
+        const D = phase <= 0.5 ? (phase / 0.5) : ((1 - phase) / 0.5);
+        const rx = Math.abs(28 * (1 - 2 * D));
+        
+        if (rx < 0.1) {
+          path = phase < 0.5 
+            ? "M 28 0 A 28 28 0 0 1 28 56 L 28 0 Z" 
+            : "M 28 56 A 28 28 0 0 1 28 0 L 28 56 Z";
+        } else if (phase < 0.5) {
+          const sweep = D < 0.5 ? 0 : 1;
+          path = `M 28 0 A 28 28 0 0 1 28 56 A ${rx} 28 0 0 ${sweep} 28 0 Z`;
+        } else {
+          const sweep = D < 0.5 ? 0 : 1;
+          path = `M 28 56 A 28 28 0 0 1 28 0 A ${rx} 28 0 0 ${sweep} 28 56 Z`;
+        }
+      }
+
+      moonPathElement.setAttribute('d', path);
+    }
+  }
+
+  // Initialize immediately
+  initBackground();
+  
+  // Re-run setup on View Transition navigation
+  document.addEventListener('astro:page-load', initBackground);
+</script>
