@@ -40,7 +40,7 @@ const optimizedScreenshotLight = screenshotLight ? await getImage({
 // Dynamically assign classes based on color-coding preferences
 const colorClasses = {
   blue: {
-    border: 'hover:border-brand-blue/40 border-white/5',
+    border: 'hover:border-brand-blue/40 border-element-border',
     glow: 'group-hover:bg-brand-blue/10',
     tagBg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20',
     linkText: 'text-brand-blue hover:text-brand-blue/80',
@@ -48,7 +48,7 @@ const colorClasses = {
     iconColor: 'text-brand-blue'
   },
   yellow: {
-    border: 'hover:border-brand-yellow/40 border-white/5',
+    border: 'hover:border-brand-yellow/40 border-element-border',
     glow: 'group-hover:bg-brand-yellow/10',
     tagBg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20',
     linkText: 'text-brand-yellow hover:text-brand-yellow/80',
@@ -56,7 +56,7 @@ const colorClasses = {
     iconColor: 'text-brand-yellow'
   },
   purple: {
-    border: 'hover:border-brand-purple/40 border-white/5',
+    border: 'hover:border-brand-purple/40 border-element-border',
     glow: 'group-hover:bg-brand-purple/10',
     tagBg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20',
     linkText: 'text-brand-purple hover:text-brand-purple/80',
@@ -64,7 +64,7 @@ const colorClasses = {
     iconColor: 'text-brand-purple'
   },
   green: {
-    border: 'hover:border-brand-green/40 border-white/5',
+    border: 'hover:border-brand-green/40 border-element-border',
     glow: 'group-hover:bg-brand-green/10',
     tagBg: 'bg-brand-green/10 text-brand-green border-brand-green/20',
     linkText: 'text-brand-green hover:text-brand-green/80',
@@ -147,7 +147,7 @@ const dotColorClass = {
   </div>
 
   <!-- Content Padding Wrapper -->
-  <div class="p-6 md:p-8 flex flex-col flex-grow border-t border-white/5">
+  <div class="p-6 md:p-8 flex flex-col flex-grow border-t border-element-border">
     <div class="flex-grow flex flex-col">
       <!-- Header -->
       <div class="flex items-start justify-between mb-4 w-full">

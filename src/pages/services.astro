@@ -85,7 +85,7 @@ const colorClasses = {
       <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple border border-brand-purple/20 mb-6 tracking-wider uppercase">
         Professional Collaboration
       </span>
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
         Professional <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-purple to-pink-500 light:to-pink-600">Services</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
@@ -103,7 +103,7 @@ const colorClasses = {
           .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
         return (
           <section id={service.id} class="scroll-mt-24 relative group">
-            <div class="glass-card rounded-3xl border border-white/5 relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 items-stretch p-0">
+            <div class="glass-card rounded-3xl border border-element-border relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 items-stretch p-0">
               <!-- Top accent color line -->
               <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${classes.glow} z-20`}></div>
 
@@ -122,7 +122,7 @@ const colorClasses = {
                     {service.data.icon}
                   </div>
                   <div>
-                    <h2 class={`text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none flex items-center gap-2 relative transition-colors ${classes.hoverText}`}>
+                    <h2 class={`text-2xl md:text-3xl font-extrabold text-gray-100 tracking-tight leading-none flex items-center gap-2 relative transition-colors ${classes.hoverText}`}>
                       <span>{service.data.title}</span>
                       <span 
                         class={`unread-dot hidden w-2.5 h-2.5 rounded-full ${classes.dot}`}
@@ -155,7 +155,7 @@ const colorClasses = {
                         return (
                           <a 
                             href={moduleUrl}
-                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border border-white/10 bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all cursor-pointer min-h-[28px]"
+                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400 hover:bg-element-bg-hover hover:text-gray-100 hover:border-element-border-hover transition-all cursor-pointer min-h-[28px]"
                           >
                             <span>{module.data.title}</span>
                             <span 
@@ -239,12 +239,12 @@ const colorClasses = {
     </div>
 
     <!-- Contact & Booking Section -->
-    <section id="contact-services" class="py-16 mt-16 border-t border-white/5 scroll-mt-24">
+    <section id="contact-services" class="py-16 mt-16 border-t border-element-border scroll-mt-24">
       <div class="max-w-3xl mx-auto text-center mb-12">
         <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple border border-brand-purple/20 mb-4 uppercase tracking-wider">
           Let's Collaborate
         </span>
-        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-100 mb-4">
           Start a Conversation
         </h2>
         <p class="text-gray-400 text-sm md:text-base leading-relaxed">
@@ -253,10 +253,10 @@ const colorClasses = {
       </div>
 
       <div class="max-w-2xl mx-auto">
-        <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
+        <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
           <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-purple to-pink-500 light:to-pink-600"></div>
           
-          <h3 class="text-lg font-bold text-white mb-6">Contact & Booking Inquiry</h3>
+          <h3 class="text-lg font-bold text-gray-100 mb-6">Contact & Booking Inquiry</h3>
           
           <div class="space-y-6">
             <div class="flex items-start space-x-4">
@@ -268,18 +268,18 @@ const colorClasses = {
               <div class="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Send an email request to</p>
-                  <p id="services-email-text" class="text-white font-mono font-medium mt-0.5 select-all text-sm sm:text-base">georg.hackenberg@fh-wels.at</p>
+                  <p id="services-email-text" class="text-gray-100 font-mono font-medium mt-0.5 select-all text-sm sm:text-base">georg.hackenberg@fh-wels.at</p>
                 </div>
                 <button 
                   id="services-copy-email-btn"
-                  class="px-4 py-2 text-xs font-semibold rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
+                  class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
                 >
                   <span id="services-copy-btn-text">Copy Email</span>
                 </button>
               </div>
             </div>
             
-            <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
+            <div class="pt-6 border-t border-element-border flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
               <p>Typically responding within 2 business days.</p>
               <a 
                 id="direct-mail-link"
@@ -370,7 +370,7 @@ const colorClasses = {
         setTimeout(() => {
           copyBtnText.textContent = 'Copy Email';
           copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-          copyBtn.classList.add('bg-white/5', 'text-gray-300', 'border-white/10');
+          copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
         }, 2500);
       }).catch(err => {
         console.error('Failed to copy: ', err);

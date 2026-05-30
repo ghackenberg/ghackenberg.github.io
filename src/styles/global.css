@@ -41,6 +41,13 @@
   --color-gray-900: #1e293b; /* Map gray-900 to Slate 800 */
   --color-gray-950: #020617; /* Map gray-950 to Slate 950 */
   
+  /* Interface Element Tokens */
+  --color-element-bg: rgba(255, 255, 255, 0.05);
+  --color-element-bg-hover: rgba(255, 255, 255, 0.1);
+  --color-element-border: rgba(255, 255, 255, 0.05);
+  --color-element-border-hover: rgba(255, 255, 255, 0.2);
+  --color-element-border-medium: rgba(255, 255, 255, 0.1);
+  
   --font-sans: "Outfit", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --breakpoint-nav: 1120px;
 }
@@ -58,6 +65,13 @@
   --color-bg-card: rgba(255, 255, 255, 0.45);
   --color-bg-main: #f8fafc;
   --color-bg-gradient: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 100%);
+
+  /* Interface Element Tokens light mode shifts */
+  --color-element-bg: rgba(15, 23, 42, 0.04);
+  --color-element-bg-hover: rgba(15, 23, 42, 0.08);
+  --color-element-border: rgba(15, 23, 42, 0.08);
+  --color-element-border-hover: rgba(15, 23, 42, 0.15);
+  --color-element-border-medium: rgba(15, 23, 42, 0.12);
 
   /* Redefine slate gray colors in light mode to cleanly shift utility colors */
   --color-gray-50: #0f172a;
@@ -92,10 +106,6 @@
   h1, h2, h3, h4, h5, h6 {
     color: var(--color-text-heading);
     transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  h1.text-white, h2.text-white, h3.text-white, h4.text-white, h5.text-white, h6.text-white {
-    color: var(--color-text-heading) !important;
   }
 
   p {
@@ -154,7 +164,9 @@
   }
 }
 
-/* Custom Tailwind CSS v4 class overrides to support dynamic light mode values */
+/* DEPRECATED LEGACY OVERRIDES - DO NOT USE FOR NEW DEVELOPMENT.
+   New development should use semantic token utilities (e.g. bg-element-bg, border-element-border) 
+   instead of overriding absolute white classes in CSS. */
 .border-white\/5 {
   border-color: rgba(255, 255, 255, 0.05);
   @variant light {

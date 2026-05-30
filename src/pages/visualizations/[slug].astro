@@ -204,43 +204,43 @@ const payload = {
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 shrink-0">
       <div>
-        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+        <h1 class="text-2xl md:text-3xl font-extrabold text-gray-100 tracking-tight flex items-center gap-3">
           {title}
-          <span class="text-xs px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 font-semibold tracking-wide uppercase">
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-element-bg border border-element-border-medium text-gray-400 font-semibold tracking-wide uppercase">
             Interactive
           </span>
         </h1>
       </div>
 
       <!-- Engine Selector Tabs -->
-      <div class="flex flex-wrap gap-1 bg-white/5 border border-white/5 p-1 rounded-xl self-start sm:self-auto">
+      <div class="flex flex-wrap gap-1 bg-element-bg border border-element-border p-1 rounded-xl self-start sm:self-auto">
         <a 
           href="/visualizations/cytoscape" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'cytoscape' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'cytoscape' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           Cytoscape
         </a>
         <a 
           href="/visualizations/d3" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'd3' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'd3' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           D3
         </a>
         <a 
           href="/visualizations/sigma" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'sigma' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'sigma' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           Sigma
         </a>
         <a 
           href="/visualizations/3d-force" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === '3d-force' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === '3d-force' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           3D Force
         </a>
         <a 
           href="/visualizations/vis-network" 
-          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'vis-network' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-white'}`}
+          class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'vis-network' ? 'bg-brand-green text-gray-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           Vis.js
         </a>
@@ -248,9 +248,9 @@ const payload = {
     </div>
 
     <!-- Graph Panel Area -->
-    <div class="flex-grow w-full relative min-h-[450px] rounded-3xl border border-white/5 bg-gray-950/60 backdrop-blur-md overflow-hidden flex flex-col md:flex-row shadow-2xl">
+    <div class="flex-grow w-full relative min-h-[450px] rounded-3xl border border-element-border bg-gray-950/60 backdrop-blur-md overflow-hidden flex flex-col md:flex-row shadow-2xl">
       <!-- Sidebar Legend & Control -->
-      <div class="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/5 p-5 shrink-0 bg-gray-950/40 relative z-20 flex flex-col justify-between">
+      <div class="w-full md:w-64 border-b md:border-b-0 md:border-r border-element-border p-5 shrink-0 bg-gray-950/40 relative z-20 flex flex-col justify-between">
         <div class="space-y-6">
           <div>
             <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Graph Legend</h2>
@@ -271,12 +271,12 @@ const payload = {
           </div>
 
           <!-- Layout Selector Section -->
-          <div class="border-t border-white/5 pt-4">
+          <div class="border-t border-element-border pt-4">
             <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2.5">Layout Mode</h2>
             <div class="relative">
               <select 
                 id="layout-selector"
-                class="w-full px-3 py-2 text-xs rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-gray-200 light:bg-slate-900/5 light:border-slate-900/10 light:hover:border-slate-900/20 light:text-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-green/50 light:focus:ring-brand-green/30 cursor-pointer appearance-none"
+                class="w-full px-3 py-2 text-xs rounded-xl bg-element-bg border border-element-border-medium hover:border-element-border-hover text-gray-200 light:bg-slate-900/5 light:border-slate-900/10 light:hover:border-slate-900/20 light:text-slate-800 focus:outline-none focus:ring-1 focus:ring-brand-green/50 light:focus:ring-brand-green/30 cursor-pointer appearance-none"
               >
                 <!-- Options will be populated dynamically by the engine -->
               </select>
@@ -288,7 +288,7 @@ const payload = {
             </div>
           </div>
 
-          <div class="border-t border-white/5 pt-4">
+          <div class="border-t border-element-border pt-4">
             <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2.5">Interaction</h2>
             <ul class="space-y-1.5 text-xs text-gray-400 list-disc pl-4 font-normal leading-relaxed">
               <li>Drag nodes to rearrange them</li>
