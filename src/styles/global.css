@@ -54,6 +54,7 @@
 
 :root.light, .light {
   /* Semantic variable shifts in light mode */
+  --color-brand-yellow: #b45309;  /* Readability shift in light mode (amber-700) */
   --color-text-main: #334155;     /* Slate 700 */
   --color-text-heading: #0f172a;  /* Slate 900 */
   --color-text-subtle: #475569;   /* Slate 600 */

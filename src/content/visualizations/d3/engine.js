@@ -65,7 +65,9 @@ export default {
           d.fy = null;
         }));
 
-    const colors = ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
+    const colors = isLight 
+      ? ["#2563eb", "#059669", "#d97706"] 
+      : ["#3b82f6", "#10b981", "#f59e0b"];
     
     this.nodeElements.append("circle")
       .attr("r", d => d.size * 6 + 4)
@@ -126,6 +128,10 @@ export default {
     this.linkElements.style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)");
     this.nodeElements.selectAll("circle").style("stroke", isLight ? "#ffffff" : "#030712");
     this.nodeElements.selectAll("text").style("fill", isLight ? "#334155" : "#9ca3af");
+    const colors = isLight 
+      ? ["#2563eb", "#059669", "#d97706"] 
+      : ["#3b82f6", "#10b981", "#f59e0b"];
+    this.nodeElements.selectAll("circle").style("fill", d => colors[d.group]);
 
     if (layout === 'radial') {
       // Calculate concentric coordinates

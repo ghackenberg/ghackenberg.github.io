@@ -21,6 +21,7 @@ export default {
     this.forceAtlas2 = forceAtlas2;
 
     this.graph = new Graph();
+    this.payload = payload;
     const nodes = payload.sigma.nodes;
     const edges = payload.sigma.edges;
 
@@ -30,7 +31,7 @@ export default {
         x: n.x || Math.random(),
         y: n.y || Math.random(),
         size: n.size * 3 + 2,
-        color: n.color
+        color: isLight && n.color === '#f59e0b' ? '#d97706' : n.color
       });
     });
 
@@ -91,6 +92,14 @@ export default {
     this.graph.forEachEdge(edge => {
       this.graph.setEdgeAttribute(edge, 'color', edgeColor);
     });
+
+    if (this.payload && this.payload.sigma) {
+      this.graph.forEachNode(node => {
+        const rawColor = this.payload.sigma.nodes.find(n => n.id === node)?.color || '#3b82f6';
+        const color = isLight && rawColor === '#f59e0b' ? '#d97706' : rawColor;
+        this.graph.setNodeAttribute(node, 'color', color);
+      });
+    }
 
     this.sigma.setSetting('labelColor', { color: labelColor });
     this.sigma.setSetting('defaultEdgeColor', edgeColor);

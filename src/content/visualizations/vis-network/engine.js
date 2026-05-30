@@ -24,9 +24,9 @@ export default {
         highlight: { background: '#059669', border: '#047857' } 
       },
       { 
-        background: '#f59e0b', 
-        border: isLight ? '#d97706' : '#fbbf24', 
-        highlight: { background: '#d97706', border: '#b45309' } 
+        background: isLight ? '#d97706' : '#f59e0b', 
+        border: isLight ? '#b45309' : '#fbbf24', 
+        highlight: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#92400e' : '#b45309' } 
       }
     ];
 
@@ -147,9 +147,9 @@ export default {
         highlight: { background: '#059669', border: '#047857' } 
       },
       { 
-        background: '#f59e0b', 
-        border: isLight ? '#d97706' : '#fbbf24', 
-        highlight: { background: '#d97706', border: '#b45309' } 
+        background: isLight ? '#d97706' : '#f59e0b', 
+        border: isLight ? '#b45309' : '#fbbf24', 
+        highlight: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#92400e' : '#b45309' } 
       }
     ];
 

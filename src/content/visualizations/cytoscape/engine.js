@@ -15,7 +15,11 @@ export default {
         {
           selector: 'node',
           style: {
-            'background-color': 'data(color)',
+            'background-color': (node) => {
+              const color = node.data('color');
+              if (isLight && color === '#f59e0b') return '#d97706';
+              return color;
+            },
             'label': 'data(name)',
             'width': 'data(size)',
             'height': 'data(size)',
@@ -88,7 +92,12 @@ export default {
     // Apply color update to node labels based on theme
     this.cy.style().selector('node').style({
       'color': isLight ? '#0f172a' : '#f3f4f6',
-      'border-color': isLight ? '#ffffff' : '#030712'
+      'border-color': isLight ? '#ffffff' : '#030712',
+      'background-color': (node) => {
+        const color = node.data('color');
+        if (isLight && color === '#f59e0b') return '#d97706';
+        return color;
+      }
     }).update();
 
     if (layout === 'radial') {

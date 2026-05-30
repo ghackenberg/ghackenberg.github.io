@@ -9,7 +9,9 @@ export default {
     const { default: ForceGraph3D } = await import('https://cdn.jsdelivr.net/npm/3d-force-graph@1.73.0/+esm');
     this.ForceGraph3D = ForceGraph3D;
 
-    const colors = ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
+    const colors = isLight
+      ? ["#2563eb", "#059669", "#d97706"]
+      : ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
     
     // Cache nodes and connections
     this.nodes = payload['3d-force'].nodes.map(n => ({
@@ -68,6 +70,14 @@ export default {
     // Apply color update based on theme
     this.graph.backgroundColor(isLight ? '#f8fafc' : '#090d16');
     this.graph.linkColor(isLight ? () => 'rgba(15, 23, 42, 0.15)' : () => 'rgba(255,255,255,0.08)');
+
+    const colors = isLight
+      ? ["#2563eb", "#059669", "#d97706"]
+      : ["#3b82f6", "#10b981", "#f59e0b"];
+    this.nodes.forEach(n => {
+      n.color = colors[n.group];
+    });
+    this.graph.nodeColor('color');
 
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
