@@ -364,7 +364,7 @@ const colorClasses = {
       
       navigator.clipboard.writeText(email).then(() => {
         copyBtnText.textContent = 'Copied!';
-        copyBtn.classList.remove('bg-white/5', 'text-gray-300', 'border-white/10');
+        copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
         copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
         
         setTimeout(() => {

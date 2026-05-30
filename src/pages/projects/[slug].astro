@@ -128,7 +128,7 @@ const formattedDate = lastUpdated
     </a>
 
     <!-- Title Header -->
-    <header class="mb-12 pb-10 border-b border-white/5 relative">
+    <header class="mb-12 pb-10 border-b border-element-border relative">
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
         {project.data.title}
       </h1>
@@ -141,7 +141,7 @@ const formattedDate = lastUpdated
       <!-- Main Content (Column 1 - Project details & Markdown text) -->
       <div class="lg:col-span-8 space-y-12">
         <!-- Detail / Content block -->
-        <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 project-content prose-custom">
+        <section class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
           <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2">
             <span>🚀</span>
             <span>Project Details & Focus</span>
@@ -175,7 +175,7 @@ const formattedDate = lastUpdated
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               {optimizedScreenshots.map((shot, index) => (
                 <div 
-                  class={`glass-card rounded-2xl border border-white/5 overflow-hidden group cursor-pointer relative transition-all duration-300 hover:scale-[1.02] hover:border-brand-${accentColor}/30 hover:shadow-lg hover:shadow-brand-${accentColor}/5 flex flex-col`}
+                  class={`glass-card rounded-2xl border border-element-border overflow-hidden group cursor-pointer relative transition-all duration-300 hover:scale-[1.02] hover:border-brand-${accentColor}/30 hover:shadow-lg hover:shadow-brand-${accentColor}/5 flex flex-col`}
                   data-screenshot-index={index}
                 >
                   <!-- Image Area -->
@@ -196,7 +196,7 @@ const formattedDate = lastUpdated
                     </div>
                   </div>
                   <!-- Title & Description Area -->
-                  <div class="p-5 border-t border-white/5 flex-grow flex flex-col justify-between">
+                  <div class="p-5 border-t border-element-border flex-grow flex flex-col justify-between">
                     <div>
                       <h3 class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans">
                         {shot.title}
@@ -218,7 +218,7 @@ const formattedDate = lastUpdated
       <!-- Sidebar Metadata & GitHub Repo (Column 2) -->
       <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
         <!-- Project Actions & Info Card -->
-        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col relative overflow-hidden">
+        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col relative overflow-hidden">
           <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
           
           <h3 class="text-lg font-bold mb-4 flex items-center space-x-2">
@@ -254,7 +254,7 @@ const formattedDate = lastUpdated
 
         <!-- Linked GitHub Repository Card (if available) -->
         {repo ? (
-          <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col group overflow-hidden relative">
+          <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col group overflow-hidden relative">
             <div class={`absolute top-0 left-0 right-0 h-1 bg-brand-${accentColor} opacity-60`}></div>
             
             <h3 class="text-lg font-bold mb-4 flex items-center space-x-2">
@@ -272,7 +272,7 @@ const formattedDate = lastUpdated
               {repo.description}
             </p>
 
-            <div class="space-y-2.5 border-t border-white/5 pt-3.5 mb-4 text-xs text-gray-400">
+            <div class="space-y-2.5 border-t border-element-border pt-3.5 mb-4 text-xs text-gray-400">
               <div class="flex items-center justify-between">
                 <span>Language:</span>
                 <div class="flex items-center space-x-1.5">
@@ -294,7 +294,7 @@ const formattedDate = lastUpdated
               )}
             </div>
 
-            <div class="border-t border-white/5 pt-4 mt-auto">
+            <div class="border-t border-element-border pt-4 mt-auto">
               <a 
                 href={repo.url}
                 target="_blank"
@@ -309,7 +309,7 @@ const formattedDate = lastUpdated
             </div>
           </div>
         ) : (
-          <div class="glass-card p-6 rounded-2xl border border-white/5 text-center text-xs text-gray-500 py-8">
+          <div class="glass-card p-6 rounded-2xl border border-element-border text-center text-xs text-gray-500 py-8">
             ⚠️ Synced repository info not available.
           </div>
         )}

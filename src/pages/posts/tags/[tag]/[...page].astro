@@ -84,19 +84,19 @@ const getPageUrl = (pageNum: number | string) => {
 
       <!-- Pagination Controls -->
       {page.lastPage > 1 && (
-        <nav class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Pagination">
+        <nav class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-element-border mt-10" aria-label="Pagination">
           {/* Previous Button */}
           <div class="flex-1 w-full sm:w-auto text-left">
             {page.url.prev ? (
               <a 
                 href={page.url.prev} 
-                class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-brand-blue/30 hover:bg-white/10 transition-all duration-200 text-sm font-semibold group w-full sm:w-auto"
+                class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto"
               >
                 <span class="group-hover:-translate-x-0.5 transition-transform mr-1.5">&larr;</span>
                 <span>Previous</span>
               </a>
             ) : (
-              <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto">
+              <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto">
                 <span class="mr-1.5">&larr;</span>
                 <span>Previous</span>
               </span>
@@ -124,7 +124,7 @@ const getPageUrl = (pageNum: number | string) => {
               ) : (
                 <a 
                   href={getPageUrl(num)} 
-                  class="px-3.5 py-2 rounded-xl text-sm font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-blue/30 hover:bg-white/10 transition-all duration-200 min-w-[38px] text-center"
+                  class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center"
                 >
                   {num}
                 </a>
@@ -137,13 +137,13 @@ const getPageUrl = (pageNum: number | string) => {
             {page.url.next ? (
               <a 
                 href={page.url.next} 
-                class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-brand-blue/30 hover:bg-white/10 transition-all duration-200 text-sm font-semibold group w-full sm:w-auto"
+                class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto"
               >
                 <span>Next</span>
                 <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
               </a>
             ) : (
-              <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto">
+              <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto">
                 <span>Next</span>
                 <span class="ml-1.5">&rarr;</span>
               </span>

@@ -29,9 +29,9 @@ const optimizedIcon = icon ? await getImage({
 }) : null;
 ---
 
-<article class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row gap-6 items-start group relative cursor-pointer hover:border-brand-blue/30 h-full w-full">
+<article class="glass-card p-6 rounded-2xl border border-element-border flex flex-col md:flex-row gap-6 items-start group relative cursor-pointer hover:border-brand-blue/30 h-full w-full">
   {icon && (
-    <div class="w-16 h-16 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 border border-white/10 bg-gray-990/50 flex items-center justify-center relative">
+    <div class="w-16 h-16 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 border border-element-border-medium bg-gray-990/50 flex items-center justify-center relative">
       <svg 
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-300 z-0 will-change-transform pointer-events-none" 
         viewBox="0 0 100 100" 

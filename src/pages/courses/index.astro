@@ -78,7 +78,7 @@ const languageColors: Record<string, string> = {
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Filters Sidebar (Column 1) -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
-        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col">
+        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col">
           <h2 class="text-lg font-bold mb-4 flex items-center space-x-2 shrink-0">
             <span>⚙️</span>
             <span>Filter Catalog</span>
@@ -92,7 +92,7 @@ const languageColors: Record<string, string> = {
                 type="text" 
                 id="course-search" 
                 placeholder="Search lectures..." 
-                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50 transition-all duration-200"
+                class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50 transition-all duration-200"
               />
               <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
             </div>
@@ -131,7 +131,7 @@ const languageColors: Record<string, string> = {
             <label for="tech-filter" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Primary Technology</label>
             <select 
               id="tech-filter" 
-              class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-yellow/50 transition-all duration-200 cursor-pointer"
+              class="w-full bg-gray-900 border border-element-border-medium rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-yellow/50 transition-all duration-200 cursor-pointer"
             >
               <option value="all" class="bg-gray-900">All Technologies</option>
               {techLanguages.map(tech => (

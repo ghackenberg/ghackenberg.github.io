@@ -63,7 +63,7 @@ const getPageUrl = (pageNum: number | string) => {
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Tag Filter Cloud -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
-        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col max-h-[300px] lg:max-h-[calc(100vh-10rem)]">
+        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col max-h-[300px] lg:max-h-[calc(100vh-10rem)]">
           <h2 class="text-lg font-bold mb-4 flex items-center space-x-2 shrink-0">
             <span>🏷️</span>
             <span>Tags</span>
@@ -73,7 +73,7 @@ const getPageUrl = (pageNum: number | string) => {
               type="text" 
               id="tag-search" 
               placeholder="Search tags..." 
-              class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
+              class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-1.5 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
             />
             <span class="absolute left-2.5 top-2 text-[10px] text-gray-500">🔍</span>
           </div>
@@ -117,13 +117,13 @@ const getPageUrl = (pageNum: number | string) => {
               {page.url.prev ? (
                 <a 
                   href={page.url.prev} 
-                  class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-brand-blue/30 hover:bg-white/10 transition-all duration-200 text-sm font-semibold group w-full sm:w-auto"
+                  class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto"
                 >
                   <span class="group-hover:-translate-x-0.5 transition-transform mr-1.5">&larr;</span>
                   <span>Previous</span>
                 </a>
               ) : (
-                <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto">
+                <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto">
                   <span class="mr-1.5">&larr;</span>
                   <span>Previous</span>
                 </span>
@@ -151,7 +151,7 @@ const getPageUrl = (pageNum: number | string) => {
                 ) : (
                   <a 
                     href={getPageUrl(num)} 
-                    class="px-3.5 py-2 rounded-xl text-sm font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-blue/30 hover:bg-white/10 transition-all duration-200 min-w-[38px] text-center"
+                    class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center"
                   >
                     {num}
                   </a>
@@ -164,13 +164,13 @@ const getPageUrl = (pageNum: number | string) => {
               {page.url.next ? (
                 <a 
                   href={page.url.next} 
-                  class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:border-brand-blue/30 hover:bg-white/10 transition-all duration-200 text-sm font-semibold group w-full sm:w-auto"
+                  class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto"
                 >
                   <span>Next</span>
                   <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
                 </a>
               ) : (
-                <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto">
+                <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto">
                   <span>Next</span>
                   <span class="ml-1.5">&rarr;</span>
                 </span>

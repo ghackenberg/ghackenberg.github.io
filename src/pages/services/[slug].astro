@@ -82,7 +82,7 @@ const colorClasses = {
     </a>
 
     <!-- Header -->
-    <header class="mb-12 pb-10 border-b border-white/5 relative">
+    <header class="mb-12 pb-10 border-b border-element-border relative">
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
         {service.data.title}
       </h1>
@@ -108,7 +108,7 @@ const colorClasses = {
     <!-- Main Content -->
     <div class="space-y-12">
         <!-- Service Text -->
-        <section class={`glass-card p-8 md:p-10 rounded-3xl border border-white/5 service-content theme-${service.data.color} prose-custom`}>
+        <section class={`glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-${service.data.color} prose-custom`}>
           <Content />
         </section>
 
@@ -129,7 +129,7 @@ const colorClasses = {
               return (
                 <a 
                   href={`/services/${service.id}/${moduleSlug}`}
-                  class="glass-card rounded-2xl border border-white/5 relative overflow-hidden flex flex-col md:grid md:grid-cols-12 items-stretch p-0 hover:border-white/10 transition-colors group cursor-pointer block no-underline"
+                  class="glass-card rounded-2xl border border-element-border relative overflow-hidden flex flex-col md:grid md:grid-cols-12 items-stretch p-0 hover:border-element-border-medium transition-colors group cursor-pointer block no-underline"
                 >
                   {/* Accent bar */}
                   <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow} z-20`}></div>
@@ -155,12 +155,12 @@ const colorClasses = {
 
                     <div class="flex flex-wrap gap-2 relative z-20">
                       {module.data.duration && (
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-white/10 bg-white/5 text-gray-400">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
                           ⏱️ {module.data.duration}
                         </span>
                       )}
                       {module.data.delivery && (
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-white/10 bg-white/5 text-gray-400">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
                           📍 {module.data.delivery}
                         </span>
                       )}
@@ -197,7 +197,7 @@ const colorClasses = {
     </div>
 
     <!-- Contact & Booking Section -->
-    <section id="contact-services" class="py-16 mt-16 border-t border-white/5 scroll-mt-24">
+    <section id="contact-services" class="py-16 mt-16 border-t border-element-border scroll-mt-24">
       <div class="max-w-3xl mx-auto text-center mb-12">
         <span class={`inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} mb-4 uppercase tracking-wider`}>
           Let's Collaborate
@@ -211,7 +211,7 @@ const colorClasses = {
       </div>
 
       <div class="max-w-2xl mx-auto">
-        <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
+        <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
           <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${colorClasses.glow}`}></div>
           
           <h3 class="text-lg font-bold mb-6">Contact & Booking Inquiry</h3>
@@ -230,14 +230,14 @@ const colorClasses = {
                 </div>
                 <button 
                   id="services-copy-email-btn"
-                  class="px-4 py-2 text-xs font-semibold rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
+                  class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
                 >
                   <span id="services-copy-btn-text">Copy Email</span>
                 </button>
               </div>
             </div>
             
-            <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
+            <div class="pt-6 border-t border-element-border flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
               <p>Typically responding within 2 business days.</p>
               <a 
                 id="direct-mail-link"
@@ -378,13 +378,13 @@ const colorClasses = {
       
       navigator.clipboard.writeText(email).then(() => {
         copyBtnText.textContent = 'Copied!';
-        copyBtn.classList.remove('bg-white/5', 'text-gray-300', 'border-white/10');
+        copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
         copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
         
         setTimeout(() => {
           copyBtnText.textContent = 'Copy Email';
           copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-          copyBtn.classList.add('bg-white/5', 'text-gray-300', 'border-white/10');
+          copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
         }, 2500);
       }).catch(err => {
         console.error('Failed to copy: ', err);

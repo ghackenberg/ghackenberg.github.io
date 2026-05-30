@@ -40,7 +40,7 @@ const allTags = Array.from(tagsSet).sort();
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Filters Sidebar (Column 1) -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
-        <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col">
+        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col">
           <h2 class="text-lg font-bold mb-4 flex items-center space-x-2 shrink-0">
             <span>⚙️</span>
             <span>Filter Projects</span>
@@ -54,7 +54,7 @@ const allTags = Array.from(tagsSet).sort();
                 type="text" 
                 id="project-search" 
                 placeholder="Search projects..." 
-                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
+                class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
               />
               <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
             </div>
@@ -65,7 +65,7 @@ const allTags = Array.from(tagsSet).sort();
             <label for="tag-filter" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Filter by Tag</label>
             <select 
               id="tag-filter" 
-              class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-blue/50 transition-all duration-200 cursor-pointer"
+              class="w-full bg-gray-900 border border-element-border-medium rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-blue/50 transition-all duration-200 cursor-pointer"
             >
               <option value="all" class="bg-gray-900">All Tags</option>
               {allTags.map(tag => (

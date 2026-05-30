@@ -52,7 +52,7 @@ const seoDescription = post.data.description
     </a>
 
     <!-- Post Header -->
-    <header class="mb-10 pb-8 border-b border-white/5">
+    <header class="mb-10 pb-8 border-b border-element-border">
       <div class="flex items-center space-x-3 mb-4">
         <time class="text-sm font-semibold text-brand-blue/80">
           {post.data.pubDate.toLocaleDateString("en-US", {
@@ -71,7 +71,7 @@ const seoDescription = post.data.description
         {post.data.tags.map(tag => (
           <a 
             href={`/posts/tags/${tag}`}
-            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-brand-blue/30 transition-all duration-200"
+            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
           >
             #{tag}
           </a>
@@ -80,7 +80,7 @@ const seoDescription = post.data.description
     </header>
 
     <!-- Post Body -->
-    <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-white/5 mb-16 relative overflow-hidden prose-custom">
+    <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-element-border mb-16 relative overflow-hidden prose-custom">
       <!-- Top accent line -->
       <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600"></div>
       
@@ -89,13 +89,13 @@ const seoDescription = post.data.description
 
     <!-- Related Posts -->
     {relatedPosts.length > 0 && (
-      <section class="border-t border-white/5 pt-16">
+      <section class="border-t border-element-border pt-16">
         <h2 class="text-2xl font-bold mb-8 tracking-tight">
           You might also be interested in
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {relatedPosts.map(p => (
-            <a href={`/posts/${p.id}`} class="glass-card p-5 rounded-2xl border border-white/5 group flex flex-col h-full justify-between">
+            <a href={`/posts/${p.id}`} class="glass-card p-5 rounded-2xl border border-element-border group flex flex-col h-full justify-between">
               <div>
                 <time class="text-[10px] font-semibold text-brand-blue/80 block mb-2">
                   {p.data.pubDate.toLocaleDateString("en-US", {
