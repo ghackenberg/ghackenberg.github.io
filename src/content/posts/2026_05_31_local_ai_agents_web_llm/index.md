@@ -14,15 +14,11 @@ The solution? **Run the LLM entirely client-side, in the browser, powered by the
 
 This post details how we integrated **MLC Web-LLM** via **WebGPU** into Delta Dynamics, offloaded the execution to a **Web Worker** to maintain a smooth 60 FPS Three.js rendering loop, and enforced **JSON Schema grammar constraints** to turn conversational AI into structured, executable game commands.
 
----
-
 ## 1. WebGPU & MLC Web-LLM: Direct Hardware Access
 
 For years, web-based graphics and computing were restricted to WebGL, which is tailored for rendering and lacks support for compute shaders and general-purpose GPU (GPGPU) operations. The arrival of **WebGPU** changes this. It provides low-level, high-performance access to the graphics card directly from the browser, allowing us to run heavy parallel tensor calculations.
 
 We leverage the [MLC Web-LLM](https://webllm.mlc.ai/) library, which compiles model weights and runtime execution kernels to WASM and WebGPU. This allows us to load lightweight models—such as `Qwen2.5-1.5B-Instruct` or `Llama-3-8B-Instruct`—and run inference at speeds upwards of 30-50 tokens per second on consumer laptops.
-
----
 
 ## 2. Decoupled Architecture: Offloading to Web Workers
 
@@ -33,8 +29,6 @@ To prevent this, we designed a **decoupled multi-threaded architecture** where t
 ![Web Worker Multithreaded Architecture](./architecture.svg)
 
 The main thread runs the Three.js render loop and updates entity coordinates, while the worker thread handles the heavy inference pipeline. The two threads communicate asynchronously using structured message passing via `postMessage` and `onmessage`.
-
----
 
 ## 3. Implementing the Web Worker
 
@@ -174,8 +168,6 @@ export class WebLlmClient {
 }
 ```
 
----
-
 ## 4. Structuring AI Actions: Enforcing JSON Schemas
 
 An LLM is naturally conversational; if you ask it to make a decision, it might reply with: *"Based on my current hunger level, I think it is best if I walk over to the river at coordinates (12, 45) to drink some water."*
@@ -216,8 +208,6 @@ By enforcing this schema, the model is physically incapable of outputting normal
   "reasoning": "Energy is low, going to rest near coordinates (12, 45)."
 }
 ```
-
----
 
 ## 5. Feeding the World State to the LLM Prompt
 
@@ -261,8 +251,6 @@ if (decision.action === "MOVE_TO") {
 }
 ```
 
----
-
 ## 6. Visualizing Weight Downloads: UX Best Practices
 
 One of the biggest hurdles of running in-browser LLMs is the initial model download. Even a small 1.5-billion-parameter model requires downloading approximately **1.2 GB to 1.8 GB** of quantized weights. 
@@ -272,8 +260,6 @@ To prevent users from thinking the web app has crashed, we must handle this load
 1. **Persistent Caching**: Web-LLM automatically leverages the browser's **Cache API** and **Origin Private File System (OPFS)**. Once a model is downloaded, subsequent page visits load the model directly from local disk storage, skipping network requests completely.
 2. **Detailed Progress UI**: We map the worker's `progress` messages to a beautiful circular loading rings or progress bar overlay.
 3. **Interactive Pre-Simulation**: While the model is downloading, we allow users to shape the terrain or adjust water levels, keeping them engaged.
-
----
 
 ## Conclusion
 
