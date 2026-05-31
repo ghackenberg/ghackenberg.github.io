@@ -1,6 +1,6 @@
 ---
 pubDate: "2026-05-26T10:25:24.292Z"
-likes: 26
+likes: 36
 comments: 2
 shares: 0
 image: null

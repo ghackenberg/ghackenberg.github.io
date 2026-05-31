@@ -72,7 +72,7 @@ export async function syncLinkedIn() {
       while ((match = regex.exec(html)) !== null) {
         try {
           const json = JSON.parse(match[1].trim());
-          if (json["@type"] === "SocialMediaPosting") {
+          if (json["@type"] === "SocialMediaPosting" || json["@type"] === "VideoObject") {
             postData = json;
             break;
           }
@@ -133,6 +133,8 @@ export async function syncLinkedIn() {
           } else if (typeof postData.image === "string") {
             imageUrl = postData.image;
           }
+        } else if (postData.thumbnailUrl) {
+          imageUrl = postData.thumbnailUrl;
         }
 
         let localExt = null;
@@ -140,7 +142,7 @@ export async function syncLinkedIn() {
           localExt = await downloadImage(imageUrl, itemDir);
         }
 
-        const bodyText = postData.articleBody || "";
+        const bodyText = postData.articleBody || postData.description || "";
 
         const mdContent = `---
 pubDate: ${JSON.stringify(pubDateStr)}
