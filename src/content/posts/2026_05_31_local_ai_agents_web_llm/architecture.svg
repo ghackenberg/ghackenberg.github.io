@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', sans-serif;">
+  <defs>
+    <!-- Arrow marker definition -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#3b82f6" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#a855f7" />
+    </marker>
+    <!-- Drop shadow filter for comic effect -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="4" dy="4" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+  </defs>
+
+  <!-- Outer Card Frame complying with image style guidelines -->
+  <rect x="10" y="10" width="780" height="430" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Diagram Title -->
+  <text x="40" y="45" fill="#f3f4f6" font-size="20" font-weight="bold" letter-spacing="0.5">Asynchronous Web-LLM Worker Architecture</text>
+  <text x="40" y="65" fill="#9ca3af" font-size="13">Decoupled execution threads keep the Three.js rendering loop at a solid 60 FPS</text>
+
+  <!-- ==================== LEFT COLUMN: MAIN UI THREAD ==================== -->
+  <g filter="url(#shadow)">
+    <!-- Container Card -->
+    <rect x="40" y="95" width="310" height="310" rx="12" fill="#111827" stroke="#3b82f6" stroke-width="2" />
+    <!-- Header -->
+    <rect x="40" y="95" width="310" height="45" rx="12" fill="#1f2937" stroke="#3b82f6" stroke-width="2" />
+    <text x="60" y="123" fill="#f3f4f6" font-size="15" font-weight="bold">Main UI Thread (60 FPS)</text>
+    
+    <!-- Render Loop -->
+    <rect x="55" y="160" width="280" height="50" rx="8" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="70" y="182" fill="#10b981" font-size="13" font-weight="bold">Three.js Render Loop</text>
+    <text x="70" y="198" fill="#9ca3af" font-size="11">Renders low-poly terrain, water, and entities</text>
+
+    <!-- State Manager -->
+    <rect x="55" y="230" width="280" height="50" rx="8" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="70" y="252" fill="#f3f4f6" font-size="13" font-weight="bold">WebLlmClient Service</text>
+    <text x="70" y="268" fill="#9ca3af" font-size="11">Tracks agent coordinates, hunger, hydration</text>
+
+    <!-- Entity Controller -->
+    <rect x="55" y="300" width="280" height="85" rx="8" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="70" y="322" fill="#3b82f6" font-size="12" font-weight="bold">UI State &amp; Callbacks</text>
+    <text x="70" y="340" fill="#d1d5db" font-size="11">• Maps worker progress to loading overlay</text>
+    <text x="70" y="358" fill="#d1d5db" font-size="11">• Parses JSON outputs to apply behaviors</text>
+  </g>
+
+  <!-- ==================== RIGHT COLUMN: WEB WORKER THREAD ==================== -->
+  <g filter="url(#shadow)">
+    <!-- Container Card -->
+    <rect x="450" y="95" width="310" height="310" rx="12" fill="#111827" stroke="#a855f7" stroke-width="2" />
+    <!-- Header -->
+    <rect x="450" y="95" width="310" height="45" rx="12" fill="#1f2937" stroke="#a855f7" stroke-width="2" />
+    <text x="470" y="123" fill="#f3f4f6" font-size="15" font-weight="bold">Web Worker Thread (Background)</text>
+
+    <!-- WebLLM Engine -->
+    <rect x="465" y="160" width="280" height="50" rx="8" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="480" y="182" fill="#a855f7" font-size="13" font-weight="bold">MLC Web-LLM Engine</text>
+    <text x="480" y="198" fill="#9ca3af" font-size="11">Runs inference, manages KV Cache &amp; tokens</text>
+
+    <!-- WASM Kernel -->
+    <rect x="465" y="230" width="280" height="50" rx="8" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="480" y="252" fill="#f3f4f6" font-size="13" font-weight="bold">WASM Runtime &amp; WebGPU</text>
+    <text x="480" y="268" fill="#9ca3af" font-size="11">Direct communication with hardware GPU buffers</text>
+
+    <!-- OPFS Cache -->
+    <rect x="465" y="300" width="280" height="85" rx="8" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="480" y="322" fill="#f59e0b" font-size="12" font-weight="bold">Cache &amp; Storage Layer</text>
+    <text x="480" y="340" fill="#d1d5db" font-size="11">• Origin Private File System (OPFS)</text>
+    <text x="480" y="358" fill="#d1d5db" font-size="11">• Skip downloads on subsequent loads</text>
+  </g>
+
+  <!-- ==================== IPC CHANNELS & ARROWS ==================== -->
+  <!-- 1. Send Prompt (Main -> Worker) -->
+  <path d="M 350, 185 L 450, 185" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow)" />
+  <rect x="360" y="152" width="80" height="30" rx="4" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+  <text x="400" y="165" fill="#f3f4f6" font-size="9" text-anchor="middle" font-weight="bold">postMessage()</text>
+  <text x="400" y="177" fill="#9ca3af" font-size="8" text-anchor="middle">Prompt + Schema</text>
+
+  <!-- 2. Send Structured Action (Worker -> Main) -->
+  <path d="M 450, 255 L 352, 255" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-purple)" />
+  <rect x="360" y="222" width="80" height="30" rx="4" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+  <text x="400" y="235" fill="#f3f4f6" font-size="9" text-anchor="middle" font-weight="bold">postMessage()</text>
+  <text x="400" y="247" fill="#a855f7" font-size="8" text-anchor="middle">JSON Result</text>
+
+  <!-- 3. Progress Updates (Worker -> Main) -->
+  <path d="M 450, 325 L 352, 325" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-purple)" />
+  <rect x="360" y="292" width="80" height="30" rx="4" fill="#1e293b" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+  <text x="400" y="305" fill="#f3f4f6" font-size="9" text-anchor="middle" font-weight="bold">postMessage()</text>
+  <text x="400" y="317" fill="#f59e0b" font-size="8" text-anchor="middle">Load Progress %</text>
+</svg>
