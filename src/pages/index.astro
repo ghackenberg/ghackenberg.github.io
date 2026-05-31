@@ -326,17 +326,28 @@ const professionalInterests = [
 
     <!-- Projects Section -->
     <section id="projects" class="py-16 md:py-24 border-t border-white/5 scroll-mt-20">
-      <div class="mb-12">
-        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Software <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600">Projects</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
-          Active software systems, frameworks, and tools designed to optimize product engineering, styling, and visual intelligence.
-        </p>
+      <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+            Featured <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600">Projects</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
+            Selected software platforms, frameworks, and tools designed to optimize product engineering, knowledge graphs, and real-time physical simulation.
+          </p>
+        </div>
+        <a 
+          href="/projects" 
+          class="shrink-0 px-5 py-3 rounded-xl bg-element-bg border border-element-border-medium hover:border-brand-blue/30 text-gray-300 hover:text-brand-blue text-sm font-semibold transition-all duration-300 hover:bg-element-bg-hover hover:scale-105 flex items-center gap-2 self-start md:self-auto shadow-sm"
+        >
+          <span>View All Projects</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {sortedProjects.map(project => (
+        {sortedProjects.slice(0, 2).map(project => (
           <ProjectCard 
             title={project.data.title}
             tagline={project.data.tagline}
@@ -348,6 +359,177 @@ const professionalInterests = [
             screenshotLight={project.data.screenshotLight}
           />
         ))}
+      </div>
+    </section>
+
+    <!-- Explore More Section -->
+    <section id="explore-more" class="py-16 md:py-24 border-t border-white/5 scroll-mt-20">
+      <div class="mb-12">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+          Explore <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-blue to-brand-green">More</span>
+        </h2>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
+          Delve deeper into my academic teaching modules, research publications, engineering insights, and interactive browser simulations.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Courses Card (Yellow) -->
+        <a 
+          href="/courses" 
+          class="group glass-card p-6 md:p-8 rounded-3xl border border-white/5 hover:border-brand-yellow/30 bg-gradient-to-br from-white/[0.01] to-brand-yellow/[0.01] transition-all duration-300 hover:scale-[1.01] flex flex-col sm:flex-row gap-6 items-center animate-fade-in"
+        >
+          <!-- Custom Visual (Yellow) -->
+          <div class="w-28 h-28 rounded-2xl bg-brand-yellow/5 border border-brand-yellow/15 flex items-center justify-center shrink-0 overflow-hidden relative group-hover:bg-brand-yellow/10 transition-colors">
+            <svg class="w-14 h-14 text-brand-yellow" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="40" class="stroke-brand-yellow/5 stroke-1" />
+              <circle cx="50" cy="50" r="30" class="stroke-brand-yellow/10 stroke-1 stroke-dasharray-[3,5] animate-[spin_20s_linear_infinite]" style="transform-origin: center;" />
+              <line x1="50" y1="50" x2="50" y2="20" class="stroke-brand-yellow/20 stroke-1" />
+              <line x1="50" y1="50" x2="76" y2="65" class="stroke-brand-yellow/20 stroke-1" />
+              <line x1="50" y1="50" x2="24" y2="65" class="stroke-brand-yellow/20 stroke-1" />
+              <circle cx="50" cy="50" r="10" class="fill-gray-950 stroke-brand-yellow stroke-2 group-hover:scale-110 transition-transform origin-center duration-300" />
+              <circle cx="50" cy="50" r="3" class="fill-brand-yellow" />
+              <circle cx="50" cy="20" r="5" class="fill-brand-yellow stroke-gray-950 stroke-2 group-hover:translate-y-[-2px] transition-transform duration-300" />
+              <circle cx="76" cy="65" r="5" class="fill-brand-yellow stroke-gray-950 stroke-2 group-hover:translate-x-[2px] group-hover:translate-y-[1px] transition-transform duration-300" />
+              <circle cx="24" cy="65" r="5" class="fill-brand-yellow stroke-gray-950 stroke-2 group-hover:translate-x-[-2px] group-hover:translate-y-[1px] transition-transform duration-300" />
+            </svg>
+          </div>
+          <div class="flex-grow text-center sm:text-left">
+            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2.5 py-0.5 rounded-full uppercase mb-2.5">
+              Teaching
+            </span>
+            <h3 class="text-lg font-extrabold text-gray-100 mb-1.5 group-hover:text-brand-yellow transition-colors">
+              Academic Courses
+            </h3>
+            <p class="text-gray-400 text-xs font-normal leading-relaxed mb-3.5">
+              Explore university lectures, repositories, and study guides for Industrial Informatics, Systems Modelling, and Software Engineering.
+            </p>
+            <span class="text-xs font-bold text-brand-yellow inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Browse Courses
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </span>
+          </div>
+        </a>
+
+        <!-- Publications Card (Purple) -->
+        <a 
+          href="/publications" 
+          class="group glass-card p-6 md:p-8 rounded-3xl border border-white/5 hover:border-brand-purple/30 bg-gradient-to-br from-white/[0.01] to-brand-purple/[0.01] transition-all duration-300 hover:scale-[1.01] flex flex-col sm:flex-row gap-6 items-center"
+        >
+          <!-- Custom Visual (Purple) -->
+          <div class="w-28 h-28 rounded-2xl bg-brand-purple/5 border border-brand-purple/15 flex items-center justify-center shrink-0 overflow-hidden relative group-hover:bg-brand-purple/10 transition-colors">
+            <svg class="w-14 h-14 text-brand-purple" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="24" y="24" width="46" height="58" rx="4" class="fill-gray-950 stroke-brand-purple/20 stroke-1.5" />
+              <g class="group-hover:translate-y-[-3px] group-hover:translate-x-[-1px] transition-transform duration-300 origin-center">
+                <rect x="30" y="18" width="46" height="58" rx="4" class="fill-gray-950 stroke-brand-purple stroke-2 shadow-xl" />
+                <line x1="38" y1="30" x2="68" y2="30" class="stroke-brand-purple/30 stroke-1.5" />
+                <line x1="38" y1="38" x2="58" y2="38" class="stroke-brand-purple/30 stroke-1.5" />
+                <line x1="38" y1="46" x2="64" y2="46" class="stroke-brand-purple/30 stroke-1.5" />
+                <line x1="38" y1="54" x2="52" y2="54" class="stroke-brand-purple/30 stroke-1.5" />
+                <circle cx="62" cy="62" r="7" class="fill-brand-purple/10 stroke-brand-purple stroke-1" />
+                <path d="M59 62L61 64L65 60" class="stroke-brand-purple stroke-1" stroke-linecap="round" stroke-linejoin="round" />
+              </g>
+            </svg>
+          </div>
+          <div class="flex-grow text-center sm:text-left">
+            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-purple bg-brand-purple/10 border border-brand-purple/20 px-2.5 py-0.5 rounded-full uppercase mb-2.5">
+              Research
+            </span>
+            <h3 class="text-lg font-extrabold text-gray-100 mb-1.5 group-hover:text-brand-purple transition-colors">
+              Publications & Papers
+            </h3>
+            <p class="text-gray-400 text-xs font-normal leading-relaxed mb-3.5">
+              Access peer-reviewed papers, scientific articles, and conference contributions regarding digital modeling and systems design.
+            </p>
+            <span class="text-xs font-bold text-brand-purple inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Read Publications
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </span>
+          </div>
+        </a>
+
+        <!-- Posts Card (Blue) -->
+        <a 
+          href="/posts" 
+          class="group glass-card p-6 md:p-8 rounded-3xl border border-white/5 hover:border-brand-blue/30 bg-gradient-to-br from-white/[0.01] to-brand-blue/[0.01] transition-all duration-300 hover:scale-[1.01] flex flex-col sm:flex-row gap-6 items-center"
+        >
+          <!-- Custom Visual (Blue) -->
+          <div class="w-28 h-28 rounded-2xl bg-brand-blue/5 border border-brand-blue/15 flex items-center justify-center shrink-0 overflow-hidden relative group-hover:bg-brand-blue/10 transition-colors">
+            <svg class="w-14 h-14 text-brand-blue" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="24" width="60" height="52" rx="6" class="fill-gray-950 stroke-brand-blue/30 stroke-1.5" />
+              <line x1="20" y1="36" x2="80" y2="36" class="stroke-brand-blue/30 stroke-1.5" />
+              <circle cx="28" cy="30" r="2" class="fill-brand-blue/50" />
+              <circle cx="36" cy="30" r="2" class="fill-brand-blue/30" />
+              <circle cx="44" cy="30" r="2" class="fill-brand-blue/20" />
+              
+              <g class="group-hover:translate-x-1 transition-transform duration-300">
+                <path d="M30 46L24 50L30 54" class="stroke-brand-blue stroke-1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M46 54L52 50L46 46" class="stroke-brand-blue stroke-1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M40 44L36 56" class="stroke-brand-blue stroke-1.5" stroke-linecap="round" />
+              </g>
+              <rect x="58" y="47" width="8" height="6" class="fill-brand-blue animate-[pulse_1s_infinite]" />
+            </svg>
+          </div>
+          <div class="flex-grow text-center sm:text-left">
+            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-blue bg-brand-blue/10 border border-brand-blue/20 px-2.5 py-0.5 rounded-full uppercase mb-2.5">
+              Articles
+            </span>
+            <h3 class="text-lg font-extrabold text-gray-100 mb-1.5 group-hover:text-brand-blue transition-colors">
+              Technical Writing
+            </h3>
+            <p class="text-gray-400 text-xs font-normal leading-relaxed mb-3.5">
+              Read technical essays, software engineering walkthroughs, programming resources, and computer science updates.
+            </p>
+            <span class="text-xs font-bold text-brand-blue inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Read Blog Posts
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </span>
+          </div>
+        </a>
+
+        <!-- Demos Card (Green) -->
+        <a 
+          href="/visualizations" 
+          class="group glass-card p-6 md:p-8 rounded-3xl border border-white/5 hover:border-brand-green/30 bg-gradient-to-br from-white/[0.01] to-brand-green/[0.01] transition-all duration-300 hover:scale-[1.01] flex flex-col sm:flex-row gap-6 items-center"
+        >
+          <!-- Custom Visual (Green) -->
+          <div class="w-28 h-28 rounded-2xl bg-brand-green/5 border border-brand-green/15 flex items-center justify-center shrink-0 overflow-hidden relative group-hover:bg-brand-green/10 transition-colors">
+            <svg class="w-14 h-14 text-brand-green" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="36" class="stroke-brand-green/5 stroke-1" />
+              <g class="animate-[spin_16s_linear_infinite]" style="transform-origin: center;">
+                <circle cx="50" cy="50" r="28" class="stroke-brand-green/15 stroke-1 stroke-dasharray-[2,4]" />
+                <path d="M50 22L74 38V62L50 78L26 62V38L50 22Z" class="stroke-brand-green/30 stroke-1.5" fill="none" />
+                <line x1="50" y1="22" x2="50" y2="78" class="stroke-brand-green/10 stroke-1" />
+                <line x1="26" y1="38" x2="74" y2="62" class="stroke-brand-green/10 stroke-1" />
+                <line x1="26" y1="62" x2="74" y2="38" class="stroke-brand-green/10 stroke-1" />
+              </g>
+              <circle cx="50" cy="50" r="6" class="fill-brand-green stroke-gray-950 stroke-2 group-hover:scale-125 transition-transform duration-300" />
+            </svg>
+          </div>
+          <div class="flex-grow text-center sm:text-left">
+            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-green bg-brand-green/10 border border-brand-green/20 px-2.5 py-0.5 rounded-full uppercase mb-2.5">
+              Prototypes
+            </span>
+            <h3 class="text-lg font-extrabold text-gray-100 mb-1.5 group-hover:text-brand-green transition-colors">
+              Interactive Demos
+            </h3>
+            <p class="text-gray-400 text-xs font-normal leading-relaxed mb-3.5">
+              Interact with live browser demos, 3D physics engines, visual graphing boards, and computer graphics experiments.
+            </p>
+            <span class="text-xs font-bold text-brand-green inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Launch Demos
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </span>
+          </div>
+        </a>
       </div>
     </section>
 
