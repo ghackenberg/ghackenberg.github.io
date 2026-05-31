@@ -365,6 +365,9 @@ const professionalInterests = [
     <!-- Explore More Section -->
     <section id="explore-more" class="py-16 md:py-24 border-t border-white/5 scroll-mt-20">
       <div class="mb-12">
+        <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-purple/10 text-brand-purple border border-brand-purple/20 mb-6 tracking-wider uppercase">
+          Ecosystem
+        </span>
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
           Explore <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-blue to-brand-green">More</span>
         </h2>
@@ -377,36 +380,44 @@ const professionalInterests = [
         <!-- Courses Card (Yellow) -->
         <a 
           href="/courses" 
-          class="group glass-card p-6 md:p-8 rounded-3xl border border-white/5 hover:border-brand-yellow/30 bg-gradient-to-br from-white/[0.01] to-brand-yellow/[0.01] transition-all duration-300 hover:scale-[1.01] flex flex-col sm:flex-row gap-6 items-center animate-fade-in"
+          class="group explore-card explore-card-yellow glass-card p-6 sm:p-8 rounded-3xl border border-white/5 flex flex-col sm:flex-row gap-6 items-start text-left animate-fade-in"
         >
           <!-- Custom Visual (Yellow) -->
-          <div class="w-28 h-28 rounded-2xl bg-brand-yellow/5 border border-brand-yellow/15 flex items-center justify-center shrink-0 overflow-hidden relative group-hover:bg-brand-yellow/10 transition-colors">
-            <svg class="w-14 h-14 text-brand-yellow" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="40" class="stroke-brand-yellow/5 stroke-1" />
-              <circle cx="50" cy="50" r="30" class="stroke-brand-yellow/10 stroke-1 stroke-dasharray-[3,5] animate-[spin_20s_linear_infinite]" style="transform-origin: center;" />
-              <line x1="50" y1="50" x2="50" y2="20" class="stroke-brand-yellow/20 stroke-1" />
-              <line x1="50" y1="50" x2="76" y2="65" class="stroke-brand-yellow/20 stroke-1" />
-              <line x1="50" y1="50" x2="24" y2="65" class="stroke-brand-yellow/20 stroke-1" />
-              <circle cx="50" cy="50" r="10" class="fill-gray-950 stroke-brand-yellow stroke-2 group-hover:scale-110 transition-transform origin-center duration-300" />
-              <circle cx="50" cy="50" r="3" class="fill-brand-yellow" />
-              <circle cx="50" cy="20" r="5" class="fill-brand-yellow stroke-gray-950 stroke-2 group-hover:translate-y-[-2px] transition-transform duration-300" />
-              <circle cx="76" cy="65" r="5" class="fill-brand-yellow stroke-gray-950 stroke-2 group-hover:translate-x-[2px] group-hover:translate-y-[1px] transition-transform duration-300" />
-              <circle cx="24" cy="65" r="5" class="fill-brand-yellow stroke-gray-950 stroke-2 group-hover:translate-x-[-2px] group-hover:translate-y-[1px] transition-transform duration-300" />
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-brand-yellow/5 border border-brand-yellow/15 flex items-center justify-center shrink-0 overflow-hidden relative visual-blueprint-bg transition-colors duration-300">
+            <!-- Center Radial Blur Glow -->
+            <div class="absolute inset-0 bg-radial-gradient from-brand-yellow/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none"></div>
+            
+            <svg class="w-12 h-12 text-brand-yellow relative z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="42" class="stroke-brand-yellow/5 stroke-1" stroke-dasharray="2 3" />
+              <circle cx="50" cy="50" r="32" class="stroke-brand-yellow/10 stroke-1" />
+              <path d="M50 18 L50 82" class="stroke-brand-yellow/20 stroke-1.5" />
+              <path d="M22 66 L78 66" class="stroke-brand-yellow/20 stroke-1.5" />
+              <path d="M50 50 L22 34" class="stroke-brand-yellow/15 stroke-1" stroke-dasharray="3 3" />
+              <path d="M50 50 L78 34" class="stroke-brand-yellow/15 stroke-1" stroke-dasharray="3 3" />
+              <circle cx="50" cy="50" r="8" class="fill-gray-950 stroke-brand-yellow stroke-2 group-hover:scale-110 transition-transform origin-center duration-300" />
+              <circle cx="50" cy="50" r="2.5" class="fill-brand-yellow" />
+              <circle cx="50" cy="18" r="5" class="fill-brand-yellow stroke-gray-950 stroke-2 group-hover:translate-y-[-2px] transition-transform duration-300" />
+              <circle cx="50" cy="82" r="5" class="fill-brand-yellow stroke-gray-950 stroke-2 group-hover:translate-y-[2px] transition-transform duration-300" />
+              <circle cx="22" cy="66" r="5" class="fill-brand-yellow/20 stroke-brand-yellow stroke-1.5 group-hover:translate-x-[-2px] transition-transform duration-300" />
+              <circle cx="78" cy="66" r="5" class="fill-brand-yellow/20 stroke-brand-yellow stroke-1.5 group-hover:translate-x-[2px] transition-transform duration-300" />
+              <g class="animate-[spin_8s_linear_infinite]" style="transform-origin: center;">
+                <circle cx="82" cy="50" r="3.5" class="fill-brand-yellow stroke-gray-950 stroke-1.5" />
+              </g>
             </svg>
           </div>
-          <div class="flex-grow text-center sm:text-left">
-            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2.5 py-0.5 rounded-full uppercase mb-2.5">
+          <div class="flex-grow flex flex-col h-full">
+            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2.5 py-0.5 rounded-full uppercase mb-3 self-start">
               Teaching
             </span>
-            <h3 class="text-lg font-extrabold text-gray-100 mb-1.5 group-hover:text-brand-yellow transition-colors">
+            <h3 class="text-lg font-extrabold text-gray-100 mb-2 group-hover:text-brand-yellow transition-colors duration-200">
               Academic Courses
             </h3>
-            <p class="text-gray-400 text-xs font-normal leading-relaxed mb-3.5">
+            <p class="text-gray-400 text-xs sm:text-[13px] font-normal leading-relaxed mb-4 flex-grow">
               Explore university lectures, repositories, and study guides for Industrial Informatics, Systems Modelling, and Software Engineering.
             </p>
-            <span class="text-xs font-bold text-brand-yellow inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Browse Courses
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <span class="text-xs font-bold text-brand-yellow inline-flex items-center gap-1.5 mt-auto">
+              <span>Browse Courses</span>
+              <svg class="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
               </svg>
             </span>
@@ -416,36 +427,41 @@ const professionalInterests = [
         <!-- Publications Card (Purple) -->
         <a 
           href="/publications" 
-          class="group glass-card p-6 md:p-8 rounded-3xl border border-white/5 hover:border-brand-purple/30 bg-gradient-to-br from-white/[0.01] to-brand-purple/[0.01] transition-all duration-300 hover:scale-[1.01] flex flex-col sm:flex-row gap-6 items-center"
+          class="group explore-card explore-card-purple glass-card p-6 sm:p-8 rounded-3xl border border-white/5 flex flex-col sm:flex-row gap-6 items-start text-left animate-fade-in"
         >
           <!-- Custom Visual (Purple) -->
-          <div class="w-28 h-28 rounded-2xl bg-brand-purple/5 border border-brand-purple/15 flex items-center justify-center shrink-0 overflow-hidden relative group-hover:bg-brand-purple/10 transition-colors">
-            <svg class="w-14 h-14 text-brand-purple" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="24" y="24" width="46" height="58" rx="4" class="fill-gray-950 stroke-brand-purple/20 stroke-1.5" />
-              <g class="group-hover:translate-y-[-3px] group-hover:translate-x-[-1px] transition-transform duration-300 origin-center">
-                <rect x="30" y="18" width="46" height="58" rx="4" class="fill-gray-950 stroke-brand-purple stroke-2 shadow-xl" />
-                <line x1="38" y1="30" x2="68" y2="30" class="stroke-brand-purple/30 stroke-1.5" />
-                <line x1="38" y1="38" x2="58" y2="38" class="stroke-brand-purple/30 stroke-1.5" />
-                <line x1="38" y1="46" x2="64" y2="46" class="stroke-brand-purple/30 stroke-1.5" />
-                <line x1="38" y1="54" x2="52" y2="54" class="stroke-brand-purple/30 stroke-1.5" />
-                <circle cx="62" cy="62" r="7" class="fill-brand-purple/10 stroke-brand-purple stroke-1" />
-                <path d="M59 62L61 64L65 60" class="stroke-brand-purple stroke-1" stroke-linecap="round" stroke-linejoin="round" />
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-brand-purple/5 border border-brand-purple/15 flex items-center justify-center shrink-0 overflow-hidden relative visual-blueprint-bg transition-colors duration-300">
+            <div class="absolute inset-0 bg-radial-gradient from-brand-purple/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none"></div>
+            
+            <svg class="w-12 h-12 text-brand-purple relative z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="40" class="stroke-brand-purple/5 stroke-1" stroke-dasharray="4 4" />
+              <path d="M25 45 L50 30 L75 45 L50 60 Z" class="fill-brand-purple/5 stroke-brand-purple/20 stroke-1" />
+              <g class="group-hover:translate-y-[-6px] transition-transform duration-300 origin-center">
+                <path d="M25 37 L50 22 L75 37 L50 52 Z" class="fill-gray-950 stroke-brand-purple stroke-2 shadow-2xl" />
+                <path d="M38 35 L50 28 L62 35" class="stroke-brand-purple/40 stroke-1.5" />
+                <path d="M38 41 L50 34 L54 36" class="stroke-brand-purple/40 stroke-1.5" />
+                <path d="M46 44 L50 42 L62 49" class="stroke-brand-purple/20 stroke-1" stroke-dasharray="2 2" />
+                <circle cx="50" cy="37" r="4" class="fill-brand-purple/15 stroke-brand-purple stroke-1" />
               </g>
+              <circle cx="20" cy="65" r="4.5" class="fill-brand-purple stroke-gray-950 stroke-1.5" />
+              <line x1="20" y1="65" x2="35" y2="52" class="stroke-brand-purple/30 stroke-1" />
+              <circle cx="80" cy="65" r="4.5" class="fill-brand-purple stroke-gray-950 stroke-1.5" />
+              <line x1="80" y1="65" x2="65" y2="52" class="stroke-brand-purple/30 stroke-1" />
             </svg>
           </div>
-          <div class="flex-grow text-center sm:text-left">
-            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-purple bg-brand-purple/10 border border-brand-purple/20 px-2.5 py-0.5 rounded-full uppercase mb-2.5">
+          <div class="flex-grow flex flex-col h-full">
+            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-purple bg-brand-purple/10 border border-brand-purple/20 px-2.5 py-0.5 rounded-full uppercase mb-3 self-start">
               Research
             </span>
-            <h3 class="text-lg font-extrabold text-gray-100 mb-1.5 group-hover:text-brand-purple transition-colors">
+            <h3 class="text-lg font-extrabold text-gray-100 mb-2 group-hover:text-brand-purple transition-colors duration-200">
               Publications & Papers
             </h3>
-            <p class="text-gray-400 text-xs font-normal leading-relaxed mb-3.5">
+            <p class="text-gray-400 text-xs sm:text-[13px] font-normal leading-relaxed mb-4 flex-grow">
               Access peer-reviewed papers, scientific articles, and conference contributions regarding digital modeling and systems design.
             </p>
-            <span class="text-xs font-bold text-brand-purple inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Read Publications
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <span class="text-xs font-bold text-brand-purple inline-flex items-center gap-1.5 mt-auto">
+              <span>Read Publications</span>
+              <svg class="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
               </svg>
             </span>
@@ -455,38 +471,42 @@ const professionalInterests = [
         <!-- Posts Card (Blue) -->
         <a 
           href="/posts" 
-          class="group glass-card p-6 md:p-8 rounded-3xl border border-white/5 hover:border-brand-blue/30 bg-gradient-to-br from-white/[0.01] to-brand-blue/[0.01] transition-all duration-300 hover:scale-[1.01] flex flex-col sm:flex-row gap-6 items-center"
+          class="group explore-card explore-card-blue glass-card p-6 sm:p-8 rounded-3xl border border-white/5 flex flex-col sm:flex-row gap-6 items-start text-left animate-fade-in"
         >
           <!-- Custom Visual (Blue) -->
-          <div class="w-28 h-28 rounded-2xl bg-brand-blue/5 border border-brand-blue/15 flex items-center justify-center shrink-0 overflow-hidden relative group-hover:bg-brand-blue/10 transition-colors">
-            <svg class="w-14 h-14 text-brand-blue" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="20" y="24" width="60" height="52" rx="6" class="fill-gray-950 stroke-brand-blue/30 stroke-1.5" />
-              <line x1="20" y1="36" x2="80" y2="36" class="stroke-brand-blue/30 stroke-1.5" />
-              <circle cx="28" cy="30" r="2" class="fill-brand-blue/50" />
-              <circle cx="36" cy="30" r="2" class="fill-brand-blue/30" />
-              <circle cx="44" cy="30" r="2" class="fill-brand-blue/20" />
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-brand-blue/5 border border-brand-blue/15 flex items-center justify-center shrink-0 overflow-hidden relative visual-blueprint-bg transition-colors duration-300">
+            <div class="absolute inset-0 bg-radial-gradient from-brand-blue/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none"></div>
+            
+            <svg class="w-12 h-12 text-brand-blue relative z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="42" class="stroke-brand-blue/5 stroke-1" />
+              <rect x="18" y="24" width="64" height="52" rx="6" class="fill-gray-950 stroke-brand-blue/30 stroke-1.5 group-hover:stroke-brand-blue/50 transition-colors" />
+              <line x1="18" y1="36" x2="82" y2="36" class="stroke-brand-blue/20 stroke-1" />
+              <circle cx="26" cy="30" r="2" class="fill-brand-blue/50" />
+              <circle cx="32" cy="30" r="2" class="fill-brand-blue/30" />
+              <circle cx="38" cy="30" r="2" class="fill-brand-blue/20" />
               
               <g class="group-hover:translate-x-1 transition-transform duration-300">
-                <path d="M30 46L24 50L30 54" class="stroke-brand-blue stroke-1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M46 54L52 50L46 46" class="stroke-brand-blue stroke-1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M40 44L36 56" class="stroke-brand-blue stroke-1.5" stroke-linecap="round" />
+                <path d="M26 44 L30 47 L26 50" class="stroke-brand-blue stroke-1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <line x1="36" y1="47" x2="52" y2="47" class="stroke-brand-blue/80 stroke-1.5" />
               </g>
-              <rect x="58" y="47" width="8" height="6" class="fill-brand-blue animate-[pulse_1s_infinite]" />
+              <line x1="26" y1="56" x2="62" y2="56" class="stroke-brand-blue/50 stroke-1.5" />
+              <line x1="32" y1="64" x2="70" y2="64" class="stroke-brand-blue/80 stroke-1.5 group-hover:translate-x-1 transition-transform duration-300" />
+              <rect x="74" y="61" width="5" height="5" class="fill-brand-blue animate-[pulse_1.2s_infinite]" />
             </svg>
           </div>
-          <div class="flex-grow text-center sm:text-left">
-            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-blue bg-brand-blue/10 border border-brand-blue/20 px-2.5 py-0.5 rounded-full uppercase mb-2.5">
+          <div class="flex-grow flex flex-col h-full">
+            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-blue bg-brand-blue/10 border border-brand-blue/20 px-2.5 py-0.5 rounded-full uppercase mb-3 self-start">
               Articles
             </span>
-            <h3 class="text-lg font-extrabold text-gray-100 mb-1.5 group-hover:text-brand-blue transition-colors">
+            <h3 class="text-lg font-extrabold text-gray-100 mb-2 group-hover:text-brand-blue transition-colors duration-200">
               Technical Writing
             </h3>
-            <p class="text-gray-400 text-xs font-normal leading-relaxed mb-3.5">
+            <p class="text-gray-400 text-xs sm:text-[13px] font-normal leading-relaxed mb-4 flex-grow">
               Read technical essays, software engineering walkthroughs, programming resources, and computer science updates.
             </p>
-            <span class="text-xs font-bold text-brand-blue inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Read Blog Posts
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <span class="text-xs font-bold text-brand-blue inline-flex items-center gap-1.5 mt-auto">
+              <span>Read Blog Posts</span>
+              <svg class="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
               </svg>
             </span>
@@ -496,35 +516,45 @@ const professionalInterests = [
         <!-- Demos Card (Green) -->
         <a 
           href="/visualizations" 
-          class="group glass-card p-6 md:p-8 rounded-3xl border border-white/5 hover:border-brand-green/30 bg-gradient-to-br from-white/[0.01] to-brand-green/[0.01] transition-all duration-300 hover:scale-[1.01] flex flex-col sm:flex-row gap-6 items-center"
+          class="group explore-card explore-card-green glass-card p-6 sm:p-8 rounded-3xl border border-white/5 flex flex-col sm:flex-row gap-6 items-start text-left animate-fade-in"
         >
           <!-- Custom Visual (Green) -->
-          <div class="w-28 h-28 rounded-2xl bg-brand-green/5 border border-brand-green/15 flex items-center justify-center shrink-0 overflow-hidden relative group-hover:bg-brand-green/10 transition-colors">
-            <svg class="w-14 h-14 text-brand-green" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="36" class="stroke-brand-green/5 stroke-1" />
-              <g class="animate-[spin_16s_linear_infinite]" style="transform-origin: center;">
-                <circle cx="50" cy="50" r="28" class="stroke-brand-green/15 stroke-1 stroke-dasharray-[2,4]" />
-                <path d="M50 22L74 38V62L50 78L26 62V38L50 22Z" class="stroke-brand-green/30 stroke-1.5" fill="none" />
-                <line x1="50" y1="22" x2="50" y2="78" class="stroke-brand-green/10 stroke-1" />
-                <line x1="26" y1="38" x2="74" y2="62" class="stroke-brand-green/10 stroke-1" />
-                <line x1="26" y1="62" x2="74" y2="38" class="stroke-brand-green/10 stroke-1" />
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-brand-green/5 border border-brand-green/15 flex items-center justify-center shrink-0 overflow-hidden relative visual-blueprint-bg transition-colors duration-300">
+            <div class="absolute inset-0 bg-radial-gradient from-brand-green/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none"></div>
+            
+            <svg class="w-12 h-12 text-brand-green relative z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="42" class="stroke-brand-green/5 stroke-1" />
+              <circle cx="50" cy="50" r="32" class="stroke-brand-green/10 stroke-1 stroke-dasharray-[2,3]" />
+              <circle cx="50" cy="50" r="20" class="stroke-brand-green/15 stroke-1" />
+              <line x1="50" y1="8" x2="50" y2="92" class="stroke-brand-green/10 stroke-1" />
+              <line x1="8" y1="50" x2="92" y2="50" class="stroke-brand-green/10 stroke-1" />
+              <g class="animate-[spin_24s_linear_infinite]" style="transform-origin: center;">
+                <path d="M50 18 L78 34 L78 66 L50 82 L22 66 L22 34 Z" class="stroke-brand-green/35 stroke-1.5" />
+                <circle cx="50" cy="18" r="3" class="fill-brand-green" />
+                <circle cx="78" cy="66" r="3" class="fill-brand-green" />
+                <circle cx="22" cy="66" r="3" class="fill-brand-green" />
               </g>
-              <circle cx="50" cy="50" r="6" class="fill-brand-green stroke-gray-950 stroke-2 group-hover:scale-125 transition-transform duration-300" />
+              <g class="animate-[spin_12s_linear_infinite]" style="transform-origin: center; animation-direction: reverse;">
+                <path d="M50 30 L67 40 L67 60 L50 70 L33 60 L33 40 Z" class="stroke-brand-green/20 stroke-1" stroke-dasharray="2 2" />
+                <circle cx="67" cy="40" r="2.5" class="fill-brand-green/60" />
+                <circle cx="33" cy="60" r="2.5" class="fill-brand-green/60" />
+              </g>
+              <circle cx="50" cy="50" r="6.5" class="fill-brand-green stroke-gray-950 stroke-2 group-hover:scale-125 transition-transform duration-300" />
             </svg>
           </div>
-          <div class="flex-grow text-center sm:text-left">
-            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-green bg-brand-green/10 border border-brand-green/20 px-2.5 py-0.5 rounded-full uppercase mb-2.5">
+          <div class="flex-grow flex flex-col h-full">
+            <span class="inline-flex items-center text-[10px] font-bold tracking-widest text-brand-green bg-brand-green/10 border border-brand-green/20 px-2.5 py-0.5 rounded-full uppercase mb-3 self-start">
               Prototypes
             </span>
-            <h3 class="text-lg font-extrabold text-gray-100 mb-1.5 group-hover:text-brand-green transition-colors">
+            <h3 class="text-lg font-extrabold text-gray-100 mb-2 group-hover:text-brand-green transition-colors duration-200">
               Interactive Demos
             </h3>
-            <p class="text-gray-400 text-xs font-normal leading-relaxed mb-3.5">
+            <p class="text-gray-400 text-xs sm:text-[13px] font-normal leading-relaxed mb-4 flex-grow">
               Interact with live browser demos, 3D physics engines, visual graphing boards, and computer graphics experiments.
             </p>
-            <span class="text-xs font-bold text-brand-green inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Launch Demos
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <span class="text-xs font-bold text-brand-green inline-flex items-center gap-1.5 mt-auto">
+              <span>Launch Demos</span>
+              <svg class="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
               </svg>
             </span>
@@ -926,6 +956,81 @@ const professionalInterests = [
   }
   .group:hover .profile-svg-image {
     transform: scale(1.04) translateY(-2px);
+  }
+
+  /* Explore Card Custom Styles */
+  .explore-card {
+    will-change: transform, border-color, box-shadow;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .explore-card:hover {
+    transform: translateY(-4px) scale(1.005);
+  }
+
+  /* Yellow Glow (Courses) */
+  .explore-card-yellow:hover {
+    border-color: rgba(245, 158, 11, 0.3) !important;
+    box-shadow: 0 20px 40px -15px rgba(245, 158, 11, 0.08), 
+                0 0 0 1px rgba(245, 158, 11, 0.05) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.015) 0%, rgba(245, 158, 11, 0.015) 100%) !important;
+  }
+  :global(.light) .explore-card-yellow:hover {
+    border-color: rgba(180, 83, 9, 0.3) !important;
+    box-shadow: 0 20px 40px -15px rgba(180, 83, 9, 0.06),
+                0 0 0 1px rgba(180, 83, 9, 0.03) !important;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.005) 0%, rgba(180, 83, 9, 0.01) 100%) !important;
+  }
+
+  /* Purple Glow (Publications) */
+  .explore-card-purple:hover {
+    border-color: rgba(168, 85, 247, 0.3) !important;
+    box-shadow: 0 20px 40px -15px rgba(168, 85, 247, 0.08),
+                0 0 0 1px rgba(168, 85, 247, 0.05) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.015) 0%, rgba(168, 85, 247, 0.015) 100%) !important;
+  }
+  :global(.light) .explore-card-purple:hover {
+    border-color: rgba(126, 34, 206, 0.3) !important;
+    box-shadow: 0 20px 40px -15px rgba(126, 34, 206, 0.06),
+                0 0 0 1px rgba(126, 34, 206, 0.03) !important;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.005) 0%, rgba(126, 34, 206, 0.01) 100%) !important;
+  }
+
+  /* Blue Glow (Posts) */
+  .explore-card-blue:hover {
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.08),
+                0 0 0 1px rgba(59, 130, 246, 0.05) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.015) 0%, rgba(59, 130, 246, 0.015) 100%) !important;
+  }
+  :global(.light) .explore-card-blue:hover {
+    border-color: rgba(29, 78, 216, 0.3) !important;
+    box-shadow: 0 20px 40px -15px rgba(29, 78, 216, 0.06),
+                0 0 0 1px rgba(29, 78, 216, 0.03) !important;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.005) 0%, rgba(29, 78, 216, 0.01) 100%) !important;
+  }
+
+  /* Green Glow (Demos) */
+  .explore-card-green:hover {
+    border-color: rgba(16, 185, 129, 0.3) !important;
+    box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.08),
+                0 0 0 1px rgba(16, 185, 129, 0.05) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.015) 0%, rgba(16, 185, 129, 0.015) 100%) !important;
+  }
+  :global(.light) .explore-card-green:hover {
+    border-color: rgba(4, 120, 87, 0.3) !important;
+    box-shadow: 0 20px 40px -15px rgba(4, 120, 87, 0.06),
+                0 0 0 1px rgba(4, 120, 87, 0.03) !important;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.005) 0%, rgba(4, 120, 87, 0.01) 100%) !important;
+  }
+
+  /* Grid pattern in visual */
+  .visual-blueprint-bg {
+    background-size: 14px 14px;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
+  :global(.light) .visual-blueprint-bg {
+    background-image: radial-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px);
   }
 </style>
 
