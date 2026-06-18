@@ -1,5 +1,6 @@
 ---
 import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 interface Props {
   title: string;
@@ -7,7 +8,7 @@ interface Props {
   href: string;
   engineId: string;
   badgeColor: string;
-  screenshot?: any;
+  screenshot?: ImageMetadata;
 }
 
 const { 
@@ -81,7 +82,7 @@ const optimizedScreenshot = screenshot ? await getImage({
   <!-- Details -->
   <div class="p-6 flex flex-col flex-grow border-t border-white/5">
     <div class="flex-grow flex flex-col">
-      <span class="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full border mb-4 tracking-wide uppercase self-start bg-brand-green/10 text-brand-green border-brand-green/20">
+      <span class={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full border mb-4 tracking-wide uppercase self-start ${badgeColor}`}>
         {engineId} engine
       </span>
       

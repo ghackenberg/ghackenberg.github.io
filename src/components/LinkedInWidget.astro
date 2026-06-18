@@ -25,7 +25,7 @@ const formattedPosts = publishedPosts
   .slice(0, 3)
   .map((entry) => {
     // Extract the first paragraph (separated by double newlines)
-    const paragraphs = entry.body.split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean);
+    const paragraphs = (entry.body || "").split(/\r?\n\r?\n/).map(p => p.trim()).filter(Boolean);
     const firstParagraph = paragraphs[0] || "";
     const text = firstParagraph.replace(/[#*`_]/g, '').trim();
 
@@ -34,7 +34,7 @@ const formattedPosts = publishedPosts
       text,
       likes: entry.data.likes,
       comments: entry.data.comments,
-      pubDate: entry.data.pubDate,
+      pubDate: entry.data.pubDate || new Date(),
       image: entry.data.image,
       url: entry.id ? `https://www.linkedin.com/feed/update/urn:li:activity:${entry.id}` : undefined
     };

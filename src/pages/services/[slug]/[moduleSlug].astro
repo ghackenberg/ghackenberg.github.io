@@ -1,7 +1,7 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import Navbar from "../../../components/Navbar.astro";
-import { getCollection, render } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
   const modules = await getCollection("modules");
@@ -16,6 +16,11 @@ export async function getStaticPaths() {
       props: { module, parentService },
     };
   });
+}
+
+interface Props {
+  module: CollectionEntry<"modules">;
+  parentService: CollectionEntry<"services">;
 }
 
 const { module, parentService } = Astro.props;
@@ -268,9 +273,9 @@ const colorClasses = {
             
             {/* Vertical Timeline container */}
             <div class="relative pl-8 sm:pl-10 pt-2">
-              {module.data.methodologyPhases.map((phase, idx) => {
+              {module.data.methodologyPhases?.map((phase, idx) => {
                 const isFirst = idx === 0;
-                const isLast = idx === module.data.methodologyPhases.length - 1;
+                const isLast = idx === (module.data.methodologyPhases?.length || 0) - 1;
                 
                 return (
                   <div class={`relative z-10 group/phase ${isLast ? '' : 'pb-8'}`}>
@@ -348,7 +353,6 @@ const colorClasses = {
             </div>
             
             <div class="pt-6 border-t border-element-border flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400 mb-0">
-text-gray-400">
               <p>Typically responding within 2 business days.</p>
               <a 
                 id="direct-mail-link"

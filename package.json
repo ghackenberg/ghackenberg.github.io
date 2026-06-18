@@ -17,6 +17,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "typecheck": "astro check",
+    "lint": "eslint .",
     "sync": "node scripts/sync.js",
     "generate-carousel": "node scripts/generate-carousel.js",
     "generate-assets": "node scripts/generate-assets.js",
@@ -24,6 +26,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
@@ -34,14 +37,20 @@
     "katex": "^0.17.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
-    "tailwindcss": "^4.3.0"
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "cheerio": "^1.2.0",
     "chrome-launcher": "^1.2.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-astro": "^1.7.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
     "lighthouse": "^13.3.0",
     "puppeteer": "^25.0.4",
-    "quickjs-wasi": "^2.2.0"
+    "quickjs-wasi": "^2.2.0",
+    "typescript-eslint": "^8.61.1"
   },
   "browserslist": [
     "> 0.5%",

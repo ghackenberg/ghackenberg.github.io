@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+/** @type {Record<string, string>} */
 const mimeTypes = {
   '.pdf': 'application/pdf',
   '.zip': 'application/zip',
@@ -28,24 +29,33 @@ function copyContentAssets() {
   return {
     name: 'copy-content-assets',
     hooks: {
+      /** @param {{ server: import('vite').ViteDevServer }} options */
       'astro:server:setup': ({ server }) => {
-        server.middlewares.use((req, res, next) => {
-          const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services)\/(.+)$/);
-          if (match) {
-            const [_, collection, rest] = match;
-            const cleanRest = rest.split('?')[0];
-            const filePath = path.resolve('src/content', collection, cleanRest);
-            if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-              const ext = path.extname(filePath).toLowerCase();
-              const contentType = mimeTypes[ext] || 'application/octet-stream';
-              res.writeHead(200, { 'Content-Type': contentType });
-              fs.createReadStream(filePath).pipe(res);
-              return;
+        server.middlewares.use(
+          /**
+           * @param {import('http').IncomingMessage} req
+           * @param {import('http').ServerResponse} res
+           * @param {() => void} next
+           */
+          (req, res, next) => {
+            const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services)\/(.+)$/);
+            if (match) {
+              const [_, collection, rest] = match;
+              const cleanRest = rest.split('?')[0];
+              const filePath = path.resolve('src/content', collection, cleanRest);
+              if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                const ext = path.extname(filePath).toLowerCase();
+                const contentType = mimeTypes[ext] || 'application/octet-stream';
+                res.writeHead(200, { 'Content-Type': contentType });
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
             }
+            next();
           }
-          next();
-        });
+        );
       },
+      /** @param {{ dir: URL }} options */
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
         const collections = ['posts', 'publications', 'visualizations', 'courses', 'services'];
@@ -53,6 +63,10 @@ function copyContentAssets() {
           const srcDir = path.resolve('src/content', col);
           if (!fs.existsSync(srcDir)) continue;
 
+          /**
+           * @param {string} currentSrc
+           * @param {string} relativePath
+           */
           const copyFiles = (currentSrc, relativePath = '') => {
             const files = fs.readdirSync(currentSrc);
             for (const file of files) {

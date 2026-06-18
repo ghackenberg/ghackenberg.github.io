@@ -80,27 +80,48 @@ if (pubDate) {
       (function() {
         const urlParams = new URLSearchParams(window.location.search);
         const themeParam = urlParams.get('theme');
-        if (themeParam === 'light') {
-          document.documentElement.classList.add('light');
-          return;
-        } else if (themeParam === 'dark') {
-          document.documentElement.classList.remove('light');
-          return;
+        let themeSetting = localStorage.getItem('theme') || 'system';
+
+        if (themeParam === 'light' || themeParam === 'dark') {
+          themeSetting = themeParam;
         }
 
-        const storedTheme = localStorage.getItem('theme');
-        if (storedTheme) {
-          if (storedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme-setting', themeSetting);
+
+        function applyTheme(setting, trigger) {
+          let activeTheme = setting;
+          if (setting === 'system') {
+            const systemIsLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+            activeTheme = systemIsLight ? 'light' : 'dark';
+          }
+
+          if (activeTheme === 'light') {
             document.documentElement.classList.add('light');
           } else {
             document.documentElement.classList.remove('light');
           }
-        } else {
-          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-            document.documentElement.classList.add('light');
-          } else {
-            document.documentElement.classList.remove('light');
+
+          if (trigger) {
+            window.dispatchEvent(new CustomEvent('theme-changed', { 
+              detail: { 
+                themeSetting: setting, 
+                resolvedTheme: activeTheme, 
+                trigger: trigger 
+              } 
+            }));
           }
+        }
+
+        applyTheme(themeSetting);
+
+        // Listen to system preference changes
+        if (window.matchMedia) {
+          window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function() {
+            const currentSetting = localStorage.getItem('theme') || 'system';
+            if (currentSetting === 'system') {
+              applyTheme('system', 'system');
+            }
+          });
         }
       })();
     </script>
@@ -168,14 +189,19 @@ if (pubDate) {
         fileDownloads: true,
         formSubmissions: true,
         customProperties: {
-          theme: document.documentElement.classList.contains('light') ? 'light' : 'dark'
+          theme_setting: document.documentElement.getAttribute('data-theme-setting') || 'system',
+          theme_resolved: document.documentElement.classList.contains('light') ? 'light' : 'dark'
         }
       });
 
       // Track theme toggle event when it changes dynamically
       window.addEventListener('theme-changed', function(e) {
         if (window.plausible) {
-          plausible('theme-changed', { props: { theme: e.detail.theme } });
+          plausible('theme-changed', { props: { 
+            theme_setting: e.detail.themeSetting,
+            theme_resolved: e.detail.resolvedTheme,
+            theme_trigger: e.detail.trigger
+          } });
         }
       });
     </script>

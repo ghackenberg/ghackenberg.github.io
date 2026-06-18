@@ -39,10 +39,15 @@ const optimizedScreenshots = await Promise.all(
 );
 
 let repo = null;
-if (project.data.repoName) {
+let repoNameId = "";
+const repoName = project.data.repoName;
+if (repoName) {
   const repos = await getCollection("github-repos");
-  const repoEntry = repos.find(r => r.id.toLowerCase() === project.data.repoName.toLowerCase());
-  repo = repoEntry?.data;
+  const repoEntry = repos.find(r => r.id.toLowerCase() === repoName.toLowerCase());
+  if (repoEntry) {
+    repo = repoEntry.data;
+    repoNameId = repoEntry.id;
+  }
 }
 
 // Language colors for GitHub stats
@@ -265,7 +270,7 @@ const formattedDate = lastUpdated
             </h3>
 
             <p class="text-sm font-mono font-bold break-all leading-tight mb-2">
-              {repo.title}
+              {repoNameId}
             </p>
             
             <p class="text-gray-400 text-xs leading-normal mb-4 line-clamp-3">

@@ -24,6 +24,46 @@ const optimizedScreenshot = screenshot ? await getImage({
 const posts = await getCollection("posts");
 const publications = await getCollection("publications");
 
+interface CytoscapeElement {
+  data: {
+    id: string;
+    name?: string;
+    color?: string;
+    size?: number;
+    source?: string;
+    target?: string;
+  };
+}
+
+interface D3Node {
+  id: string;
+  name: string;
+  size: number;
+  group: number;
+}
+
+interface D3Connection {
+  sourceId: string;
+  targetId: string;
+}
+
+interface SigmaNode {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+}
+
+interface SigmaEdge {
+  id: string;
+  source: string;
+  target: string;
+  color: string;
+  size?: number;
+}
+
 // Calculate tags
 const tagPosts: Record<string, number> = {};
 posts.forEach(p => {
@@ -42,7 +82,7 @@ publications.forEach(p => {
 const allTags = Array.from(new Set([...Object.keys(tagPosts), ...Object.keys(tagPubs)]));
 
 // Prepare payload for Cytoscape
-const cytoscapeElements = [];
+const cytoscapeElements: CytoscapeElement[] = [];
 allTags.forEach(tag => {
   const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
   cytoscapeElements.push({
@@ -98,8 +138,8 @@ publications.forEach(pub => {
 });
 
 // Prepare payload for D3
-const d3Nodes = [];
-const d3Connections = [];
+const d3Nodes: D3Node[] = [];
+const d3Connections: D3Connection[] = [];
 allTags.forEach(tag => {
   const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
   d3Nodes.push({ id: tag, name: tag, size: Math.log(count) + 1, group: 0 });
@@ -120,8 +160,8 @@ publications.forEach(pub => {
 });
 
 // Prepare payload for Sigma
-const sigmaNodes = [];
-const sigmaEdges = [];
+const sigmaNodes: SigmaNode[] = [];
+const sigmaEdges: SigmaEdge[] = [];
 allTags.forEach(tag => {
   const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
   sigmaNodes.push({
@@ -323,25 +363,55 @@ const payload = {
 
   <!-- Inject Graph Boot Scripts -->
   <script>
+    interface GraphPayload {
+      cytoscapeElements?: { data: Record<string, string | number> }[];
+      d3Nodes?: { id: string; name: string; size: number; group: number }[];
+      d3Connections?: { sourceId: string; targetId: string }[];
+      sigmaNodes?: { id: string; label: string; x: number; y: number; size: number; color: string }[];
+      sigmaEdges?: { id: string; source: string; target: string; color: string }[];
+    }
+
+    interface GraphInstance {
+      destroy(): void;
+      updateLayout(layout: string, isLight: boolean): void;
+      layouts: { id: string; label: string }[];
+    }
+
+    interface GraphEngine {
+      layouts: { id: string; label: string }[];
+      init(container: HTMLElement, payload: GraphPayload, layout: string, isLight: boolean): Promise<GraphInstance>;
+    }
+
+    declare global {
+      interface Window {
+        GRAPH_TYPE: string;
+        GRAPH_PAYLOAD: GraphPayload;
+        activeInstance: GraphInstance | null;
+      }
+    }
+
     const type = window.GRAPH_TYPE;
     const payload = window.GRAPH_PAYLOAD;
 
     window.addEventListener('DOMContentLoaded', () => {
       const container = document.getElementById('canvas');
       const loading = document.getElementById('canvas-loading');
-      const selector = document.getElementById('layout-selector');
+      const selector = document.getElementById('layout-selector') as HTMLSelectElement | null;
       if (!container) return;
 
-      let activeInstance = null;
+      let activeInstance: GraphInstance | null = null;
 
       async function runInit() {
+        if (!container) return;
         if (activeInstance) {
           if (typeof activeInstance.destroy === 'function') {
             activeInstance.destroy();
           }
           activeInstance = null;
         }
-        container.innerHTML = '';
+        if (container) {
+          container.innerHTML = '';
+        }
 
         try {
           let engineModule;
@@ -365,14 +435,14 @@ const payload = {
               throw new Error(`Unknown visualization type: ${type}`);
           }
 
-          const engine = engineModule.default;
+          const engine = engineModule.default as GraphEngine;
           
           // Determine layout from query parameters
           const params = new URLSearchParams(window.location.search);
           let currentLayout = params.get('layout');
           
           // Verify layout is supported by the engine, else fallback to default
-          const supportsLayout = engine.layouts.some(l => l.id === currentLayout);
+          const supportsLayout = engine.layouts.some((l: { id: string }) => l.id === currentLayout);
           if (!currentLayout || !supportsLayout) {
             currentLayout = engine.layouts[0].id;
           }
@@ -381,7 +451,7 @@ const payload = {
           if (selector) {
             const isLightMode = document.documentElement.classList.contains('light');
             selector.innerHTML = '';
-            engine.layouts.forEach(l => {
+            engine.layouts.forEach((l: { id: string; label: string }) => {
               const option = document.createElement('option');
               option.value = l.id;
               option.textContent = l.label;
@@ -414,7 +484,7 @@ const payload = {
       // Handle layout change
       if (selector) {
         selector.addEventListener('change', (e) => {
-          const newLayout = e.target.value;
+          const newLayout = (e.target as HTMLSelectElement).value;
           if (activeInstance) {
             const url = new URL(window.location.href);
             url.searchParams.set('layout', newLayout);
@@ -430,7 +500,7 @@ const payload = {
       window.addEventListener('theme-changed', () => {
         const isLight = document.documentElement.classList.contains('light');
         if (selector) {
-          Array.from(selector.options).forEach(option => {
+          Array.from(selector.options).forEach((option) => {
             option.style.backgroundColor = isLight ? '#ffffff' : '#030712';
             option.style.color = isLight ? '#0f172a' : '#ffffff';
           });

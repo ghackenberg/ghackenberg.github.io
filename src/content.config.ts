@@ -154,6 +154,7 @@ const projects = defineCollection({
     order: z.number().default(0),
     repoName: z.string().optional(),
     screenshot: image().optional(),
+    screenshotLight: image().optional(),
     screenshots: z.array(z.object({
       image: image(),
       title: z.string(),

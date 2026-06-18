@@ -1,13 +1,14 @@
 ---
 import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 interface Props {
   title: string;
   description?: string;
   href: string;
   language: 'de' | 'en';
-  screenshot?: any;
-  screenshotLight?: any;
+  screenshot?: ImageMetadata;
+  screenshotLight?: ImageMetadata;
   tech: string;
   starCount?: number;
 }
@@ -81,13 +82,25 @@ const languageColors: Record<string, string> = {
           </linearGradient>
         </defs>
         <image 
-          href={optimizedScreenshot ? optimizedScreenshot.src : (screenshot.src || screenshot)} 
+          href={optimizedScreenshot ? optimizedScreenshot.src : (screenshot ? screenshot.src : '')} 
           x="0" 
           y="0" 
           width="160" 
           height="90" 
           preserveAspectRatio="xMidYMid slice" 
+          class={optimizedScreenshotLight ? "block light:hidden" : "block"}
         />
+        {optimizedScreenshotLight && (
+          <image 
+            href={optimizedScreenshotLight.src} 
+            x="0" 
+            y="0" 
+            width="160" 
+            height="90" 
+            preserveAspectRatio="xMidYMid slice" 
+            class="hidden light:block"
+          />
+        )}
         <rect 
           x="0" 
           y="0" 

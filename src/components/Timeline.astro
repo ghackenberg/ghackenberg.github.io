@@ -212,7 +212,6 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
   <!-- Continuous background line -->
   <div class="absolute left-[41px] sm:left-[49px] -translate-x-1/2 top-2 bottom-2 w-[2px] bg-element-border-medium z-0 pointer-events-none rounded-full"></div>
   {companyGroups.map((group, index) => {
-    const isLast = index === companyGroups.length - 1;
     // Determine the SVG logo or image to render
     const nameLower = group.company.toLowerCase();
     const isSelfEmployed = nameLower.includes('georg hackenberg');

@@ -1064,19 +1064,19 @@ const professionalInterests = [
   }
 
   // Tab switching and auto-rotation logic for activity feeds
-  const tabs = document.querySelectorAll('.feed-tab-btn');
+  const tabs = document.querySelectorAll<HTMLElement>('.feed-tab-btn');
   const panels = document.querySelectorAll('.feed-panel');
 
   const ROTATE_INTERVAL = 8000; // 8 seconds per tab
   const PAUSE_DURATION = 15000; // 15 seconds pause on manual select
 
-  let resumeTimeout = null;
+  let resumeTimeout: ReturnType<typeof setTimeout> | null = null;
   let activeTabId = 'github'; // default active tab ID
   let rotationInitialized = false;
-  let observerInstance = null;
+  let observerInstance: IntersectionObserver | null = null;
 
   // Map of tab ID to tab button
-  const tabMap = {};
+  const tabMap: Record<string, HTMLElement> = {};
   tabs.forEach(tab => {
     const tabId = tab.getAttribute('data-tab');
     if (tabId) tabMap[tabId] = tab;
@@ -1085,7 +1085,7 @@ const professionalInterests = [
   // Ordered list of tab IDs for cycling
   const tabSequence = ['github', 'linkedin', 'youtube'];
 
-  function switchTab(targetTabId, isManual = false) {
+  function switchTab(targetTabId: string, isManual = false) {
     if (activeTabId === targetTabId && !isManual) return;
 
     if (!rotationInitialized) {
@@ -1157,7 +1157,7 @@ const professionalInterests = [
     }
   }
 
-  function startProgress(tabEl) {
+  function startProgress(tabEl: HTMLElement) {
     // Stop any existing progress animations first
     tabs.forEach(t => {
       t.classList.remove('animating');

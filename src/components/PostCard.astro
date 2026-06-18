@@ -1,12 +1,13 @@
 ---
 import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 interface Props {
   id: string;
   title: string;
   description?: string;
   pubDate: Date;
-  icon?: any;
+  icon?: ImageMetadata;
   tags: string[];
   activeTag?: string;
 }

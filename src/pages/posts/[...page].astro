@@ -1,14 +1,19 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import PostCard from "../../components/PostCard.astro";
+import type { GetStaticPathsOptions, Page } from "astro";
 
-export async function getStaticPaths({ paginate }) {
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts = (await getCollection("posts")).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
   return paginate(posts, { pageSize: 10 });
+}
+
+interface Props {
+  page: Page<CollectionEntry<"posts">>;
 }
 
 const { page } = Astro.props;
@@ -97,7 +102,7 @@ const getPageUrl = (pageNum: number | string) => {
         {posts.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No blog posts found.</p>
         ) : (
-          posts.map(post => (
+          posts.map((post) => (
             <PostCard
               id={post.id}
               title={post.data.title}

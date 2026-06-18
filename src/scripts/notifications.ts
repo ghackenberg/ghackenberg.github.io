@@ -89,7 +89,6 @@ async function initNotifications() {
   ) {
     // We are on a detail page (e.g. /posts/some-post-slug or /services/slug/module-slug)
     // Exclude auxiliary paths like tags or pages if any
-    const section = parts[0];
     const subpath = parts[1];
     if (subpath !== 'tags' && subpath !== 'page') {
       state.visitedItems[currentPath] = Date.now();

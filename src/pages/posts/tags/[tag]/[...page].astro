@@ -1,10 +1,11 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
 import Navbar from "../../../../components/Navbar.astro";
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import PostCard from "../../../../components/PostCard.astro";
+import type { GetStaticPathsOptions, Page } from "astro";
 
-export async function getStaticPaths({ paginate }) {
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts = await getCollection("posts");
   const uniqueTags = Array.from(
     new Set(posts.flatMap((post) => post.data.tags || []))
@@ -20,6 +21,10 @@ export async function getStaticPaths({ paginate }) {
       pageSize: 10,
     });
   });
+}
+
+interface Props {
+  page: Page<CollectionEntry<"posts">>;
 }
 
 const { page } = Astro.props;
@@ -70,7 +75,7 @@ const getPageUrl = (pageNum: number | string) => {
     </div>
 
     <div class="space-y-6">
-      {posts.map(post => (
+      {posts.map((post) => (
         <PostCard
           id={post.id}
           title={post.data.title}
