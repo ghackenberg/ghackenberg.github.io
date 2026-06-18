@@ -60,6 +60,38 @@ if (pubDate) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script is:inline>
+      // Add no-transitions class to prevent theme transition animation on load
+      document.documentElement.classList.add('no-transitions');
+
+      (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const themeParam = urlParams.get('theme');
+        if (themeParam === 'light') {
+          document.documentElement.classList.add('light');
+          return;
+        } else if (themeParam === 'dark') {
+          document.documentElement.classList.remove('light');
+          return;
+        }
+
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme) {
+          if (storedTheme === 'light') {
+            document.documentElement.classList.add('light');
+          } else {
+            document.documentElement.classList.remove('light');
+          }
+        } else {
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+            document.documentElement.classList.add('light');
+          } else {
+            document.documentElement.classList.remove('light');
+          }
+        }
+      })();
+    </script>
     
     <!-- Favicons & App Icons -->
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
@@ -122,7 +154,17 @@ if (pubDate) {
       plausible.init({
         outboundLinks: true,
         fileDownloads: true,
-        formSubmissions: true
+        formSubmissions: true,
+        customProperties: {
+          theme: document.documentElement.classList.contains('light') ? 'light' : 'dark'
+        }
+      });
+
+      // Track theme toggle event when it changes dynamically
+      window.addEventListener('theme-changed', function(e) {
+        if (window.plausible) {
+          plausible('theme-changed', { props: { theme: e.detail.theme } });
+        }
       });
     </script>
 
@@ -150,36 +192,6 @@ if (pubDate) {
     )}
 
     <script is:inline>
-      // Add no-transitions class to prevent theme transition animation on load
-      document.documentElement.classList.add('no-transitions');
-
-      (function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const themeParam = urlParams.get('theme');
-        if (themeParam === 'light') {
-          document.documentElement.classList.add('light');
-          return;
-        } else if (themeParam === 'dark') {
-          document.documentElement.classList.remove('light');
-          return;
-        }
-
-        const storedTheme = localStorage.getItem('theme');
-        if (storedTheme) {
-          if (storedTheme === 'light') {
-            document.documentElement.classList.add('light');
-          } else {
-            document.documentElement.classList.remove('light');
-          }
-        } else {
-          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-            document.documentElement.classList.add('light');
-          } else {
-            document.documentElement.classList.remove('light');
-          }
-        }
-      })();
-
       // Remove no-transitions once the page is loaded, stylesheets are applied, and laid out
       (function() {
         function enableTransitions() {
