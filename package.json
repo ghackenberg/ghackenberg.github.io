@@ -25,10 +25,15 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/outfit": "^5.2.8",
     "@octokit/core": "^7.0.6",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.4",
     "googleapis": "^172.0.0",
+    "katex": "^0.17.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {

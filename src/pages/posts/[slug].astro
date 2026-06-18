@@ -2,6 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import { getCollection, render } from "astro:content";
+import fs from "node:fs";
+import path from "node:path";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -29,6 +31,23 @@ const relatedPosts = allPosts
 const seoDescription = post.data.description 
   ? post.data.description.replace(/\s+/g, " ").trim().substring(0, 156)
   : `${post.data.title} - A blog post by Dr. Georg Hackenberg on topics like ${post.data.tags.join(", ")}.`;
+
+// Direct read of the raw content file to determine if math is present (since Astro 5/6 Content Layer glob loader does not expose the raw body directly on getCollection entries)
+const postDir = path.join(process.cwd(), "src/content/posts", post.id);
+let rawContent = "";
+try {
+  const mdPath = path.join(postDir, "index.md");
+  const mdxPath = path.join(postDir, "index.mdx");
+  if (fs.existsSync(mdPath)) {
+    rawContent = fs.readFileSync(mdPath, "utf-8");
+  } else if (fs.existsSync(mdxPath)) {
+    rawContent = fs.readFileSync(mdxPath, "utf-8");
+  }
+} catch (e) {
+  console.error(`Failed to read post file for math check: ${post.id}`, e);
+}
+
+const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent);
 ---
 
 <Layout 
@@ -37,7 +56,7 @@ const seoDescription = post.data.description
   type="article"
   pubDate={post.data.pubDate}
   tags={post.data.tags}
-  hasMath={post.body ? (post.body.includes('$$') || /\$[^\$\s][^\$]*\$/.test(post.body)) : false}
+  hasMath={hasMath}
 >
   <Navbar />
 

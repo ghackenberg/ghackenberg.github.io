@@ -1,5 +1,17 @@
 ---
 import "../styles/global.css";
+import "@fontsource/inter/300.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/outfit/300.css";
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/outfit/600.css";
+import "@fontsource/outfit/700.css";
+import "@fontsource/outfit/800.css";
+import KaTeXStyles from "../components/KaTeXStyles.astro";
 import { getImage } from "astro:assets";
 import defaultOgImage from "../assets/images/og-share-preview.png";
 import Background from "../components/Background.astro";
@@ -171,26 +183,8 @@ if (pubDate) {
     <!-- Notification & Badge Tracking -->
     <script>
       import "../scripts/notifications.ts";
-    </script>
-
-    <!-- Google Fonts: Outfit & Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=optional" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=optional" media="print" onload="this.media='all'" />
-    <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=optional" rel="stylesheet" />
-    </noscript>
-
-    <!-- KaTeX Math Rendering -->
-    {hasMath && (
-      <>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { delimiters: [ { left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false } ] });"></script>
-      </>
-    )}
-
+    </script>    <!-- KaTeX Math Styles -->
+    {hasMath && <KaTeXStyles />}
     <script is:inline>
       // Remove no-transitions once the page is loaded, stylesheets are applied, and laid out
       (function() {
