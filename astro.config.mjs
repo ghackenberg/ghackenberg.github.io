@@ -93,10 +93,13 @@ function copyContentAssets() {
           copyFiles(srcDir);
         }
 
-        // Copy sitemap-index.xml to sitemap.xml for better Google Search Console compatibility
+        // Prefer copying sitemap-0.xml to sitemap.xml for direct urlset compatibility with Google Search Console
+        const sitemap0Src = path.join(outDir, 'sitemap-0.xml');
         const sitemapIndexSrc = path.join(outDir, 'sitemap-index.xml');
         const sitemapDest = path.join(outDir, 'sitemap.xml');
-        if (fs.existsSync(sitemapIndexSrc)) {
+        if (fs.existsSync(sitemap0Src)) {
+          fs.copyFileSync(sitemap0Src, sitemapDest);
+        } else if (fs.existsSync(sitemapIndexSrc)) {
           fs.copyFileSync(sitemapIndexSrc, sitemapDest);
         }
       }
