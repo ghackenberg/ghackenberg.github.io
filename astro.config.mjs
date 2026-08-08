@@ -110,6 +110,9 @@ function copyContentAssets() {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://ghackenberg.github.io',
+  image: {
+    dangerouslyProcessSVG: true,
+  },
   integrations: [sitemap(), copyContentAssets()],
   markdown: {
     remarkPlugins: [remarkMath],
