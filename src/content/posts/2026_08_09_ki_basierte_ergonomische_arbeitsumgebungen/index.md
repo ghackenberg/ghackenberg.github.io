@@ -14,8 +14,6 @@ An unserer **Professur für Industrieinformatik an der FH OÖ Campus Wels** widm
 
 ![KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht](./icon.svg)
 
----
-
 ## 1. Das Kernproblem: Statische Ergonomie trifft auf dynamische Menschen
 
 Sowohl im Corporate Office als auch in der häuslichen Wohnumgebung lassen sich prägnante ergonomische Herausforderungen beobachten:
@@ -25,8 +23,6 @@ Sowohl im Corporate Office als auch in der häuslichen Wohnumgebung lassen sich 
 - **Fehlende Rückkopplung:** Nutzer merken Haltungsfehler meist erst dann, wenn Schmerzen oder Muskelverspannungen eintreten. Ein rechtzeitiges, präventives Biofeedback fehlt in der Regel.
 
 Unsere Forschung setzt genau an dieser Schnittstelle an: Wir wandeln die Arbeitsumgebung von einem passiven Mobiliar in ein **aktives, lernendes Assistenzsystem** um, das Prävention im Alltag verankert.
-
----
 
 ## 2. Die 4-Schichten-Systemarchitektur
 
@@ -57,8 +53,6 @@ Wenn physische Anpassungen nicht ausreichen, tritt die digitale Assistenz in Int
 - **Contextual Micro-Breaks:** Pause- und Bewegungsempfehlungen werden nicht nach starren Zeitintervallen (z.B. alle 60 Min.) gegeben, sondern exakt in natürlichen Aufgabenwechseln (z.B. nach dem Schließen eines Dokumentes oder Beenden eines Telefonats).
 - **Geführte Dehnübungen:** Kurze, gezielte Mikroubungen auf dem Bildschirm, abgestimmt auf die zuvor identifizierte Muskelbelastung.
 
----
-
 ## 3. Büroarbeitsumgebung vs. Häusliche Wohnumgebung: Eine vergleichende Analyse
 
 Ein zentraler Fokus unserer Forschungsarbeit liegt auf den unterschiedlichen Rahmenbedingungen im Corporate Office im Vergleich zur häuslichen Wohnumgebung. Ein Universalsystem greift hier zu kurz; die Anforderungen unterscheiden sich grundlegend:
@@ -71,8 +65,6 @@ Ein zentraler Fokus unserer Forschungsarbeit liegt auf den unterschiedlichen Rah
 | **Datenschutz & Akzeptanz** | Strikte BGM-Compliance, aggregierte & anonymisierte Kennzahlen für den Betrieb. | Absoluter Fokus auf lokale Datensouveränität (keine Rohdatenübertragung aus dem privaten Wohnraum). |
 | **Umgebungssteuerung** | Steuerung von Zonen-Beleuchtung und zentraler HVAC-Lüftung. | Ansteuerung smarter Verbraucher über offene IoT-Standards (z.B. Matter / Zigbee). |
 
----
-
 ## 4. Interdisziplinäre Forschung am FH OÖ Campus Wels
 
 Die Entwicklung KI-basierter ergonomischer Arbeitsumgebungen erfordert einen stark **interdisziplinären Ansatz**. Am **FH OÖ Campus Wels (School of Engineering)** bündeln wir Kompetenzen aus mehreren Fachbereichen:
@@ -83,14 +75,10 @@ Die Entwicklung KI-basierter ergonomischer Arbeitsumgebungen erfordert einen sta
 
 Durch den Aufbau von **Reallaboren (Living Labs)** testen wir Prototypen unter realistischen Bedingungen – sowohl in Testbüros am Campus als auch in realen Homeoffice-Szenarien unserer Projektpartner.
 
----
-
 ## 5. Fazit & Ausblick
 
 Die Arbeitsumgebung der Zukunft ist weder ein starrer Holztisch noch ein isoliertes technisches Gadget. Sie ist ein **intelligentes, adäquates Ökosystem**, das den Menschen aktiv schützt, ohne ihn zu bevormunden.
 
 Mit unserer Forschung an der FH OÖ Campus Wels leisten wir einen Beitrag dazu, Muskel-Skelett-Erkrankungen – eine der Hauptursachen für gesundheitsbedingte Ausfälle im Berufsleben – nachhaltig zu reduzieren. Indem wir KI-gestützte Ergonomie sowohl für das professionelle Büro als auch für die häusliche Wohnumgebung erschwinglich, sicher und benutzerfreundlich gestalten, schaffen wir die Basis für gesundes und produktives Arbeiten im digitalen Zeitalter.
-
----
 
 *Haben Sie Fragen zu unseren Forschungsprojekten oder Interesse an einer Kooperation im Bereich Smart Workplace & KI-Ergonomie? Kontaktieren Sie uns gerne am FH OÖ Campus Wels!*
