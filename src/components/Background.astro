@@ -1,42 +1,59 @@
 ---
 // Background.astro
-// Premium vector-style sky background with responsive day/night transitions,
-// client-side astronomical moon phase rendering, twinkling starfield, shooting stars,
-// floating clouds, and scroll/mouse parallax effects on atmospheric elements.
+// Clear vector-style night sky background with responsive day/night transitions,
+// crescent moon, detailed starfield, shooting stars, floating clouds,
+// and smooth scroll/mouse parallax effects on celestial elements.
 ---
 <div class="background-container fixed inset-0 overflow-hidden pointer-events-none z-0 select-none">
   <!-- 1. Sky Gradients -->
   <div class="sky-bg sky-bg-night"></div>
   <div class="sky-bg sky-bg-day"></div>
 
-  <!-- 2. Twinkling Stars (Dark Mode Only) -->
+  <!-- 2. Crescent Moon & Atmospheric Aura (Dark Mode Only) -->
+  <div id="bg-layer-moon" class="moon-container absolute top-[5%] right-[6%] md:top-[8%] md:right-[12%] pointer-events-none transition-opacity duration-1000">
+    <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Celestial Aura Glow -->
+        <radialGradient id="moon-aura-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.22" />
+          <stop offset="45%" stop-color="#3b82f6" stop-opacity="0.08" />
+          <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0" />
+        </radialGradient>
+        <!-- Moon Surface Gradient -->
+        <linearGradient id="moon-surface-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="40%" stop-color="#f1f5f9" />
+          <stop offset="100%" stop-color="#94a3b8" />
+        </linearGradient>
+      </defs>
+      <!-- Soft Outer Aura -->
+      <circle cx="75" cy="75" r="70" fill="url(#moon-aura-glow)" />
+      <!-- Moon Waxing Crescent -->
+      <g transform="translate(38, 38)">
+        <path d="M 38 0 A 38 38 0 1 1 38 76 A 28 28 0 1 0 38 0 Z" fill="url(#moon-surface-grad)" />
+        <!-- Subtle Crater Details -->
+        <circle cx="30" cy="20" r="3.5" fill="#94a3b8" opacity="0.35" />
+        <circle cx="24" cy="38" r="4" fill="#64748b" opacity="0.3" />
+        <circle cx="34" cy="54" r="2.8" fill="#94a3b8" opacity="0.35" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- 3. Twinkling Stars (Dark Mode Only) -->
   <svg id="bg-layer-stars" class="stars-svg absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
     <g id="sparkling-stars" class="transition-opacity duration-700"></g>
   </svg>
 
-  <!-- 3. Shooting Stars (Dark Mode Only) -->
-  <div class="shooting-stars-container absolute inset-0">
+  <!-- 4. Shooting Stars (Dark Mode Only) -->
+  <div id="bg-layer-shooting-stars" class="shooting-stars-container absolute inset-0">
     <div class="shooting-star shooting-star-1"></div>
     <div class="shooting-star shooting-star-2"></div>
     <div class="shooting-star shooting-star-3"></div>
   </div>
 
-  <!-- 5. Interactive Ambient Glowing Orbs -->
-  <div class="orbs-container absolute inset-0">
-    <div class="orb-wrapper bg-glow-wrapper-1" data-speed-y="0.12" data-speed-x="0.06" data-scale="0.15" data-mouse-x="-30" data-mouse-y="-30">
-      <div class="bg-glow-orb bg-brand-blue w-[55vmax] h-[55vmax] top-[-15%] left-[-15%]"></div>
-    </div>
-    <div class="orb-wrapper bg-glow-wrapper-2" data-speed-y="-0.1" data-speed-x="-0.06" data-scale="-0.08" data-mouse-x="40" data-mouse-y="40">
-      <div class="bg-glow-orb bg-brand-purple w-[50vmax] h-[50vmax] top-[40%] right-[-15%]" style="animation-delay: -3s;"></div>
-    </div>
-    <div class="orb-wrapper bg-glow-wrapper-3" data-speed-y="0.08" data-speed-x="-0.08" data-scale="0.05" data-mouse-x="30" data-mouse-y="30">
-      <div class="bg-glow-orb bg-brand-green w-[45vmax] h-[45vmax] top-[20%] left-[45%]" style="animation-delay: -9s;"></div>
-    </div>
-  </div>
-
-  <!-- 4. Floating Clouds (Light Mode Only) -->
+  <!-- 5. Floating Clouds (Light Mode Only) -->
   <div id="bg-layer-clouds" class="clouds-container absolute inset-0 overflow-hidden">
-    <!-- Cloud 1 (Standard) -->
+    <!-- Cloud 1 -->
     <div class="cloud cloud-1">
       <svg width="220" height="90" viewBox="0 0 220 90" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -56,7 +73,7 @@
       </svg>
     </div>
     
-    <!-- Cloud 2 (Standard) -->
+    <!-- Cloud 2 -->
     <div class="cloud cloud-2">
       <svg width="260" height="100" viewBox="0 0 260 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -76,7 +93,7 @@
       </svg>
     </div>
 
-    <!-- Cloud 3 (Standard) -->
+    <!-- Cloud 3 -->
     <div class="cloud cloud-3">
       <svg width="200" height="110" viewBox="0 0 200 110" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -96,7 +113,7 @@
       </svg>
     </div>
 
-    <!-- Cloud 4 (Standard) -->
+    <!-- Cloud 4 -->
     <div class="cloud cloud-4">
       <svg width="150" height="70" viewBox="0 0 150 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -173,7 +190,7 @@
     pointer-events: none;
   }
   .sky-bg-night {
-    background: linear-gradient(to bottom, #020408 0%, #050b18 45%, #0c152a 100%);
+    background: radial-gradient(circle at 75% 15%, #0d1b3e 0%, #060c21 45%, #02050e 100%);
     opacity: 1;
   }
   .sky-bg-day {
@@ -187,33 +204,14 @@
     opacity: 1;
   }
 
-  /* Orbs container visibility rules */
-  .bg-glow-orb {
-    position: absolute;
-    border-radius: 60% 40% 55% 45%;
-    filter: blur(14vmax);
-    opacity: 0.18;
+  /* Moon Container */
+  .moon-container {
     pointer-events: none;
-    z-index: 0;
-    animation: pulse-slow 12s infinite alternate;
-    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  :global(.light) .bg-glow-orb {
-    opacity: 0.04;
-  }
-  @keyframes pulse-slow {
-    0% {
-      transform: scale(1) translate(0px, 0px);
-      opacity: 0.20;
-    }
-    50% {
-      transform: scale(1.1) translate(20px, -20px);
-      opacity: 0.28;
-    }
-    100% {
-      transform: scale(0.9) translate(-20px, 20px);
-      opacity: 0.14;
-    }
+  :global(.light) .moon-container {
+    opacity: 0;
   }
 
   /* Twinkling Stars */
@@ -228,8 +226,13 @@
   
   /* Twinkling CSS animation */
   :global(@keyframes twinkle) {
-    0%, 100% { opacity: 0.25; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.25); }
+    0%, 100% { opacity: 0.2; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  :global(@keyframes twinkle-hero) {
+    0%, 100% { opacity: 0.3; transform: scale(0.7) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.3) rotate(45deg); }
   }
 
   /* Shooting Stars */
@@ -237,13 +240,14 @@
     pointer-events: none;
     transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
+    will-change: transform;
   }
   :global(.light) .shooting-stars-container {
     opacity: 0;
   }
   .shooting-star {
     position: absolute;
-    width: 80px;
+    width: 90px;
     height: 1.5px;
     background: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 100%);
     opacity: 0;
@@ -293,7 +297,7 @@
     will-change: transform;
   }
   :global(.light) .clouds-container {
-    opacity: 0.7; /* Slightly more visible for the premium gradient clouds */
+    opacity: 0.7;
   }
   .cloud {
     position: absolute;
@@ -340,16 +344,16 @@
     0% { transform: translate3d(-320px, 0, 0); }
     100% { transform: translate3d(105vw, 0, 0); }
   }
-
 </style>
 
 <script>
   function initBackground() {
     const starsLayer = document.getElementById('bg-layer-stars');
+    const moonLayer = document.getElementById('bg-layer-moon');
+    const shootingStarsLayer = document.getElementById('bg-layer-shooting-stars');
     const cloudsLayer = document.getElementById('bg-layer-clouds');
-    const wrappers = document.querySelectorAll('.orb-wrapper');
 
-    if (!starsLayer && !cloudsLayer && wrappers.length === 0) {
+    if (!starsLayer && !cloudsLayer && !moonLayer) {
       return;
     }
 
@@ -393,8 +397,6 @@
     };
 
     const updateFrame = () => {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      
       const scrollLerp = 0.08;
       const mouseLerp = 0.08;
 
@@ -402,48 +404,28 @@
       currentMouseX += (targetMouseX - currentMouseX) * mouseLerp;
       currentMouseY += (targetMouseY - currentMouseY) * mouseLerp;
 
-      const scrollPct = maxScroll > 0 ? currentScrollY / maxScroll : 0;
-      
       // Normalized offset from center (-0.5 to 0.5)
       const normMouseX = currentMouseX - 0.5;
       const normMouseY = currentMouseY - 0.5;
 
-      // 1. Celestial & Sky Parallax (Scroll Only)
+      // 1. Celestial & Sky Parallax
       if (starsLayer) {
-        starsLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.03}px, 0)`;
+        starsLayer.style.transform = `translate3d(${normMouseX * 10}px, ${-currentScrollY * 0.035 + normMouseY * 10}px, 0)`;
+      }
+      if (moonLayer) {
+        moonLayer.style.transform = `translate3d(${normMouseX * -15}px, ${-currentScrollY * 0.02 + normMouseY * -15}px, 0)`;
+      }
+      if (shootingStarsLayer) {
+        shootingStarsLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.03}px, 0)`;
       }
       if (cloudsLayer) {
         cloudsLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.08}px, 0)`;
       }
 
-      // 2. Orbs Parallax & Mouse Interactivity (Scroll + Mouse/Touch)
-      wrappers.forEach(wrapper => {
-        const speedY = parseFloat(wrapper.getAttribute('data-speed-y') || '0');
-        const speedX = parseFloat(wrapper.getAttribute('data-speed-x') || '0');
-        const scaleDelta = parseFloat(wrapper.getAttribute('data-scale') || '0');
-        const mouseFactorX = parseFloat(wrapper.getAttribute('data-mouse-x') || '0');
-        const mouseFactorY = parseFloat(wrapper.getAttribute('data-mouse-y') || '0');
-        
-        // Scroll drift translation
-        const scrollYShift = currentScrollY * speedY;
-        const scrollXShift = currentScrollY * speedX;
-        
-        // Mouse/Touch drift translation (scaled by factor)
-        const mouseXShift = normMouseX * mouseFactorX * 8; 
-        const mouseYShift = normMouseY * mouseFactorY * 8;
-        
-        const totalX = scrollXShift + mouseXShift;
-        const totalY = scrollYShift + mouseYShift;
-        const scale = 1 + (scrollPct * scaleDelta);
-        
-        (wrapper as HTMLElement).style.transform = `translate3d(${totalX}px, ${totalY}px, 0) scale(${scale})`;
-      });
-
       const scrollDiff = Math.abs(targetScrollY - currentScrollY);
       const mouseDiffX = Math.abs(targetMouseX - currentMouseX);
       const mouseDiffY = Math.abs(targetMouseY - currentMouseY);
 
-      // Keep animation loop ticking if there's any active movement
       if (scrollDiff > 0.05 || mouseDiffX > 0.001 || mouseDiffY > 0.001) {
         requestAnimationFrame(updateFrame);
       } else {
@@ -459,34 +441,57 @@
     // Initial frame run
     requestTick();
 
-    // Starfield Generator
+    // High Density Night Sky Starfield Generator
     const starsGroup = document.getElementById('sparkling-stars');
     if (starsGroup) {
       starsGroup.innerHTML = '';
-      const numStars = 70;
+      const numStars = 140;
+      const starColors = ['#ffffff', '#ffffff', '#e0f2fe', '#fef08a', '#f3e8ff'];
+
       for (let i = 0; i < numStars; i++) {
         const cx = Math.random() * 100; // percent
-        const cy = Math.random() * 65;  // upper 65% of sky
-        const r = Math.random() * 1.1 + 0.5; // size between 0.5px and 1.6px
+        const cy = Math.random() * 75;  // upper 75% of sky
+        const color = starColors[Math.floor(Math.random() * starColors.length)];
         const delay = Math.random() * 6; // staggered delay
-        const duration = Math.random() * 3 + 2.5; // star twinkle speed
+        const duration = Math.random() * 3.5 + 2.5; // star twinkle speed
         
-        const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        star.setAttribute('cx', `${cx}%`);
-        star.setAttribute('cy', `${cy}%`);
-        star.setAttribute('r', r.toString());
-        star.setAttribute('fill', '#ffffff');
-        star.setAttribute('opacity', (Math.random() * 0.6 + 0.3).toString());
-        
-        // CSS Twinkle styling
-        star.style.transformOrigin = `${cx}% ${cy}%`;
-        star.style.transformBox = 'fill-box';
-        star.style.animation = `twinkle ${duration}s infinite ease-in-out ${delay}s`;
-        
-        starsGroup.appendChild(star);
+        const isHeroStar = i % 18 === 0;
+
+        if (isHeroStar) {
+          // 4-point sparkle star SVG path
+          const heroStar = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          const size = Math.random() * 6 + 6;
+          heroStar.setAttribute('transform', `translate(${(cx / 100) * window.innerWidth}, ${(cy / 100) * window.innerHeight})`);
+          
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', `M 0 -${size} Q 0 0 ${size} 0 Q 0 0 0 ${size} Q 0 0 -${size} 0 Q 0 0 0 -${size} Z`);
+          path.setAttribute('fill', color);
+          path.setAttribute('opacity', (Math.random() * 0.5 + 0.5).toString());
+          
+          path.style.transformOrigin = 'center';
+          path.style.transformBox = 'fill-box';
+          path.style.animation = `twinkle-hero ${duration * 1.2}s infinite ease-in-out ${delay}s`;
+          
+          heroStar.appendChild(path);
+          starsGroup.appendChild(heroStar);
+        } else {
+          // Standard circular star
+          const r = Math.random() * 1.1 + 0.4; // 0.4px to 1.5px
+          const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          star.setAttribute('cx', `${cx}%`);
+          star.setAttribute('cy', `${cy}%`);
+          star.setAttribute('r', r.toString());
+          star.setAttribute('fill', color);
+          star.setAttribute('opacity', (Math.random() * 0.6 + 0.35).toString());
+          
+          star.style.transformOrigin = `${cx}% ${cy}%`;
+          star.style.transformBox = 'fill-box';
+          star.style.animation = `twinkle ${duration}s infinite ease-in-out ${delay}s`;
+          
+          starsGroup.appendChild(star);
+        }
       }
     }
-
   }
 
   // Initialize immediately
