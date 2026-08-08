@@ -176,12 +176,12 @@ const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent
   .post-body :global(p:last-child) {
     margin-bottom: 0;
   }
-  .post-body :global(a) {
+  .post-body :global(a:not([class*="bg-"])) {
     color: #3b82f6; /* brand-blue */
     text-decoration: underline;
     transition: color 0.2s;
   }
-  .post-body :global(a:hover) {
+  .post-body :global(a:not([class*="bg-"]):hover) {
     color: #60a5fa;
   }
   .post-body :global(strong) {
