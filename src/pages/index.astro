@@ -574,65 +574,16 @@ const professionalInterests = [
         </p>
       </div>
 
-      <!-- Social Feed Widget Container (Pause on Hover) -->
-      <div class="social-feed-widget">
-        <!-- Tabs Navigation -->
-        <div class="flex flex-wrap gap-2 sm:gap-3 mb-8 border-b border-white/5 pb-5 relative z-20">
-          <button 
-            id="tab-github" 
-            class="feed-tab-btn active px-3 py-2 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
-            data-tab="github"
-          >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-            </svg>
-            <span>GitHub</span>
-            <span class="tab-progress absolute bottom-0 left-0 h-0.5 w-0 bg-current opacity-70"></span>
-          </button>
-          <button 
-            id="tab-linkedin" 
-            class="feed-tab-btn px-3 py-2 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
-            data-tab="linkedin"
-          >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
-            </svg>
-            <span>LinkedIn</span>
-            <span class="tab-progress absolute bottom-0 left-0 h-0.5 w-0 bg-current opacity-70"></span>
-          </button>
-          <button 
-            id="tab-youtube" 
-            class="feed-tab-btn px-3 py-2 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center space-x-2 border cursor-pointer"
-            data-tab="youtube"
-          >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-            </svg>
-            <span>YouTube</span>
-            <span class="tab-progress absolute bottom-0 left-0 h-0.5 w-0 bg-current opacity-70"></span>
-          </button>
+      <!-- Vertically Stacked Feed Cards with Scroll Fade-In -->
+      <div class="space-y-8 md:space-y-12">
+        <div class="activity-card-anim opacity-0 translate-y-8 transition-all duration-700 ease-out">
+          <GitHubWidget />
         </div>
-
-        <!-- Tab Content Panels -->
-        <div class="relative z-10 grid grid-cols-1 grid-rows-1 overflow-hidden p-6 -m-6">
-          <div 
-            id="panel-github" 
-            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-100 pointer-events-auto relative z-10"
-          >
-            <GitHubWidget />
-          </div>
-          <div 
-            id="panel-linkedin" 
-            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-0 pointer-events-none absolute inset-0 w-full h-full z-0"
-          >
-            <LinkedInWidget />
-          </div>
-          <div 
-            id="panel-youtube" 
-            class="feed-panel col-start-1 row-start-1 transform-gpu opacity-0 pointer-events-none absolute inset-0 w-full h-full z-0"
-          >
-            <YouTubeWidget />
-          </div>
+        <div class="activity-card-anim opacity-0 translate-y-8 transition-all duration-700 ease-out">
+          <LinkedInWidget />
+        </div>
+        <div class="activity-card-anim opacity-0 translate-y-8 transition-all duration-700 ease-out">
+          <YouTubeWidget />
         </div>
       </div>
     </section>
@@ -792,161 +743,9 @@ const professionalInterests = [
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  :global(.light) .feed-tab-btn {
-    background: rgba(15, 23, 42, 0.04);
-    border-color: rgba(15, 23, 42, 0.08);
-    color: #475569;
-  }
-
-  /* Tab Progress Bar Indicator */
-  .tab-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    width: 0;
-    background-color: currentColor;
-    opacity: 0.7;
-    transition: none;
-  }
-
-  .feed-tab-btn.active.animating .tab-progress {
-    animation: tab-progress-grow 8s linear forwards;
-  }
-
-  /* Pause progress bar animation on hover of the widget */
-  .social-feed-widget:hover .feed-tab-btn.active.animating .tab-progress {
-    animation-play-state: paused;
-  }
-
-  @keyframes tab-progress-grow {
-    from {
-      width: 0%;
-    }
-    to {
-      width: 100%;
-    }
-  }
-
-  /* GitHub Active */
-  .feed-tab-btn[data-tab="github"].active {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #3b82f6;
-    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
-  }
-  .feed-tab-btn[data-tab="github"]:hover:not(.active) {
-    border-color: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
-  }
-  :global(.light) .feed-tab-btn[data-tab="github"]:hover:not(.active) {
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #3b82f6;
-  }
-
-  /* LinkedIn Active */
-  .feed-tab-btn[data-tab="linkedin"].active {
-    background: rgba(168, 85, 247, 0.1);
-    border-color: rgba(168, 85, 247, 0.3);
-    color: #a855f7;
-    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25);
-  }
-  .feed-tab-btn[data-tab="linkedin"]:hover:not(.active) {
-    border-color: rgba(168, 85, 247, 0.2);
-    color: #c084fc;
-  }
-  :global(.light) .feed-tab-btn[data-tab="linkedin"]:hover:not(.active) {
-    border-color: rgba(168, 85, 247, 0.3);
-    color: #a855f7;
-  }
-
-  /* YouTube Active */
-  .feed-tab-btn[data-tab="youtube"].active {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.3);
-    color: #10b981;
-    box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.25);
-  }
-  .feed-tab-btn[data-tab="youtube"]:hover:not(.active) {
-    border-color: rgba(16, 185, 129, 0.2);
-    color: #34d399;
-  }
-  :global(.light) .feed-tab-btn[data-tab="youtube"]:hover:not(.active) {
-    border-color: rgba(16, 185, 129, 0.3);
-    color: #10b981;
-  }
-
-  /* Feed Panels Slide Animations */
-  .feed-panel {
-    will-change: opacity, transform, translate, scale;
-  }
-
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      translate: 4rem 0;
-      scale: 0.98;
-    }
-    to {
-      opacity: 1;
-      translate: 0 0;
-      scale: 1;
-    }
-  }
-
-  @keyframes slideOutLeft {
-    from {
-      opacity: 1;
-      translate: 0 0;
-      scale: 1;
-    }
-    to {
-      opacity: 0;
-      translate: -4rem 0;
-      scale: 0.98;
-    }
-  }
-
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      translate: -4rem 0;
-      scale: 0.98;
-    }
-    to {
-      opacity: 1;
-      translate: 0 0;
-      scale: 1;
-    }
-  }
-
-  @keyframes slideOutRight {
-    from {
-      opacity: 1;
-      translate: 0 0;
-      scale: 1;
-    }
-    to {
-      opacity: 0;
-      translate: 4rem 0;
-      scale: 0.98;
-    }
-  }
-
-  .panel-slide-in-right {
-    animation: slideInRight 3.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  .panel-slide-out-left {
-    animation: slideOutLeft 3.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  .panel-slide-in-left {
-    animation: slideInLeft 3.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  .panel-slide-out-right {
-    animation: slideOutRight 3.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* Activity Card Scroll Animation */
+  .activity-card-anim {
+    will-change: opacity, transform;
   }
 
   /* Profile Photo SVG Image Styling */
@@ -1063,163 +862,25 @@ const professionalInterests = [
     });
   }
 
-  // Tab switching and auto-rotation logic for activity feeds
-  const tabs = document.querySelectorAll<HTMLElement>('.feed-tab-btn');
-  const panels = document.querySelectorAll('.feed-panel');
-
-  const ROTATE_INTERVAL = 8000; // 8 seconds per tab
-  const PAUSE_DURATION = 15000; // 15 seconds pause on manual select
-
-  let resumeTimeout: ReturnType<typeof setTimeout> | null = null;
-  let activeTabId = 'github'; // default active tab ID
-  let rotationInitialized = false;
-  let observerInstance: IntersectionObserver | null = null;
-
-  // Map of tab ID to tab button
-  const tabMap: Record<string, HTMLElement> = {};
-  tabs.forEach(tab => {
-    const tabId = tab.getAttribute('data-tab');
-    if (tabId) tabMap[tabId] = tab;
-  });
-
-  // Ordered list of tab IDs for cycling
-  const tabSequence = ['github', 'linkedin', 'youtube'];
-
-  function switchTab(targetTabId: string, isManual = false) {
-    if (activeTabId === targetTabId && !isManual) return;
-
-    if (!rotationInitialized) {
-      rotationInitialized = true;
-      if (observerInstance) {
-        observerInstance.disconnect();
-        observerInstance = null;
-      }
-    }
-
-    // 1. Clear any active progress animation
-    tabs.forEach(t => t.classList.remove('active', 'animating'));
-
-    // Get target tab element
-    const targetTabEl = tabMap[targetTabId];
-    if (!targetTabEl) return;
-
-    // Add active class to target tab
-    targetTabEl.classList.add('active');
-
-    // Calculate transition direction (forward or backward)
-    const currentIndex = tabSequence.indexOf(activeTabId);
-    const targetIndex = tabSequence.indexOf(targetTabId);
-    
-    let isForward = true;
-    if (currentIndex === 2 && targetIndex === 0) {
-      isForward = true; // Wrap-around from last to first is forward
-    } else if (currentIndex === 0 && targetIndex === 2) {
-      isForward = false; // Wrap-around from first to last is backward
-    } else {
-      isForward = targetIndex > currentIndex;
-    }
-
-    const previousTabId = activeTabId;
-    activeTabId = targetTabId;
-
-    // Update panels using keyed slide animations (directional slide & cross-fade)
-    panels.forEach(panel => {
-      const panelId = panel.getAttribute('id');
-      
-      // Reset animation and interaction baseline classes
-      panel.className = 'feed-panel col-start-1 row-start-1 transform-gpu';
-      
-      if (panelId === `panel-${targetTabId}`) {
-        // Target active panel: animate in
-        panel.classList.add(isForward ? 'panel-slide-in-right' : 'panel-slide-in-left');
-        panel.classList.add('pointer-events-auto', 'relative', 'z-10');
-      } else if (panelId === `panel-${previousTabId}`) {
-        // Previous active panel: animate out
-        panel.classList.add(isForward ? 'panel-slide-out-left' : 'panel-slide-out-right');
-        panel.classList.add('pointer-events-none', 'absolute', 'inset-0', 'w-full', 'h-full', 'z-0');
-      } else {
-        // All other non-active panels: hide instantly
-        panel.classList.add('opacity-0', 'pointer-events-none', 'absolute', 'inset-0', 'w-full', 'h-full', 'z-0');
-      }
-    });
-
-    if (isManual) {
-      // User clicked manually -> pause auto rotation
-      if (resumeTimeout) clearTimeout(resumeTimeout);
-
-      // Start a timeout to resume auto rotation after 15 seconds
-      resumeTimeout = setTimeout(() => {
-        startProgress(targetTabEl);
-      }, PAUSE_DURATION);
-    } else {
-      // Auto transition -> start progress bar animation immediately on the new tab
-      startProgress(targetTabEl);
-    }
-  }
-
-  function startProgress(tabEl: HTMLElement) {
-    // Stop any existing progress animations first
-    tabs.forEach(t => {
-      t.classList.remove('animating');
-    });
-
-    // Force layout reflow to ensure animation restarts
-    void tabEl.offsetWidth;
-
-    // Start progress bar animation on the current tab
-    tabEl.classList.add('animating');
-  }
-
-  // Set up event listeners for manual clicks
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const targetTabId = tab.getAttribute('data-tab');
-      if (targetTabId) {
-        switchTab(targetTabId, true);
-      }
-    });
-  });
-
-  // Set up progress bar animationend listeners to cycle to next tab
-  tabs.forEach(tab => {
-    const progressIndicator = tab.querySelector('.tab-progress');
-    if (progressIndicator) {
-      progressIndicator.addEventListener('animationend', () => {
-        // Find next tab in sequence
-        const currentIndex = tabSequence.indexOf(activeTabId);
-        const nextIndex = (currentIndex + 1) % tabSequence.length;
-        const nextTabId = tabSequence[nextIndex];
-
-        switchTab(nextTabId, false);
-      });
-    }
-  });
-
-  // Initialize auto-rotation when the widget becomes visible on screen
-  const widget = document.querySelector('.social-feed-widget');
-  if (widget && 'IntersectionObserver' in window) {
-    observerInstance = new IntersectionObserver((entries) => {
+  // Scroll Fade-in animation for Media Activities cards
+  const activityCards = document.querySelectorAll('.activity-card-anim');
+  if (activityCards.length > 0 && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting && !rotationInitialized) {
-          rotationInitialized = true;
-          const initialActiveTab = tabMap[activeTabId];
-          if (initialActiveTab) {
-            startProgress(initialActiveTab);
-          }
-          if (observerInstance) {
-            observerInstance.disconnect();
-            observerInstance = null;
-          }
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('opacity-0', 'translate-y-8');
+          entry.target.classList.add('opacity-100', 'translate-y-0');
+          observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15 });
-    observerInstance.observe(widget);
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    activityCards.forEach(card => observer.observe(card));
   } else {
-    // Fallback if IntersectionObserver is not supported or widget not found
-    rotationInitialized = true;
-    const initialActiveTab = tabMap[activeTabId];
-    if (initialActiveTab) {
-      startProgress(initialActiveTab);
-    }
+    // Fallback if IntersectionObserver is not supported
+    activityCards.forEach(card => {
+      card.classList.remove('opacity-0', 'translate-y-8');
+      card.classList.add('opacity-100', 'translate-y-0');
+    });
   }
 </script>
