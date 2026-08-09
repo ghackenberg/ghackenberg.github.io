@@ -173,7 +173,7 @@ const imageContainerClass = featured
 
     <!-- Description -->
     {description && (
-      <p class={`flex-grow leading-relaxed font-normal ${featured
+      <p class={`leading-relaxed font-normal ${featured
         ? 'text-gray-300 light:text-slate-600 text-base md:text-lg mb-5'
         : 'text-gray-400 light:text-slate-500 text-sm mb-4'
       }`}>
@@ -182,7 +182,7 @@ const imageContainerClass = featured
     )}
 
     <!-- Tags -->
-    <div class="flex flex-wrap gap-1.5 mt-auto">
+    <div class="flex flex-wrap gap-1.5 mt-2">
       {tags.map(tag => (
         <a 
           href={`/posts/tags/${tag}`}
