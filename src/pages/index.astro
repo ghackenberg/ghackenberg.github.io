@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import PostCard from "../components/PostCard.astro";
 import Timeline from "../components/Timeline.astro";
 import GitHubWidget from "../components/GitHubWidget.astro";
 import LinkedInWidget from "../components/LinkedInWidget.astro";
@@ -24,6 +25,8 @@ const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
 const posts = await getCollection("posts");
+const sortedPosts = posts.slice().sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
+const recentPosts = sortedPosts.slice(0, 3);
 const publications = await getCollection("publications");
 
 // Calculate tags and graph payload for the home page Vis.js Network
@@ -308,6 +311,67 @@ const professionalInterests = [
             </div>
           );
         })}
+      </div>
+    </section>
+
+    <!-- Featured Blog Posts Section -->
+    <section id="latest-posts" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+      <div class="mb-8 max-w-2xl">
+        <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-4 tracking-wider uppercase">
+          Digital Log
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+          Recent <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-sky-400 to-teal-400">Articles</span>
+        </h2>
+        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+          Explore my latest insights, tutorials, and dev logs on software engineering, artificial intelligence, knowledge graphs, and system architectures.
+        </p>
+      </div>
+
+      <!-- Blog Post Cards Container -->
+      <div class="space-y-6">
+        {recentPosts.length > 0 && (
+          <div class="w-full">
+            <PostCard
+              id={recentPosts[0].id}
+              title={recentPosts[0].data.title}
+              description={recentPosts[0].data.description}
+              pubDate={recentPosts[0].data.pubDate}
+              icon={recentPosts[0].data.icon}
+              tags={recentPosts[0].data.tags}
+              featured={true}
+            />
+          </div>
+        )}
+
+        {recentPosts.length > 1 && (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {recentPosts.slice(1, 3).map((post) => (
+              <PostCard
+                id={post.id}
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                icon={post.data.icon}
+                tags={post.data.tags}
+                featured={false}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- CTA Button placed below featured cards with vertical distance -->
+      <div class="mt-10 flex justify-center">
+        <a 
+          href="/posts?utm_source=homepage&utm_medium=latest_posts_cta&utm_campaign=latest_posts" 
+          class="px-6 py-3.5 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/40 text-brand-blue hover:bg-brand-blue/20 text-sm font-semibold transition-all duration-300 flex items-center gap-2.5 shadow-sm hover:scale-105"
+        >
+          <span>Browse All Posts</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
       </div>
     </section>
 
