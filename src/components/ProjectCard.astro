@@ -43,33 +43,29 @@ const colorClasses = {
   blue: {
     border: 'hover:border-brand-blue/40 border-element-border',
     glow: 'group-hover:bg-brand-blue/10',
-    tagBg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20',
-    linkText: 'text-brand-blue hover:text-brand-blue/80',
-    btnBg: 'bg-brand-blue/10 text-brand-blue hover:bg-brand-blue/25',
+    tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-blue/15 hover:border-brand-blue/30 hover:text-sky-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-blue-50 light:hover:border-brand-blue/30 light:hover:text-brand-blue',
+    btnBg: 'bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue',
     iconColor: 'text-brand-blue'
   },
   yellow: {
     border: 'hover:border-brand-yellow/40 border-element-border',
     glow: 'group-hover:bg-brand-yellow/10',
-    tagBg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20',
-    linkText: 'text-brand-yellow hover:text-brand-yellow/80',
-    btnBg: 'bg-brand-yellow/10 text-brand-yellow hover:bg-brand-yellow/25',
+    tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-yellow/15 hover:border-brand-yellow/30 hover:text-amber-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-amber-50 light:hover:border-brand-yellow/30 light:hover:text-amber-600',
+    btnBg: 'bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-600',
     iconColor: 'text-brand-yellow'
   },
   purple: {
     border: 'hover:border-brand-purple/40 border-element-border',
     glow: 'group-hover:bg-brand-purple/10',
-    tagBg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20',
-    linkText: 'text-brand-purple hover:text-brand-purple/80',
-    btnBg: 'bg-brand-purple/10 text-brand-purple hover:bg-brand-purple/25',
+    tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-purple/15 hover:border-brand-purple/30 hover:text-purple-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-purple-50 light:hover:border-brand-purple/30 light:hover:text-brand-purple',
+    btnBg: 'bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple',
     iconColor: 'text-brand-purple'
   },
   green: {
     border: 'hover:border-brand-green/40 border-element-border',
     glow: 'group-hover:bg-brand-green/10',
-    tagBg: 'bg-brand-green/10 text-brand-green border-brand-green/20',
-    linkText: 'text-brand-green hover:text-brand-green/80',
-    btnBg: 'bg-brand-green/10 text-brand-green hover:bg-brand-green/25',
+    tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-green/15 hover:border-brand-green/30 hover:text-emerald-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-emerald-50 light:hover:border-brand-green/30 light:hover:text-brand-green',
+    btnBg: 'bg-brand-green/12 hover:bg-brand-green/25 border border-brand-green/20 hover:border-brand-green/45 text-emerald-300 light:text-brand-green',
     iconColor: 'text-brand-green'
   }
 }[accentColor];
@@ -161,7 +157,7 @@ const badgeColorClass = {
 
   <!-- Content Padding Wrapper -->
   <div class="p-6 md:p-8 flex flex-col flex-grow border-t border-element-border">
-    <div class="flex-grow flex flex-col">
+    <div>
       <!-- Header -->
       <div class="flex items-start justify-between mb-4 w-full">
         <div class="w-full">
@@ -180,29 +176,31 @@ const badgeColorClass = {
       </div>
       
       <!-- Description -->
-      <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-6 font-normal flex-grow">
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-4 font-normal">
         {description}
       </p>
     </div>
 
     <!-- Tech tags & actions footer -->
-    <div class="mt-auto">
-      <div class="flex flex-wrap gap-2 mb-6">
+    <div class="flex-grow flex flex-col justify-between mt-2">
+      <div class="flex flex-wrap gap-1.5 mb-3">
         {tags.map(tag => (
-          <span class={`text-xs px-3 py-1 rounded-full border font-medium ${colorClasses.tagBg}`}>
-            {tag}
+          <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-colors ${colorClasses.tagBg}`}>
+            #{tag}
           </span>
         ))}
       </div>
       
-      <span 
-        class={`inline-flex items-center text-sm font-bold tracking-wide group-hover:translate-x-1 transition-transform duration-300 ${colorClasses.linkText}`}
-      >
-        Learn more
-        <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
-        </svg>
-      </span>
+      <div class="flex justify-center mt-3">
+        <span 
+          class={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold relative z-20 transition-all hover:scale-105 ${colorClasses.btnBg}`}
+        >
+          <span>Read More</span>
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+          </svg>
+        </span>
+      </div>
     </div>
   </div>
 </a>
