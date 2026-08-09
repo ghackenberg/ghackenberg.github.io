@@ -71,15 +71,16 @@ const hasPosts = formattedPosts.length > 0;
   )}
 
   {hasPosts && (
-    <div class="space-y-4">
-      {formattedPosts.map((post) => (
-        <a 
-          href={post.url || "https://www.linkedin.com/in/georghackenberg/recent-activity/all/"}
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-element-bg hover:bg-element-bg-hover border border-element-border hover:border-brand-purple/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0"
-        >
-          <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-40 md:w-48 lg:w-56 shrink-0 bg-gray-900 light:bg-slate-100 border-b sm:border-b-0 sm:border-r border-element-border group-hover/item:border-brand-purple/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {formattedPosts.map((post, index) => (
+        <div class={index === 2 ? 'h-full hidden sm:hidden lg:flex flex-col' : 'h-full flex flex-col'}>
+          <a 
+            href={post.url || "https://www.linkedin.com/in/georghackenberg/recent-activity/all/"}
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="w-full flex flex-col items-stretch rounded-2xl bg-element-bg hover:bg-element-bg-hover border border-element-border hover:border-brand-purple/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0 flex-grow"
+          >
+            <div class="relative w-full aspect-video shrink-0 bg-gray-900 light:bg-slate-100 border-b border-element-border group-hover/item:border-brand-purple/30 flex items-center justify-center overflow-hidden rounded-t-2xl">
             {post.image ? (
               <>
                 <Image 
@@ -112,7 +113,8 @@ const hasPosts = formattedPosts.length > 0;
               <span>{new Date(post.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
             </div>
           </div>
-        </a>
+          </a>
+        </div>
       ))}
     </div>
   )}

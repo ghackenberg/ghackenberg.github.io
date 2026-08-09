@@ -199,15 +199,16 @@ const languageColors: Record<string, string> = {
     </div>
     
     <!-- Main Card Body: Recent Repositories Feed -->
-    <div class="space-y-4">
-      {repos.slice(0, 3).map((repo) => (
-        <a 
-          href={repo.url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-element-bg hover:bg-element-bg-hover border border-element-border hover:border-brand-blue/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0"
-        >
-          <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-40 md:w-48 lg:w-56 shrink-0 bg-gray-900 light:bg-slate-100 border-b sm:border-b-0 sm:border-r border-element-border group-hover/item:border-brand-blue/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {repos.slice(0, 3).map((repo, index) => (
+        <div class={index === 2 ? 'h-full hidden sm:hidden lg:flex flex-col' : 'h-full flex flex-col'}>
+          <a 
+            href={repo.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="w-full flex flex-col items-stretch rounded-2xl bg-element-bg hover:bg-element-bg-hover border border-element-border hover:border-brand-blue/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0 flex-grow"
+          >
+            <div class="relative w-full aspect-video shrink-0 bg-gray-900 light:bg-slate-100 border-b border-element-border group-hover/item:border-brand-blue/30 flex items-center justify-center overflow-hidden rounded-t-2xl">
             {repo.image ? (
               <>
                 <Image 
@@ -227,8 +228,8 @@ const languageColors: Record<string, string> = {
                 </svg>
               </>
             )}
-          </div>
-          <div class="flex-grow min-w-0 p-4 sm:p-5 md:p-6 flex flex-col justify-center select-none">
+            </div>
+            <div class="flex-grow min-w-0 p-4 sm:p-5 md:p-6 flex flex-col justify-center select-none">
             <p class="text-base sm:text-lg md:text-xl font-bold text-gray-100 group-hover/item:text-brand-blue transition-colors line-clamp-1 font-mono leading-snug">
               {repo.title}
             </p>
@@ -244,7 +245,8 @@ const languageColors: Record<string, string> = {
               <span>⭐ {repo.stars}</span>
             </div>
           </div>
-        </a>
+          </a>
+        </div>
       ))}
     </div>
 
