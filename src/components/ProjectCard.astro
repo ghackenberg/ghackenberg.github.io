@@ -74,11 +74,11 @@ const colorClasses = {
   }
 }[accentColor];
 
-const dotColorClass = {
-  blue: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)]',
-  yellow: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)]',
-  purple: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)]',
-  green: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)]'
+const badgeColorClass = {
+  blue: 'badge-new-blue',
+  yellow: 'badge-new-yellow',
+  purple: 'badge-new-purple',
+  green: 'badge-new-green'
 }[accentColor];
 ---
 
@@ -165,13 +165,13 @@ const dotColorClass = {
       <!-- Header -->
       <div class="flex items-start justify-between mb-4 w-full">
         <div class="w-full">
-          <h3 class={`relative pr-6 text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-brand-${accentColor} transition-all duration-300`}>
+          <h3 class={`text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-brand-${accentColor} transition-all duration-300`}>
             {title}
             <span 
-              class={`unread-dot hidden absolute top-[0.625em] -translate-y-1/2 right-0 w-2.5 h-2.5 rounded-full ${dotColorClass}`} 
+              class={`unread-dot hidden badge-new ${badgeColorClass} ml-2 align-middle`} 
               data-item-url={href}
               title="Unread project"
-            ></span>
+            >UNREAD</span>
           </h3>
           <p class={`text-sm font-semibold tracking-wide mt-1 uppercase ${colorClasses.iconColor}`}>
             {tagline}

@@ -38,7 +38,7 @@ const colorClasses = {
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-slate-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
     glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
     hoverText: 'group-hover:text-brand-blue light:group-hover:text-blue-600',
-    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)] light:shadow-[0_0_4px_rgba(29,78,216,0.4)]'
+    dot: 'badge-new badge-new-blue'
   },
   yellow: {
     text: 'text-brand-yellow light:text-amber-800',
@@ -48,7 +48,7 @@ const colorClasses = {
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white',
     glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
     hoverText: 'group-hover:text-brand-yellow light:group-hover:text-amber-700',
-    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)] light:shadow-[0_0_4px_rgba(180,83,9,0.4)]'
+    dot: 'badge-new badge-new-yellow'
   },
   purple: {
     text: 'text-brand-purple light:text-purple-700',
@@ -58,7 +58,7 @@ const colorClasses = {
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
     glow: 'from-brand-purple to-pink-500 light:to-pink-600',
     hoverText: 'group-hover:text-brand-purple light:group-hover:text-purple-600',
-    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]'
+    dot: 'badge-new badge-new-purple'
   },
   green: {
     text: 'text-brand-green light:text-emerald-700',
@@ -68,7 +68,7 @@ const colorClasses = {
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-slate-950 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white',
     glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
     hoverText: 'group-hover:text-brand-green light:group-hover:text-emerald-700',
-    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)] light:shadow-[0_0_4px_rgba(4,120,87,0.4)]'
+    dot: 'badge-new badge-new-green'
   }
 };
 
@@ -142,10 +142,10 @@ const servicesJsonLd = sortedServices.map(s => ({
                     <h2 class={`text-2xl md:text-3xl font-extrabold text-gray-100 tracking-tight leading-none flex items-center gap-2 relative transition-colors ${classes.hoverText}`}>
                       <span>{service.data.title}</span>
                       <span 
-                        class={`unread-dot hidden w-2.5 h-2.5 rounded-full ${classes.dot}`}
+                        class={`unread-dot hidden ${classes.dot}`}
                         data-item-url={`/services/${service.id}`}
                         title="Unread service"
-                      ></span>
+                      >UNREAD</span>
                     </h2>
                     <p class={`${classes.text} font-bold text-xs uppercase tracking-wider mt-1.5`}>
                       {service.data.tagline}
@@ -176,10 +176,10 @@ const servicesJsonLd = sortedServices.map(s => ({
                           >
                             <span>{module.data.title}</span>
                             <span 
-                              class={`unread-dot hidden w-1.5 h-1.5 rounded-full ${classes.dot}`}
+                              class={`unread-dot hidden ${classes.dot}`}
                               data-item-url={moduleUrl}
                               title="Unread module"
-                            ></span>
+                            >UNREAD</span>
                           </a>
                         );
                       })}

@@ -29,7 +29,7 @@ const colorClasses = {
     hoverText: 'hover:text-brand-blue light:hover:text-blue-700',
     glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
     leftBorder: 'border-brand-blue light:border-blue-600',
-    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)] light:shadow-[0_0_4px_rgba(29,78,216,0.4)]'
+    dot: 'badge-new badge-new-blue'
   },
   yellow: {
     text: 'text-brand-yellow light:text-amber-800',
@@ -39,7 +39,7 @@ const colorClasses = {
     hoverText: 'hover:text-brand-yellow light:hover:text-amber-800',
     glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
     leftBorder: 'border-brand-yellow light:border-amber-600',
-    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)] light:shadow-[0_0_4px_rgba(180,83,9,0.4)]'
+    dot: 'badge-new badge-new-yellow'
   },
   purple: {
     text: 'text-brand-purple light:text-purple-700',
@@ -49,7 +49,7 @@ const colorClasses = {
     hoverText: 'hover:text-brand-purple light:hover:text-purple-700',
     glow: 'from-brand-purple to-pink-500 light:to-pink-600',
     leftBorder: 'border-brand-purple light:border-purple-600',
-    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]'
+    dot: 'badge-new badge-new-purple'
   },
   green: {
     text: 'text-brand-green light:text-emerald-700',
@@ -59,7 +59,7 @@ const colorClasses = {
     hoverText: 'hover:text-brand-green light:hover:text-emerald-700',
     glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
     leftBorder: 'border-brand-green light:border-emerald-600',
-    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)] light:shadow-[0_0_4px_rgba(4,120,87,0.4)]'
+    dot: 'badge-new badge-new-green'
   }
 }[service.data.color];
 
@@ -186,10 +186,10 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
                       <h3 class="text-lg font-bold uppercase tracking-wider leading-none mt-0 flex items-center gap-2">
                         <span>{module.data.title}</span>
                         <span 
-                          class={`unread-dot hidden w-2.5 h-2.5 rounded-full ${colorClasses.dot}`}
+                          class={`unread-dot hidden ${colorClasses.dot}`}
                           data-item-url={`/services/${service.id}/${moduleSlug}`}
                           title="Unread module"
-                        ></span>
+                        >UNREAD</span>
                       </h3>
                     </div>
                     <p class={`${colorClasses.text} font-bold text-[10px] uppercase tracking-wider leading-none`}>

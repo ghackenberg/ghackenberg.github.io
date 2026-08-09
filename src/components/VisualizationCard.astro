@@ -86,13 +86,13 @@ const optimizedScreenshot = screenshot ? await getImage({
         {engineId} engine
       </span>
       
-      <h2 class="relative pr-6 text-xl font-bold text-gray-100 mb-3 group-hover:text-brand-green transition-colors">
+      <h2 class="text-xl font-bold text-gray-100 mb-3 group-hover:text-brand-green transition-colors">
         {title}
         <span 
-          class="unread-dot hidden absolute top-[0.625em] -translate-y-1/2 right-0 w-2.5 h-2.5 rounded-full bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)]" 
+          class="unread-dot hidden badge-new badge-new-green ml-2 align-middle" 
           data-item-url={href}
           title="Unread visualization"
-        ></span>
+        >UNREAD</span>
       </h2>
       
       <p class="text-gray-400 text-sm leading-relaxed mb-6 font-normal flex-grow">

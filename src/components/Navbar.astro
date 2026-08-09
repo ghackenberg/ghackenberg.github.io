@@ -11,12 +11,12 @@ const isActive = (href: string) => {
 
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Posts", href: "/posts", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
-  { label: "Courses", href: "/courses", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
-  { label: "Projects", href: "/projects", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
-  { label: "Services", href: "/services", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
-  { label: "Papers", href: "/publications", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" },
-  { label: "Demos", href: "/visualizations", badgeColor: "bg-brand-blue text-white shadow-brand-blue/20" }
+  { label: "Posts", href: "/posts", badgeColor: "badge-new-blue" },
+  { label: "Courses", href: "/courses", badgeColor: "badge-new-yellow" },
+  { label: "Projects", href: "/projects", badgeColor: "badge-new-blue" },
+  { label: "Services", href: "/services", badgeColor: "badge-new-purple" },
+  { label: "Papers", href: "/publications", badgeColor: "badge-new-purple" },
+  { label: "Demos", href: "/visualizations", badgeColor: "badge-new-green" }
 ];
 ---
 
@@ -50,8 +50,9 @@ const navItems = [
             <span>{item.label}</span>
             {item.badgeColor && (
               <span 
-                class={`nav-badge hidden px-1.5 py-0.5 text-[9px] font-extrabold rounded-full ${item.badgeColor} shadow-md`}
+                class={`nav-badge hidden badge-new ${item.badgeColor}`}
                 data-section={item.href.replace(/^\//, '')}
+                title={`${item.label} unread count`}
               >
               </span>
             )}
@@ -140,8 +141,9 @@ const navItems = [
           <span>{item.label}</span>
           {item.badgeColor && (
             <span 
-              class={`nav-badge hidden px-2 py-0.5 text-[10px] font-extrabold rounded-full ${item.badgeColor} shadow-md`}
+              class={`nav-badge hidden badge-new ${item.badgeColor}`}
               data-section={item.href.replace(/^\//, '')}
+              title={`${item.label} unread count`}
             >
             </span>
           )}
