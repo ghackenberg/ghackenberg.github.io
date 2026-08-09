@@ -177,7 +177,7 @@ const professionalInterests = [
     tagline: "Architectures & Web Platforms",
     frontier: "Space Exploration",
     image: optimizedInterestSoftware.src,
-    description: "Architecting high-performance web systems using Astro and TypeScript. Designing modular, type-safe, and highly scalable enterprise platforms for orbital & terrestrial computing."
+    description: "My passion lies in crafting high-performance, type-safe software. From modern web architectures with Astro and TypeScript to scalable industrial platforms, I love building robust systems from the ground up."
   },
   {
     icon: "🎓",
@@ -186,7 +186,7 @@ const professionalInterests = [
     tagline: "Systems & Layout Modeling",
     frontier: "Resource Optimization",
     image: optimizedInterestSimulation.src,
-    description: "Modeling manufacturing layouts, logistics workflows, and natural systems. Running discrete-event simulations and optimization algorithms for global resource efficiency."
+    description: "I am fascinated by modeling complex physical and industrial systems. Combining discrete-event simulation and optimization algorithms, I design smart factory layouts, logistics workflows, and resource models."
   },
   {
     icon: "🎯",
@@ -195,7 +195,7 @@ const professionalInterests = [
     tagline: "Generative AI & Agent Systems",
     frontier: "Longevity & Health",
     image: optimizedInterestAi.src,
-    description: "Integrating Large Language Models locally in web applications. Developing autonomous AI agents, semantic search, and reasoning engines driving bio-longevity innovation."
+    description: "I actively explore local LLMs, agentic AI, and knowledge graphs. I enjoy developing autonomous reasoning engines, semantic search tools, and intelligent agent workflows to unlock new scientific insights."
   },
   {
     icon: "🌐",
@@ -204,7 +204,7 @@ const professionalInterests = [
     tagline: "Visualizations & UI Designs",
     frontier: "Climate Control",
     image: optimizedInterestUx.src,
-    description: "Crafting premium, responsive user interfaces with smooth animations, custom layout dynamics, and interactive graph visualizations for eco-tech and climate control."
+    description: "I believe great software must be intuitive, responsive, and visually engaging. I love creating interactive graph network visualizers, dynamic layouts, and polished interfaces that make complex data effortless to explore."
   }
 ];
 
@@ -439,14 +439,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       </div>
     </section>
 
-    <!-- Professional & Personal Interests Section -->
+    <!-- Personal Interests Section -->
     <section id="about" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Core Interests & Major Frontiers
+          Personal <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-green to-emerald-400">Interests</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
-          Key scientific domains, technical pursuits, and modern frontiers—illustrated in a modern Disney comic style—shaping my engineering projects, research, and vision.
+          Key scientific domains, technical pursuits, and personal endeavors—illustrated in a modern Disney comic style—shaping my engineering projects, research, and vision.
         </p>
       </div>
 
@@ -464,14 +464,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   loading="lazy"
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
-                
-                <!-- Frontier Overlay Badge -->
-                <div class="absolute top-3 left-3">
-                  <span class={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border backdrop-blur-md ${mapping.badge}`}>
-                    <span>{interest.icon}</span>
-                    <span>{interest.frontier}</span>
-                  </span>
-                </div>
               </div>
 
               <!-- Content Body -->

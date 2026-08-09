@@ -27,7 +27,9 @@ const {
   horizontal = false
 } = Astro.props;
 
-const optimizedIcon = icon ? await getImage({
+const isSvg = icon && typeof icon === 'object' && 'format' in icon && icon.format === 'svg';
+
+const optimizedIcon = icon && !isSvg ? await getImage({
   src: icon,
   format: 'webp',
   width: 800,
