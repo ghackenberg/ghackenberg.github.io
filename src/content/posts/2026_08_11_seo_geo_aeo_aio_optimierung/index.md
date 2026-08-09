@@ -1,6 +1,6 @@
 ---
 title: "SEO, GEO, AEO & AIO: Strategische & technische Optimierung für das KI-Zeitalter"
-pubDate: "2026-08-09"
+pubDate: "2026-08-11"
 description: "Wie man eine Website nicht nur für traditionelle Suchmaschinen (SEO), sondern auch für Generative Engines (GEO), Answer Engines (AEO) und KI-Agenten (AIO) systematisch optimiert."
 tags: ["seo", "geo", "aeo", "aio", "ai", "web-development", "astro"]
 icon: "./diagram.svg"
