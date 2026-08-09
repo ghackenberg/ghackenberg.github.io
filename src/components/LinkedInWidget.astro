@@ -40,123 +40,96 @@ const formattedPosts = publishedPosts
     };
   });
 const hasPosts = formattedPosts.length > 0;
-
-const buildDateStr = new Date().toLocaleDateString("en-US", {
-  month: "short",
-  day: "numeric"
-});
 ---
 
-<div class="glass-card p-4 sm:p-6 md:p-8 rounded-3xl border border-element-border h-full relative overflow-hidden group">
+<div class="glass-card p-5 sm:p-6 md:p-8 rounded-3xl border border-element-border h-full relative overflow-hidden group">
+  <!-- Brand accent header color block -->
   <div class="absolute top-0 left-0 right-0 h-1.5 bg-brand-purple opacity-50 group-hover:opacity-100 transition-opacity"></div>
-  
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-    <!-- Left column: Profile info & stats -->
-    <div class="lg:col-span-4 flex flex-col justify-between">
-      <div>
-        <!-- Widget Header -->
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center space-x-3">
-            <svg class="w-7 h-7 text-brand-purple shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
-            </svg>
-            <span class="text-base font-bold tracking-wider uppercase text-brand-purple">LinkedIn Feed</span>
-          </div>
-          <span class="text-[10px] text-brand-purple bg-brand-purple/10 border border-brand-purple/20 font-medium px-2 py-0.5 rounded-full whitespace-nowrap">
-            Sync: {buildDateStr}
-          </span>
-        </div>
 
-        <p class="text-sm text-gray-400 mb-6 leading-relaxed">
-          Connect with me to stay updated on educational projects, university teaching, and software developments.
-        </p>
-
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-2 gap-4 mb-6">
-          <div class="bg-element-bg border border-element-border rounded-2xl py-3 text-center">
-            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Posts</p>
-            <p class="text-xl font-bold text-gray-100 font-mono mt-1">{posts.length}</p>
-          </div>
-          <div class="bg-element-bg border border-element-border rounded-2xl py-3 text-center">
-            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Followers</p>
-            <p class="text-xl font-bold text-gray-100 font-mono mt-1">{profile.followers || "850+"}</p>
-          </div>
-        </div>
+  <!-- Widget Card Header with Integrated Stats -->
+  <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-element-border/60">
+    <div class="flex items-center space-x-3">
+      <div class="p-2.5 rounded-xl bg-brand-purple/10 border border-brand-purple/20">
+        <svg class="w-6 h-6 text-brand-purple shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75-1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+        </svg>
       </div>
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+        <h3 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100">LinkedIn</h3>
+        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-element-bg border border-element-border text-gray-300 font-mono">
+          {posts.length} Posts &bull; {profile.followers || "850+"} Followers
+        </span>
+      </div>
+    </div>
+  </div>
 
-      <!-- Bottom CTA Button (Moved inside left col) -->
-      <div class="pt-6 border-t border-element-border mt-auto">
+  <!-- Main Card Body: Recent Posts Feed -->
+  {!hasPosts && (
+    <div class="text-center py-10 bg-element-bg/40 border border-element-border rounded-xl">
+      <p class="text-sm text-gray-500 font-sans">No recent posts found.</p>
+    </div>
+  )}
+
+  {hasPosts && (
+    <div class="space-y-4">
+      {formattedPosts.map((post) => (
         <a 
-          href="https://www.linkedin.com/in/georghackenberg/" 
+          href={post.url || "https://www.linkedin.com/in/georghackenberg/recent-activity/all/"}
           target="_blank" 
           rel="noopener noreferrer"
-          class="w-full flex items-center justify-center space-x-2 py-3 text-sm font-semibold rounded-xl bg-brand-purple/10 hover:bg-brand-purple/25 text-brand-purple border border-brand-purple/20 hover:border-brand-purple/40 transition-all duration-300"
+          class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-element-bg hover:bg-element-bg-hover border border-element-border hover:border-brand-purple/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0"
         >
-          <span>Connect on LinkedIn</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-          </svg>
+          <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-40 md:w-48 lg:w-56 shrink-0 bg-gray-900 light:bg-slate-100 border-b sm:border-b-0 sm:border-r border-element-border group-hover/item:border-brand-purple/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl">
+            {post.image ? (
+              <>
+                <Image 
+                  src={post.image} 
+                  alt=""
+                  width={480}
+                  height={360}
+                  class="absolute inset-0 w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-300 z-0 will-change-transform pointer-events-none" 
+                />
+                <div class="absolute inset-0 bg-gradient-to-br from-[#111827] to-[#1a0c2e]/20 light:from-[#111827]/60 light:to-[#1a0c2e]/10 z-10 pointer-events-none"></div>
+              </>
+            ) : (
+              <>
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-900/60 to-indigo-950/80 light:from-purple-100/60 light:to-indigo-50/80 z-10"></div>
+                <svg class="w-9 h-9 text-brand-purple/50 group-hover/item:text-brand-purple/80 transition-colors z-20" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75-1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
+              </>
+            )}
+          </div>
+          <div class="flex-grow min-w-0 p-4 sm:p-5 md:p-6 flex flex-col justify-center select-none">
+            <p class="text-sm sm:text-base md:text-lg font-normal text-gray-200 group-hover/item:text-brand-purple transition-colors line-clamp-3 font-sans leading-relaxed">
+              {post.text}
+            </p>
+            <div class="flex items-center space-x-3 text-xs sm:text-sm text-gray-400 mt-3 font-medium select-none">
+              <span>👍 {formatCount(post.likes)}</span>
+              <span>&bull;</span>
+              <span>💬 {formatCount(post.comments)}</span>
+              <span>&bull;</span>
+              <span>{new Date(post.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+            </div>
+          </div>
         </a>
-      </div>
+      ))}
     </div>
+  )}
 
-    <!-- Right column: Simulated Feed -->
-    <div class="lg:col-span-8 flex flex-col justify-center">
-      <p class="text-xs font-semibold text-gray-400 tracking-wider uppercase mb-3.5">Recent Posts</p>
-      
-      {!hasPosts && (
-        <div class="text-center py-10 bg-element-bg border border-element-border rounded-2xl">
-          <p class="text-sm text-gray-500 font-sans">No recent posts found.</p>
-        </div>
-      )}
-
-      {hasPosts && (
-        <div class="space-y-3">
-          {formattedPosts.map((post) => (
-            <a 
-              href={post.url || "https://www.linkedin.com/in/georghackenberg/recent-activity/all/"}
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="w-full flex flex-col sm:flex-row items-stretch rounded-2xl bg-element-bg hover:bg-element-bg-hover border border-element-border hover:border-brand-purple/30 transition-all duration-300 group/item cursor-pointer overflow-hidden p-0"
-            >
-              <div class="relative w-full aspect-video sm:aspect-auto sm:h-auto sm:w-28 md:w-32 shrink-0 bg-gray-900 light:bg-slate-100 border-b sm:border-b-0 sm:border-r border-element-border group-hover/item:border-brand-purple/30 flex items-center justify-center overflow-hidden rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl">
-                {post.image ? (
-                  <>
-                    <Image 
-                      src={post.image} 
-                      alt=""
-                      width={480}
-                      height={360}
-                      class="absolute inset-0 w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-300 z-0 will-change-transform pointer-events-none" 
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-br from-[#111827] to-[#1a0c2e]/20 light:from-[#111827]/60 light:to-[#1a0c2e]/10 z-10 pointer-events-none"></div>
-                  </>
-                ) : (
-                  <>
-                    <div class="absolute inset-0 bg-gradient-to-br from-purple-900/60 to-indigo-950/80 light:from-purple-100/60 light:to-indigo-50/80 z-10"></div>
-                    <svg class="w-6 h-6 text-brand-purple/50 group-hover/item:text-brand-purple/80 transition-colors z-20" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                  </>
-                )}
-              </div>
-              <div class="flex-grow min-w-0 p-4 sm:py-3.5 sm:pl-4 sm:pr-4 select-none">
-                <p class="text-xs sm:text-sm font-normal text-gray-200 group-hover/item:text-brand-purple transition-colors line-clamp-3 font-sans leading-relaxed">
-                  {post.text}
-                </p>
-                <div class="flex items-center space-x-2 text-xs text-gray-500 mt-2.5 font-medium select-none">
-                  <span>👍 {formatCount(post.likes)}</span>
-                  <span>&bull;</span>
-                  <span>💬 {formatCount(post.comments)}</span>
-                  <span>&bull;</span>
-                  <span>{new Date(post.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
+  <!-- Card Footer: CTA Action Button -->
+  <div class="mt-5 pt-4 border-t border-element-border/60">
+    <a 
+      href="https://www.linkedin.com/in/georghackenberg/" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="w-full flex items-center justify-center space-x-2 py-3 px-4 text-xs sm:text-sm font-semibold rounded-xl bg-brand-purple/15 hover:bg-brand-purple/30 text-brand-purple border border-brand-purple/30 hover:border-brand-purple/50 transition-all duration-300"
+    >
+      <span>Connect on LinkedIn</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+      </svg>
+    </a>
   </div>
 </div>
 
