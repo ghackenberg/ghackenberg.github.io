@@ -10,6 +10,7 @@
 
 
 @theme {
+  --font-handwriting: "Caveat", cursive, sans-serif;
   --color-brand-blue: #3b82f6;     /* Deep Work, Steward Development, Software Engineering */
   --color-brand-yellow: #f59e0b;   /* Meetings, Academic, External partners (FH Wels) */
   --color-brand-purple: #a855f7;   /* Strategy, Briefings */
