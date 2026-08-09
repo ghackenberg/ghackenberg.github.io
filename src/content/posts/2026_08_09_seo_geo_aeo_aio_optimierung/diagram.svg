@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#030712" />
+      <stop offset="50%" stop-color="#0b132b" />
+      <stop offset="100%" stop-color="#030712" />
+    </linearGradient>
+
+    <!-- Card Glow Gradients -->
+    <linearGradient id="blue-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+
+    <linearGradient id="purple-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#6b21a8" />
+    </linearGradient>
+
+    <linearGradient id="yellow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </linearGradient>
+
+    <linearGradient id="green-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+
+    <!-- Title Gradient -->
+    <linearGradient id="title-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60a5fa" />
+      <stop offset="33%" stop-color="#c084fc" />
+      <stop offset="66%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-grad)" />
+  <circle cx="600" cy="80" r="300" fill="#3b82f6" opacity="0.05" filter="blur(60px)" />
+  <circle cx="200" cy="450" r="250" fill="#a855f7" opacity="0.04" filter="blur(60px)" />
+  <circle cx="1000" cy="450" r="250" fill="#10b981" opacity="0.04" filter="blur(60px)" />
+
+  <!-- Outer Border -->
+  <rect x="20" y="20" width="1160" height="590" rx="24" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+
+  <!-- Header -->
+  <g transform="translate(600, 75)" text-anchor="middle">
+    <rect x="-180" y="-35" width="360" height="32" rx="16" fill="rgba(59, 130, 246, 0.1)" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1" />
+    <text y="-14" fill="#60a5fa" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="2">WEB OPTIMIZATION ARCHITECTURE</text>
+    
+    <text y="30" fill="url(#title-grad)" font-family="Outfit, Inter, system-ui, sans-serif" font-size="34" font-weight="800" letter-spacing="-0.5">SEO, GEO, AEO &amp; AIO Strategie</text>
+    <text y="58" fill="#9ca3af" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="400">Das 4-Säulen-Modell für digitale Sichtbarkeit im KI-Zeitalter</text>
+  </g>
+
+  <!-- 4 Columns Grid -->
+  <!-- Column 1: SEO -->
+  <g transform="translate(50, 185)">
+    <rect width="255" height="380" rx="20" fill="rgba(15, 23, 42, 0.6)" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1.5" />
+    <rect width="255" height="6" rx="3" fill="url(#blue-grad)" />
+    
+    <rect x="20" y="24" width="60" height="26" rx="8" fill="rgba(59, 130, 246, 0.15)" />
+    <text x="50" y="41" fill="#60a5fa" font-family="Inter, sans-serif" font-size="12" font-weight="800" text-anchor="middle">SEO</text>
+    
+    <text x="20" y="80" fill="#ffffff" font-family="Outfit, sans-serif" font-size="20" font-weight="700">Search Engine</text>
+    <text x="20" y="104" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="500">Klassische Suchmaschinen</text>
+
+    <line x1="20" y1="125" x2="235" y2="125" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+    <text x="20" y="150" fill="#60a5fa" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="1">ZIELGRUPPE</text>
+    <text x="20" y="170" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="13">Google, Bing, DuckDuckGo</text>
+
+    <text x="20" y="210" fill="#60a5fa" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="1">KERNFOKUS</text>
+    <text x="20" y="232" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• HTML5 Semantik &amp; Hierarchy</text>
+    <text x="20" y="254" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• Core Web Vitals &amp; Speed</text>
+    <text x="20" y="276" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• OpenGraph &amp; Canonical URLs</text>
+    <text x="20" y="298" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• Sitemaps &amp; Indexierung</text>
+
+    <rect x="20" y="325" width="215" height="32" rx="10" fill="rgba(59, 130, 246, 0.1)" stroke="rgba(59, 130, 246, 0.2)" />
+    <text x="127" y="345" fill="#93c5fd" font-family="Inter, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Rankings &amp; Traffic</text>
+  </g>
+
+  <!-- Column 2: GEO -->
+  <g transform="translate(330, 185)">
+    <rect width="255" height="380" rx="20" fill="rgba(15, 23, 42, 0.6)" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1.5" />
+    <rect width="255" height="6" rx="3" fill="url(#purple-grad)" />
+    
+    <rect x="20" y="24" width="60" height="26" rx="8" fill="rgba(168, 85, 247, 0.15)" />
+    <text x="50" y="41" fill="#c084fc" font-family="Inter, sans-serif" font-size="12" font-weight="800" text-anchor="middle">GEO</text>
+    
+    <text x="20" y="80" fill="#ffffff" font-family="Outfit, sans-serif" font-size="20" font-weight="700">Generative Engine</text>
+    <text x="20" y="104" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="500">Generative KI-Systeme</text>
+
+    <line x1="20" y1="125" x2="235" y2="125" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+    <text x="20" y="150" fill="#c084fc" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="1">ZIELGRUPPE</text>
+    <text x="20" y="170" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="13">ChatGPT, Perplexity, Claude</text>
+
+    <text x="20" y="210" fill="#c084fc" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="1">KERNFOKUS</text>
+    <text x="20" y="232" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• llms.txt &amp; llms-full.txt</text>
+    <text x="20" y="254" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• KI-Crawler Freigaben</text>
+    <text x="20" y="276" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• sameAs Entitäten (ORCID)</text>
+    <text x="20" y="298" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• RAG Ingestion Standards</text>
+
+    <rect x="20" y="325" width="215" height="32" rx="10" fill="rgba(168, 85, 247, 0.1)" stroke="rgba(168, 85, 247, 0.2)" />
+    <text x="127" y="345" fill="#e9d5ff" font-family="Inter, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Zitation &amp; Synthese</text>
+  </g>
+
+  <!-- Column 3: AEO -->
+  <g transform="translate(615, 185)">
+    <rect width="255" height="380" rx="20" fill="rgba(15, 23, 42, 0.6)" stroke="rgba(234, 179, 8, 0.3)" stroke-width="1.5" />
+    <rect width="255" height="6" rx="3" fill="url(#yellow-grad)" />
+    
+    <rect x="20" y="24" width="60" height="26" rx="8" fill="rgba(234, 179, 8, 0.15)" />
+    <text x="50" y="41" fill="#fde047" font-family="Inter, sans-serif" font-size="12" font-weight="800" text-anchor="middle">AEO</text>
+    
+    <text x="20" y="80" fill="#ffffff" font-family="Outfit, sans-serif" font-size="20" font-weight="700">Answer Engine</text>
+    <text x="20" y="104" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="500">Direktantwort-Systeme</text>
+
+    <line x1="20" y1="125" x2="235" y2="125" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+    <text x="20" y="150" fill="#fde047" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="1">ZIELGRUPPE</text>
+    <text x="20" y="170" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="13">AI Overviews, Voice Search</text>
+
+    <text x="20" y="210" fill="#fde047" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="1">KERNFOKUS</text>
+    <text x="20" y="232" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• Answer-First Kernaussagen</text>
+    <text x="20" y="254" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• FAQPage Schema Markup</text>
+    <text x="20" y="276" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• Strukturierte Tabellen</text>
+    <text x="20" y="298" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• Direct Answer Callouts</text>
+
+    <rect x="20" y="325" width="215" height="32" rx="10" fill="rgba(234, 179, 8, 0.1)" stroke="rgba(234, 179, 8, 0.2)" />
+    <text x="127" y="345" fill="#fef08a" font-family="Inter, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Featured Snippets</text>
+  </g>
+
+  <!-- Column 4: AIO -->
+  <g transform="translate(895, 185)">
+    <rect width="255" height="380" rx="20" fill="rgba(15, 23, 42, 0.6)" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1.5" />
+    <rect width="255" height="6" rx="3" fill="url(#green-grad)" />
+    
+    <rect x="20" y="24" width="60" height="26" rx="8" fill="rgba(16, 185, 129, 0.15)" />
+    <text x="50" y="41" fill="#34d399" font-family="Inter, sans-serif" font-size="12" font-weight="800" text-anchor="middle">AIO</text>
+    
+    <text x="20" y="80" fill="#ffffff" font-family="Outfit, sans-serif" font-size="20" font-weight="700">AI Optimization</text>
+    <text x="20" y="104" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="500">Autonome KI-Agenten</text>
+
+    <line x1="20" y1="125" x2="235" y2="125" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+    <text x="20" y="150" fill="#34d399" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="1">ZIELGRUPPE</text>
+    <text x="20" y="170" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="13">Autonomous Agents &amp; APIs</text>
+
+    <text x="20" y="210" fill="#34d399" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="1">KERNFOKUS</text>
+    <text x="20" y="232" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• JSON-LD Schema Suite</text>
+    <text x="20" y="254" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• Content Manifest API</text>
+    <text x="20" y="276" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• E-E-A-T Signale &amp; BibTeX</text>
+    <text x="20" y="298" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13">• RAG Context Chunking</text>
+
+    <rect x="20" y="325" width="215" height="32" rx="10" fill="rgba(16, 185, 129, 0.1)" stroke="rgba(16, 185, 129, 0.2)" />
+    <text x="127" y="345" fill="#a7f3d0" font-family="Inter, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Agentische Aktionen</text>
+  </g>
+</svg>
