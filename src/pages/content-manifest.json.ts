@@ -44,45 +44,69 @@ export async function GET() {
     posts: posts.map(p => ({
       id: p.id,
       url: `/posts/${p.id}`,
+      title: p.data.title,
+      description: p.data.description || '',
+      tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
     })),
     courses: courses.map(c => ({
       id: c.id,
       url: `/courses/${c.id}`,
+      title: c.data.title,
+      description: c.data.description || '',
+      language: c.data.language,
       date: parseItemDate(c.id, c.data.pubDate)
     })),
     projects: projects.map(p => ({
       id: p.id,
       url: `/projects/${p.id}`,
+      title: p.data.title,
+      tagline: p.data.tagline,
+      description: p.data.description,
+      href: p.data.href,
+      tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
     })),
     publications: publications.map(p => ({
       id: p.id,
       url: `/publications/${p.id}`,
+      title: p.data.title,
+      author: p.data.author,
+      book: p.data.book || '',
+      abstract: p.data.abstract || '',
       date: parseItemDate(p.id, p.data.pubDate)
     })),
     visualizations: visualizations.map(v => ({
       id: v.id,
       url: `/visualizations/${v.id}`,
+      title: v.data.title,
+      description: v.data.description,
       date: parseItemDate(v.id, v.data.pubDate)
     })),
     services: [
       ...services.map(s => ({
         id: s.id,
         url: `/services/${s.id}`,
+        title: s.data.title,
+        tagline: s.data.tagline,
+        description: s.data.description,
         date: parseItemDate(s.id, s.data.pubDate)
       })),
       ...modules.map(m => ({
         id: m.id,
         url: `/services/${m.data.serviceId}/${m.id.split('/').pop()}`,
+        title: m.data.title,
+        tagline: m.data.tagline,
+        description: m.data.description,
         date: parseItemDate(m.id, m.data.pubDate)
       }))
     ]
   };
 
-  return new Response(JSON.stringify(manifest), {
+  return new Response(JSON.stringify(manifest, null, 2), {
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
     }
   });
 }

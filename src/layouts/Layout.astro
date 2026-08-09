@@ -15,6 +15,9 @@ import KaTeXStyles from "../components/KaTeXStyles.astro";
 import { getImage } from "astro:assets";
 import defaultOgImage from "../assets/images/og-share-preview.png";
 import Background from "../components/Background.astro";
+import JsonLd from "../components/JsonLd.astro";
+
+type JsonLdValue = string | number | boolean | null | undefined | { [key: string]: JsonLdValue } | JsonLdValue[];
 
 interface Props {
   title?: string;
@@ -25,17 +28,19 @@ interface Props {
   tags?: string[];
   hasMath?: boolean;
   preloadImage?: string;
+  jsonLd?: Record<string, JsonLdValue> | Array<Record<string, JsonLdValue>>;
 }
 
 const { 
-  title = "Dr. Georg Hackenberg | Professor & Software Engineer", 
-  description = "Personal website of Dr. Georg Hackenberg, Professor for Industrial Informatics, software engineer, entrepreneur, and developer of CADdrive and Mentawise.",
+  title = "Dr. Georg Hackenberg | Full Professor & Software Engineer", 
+  description = "Personal website of Dr. Georg Hackenberg, Full Professor for Industrial Informatics, software engineer, digital entrepreneur, and developer of CADdrive and Mentawise.",
   image,
   type = "website",
   pubDate,
   tags = [],
   hasMath = false,
-  preloadImage
+  preloadImage,
+  jsonLd
 } = Astro.props;
 
 // Build canonical URL
@@ -135,6 +140,10 @@ if (pubDate) {
     <!-- PWA Web App Manifest -->
     <link rel="manifest" href={`${import.meta.env.BASE_URL}manifest.json`} />
     
+    <!-- RSS Feed & Machine Discovery -->
+    <link rel="alternate" type="application/rss+xml" title="Dr. Georg Hackenberg - RSS Feed" href={`${import.meta.env.BASE_URL}rss.xml`} />
+    <link rel="author" href="https://ghackenberg.github.io/llms.txt" />
+    
     <!-- Theme & Mobile Colors -->
     <meta name="theme-color" content="#030712" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -152,6 +161,9 @@ if (pubDate) {
     <meta name="title" content={title} />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+
+    <!-- JSON-LD Structured Data (SEO / GEO / AIO) -->
+    {jsonLd && <JsonLd schema={jsonLd} />}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
@@ -285,7 +297,7 @@ if (pubDate) {
                 </span>
               </a>
               <p class="text-xs text-gray-500 leading-relaxed max-w-sm">
-                Professor for Industrial Informatics, software engineer, and researcher passionate about knowledge graph architectures, model-based system validation, and engineering modern software platforms.
+                Full Professor for Industrial Informatics, software engineer, and researcher passionate about knowledge graph architectures, model-based system validation, and engineering modern software platforms.
               </p>
             </div>
             

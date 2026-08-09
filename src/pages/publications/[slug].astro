@@ -64,6 +64,59 @@ const cleanAbstract = pub.data.abstract
 const seoDescription = cleanAbstract.length > 156 
   ? `${cleanAbstract.substring(0, 153)}...` 
   : cleanAbstract || `Academic research publication by Dr. Georg Hackenberg: "${pub.data.title}"`;
+
+const pubUrl = `https://ghackenberg.github.io/publications/${pub.id}`;
+
+const scholarlyArticleSchema = {
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "@id": `${pubUrl}#article`,
+  "headline": pub.data.title,
+  "name": pub.data.title,
+  "url": pubUrl,
+  "author": pub.data.author.split(/,| and /).map(a => ({
+    "@type": "Person",
+    "name": a.trim()
+  })),
+  "datePublished": pub.data.pubDate,
+  "description": cleanAbstract || `${pub.data.title} - Academic publication by ${pub.data.author}.`,
+  "publication": pub.data.book ? {
+    "@type": "PublicationEvent",
+    "name": pub.data.book
+  } : undefined,
+  "sameAs": pub.data.publisherUrl || undefined,
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": pubUrl
+  }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://ghackenberg.github.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Publications",
+      "item": "https://ghackenberg.github.io/publications"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": pub.data.title,
+      "item": pubUrl
+    }
+  ]
+};
+
+const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 ---
 
 <Layout 
@@ -72,6 +125,7 @@ const seoDescription = cleanAbstract.length > 156
   type="article"
   pubDate={pub.data.pubDate}
   tags={pub.data.tags}
+  jsonLd={pubJsonLd}
 >
   <Navbar />
 

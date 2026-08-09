@@ -71,11 +71,28 @@ const colorClasses = {
     dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)] light:shadow-[0_0_4px_rgba(4,120,87,0.4)]'
   }
 };
+
+const servicesJsonLd = sortedServices.map(s => ({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `https://ghackenberg.github.io/services#${s.id}`,
+  "name": s.data.title,
+  "serviceType": s.data.tagline,
+  "description": s.data.description,
+  "url": `https://ghackenberg.github.io/services/${s.id}`,
+  "provider": {
+    "@type": "Person",
+    "name": "Dr. Georg Hackenberg",
+    "url": "https://ghackenberg.github.io"
+  },
+  "areaServed": "Global"
+}));
 ---
 
 <Layout 
   title="Professional Services | Dr. Georg Hackenberg" 
   description="Explore custom R&D prototyping, corporate training bootcamps, scientific advisory, and media publishing services offered by Dr. Georg Hackenberg."
+  jsonLd={servicesJsonLd}
 >
   <Navbar />
 

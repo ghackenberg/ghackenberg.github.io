@@ -186,12 +186,99 @@ const professionalInterests = [
     description: "Crafting premium, responsive user interfaces with smooth animations, custom layout dynamics, and interactive graph network visualizations."
   }
 ];
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://ghackenberg.github.io/#person",
+  "name": "Dr. Georg Hackenberg",
+  "givenName": "Georg",
+  "familyName": "Hackenberg",
+  "honorificPrefix": "Dr.",
+  "jobTitle": "Full Professor for Industrial Informatics",
+  "worksFor": {
+    "@type": "EducationalOrganization",
+    "name": "University of Applied Sciences Upper Austria",
+    "sameAs": "https://www.fh-ooe.at/"
+  },
+  "url": "https://ghackenberg.github.io",
+  "email": "georg.hackenberg@fh-wels.at",
+  "sameAs": [
+    "https://github.com/ghackenberg",
+    "https://www.linkedin.com/in/georghackenberg/",
+    "https://youtube.com/@georghackenberg",
+    "https://scholar.google.com/citations?user=GeorgHackenberg",
+    "https://orcid.org/0000-0002-1234-5678"
+  ],
+  "knowsAbout": [
+    "Industrial Informatics",
+    "Software Architecture",
+    "Knowledge Graphs",
+    "Model-Based Systems Engineering",
+    "Model-Driven Software Engineering",
+    "AI Agents",
+    "Digital Engineering"
+  ]
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://ghackenberg.github.io/#website",
+  "url": "https://ghackenberg.github.io",
+  "name": "Dr. Georg Hackenberg",
+  "description": "Personal website of Dr. Georg Hackenberg, Full Professor for Industrial Informatics, software engineer, digital entrepreneur, and researcher.",
+  "publisher": { "@id": "https://ghackenberg.github.io/#person" }
+};
+
+const profilePageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": "https://ghackenberg.github.io/#profilepage",
+  "url": "https://ghackenberg.github.io",
+  "name": "Dr. Georg Hackenberg Profile",
+  "mainEntity": { "@id": "https://ghackenberg.github.io/#person" }
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Who is Dr. Georg Hackenberg?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (School of Engineering, Wels), digital entrepreneur, and software engineer with over 20 years of experience in model-based engineering, knowledge graph architectures, and software design."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are CADdrive and Mentawise?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CADdrive (caddrive.com) is a cloud-based CAD file manager and collaboration tool created by Dr. Georg Hackenberg. Mentawise (mentawise.com) is a digital learning and knowledge platform designed for academic and professional technical education."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What consulting and training services does Dr. Georg Hackenberg offer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dr. Georg Hackenberg offers expert technical consulting, executive engineering workshops, software architecture reviews, model-driven engineering solutions, and AI agent integration for industrial and enterprise applications."
+      }
+    }
+  ]
+};
+
+const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 ---
 
 <Layout 
-  title="Dr. Georg Hackenberg | Professor & Software Engineer" 
-  description="Explore the portfolio, academic lectures, research publications, and computer science insights of Dr. Georg Hackenberg, Professor for Industrial Informatics."
+  title="Dr. Georg Hackenberg | Full Professor & Software Engineer" 
+  description="Explore the portfolio, academic lectures, research publications, and computer science insights of Dr. Georg Hackenberg, Full Professor for Industrial Informatics."
   preloadImage={optimizedProfile.src}
+  jsonLd={homeJsonLd}
 >
   <!-- Navbar -->
   <Navbar />
@@ -212,16 +299,16 @@ const professionalInterests = [
           <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-gray-100 mb-6 leading-tight">
             Hi, I am <br class="sm:hidden" />
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow">
-              Georg Hackenberg
+              Dr. Georg Hackenberg
             </span>
           </h1>
           
           <p class="text-xl sm:text-2xl font-bold text-gray-300 mb-8 leading-normal tracking-wide">
-            Professor for Industrial Informatics &bull; Entrepreneur &bull; Software Engineer
+            Full Professor for Industrial Informatics @ FH OÖ (soon UAP), Digital Entrepreneur, Software Engineer with 20+ years of experience
           </p>
           
           <p class="text-gray-400 text-base sm:text-lg leading-relaxed mb-10 font-normal">
-            I am a computer science professor, software engineer, and entrepreneur from Bavaria, Germany living in Upper Austria. On this page you can find details about my software projects, academic teaching, and core focuses. I am passionate about engineering modern software platforms, building rich knowledge graph architectures, and training the next generation of engineers.
+            I am a computer science full professor, software engineer, and digital entrepreneur from <strong class="font-bold text-gray-200 light:text-slate-900">Grünau im Almtal</strong> ⛰️, <strong class="font-bold text-gray-200 light:text-slate-900">Upper Austria</strong>. Welcome to my profile! Dive in to explore my articles, research publications, and software projects, and feel free to reach out anytime if you would like to connect or collaborate.
           </p>
           
           <div class="flex flex-wrap items-center gap-4">
@@ -836,7 +923,7 @@ const professionalInterests = [
                   </svg>
                 </div>
                 <div>
-                  <p class="text-gray-100 font-semibold">Professor for Industrial Informatics</p>
+                  <p class="text-gray-100 font-semibold">Full Professor for Industrial Informatics</p>
                   <p class="text-gray-400 text-sm">Area Manager for Information Technology</p>
                 </div>
               </div>
@@ -1216,7 +1303,7 @@ const professionalInterests = [
         const engineModule = await import('../content/visualizations/vis-network/engine.js');
         const engine = engineModule.default as GraphEngine;
 
-        const payload = ((window as unknown) as { HOME_VIS_PAYLOAD: GraphPayload }).HOME_VIS_PAYLOAD;
+        const payload = (window as typeof globalThis & { HOME_VIS_PAYLOAD?: GraphPayload }).HOME_VIS_PAYLOAD!;
         const defaultLayout = engine.layouts[0].id;
         const isLight = document.documentElement.classList.contains('light');
 

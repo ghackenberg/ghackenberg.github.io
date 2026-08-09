@@ -45,12 +45,64 @@ const lastUpdated = repo?.pushDate;
 const formattedDate = lastUpdated 
   ? new Date(lastUpdated).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
   : "";
+
+const courseUrl = `https://ghackenberg.github.io/courses/${course.id}`;
+
+const courseSchema = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "@id": `${courseUrl}#course`,
+  "name": course.data.title,
+  "description": course.data.description || `${course.data.title} taught by Dr. Georg Hackenberg.`,
+  "url": courseUrl,
+  "provider": {
+    "@type": "EducationalOrganization",
+    "name": "University of Applied Sciences Upper Austria",
+    "sameAs": "https://www.fh-ooe.at/"
+  },
+  "instructor": {
+    "@type": "Person",
+    "name": "Dr. Georg Hackenberg",
+    "url": "https://ghackenberg.github.io"
+  },
+  "inLanguage": course.data.language,
+  "educationalCredentialAwarded": "Academic Course Credit",
+  "teaches": course.data.learningGoals ? course.data.learningGoals.join(", ") : undefined
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://ghackenberg.github.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Courses",
+      "item": "https://ghackenberg.github.io/courses"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": course.data.title,
+      "item": courseUrl
+    }
+  ]
+};
+
+const courseJsonLd = [courseSchema, breadcrumbSchema];
 ---
 
 <Layout 
   title={`${course.data.title} | Academic Courses | Dr. Georg Hackenberg`} 
   description={course.data.description}
   image={course.data.screenshot?.src}
+  jsonLd={courseJsonLd}
 >
   <Navbar />
 

@@ -48,6 +48,60 @@ try {
 }
 
 const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent);
+
+const postUrl = `https://ghackenberg.github.io/posts/${post.id}`;
+
+const blogPostingSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "@id": `${postUrl}#article`,
+  "headline": post.data.title,
+  "description": seoDescription,
+  "url": postUrl,
+  "datePublished": post.data.pubDate.toISOString(),
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Georg Hackenberg",
+    "url": "https://ghackenberg.github.io"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Dr. Georg Hackenberg",
+    "url": "https://ghackenberg.github.io"
+  },
+  "keywords": post.data.tags ? post.data.tags.join(", ") : undefined,
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": postUrl
+  }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://ghackenberg.github.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Posts",
+      "item": "https://ghackenberg.github.io/posts"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": post.data.title,
+      "item": postUrl
+    }
+  ]
+};
+
+const postJsonLd = [blogPostingSchema, breadcrumbSchema];
 ---
 
 <Layout 
@@ -57,6 +111,7 @@ const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent
   pubDate={post.data.pubDate}
   tags={post.data.tags}
   hasMath={hasMath}
+  jsonLd={postJsonLd}
 >
   <Navbar />
 
@@ -97,6 +152,18 @@ const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent
         ))}
       </div>
     </header>
+
+    {post.data.description && (
+      <aside class="mb-10 p-6 rounded-2xl bg-brand-blue/5 border border-brand-blue/20 text-gray-200 shadow-sm" aria-label="Key Takeaways">
+        <div class="text-xs font-bold text-brand-blue uppercase tracking-wider mb-2 flex items-center gap-2">
+          <span class="text-base">⚡</span>
+          <span>Key Takeaways / Executive Summary</span>
+        </div>
+        <p class="text-sm sm:text-base leading-relaxed text-gray-300 light:text-gray-700">
+          {post.data.description}
+        </p>
+      </aside>
+    )}
 
     <!-- Post Body -->
     <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-element-border mb-16 relative overflow-hidden prose-custom">

@@ -1,6 +1,40 @@
 User-agent: *
 Allow: /
 
+# Generative AI & Answer Engine Crawlers (GEO / AEO / AIO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: ByteSpider
+Allow: /
+
+# Machine-Readable Indexes & XML Feeds
 Sitemap: https://ghackenberg.github.io/sitemap.xml
 Sitemap: https://ghackenberg.github.io/sitemap-0.xml
 Sitemap: https://ghackenberg.github.io/sitemap-index.xml
+
+# LLM Standard (https://llmstxt.org)
+# llms.txt: https://ghackenberg.github.io/llms.txt
+# llms-full.txt: https://ghackenberg.github.io/llms-full.txt
+

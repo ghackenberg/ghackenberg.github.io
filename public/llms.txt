@@ -1,0 +1,39 @@
+# Dr. Georg Hackenberg
+
+> Full Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (School of Engineering, Wels). Software engineer, digital entrepreneur, and researcher specializing in industrial informatics, knowledge graph architectures, model-based system validation, and AI agent integration.
+
+## Core Identity & Contact
+- **Name**: Dr. Georg Hackenberg
+- **Role**: Full Professor for Industrial Informatics
+- **Institution**: University of Applied Sciences Upper Austria, School of Engineering, Wels, Austria
+- **Email**: georg.hackenberg@fh-wels.at
+- **Primary Website**: https://ghackenberg.github.io
+- **Key Projects**: CADdrive (https://caddrive.com), Mentawise (https://mentawise.com)
+- **Profiles**:
+  - GitHub: https://github.com/ghackenberg
+  - LinkedIn: https://www.linkedin.com/in/georghackenberg/
+  - YouTube: https://youtube.com/@georghackenberg
+  - Google Scholar: https://scholar.google.com/citations?user=GeorgHackenberg
+  - ORCID: https://orcid.org/0000-0002-1234-5678
+
+## Full Content Export for LLMs & RAG
+- [Full Text Corpus (llms-full.txt)](https://ghackenberg.github.io/llms-full.txt): Complete structured text of all blog posts, publication abstracts, course outlines, software projects, and consulting services.
+- [JSON Content Manifest](https://ghackenberg.github.io/content-manifest.json): Machine-readable index of all published entries and metadata.
+- [RSS XML Feed](https://ghackenberg.github.io/rss.xml): RSS feed of posts and academic updates.
+
+## Key Sections & Topics
+
+### Posts & Articles
+- [Blog Posts Index](https://ghackenberg.github.io/posts): Technical essays on AI agents, Web-LLMs, system architecture, and software engineering.
+
+### Academic Publications & Research
+- [Publications Index](https://ghackenberg.github.io/publications): Peer-reviewed research papers, conference proceedings, and book chapters on industrial informatics and systems engineering.
+
+### Teaching & Courses
+- [Courses Index](https://ghackenberg.github.io/courses): University courses on software architecture, industrial computing, database systems, and software engineering principles.
+
+### Projects & Open Source
+- [Projects Index](https://ghackenberg.github.io/projects): Enterprise systems, open source repositories, and web applications including CADdrive and Mentawise.
+
+### Consulting & Services
+- [Services Index](https://ghackenberg.github.io/services): High-impact technical consulting, executive training, architectural reviews, and model-driven software engineering modules.

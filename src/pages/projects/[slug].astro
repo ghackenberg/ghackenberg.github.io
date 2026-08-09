@@ -113,12 +113,61 @@ const lastUpdated = repo?.pushDate;
 const formattedDate = lastUpdated 
   ? new Date(lastUpdated).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
   : "";
+
+const projectUrl = `https://ghackenberg.github.io/projects/${project.id}`;
+
+const softwareAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": `${projectUrl}#software`,
+  "name": project.data.title,
+  "headline": project.data.tagline,
+  "description": project.data.description,
+  "url": projectUrl,
+  "sameAs": project.data.href,
+  "applicationCategory": "Software",
+  "operatingSystem": "Cross-platform",
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Georg Hackenberg",
+    "url": "https://ghackenberg.github.io"
+  },
+  "codeRepository": repo?.url || undefined
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://ghackenberg.github.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Projects",
+      "item": "https://ghackenberg.github.io/projects"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": project.data.title,
+      "item": projectUrl
+    }
+  ]
+};
+
+const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 ---
 
 <Layout 
   title={`${project.data.title} | Software Projects | Dr. Georg Hackenberg`} 
   description={project.data.description}
   image={optimizedMainScreenshot?.src}
+  jsonLd={projectJsonLd}
 >
   <Navbar />
 
