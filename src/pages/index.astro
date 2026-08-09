@@ -675,16 +675,18 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
         {recentPosts.length > 1 && (
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recentPosts.slice(1, 4).map((post) => (
-              <PostCard
-                id={post.id}
-                title={post.data.title}
-                description={post.data.description}
-                pubDate={post.data.pubDate}
-                icon={post.data.icon}
-                tags={post.data.tags}
-                featured={false}
-              />
+            {recentPosts.slice(1, 4).map((post, index) => (
+              <div class={index === 2 ? "block sm:hidden lg:block h-full" : "h-full"}>
+                <PostCard
+                  id={post.id}
+                  title={post.data.title}
+                  description={post.data.description}
+                  pubDate={post.data.pubDate}
+                  icon={post.data.icon}
+                  tags={post.data.tags}
+                  featured={false}
+                />
+              </div>
             ))}
           </div>
         )}
@@ -783,18 +785,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {sortedProjects.slice(0, 2).map(project => (
-          <ProjectCard 
-            title={project.data.title}
-            tagline={project.data.tagline}
-            description={project.data.description}
-            href={`/projects/${project.id}`}
-            tags={project.data.tags}
-            accentColor={project.data.accentColor}
-            screenshot={project.data.screenshot}
-            screenshotLight={project.data.screenshotLight}
-          />
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedProjects.slice(0, 3).map((project, index) => (
+          <div class={index === 2 ? "block sm:hidden lg:block h-full" : "h-full"}>
+            <ProjectCard 
+              title={project.data.title}
+              tagline={project.data.tagline}
+              description={project.data.description}
+              href={`/projects/${project.id}`}
+              tags={project.data.tags}
+              accentColor={project.data.accentColor}
+              screenshot={project.data.screenshot}
+              screenshotLight={project.data.screenshotLight}
+            />
+          </div>
         ))}
       </div>
 
