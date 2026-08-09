@@ -379,7 +379,7 @@ const payload = {
 
     interface GraphEngine {
       layouts: { id: string; label: string }[];
-      init(container: HTMLElement, payload: GraphPayload, layout: string, isLight: boolean): Promise<GraphInstance>;
+      init(container: HTMLElement, payload: GraphPayload, layout: string, isLight: boolean, extraOptions?: Record<string, string>): Promise<GraphInstance>;
     }
 
     declare global {
@@ -462,9 +462,13 @@ const payload = {
             selector.value = currentLayout;
           }
 
-          // Initialize engine
+          // Initialize engine with UTM tracking
           const isLight = document.documentElement.classList.contains('light');
-          activeInstance = await engine.init(container, payload, currentLayout, isLight);
+          activeInstance = await engine.init(container, payload, currentLayout, isLight, {
+            utmSource: 'visualizations_demo',
+            utmMedium: type,
+            utmCampaign: 'interactive_visualization'
+          });
           window.activeInstance = activeInstance;
 
         } catch (e) {

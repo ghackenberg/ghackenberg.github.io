@@ -23,6 +23,101 @@ const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.ord
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
+const posts = await getCollection("posts");
+const publications = await getCollection("publications");
+
+// Calculate tags and graph payload for the home page Vis.js Network
+const tagPosts: Record<string, number> = {};
+posts.forEach(p => {
+  p.data.tags.forEach(t => {
+    tagPosts[t] = (tagPosts[t] || 0) + 1;
+  });
+});
+
+const tagPubs: Record<string, number> = {};
+publications.forEach(p => {
+  p.data.tags.forEach(t => {
+    tagPubs[t] = (tagPubs[t] || 0) + 1;
+  });
+});
+
+const allTags = Array.from(new Set([...Object.keys(tagPosts), ...Object.keys(tagPubs)]));
+
+interface GraphNodePayload {
+  id: string;
+  name: string;
+  size: number;
+  group: number;
+  typeLabel?: string;
+  description?: string;
+  date?: string;
+  image?: string;
+  tags?: string[];
+}
+
+const visNodes: GraphNodePayload[] = [];
+const visConnections: Array<{ sourceId: string; targetId: string }> = [];
+
+allTags.forEach(tag => {
+  const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
+  visNodes.push({
+    id: `/posts/tags/${encodeURIComponent(tag)}`,
+    name: `#${tag}`,
+    size: Math.log(count) + 1,
+    group: 0,
+    typeLabel: "Topic Tag",
+    description: `${count} connected article${count > 1 ? 's' : ''} & publication${count > 1 ? 's' : ''}.`
+  });
+});
+
+for (const post of posts) {
+  const path = `/posts/${post.id}`;
+  let imageSrc: string | undefined = undefined;
+  if (post.data.icon) {
+    try {
+      const opt = await getImage({ src: post.data.icon, format: "webp", width: 240, quality: 75 });
+      imageSrc = opt.src;
+    } catch (e) {
+      console.warn("Failed to optimize post icon", e);
+    }
+  }
+  visNodes.push({
+    id: path,
+    name: post.data.title,
+    size: 1.2,
+    group: 1,
+    typeLabel: "Blog Post",
+    description: post.data.description,
+    date: post.data.pubDate ? new Date(post.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+    image: imageSrc,
+    tags: post.data.tags ? post.data.tags.slice(0, 3) : []
+  });
+  post.data.tags.forEach(tag => {
+    visConnections.push({ sourceId: path, targetId: `/posts/tags/${encodeURIComponent(tag)}` });
+  });
+}
+
+for (const pub of publications) {
+  const path = `/publications/${pub.id}`;
+  visNodes.push({
+    id: path,
+    name: pub.data.title,
+    size: 1,
+    group: 2,
+    typeLabel: "Publication",
+    description: pub.data.abstract || pub.data.book,
+    date: pub.data.pubDate,
+    tags: pub.data.tags ? pub.data.tags.slice(0, 3) : []
+  });
+  pub.data.tags.forEach(tag => {
+    visConnections.push({ sourceId: path, targetId: `/posts/tags/${encodeURIComponent(tag)}` });
+  });
+}
+
+const homeVisPayload = {
+  "vis-network": { nodes: visNodes, connections: visConnections }
+};
+
 const colorMappings = {
   blue: {
     border: 'border-brand-blue/10 hover:border-brand-blue/30',
@@ -213,6 +308,63 @@ const professionalInterests = [
             </div>
           );
         })}
+      </div>
+    </section>
+
+    <!-- Interactive Posts Network Section (Vis.js Visualization) -->
+    <section id="posts-network" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+      <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-green/10 text-brand-green border border-brand-green/20 mb-4 tracking-wider uppercase">
+            Interactive Posts Map
+          </span>
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+            Knowledge <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-green via-teal-400 to-brand-blue">Graph</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
+            Interactive network mapping my software engineering articles, research publications, and core computer science topics.
+          </p>
+        </div>
+
+        <a 
+          href="/posts?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
+          class="shrink-0 px-5 py-3 rounded-xl bg-brand-green/10 border border-brand-green/20 hover:border-brand-green/30 text-brand-green hover:bg-brand-green/20 text-sm font-semibold transition-all duration-300 flex items-center gap-2 self-start md:self-auto shadow-sm"
+        >
+          <span>Browse All Posts</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Vis.js Glass Card Container (Matching Featured Projects card style) -->
+      <div class="glass-card rounded-3xl border border-white/5 light:border-slate-200/80 overflow-hidden shadow-2xl relative w-full">
+        <!-- Floating Glassmorphic Legend (Positioned top-left, responsive on mobile & desktop) -->
+        <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-white/10 light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-blue border border-white/20 shadow-sm shadow-brand-blue/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Topic Tags</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Blog Posts</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-yellow border border-white/20 shadow-sm shadow-brand-yellow/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Publications</span>
+          </div>
+        </div>
+
+        <!-- Vis.js Canvas Area -->
+        <div id="home-vis-canvas" class="w-full h-[360px] sm:h-[440px] md:h-[500px] lg:h-[540px] relative z-10 bg-transparent">
+          <!-- Loading Indicator -->
+          <div id="home-vis-loading" class="absolute inset-0 flex items-center justify-center bg-transparent z-30 transition-opacity duration-300">
+            <div class="flex flex-col items-center space-y-3 p-4 rounded-2xl bg-gray-950/40 backdrop-blur-sm border border-white/5">
+              <div class="w-7 h-7 rounded-full border-2 border-brand-green/20 border-t-brand-green animate-spin"></div>
+              <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Initializing Vis.js Graph...</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -885,4 +1037,92 @@ const professionalInterests = [
       card.classList.add('opacity-100', 'translate-y-0');
     });
   }
+</script>
+
+<!-- Expose Astro homeVisPayload to global scope -->
+<script is:inline define:vars={{ homeVisPayload }}>
+  window.HOME_VIS_PAYLOAD = homeVisPayload;
+</script>
+
+<!-- Initialize Vis.js Network for Home Page Posts Section -->
+<script>
+  interface GraphInstance {
+    destroy(): void;
+    updateLayout(layout: string, isLight: boolean): void;
+    layouts: { id: string; label: string }[];
+  }
+
+  interface GraphPayload {
+    'vis-network': {
+      nodes: Array<Record<string, string | number | boolean | string[]>>;
+      connections: Array<{ sourceId: string; targetId: string }>;
+    };
+  }
+
+  interface GraphEngineOptions {
+    interaction?: {
+      zoomView?: boolean;
+      hover?: boolean;
+      dragView?: boolean;
+      tooltipDelay?: number;
+    };
+    utmSource?: string;
+    utmMedium?: string;
+    utmCampaign?: string;
+  }
+
+  interface GraphEngine {
+    layouts: { id: string; label: string }[];
+    init(container: HTMLElement, payload: GraphPayload, layout: string, isLight: boolean, extraOptions?: GraphEngineOptions): Promise<GraphInstance>;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('home-vis-canvas');
+    const loading = document.getElementById('home-vis-loading');
+    if (!container) return;
+
+    let activeInstance: GraphInstance | null = null;
+
+    async function initHomeVis() {
+      if (!container) return;
+
+      try {
+        const engineModule = await import('../content/visualizations/vis-network/engine.js');
+        const engine = engineModule.default as GraphEngine;
+
+        const payload = ((window as unknown) as { HOME_VIS_PAYLOAD: GraphPayload }).HOME_VIS_PAYLOAD;
+        const defaultLayout = engine.layouts[0].id;
+        const isLight = document.documentElement.classList.contains('light');
+
+        // Initialize Vis.js Network with zoomView: false (zoom disabled), hover enabled, and UTM tracking
+        activeInstance = await engine.init(container, payload, defaultLayout, isLight, {
+          interaction: {
+            zoomView: false,
+            hover: true
+          },
+          utmSource: 'homepage',
+          utmMedium: 'knowledge_graph',
+          utmCampaign: 'posts_network'
+        });
+
+        if (loading) {
+          loading.style.opacity = '0';
+          setTimeout(() => loading.remove(), 300);
+        }
+      } catch (e) {
+        console.error('Failed to initialize home Vis.js network:', e);
+      }
+    }
+
+    setTimeout(async () => {
+      await initHomeVis();
+    }, 100);
+
+    window.addEventListener('theme-changed', () => {
+      const isLight = document.documentElement.classList.contains('light');
+      if (activeInstance) {
+        activeInstance.updateLayout(activeInstance.layouts[0].id, isLight);
+      }
+    });
+  });
 </script>

@@ -450,3 +450,27 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   }
 }
 
+/* Vis.js Custom Premium Tooltip Styling */
+div.vis-tooltip {
+  position: absolute !important;
+  background: rgba(3, 7, 18, 0.9) !important;
+  color: #f8fafc !important;
+  font-family: var(--font-sans) !important;
+  padding: 8px 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.7), 0 0 20px rgba(16, 185, 129, 0.18) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  pointer-events: none !important;
+  z-index: 1000 !important;
+  transition: opacity 0.15s ease-out !important;
+}
+
+:root.light div.vis-tooltip, .light div.vis-tooltip {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.12), 0 0 20px rgba(16, 185, 129, 0.15) !important;
+}
+

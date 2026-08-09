@@ -5,7 +5,7 @@ export default {
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
 
-  async init(container, payload, layout, isLight) {
+  async init(container, payload, layout, isLight, extraOptions = {}) {
     const vis = await import('https://unpkg.com/vis-network@9.1.9/standalone/esm/index.js');
     this.vis = vis;
 
@@ -30,29 +30,84 @@ export default {
       }
     ];
 
+    const groupNames = ['Topic Tag', 'Blog Post', 'Publication'];
+    const groupColors = [
+      isLight ? '#2563eb' : '#60a5fa',
+      isLight ? '#059669' : '#34d399',
+      isLight ? '#b45309' : '#fbbf24'
+    ];
+
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
     // property and explicitly defining color object on each node.
-    this.visNodes = new vis.DataSet(this.nodes.map(n => ({
-      id: n.id,
-      label: n.name,
-      value: n.size * 6 + 4,
-      x: (Math.random() - 0.5) * 500,
-      y: (Math.random() - 0.5) * 500,
-      rawGroup: n.group,
-      color: colors[n.group],
-      font: {
-        color: isLight ? '#334155' : '#e2e8f0',
-        size: 11,
-        face: 'Outfit, Inter, sans-serif'
+    this.visNodes = new vis.DataSet(this.nodes.map(n => {
+      const card = document.createElement('div');
+      card.style.fontFamily = 'Outfit, Inter, sans-serif';
+      card.style.width = '240px';
+      card.style.boxSizing = 'border-box';
+      
+      let imageHtml = '';
+      if (n.image) {
+        imageHtml = `
+          <div style="width: 100%; height: 110px; overflow: hidden; border-radius: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center;">
+            <img src="${n.image}" alt="${n.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
+          </div>
+        `;
       }
-    })));
+
+      let tagsHtml = '';
+      if (n.tags && n.tags.length > 0) {
+        tagsHtml = `
+          <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;">
+            ${n.tags.map(t => `<span style="font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); color: ${groupColors[0]};">#${t}</span>`).join('')}
+          </div>
+        `;
+      }
+
+      let dateHtml = '';
+      if (n.date) {
+        dateHtml = `<span style="font-size: 10px; color: ${isLight ? '#64748b' : '#94a3b8'}; font-weight: 500;">${n.date}</span>`;
+      }
+
+      card.innerHTML = `
+        <div style="padding: 2px;">
+          ${imageHtml}
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: ${groupColors[n.group] || '#3b82f6'};">
+              ${n.typeLabel || groupNames[n.group] || 'Item'}
+            </span>
+            ${dateHtml}
+          </div>
+          <div style="font-size: 13px; font-weight: 700; line-height: 1.35; color: ${isLight ? '#0f172a' : '#f8fafc'}; margin-bottom: 4px;">
+            ${n.name}
+          </div>
+          ${n.description ? `<div style="font-size: 11px; line-height: 1.4; color: ${isLight ? '#475569' : '#cbd5e1'}; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${n.description}</div>` : ''}
+          ${tagsHtml}
+        </div>
+      `;
+
+      return {
+        id: n.id,
+        label: n.name,
+        title: card,
+        value: n.size * 6 + 4,
+        x: (Math.random() - 0.5) * 500,
+        y: (Math.random() - 0.5) * 500,
+        rawGroup: n.group,
+        color: colors[n.group],
+        font: {
+          color: isLight ? '#334155' : '#e2e8f0',
+          size: 11,
+          face: 'Outfit, Inter, sans-serif'
+        }
+      };
+    }));
 
     this.visEdges = new vis.DataSet(this.connections.map(c => ({
       from: c.sourceId,
       to: c.targetId,
       color: {
-        color: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.08)',
-        highlight: isLight ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255,255,255,0.25)'
+        color: isLight ? 'rgba(15, 23, 42, 0.15)' : 'rgba(255,255,255,0.15)',
+        highlight: isLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255,255,255,0.35)'
       }
     })));
 
@@ -60,6 +115,17 @@ export default {
       nodes: this.visNodes,
       edges: this.visEdges
     };
+
+    const interactionOptions = Object.assign({
+      hover: true,
+      tooltipDelay: 100,
+      zoomView: true,
+      dragView: true
+    }, extraOptions && extraOptions.interaction ? extraOptions.interaction : {});
+
+    const utmSource = (extraOptions && extraOptions.utmSource) || 'vis_network';
+    const utmMedium = (extraOptions && extraOptions.utmMedium) || 'interactive_graph';
+    const utmCampaign = (extraOptions && extraOptions.utmCampaign) || 'knowledge_network';
 
     this.options = {
       nodes: {
@@ -94,23 +160,30 @@ export default {
           updateInterval: 25
         }
       },
-      interaction: {
-        hover: true,
-        tooltipDelay: 200,
-        zoomView: true,
-        dragView: true
-      }
+      interaction: interactionOptions
     };
 
     this.network = new vis.Network(container, data, this.options);
 
     this.network.on("click", (params) => {
       if (params.nodes.length > 0) {
-        const id = params.nodes[0];
-        if (id.startsWith('/posts/') || id.startsWith('/publications/')) {
-          window.location.href = id;
+        const targetPath = params.nodes[0];
+        if (targetPath.startsWith('/posts') || targetPath.startsWith('/publications')) {
+          const targetUrl = new URL(targetPath, window.location.origin);
+          targetUrl.searchParams.set('utm_source', utmSource);
+          targetUrl.searchParams.set('utm_medium', utmMedium);
+          targetUrl.searchParams.set('utm_campaign', utmCampaign);
+          window.location.href = targetUrl.pathname + targetUrl.search;
         }
       }
+    });
+
+    this.network.on("hoverNode", () => {
+      container.style.cursor = "pointer";
+    });
+
+    this.network.on("blurNode", () => {
+      container.style.cursor = "default";
     });
 
     this.currentLayout = layout;
@@ -172,8 +245,8 @@ export default {
       edgeUpdates.push({
         id: edge.id,
         color: {
-          color: isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.08)',
-          highlight: isLight ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255,255,255,0.25)'
+          color: isLight ? 'rgba(15, 23, 42, 0.15)' : 'rgba(255,255,255,0.15)',
+          highlight: isLight ? 'rgba(15, 23, 42, 0.35)' : 'rgba(255,255,255,0.35)'
         }
       });
     });
