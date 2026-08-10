@@ -17,11 +17,7 @@ const profile = profileEntry?.data || {
 const posts = await getCollection("linkedin-posts");
 const publishedPosts = posts.filter(entry => entry.id);
 const formattedPosts = publishedPosts
-  .sort((a, b) => {
-    const dateA = a.data.pubDate ? a.data.pubDate.getTime() : 0;
-    const dateB = b.data.pubDate ? b.data.pubDate.getTime() : 0;
-    return dateB - dateA;
-  })
+  .sort((a, b) => (b.data.likes ?? 0) - (a.data.likes ?? 0))
   .slice(0, 3)
   .map((entry) => {
     // Extract the first paragraph (separated by double newlines)

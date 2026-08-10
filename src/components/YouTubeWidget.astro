@@ -47,11 +47,7 @@ try {
         likes: entry.data.likes
       };
     });
-    videos = rawVideos.sort((a, b) => {
-      const dateA = a.pubDate ? a.pubDate.getTime() : 0;
-      const dateB = b.pubDate ? b.pubDate.getTime() : 0;
-      return dateB - dateA;
-    });
+    videos = rawVideos.sort((a, b) => (b.views ?? 0) - (a.views ?? 0));
   }
 
   if (!stats || videos.length === 0) {

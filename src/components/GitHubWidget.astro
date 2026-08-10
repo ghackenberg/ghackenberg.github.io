@@ -47,11 +47,7 @@ try {
         pushDate: entry.data.pushDate
       };
     });
-    repos = rawRepos.sort((a, b) => {
-      const dateA = a.pushDate ? new Date(a.pushDate).getTime() : 0;
-      const dateB = b.pushDate ? new Date(b.pushDate).getTime() : 0;
-      return dateB - dateA;
-    });
+    repos = rawRepos.sort((a, b) => (b.stars ?? 0) - (a.stars ?? 0));
   }
 
   if (!profile || repos.length === 0) {
