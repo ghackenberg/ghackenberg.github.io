@@ -9,36 +9,6 @@
   <div class="sky-bg sky-bg-night"></div>
   <div class="sky-bg sky-bg-day"></div>
 
-  <!-- 2. Crescent Moon & Atmospheric Aura -->
-  <div id="bg-layer-moon" class="moon-container absolute top-[5%] right-[6%] md:top-[8%] md:right-[12%] pointer-events-none transition-opacity duration-1000">
-    <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <!-- Celestial Aura Glow -->
-        <radialGradient id="moon-aura-glow" cx="50%" cy="50%" r="50%">
-          <stop class="moon-aura-stop-1" offset="0%" stop-color="#93c5fd" stop-opacity="0.22" />
-          <stop class="moon-aura-stop-2" offset="45%" stop-color="#3b82f6" stop-opacity="0.08" />
-          <stop class="moon-aura-stop-3" offset="100%" stop-color="#1e1b4b" stop-opacity="0" />
-        </radialGradient>
-        <!-- Moon Surface Gradient -->
-        <linearGradient id="moon-surface-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop class="moon-surf-stop-1" offset="0%" stop-color="#ffffff" />
-          <stop class="moon-surf-stop-2" offset="40%" stop-color="#f1f5f9" />
-          <stop class="moon-surf-stop-3" offset="100%" stop-color="#94a3b8" />
-        </linearGradient>
-      </defs>
-      <!-- Soft Outer Aura -->
-      <circle cx="75" cy="75" r="70" fill="url(#moon-aura-glow)" />
-      <!-- Moon Waxing Crescent -->
-      <g transform="translate(38, 38)">
-        <path d="M 38 0 A 38 38 0 1 1 38 76 A 28 28 0 1 0 38 0 Z" fill="url(#moon-surface-grad)" />
-        <!-- Subtle Crater Details -->
-        <circle cx="30" cy="20" r="3.5" class="moon-crater-1" fill="#94a3b8" opacity="0.35" />
-        <circle cx="24" cy="38" r="4" class="moon-crater-2" fill="#64748b" opacity="0.3" />
-        <circle cx="34" cy="54" r="2.8" class="moon-crater-3" fill="#94a3b8" opacity="0.35" />
-      </g>
-    </svg>
-  </div>
-
   <!-- 3. Twinkling Stars -->
   <svg id="bg-layer-stars" class="stars-svg absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
     <g id="sparkling-stars" class="transition-opacity duration-700"></g>
@@ -96,28 +66,6 @@
   :global(.light) .sky-bg-day {
     opacity: 1;
   }
-
-  /* Moon Container & Light Mode Overrides */
-  .moon-container {
-    pointer-events: none;
-    will-change: transform;
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 1;
-  }
-  :global(.light) .moon-container {
-    opacity: 0.95;
-  }
-  :global(.light) .moon-aura-stop-1 { stop-color: #475569; stop-opacity: 0.4; }
-  :global(.light) .moon-aura-stop-2 { stop-color: #64748b; stop-opacity: 0.22; }
-  :global(.light) .moon-aura-stop-3 { stop-color: #94a3b8; stop-opacity: 0; }
-
-  :global(.light) .moon-surf-stop-1 { stop-color: #ffffff; }
-  :global(.light) .moon-surf-stop-2 { stop-color: #e2e8f0; }
-  :global(.light) .moon-surf-stop-3 { stop-color: #64748b; }
-
-  :global(.light) .moon-crater-1 { fill: #334155; opacity: 0.5; }
-  :global(.light) .moon-crater-2 { fill: #0f172a; opacity: 0.45; }
-  :global(.light) .moon-crater-3 { fill: #334155; opacity: 0.5; }
 
   /* Twinkling Stars */
   .stars-svg {
@@ -202,10 +150,9 @@
 <script>
   function initBackground() {
     const starsLayer = document.getElementById('bg-layer-stars');
-    const moonLayer = document.getElementById('bg-layer-moon');
     const shootingStarsLayer = document.getElementById('bg-layer-shooting-stars');
 
-    if (!starsLayer && !moonLayer) {
+    if (!starsLayer && !shootingStarsLayer) {
       return;
     }
 
@@ -263,9 +210,6 @@
       // 1. Celestial & Sky Parallax
       if (starsLayer) {
         starsLayer.style.transform = `translate3d(${normMouseX * 10}px, ${-currentScrollY * 0.035 + normMouseY * 10}px, 0)`;
-      }
-      if (moonLayer) {
-        moonLayer.style.transform = `translate3d(${normMouseX * -15}px, ${-currentScrollY * 0.02 + normMouseY * -15}px, 0)`;
       }
       if (shootingStarsLayer) {
         shootingStarsLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.03}px, 0)`;
