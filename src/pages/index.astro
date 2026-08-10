@@ -824,10 +824,10 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
               <!-- Tag Pill Link -->
               <a
                 href={`/posts/tags/${encodeURIComponent(tag.name)}`}
-                class={`inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl border transition-all duration-300 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-gradient-to-r from-brand-blue/20 via-sky-500/15 to-brand-blue/20 border-brand-blue/40 hover:border-brand-blue/70 shadow-lg shadow-brand-blue/10 hover:shadow-brand-blue/25 text-white hover:scale-105`}
+                class={`inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl border transition-all duration-300 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-gradient-to-r from-brand-blue/20 via-sky-500/15 to-brand-blue/20 light:from-blue-100/90 light:via-sky-100/90 light:to-blue-100/90 border-brand-blue/40 light:border-blue-300/90 hover:border-brand-blue/70 light:hover:border-blue-400 shadow-lg shadow-brand-blue/10 hover:shadow-brand-blue/25 text-white light:text-slate-900 hover:text-white light:hover:text-blue-900 hover:scale-105`}
               >
                 <span>#{tag.name}</span>
-                <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-brand-blue/30 text-sky-200 border border-brand-blue/40">
+                <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-brand-blue/30 light:bg-blue-200/80 text-sky-200 light:text-blue-950 border border-brand-blue/40 light:border-blue-300">
                   {tag.totalCount}
                 </span>
               </a>
