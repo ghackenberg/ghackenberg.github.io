@@ -1608,10 +1608,11 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         const defaultLayout = engine.layouts[0].id;
         const isLight = document.documentElement.classList.contains('light');
 
-        // Initialize Vis.js Network with zoomView: false (zoom disabled), hover enabled, and UTM tracking
+        // Initialize Vis.js Network with zoomView: false, dragView: false (pan/zoom disabled), hover enabled, and UTM tracking
         activeInstance = await engine.init(container, payload, defaultLayout, isLight, {
           interaction: {
             zoomView: false,
+            dragView: false,
             hover: true
           },
           utmSource: 'homepage',

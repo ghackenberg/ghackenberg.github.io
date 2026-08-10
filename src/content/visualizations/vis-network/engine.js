@@ -89,19 +89,24 @@ export default {
         </div>
       `;
 
+      const isTagNode = n.group === 0;
       return {
         id: n.id,
-        label: n.name,
+        label: isTagNode ? n.name : '',
         title: card,
-        value: n.size * 6 + 4,
+        shape: isTagNode ? 'circle' : 'dot',
+        value: isTagNode ? (Math.pow(n.size, 2) * 16 + 10) : (n.size * 3 + 2),
         x: (Math.random() - 0.5) * 500,
         y: (Math.random() - 0.5) * 500,
         rawGroup: n.group,
         color: colors[n.group],
         font: {
-          color: isLight ? '#334155' : '#e2e8f0',
-          size: 11,
-          face: 'Outfit, Inter, sans-serif'
+          color: isLight ? '#0f172a' : '#f8fafc',
+          size: isTagNode ? Math.min(19 + Math.round(n.size * 3.6), 32) : 15,
+          face: 'Outfit, Inter, sans-serif',
+          align: 'center',
+          strokeWidth: isLight ? 2.5 : 3,
+          strokeColor: isLight ? '#ffffff' : '#0f172a'
         }
       };
     }));
@@ -135,8 +140,14 @@ export default {
       nodes: {
         shape: 'dot',
         scaling: {
-          min: 8,
-          max: 20
+          min: 10,
+          max: 84,
+          label: {
+            enabled: true,
+            min: 18,
+            max: 53,
+            drawThreshold: 1
+          }
         },
         borderWidth: 1.5,
         borderWidthSelected: 3
@@ -250,7 +261,8 @@ export default {
         id: node.id,
         color: colors[node.rawGroup],
         font: {
-          color: isLight ? '#334155' : '#e2e8f0'
+          color: isLight ? '#0f172a' : '#f8fafc',
+          strokeColor: isLight ? '#ffffff' : '#0f172a'
         }
       });
     });
