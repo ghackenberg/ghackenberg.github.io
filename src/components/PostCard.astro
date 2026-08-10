@@ -66,68 +66,18 @@ const imageContainerClass = featured
     <!-- Transparent click overlay so the image panel navigates on click -->
     <a href={`/posts/${id}`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
     {icon ? (
-      <svg 
-        class="absolute inset-0 w-full h-full pointer-events-none z-0" 
-        viewBox="0 0 160 90" 
-        preserveAspectRatio="none"
-        role="img"
-        aria-label={`Post icon: ${title}`}
-      >
-        <defs>
-          <!-- Background gradient (letterbox fill) -->
-          <linearGradient id={`grad-post-bg-dark-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#0f172a" />
-            <stop offset="50%" stop-color="#0d1f3c" />
-            <stop offset="100%" stop-color="#0a0f1e" />
-          </linearGradient>
-          <linearGradient id={`grad-post-bg-light-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#e0eaff" />
-            <stop offset="50%" stop-color="#dbeafe" />
-            <stop offset="100%" stop-color="#eff6ff" />
-          </linearGradient>
-          <!-- Bottom overlay gradient -->
-          <linearGradient id={`grad-post-dark-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-            <stop offset="60%" stop-color="#000000" stop-opacity="0.15" />
-            <stop offset="100%" stop-color="#000000" stop-opacity="0.55" />
-          </linearGradient>
-          <linearGradient id={`grad-post-light-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-            <stop offset="60%" stop-color="#000000" stop-opacity="0.07" />
-            <stop offset="100%" stop-color="#000000" stop-opacity="0.3" />
-          </linearGradient>
-        </defs>
-        <!-- Background fill for letterbox areas -->
-        <rect x="0" y="0" width="160" height="90" class="block light:hidden" fill={`url(#grad-post-bg-dark-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} />
-        <rect x="0" y="0" width="160" height="90" class="hidden light:block" fill={`url(#grad-post-bg-light-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} />
-        <!-- Image fitted without cropping (meet = contain) -->
-        <image 
-          href={optimizedIcon ? optimizedIcon.src : (typeof icon === 'string' ? icon : (icon?.src || ''))} 
-          x="0" 
-          y="0" 
-          width="160" 
-          height="90" 
-          preserveAspectRatio="xMidYMid meet" 
-          class="group-hover:scale-105 transition-transform duration-500 will-change-transform"
+      <div class="relative w-full h-full min-h-[160px] overflow-hidden flex items-center justify-center">
+        <img 
+          src={optimizedIcon ? optimizedIcon.src : (typeof icon === 'string' ? icon : (icon?.src || ''))}
+          alt={`Preview for ${title}`}
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
+          loading="lazy"
+          decoding="async"
         />
-        <!-- Bottom overlay gradient -->
-        <rect 
-          x="0" 
-          y="0" 
-          width="160" 
-          height="90.5" 
-          class="block light:hidden"
-          fill={`url(#grad-post-dark-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
-        />
-        <rect 
-          x="0" 
-          y="0" 
-          width="160" 
-          height="90.5" 
-          class="hidden light:block"
-          fill={`url(#grad-post-light-${id.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()})`} 
-        />
-      </svg>
+        <!-- Ambient overlay for depth & contrast in dark and light modes -->
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent block light:hidden pointer-events-none z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent hidden light:block pointer-events-none z-10"></div>
+      </div>
     ) : (
       <div class="absolute inset-0 bg-gradient-to-br from-brand-blue/20 via-brand-purple/10 to-indigo-950/40 light:to-sky-100/40 flex items-center justify-center">
         <svg class="w-12 h-12 text-brand-blue/30 light:text-brand-blue/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
