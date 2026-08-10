@@ -55,7 +55,78 @@ publications.forEach(p => {
   });
 });
 
-const allTags = Array.from(new Set([...Object.keys(tagPosts), ...Object.keys(tagPubs)]));
+const tagProjects: Record<string, number> = {};
+projects.forEach(p => {
+  if (p.data.tags) {
+    p.data.tags.forEach(t => {
+      tagProjects[t] = (tagProjects[t] || 0) + 1;
+    });
+  }
+});
+
+const allTags = Array.from(new Set([...Object.keys(tagPosts), ...Object.keys(tagPubs), ...Object.keys(tagProjects)]));
+
+interface TagCloudItem {
+  name: string;
+  totalCount: number;
+  postsCount: number;
+  pubsCount: number;
+  projectsCount: number;
+  postsPct: number;
+  pubsPct: number;
+  projectsPct: number;
+  fontSizeClass: string;
+  fontWeightClass: string;
+}
+
+const tagCloudList: TagCloudItem[] = allTags.map(name => {
+  const postsCount = tagPosts[name] || 0;
+  const pubsCount = tagPubs[name] || 0;
+  const projectsCount = tagProjects[name] || 0;
+  const totalCount = postsCount + pubsCount + projectsCount;
+  
+  const postsPct = totalCount > 0 ? Math.round((postsCount / totalCount) * 100) : 0;
+  const pubsPct = totalCount > 0 ? Math.round((pubsCount / totalCount) * 100) : 0;
+  const projectsPct = totalCount > 0 ? Math.round((projectsCount / totalCount) * 100) : 0;
+
+  return {
+    name,
+    totalCount,
+    postsCount,
+    pubsCount,
+    projectsCount,
+    postsPct,
+    pubsPct,
+    projectsPct,
+    fontSizeClass: "text-xs sm:text-sm",
+    fontWeightClass: "font-medium",
+  };
+});
+
+const maxTagCount = Math.max(...tagCloudList.map(t => t.totalCount), 1);
+const minTagCount = Math.min(...tagCloudList.map(t => t.totalCount), 1);
+
+tagCloudList.forEach(t => {
+  const ratio = maxTagCount > minTagCount ? (t.totalCount - minTagCount) / (maxTagCount - minTagCount) : 0.5;
+  if (ratio > 0.75) {
+    t.fontSizeClass = "text-lg sm:text-xl";
+    t.fontWeightClass = "font-extrabold";
+  } else if (ratio > 0.45) {
+    t.fontSizeClass = "text-base sm:text-lg";
+    t.fontWeightClass = "font-bold";
+  } else if (ratio > 0.2) {
+    t.fontSizeClass = "text-sm sm:text-base";
+    t.fontWeightClass = "font-semibold";
+  } else {
+    t.fontSizeClass = "text-xs sm:text-sm";
+    t.fontWeightClass = "font-medium";
+  }
+});
+
+// Sort by total count descending
+const sortedByFreq = tagCloudList.slice().sort((a, b) => b.totalCount - a.totalCount || a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+const top7Tags = sortedByFreq.slice(0, 7);
+const remainingTags = sortedByFreq.slice(7);
 
 interface GraphNodePayload {
   id: string;
@@ -605,14 +676,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                     {item.emoji}
                   </span>
                   <div>
-                    <h3 class="text-xl sm:text-2xl font-extrabold text-gray-100 group-hover:text-white tracking-tight transition-colors">
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-gray-100 group-hover:text-white light:group-hover:text-slate-950 tracking-tight transition-colors">
                       {item.title}
                     </h3>
                   </div>
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
-                  <span class="text-lg font-extrabold text-gray-300 group-hover:text-white transition-colors tabular-nums">
+                  <span class="text-lg font-extrabold text-gray-300 group-hover:text-white light:group-hover:text-slate-950 transition-colors tabular-nums">
                     {item.count}
                   </span>
                   <span 
@@ -624,7 +695,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
               </div>
 
               <!-- Body Description -->
-              <p class="text-gray-400 group-hover:text-gray-300 text-xs sm:text-sm font-normal leading-relaxed mb-6 transition-colors">
+              <p class="text-gray-400 group-hover:text-gray-300 light:group-hover:text-slate-800 text-xs sm:text-sm font-normal leading-relaxed mb-6 transition-colors">
                 {item.description}
               </p>
             </div>
@@ -706,17 +777,166 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       </div>
     </section>
 
-    <!-- Interactive Posts Network Section (Vis.js Visualization) -->
+    <!-- Content Tags Section -->
+    <section id="content-tags" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+      <div class="mb-8 max-w-2xl">
+        <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 mb-4 tracking-wider uppercase">
+          Topic Index
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+          Content <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-sky-400 to-teal-400">Tags</span>
+        </h2>
+        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+          Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, and software projects across core computer science domains.
+        </p>
+      </div>
+
+      <!-- Tag Cloud Glass Container -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8 md:p-10 border border-white/10 light:border-slate-200/80 shadow-2xl relative w-full">
+        <!-- Continuous Glass Cloud Text Flow -->
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          
+          <!-- Top 7 Featured Highlighted Group (Sorted Alphabetically A-Z) -->
+          {top7Tags.map(tag => (
+            <div class="relative group/tag inline-block">
+              <!-- Tag Pill Link -->
+              <a
+                href={`/posts/tags/${encodeURIComponent(tag.name)}`}
+                class={`inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl border transition-all duration-300 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-gradient-to-r from-brand-blue/20 via-sky-500/15 to-brand-blue/20 border-brand-blue/40 hover:border-brand-blue/70 shadow-lg shadow-brand-blue/10 hover:shadow-brand-blue/25 text-white hover:scale-105`}
+              >
+                <span>#{tag.name}</span>
+                <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-brand-blue/30 text-sky-200 border border-brand-blue/40">
+                  {tag.totalCount}
+                </span>
+              </a>
+
+              <!-- Glass Hover Tooltip with Segmented Progress Bar -->
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden group-hover/tag:flex group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-white/15 light:border-slate-200/80 shadow-2xl text-xs w-64 sm:w-72 pointer-events-none z-30 transition-all duration-200 transform animate-in fade-in zoom-in-95">
+                <!-- Tooltip Header -->
+                <div class="flex items-center justify-between text-gray-200 light:text-slate-900 font-bold text-xs">
+                  <span class="truncate">#{tag.name}</span>
+                  <span class="text-brand-blue text-[11px] font-extrabold">{tag.totalCount} item{tag.totalCount > 1 ? 's' : ''}</span>
+                </div>
+
+                <!-- Multi-Color Segmented Progress Bar -->
+                <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
+                  {tag.postsCount > 0 && (
+                    <div style={`width: ${tag.postsPct}%`} class="bg-gradient-to-r from-brand-blue to-sky-400 h-full" title={`Blog Posts: ${tag.postsCount}`} />
+                  )}
+                  {tag.pubsCount > 0 && (
+                    <div style={`width: ${tag.pubsPct}%`} class="bg-gradient-to-r from-amber-400 to-brand-yellow h-full" title={`Publications: ${tag.pubsCount}`} />
+                  )}
+                  {tag.projectsCount > 0 && (
+                    <div style={`width: ${tag.projectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${tag.projectsCount}`} />
+                  )}
+                </div>
+
+                <!-- Responsive Legend Breakdown (Option 1) -->
+                <div class="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] text-gray-300 light:text-slate-600 font-medium">
+                  {tag.postsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-blue"></span>
+                      <span>{tag.postsCount} Post{tag.postsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.postsPct}%)</span>
+                    </span>
+                  )}
+                  {tag.pubsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                      <span>{tag.pubsCount} Paper{tag.pubsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
+                    </span>
+                  )}
+                  {tag.projectsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                      <span>{tag.projectsCount} Project{tag.projectsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <!-- Remaining Tags Group (Sorted Alphabetically A-Z) -->
+          {remainingTags.map(tag => (
+            <div class="relative group/tag inline-block">
+              <!-- Tag Pill Link -->
+              <a
+                href={`/posts/tags/${encodeURIComponent(tag.name)}`}
+                class={`inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border transition-all duration-300 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-slate-900/60 light:bg-slate-100/80 border-white/10 light:border-slate-200 hover:border-brand-blue/40 text-gray-300 light:text-slate-700 hover:text-white light:hover:text-slate-900 hover:scale-105`}
+              >
+                <span>#{tag.name}</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.25 rounded-md bg-white/10 light:bg-slate-200 text-gray-400 light:text-slate-600">
+                  {tag.totalCount}
+                </span>
+              </a>
+
+              <!-- Glass Hover Tooltip with Segmented Progress Bar -->
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden group-hover/tag:flex group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-white/15 light:border-slate-200/80 shadow-2xl text-xs w-64 sm:w-72 pointer-events-none z-30 transition-all duration-200 transform animate-in fade-in zoom-in-95">
+                <!-- Tooltip Header -->
+                <div class="flex items-center justify-between text-gray-200 light:text-slate-900 font-bold text-xs">
+                  <span class="truncate">#{tag.name}</span>
+                  <span class="text-brand-blue text-[11px] font-extrabold">{tag.totalCount} item{tag.totalCount > 1 ? 's' : ''}</span>
+                </div>
+
+                <!-- Multi-Color Segmented Progress Bar -->
+                <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
+                  {tag.postsCount > 0 && (
+                    <div style={`width: ${tag.postsPct}%`} class="bg-gradient-to-r from-brand-blue to-sky-400 h-full" title={`Blog Posts: ${tag.postsCount}`} />
+                  )}
+                  {tag.pubsCount > 0 && (
+                    <div style={`width: ${tag.pubsPct}%`} class="bg-gradient-to-r from-amber-400 to-brand-yellow h-full" title={`Publications: ${tag.pubsCount}`} />
+                  )}
+                  {tag.projectsCount > 0 && (
+                    <div style={`width: ${tag.projectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${tag.projectsCount}`} />
+                  )}
+                </div>
+
+                <!-- Responsive Legend Breakdown (Option 1) -->
+                <div class="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] text-gray-300 light:text-slate-600 font-medium">
+                  {tag.postsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-blue"></span>
+                      <span>{tag.postsCount} Post{tag.postsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.postsPct}%)</span>
+                    </span>
+                  )}
+                  {tag.pubsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                      <span>{tag.pubsCount} Paper{tag.pubsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
+                    </span>
+                  )}
+                  {tag.projectsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                      <span>{tag.projectsCount} Project{tag.projectsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Content Graph Section (Vis.js Visualization) -->
     <section id="posts-network" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-8 max-w-2xl">
         <span class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-brand-green/10 text-brand-green border border-brand-green/20 mb-4 tracking-wider uppercase">
-          Interactive Posts Map
+          Interactive Map
         </span>
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Knowledge <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-green via-teal-400 to-brand-blue">Graph</span>
+          Content <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-green via-teal-400 to-brand-blue">Graph</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
-          Interactive network mapping my software engineering articles, research publications, and core computer science topics.
+          Explore an interactive network graph mapping my technical blog posts, research publications, and core computer science topics.
         </p>
       </div>
 

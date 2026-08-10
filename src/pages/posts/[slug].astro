@@ -154,12 +154,12 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
     </header>
 
     {post.data.description && (
-      <aside class="mb-10 p-6 rounded-2xl bg-brand-blue/5 border border-brand-blue/20 text-gray-200 shadow-sm" aria-label="Key Takeaways">
-        <div class="text-xs font-bold text-brand-blue uppercase tracking-wider mb-2 flex items-center gap-2">
+      <aside class="mb-10 p-6 rounded-2xl bg-brand-blue/5 light:bg-blue-50/80 border border-brand-blue/20 light:border-brand-blue/30 text-gray-200 light:text-slate-900 shadow-sm" aria-label="Key Takeaways">
+        <div class="text-xs font-bold text-brand-blue light:text-brand-blue uppercase tracking-wider mb-2 flex items-center gap-2">
           <span class="text-base">⚡</span>
           <span>Key Takeaways / Executive Summary</span>
         </div>
-        <p class="text-sm sm:text-base leading-relaxed text-gray-300 light:text-gray-700">
+        <p class="text-sm sm:text-base leading-relaxed text-gray-300 light:text-slate-800">
           {post.data.description}
         </p>
       </aside>

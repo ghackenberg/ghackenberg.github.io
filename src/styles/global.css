@@ -537,13 +537,19 @@ div.vis-tooltip {
   background: rgba(3, 7, 18, 0.9) !important;
   color: #f8fafc !important;
   font-family: var(--font-sans) !important;
-  padding: 8px 14px !important;
-  border-radius: 14px !important;
+  padding: 10px 14px !important;
+  border-radius: 16px !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.7), 0 0 20px rgba(16, 185, 129, 0.18) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   pointer-events: none !important;
+  white-space: normal !important;
+  width: max-content !important;
+  max-width: 280px !important;
+  box-sizing: border-box !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
   z-index: 1000 !important;
   transition: opacity 0.15s ease-out !important;
 }

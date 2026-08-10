@@ -42,8 +42,12 @@ export default {
     this.visNodes = new vis.DataSet(this.nodes.map(n => {
       const card = document.createElement('div');
       card.style.fontFamily = 'Outfit, Inter, sans-serif';
-      card.style.width = '240px';
+      card.style.width = '250px';
+      card.style.maxWidth = '270px';
       card.style.boxSizing = 'border-box';
+      card.style.whiteSpace = 'normal';
+      card.style.overflowWrap = 'break-word';
+      card.style.wordBreak = 'break-word';
       
       let imageHtml = '';
       if (n.image) {
@@ -65,22 +69,22 @@ export default {
 
       let dateHtml = '';
       if (n.date) {
-        dateHtml = `<span style="font-size: 10px; color: ${isLight ? '#64748b' : '#94a3b8'}; font-weight: 500;">${n.date}</span>`;
+        dateHtml = `<span style="font-size: 10px; color: ${isLight ? '#64748b' : '#94a3b8'}; font-weight: 500; shrink: 0;">${n.date}</span>`;
       }
 
       card.innerHTML = `
-        <div style="padding: 2px;">
+        <div style="padding: 2px; box-sizing: border-box; width: 100%; white-space: normal;">
           ${imageHtml}
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
-            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: ${groupColors[n.group] || '#3b82f6'};">
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: ${groupColors[n.group] || '#3b82f6'}; flex-shrink: 0;">
               ${n.typeLabel || groupNames[n.group] || 'Item'}
             </span>
             ${dateHtml}
           </div>
-          <div style="font-size: 13px; font-weight: 700; line-height: 1.35; color: ${isLight ? '#0f172a' : '#f8fafc'}; margin-bottom: 4px;">
+          <div style="font-size: 13px; font-weight: 700; line-height: 1.35; color: ${isLight ? '#0f172a' : '#f8fafc'}; margin-bottom: 6px; white-space: normal; overflow-wrap: break-word; word-break: break-word;">
             ${n.name}
           </div>
-          ${n.description ? `<div style="font-size: 11px; line-height: 1.4; color: ${isLight ? '#475569' : '#cbd5e1'}; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${n.description}</div>` : ''}
+          ${n.description ? `<div style="font-size: 11px; line-height: 1.45; color: ${isLight ? '#475569' : '#cbd5e1'}; white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; overflow-wrap: break-word; word-break: break-word;">${n.description}</div>` : ''}
           ${tagsHtml}
         </div>
       `;
@@ -164,6 +168,19 @@ export default {
     };
 
     this.network = new vis.Network(container, data, this.options);
+
+    await new Promise((resolve) => {
+      let isDone = false;
+      const finish = () => {
+        if (!isDone) {
+          isDone = true;
+          resolve();
+        }
+      };
+      this.network.once("stabilizationIterationsDone", finish);
+      this.network.once("stabilized", finish);
+      setTimeout(finish, 1500);
+    });
 
     this.network.on("click", (params) => {
       if (params.nodes.length > 0) {
