@@ -16,17 +16,20 @@ export default {
       { 
         background: '#3b82f6', 
         border: isLight ? '#2563eb' : '#60a5fa', 
-        highlight: { background: '#2563eb', border: '#1d4ed8' } 
+        highlight: { background: '#1d4ed8', border: isLight ? '#1e40af' : '#93c5fd' },
+        hover: { background: '#1d4ed8', border: isLight ? '#1e40af' : '#93c5fd' }
       },
       { 
         background: '#10b981', 
         border: isLight ? '#059669' : '#34d399', 
-        highlight: { background: '#059669', border: '#047857' } 
+        highlight: { background: '#047857', border: isLight ? '#065f46' : '#6ee7b7' },
+        hover: { background: '#047857', border: isLight ? '#065f46' : '#6ee7b7' }
       },
       { 
         background: isLight ? '#d97706' : '#f59e0b', 
         border: isLight ? '#b45309' : '#fbbf24', 
-        highlight: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#92400e' : '#b45309' } 
+        highlight: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#78350f' : '#fde68a' },
+        hover: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#78350f' : '#fde68a' }
       }
     ];
 
@@ -90,21 +93,32 @@ export default {
       `;
 
       const isTagNode = n.group === 0;
+      const nodeValue = isTagNode ? (Math.pow(n.size, 2) * 16 + 10) : (n.size * 3 + 2);
       return {
         id: n.id,
         label: isTagNode ? n.name : '',
         title: card,
-        shape: isTagNode ? 'circle' : 'dot',
-        value: isTagNode ? (Math.pow(n.size, 2) * 16 + 10) : (n.size * 3 + 2),
+        shape: 'dot',
+        value: nodeValue,
         x: (Math.random() - 0.5) * 500,
         y: (Math.random() - 0.5) * 500,
         rawGroup: n.group,
         color: colors[n.group],
+        chosen: {
+          node: (values, _id, selected, hovering) => {
+            if (hovering || selected) {
+              if (values.hoverBackground) values.color = values.hoverBackground;
+              if (values.hoverBorder) values.borderColor = values.hoverBorder;
+            }
+          },
+          label: false
+        },
         font: {
           color: isLight ? '#0f172a' : '#f8fafc',
           size: isTagNode ? Math.min(19 + Math.round(n.size * 3.6), 32) : 15,
           face: 'Outfit, Inter, sans-serif',
           align: 'center',
+          vadjust: isTagNode ? -Math.round(nodeValue * 0.35) : 0,
           strokeWidth: isLight ? 2.5 : 3,
           strokeColor: isLight ? '#ffffff' : '#0f172a'
         }
@@ -127,6 +141,7 @@ export default {
 
     const interactionOptions = Object.assign({
       hover: true,
+      hoverConnectedEdges: false,
       tooltipDelay: 100,
       zoomView: true,
       dragView: true
@@ -139,6 +154,15 @@ export default {
     this.options = {
       nodes: {
         shape: 'dot',
+        chosen: {
+          node: (values, _id, selected, hovering) => {
+            if (hovering || selected) {
+              if (values.hoverBackground) values.color = values.hoverBackground;
+              if (values.hoverBorder) values.borderColor = values.hoverBorder;
+            }
+          },
+          label: false
+        },
         scaling: {
           min: 10,
           max: 84,
