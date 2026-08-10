@@ -1,7 +1,7 @@
 ---
 // Background.astro
-// Clear vector-style night sky background with responsive day/night transitions,
-// crescent moon, detailed starfield, shooting stars, floating clouds,
+// Clear vector-style night sky background with responsive day/night color schemes,
+// crescent moon, detailed sparkling starfield, shooting stars,
 // and smooth scroll/mouse parallax effects on celestial elements.
 ---
 <div class="background-container fixed inset-0 overflow-hidden pointer-events-none z-0 select-none">
@@ -9,21 +9,21 @@
   <div class="sky-bg sky-bg-night"></div>
   <div class="sky-bg sky-bg-day"></div>
 
-  <!-- 2. Crescent Moon & Atmospheric Aura (Dark Mode Only) -->
+  <!-- 2. Crescent Moon & Atmospheric Aura -->
   <div id="bg-layer-moon" class="moon-container absolute top-[5%] right-[6%] md:top-[8%] md:right-[12%] pointer-events-none transition-opacity duration-1000">
     <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <!-- Celestial Aura Glow -->
         <radialGradient id="moon-aura-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.22" />
-          <stop offset="45%" stop-color="#3b82f6" stop-opacity="0.08" />
-          <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0" />
+          <stop class="moon-aura-stop-1" offset="0%" stop-color="#93c5fd" stop-opacity="0.22" />
+          <stop class="moon-aura-stop-2" offset="45%" stop-color="#3b82f6" stop-opacity="0.08" />
+          <stop class="moon-aura-stop-3" offset="100%" stop-color="#1e1b4b" stop-opacity="0" />
         </radialGradient>
         <!-- Moon Surface Gradient -->
         <linearGradient id="moon-surface-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#ffffff" />
-          <stop offset="40%" stop-color="#f1f5f9" />
-          <stop offset="100%" stop-color="#94a3b8" />
+          <stop class="moon-surf-stop-1" offset="0%" stop-color="#ffffff" />
+          <stop class="moon-surf-stop-2" offset="40%" stop-color="#f1f5f9" />
+          <stop class="moon-surf-stop-3" offset="100%" stop-color="#94a3b8" />
         </linearGradient>
       </defs>
       <!-- Soft Outer Aura -->
@@ -32,150 +32,43 @@
       <g transform="translate(38, 38)">
         <path d="M 38 0 A 38 38 0 1 1 38 76 A 28 28 0 1 0 38 0 Z" fill="url(#moon-surface-grad)" />
         <!-- Subtle Crater Details -->
-        <circle cx="30" cy="20" r="3.5" fill="#94a3b8" opacity="0.35" />
-        <circle cx="24" cy="38" r="4" fill="#64748b" opacity="0.3" />
-        <circle cx="34" cy="54" r="2.8" fill="#94a3b8" opacity="0.35" />
+        <circle cx="30" cy="20" r="3.5" class="moon-crater-1" fill="#94a3b8" opacity="0.35" />
+        <circle cx="24" cy="38" r="4" class="moon-crater-2" fill="#64748b" opacity="0.3" />
+        <circle cx="34" cy="54" r="2.8" class="moon-crater-3" fill="#94a3b8" opacity="0.35" />
       </g>
     </svg>
   </div>
 
-  <!-- 3. Twinkling Stars (Dark Mode Only) -->
+  <!-- 3. Twinkling Stars -->
   <svg id="bg-layer-stars" class="stars-svg absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
     <g id="sparkling-stars" class="transition-opacity duration-700"></g>
   </svg>
 
-  <!-- 4. Shooting Stars (Dark Mode Only) -->
+  <!-- 4. Shooting Stars -->
   <div id="bg-layer-shooting-stars" class="shooting-stars-container absolute inset-0">
     <div class="shooting-star shooting-star-1"></div>
     <div class="shooting-star shooting-star-2"></div>
     <div class="shooting-star shooting-star-3"></div>
   </div>
-
-  <!-- 5. Floating Clouds (Light Mode Only) -->
-  <div id="bg-layer-clouds" class="clouds-container absolute inset-0 overflow-hidden">
-    <!-- Cloud 1 -->
-    <div class="cloud cloud-1">
-      <svg width="220" height="90" viewBox="0 0 220 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cloud-grad-1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-            <stop offset="60%" stop-color="#e2e8f0" stop-opacity="0.75" />
-            <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.5" />
-          </linearGradient>
-          <linearGradient id="cloud-highlight-1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
-          </linearGradient>
-        </defs>
-        <path d="M40 70 A 25 25 0 0 1 60 30 A 35 35 0 0 1 125 25 A 30 30 0 0 1 175 40 A 22 22 0 0 1 200 70 Z" fill="#94a3b8" fill-opacity="0.2" transform="translate(0, 4)" />
-        <path d="M40 70 A 25 25 0 0 1 60 30 A 35 35 0 0 1 125 25 A 30 30 0 0 1 175 40 A 22 22 0 0 1 200 70 Z" fill="url(#cloud-grad-1)" />
-        <path d="M40 70 A 25 25 0 0 1 60 30 A 35 35 0 0 1 125 25 A 30 30 0 0 1 175 40" stroke="url(#cloud-highlight-1)" stroke-width="2.5" stroke-linecap="round" fill="none" />
-      </svg>
-    </div>
-    
-    <!-- Cloud 2 -->
-    <div class="cloud cloud-2">
-      <svg width="260" height="100" viewBox="0 0 260 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cloud-grad-2" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-            <stop offset="65%" stop-color="#e2e8f0" stop-opacity="0.8" />
-            <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.55" />
-          </linearGradient>
-          <linearGradient id="cloud-highlight-2" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
-          </linearGradient>
-        </defs>
-        <path d="M30 80 A 20 20 0 0 1 45 45 A 28 28 0 0 1 95 35 A 40 40 0 0 1 170 30 A 30 30 0 0 1 220 50 A 20 20 0 0 1 240 80 Z" fill="#94a3b8" fill-opacity="0.2" transform="translate(0, 4)" />
-        <path d="M30 80 A 20 20 0 0 1 45 45 A 28 28 0 0 1 95 35 A 40 40 0 0 1 170 30 A 30 30 0 0 1 220 50 A 20 20 0 0 1 240 80 Z" fill="url(#cloud-grad-2)" />
-        <path d="M30 80 A 20 20 0 0 1 45 45 A 28 28 0 0 1 95 35 A 40 40 0 0 1 170 30 A 30 30 0 0 1 220 50" stroke="url(#cloud-highlight-2)" stroke-width="2.5" stroke-linecap="round" fill="none" />
-      </svg>
-    </div>
-
-    <!-- Cloud 3 -->
-    <div class="cloud cloud-3">
-      <svg width="200" height="110" viewBox="0 0 200 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cloud-grad-3" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-            <stop offset="55%" stop-color="#e2e8f0" stop-opacity="0.75" />
-            <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.5" />
-          </linearGradient>
-          <linearGradient id="cloud-highlight-3" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
-          </linearGradient>
-        </defs>
-        <path d="M25 90 A 22 22 0 0 1 40 50 A 32 32 0 0 1 90 25 A 35 35 0 0 1 150 45 A 25 25 0 0 1 180 90 Z" fill="#94a3b8" fill-opacity="0.2" transform="translate(0, 4)" />
-        <path d="M25 90 A 22 22 0 0 1 40 50 A 32 32 0 0 1 90 25 A 35 35 0 0 1 150 45 A 25 25 0 0 1 180 90 Z" fill="url(#cloud-grad-3)" />
-        <path d="M25 90 A 22 22 0 0 1 40 50 A 32 32 0 0 1 90 25 A 35 35 0 0 1 150 45" stroke="url(#cloud-highlight-3)" stroke-width="2.5" stroke-linecap="round" fill="none" />
-      </svg>
-    </div>
-
-    <!-- Cloud 4 -->
-    <div class="cloud cloud-4">
-      <svg width="150" height="70" viewBox="0 0 150 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cloud-grad-4" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-            <stop offset="70%" stop-color="#e2e8f0" stop-opacity="0.8" />
-            <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.55" />
-          </linearGradient>
-          <linearGradient id="cloud-highlight-4" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
-          </linearGradient>
-        </defs>
-        <path d="M20 55 A 15 15 0 0 1 30 25 A 22 22 0 0 1 70 20 A 18 18 0 0 1 110 30 A 15 15 0 0 1 130 55 Z" fill="#94a3b8" fill-opacity="0.2" transform="translate(0, 3)" />
-        <path d="M20 55 A 15 15 0 0 1 30 25 A 22 22 0 0 1 70 20 A 18 18 0 0 1 110 30 A 15 15 0 0 1 130 55 Z" fill="url(#cloud-grad-4)" />
-        <path d="M20 55 A 15 15 0 0 1 30 25 A 22 22 0 0 1 70 20 A 18 18 0 0 1 110 30" stroke="url(#cloud-highlight-4)" stroke-width="2" stroke-linecap="round" fill="none" />
-      </svg>
-    </div>
-
-    <!-- Cloud 5 (Large Screen Only) -->
-    <div class="cloud cloud-5">
-      <svg width="300" height="110" viewBox="0 0 300 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cloud-grad-5" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-            <stop offset="60%" stop-color="#e2e8f0" stop-opacity="0.75" />
-            <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.5" />
-          </linearGradient>
-          <linearGradient id="cloud-highlight-5" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
-          </linearGradient>
-        </defs>
-        <path d="M35 90 A 25 25 0 0 1 55 50 A 35 35 0 0 1 115 35 A 45 45 0 0 1 200 30 A 35 35 0 0 1 255 50 A 25 25 0 0 1 275 90 Z" fill="#94a3b8" fill-opacity="0.2" transform="translate(0, 4)" />
-        <path d="M35 90 A 25 25 0 0 1 55 50 A 35 35 0 0 1 115 35 A 45 45 0 0 1 200 30 A 35 35 0 0 1 255 50 A 25 25 0 0 1 275 90 Z" fill="url(#cloud-grad-5)" />
-        <path d="M35 90 A 25 25 0 0 1 55 50 A 35 35 0 0 1 115 35 A 45 45 0 0 1 200 30 A 35 35 0 0 1 255 50" stroke="url(#cloud-highlight-5)" stroke-width="2.5" stroke-linecap="round" fill="none" />
-      </svg>
-    </div>
-
-    <!-- Cloud 6 (Large Screen Only) -->
-    <div class="cloud cloud-6">
-      <svg width="240" height="95" viewBox="0 0 240 95" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cloud-grad-6" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-            <stop offset="65%" stop-color="#e2e8f0" stop-opacity="0.8" />
-            <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.55" />
-          </linearGradient>
-          <linearGradient id="cloud-highlight-6" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
-          </linearGradient>
-        </defs>
-        <path d="M30 75 A 22 22 0 0 1 45 40 A 30 30 0 0 1 100 30 A 32 32 0 0 1 160 35 A 25 25 0 0 1 200 45 A 20 20 0 0 1 220 75 Z" fill="#94a3b8" fill-opacity="0.2" transform="translate(0, 4)" />
-        <path d="M30 75 A 22 22 0 0 1 45 40 A 30 30 0 0 1 100 30 A 32 32 0 0 1 160 35 A 25 25 0 0 1 200 45 A 20 20 0 0 1 220 75 Z" fill="url(#cloud-grad-6)" />
-        <path d="M30 75 A 22 22 0 0 1 45 40 A 30 30 0 0 1 100 30 A 32 32 0 0 1 160 35 A 25 25 0 0 1 200 45" stroke="url(#cloud-highlight-6)" stroke-width="2.5" stroke-linecap="round" fill="none" />
-      </svg>
-    </div>
-  </div>
 </div>
 
 <style>
+  :root {
+    --star-c-0: #ffffff;
+    --star-c-1: #ffffff;
+    --star-c-2: #e0f2fe;
+    --star-c-3: #fef08a;
+    --star-c-4: #f3e8ff;
+  }
+
+  :global(.light) {
+    --star-c-0: #0f172a;
+    --star-c-1: #1e293b;
+    --star-c-2: #334155;
+    --star-c-3: #475569;
+    --star-c-4: #64748b;
+  }
+
   /* Base Container */
   .background-container {
     width: 100%;
@@ -194,7 +87,7 @@
     opacity: 1;
   }
   .sky-bg-day {
-    background: linear-gradient(to bottom, #7dd3fc 0%, #bae6fd 50%, #f8fafc 100%);
+    background: radial-gradient(circle at 75% 15%, #94a3b8 0%, #cbd5e1 35%, #e2e8f0 65%, #f8fafc 100%);
     opacity: 0;
   }
   :global(.light) .sky-bg-night {
@@ -204,24 +97,37 @@
     opacity: 1;
   }
 
-  /* Moon Container */
+  /* Moon Container & Light Mode Overrides */
   .moon-container {
     pointer-events: none;
     will-change: transform;
     transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
   }
   :global(.light) .moon-container {
-    opacity: 0;
+    opacity: 0.95;
   }
+  :global(.light) .moon-aura-stop-1 { stop-color: #475569; stop-opacity: 0.4; }
+  :global(.light) .moon-aura-stop-2 { stop-color: #64748b; stop-opacity: 0.22; }
+  :global(.light) .moon-aura-stop-3 { stop-color: #94a3b8; stop-opacity: 0; }
+
+  :global(.light) .moon-surf-stop-1 { stop-color: #ffffff; }
+  :global(.light) .moon-surf-stop-2 { stop-color: #e2e8f0; }
+  :global(.light) .moon-surf-stop-3 { stop-color: #64748b; }
+
+  :global(.light) .moon-crater-1 { fill: #334155; opacity: 0.5; }
+  :global(.light) .moon-crater-2 { fill: #0f172a; opacity: 0.45; }
+  :global(.light) .moon-crater-3 { fill: #334155; opacity: 0.5; }
 
   /* Twinkling Stars */
   .stars-svg {
     pointer-events: none;
     will-change: transform;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
   }
   :global(.light) .stars-svg {
-    opacity: 0;
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.85;
   }
   
   /* Twinkling CSS animation */
@@ -243,7 +149,7 @@
     will-change: transform;
   }
   :global(.light) .shooting-stars-container {
-    opacity: 0;
+    opacity: 0.85;
   }
   .shooting-star {
     position: absolute;
@@ -252,6 +158,9 @@
     background: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 100%);
     opacity: 0;
     pointer-events: none;
+  }
+  :global(.light) .shooting-star {
+    background: linear-gradient(to left, rgba(71, 85, 105, 0) 0%, rgba(30, 41, 59, 0.85) 60%, rgba(15, 23, 42, 0.95) 100%);
   }
   .shooting-star-1 {
     top: 8%;
@@ -288,62 +197,6 @@
     3.5% { transform: rotate(-32deg) translateX(-420px) scaleX(1); opacity: 0; }
     100% { transform: rotate(-32deg) translateX(-420px) scaleX(0); opacity: 0; }
   }
-
-  /* Floating Clouds */
-  .clouds-container {
-    pointer-events: none;
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0;
-    will-change: transform;
-  }
-  :global(.light) .clouds-container {
-    opacity: 0.7;
-  }
-  .cloud {
-    position: absolute;
-    pointer-events: none;
-  }
-  .cloud-1 {
-    top: 5%;
-    animation: float-cloud-anim 110s linear infinite;
-    animation-delay: -20s;
-  }
-  .cloud-2 {
-    top: 18%;
-    animation: float-cloud-anim 150s linear infinite;
-    animation-delay: -80s;
-  }
-  .cloud-3 {
-    top: 24%;
-    animation: float-cloud-anim 180s linear infinite;
-    animation-delay: -135s;
-  }
-  .cloud-4 {
-    top: 10%;
-    animation: float-cloud-anim 95s linear infinite;
-    animation-delay: -45s;
-  }
-  .cloud-5 {
-    top: 14%;
-    display: none;
-    animation: float-cloud-anim 160s linear infinite;
-    animation-delay: -110s;
-  }
-  .cloud-6 {
-    top: 27%;
-    display: none;
-    animation: float-cloud-anim 130s linear infinite;
-    animation-delay: -50s;
-  }
-  @media (min-width: 1024px) {
-    .cloud-5, .cloud-6 {
-      display: block;
-    }
-  }
-  @keyframes float-cloud-anim {
-    0% { transform: translate3d(-320px, 0, 0); }
-    100% { transform: translate3d(105vw, 0, 0); }
-  }
 </style>
 
 <script>
@@ -351,9 +204,8 @@
     const starsLayer = document.getElementById('bg-layer-stars');
     const moonLayer = document.getElementById('bg-layer-moon');
     const shootingStarsLayer = document.getElementById('bg-layer-shooting-stars');
-    const cloudsLayer = document.getElementById('bg-layer-clouds');
 
-    if (!starsLayer && !cloudsLayer && !moonLayer) {
+    if (!starsLayer && !moonLayer) {
       return;
     }
 
@@ -418,9 +270,6 @@
       if (shootingStarsLayer) {
         shootingStarsLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.03}px, 0)`;
       }
-      if (cloudsLayer) {
-        cloudsLayer.style.transform = `translate3d(0, ${-currentScrollY * 0.08}px, 0)`;
-      }
 
       const scrollDiff = Math.abs(targetScrollY - currentScrollY);
       const mouseDiffX = Math.abs(targetMouseX - currentMouseX);
@@ -446,7 +295,13 @@
     if (starsGroup) {
       starsGroup.innerHTML = '';
       const numStars = 140;
-      const starColors = ['#ffffff', '#ffffff', '#e0f2fe', '#fef08a', '#f3e8ff'];
+      const starColors = [
+        'var(--star-c-0)',
+        'var(--star-c-1)',
+        'var(--star-c-2)',
+        'var(--star-c-3)',
+        'var(--star-c-4)'
+      ];
 
       for (let i = 0; i < numStars; i++) {
         const cx = Math.random() * 100; // percent
@@ -500,3 +355,4 @@
   // Re-run setup on View Transition navigation
   document.addEventListener('astro:page-load', initBackground);
 </script>
+
