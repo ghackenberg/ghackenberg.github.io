@@ -2,7 +2,7 @@
 
 This repository contains the codebase for the personal website of Dr. Georg Hackenberg, Professor for Industrial Informatics, software engineer, and entrepreneur.
 
-The site is built using **Astro** and **Tailwind CSS v4**, and is hosted on GitHub Pages at [ghackenberg.github.io](https://ghackenberg.github.io/).
+The site is built using **Astro** and **Tailwind CSS v4**, and is hosted at [hackenberg.tech](https://hackenberg.tech/).
 
 ## Local Development
 

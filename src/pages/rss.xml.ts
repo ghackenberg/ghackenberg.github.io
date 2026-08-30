@@ -9,7 +9,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: 'Dr. Georg Hackenberg | Posts & Articles',
     description: 'Personal blog, technical articles, and academic insights from Dr. Georg Hackenberg, Full Professor for Industrial Informatics.',
-    site: context.site || 'https://ghackenberg.github.io',
+    site: context.site || 'https://hackenberg.tech',
     items: sortedPosts.map((post) => ({
       title: post.data.title,
       pubDate: post.data.pubDate,

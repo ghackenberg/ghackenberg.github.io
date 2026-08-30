@@ -109,7 +109,7 @@ function copyContentAssets() {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ghackenberg.github.io',
+  site: 'https://hackenberg.tech',
   image: {
     dangerouslyProcessSVG: true,
   },

@@ -3,19 +3,19 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Personal portfolio website of Dr. Georg Hackenberg",
-  "author": "Georg Hackenberg <georg.hackenberg@fh-wels.at> (https://ghackenberg.github.io)",
+  "author": "Georg Hackenberg <georg.hackenberg@fh-wels.at> (https://hackenberg.tech)",
   "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ghackenberg/ghackenberg.github.io.git"
   },
-  "homepage": "https://ghackenberg.github.io",
+  "homepage": "https://hackenberg.tech",
   "engines": {
     "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run generate-assets && astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
     "lint": "eslint .",

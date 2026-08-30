@@ -65,7 +65,7 @@ const seoDescription = cleanAbstract.length > 156
   ? `${cleanAbstract.substring(0, 153)}...` 
   : cleanAbstract || `Academic research publication by Dr. Georg Hackenberg: "${pub.data.title}"`;
 
-const pubUrl = `https://ghackenberg.github.io/publications/${pub.id}`;
+const pubUrl = `https://hackenberg.tech/publications/${pub.id}`;
 
 const scholarlyArticleSchema = {
   "@context": "https://schema.org",
@@ -99,13 +99,13 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://ghackenberg.github.io"
+      "item": "https://hackenberg.tech"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Publications",
-      "item": "https://ghackenberg.github.io/publications"
+      "item": "https://hackenberg.tech/publications"
     },
     {
       "@type": "ListItem",

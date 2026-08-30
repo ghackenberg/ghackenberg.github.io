@@ -66,8 +66,8 @@ User-agent: Google-Extended
 Allow: /
 
 # LLM Standard Definition
-# llms.txt: https://ghackenberg.github.io/llms.txt
-# llms-full.txt: https://ghackenberg.github.io/llms-full.txt
+# llms.txt: https://hackenberg.tech/llms.txt
+# llms-full.txt: https://hackenberg.tech/llms-full.txt
 ```
 Zusätzlich generiert `@astrojs/rss` unter `/rss.xml` ein valides RSS 2.0 XML-Feed für Feed-Reader und automatisierte Aggregatoren.
 

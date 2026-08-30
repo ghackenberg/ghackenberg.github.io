@@ -63,7 +63,7 @@ const colorClasses = {
   }
 }[service.data.color];
 
-const serviceUrl = `https://ghackenberg.github.io/services/${service.id}`;
+const serviceUrl = `https://hackenberg.tech/services/${service.id}`;
 
 const serviceSchema = {
   "@context": "https://schema.org",
@@ -76,7 +76,7 @@ const serviceSchema = {
   "provider": {
     "@type": "Person",
     "name": "Dr. Georg Hackenberg",
-    "url": "https://ghackenberg.github.io"
+    "url": "https://hackenberg.tech"
   },
   "areaServed": "Global"
 };
@@ -89,13 +89,13 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://ghackenberg.github.io"
+      "item": "https://hackenberg.tech"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Services",
-      "item": "https://ghackenberg.github.io/services"
+      "item": "https://hackenberg.tech/services"
     },
     {
       "@type": "ListItem",
