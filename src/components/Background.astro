@@ -5,16 +5,12 @@
 // and smooth scroll/mouse parallax effects on celestial elements.
 ---
 <div class="background-container fixed inset-0 overflow-hidden pointer-events-none z-0 select-none">
-  <!-- 1. Sky Gradients -->
-  <div class="sky-bg sky-bg-night"></div>
-  <div class="sky-bg sky-bg-day"></div>
-
-  <!-- 3. Twinkling Stars -->
+  <!-- Twinkling Stars -->
   <svg id="bg-layer-stars" class="stars-svg absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
     <g id="sparkling-stars" class="transition-opacity duration-700"></g>
   </svg>
 
-  <!-- 4. Shooting Stars -->
+  <!-- Shooting Stars -->
   <div id="bg-layer-shooting-stars" class="shooting-stars-container absolute inset-0">
     <div class="shooting-star shooting-star-1"></div>
     <div class="shooting-star shooting-star-2"></div>
@@ -24,19 +20,11 @@
 
 <style>
   :root {
-    --star-c-0: #ffffff;
-    --star-c-1: #ffffff;
-    --star-c-2: #e0f2fe;
-    --star-c-3: #fef08a;
-    --star-c-4: #f3e8ff;
+    --star-color: #fef9c3;
   }
 
   :global(.light) {
-    --star-c-0: #0f172a;
-    --star-c-1: #1e293b;
-    --star-c-2: #334155;
-    --star-c-3: #475569;
-    --star-c-4: #64748b;
+    --star-color: #64748b;
   }
 
   /* Base Container */
@@ -45,70 +33,48 @@
     height: 100vh;
   }
 
-  /* Sky Gradients */
-  .sky-bg {
-    position: absolute;
-    inset: 0;
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-  }
-  .sky-bg-night {
-    background: radial-gradient(ellipse at 0% 100%, #0d1b3e 0%, #060c21 55%, #02050e 100%);
-    opacity: 1;
-  }
-  .sky-bg-day {
-    background: radial-gradient(ellipse at 0% 100%, #94a3b8 0%, #cbd5e1 40%, #e2e8f0 70%, #f8fafc 100%);
-    opacity: 0;
-  }
-  :global(.light) .sky-bg-night {
-    opacity: 0;
-  }
-  :global(.light) .sky-bg-day {
-    opacity: 1;
-  }
-
   /* Twinkling Stars */
   .stars-svg {
     pointer-events: none;
     will-change: transform;
     transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 1;
+    opacity: 0.75;
   }
   :global(.light) .stars-svg {
-    opacity: 0.85;
+    opacity: 0.55;
   }
   
   /* Twinkling CSS animation */
   :global(@keyframes twinkle) {
-    0%, 100% { opacity: 0.2; transform: scale(0.85); }
-    50% { opacity: 1; transform: scale(1.2); }
+    0%, 100% { opacity: 0.25; transform: scale(0.85); }
+    50% { opacity: 0.85; transform: scale(1.15); }
   }
 
   :global(@keyframes twinkle-hero) {
     0%, 100% { opacity: 0.3; transform: scale(0.7) rotate(0deg); }
-    50% { opacity: 1; transform: scale(1.3) rotate(45deg); }
+    50% { opacity: 0.9; transform: scale(1.25) rotate(45deg); }
   }
 
   /* Shooting Stars */
   .shooting-stars-container {
     pointer-events: none;
     transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 1;
+    opacity: 0.65;
     will-change: transform;
   }
   :global(.light) .shooting-stars-container {
-    opacity: 0.85;
+    opacity: 0.55;
   }
   .shooting-star {
     position: absolute;
     width: 90px;
     height: 1.5px;
-    background: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 100%);
+    background: linear-gradient(to left, rgba(254, 249, 195, 0) 0%, rgba(254, 249, 195, 0.75) 100%);
     opacity: 0;
     pointer-events: none;
   }
   :global(.light) .shooting-star {
-    background: linear-gradient(to left, rgba(71, 85, 105, 0) 0%, rgba(30, 41, 59, 0.85) 60%, rgba(15, 23, 42, 0.95) 100%);
+    background: linear-gradient(to left, rgba(100, 116, 139, 0) 0%, rgba(100, 116, 139, 0.65) 100%);
   }
   .shooting-star-1 {
     top: 8%;
@@ -129,19 +95,19 @@
   }
   @keyframes shoot-1 {
     0% { transform: rotate(-35deg) translateX(0) scaleX(0); opacity: 0; }
-    1% { opacity: 0.85; transform: rotate(-35deg) translateX(0) scaleX(1); }
+    1% { opacity: 0.7; transform: rotate(-35deg) translateX(0) scaleX(1); }
     3% { transform: rotate(-35deg) translateX(-350px) scaleX(1); opacity: 0; }
     100% { transform: rotate(-35deg) translateX(-350px) scaleX(0); opacity: 0; }
   }
   @keyframes shoot-2 {
     0% { transform: rotate(-38deg) translateX(0) scaleX(0); opacity: 0; }
-    1% { opacity: 0.75; transform: rotate(-38deg) translateX(0) scaleX(1); }
+    1% { opacity: 0.65; transform: rotate(-38deg) translateX(0) scaleX(1); }
     3% { transform: rotate(-38deg) translateX(-280px) scaleX(1); opacity: 0; }
     100% { transform: rotate(-38deg) translateX(-280px) scaleX(0); opacity: 0; }
   }
   @keyframes shoot-3 {
     0% { transform: rotate(-32deg) translateX(0) scaleX(0); opacity: 0; }
-    1% { opacity: 0.9; transform: rotate(-32deg) translateX(0) scaleX(1); }
+    1% { opacity: 0.75; transform: rotate(-32deg) translateX(0) scaleX(1); }
     3.5% { transform: rotate(-32deg) translateX(-420px) scaleX(1); opacity: 0; }
     100% { transform: rotate(-32deg) translateX(-420px) scaleX(0); opacity: 0; }
   }
@@ -239,18 +205,12 @@
     if (starsGroup) {
       starsGroup.innerHTML = '';
       const numStars = 140;
-      const starColors = [
-        'var(--star-c-0)',
-        'var(--star-c-1)',
-        'var(--star-c-2)',
-        'var(--star-c-3)',
-        'var(--star-c-4)'
-      ];
+      const starColor = 'var(--star-color)';
 
       for (let i = 0; i < numStars; i++) {
         const cx = Math.random() * 100; // percent
         const cy = Math.random() * 75;  // upper 75% of sky
-        const color = starColors[Math.floor(Math.random() * starColors.length)];
+        const color = starColor;
         const delay = Math.random() * 6; // staggered delay
         const duration = Math.random() * 3.5 + 2.5; // star twinkle speed
         
@@ -259,13 +219,13 @@
         if (isHeroStar) {
           // 4-point sparkle star SVG path
           const heroStar = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-          const size = Math.random() * 6 + 6;
+          const size = Math.random() * 5 + 4;
           heroStar.setAttribute('transform', `translate(${(cx / 100) * window.innerWidth}, ${(cy / 100) * window.innerHeight})`);
           
           const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
           path.setAttribute('d', `M 0 -${size} Q 0 0 ${size} 0 Q 0 0 0 ${size} Q 0 0 -${size} 0 Q 0 0 0 -${size} Z`);
           path.setAttribute('fill', color);
-          path.setAttribute('opacity', (Math.random() * 0.5 + 0.5).toString());
+          path.setAttribute('opacity', (Math.random() * 0.3 + 0.5).toString());
           
           path.style.transformOrigin = 'center';
           path.style.transformBox = 'fill-box';
@@ -275,13 +235,13 @@
           starsGroup.appendChild(heroStar);
         } else {
           // Standard circular star
-          const r = Math.random() * 1.1 + 0.4; // 0.4px to 1.5px
+          const r = Math.random() * 0.8 + 0.4; // 0.4px to 1.2px
           const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
           star.setAttribute('cx', `${cx}%`);
           star.setAttribute('cy', `${cy}%`);
           star.setAttribute('r', r.toString());
           star.setAttribute('fill', color);
-          star.setAttribute('opacity', (Math.random() * 0.6 + 0.35).toString());
+          star.setAttribute('opacity', (Math.random() * 0.35 + 0.4).toString());
           
           star.style.transformOrigin = `${cx}% ${cy}%`;
           star.style.transformBox = 'fill-box';

@@ -27,7 +27,6 @@
   --color-bg-pane: rgba(15, 23, 42, 0.75);
   --color-bg-card: rgba(30, 41, 59, 0.45);
   --color-bg-main: #030712;
-  --color-bg-gradient: radial-gradient(circle at 50% 0%, #060c20 0%, #030712 100%);
 
   /* Shifted, cool slate-blue theme gray overrides for high contrast readability */
   --color-gray-50: #f8fafc;
@@ -65,8 +64,7 @@
   
   --color-bg-pane: rgba(255, 255, 255, 0.75);
   --color-bg-card: rgba(255, 255, 255, 0.45);
-  --color-bg-main: #f8fafc;
-  --color-bg-gradient: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 100%);
+  --color-bg-main: #ebf2f8;
 
   /* Interface Element Tokens light mode shifts */
   --color-element-bg: rgba(15, 23, 42, 0.04);
@@ -86,7 +84,7 @@
   --color-gray-700: #cbd5e1;
   --color-gray-800: #e2e8f0;
   --color-gray-900: #f1f5f9;
-  --color-gray-950: #f8fafc;
+  --color-gray-950: #ebf2f8;
 }
 
 @layer base {
@@ -102,8 +100,6 @@
   
   body {
     background-color: var(--color-bg-main);
-    background-image: var(--color-bg-gradient);
-    background-repeat: no-repeat;
     color: var(--color-text-main);
     overflow-x: hidden;
     transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
@@ -448,10 +444,10 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
 
 /* Timeline lifeline dashed SVG lines in light mode */
 .light [data-lifeline-dashed-top] stop[offset="0%"] {
-  stop-color: #f8fafc !important;
+  stop-color: #ebf2f8 !important;
 }
 .light [data-lifeline-dashed-bottom] stop[offset="100%"] {
-  stop-color: #f8fafc !important;
+  stop-color: #ebf2f8 !important;
 }
 
 /* Prevent KaTeX math blocks from breaking horizontal layout responsiveness */
