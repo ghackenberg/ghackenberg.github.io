@@ -14,8 +14,6 @@ Um dieses Problem mit einer Symbiose aus handwerklicher Präzision, Thermodynami
 
 ![Massivholz-Kühldock für GPU- und KI-Laptops - Hero Übersicht](./icon.svg)
 
----
-
 ## 1. Die Problemstellung: Hitzestau und Thermal Throttling am Schreibtisch
 
 Moderne Laptop-Kühlsysteme vollbringen mechatronische Höchstleistungen. Kompakte Vapor Chambers und hochdrehende Radiallüfter (oft 4.500 bis über 6.000 U/min) transportieren bis zu 150 bis 175 Watt Verlustleistung (TDP) aus CPU und dedizierter GPU ab. 
@@ -26,8 +24,6 @@ Ein konstruktives Dilemma vieler aktueller Hochleistungs-Notebooks liegt jedoch 
 3. **Thermal Throttling & Akustikbelastung:** Die GPU erreicht binnen weniger Minuten ihr Temperatur-Limit ($T_{j,\max} \approx 87\text{--}100\,^\circ\text{C}$). Die Folge: Die Taktfrequenzen brechen drastisch ein (Leistungsverluste von 20–35 %), während die Lüfter mit schrillem, ermüdendem Rauschen auf maximaler Drehzahl laufen.
 
 Herkömmliche Laptop-Ständer aus gestanztem Blech oder klapprigem Plastik schaffen hier oft nur unzureichend Abhilfe und wirken im hochwertigen Büro- oder Homeoffice-Ambiente wie Fremdkörper.
-
----
 
 ## 2. Das Konzept: Ein monolithischer Massivholzblock mit integrierter Strömungsmatrix
 
@@ -46,8 +42,6 @@ Im Zentrum des Docks befindet sich keine bloße Öffnung, sondern eine **aerodyn
 - **Akustische Resonanzdämpfung von Massivholz:** Holz besitzt durch seine zelluläre Faserstruktur eine signifikant höhere innere Eigendämpfung als Aluminium oder Kunststoffe. Hochfrequente Turbulenzgeräusche und Vibrationen der Laptop-Lüfter werden vom Holzkorpus absorbiert, wodurch der empfundene Schalldruckpegel am Arbeitsplatz spürbar sinkt (Messungen zeigen eine Reduktion um bis zu $6\text{ bis }8\text{ dB(A)}$).
 - **Punktuelle Silikon-Entkopplung:** Vier bündig eingelassene Elastomer-Puffer verhindern jedes Verrutschen des Notebooks und verhindern direkte Körperschallübertragungen auf den Schreibtisch.
 
----
-
 ## 3. Systemarchitektur & Multidomänen-Flussmodell
 
 Um die Interaktion zwischen Berechnungs-Workload, thermischer Dissipation und Raumumgebung ganzheitlich im Sinne der Industrieinformatik abzubilden, lässt sich das System in drei interagierende Domänen gliedern: **Energiefluss**, **Materialfluss (Fluidik)** und **Datenfluss**.
@@ -63,8 +57,6 @@ Frische Umgebungsluft ($T_{\text{amb}} \approx 21\text{--}23\,^\circ\text{C}$) t
 ### C. Der Daten- & Regelungsfluss (Blau)
 Auf Softwareebene überwacht ein Telemetrie-Daemon (über APIs wie NVIDIA NVML) kontinuierlich Kern- und Hotspot-Temperaturen, Power Limits und Fan Curves. Dank des verbesserten Wärmeübergangs $\Delta T$ kann das Notebook dauerhaft im optimalen Boost-Bereich takten, ohne in thermisch bedingte Drosselungen abzugleiten.
 
----
-
 ## 4. Primäre Einsatzgebiete: Wo die Holzunterlage den Unterschied macht
 
 Das Massivholz-Kühldock entfaltet seinen größten Mehrwert bei kontinuierlichen Rechenlasten (Sustained Workloads):
@@ -78,16 +70,12 @@ Im mechatronischen Engineering – von parametrischen CAD-Konstruktionen (Autode
 ### 3. Realtime Visualisierung & Game Engine Development
 Beim Arbeiten in Umgebungen wie Unreal Engine oder Unity sowie bei anspruchsvollen Rendering-Sessions bleibt die Tischoberfläche kühl, und die Handauflageflächen des Laptops heizen sich nicht unangenehm auf.
 
----
-
 ## 5. Modulare Erweiterungsoption: Passive vs. Aktive Kühlung
 
 Während die passive Konvektion des Holz-Kühldocks für die allermeisten Anwendungsszenarien einen Temperaturvorteil von **$8\text{ bis }12\,^\circ\text{C}$** an den GPU-Hotspots erzielt, lässt sich das Design modular erweitern:
 
 - **Passiv-Modus (Standard):** Völlig geräuschlos, wartungsfrei und ohne zusätzliche Kabel. Reine Ausnutzung von Naturkonvektion, Strömungsdynamik und Werkstoffdämpfung.
 - **Aktiv-Modus (Power-User):** In die gefräste Unterbodenkammer können magnetisch fixierbare, ultraleise $120\,\text{mm}$-Fluid-Dynamic-Lüfter eingesetzt werden. Über ein kurzes, im Holz versenktes USB-C-Kabel mit integriertem Drehzahl-Potentiometer lässt sich ein zusätzlicher, flüsterleiser Frischluftstrom direkt an die Notebook-Bodenansaugung leiten.
-
----
 
 ## 6. Fazit & Ausblick
 
