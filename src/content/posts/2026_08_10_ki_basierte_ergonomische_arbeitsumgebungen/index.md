@@ -3,7 +3,7 @@ title: "KI-basierte ergonomische Arbeitsumgebungen: Dynamische Prävention im B�
 pubDate: "2026-08-10"
 description: "Wie künstliche Intelligenz, multimodale Sensorik und adaptive Möbel Arbeitsumgebungen dynamisch an den Menschen anpassen – im Unternehmensbüro und in häuslichen Wohnräumen."
 tags: ["ai", "ergonomics", "industrial-informatics", "smart-workplace", "iot", "computer-vision"]
-icon: "./icon.svg"
+icon: "./icon.jpg"
 ---
 
 Die Moderne Arbeitswelt ist geprägt von Flexibilität und zeitortsunabhängigem Arbeiten. Während sich Arbeitsinhalte, digitale Tools und Kommunikationskanäle in rasantem Tempo weiterentwickelt haben, hinken unsere physischen Arbeitsplätze diesem Wandel oft hinterher. Sowohl im klassischen Unternehmensbüro als auch im häuslichen Homeoffice verbringen Wissensarbeiter viele Stunden in weitgehend statischen Körperhaltungen. 
@@ -12,7 +12,7 @@ Klassische Ergonomie-Ansätze stoßen hier an ihre Grenzen: Ein höhenverstellba
 
 An unserer **Professur für Industrieinformatik an der FH OÖ Campus Wels** widmen wir uns daher einem zentralen Forschungsthema der Zukunft: Der **Entwicklung KI-basierter ergonomischer Arbeitsumgebungen**, die sich durch multimodale Sensorik, lernende Algorithmen und adaptive Aktorik kontinuierlich und unaufdringlich an den Menschen anpassen.
 
-![KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht](./icon.svg)
+![KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht](./icon.jpg)
 
 ## 1. Das Kernproblem: Statische Ergonomie trifft auf dynamische Menschen
 
@@ -28,7 +28,7 @@ Unsere Forschung setzt genau an dieser Schnittstelle an: Wir wandeln die Arbeits
 
 Um eine transparente, datenschutzkonforme und reaktionsschnelle Steuerung zu gewährleisten, basiert unser Forschungsansatz auf einer modularen, vierstufigen Systemarchitektur.
 
-![4-Schichten-Systemarchitektur KI-basierter ergonomischer Arbeitsumgebungen](./system_architecture.svg)
+![4-Schichten-Systemarchitektur KI-basierter ergonomischer Arbeitsumgebungen](./system_architecture.jpg)
 
 ### Schicht 1: Multimodale Sensorik & Edge-Erfassung (Privacy-First)
 Um Haltung und Umgebungsfaktoren präzise zu erfassen, kombinieren wir unterschiedliche Sensor modalitäten:
