@@ -3,7 +3,7 @@ title: "Vision Campus Almtal 2035: Vom Erholungstourismus zum dezentralen Innova
 pubDate: "2026-08-09"
 description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural Sciences & Applications."
 tags: ["education", "innovation", "regional-development", "sustainability", "almtal"]
-icon: "./icon.png"
+icon: "./icon.jpg"
 ---
 
 Die aktuelle Diskussion rund um die Zukunft des Kasbergs steht stellvertretend für ein tiefgreifendes regionales Strukturproblem: Der klassische Erholungstourismus gerät im Zuge des Klimawandels und sich wandelnder Freizeitgewohnheiten zunehmend unter Druck. Gleichzeitig pendeln viele unserer besten Fachkräfte und jungen Talente täglich in die oberösterreichischen Zentralräume ab. 
@@ -26,7 +26,7 @@ Die Vision des **Campus Almtal** verwandelt diese Ausgangslage in einen klaren S
 
 Um politische Grabenkämpfe zwischen den Gemeinden zu vermeiden, baut das Konzept auf ein dezentrales **Hub-and-Spoke-Netzwerk**. Jeder Ortsteil besetzt genau jene wissenschaftliche und wirtschaftliche Nische, die perfekt zu seiner Geschichte und seinen ansässigen Leitbetrieben passt:
 
-![FH OÖ Campus Almtal: Dezentrales Hub-and-Spoke Modell](./hub_spoke_architecture.svg)
+![FH OÖ Campus Almtal: Dezentrales Hub-and-Spoke Modell](./hub_spoke_architecture.jpg)
 
 ### Die 6 Satelliten des Campus Almtal
 
@@ -55,7 +55,7 @@ Ein dezentrales Ökosystem benötigt keine teuren Neubauten auf der grünen Wies
 
 Ein Zukunftsprojekt dieser Größenordnung darf weder an knappen Gemeindebudgets scheitern noch von einzelnen Großinvestoren abhängig sein. Wir schlagen eine **regionale Trägergesellschaft ("Almtal AG")** in Form einer Genossenschaft oder AG vor.
 
-![Finanzierungsmodell der Almtal AG und 3-Stufen ROI](./financing_structure.svg)
+![Finanzierungsmodell der Almtal AG und 3-Stufen ROI](./financing_structure.jpg)
 
 ### Der Kapitalbedarf von ca. 20 Mio. € bis 2030 teilt sich wie folgt auf:
 - **50 % Fördermittel (ca. 10 Mio. €):** Hebelung von Förderungen aus dem Land Oberösterreich (*#upperVISION2030*, *Arbeitsplatz OÖ 2030*), EU-Programmen (*LEADER*, *Horizon Europe*) sowie Bundestöpfen (*FFG*, *Klima- und Energiefonds*).
@@ -71,7 +71,7 @@ Ein Zukunftsprojekt dieser Größenordnung darf weder an knappen Gemeindebudgets
 
 Um Bedenken auszuräumen und Machbarkeit schrittweise zu beweisen, folgen wir einem klaren 4-Phasen-Modell:
 
-![Roadmap 2026 bis 2030: Stufenplan zur Umsetzung](./roadmap_2026_2030.svg)
+![Roadmap 2026 bis 2030: Stufenplan zur Umsetzung](./roadmap_2026_2030.jpg)
 
 - **Phase 1: Validierung & Kernteam (H2/2026):** Veröffentlichung dieses Diskussionsentwurfs, Gespräche mit 5–10 Schlüsselakteuren und Gründung des Kernteams *"Initiative Almtal 2035"*.
 - **Phase 2: Proof of Concept & Gründung (2027):** Durchführung des ersten sichtbaren Pilotprojekts (z. B. *"Almtal Summer School"*) im Frühjahr 2027, gefolgt von der formellen Gründung der *Almtal AG* im Herbst 2027.
