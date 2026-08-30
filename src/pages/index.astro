@@ -320,7 +320,7 @@ const websiteSections = [
     borderHover: "group-hover:border-brand-blue/40",
     glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(59,130,246,0.25)]",
     badgeStyle: "bg-brand-blue/10 text-brand-blue border-brand-blue/20",
-    buttonGradient: "bg-gradient-to-r from-brand-blue to-sky-400 text-white",
+    buttonGradient: "bg-gradient-blue text-white",
     radialGlow: "bg-brand-blue/10"
   },
   {
@@ -334,7 +334,7 @@ const websiteSections = [
     borderHover: "group-hover:border-brand-yellow/40",
     glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(245,158,11,0.25)]",
     badgeStyle: "bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20",
-    buttonGradient: "bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-extrabold",
+    buttonGradient: "bg-gradient-yellow text-slate-950 font-extrabold",
     radialGlow: "bg-brand-yellow/10"
   },
   {
@@ -348,7 +348,7 @@ const websiteSections = [
     borderHover: "group-hover:border-sky-400/40",
     glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(56,189,248,0.25)]",
     badgeStyle: "bg-sky-500/10 text-sky-400 border-sky-500/20",
-    buttonGradient: "bg-gradient-to-r from-sky-400 to-blue-600 text-white",
+    buttonGradient: "bg-gradient-blue text-white",
     radialGlow: "bg-sky-400/10"
   },
   {
@@ -362,7 +362,7 @@ const websiteSections = [
     borderHover: "group-hover:border-brand-purple/40",
     glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(168,85,247,0.25)]",
     badgeStyle: "bg-brand-purple/10 text-brand-purple border-brand-purple/20",
-    buttonGradient: "bg-gradient-to-r from-brand-purple to-indigo-500 text-white",
+    buttonGradient: "bg-gradient-purple text-white",
     radialGlow: "bg-brand-purple/10"
   },
   {
@@ -376,7 +376,7 @@ const websiteSections = [
     borderHover: "group-hover:border-indigo-400/40",
     glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(129,140,248,0.25)]",
     badgeStyle: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-    buttonGradient: "bg-gradient-to-r from-indigo-500 to-violet-600 text-white",
+    buttonGradient: "bg-gradient-purple text-white",
     radialGlow: "bg-indigo-400/10"
   },
   {
@@ -390,7 +390,7 @@ const websiteSections = [
     borderHover: "group-hover:border-brand-green/40",
     glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(16,185,129,0.25)]",
     badgeStyle: "bg-brand-green/10 text-brand-green border-brand-green/20",
-    buttonGradient: "bg-gradient-to-r from-brand-green to-emerald-400 text-white",
+    buttonGradient: "bg-gradient-green text-white",
     radialGlow: "bg-brand-green/10"
   }
 ];
@@ -504,7 +504,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           
           <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-gray-100 mb-6 leading-tight">
             Hi, I am <br class="sm:hidden" />
-            <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow">
+            <span class="heading-gradient-brand">
               Dr. Georg Hackenberg
             </span>
           </h1>
@@ -628,7 +628,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     <section id="about" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Personal <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-green to-emerald-400">Interests</span>
+          Personal <span class="heading-gradient-green">Interests</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
           Key scientific domains, technical pursuits, and personal endeavors—illustrated in a modern Disney comic style—shaping my engineering projects, research, and vision.
@@ -674,7 +674,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       <div class="mb-10 max-w-2xl">
 
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Website <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-emerald-400">Sections</span>
+          Website <span class="heading-gradient-brand">Sections</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
           Quickly access core content areas across technical writing, academic teaching, software engineering, services, research, and interactive web tools.
@@ -737,7 +737,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       <div class="mb-8 max-w-2xl">
 
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Blog <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-sky-400 to-teal-400">Posts</span>
+          Blog <span class="heading-gradient-blue">Posts</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
           Explore my latest insights, tutorials, and dev logs on software engineering, artificial intelligence, knowledge graphs, and system architectures.
@@ -783,7 +783,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       <div class="mt-12 md:mt-16 flex justify-center">
         <a 
           href="/posts?utm_source=homepage&utm_medium=latest_posts_cta&utm_campaign=latest_posts" 
-          class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-blue via-sky-500 to-teal-400 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-blue/20 hover:shadow-brand-blue/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+          class="px-8 py-4 rounded-2xl bg-gradient-blue text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-blue/20 hover:shadow-brand-blue/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
         >
           <span>Browse All Posts</span>
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -798,7 +798,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       <div class="mb-8 max-w-2xl">
 
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Content <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-sky-400 to-teal-400">Tags</span>
+          Content <span class="heading-gradient-blue">Tags</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
           Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, and software projects across core computer science domains.
@@ -1008,7 +1008,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       <div class="mb-8 max-w-2xl">
 
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Content <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-green via-teal-400 to-brand-blue">Graph</span>
+          Content <span class="heading-gradient-green">Graph</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
           Explore an interactive network graph mapping my technical blog posts, research publications, and core computer science topics.
@@ -1040,7 +1040,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
             <div class="flex flex-col items-center space-y-3 p-4 rounded-2xl bg-gray-950/40 backdrop-blur-sm border border-white/5">
               <div class="w-7 h-7 rounded-full border-2 border-brand-green/20 border-t-brand-green animate-spin"></div>
               <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Initializing Vis.js Graph...</span>
-            </div>
           </div>
         </div>
       </div>
@@ -1049,7 +1048,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       <div class="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-2xl mx-auto w-full">
         <a 
           href="/posts?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
-          class="w-full px-7 py-4 rounded-2xl bg-gradient-to-r from-brand-green via-emerald-500 to-teal-400 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-green/20 hover:shadow-brand-green/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
+          class="w-full px-7 py-4 rounded-2xl bg-gradient-green text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-green/20 hover:shadow-brand-green/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
         >
           <span>Browse All Posts</span>
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1059,7 +1058,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
         <a 
           href="/publications?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
-          class="w-full px-7 py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-brand-yellow to-yellow-400 text-gray-950 font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-yellow/20 hover:shadow-brand-yellow/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
+          class="w-full px-7 py-4 rounded-2xl bg-gradient-yellow text-gray-950 font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-yellow/20 hover:shadow-brand-yellow/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
         >
           <span>Browse All Publications</span>
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1073,7 +1072,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     <section id="projects" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-12 max-w-2xl">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Featured <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600">Projects</span>
+          Featured <span class="heading-gradient-blue">Projects</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
           Selected software platforms, frameworks, and tools designed to optimize product engineering, knowledge graphs, and real-time physical simulation.
@@ -1101,7 +1100,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       <div class="mt-12 md:mt-16 flex justify-center">
         <a 
           href="/projects" 
-          class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-blue via-indigo-500 to-purple-600 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-blue/20 hover:shadow-brand-blue/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+          class="px-8 py-4 rounded-2xl bg-gradient-blue text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-blue/20 hover:shadow-brand-blue/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
         >
           <span>View All Projects</span>
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1115,7 +1114,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     <section id="activity" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Media <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-green">Activities</span>
+          Media <span class="heading-gradient-blue">Activities</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
           Recent updates, professional networks, code repositories, and video tutorials across my digital ecosystem.
@@ -1140,7 +1139,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     <section id="experience" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Professional <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600">Experiences</span>
+          Professional <span class="heading-gradient-blue">Experiences</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
           A summary of my academic tenure, software engineering developments, and organizational leadership roles.
@@ -1176,7 +1175,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
             <!-- LinkedIn -->
             <a href="https://www.linkedin.com/in/georghackenberg/" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 hover:border-brand-purple/30 transition-all duration-300 hover:scale-110" aria-label="LinkedIn Profile">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+                <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75-1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
               </svg>
             </a>
             <!-- Twitter / X -->
@@ -1198,7 +1197,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         <div class="lg:col-span-7">
           <div class="glass-card p-6 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
             <!-- Accent gradient line on top -->
-            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-blue via-brand-purple to-brand-yellow"></div>
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-brand"></div>
             
             <h3 class="text-xl md:text-2xl font-extrabold text-gray-100 mb-8 tracking-tight">
               Dr. rer. nat. Georg Hackenberg BSc MSc

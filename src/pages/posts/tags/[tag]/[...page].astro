@@ -73,7 +73,7 @@ const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
 
     <div class="mb-12">
       <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-6">
-        Posts tagged <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-indigo-500 light:to-indigo-600">#{tag}</span>
+        Posts tagged <span class="heading-gradient-blue">#{tag}</span>
       </h1>
     </div>
 
@@ -125,7 +125,7 @@ const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
               const isCurrent = num === page.currentPage;
               return isCurrent ? (
                 <span 
-                  class="px-3.5 py-2 rounded-xl text-sm font-bold text-slate-950 bg-gradient-to-r from-brand-blue to-brand-purple shadow-lg shadow-brand-blue/20 cursor-default select-none min-w-[38px] text-center"
+                  class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-blue shadow-lg shadow-brand-blue/20 cursor-default select-none min-w-[38px] text-center"
                   aria-current="page"
                 >
                   {num}

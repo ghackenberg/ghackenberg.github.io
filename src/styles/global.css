@@ -557,3 +557,110 @@ div.vis-tooltip {
   box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.12), 0 0 20px rgba(16, 185, 129, 0.15) !important;
 }
 
+/* Unified Heading Gradient Utilities */
+.heading-gradient-brand {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #3b82f6, #a855f7, #f59e0b);
+}
+
+:root.light .heading-gradient-brand,
+.light .heading-gradient-brand {
+  background-image: linear-gradient(to right, #2563eb, #9333ea, #d97706);
+}
+
+.heading-gradient-blue {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #3b82f6, #6366f1);
+}
+
+:root.light .heading-gradient-blue,
+.light .heading-gradient-blue {
+  background-image: linear-gradient(to right, #2563eb, #4f46e5);
+}
+
+.heading-gradient-yellow {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #f59e0b, #f97316);
+}
+
+:root.light .heading-gradient-yellow,
+.light .heading-gradient-yellow {
+  background-image: linear-gradient(to right, #d97706, #ea580c);
+}
+
+.heading-gradient-purple {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #a855f7, #ec4899);
+}
+
+:root.light .heading-gradient-purple,
+.light .heading-gradient-purple {
+  background-image: linear-gradient(to right, #9333ea, #db2777);
+}
+
+.heading-gradient-green {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #10b981, #2dd4bf);
+}
+
+:root.light .heading-gradient-green,
+.light .heading-gradient-green {
+  background-image: linear-gradient(to right, #059669, #0d9488);
+}
+
+/* Unified Background Gradient Utilities (Buttons, Badges, Accent Stripes) */
+.bg-gradient-brand {
+  background-image: linear-gradient(to right, #3b82f6, #a855f7, #f59e0b);
+}
+
+:root.light .bg-gradient-brand,
+.light .bg-gradient-brand {
+  background-image: linear-gradient(to right, #2563eb, #9333ea, #d97706);
+}
+
+.bg-gradient-blue {
+  background-image: linear-gradient(to right, #3b82f6, #6366f1);
+}
+
+:root.light .bg-gradient-blue,
+.light .bg-gradient-blue {
+  background-image: linear-gradient(to right, #2563eb, #4f46e5);
+}
+
+.bg-gradient-yellow {
+  background-image: linear-gradient(to right, #f59e0b, #f97316);
+}
+
+:root.light .bg-gradient-yellow,
+.light .bg-gradient-yellow {
+  background-image: linear-gradient(to right, #d97706, #ea580c);
+}
+
+.bg-gradient-purple {
+  background-image: linear-gradient(to right, #a855f7, #ec4899);
+}
+
+:root.light .bg-gradient-purple,
+.light .bg-gradient-purple {
+  background-image: linear-gradient(to right, #9333ea, #db2777);
+}
+
+.bg-gradient-green {
+  background-image: linear-gradient(to right, #10b981, #2dd4bf);
+}
+
+:root.light .bg-gradient-green,
+.light .bg-gradient-green {
+  background-image: linear-gradient(to right, #059669, #0d9488);
+}
+
