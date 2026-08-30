@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="blueprintBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="50%" stop-color="#080f22" />
+      <stop offset="100%" stop-color="#030712" />
+    </linearGradient>
+
+    <!-- Wood Gradient -->
+    <linearGradient id="woodMat" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#854d0e" />
+      <stop offset="50%" stop-color="#a16207" />
+      <stop offset="100%" stop-color="#713f12" />
+    </linearGradient>
+
+    <!-- Arrow Markers -->
+    <marker id="arrow-dim" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#60a5fa" />
+    </marker>
+    <marker id="arrow-heat" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#ef4444" />
+    </marker>
+    <marker id="arrow-cool" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#38bdf8" />
+    </marker>
+
+    <filter id="subtleGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Container Box -->
+  <rect x="0" y="0" width="1000" height="620" rx="16" fill="url(#blueprintBg)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Blueprint Technical Grid -->
+  <g stroke="rgba(59, 130, 246, 0.04)" stroke-width="1">
+    <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="40" y2="0" stroke="rgba(59,130,246,0.06)" />
+      <line x1="0" y1="0" x2="0" y2="40" stroke="rgba(59,130,246,0.06)" />
+    </pattern>
+    <rect width="1000" height="620" fill="url(#gridPattern)" />
+  </g>
+
+  <!-- HEADER -->
+  <g transform="translate(40, 35)">
+    <rect x="0" y="0" width="180" height="26" rx="13" fill="rgba(59, 130, 246, 0.15)" stroke="#3b82f6" stroke-width="1" />
+    <text x="90" y="17" fill="#60a5fa" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1.5">TECHNISCHE ZEICHNUNG</text>
+    <text x="200" y="20" fill="#f8fafc" font-family="'Outfit', 'Inter', sans-serif" font-size="20" font-weight="700">Massivholz-Kühldock: CAD- &amp; Strömungsgeometrie</text>
+    <text x="200" y="40" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="13">Präzisionsgefräste Lamellen-Gittermatrix zur Abführung von GPU-Thermallasten (3-Achs-CNC-Fertigung)</text>
+  </g>
+
+  <!-- LEFT VIEW: ISOMETRIC EXPLODED / 3D CAD PERSPECTIVE -->
+  <g transform="translate(250, 260)">
+    <!-- Subtitle -->
+    <text x="0" y="-140" fill="#93c5fd" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="700" text-anchor="middle">Isometrische Gesamtansicht (Schnittbild)</text>
+
+    <!-- Wood Solid Base Block Geometry -->
+    <!-- Front/Left Base Side -->
+    <polygon points="-170,40 -170,75 0,130 0,95" fill="#542e0c" stroke="#854d0e" stroke-width="1.5" />
+    <!-- Front/Right Base Side -->
+    <polygon points="0,95 0,130 170,75 170,40" fill="#3d2007" stroke="#854d0e" stroke-width="1.5" />
+    <!-- Top Inclined Surface (13.5° Angle) -->
+    <polygon points="-170,40 0,95 170,40 0,-15" fill="url(#woodMat)" stroke="#d97706" stroke-width="1.5" />
+
+    <!-- Milled Recess Cavity (Aerodynamische Senke) -->
+    <polygon points="-130,35 0,78 130,35 0,-5" fill="#030712" stroke="#1e293b" stroke-width="1.5" />
+
+    <!-- CNC Milled Lattice Ribs (Holz-Lamellengitter) -->
+    <g stroke="#38bdf8" stroke-width="2" opacity="0.85">
+      <!-- Transverse Milled Slots -->
+      <line x1="-100" y1="28" x2="-20" y2="54" />
+      <line x1="-70" y1="18" x2="10" y2="44" />
+      <line x1="-40" y1="8" x2="40" y2="34" />
+      <line x1="-10" y1="-2" x2="70" y2="24" />
+      <line x1="20" y1="-12" x2="100" y2="14" />
+
+      <line x1="-20" y1="54" x2="60" y2="28" stroke-dasharray="4 2" />
+      <line x1="-50" y1="44" x2="30" y2="18" stroke-dasharray="4 2" />
+      <line x1="-80" y1="34" x2="0" y2="8" stroke-dasharray="4 2" />
+    </g>
+
+    <!-- CNC Lateral Exhaust Vents (Seitliche Ausströmöffnungen) -->
+    <g stroke="#ef4444" stroke-width="2" stroke-linecap="round">
+      <path d="M 60,105 L 140,80" />
+      <path d="M 70,115 L 150,90" />
+    </g>
+
+    <!-- Silicone Rest Pads (Ergonomische Auflage-Pads) -->
+    <ellipse cx="-135" cy="40" rx="14" ry="7" fill="#1e293b" stroke="#10b981" stroke-width="2" />
+    <ellipse cx="135" cy="40" rx="14" ry="7" fill="#1e293b" stroke="#10b981" stroke-width="2" />
+    <ellipse cx="0" cy="-7" rx="18" ry="8" fill="#1e293b" stroke="#10b981" stroke-width="2" />
+
+    <!-- Airflow Vectors -->
+    <!-- Cool Inflow (Bottom & Sides) -->
+    <path d="M -180,95 Q -140,80 -90,45" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-cool)" />
+    <!-- Hot Outflow (Rear & Lateral Channels) -->
+    <path d="M 40,65 Q 110,50 180,15" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-heat)" />
+    <path d="M 0,25 Q 0,-30 0,-60" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-heat)" />
+
+    <!-- Callout 1: Solid Hardwood -->
+    <line x1="-150" y1="65" x2="-210" y2="95" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2 2" />
+    <circle cx="-210" cy="95" r="3" fill="#94a3b8" />
+    <text x="-218" y="99" fill="#fef08a" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="end">Massivholz (Walnuss/Eiche)</text>
+
+    <!-- Callout 2: Lattice Ventilation -->
+    <line x1="-40" y1="20" x2="-90" y2="-50" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2 2" />
+    <circle cx="-90" cy="-50" r="3" fill="#94a3b8" />
+    <text x="-98" y="-47" fill="#bae6fd" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="end">Gefräste Gitter-Lamellen</text>
+
+    <!-- Callout 3: Silicone Anti-Slip -->
+    <line x1="135" y1="40" x2="190" y2="10" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2 2" />
+    <circle cx="190" cy="10" r="3" fill="#94a3b8" />
+    <text x="198" y="14" fill="#a7f3d0" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="600">Silikon-Entkopplung</text>
+  </g>
+
+  <!-- RIGHT TOP VIEW: SEITENSCHNITT & NEIGUNGSWINKEL (Sectional Elevation View) -->
+  <g transform="translate(560, 115)">
+    <!-- Container Card -->
+    <rect x="0" y="0" width="400" height="210" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+    <text x="20" y="28" fill="#93c5fd" font-family="'Outfit', 'Inter', sans-serif" font-size="13" font-weight="700">Seitenprofil &amp; Strömungskonvektion (Schnitt A-A)</text>
+
+    <!-- Side Profile Wedge Wedge -->
+    <g transform="translate(30, 60)">
+      <!-- Wood Section Triangle/Trapezoid -->
+      <polygon points="0,100 320,100 320,35 0,85" fill="url(#woodMat)" stroke="#d97706" stroke-width="1.5" />
+      
+      <!-- Internal Recess Chamber (CNC Tasche) -->
+      <polygon points="40,86 280,48 280,72 40,94" fill="#030712" stroke="#38bdf8" stroke-width="1" />
+
+      <!-- Laptop Mockup Resting On Top -->
+      <polygon points="-10,83 330,30 330,22 -10,75" fill="#334155" stroke="#60a5fa" stroke-width="1.5" />
+      <!-- Display Opened -->
+      <polygon points="325,23 380,-30 375,-33 320,20" fill="#1e293b" stroke="#60a5fa" stroke-width="1" />
+
+      <!-- Downward Air Blow from Laptop Fans -->
+      <g stroke="#ef4444" stroke-width="2" fill="none">
+        <line x1="200" y1="40" x2="200" y2="70" marker-end="url(#arrow-heat)" />
+        <line x1="240" y1="35" x2="240" y2="65" marker-end="url(#arrow-heat)" />
+        <!-- Deflected hot air channel escaping out rear -->
+        <path d="M 240,65 Q 270,70 310,60" marker-end="url(#arrow-heat)" />
+      </g>
+
+      <!-- Ambient Cool Inflow at Front -->
+      <g stroke="#38bdf8" stroke-width="2" fill="none">
+        <path d="M 10,110 Q 30,95 60,90" marker-end="url(#arrow-cool)" />
+      </g>
+
+      <!-- Ergonomic Angle Dimension Arc -->
+      <path d="M 0,100 L 60,100 M 0,100 L 58,86" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2 2" />
+      <path d="M 45,100 A 45 45 0 0 0 44,90" fill="none" stroke="#f59e0b" stroke-width="1.5" />
+      <text x="54" y="97" fill="#fbbf24" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700">14°</text>
+
+      <!-- Dimension Heights -->
+      <!-- Rear Height: 48mm -->
+      <line x1="335" y1="35" x2="335" y2="100" stroke="#60a5fa" stroke-width="1" />
+      <line x1="330" y1="35" x2="340" y2="35" stroke="#60a5fa" stroke-width="1" />
+      <line x1="330" y1="100" x2="340" y2="100" stroke="#60a5fa" stroke-width="1" />
+      <text x="345" y="70" fill="#93c5fd" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="600">48 mm</text>
+
+      <!-- Front Height: 15mm -->
+      <line x1="-18" y1="85" x2="-18" y2="100" stroke="#60a5fa" stroke-width="1" />
+      <line x1="-23" y1="85" x2="-13" y2="85" stroke="#60a5fa" stroke-width="1" />
+      <line x1="-23" y1="100" x2="-13" y2="100" stroke="#60a5fa" stroke-width="1" />
+      <text x="-48" y="95" fill="#93c5fd" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="600">15 mm</text>
+    </g>
+  </g>
+
+  <!-- RIGHT BOTTOM VIEW: DRAUFSICHT / STRÖMUNGS-LAYOUT (Top-Down Flow Geometry) -->
+  <g transform="translate(560, 345)">
+    <!-- Container Card -->
+    <rect x="0" y="0" width="400" height="235" rx="10" fill="#0f172a" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+    <text x="20" y="26" fill="#93c5fd" font-family="'Outfit', 'Inter', sans-serif" font-size="13" font-weight="700">Draufsicht &amp; Geometrie der Lüftungsmatrix</text>
+
+    <!-- Top View Wooden Block -->
+    <g transform="translate(35, 45)">
+      <!-- Main Wood Frame -->
+      <rect x="0" y="0" width="330" height="150" rx="8" fill="url(#woodMat)" stroke="#d97706" stroke-width="1.5" />
+      
+      <!-- Central CNC Lattice Chamber -->
+      <rect x="30" y="20" width="270" height="110" rx="6" fill="#030712" stroke="#1e293b" stroke-width="1.5" />
+
+      <!-- Bionic Honeycomb / Slotted Matrix Pattern -->
+      <g stroke="#38bdf8" stroke-width="1.5" opacity="0.8">
+        <!-- Vertical Vent Fins -->
+        <line x1="60" y1="25" x2="60" y2="125" />
+        <line x1="90" y1="25" x2="90" y2="125" />
+        <line x1="120" y1="25" x2="120" y2="125" />
+        <line x1="150" y1="25" x2="150" y2="125" />
+        <line x1="180" y1="25" x2="180" y2="125" />
+        <line x1="210" y1="25" x2="210" y2="125" />
+        <line x1="240" y1="25" x2="240" y2="125" />
+        <line x1="270" y1="25" x2="270" y2="125" />
+
+        <!-- Diagonal Air Diverters (Strömungsleitflügel) -->
+        <line x1="60" y1="40" x2="90" y2="70" stroke="#f59e0b" stroke-width="1.5" />
+        <line x1="90" y1="40" x2="120" y2="70" stroke="#f59e0b" stroke-width="1.5" />
+        <line x1="120" y1="40" x2="150" y2="70" stroke="#f59e0b" stroke-width="1.5" />
+        <line x1="180" y1="70" x2="210" y2="40" stroke="#f59e0b" stroke-width="1.5" />
+        <line x1="210" y1="70" x2="240" y2="40" stroke="#f59e0b" stroke-width="1.5" />
+        <line x1="240" y1="70" x2="270" y2="40" stroke="#f59e0b" stroke-width="1.5" />
+      </g>
+
+      <!-- Silicon Anti-Slip Bumpers (4 Corners) -->
+      <rect x="8" y="8" width="16" height="8" rx="3" fill="#10b981" />
+      <rect x="306" y="8" width="16" height="8" rx="3" fill="#10b981" />
+      <rect x="8" y="134" width="16" height="8" rx="3" fill="#10b981" />
+      <rect x="306" y="134" width="16" height="8" rx="3" fill="#10b981" />
+
+      <!-- Width Dimension: 360mm -->
+      <line x1="0" y1="165" x2="330" y2="165" stroke="#60a5fa" stroke-width="1" />
+      <line x1="0" y1="160" x2="0" y2="170" stroke="#60a5fa" stroke-width="1" />
+      <line x1="330" y1="160" x2="330" y2="170" stroke="#60a5fa" stroke-width="1" />
+      <text x="165" y="177" fill="#93c5fd" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="600" text-anchor="middle">Breite: 360 mm (14"-16" Workstations)</text>
+    </g>
+  </g>
+
+  <!-- BOTTOM SPECIFICATION BAR -->
+  <g transform="translate(40, 560)">
+    <rect x="0" y="0" width="500" height="28" rx="6" fill="#0f172a" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+    <text x="15" y="18" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="11">
+      <tspan fill="#fef08a" font-weight="600">Material:</tspan> Nussbaum / Räuchereiche | <tspan fill="#bae6fd" font-weight="600">Fertigung:</tspan> 5-Achs-CNC-Fräsung | <tspan fill="#a7f3d0" font-weight="600">ΔT-Kühlgewinn:</tspan> bis zu 8-12 °C
+    </text>
+  </g>
+</svg>
