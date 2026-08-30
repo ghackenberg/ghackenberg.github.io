@@ -44,11 +44,14 @@ const getPageUrl = (pageNum: number | string) => {
   if (typeof pageNum === 'string') return '#';
   return pageNum === 1 ? "/posts" : `/posts/${pageNum}`;
 };
+
+const pagePreviewImage = page.data.find(p => p.data.icon)?.data.icon;
 ---
 
 <Layout 
   title={page.currentPage > 1 ? `Computer Science Blog - Page ${page.currentPage} | Dr. Georg Hackenberg` : "Computer Science Blog | Dr. Georg Hackenberg"} 
   description={page.currentPage > 1 ? `Read computer science insights, software tutorials, and dev logs by Dr. Georg Hackenberg (Page ${page.currentPage}).` : "Read computer science insights, software tutorials, and dev logs by Dr. Georg Hackenberg covering systems development, styling, and graphics."}
+  image={pagePreviewImage}
 >
   <Navbar />
 

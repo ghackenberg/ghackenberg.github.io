@@ -14,6 +14,7 @@ import "@fontsource/outfit/800.css";
 import "@fontsource/caveat/400.css";
 import "@fontsource/caveat/600.css";
 import "@fontsource/caveat/700.css";
+import type { ImageMetadata } from "astro";
 import KaTeXStyles from "../components/KaTeXStyles.astro";
 import { getImage } from "astro:assets";
 import defaultOgImage from "../assets/images/og-share-preview.png";
@@ -25,7 +26,7 @@ type JsonLdValue = string | number | boolean | null | undefined | { [key: string
 interface Props {
   title?: string;
   description?: string;
-  image?: string;
+  image?: string | ImageMetadata;
   type?: "website" | "article";
   pubDate?: Date | string;
   tags?: string[];
@@ -50,7 +51,7 @@ const {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 // Optimize default OG image at build time
-const optimizedOgImage = await getImage({
+const optimizedDefaultOgImage = await getImage({
   src: defaultOgImage,
   format: 'jpeg',
   width: 1200,
@@ -58,9 +59,34 @@ const optimizedOgImage = await getImage({
   quality: 85
 });
 
+let resolvedImageSrc: string = optimizedDefaultOgImage.src;
+
+if (image) {
+  if (typeof image === 'string') {
+    resolvedImageSrc = image;
+  } else if (typeof image === 'object' && 'src' in image) {
+    if (image.format === 'svg') {
+      resolvedImageSrc = image.src;
+    } else {
+      try {
+        const optimizedCustomImage = await getImage({
+          src: image,
+          format: 'jpeg',
+          width: 1200,
+          height: 630,
+          quality: 85
+        });
+        resolvedImageSrc = optimizedCustomImage.src;
+      } catch (e) {
+        resolvedImageSrc = image.src;
+      }
+    }
+  }
+}
+
 // Build absolute OG image URL
 const resolvedImageURL = new URL(
-  image || optimizedOgImage.src,
+  resolvedImageSrc,
   Astro.site
 );
 

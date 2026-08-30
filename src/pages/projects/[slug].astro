@@ -123,6 +123,7 @@ const softwareAppSchema = {
   "name": project.data.title,
   "headline": project.data.tagline,
   "description": project.data.description,
+  "image": optimizedMainScreenshot?.src ? new URL(optimizedMainScreenshot.src, Astro.site).href : undefined,
   "url": projectUrl,
   "sameAs": project.data.href,
   "applicationCategory": "Software",
@@ -166,7 +167,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 <Layout 
   title={`${project.data.title} | Software Projects | Dr. Georg Hackenberg`} 
   description={project.data.description}
-  image={optimizedMainScreenshot?.src}
+  image={project.data.screenshot || optimizedMainScreenshot?.src}
   jsonLd={projectJsonLd}
 >
   <Navbar />

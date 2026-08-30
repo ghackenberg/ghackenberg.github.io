@@ -50,11 +50,14 @@ const getPageUrl = (pageNum: number | string) => {
   if (typeof pageNum === 'string') return '#';
   return pageNum === 1 ? `/posts/tags/${tag}` : `/posts/tags/${tag}/${pageNum}`;
 };
+
+const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
 ---
 
 <Layout 
   title={page.currentPage > 1 ? `Blog Posts on #${tag} - Page ${page.currentPage} | Dr. Georg Hackenberg` : `Blog Posts on #${tag} | Dr. Georg Hackenberg`} 
   description={page.currentPage > 1 ? `Browse blog articles and computer science insights tagged with #${tag} by Dr. Georg Hackenberg (Page ${page.currentPage}).` : `Browse blog articles and computer science insights tagged with #${tag} by Dr. Georg Hackenberg.`}
+  image={pagePreviewImage}
 >
   <Navbar />
 

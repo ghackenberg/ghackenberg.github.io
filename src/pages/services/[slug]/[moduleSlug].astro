@@ -83,6 +83,8 @@ const colorClasses = {
 
 const moduleUrl = `https://hackenberg.tech/services/${parentService.id}/${module.id.split('/').pop()}`;
 
+const activePreviewImage = module.data.previewImage || parentService.data.previewImage;
+
 const moduleServiceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
@@ -90,6 +92,7 @@ const moduleServiceSchema = {
   "name": module.data.title,
   "serviceType": module.data.tagline,
   "description": module.data.description,
+  "image": activePreviewImage?.src ? new URL(activePreviewImage.src, Astro.site).href : undefined,
   "url": moduleUrl,
   "category": parentService.data.title,
   "provider": {
@@ -137,7 +140,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
 <Layout 
   title={`${module.data.title} | ${parentService.data.title} | Dr. Georg Hackenberg`} 
   description={module.data.description}
-  image={module.data.previewImage?.src}
+  image={activePreviewImage}
   jsonLd={moduleJsonLd}
 >
   <Navbar />

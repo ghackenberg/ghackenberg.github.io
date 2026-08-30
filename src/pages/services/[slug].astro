@@ -72,6 +72,7 @@ const serviceSchema = {
   "name": service.data.title,
   "serviceType": service.data.tagline,
   "description": service.data.description,
+  "image": service.data.previewImage?.src ? new URL(service.data.previewImage.src, Astro.site).href : undefined,
   "url": serviceUrl,
   "provider": {
     "@type": "Person",
@@ -112,7 +113,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
 <Layout 
   title={`${service.data.title} | Professional Services | Dr. Georg Hackenberg`} 
   description={service.data.description}
-  image={service.data.previewImage?.src}
+  image={service.data.previewImage}
   jsonLd={serviceJsonLd}
 >
   <Navbar />

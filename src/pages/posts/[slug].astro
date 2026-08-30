@@ -57,6 +57,7 @@ const blogPostingSchema = {
   "@id": `${postUrl}#article`,
   "headline": post.data.title,
   "description": seoDescription,
+  "image": post.data.icon?.src ? new URL(post.data.icon.src, Astro.site).href : undefined,
   "url": postUrl,
   "datePublished": post.data.pubDate.toISOString(),
   "author": {
@@ -107,6 +108,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
 <Layout 
   title={`${post.data.title} | Blog | Dr. Georg Hackenberg`} 
   description={seoDescription}
+  image={post.data.icon}
   type="article"
   pubDate={post.data.pubDate}
   tags={post.data.tags}

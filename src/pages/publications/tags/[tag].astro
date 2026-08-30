@@ -24,12 +24,13 @@ export async function getStaticPaths() {
 const { pubs } = Astro.props;
 const { tag } = Astro.params;
 
-
+const firstPubIcon = pubs.find((pub) => pub.data.icon)?.data.icon;
 ---
 
 <Layout 
   title={`Research Publications on #${tag} | Dr. Georg Hackenberg`} 
   description={`Explore peer-reviewed research papers and presentations by Dr. Georg Hackenberg tagged with the topic #${tag}.`}
+  image={firstPubIcon}
 >
   <Navbar />
 

@@ -5,11 +5,13 @@ import { getCollection } from "astro:content";
 import VisualizationCard from "../../components/VisualizationCard.astro";
 
 const visualizations = await getCollection("visualizations");
+const firstVisScreenshot = visualizations.find(v => v.data.screenshot)?.data.screenshot;
 ---
 
 <Layout 
   title="Interactive Data Visualizations | Dr. Georg Hackenberg" 
   description="Explore the relationships between different blog posts, publications, and topics on Dr. Georg Hackenberg's website through interactive real-time graphs."
+  image={firstVisScreenshot}
 >
   <Navbar />
 

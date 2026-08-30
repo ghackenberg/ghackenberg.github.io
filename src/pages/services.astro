@@ -87,11 +87,14 @@ const servicesJsonLd = sortedServices.map(s => ({
   },
   "areaServed": "Global"
 }));
+
+const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewImage;
 ---
 
 <Layout 
   title="Professional Services | Dr. Georg Hackenberg" 
   description="Explore custom R&D prototyping, corporate training bootcamps, scientific advisory, and media publishing services offered by Dr. Georg Hackenberg."
+  image={firstServiceImage}
   jsonLd={servicesJsonLd}
 >
   <Navbar />

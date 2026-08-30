@@ -84,6 +84,7 @@ const scholarlyArticleSchema = {
     "@type": "PublicationEvent",
     "name": pub.data.book
   } : undefined,
+  "image": pub.data.icon ? new URL(pub.data.icon, Astro.site).href : undefined,
   "sameAs": pub.data.publisherUrl || undefined,
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -122,6 +123,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 <Layout 
   title={`${pub.data.title} | Research Publications | Dr. Georg Hackenberg`} 
   description={seoDescription}
+  image={pub.data.icon}
   type="article"
   pubDate={pub.data.pubDate}
   tags={pub.data.tags}
