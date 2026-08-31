@@ -9,10 +9,10 @@ import LinkedInWidget from "../components/LinkedInWidget.astro";
 import YouTubeWidget from "../components/YouTubeWidget.astro";
 import { getImage } from "astro:assets";
 import profileImage from "../assets/images/comic-profile.png";
-import interestSoftwareImg from "../assets/images/interest-software-engineering.jpg";
-import interestSimulationImg from "../assets/images/interest-computer-simulation.jpg";
-import interestAiImg from "../assets/images/interest-artificial-intelligence.jpg";
-import interestUxImg from "../assets/images/interest-user-experience.jpg";
+import interestSoftwareImg from "../content/interests/software-engineering/preview.jpg";
+import interestSimulationImg from "../content/interests/computer-simulation/preview.jpg";
+import interestAiImg from "../content/interests/artificial-intelligence/preview.jpg";
+import interestUxImg from "../content/interests/user-experience/preview.jpg";
 import { getCollection } from "astro:content";
 
 const optimizedProfile = await getImage({
@@ -238,6 +238,7 @@ const colorMappings = {
     bg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20',
     badge: 'bg-brand-blue/20 text-brand-blue border-brand-blue/30',
     button: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 text-white',
+    buttonGradient: 'bg-gradient-blue text-white',
     bullet: 'text-brand-blue',
   },
   yellow: {
@@ -247,6 +248,7 @@ const colorMappings = {
     bg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20',
     badge: 'bg-brand-yellow/20 text-brand-yellow border-brand-yellow/30',
     button: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 text-gray-950 light:text-gray-50',
+    buttonGradient: 'bg-gradient-yellow text-slate-950 font-extrabold',
     bullet: 'text-brand-yellow',
   },
   purple: {
@@ -256,6 +258,7 @@ const colorMappings = {
     bg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20',
     badge: 'bg-brand-purple/20 text-brand-purple border-brand-purple/30',
     button: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 text-white',
+    buttonGradient: 'bg-gradient-purple text-white',
     bullet: 'text-brand-purple',
   },
   green: {
@@ -265,44 +268,45 @@ const colorMappings = {
     bg: 'bg-brand-green/10 text-brand-green border-brand-green/20',
     badge: 'bg-brand-green/20 text-brand-green border-brand-green/30',
     button: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 text-white',
+    buttonGradient: 'bg-gradient-green text-white',
     bullet: 'text-brand-green',
   }
 };
 
 const professionalInterests = [
   {
+    slug: "software-engineering",
     icon: "💻",
     color: "blue" as const,
     title: "Software Engineering",
     tagline: "Architectures & Web Platforms",
-    frontier: "Space Exploration",
     image: optimizedInterestSoftware.src,
     description: "My passion lies in crafting high-performance, type-safe software. From modern web architectures with Astro and TypeScript to scalable industrial platforms, I love building robust systems from the ground up."
   },
   {
+    slug: "computer-simulation",
     icon: "🎓",
     color: "yellow" as const,
     title: "Computer Simulation",
     tagline: "Systems & Layout Modeling",
-    frontier: "Resource Optimization",
     image: optimizedInterestSimulation.src,
     description: "I am fascinated by modeling complex physical and industrial systems. Combining discrete-event simulation and optimization algorithms, I design smart factory layouts, logistics workflows, and resource models."
   },
   {
+    slug: "artificial-intelligence",
     icon: "🎯",
     color: "purple" as const,
     title: "Artificial Intelligence",
     tagline: "Generative AI & Agent Systems",
-    frontier: "Longevity & Health",
     image: optimizedInterestAi.src,
     description: "I actively explore local LLMs, agentic AI, and knowledge graphs. I enjoy developing autonomous reasoning engines, semantic search tools, and intelligent agent workflows to unlock new scientific insights."
   },
   {
+    slug: "user-experience",
     icon: "🌐",
     color: "green" as const,
     title: "User Experience",
     tagline: "Visualizations & UI Designs",
-    frontier: "Climate Control",
     image: optimizedInterestUx.src,
     description: "I believe great software must be intuitive, responsive, and visually engaging. I love creating interactive graph network visualizers, dynamic layouts, and polished interfaces that make complex data effortless to explore."
   }
@@ -639,12 +643,15 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         {professionalInterests.map(interest => {
           const mapping = colorMappings[interest.color];
           return (
-            <div class={`glass-card rounded-2xl border ${mapping.border} group flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}>
+            <a 
+              href={`/interests/${interest.slug}`}
+              class={`glass-card rounded-2xl border ${mapping.border} group flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer block no-underline`}
+            >
               <!-- Artwork Header -->
               <div class="relative w-full aspect-video overflow-hidden bg-slate-950">
                 <img 
                   src={interest.image} 
-                  alt={`${interest.title} illustration - ${interest.frontier}`}
+                  alt={`${interest.title} illustration`}
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
@@ -659,11 +666,21 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                 <p class={`text-[10px] font-semibold uppercase tracking-wider mb-3 ${mapping.text}`}>
                   {interest.tagline}
                 </p>
-                <p class="text-gray-400 text-sm leading-relaxed font-normal flex-grow">
+                <p class="text-gray-400 text-sm leading-relaxed font-normal flex-grow mb-6">
                   {interest.description}
                 </p>
+
+                <!-- Footer: Explore Field Button -->
+                <div class="pt-2 mt-auto">
+                  <div class={`w-full py-2.5 px-4 rounded-xl font-bold text-xs shadow-md transition-all duration-300 group-hover:shadow-lg flex items-center justify-between ${mapping.buttonGradient}`}>
+                    <span>Explore Field</span>
+                    <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </div>
+                </div>
               </div>
-            </div>
+            </a>
           );
         })}
       </div>

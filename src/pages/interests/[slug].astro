@@ -1,0 +1,424 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+
+export async function getStaticPaths() {
+  const interests = await getCollection("interests");
+  const sorted = interests.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+  
+  return sorted.map((interest, index) => {
+    const prevInterest = index > 0 ? sorted[index - 1] : sorted[sorted.length - 1];
+    const nextInterest = index < sorted.length - 1 ? sorted[index + 1] : sorted[0];
+    
+    return {
+      params: { slug: interest.id },
+      props: { interest, prevInterest, nextInterest },
+    };
+  });
+}
+
+const { interest, prevInterest, nextInterest } = Astro.props;
+const { Content } = await render(interest);
+
+const colorClasses = {
+  blue: {
+    text: 'text-brand-blue light:text-blue-700',
+    border: 'border-brand-blue/20 light:border-blue-200',
+    hoverBorder: 'hover:border-brand-blue/40',
+    bg: 'bg-brand-blue/10 light:bg-blue-50/50',
+    badge: 'bg-brand-blue/10 text-brand-blue border-brand-blue/30',
+    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white font-extrabold',
+    glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
+    radialGlow: 'bg-brand-blue/10',
+    gradientText: 'heading-gradient-blue',
+    takeawayBullet: 'bg-brand-blue/20 text-brand-blue border-brand-blue/30',
+    shadowGlow: 'shadow-[0_0_30px_-5px_rgba(59,130,246,0.2)]'
+  },
+  yellow: {
+    text: 'text-brand-yellow light:text-amber-800',
+    border: 'border-brand-yellow/20 light:border-amber-200',
+    hoverBorder: 'hover:border-brand-yellow/40',
+    bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
+    badge: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/30',
+    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-extrabold',
+    glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
+    radialGlow: 'bg-brand-yellow/10',
+    gradientText: 'heading-gradient-yellow',
+    takeawayBullet: 'bg-brand-yellow/20 text-brand-yellow border-brand-yellow/30',
+    shadowGlow: 'shadow-[0_0_30px_-5px_rgba(245,158,11,0.2)]'
+  },
+  purple: {
+    text: 'text-brand-purple light:text-purple-700',
+    border: 'border-brand-purple/20 light:border-purple-200',
+    hoverBorder: 'hover:border-brand-purple/40',
+    bg: 'bg-brand-purple/10 light:bg-purple-50/50',
+    badge: 'bg-brand-purple/10 text-brand-purple border-brand-purple/30',
+    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white font-extrabold',
+    glow: 'from-brand-purple to-pink-500 light:to-pink-600',
+    radialGlow: 'bg-brand-purple/10',
+    gradientText: 'heading-gradient-purple',
+    takeawayBullet: 'bg-brand-purple/20 text-brand-purple border-brand-purple/30',
+    shadowGlow: 'shadow-[0_0_30px_-5px_rgba(168,85,247,0.2)]'
+  },
+  green: {
+    text: 'text-brand-green light:text-emerald-700',
+    border: 'border-brand-green/20 light:border-emerald-200',
+    hoverBorder: 'hover:border-brand-green/40',
+    bg: 'bg-brand-green/10 light:bg-emerald-50/50',
+    badge: 'bg-brand-green/10 text-brand-green border-brand-green/30',
+    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white font-extrabold',
+    glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
+    radialGlow: 'bg-brand-green/10',
+    gradientText: 'heading-gradient-green',
+    takeawayBullet: 'bg-brand-green/20 text-brand-green border-brand-green/30',
+    shadowGlow: 'shadow-[0_0_30px_-5px_rgba(16,185,129,0.2)]'
+  }
+}[interest.data.color];
+
+const interestUrl = `https://hackenberg.tech/interests/${interest.id}`;
+
+const interestSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${interestUrl}#webpage`,
+  "name": `${interest.data.title} - Personal Interests | Dr. Georg Hackenberg`,
+  "description": interest.data.description,
+  "url": interestUrl,
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Georg Hackenberg",
+    "url": "https://hackenberg.tech"
+  }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Personal Interests",
+      "item": "https://hackenberg.tech/#about"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": interest.data.title,
+      "item": interestUrl
+    }
+  ]
+};
+
+const pageJsonLd = [interestSchema, breadcrumbSchema];
+---
+
+<Layout 
+  title={`${interest.data.title} | Personal Interests | Dr. Georg Hackenberg`}
+  description={interest.data.description}
+  image={interest.data.heroImage}
+  jsonLd={pageJsonLd}
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-5xl mx-auto px-4 md:px-8 py-10 md:py-16 w-full relative z-10">
+    
+    <!-- Top Breadcrumb / Back Link -->
+    <div class="mb-8">
+      <a 
+        href="/#about" 
+        class={`inline-flex items-center space-x-2 text-xs font-bold px-4 py-2.5 rounded-xl border transition-all duration-300 hover:scale-105 ${colorClasses.badge}`}
+      >
+        <span>&larr;</span>
+        <span>Back to Personal Interests</span>
+      </a>
+    </div>
+
+    <!-- Hero Header -->
+    <header class="mb-14 pb-12 border-b border-element-border relative overflow-hidden">
+      <!-- Ambient Background Radial Glow -->
+      <div class={`absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-40 ${colorClasses.radialGlow}`}></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        
+        <!-- Left Content -->
+        <div class="lg:col-span-7 flex flex-col justify-center">
+          
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-100 mb-2 leading-tight">
+            <span class={colorClasses.gradientText}>
+              {interest.data.title}
+            </span>
+          </h1>
+
+          <p class={`${colorClasses.text} font-bold text-xs uppercase tracking-wider mb-4`}>
+            {interest.data.tagline}
+          </p>
+
+          <p class="text-gray-300 text-base sm:text-lg leading-relaxed font-normal mb-6">
+            {interest.data.description}
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <a 
+              href="#essay"
+              class={`px-5 py-3 rounded-xl text-xs font-bold shadow-md transition-all duration-300 hover:scale-105 flex items-center space-x-2 ${colorClasses.btnBg}`}
+            >
+              <span>Explore My Perspective</span>
+              <span>&darr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Artwork Card -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class={`glass-card p-2 rounded-3xl border ${colorClasses.border} ${colorClasses.shadowGlow} overflow-hidden group w-full max-w-md`}>
+            <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950">
+              <Image 
+                src={interest.data.heroImage} 
+                alt={`${interest.data.title} preview illustration`}
+                width={800}
+                height={450}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="eager"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none"></div>
+            </div>
+            <div class="p-3 text-center">
+              <span class="text-[11px] text-gray-400 font-medium italic">
+                {interest.data.title} &bull; {interest.data.tagline}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Detailed Article / Why This Excites Me -->
+    <section id="essay" class="mb-16 scroll-mt-24">
+      <div class="mb-8">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-100">
+          Why This Field <span class={colorClasses.gradientText}>Excites Me</span>
+        </h2>
+        <p class="text-gray-400 text-sm mt-1">
+          Personal motivations, core engineering philosophy, and architectural principles driving my work.
+        </p>
+      </div>
+
+      <div class={`glass-card p-6 sm:p-10 md:p-12 rounded-3xl border ${colorClasses.border} interest-content theme-${interest.data.color} prose-custom`}>
+        <Content />
+      </div>
+    </section>
+
+    <!-- Adjacent Interest Navigator -->
+    <section class="py-10 border-t border-element-border">
+      <div class="text-center mb-8">
+        <h3 class="text-lg font-bold text-gray-200">
+          Explore Other Personal Interests
+        </h3>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- Previous Interest -->
+        <a 
+          href={`/interests/${prevInterest.id}`}
+          class="glass-card p-6 rounded-2xl border border-element-border hover:border-element-border-medium transition-all duration-300 group flex items-center gap-4 text-left hover:-translate-x-1"
+        >
+          <span class="text-3xl select-none group-hover:scale-110 transition-transform">
+            {prevInterest.data.icon}
+          </span>
+          <div>
+            <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">
+              &larr; Previous Interest
+            </span>
+            <h4 class="text-base font-bold text-gray-100 group-hover:text-white transition-colors">
+              {prevInterest.data.title}
+            </h4>
+            <p class="text-xs text-gray-400 font-normal">
+              {prevInterest.data.tagline}
+            </p>
+          </div>
+        </a>
+
+        <!-- Next Interest -->
+        <a 
+          href={`/interests/${nextInterest.id}`}
+          class="glass-card p-6 rounded-2xl border border-element-border hover:border-element-border-medium transition-all duration-300 group flex items-center justify-end gap-4 text-right hover:translate-x-1"
+        >
+          <div>
+            <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">
+              Next Interest &rarr;
+            </span>
+            <h4 class="text-base font-bold text-gray-100 group-hover:text-white transition-colors">
+              {nextInterest.data.title}
+            </h4>
+            <p class="text-xs text-gray-400 font-normal">
+              {nextInterest.data.tagline}
+            </p>
+          </div>
+          <span class="text-3xl select-none group-hover:scale-110 transition-transform">
+            {nextInterest.data.icon}
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Connect & Collaborate Callout -->
+    <section class="mt-12 p-8 sm:p-10 rounded-3xl glass-card border border-element-border text-center relative overflow-hidden">
+      <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
+      <h3 class="text-2xl font-extrabold text-gray-100 mb-3">
+        Interested in {interest.data.title}?
+      </h3>
+      <p class="text-gray-400 text-sm max-w-xl mx-auto mb-6 leading-relaxed">
+        Whether you are working on innovative software architectures, simulation models, AI workflows, or interactive user experiences—let's connect and exchange ideas.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a 
+          href="/#contact" 
+          class={`px-6 py-3.5 rounded-xl text-xs font-bold shadow-lg transition-all duration-300 hover:scale-105 ${colorClasses.btnBg}`}
+        >
+          Get in Touch
+        </a>
+        <a 
+          href="/" 
+          class="px-6 py-3.5 rounded-xl text-xs font-bold border border-white/10 glass-card text-gray-300 hover:text-white transition-all duration-300"
+        >
+          Return to Homepage
+        </a>
+      </div>
+    </section>
+
+  </main>
+</Layout>
+
+<style>
+  /* Markdown content styling for interest articles */
+  .interest-content :global(h2) {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text-heading);
+    margin-top: 2rem;
+    margin-bottom: 0.85rem;
+    letter-spacing: -0.015em;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-bottom: 0.4rem;
+    transition: color 0.5s ease, border-color 0.5s ease;
+  }
+  .interest-content :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .interest-content :global(h3) {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-heading);
+    margin-top: 1.6rem;
+    margin-bottom: 0.75rem;
+    transition: color 0.5s ease;
+  }
+  .interest-content :global(p) {
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    color: var(--color-text-main);
+    margin-bottom: 1.25rem;
+    transition: color 0.5s ease;
+  }
+  .interest-content :global(p:first-of-type) {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.65;
+    color: var(--color-text-heading);
+    border-left: 3px solid var(--glow-text, #3b82f6);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+    transition: color 0.5s ease, border-color 0.5s ease;
+  }
+  .interest-content :global(ul) {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .interest-content :global(li) {
+    position: relative;
+    margin-bottom: 0;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.85rem 1.25rem 0.85rem 2.25rem;
+    border-radius: 12px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  :global(.light) .interest-content :global(li) {
+    background: rgba(15, 23, 42, 0.02);
+    border-color: rgba(15, 23, 42, 0.06);
+  }
+  .interest-content :global(li:hover) {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  :global(.light) .interest-content :global(li:hover) {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.1);
+  }
+  .interest-content :global(li::before) {
+    content: "✦";
+    position: absolute;
+    left: 0.85rem;
+    top: 0.85rem;
+    color: var(--glow-text, #3b82f6);
+    font-weight: bold;
+    line-height: 1.75;
+  }
+  .interest-content :global(li strong) {
+    color: var(--color-text-heading);
+    font-weight: 700;
+    margin-right: 0.2rem;
+    transition: color 0.5s ease;
+  }
+  .interest-content :global(> *:last-child) {
+    margin-bottom: 0;
+  }
+
+  .interest-content :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+    background-color: #030712;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .interest-content :global(img:hover) {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+  .interest-content :global(p:has(> em:only-child)) {
+    text-align: center;
+    margin-top: -0.25rem;
+    margin-bottom: 2.25rem;
+    font-size: 0.8125rem;
+    color: #9ca3af;
+  }
+
+  .theme-blue { --glow-text: #60a5fa; }
+  .theme-yellow { --glow-text: #fbbf24; }
+  .theme-purple { --glow-text: #c084fc; }
+  .theme-green { --glow-text: #34d399; }
+
+  :global(.light) .theme-blue { --glow-text: #1d4ed8; }
+  :global(.light) .theme-yellow { --glow-text: #b45309; }
+  :global(.light) .theme-purple { --glow-text: #7e22ce; }
+  :global(.light) .theme-green { --glow-text: #047857; }
+</style>

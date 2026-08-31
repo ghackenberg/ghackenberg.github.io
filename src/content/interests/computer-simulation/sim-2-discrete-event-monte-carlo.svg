@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1920 1080" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      
+      text { font-family: 'Outfit', 'Inter', -apple-system, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#030712"/>
+
+  <!-- Header -->
+  <g transform="translate(64, 48)">
+    <text x="0" y="36" fill="#ffffff" font-size="34" font-weight="900" letter-spacing="-0.5">Discrete-Event Simulation (DES) &amp; Monte Carlo Analysis</text>
+    <text x="0" y="66" fill="#fbbf24" font-size="16" font-weight="700" letter-spacing="1">EVENT SCHEDULING QUEUES, FACTORY LOGISTICS &amp; PROBABILISTIC STRESS-TESTING</text>
+    
+    <!-- Badge -->
+    <rect x="1560" y="8" width="232" height="40" rx="20" fill="rgba(255,255,255,0.05)" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="1676" y="33" fill="#fbbf24" font-size="13" font-weight="800" letter-spacing="1" text-anchor="middle">TECHNICAL SCHEMATIC</text>
+    
+    <!-- Separator -->
+    <line x1="0" y1="90" x2="1792" y2="90" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  </g>
+
+  <!-- Diagram Body -->
+  <g transform="translate(40, 150)">
+    <g transform="translate(60, 40)">
+      <rect x="0" y="0" width="1720" height="780" rx="24" fill="#1e1808" stroke="rgba(245,158,11,0.3)" stroke-width="3"/>
+      <text x="50" y="65" fill="#fbbf24" font-size="22" font-weight="800" letter-spacing="1.5">DISCRETE-EVENT SIMULATION (DES) &amp; MONTE CARLO STOCHASTICS</text>
+
+      <g transform="translate(50, 110)">
+        <!-- Left: Discrete Event Scheduler -->
+        <g transform="translate(0, 0)">
+          <rect x="0" y="0" width="810" height="590" rx="20" fill="#0e0c04" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <text x="35" y="45" fill="#fcd34d" font-size="20" font-weight="800">Discrete-Event Simulation (DES) Engine</text>
+          <text x="35" y="75" fill="#a8a29e" font-size="14">Future Event List (FEL) &amp; Resource Queue Mechanics</text>
+
+          <!-- Event Timeline Pipeline -->
+          <g transform="translate(35, 105)">
+            <rect x="0" y="0" width="740" height="90" rx="12" fill="#2d2208" stroke="#f59e0b" stroke-width="2"/>
+            <text x="25" y="35" fill="#fbbf24" font-size="14" font-weight="800">FUTURE EVENT LIST (FEL)</text>
+            <rect x="25" y="45" width="150" height="30" rx="6" fill="#030712"/>
+            <text x="100" y="65" fill="#fde68a" font-size="11" text-anchor="middle">e₁: t=12.4s (Part Arrives)</text>
+            <rect x="195" y="45" width="160" height="30" rx="6" fill="#030712"/>
+            <text x="275" y="65" fill="#fde68a" font-size="11" text-anchor="middle">e₂: t=14.1s (Robot Weld)</text>
+            <rect x="375" y="45" width="160" height="30" rx="6" fill="#030712"/>
+            <text x="455" y="65" fill="#fde68a" font-size="11" text-anchor="middle">e₃: t=18.0s (AGV Move)</text>
+            <rect x="555" y="45" width="160" height="30" rx="6" fill="#030712"/>
+            <text x="635" y="65" fill="#fde68a" font-size="11" text-anchor="middle">e₄: t=22.5s (Inspection)</text>
+          </g>
+
+          <!-- Factory Flow Schematic -->
+          <g transform="translate(35, 220)">
+            <!-- Buffer -->
+            <rect x="0" y="0" width="180" height="150" rx="14" fill="#18150a" stroke="rgba(245,158,11,0.4)" stroke-width="1.5"/>
+            <text x="20" y="35" fill="#fbbf24" font-size="14" font-weight="700">Buffer Queue (Q1)</text>
+            <rect x="20" y="55" width="25" height="70" rx="4" fill="#f59e0b"/>
+            <rect x="55" y="55" width="25" height="70" rx="4" fill="#f59e0b"/>
+            <rect x="90" y="55" width="25" height="70" rx="4" fill="#f59e0b"/>
+            <text x="20" y="140" fill="#a8a29e" font-size="11">Capacity: 8 / 10</text>
+
+            <!-- Server / Workstation -->
+            <rect x="260" y="0" width="220" height="150" rx="14" fill="#2d2208" stroke="#f59e0b" stroke-width="2.5"/>
+            <text x="280" y="35" fill="#ffffff" font-size="16" font-weight="800">Spine Workstation (S1)</text>
+            <text x="280" y="65" fill="#fde68a" font-size="13">Service Time: ~28s</text>
+            <text x="280" y="95" fill="#10b981" font-size="13" font-weight="700">Utilization: 94.2%</text>
+            <rect x="280" y="110" width="120" height="24" rx="6" fill="#10b981" opacity="0.2"/>
+            <text x="340" y="127" fill="#6ee7b7" font-size="11" font-weight="800" text-anchor="middle">ACTIVE</text>
+
+            <!-- AGV Dispatch -->
+            <rect x="540" y="0" width="200" height="150" rx="14" fill="#18150a" stroke="rgba(245,158,11,0.4)" stroke-width="1.5"/>
+            <text x="560" y="35" fill="#fbbf24" font-size="14" font-weight="700">AGV Fleet Transport</text>
+            <text x="560" y="65" fill="#a8a29e" font-size="12">Collision-Free Spine Routing</text>
+            <text x="560" y="95" fill="#fde68a" font-size="12">Fleet Active: 4 / 5</text>
+          </g>
+
+          <rect x="35" y="400" width="740" height="150" rx="14" fill="#261d06" stroke="rgba(245,158,11,0.5)" stroke-width="1.5"/>
+          <text x="60" y="440" fill="#fbbf24" font-size="16" font-weight="800">Spine Layout Simulation Insight</text>
+          <text x="60" y="475" fill="#d6d3d1" font-size="13">Discrete-event modeling uncovers bottleneck propagation and optimizes material flow without physical trial-and-error.</text>
+        </g>
+
+        <!-- Right: Monte Carlo Stochastics -->
+        <g transform="translate(850, 0)">
+          <rect x="0" y="0" width="770" height="590" rx="20" fill="#0e0c04" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <text x="35" y="45" fill="#fcd34d" font-size="20" font-weight="800">Monte Carlo Simulation: 10,000 Runs</text>
+          <text x="35" y="75" fill="#a8a29e" font-size="14">Statistical Confidence Intervals &amp; Machine Failure Risk</text>
+
+          <!-- Probability Bell Curve -->
+          <g transform="translate(60, 110)">
+            <line x1="0" y1="300" x2="650" y2="300" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+            <line x1="325" y1="40" x2="325" y2="300" stroke="#10b981" stroke-width="2" stroke-dasharray="6 4"/>
+            
+            <!-- Monte Carlo Distribution Curve -->
+            <path d="M 30,295 C 150,290 220,50 325,40 C 430,50 500,290 620,295" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="4"/>
+            
+            <text x="325" y="25" fill="#10b981" font-size="14" font-weight="800" text-anchor="middle">Mean Throughput: 1,420 parts/hr</text>
+            <text x="140" y="270" fill="#ef4444" font-size="12">95% Conf. Min: 1,280</text>
+            <text x="510" y="270" fill="#10b981" font-size="12">95% Conf. Max: 1,560</text>
+          </g>
+
+          <rect x="60" y="445" width="650" height="105" rx="14" fill="#2d2208" stroke="#f59e0b" stroke-width="2"/>
+          <text x="85" y="480" fill="#ffffff" font-size="15" font-weight="800">Risk Assessment under Uncertainty</text>
+          <text x="85" y="510" fill="#fde68a" font-size="13">Probabilistic stress-testing guarantees capacity under supply chain fluctuations and stochastic breakdown events.</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(64, 1030)">
+    <line x1="0" y1="0" x2="1792" y2="0" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+    <text x="0" y="24" fill="#6b7280" font-size="14" font-weight="600">Dr. Georg Hackenberg • Personal Interests Exploration</text>
+    <text x="1792" y="24" fill="#6b7280" font-size="14" font-weight="600" text-anchor="end">Original Vector SVG • Infinite Crisp Scalability</text>
+  </g>
+</svg>
