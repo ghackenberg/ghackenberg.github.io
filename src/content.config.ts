@@ -233,6 +233,24 @@ const modules = defineCollection({
   })
 });
 
+const interests = defineCollection({
+  loader: glob({
+    base: './src/content/interests',
+    pattern: '*/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    tagline: z.string(),
+    description: z.string().optional(),
+    color: z.enum(['blue', 'yellow', 'purple', 'green']),
+    icon: z.string(),
+    heroImage: image(),
+    order: z.number().default(0),
+    pubDate: z.coerce.date().optional(),
+  })
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -248,6 +266,8 @@ export const collections = {
   'courses': courses,
   'services': services,
   'modules': modules,
+  'interests': interests,
 };
+
 
 

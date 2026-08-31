@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1920 1080" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      
+      text { font-family: 'Outfit', 'Inter', -apple-system, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#030712"/>
+
+  <!-- Header -->
+  <g transform="translate(64, 48)">
+    <text x="0" y="36" fill="#ffffff" font-size="34" font-weight="900" letter-spacing="-0.5">Test-Driven Development &amp; Static Code Analysis</text>
+    <text x="0" y="66" fill="#60a5fa" font-size="16" font-weight="700" letter-spacing="1">ITERATIVE CORRECTNESS, AUTOMATED VERIFICATION &amp; AST LINTING GATES</text>
+    
+    <!-- Badge -->
+    <rect x="1560" y="8" width="232" height="40" rx="20" fill="rgba(255,255,255,0.05)" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="1676" y="33" fill="#60a5fa" font-size="13" font-weight="800" letter-spacing="1" text-anchor="middle">TECHNICAL SCHEMATIC</text>
+    
+    <!-- Separator -->
+    <line x1="0" y1="90" x2="1792" y2="90" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  </g>
+
+  <!-- Diagram Body -->
+  <g transform="translate(40, 150)">
+    <g transform="translate(60, 40)">
+      <!-- Red-Green-Refactor Cycle -->
+      <rect x="0" y="0" width="840" height="780" rx="24" fill="#0b132b" stroke="rgba(59,130,246,0.3)" stroke-width="3"/>
+      <text x="40" y="60" fill="#60a5fa" font-size="22" font-weight="800" letter-spacing="1.5">TEST-DRIVEN DEVELOPMENT (TDD) CYCLE</text>
+      
+      <!-- Big Circular Flow -->
+      <g transform="translate(420, 430)">
+        <!-- Circular Flow Dashed Track -->
+        <circle cx="0" cy="0" r="230" fill="none" stroke="rgba(59,130,246,0.2)" stroke-width="6" stroke-dasharray="12 8"/>
+        
+        <!-- Node 1: Red (Failing Test) -->
+        <g transform="translate(0, -230)">
+          <circle cx="0" cy="0" r="85" fill="#1e1022" stroke="#ef4444" stroke-width="4"/>
+          <text x="0" y="-15" fill="#ef4444" font-size="28" font-weight="900" text-anchor="middle">1. RED</text>
+          <text x="0" y="15" fill="#fca5a5" font-size="14" font-weight="700" text-anchor="middle">Write Failing Test</text>
+          <text x="0" y="35" fill="#9ca3af" font-size="12" text-anchor="middle">Specify behavior first</text>
+        </g>
+
+        <!-- Node 2: Green (Pass Test) -->
+        <g transform="translate(200, 115)">
+          <circle cx="0" cy="0" r="85" fill="#062419" stroke="#10b981" stroke-width="4"/>
+          <text x="0" y="-15" fill="#10b981" font-size="28" font-weight="900" text-anchor="middle">2. GREEN</text>
+          <text x="0" y="15" fill="#6ee7b7" font-size="14" font-weight="700" text-anchor="middle">Make Test Pass</text>
+          <text x="0" y="35" fill="#9ca3af" font-size="12" text-anchor="middle">Minimal code to succeed</text>
+        </g>
+
+        <!-- Node 3: Refactor (Optimize) -->
+        <g transform="translate(-200, 115)">
+          <circle cx="0" cy="0" r="85" fill="#0f1f3d" stroke="#3b82f6" stroke-width="4"/>
+          <text x="0" y="-15" fill="#3b82f6" font-size="26" font-weight="900" text-anchor="middle">3. REFACTOR</text>
+          <text x="0" y="15" fill="#93c5fd" font-size="14" font-weight="700" text-anchor="middle">Clean Architecture</text>
+          <text x="0" y="35" fill="#9ca3af" font-size="12" text-anchor="middle">Remove duplication &amp; debt</text>
+        </g>
+
+        <!-- Center Label -->
+        <circle cx="0" cy="0" r="70" fill="#030712" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+        <text x="0" y="-5" fill="#ffffff" font-size="16" font-weight="800" text-anchor="middle">CONTINUOUS</text>
+        <text x="0" y="18" fill="#60a5fa" font-size="14" font-weight="700" text-anchor="middle">TDD LOOP</text>
+      </g>
+    </g>
+
+    <!-- Static Code Analysis &amp; AST Verification Side -->
+    <g transform="translate(940, 40)">
+      <rect x="0" y="0" width="840" height="780" rx="24" fill="#0b132b" stroke="rgba(59,130,246,0.3)" stroke-width="3"/>
+      <text x="40" y="60" fill="#60a5fa" font-size="22" font-weight="800" letter-spacing="1.5">STATIC CODE ANALYSIS &amp; QUALITY GATES</text>
+
+      <!-- Pipeline Steps -->
+      <g transform="translate(40, 100)">
+        <!-- Step 1: AST Parsing -->
+        <rect x="0" y="0" width="760" height="135" rx="16" fill="#070d1e" stroke="rgba(59,130,246,0.4)" stroke-width="2"/>
+        <circle cx="50" cy="67" r="28" fill="#3b82f6" opacity="0.2"/>
+        <text x="50" y="75" fill="#60a5fa" font-size="20" font-weight="900" text-anchor="middle">AST</text>
+        <text x="100" y="52" fill="#ffffff" font-size="18" font-weight="800">Abstract Syntax Tree (AST) Parsing</text>
+        <text x="100" y="80" fill="#9ca3af" font-size="14">Deconstructs source code into hierarchical syntactic tokens and grammar trees.</text>
+        <rect x="620" y="45" width="110" height="36" rx="8" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5"/>
+        <text x="675" y="68" fill="#10b981" font-size="13" font-weight="800" text-anchor="middle">PARSED ✓</text>
+
+        <!-- Step 2: Type Inference -->
+        <g transform="translate(0, 155)">
+          <rect x="0" y="0" width="760" height="135" rx="16" fill="#070d1e" stroke="rgba(59,130,246,0.4)" stroke-width="2"/>
+          <circle cx="50" cy="67" r="28" fill="#3b82f6" opacity="0.2"/>
+          <text x="50" y="75" fill="#60a5fa" font-size="20" font-weight="900" text-anchor="middle">TS</text>
+          <text x="100" y="52" fill="#ffffff" font-size="18" font-weight="800">Type System &amp; Soundness Verification</text>
+          <text x="100" y="80" fill="#9ca3af" font-size="14">Verifies compile-time type bounds, non-nullable invariants, and interface contracts.</text>
+          <rect x="620" y="45" width="110" height="36" rx="8" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5"/>
+          <text x="675" y="68" fill="#10b981" font-size="13" font-weight="800" text-anchor="middle">SOUND ✓</text>
+        </g>
+
+        <!-- Step 3: Linting &amp; Security -->
+        <g transform="translate(0, 310)">
+          <rect x="0" y="0" width="760" height="135" rx="16" fill="#070d1e" stroke="rgba(59,130,246,0.4)" stroke-width="2"/>
+          <circle cx="50" cy="67" r="28" fill="#3b82f6" opacity="0.2"/>
+          <text x="50" y="75" fill="#60a5fa" font-size="18" font-weight="900" text-anchor="middle">SEC</text>
+          <text x="100" y="52" fill="#ffffff" font-size="18" font-weight="800">Linter Rules &amp; Security Vulnerability Scan</text>
+          <text x="100" y="80" fill="#9ca3af" font-size="14">Enforces architectural boundaries, complexity thresholds, and sanitization checks.</text>
+          <rect x="620" y="45" width="110" height="36" rx="8" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5"/>
+          <text x="675" y="68" fill="#10b981" font-size="13" font-weight="800" text-anchor="middle">PASSED ✓</text>
+        </g>
+
+        <!-- Step 4: Quality Gate Result -->
+        <g transform="translate(0, 465)">
+          <rect x="0" y="0" width="760" height="140" rx="16" fill="#0f291e" stroke="#10b981" stroke-width="2.5"/>
+          <text x="40" y="50" fill="#10b981" font-size="20" font-weight="900">QUALITY GATE PASSED: READY FOR MERGE</text>
+          <text x="40" y="80" fill="#d1fae5" font-size="14">0 Errors • 0 Vulnerabilities • 100% Code Coverage on New Lines • Zero Regressions</text>
+          <text x="40" y="108" fill="#6ee7b7" font-size="12" font-weight="700">Deterministic verification guarantees system resilience before execution.</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(64, 1030)">
+    <line x1="0" y1="0" x2="1792" y2="0" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+    <text x="0" y="24" fill="#6b7280" font-size="14" font-weight="600">Dr. Georg Hackenberg • Personal Interests Exploration</text>
+    <text x="1792" y="24" fill="#6b7280" font-size="14" font-weight="600" text-anchor="end">Original Vector SVG • Infinite Crisp Scalability</text>
+  </g>
+</svg>

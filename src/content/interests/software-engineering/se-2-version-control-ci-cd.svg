@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1920 1080" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      
+      text { font-family: 'Outfit', 'Inter', -apple-system, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#030712"/>
+
+  <!-- Header -->
+  <g transform="translate(64, 48)">
+    <text x="0" y="36" fill="#ffffff" font-size="34" font-weight="900" letter-spacing="-0.5">Version Control, Continuous Integration &amp; Delivery</text>
+    <text x="0" y="66" fill="#60a5fa" font-size="16" font-weight="700" letter-spacing="1">AUTOMATED TRUNK-BASED PIPELINES FROM GIT COMMIT TO STAGED ARTIFACTS</text>
+    
+    <!-- Badge -->
+    <rect x="1560" y="8" width="232" height="40" rx="20" fill="rgba(255,255,255,0.05)" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="1676" y="33" fill="#60a5fa" font-size="13" font-weight="800" letter-spacing="1" text-anchor="middle">TECHNICAL SCHEMATIC</text>
+    
+    <!-- Separator -->
+    <line x1="0" y1="90" x2="1792" y2="90" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  </g>
+
+  <!-- Diagram Body -->
+  <g transform="translate(40, 150)">
+    <g transform="translate(60, 40)">
+      <rect x="0" y="0" width="1720" height="780" rx="24" fill="#0b132b" stroke="rgba(59,130,246,0.3)" stroke-width="3"/>
+      <text x="50" y="65" fill="#60a5fa" font-size="22" font-weight="800" letter-spacing="1.5">END-TO-END AUTOMATED CI/CD DELIVERY PIPELINE</text>
+
+      <!-- Pipeline Sequence Columns -->
+      <g transform="translate(50, 110)">
+        
+        <!-- Column 1: Git Branching -->
+        <g transform="translate(0, 0)">
+          <rect x="0" y="0" width="370" height="590" rx="20" fill="#070d1e" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
+          <text x="25" y="45" fill="#60a5fa" font-size="18" font-weight="800">1. Version Control (Git)</text>
+          <!-- Git Tree -->
+          <path d="M 60,110 L 60,510" stroke="#3b82f6" stroke-width="4"/>
+          <path d="M 60,190 C 140,190 140,270 140,320 L 140,430 C 140,480 60,480 60,510" fill="none" stroke="#a855f7" stroke-width="3" stroke-dasharray="6 4"/>
+          <circle cx="60" cy="110" r="14" fill="#3b82f6"/>
+          <text x="90" y="115" fill="#e2e8f0" font-size="14" font-weight="700">main: v2.4.0</text>
+          
+          <circle cx="140" cy="320" r="12" fill="#a855f7"/>
+          <text x="165" y="325" fill="#c084fc" font-size="13">feature/ast-engine</text>
+
+          <circle cx="140" cy="430" r="12" fill="#a855f7"/>
+          <text x="165" y="435" fill="#c084fc" font-size="13">commit: tests passed</text>
+
+          <circle cx="60" cy="510" r="16" fill="#10b981"/>
+          <text x="90" y="515" fill="#10b981" font-size="14" font-weight="800">PR Merged ✓</text>
+        </g>
+
+        <!-- Arrow 1 -->
+        <path d="M 390,405 L 430,405" stroke="#60a5fa" stroke-width="4"/>
+
+        <!-- Column 2: Continuous Integration -->
+        <g transform="translate(440, 0)">
+          <rect x="0" y="0" width="370" height="590" rx="20" fill="#070d1e" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
+          <text x="25" y="45" fill="#60a5fa" font-size="18" font-weight="800">2. Continuous Integration</text>
+
+          <!-- Stages -->
+          <rect x="25" y="85" width="320" height="95" rx="12" fill="#0b1a38" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+          <text x="45" y="125" fill="#ffffff" font-size="16" font-weight="700">Build &amp; Typecheck</text>
+          <text x="45" y="150" fill="#93c5fd" font-size="12">Vite / TypeScript / Astro</text>
+          <circle cx="310" cy="132" r="14" fill="#10b981"/>
+          <text x="310" y="137" fill="#fff" font-size="12" font-weight="900" text-anchor="middle">✓</text>
+
+          <rect x="25" y="200" width="320" height="95" rx="12" fill="#0b1a38" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+          <text x="45" y="240" fill="#ffffff" font-size="16" font-weight="700">Automated Test Matrix</text>
+          <text x="45" y="265" fill="#93c5fd" font-size="12">Unit, Integration &amp; E2E Suites</text>
+          <circle cx="310" cy="247" r="14" fill="#10b981"/>
+          <text x="310" y="252" fill="#fff" font-size="12" font-weight="900" text-anchor="middle">✓</text>
+
+          <rect x="25" y="315" width="320" height="95" rx="12" fill="#0b1a38" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+          <text x="45" y="355" fill="#ffffff" font-size="16" font-weight="700">Artifact Packaging</text>
+          <text x="45" y="380" fill="#93c5fd" font-size="12">Docker OCI &amp; Static Bundles</text>
+          <circle cx="310" cy="362" r="14" fill="#10b981"/>
+          <text x="310" y="367" fill="#fff" font-size="12" font-weight="900" text-anchor="middle">✓</text>
+
+          <rect x="25" y="440" width="320" height="110" rx="12" fill="#062419" stroke="#10b981" stroke-width="1.5"/>
+          <text x="45" y="480" fill="#10b981" font-size="16" font-weight="800">CI Result: All Green</text>
+          <text x="45" y="510" fill="#d1fae5" font-size="12">Build duration: 42s • Deterministic</text>
+        </g>
+
+        <!-- Arrow 2 -->
+        <path d="M 830,405 L 870,405" stroke="#60a5fa" stroke-width="4"/>
+
+        <!-- Column 3: Continuous Delivery (CD) -->
+        <g transform="translate(880, 0)">
+          <rect x="0" y="0" width="370" height="590" rx="20" fill="#070d1e" stroke="rgba(59,130,246,0.3)" stroke-width="2"/>
+          <text x="25" y="45" fill="#60a5fa" font-size="18" font-weight="800">3. Continuous Delivery</text>
+
+          <rect x="25" y="85" width="320" height="130" rx="12" fill="#0b1a38" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+          <text x="45" y="125" fill="#ffffff" font-size="16" font-weight="700">Staging Environment</text>
+          <text x="45" y="155" fill="#9ca3af" font-size="13">Ephemeral preview environments for automated QA validation.</text>
+          <rect x="45" y="175" width="130" height="24" rx="6" fill="#10b981" opacity="0.2"/>
+          <text x="110" y="191" fill="#10b981" font-size="11" font-weight="700" text-anchor="middle">STAGED ✓</text>
+
+          <rect x="25" y="240" width="320" height="150" rx="12" fill="#0b1a38" stroke="rgba(59,130,246,0.5)" stroke-width="1.5"/>
+          <text x="45" y="280" fill="#ffffff" font-size="16" font-weight="700">Artifact Registry &amp; Sync</text>
+          <text x="45" y="310" fill="#9ca3af" font-size="13">Signed immutable releases published to global CDN edge nodes.</text>
+          <rect x="45" y="340" width="130" height="24" rx="6" fill="#3b82f6" opacity="0.2"/>
+          <text x="110" y="356" fill="#60a5fa" font-size="11" font-weight="700" text-anchor="middle">REPLICATED ✓</text>
+
+          <rect x="25" y="415" width="320" height="135" rx="12" fill="#161538" stroke="#a855f7" stroke-width="1.5"/>
+          <text x="45" y="455" fill="#c084fc" font-size="16" font-weight="800">Production Deploy Target</text>
+          <text x="45" y="485" fill="#e9d5ff" font-size="12">Automated zero-downtime rolling rollout with instant rollback capability.</text>
+        </g>
+
+        <!-- Arrow 3 -->
+        <path d="M 1270,405 L 1310,405" stroke="#60a5fa" stroke-width="4"/>
+
+        <!-- Column 4: Value Delivered -->
+        <g transform="translate(1320, 0)">
+          <rect x="0" y="0" width="300" height="590" rx="20" fill="#062419" stroke="#10b981" stroke-width="2.5"/>
+          <text x="25" y="45" fill="#10b981" font-size="18" font-weight="800">Production Live</text>
+          
+          <circle cx="150" cy="180" r="70" fill="#074e35" stroke="#34d399" stroke-width="3"/>
+          <text x="150" y="175" fill="#ffffff" font-size="28" font-weight="900" text-anchor="middle">100%</text>
+          <text x="150" y="205" fill="#a7f3d0" font-size="14" font-weight="700" text-anchor="middle">AUTOMATED</text>
+
+          <g transform="translate(25, 290)">
+            <text x="0" y="25" fill="#ffffff" font-size="14" font-weight="700">✓ Zero Manual Friction</text>
+            <text x="0" y="65" fill="#ffffff" font-size="14" font-weight="700">✓ Immutable Builds</text>
+            <text x="0" y="105" fill="#ffffff" font-size="14" font-weight="700">✓ Traceable Commits</text>
+            <text x="0" y="145" fill="#ffffff" font-size="14" font-weight="700">✓ Fast Feedback Loops</text>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(64, 1030)">
+    <line x1="0" y1="0" x2="1792" y2="0" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+    <text x="0" y="24" fill="#6b7280" font-size="14" font-weight="600">Dr. Georg Hackenberg • Personal Interests Exploration</text>
+    <text x="1792" y="24" fill="#6b7280" font-size="14" font-weight="600" text-anchor="end">Original Vector SVG • Infinite Crisp Scalability</text>
+  </g>
+</svg>

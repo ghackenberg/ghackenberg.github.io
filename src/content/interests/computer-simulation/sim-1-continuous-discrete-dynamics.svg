@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1920 1080" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      
+      text { font-family: 'Outfit', 'Inter', -apple-system, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#030712"/>
+
+  <!-- Header -->
+  <g transform="translate(64, 48)">
+    <text x="0" y="36" fill="#ffffff" font-size="34" font-weight="900" letter-spacing="-0.5">Continuous &amp; Discrete-Time Dynamics with Numerical Integration</text>
+    <text x="0" y="66" fill="#fbbf24" font-size="16" font-weight="700" letter-spacing="1">DIFFERENTIAL EQUATIONS, RUNGE-KUTTA NUMERICAL SOLVERS &amp; STATE TRANSITIONS</text>
+    
+    <!-- Badge -->
+    <rect x="1560" y="8" width="232" height="40" rx="20" fill="rgba(255,255,255,0.05)" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="1676" y="33" fill="#fbbf24" font-size="13" font-weight="800" letter-spacing="1" text-anchor="middle">TECHNICAL SCHEMATIC</text>
+    
+    <!-- Separator -->
+    <line x1="0" y1="90" x2="1792" y2="90" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  </g>
+
+  <!-- Diagram Body -->
+  <g transform="translate(40, 150)">
+    <g transform="translate(60, 40)">
+      <rect x="0" y="0" width="1720" height="780" rx="24" fill="#1e1808" stroke="rgba(245,158,11,0.3)" stroke-width="3"/>
+      <text x="50" y="65" fill="#fbbf24" font-size="22" font-weight="800" letter-spacing="1.5">CONTINUOUS VS DISCRETE-TIME DYNAMICS &amp; NUMERICAL INTEGRATION</text>
+
+      <g transform="translate(50, 110)">
+        <!-- Left: Continuous Time Differential Solver -->
+        <g transform="translate(0, 0)">
+          <rect x="0" y="0" width="770" height="590" rx="20" fill="#0e0c04" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <text x="35" y="50" fill="#fcd34d" font-size="20" font-weight="800">Continuous-Time Dynamics: dx/dt = f(x, t)</text>
+          <text x="35" y="80" fill="#a8a29e" font-size="14">Numerical Integration via 4th-Order Runge-Kutta (RK4)</text>
+
+          <!-- Coordinate Grid -->
+          <g transform="translate(60, 120)">
+            <line x1="0" y1="360" x2="620" y2="360" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+            <line x1="0" y1="0" x2="0" y2="360" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+            <text x="610" y="395" fill="#a8a29e" font-size="14">Time (t)</text>
+            <text x="-40" y="20" fill="#a8a29e" font-size="14">State x(t)</text>
+
+            <!-- True Continuous Curve -->
+            <path d="M 0,320 C 120,310 180,60 300,90 C 420,120 480,240 600,160" fill="none" stroke="rgba(245,158,11,0.3)" stroke-width="4" stroke-dasharray="6 4"/>
+            
+            <!-- Numerical RK4 Step Discretization -->
+            <path d="M 0,320 L 100,300 L 200,110 L 300,90 L 400,115 L 500,210 L 600,160" fill="none" stroke="#f59e0b" stroke-width="4"/>
+            
+            <!-- Step Points -->
+            <circle cx="0" cy="320" r="8" fill="#f59e0b"/>
+            <circle cx="100" cy="300" r="8" fill="#f59e0b"/>
+            <circle cx="200" cy="110" r="8" fill="#f59e0b"/>
+            <circle cx="300" cy="90" r="8" fill="#f59e0b"/>
+            <circle cx="400" cy="115" r="8" fill="#f59e0b"/>
+            <circle cx="500" cy="210" r="8" fill="#f59e0b"/>
+            <circle cx="600" cy="160" r="8" fill="#f59e0b"/>
+
+            <text x="215" y="95" fill="#fde68a" font-size="12" font-weight="700">t + Δt</text>
+            <line x1="200" y1="110" x2="200" y2="360" stroke="rgba(245,158,11,0.4)" stroke-dasharray="4 4"/>
+          </g>
+
+          <rect x="60" y="500" width="650" height="50" rx="10" fill="#2d2208" stroke="#f59e0b" stroke-width="1"/>
+          <text x="80" y="532" fill="#fef3c7" font-size="13" font-weight="700">RK4 Solver: x(t+Δt) = x(t) + (Δt/6) • (k₁ + 2k₂ + 2k₃ + k₄)</text>
+        </g>
+
+        <!-- Right: Discrete-Time State Transition Model -->
+        <g transform="translate(810, 0)">
+          <rect x="0" y="0" width="810" height="590" rx="20" fill="#0e0c04" stroke="rgba(245,158,11,0.3)" stroke-width="2"/>
+          <text x="35" y="50" fill="#fcd34d" font-size="20" font-weight="800">Discrete-Time State Dynamics: x[k+1] = A • x[k] + B • u[k]</text>
+          <text x="35" y="80" fill="#a8a29e" font-size="14">Sampled-Data Feedback &amp; Discrete Synchronous State Machines</text>
+
+          <!-- State Nodes Diagram -->
+          <g transform="translate(60, 140)">
+            <!-- State S0 -->
+            <circle cx="100" cy="120" r="65" fill="#2d2208" stroke="#f59e0b" stroke-width="3"/>
+            <text x="100" y="115" fill="#ffffff" font-size="18" font-weight="800" text-anchor="middle">State S[0]</text>
+            <text x="100" y="138" fill="#fbbf24" font-size="12" text-anchor="middle">Idle / Ready</text>
+
+            <!-- State S1 -->
+            <circle cx="360" cy="120" r="65" fill="#2d2208" stroke="#f59e0b" stroke-width="3"/>
+            <text x="360" y="115" fill="#ffffff" font-size="18" font-weight="800" text-anchor="middle">State S[1]</text>
+            <text x="360" y="138" fill="#fbbf24" font-size="12" text-anchor="middle">Processing</text>
+
+            <!-- State S2 -->
+            <circle cx="620" cy="120" r="65" fill="#2d2208" stroke="#10b981" stroke-width="3"/>
+            <text x="620" y="115" fill="#ffffff" font-size="18" font-weight="800" text-anchor="middle">State S[2]</text>
+            <text x="620" y="138" fill="#6ee7b7" font-size="12" text-anchor="middle">Completed</text>
+
+            <!-- Transitions -->
+            <path d="M 165,120 L 295,120" stroke="#fbbf24" stroke-width="4"/>
+            <text x="230" y="105" fill="#fde68a" font-size="12" font-weight="700" text-anchor="middle">Input u[k]</text>
+
+            <path d="M 425,120 L 555,120" stroke="#10b981" stroke-width="4"/>
+            <text x="490" y="105" fill="#a7f3d0" font-size="12" font-weight="700" text-anchor="middle">Event Done</text>
+
+            <path d="M 590,175 C 490,260 230,260 130,175" fill="none" stroke="rgba(245,158,11,0.4)" stroke-width="3" stroke-dasharray="6 4"/>
+            <text x="360" y="270" fill="#a8a29e" font-size="12" text-anchor="middle">Reset / Next Cycle</text>
+          </g>
+
+          <rect x="60" y="470" width="690" height="80" rx="12" fill="#261d06" stroke="rgba(245,158,11,0.5)" stroke-width="1.5"/>
+          <text x="80" y="505" fill="#fbbf24" font-size="15" font-weight="800">Unified Static &amp; Dynamic Modeling</text>
+          <text x="80" y="532" fill="#d6d3d1" font-size="13">Combining differential continuous physics with discrete state machines models any complex system.</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(64, 1030)">
+    <line x1="0" y1="0" x2="1792" y2="0" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+    <text x="0" y="24" fill="#6b7280" font-size="14" font-weight="600">Dr. Georg Hackenberg • Personal Interests Exploration</text>
+    <text x="1792" y="24" fill="#6b7280" font-size="14" font-weight="600" text-anchor="end">Original Vector SVG • Infinite Crisp Scalability</text>
+  </g>
+</svg>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1920 1080" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      
+      text { font-family: 'Outfit', 'Inter', -apple-system, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#030712"/>
+
+  <!-- Header -->
+  <g transform="translate(64, 48)">
+    <text x="0" y="36" fill="#ffffff" font-size="34" font-weight="900" letter-spacing="-0.5">Design Systems, Tokens &amp; Usability Testing Metrics</text>
+    <text x="0" y="66" fill="#34d399" font-size="16" font-weight="700" letter-spacing="1">ATOMIC DESIGN TOKENS, CONSISTENCY ARCHITECTURE &amp; QUANTITATIVE UX METRICS</text>
+    
+    <!-- Badge -->
+    <rect x="1560" y="8" width="232" height="40" rx="20" fill="rgba(255,255,255,0.05)" stroke="#34d399" stroke-width="1.5"/>
+    <text x="1676" y="33" fill="#34d399" font-size="13" font-weight="800" letter-spacing="1" text-anchor="middle">TECHNICAL SCHEMATIC</text>
+    
+    <!-- Separator -->
+    <line x1="0" y1="90" x2="1792" y2="90" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  </g>
+
+  <!-- Diagram Body -->
+  <g transform="translate(40, 150)">
+    <g transform="translate(60, 40)">
+      <rect x="0" y="0" width="1720" height="780" rx="24" fill="#061c14" stroke="rgba(16,185,129,0.3)" stroke-width="3"/>
+      <text x="50" y="65" fill="#34d399" font-size="22" font-weight="800" letter-spacing="1.5">DESIGN SYSTEMS, TOKENS &amp; EMPIRICAL USABILITY TESTING</text>
+
+      <g transform="translate(50, 110)">
+        <!-- Left: Design Tokens Architecture -->
+        <g transform="translate(0, 0)">
+          <rect x="0" y="0" width="790" height="590" rx="20" fill="#020f0a" stroke="rgba(16,185,129,0.3)" stroke-width="2"/>
+          <text x="35" y="45" fill="#6ee7b7" font-size="20" font-weight="800">Atomic Design Tokens &amp; Consistency</text>
+          <text x="35" y="75" fill="#9ca3af" font-size="13">Single Source of Truth across 300+ Views</text>
+
+          <g transform="translate(35, 105)">
+            <!-- Token Category 1: Colors -->
+            <rect x="0" y="0" width="720" height="85" rx="12" fill="#072418" stroke="#10b981" stroke-width="1.5"/>
+            <text x="25" y="35" fill="#34d399" font-size="15" font-weight="800">Color Tokens</text>
+            <circle cx="200" cy="45" r="14" fill="#3b82f6"/>
+            <text x="225" y="50" fill="#93c5fd" font-size="12">--brand-blue</text>
+            <circle cx="340" cy="45" r="14" fill="#fbbf24"/>
+            <text x="365" y="50" fill="#fde68a" font-size="12">--brand-yellow</text>
+            <circle cx="480" cy="45" r="14" fill="#c084fc"/>
+            <text x="505" y="50" fill="#f3e8ff" font-size="12">--brand-purple</text>
+            <circle cx="620" cy="45" r="14" fill="#34d399"/>
+            <text x="645" y="50" fill="#a7f3d0" font-size="12">--brand-green</text>
+
+            <!-- Token Category 2: Typography -->
+            <rect x="0" y="100" width="720" height="85" rx="12" fill="#072418" stroke="#10b981" stroke-width="1.5"/>
+            <text x="25" y="135" fill="#34d399" font-size="15" font-weight="800">Typography Scale</text>
+            <text x="200" y="145" fill="#ffffff" font-size="13" font-weight="800">Outfit: Headings</text>
+            <text x="360" y="145" fill="#d1fae5" font-size="13">Inter: Body Legibility</text>
+            <text x="540" y="145" fill="#9ca3af" font-size="13">JetBrains: Code/Math</text>
+
+            <!-- Token Category 3: Spacing &amp; Elevation -->
+            <rect x="0" y="200" width="720" height="85" rx="12" fill="#072418" stroke="#10b981" stroke-width="1.5"/>
+            <text x="25" y="235" fill="#34d399" font-size="15" font-weight="800">Spacing &amp; Glass</text>
+            <text x="200" y="245" fill="#d1fae5" font-size="13">4px / 8px / 16px / 24px / 32px Grid</text>
+            <text x="460" y="245" fill="#a7f3d0" font-size="13">glass-card: backdrop-blur-xl</text>
+          </g>
+
+          <rect x="35" y="420" width="720" height="135" rx="14" fill="#062e20" stroke="#10b981" stroke-width="2"/>
+          <text x="60" y="460" fill="#ffffff" font-size="16" font-weight="800">Architectural Consistency</text>
+          <text x="60" y="490" fill="#d1fae5" font-size="13">Tokens eradicate visual drift, guaranteeing unified dark/light theme switching and responsive behavior everywhere.</text>
+        </g>
+
+        <!-- Right: Empirical Usability Testing -->
+        <g transform="translate(830, 0)">
+          <rect x="0" y="0" width="790" height="590" rx="20" fill="#020f0a" stroke="rgba(16,185,129,0.3)" stroke-width="2"/>
+          <text x="35" y="45" fill="#6ee7b7" font-size="20" font-weight="800">Empirical Usability Testing Metrics</text>
+          <text x="35" y="75" fill="#9ca3af" font-size="13">Quantitative Task Success, Latency &amp; Satisfaction (CSAT)</text>
+
+          <!-- Metric Cards Grid -->
+          <g transform="translate(35, 105)">
+            <rect x="0" y="0" width="345" height="135" rx="14" fill="#062e20" stroke="#10b981" stroke-width="2"/>
+            <text x="25" y="40" fill="#34d399" font-size="14" font-weight="800">Task Completion Rate</text>
+            <text x="25" y="85" fill="#ffffff" font-size="34" font-weight="900">96.8%</text>
+            <text x="25" y="115" fill="#a7f3d0" font-size="12">Target &gt; 90% • Passed ✓</text>
+
+            <rect x="375" y="0" width="345" height="135" rx="14" fill="#062e20" stroke="#10b981" stroke-width="2"/>
+            <text x="400" y="40" fill="#34d399" font-size="14" font-weight="800">Time-on-Task Reduction</text>
+            <text x="400" y="85" fill="#ffffff" font-size="34" font-weight="900">-48%</text>
+            <text x="400" y="115" fill="#a7f3d0" font-size="12">From 3.2m down to 1.6m</text>
+
+            <rect x="0" y="155" width="345" height="135" rx="14" fill="#062e20" stroke="#10b981" stroke-width="2"/>
+            <text x="25" y="195" fill="#34d399" font-size="14" font-weight="800">System Usability Scale (SUS)</text>
+            <text x="25" y="240" fill="#ffffff" font-size="34" font-weight="900">89.4</text>
+            <text x="25" y="270" fill="#a7f3d0" font-size="12">Top 5% Grade A+ Benchmark</text>
+
+            <rect x="375" y="155" width="345" height="135" rx="14" fill="#062e20" stroke="#10b981" stroke-width="2"/>
+            <text x="400" y="195" fill="#34d399" font-size="14" font-weight="800">Cognitive Error Recovery</text>
+            <text x="400" y="240" fill="#ffffff" font-size="34" font-weight="900">&lt; 4.2s</text>
+            <text x="400" y="270" fill="#a7f3d0" font-size="12">Self-healing guided inputs</text>
+          </g>
+
+          <rect x="35" y="420" width="720" height="135" rx="14" fill="#0b2419" stroke="#10b981" stroke-width="1.5"/>
+          <text x="60" y="460" fill="#ffffff" font-size="16" font-weight="800">Data-Driven Design Decisions</text>
+          <text x="60" y="490" fill="#a7f3d0" font-size="13">Pairing quantitative metrics with direct user feedback transforms design from opinion into verifiable science.</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(64, 1030)">
+    <line x1="0" y1="0" x2="1792" y2="0" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+    <text x="0" y="24" fill="#6b7280" font-size="14" font-weight="600">Dr. Georg Hackenberg • Personal Interests Exploration</text>
+    <text x="1792" y="24" fill="#6b7280" font-size="14" font-weight="600" text-anchor="end">Original Vector SVG • Infinite Crisp Scalability</text>
+  </g>
+</svg>
