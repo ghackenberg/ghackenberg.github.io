@@ -1,12 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
-import sitemap from '@astrojs/sitemap';
+import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildSitemapMetadata } from './scripts/sitemap-config.js';
 
 /** @type {Record<string, string>} */
 const mimeTypes = {
@@ -92,20 +93,12 @@ function copyContentAssets() {
           };
           copyFiles(srcDir);
         }
-
-        // Prefer copying sitemap-0.xml to sitemap.xml for direct urlset compatibility with Google Search Console
-        const sitemap0Src = path.join(outDir, 'sitemap-0.xml');
-        const sitemapIndexSrc = path.join(outDir, 'sitemap-index.xml');
-        const sitemapDest = path.join(outDir, 'sitemap.xml');
-        if (fs.existsSync(sitemap0Src)) {
-          fs.copyFileSync(sitemap0Src, sitemapDest);
-        } else if (fs.existsSync(sitemapIndexSrc)) {
-          fs.copyFileSync(sitemapIndexSrc, sitemapDest);
-        }
       }
     }
   };
 }
+
+const { getMetadataForPath } = buildSitemapMetadata();
 
 // https://astro.build/config
 export default defineConfig({
@@ -113,7 +106,52 @@ export default defineConfig({
   image: {
     dangerouslyProcessSVG: true,
   },
-  integrations: [sitemap(), copyContentAssets()],
+  integrations: [
+    sitemap({
+      serialize(item) {
+        try {
+          const urlObj = new URL(item.url);
+          const meta = getMetadataForPath(urlObj.pathname);
+          return {
+            ...item,
+            lastmod: meta.lastmod ? meta.lastmod.toISOString() : item.lastmod,
+            changefreq: /** @type {ChangeFreqEnum} */ (meta.changefreq),
+            priority: meta.priority
+          };
+        } catch {
+          return item;
+        }
+      },
+
+      chunks: {
+        posts: (item) => {
+          const pathname = new URL(item.url).pathname;
+          return pathname.startsWith('/posts/') || pathname === '/posts' ? item : undefined;
+        },
+        courses: (item) => {
+          const pathname = new URL(item.url).pathname;
+          return pathname.startsWith('/courses/') || pathname === '/courses' ? item : undefined;
+        },
+        publications: (item) => {
+          const pathname = new URL(item.url).pathname;
+          return pathname.startsWith('/publications/') || pathname === '/publications' ? item : undefined;
+        },
+        projects: (item) => {
+          const pathname = new URL(item.url).pathname;
+          return pathname.startsWith('/projects/') || pathname === '/projects' ? item : undefined;
+        },
+        services: (item) => {
+          const pathname = new URL(item.url).pathname;
+          return pathname.startsWith('/services/') || pathname === '/services' ? item : undefined;
+        },
+        visualizations: (item) => {
+          const pathname = new URL(item.url).pathname;
+          return pathname.startsWith('/visualizations/') || pathname === '/visualizations' ? item : undefined;
+        }
+      }
+    }),
+    copyContentAssets()
+  ],
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
@@ -122,4 +160,5 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 });
+
 

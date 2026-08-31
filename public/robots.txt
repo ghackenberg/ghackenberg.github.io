@@ -30,9 +30,8 @@ User-agent: ByteSpider
 Allow: /
 
 # Machine-Readable Indexes & XML Feeds
-Sitemap: https://hackenberg.tech/sitemap.xml
-Sitemap: https://hackenberg.tech/sitemap-0.xml
 Sitemap: https://hackenberg.tech/sitemap-index.xml
+
 
 # LLM Standard (https://llmstxt.org)
 # llms.txt: https://hackenberg.tech/llms.txt
