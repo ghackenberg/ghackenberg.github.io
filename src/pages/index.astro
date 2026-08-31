@@ -1487,6 +1487,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
   :global(.light) .visual-blueprint-bg {
     background-image: radial-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px);
   }
+
+  /* Allow native vertical touch scrolling through the Vis.js canvas area */
+  #home-vis-canvas,
+  #home-vis-canvas :global(canvas),
+  #home-vis-canvas :global(.vis-network) {
+    touch-action: pan-y !important;
+  }
 </style>
 
 <script>
@@ -1566,6 +1573,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       zoomView?: boolean;
       hover?: boolean;
       dragView?: boolean;
+      dragNodes?: boolean;
       tooltipDelay?: number;
     };
     utmSource?: string;
@@ -1596,11 +1604,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         const defaultLayout = engine.layouts[0].id;
         const isLight = document.documentElement.classList.contains('light');
 
-        // Initialize Vis.js Network with zoomView: false, dragView: false (pan/zoom disabled), hover enabled, and UTM tracking
+        // Initialize Vis.js Network with zoomView: false, dragView: false, dragNodes: false (pan/zoom disabled, vertical scroll preserved), hover enabled, and UTM tracking
         activeInstance = await engine.init(container, payload, defaultLayout, isLight, {
           interaction: {
             zoomView: false,
             dragView: false,
+            dragNodes: false,
             hover: true
           },
           utmSource: 'homepage',

@@ -664,3 +664,10 @@ div.vis-tooltip {
   background-image: linear-gradient(to right, #059669, #0d9488);
 }
 
+/* Ensure Vis.js canvases with disabled drag allow native touch scrolling */
+#home-vis-canvas,
+#home-vis-canvas canvas,
+#home-vis-canvas .vis-network {
+  touch-action: pan-y !important;
+}
+

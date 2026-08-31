@@ -144,7 +144,8 @@ export default {
       hoverConnectedEdges: false,
       tooltipDelay: 100,
       zoomView: true,
-      dragView: true
+      dragView: true,
+      dragNodes: true
     }, extraOptions && extraOptions.interaction ? extraOptions.interaction : {});
 
     const utmSource = (extraOptions && extraOptions.utmSource) || 'vis_network';
@@ -203,6 +204,18 @@ export default {
     };
 
     this.network = new vis.Network(container, data, this.options);
+
+    if (interactionOptions.dragView === false) {
+      container.style.touchAction = 'pan-y';
+      const canvasEl = container.querySelector('canvas');
+      if (canvasEl) {
+        canvasEl.style.touchAction = 'pan-y';
+      }
+      const visWrapper = container.querySelector('.vis-network');
+      if (visWrapper) {
+        visWrapper.style.touchAction = 'pan-y';
+      }
+    }
 
     await new Promise((resolve) => {
       let isDone = false;
