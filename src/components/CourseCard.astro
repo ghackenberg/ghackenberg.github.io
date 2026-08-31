@@ -129,7 +129,7 @@ const languageColors: Record<string, string> = {
     )}
 
     <!-- Instruction language badge -->
-    <span class="absolute top-4 right-4 z-20 inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-slate-950/80 text-white border border-white/15 uppercase select-none">
+    <span class="absolute top-4 right-4 z-20 inline-flex items-center text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-950/80 text-white border border-white/15 uppercase select-none tracking-wide">
       {language}
     </span>
   </div>
@@ -147,14 +147,14 @@ const languageColors: Record<string, string> = {
       </h2>
 
       {description && (
-        <p class="text-gray-400 text-xs leading-relaxed mb-6 font-normal line-clamp-3 flex-grow">
+        <p class="text-gray-300 light:text-slate-600 text-sm leading-relaxed mb-6 font-normal line-clamp-3 flex-grow">
           {description}
         </p>
       )}
     </div>
 
     <!-- Card footer: Tech language + Stars -->
-    <div class="flex items-center justify-between text-xs text-gray-500 border-t border-element-border pt-4 mt-auto z-20">
+    <div class="flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-600 border-t border-element-border pt-4 mt-auto z-20">
       <div class="flex items-center space-x-1.5">
         <span class={`w-2.5 h-2.5 rounded-full ${languageColors[tech] || 'bg-gray-400'}`}></span>
         <span class="font-medium">{tech}</span>

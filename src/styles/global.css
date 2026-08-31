@@ -366,8 +366,8 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
 .badge-new {
   align-items: center;
   justify-content: center;
-  padding: 0.15rem 0.5rem;
-  font-size: 0.625rem; /* 10px */
+  padding: 0.2rem 0.55rem;
+  font-size: 0.6875rem; /* 11px */
   line-height: 1;
   font-weight: 800;
   letter-spacing: 0.05em;

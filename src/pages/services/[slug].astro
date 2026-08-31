@@ -122,7 +122,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
     <!-- Back Button -->
     <a 
       href="/services" 
-      class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${service.data.color}/10 border border-brand-${service.data.color}/20 hover:border-brand-${service.data.color}/30 text-brand-${service.data.color} transition-all mb-8 cursor-pointer`}
+      class={`inline-flex items-center space-x-2 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-brand-${service.data.color}/10 border border-brand-${service.data.color}/20 hover:border-brand-${service.data.color}/30 text-brand-${service.data.color} transition-all mb-8 cursor-pointer`}
     >
       <span>&larr;</span>
       <span>Back to Services</span>
@@ -136,7 +136,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
       <p class={`${colorClasses.text} font-bold text-xs uppercase tracking-wider mb-2`}>
         {service.data.tagline}
       </p>
-      <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
+      <p class="text-gray-300 light:text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
         {service.data.description}
       </p>
       
@@ -144,7 +144,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
         <a
           href="#contact-services"
           data-subject={`Inquiry: ${service.data.title}`}
-          class={`px-6 py-3 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger min-h-[44px] ${colorClasses.btnBg}`}
+          class={`px-6 py-3 rounded-xl text-center text-xs sm:text-sm font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger min-h-[44px] ${colorClasses.btnBg}`}
         >
           <span>{service.data.ctaText}</span>
           <span>&rarr;</span>
@@ -166,7 +166,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
             <span>Available Service Modules</span>
           </h2>
           
-          <p class="text-gray-400 text-sm leading-relaxed font-normal">
+          <p class="text-gray-300 light:text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
             Each service module represents a concrete building block that can be booked individually or combined into a comprehensive custom package.
           </p>
 
@@ -193,21 +193,21 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
                         >UNREAD</span>
                       </h3>
                     </div>
-                    <p class={`${colorClasses.text} font-bold text-[10px] uppercase tracking-wider leading-none`}>
+                    <p class={`${colorClasses.text} font-bold text-xs uppercase tracking-wider leading-none`}>
                       {module.data.tagline}
                     </p>
-                    <p class="text-gray-400 text-xs leading-relaxed font-normal">
+                    <p class="text-gray-300 light:text-slate-600 text-sm leading-relaxed font-normal">
                       {module.data.description}
                     </p>
 
                     <div class="flex flex-wrap gap-2 relative z-20">
                       {module.data.duration && (
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-300 light:text-slate-600">
                           ⏱️ {module.data.duration}
                         </span>
                       )}
                       {module.data.delivery && (
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-300 light:text-slate-600">
                           📍 {module.data.delivery}
                         </span>
                       )}
@@ -215,7 +215,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
 
                     <div>
                       <span 
-                        class={`inline-flex items-center space-x-1.5 text-xs font-bold px-4 py-2 rounded-lg transition-all shadow-md ${colorClasses.btnBg}`}
+                        class={`inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold px-4 py-2 rounded-lg transition-all shadow-md ${colorClasses.btnBg}`}
                       >
                         <span>Explore Module & Methodology</span>
                         <span>&rarr;</span>
@@ -250,7 +250,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
         <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
           Start a Conversation
         </h2>
-        <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+        <p class="text-gray-300 light:text-slate-600 text-base sm:text-lg leading-relaxed">
           Write directly to discuss custom setups, corporate workshops, strategic advisory, or media publishing.
         </p>
       </div>
@@ -282,7 +282,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
               </div>
             </div>
             
-            <div class="pt-6 border-t border-element-border flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
+            <div class="pt-6 border-t border-element-border flex flex-col sm:flex-row gap-4 justify-between items-center text-xs sm:text-sm text-gray-400">
               <p>Typically responding within 2 business days.</p>
               <a 
                 id="direct-mail-link"
@@ -302,7 +302,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
 <style>
   /* Markdown content styling for service layouts */
   .service-content :global(h2) {
-    font-size: 1.25rem;
+    font-size: 1.75rem;
     font-weight: 800;
     color: var(--color-text-heading);
     margin-top: 1.85rem;
@@ -316,7 +316,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
     margin-top: 0;
   }
   .service-content :global(h3) {
-    font-size: 1.05rem;
+    font-size: 1.375rem;
     font-weight: 700;
     color: var(--color-text-heading);
     margin-top: 1.5rem;
@@ -324,16 +324,16 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
     transition: color 0.5s ease;
   }
   .service-content :global(p) {
-    font-size: 0.875rem;
-    line-height: 1.7;
+    font-size: 1.0625rem;
+    line-height: 1.75;
     color: var(--color-text-main);
     margin-bottom: 1.25rem;
     transition: color 0.5s ease;
   }
   .service-content :global(p:first-of-type) {
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 500;
-    line-height: 1.6;
+    line-height: 1.7;
     color: var(--color-text-heading);
     border-left: 3px solid var(--glow-text, #a855f7);
     padding-left: 1rem;
@@ -350,8 +350,8 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
   }
   .service-content :global(li) {
     margin-bottom: 0;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 1.0625rem;
+    line-height: 1.7;
     background: rgba(255, 255, 255, 0.01);
     border: 1px solid rgba(255, 255, 255, 0.04);
     padding: 0.85rem 1rem;

@@ -149,7 +149,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     <!-- Back Button -->
     <a 
       href={`/services/${parentService.id}`} 
-      class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${parentService.data.color}/10 border border-brand-${parentService.data.color}/20 hover:border-brand-${parentService.data.color}/30 text-brand-${parentService.data.color} transition-all mb-8 cursor-pointer`}
+      class={`inline-flex items-center space-x-2 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-brand-${parentService.data.color}/10 border border-brand-${parentService.data.color}/20 hover:border-brand-${parentService.data.color}/30 text-brand-${parentService.data.color} transition-all mb-8 cursor-pointer`}
     >
       <span>&larr;</span>
       <span>Back to {parentService.data.title}</span>
@@ -163,7 +163,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <p class={`${colorClasses.text} font-bold text-xs uppercase tracking-wider mb-2`}>
         {module.data.tagline}
       </p>
-      <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
+      <p class="text-gray-300 light:text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
         {module.data.description}
       </p>
       
@@ -171,7 +171,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
         <a
           href="#contact-services"
           data-subject={`Inquiry: ${parentService.data.title} - ${module.data.title}`}
-          class={`px-6 py-3 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger min-h-[48px] shrink-0 ${colorClasses.btnBg}`}
+          class={`px-6 py-3 rounded-xl text-center text-xs sm:text-sm font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger min-h-[48px] shrink-0 ${colorClasses.btnBg}`}
         >
           <span>{module.data.ctaText}</span>
           <span>&rarr;</span>
@@ -180,14 +180,14 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
         {/* Quick Specs Grid */}
         <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="px-4 py-2.5 rounded-xl bg-element-bg border border-element-border flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
-            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Est. Duration</span>
-            <span class="text-xs font-bold mt-0.5">
+            <span class="text-xs font-bold text-gray-400 light:text-slate-500 uppercase tracking-wider">Est. Duration</span>
+            <span class="text-sm font-bold mt-0.5">
               {module.data.duration || 'Flexible Plan'}
             </span>
           </div>
           <div class="px-4 py-2.5 rounded-xl bg-element-bg border border-element-border flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
-            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Delivery Mode</span>
-            <span class="text-xs font-bold mt-0.5">
+            <span class="text-xs font-bold text-gray-400 light:text-slate-500 uppercase tracking-wider">Delivery Mode</span>
+            <span class="text-sm font-bold mt-0.5">
               {module.data.delivery || 'Collaborative'}
             </span>
           </div>
@@ -208,7 +208,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
             <span>🎯</span>
             <span>Service Scope & Key Capabilities</span>
           </h2>
-          <p class="text-gray-400 text-sm leading-relaxed font-normal max-w-2xl light:text-slate-600">
+          <p class="text-gray-300 light:text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-2xl">
             This module covers the following targeted topics and key expert competencies:
           </p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -217,7 +217,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
                 <div class="mt-[7px] shrink-0">
                   <span class={`flex w-2 h-2 rounded-full ${colorClasses.dot} transition-transform group-hover:scale-125`}></span>
                 </div>
-                <span class="text-xs sm:text-sm font-semibold text-gray-300 light:text-slate-800 leading-relaxed">
+                <span class="text-sm sm:text-base font-semibold text-gray-200 light:text-slate-800 leading-relaxed">
                   {item}
                 </span>
               </div>
@@ -232,7 +232,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
               <span>📦</span>
               <span>Specifications: Inputs & Deliverables</span>
             </h2>
-            <p class="text-gray-400 text-sm leading-relaxed font-normal max-w-2xl light:text-slate-600">
+            <p class="text-gray-300 light:text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-2xl">
               A clear breakdown of the resource inputs required from your side and the concrete deliverables you will receive as the output of this service module:
             </p>
           </div>
@@ -250,14 +250,14 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
                     <h3 class="text-sm font-extrabold uppercase tracking-wider mt-0 mb-0.5">
                       Required Client Inputs
                     </h3>
-                    <p class="text-[10px] text-gray-500 font-medium">To be provided to initiate development</p>
+                    <p class="text-xs text-gray-400 light:text-slate-500 font-medium">To be provided to initiate development</p>
                   </div>
                 </div>
 
                 {module.data.inputs && module.data.inputs.length > 0 ? (
                   <ul class="space-y-3.5">
                     {module.data.inputs.map(item => (
-                      <li class="text-xs text-gray-400 light:text-slate-600 flex items-start gap-3 leading-relaxed font-normal">
+                      <li class="text-xs sm:text-sm text-gray-300 light:text-slate-600 flex items-start gap-3 leading-relaxed font-normal">
                         <span class="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-gray-500 light:bg-slate-400"></span>
                         <span>{item}</span>
                       </li>
@@ -281,14 +281,14 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
                     <h3 class="text-sm font-extrabold uppercase tracking-wider mt-0 mb-0.5">
                       Guaranteed Deliverables
                     </h3>
-                    <p class="text-[10px] text-gray-400 light:text-slate-500 font-medium">Outcome packages included in the scope</p>
+                    <p class="text-xs text-gray-400 light:text-slate-500 font-medium">Outcome packages included in the scope</p>
                   </div>
                 </div>
 
                 {module.data.outputs && module.data.outputs.length > 0 ? (
                   <ul class="space-y-3.5">
                     {module.data.outputs.map(item => (
-                      <li class="text-xs text-gray-300 light:text-slate-800 flex items-start gap-3 leading-relaxed font-normal">
+                      <li class="text-xs sm:text-sm text-gray-200 light:text-slate-800 flex items-start gap-3 leading-relaxed font-normal">
                         <svg class={`w-4 h-4 mt-0.5 shrink-0 ${colorClasses.text}`} fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
                         </svg>
@@ -320,7 +320,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
                 <span>Project Plan & Execution Phases</span>
               </h2>
               {module.data.methodologyDescription && (
-                <p class="text-gray-400 text-sm leading-relaxed font-normal light:text-slate-600">
+                <p class="text-gray-300 light:text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
                   {module.data.methodologyDescription}
                 </p>
               )}
@@ -345,7 +345,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
 
                     {/* Circle Node on Timeline */}
                     <div 
-                      class={`absolute -left-[32px] sm:-left-[36px] top-[-2px] w-6 h-6 rounded-full flex items-center justify-center font-mono font-bold text-[10px] border transition-all duration-300 methodology-step-node`}
+                      class={`absolute -left-[32px] sm:-left-[36px] top-[-2px] w-6 h-6 rounded-full flex items-center justify-center font-mono font-bold text-xs border transition-all duration-300 methodology-step-node`}
                     >
                       {String(idx + 1).padStart(2, '0')}
                     </div>
@@ -354,7 +354,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
                       <h3 class={`text-xs sm:text-sm font-extrabold uppercase tracking-wider leading-tight ${colorClasses.phaseHover} transition-colors mt-0.5`}>
                         {phase.title}
                       </h3>
-                      <p class="text-xs text-gray-400 leading-relaxed font-normal group-hover/phase:text-gray-300 transition-colors max-w-3xl light:text-slate-600 light:group-hover/phase:text-slate-800">
+                      <p class="text-xs sm:text-sm text-gray-300 light:text-slate-600 leading-relaxed font-normal group-hover/phase:text-gray-100 light:group-hover/phase:text-slate-900 transition-colors max-w-3xl">
                         {phase.description}
                       </p>
                     </div>
@@ -373,7 +373,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
         <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
           Start a Conversation
         </h2>
-        <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+        <p class="text-gray-300 light:text-slate-600 text-base sm:text-lg leading-relaxed">
           Write directly to request an inquiry about the {module.data.title} module or custom bundle options.
         </p>
       </div>
@@ -425,7 +425,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
 <style>
   /* Markdown content styling for service layouts */
   .service-content :global(h2) {
-    font-size: 1.25rem;
+    font-size: 1.75rem;
     font-weight: 800;
     color: var(--color-text-heading);
     margin-top: 1.85rem;
@@ -439,7 +439,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     margin-top: 0;
   }
   .service-content :global(h3) {
-    font-size: 1.05rem;
+    font-size: 1.375rem;
     font-weight: 700;
     color: var(--color-text-heading);
     margin-top: 1.5rem;
@@ -447,16 +447,16 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     transition: color 0.5s ease;
   }
   .service-content :global(p) {
-    font-size: 0.875rem;
-    line-height: 1.7;
+    font-size: 1.0625rem;
+    line-height: 1.75;
     color: var(--color-text-main);
     margin-bottom: 1.25rem;
     transition: color 0.5s ease;
   }
   .service-content :global(p:first-of-type) {
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 500;
-    line-height: 1.6;
+    line-height: 1.7;
     color: var(--color-text-heading);
     border-left: 3px solid var(--glow-text, #a855f7);
     padding-left: 1rem;
@@ -473,8 +473,8 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
   }
   .service-content :global(li) {
     margin-bottom: 0;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 1.0625rem;
+    line-height: 1.7;
     background: rgba(255, 255, 255, 0.01);
     border: 1px solid rgba(255, 255, 255, 0.04);
     padding: 0.85rem 1rem;

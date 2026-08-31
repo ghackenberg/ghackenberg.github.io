@@ -114,7 +114,7 @@ const imageContainerClass = featured
     <!-- Title -->
     <h2 class={featured
       ? "text-xl md:text-2xl lg:text-3xl font-extrabold text-gray-100 light:text-slate-900 mb-3 group-hover:text-sky-300 light:group-hover:text-brand-blue transition-colors leading-snug"
-      : "text-base font-bold text-gray-100 light:text-slate-900 mb-2 group-hover:text-brand-blue transition-colors leading-snug"
+      : "text-lg font-bold text-gray-100 light:text-slate-900 mb-2 group-hover:text-brand-blue transition-colors leading-snug"
     }>
       <a href={`/posts/${id}`} class="after:absolute after:inset-0 after:z-10">
         {title}
@@ -124,8 +124,8 @@ const imageContainerClass = featured
     <!-- Description -->
     {description && (
       <p class={`leading-relaxed font-normal ${featured
-        ? 'text-gray-300 light:text-slate-600 text-base md:text-lg mb-5'
-        : 'text-gray-400 light:text-slate-500 text-sm mb-4'
+        ? 'text-gray-200 light:text-slate-700 text-base md:text-lg mb-5'
+        : 'text-gray-300 light:text-slate-600 text-sm sm:text-base mb-4'
       }`}>
         {description}
       </p>
@@ -153,8 +153,8 @@ const imageContainerClass = featured
         <a 
           href={`/posts/${id}`} 
           class={featured 
-            ? "inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-blue/30 hover:bg-brand-blue/50 border border-brand-blue/50 text-white light:bg-brand-blue light:text-white light:hover:bg-brand-blue/90 text-sm font-bold relative z-20 shadow-md transition-all hover:scale-105" 
-            : "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs font-bold relative z-20 transition-all hover:scale-105"
+            ? "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-blue/30 hover:bg-brand-blue/50 border border-brand-blue/50 text-white light:bg-brand-blue light:text-white light:hover:bg-brand-blue/90 text-sm font-bold relative z-20 shadow-md transition-all hover:scale-105" 
+            : "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs sm:text-sm font-bold relative z-20 transition-all hover:scale-105"
           }
         >
           <span>Read Article</span>

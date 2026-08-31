@@ -61,7 +61,7 @@ const pagePreviewImage = page.data.find(p => p.data.icon)?.data.icon;
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
         Computer Science <span class="heading-gradient-blue">Blog</span>
       </h1>
-      <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+      <p class="text-gray-300 light:text-slate-600 text-base sm:text-lg max-w-2xl font-normal leading-relaxed">
         Insights, development logs, sketches, and tutorials covering ultimate usability design, graphics engine development, software systems, and mechatronics workbench engineering.
       </p>
     </div>
@@ -79,9 +79,9 @@ const pagePreviewImage = page.data.find(p => p.data.icon)?.data.icon;
               type="text" 
               id="tag-search" 
               placeholder="Search tags..." 
-              class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-1.5 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
+              class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-sm placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
             />
-            <span class="absolute left-2.5 top-2 text-[10px] text-gray-500">🔍</span>
+            <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
           </div>
           <div class="flex flex-wrap gap-2 overflow-y-auto pr-1 custom-scrollbar-thin flex-grow">
             {tags.map(tag => (

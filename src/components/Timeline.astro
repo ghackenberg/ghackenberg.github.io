@@ -420,8 +420,8 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
                       <h4 class="text-base font-bold text-gray-50 mb-1 group-hover/role:text-transparent group-hover/role:bg-clip-text group-hover/role:bg-gradient-to-r group-hover/role:from-gray-50 group-hover/role:to-gray-300 transition-all">
                         {role.title}
                       </h4>
-                      <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs text-gray-500 font-semibold mb-3">
-                        <span class="text-gray-400">{role.displayPeriod}</span>
+                      <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs text-gray-400 light:text-slate-500 font-semibold mb-3">
+                        <span>{role.displayPeriod}</span>
                         {role.employmentType && (
                           <>
                             <span>&bull;</span>
@@ -435,7 +435,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
                           </>
                         )}
                       </div>
-                      <div class="text-gray-400 text-sm md:text-base leading-relaxed font-normal prose prose-invert max-w-none">
+                      <div class="text-gray-300 light:text-slate-600 text-sm md:text-base leading-relaxed font-normal prose prose-invert max-w-none">
                         <role.Content />
                       </div>
                     </div>

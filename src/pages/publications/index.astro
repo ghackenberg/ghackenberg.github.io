@@ -40,7 +40,7 @@ const firstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
         Peer-Reviewed <span class="heading-gradient-purple">Publications</span>
       </h1>
-      <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+      <p class="text-gray-300 light:text-slate-600 text-base sm:text-lg max-w-2xl font-normal leading-relaxed">
         A list of international conference papers, workshop reports, journals, and presentations focusing on gesture control, software engineering, and smart grids.
       </p>
     </div>
@@ -58,9 +58,9 @@ const firstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
               type="text" 
               id="tag-search" 
               placeholder="Search tags..." 
-              class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-1.5 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50 transition-all duration-200"
+              class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50 transition-all duration-200"
             />
-            <span class="absolute left-2.5 top-2 text-[10px] text-gray-500">🔍</span>
+            <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
           </div>
           <div class="flex flex-wrap gap-2.5 overflow-y-auto pr-1 custom-scrollbar-thin flex-grow">
             {tags.map(tag => (

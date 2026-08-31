@@ -92,7 +92,7 @@ const languageColors: Record<string, string> = {
           </div>
           <h3 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100">GitHub</h3>
         </div>
-        <span class="text-[10px] text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20 font-semibold uppercase">
+        <span class="text-xs text-red-500 bg-red-500/10 px-2.5 py-0.5 rounded-full border border-red-500/20 font-bold uppercase tracking-wider">
           Failed
         </span>
       </div>
@@ -101,8 +101,8 @@ const languageColors: Record<string, string> = {
         <div class="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 text-lg mb-4">
           ⚠️
         </div>
-        <h4 class="text-sm font-bold text-gray-100 mb-2">Build-Time Error</h4>
-        <p class="text-xs text-gray-400 leading-relaxed max-w-[220px]">
+        <h4 class="text-base font-bold text-gray-100 mb-2">Build-Time Error</h4>
+        <p class="text-sm text-gray-400 leading-relaxed max-w-[220px]">
           Could not load local collection. {buildError}
         </p>
       </div>
@@ -114,7 +114,7 @@ const languageColors: Record<string, string> = {
         href="https://github.com/ghackenberg" 
         target="_blank" 
         rel="noopener noreferrer"
-        class="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-semibold rounded-xl bg-element-bg hover:bg-element-bg-hover text-gray-300 border border-element-border-medium hover:border-element-border-hover transition-all duration-300"
+        class="w-full flex items-center justify-center space-x-2 py-2.5 text-xs sm:text-sm font-semibold rounded-xl bg-element-bg hover:bg-element-bg-hover text-gray-300 border border-element-border-medium hover:border-element-border-hover transition-all duration-300"
       >
         <span>Open Profile Link</span>
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -140,7 +140,7 @@ const languageColors: Record<string, string> = {
           </div>
           <h3 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100">GitHub</h3>
         </div>
-        <span class="text-[10px] text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20 font-semibold uppercase">
+        <span class="text-xs text-yellow-500 bg-yellow-500/10 px-2.5 py-0.5 rounded-full border border-yellow-500/20 font-bold uppercase tracking-wider">
           Sync Required
         </span>
       </div>
@@ -149,9 +149,9 @@ const languageColors: Record<string, string> = {
         <div class="w-12 h-12 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-500 text-lg mb-4">
           ⚙️
         </div>
-        <h4 class="text-sm font-bold text-gray-100 mb-2">No Local Data Found</h4>
-        <p class="text-xs text-gray-400 leading-relaxed max-w-[220px]">
-          Please run <code class="bg-element-bg-hover px-1.5 py-0.5 rounded text-yellow-400 font-mono text-[11px]">npm run sync</code> locally to populate the GitHub feed.
+        <h4 class="text-base font-bold text-gray-100 mb-2">No Local Data Found</h4>
+        <p class="text-sm text-gray-400 leading-relaxed max-w-[220px]">
+          Please run <code class="bg-element-bg-hover px-1.5 py-0.5 rounded text-yellow-400 font-mono text-xs">npm run sync</code> locally to populate the GitHub feed.
         </p>
       </div>
     </div>
@@ -162,7 +162,7 @@ const languageColors: Record<string, string> = {
         href="https://github.com/ghackenberg" 
         target="_blank" 
         rel="noopener noreferrer"
-        class="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-semibold rounded-xl bg-element-bg hover:bg-element-bg-hover text-gray-300 border border-element-border-medium hover:border-element-border-hover transition-all duration-300"
+        class="w-full flex items-center justify-center space-x-2 py-2.5 text-xs sm:text-sm font-semibold rounded-xl bg-element-bg hover:bg-element-bg-hover text-gray-300 border border-element-border-medium hover:border-element-border-hover transition-all duration-300"
       >
         <span>Open Profile Link</span>
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -229,7 +229,7 @@ const languageColors: Record<string, string> = {
             <p class="text-base sm:text-lg md:text-xl font-bold text-gray-100 group-hover/item:text-brand-blue transition-colors line-clamp-1 font-mono leading-snug">
               {repo.title}
             </p>
-            <p class="text-xs sm:text-sm md:text-base text-gray-300 line-clamp-2 mt-1.5 sm:mt-2 leading-relaxed font-sans font-normal">
+            <p class="text-sm sm:text-base text-gray-300 light:text-slate-600 line-clamp-2 mt-1.5 sm:mt-2 leading-relaxed font-sans font-normal">
               {repo.description}
             </p>
             <div class="flex items-center space-x-3 text-xs sm:text-sm text-gray-400 mt-3 font-medium select-none">

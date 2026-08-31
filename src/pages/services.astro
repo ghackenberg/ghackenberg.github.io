@@ -106,7 +106,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
         Professional <span class="heading-gradient-purple">Services</span>
       </h1>
-      <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+      <p class="text-gray-300 light:text-slate-600 text-base sm:text-lg max-w-2xl font-normal leading-relaxed">
         Bridging the gap between academic research, software engineering, and corporate strategy. Discover tailorable workshops, R&D prototyping, and advisory setups.
       </p>
     </div>
@@ -156,14 +156,14 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
 
                 <!-- Description -->
                 <div class="space-y-3">
-                  <p class="text-gray-300 text-sm leading-relaxed font-normal">
+                  <p class="text-gray-300 light:text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
                     {service.data.description}
                   </p>
                 </div>
 
                 {serviceModules.length > 0 && (
                   <div class="space-y-3 relative z-20">
-                    <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">
+                    <p class="text-xs font-bold text-gray-400 light:text-slate-500 uppercase tracking-wider">
                       Service Modules
                     </p>
                     <div class="flex flex-wrap gap-2">
@@ -173,7 +173,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                         return (
                           <a 
                             href={moduleUrl}
-                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400 hover:bg-element-bg-hover hover:text-gray-100 hover:border-element-border-hover transition-all cursor-pointer min-h-[28px]"
+                            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-300 light:text-slate-700 hover:bg-element-bg-hover hover:text-gray-100 light:hover:text-slate-950 hover:border-element-border-hover transition-all cursor-pointer min-h-[28px]"
                           >
                             <span>{module.data.title}</span>
                             <span 
@@ -191,7 +191,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                 <div class="flex flex-col sm:flex-row gap-4 pt-2 relative z-20">
                   <a
                     href={`/services/${service.id}`}
-                    class={`px-5 py-3 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer min-h-[44px] ${classes.btnBg}`}
+                    class={`px-5 py-3 rounded-xl text-center text-xs sm:text-sm font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer min-h-[44px] ${classes.btnBg}`}
                   >
                     <span>View Details & Methodology</span>
                     <span>&rarr;</span>
@@ -316,7 +316,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
 <style>
   /* Markdown content styling for service layouts */
   .service-content :global(h3) {
-    font-size: 1.25rem;
+    font-size: 1.75rem;
     font-weight: 800;
     color: white;
     margin-top: 1.5rem;
@@ -327,28 +327,28 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
     margin-top: 0;
   }
   .service-content :global(h4) {
-    font-size: 1.05rem;
+    font-size: 1.375rem;
     font-weight: 700;
     color: white;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
   }
   .service-content :global(p) {
-    font-size: 0.875rem;
-    line-height: 1.7;
-    color: #9ca3af; /* text-gray-400 */
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #cbd5e1;
     margin-bottom: 1.25rem;
   }
   .service-content :global(ul) {
     list-style-type: disc;
     padding-left: 1.25rem;
     margin-bottom: 1.25rem;
-    color: #9ca3af;
+    color: #cbd5e1;
   }
   .service-content :global(li) {
     margin-bottom: 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 1.0625rem;
+    line-height: 1.7;
   }
   .service-content :global(li strong) {
     color: white;

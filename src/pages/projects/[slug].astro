@@ -176,7 +176,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     <!-- Back Button -->
     <a 
       href="/projects" 
-      class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${accentColor}/10 border border-brand-${accentColor}/20 hover:border-brand-${accentColor}/30 text-brand-${accentColor} transition-all mb-8 cursor-pointer`}
+      class={`inline-flex items-center space-x-2 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-brand-${accentColor}/10 border border-brand-${accentColor}/20 hover:border-brand-${accentColor}/30 text-brand-${accentColor} transition-all mb-8 cursor-pointer`}
     >
       <span>&larr;</span>
       <span>Back to Projects</span>
@@ -187,7 +187,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
         {project.data.title}
       </h1>
-      <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
+      <p class="text-gray-300 light:text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
         {project.data.description}
       </p>
     </header>
@@ -211,7 +211,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
                 {project.data.title} is a dedicated solution designed with the core principles of reliability, usability, and modern architecture. It addresses critical needs in {project.data.tags.slice(0, 3).join(", ").toLowerCase()} systems.
               </p>
               <h3 class="font-bold mt-6 mb-2">Key Areas of Focus:</h3>
-              <ul class="list-disc pl-5 space-y-2 text-gray-400">
+              <ul class="list-disc pl-5 space-y-2 text-gray-300 light:text-slate-600">
                 {project.data.tags.map(tag => (
                   <li><strong>{tag}</strong>: Implementation of standards, optimized performance, and interdisciplinary support.</li>
                 ))}
@@ -250,18 +250,21 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
                       </div>
                     </div>
                   </div>
-                  <!-- Title & Description Area -->
-                  <div class="p-5 border-t border-element-border flex-grow flex flex-col justify-between">
-                    <div>
-                      <h3 class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans">
+                  <!-- Text Container -->
+                  <div class="p-4 sm:p-5 flex flex-col flex-grow bg-slate-900/40">
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                      <h3 class={`text-sm sm:text-base font-bold text-gray-100 group-hover:text-brand-${accentColor} transition-colors line-clamp-1`}>
                         {shot.title}
                       </h3>
-                      {shot.description && (
-                        <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed font-sans">
-                          {shot.description}
-                        </p>
-                      )}
+                      <span class="text-xs text-gray-400 font-mono shrink-0">
+                        {index + 1}/{optimizedScreenshots.length}
+                      </span>
                     </div>
+                    {shot.description && (
+                      <p class="text-xs sm:text-sm text-gray-300 light:text-slate-600 line-clamp-2 leading-relaxed font-sans">
+                        {shot.description}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -283,10 +286,10 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 
           <div class="mb-6 space-y-4">
             <div>
-              <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-1.5">Project Type</p>
+              <p class="text-xs font-bold text-gray-400 light:text-slate-500 uppercase tracking-wider mb-1.5">Project Type</p>
               <div class="flex flex-wrap gap-1.5">
                 {project.data.tags.map(tag => (
-                  <span class={`text-[10px] px-2.5 py-0.5 rounded-full border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-medium`}>
+                  <span class={`text-xs px-2.5 py-0.5 rounded-full border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-medium`}>
                     {tag}
                   </span>
                 ))}
@@ -298,7 +301,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
             href={project.data.href}
             target="_blank"
             rel="noopener noreferrer"
-            class={`w-full py-3.5 px-4 rounded-xl text-center text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-2 cursor-pointer ${colorClasses.btnBg}`}
+            class={`w-full py-3.5 px-4 rounded-xl text-center text-xs sm:text-sm font-bold transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-2 cursor-pointer ${colorClasses.btnBg}`}
           >
             <span>Visit Website</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -323,11 +326,11 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
               {repoNameId}
             </p>
             
-            <p class="text-gray-400 text-xs leading-normal mb-4 line-clamp-3">
+            <p class="text-gray-300 light:text-slate-600 text-sm leading-relaxed mb-4 line-clamp-3">
               {repo.description}
             </p>
 
-            <div class="space-y-2.5 border-t border-element-border pt-3.5 mb-4 text-xs text-gray-400">
+            <div class="space-y-2.5 border-t border-element-border pt-3.5 mb-4 text-xs sm:text-sm text-gray-300 light:text-slate-600">
               <div class="flex items-center justify-between">
                 <span>Language:</span>
                 <div class="flex items-center space-x-1.5">
@@ -354,7 +357,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
                 href={repo.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                class={`inline-flex items-center text-sm font-bold transition-colors group/link cursor-pointer ${colorClasses.text} ${colorClasses.hoverText}`}
+                class={`inline-flex items-center text-xs sm:text-sm font-bold transition-colors group/link cursor-pointer ${colorClasses.text} ${colorClasses.hoverText}`}
               >
                 <span>Explore Repository</span>
                 <svg class="w-4 h-4 ml-1.5 transform group-hover/link:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -535,7 +538,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 <style>
   /* Markdown content layout styling */
   .project-content :global(h2) {
-    font-size: 1.25rem;
+    font-size: 1.75rem;
     font-weight: 850;
     color: var(--color-text-heading);
     margin-top: 2.25rem;
@@ -549,7 +552,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     margin-top: 0;
   }
   .project-content :global(h3) {
-    font-size: 1.1rem;
+    font-size: 1.375rem;
     font-weight: 750;
     color: var(--color-text-heading);
     margin-top: 1.75rem;
@@ -557,8 +560,8 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     transition: color 0.5s ease;
   }
   .project-content :global(p) {
-    font-size: 0.875rem;
-    line-height: 1.65;
+    font-size: 1.0625rem;
+    line-height: 1.75;
     color: var(--color-text-main);
     margin-bottom: 1.5rem;
     transition: color 0.5s ease;
@@ -572,8 +575,8 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
   }
   .project-content :global(li) {
     margin-bottom: 0.6rem;
-    font-size: 0.875rem;
-    line-height: 1.55;
+    font-size: 1.0625rem;
+    line-height: 1.75;
   }
   .project-content :global(ol) {
     list-style-type: decimal;
