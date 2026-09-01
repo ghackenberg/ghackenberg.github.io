@@ -1,0 +1,123 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 500" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', sans-serif;">
+  <defs>
+    <filter id="shadow-arch" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="4" dy="4" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#3b82f6" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
+    </marker>
+  </defs>
+
+  <!-- Outer Frame -->
+  <rect x="10" y="10" width="860" height="480" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Headline -->
+  <text x="35" y="40" fill="#f8fafc" font-size="18" font-weight="bold">Referenzarchitektur eines Mindful-IT-Systems</text>
+  <text x="35" y="58" fill="#94a3b8" font-size="12">Schichtenmodell vom Calm-Interface über Edge-AI-Shields bis zur Local-First-Datenhaltung</text>
+
+  <!-- ==================== LAYER 1: CALM INTERFACE LAYER ==================== -->
+  <g filter="url(#shadow-arch)" transform="translate(35, 78)">
+    <rect x="0" y="0" width="810" height="78" rx="10" fill="#111827" stroke="#3b82f6" stroke-width="2" />
+    <rect x="0" y="0" width="220" height="78" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+    <text x="18" y="32" fill="#60a5fa" font-size="13" font-weight="bold">1. Calm Interface Layer</text>
+    <text x="18" y="52" fill="#94a3b8" font-size="10.5">Frontend &amp; Ambient UX</text>
+
+    <!-- Sub-elements -->
+    <g transform="translate(235, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#0f172a" stroke="#3b82f6" stroke-width="1" />
+      <text x="10" y="22" fill="#93c5fd" font-size="11" font-weight="bold">Minimalist UI &amp; Zen Mode</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Kein visuelles Rauschen</text>
+    </g>
+    <g transform="translate(425, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="1" />
+      <text x="10" y="22" fill="#86efac" font-size="11" font-weight="bold">Peripherie-Indikatoren</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Ambient Cues statt Popups</text>
+    </g>
+    <g transform="translate(615, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="1" />
+      <text x="10" y="22" fill="#fde047" font-size="11" font-weight="bold">Positive Friction</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Deliberation Gates</text>
+    </g>
+  </g>
+
+  <!-- ==================== LAYER 2: COGNITIVE SHIELD & AGENT LAYER ==================== -->
+  <g filter="url(#shadow-arch)" transform="translate(35, 172)">
+    <rect x="0" y="0" width="810" height="78" rx="10" fill="#111827" stroke="#a855f7" stroke-width="2" />
+    <rect x="0" y="0" width="220" height="78" rx="10" fill="#2e1065" stroke="#a855f7" stroke-width="2" />
+    <text x="18" y="32" fill="#c084fc" font-size="13" font-weight="bold">2. Cognitive Shield Layer</text>
+    <text x="18" y="52" fill="#d8b4fe" font-size="10.5">Lokale KI &amp; Filter-Agenten</text>
+
+    <!-- Sub-elements -->
+    <g transform="translate(235, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#1e1b4b" stroke="#a855f7" stroke-width="1" />
+      <text x="10" y="22" fill="#d8b4fe" font-size="11" font-weight="bold">Local SLM Triage (1-7B)</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Semantische Vorfilterung</text>
+    </g>
+    <g transform="translate(425, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#1e1b4b" stroke="#a855f7" stroke-width="1" />
+      <text x="10" y="22" fill="#d8b4fe" font-size="11" font-weight="bold">Urgency Dampener</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Dämpft künstliche Panik</text>
+    </g>
+    <g transform="translate(615, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#1e1b4b" stroke="#a855f7" stroke-width="1" />
+      <text x="10" y="22" fill="#d8b4fe" font-size="11" font-weight="bold">Batch Summary Engine</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Ruhige Digest-Entwürfe</text>
+    </g>
+  </g>
+
+  <!-- ==================== LAYER 3: PROCESSING & SYNC LAYER ==================== -->
+  <g filter="url(#shadow-arch)" transform="translate(35, 266)">
+    <rect x="0" y="0" width="810" height="78" rx="10" fill="#111827" stroke="#10b981" stroke-width="2" />
+    <rect x="0" y="0" width="220" height="78" rx="10" fill="#064e3b" stroke="#10b981" stroke-width="2" />
+    <text x="18" y="32" fill="#86efac" font-size="13" font-weight="bold">3. Processing &amp; Sync</text>
+    <text x="18" y="52" fill="#a7f3d0" font-size="10.5">Local-First &amp; CRDT Engine</text>
+
+    <!-- Sub-elements -->
+    <g transform="translate(235, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#022c22" stroke="#10b981" stroke-width="1" />
+      <text x="10" y="22" fill="#86efac" font-size="11" font-weight="bold">Local Storage (SQLite/IDB)</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Null Latenz &amp; Offline-Modus</text>
+    </g>
+    <g transform="translate(425, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#022c22" stroke="#10b981" stroke-width="1" />
+      <text x="10" y="22" fill="#86efac" font-size="11" font-weight="bold">CRDTs (Automerge/Yjs)</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Konfliktfreie Sync-Wellen</text>
+    </g>
+    <g transform="translate(615, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#022c22" stroke="#10b981" stroke-width="1" />
+      <text x="10" y="22" fill="#86efac" font-size="11" font-weight="bold">Epistemic Windows</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Asynchrones Pull-Batching</text>
+    </g>
+  </g>
+
+  <!-- ==================== LAYER 4: TELEMETRY & PRIVACY LAYER ==================== -->
+  <g filter="url(#shadow-arch)" transform="translate(35, 360)">
+    <rect x="0" y="0" width="810" height="78" rx="10" fill="#111827" stroke="#f59e0b" stroke-width="2" />
+    <rect x="0" y="0" width="220" height="78" rx="10" fill="#361e04" stroke="#f59e0b" stroke-width="2" />
+    <text x="18" y="32" fill="#fde047" font-size="13" font-weight="bold">4. Privacy &amp; Sensing</text>
+    <text x="18" y="52" fill="#fef08a" font-size="10.5">On-Device Bio-Ergonomie</text>
+
+    <!-- Sub-elements -->
+    <g transform="translate(235, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#1c1917" stroke="#f59e0b" stroke-width="1" />
+      <text x="10" y="22" fill="#fde047" font-size="11" font-weight="bold">Local Bio-Sensing</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Blick- &amp; Tipprhythmus</text>
+    </g>
+    <g transform="translate(425, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#1c1917" stroke="#f59e0b" stroke-width="1" />
+      <text x="10" y="22" fill="#fde047" font-size="11" font-weight="bold">Flow-State Detection</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Auto-Mute bei Fokus</text>
+    </g>
+    <g transform="translate(615, 12)">
+      <rect x="0" y="0" width="180" height="54" rx="6" fill="#1c1917" stroke="#10b981" stroke-width="1" />
+      <text x="10" y="22" fill="#86efac" font-size="11" font-weight="bold">Zero Cloud Leakage</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9.5">Volle Datensouveränität</text>
+    </g>
+  </g>
+
+  <!-- Bottom Note -->
+  <text x="35" y="468" fill="#64748b" font-size="10.5">Architektur-Prinzip: Vertikale Entkopplung von störendem Cloud-Push • Maximale Latenzfreiheit durch lokale Ausführung</text>
+</svg>

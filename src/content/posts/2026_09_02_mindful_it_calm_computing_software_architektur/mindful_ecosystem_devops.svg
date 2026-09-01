@@ -1,0 +1,80 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 480" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', sans-serif;">
+  <defs>
+    <filter id="shadow-eco" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="4" dy="4" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+  </defs>
+
+  <!-- Outer Frame -->
+  <rect x="10" y="10" width="860" height="460" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Headline -->
+  <text x="35" y="42" fill="#f8fafc" font-size="18" font-weight="bold">Mindful Engineering, SRE &amp; Markt-Ökosystem</text>
+  <text x="35" y="62" fill="#94a3b8" font-size="12">Vom Abbau von Alert Fatigue im DevOps-Team bis zur modernen Tool-Landschaft</text>
+
+  <!-- ==================== LEFT: MINDFUL DEVOPS & SRE ==================== -->
+  <g filter="url(#shadow-eco)">
+    <rect x="30" y="85" width="400" height="365" rx="12" fill="#111827" stroke="#10b981" stroke-width="2" />
+    <rect x="30" y="85" width="400" height="38" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2" />
+    <text x="48" y="109" fill="#86efac" font-size="13" font-weight="bold">Mindful SRE &amp; Developer Experience</text>
+
+    <!-- 1. Alert Fatigue Prevention -->
+    <g transform="translate(48, 136)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
+      <text x="12" y="20" fill="#86efac" font-size="11.5" font-weight="bold">1. SLO-Basiertes Paging</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="10">• Alarm nur bei Gefährdung von <tspan fill="#86efac" font-weight="bold">Error Budgets</tspan></text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="10">• Keine nächtlichen Alarme für flüchtige CPU-Spikes</text>
+    </g>
+
+    <!-- 2. Async-First Culture -->
+    <g transform="translate(48, 214)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" />
+      <text x="12" y="20" fill="#93c5fd" font-size="11.5" font-weight="bold">2. Asynchrone Dokumentation &amp; ADRs</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="10">• Strukturierte Architecture Decision Records vor Chat-Panik</text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="10">• Batch-Code-Reviews schützen vor <tspan fill="#93c5fd" font-weight="bold">Attention Residue</tspan></text>
+    </g>
+
+    <!-- 3. Architectural Simplicity -->
+    <g transform="translate(48, 292)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+      <text x="12" y="20" fill="#fde047" font-size="11.5" font-weight="bold">3. Simplicity as a Virtue</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="10">• Stopp von Resume-Driven-Development &amp; Hypes</text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="10">• Modulare Monolithen statt unüberblickbarer Service-Geflechte</text>
+    </g>
+
+    <text x="48" y="434" fill="#94a3b8" font-size="10.5">Fokus: Psychologische Sicherheit &amp; ununterbrochener Flow</text>
+  </g>
+
+  <!-- ==================== RIGHT: MARKET ECOSYSTEM ==================== -->
+  <g filter="url(#shadow-eco)">
+    <rect x="450" y="85" width="400" height="365" rx="12" fill="#111827" stroke="#a855f7" stroke-width="2" />
+    <rect x="450" y="85" width="400" height="38" rx="12" fill="#2e1065" stroke="#a855f7" stroke-width="2" />
+    <text x="468" y="109" fill="#c084fc" font-size="13" font-weight="bold">Pioniere &amp; Ökosystem der Mindful IT</text>
+
+    <!-- Category 1 -->
+    <g transform="translate(468, 136)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="1.5" />
+      <text x="12" y="20" fill="#d8b4fe" font-size="11.5" font-weight="bold">Local-First Workspaces &amp; Calm UX</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="10">• <tspan fill="#c084fc" font-weight="bold">Obsidian &amp; Logseq:</tspan> Lokale Markdown-Archive</text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="10">• <tspan fill="#c084fc" font-weight="bold">Linear &amp; Superhuman:</tspan> Tastaturfokus &amp; E-Mail-Batching</text>
+    </g>
+
+    <!-- Category 2 -->
+    <g transform="translate(468, 214)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#1e1b4b" stroke="#3b82f6" stroke-width="1.5" />
+      <text x="12" y="20" fill="#93c5fd" font-size="11.5" font-weight="bold">Ambient Hardware &amp; Reflexionsscreens</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="10">• <tspan fill="#93c5fd" font-weight="bold">Daylight Computer:</tspan> Transflektives LivePaper</text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="10">• <tspan fill="#93c5fd" font-weight="bold">reMarkable &amp; Boox:</tspan> Ablenkungsfreie E-Ink Notizen</text>
+    </g>
+
+    <!-- Category 3 -->
+    <g transform="translate(468, 292)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#1e1b4b" stroke="#10b981" stroke-width="1.5" />
+      <text x="12" y="20" fill="#86efac" font-size="11.5" font-weight="bold">Cognitive Firewalls &amp; Focus Enablers</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="10">• <tspan fill="#86efac" font-weight="bold">Raycast / Alfred:</tspan> Instant-Befehle ohne Tab-Chaos</text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="10">• <tspan fill="#86efac" font-weight="bold">Endel, Opal &amp; Freedom:</tspan> Neuroakustik &amp; OS-Filter</text>
+    </g>
+
+    <text x="468" y="434" fill="#94a3b8" font-size="10.5">Standards: Calm Tech Institute Guidelines &amp; Humane Design</text>
+  </g>
+</svg>
