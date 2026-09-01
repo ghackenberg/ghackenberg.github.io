@@ -386,6 +386,29 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   display: none !important;
 }
 
+/* Navigation Section Unread Notification Dot */
+.nav-badge {
+  width: 0.45rem;
+  height: 0.45rem;
+  min-width: 0.45rem;
+  min-height: 0.45rem;
+  padding: 0 !important;
+  border-radius: 9999px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  flex-shrink: 0;
+  vertical-align: middle;
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.nav-badge:not(.hidden) {
+  display: inline-block !important;
+}
+
+.nav-badge.hidden {
+  display: none !important;
+}
+
 .badge-new-blue {
   background: linear-gradient(135deg, #2563eb 0%, #0284c7 50%, #06b6d4 100%);
   color: #ffffff !important;

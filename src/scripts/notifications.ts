@@ -123,7 +123,6 @@ async function initNotifications() {
       const badges = document.querySelectorAll(`.nav-badge[data-section="${section}"]`);
       badges.forEach(badge => {
         if (newItemsCount > 0) {
-          badge.textContent = String(newItemsCount);
           badge.classList.remove('hidden');
         } else {
           badge.classList.add('hidden');

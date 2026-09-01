@@ -15,8 +15,8 @@ const navItems = [
   { label: "Courses", href: "/courses", badgeColor: "badge-new-yellow" },
   { label: "Projects", href: "/projects", badgeColor: "badge-new-blue" },
   { label: "Services", href: "/services", badgeColor: "badge-new-purple" },
-  { label: "Papers", href: "/publications", badgeColor: "badge-new-purple" },
-  { label: "Demos", href: "/visualizations", badgeColor: "badge-new-green" }
+  { label: "Publications", href: "/publications", badgeColor: "badge-new-purple" },
+  { label: "Visualizations", href: "/visualizations", badgeColor: "badge-new-green" }
 ];
 ---
 
@@ -59,7 +59,7 @@ const navItems = [
               <span 
                 class={`nav-badge hidden badge-new ${item.badgeColor}`}
                 data-section={item.href.replace(/^\//, '')}
-                title={`${item.label} unread count`}
+                title={`Unread items in ${item.label}`}
               >
               </span>
             )}
@@ -133,7 +133,7 @@ const navItems = [
       return (
         <a 
           href={item.href} 
-          class={`text-base font-medium transition-colors py-1 flex items-center justify-between ${
+          class={`text-base font-medium transition-colors py-1 flex items-center gap-2 ${
             active 
               ? "text-brand-blue font-semibold border-l-2 border-brand-blue pl-3 -ml-3" 
               : "text-gray-300 hover:text-gray-100"
@@ -144,7 +144,7 @@ const navItems = [
             <span 
               class={`nav-badge hidden badge-new ${item.badgeColor}`}
               data-section={item.href.replace(/^\//, '')}
-              title={`${item.label} unread count`}
+              title={`Unread items in ${item.label}`}
             >
             </span>
           )}
