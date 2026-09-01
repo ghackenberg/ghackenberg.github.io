@@ -101,14 +101,16 @@ server.listen(PORT, async () => {
     
     console.log('[Asset Generator] Starting screenshots compilation...');
 
-    // 1. Generate Favicons & App Icons (Transparent)
+    // 1. Generate Favicons (Transparent)
     await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 16, 16, path.join(publicDir, 'favicon-16x16.png'));
     await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 32, 32, path.join(publicDir, 'favicon-32x32.png'));
-    await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 180, 180, path.join(publicDir, 'apple-touch-icon.png'));
-    await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 192, 192, path.join(publicDir, 'icon-192x192.png'));
-    await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 512, 512, path.join(publicDir, 'icon-512x512.png'));
     
-    // 2. Generate Maskable Icon (Solid Theme Background)
+    // 2. Generate Apple Touch Icon & PWA App Icons (Solid Theme Background + Safe Zone Padding)
+    await capture(`${baseUrl}/icon-generator.html?mode=app`, 180, 180, path.join(publicDir, 'apple-touch-icon.png'));
+    await capture(`${baseUrl}/icon-generator.html?mode=app`, 192, 192, path.join(publicDir, 'icon-192x192.png'));
+    await capture(`${baseUrl}/icon-generator.html?mode=app`, 512, 512, path.join(publicDir, 'icon-512x512.png'));
+    
+    // 3. Generate Maskable Icon (Solid Theme Background + Maskable Safe Zone)
     await capture(`${baseUrl}/icon-generator.html?mode=maskable`, 512, 512, path.join(publicDir, 'icon-512x512-maskable.png'));
     
     // 3. Generate Social Sharing Banner (1200x630)

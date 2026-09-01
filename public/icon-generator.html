@@ -3,51 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <title>Icon Generator</title>
+  <!-- Load Outfit font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap" rel="stylesheet" />
   <style>
     /* Reset and set transparent body */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     html, body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent !important;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Standard transparent container */
-    #transparent-icon {
+    .icon-wrapper {
       width: 100vw;
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Standard transparent container (for browser tab favicons - minimal padding, maximal size) */
+    .icon-wrapper.mode-transparent {
       background: transparent;
     }
 
-    #transparent-icon svg {
+    .icon-wrapper.mode-transparent svg {
       width: 100%;
       height: 100%;
     }
 
-    /* Maskable icon container (with background and 15-20% padding/safe zone margin) */
-    #maskable-icon {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #030712; /* site theme color background */
+    .icon-wrapper.mode-transparent .text-logo {
+      font-size: 78px;
+      letter-spacing: -3px;
     }
 
-    #maskable-icon svg {
-      width: 70%; /* 15% padding on all sides */
-      height: 70%;
+    /* App icon container (for Apple Touch Icon & PWA icons: solid theme background with safe margin) */
+    .icon-wrapper.mode-app {
+      background: #030712;
+      background-image: radial-gradient(circle at 50% 30%, #0d1e44 0%, #030712 85%);
+    }
+
+    .icon-wrapper.mode-app svg {
+      width: 62%;
+      height: 62%;
+    }
+
+    .icon-wrapper.mode-app .text-logo {
+      font-size: 64px;
+      letter-spacing: -2px;
+    }
+
+    /* Maskable icon container (for Android adaptive icons: centered inside 80% safe zone) */
+    .icon-wrapper.mode-maskable {
+      background: #030712;
+      background-image: radial-gradient(circle at 50% 30%, #0d1e44 0%, #030712 85%);
+    }
+
+    .icon-wrapper.mode-maskable svg {
+      width: 56%;
+      height: 56%;
+    }
+
+    .icon-wrapper.mode-maskable .text-logo {
+      font-size: 64px;
+      letter-spacing: -2px;
     }
   </style>
 </head>
 <body>
-  <!-- Standard container -->
-  <div id="transparent-icon">
+  <div id="icon-container" class="icon-wrapper mode-transparent">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
       <defs>
         <linearGradient id="gh-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -57,27 +91,22 @@
         </linearGradient>
         <style>
           .text-logo {
-            font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-weight: 800;
-            font-size: 68px;
             fill: url(#gh-gradient);
           }
         </style>
       </defs>
-      <text x="50%" y="68" dominant-baseline="middle" text-anchor="middle" class="text-logo">GH.</text>
+      <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" class="text-logo">GH</text>
     </svg>
   </div>
 
   <script>
-    // Simple toggle between transparent and maskable modes
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('mode') || 'transparent';
+    const container = document.getElementById('icon-container');
     
-    const transparentEl = document.getElementById('transparent-icon');
-    
-    if (mode === 'maskable') {
-      transparentEl.id = 'maskable-icon';
-    }
+    container.className = 'icon-wrapper mode-' + mode;
   </script>
 </body>
 </html>
