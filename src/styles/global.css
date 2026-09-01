@@ -309,7 +309,7 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
 }
 @media (min-width: 380px) {
   .nav-logo-name {
-    display: inline-block !important;
+    display: flex !important;
   }
 }
 
