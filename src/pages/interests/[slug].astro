@@ -83,7 +83,7 @@ const interestSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   "@id": `${interestUrl}#webpage`,
-  "name": `${interest.data.title} - Personal Interests | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP`,
+  "name": `${interest.data.title} - Personal Interests | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`,
   "description": interest.data.description,
   "url": interestUrl,
   "author": {
@@ -122,7 +122,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
 ---
 
 <Layout 
-  title={`${interest.data.title} | Personal Interests | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP`}
+  title={`${interest.data.title} | Personal Interests | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`}
   description={interest.data.description}
   image={interest.data.heroImage}
   jsonLd={pageJsonLd}
