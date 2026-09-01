@@ -6,7 +6,7 @@ export default {
   ],
 
   async init(container, payload, layout, isLight) {
-    const { default: ForceGraph3D } = await import('https://cdn.jsdelivr.net/npm/3d-force-graph@1.73.0/+esm');
+    const { default: ForceGraph3D } = await import('https://esm.sh/3d-force-graph@1.73.0?bundle');
     this.ForceGraph3D = ForceGraph3D;
 
     const colors = isLight
