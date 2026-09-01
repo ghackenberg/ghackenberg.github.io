@@ -55,7 +55,7 @@ const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
 ---
 
 <Layout 
-  title={page.currentPage > 1 ? `Science Blog Posts on #${tag} - Page ${page.currentPage} | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels` : `Science Blog Posts on #${tag} | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`} 
+  title={page.currentPage > 1 ? `Blog Posts on #${tag} - Page ${page.currentPage} | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels` : `Blog Posts on #${tag} | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`} 
   description={page.currentPage > 1 ? `Browse blog articles and computer science insights tagged with #${tag} by Dr. Georg Hackenberg (Page ${page.currentPage}).` : `Browse blog articles and computer science insights tagged with #${tag} by Dr. Georg Hackenberg.`}
   image={pagePreviewImage}
 >
@@ -68,7 +68,7 @@ const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue hover:bg-brand-blue/20 transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
-      <span>Back to Blog</span>
+      <span>Back to Posts</span>
     </a>
 
     <div class="mb-12">

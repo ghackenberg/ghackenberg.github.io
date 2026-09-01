@@ -49,7 +49,7 @@ const pagePreviewImage = page.data.find(p => p.data.icon)?.data.icon;
 ---
 
 <Layout 
-  title={page.currentPage > 1 ? `Science Blog - Page ${page.currentPage} | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels` : "Science Blog | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels"} 
+  title={page.currentPage > 1 ? `Blog Posts - Page ${page.currentPage} | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels` : "Blog Posts | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels"} 
   description={page.currentPage > 1 ? `Read computer science insights, software tutorials, and dev logs by Dr. Georg Hackenberg (Page ${page.currentPage}).` : "Read computer science insights, software tutorials, and dev logs by Dr. Georg Hackenberg covering systems development, styling, and graphics."}
   image={pagePreviewImage}
 >
@@ -59,7 +59,7 @@ const pagePreviewImage = page.data.find(p => p.data.icon)?.data.icon;
     <div class="mb-12">
 
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-        Science <span class="heading-gradient-blue">Blog</span>
+        Blog <span class="heading-gradient-blue">Posts</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Insights, development logs, sketches, and tutorials covering ultimate usability design, graphics engine development, software systems, and mechatronics workbench engineering.
