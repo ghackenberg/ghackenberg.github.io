@@ -7,264 +7,267 @@
   <!-- Load fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     html, body {
       margin: 0;
       padding: 0;
       width: 1200px;
       height: 630px;
-      background: radial-gradient(circle at 50% 0%, #12244a 0%, #030712 100%);
-      font-family: "Inter", sans-serif;
-      color: #f3f4f6;
+      font-family: "Outfit", "Inter", sans-serif;
       overflow: hidden;
       position: relative;
     }
 
-    /* Glow orbs matching the website layout */
+    /* Base Canvas & Night Sky */
+    .og-canvas {
+      position: relative;
+      width: 1200px;
+      height: 630px;
+      background: #030712;
+      background-image: radial-gradient(ellipse 90% 70% at 50% 25%, #0e2047 0%, #030712 85%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Ambient Glow Orbs */
     .bg-glow-orb {
       position: absolute;
-      border-radius: 60% 40% 55% 45%;
-      filter: blur(12vw);
-      opacity: 0.28;
+      border-radius: 50%;
       pointer-events: none;
+      z-index: 1;
     }
     .orb-blue {
       background-color: #3b82f6;
-      width: 600px;
+      width: 650px;
       height: 500px;
-      top: -150px;
-      left: -150px;
+      top: -120px;
+      left: 80px;
+      filter: blur(140px);
+      opacity: 0.22;
     }
     .orb-purple {
       background-color: #a855f7;
-      width: 550px;
-      height: 450px;
-      top: 200px;
-      right: -100px;
+      width: 600px;
+      height: 480px;
+      top: 160px;
+      right: -80px;
+      filter: blur(140px);
+      opacity: 0.18;
     }
-
     .orb-green {
       background-color: #10b981;
-      width: 500px;
-      height: 400px;
-      top: 50px;
-      left: 600px;
+      width: 450px;
+      height: 350px;
+      bottom: -80px;
+      left: 380px;
+      filter: blur(130px);
+      opacity: 0.12;
     }
 
-    /* Main layout */
-    .container {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      padding: 60px 80px;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    /* Content details */
-    .content-left {
-      position: relative;
-      z-index: 30;
-      max-width: 680px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      height: 100%;
-    }
-
-    .brand-logo {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 25px;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 16px;
-      border: 1.5px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
-      padding: 8px;
-      box-sizing: border-box;
-    }
-
-    .name {
-      font-family: "Outfit", sans-serif;
-      font-weight: 700;
-      font-size: 76px;
-      line-height: 1.1;
-      color: #ffffff;
-      margin: 0 0 20px -6px;
-      letter-spacing: -1.5px;
-    }
-
-    .roles-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin: 0 0 45px 0;
-    }
-
-    .role-item {
-      font-family: "Outfit", sans-serif;
-      font-weight: 600;
-      font-size: 28px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      line-height: 1.2;
-    }
-
-    .role-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .role-professor {
-      color: #10b981; /* Green */
-    }
-    .role-professor .role-dot {
-      background-color: #10b981;
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
-    }
-
-    .role-engineer {
-      color: #f59e0b; /* Orange */
-    }
-    .role-engineer .role-dot {
-      background-color: #f59e0b;
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
-    }
-
-    .role-entrepreneur {
-      color: #a855f7; /* Purple */
-    }
-    .role-entrepreneur .role-dot {
-      background-color: #a855f7;
-      box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
-    }
-
-    .website-url {
-      font-family: "Outfit", sans-serif;
-      font-size: 22px;
-      font-weight: 600;
-      color: #f3f4f6;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 26px;
-      border-radius: 9999px;
-      background: rgba(59, 130, 246, 0.08);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-      width: fit-content;
-    }
-
-    .github-icon {
-      width: 24px;
-      height: 24px;
-      color: #3b82f6; /* Brand Blue */
-    }
-
-    /* Profile Card (Right Side) */
-    .profile-card-container {
+    /* Starfield SVG */
+    .stars-svg {
       position: absolute;
       top: 0;
-      right: 0;
-      width: 630px;
+      left: 0;
+      width: 1200px;
       height: 630px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Shooting Stars */
+    .shooting-stars-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1200px;
+      height: 630px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .shooting-star {
+      position: absolute;
+      height: 1.5px;
+      background: linear-gradient(to left, rgba(254, 249, 195, 0) 0%, rgba(254, 249, 195, 0.75) 100%);
+      transform-origin: left center;
+    }
+    .shooting-star-1 {
+      width: 140px;
+      top: 12%;
+      left: 72%;
+      transform: rotate(-35deg);
+      opacity: 0.8;
+    }
+    .shooting-star-2 {
+      width: 110px;
+      top: 26%;
+      left: 18%;
+      transform: rotate(-38deg);
+      opacity: 0.65;
+    }
+    .shooting-star-3 {
+      width: 160px;
+      top: 7%;
+      left: 88%;
+      transform: rotate(-32deg);
+      opacity: 0.75;
+    }
+
+    /* Main Centered Logo Container */
+    .center-container {
+      position: relative;
+      z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      z-index: 10;
+      gap: 32px;
     }
 
-
-
-    .profile-svg {
-      width: 100%;
-      height: 100%;
-      user-select: none;
-      pointer-events: none;
-      position: relative;
-      z-index: 10;
+    /* Logo Badge ("GH.") */
+    .logo-badge {
+      width: 112px;
+      height: 112px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 
+        0 20px 48px -10px rgba(0, 0, 0, 0.7),
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+        0 0 40px -10px rgba(59, 130, 246, 0.35);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    .profile-svg-image {
+    .logo-text {
+      font-family: "Outfit", sans-serif;
+      font-weight: 800;
+      font-size: 52px;
+      line-height: 1;
+      letter-spacing: -1.5px;
+      background: linear-gradient(135deg, #3b82f6 0%, #a855f7 50%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      padding-bottom: 2px;
+    }
+
+    /* Logo Text Details */
+    .logo-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .brand-name {
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      font-size: 54px;
+      line-height: 1.1;
+      color: #ffffff;
+      letter-spacing: -0.8px;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .brand-subtitle {
+      font-family: "Inter", sans-serif;
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 1.25;
+      color: #94a3b8;
+      letter-spacing: 0.1px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
     }
   </style>
 </head>
 <body>
-  <div class="bg-glow-orb orb-blue"></div>
-  <div class="bg-glow-orb orb-purple"></div>
-  <div class="bg-glow-orb orb-green"></div>
+  <div class="og-canvas">
+    <!-- Ambient Glow Orbs -->
+    <div class="bg-glow-orb orb-blue"></div>
+    <div class="bg-glow-orb orb-purple"></div>
+    <div class="bg-glow-orb orb-green"></div>
 
-  <!-- Container -->
-  <div class="container">
-    <!-- Left Section -->
-    <div class="content-left">
-      <h1 class="name">Dr. Georg Hackenberg</h1>
-      
-      <div class="roles-list">
-        <div class="role-item role-professor">
-          <span class="role-dot"></span>
-          <span>Professor for Industrial Informatics</span>
-        </div>
-        <div class="role-item role-engineer">
-          <span class="role-dot"></span>
-          <span>Software Engineer</span>
-        </div>
-        <div class="role-item role-entrepreneur">
-          <span class="role-dot"></span>
-          <span>Entrepreneur</span>
-        </div>
-      </div>
-      
-      <div class="website-url">
-        <svg class="github-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-        </svg>
-        <span>hackenberg.tech</span>
-      </div>
+    <!-- Shooting Stars -->
+    <div class="shooting-stars-container">
+      <div class="shooting-star shooting-star-1"></div>
+      <div class="shooting-star shooting-star-2"></div>
+      <div class="shooting-star shooting-star-3"></div>
     </div>
 
-    <!-- Right Section -->
-    <div class="profile-card-container">
-      <svg viewBox="0 0 100 100" class="profile-svg">
-        <defs>
-          <!-- SVG RadialGradient for soft bottom fadeout, keeping top head sharp -->
-          <radialGradient id="fadeGradient" cx="50%" cy="30%" r="70%">
-            <stop offset="55%" stop-color="#fff" stop-opacity="1" />
-            <stop offset="95%" stop-color="#fff" stop-opacity="0" />
-          </radialGradient>
-          <!-- SVG Mask applying the gradient -->
-          <mask id="fadeMask">
-            <rect x="0" y="0" width="100%" height="100%" fill="url(#fadeGradient)" />
-          </mask>
-        </defs>
-        <!-- Group using mask for vignette blend without clipping boundaries -->
-        <g>
-          <!-- Image inside using mask for vignette blend -->
-          <image
-            href="images/comic-profile.png"
-            x="0"
-            y="0"
-            width="100"
-            height="100"
-            preserveAspectRatio="xMidYMid slice"
-            mask="url(#fadeMask)"
-            class="profile-svg-image"
-          />
-        </g>
-      </svg>
+    <!-- Twinkling Stars SVG Layer -->
+    <svg id="sparkling-stars" class="stars-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"></svg>
+
+    <!-- Center Brand Logo Lockup -->
+    <div class="center-container">
+      <div class="logo-badge">
+        <span class="logo-text">GH.</span>
+      </div>
+      <div class="logo-details">
+        <h1 class="brand-name">Dr. Georg Hackenberg</h1>
+        <p class="brand-subtitle">Professor for Industrial Informatics @ UAP Campus Wels</p>
+      </div>
     </div>
   </div>
+
+  <script>
+    // Deterministic High-Density Starfield Generator matching Background.astro
+    (function generateStarfield() {
+      const svg = document.getElementById('sparkling-stars');
+      if (!svg) return;
+
+      const numStars = 140;
+      const starColor = '#fef9c3';
+
+      // Seeded random function for deterministic visual generation
+      let seed = 42;
+      function random() {
+        seed = (seed * 16807) % 2147483647;
+        return (seed - 1) / 2147483646;
+      }
+
+      for (let i = 0; i < numStars; i++) {
+        const x = random() * 1200;
+        const y = random() * 630;
+        const opacity = random() * 0.45 + 0.35;
+        const isHeroStar = i % 14 === 0;
+
+        if (isHeroStar) {
+          const heroStar = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          const size = random() * 4.5 + 4;
+          heroStar.setAttribute('transform', `translate(${x}, ${y})`);
+          
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', `M 0 -${size} Q 0 0 ${size} 0 Q 0 0 0 ${size} Q 0 0 -${size} 0 Q 0 0 0 -${size} Z`);
+          path.setAttribute('fill', starColor);
+          path.setAttribute('opacity', (random() * 0.3 + 0.55).toFixed(2));
+          
+          heroStar.appendChild(path);
+          svg.appendChild(heroStar);
+        } else {
+          const r = (random() * 0.8 + 0.5).toFixed(2);
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', x.toFixed(1));
+          circle.setAttribute('cy', y.toFixed(1));
+          circle.setAttribute('r', r);
+          circle.setAttribute('fill', starColor);
+          circle.setAttribute('opacity', opacity.toFixed(2));
+          
+          svg.appendChild(circle);
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
