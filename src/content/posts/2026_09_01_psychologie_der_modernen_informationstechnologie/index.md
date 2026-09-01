@@ -146,3 +146,5 @@ Ein zukunftsfähiges, menschenzentriertes Softwaresystem zeichnet sich durch fol
 * **Privacy-Preserving Bio-Adaptive UX:** Sensordaten (wie Eye-Tracking oder Ermüdungsmetriken) dürfen ausschließlich zur lokalen, datenschutzkonformen Entlastung des Nutzers eingesetzt werden – niemals zur Steigerung von Werbeeinnahmen.
 
 Moderne Informationstechnologie entfaltet ihr wahres Potenzial erst dann, wenn sie die menschliche Psyche nicht als Schwachstelle zur Verhaltensausbeutung begreift, sondern als wertvolle Ressource, die es durch intelligente, ergonomische Werkzeuge zu stärken und zu erweitern gilt.
+
+*Hinweis: Konkrete Software-Architekturen, Engineering-Muster und Implementierungsansätze für solche Systeme behandeln wir im Folgebeitrag [Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist](/posts/2026_09_02_mindful_it_calm_computing_software_architektur/).*

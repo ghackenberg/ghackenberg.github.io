@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist"
 pubDate: "2026-09-02"
 description: "Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken."
@@ -6,7 +6,7 @@ tags: ["mindful-it", "calm-technology", "software-architecture", "cognitive-ergo
 icon: "./icon.jpg"
 ---
 
-In unserem vorherigen Beitrag zur [Psychologie der modernen Informationstechnologie](../2026_09_01_psychologie_der_modernen_informationstechnologie/) haben wir die Mechanismen analysiert, mit denen heutige Plattformen, Recommender-Pipelines und persuasive Benutzeroberflächen auf das menschliche Gehirn einwirken: dopaminerge Verstärkungsschleifen, kognitive Fragmentierung, *Attention Residue* und das Phänomen des *Information Overload*.
+In unserem vorherigen Beitrag zur [Psychologie der modernen Informationstechnologie](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/) haben wir die Mechanismen analysiert, mit denen heutige Plattformen, Recommender-Pipelines und persuasive Benutzeroberflächen auf das menschliche Gehirn einwirken: dopaminerge Verstärkungsschleifen, kognitive Fragmentierung, *Attention Residue* und das Phänomen des *Information Overload*.
 
 Die Diagnose war eindeutig: Die vorherrschende Maxime der Tech-Industrie – die bedingungslose Maximierung von Verweildauer (*Engagement*), Klickraten und Interaktionsfrequenzen – führt zu chronischer mentaler Erschöpfung und kognitiver Atrophie.
 
