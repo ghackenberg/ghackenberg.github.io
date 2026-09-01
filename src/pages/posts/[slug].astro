@@ -51,13 +51,19 @@ const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent
 
 const postUrl = `https://hackenberg.tech/posts/${post.id}`;
 
+const isSvgIcon = post.data.icon?.format === "svg";
+const ogImage = isSvgIcon ? `/posts/${post.id}/og.png` : post.data.icon;
+const schemaImage = isSvgIcon 
+  ? new URL(`/posts/${post.id}/og.png`, Astro.site).href
+  : (post.data.icon?.src ? new URL(post.data.icon.src, Astro.site).href : undefined);
+
 const blogPostingSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "@id": `${postUrl}#article`,
   "headline": post.data.title,
   "description": seoDescription,
-  "image": post.data.icon?.src ? new URL(post.data.icon.src, Astro.site).href : undefined,
+  "image": schemaImage,
   "url": postUrl,
   "datePublished": post.data.pubDate.toISOString(),
   "author": {
@@ -108,7 +114,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
 <Layout 
   title={`${post.data.title} | Blog | Dr. Georg Hackenberg`} 
   description={seoDescription}
-  image={post.data.icon}
+  image={ogImage}
   type="article"
   pubDate={post.data.pubDate}
   tags={post.data.tags}
