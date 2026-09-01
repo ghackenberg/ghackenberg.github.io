@@ -14,7 +14,7 @@ Artificial Intelligence represents one of the most exhilarating frontiers in com
 
 Modern AI breakthroughs are rooted in high-dimensional **text embeddings** and Transformer-based **Large Language Models (LLMs)**. By projecting human language and structural ontologies into dense mathematical vector spaces, semantic similarity, conceptual clustering, and contextual nuance can be calculated directly.
 
-![Text Embeddings, Transformer Attention & KV Caching](./ai-1-embeddings-llm-kvcaching.svg)
+![Text Embeddings, Transformer Attention & KV Caching](./ai-1-embeddings-llm-kvcaching.jpg)
 *Figure 1: High-dimensional vector embeddings, multi-head Transformer self-attention layers, and Key-Value (KV) caching acceleration.*
 
 Inside Transformer architectures, multi-head self-attention dynamically weighs relationships between every token across deep context windows. To make real-time, interactive generation viable—especially in resource-constrained or local browser environments—**KV caching (Key-Value Caching)** is essential. By caching previously computed keys and values in GPU memory, token generation complexity drops from $O(N^2)$ to $O(1)$ per step, enabling instantaneous streaming responses.
@@ -23,7 +23,7 @@ Inside Transformer architectures, multi-head self-attention dynamically weighs r
 
 Generative AI has expanded far beyond text processing into cross-modal synthesis. Generative architectures—spanning latent diffusion models, flow matching, and autoregressive transformer backbones—now synthesize diverse sensory modalities with astonishing fidelity.
 
-![Multimodal Generative AI: Image, Audio and Video Synthesis](./ai-2-multimodal-generation.svg)
+![Multimodal Generative AI: Image, Audio and Video Synthesis](./ai-2-multimodal-generation.jpg)
 *Figure 2: Unified latent diffusion space branching into specialized generative pipelines for high-resolution images, neural audio synthesis, and temporal video generation.*
 
 * **Image Generation Models**: Step-by-step Gaussian denoising in compressed latent spaces translates text prompts and sketches into stylized comic art, technical diagrams, and photorealistic graphics.
@@ -34,7 +34,7 @@ Generative AI has expanded far beyond text processing into cross-modal synthesis
 
 The ultimate frontier of AI is transitioning from passive chatbots to active, goal-oriented **Agentic AI**. Rather than generating a single static response, modern autonomous agents operate inside continuous **reasoning loops** (such as ReAct: *Plan $\rightarrow$ Act $\rightarrow$ Observe $\rightarrow$ Reflect*).
 
-![Agentic AI, Reasoning Loops & Model Context Protocol (MCP)](./ai-3-agentic-reasoning-mcp.svg)
+![Agentic AI, Reasoning Loops & Model Context Protocol (MCP)](./ai-3-agentic-reasoning-mcp.jpg)
 *Figure 3: Autonomous ReAct reasoning loop integrated with the Model Context Protocol (MCP) bus and precision context engineering.*
 
 Building dependable AI agents requires two fundamental pillars:
