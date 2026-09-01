@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 460" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', sans-serif;">
+  <defs>
+    <!-- Drop Shadow for comic effect -->
+    <filter id="shadow-ap" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="4" dy="4" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="grad-vs" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Frame -->
+  <rect x="10" y="10" width="860" height="440" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Headline -->
+  <text x="35" y="42" fill="#f8fafc" font-size="18" font-weight="bold">Das Autonomie-Paradoxon der Informationstechnologie</text>
+  <text x="35" y="62" fill="#94a3b8" font-size="12">Das Spannungsfeld zwischen maximaler digitaler Bequemlichkeit und kognitiver Souveränität</text>
+
+  <!-- ==================== LEFT PILLAR: DELEGATION & CONVENIENCE ==================== -->
+  <g filter="url(#shadow-ap)">
+    <rect x="30" y="85" width="370" height="245" rx="12" fill="#111827" stroke="#3b82f6" stroke-width="2" />
+    <rect x="30" y="85" width="370" height="38" rx="12" fill="#172554" stroke="#3b82f6" stroke-width="2" />
+    <text x="48" y="109" fill="#93c5fd" font-size="13" font-weight="bold">1. Vollständige Delegation (Convenience)</text>
+
+    <g transform="translate(48, 136)">
+      <!-- Short-term benefit box -->
+      <rect x="0" y="0" width="334" height="60" rx="6" fill="#1e293b" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+      <text x="10" y="18" fill="#60a5fa" font-size="11" font-weight="bold">Kurzfristiger Gewinn:</text>
+      <text x="10" y="34" fill="#cbd5e1" font-size="10">• Zero-Click-Workflows &amp; KI-Zusammenfassungen</text>
+      <text x="10" y="48" fill="#cbd5e1" font-size="10">• Schnelle Ergebnisse bei minimalem Denkaufwand</text>
+
+      <!-- Long-term risk box -->
+      <g transform="translate(0, 70)">
+        <rect x="0" y="0" width="334" height="72" rx="6" fill="#450a0a" stroke="#ef4444" stroke-width="1.5" />
+        <text x="10" y="18" fill="#fca5a5" font-size="11" font-weight="bold">Langfristiges Risiko (De-Skilling):</text>
+        <text x="10" y="34" fill="#fecaca" font-size="10">• <tspan font-weight="bold">Automation Bias:</tspan> Blindes Vertrauen in System-Outputs</text>
+        <text x="10" y="48" fill="#fecaca" font-size="10">• <tspan font-weight="bold">Kognitive Atrophie:</tspan> Verlust von Problemlösungskompetenz</text>
+        <text x="10" y="62" fill="#fecaca" font-size="10">• Unfähigkeit zur fundierten Plausibilitätsprüfung</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ==================== CENTER: VS BADGE & TENSION ==================== -->
+  <g transform="translate(415, 185)" filter="url(#shadow-ap)">
+    <circle cx="25" cy="25" r="24" fill="#1f2937" stroke="#f59e0b" stroke-width="2.5" />
+    <text x="25" y="31" fill="#fde047" font-size="13" font-weight="bold" text-anchor="middle">VS</text>
+  </g>
+
+  <!-- ==================== RIGHT PILLAR: COGNITIVE AUTONOMY ==================== -->
+  <g filter="url(#shadow-ap)">
+    <rect x="480" y="85" width="370" height="245" rx="12" fill="#111827" stroke="#10b981" stroke-width="2" />
+    <rect x="480" y="85" width="370" height="38" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2" />
+    <text x="498" y="109" fill="#86efac" font-size="13" font-weight="bold">2. Kognitive Souveränität (Autonomie)</text>
+
+    <g transform="translate(498, 136)">
+      <!-- Active Cognition box -->
+      <rect x="0" y="0" width="334" height="60" rx="6" fill="#1e293b" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+      <text x="10" y="18" fill="#34d399" font-size="11" font-weight="bold">Menschliche Kernfähigkeiten:</text>
+      <text x="10" y="34" fill="#cbd5e1" font-size="10">• Kritisches Urteilsvermögen &amp; Reflexion</text>
+      <text x="10" y="48" fill="#cbd5e1" font-size="10">• Tiefes konzeptionelles Domänenverständnis</text>
+
+      <!-- Scaffolding requirement box -->
+      <g transform="translate(0, 70)">
+        <rect x="0" y="0" width="334" height="72" rx="6" fill="#064e3b" stroke="#10b981" stroke-width="1.5" />
+        <text x="10" y="18" fill="#86efac" font-size="11" font-weight="bold">Anforderung an Mindful IT:</text>
+        <text x="10" y="34" fill="#d1fae5" font-size="10">• <tspan font-weight="bold">Scaffolding statt Ersatz:</tspan> KI als Co-Denker &amp; Sparringspartner</text>
+        <text x="10" y="48" fill="#d1fae5" font-size="10">• <tspan font-weight="bold">Transparenz:</tspan> Nachvollziehbarkeit algorithmischer Schritte</text>
+        <text x="10" y="62" fill="#d1fae5" font-size="10">• Erhalt der menschlichen Entscheidungshoheit</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ==================== BOTTOM: PARADOX CORE PRINCIPLE ==================== -->
+  <g filter="url(#shadow-ap)">
+    <rect x="30" y="345" width="820" height="85" rx="10" fill="#1f2937" stroke="url(#grad-vs)" stroke-width="2" />
+    <text x="50" y="372" fill="#fde047" font-size="12" font-weight="bold">Das Paradoxon auf den Punkt gebracht:</text>
+    <text x="50" y="394" fill="#cbd5e1" font-size="11">Je mehr intellektuelle Anstrengung wir an automatisierte Systeme auslagern, umso effizienter scheinen wir zu arbeiten.</text>
+    <text x="50" y="412" fill="#cbd5e1" font-size="11">Gleichzeitig verlieren wir ohne aktives Gegensteuern schleichend die Fähigkeit, komplexe Probleme ohne IT selbstständig zu lösen.</text>
+  </g>
+</svg>

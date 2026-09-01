@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 480" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', sans-serif;">
+  <defs>
+    <!-- Drop Shadow -->
+    <filter id="shadow-cl" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="4" dy="4" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+  </defs>
+
+  <!-- Outer Frame -->
+  <rect x="10" y="10" width="860" height="460" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Headline -->
+  <text x="35" y="42" fill="#f8fafc" font-size="18" font-weight="bold">Kognitive Belastung &amp; Aufmerksamkeitsdynamik</text>
+  <text x="35" y="62" fill="#94a3b8" font-size="12">Informationsverarbeitung im Arbeitsgedächtnis versus Unterbrechungsökonomie</text>
+
+  <!-- ==================== LEFT: COGNITIVE LOAD MODEL ==================== -->
+  <g filter="url(#shadow-cl)">
+    <!-- Container Card -->
+    <rect x="30" y="85" width="400" height="365" rx="12" fill="#111827" stroke="#3b82f6" stroke-width="2" />
+    <!-- Header -->
+    <rect x="30" y="85" width="400" height="38" rx="12" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+    <text x="48" y="109" fill="#60a5fa" font-size="13" font-weight="bold">Cognitive Load Theory (John Sweller)</text>
+
+    <!-- 1. Extraneous Load -->
+    <g transform="translate(48, 136)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1.5" />
+      <text x="12" y="20" fill="#fca5a5" font-size="11.5" font-weight="bold">Extraneous Load (Störbelastung)</text>
+      <text x="12" y="38" fill="#fecaca" font-size="10">• Reizüberflutung, schlechte UX, Störungen &amp; Dark Patterns</text>
+      <text x="12" y="54" fill="#fecaca" font-size="10">• Verschwendet begrenzte Arbeitsgedächtnis-Kapazität</text>
+    </g>
+
+    <!-- 2. Intrinsic Load -->
+    <g transform="translate(48, 214)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#172554" stroke="#3b82f6" stroke-width="1.5" />
+      <text x="12" y="20" fill="#93c5fd" font-size="11.5" font-weight="bold">Intrinsic Load (Aufgabenkomplexität)</text>
+      <text x="12" y="38" fill="#bfdbfe" font-size="10">• Inhärente gedankliche Schwierigkeit der Kernaufgabe</text>
+      <text x="12" y="54" fill="#bfdbfe" font-size="10">• Abhängig vom Wissensstand (Experte vs. Einsteiger)</text>
+    </g>
+
+    <!-- 3. Germane Load -->
+    <g transform="translate(48, 292)">
+      <rect x="0" y="0" width="364" height="68" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5" />
+      <text x="12" y="20" fill="#86efac" font-size="11.5" font-weight="bold">Germane Load (Nachhaltiges Lernen)</text>
+      <text x="12" y="38" fill="#bbf7d0" font-size="10">• Konstruktion mentaler Schemata im Langzeitgedächtnis</text>
+      <text x="12" y="54" fill="#bbf7d0" font-size="10">• <tspan font-weight="bold">Ziel gesunder IT:</tspan> Störlast senken, Lernlast ermöglichen</text>
+    </g>
+
+    <!-- Bottom Capacity Note -->
+    <text x="48" y="434" fill="#94a3b8" font-size="10.5">Kapazitätsgrenze des Arbeitsgedächtnisses: nur ca. 4 ± 1 Einheiten</text>
+  </g>
+
+  <!-- ==================== RIGHT: ATTENTION & TASK SWITCHING ==================== -->
+  <g filter="url(#shadow-cl)">
+    <!-- Container Card -->
+    <rect x="450" y="85" width="400" height="365" rx="12" fill="#111827" stroke="#a855f7" stroke-width="2" />
+    <!-- Header -->
+    <rect x="450" y="85" width="400" height="38" rx="12" fill="#2e1065" stroke="#a855f7" stroke-width="2" />
+    <text x="468" y="109" fill="#c084fc" font-size="13" font-weight="bold">Aufmerksamkeit &amp; Unterbrechungskosten</text>
+
+    <!-- Interruption Flow Sequence -->
+    <g transform="translate(468, 136)">
+      <!-- Flow State -->
+      <rect x="0" y="0" width="165" height="38" rx="6" fill="#064e3b" stroke="#10b981" stroke-width="1.5" />
+      <text x="10" y="16" fill="#86efac" font-size="10.5" font-weight="bold">Fokus &amp; Flow-State</text>
+      <text x="10" y="30" fill="#a7f3d0" font-size="9.5">Tiefe kognitive Arbeit</text>
+
+      <!-- Arrow -->
+      <text x="174" y="24" fill="#94a3b8" font-size="14" font-weight="bold">→</text>
+
+      <!-- Push Interruption -->
+      <rect x="195" y="0" width="169" height="38" rx="6" fill="#450a0a" stroke="#ef4444" stroke-width="1.5" />
+      <text x="10" y="16" transform="translate(195,0)" fill="#fca5a5" font-size="10.5" font-weight="bold">⚡ Push-Notification</text>
+      <text x="10" y="30" transform="translate(195,0)" fill="#fecaca" font-size="9.5">Alarm, Mail, Social Ping</text>
+    </g>
+
+    <!-- 1. Task-Switching Costs -->
+    <g transform="translate(468, 186)">
+      <rect x="0" y="0" width="364" height="106" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+      <text x="12" y="20" fill="#fde047" font-size="11.5" font-weight="bold">Re-Fokussierung (~23 Min. nach Gloria Mark)</text>
+      <text x="12" y="40" fill="#cbd5e1" font-size="10">• <tspan fill="#fde047" font-weight="bold">Attention Residue:</tspan> Gedanken haften an der Störung</text>
+      <text x="12" y="58" fill="#cbd5e1" font-size="10">• <tspan fill="#fde047" font-weight="bold">Partial Attention:</tspan> Dauer-Alarm erschöpft Stirnhirn</text>
+      <text x="12" y="76" fill="#cbd5e1" font-size="10">• <tspan fill="#fde047" font-weight="bold">Fehlerquote:</tspan> Steigt drastisch bei komplexen Aufgaben</text>
+      <text x="12" y="94" fill="#94a3b8" font-size="9.5">Häufiges Umschalten fragmentiert das Denken nachhaltig</text>
+    </g>
+
+    <!-- 2. Cyberpsychology Dynamics -->
+    <g transform="translate(468, 302)">
+      <rect x="0" y="0" width="364" height="96" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="1.5" />
+      <text x="12" y="20" fill="#c084fc" font-size="11.5" font-weight="bold">Cyberpsychologische Dynamiken</text>
+      <text x="12" y="40" fill="#cbd5e1" font-size="10">• <tspan fill="#c084fc" font-weight="bold">Online Disinhibition:</tspan> Fehlende Präsenz senkt Hemmschwelle</text>
+      <text x="12" y="58" fill="#c084fc" font-size="10">• <tspan fill="#c084fc" font-weight="bold">FOMO &amp; Statusvergleich:</tspan> Feeds treiben sozialen Stress</text>
+      <text x="12" y="76" fill="#c084fc" font-size="10">• <tspan fill="#c084fc" font-weight="bold">Echokammern:</tspan> Algorithmen bestärken Bestätigungsfehler</text>
+    </g>
+  </g>
+</svg>
