@@ -354,11 +354,9 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
     line-height: 1.6;
     background: rgba(255, 255, 255, 0.01);
     border: 1px solid rgba(255, 255, 255, 0.04);
-    padding: 0.85rem 1rem;
+    padding: 0.85rem 1rem 0.85rem 2.25rem;
     border-radius: 12px;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
+    position: relative;
     transition: border-color 0.2s ease, background-color 0.2s ease;
   }
   :global(.light) .service-content :global(li) {
@@ -375,9 +373,12 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
   }
   .service-content :global(li::before) {
     content: "→";
+    position: absolute;
+    left: 1rem;
+    top: 0.85rem;
+    line-height: 1.6;
     color: var(--glow-text, #a855f7);
     font-weight: bold;
-    flex-shrink: 0;
   }
   .service-content :global(li strong) {
     color: var(--color-text-heading);

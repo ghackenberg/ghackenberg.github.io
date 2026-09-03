@@ -6,7 +6,6 @@ import { Image, getImage } from "astro:assets";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-const modules = await getCollection("modules");
 
 const optimizedServices = await Promise.all(
   sortedServices.map(async (service) => {
@@ -92,8 +91,8 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
 ---
 
 <Layout 
-  title="Business Services | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels" 
-  description="Explore custom R&D prototyping, corporate training bootcamps, scientific advisory, and media publishing services offered by Dr. Georg Hackenberg."
+  title="Consulting Services | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels" 
+  description="Explore specialized artificial intelligence and media publishing consulting services offered by Dr. Georg Hackenberg, covering sovereign AI technology stacks, system integration, agentic automation, channel definition, social media design systems, and content production."
   image={firstServiceImage}
   jsonLd={servicesJsonLd}
 >
@@ -104,10 +103,10 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
     <div class="mb-16">
 
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
-        Business <span class="heading-gradient-purple">Services</span>
+        Consulting <span class="heading-gradient-purple">Services</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-        Bridging the gap between academic research, software engineering, and corporate strategy. Discover tailorable workshops, R&D prototyping, and advisory setups.
+        Bridging the gap between cutting-edge academic research, software engineering, and corporate practice. Discover specialized consulting across sovereign artificial intelligence architectures and modern digital media publishing.
       </p>
     </div>
 
@@ -116,9 +115,6 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
     <div class="space-y-16">
       {optimizedServices.map((service) => {
         const classes = colorClasses[service.data.color];
-        const serviceModules = modules
-          .filter((m) => m.data.serviceId === service.id)
-          .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
         return (
           <section id={service.id} class="scroll-mt-24 relative group">
             <div class="glass-card rounded-3xl border border-element-border relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 items-stretch p-0">
@@ -156,44 +152,17 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
 
                 <!-- Description -->
                 <div class="space-y-3">
-                  <p class="text-gray-300 text-sm leading-relaxed font-normal">
+                  <p class="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed font-normal">
                     {service.data.description}
                   </p>
                 </div>
-
-                {serviceModules.length > 0 && (
-                  <div class="space-y-3 relative z-20">
-                    <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">
-                      Service Modules
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                      {serviceModules.map((module) => {
-                        const moduleSlug = module.id.split('/').pop();
-                        const moduleUrl = `/services/${service.id}/${moduleSlug}`;
-                        return (
-                          <a 
-                            href={moduleUrl}
-                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400 hover:bg-element-bg-hover hover:text-gray-100 hover:border-element-border-hover transition-all cursor-pointer min-h-[28px]"
-                          >
-                            <span>{module.data.title}</span>
-                            <span 
-                              class={`unread-dot hidden ${classes.dot}`}
-                              data-item-url={moduleUrl}
-                              title="Unread module"
-                            >UNREAD</span>
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
 
                 <div class="flex flex-col sm:flex-row gap-4 pt-2 relative z-20">
                   <a
                     href={`/services/${service.id}`}
                     class={`px-5 py-3 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer min-h-[44px] ${classes.btnBg}`}
                   >
-                    <span>View Details & Methodology</span>
+                    <span>Explore Service & Modules</span>
                     <span>&rarr;</span>
                   </a>
                 </div>
