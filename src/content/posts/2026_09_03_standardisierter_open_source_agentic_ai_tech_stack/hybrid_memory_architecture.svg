@@ -1,0 +1,117 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow-mem" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="3" stdDeviation="2" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#c084fc" />
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2dd4bf" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#60a5fa" />
+    </marker>
+    <linearGradient id="grad-mem0" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2e1065" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="grad-node" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="100%" stop-color="#291804" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Frame -->
+  <rect x="12" y="12" width="896" height="436" rx="16" fill="#0b1120" stroke="rgba(168, 85, 247, 0.25)" stroke-width="1.5" />
+
+  <!-- Header Section -->
+  <g transform="translate(35, 42)">
+    <text x="0" y="0" fill="#f8fafc" font-size="18" font-weight="800" letter-spacing="-0.02em">Hybride Datenarchitektur &amp; Persistentes Langzeitgedächtnis</text>
+    <text x="0" y="22" fill="#a855f7" font-size="12" font-weight="700" letter-spacing="0.05em">ZUSAMMENSPIEL VON LANGGRAPH-AGENTEN, MEM0 UND DER DATEN-TRIADE</text>
+  </g>
+
+  <!-- Connection Paths -->
+  <!-- Agent to Mem0 -->
+  <path d="M 270 200 C 350 200, 350 145, 430 145" fill="none" stroke="#c084fc" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-purple)" />
+  <text x="320" y="160" fill="#c084fc" font-size="10" font-weight="600">Episodic Recall</text>
+
+  <!-- Agent to Data Container (Postgres, Qdrant, Neo4j) -->
+  <path d="M 270 240 C 350 240, 350 310, 430 310" fill="none" stroke="#2dd4bf" stroke-width="2" marker-end="url(#arrow-cyan)" />
+  <text x="320" y="290" fill="#2dd4bf" font-size="10" font-weight="600">Hybrid Query</text>
+
+  <!-- Mem0 to Data Tier (Context injection back to agent/queries) -->
+  <path d="M 640 185 L 640 220" fill="none" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="3,3" />
+
+  <!-- ==================== LEFT: LANGGRAPH AGENT NODE ==================== -->
+  <g filter="url(#shadow-mem)" transform="translate(35, 140)">
+    <rect x="0" y="0" width="235" height="170" rx="12" fill="url(#grad-node)" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="12" y="12" width="211" height="34" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1" />
+    <text x="24" y="34" fill="#fef3c7" font-size="13" font-weight="800">LangGraph Agent Node</text>
+    
+    <g transform="translate(16, 58)">
+      <circle cx="6" cy="6" r="3" fill="#f59e0b" />
+      <text x="16" y="10" fill="#f8fafc" font-size="10.5" font-weight="600">Zustandsbehafteter Graph</text>
+      <text x="16" y="24" fill="#cbd5e1" font-size="9.5">State Machine &amp; Checkpoints</text>
+    </g>
+    <g transform="translate(16, 96)">
+      <circle cx="6" cy="6" r="3" fill="#f59e0b" />
+      <text x="16" y="10" fill="#f8fafc" font-size="10.5" font-weight="600">Tool Execution Loop</text>
+      <text x="16" y="24" fill="#cbd5e1" font-size="9.5">Reflexions- &amp; Prüfungsschleifen</text>
+    </g>
+    <g transform="translate(16, 134)">
+      <circle cx="6" cy="6" r="3" fill="#f59e0b" />
+      <text x="16" y="10" fill="#f8fafc" font-size="10.5" font-weight="600">Human-in-the-Loop</text>
+      <text x="16" y="24" fill="#cbd5e1" font-size="9.5">Interruption &amp; Approval Gates</text>
+    </g>
+  </g>
+
+  <!-- ==================== TOP-RIGHT: MEM0 MEMORY LAYER ==================== -->
+  <g filter="url(#shadow-mem)" transform="translate(435, 95)">
+    <rect x="0" y="0" width="455" height="96" rx="12" fill="url(#grad-mem0)" stroke="#a855f7" stroke-width="1.5" />
+    <text x="20" y="28" fill="#f3e8ff" font-size="13.5" font-weight="800">Mem0 Intelligent Long-Term Memory Layer</text>
+    <text x="20" y="46" fill="#c084fc" font-size="10.5" font-weight="600">Sitzungsübergreifendes Benutzer-, Kontext- und Fakten-Gedächtnis</text>
+
+    <!-- Sub-boxes -->
+    <g transform="translate(20, 56)">
+      <rect x="0" y="0" width="130" height="28" rx="5" fill="#1e1b4b" stroke="#c084fc" stroke-width="1" />
+      <text x="10" y="18" fill="#f8fafc" font-size="9.5" font-weight="600">User Profile Memory</text>
+    </g>
+    <g transform="translate(160, 56)">
+      <rect x="0" y="0" width="130" height="28" rx="5" fill="#1e1b4b" stroke="#c084fc" stroke-width="1" />
+      <text x="10" y="18" fill="#f8fafc" font-size="9.5" font-weight="600">Episodic Interaction</text>
+    </g>
+    <g transform="translate(300, 56)">
+      <rect x="0" y="0" width="135" height="28" rx="5" fill="#1e1b4b" stroke="#c084fc" stroke-width="1" />
+      <text x="10" y="18" fill="#f8fafc" font-size="9.5" font-weight="600">Context Injection</text>
+    </g>
+  </g>
+
+  <!-- ==================== BOTTOM-RIGHT: HYBRIDE DATEN-TRIADE ==================== -->
+  <g filter="url(#shadow-mem)" transform="translate(435, 215)">
+    <rect x="0" y="0" width="455" height="195" rx="12" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+    <text x="20" y="26" fill="#ccfbf1" font-size="13.5" font-weight="800">Hybride Daten-Triade (Storage &amp; Retrieval)</text>
+    <text x="20" y="44" fill="#5eead4" font-size="10.5" font-weight="600">Souveräne Persistenz: Relational, Vektoriell und Graphbasiert</text>
+
+    <!-- PostgreSQL -->
+    <g transform="translate(18, 56)">
+      <rect x="0" y="0" width="419" height="38" rx="7" fill="#172554" stroke="#3b82f6" stroke-width="1" />
+      <text x="14" y="24" fill="#93c5fd" font-size="11.5" font-weight="800">PostgreSQL</text>
+      <text x="105" y="24" fill="#cbd5e1" font-size="10">Relationale Daten, LangGraph State-Checkpoints &amp; Audit-Trails</text>
+    </g>
+
+    <!-- Qdrant -->
+    <g transform="translate(18, 102)">
+      <rect x="0" y="0" width="419" height="38" rx="7" fill="#042f2e" stroke="#06b6d4" stroke-width="1" />
+      <text x="14" y="24" fill="#67e8f9" font-size="11.5" font-weight="800">Qdrant</text>
+      <text x="80" y="24" fill="#cbd5e1" font-size="10">Dichte semantische Vektorsuche, Embeddings &amp; Dokumenten-RAG</text>
+    </g>
+
+    <!-- Neo4j -->
+    <g transform="translate(18, 148)">
+      <rect x="0" y="0" width="419" height="38" rx="7" fill="#064e3b" stroke="#10b981" stroke-width="1" />
+      <text x="14" y="24" fill="#6ee7b7" font-size="11.5" font-weight="800">Neo4j</text>
+      <text x="75" y="24" fill="#cbd5e1" font-size="10">Enterprise Wissensgraphen, GraphRAG &amp; relationale Ontologien</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,180 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow-box" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="3" stdDeviation="2" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+    <linearGradient id="grad-purple" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <linearGradient id="grad-cyan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <linearGradient id="badge-glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2e1065" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0.9" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Frame -->
+  <rect x="12" y="12" width="936" height="616" rx="16" fill="#0b1120" stroke="rgba(168, 85, 247, 0.25)" stroke-width="1.5" />
+
+  <!-- Header Section -->
+  <g transform="translate(35, 42)">
+    <text x="0" y="0" fill="#f8fafc" font-size="20" font-weight="800" letter-spacing="-0.02em">Standardisierter Open-Source Agentic AI Tech Stack</text>
+    <text x="0" y="22" fill="#a855f7" font-size="12" font-weight="700" letter-spacing="0.05em">SOUVERÄNES SCHICHTENMODELL FÜR ENTERPRISE-AGENTEN</text>
+  </g>
+
+  <!-- LAYER 6: USER EXPERIENCE & CONTROL -->
+  <g filter="url(#shadow-box)" transform="translate(35, 82)">
+    <rect x="0" y="0" width="890" height="74" rx="10" fill="#0f172a" stroke="#c084fc" stroke-width="1.5" />
+    <rect x="0" y="0" width="220" height="74" rx="10" fill="url(#badge-glow)" stroke="#c084fc" stroke-width="1.5" />
+    <text x="18" y="30" fill="#f3e8ff" font-size="12.5" font-weight="800">6. User Experience &amp; Control</text>
+    <text x="18" y="50" fill="#c084fc" font-size="11" font-weight="600">Open WebUI Workspaces</text>
+    <!-- Sub-boxes -->
+    <g transform="translate(232, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#1e1b4b" stroke="#a855f7" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Open WebUI Platform</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Kollaborative Fachanwender-Workspaces</text>
+    </g>
+    <g transform="translate(450, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#1e1b4b" stroke="#a855f7" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Inline Document RAG</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Automatisiertes Chunking &amp; Retrieval</text>
+    </g>
+    <g transform="translate(668, 10)">
+      <rect x="0" y="0" width="210" height="54" rx="7" fill="#1e1b4b" stroke="#ec4899" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Generative UI Controls</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Interaktive Widgets &amp; Freigabemasken</text>
+    </g>
+  </g>
+
+  <!-- LAYER 5: GATEWAY & GOVERNANCE -->
+  <g filter="url(#shadow-box)" transform="translate(35, 168)">
+    <rect x="0" y="0" width="890" height="74" rx="10" fill="#0f172a" stroke="#818cf8" stroke-width="1.5" />
+    <rect x="0" y="0" width="220" height="74" rx="10" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5" />
+    <text x="18" y="30" fill="#e0e7ff" font-size="12.5" font-weight="800">5. Gateway &amp; Governance</text>
+    <text x="18" y="50" fill="#a5b4fc" font-size="11" font-weight="600">LiteLLM Proxy + Keycloak</text>
+    <!-- Sub-boxes -->
+    <g transform="translate(232, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#172554" stroke="#6366f1" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">LiteLLM Proxy Gateway</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Lastverteilung, Routing &amp; Fallbacks</text>
+    </g>
+    <g transform="translate(450, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#172554" stroke="#6366f1" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Token &amp; Cost Telemetry</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Budgets, Quotas &amp; Echtzeit-Tracking</text>
+    </g>
+    <g transform="translate(668, 10)">
+      <rect x="0" y="0" width="210" height="54" rx="7" fill="#172554" stroke="#6366f1" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Keycloak IAM &amp; RBAC</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Enterprise SSO (OIDC/SAML) &amp; Tokens</text>
+    </g>
+  </g>
+
+  <!-- LAYER 4: HYBRID DATA & MEMORY -->
+  <g filter="url(#shadow-box)" transform="translate(35, 254)">
+    <rect x="0" y="0" width="890" height="74" rx="10" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+    <rect x="0" y="0" width="220" height="74" rx="10" fill="#042f2e" stroke="#2dd4bf" stroke-width="1.5" />
+    <text x="18" y="30" fill="#ccfbf1" font-size="12.5" font-weight="800">4. Hybrid Data &amp; Memory</text>
+    <text x="18" y="50" fill="#5eead4" font-size="11" font-weight="600">Mem0, PG, Qdrant &amp; Neo4j</text>
+    <!-- Sub-boxes (4 items) -->
+    <g transform="translate(232, 10)">
+      <rect x="0" y="0" width="155" height="54" rx="7" fill="#134e4a" stroke="#0d9488" stroke-width="1" />
+      <text x="10" y="22" fill="#f8fafc" font-size="11" font-weight="700">Mem0 Memory</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9">Sitzungs-Gedächtnis</text>
+    </g>
+    <g transform="translate(397, 10)">
+      <rect x="0" y="0" width="155" height="54" rx="7" fill="#134e4a" stroke="#0d9488" stroke-width="1" />
+      <text x="10" y="22" fill="#f8fafc" font-size="11" font-weight="700">PostgreSQL</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9">State &amp; Audit-Logs</text>
+    </g>
+    <g transform="translate(562, 10)">
+      <rect x="0" y="0" width="155" height="54" rx="7" fill="#134e4a" stroke="#0d9488" stroke-width="1" />
+      <text x="10" y="22" fill="#f8fafc" font-size="11" font-weight="700">Qdrant Vector</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9">Dichte Vektorsuche</text>
+    </g>
+    <g transform="translate(727, 10)">
+      <rect x="0" y="0" width="151" height="54" rx="7" fill="#134e4a" stroke="#0d9488" stroke-width="1" />
+      <text x="10" y="22" fill="#f8fafc" font-size="11" font-weight="700">Neo4j Graph</text>
+      <text x="10" y="40" fill="#cbd5e1" font-size="9">GraphRAG Ontologie</text>
+    </g>
+  </g>
+
+  <!-- LAYER 3: WORKFLOW ORCHESTRATION -->
+  <g filter="url(#shadow-box)" transform="translate(35, 340)">
+    <rect x="0" y="0" width="890" height="74" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="0" y="0" width="220" height="74" rx="10" fill="#451a03" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="18" y="30" fill="#fef3c7" font-size="12.5" font-weight="800">3. Workflow Orchestration</text>
+    <text x="18" y="50" fill="#fcd34d" font-size="11" font-weight="600">LangGraph Multi-Agenten</text>
+    <!-- Sub-boxes -->
+    <g transform="translate(232, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#291804" stroke="#d97706" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">LangGraph Cyclic Graphs</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Reflexions- &amp; Prüfungsschleifen</text>
+    </g>
+    <g transform="translate(450, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#291804" stroke="#d97706" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">State Checkpointing</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Ausfallsichere Wiederaufnahme</text>
+    </g>
+    <g transform="translate(668, 10)">
+      <rect x="0" y="0" width="210" height="54" rx="7" fill="#291804" stroke="#d97706" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Human-in-the-Loop</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Deterministische Freigabe-Gates</text>
+    </g>
+  </g>
+
+  <!-- LAYER 2: AGENT RUNTIME & SKILLS -->
+  <g filter="url(#shadow-box)" transform="translate(35, 426)">
+    <rect x="0" y="0" width="890" height="74" rx="10" fill="#0f172a" stroke="#a855f7" stroke-width="1.5" />
+    <rect x="0" y="0" width="220" height="74" rx="10" fill="#3b0764" stroke="#a855f7" stroke-width="1.5" />
+    <text x="18" y="30" fill="#fae8ff" font-size="12.5" font-weight="800">2. Agent Runtime &amp; Skills</text>
+    <text x="18" y="50" fill="#e879f9" font-size="11" font-weight="600">Hermes &amp; Google WikiSkills</text>
+    <!-- Sub-boxes -->
+    <g transform="translate(232, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#1e1b4b" stroke="#c084fc" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Hermes Agent Runtime</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Deterministisches Function Calling</text>
+    </g>
+    <g transform="translate(450, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#1e1b4b" stroke="#c084fc" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Google WikiSkills Standard</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Deklarative Fähigkeiten (SKILL.md)</text>
+    </g>
+    <g transform="translate(668, 10)">
+      <rect x="0" y="0" width="210" height="54" rx="7" fill="#1e1b4b" stroke="#c084fc" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Model Context Protocol</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Standardisierte MCP-Konnektoren</text>
+    </g>
+  </g>
+
+  <!-- LAYER 1: COMPUTE & INFERENCE -->
+  <g filter="url(#shadow-box)" transform="translate(35, 512)">
+    <rect x="0" y="0" width="890" height="74" rx="10" fill="#0f172a" stroke="#06b6d4" stroke-width="1.5" />
+    <rect x="0" y="0" width="220" height="74" rx="10" fill="#083344" stroke="#06b6d4" stroke-width="1.5" />
+    <text x="18" y="30" fill="#cffafe" font-size="12.5" font-weight="800">1. Compute &amp; Inferenz</text>
+    <text x="18" y="50" fill="#67e8f9" font-size="11" font-weight="600">vLLM Inference Engine</text>
+    <!-- Sub-boxes -->
+    <g transform="translate(232, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#042f2e" stroke="#0891b2" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">vLLM Serving Engine</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">PagedAttention &amp; Continuous Batching</text>
+    </g>
+    <g transform="translate(450, 10)">
+      <rect x="0" y="0" width="206" height="54" rx="7" fill="#042f2e" stroke="#0891b2" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Tensor Parallelism (TP)</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">Multi-GPU Cluster (NVIDIA &amp; AMD)</text>
+    </g>
+    <g transform="translate(668, 10)">
+      <rect x="0" y="0" width="210" height="54" rx="7" fill="#042f2e" stroke="#0891b2" stroke-width="1" />
+      <text x="14" y="22" fill="#f8fafc" font-size="11.5" font-weight="700">Quantization Tier</text>
+      <text x="14" y="40" fill="#cbd5e1" font-size="9.5">FP8 / AWQ / GPTQ Hardware-Optimiert</text>
+    </g>
+  </g>
+
+  <!-- Bottom Accent Line -->
+  <line x1="35" y1="600" x2="925" y2="600" stroke="url(#grad-purple)" stroke-width="2" stroke-linecap="round" />
+</svg>
