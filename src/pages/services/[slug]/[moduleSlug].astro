@@ -463,13 +463,17 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     margin-bottom: 1.5rem;
     transition: color 0.5s ease, border-color 0.5s ease;
   }
-  .service-content :global(ul) {
+  .service-content :global(ul),
+  .service-content :global(ol) {
     list-style-type: none;
     padding-left: 0;
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
+  }
+  .service-content :global(ol) {
+    counter-reset: service-counter;
   }
   .service-content :global(li) {
     margin-bottom: 0;
@@ -502,6 +506,12 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     line-height: 1.6;
     color: var(--glow-text, #a855f7);
     font-weight: bold;
+  }
+  .service-content :global(ol > li) {
+    counter-increment: service-counter;
+  }
+  .service-content :global(ol > li::before) {
+    content: counter(service-counter) ".";
   }
   .service-content :global(li strong) {
     color: var(--color-text-heading);
