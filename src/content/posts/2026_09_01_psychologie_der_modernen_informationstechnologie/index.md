@@ -3,7 +3,7 @@ title: "Psychologie der modernen Informationstechnologie: Stand der Wissenschaft
 pubDate: "2026-09-01"
 description: "Eine interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Aufmerksamkeitsökonomie, Cyberpsychologie, Software-Architekturen und kommerzielle KI-Ökosysteme ineinandergreifen."
 tags: ["psychology", "cyberpsychology", "cognitive-science", "ai", "software-architecture", "human-computer-interaction", "social-media"]
-icon: "./icon.svg"
+icon: "./icon.jpg"
 ---
 
 Die Informationstechnologie hat einen fundamentalen Paradigmenwechsel vollzogen: Während die frühe Informatik primär darauf abzielte, Rechenleistung bereitzustellen und funktionale Geschäftsprozesse abzubilden, greifen moderne Softwaresysteme tief in die neurobiologischen, kognitiven und sozialpsychologischen Grundstrukturen des Menschen ein. 
@@ -12,7 +12,7 @@ Ob Empfehlungsalgorithmen sozialer Netzwerke, generative KI-Agenten, persuasive 
 
 Wer heute Softwaresysteme, Datenarchitekturen oder Benutzeroberflächen gestaltet, betreibt unweigerlich angewandte Psychologie. In diesem Beitrag fassen wir den aktuellen **Stand der Wissenschaft** (Kognitionspsychologie, Cyberpsychologie, Neurobiologie) sowie den **Stand der Technik** (Software-Architekturen, Recommender-Pipelines, kommerzielle Plattformen) fundiert und anschaulich zusammen.
 
-![Psychologie der modernen Informationstechnologie - Übersicht](./icon.svg)
+![Psychologie der modernen Informationstechnologie - Übersicht](./psychology_it_overview.svg)
 
 ## 1. Der Stand der Wissenschaft: Wie digitale Systeme den menschlichen Geist fordern
 
