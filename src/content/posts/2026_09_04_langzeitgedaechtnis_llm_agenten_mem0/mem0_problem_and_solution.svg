@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', sans-serif;">
+  <defs>
+    <linearGradient id="grad-mem-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#2dd4bf" />
+    </linearGradient>
+    
+    <linearGradient id="grad-problem-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a080c" />
+      <stop offset="100%" stop-color="#180407" />
+    </linearGradient>
+
+    <linearGradient id="grad-solution-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#150d30" />
+      <stop offset="100%" stop-color="#091428" />
+    </linearGradient>
+
+    <filter id="comic-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="4" dy="4" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect x="10" y="10" width="780" height="430" rx="16" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Subtle Halftone / Grid Pattern Background -->
+  <g opacity="0.12">
+    <circle cx="80" cy="70" r="2" fill="#3b82f6" /><circle cx="130" cy="70" r="2" fill="#3b82f6" /><circle cx="180" cy="70" r="2" fill="#3b82f6" />
+    <circle cx="80" cy="110" r="2" fill="#3b82f6" /><circle cx="130" cy="110" r="2" fill="#3b82f6" /><circle cx="180" cy="110" r="2" fill="#3b82f6" />
+    <circle cx="620" cy="330" r="2" fill="#a855f7" /><circle cx="670" cy="330" r="2" fill="#a855f7" /><circle cx="720" cy="330" r="2" fill="#a855f7" />
+    <circle cx="620" cy="370" r="2" fill="#a855f7" /><circle cx="670" cy="370" r="2" fill="#a855f7" /><circle cx="720" cy="370" r="2" fill="#a855f7" />
+    <line x1="40" y1="230" x2="760" y2="230" stroke="#3b82f6" stroke-dasharray="4 8" stroke-width="1" />
+  </g>
+
+  <!-- Header Category Tag -->
+  <rect x="40" y="28" width="250" height="26" rx="6" fill="#1e1b4b" stroke="#a855f7" stroke-width="1.5" />
+  <text x="50" y="45" fill="#c084fc" font-size="11" font-weight="bold" letter-spacing="1">AGENTIC AI &amp; SYSTEM-GEDÄCHTNIS</text>
+
+  <!-- Main Headline in Illustration -->
+  <text x="40" y="78" fill="#f8fafc" font-size="22" font-weight="800" letter-spacing="-0.5">Langzeitgedächtnis für LLM-Agenten</text>
+  <text x="40" y="98" fill="#94a3b8" font-size="12.5">Warum Full-Context-Prompting scheitert und wie Mem0 persistente Intelligenz realisiert</text>
+
+  <!-- ==================== LEFT PILLAR: DAS PROBLEM (Full Context & Naive RAG) ==================== -->
+  <g filter="url(#comic-shadow)" transform="translate(40, 118)">
+    <rect x="0" y="0" width="345" height="235" rx="12" fill="url(#grad-problem-card)" stroke="#ef4444" stroke-width="1.5" />
+    <rect x="0" y="0" width="345" height="34" rx="12" fill="#450a0a" stroke="#ef4444" stroke-width="1.5" />
+    <circle cx="18" cy="17" r="6" fill="#ef4444" />
+    <text x="32" y="21" fill="#fecaca" font-size="12" font-weight="bold">Das Problem: Amnesie &amp; Kontextgrenzen</text>
+
+    <!-- Item 1: Token Explosion -->
+    <g transform="translate(14, 46)">
+      <rect x="0" y="0" width="317" height="38" rx="6" fill="#1e1315" stroke="rgba(239, 68, 68, 0.25)" stroke-width="1" />
+      <text x="10" y="16" fill="#fca5a5" font-size="11" font-weight="bold">Quadratische Token-Kosten: O(T²)</text>
+      <text x="10" y="30" fill="#94a3b8" font-size="9.5">Kumulative Chat-Historie explodiert bei Multi-Session</text>
+    </g>
+
+    <!-- Item 2: Lost in the Middle -->
+    <g transform="translate(14, 90)">
+      <rect x="0" y="0" width="317" height="38" rx="6" fill="#1e1315" stroke="rgba(239, 68, 68, 0.25)" stroke-width="1" />
+      <text x="10" y="16" fill="#fca5a5" font-size="11" font-weight="bold">„Lost in the Middle“ (Liu et al.)</text>
+      <text x="10" y="30" fill="#94a3b8" font-size="9.5">Bis zu 50 % Abfall der Retrieval- &amp; Recall-Genauigkeit</text>
+    </g>
+
+    <!-- Item 3: Context Drift & Latenz -->
+    <g transform="translate(14, 134)">
+      <rect x="0" y="0" width="317" height="38" rx="6" fill="#1e1315" stroke="rgba(239, 68, 68, 0.25)" stroke-width="1" />
+      <text x="10" y="16" fill="#fca5a5" font-size="11" font-weight="bold">Context Drift &amp; Widersprüche</text>
+      <text x="10" y="30" fill="#94a3b8" font-size="9.5">Veraltete Fakten ohne Update-Primitive erzeugen Halluzinationen</text>
+    </g>
+
+    <!-- Item 4: Naive RAG Limit -->
+    <g transform="translate(14, 178)">
+      <rect x="0" y="0" width="317" height="38" rx="6" fill="#1e1315" stroke="rgba(239, 68, 68, 0.25)" stroke-width="1" />
+      <text x="10" y="16" fill="#fca5a5" font-size="11" font-weight="bold">Naive Chunk-Verwässerung</text>
+      <text x="10" y="30" fill="#94a3b8" font-size="9.5">500-Token-Chunks ersticken feine Benutzerpräferenzen im Rauschen</text>
+    </g>
+  </g>
+
+  <!-- ==================== RIGHT PILLAR: DIE MEM0-LÖSUNG ==================== -->
+  <g filter="url(#comic-shadow)" transform="translate(415, 118)">
+    <rect x="0" y="0" width="345" height="235" rx="12" fill="url(#grad-solution-card)" stroke="#2dd4bf" stroke-width="1.5" />
+    <rect x="0" y="0" width="345" height="34" rx="12" fill="#0f2937" stroke="#2dd4bf" stroke-width="1.5" />
+    <circle cx="18" cy="17" r="6" fill="#2dd4bf" />
+    <text x="32" y="21" fill="#ccfbf1" font-size="12" font-weight="bold">Die Lösung: Mem0 Dynamic Memory Layer</text>
+
+    <!-- Item 1: Atomare Extraktion -->
+    <g transform="translate(14, 46)">
+      <rect x="0" y="0" width="317" height="38" rx="6" fill="#0b1b2b" stroke="rgba(45, 212, 191, 0.25)" stroke-width="1" />
+      <text x="10" y="16" fill="#5eead4" font-size="11" font-weight="bold">Atomare Faktenextraktion</text>
+      <text x="10" y="30" fill="#94a3b8" font-size="9.5">Präzise Zerlegung von Dialogen in eigenständige Propositionen</text>
+    </g>
+
+    <!-- Item 2: Lifecycle Engine -->
+    <g transform="translate(14, 90)">
+      <rect x="0" y="0" width="317" height="38" rx="6" fill="#0b1b2b" stroke="rgba(45, 212, 191, 0.25)" stroke-width="1" />
+      <text x="10" y="16" fill="#5eead4" font-size="11" font-weight="bold">Deterministischer Lifecycle (ADD, UPDATE, DELETE)</text>
+      <text x="10" y="30" fill="#94a3b8" font-size="9.5">Aktive Konfliktauflösung und Deduplizierung (NOOP)</text>
+    </g>
+
+    <!-- Item 3: Hybrid Store -->
+    <g transform="translate(14, 134)">
+      <rect x="0" y="0" width="317" height="38" rx="6" fill="#0b1b2b" stroke="rgba(45, 212, 191, 0.25)" stroke-width="1" />
+      <text x="10" y="16" fill="#5eead4" font-size="11" font-weight="bold">Hybrider Vektor- &amp; Wissensgraph (Mem0g)</text>
+      <text x="10" y="30" fill="#94a3b8" font-size="9.5">Dichte Vektorsuche kombiniert mit relationalen Entity-Graphen</text>
+    </g>
+
+    <!-- Item 4: Context Injection -->
+    <g transform="translate(14, 178)">
+      <rect x="0" y="0" width="317" height="38" rx="6" fill="#0b1b2b" stroke="rgba(45, 212, 191, 0.25)" stroke-width="1" />
+      <text x="10" y="16" fill="#5eead4" font-size="11" font-weight="bold">Selektive Kontext-Injektion (&lt; 500 Tokens)</text>
+      <text x="10" y="30" fill="#94a3b8" font-size="9.5">Minimaler Overhead, extrem kurze TTFT &amp; null Kontextverschmutzung</text>
+    </g>
+  </g>
+
+  <!-- ==================== BOTTOM METRICS FOOTER ==================== -->
+  <g transform="translate(40, 368)">
+    <rect x="0" y="0" width="720" height="54" rx="10" fill="#111827" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1.2" />
+    
+    <!-- Metric 1: LoCoMo -->
+    <g transform="translate(25, 12)">
+      <text x="0" y="15" fill="#c084fc" font-size="16" font-weight="800">92.5 %</text>
+      <text x="0" y="30" fill="#94a3b8" font-size="9.5" font-weight="600">LoCoMo Benchmark Score</text>
+    </g>
+
+    <!-- Metric 2: Improvement over OpenAI -->
+    <g transform="translate(205, 12)">
+      <text x="0" y="15" fill="#38bdf8" font-size="16" font-weight="800">+26 %</text>
+      <text x="0" y="30" fill="#94a3b8" font-size="9.5" font-weight="600">relativ ggü. OpenAI Memory</text>
+    </g>
+
+    <!-- Metric 3: Token Reduction -->
+    <g transform="translate(390, 12)">
+      <text x="0" y="15" fill="#2dd4bf" font-size="16" font-weight="800">&gt; 90 %</text>
+      <text x="0" y="30" fill="#94a3b8" font-size="9.5" font-weight="600">Token-Ersparnis vs. Full-Context</text>
+    </g>
+
+    <!-- Metric 4: Latency Reduction -->
+    <g transform="translate(565, 12)">
+      <text x="0" y="15" fill="#facc15" font-size="16" font-weight="800">-91 %</text>
+      <text x="0" y="30" fill="#94a3b8" font-size="9.5" font-weight="600">p95-Latenz (TTFT-Beschleunigung)</text>
+    </g>
+  </g>
+</svg>
