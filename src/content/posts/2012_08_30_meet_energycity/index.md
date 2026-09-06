@@ -2,7 +2,7 @@
 title: "Meet EnergyCity - A Virtual Testbed for Smartness"
 pubDate: "2012-08-29"
 description: "To smooth the way for smart energy systems we have been working on a virtual testbed for deploying and testing control strategies: EnergyCity. This article show..."
-tags: ["dynamic-programming", "data-visualization", "youtube-video"]
+tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation", "youtube-video"]
 icon: "./screenshot.png"
 ---
 The video shows a control strategy for 25 households including their refrigerators.

@@ -2,7 +2,7 @@
 title: "Java Runtime UML."
 pubDate: "2009-02-11"
 description: "Two years ago, I started a project called SoftRay at Siemens Corporate Research in Princeton. The tool generates UML diagrams from running Java programs. It's q..."
-tags: ["data-visualization"]
+tags: ["data-visualization", "software-architecture", "software-systems"]
 icon: "./uml_diagram.png"
 ---
 Here's a little sample from my work:

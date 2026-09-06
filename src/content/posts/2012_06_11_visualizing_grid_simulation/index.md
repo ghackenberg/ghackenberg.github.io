@@ -2,7 +2,7 @@
 title: "Visualizing our Smart Grid Simulation"
 pubDate: "2012-06-10"
 description: "At ICSE I presented our initial model for simulating the smart grid including both physical and software components. To help developers analyse their systems we..."
-tags: ["dynamic-programming", "data-visualization", "youtube-video"]
+tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation", "youtube-video"]
 icon: "./screenshot.png"
 ---
 The simulation setting for the proof of concept is simple:

@@ -3,7 +3,7 @@ title: "Delta Dynamics"
 tagline: "Ecosystem Simulator"
 description: "Low-poly ecosystem simulator featuring real-time dynamic terrain, GPU-accelerated water flow, resource management, and local LLM-driven AI behaviors."
 href: "https://dd.hackenberg.tech"
-tags: ["react", "threejs", "web-llm", "simulation", "artificial-intelligence"]
+tags: ["agentic-ai", "artificial-intelligence", "gpgpu", "local-ai", "react", "shaders", "simulation", "threejs", "web-llm", "webgl"]
 accentColor: "blue"
 order: 3
 repoName: "delta-dynamics"

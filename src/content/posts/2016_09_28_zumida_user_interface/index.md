@@ -2,7 +2,7 @@
 title: "The new zumida user interface revealed!"
 pubDate: "2016-09-27"
 description: "Some time ago I started working on a new version of zumida, a software for knowledge management, communication, and presentation. Today, I want to share two scr..."
-tags: ["data-visualization", "hyperkit-software", "zumida", "user-interface", "knowledge-management"]
+tags: ["data-visualization", "hyperkit-software", "knowledge-management", "user-interface", "ux-design", "zumida"]
 icon: "./screenshot_edit.png"
 ---
 The new zumida user interface allows one to explore existing knowledge nodes and their connections (right side of the following screenshot).

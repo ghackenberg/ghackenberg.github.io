@@ -2,7 +2,7 @@
 title: "From Layout to Animation"
 pubDate: "2011-06-15"
 description: "In a previous article The Evolution of a Functional Prototype I demonstrated how to transform sketches into prototypes backed by database content and applicatio..."
-tags: ["blog", "user-interface", "drawing", "youtube-video"]
+tags: ["blog", "drawing", "user-interface", "ux-design", "youtube-video"]
 icon: "./screenshot.png"
 ---
 To provide some context for this article here are the images from my previous post that illustrate the change from whiteboard sketch to functional prototype.

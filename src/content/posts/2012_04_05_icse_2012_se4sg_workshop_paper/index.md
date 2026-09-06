@@ -2,7 +2,7 @@
 title: "Paper accepted for ICSE'2012 workshop on SE4SG!"
 pubDate: "2012-04-04"
 description: "I am happy to announce that my colleagues Maximilian Irlbeck, Vasileios Koutsoumpas, Denis Bytschkow and I successfully published a paper on applying formal sof..."
-tags: ["conference"]
+tags: ["conference", "energy-systems", "software-systems", "systems-engineering"]
 icon: "./se4sg.png"
 ---
 Here's a little teaser for the paper.

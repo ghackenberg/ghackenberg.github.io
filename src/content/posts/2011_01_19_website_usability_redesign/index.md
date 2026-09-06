@@ -2,7 +2,7 @@
 title: "Improved Website Usability!"
 pubDate: "2011-01-18"
 description: "After being online with the original layout and navigation concept for almost two years it was time for some central improvements. Among others the RSS feeds ha..."
-tags: ["blog"]
+tags: ["blog", "human-computer-interaction", "user-interface", "ux-design"]
 icon: "./screenshot.png"
 ---
 Secondly, the index page has be redesigned with the goal to provide a better overview of the blog articles in the individual categories.

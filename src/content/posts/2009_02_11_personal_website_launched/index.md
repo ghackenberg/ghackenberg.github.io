@@ -2,7 +2,7 @@
 title: "Personal Website launched!"
 pubDate: "2009-02-10"
 description: "Hey everyone! I am happy, you made it to this site :). It is my first try to get something up and running. So I hope, you'll like it. I'll try my best to get so..."
-tags: ["blog"]
+tags: ["blog", "web-development"]
 icon: "./icon.png"
 ---
 Here's a little about my person:

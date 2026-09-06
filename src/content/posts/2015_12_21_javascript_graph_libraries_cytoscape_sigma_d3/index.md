@@ -2,7 +2,7 @@
 title: "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3"
 pubDate: "2015-12-20"
 description: "Recently, I added tags to my blog posts and scientific publications. The tags allow me to connect my articles based on keywords and topics. I use the tags to im..."
-tags: ["blog", "data-visualization", "zumida", "hyperkit-software"]
+tags: ["blog", "cytoscape", "d3", "data-visualization", "hyperkit-software", "javascript", "zumida"]
 icon: "./cytoscape.png"
 ---
 The implementation with all three JavaScript libraries was straight forward.

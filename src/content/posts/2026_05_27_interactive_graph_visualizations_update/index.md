@@ -2,7 +2,7 @@
 title: "Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing"
 pubDate: "2026-05-27"
 description: "A deep dive into refactoring our website's interactive visualization network. Learn how we integrated 3D Force graphs, Vis.js canvas rendering, smooth coordinate transitions, and real-time theme syncing with URL state persistence."
-tags: ["threejs", "webgl", "d3", "cytoscape", "visjs", "javascript", "astro"]
+tags: ["astro", "computer-graphics", "cytoscape", "d3", "data-visualization", "javascript", "threejs", "visjs", "webgl"]
 icon: "./icon.png"
 ---
 To help visitors explore the relationships between topics, blog posts, and academic publications, this website features interactive network graph visualizations. Recently, we gave this visualization system a major architectural and aesthetic overhaul. 

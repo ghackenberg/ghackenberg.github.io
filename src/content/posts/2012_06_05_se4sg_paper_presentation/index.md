@@ -2,7 +2,7 @@
 title: "My SE4SG Presentation"
 pubDate: "2012-06-04"
 description: "I just uploaded my presentation slides for the SE4SG workshop to slideshare to give you the opportunity to review my talk. I hope everybody enjoyed the presenta..."
-tags: ["conference", "slideshare-presentation"]
+tags: ["conference", "energy-systems", "slideshare-presentation", "systems-engineering"]
 icon: "./title.png"
 ---
 If you have any questions or suggestions feel free to comment on the slides either on this page or on the slideshare website.

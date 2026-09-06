@@ -2,7 +2,7 @@
 title: "Leaving to ICSE tomorrow!"
 pubDate: "2012-05-30"
 description: "The event is approaching: Tomorrow at 11:59 AM the train is leaving to Zurich, Switzerland, where the 34th International Conference on Software Engineering is h..."
-tags: ["conference"]
+tags: ["conference", "energy-systems", "software-systems"]
 icon: "./screenshot.png"
 ---
 If I find enough time and Internet access in Zurich I will try to blog a little bit about the event, the topics and the people.

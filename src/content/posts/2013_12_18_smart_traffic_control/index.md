@@ -2,7 +2,7 @@
 title: "Teaser: Smart Traffic Control"
 pubDate: "2013-12-17"
 description: "Besides our original topics such as distributed and smart fride control we have worked on another interesting issue: Smart traffic control. By smart traffic con..."
-tags: ["dynamic-programming", "traffic-control", "data-visualization"]
+tags: ["data-visualization", "dynamic-programming", "simulation", "traffic-control", "transportation-systems"]
 icon: "./graph.png"
 ---
 The following graph shows the driving behavior of three color coded traffic participants from their home to their work location.

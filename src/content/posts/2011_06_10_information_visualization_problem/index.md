@@ -2,7 +2,7 @@
 title: "The Information Visualization Problem"
 pubDate: "2011-06-09"
 description: "Inspired by my pervious post about Visualizing Software Systems I started to think about the more general problem of information visualization. The major differ..."
-tags: ["drawing"]
+tags: ["data-visualization", "drawing", "ux-design"]
 icon: "./first.jpg"
 ---
 First, I introduce my thoughts that preceded the step of creating the illustrations:

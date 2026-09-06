@@ -2,7 +2,7 @@
 title: "Comparing Interface Design Options"
 pubDate: "2011-06-08"
 description: "Developing graphical user interfaces requires us to develop visual representations of information and controls. My previous article, From Sketch to Prototype, e..."
-tags: ["drawing", "user-interface"]
+tags: ["drawing", "human-computer-interaction", "user-interface", "ux-design"]
 icon: "./screenshot.png"
 ---
 Developing visual representations of information and controls is a wildly creative process.

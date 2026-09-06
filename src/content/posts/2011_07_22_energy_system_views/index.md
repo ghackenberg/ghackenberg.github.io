@@ -2,7 +2,7 @@
 title: "View onto the Energy System"
 pubDate: "2011-07-21"
 description: "Lately I got interested in the domain of energy supply systems for human society. It is currently one of the hottest topics all in politics, science, research &..."
-tags: ["drawing"]
+tags: ["drawing", "energy-systems", "systems-engineering"]
 icon: "./bus.jpg"
 ---
 When you try to understand the challenges humanity is facing when it comes to energy supply, you probably want to start with learning about the current infrastructure and the way it works.

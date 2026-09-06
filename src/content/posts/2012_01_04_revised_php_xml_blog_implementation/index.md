@@ -2,7 +2,7 @@
 title: "Revised PHP/XML Blog Implementation"
 pubDate: "2012-01-03"
 description: "After another year of up-time it was time to revise some parts of the blog implementation. Originally, I did not pay much attention to the file structure. Howev..."
-tags: ["blog", "data-visualization"]
+tags: ["blog", "data-visualization", "software-systems", "web-development"]
 icon: "./content.png"
 ---
 The files of the blog are distributed to six folders:

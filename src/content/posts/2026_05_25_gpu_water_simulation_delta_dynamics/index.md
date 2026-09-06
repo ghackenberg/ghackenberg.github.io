@@ -2,7 +2,7 @@
 title: "GPU-Accelerated Water Flow and Subsurface Hydrology Shaders in Delta Dynamics"
 pubDate: "2026-05-25"
 description: "How we implemented a high-performance, discrete grid-based shallow water and groundwater simulator on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong textures."
-tags: ["threejs", "webgl", "shaders", "simulation", "gpgpu", "hydrology"]
+tags: ["computer-graphics", "gpgpu", "hydrology", "shaders", "simulation", "threejs", "webgl"]
 icon: "./icon.png"
 ---
 In building **Delta Dynamics**, a low-poly ecosystem simulator, we wanted a world that felt hydrodynamically alive. Water shouldn't just be a static visual plane; it should rain down, infiltrate the soil, accumulate in aquifers, flow down mountains, erode terrain, saturate soil, and form dynamic rivers and lakes that direct the growth of vegetation and the behaviors of AI entities.

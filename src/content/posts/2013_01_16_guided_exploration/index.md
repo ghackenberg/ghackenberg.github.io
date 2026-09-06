@@ -2,7 +2,7 @@
 title: "Guided Behavior Space Exploration"
 pubDate: "2013-01-15"
 description: "Previously, our results showed that we are able to generate high quality goal-oriented behavior for models including up to 20 components. This article demonstra..."
-tags: ["dynamic-programming", "data-visualization"]
+tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation"]
 icon: "./balance-20.png"
 ---
 The first two diagrams show the energy balance obtained when coordinating up to 40 refrigerators with respect to solar energy and a single energy storage.

@@ -2,7 +2,7 @@
 title: "Reviewing the last year of smart grid research"
 pubDate: "2013-03-10"
 description: "In the past year we have spent quite some effort on giving our smart grid research activties a shape. One of our big milestones was to establish this website as..."
-tags: ["data-visualization", "zumida"]
+tags: ["data-visualization", "energy-systems", "knowledge-graphs", "zumida"]
 icon: "./full.png"
 ---
 For understanding the contents we generated a respective graph representation.

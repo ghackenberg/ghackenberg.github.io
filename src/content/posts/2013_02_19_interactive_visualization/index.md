@@ -2,7 +2,7 @@
 title: "Model Visualization for Windows and Android"
 pubDate: "2013-02-18"
 description: "As part of our virtual smart grid testbed lab we have been working on an interactive visualization for our models including their structure and behavior. Here a..."
-tags: ["data-visualization", "user-interface"]
+tags: ["data-visualization", "energy-systems", "simulation", "user-interface"]
 icon: "./screenshot_android.png"
 ---
 Technically, the visualization is developed using standard HTML 5 web technology.

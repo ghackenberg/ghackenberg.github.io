@@ -2,7 +2,7 @@
 title: "3D Trace Visualization"
 pubDate: "2013-05-15"
 description: "To better understand the behavior space and its heuristic exploration using our tool Xtream we developed a proprietary 3D visualization. The visualization shows..."
-tags: ["dynamic-programming", "data-visualization"]
+tags: ["computer-graphics", "data-visualization", "dynamic-programming", "simulation"]
 icon: "./rendering.png"
 ---
 In the example the control of 20 refrigerators and one energy storage is explored with respect to temperature band constraints and autonomy objectives.

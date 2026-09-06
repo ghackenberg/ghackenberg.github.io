@@ -3,7 +3,7 @@ title: "SpineML"
 tagline: "Layout & Simulation Toolkit"
 description: "A Python toolkit designed to optimize factory layout planning (FLP) and job shop scheduling (JSS) through advanced layout modeling and simulation."
 href: "https://github.com/ghackenberg/SpineML"
-tags: ["python", "optimization", "simulation", "factory-layout", "scheduling"]
+tags: ["data-visualization", "factory-layout", "manufacturing-systems", "open-source", "optimization", "python", "scheduling", "simulation"]
 accentColor: "blue"
 order: 4
 repoName: "spineml"

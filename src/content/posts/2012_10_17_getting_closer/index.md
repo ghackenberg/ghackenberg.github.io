@@ -2,7 +2,7 @@
 title: "Getting Closer to Actual Balance"
 pubDate: "2012-10-16"
 description: "After extending our models and testing our tool chain we finally get some results that are really close to actual balance. The results are an important step tow..."
-tags: ["dynamic-programming", "data-visualization"]
+tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation"]
 icon: "./level.png"
 ---
 The underlying model contains a solar panel, an energy storage and 20 refrigerators.

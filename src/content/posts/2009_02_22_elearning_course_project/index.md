@@ -2,7 +2,7 @@
 title: "eLearning Course Project Sketches."
 pubDate: "2009-02-21"
 description: "Here are some impressions from my last term at university. I participated in a course called eLearning. The goal was to teach us how to develop eLearning produc..."
-tags: ["drawing"]
+tags: ["drawing", "education", "user-interface"]
 icon: "./choice.jpg"
 ---
 Our course project was develop a system for teaching students how to use polymorphism in object-oriented programming languages.

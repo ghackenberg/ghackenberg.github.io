@@ -2,7 +2,7 @@
 title: "Promotional Smart Grid Videos"
 pubDate: "2011-08-11"
 description: "Currently I am working hard to understand ongoing efforts for revolutionizing the energy supply systems across the globe. In a recent article - a View onto the ..."
-tags: ["youtube-video", "drawing"]
+tags: ["drawing", "energy-systems", "youtube-video"]
 icon: "./youtube_research.jpg"
 ---
 As usual I have also done some meta-level thinking, i.e. thinking about the causes and effects of watching these YouTube videos.

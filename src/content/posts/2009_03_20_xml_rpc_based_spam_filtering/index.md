@@ -2,7 +2,7 @@
 title: "XML-RPC based Spam Filtering."
 pubDate: "2009-03-19"
 description: "To prevent my blog from being spammed, I recently integrated a spam filtering service. The service is offered by blogspam (dot) net, it's entirely open source a..."
-tags: ["blog"]
+tags: ["blog", "software-systems", "web-development"]
 icon: "./http_post.png"
 ---
 You might wonder, why I decided to implement my own XML-RPC HTTP client, because there are already packages out there which solve that problem.

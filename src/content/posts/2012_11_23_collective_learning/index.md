@@ -2,7 +2,7 @@
 title: "Collective Learning - A New Approach"
 pubDate: "2012-11-22"
 description: "In the past weeks we have been working on a first prototype for collective learning. The idea behind the approach is to make individuals collaborate with respec..."
-tags: ["dynamic-programming", "machine-learning", "data-visualization"]
+tags: ["data-visualization", "dynamic-programming", "energy-systems", "machine-learning"]
 icon: "./screenshot.png"
 ---
 The following diagram shows how the learning algorithm performs for a number of problem scales.

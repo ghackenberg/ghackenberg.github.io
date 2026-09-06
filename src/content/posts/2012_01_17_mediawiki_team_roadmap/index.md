@@ -2,7 +2,7 @@
 title: "Managing Our Team Roadmap with MediaWiki"
 pubDate: "2012-01-16"
 description: "Recently, a few colleagues and I founded a working group around the topic of software engineering for future energy systems (also called smart grids). To coordi..."
-tags: ["task-management", "hyperkit-software"]
+tags: ["collaborative-software", "hyperkit-software", "knowledge-management", "task-management"]
 icon: "./editor.png"
 ---
 The roadmap is basically a collection of current tasks and events.
