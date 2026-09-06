@@ -1,0 +1,523 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import PostCard from "../../components/PostCard.astro";
+import PublicationCard from "../../components/PublicationCard.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const tags = await getCollection("tags");
+  const posts = await getCollection("posts");
+  const publications = await getCollection("publications");
+  const projects = await getCollection("projects");
+
+  return tags.map((tag) => {
+    const relatedPosts = posts
+      .filter((p) => p.data.tags.includes(tag.id))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+    const relatedPubs = publications
+      .filter((pub) => pub.data.tags.includes(tag.id))
+      .sort((a, b) => b.id.localeCompare(a.id));
+
+    const relatedProjects = projects
+      .filter((proj) => proj.data.tags && proj.data.tags.includes(tag.id))
+      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+    return {
+      params: { tag: tag.id },
+      props: {
+        tag,
+        posts: relatedPosts,
+        publications: relatedPubs,
+        projects: relatedProjects,
+      },
+    };
+  });
+}
+
+interface Props {
+  tag: CollectionEntry<"tags">;
+  posts: CollectionEntry<"posts">[];
+  publications: CollectionEntry<"publications">[];
+  projects: CollectionEntry<"projects">[];
+}
+
+const { tag, posts, publications, projects } = Astro.props;
+const totalCount = posts.length + publications.length + projects.length;
+
+// Page sizes divisible by 1, 2, and 3 for responsive grid harmony (1 col mobile, 2 col tablet, 3 col desktop)
+const POSTS_PER_PAGE = 6;
+const PUBS_PER_PAGE = 6;
+
+const totalPostPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+const totalPubPages = Math.ceil(publications.length / PUBS_PER_PAGE);
+
+function getPageNumbers(current: number, total: number): (number | string)[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  if (current <= 4) {
+    return [1, 2, 3, 4, 5, '...', total];
+  }
+  if (current >= total - 3) {
+    return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+  }
+  return [1, '...', current - 1, current, current + 1, '...', total];
+}
+
+// Determine preview image if available
+const previewImage = posts.find((p) => p.data.icon)?.data.icon;
+---
+
+<Layout
+  title={`#${tag.data.title} | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`}
+  description={tag.data.description}
+  image={previewImage}
+  tags={[tag.id]}
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Back Button -->
+    <a 
+      href="/tags" 
+      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue hover:bg-brand-blue/20 transition-all mb-8 cursor-pointer"
+    >
+      <span>&larr;</span>
+      <span>Back to Tags</span>
+    </a>
+
+    <!-- Header -->
+    <header class="mb-12">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
+        <span class="text-gray-400 font-medium mr-1">#</span>{tag.data.title}
+      </h1>
+      <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
+        {tag.data.description}
+      </p>
+    </header>
+
+    <!-- Connected Content Sections -->
+    <div class="space-y-16">
+      <!-- 1. Blog Posts -->
+      {posts.length > 0 && (
+        <section id="blog-posts" class="scroll-mt-24" data-total-pages={totalPostPages} data-section="posts">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>✍️</span>
+              <span>Blog Posts</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue border border-brand-blue/30 ml-2">
+                {posts.length}
+              </span>
+            </h2>
+            <a href="/posts" class="text-xs font-semibold text-brand-blue hover:underline">
+              All Posts &rarr;
+            </a>
+          </div>
+
+          <div id="posts-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post, index) => {
+              const pageNum = Math.floor(index / POSTS_PER_PAGE) + 1;
+              return (
+                <div class={`post-page-item h-full flex flex-col ${pageNum > 1 ? 'hidden' : ''}`} data-page={pageNum}>
+                  <PostCard
+                    id={post.id}
+                    title={post.data.title}
+                    description={post.data.description}
+                    pubDate={post.data.pubDate}
+                    icon={post.data.icon}
+                    tags={post.data.tags}
+                    activeTag={tag.id}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {totalPostPages > 1 && (
+            <nav id="posts-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Blog Posts Pagination">
+              {/* Previous Button */}
+              <div class="flex-1 w-full sm:w-auto text-left">
+                <button 
+                  type="button"
+                  data-action="prev"
+                  disabled
+                  class="prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200"
+                >
+                  <span class="mr-1.5">&larr;</span>
+                  <span>Previous</span>
+                </button>
+              </div>
+
+              {/* Page Numbers */}
+              <div class="page-numbers-container flex items-center justify-center gap-1.5 order-3 sm:order-2 flex-wrap">
+                {getPageNumbers(1, totalPostPages).map((num) => {
+                  if (typeof num === 'string') {
+                    return <span class="px-3 py-2 text-gray-500 text-sm font-medium">...</span>;
+                  }
+                  const isCurrent = num === 1;
+                  return isCurrent ? (
+                    <span 
+                      class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-blue shadow-lg shadow-brand-blue/20 cursor-default select-none min-w-[38px] text-center"
+                      aria-current="page"
+                      data-page-btn={num}
+                    >
+                      {num}
+                    </span>
+                  ) : (
+                    <button 
+                      type="button"
+                      data-goto={num}
+                      class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer"
+                    >
+                      {num}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Next Button */}
+              <div class="flex-1 w-full sm:w-auto text-right order-2 sm:order-3">
+                <button 
+                  type="button"
+                  data-action="next"
+                  class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+                >
+                  <span>Next</span>
+                  <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
+                </button>
+              </div>
+            </nav>
+          )}
+        </section>
+      )}
+
+      <!-- 2. Publications -->
+      {publications.length > 0 && (
+        <section id="publications" class="scroll-mt-24" data-total-pages={totalPubPages} data-section="pubs">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>📚</span>
+              <span>Reviewed Publications</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-purple/20 text-brand-purple border border-brand-purple/30 ml-2">
+                {publications.length}
+              </span>
+            </h2>
+            <a href="/publications" class="text-xs font-semibold text-brand-purple hover:underline">
+              All Publications &rarr;
+            </a>
+          </div>
+
+          <div id="pubs-list" class="space-y-6">
+            {publications.map((pub, index) => {
+              const pageNum = Math.floor(index / PUBS_PER_PAGE) + 1;
+              return (
+                <div class={`pub-page-item ${pageNum > 1 ? 'hidden' : ''}`} data-page={pageNum}>
+                  <PublicationCard
+                    id={pub.id}
+                    title={pub.data.title}
+                    author={pub.data.author}
+                    pubDate={pub.data.pubDate}
+                    book={pub.data.book}
+                    tags={pub.data.tags}
+                    icon={pub.data.icon}
+                    publisherUrl={pub.data.publisherUrl}
+                    activeTag={tag.id}
+                    linkLabel="Abstract & Citation"
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {totalPubPages > 1 && (
+            <nav id="pubs-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Reviewed Publications Pagination">
+              {/* Previous Button */}
+              <div class="flex-1 w-full sm:w-auto text-left">
+                <button 
+                  type="button"
+                  data-action="prev"
+                  disabled
+                  class="prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200"
+                >
+                  <span class="mr-1.5">&larr;</span>
+                  <span>Previous</span>
+                </button>
+              </div>
+
+              {/* Page Numbers */}
+              <div class="page-numbers-container flex items-center justify-center gap-1.5 order-3 sm:order-2 flex-wrap">
+                {getPageNumbers(1, totalPubPages).map((num) => {
+                  if (typeof num === 'string') {
+                    return <span class="px-3 py-2 text-gray-500 text-sm font-medium">...</span>;
+                  }
+                  const isCurrent = num === 1;
+                  return isCurrent ? (
+                    <span 
+                      class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-purple shadow-lg shadow-brand-purple/20 cursor-default select-none min-w-[38px] text-center"
+                      aria-current="page"
+                      data-page-btn={num}
+                    >
+                      {num}
+                    </span>
+                  ) : (
+                    <button 
+                      type="button"
+                      data-goto={num}
+                      class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-purple/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer"
+                    >
+                      {num}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Next Button */}
+              <div class="flex-1 w-full sm:w-auto text-right order-2 sm:order-3">
+                <button 
+                  type="button"
+                  data-action="next"
+                  class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-purple/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+                >
+                  <span>Next</span>
+                  <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
+                </button>
+              </div>
+            </nav>
+          )}
+        </section>
+      )}
+
+      <!-- 3. Software Projects -->
+      {projects.length > 0 && (
+        <section id="projects" class="scroll-mt-24">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>🚀</span>
+              <span>Software Projects</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-2">
+                {projects.length}
+              </span>
+            </h2>
+            <a href="/projects" class="text-xs font-semibold text-emerald-400 hover:underline">
+              All Projects &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {projects.map((project) => (
+              <ProjectCard
+                title={project.data.title}
+                tagline={project.data.tagline}
+                description={project.data.description}
+                href={`/projects/${project.id}`}
+                tags={project.data.tags}
+                accentColor={project.data.accentColor}
+                screenshot={project.data.screenshot}
+                screenshotLight={project.data.screenshotLight}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {totalCount === 0 && (
+        <div class="glass-card rounded-2xl p-12 text-center border border-element-border">
+          <p class="text-gray-400 text-sm">
+            No items are currently associated with this topic tag.
+          </p>
+        </div>
+      )}
+    </div>
+  </main>
+</Layout>
+
+<script>
+  function getPageNumbers(current: number, total: number): (number | string)[] {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    if (current <= 4) {
+      return [1, 2, 3, 4, 5, '...', total];
+    }
+    if (current >= total - 3) {
+      return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    }
+    return [1, '...', current - 1, current, current + 1, '...', total];
+  }
+
+  interface PaginationOptions {
+    sectionId: string;
+    itemSelector: string;
+    paginationId: string;
+    paramKey: string;
+    totalPages: number;
+    theme: 'blue' | 'purple';
+  }
+
+  function setupSectionPagination({
+    sectionId,
+    itemSelector,
+    paginationId,
+    paramKey,
+    totalPages,
+    theme
+  }: PaginationOptions) {
+    if (totalPages <= 1) return;
+
+    const sectionEl = document.getElementById(sectionId);
+    const navEl = document.getElementById(paginationId);
+    if (!sectionEl || !navEl) return;
+
+    const items = sectionEl.querySelectorAll<HTMLElement>(itemSelector);
+    if (items.length === 0) return;
+
+    let currentPage = 1;
+
+    function updateNav(page: number) {
+      if (!navEl) return;
+      const prevBtn = navEl.querySelector<HTMLButtonElement>('[data-action="prev"]');
+      const nextBtn = navEl.querySelector<HTMLButtonElement>('[data-action="next"]');
+      const numbersContainer = navEl.querySelector<HTMLElement>('.page-numbers-container');
+
+      if (prevBtn) {
+        if (page <= 1) {
+          prevBtn.disabled = true;
+          prevBtn.className = "prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200";
+        } else {
+          prevBtn.disabled = false;
+          prevBtn.className = `prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
+        }
+      }
+
+      if (nextBtn) {
+        if (page >= totalPages) {
+          nextBtn.disabled = true;
+          nextBtn.className = "next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200";
+        } else {
+          nextBtn.disabled = false;
+          nextBtn.className = `next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
+        }
+      }
+
+      if (numbersContainer) {
+        const pageNumbers = getPageNumbers(page, totalPages);
+        numbersContainer.innerHTML = pageNumbers.map((num) => {
+          if (typeof num === 'string') {
+            return '<span class="px-3 py-2 text-gray-500 text-sm font-medium">...</span>';
+          }
+          if (num === page) {
+            return `<span class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-${theme} shadow-lg shadow-brand-${theme}/20 cursor-default select-none min-w-[38px] text-center" aria-current="page" data-page-btn="${num}">${num}</span>`;
+          }
+          return `<button type="button" data-goto="${num}" class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer">${num}</button>`;
+        }).join('');
+      }
+    }
+
+    function setPage(page: number, shouldScroll: boolean) {
+      currentPage = page;
+      items.forEach((item) => {
+        const p = parseInt(item.getAttribute('data-page') || '1', 10);
+        if (p === currentPage) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+
+      updateNav(currentPage);
+
+      const url = new URL(window.location.href);
+      if (currentPage === 1) {
+        url.searchParams.delete(paramKey);
+      } else {
+        url.searchParams.set(paramKey, String(currentPage));
+      }
+      window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+
+      if (shouldScroll && sectionEl) {
+        sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // Read initial page from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialParam = urlParams.get(paramKey);
+    if (initialParam) {
+      const parsed = parseInt(initialParam, 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= totalPages) {
+        setPage(parsed, false);
+      }
+    }
+
+    // Attach click handler with event delegation
+    navEl.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest('button');
+      if (!target || target.disabled) return;
+
+      const action = target.getAttribute('data-action');
+      const goto = target.getAttribute('data-goto');
+
+      let targetPage = currentPage;
+      if (action === 'prev') {
+        targetPage = Math.max(1, currentPage - 1);
+      } else if (action === 'next') {
+        targetPage = Math.min(totalPages, currentPage + 1);
+      } else if (goto) {
+        targetPage = parseInt(goto, 10);
+      }
+
+      if (targetPage !== currentPage && targetPage >= 1 && targetPage <= totalPages) {
+        setPage(targetPage, true);
+      }
+    });
+
+    // Handle back/forward navigation
+    window.addEventListener('popstate', () => {
+      const currentParams = new URLSearchParams(window.location.search);
+      const paramVal = currentParams.get(paramKey);
+      const targetPage = paramVal ? Math.min(totalPages, Math.max(1, parseInt(paramVal, 10) || 1)) : 1;
+      if (targetPage !== currentPage) {
+        setPage(targetPage, false);
+      }
+    });
+  }
+
+  function initTagPagination() {
+    const postsSection = document.getElementById('blog-posts');
+    if (postsSection) {
+      const totalPages = parseInt(postsSection.getAttribute('data-total-pages') || '1', 10);
+      setupSectionPagination({
+        sectionId: 'blog-posts',
+        itemSelector: '.post-page-item',
+        paginationId: 'posts-pagination',
+        paramKey: 'posts_page',
+        totalPages,
+        theme: 'blue'
+      });
+    }
+
+    const pubsSection = document.getElementById('publications');
+    if (pubsSection) {
+      const totalPages = parseInt(pubsSection.getAttribute('data-total-pages') || '1', 10);
+      setupSectionPagination({
+        sectionId: 'publications',
+        itemSelector: '.pub-page-item',
+        paginationId: 'pubs-pagination',
+        paramKey: 'pubs_page',
+        totalPages,
+        theme: 'purple'
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTagPagination);
+  } else {
+    initTagPagination();
+  }
+  document.addEventListener('astro:page-load', initTagPagination);
+</script>
+

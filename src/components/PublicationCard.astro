@@ -131,7 +131,7 @@ function getPublisherDomain(url: string | undefined): string {
     <div class="flex flex-wrap gap-2.5 items-center w-full mt-auto">
       {tags.map(tag => (
         <a 
-          href={`/publications/tags/${tag}`}
+          href={`/tags/${tag}`}
           class={`text-[11px] px-2.5 py-1 rounded-lg bg-element-bg border border-element-border ${tag === activeTag ? 'text-brand-purple border-brand-purple/30 bg-brand-purple/5' : 'text-gray-400 hover:text-gray-100 hover:border-element-border-medium'} transition-all duration-200 relative z-20`}
         >
           #{tag}

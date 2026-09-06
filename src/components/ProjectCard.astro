@@ -78,10 +78,12 @@ const badgeColorClass = {
 }[accentColor];
 ---
 
-<a 
-  href={href} 
+<div 
   class={`glass-card h-full rounded-2xl border flex flex-col group overflow-hidden relative cursor-pointer ${colorClasses.border}`}
 >
+  <!-- Absolute overlay link for card clickability -->
+  <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
+
   <!-- Interactive Glow Element -->
   <div class={`absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${colorClasses.glow}`}></div>
   
@@ -183,24 +185,28 @@ const badgeColorClass = {
 
     <!-- Tech tags & actions footer -->
     <div class="flex-grow flex flex-col justify-between mt-2">
-      <div class="flex flex-wrap gap-1.5 mb-3">
+      <div class="flex flex-wrap gap-1.5 mb-3 relative z-20">
         {tags.map(tag => (
-          <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-colors ${colorClasses.tagBg}`}>
+          <a 
+            href={`/tags/${tag}`}
+            class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 ${colorClasses.tagBg}`}
+          >
             #{tag}
-          </span>
+          </a>
         ))}
       </div>
       
       <div class="flex justify-center mt-3">
-        <span 
+        <a 
+          href={href}
           class={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold relative z-20 transition-all hover:scale-105 ${colorClasses.btnBg}`}
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
           </svg>
-        </span>
+        </a>
       </div>
     </div>
   </div>
-</a>
+</div>

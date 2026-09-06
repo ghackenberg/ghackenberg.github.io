@@ -23,6 +23,8 @@ const optimizedScreenshot = screenshot ? await getImage({
 
 const posts = await getCollection("posts");
 const publications = await getCollection("publications");
+const tags = await getCollection("tags");
+const tagMap = new Map(tags.map(t => [t.id, t]));
 
 interface CytoscapeElement {
   data: {
@@ -85,10 +87,11 @@ const allTags = Array.from(new Set([...Object.keys(tagPosts), ...Object.keys(tag
 const cytoscapeElements: CytoscapeElement[] = [];
 allTags.forEach(tag => {
   const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
+  const tagTitle = tagMap.get(tag)?.data.title ?? tag;
   cytoscapeElements.push({
     data: {
       id: tag,
-      name: tag,
+      name: tagTitle,
       color: "#3b82f6", // Blue
       size: (Math.log(count) + 1) * 15 + 10
     }
@@ -142,7 +145,8 @@ const d3Nodes: D3Node[] = [];
 const d3Connections: D3Connection[] = [];
 allTags.forEach(tag => {
   const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
-  d3Nodes.push({ id: tag, name: tag, size: Math.log(count) + 1, group: 0 });
+  const tagTitle = tagMap.get(tag)?.data.title ?? tag;
+  d3Nodes.push({ id: tag, name: tagTitle, size: Math.log(count) + 1, group: 0 });
 });
 posts.forEach(post => {
   const path = `/posts/${post.id}`;
@@ -164,9 +168,10 @@ const sigmaNodes: SigmaNode[] = [];
 const sigmaEdges: SigmaEdge[] = [];
 allTags.forEach(tag => {
   const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
+  const tagTitle = tagMap.get(tag)?.data.title ?? tag;
   sigmaNodes.push({
     id: tag,
-    label: tag,
+    label: tagTitle,
     x: Math.random(),
     y: Math.random(),
     size: Math.log(count) + 1,

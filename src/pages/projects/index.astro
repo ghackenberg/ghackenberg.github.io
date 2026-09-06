@@ -60,18 +60,20 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data
             </div>
           </div>
 
-          <!-- Technologies / Tags dropdown -->
+          <!-- Technologies / Tags list -->
           <div class="mb-2">
-            <label for="tag-filter" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Filter by Tag</label>
-            <select 
-              id="tag-filter" 
-              class="w-full bg-gray-900 border border-element-border-medium rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-blue/50 transition-all duration-200 cursor-pointer"
-            >
-              <option value="all" class="bg-gray-900">All Tags</option>
+            <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Filter by Tag</span>
+            <div class="flex flex-wrap gap-1.5" id="tag-filter-buttons">
               {allTags.map(tag => (
-                <option value={tag} class="bg-gray-900">{tag}</option>
+                <button 
+                  type="button" 
+                  class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                  data-tag={tag}
+                >
+                  #{tag}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
         </div>
       </div>
@@ -122,10 +124,12 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data
     itemSelector: ".project-wrapper",
     searchFieldSelector: "#project-search",
     searchDataAttributes: ["data-title", "data-tagline", "data-desc", "data-tags"],
-    dropdownFilters: [
+    buttonFilters: [
       {
-        selectSelector: "#tag-filter",
+        buttonSelector: ".tag-filter-btn",
         dataAttribute: "data-tags",
+        defaultValue: "all",
+        activeClass: "active",
         matchType: "includes"
       }
     ],
@@ -134,19 +138,42 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data
 </script>
 
 <style>
-  /* Light mode overrides for tag filter dropdown */
-  :global(.light) #tag-filter {
-    background-color: #ffffff;
-    border-color: rgba(15, 23, 42, 0.12);
-    color: #0f172a;
+  .tag-filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
   }
 
-  :global(.light) #tag-filter option {
-    background-color: #ffffff;
-    color: #0f172a;
+  .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.08);
   }
 
-  :global(.light) #tag-filter:focus {
-    border-color: rgba(59, 130, 246, 0.6); /* brand-blue */
+  .tag-filter-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #7dd3fc;
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
+  }
+
+  /* Light mode overrides */
+  :global(.light) .tag-filter-btn {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569;
+  }
+
+  :global(.light) .tag-filter-btn:hover:not(.active) {
+    background: rgba(59, 130, 246, 0.06);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #1d4ed8;
+  }
+
+  :global(.light) .tag-filter-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #1d4ed8;
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2);
   }
 </style>

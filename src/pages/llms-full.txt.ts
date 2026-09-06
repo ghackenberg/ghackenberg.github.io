@@ -7,6 +7,7 @@ export async function GET() {
   const projects = await getCollection("projects");
   const services = await getCollection("services");
   const modules = await getCollection("modules");
+  const tags = await getCollection("tags");
 
   // Sort posts by date descending
   const sortedPosts = posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
@@ -93,6 +94,14 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
       output += `- Key Highlights:\n  * ${mod.data.highlights.join('\n  * ')}\n`;
     }
     output += `\n${mod.body}\n\n---\n\n`;
+  }
+
+  output += `## 7. Knowledge Index & Topic Tags\n\n`;
+  const sortedTags = tags.sort((a, b) => a.data.title.localeCompare(b.data.title));
+  for (const tag of sortedTags) {
+    output += `### #${tag.data.title}\n`;
+    output += `- URL: https://hackenberg.tech/tags/${tag.id}\n`;
+    output += `- Description: ${tag.data.description}\n\n`;
   }
 
   return new Response(output, {

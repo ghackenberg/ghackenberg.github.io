@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Ein standardisierter Open-Source Agentic AI Tech Stack: Architektur, Komponenten und Governance für souveräne Enterprise-Agenten"
 pubDate: "2026-09-03"
 description: "Eine detaillierte ingenieurwissenschaftliche Analyse unseres standardisierten Open-Source KI-Tech-Stacks: vLLM, Hermes Agent, Google WikiSkills, LangGraph, Mem0, PostgreSQL/Qdrant + Neo4j, LiteLLM Proxy, Keycloak und Open WebUI."

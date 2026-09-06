@@ -86,7 +86,7 @@ const pagePreviewImage = page.data.find(p => p.data.icon)?.data.icon;
           <div class="flex flex-wrap gap-2 overflow-y-auto pr-1 custom-scrollbar-thin flex-grow">
             {tags.map(tag => (
               <a 
-                href={`/posts/tags/${tag}`}
+                href={`/tags/${tag}`}
                 data-tag={tag}
                 class="tag-link px-2.5 py-1 rounded-lg text-xs font-medium border transition-all duration-200"
               >

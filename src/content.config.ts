@@ -1,5 +1,36 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
+import fs from 'node:fs';
+import path from 'node:path';
+
+function getValidTagIds(): Set<string> {
+  const tagsDir = path.resolve('./src/content/tags');
+  if (!fs.existsSync(tagsDir)) return new Set();
+  const entries = fs.readdirSync(tagsDir, { withFileTypes: true, recursive: true });
+  const ids = new Set<string>();
+  for (const entry of entries) {
+    if (entry.isFile() && (entry.name.endsWith('.md') || entry.name.endsWith('.mdx'))) {
+      const relPath = path.relative(tagsDir, path.join(entry.parentPath ?? tagsDir, entry.name));
+      const id = relPath
+        .replace(/\\/g, '/')
+        .replace(/\/index\.(md|mdx)$/, '')
+        .replace(/\.(md|mdx)$/, '');
+      ids.add(id);
+    }
+  }
+  return ids;
+}
+
+const tagReference = z.string().superRefine((tagId, ctx) => {
+  const validTags = getValidTagIds();
+  if (!validTags.has(tagId)) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `Unknown tag "${tagId}". The tag is not defined in "src/content/tags/". Please create "src/content/tags/${tagId}.md" with a description or fix the tag reference.`
+    });
+  }
+});
 
 const linkedinPosts = defineCollection({
   loader: glob({
@@ -81,7 +112,7 @@ const posts = defineCollection({
     title: z.string(),
     pubDate: z.coerce.date(),
     description: z.string().optional(),
-    tags: z.array(z.string()).default([]),
+    tags: z.array(tagReference).default([]),
     icon: image().optional(),
   }),
 });
@@ -98,7 +129,7 @@ const publications = defineCollection({
     book: z.string().optional(),
     author: z.string(),
     abstract: z.string().optional(),
-    tags: z.array(z.string()).default([]),
+    tags: z.array(tagReference).default([]),
     bibtex: z.string().optional(),
     slides: z.string().optional(),
     icon: z.string().optional(),
@@ -149,7 +180,7 @@ const projects = defineCollection({
     tagline: z.string(),
     description: z.string(),
     href: z.string().url(),
-    tags: z.array(z.string()).default([]),
+    tags: z.array(tagReference).default([]),
     accentColor: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),
     repoName: z.string().optional(),
@@ -251,6 +282,18 @@ const interests = defineCollection({
   })
 });
 
+const tags = defineCollection({
+  loader: glob({
+    base: './src/content/tags',
+    pattern: '**/*.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '').replace(/\.(md|mdx)$/, '')
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+  }),
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -267,6 +310,7 @@ export const collections = {
   'services': services,
   'modules': modules,
   'interests': interests,
+  'tags': tags,
 };
 
 

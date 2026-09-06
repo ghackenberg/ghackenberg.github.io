@@ -65,7 +65,7 @@ const firstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
           <div class="flex flex-wrap gap-2.5 overflow-y-auto pr-1 custom-scrollbar-thin flex-grow">
             {tags.map(tag => (
               <a 
-                href={`/publications/tags/${tag}`}
+                href={`/tags/${tag}`}
                 data-tag={tag}
                 class="tag-link px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-200"
               >

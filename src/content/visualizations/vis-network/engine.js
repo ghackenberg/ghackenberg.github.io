@@ -30,14 +30,21 @@ export default {
         border: isLight ? '#b45309' : '#fbbf24', 
         highlight: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#78350f' : '#fde68a' },
         hover: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#78350f' : '#fde68a' }
+      },
+      {
+        background: '#a855f7',
+        border: isLight ? '#9333ea' : '#c084fc',
+        highlight: { background: '#7e22ce', border: isLight ? '#6b21a8' : '#e9d5ff' },
+        hover: { background: '#7e22ce', border: isLight ? '#6b21a8' : '#e9d5ff' }
       }
     ];
 
-    const groupNames = ['Topic Tag', 'Blog Post', 'Publication'];
+    const groupNames = ['Tag', 'Post', 'Publication', 'Project'];
     const groupColors = [
       isLight ? '#2563eb' : '#60a5fa',
       isLight ? '#059669' : '#34d399',
-      isLight ? '#b45309' : '#fbbf24'
+      isLight ? '#b45309' : '#fbbf24',
+      isLight ? '#9333ea' : '#c084fc'
     ];
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
@@ -233,7 +240,7 @@ export default {
     this.network.on("click", (params) => {
       if (params.nodes.length > 0) {
         const targetPath = params.nodes[0];
-        if (targetPath.startsWith('/posts') || targetPath.startsWith('/publications')) {
+        if (targetPath.startsWith('/posts') || targetPath.startsWith('/publications') || targetPath.startsWith('/projects') || targetPath.startsWith('/tags')) {
           const targetUrl = new URL(targetPath, window.location.origin);
           targetUrl.searchParams.set('utm_source', utmSource);
           targetUrl.searchParams.set('utm_medium', utmMedium);
@@ -288,6 +295,11 @@ export default {
         background: isLight ? '#d97706' : '#f59e0b', 
         border: isLight ? '#b45309' : '#fbbf24', 
         highlight: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#92400e' : '#b45309' } 
+      },
+      {
+        background: '#a855f7',
+        border: isLight ? '#9333ea' : '#c084fc',
+        highlight: { background: isLight ? '#9333ea' : '#c084fc', border: isLight ? '#7e22ce' : '#e9d5ff' }
       }
     ];
 
@@ -351,50 +363,65 @@ export default {
       const tags = this.nodes.filter(n => n.group === 0);
       const posts = this.nodes.filter(n => n.group === 1);
       const publications = this.nodes.filter(n => n.group === 2);
+      const projects = this.nodes.filter(n => n.group === 3);
 
       const isMobile = window.innerWidth < 768;
       const heightFactor = 45;
       const widthFactor = 45;
 
       if (isMobile) {
-        posts.forEach((n, idx) => {
+        projects.forEach((n, idx) => {
           targets[n.id] = {
-            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * widthFactor : 0,
-            y: -250
+            x: projects.length > 1 ? (idx - (projects.length - 1) / 2) * widthFactor : 0,
+            y: -360
           };
         });
 
         tags.forEach((n, idx) => {
           targets[n.id] = {
             x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * widthFactor : 0,
-            y: 0
+            y: -120
+          };
+        });
+
+        posts.forEach((n, idx) => {
+          targets[n.id] = {
+            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * widthFactor : 0,
+            y: 120
           };
         });
 
         publications.forEach((n, idx) => {
           targets[n.id] = {
             x: publications.length > 1 ? (idx - (publications.length - 1) / 2) * widthFactor : 0,
-            y: 250
+            y: 360
           };
         });
       } else {
+        projects.forEach((n, idx) => {
+          targets[n.id] = {
+            x: -360,
+            y: projects.length > 1 ? (idx - (projects.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
         tags.forEach((n, idx) => {
           targets[n.id] = {
-            x: 0,
+            x: -120,
             y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0
           };
         });
 
         posts.forEach((n, idx) => {
           targets[n.id] = {
-            x: -250,
+            x: 120,
             y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0
           };
         });
 
         publications.forEach((n, idx) => {
           targets[n.id] = {
-            x: 250,
+            x: 360,
             y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0
           };
         });

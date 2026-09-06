@@ -136,7 +136,7 @@ const imageContainerClass = featured
       <div class="flex flex-wrap gap-1.5 mb-3">
         {tags.map(tag => (
           <a 
-            href={`/posts/tags/${tag}`}
+            href={`/tags/${tag}`}
             class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-colors relative z-20 ${
               tag === activeTag
                 ? 'bg-brand-blue/20 border-brand-blue/50 text-sky-300 light:bg-brand-blue/15 light:border-brand-blue/40 light:text-brand-blue'

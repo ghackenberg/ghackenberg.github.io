@@ -152,7 +152,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
       <div class="flex flex-wrap gap-2">
         {post.data.tags.map(tag => (
           <a 
-            href={`/posts/tags/${tag}`}
+            href={`/tags/${tag}`}
             class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
           >
             #{tag}

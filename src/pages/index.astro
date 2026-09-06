@@ -39,6 +39,8 @@ const recentPosts = sortedPosts.slice(0, 4);
 const publications = await getCollection("publications");
 const courses = await getCollection("courses");
 const visualizations = await getCollection("visualizations");
+const tagsCollection = await getCollection("tags");
+const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
 
 // Calculate tags and graph payload for the home page Vis.js Network
 const tagPosts: Record<string, number> = {};
@@ -67,7 +69,9 @@ projects.forEach(p => {
 const allTags = Array.from(new Set([...Object.keys(tagPosts), ...Object.keys(tagPubs), ...Object.keys(tagProjects)]));
 
 interface TagCloudItem {
+  id: string;
   name: string;
+  description: string;
   totalCount: number;
   postsCount: number;
   pubsCount: number;
@@ -79,18 +83,24 @@ interface TagCloudItem {
   fontWeightClass: string;
 }
 
-const tagCloudList: TagCloudItem[] = allTags.map(name => {
-  const postsCount = tagPosts[name] || 0;
-  const pubsCount = tagPubs[name] || 0;
-  const projectsCount = tagProjects[name] || 0;
+const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
+  const postsCount = tagPosts[tagId] || 0;
+  const pubsCount = tagPubs[tagId] || 0;
+  const projectsCount = tagProjects[tagId] || 0;
   const totalCount = postsCount + pubsCount + projectsCount;
   
   const postsPct = totalCount > 0 ? Math.round((postsCount / totalCount) * 100) : 0;
   const pubsPct = totalCount > 0 ? Math.round((pubsCount / totalCount) * 100) : 0;
   const projectsPct = totalCount > 0 ? Math.round((projectsCount / totalCount) * 100) : 0;
 
+  const tagEntry = tagMap.get(tagId);
+  const name = tagEntry?.data.title ?? tagId;
+  const description = tagEntry?.data.description ?? '';
+
   return {
+    id: tagId,
     name,
+    description,
     totalCount,
     postsCount,
     pubsCount,
@@ -171,14 +181,16 @@ const visNodes: GraphNodePayload[] = [];
 const visConnections: Array<{ sourceId: string; targetId: string }> = [];
 
 allTags.forEach(tag => {
-  const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0);
+  const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0) + (tagProjects[tag] || 0);
+  const tagEntry = tagMap.get(tag);
+  const title = tagEntry?.data.title ?? tag;
   visNodes.push({
-    id: `/posts/tags/${encodeURIComponent(tag)}`,
-    name: `#${tag}`,
+    id: `/tags/${encodeURIComponent(tag)}`,
+    name: `#${title}`,
     size: Math.log(count) + 1,
     group: 0,
-    typeLabel: "Topic Tag",
-    description: `${count} connected article${count > 1 ? 's' : ''} & publication${count > 1 ? 's' : ''}.`
+    typeLabel: "Tag",
+    description: tagEntry?.data.description || `${count} connected item${count > 1 ? 's' : ''}.`
   });
 });
 
@@ -198,14 +210,14 @@ for (const post of posts) {
     name: post.data.title,
     size: 1.2,
     group: 1,
-    typeLabel: "Blog Post",
+    typeLabel: "Post",
     description: post.data.description,
     date: post.data.pubDate ? new Date(post.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
     image: imageSrc,
     tags: post.data.tags ? post.data.tags.slice(0, 3) : []
   });
   post.data.tags.forEach(tag => {
-    visConnections.push({ sourceId: path, targetId: `/posts/tags/${encodeURIComponent(tag)}` });
+    visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
   });
 }
 
@@ -222,8 +234,38 @@ for (const pub of publications) {
     tags: pub.data.tags ? pub.data.tags.slice(0, 3) : []
   });
   pub.data.tags.forEach(tag => {
-    visConnections.push({ sourceId: path, targetId: `/posts/tags/${encodeURIComponent(tag)}` });
+    visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
   });
+}
+
+for (const project of projects) {
+  const path = `/projects/${project.id}`;
+  let imageSrc: string | undefined = undefined;
+  const projectImg = project.data.screenshot || project.data.screenshotLight;
+  if (projectImg) {
+    try {
+      const opt = await getImage({ src: projectImg, format: "webp", width: 240, quality: 75 });
+      imageSrc = opt.src;
+    } catch (e) {
+      console.warn("Failed to optimize project screenshot", e);
+    }
+  }
+  visNodes.push({
+    id: path,
+    name: project.data.title,
+    size: 1.1,
+    group: 3,
+    typeLabel: "Project",
+    description: project.data.description,
+    date: project.data.pubDate ? new Date(project.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+    image: imageSrc,
+    tags: project.data.tags ? project.data.tags.slice(0, 3) : []
+  });
+  if (project.data.tags) {
+    project.data.tags.forEach(tag => {
+      visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
+    });
+  }
 }
 
 const homeVisPayload = {
@@ -813,10 +855,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     <!-- Content Tags Section -->
     <section id="content-tags" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-8 max-w-2xl">
-
-        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-          Content <span class="heading-gradient-blue">Tags</span>
-        </h2>
+        <div class="flex items-center justify-between gap-4 mb-4">
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100">
+            Content <span class="heading-gradient-blue">Tags</span>
+          </h2>
+          <a href="/tags" class="text-xs sm:text-sm font-semibold text-brand-blue hover:underline shrink-0">
+            All Topics &rarr;
+          </a>
+        </div>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
           Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, and software projects across core computer science domains.
         </p>
@@ -832,7 +878,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
             <div class="relative group/tag inline-block">
               <!-- Tag Pill Link -->
               <a
-                href={`/posts/tags/${encodeURIComponent(tag.name)}`}
+                href={`/tags/${encodeURIComponent(tag.id)}`}
                 class={`inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl border transition-all duration-300 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-gradient-to-r from-brand-blue/20 via-sky-500/15 to-brand-blue/20 light:from-blue-100/90 light:via-sky-100/90 light:to-blue-100/90 border-brand-blue/40 light:border-blue-300/90 hover:border-brand-blue/70 light:hover:border-blue-400 shadow-lg shadow-brand-blue/10 hover:shadow-brand-blue/25 text-white light:text-slate-900 hover:text-white light:hover:text-blue-900 hover:scale-105`}
               >
                 <span>#{tag.name}</span>
@@ -848,6 +894,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   <span class="truncate">#{tag.name}</span>
                   <span class="text-brand-blue text-[11px] font-extrabold">{tag.totalCount} item{tag.totalCount > 1 ? 's' : ''}</span>
                 </div>
+
+                {tag.description && (
+                  <p class="text-[11px] text-gray-400 light:text-slate-600 line-clamp-2 leading-relaxed">
+                    {tag.description}
+                  </p>
+                )}
 
                 <!-- Multi-Color Segmented Progress Bar -->
                 <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
@@ -895,7 +947,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
             <div class="relative group/tag inline-block">
               <!-- Tag Pill Link -->
               <a
-                href={`/posts/tags/${encodeURIComponent(tag.name)}`}
+                href={`/tags/${encodeURIComponent(tag.id)}`}
                 class={`inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border transition-all duration-300 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-slate-900/60 light:bg-slate-100/80 border-white/10 light:border-slate-200 hover:border-brand-blue/40 text-gray-300 light:text-slate-700 hover:text-white light:hover:text-slate-900 hover:scale-105`}
               >
                 <span>#{tag.name}</span>
@@ -911,6 +963,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   <span class="truncate">#{tag.name}</span>
                   <span class="text-brand-blue text-[11px] font-extrabold">{tag.totalCount} item{tag.totalCount > 1 ? 's' : ''}</span>
                 </div>
+
+                {tag.description && (
+                  <p class="text-[11px] text-gray-400 light:text-slate-600 line-clamp-2 leading-relaxed">
+                    {tag.description}
+                  </p>
+                )}
 
                 <!-- Multi-Color Segmented Progress Bar -->
                 <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
@@ -958,7 +1016,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
             <div class="relative group/tag inline-block">
               <!-- Tag Pill Link -->
               <a
-                href="/posts"
+                href="/tags"
                 class={`inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl border transition-all duration-300 ${restFontSizeClass} ${restFontWeightClass} bg-gradient-to-r from-purple-600/30 via-indigo-500/25 to-purple-600/30 light:from-purple-100/90 light:via-indigo-50/90 light:to-purple-100/90 border-purple-500/50 light:border-purple-300/90 hover:border-purple-400 light:hover:border-purple-500 shadow-lg shadow-purple-500/15 light:shadow-purple-500/10 text-purple-100 light:text-purple-950 hover:text-white light:hover:text-purple-900 hover:scale-105`}
               >
                 <span>+{restTagsCount} remaining</span>
@@ -1028,7 +1086,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           Content <span class="heading-gradient-green">Graph</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
-          Explore an interactive network graph mapping my technical blog posts, research publications, and core computer science topics.
+          Explore an interactive network graph mapping my software projects, technical blog posts, research publications, and core computer science topics.
         </p>
       </div>
 
@@ -1038,11 +1096,15 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-white/10 light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-brand-blue border border-white/20 shadow-sm shadow-brand-blue/30"></span>
-            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Topic Tags</span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Tags</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-purple border border-white/20 shadow-sm shadow-brand-purple/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Projects</span>
           </div>
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
-            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Blog Posts</span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Posts</span>
           </div>
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-brand-yellow border border-white/20 shadow-sm shadow-brand-yellow/30"></span>
@@ -1062,11 +1124,21 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         </div>
       </div>
 
-      <!-- Section Footer CTAs: 2 columns on desktop, stacked rows on mobile -->
-      <div class="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-2xl mx-auto w-full">
+      <!-- Section Footer CTAs: 3 columns on desktop, stacked rows on mobile -->
+      <div class="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto w-full">
+        <a 
+          href="/projects?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
+          class="w-full px-6 py-4 rounded-2xl bg-gradient-purple text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-purple/20 hover:shadow-brand-purple/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
+        >
+          <span>Browse All Projects</span>
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
+
         <a 
           href="/posts?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
-          class="w-full px-7 py-4 rounded-2xl bg-gradient-green text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-green/20 hover:shadow-brand-green/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
+          class="w-full px-6 py-4 rounded-2xl bg-gradient-green text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-green/20 hover:shadow-brand-green/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
         >
           <span>Browse All Posts</span>
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1076,7 +1148,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
         <a 
           href="/publications?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
-          class="w-full px-7 py-4 rounded-2xl bg-gradient-yellow text-gray-950 font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-yellow/20 hover:shadow-brand-yellow/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
+          class="w-full px-6 py-4 rounded-2xl bg-gradient-yellow text-gray-950 font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-yellow/20 hover:shadow-brand-yellow/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
         >
           <span>Browse All Publications</span>
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

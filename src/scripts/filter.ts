@@ -9,6 +9,7 @@ export interface ButtonFilterConfig {
   dataAttribute: string;
   defaultValue?: string;
   activeClass?: string;
+  matchType?: 'exact' | 'includes';
 }
 
 export interface FilterConfig {
@@ -75,11 +76,17 @@ export class ClientListFilter {
 
         buttons.forEach(btn => {
           btn.addEventListener('click', () => {
-            buttons.forEach(b => b.classList.remove(activeCls));
-            btn.classList.add(activeCls);
-            
             const btnVal = btn.getAttribute('data-lang') || btn.getAttribute('data-value') || btn.getAttribute('data-tag') || defVal;
-            this.buttonValues.set(btnConfig.dataAttribute, btnVal);
+            const currentVal = this.buttonValues.get(btnConfig.dataAttribute);
+
+            if (currentVal === btnVal) {
+              buttons.forEach(b => b.classList.remove(activeCls));
+              this.buttonValues.set(btnConfig.dataAttribute, defVal);
+            } else {
+              buttons.forEach(b => b.classList.remove(activeCls));
+              btn.classList.add(activeCls);
+              this.buttonValues.set(btnConfig.dataAttribute, btnVal);
+            }
             this.updateFilters();
           });
         });
@@ -134,10 +141,19 @@ export class ClientListFilter {
         for (const btnConfig of this.config.buttonFilters) {
           const selectedValue = this.buttonValues.get(btnConfig.dataAttribute);
           if (selectedValue && selectedValue !== 'all') {
-            const itemValue = item.getAttribute(btnConfig.dataAttribute) || '';
-            if (itemValue !== selectedValue) {
-              isVisible = false;
-              break;
+            const itemValue = item.getAttribute(btnConfig.dataAttribute)?.toLowerCase() || '';
+            const matchVal = selectedValue.toLowerCase();
+
+            if (btnConfig.matchType === 'includes') {
+              if (!itemValue.includes(matchVal)) {
+                isVisible = false;
+                break;
+              }
+            } else {
+              if (itemValue !== matchVal) {
+                isVisible = false;
+                break;
+              }
             }
           }
         }

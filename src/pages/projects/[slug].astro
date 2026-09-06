@@ -286,9 +286,12 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
               <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-1.5">Project Type</p>
               <div class="flex flex-wrap gap-1.5">
                 {project.data.tags.map(tag => (
-                  <span class={`text-[10px] px-2.5 py-0.5 rounded-full border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-medium`}>
-                    {tag}
-                  </span>
+                  <a 
+                    href={`/tags/${tag}`}
+                    class={`text-[10px] px-2.5 py-0.5 rounded-full border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-medium hover:scale-105 transition-transform`}
+                  >
+                    #{tag}
+                  </a>
                 ))}
               </div>
             </div>

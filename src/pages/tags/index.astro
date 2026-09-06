@@ -1,0 +1,162 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection } from "astro:content";
+
+const tags = await getCollection("tags");
+const posts = await getCollection("posts");
+const publications = await getCollection("publications");
+const projects = await getCollection("projects");
+
+// Compute counts for each tag
+const tagStats = tags.map((tag) => {
+  const postCount = posts.filter((p) => p.data.tags.includes(tag.id)).length;
+  const pubCount = publications.filter((p) => p.data.tags.includes(tag.id)).length;
+  const projCount = projects.filter((p) => p.data.tags && p.data.tags.includes(tag.id)).length;
+  const total = postCount + pubCount + projCount;
+
+  return {
+    id: tag.id,
+    title: tag.data.title,
+    description: tag.data.description,
+    postCount,
+    pubCount,
+    projCount,
+    total,
+  };
+});
+
+// Sort tags alphabetically by title
+const sortedTags = tagStats.sort((a, b) => a.title.localeCompare(b.title));
+---
+
+<Layout
+  title="Content Tags & Topic Index | Dr. Georg Hackenberg"
+  description="Explore the comprehensive knowledge index connecting technical blog posts, scientific publications, and software projects by Dr. Georg Hackenberg."
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Header -->
+    <div class="mb-12">
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+        Topic <span class="heading-gradient-blue">Tags</span>
+      </h1>
+      <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+        A structured directory of domain concepts, technologies, and methodologies spanning my technical articles, academic papers, and software engineering platforms.
+      </p>
+    </div>
+
+    <!-- Search / Filter Bar -->
+    <div class="glass-card rounded-2xl p-4 sm:p-6 border border-element-border mb-10">
+      <div class="relative w-full max-w-md">
+        <label for="tag-filter" class="sr-only">Search tags</label>
+        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <input
+          type="text"
+          id="tag-filter"
+          placeholder="Filter by keyword (e.g. AI, Systems, Web)..."
+          class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors"
+        />
+      </div>
+      <p id="tag-count-label" class="text-xs text-gray-500 mt-3 font-medium">
+        Showing all {sortedTags.length} topics
+      </p>
+    </div>
+
+    <!-- Tags Grid -->
+    <div id="tags-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {sortedTags.map((tag) => (
+        <a
+          href={`/tags/${tag.id}`}
+          class="tag-card glass-card p-5 sm:p-6 rounded-2xl border border-element-border hover:border-brand-blue/40 transition-all duration-300 group flex flex-col justify-between hover:scale-[1.01] hover:shadow-lg hover:shadow-brand-blue/5"
+          data-title={tag.title.toLowerCase()}
+          data-id={tag.id.toLowerCase()}
+          data-desc={tag.description.toLowerCase()}
+        >
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <h2 class="text-base font-bold text-gray-100 group-hover:text-brand-blue transition-colors flex items-center gap-1">
+                <span class="text-gray-500 font-normal">#</span>
+                <span>{tag.title}</span>
+              </h2>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 group-hover:border-brand-blue/30 group-hover:text-brand-blue transition-colors shrink-0">
+                {tag.total}
+              </span>
+            </div>
+
+            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-3 font-normal">
+              {tag.description}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-white/5 text-[11px] text-gray-500 mt-auto">
+            {tag.postCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-sky-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-blue"></span>
+                <span>{tag.postCount} Post{tag.postCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
+            {tag.pubCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-purple-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
+                <span>{tag.pubCount} Paper{tag.pubCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
+            {tag.projCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>{tag.projCount} Project{tag.projCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <div id="no-results" class="hidden glass-card rounded-2xl p-12 text-center border border-element-border mt-6">
+      <p class="text-gray-400 text-sm">No topics match your search criteria.</p>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const input = document.getElementById('tag-filter') as HTMLInputElement | null;
+  const cards = document.querySelectorAll<HTMLElement>('.tag-card');
+  const countLabel = document.getElementById('tag-count-label');
+  const noResults = document.getElementById('no-results');
+
+  if (input) {
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const title = card.dataset.title || '';
+        const id = card.dataset.id || '';
+        const desc = card.dataset.desc || '';
+        const matches = !q || title.includes(q) || id.includes(q) || desc.includes(q);
+
+        if (matches) {
+          card.style.display = 'flex';
+          visible++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      if (countLabel) {
+        countLabel.textContent = q ? `Found ${visible} matching topic${visible !== 1 ? 's' : ''}` : `Showing all ${cards.length} topics`;
+      }
+
+      if (noResults) {
+        noResults.classList.toggle('hidden', visible > 0);
+      }
+    });
+  }
+</script>

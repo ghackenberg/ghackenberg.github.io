@@ -39,8 +39,18 @@ export async function GET() {
   const visualizations = await getCollection("visualizations");
   const services = await getCollection("services");
   const modules = await getCollection("modules");
+  const tags = await getCollection("tags");
 
   const manifest = {
+    tags: tags.map(t => ({
+      id: t.id,
+      url: `/tags/${t.id}`,
+      title: t.data.title,
+      description: t.data.description,
+      postsCount: posts.filter(p => p.data.tags.includes(t.id)).length,
+      publicationsCount: publications.filter(pub => pub.data.tags.includes(t.id)).length,
+      projectsCount: projects.filter(proj => proj.data.tags && proj.data.tags.includes(t.id)).length,
+    })),
     posts: posts.map(p => ({
       id: p.id,
       url: `/posts/${p.id}`,
@@ -74,6 +84,7 @@ export async function GET() {
       author: p.data.author,
       book: p.data.book || '',
       abstract: p.data.abstract || '',
+      tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
     })),
     visualizations: visualizations.map(v => ({
