@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 660" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-lifecycle-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+
+    <linearGradient id="grad-step" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#090e18" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-inv" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a192f" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+
+    <filter id="turn-shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.75" />
+    </filter>
+
+    <marker id="turn-arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="turn-arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="turn-arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="640" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Background Decorative Grid -->
+  <g opacity="0.08">
+    <line x1="30" y1="285" x2="970" y2="285" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+  </g>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="340" height="24" rx="5" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5" />
+  <text x="50" y="40" fill="#a5b4fc" font-size="10.5" font-weight="bold" letter-spacing="1">AIAgent TURN-LIFECYCLE &amp; EXECUTION LOOP</text>
+
+  <text x="40" y="70" fill="#f8fafc" font-size="21" font-weight="800" letter-spacing="-0.5">Der deterministische Iterationszyklus im Detail</text>
+  <text x="40" y="88" fill="#94a3b8" font-size="11.5">Phasenweiser Ablauf: Von der User-Anweisung über Prompt-Assemblierung und Inferenz bis zur Tool-Alternation und Persistenz</text>
+
+  <!-- ==================== TOP ROW: PIPELINE (STEPS 1 - 3) ==================== -->
+
+  <!-- STEP 1: INGESTION -->
+  <g filter="url(#turn-shadow)" transform="translate(40, 110)">
+    <rect x="0" y="0" width="280" height="160" rx="8" fill="url(#grad-step)" stroke="#38bdf8" stroke-width="1.4" />
+    <rect x="0" y="0" width="280" height="24" rx="8" fill="#0369a1" stroke="#38bdf8" stroke-width="1.4" />
+    <text x="12" y="16" fill="#f0f9ff" font-size="10.5" font-weight="bold">1. INGESTION &amp; SESSION</text>
+    
+    <text x="14" y="46" fill="#bae6fd" font-size="9.5" font-weight="bold">• run_conversation(task_id)</text>
+    <text x="14" y="60" fill="#94a3b8" font-size="8.5">Initialisierung von Task-ID &amp; Turn-Budget</text>
+    
+    <text x="14" y="80" fill="#bae6fd" font-size="9.5" font-weight="bold">• User Turn Ingestion</text>
+    <text x="14" y="94" fill="#94a3b8" font-size="8.5">Anhängen der Nachricht an Dialoghistorie</text>
+    
+    <text x="14" y="114" fill="#bae6fd" font-size="9.5" font-weight="bold">• Context Files Injection</text>
+    <text x="14" y="128" fill="#94a3b8" font-size="8.5">Autom. Import: .hermes.md, SOUL.md, AGENTS.md</text>
+    
+    <rect x="10" y="136" width="260" height="18" rx="3" fill="#0b2440" />
+    <text x="140" y="149" fill="#38bdf8" font-size="8" font-weight="bold" text-anchor="middle">OpenAI Message Dict Format (role / content)</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="320" y1="190" x2="355" y2="190" stroke="#38bdf8" stroke-width="2" marker-end="url(#turn-arrow-blue)" />
+
+  <!-- STEP 2: PREFLIGHT & PROMPT BUILDER -->
+  <g filter="url(#turn-shadow)" transform="translate(360, 110)">
+    <rect x="0" y="0" width="280" height="160" rx="8" fill="url(#grad-step)" stroke="#818cf8" stroke-width="1.4" />
+    <rect x="0" y="0" width="280" height="24" rx="8" fill="#4338ca" stroke="#818cf8" stroke-width="1.4" />
+    <text x="12" y="16" fill="#e0e7ff" font-size="10.5" font-weight="bold">2. PREFLIGHT &amp; PROMPT BUILDER</text>
+
+    <text x="14" y="46" fill="#c7d2fe" font-size="9.5" font-weight="bold">• Preflight Compaction Check</text>
+    <text x="14" y="60" fill="#94a3b8" font-size="8.5">Kompressionstrigger bei &gt; 50 % Context Pressure</text>
+
+    <text x="14" y="80" fill="#c7d2fe" font-size="9.5" font-weight="bold">• Frozen Memory Snapshot</text>
+    <text x="14" y="94" fill="#94a3b8" font-size="8.5">Statische Injektion von MEMORY.md &amp; USER.md</text>
+
+    <text x="14" y="114" fill="#c7d2fe" font-size="9.5" font-weight="bold">• Progressive Skills (Level 0)</text>
+    <text x="14" y="128" fill="#94a3b8" font-size="8.5">Kompakter Namens- &amp; Beschreibungsindex (~3k Tok)</text>
+
+    <rect x="10" y="136" width="260" height="18" rx="3" fill="#1e1b4b" />
+    <text x="140" y="149" fill="#a5b4fc" font-size="8" font-weight="bold" text-anchor="middle">Prefix-Cache-Schonung (Bit-identischer Header)</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="640" y1="190" x2="675" y2="190" stroke="#818cf8" stroke-width="2" marker-end="url(#turn-arrow-blue)" />
+
+  <!-- STEP 3: API DISPATCH & INFERENCE -->
+  <g filter="url(#turn-shadow)" transform="translate(680, 110)">
+    <rect x="0" y="0" width="280" height="160" rx="8" fill="url(#grad-step)" stroke="#a855f7" stroke-width="1.4" />
+    <rect x="0" y="0" width="280" height="24" rx="8" fill="#7e22ce" stroke="#a855f7" stroke-width="1.4" />
+    <text x="12" y="16" fill="#faf5ff" font-size="10.5" font-weight="bold">3. API DISPATCH («BRAIN»)</text>
+
+    <text x="14" y="46" fill="#e9d5ff" font-size="9.5" font-weight="bold">• 3 API Execution Modes</text>
+    <text x="14" y="60" fill="#94a3b8" font-size="8.5">chat_completions | codex_responses | anthropic</text>
+
+    <text x="14" y="80" fill="#e9d5ff" font-size="9.5" font-weight="bold">• Interruptible API Call</text>
+    <text x="14" y="94" fill="#94a3b8" font-size="8.5">Sofortiger Stream-Abbruch bei User-Interruption</text>
+
+    <text x="14" y="114" fill="#e9d5ff" font-size="9.5" font-weight="bold">• Extended Thinking Stream</text>
+    <text x="14" y="128" fill="#94a3b8" font-size="8.5">Separates Parsing von assistant_msg["reasoning"]</text>
+
+    <rect x="10" y="136" width="260" height="18" rx="3" fill="#2e1065" />
+    <text x="140" y="149" fill="#d8b4fe" font-size="8" font-weight="bold" text-anchor="middle">Provider-Failover &amp; Auto-Retry Mechanismus</text>
+  </g>
+
+  <!-- Flow down to Decision Node -->
+  <line x1="820" y1="270" x2="820" y2="306" stroke="#a855f7" stroke-width="2" marker-end="url(#turn-arrow-purple)" />
+
+  <!-- STEP 4: DECISION DIAMOND -->
+  <g filter="url(#turn-shadow)">
+    <polygon points="820,310 895,350 820,390 745,350" fill="#1e1b4b" stroke="#c084fc" stroke-width="1.6" />
+    <text x="820" y="346" fill="#f8fafc" font-size="11" font-weight="bold" text-anchor="middle">Tool Calls</text>
+    <text x="820" y="362" fill="#c084fc" font-size="10" font-weight="bold" text-anchor="middle">erzeugt?</text>
+  </g>
+
+  <!-- ==================== BRANCHES FROM DECISION ==================== -->
+
+  <!-- BRANCH JA (Left to Box 4A) -->
+  <line x1="745" y1="350" x2="628" y2="350" stroke="#c084fc" stroke-width="2" marker-end="url(#turn-arrow-purple)" />
+  <rect x="645" y="338" width="75" height="22" rx="4" fill="#2e1065" stroke="#a855f7" stroke-width="0.8" />
+  <text x="682" y="353" fill="#e9d5ff" font-size="9" font-weight="bold" text-anchor="middle">JA (Tools)</text>
+
+  <!-- BRANCH NEIN (Down to Box 4B) -->
+  <line x1="820" y1="390" x2="820" y2="430" stroke="#10b981" stroke-width="2" marker-end="url(#turn-arrow-emerald)" />
+  <rect x="830" y="400" width="75" height="22" rx="4" fill="#064e3b" stroke="#10b981" stroke-width="0.8" />
+  <text x="867" y="415" fill="#a7f3d0" font-size="9" font-weight="bold" text-anchor="middle">NEIN (Text)</text>
+
+  <!-- ==================== LOWER ROW: OUTCOMES ==================== -->
+
+  <!-- STEP 4A: TOOL EXECUTION & STRICT ALTERNATION (LEFT) -->
+  <g filter="url(#turn-shadow)" transform="translate(40, 310)">
+    <rect x="0" y="0" width="580" height="180" rx="8" fill="url(#grad-step)" stroke="#c084fc" stroke-width="1.4" />
+    <rect x="0" y="0" width="580" height="24" rx="8" fill="#6b21a8" stroke="#c084fc" stroke-width="1.4" />
+    <text x="14" y="16" fill="#faf5ff" font-size="10.5" font-weight="bold">4A. TOOL EXECUTION &amp; STRICT ALTERNATION LOOP</text>
+
+    <g transform="translate(14, 34)">
+      <text x="0" y="14" fill="#e9d5ff" font-size="9.5" font-weight="bold">• Tool Dispatcher (Sequentiell oder ThreadPool-Parallelismus)</text>
+      <text x="0" y="28" fill="#94a3b8" font-size="8.5">Ausführung in isolierter Sandbox (Local Terminal / Docker / Modal / Daytona)</text>
+
+      <!-- Message Alternation Banner -->
+      <g transform="translate(0, 38)">
+        <rect x="0" y="0" width="552" height="42" rx="5" fill="#1e1035" stroke="#7e22ce" stroke-width="1" />
+        <text x="12" y="18" fill="#d8b4fe" font-size="9.5" font-family="monospace" font-weight="bold">Assistant (mit tool_calls) ──► Tool Result ──► Tool Result ──► Assistant</text>
+        <text x="12" y="32" fill="#94a3b8" font-size="8.5">Strikte Alternierungs-Garantie: Schützt Open-Source-Modelle vor Rollen-Drift und Syntaxfehlern</text>
+      </g>
+
+      <text x="0" y="100" fill="#e9d5ff" font-size="9.5" font-weight="bold">• Append Tool Outputs an Historie &amp; Loopback</text>
+      <text x="0" y="114" fill="#94a3b8" font-size="8.5">Ergebnisse werden als Tool-Rollen angehängt; Rückkehr zum Prompt Builder für nächste Inferenz</text>
+    </g>
+  </g>
+
+  <!-- Loopback Arrow from Box 4A UP to Step 2 (Direct, Straight, No Crossing!) -->
+  <line x1="480" y1="310" x2="480" y2="276" stroke="#c084fc" stroke-width="2" marker-end="url(#turn-arrow-purple)" />
+  <rect x="390" y="282" width="165" height="18" rx="3" fill="#2e1065" stroke="#a855f7" stroke-width="0.8" />
+  <text x="472" y="295" fill="#e9d5ff" font-size="8" font-weight="bold" text-anchor="middle">Turn Re-Entry (Prompt Refresh)</text>
+
+  <!-- STEP 4B: FINALIZATION, PERSISTENCE & OUTPUT (RIGHT LOWER) -->
+  <g filter="url(#turn-shadow)" transform="translate(650, 435)">
+    <rect x="0" y="0" width="310" height="205" rx="8" fill="url(#grad-step)" stroke="#10b981" stroke-width="1.4" />
+    <rect x="0" y="0" width="310" height="24" rx="8" fill="#047857" stroke="#10b981" stroke-width="1.4" />
+    <text x="12" y="16" fill="#ecfdf5" font-size="10.5" font-weight="bold">4B. PERSISTENZ, MEMORY &amp; DELIVERABLE</text>
+
+    <g transform="translate(12, 34)">
+      <text x="0" y="14" fill="#6ee7b7" font-size="9.5" font-weight="bold">• Persistent Memory Flush (Disk Write):</text>
+      <text x="0" y="28" fill="#94a3b8" font-size="8.5">Gedächtnismutationen in MEMORY.md / USER.md</text>
+      <text x="0" y="40" fill="#94a3b8" font-size="8.5">werden sofort atomar auf die Platte geschrieben.</text>
+
+      <text x="0" y="60" fill="#6ee7b7" font-size="9.5" font-weight="bold">• SQLite Session Storage &amp; FTS5 Indexing:</text>
+      <text x="0" y="74" fill="#94a3b8" font-size="8.5">Vollständiger Dialog wird in ~/.hermes/state.db archiviert.</text>
+
+      <text x="0" y="94" fill="#6ee7b7" font-size="9.5" font-weight="bold">• Deliverable Mode &amp; Output Formatting:</text>
+      <text x="0" y="108" fill="#94a3b8" font-size="8.5">[[as_document]] liefert Rohdateien verlustfrei aus.</text>
+      
+      <rect x="0" y="122" width="286" height="24" rx="4" fill="#064e3b" stroke="#10b981" stroke-width="0.8" />
+      <text x="143" y="138" fill="#a7f3d0" font-size="8.5" font-weight="bold" text-anchor="middle">★ Return final_response an CLI / TUI / Gateway</text>
+    </g>
+  </g>
+
+  <!-- SYSTEM GUARANTEES & INVARIANTS (BOTTOM LEFT) -->
+  <g filter="url(#turn-shadow)" transform="translate(40, 505)">
+    <rect x="0" y="0" width="580" height="135" rx="8" fill="url(#grad-card-inv)" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.2" />
+    <rect x="0" y="0" width="580" height="22" rx="8" fill="#0c2e59" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1" />
+    <text x="14" y="15" fill="#bae6fd" font-size="10" font-weight="bold" letter-spacing="0.5">SYSTEM-INVARIANTEN &amp; DETERMINISTISCHE SICHERHEIT</text>
+
+    <g transform="translate(14, 30)">
+      <!-- Item 1 -->
+      <text x="0" y="14" fill="#38bdf8" font-size="8.5" font-weight="bold">1. KV-Cache-Erhaltung:</text>
+      <text x="135" y="14" fill="#94a3b8" font-size="8.5">Gefrorene Memory-Snapshots verhindern kostspielige Prefill-Recomputations.</text>
+
+      <!-- Item 2 -->
+      <text x="0" y="36" fill="#38bdf8" font-size="8.5" font-weight="bold">2. Interruptibility:</text>
+      <text x="135" y="36" fill="#94a3b8" font-size="8.5">Ctrl+C und Folge-Nachrichten brechen laufende HTTP-Streams sauber ab.</text>
+
+      <!-- Item 3 -->
+      <text x="0" y="58" fill="#38bdf8" font-size="8.5" font-weight="bold">3. Tool Sandboxing:</text>
+      <text x="135" y="58" fill="#94a3b8" font-size="8.5">Kommando-Approval-Gating und Whitelists schützen vor zerstörerischen Aktionen.</text>
+
+      <!-- Item 4 -->
+      <text x="0" y="80" fill="#38bdf8" font-size="8.5" font-weight="bold">4. Modell-Agnostik:</text>
+      <text x="135" y="80" fill="#94a3b8" font-size="8.5">Vollständige Portabilität zwischen lokalem vLLM und externen Cloud-APIs.</text>
+    </g>
+  </g>
+</svg>

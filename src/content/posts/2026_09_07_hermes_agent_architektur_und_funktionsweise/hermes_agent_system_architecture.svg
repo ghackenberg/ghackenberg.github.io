@@ -1,0 +1,283 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-entry" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-core" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-memory" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-skills" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4c1d95" />
+      <stop offset="100%" stop-color="#2e1065" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-backend" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#261b0c" />
+      <stop offset="100%" stop-color="#150f06" />
+    </linearGradient>
+
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="arrow-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#818cf8" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="730" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Background Decorative Grid -->
+  <g opacity="0.08">
+    <line x1="30" y1="110" x2="970" y2="110" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="30" y1="465" x2="970" y2="465" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <circle cx="920" cy="45" r="3" fill="#38bdf8" /><circle cx="950" cy="45" r="3" fill="#818cf8" />
+  </g>
+
+  <!-- Header Section -->
+  <rect x="40" y="25" width="370" height="26" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5" />
+  <text x="50" y="42" fill="#a5b4fc" font-size="11" font-weight="bold" letter-spacing="1">HERMES AGENT ARCHITEKTUR-BLUEPRINT</text>
+
+  <text x="40" y="74" fill="#f8fafc" font-size="22" font-weight="800" letter-spacing="-0.5">Das persistente KI-Agenten-Betriebssystem im Detail</text>
+  <text x="40" y="94" fill="#94a3b8" font-size="12">Entkopplung von Körper («Body») und Modell («Brain») mit progressivem Tooling, Bounded Context und autonomer Wissensevolution</text>
+
+  <!-- ==================== 1. ENTRY POINTS (TOP BAR) ==================== -->
+  <g filter="url(#shadow)" transform="translate(40, 110)">
+    <rect x="0" y="0" width="920" height="74" rx="10" fill="url(#grad-card-entry)" stroke="#818cf8" stroke-width="1.5" />
+    <rect x="0" y="0" width="920" height="24" rx="10" fill="#312e81" stroke="#818cf8" stroke-width="1.5" />
+    <text x="14" y="17" fill="#e0e7ff" font-size="11" font-weight="bold">SCHICHT 6: MULTI-SURFACE ENTRY POINTS &amp; UNIFIED GATEWAY</text>
+
+    <!-- 4 Clean Cards with 2 Lines Each -->
+    <!-- Card 1 -->
+    <g transform="translate(15, 30)">
+      <rect x="0" y="0" width="210" height="36" rx="5" fill="#0f172a" stroke="rgba(129, 140, 248, 0.4)" stroke-width="1" />
+      <text x="10" y="15" fill="#bae6fd" font-size="10" font-weight="bold">Terminal CLI &amp; Ink TUI</text>
+      <text x="10" y="28" fill="#64748b" font-size="8.5">Interaktive Entwickler-Shell</text>
+    </g>
+
+    <!-- Card 2 -->
+    <g transform="translate(240, 30)">
+      <rect x="0" y="0" width="215" height="36" rx="5" fill="#0f172a" stroke="rgba(129, 140, 248, 0.4)" stroke-width="1" />
+      <text x="10" y="15" fill="#bae6fd" font-size="10" font-weight="bold">Unified Messenger Gateway</text>
+      <text x="10" y="28" fill="#64748b" font-size="8.5">Telegram, Discord, Slack (21+)</text>
+    </g>
+
+    <!-- Card 3 -->
+    <g transform="translate(470, 30)">
+      <rect x="0" y="0" width="210" height="36" rx="5" fill="#0f172a" stroke="rgba(129, 140, 248, 0.4)" stroke-width="1" />
+      <text x="10" y="15" fill="#bae6fd" font-size="10" font-weight="bold">Cron Automations &amp; Loops</text>
+      <text x="10" y="28" fill="#64748b" font-size="8.5">Headless Background Scheduler</text>
+    </g>
+
+    <!-- Card 4 -->
+    <g transform="translate(695, 30)">
+      <rect x="0" y="0" width="210" height="36" rx="5" fill="#0f172a" stroke="rgba(129, 140, 248, 0.4)" stroke-width="1" />
+      <text x="10" y="15" fill="#bae6fd" font-size="10" font-weight="bold">Python API &amp; ACP Server</text>
+      <text x="10" y="28" fill="#64748b" font-size="8.5">App Server &amp; RPC Endpoints</text>
+    </g>
+  </g>
+
+  <!-- Flow Arrow from Entry to AIAgent -->
+  <line x1="500" y1="184" x2="500" y2="204" stroke="#818cf8" stroke-width="2" marker-end="url(#arrow-indigo)" />
+
+  <!-- ==================== 2. AIAgent CORE ORCHESTRATION (CENTER) ==================== -->
+  <g filter="url(#shadow)" transform="translate(40, 205)">
+    <rect x="0" y="0" width="920" height="248" rx="12" fill="url(#grad-card-core)" stroke="#38bdf8" stroke-width="1.8" />
+    <rect x="0" y="0" width="920" height="28" rx="12" fill="#0369a1" stroke="#38bdf8" stroke-width="1.8" />
+    <circle cx="16" cy="14" r="5" fill="#38bdf8" />
+    <text x="28" y="19" fill="#f0f9ff" font-size="11.5" font-weight="bold">AIAgent RUNTIME CORE (agent/conversation_loop.py &amp; turn_*.py) – DER «BODY»</text>
+
+    <!-- Subsystem 1: Prompt Assembly -->
+    <g transform="translate(18, 38)">
+      <rect x="0" y="0" width="280" height="195" rx="8" fill="#071526" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1" />
+      <text x="12" y="20" fill="#7dd3fc" font-size="10.5" font-weight="bold">1. Prompt Builder &amp; Ephemerals</text>
+      <line x1="12" y1="26" x2="268" y2="26" stroke="#0284c7" stroke-width="1" opacity="0.4" />
+      <text x="12" y="44" fill="#e2e8f0" font-size="9.5">• Base System Prompt &amp; Personalities</text>
+      <text x="12" y="62" fill="#e2e8f0" font-size="9.5">• Context Files (.hermes.md, SOUL.md)</text>
+      <text x="12" y="80" fill="#e2e8f0" font-size="9.5">• Frozen Memory Snapshot (Prefix Cache)</text>
+      <text x="12" y="98" fill="#e2e8f0" font-size="9.5">• Progressive Skills Index (Level 0)</text>
+      <text x="12" y="116" fill="#e2e8f0" font-size="9.5">• Ephemerale Budget- &amp; Statuswarnungen</text>
+      
+      <rect x="10" y="132" width="260" height="48" rx="5" fill="#0b2440" stroke="#0284c7" stroke-width="0.8" />
+      <text x="18" y="150" fill="#93c5fd" font-size="9" font-weight="bold">Preflight Context-Pressure Check:</text>
+      <text x="18" y="166" fill="#94a3b8" font-size="8.5">Autom. Kompression bei &gt; 50 % Context</text>
+    </g>
+
+    <!-- Subsystem 2: Provider Resolution & API Modes -->
+    <g transform="translate(318, 38)">
+      <rect x="0" y="0" width="284" height="195" rx="8" fill="#071526" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1" />
+      <text x="12" y="20" fill="#7dd3fc" font-size="10.5" font-weight="bold">2. Provider Resolution &amp; Brain</text>
+      <line x1="12" y1="26" x2="272" y2="26" stroke="#0284c7" stroke-width="1" opacity="0.4" />
+      <text x="12" y="42" fill="#cbd5e1" font-size="9">Modellagnostisch via 3 vereinheitlichte Modi:</text>
+      
+      <rect x="10" y="50" width="264" height="34" rx="4" fill="#0c1e36" stroke="rgba(56, 189, 248, 0.3)" stroke-width="0.8" />
+      <text x="16" y="64" fill="#bae6fd" font-size="8.5" font-weight="bold">chat_completions (OpenAI / vLLM)</text>
+      <text x="16" y="76" fill="#64748b" font-size="8">Standard Tool-Calling &amp; Streaming</text>
+
+      <rect x="10" y="88" width="264" height="34" rx="4" fill="#0c1e36" stroke="rgba(56, 189, 248, 0.3)" stroke-width="0.8" />
+      <text x="16" y="102" fill="#bae6fd" font-size="8.5" font-weight="bold">codex_responses (OpenAI Codex)</text>
+      <text x="16" y="114" fill="#64748b" font-size="8">Responses API Input Items Mapping</text>
+
+      <rect x="10" y="126" width="264" height="34" rx="4" fill="#0c1e36" stroke="rgba(56, 189, 248, 0.3)" stroke-width="0.8" />
+      <text x="16" y="140" fill="#bae6fd" font-size="8.5" font-weight="bold">anthropic_messages (Claude Native)</text>
+      <text x="16" y="152" fill="#64748b" font-size="8">Adapter &amp; Prompt Caching Breakpoints</text>
+      
+      <text x="12" y="180" fill="#38bdf8" font-size="8.5" font-weight="bold">★ Das Brain (LLM) ist modular austauschbar!</text>
+    </g>
+
+    <!-- Subsystem 3: Tool Dispatch & Execution Engine -->
+    <g transform="translate(622, 38)">
+      <rect x="0" y="0" width="280" height="195" rx="8" fill="#071526" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1" />
+      <text x="12" y="20" fill="#7dd3fc" font-size="10.5" font-weight="bold">3. Tool Dispatcher &amp; Engine</text>
+      <line x1="12" y1="26" x2="268" y2="26" stroke="#0284c7" stroke-width="1" opacity="0.4" />
+      <text x="12" y="44" fill="#e2e8f0" font-size="9.5">• 70+ Built-in Tools in 28 Toolsets</text>
+      <text x="12" y="62" fill="#e2e8f0" font-size="9.5">• Model Context Protocol (MCP Support)</text>
+      <text x="12" y="80" fill="#e2e8f0" font-size="9.5">• Paralleler ThreadPool / Sequential Dispatch</text>
+      <text x="12" y="98" fill="#e2e8f0" font-size="9.5">• Strikte Rollen-Alternierungsregeln</text>
+      <text x="12" y="116" fill="#e2e8f0" font-size="9.5">• Media-Erkennung &amp; [[as_document]]</text>
+      
+      <rect x="10" y="132" width="260" height="48" rx="5" fill="#0b2440" stroke="#0284c7" stroke-width="0.8" />
+      <text x="18" y="150" fill="#93c5fd" font-size="9" font-weight="bold">Approval Gating &amp; Safety Guardrails:</text>
+      <text x="18" y="166" fill="#94a3b8" font-size="8.5">Whitelists, Destructive Rollback, Egress</text>
+    </g>
+  </g>
+
+  <!-- Connecting Lines from AIAgent downwards -->
+  <path d="M 235 453 L 235 478" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)" />
+  <path d="M 500 453 L 500 478" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)" />
+  <path d="M 765 453 L 765 478" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)" />
+
+  <!-- ==================== 3. LOWER SUBSYSTEMS (3 COLUMNS) ==================== -->
+
+  <!-- COLUMN 1: PERSISTENT MEMORY & TRANSCRIPTS -->
+  <g filter="url(#shadow)" transform="translate(40, 480)">
+    <rect x="0" y="0" width="293" height="240" rx="10" fill="url(#grad-card-memory)" stroke="#10b981" stroke-width="1.5" />
+    <rect x="0" y="0" width="293" height="26" rx="10" fill="#065f46" stroke="#10b981" stroke-width="1.5" />
+    <text x="14" y="18" fill="#d1fae5" font-size="10.5" font-weight="bold">BOUNDED MEMORY &amp; PERSISTENZ</text>
+
+    <g transform="translate(12, 34)">
+      <!-- Box A -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="269" height="58" rx="5" fill="#022119" stroke="rgba(16, 185, 129, 0.3)" stroke-width="0.8" />
+        <text x="10" y="18" fill="#6ee7b7" font-size="9.5" font-weight="bold">MEMORY.md (Agent Notes &amp; Facts)</text>
+        <text x="10" y="34" fill="#94a3b8" font-size="8.5">Limit: 2.200 Zeichen (~800 Tokens)</text>
+        <text x="10" y="48" fill="#94a3b8" font-size="8.5">Projektstandards, Systemfakten, Lessons</text>
+      </g>
+
+      <!-- Box B -->
+      <g transform="translate(0, 66)">
+        <rect x="0" y="0" width="269" height="58" rx="5" fill="#022119" stroke="rgba(16, 185, 129, 0.3)" stroke-width="0.8" />
+        <text x="10" y="18" fill="#6ee7b7" font-size="9.5" font-weight="bold">USER.md (User Profile &amp; Style)</text>
+        <text x="10" y="34" fill="#94a3b8" font-size="8.5">Limit: 1.375 Zeichen (~500 Tokens)</text>
+        <text x="10" y="48" fill="#94a3b8" font-size="8.5">Präferenzen, Zeitzone, Kommunikationsstil</text>
+      </g>
+
+      <!-- Box C -->
+      <g transform="translate(0, 132)">
+        <rect x="0" y="0" width="269" height="60" rx="5" fill="#022119" stroke="rgba(16, 185, 129, 0.3)" stroke-width="0.8" />
+        <text x="10" y="18" fill="#34d399" font-size="9.5" font-weight="bold">Frozen Snapshot &amp; SQLite FTS5</text>
+        <text x="10" y="34" fill="#94a3b8" font-size="8.5">• Session-Start Freeze (Cache Preservation)</text>
+        <text x="10" y="48" fill="#94a3b8" font-size="8.5">• Volltextsuche über alle historischen Dialoge</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- COLUMN 2: SKILLS SYSTEM & CURATOR -->
+  <g filter="url(#shadow)" transform="translate(353, 480)">
+    <rect x="0" y="0" width="293" height="240" rx="10" fill="url(#grad-card-skills)" stroke="#a855f7" stroke-width="1.5" />
+    <rect x="0" y="0" width="293" height="26" rx="10" fill="#6b21a8" stroke="#a855f7" stroke-width="1.5" />
+    <text x="14" y="18" fill="#f3e8ff" font-size="10.5" font-weight="bold">SKILLS &amp; AUTONOME EVOLUTION</text>
+
+    <g transform="translate(12, 34)">
+      <!-- Box A -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="269" height="58" rx="5" fill="#1e0e38" stroke="rgba(168, 85, 247, 0.3)" stroke-width="0.8" />
+        <text x="10" y="18" fill="#d8b4fe" font-size="9.5" font-weight="bold">agentskills.io Standard (SKILL.md)</text>
+        <text x="10" y="34" fill="#94a3b8" font-size="8.5">Progressive Disclosure Modell:</text>
+        <text x="10" y="48" fill="#94a3b8" font-size="8.5">L0: Discovery | L1: Full View | L2: Refs</text>
+      </g>
+
+      <!-- Box B -->
+      <g transform="translate(0, 66)">
+        <rect x="0" y="0" width="269" height="58" rx="5" fill="#1e0e38" stroke="rgba(168, 85, 247, 0.3)" stroke-width="0.8" />
+        <text x="10" y="18" fill="#d8b4fe" font-size="9.5" font-weight="bold">Autonomous Learning (/learn)</text>
+        <text x="10" y="34" fill="#94a3b8" font-size="8.5">Kompiliert Codebases, Docs &amp; Dialoge</text>
+        <text x="10" y="48" fill="#94a3b8" font-size="8.5">in standardisierte, modulare SKILL.md</text>
+      </g>
+
+      <!-- Box C -->
+      <g transform="translate(0, 132)">
+        <rect x="0" y="0" width="269" height="60" rx="5" fill="#1e0e38" stroke="rgba(168, 85, 247, 0.3)" stroke-width="0.8" />
+        <text x="10" y="18" fill="#c084fc" font-size="9.5" font-weight="bold">Background Curator (Lifecycle)</text>
+        <text x="10" y="34" fill="#94a3b8" font-size="8.5">• Inaktivität: active → stale → archived</text>
+        <text x="10" y="48" fill="#94a3b8" font-size="8.5">• LLM-Konsolidierung (Umbrella Merging)</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- COLUMN 3: EXECUTION BACKENDS & ENVIRONMENTS -->
+  <g filter="url(#shadow)" transform="translate(667, 480)">
+    <rect x="0" y="0" width="293" height="240" rx="10" fill="url(#grad-card-backend)" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="0" y="0" width="293" height="26" rx="10" fill="#92400e" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="14" y="18" fill="#fef3c7" font-size="10.5" font-weight="bold">ISOLIERTE EXECUTION BACKENDS</text>
+
+    <g transform="translate(12, 34)">
+      <!-- Backend 1 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="269" height="42" rx="4" fill="#1f1406" stroke="rgba(245, 158, 11, 0.3)" stroke-width="0.8" />
+        <text x="10" y="16" fill="#fde68a" font-size="8.5" font-weight="bold">Local Host Terminal</text>
+        <text x="10" y="30" fill="#94a3b8" font-size="8">Native PowerShell, MinGit, Linux &amp; macOS</text>
+      </g>
+
+      <!-- Backend 2 -->
+      <g transform="translate(0, 48)">
+        <rect x="0" y="0" width="269" height="42" rx="4" fill="#1f1406" stroke="rgba(245, 158, 11, 0.3)" stroke-width="0.8" />
+        <text x="10" y="16" fill="#fde68a" font-size="8.5" font-weight="bold">Docker / Podman Sandbox</text>
+        <text x="10" y="30" fill="#94a3b8" font-size="8">Vollständig isolierte Container-Ausführung</text>
+      </g>
+
+      <!-- Backend 3 -->
+      <g transform="translate(0, 96)">
+        <rect x="0" y="0" width="269" height="42" rx="4" fill="#1f1406" stroke="rgba(245, 158, 11, 0.3)" stroke-width="0.8" />
+        <text x="10" y="16" fill="#fde68a" font-size="8.5" font-weight="bold">Remote SSH &amp; Singularity</text>
+        <text x="10" y="30" fill="#94a3b8" font-size="8">Sichere Anbindung von GPU-Clustern</text>
+      </g>
+
+      <!-- Backend 4 -->
+      <g transform="translate(0, 144)">
+        <rect x="0" y="0" width="269" height="48" rx="4" fill="#1f1406" stroke="rgba(245, 158, 11, 0.3)" stroke-width="0.8" />
+        <text x="10" y="16" fill="#fde68a" font-size="8.5" font-weight="bold">Serverless Hibernation (Modal, Daytona)</text>
+        <text x="10" y="30" fill="#94a3b8" font-size="8">Schlafmodus bei Inaktivität (schnelles Wakeup)</text>
+        <text x="10" y="42" fill="#f59e0b" font-size="7.5" font-weight="bold">★ Nahezu 0 € Kosten bei Nichtbenutzung</text>
+      </g>
+    </g>
+  </g>
+</svg>
