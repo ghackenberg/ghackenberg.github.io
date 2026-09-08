@@ -14,36 +14,24 @@ Bislang dominierten in der Praxis zwei problematische Extreme: Entweder starre, 
 
 Mit dem von **Nous Research** entwickelten **Hermes Agent** liegt nun ein quelloffenes, autarkes „Agenten-Betriebssystem“ vor, das genau diese Lücke schließt. Dieser Beitrag analysiert die Software-Architektur, den Turn-Lifecycle der Kern-Engine, das Zusammenspiel von Bounded Memory und FTS5-Transkriptsuche sowie das Zusammenspiel von standardisierten Skills und Hintergrund-Kuratierung.
 
-![Hermes Agent: Ein empathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills](./hero.jpg)
+![Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills](./hero.jpg)
 
-## 1. Die fundamentale Entwurfsphilosophie: «Body vs. Brain»
-
-Herkömmliche Agenten-Frameworks verschmelzen das ausführende Programm eng mit den Eigenheiten eines bestimmten Modellanbieters. Ändert der Anbieter seine Funktionsaufruf-Syntax oder dreht an den System-Prompt-Gewichten, bricht die umgebende Logik zusammen.
-
-Hermes Agent begegnet diesem Vendor Lock-in mit einer strikten architektonischen Abstraktion: **der Trennung von «Body» (Körper) und «Brain» (Gehirn)**.
+Bevor wir in die feingranularen Ausführungszyklen einsteigen, veranschaulicht das folgende Referenzmodell die sechs Subsysteme der Gesamtlösung:
 
 ![Referenzarchitektur und Subsysteme des Hermes Agent](./hermes_agent_system_architecture.svg)
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        DER «BODY» (Agenten-Harness)                    │
-│  • Identität & Bounded Memory (MEMORY.md / USER.md)                    │
-│  • Session-Persistenz & FTS5-Transkriptsuche (SQLite)                  │
-│  • Progressive Skills (~/.hermes/skills/ via agentskills.io)           │
-│  • Execution Backends (Local, Docker, Modal, Daytona)                  │
-│  • Multi-Surface Gateway (CLI, TUI, Telegram, Slack, WhatsApp)         │
-│  • Hintergrund-Wartung (Curator Lifecycle Engine)                      │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │ Unified Message Protocol
-                                    │ (Normalized OpenAI-Dicts)
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                        DAS «BRAIN» (Modulares LLM)                     │
-│  • Lokales vLLM Cluster (DeepSeek, Llama, Mistral, Qwen)               │
-│  • Nous Portal / OpenRouter Router / Anthropic Claude / OpenAI Codex   │
-│  • Beliebig per 'hermes model' zur Laufzeit austauschbar!              │
-└────────────────────────────────────────────────────────────────────────┘
-```
+## 1. Die fundamentale Entwurfsphilosophie: «Body vs. Brain»
+
+Herkömmliche Agenten-Frameworks verschmelzen das ausführende Programm eng mit den Eigenheiten eines bestimmten Modellanbieters. Ändert der Anbieter seine Funktionsaufruf-Syntax oder dreht an den System-Prompt-Gewichten, bricht die umgebende Logik zusammen. Ebenso fatal ist der umgekehrte Fall: Wird ein Agenten-Skript auf ein neues Modell umgestellt, gehen oft mühevoll akkumulierte Kontexte, Arbeitsroutinen und Verhaltensweisen verloren.
+
+Hermes Agent begegnet diesem architektonischen Dilemma mit einer radikalen Trennung von **«Body» (Körper)** und **«Brain» (Gehirn)**:
+* Der **Body** ist der langlebige, deterministische Laufzeit-Harness. Er verwaltet die Identität, kapselt Bounded Contexts (`MEMORY.md`, `USER.md`), indiziert vergangene Konversationen in SQLite (FTS5), lädt progressive Skills nach Bedarf und wickelt die Multi-Surface-Kommunikation mit über 21 Messaging-Plattformen ab.
+* Das **Brain** ist eine austauschbare, rein funktionale Inferenzressource. Es konsumiert normalisierte Nachrichten und erzeugt Streaming-Deltas oder Tool-Aufrufe – ohne eigenen persistenten Zustand.
+* Die **Protokollbrücke** entkoppelt beide Welten über ein homogenes OpenAI-Dictionary-Format (`role`, `content`, `tool_calls`, `reasoning`).
+
+Diese Trennung garantiert echte Modellagnostik: Ein Anwender kann über den einfachen Befehl `hermes model <name>` zur Laufzeit zwischen einem lokalen 8B-vLLM-Knoten, einem Nous-Portal-Router oder einer Frontier-Cloud-API (Claude 3.7, Codex) wechseln, ohne dass der Agent seine Identität, seine gelernten Skills oder sein Gedächtnis verliert (**Zero Amnesia**).
+
+![Architektonische Entkopplung von Body und Brain im Hermes Agent](./hermes_agent_body_vs_brain.svg)
 
 ### Der Körper als unveränderliche Heimat
 Der **Body** stellt die langlebige Software-Infrastruktur dar. Hier residieren:

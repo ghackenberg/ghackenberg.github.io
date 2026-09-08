@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="grad-body-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e172a" />
+      <stop offset="100%" stop-color="#070d1a" />
+    </linearGradient>
+
+    <linearGradient id="grad-brain-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1035" />
+      <stop offset="100%" stop-color="#0b0614" />
+    </linearGradient>
+
+    <filter id="card-shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="4" stdDeviation="0" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+
+    <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 2 1 L 5 8 L 8 1 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrow-up" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 2 9 L 5 2 L 8 9 z" fill="#c084fc" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="680" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Background Decorative Grid -->
+  <g opacity="0.06">
+    <line x1="30" y1="100" x2="970" y2="100" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="30" y1="380" x2="970" y2="380" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="30" y1="460" x2="970" y2="460" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+  </g>
+
+  <!-- ==================== HEADER ==================== -->
+  <g id="header-group">
+    <rect x="40" y="24" width="225" height="20" rx="4" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="1" />
+    <text x="48" y="38" fill="#38bdf8" font-size="10" font-weight="700" letter-spacing="1">HERMES AGENT ARCHITEKTUR</text>
+
+    <text x="40" y="66" fill="url(#grad-header)" font-size="20" font-weight="800">«Body vs. Brain»: Entkopplung von Laufzeit und Inferenz</text>
+    <text x="40" y="88" fill="#94a3b8" font-size="12">Langlebiger System-Harness mit Identität &amp; Bounded Memory vs. beliebig austauschbare Modell-Inferenz</text>
+  </g>
+
+  <!-- ==================== TOP: DER BODY ==================== -->
+  <g id="body-container">
+    <!-- Macro Box -->
+    <rect x="40" y="105" width="920" height="265" rx="12" fill="url(#grad-body-bg)" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.4" filter="url(#card-shadow)" />
+
+    <!-- Body Header Bar -->
+    <rect x="60" y="120" width="235" height="18" rx="4" fill="rgba(59, 130, 246, 0.15)" stroke="#3b82f6" stroke-width="0.8" />
+    <text x="68" y="133" fill="#60a5fa" font-size="9.5" font-weight="700" letter-spacing="0.5">SCHICHT 2: AGENT RUNTIME &amp; HARNESS</text>
+
+    <text x="60" y="156" fill="#f8fafc" font-size="16" font-weight="800">Der «Body» (Unveränderliche Heimat &amp; Systemlogik)</text>
+    <text x="940" y="155" text-anchor="end" fill="#93c5fd" font-size="11" font-weight="600">Zustandsbehaftet • Persistent • Deterministisch</text>
+
+    <!-- Sub-Card 1: Identity & Memory -->
+    <g id="body-card-1">
+      <rect x="60" y="172" width="280" height="182" rx="8" fill="#0b1329" stroke="rgba(59, 130, 246, 0.25)" stroke-width="1" />
+      <circle cx="80" cy="194" r="10" fill="rgba(59, 130, 246, 0.15)" />
+      <text x="80" y="198" text-anchor="middle" fill="#60a5fa" font-size="11">🧠</text>
+      <text x="98" y="198" fill="#93c5fd" font-size="13" font-weight="700">Identität &amp; Memory</text>
+      <line x1="72" y1="210" x2="328" y2="210" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+
+      <circle cx="75" cy="228" r="3" fill="#3b82f6" />
+      <text x="86" y="232" fill="#e2e8f0" font-size="11" font-weight="600">Bounded Contexts</text>
+      <text x="86" y="246" fill="#94a3b8" font-size="10">Deterministisches MEMORY.md &amp; USER.md</text>
+
+      <circle cx="75" cy="268" r="3" fill="#3b82f6" />
+      <text x="86" y="272" fill="#e2e8f0" font-size="11" font-weight="600">FTS5-Transkriptsuche</text>
+      <text x="86" y="286" fill="#94a3b8" font-size="10">SQLite Volltextsuche statt Kontextflutung</text>
+
+      <circle cx="75" cy="308" r="3" fill="#3b82f6" />
+      <text x="86" y="312" fill="#e2e8f0" font-size="11" font-weight="600">Preflight-Kompression</text>
+      <text x="86" y="326" fill="#94a3b8" font-size="10">KV-Cache-Schutz bei Kontextdruck (&gt; 50 %)</text>
+
+      <rect x="72" y="336" width="256" height="1" fill="rgba(255, 255, 255, 0.05)" />
+    </g>
+
+    <!-- Sub-Card 2: Skills & Sandbox -->
+    <g id="body-card-2">
+      <rect x="360" y="172" width="280" height="182" rx="8" fill="#0b1329" stroke="rgba(99, 102, 241, 0.25)" stroke-width="1" />
+      <circle cx="380" cy="194" r="10" fill="rgba(99, 102, 241, 0.15)" />
+      <text x="380" y="198" text-anchor="middle" fill="#818cf8" font-size="11">⚡</text>
+      <text x="398" y="198" fill="#c7d2fe" font-size="13" font-weight="700">Skills &amp; Ausführung</text>
+      <line x1="372" y1="210" x2="628" y2="210" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+
+      <circle cx="375" cy="228" r="3" fill="#818cf8" />
+      <text x="386" y="232" fill="#e2e8f0" font-size="11" font-weight="600">Progressive Disclosure</text>
+      <text x="386" y="246" fill="#94a3b8" font-size="10">Level-0 bis Level-2 Laden spart Token</text>
+
+      <circle cx="375" cy="268" r="3" fill="#818cf8" />
+      <text x="386" y="272" fill="#e2e8f0" font-size="11" font-weight="600">Sandboxed Backends</text>
+      <text x="386" y="286" fill="#94a3b8" font-size="10">Local Shell, Docker, Modal &amp; Daytona</text>
+
+      <circle cx="375" cy="308" r="3" fill="#818cf8" />
+      <text x="386" y="312" fill="#e2e8f0" font-size="11" font-weight="600">Curator-Lifecycle Engine</text>
+      <text x="386" y="326" fill="#94a3b8" font-size="10">Hintergrund-Pruning verhindert Skill-Sprawl</text>
+    </g>
+
+    <!-- Sub-Card 3: Gateway & State Machine -->
+    <g id="body-card-3">
+      <rect x="660" y="172" width="280" height="182" rx="8" fill="#0b1329" stroke="rgba(168, 85, 247, 0.25)" stroke-width="1" />
+      <circle cx="680" cy="194" r="10" fill="rgba(168, 85, 247, 0.15)" />
+      <text x="680" y="198" text-anchor="middle" fill="#c084fc" font-size="11">🌐</text>
+      <text x="698" y="198" fill="#e9d5ff" font-size="13" font-weight="700">Gateway &amp; Loop</text>
+      <line x1="672" y1="210" x2="928" y2="210" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+
+      <circle cx="675" cy="228" r="3" fill="#c084fc" />
+      <text x="686" y="232" fill="#e2e8f0" font-size="11" font-weight="600">Multi-Surface Gateway</text>
+      <text x="686" y="246" fill="#94a3b8" font-size="10">21+ Messenger (Telegram, Slack, TUI, CLI)</text>
+
+      <circle cx="675" cy="268" r="3" fill="#c084fc" />
+      <text x="686" y="272" fill="#e2e8f0" font-size="11" font-weight="600">Message-Alternierung</text>
+      <text x="686" y="286" fill="#94a3b8" font-size="10">Erzwingt strikte System-User-Assistant Kette</text>
+
+      <circle cx="675" cy="308" r="3" fill="#c084fc" />
+      <text x="686" y="312" fill="#e2e8f0" font-size="11" font-weight="600">Integrierter Scheduler</text>
+      <text x="686" y="326" fill="#94a3b8" font-size="10">Cron-Jobs &amp; Event-getriebene Routinen</text>
+    </g>
+  </g>
+
+  <!-- ==================== MIDDLE: PROTOCOL BRIDGE ==================== -->
+  <g id="protocol-bridge">
+    <!-- Connecting Vertical Lines -->
+    <line x1="200" y1="370" x2="200" y2="385" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#arrow-down)" />
+    <line x1="800" y1="465" x2="800" y2="445" stroke="#c084fc" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#arrow-up)" />
+
+    <!-- Protocol Container Bar -->
+    <rect x="130" y="388" width="740" height="60" rx="10" fill="#081b2e" stroke="#0284c7" stroke-width="1.5" filter="url(#card-shadow)" />
+
+    <!-- Left Badge: Outgoing -->
+    <rect x="145" y="405" width="105" height="26" rx="5" fill="rgba(56, 189, 248, 0.15)" stroke="#38bdf8" stroke-width="0.8" />
+    <text x="197" y="422" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="700">▼ PROMPTS &amp; TOOLS</text>
+
+    <!-- Center Description -->
+    <text x="500" y="413" text-anchor="middle" fill="#f8fafc" font-size="13" font-weight="800" letter-spacing="0.5">UNIFIED MESSAGE PROTOCOL (Normalisiertes OpenAI-Schema)</text>
+    <text x="500" y="433" text-anchor="middle" fill="#94a3b8" font-size="10.5">Homogene Dicts: role • content • tool_calls • reasoning | Abbrechbare Inferenz (Ctrl+C)</text>
+
+    <!-- Right Badge: Incoming -->
+    <rect x="750" y="405" width="105" height="26" rx="5" fill="rgba(192, 132, 252, 0.15)" stroke="#c084fc" stroke-width="0.8" />
+    <text x="802" y="422" text-anchor="middle" fill="#c084fc" font-size="10" font-weight="700">▲ DELTAS &amp; CALLS</text>
+  </g>
+
+  <!-- ==================== BOTTOM: DAS BRAIN ==================== -->
+  <g id="brain-container">
+    <!-- Macro Box -->
+    <rect x="40" y="465" width="920" height="165" rx="12" fill="url(#grad-brain-bg)" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.4" filter="url(#card-shadow)" />
+
+    <!-- Brain Header Bar -->
+    <rect x="60" y="480" width="235" height="18" rx="4" fill="rgba(168, 85, 247, 0.15)" stroke="#a855f7" stroke-width="0.8" />
+    <text x="68" y="493" fill="#c084fc" font-size="9.5" font-weight="700" letter-spacing="0.5">SCHICHT 1: MODULARE INFERENZ-PROVIDER</text>
+
+    <text x="60" y="516" fill="#f8fafc" font-size="16" font-weight="800">Das «Brain» (Austauschbare Inferenz-Cluster)</text>
+    <text x="940" y="515" text-anchor="end" fill="#f59e0b" font-size="11" font-weight="700">⚡ Zero-Amnesia-Modellwechsel via 'hermes model &lt;name&gt;'</text>
+
+    <!-- Brain Provider 1: Local vLLM -->
+    <g id="brain-card-1">
+      <rect x="60" y="530" width="280" height="85" rx="8" fill="#130b24" stroke="rgba(168, 85, 247, 0.25)" stroke-width="1" />
+      <text x="75" y="550" fill="#e9d5ff" font-size="12" font-weight="700">1. Lokale vLLM Cluster</text>
+      <rect x="235" y="538" width="95" height="16" rx="3" fill="rgba(56, 189, 248, 0.15)" />
+      <text x="282" y="550" text-anchor="middle" fill="#38bdf8" font-size="9" font-weight="600">chat_completions</text>
+      <text x="75" y="572" fill="#cbd5e1" font-size="10.5">DeepSeek-R1 / V3, Llama 3.3, Qwen 2.5</text>
+      <text x="75" y="592" fill="#94a3b8" font-size="9.5">100 % lokale Souveränität &amp; Datenschutz</text>
+    </g>
+
+    <!-- Brain Provider 2: Nous Portal & Router -->
+    <g id="brain-card-2">
+      <rect x="360" y="530" width="280" height="85" rx="8" fill="#130b24" stroke="rgba(168, 85, 247, 0.25)" stroke-width="1" />
+      <text x="375" y="550" fill="#e9d5ff" font-size="12" font-weight="700">2. Nous Portal / OpenRouter</text>
+      <rect x="545" y="538" width="85" height="16" rx="3" fill="rgba(192, 132, 252, 0.15)" />
+      <text x="587" y="550" text-anchor="middle" fill="#c084fc" font-size="9" font-weight="600">Model Routing</text>
+      <text x="375" y="572" fill="#cbd5e1" font-size="10.5">Dynamisches Multi-Provider Routing</text>
+      <text x="375" y="592" fill="#94a3b8" font-size="9.5">Automatische Fallbacks &amp; Lastverteilung</text>
+    </g>
+
+    <!-- Brain Provider 3: Frontier APIs -->
+    <g id="brain-card-3">
+      <rect x="660" y="530" width="280" height="85" rx="8" fill="#130b24" stroke="rgba(245, 158, 11, 0.25)" stroke-width="1" />
+      <text x="675" y="550" fill="#fde68a" font-size="12" font-weight="700">3. Frontier Cloud APIs</text>
+      <rect x="825" y="538" width="105" height="16" rx="3" fill="rgba(245, 158, 11, 0.15)" />
+      <text x="877" y="550" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="600">Native Adapters</text>
+      <text x="675" y="572" fill="#cbd5e1" font-size="10.5">Claude 3.7 (Thinking), OpenAI Codex</text>
+      <text x="675" y="592" fill="#94a3b8" font-size="9.5">anthropic_messages &amp; codex_responses</text>
+    </g>
+  </g>
+
+  <!-- ==================== FOOTER: SUMMARY ==================== -->
+  <g id="footer-group">
+    <rect x="40" y="645" width="920" height="35" rx="8" fill="#090e1a" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+    <circle cx="60" cy="662" r="4" fill="#10b981" />
+    <text x="75" y="666" fill="#cbd5e1" font-size="11" font-weight="500">
+      <tspan font-weight="700" fill="#34d399">Architektur-Fazit:</tspan> Der Inferenz-Server liefert rohe Next-Token-Wahrscheinlichkeiten – der Harness garantiert Identität, Gedächtnis und Validierung.
+    </text>
+  </g>
+</svg>
