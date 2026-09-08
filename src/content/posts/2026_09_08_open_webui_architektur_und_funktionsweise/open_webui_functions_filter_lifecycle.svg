@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-lifecycle-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+
+    <linearGradient id="box-inlet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="box-loop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <linearGradient id="box-outlet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <filter id="shadow-filter" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.75" />
+    </filter>
+
+    <marker id="m-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="m-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="m-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="m-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="10" y="10" width="980" height="660" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header -->
+  <text x="40" y="52" fill="url(#grad-lifecycle-header)" font-size="22" font-weight="800" letter-spacing="0.5">IN-PROCESS FUNCTIONS &amp; FILTER-LIFECYCLE</text>
+  <text x="40" y="76" fill="#94a3b8" font-size="13">Deterministische Turn-Ausführung: Inlet-Filter, Request-Hooks, MCP-Tool-Loops und Outlet-Stream-Transformationen</text>
+
+  <!-- STEP 1: USER INPUT & PAYLOAD -->
+  <g filter="url(#shadow-filter)">
+    <rect x="40" y="110" width="180" height="230" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="40" y="110" width="180" height="28" rx="10" fill="#0369a1" />
+    <text x="50" y="129" fill="#f0f9ff" font-size="11.5" font-weight="700">1. USER TURN INGESTION</text>
+    
+    <text x="55" y="160" fill="#38bdf8" font-size="12" font-weight="600">Eingehende Daten:</text>
+    <text x="55" y="180" fill="#e2e8f0" font-size="11">• User-Prompt &amp; Historie</text>
+    <text x="55" y="200" fill="#e2e8f0" font-size="11">• Hochgeladene Dateien</text>
+    <text x="55" y="220" fill="#e2e8f0" font-size="11">• Modell-Auswahl</text>
+    <text x="55" y="240" fill="#e2e8f0" font-size="11">• Aktive Tools &amp; MCPs</text>
+    <text x="55" y="260" fill="#e2e8f0" font-size="11">• User Auth Token (JWT)</text>
+
+    <rect x="52" y="280" width="156" height="42" rx="6" fill="#082f49" stroke="#0284c7" stroke-width="1" />
+    <text x="60" y="298" fill="#bae6fd" font-size="10.5" font-weight="600">Client: SvelteKit UI</text>
+    <text x="60" y="312" fill="#7dd3fc" font-size="9.5">WebSockets / REST</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 220 225 L 260 225" stroke="#38bdf8" stroke-width="2" marker-end="url(#m-sky)" />
+
+  <!-- STEP 2: INLET FILTERS & REQUEST HOOK -->
+  <g filter="url(#shadow-filter)">
+    <rect x="260" y="110" width="220" height="230" rx="10" fill="url(#box-inlet)" stroke="#818cf8" stroke-width="1.5" />
+    <rect x="260" y="110" width="220" height="28" rx="10" fill="#3730a3" />
+    <text x="272" y="129" fill="#e0e7ff" font-size="11.5" font-weight="700">2. INLET &amp; REQUEST HOOKS</text>
+
+    <text x="275" y="158" fill="#a5b4fc" font-size="12" font-weight="600">Inlet-Filter (In-Process):</text>
+    <text x="275" y="178" fill="#e2e8f0" font-size="11">• PII-Maskierung (Datenschutz)</text>
+    <text x="275" y="198" fill="#e2e8f0" font-size="11">• System-Prompt Enrichment</text>
+    <text x="275" y="218" fill="#e2e8f0" font-size="11">• Input Guardrails &amp; Toxizität</text>
+
+    <line x1="270" y1="232" x2="465" y2="232" stroke="#4338ca" stroke-width="1" stroke-dasharray="2 2" />
+
+    <text x="275" y="252" fill="#a5b4fc" font-size="12" font-weight="600">Request-Hook (Egress):</text>
+    <text x="275" y="272" fill="#cbd5e1" font-size="10.5">• Modellabhängige Parameter</text>
+    <text x="275" y="290" fill="#cbd5e1" font-size="10.5">• Header-Stamping &amp; Quotas</text>
+    <text x="275" y="308" fill="#cbd5e1" font-size="10.5">• Payload-Normalisierung</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 480 225 L 520 225" stroke="#818cf8" stroke-width="2" marker-end="url(#m-purple)" />
+
+  <!-- STEP 3: MODEL & TOOL REASONING LOOP -->
+  <g filter="url(#shadow-filter)">
+    <rect x="520" y="110" width="240" height="230" rx="10" fill="url(#box-loop)" stroke="#c084fc" stroke-width="1.5" />
+    <rect x="520" y="110" width="240" height="28" rx="10" fill="#6b21a8" />
+    <text x="532" y="129" fill="#fae8ff" font-size="11.5" font-weight="700">3. INFERENZ &amp; MCP-TOOL-LOOP</text>
+
+    <rect x="535" y="150" width="210" height="46" rx="6" fill="#180c2e" stroke="#9333ea" stroke-width="1" />
+    <text x="545" y="169" fill="#f8fafc" font-size="11" font-weight="600">LLM Generation (vLLM / Cloud)</text>
+    <text x="545" y="185" fill="#c084fc" font-size="10">Streaming Tokens oder Tool Call</text>
+
+    <!-- Decision Branch -->
+    <path d="M 640 196 L 640 216" stroke="#c084fc" stroke-width="1.5" marker-end="url(#m-purple)" />
+    
+    <rect x="535" y="220" width="210" height="105" rx="6" fill="#1e113a" stroke="#a855f7" stroke-width="1" />
+    <text x="545" y="238" fill="#f59e0b" font-size="11" font-weight="700">Tool Calling aktiv?</text>
+    <text x="545" y="256" fill="#e2e8f0" font-size="10">• Native Python Tools</text>
+    <text x="545" y="272" fill="#e2e8f0" font-size="10">• Model Context Protocol (MCP)</text>
+    <text x="545" y="288" fill="#94a3b8" font-size="9.5">Streamable HTTP / MCPO Proxy</text>
+    <text x="545" y="306" fill="#34d399" font-size="9.5">✓ Re-Injection: Resultat zurück an LLM</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 760 225 L 800 225" stroke="#c084fc" stroke-width="2" marker-end="url(#m-emerald)" />
+
+  <!-- STEP 4: OUTLET FILTERS & CLIENT DISPATCH -->
+  <g filter="url(#shadow-filter)">
+    <rect x="800" y="110" width="160" height="230" rx="10" fill="url(#box-outlet)" stroke="#10b981" stroke-width="1.5" />
+    <rect x="800" y="110" width="160" height="28" rx="10" fill="#065f46" />
+    <text x="810" y="129" fill="#ecfdf5" font-size="11.5" font-weight="700">4. OUTLET &amp; UI</text>
+
+    <text x="812" y="158" fill="#6ee7b7" font-size="12" font-weight="600">Outlet-Filter:</text>
+    <text x="812" y="178" fill="#e2e8f0" font-size="11">• RAG-Zitate</text>
+    <text x="812" y="198" fill="#e2e8f0" font-size="11">• KaTeX Math Fix</text>
+    <text x="812" y="218" fill="#e2e8f0" font-size="11">• Compliance &amp; PII</text>
+    <text x="812" y="238" fill="#e2e8f0" font-size="11">• Wasserzeichen</text>
+
+    <rect x="810" y="260" width="140" height="65" rx="6" fill="#022c22" stroke="#059669" stroke-width="1" />
+    <text x="818" y="280" fill="#a7f3d0" font-size="10.5" font-weight="700">Client Streaming</text>
+    <text x="818" y="296" fill="#cbd5e1" font-size="9.5">• SSE Delta Stream</text>
+    <text x="818" y="312" fill="#cbd5e1" font-size="9.5">• Generative UI Action</text>
+  </g>
+
+  <!-- LOWER SECTION: COMPARISON & ARCHITECTURAL BENEFITS -->
+  <!-- Comparison Box: Legacy Pipelines vs. Native Functions -->
+  <g filter="url(#shadow-filter)">
+    <rect x="40" y="375" width="450" height="260" rx="10" fill="#09101f" stroke="#3b82f6" stroke-width="1" />
+    <rect x="40" y="375" width="450" height="30" rx="10" fill="#1e293b" />
+    <text x="55" y="395" fill="#93c5fd" font-size="12" font-weight="700">PARADIGMENWECHSEL: PIPELINES (LEGACY) VS. FUNCTIONS (STANDARD)</text>
+    
+    <!-- Table inside Box -->
+    <text x="55" y="425" fill="#f8fafc" font-size="11" font-weight="700">Kriterium</text>
+    <text x="170" y="425" fill="#f87171" font-size="11" font-weight="700">Legacy Pipelines</text>
+    <text x="315" y="425" fill="#4ade80" font-size="11" font-weight="700">In-Process Functions</text>
+    <line x1="55" y1="432" x2="470" y2="432" stroke="#334155" stroke-width="1" />
+
+    <text x="55" y="455" fill="#94a3b8" font-size="10.5">Architektur</text>
+    <text x="170" y="455" fill="#cbd5e1" font-size="10.5">Separater Worker-Container</text>
+    <text x="315" y="455" fill="#cbd5e1" font-size="10.5">Nativ im FastAPI Backend</text>
+
+    <text x="55" y="485" fill="#94a3b8" font-size="10.5">Latenz (Turn)</text>
+    <text x="170" y="485" fill="#cbd5e1" font-size="10.5">Zusätzlicher HTTP/gRPC-Hop</text>
+    <text x="315" y="485" fill="#cbd5e1" font-size="10.5">Direkter Python-Aufruf (0 ms)</text>
+
+    <text x="55" y="515" fill="#94a3b8" font-size="10.5">State &amp; Context</text>
+    <text x="170" y="515" fill="#cbd5e1" font-size="10.5">Isolierter Prozess-Scope</text>
+    <text x="315" y="515" fill="#cbd5e1" font-size="10.5">Voller Zugriff auf User &amp; DB</text>
+
+    <text x="55" y="545" fill="#94a3b8" font-size="10.5">Administration</text>
+    <text x="170" y="545" fill="#cbd5e1" font-size="10.5">Komplexe Multi-Container-Ops</text>
+    <text x="315" y="545" fill="#cbd5e1" font-size="10.5">1-Klick-Import via Web-UI</text>
+
+    <text x="55" y="575" fill="#94a3b8" font-size="10.5">Funktionstypen</text>
+    <text x="170" y="575" fill="#cbd5e1" font-size="10.5">Pipes, Filters</text>
+    <text x="315" y="575" fill="#cbd5e1" font-size="10.5">Pipes, Filters, Actions &amp; Tools</text>
+
+    <rect x="55" y="595" width="415" height="26" rx="4" fill="#14532d" />
+    <text x="65" y="612" fill="#bbf7d0" font-size="10" font-weight="600">Empfehlung: Neue Workflows ausschließlich als native Functions implementieren</text>
+  </g>
+
+  <!-- Technical Summary Card: MCP Integration & Ecosystem -->
+  <g filter="url(#shadow-filter)">
+    <rect x="510" y="375" width="450" height="260" rx="10" fill="#09101f" stroke="#a855f7" stroke-width="1" />
+    <rect x="510" y="375" width="450" height="30" rx="10" fill="#1e293b" />
+    <text x="525" y="395" fill="#d8b4fe" font-size="12" font-weight="700">MODEL CONTEXT PROTOCOL (MCP) INTEGRATION</text>
+
+    <text x="525" y="428" fill="#e2e8f0" font-size="11" font-weight="700">Zwei Wege zur Tool-Konnektivität ab Open WebUI v0.6.31+:</text>
+
+    <rect x="525" y="442" width="420" height="70" rx="6" fill="#180c2e" stroke="#7e22ce" stroke-width="1" />
+    <text x="535" y="462" fill="#c084fc" font-size="11" font-weight="700">1. Nativer MCP Transport (Streamable HTTP)</text>
+    <text x="535" y="480" fill="#cbd5e1" font-size="10.5">• Direkte Server-Sent Events (SSE) Verbindung zu externen MCP-Servern</text>
+    <text x="535" y="498" fill="#cbd5e1" font-size="10.5">• Konfiguration via UI (Settings > Tools), kein Proxy-Overhead nötig</text>
+
+    <rect x="525" y="522" width="420" height="70" rx="6" fill="#180c2e" stroke="#7e22ce" stroke-width="1" />
+    <text x="535" y="542" fill="#c084fc" font-size="11" font-weight="700">2. MCPO Proxy (OpenAPI Bridge für stdio-Server)</text>
+    <text x="535" y="560" fill="#cbd5e1" font-size="10.5">• Kapselt Subprozess-/stdio-basierte MCP-Server in OpenAPI-Endpunkte</text>
+    <text x="535" y="578" fill="#cbd5e1" font-size="10.5">• Ermöglicht Zugriff auf Dateisysteme, Docker und lokale CLI-Tools</text>
+
+    <text x="525" y="614" fill="#a855f7" font-size="10.5" font-weight="600">Interoperabilität: Beliebige Toolsets ohne proprietären Vendor-Lock-in</text>
+  </g>
+</svg>

@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-rag-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+
+    <linearGradient id="grad-dense-box" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <linearGradient id="grad-sparse-box" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="grad-fusion-box" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <filter id="shadow-rag" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.75" />
+    </filter>
+
+    <marker id="m-emerald-2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="m-sky-2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="m-indigo-2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#818cf8" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="660" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header -->
+  <text x="40" y="52" fill="url(#grad-rag-header)" font-size="22" font-weight="800" letter-spacing="0.5">OPEN WEBUI ENTERPRISE RAG ARCHITEKTUR</text>
+  <text x="40" y="76" fill="#94a3b8" font-size="13">Hybrides Wissensretrieval: Duale Indizierung (Dense &amp; Sparse), RRF-Score-Fusion und Cross-Encoder Reranking</text>
+
+  <!-- PHASE 1: INGESTION & CHUNKING (LEFT) -->
+  <g filter="url(#shadow-rag)">
+    <rect x="40" y="110" width="200" height="420" rx="10" fill="#091322" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="40" y="110" width="200" height="28" rx="10" fill="#0284c7" />
+    <text x="50" y="129" fill="#f0f9ff" font-size="11.5" font-weight="700">1. INGESTION &amp; PARSING</text>
+
+    <!-- Source Types -->
+    <rect x="52" y="150" width="176" height="65" rx="6" fill="#0c233c" stroke="#0369a1" stroke-width="1" />
+    <text x="60" y="170" fill="#7dd3fc" font-size="11" font-weight="700">Datenquellen</text>
+    <text x="60" y="188" fill="#e2e8f0" font-size="10">• PDFs, DOCX, CSV, MD</text>
+    <text x="60" y="204" fill="#e2e8f0" font-size="10">• Web Scraping (SearXNG)</text>
+
+    <!-- Document Loaders & Extractors -->
+    <path d="M 140 215 L 140 235" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m-sky-2)" />
+    <rect x="52" y="240" width="176" height="75" rx="6" fill="#0c233c" stroke="#0369a1" stroke-width="1" />
+    <text x="60" y="260" fill="#7dd3fc" font-size="11" font-weight="700">Text-Extraktion</text>
+    <text x="60" y="278" fill="#e2e8f0" font-size="10">• PyPDF / Tika Parser</text>
+    <text x="60" y="294" fill="#e2e8f0" font-size="10">• HTML / Markdown Cleaner</text>
+    <text x="60" y="308" fill="#94a3b8" font-size="9">Struktur- &amp; Tabellenerhalt</text>
+
+    <!-- Chunking Engine -->
+    <path d="M 140 315 L 140 335" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m-sky-2)" />
+    <rect x="52" y="340" width="176" height="95" rx="6" fill="#0c233c" stroke="#0369a1" stroke-width="1" />
+    <text x="60" y="360" fill="#7dd3fc" font-size="11" font-weight="700">Chunking Engine</text>
+    <text x="60" y="378" fill="#e2e8f0" font-size="10">• Chunk Size (z. B. 1.000 Tok)</text>
+    <text x="60" y="394" fill="#e2e8f0" font-size="10">• Overlap (z. B. 150 Tok)</text>
+    <text x="60" y="410" fill="#e2e8f0" font-size="10">• Semantische Grenzprüfung</text>
+    <text x="60" y="424" fill="#94a3b8" font-size="9">Sentence / Header Splitter</text>
+
+    <rect x="52" y="450" width="176" height="60" rx="6" fill="#042f2e" stroke="#0d9488" stroke-width="1" />
+    <text x="60" y="470" fill="#5eead4" font-size="10.5" font-weight="700">Granulare Wissensbasen</text>
+    <text x="60" y="488" fill="#ccfbf1" font-size="9.5">RBAC-Zuweisung per</text>
+    <text x="60" y="500" fill="#ccfbf1" font-size="9.5">Fachabteilung oder Rolle</text>
+  </g>
+
+  <!-- Connectors from Chunking to Dual Branches -->
+  <path d="M 240 380 L 270 380 L 270 230 L 300 230" stroke="#34d399" stroke-width="2" marker-end="url(#m-emerald-2)" />
+  <path d="M 240 380 L 270 380 L 270 470 L 300 470" stroke="#818cf8" stroke-width="2" marker-end="url(#m-indigo-2)" />
+
+  <!-- PHASE 2: DUAL INDEXING BRANCHES (CENTER-LEFT) -->
+  
+  <!-- Branch A: Dense Vector Embeddings (Top) -->
+  <g filter="url(#shadow-rag)">
+    <rect x="300" y="140" width="220" height="180" rx="10" fill="url(#grad-dense-box)" stroke="#10b981" stroke-width="1.5" />
+    <rect x="300" y="140" width="220" height="26" rx="10" fill="#065f46" />
+    <text x="310" y="158" fill="#ecfdf5" font-size="11.5" font-weight="700">DENSE VECTOR RETRIEVAL</text>
+
+    <text x="312" y="185" fill="#6ee7b7" font-size="11" font-weight="600">Embedding-Modell:</text>
+    <text x="312" y="202" fill="#e2e8f0" font-size="10.5">• BGE-Large / all-MiniLM</text>
+    <text x="312" y="218" fill="#e2e8f0" font-size="10.5">• Lokale Inferenz via FastEmbed</text>
+
+    <rect x="312" y="232" width="196" height="74" rx="6" fill="#022c22" stroke="#059669" stroke-width="1" />
+    <text x="320" y="250" fill="#34d399" font-size="11" font-weight="700">Vektordatenbank (K-ANN)</text>
+    <text x="320" y="268" fill="#a7f3d0" font-size="10">• ChromaDB (In-Process / Dev)</text>
+    <text x="320" y="284" fill="#a7f3d0" font-size="10">• Qdrant / PGVector / Milvus</text>
+    <text x="320" y="298" fill="#6ee7b7" font-size="9">Cosine Similarity: cos(θ)</text>
+  </g>
+
+  <!-- Branch B: Sparse Lexical BM25 (Bottom) -->
+  <g filter="url(#shadow-rag)">
+    <rect x="300" y="380" width="220" height="180" rx="10" fill="url(#grad-sparse-box)" stroke="#818cf8" stroke-width="1.5" />
+    <rect x="300" y="380" width="220" height="26" rx="10" fill="#3730a3" />
+    <text x="310" y="398" fill="#e0e7ff" font-size="11.5" font-weight="700">SPARSE LEXICAL RETRIEVAL</text>
+
+    <text x="312" y="425" fill="#a5b4fc" font-size="11" font-weight="600">Keyword-Indizierung:</text>
+    <text x="312" y="442" fill="#e2e8f0" font-size="10.5">• Invertierter Volltextindex</text>
+    <text x="312" y="458" fill="#e2e8f0" font-size="10.5">• N-Gramm &amp; Term-Frequenz</text>
+
+    <rect x="312" y="472" width="196" height="74" rx="6" fill="#0f172a" stroke="#4338ca" stroke-width="1" />
+    <text x="320" y="490" fill="#818cf8" font-size="11" font-weight="700">BM25 Scoring Engine</text>
+    <text x="320" y="508" fill="#c7d2fe" font-size="10">• Exakte Fachbegriffe</text>
+    <text x="320" y="524" fill="#c7d2fe" font-size="10">• Artikel-Nr., Code-Bezeichner</text>
+    <text x="320" y="538" fill="#a5b4fc" font-size="9">Keine semantischen Fehlmatches</text>
+  </g>
+
+  <!-- Connectors from Dual Branches to Hybrid Fusion -->
+  <path d="M 520 230 L 560 230 L 560 325 L 580 325" stroke="#34d399" stroke-width="2" marker-end="url(#m-emerald-2)" />
+  <path d="M 520 470 L 560 470 L 560 375 L 580 375" stroke="#818cf8" stroke-width="2" marker-end="url(#m-indigo-2)" />
+
+  <!-- PHASE 3: HYBRID FUSION & RERANKING (CENTER-RIGHT) -->
+  <g filter="url(#shadow-rag)">
+    <rect x="580" y="210" width="200" height="280" rx="10" fill="url(#grad-fusion-box)" stroke="#0284c7" stroke-width="1.5" />
+    <rect x="580" y="210" width="200" height="28" rx="10" fill="#034d75" />
+    <text x="590" y="229" fill="#e0f2fe" font-size="11.5" font-weight="700">3. HYBRID FUSION &amp; RERANK</text>
+
+    <rect x="592" y="250" width="176" height="85" rx="6" fill="#06182c" stroke="#0891b2" stroke-width="1" />
+    <text x="600" y="268" fill="#38bdf8" font-size="11" font-weight="700">Reciprocal Rank Fusion</text>
+    <text x="600" y="286" fill="#e2e8f0" font-size="9.5">RRF(d) = Σ 1 / (60 + r_m(d))</text>
+    <text x="600" y="302" fill="#94a3b8" font-size="9.5">Führt dichte Vektor- und</text>
+    <text x="600" y="316" fill="#94a3b8" font-size="9.5">exakte BM25-Listen zusammen</text>
+
+    <!-- Cross-Encoder Reranker -->
+    <path d="M 680 335 L 680 355" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#m-sky-2)" />
+    <rect x="592" y="360" width="176" height="115" rx="6" fill="#06182c" stroke="#0284c7" stroke-width="1" />
+    <text x="600" y="380" fill="#38bdf8" font-size="11" font-weight="700">Cross-Encoder Reranker</text>
+    <text x="600" y="398" fill="#e2e8f0" font-size="10">• BGE-Reranker-v2-M3</text>
+    <text x="600" y="414" fill="#e2e8f0" font-size="10">• Joint Attention: (Query, Chunk)</text>
+    <text x="600" y="430" fill="#e2e8f0" font-size="10">• Filtert irrelevante Rauschen</text>
+    <text x="600" y="446" fill="#34d399" font-size="10.5" font-weight="600">Liefert kalibrierte Top-K</text>
+    <text x="600" y="462" fill="#94a3b8" font-size="9">Maximale Kontext-Präzision</text>
+  </g>
+
+  <!-- Arrow from Rerank to Context Injection -->
+  <path d="M 780 350 L 820 350" stroke="#38bdf8" stroke-width="2" marker-end="url(#m-sky-2)" />
+
+  <!-- PHASE 4: GROUNDED INFERENCE & CITATIONS (RIGHT) -->
+  <g filter="url(#shadow-rag)">
+    <rect x="820" y="140" width="140" height="420" rx="10" fill="#091322" stroke="#10b981" stroke-width="1.5" />
+    <rect x="820" y="140" width="140" height="28" rx="10" fill="#065f46" />
+    <text x="828" y="159" fill="#ecfdf5" font-size="11" font-weight="700">4. GROUNDING &amp; UI</text>
+
+    <rect x="828" y="180" width="124" height="110" rx="6" fill="#022c22" stroke="#059669" stroke-width="1" />
+    <text x="834" y="198" fill="#34d399" font-size="10.5" font-weight="700">Prompt Injection</text>
+    <text x="834" y="216" fill="#a7f3d0" font-size="9.5">• Relevante Chunks</text>
+    <text x="834" y="230" fill="#a7f3d0" font-size="9.5">• Quell-Metadaten</text>
+    <text x="834" y="244" fill="#a7f3d0" font-size="9.5">• Seitenzahlen</text>
+    <text x="834" y="258" fill="#a7f3d0" font-size="9.5">• Dokumenten-Titel</text>
+    <text x="834" y="276" fill="#6ee7b7" font-size="9">KV-Cache-optimiert</text>
+
+    <path d="M 890 290 L 890 315" stroke="#34d399" stroke-width="1.5" marker-end="url(#m-emerald-2)" />
+
+    <rect x="828" y="320" width="124" height="90" rx="6" fill="#06182c" stroke="#0891b2" stroke-width="1" />
+    <text x="834" y="338" fill="#38bdf8" font-size="10.5" font-weight="700">LLM Generation</text>
+    <text x="834" y="356" fill="#cbd5e1" font-size="9.5">• vLLM Inferenz</text>
+    <text x="834" y="370" fill="#cbd5e1" font-size="9.5">• Halluzinationsfreie</text>
+    <text x="834" y="384" fill="#cbd5e1" font-size="9.5">  Beantwortung</text>
+    <text x="834" y="398" fill="#94a3b8" font-size="9">Strict Grounding</text>
+
+    <path d="M 890 410 L 890 435" stroke="#34d399" stroke-width="1.5" marker-end="url(#m-emerald-2)" />
+
+    <rect x="828" y="440" width="124" height="100" rx="6" fill="#022c22" stroke="#059669" stroke-width="1" />
+    <text x="834" y="458" fill="#34d399" font-size="10.5" font-weight="700">UI Citation Chips</text>
+    <text x="834" y="476" fill="#a7f3d0" font-size="9.5">• Klickbare Zitate</text>
+    <text x="834" y="490" fill="#a7f3d0" font-size="9.5">• PDF-Seitensprung</text>
+    <text x="834" y="504" fill="#a7f3d0" font-size="9.5">• Relevanz-Score</text>
+    <text x="834" y="524" fill="#6ee7b7" font-size="9">Auditierbare Evidenz</text>
+  </g>
+
+  <!-- Bottom Legend Banner -->
+  <rect x="40" y="580" width="920" height="60" rx="8" fill="#0b1329" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="60" y="605" fill="#f8fafc" font-size="11.5" font-weight="700">Technischer Vorteil des hybriden Ansatzes:</text>
+  <text x="60" y="624" fill="#94a3b8" font-size="11">Reine Vektorsuche scheitert häufig an exakten IDs, Artikelnummern und Code-Tokens. Durch die Kombination von BM25 mit dichter Vektorsuche und Cross-Encoder-Reranking erreicht Open WebUI höchste Treffergenauigkeit bei minimalem Rauschen.</text>
+</svg>

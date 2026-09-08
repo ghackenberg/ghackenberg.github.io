@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-client" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-core" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-rag" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-tools" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4c1d95" />
+      <stop offset="100%" stop-color="#2e1065" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-inf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#261b0c" />
+      <stop offset="100%" stop-color="#150f06" />
+    </linearGradient>
+
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="arrow-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#818cf8" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="700" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Background Decorative Grid -->
+  <g opacity="0.08">
+    <line x1="30" y1="100" x2="970" y2="100" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="30" y1="260" x2="970" y2="260" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="30" y1="510" x2="970" y2="510" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="280" y1="40" x2="280" y2="680" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="680" y1="40" x2="680" y2="680" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+  </g>
+
+  <!-- Header Section -->
+  <text x="40" y="52" fill="url(#grad-header)" font-size="22" font-weight="800" letter-spacing="0.5">OPEN WEBUI SYSTEMARCHITEKTUR</text>
+  <text x="40" y="76" fill="#94a3b8" font-size="13">Entkoppelte Schichtenarchitektur: SvelteKit SPA, FastAPI Core, Functions/MCP-Engine, Enterprise RAG &amp; IAM</text>
+  <rect x="760" y="36" width="200" height="28" rx="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="1" />
+  <text x="860" y="55" fill="#c7d2fe" font-size="11.5" font-weight="600" text-anchor="middle">Tech Stack Schicht 6: Human UX</text>
+
+  <!-- LAYER 1: CLIENT PRESENTATION (TOP) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="110" width="920" height="110" rx="12" fill="url(#grad-card-client)" stroke="#4338ca" stroke-width="1.5" />
+    <rect x="40" y="110" width="920" height="30" rx="12" fill="#1e1b4b" />
+    <text x="60" y="130" fill="#a5b4fc" font-size="12" font-weight="700" letter-spacing="1">PRÄSENTATIONSSCHICHT · SVELTEKIT &amp; TAILWIND CSS SINGLE PAGE APPLICATION</text>
+    
+    <!-- Sub-boxes in Client -->
+    <rect x="60" y="150" width="190" height="54" rx="8" fill="#0f172a" stroke="#312e81" stroke-width="1" />
+    <text x="75" y="172" fill="#f8fafc" font-size="12" font-weight="600">Reaktives Chat-UI</text>
+    <text x="75" y="190" fill="#94a3b8" font-size="10.5">KaTeX Math, Markdown, Code</text>
+
+    <rect x="270" y="150" width="190" height="54" rx="8" fill="#0f172a" stroke="#312e81" stroke-width="1" />
+    <text x="285" y="172" fill="#f8fafc" font-size="12" font-weight="600">Model Arena &amp; Side-by-Side</text>
+    <text x="285" y="190" fill="#94a3b8" font-size="10.5">Paralleles Inferenz-Benchmarking</text>
+
+    <rect x="480" y="150" width="190" height="54" rx="8" fill="#0f172a" stroke="#312e81" stroke-width="1" />
+    <text x="495" y="172" fill="#f8fafc" font-size="12" font-weight="600">Workspace &amp; Knowledge</text>
+    <text x="495" y="190" fill="#94a3b8" font-size="10.5">Modelfiles, Prompt Hub, Tags</text>
+
+    <rect x="690" y="150" width="250" height="54" rx="8" fill="#0f172a" stroke="#312e81" stroke-width="1" />
+    <text x="705" y="172" fill="#f8fafc" font-size="12" font-weight="600">Multimodal &amp; Controls</text>
+    <text x="705" y="190" fill="#94a3b8" font-size="10.5">Voice STT/TTS, File Drag &amp; Drop, PWA</text>
+  </g>
+
+  <!-- Flow Arrows Client to Core -->
+  <path d="M 500 220 L 500 260" stroke="#818cf8" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-indigo)" />
+  <text x="515" y="245" fill="#818cf8" font-size="11" font-weight="600">REST API / WebSocket Streams</text>
+
+  <!-- LAYER 2: FASTAPI CORE ENGINE (CENTER) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="265" width="920" height="190" rx="12" fill="url(#grad-card-core)" stroke="#0284c7" stroke-width="1.5" />
+    <rect x="40" y="265" width="920" height="30" rx="12" fill="#034d75" />
+    <text x="60" y="285" fill="#bae6fd" font-size="12" font-weight="700" letter-spacing="1">APP-SERVER-SCHICHT · ASYNCHRONES FASTAPI BACKEND &amp; ORCHESTRATOR</text>
+
+    <!-- Sub-module 1: Gateway & IAM -->
+    <rect x="60" y="308" width="205" height="130" rx="8" fill="#06182c" stroke="#0891b2" stroke-width="1" />
+    <text x="75" y="330" fill="#38bdf8" font-size="12.5" font-weight="700">Security &amp; IAM</text>
+    <text x="75" y="352" fill="#e2e8f0" font-size="11">• OIDC / Keycloak / LDAP</text>
+    <text x="75" y="372" fill="#e2e8f0" font-size="11">• Feingranulares RBAC</text>
+    <text x="75" y="392" fill="#e2e8f0" font-size="11">• Rate Limiting &amp; Quotas</text>
+    <text x="75" y="412" fill="#94a3b8" font-size="10.5">Audit-Logs &amp; Session-Tokens</text>
+
+    <!-- Sub-module 2: In-Process Functions Engine -->
+    <rect x="280" y="308" width="220" height="130" rx="8" fill="#06182c" stroke="#0284c7" stroke-width="1" />
+    <text x="295" y="330" fill="#38bdf8" font-size="12.5" font-weight="700">In-Process Functions Engine</text>
+    <text x="295" y="352" fill="#e2e8f0" font-size="11">• Inlet Filters (Guardrails)</text>
+    <text x="295" y="372" fill="#e2e8f0" font-size="11">• Request Hooks (Policies)</text>
+    <text x="295" y="392" fill="#e2e8f0" font-size="11">• Outlet Filters (Citations)</text>
+    <text x="295" y="412" fill="#94a3b8" font-size="10.5">Ersetzt Legacy-Pipelines</text>
+
+    <!-- Sub-module 3: RAG Core Coordinator -->
+    <rect x="515" y="308" width="205" height="130" rx="8" fill="#06182c" stroke="#0891b2" stroke-width="1" />
+    <text x="530" y="330" fill="#38bdf8" font-size="12.5" font-weight="700">RAG Orchestration</text>
+    <text x="530" y="352" fill="#e2e8f0" font-size="11">• Token/Header Chunking</text>
+    <text x="530" y="372" fill="#e2e8f0" font-size="11">• Hybrid Search (BM25+Vec)</text>
+    <text x="530" y="392" fill="#e2e8f0" font-size="11">• Cross-Encoder Reranking</text>
+    <text x="530" y="412" fill="#94a3b8" font-size="10.5">Web Scraping &amp; Doc-Parser</text>
+
+    <!-- Sub-module 4: Reverse Proxy & Model Router -->
+    <rect x="735" y="308" width="210" height="130" rx="8" fill="#06182c" stroke="#0284c7" stroke-width="1" />
+    <text x="750" y="330" fill="#38bdf8" font-size="12.5" font-weight="700">Model Routing &amp; Proxy</text>
+    <text x="750" y="352" fill="#e2e8f0" font-size="11">• OpenAI API Reverse-Proxy</text>
+    <text x="750" y="372" fill="#e2e8f0" font-size="11">• Fallback-Kaskaden</text>
+    <text x="750" y="392" fill="#e2e8f0" font-size="11">• Load Balancing / Queuing</text>
+    <text x="750" y="412" fill="#94a3b8" font-size="10.5">Endpunkt: /api/v1</text>
+  </g>
+
+  <!-- Connectors from Core to Bottom Systems -->
+  <path d="M 160 455 L 160 500" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)" />
+  <path d="M 400 455 L 400 500" stroke="#c084fc" stroke-width="2" marker-end="url(#arrow-purple)" />
+  <path d="M 620 455 L 620 500" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-sky)" />
+  <path d="M 840 455 L 840 500" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-amber)" />
+
+  <!-- LAYER 3: SUBSYSTEMS (BOTTOM 4 CARDS) -->
+
+  <!-- Subsystem A: Persistence & State (Bottom Left) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="510" width="215" height="180" rx="10" fill="url(#grad-card-rag)" stroke="#059669" stroke-width="1.5" />
+    <text x="55" y="535" fill="#6ee7b7" font-size="12.5" font-weight="700">Persistenz &amp; Sessions</text>
+    <rect x="55" y="548" width="185" height="42" rx="6" fill="#022c22" stroke="#047857" stroke-width="1" />
+    <text x="65" y="566" fill="#f8fafc" font-size="11" font-weight="600">SQLAlchemy ORM</text>
+    <text x="65" y="582" fill="#94a3b8" font-size="10">SQLite (Dev) / PostgreSQL (Prod)</text>
+
+    <rect x="55" y="600" width="185" height="42" rx="6" fill="#022c22" stroke="#047857" stroke-width="1" />
+    <text x="65" y="618" fill="#f8fafc" font-size="11" font-weight="600">Redis Cache &amp; Pub/Sub</text>
+    <text x="65" y="634" fill="#94a3b8" font-size="10">Session-Sync über Cluster</text>
+    <text x="55" y="668" fill="#a7f3d0" font-size="10.5">Transaktionale Chat-Historie</text>
+  </g>
+
+  <!-- Subsystem B: Tools & Protocol Bridge (Bottom Center-Left) -->
+  <g filter="url(#shadow)">
+    <rect x="275" y="510" width="215" height="180" rx="10" fill="url(#grad-card-tools)" stroke="#7c3aed" stroke-width="1.5" />
+    <text x="290" y="535" fill="#d8b4fe" font-size="12.5" font-weight="700">Tool &amp; Agent Schnittstellen</text>
+    <rect x="290" y="548" width="185" height="42" rx="6" fill="#1f0a3d" stroke="#6d28d9" stroke-width="1" />
+    <text x="300" y="566" fill="#f8fafc" font-size="11" font-weight="600">Native MCP Integration</text>
+    <text x="300" y="582" fill="#94a3b8" font-size="10">Streamable HTTP &amp; MCPO Proxy</text>
+
+    <rect x="290" y="600" width="185" height="42" rx="6" fill="#1f0a3d" stroke="#6d28d9" stroke-width="1" />
+    <text x="300" y="618" fill="#f8fafc" font-size="11" font-weight="600">Python Tools &amp; Actions</text>
+    <text x="300" y="634" fill="#94a3b8" font-size="10">OpenAPI Function Calling</text>
+    <text x="290" y="668" fill="#e9d5ff" font-size="10.5">Community Tools (openwebui.com)</text>
+  </g>
+
+  <!-- Subsystem C: Vector Stores & External Search (Bottom Center-Right) -->
+  <g filter="url(#shadow)">
+    <rect x="510" y="510" width="215" height="180" rx="10" fill="url(#grad-card-core)" stroke="#0284c7" stroke-width="1.5" />
+    <text x="525" y="535" fill="#7dd3fc" font-size="12.5" font-weight="700">Vektorspeicher &amp; Suche</text>
+    <rect x="525" y="548" width="185" height="42" rx="6" fill="#071a2e" stroke="#0369a1" stroke-width="1" />
+    <text x="535" y="566" fill="#f8fafc" font-size="11" font-weight="600">Vector Backends</text>
+    <text x="535" y="582" fill="#94a3b8" font-size="10">ChromaDB, Qdrant, PGVector, Milvus</text>
+
+    <rect x="525" y="600" width="185" height="42" rx="6" fill="#071a2e" stroke="#0369a1" stroke-width="1" />
+    <text x="535" y="618" fill="#f8fafc" font-size="11" font-weight="600">Live Web Retrieval</text>
+    <text x="535" y="634" fill="#94a3b8" font-size="10">SearXNG, Brave, DuckDuckGo, Tavily</text>
+    <text x="525" y="668" fill="#bae6fd" font-size="10.5">BGE-Reranker Cross-Encoder</text>
+  </g>
+
+  <!-- Subsystem D: Model Inferenz Backends (Bottom Right) -->
+  <g filter="url(#shadow)">
+    <rect x="745" y="510" width="215" height="180" rx="10" fill="url(#grad-card-inf)" stroke="#d97706" stroke-width="1.5" />
+    <text x="760" y="535" fill="#fcd34d" font-size="12.5" font-weight="700">Inferenz-Backends (Schicht 1)</text>
+    <rect x="760" y="548" width="185" height="42" rx="6" fill="#1b1204" stroke="#b45309" stroke-width="1" />
+    <text x="770" y="566" fill="#f8fafc" font-size="11" font-weight="600">Lokale High-Throughput Cluster</text>
+    <text x="770" y="582" fill="#94a3b8" font-size="10">vLLM, Ollama, Aphrodite Engine</text>
+
+    <rect x="760" y="600" width="185" height="42" rx="6" fill="#1b1204" stroke="#b45309" stroke-width="1" />
+    <text x="770" y="618" fill="#f8fafc" font-size="11" font-weight="600">Enterprise Gateway &amp; Cloud</text>
+    <text x="770" y="634" fill="#94a3b8" font-size="10">LiteLLM Proxy, OpenAI, Anthropic</text>
+    <text x="760" y="668" fill="#fde68a" font-size="10.5">Automatisches Fallback-Routing</text>
+  </g>
+</svg>

@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-inf-head" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="card-grad-core" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <linearGradient id="card-grad-vllm" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#261b0c" />
+      <stop offset="100%" stop-color="#150f06" />
+    </linearGradient>
+
+    <linearGradient id="card-grad-proxy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="card-grad-ollama" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <filter id="shadow-inf" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="arr-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+    <marker id="arr-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#818cf8" />
+    </marker>
+    <marker id="arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="10" y="10" width="980" height="540" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header -->
+  <text x="40" y="48" fill="url(#grad-inf-head)" font-size="20" font-weight="800" letter-spacing="0.5">MULTI-PROVIDER INFERENZ-ORCHESTRIERUNG &amp; ROUTING</text>
+  <text x="40" y="70" fill="#94a3b8" font-size="12.5">Abstraktion heterogener Inferenzressourcen: High-Throughput Cluster, Gateways und lokale Nodes</text>
+
+  <!-- TOP CARD: OPEN WEBUI ORCHESTRATOR -->
+  <g filter="url(#shadow-inf)">
+    <rect x="250" y="95" width="500" height="95" rx="10" fill="url(#card-grad-core)" stroke="#0284c7" stroke-width="1.5" />
+    <rect x="250" y="95" width="500" height="26" rx="10" fill="#034d75" />
+    <text x="500" y="113" fill="#bae6fd" font-size="12" font-weight="700" text-anchor="middle">OPEN WEBUI INFERENCE ROUTER &amp; ARENA CONTROLLER</text>
+    
+    <text x="270" y="145" fill="#f8fafc" font-size="11.5" font-weight="600">• Virtuelle Modell-Aliase &amp; Load Balancing</text>
+    <text x="270" y="165" fill="#94a3b8" font-size="10.5">• Side-by-Side Model Arena (Paralleles Streaming)</text>
+
+    <text x="520" y="145" fill="#f8fafc" font-size="11.5" font-weight="600">• Automatisches Failover &amp; Fallbacks</text>
+    <text x="520" y="165" fill="#94a3b8" font-size="10.5">• SSE Token Streaming &amp; TTFT-Monitoring</text>
+  </g>
+
+  <!-- Connectors from Orchestrator to 3 Targets -->
+  <path d="M 375 190 L 375 220 L 175 220 L 175 250" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr-amber)" />
+  <path d="M 500 190 L 500 250" stroke="#818cf8" stroke-width="2" marker-end="url(#arr-indigo)" />
+  <path d="M 625 190 L 625 220 L 825 220 L 825 250" stroke="#34d399" stroke-width="2" marker-end="url(#arr-emerald)" />
+
+  <!-- MIDDLE LAYER: 3 TARGET BACKENDS -->
+
+  <!-- Backend 1: vLLM Cluster (Left) -->
+  <g filter="url(#shadow-inf)">
+    <rect x="40" y="255" width="270" height="150" rx="10" fill="url(#card-grad-vllm)" stroke="#d97706" stroke-width="1.5" />
+    <rect x="40" y="255" width="270" height="26" rx="10" fill="#78350f" />
+    <text x="175" y="273" fill="#fef3c7" font-size="11.5" font-weight="700" text-anchor="middle">vLLM CLUSTER (SCHICHT 1)</text>
+
+    <text x="55" y="302" fill="#f59e0b" font-size="11" font-weight="700">Port 8000 · OpenAI Protocol</text>
+    <text x="55" y="322" fill="#e2e8f0" font-size="10.5">• Interner GPU-Server (H100/A100)</text>
+    <text x="55" y="340" fill="#e2e8f0" font-size="10.5">• Continuous Batching &amp; PagedAttn</text>
+    <text x="55" y="358" fill="#e2e8f0" font-size="10.5">• Höchster Durchsatz für Standard-Last</text>
+    <text x="55" y="380" fill="#fde68a" font-size="10" font-weight="600">Primärer Inferenz-Workhorse</text>
+  </g>
+
+  <!-- Backend 2: LiteLLM Proxy (Center) -->
+  <g filter="url(#shadow-inf)">
+    <rect x="365" y="255" width="270" height="150" rx="10" fill="url(#card-grad-proxy)" stroke="#6366f1" stroke-width="1.5" />
+    <rect x="365" y="255" width="270" height="26" rx="10" fill="#312e81" />
+    <text x="500" y="273" fill="#e0e7ff" font-size="11.5" font-weight="700" text-anchor="middle">LiteLLM PROXY (GATEWAY)</text>
+
+    <text x="380" y="302" fill="#818cf8" font-size="11" font-weight="700">Port 4000 · Aggregation Gateway</text>
+    <text x="380" y="322" fill="#e2e8f0" font-size="10.5">• Einheitliche API für Multi-Cloud</text>
+    <text x="380" y="340" fill="#e2e8f0" font-size="10.5">• Zentrales Budget- &amp; Key-Management</text>
+    <text x="380" y="358" fill="#e2e8f0" font-size="10.5">• Dynamische Kostenallokation</text>
+    <text x="380" y="380" fill="#c7d2fe" font-size="10" font-weight="600">Orchestrierung externer Provider</text>
+  </g>
+
+  <!-- Backend 3: Ollama Node (Right) -->
+  <g filter="url(#shadow-inf)">
+    <rect x="690" y="255" width="270" height="150" rx="10" fill="url(#card-grad-ollama)" stroke="#059669" stroke-width="1.5" />
+    <rect x="690" y="255" width="270" height="26" rx="10" fill="#064e3b" />
+    <text x="825" y="273" fill="#ecfdf5" font-size="11.5" font-weight="700" text-anchor="middle">OLLAMA NODE (LOKAL / EDGE)</text>
+
+    <text x="705" y="302" fill="#34d399" font-size="11" font-weight="700">Port 11434 · Ollama API</text>
+    <text x="705" y="322" fill="#e2e8f0" font-size="10.5">• Lokale Workstation / Mac Studio</text>
+    <text x="705" y="340" fill="#e2e8f0" font-size="10.5">• GGUF-Quantisierungen (4-Bit / 8-Bit)</text>
+    <text x="705" y="358" fill="#e2e8f0" font-size="10.5">• 1-Klick Model-Pull via Web-UI</text>
+    <text x="705" y="380" fill="#a7f3d0" font-size="10" font-weight="600">Offline- &amp; Entwicklungs-Modus</text>
+  </g>
+
+  <!-- Connectors from LiteLLM down to Cloud Providers -->
+  <path d="M 450 405 L 450 445 L 340 445 L 340 470" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arr-indigo)" />
+  <path d="M 550 405 L 550 445 L 660 445 L 660 470" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arr-indigo)" />
+
+  <!-- SUB-TIER: CLOUD PROVIDERS -->
+  <g filter="url(#shadow-inf)">
+    <rect x="230" y="475" width="220" height="50" rx="8" fill="#0f172a" stroke="#475569" stroke-width="1" />
+    <text x="340" y="496" fill="#f8fafc" font-size="11" font-weight="700" text-anchor="middle">OpenAI / Azure OpenAI</text>
+    <text x="340" y="512" fill="#94a3b8" font-size="10" text-anchor="middle">GPT-4o, o1, o3-mini (Cloud)</text>
+  </g>
+
+  <g filter="url(#shadow-inf)">
+    <rect x="550" y="475" width="220" height="50" rx="8" fill="#0f172a" stroke="#475569" stroke-width="1" />
+    <text x="660" y="496" fill="#f8fafc" font-size="11" font-weight="700" text-anchor="middle">Anthropic Claude</text>
+    <text x="660" y="512" fill="#94a3b8" font-size="10" text-anchor="middle">Claude 3.5 Sonnet / 3.7 (Cloud)</text>
+  </g>
+</svg>

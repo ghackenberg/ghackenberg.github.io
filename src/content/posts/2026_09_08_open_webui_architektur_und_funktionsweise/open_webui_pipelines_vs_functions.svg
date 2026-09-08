@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-p-vs-f" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+
+    <linearGradient id="grad-legacy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d1215" />
+      <stop offset="100%" stop-color="#180709" />
+    </linearGradient>
+
+    <linearGradient id="grad-modern" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#063528" />
+      <stop offset="100%" stop-color="#021c15" />
+    </linearGradient>
+
+    <filter id="shadow-pvf" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="arr-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f87171" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="10" y="10" width="980" height="540" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header -->
+  <text x="40" y="48" fill="url(#grad-p-vs-f)" font-size="20" font-weight="800" letter-spacing="0.5">ARCHITEKTUR-VERGLEICH: PIPELINES (LEGACY) VS. FUNCTIONS (MODERN)</text>
+  <text x="40" y="70" fill="#94a3b8" font-size="12.5">Der Übergang von entkoppelten Worker-Containern zur nativen In-Process-Laufzeitumgebung in FastAPI</text>
+
+  <!-- SECTION 1: LEGACY PIPELINES (TOP HALF) -->
+  <g filter="url(#shadow-pvf)">
+    <rect x="40" y="95" width="920" height="195" rx="10" fill="url(#grad-legacy)" stroke="#ef4444" stroke-width="1.5" />
+    <rect x="40" y="95" width="920" height="28" rx="10" fill="#7f1d1d" />
+    <text x="60" y="114" fill="#fee2e2" font-size="12" font-weight="700">1. LEGACY PIPELINES (EXTERNER WORKER-CONTAINER)</text>
+    <rect x="830" y="99" width="115" height="20" rx="10" fill="#991b1b" />
+    <text x="887" y="113" fill="#fecaca" font-size="10" font-weight="700" text-anchor="middle">DEPRECATED</text>
+
+    <!-- Flow: Client -> OpenWebUI -> Pipelines -> LLM -->
+    <rect x="60" y="145" width="140" height="65" rx="8" fill="#1e1012" stroke="#991b1b" stroke-width="1" />
+    <text x="130" y="172" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">Client (Browser)</text>
+    <text x="130" y="192" fill="#fca5a5" font-size="10" text-anchor="middle">HTTP / WebSocket</text>
+
+    <path d="M 200 177 L 245 177" stroke="#f87171" stroke-width="2" marker-end="url(#arr-red)" />
+
+    <rect x="250" y="145" width="180" height="65" rx="8" fill="#1e1012" stroke="#991b1b" stroke-width="1" />
+    <text x="340" y="172" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">Open WebUI Server</text>
+    <text x="340" y="192" fill="#fca5a5" font-size="10" text-anchor="middle">FastAPI Core</text>
+
+    <!-- Warning Network Hop -->
+    <path d="M 430 177 L 505 177" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arr-red)" />
+    <text x="468" y="168" fill="#f87171" font-size="9.5" font-weight="700" text-anchor="middle">+ Latenz-Hop</text>
+
+    <rect x="510" y="135" width="220" height="85" rx="8" fill="#3f1317" stroke="#ef4444" stroke-width="1.5" />
+    <text x="620" y="160" fill="#fee2e2" font-size="12" font-weight="700" text-anchor="middle">Pipelines Container</text>
+    <text x="620" y="180" fill="#fca5a5" font-size="10" text-anchor="middle">Separater Python-Prozess (Port 9099)</text>
+    <text x="620" y="198" fill="#f87171" font-size="9.5" text-anchor="middle">Kein Zugriff auf DB / User-State</text>
+
+    <path d="M 730 177 L 775 177" stroke="#f87171" stroke-width="2" marker-end="url(#arr-red)" />
+
+    <rect x="780" y="145" width="160" height="65" rx="8" fill="#1e1012" stroke="#991b1b" stroke-width="1" />
+    <text x="860" y="172" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">Inferenz (LLM)</text>
+    <text x="860" y="192" fill="#fca5a5" font-size="10" text-anchor="middle">vLLM / Cloud</text>
+
+    <!-- Drawbacks footer -->
+    <text x="60" y="240" fill="#fca5a5" font-size="10.5">• Erhöhte Netzwerklatenz durch redundante HTTP-Hops</text>
+    <text x="360" y="240" fill="#fca5a5" font-size="10.5">• Aufwendiges Multi-Container-Deployment</text>
+    <text x="680" y="240" fill="#fca5a5" font-size="10.5">• Keine atomare Transaktionskontrolle</text>
+  </g>
+
+  <!-- SECTION 2: MODERN FUNCTIONS (BOTTOM HALF) -->
+  <g filter="url(#shadow-pvf)">
+    <rect x="40" y="315" width="920" height="215" rx="10" fill="url(#grad-modern)" stroke="#10b981" stroke-width="1.5" />
+    <rect x="40" y="315" width="920" height="28" rx="10" fill="#065f46" />
+    <text x="60" y="334" fill="#d1fae5" font-size="12" font-weight="700">2. MODERN FUNCTIONS (IN-PROCESS ARCHITEKTUR)</text>
+    <rect x="815" y="319" width="130" height="20" rx="10" fill="#047857" />
+    <text x="880" y="333" fill="#a7f3d0" font-size="10" font-weight="700" text-anchor="middle">CURRENT STANDARD</text>
+
+    <!-- Flow: Client -> OpenWebUI [Inlet -> Req -> Tools -> Outlet] -> LLM -->
+    <rect x="60" y="365" width="140" height="110" rx="8" fill="#022c22" stroke="#059669" stroke-width="1" />
+    <text x="130" y="415" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">Client (Browser)</text>
+    <text x="130" y="435" fill="#6ee7b7" font-size="10" text-anchor="middle">SvelteKit UI</text>
+
+    <path d="M 200 420 L 245 420" stroke="#34d399" stroke-width="2" marker-end="url(#arr-green)" />
+
+    <!-- Big Integrated Core Box -->
+    <rect x="250" y="355" width="480" height="130" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="1.5" />
+    <text x="490" y="378" fill="#ecfdf5" font-size="12" font-weight="700" text-anchor="middle">Open WebUI Server (FastAPI In-Process Execution)</text>
+
+    <!-- 4 Inner Blocks in row -->
+    <rect x="265" y="390" width="105" height="80" rx="6" fill="#022c22" stroke="#10b981" stroke-width="1" />
+    <text x="317" y="410" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Inlet Filter</text>
+    <text x="317" y="430" fill="#e2e8f0" font-size="9" text-anchor="middle">PII Redaction</text>
+    <text x="317" y="445" fill="#e2e8f0" font-size="9" text-anchor="middle">Guardrails</text>
+    <text x="317" y="460" fill="#94a3b8" font-size="8.5" text-anchor="middle">0 ms Latenz</text>
+
+    <path d="M 370 430 L 380 430" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-green)" />
+
+    <rect x="385" y="390" width="105" height="80" rx="6" fill="#022c22" stroke="#10b981" stroke-width="1" />
+    <text x="437" y="410" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Request Hook</text>
+    <text x="437" y="430" fill="#e2e8f0" font-size="9" text-anchor="middle">Param Stamping</text>
+    <text x="437" y="445" fill="#e2e8f0" font-size="9" text-anchor="middle">Quota Check</text>
+    <text x="437" y="460" fill="#94a3b8" font-size="8.5" text-anchor="middle">Direct DB Sync</text>
+
+    <path d="M 490 430 L 500 430" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-green)" />
+
+    <rect x="505" y="390" width="105" height="80" rx="6" fill="#022c22" stroke="#10b981" stroke-width="1" />
+    <text x="557" y="410" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Tools &amp; MCP</text>
+    <text x="557" y="430" fill="#e2e8f0" font-size="9" text-anchor="middle">Python Tools</text>
+    <text x="557" y="445" fill="#e2e8f0" font-size="9" text-anchor="middle">MCP Stream</text>
+    <text x="557" y="460" fill="#94a3b8" font-size="8.5" text-anchor="middle">MCPO Proxy</text>
+
+    <path d="M 610 430 L 620 430" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-green)" />
+
+    <rect x="625" y="390" width="95" height="80" rx="6" fill="#022c22" stroke="#10b981" stroke-width="1" />
+    <text x="672" y="410" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Outlet Filter</text>
+    <text x="672" y="430" fill="#e2e8f0" font-size="9" text-anchor="middle">RAG Citations</text>
+    <text x="672" y="445" fill="#e2e8f0" font-size="9" text-anchor="middle">KaTeX Polish</text>
+    <text x="672" y="460" fill="#94a3b8" font-size="8.5" text-anchor="middle">Watermarking</text>
+
+    <!-- Out to LLM -->
+    <path d="M 730 420 L 775 420" stroke="#34d399" stroke-width="2" marker-end="url(#arr-green)" />
+
+    <rect x="780" y="365" width="160" height="110" rx="8" fill="#022c22" stroke="#059669" stroke-width="1" />
+    <text x="860" y="415" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">Inferenz (LLM)</text>
+    <text x="860" y="435" fill="#6ee7b7" font-size="10" text-anchor="middle">vLLM / Cloud</text>
+
+    <!-- Benefits footer -->
+    <text x="60" y="505" fill="#a7f3d0" font-size="10.5">✓ 0 ms interner Hop-Overhead</text>
+    <text x="360" y="505" fill="#a7f3d0" font-size="10.5">✓ Direkter Zugriff auf User-Scope &amp; DB</text>
+    <text x="680" y="505" fill="#a7f3d0" font-size="10.5">✓ 1-Klick-Import via Web-UI</text>
+  </g>
+</svg>
