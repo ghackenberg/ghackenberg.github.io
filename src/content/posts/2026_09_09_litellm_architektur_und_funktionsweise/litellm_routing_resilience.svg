@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="card-lb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="card-cb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="card-fb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#261b0c" />
+      <stop offset="100%" stop-color="#150f06" />
+    </linearGradient>
+
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="arr-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arr-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#ef4444" />
+    </marker>
+    <marker id="arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="660" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header Section -->
+  <text x="40" y="50" fill="url(#grad-header)" font-size="22" font-weight="800" letter-spacing="0.5">DYNAMISCHES ROUTING &amp; RESILIENZ-ARCHITEKTUR</text>
+  <text x="40" y="74" fill="#94a3b8" font-size="13">Load-Balancing-Algorithmen, Cooldown-Circuit-Breaker &amp; Mehrstufige Fallback-Kaskaden</text>
+  <rect x="710" y="34" width="250" height="28" rx="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="1" />
+  <text x="835" y="53" fill="#c7d2fe" font-size="11.5" font-weight="600" text-anchor="middle">Ausfallsichere Inferenz-Kontrolle</text>
+
+  <!-- SECTION 1: 5 LOAD BALANCING STRATEGIES (LEFT COLUMN, width 320) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="105" width="310" height="425" rx="12" fill="url(#card-lb)" stroke="#4338ca" stroke-width="1.5" />
+    <rect x="40" y="105" width="310" height="28" rx="12" fill="#1e1b4b" />
+    <text x="55" y="124" fill="#a5b4fc" font-size="11.5" font-weight="700" letter-spacing="0.5">1. ROUTING-STRATEGIEN (ROUTER)</text>
+
+    <!-- Strategy 1: latency-based -->
+    <rect x="55" y="145" width="280" height="65" rx="8" fill="#0b1329" stroke="#312e81" stroke-width="1" />
+    <text x="68" y="166" fill="#38bdf8" font-size="11.5" font-weight="700">latency-based-routing</text>
+    <text x="68" y="184" fill="#cbd5e1" font-size="10.5">Gleitender EMA-Latenzwert (TTFT)</text>
+    <text x="68" y="200" fill="#94a3b8" font-size="9.5">Bevorzugt Instanzen mit schnellster Rückmeldung</text>
+
+    <!-- Strategy 2: usage-based -->
+    <rect x="55" y="220" width="280" height="65" rx="8" fill="#0b1329" stroke="#312e81" stroke-width="1" />
+    <text x="68" y="241" fill="#818cf8" font-size="11.5" font-weight="700">usage-based-routing</text>
+    <text x="68" y="259" fill="#cbd5e1" font-size="10.5">Tracking von RPM/TPM in Redis</text>
+    <text x="68" y="275" fill="#94a3b8" font-size="9.5">Verhindert Rate-Limit-Überschreitungen an Deployments</text>
+
+    <!-- Strategy 3: least-busy -->
+    <rect x="55" y="295" width="280" height="65" rx="8" fill="#0b1329" stroke="#312e81" stroke-width="1" />
+    <text x="68" y="316" fill="#c084fc" font-size="11.5" font-weight="700">least-busy</text>
+    <text x="68" y="334" fill="#cbd5e1" font-size="10.5">Aktive In-Flight-Verbindungen</text>
+    <text x="68" y="350" fill="#94a3b8" font-size="9.5">Routet zu Pods mit minimaler Warteschlange</text>
+
+    <!-- Strategy 4: cost-based -->
+    <rect x="55" y="370" width="280" height="65" rx="8" fill="#0b1329" stroke="#312e81" stroke-width="1" />
+    <text x="68" y="391" fill="#34d399" font-size="11.5" font-weight="700">cost-based-routing</text>
+    <text x="68" y="409" fill="#cbd5e1" font-size="10.5">Dynamischer Preisabgleich ($/Token)</text>
+    <text x="68" y="425" fill="#94a3b8" font-size="9.5">Routet automatisch zur günstigsten Option</text>
+
+    <!-- Strategy 5: simple-shuffle -->
+    <rect x="55" y="445" width="280" height="65" rx="8" fill="#0b1329" stroke="#312e81" stroke-width="1" />
+    <text x="68" y="466" fill="#f59e0b" font-size="11.5" font-weight="700">simple-shuffle (Standard)</text>
+    <text x="68" y="484" fill="#cbd5e1" font-size="10.5">Statistisch uniforme Lastverteilung</text>
+    <text x="68" y="500" fill="#94a3b8" font-size="9.5">Zufällige Verteilung über gesunde Deployments</text>
+  </g>
+
+  <!-- SECTION 2: CIRCUIT BREAKER & COOLDOWN STATE MACHINE (CENTER COLUMN, width 290) -->
+  <g filter="url(#shadow)">
+    <rect x="365" y="105" width="285" height="425" rx="12" fill="url(#card-cb)" stroke="#0284c7" stroke-width="1.5" />
+    <rect x="365" y="105" width="285" height="28" rx="12" fill="#0c4a6e" />
+    <text x="380" y="124" fill="#7dd3fc" font-size="11.5" font-weight="700" letter-spacing="0.5">2. CIRCUIT BREAKER &amp; COOLDOWNS</text>
+
+    <!-- State 1: Active / Healthy -->
+    <rect x="380" y="150" width="255" height="75" rx="10" fill="#064e3b" stroke="#10b981" stroke-width="1.5" />
+    <circle cx="400" cy="170" r="7" fill="#10b981" />
+    <text x="415" y="174" fill="#ecfdf5" font-size="12" font-weight="700">ACTIVE / HEALTHY</text>
+    <text x="400" y="194" fill="#a7f3d0" font-size="10.5">Deployment empfängt Regellast</text>
+    <text x="400" y="210" fill="#d1fae5" font-size="9.5">Erfolgsrate &gt; 99 % · Latenz im Normbereich</text>
+
+    <!-- Transition Failure Arrow Down -->
+    <path d="M 507 225 L 507 265" stroke="#ef4444" stroke-width="2" marker-end="url(#arr-red)" />
+    <text x="515" y="250" fill="#f87171" font-size="10" font-weight="600">HTTP 429 / 5xx Error</text>
+
+    <!-- State 2: Cooldown State -->
+    <rect x="380" y="270" width="255" height="85" rx="10" fill="#450a0a" stroke="#ef4444" stroke-width="1.5" />
+    <circle cx="400" cy="292" r="7" fill="#ef4444" />
+    <text x="415" y="296" fill="#fef2f2" font-size="12" font-weight="700">COOLDOWN (ISOLIERT)</text>
+    <text x="400" y="316" fill="#fca5a5" font-size="10.5">Aus Routing-Pool entfernt</text>
+    <text x="400" y="332" fill="#fecaca" font-size="9.5">T_cooldown Timer läuft (z. B. 60s)</text>
+    <text x="400" y="346" fill="#cbd5e1" font-size="9.5">Automatisches Failover auf Fallback-Kette</text>
+
+    <!-- Transition Timer Expired -->
+    <path d="M 507 355 L 507 395" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr-amber)" />
+    <text x="515" y="380" fill="#fbbf24" font-size="10" font-weight="600">Cooldown abgelaufen</text>
+
+    <!-- State 3: Canary / Probe State -->
+    <rect x="380" y="400" width="255" height="75" rx="10" fill="#291c06" stroke="#f59e0b" stroke-width="1.5" />
+    <circle cx="400" cy="420" r="7" fill="#f59e0b" />
+    <text x="415" y="424" fill="#fffbeb" font-size="12" font-weight="700">CANARY PROBE</text>
+    <text x="400" y="444" fill="#fde68a" font-size="10.5">Test-Request zur Zustandsprüfung</text>
+    <text x="400" y="460" fill="#fef3c7" font-size="9.5">Bei Erfolg: Rückkehr zu ACTIVE / HEALTHY</text>
+
+    <!-- Loop Back to Healthy -->
+    <path d="M 380 440 Q 350 300 380 185" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arr-emerald)" />
+    <text x="325" y="315" fill="#34d399" font-size="9.5" font-weight="600" transform="rotate(-90 325 315)">Canary OK</text>
+  </g>
+
+  <!-- SECTION 3: HIERARCHICAL FALLBACK CASCADE (RIGHT COLUMN, width 285) -->
+  <g filter="url(#shadow)">
+    <rect x="665" y="105" width="295" height="425" rx="12" fill="url(#card-fb)" stroke="#d97706" stroke-width="1.5" />
+    <rect x="665" y="105" width="295" height="28" rx="12" fill="#451a03" />
+    <text x="680" y="124" fill="#fde68a" font-size="11.5" font-weight="700" letter-spacing="0.5">3. KASKADIERENDE FALLBACK-KETTE</text>
+
+    <!-- Tier 1: Primary On-Prem -->
+    <rect x="680" y="145" width="265" height="72" rx="8" fill="#1c1203" stroke="#b45309" stroke-width="1" />
+    <text x="695" y="167" fill="#34d399" font-size="11.5" font-weight="700">Stufe 1: Primärer vLLM Cluster</text>
+    <text x="695" y="185" fill="#fef3c7" font-size="10.5">Llama-3.3-70B-Instruct (On-Premises)</text>
+    <text x="695" y="202" fill="#94a3b8" font-size="9.5">Maximale Datensouveränität &amp; Null Grenzkosten</text>
+
+    <!-- Failover Arrow 1 -->
+    <path d="M 812 217 L 812 242" stroke="#ef4444" stroke-width="2" marker-end="url(#arr-red)" />
+    <text x="822" y="233" fill="#f87171" font-size="9.5" font-weight="600">Bei Ausfall / VRAM-Überlauf</text>
+
+    <!-- Tier 2: Secondary Local Backup -->
+    <rect x="680" y="245" width="265" height="72" rx="8" fill="#1c1203" stroke="#b45309" stroke-width="1" />
+    <text x="695" y="267" fill="#38bdf8" font-size="11.5" font-weight="700">Stufe 2: Sekundärer GPU-Knoten</text>
+    <text x="695" y="285" fill="#fef3c7" font-size="10.5">Qwen-2.5-72B (AWQ Quantisiert)</text>
+    <text x="695" y="302" fill="#94a3b8" font-size="9.5">Lokaler Failover auf Notfall-Server</text>
+
+    <!-- Failover Arrow 2 -->
+    <path d="M 812 317 L 812 342" stroke="#ef4444" stroke-width="2" marker-end="url(#arr-red)" />
+    <text x="822" y="333" fill="#f87171" font-size="9.5" font-weight="600">Bei Cluster-Totalausfall</text>
+
+    <!-- Tier 3: Enterprise Frontier Cloud -->
+    <rect x="680" y="345" width="265" height="72" rx="8" fill="#1c1203" stroke="#b45309" stroke-width="1" />
+    <text x="695" y="367" fill="#c084fc" font-size="11.5" font-weight="700">Stufe 3: Cloud SLA Provider</text>
+    <text x="695" y="385" fill="#fef3c7" font-size="10.5">Claude 3.5 Sonnet / Azure OpenAI</text>
+    <text x="695" y="402" fill="#94a3b8" font-size="9.5">Gesicherte Hochverfügbarkeit mit Token-Accounting</text>
+
+    <!-- Failover Arrow 3 -->
+    <path d="M 812 417 L 812 442" stroke="#ef4444" stroke-width="2" marker-end="url(#arr-red)" />
+
+    <!-- Tier 4: Graceful Degradation -->
+    <rect x="680" y="445" width="265" height="65" rx="8" fill="#1c1203" stroke="#b45309" stroke-width="1" />
+    <text x="695" y="467" fill="#f59e0b" font-size="11.5" font-weight="700">Stufe 4: Graceful Degradation</text>
+    <text x="695" y="485" fill="#fef3c7" font-size="10.5">Mistral-Small / Edge LLM Notbetrieb</text>
+    <text x="695" y="499" fill="#94a3b8" font-size="9">Geringer Ressourcenverbrauch, Basisfunktion bleibt aktiv</text>
+  </g>
+
+  <!-- BOTTOM COMPARISON & METRICS BAR (FULL WIDTH) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="545" width="920" height="95" rx="12" fill="#091424" stroke="#0284c7" stroke-width="1.5" />
+    <rect x="40" y="545" width="920" height="26" rx="12" fill="#0c2d48" />
+    <text x="60" y="563" fill="#38bdf8" font-size="11.5" font-weight="700" letter-spacing="1">RESILIENZ-VERTRAG: EXPONENTIAL BACKOFF MIT JITTER &amp; HEALTH PROBES</text>
+
+    <text x="60" y="593" fill="#f8fafc" font-size="11.5" font-weight="600">Backoff-Formel:</text>
+    <text x="175" y="593" fill="#fde68a" font-size="11" font-family="monospace">t_retry = min(t_max, t_base * 2^(attempt) + Uniform(0, jitter))</text>
+    <text x="60" y="618" fill="#94a3b8" font-size="10.5">Verhindert den gefürchteten "Thundering Herd"-Effekt bei Inferenz-Wiederanläufen nach Störungen.</text>
+
+    <rect x="670" y="580" width="270" height="48" rx="6" fill="#031524" stroke="#0369a1" stroke-width="1" />
+    <text x="685" y="600" fill="#7dd3fc" font-size="11" font-weight="600">Health Probes:</text>
+    <text x="685" y="616" fill="#94a3b8" font-size="10">GET /health/readiness &amp; /health/liveliness</text>
+  </g>
+
+  <!-- Status / Copyright -->
+  <text x="50" y="658" fill="#64748b" font-size="10">LiteLLM Resilience Matrix · Robuste Enterprise-Sicherheit gegen Ausfälle, Ratelimits und Netzwerk-Jitter</text>
+</svg>

@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 540" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="card-l6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="card-l5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <linearGradient id="card-l23" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b0764" />
+      <stop offset="100%" stop-color="#1e053a" />
+    </linearGradient>
+
+    <linearGradient id="card-l4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <linearGradient id="card-l1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#261b0c" />
+      <stop offset="100%" stop-color="#150f06" />
+    </linearGradient>
+
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="arr-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#818cf8" />
+    </marker>
+    <marker id="arr-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="900" height="520" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header Section -->
+  <text x="35" y="44" fill="url(#grad-header)" font-size="20" font-weight="800" letter-spacing="0.5">SCHICHTEN-INTERAKTION IM AGENTIC AI TECH STACK</text>
+  <text x="35" y="66" fill="#94a3b8" font-size="12">LiteLLM als zentrales Bindeglied zwischen UX, autonomen Agenten, episodischem Gedächtnis und Inferenz</text>
+  <rect x="670" y="30" width="220" height="26" rx="13" fill="#1e1b4b" stroke="#818cf8" stroke-width="1" />
+  <text x="780" y="47" fill="#c7d2fe" font-size="11" font-weight="600" text-anchor="middle">End-to-End Schichtenverbund</text>
+
+  <!-- TOP CARD: LAYER 6 HUMAN-IN-THE-LOOP -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="90" width="840" height="70" rx="10" fill="url(#card-l6)" stroke="#4338ca" stroke-width="1.5" />
+    <rect x="40" y="90" width="840" height="22" rx="10" fill="#1e1b4b" />
+    <text x="55" y="106" fill="#a5b4fc" font-size="11" font-weight="700">SCHICHT 6: HUMAN-IN-THE-LOOP &amp; WORKSPACE CONTROL · OPEN WEBUI</text>
+    <text x="55" y="130" fill="#f8fafc" font-size="12" font-weight="600">Kollaborative Fachanwender-Oberfläche, Workspace Modelfiles, RAG &amp; Generative UI</text>
+    <text x="55" y="146" fill="#94a3b8" font-size="10.5">Konsumiert LiteLLM Proxy transparent als zentralen Modell-Endpunkt (/v1/models &amp; /v1/chat/completions)</text>
+  </g>
+
+  <!-- Arrow L6 to L5 -->
+  <path d="M 460 160 L 460 195" stroke="#818cf8" stroke-width="2" marker-end="url(#arr-indigo)" />
+  <text x="475" y="182" fill="#818cf8" font-size="11" font-weight="600">OpenAI-kompatible REST API &amp; SSE Token-Streams</text>
+
+  <!-- CENTER CARD: LAYER 5 GATEWAY & GOVERNANCE -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="200" width="840" height="120" rx="12" fill="url(#card-l5)" stroke="#0284c7" stroke-width="2" />
+    <rect x="40" y="200" width="840" height="24" rx="12" fill="#0c4a6e" />
+    <text x="55" y="217" fill="#38bdf8" font-size="11.5" font-weight="800">SCHICHT 5: GATEWAY &amp; GOVERNANCE · LITELLM PROXY + KEYCLOAK</text>
+    
+    <!-- Inner blocks of Layer 5 -->
+    <rect x="55" y="234" width="250" height="74" rx="8" fill="#031524" stroke="#0369a1" stroke-width="1" />
+    <text x="68" y="253" fill="#e0f2fe" font-size="11" font-weight="700">Virtual Keys &amp; IAM</text>
+    <text x="68" y="271" fill="#7dd3fc" font-size="10">• Keycloak OIDC SSO &amp; RBAC</text>
+    <text x="68" y="287" fill="#cbd5e1" font-size="9.5">• Team-Budgets &amp; Whitelists</text>
+    <text x="68" y="300" fill="#94a3b8" font-size="9">• Redis Auth Cache &lt; 0.2ms</text>
+
+    <rect x="325" y="234" width="270" height="74" rx="8" fill="#031524" stroke="#0369a1" stroke-width="1" />
+    <text x="338" y="253" fill="#e0f2fe" font-size="11" font-weight="700">Routing &amp; Resilienz</text>
+    <text x="338" y="271" fill="#7dd3fc" font-size="10">• 5 Load Balancing Strategien</text>
+    <text x="338" y="287" fill="#cbd5e1" font-size="9.5">• Circuit Breaker &amp; Cooldowns</text>
+    <text x="338" y="300" fill="#f59e0b" font-size="9">• 4-Stufen Fallback-Kaskade</text>
+
+    <rect x="615" y="234" width="250" height="74" rx="8" fill="#031524" stroke="#0369a1" stroke-width="1" />
+    <text x="628" y="253" fill="#e0f2fe" font-size="11" font-weight="700">Security &amp; Caching</text>
+    <text x="628" y="271" fill="#7dd3fc" font-size="10">• Presidio PII Masking</text>
+    <text x="628" y="287" fill="#cbd5e1" font-size="9.5">• Lakera AI Jailbreak Guard</text>
+    <text x="628" y="300" fill="#34d399" font-size="9">• Exact &amp; Semantic Cache</text>
+  </g>
+
+  <!-- Distribution Arrows from Layer 5 to Lower Layers -->
+  <path d="M 180 320 L 180 355" stroke="#c084fc" stroke-width="2" marker-end="url(#arr-purple)" />
+  <path d="M 460 320 L 460 355" stroke="#34d399" stroke-width="2" marker-end="url(#arr-emerald)" />
+  <path d="M 740 320 L 740 355" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr-amber)" />
+
+  <!-- LOWER ROW: 3 TARGET TIERS -->
+  <!-- Column 1: Agent Runtime & Workflows (Schichten 2 & 3) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="360" width="265" height="135" rx="10" fill="url(#card-l23)" stroke="#7c3aed" stroke-width="1.5" />
+    <rect x="40" y="360" width="265" height="24" rx="10" fill="#4c1d95" />
+    <text x="55" y="377" fill="#e9d5ff" font-size="11" font-weight="700">SCHICHT 2 &amp; 3: AGENTS &amp; WORKFLOWS</text>
+    <text x="55" y="401" fill="#f8fafc" font-size="12" font-weight="600">Hermes Agent &amp; LangGraph</text>
+    <text x="55" y="419" fill="#cbd5e1" font-size="10">• Autonomes Function Calling</text>
+    <text x="55" y="435" fill="#cbd5e1" font-size="10">• Deterministische Tool Schemas</text>
+    <text x="55" y="451" fill="#c084fc" font-size="9.5">• stream_chunk_builder() Support</text>
+    <text x="55" y="467" fill="#94a3b8" font-size="9">Kein SDK-Wechsel bei Modelländerung</text>
+  </g>
+
+  <!-- Column 2: Memory (Schicht 4) -->
+  <g filter="url(#shadow)">
+    <rect x="325" y="360" width="270" height="135" rx="10" fill="url(#card-l4)" stroke="#059669" stroke-width="1.5" />
+    <rect x="325" y="360" width="270" height="24" rx="10" fill="#064e3b" />
+    <text x="340" y="377" fill="#a7f3d0" font-size="11" font-weight="700">SCHICHT 4: HYBRID DATA &amp; MEMORY</text>
+    <text x="340" y="401" fill="#f8fafc" font-size="12" font-weight="600">Mem0 Langzeitgedächtnis</text>
+    <text x="340" y="419" fill="#cbd5e1" font-size="10">• Kontinuierliche Faktenextraktion</text>
+    <text x="340" y="435" fill="#cbd5e1" font-size="10">• Redundanz-Eliminierung via Cache</text>
+    <text x="340" y="451" fill="#34d399" font-size="9.5">• Sub-Millisekunden Response-Hit</text>
+    <text x="340" y="467" fill="#94a3b8" font-size="9">Minimiert Kosten für Extraktions-Calls</text>
+  </g>
+
+  <!-- Column 3: Compute & Inference (Schicht 1) -->
+  <g filter="url(#shadow)">
+    <rect x="615" y="360" width="265" height="135" rx="10" fill="url(#card-l1)" stroke="#d97706" stroke-width="1.5" />
+    <rect x="615" y="360" width="265" height="24" rx="10" fill="#451a03" />
+    <text x="630" y="377" fill="#fde68a" font-size="11" font-weight="700">SCHICHT 1: COMPUTE &amp; INFERENZ</text>
+    <text x="630" y="401" fill="#f8fafc" font-size="12" font-weight="600">vLLM Cluster &amp; Cloud SLAs</text>
+    <text x="630" y="419" fill="#cbd5e1" font-size="10">• PagedAttention On-Premises Server</text>
+    <text x="630" y="435" fill="#cbd5e1" font-size="10">• Llama-3.3, Qwen-2.5, Mistral</text>
+    <text x="630" y="451" fill="#f59e0b" font-size="9.5">• Dynamische Lastverteilung</text>
+    <text x="630" y="467" fill="#94a3b8" font-size="9">Überlastungsschutz durch Circuit Breaker</text>
+  </g>
+
+  <!-- Status / Info Footer -->
+  <text x="35" y="510" fill="#64748b" font-size="10">End-to-End Entkopplung · Volle architektonische Souveränität · Kein Vendor Lock-in</text>
+</svg>

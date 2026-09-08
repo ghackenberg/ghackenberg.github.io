@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="pipe-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#070b16" />
+    </linearGradient>
+
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="arr-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="660" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header Section -->
+  <text x="40" y="50" fill="url(#grad-header)" font-size="22" font-weight="800" letter-spacing="0.5">REQUEST-PIPELINE &amp; HOOK-LIFECYCLE</text>
+  <text x="40" y="74" fill="#94a3b8" font-size="13">Chronologische Ablaufkette: Auth-Cache, Guardrails, Caching, Routing, Translation &amp; Stream-Normalisierung</text>
+  <rect x="710" y="34" width="250" height="28" rx="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="1" />
+  <text x="835" y="53" fill="#c7d2fe" font-size="11.5" font-weight="600" text-anchor="middle">Deterministischer In-Flight Pfad</text>
+
+  <!-- Decorative Horizontal Track -->
+  <line x1="60" y1="170" x2="940" y2="170" stroke="#1e293b" stroke-width="3" stroke-dasharray="6 6" />
+  <line x1="60" y1="410" x2="940" y2="410" stroke="#1e293b" stroke-width="3" stroke-dasharray="6 6" />
+
+  <!-- ROW 1: INGRESS, AUTH, GUARDRAILS, CACHE (Left to Right) -->
+
+  <!-- STEP 1: Ingress & Auth -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="115" width="205" height="110" rx="10" fill="url(#pipe-card)" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="40" y="115" width="205" height="26" rx="10" fill="#0c4a6e" />
+    <text x="50" y="133" fill="#e0f2fe" font-size="11" font-weight="700">1. INGRESS &amp; AUTH</text>
+    <text x="52" y="158" fill="#f8fafc" font-size="12" font-weight="600">POST /v1/chat/completions</text>
+    <text x="52" y="176" fill="#7dd3fc" font-size="10.5">• Bearer Token Validation</text>
+    <text x="52" y="193" fill="#94a3b8" font-size="10">• Redis Virtual Key Auth Cache</text>
+    <text x="52" y="210" fill="#94a3b8" font-size="10">• Team &amp; User ID Bindung</text>
+  </g>
+
+  <path d="M 245 170 L 275 170" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr-sky)" />
+
+  <!-- STEP 2: Rate Limits & Quotas -->
+  <g filter="url(#shadow)">
+    <rect x="280" y="115" width="205" height="110" rx="10" fill="url(#pipe-card)" stroke="#818cf8" stroke-width="1.5" />
+    <rect x="280" y="115" width="205" height="26" rx="10" fill="#312e81" />
+    <text x="290" y="133" fill="#e0e7ff" font-size="11" font-weight="700">2. RATE LIMITS &amp; QUOTAS</text>
+    <text x="292" y="158" fill="#f8fafc" font-size="12" font-weight="600">Redis Sliding Window</text>
+    <text x="292" y="176" fill="#a5b4fc" font-size="10.5">• RPM &amp; TPM Durchsetzung</text>
+    <text x="292" y="193" fill="#94a3b8" font-size="10">• Max Budget Check ($ / Key)</text>
+    <text x="292" y="210" fill="#94a3b8" font-size="10">• HTTP 429 bei Überschreitung</text>
+  </g>
+
+  <path d="M 485 170 L 515 170" stroke="#818cf8" stroke-width="2" marker-end="url(#arr-purple)" />
+
+  <!-- STEP 3: Pre-Call Guardrails -->
+  <g filter="url(#shadow)">
+    <rect x="520" y="115" width="205" height="110" rx="10" fill="url(#pipe-card)" stroke="#c084fc" stroke-width="1.5" />
+    <rect x="520" y="115" width="205" height="26" rx="10" fill="#581c87" />
+    <text x="530" y="133" fill="#f3e8ff" font-size="11" font-weight="700">3. PRE-CALL GUARDRAILS</text>
+    <text x="532" y="158" fill="#f8fafc" font-size="12" font-weight="600">Presidio PII &amp; Hooks</text>
+    <text x="532" y="176" fill="#d8b4fe" font-size="10.5">• async_pre_call_hook</text>
+    <text x="532" y="193" fill="#94a3b8" font-size="10">• PII-Maskierung (IBAN, Mail)</text>
+    <text x="532" y="210" fill="#94a3b8" font-size="10">• Model Parameter Clamping</text>
+  </g>
+
+  <path d="M 725 170 L 755 170" stroke="#c084fc" stroke-width="2" marker-end="url(#arr-purple)" />
+
+  <!-- STEP 4: Response Caching -->
+  <g filter="url(#shadow)">
+    <rect x="760" y="115" width="200" height="110" rx="10" fill="url(#pipe-card)" stroke="#34d399" stroke-width="1.5" />
+    <rect x="760" y="115" width="200" height="26" rx="10" fill="#064e3b" />
+    <text x="770" y="133" fill="#d1fae5" font-size="11" font-weight="700">4. MULTI-TIER CACHE</text>
+    <text x="772" y="158" fill="#f8fafc" font-size="12" font-weight="600">Exact &amp; Semantic Check</text>
+    <text x="772" y="176" fill="#6ee7b7" font-size="10.5">• SHA-256 Prompt Hash (Redis)</text>
+    <text x="772" y="193" fill="#94a3b8" font-size="10">• Vector Match: cos(q, k) ≥ τ</text>
+    <text x="772" y="210" fill="#34d399" font-size="10" font-weight="600">HIT: Rückgabe in &lt; 5 ms!</text>
+  </g>
+
+  <!-- Turnaround Arrow: Step 4 down to Step 5 -->
+  <path d="M 860 225 L 860 280 L 860 335" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr-amber)" />
+  <text x="870" y="275" fill="#f59e0b" font-size="11" font-weight="600">CACHE MISS</text>
+
+  <!-- ROW 2: ROUTING, TRANSLATION, INFERENCE, NORMALIZATION (Right to Left) -->
+
+  <!-- STEP 5: Dynamic Routing -->
+  <g filter="url(#shadow)">
+    <rect x="760" y="340" width="200" height="115" rx="10" fill="url(#pipe-card)" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="760" y="340" width="200" height="26" rx="10" fill="#78350f" />
+    <text x="770" y="358" fill="#fef3c7" font-size="11" font-weight="700">5. DYNAMIC ROUTER</text>
+    <text x="772" y="383" fill="#f8fafc" font-size="12" font-weight="600">Load Balancing Strategy</text>
+    <text x="772" y="401" fill="#fcd34d" font-size="10.5">• latency-based / least-busy</text>
+    <text x="772" y="418" fill="#94a3b8" font-size="10">• Circuit Breaker &amp; Cooldown</text>
+    <text x="772" y="435" fill="#94a3b8" font-size="10">• Zielknoten-Auswahl</text>
+  </g>
+
+  <path d="M 760 395 L 730 395" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr-amber)" />
+
+  <!-- STEP 6: Payload Translation -->
+  <g filter="url(#shadow)">
+    <rect x="520" y="340" width="205" height="115" rx="10" fill="url(#pipe-card)" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="520" y="340" width="205" height="26" rx="10" fill="#0c4a6e" />
+    <text x="530" y="358" fill="#e0f2fe" font-size="11" font-weight="700">6. PAYLOAD TRANSLATION</text>
+    <text x="532" y="383" fill="#f8fafc" font-size="12" font-weight="600">Universal Adapter</text>
+    <text x="532" y="401" fill="#7dd3fc" font-size="10.5">• OpenAI -&gt; Claude / Bedrock</text>
+    <text x="532" y="418" fill="#94a3b8" font-size="10">• Tool Calling Mapping</text>
+    <text x="532" y="435" fill="#94a3b8" font-size="10">• Hyperparameter-Anpassung</text>
+  </g>
+
+  <path d="M 520 395 L 490 395" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr-sky)" />
+
+  <!-- STEP 7: Upstream Call & Threat Check -->
+  <g filter="url(#shadow)">
+    <rect x="280" y="340" width="205" height="115" rx="10" fill="url(#pipe-card)" stroke="#ec4899" stroke-width="1.5" />
+    <rect x="280" y="340" width="205" height="26" rx="10" fill="#831843" />
+    <text x="290" y="358" fill="#fce7f3" font-size="11" font-weight="700">7. INFERENZ &amp; DURING-CALL</text>
+    <text x="292" y="383" fill="#f8fafc" font-size="12" font-weight="600">vLLM / Cloud API</text>
+    <text x="292" y="401" fill="#f472b6" font-size="10.5">• Parallele Lakera Moderation</text>
+    <text x="292" y="418" fill="#94a3b8" font-size="10">• Prompt Injection Detection</text>
+    <text x="292" y="435" fill="#94a3b8" font-size="10">• Retries bei Timeout / 503</text>
+  </g>
+
+  <path d="M 280 395 L 250 395" stroke="#ec4899" stroke-width="2" marker-end="url(#arr-purple)" />
+
+  <!-- STEP 8: Stream Normalizer -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="340" width="205" height="115" rx="10" fill="url(#pipe-card)" stroke="#10b981" stroke-width="1.5" />
+    <rect x="40" y="340" width="205" height="26" rx="10" fill="#064e3b" />
+    <text x="50" y="358" fill="#d1fae5" font-size="11" font-weight="700">8. STREAM NORMALIZER</text>
+    <text x="52" y="383" fill="#f8fafc" font-size="12" font-weight="600">SSE Chunk Rebuilder</text>
+    <text x="52" y="401" fill="#34d399" font-size="10.5">• stream_chunk_builder()</text>
+    <text x="52" y="418" fill="#94a3b8" font-size="10">• Einheitliches finish_reason</text>
+    <text x="52" y="435" fill="#94a3b8" font-size="10">• Exact Token-Counting</text>
+  </g>
+
+  <!-- Turnaround Arrow: Step 8 down to Bottom Row -->
+  <path d="M 140 455 L 140 500" stroke="#10b981" stroke-width="2" marker-end="url(#arr-emerald)" />
+
+  <!-- ROW 3: POST-CALL LIFECYCLE & EGRESS (FULL WIDTH) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="505" width="920" height="110" rx="12" fill="#091424" stroke="#0284c7" stroke-width="1.5" />
+    <rect x="40" y="505" width="920" height="28" rx="12" fill="#072b44" />
+    <text x="60" y="524" fill="#38bdf8" font-size="11.5" font-weight="700" letter-spacing="1">9. POST-CALL OBSERVABILITY, SPEND BATCHING &amp; CLIENT EGRESS</text>
+
+    <!-- Sub-blocks for Step 9 -->
+    <rect x="60" y="542" width="270" height="60" rx="8" fill="#031524" stroke="#0369a1" stroke-width="1" />
+    <text x="75" y="563" fill="#f8fafc" font-size="12" font-weight="600">OpenTelemetry v2 Tracing</text>
+    <text x="75" y="581" fill="#7dd3fc" font-size="10.5">LITELLM_OTEL_V2=true · GenAI Semantik</text>
+    <text x="75" y="595" fill="#94a3b8" font-size="9.5">Spans für Auth, Guardrail, Provider-Latenz</text>
+
+    <rect x="350" y="542" width="270" height="60" rx="8" fill="#031524" stroke="#0369a1" stroke-width="1" />
+    <text x="365" y="563" fill="#f8fafc" font-size="12" font-weight="600">Batched PostgreSQL SpendLogs</text>
+    <text x="365" y="581" fill="#7dd3fc" font-size="10.5">Asynchroner Flush alle N Sekunden</text>
+    <text x="365" y="595" fill="#94a3b8" font-size="9.5">Minimiert DB-Last auf dem Primary Node</text>
+
+    <rect x="640" y="542" width="300" height="60" rx="8" fill="#031524" stroke="#0369a1" stroke-width="1" />
+    <text x="655" y="563" fill="#f8fafc" font-size="12" font-weight="600">Client Response Egress</text>
+    <text x="655" y="581" fill="#34d399" font-size="10.5">Valides OpenAI JSON / Server-Sent Events</text>
+    <text x="655" y="595" fill="#94a3b8" font-size="9.5">An Open WebUI, Hermes Agent oder LangGraph</text>
+  </g>
+
+  <!-- Bottom Info Footer -->
+  <text x="50" y="645" fill="#64748b" font-size="10.5">LiteLLM In-Flight Execution Pipeline · Nicht-blockierender async Python Flow · End-to-End Governance</text>
+</svg>

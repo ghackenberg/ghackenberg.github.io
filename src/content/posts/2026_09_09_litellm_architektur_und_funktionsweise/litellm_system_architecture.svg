@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-client" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-core" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-storage" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-router" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4c1d95" />
+      <stop offset="100%" stop-color="#2e1065" />
+    </linearGradient>
+
+    <linearGradient id="grad-card-inf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#261b0c" />
+      <stop offset="100%" stop-color="#150f06" />
+    </linearGradient>
+
+    <filter id="shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="arrow-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#818cf8" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="700" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Background Decorative Grid -->
+  <g opacity="0.08">
+    <line x1="30" y1="100" x2="970" y2="100" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="30" y1="250" x2="970" y2="250" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="30" y1="520" x2="970" y2="520" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="300" y1="40" x2="300" y2="680" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+    <line x1="700" y1="40" x2="700" y2="680" stroke="#818cf8" stroke-dasharray="4 8" stroke-width="1" />
+  </g>
+
+  <!-- Header Section -->
+  <text x="40" y="52" fill="url(#grad-header)" font-size="22" font-weight="800" letter-spacing="0.5">LITELLM SYSTEMARCHITEKTUR</text>
+  <text x="40" y="76" fill="#94a3b8" font-size="13">Zentrales Enterprise AI Gateway: Universal Abstraction, Dynamisches Routing, Caching &amp; Governance</text>
+  <rect x="710" y="36" width="250" height="28" rx="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="1" />
+  <text x="835" y="55" fill="#c7d2fe" font-size="11.5" font-weight="600" text-anchor="middle">Tech Stack Schicht 5: Gateway &amp; IAM</text>
+
+  <!-- LAYER 1: CLIENTS & CONSUMERS (TOP) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="105" width="920" height="105" rx="12" fill="url(#grad-card-client)" stroke="#4338ca" stroke-width="1.5" />
+    <rect x="40" y="105" width="920" height="28" rx="12" fill="#1e1b4b" />
+    <text x="60" y="124" fill="#a5b4fc" font-size="11.5" font-weight="700" letter-spacing="1">KONSUMENTENSCHICHT · UNIFIED OPENAI-PROTOKOLL (/v1/chat/completions, /v1/embeddings)</text>
+
+    <!-- Sub-boxes for Consumers -->
+    <rect x="60" y="142" width="205" height="55" rx="8" fill="#0f172a" stroke="#312e81" stroke-width="1" />
+    <text x="75" y="164" fill="#f8fafc" font-size="12" font-weight="600">Open WebUI (Schicht 6)</text>
+    <text x="75" y="182" fill="#94a3b8" font-size="10.5">Human-in-the-Loop &amp; Workspace</text>
+
+    <rect x="285" y="142" width="205" height="55" rx="8" fill="#0f172a" stroke="#312e81" stroke-width="1" />
+    <text x="300" y="164" fill="#f8fafc" font-size="12" font-weight="600">Hermes Agent (Schicht 2)</text>
+    <text x="300" y="182" fill="#94a3b8" font-size="10.5">Autonome Tool-Calling-Runtime</text>
+
+    <rect x="510" y="142" width="205" height="55" rx="8" fill="#0f172a" stroke="#312e81" stroke-width="1" />
+    <text x="525" y="164" fill="#f8fafc" font-size="12" font-weight="600">LangGraph (Schicht 3)</text>
+    <text x="525" y="182" fill="#94a3b8" font-size="10.5">Zustandsbehaftete Agent-Graphen</text>
+
+    <rect x="735" y="142" width="205" height="55" rx="8" fill="#0f172a" stroke="#312e81" stroke-width="1" />
+    <text x="750" y="164" fill="#f8fafc" font-size="12" font-weight="600">Enterprise Apps &amp; SDKs</text>
+    <text x="750" y="182" fill="#94a3b8" font-size="10.5">Python, TypeScript, cURL, CI/CD</text>
+  </g>
+
+  <!-- Flow Arrows Client to LiteLLM Gateway Core -->
+  <path d="M 500 210 L 500 248" stroke="#818cf8" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-indigo)" />
+  <text x="515" y="235" fill="#818cf8" font-size="11" font-weight="600">OpenAI REST API / SSE Streams / Bearer Virtual Key</text>
+
+  <!-- LAYER 2: LITELLM PROXY GATEWAY CORE (MIDDLE) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="250" width="640" height="240" rx="12" fill="url(#grad-card-core)" stroke="#0284c7" stroke-width="1.5" />
+    <rect x="40" y="250" width="640" height="28" rx="12" fill="#0c2d48" />
+    <text x="60" y="269" fill="#38bdf8" font-size="11.5" font-weight="700" letter-spacing="1">LITELLM PROXY GATEWAY CORE · STATELESS FASTAPI ASGI CLUSTER</text>
+
+    <!-- Internal Core Modules -->
+    <!-- Module 1: Auth & Rate Limiting -->
+    <rect x="60" y="290" width="280" height="58" rx="8" fill="#071828" stroke="#0369a1" stroke-width="1" />
+    <text x="75" y="312" fill="#f0f9ff" font-size="12" font-weight="600">Virtual Key Auth &amp; Rate Limits</text>
+    <text x="75" y="332" fill="#7dd3fc" font-size="10.5">Hierarchische Keys, RPM/TPM, Budgets</text>
+
+    <!-- Module 2: In-Flight Guardrails -->
+    <rect x="360" y="290" width="300" height="58" rx="8" fill="#071828" stroke="#0369a1" stroke-width="1" />
+    <text x="375" y="312" fill="#f0f9ff" font-size="12" font-weight="600">Guardrails &amp; Content Moderation</text>
+    <text x="375" y="332" fill="#7dd3fc" font-size="10.5">Presidio (PII Masking), Lakera AI, Hooks</text>
+
+    <!-- Module 3: Multi-Tier Caching -->
+    <rect x="60" y="360" width="280" height="58" rx="8" fill="#071828" stroke="#0369a1" stroke-width="1" />
+    <text x="75" y="382" fill="#f0f9ff" font-size="12" font-weight="600">Multi-Tier Caching Layer</text>
+    <text x="75" y="402" fill="#7dd3fc" font-size="10.5">Exact Match (Hash) &amp; Semantic Cache</text>
+
+    <!-- Module 4: Dynamic Router -->
+    <rect x="360" y="360" width="300" height="58" rx="8" fill="#071828" stroke="#0369a1" stroke-width="1" />
+    <text x="375" y="382" fill="#f0f9ff" font-size="12" font-weight="600">Dynamic Router &amp; Fallback Engine</text>
+    <text x="375" y="402" fill="#7dd3fc" font-size="10.5">Latency, Least-Busy, Cooldown &amp; Retries</text>
+
+    <!-- Module 5: Universal Translation Engine (Bottom bar inside core) -->
+    <rect x="60" y="430" width="600" height="46" rx="8" fill="#051b2c" stroke="#38bdf8" stroke-width="1" />
+    <text x="75" y="452" fill="#e0f2fe" font-size="12" font-weight="700">Universal Translation &amp; Streaming Normalizer</text>
+    <text x="75" y="468" fill="#94a3b8" font-size="10.5">OpenAI Tools &lt;-&gt; Claude/Bedrock/Vertex API | Chunk Rebuilder | Standard Exceptions</text>
+  </g>
+
+  <!-- SIDEBAR: STATE & PERSISTENCE (MIDDLE RIGHT) -->
+  <g filter="url(#shadow)">
+    <rect x="700" y="250" width="260" height="240" rx="12" fill="url(#grad-card-storage)" stroke="#059669" stroke-width="1.5" />
+    <rect x="700" y="250" width="260" height="28" rx="12" fill="#064e3b" />
+    <text x="715" y="269" fill="#6ee7b7" font-size="11.5" font-weight="700" letter-spacing="0.5">PERSISTENZ &amp; STATE BUS</text>
+
+    <rect x="715" y="290" width="230" height="58" rx="8" fill="#022c22" stroke="#047857" stroke-width="1" />
+    <text x="730" y="312" fill="#ecfdf5" font-size="12" font-weight="600">Redis Cluster (State &amp; Cache)</text>
+    <text x="730" y="332" fill="#a7f3d0" font-size="10.5">Sliding RPM/TPM, Auth Cache, PubSub</text>
+
+    <rect x="715" y="358" width="230" height="58" rx="8" fill="#022c22" stroke="#047857" stroke-width="1" />
+    <text x="730" y="380" fill="#ecfdf5" font-size="12" font-weight="600">PostgreSQL (Prisma ORM)</text>
+    <text x="730" y="400" fill="#a7f3d0" font-size="10.5">Keys, Teams, SpendLogs (Batched)</text>
+
+    <rect x="715" y="426" width="230" height="50" rx="8" fill="#022c22" stroke="#047857" stroke-width="1" />
+    <text x="730" y="447" fill="#ecfdf5" font-size="12" font-weight="600">Keycloak Identity Provider</text>
+    <text x="730" y="465" fill="#a7f3d0" font-size="10.5">OIDC SSO &amp; JWT Role Mapping</text>
+  </g>
+
+  <!-- Connectors Core to Storage -->
+  <path d="M 680 340 L 700 340" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)" />
+  <path d="M 700 390 L 680 390" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-sky)" />
+
+  <!-- Flow Arrows Core to Inference Layer -->
+  <path d="M 280 490 L 280 528" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-amber)" />
+  <path d="M 720 490 L 720 528" stroke="#c084fc" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow-purple)" />
+  <text x="500" y="515" fill="#94a3b8" font-size="11" font-weight="600" text-anchor="middle">Multi-Provider Adapter &amp; Dynamic Failover Chains</text>
+
+  <!-- LAYER 3: HETEROGENEOUS INFERENCE BACKENDS (BOTTOM) -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="530" width="920" height="135" rx="12" fill="url(#grad-card-inf)" stroke="#d97706" stroke-width="1.5" />
+    <rect x="40" y="530" width="920" height="28" rx="12" fill="#2d1d06" />
+    <text x="60" y="549" fill="#fcd34d" font-size="11.5" font-weight="700" letter-spacing="1">HETEROGENE INFERENZ-RESSOURCEN · SOUVERÄNE CLUSTER &amp; PUBLIC CLOUD</text>
+
+    <!-- Sub-boxes for Backends -->
+    <!-- Backend 1: vLLM (Schicht 1) -->
+    <rect x="60" y="570" width="210" height="80" rx="8" fill="#1c1203" stroke="#b45309" stroke-width="1" />
+    <text x="75" y="592" fill="#fef3c7" font-size="12" font-weight="700">vLLM (Schicht 1)</text>
+    <text x="75" y="610" fill="#fde68a" font-size="10.5">PagedAttention High-Throughput</text>
+    <text x="75" y="626" fill="#94a3b8" font-size="10">Llama-3.3, Qwen-2.5, DeepSeek</text>
+    <text x="75" y="642" fill="#34d399" font-size="10" font-weight="600">On-Premises / Datensouverän</text>
+
+    <!-- Backend 2: Ollama / Local Dev -->
+    <rect x="290" y="570" width="210" height="80" rx="8" fill="#1c1203" stroke="#b45309" stroke-width="1" />
+    <text x="305" y="592" fill="#fef3c7" font-size="12" font-weight="700">Ollama &amp; Workstation</text>
+    <text x="305" y="610" fill="#fde68a" font-size="10.5">Labor- &amp; Edge-Inferenz</text>
+    <text x="305" y="626" fill="#94a3b8" font-size="10">GGUF Quantisierungen</text>
+    <text x="305" y="642" fill="#38bdf8" font-size="10" font-weight="600">Lokale Entwicklungsrechner</text>
+
+    <!-- Backend 3: Anthropic Claude -->
+    <rect x="520" y="570" width="200" height="80" rx="8" fill="#1c1203" stroke="#b45309" stroke-width="1" />
+    <text x="535" y="592" fill="#fef3c7" font-size="12" font-weight="700">Anthropic Claude</text>
+    <text x="535" y="610" fill="#fde68a" font-size="10.5">Messages API &amp; Tool Calling</text>
+    <text x="535" y="626" fill="#94a3b8" font-size="10">Claude 3.5 Sonnet / Haiku</text>
+    <text x="535" y="642" fill="#c084fc" font-size="10" font-weight="600">Frontier Reasoning Cloud</text>
+
+    <!-- Backend 4: Azure / Bedrock / Vertex -->
+    <rect x="740" y="570" width="200" height="80" rx="8" fill="#1c1203" stroke="#b45309" stroke-width="1" />
+    <text x="755" y="592" fill="#fef3c7" font-size="12" font-weight="700">Hyperscaler Clouds</text>
+    <text x="755" y="610" fill="#fde68a" font-size="10.5">AWS Bedrock, Vertex AI, Azure</text>
+    <text x="755" y="626" fill="#94a3b8" font-size="10">GPT-4o, Gemini 1.5/2.0</text>
+    <text x="755" y="642" fill="#f59e0b" font-size="10" font-weight="600">Enterprise SLA &amp; Fallbacks</text>
+  </g>
+
+  <!-- Bottom Legend / Status Bar -->
+  <rect x="40" y="675" width="920" height="24" rx="6" fill="#0b1329" stroke="rgba(255, 255, 255, 0.05)" />
+  <text x="50" y="691" fill="#64748b" font-size="10.5">Dr. Georg Hackenberg · FH Oberösterreich · Agentic AI Reference Architecture · Schicht 5 Gateway</text>
+  <text x="945" y="691" fill="#38bdf8" font-size="10.5" text-anchor="end">Status: High-Availability Production Ready</text>
+</svg>
