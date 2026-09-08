@@ -217,31 +217,7 @@ Hermes Agent implementiert diesen evolutionären Lernzyklus auf zwei Ebenen:
 1. **Aktive Wissenskompilierung (`/learn`):** Ermöglicht dem Agenten, aus Rohdaten, Code-Repositories, Dokumentationen oder erfolgreichen Dialogverläufen eigenständig neue, standardkonforme Skills zu generieren.
 2. **Automatisierte Bibliotheks-Kuratierung (Der Curator):** Verhindert das unkontrollierte Wuchern redundanter, veralteter Fähigkeiten (*Skill Sprawl*).
 
-```
-          [Neuer Anwendungsfall / Dokumentation / Repo]
-                               │
-                               ▼
-               [/learn Kompilierung via AIAgent]
-                               │
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │  Neuer Skill landet in ~/.hermes/skills/     │
-        └──────────────────────┬───────────────────────┘
-                               │
-            ┌──────────────────┴──────────────────┐
-            │   DER BACKGROUND CURATOR LIFECYCLE  │
-            └──────────────────┬──────────────────┘
-                               │
-         ┌─────────────────────┼─────────────────────┐
-         ▼                     ▼                     ▼
-    [Phase 1: Deterministic]   │         [Phase 2: LLM Consolidation]
-   Inaktivitäts-Tracking       │         (curator.consolidate: true)
-   • 30 Tage ungenutzt:        │         • Semantischer Ähnlichkeitsabgleich
-     Status → 'stale'          │         • Verschmelzung überlappender Skills
-   • 90 Tage ungenutzt:        │           zu kohärenten Dach-Skills («Umbrellas»)
-     Verschieben nach          │         • Bereinigung des L0-Katalogs
-     ~/.hermes/skills/.archive/│
-```
+![Der Background Curator Lifecycle: Skill-Synthese, Inaktivitäts-Pruning und LLM-Konsolidierung](./hermes_agent_curator_lifecycle.svg)
 
 ### Wie der Curator arbeitet
 Der Curator ist kein starrer Cronjob, sondern ein **intelligenter Inaktivitäts-Pass**:
