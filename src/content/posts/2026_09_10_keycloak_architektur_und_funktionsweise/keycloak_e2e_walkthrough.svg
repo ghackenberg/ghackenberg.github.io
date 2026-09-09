@@ -1,0 +1,249 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 760" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="ew-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="ew-card-ui" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="ew-card-agent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2e1065" />
+      <stop offset="100%" stop-color="#14072b" />
+    </linearGradient>
+
+    <linearGradient id="ew-card-kc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <linearGradient id="ew-card-mcp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#311302" />
+      <stop offset="100%" stop-color="#1a0a01" />
+    </linearGradient>
+
+    <linearGradient id="ew-card-gw" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <linearGradient id="ew-card-inf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+
+    <filter id="ew-shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="ew-arr-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="ew-arr-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="ew-arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="ew-arr-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="10" y="10" width="980" height="740" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="24" fill="url(#ew-header)" font-size="19" font-weight="800" letter-spacing="0.5">END-TO-END SECURITY WALKTHROUGH: ANFRAGE-LEBENSZYKLUS</text>
+    <text x="0" y="44" fill="#94a3b8" font-size="12">Lückenlose kryptografische Kette vom Benutzer-Prompt über Token-Exchange bis zur geschützten GPU-Inferenz</text>
+  </g>
+
+  <!-- 6 MAIN PARTICIPANT NODES (2 Rows x 3 Columns) -->
+
+  <!-- Node 1: Fachanwender & Open WebUI (Top Left: x=35, y=85, w=275, h=110) -->
+  <g transform="translate(35, 85)">
+    <rect width="275" height="110" rx="10" fill="url(#ew-card-ui)" stroke="#6366f1" stroke-width="1.5" filter="url(#ew-shadow)" />
+    <rect x="0" y="0" width="275" height="26" rx="10" fill="#312e81" opacity="0.4" />
+    <text x="12" y="18" fill="#a5b4fc" font-size="11" font-weight="800">1. FACHANWENDER &amp; OPEN WEBUI</text>
+    <text x="12" y="44" fill="#e0e7ff" font-size="10" font-weight="700">OIDC Single Sign-On (PKCE)</text>
+    <text x="12" y="60" fill="#cbd5e1" font-size="9">• Prompt: "Analysiere Quartalsumsatz"</text>
+    <text x="12" y="74" fill="#cbd5e1" font-size="9">• Hält aktives User Token: <tspan fill="#38bdf8">T_user</tspan></text>
+    <text x="12" y="88" fill="#94a3b8" font-size="8.5">sub: "georg.hackenberg" · aud: "hermes"</text>
+  </g>
+
+  <!-- Node 2: Hermes Agent Runtime (Top Center: x=362, y=85, w=275, h=110) -->
+  <g transform="translate(362, 85)">
+    <rect width="275" height="110" rx="10" fill="url(#ew-card-agent)" stroke="#a855f7" stroke-width="1.5" filter="url(#ew-shadow)" />
+    <rect x="0" y="0" width="275" height="26" rx="10" fill="#6b21a8" opacity="0.4" />
+    <text x="12" y="18" fill="#d8b4fe" font-size="11" font-weight="800">2. HERMES AGENT RUNTIME</text>
+    <text x="12" y="44" fill="#f3e8ff" font-size="10" font-weight="700">Autonomer Reasoning &amp; Tool-Loop</text>
+    <text x="12" y="60" fill="#cbd5e1" font-size="9">• Zerlegt Aufgabe in ERP-Abfrage &amp; LLM-Synthese</text>
+    <text x="12" y="74" fill="#cbd5e1" font-size="9">• Initiiert RFC 8693 Token Exchange</text>
+    <text x="12" y="88" fill="#94a3b8" font-size="8.5">Confidential Client: client:hermes-agent</text>
+  </g>
+
+  <!-- Node 3: Keycloak IAM Server (Top Right: x=690, y=85, w=275, h=110) -->
+  <g transform="translate(690, 85)">
+    <rect width="275" height="110" rx="10" fill="url(#ew-card-kc)" stroke="#10b981" stroke-width="1.8" filter="url(#ew-shadow)" />
+    <rect x="0" y="0" width="275" height="26" rx="10" fill="#047857" opacity="0.4" />
+    <text x="12" y="18" fill="#6ee7b7" font-size="11" font-weight="800">3. KEYCLOAK IAM TRUST BROKER</text>
+    <text x="12" y="44" fill="#d1fae5" font-size="10" font-weight="700">Token Exchange &amp; Delegation Engine</text>
+    <text x="12" y="60" fill="#cbd5e1" font-size="9">• Prüft Client-Policy &amp; Scope-Rechte</text>
+    <text x="12" y="74" fill="#cbd5e1" font-size="9">• Downscoping: Entfernt Schreibrechte</text>
+    <text x="12" y="88" fill="#34d399" font-size="8.5" font-weight="600">Emittiert T_delegated (act: hermes-agent)</text>
+  </g>
+
+  <!-- Node 4: MCP Resource Server (Bottom Right: x=690, y=365, w=275, h=110) -->
+  <g transform="translate(690, 365)">
+    <rect width="275" height="110" rx="10" fill="url(#ew-card-mcp)" stroke="#f59e0b" stroke-width="1.5" filter="url(#ew-shadow)" />
+    <rect x="0" y="0" width="275" height="26" rx="10" fill="#b45309" opacity="0.4" />
+    <text x="12" y="18" fill="#fde68a" font-size="11" font-weight="800">4. MCP RESOURCE SERVER (ERP TOOL)</text>
+    <text x="12" y="44" fill="#fef3c7" font-size="10" font-weight="700">Enterprise Database &amp; API Connector</text>
+    <text x="12" y="60" fill="#cbd5e1" font-size="9">• Stateless Token Check via JWKS (/certs)</text>
+    <text x="12" y="74" fill="#cbd5e1" font-size="9">• Scope verifiziert: <tspan fill="#f59e0b">erp:read</tspan> (Read-Only)</text>
+    <text x="12" y="88" fill="#94a3b8" font-size="8.5">Audit: user="georg" via act="hermes-agent"</text>
+  </g>
+
+  <!-- Node 5: LiteLLM Proxy Gateway (Bottom Center: x=362, y=365, w=275, h=110) -->
+  <g transform="translate(362, 365)">
+    <rect width="275" height="110" rx="10" fill="url(#ew-card-gw)" stroke="#0284c7" stroke-width="1.8" filter="url(#ew-shadow)" />
+    <rect x="0" y="0" width="275" height="26" rx="10" fill="#0369a1" opacity="0.3" />
+    <text x="12" y="18" fill="#38bdf8" font-size="11" font-weight="800">5. LITELLM PROXY GATEWAY</text>
+    <text x="12" y="44" fill="#e0f2fe" font-size="10" font-weight="700">Stateless Governance &amp; Routing Hub</text>
+    <text x="12" y="60" fill="#cbd5e1" font-size="9">• JWKS Signatur- &amp; Expiration-Check (&lt;0.2ms)</text>
+    <text x="12" y="74" fill="#cbd5e1" font-size="9">• Claim-Prüfung: Budget-Limit &amp; Whitelist</text>
+    <text x="12" y="88" fill="#38bdf8" font-size="8.5" font-weight="600">Routet Inferenz an lokalen GPU-Knoten</text>
+  </g>
+
+  <!-- Node 6: vLLM Inference Cluster (Bottom Left: x=35, y=365, w=275, h=110) -->
+  <g transform="translate(35, 365)">
+    <rect width="275" height="110" rx="10" fill="url(#ew-card-inf)" stroke="#3b82f6" stroke-width="1.5" filter="url(#ew-shadow)" />
+    <rect x="0" y="0" width="275" height="26" rx="10" fill="#1d4ed8" opacity="0.4" />
+    <text x="12" y="18" fill="#93c5fd" font-size="11" font-weight="800">6. vLLM ACCELERATOR CLUSTER</text>
+    <text x="12" y="44" fill="#eff6ff" font-size="10" font-weight="700">Private Private Model Inference</text>
+    <text x="12" y="60" fill="#cbd5e1" font-size="9">• Abgeschirmtes internes GPU-Netzwerk</text>
+    <text x="12" y="74" fill="#cbd5e1" font-size="9">• PagedAttention Inferenz (Llama-3.3-70B)</text>
+    <text x="12" y="88" fill="#93c5fd" font-size="8.5">Kein externer Netzzugriff; 100% datensouverän</text>
+  </g>
+
+  <!-- PROTOCOL INTERACTION FLOWS & LABELS -->
+
+  <!-- Flow 1: UI -> Agent (Trigger) -->
+  <g transform="translate(310, 125)">
+    <line x1="0" y1="0" x2="44" y2="0" stroke="#38bdf8" stroke-width="2" marker-end="url(#ew-arr-cyan)" />
+    <rect x="-10" y="-18" width="65" height="16" rx="4" fill="#070b16" stroke="#38bdf8" stroke-width="0.8" />
+    <text x="2" y="-6" fill="#7dd3fc" font-size="8.5" font-weight="700">1. Prompt</text>
+  </g>
+
+  <!-- Flow 2: Agent -> Keycloak (Exchange Request) -->
+  <g transform="translate(637, 120)">
+    <line x1="0" y1="0" x2="45" y2="0" stroke="#c084fc" stroke-width="2" marker-end="url(#ew-arr-purple)" />
+    <rect x="-8" y="-18" width="60" height="16" rx="4" fill="#070b16" stroke="#c084fc" stroke-width="0.8" />
+    <text x="2" y="-6" fill="#d8b4fe" font-size="8" font-weight="700">2. Exch Req</text>
+  </g>
+
+  <!-- Flow 3: Keycloak -> Agent (Token Return) -->
+  <g transform="translate(682, 155)">
+    <line x1="0" y1="0" x2="-37" y2="0" stroke="#34d399" stroke-width="2" stroke-dasharray="3 2" marker-end="url(#ew-arr-emerald)" />
+    <rect x="-52" y="4" width="65" height="16" rx="4" fill="#070b16" stroke="#34d399" stroke-width="0.8" />
+    <text x="-48" y="16" fill="#6ee7b7" font-size="8" font-weight="700">3. T_deleg</text>
+  </g>
+
+  <!-- Flow 4: Agent -> MCP (Tool Call: Down-Right) -->
+  <path d="M 580 195 L 580 270 L 740 270 L 740 357" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#ew-arr-amber)" />
+  <g transform="translate(605, 260)">
+    <rect width="115" height="20" rx="4" fill="#070b16" stroke="#f59e0b" stroke-width="0.8" />
+    <text x="6" y="14" fill="#fde68a" font-size="8.5" font-weight="700">4. GET /api/v1/invoices</text>
+  </g>
+
+  <!-- Flow 5: MCP -> Agent (Data Return: Up-Left) -->
+  <path d="M 705 365 L 705 295 L 540 295 L 540 203" fill="none" stroke="#34d399" stroke-width="1.8" stroke-dasharray="4 2" marker-end="url(#ew-arr-emerald)" />
+  <g transform="translate(565, 305)">
+    <rect width="115" height="20" rx="4" fill="#070b16" stroke="#34d399" stroke-width="0.8" />
+    <text x="8" y="14" fill="#6ee7b7" font-size="8.5" font-weight="700">5. Rohdaten-Rückgabe</text>
+  </g>
+
+  <!-- Flow 6: Agent -> LiteLLM (Inference Request Straight Down) -->
+  <line x1="450" y1="195" x2="450" y2="357" stroke="#38bdf8" stroke-width="2" marker-end="url(#ew-arr-cyan)" />
+  <g transform="translate(460, 265)">
+    <rect width="105" height="30" rx="4" fill="#070b16" stroke="#38bdf8" stroke-width="0.8" />
+    <text x="6" y="13" fill="#7dd3fc" font-size="8.5" font-weight="700">6. LLM Inferenz</text>
+    <text x="6" y="24" fill="#94a3b8" font-size="7.5">POST /chat/completions</text>
+  </g>
+
+  <!-- Flow 7: LiteLLM -> vLLM (Compute Routing Left) -->
+  <g transform="translate(362, 420)">
+    <line x1="0" y1="0" x2="-44" y2="0" stroke="#38bdf8" stroke-width="2" marker-end="url(#ew-arr-cyan)" />
+    <rect x="-48" y="-18" width="55" height="16" rx="4" fill="#070b16" stroke="#38bdf8" stroke-width="0.8" />
+    <text x="-44" y="-6" fill="#7dd3fc" font-size="8" font-weight="700">7. Route GPU</text>
+  </g>
+
+  <!-- Flow 8 & 9: vLLM -> LiteLLM -> Hermes -> WebUI (Streaming Return Left-Up) -->
+  <path d="M 172 365 L 172 203" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#ew-arr-purple)" />
+  <g transform="translate(90, 275)">
+    <rect width="155" height="28" rx="4" fill="#070b16" stroke="#a855f7" stroke-width="0.8" />
+    <text x="8" y="13" fill="#d8b4fe" font-size="8.5" font-weight="700">8. &amp; 9. SSE Streaming Response</text>
+    <text x="8" y="24" fill="#94a3b8" font-size="7.5">vLLM ➔ Gateway ➔ UI Stream</text>
+  </g>
+
+  <!-- BOTTOM CARD: SECURITY GUARANTEES MATRIX (y=500 to 725, h=225) -->
+  <g transform="translate(35, 500)">
+    <rect width="930" height="225" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5" filter="url(#ew-shadow)" />
+    <rect x="0" y="0" width="930" height="28" rx="12" fill="#1e293b" opacity="0.6" />
+    <text x="16" y="19" fill="#38bdf8" font-size="11.5" font-weight="800" letter-spacing="0.5">KRYPTOGRAFISCHE SICHERHEITSGARANTIEN DIESES ABLAUFS</text>
+
+    <!-- 4 Sub-Columns for Guarantees -->
+    <!-- Col 1: Zero Static Secrets -->
+    <g transform="translate(16, 40)">
+      <rect width="215" height="165" rx="8" fill="#070d18" stroke="#475569" stroke-width="0.8" />
+      <text x="12" y="20" fill="#a5b4fc" font-size="10.5" font-weight="700">1. Zero Static Secrets</text>
+      <line x1="12" y1="26" x2="203" y2="26" stroke="#475569" stroke-width="0.8" opacity="0.4" />
+      <text x="12" y="44" fill="#cbd5e1" font-size="9">• Kein Klartext-Secret in Configs</text>
+      <text x="12" y="60" fill="#cbd5e1" font-size="9">• Nur kurzlebige JWT Bearer Tokens</text>
+      <text x="12" y="76" fill="#cbd5e1" font-size="9">• Asymmetrische Signaturen (RS256)</text>
+      <text x="12" y="92" fill="#cbd5e1" font-size="9">• Automatische Key-Rotation</text>
+      <text x="12" y="120" fill="#34d399" font-size="8.5" font-weight="600">Schutz vor Secret-Leakage</text>
+    </g>
+
+    <!-- Col 2: Downscoped Delegation -->
+    <g transform="translate(243, 40)">
+      <rect width="215" height="165" rx="8" fill="#070d18" stroke="#475569" stroke-width="0.8" />
+      <text x="12" y="20" fill="#fde68a" font-size="10.5" font-weight="700">2. Downscoped Delegation</text>
+      <line x1="12" y1="26" x2="203" y2="26" stroke="#475569" stroke-width="0.8" opacity="0.4" />
+      <text x="12" y="44" fill="#cbd5e1" font-size="9">• RFC 8693 Token Exchange</text>
+      <text x="12" y="60" fill="#cbd5e1" font-size="9">• Schreibrechte strikt entzogen</text>
+      <text x="12" y="76" fill="#cbd5e1" font-size="9">• Audience auf MCP-Tool beschränkt</text>
+      <text x="12" y="92" fill="#cbd5e1" font-size="9">• Prompt Injections wirkungslos</text>
+      <text x="12" y="120" fill="#34d399" font-size="8.5" font-weight="600">Kein Confused-Deputy-Problem</text>
+    </g>
+
+    <!-- Col 3: Realtime Budget Enforcement -->
+    <g transform="translate(470, 40)">
+      <rect width="215" height="165" rx="8" fill="#070d18" stroke="#475569" stroke-width="0.8" />
+      <text x="12" y="20" fill="#7dd3fc" font-size="10.5" font-weight="700">3. Budget- &amp; Modellkontrolle</text>
+      <line x1="12" y1="26" x2="203" y2="26" stroke="#475569" stroke-width="0.8" opacity="0.4" />
+      <text x="12" y="44" fill="#cbd5e1" font-size="9">• LiteLLM liest Claims im JWT</text>
+      <text x="12" y="60" fill="#cbd5e1" font-size="9">• Monats-Budget &amp; TPM/RPM Limits</text>
+      <text x="12" y="76" fill="#cbd5e1" font-size="9">• Modell-Whitelist zur Laufzeit</text>
+      <text x="12" y="92" fill="#cbd5e1" font-size="9">• Verarbeitungszeit &lt; 0.2 ms</text>
+      <text x="12" y="120" fill="#34d399" font-size="8.5" font-weight="600">Kostentransparenz &amp; Schutz</text>
+    </g>
+
+    <!-- Col 4: Non-Repudiation Audit -->
+    <g transform="translate(697, 40)">
+      <rect width="215" height="165" rx="8" fill="#070d18" stroke="#475569" stroke-width="0.8" />
+      <text x="12" y="20" fill="#d8b4fe" font-size="10.5" font-weight="700">4. Lückenloses Audit</text>
+      <line x1="12" y1="26" x2="203" y2="26" stroke="#475569" stroke-width="0.8" opacity="0.4" />
+      <text x="12" y="44" fill="#cbd5e1" font-size="9">• sub (Nutzer) &amp; act (Agent)</text>
+      <text x="12" y="60" fill="#cbd5e1" font-size="9">• Jeder DB-Turn kryptografisch belegt</text>
+      <text x="12" y="76" fill="#cbd5e1" font-size="9">• Event-Streams an SIEM / Kafka</text>
+      <text x="12" y="92" fill="#cbd5e1" font-size="9">• Erfüllt DSGVO &amp; EU AI Act</text>
+      <text x="12" y="120" fill="#34d399" font-size="8.5" font-weight="600">Rechtssichere Nachvollziehbarkeit</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="si-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="si-layer-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#070d19" />
+    </linearGradient>
+
+    <linearGradient id="si-iam-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <filter id="si-shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="2" dy="2" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="si-arr-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="si-arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+  </defs>
+
+  <!-- Frame Canvas -->
+  <rect x="10" y="10" width="980" height="660" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Title Header -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="24" fill="url(#si-header)" font-size="19" font-weight="800" letter-spacing="0.5">KEYCLOAK ZERO-TRUST GOVERNANCE IM SOUVERÄNEN AI TECH STACK</text>
+    <text x="0" y="44" fill="#94a3b8" font-size="12">End-to-End Identitätspropagation, Token-Verifikation &amp; Mandantenisolation über alle 6 Architekturschichten</text>
+  </g>
+
+  <!-- Left: 6 Layers of Stack (Width: 620) -->
+  <!-- Layer 6: UX -->
+  <g transform="translate(35, 90)">
+    <rect width="610" height="74" rx="10" fill="url(#si-layer-card)" stroke="#e11d48" stroke-width="1.2" filter="url(#si-shadow)" />
+    <text x="16" y="22" fill="#fda4af" font-size="11.5" font-weight="800">SCHICHT 6: HUMAN INTERFACE · OPEN WEBUI</text>
+    <text x="16" y="42" fill="#cbd5e1" font-size="10.5">• SvelteKit SPA mit interaktivem Benutzer-Login via OIDC Authorization Code Flow + PKCE</text>
+    <text x="16" y="58" fill="#94a3b8" font-size="9.5">• Personalisierte Arbeitsbereiche, Chat-Verläufe und Prompt-Bibliotheken gebunden an Benutzer-ID</text>
+  </g>
+
+  <!-- Layer 5: Gateway -->
+  <g transform="translate(35, 175)">
+    <rect width="610" height="82" rx="10" fill="url(#si-layer-card)" stroke="#0284c7" stroke-width="1.8" filter="url(#si-shadow)" />
+    <text x="16" y="22" fill="#38bdf8" font-size="11.5" font-weight="800">SCHICHT 5: GATEWAY &amp; ROUTING · LITELLM PROXY</text>
+    <text x="16" y="42" fill="#cbd5e1" font-size="10.5">• Zustandslose JWT-Validierung am API-Perimeter gegen Keycloak JWKS (Latenz &lt; 1 ms)</text>
+    <text x="16" y="58" fill="#cbd5e1" font-size="10.5">• Rollen-Mapping: Keycloak Realm-Rollen ➔ LiteLLM RBAC (proxy_admin, team_lead, researcher)</text>
+    <text x="16" y="73" fill="#94a3b8" font-size="9.5">• Automatische Budget- &amp; TPM/RPM-Limitierung auf Team- und Benutzerebene</text>
+  </g>
+
+  <!-- Layer 3: Orchestration -->
+  <g transform="translate(35, 268)">
+    <rect width="610" height="74" rx="10" fill="url(#si-layer-card)" stroke="#9333ea" stroke-width="1.2" filter="url(#si-shadow)" />
+    <text x="16" y="22" fill="#d8b4fe" font-size="11.5" font-weight="800">SCHICHT 3: AGENTISCHE WORKFLOWS · LANGGRAPH</text>
+    <text x="16" y="42" fill="#cbd5e1" font-size="10.5">• Zyklische Multi-Agenten-Graphen &amp; Microservice-Workflows mit Service Accounts</text>
+    <text x="16" y="58" fill="#94a3b8" font-size="9.5">• Zustandsbehaftete Checkpoints mit kryptografischer Nachvollziehbarkeit des auslösenden Akteurs</text>
+  </g>
+
+  <!-- Layer 2: Runtime & Skills -->
+  <g transform="translate(35, 353)">
+    <rect width="610" height="74" rx="10" fill="url(#si-layer-card)" stroke="#d97706" stroke-width="1.2" filter="url(#si-shadow)" />
+    <text x="16" y="22" fill="#fde68a" font-size="11.5" font-weight="800">SCHICHT 2: AGENT RUNTIME &amp; SKILLS · HERMES AGENT &amp; WIKISKILLS</text>
+    <text x="16" y="42" fill="#cbd5e1" font-size="10.5">• RFC 8693 Token Exchange: Agent agiert im Auftrag des Nutzers mit reduzierten Privilegien</text>
+    <text x="16" y="58" fill="#94a3b8" font-size="9.5">• Feingranularer MCP-Tool-Aufruf (Model Context Protocol) abgesichert via UMA 2.0 Scopes</text>
+  </g>
+
+  <!-- Layer 4: Memory & DBs -->
+  <g transform="translate(35, 438)">
+    <rect width="610" height="74" rx="10" fill="url(#si-layer-card)" stroke="#059669" stroke-width="1.2" filter="url(#si-shadow)" />
+    <text x="16" y="22" fill="#6ee7b7" font-size="11.5" font-weight="800">SCHICHT 4: LANGZEITGEDÄCHTNIS &amp; HYBRID-SPEICHER · MEM0, QDRANT, NEO4J</text>
+    <text x="16" y="42" fill="#cbd5e1" font-size="10.5">• Strikte Mandanten- und Benutzerisolation über JWT-Claims (`tenant_id`, `sub`)</text>
+    <text x="16" y="58" fill="#94a3b8" font-size="9.5">• Vektor- und Wissensgraph-Partitionierung: Kein unautorisierter Cross-Tenant-Speicherzugriff</text>
+  </g>
+
+  <!-- Layer 1: Inference -->
+  <g transform="translate(35, 523)">
+    <rect width="610" height="66" rx="10" fill="url(#si-layer-card)" stroke="#2563eb" stroke-width="1.2" filter="url(#si-shadow)" />
+    <text x="16" y="22" fill="#93c5fd" font-size="11.5" font-weight="800">SCHICHT 1: PRIVATE INFERENZ · vLLM ACCELERATOR CLUSTER</text>
+    <text x="16" y="42" fill="#cbd5e1" font-size="10.5">• Abgeschirmtes internes GPU-Netzwerk; kein direkter externer Zugriff</text>
+    <text x="16" y="56" fill="#94a3b8" font-size="9.5">• Exklusiver Aufrufkanal über das authentifizierte LiteLLM Gateway</text>
+  </g>
+
+  <!-- Right: Central Keycloak IAM Pillar (Width: 290) -->
+  <g transform="translate(675, 90)">
+    <rect width="290" height="500" rx="14" fill="url(#si-iam-card)" stroke="#10b981" stroke-width="2" filter="url(#si-shadow)" />
+    <rect x="0" y="0" width="290" height="32" rx="14" fill="#047857" opacity="0.4" />
+    <text x="18" y="22" fill="#a7f3d0" font-size="12.5" font-weight="800" letter-spacing="0.5">KEYCLOAK IAM CORE</text>
+
+    <!-- IAM Sub-Modules inside pillar -->
+    <g transform="translate(15, 45)">
+      <rect width="260" height="90" rx="8" fill="#022c22" stroke="#059669" stroke-width="1" />
+      <text x="12" y="20" fill="#6ee7b7" font-size="11" font-weight="700">Identity Federation</text>
+      <text x="12" y="38" fill="#e2e8f0" font-size="9.5">• LDAP / Active Directory Sync</text>
+      <text x="12" y="54" fill="#e2e8f0" font-size="9.5">• SAML 2.0 &amp; OIDC Social Brokering</text>
+      <text x="12" y="70" fill="#e2e8f0" font-size="9.5">• MFA, WebAuthn &amp; Passkeys</text>
+    </g>
+
+    <g transform="translate(15, 148)">
+      <rect width="260" height="110" rx="8" fill="#022c22" stroke="#059669" stroke-width="1" />
+      <text x="12" y="20" fill="#6ee7b7" font-size="11" font-weight="700">Token &amp; Delegation Engine</text>
+      <text x="12" y="38" fill="#e2e8f0" font-size="9.5">• OpenID Connect (OIDC) v1.0</text>
+      <text x="12" y="54" fill="#e2e8f0" font-size="9.5">• RFC 8693 Standard Token Exchange</text>
+      <text x="12" y="70" fill="#e2e8f0" font-size="9.5">• Asymmetrische Signaturen (RS256/EdDSA)</text>
+      <text x="12" y="86" fill="#e2e8f0" font-size="9.5">• Dynamische JWKS Key-Distribution</text>
+      <text x="12" y="102" fill="#34d399" font-size="9" font-weight="600">Zero-Trust Token Emission</text>
+    </g>
+
+    <g transform="translate(15, 270)">
+      <rect width="260" height="100" rx="8" fill="#022c22" stroke="#059669" stroke-width="1" />
+      <text x="12" y="20" fill="#6ee7b7" font-size="11" font-weight="700">UMA 2.0 &amp; Policy Engine</text>
+      <text x="12" y="38" fill="#e2e8f0" font-size="9.5">• Resource Server &amp; Permission Tickets</text>
+      <text x="12" y="54" fill="#e2e8f0" font-size="9.5">• RBAC / ABAC Decision Engine</text>
+      <text x="12" y="70" fill="#e2e8f0" font-size="9.5">• RPT (Requesting Party Token) Issuance</text>
+      <text x="12" y="86" fill="#34d399" font-size="9" font-weight="600">Feingranulare MCP-Tool-Rechte</text>
+    </g>
+
+    <g transform="translate(15, 382)">
+      <rect width="260" height="98" rx="8" fill="#022c22" stroke="#059669" stroke-width="1" />
+      <text x="12" y="20" fill="#6ee7b7" font-size="11" font-weight="700">Audit &amp; Session Management</text>
+      <text x="12" y="38" fill="#e2e8f0" font-size="9.5">• Infinispan In-Memory Session Cache</text>
+      <text x="12" y="54" fill="#e2e8f0" font-size="9.5">• OIDC Backchannel Logout Propagation</text>
+      <text x="12" y="70" fill="#e2e8f0" font-size="9.5">• SIEM / OTEL Audit Logging SPI</text>
+      <text x="12" y="86" fill="#34d399" font-size="9" font-weight="600">Compliance &amp; EU AI Act Ready</text>
+    </g>
+  </g>
+
+  <!-- Connective Horizontal Rays between Layers and Keycloak -->
+  <path d="M 645 125 L 675 125" stroke="#10b981" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#si-arr-emerald)" />
+  <path d="M 645 215 L 675 215" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#si-arr-cyan)" />
+  <path d="M 645 305 L 675 305" stroke="#10b981" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#si-arr-emerald)" />
+  <path d="M 645 390 L 675 390" stroke="#10b981" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#si-arr-emerald)" />
+  <path d="M 645 475 L 675 475" stroke="#10b981" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#si-arr-emerald)" />
+
+  <!-- Legend / Bottom Footer -->
+  <g transform="translate(35, 610)">
+    <rect width="930" height="38" rx="8" fill="#0b1329" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+    <text x="20" y="24" fill="#94a3b8" font-size="11">Legende: <tspan fill="#e11d48" font-weight="700">■ UX-Perimeter</tspan> · <tspan fill="#0284c7" font-weight="700">■ Inferenz-Gateway</tspan> · <tspan fill="#9333ea" font-weight="700">■ Multi-Agenten-Graphen</tspan> · <tspan fill="#d97706" font-weight="700">■ Agent-Runtime &amp; Skills</tspan> · <tspan fill="#059669" font-weight="700">■ Wissensspeicher</tspan> · <tspan fill="#10b981" font-weight="800">■ Keycloak IAM</tspan></text>
+  </g>
+</svg>

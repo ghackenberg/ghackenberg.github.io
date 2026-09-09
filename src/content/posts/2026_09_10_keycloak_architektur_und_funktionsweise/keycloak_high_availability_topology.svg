@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="ha-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="ha-card-lb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="ha-card-pod" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c233c" />
+      <stop offset="100%" stop-color="#061220" />
+    </linearGradient>
+
+    <linearGradient id="ha-card-db" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b0764" />
+      <stop offset="100%" stop-color="#1e053a" />
+    </linearGradient>
+
+    <filter id="ha-shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="ha-arr-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="ha-arr-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="ha-arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+  </defs>
+
+  <!-- Frame Canvas -->
+  <rect x="10" y="10" width="980" height="660" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Title Header -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="24" fill="url(#ha-header)" font-size="19" font-weight="800" letter-spacing="0.5">HIGH-AVAILABILITY &amp; KUBERNETES-CLUSTER-TOPOLOGIE</text>
+    <text x="0" y="44" fill="#94a3b8" font-size="12">Keycloak Operator, Infinispan Cache-Replikation (JGroups KUBE_PING) &amp; PostgreSQL HA</text>
+  </g>
+
+  <!-- Tier 1: Ingress / Load Balancer (Top) -->
+  <g transform="translate(35, 90)">
+    <rect width="930" height="70" rx="10" fill="url(#ha-card-lb)" stroke="#6366f1" stroke-width="1.5" filter="url(#ha-shadow)" />
+    <rect x="0" y="0" width="930" height="24" rx="10" fill="#312e81" opacity="0.4" />
+    <text x="16" y="17" fill="#a5b4fc" font-size="11" font-weight="700">ENTERPRISE INGRESS / LOAD BALANCER (TRAEFIK / ENVOY / NGINX)</text>
+
+    <text x="20" y="45" fill="#e0e7ff" font-size="10.5" font-weight="600">• TLS 1.3 Termination &amp; HTTP/2 Multiplexing</text>
+    <text x="360" y="45" fill="#cbd5e1" font-size="10">• Cookie-Based Session Stickiness (<tspan fill="#f59e0b">AUTH_SESSION_ID</tspan>)</text>
+    <text x="730" y="45" fill="#34d399" font-size="10" font-weight="600">Zero-Downtime Failover</text>
+  </g>
+
+  <!-- Flow Arrows Tier 1 -> Tier 2 -->
+  <line x1="200" y1="160" x2="200" y2="200" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#ha-arr-cyan)" />
+  <line x1="500" y1="160" x2="500" y2="200" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#ha-arr-cyan)" />
+  <line x1="800" y1="160" x2="800" y2="200" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#ha-arr-cyan)" />
+
+  <!-- Tier 2: Kubernetes Cluster & Pods (Middle) -->
+  <g transform="translate(35, 205)">
+    <rect width="930" height="240" rx="12" fill="#07152b" stroke="#0284c7" stroke-width="1.8" filter="url(#ha-shadow)" />
+    <rect x="0" y="0" width="930" height="26" rx="12" fill="#0369a1" opacity="0.3" />
+    <text x="16" y="18" fill="#38bdf8" font-size="11.5" font-weight="800">KUBERNETES / OPENSHIFT CLUSTER (ORCHESTRIERT VIA KEYCLOAK OPERATOR)</text>
+
+    <!-- Keycloak Pod 1 -->
+    <g transform="translate(20, 36)">
+      <rect width="275" height="150" rx="8" fill="url(#ha-card-pod)" stroke="#0ea5e9" stroke-width="1.2" />
+      <text x="12" y="20" fill="#7dd3fc" font-size="11" font-weight="700">Keycloak Pod #1 (Quarkus)</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="9.5">• Vert.x Non-Blocking Engine</text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="9.5">• RESTEasy Reactive API Handler</text>
+      <line x1="12" y1="64" x2="263" y2="64" stroke="#0ea5e9" stroke-width="0.8" opacity="0.4" />
+      <text x="12" y="80" fill="#6ee7b7" font-size="10" font-weight="600">Embedded Infinispan Node A</text>
+      <text x="12" y="96" fill="#94a3b8" font-size="9">• Owner für Session Partitions 1-33%</text>
+      <text x="12" y="112" fill="#94a3b8" font-size="9">• Backup für Session Partitions 34-66%</text>
+      <text x="12" y="132" fill="#38bdf8" font-size="8.5">Health: /lb-check (HTTP 200)</text>
+    </g>
+
+    <!-- Keycloak Pod 2 -->
+    <g transform="translate(325, 36)">
+      <rect width="275" height="150" rx="8" fill="url(#ha-card-pod)" stroke="#0ea5e9" stroke-width="1.2" />
+      <text x="12" y="20" fill="#7dd3fc" font-size="11" font-weight="700">Keycloak Pod #2 (Quarkus)</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="9.5">• Vert.x Non-Blocking Engine</text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="9.5">• RESTEasy Reactive API Handler</text>
+      <line x1="12" y1="64" x2="263" y2="64" stroke="#0ea5e9" stroke-width="0.8" opacity="0.4" />
+      <text x="12" y="80" fill="#6ee7b7" font-size="10" font-weight="600">Embedded Infinispan Node B</text>
+      <text x="12" y="96" fill="#94a3b8" font-size="9">• Owner für Session Partitions 34-66%</text>
+      <text x="12" y="112" fill="#94a3b8" font-size="9">• Backup für Session Partitions 67-100%</text>
+      <text x="12" y="132" fill="#38bdf8" font-size="8.5">Health: /lb-check (HTTP 200)</text>
+    </g>
+
+    <!-- Keycloak Pod 3 -->
+    <g transform="translate(630, 36)">
+      <rect width="275" height="150" rx="8" fill="url(#ha-card-pod)" stroke="#0ea5e9" stroke-width="1.2" />
+      <text x="12" y="20" fill="#7dd3fc" font-size="11" font-weight="700">Keycloak Pod #3 (Quarkus)</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="9.5">• Vert.x Non-Blocking Engine</text>
+      <text x="12" y="54" fill="#cbd5e1" font-size="9.5">• RESTEasy Reactive API Handler</text>
+      <line x1="12" y1="64" x2="263" y2="64" stroke="#0ea5e9" stroke-width="0.8" opacity="0.4" />
+      <text x="12" y="80" fill="#6ee7b7" font-size="10" font-weight="600">Embedded Infinispan Node C</text>
+      <text x="12" y="96" fill="#94a3b8" font-size="9">• Owner für Session Partitions 67-100%</text>
+      <text x="12" y="112" fill="#94a3b8" font-size="9">• Backup für Session Partitions 1-33%</text>
+      <text x="12" y="132" fill="#38bdf8" font-size="8.5">Health: /lb-check (HTTP 200)</text>
+    </g>
+
+    <!-- JGroups Inter-Pod Sync Bar -->
+    <g transform="translate(20, 196)">
+      <rect width="885" height="30" rx="6" fill="#042f2e" stroke="#14b8a6" stroke-width="1" />
+      <text x="14" y="20" fill="#5eead4" font-size="10" font-weight="700">VERTEILTER JGROUPS BUS (DISCOVERY: KUBE_PING / DNS_PING · PORT 7800 TCP)</text>
+      <text x="590" y="20" fill="#cbd5e1" font-size="9.5">Automatische Topologie-Erkennung &amp; Cache-Replikation</text>
+    </g>
+  </g>
+
+  <!-- Flow Arrows Tier 2 -> Tier 3 -->
+  <line x1="250" y1="445" x2="250" y2="485" stroke="#c084fc" stroke-width="2" marker-end="url(#ha-arr-purple)" />
+  <line x1="750" y1="445" x2="750" y2="485" stroke="#34d399" stroke-width="2" marker-end="url(#ha-arr-emerald)" />
+
+  <!-- Tier 3: Database & Federation (Bottom) -->
+  <!-- Left Box: PostgreSQL HA Tier -->
+  <g transform="translate(35, 490)">
+    <rect width="455" height="150" rx="10" fill="url(#ha-card-db)" stroke="#9333ea" stroke-width="1.5" filter="url(#ha-shadow)" />
+    <rect x="0" y="0" width="455" height="24" rx="10" fill="#7e22ce" opacity="0.3" />
+    <text x="14" y="17" fill="#d8b4fe" font-size="11" font-weight="700">POSTGRESQL HIGH AVAILABILITY CLUSTER (PATRONI / PGBOUNCER)</text>
+
+    <!-- Sub Pods DB -->
+    <g transform="translate(14, 34)">
+      <rect width="205" height="100" rx="6" fill="#1e053a" stroke="#a855f7" stroke-width="1" />
+      <text x="10" y="20" fill="#f3e8ff" font-size="10" font-weight="700">PostgreSQL Primary (RW)</text>
+      <text x="10" y="38" fill="#cbd5e1" font-size="9">• Transaktionale Writes</text>
+      <text x="10" y="54" fill="#cbd5e1" font-size="9">• User, Realm &amp; Client Changes</text>
+      <text x="10" y="70" fill="#cbd5e1" font-size="9">• Synchronous WAL Replication</text>
+      <text x="10" y="88" fill="#34d399" font-size="8.5" font-weight="600">RPO = 0 / RTO &lt; 10s</text>
+    </g>
+
+    <g transform="translate(235, 34)">
+      <rect width="205" height="100" rx="6" fill="#1e053a" stroke="#a855f7" stroke-width="1" />
+      <text x="10" y="20" fill="#f3e8ff" font-size="10" font-weight="700">PostgreSQL Standby (RO)</text>
+      <text x="10" y="38" fill="#cbd5e1" font-size="9">• Skalierbare Leseabfragen</text>
+      <text x="10" y="54" fill="#cbd5e1" font-size="9">• Offline Session Queries</text>
+      <text x="10" y="70" fill="#cbd5e1" font-size="9">• Automatisches Failover</text>
+      <text x="10" y="88" fill="#c084fc" font-size="8.5" font-weight="600">Entlastet Primary Instance</text>
+    </g>
+  </g>
+
+  <!-- Right Box: Enterprise Federation & Observability Tier -->
+  <g transform="translate(510, 490)">
+    <rect width="455" height="150" rx="10" fill="#041f1a" stroke="#10b981" stroke-width="1.5" filter="url(#ha-shadow)" />
+    <rect x="0" y="0" width="455" height="24" rx="10" fill="#047857" opacity="0.3" />
+    <text x="14" y="17" fill="#6ee7b7" font-size="11" font-weight="700">ENTERPRISE FEDERATION &amp; OBSERVABILITY PIPELINES</text>
+
+    <g transform="translate(14, 34)">
+      <rect width="205" height="100" rx="6" fill="#022c22" stroke="#059669" stroke-width="1" />
+      <text x="10" y="20" fill="#d1fae5" font-size="10" font-weight="700">Enterprise IdP / LDAP</text>
+      <text x="10" y="38" fill="#cbd5e1" font-size="9">• Active Directory (LDAPS / 636)</text>
+      <text x="10" y="54" fill="#cbd5e1" font-size="9">• Campus Shibboleth SAML</text>
+      <text x="10" y="70" fill="#cbd5e1" font-size="9">• Kerberos SPNEGO SSO</text>
+      <text x="10" y="88" fill="#34d399" font-size="8.5" font-weight="600">Periodischer Sync-Worker</text>
+    </g>
+
+    <g transform="translate(235, 34)">
+      <rect width="205" height="100" rx="6" fill="#022c22" stroke="#059669" stroke-width="1" />
+      <text x="10" y="20" fill="#d1fae5" font-size="10" font-weight="700">Telemetrie &amp; Audit (OTEL)</text>
+      <text x="10" y="38" fill="#cbd5e1" font-size="9">• Prometheus Metriken (/metrics)</text>
+      <text x="10" y="54" fill="#cbd5e1" font-size="9">• OpenTelemetry Tracing</text>
+      <text x="10" y="70" fill="#cbd5e1" font-size="9">• Audit Event Listener SPI</text>
+      <text x="10" y="88" fill="#38bdf8" font-size="8.5" font-weight="600">Echtzeit Security SIEM</text>
+    </g>
+  </g>
+</svg>

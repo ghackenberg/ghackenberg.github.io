@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 780" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <linearGradient id="te-header" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="te-card-actor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="te-card-kc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <linearGradient id="te-card-res" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#311302" />
+      <stop offset="100%" stop-color="#1a0a01" />
+    </linearGradient>
+
+    <filter id="te-shadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="2" dy="2" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <marker id="te-arr-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="te-arr-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <marker id="te-arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#34d399" />
+    </marker>
+    <marker id="te-arr-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Frame Canvas -->
+  <rect x="10" y="10" width="980" height="760" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="24" fill="url(#te-header)" font-size="19" font-weight="800" letter-spacing="0.5">OAUTH 2.0 TOKEN EXCHANGE (RFC 8693) IM AGENTEN-ÖKOSYSTEM</text>
+    <text x="0" y="44" fill="#94a3b8" font-size="12">Sichere Identitätspropagation, Privilegien-Downscoping &amp; Abwehr des Confused-Deputy-Problems</text>
+  </g>
+
+  <!-- Lifelines (Behind boxes, terminating cleanly before footer) -->
+  <line x1="130" y1="155" x2="130" y2="685" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.35" />
+  <line x1="370" y1="155" x2="370" y2="685" stroke="#c084fc" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.35" />
+  <line x1="620" y1="155" x2="620" y2="685" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.35" />
+  <line x1="865" y1="155" x2="865" y2="685" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.35" />
+
+  <!-- 4 Actor Header Cards -->
+  <!-- Actor 1: End User & Open WebUI (Center: 130) -->
+  <g transform="translate(40, 85)">
+    <rect width="180" height="70" rx="10" fill="url(#te-card-actor)" stroke="#6366f1" stroke-width="1.5" filter="url(#te-shadow)" />
+    <text x="14" y="24" fill="#a5b4fc" font-size="11.5" font-weight="700">1. End-User &amp; UI</text>
+    <text x="14" y="42" fill="#e0e7ff" font-size="10">Open WebUI Frontend</text>
+    <text x="14" y="58" fill="#94a3b8" font-size="9">OIDC Session (sub: user_123)</text>
+  </g>
+
+  <!-- Actor 2: Hermes Agent Runtime (Center: 370) -->
+  <g transform="translate(280, 85)">
+    <rect width="180" height="70" rx="10" fill="url(#te-card-actor)" stroke="#c084fc" stroke-width="1.5" filter="url(#te-shadow)" />
+    <text x="14" y="24" fill="#d8b4fe" font-size="11.5" font-weight="700">2. Hermes Agent</text>
+    <text x="14" y="42" fill="#f3e8ff" font-size="10">Confidential Client</text>
+    <text x="14" y="58" fill="#94a3b8" font-size="9">client_id: hermes-agent</text>
+  </g>
+
+  <!-- Actor 3: Keycloak IAM Server (Center: 620) -->
+  <g transform="translate(530, 85)">
+    <rect width="180" height="70" rx="10" fill="url(#te-card-kc)" stroke="#10b981" stroke-width="1.8" filter="url(#te-shadow)" />
+    <text x="14" y="24" fill="#6ee7b7" font-size="11.5" font-weight="800">3. Keycloak IAM</text>
+    <text x="14" y="42" fill="#d1fae5" font-size="10">Token Exchange Engine</text>
+    <text x="14" y="58" fill="#94a3b8" font-size="9">RFC 8693 Token Endpoint</text>
+  </g>
+
+  <!-- Actor 4: MCP Resource Server (Center: 865) -->
+  <g transform="translate(775, 85)">
+    <rect width="180" height="70" rx="10" fill="url(#te-card-res)" stroke="#f59e0b" stroke-width="1.5" filter="url(#te-shadow)" />
+    <text x="14" y="24" fill="#fde68a" font-size="11.5" font-weight="700">4. Resource Server</text>
+    <text x="14" y="42" fill="#fef3c7" font-size="10">MCP Tool / LiteLLM Proxy</text>
+    <text x="14" y="58" fill="#94a3b8" font-size="9">aud: mcp-erp-service</text>
+  </g>
+
+  <!-- STEP 1: User prompts Open WebUI -> Hermes Agent (130 -> 370) -->
+  <g transform="translate(130, 192)">
+    <line x1="0" y1="0" x2="240" y2="0" stroke="#38bdf8" stroke-width="2" marker-end="url(#te-arr-cyan)" />
+    <rect x="15" y="-22" width="210" height="32" rx="6" fill="#0b1329" stroke="#38bdf8" stroke-width="1" />
+    <text x="25" y="-7" fill="#7dd3fc" font-size="9.5" font-weight="700">1. Prompt &amp; Delegations-Trigger</text>
+    <text x="25" y="5" fill="#cbd5e1" font-size="8.5">Überträgt Benutzer-Token (T_user)</text>
+  </g>
+
+  <!-- STEP 2: Hermes Agent calls Keycloak Token Exchange (370 -> 620) -->
+  <g transform="translate(370, 260)">
+    <line x1="0" y1="0" x2="250" y2="0" stroke="#c084fc" stroke-width="2" marker-end="url(#te-arr-purple)" />
+    <rect x="15" y="-25" width="225" height="36" rx="6" fill="#0b1329" stroke="#c084fc" stroke-width="1" />
+    <text x="25" y="-9" fill="#d8b4fe" font-size="9.5" font-weight="700">2. POST /token (grant_type=token-exchange)</text>
+    <text x="25" y="5" fill="#94a3b8" font-size="8.5">subject_token=T_user · aud=mcp-erp · downscope</text>
+  </g>
+
+  <!-- STEP 3: Keycloak Policy Evaluation Box (Centered at 620) -->
+  <g transform="translate(510, 305)">
+    <rect width="220" height="84" rx="8" fill="#022c22" stroke="#10b981" stroke-width="1.2" filter="url(#te-shadow)" />
+    <text x="12" y="19" fill="#6ee7b7" font-size="10.5" font-weight="700">Keycloak Policy Evaluation</text>
+    <line x1="12" y1="26" x2="208" y2="26" stroke="#10b981" stroke-width="0.8" opacity="0.4" />
+    <text x="12" y="42" fill="#cbd5e1" font-size="9">• Client Policy: Hermes autorisiert</text>
+    <text x="12" y="58" fill="#cbd5e1" font-size="9">• Downscoping: Schreibrechte entzogen</text>
+    <text x="12" y="74" fill="#34d399" font-size="9" font-weight="600">• Actor-Claim: act={sub:hermes-agent}</text>
+  </g>
+
+  <!-- STEP 4: Keycloak returns Downscoped Delegated Token to Agent (620 -> 370) -->
+  <g transform="translate(620, 418)">
+    <line x1="0" y1="0" x2="-250" y2="0" stroke="#34d399" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#te-arr-emerald)" />
+    <rect x="-235" y="-22" width="220" height="32" rx="6" fill="#0b1329" stroke="#34d399" stroke-width="1" />
+    <text x="-225" y="-7" fill="#6ee7b7" font-size="9.5" font-weight="700">3. Emittiere T_delegated (Downscoped)</text>
+    <text x="-225" y="5" fill="#cbd5e1" font-size="8.5">Reduzierter Scope + kryptografischer Actor-Claim</text>
+  </g>
+
+  <!-- Detail Token Badge: T_delegated Claims (Attached to Hermes Agent, Center: 370) -->
+  <g transform="translate(250, 455)">
+    <rect width="240" height="74" rx="8" fill="#130c25" stroke="#8b5cf6" stroke-width="1.2" filter="url(#te-shadow)" />
+    <text x="12" y="18" fill="#c084fc" font-size="10" font-weight="700">Token Claims (T_delegated):</text>
+    <line x1="12" y1="24" x2="228" y2="24" stroke="#8b5cf6" stroke-width="0.8" opacity="0.4" />
+    <text x="12" y="40" fill="#cbd5e1" font-size="8.5">sub: "user_123"  (Original-Identität)</text>
+    <text x="12" y="54" fill="#cbd5e1" font-size="8.5">act: { "sub": "hermes-agent" }  (Stellvertreter)</text>
+    <text x="12" y="68" fill="#38bdf8" font-size="8.5" font-weight="600">aud: "mcp-erp"  |  scope: "erp:read"</text>
+  </g>
+
+  <!-- STEP 5: Hermes Agent calls MCP Tool / LiteLLM Proxy (370 -> 865) -->
+  <g transform="translate(370, 560)">
+    <line x1="0" y1="0" x2="495" y2="0" stroke="#f59e0b" stroke-width="2" marker-end="url(#te-arr-amber)" />
+    <rect x="90" y="-24" width="315" height="34" rx="6" fill="#0b1329" stroke="#f59e0b" stroke-width="1" />
+    <text x="102" y="-10" fill="#fde68a" font-size="9.5" font-weight="700">4. Tool-Aufruf mit T_delegated: GET /api/v1/inventory</text>
+    <text x="102" y="4" fill="#cbd5e1" font-size="8.5">Überträgt Bearer T_delegated (Gültig exklusiv für mcp-erp)</text>
+  </g>
+
+  <!-- STEP 6: Verification Box inside Resource Server (Center: 865) -->
+  <g transform="translate(760, 605)">
+    <rect width="210" height="84" rx="8" fill="#1c1103" stroke="#f59e0b" stroke-width="1.2" filter="url(#te-shadow)" />
+    <text x="12" y="19" fill="#fde68a" font-size="10.5" font-weight="700">Stateless Token Verification</text>
+    <line x1="12" y1="26" x2="198" y2="26" stroke="#f59e0b" stroke-width="0.8" opacity="0.4" />
+    <text x="12" y="42" fill="#cbd5e1" font-size="9">• Signatur via Keycloak JWKS geprüft</text>
+    <text x="12" y="58" fill="#cbd5e1" font-size="9">• Scope verifiziert: nur Leserechte</text>
+    <text x="12" y="74" fill="#34d399" font-size="9" font-weight="600">• Audit: user_123 via hermes-agent</text>
+  </g>
+
+  <!-- Security Advantage Footer Card -->
+  <g transform="translate(35, 705)">
+    <rect width="930" height="52" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1" />
+    <text x="18" y="21" fill="#38bdf8" font-size="10.5" font-weight="700">Sicherheitsgarantie (Abwehr des Confused-Deputy-Problems):</text>
+    <text x="18" y="37" fill="#94a3b8" font-size="9.5">Der Agent erhält niemals die Generalvollmacht des Nutzers. Token sind kryptografisch an den Zielservice (<tspan fill="#fde68a">aud</tspan>) gebunden, auf Minimalrechte (<tspan fill="#6ee7b7">downscoped</tspan>) reduziert</text>
+    <text x="18" y="49" fill="#94a3b8" font-size="9.5">und im Audit-Trail lückenlos als Delegationskette (<tspan fill="#a5b4fc">sub + act</tspan>) nachvollziehbar.</text>
+  </g>
+</svg>
