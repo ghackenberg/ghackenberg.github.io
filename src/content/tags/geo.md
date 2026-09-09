@@ -1,4 +1,4 @@
 ---
-title: "Geospatial Systems & GIS"
-description: "Geographic information systems, spatial coordinate transformations, and location-based data visualizations."
+title: "Generative Engine Optimization (GEO)"
+description: "Architectures, retrieval-augmented generation (RAG) readiness, semantic citation engineering, and visibility optimization for generative AI search engines."
 ---
