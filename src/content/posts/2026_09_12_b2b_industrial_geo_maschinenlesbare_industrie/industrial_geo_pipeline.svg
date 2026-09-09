@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <filter id="b2b-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.9" />
+    </filter>
+    <linearGradient id="header-b2b" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
+    </marker>
+  </defs>
+
+  <!-- Frame Canvas -->
+  <rect x="10" y="10" width="820" height="430" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Title & Subtitle -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="22" fill="url(#header-b2b)" font-size="19" font-weight="800" letter-spacing="0.5">B2B INDUSTRIAL GEO: VOM GATED-PDF ZUM DIGITALEN SPEZIFIKATIONS-TWIN</text>
+    <text x="0" y="42" fill="#94a3b8" font-size="12">Die Transformation technischer Maschinendaten für autonome KI-Beschaffungsagenten</text>
+  </g>
+
+  <!-- Box 1: Alt (Gated Content) -->
+  <g transform="translate(35, 85)" filter="url(#b2b-shadow)">
+    <rect x="0" y="0" width="225" height="295" rx="12" fill="#110d18" stroke="#ef4444" stroke-width="2" />
+    <rect x="0" y="0" width="225" height="42" rx="12" fill="#2d1219" stroke="#ef4444" stroke-width="2" />
+    <text x="20" y="26" fill="#fca5a5" font-size="13" font-weight="700">1. Klassisches B2B</text>
+    <text x="145" y="26" fill="#ef4444" font-size="11" font-weight="800">UNSICHTBAR</text>
+
+    <g transform="translate(15, 60)">
+      <rect x="0" y="0" width="195" height="50" rx="8" fill="#1f1627" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#f87171" font-size="11" font-weight="700">Gated Whitepapers</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">Formulare sperren Crawler aus</text>
+    </g>
+    <g transform="translate(15, 125)">
+      <rect x="0" y="0" width="195" height="50" rx="8" fill="#1f1627" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#f87171" font-size="11" font-weight="700">Unstrukturierte PDFs</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">Tabellen für RAG unlesbar</text>
+    </g>
+    <g transform="translate(15, 190)">
+      <rect x="0" y="0" width="195" height="50" rx="8" fill="#1f1627" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#f87171" font-size="11" font-weight="700">Werbliche Prosa</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">Keine nachprüfbaren Fakten</text>
+    </g>
+    <g transform="translate(15, 252)">
+      <text x="10" y="18" fill="#ef4444" font-size="11" font-weight="800">Ergebnis: 0% KI-Shortlist</text>
+    </g>
+  </g>
+
+  <!-- Center Arrow -->
+  <path d="M 275 230 L 305 230" stroke="#38bdf8" stroke-width="3" marker-end="url(#arrow-blue)" />
+
+  <!-- Box 2: Transformation Layer (Standards) -->
+  <g transform="translate(320, 85)" filter="url(#b2b-shadow)">
+    <rect x="0" y="0" width="225" height="295" rx="12" fill="#0d1726" stroke="#3b82f6" stroke-width="2" />
+    <rect x="0" y="0" width="225" height="42" rx="12" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+    <text x="20" y="26" fill="#93c5fd" font-size="13" font-weight="700">2. Strukturierung</text>
+    <text x="155" y="26" fill="#38bdf8" font-size="11" font-weight="800">STANDARDS</text>
+
+    <g transform="translate(15, 60)">
+      <rect x="0" y="0" width="195" height="50" rx="8" fill="#0f172a" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#38bdf8" font-size="11" font-weight="700">DOM-Spezifikationen</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">Toleranzen, Werkstoffe &amp; Maße</text>
+    </g>
+    <g transform="translate(15, 125)">
+      <rect x="0" y="0" width="195" height="50" rx="8" fill="#0f172a" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#38bdf8" font-size="11" font-weight="700">Schema.org Normen</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">ISO, IEC, SIL, CE Zertifikate</text>
+    </g>
+    <g transform="translate(15, 190)">
+      <rect x="0" y="0" width="195" height="50" rx="8" fill="#0f172a" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#38bdf8" font-size="11" font-weight="700">AAS Digital Twin</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">IEC 63278-1 Submodels</text>
+    </g>
+    <g transform="translate(15, 252)">
+      <text x="10" y="18" fill="#38bdf8" font-size="11" font-weight="800">llms.txt + JSON-LD Graph</text>
+    </g>
+  </g>
+
+  <!-- Center Arrow 2 -->
+  <path d="M 560 230 L 590 230" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-blue)" />
+
+  <!-- Box 3: Neu (Agentic Ingestion) -->
+  <g transform="translate(605, 85)" filter="url(#b2b-shadow)">
+    <rect x="0" y="0" width="200" height="295" rx="12" fill="#071b15" stroke="#10b981" stroke-width="2" />
+    <rect x="0" y="0" width="200" height="42" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2" />
+    <text x="20" y="26" fill="#a7f3d0" font-size="13" font-weight="700">3. KI-Beschaffung</text>
+    <text x="135" y="26" fill="#34d399" font-size="11" font-weight="800">CITABLE</text>
+
+    <g transform="translate(15, 60)">
+      <rect x="0" y="0" width="170" height="50" rx="8" fill="#022c22" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#34d399" font-size="11" font-weight="700">94% B2B-Käufer</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">Nutzen GenAI im Einkauf (2026)</text>
+    </g>
+    <g transform="translate(15, 125)">
+      <rect x="0" y="0" width="170" height="50" rx="8" fill="#022c22" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#34d399" font-size="11" font-weight="700">Top-3 Zitation</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">Automatische Shortlist-Wahl</text>
+    </g>
+    <g transform="translate(15, 190)">
+      <rect x="0" y="0" width="170" height="50" rx="8" fill="#022c22" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+      <text x="12" y="22" fill="#34d399" font-size="11" font-weight="700">Autonomous RFQ</text>
+      <text x="12" y="38" fill="#94a3b8" font-size="9.5">Maschinenlesbare Anfrage</text>
+    </g>
+    <g transform="translate(15, 252)">
+      <text x="10" y="18" fill="#10b981" font-size="11" font-weight="800">Ergebnis: Primärquelle</text>
+    </g>
+  </g>
+
+  <!-- Bottom Bar -->
+  <g transform="translate(35, 395)">
+    <rect x="0" y="0" width="770" height="30" rx="6" fill="#0f172a" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="385" y="19" fill="#94a3b8" font-size="11" text-anchor="middle">
+      <tspan fill="#38bdf8" font-weight="700">Architektur-Prinzip:</tspan> Wer technische Parameter für KI-Crawler offenlegt, dominiert die Day-One-Shortlist.
+    </text>
+  </g>
+</svg>

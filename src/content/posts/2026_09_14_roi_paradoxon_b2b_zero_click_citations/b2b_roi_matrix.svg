@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <filter id="roi-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.9" />
+    </filter>
+    <linearGradient id="header-roi" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
+    </marker>
+  </defs>
+
+  <!-- Frame Canvas -->
+  <rect x="10" y="10" width="820" height="430" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Title & Subtitle -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="22" fill="url(#header-roi)" font-size="19" font-weight="800" letter-spacing="0.5">DAS B2B ROI-PARADOXON: VON WEBTRAFFIC ZU ZITATIONSAUTORITÄT</text>
+    <text x="0" y="42" fill="#94a3b8" font-size="12">Warum sinkende Google-Klicks im B2B mit steigendem Markteinfluss einhergehen</text>
+  </g>
+
+  <!-- ==================== LEFT CARD: OBSOLETE METRICS ==================== -->
+  <g transform="translate(35, 85)" filter="url(#roi-shadow)">
+    <rect x="0" y="0" width="370" height="295" rx="12" fill="#160d1b" stroke="#ef4444" stroke-width="2" />
+    <rect x="0" y="0" width="370" height="42" rx="12" fill="#2d1219" stroke="#ef4444" stroke-width="2" />
+    <text x="20" y="26" fill="#fca5a5" font-size="13" font-weight="700">1. Überholte Vanity-Metriken</text>
+    <text x="245" y="26" fill="#ef4444" font-size="11" font-weight="800">CLICK-PARADIGMA</text>
+
+    <g transform="translate(18, 58)">
+      <rect x="0" y="0" width="334" height="46" rx="8" fill="#221428" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1" />
+      <text x="14" y="28" fill="#ef4444" font-size="16" font-weight="800">68%</text>
+      <text x="75" y="21" fill="#f1f5f9" font-size="11" font-weight="700">Zero-Click Search Rate (2026)</text>
+      <text x="75" y="36" fill="#94a3b8" font-size="10">Nutzer erhalten Antwort direkt im SERP-Interface</text>
+    </g>
+
+    <g transform="translate(18, 114)">
+      <rect x="0" y="0" width="334" height="46" rx="8" fill="#221428" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1" />
+      <text x="14" y="28" fill="#ef4444" font-size="16" font-weight="800">-58%</text>
+      <text x="75" y="21" fill="#f1f5f9" font-size="11" font-weight="700">Organischer CTR-Einbruch (Pos 1)</text>
+      <text x="75" y="36" fill="#94a3b8" font-size="10">Google AI Overviews verdrängen blaue Links</text>
+    </g>
+
+    <g transform="translate(18, 170)">
+      <rect x="0" y="0" width="334" height="46" rx="8" fill="#221428" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1" />
+      <text x="14" y="28" fill="#f87171" font-size="14" font-weight="800">Sessions</text>
+      <text x="75" y="21" fill="#f1f5f9" font-size="11" font-weight="700">Irreführende Erfolgsmessung</text>
+      <text x="75" y="36" fill="#94a3b8" font-size="10">Kaufentscheidung fällt vor dem ersten Website-Klick</text>
+    </g>
+
+    <g transform="translate(18, 235)">
+      <text x="10" y="16" fill="#fca5a5" font-size="11" font-weight="700">Diagnose: Wer nur Sessions zählt, optimiert für die Vergangenheit.</text>
+    </g>
+  </g>
+
+  <!-- ==================== RIGHT CARD: NEW VALUE METRICS ==================== -->
+  <g transform="translate(435, 85)" filter="url(#roi-shadow)">
+    <rect x="0" y="0" width="370" height="295" rx="12" fill="#071b15" stroke="#10b981" stroke-width="2" />
+    <rect x="0" y="0" width="370" height="42" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2" />
+    <text x="20" y="26" fill="#a7f3d0" font-size="13" font-weight="700">2. Die neuen Leitmetriken</text>
+    <text x="235" y="26" fill="#34d399" font-size="11" font-weight="800">ZITATIONS-ÖKONOMIE</text>
+
+    <g transform="translate(18, 58)">
+      <rect x="0" y="0" width="334" height="46" rx="8" fill="#032c21" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+      <text x="14" y="28" fill="#34d399" font-size="15" font-weight="800">SoM</text>
+      <text x="75" y="21" fill="#f1f5f9" font-size="11" font-weight="700">Share of Model (%)</text>
+      <text x="75" y="36" fill="#94a3b8" font-size="10">Nennungshäufigkeit bei 50–100 Facheinkäufer-Prompts</text>
+    </g>
+
+    <g transform="translate(18, 114)">
+      <rect x="0" y="0" width="334" height="46" rx="8" fill="#032c21" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+      <text x="14" y="28" fill="#38bdf8" font-size="15" font-weight="800">Top 3</text>
+      <text x="75" y="21" fill="#f1f5f9" font-size="11" font-weight="700">AIO-Karussell-Präsenz</text>
+      <text x="75" y="36" fill="#94a3b8" font-size="10">Sichert &gt;80% des verbleibenden B2B-Klickstroms</text>
+    </g>
+
+    <g transform="translate(18, 170)">
+      <rect x="0" y="0" width="334" height="46" rx="8" fill="#032c21" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+      <text x="14" y="28" fill="#c084fc" font-size="14" font-weight="800">Fakten</text>
+      <text x="75" y="21" fill="#f1f5f9" font-size="11" font-weight="700">Entitäten-Präzision &amp; Sentiment</text>
+      <text x="75" y="36" fill="#94a3b8" font-size="10">Verifizierung technischer Toleranzen durch LLMs</text>
+    </g>
+
+    <g transform="translate(18, 235)">
+      <text x="10" y="16" fill="#a7f3d0" font-size="11" font-weight="700">Strategie: Verankerung als Primärquelle im Modell-Konsens.</text>
+    </g>
+  </g>
+
+  <!-- Bottom Bar -->
+  <g transform="translate(35, 395)">
+    <rect x="0" y="0" width="770" height="30" rx="6" fill="#0f172a" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="385" y="19" fill="#94a3b8" font-size="11" text-anchor="middle">
+      <tspan fill="#10b981" font-weight="700">Vertriebskonsequenz:</tspan> Ein einziger 7-stelliger Industrie-Deal via KI-Shortlist wiegt Millionen verlorener PageViews auf.
+    </text>
+  </g>
+</svg>

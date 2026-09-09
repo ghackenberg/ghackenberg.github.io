@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <filter id="reife-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.9" />
+    </filter>
+    <linearGradient id="header-reife" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+  </defs>
+
+  <!-- Frame Canvas -->
+  <rect x="10" y="10" width="820" height="430" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Title & Subtitle -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="22" fill="url(#header-reife)" font-size="19" font-weight="800" letter-spacing="0.5">DAS 4-STUFEN-REIFEGRADMODELL FÜR INDUSTRIE-GEO</text>
+    <text x="0" y="42" fill="#94a3b8" font-size="12">Vom unstrukturierten Webauftritt zur autonomen KI-Agenten-Schnittstelle</text>
+  </g>
+
+  <!-- ==================== 4 CARDS ACROSS ==================== -->
+  <!-- Level 1 -->
+  <g transform="translate(35, 80)" filter="url(#reife-shadow)">
+    <rect x="0" y="0" width="180" height="300" rx="10" fill="#140d17" stroke="#ef4444" stroke-width="1.5" />
+    <rect x="0" y="0" width="180" height="36" rx="10" fill="#2d1219" stroke="#ef4444" stroke-width="1.5" />
+    <text x="12" y="23" fill="#fca5a5" font-size="12" font-weight="800">LEVEL 1: SEO-BASE</text>
+    
+    <g transform="translate(10, 48)">
+      <text x="0" y="14" fill="#f87171" font-size="10.5" font-weight="700">Fokus: Webcrawler</text>
+      <text x="0" y="32" fill="#94a3b8" font-size="9.5">• HTML &amp; Sitemap</text>
+      <text x="0" y="48" fill="#94a3b8" font-size="9.5">• Keywords &amp; Metatags</text>
+      <text x="0" y="64" fill="#94a3b8" font-size="9.5">• Gated PDFs (Formulare)</text>
+    </g>
+
+    <rect x="10" y="145" width="160" height="75" rx="6" fill="#1f1627" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1" />
+    <text x="18" y="165" fill="#f87171" font-size="10" font-weight="700">KI-Diagnose:</text>
+    <text x="18" y="181" fill="#cbd5e1" font-size="9">Keine strukturierte</text>
+    <text x="18" y="195" fill="#cbd5e1" font-size="9">Faktenextraktion</text>
+    <text x="18" y="209" fill="#ef4444" font-size="9" font-weight="700">Faktisch unsichtbar</text>
+
+    <text x="12" y="280" fill="#ef4444" font-size="10" font-weight="800">KMU-Status: ~65%</text>
+  </g>
+
+  <!-- Level 2 -->
+  <g transform="translate(230, 80)" filter="url(#reife-shadow)">
+    <rect x="0" y="0" width="180" height="300" rx="10" fill="#18130a" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="0" y="0" width="180" height="36" rx="10" fill="#382506" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="12" y="23" fill="#fde68a" font-size="12" font-weight="800">LEVEL 2: AEO-READY</text>
+
+    <g transform="translate(10, 48)">
+      <text x="0" y="14" fill="#fbbf24" font-size="10.5" font-weight="700">Fokus: Direct Answers</text>
+      <text x="0" y="32" fill="#94a3b8" font-size="9.5">• Schema.org Typen</text>
+      <text x="0" y="48" fill="#94a3b8" font-size="9.5">• Answer-First Muster</text>
+      <text x="0" y="64" fill="#94a3b8" font-size="9.5">• FAQPage &amp; Entitäten</text>
+    </g>
+
+    <rect x="10" y="145" width="160" height="75" rx="6" fill="#291e0a" stroke="rgba(245, 158, 11, 0.3)" stroke-width="1" />
+    <text x="18" y="165" fill="#fbbf24" font-size="10" font-weight="700">KI-Diagnose:</text>
+    <text x="18" y="181" fill="#cbd5e1" font-size="9">Eindeutige Entität</text>
+    <text x="18" y="195" fill="#cbd5e1" font-size="9">im Knowledge Graph</text>
+    <text x="18" y="209" fill="#f59e0b" font-size="9" font-weight="700">Snippets &amp; Overviews</text>
+
+    <text x="12" y="280" fill="#f59e0b" font-size="10" font-weight="800">KMU-Status: ~25%</text>
+  </g>
+
+  <!-- Level 3 -->
+  <g transform="translate(425, 80)" filter="url(#reife-shadow)">
+    <rect x="0" y="0" width="180" height="300" rx="10" fill="#0c1726" stroke="#3b82f6" stroke-width="1.5" />
+    <rect x="0" y="0" width="180" height="36" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" />
+    <text x="12" y="23" fill="#93c5fd" font-size="12" font-weight="800">LEVEL 3: GEO-NATIVE</text>
+
+    <g transform="translate(10, 48)">
+      <text x="0" y="14" fill="#38bdf8" font-size="10.5" font-weight="700">Fokus: RAG-Ingestion</text>
+      <text x="0" y="32" fill="#94a3b8" font-size="9.5">• /llms.txt &amp; llms-full</text>
+      <text x="0" y="48" fill="#94a3b8" font-size="9.5">• Spezifikationsmatrizen</text>
+      <text x="0" y="64" fill="#94a3b8" font-size="9.5">• GPT/Perplexity Freigabe</text>
+    </g>
+
+    <rect x="10" y="145" width="160" height="75" rx="6" fill="#0f172a" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1" />
+    <text x="18" y="165" fill="#38bdf8" font-size="10" font-weight="700">KI-Diagnose:</text>
+    <text x="18" y="181" fill="#cbd5e1" font-size="9">Direkt zitierte</text>
+    <text x="18" y="195" fill="#cbd5e1" font-size="9">Primärquelle</text>
+    <text x="18" y="209" fill="#38bdf8" font-size="9" font-weight="700">Top-3 Zitationskarte</text>
+
+    <text x="12" y="280" fill="#38bdf8" font-size="10" font-weight="800">KMU-Status: ~8%</text>
+  </g>
+
+  <!-- Level 4 -->
+  <g transform="translate(620, 80)" filter="url(#reife-shadow)">
+    <rect x="0" y="0" width="185" height="300" rx="10" fill="#061b14" stroke="#10b981" stroke-width="1.5" />
+    <rect x="0" y="0" width="185" height="36" rx="10" fill="#064e3b" stroke="#10b981" stroke-width="1.5" />
+    <text x="12" y="23" fill="#a7f3d0" font-size="12" font-weight="800">LEVEL 4: AGENTIC AIO</text>
+
+    <g transform="translate(10, 48)">
+      <text x="0" y="14" fill="#34d399" font-size="10.5" font-weight="700">Fokus: Autonome Bots</text>
+      <text x="0" y="32" fill="#94a3b8" font-size="9.5">• /content-manifest.json</text>
+      <text x="0" y="48" fill="#94a3b8" font-size="9.5">• AAS Digital Twin (IEC)</text>
+      <text x="0" y="64" fill="#94a3b8" font-size="9.5">• Automatisierte RFQ-API</text>
+    </g>
+
+    <rect x="10" y="145" width="165" height="75" rx="6" fill="#022c22" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+    <text x="18" y="165" fill="#34d399" font-size="10" font-weight="700">KI-Diagnose:</text>
+    <text x="18" y="181" fill="#cbd5e1" font-size="9">Programmatischer</text>
+    <text x="18" y="195" fill="#cbd5e1" font-size="9">M2M-Spezifikationscheck</text>
+    <text x="18" y="209" fill="#10b981" font-size="9" font-weight="700">Transaktionale Reife</text>
+
+    <text x="12" y="280" fill="#10b981" font-size="10" font-weight="800">KMU-Status: &lt;2%</text>
+  </g>
+
+  <!-- Bottom Bar -->
+  <g transform="translate(35, 395)">
+    <rect x="0" y="0" width="770" height="30" rx="6" fill="#0f172a" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    <text x="385" y="19" fill="#94a3b8" font-size="11" text-anchor="middle">
+      <tspan fill="#38bdf8" font-weight="700">Roadmap-Empfehlung:</tspan> Industrieunternehmen sollten 2026 den gezielten Sprung von Level 1 auf Level 3 vollziehen.
+    </text>
+  </g>
+</svg>
