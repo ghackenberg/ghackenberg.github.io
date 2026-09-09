@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 470" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <!-- Drop Shadow for Comic Outline Depth -->
+    <filter id="comic-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="3" stdDeviation="0" flood-color="#000000" flood-opacity="0.9" />
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="header-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+
+    <linearGradient id="card-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e1726" />
+      <stop offset="100%" stop-color="#070d18" />
+    </linearGradient>
+
+    <linearGradient id="card-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141124" />
+      <stop offset="100%" stop-color="#090714" />
+    </linearGradient>
+  </defs>
+
+  <!-- Frame Canvas -->
+  <rect x="10" y="10" width="820" height="450" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Title & Subtitle -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="22" fill="url(#header-grad)" font-size="20" font-weight="800" letter-spacing="0.5">GEO &amp; AEO: EMPIRISCHE STUDIENLANDSCHAFT</text>
+    <text x="0" y="42" fill="#94a3b8" font-size="12.5">Wissenschaftliche Kausalhebel (Peer-Reviewed) vs. Live-Marktdynamik (Industrie-Benchmarks)</text>
+  </g>
+
+  <!-- ==================== LEFT CARD: PEER-REVIEWED SCIENCE ==================== -->
+  <g transform="translate(35, 88)" filter="url(#comic-shadow)">
+    <!-- Container -->
+    <rect x="0" y="0" width="370" height="310" rx="12" fill="url(#card-left)" stroke="#3b82f6" stroke-width="2" />
+    
+    <!-- Badge Header -->
+    <rect x="0" y="0" width="370" height="46" rx="12" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+    <circle cx="24" cy="23" r="8" fill="#3b82f6" />
+    <text x="40" y="28" fill="#f8fafc" font-size="14" font-weight="700">1. Peer-Reviewed Studien</text>
+    <text x="245" y="28" fill="#93c5fd" font-size="11" font-weight="600">KDD • EMNLP • SIGIR</text>
+
+    <!-- Metric Row 1: Quotations -->
+    <g transform="translate(18, 62)">
+      <rect x="0" y="0" width="334" height="48" rx="8" fill="#0f172a" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1.5" />
+      <text x="14" y="29" fill="#10b981" font-size="18" font-weight="800">+40%</text>
+      <text x="75" y="22" fill="#f1f5f9" font-size="12" font-weight="700">Expertenzitate &amp; Quellenangaben</text>
+      <text x="75" y="37" fill="#94a3b8" font-size="10.5">Höchster gemessener Sichtbarkeitsgewinn (KDD '24)</text>
+    </g>
+
+    <!-- Metric Row 2: Statistics & Numbers -->
+    <g transform="translate(18, 120)">
+      <rect x="0" y="0" width="334" height="48" rx="8" fill="#0f172a" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1.5" />
+      <text x="14" y="29" fill="#38bdf8" font-size="18" font-weight="800">+37%</text>
+      <text x="75" y="22" fill="#f1f5f9" font-size="12" font-weight="700">Statistiken &amp; Numerische Fakten</text>
+      <text x="75" y="37" fill="#94a3b8" font-size="10.5">Disproportionaler Effekt in Fachdomänen (GEO-bench)</text>
+    </g>
+
+    <!-- Metric Row 3: Keyword Stuffing -->
+    <g transform="translate(18, 178)">
+      <rect x="0" y="0" width="334" height="48" rx="8" fill="#0f172a" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1.5" />
+      <text x="14" y="29" fill="#ef4444" font-size="18" font-weight="800">-10%</text>
+      <text x="75" y="22" fill="#f1f5f9" font-size="12" font-weight="700">Klassisches Keyword-Stuffing</text>
+      <text x="75" y="37" fill="#94a3b8" font-size="10.5">SEO-Relikte wirken in Generative Engines negativ</text>
+    </g>
+
+    <!-- Metric Row 4: Verifiability Gap -->
+    <g transform="translate(18, 236)">
+      <rect x="0" y="0" width="334" height="54" rx="8" fill="#0f172a" stroke="rgba(245, 158, 11, 0.3)" stroke-width="1.5" />
+      <text x="14" y="33" fill="#f59e0b" font-size="18" font-weight="800">51.5%</text>
+      <text x="75" y="24" fill="#f1f5f9" font-size="12" font-weight="700">Tatsächlich belegte Zitate (EMNLP '23)</text>
+      <text x="75" y="40" fill="#94a3b8" font-size="10.5">LLMs bevorzugen Autorität über formale Logik</text>
+    </g>
+  </g>
+
+  <!-- ==================== RIGHT CARD: INDUSTRY BENCHMARKS ==================== -->
+  <g transform="translate(435, 88)" filter="url(#comic-shadow)">
+    <!-- Container -->
+    <rect x="0" y="0" width="370" height="310" rx="12" fill="url(#card-right)" stroke="#a855f7" stroke-width="2" />
+    
+    <!-- Badge Header -->
+    <rect x="0" y="0" width="370" height="46" rx="12" fill="#2e1065" stroke="#a855f7" stroke-width="2" />
+    <circle cx="24" cy="23" r="8" fill="#a855f7" />
+    <text x="40" y="28" fill="#f8fafc" font-size="14" font-weight="700">2. Industrie-Benchmarks</text>
+    <text x="235" y="28" fill="#d8b4fe" font-size="11" font-weight="600">SparkToro • BrightEdge</text>
+
+    <!-- Metric Row 1: Zero-Click -->
+    <g transform="translate(18, 62)">
+      <rect x="0" y="0" width="334" height="48" rx="8" fill="#180d2b" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1.5" />
+      <text x="14" y="29" fill="#f59e0b" font-size="18" font-weight="800">68%</text>
+      <text x="75" y="22" fill="#f1f5f9" font-size="12" font-weight="700">Zero-Click Searches (USA 2026)</text>
+      <text x="75" y="37" fill="#94a3b8" font-size="10.5">Nutzer decken Informationsbedarf direkt im SERP</text>
+    </g>
+
+    <!-- Metric Row 2: Ranking Disruption -->
+    <g transform="translate(18, 120)">
+      <rect x="0" y="0" width="334" height="48" rx="8" fill="#180d2b" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1.5" />
+      <text x="14" y="29" fill="#38bdf8" font-size="18" font-weight="800">54%</text>
+      <text x="75" y="22" fill="#f1f5f9" font-size="12" font-weight="700">Quellen außerhalb der Top 10</text>
+      <text x="75" y="37" fill="#94a3b8" font-size="10.5">AIO zitiert strukturierte Nischenquellen (BrightEdge)</text>
+    </g>
+
+    <!-- Metric Row 3: Organic CTR Drop -->
+    <g transform="translate(18, 178)">
+      <rect x="0" y="0" width="334" height="48" rx="8" fill="#180d2b" stroke="rgba(239, 68, 68, 0.3)" stroke-width="1.5" />
+      <text x="14" y="29" fill="#ef4444" font-size="18" font-weight="800">-58%</text>
+      <text x="75" y="22" fill="#f1f5f9" font-size="12" font-weight="700">CTR-Kompression auf Position 1</text>
+      <text x="75" y="37" fill="#94a3b8" font-size="10.5">Verdrängung organischer Links durch AIO-Boxen</text>
+    </g>
+
+    <!-- Metric Row 4: Carousel Concentration -->
+    <g transform="translate(18, 236)">
+      <rect x="0" y="0" width="334" height="54" rx="8" fill="#180d2b" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1.5" />
+      <text x="14" y="33" fill="#10b981" font-size="18" font-weight="800">Top 3</text>
+      <text x="75" y="24" fill="#f1f5f9" font-size="12" font-weight="700">Zitationskarten im AI Overview</text>
+      <text x="75" y="40" fill="#94a3b8" font-size="10.5">Erhalten &gt;80% des verbleibenden AIO-Referral-Traffics</text>
+    </g>
+  </g>
+
+  <!-- ==================== BOTTOM SYNTHESIS FOOTER ==================== -->
+  <g transform="translate(35, 412)">
+    <rect x="0" y="0" width="770" height="34" rx="8" fill="#0f172a" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1" />
+    <text x="385" y="21" fill="#e2e8f0" font-size="11.5" font-weight="600" text-anchor="middle">
+      <tspan fill="#38bdf8">Strategische Konsequenz:</tspan> Semantische Struktur &amp; belegbare Faktenautorität schlagen reine Keyword-Platzierung.
+    </text>
+  </g>
+</svg>
