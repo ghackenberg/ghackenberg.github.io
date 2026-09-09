@@ -120,7 +120,7 @@ const optimizedScreenshotLight = screenshotLight ? await getImage({
 
   <!-- Details -->
   <div class="p-5 md:p-6 flex flex-col flex-grow border-t border-element-border">
-    <div class="flex-grow flex flex-col">
+    <div>
       <h2 class="text-lg font-bold text-gray-100 mb-2 group-hover:text-brand-yellow transition-colors leading-tight">
         {title}
         <span 
@@ -131,7 +131,7 @@ const optimizedScreenshotLight = screenshotLight ? await getImage({
       </h2>
 
       {description && (
-        <p class="text-gray-400 text-sm leading-relaxed mb-3 font-normal line-clamp-3 flex-grow">
+        <p class="text-gray-400 text-sm leading-relaxed mb-3 font-normal">
           {description}
         </p>
       )}
