@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar.astro";
 import PostCard from "../../components/PostCard.astro";
 import PublicationCard from "../../components/PublicationCard.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
+import CourseCard from "../../components/CourseCard.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -11,6 +12,14 @@ export async function getStaticPaths() {
   const posts = await getCollection("posts");
   const publications = await getCollection("publications");
   const projects = await getCollection("projects");
+  const courses = await getCollection("courses");
+  const services = await getCollection("services");
+  const repos = await getCollection("github-repos");
+
+  const repoMap = new Map();
+  for (const repo of repos) {
+    repoMap.set(repo.id.toLowerCase(), repo.data);
+  }
 
   return tags.map((tag) => {
     const relatedPosts = posts
@@ -25,6 +34,13 @@ export async function getStaticPaths() {
       .filter((proj) => proj.data.tags && proj.data.tags.includes(tag.id))
       .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
+    const relatedCourses = courses
+      .filter((c) => c.data.tags && c.data.tags.includes(tag.id));
+
+    const relatedServices = services
+      .filter((s) => s.data.tags && s.data.tags.includes(tag.id))
+      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
     return {
       params: { tag: tag.id },
       props: {
@@ -32,6 +48,8 @@ export async function getStaticPaths() {
         posts: relatedPosts,
         publications: relatedPubs,
         projects: relatedProjects,
+        courses: relatedCourses,
+        services: relatedServices,
       },
     };
   });
@@ -42,10 +60,12 @@ interface Props {
   posts: CollectionEntry<"posts">[];
   publications: CollectionEntry<"publications">[];
   projects: CollectionEntry<"projects">[];
+  courses: (CollectionEntry<"courses"> & { tech: string; starCount: number })[];
+  services: CollectionEntry<"services">[];
 }
 
-const { tag, posts, publications, projects } = Astro.props;
-const totalCount = posts.length + publications.length + projects.length;
+const { tag, posts, publications, projects, courses, services } = Astro.props;
+const totalCount = posts.length + publications.length + projects.length + courses.length + services.length;
 
 // Page sizes divisible by 1, 2, and 3 for responsive grid harmony (1 col mobile, 2 col tablet, 3 col desktop)
 const POSTS_PER_PAGE = 6;
@@ -225,7 +245,6 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                     icon={pub.data.icon}
                     publisherUrl={pub.data.publisherUrl}
                     activeTag={tag.id}
-                    linkLabel="Abstract & Citation"
                   />
                 </div>
               );
@@ -314,10 +333,116 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                 description={project.data.description}
                 href={`/projects/${project.id}`}
                 tags={project.data.tags}
+                activeTag={tag.id}
                 accentColor={project.data.accentColor}
                 screenshot={project.data.screenshot}
                 screenshotLight={project.data.screenshotLight}
               />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- 4. University Lectures -->
+      {courses.length > 0 && (
+        <section id="courses" class="scroll-mt-24">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>🎓</span>
+              <span>University Lectures</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-yellow/20 text-brand-yellow border border-brand-yellow/30 ml-2">
+                {courses.length}
+              </span>
+            </h2>
+            <a href="/courses" class="text-xs font-semibold text-brand-yellow hover:underline">
+              All Courses &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {courses.map((course) => (
+              <CourseCard
+                title={course.data.title}
+                description={course.data.description}
+                href={`/courses/${course.id}`}
+                language={course.data.language}
+                screenshot={course.data.screenshot}
+                tags={course.data.tags}
+                activeTag={tag.id}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- 5. Consulting Services -->
+      {services.length > 0 && (
+        <section id="services" class="scroll-mt-24">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>💼</span>
+              <span>Consulting Services</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-purple/20 text-brand-purple border border-brand-purple/30 ml-2">
+                {services.length}
+              </span>
+            </h2>
+            <a href="/services" class="text-xs font-semibold text-brand-purple hover:underline">
+              All Services &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {services.map((service) => (
+              <div class="glass-card h-full rounded-2xl border border-element-border hover:border-brand-purple/40 flex flex-col group overflow-hidden relative cursor-pointer transition-all duration-300">
+                <a href={`/services/${service.id}`} class="absolute inset-0 z-10" aria-label={service.data.title}></a>
+                  
+                  <div class="p-6 md:p-8 flex flex-col flex-grow">
+                    <div class="mb-4">
+                      <div class="flex items-center space-x-2 text-2xl mb-3">
+                        <span>{service.data.icon}</span>
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-brand-purple transition-colors">
+                          {service.data.title}
+                        </h3>
+                      </div>
+                      <p class="text-xs font-bold uppercase tracking-wider text-brand-purple mb-3">
+                        {service.data.tagline}
+                      </p>
+                      <p class="text-gray-400 text-sm leading-relaxed font-normal">
+                        {service.data.description}
+                      </p>
+                    </div>
+
+                    <div class="flex-grow flex flex-col mt-4">
+                      {service.data.tags && service.data.tags.length > 0 && (
+                        <div class="flex flex-wrap gap-1.5 self-start relative z-20">
+                          {service.data.tags.map((t) => (
+                            <a
+                              href={`/tags/${t}`}
+                              data-tag={t}
+                              class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+                                t === tag.id ? 'active-tag-match' : ''
+                              }`}
+                            >
+                              #{t}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+
+                      <div class="mt-auto pt-6 w-full relative z-20">
+                        <a
+                          href={`/services/${service.id}`}
+                          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
+                        >
+                          <span>Read More</span>
+                          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             ))}
           </div>
         </section>

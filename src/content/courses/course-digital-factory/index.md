@@ -11,6 +11,11 @@ terms:
   - "Winter Term 2025/26"
 language: "en"
 screenshot: "./preview.png"
+tags:
+  - "simulation"
+  - "factory-layout"
+  - "industrial-informatics"
+  - "teaching"
 ---
 
 Welcome to the **Digital Factory & Simulation** course! This master-level course bridges the gap between industrial design processes and computational validation.

@@ -9,8 +9,8 @@ interface Props {
   language: 'de' | 'en';
   screenshot?: ImageMetadata;
   screenshotLight?: ImageMetadata;
-  tech: string;
-  starCount?: number;
+  tags?: string[];
+  activeTag?: string;
 }
 
 const { 
@@ -19,9 +19,9 @@ const {
   href, 
   language, 
   screenshot, 
-  screenshotLight,
-  tech, 
-  starCount = 0 
+  screenshotLight, 
+  tags = [],
+  activeTag
 } = Astro.props;
 
 const optimizedScreenshot = screenshot ? await getImage({
@@ -37,28 +37,12 @@ const optimizedScreenshotLight = screenshotLight ? await getImage({
   width: 480,
   quality: 80
 }) : null;
-
-// Language colors from courses page
-const languageColors: Record<string, string> = {
-  TypeScript: "bg-blue-400",
-  JavaScript: "bg-yellow-400",
-  HTML: "bg-orange-500",
-  CSS: "bg-purple-400",
-  Astro: "bg-rose-500",
-  Python: "bg-blue-500",
-  Vue: "bg-emerald-500",
-  React: "bg-sky-400",
-  C: "bg-gray-400",
-  "C++": "bg-pink-500",
-  Java: "bg-red-400",
-  "C#": "bg-violet-500",
-  TeX: "bg-emerald-600",
-  Mermaid: "bg-teal-400",
-  "Jupyter Notebook": "bg-amber-600"
-};
 ---
 
-<a href={href} class="glass-card h-full rounded-2xl border border-element-border flex flex-col group overflow-hidden relative cursor-pointer hover:border-brand-yellow/30">
+<div class="glass-card h-full rounded-2xl border border-element-border flex flex-col group overflow-hidden relative cursor-pointer hover:border-brand-yellow/30">
+  <!-- Absolute overlay link for card clickability -->
+  <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
+
   <!-- Card Header Banner (Preview or Placeholder) -->
   <div class="aspect-video w-full overflow-hidden bg-gray-950 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
     {screenshot ? (
@@ -135,9 +119,9 @@ const languageColors: Record<string, string> = {
   </div>
 
   <!-- Details -->
-  <div class="p-6 flex flex-col flex-grow border-t border-element-border">
+  <div class="p-5 md:p-6 flex flex-col flex-grow border-t border-element-border">
     <div class="flex-grow flex flex-col">
-      <h2 class="text-lg font-bold text-gray-100 mb-2.5 group-hover:text-brand-yellow transition-colors leading-tight">
+      <h2 class="text-lg font-bold text-gray-100 mb-2 group-hover:text-brand-yellow transition-colors leading-tight">
         {title}
         <span 
           class="unread-dot hidden badge-new badge-new-yellow ml-2 align-middle" 
@@ -147,24 +131,42 @@ const languageColors: Record<string, string> = {
       </h2>
 
       {description && (
-        <p class="text-gray-400 text-xs leading-relaxed mb-6 font-normal line-clamp-3 flex-grow">
+        <p class="text-gray-400 text-sm leading-relaxed mb-3 font-normal line-clamp-3 flex-grow">
           {description}
         </p>
       )}
     </div>
 
-    <!-- Card footer: Tech language + Stars -->
-    <div class="flex items-center justify-between text-xs text-gray-500 border-t border-element-border pt-4 mt-auto z-20">
-      <div class="flex items-center space-x-1.5">
-        <span class={`w-2.5 h-2.5 rounded-full ${languageColors[tech] || 'bg-gray-400'}`}></span>
-        <span class="font-medium">{tech}</span>
-      </div>
-      {starCount > 0 && (
-        <span class="font-semibold flex items-center space-x-1">
-          <span>⭐</span>
-          <span>{starCount}</span>
-        </span>
+    <!-- Tags & Action Button Area -->
+    <div class="flex-grow flex flex-col mt-3">
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 relative z-20 self-start">
+          {tags.map((tag) => (
+            <a
+              href={`/tags/${tag}`}
+              data-tag={tag}
+              class={`tag-chip tag-chip-yellow inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+                activeTag === tag ? 'active-tag-match' : ''
+              }`}
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
       )}
+
+      <!-- Read more button — full width, pinned to bottom -->
+      <div class="mt-auto pt-6 w-full">
+        <a 
+          href={href} 
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-700 text-xs font-bold relative z-20 transition-all duration-200"
+        >
+          <span>Read More</span>
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
-</a>
+</div>

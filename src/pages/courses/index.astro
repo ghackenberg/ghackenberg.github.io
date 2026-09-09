@@ -6,23 +6,15 @@ import { getImage } from "astro:assets";
 import CourseCard from "../../components/CourseCard.astro";
 
 const courses = await getCollection("courses");
-const repos = await getCollection("github-repos");
 
-// Map repoName to repo data for quick access
-const repoMap = new Map();
-for (const repo of repos) {
-  repoMap.set(repo.id, repo.data);
-}
-
-// Extract unique technologies/languages from course repos
-const techLanguagesSet = new Set<string>();
+// Extract unique tags from all courses
+const tagsSet = new Set<string>();
 for (const course of courses) {
-  const repo = repoMap.get(course.data.repoName);
-  if (repo && repo.language) {
-    techLanguagesSet.add(repo.language);
+  if (course.data.tags) {
+    course.data.tags.forEach(tag => tagsSet.add(tag));
   }
 }
-const techLanguages = Array.from(techLanguagesSet).sort();
+const allTags = Array.from(tagsSet).sort();
 
 // Find the first course's screenshot to preload for LCP
 const firstCourse = courses[0];
@@ -33,25 +25,6 @@ const optimizedFirstScreenshot = firstCourseScreenshot ? await getImage({
   width: 480,
   quality: 80
 }) : null;
-
-// Language badge colors
-const languageColors: Record<string, string> = {
-  TypeScript: "bg-blue-400",
-  JavaScript: "bg-yellow-400",
-  HTML: "bg-orange-500",
-  CSS: "bg-purple-400",
-  Astro: "bg-rose-500",
-  Python: "bg-blue-500",
-  Vue: "bg-emerald-500",
-  React: "bg-sky-400",
-  C: "bg-gray-400",
-  "C++": "bg-pink-500",
-  Java: "bg-red-400",
-  "C#": "bg-violet-500",
-  TeX: "bg-emerald-600",
-  Mermaid: "bg-teal-400",
-  "Jupyter Notebook": "bg-amber-600"
-};
 ---
 
 <Layout 
@@ -77,14 +50,16 @@ const languageColors: Record<string, string> = {
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Filters Sidebar (Column 1) -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
-        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col">
-          <h2 class="text-lg font-bold mb-4 flex items-center space-x-2 shrink-0">
-            <span>⚙️</span>
-            <span>Filter Catalog</span>
-          </h2>
+        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col lg:max-h-[calc(100vh-8rem)]">
+          <div class="mb-4 shrink-0">
+            <h2 class="text-lg font-bold flex items-center space-x-2">
+              <span>⚙️</span>
+              <span>Filter Catalog</span>
+            </h2>
+          </div>
 
           <!-- Text Search -->
-          <div class="mb-4">
+          <div class="mb-4 shrink-0">
             <label for="course-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
             <div class="relative">
               <input 
@@ -98,7 +73,7 @@ const languageColors: Record<string, string> = {
           </div>
 
           <!-- Instruction Language -->
-          <div class="mb-4">
+          <div class="mb-4 shrink-0">
             <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Instruction Language</span>
             <div class="flex flex-wrap gap-2">
               <button 
@@ -118,18 +93,23 @@ const languageColors: Record<string, string> = {
             </div>
           </div>
 
-          <!-- Programming Language / Tech -->
-          <div class="mb-2">
-            <label for="tech-filter" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Primary Technology</label>
-            <select 
-              id="tech-filter" 
-              class="w-full bg-gray-900 border border-element-border-medium rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-yellow/50 transition-all duration-200 cursor-pointer"
-            >
-              <option value="all" class="bg-gray-900">All Technologies</option>
-              {techLanguages.map(tech => (
-                <option value={tech} class="bg-gray-900">{tech}</option>
+          <!-- Technologies / Tags list -->
+          <div class="flex-1 min-h-0 flex flex-col">
+            <div class="flex items-center justify-between mb-2 shrink-0">
+              <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block">Filter by Tag</span>
+              <span class="text-[10px] text-gray-500 font-medium">{allTags.length} topics</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 max-h-[240px] lg:max-h-none flex-1 min-h-0 overflow-y-auto pr-1 custom-scrollbar-thin content-start" id="tag-filter-buttons">
+              {allTags.map(tag => (
+                <button 
+                  type="button" 
+                  class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                  data-tag={tag}
+                >
+                  #{tag}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
         </div>
       </div>
@@ -139,12 +119,8 @@ const languageColors: Record<string, string> = {
         {courses.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No courses defined.</p>
         ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="courses-grid">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 scroll-mt-28" id="courses-grid">
             {courses.map(course => {
-              const repo = repoMap.get(course.data.repoName);
-              const starCount = repo?.stars ?? 0;
-              const tech = repo?.language ?? "Web";
-              const socialPreview = repo?.image;
               const goalsJoined = (course.data.learningGoals || []).join(" ").toLowerCase();
 
               return (
@@ -153,8 +129,8 @@ const languageColors: Record<string, string> = {
                   data-title={course.data.title.toLowerCase()}
                   data-desc={(course.data.description || "").toLowerCase()}
                   data-goals={goalsJoined}
+                  data-tags={(course.data.tags || []).join(" ").toLowerCase()}
                   data-lang={course.data.language}
-                  data-tech={tech}
                 >
                   <CourseCard
                     title={course.data.title}
@@ -162,8 +138,7 @@ const languageColors: Record<string, string> = {
                     href={`/courses/${course.id}`}
                     language={course.data.language}
                     screenshot={course.data.screenshot}
-                    tech={tech}
-                    starCount={starCount}
+                    tags={course.data.tags}
                   />
                 </div>
               );
@@ -219,44 +194,78 @@ const languageColors: Record<string, string> = {
     color: #d97706; /* amber-600 */
   }
 
-  :global(.light) #tech-filter {
-    background-color: #ffffff;
-    border-color: rgba(15, 23, 42, 0.12);
-    color: #0f172a;
+  /* Tag filter buttons */
+  .tag-filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
   }
 
-  :global(.light) #tech-filter option {
-    background-color: #ffffff;
-    color: #0f172a;
+  .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.08);
   }
 
-  :global(.light) #tech-filter:focus {
-    border-color: rgba(245, 158, 11, 0.6);
+  .tag-filter-btn.active {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.5);
+    color: #fde047;
+    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25);
+  }
+
+  /* Light mode overrides */
+  :global(.light) .tag-filter-btn {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569;
+  }
+
+  :global(.light) .tag-filter-btn:hover:not(.active) {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #d97706;
+  }
+
+  :global(.light) .tag-filter-btn.active {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #b45309;
+    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2);
   }
 </style>
 
 <script>
   import { ClientListFilter } from "../../scripts/filter";
 
-  new ClientListFilter({
-    itemSelector: ".course-card",
-    searchFieldSelector: "#course-search",
-    searchDataAttributes: ["data-title", "data-desc", "data-goals"],
-    dropdownFilters: [
-      {
-        selectSelector: "#tech-filter",
-        dataAttribute: "data-tech",
-        matchType: "exact"
-      }
-    ],
-    buttonFilters: [
-      {
-        buttonSelector: ".lang-filter-btn",
-        dataAttribute: "data-lang",
-        defaultValue: "all",
-        activeClass: "active"
-      }
-    ],
-    noResultsSelector: "#no-courses-message"
-  });
+  function initFilter() {
+    new ClientListFilter({
+      itemSelector: ".course-card",
+      searchFieldSelector: "#course-search",
+      searchDataAttributes: ["data-title", "data-desc", "data-goals", "data-tags"],
+      searchParamKey: "q",
+      buttonFilters: [
+        {
+          buttonSelector: ".lang-filter-btn",
+          dataAttribute: "data-lang",
+          defaultValue: "all",
+          activeClass: "active",
+          paramKey: "lang"
+        },
+        {
+          buttonSelector: ".tag-filter-btn",
+          dataAttribute: "data-tags",
+          defaultValue: "all",
+          activeClass: "active",
+          matchType: "includes",
+          paramKey: "tag"
+        }
+      ],
+      scrollToSelector: "#courses-grid",
+      noResultsSelector: "#no-courses-message"
+    });
+  }
+
+  initFilter();
+  document.addEventListener("astro:page-load", initFilter);
 </script>

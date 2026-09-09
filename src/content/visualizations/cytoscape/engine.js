@@ -1,7 +1,15 @@
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#10b981', '#f59e0b', '#a855f7'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#059669', '#d97706', '#9333ea'];
+
+function getNodeColor(node, isLight) {
+  const grp = node.data('group') ?? 0;
+  return isLight ? (colorsLight[grp] || colorsLight[0]) : (colorsDark[grp] || colorsDark[0]);
+}
+
 export default {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
-    { id: 'radial', label: 'Concentric Rings (Tags → Posts)' },
+    { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
 
@@ -15,11 +23,7 @@ export default {
         {
           selector: 'node',
           style: {
-            'background-color': (node) => {
-              const color = node.data('color');
-              if (isLight && color === '#f59e0b') return '#d97706';
-              return color;
-            },
+            'background-color': (node) => getNodeColor(node, isLight),
             'label': 'data(name)',
             'width': 'data(size)',
             'height': 'data(size)',
@@ -60,7 +64,14 @@ export default {
     this.cy.on('tap', 'node', function(evt) {
       const node = evt.target;
       const id = node.id();
-      if (id.startsWith('/posts/') || id.startsWith('/publications/')) {
+      if (
+        id.startsWith('/posts/') ||
+        id.startsWith('/publications/') ||
+        id.startsWith('/projects/') ||
+        id.startsWith('/courses/') ||
+        id.startsWith('/services/') ||
+        id.startsWith('/tags/')
+      ) {
         window.location.href = id;
       }
     });
@@ -93,18 +104,14 @@ export default {
     this.cy.style().selector('node').style({
       'color': isLight ? '#0f172a' : '#f3f4f6',
       'border-color': isLight ? '#ffffff' : '#030712',
-      'background-color': (node) => {
-        const color = node.data('color');
-        if (isLight && color === '#f59e0b') return '#d97706';
-        return color;
-      }
+      'background-color': (node) => getNodeColor(node, isLight)
     }).update();
 
     if (layout === 'radial') {
       this.cy.layout({
         name: 'concentric',
         concentric: function(node) {
-          return node.data('color') === '#3b82f6' ? 2 : 1;
+          return node.data('group') === 0 ? 2 : 1;
         },
         levelWidth: function() { return 1; },
         animate: true,
@@ -115,54 +122,36 @@ export default {
       const height = this.cy.height();
       const nodes = this.cy.nodes();
 
-      const tags = nodes.filter(n => n.data('color') === '#3b82f6');
-      const posts = nodes.filter(n => n.data('color') === '#10b981');
-      const publications = nodes.filter(n => n.data('color') === '#f59e0b');
+      const posts = nodes.filter(n => n.data('group') === 1);
+      const courses = nodes.filter(n => n.data('group') === 4);
+      const tags = nodes.filter(n => n.data('group') === 0);
+      const projects = nodes.filter(n => n.data('group') === 3);
+      const services = nodes.filter(n => n.data('group') === 5);
+      const publications = nodes.filter(n => n.data('group') === 2);
 
+      const categories = [posts, courses, tags, projects, services, publications];
       const pos = {};
       const isMobile = width < 768 || window.innerWidth < 768;
       
       if (isMobile) {
-        posts.forEach((n, idx) => {
-          pos[n.id()] = {
-            x: (idx + 1) * (width / (posts.length + 1)),
-            y: height / 4
-          };
-        });
-
-        tags.forEach((n, idx) => {
-          pos[n.id()] = {
-            x: (idx + 1) * (width / (tags.length + 1)),
-            y: height / 2
-          };
-        });
-
-        publications.forEach((n, idx) => {
-          pos[n.id()] = {
-            x: (idx + 1) * (width / (publications.length + 1)),
-            y: 3 * height / 4
-          };
+        categories.forEach((catNodes, catIdx) => {
+          const rowY = (catIdx + 1) * (height / (categories.length + 1));
+          catNodes.forEach((n, idx) => {
+            pos[n.id()] = {
+              x: (idx + 1) * (width / (catNodes.length + 1)),
+              y: rowY
+            };
+          });
         });
       } else {
-        tags.forEach((n, idx) => {
-          pos[n.id()] = {
-            x: width / 2,
-            y: (idx + 1) * (height / (tags.length + 1))
-          };
-        });
-
-        posts.forEach((n, idx) => {
-          pos[n.id()] = {
-            x: width / 4,
-            y: (idx + 1) * (height / (posts.length + 1))
-          };
-        });
-
-        publications.forEach((n, idx) => {
-          pos[n.id()] = {
-            x: 3 * width / 4,
-            y: (idx + 1) * (height / (publications.length + 1))
-          };
+        categories.forEach((catNodes, catIdx) => {
+          const colX = (catIdx + 1) * (width / (categories.length + 1));
+          catNodes.forEach((n, idx) => {
+            pos[n.id()] = {
+              x: colX,
+              y: (idx + 1) * (height / (catNodes.length + 1))
+            };
+          });
         });
       }
 

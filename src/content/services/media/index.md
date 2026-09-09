@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Media Publishing"
 category: "Consulting Services"
 tagline: "Modern Digital Publishing, Brand Systems & Automated Pipelines"
@@ -9,6 +9,13 @@ order: 2
 ctaText: "Inquire about Media Services"
 previewImage: "./preview.png"
 pubDate: 2026-09-03
+tags:
+  - "social-media"
+  - "open-source"
+  - "blog"
+  - "web-development"
+  - "saas"
+  - "innovation"
 ---
 
 ## Modern Media Architecture for High-Performance Publishing

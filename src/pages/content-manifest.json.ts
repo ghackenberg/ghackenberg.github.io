@@ -50,6 +50,8 @@ export async function GET() {
       postsCount: posts.filter(p => p.data.tags.includes(t.id)).length,
       publicationsCount: publications.filter(pub => pub.data.tags.includes(t.id)).length,
       projectsCount: projects.filter(proj => proj.data.tags && proj.data.tags.includes(t.id)).length,
+      coursesCount: courses.filter(c => c.data.tags && c.data.tags.includes(t.id)).length,
+      servicesCount: services.filter(s => s.data.tags && s.data.tags.includes(t.id)).length,
     })),
     posts: posts.map(p => ({
       id: p.id,
@@ -65,6 +67,7 @@ export async function GET() {
       title: c.data.title,
       description: c.data.description || '',
       language: c.data.language,
+      tags: c.data.tags || [],
       date: parseItemDate(c.id, c.data.pubDate)
     })),
     projects: projects.map(p => ({
@@ -101,6 +104,7 @@ export async function GET() {
         title: s.data.title,
         tagline: s.data.tagline,
         description: s.data.description,
+        tags: s.data.tags || [],
         date: parseItemDate(s.id, s.data.pubDate)
       })),
       ...modules.map(m => ({

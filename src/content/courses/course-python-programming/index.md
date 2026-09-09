@@ -10,6 +10,10 @@ terms:
   - "Winter Term 2025/26"
 language: "en"
 screenshot: "./preview.png"
+tags:
+  - "python"
+  - "software-engineering"
+  - "teaching"
 ---
 
 Welcome to the **Python for Engineers** course! Python has become the lingua franca of engineering automation, data science, and system simulation. This course gets you writing code quickly.

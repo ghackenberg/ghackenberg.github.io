@@ -7,6 +7,15 @@ import { getImage } from "astro:assets";
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
+// Extract unique tags from all services
+const tagsSet = new Set<string>();
+for (const service of services) {
+  if (service.data.tags) {
+    service.data.tags.forEach(tag => tagsSet.add(tag));
+  }
+}
+const allTags = Array.from(tagsSet).sort();
+
 const optimizedServices = await Promise.all(
   sortedServices.map(async (service) => {
     let optimizedImageSrc = undefined;
@@ -111,114 +120,194 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
     </div>
 
 
-    <!-- Services Grid Layout -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {optimizedServices.map((service) => {
-        const classes = colorClasses[service.data.color];
-        return (
-          <section id={service.id} class="scroll-mt-24 relative group h-full">
-            <div class="glass-card rounded-2xl md:rounded-3xl border border-element-border relative overflow-hidden flex flex-col h-full items-stretch p-0 hover:border-element-border-medium transition-all duration-300">
-              <!-- Top accent color line -->
-              <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${classes.glow} z-20`}></div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Filters Sidebar (Column 1) -->
+      <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
+        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col lg:max-h-[calc(100vh-8rem)]">
+          <div class="mb-4 shrink-0">
+            <h2 class="text-lg font-bold flex items-center space-x-2">
+              <span>⚙️</span>
+              <span>Filter Services</span>
+            </h2>
+          </div>
 
-              <!-- Card Clickable Overlay Link -->
-              <a 
-                href={`/services/${service.id}`} 
-                class="absolute inset-0 z-10 cursor-pointer" 
-                aria-label={`View details for ${service.data.title}`}
-              ></a>
-
-              <!-- Preview Image Column (Top) -->
-              <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
-                {service.data.previewImage && (
-                  <svg 
-                    class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 will-change-transform pointer-events-none" 
-                    viewBox={`0 0 ${service.data.previewImage.width} ${service.data.previewImage.height}`} 
-                    preserveAspectRatio="xMidYMid slice"
-                    role="img"
-                    aria-label={`Service preview: ${service.data.title}`}
-                  >
-                    <defs>
-                      <linearGradient id={`grad-service-dark-${service.id}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-                        <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
-                        <stop offset="100%" stop-color="#000000" stop-opacity="0.75" />
-                      </linearGradient>
-                      <linearGradient id={`grad-service-light-${service.id}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-                        <stop offset="50%" stop-color="#000000" stop-opacity="0.10" />
-                        <stop offset="100%" stop-color="#000000" stop-opacity="0.40" />
-                      </linearGradient>
-                    </defs>
-                    <image 
-                      href={service.optimizedImageSrc || service.data.previewImage.src} 
-                      x="0" 
-                      y="0" 
-                      width={service.data.previewImage.width} 
-                      height={service.data.previewImage.height} 
-                      preserveAspectRatio="xMidYMid slice" 
-                    />
-                    <rect 
-                      x="0" 
-                      y="0" 
-                      width={service.data.previewImage.width} 
-                      height={service.data.previewImage.height + 0.5} 
-                      class="block light:hidden"
-                      fill={`url(#grad-service-dark-${service.id})`} 
-                    />
-                    <rect 
-                      x="0" 
-                      y="0" 
-                      width={service.data.previewImage.width} 
-                      height={service.data.previewImage.height + 0.5} 
-                      class="hidden light:block"
-                      fill={`url(#grad-service-light-${service.id})`} 
-                    />
-                  </svg>
-                )}
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
-              </div>
-
-              <!-- Info Body (Below) -->
-              <div class="p-6 md:p-8 flex flex-col flex-grow justify-between relative z-10">
-                <div class="space-y-4">
-                  <!-- Header -->
-                  <div>
-                    <h2 class={`text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 relative transition-colors ${classes.hoverText}`}>
-                      <span>{service.data.title}</span>
-                      <span 
-                        class={`unread-dot hidden ${classes.dot}`}
-                        data-item-url={`/services/${service.id}`}
-                        title="Unread service"
-                      >UNREAD</span>
-                    </h2>
-                    <p class={`${classes.text} font-bold text-xs uppercase tracking-wider mt-1`}>
-                      {service.data.tagline}
-                    </p>
-                  </div>
-
-                  <!-- Description -->
-                  <p class="text-gray-300 light:text-slate-600 text-sm md:text-base leading-relaxed font-normal">
-                    {service.data.description}
-                  </p>
-                </div>
-
-                <!-- Footer CTA Button -->
-                <div class="pt-6 mt-auto flex justify-center relative z-20">
-                  <a
-                    href={`/services/${service.id}`}
-                    class={`px-5 py-2.5 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-1.5 cursor-pointer ${classes.btnBg}`}
-                  >
-                    <span>Explore Service & Modules</span>
-                    <span>&rarr;</span>
-                  </a>
-                </div>
-              </div>
-
+          <!-- Text Search -->
+          <div class="mb-4 shrink-0">
+            <label for="service-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="service-search" 
+                placeholder="Search services..." 
+                class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50 transition-all duration-200"
+              />
+              <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
             </div>
-          </section>
-        );
-      })}
+          </div>
+
+          <!-- Technologies / Tags list -->
+          <div class="flex-1 min-h-0 flex flex-col">
+            <div class="flex items-center justify-between mb-2 shrink-0">
+              <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block">Filter by Tag</span>
+              <span class="text-[10px] text-gray-500 font-medium">{allTags.length} topics</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 max-h-[260px] lg:max-h-none flex-1 min-h-0 overflow-y-auto pr-1 custom-scrollbar-thin content-start" id="tag-filter-buttons">
+              {allTags.map(tag => (
+                <button 
+                  type="button" 
+                  class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                  data-tag={tag}
+                >
+                  #{tag}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Grid (Column 2) -->
+      <div class="lg:col-span-9 order-2 lg:order-1">
+        {optimizedServices.length === 0 ? (
+          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No services defined.</p>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 scroll-mt-28" id="services-grid">
+            {optimizedServices.map((service) => {
+              const classes = colorClasses[service.data.color];
+              const tagsJoined = (service.data.tags || []).join(" ").toLowerCase();
+              return (
+                <section 
+                  id={service.id} 
+                  class="service-card scroll-mt-24 relative group h-full"
+                  data-title={service.data.title.toLowerCase()}
+                  data-tagline={service.data.tagline.toLowerCase()}
+                  data-desc={service.data.description.toLowerCase()}
+                  data-tags={tagsJoined}
+                >
+                  <div class="glass-card rounded-2xl md:rounded-3xl border border-element-border relative overflow-hidden flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300">
+                    <!-- Top accent color line -->
+                    <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${classes.glow} z-20`}></div>
+
+                    <!-- Card Clickable Overlay Link -->
+                    <a 
+                      href={`/services/${service.id}`} 
+                      class="absolute inset-0 z-10 cursor-pointer" 
+                      aria-label={`View details for ${service.data.title}`}
+                    ></a>
+
+                    <!-- Preview Image Column (Top) -->
+                    <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
+                      {service.data.previewImage && (
+                        <svg 
+                          class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 will-change-transform pointer-events-none" 
+                          viewBox={`0 0 ${service.data.previewImage.width} ${service.data.previewImage.height}`} 
+                          preserveAspectRatio="xMidYMid slice" 
+                          role="img"
+                          aria-label={`Service preview: ${service.data.title}`}
+                        >
+                          <defs>
+                            <linearGradient id={`grad-service-dark-${service.id}`} x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+                              <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
+                              <stop offset="100%" stop-color="#000000" stop-opacity="0.75" />
+                            </linearGradient>
+                            <linearGradient id={`grad-service-light-${service.id}`} x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+                              <stop offset="50%" stop-color="#000000" stop-opacity="0.10" />
+                              <stop offset="100%" stop-color="#000000" stop-opacity="0.40" />
+                            </linearGradient>
+                          </defs>
+                          <image 
+                            href={service.optimizedImageSrc || service.data.previewImage.src} 
+                            x="0" 
+                            y="0" 
+                            width={service.data.previewImage.width} 
+                            height={service.data.previewImage.height} 
+                            preserveAspectRatio="xMidYMid slice" 
+                          />
+                          <rect 
+                            x="0" 
+                            y="0" 
+                            width={service.data.previewImage.width} 
+                            height={service.data.previewImage.height + 0.5} 
+                            class="block light:hidden"
+                            fill={`url(#grad-service-dark-${service.id})`} 
+                          />
+                          <rect 
+                            x="0" 
+                            y="0" 
+                            width={service.data.previewImage.width} 
+                            height={service.data.previewImage.height + 0.5} 
+                            class="hidden light:block"
+                            fill={`url(#grad-service-light-${service.id})`} 
+                          />
+                        </svg>
+                      )}
+                      <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+                    </div>
+
+                    <!-- Info Body (Below) -->
+                    <div class="p-6 md:p-8 flex flex-col flex-grow justify-between">
+                      <div class="space-y-3">
+                        <!-- Header -->
+                        <div>
+                          <h2 class={`text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors ${classes.hoverText}`}>
+                            <span>{service.data.title}</span>
+                            <span 
+                              class={`unread-dot hidden ${classes.dot}`}
+                              data-item-url={`/services/${service.id}`}
+                              title="Unread service"
+                            >UNREAD</span>
+                          </h2>
+                          <p class={`${classes.text} font-bold text-xs uppercase tracking-wider mt-1`}>
+                            {service.data.tagline}
+                          </p>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="text-gray-300 light:text-slate-600 text-sm md:text-base leading-relaxed font-normal">
+                          {service.data.description}
+                        </p>
+
+                        {service.data.tags && service.data.tags.length > 0 && (
+                          <div class="flex flex-wrap gap-1.5 pt-1 relative z-20">
+                            {service.data.tags.map((tag) => (
+                              <a
+                                href={`/tags/${tag}`}
+                                data-tag={tag}
+                                class="tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
+                              >
+                                #{tag}
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <!-- Footer CTA Button -->
+                      <div class="pt-6 mt-auto w-full relative z-20">
+                        <a
+                          href={`/services/${service.id}`}
+                          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
+                        >
+                          <span>Read More</span>
+                          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+        )}
+        <p id="no-services-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+          No services match your selected filter criteria.
+        </p>
+      </div>
     </div>
 
     <!-- Contact & Booking Section -->
@@ -265,7 +354,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
               <a 
                 id="direct-mail-link"
                 href="mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry"
-                class="px-5 py-2.5 rounded-xl bg-brand-purple hover:bg-brand-purple/90 text-slate-950 font-bold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-purple/20"
+                class="px-5 py-2.5 rounded-xl bg-brand-purple hover:bg-brand-purple/90 text-slate-950 font-bold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-purple/20 light:bg-purple-600 light:hover:bg-purple-700 light:text-white"
               >
                 Open Email Client &rarr;
               </a>
@@ -318,44 +407,114 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
   .service-content :global(li strong) {
     color: white;
   }
+
+  .tag-filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
+  }
+
+  .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #c084fc;
+    background: rgba(168, 85, 247, 0.08);
+  }
+
+  .tag-filter-btn.active {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.5);
+    color: #d8b4fe;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25);
+  }
+
+  /* Light mode overrides */
+  :global(.light) .tag-filter-btn {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569;
+  }
+
+  :global(.light) .tag-filter-btn:hover:not(.active) {
+    background: rgba(168, 85, 247, 0.06);
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #7e22ce;
+  }
+
+  :global(.light) .tag-filter-btn.active {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.4);
+    color: #7e22ce;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2);
+  }
 </style>
 
 <script>
-  // Add listeners to inquiry triggers to pre-fill email client link subject
-  const triggers = document.querySelectorAll('.inquiry-trigger');
-  const directMailLink = document.getElementById('direct-mail-link') as HTMLAnchorElement | null;
-  
-  triggers.forEach(trigger => {
-    trigger.addEventListener('click', () => {
-      const subject = trigger.getAttribute('data-subject');
-      if (directMailLink && subject) {
-        directMailLink.href = `mailto:georg.hackenberg@fh-wels.at?subject=${encodeURIComponent(subject)}`;
-      }
-    });
-  });
+  import { ClientListFilter } from "../scripts/filter";
 
-  // Copy Email Logic
-  const copyBtn = document.getElementById('services-copy-email-btn');
-  const emailText = document.getElementById('services-email-text');
-  const copyBtnText = document.getElementById('services-copy-btn-text');
-
-  if (copyBtn && emailText && copyBtnText) {
-    copyBtn.addEventListener('click', () => {
-      const email = emailText.textContent?.trim() || 'georg.hackenberg@fh-wels.at';
-      
-      navigator.clipboard.writeText(email).then(() => {
-        copyBtnText.textContent = 'Copied!';
-        copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-        
-        setTimeout(() => {
-          copyBtnText.textContent = 'Copy Email';
-          copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-          copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        }, 2500);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-      });
+  function initFilter() {
+    new ClientListFilter({
+      itemSelector: ".service-card",
+      searchFieldSelector: "#service-search",
+      searchDataAttributes: ["data-title", "data-tagline", "data-desc", "data-tags"],
+      searchParamKey: "q",
+      buttonFilters: [
+        {
+          buttonSelector: ".tag-filter-btn",
+          dataAttribute: "data-tags",
+          defaultValue: "all",
+          activeClass: "active",
+          matchType: "includes",
+          paramKey: "tag"
+        }
+      ],
+      scrollToSelector: "#services-grid",
+      noResultsSelector: "#no-services-message"
     });
   }
+
+  initFilter();
+  document.addEventListener("astro:page-load", initFilter);
+
+  // Add listeners to inquiry triggers to pre-fill email client link subject
+  function initEmailHandlers() {
+    const triggers = document.querySelectorAll('.inquiry-trigger');
+    const directMailLink = document.getElementById('direct-mail-link') as HTMLAnchorElement | null;
+    
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const subject = trigger.getAttribute('data-subject');
+        if (directMailLink && subject) {
+          directMailLink.href = `mailto:georg.hackenberg@fh-wels.at?subject=${encodeURIComponent(subject)}`;
+        }
+      });
+    });
+
+    // Copy Email Logic
+    const copyBtn = document.getElementById('services-copy-email-btn');
+    const emailText = document.getElementById('services-email-text');
+    const copyBtnText = document.getElementById('services-copy-btn-text');
+
+    if (copyBtn && emailText && copyBtnText) {
+      copyBtn.addEventListener('click', () => {
+        const email = emailText.textContent?.trim() || 'georg.hackenberg@fh-wels.at';
+        
+        navigator.clipboard.writeText(email).then(() => {
+          copyBtnText.textContent = 'Copied!';
+          copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
+          copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+          
+          setTimeout(() => {
+            copyBtnText.textContent = 'Copy Email';
+            copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+            copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
+          }, 2500);
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+        });
+      });
+    }
+  }
+
+  initEmailHandlers();
+  document.addEventListener("astro:page-load", initEmailHandlers);
 </script>

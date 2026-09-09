@@ -79,10 +79,10 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
   </div>
   
   <!-- Content -->
-  <div class="flex-grow flex flex-col gap-3 relative z-10 p-5 md:p-6">
+  <div class="flex-grow flex flex-col relative z-10 p-5 md:p-6">
 
     <!-- Meta row: date + badge -->
-    <div class="flex flex-wrap items-center gap-2 mb-3">
+    <div class="flex flex-wrap items-center gap-2 mb-1.5">
       {featured && (
         <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-blue text-white shadow-md shadow-brand-blue/30">
           ★ Featured
@@ -111,21 +111,20 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
 
     <!-- Description -->
     {description && (
-      <p class="text-gray-400 light:text-slate-500 text-sm mb-4 leading-relaxed font-normal">
+      <p class="text-gray-400 light:text-slate-500 text-sm mb-3 leading-relaxed font-normal">
         {description}
       </p>
     )}
 
     <!-- Tags & Action Button Area -->
-    <div class="flex-grow flex flex-col justify-between mt-2">
-      <div class="flex flex-wrap gap-1.5 mb-3">
+    <div class="flex-grow flex flex-col mt-3">
+      <div class="flex flex-wrap gap-1.5 self-start">
         {tags.map(tag => (
           <a 
             href={`/tags/${tag}`}
-            class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-colors relative z-20 ${
-              tag === activeTag
-                ? 'bg-brand-blue/20 border-brand-blue/50 text-sky-300 light:bg-brand-blue/15 light:border-brand-blue/40 light:text-brand-blue'
-                : 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-blue/15 hover:border-brand-blue/30 hover:text-sky-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-blue-50 light:hover:border-brand-blue/30 light:hover:text-brand-blue'
+            data-tag={tag}
+            class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              tag === activeTag ? 'active-tag-match' : ''
             }`}
           >
             #{tag}
@@ -133,13 +132,13 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
         ))}
       </div>
 
-      <!-- Read more button — centered -->
-      <div class="flex justify-center mt-3">
+      <!-- Read more button — full width, pinned to bottom -->
+      <div class="mt-auto pt-6 w-full">
         <a 
           href={`/posts/${id}`} 
-          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs font-bold relative z-20 transition-all hover:scale-105"
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs font-bold relative z-20 transition-all duration-200"
         >
-          <span>Read Article</span>
+          <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>

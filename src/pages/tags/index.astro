@@ -7,13 +7,17 @@ const tags = await getCollection("tags");
 const posts = await getCollection("posts");
 const publications = await getCollection("publications");
 const projects = await getCollection("projects");
+const courses = await getCollection("courses");
+const services = await getCollection("services");
 
 // Compute counts for each tag
 const tagStats = tags.map((tag) => {
   const postCount = posts.filter((p) => p.data.tags.includes(tag.id)).length;
   const pubCount = publications.filter((p) => p.data.tags.includes(tag.id)).length;
   const projCount = projects.filter((p) => p.data.tags && p.data.tags.includes(tag.id)).length;
-  const total = postCount + pubCount + projCount;
+  const courseCount = courses.filter((c) => c.data.tags && c.data.tags.includes(tag.id)).length;
+  const serviceCount = services.filter((s) => s.data.tags && s.data.tags.includes(tag.id)).length;
+  const total = postCount + pubCount + projCount + courseCount + serviceCount;
 
   return {
     id: tag.id,
@@ -22,6 +26,8 @@ const tagStats = tags.map((tag) => {
     postCount,
     pubCount,
     projCount,
+    courseCount,
+    serviceCount,
     total,
   };
 });
@@ -32,7 +38,7 @@ const sortedTags = tagStats.sort((a, b) => a.title.localeCompare(b.title));
 
 <Layout
   title="Content Tags & Topic Index | Dr. Georg Hackenberg"
-  description="Explore the comprehensive knowledge index connecting technical blog posts, scientific publications, and software projects by Dr. Georg Hackenberg."
+  description="Explore the comprehensive knowledge index connecting technical blog posts, scientific publications, software projects, university courses, and consulting services by Dr. Georg Hackenberg."
 >
   <Navbar />
 
@@ -43,7 +49,7 @@ const sortedTags = tagStats.sort((a, b) => a.title.localeCompare(b.title));
         Topic <span class="heading-gradient-blue">Tags</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-        A structured directory of domain concepts, technologies, and methodologies spanning my technical articles, academic papers, and software engineering platforms.
+        A structured directory of domain concepts, technologies, and methodologies spanning my technical articles, academic papers, software engineering platforms, university lectures, and consulting services.
       </p>
     </div>
 
@@ -103,8 +109,8 @@ const sortedTags = tagStats.sort((a, b) => a.title.localeCompare(b.title));
               </span>
             )}
             {tag.pubCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-purple-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
+              <span class="inline-flex items-center gap-1 text-indigo-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
                 <span>{tag.pubCount} Paper{tag.pubCount !== 1 ? 's' : ''}</span>
               </span>
             )}
@@ -112,6 +118,18 @@ const sortedTags = tagStats.sort((a, b) => a.title.localeCompare(b.title));
               <span class="inline-flex items-center gap-1 text-emerald-400">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                 <span>{tag.projCount} Project{tag.projCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
+            {tag.courseCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-amber-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow"></span>
+                <span>{tag.courseCount} Course{tag.courseCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
+            {tag.serviceCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-purple-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
+                <span>{tag.serviceCount} Service{tag.serviceCount !== 1 ? 's' : ''}</span>
               </span>
             )}
           </div>

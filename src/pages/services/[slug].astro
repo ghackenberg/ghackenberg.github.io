@@ -26,6 +26,7 @@ const colorClasses = {
     border: 'border-brand-blue/20 light:border-blue-200',
     bg: 'bg-brand-blue/10 light:bg-blue-50/50',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-slate-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
+    cardBtnBg: 'bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue',
     hoverText: 'group-hover:text-brand-blue light:group-hover:text-blue-600',
     glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
     leftBorder: 'border-brand-blue light:border-blue-600',
@@ -36,6 +37,7 @@ const colorClasses = {
     border: 'border-brand-yellow/20 light:border-amber-200',
     bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white',
+    cardBtnBg: 'bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-700',
     hoverText: 'group-hover:text-brand-yellow light:group-hover:text-amber-700',
     glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
     leftBorder: 'border-brand-yellow light:border-amber-600',
@@ -46,6 +48,7 @@ const colorClasses = {
     border: 'border-brand-purple/20 light:border-purple-200',
     bg: 'bg-brand-purple/10 light:bg-purple-50/50',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
+    cardBtnBg: 'bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple',
     hoverText: 'group-hover:text-brand-purple light:group-hover:text-purple-600',
     glow: 'from-brand-purple to-pink-500 light:to-pink-600',
     leftBorder: 'border-brand-purple light:border-purple-600',
@@ -56,6 +59,7 @@ const colorClasses = {
     border: 'border-brand-green/20 light:border-emerald-200',
     bg: 'bg-brand-green/10 light:bg-emerald-50/50',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-slate-950 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white',
+    cardBtnBg: 'bg-brand-green/12 hover:bg-brand-green/25 border border-brand-green/20 hover:border-brand-green/45 text-emerald-300 light:text-brand-green',
     hoverText: 'group-hover:text-brand-green light:group-hover:text-emerald-700',
     glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
     leftBorder: 'border-brand-green light:border-emerald-600',
@@ -114,6 +118,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
   title={`${service.data.title} | Consulting Services | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`} 
   description={service.data.description}
   image={service.data.previewImage}
+  tags={service.data.tags}
   jsonLd={serviceJsonLd}
 >
   <Navbar />
@@ -141,6 +146,19 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
         <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
           {service.data.description}
         </p>
+
+        {service.data.tags && service.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-4 mb-2">
+            {service.data.tags.map((tag) => (
+              <a
+                href={`/tags/${tag}`}
+                class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 ${colorClasses.bg} ${colorClasses.border} ${colorClasses.text}`}
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        )}
         
         <div class="flex flex-wrap gap-4 mt-6">
           <a
@@ -200,7 +218,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
                   </div>
                   
                   <!-- Info Body (Below) -->
-                  <div class="p-6 flex flex-col flex-grow justify-between relative z-10 text-left">
+                  <div class="p-5 md:p-6 flex flex-col flex-grow justify-between relative z-10 text-left">
                     <div class="space-y-3">
                       <div class="flex items-center gap-2">
                         <h3 class={`text-base sm:text-lg font-bold uppercase tracking-wider leading-snug mt-0 flex items-center gap-2 text-gray-100 light:text-slate-900 ${colorClasses.hoverText} transition-colors`}>
@@ -238,12 +256,15 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
                       </div>
                     </div>
 
-                    <div class="mt-auto pt-4 flex justify-center">
+                    <!-- Read more button — full width, pinned to bottom -->
+                    <div class="mt-auto pt-6 w-full">
                       <span 
-                        class={`inline-flex items-center space-x-1.5 text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md group-hover:scale-105 ${colorClasses.btnBg}`}
+                        class={`flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg text-xs font-bold relative z-20 transition-all duration-200 ${colorClasses.cardBtnBg}`}
                       >
-                        <span>Explore Module</span>
-                        <span>&rarr;</span>
+                        <span>Read More</span>
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
                       </span>
                     </div>
                   </div>

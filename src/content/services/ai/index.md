@@ -9,6 +9,14 @@ order: 1
 ctaText: "Inquire about AI Services"
 previewImage: "./preview.png"
 pubDate: 2026-09-03
+tags:
+  - "artificial-intelligence"
+  - "agentic-ai"
+  - "enterprise-ai"
+  - "rag"
+  - "local-ai"
+  - "open-webui"
+  - "litellm"
 ---
 
 ## Scientific Rigor Meets Enterprise AI Architecture

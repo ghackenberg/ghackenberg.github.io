@@ -20,7 +20,7 @@ const repoEntry = repos.find(r => r.id.toLowerCase() === course.data.repoName.to
 const repo = repoEntry?.data;
 const repoNameId = repoEntry ? repoEntry.id : course.data.repoName;
 
-// Language colors
+// Language colors for GitHub repository stats
 const languageColors: Record<string, string> = {
   TypeScript: "bg-blue-400",
   JavaScript: "bg-yellow-400",
@@ -103,6 +103,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
   title={`${course.data.title} | University Lectures | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`} 
   description={course.data.description}
   image={course.data.screenshot}
+  tags={course.data.tags}
   jsonLd={courseJsonLd}
 >
   <Navbar />
@@ -126,6 +127,18 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
         <p class="text-gray-400 text-base max-w-3xl leading-relaxed font-normal">
           {course.data.description}
         </p>
+      )}
+      {course.data.tags && course.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-6">
+          {course.data.tags.map((tag) => (
+            <a
+              href={`/tags/${tag}`}
+              class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 bg-brand-yellow/10 border-brand-yellow/20 text-brand-yellow hover:bg-brand-yellow/20 hover:border-brand-yellow/30"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
       )}
     </header>
 
@@ -177,6 +190,21 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
             <p class="text-sm text-gray-300 font-semibold leading-tight">FH Upper Austria</p>
             <p class="text-xs text-gray-400 font-normal mt-0.5">Campus Wels</p>
           </div>
+          {course.data.tags && course.data.tags.length > 0 && (
+            <div class="mt-4 pt-4 border-t border-white/5">
+              <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-2">Topics & Tags</p>
+              <div class="flex flex-wrap gap-1.5">
+                {course.data.tags.map((tag) => (
+                  <a
+                    href={`/tags/${tag}`}
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border transition-all duration-200 hover:scale-105 bg-brand-yellow/10 border-brand-yellow/20 text-brand-yellow hover:bg-brand-yellow/20"
+                  >
+                    #{tag}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <!-- Linked GitHub Repository Card -->

@@ -1,7 +1,10 @@
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#10b981', '#f59e0b', '#a855f7'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#059669', '#d97706', '#9333ea'];
+
 export default {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
-    { id: 'radial', label: 'Concentric Rings (Tags → Posts)' },
+    { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
 
@@ -9,14 +12,14 @@ export default {
     const d3 = await import('https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm');
     this.d3 = d3;
 
-    this.width = container.offsetWidth;
-    this.height = container.offsetHeight;
+    this.width = container.offsetWidth || 800;
+    this.height = container.offsetHeight || 500;
 
     this.nodes = payload.d3.nodes.map(n => ({ ...n }));
-    // Randomize initial node positions
+    // Randomize initial node positions around center
     this.nodes.forEach(n => {
-      n.x = Math.random() * this.width;
-      n.y = Math.random() * this.height;
+      n.x = this.width / 2 + (Math.random() - 0.5) * (this.width * 0.4);
+      n.y = this.height / 2 + (Math.random() - 0.5) * (this.height * 0.4);
     });
 
     this.links = payload.d3.connections.map(c => ({
@@ -25,13 +28,15 @@ export default {
     })).filter(l => this.nodes.some(n => n.id === l.source) && this.nodes.some(n => n.id === l.target));
 
     this.svg = d3.select(container).append("svg")
-      .attr("width", this.width)
-      .attr("height", this.height);
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .attr("viewBox", `0 0 ${this.width} ${this.height}`)
+      .style("display", "block");
 
     this.svgGroup = this.svg.append("g");
 
     this.zoom = d3.zoom()
-      .scaleExtent([0.3, 8])
+      .scaleExtent([0.1, 8])
       .on("zoom", (event) => {
         this.svgGroup.attr("transform", event.transform);
       });
@@ -65,13 +70,11 @@ export default {
           d.fy = null;
         }));
 
-    const colors = isLight 
-      ? ["#2563eb", "#059669", "#d97706"] 
-      : ["#3b82f6", "#10b981", "#f59e0b"];
+    const colors = isLight ? colorsLight : colorsDark;
     
     this.nodeElements.append("circle")
       .attr("r", d => d.size * 6 + 4)
-      .style("fill", d => colors[d.group])
+      .style("fill", d => colors[d.group] || colors[0])
       .style("stroke-width", "1.5px");
 
     this.nodeElements.append("text")
@@ -83,7 +86,14 @@ export default {
       .style("pointer-events", "none");
 
     this.nodeElements.on("dblclick", (event, d) => {
-      if (d.id.startsWith('/posts/') || d.id.startsWith('/publications/')) {
+      if (
+        d.id.startsWith('/posts/') ||
+        d.id.startsWith('/publications/') ||
+        d.id.startsWith('/projects/') ||
+        d.id.startsWith('/courses/') ||
+        d.id.startsWith('/services/') ||
+        d.id.startsWith('/tags/')
+      ) {
         window.location.href = d.id;
       }
     });
@@ -102,21 +112,87 @@ export default {
     this.isLight = isLight;
     this.updateLayout(layout, isLight);
 
+    // Warm up the simulation to compute initial equilibrium positions
+    for (let i = 0; i < 70; ++i) {
+      this.simulation.tick();
+    }
+    // Auto-fit to viewport immediately
+    this.fitToView(0);
+
     // Bind ResizeObserver to handle SVG resizing dynamically
     this.resizeObserver = new ResizeObserver(entries => {
       for (let entry of entries) {
         const { width, height } = entry.contentRect;
+        if (width <= 0 || height <= 0) continue;
         this.width = width;
         this.height = height;
         if (this.svg) {
-          this.svg.attr("width", this.width).attr("height", this.height);
+          this.svg.attr("viewBox", `0 0 ${this.width} ${this.height}`);
           this.updateLayout(this.currentLayout, this.isLight);
+          clearTimeout(this.fitTimeout);
+          this.fitTimeout = setTimeout(() => {
+            this.fitToView(300);
+          }, 300);
         }
       }
     });
     this.resizeObserver.observe(container);
 
     return this;
+  },
+
+  fitToView(duration = 600) {
+    if (!this.svg || !this.zoom || !this.nodes || this.nodes.length === 0) return;
+    if (this.width <= 0 || this.height <= 0) return;
+
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const n of this.nodes) {
+      const r = (n.size || 1) * 6 + 4;
+      const left = n.x - r - 10;
+      const right = n.x + r + 80; // approximate label length
+      const top = n.y - r - 10;
+      const bottom = n.y + r + 10;
+
+      if (left < minX) minX = left;
+      if (right > maxX) maxX = right;
+      if (top < minY) minY = top;
+      if (bottom > maxY) maxY = bottom;
+    }
+
+    const boxWidth = maxX - minX;
+    const boxHeight = maxY - minY;
+    if (boxWidth <= 0 || boxHeight <= 0) return;
+
+    // Margins to ensure nodes don't collide with the top legend or bottom layout selector
+    const padTop = 60;
+    const padBottom = 55;
+    const padX = 40;
+
+    const availableWidth = Math.max(100, this.width - padX * 2);
+    const availableHeight = Math.max(100, this.height - padTop - padBottom);
+
+    const scaleX = availableWidth / boxWidth;
+    const scaleY = availableHeight / boxHeight;
+    const scale = Math.max(0.12, Math.min(1.1, Math.min(scaleX, scaleY)));
+
+    const midX = (minX + maxX) / 2;
+    const midY = (minY + maxY) / 2;
+
+    const targetCenterX = this.width / 2;
+    const targetCenterY = padTop + availableHeight / 2;
+
+    const translateX = targetCenterX - scale * midX;
+    const translateY = targetCenterY - scale * midY;
+
+    const transform = this.d3.zoomIdentity
+      .translate(translateX, translateY)
+      .scale(scale);
+
+    if (duration > 0) {
+      this.svg.transition().duration(duration).call(this.zoom.transform, transform);
+    } else {
+      this.svg.call(this.zoom.transform, transform);
+    }
   },
 
   updateLayout(layout, isLight) {
@@ -128,34 +204,35 @@ export default {
     this.linkElements.style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)");
     this.nodeElements.selectAll("circle").style("stroke", isLight ? "#ffffff" : "#030712");
     this.nodeElements.selectAll("text").style("fill", isLight ? "#334155" : "#9ca3af");
-    const colors = isLight 
-      ? ["#2563eb", "#059669", "#d97706"] 
-      : ["#3b82f6", "#10b981", "#f59e0b"];
-    this.nodeElements.selectAll("circle").style("fill", d => colors[d.group]);
+    const colors = isLight ? colorsLight : colorsDark;
+    this.nodeElements.selectAll("circle").style("fill", d => colors[d.group] || colors[0]);
 
     if (layout === 'radial') {
-      // Calculate concentric coordinates
       const cx = this.width / 2;
       const cy = this.height / 2;
+
+      const minDim = Math.min(this.width, this.height);
+      const innerRadius = Math.max(60, minDim * 0.20);
+      const outerRadius = Math.max(140, minDim * 0.42);
 
       const tags = this.nodes.filter(n => n.group === 0);
       const others = this.nodes.filter(n => n.group !== 0);
 
       tags.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / tags.length;
-        n.targetX = cx + 110 * Math.cos(theta);
-        n.targetY = cy + 110 * Math.sin(theta);
+        n.targetX = cx + innerRadius * Math.cos(theta);
+        n.targetY = cy + innerRadius * Math.sin(theta);
       });
 
       others.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / others.length;
-        n.targetX = cx + 250 * Math.cos(theta);
-        n.targetY = cy + 250 * Math.sin(theta);
+        n.targetX = cx + outerRadius * Math.cos(theta);
+        n.targetY = cy + outerRadius * Math.sin(theta);
       });
 
       // Apply positional forces
       this.simulation
-        .force("link", this.d3.forceLink(this.links).id(d => d.id).distance(30).strength(0.1))
+        .force("link", this.d3.forceLink(this.links).id(d => d.id).distance(30).strength(0.08))
         .force("charge", this.d3.forceManyBody().strength(-30))
         .force("center", null)
         .force("x", this.d3.forceX(d => d.targetX).strength(1.2))
@@ -163,42 +240,36 @@ export default {
         .force("collide", this.d3.forceCollide(d => d.size * 6 + 10).strength(0.8));
 
     } else if (layout === 'columns') {
-      // Calculate columnar coordinates
-      const tags = this.nodes.filter(n => n.group === 0);
       const posts = this.nodes.filter(n => n.group === 1);
+      const courses = this.nodes.filter(n => n.group === 4);
+      const tags = this.nodes.filter(n => n.group === 0);
+      const projects = this.nodes.filter(n => n.group === 3);
+      const services = this.nodes.filter(n => n.group === 5);
       const publications = this.nodes.filter(n => n.group === 2);
 
+      const categories = [posts, courses, tags, projects, services, publications];
       const isMobile = this.width < 768 || window.innerWidth < 768;
 
+      const padX = Math.max(40, this.width * 0.08);
+      const padY = Math.max(50, this.height * 0.12);
+      const usableW = this.width - padX * 2;
+      const usableH = this.height - padY * 2;
+
       if (isMobile) {
-        posts.forEach((n, idx) => {
-          n.targetX = (idx + 1) * (this.width / (posts.length + 1));
-          n.targetY = this.height / 4;
-        });
-
-        tags.forEach((n, idx) => {
-          n.targetX = (idx + 1) * (this.width / (tags.length + 1));
-          n.targetY = this.height / 2;
-        });
-
-        publications.forEach((n, idx) => {
-          n.targetX = (idx + 1) * (this.width / (publications.length + 1));
-          n.targetY = 3 * this.height / 4;
+        categories.forEach((catNodes, catIdx) => {
+          const rowY = padY + (catIdx + 0.5) * (usableH / categories.length);
+          catNodes.forEach((n, idx) => {
+            n.targetX = padX + (idx + 0.5) * (usableW / Math.max(1, catNodes.length));
+            n.targetY = rowY;
+          });
         });
       } else {
-        tags.forEach((n, idx) => {
-          n.targetX = this.width / 2;
-          n.targetY = (idx + 1) * (this.height / (tags.length + 1));
-        });
-
-        posts.forEach((n, idx) => {
-          n.targetX = this.width / 4;
-          n.targetY = (idx + 1) * (this.height / (posts.length + 1));
-        });
-
-        publications.forEach((n, idx) => {
-          n.targetX = (3 * this.width) / 4;
-          n.targetY = (idx + 1) * (this.height / (publications.length + 1));
+        categories.forEach((catNodes, catIdx) => {
+          const colX = padX + (catIdx + 0.5) * (usableW / categories.length);
+          catNodes.forEach((n, idx) => {
+            n.targetX = colX;
+            n.targetY = padY + (idx + 0.5) * (usableH / Math.max(1, catNodes.length));
+          });
         });
       }
 
@@ -213,20 +284,31 @@ export default {
 
     } else {
       // Force-directed (default)
+      const minDim = Math.min(this.width, this.height);
+      const linkDist = Math.max(35, Math.min(65, minDim * 0.08));
+      const charge = -Math.max(100, Math.min(220, minDim * 0.25));
+
       this.simulation
-        .force("link", this.d3.forceLink(this.links).id(d => d.id).distance(90))
-        .force("charge", this.d3.forceManyBody().strength(-250))
+        .force("link", this.d3.forceLink(this.links).id(d => d.id).distance(linkDist).strength(0.3))
+        .force("charge", this.d3.forceManyBody().strength(charge))
         .force("center", this.d3.forceCenter(this.width / 2, this.height / 2))
-        .force("x", null)
-        .force("y", null)
-        .force("collide", null);
+        .force("collide", this.d3.forceCollide(d => d.size * 6 + 12).strength(0.8))
+        .force("x", this.d3.forceX(this.width / 2).strength(0.04))
+        .force("y", this.d3.forceY(this.height / 2).strength(0.04));
     }
 
     // Trigger transition
     this.simulation.alpha(0.3).restart();
+
+    // Smoothly auto-fit once simulation transitions
+    clearTimeout(this.fitTimeout);
+    this.fitTimeout = setTimeout(() => {
+      this.fitToView(600);
+    }, 350);
   },
 
   destroy() {
+    clearTimeout(this.fitTimeout);
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;

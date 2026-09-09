@@ -10,6 +10,12 @@ terms:
   - "Winter Term 2025/26"
 language: "de"
 screenshot: "./preview.png"
+tags:
+  - "systems-engineering"
+  - "systems-analysis"
+  - "systems-design"
+  - "systems-verification"
+  - "teaching"
 ---
 
 Herzlich willkommen zum Kurs **Systems Engineering**! Bei der Entwicklung komplexer physikalisch-digitaler Systeme ist die interdisziplinäre Systemsicht unerlässlich.

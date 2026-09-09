@@ -1,7 +1,7 @@
 export default {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
-    { id: 'radial', label: 'Concentric Rings (Tags → Posts)' },
+    { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
 
@@ -13,38 +13,52 @@ export default {
     this.connections = payload['vis-network'].connections;
 
     const colors = [
-      { 
-        background: '#3b82f6', 
-        border: isLight ? '#2563eb' : '#60a5fa', 
-        highlight: { background: '#1d4ed8', border: isLight ? '#1e40af' : '#93c5fd' },
-        hover: { background: '#1d4ed8', border: isLight ? '#1e40af' : '#93c5fd' }
+      { // 0: Tag (Sky)
+        background: isLight ? '#0284c7' : '#0ea5e9', 
+        border: isLight ? '#0369a1' : '#38bdf8', 
+        highlight: { background: isLight ? '#075985' : '#0284c7', border: isLight ? '#0284c7' : '#7dd3fc' },
+        hover: { background: isLight ? '#075985' : '#0284c7', border: isLight ? '#0284c7' : '#7dd3fc' }
       },
-      { 
-        background: '#10b981', 
-        border: isLight ? '#059669' : '#34d399', 
-        highlight: { background: '#047857', border: isLight ? '#065f46' : '#6ee7b7' },
-        hover: { background: '#047857', border: isLight ? '#065f46' : '#6ee7b7' }
+      { // 1: Post (Blue)
+        background: isLight ? '#2563eb' : '#3b82f6', 
+        border: isLight ? '#1d4ed8' : '#60a5fa', 
+        highlight: { background: isLight ? '#1e40af' : '#1d4ed8', border: isLight ? '#2563eb' : '#93c5fd' },
+        hover: { background: isLight ? '#1e40af' : '#1d4ed8', border: isLight ? '#2563eb' : '#93c5fd' }
       },
-      { 
+      { // 2: Publication (Indigo)
+        background: isLight ? '#4f46e5' : '#6366f1', 
+        border: isLight ? '#4338ca' : '#818cf8', 
+        highlight: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' },
+        hover: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' }
+      },
+      { // 3: Project (Green)
+        background: isLight ? '#059669' : '#10b981', 
+        border: isLight ? '#047857' : '#34d399', 
+        highlight: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' },
+        hover: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' }
+      },
+      { // 4: Course (Yellow)
         background: isLight ? '#d97706' : '#f59e0b', 
         border: isLight ? '#b45309' : '#fbbf24', 
-        highlight: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#78350f' : '#fde68a' },
-        hover: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#78350f' : '#fde68a' }
+        highlight: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' },
+        hover: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' }
       },
-      {
-        background: '#a855f7',
-        border: isLight ? '#9333ea' : '#c084fc',
-        highlight: { background: '#7e22ce', border: isLight ? '#6b21a8' : '#e9d5ff' },
-        hover: { background: '#7e22ce', border: isLight ? '#6b21a8' : '#e9d5ff' }
+      { // 5: Service (Purple)
+        background: isLight ? '#9333ea' : '#a855f7', 
+        border: isLight ? '#7e22ce' : '#c084fc', 
+        highlight: { background: isLight ? '#6b21a8' : '#9333ea', border: isLight ? '#7e22ce' : '#e9d5ff' },
+        hover: { background: isLight ? '#6b21a8' : '#9333ea', border: isLight ? '#7e22ce' : '#e9d5ff' }
       }
     ];
 
-    const groupNames = ['Tag', 'Post', 'Publication', 'Project'];
+    const groupNames = ['Tag', 'Post', 'Publication', 'Project', 'Course', 'Service'];
     const groupColors = [
-      isLight ? '#2563eb' : '#60a5fa',
-      isLight ? '#059669' : '#34d399',
-      isLight ? '#b45309' : '#fbbf24',
-      isLight ? '#9333ea' : '#c084fc'
+      isLight ? '#0284c7' : '#38bdf8', // 0: Tag (sky)
+      isLight ? '#2563eb' : '#60a5fa', // 1: Post (blue)
+      isLight ? '#4f46e5' : '#818cf8', // 2: Publication (indigo)
+      isLight ? '#059669' : '#34d399', // 3: Project (green)
+      isLight ? '#b45309' : '#fbbf24', // 4: Course (yellow)
+      isLight ? '#7e22ce' : '#c084fc'  // 5: Service (purple)
     ];
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
@@ -240,7 +254,14 @@ export default {
     this.network.on("click", (params) => {
       if (params.nodes.length > 0) {
         const targetPath = params.nodes[0];
-        if (targetPath.startsWith('/posts') || targetPath.startsWith('/publications') || targetPath.startsWith('/projects') || targetPath.startsWith('/tags')) {
+        if (
+          targetPath.startsWith('/posts') ||
+          targetPath.startsWith('/publications') ||
+          targetPath.startsWith('/projects') ||
+          targetPath.startsWith('/courses') ||
+          targetPath.startsWith('/services') ||
+          targetPath.startsWith('/tags')
+        ) {
           const targetUrl = new URL(targetPath, window.location.origin);
           targetUrl.searchParams.set('utm_source', utmSource);
           targetUrl.searchParams.set('utm_medium', utmMedium);
@@ -281,25 +302,35 @@ export default {
 
     // Apply color update to node labels and edges based on theme
     const colors = [
-      { 
-        background: '#3b82f6', 
-        border: isLight ? '#2563eb' : '#60a5fa', 
-        highlight: { background: '#2563eb', border: '#1d4ed8' } 
+      { // 0: Tag (Sky)
+        background: isLight ? '#0284c7' : '#0ea5e9', 
+        border: isLight ? '#0369a1' : '#38bdf8', 
+        highlight: { background: isLight ? '#075985' : '#0284c7', border: isLight ? '#0284c7' : '#7dd3fc' } 
       },
-      { 
-        background: '#10b981', 
-        border: isLight ? '#059669' : '#34d399', 
-        highlight: { background: '#059669', border: '#047857' } 
+      { // 1: Post (Blue)
+        background: isLight ? '#2563eb' : '#3b82f6', 
+        border: isLight ? '#1d4ed8' : '#60a5fa', 
+        highlight: { background: isLight ? '#1e40af' : '#1d4ed8', border: isLight ? '#2563eb' : '#93c5fd' } 
       },
-      { 
+      { // 2: Publication (Indigo)
+        background: isLight ? '#4f46e5' : '#6366f1', 
+        border: isLight ? '#4338ca' : '#818cf8', 
+        highlight: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' } 
+      },
+      { // 3: Project (Green)
+        background: isLight ? '#059669' : '#10b981', 
+        border: isLight ? '#047857' : '#34d399', 
+        highlight: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' } 
+      },
+      { // 4: Course (Yellow)
         background: isLight ? '#d97706' : '#f59e0b', 
         border: isLight ? '#b45309' : '#fbbf24', 
-        highlight: { background: isLight ? '#b45309' : '#d97706', border: isLight ? '#92400e' : '#b45309' } 
+        highlight: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' } 
       },
-      {
-        background: '#a855f7',
-        border: isLight ? '#9333ea' : '#c084fc',
-        highlight: { background: isLight ? '#9333ea' : '#c084fc', border: isLight ? '#7e22ce' : '#e9d5ff' }
+      { // 5: Service (Purple)
+        background: isLight ? '#9333ea' : '#a855f7', 
+        border: isLight ? '#7e22ce' : '#c084fc', 
+        highlight: { background: isLight ? '#6b21a8' : '#9333ea', border: isLight ? '#7e22ce' : '#e9d5ff' } 
       }
     ];
 
@@ -308,7 +339,7 @@ export default {
     this.visNodes.forEach(node => {
       nodeUpdates.push({
         id: node.id,
-        color: colors[node.rawGroup],
+        color: colors[node.rawGroup] || colors[0],
         font: {
           color: isLight ? '#0f172a' : '#f8fafc',
           strokeColor: isLight ? '#ffffff' : '#0f172a'
@@ -364,64 +395,94 @@ export default {
       const posts = this.nodes.filter(n => n.group === 1);
       const publications = this.nodes.filter(n => n.group === 2);
       const projects = this.nodes.filter(n => n.group === 3);
+      const courses = this.nodes.filter(n => n.group === 4);
+      const services = this.nodes.filter(n => n.group === 5);
 
       const isMobile = window.innerWidth < 768;
       const heightFactor = 45;
       const widthFactor = 45;
 
       if (isMobile) {
-        projects.forEach((n, idx) => {
+        posts.forEach((n, idx) => {
           targets[n.id] = {
-            x: projects.length > 1 ? (idx - (projects.length - 1) / 2) * widthFactor : 0,
-            y: -360
+            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * widthFactor : 0,
+            y: -350
+          };
+        });
+
+        courses.forEach((n, idx) => {
+          targets[n.id] = {
+            x: courses.length > 1 ? (idx - (courses.length - 1) / 2) * widthFactor : 0,
+            y: -210
           };
         });
 
         tags.forEach((n, idx) => {
           targets[n.id] = {
             x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * widthFactor : 0,
-            y: -120
+            y: -70
           };
         });
 
-        posts.forEach((n, idx) => {
+        projects.forEach((n, idx) => {
           targets[n.id] = {
-            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * widthFactor : 0,
-            y: 120
+            x: projects.length > 1 ? (idx - (projects.length - 1) / 2) * widthFactor : 0,
+            y: 70
+          };
+        });
+
+        services.forEach((n, idx) => {
+          targets[n.id] = {
+            x: services.length > 1 ? (idx - (services.length - 1) / 2) * widthFactor : 0,
+            y: 210
           };
         });
 
         publications.forEach((n, idx) => {
           targets[n.id] = {
             x: publications.length > 1 ? (idx - (publications.length - 1) / 2) * widthFactor : 0,
-            y: 360
+            y: 350
           };
         });
       } else {
-        projects.forEach((n, idx) => {
+        posts.forEach((n, idx) => {
           targets[n.id] = {
-            x: -360,
-            y: projects.length > 1 ? (idx - (projects.length - 1) / 2) * heightFactor : 0
+            x: -500,
+            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        courses.forEach((n, idx) => {
+          targets[n.id] = {
+            x: -300,
+            y: courses.length > 1 ? (idx - (courses.length - 1) / 2) * heightFactor : 0
           };
         });
 
         tags.forEach((n, idx) => {
           targets[n.id] = {
-            x: -120,
+            x: -100,
             y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0
           };
         });
 
-        posts.forEach((n, idx) => {
+        projects.forEach((n, idx) => {
           targets[n.id] = {
-            x: 120,
-            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0
+            x: 100,
+            y: projects.length > 1 ? (idx - (projects.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        services.forEach((n, idx) => {
+          targets[n.id] = {
+            x: 300,
+            y: services.length > 1 ? (idx - (services.length - 1) / 2) * heightFactor : 0
           };
         });
 
         publications.forEach((n, idx) => {
           targets[n.id] = {
-            x: 360,
+            x: 500,
             y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0
           };
         });

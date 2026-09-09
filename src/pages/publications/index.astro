@@ -8,7 +8,7 @@ const publications = (await getCollection("publications")).sort(
   (a, b) => b.id.localeCompare(a.id)
 );
 
-// Collect all unique tags for a tag cloud
+// Collect all unique tags for tag filter
 const tags = Array.from(
   new Set(publications.flatMap((pub) => pub.data.tags || []))
 ).sort();
@@ -36,7 +36,6 @@ const firstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
 
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <div class="mb-12">
-
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
         Reviewed <span class="heading-gradient-purple">Publications</span>
       </h1>
@@ -46,118 +45,163 @@ const firstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Tag Cloud -->
+      <!-- Filter Sidebar (Column 1) -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
-        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col max-h-[300px] lg:max-h-[calc(100vh-10rem)]">
-          <h2 class="text-lg font-bold text-gray-100 mb-4 flex items-center space-x-2 shrink-0">
-            <span>🏷️</span>
-            <span>Research Tags</span>
-          </h2>
-          <div class="mb-3 relative shrink-0">
-            <input 
-              type="text" 
-              id="tag-search" 
-              placeholder="Search tags..." 
-              class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-1.5 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50 transition-all duration-200"
-            />
-            <span class="absolute left-2.5 top-2 text-[10px] text-gray-500">🔍</span>
+        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col lg:max-h-[calc(100vh-8rem)]">
+          <div class="mb-4 shrink-0">
+            <h2 class="text-lg font-bold text-gray-100 flex items-center space-x-2">
+              <span>⚙️</span>
+              <span>Filter Papers</span>
+            </h2>
           </div>
-          <div class="flex flex-wrap gap-2.5 overflow-y-auto pr-1 custom-scrollbar-thin flex-grow">
-            {tags.map(tag => (
-              <a 
-                href={`/tags/${tag}`}
-                data-tag={tag}
-                class="tag-link px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-200"
-              >
-                #{tag}
-              </a>
-            ))}
-            <p id="no-tags-message" class="text-xs text-gray-500 italic py-2 hidden w-full text-center">No matching tags</p>
+
+          <!-- Text Search -->
+          <div class="mb-4 shrink-0">
+            <label for="publication-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="publication-search" 
+                placeholder="Search papers..." 
+                class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50 transition-all duration-200"
+              />
+              <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
+            </div>
+          </div>
+
+          <!-- Technologies / Tags list -->
+          <div class="flex-1 min-h-0 flex flex-col">
+            <div class="flex items-center justify-between mb-2 shrink-0">
+              <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block">Filter by Tag</span>
+              <span class="text-[10px] text-gray-500 font-medium">{tags.length} topics</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 max-h-[260px] lg:max-h-none flex-1 min-h-0 overflow-y-auto pr-1 custom-scrollbar-thin content-start" id="tag-filter-buttons">
+              {tags.map(tag => (
+                <button 
+                  type="button" 
+                  class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                  data-tag={tag}
+                >
+                  #{tag}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Grouped Publications list -->
-      <div class="lg:col-span-9 order-2 lg:order-1 space-y-12">
+      <!-- Grouped Publications list (Column 2) -->
+      <div class="lg:col-span-9 order-2 lg:order-1 space-y-12 scroll-mt-28" id="publications-list">
         {years.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No publications found.</p>
         ) : (
           years.map(year => (
-            <section class="space-y-4">
+            <section class="publication-year-section space-y-4">
               <h2 class="text-2xl font-extrabold text-gray-100 border-b border-element-border pb-2 tracking-tight">
                 {year}
               </h2>
               <div class="space-y-4">
-                {groupedByYear[year].map(pub => (
-                  <PublicationCard
-                    id={pub.id}
-                    title={pub.data.title}
-                    author={pub.data.author}
-                    pubDate={pub.data.pubDate}
-                    book={pub.data.book}
-                    tags={pub.data.tags}
-                    icon={pub.data.icon}
-                    publisherUrl={pub.data.publisherUrl}
-                    linkLabel="Abstract & BibTeX"
-                  />
-                ))}
+                {groupedByYear[year].map(pub => {
+                  const tagsJoined = (pub.data.tags || []).join(" ").toLowerCase();
+                  return (
+                    <div 
+                      class="publication-card-item"
+                      data-title={pub.data.title.toLowerCase()}
+                      data-author={pub.data.author.toLowerCase()}
+                      data-book={(pub.data.book || "").toLowerCase()}
+                      data-tags={tagsJoined}
+                    >
+                      <PublicationCard
+                        id={pub.id}
+                        title={pub.data.title}
+                        author={pub.data.author}
+                        pubDate={pub.data.pubDate}
+                        book={pub.data.book}
+                        tags={pub.data.tags}
+                        icon={pub.data.icon}
+                        publisherUrl={pub.data.publisherUrl}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </section>
           ))
         )}
+        <p id="no-publications-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+          No publications match your selected filter criteria.
+        </p>
       </div>
     </div>
   </main>
-
-  <script>
-    const searchInput = document.getElementById('tag-search') as HTMLInputElement | null;
-    const tagLinks = document.querySelectorAll('[data-tag]');
-    const noTagsMessage = document.getElementById('no-tags-message');
-
-    searchInput?.addEventListener('input', (e) => {
-      const query = (e.target as HTMLInputElement).value.toLowerCase().trim();
-      let visibleCount = 0;
-
-      tagLinks.forEach(link => {
-        const tag = link.getAttribute('data-tag')?.toLowerCase() || '';
-        if (tag.includes(query)) {
-          link.classList.remove('hidden');
-          visibleCount++;
-        } else {
-          link.classList.add('hidden');
-        }
-      });
-
-      if (noTagsMessage) {
-        if (visibleCount === 0 && query !== '') {
-          noTagsMessage.classList.remove('hidden');
-        } else {
-          noTagsMessage.classList.add('hidden');
-        }
-      }
-    });
-  </script>
 </Layout>
 
+<script>
+  import { ClientListFilter } from "../../scripts/filter";
+
+  function initFilter() {
+    new ClientListFilter({
+      itemSelector: ".publication-card-item",
+      searchFieldSelector: "#publication-search",
+      searchDataAttributes: ["data-title", "data-author", "data-book", "data-tags"],
+      searchParamKey: "q",
+      buttonFilters: [
+        {
+          buttonSelector: ".tag-filter-btn",
+          dataAttribute: "data-tags",
+          defaultValue: "all",
+          activeClass: "active",
+          matchType: "includes",
+          paramKey: "tag"
+        }
+      ],
+      groupSelector: ".publication-year-section",
+      scrollToSelector: "#publications-list",
+      noResultsSelector: "#no-publications-message"
+    });
+  }
+
+  initFilter();
+  document.addEventListener("astro:page-load", initFilter);
+</script>
+
 <style>
-  .tag-link {
+  .tag-filter-btn {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
     color: #9ca3af;
   }
-  .tag-link:hover {
-    border-color: rgba(168, 85, 247, 0.4);
+
+  .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(168, 85, 247, 0.3);
     color: #c084fc;
     background: rgba(168, 85, 247, 0.08);
   }
-  :global(.light) .tag-link {
+
+  .tag-filter-btn.active {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.5);
+    color: #d8b4fe;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25);
+  }
+
+  /* Light mode overrides */
+  :global(.light) .tag-filter-btn {
     background: rgba(15, 23, 42, 0.04);
     border-color: rgba(15, 23, 42, 0.08);
     color: #475569;
   }
-  :global(.light) .tag-link:hover {
+
+  :global(.light) .tag-filter-btn:hover:not(.active) {
     background: rgba(168, 85, 247, 0.06);
     border-color: rgba(168, 85, 247, 0.3);
     color: #7e22ce;
+  }
+
+  :global(.light) .tag-filter-btn.active {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.4);
+    color: #7e22ce;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2);
   }
 </style>

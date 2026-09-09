@@ -10,6 +10,11 @@ terms:
   - "Summer Term 2025"
 language: "de"
 screenshot: "./preview.png"
+tags:
+  - "iot"
+  - "smart-home"
+  - "industrial-informatics"
+  - "teaching"
 ---
 
 Herzlich willkommen zum Kurs **Internet der Dinge (IoT)**! In diesem Modul verbinden wir die physische Welt der Sensoren mit der digitalen Welt der Cloud.

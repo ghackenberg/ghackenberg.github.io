@@ -1,60 +1,62 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
-import ProjectCard from "../../components/ProjectCard.astro";
 import { getCollection } from "astro:content";
+import PostCard from "../../components/PostCard.astro";
 
-const projects = await getCollection("projects");
-const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const allPosts = await getCollection("posts");
+const posts = allPosts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
 
-// Extract unique tags from all projects
+// Collect all unique tags for tag filter across all posts
 const tagsSet = new Set<string>();
-for (const project of projects) {
-  if (project.data.tags) {
-    project.data.tags.forEach(tag => tagsSet.add(tag));
+for (const post of posts) {
+  if (post.data.tags) {
+    post.data.tags.forEach(tag => tagsSet.add(tag));
   }
 }
 const allTags = Array.from(tagsSet).sort();
-const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data.screenshot;
+
+const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
 ---
 
 <Layout 
-  title="Software Projects | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels" 
-  description="Explore software engineering projects, open-source systems, and interactive tools designed and built by Dr. Georg Hackenberg."
-  image={firstProjectScreenshot}
+  title="Blog Posts | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels" 
+  description="Read computer science insights, software tutorials, and dev logs by Dr. Georg Hackenberg covering systems development, styling, and graphics."
+  image={pagePreviewImage}
 >
   <Navbar />
 
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
-    <!-- Header -->
     <div class="mb-12">
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-        Software <span class="heading-gradient-blue">Projects</span>
+        Blog <span class="heading-gradient-blue">Posts</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-        Active platforms, frameworks, and tools designed to optimize product design, engineering, knowledge graphs, and real-time physical simulation.
+        Insights, development logs, sketches, and tutorials covering ultimate usability design, graphics engine development, software systems, and mechatronics workbench engineering.
       </p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Filters Sidebar (Column 1) -->
+      <!-- Filter Sidebar (Column 1) -->
       <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
         <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col lg:max-h-[calc(100vh-8rem)]">
           <div class="mb-4 shrink-0">
             <h2 class="text-lg font-bold flex items-center space-x-2">
               <span>⚙️</span>
-              <span>Filter Projects</span>
+              <span>Filter Posts</span>
             </h2>
           </div>
 
           <!-- Text Search -->
           <div class="mb-4 shrink-0">
-            <label for="project-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
+            <label for="post-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
             <div class="relative">
               <input 
                 type="text" 
-                id="project-search" 
-                placeholder="Search projects..." 
+                id="post-search" 
+                placeholder="Search articles..." 
                 class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
               />
               <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
@@ -82,40 +84,69 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data
         </div>
       </div>
 
-      <!-- Projects Grid (Column 2) -->
+      <!-- Posts Grid (Column 2) -->
       <div class="lg:col-span-9 order-2 lg:order-1">
-        {sortedProjects.length === 0 ? (
-          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No projects defined.</p>
+        {posts.length === 0 ? (
+          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No blog posts found.</p>
         ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 scroll-mt-28" id="projects-grid">
-            {sortedProjects.map(project => {
-              const tagsJoined = (project.data.tags || []).join(" ").toLowerCase();
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 scroll-mt-28" id="posts-grid">
+            {posts.map((post) => {
+              const tagsJoined = (post.data.tags || []).join(" ").toLowerCase();
               return (
                 <div 
-                  class="project-wrapper h-full"
-                  data-title={project.data.title.toLowerCase()}
-                  data-tagline={project.data.tagline.toLowerCase()}
-                  data-desc={project.data.description.toLowerCase()}
+                  class="post-card-item h-full"
+                  data-title={post.data.title.toLowerCase()}
+                  data-desc={(post.data.description || "").toLowerCase()}
                   data-tags={tagsJoined}
                 >
-                  <ProjectCard 
-                    title={project.data.title}
-                    tagline={project.data.tagline}
-                    description={project.data.description}
-                    href={`/projects/${project.id}`}
-                    tags={project.data.tags}
-                    accentColor={project.data.accentColor}
-                    screenshot={project.data.screenshot}
-                    screenshotLight={project.data.screenshotLight}
+                  <PostCard
+                    id={post.id}
+                    title={post.data.title}
+                    description={post.data.description}
+                    pubDate={post.data.pubDate}
+                    icon={post.data.icon}
+                    tags={post.data.tags}
                   />
                 </div>
               );
             })}
           </div>
         )}
-        <p id="no-projects-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
-          No projects match your selected filter criteria.
+
+        <p id="no-posts-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+          No blog posts match your selected filter criteria.
         </p>
+
+        <!-- Pagination Controls -->
+        <nav id="posts-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Blog Posts Pagination">
+          {/* Previous Button */}
+          <div class="flex-1 w-full sm:w-auto text-left">
+            <button 
+              type="button"
+              data-action="prev"
+              disabled
+              class="prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200"
+            >
+              <span class="mr-1.5">&larr;</span>
+              <span>Previous</span>
+            </button>
+          </div>
+
+          {/* Page Numbers */}
+          <div class="page-numbers-container flex items-center justify-center gap-1.5 order-3 sm:order-2 flex-wrap"></div>
+
+          {/* Next Button */}
+          <div class="flex-1 w-full sm:w-auto text-right order-2 sm:order-3">
+            <button 
+              type="button"
+              data-action="next"
+              class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+            >
+              <span>Next</span>
+              <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
+            </button>
+          </div>
+        </nav>
       </div>
     </div>
   </main>
@@ -126,9 +157,9 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data
 
   function initFilter() {
     new ClientListFilter({
-      itemSelector: ".project-wrapper",
-      searchFieldSelector: "#project-search",
-      searchDataAttributes: ["data-title", "data-tagline", "data-desc", "data-tags"],
+      itemSelector: ".post-card-item",
+      searchFieldSelector: "#post-search",
+      searchDataAttributes: ["data-title", "data-desc", "data-tags"],
       searchParamKey: "q",
       buttonFilters: [
         {
@@ -140,8 +171,15 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data
           paramKey: "tag"
         }
       ],
-      scrollToSelector: "#projects-grid",
-      noResultsSelector: "#no-projects-message"
+      pagination: {
+        pageSize: 10,
+        navSelector: "#posts-pagination",
+        pageParamKey: "page",
+        theme: "blue",
+        scrollToSelector: "#posts-grid"
+      },
+      scrollToSelector: "#posts-grid",
+      noResultsSelector: "#no-posts-message"
     });
   }
 

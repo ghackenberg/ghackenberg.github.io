@@ -14,6 +14,7 @@ import interestSimulationImg from "../content/interests/computer-simulation/prev
 import interestAiImg from "../content/interests/artificial-intelligence/preview.jpg";
 import interestUxImg from "../content/interests/user-experience/preview.jpg";
 import { getCollection } from "astro:content";
+import { calculateTagCounts, buildGraphPayload } from "../scripts/graph-payload";
 
 const optimizedProfile = await getImage({
   src: profileImage,
@@ -31,7 +32,7 @@ const projects = await getCollection("projects");
 const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
 const services = await getCollection("services");
-const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
 const posts = await getCollection("posts");
 const sortedPosts = posts.slice().sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
@@ -43,30 +44,13 @@ const tagsCollection = await getCollection("tags");
 const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
 
 // Calculate tags and graph payload for the home page Vis.js Network
-const tagPosts: Record<string, number> = {};
-posts.forEach(p => {
-  p.data.tags.forEach(t => {
-    tagPosts[t] = (tagPosts[t] || 0) + 1;
-  });
-});
-
-const tagPubs: Record<string, number> = {};
-publications.forEach(p => {
-  p.data.tags.forEach(t => {
-    tagPubs[t] = (tagPubs[t] || 0) + 1;
-  });
-});
-
-const tagProjects: Record<string, number> = {};
-projects.forEach(p => {
-  if (p.data.tags) {
-    p.data.tags.forEach(t => {
-      tagProjects[t] = (tagProjects[t] || 0) + 1;
-    });
-  }
-});
-
-const allTags = Array.from(new Set([...Object.keys(tagPosts), ...Object.keys(tagPubs), ...Object.keys(tagProjects)]));
+const tagCounts = calculateTagCounts({ posts, publications, projects, courses, services });
+const tagPosts = tagCounts.posts;
+const tagPubs = tagCounts.publications;
+const tagProjects = tagCounts.projects;
+const tagCourses = tagCounts.courses;
+const tagServices = tagCounts.services;
+const allTags = tagCounts.allTags;
 
 interface TagCloudItem {
   id: string;
@@ -76,9 +60,13 @@ interface TagCloudItem {
   postsCount: number;
   pubsCount: number;
   projectsCount: number;
+  coursesCount: number;
+  servicesCount: number;
   postsPct: number;
   pubsPct: number;
   projectsPct: number;
+  coursesPct: number;
+  servicesPct: number;
   fontSizeClass: string;
   fontWeightClass: string;
 }
@@ -87,11 +75,15 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const postsCount = tagPosts[tagId] || 0;
   const pubsCount = tagPubs[tagId] || 0;
   const projectsCount = tagProjects[tagId] || 0;
-  const totalCount = postsCount + pubsCount + projectsCount;
+  const coursesCount = tagCourses[tagId] || 0;
+  const servicesCount = tagServices[tagId] || 0;
+  const totalCount = postsCount + pubsCount + projectsCount + coursesCount + servicesCount;
   
   const postsPct = totalCount > 0 ? Math.round((postsCount / totalCount) * 100) : 0;
   const pubsPct = totalCount > 0 ? Math.round((pubsCount / totalCount) * 100) : 0;
   const projectsPct = totalCount > 0 ? Math.round((projectsCount / totalCount) * 100) : 0;
+  const coursesPct = totalCount > 0 ? Math.round((coursesCount / totalCount) * 100) : 0;
+  const servicesPct = totalCount > 0 ? Math.round((servicesCount / totalCount) * 100) : 0;
 
   const tagEntry = tagMap.get(tagId);
   const name = tagEntry?.data.title ?? tagId;
@@ -105,9 +97,13 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     postsCount,
     pubsCount,
     projectsCount,
+    coursesCount,
+    servicesCount,
     postsPct,
     pubsPct,
     projectsPct,
+    coursesPct,
+    servicesPct,
     fontSizeClass: "text-xs sm:text-sm",
     fontWeightClass: "font-medium",
   };
@@ -144,10 +140,14 @@ const restTotalContentCount = overflowTags.reduce((sum, t) => sum + t.totalCount
 const restPostsCount = overflowTags.reduce((sum, t) => sum + t.postsCount, 0);
 const restPubsCount = overflowTags.reduce((sum, t) => sum + t.pubsCount, 0);
 const restProjectsCount = overflowTags.reduce((sum, t) => sum + t.projectsCount, 0);
+const restCoursesCount = overflowTags.reduce((sum, t) => sum + t.coursesCount, 0);
+const restServicesCount = overflowTags.reduce((sum, t) => sum + t.servicesCount, 0);
 
 const restPostsPct = restTotalContentCount > 0 ? Math.round((restPostsCount / restTotalContentCount) * 100) : 0;
 const restPubsPct = restTotalContentCount > 0 ? Math.round((restPubsCount / restTotalContentCount) * 100) : 0;
 const restProjectsPct = restTotalContentCount > 0 ? Math.round((restProjectsCount / restTotalContentCount) * 100) : 0;
+const restCoursesPct = restTotalContentCount > 0 ? Math.round((restCoursesCount / restTotalContentCount) * 100) : 0;
+const restServicesPct = restTotalContentCount > 0 ? Math.round((restServicesCount / restTotalContentCount) * 100) : 0;
 
 // Dynamic weight sizing for the remaining badge, capped to max tag weight
 const cappedRestWeight = Math.min(restTotalContentCount, maxTagCount);
@@ -165,111 +165,18 @@ if (restRatio > 0.75) {
   restFontWeightClass = "font-semibold";
 }
 
-interface GraphNodePayload {
-  id: string;
-  name: string;
-  size: number;
-  group: number;
-  typeLabel?: string;
-  description?: string;
-  date?: string;
-  image?: string;
-  tags?: string[];
-}
-
-const visNodes: GraphNodePayload[] = [];
-const visConnections: Array<{ sourceId: string; targetId: string }> = [];
-
-allTags.forEach(tag => {
-  const count = (tagPosts[tag] || 0) + (tagPubs[tag] || 0) + (tagProjects[tag] || 0);
-  const tagEntry = tagMap.get(tag);
-  const title = tagEntry?.data.title ?? tag;
-  visNodes.push({
-    id: `/tags/${encodeURIComponent(tag)}`,
-    name: `#${title}`,
-    size: Math.log(count) + 1,
-    group: 0,
-    typeLabel: "Tag",
-    description: tagEntry?.data.description || `${count} connected item${count > 1 ? 's' : ''}.`
-  });
+const graphPayloads = await buildGraphPayload({
+  posts,
+  publications,
+  projects,
+  courses,
+  services,
+  tags: tagsCollection,
+  getImage
 });
 
-for (const post of posts) {
-  const path = `/posts/${post.id}`;
-  let imageSrc: string | undefined = undefined;
-  if (post.data.icon) {
-    try {
-      const opt = await getImage({ src: post.data.icon, format: "webp", width: 240, quality: 75 });
-      imageSrc = opt.src;
-    } catch (e) {
-      console.warn("Failed to optimize post icon", e);
-    }
-  }
-  visNodes.push({
-    id: path,
-    name: post.data.title,
-    size: 1.2,
-    group: 1,
-    typeLabel: "Post",
-    description: post.data.description,
-    date: post.data.pubDate ? new Date(post.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
-    image: imageSrc,
-    tags: post.data.tags ? post.data.tags.slice(0, 3) : []
-  });
-  post.data.tags.forEach(tag => {
-    visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
-  });
-}
-
-for (const pub of publications) {
-  const path = `/publications/${pub.id}`;
-  visNodes.push({
-    id: path,
-    name: pub.data.title,
-    size: 1,
-    group: 2,
-    typeLabel: "Publication",
-    description: pub.data.abstract || pub.data.book,
-    date: pub.data.pubDate,
-    tags: pub.data.tags ? pub.data.tags.slice(0, 3) : []
-  });
-  pub.data.tags.forEach(tag => {
-    visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
-  });
-}
-
-for (const project of projects) {
-  const path = `/projects/${project.id}`;
-  let imageSrc: string | undefined = undefined;
-  const projectImg = project.data.screenshot || project.data.screenshotLight;
-  if (projectImg) {
-    try {
-      const opt = await getImage({ src: projectImg, format: "webp", width: 240, quality: 75 });
-      imageSrc = opt.src;
-    } catch (e) {
-      console.warn("Failed to optimize project screenshot", e);
-    }
-  }
-  visNodes.push({
-    id: path,
-    name: project.data.title,
-    size: 1.1,
-    group: 3,
-    typeLabel: "Project",
-    description: project.data.description,
-    date: project.data.pubDate ? new Date(project.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
-    image: imageSrc,
-    tags: project.data.tags ? project.data.tags.slice(0, 3) : []
-  });
-  if (project.data.tags) {
-    project.data.tags.forEach(tag => {
-      visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
-    });
-  }
-}
-
 const homeVisPayload = {
-  "vis-network": { nodes: visNodes, connections: visConnections }
+  "vis-network": graphPayloads['vis-network']
 };
 
 const colorMappings = {
@@ -863,7 +770,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           Content <span class="heading-gradient-blue">Tags</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
-          Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, and software projects across core computer science domains.
+          Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, software projects, university courses, and consulting services across core computer science domains.
         </p>
       </div>
 
@@ -906,10 +813,16 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                     <div style={`width: ${tag.postsPct}%`} class="bg-gradient-to-r from-brand-blue to-sky-400 h-full" title={`Blog Posts: ${tag.postsCount}`} />
                   )}
                   {tag.pubsCount > 0 && (
-                    <div style={`width: ${tag.pubsPct}%`} class="bg-gradient-to-r from-amber-400 to-brand-yellow h-full" title={`Publications: ${tag.pubsCount}`} />
+                    <div style={`width: ${tag.pubsPct}%`} class="bg-gradient-to-r from-indigo-500 to-indigo-400 h-full" title={`Publications: ${tag.pubsCount}`} />
                   )}
                   {tag.projectsCount > 0 && (
                     <div style={`width: ${tag.projectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${tag.projectsCount}`} />
+                  )}
+                  {tag.coursesCount > 0 && (
+                    <div style={`width: ${tag.coursesPct}%`} class="bg-gradient-to-r from-yellow-400 to-brand-yellow h-full" title={`Courses: ${tag.coursesCount}`} />
+                  )}
+                  {tag.servicesCount > 0 && (
+                    <div style={`width: ${tag.servicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${tag.servicesCount}`} />
                   )}
                 </div>
 
@@ -924,7 +837,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   )}
                   {tag.pubsCount > 0 && (
                     <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                      <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
                       <span>{tag.pubsCount} Paper{tag.pubsCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
                     </span>
@@ -934,6 +847,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                       <span>{tag.projectsCount} Project{tag.projectsCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
+                    </span>
+                  )}
+                  {tag.coursesCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                      <span>{tag.coursesCount} Course{tag.coursesCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.coursesPct}%)</span>
+                    </span>
+                  )}
+                  {tag.servicesCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-purple"></span>
+                      <span>{tag.servicesCount} Service{tag.servicesCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
                     </span>
                   )}
                 </div>
@@ -975,10 +902,16 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                     <div style={`width: ${tag.postsPct}%`} class="bg-gradient-to-r from-brand-blue to-sky-400 h-full" title={`Blog Posts: ${tag.postsCount}`} />
                   )}
                   {tag.pubsCount > 0 && (
-                    <div style={`width: ${tag.pubsPct}%`} class="bg-gradient-to-r from-amber-400 to-brand-yellow h-full" title={`Publications: ${tag.pubsCount}`} />
+                    <div style={`width: ${tag.pubsPct}%`} class="bg-gradient-to-r from-indigo-500 to-indigo-400 h-full" title={`Publications: ${tag.pubsCount}`} />
                   )}
                   {tag.projectsCount > 0 && (
                     <div style={`width: ${tag.projectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${tag.projectsCount}`} />
+                  )}
+                  {tag.coursesCount > 0 && (
+                    <div style={`width: ${tag.coursesPct}%`} class="bg-gradient-to-r from-yellow-400 to-brand-yellow h-full" title={`Courses: ${tag.coursesCount}`} />
+                  )}
+                  {tag.servicesCount > 0 && (
+                    <div style={`width: ${tag.servicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${tag.servicesCount}`} />
                   )}
                 </div>
 
@@ -993,7 +926,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   )}
                   {tag.pubsCount > 0 && (
                     <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                      <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
                       <span>{tag.pubsCount} Paper{tag.pubsCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
                     </span>
@@ -1003,6 +936,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                       <span>{tag.projectsCount} Project{tag.projectsCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
+                    </span>
+                  )}
+                  {tag.coursesCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                      <span>{tag.coursesCount} Course{tag.coursesCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.coursesPct}%)</span>
+                    </span>
+                  )}
+                  {tag.servicesCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-purple"></span>
+                      <span>{tag.servicesCount} Service{tag.servicesCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
                     </span>
                   )}
                 </div>
@@ -1038,10 +985,16 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                     <div style={`width: ${restPostsPct}%`} class="bg-gradient-to-r from-brand-blue to-sky-400 h-full" title={`Blog Posts: ${restPostsCount}`} />
                   )}
                   {restPubsCount > 0 && (
-                    <div style={`width: ${restPubsPct}%`} class="bg-gradient-to-r from-amber-400 to-brand-yellow h-full" title={`Publications: ${restPubsCount}`} />
+                    <div style={`width: ${restPubsPct}%`} class="bg-gradient-to-r from-indigo-500 to-indigo-400 h-full" title={`Publications: ${restPubsCount}`} />
                   )}
                   {restProjectsCount > 0 && (
                     <div style={`width: ${restProjectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${restProjectsCount}`} />
+                  )}
+                  {restCoursesCount > 0 && (
+                    <div style={`width: ${restCoursesPct}%`} class="bg-gradient-to-r from-yellow-400 to-brand-yellow h-full" title={`Courses: ${restCoursesCount}`} />
+                  )}
+                  {restServicesCount > 0 && (
+                    <div style={`width: ${restServicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${restServicesCount}`} />
                   )}
                 </div>
 
@@ -1056,7 +1009,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   )}
                   {restPubsCount > 0 && (
                     <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                      <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
                       <span>{restPubsCount} Paper{restPubsCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({restPubsPct}%)</span>
                     </span>
@@ -1066,6 +1019,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                       <span>{restProjectsCount} Project{restProjectsCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({restProjectsPct}%)</span>
+                    </span>
+                  )}
+                  {restCoursesCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
+                      <span>{restCoursesCount} Course{restCoursesCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({restCoursesPct}%)</span>
+                    </span>
+                  )}
+                  {restServicesCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-brand-purple"></span>
+                      <span>{restServicesCount} Service{restServicesCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({restServicesPct}%)</span>
                     </span>
                   )}
                 </div>
@@ -1098,7 +1065,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           Content <span class="heading-gradient-green">Graph</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
-          Explore an interactive network graph mapping my software projects, technical blog posts, research publications, and core computer science topics.
+          Explore an interactive network graph mapping my software projects, technical blog posts, research publications, university courses, consulting services, and core topic tags.
         </p>
       </div>
 
@@ -1107,20 +1074,28 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         <!-- Floating Glassmorphic Legend (Positioned top-left, responsive on mobile & desktop) -->
         <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-white/10 light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-blue border border-white/20 shadow-sm shadow-brand-blue/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-400 border border-white/20 shadow-sm shadow-sky-400/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Tags</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-purple border border-white/20 shadow-sm shadow-brand-purple/30"></span>
-            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Projects</span>
-          </div>
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-blue border border-white/20 shadow-sm shadow-brand-blue/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Posts</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-yellow border border-white/20 shadow-sm shadow-brand-yellow/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Projects</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 border border-white/20 shadow-sm shadow-indigo-500/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Publications</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-yellow border border-white/20 shadow-sm shadow-brand-yellow/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Courses</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-purple border border-white/20 shadow-sm shadow-brand-purple/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Services</span>
           </div>
         </div>
 
@@ -1136,33 +1111,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         </div>
       </div>
 
-      <!-- Section Footer CTAs: 3 columns on desktop, stacked rows on mobile -->
-      <div class="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto w-full">
+      <!-- Section Footer CTA: Single Browse All Tags button placed under graph -->
+      <div class="mt-12 md:mt-16 flex justify-center">
         <a 
-          href="/projects?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
-          class="w-full px-6 py-4 rounded-2xl bg-gradient-purple text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-purple/20 hover:shadow-brand-purple/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
+          href="/tags?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
+          class="px-8 py-4 rounded-2xl bg-gradient-blue text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-blue/20 hover:shadow-brand-blue/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
         >
-          <span>Browse All Projects</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-          </svg>
-        </a>
-
-        <a 
-          href="/posts?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
-          class="w-full px-6 py-4 rounded-2xl bg-gradient-green text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-green/20 hover:shadow-brand-green/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
-        >
-          <span>Browse All Posts</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-          </svg>
-        </a>
-
-        <a 
-          href="/publications?utm_source=homepage&utm_medium=posts_network_cta&utm_campaign=posts_network" 
-          class="w-full px-6 py-4 rounded-2xl bg-gradient-yellow text-gray-950 font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-yellow/20 hover:shadow-brand-yellow/35 transition-all duration-300 flex items-center justify-center gap-3 hover:scale-[1.02]"
-        >
-          <span>Browse All Publications</span>
+          <span>Browse All Tags</span>
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
           </svg>

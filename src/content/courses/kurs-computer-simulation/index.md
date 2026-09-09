@@ -10,6 +10,10 @@ terms:
   - "Winter Term 2025/26"
 language: "de"
 screenshot: "./preview.png"
+tags:
+  - "simulation"
+  - "manufacturing-systems"
+  - "teaching"
 ---
 
 Herzlich willkommen zum Kurs **Computer-Simulation**! Dieser Kurs bietet eine fundierte Einführung in die Modellierung und rechnergestützte Simulation dynamischer Systeme.

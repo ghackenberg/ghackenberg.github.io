@@ -8,6 +8,7 @@ interface Props {
   description: string;
   href: string;
   tags: string[];
+  activeTag?: string;
   accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
   screenshot?: ImageMetadata;
   screenshotLight?: ImageMetadata;
@@ -19,6 +20,7 @@ const {
   description, 
   href, 
   tags, 
+  activeTag,
   accentColor = 'blue',
   screenshot,
   screenshotLight
@@ -51,7 +53,7 @@ const colorClasses = {
     border: 'hover:border-brand-yellow/40 border-element-border',
     glow: 'group-hover:bg-brand-yellow/10',
     tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-yellow/15 hover:border-brand-yellow/30 hover:text-amber-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-amber-50 light:hover:border-brand-yellow/30 light:hover:text-amber-600',
-    btnBg: 'bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-600',
+    btnBg: 'bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-700',
     iconColor: 'text-brand-yellow'
   },
   purple: {
@@ -158,10 +160,10 @@ const badgeColorClass = {
   </div>
 
   <!-- Content Padding Wrapper -->
-  <div class="p-6 md:p-8 flex flex-col flex-grow border-t border-element-border">
+  <div class="p-5 md:p-6 flex flex-col flex-grow border-t border-element-border">
     <div>
       <!-- Header -->
-      <div class="flex items-start justify-between mb-4 w-full">
+      <div class="flex items-start justify-between mb-2 w-full">
         <div class="w-full">
           <h3 class={`text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-brand-${accentColor} transition-all duration-300`}>
             {title}
@@ -178,28 +180,32 @@ const badgeColorClass = {
       </div>
       
       <!-- Description -->
-      <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-4 font-normal">
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-3 font-normal">
         {description}
       </p>
     </div>
 
     <!-- Tech tags & actions footer -->
-    <div class="flex-grow flex flex-col justify-between mt-2">
-      <div class="flex flex-wrap gap-1.5 mb-3 relative z-20">
+    <div class="flex-grow flex flex-col mt-3">
+      <div class="flex flex-wrap gap-1.5 self-start relative z-20">
         {tags.map(tag => (
           <a 
             href={`/tags/${tag}`}
-            class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 ${colorClasses.tagBg}`}
+            data-tag={tag}
+            class={`tag-chip tag-chip-${accentColor} inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              activeTag === tag ? 'active-tag-match' : ''
+            }`}
           >
             #{tag}
           </a>
         ))}
       </div>
       
-      <div class="flex justify-center mt-3">
+      <!-- Read more button — full width, pinned to bottom -->
+      <div class="mt-auto pt-6 w-full">
         <a 
           href={href}
-          class={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold relative z-20 transition-all hover:scale-105 ${colorClasses.btnBg}`}
+          class={`flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg text-xs font-bold relative z-20 transition-all duration-200 ${colorClasses.btnBg}`}
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

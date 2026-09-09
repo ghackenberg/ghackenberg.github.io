@@ -694,3 +694,129 @@ div.vis-tooltip {
   touch-action: pan-y !important;
 }
 
+/* Unified Tag Chip System (Preview Cards & Detail Pages) */
+.tag-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+  transition: all 0.2s ease-in-out;
+}
+
+:root.light .tag-chip,
+.light .tag-chip {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: #475569;
+}
+
+/* Hover States (when not matching active tag filter) */
+.tag-chip-blue:hover:not(.active-tag-match) {
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.08);
+}
+:root.light .tag-chip-blue:hover:not(.active-tag-match),
+.light .tag-chip-blue:hover:not(.active-tag-match) {
+  background: rgba(59, 130, 246, 0.06);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #1d4ed8;
+}
+
+.tag-chip-yellow:hover:not(.active-tag-match) {
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.08);
+}
+:root.light .tag-chip-yellow:hover:not(.active-tag-match),
+.light .tag-chip-yellow:hover:not(.active-tag-match) {
+  background: rgba(245, 158, 11, 0.06);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #b45309;
+}
+
+.tag-chip-purple:hover:not(.active-tag-match) {
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #d8b4fe;
+  background: rgba(168, 85, 247, 0.08);
+}
+:root.light .tag-chip-purple:hover:not(.active-tag-match),
+.light .tag-chip-purple:hover:not(.active-tag-match) {
+  background: rgba(168, 85, 247, 0.06);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #7e22ce;
+}
+
+.tag-chip-green:hover:not(.active-tag-match) {
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.08);
+}
+:root.light .tag-chip-green:hover:not(.active-tag-match),
+.light .tag-chip-green:hover:not(.active-tag-match) {
+  background: rgba(16, 185, 129, 0.06);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #047857;
+}
+
+/* Active Highlight Matches - Harmonized 1:1 with Sidebar .tag-filter-btn.active */
+.tag-chip-blue.active-tag-match {
+  background: rgba(59, 130, 246, 0.2) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  color: #7dd3fc !important;
+  box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-blue.active-tag-match,
+.light .tag-chip-blue.active-tag-match {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  color: #1d4ed8 !important;
+  box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2) !important;
+}
+
+.tag-chip-yellow.active-tag-match {
+  background: rgba(245, 158, 11, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  color: #fde047 !important;
+  box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-yellow.active-tag-match,
+.light .tag-chip-yellow.active-tag-match {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  color: #b45309 !important;
+  box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2) !important;
+}
+
+.tag-chip-purple.active-tag-match {
+  background: rgba(168, 85, 247, 0.2) !important;
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  color: #d8b4fe !important;
+  box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-purple.active-tag-match,
+.light .tag-chip-purple.active-tag-match {
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(168, 85, 247, 0.4) !important;
+  color: #7e22ce !important;
+  box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2) !important;
+}
+
+.tag-chip-green.active-tag-match {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  color: #6ee7b7 !important;
+  box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.25) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-green.active-tag-match,
+.light .tag-chip-green.active-tag-match {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #047857 !important;
+  box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2) !important;
+}
+
+

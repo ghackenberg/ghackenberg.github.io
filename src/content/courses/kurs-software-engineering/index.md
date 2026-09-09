@@ -10,6 +10,11 @@ terms:
   - "Summer Term 2025"
 language: "de"
 screenshot: "./preview.png"
+tags:
+  - "software-engineering"
+  - "software-architecture"
+  - "systems-implementation"
+  - "teaching"
 ---
 
 Herzlich willkommen zum Kurs **Software Engineering**! Softwareentwicklung ist weit mehr als nur Code zu schreiben – es ist ein strukturierter Ingenieursprozess zur Lösung komplexer Probleme.

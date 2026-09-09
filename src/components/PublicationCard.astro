@@ -9,7 +9,6 @@ interface Props {
   icon?: string;
   publisherUrl?: string;
   activeTag?: string;
-  linkLabel?: string;
 }
 
 const { 
@@ -20,36 +19,8 @@ const {
   book, 
   tags, 
   icon, 
-  publisherUrl, 
-  activeTag,
-  linkLabel = "Abstract & Citation"
+  activeTag
 } = Astro.props;
-
-function getPublisherDomain(url: string | undefined): string {
-  if (!url) return "";
-  try {
-    const parsed = new URL(url);
-    let hostname = parsed.hostname;
-    if (hostname.startsWith("www.")) {
-      hostname = hostname.substring(4);
-    }
-    if (hostname === "doi.org") {
-      const path = parsed.pathname;
-      if (path.includes("10.1109")) return "ieeexplore.ieee.org";
-      if (path.includes("10.1145") || path.includes("10.5555")) return "dl.acm.org";
-      if (path.includes("10.1007")) return "link.springer.com";
-      if (path.includes("10.1016")) return "sciencedirect.com";
-      if (path.includes("10.1117")) return "spiedigitallibrary.org";
-      if (path.includes("10.3139")) return "hanser-elibrary.com";
-      if (path.includes("10.1515")) return "degruyter.com";
-      if (path.includes("10.5220")) return "scitepress.org";
-      if (path.includes("10.1017")) return "cambridge.org";
-    }
-    return hostname;
-  } catch (e) {
-    return "Publisher Page";
-  }
-}
 ---
 
 <div class="glass-card p-6 rounded-2xl border border-element-border group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-purple/30 h-full w-full">
@@ -119,42 +90,42 @@ function getPublisherDomain(url: string | undefined): string {
       >UNREAD</span>
     </h3>
     
-    <p class="text-gray-300 text-sm mb-2 font-normal">
+    <p class="text-gray-300 text-sm mb-1.5 font-normal">
       <span set:html={author} />
     </p>
 
-    <p class="text-gray-400 text-xs mb-4 font-normal italic">
+    <p class="text-gray-400 text-xs mb-3 font-normal italic">
       {book && <span>{book}, </span>}
       <span>{pubDate}</span>
     </p>
 
-    <div class="flex flex-wrap gap-2.5 items-center w-full mt-auto">
-      {tags.map(tag => (
-        <a 
-          href={`/tags/${tag}`}
-          class={`text-[11px] px-2.5 py-1 rounded-lg bg-element-bg border border-element-border ${tag === activeTag ? 'text-brand-purple border-brand-purple/30 bg-brand-purple/5' : 'text-gray-400 hover:text-gray-100 hover:border-element-border-medium'} transition-all duration-200 relative z-20`}
-        >
-          #{tag}
-        </a>
-      ))}
-      <div class="ml-auto flex items-center space-x-6 relative z-20">
-        {publisherUrl && (
+    <!-- Tags & Action Button Area -->
+    <div class="flex-grow flex flex-col mt-3">
+      <div class="flex flex-wrap gap-1.5 self-start relative z-20">
+        {tags.map(tag => (
           <a 
-            href={publisherUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-xs font-semibold text-brand-purple hover:text-brand-purple/85 flex items-center space-x-1 relative z-20 py-1"
+            href={`/tags/${tag}`}
+            data-tag={tag}
+            class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              tag === activeTag ? 'active-tag-match' : ''
+            }`}
           >
-            <span>{getPublisherDomain(publisherUrl)}</span>
-            <span>↗</span>
+            #{tag}
           </a>
-        )}
-        <span 
-          class="text-xs font-semibold text-brand-purple group-hover:text-brand-purple/85 flex items-center space-x-1 transition-colors duration-300 cursor-pointer py-1"
+        ))}
+      </div>
+
+      <!-- Read more button — full width, pinned to bottom -->
+      <div class="mt-auto pt-6 w-full relative z-20">
+        <a 
+          href={`/publications/${id}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
         >
-          <span>{linkLabel}</span>
-          <span>&rarr;</span>
-        </span>
+          <span>Read More</span>
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
       </div>
     </div>
   </div>

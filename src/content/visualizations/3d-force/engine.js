@@ -1,7 +1,10 @@
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#10b981', '#f59e0b', '#a855f7'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#059669', '#d97706', '#9333ea'];
+
 export default {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
-    { id: 'radial', label: 'Concentric Rings (Tags → Posts)' },
+    { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
 
@@ -9,16 +12,14 @@ export default {
     const { default: ForceGraph3D } = await import('https://esm.sh/3d-force-graph@1.73.0?bundle');
     this.ForceGraph3D = ForceGraph3D;
 
-    const colors = isLight
-      ? ["#2563eb", "#059669", "#d97706"]
-      : ["#3b82f6", "#10b981", "#f59e0b"]; // blue, green, yellow
+    const colors = isLight ? colorsLight : colorsDark;
     
     // Cache nodes and connections
     this.nodes = payload['3d-force'].nodes.map(n => ({
       id: n.id,
       name: n.name,
       val: n.size * 5 + 3,
-      color: colors[n.group],
+      color: colors[n.group] || colors[0],
       group: n.group
     }));
 
@@ -40,7 +41,14 @@ export default {
       .linkDirectionalParticleWidth(1.5)
       .linkDirectionalParticleSpeed(0.006)
       .onNodeClick(node => {
-        if (node.id.startsWith('/posts/') || node.id.startsWith('/publications/')) {
+        if (
+          node.id.startsWith('/posts/') ||
+          node.id.startsWith('/publications/') ||
+          node.id.startsWith('/projects/') ||
+          node.id.startsWith('/courses/') ||
+          node.id.startsWith('/services/') ||
+          node.id.startsWith('/tags/')
+        ) {
           window.location.href = node.id;
         }
       });
@@ -71,11 +79,9 @@ export default {
     this.graph.backgroundColor(isLight ? '#f8fafc' : '#090d16');
     this.graph.linkColor(isLight ? () => 'rgba(15, 23, 42, 0.15)' : () => 'rgba(255,255,255,0.08)');
 
-    const colors = isLight
-      ? ["#2563eb", "#059669", "#d97706"]
-      : ["#3b82f6", "#10b981", "#f59e0b"];
+    const colors = isLight ? colorsLight : colorsDark;
     this.nodes.forEach(n => {
-      n.color = colors[n.group];
+      n.color = colors[n.group] || colors[0];
     });
     this.graph.nodeColor('color');
 
@@ -99,7 +105,7 @@ export default {
         };
       });
 
-      // Outer ring: posts & publications (Z = 0)
+      // Outer ring: other items (Z = 0)
       others.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / others.length;
         targets[n.id] = {
@@ -113,61 +119,39 @@ export default {
 
     } else if (layout === 'columns') {
       const targets = {};
-      const tags = this.nodes.filter(n => n.group === 0);
       const posts = this.nodes.filter(n => n.group === 1);
+      const courses = this.nodes.filter(n => n.group === 4);
+      const tags = this.nodes.filter(n => n.group === 0);
+      const projects = this.nodes.filter(n => n.group === 3);
+      const services = this.nodes.filter(n => n.group === 5);
       const publications = this.nodes.filter(n => n.group === 2);
 
+      const categories = [posts, courses, tags, projects, services, publications];
       const isMobile = window.innerWidth < 768;
       const heightFactor = 25;
       const widthFactor = 25;
 
       if (isMobile) {
-        posts.forEach((n, idx) => {
-          targets[n.id] = {
-            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * widthFactor : 0,
-            y: -110,
-            z: 0
-          };
-        });
-
-        tags.forEach((n, idx) => {
-          targets[n.id] = {
-            x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * widthFactor : 0,
-            y: 0,
-            z: 0
-          };
-        });
-
-        publications.forEach((n, idx) => {
-          targets[n.id] = {
-            x: publications.length > 1 ? (idx - (publications.length - 1) / 2) * widthFactor : 0,
-            y: 110,
-            z: 0
-          };
+        categories.forEach((catNodes, catIdx) => {
+          const rowY = (catIdx - 2.5) * 55;
+          catNodes.forEach((n, idx) => {
+            targets[n.id] = {
+              x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * widthFactor : 0,
+              y: rowY,
+              z: 0
+            };
+          });
         });
       } else {
-        tags.forEach((n, idx) => {
-          targets[n.id] = {
-            x: 0,
-            y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0,
-            z: 0
-          };
-        });
-
-        posts.forEach((n, idx) => {
-          targets[n.id] = {
-            x: -110,
-            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0,
-            z: 0
-          };
-        });
-
-        publications.forEach((n, idx) => {
-          targets[n.id] = {
-            x: 110,
-            y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0,
-            z: 0
-          };
+        categories.forEach((catNodes, catIdx) => {
+          const colX = (catIdx - 2.5) * 55;
+          catNodes.forEach((n, idx) => {
+            targets[n.id] = {
+              x: colX,
+              y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * heightFactor : 0,
+              z: 0
+            };
+          });
         });
       }
 

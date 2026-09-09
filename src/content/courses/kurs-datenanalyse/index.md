@@ -10,6 +10,10 @@ terms:
   - "Summer Term 2025"
 language: "de"
 screenshot: "./preview.png"
+tags:
+  - "data-integration"
+  - "python"
+  - "teaching"
 ---
 
 Herzlich willkommen zum Kurs **Datenanalyse und SQL**! Daten sind das Gold des 21. Jahrhunderts – aber nur, wenn man sie richtig abfragen, strukturieren und interpretieren kann.

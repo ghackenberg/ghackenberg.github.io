@@ -209,6 +209,7 @@ const courses = defineCollection({
     terms: z.array(z.string()).default([]),
     language: z.enum(['de', 'en']).default('de'),
     screenshot: image().optional(),
+    tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
   }),
 });
@@ -228,6 +229,7 @@ const services = defineCollection({
     color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),
     ctaText: z.string().default('Inquire Now'),
+    tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
     previewImage: image().optional(),
   })

@@ -1,7 +1,14 @@
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#10b981', '#f59e0b', '#a855f7'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#059669', '#d97706', '#9333ea'];
+
+function getNodeColor(group, isLight) {
+  return isLight ? (colorsLight[group] || colorsLight[0]) : (colorsDark[group] || colorsDark[0]);
+}
+
 export default {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
-    { id: 'radial', label: 'Concentric Rings (Tags → Posts)' },
+    { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
 
@@ -31,7 +38,8 @@ export default {
         x: n.x || Math.random(),
         y: n.y || Math.random(),
         size: n.size * 3 + 2,
-        color: isLight && n.color === '#f59e0b' ? '#d97706' : n.color
+        group: n.group ?? 0,
+        color: getNodeColor(n.group ?? 0, isLight)
       });
     });
 
@@ -52,7 +60,14 @@ export default {
     });
 
     this.sigma.on('clickNode', ({ node }) => {
-      if (node.startsWith('/posts/') || node.startsWith('/publications/')) {
+      if (
+        node.startsWith('/posts/') ||
+        node.startsWith('/publications/') ||
+        node.startsWith('/projects/') ||
+        node.startsWith('/courses/') ||
+        node.startsWith('/services/') ||
+        node.startsWith('/tags/')
+      ) {
         window.location.href = node;
       }
     });
@@ -93,13 +108,10 @@ export default {
       this.graph.setEdgeAttribute(edge, 'color', edgeColor);
     });
 
-    if (this.payload && this.payload.sigma) {
-      this.graph.forEachNode(node => {
-        const rawColor = this.payload.sigma.nodes.find(n => n.id === node)?.color || '#3b82f6';
-        const color = isLight && rawColor === '#f59e0b' ? '#d97706' : rawColor;
-        this.graph.setNodeAttribute(node, 'color', color);
-      });
-    }
+    this.graph.forEachNode(node => {
+      const grp = this.graph.getNodeAttribute(node, 'group') ?? 0;
+      this.graph.setNodeAttribute(node, 'color', getNodeColor(grp, isLight));
+    });
 
     this.sigma.setSetting('labelColor', { color: labelColor });
     this.sigma.setSetting('defaultEdgeColor', edgeColor);
@@ -108,8 +120,8 @@ export default {
 
     if (layout === 'radial') {
       const nodes = this.graph.nodes();
-      const tags = nodes.filter(n => this.graph.getNodeAttribute(n, 'color') === '#3b82f6');
-      const others = nodes.filter(n => this.graph.getNodeAttribute(n, 'color') !== '#3b82f6');
+      const tags = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 0);
+      const others = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') !== 0);
 
       tags.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / tags.length;
@@ -131,53 +143,35 @@ export default {
 
     } else if (layout === 'columns') {
       const nodes = this.graph.nodes();
-      const tags = nodes.filter(n => this.graph.getNodeAttribute(n, 'color') === '#3b82f6');
-      const posts = nodes.filter(n => this.graph.getNodeAttribute(n, 'color') === '#10b981');
-      const publications = nodes.filter(n => this.graph.getNodeAttribute(n, 'color') === '#f59e0b');
+      const posts = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 1);
+      const courses = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 4);
+      const tags = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 0);
+      const projects = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 3);
+      const services = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 5);
+      const publications = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 2);
 
+      const categories = [posts, courses, tags, projects, services, publications];
       const isMobile = window.innerWidth < 768;
 
       if (isMobile) {
-        posts.forEach((n, idx) => {
-          targets[n] = {
-            x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * (20 / (posts.length - 1)) : 0,
-            y: -8
-          };
-        });
-
-        tags.forEach((n, idx) => {
-          targets[n] = {
-            x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * (20 / (tags.length - 1)) : 0,
-            y: 0
-          };
-        });
-
-        publications.forEach((n, idx) => {
-          targets[n] = {
-            x: publications.length > 1 ? (idx - (publications.length - 1) / 2) * (20 / (publications.length - 1)) : 0,
-            y: 8
-          };
+        categories.forEach((catNodes, catIdx) => {
+          const rowY = (catIdx - 2.5) * 4;
+          catNodes.forEach((n, idx) => {
+            targets[n] = {
+              x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0,
+              y: rowY
+            };
+          });
         });
       } else {
-        tags.forEach((n, idx) => {
-          targets[n] = {
-            x: 0,
-            y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * (20 / (tags.length - 1)) : 0
-          };
-        });
-
-        posts.forEach((n, idx) => {
-          targets[n] = {
-            x: -8,
-            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * (20 / (posts.length - 1)) : 0
-          };
-        });
-
-        publications.forEach((n, idx) => {
-          targets[n] = {
-            x: 8,
-            y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * (20 / (publications.length - 1)) : 0
-          };
+        categories.forEach((catNodes, catIdx) => {
+          const colX = (catIdx - 2.5) * 5;
+          catNodes.forEach((n, idx) => {
+            targets[n] = {
+              x: colX,
+              y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0
+            };
+          });
         });
       }
 
