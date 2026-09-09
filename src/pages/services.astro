@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import { getCollection } from "astro:content";
-import { Image, getImage } from "astro:assets";
+import { getImage } from "astro:assets";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
@@ -111,13 +111,13 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
     </div>
 
 
-    <!-- Services Detailed List -->
-    <div class="space-y-16">
+    <!-- Services Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       {optimizedServices.map((service) => {
         const classes = colorClasses[service.data.color];
         return (
-          <section id={service.id} class="scroll-mt-24 relative group">
-            <div class="glass-card rounded-3xl border border-element-border relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 items-stretch p-0">
+          <section id={service.id} class="scroll-mt-24 relative group h-full">
+            <div class="glass-card rounded-2xl md:rounded-3xl border border-element-border relative overflow-hidden flex flex-col h-full items-stretch p-0 hover:border-element-border-medium transition-all duration-300">
               <!-- Top accent color line -->
               <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${classes.glow} z-20`}></div>
 
@@ -128,48 +128,8 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                 aria-label={`View details for ${service.data.title}`}
               ></a>
 
-              <!-- Info Column (Left) -->
-              <div class="p-8 md:p-10 lg:col-span-7 flex flex-col justify-center space-y-6 relative">
-                <!-- Header -->
-                <div class="flex items-center gap-4">
-                  <div class={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl border ${classes.bg}`}>
-                    {service.data.icon}
-                  </div>
-                  <div>
-                    <h2 class={`text-2xl md:text-3xl font-extrabold text-gray-100 tracking-tight leading-none flex items-center gap-2 relative transition-colors ${classes.hoverText}`}>
-                      <span>{service.data.title}</span>
-                      <span 
-                        class={`unread-dot hidden ${classes.dot}`}
-                        data-item-url={`/services/${service.id}`}
-                        title="Unread service"
-                      >UNREAD</span>
-                    </h2>
-                    <p class={`${classes.text} font-bold text-xs uppercase tracking-wider mt-1.5`}>
-                      {service.data.tagline}
-                    </p>
-                  </div>
-                </div>
-
-                <!-- Description -->
-                <div class="space-y-3">
-                  <p class="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed font-normal">
-                    {service.data.description}
-                  </p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4 pt-2 relative z-20">
-                  <a
-                    href={`/services/${service.id}`}
-                    class={`px-5 py-3 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer min-h-[44px] ${classes.btnBg}`}
-                  >
-                    <span>Explore Service & Modules</span>
-                    <span>&rarr;</span>
-                  </a>
-                </div>
-              </div>
-
-              <!-- Preview Image Column (Right) -->
-              <div class="lg:col-span-5 relative min-h-[240px] sm:min-h-[320px] lg:min-h-full w-full overflow-hidden bg-gray-950/40">
+              <!-- Preview Image Column (Top) -->
+              <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
                 {service.data.previewImage && (
                   <svg 
                     class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 will-change-transform pointer-events-none" 
@@ -216,7 +176,43 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                     />
                   </svg>
                 )}
-                <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-l from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+              </div>
+
+              <!-- Info Body (Below) -->
+              <div class="p-6 md:p-8 flex flex-col flex-grow justify-between relative z-10">
+                <div class="space-y-4">
+                  <!-- Header -->
+                  <div>
+                    <h2 class={`text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 relative transition-colors ${classes.hoverText}`}>
+                      <span>{service.data.title}</span>
+                      <span 
+                        class={`unread-dot hidden ${classes.dot}`}
+                        data-item-url={`/services/${service.id}`}
+                        title="Unread service"
+                      >UNREAD</span>
+                    </h2>
+                    <p class={`${classes.text} font-bold text-xs uppercase tracking-wider mt-1`}>
+                      {service.data.tagline}
+                    </p>
+                  </div>
+
+                  <!-- Description -->
+                  <p class="text-gray-300 light:text-slate-600 text-sm md:text-base leading-relaxed font-normal">
+                    {service.data.description}
+                  </p>
+                </div>
+
+                <!-- Footer CTA Button -->
+                <div class="pt-6 mt-auto flex justify-center relative z-20">
+                  <a
+                    href={`/services/${service.id}`}
+                    class={`px-5 py-2.5 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-1.5 cursor-pointer ${classes.btnBg}`}
+                  >
+                    <span>Explore Service & Modules</span>
+                    <span>&rarr;</span>
+                  </a>
+                </div>
               </div>
 
             </div>

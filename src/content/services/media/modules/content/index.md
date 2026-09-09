@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Content Production"
 serviceId: "media"
 badge: "Technical Implementation"
@@ -37,7 +37,8 @@ outputs:
   - "Automated XML Sitemap, RSS & LLM Context Manifest Generators"
   - "Authoring Documentation & Editorial Markdown Style Guide"
 duration: "2 - 4 Weeks"
-delivery: "Engineering Sprints (Remote / On-site)"
+format: "Engineering Sprints"
+delivery: "Remote / On-site"
 ---
 
 ## Engineering High-Velocity, Git-Driven Publishing Pipelines

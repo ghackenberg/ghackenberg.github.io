@@ -11,8 +11,6 @@ interface Props {
   tags: string[];
   activeTag?: string;
   featured?: boolean;
-  /** Side-by-side image+text on desktop, stacks on mobile (used on /posts overview) */
-  horizontal?: boolean;
 }
 
 const { 
@@ -23,8 +21,7 @@ const {
   icon, 
   tags, 
   activeTag,
-  featured = false,
-  horizontal = false
+  featured = false
 } = Astro.props;
 
 const isSvg = icon && typeof icon === 'object' && 'format' in icon && icon.format === 'svg';
@@ -39,17 +36,11 @@ const optimizedIcon = icon && !isSvg ? await getImage({
 
 // Article wrapper classes
 const articleClass = featured
-  ? "glass-card rounded-2xl md:rounded-3xl border-2 border-brand-blue/50 light:border-brand-blue/40 shadow-2xl shadow-brand-blue/15 light:shadow-xl light:shadow-brand-blue/10 bg-gradient-to-br from-brand-blue/20 via-slate-900/90 to-indigo-950/80 light:from-blue-50/90 light:via-white light:to-sky-100/70 flex flex-col md:flex-row items-stretch group relative cursor-pointer hover:border-brand-blue/80 transition-all duration-300 h-full w-full overflow-hidden"
-  : horizontal
-    ? "glass-card rounded-2xl md:rounded-3xl border border-element-border flex flex-col md:flex-row items-stretch group relative cursor-pointer hover:border-brand-blue/40 transition-all duration-300 h-full w-full overflow-hidden"
-    : "glass-card rounded-2xl md:rounded-3xl border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/40 transition-all duration-300 h-full w-full overflow-hidden";
+  ? "glass-card rounded-2xl md:rounded-3xl border-2 border-brand-blue/50 light:border-brand-blue/40 shadow-2xl shadow-brand-blue/15 light:shadow-xl light:shadow-brand-blue/10 bg-gradient-to-br from-brand-blue/20 via-slate-900/90 to-indigo-950/80 light:from-blue-50/90 light:via-white light:to-sky-100/70 flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/80 transition-all duration-300 h-full w-full overflow-hidden"
+  : "glass-card rounded-2xl md:rounded-3xl border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/40 transition-all duration-300 h-full w-full overflow-hidden";
 
 // Image container classes
-const imageContainerClass = featured
-  ? "w-full md:w-[320px] lg:w-[380px] xl:w-[440px] shrink-0 aspect-video md:aspect-auto self-stretch overflow-hidden border-b-2 md:border-b-0 md:border-r-2 border-brand-blue/40 bg-gray-900 flex items-center justify-center relative shadow-lg shadow-brand-blue/20 z-10"
-  : horizontal
-    ? "w-full md:w-56 lg:w-64 xl:w-72 shrink-0 aspect-video md:aspect-auto self-stretch overflow-hidden border-b md:border-b-0 md:border-r border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10"
-    : "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10";
+const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10";
 ---
 
 
@@ -88,16 +79,16 @@ const imageContainerClass = featured
   </div>
   
   <!-- Content -->
-  <div class={`flex-grow flex flex-col gap-3 relative z-10 ${featured ? 'p-6 md:p-8' : 'p-5 md:p-6'}`}>
+  <div class="flex-grow flex flex-col gap-3 relative z-10 p-5 md:p-6">
 
     <!-- Meta row: date + badge -->
-    <div class={`flex flex-wrap items-center gap-2 ${featured ? 'mb-4' : 'mb-3'}`}>
+    <div class="flex flex-wrap items-center gap-2 mb-3">
       {featured && (
-        <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-brand-blue text-white shadow-md shadow-brand-blue/30">
+        <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-blue text-white shadow-md shadow-brand-blue/30">
           ★ Featured
         </span>
       )}
-      <time class={featured ? "text-sm font-extrabold text-sky-400 light:text-brand-blue" : "text-xs font-semibold text-brand-blue/80"}>
+      <time class="text-xs font-semibold text-brand-blue/80">
         {pubDate.toLocaleDateString("en-US", {
           year: "numeric",
           month: "short",
@@ -112,10 +103,7 @@ const imageContainerClass = featured
     </div>
 
     <!-- Title -->
-    <h2 class={featured
-      ? "text-xl md:text-2xl lg:text-3xl font-extrabold text-gray-100 light:text-slate-900 mb-3 group-hover:text-sky-300 light:group-hover:text-brand-blue transition-colors leading-snug"
-      : "text-base font-bold text-gray-100 light:text-slate-900 mb-2 group-hover:text-brand-blue transition-colors leading-snug"
-    }>
+    <h2 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 mb-2 group-hover:text-brand-blue transition-colors leading-snug">
       <a href={`/posts/${id}`} class="after:absolute after:inset-0 after:z-10">
         {title}
       </a>
@@ -123,10 +111,7 @@ const imageContainerClass = featured
 
     <!-- Description -->
     {description && (
-      <p class={`leading-relaxed font-normal ${featured
-        ? 'text-gray-300 light:text-slate-600 text-base md:text-lg mb-5'
-        : 'text-gray-400 light:text-slate-500 text-sm mb-4'
-      }`}>
+      <p class="text-gray-400 light:text-slate-500 text-sm mb-4 leading-relaxed font-normal">
         {description}
       </p>
     )}
@@ -152,10 +137,7 @@ const imageContainerClass = featured
       <div class="flex justify-center mt-3">
         <a 
           href={`/posts/${id}`} 
-          class={featured 
-            ? "inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-blue/30 hover:bg-brand-blue/50 border border-brand-blue/50 text-white light:bg-brand-blue light:text-white light:hover:bg-brand-blue/90 text-sm font-bold relative z-20 shadow-md transition-all hover:scale-105" 
-            : "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs font-bold relative z-20 transition-all hover:scale-105"
-          }
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs font-bold relative z-20 transition-all hover:scale-105"
         >
           <span>Read Article</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Technology Stack"
 serviceId: "ai"
 badge: "Architecture & Stack"
@@ -45,7 +45,8 @@ outputs:
   - "Configured LangGraph Multi-Agent Runtime & Open WebUI Workspace Environment"
   - "Infrastructure-as-Code Runbook, Backup Protocols & Operational Maintenance Guide"
 duration: "3 - 6 Weeks"
-delivery: "Engineering Sprints (Remote / On-site)"
+format: "Engineering Sprints"
+delivery: "Remote / On-site"
 ---
 
 ## A Standardized, Sovereign Enterprise AI Tech Stack

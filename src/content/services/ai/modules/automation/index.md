@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Agentic Automation"
 serviceId: "ai"
 badge: "UX & Telemetry"
@@ -37,7 +37,8 @@ outputs:
   - "Token Budgeting Strategy, Caching Rules & Performance Audit Report"
   - "End-user onboarding documentation and operational guidelines"
 duration: "2 - 5 Weeks"
-delivery: "Engineering Sprints (Collaborative)"
+format: "Engineering Sprints"
+delivery: "Collaborative"
 ---
 
 ## Autonomous Operations with Human Control and Real-Time Observability

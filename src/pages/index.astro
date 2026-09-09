@@ -35,7 +35,7 @@ const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.ord
 
 const posts = await getCollection("posts");
 const sortedPosts = posts.slice().sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
-const recentPosts = sortedPosts.slice(0, 4);
+const recentPosts = sortedPosts.slice(0, 5);
 const publications = await getCollection("publications");
 const courses = await getCollection("courses");
 const visualizations = await getCollection("visualizations");
@@ -805,23 +805,28 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
       <!-- Blog Post Cards Container -->
       <div class="space-y-6">
+        <!-- Row 1: 2 Posts (Columns on larger screens, vertical stack on mobile) -->
         {recentPosts.length > 0 && (
-          <div class="w-full">
-            <PostCard
-              id={recentPosts[0].id}
-              title={recentPosts[0].data.title}
-              description={recentPosts[0].data.description}
-              pubDate={recentPosts[0].data.pubDate}
-              icon={recentPosts[0].data.icon}
-              tags={recentPosts[0].data.tags}
-              featured={true}
-            />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {recentPosts.slice(0, 2).map((post) => (
+              <div class="h-full">
+                <PostCard
+                  id={post.id}
+                  title={post.data.title}
+                  description={post.data.description}
+                  pubDate={post.data.pubDate}
+                  icon={post.data.icon}
+                  tags={post.data.tags}
+                />
+              </div>
+            ))}
           </div>
         )}
 
-        {recentPosts.length > 1 && (
+        <!-- Row 2: 3 Posts on desktop, 2 posts on tablet (3rd hidden), vertical stack on mobile -->
+        {recentPosts.length > 2 && (
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recentPosts.slice(1, 4).map((post, index) => (
+            {recentPosts.slice(2, 5).map((post, index) => (
               <div class={index === 2 ? "block sm:hidden lg:block h-full" : "h-full"}>
                 <PostCard
                   id={post.id}
@@ -830,7 +835,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   pubDate={post.data.pubDate}
                   icon={post.data.icon}
                   tags={post.data.tags}
-                  featured={false}
                 />
               </div>
             ))}
@@ -855,14 +859,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     <!-- Content Tags Section -->
     <section id="content-tags" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-8 max-w-2xl">
-        <div class="flex items-center justify-between gap-4 mb-4">
-          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100">
-            Content <span class="heading-gradient-blue">Tags</span>
-          </h2>
-          <a href="/tags" class="text-xs sm:text-sm font-semibold text-brand-blue hover:underline shrink-0">
-            All Topics &rarr;
-          </a>
-        </div>
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+          Content <span class="heading-gradient-blue">Tags</span>
+        </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
           Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, and software projects across core computer science domains.
         </p>
@@ -1076,6 +1075,19 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
         </div>
       </div>
+
+      <!-- Unified Section CTA Button placed under content -->
+      <div class="mt-12 md:mt-16 flex justify-center">
+        <a 
+          href="/tags" 
+          class="px-8 py-4 rounded-2xl bg-gradient-blue text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-blue/20 hover:shadow-brand-blue/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+        >
+          <span>Browse All Tags</span>
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
+      </div>
     </section>
 
     <!-- Interactive Content Graph Section (Vis.js Visualization) -->
@@ -1192,7 +1204,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           href="/projects" 
           class="px-8 py-4 rounded-2xl bg-gradient-blue text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-brand-blue/20 hover:shadow-brand-blue/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
         >
-          <span>View All Projects</span>
+          <span>Browse All Projects</span>
           <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
           </svg>

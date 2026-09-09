@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Channel Definition"
 serviceId: "media"
 badge: "Strategy & Architecture"
@@ -37,7 +37,8 @@ outputs:
   - "Channel Performance Measurement Framework & Cross-Platform Analytics Dashboard"
   - "Editorial Team Playbook & Multi-Channel Operating Guide"
 duration: "2 - 4 Weeks"
-delivery: "Strategic Consulting Sprints (Remote / Hybrid)"
+format: "Strategic Consulting Sprints"
+delivery: "Remote / Hybrid"
 ---
 
 ## Strategic Clarity Across Multi-Platform Channels

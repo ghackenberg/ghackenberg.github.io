@@ -99,21 +99,24 @@ const pagePreviewImage = page.data.find(p => p.data.icon)?.data.icon;
       </div>
 
       <!-- Posts List -->
-      <div class="lg:col-span-9 order-2 lg:order-1 space-y-6">
+      <div class="lg:col-span-9 order-2 lg:order-1">
         {posts.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No blog posts found.</p>
         ) : (
-          posts.map((post) => (
-            <PostCard
-              id={post.id}
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              icon={post.data.icon}
-              tags={post.data.tags}
-              horizontal={true}
-            />
-          ))
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {posts.map((post) => (
+              <div class="h-full">
+                <PostCard
+                  id={post.id}
+                  title={post.data.title}
+                  description={post.data.description}
+                  pubDate={post.data.pubDate}
+                  icon={post.data.icon}
+                  tags={post.data.tags}
+                />
+              </div>
+            ))}
+          </div>
         )}
 
         <!-- Pagination Controls -->

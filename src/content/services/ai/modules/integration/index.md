@@ -1,4 +1,4 @@
-﻿---
+---
 title: "System Integration"
 serviceId: "ai"
 badge: "Architecture"
@@ -37,7 +37,8 @@ outputs:
   - "Automated Contract Testing Suite & Synthetic Validation Fixtures"
   - "Developer SDK, integration runbook, and architectural documentation"
 duration: "3 - 6 Weeks"
-delivery: "Engineering Sprints (Remote / On-site)"
+format: "Engineering Sprints"
+delivery: "Remote / On-site"
 ---
 
 ## Unifying Open-Source Agent Runtimes with Enterprise Systems

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Design System"
 serviceId: "media"
 badge: "Visual Systems"
@@ -37,7 +37,8 @@ outputs:
   - "Social Media Visual QA Checklist & Brand Compliance Standard"
   - "Content Creator Guidelines & Application Playbook"
 duration: "3 - 5 Weeks"
-delivery: "Design Sprints (Collaborative)"
+format: "Design Sprints"
+delivery: "Collaborative"
 ---
 
 ## Building an Unmistakable Visual Identity for Social Media

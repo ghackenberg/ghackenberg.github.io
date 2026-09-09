@@ -252,6 +252,7 @@ const modules = defineCollection({
     inputs: z.array(z.string()).default([]),
     outputs: z.array(z.string()).default([]),
     duration: z.string().optional(),
+    format: z.string().optional(),
     delivery: z.string().optional(),
     methodologyDescription: z.string().optional(),
     methodologyPhases: z.array(z.object({
