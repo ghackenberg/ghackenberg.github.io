@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 450" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bg-panel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="100%" stop-color="#080d1e" />
+    </linearGradient>
+
+    <!-- Card Gradients -->
+    <linearGradient id="card-exiting" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c2d12" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="card-visible" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="card-recycled" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Flow Gradients -->
+    <linearGradient id="flow-line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f97316" />
+      <stop offset="50%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <!-- Arrow Markers -->
+    <marker id="arr-orange" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f97316" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect width="840" height="450" rx="16" fill="url(#bg-panel)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Header -->
+  <g transform="translate(30, 24)">
+    <text x="0" y="16" fill="#a855f7" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">CONTINUOUS DOM RECYCLING ENGINE</text>
+    <text x="0" y="36" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="18" font-weight="800">Zero-Jump Position Compensation &amp; Pool Re-Hydration</text>
+  </g>
+
+  <!-- VIEWPORT BOX -->
+  <g transform="translate(190, 80)">
+    <!-- Viewport Active Area -->
+    <rect width="450" height="150" rx="10" fill="#0f172a" fill-opacity="0.6" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6,4" />
+    <text x="225" y="24" fill="#38bdf8" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1">VISIBLE BROWSER VIEWPORT</text>
+
+    <!-- Visible Active Cards -->
+    <g transform="translate(30, 42)">
+      <!-- Card 1 -->
+      <rect x="0" y="0" width="115" height="68" rx="8" fill="url(#card-visible)" stroke="#475569" stroke-width="1.2" />
+      <rect x="10" y="12" width="60" height="5" rx="2.5" fill="#94a3b8" />
+      <rect x="10" y="22" width="85" height="4" rx="2" fill="#334155" />
+      <text x="57.5" y="52" fill="#cbd5e1" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" text-anchor="middle">Card 1 (Active)</text>
+
+      <!-- Card 2 -->
+      <rect x="135" y="0" width="115" height="68" rx="8" fill="url(#card-visible)" stroke="#475569" stroke-width="1.2" />
+      <rect x="145" y="12" width="55" height="5" rx="2.5" fill="#94a3b8" />
+      <rect x="145" y="22" width="80" height="4" rx="2" fill="#334155" />
+      <text x="192.5" y="52" fill="#cbd5e1" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" text-anchor="middle">Card 2 (Active)</text>
+
+      <!-- Card 3 -->
+      <rect x="270" y="0" width="115" height="68" rx="8" fill="url(#card-visible)" stroke="#475569" stroke-width="1.2" />
+      <rect x="280" y="12" width="65" height="5" rx="2.5" fill="#94a3b8" />
+      <rect x="280" y="22" width="75" height="4" rx="2" fill="#334155" />
+      <text x="327.5" y="52" fill="#cbd5e1" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" text-anchor="middle">Card 3 (Active)</text>
+    </g>
+
+    <!-- Velocity Arrow -->
+    <line x1="390" y1="130" x2="60" y2="130" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr-blue)" />
+    <text x="225" y="142" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="600" text-anchor="middle">Motion Velocity v (px/s)</text>
+  </g>
+
+  <!-- LEFT BOUNDARY: EXITING CARD 0 -->
+  <g transform="translate(30, 80)">
+    <!-- Boundary line -->
+    <line x1="160" y1="-5" x2="160" y2="155" stroke="#f97316" stroke-width="2" stroke-dasharray="4,3" />
+    <text x="155" y="-12" fill="#f97316" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="800" text-anchor="end">Left Boundary</text>
+
+    <!-- Card 0 (Fully Offscreen) -->
+    <rect x="15" y="42" width="125" height="68" rx="8" fill="url(#card-exiting)" stroke="#f97316" stroke-width="1.5" />
+    <rect x="25" y="54" width="60" height="5" rx="2.5" fill="#fdba74" />
+    <text x="77.5" y="74" fill="#ffedd5" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="800" text-anchor="middle">Card 0 (Exiting)</text>
+    <text x="77.5" y="92" fill="#fed7aa" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="600" text-anchor="middle">right &lt; vp.left - 10</text>
+  </g>
+
+  <!-- RECYCLING ARCH PIPELINE -->
+  <g>
+    <!-- Pipeline arc from Card 0 to Card Recycled -->
+    <path d="M 92 195 C 92 310, 755 310, 755 195" fill="none" stroke="url(#flow-line)" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arr-green)" />
+    
+    <!-- Step 1: Detach & Compensate -->
+    <g transform="translate(75, 310)">
+      <rect width="190" height="74" rx="10" fill="#111827" stroke="#f97316" stroke-width="1.2" />
+      <text x="14" y="24" fill="#f97316" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="800">1. Coordinate Shift</text>
+      <text x="14" y="42" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700">track.x += (width + gap)</text>
+      <text x="14" y="58" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10">Cancels flex child index shift</text>
+    </g>
+
+    <!-- Step 2: Pool Selection & LRU -->
+    <g transform="translate(315, 310)">
+      <rect width="210" height="74" rx="10" fill="#111827" stroke="#a855f7" stroke-width="1.2" />
+      <text x="14" y="24" fill="#c084fc" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="800">2. Pool Re-Hydration</text>
+      <text x="14" y="42" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700">pickNextItem(candidates)</text>
+      <text x="14" y="58" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10">Excludes on-screen cards · LRU boost</text>
+    </g>
+
+    <!-- Step 3: Append to End -->
+    <g transform="translate(575, 310)">
+      <rect width="190" height="74" rx="10" fill="#111827" stroke="#10b981" stroke-width="1.2" />
+      <text x="14" y="24" fill="#34d399" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="800">3. Append to Tail</text>
+      <text x="14" y="42" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700">track.appendChild(card)</text>
+      <text x="14" y="58" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10">Becomes right buffer runway</text>
+    </g>
+  </g>
+
+  <!-- RIGHT BUFFER: RECYCLED CARD APPRENDED -->
+  <g transform="translate(680, 80)">
+    <rect x="15" y="42" width="125" height="68" rx="8" fill="url(#card-recycled)" stroke="#10b981" stroke-width="1.5" />
+    <rect x="25" y="54" width="70" height="5" rx="2.5" fill="#6ee7b7" />
+    <text x="77.5" y="74" fill="#d1fae5" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="800" text-anchor="middle">Card 0 (Recycled)</text>
+    <text x="77.5" y="92" fill="#a7f3d0" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="600" text-anchor="middle">New Image &amp; Meta</text>
+  </g>
+
+  <!-- MATH GUARANTEE BADGE -->
+  <g transform="translate(240, 400)">
+    <rect width="360" height="28" rx="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="1" />
+    <text x="180" y="18" fill="#c7d2fe" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle">Mathematical Guarantee: Net Visual Shift = -offset + offset = 0 px</text>
+  </g>
+</svg>

@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 420" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bg-panel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="100%" stop-color="#080d1e" />
+    </linearGradient>
+
+    <!-- Row Gradients -->
+    <linearGradient id="row1-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.16" />
+      <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.01" />
+    </linearGradient>
+    <linearGradient id="row2-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.16" />
+      <stop offset="50%" stop-color="#a855f7" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.01" />
+    </linearGradient>
+    <linearGradient id="row3-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.16" />
+      <stop offset="50%" stop-color="#10b981" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.01" />
+    </linearGradient>
+
+    <!-- Card Gradients -->
+    <linearGradient id="card-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="card-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="card-green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow-light" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Arrow Markers -->
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#60a5fa" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#c084fc" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#34d399" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect width="820" height="420" rx="16" fill="url(#bg-panel)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Header -->
+  <g transform="translate(30, 24)">
+    <text x="0" y="16" fill="#38bdf8" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">OPTICAL KINEMATICS &amp; TIER HIERARCHY</text>
+    <text x="0" y="36" fill="#ffffff" font-family="'Outfit', 'Inter', sans-serif" font-size="18" font-weight="800">3-Tier Motion Parallax Model</text>
+    <text x="760" y="24" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="500" text-anchor="end">Right-to-Left Vector Flow</text>
+  </g>
+
+  <!-- ROW 1: FOREGROUND (Largest, Fastest) -->
+  <g transform="translate(30, 75)">
+    <rect width="760" height="100" rx="12" fill="url(#row1-grad)" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1.2" />
+    
+    <!-- Row Metadata Tag -->
+    <rect x="16" y="14" width="132" height="24" rx="6" fill="#1e3a8a" fill-opacity="0.6" stroke="#3b82f6" stroke-width="1" />
+    <text x="82" y="30" fill="#93c5fd" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle">TIER 1: FOREGROUND</text>
+    
+    <text x="16" y="58" fill="#e2e8f0" font-family="'Outfit', 'Inter', sans-serif" font-size="13" font-weight="700">320px Cards (w-80)</text>
+    <text x="16" y="74" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500">Primary focus: title, tagline, arrow</text>
+
+    <!-- Sample Cards -->
+    <rect x="235" y="14" width="128" height="72" rx="8" fill="url(#card-blue)" stroke="#3b82f6" stroke-width="1.2" />
+    <rect x="245" y="24" width="60" height="6" rx="3" fill="#60a5fa" />
+    <rect x="245" y="36" width="95" height="4" rx="2" fill="#475569" />
+    <circle cx="348" cy="72" r="6" fill="#3b82f6" fill-opacity="0.3" stroke="#60a5fa" stroke-width="1" />
+
+    <rect x="375" y="14" width="128" height="72" rx="8" fill="url(#card-blue)" stroke="rgba(59, 130, 246, 0.5)" stroke-width="1" />
+    <rect x="385" y="24" width="55" height="6" rx="3" fill="#60a5fa" />
+    <rect x="385" y="36" width="90" height="4" rx="2" fill="#475569" />
+
+    <!-- Velocity Vector -->
+    <g transform="translate(525, 42)">
+      <line x1="210" y1="8" x2="10" y2="8" stroke="#60a5fa" stroke-width="2.5" marker-end="url(#arr-blue)" />
+      <text x="110" y="-4" fill="#93c5fd" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="800" text-anchor="middle">~65 px/s (100%)</text>
+      <text x="110" y="28" fill="#64748b" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500" text-anchor="middle">Max Angular Velocity</text>
+    </g>
+  </g>
+
+  <!-- ROW 2: MIDGROUND (Medium, Moderate Speed) -->
+  <g transform="translate(30, 190)">
+    <rect width="760" height="92" rx="12" fill="url(#row2-grad)" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1.2" />
+    
+    <!-- Row Metadata Tag -->
+    <rect x="16" y="14" width="132" height="24" rx="6" fill="#581c87" fill-opacity="0.6" stroke="#a855f7" stroke-width="1" />
+    <text x="82" y="30" fill="#d8b4fe" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle">TIER 2: MIDGROUND</text>
+    
+    <text x="16" y="55" fill="#e2e8f0" font-family="'Outfit', 'Inter', sans-serif" font-size="13" font-weight="700">256px Cards (w-64)</text>
+    <text x="16" y="70" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500">Context density &amp; scanning</text>
+
+    <!-- Sample Cards -->
+    <rect x="235" y="16" width="105" height="59" rx="7" fill="url(#card-purple)" stroke="#a855f7" stroke-width="1.2" />
+    <rect x="244" y="25" width="50" height="5" rx="2.5" fill="#c084fc" />
+    <rect x="244" y="35" width="75" height="3" rx="1.5" fill="#475569" />
+
+    <rect x="350" y="16" width="105" height="59" rx="7" fill="url(#card-purple)" stroke="rgba(168, 85, 247, 0.5)" stroke-width="1" />
+    <rect x="359" y="25" width="45" height="5" rx="2.5" fill="#c084fc" />
+    <rect x="359" y="35" width="70" height="3" rx="1.5" fill="#475569" />
+
+    <!-- Velocity Vector -->
+    <g transform="translate(525, 38)">
+      <line x1="165" y1="8" x2="30" y2="8" stroke="#c084fc" stroke-width="2.2" marker-end="url(#arr-purple)" />
+      <text x="98" y="-4" fill="#e9d5ff" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="800" text-anchor="middle">~42 px/s (~65%)</text>
+      <text x="98" y="27" fill="#64748b" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500" text-anchor="middle">Intermediate Depth</text>
+    </g>
+  </g>
+
+  <!-- ROW 3: BACKGROUND (Smallest, Slowest) -->
+  <g transform="translate(30, 297)">
+    <rect width="760" height="84" rx="12" fill="url(#row3-grad)" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1.2" />
+    
+    <!-- Row Metadata Tag -->
+    <rect x="16" y="14" width="132" height="24" rx="6" fill="#064e3b" fill-opacity="0.6" stroke="#10b981" stroke-width="1" />
+    <text x="82" y="30" fill="#6ee7b7" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle">TIER 3: BACKGROUND</text>
+    
+    <text x="16" y="52" fill="#e2e8f0" font-family="'Outfit', 'Inter', sans-serif" font-size="13" font-weight="700">208px Cards (w-52)</text>
+    <text x="16" y="67" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500">Panoramic depth &amp; calm ambient</text>
+
+    <!-- Sample Cards -->
+    <rect x="235" y="16" width="85" height="48" rx="6" fill="url(#card-green)" stroke="#10b981" stroke-width="1.2" />
+    <rect x="243" y="24" width="40" height="4" rx="2" fill="#34d399" />
+
+    <rect x="330" y="16" width="85" height="48" rx="6" fill="url(#card-green)" stroke="rgba(16, 185, 129, 0.5)" stroke-width="1" />
+    <rect x="338" y="24" width="35" height="4" rx="2" fill="#34d399" />
+
+    <!-- Velocity Vector -->
+    <g transform="translate(525, 34)">
+      <line x1="120" y1="8" x2="50" y2="8" stroke="#34d399" stroke-width="2" marker-end="url(#arr-green)" />
+      <text x="85" y="-4" fill="#a7f3d0" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="800" text-anchor="middle">~26 px/s (~40%)</text>
+      <text x="85" y="26" fill="#64748b" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500" text-anchor="middle">Distant Horizon Cue</text>
+    </g>
+  </g>
+
+  <!-- Bottom Insight Footer -->
+  <g transform="translate(30, 395)">
+    <circle cx="6" cy="6" r="3" fill="#38bdf8" />
+    <text x="16" y="10" fill="#94a3b8" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="500">Dynamic speed ratios prevent vertical synchrony: cards across tiers constantly form novel combinations without alignment repetition.</text>
+  </g>
+</svg>

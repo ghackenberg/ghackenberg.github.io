@@ -297,6 +297,73 @@ const tags = defineCollection({
   }),
 });
 
+const characters = defineCollection({
+  loader: glob({
+    base: './src/content/characters',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
+    name: z.string(),
+    role: z.string(),
+    canonicalPrompt: z.string(),
+    appearance: z.object({
+      hair: z.string(),
+      eyes: z.string(),
+      facialHair: z.string().optional(),
+      build: z.string().optional(),
+      glasses: z.boolean().default(false),
+    }).optional(),
+    referenceImage: image(),
+    variants: z.array(z.object({
+      name: z.string(),
+      image: image(),
+      promptSnippet: z.string(),
+    })).default([]),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
+const objects = defineCollection({
+  loader: glob({
+    base: './src/content/objects',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
+    name: z.string(),
+    category: z.string(),
+    canonicalPrompt: z.string(),
+    referenceImage: image(),
+    variants: z.array(z.object({
+      name: z.string(),
+      image: image(),
+      promptSnippet: z.string(),
+    })).default([]),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
+const environments = defineCollection({
+  loader: glob({
+    base: './src/content/environments',
+    pattern: '**/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
+    name: z.string(),
+    category: z.string(),
+    canonicalPrompt: z.string(),
+    referenceImage: image(),
+    variants: z.array(z.object({
+      name: z.string(),
+      image: image(),
+      promptSnippet: z.string(),
+    })).default([]),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -314,6 +381,9 @@ export const collections = {
   'modules': modules,
   'interests': interests,
   'tags': tags,
+  'characters': characters,
+  'objects': objects,
+  'environments': environments,
 };
 
 
