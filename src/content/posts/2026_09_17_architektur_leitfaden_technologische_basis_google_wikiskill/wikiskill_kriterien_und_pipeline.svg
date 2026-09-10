@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 420" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <defs>
+    <marker id="pipe-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 2 L 8 5 L 1 8 z" fill="#94a3b8" />
+    </marker>
+    <marker id="pipe-arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 2 L 8 5 L 1 8 z" fill="#3b82f6" />
+    </marker>
+  </defs>
+
+  <!-- Outer Card Frame -->
+  <rect x="8" y="8" width="824" height="404" rx="12" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Header -->
+  <g transform="translate(32, 34)">
+    <text x="0" y="0" fill="#3b82f6" font-size="11" font-weight="700" letter-spacing="1">WIKISKILL-PARADIGMA &amp; SYSTEMANFORDERUNGEN</text>
+    <text x="0" y="24" fill="#f8fafc" font-size="18" font-weight="700">Der 5-Stufen-Lebenszyklus und seine 3 Implementierungskriterien</text>
+  </g>
+
+  <!-- Pipeline Steps (Top Section) -->
+  <g transform="translate(32, 85)">
+    <!-- Phase 1: Inference -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="138" height="68" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.2" />
+      <text x="14" y="22" fill="#93c5fd" font-size="10" font-weight="700">SCHRITT 1</text>
+      <text x="14" y="40" fill="#f8fafc" font-size="13" font-weight="700">Inference</text>
+      <text x="14" y="56" fill="#94a3b8" font-size="10">Schneller Agent-Loop</text>
+    </g>
+
+    <line x1="142" y1="34" x2="156" y2="34" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#pipe-arrow)" />
+
+    <!-- Phase 2: Trace Logging -->
+    <g transform="translate(160, 0)">
+      <rect x="0" y="0" width="138" height="68" rx="8" fill="#1e293b" stroke="#60a5fa" stroke-width="1.2" />
+      <text x="14" y="22" fill="#bfdbfe" font-size="10" font-weight="700">SCHRITT 2</text>
+      <text x="14" y="40" fill="#f8fafc" font-size="13" font-weight="700">Trace Logging</text>
+      <text x="14" y="56" fill="#94a3b8" font-size="10">raw/ JSONL Persistenz</text>
+    </g>
+
+    <line x1="302" y1="34" x2="316" y2="34" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#pipe-arrow)" />
+
+    <!-- Phase 3: Wiki Maintenance -->
+    <g transform="translate(320, 0)">
+      <rect x="0" y="0" width="138" height="68" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="1.2" />
+      <text x="14" y="22" fill="#d8b4fe" font-size="10" font-weight="700">SCHRITT 3</text>
+      <text x="14" y="40" fill="#f8fafc" font-size="13" font-weight="700">Wiki Maintain</text>
+      <text x="14" y="56" fill="#cbd5e1" font-size="10">Root-Cause-Muster</text>
+    </g>
+
+    <line x1="462" y1="34" x2="476" y2="34" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#pipe-arrow)" />
+
+    <!-- Phase 4: Skill Synthesis -->
+    <g transform="translate(480, 0)">
+      <rect x="0" y="0" width="138" height="68" rx="8" fill="#1e1b4b" stroke="#c084fc" stroke-width="1.2" />
+      <text x="14" y="22" fill="#e9d5ff" font-size="10" font-weight="700">SCHRITT 4</text>
+      <text x="14" y="40" fill="#f8fafc" font-size="13" font-weight="700">Skill Synthesis</text>
+      <text x="14" y="56" fill="#cbd5e1" font-size="10">Atomare Patches</text>
+    </g>
+
+    <line x1="622" y1="34" x2="636" y2="34" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#pipe-arrow)" />
+
+    <!-- Phase 5: Gating & Rollback -->
+    <g transform="translate(640, 0)">
+      <rect x="0" y="0" width="136" height="68" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.2" />
+      <text x="14" y="22" fill="#a7f3d0" font-size="10" font-weight="700">SCHRITT 5</text>
+      <text x="14" y="40" fill="#f8fafc" font-size="13" font-weight="700">Gating / Rollback</text>
+      <text x="14" y="56" fill="#6ee7b7" font-size="10">Deterministischer Test</text>
+    </g>
+  </g>
+
+  <!-- Divider Line -->
+  <line x1="32" y1="180" x2="808" y2="180" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+
+  <!-- 3 Fundamental Architectural Criteria (Bottom Section) -->
+  <g transform="translate(32, 204)">
+    <text x="0" y="0" fill="#cbd5e1" font-size="13" font-weight="700">Die drei unverzichtbaren Technologie-Kriterien für reale Produktionssysteme:</text>
+
+    <!-- Kriterium 1: Zustandstrennung -->
+    <g transform="translate(0, 18)">
+      <rect x="0" y="0" width="246" height="156" rx="8" fill="#0f172a" stroke="#3b82f6" stroke-width="1" />
+      <rect x="0" y="0" width="246" height="26" rx="8" fill="#1e3a8a" fill-opacity="0.4" />
+      <text x="12" y="18" fill="#93c5fd" font-size="11" font-weight="700">1. ZUSTANDSTRENNUNG</text>
+      
+      <text x="12" y="48" fill="#f8fafc" font-size="12" font-weight="600">Asynchrone Entkopplung</text>
+      <text x="12" y="66" fill="#94a3b8" font-size="11">Der reaktive Ausführungs-Loop</text>
+      <text x="12" y="82" fill="#94a3b8" font-size="11">(Inference) darf nicht durch</text>
+      <text x="12" y="98" fill="#94a3b8" font-size="11">mehrstündige Wissenssynthesen</text>
+      <text x="12" y="114" fill="#94a3b8" font-size="11">blockiert werden.</text>
+      <text x="12" y="138" fill="#60a5fa" font-size="10.5" font-weight="600">Muster: Worker, DAGs, Queues</text>
+    </g>
+
+    <!-- Kriterium 2: Deterministisches Gating -->
+    <g transform="translate(262, 18)">
+      <rect x="0" y="0" width="246" height="156" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1" />
+      <rect x="0" y="0" width="246" height="26" rx="8" fill="#064e3b" fill-opacity="0.5" />
+      <text x="12" y="18" fill="#a7f3d0" font-size="11" font-weight="700">2. DETERMINISTISCHES GATING</text>
+      
+      <text x="12" y="48" fill="#f8fafc" font-size="12" font-weight="600">Code-basierte Verzweigung</text>
+      <text x="12" y="66" fill="#94a3b8" font-size="11">Akzeptanz &amp; Rollbacks via</text>
+      <text x="12" y="82" fill="#94a3b8" font-size="11">if/else-Bedingungen, Pytest oder</text>
+      <text x="12" y="98" fill="#94a3b8" font-size="11">Benchmark-Suites – frei von</text>
+      <text x="12" y="114" fill="#94a3b8" font-size="11">probabilistischen LLM-Zufällen.</text>
+      <text x="12" y="138" fill="#34d399" font-size="10.5" font-weight="600">Muster: .branch(), Ground-Truth</text>
+    </g>
+
+    <!-- Kriterium 3: Observability & Tracing -->
+    <g transform="translate(524, 18)">
+      <rect x="0" y="0" width="252" height="156" rx="8" fill="#0f172a" stroke="#a855f7" stroke-width="1" />
+      <rect x="0" y="0" width="252" height="26" rx="8" fill="#581c87" fill-opacity="0.4" />
+      <text x="12" y="18" fill="#e9d5ff" font-size="11" font-weight="700">3. OBSERVABILITY &amp; TRACING</text>
+      
+      <text x="12" y="48" fill="#f8fafc" font-size="12" font-weight="600">Lückenlose Multi-Turn-Logs</text>
+      <text x="12" y="66" fill="#94a3b8" font-size="11">Saubere Serialisierung von</text>
+      <text x="12" y="82" fill="#94a3b8" font-size="11">Tool-Calls, Parametern, Bash-</text>
+      <text x="12" y="98" fill="#94a3b8" font-size="11">Outputs und Benutzerkorrekturen</text>
+      <text x="12" y="114" fill="#94a3b8" font-size="11">im Rohformat (JSONL / OTel).</text>
+      <text x="12" y="138" fill="#c084fc" font-size="10.5" font-weight="600">Muster: Logfire, OpenTelemetry</text>
+    </g>
+  </g>
+</svg>

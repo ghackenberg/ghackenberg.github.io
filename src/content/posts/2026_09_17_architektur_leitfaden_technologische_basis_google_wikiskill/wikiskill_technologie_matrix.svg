@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 480" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <!-- Outer Card Frame -->
+  <rect x="8" y="8" width="824" height="464" rx="12" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Header -->
+  <g transform="translate(32, 34)">
+    <text x="0" y="0" fill="#3b82f6" font-size="11" font-weight="700" letter-spacing="1">TECHNOLOGIE-VERGLEICH &amp; ARCHITEKTUR-EIGNUNG</text>
+    <text x="0" y="24" fill="#f8fafc" font-size="18" font-weight="700">Welcher Stack eignet sich für welche WikiSkill-Umgebung?</text>
+  </g>
+
+  <!-- Table Header -->
+  <g transform="translate(32, 84)">
+    <rect x="0" y="0" width="776" height="30" rx="6" fill="#1e293b" fill-opacity="0.6" />
+    <text x="16" y="20" fill="#94a3b8" font-size="11" font-weight="700">TECHNOLOGIE-STACK</text>
+    <text x="210" y="20" fill="#94a3b8" font-size="11" font-weight="700">ZUSTANDSTRENNUNG &amp; GATING</text>
+    <text x="490" y="20" fill="#94a3b8" font-size="11" font-weight="700">EIGNUNG FÜR WIKISKILL</text>
+    <text x="645" y="20" fill="#94a3b8" font-size="11" font-weight="700">BESTER KONTEXT</text>
+  </g>
+
+  <!-- Rows -->
+  <g transform="translate(32, 122)">
+    <!-- Row 1: Mastra -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="776" height="58" rx="6" fill="#0f172a" stroke="#3b82f6" stroke-width="0.8" stroke-opacity="0.6" />
+      <text x="16" y="26" fill="#60a5fa" font-size="13" font-weight="700">Mastra</text>
+      <text x="16" y="44" fill="#94a3b8" font-size="10.5">TypeScript / Node.js</text>
+
+      <text x="210" y="26" fill="#f8fafc" font-size="12" font-weight="600">Nativer Workflow-DAG (.branch)</text>
+      <text x="210" y="44" fill="#94a3b8" font-size="10.5">Strikte Zod-Schemas &amp; OTel-Tracing</text>
+
+      <rect x="490" y="16" width="112" height="24" rx="4" fill="#064e3b" stroke="#10b981" stroke-width="0.8" />
+      <text x="546" y="32" fill="#6ee7b7" font-size="11" font-weight="700" text-anchor="middle">Hervorragend</text>
+
+      <text x="645" y="26" fill="#f8fafc" font-size="12" font-weight="600">Web / PWA / SaaS</text>
+      <text x="645" y="44" fill="#94a3b8" font-size="10.5">Fullstack TypeScript</text>
+    </g>
+
+    <!-- Row 2: Pi Agent -->
+    <g transform="translate(0, 68)">
+      <rect x="0" y="0" width="776" height="58" rx="6" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="0.8" />
+      <text x="16" y="26" fill="#93c5fd" font-size="13" font-weight="700">Pi Agent</text>
+      <text x="16" y="44" fill="#94a3b8" font-size="10.5">Minimalist TS Harness</text>
+
+      <text x="210" y="26" fill="#f8fafc" font-size="12" font-weight="600">Native JSONL-Session-Traces</text>
+      <text x="210" y="44" fill="#94a3b8" font-size="10.5">agentskills.io; Gating via externen Worker</text>
+
+      <rect x="490" y="16" width="112" height="24" rx="4" fill="#172554" stroke="#3b82f6" stroke-width="0.8" />
+      <text x="546" y="32" fill="#93c5fd" font-size="11" font-weight="700" text-anchor="middle">Sehr hoch</text>
+
+      <text x="645" y="26" fill="#f8fafc" font-size="12" font-weight="600">CLI &amp; Dev-Tools</text>
+      <text x="645" y="44" fill="#94a3b8" font-size="10.5">Autonome Dev-Agents</text>
+    </g>
+
+    <!-- Row 3: PydanticAI -->
+    <g transform="translate(0, 136)">
+      <rect x="0" y="0" width="776" height="58" rx="6" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="0.8" />
+      <text x="16" y="26" fill="#34d399" font-size="13" font-weight="700">PydanticAI</text>
+      <text x="16" y="44" fill="#94a3b8" font-size="10.5">Python SDK</text>
+
+      <text x="210" y="26" fill="#f8fafc" font-size="12" font-weight="600">Strikte Validierung &amp; Logfire</text>
+      <text x="210" y="44" fill="#94a3b8" font-size="10.5">Async via Celery/Temporal; Pytest-Gating</text>
+
+      <rect x="490" y="16" width="112" height="24" rx="4" fill="#172554" stroke="#3b82f6" stroke-width="0.8" />
+      <text x="546" y="32" fill="#93c5fd" font-size="11" font-weight="700" text-anchor="middle">Sehr hoch</text>
+
+      <text x="645" y="26" fill="#f8fafc" font-size="12" font-weight="600">Enterprise Backend</text>
+      <text x="645" y="44" fill="#94a3b8" font-size="10.5">Data Science &amp; ML</text>
+    </g>
+
+    <!-- Row 4: Hermes Agent -->
+    <g transform="translate(0, 204)">
+      <rect x="0" y="0" width="776" height="58" rx="6" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="0.8" />
+      <text x="16" y="26" fill="#c084fc" font-size="13" font-weight="700">Hermes Agent</text>
+      <text x="16" y="44" fill="#94a3b8" font-size="10.5">Nous Research Mod</text>
+
+      <text x="210" y="26" fill="#f8fafc" font-size="12" font-weight="600">Integrierter Ad-hoc-Skill-Loop</text>
+      <text x="210" y="44" fill="#94a3b8" font-size="10.5">Umbau nötig: skill_manage durch WikiCurator ersetzen</text>
+
+      <rect x="490" y="16" width="112" height="24" rx="4" fill="#451a03" stroke="#f59e0b" stroke-width="0.8" />
+      <text x="546" y="32" fill="#fcd34d" font-size="11" font-weight="700" text-anchor="middle">Bedingt</text>
+
+      <text x="645" y="26" fill="#f8fafc" font-size="12" font-weight="600">Hermes Ökosystem</text>
+      <text x="645" y="44" fill="#94a3b8" font-size="10.5">Bestehende Deployments</text>
+    </g>
+
+    <!-- Row 5: LangGraph / CrewAI -->
+    <g transform="translate(0, 272)">
+      <rect x="0" y="0" width="776" height="58" rx="6" fill="#0f172a" stroke="rgba(255,255,255,0.06)" stroke-width="0.8" />
+      <text x="16" y="26" fill="#94a3b8" font-size="13" font-weight="700">LangGraph / CrewAI</text>
+      <text x="16" y="44" fill="#64748b" font-size="10.5">Multi-Agent Frameworks</text>
+
+      <text x="210" y="26" fill="#f8fafc" font-size="12" font-weight="600">Schwergewichtige State-Machines</text>
+      <text x="210" y="44" fill="#94a3b8" font-size="10.5">Hohe Abstraktion, komplexes Tracing &amp; Debugging</text>
+
+      <rect x="490" y="16" width="112" height="24" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="0.8" />
+      <text x="546" y="32" fill="#cbd5e1" font-size="11" font-weight="700" text-anchor="middle">Mittel</text>
+
+      <text x="645" y="26" fill="#f8fafc" font-size="12" font-weight="600">Multi-Agenten-Graphen</text>
+      <text x="645" y="44" fill="#94a3b8" font-size="10.5">Oft Over-Engineering</text>
+    </g>
+  </g>
+</svg>

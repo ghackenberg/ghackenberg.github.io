@@ -7,6 +7,9 @@ variants:
   - name: "full-office"
     image: "./reference.png"
     promptSnippet: "Academic office view at FH OÖ Campus Wels showing lockable book cabinets, consultation table, laptop dock with 16:10 monitor and soundbar, single whiteboard, and window overlooking city backyards."
+  - name: "visitor-table-focus"
+    image: "./visitor-table-focus.jpg"
+    promptSnippet: "Close, elevated high-angle perspective tightly focused on the intimate two-person round wooden consultation table at FH OÖ Campus Wels, with clean tabletop surface filling the frame, two modern armchairs, and warm sunny indoor lighting."
 tags:
   - "wels"
   - "campus"
