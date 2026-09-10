@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <defs>
+    <linearGradient id="grad-rpa-simple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#241014" />
+      <stop offset="100%" stop-color="#120709" />
+    </linearGradient>
+    <linearGradient id="grad-react-simple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#16122e" />
+      <stop offset="100%" stop-color="#0b0818" />
+    </linearGradient>
+    <linearGradient id="grad-pg-simple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#092920" />
+      <stop offset="100%" stop-color="#041410" />
+    </linearGradient>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect x="0" y="0" width="900" height="420" fill="#030712" />
+
+  <!-- Title & Subtitle -->
+  <text x="40" y="44" fill="#f8fafc" font-size="20" font-weight="800" letter-spacing="-0.5">Drei Ansätze der Prozessautomatisierung im Vergleich</text>
+  <text x="40" y="66" fill="#94a3b8" font-size="12">Warum starre Workflows und ungebundene Agenten scheitern – und wie Procedural Graphs beide Welten vereinen</text>
+
+  <!-- ==================== COLUMN 1: STARRES RPA ==================== -->
+  <g transform="translate(40, 90)">
+    <rect x="0" y="0" width="260" height="300" rx="12" fill="url(#grad-rpa-simple)" stroke="#ef4444" stroke-width="1.2" />
+    <rect x="0" y="0" width="260" height="36" rx="12" fill="#3b0f15" />
+    <text x="16" y="23" fill="#fecaca" font-size="13" font-weight="800">1. Starres RPA / BPMN</text>
+
+    <!-- Key Concept Badge -->
+    <rect x="16" y="48" width="135" height="20" rx="4" fill="#2d1217" />
+    <text x="24" y="62" fill="#f87171" font-size="9.5" font-weight="700">DETERMINISTISCH</text>
+
+    <!-- Bullets -->
+    <text x="16" y="98" fill="#fca5a5" font-size="12" font-weight="700">Keine kognitive Flexibilität</text>
+    <text x="16" y="116" fill="#cbd5e1" font-size="10">Bricht bei kleinsten PDF- oder</text>
+    <text x="16" y="130" fill="#cbd5e1" font-size="10">Layout-Änderungen sofort ab.</text>
+
+    <text x="16" y="165" fill="#fca5a5" font-size="12" font-weight="700">Explodierende Wartungskosten</text>
+    <text x="16" y="183" fill="#cbd5e1" font-size="10">Jede Prozessänderung muss</text>
+    <text x="16" y="197" fill="#cbd5e1" font-size="10">manuell programmiert werden.</text>
+
+    <!-- Summary Box -->
+    <rect x="16" y="235" width="228" height="48" rx="8" fill="#180a0c" stroke="#991b1b" stroke-width="0.8" />
+    <text x="26" y="254" fill="#f87171" font-size="9.5" font-weight="800">ERGEBNIS:</text>
+    <text x="26" y="269" fill="#94a3b8" font-size="9.5">Zu starr für die reale Welt.</text>
+  </g>
+
+  <!-- ==================== COLUMN 2: NAIVER REACT-AGENT ==================== -->
+  <g transform="translate(320, 90)">
+    <rect x="0" y="0" width="260" height="300" rx="12" fill="url(#grad-react-simple)" stroke="#6366f1" stroke-width="1.2" />
+    <rect x="0" y="0" width="260" height="36" rx="12" fill="#1e1b4b" />
+    <text x="16" y="23" fill="#e0e7ff" font-size="13" font-weight="800">2. Naiver ReAct-Agent</text>
+
+    <!-- Key Concept Badge -->
+    <rect x="16" y="48" width="135" height="20" rx="4" fill="#1c1642" />
+    <text x="24" y="62" fill="#a5b4fc" font-size="9.5" font-weight="700">UNGEBUNDENER PROMPT</text>
+
+    <!-- Bullets -->
+    <text x="16" y="98" fill="#c7d2fe" font-size="12" font-weight="700">Long-Horizon Drift</text>
+    <text x="16" y="116" fill="#cbd5e1" font-size="10">Verliert nach 8-15 Schritten das</text>
+    <text x="16" y="130" fill="#cbd5e1" font-size="10">Ziel aus den Augen; Fehlerzyklen.</text>
+
+    <text x="16" y="165" fill="#c7d2fe" font-size="12" font-weight="700">Kausalitätsverletzung</text>
+    <text x="16" y="183" fill="#cbd5e1" font-size="10">Überspringt Pflichtprüfungen</text>
+    <text x="16" y="197" fill="#cbd5e1" font-size="10">(z. B. Freigabe ohne Bonitätscheck).</text>
+
+    <!-- Summary Box -->
+    <rect x="16" y="235" width="228" height="48" rx="8" fill="#0d0b22" stroke="#4338ca" stroke-width="0.8" />
+    <text x="26" y="254" fill="#818cf8" font-size="9.5" font-weight="800">ERGEBNIS:</text>
+    <text x="26" y="269" fill="#94a3b8" font-size="9.5">Zu unberechenbar für Kernprozesse.</text>
+  </g>
+
+  <!-- ==================== COLUMN 3: PROCEDURAL GRAPH ==================== -->
+  <g transform="translate(600, 90)">
+    <rect x="0" y="0" width="260" height="300" rx="12" fill="url(#grad-pg-simple)" stroke="#10b981" stroke-width="1.8" />
+    <rect x="0" y="0" width="260" height="36" rx="12" fill="#064e3b" />
+    <text x="16" y="23" fill="#d1fae5" font-size="13" font-weight="800">3. Procedural Graph</text>
+
+    <!-- Key Concept Badge -->
+    <rect x="16" y="48" width="135" height="20" rx="4" fill="#063226" />
+    <text x="24" y="62" fill="#34d399" font-size="9.5" font-weight="700">LEITGELÄNDER + EVOLUTION</text>
+
+    <!-- Bullets -->
+    <text x="16" y="98" fill="#6ee7b7" font-size="12" font-weight="700">Generative Soft Guidance</text>
+    <text x="16" y="116" fill="#cbd5e1" font-size="10">Lenkt den Agenten schrittweise,</text>
+    <text x="16" y="130" fill="#cbd5e1" font-size="10">erhält aber volle Denkfreiheit.</text>
+
+    <text x="16" y="165" fill="#6ee7b7" font-size="12" font-weight="700">Kontinuierliche Self-Evolution</text>
+    <text x="16" y="183" fill="#cbd5e1" font-size="10">Optimiert Topologie aus Fehlern;</text>
+    <text x="16" y="197" fill="#cbd5e1" font-size="10">Rejection Memory verhindert Amnesie.</text>
+
+    <!-- Summary Box -->
+    <rect x="16" y="235" width="228" height="48" rx="8" fill="#042018" stroke="#059669" stroke-width="1" />
+    <text x="26" y="254" fill="#10b981" font-size="9.5" font-weight="800">ERGEBNIS:</text>
+    <text x="26" y="269" fill="#a7f3d0" font-size="9.5">Verlässlich, flexibel &amp; auditierbar.</text>
+  </g>
+</svg>

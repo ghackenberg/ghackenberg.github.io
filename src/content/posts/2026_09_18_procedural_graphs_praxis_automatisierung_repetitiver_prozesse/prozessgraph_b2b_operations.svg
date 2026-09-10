@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <defs>
+    <!-- Node Gradients -->
+    <linearGradient id="node-blue-clean" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="node-amber-clean" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#1c1917" />
+    </linearGradient>
+    <linearGradient id="node-green-clean" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <!-- Markers -->
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#3b82f6" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#a855f7" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="900" height="440" fill="#030712" />
+
+  <!-- Headline -->
+  <text x="40" y="38" fill="#f8fafc" font-size="18" font-weight="800" letter-spacing="-0.5">B2B-Auftragsprüfung als Procedural Graph</text>
+  <text x="40" y="58" fill="#94a3b8" font-size="11.5">Topologische Kanten führen den Agenten durch Prüfungen und warnen vor Fallstricken</text>
+
+  <!-- ==================== HORIZONTAL GRAPH FLOW ==================== -->
+  <!-- Arrows -->
+  <line x1="165" y1="125" x2="225" y2="125" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arr-blue)" />
+  <line x1="375" y1="125" x2="435" y2="125" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arr-blue)" />
+  <line x1="585" y1="125" x2="645" y2="125" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arr-blue)" />
+  <path d="M 720 160 L 720 220 L 720 270" stroke="#a855f7" stroke-width="1.8" stroke-dasharray="4 4" marker-end="url(#arr-purple)" />
+
+  <!-- Node 1: Eingang -->
+  <g transform="translate(40, 95)">
+    <rect x="0" y="0" width="125" height="60" rx="8" fill="url(#node-blue-clean)" stroke="#3b82f6" stroke-width="1.2" />
+    <text x="14" y="24" fill="#93c5fd" font-size="9" font-weight="700">1. EINGANG</text>
+    <text x="14" y="44" fill="#ffffff" font-size="12" font-weight="800">Bestelldaten</text>
+  </g>
+
+  <!-- Node 2: Bonität (Aktiv) -->
+  <g transform="translate(225, 95)">
+    <rect x="0" y="0" width="150" height="60" rx="8" fill="url(#node-blue-clean)" stroke="#60a5fa" stroke-width="2" />
+    <circle cx="134" cy="16" r="5" fill="#3b82f6" />
+    <text x="14" y="24" fill="#60a5fa" font-size="9" font-weight="800">2. AKTIVER SCHRITT</text>
+    <text x="14" y="44" fill="#ffffff" font-size="12" font-weight="800">Bonitätsprüfung</text>
+  </g>
+
+  <!-- Node 3: Machbarkeit -->
+  <g transform="translate(435, 95)">
+    <rect x="0" y="0" width="150" height="60" rx="8" fill="url(#node-blue-clean)" stroke="#3b82f6" stroke-width="1.2" />
+    <text x="14" y="24" fill="#93c5fd" font-size="9" font-weight="700">3. PRÜFUNG</text>
+    <text x="14" y="44" fill="#ffffff" font-size="12" font-weight="800">Machbarkeit &amp; Fracht</text>
+  </g>
+
+  <!-- Node 4: Freigabe -->
+  <g transform="translate(645, 95)">
+    <rect x="0" y="0" width="150" height="60" rx="8" fill="url(#node-green-clean)" stroke="#10b981" stroke-width="1.5" />
+    <text x="14" y="24" fill="#a7f3d0" font-size="9" font-weight="700">4. ABSCHLUSS</text>
+    <text x="14" y="44" fill="#ffffff" font-size="12" font-weight="800">ERP-Freigabe</text>
+  </g>
+
+  <!-- Node 5: Eskalation (unten) -->
+  <g transform="translate(645, 275)">
+    <rect x="0" y="0" width="150" height="50" rx="8" fill="#1e1030" stroke="#a855f7" stroke-width="1.2" stroke-dasharray="3 3" />
+    <text x="14" y="20" fill="#d8b4fe" font-size="8.5" font-weight="700">SONDERFALL</text>
+    <text x="14" y="37" fill="#ffffff" font-size="11" font-weight="700">Mitarbeiter-Eskalation</text>
+  </g>
+
+  <!-- ==================== KANTEN-ATTRIBUTE DETAIL-PANEL ==================== -->
+  <g transform="translate(40, 185)">
+    <rect x="0" y="0" width="545" height="215" rx="10" fill="#0b1329" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+    
+    <!-- Title Bar -->
+    <rect x="0" y="0" width="545" height="30" rx="10" fill="#131e3d" />
+    <text x="16" y="20" fill="#93c5fd" font-size="10.5" font-weight="700">Kanten-Attribute Φ(e): Übergang [Bonität ➔ Machbarkeit]</text>
+
+    <!-- Condition -->
+    <g transform="translate(16, 40)">
+      <rect x="0" y="0" width="513" height="46" rx="6" fill="#08152c" stroke="#1d4ed8" stroke-width="0.8" />
+      <text x="12" y="18" fill="#60a5fa" font-size="9.5" font-weight="800">VORBEDINGUNG (Condition):</text>
+      <text x="12" y="34" fill="#cbd5e1" font-size="10">Bonitätsscore ≥ 80 Punkte UND kein Zahlungsstopp im ERP.</text>
+    </g>
+
+    <!-- Guidance -->
+    <g transform="translate(16, 95)">
+      <rect x="0" y="0" width="513" height="46" rx="6" fill="#042018" stroke="#059669" stroke-width="0.8" />
+      <text x="12" y="18" fill="#34d399" font-size="9.5" font-weight="800">SITUATIVE FÜHRUNG (Guidance):</text>
+      <text x="12" y="34" fill="#cbd5e1" font-size="10">Lagerbestände beider Werke prüfen; bei Lieferzeit &gt; 14 Tage Expressfracht abfragen.</text>
+    </g>
+
+    <!-- Pitfall -->
+    <g transform="translate(16, 150)">
+      <rect x="0" y="0" width="513" height="46" rx="6" fill="#240c12" stroke="#b91c1c" stroke-width="0.8" />
+      <text x="12" y="18" fill="#f87171" font-size="9.5" font-weight="800">FALLSTRICKE VERMEIDEN (Pitfalls):</text>
+      <text x="12" y="34" fill="#fca5a5" font-size="10">Keine Teillieferung unter 500 € Mindestwert freigeben (verhindert Frachtverlust).</text>
+    </g>
+  </g>
+
+  <!-- Bottom Tip -->
+  <text x="605" y="360" fill="#94a3b8" font-size="10">
+    <tspan fill="#60a5fa" font-weight="bold">Soft Guidance:</tspan> Der Agent
+  </text>
+  <text x="605" y="376" fill="#94a3b8" font-size="10">wird situationsgerecht geführt,</text>
+  <text x="605" y="392" fill="#94a3b8" font-size="10">ohne in starre Regeln verfallen zu müssen.</text>
+</svg>

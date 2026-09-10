@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 300" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <defs>
+    <linearGradient id="card-dark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#0b0f19" />
+    </linearGradient>
+    <marker id="arr-evol" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#3b82f6" />
+    </marker>
+    <marker id="arr-rej" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#a855f7" />
+    </marker>
+    <marker id="arr-green-loop" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="840" height="300" fill="#030712" />
+
+  <!-- Title -->
+  <text x="30" y="32" fill="#f8fafc" font-size="15" font-weight="800">Der 4-Phasen-Evolutionszyklus mit Rejection Memory</text>
+
+  <!-- Step 1: Diagnostic Rollout -->
+  <g transform="translate(30, 55)">
+    <rect x="0" y="0" width="170" height="115" rx="8" fill="url(#card-dark)" stroke="#3b82f6" stroke-width="1.2" />
+    <rect x="10" y="10" width="105" height="18" rx="4" fill="#1e3a8a" />
+    <text x="16" y="23" fill="#93c5fd" font-size="8.5" font-weight="700">1. DIAGNOSTIK</text>
+    <text x="12" y="46" fill="#ffffff" font-size="12" font-weight="800">Diagnostic Rollout</text>
+    <text x="12" y="66" fill="#cbd5e1" font-size="9.5">Batch-Ausführung;</text>
+    <text x="12" y="80" fill="#cbd5e1" font-size="9.5">Partitionierung in</text>
+    <text x="12" y="94" fill="#cbd5e1" font-size="9.5">Erfolge &amp; Fehler-Traces.</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="205" y1="112" x2="235" y2="112" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-evol)" />
+
+  <!-- Step 2: Feedback Mutation -->
+  <g transform="translate(240, 55)">
+    <rect x="0" y="0" width="170" height="115" rx="8" fill="url(#card-dark)" stroke="#3b82f6" stroke-width="1.2" />
+    <rect x="10" y="10" width="90" height="18" rx="4" fill="#1e3a8a" />
+    <text x="16" y="23" fill="#93c5fd" font-size="8.5" font-weight="700">2. MUTATION</text>
+    <text x="12" y="46" fill="#ffffff" font-size="12" font-weight="800">Refiner-LLM</text>
+    <text x="12" y="66" fill="#cbd5e1" font-size="9.5">Schlägt Edits ΔG vor:</text>
+    <text x="12" y="80" fill="#cbd5e1" font-size="9.5">Knoten/Kanten hinzufügen,</text>
+    <text x="12" y="94" fill="#cbd5e1" font-size="9.5">Attribute verfeinern.</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="415" y1="112" x2="445" y2="112" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-evol)" />
+
+  <!-- Step 3: Validation Gating -->
+  <g transform="translate(450, 55)">
+    <rect x="0" y="0" width="170" height="115" rx="8" fill="url(#card-dark)" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="10" y="10" width="80" height="18" rx="4" fill="#78350f" />
+    <text x="16" y="23" fill="#fde68a" font-size="8.5" font-weight="700">3. GATING</text>
+    <text x="12" y="46" fill="#ffffff" font-size="12" font-weight="800">Validation Gate</text>
+    <text x="12" y="66" fill="#cbd5e1" font-size="9.5">Test auf Validierungsdaten.</text>
+    <text x="12" y="82" fill="#34d399" font-size="9.5" font-weight="bold">Besser? ➔ Übernahme!</text>
+    <text x="12" y="98" fill="#f87171" font-size="9.5" font-weight="bold">Schlechter? ➔ Abweisung!</text>
+  </g>
+
+  <!-- Arrow 3 -> Übernahme (Success) -->
+  <line x1="625" y1="112" x2="655" y2="112" stroke="#10b981" stroke-width="2" marker-end="url(#arr-green-loop)" />
+
+  <!-- Target: Retained Graph -->
+  <g transform="translate(660, 55)">
+    <rect x="0" y="0" width="150" height="115" rx="8" fill="#042018" stroke="#10b981" stroke-width="1.8" />
+    <text x="14" y="32" fill="#34d399" font-size="10" font-weight="800">PRODUKTIV</text>
+    <text x="14" y="54" fill="#ffffff" font-size="13" font-weight="800">Neuer Graph</text>
+    <text x="14" y="76" fill="#cbd5e1" font-size="9.5">Verbindlich für</text>
+    <text x="14" y="90" fill="#cbd5e1" font-size="9.5">nächste Inferenz-</text>
+    <text x="14" y="104" fill="#cbd5e1" font-size="9.5">Aufgaben.</text>
+  </g>
+
+  <!-- Rejection Path (Down and Left to Rejection Memory) -->
+  <path d="M 535 175 L 535 210 L 415 210" stroke="#a855f7" stroke-width="1.8" fill="none" marker-end="url(#arr-rej)" />
+  <text x="542" y="198" fill="#c084fc" font-size="9" font-weight="bold">Abgewiesen</text>
+
+  <!-- Step 4: Rejection Memory Card -->
+  <g transform="translate(30, 195)">
+    <rect x="0" y="0" width="380" height="85" rx="8" fill="#170c24" stroke="#a855f7" stroke-width="1.2" />
+    <rect x="10" y="8" width="160" height="18" rx="4" fill="#4c1d95" />
+    <text x="16" y="21" fill="#e9d5ff" font-size="8.5" font-weight="700">4. ANTI-AMNESIE SPEICHER</text>
+    <text x="12" y="44" fill="#ffffff" font-size="12" font-weight="800">Rejection Memory (H_rejected)</text>
+    <text x="12" y="60" fill="#e2e8f0" font-size="9.5">Archiviert gescheiterte Mutationen als Negativ-Bedingung.</text>
+    <text x="12" y="74" fill="#d8b4fe" font-size="9.5" font-weight="bold">Verhindert, dass der Refiner denselben Fehler wiederholt!</text>
+  </g>
+
+  <!-- Arrow from Rejection Memory back to Refiner -->
+  <path d="M 325 195 L 325 175" stroke="#a855f7" stroke-width="1.8" fill="none" marker-end="url(#arr-rej)" />
+</svg>
