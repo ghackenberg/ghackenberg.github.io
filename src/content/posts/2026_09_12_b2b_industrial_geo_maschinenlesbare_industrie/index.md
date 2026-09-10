@@ -6,7 +6,7 @@ tags: ["aeo", "agentic-ai", "aio", "enterprise-ai", "geo", "industrial-informati
 icon: "./hero.jpg"
 ---
 
-In unserer Artikelreihe zur Sichtbarkeit im KI-Zeitalter haben wir bisher die [technischen Grundlagen von SEO, GEO, AEO und AIO](/posts/2026_08_11_seo_geo_aeo_aio_optimierung) sowie die [empirischen Daten aus Peer-Reviewed und Industriestudien](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien) beleuchtet.
+In unserer Artikelreihe zur Sichtbarkeit im KI-Zeitalter haben wir bisher die [technischen Grundlagen von SEO, GEO, AEO und AIO](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/) sowie die [empirischen Daten aus Peer-Reviewed und Industriestudien](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien/) beleuchtet.
 
 In Vorbereitung auf einen Expertenvortrag zu den Themen SEO, GEO, AEO und AIO, zu dem ich für Anfang Oktober eingeladen bin, habe ich mir die Schnittstelle zwischen moderner Websichtbarkeit und industriellen B2B-Prozessen in den letzten Wochen noch einmal ganz genau angeschaut. Dabei sind viele spannende Erkenntnisse, aktuelle Studiendaten und Praxisbeispiele zusammengekommen, die zeigen: Das anspruchsvollste – aber auch lohnendste – Anwendungsfeld liegt in der **produzierenden Industrie, dem Maschinen- und Anlagenbau sowie bei technischen B2B-Spezialanbietern**.
 
@@ -24,7 +24,7 @@ Ausführliche technische Datenblätter, Maßzeichnungen, Toleranztabellen, CAD-B
 * **Der reale Beschaffungsfall**: Wenn ein Automobilzulieferer fragt: *„Welche Präzisionsdrehereien im DACH-Raum bearbeiten Inconel 718 mit Toleranzen unter 5 µm nach IATF 16949?“*, wird das Unternehmen mit den detailliertesten, aber formulargeschützten PDFs in keinem einzigen RAG-Retrieval berücksichtigt.
 
 ### B. Prosa-Floskeln statt harter Spezifikationen
-Viele Industrie-Websites zeichnen sich durch austauschbare Marketingtexte aus (*„Ihr innovativer Partner für zukunftssichere mechatronische Systemlösungen“*). Wie die [empirischen Daten der KDD-2024-Studie (Aggarwal et al.)](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien) eindeutig belegen, honorieren neuronale Reranker keine werblichen Füllwörter. Sie reagieren dagegen disproportional positiv auf:
+Viele Industrie-Websites zeichnen sich durch austauschbare Marketingtexte aus (*„Ihr innovativer Partner für zukunftssichere mechatronische Systemlösungen“*). Wie die [empirischen Daten der KDD-2024-Studie (Aggarwal et al.)](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien/) eindeutig belegen, honorieren neuronale Reranker keine werblichen Füllwörter. Sie reagieren dagegen disproportional positiv auf:
 * **Statistiken und quantitative Parameter (+37% Sichtbarkeit)**: Werkstoffhärten, maximale Schnittgeschwindigkeiten, thermische Ausdehnungskoeffizienten, Schutzklassen nach DIN EN 60529 (IP67/IP69K).
 * **Verifizierbare Zitate und Primärnachweise (+40% Sichtbarkeit)**: Explizite Verweise auf Prüfberichte, akkreditierte Labore und Industriestandards.
 

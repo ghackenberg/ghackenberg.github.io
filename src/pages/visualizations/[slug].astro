@@ -52,7 +52,7 @@ const payload = await buildGraphPayload({
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 pt-12 pb-20 md:pt-16 md:pb-24 w-full relative z-10 flex flex-col min-h-[calc(100vh-80px)]">
     <!-- Back Button -->
     <a 
-      href="/visualizations" 
+      href="/visualizations/" 
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-green/10 border border-brand-green/20 hover:border-brand-green/30 text-brand-green transition-all mb-8 cursor-pointer self-start"
     >
       <span>&larr;</span>
@@ -70,31 +70,31 @@ const payload = await buildGraphPayload({
       <!-- Engine Selector Tabs -->
       <div class="flex flex-wrap gap-1 bg-element-bg border border-element-border p-1 rounded-xl self-start sm:self-auto">
         <a 
-          href="/visualizations/cytoscape" 
+          href="/visualizations/cytoscape/" 
           class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'cytoscape' ? 'bg-brand-green text-slate-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           Cytoscape
         </a>
         <a 
-          href="/visualizations/d3" 
+          href="/visualizations/d3/" 
           class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'd3' ? 'bg-brand-green text-slate-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           D3
         </a>
         <a 
-          href="/visualizations/sigma" 
+          href="/visualizations/sigma/" 
           class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'sigma' ? 'bg-brand-green text-slate-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           Sigma
         </a>
         <a 
-          href="/visualizations/3d-force" 
+          href="/visualizations/3d-force/" 
           class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === '3d-force' ? 'bg-brand-green text-slate-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           3D Force
         </a>
         <a 
-          href="/visualizations/vis-network" 
+          href="/visualizations/vis-network/" 
           class={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${type === 'vis-network' ? 'bg-brand-green text-slate-950 shadow-md' : 'text-gray-400 hover:text-gray-100'}`}
         >
           Vis.js

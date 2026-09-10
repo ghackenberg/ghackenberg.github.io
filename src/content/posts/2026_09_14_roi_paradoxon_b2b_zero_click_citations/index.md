@@ -10,7 +10,7 @@ In klassischen Marketing- und Vertriebsberichten des industriellen B2B-Sektors d
 
 Wer diese Metriken heute im Vorstand präsentiert, erlebt ein beunruhigendes Phänomen: Die traditionellen Website-Klicks stagnieren oder brechen zweistellig ein. Doch der Grund dafür ist keineswegs mangelndes Kundeninteresse, sondern eine fundamentale Strukturverschiebung im Suchverhalten:
 
-* Wie die [empirischen Marktdaten unserer Analyse](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien) sowie der [SparkToro Zero-Click-Studie (Fishkin et al.)](https://sparktoro.com/blog/2024-zero-click-search-study/) belegen, enden bereits heute über **68% aller Google-Suchanfragen ohne Klick** (*Zero-Click Searches*).
+* Wie die [empirischen Marktdaten unserer Analyse](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien/) sowie der [SparkToro Zero-Click-Studie (Fishkin et al.)](https://sparktoro.com/blog/2024-zero-click-search-study/) belegen, enden bereits heute über **68% aller Google-Suchanfragen ohne Klick** (*Zero-Click Searches*).
 * Werden Google AI Overviews oder Perplexity-Direktantworten ausgespielt, bricht der Klickstrom auf traditionelle organische Spitzenplatzierungen (Position 1) um **58%** ein.
 * Einkäufer, Betriebsleiter und Entwicklungsingenieure erhalten ihre Antwort direkt im Interface des Sprachmodells – sie besuchen die Website des Herstellers gar nicht erst.
 

@@ -49,7 +49,7 @@ try {
 
 const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent);
 
-const postUrl = `https://hackenberg.tech/posts/${post.id}`;
+const postUrl = `https://hackenberg.tech/posts/${post.id}/`;
 
 const isSvgIcon = post.data.icon?.format === "svg";
 const ogImage = isSvgIcon ? `/posts/${post.id}/og.png` : post.data.icon;
@@ -97,7 +97,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "name": "Posts",
-      "item": "https://hackenberg.tech/posts"
+      "item": "https://hackenberg.tech/posts/"
     },
     {
       "@type": "ListItem",
@@ -126,7 +126,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
   <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <!-- Back button -->
     <a 
-      href="/posts" 
+      href="/posts/" 
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
@@ -152,7 +152,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
       <div class="flex flex-wrap gap-2">
         {post.data.tags.map(tag => (
           <a 
-            href={`/tags/${tag}`}
+            href={`/tags/${tag}/`}
             class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
           >
             #{tag}
@@ -189,7 +189,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {relatedPosts.map(p => (
-            <a href={`/posts/${p.id}`} class="glass-card p-5 rounded-2xl border border-element-border group flex flex-col h-full justify-between">
+            <a href={`/posts/${p.id}/`} class="glass-card p-5 rounded-2xl border border-element-border group flex flex-col h-full justify-between">
               <div>
                 <time class="text-[10px] font-semibold text-brand-blue/80 block mb-2">
                   {p.data.pubDate.toLocaleDateString("en-US", {

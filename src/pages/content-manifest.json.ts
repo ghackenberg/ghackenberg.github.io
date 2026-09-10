@@ -44,7 +44,7 @@ export async function GET() {
   const manifest = {
     tags: tags.map(t => ({
       id: t.id,
-      url: `/tags/${t.id}`,
+      url: `/tags/${t.id}/`,
       title: t.data.title,
       description: t.data.description,
       postsCount: posts.filter(p => p.data.tags.includes(t.id)).length,
@@ -55,7 +55,7 @@ export async function GET() {
     })),
     posts: posts.map(p => ({
       id: p.id,
-      url: `/posts/${p.id}`,
+      url: `/posts/${p.id}/`,
       title: p.data.title,
       description: p.data.description || '',
       tags: p.data.tags || [],
@@ -63,7 +63,7 @@ export async function GET() {
     })),
     courses: courses.map(c => ({
       id: c.id,
-      url: `/courses/${c.id}`,
+      url: `/courses/${c.id}/`,
       title: c.data.title,
       description: c.data.description || '',
       language: c.data.language,
@@ -72,7 +72,7 @@ export async function GET() {
     })),
     projects: projects.map(p => ({
       id: p.id,
-      url: `/projects/${p.id}`,
+      url: `/projects/${p.id}/`,
       title: p.data.title,
       tagline: p.data.tagline,
       description: p.data.description,
@@ -82,7 +82,7 @@ export async function GET() {
     })),
     publications: publications.map(p => ({
       id: p.id,
-      url: `/publications/${p.id}`,
+      url: `/publications/${p.id}/`,
       title: p.data.title,
       author: p.data.author,
       book: p.data.book || '',
@@ -92,7 +92,7 @@ export async function GET() {
     })),
     visualizations: visualizations.map(v => ({
       id: v.id,
-      url: `/visualizations/${v.id}`,
+      url: `/visualizations/${v.id}/`,
       title: v.data.title,
       description: v.data.description,
       date: parseItemDate(v.id, v.data.pubDate)
@@ -100,7 +100,7 @@ export async function GET() {
     services: [
       ...services.map(s => ({
         id: s.id,
-        url: `/services/${s.id}`,
+        url: `/services/${s.id}/`,
         title: s.data.title,
         tagline: s.data.tagline,
         description: s.data.description,
@@ -109,7 +109,7 @@ export async function GET() {
       })),
       ...modules.map(m => ({
         id: m.id,
-        url: `/services/${m.data.serviceId}/${m.id.split('/').pop()}`,
+        url: `/services/${m.data.serviceId}/${m.id.split('/').pop()}/`,
         title: m.data.title,
         tagline: m.data.tagline,
         description: m.data.description,

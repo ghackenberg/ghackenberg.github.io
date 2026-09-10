@@ -55,7 +55,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
   <!-- Image panel -->
   <div class={imageContainerClass}>
     <!-- Transparent click overlay so the image panel navigates on click -->
-    <a href={`/posts/${id}`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
+    <a href={`/posts/${id}/`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
     {icon ? (
       <div class="relative w-full h-full min-h-[160px] overflow-hidden flex items-center justify-center">
         <img 
@@ -97,14 +97,14 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       </time>
       <span 
         class="unread-dot hidden badge-new badge-new-blue shrink-0" 
-        data-item-url={`/posts/${id}`}
+        data-item-url={`/posts/${id}/`}
         title="Unread post"
       >UNREAD</span>
     </div>
 
     <!-- Title -->
     <h2 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 mb-2 group-hover:text-brand-blue transition-colors leading-snug">
-      <a href={`/posts/${id}`} class="after:absolute after:inset-0 after:z-10">
+      <a href={`/posts/${id}/`} class="after:absolute after:inset-0 after:z-10">
         {title}
       </a>
     </h2>
@@ -121,7 +121,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       <div class="flex flex-wrap gap-1.5 self-start">
         {tags.map(tag => (
           <a 
-            href={`/tags/${tag}`}
+            href={`/tags/${tag}/`}
             data-tag={tag}
             class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
               tag === activeTag ? 'active-tag-match' : ''
@@ -135,7 +135,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       <!-- Read more button — full width, pinned to bottom -->
       <div class="mt-auto pt-6 w-full">
         <a 
-          href={`/posts/${id}`} 
+          href={`/posts/${id}/`} 
           class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Read More</span>

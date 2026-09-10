@@ -77,7 +77,7 @@ const colorClasses = {
   }
 }[interest.data.color];
 
-const interestUrl = `https://hackenberg.tech/interests/${interest.id}`;
+const interestUrl = `https://hackenberg.tech/interests/${interest.id}/`;
 
 const interestSchema = {
   "@context": "https://schema.org",
@@ -229,7 +229,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <!-- Previous Interest -->
         <a 
-          href={`/interests/${prevInterest.id}`}
+          href={`/interests/${prevInterest.id}/`}
           class="glass-card p-6 rounded-2xl border border-element-border hover:border-element-border-medium transition-all duration-300 group flex items-center gap-4 text-left hover:-translate-x-1"
         >
           <span class="text-3xl select-none group-hover:scale-110 transition-transform">
@@ -250,7 +250,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
 
         <!-- Next Interest -->
         <a 
-          href={`/interests/${nextInterest.id}`}
+          href={`/interests/${nextInterest.id}/`}
           class="glass-card p-6 rounded-2xl border border-element-border hover:border-element-border-medium transition-all duration-300 group flex items-center justify-end gap-4 text-right hover:translate-x-1"
         >
           <div>

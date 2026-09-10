@@ -25,7 +25,7 @@ const {
 
 <div class="glass-card p-6 rounded-2xl border border-element-border group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-purple/30 h-full w-full">
   <!-- Absolute overlay link for card clickability -->
-  <a href={`/publications/${id}`} class="absolute inset-0 z-10" aria-label={title}></a>
+  <a href={`/publications/${id}/`} class="absolute inset-0 z-10" aria-label={title}></a>
 
   <!-- Icon -->
   <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shrink-0 border border-element-border-medium bg-gray-900/50 flex items-center justify-center text-white/30 light:text-slate-900/40 group-hover:text-brand-purple/80 group-hover:border-brand-purple/30 transition-all duration-300 relative">
@@ -85,7 +85,7 @@ const {
       {title}
       <span 
         class="unread-dot hidden badge-new badge-new-purple ml-2 align-middle" 
-        data-item-url={`/publications/${id}`}
+        data-item-url={`/publications/${id}/`}
         title="Unread publication"
       >UNREAD</span>
     </h3>
@@ -104,7 +104,7 @@ const {
       <div class="flex flex-wrap gap-1.5 self-start relative z-20">
         {tags.map(tag => (
           <a 
-            href={`/tags/${tag}`}
+            href={`/tags/${tag}/`}
             data-tag={tag}
             class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
               tag === activeTag ? 'active-tag-match' : ''
@@ -118,7 +118,7 @@ const {
       <!-- Read more button — full width, pinned to bottom -->
       <div class="mt-auto pt-6 w-full relative z-20">
         <a 
-          href={`/publications/${id}`}
+          href={`/publications/${id}/`}
           class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Read More</span>

@@ -34,7 +34,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     const formattedDate = post.data.pubDate.toISOString().split('T')[0];
     const tags = post.data.tags ? post.data.tags.join(', ') : '';
     output += `### ${post.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/posts/${post.id}\n`;
+    output += `- URL: https://hackenberg.tech/posts/${post.id}/\n`;
     output += `- Date: ${formattedDate}\n`;
     if (tags) output += `- Tags: ${tags}\n`;
     if (post.data.description) output += `- Summary: ${post.data.description}\n`;
@@ -44,7 +44,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
   output += `## 3. Academic Publications & Research Papers\n\n`;
   for (const pub of publications) {
     output += `### ${pub.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/publications/${pub.id}\n`;
+    output += `- URL: https://hackenberg.tech/publications/${pub.id}/\n`;
     output += `- Date/Venue: ${pub.data.pubDate}${pub.data.book ? ` (${pub.data.book})` : ''}\n`;
     output += `- Authors: ${pub.data.author}\n`;
     if (pub.data.abstract) output += `- Abstract: ${pub.data.abstract}\n`;
@@ -55,7 +55,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
   output += `## 4. University Courses & Educational Content\n\n`;
   for (const course of courses) {
     output += `### ${course.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/courses/${course.id}\n`;
+    output += `- URL: https://hackenberg.tech/courses/${course.id}/\n`;
     output += `- Repository: ${course.data.repoName}\n`;
     output += `- Language: ${course.data.language}\n`;
     if (course.data.description) output += `- Description: ${course.data.description}\n`;
@@ -68,7 +68,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
   output += `## 5. Software Projects & Systems\n\n`;
   for (const project of projects) {
     output += `### ${project.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/projects/${project.id}\n`;
+    output += `- URL: https://hackenberg.tech/projects/${project.id}/\n`;
     output += `- External Link: ${project.data.href}\n`;
     output += `- Tagline: ${project.data.tagline}\n`;
     output += `- Description: ${project.data.description}\n`;
@@ -81,7 +81,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
   output += `## 6. Consulting Services & Modules\n\n`;
   for (const service of services) {
     output += `### Service: ${service.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/services/${service.id}\n`;
+    output += `- URL: https://hackenberg.tech/services/${service.id}/\n`;
     output += `- Tagline: ${service.data.tagline}\n`;
     output += `- Description: ${service.data.description}\n\n`;
   }
@@ -100,7 +100,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
   const sortedTags = tags.sort((a, b) => a.data.title.localeCompare(b.data.title));
   for (const tag of sortedTags) {
     output += `### #${tag.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/tags/${tag.id}\n`;
+    output += `- URL: https://hackenberg.tech/tags/${tag.id}/\n`;
     output += `- Description: ${tag.data.description}\n\n`;
   }
 

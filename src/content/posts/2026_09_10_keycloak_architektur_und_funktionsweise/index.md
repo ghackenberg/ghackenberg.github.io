@@ -13,7 +13,7 @@ Bereits in unseren Grundlagenarbeiten zu [lokalen KI-Agenten und strukturierter 
 In vielen heutigen Pilotprojekten und unreflektierten Enterprise-Deployments herrscht jedoch ein eklatantes Sicherheitsvakuum:
 * **Statische Master-API-Keys:** Autonome Agenten und Pipelines operieren mit allmächtigen Service-Tokens, die im Klartext in Umgebungsdateien hinterlegt sind und bei Kompromittierung unbegrenzten Datenzugriff erlauben.
 * **Das Confused-Deputy-Problem:** Ein Agent erhält im Auftrag eines Endnutzers eine komplexe Problemstellung, nutzt jedoch zur Tool-Ausführung seine eigenen, überprivilegierten Systemrechte. Böswillige Prompt Injections führen so unmittelbar zu Datenexfiltration oder unberechtigten Transaktionen.
-* **Fehlende Mandanten- und Rollenisolation:** Vektordatenbanken ([Qdrant](/tags/neo4j)), relationale Persistenzschichten ([PostgreSQL](/tags/software-architecture)) und Graph-Datenbanken ([Neo4j](/tags/knowledge-graphs)) können Anfragen aus Web-Interfaces oft nicht verlässlich einem verifizierten Endnutzer zuordnen.
+* **Fehlende Mandanten- und Rollenisolation:** Vektordatenbanken ([Qdrant](/tags/neo4j/)), relationale Persistenzschichten ([PostgreSQL](/tags/software-architecture/)) und Graph-Datenbanken ([Neo4j](/tags/knowledge-graphs/)) können Anfragen aus Web-Interfaces oft nicht verlässlich einem verifizierten Endnutzer zuordnen.
 * **Audit- und Compliance-Lücken:** Gesetzliche Vorgaben nach DSGVO und EU AI Act verlangen die lückenlose, kryptografisch nachweisbare Nachvollziehbarkeit jeder automatisierten Entscheidung und jedes Datenbankzugriffs.
 
 Genau an dieser Nahtstelle greift **Keycloak** als **Schicht 5 (Gateway, Identity & Access Management)** unseres Referenzmodells ein. Als hochgradig performanter, cloud-nativer Open-Source-Identity-Provider (IdP) standardisiert Keycloak moderne Authentifizierungs- und Autorisierungs-Flows (OAuth 2.0, OpenID Connect, SAML 2.0, UMA 2.0). 
@@ -32,11 +32,11 @@ In unserem sechsgliedrigen Referenzstack agiert Keycloak nicht als isolierter Au
    Fachanwender, Forscher und Studierende melden sich über standardisierte Single-Sign-On-Verfahren (SSO) an. Open WebUI delegiert die Authentifizierung via OpenID Connect (OIDC) Authorization Code Flow mit PKCE vollständig an Keycloak. Passwörter oder biometrische Merkmale berühren die Web-UI zu keinem Zeitpunkt.
 2. **Gateway-Absicherung (Schicht 5 · [LiteLLM Proxy](/posts/2026_09_09_litellm_architektur_und_funktionsweise/)):**
    LiteLLM validiert eintreffende Requests zustandslos anhand der von Keycloak asymmetrisch signierten JSON Web Tokens (JWT). Über Keycloak Protocol Mappers werden Rollen, Team-Zugehörigkeiten und Budgetgrenzen direkt in den Token injiziert.
-3. **Agenten-Delegation & Token Exchange (Schichten 2 & 3 · [Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) & [LangGraph](/tags/langgraph)):**
-   Wenn ein autonomer Agent im Auftrag eines Nutzers Werkzeuge ausführt (via [Model Context Protocol – MCP](/services/ai/integration) oder Google [WikiSkills](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/)), tauscht er das Benutzer-Token nach **RFC 8693** in ein downscoped, auditiertes Agenten-Token um.
+3. **Agenten-Delegation & Token Exchange (Schichten 2 & 3 · [Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) & [LangGraph](/tags/langgraph/)):**
+   Wenn ein autonomer Agent im Auftrag eines Nutzers Werkzeuge ausführt (via [Model Context Protocol – MCP](/services/ai/integration/) oder Google [WikiSkills](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/)), tauscht er das Benutzer-Token nach **RFC 8693** in ein downscoped, auditiertes Agenten-Token um.
 4. **Mandantensichere Persistenz (Schicht 4 · [Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), Qdrant, Neo4j):**
    Speicherabfragen auf Langzeit-Fakten oder Knowledge Graphs werden anhand der im JWT transportierten Claims (`tenant_id`, `sub`, `department`) auf Partitionsebene gefiltert.
-5. **Compute-Isolation (Schicht 1 · [vLLM](/tags/vllm)):**
+5. **Compute-Isolation (Schicht 1 · [vLLM](/tags/vllm/)):**
    Die GPU-Inferenzcluster operieren in einem abgeschirmten Zero-Trust-Netzwerk ohne öffentlichen Zugang. Zugriff erhält ausschließlich das von Keycloak autorisierte LiteLLM Gateway.
 
 ## 2. Systemarchitektur & Cloud-Native Quarkus Runtime
@@ -75,7 +75,7 @@ In Keycloak ist jeder Service, der Authentifizierung anfordert oder Ressourcen s
 1. **Public Clients (Frontend / Browser):**
    Verwendet für [Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/). Da Client-Secrets in browserseitigen Single-Page-Applications (SPA) nicht geheim gehalten werden können, verbietet Keycloak hier statische Secrets und erzwingt zwingend **Proof Key for Code Exchange (PKCE)** nach RFC 7636.
 2. **Confidential Clients (Backend-Services):**
-   Verwendet für [LiteLLM Proxy](/posts/2026_09_09_litellm_architektur_und_funktionsweise/), den [Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) Runtime-Dienst und [LangGraph](/tags/langgraph)-Orchestrierungs-Knoten. Diese Services laufen in sicheren Serverumgebungen und authentifizieren sich über kryptografisch starke Client-Credentials (`client_secret` oder mTLS Client Certificates).
+   Verwendet für [LiteLLM Proxy](/posts/2026_09_09_litellm_architektur_und_funktionsweise/), den [Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) Runtime-Dienst und [LangGraph](/tags/langgraph/)-Orchestrierungs-Knoten. Diese Services laufen in sicheren Serverumgebungen und authentifizieren sich über kryptografisch starke Client-Credentials (`client_secret` oder mTLS Client Certificates).
 3. **Bearer-Only / Resource Servers:**
    Microservices und Model Context Protocol (MCP) Server, die selbst keine Tokens ausstellen, sondern lediglich eingehende Bearer Tokens validieren und Ressourcen schützen.
 
@@ -117,7 +117,7 @@ Der Goldstandard für interaktive Webanwendungen wie [Open WebUI](/posts/2026_09
 5. Open WebUI tauscht den Code zusammen mit dem originalen $V$ am Token-Endpunkt gegen ID-Token, Access-Token und Refresh-Token ein. Keycloak verifiziert $C \stackrel{?}{=} \text{SHA256}(V)$ und stellt die Token aus.
 
 ### 2. Client Credentials Flow (Autonome System-Pipelines)
-Hintergrund-Dienste, wie zeitgesteuerte RAG-Indexierungs-Pipelines oder automatisierte [LangGraph](/tags/langgraph)-Graphen, agieren ohne menschlichen Interaktionspartner. Sie authentifizieren sich direkt über den OAuth 2.0 Client Credentials Flow:
+Hintergrund-Dienste, wie zeitgesteuerte RAG-Indexierungs-Pipelines oder automatisierte [LangGraph](/tags/langgraph/)-Graphen, agieren ohne menschlichen Interaktionspartner. Sie authentifizieren sich direkt über den OAuth 2.0 Client Credentials Flow:
 $$\text{Hermes Service} \xrightarrow{\text{POST /token (client\_id, client\_secret)}} \text{Keycloak} \xrightarrow{\text{JWT Access Token}} \text{Hermes Service}$$
 
 ### 3. OAuth 2.0 Token Exchange (RFC 8693) & Agenten-Delegation
@@ -175,9 +175,9 @@ Authentifizierung stellt lediglich fest, *wer* eine Anfrage stellt. Autorisierun
 ### 1. Rollenbasierte Zugriffskontrolle (RBAC)
 Keycloak unterscheidet zwischen globalen **Realm Roles** und dienstspezifischen **Client Roles**:
 * `ai-admin`: Vollzugriff auf Inferenz-Routing, globale Team-Budgets und GPU-Cluster-Management.
-* `ai-researcher`: Zugriff auf unzensierte 70B+ Modelle, Cloud-Frontier-APIs, Schreibzugriff auf Wissensgraphen ([Neo4j](/tags/neo4j)).
-* `ai-developer`: Standard-Modelle, Lesezugriff auf RAG-Collections in [Qdrant](/tags/neo4j), Entwicklungstools.
-* `internal-user` / `student`: Strikte Beschränkung auf lokale [vLLM](/tags/vllm)-Modelle, Monats-Tokenbudget gecappt auf 20 €.
+* `ai-researcher`: Zugriff auf unzensierte 70B+ Modelle, Cloud-Frontier-APIs, Schreibzugriff auf Wissensgraphen ([Neo4j](/tags/neo4j/)).
+* `ai-developer`: Standard-Modelle, Lesezugriff auf RAG-Collections in [Qdrant](/tags/neo4j/), Entwicklungstools.
+* `internal-user` / `student`: Strikte Beschränkung auf lokale [vLLM](/tags/vllm/)-Modelle, Monats-Tokenbudget gecappt auf 20 €.
 
 ### 2. Attributbasierte Zugriffskontrolle (ABAC)
 Rollen allein sind oft zu starr. ABAC ermöglicht dynamische, kontextsensitive Richtlinienentscheidungen:
@@ -253,13 +253,13 @@ Um das nahtlose Ineinandergreifen aller Komponenten zu demonstrieren, betrachten
 **Keycloak** ist weit mehr als eine Login-Maske: Im modernen KI-Ökosystem ist es das **zentrale Nervensystem für Vertrauen, Identitäts-Governance und Least-Privilege-Zugriffskontrolle**. Ohne ein leistungsfähiges, standardkonformes IAM-System lassen sich generative Sprachmodelle und autonome Agenten in regulierten Unternehmen, Industrie 4.0 und wissenschaftlichen Einrichtungen schlicht nicht rechtskonform und sicher betreiben.
 
 Im Zusammenspiel unseres [standardisierten Open-Source Agentic AI Tech Stacks](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) bildet Keycloak das perfekte Fundament für alle weiteren Module:
-* **Schicht 1 (Inferenz):** [vLLM](/tags/vllm) liefert rohe GPU-Beschleunigung – hermetisch abgeriegelt im internen Netz.
+* **Schicht 1 (Inferenz):** [vLLM](/tags/vllm/) liefert rohe GPU-Beschleunigung – hermetisch abgeriegelt im internen Netz.
 * **Schicht 2 (Laufzeit & Skills):** Der [Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) und declarative [WikiSkills](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) nutzen RFC 8693 Token Exchange für sichere Werkzeugausführung.
-* **Schicht 3 (Workflows):** [LangGraph](/tags/langgraph) steuert zustandsbehaftete Graphen über dedizierte Service Accounts.
-* **Schicht 4 (Gedächtnis):** [Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), Qdrant und [Neo4j](/tags/neo4j) partitionieren Wissen anhand von Keycloak Tenant-Claims.
+* **Schicht 3 (Workflows):** [LangGraph](/tags/langgraph/) steuert zustandsbehaftete Graphen über dedizierte Service Accounts.
+* **Schicht 4 (Gedächtnis):** [Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), Qdrant und [Neo4j](/tags/neo4j/) partitionieren Wissen anhand von Keycloak Tenant-Claims.
 * **Schicht 5 (Gateway & IAM):** **Keycloak + [LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/)** bilden das unüberwindbare Sicherheits- und Governance-Doppel für Routing, Caching und Identity Federation.
 * **Schicht 6 (Human UX):** [Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/) bietet Fachanwendern eine ergonomische Schnittstelle mit nahtlosem OIDC Single Sign-On.
 
 Mit dieser geschlossenen Open-Source-Architektur demonstrieren wir, dass technologische Souveränität, modernste Agenten-Autonomie und kompromisslose Enterprise-Sicherheit keine Widersprüche sind, sondern sich in einem wohlstrukturierten Softwaredesign gegenseitig verstärken.
 
-*Planen Sie den Aufbau einer souveränen, DSGVO-konformen KI-Infrastruktur in Ihrem Unternehmen oder Ihrer Forschungseinrichtung? Benötigen Sie Unterstützung bei der Anbindung von Keycloak an bestehende Active Directory/LDAP-Systeme, der Integration von Token-Exchange-Verfahren für autonome Agenten oder der Härtung von Inferenz-Gateways? Informieren Sie sich in unserem Leistungsbereich [Artificial Intelligence](/services/ai) oder vereinbaren Sie ein individuelles Fachgespräch zu unseren Servicemodulen [Technology Stack](/services/ai/stack) und [System Integration](/services/ai/integration).*
+*Planen Sie den Aufbau einer souveränen, DSGVO-konformen KI-Infrastruktur in Ihrem Unternehmen oder Ihrer Forschungseinrichtung? Benötigen Sie Unterstützung bei der Anbindung von Keycloak an bestehende Active Directory/LDAP-Systeme, der Integration von Token-Exchange-Verfahren für autonome Agenten oder der Härtung von Inferenz-Gateways? Informieren Sie sich in unserem Leistungsbereich [Artificial Intelligence](/services/ai/) oder vereinbaren Sie ein individuelles Fachgespräch zu unseren Servicemodulen [Technology Stack](/services/ai/stack/) und [System Integration](/services/ai/integration/).*

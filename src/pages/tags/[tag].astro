@@ -102,7 +102,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <!-- Back Button -->
     <a 
-      href="/tags" 
+      href="/tags/" 
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue hover:bg-brand-blue/20 transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
@@ -132,7 +132,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                 {posts.length}
               </span>
             </h2>
-            <a href="/posts" class="text-xs font-semibold text-brand-blue hover:underline">
+            <a href="/posts/" class="text-xs font-semibold text-brand-blue hover:underline">
               All Posts &rarr;
             </a>
           </div>
@@ -225,7 +225,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                 {publications.length}
               </span>
             </h2>
-            <a href="/publications" class="text-xs font-semibold text-brand-purple hover:underline">
+            <a href="/publications/" class="text-xs font-semibold text-brand-purple hover:underline">
               All Publications &rarr;
             </a>
           </div>
@@ -320,7 +320,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                 {projects.length}
               </span>
             </h2>
-            <a href="/projects" class="text-xs font-semibold text-emerald-400 hover:underline">
+            <a href="/projects/" class="text-xs font-semibold text-emerald-400 hover:underline">
               All Projects &rarr;
             </a>
           </div>
@@ -331,7 +331,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                 title={project.data.title}
                 tagline={project.data.tagline}
                 description={project.data.description}
-                href={`/projects/${project.id}`}
+                href={`/projects/${project.id}/`}
                 tags={project.data.tags}
                 activeTag={tag.id}
                 accentColor={project.data.accentColor}
@@ -354,7 +354,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                 {courses.length}
               </span>
             </h2>
-            <a href="/courses" class="text-xs font-semibold text-brand-yellow hover:underline">
+            <a href="/courses/" class="text-xs font-semibold text-brand-yellow hover:underline">
               All Courses &rarr;
             </a>
           </div>
@@ -364,7 +364,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
               <CourseCard
                 title={course.data.title}
                 description={course.data.description}
-                href={`/courses/${course.id}`}
+                href={`/courses/${course.id}/`}
                 language={course.data.language}
                 screenshot={course.data.screenshot}
                 tags={course.data.tags}
@@ -386,7 +386,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                 {services.length}
               </span>
             </h2>
-            <a href="/services" class="text-xs font-semibold text-brand-purple hover:underline">
+            <a href="/services/" class="text-xs font-semibold text-brand-purple hover:underline">
               All Services &rarr;
             </a>
           </div>
@@ -394,7 +394,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {services.map((service) => (
               <div class="glass-card h-full rounded-2xl border border-element-border hover:border-brand-purple/40 flex flex-col group overflow-hidden relative cursor-pointer transition-all duration-300">
-                <a href={`/services/${service.id}`} class="absolute inset-0 z-10" aria-label={service.data.title}></a>
+                <a href={`/services/${service.id}/`} class="absolute inset-0 z-10" aria-label={service.data.title}></a>
                   
                   <div class="p-6 md:p-8 flex flex-col flex-grow">
                     <div class="mb-4">
@@ -417,7 +417,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
                         <div class="flex flex-wrap gap-1.5 self-start relative z-20">
                           {service.data.tags.map((t) => (
                             <a
-                              href={`/tags/${t}`}
+                              href={`/tags/${t}/`}
                               data-tag={t}
                               class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
                                 t === tag.id ? 'active-tag-match' : ''
@@ -431,7 +431,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
 
                       <div class="mt-auto pt-6 w-full relative z-20">
                         <a
-                          href={`/services/${service.id}`}
+                          href={`/services/${service.id}/`}
                           class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
                         >
                           <span>Read More</span>

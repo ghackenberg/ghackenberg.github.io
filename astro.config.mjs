@@ -103,6 +103,7 @@ const { getMetadataForPath } = buildSitemapMetadata();
 // https://astro.build/config
 export default defineConfig({
   site: 'https://hackenberg.tech',
+  trailingSlash: 'always',
   image: {
     dangerouslyProcessSVG: true,
   },

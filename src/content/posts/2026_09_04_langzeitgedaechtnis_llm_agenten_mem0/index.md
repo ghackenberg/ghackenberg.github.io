@@ -190,4 +190,4 @@ Mem0 demonstriert eindrucksvoll, dass der Schlüssel zu lebenslangem Lernen nich
 
 Die empirischen Daten – über 90 % Token-Ersparnis, 91 % Latenzreduktion und bis zu 92,5 % Recall-Genauigkeit – sprechen eine deutliche Sprache. Für softwaretechnisch anspruchsvolle Multi-Agenten-Systeme ist ein dedizierter Memory-Layer wie Mem0 daher kein optionales Add-on, sondern ein unverzichtbares Fundament.
 
-*Planen Sie den Aufbau zustandsbehafteter, souveräner KI-Agenten oder möchten Sie Ihre bestehende LLM-Architektur auf ein performantes Langzeitgedächtnis umstellen? Erfahren Sie mehr in unserem Leistungsbereich [Artificial Intelligence](/services/ai) oder sprechen Sie uns direkt auf unser Servicemodul [Technology Stack](/services/ai/stack) an.*
+*Planen Sie den Aufbau zustandsbehafteter, souveräner KI-Agenten oder möchten Sie Ihre bestehende LLM-Architektur auf ein performantes Langzeitgedächtnis umstellen? Erfahren Sie mehr in unserem Leistungsbereich [Artificial Intelligence](/services/ai/) oder sprechen Sie uns direkt auf unser Servicemodul [Technology Stack](/services/ai/stack/) an.*

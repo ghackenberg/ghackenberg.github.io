@@ -228,7 +228,7 @@ export async function buildGraphPayload(options: {
     const tagEntry = tagMap.get(tag);
     const title = tagEntry?.data.title ?? tag;
     visNodes.push({
-      id: `/tags/${encodeURIComponent(tag)}`,
+      id: `/tags/${encodeURIComponent(tag)}/`,
       name: `#${title}`,
       size: Math.log(count) + 1,
       group: 0,
@@ -239,7 +239,7 @@ export async function buildGraphPayload(options: {
 
   // Group 1: Posts
   for (const post of options.posts) {
-    const path = `/posts/${post.id}`;
+    const path = `/posts/${post.id}/`;
     let imageSrc: string | undefined = undefined;
     if (post.data.icon && options.getImage) {
       try {
@@ -262,14 +262,14 @@ export async function buildGraphPayload(options: {
     });
     if (post.data.tags) {
       post.data.tags.forEach(tag => {
-        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }
   }
 
   // Group 2: Publications
   for (const pub of options.publications) {
-    const path = `/publications/${pub.id}`;
+    const path = `/publications/${pub.id}/`;
     visNodes.push({
       id: path,
       name: pub.data.title,
@@ -282,14 +282,14 @@ export async function buildGraphPayload(options: {
     });
     if (pub.data.tags) {
       pub.data.tags.forEach(tag => {
-        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }
   }
 
   // Group 3: Projects
   for (const project of options.projects) {
-    const path = `/projects/${project.id}`;
+    const path = `/projects/${project.id}/`;
     let imageSrc: string | undefined = undefined;
     const projectImg = project.data.screenshot || project.data.screenshotLight;
     if (projectImg && options.getImage) {
@@ -313,14 +313,14 @@ export async function buildGraphPayload(options: {
     });
     if (project.data.tags) {
       project.data.tags.forEach(tag => {
-        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }
   }
 
   // Group 4: Courses
   for (const course of options.courses) {
-    const path = `/courses/${course.id}`;
+    const path = `/courses/${course.id}/`;
     let imageSrc: string | undefined = undefined;
     if (course.data.screenshot && options.getImage) {
       try {
@@ -343,14 +343,14 @@ export async function buildGraphPayload(options: {
     });
     if (course.data.tags) {
       course.data.tags.forEach(tag => {
-        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }
   }
 
   // Group 5: Services
   for (const service of options.services) {
-    const path = `/services/${service.id}`;
+    const path = `/services/${service.id}/`;
     let imageSrc: string | undefined = undefined;
     if (service.data.previewImage && options.getImage) {
       try {
@@ -373,7 +373,7 @@ export async function buildGraphPayload(options: {
     });
     if (service.data.tags) {
       service.data.tags.forEach(tag => {
-        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}` });
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }
   }

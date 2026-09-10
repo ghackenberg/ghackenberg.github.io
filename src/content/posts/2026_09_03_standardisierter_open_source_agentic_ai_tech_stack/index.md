@@ -102,4 +102,4 @@ Der hier vorgestellte **Open-Source Agentic AI Tech Stack** beweist, dass Untern
 2. **Skalierbar und deterministisch** agiert – ohne unberechenbare Blackbox-Abhängigkeiten,
 3. **Auditierbar und sicher** den Anforderungen von ISO 27001, DSGVO und EU AI Act genügt.
 
-Interessieren Sie sich für die Konzeption, Dimensionierung oder Implementierung dieses Stacks in Ihrer Organisation? Informieren Sie sich in unserem Leistungsbereich [Artificial Intelligence](/services/ai) oder vereinbaren Sie ein unverbindliches Fachgespräch zu unserem Servicemodul [Technology Stack](/services/ai/stack).
+Interessieren Sie sich für die Konzeption, Dimensionierung oder Implementierung dieses Stacks in Ihrer Organisation? Informieren Sie sich in unserem Leistungsbereich [Artificial Intelligence](/services/ai/) oder vereinbaren Sie ein unverbindliches Fachgespräch zu unserem Servicemodul [Technology Stack](/services/ai/stack/).

@@ -3,20 +3,21 @@ const { pathname } = Astro.url;
 const normalizedPathname = pathname.replace(/\/$/, "") || "/";
 
 const isActive = (href: string) => {
-  if (href === "/") {
+  const normHref = href.replace(/\/$/, "") || "/";
+  if (normHref === "/") {
     return normalizedPathname === "/";
   }
-  return normalizedPathname.startsWith(href);
+  return normalizedPathname.startsWith(normHref);
 };
 
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Posts", href: "/posts", badgeColor: "badge-new-blue" },
-  { label: "Courses", href: "/courses", badgeColor: "badge-new-yellow" },
-  { label: "Projects", href: "/projects", badgeColor: "badge-new-blue" },
-  { label: "Services", href: "/services", badgeColor: "badge-new-purple" },
-  { label: "Publications", href: "/publications", badgeColor: "badge-new-purple" },
-  { label: "Visualizations", href: "/visualizations", badgeColor: "badge-new-green" }
+  { label: "Posts", href: "/posts/", badgeColor: "badge-new-blue" },
+  { label: "Courses", href: "/courses/", badgeColor: "badge-new-yellow" },
+  { label: "Projects", href: "/projects/", badgeColor: "badge-new-blue" },
+  { label: "Services", href: "/services/", badgeColor: "badge-new-purple" },
+  { label: "Publications", href: "/publications/", badgeColor: "badge-new-purple" },
+  { label: "Visualizations", href: "/visualizations/", badgeColor: "badge-new-green" }
 ];
 ---
 
@@ -58,7 +59,7 @@ const navItems = [
             {item.badgeColor && (
               <span 
                 class={`nav-badge hidden badge-new ${item.badgeColor}`}
-                data-section={item.href.replace(/^\//, '')}
+                data-section={item.href.replace(/^\//, '').replace(/\/$/, '')}
                 title={`Unread items in ${item.label}`}
               >
               </span>
@@ -143,7 +144,7 @@ const navItems = [
           {item.badgeColor && (
             <span 
               class={`nav-badge hidden badge-new ${item.badgeColor}`}
-              data-section={item.href.replace(/^\//, '')}
+              data-section={item.href.replace(/^\//, '').replace(/\/$/, '')}
               title={`Unread items in ${item.label}`}
             >
             </span>

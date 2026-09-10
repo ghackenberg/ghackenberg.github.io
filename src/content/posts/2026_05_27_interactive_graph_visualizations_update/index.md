@@ -168,4 +168,4 @@ On page load, the Astro script parses the URL parameters to fetch the state, ini
 
 With this modular refactoring, the graph visualization page is more robust, lighter on initial loading speeds, and visually synchronized with the rest of the website. Whether you prefer the organic physics of **Vis.js**, the raw data transparency of **D3**, or the futuristic fly-throughs of the **3D Force Graph**, the system delivers a premium, smooth interactive experience in light and dark mode alike.
 
-Try out the different engines on the [Visualizations Panel](/visualizations)!
+Try out the different engines on the [Visualizations Panel](/visualizations/)!

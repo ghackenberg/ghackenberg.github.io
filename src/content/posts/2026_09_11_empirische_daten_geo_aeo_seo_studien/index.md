@@ -6,7 +6,7 @@ tags: ["aeo", "agentic-ai", "aio", "artificial-intelligence", "benchmarks", "geo
 icon: "./hero.jpg"
 ---
 
-In unserem [vorherigen Beitrag vom 11. August 2026](/posts/2026_08_11_seo_geo_aeo_aio_optimierung) haben wir die theoretischen Grundlagen und die technische Umsetzung für die vier Dimensionen moderner Websichtbarkeit vorgestellt: **SEO**, **GEO**, **AEO** und **AIO**. Wir haben dargelegt, wie sich Websites durch Standards wie `llms.txt`, strukturierte JSON-LD Schemas und „Answer-First“-Architekturen für RAG-Systeme und KI-Agenten rüsten lassen.
+In unserem [vorherigen Beitrag vom 11. August 2026](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/) haben wir die theoretischen Grundlagen und die technische Umsetzung für die vier Dimensionen moderner Websichtbarkeit vorgestellt: **SEO**, **GEO**, **AEO** und **AIO**. Wir haben dargelegt, wie sich Websites durch Standards wie `llms.txt`, strukturierte JSON-LD Schemas und „Answer-First“-Architekturen für RAG-Systeme und KI-Agenten rüsten lassen.
 
 In der SEO- und Tech-Branche wird jedoch viel behauptet, wenn neue Buzzwords auftauchen. Häufig vermischen sich verifizierte Kausalitäten mit spekulativem Marketing-Folklore. Um fundierte architektonische und strategische Entscheidungen zu treffen, brauchen wir **harte empirische Daten**.
 

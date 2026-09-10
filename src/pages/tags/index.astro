@@ -79,7 +79,7 @@ const sortedTags = tagStats.sort((a, b) => a.title.localeCompare(b.title));
     <div id="tags-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {sortedTags.map((tag) => (
         <a
-          href={`/tags/${tag.id}`}
+          href={`/tags/${tag.id}/`}
           class="tag-card glass-card p-5 sm:p-6 rounded-2xl border border-element-border hover:border-brand-blue/40 transition-all duration-300 group flex flex-col justify-between hover:scale-[1.01] hover:shadow-lg hover:shadow-brand-blue/5"
           data-title={tag.title.toLowerCase()}
           data-id={tag.id.toLowerCase()}

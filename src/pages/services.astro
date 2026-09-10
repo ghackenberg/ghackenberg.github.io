@@ -83,11 +83,11 @@ const colorClasses = {
 const servicesJsonLd = sortedServices.map(s => ({
   "@context": "https://schema.org",
   "@type": "Service",
-  "@id": `https://hackenberg.tech/services#${s.id}`,
+  "@id": `https://hackenberg.tech/services/#${s.id}`,
   "name": s.data.title,
   "serviceType": s.data.tagline,
   "description": s.data.description,
-  "url": `https://hackenberg.tech/services/${s.id}`,
+  "url": `https://hackenberg.tech/services/${s.id}/`,
   "provider": {
     "@type": "Person",
     "name": "Dr. Georg Hackenberg",
@@ -190,7 +190,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
 
                     <!-- Card Clickable Overlay Link -->
                     <a 
-                      href={`/services/${service.id}`} 
+                      href={`/services/${service.id}/`} 
                       class="absolute inset-0 z-10 cursor-pointer" 
                       aria-label={`View details for ${service.data.title}`}
                     ></a>
@@ -255,7 +255,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                             <span>{service.data.title}</span>
                             <span 
                               class={`unread-dot hidden ${classes.dot}`}
-                              data-item-url={`/services/${service.id}`}
+                              data-item-url={`/services/${service.id}/`}
                               title="Unread service"
                             >UNREAD</span>
                           </h2>
@@ -273,7 +273,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                           <div class="flex flex-wrap gap-1.5 pt-1 relative z-20">
                             {service.data.tags.map((tag) => (
                               <a
-                                href={`/tags/${tag}`}
+                                href={`/tags/${tag}/`}
                                 data-tag={tag}
                                 class="tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
                               >
@@ -287,7 +287,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                       <!-- Footer CTA Button -->
                       <div class="pt-6 mt-auto w-full relative z-20">
                         <a
-                          href={`/services/${service.id}`}
+                          href={`/services/${service.id}/`}
                           class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
                         >
                           <span>Read More</span>

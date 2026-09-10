@@ -267,4 +267,4 @@ Running local AI models directly in the web browser removes server hosting bills
 
 As lightweight open-source models continue to get smaller and more capable, the web browser will increasingly become a powerful, self-contained runtime for decentralized, AI-driven applications.
 
-Try spawning LLM-driven agents on the [Delta Dynamics Simulation Panel](/projects/delta-dynamics)!
+Try spawning LLM-driven agents on the [Delta Dynamics Simulation Panel](/projects/delta-dynamics/)!

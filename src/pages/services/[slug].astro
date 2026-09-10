@@ -67,7 +67,7 @@ const colorClasses = {
   }
 }[service.data.color];
 
-const serviceUrl = `https://hackenberg.tech/services/${service.id}`;
+const serviceUrl = `https://hackenberg.tech/services/${service.id}/`;
 
 const serviceSchema = {
   "@context": "https://schema.org",
@@ -100,7 +100,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "name": "Services",
-      "item": "https://hackenberg.tech/services"
+      "item": "https://hackenberg.tech/services/"
     },
     {
       "@type": "ListItem",
@@ -128,7 +128,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
     <div class="max-w-4xl mx-auto">
       <!-- Back Button -->
       <a 
-        href="/services" 
+        href="/services/" 
         class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${service.data.color}/10 border border-brand-${service.data.color}/20 hover:border-brand-${service.data.color}/30 text-brand-${service.data.color} transition-all mb-8 cursor-pointer`}
       >
         <span>&larr;</span>
@@ -151,7 +151,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
           <div class="flex flex-wrap gap-2 mt-4 mb-2">
             {service.data.tags.map((tag) => (
               <a
-                href={`/tags/${tag}`}
+                href={`/tags/${tag}/`}
                 class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 ${colorClasses.bg} ${colorClasses.border} ${colorClasses.text}`}
               >
                 #{tag}
@@ -197,7 +197,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
               const moduleSlug = module.id.split('/').pop();
               return (
                 <a 
-                  href={`/services/${service.id}/${moduleSlug}`}
+                  href={`/services/${service.id}/${moduleSlug}/`}
                   class="glass-card rounded-2xl md:rounded-3xl border border-element-border relative overflow-hidden flex flex-col h-full hover:border-element-border-medium transition-all duration-300 group cursor-pointer block no-underline"
                 >
                   {/* Accent bar */}
@@ -225,7 +225,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
                           <span>{module.data.title}</span>
                           <span 
                             class={`unread-dot hidden ${colorClasses.dot}`}
-                            data-item-url={`/services/${service.id}/${moduleSlug}`}
+                            data-item-url={`/services/${service.id}/${moduleSlug}/`}
                             title="Unread module"
                           >UNREAD</span>
                         </h3>

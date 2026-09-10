@@ -81,7 +81,7 @@ const colorClasses = {
   }
 }[parentService.data.color];
 
-const moduleUrl = `https://hackenberg.tech/services/${parentService.id}/${module.id.split('/').pop()}`;
+const moduleUrl = `https://hackenberg.tech/services/${parentService.id}/${module.id.split('/').pop()}/`;
 
 const activePreviewImage = module.data.previewImage || parentService.data.previewImage;
 
@@ -117,13 +117,13 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "name": "Services",
-      "item": "https://hackenberg.tech/services"
+      "item": "https://hackenberg.tech/services/"
     },
     {
       "@type": "ListItem",
       "position": 3,
       "name": parentService.data.title,
-      "item": `https://hackenberg.tech/services/${parentService.id}`
+      "item": `https://hackenberg.tech/services/${parentService.id}/`
     },
     {
       "@type": "ListItem",
@@ -148,7 +148,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
   <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <!-- Back Button -->
     <a 
-      href={`/services/${parentService.id}`} 
+      href={`/services/${parentService.id}/`} 
       class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${parentService.data.color}/10 border border-brand-${parentService.data.color}/20 hover:border-brand-${parentService.data.color}/30 text-brand-${parentService.data.color} transition-all mb-8 cursor-pointer`}
     >
       <span>&larr;</span>

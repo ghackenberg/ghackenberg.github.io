@@ -32,7 +32,7 @@ const firstVisScreenshot = visualizations.find(v => v.data.screenshot)?.data.scr
         <VisualizationCard
           title={vis.data.title}
           description={vis.data.description}
-          href={`/visualizations/${vis.id}`}
+          href={`/visualizations/${vis.id}/`}
           engineId={vis.id}
           badgeColor={vis.data.badgeColor}
           screenshot={vis.data.screenshot}

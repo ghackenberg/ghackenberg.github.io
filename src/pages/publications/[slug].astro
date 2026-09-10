@@ -65,7 +65,7 @@ const seoDescription = cleanAbstract.length > 156
   ? `${cleanAbstract.substring(0, 153)}...` 
   : cleanAbstract || `Academic research publication by Dr. Georg Hackenberg: "${pub.data.title}"`;
 
-const pubUrl = `https://hackenberg.tech/publications/${pub.id}`;
+const pubUrl = `https://hackenberg.tech/publications/${pub.id}/`;
 
 const scholarlyArticleSchema = {
   "@context": "https://schema.org",
@@ -106,7 +106,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "name": "Publications",
-      "item": "https://hackenberg.tech/publications"
+      "item": "https://hackenberg.tech/publications/"
     },
     {
       "@type": "ListItem",
@@ -134,7 +134,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
   <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <!-- Back Button -->
     <a 
-      href="/publications" 
+      href="/publications/" 
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-purple/10 border border-brand-purple/20 hover:border-brand-purple/30 text-brand-purple transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
@@ -159,7 +159,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
       <div class="flex flex-wrap gap-2 items-center">
         {pub.data.tags.map(tag => (
           <a 
-            href={`/tags/${tag}`}
+            href={`/tags/${tag}/`}
             class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-purple/30 transition-all duration-200"
           >
             #{tag}
@@ -251,7 +251,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {relatedPubs.map(p => (
-            <a href={`/publications/${p.id}`} class="glass-card p-5 rounded-2xl border border-element-border group flex flex-col h-full justify-between">
+            <a href={`/publications/${p.id}/`} class="glass-card p-5 rounded-2xl border border-element-border group flex flex-col h-full justify-between">
               <div>
                 <span class="text-[10px] font-semibold text-brand-purple/80 block mb-2">
                   {p.id.substring(0, 4)}

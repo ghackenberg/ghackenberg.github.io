@@ -190,7 +190,7 @@ const badgeColorClass = {
       <div class="flex flex-wrap gap-1.5 self-start relative z-20">
         {tags.map(tag => (
           <a 
-            href={`/tags/${tag}`}
+            href={`/tags/${tag}/`}
             data-tag={tag}
             class={`tag-chip tag-chip-${accentColor} inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
               activeTag === tag ? 'active-tag-match' : ''
