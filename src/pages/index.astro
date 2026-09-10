@@ -7,6 +7,7 @@ import Timeline from "../components/Timeline.astro";
 import GitHubWidget from "../components/GitHubWidget.astro";
 import LinkedInWidget from "../components/LinkedInWidget.astro";
 import YouTubeWidget from "../components/YouTubeWidget.astro";
+import ImageGalleryMarquee, { type GalleryItem } from "../components/ImageGalleryMarquee.astro";
 import { getImage } from "astro:assets";
 import profileImage from "../assets/images/comic-profile.png";
 import interestSoftwareImg from "../content/interests/software-engineering/preview.jpg";
@@ -261,6 +262,170 @@ const professionalInterests = [
   }
 ];
 
+// Build comprehensive showcase items for the flying image gallery marquee pool
+const postGalleryItems: GalleryItem[] = await Promise.all(
+  sortedPosts
+    .filter(p => !!p.data.icon)
+    .map(async p => {
+      const opt = await getImage({
+        src: p.data.icon!,
+        format: "webp",
+        width: 640,
+        height: 360,
+        quality: 85
+      });
+      return {
+        id: `post:${p.id}`,
+        title: p.data.title,
+        image: opt.src,
+        href: `/posts/${p.id}`,
+        tagline: p.data.description,
+        pubDate: new Date(p.data.pubDate).valueOf()
+      };
+    })
+);
+
+const projectGalleryItems: GalleryItem[] = await Promise.all(
+  sortedProjects
+    .filter(p => !!p.data.screenshot)
+    .map(async p => {
+      const opt = await getImage({
+        src: p.data.screenshot!,
+        format: "webp",
+        width: 640,
+        height: 360,
+        quality: 85
+      });
+      return {
+        id: `project:${p.id}`,
+        title: p.data.title,
+        image: opt.src,
+        href: `/projects/${p.id}`,
+        tagline: p.data.tagline,
+        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 60
+      };
+    })
+);
+
+const courseGalleryItems: GalleryItem[] = await Promise.all(
+  courses
+    .filter(c => !!c.data.screenshot)
+    .map(async c => {
+      const opt = await getImage({
+        src: c.data.screenshot!,
+        format: "webp",
+        width: 640,
+        height: 360,
+        quality: 85
+      });
+      return {
+        id: `course:${c.id}`,
+        title: c.data.title,
+        image: opt.src,
+        href: `/courses/${c.id}`,
+        tagline: c.data.description,
+        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 90
+      };
+    })
+);
+
+const allModules = await getCollection("modules");
+const serviceGalleryItems: GalleryItem[] = await Promise.all(
+  services
+    .filter(s => !!s.data.previewImage)
+    .map(async s => {
+      const opt = await getImage({
+        src: s.data.previewImage!,
+        format: "webp",
+        width: 640,
+        height: 360,
+        quality: 85
+      });
+      return {
+        id: `service:${s.id}`,
+        title: s.data.title,
+        image: opt.src,
+        href: `/services/${s.id}`,
+        tagline: s.data.tagline,
+        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120
+      };
+    })
+);
+
+const moduleGalleryItems: GalleryItem[] = await Promise.all(
+  allModules
+    .filter(m => !!m.data.previewImage)
+    .map(async m => {
+      const opt = await getImage({
+        src: m.data.previewImage!,
+        format: "webp",
+        width: 640,
+        height: 360,
+        quality: 85
+      });
+      const [serviceSlug, moduleSlug] = m.id.split('/');
+      return {
+        id: `module:${m.id}`,
+        title: m.data.title,
+        image: opt.src,
+        href: `/services/${serviceSlug}/${moduleSlug}`,
+        tagline: m.data.tagline,
+        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120
+      };
+    })
+);
+
+const visualizationGalleryItems: GalleryItem[] = await Promise.all(
+  visualizations
+    .filter(v => !!v.data.screenshot)
+    .map(async v => {
+      const opt = await getImage({
+        src: v.data.screenshot!,
+        format: "webp",
+        width: 640,
+        height: 360,
+        quality: 85
+      });
+      return {
+        id: `viz:${v.id}`,
+        title: v.data.title,
+        image: opt.src,
+        href: `/visualizations/${v.id}`,
+        tagline: v.data.description,
+        pubDate: v.data.pubDate ? new Date(v.data.pubDate).valueOf() : (Date.now() - 1000 * 60 * 60 * 24 * 150)
+      };
+    })
+);
+
+const interestGalleryItems: GalleryItem[] = professionalInterests.map(interest => ({
+  id: `interest:${interest.slug}`,
+  title: interest.title,
+  image: interest.image,
+  href: `/interests/${interest.slug}`,
+  tagline: interest.tagline,
+  pubDate: Date.now() - 1000 * 60 * 60 * 24 * 30
+}));
+
+// Interleave categories to alternate color and topic rhythms in the marquee
+const categoryBuckets = [
+  postGalleryItems,
+  projectGalleryItems,
+  courseGalleryItems,
+  [...serviceGalleryItems, ...moduleGalleryItems],
+  visualizationGalleryItems,
+  interestGalleryItems
+];
+
+const galleryItems: GalleryItem[] = [];
+const maxBucketLen = Math.max(...categoryBuckets.map(b => b.length));
+for (let i = 0; i < maxBucketLen; i++) {
+  for (const bucket of categoryBuckets) {
+    if (i < bucket.length) {
+      galleryItems.push(bucket[i]);
+    }
+  }
+}
+
 const websiteSections = [
   {
     title: "Posts",
@@ -445,10 +610,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
   <Navbar />
 
   <!-- Main Content -->
-  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <main class="flex-grow w-full relative z-10">
     
-    <!-- Hero Section -->
-    <section id="home" class="flex flex-col justify-center pb-12 md:pb-20 pt-0 relative">
+    <!-- Hero Section Container -->
+    <div class="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20">
+      <!-- Hero Section -->
+      <section id="home" class="flex flex-col justify-center pb-0 pt-0 relative">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
         
         <!-- Text Content -->
@@ -576,7 +743,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         
       </div>
     </section>
+  </div>
 
+  <!-- Animated Image Gallery Marquee (Full-Width Edge-to-Edge) -->
+  <ImageGalleryMarquee catalog={galleryItems} />
+
+  <!-- Core Content Sections Container -->
+  <div class="max-w-6xl mx-auto px-4 md:px-8 pb-12 md:pb-20">
     <!-- Professional Interests Section -->
     <section id="about" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-12">
@@ -1439,6 +1612,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         </div>
       </div>
     </section>
+  </div>
 
   </main>
 

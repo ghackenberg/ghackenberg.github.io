@@ -1,0 +1,492 @@
+---
+export interface GalleryItem {
+  id: string;
+  title: string;
+  image: string;
+  href: string;
+  tagline?: string;
+  pubDate: number;
+}
+
+interface Props {
+  catalog: GalleryItem[];
+}
+
+const { catalog } = Astro.props;
+
+// Select distinct initial items for the 3 rows: 12 for row 1, 15 for row 2, 18 for row 3 (45 distinct items total)
+const initialRow1 = catalog.slice(0, 12);
+const initialRow2 = catalog.slice(12, 27);
+const initialRow3 = catalog.slice(27, 45);
+---
+
+<section id="gallery" class="w-full py-12 md:py-16 border-y border-white/5 light:border-slate-200/80 scroll-mt-20 overflow-hidden relative bg-slate-950/20 light:bg-white/20">
+  <!-- Section Header (Aligned to standard grid max-w-6xl) -->
+  <div class="max-w-6xl mx-auto px-4 md:px-8 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+        Content <span class="heading-gradient-brand">Gallery</span>
+      </h2>
+      <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        A multi-tier perspective preview across articles, interactive platforms, academic courses, consulting architectures, and scientific models.
+      </p>
+    </div>
+
+    <!-- Accessible Play/Pause Toggle -->
+    <div class="flex items-center gap-3 shrink-0 self-start sm:self-end">
+      <button
+        id="marquee-toggle-btn"
+        type="button"
+        class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card border border-white/10 hover:border-white/30 text-xs font-semibold text-gray-300 hover:text-white transition-all duration-200 cursor-pointer shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+        aria-label="Pause flying gallery animation"
+        aria-pressed="false"
+      >
+        <!-- Pause Icon -->
+        <svg id="marquee-icon-pause" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+        </svg>
+        <!-- Play Icon -->
+        <svg id="marquee-icon-play" class="w-3.5 h-3.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+        </svg>
+        <span id="marquee-toggle-label">Pause</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Multi-Tier Parallax Viewport (Edge-to-Edge) -->
+  <div id="gallery-marquee-viewport" class="gallery-viewport w-full overflow-hidden py-2 select-none relative space-y-4 sm:space-y-5">
+    
+    <!-- Row 1: Foreground (Largest Cards, Speed ~65px/s) -->
+    <div id="gallery-marquee-track-1" class="gallery-track gallery-track-1 flex gap-6 w-max" data-speed="65" data-gap="24">
+      {initialRow1.map(item => (
+        <a
+          href={item.href}
+          data-id={item.id}
+          class="gallery-card group relative w-64 sm:w-72 md:w-80 aspect-video shrink-0 rounded-2xl overflow-hidden glass-card border border-white/10 light:border-slate-200/80 hover:border-white/35 light:hover:border-slate-400/80 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+        >
+          <img
+            src={item.image}
+            alt={item.title}
+            width="640"
+            height="360"
+            class="gallery-card-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/45 to-transparent opacity-90 transition-opacity duration-300 pointer-events-none" />
+          <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between pointer-events-none z-10">
+            <div class="pr-3 min-w-0 flex-1">
+              <h3 class="gallery-card-title text-sm sm:text-base font-bold text-gray-100 group-hover:text-white transition-colors truncate" title={item.title}>
+                {item.title}
+              </h3>
+              <p class="gallery-card-tagline text-xs text-gray-400 line-clamp-1 font-normal mt-1" style={item.tagline ? "" : "display: none;"}>
+                {item.tagline || ""}
+              </p>
+            </div>
+            <div class="w-7 h-7 shrink-0 rounded-lg glass-card border border-white/10 flex items-center justify-center text-white/70 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-300">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Row 2: Midground (Medium Cards, Speed ~42px/s) -->
+    <div id="gallery-marquee-track-2" class="gallery-track gallery-track-2 flex gap-5 w-max" data-speed="42" data-gap="20">
+      {initialRow2.map(item => (
+        <a
+          href={item.href}
+          data-id={item.id}
+          class="gallery-card group relative w-52 sm:w-60 md:w-64 aspect-video shrink-0 rounded-xl overflow-hidden glass-card border border-white/10 light:border-slate-200/80 hover:border-white/35 light:hover:border-slate-400/80 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+        >
+          <img
+            src={item.image}
+            alt={item.title}
+            width="640"
+            height="360"
+            class="gallery-card-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/45 to-transparent opacity-90 transition-opacity duration-300 pointer-events-none" />
+          <div class="absolute inset-x-0 bottom-0 p-3.5 sm:p-4 flex items-end justify-between pointer-events-none z-10">
+            <div class="pr-2 min-w-0 flex-1">
+              <h3 class="gallery-card-title text-xs sm:text-sm font-bold text-gray-100 group-hover:text-white transition-colors truncate" title={item.title}>
+                {item.title}
+              </h3>
+              <p class="gallery-card-tagline text-[11px] text-gray-400 line-clamp-1 font-normal mt-0.5" style={item.tagline ? "" : "display: none;"}>
+                {item.tagline || ""}
+              </p>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Row 3: Background (Smallest Cards, Speed ~26px/s) -->
+    <div id="gallery-marquee-track-3" class="gallery-track gallery-track-3 flex gap-4 w-max" data-speed="26" data-gap="16">
+      {initialRow3.map(item => (
+        <a
+          href={item.href}
+          data-id={item.id}
+          class="gallery-card group relative w-40 sm:w-48 md:w-52 aspect-video shrink-0 rounded-lg overflow-hidden glass-card border border-white/10 light:border-slate-200/80 hover:border-white/35 light:hover:border-slate-400/80 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+        >
+          <img
+            src={item.image}
+            alt={item.title}
+            width="640"
+            height="360"
+            class="gallery-card-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/45 to-transparent opacity-90 transition-opacity duration-300 pointer-events-none" />
+          <div class="absolute inset-x-0 bottom-0 p-2.5 sm:p-3 flex items-end justify-between pointer-events-none z-10">
+            <h3 class="gallery-card-title text-[11px] sm:text-xs font-semibold text-gray-100 group-hover:text-white transition-colors truncate" title={item.title}>
+              {item.title}
+            </h3>
+          </div>
+        </a>
+      ))}
+    </div>
+
+  </div>
+
+  <!-- Full catalog embedded for client-side continuous recycling -->
+  <script is:inline type="application/json" id="gallery-catalog-data" set:html={JSON.stringify(catalog)} />
+</section>
+
+<style>
+  /* Soft left and right edge fade masks */
+  .gallery-viewport {
+    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  }
+
+  .gallery-track {
+    will-change: transform;
+  }
+
+  /* Accessibility: Prefers reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-viewport {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+
+    .gallery-track {
+      transform: none !important;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      width: 100%;
+      padding-inline: 1rem;
+      scrollbar-width: thin;
+    }
+
+    .gallery-card {
+      scroll-snap-align: start;
+    }
+  }
+</style>
+
+<script>
+  import type { GalleryItem } from './ImageGalleryMarquee.astro';
+
+  interface TrackState {
+    el: HTMLElement;
+    speed: number;
+    gap: number;
+    x: number;
+  }
+
+  let activeAnimationId: number | null = null;
+  let saveLedgerTimer: number | null = null;
+  let inMemorySeenLedger: Record<string, number> = {};
+
+  function loadSeenLedger(): Record<string, number> {
+    try {
+      const raw = localStorage.getItem('gh_gallery_impressions');
+      if (raw) {
+        return JSON.parse(raw);
+      }
+    } catch {
+      // Ignore localStorage access failures in restricted environments
+    }
+    return {};
+  }
+
+  function scheduleSaveLedger() {
+    if (saveLedgerTimer !== null) return;
+    saveLedgerTimer = window.setTimeout(() => {
+      saveLedgerTimer = null;
+      try {
+        localStorage.setItem('gh_gallery_impressions', JSON.stringify(inMemorySeenLedger));
+      } catch {
+        // Quota exceeded or private browsing
+      }
+    }, 1000);
+  }
+
+  function recordSeen(id: string) {
+    inMemorySeenLedger[id] = Date.now();
+    scheduleSaveLedger();
+  }
+
+  function pickNextItem(
+    catalog: GalleryItem[],
+    inUseIds: Set<string>,
+    seenLedger: Record<string, number>
+  ): GalleryItem {
+    let candidates = catalog.filter(item => !inUseIds.has(item.id));
+    if (candidates.length === 0) {
+      candidates = catalog;
+    }
+
+    const now = Date.now();
+    const weights: number[] = [];
+    let totalWeight = 0;
+
+    for (const item of candidates) {
+      // 1. Content publication recency factor
+      const ageYears = Math.max(0, (now - item.pubDate) / (1000 * 60 * 60 * 24 * 365.25));
+      const contentFactor = 1 / (1 + 0.25 * ageYears);
+
+      // 2. Display recency factor (LRU tracking)
+      const lastSeen = seenLedger[item.id];
+      let displayFactor = 1.0;
+      if (!lastSeen) {
+        // High boost to display unseen items
+        displayFactor = 12.0;
+      } else {
+        const minutesSinceSeen = (now - lastSeen) / 60000;
+        if (minutesSinceSeen < 12) {
+          // Strict cooldown for recently viewed items
+          displayFactor = 0.05;
+        } else {
+          // Smooth restoration over the subsequent 48 minutes
+          displayFactor = Math.min(1.0, 0.05 + 0.95 * ((minutesSinceSeen - 12) / 48));
+        }
+      }
+
+      const weight = contentFactor * displayFactor;
+      weights.push(weight);
+      totalWeight += weight;
+    }
+
+    let random = Math.random() * totalWeight;
+    for (let i = 0; i < candidates.length; i++) {
+      random -= weights[i];
+      if (random <= 0 || i === candidates.length - 1) {
+        return candidates[i];
+      }
+    }
+
+    return candidates[0];
+  }
+
+  function hydrateCard(card: HTMLElement, item: GalleryItem) {
+    card.dataset.id = item.id;
+    card.setAttribute('href', item.href);
+
+    const img = card.querySelector<HTMLImageElement>('.gallery-card-img');
+    if (img) {
+      img.src = item.image;
+      img.alt = item.title;
+    }
+
+    const title = card.querySelector<HTMLElement>('.gallery-card-title');
+    if (title) {
+      title.textContent = item.title;
+      title.setAttribute('title', item.title);
+    }
+
+    const tagline = card.querySelector<HTMLElement>('.gallery-card-tagline');
+    if (tagline) {
+      if (item.tagline) {
+        tagline.textContent = item.tagline;
+        tagline.style.display = '';
+      } else {
+        tagline.textContent = '';
+        tagline.style.display = 'none';
+      }
+    }
+  }
+
+  function setupGalleryEngine() {
+    if (activeAnimationId !== null) {
+      cancelAnimationFrame(activeAnimationId);
+      activeAnimationId = null;
+    }
+
+    const viewport = document.getElementById('gallery-marquee-viewport');
+    const catalogDataEl = document.getElementById('gallery-catalog-data');
+    const toggleBtn = document.getElementById('marquee-toggle-btn');
+    const iconPause = document.getElementById('marquee-icon-pause');
+    const iconPlay = document.getElementById('marquee-icon-play');
+    const label = document.getElementById('marquee-toggle-label');
+
+    if (!viewport || !catalogDataEl) return;
+
+    let catalog: GalleryItem[] = [];
+    try {
+      catalog = JSON.parse(catalogDataEl.textContent || '[]');
+    } catch {
+      return;
+    }
+
+    if (!catalog.length) return;
+
+    inMemorySeenLedger = loadSeenLedger();
+
+    // Mark all initial cards as seen
+    const initialCards = viewport.querySelectorAll<HTMLElement>('.gallery-card[data-id]');
+    initialCards.forEach(card => {
+      const id = card.dataset.id;
+      if (id) recordSeen(id);
+    });
+
+    const trackElements = viewport.querySelectorAll<HTMLElement>('.gallery-track');
+    const tracks: TrackState[] = [];
+
+    trackElements.forEach(el => {
+      const speed = parseFloat(el.dataset.speed || '40');
+      const gap = parseFloat(el.dataset.gap || '20');
+      tracks.push({
+        el,
+        speed,
+        gap,
+        x: 0,
+      });
+
+      // Ensure track buffer covers ultra-wide displays
+      while (el.children.length > 0 && el.scrollWidth < window.innerWidth + 1200) {
+        const inUseIds = new Set<string>();
+        viewport.querySelectorAll<HTMLElement>('.gallery-card[data-id]').forEach(c => {
+          if (c.dataset.id) inUseIds.add(c.dataset.id);
+        });
+
+        const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
+        const template = el.firstElementChild as HTMLElement;
+        if (!template) break;
+
+        const clone = template.cloneNode(true) as HTMLElement;
+        hydrateCard(clone, nextItem);
+        recordSeen(nextItem.id);
+        el.appendChild(clone);
+      }
+    });
+
+    let isManuallyPaused = false;
+    let isHovered = false;
+    let isFocused = false;
+    let isDocumentHidden = false;
+    let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Viewport hover & focus events
+    viewport.addEventListener('mouseenter', () => { isHovered = true; });
+    viewport.addEventListener('mouseleave', () => { isHovered = false; });
+    viewport.addEventListener('focusin', () => { isFocused = true; });
+    viewport.addEventListener('focusout', () => { isFocused = false; });
+
+    // Toggle button handler
+    if (toggleBtn && iconPause && iconPlay && label) {
+      toggleBtn.addEventListener('click', () => {
+        isManuallyPaused = !isManuallyPaused;
+        if (isManuallyPaused) {
+          iconPause.classList.add('hidden');
+          iconPlay.classList.remove('hidden');
+          label.textContent = 'Resume';
+          toggleBtn.setAttribute('aria-pressed', 'true');
+          toggleBtn.setAttribute('aria-label', 'Resume flying gallery animation');
+        } else {
+          iconPlay.classList.add('hidden');
+          iconPause.classList.remove('hidden');
+          label.textContent = 'Pause';
+          toggleBtn.setAttribute('aria-pressed', 'false');
+          toggleBtn.setAttribute('aria-label', 'Pause flying gallery animation');
+        }
+      });
+    }
+
+    // Media query listener
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      reducedMotion = e.matches;
+    };
+    motionQuery.addEventListener('change', handleMotionChange);
+
+    // Tab visibility handler
+    const handleVisibilityChange = () => {
+      isDocumentHidden = document.hidden;
+      if (!isDocumentHidden) {
+        lastTime = null;
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    let lastTime: number | null = null;
+
+    function tick(timestamp: number) {
+      if (lastTime === null) {
+        lastTime = timestamp;
+      }
+      const dt = Math.min((timestamp - lastTime) / 1000, 0.1);
+      lastTime = timestamp;
+
+      const shouldAnimate = !isManuallyPaused && !isHovered && !isFocused && !isDocumentHidden && !reducedMotion;
+
+      if (shouldAnimate) {
+        const vpRect = viewport!.getBoundingClientRect();
+
+        for (const track of tracks) {
+          track.x -= track.speed * dt;
+          track.el.style.transform = `translate3d(${track.x}px, 0, 0)`;
+
+          const firstCard = track.el.firstElementChild as HTMLElement | null;
+          if (firstCard) {
+            const cardRect = firstCard.getBoundingClientRect();
+            // If the card has fully scrolled out past the left edge of the viewport
+            if (cardRect.right < vpRect.left - 10) {
+              const cardWidthWithGap = firstCard.offsetWidth + track.gap;
+              track.x += cardWidthWithGap;
+              track.el.style.transform = `translate3d(${track.x}px, 0, 0)`;
+
+              // Collect all IDs currently active across all tracks
+              const inUseIds = new Set<string>();
+              viewport!.querySelectorAll<HTMLElement>('.gallery-card[data-id]').forEach(c => {
+                if (c !== firstCard && c.dataset.id) {
+                  inUseIds.add(c.dataset.id);
+                }
+              });
+
+              // Select next item using two-factor weighted distribution
+              const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
+              hydrateCard(firstCard, nextItem);
+              recordSeen(nextItem.id);
+
+              // Move card seamlessly to the end of the flex container
+              track.el.appendChild(firstCard);
+            }
+          }
+        }
+      }
+
+      activeAnimationId = requestAnimationFrame(tick);
+    }
+
+    activeAnimationId = requestAnimationFrame(tick);
+  }
+
+  // Support Astro View Transitions and initial load
+  setupGalleryEngine();
+  document.addEventListener('astro:page-load', setupGalleryEngine);
+  document.addEventListener('astro:before-swap', () => {
+    if (activeAnimationId !== null) {
+      cancelAnimationFrame(activeAnimationId);
+      activeAnimationId = null;
+    }
+  });
+</script>
