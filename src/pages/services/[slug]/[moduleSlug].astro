@@ -27,59 +27,18 @@ const { module, parentService } = Astro.props;
 const { Content } = await render(module);
 
 const colorClasses = {
-  blue: {
-    text: 'text-brand-blue light:text-blue-700',
-    border: 'border-brand-blue/20 light:border-blue-200',
-    bg: 'bg-brand-blue/10 light:bg-blue-50/50',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-slate-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
-    glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
-    leftBorder: 'border-brand-blue light:border-blue-600',
-    glowBorder: 'rgba(59, 130, 246, 0.3)',
-    glowText: '#60a5fa',
-    glowShadow: 'rgba(59, 130, 246, 0.25)',
-    dot: 'bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)] light:shadow-[0_0_4px_rgba(29,78,216,0.4)]',
-    phaseHover: 'group-hover/phase:text-brand-blue light:group-hover/phase:text-blue-700',
-  },
-  yellow: {
-    text: 'text-brand-yellow light:text-amber-800',
-    border: 'border-brand-yellow/20 light:border-amber-200',
-    bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white',
-    glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
-    leftBorder: 'border-brand-yellow light:border-amber-600',
-    glowBorder: 'rgba(245, 158, 11, 0.3)',
-    glowText: '#fbbf24',
-    glowShadow: 'rgba(245, 158, 11, 0.25)',
-    dot: 'bg-brand-yellow shadow-[0_0_8px_rgba(245,158,11,0.8)] light:shadow-[0_0_4px_rgba(180,83,9,0.4)]',
-    phaseHover: 'group-hover/phase:text-brand-yellow light:group-hover/phase:text-amber-800',
-  },
-  purple: {
-    text: 'text-brand-purple light:text-purple-700',
-    border: 'border-brand-purple/20 light:border-purple-200',
-    bg: 'bg-brand-purple/10 light:bg-purple-50/50',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
-    glow: 'from-brand-purple to-pink-500 light:to-pink-600',
-    leftBorder: 'border-brand-purple light:border-purple-600',
-    glowBorder: 'rgba(168, 85, 247, 0.3)',
-    glowText: '#c084fc',
-    glowShadow: 'rgba(168, 85, 247, 0.25)',
-    dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]',
-    phaseHover: 'group-hover/phase:text-brand-purple light:group-hover/phase:text-purple-700',
-  },
-  green: {
-    text: 'text-brand-green light:text-emerald-700',
-    border: 'border-brand-green/20 light:border-emerald-200',
-    bg: 'bg-brand-green/10 light:bg-emerald-50/50',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-slate-950 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white',
-    glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
-    leftBorder: 'border-brand-green light:border-emerald-600',
-    glowBorder: 'rgba(16, 185, 129, 0.3)',
-    glowText: '#34d399',
-    glowShadow: 'rgba(16, 185, 129, 0.25)',
-    dot: 'bg-brand-green shadow-[0_0_8px_rgba(16,185,129,0.8)] light:shadow-[0_0_4px_rgba(4,120,87,0.4)]',
-    phaseHover: 'group-hover/phase:text-brand-green light:group-hover/phase:text-emerald-700',
-  }
-}[parentService.data.color];
+  text: 'text-brand-purple light:text-purple-700',
+  border: 'border-brand-purple/20 light:border-purple-200',
+  bg: 'bg-brand-purple/10 light:bg-purple-50/50',
+  btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
+  glow: 'from-brand-purple to-pink-500 light:to-pink-600',
+  leftBorder: 'border-brand-purple light:border-purple-600',
+  glowBorder: 'rgba(168, 85, 247, 0.3)',
+  glowText: '#c084fc',
+  glowShadow: 'rgba(168, 85, 247, 0.25)',
+  dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]',
+  phaseHover: 'group-hover/phase:text-brand-purple light:group-hover:text-purple-700',
+};
 
 const moduleUrl = `https://hackenberg.tech/services/${parentService.id}/${module.id.split('/').pop()}/`;
 
@@ -149,7 +108,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     <!-- Back Button -->
     <a 
       href={`/services/${parentService.id}/`} 
-      class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${parentService.data.color}/10 border border-brand-${parentService.data.color}/20 hover:border-brand-${parentService.data.color}/30 text-brand-${parentService.data.color} transition-all mb-8 cursor-pointer`}
+      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-purple/10 border border-brand-purple/20 hover:border-brand-purple/30 text-brand-purple transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
       <span>Back to {parentService.data.title}</span>
@@ -204,7 +163,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     <!-- Main Content -->
     <div class="space-y-16">
         <!-- Module Text Content -->
-        <section class={`glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-${parentService.data.color} prose-custom`}>
+        <section class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
           <Content />
         </section>
 
@@ -550,46 +509,16 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     color: var(--glow-text) !important;
   }
 
-  .theme-blue {
-    --glow-border: rgba(59, 130, 246, 0.3);
-    --glow-text: #60a5fa;
-    --glow-shadow: rgba(59, 130, 246, 0.25);
-  }
-  .theme-yellow {
-    --glow-border: rgba(245, 158, 11, 0.3);
-    --glow-text: #fbbf24;
-    --glow-shadow: rgba(245, 158, 11, 0.25);
-  }
   .theme-purple {
     --glow-border: rgba(168, 85, 247, 0.3);
     --glow-text: #c084fc;
     --glow-shadow: rgba(168, 85, 247, 0.25);
   }
-  .theme-green {
-    --glow-border: rgba(16, 185, 129, 0.3);
-    --glow-text: #34d399;
-    --glow-shadow: rgba(16, 185, 129, 0.25);
-  }
 
-  :global(.light) .theme-blue {
-    --glow-border: rgba(29, 78, 216, 0.25);
-    --glow-text: #1d4ed8;
-    --glow-shadow: rgba(29, 78, 216, 0.15);
-  }
-  :global(.light) .theme-yellow {
-    --glow-border: rgba(180, 83, 9, 0.25);
-    --glow-text: #b45309;
-    --glow-shadow: rgba(180, 83, 9, 0.15);
-  }
   :global(.light) .theme-purple {
     --glow-border: rgba(109, 40, 217, 0.25);
     --glow-text: #6d28d9;
     --glow-shadow: rgba(109, 40, 217, 0.15);
-  }
-  :global(.light) .theme-green {
-    --glow-border: rgba(4, 120, 87, 0.25);
-    --glow-text: #047857;
-    --glow-shadow: rgba(4, 120, 87, 0.15);
   }
 </style>
 

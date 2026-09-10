@@ -1,10 +1,7 @@
 ---
 title: "Media Publishing"
-category: "Consulting Services"
 tagline: "Modern Digital Publishing, Brand Systems & Automated Pipelines"
 description: "End-to-end consulting for scalable digital media operations. From channel definition and social media design systems to high-velocity automated content production."
-icon: "🎨"
-color: "purple"
 order: 2
 ctaText: "Inquire about Media Services"
 previewImage: "./preview.png"

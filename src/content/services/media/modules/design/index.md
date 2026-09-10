@@ -1,7 +1,6 @@
 ---
 title: "Design System"
 serviceId: "media"
-badge: "Visual Systems"
 tagline: "Social Media Design Systems & Consistent Visual Brand Identity"
 description: "Developing a comprehensive design system tailored for social media contents, visual templates, design tokens, and establishing an unmistakable, consistent look and feel across all platforms."
 ctaText: "Inquire about Design System"

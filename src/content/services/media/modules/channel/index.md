@@ -1,7 +1,6 @@
 ---
 title: "Channel Definition"
 serviceId: "media"
-badge: "Strategy & Architecture"
 tagline: "Content Strategy per Channel & Cross-Channel Integration"
 description: "Defining tailored content strategies for digital platforms and establishing seamless cross-channel integration across web, documentation, social media, and developer hubs."
 ctaText: "Inquire about Channel Definition"

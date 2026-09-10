@@ -21,51 +21,16 @@ const serviceModules = allModules
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
 const colorClasses = {
-  blue: {
-    text: 'text-brand-blue light:text-blue-700',
-    border: 'border-brand-blue/20 light:border-blue-200',
-    bg: 'bg-brand-blue/10 light:bg-blue-50/50',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-slate-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
-    cardBtnBg: 'bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue',
-    hoverText: 'group-hover:text-brand-blue light:group-hover:text-blue-600',
-    glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
-    leftBorder: 'border-brand-blue light:border-blue-600',
-    dot: 'badge-new badge-new-blue'
-  },
-  yellow: {
-    text: 'text-brand-yellow light:text-amber-800',
-    border: 'border-brand-yellow/20 light:border-amber-200',
-    bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white',
-    cardBtnBg: 'bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-700',
-    hoverText: 'group-hover:text-brand-yellow light:group-hover:text-amber-700',
-    glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
-    leftBorder: 'border-brand-yellow light:border-amber-600',
-    dot: 'badge-new badge-new-yellow'
-  },
-  purple: {
-    text: 'text-brand-purple light:text-purple-700',
-    border: 'border-brand-purple/20 light:border-purple-200',
-    bg: 'bg-brand-purple/10 light:bg-purple-50/50',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
-    cardBtnBg: 'bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple',
-    hoverText: 'group-hover:text-brand-purple light:group-hover:text-purple-600',
-    glow: 'from-brand-purple to-pink-500 light:to-pink-600',
-    leftBorder: 'border-brand-purple light:border-purple-600',
-    dot: 'badge-new badge-new-purple'
-  },
-  green: {
-    text: 'text-brand-green light:text-emerald-700',
-    border: 'border-brand-green/20 light:border-emerald-200',
-    bg: 'bg-brand-green/10 light:bg-emerald-50/50',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-slate-950 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white',
-    cardBtnBg: 'bg-brand-green/12 hover:bg-brand-green/25 border border-brand-green/20 hover:border-brand-green/45 text-emerald-300 light:text-brand-green',
-    hoverText: 'group-hover:text-brand-green light:group-hover:text-emerald-700',
-    glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
-    leftBorder: 'border-brand-green light:border-emerald-600',
-    dot: 'badge-new badge-new-green'
-  }
-}[service.data.color];
+  text: 'text-brand-purple light:text-purple-700',
+  border: 'border-brand-purple/20 light:border-purple-200',
+  bg: 'bg-brand-purple/10 light:bg-purple-50/50',
+  btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
+  cardBtnBg: 'bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple',
+  hoverText: 'group-hover:text-brand-purple light:group-hover:text-purple-600',
+  glow: 'from-brand-purple to-pink-500 light:to-pink-600',
+  leftBorder: 'border-brand-purple light:border-purple-600',
+  dot: 'badge-new badge-new-purple'
+};
 
 const serviceUrl = `https://hackenberg.tech/services/${service.id}/`;
 
@@ -129,7 +94,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
       <!-- Back Button -->
       <a 
         href="/services/" 
-        class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${service.data.color}/10 border border-brand-${service.data.color}/20 hover:border-brand-${service.data.color}/30 text-brand-${service.data.color} transition-all mb-8 cursor-pointer`}
+        class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-purple/10 border border-brand-purple/20 hover:border-brand-purple/30 text-brand-purple transition-all mb-8 cursor-pointer"
       >
         <span>&larr;</span>
         <span>Back to Services</span>
@@ -173,7 +138,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
       </header>
 
       <!-- Service Text -->
-      <section class={`glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-${service.data.color} prose-custom`}>
+      <section class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
         <Content />
       </section>
     </div>
@@ -429,15 +394,8 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
     margin-bottom: 0;
   }
 
-  .theme-blue { --glow-text: #60a5fa; }
-  .theme-yellow { --glow-text: #fbbf24; }
   .theme-purple { --glow-text: #c084fc; }
-  .theme-green { --glow-text: #34d399; }
-
-  :global(.light) .theme-blue { --glow-text: #1d4ed8; }
-  :global(.light) .theme-yellow { --glow-text: #b45309; }
   :global(.light) .theme-purple { --glow-text: #7e22ce; }
-  :global(.light) .theme-green { --glow-text: #047857; }
 </style>
 
 <script>

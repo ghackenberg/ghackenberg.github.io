@@ -1,7 +1,6 @@
 ---
 title: "Technology Stack"
 serviceId: "ai"
-badge: "Architecture & Stack"
 tagline: "Sovereign AI Foundation: vLLM, Hermes Agent & WikiSkills, LangGraph, Mem0, Hybrid DBs, LiteLLM & Open WebUI"
 description: "Designing and deploying a production-ready, sovereign AI technology stack featuring vLLM inference, Hermes Agent runtime with declarative Google WikiSkills, LangGraph orchestration, Mem0 memory, PostgreSQL/Qdrant + Neo4j hybrid storage, LiteLLM Proxy + Keycloak security, and Open WebUI."
 ctaText: "Inquire about Technology Stack"

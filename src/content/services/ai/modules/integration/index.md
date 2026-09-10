@@ -1,7 +1,6 @@
 ---
 title: "System Integration"
 serviceId: "ai"
-badge: "Architecture"
 tagline: "Standardized Open-Source Agentic AI Stack (Hermes & Google WikiSkills)"
 description: "Architecting and integrating a standardized, open-source agentic AI tech stack founded on the Hermes agent runtime, Google WikiSkills tool specifications, and Model Context Protocol (MCP) servers."
 ctaText: "Inquire about System Integration"

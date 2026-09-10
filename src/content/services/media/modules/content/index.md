@@ -1,7 +1,6 @@
 ---
 title: "Content Production"
 serviceId: "media"
-badge: "Technical Implementation"
 tagline: "Automated Astro/MDX Pipelines, Programmatic Assets & Git CI/CD"
 description: "Implementing automated publishing pipelines using Astro and MDX, programmatic asset rendering, automated sitemaps, and zero-downtime Git CI/CD delivery."
 ctaText: "Inquire about Content Production"

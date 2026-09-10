@@ -1,10 +1,7 @@
 ---
 title: "Artificial Intelligence"
-category: "Consulting Services"
 tagline: "Sovereign Agent Architectures, Infrastructure & Enterprise Integration"
 description: "End-to-end consulting for enterprise AI transformation. From sovereign technology stack deployment and open-source system integration to resilient agentic automation."
-icon: "🤖"
-color: "purple"
 order: 1
 ctaText: "Inquire about AI Services"
 previewImage: "./preview.png"

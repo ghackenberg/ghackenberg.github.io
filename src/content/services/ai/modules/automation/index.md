@@ -1,7 +1,6 @@
 ---
 title: "Agentic Automation"
 serviceId: "ai"
-badge: "UX & Telemetry"
 tagline: "Autonomous Workflows, Generative UI & Performance Monitoring"
 description: "Designing ergonomic human-in-the-loop agentic workflows, dynamic Generative UI interfaces, and comprehensive real-time telemetry, latency profiling, and reliability monitoring."
 ctaText: "Inquire about Agentic Automation"

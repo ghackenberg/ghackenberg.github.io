@@ -37,48 +37,7 @@ const optimizedServices = await Promise.all(
   })
 );
 
-const colorClasses = {
-  blue: {
-    text: 'text-brand-blue light:text-blue-700',
-    border: 'border-brand-blue/20 light:border-blue-200',
-    hoverBorder: 'hover:border-brand-blue/40 light:hover:border-blue-300',
-    bg: 'bg-brand-blue/10 text-brand-blue border-brand-blue/20 light:bg-blue-50/50 light:text-blue-700 light:border-blue-200',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-slate-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
-    glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
-    hoverText: 'group-hover:text-brand-blue light:group-hover:text-blue-600',
-    dot: 'badge-new badge-new-blue'
-  },
-  yellow: {
-    text: 'text-brand-yellow light:text-amber-800',
-    border: 'border-brand-yellow/20 light:border-amber-200',
-    hoverBorder: 'hover:border-brand-yellow/40 light:hover:border-amber-300',
-    bg: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20 light:bg-amber-50/50 light:text-amber-800 light:border-amber-200',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white',
-    glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
-    hoverText: 'group-hover:text-brand-yellow light:group-hover:text-amber-700',
-    dot: 'badge-new badge-new-yellow'
-  },
-  purple: {
-    text: 'text-brand-purple light:text-purple-700',
-    border: 'border-brand-purple/20 light:border-purple-200',
-    hoverBorder: 'hover:border-brand-purple/40 light:hover:border-purple-300',
-    bg: 'bg-brand-purple/10 text-brand-purple border-brand-purple/20 light:bg-purple-50/50 light:text-purple-700 light:border-purple-200',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
-    glow: 'from-brand-purple to-pink-500 light:to-pink-600',
-    hoverText: 'group-hover:text-brand-purple light:group-hover:text-purple-600',
-    dot: 'badge-new badge-new-purple'
-  },
-  green: {
-    text: 'text-brand-green light:text-emerald-700',
-    border: 'border-brand-green/20 light:border-emerald-200',
-    hoverBorder: 'hover:border-brand-green/40 light:hover:border-emerald-300',
-    bg: 'bg-brand-green/10 text-brand-green border-brand-green/20 light:bg-emerald-50/50 light:text-emerald-700 light:border-emerald-200',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-slate-950 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white',
-    glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
-    hoverText: 'group-hover:text-brand-green light:group-hover:text-emerald-700',
-    dot: 'badge-new badge-new-green'
-  }
-};
+
 
 const servicesJsonLd = sortedServices.map(s => ({
   "@context": "https://schema.org",
@@ -173,7 +132,6 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
         ) : (
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 scroll-mt-28" id="services-grid">
             {optimizedServices.map((service) => {
-              const classes = colorClasses[service.data.color];
               const tagsJoined = (service.data.tags || []).join(" ").toLowerCase();
               return (
                 <section 
@@ -186,7 +144,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                 >
                   <div class="glass-card rounded-2xl md:rounded-3xl border border-element-border relative overflow-hidden flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300">
                     <!-- Top accent color line -->
-                    <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${classes.glow} z-20`}></div>
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-purple to-pink-500 light:to-pink-600 z-20"></div>
 
                     <!-- Card Clickable Overlay Link -->
                     <a 
@@ -251,15 +209,15 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                       <div class="space-y-3">
                         <!-- Header -->
                         <div>
-                          <h2 class={`text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors ${classes.hoverText}`}>
+                          <h2 class="text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors group-hover:text-brand-purple light:group-hover:text-purple-600">
                             <span>{service.data.title}</span>
                             <span 
-                              class={`unread-dot hidden ${classes.dot}`}
+                              class="unread-dot hidden badge-new badge-new-purple"
                               data-item-url={`/services/${service.id}/`}
                               title="Unread service"
                             >UNREAD</span>
                           </h2>
-                          <p class={`${classes.text} font-bold text-xs uppercase tracking-wider mt-1`}>
+                          <p class="text-brand-purple light:text-purple-700 font-bold text-xs uppercase tracking-wider mt-1">
                             {service.data.tagline}
                           </p>
                         </div>
