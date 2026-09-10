@@ -341,11 +341,17 @@ const initialRow3 = catalog.slice(27, 45);
 
     inMemorySeenLedger = loadSeenLedger();
 
-    // Mark all initial cards as seen
-    const initialCards = viewport.querySelectorAll<HTMLElement>('.gallery-card[data-id]');
+    // 1. Full Client-Side Rehydration:
+    // Re-seed all initial cards across all tracks using the two-factor selection algorithm,
+    // immediately respecting display recency (0.05x cooldown for seen items, 12x boost for unseen items)
+    const inUseIds = new Set<string>();
+    const initialCards = viewport.querySelectorAll<HTMLElement>('.gallery-card');
+
     initialCards.forEach(card => {
-      const id = card.dataset.id;
-      if (id) recordSeen(id);
+      const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
+      inUseIds.add(nextItem.id);
+      hydrateCard(card, nextItem);
+      recordSeen(nextItem.id);
     });
 
     const trackElements = viewport.querySelectorAll<HTMLElement>('.gallery-track');
@@ -363,12 +369,8 @@ const initialRow3 = catalog.slice(27, 45);
 
       // Ensure track buffer covers ultra-wide displays
       while (el.children.length > 0 && el.scrollWidth < window.innerWidth + 1200) {
-        const inUseIds = new Set<string>();
-        viewport.querySelectorAll<HTMLElement>('.gallery-card[data-id]').forEach(c => {
-          if (c.dataset.id) inUseIds.add(c.dataset.id);
-        });
-
         const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
+        inUseIds.add(nextItem.id);
         const template = el.firstElementChild as HTMLElement;
         if (!template) break;
 

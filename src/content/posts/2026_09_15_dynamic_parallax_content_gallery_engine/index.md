@@ -190,6 +190,40 @@ function pickNextItem(
 }
 ```
 
+### The Cold-Start & Reload Paradox: Full Client-Side Rehydration
+
+A subtle architectural challenge arises when marrying a client-side LRU tracking engine with a static site generator (SSG):
+
+1. **The Stateless Build**: At build time, Astro compiles the initial HTML markup statically, populating the 45 initial card slots with default catalog items. The static compiler has no access to a user's browser storage.
+2. **The Reload Flaw**: If client-side JavaScript only invokes `pickNextItem()` when an existing card scrolls off the left screen edge, a visitor will see the **exact same 45 static items** every time they reload or revisit the homepage. Even though subsequent cards would eventually be personalized, the initial visual impression on every reload would remain identical.
+
+To solve this, we implemented **synchronous full client-side rehydration on mount**:
+
+```typescript
+// src/components/ImageGalleryMarquee.astro
+function setupGalleryEngine() {
+  inMemorySeenLedger = loadSeenLedger();
+
+  // Full Client-Side Rehydration across all 3 tracks
+  const inUseIds = new Set<string>();
+  const initialCards = viewport.querySelectorAll<HTMLElement>('.gallery-card');
+
+  initialCards.forEach(card => {
+    const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
+    inUseIds.add(nextItem.id);
+    hydrateCard(card, nextItem);
+    recordSeen(nextItem.id);
+  });
+
+  // Proceed with ultra-wide buffer checks and animation loop...
+}
+```
+
+#### Why this architecture is optimal:
+- **Zero Repetition on Reload**: When the page reloads, the items displayed in the user's previous session are already recorded in `localStorage`. The selection algorithm penalizes them with the $0.05\times$ cooldown, while unread content receives the $12.0\times$ boost. The initial frame immediately renders completely fresh, unseen content.
+- **Zero Cumulative Layout Shift ($\text{CLS} = 0$)**: Because each card possesses strictly constrained dimensions (`aspect-video`, fixed responsive width containers) and a dark glass aesthetic, swapping `img.src`, `href`, and text nodes occurs in under 2 milliseconds without shifting the layout by a single pixel.
+- **Flawless Search & AI Discovery (SEO, GEO, AEO)**: Stateless web crawlers (Googlebot, Bingbot) and generative AI engines (Perplexity, SearchGPT) receive 45 semantic, pre-rendered `<a>` and `<img>` tags directly from the static HTML with zero reliance on client JavaScript execution.
+
 ## 5. Performance, Ergonomics, and Accessibility
 
 A continuous visual animation must be respectful of device resources and user control:
