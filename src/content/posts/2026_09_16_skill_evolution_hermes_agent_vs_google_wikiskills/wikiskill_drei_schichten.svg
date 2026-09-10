@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 390" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <defs>
+    <marker id="arrow-down-wiki" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="8" y="8" width="764" height="374" rx="12" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Layer 1: Raw Layer -->
+  <g transform="translate(36, 24)">
+    <rect x="0" y="0" width="708" height="76" rx="8" fill="#0d1b2e" stroke="#3b82f6" stroke-width="1.2" />
+    <rect x="0" y="0" width="708" height="26" rx="8" fill="#1e3a8a" fill-opacity="0.5" />
+    <text x="16" y="18" fill="#93c5fd" font-size="11.5" font-weight="700">1. RAW LAYER (raw/) ── Unveränderliche Ausführungsevidenz</text>
+    <text x="16" y="45" fill="#f8fafc" font-size="12" font-weight="500">Append-Only Archiv aller Ausführungstraces τ_i: Multi-Turn Tool Calls, Thought-Chains und Environment-Ausgaben.</text>
+    <text x="16" y="64" fill="#94a3b8" font-size="11">Vollständig unveränderlich; der Inferenz-Agent operiert hier ohne Einblick in übergeordnete Wiki-Muster.</text>
+  </g>
+
+  <!-- Connector 1 -->
+  <g transform="translate(390, 100)">
+    <line x1="0" y1="0" x2="0" y2="34" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-down-wiki)" />
+    <rect x="-115" y="8" width="230" height="18" rx="4" fill="#0b1329" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1" />
+    <text x="0" y="21" fill="#cbd5e1" font-size="9.5" font-weight="600" text-anchor="middle">VERDICHTUNG DURCH WIKI MAINTAINER</text>
+  </g>
+
+  <!-- Layer 2: Wiki Layer (The Core Innovation) -->
+  <g transform="translate(36, 142)">
+    <rect x="0" y="0" width="708" height="96" rx="8" fill="#241707" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="0" y="0" width="708" height="26" rx="8" fill="#78350f" fill-opacity="0.7" />
+    <text x="16" y="18" fill="#fef3c7" font-size="11.5" font-weight="700">2. WIKI LAYER (wiki/) ── PERSISTENT &amp; KUMULATIV (WIRD NIEMALS ZURÜCKGEROLLT!)</text>
+    <text x="16" y="47" fill="#fef08a" font-size="12" font-weight="600">• patterns/*.md: Generalisierte Root-Cause Analysen, Fehlerbilder, Randbedingungen und Heuristiken.</text>
+    <text x="16" y="67" fill="#fde68a" font-size="12" font-weight="600">• skill-impact.md: Lückenloser Prüfpfad (Unified-Diffs, Validierungsscores und Akzeptanz-Urteile).</text>
+    <text x="16" y="85" fill="#4ade80" font-size="11" font-weight="600">★ Verhindert Optimization Amnesia: Das System lernt aus Fehlschlägen und wiederholt keine Sackgassen.</text>
+  </g>
+
+  <!-- Connector 2 -->
+  <g transform="translate(390, 238)">
+    <line x1="0" y1="0" x2="0" y2="34" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-down-wiki)" />
+    <rect x="-105" y="8" width="210" height="18" rx="4" fill="#0b1329" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1" />
+    <text x="0" y="21" fill="#cbd5e1" font-size="9.5" font-weight="600" text-anchor="middle">SYNTHESE DURCH SKILL PROPOSER</text>
+  </g>
+
+  <!-- Layer 3: Skills Layer -->
+  <g transform="translate(36, 280)">
+    <rect x="0" y="0" width="708" height="76" rx="8" fill="#061c16" stroke="#10b981" stroke-width="1.2" />
+    <rect x="0" y="0" width="708" height="26" rx="8" fill="#064e3b" fill-opacity="0.6" />
+    <text x="16" y="18" fill="#a7f3d0" font-size="11.5" font-weight="700">3. SKILLS LAYER (skills/) ── Ausführbar, modular und mutationsfähig</text>
+    <text x="16" y="45" fill="#f8fafc" font-size="12" font-weight="500">Prozedurale Handlungsanweisungen S_k: SKILL.md (Code/Workflows) verknüpft via PURPOSE.md mit Wiki-Mustern.</text>
+    <text x="16" y="64" fill="#6ee7b7" font-size="11">Validation Gating: Sinkt die Erfolgsquote, rollt S_k zurück – das Wiki (Schicht 2) behält die Erfahrung!</text>
+  </g>
+</svg>

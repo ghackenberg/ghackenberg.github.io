@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 320" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <defs>
+    <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="8" y="8" width="764" height="304" rx="12" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Top Card: Manuelle Entwicklung -->
+  <g transform="translate(36, 28)">
+    <rect x="0" y="0" width="708" height="84" rx="8" fill="#0f172a" stroke="#3b82f6" stroke-width="1.2" />
+    <rect x="0" y="0" width="708" height="28" rx="8" fill="#1e3a8a" fill-opacity="0.5" />
+    <text x="16" y="19" fill="#93c5fd" font-size="12" font-weight="700" letter-spacing="0.5">MANUELLE SKILL-ENTWICKLUNG</text>
+    <text x="16" y="48" fill="#f8fafc" font-size="12.5" font-weight="500">Präzise, qualitätsgesichert und domänenspezifisch durch menschliche Fachexperten.</text>
+    <text x="16" y="68" fill="#94a3b8" font-size="11.5">Engpass: Hoher Zeitaufwand, skaliert nicht bei Hunderten APIs und übersieht seltene Edge-Cases.</text>
+  </g>
+
+  <!-- Connector Line & Label -->
+  <g transform="translate(390, 112)">
+    <line x1="0" y1="0" x2="0" y2="40" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-down)" />
+    <rect x="-85" y="11" width="170" height="20" rx="4" fill="#0b1329" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1" />
+    <text x="0" y="25" fill="#cbd5e1" font-size="10" font-weight="600" text-anchor="middle">AUTOMATISIERUNGSVERSUCH</text>
+  </g>
+
+  <!-- Bottom Card: Naive Selbst-Modifikation -->
+  <g transform="translate(36, 164)">
+    <rect x="0" y="0" width="708" height="124" rx="8" fill="#180a0c" stroke="#ef4444" stroke-width="1.2" />
+    <rect x="0" y="0" width="708" height="28" rx="8" fill="#450a0a" fill-opacity="0.6" />
+    <text x="16" y="19" fill="#fca5a5" font-size="12" font-weight="700" letter-spacing="0.5">NAIVE AGENTISCHE SKILL-EVOLUTION (EvoSkill, Trace2Skill, SkillOpt)</text>
+    <text x="16" y="48" fill="#fecaca" font-size="12" font-weight="500">Zyklus: Agent erzeugt Patch S' ──► Validierung scheitert ──► Rollback zum Ausgangszustand S</text>
+    
+    <!-- Problem Bullet 1 -->
+    <text x="16" y="74" fill="#f87171" font-size="12" font-weight="700">❌ Optimization Amnesia:</text>
+    <text x="195" y="74" fill="#cbd5e1" font-size="11.5">Mit dem Rollback wird auch die Ursachenanalyse des Fehlschlags vernichtet.</text>
+    
+    <!-- Problem Bullet 2 -->
+    <text x="16" y="98" fill="#f87171" font-size="12" font-weight="700">❌ Unkontrollierter Sprawl:</text>
+    <text x="202" y="98" fill="#cbd5e1" font-size="11.5">Dutzende redundante Ad-hoc-Skills verstopfen das Kontextfenster und den Workspace.</text>
+  </g>
+</svg>

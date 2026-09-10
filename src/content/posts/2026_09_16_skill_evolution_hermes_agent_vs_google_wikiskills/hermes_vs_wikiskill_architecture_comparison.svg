@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 460" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <!-- Frame -->
+  <rect x="8" y="8" width="824" height="444" rx="12" fill="#0b1329" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Header Section -->
+  <g transform="translate(32, 28)">
+    <text x="0" y="0" fill="#38bdf8" font-size="11" font-weight="700" letter-spacing="1">ARCHITEKTUR-VERGLEICH</text>
+    <text x="0" y="24" fill="#f8fafc" font-size="18" font-weight="700">Hermes Agent vs. Google WikiSkills</text>
+    <text x="0" y="42" fill="#94a3b8" font-size="12">Pragmatische Runtime-Kuratierung im Dialog trifft auf mathematisch entkoppelte 3-Schichten-Wissenssynthese</text>
+  </g>
+
+  <!-- Left Column: Hermes Agent -->
+  <g transform="translate(32, 90)">
+    <rect x="0" y="0" width="374" height="336" rx="8" fill="#0d1b2e" stroke="#3b82f6" stroke-width="1.2" />
+    <rect x="0" y="0" width="374" height="32" rx="8" fill="#1e3a8a" fill-opacity="0.6" />
+    <text x="14" y="21" fill="#bfdbfe" font-size="12" font-weight="700">HERMES AGENT (Nous Research)</text>
+    <text x="14" y="52" fill="#60a5fa" font-size="11" font-weight="600">Schwerpunkt: Interaktiver 24/7-Produktivbetrieb</text>
+
+    <!-- Point 1 -->
+    <g transform="translate(14, 70)">
+      <circle cx="4" cy="6" r="3" fill="#38bdf8" />
+      <text x="14" y="10" fill="#f1f5f9" font-size="11.5" font-weight="600">Progressive Disclosure (agentskills.io)</text>
+      <text x="14" y="26" fill="#94a3b8" font-size="11">Dreistufig: L0-Katalog (Prompt) ──► L1 SKILL.md ──► L2 Skripte</text>
+    </g>
+
+    <!-- Point 2 -->
+    <g transform="translate(14, 118)">
+      <circle cx="4" cy="6" r="3" fill="#38bdf8" />
+      <text x="14" y="10" fill="#f1f5f9" font-size="11.5" font-weight="600">In-Session-Lernen &amp; /learn-Kommando</text>
+      <text x="14" y="26" fill="#94a3b8" font-size="11">Destilliert APIs, Code-Repos und Dialogspuren in Markdown-Skills</text>
+    </g>
+
+    <!-- Point 3 -->
+    <g transform="translate(14, 166)">
+      <circle cx="4" cy="6" r="3" fill="#38bdf8" />
+      <text x="14" y="10" fill="#f1f5f9" font-size="11.5" font-weight="600">Der Hintergrund-Curator („Hausmeister“)</text>
+      <text x="14" y="26" fill="#94a3b8" font-size="11">Inaktivitäts-Trigger: 30 Tage = stale, 90 Tage = .archive/</text>
+      <text x="14" y="42" fill="#94a3b8" font-size="11">LLM Umbrella Merging konsolidiert redundante Mini-Skills</text>
+    </g>
+
+    <!-- Point 4 -->
+    <g transform="translate(14, 230)">
+      <circle cx="4" cy="6" r="3" fill="#38bdf8" />
+      <text x="14" y="10" fill="#f1f5f9" font-size="11.5" font-weight="600">KV-Cache &amp; Schutz vor Amnesie</text>
+      <text x="14" y="26" fill="#94a3b8" font-size="11">Frozen Snapshots (MEMORY.md) + hermes curator pin</text>
+    </g>
+
+    <!-- Evaluation footer -->
+    <g transform="translate(14, 282)">
+      <rect x="0" y="0" width="346" height="40" rx="6" fill="#091424" stroke="#1d4ed8" stroke-width="1" />
+      <text x="10" y="16" fill="#93c5fd" font-size="10.5" font-weight="600">Vorteil: Geringer Overhead, sofort einsatzbereit im Dev-Alltag</text>
+      <text x="10" y="31" fill="#f87171" font-size="10.5">Grenze: Fehlversuche hinterlassen keinen maschinenlesbaren Prüfpfad</text>
+    </g>
+  </g>
+
+  <!-- Right Column: Google WikiSkills -->
+  <g transform="translate(434, 90)">
+    <rect x="0" y="0" width="374" height="336" rx="8" fill="#241707" stroke="#f59e0b" stroke-width="1.2" />
+    <rect x="0" y="0" width="374" height="32" rx="8" fill="#78350f" fill-opacity="0.6" />
+    <text x="14" y="21" fill="#fef3c7" font-size="12" font-weight="700">GOOGLE WIKISKILLS (arXiv:2608.27454)</text>
+    <text x="14" y="52" fill="#fbbf24" font-size="11" font-weight="600">Schwerpunkt: Formale Offline-Optimierung &amp; Anti-Amnesie</text>
+
+    <!-- Point 1 -->
+    <g transform="translate(14, 70)">
+      <circle cx="4" cy="6" r="3" fill="#fbbf24" />
+      <text x="14" y="10" fill="#f1f5f9" font-size="11.5" font-weight="600">3-Schichten-Wissensarchitektur</text>
+      <text x="14" y="26" fill="#d1d5db" font-size="11">raw/ (Traces) ──► wiki/ (Muster) ──► skills/ (Ausführbare SKILL.md)</text>
+    </g>
+
+    <!-- Point 2 -->
+    <g transform="translate(14, 118)">
+      <circle cx="4" cy="6" r="3" fill="#fbbf24" />
+      <text x="14" y="10" fill="#f1f5f9" font-size="11.5" font-weight="600">Strikte Inferenz-Isolation</text>
+      <text x="14" y="26" fill="#d1d5db" font-size="11">Inferenz-Agent sieht das Wiki nie – erzwingt kanonische Skills</text>
+    </g>
+
+    <!-- Point 3 -->
+    <g transform="translate(14, 166)">
+      <circle cx="4" cy="6" r="3" fill="#fbbf24" />
+      <text x="14" y="10" fill="#f1f5f9" font-size="11.5" font-weight="600">Unlöschbares Wiki &amp; Audit-Ledger</text>
+      <text x="14" y="26" fill="#d1d5db" font-size="11">Validation-Fail? Nur Skills rollen zurück; das Wiki merkt sich Diffs</text>
+      <text x="14" y="42" fill="#4ade80" font-size="11" font-weight="600">★ Eliminiert Optimization Amnesia vollständig</text>
+    </g>
+
+    <!-- Point 4 -->
+    <g transform="translate(14, 230)">
+      <circle cx="4" cy="6" r="3" fill="#fbbf24" />
+      <text x="14" y="10" fill="#f1f5f9" font-size="11.5" font-weight="600">4-Agenten-Zyklus mit Ground Truth</text>
+      <text x="14" y="26" fill="#d1d5db" font-size="11">Inferenz ──► Wiki Maintainer ──► Skill Proposer ──► Validation Gating</text>
+    </g>
+
+    <!-- Evaluation footer -->
+    <g transform="translate(14, 282)">
+      <rect x="0" y="0" width="346" height="40" rx="6" fill="#180e03" stroke="#b45309" stroke-width="1" />
+      <text x="10" y="16" fill="#fde68a" font-size="10.5" font-weight="600">Vorteil: Monotone Gewinne (+12 % Gemini, +40 % SpreadSheet)</text>
+      <text x="10" y="31" fill="#fca5a5" font-size="10.5">Grenze: Hoher Rechenaufwand, benötigt formalisierte Benchmarks</text>
+    </g>
+  </g>
+</svg>
