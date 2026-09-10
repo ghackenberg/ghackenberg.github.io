@@ -1631,7 +1631,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
   /* Activity Card Scroll Animation */
   .activity-card-anim {
-    will-change: opacity, transform;
+    transition: all 0.7s ease-out;
   }
 
   /* Profile Photo SVG Image Styling */
@@ -1645,7 +1645,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
   /* Explore Card Custom Styles */
   .explore-card {
-    will-change: transform, border-color, box-shadow;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
   
@@ -1856,9 +1855,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       }
     }
 
-    setTimeout(async () => {
-      await initHomeVis();
-    }, 100);
+    // Lazy-load Vis.js via IntersectionObserver when approaching the graph section
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            observer.disconnect();
+            initHomeVis();
+          }
+        });
+      }, { rootMargin: '300px 0px' });
+      observer.observe(container);
+    } else {
+      initHomeVis();
+    }
 
     window.addEventListener('theme-changed', () => {
       const isLight = document.documentElement.classList.contains('light');

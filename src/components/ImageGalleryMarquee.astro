@@ -160,21 +160,48 @@ const initialRow3 = catalog.slice(27, 45);
 </section>
 
 <style>
-  /* Soft left and right edge fade masks */
+  /* Edge fade overlays: GPU-friendly linear gradient overlays instead of heavy off-screen alpha mask */
   .gallery-viewport {
-    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    position: relative;
+  }
+
+  .gallery-viewport::before,
+  .gallery-viewport::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(24px, 6vw, 80px);
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .gallery-viewport::before {
+    left: 0;
+    background: linear-gradient(to right, var(--color-bg-main) 0%, transparent 100%);
+  }
+
+  .gallery-viewport::after {
+    right: 0;
+    background: linear-gradient(to left, var(--color-bg-main) 0%, transparent 100%);
   }
 
   .gallery-track {
     will-change: transform;
   }
 
+  /* Marquee cards are 100% covered by opaque image + dark gradient overlay; disable expensive backdrop-filter */
+  .gallery-card,
+  .gallery-card .glass-card {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
   /* Accessibility: Prefers reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .gallery-viewport {
-      mask-image: none;
-      -webkit-mask-image: none;
+    .gallery-viewport::before,
+    .gallery-viewport::after {
+      display: none;
     }
 
     .gallery-track {
@@ -200,9 +227,11 @@ const initialRow3 = catalog.slice(27, 45);
     speed: number;
     gap: number;
     x: number;
+    cardWidthWithGap: number;
   }
 
   let activeAnimationId: number | null = null;
+  let galleryObserver: IntersectionObserver | null = null;
   let saveLedgerTimer: number | null = null;
   let inMemorySeenLedger: Record<string, number> = {};
 
@@ -320,6 +349,10 @@ const initialRow3 = catalog.slice(27, 45);
       cancelAnimationFrame(activeAnimationId);
       activeAnimationId = null;
     }
+    if (galleryObserver !== null) {
+      galleryObserver.disconnect();
+      galleryObserver = null;
+    }
 
     const viewport = document.getElementById('gallery-marquee-viewport');
     const catalogDataEl = document.getElementById('gallery-catalog-data');
@@ -342,8 +375,6 @@ const initialRow3 = catalog.slice(27, 45);
     inMemorySeenLedger = loadSeenLedger();
 
     // 1. Full Client-Side Rehydration:
-    // Re-seed all initial cards across all tracks using the two-factor selection algorithm,
-    // immediately respecting display recency (0.05x cooldown for seen items, 12x boost for unseen items)
     const inUseIds = new Set<string>();
     const initialCards = viewport.querySelectorAll<HTMLElement>('.gallery-card');
 
@@ -360,11 +391,17 @@ const initialRow3 = catalog.slice(27, 45);
     trackElements.forEach(el => {
       const speed = parseFloat(el.dataset.speed || '40');
       const gap = parseFloat(el.dataset.gap || '20');
+
+      // Measure initial card width once during setup to avoid synchronous layout reads during animation
+      const firstCard = el.firstElementChild as HTMLElement | null;
+      const initialCardWidth = firstCard ? firstCard.getBoundingClientRect().width : 280;
+
       tracks.push({
         el,
         speed,
         gap,
         x: 0,
+        cardWidthWithGap: initialCardWidth + gap,
       });
 
       // Ensure track buffer covers ultra-wide displays
@@ -381,10 +418,22 @@ const initialRow3 = catalog.slice(27, 45);
       }
     });
 
+    // Update cached card widths on resize without polling
+    const onResize = () => {
+      tracks.forEach(track => {
+        const firstCard = track.el.firstElementChild as HTMLElement | null;
+        if (firstCard) {
+          track.cardWidthWithGap = firstCard.getBoundingClientRect().width + track.gap;
+        }
+      });
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+
     let isManuallyPaused = false;
     let isHovered = false;
     let isFocused = false;
     let isDocumentHidden = false;
+    let isInView = false;
     let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Viewport hover & focus events
@@ -409,6 +458,10 @@ const initialRow3 = catalog.slice(27, 45);
           label.textContent = 'Pause';
           toggleBtn.setAttribute('aria-pressed', 'false');
           toggleBtn.setAttribute('aria-label', 'Pause flying gallery animation');
+          if (isInView && activeAnimationId === null) {
+            lastTime = null;
+            activeAnimationId = requestAnimationFrame(tick);
+          }
         }
       });
     }
@@ -425,6 +478,9 @@ const initialRow3 = catalog.slice(27, 45);
       isDocumentHidden = document.hidden;
       if (!isDocumentHidden) {
         lastTime = null;
+        if (isInView && activeAnimationId === null) {
+          activeAnimationId = requestAnimationFrame(tick);
+        }
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -432,6 +488,12 @@ const initialRow3 = catalog.slice(27, 45);
     let lastTime: number | null = null;
 
     function tick(timestamp: number) {
+      // 1. Off-screen check: If the viewport is not visible, stop scheduling frames completely!
+      if (!isInView) {
+        activeAnimationId = null;
+        return;
+      }
+
       if (lastTime === null) {
         lastTime = timestamp;
       }
@@ -441,45 +503,49 @@ const initialRow3 = catalog.slice(27, 45);
       const shouldAnimate = !isManuallyPaused && !isHovered && !isFocused && !isDocumentHidden && !reducedMotion;
 
       if (shouldAnimate) {
-        const vpRect = viewport!.getBoundingClientRect();
-
+        // 2. Zero-DOM-Reads Pure Mathematical Loop:
+        // By using pure coordinate offsets, we trigger ZERO forced synchronous layouts per frame.
         for (const track of tracks) {
           track.x -= track.speed * dt;
-          track.el.style.transform = `translate3d(${track.x}px, 0, 0)`;
 
-          const firstCard = track.el.firstElementChild as HTMLElement | null;
-          if (firstCard) {
-            const cardRect = firstCard.getBoundingClientRect();
-            // If the card has fully scrolled out past the left edge of the viewport
-            if (cardRect.right < vpRect.left - 10) {
-              const cardWidthWithGap = firstCard.offsetWidth + track.gap;
-              track.x += cardWidthWithGap;
-              track.el.style.transform = `translate3d(${track.x}px, 0, 0)`;
+          while (track.x <= -track.cardWidthWithGap) {
+            track.x += track.cardWidthWithGap;
+            const cardToRecycle = track.el.firstElementChild as HTMLElement | null;
+            if (cardToRecycle) {
+              const oldId = cardToRecycle.dataset.id;
+              if (oldId) inUseIds.delete(oldId);
 
-              // Collect all IDs currently active across all tracks
-              const inUseIds = new Set<string>();
-              viewport!.querySelectorAll<HTMLElement>('.gallery-card[data-id]').forEach(c => {
-                if (c !== firstCard && c.dataset.id) {
-                  inUseIds.add(c.dataset.id);
-                }
-              });
-
-              // Select next item using two-factor weighted distribution
               const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
-              hydrateCard(firstCard, nextItem);
+              inUseIds.add(nextItem.id);
+              hydrateCard(cardToRecycle, nextItem);
               recordSeen(nextItem.id);
 
-              // Move card seamlessly to the end of the flex container
-              track.el.appendChild(firstCard);
+              track.el.appendChild(cardToRecycle);
             }
           }
+
+          track.el.style.transform = `translate3d(${track.x}px, 0, 0)`;
         }
       }
 
       activeAnimationId = requestAnimationFrame(tick);
     }
 
-    activeAnimationId = requestAnimationFrame(tick);
+    // IntersectionObserver: Pause completely when scrolled out of view to save 100% CPU/battery
+    galleryObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const wasInView = isInView;
+        isInView = entry.isIntersecting;
+        if (isInView && !wasInView) {
+          lastTime = null;
+          if (activeAnimationId === null) {
+            activeAnimationId = requestAnimationFrame(tick);
+          }
+        }
+      });
+    }, { rootMargin: '150px 0px' });
+
+    galleryObserver.observe(viewport);
   }
 
   // Support Astro View Transitions and initial load
@@ -489,6 +555,10 @@ const initialRow3 = catalog.slice(27, 45);
     if (activeAnimationId !== null) {
       cancelAnimationFrame(activeAnimationId);
       activeAnimationId = null;
+    }
+    if (galleryObserver !== null) {
+      galleryObserver.disconnect();
+      galleryObserver = null;
     }
   });
 </script>

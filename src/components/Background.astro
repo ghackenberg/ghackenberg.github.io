@@ -145,14 +145,6 @@
       requestTick();
     };
 
-    // Touch listener for mobile
-    const onTouchMove = (e: TouchEvent) => {
-      if (e.touches && e.touches[0]) {
-        targetMouseX = e.touches[0].clientX / window.innerWidth;
-        targetMouseY = e.touches[0].clientY / window.innerHeight;
-        requestTick();
-      }
-    };
 
     const requestTick = () => {
       if (!ticking) {
@@ -192,13 +184,19 @@
       }
     };
 
-    // Attach listeners
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    // Only enable parallax on desktop devices with fine pointer (mouse).
+    // On mobile touch devices, JS-based parallax on fixed full-screen SVG layers fights with
+    // native asynchronous compositor scrolling and creates noticeable jitter/stutter.
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
 
-    // Initial frame run
-    requestTick();
+    if (!isTouchDevice) {
+      // Attach listeners only on desktop
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('mousemove', onMouseMove, { passive: true });
+
+      // Initial frame run
+      requestTick();
+    }
 
     // High Density Night Sky Starfield Generator
     const starsGroup = document.getElementById('sparkling-stars');

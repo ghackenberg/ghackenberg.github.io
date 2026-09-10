@@ -61,7 +61,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
         <img 
           src={optimizedIcon ? optimizedIcon.src : (typeof icon === 'string' ? icon : (icon?.src || ''))}
           alt={`Preview for ${title}`}
-          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
           decoding="async"
         />
