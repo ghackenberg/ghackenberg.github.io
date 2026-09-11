@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <defs>
+    <linearGradient id="flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    <marker id="flow-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#818cf8" />
+    </marker>
+    <marker id="emerald-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+    </marker>
+    <marker id="amber-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="12" y="12" width="876" height="396" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Header -->
+  <text x="40" y="48" fill="url(#flow-grad)" font-size="20" font-weight="800">Mastra Runtime Guidance Flow</text>
+  <text x="40" y="70" fill="#94a3b8" font-size="13">Inferenz-Zyklus: Topologische Führung und Agenten-Ausführung</text>
+
+  <!-- Step 1: LOCATE -->
+  <g transform="translate(40, 110)">
+    <rect x="0" y="0" width="170" height="90" rx="12" fill="#0b1329" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="85" y="36" fill="#38bdf8" font-size="12" font-weight="800" text-anchor="middle">SCHRITT 1</text>
+    <text x="85" y="62" fill="#f8fafc" font-size="16" font-weight="700" text-anchor="middle">Locate Node</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 215 155 L 245 155" stroke="#818cf8" stroke-width="2.5" marker-end="url(#flow-arrow)" />
+
+  <!-- Step 2: EXTRACT -->
+  <g transform="translate(255, 110)">
+    <rect x="0" y="0" width="170" height="90" rx="12" fill="#120e28" stroke="#818cf8" stroke-width="1.5" />
+    <text x="85" y="36" fill="#a5b4fc" font-size="12" font-weight="800" text-anchor="middle">SCHRITT 2</text>
+    <text x="85" y="62" fill="#f8fafc" font-size="16" font-weight="700" text-anchor="middle">Extract 2-Hop</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 430 155 L 460 155" stroke="#818cf8" stroke-width="2.5" marker-end="url(#flow-arrow)" />
+
+  <!-- Step 3: GENERATE GUIDANCE -->
+  <g transform="translate(470, 110)">
+    <rect x="0" y="0" width="180" height="90" rx="12" fill="#1f1035" stroke="#a855f7" stroke-width="1.5" />
+    <text x="90" y="36" fill="#c084fc" font-size="12" font-weight="800" text-anchor="middle">SCHRITT 3</text>
+    <text x="90" y="62" fill="#f8fafc" font-size="16" font-weight="700" text-anchor="middle">Guidance LLM (Ψ)</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 655 155 L 685 155" stroke="#818cf8" stroke-width="2.5" marker-end="url(#flow-arrow)" />
+
+  <!-- Step 4: SOLVER AGENT -->
+  <g transform="translate(695, 110)">
+    <rect x="0" y="0" width="165" height="90" rx="12" fill="#091d17" stroke="#10b981" stroke-width="1.5" />
+    <text x="82" y="36" fill="#34d399" font-size="12" font-weight="800" text-anchor="middle">SCHRITT 4</text>
+    <text x="82" y="62" fill="#f8fafc" font-size="16" font-weight="700" text-anchor="middle">Solver Agent (π)</text>
+  </g>
+
+  <!-- Branching Downward from Solver Agent -->
+  <!-- Arrow Down Left to Auto-Execution -->
+  <path d="M 740 205 L 740 260 L 525 260 L 525 285" stroke="#10b981" stroke-width="2" marker-end="url(#emerald-arrow)" />
+
+  <!-- Arrow Down Right to Suspend / Human Gate -->
+  <path d="M 810 205 L 810 285" stroke="#f59e0b" stroke-width="2" marker-end="url(#amber-arrow)" />
+
+  <!-- Option A: Auto Step with MCP -->
+  <g transform="translate(360, 295)">
+    <rect x="0" y="0" width="310" height="70" rx="10" fill="#072018" stroke="#10b981" stroke-width="1.2" />
+    <text x="25" y="32" fill="#34d399" font-size="14" font-weight="700">Normale Ausführung (MCP Tools)</text>
+    <text x="25" y="52" fill="#94a3b8" font-size="12">Tool-Call ausführen &amp; zum nächsten Knoten iterieren</text>
+  </g>
+
+  <!-- Option B: Human Gate / Suspend -->
+  <g transform="translate(700, 295)">
+    <rect x="0" y="0" width="160" height="70" rx="10" fill="#241505" stroke="#f59e0b" stroke-width="1.2" />
+    <text x="80" y="32" fill="#fbbf24" font-size="13" font-weight="700" text-anchor="middle">Freigabe nötig</text>
+    <text x="80" y="52" fill="#fef3c7" font-size="12" font-weight="600" text-anchor="middle">suspend()</text>
+  </g>
+
+  <!-- Return Loop back to Step 1 -->
+  <path d="M 360 330 L 125 330 L 125 210" stroke="#818cf8" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#flow-arrow)" />
+  <text x="235" y="322" fill="#818cf8" font-size="11" font-weight="600" text-anchor="middle">Nächster Schritt (Loop)</text>
+</svg>

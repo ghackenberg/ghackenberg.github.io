@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" height="460" style="background-color: #030712; font-family: 'Outfit', 'Inter', system-ui, sans-serif;">
+  <defs>
+    <linearGradient id="pge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 2 1 L 5 8 L 8 1 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Frame -->
+  <rect x="12" y="12" width="876" height="436" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <text x="40" y="48" fill="url(#pge-grad)" font-size="20" font-weight="800" letter-spacing="-0.02em">Mastra Procedural Graph Engine (PGE)</text>
+  <text x="40" y="70" fill="#94a3b8" font-size="13">Das 4-Schichten-Modell für selbstlernende Prozessautomatisierung</text>
+
+  <!-- LAYER 1: KNOWLEDGE & STORAGE -->
+  <g transform="translate(40, 95)">
+    <rect x="0" y="0" width="820" height="64" rx="10" fill="#0b1329" stroke="#38bdf8" stroke-width="1.2" />
+    <circle cx="28" cy="32" r="14" fill="#132338" stroke="#38bdf8" stroke-width="1.2" />
+    <text x="28" y="37" fill="#38bdf8" font-size="13" font-weight="800" text-anchor="middle">1</text>
+    <text x="56" y="37" fill="#f8fafc" font-size="15" font-weight="700">Graph Knowledge Layer</text>
+
+    <!-- Sub elements -->
+    <rect x="310" y="14" width="230" height="36" rx="6" fill="#131e3a" stroke="rgba(56, 189, 248, 0.3)" />
+    <text x="425" y="37" fill="#38bdf8" font-size="13" font-weight="600" text-anchor="middle">Zod Procedural Schema</text>
+
+    <rect x="560" y="14" width="240" height="36" rx="6" fill="#131e3a" stroke="rgba(56, 189, 248, 0.3)" />
+    <text x="680" y="37" fill="#94a3b8" font-size="13" font-weight="600" text-anchor="middle">Postgres / LibSQL Store</text>
+  </g>
+
+  <!-- Connect Arrow 1 -> 2 -->
+  <path d="M 450 159 L 450 178" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- LAYER 2: RUNTIME GUIDANCE -->
+  <g transform="translate(40, 180)">
+    <rect x="0" y="0" width="820" height="64" rx="10" fill="#120e28" stroke="#a855f7" stroke-width="1.2" />
+    <circle cx="28" cy="32" r="14" fill="#24143f" stroke="#a855f7" stroke-width="1.2" />
+    <text x="28" y="37" fill="#c084fc" font-size="13" font-weight="800" text-anchor="middle">2</text>
+    <text x="56" y="37" fill="#f8fafc" font-size="15" font-weight="700">Runtime Guidance Pipeline</text>
+
+    <!-- 3 Steps -->
+    <rect x="310" y="14" width="150" height="36" rx="6" fill="#201138" stroke="rgba(168, 85, 247, 0.3)" />
+    <text x="385" y="37" fill="#e9d5ff" font-size="13" font-weight="600" text-anchor="middle">Locate u_t</text>
+
+    <rect x="475" y="14" width="160" height="36" rx="6" fill="#201138" stroke="rgba(168, 85, 247, 0.3)" />
+    <text x="555" y="37" fill="#e9d5ff" font-size="13" font-weight="600" text-anchor="middle">Extract 2-Hop</text>
+
+    <rect x="650" y="14" width="150" height="36" rx="6" fill="#201138" stroke="#a855f7" />
+    <text x="725" y="37" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">Guidance LLM</text>
+  </g>
+
+  <!-- Connect Arrow 2 -> 3 -->
+  <path d="M 450 244 L 450 263" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- LAYER 3: EXECUTION & MCP -->
+  <g transform="translate(40, 265)">
+    <rect x="0" y="0" width="820" height="64" rx="10" fill="#091d17" stroke="#10b981" stroke-width="1.2" />
+    <circle cx="28" cy="32" r="14" fill="#0f3427" stroke="#10b981" stroke-width="1.2" />
+    <text x="28" y="37" fill="#34d399" font-size="13" font-weight="800" text-anchor="middle">3</text>
+    <text x="56" y="37" fill="#f8fafc" font-size="15" font-weight="700">Execution &amp; MCP Layer</text>
+
+    <rect x="310" y="14" width="240" height="36" rx="6" fill="#0f3025" stroke="rgba(16, 185, 129, 0.4)" />
+    <text x="430" y="37" fill="#a7f3d0" font-size="13" font-weight="700" text-anchor="middle">Mastra Agent (ReAct)</text>
+
+    <rect x="570" y="14" width="230" height="36" rx="6" fill="#0f3025" stroke="rgba(16, 185, 129, 0.4)" />
+    <text x="685" y="37" fill="#6ee7b7" font-size="13" font-weight="600" text-anchor="middle">MCP Tools (ERP, CRM)</text>
+  </g>
+
+  <!-- Connect Arrow 3 -> 4 -->
+  <path d="M 450 329 L 450 348" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- LAYER 4: SELF-EVOLUTION -->
+  <g transform="translate(40, 350)">
+    <rect x="0" y="0" width="820" height="64" rx="10" fill="#1c1608" stroke="#f59e0b" stroke-width="1.2" />
+    <circle cx="28" cy="32" r="14" fill="#332408" stroke="#f59e0b" stroke-width="1.2" />
+    <text x="28" y="37" fill="#fbbf24" font-size="13" font-weight="800" text-anchor="middle">4</text>
+    <text x="56" y="37" fill="#f8fafc" font-size="15" font-weight="700">Offline Self-Evolution Loop</text>
+
+    <rect x="310" y="14" width="150" height="36" rx="6" fill="#2e1f06" stroke="rgba(245, 158, 11, 0.4)" />
+    <text x="385" y="37" fill="#fde68a" font-size="13" font-weight="600" text-anchor="middle">Refiner Agent</text>
+
+    <rect x="475" y="14" width="180" height="36" rx="6" fill="#2e1f06" stroke="#ef4444" />
+    <text x="565" y="37" fill="#fca5a5" font-size="13" font-weight="700" text-anchor="middle">Rejection Memory</text>
+
+    <rect x="670" y="14" width="130" height="36" rx="6" fill="#2e1f06" stroke="rgba(245, 158, 11, 0.4)" />
+    <text x="735" y="37" fill="#fde68a" font-size="13" font-weight="600" text-anchor="middle">Eval Gate</text>
+  </g>
+</svg>
