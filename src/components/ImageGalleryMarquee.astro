@@ -18,6 +18,13 @@ const { catalog } = Astro.props;
 const initialRow1 = catalog.slice(0, 12);
 const initialRow2 = catalog.slice(12, 27);
 const initialRow3 = catalog.slice(27, 45);
+
+function getBadgeColor(href: string): string {
+  if (href.startsWith('/courses/')) return 'badge-new-yellow';
+  if (href.startsWith('/services/')) return 'badge-new-purple';
+  if (href.startsWith('/visualizations/')) return 'badge-new-green';
+  return 'badge-new-blue';
+}
 ---
 
 <section id="gallery" class="w-full pb-12 md:pb-16 scroll-mt-20 overflow-hidden relative">
@@ -29,7 +36,7 @@ const initialRow3 = catalog.slice(27, 45);
           Content <span class="heading-gradient-brand">Gallery</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
-          A multi-tier perspective preview across articles, interactive platforms, academic courses, consulting architectures, and scientific models.
+          A multi-tier perspective preview across articles, interactive platforms, academic courses, business services, and scientific models.
         </p>
       </div>
 
@@ -77,6 +84,11 @@ const initialRow3 = catalog.slice(27, 45);
             decoding="async"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-transparent opacity-95 pointer-events-none" />
+          <span
+            class={`gallery-badge unread-dot hidden badge-new ${getBadgeColor(item.href)}`}
+            data-item-url={item.href}
+            title="Unread"
+          >UNREAD</span>
           <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between pointer-events-none z-10">
             <div class="pr-3 min-w-0 flex-1">
               <h3 class="gallery-card-title text-sm sm:text-base font-bold text-white group-hover:text-blue-200 transition-colors truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" title={item.title}>
@@ -114,6 +126,11 @@ const initialRow3 = catalog.slice(27, 45);
             decoding="async"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-transparent opacity-95 pointer-events-none" />
+          <span
+            class={`gallery-badge unread-dot hidden badge-new ${getBadgeColor(item.href)}`}
+            data-item-url={item.href}
+            title="Unread"
+          >UNREAD</span>
           <div class="absolute inset-x-0 bottom-0 p-3.5 sm:p-4 flex items-end justify-between pointer-events-none z-10">
             <div class="pr-2 min-w-0 flex-1">
               <h3 class="gallery-card-title text-xs sm:text-sm font-bold text-white group-hover:text-blue-200 transition-colors truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" title={item.title}>
@@ -146,6 +163,11 @@ const initialRow3 = catalog.slice(27, 45);
             decoding="async"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-transparent opacity-95 pointer-events-none" />
+          <span
+            class={`gallery-badge unread-dot hidden badge-new ${getBadgeColor(item.href)}`}
+            data-item-url={item.href}
+            title="Unread"
+          >UNREAD</span>
           <div class="absolute inset-x-0 bottom-0 p-2.5 sm:p-3 flex items-end justify-between pointer-events-none z-10">
             <h3 class="gallery-card-title text-[11px] sm:text-xs font-semibold text-white group-hover:text-blue-200 transition-colors truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" title={item.title}>
               {item.title}
@@ -318,6 +340,40 @@ const initialRow3 = catalog.slice(27, 45);
     return candidates[0];
   }
 
+  function getBadgeColor(href: string): string {
+    if (href.startsWith('/courses/')) return 'badge-new-yellow';
+    if (href.startsWith('/services/')) return 'badge-new-purple';
+    if (href.startsWith('/visualizations/')) return 'badge-new-green';
+    return 'badge-new-blue';
+  }
+
+  function getVisitedItems(): Record<string, number> {
+    try {
+      const raw = localStorage.getItem('gh_site_notifications_v1');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed.visitedItems || {};
+      }
+    } catch {
+      // Storage access failure
+    }
+    return {};
+  }
+
+  function isPathVisited(path: string, visitedMap: Record<string, number>): boolean {
+    let normalized = path.replace(/\/$/, '');
+    if (!normalized.startsWith('/')) {
+      normalized = '/' + normalized;
+    }
+    return !!visitedMap[normalized];
+  }
+
+  let visitedItemsCache: Record<string, number> = {};
+
+  function refreshVisitedItemsCache() {
+    visitedItemsCache = getVisitedItems();
+  }
+
   function hydrateCard(card: HTMLElement, item: GalleryItem) {
     card.dataset.id = item.id;
     card.setAttribute('href', item.href);
@@ -342,6 +398,20 @@ const initialRow3 = catalog.slice(27, 45);
       } else {
         tagline.textContent = '';
         tagline.style.display = 'none';
+      }
+    }
+
+    const badge = card.querySelector<HTMLElement>('.gallery-badge');
+    if (badge) {
+      badge.setAttribute('data-item-url', item.href);
+      badge.classList.remove('badge-new-blue', 'badge-new-yellow', 'badge-new-purple', 'badge-new-green');
+      badge.classList.add(getBadgeColor(item.href));
+
+      const isVisited = isPathVisited(item.href, visitedItemsCache);
+      if (!isVisited) {
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
       }
     }
   }
@@ -375,6 +445,7 @@ const initialRow3 = catalog.slice(27, 45);
     if (!catalog.length) return;
 
     inMemorySeenLedger = loadSeenLedger();
+    refreshVisitedItemsCache();
 
     // 1. Full Client-Side Rehydration:
     const inUseIds = new Set<string>();
@@ -475,10 +546,11 @@ const initialRow3 = catalog.slice(27, 45);
     };
     motionQuery.addEventListener('change', handleMotionChange);
 
-    // Tab visibility handler
+    // Tab visibility handler & storage sync
     const handleVisibilityChange = () => {
       isDocumentHidden = document.hidden;
       if (!isDocumentHidden) {
+        refreshVisitedItemsCache();
         lastTime = null;
         if (isInView && activeAnimationId === null) {
           activeAnimationId = requestAnimationFrame(tick);
@@ -486,6 +558,7 @@ const initialRow3 = catalog.slice(27, 45);
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('storage', refreshVisitedItemsCache, { passive: true });
 
     let lastTime: number | null = null;
 

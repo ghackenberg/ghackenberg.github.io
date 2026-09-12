@@ -13,12 +13,19 @@ variants:
   - name: "portrait-business"
     image: "./portrait.png"
     promptSnippet: "Close-up bust portrait of Dr. Georg Hackenberg smiling warmly in a dark tailored suit jacket and light checked shirt, crisp ink linework on dark background."
+environments:
+  - "home-office-almtal"
+  - "campus-office-wels"
+  - "design-thinking-lab-wels"
+objects:
+  - "almtal-abstract-painting"
 tags:
   - "author"
   - "protagonist"
   - "professor"
   - "engineer"
 ---
+
 
 # Dr. Georg Hackenberg
 

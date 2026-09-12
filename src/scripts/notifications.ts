@@ -147,5 +147,6 @@ async function initNotifications() {
   });
 }
 
-// Run when script is loaded
+// Run when script is loaded and on Astro view transitions
 initNotifications();
+document.addEventListener('astro:page-load', initNotifications);

@@ -36,8 +36,8 @@ const optimizedIcon = icon && !isSvg ? await getImage({
 
 // Article wrapper classes
 const articleClass = featured
-  ? "glass-card rounded-2xl md:rounded-3xl border-2 border-brand-blue/50 light:border-brand-blue/40 shadow-2xl shadow-brand-blue/15 light:shadow-xl light:shadow-brand-blue/10 bg-gradient-to-br from-brand-blue/20 via-slate-900/90 to-indigo-950/80 light:from-blue-50/90 light:via-white light:to-sky-100/70 flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/80 transition-all duration-300 h-full w-full overflow-hidden"
-  : "glass-card rounded-2xl md:rounded-3xl border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/40 transition-all duration-300 h-full w-full overflow-hidden";
+  ? "glass-card preview-card border-2 border-brand-blue/50 light:border-brand-blue/40 shadow-2xl shadow-brand-blue/15 light:shadow-xl light:shadow-brand-blue/10 bg-gradient-to-br from-brand-blue/20 via-slate-900/90 to-indigo-950/80 light:from-blue-50/90 light:via-white light:to-sky-100/70 flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/80 transition-all duration-300 h-full w-full"
+  : "glass-card preview-card border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/40 transition-all duration-300 h-full w-full";
 
 // Image container classes
 const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10";
@@ -76,10 +76,17 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
         </svg>
       </div>
     )}
+
+    <!-- Unread badge -->
+    <span 
+      class="unread-dot hidden badge-new badge-new-blue badge-corner-tr" 
+      data-item-url={`/posts/${id}/`}
+      title="Unread post"
+    >UNREAD</span>
   </div>
   
   <!-- Content -->
-  <div class="flex-grow flex flex-col relative z-10 p-5 md:p-6">
+  <div class="flex-grow flex flex-col relative z-10 preview-card-body">
 
     <!-- Meta row: date + badge -->
     <div class="flex flex-wrap items-center gap-2 mb-1.5">
@@ -95,11 +102,6 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
           day: "numeric"
         })}
       </time>
-      <span 
-        class="unread-dot hidden badge-new badge-new-blue shrink-0" 
-        data-item-url={`/posts/${id}/`}
-        title="Unread post"
-      >UNREAD</span>
     </div>
 
     <!-- Title -->

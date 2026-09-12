@@ -382,6 +382,146 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   display: none !important;
 }
 
+/* Centralized Preview Card Architecture */
+.preview-card {
+  border-radius: 1rem; /* 16px (rounded-2xl) */
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .preview-card {
+    border-radius: 1.5rem; /* 24px (rounded-3xl) */
+  }
+}
+
+.preview-card-body {
+  padding: 1.25rem; /* 20px (p-5) */
+}
+
+@media (min-width: 768px) {
+  .preview-card-body {
+    padding: 1.5rem; /* 24px (p-6) */
+  }
+}
+
+/* Card Corner Ribbon Badges (Top-Right & Top-Left) */
+.badge-corner-tr,
+.badge-corner-tl {
+  position: absolute;
+  top: 0;
+  z-index: 20;
+  height: 1.75rem; /* 28px */
+  padding: 0 0.85rem;
+  font-size: 0.625rem; /* 10px */
+  line-height: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  user-select: none;
+}
+
+.badge-corner-tr {
+  right: 0;
+  border-top-right-radius: 1rem; /* 16px matching preview-card mobile */
+  border-bottom-left-radius: 1rem; /* 16px matching outer radius of preview-card */
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  border-top-width: 0;
+  border-right-width: 0;
+}
+
+.badge-corner-tl {
+  left: 0;
+  border-top-left-radius: 1rem; /* 16px matching preview-card mobile */
+  border-bottom-right-radius: 1rem; /* 16px matching outer radius of preview-card */
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-top-width: 0;
+  border-left-width: 0;
+}
+
+@media (min-width: 768px) {
+  .badge-corner-tr,
+  .badge-corner-tl {
+    height: 2rem; /* 32px */
+    line-height: 2rem;
+    padding: 0 1rem;
+    font-size: 0.6875rem; /* 11px */
+  }
+
+  .badge-corner-tr {
+    border-top-right-radius: 1.5rem; /* 24px matching preview-card desktop */
+    border-bottom-left-radius: 1.5rem; /* 24px matching outer radius of preview-card */
+  }
+
+  .badge-corner-tl {
+    border-top-left-radius: 1.5rem; /* 24px matching preview-card desktop */
+    border-bottom-right-radius: 1.5rem; /* 24px matching outer radius of preview-card */
+  }
+}
+
+/* Gallery Marquee Corner Ribbon Badges */
+.gallery-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  text-transform: uppercase;
+  user-select: none;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  border-top-width: 0;
+  border-right-width: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+.gallery-badge.hidden {
+  display: none !important;
+}
+
+/* Gallery Row 1: Foreground (Largest Cards, rounded-2xl) */
+.gallery-track-1 .gallery-badge {
+  height: 1.35rem; /* 21.6px */
+  padding: 0 0.6rem;
+  font-size: 0.5625rem; /* 9px */
+  letter-spacing: 0.06em;
+  border-top-right-radius: 1rem; /* 16px matching row 1 card radius */
+  border-bottom-left-radius: 1rem;
+}
+
+/* Gallery Row 2: Midground (Medium Cards, rounded-xl) */
+.gallery-track-2 .gallery-badge {
+  height: 1.15rem; /* 18.4px */
+  padding: 0 0.5rem;
+  font-size: 0.5rem; /* 8px */
+  letter-spacing: 0.05em;
+  border-top-right-radius: 0.75rem; /* 12px matching row 2 card radius */
+  border-bottom-left-radius: 0.75rem;
+}
+
+/* Gallery Row 3: Background (Smallest Cards, rounded-lg) */
+.gallery-track-3 .gallery-badge {
+  height: 0.95rem; /* 15.2px */
+  padding: 0 0.4rem;
+  font-size: 0.4375rem; /* 7px */
+  letter-spacing: 0.04em;
+  border-top-right-radius: 0.5rem; /* 8px matching row 3 card radius */
+  border-bottom-left-radius: 0.5rem;
+}
+
 /* Navigation Section Unread Notification Dot */
 .nav-badge {
   width: 0.45rem;

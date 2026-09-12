@@ -39,7 +39,7 @@ const optimizedScreenshotLight = screenshotLight ? await getImage({
 }) : null;
 ---
 
-<div class="glass-card h-full rounded-2xl border border-element-border flex flex-col group overflow-hidden relative cursor-pointer hover:border-brand-yellow/30">
+<div class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-brand-yellow/30">
   <!-- Absolute overlay link for card clickability -->
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
 
@@ -113,21 +113,23 @@ const optimizedScreenshotLight = screenshotLight ? await getImage({
     )}
 
     <!-- Instruction language badge -->
-    <span class="absolute top-4 right-4 z-20 inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-slate-950/80 text-white border border-white/15 uppercase select-none">
+    <span class="badge-corner-tl bg-slate-950/85 text-white border-white/20 shadow-md backdrop-blur-sm">
       {language}
     </span>
+
+    <!-- Unread badge -->
+    <span 
+      class="unread-dot hidden badge-new badge-new-yellow badge-corner-tr" 
+      data-item-url={href}
+      title="Unread course"
+    >UNREAD</span>
   </div>
 
   <!-- Details -->
-  <div class="p-5 md:p-6 flex flex-col flex-grow border-t border-element-border">
+  <div class="preview-card-body flex flex-col flex-grow border-t border-element-border">
     <div>
       <h2 class="text-lg font-bold text-gray-100 mb-2 group-hover:text-brand-yellow transition-colors leading-tight">
         {title}
-        <span 
-          class="unread-dot hidden badge-new badge-new-yellow ml-2 align-middle" 
-          data-item-url={href}
-          title="Unread course"
-        >UNREAD</span>
       </h2>
 
       {description && (

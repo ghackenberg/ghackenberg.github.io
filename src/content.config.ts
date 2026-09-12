@@ -1,4 +1,4 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, reference } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import fs from 'node:fs';
@@ -316,6 +316,8 @@ const characters = defineCollection({
       image: image(),
       promptSnippet: z.string(),
     })).default([]),
+    environments: z.array(reference('environments')).default([]),
+    objects: z.array(reference('objects')).default([]),
     tags: z.array(z.string()).default([]),
   }),
 });
@@ -331,11 +333,18 @@ const objects = defineCollection({
     category: z.string(),
     canonicalPrompt: z.string(),
     referenceImage: image(),
+    geometry: z.object({
+      form: z.string(),
+      materials: z.string(),
+      colors: z.array(z.string()).default([]),
+    }).optional(),
     variants: z.array(z.object({
       name: z.string(),
       image: image(),
       promptSnippet: z.string(),
     })).default([]),
+    environments: z.array(reference('environments')).default([]),
+    characters: z.array(reference('characters')).default([]),
     tags: z.array(z.string()).default([]),
   }),
 });
@@ -351,14 +360,38 @@ const environments = defineCollection({
     category: z.string(),
     canonicalPrompt: z.string(),
     referenceImage: image(),
+    dna: z.object({
+      architecture: z.string(),
+      materials: z.object({
+        walls: z.string(),
+        ceiling: z.string(),
+        flooring: z.string(),
+      }),
+      lighting: z.string(),
+      palette: z.array(z.string()).default([]),
+      view: z.string().optional(),
+    }).optional(),
     variants: z.array(z.object({
       name: z.string(),
       image: image(),
+      shotType: z.enum(['three-quarters', 'wide-angle', 'close-up', 'over-the-shoulder', 'top-down', 'eye-level']).default('eye-level'),
+      cameraAngle: z.string().optional(),
+      focalTarget: z.string().optional(),
+      maxCharacters: z.number().int().min(0).default(1),
+      visibleObjects: z.array(reference('objects')).default([]),
+      depthLayers: z.object({
+        foreground: z.string(),
+        midground: z.string(),
+        background: z.string(),
+      }).optional(),
       promptSnippet: z.string(),
     })).default([]),
+    characters: z.array(reference('characters')).default([]),
+    objects: z.array(reference('objects')).default([]),
     tags: z.array(z.string()).default([]),
   }),
 });
+
 
 export const collections = {
   'linkedin-posts': linkedinPosts,

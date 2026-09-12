@@ -28,7 +28,7 @@ const optimizedScreenshot = screenshot ? await getImage({
 }) : null;
 ---
 
-<div class="glass-card rounded-2xl border border-white/5 overflow-hidden flex flex-col h-full group relative cursor-pointer hover:border-brand-green/30">
+<div class="glass-card preview-card border border-white/5 flex flex-col h-full group relative cursor-pointer hover:border-brand-green/30">
   <!-- Screenshot -->
   <div class="aspect-video w-full overflow-hidden bg-gray-900 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
     {screenshot && (
@@ -77,10 +77,17 @@ const optimizedScreenshot = screenshot ? await getImage({
         />
       </svg>
     )}
+
+    <!-- Unread badge -->
+    <span 
+      class="unread-dot hidden badge-new badge-new-green badge-corner-tr" 
+      data-item-url={href}
+      title="Unread visualization"
+    >UNREAD</span>
   </div>
 
   <!-- Details -->
-  <div class="p-6 flex flex-col flex-grow border-t border-white/5">
+  <div class="preview-card-body flex flex-col flex-grow border-t border-white/5">
     <div class="flex-grow flex flex-col">
       <span class={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full border mb-4 tracking-wide uppercase self-start ${badgeColor}`}>
         {engineId} engine
@@ -88,11 +95,6 @@ const optimizedScreenshot = screenshot ? await getImage({
       
       <h2 class="text-xl font-bold text-gray-100 mb-3 group-hover:text-brand-green transition-colors">
         {title}
-        <span 
-          class="unread-dot hidden badge-new badge-new-green ml-2 align-middle" 
-          data-item-url={href}
-          title="Unread visualization"
-        >UNREAD</span>
       </h2>
       
       <p class="text-gray-400 text-sm leading-relaxed mb-6 font-normal flex-grow">

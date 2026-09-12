@@ -17,7 +17,7 @@
   - ORCID: https://orcid.org/0000-0002-1234-5678
 
 ## Full Content Export for LLMs & RAG
-- [Full Text Corpus (llms-full.txt)](https://hackenberg.tech/llms-full.txt): Complete structured text of all blog posts, publication abstracts, course outlines, software projects, and consulting services.
+- [Full Text Corpus (llms-full.txt)](https://hackenberg.tech/llms-full.txt): Complete structured text of all blog posts, publication abstracts, course outlines, software projects, and business services.
 - [JSON Content Manifest](https://hackenberg.tech/content-manifest.json): Machine-readable index of all published entries and metadata.
 - [RSS XML Feed](https://hackenberg.tech/rss.xml): RSS feed of posts and academic updates.
 

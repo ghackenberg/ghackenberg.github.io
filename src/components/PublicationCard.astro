@@ -81,13 +81,17 @@ const {
 
   <!-- Details -->
   <div class="flex-grow flex flex-col h-full w-full">
-    <h3 class="text-lg font-bold text-gray-100 mb-2 group-hover:text-brand-purple transition-colors leading-snug">
-      {title}
+    <!-- Unread badge above title -->
+    <div>
       <span 
-        class="unread-dot hidden badge-new badge-new-purple ml-2 align-middle" 
+        class="unread-dot hidden badge-new badge-new-purple mb-2 self-start" 
         data-item-url={`/publications/${id}/`}
         title="Unread publication"
       >UNREAD</span>
+    </div>
+
+    <h3 class="text-lg font-bold text-gray-100 mb-2 group-hover:text-brand-purple transition-colors leading-snug">
+      {title}
     </h3>
     
     <p class="text-gray-300 text-sm mb-1.5 font-normal">

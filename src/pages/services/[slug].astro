@@ -80,7 +80,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
 ---
 
 <Layout 
-  title={`${service.data.title} | Consulting Services | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`} 
+  title={`${service.data.title} | Business Services | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`} 
   description={service.data.description}
   image={service.data.previewImage}
   tags={service.data.tags}
@@ -163,11 +163,8 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
               return (
                 <a 
                   href={`/services/${service.id}/${moduleSlug}/`}
-                  class="glass-card rounded-2xl md:rounded-3xl border border-element-border relative overflow-hidden flex flex-col h-full hover:border-element-border-medium transition-all duration-300 group cursor-pointer block no-underline"
+                  class="glass-card preview-card border border-element-border relative flex flex-col h-full hover:border-element-border-medium transition-all duration-300 group cursor-pointer block no-underline"
                 >
-                  {/* Accent bar */}
-                  <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow} z-20`}></div>
-
                   {/* Preview Image Column (Top) */}
                   <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
                     {module.data.previewImage && (
@@ -180,19 +177,21 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
                       />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+
+                    <!-- Unread badge -->
+                    <span 
+                      class={`unread-dot hidden ${colorClasses.dot} badge-corner-tr`}
+                      data-item-url={`/services/${service.id}/${moduleSlug}/`}
+                      title="Unread module"
+                    >UNREAD</span>
                   </div>
                   
                   <!-- Info Body (Below) -->
-                  <div class="p-5 md:p-6 flex flex-col flex-grow justify-between relative z-10 text-left">
+                  <div class="preview-card-body flex flex-col flex-grow justify-between relative z-10 text-left">
                     <div class="space-y-3">
                       <div class="flex items-center gap-2">
                         <h3 class={`text-base sm:text-lg font-bold uppercase tracking-wider leading-snug mt-0 flex items-center gap-2 text-gray-100 light:text-slate-900 ${colorClasses.hoverText} transition-colors`}>
                           <span>{module.data.title}</span>
-                          <span 
-                            class={`unread-dot hidden ${colorClasses.dot}`}
-                            data-item-url={`/services/${service.id}/${moduleSlug}/`}
-                            title="Unread module"
-                          >UNREAD</span>
                         </h3>
                       </div>
                       <p class={`${colorClasses.text} font-bold text-[10px] uppercase tracking-wider leading-none`}>

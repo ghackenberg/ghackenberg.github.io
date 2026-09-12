@@ -78,7 +78,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     output += `\n${project.body}\n\n---\n\n`;
   }
 
-  output += `## 6. Consulting Services & Modules\n\n`;
+  output += `## 6. Business Services & Modules\n\n`;
   for (const service of services) {
     output += `### Service: ${service.data.title}\n`;
     output += `- URL: https://hackenberg.tech/services/${service.id}/\n`;

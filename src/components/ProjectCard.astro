@@ -81,7 +81,7 @@ const badgeColorClass = {
 ---
 
 <div 
-  class={`glass-card h-full rounded-2xl border flex flex-col group overflow-hidden relative cursor-pointer ${colorClasses.border}`}
+  class={`glass-card preview-card h-full border flex flex-col group relative cursor-pointer ${colorClasses.border}`}
 >
   <!-- Absolute overlay link for card clickability -->
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
@@ -157,21 +157,23 @@ const badgeColorClass = {
         </div>
       </>
     )}
+
+    <!-- Unread badge -->
+    <span 
+      class={`unread-dot hidden badge-new ${badgeColorClass} badge-corner-tr`} 
+      data-item-url={href}
+      title="Unread project"
+    >UNREAD</span>
   </div>
 
   <!-- Content Padding Wrapper -->
-  <div class="p-5 md:p-6 flex flex-col flex-grow border-t border-element-border">
+  <div class="preview-card-body flex flex-col flex-grow border-t border-element-border">
     <div>
       <!-- Header -->
       <div class="flex items-start justify-between mb-2 w-full">
         <div class="w-full">
           <h3 class={`text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-brand-${accentColor} transition-all duration-300`}>
             {title}
-            <span 
-              class={`unread-dot hidden badge-new ${badgeColorClass} ml-2 align-middle`} 
-              data-item-url={href}
-              title="Unread project"
-            >UNREAD</span>
           </h3>
           <p class={`text-sm font-semibold tracking-wide mt-1 uppercase ${colorClasses.iconColor}`}>
             {tagline}

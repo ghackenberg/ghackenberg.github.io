@@ -59,8 +59,8 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
 ---
 
 <Layout 
-  title="Consulting Services | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels" 
-  description="Explore specialized artificial intelligence and media publishing consulting services offered by Dr. Georg Hackenberg, covering sovereign AI technology stacks, system integration, agentic automation, channel definition, social media design systems, and content production."
+  title="Business Services | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels" 
+  description="Explore specialized artificial intelligence and media publishing business services offered by Dr. Georg Hackenberg, covering sovereign AI technology stacks, system integration, agentic automation, channel definition, social media design systems, and content production."
   image={firstServiceImage}
   jsonLd={servicesJsonLd}
 >
@@ -71,10 +71,10 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
     <div class="mb-16">
 
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
-        Consulting <span class="heading-gradient-purple">Services</span>
+        Business <span class="heading-gradient-purple">Services</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-        Bridging the gap between cutting-edge academic research, software engineering, and corporate practice. Discover specialized consulting across sovereign artificial intelligence architectures and modern digital media publishing.
+        Bridging the gap between cutting-edge academic research, software engineering, and corporate practice. Discover specialized business services across sovereign artificial intelligence architectures and modern digital media publishing.
       </p>
     </div>
 
@@ -142,10 +142,7 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                   data-desc={service.data.description.toLowerCase()}
                   data-tags={tagsJoined}
                 >
-                  <div class="glass-card rounded-2xl md:rounded-3xl border border-element-border relative overflow-hidden flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300">
-                    <!-- Top accent color line -->
-                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-purple to-pink-500 light:to-pink-600 z-20"></div>
-
+                  <div class="glass-card preview-card border border-element-border relative flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300">
                     <!-- Card Clickable Overlay Link -->
                     <a 
                       href={`/services/${service.id}/`} 
@@ -202,20 +199,22 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                         </svg>
                       )}
                       <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+
+                      <!-- Unread badge -->
+                      <span 
+                        class="unread-dot hidden badge-new badge-new-purple badge-corner-tr"
+                        data-item-url={`/services/${service.id}/`}
+                        title="Unread service"
+                      >UNREAD</span>
                     </div>
 
                     <!-- Info Body (Below) -->
-                    <div class="p-6 md:p-8 flex flex-col flex-grow justify-between">
+                    <div class="preview-card-body flex flex-col flex-grow justify-between">
                       <div class="space-y-3">
                         <!-- Header -->
                         <div>
                           <h2 class="text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors group-hover:text-brand-purple light:group-hover:text-purple-600">
                             <span>{service.data.title}</span>
-                            <span 
-                              class="unread-dot hidden badge-new badge-new-purple"
-                              data-item-url={`/services/${service.id}/`}
-                              title="Unread service"
-                            >UNREAD</span>
                           </h2>
                           <p class="text-brand-purple light:text-purple-700 font-bold text-xs uppercase tracking-wider mt-1">
                             {service.data.tagline}
