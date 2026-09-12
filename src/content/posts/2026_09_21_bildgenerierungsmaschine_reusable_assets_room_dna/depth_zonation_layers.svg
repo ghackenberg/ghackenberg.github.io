@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 455" width="100%" height="100%" style="background-color: #030712; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Row Gradients -->
+    <linearGradient id="grad-fg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0c2338" />
+      <stop offset="100%" stop-color="#081424" />
+    </linearGradient>
+    <linearGradient id="grad-mg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#231338" />
+      <stop offset="100%" stop-color="#140b22" />
+    </linearGradient>
+    <linearGradient id="grad-bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0b291e" />
+      <stop offset="100%" stop-color="#071711" />
+    </linearGradient>
+  </defs>
+
+  <!-- Frame Background -->
+  <rect x="8" y="8" width="924" height="439" rx="16" fill="#070b16" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Title Header -->
+  <text x="36" y="38" fill="#f8fafc" font-size="17" font-weight="700">Depth Zonation: Dreidimensionale Prompt-Architektur</text>
+  <text x="36" y="58" fill="#94a3b8" font-size="12.5">Strukturierung des Prompts entlang der Z-Achse verhindert räumliche Ambiguitäten im Diffusionsmodell</text>
+
+  <!-- ==================== TOP BAR: STYLE GUARDRAILS ==================== -->
+  <g transform="translate(36, 74)">
+    <rect width="868" height="34" rx="8" fill="#0b172a" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1.2" />
+    <rect x="10" y="7" width="140" height="20" rx="4" fill="#0284c7" fill-opacity="0.3" />
+    <text x="80" y="21" fill="#38bdf8" font-size="10.5" font-weight="700" text-anchor="middle" letter-spacing="0.04em">STYLE GUARDRAILS</text>
+    <text x="165" y="21" fill="#cbd5e1" font-size="11">Disney/Pixar Comic-Stil • Dark Slate Canvas (#030712) • Bold Cel Shading • Markenfarben (#3b82f6, #a855f7, #10b981)</text>
+  </g>
+
+  <!-- ==================== LAYER 1: FOREGROUND ==================== -->
+  <g transform="translate(36, 118)">
+    <rect width="868" height="74" rx="10" fill="url(#grad-fg)" stroke="#38bdf8" stroke-width="1.2" />
+    
+    <!-- Left Column: Layer & Depth -->
+    <g transform="translate(18, 16)">
+      <rect width="168" height="22" rx="5" fill="#0284c7" fill-opacity="0.25" stroke="#38bdf8" stroke-width="1" />
+      <text x="10" y="15" fill="#38bdf8" font-size="11" font-weight="700">1. FOREGROUND LAYER</text>
+      <text x="2" y="38" fill="#94a3b8" font-size="11">Z: 0.0 – 1.2 m (Nahbereich)</text>
+    </g>
+
+    <!-- Center Column: Semantic Focus -->
+    <g transform="translate(210, 16)">
+      <text x="0" y="14" fill="#f8fafc" font-size="12.5" font-weight="700">Protagonist &amp; Primärinteraktion</text>
+      <text x="0" y="34" fill="#cbd5e1" font-size="11.5">• Dr. Georg Hackenberg am Stehpult mit holografischem UI</text>
+    </g>
+
+    <!-- Right Column: Conditioning Anchor -->
+    <g transform="translate(635, 14)">
+      <rect width="215" height="46" rx="6" fill="#071626" stroke="#0284c7" stroke-opacity="0.6" stroke-width="1" />
+      <text x="12" y="20" fill="#38bdf8" font-size="10.5" font-weight="700">Visueller Anker 1: Portrait</text>
+      <text x="12" y="36" fill="#94a3b8" font-size="10">characters/georg/portrait.png</text>
+    </g>
+  </g>
+
+  <!-- ==================== LAYER 2: MIDGROUND ==================== -->
+  <g transform="translate(36, 202)">
+    <rect width="868" height="74" rx="10" fill="url(#grad-mg)" stroke="#a855f7" stroke-width="1.2" />
+    
+    <!-- Left Column: Layer & Depth -->
+    <g transform="translate(18, 16)">
+      <rect width="168" height="22" rx="5" fill="#7e22ce" fill-opacity="0.25" stroke="#a855f7" stroke-width="1" />
+      <text x="10" y="15" fill="#c084fc" font-size="11" font-weight="700">2. MIDGROUND LAYER</text>
+      <text x="2" y="38" fill="#94a3b8" font-size="11">Z: 1.2 – 3.5 m (Mitteldistanz)</text>
+    </g>
+
+    <!-- Center Column: Semantic Focus -->
+    <g transform="translate(210, 16)">
+      <text x="0" y="14" fill="#f8fafc" font-size="12.5" font-weight="700">Signature Objects &amp; Arbeitsplatz</text>
+      <text x="0" y="34" fill="#cbd5e1" font-size="11.5">• Almtal-Gemälde an Holzwand (0% Okklusion) &amp; Dual-Monitore</text>
+    </g>
+
+    <!-- Right Column: Conditioning Anchor -->
+    <g transform="translate(635, 14)">
+      <rect width="215" height="46" rx="6" fill="#170924" stroke="#7e22ce" stroke-opacity="0.6" stroke-width="1" />
+      <text x="12" y="20" fill="#c084fc" font-size="10.5" font-weight="700">Visueller Anker 2: Planar-Objekt</text>
+      <text x="12" y="36" fill="#94a3b8" font-size="10">objects/almtal-painting/reference.jpg</text>
+    </g>
+  </g>
+
+  <!-- ==================== LAYER 3: BACKGROUND ==================== -->
+  <g transform="translate(36, 286)">
+    <rect width="868" height="74" rx="10" fill="url(#grad-bg)" stroke="#10b981" stroke-width="1.2" />
+    
+    <!-- Left Column: Layer & Depth -->
+    <g transform="translate(18, 16)">
+      <rect width="168" height="22" rx="5" fill="#047857" fill-opacity="0.25" stroke="#10b981" stroke-width="1" />
+      <text x="10" y="15" fill="#34d399" font-size="11" font-weight="700">3. BACKGROUND LAYER</text>
+      <text x="2" y="38" fill="#94a3b8" font-size="11">Z: &gt; 3.5 m (Raumtiefe &amp; Weite)</text>
+    </g>
+
+    <!-- Center Column: Semantic Focus -->
+    <g transform="translate(210, 16)">
+      <text x="0" y="14" fill="#f8fafc" font-size="12.5" font-weight="700">Semantische Room DNA &amp; Panorama</text>
+      <text x="0" y="34" fill="#cbd5e1" font-size="11.5">• Zirbenholzbohlen, Deckenleuchten &amp; verschneite Bergkulisse</text>
+    </g>
+
+    <!-- Right Column: Conditioning Anchor -->
+    <g transform="translate(635, 14)">
+      <rect width="215" height="46" rx="6" fill="#061811" stroke="#047857" stroke-opacity="0.6" stroke-width="1" />
+      <text x="12" y="20" fill="#34d399" font-size="10.5" font-weight="700">Visueller Anker 3: Fokus-Variante</text>
+      <text x="12" y="36" fill="#94a3b8" font-size="10">environments/.../workplace-focus.jpg</text>
+    </g>
+  </g>
+
+  <!-- ==================== BOTTOM BAR: CINEMATOGRAPHY ==================== -->
+  <g transform="translate(36, 370)">
+    <rect width="868" height="34" rx="8" fill="#161208" stroke="#f59e0b" stroke-opacity="0.4" stroke-width="1.2" />
+    <rect x="10" y="7" width="170" height="20" rx="4" fill="#b45309" fill-opacity="0.3" />
+    <text x="95" y="21" fill="#fbbf24" font-size="10.5" font-weight="700" text-anchor="middle" letter-spacing="0.04em">CINEMATOGRAPHY &amp; LIGHT</text>
+    <text x="195" y="21" fill="#cbd5e1" font-size="11">Warmweiße Deckenspots (3000 K) • Cyan/Purple Rim Lights • 16:9 Widescreen • Keine schwebenden Duplikate</text>
+  </g>
+
+  <!-- Footer Note -->
+  <text x="36" y="426" fill="#64748b" font-size="11">Vorteil: Cross-Attention-Karten erhalten eindeutige Tiefenkoordinaten – Vorder- und Hintergrund verschmelzen nicht.</text>
+</svg>

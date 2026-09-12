@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 440" width="100%" height="100%" style="background-color: #030712; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="grad-title" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+    
+    <linearGradient id="card-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0e172a" />
+      <stop offset="100%" stop-color="#0b1120" />
+    </linearGradient>
+    <linearGradient id="card-purple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#140f2d" />
+      <stop offset="100%" stop-color="#0d091e" />
+    </linearGradient>
+    <linearGradient id="card-yellow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1c1608" />
+      <stop offset="100%" stop-color="#120e04" />
+    </linearGradient>
+    <linearGradient id="card-green" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#091d17" />
+      <stop offset="100%" stop-color="#05130f" />
+    </linearGradient>
+
+    <!-- Arrow Marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9 z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <!-- Frame Background -->
+  <rect x="8" y="8" width="984" height="424" rx="16" fill="#070b16" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Header -->
+  <text x="40" y="46" fill="url(#grad-title)" font-size="20" font-weight="800" letter-spacing="-0.02em">Visual Systems Pipeline</text>
+  <text x="40" y="70" fill="#94a3b8" font-size="13">Deterministische Bildgenerierung in vier modular entkoppelten Schritten</text>
+
+  <!-- ==================== 4 PIPELINE STEPS ==================== -->
+  
+  <!-- STEP 1: ASSET GRAPH -->
+  <g transform="translate(40, 95)">
+    <rect width="205" height="165" rx="12" fill="url(#card-blue)" stroke="#38bdf8" stroke-width="1.5" />
+    <circle cx="28" cy="28" r="14" fill="#0284c7" fill-opacity="0.25" stroke="#38bdf8" stroke-width="1.2" />
+    <text x="28" y="33" fill="#38bdf8" font-size="12" font-weight="800" text-anchor="middle">1</text>
+    <text x="50" y="34" fill="#f8fafc" font-size="14" font-weight="700">Asset Graph</text>
+    
+    <text x="16" y="68" fill="#93c5fd" font-size="11.5" font-weight="600">Astro Content Layer</text>
+    <text x="16" y="90" fill="#cbd5e1" font-size="11">• Characters (Porträt)</text>
+    <text x="16" y="110" fill="#cbd5e1" font-size="11">• Planare Objekte (0%)</text>
+    <text x="16" y="130" fill="#cbd5e1" font-size="11">• Raum-DNA &amp; Varianten</text>
+    <text x="16" y="150" fill="#64748b" font-size="10">Zod Schema Validierung</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 252 177 L 271 177" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- STEP 2: DEPTH ZONATION -->
+  <g transform="translate(278, 95)">
+    <rect width="205" height="165" rx="12" fill="url(#card-purple)" stroke="#a855f7" stroke-width="1.5" />
+    <circle cx="28" cy="28" r="14" fill="#7e22ce" fill-opacity="0.25" stroke="#a855f7" stroke-width="1.2" />
+    <text x="28" y="33" fill="#c084fc" font-size="12" font-weight="800" text-anchor="middle">2</text>
+    <text x="50" y="34" fill="#f8fafc" font-size="14" font-weight="700">Depth Zonation</text>
+
+    <text x="16" y="68" fill="#d8b4fe" font-size="11.5" font-weight="600">Prompt Governance</text>
+    <text x="16" y="90" fill="#cbd5e1" font-size="11">• Foreground (Person)</text>
+    <text x="16" y="110" fill="#cbd5e1" font-size="11">• Midground (Objekt)</text>
+    <text x="16" y="130" fill="#cbd5e1" font-size="11">• Background (Raum)</text>
+    <text x="16" y="150" fill="#64748b" font-size="10">Entkoppelte Semantik</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 490 177 L 509 177" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- STEP 3: DIFFUSION SYNTHESIS -->
+  <g transform="translate(516, 95)">
+    <rect width="205" height="165" rx="12" fill="url(#card-yellow)" stroke="#f59e0b" stroke-width="1.5" />
+    <circle cx="28" cy="28" r="14" fill="#b45309" fill-opacity="0.25" stroke="#f59e0b" stroke-width="1.2" />
+    <text x="28" y="33" fill="#fbbf24" font-size="12" font-weight="800" text-anchor="middle">3</text>
+    <text x="50" y="34" fill="#f8fafc" font-size="14" font-weight="700">Diffusion</text>
+
+    <text x="16" y="68" fill="#fde68a" font-size="11.5" font-weight="600">Latent Conditioning</text>
+    <text x="16" y="90" fill="#cbd5e1" font-size="11">• Fokus-Variante (Anker)</text>
+    <text x="16" y="110" fill="#cbd5e1" font-size="11">• Keine 2D-Layout-Falle</text>
+    <text x="16" y="130" fill="#cbd5e1" font-size="11">• Cel Shading &amp; Linework</text>
+    <text x="16" y="150" fill="#64748b" font-size="10">Attention Alignment</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 728 177 L 747 177" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- STEP 4: STATIC PLATFORM -->
+  <g transform="translate(754, 95)">
+    <rect width="205" height="165" rx="12" fill="url(#card-green)" stroke="#10b981" stroke-width="1.5" />
+    <circle cx="28" cy="28" r="14" fill="#047857" fill-opacity="0.25" stroke="#10b981" stroke-width="1.2" />
+    <text x="28" y="33" fill="#34d399" font-size="12" font-weight="800" text-anchor="middle">4</text>
+    <text x="50" y="34" fill="#f8fafc" font-size="14" font-weight="700">Delivery</text>
+
+    <text x="16" y="68" fill="#a7f3d0" font-size="11.5" font-weight="600">Astro Production</text>
+    <text x="16" y="90" fill="#cbd5e1" font-size="11">• WebP Optimierung</text>
+    <text x="16" y="110" fill="#cbd5e1" font-size="11">• Preview Cards</text>
+    <text x="16" y="130" fill="#cbd5e1" font-size="11">• Marquee Badges</text>
+    <text x="16" y="150" fill="#34d399" font-size="10" font-weight="700">✓ 100% Stil-Konsistenz</text>
+  </g>
+
+  <!-- ==================== BOTTOM COMPARISON BOXES ==================== -->
+  
+  <!-- LEFT BOX: TRADITIONAL TRAP -->
+  <g transform="translate(40, 280)">
+    <rect width="445" height="120" rx="10" fill="#150d10" stroke="#ef4444" stroke-opacity="0.5" stroke-width="1.2" />
+    
+    <circle cx="22" cy="24" r="9" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="22" y="28" fill="#ef4444" font-size="11" font-weight="800" text-anchor="middle">✕</text>
+    <text x="40" y="28" fill="#fca5a5" font-size="13" font-weight="700">2D Layout-Locking Trap (Anti-Pattern)</text>
+
+    <text x="18" y="56" fill="#cbd5e1" font-size="11.5">• Weitwinkelfoto als 2D-Referenz friert Raster ein</text>
+    <text x="18" y="76" fill="#cbd5e1" font-size="11.5">• Blickwinkelwechsel erzeugen Geister-Duplikate</text>
+    <text x="18" y="98" fill="#f87171" font-size="11" font-weight="600">Ergebnis: Starres Raster, keine 3D-Kamerasteuerung</text>
+  </g>
+
+  <!-- RIGHT BOX: ROOM DNA SOLUTION -->
+  <g transform="translate(515, 280)">
+    <rect width="444" height="120" rx="10" fill="#081712" stroke="#10b981" stroke-opacity="0.5" stroke-width="1.2" />
+    
+    <circle cx="22" cy="24" r="9" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1" />
+    <text x="22" y="28" fill="#34d399" font-size="10" font-weight="800" text-anchor="middle">✓</text>
+    <text x="40" y="28" fill="#a7f3d0" font-size="13" font-weight="700">Entkoppelte Room DNA (Best Practice)</text>
+
+    <text x="18" y="56" fill="#cbd5e1" font-size="11.5">• Raum-DNA trennt Semantik strikt von Pixeln</text>
+    <text x="18" y="76" fill="#cbd5e1" font-size="11.5">• Vorberechnete Fokus-Varianten als Kameraanker</text>
+    <text x="18" y="98" fill="#34d399" font-size="11" font-weight="600">Ergebnis: Freie Blickwinkel bei 100% Konsistenz</text>
+  </g>
+</svg>
