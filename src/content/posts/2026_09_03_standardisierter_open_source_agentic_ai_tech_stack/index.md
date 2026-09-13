@@ -37,18 +37,19 @@ Herkömmliche HuggingFace-Inferenz-Pipelines scheitern unter Last an Speicherfra
 * **Continuous Batching**: Eingehende Benutzer- und Agenten-Prompts werden dynamisch auf Iterationsebene zusammengefasst, anstatt auf die Beendigung kompletter Sequenzen zu warten.
 * **Hardware-Parallelismus**: Native Unterstützung für Tensor Parallelism (TP) und Pipeline Parallelism (PP) über mehrere NVIDIA- oder AMD-Beschleuniger sowie moderne Quantisierungsstandards (FP8, AWQ, GPTQ).
 
-## 3. Schicht 2: Autonome Agenten-Intelligenz mit Hermes & Google WikiSkills
+## 3. Schicht 2: Autonome Agenten-Intelligenz mit Hermes, Agent Skills & Google WikiSkill
 
 Ein Inferenz-Server liefert reine Next-Token-Vorhersagen. Um daraus handlungsfähige Agenten zu formen, die Datenbanken abfragen, Code ausführen und APIs ansprechen, bedarf es zweier Standards:
 
-### Hermes Agent Runtime
-Das von Nous Research vorangetriebene **Hermes-Ökosystem** repräsentiert die Speerspitze offener Modelle für agentische Workflows. Hermes ist gezielt auf strukturiertes JSON-Output, fortgeschrittenes Function Calling und autonome Denkprozesse (*Chain-of-Thought / ReAct*) trainiert. Es agiert deterministisch und lässt sich ohne Abhängigkeit von geschlossenen OpenAI-Funktionen betreiben.
+### Hermes Agent Runtime (Nous Research)
+Die von Nous Research entwickelte **Hermes-Modellfamilie und zugehörige Agent-Runtime** repräsentiert die Speerspitze offener Modelle für agentische Workflows. Hermes ist gezielt auf strukturiertes JSON-Output, fortgeschrittenes Function Calling und autonome Denkprozesse (*Chain-of-Thought / ReAct*) trainiert. Es agiert deterministisch und lässt sich ohne Abhängigkeit von geschlossenen OpenAI-Funktionen betreiben.
 
-### Google WikiSkills / Agent Skills Standard
-Werkzeuge (*Tools*) dürfen nicht als undokumentierter Spaghetti-Code im Prompt enden. Wir standardisieren alle Fähigkeiten nach dem **Google WikiSkills / Agent Skills Format**:
-* Jede Fähigkeit wird deklarativ in einer standardisierten Schnittstellendatei (SKILL.md) spezifiziert.
+### Offener Agent Skills Standard (`SKILL.md`) & Google WikiSkill
+Werkzeuge (*Tools*) dürfen nicht als undokumentierter Spaghetti-Code im Prompt enden. Wir standardisieren alle Fähigkeiten nach dem offenen **Agent Skills Standard** ([`agentskills.io`](https://agentskills.io)):
+* Jede Fähigkeit wird deklarativ in einer standardisierten Schnittstellendatei (`SKILL.md`) mit YAML-Frontmatter und Markdown-Instruktionen spezifiziert.
 * Typisierung via Zod oder Pydantic garantiert, dass Parameternamen, Typen, Grenzwerte und Validierungsregeln zur Laufzeit strikt erzwungen werden.
 * Dynamische Skill-Discovery erlaubt es Agenten, zur Laufzeit gezielt diejenigen Werkzeuge in den Kontext zu laden, die für die aktuelle Teilaufgabe erforderlich sind, wodurch das Context Window sauber und fokussiert bleibt.
+* Für die automatisierte, regressionsfreie Weiterentwicklung und Entkopplung von Fehlerwissen dockt die Architektur an das **WikiSkill-Paradigma von Google Research** an.
 
 ## 4. Schicht 3: Zyklische Orchestrierung mit LangGraph
 

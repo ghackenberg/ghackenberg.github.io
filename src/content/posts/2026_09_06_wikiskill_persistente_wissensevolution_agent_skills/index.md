@@ -27,7 +27,7 @@ Traditionell wurden Modelle durch Supervised Fine-Tuning (SFT) oder Reinforcemen
 2. **Mangelnde Auditierbarkeit:** In regulierten Industrieumgebungen muss transparent nachvollziehbar sein, *welche* Handlungsregel ein Agent befolgt hat. Gewichte in einem neuronalen Netz sind eine intransparente Black-Box.
 3. **Zykluszeiten & Kosten:** Ein Retraining oder Feintuning bei jedem geänderten Schnittstellen-Endpunkt oder Geschäftslogik-Update ist wirtschaftlich nicht tragfähig.
 
-Aus diesem Grund hat sich in modernen Systemen der Standard modularer, dateisystembasierter Fähigkeiten etabliert: **Agent Skills** (wie das von Anthropic und Google vorangetriebene `SKILL.md`-Format). Ein Skill bündelt Anweisungen, Workflows, Validierungsregeln und Skripte in einem klar strukturierten Verzeichnis, das vom Agenten zur Laufzeit deklarativ eingelesen wird.
+Aus diesem Grund hat sich in modernen Systemen der herstellerübergreifende Standard modularer, dateisystembasierter Fähigkeiten etabliert: **Agent Skills** (spezifiziert unter [agentskills.io](https://agentskills.io) rund um das offene `SKILL.md`-Format). Ein Skill bündelt Metadaten, Handlungsanweisungen, deterministische Validierungsregeln und Hilfsskripte in einem klar strukturierten Verzeichnis, das vom Agenten zur Laufzeit deklarativ eingelesen wird.
 
 ### B. Das Dilemma automatisierter Skill-Evolution
 

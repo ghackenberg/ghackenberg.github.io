@@ -30,9 +30,9 @@ Um Verkehrsflächen dauerhaft befahrbar zu halten, ohne das Wurzelwachstum abzus
 2. **Bettungsschicht (3–5 cm):**  
    Brechsand-Splitt-Gemisch (Körnung 0/5 oder 1/3 mm) zur kraftschlüssigen Lastübertragung und gleichmäßigen Pflasterverlegung.
 3. **Überbaubares Baumsubstrat Klasse 2 (min. 50–80 cm Mächtigkeit):**  
-   Das Herzstück des Wurzelraums unter versiegelten bzw. befahrbaren Flächen. Dieses Substrat besteht aus einem mineralischen Korngerüst (z. B. Lava, Bims, gebrochener Naturstein) mit definiertem Porenvolumen und einer organischen Komponente (Kompost/Oberbodenanteil). Selbst nach mechanischer Verdichtung zur Aufnahme von Verkehrslasten (Verdichtungsgrad $D_{\text{Pr}} \ge 95\text{--}97\,\%$) bleibt ein lufterfülltes Porenvolumen von über $15\,\%$ erhalten. Feinwurzeln können ungehindert atmen und in die Tiefe vordringen.
+   Das Herzstück des Wurzelraums unter versiegelten bzw. befahrbaren Flächen. Dieses Substrat besteht aus einem mineralischen Korngerüst (z. B. Lava, Bims, gebrochener Naturstein) mit definiertem Porenvolumen und einer organischen Komponente (Kompost/Oberbodenanteil). Selbst nach mechanischer Verdichtung zur Aufnahme von Verkehrslasten (Verdichtungsgrad $D_{\text{Pr}} \ge 95\text{--}97\,\%$ nach Proctor / Proctordichte) bleibt ein lufterfülltes Porenvolumen von über $15\,\%$ erhalten. Feinwurzeln können ungehindert atmen und in die Tiefe vordringen.
 4. **Vertikale Wurzelsperre (Root Barrier):**  
-   Hochdichte HDPE-Platten (z. B. $1\text{--}2\,\text{mm}$ stark), die parallel zur Pflasterkante oder entlang von Leitungstrassen eingebracht werden. Sie lenken aggressive Flachwurzeln gezielt nach unten ab und verhindern das Aufhebeln von Pflasterbelägen.
+   Hochdichte HDPE-Platten (*High-Density Polyethylene*, z. B. $1\text{--}2\,\text{mm}$ stark), die parallel zur Pflasterkante oder entlang von Leitungstrassen eingebracht werden. Sie lenken aggressive Flachwurzeln gezielt nach unten ab und verhindern das Aufhebeln von Pflasterbelägen.
 5. **Unverdichteter natürlicher Baugrund:**  
    Dient als tief liegender Sicker- und Verbindungshorizont für die Tiefenwurzeln des Baumes.
 
@@ -61,7 +61,7 @@ Ein energie- und wassereffizientes System lebt von der intelligenten Verknüpfun
 ![IoT-Ventilsteuerung mit kabelloser Smart-Home-Anbindung](./smart_valve_control.jpg)
 
 ### 1. Sensorik & Telemetrie
-- **Kapazitive Bodenfeuchtesensoren (FDR/TDR-Prinzip):** In verschiedenen Tiefen ($20\,\text{cm}$ und $50\,\text{cm}$) positioniert, erfassen sie die volumetrische Bodenfeuchte ($\theta$ in Vol.-%) in Echtzeit.
+- **Kapazitive Bodenfeuchtesensoren (FDR/TDR-Prinzip):** In verschiedenen Tiefen ($20\,\text{cm}$ und $50\,\text{cm}$) positioniert, erfassen sie die volumetrische Bodenfeuchte ($\theta$ in Vol.-%) in Echtzeit über hochfrequente elektromagnetische Felder (*Frequency / Time Domain Reflectometry*).
 - **Kabellose Signalübertragung:** Extrem stromsparende Funkprotokolle (Zigbee, Thread oder LoRaWAN) ermöglichen mehrjährigen Batteriebetrieb der Erdsensoren.
 
 ### 2. Dezentrale Aktorik & Ventilboxen
@@ -69,7 +69,7 @@ Ein energie- und wassereffizientes System lebt von der intelligenten Verknüpfun
 - **Integrierte Impuls-Durchflussmesser (Flow Meter):** Digitale Durchflussmesser erfassen das tatsächlich ausgebrachte Wasservolumen in Litern. Treten Abweichungen zwischen Soll- und Ist-Durchfluss auf (z. B. Rohrbruch oder verstopfter Filter), schaltet das System die Zone automatisch ab und sendet eine Push-Warnung an das Dashboard.
 
 ### 3. Edge-Server & Prädiktive Regelungslogik
-Der zentrale Edge-Controller führt alle Telemetriedaten zusammen und errechnet dynamisch den Bewässerungsbedarf anhand des **Bodenwasserbilanz-Modells**:
+Der zentrale Edge-Controller (z. B. auf Basis von *Home Assistant* mit *ESPHome* und MQTT-Telemetrie) führt alle Sensordaten zusammen und errechnet dynamisch den Bewässerungsbedarf anhand des **Bodenwasserbilanz-Modells**:
 
 $$\Delta W = P_{\text{eff}} + I_{\text{drip}} - ET_c - D_{\text{deep}}$$
 
@@ -77,7 +77,7 @@ Dabei gilt:
 - $\Delta W$: Veränderung des Bodenwasserspeichers
 - $P_{\text{eff}}$: Effektiver natürlicher Niederschlag
 - $I_{\text{drip}}$: Zugeführte Bewässerungsmenge (Liter)
-- $ET_c$: Kulturspezifische Evapotranspiration ($ET_c = K_c \cdot ET_0$)
+- $ET_c$: Kulturspezifische Evapotranspiration ($ET_c = K_c \cdot ET_0$), wobei $K_c$ der pflanzenspezifische Kulturkoeffizient und $ET_0$ die Gras-Referenzverdunstung nach FAO-56 Penman-Monteith ist
 - $D_{\text{deep}}$: Tiefensickerung unter die Wurzelzone
 
 Das System bewässert ausschließlich in den kühlen Nacht- oder frühen Morgenstunden ($03:00\text{--}06:00\,\text{Uhr}$), wenn der hydrostatische Druck im Pflanzengewebe optimal ist und keine Verdunstungsverluste auftreten. Bei prognostiziertem Regen stoppt die vorausschauende Wetter-Integration den Gießzyklus automatisch.

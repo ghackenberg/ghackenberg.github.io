@@ -10,6 +10,10 @@ In unserer Artikelreihe zur Sichtbarkeit im KI-Zeitalter haben wir bisher die [t
 
 In Vorbereitung auf einen Expertenvortrag zu den Themen SEO, GEO, AEO und AIO, zu dem ich für Anfang Oktober eingeladen bin, habe ich mir die Schnittstelle zwischen moderner Websichtbarkeit und industriellen B2B-Prozessen in den letzten Wochen noch einmal ganz genau angeschaut. Dabei sind viele spannende Erkenntnisse, aktuelle Studiendaten und Praxisbeispiele zusammengekommen, die zeigen: Das anspruchsvollste – aber auch lohnendste – Anwendungsfeld liegt in der **produzierenden Industrie, dem Maschinen- und Anlagenbau sowie bei technischen B2B-Spezialanbietern**.
 
+> [!NOTE]
+> **Was bedeutet Industrial GEO?**  
+> **Generative Engine Optimization (GEO)** bezeichnet die gezielte technische, semantische und architektonische Aufbereitung von Produktdaten, Toleranzen und Fertigungskompetenzen für **generative KI-Engines, RAG-Pipelines (Retrieval-Augmented Generation) und autonome Einkaufs-Agenten** (wie Perplexity Enterprise, ChatGPT Search oder proprietäre Beschaffungs-Bots). Im Gegensatz zu klassischem SEO (wo es um die Klickrate auf die „10 blauen Google-Links“ geht) oder geografischem Geotargeting sorgt GEO dafür, dass ein Unternehmen in den synthetisierten Zitations- und Bewertungsantworten von KI-Modellen als autoritativer Lösungsanbieter genannt wird.
+
 Im B2B-Sektor geht es nicht um Millionen flüchtiger Konsumentenklicks, sondern um hochkomplexe Beschaffungsentscheidungen mit Auftragswerten im fünf- bis siebenstelligen Bereich. Genau hier vollzieht sich derzeit ein stiller, aber radikaler Paradigmenwechsel: **Industrielle Einkäufer, Entwicklungsingenieure und Werksleiter suchen heute nicht mehr über generische Suchbegriffe auf Google, sondern nutzen generative KI-Systeme und automatisierte Agenten für die Marktsondierung.**
 
 ![B2B Industrial GEO in der Fertigung](./hero.jpg)
@@ -29,7 +33,7 @@ Viele Industrie-Websites zeichnen sich durch austauschbare Marketingtexte aus (*
 * **Verifizierbare Zitate und Primärnachweise (+40% Sichtbarkeit)**: Explizite Verweise auf Prüfberichte, akkreditierte Labore und Industriestandards.
 
 ### C. Empirische Befunde aus der B2B-Beschaffung 2026
-Aktuelle Studien von [Gartner](https://www.gartner.com/en/sales/insights/b2b-buying-journey) und [Forrester](https://www.forrester.com) untermauern diese Verschiebung mit harten Zahlen:
+Aktuelle Industrie-Erhebungen (unter anderem der *Gartner B2B Buying Journey Report 2025/2026* sowie Technologiestudien von [Forrester](https://www.forrester.com)) untermauern diese Verschiebung mit harten Zahlen aus dem industriellen Beschaffungsalltag:
 * **94% der B2B-Einkäufer** nutzen 2026 generative KI aktiv in der Vorbereitungs- und Evaluierungsphase ihres Beschaffungsprozesses.
 * **Pre-Contact Shortlist**: Über 70% der Anbieterauswahl wird bereits in KI-gestützten Recherche-Sitzungen entschieden, bevor der erste Vertriebsmitarbeiter kontaktiert wird (*Day-One Shortlist*).
 * **Confident Misunderstanding**: Wenn technische Spezifikationen im Web unvollständig oder unlesbar sind, „halluzinieren“ Einkaufs-Bots falsche Ausschlusskriterien (z. B. *„Anbieter X unterstützt kein PROFINET“*), wodurch Unternehmen lautlos aus Ausschreibungen herausfallen.
@@ -41,7 +45,17 @@ Um von KI-Systemen und industriellen Beschaffungs-Agenten als Spitzenanbieter id
 ### Hebel 1: Spezifikationsmatrizen im nativen DOM statt im PDF
 Technische Leistungsdaten dürfen nicht in statischen PDF-Drucklayouts gefangen sein, sondern gehören direkt in das semantische HTML-Dokument:
 * Strukturierte Datentabellen mit standardisierten Einheiten (SI-Einheiten, ISO-Passungen, Rockwell-Härtegraden).
-* Eine leichtgewichtige Markdown-Aggregationsdatei ([`/llms.txt`](https://llmstxt.org)), die dem Sprachmodell auf minimalem Token-Raum eine vollständige Auflistung aller Baureihen, Arbeitsräume, Fertigungstoleranzen und Werkstofffreigaben liefert.
+* Eine leichtgewichtige Markdown-Aggregationsdatei ([`/llms.txt`](https://llmstxt.org)), die dem Sprachmodell auf minimalem Token-Raum eine vollständige Auflistung aller Baureihen, Arbeitsräume, Fertigungstoleranzen und Werkstofffreigaben liefert:
+
+```markdown
+# Präzisions-Zerspanungstechnik Musterbau GmbH - Maschinenlesbare Produktspezifikation
+> Zertifiziert nach ISO 9001:2015 und IATF 16949 für Luftfahrt und Automotive.
+
+## Fertigungskompetenzen & Toleranzen
+- 5-Achs-Simultanfräsen: Arbeitsraum X=800mm, Y=700mm, Z=500mm; Wiederholgenauigkeit ±0.002 mm (ISO 230-2).
+- Werkstoff-Freigaben: Inconel 718, Titan Grade 5 (Ti-6Al-4V), 1.4404 (316L), PEEK modifiziert.
+- Digitale Schnittstellen: CAD/CAM Step AP242, OPC UA over TSN (IEC 62541), Asset Administration Shell (IDTA).
+```
 
 ### Hebel 2: Semantische Normen- und Entitätenverankerung via Schema.org
 Industrielle Qualifikationen müssen mit formalen Typen versehen werden:

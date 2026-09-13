@@ -10,7 +10,7 @@ Die Art und Weise, wie Menschen und Maschinen Informationen im Internet suchen u
 
 Damit eine persönliche, wissenschaftliche oder unternehmerische Website im modernen KI-Zeitalter sichtbar, zitierfähig und maschinenlesbar bleibt, reicht SEO alleine nicht mehr aus. Wir müssen Websites multidimensional optimieren: für **SEO**, **GEO**, **AEO** und **AIO**.
 
-In diesem Artikel erklären wir die vier Begriffe kurz und zeigen anschließend Schritt für Schritt, wie wir diesen Ansatz auf dieser Website strategisch und technisch umgesetzt haben.
+In diesem Artikel erklären wir die vier Begriffe kurz und zeigen anschließend Schritt für Schritt, wie wir diesen Ansatz auf dieser Website ([hackenberg.tech](https://hackenberg.tech), entwickelt auf Basis des modernen Web-Frameworks Astro) strategisch und technisch umgesetzt haben.
 
 ![SEO, GEO, AEO & AIO Optimierungsmodell](./diagram.jpg)
 
@@ -34,16 +34,16 @@ In diesem Artikel erklären wir die vier Begriffe kurz und zeigen anschließend 
 
 ## 2. Unser strategischer und technischer Umsetzungsansatz
 
-Um diese Website systematisch für alle vier Dimensionen aufzustellen, haben wir eine Architektur umgesetzt, die sowohl menschlichen Besuchern eine erstklassige UX bietet als auch Maschinen maximale Transparenz garantiert.
+Um diese Website ([hackenberg.tech](https://hackenberg.tech)) systematisch für alle vier Dimensionen aufzustellen, haben wir eine Architektur umgesetzt, die sowohl menschlichen Besuchern eine erstklassige UX bietet als auch Maschinen maximale Transparenz garantiert.
 
 ### Schritt 1: Das maschinenlesbare Fundament (`llms.txt` & `llms-full.txt`)
 Gemäß dem aufkommenden Web-Standard [llmstxt.org](https://llmstxt.org) haben wir zwei zentrale Text-Dateien bereitgestellt:
-- **`public/llms.txt`**: Eine strukturierte Übersicht über Dr. Georg Hackenberg, Hauptforschungsgebiete, Kernprojekte (wie CADdrive und Mentawise) und die Navigationsstruktur der Website.
+- **`public/llms.txt`**: Eine strukturierte Übersicht über Dr. Georg Hackenberg, Hauptforschungsgebiete, Kernprojekte (wie CADdrive, unsere Cloud-Plattform für CAD-Kollaboration, und Mentawise, unsere Plattform für kognitives Training) und die Navigationsstruktur der Website.
 - **`src/pages/llms-full.txt.ts`**: Ein dynamischer Endpunkt, der beim Aufruf von `/llms-full.txt` den gesamten Content-Corpus der Website (alle Blogbeiträge, Publikations-Abstracts, Kursübersichten, Softwareprojekte und Beratungsleistungen) in einer einzigen sauberen Markdown-Datei aggregiert. Dadurch können RAG-Engine-Crawler den vollständigen Inhalt mit einem einzigen Request erfassen.
 
 ### Schritt 2: Eindeutige Identitäten via JSON-LD Schema.org Markup
 Um Verwechslungen bei KI-Modellen zu vermeiden und Dr. Georg Hackenberg als eindeutige Entität im globalen Wissensgraphen zu verankern, haben wir über eine wiederverwendbare Astro-Komponente typisierte Schema.org-Daten integriert:
-- **`Person` & `ProfilePage`**: Auf der Startseite mit Verknüpfung zu Affiliationen (FH Oberösterreich) und externen Profilen (`sameAs`: ORCID, Google Scholar, DBLP, GitHub, LinkedIn, YouTube).
+- **`Person` & `ProfilePage`**: Auf der Startseite mit Verknüpfung zu Affiliationen (FH Oberösterreich) und externen Profilen (`sameAs`: ORCID, Google Scholar, DBLP – die weltweite Informatik-Bibliografie, GitHub, LinkedIn, YouTube).
 - **`BlogPosting` & `BreadcrumbList`**: Auf allen Blogbeiträgen für Autor, Veröffentlichungsdatum und Pfadnavigation.
 - **`ScholarlyArticle`**: Auf allen Forschungspublikationen inklusive Autorenliste, BibTeX-Metadaten und Verlag-Links.
 - **`SoftwareApplication`**: Auf Projekten wie CADdrive und Mentawise mit Repositories und Anwendungs-Kategorien.

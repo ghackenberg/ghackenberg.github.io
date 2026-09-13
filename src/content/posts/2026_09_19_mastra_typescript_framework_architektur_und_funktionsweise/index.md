@@ -131,7 +131,7 @@ export const devOpsAgent = new Agent({
 });
 ```
 
-*Hinweis:* Genau wie beim [Hermes Agent und dessen Bounded-Memory-Konzept](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) schützt die Begrenzung der `lastMessages` den Token-Kontext vor unkontrollierter Aufblähung und erhält die Recheneffizienz des KV-Caches.
+*Hinweis:* Warum ist die Begrenzung auf `lastMessages: 20` für Software-Architekten so entscheidend? Genau wie beim [Hermes Agent und dessen Bounded-Memory-Konzept](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) schützt dies nicht nur vor ausufernden API-Kosten: Moderne Inferenz-Engines cachen die vorberechneten Aufmerksamkeitszustände (KV-Cache, *Key-Value Cache*) vorangegangener Tokens. Wächst der Chatverlauf unbegrenzt oder mutiert der Prompt-Präfix, muss der Cache permanent verworfen und neu berechnet werden – was zu massiven Latenzspitzen und hohem Server-Overhead führt.
 
 ### Das `Workflow`-Primitiv: Typsichere Graphen mit Durable Execution
 
@@ -265,7 +265,7 @@ export const sqlQueryTool = createTool({
 
 ### Die native MCP-Integration: Client & Server
 
-Das von Anthropic initiierte **Model Context Protocol (MCP)** hat sich in kürzester Zeit zum offenen Industriestandard für Tool- und Kontext-Schnittstellen entwickelt. Mastra bietet über das Paket `@mastra/mcp` eine **vollwertige MCP-Dualität**:
+Das von Anthropic initiierte **Model Context Protocol (MCP)** – ein offener, JSON-RPC-basierter Protokollstandard, der KI-Modellen sichere, bidirektionale Schnittstellen zu externen Datenquellen, Dateisystemen und Tools bereitstellt – hat sich in kürzester Zeit im Enterprise-Ökosystem durchgesetzt. Mastra bietet über das Paket `@mastra/mcp` eine **vollwertige MCP-Dualität**:
 
 ![Mastra & Model Context Protocol (MCP): Client- & Server-Dualität](./mastra_mcp_integration.svg)
 

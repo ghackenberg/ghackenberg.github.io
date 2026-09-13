@@ -25,25 +25,25 @@ Die Transformation von traditioneller Webpräsenz zur maschinenlesbaren Plattfor
 * **Diagnose**: Im Zeitalter generativer Engines faktisch **unsichtbar für KI-gestützte Einkäufer-Recherchen**. RAG-Systeme können PDFs hinter Barrieren nicht parsen und weisen dem Unternehmen mangels harter Fakten keine semantische Relevanz zu.
 
 ### Level 2: Semantische Entitäten & Antwortbereitschaft (AEO-Ready)
-* **Zielgruppe**: Direct Answer Engines, Featured Snippets und Sprachassistenten.
+* **Zielgruppe**: Direct Answer Engines, Featured Snippets und Sprachassistenten (Fokus: punktuelle Faktenextraktion).
 * **Fokus**:
   - Typisiertes [Schema.org](https://schema.org) Markup ([`Organization`](https://schema.org/Organization), [`Product`](https://schema.org/Product), [`TechArticle`](https://schema.org/TechArticle), [`DefinedTerm`](https://schema.org/DefinedTerm)).
   - Answer-First-Muster: Prägnante 40- bis 60-Wörter-Kernaussagen direkt unter technischen Zwischenüberschriften (z. B. *„Welche maximale Wiederholgenauigkeit erreicht das Linearführungssystem X?“*).
   - Strukturierte FAQs mit [`FAQPage`](https://schema.org/FAQPage)-Schema für typische Integrations-, Toleranz- und Wartungsfragen.
-* **Diagnose**: Das Unternehmen wird von Suchmaschinen als eindeutige Entität im Knowledge Graph verankert. In Google AI Overviews tauchen erste Zitate auf, wenn einfache Informationsfragen beantwortet werden.
+* **Diagnose**: Das Unternehmen wird von Suchmaschinen als eindeutige Entität im Knowledge Graph verankert. In Google AI Overviews tauchen erste Zitate auf, wenn isolierte Faktenfragen beantwortet werden.
 
 ### Level 3: RAG-optimierte Ingestion (GEO-Standard)
-* **Zielgruppe**: Generative KI-Suchsysteme (Perplexity, ChatGPT Search, Claude, Gemini).
+* **Zielgruppe**: Generative KI-Suchsysteme (Perplexity, ChatGPT Search, Claude, Gemini; Fokus: mehrstufige RAG-Synthese und Zitations-Reasoning).
 * **Fokus**:
   - Bereitstellung nativer Markdown-Aggregationsdateien ([`/llms.txt`](https://llmstxt.org) und `/llms-full.txt`) für token-effiziente Ingestion durch Web-LLMs.
   - Tabellarische Spezifikationsmatrizen im nativen DOM (Werkstoffe, Toleranzklassen nach ISO 2768, Schutzarten nach IP69K).
   - Saubere Freigabe autorisierter KI-User-Agents (GPTBot, PerplexityBot, ClaudeBot) in der `robots.txt`.
-* **Diagnose**: Das Unternehmen wird von RAG-Pipelines als **zitierfähige Primärquelle** erkannt. Bei komplexen technischen Vergleichen wird die Marke in den ersten 1–3 Zitationskarten empfohlen (+40% Sichtbarkeitseffekt).
+* **Diagnose**: Das Unternehmen wird von RAG-Pipelines als **autoritative Primärquelle** erkannt. Bei komplexen technischen Lösungsvergleichen wird die Marke in den ersten 1–3 Zitationskarten empfohlen (+40% Sichtbarkeitseffekt).
 
 ### Level 4: Autonome Agenten-Interaktion (Agentic AIO)
 * **Zielgruppe**: Autonome KI-Einkaufs- und Engineering-Agenten.
 * **Fokus**:
-  - Maschinenlesbare Manifest-Schnittstellen (`/content-manifest.json`) und standardisierte OpenAPI-Endpunkte.
+  - Maschinenlesbare Manifest-Schnittstellen (wie ein zentrales `/content-manifest.json` als strukturierter JSON-Katalog aller abfragbaren Datenpunkte) und standardisierte OpenAPI-Endpunkte.
   - Digitale Typenschilder und Verknüpfung mit Teilmodellen der [Asset Administration Shell (AAS nach IEC 63278-1 der IDTA)](https://industrialdigitaltwin.org).
   - Automatisierte Vorqualifikation: KI-Agenten können die Machbarkeit eines Bauteils (Arbeitsraum, Achsen, Legierung) programmatisch gegen die Web-Schnittstelle prüfen.
 * **Diagnose**: Transaktionale Exzellenz. Das Unternehmen generiert qualifizierte Anfragen (*Requests for Quotation*) vollautomatisiert über Machine-to-Machine-Schnittstellen.

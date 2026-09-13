@@ -54,7 +54,7 @@ Ganz gleich, welches Backend konfiguriert ist: Vor und nach jedem Inferenzschrit
 
 ## 2. Der Agent Loop & Turn-Lifecycle im Detail
 
-Das Herzstück der Ausführung ist die Klasse `AIAgent`. Während frühere Versionen oft als monolithische Klassen realisiert wurden, folgt die moderne Architektur von Hermes Agent einer granularen Dekomposition: Die Fassade delegiert an `agent/conversation_loop.py`, während die einzelnen Iterationsphasen in modular isolierten Modulen (`agent/turn_*.py`) gekapselt sind.
+Das Herzstück der Ausführung ist die Klasse `AIAgent` (im quelloffenen Referenz-Repository von Nous Research). Während frühere Versionen oft als monolithische Skripte realisiert wurden, folgt die moderne Architektur von Hermes Agent einer granularen Dekomposition: Die zentrale Fassade delegiert an den Orchestrierer `agent/conversation_loop.py`, während die einzelnen Iterationsphasen in modular isolierten Modulen (`agent/turn_*.py`) gekapselt sind.
 
 ![Turn-Lifecycle und Execution Loop des AIAgent](./hermes_agent_turn_lifecycle.svg)
 
@@ -166,7 +166,7 @@ Level 2: skill_view(name, path) ──► Spezifische Referenzdateien/Skripte   
 ```
 
 1. **Level 0 (Discovery):** Im System-Prompt liegt lediglich ein kompakter Index aller Skill-Namen und Kurzbeschreibungen ($\le 60$ Zeichen). Der Token-Footprint bleibt minimal.
-2. **Level 1 (Aktivierung):** Erst wenn eine Aufgabe eine bestimmte Fertigkeit erfordert (oder der Anwender den Slash-Befehl `/axolotl` eingibt), liest der Agent die Datei `SKILL.md` ein.
+2. **Level 1 (Aktivierung):** Erst wenn eine Aufgabe eine bestimmte Fertigkeit erfordert (oder der Anwender den Slash-Befehl `/vllm-cluster-ops` eingibt), liest der Agent die Datei `SKILL.md` ein.
 3. **Level 2 (Deep Dive):** Umfangreiche Referenzdokumente, Skripte oder Schemata in Unterordnern (`references/`, `scripts/`, `templates/`) werden erst geladen, wenn eine konkrete Detailfrage dies verlangt.
 
 ### Anatomie einer standardkonformen `SKILL.md`
@@ -266,7 +266,7 @@ Werkzeuge, die Shell-Befehle ausführen oder Code interpretieren, dürfen Untern
 3. **Remote SSH & Singularity:** Sichere Delegation rechenintensiver Operationen an dedizierte High-Performance- und GPU-Cluster.
 4. **Serverless Hibernation (Modal & Daytona):** Die Arbeitsumgebung des Agenten friert bei Inaktivität ein und taut bei neuen Befehlen binnen Millisekunden wieder auf. **Ergebnis:** Nahezu null Betriebskosten bei Nichtbenutzung.
 
-Für sensible Enterprise-Szenarien integriert Hermes zudem den **Iron-Proxy** – eine Egress-Firewall, die externe API-Aufrufe überwacht und vertrauliche Zugangsdaten (*Secrets*) per Injection erst unmittelbar am Netzwerkausgang einfügt, sodass sie im Kontextfenster des Modells zu keinem Zeitpunkt im Klartext auftauchen.
+Für sensible Enterprise-Szenarien integriert Hermes zudem den **Iron-Proxy** – eine quelloffene Egress-Sicherheitsfirewall, die ausgehende Netzwerk- und API-Aufrufe des Agenten überwacht, Zero-Trust-Filter anwendet und vertrauliche Zugangsdaten (*Secrets*) per Injection erst unmittelbar am Netzwerk-Gateway einfügt, sodass geheime Tokens im Kontextfenster des Sprachmodells zu keinem Zeitpunkt im Klartext auftauchen.
 
 ## Fazit: Die Blaupause für souveräne Enterprise-Agenten
 

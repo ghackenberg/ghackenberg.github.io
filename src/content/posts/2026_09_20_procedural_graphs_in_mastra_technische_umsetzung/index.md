@@ -16,6 +16,12 @@ Dieser Beitrag schlägt die Brücke vom Forschungspapier zur lauffähigen Enterp
 
 ![Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen](./hero.jpg)
 
+> [!TIP]
+> **Kompakt-Rekapitulation: Was sind Procedural Graphs & warum Mastra?**
+> * **Das Problem unbeschränkter ReAct-Agenten:** Reine Prompt- und Tool-Loops driften bei mehrstufigen Geschäftsprozessen unweigerlich ab oder übersehen Compliance-Vorgaben. Klassische BPMN-Workflows sind wiederum zu starr für unstrukturierte Daten.
+> * **Procedural Graphs (Google Research, 2026):** Ein attributierter Wissensgraph $\mathcal{G} = (\mathcal{V}, \mathcal{R}, \mathcal{E}, \Phi)$ fungiert als dynamisches Leitplanken-Modell. Anstelle fest verdrahteter Code-Pfade liefert jede Kante situative Bedingungen, Handlungsrichtlinien und bekannte Fehler-Fallstricke (`condition`, `guidance`, `pitfalls`) als *Soft Guidance* in den Prompt des Agenten.
+> * **Warum Mastra?** Das TypeScript-Framework Mastra bietet native Zod-Validierung, asynchrone Workflow-Graphen mit programmierbaren Verzweigungen (`.branch()`) sowie die Fähigkeit, Workflows via `suspend()` und `resume()` für Genehmigungsschritte (*Human-in-the-Loop*) persistent anzuhalten.
+
 ## 1. Das Architektur-Paradigma: Ausführungsgraph vs. Attributierter Wissensgraph
 
 Der häufigste Denkfehler bei der praktischen Umsetzung von Procedural Graphs besteht darin, sie mit klassischen Graph-Workflow-Engines gleichzusetzen. 
@@ -209,8 +215,7 @@ export function createProceduralExecutionWorkflow(graphStore: ProceduralGraphSto
    - Richtlinie: ${e.attributes.guidance}
    - Fallstricke: ${e.attributes.pitfalls}
    - Freigabe erforderlich: ${e.attributes.requiresHumanReview}
-`).join('
-');
+`).join('\n');
 
       const anyApprovalNeeded = neighborhood.outgoingEdges.some(
         (e) => e.attributes.requiresHumanReview
@@ -290,10 +295,15 @@ ${context.guidanceText}`,
         },
       ]);
 
-      // Nächsten Zustand aus dem Tool-Execution-Trace determinieren
+      // Nächsten Zustand aus dem Tool-Execution-Trace determinieren:
+      // Das Modell meldet die Transition entweder über ein strukturiertes Zod-Schema
+      // oder die Engine matcht den Rückgabewert des ausgeführten MCP-Tools auf den Zielknoten:
+      const nextNodeId = result.toolCalls?.find(c => c.toolName === 'transition_state')?.args?.targetNodeId 
+        || 'assess_liability';
+
       return {
         solverOutput: result.text,
-        nextNodeId: 'node_next_determined',
+        nextNodeId,
       };
     },
   });
@@ -426,12 +436,10 @@ export async function proposeGraphRefinement(
 
   // Prompt für den Refiner-Agenten mit expliziter Negativ-Bedingung
   const prompt = `Analysiere folgende Trace-Anomalien aus dem Produktivbetrieb:
-${traceAnomalies.join('
-')}
+${traceAnomalies.join('\n')}
 
 Bereits gescheiterte Mutationen (NICHT erneut vorschlagen!):
-${rejectedHistory.map((r) => `- Kante [${r.proposedEdge.source} -> ${r.proposedEdge.target}]: ${r.rejectionReason}`).join('
-')}
+${rejectedHistory.map((r) => `- Kante [${r.proposedEdge.source} -> ${r.proposedEdge.target}]: ${r.rejectionReason}`).join('\n')}
 
 Schlage eine präzise Korrektur vor:
 1. Entweder eine Kanten-Bedingung schärfen,

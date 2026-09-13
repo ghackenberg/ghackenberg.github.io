@@ -8,6 +8,12 @@ icon: "./icon.jpg"
 
 In unserem vorherigen Beitrag zur [Psychologie der modernen Informationstechnologie](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/) haben wir die Mechanismen analysiert, mit denen heutige Plattformen, Recommender-Pipelines und persuasive Benutzeroberflächen auf das menschliche Gehirn einwirken: dopaminerge Verstärkungsschleifen, kognitive Fragmentierung, *Attention Residue* und das Phänomen des *Information Overload*.
 
+> [!NOTE]
+> **Kompakt-Rückblick: Die 3 Kernbefunde aus Teil 1**
+> * **Dopaminerge Hooks:** Variable Belohnungspläne (wie der Pull-to-Refresh) triggern unwillkürliche Sucht- und Prüfschleifen im Gehirn.
+> * **Attention Residue:** Jeder Kontextwechsel (Benachrichtigungen, Slack-Pings) hinterlässt mentale Rückstände, die bis zu 23 Minuten Konzentrationsverlust nach sich ziehen.
+> * **Cognitive Load Theory:** Unser Arbeitsgedächtnis ist biologisch auf $4 \pm 1$ Informationseinheiten begrenzt – unnötige UI-Reize (*Extraneous Load*) verdrängen produktives Problemlösen (*Germane Load*).
+
 Die Diagnose war eindeutig: Die vorherrschende Maxime der Tech-Industrie – die bedingungslose Maximierung von Verweildauer (*Engagement*), Klickraten und Interaktionsfrequenzen – führt zu chronischer mentaler Erschöpfung und kognitiver Atrophie.
 
 Doch wie sieht die **konstruktive ingenieurwissenschaftliche Antwort** aus?
@@ -86,7 +92,7 @@ Mindful IT implementiert **asynchrone Digest-Engines** und **epistemische Fenste
 Klassische Cloud-Anwendungen leiden unter Netzwerk-Latenzen und zwingen den Anwender in eine permanente Abhängigkeit vom Server. Jede Verzögerung bei Eingaben erzeugt subbewusste Mikrostress-Reaktionen.
 
 Das **Local-First-Paradigma** (vgl. Martin Kleppmann et al.) löst dieses Problem:
-* **Lokale Datenhoheit:** Die primäre Datenhaltung erfolgt direkt auf dem Endgerät (z. B. via **SQLite in WASM**, **IndexedDB** oder embedded Key-Value Stores).
+* **Lokale Datenhoheit:** Die primäre Datenhaltung erfolgt direkt auf dem Endgerät (z. B. via **SQLite in WebAssembly / WASM**, **IndexedDB** oder embedded Key-Value Stores).
 * **Konfliktfreie Replikation:** Die Synchronisation im Hintergrund nutzt **CRDTs (Conflict-free Replicated Data Types)** wie *Yjs* oder *Automerge*.
 * **Null Latenz & Offline-Resilienz:** Schreib- und Lesevorgänge geschehen instantan und lokal. Der Anwender kann völlig ungestört im Flugzeug, im Wald oder bei instabiler Verbindung arbeiten, ohne Fehlermeldungen oder Lade-Spinner.
 
@@ -97,7 +103,7 @@ In modernen Web-Projekten sind *Performance Budgets* (z. B. max. 150 KB initiale
 Im Rahmen von automatisierten Linting- und End-to-End-Test-Pipelines werden Grenzwerte überwacht:
 * **DOM-Elemente & Visuelle Komplexität:** Maximale Anzahl von UI-Komponenten und interaktiven Elementen pro Viewport.
 * **Notification-Dichte:** Verbot von mehr als $N$ Systemmeldungen pro Zeiteinheit.
-* **Entscheidungstiefe (Hick-Hyman-Gesetz):** Begrenzung der gleichzeitig angebotenen Navigations- und Aktionsoptionen auf maximal $7 \pm 2$.
+* **Entscheidungstiefe (Hick-Hyman-Gesetz & Kognitionsmodelle):** Begrenzung der gleichzeitig angebotenen Navigations- und Aktionsoptionen auf maximal $7 \pm 2$ (Millersche Zahl) sowie maximal $4 \pm 1$ aktiv zu haltende semantische Informationseinheiten (Cowans Working-Memory-Modell).
 * **Modal-Verbot:** Automatisierte Warnung bei blockierenden Modal-Dialogen, die den Nutzer aus seinem aktuellen Aufgabenkontext reißen.
 
 ### 4. Quiet AI & Agentic Cognitive Shields (Lokale SLMs als Schutztür)
@@ -126,13 +132,13 @@ Achtsame Informationstechnologie beginnt bei den Menschen, die sie erschaffen. S
 Das klassische Monitoring bombardiert Ingenieure oft mit Hunderten Warnungen wegen irrelevanter CPU-Spikes oder transienter Netzwerkfehler. Die Folge: *Alert Fatigue* – echte Notfälle werden im Alarmrauschen übersehen.
 
 **Mindful Site Reliability Engineering (SRE):**
-* **Alarmierung nur auf Service Level Objectives (SLOs):** Alarme werden ausschließlich ausgelöst, wenn das *Error Budget* von Endnutzer-kritischen Pfaden in Gefahr ist.
+* **Alarmierung nur auf Service Level Objectives (SLOs):** Alarme werden ausschließlich ausgelöst, wenn das *Error Budget* (das zulässige Kontingent an Fehlern oder Ausfallzeit innerhalb eines SLA-Zeitraums, z. B. 0,1 % bei 99,9 % Verfügbarkeit) von Endnutzer-kritischen Pfaden in Gefahr ist.
 * **Intelligente Alert-Korrelation:** Tausende Rohmetriken werden durch Observability-Pipelines (z. B. via OpenTelemetry und adaptive Korrelation) zu einem einzigen, kontextreichen Vorfall zusammengefasst.
 * **Schutz der Nachtruhe:** Keine automatisierten Pager-Benachrichtigungen außerhalb von Kernarbeitszeiten für Vorfälle, die bis zum nächsten Morgen warten können (*No-Panic Defaults*).
 
 ### B. Asynchrone Engineering-Kultur
 
-* **ADRs (Architecture Decision Records) & RFCs vor Chat:** Technische Diskussionen finden strukturiert und asynchron in Markdown-Dokumenten und Versionskontrollsystemen statt – nicht in flüchtigen, stressigen Chat-Kanälen.
+* **ADRs (Architecture Decision Records) & RFCs (*Requests for Comments* – formale, schriftliche Entwurfsvorschläge zur asynchronen Teamdiskussion) vor Chat:** Technische Diskussionen finden strukturiert und asynchron in Markdown-Dokumenten und Versionskontrollsystemen statt – nicht in flüchtigen, stressigen Chat-Kanälen.
 * **Fokus-Blöcke & Batch-Reviews:** Pull Requests werden nicht im Minutentakt „zwischendurch“ begutachtet, sondern in dedizierten Review-Zeitfenstern, um *Attention Residue* zu vermeiden.
 
 ### C. Architektonische Schlichtheit (Simplicity as a Virtue)

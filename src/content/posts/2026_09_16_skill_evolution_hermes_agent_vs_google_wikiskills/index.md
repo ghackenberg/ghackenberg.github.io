@@ -12,7 +12,7 @@ Während einfache Chatbots rein deklarative Fakten konsumieren, müssen autonome
 
 Genau an dieser Schnittstelle prallen derzeit zwei wegweisende, aber grundverschiedene Philosophien aufeinander:
 1. **Der pragmatische Runtime-Ansatz:** Die standardmäßig im **Hermes Agent** von **Nous Research** implementierte Skill-Evolution via In-Session-Synthese, `/learn`-Befehl und dem intelligenten Hintergrund-**Curator**, den wir in unserer [Tiefenanalyse des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) vorgestellt haben.
-2. **Der rigorose Wissens-Kompilierungsansatz:** Die von **Google Research & Virginia Tech** publizierte **WikiSkill**-Architektur (*Tang et al., August 2026, [arXiv:2608.27454](https://arxiv.org/abs/2608.27454)*), deren mathematische Grundlagen und Anti-Amnesie-Konzepte wir in unserer [Untersuchung zur persistenten Wissensevolution](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) analysiert haben.
+2. **Der rigorose Wissens-Kompilierungsansatz:** Die von **Google Research & Virginia Tech** publizierte **WikiSkill**-Architektur (*Tang et al., August 2026, [arXiv:2608.27454](https://arxiv.org/abs/2608.27454)*) – ein formales wissenschaftliches Forschungsmuster (kein proprietärer Google-Dienst), dessen mathematische Grundlagen und Anti-Amnesie-Konzepte wir in unserer [Untersuchung zur persistenten Wissensevolution](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) analysiert haben.
 
 Dieser Beitrag stellt beide Paradigmen in einen direkten softwaretechnischen Vergleich: Wo liegen die Stärken und Schwächen? Wie gehen beide Systeme mit Fehlern um? Und wie sieht eine praxistaugliche Enterprise-Synthese aus?
 
@@ -78,7 +78,7 @@ Der Curator operiert als intelligenter Inaktivitäts-Pass:
 * **Human-in-the-Loop Sicherungsnetz:** Kritische Kernfähigkeiten können vom Benutzer oder Administrator über `hermes curator pin <name>` dauerhaft geschützt werden. Gepinnte Skills werden niemals automatisch archiviert, bleiben für den Agenten jedoch les- und editierbar.
 * **LLM-gestützte Dach-Konsolidierung (*Umbrella Merging*):** Erkennt der Curator semantisch überlappende Einzelfähigkeiten (z. B. `s7-read`, `s7-write` und `s7-alarm`), verschmilzt ein Hintergrund-LLM diese zu einem modularen Dach-Skill `siemens-s7-operations` und führt ein transaktionales Rollback-Ledger (`hermes curator rollback`).
 
-Für experimentelle Forschungszwecke stellt Nous Research ergänzend das Repository `hermes-agent-self-evolution` bereit, das Skills über Offline-Trajektorien via **DSPy** und genetische Prompt-Optimierung (**GEPA**) gegen Test-Rubriken verfeinert.
+Für experimentelle Forschungszwecke stellt Nous Research ergänzend das Repository `hermes-agent-self-evolution` bereit, das Skills über Offline-Trajektorien via **DSPy** (ein Framework zur algorithmischen Optimierung von LLM-Prompts) und genetische Prompt-Optimierung (**GEPA** – *Genetic Evolutionary Prompt Adaptation*) gegen Test-Rubriken verfeinert.
 
 ## 3. Der Google WikiSkills-Ansatz (arXiv:2608.27454)
 
@@ -115,7 +115,7 @@ Die folgende Matrix stellt die beiden Systeme über alle ingenieurtechnisch rele
 | **Evolutions-Trigger** | Ereignisgesteuert (`/learn`), Inaktivitäts-Pass (Curator) | Formaler, iterativer 4-Agenten-Trainingsloop |
 | **Amnesie-Prävention** | `pin`-Befehl, Archivierung statt Löschung, Git-Commits | **Strukturelles Rollback-Verbot** für die Wiki-Ebene |
 | **Dokumentation von Negativwissen** | Implizit im Session-Verlauf & FTS5-Transkriptspeicher | Explizit & maschinenlesbar in `wiki/skill-impact.md` |
-| **Token-Ökonomie zur Laufzeit** | **Progressive Disclosure** (Level 0 Index $\to$ Level 1/2 Detail) | Vollständige Prompt-Injektion aller aktiven Skills |
+| **Token-Ökonomie zur Laufzeit** | **Progressive Disclosure** (Level 0 Index im Prompt $\to$ Level 1/2 Detail bei Abruf) | Vollständige Prompt-Injektion aller aktiven Skills |
 | **KV-Cache-Schutz** | **Frozen Snapshots** (`MEMORY.md` & `USER.md` bleiben konstant) | Keine spezifische KV-Cache-Optimierung im Trajektorien-Loop |
 | **Human-in-the-Loop** | Voll integriert (CLI, Telegram, Discord, Pinning, Chat) | Vollautomatisch (Test-Harness mit Ground-Truth-Metrik) |
 | **Typische Performance-Gewinne** | Kontinuierliche Bereinigung, verhindert Token-Explosion | **Monotone Zuwächse:** Bis zu +12 % Gemini, +40 % SpreadSheet |

@@ -100,6 +100,14 @@ $$g_t = \Psi(q, \mathcal{T}_{t-w:t}, \mathcal{N}_h(u_t))$$
 Der eigentliche Problemlöser (*Task Solver*) wählt seine nächste Aktion $a_t$ anschließend unter Berücksichtigung dieser Führung:
 $$a_t \sim \pi(a \mid q, \mathcal{T}_t, g_t)$$
 
+*Symbol-Legende:*
+* $q$: Die ursprüngliche Aufgabenstellung bzw. Benutzerabsicht (*User Query / Task Intent*).
+* $\mathcal{T}_t$: Die gesamte bisherige Ausführungshistorie (*Execution Trajectory*) bis Zeitschritt $t$.
+* $\mathcal{T}_{t-w:t}$: Das gleitende Zeitfenster der letzten $w$ Interaktionen ($w = 3$).
+* $\mathcal{N}_h(u_t)$: Die $h$-Hop-Nachbarschaft ausgehender Pfade um den aktuellen Knoten $u_t$.
+* $g_t$: Die vom Guidance-Modell $\Psi$ generierte, kontextsensitive Handlungsanleitung (*Soft Guidance*).
+* $\pi$: Die Handlungsrichtlinie (*Action Policy*) des ausführenden Task Solvers.
+
 ### Warum „Soft Guidance“ den ROI rettet
 Dieser Ansatz verbindet das Beste aus zwei Welten:
 * **Garantierte Leitplanken:** Die Kantenattribute weisen den Agenten unmissverständlich darauf hin, welche Voraussetzungen erfüllt sein müssen und welche Fehler tunlichst zu vermeiden sind.
@@ -118,6 +126,12 @@ In unserem früheren Beitrag zu [Google WikiSkills](/posts/2026_09_06_wikiskill_
 
 Procedural Graphs lösen dieses Dilemma über eine dedizierte **Rejection Memory** $\mathcal{H}_{\text{rejected}}$:
 $$\Delta \mathcal{G}_{k+1} \sim \mathcal{M}_{\text{refine}}(\mathcal{G}_{k}, \mathcal{C}_{k+1}, \mathcal{H}_{\text{rejected}})$$
+
+*Symbol-Legende:*
+* $\mathcal{G}_k$: Der Prozessgraph in Iterationsschritt $k$.
+* $\mathcal{C}_{k+1}$: Der Satz gesammelter Ausführungsspuren und Trajektorien (*Execution Traces*) der aktuellen Runde.
+* $\mathcal{H}_{\text{rejected}}$: Das kumulierte Archiv verworfener Modifikationen mitsamt Fehlerprotokollen (*Rejection Memory*).
+* $\mathcal{M}_{\text{refine}}$: Das Refiner-Modell, das den Graphen differentiell um $\Delta \mathcal{G}_{k+1}$ anpasst.
 
 Wird ein Graph-Kandidat vom Validation Gate abgewiesen, werden die vorgeschlagenen Kantenänderungen zusammen mit den Fehlersymptomen dauerhaft im Gedächtnis verankert. In der nächsten Optimierungsrunde dient dieser Fundus als explizite Negativ-Bedingung.
 

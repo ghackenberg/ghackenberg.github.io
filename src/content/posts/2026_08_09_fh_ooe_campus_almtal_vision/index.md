@@ -6,11 +6,11 @@ tags: ["education", "innovation", "regional-development", "sustainability", "alm
 icon: "./icon.jpg"
 ---
 
-Die aktuelle Diskussion rund um die Zukunft des Kasbergs steht stellvertretend für ein tiefgreifendes regionales Strukturproblem: Der klassische Erholungstourismus gerät im Zuge des Klimawandels und sich wandelnder Freizeitgewohnheiten zunehmend unter Druck. Gleichzeitig pendeln viele unserer besten Fachkräfte und jungen Talente täglich in die oberösterreichischen Zentralräume ab. 
+Das Almtal (Bezirk Gmunden, Oberösterreich) steht symbolisch für alpine Randregionen im Wandel: Die aktuelle Diskussion rund um die Zukunft und Schneesicherheit des Traditionsskigebiets Kasberg in Grünau im Almtal steht stellvertretend für ein tiefgreifendes regionales Strukturproblem: Der klassische Winter- und Erholungstourismus gerät im Zuge des Klimawandels und sich wandelnder Freizeitgewohnheiten zunehmend unter Druck. Gleichzeitig pendeln viele unserer besten Fachkräfte und jungen Talente täglich in die oberösterreichischen Zentralräume ab. 
 
 Wenn das Almtal wirtschaftlich, demografisch und ökologisch gesund bleiben will, reicht es nicht aus, nur über neue Sommer-Tourismuskonzepte nachzudenken. Wir müssen die **regionale Wertschöpfung grundlegend neu denken**. 
 
-Mit dem vorliegenden Diskussionsentwurf (Version 0.1) präsentiere ich meine Vision für das Almtal als **dezentrales Reallabor** und akademisches Ökosystem: Die **FH OÖ School of Natural Sciences and Applications** (Campus Almtal 2035).
+Als Professor für Informatik und Industriesysteme an der Fachhochschule Oberösterreich (Campus Wels) und Bürger der Region präsentiere ich mit dem vorliegenden Diskussionsentwurf (Version 0.1) meine Vision für das Almtal als **dezentrales Reallabor** und akademisches Ökosystem: Die **FH OÖ School of Natural Sciences and Applications** (Campus Almtal 2035).
 
 ## 1. Die Kernvision: Das Almtal als dezentrales "Reallabor"
 
@@ -31,7 +31,7 @@ Um politische Grabenkämpfe zwischen den Gemeinden zu vermeiden, baut das Konzep
 ### Die 6 Satelliten des Campus Almtal
 
 1. **Scharnstein (Der Inkubator & Hauptcampus):**  
-   Scharnstein bildet das organisatorische Herzstück. Hier entsteht ein Bildungs-Hub (in Kooperation mit HTL/HAK und FH) für industrielles Bauen, Automatisierung und Kreislaufwirtschaft. Leitbetriebe wie *Wolf System* und *Grüne Erde* werden direkt in die praxisnahe Ausbildung eingebunden.
+   Scharnstein bildet das organisatorische Herzstück. Hier entsteht ein Bildungs-Hub (in Kooperation mit berufsbildenden höheren Schulen wie HTL/HAK und der FH OÖ) für industrielles Bauen, Automatisierung und Kreislaufwirtschaft. Leitbetriebe wie *Wolf System* und *Grüne Erde* werden direkt in die praxisnahe Ausbildung eingebunden.
 2. **Grünau im Almtal (Das Alpine Biosphären-Labor):**  
    Grünau fokussiert sich auf Wasser, Wald und Wildtiere. Aufbauend auf der traditionsreichen *Konrad-Lorenz-Forschungsstelle (Universität Wien)* wird Grünau zum Zentrum für ökologische Forschung, Wildtiermanagement und sanften Alpinismus.
 3. **Pettenbach (Das Energie- & Tech-Gateway):**  
@@ -58,14 +58,14 @@ Ein Zukunftsprojekt dieser Größenordnung darf weder an knappen Gemeindebudgets
 ![Finanzierungsmodell der Almtal AG und 3-Stufen ROI](./financing_structure.jpg)
 
 ### Der Kapitalbedarf von ca. 20 Mio. € bis 2030 teilt sich wie folgt auf:
-- **50 % Fördermittel (ca. 10 Mio. €):** Hebelung von Förderungen aus dem Land Oberösterreich (*#upperVISION2030*, *Arbeitsplatz OÖ 2030*), EU-Programmen (*LEADER*, *Horizon Europe*) sowie Bundestöpfen (*FFG*, *Klima- und Energiefonds*).
+- **50 % Fördermittel (ca. 10 Mio. €):** Hebelung von Förderungen aus dem Land Oberösterreich (*#upperVISION2030*, *Arbeitsplatz OÖ 2030*), EU-Programmen (*LEADER*, *Horizon Europe*) sowie Bundestöpfen (*FFG – Österreichische Forschungsförderungsgesellschaft*, *Klima- und Energiefonds*).
 - **30 % Almtal AG (ca. 6 Mio. €):** Setzt sich zusammen aus Bürgerbeteiligung (ca. 2 Mio. € von 1.000 Bürgern) und Corporate Investments (ca. 4 Mio. € von 8–10 regionalen Leitbetrieben).
 - **20 % Fremdkapital & Gemeindebeteiligung (ca. 4 Mio. €):** Immobilienbesicherte Bankkredite und moderate Infrastrukturbeiträge der Gemeinden.
 
 ### Der Return on Investment auf 3 Ebenen:
 1. **Direkter finanzieller ROI (3–5 % p.a.):** Mieteinnahmen von Hochschulen, Pacht von Start-ups und Erlöse aus Ausgründungen fließen an die Bürger und Betriebe zurück.
 2. **Corporate ROI für Betriebe:** Massive Einsparung bei Rekrutierungskosten (15.000–25.000 € pro Fachkraft) und direkter Zugang zu F&E-Ergebnissen.
-3. **Volkswirtschaftlicher ROI:** Erstellung von 1.500 bis 2.500 krisenfesten Ganzjahres-Arbeitsplätzen. Bei einer Lohnsumme von 50 Mio. € bedeutet das ein **jährliches Kommunalsteuer-Plus von ca. 1,5 Mio. €** für die Gemeinden im Tal.
+3. **Volkswirtschaftlicher ROI:** Schaffung von langfristig 1.500 bis 2.500 direkten und indirekten Ganzjahres-Arbeitsplätzen und Bildungsplätzen (entspricht ca. 800–1.200 Vollzeitäquivalenten). Bei einer geschätzten Lohnsumme von 50 Mio. € bedeutet das ein **jährliches Kommunalsteuer-Plus von ca. 1,5 Mio. €** für die Gemeinden im Tal.
 
 ## 5. Der Stufenplan: Roadmap 2026–2030
 

@@ -8,6 +8,13 @@ icon: "./hero.jpg"
 
 In unserem [vorherigen Beitrag vom 11. August 2026](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/) haben wir die theoretischen Grundlagen und die technische Umsetzung für die vier Dimensionen moderner Websichtbarkeit vorgestellt: **SEO**, **GEO**, **AEO** und **AIO**. Wir haben dargelegt, wie sich Websites durch Standards wie `llms.txt`, strukturierte JSON-LD Schemas und „Answer-First“-Architekturen für RAG-Systeme und KI-Agenten rüsten lassen.
 
+> [!NOTE]
+> **Begriffsabgrenzung auf einen Blick:**
+> * **SEO (Search Engine Optimization):** Klassische Optimierung für Suchmaschinen-Crawler (Google, Bing) mit Fokus auf Keywords, Ladezeiten und die organischen „10 blauen Links“.
+> * **GEO (Generative Engine Optimization):** Optimierung für generative KI-Systeme (Perplexity, ChatGPT Search, Claude), um in den KI-synthetisierten Antworten namentlich als zitierte Quelle aufzutauchen.
+> * **AEO (Answer Engine Optimization):** Direkte Antwortausspielung über Featured Snippets, Sprachassistenten und strukturierte Faktenboxen („Answer-First“-Muster).
+> * **AIO (Artificial Intelligence Optimization):** Strukturierte Bereitstellung maschinenlesbarer Schnittstellen (`/llms.txt`, JSON-LD Schemas) für autonome KI-Agenten und RAG-Pipelines.
+
 In der SEO- und Tech-Branche wird jedoch viel behauptet, wenn neue Buzzwords auftauchen. Häufig vermischen sich verifizierte Kausalitäten mit spekulativem Marketing-Folklore. Um fundierte architektonische und strategische Entscheidungen zu treffen, brauchen wir **harte empirische Daten**.
 
 In diesem Artikel ziehen wir Bilanz über den aktuellen wissenschaftlichen und industriellen Erkenntnisstand. Dabei unterscheiden wir strikt zwischen **Peer-Reviewed Publikationen** (akademisch geprüfte Forschung) und **Non-Peer-Reviewed Publikationen** (Industriereporte und Tool-Benchmarks). Abschließend bewerten wir Methodik, Datenqualität und Glaubwürdigkeit beider Quellen.
@@ -97,7 +104,7 @@ Da 54% der AIO-Quellen nicht aus der organischen Top-10 stammen, haben schlanke,
 * **Umsetzung**: Jede Inhaltsseite muss in den ersten 50–70 Wörtern die Kernantwort liefern (Definitions-Snippet). Wer die Antwort erst nach drei Absätzen Einleitung versteckt, wird von Chunking-Algorithmen aussortiert.
 
 ### 4. Maschinenlesbare APIs (`llms.txt`) reduzieren Token-Kosten
-Da KI-Crawler (wie GPTBot und ClaudeBot) unter strikten Rechenzeit- und Token-Budgets operieren, priorisieren sie Webseiten, die strukturierte, saubere Markdown-Repräsentationen anbieten. Eine schlanke `/llms.txt` und `/llms-full.txt` ermöglicht es RAG-Pipelines, Inhalte ohne HTML-Parser-Rauschen aufzunehmen.
+Da KI-Crawler (wie GPTBot und ClaudeBot) unter strikten Rechenzeit- und Token-Budgets operieren, priorisieren sie Webseiten, die strukturierte, saubere Markdown-Repräsentationen anbieten. Eine schlanke [`/llms.txt`](https://llmstxt.org) und `/llms-full.txt` (standardisierte Markdown-Zusammenfassungen im Webroot) ermöglicht es RAG-Pipelines, Inhalte ohne HTML-Parser-Rauschen und Overhead aufzunehmen.
 
 ## 5. Fazit
 

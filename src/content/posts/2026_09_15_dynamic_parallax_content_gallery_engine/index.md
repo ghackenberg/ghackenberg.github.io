@@ -12,6 +12,10 @@ Traditional carousels or looping marquees suffer from well-known UX problems: th
 
 To solve this, we designed and engineered a **living, 3-tier parallax Content Gallery** directly beneath the homepage hero section. In this post, I want to explore the engineering and mathematical principles behind this component: from optical kinematics and row velocity ratios to zero on-screen duplication guarantees, dynamic archive pooling, and a two-factor probabilistic selection algorithm backed by `localStorage`.
 
+> [!TIP]
+> **Live Interactive Experience:**  
+> You can experience this dynamic 3-tier parallax gallery live in action directly below the hero section on the [hackenberg.tech homepage](https://hackenberg.tech).
+
 ## 1. Kinematics & Visual Hierarchy: Optical Motion Parallax
 
 Rather than creating a single horizontal slider or a uniform grid, the gallery is structured into **three distinct horizontal tiers** moving continuously from right to left. 
@@ -142,6 +146,8 @@ When calculating candidate weights, the display factor $f_{\text{display}}$ acts
 3. **Smooth Weight Recovery**: As time passes beyond 12 minutes, the suppression decays linearly back to baseline ($1.0$) over the following 48 minutes:
 
 $$f_{\text{display}} = \min\left(1.0,\; 0.05 + 0.95 \cdot \frac{\Delta t_{\text{min}} - 12}{48}\right)$$
+
+*(Rationale: Average web session durations typically range from 2 to 5 minutes. A 12-minute strict window guarantees zero visual duplication within a single session, while the 48-minute linear recovery smoothly reintroduces older archive items if a visitor returns within the same hour).*
 
 ```typescript
 function pickNextItem(

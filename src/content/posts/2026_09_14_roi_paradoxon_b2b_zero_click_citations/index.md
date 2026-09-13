@@ -33,7 +33,7 @@ Wer Optimierungsmaßnahmen ausschließlich an kurzfristigen Klickzahlen misst, s
 
 ## 2. Die neuen Leitmetriken für die Zitations-Ökonomie
 
-Um den Return on Investment (ROI) von SEO-, GEO- und AEO-Initiativen im industriellen B2B-Umfeld belastbar zu quantifizieren, müssen Controlling und Marketing auf drei neue Steuerungsgrößen umstellen:
+Um den Return on Investment (ROI) von SEO- (*Search Engine Optimization*), GEO- (*Generative Engine Optimization* für KI-Suchsysteme wie Perplexity, ChatGPT Search oder Google AI Overviews) und AEO-Initiativen (*Answer Engine Optimization* für direkte Antwort- und Zitations-Engines) im industriellen B2B-Umfeld belastbar zu quantifizieren, müssen Controlling und Marketing auf drei neue Steuerungsgrößen umstellen:
 
 ### Metrik 1: Share of Model (SoM) / Citation Share
 * **Definition**: Wie hoch ist der prozentuale Anteil, zu dem das eigene Unternehmen bei einem definierten Katalog von 50 bis 100 repräsentativen Branchen-Prompts (z. B. typische Einkäuferfragen zu Fertigungsverfahren, Normen und Werkstoffen) in ChatGPT, Perplexity, Claude und Gemini als empfohlene Lösung genannt wird?

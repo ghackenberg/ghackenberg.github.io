@@ -10,7 +10,7 @@ Die Informationstechnologie hat einen fundamentalen Paradigmenwechsel vollzogen:
 
 Ob Empfehlungsalgorithmen sozialer Netzwerke, generative KI-Agenten, persuasive Benutzeroberflächen oder immersive Spatial-Computing-Umgebungen – moderne IT ist längst nicht mehr nur ein Werkzeug zur Datenverarbeitung. Sie ist ein **verhaltensformendes, kognitionsveränderndes Ökosystem**.
 
-Wer heute Softwaresysteme, Datenarchitekturen oder Benutzeroberflächen gestaltet, betreibt unweigerlich angewandte Psychologie. In diesem Beitrag fassen wir den aktuellen **Stand der Wissenschaft** (Kognitionspsychologie, Cyberpsychologie, Neurobiologie) sowie den **Stand der Technik** (Software-Architekturen, Recommender-Pipelines, kommerzielle Plattformen) fundiert und anschaulich zusammen.
+Wer heute Softwaresysteme, Datenarchitekturen oder Benutzeroberflächen gestaltet, betreibt unweigerlich angewandte Psychologie. Aus der Perspektive von Software-Architektur und Industrieinformatik fassen wir in diesem Beitrag den aktuellen **Stand der Wissenschaft** (Kognitionspsychologie, Cyberpsychologie, Neurobiologie) sowie den **Stand der Technik** (Software-Architekturen, Recommender-Pipelines, kommerzielle Plattformen) fundiert und anschaulich zusammen.
 
 ![Psychologie der modernen Informationstechnologie - Übersicht](./psychology_it_overview.svg)
 

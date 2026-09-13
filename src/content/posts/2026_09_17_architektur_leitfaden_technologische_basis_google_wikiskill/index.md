@@ -8,11 +8,21 @@ icon: "./hero.jpg"
 
 In unserer Beitragsreihe zur softwaretechnischen Realisierung souveräner Agentensysteme haben wir die Bausteine moderner KI-Plattformen schrittweise erschlossen: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das sitzungsübergreifende [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die kollaborative [Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/), das hochperformante Routing via [LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur [Enterprise Identity Governance via Keycloak](/posts/2026_09_10_keycloak_architektur_und_funktionsweise/). Nachdem wir in der theoretischen Fundierung die [persistente Wissensevolution nach Google WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) sowie den [Vergleich zwischen Hermes Agent und WikiSkills](/posts/2026_09_16_skill_evolution_hermes_agent_vs_google_wikiskills/) analysiert haben, stehen Software-Architekten vor der entscheidenden Umsetzungsfrage: **Welche technologische Basis eignet sich am besten, um das WikiSkill-Muster in realen Produktionssystemen verlässlich in Code zu gießen?**
 
-Das von Tang et al. (*Google Research & Virginia Tech, August 2026, [arXiv:2608.27454](https://arxiv.org/abs/2608.27454)*) formalisierte WikiSkill-Paradigma bricht mit improvisierten In-Session-Prompts: Anstatt flüchtige Kontextfenster immer wieder mit Versuch-und-Irrtum-Routinen zu fluten, werden Ausführungserfahrungen asynchron in ein unlöschbares Wissensarchiv kompiliert. Doch Theorie und Praxis klaffen oft auseinander. Wer versucht, dieses 5-Stufen-Muster mit klassischen Chatbot-Frameworks abzubilden, stößt rasch an fundamentale Grenzen.
+> [!NOTE]
+> **Wichtig für das Systemverständnis:**  
+> Bei *Google WikiSkill* (Tang et al., *Google Research & Virginia Tech, August 2026, [arXiv:2608.27454](https://arxiv.org/abs/2608.27454)*) handelt es sich **nicht um ein fertiges Softwareprodukt, SDK oder einen Cloud-Dienst von Google**, sondern um ein bahnbrechendes **wissenschaftliches Architektur- und Evolutionsmuster**. Da es dafür kein offizielles einsatzbereites Open-Source-Paket gibt, müssen Engineering-Teams das Paradigma auf Basis existierender Agenten-Runtimes und Workflow-Engines selbst implementieren.
+
+Anstatt flüchtige Kontextfenster immer wieder mit Versuch-und-Irrtum-Routinen zu fluten, bricht WikiSkill mit improvisierten In-Session-Prompts: Ausführungserfahrungen werden asynchron in ein unlöschbares Wissensarchiv kompiliert. Doch Theorie und Praxis klaffen oft auseinander. Wer versucht, dieses 5-Stufen-Muster mit klassischen Chatbot-Frameworks abzubilden, stößt rasch an fundamentale Grenzen.
 
 Dieser Architektur-Leitfaden definiert die unverzichtbaren Systemkriterien für WikiSkill-Runtimes, unterzieht die fünf maßgeblichen Technologie-Stacks einer softwaretechnischen Eignungsprüfung und gibt konkrete Stack-Empfehlungen für Web-, CLI- und Enterprise-Szenarien.
 
 ![Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg analysiert am Besprechungstisch im Campus Office Wels die technologische Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph](./hero.jpg)
+
+> [!TIP]
+> **Kompakt-Rekapitulation: Die 3 Schichten des WikiSkill-Paradigmas**
+> * **1. `raw/` (Ausführungs-Traces):** Unveränderliche, chronologische Aufzeichnungen aller Multi-Turn-Interaktionen, Tool-Aufrufe, Parameter und CLI-Ausgaben des Inferenz-Agenten.
+> * **2. `wiki/` (Kumulatives Wissensarchiv):** Ein maschinen- und menschenlesbares Markdown-Repository, in dem ein asynchroner *Wiki Maintainer* wiederkehrende Fehlermuster (*Failure Modes*), API-Eigenheiten und Lösungsstrategien thematisch synthetisiert.
+> * **3. `skills/` (Ausführbare Fähigkeiten):** Schlanke, nach dem Standard `agentskills.io` (`SKILL.md`) formatierte Werkzeuge, die erst nach erfolgreichem Durchlaufen einer deterministischen Testsuite (*Gating*) freigegeben werden.
 
 ## 1. Die drei fundamentalen Kriterien für WikiSkill-Runtimes
 
@@ -88,9 +98,9 @@ export const wikiSkillEvolutionWorkflow = createWorkflow({
 #### Bester Kontext:
 Entwickler-Teams, die Full-Stack-Webapplikationen, Progressive Web Apps (PWAs) oder SaaS-Produkte bauen und den gesamten Stack von der Benutzeroberfläche bis zum Agenten-Hintergrund in einer einheitlichen, typsicheren TypeScript-Codebasis halten wollen.
 
-### 2. Pi Agent (Minimalistischer TS-Harness)
+### 2. Pi Agent (Minimalistischer TS-Harness von Mario Zechner)
 
-Pi setzt auf absolute architektonische Reduktion nach der Unix-Philosophie: ein winziger, präziser System-Prompt, vier fundamentale System-Tools (`read`, `write`, `edit`, `bash`) und deterministische Session-Dateien direkt auf der Festplatte.
+Pi ([`badlogic/pi-mono`](https://github.com/badlogic/pi-mono)) – der von Mario Zechner entwickelte, minimalistische TypeScript-Coding-Agent – setzt auf absolute architektonische Reduktion nach der Unix-Philosophie: ein winziger, hochpräziser System-Prompt, vier fundamentale System-Tools (`read`, `write`, `edit`, `bash`) und deterministische Session-Dateien direkt auf der Festplatte. *(Hinweis: Nicht zu verwechseln mit dem gleichnamigen Chatbot von Inflection AI).*
 
 #### Vorteile:
 * **Keine Framework-Magie:** Volle Transparenz über den Prompt- und Tool-Loop; keine versteckten Abstraktionsschichten, die das Debugging erschweren.
@@ -128,7 +138,7 @@ Der im [Hermes Agent von Nous Research](/posts/2026_09_07_hermes_agent_architekt
 * Ausgereiftes Format nach [agentskills.io](https://agentskills.io) mit Level-0-Katalog im System-Prompt.
 
 #### Nachteile & Refactoring-Bedarf:
-* Das Standard-Paradigma widerspricht WikiSkill im Kern: Der Agent schreibt seine eigenen Skills via Tool-Call `skill_manage` direkt im Dialog. Dadurch drohen Amnesie und Schichten-Konflation.
+* **Verletzung des Gating-Prinzips:** Standardmäßig injiziert der Hermes Agent dem Modell das interaktive Tool `skill_manage` direkt in den Konversations-Prompt. Das Sprachmodell kann damit ad hoc mitten im Chat neue Fähigkeiten anlegen oder existierende `SKILL.md`-Dateien im Dateisystem überschreiben – völlig ungefiltert, ohne automatisierte Regressions-Tests und ohne den Zwischenschritt einer kollektiven Wiki-Konsolidierung. Dadurch drohen katastrophale Regressionen und Schichten-Konflation.
 * Um WikiSkill auf Basis von Hermes umzusetzen, muss man das interne Werkzeug `skill_manage` entziehen und den Inaktivitäts-Pass des Curators um ein externes Gating-Harness erweitern – ein Arbeiten gegen die Standard-Architektur des Tools, das wir in unserem [WikiCurator-Konzept](/posts/2026_09_16_skill_evolution_hermes_agent_vs_google_wikiskills/) als hybride Schichten-Entkopplung skizziert haben.
 
 #### Bester Kontext:

@@ -22,7 +22,7 @@ Sowohl im Corporate Office als auch in der häuslichen Wohnumgebung lassen sich 
 - **Unzulänglichkeiten im Homeoffice:** In häuslichen Wohnräumen sind die Voraussetzungen oft noch komplexer. Nicht jede Wohnung bietet Platz für ein separates Arbeitszimmer. Häufig wird am Esszimmertisch oder auf Provisorien gearbeitet. Lichtverhältnisse, Raumklima und Sitzgelegenheiten entsprechen selten arbeitsmedizinischen Idealstandards.
 - **Fehlende Rückkopplung:** Nutzer merken Haltungsfehler meist erst dann, wenn Schmerzen oder Muskelverspannungen eintreten. Ein rechtzeitiges, präventives Biofeedback fehlt in der Regel.
 
-Unsere Forschung setzt genau an dieser Schnittstelle an: Wir wandeln die Arbeitsumgebung von einem passiven Mobiliar in ein **aktives, lernendes Assistenzsystem** um, das Prävention im Alltag verankert.
+Unsere Forschung am Forschungsschwerpunkt für Industrieinformatik der FH OÖ (Campus Wels) setzt genau an dieser Schnittstelle an: Wir wandeln die Arbeitsumgebung von einem passiven Mobiliar in ein **aktives, lernendes Assistenzsystem** um, das Prävention im Alltag verankert.
 
 ## 2. Die 4-Schichten-Systemarchitektur
 
@@ -32,12 +32,12 @@ Um eine transparente, datenschutzkonforme und reaktionsschnelle Steuerung zu gew
 
 ### Schicht 1: Multimodale Sensorik & Edge-Erfassung (Privacy-First)
 Um Haltung und Umgebungsfaktoren präzise zu erfassen, kombinieren wir unterschiedliche Sensor modalitäten:
-- **Edge Computer Vision:** Leichtgewichtige KI-Modelle zur 3D-Pose-Estimation erfassen Oberkörperneigung, Schulterasymmetrien und Kopfhaltung. *Strikter Grundsatz:* Sämtliche Bilddaten werden direkt lokal auf der Edge-Hardware (z.B. Kamera-MCU) verarbeitet und unverzüglich verworfen. Es werden ausschließlich anonymisierte Vektorkoordinaten weitergeleitet.
+- **Edge Computer Vision:** Leichtgewichtige KI-Modelle zur 3D-Pose-Estimation erfassen Oberkörperneigung, Schulterasymmetrien und Kopfhaltung. *Strikter Grundsatz:* Sämtliche Bilddaten werden direkt lokal auf der Edge-Hardware (z.B. Kamera-Mikrocontroller / MCU – *Microcontroller Unit*) verarbeitet und unverzüglich verworfen. Es werden ausschließlich anonymisierte Vektorkoordinaten weitergeleitet.
 - **Tisch- & Stuhltelemetrie:** In Sitzflächen und Rückenlehnen integrierte Druckfolien und Kraftmesssensoren ermitteln die Lastverteilung und erkennen Fehlhaltungen (z.B. einseitiges Entlasten oder Überstrecken).
 - **Umwelt- & Klimasensorik:** Erfassung von CO2-Konzentration, Beleuchtungsstärke, Farbtemperatur und Lärmpegel zur ganzheitlichen Bewertung der Raumqualität.
 
 ### Schicht 2: KI-Analyse & Dynamische Belastungsmodellierung
-Die erfassten Sensordaten fließen in ein biologisch motiviertes Belastungsmodell ein. Mithilfe von Methoden des maschinellen Lernens (z.B. Temporal Convolutional Networks und Decision Trees) analysiert das System:
+Die erfassten Sensordaten fließen in ein biologisch motiviertes Belastungsmodell ein. Mithilfe von Methoden des maschinellen Lernens (z.B. Temporal Convolutional Networks / TCN für sequenzielle Bewegungszeitreihen und Decision Trees) analysiert das System:
 - **Ergonomie-Indizes:** Echtzeit-Bewertung von Haltungsabweichungen und Dauer statischer Belastungsphasen.
 - **Arbeitskontext-Erkennung:** Unterscheidung zwischen konzentrierter Einzelarbeit (Tippen/Programmieren), Bildschirm-Lesepassagen und aktiver Teilnahme an Videokonferenzen.
 - **Ermüdungsprognose:** Frühzeitige Signalerkennung von Absacken der Haltung durch ermüdende Rumpfmuskulatur.
@@ -62,8 +62,8 @@ Ein zentraler Fokus unserer Forschungsarbeit liegt auf den unterschiedlichen Rah
 | **Raum- & Möbelkontext** | Standardisierte Büromöbel, dedizierte Arbeitsflächen, oft Shared-Desking / Hot-Desking. | Variable Raumbedingungen, multifunktionale Nutzung (z.B. Esszimmer), oft eingeschränktes Platzangebot. |
 | **Sensorkonfiguration** | Fest installierte Sensor-Knoten am Arbeitsplatz, Anbindung an Gebäudeleittechnik. | Kompakte, agile Edge-Kits, universell an Bestandsmöbeln nachrüstbar (Retrofit). |
 | **Nutzerprofil-Management** | Schnelle Authentifizierung & Roaming von Einstellungen via RFID/NFC/BLE beim Platzwechsel. | Individuelles Nutzerprofil, Nahtloser Wechsel zwischen Arbeits- und Freizeitmodus. |
-| **Datenschutz & Akzeptanz** | Strikte BGM-Compliance, aggregierte & anonymisierte Kennzahlen für den Betrieb. | Absoluter Fokus auf lokale Datensouveränität (keine Rohdatenübertragung aus dem privaten Wohnraum). |
-| **Umgebungssteuerung** | Steuerung von Zonen-Beleuchtung und zentraler HVAC-Lüftung. | Ansteuerung smarter Verbraucher über offene IoT-Standards (z.B. Matter / Zigbee). |
+| **Datenschutz & Akzeptanz** | Strikte BGM-Compliance (Betriebliches Gesundheitsmanagement), aggregierte & anonymisierte Kennzahlen für den Betrieb. | Absoluter Fokus auf lokale Datensouveränität (keine Rohdatenübertragung aus dem privaten Wohnraum). |
+| **Umgebungssteuerung** | Steuerung von Zonen-Beleuchtung und zentraler HVAC-Lüftung (Heizung, Lüftung, Klima). | Ansteuerung smarter Verbraucher über offene IoT-Standards (z.B. Matter / Zigbee). |
 
 ## 4. Interdisziplinäre Forschung am FH OÖ Campus Wels
 
