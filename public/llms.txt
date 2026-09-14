@@ -13,8 +13,8 @@
   - GitHub: https://github.com/ghackenberg
   - LinkedIn: https://www.linkedin.com/in/georghackenberg/
   - YouTube: https://youtube.com/@georghackenberg
-  - Google Scholar: https://scholar.google.com/citations?user=GeorgHackenberg
-  - ORCID: https://orcid.org/0000-0002-1234-5678
+  - Google Scholar: https://scholar.google.com/citations?user=WS9Q3eYAAAAJ
+  - ORCID: https://orcid.org/0000-0003-3913-4148
 
 ## Full Content Export for LLMs & RAG
 - [Full Text Corpus (llms-full.txt)](https://hackenberg.tech/llms-full.txt): Complete structured text of all blog posts, publication abstracts, course outlines, software projects, and business services.

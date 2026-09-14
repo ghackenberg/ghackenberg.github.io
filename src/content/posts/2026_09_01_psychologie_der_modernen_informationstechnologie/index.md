@@ -17,7 +17,9 @@ Wer heute Softwaresysteme, Datenarchitekturen oder Benutzeroberflächen gestalte
 
 ![Psychologie der modernen Informationstechnologie - Übersicht](./psychology_it_overview.svg "Psychologie der modernen Informationstechnologie -")
 
-## 1. Der Stand der Wissenschaft: Wie digitale Systeme den menschlichen Geist fordern
+## 1. Wie fordern digitale Systeme den menschlichen Geist? Stand der Wissenschaft
+
+Digitale Systeme fordern die menschliche Kognition durch gezielte Reizüberflutung, unvorhersehbare Belohnungsmuster und ständige Aufmerksamkeitsunterbrechungen heraus. Kognitionspsychologie und Cyberpsychologie belegen, dass permanente Reize exekutive Kontrollfunktionen des präfrontalen Kortex erschöpfen, das Arbeitsgedächtnis überlasten und kognitive Wechselkosten von durchschnittlich 23 Minuten pro Unterbrechung verursachen.
 
 Die wissenschaftliche Erforschung der Mensch-Technik-Interaktion speist sich heute aus der Kognitionspsychologie, den Neurowissenschaften und der Cyberpsychologie. Vier Kernbereiche beschreiben den aktuellen Forschungsstand:
 
@@ -53,9 +55,19 @@ Die Vernetzung von Milliarden Menschen über das World Wide Web und soziale Netz
 
 * **Transaktives Gedächtnis & der "Google-Effekt":** Die *Extended Mind Thesis* (Clark & Chalmers) besagt, dass kognitive Prozesse nicht an der Schädeldecke enden, sondern physische und digitale Werkzeuge als externe Speicher einbinden. Die Forschung von Betsy Sparrow et al. belegt: Wissen Menschen, dass Informationen im Internet permanent abrufbar sind, speichert das Gehirn nicht mehr den *Inhalt*, sondern primär den *Ort des Zugriffs* (*Digital Amnesia*).
 * **Automation Bias & De-Skilling:** Übermäßiges Vertrauen in automatisierte Systeme und KI-Assistenten führt dazu, dass menschliche Anwender Warnsignale übersehen oder eigene analytische Fähigkeiten verlernen (*kognitive Atrophie*).
-* **Das CASA-Paradigma & Anthropomorphismus:** Das von Clifford Nass und Byron Reeves formulierte Paradigma **"Computers Are Social Actors" (CASA)** belegt, dass Menschen Computern, Sprachassistenten und Chatbots instinktiv soziale Eigenschaften (Höflichkeit, Geschlecht, Intentionalität) zuschreiben – selbst wenn ihnen vollkommen bewusst ist, dass sie mit Algorithmen interagieren (verstärkter *ELIZA-Effekt*).
+### E. Kognitive Wirkmechanismen vs. Software-Architekturen im Überblick
 
-## 2. Der Stand der Technik: Software-Architekturen & Persuasive Systeme
+Die folgende Synthese stellt die wichtigsten psychologischen Phänomene den typischen persuasiven Mustern kommerzieller Plattformen und human-zentrierten Gegenmaßnahmen (*Calm Computing*) gegenüber:
+
+| Kognitiver Faktor | Psychologischer Wirkmechanismus | Persuasives Software-Muster | Human-Centered Gegenmaßnahme |
+| :--- | :--- | :--- | :--- |
+| **Attention Residue** | 23 Minuten Rekonzentrationszeit nach Störung | Synchrone Push-Mitteilungen & rote Badges | Asynchrone Batch-Zustellung & Do-Not-Disturb |
+| **Variable Rewards** | Dopaminausschüttung bei Belohnungserwartung | Endlose Feeds mit Pull-to-Refresh | Feste Paginierung & deterministischer Lesestopp |
+| **Extraneous Load** | Überlastung des $4 \pm 1$ Arbeitsgedächtnisses | Visuell überladene Oberflächen & Werbe-Overlays | Minimalistische Typografie & visuelle Ruhe |
+| **Digital Amnesia** | Speicherort statt Inhalt gemerkt (Google-Effekt) | Geschlossene, proprietäre Datensilos | Lokale Markdown-Archive & offene Wissensgraphen |
+| **Automation Bias** | Unreflektiertes Vertrauen in algorithmische Ausgaben | Intransparente Black-Box-Empfehlungen | Explainable AI & Human-in-the-Loop-Gates |
+
+## 2. Wie operationalisieren moderne Software-Architekturen psychologische Mechanismen?
 
 Um psychologische Prinzipien in großem Maßstab zu operationalisieren, hat die IT-Industrie hochentwickelte, verteilte Software-Architekturen entwickelt. Moderne Systeme basieren auf einer engen Verzahnung von Event-Streaming, mehrstufigen Deep-Learning-Modellen und adaptiver Benutzeroberflächen-Steuerung.
 

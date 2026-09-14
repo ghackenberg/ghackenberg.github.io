@@ -113,7 +113,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
 ---
 
 <Layout 
-  title={`${post.data.title} | Blog Posts | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`} 
+  title={`${post.data.title} | Dr. Georg Hackenberg`} 
   description={seoDescription}
   image={ogImage}
   type="article"
@@ -121,6 +121,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
   tags={post.data.tags}
   hasMath={hasMath}
   jsonLd={postJsonLd}
+  lang={post.data.lang || "de"}
 >
   <Navbar />
 

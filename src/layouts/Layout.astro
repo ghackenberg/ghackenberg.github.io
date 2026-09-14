@@ -33,18 +33,20 @@ interface Props {
   hasMath?: boolean;
   preloadImage?: string;
   jsonLd?: Record<string, JsonLdValue> | Array<Record<string, JsonLdValue>>;
+  lang?: string;
 }
 
 const { 
-  title = "Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels", 
-  description = "Personal website of Dr. Georg Hackenberg, Full Professor for Industrial Informatics, software engineer, digital entrepreneur, and developer of CADdrive and Mentawise.",
+  title = "Dr. Georg Hackenberg | Professor for Industrial Informatics", 
+  description = "Personal website of Dr. Georg Hackenberg, Full Professor for Industrial Informatics, software engineer, digital entrepreneur, and researcher.",
   image,
   type = "website",
   pubDate,
   tags,
   hasMath = false,
   preloadImage,
-  jsonLd
+  jsonLd,
+  lang = "en"
 } = Astro.props;
 
 // Build canonical URL
@@ -107,7 +109,7 @@ if (pubDate) {
 ---
 
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang={lang} class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -206,7 +208,7 @@ if (pubDate) {
     <meta property="og:description" content={description} />
     <meta property="og:image" content={resolvedImageURL} />
     <meta property="og:site_name" content="Dr. Georg Hackenberg" />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={lang === "de" ? "de_AT" : "en_US"} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />

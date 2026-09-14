@@ -17,7 +17,16 @@ In diesem Artikel erklären wir die vier Begriffe kurz und zeigen anschließend 
 
 ![SEO, GEO, AEO & AIO Optimierungsmodell](./diagram.jpg "SEO, GEO, AEO & AIO")
 
-## 1. Die vier Dimensionen der modernen Sichtbarkeit
+## 1. Was unterscheidet SEO, GEO, AEO und AIO? Die vier Dimensionen im Vergleich
+
+Während traditionelles SEO auf Crawler-Indizes und Klicks abzielt, optimieren GEO, AEO und AIO auf generative Synthesen, direkte Antwort-Snippets und maschinenlesbare Agenten-APIs. Wer heute im Web nachhaltig sichtbar bleiben will, muss menschliche User Experience mit maschinenlesbaren Ingestion-Schnittstellen (`llms.txt`, JSON-LD, Tabellensynthese) verbinden.
+
+| Dimension | Primäre Zielgruppe | Technische Kernmetriken | Hauptwerkzeuge & Standards |
+| :--- | :--- | :--- | :--- |
+| **SEO** (Search Engine Optimization) | Klassische Web-Crawler (Google, Bing) | Ladezeiten (CWV), HTML-Hierarchie, Backlinks, Meta-Tags | XML-Sitemaps, Google Search Console, OpenGraph |
+| **GEO** (Generative Engine Optimization) | Generative Suchmaschinen (Perplexity, ChatGPT) | Zitationsrate, Wissensgraphen-Verankerung, Entity-Dichte | `llms.txt`, `llms-full.txt`, `sameAs`-Schemas |
+| **AEO** (Answer Engine Optimization) | Direct-Answer-Engines (Google AI Overviews) | Direct-Answer-Dichte (40–60 Wörter), Tabellensynthese | Answer-First-Muster, FAQ-Schemas, Aufzählungen |
+| **AIO** (Artificial Intelligence Optimization) | Autonome Agenten & RAG-Pipelines | Strukturierte Tool-Calls, deterministische Extraktion | Model Context Protocol (MCP), Manifest-APIs |
 
 ### 1. SEO (Search Engine Optimization)
 * **Zielgruppe**: Klassische Web-Crawler von Google, Bing und DuckDuckGo.
@@ -35,7 +44,7 @@ In diesem Artikel erklären wir die vier Begriffe kurz und zeigen anschließend 
 * **Zielgruppe**: Autonome KI-Agenten, RAG-Pipelines und automatisierte Web-Scraper.
 * **Kernfokus**: Maschinenlesbare Manifest-APIs (`/content-manifest.json`), tiefgreifendes JSON-LD Schema.org Markup (`Person`, `ScholarlyArticle`, `SoftwareApplication`, `Course`, `Service`) und starker Nachweis von E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness).
 
-## 2. Unser strategischer und technischer Umsetzungsansatz
+## 2. Wie sieht unser strategischer und technischer Umsetzungsansatz aus?
 
 Um diese Website ([hackenberg.tech](https://hackenberg.tech)) systematisch für alle vier Dimensionen aufzustellen, haben wir eine Architektur umgesetzt, die sowohl menschlichen Besuchern eine erstklassige UX bietet als auch Maschinen maximale Transparenz garantiert.
 

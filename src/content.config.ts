@@ -139,6 +139,7 @@ const posts = defineCollection({
     title: z.string(),
     pubDate: z.coerce.date(),
     description: z.string().optional(),
+    lang: z.enum(['de', 'en']).default('de').optional(),
     tags: z.array(tagReference).default([]),
     icon: coverImageSchema({ image }).optional(),
   }),
