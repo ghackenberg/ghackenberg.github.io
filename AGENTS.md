@@ -74,13 +74,17 @@ Follow these holistic optimization principles across all written technical conte
 
 ### 1. Mandatory Use of the Custom MCP Server (`unified-analytics`)
 Whenever tasked with analyzing, optimizing, writing, or inspecting content in this repository:
-- **Pre-Optimization Content Audits**: Always query the custom MCP server to inspect consolidated Google Search Console (GSC) search performance and Plausible engagement metrics for the target URL before making revisions. Protect high-performing search queries identified in top search results.
-- **Opportunity Discovery**: Leverage the MCP server's opportunity heuristic tools to identify striking-distance keywords (positions 4–15), high-bounce top performers, and hidden champions across the site.
-- **Pre-Publishing AIO / GEO Evaluation**: Always run the MCP server's local AIO extractability evaluator against newly drafted or revised markdown articles (`src/content/**`) to verify direct-answer density, table/list structure, and Schema.org metadata before committing.
-- **Indexation & Canonical Verification**: Use the MCP server's URL inspection tool to diagnose live indexation state, verify user vs. Google-selected canonicals, and check last crawl timestamps via the GSC URL Inspection API.
+- **Pre-Optimization Content Audits**: Always query the custom MCP server to inspect consolidated Google Search Console (GSC) search performance and Plausible engagement metrics (`get_page_audit`) for the target URL before making revisions. Protect high-performing search queries identified in top search results.
+- **Opportunity Discovery**: Leverage the MCP server's opportunity heuristic tools (`find_seo_opportunities`) to identify striking-distance keywords (positions 4–15), high-bounce top performers, and hidden champions across the site.
+- **Batch Content Screening**: Use `scan_aio_readiness` to scan markdown collections and immediately uncover content with the lowest AIO scores and highest optimization leverage.
+- **Internal Link & Orphan Page Auditing**: Use `audit_internal_linking` to detect orphan pages (< 2 incoming internal links) and discover relevant donor articles for backlinking to hidden champions.
+- **SERP Snippet & Metadata Auditing**: Use `audit_serp_snippets` to catch titles > 60 chars, descriptions outside 140-160 chars, and verify that primary GSC search queries appear in page titles.
+- **AIO / GEO Evaluation & Impact Diffing**: Run `evaluate_aio_extractability` against drafted or revised markdown articles (`src/content/**`) to verify direct-answer density, table/list structure, and Schema.org metadata. Use `diff_aio_impact` to measure the exact delta against git `HEAD` before committing.
+- **Indexation & Canonical Verification**: Use `inspect_url_index_status` to diagnose live indexation state, verify user vs. Google-selected canonicals, and check last crawl timestamps via the GSC URL Inspection API.
 - **Environment Setup**: On fresh checkouts or new machines, run `npm run setup:mcp` if the MCP server has not yet been compiled or linked.
 
 ### 2. Traditional On-Page & Technical SEO
+
 - **Search Intent & Snippet Optimization**: Craft concise, compelling frontmatter `title` tags (< 60 characters) and `description` meta tags (140–160 characters) with explicit value propositions.
 - **Keyword & Ranking Preservation**: When revising existing articles, never strip out high-volume organic search queries or established internal anchor links that drive existing traffic.
 - **Strict Hierarchy**: Maintain strict semantic nesting (`#` title $\rightarrow$ `##` sections $\rightarrow$ `###` subsections). Never skip heading levels.

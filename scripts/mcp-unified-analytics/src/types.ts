@@ -103,3 +103,85 @@ export interface AioEvaluationResult {
   keyFindings: string[];
   concreteRecommendations: string[];
 }
+
+export interface AioScanSummary {
+  totalScanned: number;
+  averageScore: number;
+  highReadinessCount: number; // score >= 90
+  mediumReadinessCount: number; // 70 <= score < 90
+  lowReadinessCount: number; // score < 70
+  results: Array<{
+    target: string;
+    sourceFile: string;
+    score: number;
+    tables: number;
+    questionHeadings: number;
+    directAnswers: number;
+    recommendations: string[];
+  }>;
+}
+
+export interface InternalLinkItem {
+  sourcePath: string;
+  targetPath: string;
+  anchorText: string;
+  isRelative: boolean;
+}
+
+export interface InternalLinkAudit {
+  totalInternalLinks: number;
+  totalUniquePages: number;
+  orphanPages: Array<{
+    path: string;
+    sourceFile: string;
+    incomingLinksCount: number;
+  }>;
+  linkingOpportunities?: Array<{
+    targetPath: string;
+    donorPath: string;
+    donorFile: string;
+    matchedKeywords: string[];
+    snippetContext: string;
+  }>;
+}
+
+export interface SerpSnippetIssue {
+  field: 'title' | 'description';
+  issue: 'too_long' | 'too_short' | 'missing_focus_keyword' | 'empty';
+  message: string;
+  currentLength: number;
+  recommendedRange: string;
+}
+
+export interface SerpSnippetPageReport {
+  path: string;
+  sourceFile: string;
+  title: string;
+  description: string;
+  titleLength: number;
+  descriptionLength: number;
+  issues: SerpSnippetIssue[];
+  topGscQuery?: string;
+  hasTopGscQueryInTitle?: boolean;
+}
+
+export interface SerpSnippetAudit {
+  totalAudited: number;
+  issuesCount: number;
+  pagesWithIssues: SerpSnippetPageReport[];
+}
+
+export interface AioDiffResult {
+  target: string;
+  baseRef: string;
+  scoreBefore: number;
+  scoreAfter: number;
+  scoreDelta: number;
+  directAnswersDelta: number;
+  tablesDelta: number;
+  questionHeadingsDelta: number;
+  listsDelta: number;
+  before: AioEvaluationResult;
+  after: AioEvaluationResult;
+}
+

@@ -5,12 +5,19 @@ import { z } from 'zod';
 import { getUnifiedPageAudit } from './services/aggregator.js';
 import { findSeoOpportunities } from './services/opportunities.js';
 import { inspectUrlIndexStatus } from './clients/gsc.js';
-import { evaluateAioExtractability } from './services/aio-evaluator.js';
+import {
+  evaluateAioExtractability,
+  scanAllContentAio,
+  diffAioAgainstGit,
+} from './services/aio-evaluator.js';
+import { auditInternalLinking } from './services/internal-links.js';
+import { auditSerpSnippets } from './services/serp-snippets.js';
 
 const server = new McpServer({
   name: 'unified-analytics',
   version: '1.0.0',
 });
+
 
 // Tool 1: get_page_audit
 server.tool(
@@ -179,6 +186,172 @@ server.tool(
   }
 );
 
+// Tool 5: scan_aio_readiness
+server.tool(
+  'scan_aio_readiness',
+  'Batch-scan all markdown content across collections (posts, visualizations, courses) to compute AIO extractability scores. Identifies content with the highest optimization potential, sorting ascending by score.',
+  {
+    collection: z
+      .enum(['all', 'posts', 'visualizations', 'courses'])
+      .optional()
+      .default('all')
+      .describe('Collection directory to scan'),
+    maxScore: z
+      .number()
+      .optional()
+      .default(80)
+      .describe('Only return pages with an AIO score at or below this threshold'),
+    limit: z
+      .number()
+      .optional()
+      .default(15)
+      .describe('Maximum number of underperforming pages to return'),
+  },
+  async ({ collection, maxScore, limit }) => {
+    try {
+      const summary = scanAllContentAio({ collection, maxScore, limit });
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(summary, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error scanning AIO readiness: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 6: audit_internal_linking
+server.tool(
+  'audit_internal_linking',
+  'Analyze internal linking graph across all markdown content. Detects orphan pages (pages with 0 or 1 incoming links) and automatically suggests backlink opportunities from donor articles for a target article or hidden champion.',
+  {
+    targetPath: z
+      .string()
+      .optional()
+      .describe('Relative URL or file path of target article to find backlink donor opportunities for (e.g. "/posts/my-post/")'),
+    minIncomingLinks: z
+      .number()
+      .optional()
+      .default(1)
+      .describe('Threshold below which a page is flagged as an orphan'),
+  },
+  async ({ targetPath, minIncomingLinks }) => {
+    try {
+      const audit = auditInternalLinking({ targetPath, minIncomingLinks });
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(audit, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error auditing internal links: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 7: audit_serp_snippets
+server.tool(
+  'audit_serp_snippets',
+  'Audit frontmatter title and description lengths against Google SERP truncation limits (<60 chars for title, 140-160 for description). Cross-references top queries from Google Search Console to verify keyword inclusion.',
+  {
+    collection: z
+      .enum(['posts', 'visualizations', 'courses', 'all'])
+      .optional()
+      .default('posts')
+      .describe('Content collection to audit'),
+    checkGscKeywords: z
+      .boolean()
+      .optional()
+      .default(true)
+      .describe('Whether to verify inclusion of the primary GSC ranking query in the page title'),
+  },
+  async ({ collection, checkGscKeywords }) => {
+    try {
+      const audit = await auditSerpSnippets({ collection, checkGscKeywords });
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(audit, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error auditing SERP snippets: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 8: diff_aio_impact
+server.tool(
+  'diff_aio_impact',
+  'Compare current content of a file against a Git revision (default HEAD) to evaluate the exact delta in AIO extractability score, direct answers, tables, headings, and lists.',
+  {
+    target: z
+      .string()
+      .describe('Relative URL path or file path (e.g. "src/content/posts/my-post/index.md")'),
+    baseRef: z
+      .string()
+      .optional()
+      .default('HEAD')
+      .describe('Git base revision to compare against (default: HEAD)'),
+  },
+  async ({ target, baseRef }) => {
+    try {
+      const diff = diffAioAgainstGit(target, baseRef);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(diff, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error computing AIO diff: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
@@ -189,3 +362,4 @@ main().catch((err) => {
   console.error('Fatal error running Unified Analytics MCP Server:', err);
   process.exit(1);
 });
+
