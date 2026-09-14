@@ -1,7 +1,7 @@
 ---
-title: "Running Local AI Agents in the Browser: Integrating Web-LLM into Delta Dynamics"
+title: "Local Browser AI Agents: Web-LLM in Delta Dynamics"
 pubDate: "2026-05-31"
-description: "A deep dive into bringing decentralized, client-side LLM-driven AI behaviors to our low-poly ecosystem simulator using WebGPU, MLC Web-LLM, and asynchronous web workers."
+description: "Bringing client-side LLM-driven AI agents into the browser with WebGPU, MLC Web-LLM, and web workers for decentralized ecosystem simulation."
 tags: ["agentic-ai", "artificial-intelligence", "local-ai", "simulation", "threejs", "typescript", "web-llm", "webgpu"]
 icon:
   src: "./icon.png"

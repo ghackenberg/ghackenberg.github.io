@@ -1,7 +1,7 @@
 ---
-title: "Generative Visual Systems: Warum Diffusionsmodelle an Kamerawinkeln scheitern und wie Room DNA, Reusable Assets und Agent Protocols konsistente Welten schaffen"
+title: "Bildgenerierungsmaschine: Reusable Assets & Room DNA"
 pubDate: "2026-09-21"
-description: "Vom stochastischen Prompt-Glücksspiel zur deterministischen Grafik-Pipeline: Warum 2D-Bildkonditionierung Diffusionsmodelle in die Layout-Locking-Falle führt, wie wir Kamerawinkel durch semantische 'Room DNA' und Fokus-Varianten entkoppeln, und wie ein relationaler Asset-Graph in Astro für reproduzierbare visuelle Konsistenz sorgt."
+description: "Wie wir mit Relational Libraries, Character Slots und Room DNA konsistente Disney/Pixar-Illustrationen für Fachartikel deterministisch generieren."
 tags: ["generative-ai", "diffusion-models", "software-architecture", "astro", "prompt-engineering", "agentic-ai", "digital-engineering", "design-systems"]
 icon:
   src: "./hero.jpg"

@@ -1,7 +1,7 @@
 ---
-title: "Thermische Höchstleistung im Naturdesign: Der minimalistische Holz-Laptopständer für GPU- und KI-Workstations"
+title: "Massivholz-Kühldock: Minimalistischer Laptopständer"
 pubDate: "2026-08-31"
-description: "Wie ein leichtgewichtiger Holz-Laptopständer mit offenen Seitenwangen und horizontal gefrästen Belüftungsschlitzen die thermische Abwärme moderner Hochleistungs-GPUs bewältigt – für lokale KI, 3D-CAD und anspruchsvolles Computing."
+description: "Leichtgewichtiger Holz-Laptopständer mit Kamineffekt: Passive Kühlung für anspruchsvolle GPU-Workstations im eleganten, minimalistischen Naturdesign."
 tags: ["hardware", "thermal-engineering", "ergonomics", "local-ai", "cad", "smart-workplace", "industrial-informatics"]
 icon:
   src: "./hero.jpg"
@@ -9,7 +9,7 @@ icon:
   description: "Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops - Hero Übersicht"
 ---
 
-In meinem vorigen Beitrag über [KI-basierte ergonomische Arbeitsumgebungen](../2026_08_10_ki_basierte_ergonomische_arbeitsumgebungen/index.md) haben wir beleuchtet, wie adaptive Sensorik, lernende Algorithmen und smarte Möbel den Arbeitsplatz dynamisch an den Menschen anpassen. Doch neben der physiologischen Interaktion zwischen Mensch und Raum entscheidet ein weiterer, oft unterschätzter Faktor über die Produktivität im modernen Wissens- und Ingenieursalltag: die **thermische Leistungsfähigkeit unserer primären Arbeitsgeräte**.
+In meinem vorigen Beitrag über [KI-basierte ergonomische Arbeitsumgebungen](/posts/2026_08_10_ki_basierte_ergonomische_arbeitsumgebungen/) haben wir beleuchtet, wie adaptive Sensorik, lernende Algorithmen und smarte Möbel den Arbeitsplatz dynamisch an den Menschen anpassen. Doch neben der physiologischen Interaktion zwischen Mensch und Raum entscheidet ein weiterer, oft unterschätzter Faktor über die Produktivität im modernen Wissens- und Ingenieursalltag: die **thermische Leistungsfähigkeit unserer primären Arbeitsgeräte**.
 
 Ob beim Ausführen lokaler Large Language Models (LLMs) via Ollama, beim Rendern komplexer Baugruppen in 3D-CAD-Systemen oder bei rechenintensiven Physik-Simulationen – moderne mobile Workstations und High-End-Laptops verfügen heute über erstaunliche Rechenpower in Form dedizierter Grafikprozessoren (dGPUs). Diese kompakte Spitzenleistung hat jedoch einen physikalischen Preis: **massive thermische Verlustleistung auf engstem Raum**.
 

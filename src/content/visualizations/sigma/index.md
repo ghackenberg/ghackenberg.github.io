@@ -1,5 +1,5 @@
 ---
-title: "Sigma ForceAtlas2"
+title: "Sigma.js: ForceAtlas2 Network Graph"
 description: "Interactive WebGL network graph visualization using Sigma.js and multi-threaded ForceAtlas2 physics in web workers by Dr. Georg Hackenberg."
 screenshot:
   src: "./sigma.png"
@@ -33,13 +33,21 @@ The **Sigma ForceAtlas2** visualization renders the semantic knowledge graph con
 ## Frequently Asked Questions (FAQ)
 
 ### How does Sigma.js handle thousands of graph nodes without lagging?
-Sigma.js delegates the entire rendering pipeline to WebGL fragment and vertex shaders rather than manipulating thousands of individual DOM or SVG elements. Furthermore, the physics calculations for the ForceAtlas2 algorithm run asynchronously in a web worker thread, decoupling graph computation from browser rendering.
+
+Sigma.js eliminates rendering bottlenecks through three hardware-accelerated techniques:
+- **WebGL GPU Pipelines**: Offloads node, edge, and label rendering directly to vertex and fragment shaders.
+- **Asynchronous Physics**: Solves ForceAtlas2 spatial positions in a dedicated web worker thread without blocking the UI.
+- **Spatial Caching**: Batches node coordinates to avoid expensive DOM re-flows or main-thread garbage collection.
 
 ### When should you use Sigma.js over D3.js or Vis.js?
-Sigma.js is ideal for medium-to-massive networks (1,000+ nodes) where frame rate and high throughput are paramount. While D3 offers richer SVG vector styling and Vis.js provides elastic spring physics for smaller graphs, Sigma excels in rendering large, dense graph structures with minimal CPU overhead.
+
+Sigma.js is the optimal architectural choice under specific network requirements:
+- **Large-Scale Graphs**: Ideal for medium-to-massive networks (1,000+ nodes) where frame rate and high throughput are paramount.
+- **Minimal CPU Overhead**: Offloads $n$-body calculations to secondary threads rather than bogging down browser interaction.
+- **Complementary Tooling**: Use D3 for fine-grained SVG typography or Vis.js for tactile 2D canvas springs under 1,000 nodes.
 
 ### Where can I find more background on this implementation?
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing](/posts/2026_05_27_interactive_graph_visualizations_update/).
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
 
 
 

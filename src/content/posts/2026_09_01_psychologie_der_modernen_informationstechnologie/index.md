@@ -1,7 +1,7 @@
 ---
-title: "Psychologie der modernen Informationstechnologie: Stand der Wissenschaft und Stand der Technik"
+title: "Psychologie der modernen Informationstechnologie"
 pubDate: "2026-09-01"
-description: "Eine interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Aufmerksamkeitsökonomie, Cyberpsychologie, Software-Architekturen und kommerzielle KI-Ökosysteme ineinandergreifen."
+description: "Interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Dopamin-Schleifen und Aufmerksamkeitsökonomie moderne Software-Architekturen prägen."
 tags: ["psychology", "cyberpsychology", "cognitive-science", "artificial-intelligence", "software-architecture", "human-computer-interaction", "social-media"]
 icon:
   src: "./icon.jpg"

@@ -1,7 +1,7 @@
 ---
-title: "Vision Campus Almtal 2035: Vom Erholungstourismus zum dezentralen Innovationsraum"
+title: "Vision Campus Almtal 2035: Dezentraler Innovationsraum"
 pubDate: "2026-08-09"
-description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural Sciences & Applications."
+description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im Wandel."
 tags: ["education", "innovation", "regional-development", "sustainability", "almtal"]
 icon:
   src: "./icon.jpg"
@@ -40,7 +40,7 @@ Um politische Grabenkämpfe zwischen den Gemeinden zu vermeiden, baut das Konzep
 3. **Pettenbach (Das Energie- & Tech-Gateway):**  
    Als Tor zum Almtal bietet Pettenbach mit Partnern wie *Fronius* und *Danner Wasserkraft* den idealen Standort für die Erprobung dezentraler Energienetze, Energiespeicher und Automatisierungshardware.
 4. **Viechtwang (Campus für Premium-Handwerk & Lernwelten):**  
-   Mit Leitbetrieben wie *Mayr-Schulmöbel* wird Viechtwang zum Zentrum für moderne Arbeitsraumgestaltung, Ergonomie und spezialisiertes Premium-Handwerk. Hier werden die Lern- und Arbeitswelten der Zukunft erforscht und produziert.
+   Mit Leitbetrieben wie *Mayr-Schulmöbel* wird Viechtwang zum Zentrum für moderne Arbeitsraumgestaltung, Ergonomie und spezialisiertes Premium-Handwerk. Hier werden die Lern- und Arbeitswelten der Zukunft erforscht und produziert – inklusive kognitiver Ergonomie und digitaler Stressreduktion (siehe dazu auch unsere Grundlagenanalyse zur [Psychologie der modernen Informationstechnologie](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/)).
 5. **Steinbach am Ziehberg (Feldlabor für Forstwirtschaft & Biomasse):**  
    Mit seiner waldreichen Topografie und Betrieben wie dem *Sägewerk Aitzetmüller* dient Steinbach als Erprobungsraum für datengestütztes Forstmanagement, nachhaltige Holznutzung und lokale Nahwärmekonzepte. Zudem bietet es Raum für akademische "Retreats".
 6. **St. Konrad (Agri-Tech & Ressourcen-Resilienz):**  

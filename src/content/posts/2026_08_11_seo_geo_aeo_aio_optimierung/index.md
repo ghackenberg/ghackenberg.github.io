@@ -1,7 +1,7 @@
 ---
-title: "SEO, GEO, AEO & AIO: Strategische & technische Optimierung für das KI-Zeitalter"
+title: "SEO, GEO, AEO & AIO: Leitfaden fürs KI-Zeitalter"
 pubDate: "2026-08-11"
-description: "Wie man eine Website nicht nur für traditionelle Suchmaschinen (SEO), sondern auch für Generative Engines (GEO), Answer Engines (AEO) und KI-Agenten (AIO) systematisch optimiert."
+description: "Wie man Websites für traditionelle Suchmaschinen (SEO), Generative Engines (GEO), Answer Engines (AEO) und KI-Agenten (AIO) systematisch optimiert."
 tags: ["aeo", "agentic-ai", "aio", "artificial-intelligence", "astro", "geo", "knowledge-graphs", "seo", "web-development"]
 icon:
   src: "./diagram.jpg"
@@ -84,7 +84,7 @@ Allow: /
 Zusätzlich generiert `@astrojs/rss` unter `/rss.xml` ein valides RSS 2.0 XML-Feed für Feed-Reader und automatisierte Aggregatoren.
 
 ### Schritt 4: „Answer-First“-Muster & FAQ-Integration (AEO)
-Für Antwort-Engines wie Google AI Overviews und Perplexity haben wir auf Detailseiten prägnante **Key Takeaways / Executive Summary**-Blöcke integriert. Zudem nutzt die Website auf der Startseite ein strukturiertes `FAQPage`-Schema für direkte Antworten auf häufige Fragen.
+Für Antwort-Engines wie Google AI Overviews und Perplexity haben wir auf Detailseiten prägnante **Key Takeaways / Executive Summary**-Blöcke integriert. Zudem nutzt die Website auf der Startseite ein strukturiertes `FAQPage`-Schema für direkte Antworten auf häufige Fragen. Dieses Answer-First-Muster adressiert nicht nur maschinelle RAG-Extraktoren, sondern begegnet auch der menschlichen Reizüberflutung – ein kognitives Phänomen, das wir in unserer interdisziplinären Analyse zur [Psychologie der modernen Informationstechnologie](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/) detailliert aufschlüsseln.
 
 ### Schritt 5: Maschinenlesbares Content-Manifest (`/content-manifest.json`)
 Der Endpunkt `/content-manifest.json` wurde erweitert, sodass autonome KI-Agenten das Verzeichnis der Website programmatisch abfragen und filtern können.

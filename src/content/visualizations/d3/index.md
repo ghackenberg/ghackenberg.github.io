@@ -1,6 +1,6 @@
 ---
-title: "D3 Force Layout"
-description: "Physics-based force simulation and interactive SVG/canvas network layout using D3.js by Dr. Georg Hackenberg."
+title: "D3.js: Force-Directed Network Graph"
+description: "Physics-based force simulation and interactive SVG vector network graph layout using D3.js with velocity Verlet integration by Dr. Georg Hackenberg."
 screenshot:
   src: "./d3.png"
   title: "D3 Physics-Based Force Graph"
@@ -19,6 +19,6 @@ The **D3 Force Layout** visualization leverages the modular physics simulation p
 - **Granular Vector Control**: Crisp SVG vector rendering with direct geometric transformation matrices, smooth zoom behaviors, and bezier link curves.
 - **Deterministic Thermal Cooling**: Using alpha decay parameters, the force simulation cools down incrementally until the network settles into minimum-energy equilibrium.
 
-For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing](/posts/2026_05_27_interactive_graph_visualizations_update/).
+For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
 
 

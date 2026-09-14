@@ -1,7 +1,7 @@
 ---
-title: "Architektur und Funktionsweise von Mastra: Das TypeScript-native Framework für autonome Agenten, deterministische Workflows und MCP"
+title: "Mastra TypeScript Agent Framework: Architektur im Detail"
 pubDate: "2026-09-19"
-description: "Eine fundierte Architekturanalyse des Mastra TypeScript Frameworks: Wie Typsicherheit via Zod, graphbasierte Workflows mit Suspend/Resume und native MCP-Client/Server-Dualität produktionsreife KI-Backends ermöglichen – inklusive praxisnaher Codebeispiele und Systemschaltbilder."
+description: "Tiefgehende Architekturanalyse des Mastra-Frameworks: Typsichere Workflows, RAG-Pipelines, Tool-Calling und deterministische KI-Agenten in TypeScript."
 tags: ["mastra", "typescript", "agentic-ai", "software-architecture", "open-source", "artificial-intelligence", "enterprise-ai", "mcp", "software-engineering"]
 icon:
   src: "./hero.jpg"

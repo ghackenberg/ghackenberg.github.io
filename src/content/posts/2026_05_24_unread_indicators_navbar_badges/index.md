@@ -1,7 +1,7 @@
 ---
-title: "Designing a Flicker-Free Client-Side Unread Content System in Astro"
+title: "Flicker-Free Unread Indicators in Astro"
 pubDate: "2026-05-24"
-description: "How we implemented a client-side localStorage notification system for unread content, using cached Astro static content manifests and synchronous scripting to eliminate visual flickering."
+description: "How to build a zero-flicker client-side unread content notification badge in Astro using localStorage and synchronous manifest synchronization."
 tags: ["web-development", "astro", "typescript", "localstorage", "ux-design", "state-management"]
 icon:
   src: "./icon.png"

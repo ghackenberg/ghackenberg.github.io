@@ -1,6 +1,6 @@
 ---
-title: "Cytoscape Graph"
-description: "Interactive graph theory analysis and force-directed network layouts in the browser using Cytoscape.js by Dr. Georg Hackenberg."
+title: "Cytoscape.js: Semantic Network Graph"
+description: "Interactive graph theory analysis and force-directed network layouts in the browser using Cytoscape.js and CoSE physics by Dr. Georg Hackenberg."
 screenshot:
   src: "./cytoscape.png"
   title: "Cytoscape Force-Directed Network"
@@ -19,6 +19,6 @@ The **Cytoscape Graph** visualization is built on **Cytoscape.js**, a premier op
 - **Versatile Layout Engines**: Beyond classic force-directed layouts (such as CoSE and Cose-Bilkent), Cytoscape easily supports hierarchical dagre trees, circular, and concentric ring layouts.
 - **Event-Driven Styling**: High-performance CSS-like selector stylesheets dynamically highlight node degrees, incoming dependencies, and connected neighbors.
 
-For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing](/posts/2026_05_27_interactive_graph_visualizations_update/).
+For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
 
 

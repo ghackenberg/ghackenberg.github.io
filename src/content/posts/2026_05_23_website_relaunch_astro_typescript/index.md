@@ -1,5 +1,5 @@
 ---
-title: "Relaunching my personal website on GitHub Pages with Astro and TypeScript"
+title: "Website Relaunch with Astro & TypeScript on GitHub Pages"
 pubDate: "2026-05-23"
 description: "Learn how to build a static portfolio on GitHub Pages with Astro, TypeScript & AI agents: Automated migration, sub-second loads, and full type safety."
 lang: "en"

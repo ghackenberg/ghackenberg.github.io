@@ -1,6 +1,6 @@
 ---
-title: "3D Force Graph"
-description: "Immersive 3D network graph visualization in spatial coordinates using WebGL and Three.js by Dr. Georg Hackenberg."
+title: "3D Force: Volumetric Network Graph"
+description: "Interactive 3D network graph visualization in volumetric coordinates using WebGL and Three.js with orbital camera controls by Dr. Georg Hackenberg."
 screenshot:
   src: "./3d-force.png"
   title: "3D Network Graph in Spatial Space"
@@ -19,6 +19,6 @@ The **3D Force Graph** visualization projects the website's interconnected netwo
 - **3D Vector Physics Simulation**: Rather than constraining forces to planar vectors, the physics solver evaluates spring tension and charge repulsion across all three Cartesian axes ($x, y, z$).
 - **Orbital Camera & Directional Particles**: Full orbit controller integration enables smooth fly-through navigation, highlighted by animated particles indicating semantic link directionality.
 
-For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing](/posts/2026_05_27_interactive_graph_visualizations_update/).
+For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
 
 

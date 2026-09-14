@@ -1,7 +1,7 @@
 ---
-title: "KI-basierte ergonomische Arbeitsumgebungen: Dynamische Prävention im Büro und im Homeoffice"
+title: "KI-Ergonomie: Dynamische Prävention am Arbeitsplatz"
 pubDate: "2026-08-10"
-description: "Wie künstliche Intelligenz, multimodale Sensorik und adaptive Möbel Arbeitsumgebungen dynamisch an den Menschen anpassen – im Unternehmensbüro und in häuslichen Wohnräumen."
+description: "Wie künstliche Intelligenz, multimodale Sensorik und adaptive Möbel Haltungsschäden im Homeoffice und Büro aktiv verhindern und Ergonomie steigern."
 tags: ["artificial-intelligence", "cognitive-ergonomics", "computer-vision", "ergonomics", "human-computer-interaction", "industrial-informatics", "iot", "smart-workplace"]
 icon:
   src: "./icon.jpg"

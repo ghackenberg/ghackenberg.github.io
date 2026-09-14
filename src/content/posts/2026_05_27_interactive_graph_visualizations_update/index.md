@@ -1,12 +1,12 @@
 ---
-title: "Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing"
+title: "WebGL Network Visualization & Graph Engines"
 pubDate: "2026-05-27"
-description: "A deep dive into refactoring our website's interactive visualization network. Learn how we integrated 3D Force graphs, Vis.js canvas rendering, smooth coordinate transitions, and real-time theme syncing with URL state persistence."
+description: "Explore interactive network graph visualizations in Astro: How we unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware styling."
 tags: ["astro", "computer-graphics", "cytoscape", "d3", "data-visualization", "javascript", "threejs", "visjs", "webgl"]
 icon:
   src: "./icon.png"
-  title: "Cover illustration: Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing"
-  description: "A deep dive into refactoring our website's interactive visualization network. Learn how we integrated 3D Force graphs, Vis.js canvas rendering, smooth coordinate transitions, and real-time theme syncing with URL state persistence."
+  title: "Cover illustration: WebGL Network Visualization & Graph Engines"
+  description: "Explore interactive network graph visualizations in Astro: How we unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware styling."
 ---
 To help visitors explore the relationships between topics, blog posts, and academic publications, this website features interactive network graph visualizations. Recently, we gave this visualization system a major architectural and aesthetic overhaul. 
 
@@ -14,7 +14,9 @@ Instead of a monolithic script, the system now runs on a modular, multi-engine a
 
 Here is a technical walkthrough of how we restructured the system, implemented layout algorithms with smooth animations, added live theme-awareness, and synchronized user settings via the URL.
 
-## 1. Modular Architecture: Decoupling the Engines
+## 1. How Does the Modular Multi-Engine Visualization Architecture Work?
+
+The modular multi-engine visualization architecture decouples graph layout logic from the Astro presentation layer by encapsulating each rendering framework into standalone ES modules conforming to a unified lifecycle interface. Dynamic runtime imports load heavyweight WebGL or canvas dependencies strictly on demand, cutting initial bundle weights while preserving cross-engine theme and state synchronization.
 
 ![Modulare Architektur der Netzwerk-Visualisierungs-Engines](./architecture.jpg "Modulare Graph-Visualisierungsarchitektur in Astro")
 
@@ -45,9 +47,17 @@ activeInstance = await engine.init(container, payload, currentLayout, isLight);
 
 This drastically reduces the initial page bundle size, loading dependencies like Three.js or Vis.js only when the user selects that specific engine.
 
-## 2. Introducing New Engines: 3D Force Graph & Vis.js
+## 2. Which WebGL and Canvas Engines Power Interactive Graph Visualizations?
 
 Alongside our existing Cytoscape, D3, and Sigma engines, we introduced two new visualization engines:
+
+| Engine | Rendering Backend | Node Capacity | Primary Physics Model | Best Architectural Use Case |
+| :--- | :--- | :--- | :--- | :--- |
+| **Sigma.js** | WebGL 2.0 Shader Pipeline | 1,000–50,000+ | ForceAtlas2 (Web Worker) | Massive networks requiring high FPS throughput |
+| **Vis.js** | HTML5 2D Canvas | 50–1,000 | Barnes-Hut Spring Damper | Tactile drag-and-drop & interactive exploration |
+| **3D Force** | WebGL & Three.js | 500–5,000 | 3D Force-Directed Sphere | Immersive volumetric spatial visualization |
+| **Cytoscape** | HTML5 2D Canvas | 100–2,000 | Concentric / Compound Tree | Graph-theoretical & hierarchical analysis |
+| **D3.js** | SVG Vector DOM | 50–500 | D3-Force Velocity Verlet | Vector typography & crisp publication graphics |
 
 ### 3D Force Graph (WebGL & Three.js)
 The 3D Force Graph engine ([3d-force/engine.js](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/content/visualizations/3d-force/engine.js)) renders the network as a floating three-dimensional sphere. 
@@ -67,7 +77,7 @@ The Vis.js engine ([vis-network/engine.js](https://github.com/ghackenberg/ghacke
 - **Custom Shapes & Labels**: Each node type (Tag, Post, Publication) is color-coded and sized proportionally based on its degree of connections, with custom font configurations matching our typography.
 - **Interaction Events**: Handles hover states and double-clicks cleanly to navigate users directly to posts or publications.
 
-## 3. Smooth Layout Transitions (Concentric & Columns)
+## 3. How Can Coordinate Transitions and Organic Layouts Be Smoothly Animated?
 
 A major feature of this update is the ability to toggle between three distinct layouts:
 1. **Force Directed**: Nodes self-organize organically based on charge repulsion and edge attraction forces.
@@ -172,11 +182,11 @@ On page load, the Astro script parses the URL parameters to fetch the state, ini
 With this modular refactoring, the graph visualization page is more robust, lighter on initial loading speeds, and visually synchronized with the rest of the website. Whether you prefer the organic physics of **Vis.js**, the raw data transparency of **D3**, or the futuristic fly-throughs of the **3D Force Graph**, the system delivers a premium, smooth interactive experience in light and dark mode alike.
 
 Explore each engine live in action on the website:
-- [Sigma ForceAtlas2 Graph](/visualizations/sigma/) – High-performance WebGL graph layout with web workers.
-- [Vis.js Network Demo](/visualizations/vis-network/) – Smooth physics-driven 2D particle network on HTML5 canvas.
-- [3D Force-Directed Graph](/visualizations/3d-force/) – Immersive spatial exploration built on Three.js & WebGL.
-- [Cytoscape.js Graph Analysis](/visualizations/cytoscape/) – Versatile graph-theoretical layouts.
-- [D3 Force-Directed Simulation](/visualizations/d3/) – Physics-based force layout with delicate vector typography.
+- [Sigma.js: ForceAtlas2 Network Graph](/visualizations/sigma/) – High-performance WebGL graph layout with web workers.
+- [Vis.js: Physics-Based Network Graph](/visualizations/vis-network/) – Smooth physics-driven 2D particle network on HTML5 canvas.
+- [3D Force: Volumetric Network Graph](/visualizations/3d-force/) – Immersive spatial exploration built on Three.js & WebGL.
+- [Cytoscape.js: Semantic Network Graph](/visualizations/cytoscape/) – Versatile graph-theoretical layouts.
+- [D3.js: Force-Directed Network Graph](/visualizations/d3/) – Physics-based force layout with delicate vector typography.
 
 Browse the complete collection on the [Content Visualizations Hub](/visualizations/).
 

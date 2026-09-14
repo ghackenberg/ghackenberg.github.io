@@ -1,7 +1,7 @@
 ---
-title: "Smarte Tiefenbewässerung und Bodenbau: Intelligentes Wurzelzonen-Management für urbane Bäume und versiegelte Flächen"
+title: "Smarte Tiefenbewässerung & urbanes Wurzelzonen-Management"
 pubDate: "2026-08-30"
-description: "Wie die Symbiose aus überbaubarem Baumsubstrat, Unterflur-Tropfschläuchen, nachrüstbaren Tiefenlanzen und Edge-basierter Smart-Home-Sensorik Gehölze auf befahrbaren Pflasterflächen resilient gegen Hitzeperioden macht."
+description: "Symbiose aus überbaubarem Baumsubstrat, Tiefenbewässerung und smarter IoT-Sensorik für gesunde Stadtbäume auf versiegelten Pflasterflächen."
 tags: ["smart-home", "iot", "irrigation", "systems-engineering", "civil-engineering", "sustainability", "industrial-informatics"]
 icon:
   src: "./hero.jpg"

@@ -1,5 +1,5 @@
 ---
-title: "Vis.js Network"
+title: "Vis.js: Physics-Based Network Graph"
 description: "Interactive 2D network graph visualization using Vis.js with physics simulation and dynamic particle interactions by Dr. Georg Hackenberg."
 screenshot:
   src: "./vis-network.png"
@@ -33,13 +33,21 @@ The **Vis.js Network** visualization models the website's knowledge ecosystem in
 ## Frequently Asked Questions (FAQ)
 
 ### How does Vis.js simulate spring forces between connected nodes?
-Vis.js models edges as physical spring-dampers governed by Hooke's Law while treating unlinked nodes as charged particles that repel each other. Through iterative step integration, the system naturally finds an equilibrium state where connected concepts cluster closely and unrelated nodes stay separated.
+
+Vis.js calculates dynamic physical equilibrium through complementary forces:
+- **Hooke's Law**: Treats edges as spring-dampers pulling connected concepts together.
+- **Coulomb Repulsion**: Treats unconnected nodes as charged particles that push apart.
+- **Step Integration**: Solves velocity damping iteratively until the network settles into a stable resting state.
 
 ### When should you choose Vis.js over WebGL engines like Sigma or Three.js?
-Vis.js is the preferred engine for exploratory, highly tactile interfaces where users actively interact with nodes (dragging, pinning, and clustering). While WebGL engines handle tens of thousands of nodes, Vis.js offers superior 2D vector styling, typography crispness, and intuitive physics for networks under 1,000 nodes.
+
+Vis.js provides clear design advantages for targeted network sizes:
+- **Tactile Interaction**: Supports fluid drag-and-drop, node pinning, and elastic cluster movement.
+- **Crisp Typography**: Renders high-fidelity vector text and custom pill badges cleanly on HTML5 canvas.
+- **Ideal Scale**: Perfectly optimized for networks of 50 to 1,000 nodes where individual label readability is paramount.
 
 ### Where can I find more background on this implementation?
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing](/posts/2026_05_27_interactive_graph_visualizations_update/).
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
 
 
 
