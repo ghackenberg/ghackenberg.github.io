@@ -61,6 +61,12 @@ Whenever asked to generate or modify an image (preview, hero, social card, or di
       Client[Client] --> Server[MCP Server]
     ```
     ````
+- **Linking Repository Source Files via Public GitHub URLs**:
+  - Source code files, scripts, plugins, or configurations from the repository (e.g. `scripts/sync.js`, `src/plugins/remark-mermaid.js`, `astro.config.mjs`) are **NOT** copied to the public web server during the Astro build (`dist/`).
+  - **NEVER** use relative paths, local website paths, or `file:///` URLs to link to source code files inside markdown blog posts (e.g., `[script.js](/scripts/script.js)`, `[plugin](src/plugins/...)`, or `file:///...` will result in 404 broken links for live visitors).
+  - **ALWAYS** link to repository source files using their canonical GitHub URL on `main`:
+    `https://github.com/ghackenberg/ghackenberg.github.io/blob/main/<path-to-file>` (e.g. `[`src/plugins/remark-mermaid.js`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/remark-mermaid.js)`).
+
 
 
 ## 4. Content Optimization Guidelines (SEO, GEO & AIO)
