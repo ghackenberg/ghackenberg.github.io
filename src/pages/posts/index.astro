@@ -19,12 +19,32 @@ for (const post of posts) {
 const allTags = Array.from(tagsSet).sort();
 
 const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Posts",
+      "item": "https://hackenberg.tech/posts/"
+    }
+  ]
+};
 ---
 
 <Layout 
   title="Blog Posts | Dr. Georg Hackenberg" 
   description="Read computer science insights, software tutorials, and dev logs by Dr. Georg Hackenberg covering systems development, styling, and graphics."
   image={pagePreviewImage}
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

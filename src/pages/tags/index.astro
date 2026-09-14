@@ -34,11 +34,31 @@ const tagStats = tags.map((tag) => {
 
 // Sort tags alphabetically by title
 const sortedTags = tagStats.sort((a, b) => a.title.localeCompare(b.title));
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Tags",
+      "item": "https://hackenberg.tech/tags/"
+    }
+  ]
+};
 ---
 
 <Layout
   title="Content Tags & Topic Index | Dr. Georg Hackenberg"
   description="Explore the comprehensive knowledge index connecting technical blog posts, scientific publications, software projects, university courses, and business services by Dr. Georg Hackenberg."
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

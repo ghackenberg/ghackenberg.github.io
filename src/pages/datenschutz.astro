@@ -1,11 +1,31 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Datenschutz",
+      "item": "https://hackenberg.tech/datenschutz/"
+    }
+  ]
+};
 ---
 
 <Layout 
   title="Datenschutzerklärung | Dr. Georg Hackenberg" 
   description="Datenschutzerklärung von Dr. Georg Hackenberg gemäß EU-Datenschutz-Grundverordnung (DSGVO)."
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

@@ -26,6 +26,25 @@ const optimizedFirstScreenshot = firstCourseScreenshotImg ? await getImage({
   width: 480,
   quality: 80
 }) : null;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Courses",
+      "item": "https://hackenberg.tech/courses/"
+    }
+  ]
+};
 ---
 
 <Layout 
@@ -33,6 +52,7 @@ const optimizedFirstScreenshot = firstCourseScreenshotImg ? await getImage({
   description="Praxisnahe Hochschullehre zu Software-Architektur, Modellierung und Industrial Informatics von Dr. Georg Hackenberg – mit Vorlesungsskripten und GitHub-Code."
   image={firstCourseScreenshot}
   preloadImage={optimizedFirstScreenshot?.src}
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

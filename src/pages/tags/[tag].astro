@@ -89,6 +89,33 @@ function getPageNumbers(current: number, total: number): (number | string)[] {
 
 // Determine preview image if available
 const previewImage = posts.find((p) => p.data.icon)?.data.icon;
+
+const tagUrl = `https://hackenberg.tech/tags/${tag.id}/`;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Tags",
+      "item": "https://hackenberg.tech/tags/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": `#${tag.data.title}`,
+      "item": tagUrl
+    }
+  ]
+};
 ---
 
 <Layout
@@ -96,6 +123,7 @@ const previewImage = posts.find((p) => p.data.icon)?.data.icon;
   description={tag.data.description}
   image={previewImage}
   tags={[tag.id]}
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

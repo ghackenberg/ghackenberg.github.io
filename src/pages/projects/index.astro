@@ -16,12 +16,32 @@ for (const project of projects) {
 }
 const allTags = Array.from(tagsSet).sort();
 const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data.screenshot;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Projects",
+      "item": "https://hackenberg.tech/projects/"
+    }
+  ]
+};
 ---
 
 <Layout 
   title="Software Projects | Dr. Georg Hackenberg" 
   description="Explore software engineering projects, open-source systems, and interactive tools designed and built by Dr. Georg Hackenberg."
   image={firstProjectScreenshot}
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

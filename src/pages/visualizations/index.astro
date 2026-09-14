@@ -6,12 +6,32 @@ import VisualizationCard from "../../components/VisualizationCard.astro";
 
 const visualizations = await getCollection("visualizations");
 const firstVisScreenshot = visualizations.find(v => v.data.screenshot)?.data.screenshot;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Visualizations",
+      "item": "https://hackenberg.tech/visualizations/"
+    }
+  ]
+};
 ---
 
 <Layout 
   title="Content Visualizations | Dr. Georg Hackenberg" 
   description="Explore the relationships between projects, blog posts, publications, courses, services, and topic tags on Dr. Georg Hackenberg's website through interactive real-time graphs."
   image={firstVisScreenshot}
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

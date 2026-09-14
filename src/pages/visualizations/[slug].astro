@@ -47,12 +47,39 @@ const payload = await buildGraphPayload({
   getImage
 });
 
+const visUrl = `https://hackenberg.tech/visualizations/${vis.id}/`;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Visualizations",
+      "item": "https://hackenberg.tech/visualizations/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": title,
+      "item": visUrl
+    }
+  ]
+};
 ---
 
 <Layout 
   title={`${title} | Dr. Georg Hackenberg`} 
   description={description || `An interactive network diagram mapping the connections between projects, blog posts, publications, courses, services, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
   image={screenshot || optimizedScreenshot?.src}
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

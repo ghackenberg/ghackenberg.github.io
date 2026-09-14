@@ -1,11 +1,31 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Impressum",
+      "item": "https://hackenberg.tech/impressum/"
+    }
+  ]
+};
 ---
 
 <Layout 
   title="Impressum | Dr. Georg Hackenberg" 
   description="Offizielles Impressum von Dr. Georg Hackenberg (IT-Dienstleistungen) gemäß § 5 ECG, § 14 UGB, § 345 GewO und § 25 Mediengesetz."
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 

@@ -57,13 +57,34 @@ const servicesJsonLd = sortedServices.map(s => ({
 }));
 
 const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewImage;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Services",
+      "item": "https://hackenberg.tech/services/"
+    }
+  ]
+};
+
+const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
 ---
 
 <Layout 
   title="Business Services | Dr. Georg Hackenberg" 
   description="Explore specialized artificial intelligence and media publishing business services offered by Dr. Georg Hackenberg, covering sovereign AI technology stacks, system integration, agentic automation, channel definition, social media design systems, and content production."
   image={firstServiceImage}
-  jsonLd={servicesJsonLd}
+  jsonLd={pageJsonLd}
 >
   <Navbar />
 

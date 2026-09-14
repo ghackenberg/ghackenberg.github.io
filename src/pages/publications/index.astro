@@ -25,12 +25,32 @@ publications.forEach((pub) => {
 
 const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
 const firstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Publications",
+      "item": "https://hackenberg.tech/publications/"
+    }
+  ]
+};
 ---
 
 <Layout 
   title="Reviewed Publications | Dr. Georg Hackenberg" 
   description="Browse academic research papers, conference articles, book chapters, and presentations by Dr. Georg Hackenberg on smart grids, gestural input, and informatics."
   image={firstPubIcon}
+  jsonLd={breadcrumbSchema}
 >
   <Navbar />
 
