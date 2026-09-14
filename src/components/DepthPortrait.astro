@@ -1,0 +1,681 @@
+---
+export interface FacialTransition {
+  targetId: string;
+  weight: number;
+}
+
+export interface FacialExpression {
+  id: string;
+  imageSrc: string;
+  depthSrc: string;
+  durationRange?: [number, number]; // [minMs, maxMs], default e.g. [3000, 5000]
+  transitionDuration?: number; // ms to blend to next face, default 200ms
+  transitions?: FacialTransition[]; // possible next faces with weights
+}
+
+export interface Props {
+  expressions?: FacialExpression[];
+  imageSrc?: string;
+  depthSrc?: string;
+  alt?: string;
+  title?: string;
+  class?: string;
+  intensity?: number;
+  maxTilt?: number;
+  trackMouse?: boolean;
+  vignette?: boolean;
+  idleAnimation?: boolean;
+  loading?: "eager" | "lazy";
+}
+
+const {
+  expressions = [],
+  imageSrc,
+  depthSrc,
+  alt = "Portrait",
+  title,
+  class: className = "",
+  intensity = 0.08,
+  maxTilt = 6,
+  trackMouse = false,
+  vignette = true,
+  idleAnimation = true,
+  loading = "eager"
+} = Astro.props;
+
+// Compile facial expressions list. If expressions array is empty, fall back to imageSrc/depthSrc.
+const effectiveExpressions: FacialExpression[] = expressions.length > 0
+  ? expressions
+  : (imageSrc && depthSrc ? [{
+      id: "default",
+      imageSrc,
+      depthSrc,
+      durationRange: [4000, 6000]
+    }] : []);
+
+const initialImageSrc = effectiveExpressions.length > 0 ? effectiveExpressions[0].imageSrc : (imageSrc || "");
+const expressionsJson = JSON.stringify(effectiveExpressions);
+
+// Unique ID for scoped instance handling
+const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+<div 
+  class={`relative select-none overflow-visible depth-portrait-container ${className}`}
+  id={id}
+  data-expressions={expressionsJson}
+  data-intensity={intensity}
+  data-max-tilt={maxTilt}
+  data-track-mouse={trackMouse ? "true" : "false"}
+  data-vignette={vignette ? "true" : "false"}
+  data-idle={idleAnimation ? "true" : "false"}
+  role="img"
+  aria-label={alt}
+  title={title}
+  style="transform-style: preserve-3d; will-change: transform;"
+>
+  <!-- Fallback Static Image (rendered immediately, crossfaded once WebGL textures are ready) -->
+  <img
+    src={initialImageSrc}
+    alt={alt}
+    title={title}
+    loading={loading}
+    class="depth-fallback-img w-full h-full object-contain pointer-events-none transition-opacity duration-700 select-none"
+    style={vignette ? "mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%);" : ""}
+  />
+
+  <!-- Interactive 3D WebGL Canvas -->
+  <canvas 
+    class="depth-canvas absolute inset-0 w-full h-full pointer-events-none opacity-0 transition-opacity duration-700 select-none"
+    aria-hidden="true"
+  ></canvas>
+</div>
+
+<script>
+  interface FacialTransition {
+    targetId: string;
+    weight: number;
+  }
+
+  interface FacialExpressionConfig {
+    id: string;
+    imageSrc: string;
+    depthSrc: string;
+    durationRange?: [number, number];
+    transitionDuration?: number;
+    transitions?: FacialTransition[];
+  }
+
+  interface LoadedTexturePair {
+    imageTex: WebGLTexture;
+    depthTex: WebGLTexture;
+  }
+
+  function initDepthPortraits() {
+    const containers = document.querySelectorAll<HTMLElement>('.depth-portrait-container:not([data-initialized="true"])');
+
+    containers.forEach(container => {
+      container.setAttribute('data-initialized', 'true');
+
+      const expressionsRaw = container.getAttribute('data-expressions');
+      if (!expressionsRaw) return;
+
+      let expressions: FacialExpressionConfig[] = [];
+      try {
+        expressions = JSON.parse(expressionsRaw);
+      } catch (err) {
+        console.warn('Failed to parse facial expressions:', err);
+        return;
+      }
+
+      if (expressions.length === 0) return;
+
+      const intensity = parseFloat(container.getAttribute('data-intensity') || '0.08');
+      const maxTilt = parseFloat(container.getAttribute('data-max-tilt') || '6');
+      const hasTrackMouse = container.getAttribute('data-track-mouse') === 'true';
+      const hasVignette = container.getAttribute('data-vignette') === 'true';
+      const hasIdle = container.getAttribute('data-idle') === 'true';
+
+      const canvas = container.querySelector<HTMLCanvasElement>('canvas.depth-canvas');
+      const fallbackImg = container.querySelector<HTMLImageElement>('img.depth-fallback-img');
+
+      if (!canvas) return;
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        return;
+      }
+
+      const gl = canvas.getContext('webgl', {
+        alpha: true,
+        antialias: true,
+        premultipliedAlpha: false
+      });
+
+      if (!gl) return;
+
+      const glCtx = gl;
+      const canvasEl = canvas;
+
+      // Vertex Shader
+      const vsSource = `
+        precision mediump float;
+        attribute vec2 a_position;
+        varying vec2 v_uv;
+
+        void main() {
+          v_uv = (a_position + 1.0) * 0.5;
+          v_uv.y = 1.0 - v_uv.y;
+          gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+      `;
+
+      // Generic 2-State Parallax Occlusion Mapping Fragment Shader:
+      // Dynamically blends between Current face (slots 0 & 1) and Next face (slots 2 & 3).
+      // Raymarches 40 depth slices from front (z=1) to back (z=0).
+      const fsSource = `
+        precision mediump float;
+        varying vec2 v_uv;
+        uniform sampler2D u_curr_image;
+        uniform sampler2D u_curr_depth;
+        uniform sampler2D u_next_image;
+        uniform sampler2D u_next_depth;
+        uniform float u_blend; // 0.0 = current only, 1.0 = next only
+        uniform vec2 u_offset;
+        uniform float u_intensity;
+        uniform int u_vignette;
+
+        const int NUM_STEPS = 40;
+
+        void main() {
+          // Check if initial surface pixel contains any non-transparent geometry.
+          // Discard background immediately so background rays cannot penetrate into the side of the head.
+          vec4 initColorCurr = texture2D(u_curr_image, v_uv);
+          vec4 initColorNext = texture2D(u_next_image, v_uv);
+          float initAlpha = mix(initColorCurr.a, initColorNext.a, u_blend);
+          if (initAlpha < 0.05) {
+            gl_FragColor = vec4(0.0);
+            return;
+          }
+
+          float stepSize = 1.0 / float(NUM_STEPS);
+          float pivotZ = 0.40;
+          vec2 rayDir = u_offset * u_intensity;
+
+          float prevZ = 1.0;
+          float currZ = 1.0;
+          vec2 prevUV = v_uv - (1.0 - pivotZ) * rayDir;
+          vec2 currUV = prevUV;
+
+          float prevDepth = 0.0;
+          float currDepth = 0.0;
+          bool hit = false;
+
+          for (int i = 0; i <= NUM_STEPS; i++) {
+            currZ = 1.0 - float(i) * stepSize;
+            currUV = v_uv - (currZ - pivotZ) * rayDir;
+
+            if (currUV.x >= 0.0 && currUV.x <= 1.0 && currUV.y >= 0.0 && currUV.y <= 1.0) {
+              float dCurr = texture2D(u_curr_depth, currUV).r;
+              float dNext = texture2D(u_next_depth, currUV).r;
+              currDepth = mix(dCurr, dNext, u_blend);
+
+              if (currDepth > 0.001 && currDepth >= currZ) {
+                hit = true;
+                break;
+              }
+            } else {
+              currDepth = 0.0;
+            }
+
+            prevZ = currZ;
+            prevUV = currUV;
+            prevDepth = currDepth;
+          }
+
+          if (!hit) {
+            gl_FragColor = vec4(0.0);
+            return;
+          }
+
+          // Linear interpolation refinement between previous and current step
+          float d1 = prevZ - prevDepth;
+          float d2 = currDepth - currZ;
+          float weight = d1 / (d1 + d2 + 0.00001);
+          vec2 finalUV = mix(prevUV, currUV, clamp(weight, 0.0, 1.0));
+
+          if (finalUV.x < 0.0 || finalUV.x > 1.0 || finalUV.y < 0.0 || finalUV.y > 1.0) {
+            gl_FragColor = vec4(0.0);
+            return;
+          }
+
+          vec4 colorCurr = texture2D(u_curr_image, finalUV);
+          vec4 colorNext = texture2D(u_next_image, finalUV);
+          vec4 color = mix(colorCurr, colorNext, u_blend);
+
+          // Discard transparent pixels
+          if (color.a < 0.02) {
+            gl_FragColor = vec4(0.0);
+            return;
+          }
+
+          // Surface normal calculation from blended depth map for 3D curvature lighting
+          vec2 texel = vec2(0.003, 0.003);
+          float dL = mix(texture2D(u_curr_depth, finalUV - vec2(texel.x, 0.0)).r, texture2D(u_next_depth, finalUV - vec2(texel.x, 0.0)).r, u_blend);
+          float dR = mix(texture2D(u_curr_depth, finalUV + vec2(texel.x, 0.0)).r, texture2D(u_next_depth, finalUV + vec2(texel.x, 0.0)).r, u_blend);
+          float dU = mix(texture2D(u_curr_depth, finalUV - vec2(0.0, texel.y)).r, texture2D(u_next_depth, finalUV - vec2(0.0, texel.y)).r, u_blend);
+          float dD = mix(texture2D(u_curr_depth, finalUV + vec2(0.0, texel.y)).r, texture2D(u_next_depth, finalUV + vec2(0.0, texel.y)).r, u_blend);
+
+          // Taper normal gradient near silhouette boundary to prevent extreme side lighting shadows
+          float normalWeight = smoothstep(0.005, 0.08, currDepth);
+          vec3 rawNormal = vec3((dL - dR) * 12.0 * normalWeight, (dU - dD) * 12.0 * normalWeight, 1.0);
+          vec3 normal = normalize(rawNormal);
+
+          // Dynamic 3D lighting responding to cursor offset
+          vec3 lightDir = normalize(vec3(u_offset.x * 0.7, -u_offset.y * 0.7, 0.85));
+          float diff = max(dot(normal, lightDir), 0.0);
+          float spec = pow(max(dot(reflect(-lightDir, normal), vec3(0.0, 0.0, 1.0)), 0.0), 16.0);
+
+          // Tactile 3D illumination
+          color.rgb = color.rgb * (0.84 + 0.26 * diff) + vec3(spec * 0.12);
+
+          // Soft radial vignette fade if enabled
+          if (u_vignette == 1) {
+            vec2 center = vec2(0.5, 0.45);
+            float dist = length(finalUV - center);
+            float fade = 1.0 - smoothstep(0.50, 0.80, dist);
+            color.a *= fade;
+          }
+
+          gl_FragColor = color;
+        }
+      `;
+
+      function createShader(glContext: WebGLRenderingContext, type: number, source: string) {
+        const shader = glContext.createShader(type);
+        if (!shader) return null;
+        glContext.shaderSource(shader, source);
+        glContext.compileShader(shader);
+        if (!glContext.getShaderParameter(shader, glContext.COMPILE_STATUS)) {
+          console.warn('Shader compile failed:', glContext.getShaderInfoLog(shader));
+          glContext.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      const vs = createShader(glCtx, glCtx.VERTEX_SHADER, vsSource);
+      const fs = createShader(glCtx, glCtx.FRAGMENT_SHADER, fsSource);
+      if (!vs || !fs) return;
+
+      const program = glCtx.createProgram();
+      if (!program) return;
+      glCtx.attachShader(program, vs);
+      glCtx.attachShader(program, fs);
+      glCtx.linkProgram(program);
+
+      if (!glCtx.getProgramParameter(program, glCtx.LINK_STATUS)) {
+        console.warn('Program link failed:', glCtx.getProgramInfoLog(program));
+        return;
+      }
+
+      glCtx.useProgram(program);
+
+      // Vertex quad buffer
+      const positionBuffer = glCtx.createBuffer();
+      glCtx.bindBuffer(glCtx.ARRAY_BUFFER, positionBuffer);
+      glCtx.bufferData(
+        glCtx.ARRAY_BUFFER,
+        new Float32Array([
+          -1, -1,
+           1, -1,
+          -1,  1,
+          -1,  1,
+           1, -1,
+           1,  1,
+        ]),
+        glCtx.STATIC_DRAW
+      );
+
+      const posAttribLoc = glCtx.getAttribLocation(program, 'a_position');
+      glCtx.enableVertexAttribArray(posAttribLoc);
+      glCtx.vertexAttribPointer(posAttribLoc, 2, glCtx.FLOAT, false, 0, 0);
+
+      // Uniform locations
+      const uCurrImageLoc = glCtx.getUniformLocation(program, 'u_curr_image');
+      const uCurrDepthLoc = glCtx.getUniformLocation(program, 'u_curr_depth');
+      const uNextImageLoc = glCtx.getUniformLocation(program, 'u_next_image');
+      const uNextDepthLoc = glCtx.getUniformLocation(program, 'u_next_depth');
+      const uBlendLoc = glCtx.getUniformLocation(program, 'u_blend');
+      const uOffsetLoc = glCtx.getUniformLocation(program, 'u_offset');
+      const uIntensityLoc = glCtx.getUniformLocation(program, 'u_intensity');
+      const uVignetteLoc = glCtx.getUniformLocation(program, 'u_vignette');
+
+      glCtx.uniform1i(uCurrImageLoc, 0);
+      glCtx.uniform1i(uCurrDepthLoc, 1);
+      glCtx.uniform1i(uNextImageLoc, 2);
+      glCtx.uniform1i(uNextDepthLoc, 3);
+      glCtx.uniform1f(uBlendLoc, 0.0);
+      glCtx.uniform1f(uIntensityLoc, intensity);
+      glCtx.uniform1i(uVignetteLoc, hasVignette ? 1 : 0);
+
+      // Load texture helper
+      function loadTexture(glContext: WebGLRenderingContext, src: string): Promise<WebGLTexture> {
+        return new Promise((resolve, reject) => {
+          const texture = glContext.createTexture();
+          if (!texture) return reject(new Error('Failed to create texture'));
+
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            glContext.bindTexture(glContext.TEXTURE_2D, texture);
+            glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_S, glContext.CLAMP_TO_EDGE);
+            glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_T, glContext.CLAMP_TO_EDGE);
+            glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_MIN_FILTER, glContext.LINEAR);
+            glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_MAG_FILTER, glContext.LINEAR);
+            glContext.texImage2D(glContext.TEXTURE_2D, 0, glContext.RGBA, glContext.RGBA, glContext.UNSIGNED_BYTE, img);
+            resolve(texture);
+          };
+          img.onerror = reject;
+          img.src = src;
+        });
+      }
+
+      // Preload all expressions into texture cache
+      const textureCache = new Map<string, LoadedTexturePair>();
+      const exprMap = new Map<string, FacialExpressionConfig>();
+      expressions.forEach(e => exprMap.set(e.id, e));
+
+      const loadPromises = expressions.map(async expr => {
+        const [imageTex, depthTex] = await Promise.all([
+          loadTexture(glCtx, expr.imageSrc),
+          loadTexture(glCtx, expr.depthSrc)
+        ]);
+        textureCache.set(expr.id, { imageTex, depthTex });
+      });
+
+      Promise.all(loadPromises).then(() => {
+        // Enable alpha blending
+        glCtx.enable(glCtx.BLEND);
+        glCtx.blendFunc(glCtx.SRC_ALPHA, glCtx.ONE_MINUS_SRC_ALPHA);
+
+        // Bind initial textures to units
+        function bindPair(pair: LoadedTexturePair, imageUnit: number, depthUnit: number) {
+          glCtx.activeTexture(glCtx.TEXTURE0 + imageUnit);
+          glCtx.bindTexture(glCtx.TEXTURE_2D, pair.imageTex);
+          glCtx.activeTexture(glCtx.TEXTURE0 + depthUnit);
+          glCtx.bindTexture(glCtx.TEXTURE_2D, pair.depthTex);
+        }
+
+        // State machine variables: Start with first expression in list
+        let currentExpr = expressions[0];
+        let nextExpr: FacialExpressionConfig | null = null;
+        let isTransitioning = false;
+        let transitionStartTime = 0;
+        let transitionDuration = 200;
+
+        function getRandomDuration(range?: [number, number]): number {
+          const [min, max] = range || [3000, 5000];
+          return min + Math.random() * (max - min);
+        }
+
+        let stateTimer = performance.now() + getRandomDuration(currentExpr.durationRange);
+
+        // Bind initial expression to Current slots (0 & 1) and Next slots (2 & 3)
+        const initialPair = textureCache.get(currentExpr.id)!;
+        bindPair(initialPair, 0, 1);
+        bindPair(initialPair, 2, 3);
+
+        // History tracking for frequency and recency balancing
+        interface ExpressionHistory {
+          count: number;
+          lastShownTime: number; // timestamp in ms
+        }
+
+        const historyMap = new Map<string, ExpressionHistory>();
+        expressions.forEach(e => {
+          historyMap.set(e.id, {
+            count: e.id === currentExpr.id ? 1 : 0,
+            lastShownTime: e.id === currentExpr.id ? performance.now() : 0
+          });
+        });
+
+        // Weighted and balanced random selection for next face
+        function chooseNextExpression(curr: FacialExpressionConfig, now: number): FacialExpressionConfig {
+          if (expressions.length <= 1) return curr;
+
+          // Candidate list from transitions or fallback to all other expressions
+          let candidates: { expr: FacialExpressionConfig; baseWeight: number }[] = [];
+
+          if (curr.transitions && curr.transitions.length > 0) {
+            const valid = curr.transitions.filter(t => exprMap.has(t.targetId) && t.targetId !== curr.id);
+            if (valid.length > 0) {
+              candidates = valid.map(t => ({
+                expr: exprMap.get(t.targetId)!,
+                baseWeight: Math.max(1, t.weight)
+              }));
+            }
+          }
+
+          if (candidates.length === 0) {
+            candidates = expressions
+              .filter(e => e.id !== curr.id)
+              .map(e => ({ expr: e, baseWeight: 50 }));
+          }
+
+          // Calculate counts and max counts for relative frequency weighting
+          const candidateCounts = candidates.map(c => historyMap.get(c.expr.id)?.count || 0);
+          const maxCount = Math.max(1, ...candidateCounts);
+
+          // Compute adjusted dynamic weights:
+          // 1. Less frequently shown faces receive a significant multiplier (1.0 to 3.5x)
+          // 2. Expressions not seen for longer receive a recency boost based on elapsed time
+          const weightedCandidates = candidates.map(c => {
+            const hist = historyMap.get(c.expr.id) || { count: 0, lastShownTime: 0 };
+            
+            // Frequency boost: higher for lower count
+            const frequencyFactor = 1.0 + 2.5 * ((maxCount - hist.count) / maxCount);
+
+            // Recency boost: elapsed seconds since last shown
+            const timeSinceLastSeenSec = hist.lastShownTime > 0 ? Math.max(0, (now - hist.lastShownTime) / 1000) : 60;
+            const recencyFactor = 1.0 + Math.min(2.0, timeSinceLastSeenSec / 15.0);
+
+            const dynamicWeight = c.baseWeight * frequencyFactor * recencyFactor;
+            return { expr: c.expr, weight: dynamicWeight };
+          });
+
+          const totalWeight = weightedCandidates.reduce((sum, c) => sum + c.weight, 0);
+          let r = Math.random() * totalWeight;
+          for (const c of weightedCandidates) {
+            r -= c.weight;
+            if (r <= 0) {
+              return c.expr;
+            }
+          }
+
+          return weightedCandidates[weightedCandidates.length - 1].expr;
+        }
+
+        // Resize handling
+        function resize() {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const width = Math.floor(container.clientWidth * dpr);
+          const height = Math.floor(container.clientHeight * dpr);
+
+          if (canvasEl.width !== width || canvasEl.height !== height) {
+            canvasEl.width = width;
+            canvasEl.height = height;
+            glCtx.viewport(0, 0, width, height);
+          }
+        }
+
+        resize();
+        window.addEventListener('resize', resize, { passive: true });
+
+        // Motion tracking variables
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let lastMoveTime = hasTrackMouse ? performance.now() : 0;
+        let isVisible = true;
+        let animId: number | null = null;
+
+        if (hasTrackMouse) {
+          function onPointerMove(e: MouseEvent | TouchEvent) {
+            lastMoveTime = performance.now();
+            const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+            const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+            targetX = ((clientX / window.innerWidth) - 0.5) * 2;
+            targetY = ((clientY / window.innerHeight) - 0.5) * 2;
+          }
+
+          window.addEventListener('mousemove', onPointerMove, { passive: true });
+          window.addEventListener('touchmove', onPointerMove, { passive: true });
+
+          // Device orientation for mobile tilt
+          function onDeviceOrientation(e: DeviceOrientationEvent) {
+            if (e.gamma !== null && e.beta !== null) {
+              lastMoveTime = performance.now();
+              const gamma = Math.max(-45, Math.min(45, e.gamma));
+              const beta = Math.max(0, Math.min(90, e.beta)) - 45;
+              targetX = (gamma / 45);
+              targetY = (beta / 45);
+            }
+          }
+          window.addEventListener('deviceorientation', onDeviceOrientation, { passive: true });
+        }
+
+        // Pause loop when out of viewport
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            isVisible = entry.isIntersecting;
+            if (isVisible && animId === null) {
+              lastTimestamp = performance.now();
+              render(lastTimestamp);
+            }
+          });
+        }, { threshold: 0.05 });
+        observer.observe(container);
+
+        let lastTimestamp = performance.now();
+
+        function render(timestamp: number) {
+          if (!isVisible) {
+            animId = null;
+            return;
+          }
+
+          const dt = Math.min((timestamp - lastTimestamp) / 1000, 0.1);
+          lastTimestamp = timestamp;
+
+          // Subtle natural breathing/swaying animation
+          if (hasIdle) {
+            if (!hasTrackMouse) {
+              // Autonomous gentle breathing motion
+              targetX = Math.sin(timestamp * 0.0008) * 0.45;
+              targetY = Math.cos(timestamp * 0.0011) * 0.3;
+            } else {
+              const idleTime = (timestamp - lastMoveTime) / 1000;
+              if (idleTime > 0.5) {
+                const blend = Math.min((idleTime - 0.5) / 2, 1);
+                const idleX = Math.sin(timestamp * 0.0008) * 0.45;
+                const idleY = Math.cos(timestamp * 0.0011) * 0.3;
+                targetX = targetX * (1 - blend) + idleX * blend;
+                targetY = targetY * (1 - blend) + idleY * blend;
+              }
+            }
+          }
+
+          // Smooth lerp (exponential easing)
+          currentX += (targetX - currentX) * (1 - Math.exp(-12 * dt));
+          currentY += (targetY - currentY) * (1 - Math.exp(-12 * dt));
+
+          // Physical 3D perspective rotation on container
+          const rotY = currentX * maxTilt;
+          const rotX = -currentY * (maxTilt * 0.65);
+          container.style.transform = `perspective(900px) rotateY(${rotY.toFixed(2)}deg) rotateX(${rotX.toFixed(2)}deg)`;
+
+          // State Machine & Expression Transitions
+          let blendValue = 0.0;
+
+          if (expressions.length > 1) {
+            if (!isTransitioning) {
+              if (timestamp >= stateTimer) {
+                nextExpr = chooseNextExpression(currentExpr, timestamp);
+                if (nextExpr.id !== currentExpr.id) {
+                  isTransitioning = true;
+                  transitionStartTime = timestamp;
+                  transitionDuration = nextExpr.transitionDuration ?? 200;
+
+                  // Bind next expression textures to slots 2 & 3
+                  const nextPair = textureCache.get(nextExpr.id)!;
+                  bindPair(nextPair, 2, 3);
+                } else {
+                  stateTimer = timestamp + getRandomDuration(currentExpr.durationRange);
+                }
+              }
+            } else if (nextExpr) {
+              const elapsed = timestamp - transitionStartTime;
+              if (elapsed >= transitionDuration) {
+                // Transition finished: make next expression the current one
+                currentExpr = nextExpr;
+                nextExpr = null;
+                isTransitioning = false;
+                blendValue = 0.0;
+
+                // Update history tracking for the newly displayed expression
+                const hist = historyMap.get(currentExpr.id);
+                if (hist) {
+                  hist.count += 1;
+                  hist.lastShownTime = timestamp;
+                }
+
+                // Bind new current expression to slots 0 & 1
+                const currPair = textureCache.get(currentExpr.id)!;
+                bindPair(currPair, 0, 1);
+                // Also bind to slots 2 & 3 as standby
+                bindPair(currPair, 2, 3);
+
+                // Schedule next state transition
+                stateTimer = timestamp + getRandomDuration(currentExpr.durationRange);
+              } else {
+                // Cosine smoothstep transition: 0.5 - 0.5 * cos(pi * progress)
+                const progress = elapsed / transitionDuration;
+                blendValue = 0.5 - 0.5 * Math.cos(progress * Math.PI);
+              }
+            }
+          }
+
+          glCtx.clearColor(0, 0, 0, 0);
+          glCtx.clear(glCtx.COLOR_BUFFER_BIT);
+
+          glCtx.uniform1f(uBlendLoc, blendValue);
+          glCtx.uniform2f(uOffsetLoc, currentX, currentY);
+          glCtx.drawArrays(glCtx.TRIANGLES, 0, 6);
+
+          animId = requestAnimationFrame(render);
+        }
+
+        // Show canvas and smoothly crossfade
+        canvasEl.style.opacity = '1';
+        if (fallbackImg) {
+          fallbackImg.style.opacity = '0';
+        }
+
+        animId = requestAnimationFrame(render);
+      }).catch(err => {
+        console.warn('DepthPortrait texture load failed, using fallback:', err);
+      });
+    });
+  }
+
+  // Run on initial load and Astro page transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDepthPortraits);
+  } else {
+    initDepthPortraits();
+  }
+  document.addEventListener('astro:page-load', initDepthPortraits);
+</script>

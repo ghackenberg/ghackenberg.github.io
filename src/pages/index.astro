@@ -8,8 +8,18 @@ import GitHubWidget from "../components/GitHubWidget.astro";
 import LinkedInWidget from "../components/LinkedInWidget.astro";
 import YouTubeWidget from "../components/YouTubeWidget.astro";
 import ImageGalleryMarquee, { type GalleryItem } from "../components/ImageGalleryMarquee.astro";
+import DepthPortrait from "../components/DepthPortrait.astro";
 import { getImage } from "astro:assets";
-import profileImage from "../assets/images/comic-profile.png";
+import profileImage from "../assets/images/comic-profile-head.png";
+import profileDepthImage from "../assets/images/comic-profile-head-depth.png";
+import profileWinkImage from "../assets/images/comic-profile-head-wink.png";
+import profileWinkDepthImage from "../assets/images/comic-profile-head-wink-depth.png";
+import profileBlinkImage from "../assets/images/comic-profile-head-blink.png";
+import profileBlinkDepthImage from "../assets/images/comic-profile-head-blink-depth.png";
+import profileClosedMouthImage from "../assets/images/comic-profile-head-closed-mouth.png";
+import profileClosedMouthDepthImage from "../assets/images/comic-profile-head-closed-mouth-depth.png";
+import profileClosedMouthBlinkImage from "../assets/images/comic-profile-head-closed-mouth-blink.png";
+import profileClosedMouthBlinkDepthImage from "../assets/images/comic-profile-head-closed-mouth-blink-depth.png";
 import interestSoftwareImg from "../content/interests/software-engineering/preview.jpg";
 import interestSimulationImg from "../content/interests/computer-simulation/preview.jpg";
 import interestAiImg from "../content/interests/artificial-intelligence/preview.jpg";
@@ -23,6 +33,131 @@ const optimizedProfile = await getImage({
   width: 600,
   quality: 80
 });
+
+const optimizedDepth = await getImage({
+  src: profileDepthImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+const optimizedWink = await getImage({
+  src: profileWinkImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+const optimizedWinkDepth = await getImage({
+  src: profileWinkDepthImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+const optimizedBlink = await getImage({
+  src: profileBlinkImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+const optimizedBlinkDepth = await getImage({
+  src: profileBlinkDepthImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+const optimizedClosedMouth = await getImage({
+  src: profileClosedMouthImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+const optimizedClosedMouthDepth = await getImage({
+  src: profileClosedMouthDepthImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+const optimizedClosedMouthBlink = await getImage({
+  src: profileClosedMouthBlinkImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+const optimizedClosedMouthBlinkDepth = await getImage({
+  src: profileClosedMouthBlinkDepthImage,
+  format: "webp",
+  width: 600,
+  quality: 80
+});
+
+// Configurable facial expressions state machine
+const faceExpressions = [
+  {
+    id: "default",
+    imageSrc: optimizedProfile.src,
+    depthSrc: optimizedDepth.src,
+    durationRange: [3000, 6000] as [number, number],
+    transitionDuration: 180,
+    transitions: [
+      { targetId: "wink", weight: 25 },
+      { targetId: "blink", weight: 35 },
+      { targetId: "closed_mouth", weight: 40 }
+    ]
+  },
+  {
+    id: "wink",
+    imageSrc: optimizedWink.src,
+    depthSrc: optimizedWinkDepth.src,
+    durationRange: [250, 380] as [number, number],
+    transitionDuration: 120,
+    transitions: [
+      { targetId: "default", weight: 65 },
+      { targetId: "closed_mouth", weight: 35 }
+    ]
+  },
+  {
+    id: "blink",
+    imageSrc: optimizedBlink.src,
+    depthSrc: optimizedBlinkDepth.src,
+    durationRange: [180, 280] as [number, number],
+    transitionDuration: 100,
+    transitions: [
+      { targetId: "default", weight: 70 },
+      { targetId: "closed_mouth", weight: 30 }
+    ]
+  },
+  {
+    id: "closed_mouth",
+    imageSrc: optimizedClosedMouth.src,
+    depthSrc: optimizedClosedMouthDepth.src,
+    durationRange: [2500, 5000] as [number, number],
+    transitionDuration: 200,
+    transitions: [
+      { targetId: "closed_mouth_blink", weight: 40 },
+      { targetId: "default", weight: 35 },
+      { targetId: "blink", weight: 15 },
+      { targetId: "wink", weight: 10 }
+    ]
+  },
+  {
+    id: "closed_mouth_blink",
+    imageSrc: optimizedClosedMouthBlink.src,
+    depthSrc: optimizedClosedMouthBlinkDepth.src,
+    durationRange: [180, 280] as [number, number],
+    transitionDuration: 100,
+    transitions: [
+      { targetId: "closed_mouth", weight: 75 },
+      { targetId: "default", weight: 25 }
+    ]
+  }
+];
 
 const optimizedInterestSoftware = await getImage({ src: interestSoftwareImg, format: "webp", width: 800, quality: 85 });
 const optimizedInterestSimulation = await getImage({ src: interestSimulationImg, format: "webp", width: 800, quality: 85 });
@@ -724,44 +859,21 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </div>
         </div>
         
-        <!-- Profile Photo -->
         <div class="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
           <div class="relative w-64 h-64 min-[360px]:w-72 min-[360px]:h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
-            <!-- Large floating headshot inside SVG to avoid WebKit subpixel clipping artifacts -->
-            <svg 
-              viewBox="0 0 100 100" 
-              class="w-full h-full select-none pointer-events-none relative z-10"
-              role="img"
-              aria-label="Dr. Georg Hackenberg - Profile Headshot"
-            >
-              <defs>
-                <!-- SVG RadialGradient for soft bottom fadeout, keeping top head sharp -->
-                <radialGradient id="fadeGradient" cx="50%" cy="30%" r="70%">
-                  <stop offset="55%" stop-color="#fff" stop-opacity="1" />
-                  <stop offset="95%" stop-color="#fff" stop-opacity="0" />
-                </radialGradient>
-                <!-- SVG Mask applying the gradient -->
-                <mask id="fadeMask">
-                  <rect x="0" y="0" width="100%" height="100%" fill="url(#fadeGradient)" />
-                </mask>
-              </defs>
-              <!-- Group using mask for vignette blend without clipping boundaries -->
-              <g>
-                <!-- Image inside using mask for vignette blend -->
-                <image
-                  href={optimizedProfile.src}
-                  x="0"
-                  y="0"
-                  width="100"
-                  height="100"
-                  preserveAspectRatio="xMidYMid slice"
-                  mask="url(#fadeMask)"
-                  class="profile-svg-image"
-                  {...{ title: "Dr. Georg Hackenberg" }}
-                  aria-label="Portrait of Dr. Georg Hackenberg, Professor for Industrial Informatics at FH Upper Austria"
-                />
-              </g>
-            </svg>
+            <DepthPortrait
+              expressions={faceExpressions}
+              imageSrc={optimizedProfile.src}
+              depthSrc={optimizedDepth.src}
+              alt="Dr. Georg Hackenberg - Profile Headshot"
+              title="Dr. Georg Hackenberg"
+              class="w-full h-full"
+              intensity={0.08}
+              maxTilt={5}
+              trackMouse={false}
+              vignette={false}
+              idleAnimation={true}
+            />
           </div>
         </div>
         
