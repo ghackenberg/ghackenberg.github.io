@@ -24,13 +24,25 @@ Here is a mockup of the visual interface:
 
 ![Benutzeroberflächen-Mockup für ungelesene Inhalte und Badges](./mockup.svg "UI-Mockup für Benachrichtigungs-Badges in Astro")
 
-## The Core Challenge: The Visual Flicker
+## How Do You Prevent Layout Shift When Loading Client-Side State?
+
+To eliminate visual layout flickering (**Cumulative Layout Shift**) on static websites, client state must be painted synchronously before the first paint cycle. By combining pre-compiled build-time content manifests with inline render-blocking `localStorage` lookups and background asynchronous delta synchronization, UI badges appear instantly without flash.
+
+### The Problem with Traditional Async State Ingestion
 
 A standard approach for client-side state is to load an asynchronous JavaScript script, read `localStorage`, fetch a manifest of posts, and inject the badges into the DOM.
 
 While simple, this pattern introduces a major UX flaw: **Visual Flickering**. Because async scripts execute after the DOM is rendered and styled, the user will see the navbar *without* badges for a split second, followed by a sudden jump as badges and unread dots pop into existence. This layout shift looks unpolished and cheap.
 
 To achieve a **flicker-free experience**, we designed a decoupled synchronization architecture.
+
+### Architectural Trade-offs: Client Notification Strategies
+
+| Architecture Approach | Initial Paint Flicker (CLS) | Server Overhead | Offline & Privacy Support | Code Complexity |
+| :--- | :--- | :--- | :--- | :--- |
+| **Server-Rendered DB Query** | None (Zero CLS) | High (Requires DB & Auth per request) | Poor (Server dependency) | High (Backend stack needed) |
+| **Async Client-Side Script** | Severe (~150-300ms flash) | Low (Static CDN) | Excellent (Pure browser state) | Very Low |
+| **Decoupled Cached Manifest** | **None (Zero CLS)** | **Zero (Pre-compiled JSON)** | **Excellent (Local Storage)** | **Moderate (Inline paint + worker sync)** |
 
 ## Decoupled Architecture: Build-Time meets Client-Time
 
@@ -112,6 +124,17 @@ The sequence diagram below displays the step-by-step workflow of the client stat
 
 By utilizing the cached manifest cache from the *previous* session, the client is able to execute Step 2 synchronously. When the background fetch completes in Step 4, if there is a discrepancy (e.g., a new article was published since the user last refreshed), the UI updates smoothly, ensuring they always have accurate, real-time unread counts without sacrificing performance.
 
+## Frequently Asked Questions (FAQ)
+
+### What causes layout shift when loading client-side badges?
+Layout shifts (CLS) occur when asynchronous JavaScript scripts inject HTML elements into the DOM after the browser has already finished rendering and painting the initial page. On static websites, this creates a visible flicker where navigation bars initially render flat, then suddenly shift down or expand as badges appear.
+
+### How does localStorage caching prevent visual flickering?
+By inlining a tiny, synchronous script block at the very bottom of the document body, the browser executes badge evaluation before the first paint cycle. The script reads the pre-cached unread state from `localStorage` instantly, ensuring elements render in their correct visual positions without waiting for asynchronous network fetches.
+
+### Does this client-side notification architecture require a backend?
+No. All collection timestamps and URLs are extracted into a static `/content-manifest.json` file at build time. The user's read state is stored completely on their own device via `localStorage`, guaranteeing full GDPR privacy compliance and zero server infrastructure costs.
+
 ## Summary of Benefits
 
 This decoupled notification architecture provides several major advantages:
@@ -119,4 +142,5 @@ This decoupled notification architecture provides several major advantages:
 2. **Static Compilation**: The server never has to execute dynamic database queries. The manifest is pre-compiled at build time and served globally via a fast CDN.
 3. **No Database Dependencies**: Users are tracked anonymously on their own machines using local storage, keeping the application fast, privacy-friendly, and cost-effective.
 
-Implementing this pattern ensures that static sites feel as reactive and feature-rich as complex single-page apps, while retaining all the speed and security benefits of pre-rendered HTML.
+Implementing this pattern ensures that static sites feel as reactive and feature-rich as complex single-page apps, while retaining all the speed and security benefits of pre-rendered HTML. For further architectural details on our static stack, see our [Astro Relaunch deep dive](/posts/2026_05_23_website_relaunch_astro_typescript/) and explore our topics on [Web Performance](/tags/web-development/).
+
