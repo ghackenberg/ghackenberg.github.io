@@ -31,20 +31,13 @@ export async function getPlausiblePageMetrics(
   const canonicalPath = normalizePath(urlOrPath);
   const plausiblePeriod = mapPeriodToPlausible(period);
 
-  // Note: Some Plausible setups log without trailing slash, some with.
-  // We query with the canonical path or match both variants.
-  const pathWithoutSlash = canonicalPath.replace(/\/$/, '') || '/';
-  const filterExpr = canonicalPath === '/'
-    ? 'event:page==/'
-    : `event:page==${canonicalPath}|event:page==${pathWithoutSlash}`;
+  const fetchAggregate = async (filterPath: string) => {
+    const url = new URL(`${config.plausible.host}/api/v1/stats/aggregate`);
+    url.searchParams.set('site_id', config.plausible.siteId);
+    url.searchParams.set('period', plausiblePeriod);
+    url.searchParams.set('metrics', 'visitors,pageviews,bounce_rate,visit_duration');
+    url.searchParams.set('filters', `event:page==${filterPath}`);
 
-  const url = new URL(`${config.plausible.host}/api/v1/stats/aggregate`);
-  url.searchParams.set('site_id', config.plausible.siteId);
-  url.searchParams.set('period', plausiblePeriod);
-  url.searchParams.set('metrics', 'visitors,pageviews,bounce_rate,visit_duration');
-  url.searchParams.set('filters', filterExpr);
-
-  try {
     const res = await fetch(url.toString(), {
       headers: {
         Authorization: `Bearer ${config.plausible.apiKey}`,
@@ -54,6 +47,27 @@ export async function getPlausiblePageMetrics(
     if (!res.ok) {
       const errText = await res.text();
       console.warn(`Plausible API error (${res.status}): ${errText}`);
+      return null;
+    }
+
+    const data = await res.json();
+    return data.results || {};
+  };
+
+  try {
+    let results = await fetchAggregate(canonicalPath);
+    // If no pageviews on canonicalPath and path has trailing slash, try without slash (or vice versa)
+    if ((!results || results.pageviews?.value === 0) && canonicalPath !== '/') {
+      const alternativePath = canonicalPath.endsWith('/') 
+        ? canonicalPath.slice(0, -1) 
+        : `${canonicalPath}/`;
+      const altResults = await fetchAggregate(alternativePath);
+      if (altResults && (altResults.pageviews?.value ?? 0) > 0) {
+        results = altResults;
+      }
+    }
+
+    if (!results) {
       return {
         visitors: 0,
         pageviews: 0,
@@ -61,9 +75,6 @@ export async function getPlausiblePageMetrics(
         visitDuration: null,
       };
     }
-
-    const data = await res.json();
-    const results = data.results || {};
 
     return {
       visitors: results.visitors?.value ?? 0,

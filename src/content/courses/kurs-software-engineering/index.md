@@ -22,15 +22,40 @@ tags:
 
 Herzlich willkommen zum Kurs **Software Engineering**! Softwareentwicklung ist weit mehr als nur Code zu schreiben – es ist ein strukturierter Ingenieursprozess zur Lösung komplexer Probleme.
 
-## Kursübersicht
+## Kursübersicht: Software Engineering an der FH Oberösterreich
 
-In diesem Kurs betrachten wir den gesamten Prozess der Softwareentstehung: Von der Anforderungsanalyse (Requirements Engineering) über die Architekturmodellierung und Programmierung (in C#) bis hin zu Softwaretests und Deployment-Pipelines.
+Der Hochschulkurs **Software Engineering** von Dr. Georg Hackenberg vermittelt die methodischen und technischen Grundlagen zur industriellen Softwareentwicklung. Studierende lernen systematisch, wie komplexe Softwaresysteme von der Anforderungsanalyse über die modellgetriebene Architektur bis hin zu automatisierter Qualitätssicherung in C# und CI/CD-Pipelines engineered werden.
 
-## Inhaltliche Schwerpunkte
+## Was lernen Sie im Kurs Software Engineering?
 
-1. **Softwareprozessmodelle**: Wasserfall vs. Agil (Scrum, Sprints, User Stories).
-2. **Objektorientiertes Design (OOD)**: UML-Klassendiagramme, Use Case-Diagramme und Sequenzdiagramme.
-3. **Entwurfsmuster (Design Patterns)**: Singleton, Factory, Observer und MVC-Muster praxisecht anwenden.
-4. **Clean Code & Refactoring**: Wartbaren Code schreiben, Code Smells erkennen und auflösen.
-5. **Testing**: JUnit/NUnit für Unit Testing, Test-Driven Development (TDD) und Mocking.
-6. **Versionskontrolle**: Git-Workflows (Branching, Merge Requests, CI/CD-Pipelines).
+Die Lehrveranstaltung verbindet agile Vorgehensmodelle mit soliden ingenieurmäßigen Softwarearchitekturen. Anhand durchgängiger praktischer Programmierprojekte erarbeiten Sie wartbare, skalierbare und testbare Systeme:
+
+1. **Softwareprozessmodelle**: Phasenorientiertes Vorgehen, Scrum-Framework, Sprint-Planung, User Stories und Kanban.
+2. **Objektorientierter Entwurf (OOD)**: Modellierung mit UML-Klassendiagrammen, Sequenzdiagrammen und Use-Case-Spezifikationen.
+3. **Entwurfsmuster (Design Patterns)**: Praxisnahe Umsetzung von Gang-of-Four-Mustern wie Singleton, Factory, Observer, Adapter und MVC.
+4. **Clean Code & Refactoring**: Wartbarkeitstechniken, SOLID-Prinzipien, Erkennung und Beseitigung technischer Schulden.
+5. **Automatisiertes Testen**: Test-Driven Development (TDD), Unit Tests und Mocking mit NUnit in modernem C#/.NET.
+6. **Versionsverwaltung & CI/CD**: Verteilte Entwicklung mit Git (Feature Branching, Code Reviews) und automatisierte GitHub Actions Builds.
+
+## Curriculum & Modulübersicht
+
+Die folgende Tabelle gibt einen Überblick über die Kernmodule, behandelte Methoden und die eingesetzten Entwicklungswerkzeuge:
+
+| Modul | Themen & Methoden | Werkzeuge & Technologien |
+| :--- | :--- | :--- |
+| **1. Agiles Vorgehen** | Scrum, Sprint Backlog, User Story Mapping, Retrospektiven | Jira, GitHub Projects, Markdown |
+| **2. Systemarchitektur** | Domain-Driven Design (DDD), Komponentenarchitektur, UML | Draw.io, Mermaid.js, PlantUML |
+| **3. Objektorientierung** | Clean Architecture, SOLID-Prinzipien, Design Patterns | C#, Visual Studio, Rider |
+| **4. Testautomatisierung** | Unit Tests, TDD-Zyklus (Red-Green-Refactor), Mocking | NUnit, Moq, FluentAssertions |
+| **5. Build & Deployment** | Continuous Integration, Static Code Analysis, Linter | Git, GitHub Actions, SonarQube |
+
+## Häufig gestellte Fragen (FAQ)
+
+### An wen richtet sich dieser Kurs?
+Der Kurs richtet sich primär an Bachelor-Studierende der Fachrichtung Informatik und verwandter technischer Studiengänge an der FH Oberösterreich sowie an Softwareentwickler, die ihre Grundlagen in systematischer Architektur und Testautomatisierung vertiefen möchten.
+
+### Welche Vorkenntnisse sind erforderlich?
+Grundlegende Programmierkenntnisse in einer modernen objektorientierten Sprache (wie C#, Java, C++ oder TypeScript) sowie Verständnis grundlegender Kontrollstrukturen und Datenstrukturen werden vorausgesetzt.
+
+### Sind die Lehrmaterialien und Code-Beispiele öffentlich zugänglich?
+Ja, alle zugehörigen Vorlesungsunterlagen, Folien und lauffähigen C#-Code-Beispiele stehen im verlinkten Open-Source GitHub Repository zur freien Verfügung und können für das Selbststudium genutzt werden.

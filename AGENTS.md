@@ -103,5 +103,18 @@ Whenever tasked with analyzing, optimizing, writing, or inspecting content in th
   - **High Bounce (>75%)**: Target for immediate answer-first restructuring, scannability enhancements, and prominent related internal links.
   - **Hidden Champions (High Duration, Low Impressions)**: Target for internal backlinks from top-ranking pillar articles.
 
+### 5. Multilingual Content Architecture & Localization Protocol
+To avoid mixed-language indexing penalties and ensure search engines and generative models accurately classify target audiences:
+- **Baseline Language per Content Domain**:
+  - **Technical Tooling, Visualizations, Academic Publications & GitHub Projects $\rightarrow$ English**: All interactive visualization pages (`src/content/visualizations/`), tool documentation, research papers, and software projects target a global audience and must be written strictly in English.
+  - **Global Tags $\rightarrow$ English**: Since tag landing pages (`src/content/tags/` $\rightarrow$ `/tags/[tag]/`) aggregate across German blog posts, English papers, and English repositories, their metadata definitions and descriptions must remain in English.
+  - **University Course Materials $\rightarrow$ Language of Instruction**: Academic lectures (`src/content/courses/`) are authored in their respective teaching language (e.g. German for FH Upper Austria courses with `language: "de"`).
+  - **Blog Articles $\rightarrow$ Explicit Post Language**: Blog posts (`src/content/posts/`) can be in German or English, but must declare `language: "de"` or `language: "en"` in frontmatter.
+- **Strict HTML & OpenGraph Locale Alignment**:
+  - Whenever rendering localized content (posts or courses), the page template must pass `lang={item.data.language || 'en'}` to `Layout.astro` so that `<html lang="...">` and `og:locale` (`de_AT` or `en_US`) accurately reflect the document body for search crawlers.
+- **Zero Language Mixing within Single Pages**:
+  - Never place German body text onto English-titled or English-navigated pages without explicit language declarations. Maintain linguistic consistency across headings, body paragraphs, and UI labels.
+
+
 
 

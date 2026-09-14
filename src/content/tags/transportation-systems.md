@@ -1,4 +1,4 @@
 ---
 title: "Transportation Systems"
-description: "Multi-modal transit modeling, autonomous vehicle infrastructure, and logistics network optimization."
+description: "Modeling, simulation, and optimization of multimodal transit systems, autonomous logistics networks, and intelligent urban mobility infrastructure in research and academia."
 ---

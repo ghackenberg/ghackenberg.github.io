@@ -1,18 +1,24 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
 
 export async function getStaticPaths() {
   const visualizations = await getCollection("visualizations");
   return visualizations.map(vis => ({
     params: { slug: vis.id },
-    props: { type: vis.id, title: vis.data.title, screenshot: vis.data.screenshot }
+    props: { vis }
   }));
 }
 
-const { type, title, screenshot } = Astro.props;
+const { vis } = Astro.props;
+const type = vis.id;
+const title = vis.data.title;
+const description = vis.data.description;
+const screenshot = vis.data.screenshot;
+
+const { Content } = await render(vis);
 
 const screenshotImg = screenshot ? (typeof screenshot === 'object' && 'src' in screenshot ? screenshot.src : screenshot) : null;
 const optimizedScreenshot = screenshotImg ? await getImage({
@@ -45,7 +51,7 @@ const payload = await buildGraphPayload({
 
 <Layout 
   title={`${title} | Dr. Georg Hackenberg`} 
-  description={`An interactive network diagram mapping the connections between projects, blog posts, publications, courses, services, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
+  description={description || `An interactive network diagram mapping the connections between projects, blog posts, publications, courses, services, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
   image={screenshot || optimizedScreenshot?.src}
 >
   <Navbar />
@@ -103,7 +109,7 @@ const payload = await buildGraphPayload({
       </div>
     </div>
 
-    <div class="flex-grow w-full relative min-h-[500px] h-[70vh] md:h-[calc(100vh-320px)] rounded-3xl border border-element-border light:border-slate-200 bg-gray-950/60 light:bg-slate-100/60 backdrop-blur-md overflow-hidden shadow-2xl">
+    <div class="flex-grow w-full relative min-h-[500px] h-[70vh] md:h-[calc(100vh-320px)] rounded-3xl border border-element-border light:border-slate-200 bg-gray-950/60 light:bg-slate-100/60 backdrop-blur-md overflow-hidden shadow-2xl mb-12">
       <!-- Floating Glassmorphic Legend (Positioned top-left, responsive on mobile & desktop) -->
       <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-white/10 light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
         <div class="flex items-center space-x-2">
@@ -115,28 +121,31 @@ const payload = await buildGraphPayload({
           <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Posts</span>
         </div>
         <div class="flex items-center space-x-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
-          <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Projects</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 border border-white/20 shadow-sm shadow-indigo-500/30"></span>
-          <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Publications</span>
+          <span class="w-2.5 h-2.5 rounded-full bg-brand-purple border border-white/20 shadow-sm shadow-brand-purple/30"></span>
+          <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Pubs</span>
         </div>
         <div class="flex items-center space-x-2">
           <span class="w-2.5 h-2.5 rounded-full bg-brand-yellow border border-white/20 shadow-sm shadow-brand-yellow/30"></span>
+          <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Projects</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
           <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Courses</span>
         </div>
         <div class="flex items-center space-x-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-brand-purple border border-white/20 shadow-sm shadow-brand-purple/30"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-500 border border-white/20 shadow-sm shadow-rose-500/30"></span>
           <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Services</span>
         </div>
       </div>
 
-      <!-- Floating Glassmorphic Layout Mode Selector (Positioned bottom-right) -->
-      <div class="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 pointer-events-auto flex items-center space-x-2.5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-white/10 light:border-slate-200/80 shadow-md text-xs">
-        <label for="layout-selector" class="text-gray-400 light:text-slate-500 font-semibold text-[11px] sm:text-xs whitespace-nowrap flex items-center space-x-1.5 cursor-pointer">
+      <!-- Floating Controls: Layout Dropdown Selector -->
+      <div 
+        id="layout-control-container"
+        class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20 flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-gray-950/70 light:bg-white/90 backdrop-blur-md border border-white/10 light:border-slate-200 shadow-md text-xs"
+      >
+        <label for="layout-selector" class="flex items-center space-x-1.5 text-gray-400 light:text-slate-500 font-medium select-none">
           <svg class="w-3.5 h-3.5 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
           </svg>
           <span>Layout:</span>
         </label>
@@ -167,6 +176,11 @@ const payload = await buildGraphPayload({
       <!-- Graph Rendering Canvas -->
       <div id="canvas" class="w-full h-full relative z-10"></div>
     </div>
+
+    <!-- Structured Content & Technical Context Section -->
+    <article class="glass-card p-8 md:p-10 rounded-3xl border border-element-border visualization-details">
+      <Content />
+    </article>
   </main>
 
   <!-- Expose Astro variables to global scope for client script -->
@@ -359,5 +373,50 @@ const payload = await buildGraphPayload({
   :global(.light) #layout-selector option {
     background: #ffffff;
     color: #0f172a;
+  }
+
+  /* Typography for semantic visualization details */
+  .visualization-details :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-heading);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.025em;
+  }
+  .visualization-details :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .visualization-details :global(h3) {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-text-heading);
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .visualization-details :global(p) {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-text-main);
+    margin-bottom: 1.25rem;
+  }
+  .visualization-details :global(ul) {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-main);
+  }
+  .visualization-details :global(li) {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .visualization-details :global(a) {
+    color: #3b82f6;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .visualization-details :global(a:hover) {
+    color: #60a5fa;
   }
 </style>

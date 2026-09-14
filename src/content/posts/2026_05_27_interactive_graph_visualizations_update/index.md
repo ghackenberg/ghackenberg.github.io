@@ -167,8 +167,16 @@ selector.addEventListener('change', (e) => {
 
 On page load, the Astro script parses the URL parameters to fetch the state, initializing the canvas directly with the user's preferred layout.
 
-## Conclusion
+## Conclusion & Live Interactive Demos
 
 With this modular refactoring, the graph visualization page is more robust, lighter on initial loading speeds, and visually synchronized with the rest of the website. Whether you prefer the organic physics of **Vis.js**, the raw data transparency of **D3**, or the futuristic fly-throughs of the **3D Force Graph**, the system delivers a premium, smooth interactive experience in light and dark mode alike.
 
-Try out the different engines on the [Visualizations Panel](/visualizations/)!
+Explore each engine live in action on the website:
+- [Sigma ForceAtlas2 Graph](/visualizations/sigma/) – High-performance WebGL graph layout with web workers.
+- [Vis.js Network Demo](/visualizations/vis-network/) – Smooth physics-driven 2D particle network on HTML5 canvas.
+- [3D Force-Directed Graph](/visualizations/3d-force/) – Immersive spatial exploration built on Three.js & WebGL.
+- [Cytoscape.js Graph Analysis](/visualizations/cytoscape/) – Versatile graph-theoretical layouts.
+- [D3 Force-Directed Simulation](/visualizations/d3/) – Physics-based force layout with delicate vector typography.
+
+Browse the complete collection on the [Content Visualizations Hub](/visualizations/).
+
