@@ -94,7 +94,7 @@ Der **LiteLLM Proxy** fungiert als intelligentes KI-Gateway:
 
 Die fortschrittlichste Backend-Architektur verpufft, wenn Anwender auf kryptische Kommandozeilen angewiesen sind. **Open WebUI** schließt die Lücke zur Belegschaft:
 
-* **Ergonomisches Interface**: Modernes, ansprechendes Webinterface mit Multi-Modell-Auswahl, Konversationsverwaltung und Markdown-Rendering mit nativer KaTeX-Mathematik-Unterstützung.
+* **Ergonomisches Interface**: Modernes, ansprechendes Webinterface mit Multi-Modell-Auswahl, Konversationsverwaltung und Markdown-Rendering mit nativer KaTeX-Mathematik-Unterstützung. Es reduziert Barrieren und mentale Ermüdung bei der täglichen Arbeit (siehe dazu auch unsere Grundlagenanalyse zur [Psychologie der modernen Informationstechnologie](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/)).
 * **Dokumenten-RAG direkt im Chat**: Fachanwender laden PDFs, Tabellen oder Code hoch; das System übernimmt automatisiertes Chunking, Embedding und Vektor-Retrieval.
 * **Workspaces & Tool-Freigaben**: Administratoren können kuratierte Assistenten mit spezifischen Systemprompts und WikiSkills-Werkzeugen für einzelne Benutzergruppen freischalten.
 
