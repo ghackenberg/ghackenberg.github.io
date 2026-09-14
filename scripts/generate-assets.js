@@ -6,6 +6,7 @@ import puppeteer from 'puppeteer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(__dirname, '../public');
+const templatesDir = path.resolve(__dirname, 'templates');
 
 // Simple static server to serve local HTML/assets to Puppeteer
 const server = http.createServer((req, res) => {
@@ -14,6 +15,14 @@ const server = http.createServer((req, res) => {
   let filePath = path.join(publicDir, urlPath);
   if (filePath === publicDir || fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
     filePath = path.join(filePath, 'index.html');
+  }
+
+  // Fallback to scripts/templates if file is an internal generator template
+  if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+    const templatePath = path.join(templatesDir, path.basename(urlPath));
+    if (fs.existsSync(templatePath) && fs.statSync(templatePath).isFile()) {
+      filePath = templatePath;
+    }
   }
 
   // Fallback to src/assets/images if file is not found in public directory

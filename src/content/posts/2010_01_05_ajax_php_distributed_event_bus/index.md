@@ -32,13 +32,21 @@ Finally, for each entity the individual subcomponents are depicted which I will 
 Now, let's have a look at each subcomponent in isolation.
 From this presentation I hope to give the best possible insight into the system.
 If you have further questions, do not hesitate to send me a message or comment on this article.
-![Channel illustration from Ajax/PHP Distributed Event Bus.](./channel.png "Ajax/PHP Distributed Event Bus - Channel illustration")
 The **channel** is the heart of the system.
 It is stored on the server and basically denotes a regular XML file storing all events in a circular log file fashion.
 *Circular log file* means, that only a maximum number of entries is stored.
 If this limit is reached, the oldest entries are being deleted saving space for new ones.
 This is an effective method for saving hard disk memory on your system which is also used by many other applications and software packages like *DB2*.
-The format of the log file is shown in the figure to the right.
+The format of the log file is defined as follows:
+
+```xml
+<channel>
+  <item timestamp="1262600000" microseconds="0.1234" client="123456" type="message">
+    <content>Hello World!</content>
+  </item>
+</channel>
+```
+
 At its root, a `channel` element is defined which holds a possibly infinite number of `item` elements.
 The items store the actual events that have occured during system operation.
 Each item provides information about the time, client, type and content of the event.
@@ -57,58 +65,171 @@ This simple filesystem based synchronization method works well in the PHP domain
 
 Finally, the client-side components are left for discussion.
 The core of the client deployment is a general *JavaScript API* which allows to connect to channels, register event handlers and publish events.
-The skeleton of the current implementation is presented in the following figure.
-Most implementation details are removed for clarity of the illustration.
 
-[![Javascript illustration from Ajax/PHP Distributed Event Bus.](./javascript.png "Ajax/PHP Distributed Event Bus - Javascript illustration")](./javascript.png)
+### Event Dispatching and Publishing
 
-The first thing to notice is the `client` variable.
-It holds the randomly generated ID of the current client.
-This ID is passed as a signature for each event to distinguish its origin.
-Now, let's quickly loop through all methods provided by the API:
-First, there is the function `HandleEvent`.
-It is called for every event recieved via the event bus.
-Its responsibility is to call the respective event handlers which have been registered for the individual event types.
-Second, there is the function `Publish` which requires a `type` and a `content` argument.
-It is used for transmitting new events into the distributed event channel.
-The type and the content parameters can be filled arbitrarily.
-This keeps the system task-agnostic to the most possible extent.
-The next key function is `Connect`.
-It provides the entrace point to event listing on the distributed channel.
-Its implementation is fairly simple: Basically, a get request is issued for the **update** component on the server-side providing the timestamp of the client.
-When the request is finished, the method `Update` is called for handling the new event content.
-The `Update` method also takes care of running a event retrieval loop.
-Finally, there are the functions `Register` and `Unregister` each requiring an event type and an event handler.
-They are used for managing the event handler registry for the specific event types.
+Every browser instance generates a random client ID upon entry. When an event is dispatched or published, HTTP POST sends the payload to `post.php`:
 
-The last thing left is the actual client code which utilizes the *JavaScript API*.
-For demonstration purposes I provide a truncated code snippet which hopefully explains the basic principles.
-The snippet is taken from the demo chat application shown in the initial video sequence.
+```javascript
+var client = Math.round(Math.random() * 1000000);
+var handlers = new Object();
 
-[![Client illustration from Ajax/PHP Distributed Event Bus.](./client.png "Ajax/PHP Distributed Event Bus - Client illustration")](./client.png)
+function HandleEvent(timestamp, microseconds, client, type, content) {
+  if (handlers[type]) {
+    for (var i = 0; i < handlers[type].length; i++) {
+      handlers[type][i](timestamp, microseconds, client, type, content);
+    }
+  }
+}
 
-Again, first a word about the variable `timestamp`.
-Initially, it holds the server timestamp when the page was delivered to the client.
-Accordingly, it defines up to which point in time changes are already reflected in the initial content.
-Then, successively the timestamp value is upated with each iteration through the `Update` loop.
-This way, only the most recent changes are transfered to each client.
-Now, let's concentrate on the provided methods:
-First, there is the method `Say` which expects a `form` parameter.
-The parameter refers to the HTML form holding the message the client wants to *say*.
-When executed, the method publishes an event of type `message`.
-The content of the event is the text string contained in the HTML input form.
-Finally, the form is cleared for further user input.
-This is already a simple example of how to use the distributed event bus for synchronizing events between clients.
+function Publish(type, content) {
+  var body = "client=" + client + "&type=" + encodeURIComponent(type) + "&content=" + encodeURIComponent(content);
+  var post = new XMLHttpRequest();
+  post.open("POST", "post.php");
+  post.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  post.send(body);
+}
+```
 
-Next, there are the `UpdateUserList` and `UpdateMessageList` methods.
-These are two examples of event handlers which are registered in a later step.
-Their signature is predefined, i.e. all event handlers retrieve the same list of parameters.
-The parameter names are self-explanatory, they basically contain the item information for each event.
-Usually, the event handlers are used to update the user interface, e.g. by displaying updated content or triggering alerts.
-Thelast step in the script is the call to the method `Connect`.
-This call initiates the *AJAX* connection between the client and the server.
+### Long-Polling Connection Loop
+
+The `Connect` function initiates long-polling against `channel.php`. As soon as the server closes the response stream after a timeout or new events, it recursively reconnects using the latest timestamps:
+
+```javascript
+function Connect(timestamp, microseconds) {
+  var channel = new XMLHttpRequest();
+  channel.onreadystatechange = function() {
+    if (channel.readyState == 4) {
+      Update(channel.responseText);
+      Connect(last_timestamp, last_microseconds);
+    }
+  };
+  channel.open("GET", "channel.php?timestamp=" + timestamp + "&microseconds=" + microseconds);
+  channel.send(null);
+}
+```
+
+### Event Handler Registry
+
+Clients register callbacks for distinct event types without coupling components together:
+
+```javascript
+function Register(type, handler) {
+  if (!handlers[type]) {
+    handlers[type] = new Array();
+  }
+  handlers[type].push(handler);
+}
+
+function Unregister(type, handler) {
+  if (handlers[type]) {
+    var index = handlers[type].indexOf(handler);
+    if (index != -1) {
+      handlers[type].splice(index, 1);
+    }
+  }
+}
+```
+
+## Client Application Example
+
+To demonstrate the API, we wire an HTML chat interface to the distributed event bus:
+
+```javascript
+function Say(form) {
+  Publish("message", form.content.value);
+  form.content.value = "";
+}
+
+function UpdateMessageList(timestamp, microseconds, client, type, content) {
+  var messageList = document.getElementById("messages");
+  var messageItem = document.createElement("li");
+  messageItem.appendChild(document.createTextNode(content));
+  messageList.appendChild(messageItem);
+}
+
+Register("message", UpdateMessageList);
+Connect(timestamp, microseconds);
+```
+
+First, the method `Say` publishes an event of type `message` from the form input.
+Next, the `UpdateMessageList` event handler is registered with the event bus. When any client sends a message, all connected clients receive the notification and append it to their UI.
+
+## Server-Side Implementation
+
+The backend is driven by two lightweight PHP scripts that manage the file-based circular queue with filesystem locks.
+
+### Long-Polling Event Consumer (channel.php)
+
+The consumer script holds open an HTTP connection for up to 25 seconds, querying `channel.xml` with a shared read lock (`LOCK_SH`):
+
+```php
+<?php
+header("Cache-Control: no-cache, must-revalidate");
+header("Content-Type: text/xml");
+
+$lock = fopen("access.lock", "r");
+$timestamp = (int) $_GET['timestamp'];
+$microseconds = (float) $_GET['microseconds'];
+
+$start = time();
+while (time() - $start < 25) {
+  while (!flock($lock, LOCK_SH)) {
+    // Wait for shared read lock
+  }
+  $channel = simplexml_load_file("channel.xml");
+  while (!flock($lock, LOCK_UN)) {
+    // Release read lock
+  }
+
+  foreach ($channel->item as $item) {
+    if ((int) $item['timestamp'] > $timestamp) {
+      print($item->asXML());
+      flush();
+      $timestamp = (int) $item['timestamp'];
+    }
+  }
+  usleep(20000);
+}
+?>
+```
+
+### Event Ingestion & Circular Queue Pruning (post.php)
+
+When a client submits an event, `post.php` acquires an exclusive lock (`LOCK_EX`), appends the new `<item>`, and automatically removes items older than 10 seconds to maintain a fixed file size:
+
+```php
+<?php
+$lock = fopen("access.lock", "r");
+while (!flock($lock, LOCK_EX)) {
+  // Wait for exclusive write lock
+}
+
+$channel = simplexml_load_file("channel.xml");
+$item = $channel->addChild("item");
+$item['timestamp'] = time();
+$item['client'] = $_POST['client'];
+$item['type'] = $_POST['type'];
+$item->content = $_POST['content'];
+
+$dom = dom_import_simplexml($channel);
+foreach ($channel->item as $entry) {
+  if ((int) $entry['timestamp'] < time() - 10) {
+    // Evict items older than 10 seconds
+    $dom->removeChild($dom->firstChild);
+  } else {
+    break;
+  }
+}
+
+$dom->ownerDocument->save("channel.xml");
+while (!flock($lock, LOCK_UN)) {
+  // Release write lock
+}
+?>
+```
 
 I hope you enjoyed the demonstration of this sweet little piece of technology.
 If you have further questions or want to play with the code, just drop me a line.
 
-[Download the source code!](/posts/2010_01_05_ajax_php_distributed_event_bus/source.zip)
+
