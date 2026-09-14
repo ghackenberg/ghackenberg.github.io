@@ -60,6 +60,41 @@ Das Tool `find_seo_opportunities` identifizierte unseren Beitrag [Psychologie de
 
 Bei der Überprüfung der maschinenlesbaren Ingestion-Schnittstellen (`public/llms.txt` und Schema.org `#person` in `index.astro`) deckte der Audit auf, dass Zitationsprofile für Google Scholar und ORCID noch Platzhalter enthielten. Für KI-Suchmaschinen wie Perplexity und Google AI Overviews ist die fehlerfreie Verknüpfung wissenschaftlicher Entitäten jedoch essenziell, um Fachautorität (E-E-A-T) deterministisch zuzuordnen.
 
+### 4. Das mobile Tabellen-Dilemma: GEO-Zitationshebel vs. Responsive UX
+
+In den darauffolgenden Optimierungsiterationen stießen wir auf einen fundamentalen Zielkonflikt zwischen KI-Suchoptimierung und moderner Web-Ergonomie:
+* **Die GEO-Anforderung**: Generative Engines (Perplexity, ChatGPT Search, Gemini) bevorzugen tabellarische Vergleiche disproportional gegenüber Fließtext (+37% Zitationshebel laut KDD-2024-Studie).
+* **Das mobile Layout-Problem**: Auf Smartphones führten 4- bis 5-spaltige Markdown-Tabellen zum horizontalen Ausbrechen des Viewports oder zu unleserlich zusammengequetschten Spalten.
+
+**Die architektonische Lösung**: Statt Tabellen künstlich zu verknappen, entwickelten wir ein build-zeitliches Rehype-Plugin ([`src/plugins/rehype-responsive-tables.js`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-responsive-tables.js)) in Astro. Das Plugin wickelt jede Markdown-Tabelle zur Build-Zeit automatisch in einen Container (`<div class="table-responsive-wrapper">`). Gekoppelt mit horizontalem Touch-Scrollen (`overflow-x: auto; min-width: 580px;`) und abgestimmtem Dark- und Light-Mode-Styling bleiben Tabellen auf mobilen Geräten flüssig wischbar, während die semantische DOM-Struktur für KI-Parser vollständig erhalten bleibt.
+
+## Welche Hebel erschließen Folgeiterationen mit der erweiterten Tool-Suite?
+
+Nach den ersten manuell angestoßenen Erfolgen erweiterten wir den MCP Server um vier spezialisierte Werkzeuge für Batch-Analysen, Graph-Topologie und Git-Diffing. Die praktischen Ergebnisse der nächsten Iterationen bestätigten die enorme Hebelwirkung dieser Automatisierung:
+
+### 1. Flächenhafte Content-Priorisierung mit `scan_aio_readiness`
+Statt über 130 Fachbeiträge einzeln zu evaluieren, scannt das Werkzeug das gesamte Repository in 3 Sekunden. Es filterte sofort diejenigen Artikel heraus, die trotz hoher fachlicher Tiefe Reifegrad-Lücken aufwiesen:
+* Die **GPU-Wasser-Simulation (Delta Dynamics)** erzielte anfangs nur 55 Punkte. Durch gezielte Ergänzung einer Architektur-Vergleichstabelle und W-Fragen stieg der Score auf **95/100**.
+* Der Artikel zu **Unread Badges & Layout-Shift-Vermeidung** litt unter fehlenden Antwortdefinitionen (50 Punkte). Nach Einbau einer CLS-Strategiematrix und FAQs verbesserte sich die AIO-Readiness auf **95/100**.
+* Das **GEO-Reifegradmodell für Industrieunternehmen** wurde direkt mit einer 5-stufigen Umsetzungsmatrix ausgestattet und sprang von 50 auf **95/100**.
+
+### 2. Objektiver Wirkungsnachweis mit `diff_aio_impact`
+Vor jedem Commit validiert der Agent das tatsächliche Delta gegen Git `HEAD`. Statt vager Vermutungen liefert das Tool harte Kennzahlen für das Commit-Log:
+```text
+ScoreBefore: 50 -> ScoreAfter: 95 (+45 Punkte)
+Deltas: +4 Direct Answers, +1 Vergleichstabelle, +4 W-Fragen-Überschriften
+```
+
+### 3. Der geschlossene Backlink-Loop mit `audit_internal_linking`
+Das Werkzeug analysiert den gesamten internen Linkgraphen (über 580 interne Markdown-Links). Für unseren identifizierten *Hidden Champion* (den Psychologie-Artikel mit über 7,5 Minuten Lesezeit) durchsuchte der Agent alle übrigen Fachbeiträge nach passenden thematischen Anknüpfungspunkten. 
+
+Im Leitfaden zum **Standardisierten Open-Source Agentic AI Tech Stack** identifizierte das Tool in Schicht 6 (Open WebUI) sofort den Kontext der mentalen Entlastung von Fachanwendern. Der Agent platzierte dort vollautomatisch einen organischen Querverweis auf die kognitive Ergonomie – ein direkter PageRank- und Lesertransfer ohne manuelles Code-Durchsuchen.
+
+### 4. Multilinguale Content-Architektur
+Um Verwirrung bei multimodalen KI-Crawlern zu vermeiden, etablierten wir ein striktes Lokalisierungsprotokoll:
+* Technische Tools, interaktive Visualisierungen und globale Tags verbleiben strikt auf Englisch.
+* Deutsche Hochschullehre und Blogbeiträge deklarieren ihr Sprachattribut (`lang: "de"`), welches über `Layout.astro` fehlerfrei in das HTML-Root-Element (`<html lang="de">`) und die OpenGraph-Metadaten (`de_AT`) überführt wird.
+
 ## Was bringt die lokale AIO-Extraktionsprüfung vor dem Build?
 
 Der vielleicht mächtigste Baustein des MCP-Servers ist das Werkzeug `evaluate_aio_extractability`. Es führt eine deterministische statische Analyse lokaler Markdown-Dateien durch und bewertet deren Tauglichkeit für generative Antwortmaschinen auf einer Skala von 0 bis 100 Punkten.
@@ -79,7 +114,7 @@ Der Prüfalgorithmus analysiert folgende Kernfaktoren:
 * **Tabellarische Synthesen**: Sind Kriterien oder Architekturen in Markdown-Tabellen zusammengefasst? LLMs greifen bei generierten Antworten bevorzugt auf tabellarische Vergleiche zurück.
 * **Listenstruktur**: Liegen strukturierte Schritt-für-Schritt-Aufzählungen für prozedurale Abläufe vor?
 
-In unserem Testlauf steigerte die automatisierte Überarbeitung den AIO-Score des Psychologie-Artikels und des SEO-Strategie-Leitfadens unmittelbar von **60 auf 95 von 100 Punkten**.
+In unserem Testlauf steigerte die automatisierte Überarbeitung den AIO-Score aller überarbeiteten Artikel systematisch von **50–60 auf 95 von 100 Punkten**.
 
 ## Fazit: Autonome Qualitätssicherung als Standard moderner Web-Systeme
 

@@ -13,7 +13,7 @@ In unserer fortlaufenden Beitragsreihe zur Websichtbarkeit im Zeitalter generati
 
 In jenem Reifegradmodell markiert **Level 4** den entscheidenden Schritt: die Transformation von manuell gepflegten Inhalten hin zu einem **geschlossenen, agentenfähigen Regelkreis**. Doch genau hier stießen Entwickler und Autoren bisher an eine methodische Mauer: das **[ROI-Paradoxon in der Zero-Click-Ökonomie](/posts/2026_09_14_roi_paradoxon_b2b_zero_click_citations/)** und die strikte Datensilo-Bildung bestehender Analysewerkzeuge.
 
-In diesem Beitrag überführen wir die Theorie in die betriebliche Praxis. Wir stellen die Architektur unseres eigens entwickelten, quelloffenen **Unified Analytics MCP Servers** vor: wie er Google Search Console und die datenschutzfreundliche Open-Source-Plattform Plausible Analytics deterministisch zusammenführt, Rohdaten vor dem Kontext-Inject token-effizient aggregiert und autonomen Coding-Agenten (wie Antigravity oder Claude Code) vier mächtige Werkzeuge für automatische Inhaltsaudits und Pre-Commit-Prüfungen an die Hand gibt.
+In diesem Beitrag überführen wir die Theorie in die betriebliche Praxis. Wir stellen die Architektur unseres eigens entwickelten, quelloffenen **Unified Analytics MCP Servers** vor: wie er Google Search Console und die datenschutzfreundliche Open-Source-Plattform Plausible Analytics deterministisch zusammenführt, Rohdaten vor dem Kontext-Inject token-effizient aggregiert und autonomen Coding-Agenten (wie Antigravity oder Claude Code) acht mächtige Werkzeuge für automatische Inhaltsaudits, Graph-Analysen und Pre-Commit-Prüfungen an die Hand gibt.
 
 ![Dr. Georg Hackenberg analysiert vereinte Such- und Engagement-Metriken im Freien auf der Holzterrasse in Grünau im Almtal](./hero.jpg "Dr. Georg Hackenberg auf der Almtal-Terrasse")
 
@@ -45,14 +45,14 @@ Statt einem LLM gigantische Rohdatenmengen aus CSV-Exporten oder unfiltrierten J
 ### Deterministischer Pfad- und URL-Normalizer
 Die größte Herausforderung beim Zusammenführen heterogener Datenquellen liegt in der Identifikation des gemeinsamen Schlüssels. Google Search Console liefert absolute, kanonische URLs (`https://hackenberg.tech/posts/mein-artikel/`), während Plausible relative Pfade (`/posts/mein-artikel`) protokolliert. Unser Normalizer vereinheitlicht Trailing Slashes, Protokolle und Domain-Präfixe deterministisch, sodass Suchanfragen und Verweildauer exakt auf denselben Markdown-Quelldateien im Astro-Repository abgebildet werden.
 
-## 3. Die vier MCP-Werkzeuge im praktischen Überblick
+## 3. Die acht MCP-Werkzeuge im praktischen Überblick
 
-Unser Server stellt dem KI-Agenten vier fokussierte Tools zur Verfügung, die sowohl analytische als auch evaluative Aufgaben abdecken. Das folgende UML-Klassendiagramm spezifiziert die primäre Schnittstelle (`UnifiedAnalyticsMcpServer`) mit ihren Methodensignaturen und Eingabeparametern:
+Unser Server stellt dem KI-Agenten eine modulare Suite aus acht fokussierten Werkzeugen zur Verfügung, die sowohl analytische Telemetrie-Aufgaben als auch statische Inhalts-, Graph- und Git-Prüfungen abdecken. Das folgende UML-Klassendiagramm spezifiziert die primäre Schnittstelle (`UnifiedAnalyticsMcpServer`) mit ihren Methodensignaturen und Eingabeparametern:
 
 ```mermaid
 ---
 title: "Schnittstellendefinition des Unified Analytics MCP Servers"
-caption: "UML-Klassendiagramm der MCP-Tools mit typisierten Parametern und Rückgabetypen nach Model Context Protocol Standard."
+caption: "UML-Klassendiagramm der 8 MCP-Tools mit typisierten Parametern und Rückgabetypen nach Model Context Protocol Standard."
 ---
 classDiagram
   class UnifiedAnalyticsMcpServer {
@@ -60,6 +60,10 @@ classDiagram
     +find_seo_opportunities(period: PeriodEnum, min_impressions: number, limit: number) OpportunitiesResult
     +inspect_url_index_status(urlOrPath: string) UrlInspectionDetails
     +evaluate_aio_extractability(target: string) AioEvaluationResult
+    +scan_aio_readiness(collection: string, maxScore: number, limit: number) AioScanSummary
+    +audit_internal_linking(targetPath: string, minIncomingLinks: number) InternalLinkAudit
+    +audit_serp_snippets(collection: string, checkGscKeywords: boolean) SerpSnippetAudit
+    +diff_aio_impact(target: string, baseRef: string) AioDiffResult
   }
 
   class PeriodEnum {
@@ -257,6 +261,134 @@ classDiagram
   AioBreakdown *-- QuestionHeadingCheck
   AioBreakdown *-- SchemaCheck
   AioBreakdown *-- SummaryLengthCheck
+```
+
+### 5. `scan_aio_readiness`: Flächenhafter Batch-Content-Scanner
+Während die Einzelprüfung für gezielte Pre-Commit-Checks konzipiert ist, erfordert die Content-Strategie eines gesamten Repositories mit über 130 Artikeln einen flächendeckenden Scan. `scan_aio_readiness` iteriert rekursiv über definierte Sammlungen (`posts`, `visualizations`, `courses`), berechnet den Gesamtdurchschnitt und liefert eine nach Optimierungsbedarf aufsteigend sortierte Prioritätenliste.
+
+```mermaid
+---
+title: "Datenmodell von AioScanSummary"
+caption: "UML-Klassendiagramm des Batch-Scan-Ergebnisobjekts zur Priorisierung unzureichend optimierter Inhaltsseiten."
+---
+classDiagram
+  class AioScanSummary {
+    +number totalScanned
+    +number averageScore
+    +number highReadinessCount
+    +number mediumReadinessCount
+    +number lowReadinessCount
+    +AioPageSummary[] results
+  }
+
+  class AioPageSummary {
+    +string target
+    +string sourceFile
+    +number score
+    +number tables
+    +number questionHeadings
+    +number directAnswers
+    +string[] recommendations
+  }
+
+  AioScanSummary *-- AioPageSummary
+```
+
+### 6. `audit_internal_linking`: Graph-Analyse & Backlink-Matching
+Generative Suchmaschinen und traditionelle Crawler bewerten thematische Autorität maßgeblich über die interne Linktopologie. `audit_internal_linking` parst alle relativen Markdown-Verlinkungen im gesamten Projekt, deckt verwaiste Seiten (*Orphan Pages* mit weniger als zwei eingehenden Links) auf und löst das Dilemma von *Hidden Champions*: Für eine Ziel-URL durchsucht das Werkzeug alle übrigen Fachartikel nach semantisch verwandten Keywords und schlägt sofort konkrete Spender-Absätze mit Kontext-Snippets für organische Querverweise vor.
+
+```mermaid
+---
+title: "Datenmodell von InternalLinkAudit"
+caption: "UML-Klassendiagramm der internen Linkgraphen-Analyse mit verwaisten Seiten und Keyword-Spender-Empfehlungen."
+---
+classDiagram
+  class InternalLinkAudit {
+    +number totalInternalLinks
+    +number totalUniquePages
+    +OrphanPage[] orphanPages
+    +LinkingOpportunity[] linkingOpportunities
+  }
+
+  class OrphanPage {
+    +string path
+    +string sourceFile
+    +number incomingLinksCount
+  }
+
+  class LinkingOpportunity {
+    +string targetPath
+    +string donorPath
+    +string donorFile
+    +string[] matchedKeywords
+    +string snippetContext
+  }
+
+  InternalLinkAudit *-- OrphanPage
+  InternalLinkAudit *-- LinkingOpportunity
+```
+
+### 7. `audit_serp_snippets`: SERP- & Snippet-Hygiene
+Die Klickrate auf den Suchergebnisseiten entscheidet darüber, ob gewonnene Rankings auch in tatsächliche Leser konvertieren. `audit_serp_snippets` validiert Seitentitel (< 60 Zeichen) und Meta-Beschreibungen (140–160 Zeichen) gegen visuelle Truncation-Grenzen. Bei konfigurierter Google Search Console prüft das Tool zusätzlich, ob die tatsächliche Hauptsuchanfrage im Seitentitel verankert ist, um Keyword-Relevanzverluste automatisch zu verhindern.
+
+```mermaid
+---
+title: "Datenmodell von SerpSnippetAudit"
+caption: "UML-Klassendiagramm der Snippet- und Längenprüfung mit GSC-Keyword-Inklusionsabgleich."
+---
+classDiagram
+  class SerpSnippetAudit {
+    +number totalAudited
+    +number issuesCount
+    +SerpSnippetPageReport[] pagesWithIssues
+  }
+
+  class SerpSnippetPageReport {
+    +string path
+    +string sourceFile
+    +string title
+    +string description
+    +number titleLength
+    +number descriptionLength
+    +SerpSnippetIssue[] issues
+    +string topGscQuery
+    +boolean hasTopGscQueryInTitle
+  }
+
+  class SerpSnippetIssue {
+    +string field
+    +string issue
+    +string message
+    +number currentLength
+    +string recommendedRange
+  }
+
+  SerpSnippetAudit *-- SerpSnippetPageReport
+  SerpSnippetPageReport *-- SerpSnippetIssue
+```
+
+### 8. `diff_aio_impact`: Git-Delta-Validierung vor dem Commit
+Um den Netto-Effekt einer Inhaltsüberarbeitung objektiv messbar zu machen, vergleicht `diff_aio_impact` den aktuellen Stand einer Datei gegen eine beliebige Git-Revision (standardmäßig `HEAD`). Es weist neben dem exakten Punktegewinn (z. B. `50 -> 95 (+45 Punkte)`) detailliert aus, wie viele Direct Answers, Spezifikationstabellen und W-Fragen durch die Bearbeitung netto hinzugewonnen wurden.
+
+```mermaid
+---
+title: "Datenmodell von AioDiffResult"
+caption: "UML-Klassendiagramm des Vorher-Nachher-Vergleichs gegen Git-Revisionen zur präzisen Qualitätsvalidierung."
+---
+classDiagram
+  class AioDiffResult {
+    +string target
+    +string baseRef
+    +number scoreBefore
+    +number scoreAfter
+    +number scoreDelta
+    +number directAnswersDelta
+    +number tablesDelta
+    +number questionHeadingsDelta
+    +number listsDelta
+    +AioEvaluationResult before
+    +AioEvaluationResult after
+  }
 ```
 
 ## 4. Token-Effizienz: Warum Aggregation vor dem Prompting entscheidend ist
