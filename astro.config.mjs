@@ -6,6 +6,7 @@ import remarkMath from 'remark-math';
 import remarkValidateImages from './src/plugins/remark-validate-images.js';
 import remarkMermaid from './src/plugins/remark-mermaid.js';
 import rehypeKatex from 'rehype-katex';
+import rehypeResponsiveTables from './src/plugins/rehype-responsive-tables.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -170,7 +171,7 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid],
-    rehypePlugins: [rehypeKatex],
+    rehypePlugins: [rehypeKatex, rehypeResponsiveTables],
   },
   vite: {
     plugins: [tailwindcss()],

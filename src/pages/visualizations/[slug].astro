@@ -419,4 +419,26 @@ const payload = await buildGraphPayload({
   .visualization-details :global(a:hover) {
     color: #60a5fa;
   }
+  .visualization-details :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.75rem 0;
+    font-size: 0.875rem;
+  }
+  .visualization-details :global(th) {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    background: var(--color-element-bg);
+    border-bottom: 2px solid var(--color-border-subtle);
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+  .visualization-details :global(td) {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border-subtle);
+    color: var(--color-text-main);
+  }
+  .visualization-details :global(tr:hover td) {
+    background: rgba(255, 255, 255, 0.02);
+  }
 </style>

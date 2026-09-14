@@ -985,3 +985,103 @@ div.vis-tooltip {
   font-size: 13px !important;
   padding: 0 !important;
 }
+
+/* ==========================================================================
+   Universal Responsive Markdown Tables (Mobile UX & Dark/Light Mode)
+   ========================================================================== */
+.responsive-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 2rem 0;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border-medium);
+  background: rgba(15, 23, 42, 0.45);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+:root.light .responsive-table-wrapper,
+.light .responsive-table-wrapper {
+  background: rgba(248, 250, 252, 0.8);
+  border-color: rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+  scrollbar-color: rgba(15, 23, 42, 0.2) transparent;
+}
+
+.responsive-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.responsive-table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.responsive-table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+
+:root.light .responsive-table-wrapper::-webkit-scrollbar-thumb,
+.light .responsive-table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.2);
+}
+
+/* Inner Table Structure */
+.responsive-table-wrapper table {
+  width: 100%;
+  min-width: 580px; /* Guarantees legible column proportions on mobile */
+  border-collapse: collapse;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.9rem;
+}
+
+.responsive-table-wrapper th {
+  padding: 0.9rem 1.25rem;
+  text-align: left;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  color: var(--color-text-heading);
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid var(--color-border-medium);
+  white-space: nowrap;
+}
+
+:root.light .responsive-table-wrapper th,
+.light .responsive-table-wrapper th {
+  background: rgba(241, 245, 249, 0.9);
+  border-bottom-color: rgba(203, 213, 225, 0.8);
+  color: #0f172a;
+}
+
+.responsive-table-wrapper td {
+  padding: 0.85rem 1.25rem;
+  color: var(--color-text-main);
+  border-bottom: 1px solid var(--color-border-subtle);
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+:root.light .responsive-table-wrapper td,
+.light .responsive-table-wrapper td {
+  border-bottom-color: rgba(226, 232, 240, 0.8);
+  color: #334155;
+}
+
+.responsive-table-wrapper tr:last-child td {
+  border-bottom: none;
+}
+
+.responsive-table-wrapper tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+:root.light .responsive-table-wrapper tr:hover td,
+.light .responsive-table-wrapper tr:hover td {
+  background: rgba(15, 23, 42, 0.02);
+}
+

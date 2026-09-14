@@ -54,7 +54,7 @@ Dieser Suffix beanspruchte alleine **89 Zeichen**. Da Google und Bing Seitentite
 
 ### 2. Der „Hidden Champion“ der Kognitionswissenschaft
 
-Das Tool `find_seo_opportunities` identifizierte unseren Beitrag zur *Psychologie der modernen Informationstechnologie* als herausragenden Hidden Champion: Besucher verweilen dort im Schnitt **464 Sekunden (über 7,5 Minuten)** bei einer Absprungrate von nur 40 %. Gleichzeitig verzeichnete GSC jedoch kaum Impressionen, da der Artikel in den neu eingereichten XML-Sitemaps nach dem Domain-Umzug noch in der Indexierungs-Warteschlange lag.
+Das Tool `find_seo_opportunities` identifizierte unseren Beitrag [Psychologie der modernen Informationstechnologie: Kognitive Ergonomie und mentale Modelle im digitalen Zeitalter](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/) als herausragenden Hidden Champion: Besucher verweilen dort im Schnitt **464 Sekunden (über 7,5 Minuten)** bei einer Absprungrate von nur 40 %. Gleichzeitig verzeichnete GSC jedoch kaum Impressionen, da der Artikel in den neu eingereichten XML-Sitemaps nach dem Domain-Umzug noch in der Indexierungs-Warteschlange lag. Durch gezielte interne Querverlinkung und E-E-A-T-Strukturierung erhält dieser leserseitig hochgeschätzte Artikel die verdiente Sichtbarkeit.
 
 ### 3. Entity-Diskrepanzen im Knowledge Graph
 
