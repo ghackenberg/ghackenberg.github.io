@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "unified-analytics": {
+      "command": "npx",
+      "args": ["mcp-unified-analytics"]
+    }
+  }
+}

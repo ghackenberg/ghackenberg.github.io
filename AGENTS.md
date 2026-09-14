@@ -48,3 +48,54 @@ Whenever asked to generate or modify an image (preview, hero, social card, or di
 ## 3. Blog Post Writing & Formatting Guidelines
 - **NO Horizontal Dividers**: **NEVER** use horizontal rules (`---`) between sections in blog posts (only use `---` to enclose the YAML frontmatter at the very top of the file). Rely solely on clean semantic heading hierarchies (`##`, `###`) for visual and document section separation.
 - **Nested Code Blocks**: When demonstrating code blocks inside Markdown (e.g. showing an example Markdown snippet that contains backticks), **ALWAYS** use 4 backticks (` ````markdown ... ```` `) for the outer block to avoid terminating code blocks early and breaking the markdown parser.
+- **Mermaid Diagram Frontmatter (`title` & `caption`)**:
+  - Every `mermaid` diagram code block **MUST** contain a YAML frontmatter header enclosing distinct `title` and `caption` properties.
+  - The build pipeline (`remark-mermaid.js`) compiles Mermaid diagrams statically at build time into dual-theme SVGs and embeds Schema.org `ImageObject` metadata. Builds will strictly fail if either property is missing, too short, or identical:
+    ````markdown
+    ```mermaid
+    ---
+    title: "Architektur-Übersicht des Systems"
+    caption: "Schematische Darstellung des Datenflusses zwischen Client, MCP-Server und Analyse-Backends."
+    ---
+    flowchart TD
+      Client[Client] --> Server[MCP Server]
+    ```
+    ````
+
+
+## 4. Content Optimization Guidelines (SEO, GEO & AIO)
+Follow these holistic optimization principles across all written technical content, actively leveraging the repository's custom MCP server (`unified-analytics`):
+
+### 1. Mandatory Use of the Custom MCP Server (`unified-analytics`)
+Whenever tasked with analyzing, optimizing, writing, or inspecting content in this repository:
+- **Pre-Optimization Content Audits**: Always query the custom MCP server to inspect consolidated Google Search Console (GSC) search performance and Plausible engagement metrics for the target URL before making revisions. Protect high-performing search queries identified in top search results.
+- **Opportunity Discovery**: Leverage the MCP server's opportunity heuristic tools to identify striking-distance keywords (positions 4–15), high-bounce top performers, and hidden champions across the site.
+- **Pre-Publishing AIO / GEO Evaluation**: Always run the MCP server's local AIO extractability evaluator against newly drafted or revised markdown articles (`src/content/**`) to verify direct-answer density, table/list structure, and Schema.org metadata before committing.
+- **Indexation & Canonical Verification**: Use the MCP server's URL inspection tool to diagnose live indexation state, verify user vs. Google-selected canonicals, and check last crawl timestamps via the GSC URL Inspection API.
+- **Environment Setup**: On fresh checkouts or new machines, run `npm run setup:mcp` if the MCP server has not yet been compiled or linked.
+
+### 2. Traditional On-Page & Technical SEO
+- **Search Intent & Snippet Optimization**: Craft concise, compelling frontmatter `title` tags (< 60 characters) and `description` meta tags (140–160 characters) with explicit value propositions.
+- **Keyword & Ranking Preservation**: When revising existing articles, never strip out high-volume organic search queries or established internal anchor links that drive existing traffic.
+- **Strict Hierarchy**: Maintain strict semantic nesting (`#` title $\rightarrow$ `##` sections $\rightarrow$ `###` subsections). Never skip heading levels.
+
+### 3. Generative Engine Optimization (GEO & AEO)
+- **Answer-First Pattern (Direct Answers)**:
+  - Place a concise direct-answer definition paragraph (40–55 words) immediately below key `##` headings.
+  - Answer the heading's core topic directly without throat-clearing or filler phrases (e.g. avoid "In this section, we will explore...").
+- **Question-Framed Headings**:
+  - Formulate at least 1–2 headings per article as explicit, natural-language search queries (e.g. "Was ist...", "Wie funktioniert...", "How does...").
+- **Structured Synthesis (Tables & Steps)**:
+  - Generative engines (Google AI Overviews, Perplexity, ChatGPT Search) disproportionately cite tabular comparisons. Always summarize trade-offs, architectures, or metric benchmarks in markdown tables (`| ... |`).
+  - Use numbered lists (`1. ... 2. ...`) for sequential instructions and procedures.
+- **Entity Density & Factual Precision**:
+  - Ground explanations with concrete technical entities, standards, version numbers, and architectural patterns to maximize LLM retrieval confidence.
+
+### 4. Data-Driven Content Iteration Heuristics
+- Leverage unified search performance (GSC impressions, CTR, rankings) and on-site engagement (Plausible visitors, bounce rates, visit durations) to guide content updates:
+  - **Striking Distance (Positions 4–15)**: Target for title tag, meta snippet, and introductory hook refinement to gain page-1 clicks.
+  - **High Bounce (>75%)**: Target for immediate answer-first restructuring, scannability enhancements, and prominent related internal links.
+  - **Hidden Champions (High Duration, Low Impressions)**: Target for internal backlinks from top-ranking pillar articles.
+
+
+

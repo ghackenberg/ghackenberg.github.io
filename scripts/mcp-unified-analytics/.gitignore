@@ -1,0 +1,11 @@
+# Environment and local keys
+.env
+.env.*
+!.env.example
+*.json.key
+*service-account*.json
+service-account.json
+
+# Build output
+dist/
+node_modules/
