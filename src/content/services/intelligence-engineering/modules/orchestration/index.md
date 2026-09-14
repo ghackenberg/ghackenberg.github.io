@@ -20,7 +20,10 @@ methodologyPhases:
   - title: "Checkpointing & Fault Tolerance"
     description: "Configuring persistent state stores (PostgreSQL / SQLite) for seamless pause/resume and time-travel debugging."
 order: 4
-previewImage: ./preview.png
+previewImage:
+  src: "./preview.png"
+  title: "Präsentation: Agentic Orchestration mit LangGraph"
+  description: "Dr. Georg Hackenberg präsentiert die zyklische Multi-Agenten-Architektur mit Supervisor Router und Human-in-the-Loop-Checkpoints"
 pubDate: 2026-09-11
 
 inputs:

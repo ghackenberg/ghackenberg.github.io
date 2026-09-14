@@ -3,7 +3,10 @@ title: "Persistente Wissensevolution für autonome Agenten: Das Fertigkeiten-Dil
 pubDate: "2026-09-06"
 description: "Eine ingenieurwissenschaftliche Tiefenanalyse zum Problem der 'Optimization Amnesia' bei Agent-Skills: Warum naive Trajektorien-Optimierung versagt, wie die Google-Architektur WikiSkill (arXiv:2608.27454) Wissen persistent von Prozeduren entkoppelt und welche empirischen Benchmarks die Effektivität belegen."
 tags: ["artificial-intelligence", "agentic-ai", "wikiskills", "software-architecture", "machine-learning", "benchmarks", "prompt-engineering"]
-icon: "./icon.jpg"
+icon:
+  src: "./icon.jpg"
+  title: "Titelgrafik: Persistente Wissensevolution für autonome Agenten: Das Fertigkeiten-Dilemma, die WikiSkill-Architektur und empirische Evidenz"
+  description: "Eine ingenieurwissenschaftliche Tiefenanalyse zum Problem der 'Optimization Amnesia' bei Agent-Skills: Warum naive Trajektorien-Optimierung versagt, wie die Google-Architektur WikiSkill (arXiv:2608.27454) Wissen persistent von Prozeduren entkoppelt und welche empirischen Benchmarks die Effektivität belegen."
 ---
 
 In unseren vorangegangenen Beiträgen zum [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) und zum [sitzungsübergreifenden Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) haben wir die Fundamente moderner Unternehmensagenten skizziert. Dabei wurde eine fundamentale Zweiteilung des Agentengedächtnisses deutlich: Während Systeme wie Mem0 das *deklarative und episodische Gedächtnis* über Benutzer und Konversationskontexte verwalten, erfordern autonome Problemlöser eine völlig andere Kategorie von Wissen: **prozedurale Fertigkeiten (*Agent Skills*)** – also domänenspezifische Handlungsanweisungen, Tool-Chains, Validierungsroutinen und Heuristiken.
@@ -14,7 +17,7 @@ Mit der Veröffentlichung von **WikiSkill** (*„WikiSkill: Compiling Agent Expe
 
 Dieser Artikel liefert die ingenieurwissenschaftliche Analyse: Welches systemische Problem lösen Ansätze wie WikiSkill? Wie funktioniert die Architektur im Detail? Was zeigen die empirischen Benchmarks – und welche alternativen Paradigmen existieren am Markt?
 
-![Das Fertigkeiten-Dilemma autonomer Agenten: Problem und Lösung im Überblick](./wikiskill_problem_und_dilemma.svg)
+![Das Fertigkeiten-Dilemma autonomer Agenten: Problem und Lösung im Überblick](./wikiskill_problem_und_dilemma.svg "Das Fertigkeiten-Dilemma autonomer Agenten")
 
 ## 1. Das Problem: Das Fertigkeiten-Dilemma & „Optimization Amnesia“
 
@@ -63,7 +66,7 @@ Die Kernidee von WikiSkill basiert auf einem Gedanken, den **Andrej Karpathy (20
 
 WikiSkill formalisiert dieses Paradigma für die Evolution von Agentenfähigkeiten durch eine strikte **Drei-Schichten-Wissensarchitektur** und einen koordinierten **4-Agenten-Evolutionszyklus**.
 
-![Die Drei-Schichten-Architektur und der 4-Agenten-Lifecycle von WikiSkill](./wikiskill_drei_schichten_architektur.svg)
+![Die Drei-Schichten-Architektur und der 4-Agenten-Lifecycle von WikiSkill](./wikiskill_drei_schichten_architektur.svg "WikiSkill - Die Drei-Schichten-Architektur und der 4-Agenten-Lifecycle")
 
 ### A. Die Drei-Schichten-Architektur (*Three-Layer Knowledge Architecture*)
 

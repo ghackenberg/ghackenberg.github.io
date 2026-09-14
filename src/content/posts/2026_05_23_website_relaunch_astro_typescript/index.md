@@ -3,7 +3,10 @@ title: "Relaunching my personal website on GitHub Pages with Astro and TypeScrip
 pubDate: "2026-05-23"
 description: "Discover how I relaunched my personal website on GitHub Pages using Astro, TypeScript, and Google Antigravity to automate legacy PHP content migration."
 tags: ["web-development", "astro", "typescript", "gemini", "ai-migration", "github-pages"]
-icon: "./icon.png"
+icon:
+  src: "./icon.png"
+  title: "Cover illustration: Relaunching my personal website on GitHub Pages with Astro and TypeScript"
+  description: "Discover how I relaunched my personal website on GitHub Pages using Astro, TypeScript, and Google Antigravity to automate legacy PHP content migration."
 ---
 After many years of running my personal website on a custom, server-side template engine, I have officially relaunched it! The new website is a fully static application built with **Astro** and **TypeScript**, hosted entirely on **GitHub Pages**. 
 
@@ -27,7 +30,7 @@ To automate the migration, I leveraged **Google Antigravity** running **Gemini 3
 
 Here is the migration workflow in detail:
 
-![Migration Workflow](./workflow.svg)
+![Migration Workflow vom PHP-Altsystem zu Astro](./workflow.svg "Automatisierter KI-Migrations-Workflow")
 
 1. **Legacy Source**: The migration script extracted raw XML and PHP content from my original database.
 2. **AI Translation**: Using Google Antigravity's agentic workspace tools, Gemini 3.5 Flash analyzed the structure of my old files, mapped attributes (e.g., date formats, tag arrays, image assets), and converted them into clean markdown/frontmatter.
@@ -39,7 +42,7 @@ Everything ran completely smoothly in a matter of minutes, preserving all format
 
 The new setup completely decouples the content creation and compilation step from the content delivery step. The architecture below showcases the contrast between the old dynamic approach and the modern, static CDN-driven approach:
 
-![Architecture Comparison](./architecture.svg)
+![Architektur-Vergleich zwischen Legacy PHP und modernem Astro Stack](./architecture.svg "Architektur-Vergleich: Dynamisches PHP vs. Statisches Astro CDN")
 
 - **Old (Left)**: The client had to wait for Apache to compile the PHP template engine and retrieve values from the filesystem on every request.
 - **New (Right)**: The compiler runs locally or via CI/CD. The build output is a folder of optimized HTML, CSS, and JS files served directly from the GitHub Pages CDN.

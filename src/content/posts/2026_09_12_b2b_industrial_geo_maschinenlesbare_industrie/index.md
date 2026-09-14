@@ -3,7 +3,10 @@ title: "B2B & Industrial GEO: Warum klassisches Industrie-Marketing an KI-Agente
 pubDate: "2026-09-12"
 description: "Warum Gated Whitepapers, unstrukturierte PDFs und Werbefloskeln Industrieunternehmen im KI-Zeitalter unsichtbar machen – und wie technische B2B-Anbieter ihre Spezifikationen maschinenlesbar für KI-Einkaufsagenten strukturieren."
 tags: ["aeo", "agentic-ai", "aio", "enterprise-ai", "geo", "industrial-informatics", "knowledge-graphs", "manufacturing-systems", "seo", "web-development"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "B2B Industrial GEO in der Fertigung"
+  description: "Dr. Georg Hackenberg analysiert semantische Wissensgraphen für generative Industrie-Suchmaschinen in einer modernen Fertigungsumgebung"
 ---
 
 In unserer Artikelreihe zur Sichtbarkeit im KI-Zeitalter haben wir bisher die [technischen Grundlagen von SEO, GEO, AEO und AIO](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/) sowie die [empirischen Daten aus Peer-Reviewed und Industriestudien](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien/) beleuchtet.
@@ -16,7 +19,7 @@ In Vorbereitung auf einen Expertenvortrag zu den Themen SEO, GEO, AEO und AIO, z
 
 Im B2B-Sektor geht es nicht um Millionen flüchtiger Konsumentenklicks, sondern um hochkomplexe Beschaffungsentscheidungen mit Auftragswerten im fünf- bis siebenstelligen Bereich. Genau hier vollzieht sich derzeit ein stiller, aber radikaler Paradigmenwechsel: **Industrielle Einkäufer, Entwicklungsingenieure und Werksleiter suchen heute nicht mehr über generische Suchbegriffe auf Google, sondern nutzen generative KI-Systeme und automatisierte Agenten für die Marktsondierung.**
 
-![B2B Industrial GEO in der Fertigung](./hero.jpg)
+![Dr. Georg Hackenberg analysiert semantische Wissensgraphen für generative Industrie-Suchmaschinen in einer modernen Fertigungsumgebung](./hero.jpg "B2B Industrial GEO in der Fertigung")
 
 ## 1. Die industrielle Schieflage: Die Illusion des klassischen B2B-Marketings
 
@@ -71,7 +74,7 @@ Wer seine Online-Produktdatenbank mit den Teilmodellen der AAS synchronisiert, s
 
 Das folgende Architekturdiagramm veranschaulicht den Übergang von isolierten Marketing-Silos zur agenten-fähigen Spezifikations-Plattform:
 
-![B2B Industrial GEO: Vom Gated-PDF zum digitalen Spezifikations-Twin](./industrial_geo_pipeline.svg)
+![B2B Industrial GEO: Vom Gated-PDF zum digitalen Spezifikations-Twin](./industrial_geo_pipeline.svg "B2B Industrial GEO")
 
 ## 3. Werkzeuge und Monitoring im industriellen Praxiseinsatz
 

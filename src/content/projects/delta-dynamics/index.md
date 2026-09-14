@@ -7,7 +7,10 @@ tags: ["agentic-ai", "artificial-intelligence", "gpgpu", "local-ai", "react", "s
 accentColor: "blue"
 order: 3
 repoName: "delta-dynamics"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Low-Poly Ökosystem und Flusslauf-Simulation"
+  description: "Isometrische Low-Poly-Landschaft mit kaskadierenden Wasserfällen, terrassierten Hochebenen, Nadelwäldern und Wildtieren"
 screenshots:
   - image: "./screenshot1.png"
     title: "Ecosystem Simulation View"

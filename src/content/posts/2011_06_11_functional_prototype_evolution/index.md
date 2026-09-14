@@ -3,20 +3,23 @@ title: "The Evolution of a Functional Prototype"
 pubDate: "2011-06-10"
 description: "In a previous article From Sketch to Prototype I illustrated the change from fuzzy whiteboard sketches to more structured and formal HTML prototypes. In this ar..."
 tags: ["blog", "drawing", "product-design", "user-interface", "ux-design"]
-icon: "./data.png"
+icon:
+  src: "./data.png"
+  title: "The Evolution of a Functional Prototype - Data illustration"
+  description: "Data illustration from The Evolution of a Functional Prototype"
 ---
 Again we start by sketching the layout idea on the whiteboard.
 We use different colors for grouping similar content structures.
 Annotations (in our case black) are also a good idea to evoke further associations with the presented content.
 
-[![Start illustration from The Evolution of a Functional Prototype](./start.jpg)](./start.jpg)
+[![Start illustration from The Evolution of a Functional Prototype](./start.jpg "The Evolution of a Functional Prototype - Start illustration")](./start.jpg)
 
 It is probably not surprising that again I arrived at a tabular layout of my website contents.
 Also the icon-style illustrations of content categories is a common pattern that I have used frequently in previous design prototypes.
 
 Now the next step in the evolution of the interface idea is to transform the fuzzy whiteboard drawing into a more formal HTML/CSS prototype with icons downloaded from Google images.
 
-[![Intermediate illustration from The Evolution of a Functional Prototype](./intermediate.png)](./intermediate.png)
+[![Intermediate illustration from The Evolution of a Functional Prototype](./intermediate.png "The Evolution of a Functional Prototype - Intermediate illustration")](./intermediate.png)
 
 You see again some sort of transformation of the initial design proposal.
 Similar to other cases horizontal and vertical color shades are introduced to separate header from content cells plus the individual columns.
@@ -29,7 +32,7 @@ For the second column I selected four projects from my [Source Code Portal](http
 For the third column I created new content which I haven't been using before.
 For the fourth column I copied the top-level structure of my resume.
 
-[![End illustration from The Evolution of a Functional Prototype](./end.png)](./end.png)
+[![End illustration from The Evolution of a Functional Prototype](./end.png "The Evolution of a Functional Prototype - End illustration")](./end.png)
 
 In this case several transformations took place:
 (1) The *Articles* column was extended because its contents were generally larger than the contents of the other columns.
@@ -39,11 +42,11 @@ This content-specific layout variation was possible because the underlying data 
 
 In the following I provide you with a view onto the file structure of the functional prototype to give you a feeling of the complexity of the implementation as well as the required effort.
 
-[![Folders illustration from The Evolution of a Functional Prototype](./folders.png)](./folders.png)
-[![Data illustration from The Evolution of a Functional Prototype](./data.png)](./data.png)
-[![Model illustration from The Evolution of a Functional Prototype](./model.png)](./model.png)
-[![View illustration from The Evolution of a Functional Prototype](./view.png)](./view.png)
-[![Theme illustration from The Evolution of a Functional Prototype](./theme.png)](./theme.png)
+[![Folders illustration from The Evolution of a Functional Prototype](./folders.png "The Evolution of a Functional Prototype - Folders illustration")](./folders.png)
+[![Data illustration from The Evolution of a Functional Prototype](./data.png "The Evolution of a Functional Prototype - Data illustration")](./data.png)
+[![Model illustration from The Evolution of a Functional Prototype](./model.png "The Evolution of a Functional Prototype - Model illustration")](./model.png)
+[![View illustration from The Evolution of a Functional Prototype](./view.png "The Evolution of a Functional Prototype - View illustration")](./view.png)
+[![Theme illustration from The Evolution of a Functional Prototype](./theme.png "The Evolution of a Functional Prototype - Theme illustration")](./theme.png)
 
 It should be noted that many parts of the implementation have been reused from existing projects.
 In particular, the *Model* and the *Controller* are very similar in structure and behavior to other web applications I developed in PHP.

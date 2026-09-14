@@ -3,7 +3,10 @@ title: "Comparing Interface Design Options"
 pubDate: "2011-06-08"
 description: "Developing graphical user interfaces requires us to develop visual representations of information and controls. My previous article, From Sketch to Prototype, e..."
 tags: ["drawing", "human-computer-interaction", "user-interface", "ux-design"]
-icon: "./screenshot.png"
+icon:
+  src: "./screenshot.png"
+  title: "sketch to prototype/screenshot illustration from Comparing Interface Design Options - ../2011 06 06"
+  description: "../2011 06 06 from sketch to prototype/screenshot illustration from Comparing Interface Design Options"
 ---
 Developing visual representations of information and controls is a wildly creative process.
 In particular this means when executed my two independent people at the same time, or even by a single person at two different points in time, the output is probably never the same.
@@ -11,8 +14,8 @@ At first this property may seem problematic, but on a second thought you can exp
 Develop a set of alternatives (which come naturally) and let people choose the one they like best.
 In the following the effect of this procedure is illustrated by two independent design options I created for my website.
 
-[![../2011 06 06 from sketch to prototype/whiteboard illustration from Comparing Interface Design Options](./../2011_06_06_from_sketch_to_prototype/whiteboard.jpg)](./../2011_06_06_from_sketch_to_prototype/whiteboard.jpg)
-[![Whiteboard illustration from Comparing Interface Design Options](./whiteboard.jpg)](./whiteboard.jpg)
+[![../2011 06 06 from sketch to prototype/whiteboard illustration from Comparing Interface Design Options](./../2011_06_06_from_sketch_to_prototype/whiteboard.jpg "sketch to prototype/whiteboard illustration from Comparing Interface Design Options - ../2011 06 06")](./../2011_06_06_from_sketch_to_prototype/whiteboard.jpg)
+[![Whiteboard illustration from Comparing Interface Design Options](./whiteboard.jpg "Comparing Interface Design Options - Whiteboard illustration")](./whiteboard.jpg)
 
 The first design option (on the left) has already been explained in the previous article.
 It features a tabular layout and various levels of grouping.
@@ -20,8 +23,8 @@ The second design option (on the right) abandons the idea of hierarchical groupi
 Instead the contents are organized horizontally by life domain (education, job, personal) and vertically by inner-domain grouping (academic degree/job type/personal interest).
 Again, the drawings are followed by a prototypical implementation adding further detail to the idea.
 
-[![../2011 06 06 from sketch to prototype/screenshot illustration from Comparing Interface Design Options](./../2011_06_06_from_sketch_to_prototype/screenshot.png)](./../2011_06_06_from_sketch_to_prototype/screenshot.png)
-[![Screenshot illustration from Comparing Interface Design Options](./screenshot.png)](./screenshot.png)
+[![../2011 06 06 from sketch to prototype/screenshot illustration from Comparing Interface Design Options](./../2011_06_06_from_sketch_to_prototype/screenshot.png "sketch to prototype/screenshot illustration from Comparing Interface Design Options - ../2011 06 06")](./../2011_06_06_from_sketch_to_prototype/screenshot.png)
+[![Screenshot illustration from Comparing Interface Design Options](./screenshot.png "Comparing Interface Design Options - Screenshot illustration")](./screenshot.png)
 
 The first option has been enhanced by colors and shades to improve the cognitive-visual separability of the content.
 Instead, the second option was extended by introducing colors to separate header cells (education/job/personal) from content cells (academic degree/job type/personal interest).

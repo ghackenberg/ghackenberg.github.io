@@ -54,7 +54,7 @@ const courseSchema = {
   "@id": `${courseUrl}#course`,
   "name": course.data.title,
   "description": course.data.description || `${course.data.title} taught by Dr. Georg Hackenberg.`,
-  "image": course.data.screenshot?.src ? new URL(course.data.screenshot.src, Astro.site).href : undefined,
+  "image": course.data.screenshot ? new URL(course.data.screenshot.src.src, Astro.site).href : undefined,
   "url": courseUrl,
   "provider": {
     "@type": "EducationalOrganization",

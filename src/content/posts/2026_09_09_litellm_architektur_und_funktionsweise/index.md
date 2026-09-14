@@ -3,7 +3,10 @@ title: "Architektur und Funktionsweise von LiteLLM: Universelle Modell-Abstrakti
 pubDate: "2026-09-09"
 description: "Eine softwaretechnische Tiefenanalyse von LiteLLM: Wie die universelle Abstraktionsschicht 100+ LLMs vereinheitlicht, wie intelligentes Routing und kaskadierende Fallbacks Ausfallsicherheit garantieren, warum Multilevel-Caching Latenzen minimiert und wie Enterprise-Governance via Keycloak und Virtual Keys funktioniert."
 tags: ["litellm", "agentic-ai", "artificial-intelligence", "enterprise-ai", "keycloak", "local-ai", "open-source", "software-architecture", "vllm", "devops", "python"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "LiteLLM"
+  description: "LiteLLM: Zentrales AI Gateway und Proxy-Router für das souveräne Multi-Model Ökosystem"
 ---
 
 In unserer fortlaufenden Artikelserie zur systematischen Konzeption und Realisierung souveräner Unternehmens-KI haben wir die Schichten moderner Architekturen schrittweise von Grund auf analysiert: Aufbauend auf unserem [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) untersuchten wir das mathematisch fundierte [sitzungsübergreifende Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die [kontinuierliche Wissensevolution via WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/), die [Body-Brain-Entkopplung und Bounded-Memory-Laufzeit des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) sowie die kollaborative [Human-in-the-Loop Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/).
@@ -20,11 +23,11 @@ Werden diese Systeme über direkte Punkt-zu-Punkt-Verbindungen verdrahtet, entst
 
 Genau diese Herausforderung adressiert **LiteLLM** als **Schicht 5 (Gateway & Governance)** unseres Referenzstacks. Als universeller Übersetzer, intelligenter Load-Balancer, Multi-Tier-Cache und Zero-Trust-Governance-Hub bildet LiteLLM das unverzichtbare Bindeglied zwischen Konsumenten und heterogenen Inferenz-Clustern.
 
-![LiteLLM: Zentrales AI Gateway und Proxy-Router für das souveräne Multi-Model Ökosystem](./hero.jpg)
+![LiteLLM: Zentrales AI Gateway und Proxy-Router für das souveräne Multi-Model Ökosystem](./hero.jpg "LiteLLM")
 
 Bevor wir die internen Transformationsmechanismen und Routing-Algorithmen im Detail zerlegen, visualisiert das folgende Architekturmodell das Gesamtsystem:
 
-![Umfassende Systemarchitektur von LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen](./litellm_system_architecture.svg)
+![Umfassende Systemarchitektur von LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen](./litellm_system_architecture.svg "LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen - Umfassende Systemarchitektur")
 
 ## 1. Systemarchitektur & Entwurfsprinzipien
 
@@ -39,7 +42,7 @@ Auf Systemebene unterscheidet LiteLLM zwischen zwei Betriebsmodi: einer leichtge
 ### Zustandslosigkeit & Horizontale Skalierbarkeit
 Das FastAPI-Backend von LiteLLM ist konsequent **stateless** konzipiert. Eingehende Anfragen halten keinen Zustand im Arbeitsspeicher des Worker-Prozesses. Dies erlaubt den Betrieb beliebig vieler paralleler Proxy-Instanzen hinter einem Standard-Reverse-Proxy (NGINX, Traefik oder Envoy):
 
-![Horizontale Skalierung und High-Availability-Topologie von LiteLLM mit Traefik-Load-Balancer, stateless Pods und geteilter Redis- und PostgreSQL-Infrastruktur](./litellm_horizontal_scaling.svg)
+![Horizontale Skalierung und High-Availability-Topologie von LiteLLM mit Traefik-Load-Balancer, stateless Pods und geteilter Redis- und PostgreSQL-Infrastruktur](./litellm_horizontal_scaling.svg "LiteLLM mit Traefik-Load-Balancer, stateless Pods und geteilter Redis- und PostgreSQL-Infrastruktur - Horizontale Skalierung und High-Availability-Topologie")
 
 ### Die Persistenz- und State-Topologie
 Um Hochverfügbarkeit und feingranulare Abrechnung im Cluster sicherzustellen, stützt sich LiteLLM auf eine zweigeteilte Persistenzschicht:
@@ -55,7 +58,7 @@ Durch das Aktivieren des **Redis Virtual Key Auth Cache** (`enable_redis_auth_ca
 
 Das architektonische Meisterstück von LiteLLM ist seine universelle Übersetzungs- und Normalisierungs-Engine. Konsumenten senden stets standardisierte OpenAI-Payloads; LiteLLM übersetzt diese zur Laufzeit verlustfrei in den spezifischen Dialekt des adressierten Zielsystems und normalisiert die Antwort.
 
-![Detaillierter Request-Pipeline- und Hook-Lifecycle in LiteLLM](./litellm_request_pipeline_lifecycle.svg)
+![Detaillierter Request-Pipeline- und Hook-Lifecycle in LiteLLM](./litellm_request_pipeline_lifecycle.svg "Request-Pipeline- und Hook-Lifecycle in LiteLLM")
 
 ### Protokoll- und Payload-Transformation
 Die folgende Übersicht illustriert, wie LiteLLM die divergenten Datenmodelle führender LLM-Provider auf das OpenAI-Referenzmodell abbildet:
@@ -97,7 +100,7 @@ Dadurch können übergeordnete Orchestrierungsschichten wie [LangGraph](/tags/la
 
 In Hochlastumgebungen genügt es nicht, Anfragen starr an einen einzelnen Inferenz-Knoten weiterzuleiten. Der LiteLLM Router bildet eine dynamische Steuerebene, die Lasten intelligent verteilt und Ausfälle transparent kompensiert.
 
-![Dynamisches Routing, Circuit Breaker und Kaskadierende Fallbacks in LiteLLM](./litellm_routing_resilience.svg)
+![Dynamisches Routing, Circuit Breaker und Kaskadierende Fallbacks in LiteLLM](./litellm_routing_resilience.svg "Dynamisches Routing und Circuit Breaker in LiteLLM")
 
 ### Die fünf Load-Balancing-Strategien
 LiteLLM unterstützt fünf spezialisierte Routing-Strategien, die per Konfiguration für Modellgruppen definiert werden können:
@@ -182,7 +185,7 @@ Klassische Hash-Verfahren versagen, wenn Nutzer semantisch identische Fragen mit
 
 Für diese Szenarien schaltet LiteLLM ein **Semantic Cache Subsystem** vor, das auf einer Vektordatenbank (z. B. [Qdrant](/tags/neo4j/), Redis mit RediSearch oder Valkey) operiert:
 
-![Entscheidungsfluss des semantischen Vektor-Cachings in LiteLLM mit Cosinus-Schwellenwert-Prüfung](./litellm_semantic_cache_flow.svg)
+![Entscheidungsfluss des semantischen Vektor-Cachings in LiteLLM mit Cosinus-Schwellenwert-Prüfung](./litellm_semantic_cache_flow.svg "Entscheidungsfluss des semantischen Vektor-Cachings in LiteLLM")
 
 1. Der Prompt $q$ wird über ein schlankes lokales Embedding-Modell (z. B. `all-MiniLM-L6-v2`) in einen dichten Vektor $\mathbf{e} = E(q) \in \mathbb{R}^d$ überführt.
 2. Im Vektorindex wird der ähnlichste gespeicherte Cache-Eintrag $\mathbf{v}_{k^*}$ ermittelt.
@@ -194,7 +197,7 @@ Für diese Szenarien schaltet LiteLLM ein **Semantic Cache Subsystem** vor, das 
 
 In regulierten Industrieunternehmen, Behörden und Universitäten darf der Zugriff auf Sprachmodelle nicht unkontrolliert erfolgen. LiteLLM implementiert eine vollständige Zero-Trust-Governance- und Multi-Tenancy-Matrix.
 
-![Enterprise Governance, Keycloak OIDC Integration und Budget-Matrix in LiteLLM](./litellm_governance_budget_matrix.svg)
+![Enterprise Governance, Keycloak OIDC Integration und Budget-Matrix in LiteLLM](./litellm_governance_budget_matrix.svg "Enterprise Governance, Keycloak OIDC Integration")
 
 ### Hierarchisches Key-Management
 LiteLLM strukturiert Berechtigungen in einer sauberen Vier-Ebenen-Hierarchie:
@@ -254,7 +257,7 @@ Durch Setzen von `LITELLM_OTEL_V2=true` aktiviert der Proxy die moderne OpenTele
 
 Wie fügt sich LiteLLM nun konkret in die übrigen Schichten unseres Open-Source Agentic AI Stacks ein? Die folgende Übersicht zeigt die nahtlose Integration:
 
-![Schichten-Interaktion im Agentic AI Tech Stack: LiteLLM als zentrales Bindeglied zwischen UX, Agenten, Gedächtnis und Inferenz](./litellm_stack_integration.svg)
+![Schichten-Interaktion im Agentic AI Tech Stack: LiteLLM als zentrales Bindeglied zwischen UX, Agenten, Gedächtnis und Inferenz](./litellm_stack_integration.svg "Schichten-Interaktion im Agentic AI Tech Stack")
 
 ### 1. Open WebUI als Frontend-Konsument
 In [Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/) tragen Administratoren nicht Dutzende einzelne Inferenz-Server ein, sondern konfigurieren schlicht eine einzige Modellquelle: den LiteLLM Proxy Endpunkt `http://litellm-proxy:4000/v1`. 

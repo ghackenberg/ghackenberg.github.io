@@ -10,7 +10,10 @@ terms:
   - "Winter Term 2024/25"
   - "Winter Term 2025/26"
 language: "en"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Dr. Georg Hackenberg im Digital Factory Smart Lab"
+  description: "Dr. Georg Hackenberg im industriellen Smart Factory Labor mit holografischen Anzeigen für JaamSim-Ablaufsimulationen und Produktionsanalysen"
 tags:
   - "simulation"
   - "factory-layout"

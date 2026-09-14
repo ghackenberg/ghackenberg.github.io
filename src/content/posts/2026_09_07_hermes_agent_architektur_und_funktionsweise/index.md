@@ -3,7 +3,10 @@ title: "Architektur und Funktionsweise des Hermes Agent: Body-Brain-Entkopplung,
 pubDate: "2026-09-07"
 description: "Eine softwaretechnische Tiefenanalyse des Hermes Agent von Nous Research: Wie die Trennung von Body und Brain echte Modellagnostik schafft, warum Bounded Memory KV-Caches schützt, wie Progressive Disclosure Token spart und wie der Curator Skill Sprawl verhindert."
 tags: ["agentic-ai", "artificial-intelligence", "enterprise-ai", "hermes-agent", "local-ai", "mem0", "open-source", "prompt-engineering", "software-architecture", "wikiskills"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Hermes Agent"
+  description: "Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills"
 ---
 
 In unserer Artikelserie zu souveränen, produktionsreifen Unternehmens-KI-Systemen haben wir die architektonischen Leitplanken für moderne Agenten schrittweise vertieft: Ausgehend von unserem [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über die mathematische und empirische Analyse des [sitzungsübergreifenden Langzeitgedächtnisses via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) bis hin zur [persistenten Wissensevolution und Vermeidung von Optimization Amnesia via WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/).
@@ -14,11 +17,11 @@ Bislang dominierten in der Praxis zwei problematische Extreme: Entweder starre, 
 
 Mit dem von **Nous Research** entwickelten **Hermes Agent** liegt nun ein quelloffenes, autarkes „Agenten-Betriebssystem“ vor, das genau diese Lücke schließt. Dieser Beitrag analysiert die Software-Architektur, den Turn-Lifecycle der Kern-Engine, das Zusammenspiel von Bounded Memory und FTS5-Transkriptsuche sowie das Zusammenspiel von standardisierten Skills und Hintergrund-Kuratierung.
 
-![Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills](./hero.jpg)
+![Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills](./hero.jpg "Hermes Agent")
 
 Bevor wir in die feingranularen Ausführungszyklen einsteigen, veranschaulicht das folgende Referenzmodell die sechs Subsysteme der Gesamtlösung:
 
-![Referenzarchitektur und Subsysteme des Hermes Agent](./hermes_agent_system_architecture.svg)
+![Referenzarchitektur und Subsysteme des Hermes Agent](./hermes_agent_system_architecture.svg "Referenzarchitektur und Subsysteme des Hermes")
 
 ## 1. Die fundamentale Entwurfsphilosophie: «Body vs. Brain»
 
@@ -31,7 +34,7 @@ Hermes Agent begegnet diesem architektonischen Dilemma mit einer radikalen Trenn
 
 Diese Trennung garantiert echte Modellagnostik: Ein Anwender kann über den einfachen Befehl `hermes model <name>` zur Laufzeit zwischen einem lokalen 8B-vLLM-Knoten, einem Nous-Portal-Router oder einer Frontier-Cloud-API (Claude 3.7, Codex) wechseln, ohne dass der Agent seine Identität, seine gelernten Skills oder sein Gedächtnis verliert (**Zero Amnesia**).
 
-![Architektonische Entkopplung von Body und Brain im Hermes Agent](./hermes_agent_body_vs_brain.svg)
+![Architektonische Entkopplung von Body und Brain im Hermes Agent](./hermes_agent_body_vs_brain.svg "Body und Brain im Hermes Agent - Architektonische Entkopplung")
 
 ### Der Körper als unveränderliche Heimat
 Der **Body** stellt die langlebige Software-Infrastruktur dar. Hier residieren:
@@ -56,7 +59,7 @@ Ganz gleich, welches Backend konfiguriert ist: Vor und nach jedem Inferenzschrit
 
 Das Herzstück der Ausführung ist die Klasse `AIAgent` (im quelloffenen Referenz-Repository von Nous Research). Während frühere Versionen oft als monolithische Skripte realisiert wurden, folgt die moderne Architektur von Hermes Agent einer granularen Dekomposition: Die zentrale Fassade delegiert an den Orchestrierer `agent/conversation_loop.py`, während die einzelnen Iterationsphasen in modular isolierten Modulen (`agent/turn_*.py`) gekapselt sind.
 
-![Turn-Lifecycle und Execution Loop des AIAgent](./hermes_agent_turn_lifecycle.svg)
+![Ablaufdiagramm des Turn-Lifecycles und der Execution Loop im Hermes Agent Framework von Input bis Tool-Execution](./hermes_agent_turn_lifecycle.svg "Hermes AIAgent Turn-Lifecycle")
 
 Ein vollständiger Interaktionszyklus (*Turn Lifecycle*) durchläuft folgende Phasen:
 
@@ -217,7 +220,7 @@ Hermes Agent implementiert diesen evolutionären Lernzyklus auf zwei Ebenen:
 1. **Aktive Wissenskompilierung (`/learn`):** Ermöglicht dem Agenten, aus Rohdaten, Code-Repositories, Dokumentationen oder erfolgreichen Dialogverläufen eigenständig neue, standardkonforme Skills zu generieren.
 2. **Automatisierte Bibliotheks-Kuratierung (Der Curator):** Verhindert das unkontrollierte Wuchern redundanter, veralteter Fähigkeiten (*Skill Sprawl*).
 
-![Der Background Curator Lifecycle: Skill-Synthese, Inaktivitäts-Pruning und LLM-Konsolidierung](./hermes_agent_curator_lifecycle.svg)
+![Der Background Curator Lifecycle: Skill-Synthese, Inaktivitäts-Pruning und LLM-Konsolidierung](./hermes_agent_curator_lifecycle.svg "Der Background Curator Lifecycle")
 
 ### Wie der Curator arbeitet
 Der Curator ist kein starrer Cronjob, sondern ein **intelligenter Inaktivitäts-Pass**:

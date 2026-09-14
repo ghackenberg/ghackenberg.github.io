@@ -41,7 +41,7 @@ const serviceSchema = {
   "name": service.data.title,
   "serviceType": service.data.tagline,
   "description": service.data.description,
-  "image": service.data.previewImage?.src ? new URL(service.data.previewImage.src, Astro.site).href : undefined,
+  "image": service.data.previewImage ? new URL(service.data.previewImage.src.src, Astro.site).href : undefined,
   "url": serviceUrl,
   "provider": {
     "@type": "Person",
@@ -169,8 +169,9 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
                   <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
                     {module.data.previewImage && (
                       <Image 
-                        src={module.data.previewImage} 
-                        alt={`${module.data.title} preview`}
+                        src={module.data.previewImage.src} 
+                        alt={module.data.previewImage.description}
+                        title={module.data.previewImage.title}
                         width={640}
                         height={360}
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

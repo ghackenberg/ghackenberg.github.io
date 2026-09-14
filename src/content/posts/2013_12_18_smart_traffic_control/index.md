@@ -3,12 +3,15 @@ title: "Teaser: Smart Traffic Control"
 pubDate: "2013-12-17"
 description: "Besides our original topics such as distributed and smart fride control we have worked on another interesting issue: Smart traffic control. By smart traffic con..."
 tags: ["data-visualization", "dynamic-programming", "simulation", "traffic-control", "transportation-systems"]
-icon: "./graph.png"
+icon:
+  src: "./graph.png"
+  title: "Teaser: Smart Traffic Control - Graph illustration"
+  description: "Graph illustration from Teaser: Smart Traffic Control"
 ---
 The following graph shows the driving behavior of three color coded traffic participants from their home to their work location.
 The number of colored edges indicates the driving speed on a particular route section: The more the slower, the less the faster.
 
-![Graph illustration from Teaser: Smart Traffic Control](./graph.png)
+![Graph illustration from Teaser: Smart Traffic Control](./graph.png "Teaser: Smart Traffic Control - Graph illustration")
 
 Currently we are working on improving the visualization and scaling the model to more traffic participants (ideally in the hundreds or thousands).
 Further we work on aligning the traffic model with established approaches to ensure the overall validity.

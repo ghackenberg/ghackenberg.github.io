@@ -3,14 +3,17 @@ title: "From Layout to Animation"
 pubDate: "2011-06-15"
 description: "In a previous article The Evolution of a Functional Prototype I demonstrated how to transform sketches into prototypes backed by database content and applicatio..."
 tags: ["blog", "drawing", "user-interface", "ux-design", "youtube-video"]
-icon: "./screenshot.png"
+icon:
+  src: "./screenshot.png"
+  title: "Cover illustration: From Layout to Animation"
+  description: "In a previous article The Evolution of a Functional Prototype I demonstrated how to transform sketches into prototypes backed by database content and applicatio..."
 ---
 To provide some context for this article here are the images from my previous post that illustrate the change from whiteboard sketch to functional prototype.
 You can see how the sketch ideas are transformed into a more formal HTML description of layout and content.
 
-[![../2011 06 11 functional prototype evolution/start illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/start.jpg)](./../2011_06_11_functional_prototype_evolution/start.jpg)
-[![../2011 06 11 functional prototype evolution/intermediate illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/intermediate.png)](./../2011_06_11_functional_prototype_evolution/intermediate.png)
-[![../2011 06 11 functional prototype evolution/end illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/end.png)](./../2011_06_11_functional_prototype_evolution/end.png)
+[![../2011 06 11 functional prototype evolution/start illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/start.jpg "From Layout to Animation - ../2011 06 11 functional prototype evolution/start illustration")](./../2011_06_11_functional_prototype_evolution/start.jpg)
+[![../2011 06 11 functional prototype evolution/intermediate illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/intermediate.png "From Layout to Animation - ../2011 06 11 functional prototype evolution/intermediate illustration")](./../2011_06_11_functional_prototype_evolution/intermediate.png)
+[![../2011 06 11 functional prototype evolution/end illustration from From Layout to Animation](./../2011_06_11_functional_prototype_evolution/end.png "From Layout to Animation - ../2011 06 11 functional prototype evolution/end illustration")](./../2011_06_11_functional_prototype_evolution/end.png)
 
 Since the interface only displays navigation structures the question is how to integrate the actual contents.
 I.e. what should happen if the user clicks one of the links in the navigational interface, and how to get back from the content (e.g. blog article) to the navigation.

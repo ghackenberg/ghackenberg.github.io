@@ -3,7 +3,10 @@ title: "Procedural Graphs in der Praxis: Wie Unternehmen repetitive Prozesse zuv
 pubDate: "2026-09-18"
 description: "Über 80 % agentischer Pilotprojekte scheitern am Übergang in den Produktivbetrieb: Entweder driften ungebundene LLM-Agenten bei repetitiven Vorgängen ab, oder starre RPA-Workflows ersticken die Flexibilität. Eine ingenieurwissenschaftliche Analyse des Google-Frameworks Procedural Graphs (arXiv:2609.09153): Wie Unternehmen Standard Operating Procedures (SOPs) in selbstlernende Wissensgraphen überführen, Qualität sichern, Kosten senken und Mitarbeiter nachhaltig entlasten."
 tags: ["agentic-ai", "artificial-intelligence", "enterprise-ai", "industrial-informatics", "knowledge-graphs", "knowledge-management", "benchmarks", "software-architecture", "task-management", "optimization"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Procedural Graphs in der Praxis"
+  description: "Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an einer interaktiven Projektionswand, wie Prozesswissen in dynamischen Wissensgraphen verankert wird"
 ---
 
 In unserer Beitragsreihe zur praktischen Umsetzung der AI-Transformation in Unternehmen haben wir die technologischen Fundamente moderner Agentensysteme von Grund auf erschlossen: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das sitzungsübergreifende [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die kollaborative [Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/) und das hochperformante [Routing via LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur [Enterprise Identity Governance via Keycloak](/posts/2026_09_10_keycloak_architektur_und_funktionsweise/). 
@@ -18,7 +21,7 @@ Mit dem bahnbrechenden Forschungspapier **„Procedural Graphs: Self-Evolving Ex
 
 Dieser Artikel analysiert das Framework aus Sicht der betrieblichen AI-Transformation: Welches systemische Problem löst der Ansatz? Wie funktionieren Procedural Graphs mathematisch und operativ? Und wie gelingt es damit, repetitive Routineaufgaben wirtschaftlich, fehlertolerant und mitarbeiterorientiert zu automatisieren?
 
-![Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an einer interaktiven Projektionswand, wie Prozesswissen in dynamischen Wissensgraphen verankert wird](./hero.jpg)
+![Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an einer interaktiven Projektionswand, wie Prozesswissen in dynamischen Wissensgraphen verankert wird](./hero.jpg "Procedural Graphs in der Praxis")
 
 ## 1. Das Dilemma der AI-Transformation bei repetitiven Prozessen
 
@@ -32,7 +35,7 @@ Typische Beispiele aus der Unternehmenspraxis finden sich in nahezu jeder Abteil
 
 Bislang scheiterte die wirtschaftliche Automatisierung solcher Abläufe an zwei unbefriedigenden Extremen:
 
-![Automatisierung repetitiver Prozesse im Vergleich: Klassisches RPA vs. Naiver ReAct-Agent vs. Procedural Graph](./procedural_graphs_vs_rpa_und_react.svg)
+![Automatisierung repetitiver Prozesse im Vergleich: Klassisches RPA vs. Naiver ReAct-Agent vs. Procedural Graph](./procedural_graphs_vs_rpa_und_react.svg "Automatisierung repetitiver Prozesse im Vergleich")
 
 ### Extrem 1: Das starre Korsett klassischer RPA- und BPMN-Systeme
 Robotic Process Automation (RPA) und fest verdrahtete Workflows (BPMN / State Machines) sind vollständig deterministisch programmiert. 
@@ -61,7 +64,7 @@ Das Autorenteam von Google Research überträgt dieses mächtige Prinzip nun auf
 * $\Phi$ ist das **Attribut-Mapping**, das jeder Kante ein dreiteiliges Regelwerk zuweist:
   $$\Phi(e) = (\text{condition}, \text{guidance}, \text{pitfalls})$$
 
-![Struktur eines prozeduralen Übergangs: Triplett-Modell mit Vorbedingungen, Handlungsführung und Fallstricken](./prozedur_triplett_struktur.svg)
+![Struktur eines prozeduralen Übergangs: Triplett-Modell mit Vorbedingungen, Handlungsführung und Fallstricken](./prozedur_triplett_struktur.svg "Struktur eines prozeduralen Übergangs")
 
 ### Die Anatomie einer betrieblichen Kante am B2B-Praxisbeispiel
 Betrachten wir den Übergang zwischen einer Bonitätsprüfung und der technischen Machbarkeitsprüfung im B2B-Vertrieb:
@@ -73,7 +76,7 @@ Betrachten wir den Übergang zwischen einer Bonitätsprüfung und der technische
 3. **Bekannte Fallstricke (`pitfalls`):**
    > *„Bestätige unter keinen Umständen Teillieferungen unter dem Mindestauftragswert von 500 EUR, um ungedeckte Frachtnebenkosten zu verhindern.“*
 
-![B2B-Auftragsprüfung als formaler Procedural Graph mit Kanten-Attribut-Inspektor](./prozessgraph_b2b_operations.svg)
+![B2B-Auftragsprüfung als formaler Procedural Graph mit Kanten-Attribut-Inspektor](./prozessgraph_b2b_operations.svg "B2B-Auftragsprüfung als formaler Procedural Graph")
 
 Der unschätzbare Vorteil für Unternehmen: **Das Prozesswissen ist nicht in intransparenten neuronalen Gewichten oder kryptischem Spaghetti-Code vergraben.** Es liegt als lesbarer, visuell auditierbarer Graph vor, den Fachbereichsleiter, Compliance-Beauftragte und Prozessmanager direkt verstehen, diskutieren und validieren können.
 
@@ -83,7 +86,7 @@ Das größte Missverständnis bei Workflow-Engines ist der Glaube, dass Regeln z
 
 Procedural Graphs wählen einen völlig anderen, eleganteren Weg: **Generative Procedural Guidance zur Inferenzzeit.**
 
-![Der Inferenz-Mechanismus: 4-stufige Generative Soft Guidance zur Laufzeit](./laufzeit_guidance_pipeline.svg)
+![Der Inferenz-Mechanismus: 4-stufige Generative Soft Guidance zur Laufzeit](./laufzeit_guidance_pipeline.svg "Der Inferenz-Mechanismus")
 
 Das Zusammenspiel erfolgt in drei präzisen Einzelschritten:
 
@@ -119,7 +122,7 @@ Geschäftsprozesse in dynamischen Unternehmen sind niemals statisch. Lieferanten
 
 Klassische Automatisierungslösungen scheitern hier an den enormen Änderungskosten. Das Google-Framework löst dieses Problem durch einen **Offline-Self-Evolution-Loop**, der Prozessgraphen auf Basis realer Ausführungsprotokolle kontinuierlich verfeinert.
 
-![Der 4-Phasen-Evolutionszyklus mit Rejection Memory](./self_evolution_rejection_memory_loop.svg)
+![Der 4-Phasen-Evolutionszyklus mit Rejection Memory](./self_evolution_rejection_memory_loop.svg "Self Evolution Rejection Memory Loop")
 
 ### Der Durchbruch gegen „Optimization Amnesia“
 In unserem früheren Beitrag zu [Google WikiSkills](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) haben wir das Kernproblem bisheriger Optimierer analysiert: die **Optimization Amnesia**. Wenn ein Modifikationsvorschlag im Validation Gate durchfällt, rollt das System zurück – und vergisst augenblicklich, *warum* der Eingriff gescheitert ist. In späteren Runden schlagen naive Optimierer denselben Fehler immer wieder vor (*Recurrent Blind Alleys*).
@@ -168,7 +171,7 @@ Im Unternehmensalltag muss ein Agent fehlerfrei mit ERP-Systemen (SAP, Microsoft
 
 Wie sollten Geschäftsführer, Abteilungsleiter und IT-Architekten vorgehen, um die Potenziale von Procedural Graphs in der eigenen Organisation pragmatisch zu heben?
 
-![In 4 Schritten zur produktiven Prozess-KI: Von der Identifikation zur autonomen Härtung](./vier_schritte_einfuehrung_prozess_ki.svg)
+![In 4 Schritten zur produktiven Prozess-KI: Von der Identifikation zur autonomen Härtung](./vier_schritte_einfuehrung_prozess_ki.svg "der Identifikation zur autonomen Härtung - In 4 Schritten zur produktiven Prozess-KI:")
 
 ### Schritt 1: Identifikation des richtigen Pilotprozesses (*Prozess-Scoping*)
 Wählen Sie für den Start weder den simpelsten noch den komplexesten Ausnahme-Prozess. Ideal sind Vorgänge mit:

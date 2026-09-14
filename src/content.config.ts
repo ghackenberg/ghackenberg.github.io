@@ -1,4 +1,5 @@
-import { defineCollection, reference } from 'astro:content';
+import { defineCollection, reference, type ImageFunction } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import fs from 'node:fs';
@@ -31,6 +32,32 @@ const tagReference = z.string().superRefine((tagId, ctx) => {
     });
   }
 });
+
+const coverImageSchema = ({ image }: { image: ImageFunction }) =>
+  z.preprocess((val) => {
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      const obj = { ...val } as {
+        src?: string | ImageMetadata;
+        image?: string | ImageMetadata;
+        caption?: string;
+        description?: string;
+        title?: string;
+      };
+      if (typeof obj.image !== 'undefined' && !obj.src) obj.src = obj.image;
+      if (typeof obj.caption !== 'undefined' && !obj.description) obj.description = obj.caption;
+      return obj;
+    }
+    return val;
+  }, z.object({
+    src: image(),
+    title: z.string().min(3, "Image title must be at least 3 characters"),
+    description: z.string().min(3, "Image description must be at least 3 characters"),
+  }).transform((data) => ({
+    ...data,
+    image: data.src,
+  })).refine((data) => data.title.trim().toLowerCase() !== data.description.trim().toLowerCase(), {
+    message: "Image title and description must be distinct (no duplicate fallbacks)",
+  }));
 
 const linkedinPosts = defineCollection({
   loader: glob({
@@ -113,7 +140,7 @@ const posts = defineCollection({
     pubDate: z.coerce.date(),
     description: z.string().optional(),
     tags: z.array(tagReference).default([]),
-    icon: image().optional(),
+    icon: coverImageSchema({ image }).optional(),
   }),
 });
 
@@ -146,7 +173,7 @@ const visualizations = defineCollection({
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
-    screenshot: image().optional(),
+    screenshot: coverImageSchema({ image }).optional(),
     colorClass: z.string(),
     badgeColor: z.string(),
     pubDate: z.coerce.date().optional(),
@@ -184,13 +211,9 @@ const projects = defineCollection({
     accentColor: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),
     repoName: z.string().optional(),
-    screenshot: image().optional(),
-    screenshotLight: image().optional(),
-    screenshots: z.array(z.object({
-      image: image(),
-      title: z.string(),
-      description: z.string().optional(),
-    })).default([]),
+    screenshot: coverImageSchema({ image }).optional(),
+    screenshotLight: coverImageSchema({ image }).optional(),
+    screenshots: z.array(coverImageSchema({ image })).default([]),
     pubDate: z.coerce.date().optional(),
   }),
 });
@@ -208,7 +231,7 @@ const courses = defineCollection({
     learningGoals: z.array(z.string()).default([]),
     terms: z.array(z.string()).default([]),
     language: z.enum(['de', 'en']).default('de'),
-    screenshot: image().optional(),
+    screenshot: coverImageSchema({ image }).optional(),
     tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
   }),
@@ -228,7 +251,7 @@ const services = defineCollection({
     ctaText: z.string().default('Inquire Now'),
     tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
-    previewImage: image().optional(),
+    previewImage: coverImageSchema({ image }).optional(),
   })
 });
 
@@ -259,7 +282,7 @@ const modules = defineCollection({
     })).optional(),
     order: z.number().default(0),
     pubDate: z.coerce.date().optional(),
-    previewImage: image().optional(),
+    previewImage: coverImageSchema({ image }).optional(),
   })
 });
 
@@ -275,7 +298,7 @@ const interests = defineCollection({
     description: z.string().optional(),
     color: z.enum(['blue', 'yellow', 'purple', 'green']),
     icon: z.string(),
-    heroImage: image(),
+    heroImage: coverImageSchema({ image }),
     order: z.number().default(0),
     pubDate: z.coerce.date().optional(),
   })
@@ -377,7 +400,18 @@ const environments = defineCollection({
       shotType: z.enum(['three-quarters', 'wide-angle', 'close-up', 'over-the-shoulder', 'top-down', 'eye-level']).default('eye-level'),
       cameraAngle: z.string().optional(),
       focalTarget: z.string().optional(),
-      maxCharacters: z.number().int().min(0).default(1),
+      maxCharacters: z.number().int().min(0).optional(),
+      characterSlots: z.array(z.object({
+        id: z.string(),
+        role: z.string().optional(),
+        priority: z.number().int().default(1),
+        required: z.boolean().default(false),
+        spatialPlacement: z.string(),
+        allowedPoses: z.array(z.string()).default([]),
+        prohibitedPoses: z.array(z.string()).default([]),
+        defaultAction: z.string().optional(),
+        cutline: z.string().optional(),
+      })).default([]),
       visibleObjects: z.array(reference('objects')).default([]),
       depthLayers: z.object({
         foreground: z.string(),

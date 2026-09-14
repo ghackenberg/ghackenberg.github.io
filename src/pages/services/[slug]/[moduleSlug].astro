@@ -51,7 +51,7 @@ const moduleServiceSchema = {
   "name": module.data.title,
   "serviceType": module.data.tagline,
   "description": module.data.description,
-  "image": activePreviewImage?.src ? new URL(activePreviewImage.src, Astro.site).href : undefined,
+  "image": activePreviewImage ? new URL(activePreviewImage.src.src, Astro.site).href : undefined,
   "url": moduleUrl,
   "category": parentService.data.title,
   "provider": {

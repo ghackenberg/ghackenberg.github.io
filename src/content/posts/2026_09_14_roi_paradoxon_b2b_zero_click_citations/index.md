@@ -3,7 +3,10 @@ title: "Das ROI-Paradoxon im B2B: Wie man Erfolg in einer Zero-Click- und Zitati
 pubDate: "2026-09-14"
 description: "Wenn 68% der Suchen ohne Website-Klick enden: Warum traditionelle KPIs wie PageViews im B2B versagen und wie Unternehmen Share of Model (SoM), Citation Share und Prompt-Audits für die Erfolgsmessung nutzen."
 tags: ["aeo", "agentic-ai", "aio", "benchmarks", "enterprise-ai", "geo", "industrial-informatics", "seo", "web-development"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Das B2B ROI Paradoxon im Enterprise Boardroom"
+  description: "Dr. Georg Hackenberg präsentiert die Auswirkungen von Zero-Click-Zitaten und synthetischer B2B-Recherche vor Führungskräften"
 ---
 
 In klassischen Marketing- und Vertriebsberichten des industriellen B2B-Sektors drehte sich das Controlling jahrzehntelang um dieselben Standardkennzahlen: Website-Sitzungen (*Sessions*), Seitenaufrufe (*PageViews*), Klickraten (*CTR*) und Konversionen über digitale Kontaktformulare.
@@ -16,7 +19,7 @@ Wer diese Metriken heute im Vorstand präsentiert, erlebt ein beunruhigendes Ph�
 
 Für Geschäftsführer und Vertriebsleiter entsteht daraus das **B2B ROI-Paradoxon**: **Der gemessene organische Web-Traffic sinkt, während das Unternehmen in der realen industriellen Beschaffungswelt dennoch massive Marktanteile gewinnen kann – vorausgesetzt, es dominiert die Zitations-Ökonomie.**
 
-![Das B2B ROI Paradoxon im Enterprise Boardroom](./hero.jpg)
+![Dr. Georg Hackenberg präsentiert die Auswirkungen von Zero-Click-Zitaten und synthetischer B2B-Recherche vor Führungskräften](./hero.jpg "Das B2B ROI Paradoxon im Enterprise Boardroom")
 
 ## 1. Die Illusion traditioneller Web-Metriken im Maschinenbau
 
@@ -51,7 +54,7 @@ Um den Return on Investment (ROI) von SEO- (*Search Engine Optimization*), GEO- 
 
 Das folgende Diagramm fasst das ROI-Paradoxon zusammen und stellt überholte Vanity-Metriken den neuen wertschöpfenden Steuerungsgrößen gegenüber:
 
-![Das B2B ROI-Paradoxon: Von Webtraffic zu Zitationsautorität](./b2b_roi_matrix.svg)
+![Das B2B ROI-Paradoxon: Von Webtraffic zu Zitationsautorität](./b2b_roi_matrix.svg "Webtraffic zu Zitationsautorität - Das B2B ROI-Paradoxon:")
 
 ## 3. Kommerzielle Tools und Implementierungsstrategien
 

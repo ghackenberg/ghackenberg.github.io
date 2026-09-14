@@ -3,14 +3,17 @@ title: "Second report on smart grid simualtion."
 pubDate: "2012-04-18"
 description: "We are not there yet, but we are making good progress! That's probably the message of this second report on smart grid simulation (see first report). This artic..."
 tags: ["dynamic-programming", "energy-systems", "simulation"]
-icon: "./screenshot.png"
+icon:
+  src: "./screenshot.png"
+  title: "Second report on smart grid simualtion - Screenshot illustration"
+  description: "Screenshot illustration from Second report on smart grid simualtion."
 ---
 The screenshot shows the simualtion results for a system configuration.
 The system configuration includes a single low-voltage net with ten households, two wind farms and two solar plant.
 The households are further decomposed into five lamps, one refrigerator and one electric power storage.
 The time axis shows the component states in sequential order.
 
-[![Screenshot illustration from Second report on smart grid simualtion.](./screenshot.png)](./screenshot.png)
+[![Screenshot illustration from Second report on smart grid simualtion.](./screenshot.png "Second report on smart grid simualtion - Screenshot illustration")](./screenshot.png)
 
 Currently, all devices in the system are switched off by default.
 However, the mid-term goal is to develop smart algorithms that control the devices.

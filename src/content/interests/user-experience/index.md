@@ -4,7 +4,10 @@ tagline: "Visualizations & UI Designs"
 description: "I believe great software must be intuitive, responsive, and tactile—crafting user-centered workflows, polished mockups, and consistent design systems."
 color: "green"
 icon: "🌐"
-heroImage: "./preview.jpg"
+heroImage:
+  src: "./preview.jpg"
+  title: "Research domain: User Experience"
+  description: "Focus area in User Experience: Visualizations & UI Designs."
 order: 4
 ---
 
@@ -14,7 +17,7 @@ User Experience (UX) is the bridge where complex engineering meets human cogniti
 
 Exceptional software never begins with arbitrary wireframes; it begins with deep user empathy and structured **User-Centered Design (UCD)**.
 
-![User-Centered Design, Personas & Scenario Mapping](./ux-1-ucd-personas-scenarios.jpg)
+![User-Centered Design, Personas & Scenario Mapping](./ux-1-ucd-personas-scenarios.jpg "User-Centered Design mit Personas und Journey-Mapping")
 *Figure 1: User Persona definition, structured User Stories and Use Cases, and end-to-end scenario journey mapping.*
 
 To ground design decisions in real-world human context:
@@ -26,7 +29,7 @@ To ground design decisions in real-world human context:
 
 Bringing software to life requires a disciplined transition from spatial layout sketches to high-fidelity interactive prototypes.
 
-![Wireframes, High-Fidelity UI Mockups & Interaction Behavior](./ux-2-mockups-interaction-design.jpg)
+![Wireframes, High-Fidelity UI Mockups & Interaction Behavior](./ux-2-mockups-interaction-design.jpg "Von Low-Fidelity Wireframes zu High-Fidelity UI-Mockups")
 *Figure 2: Progression from structural low-fidelity wireframes to polished high-fidelity mockups, dark theme aesthetics, and tactile interaction states.*
 
 * **Low-Fidelity Wireframes**: Rapidly test information hierarchy, spatial groupings, and navigation flows without the distraction of colors or typography.
@@ -37,7 +40,7 @@ Bringing software to life requires a disciplined transition from spatial layout 
 
 Great UX is not a one-off stroke of inspiration; it is an engineered, scalable system that maintains consistency across hundreds of views.
 
-![Design Systems, Design Tokens & Empirical Usability Testing](./ux-3-design-systems-usability-testing.jpg)
+![Design Systems, Design Tokens & Empirical Usability Testing](./ux-3-design-systems-usability-testing.jpg "Design-Systeme mit Tokens und empirische Usability-Tests")
 *Figure 3: Atomic design tokens for color, typography, and spacing alongside empirical usability testing metrics.*
 
 * **Design Systems & Tokens**: By establishing single-source-of-truth **design tokens** (color palettes, typography scales, spacing grids, elevation shadows), we maintain strict **design consistency** across all components (buttons, glass-cards, modal dialogs, and graph visualizers).

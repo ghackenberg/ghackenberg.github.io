@@ -3,7 +3,10 @@ title: "Procedural Graphs mit Mastra: Wie Software-Ingenieure selbstlernende Pro
 pubDate: "2026-09-20"
 description: "Die ingenieurwissenschaftliche Brücke von Google Research zu moderner Enterprise-Software: Wie Entwickler das Paper 'Procedural Graphs' (arXiv:2609.09153) auf Basis des TypeScript-Frameworks Mastra technisch implementieren – inklusive Zod-Schemas für Kantenattribute, Runtime Soft Guidance, MCP-Integration und Offline-Evolution mit Rejection Memory."
 tags: ["mastra", "typescript", "agentic-ai", "software-architecture", "enterprise-ai", "knowledge-graphs", "mcp", "software-engineering"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Procedural Graphs mit Mastra"
+  description: "Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen"
 ---
 
 In unserer Beitragsreihe zur praktischen AI-Transformation in Unternehmen haben wir die architektonischen Grundlagen moderner KI-Systeme erschlossen: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das sitzungsübergreifende [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die Wissensevolution via [Google WikiSkills](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) und das [Inferenz-Routing via LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur tiefen [Architektur- und Funktionsanalyse von Mastra](/posts/2026_09_19_mastra_typescript_framework_architektur_und_funktionsweise/). 
@@ -14,7 +17,7 @@ Die Resonanz aus Entwicklungsteams und IT-Architekturen war eindeutig: Das theor
 
 Dieser Beitrag schlägt die Brücke vom Forschungspapier zur lauffähigen Enterprise-Architektur. Wir nutzen das TypeScript-native Framework **Mastra**, um eine vollständige Referenzimplementierung zu entwerfen: mit formaler Typsicherheit via Zod, dynamischer Laufzeit-Führung (*Runtime Soft Guidance*), nativer MCP-Integration für reale Industriesysteme und einem kontinuierlichen Offline-Evolutionszyklus mit persistenter *Rejection Memory*.
 
-![Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen](./hero.jpg)
+![Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen](./hero.jpg "Procedural Graphs mit Mastra")
 
 > [!TIP]
 > **Kompakt-Rekapitulation: Was sind Procedural Graphs & warum Mastra?**
@@ -33,7 +36,7 @@ Wer versucht, einen Procedural Graph einfach als deterministischen Mastra-`Workf
 
 Das eigentliche Problemlösen übernimmt nach wie vor ein sprachfähiger ReAct-Agent. Er bewegt sich jedoch nicht im luftleeren Raum, sondern erhält an jedem Schritt dynamische **topologische Leitplanken (*Soft Guidance*)**, die ihn situativ absichern.
 
-![Mastra Procedural Graph Engine: Das 4-Schichten-Modell im Überblick](./mastra_procedural_graph_architecture.svg)
+![Mastra Procedural Graph Engine: Das 4-Schichten-Modell im Überblick](./mastra_procedural_graph_architecture.svg "Mastra Procedural Graph Engine")
 
 ### Die vier Schichten der Mastra Procedural Graph Engine (PGE)
 
@@ -164,7 +167,7 @@ Wie wird aus dem statischen Graphen nun eine dynamische Führung für das Sprach
 
 Der Ablauf folgt der 4-Schritte-Inferenzpipeline aus dem Forschungspapier: Vor jedem Ausführungsschritt des Problemlöser-Agenten ($\pi$) bereitet ein spezialisierter Guidance-Workflow die Leitplanken auf.
 
-![Mastra Runtime Guidance Flow: Der 4-Schritte-Inferenzzyklus mit Suspend/Resume](./mastra_runtime_guidance_flow.svg)
+![Mastra Runtime Guidance Flow: Der 4-Schritte-Inferenzzyklus mit Suspend/Resume](./mastra_runtime_guidance_flow.svg "Mastra Runtime Guidance Flow")
 
 ### Schritt 1: Lokalisierung (*Locate*)
 Anhand des jüngsten Aktionsfensters $\mathcal{T}_{t-w:t}$ (z. B. den letzten Tool-Aufrufen und Statusmeldungen) stellt das System fest, an welchem Knoten $u_t$ sich der Prozess aktuell befindet. Bei strukturierten Tasks kann dieser Knoten direkt im Execution State mitgeführt werden.
@@ -365,7 +368,7 @@ In klassischen Optimierungsschleifen passiert Folgendes: Ein Optimierer schlägt
 
 Procedural Graphs lösen dies durch eine explizite **Rejection Memory** $\mathcal{H}_{\text{rejected}}$.
 
-![Mastra Offline Self-Evolution Loop: Die Evolutions-Pipeline mit Rejection Memory und Mastra Evals](./mastra_self_evolution_rejection_loop.svg)
+![Mastra Offline Self-Evolution Loop: Die Evolutions-Pipeline mit Rejection Memory und Mastra Evals](./mastra_self_evolution_rejection_loop.svg "Mastra Offline Self-Evolution Loop")
 
 ### Die Phasen des Evolutions-Loops in TypeScript
 

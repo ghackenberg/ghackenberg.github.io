@@ -3,7 +3,10 @@ title: "Das GEO-Reifegradmodell für Industrieunternehmen: Vom unsichtbaren Weba
 pubDate: "2026-09-13"
 description: "Ein praxisorientiertes 4-Stufen-Reifegradmodell für Industrieunternehmen und technische Mittelständler: Von klassischer SEO-Crawlability über semantische Wissensgraphen bis zur autonomen Interaktion mit KI-Agenten."
 tags: ["aeo", "agentic-ai", "aio", "benchmarks", "enterprise-ai", "geo", "industrial-informatics", "seo", "software-architecture", "web-development"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Das fünfstufige GEO-Reifegradmodell für Industrieunternehmen"
+  description: "Das GEO-Reifegradmodell im industriellen Kontrollraum"
 ---
 
 In unseren vorangegangenen Beiträgen haben wir die [technischen Grundlagen von SEO, GEO, AEO und AIO](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/), die [empirische Studienlage zu Zitationshebeln](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien/) sowie die [spezifischen Hürden des industriellen B2B-Marketings](/posts/2026_09_12_b2b_industrial_geo_maschinenlesbare_industrie/) analysiert.
@@ -12,7 +15,7 @@ Wenn Führungskräfte, Werksleiter und IT-Verantwortliche im Maschinen- und Anla
 
 Um diesen Transformationsprozess messbar und auditierbar zu machen, habe ich ein **vierstufiges GEO-Reifegradmodell für Industrieunternehmen** entwickelt. Es soll als pragmatischer Leitfaden dienen, um den aktuellen Status quo der eigenen Web-Architektur zu bestimmen und den Weg zur zukunftsfähigen KI-Sichtbarkeit schrittweise zu planen.
 
-![Das GEO-Reifegradmodell im industriellen Kontrollraum](./hero.jpg)
+![Das GEO-Reifegradmodell im industriellen Kontrollraum](./hero.jpg "Das fünfstufige GEO-Reifegradmodell für Industrieunternehmen")
 
 ## 1. Die vier Reifegrade der industriellen KI-Sichtbarkeit
 
@@ -52,7 +55,7 @@ Die Transformation von traditioneller Webpräsenz zur maschinenlesbaren Plattfor
 
 Das folgende Diagramm fasst die vier Entwicklungsstufen, ihren technologischen Fokus und den geschätzten industriellen Reifegrad im DACH-Raum zusammen:
 
-![Das 4-Stufen-Reifegradmodell für Industrie-GEO](./geo_maturity_model.svg)
+![Das 4-Stufen-Reifegradmodell für Industrie-GEO](./geo_maturity_model.svg "Geo Maturity Model")
 
 ## 2. Der 15-Minuten-Audit für Industrie-Führungskräfte
 

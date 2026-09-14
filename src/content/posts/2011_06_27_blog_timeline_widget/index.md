@@ -3,14 +3,17 @@ title: "Blog Timeline Widget"
 pubDate: "2011-06-26"
 description: "The main purpose of a blog is to provide access to articles (HTML documents) organized by date. To reflect this idea I designed a timeline that visualizes the t..."
 tags: ["blog", "data-visualization", "user-interface", "youtube-video"]
-icon: "./bubble.png"
+icon:
+  src: "./bubble.png"
+  title: "Blog Timeline Widget - Bubble illustration"
+  description: "Bubble illustration from Blog Timeline Widget"
 ---
 First here are the screenshots of the widget taken with the latest stable Opera web browser (though other recent browsers can be used as well).
 The left image shows the interface directly after loading the web page.
 The right image illustrates the effect when hovering over dots in the timeline fading in a bubble with information about the underlying blog post.
 
-[![Interface illustration from Blog Timeline Widget](./interface.png)](./interface.png)
-[![Bubble illustration from Blog Timeline Widget](./bubble.png)](./bubble.png)
+[![Interface illustration from Blog Timeline Widget](./interface.png "Blog Timeline Widget - Interface illustration")](./interface.png)
+[![Bubble illustration from Blog Timeline Widget](./bubble.png "Blog Timeline Widget - Bubble illustration")](./bubble.png)
 
 The usage of the widget is further illustrated in the following YouTube video.
 You can see how interaction with the widget is carried out.

@@ -231,6 +231,8 @@ const professionalInterests = [
     title: "Software Engineering",
     tagline: "Architectures & Web Platforms",
     image: optimizedInterestSoftware.src,
+    imageTitle: "Research domain: Software Engineering",
+    imageDescription: "Focus area in Software Engineering: Architectures & Web Platforms.",
     description: "My passion lies in crafting high-performance, type-safe software. From modern web architectures with Astro and TypeScript to scalable industrial platforms, I love building robust systems from the ground up."
   },
   {
@@ -240,6 +242,8 @@ const professionalInterests = [
     title: "Computer Simulation",
     tagline: "Systems & Layout Modeling",
     image: optimizedInterestSimulation.src,
+    imageTitle: "Research domain: Computer Simulation",
+    imageDescription: "Focus area in Computer Simulation: Systems & Layout Modeling.",
     description: "I am fascinated by modeling complex physical and industrial systems. Combining discrete-event simulation and optimization algorithms, I design smart factory layouts, logistics workflows, and resource models."
   },
   {
@@ -249,6 +253,8 @@ const professionalInterests = [
     title: "Artificial Intelligence",
     tagline: "Generative AI & Agent Systems",
     image: optimizedInterestAi.src,
+    imageTitle: "Research domain: Artificial Intelligence",
+    imageDescription: "Focus area in Artificial Intelligence: Generative AI & Agent Systems.",
     description: "I actively explore local LLMs, agentic AI, and knowledge graphs. I enjoy developing autonomous reasoning engines, semantic search tools, and intelligent agent workflows to unlock new scientific insights."
   },
   {
@@ -258,6 +264,8 @@ const professionalInterests = [
     title: "User Experience",
     tagline: "Visualizations & UI Designs",
     image: optimizedInterestUx.src,
+    imageTitle: "Research domain: User Experience",
+    imageDescription: "Focus area in User Experience: Visualizations & UI Designs.",
     description: "I believe great software must be intuitive, responsive, and visually engaging. I love creating interactive graph network visualizers, dynamic layouts, and polished interfaces that make complex data effortless to explore."
   }
 ];
@@ -268,7 +276,7 @@ const postGalleryItems: GalleryItem[] = await Promise.all(
     .filter(p => !!p.data.icon)
     .map(async p => {
       const opt = await getImage({
-        src: p.data.icon!,
+        src: p.data.icon!.src || p.data.icon!,
         format: "webp",
         width: 640,
         height: 360,
@@ -280,7 +288,9 @@ const postGalleryItems: GalleryItem[] = await Promise.all(
         image: opt.src,
         href: `/posts/${p.id}/`,
         tagline: p.data.description,
-        pubDate: new Date(p.data.pubDate).valueOf()
+        pubDate: new Date(p.data.pubDate).valueOf(),
+        imageTitle: p.data.icon!.title,
+        imageDescription: p.data.icon!.description
       };
     })
 );
@@ -290,7 +300,7 @@ const projectGalleryItems: GalleryItem[] = await Promise.all(
     .filter(p => !!p.data.screenshot)
     .map(async p => {
       const opt = await getImage({
-        src: p.data.screenshot!,
+        src: p.data.screenshot!.src || p.data.screenshot!,
         format: "webp",
         width: 640,
         height: 360,
@@ -302,7 +312,9 @@ const projectGalleryItems: GalleryItem[] = await Promise.all(
         image: opt.src,
         href: `/projects/${p.id}/`,
         tagline: p.data.tagline,
-        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 60
+        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 60,
+        imageTitle: p.data.screenshot!.title,
+        imageDescription: p.data.screenshot!.description
       };
     })
 );
@@ -312,7 +324,7 @@ const courseGalleryItems: GalleryItem[] = await Promise.all(
     .filter(c => !!c.data.screenshot)
     .map(async c => {
       const opt = await getImage({
-        src: c.data.screenshot!,
+        src: c.data.screenshot!.src || c.data.screenshot!,
         format: "webp",
         width: 640,
         height: 360,
@@ -324,7 +336,9 @@ const courseGalleryItems: GalleryItem[] = await Promise.all(
         image: opt.src,
         href: `/courses/${c.id}/`,
         tagline: c.data.description,
-        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 90
+        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 90,
+        imageTitle: c.data.screenshot!.title,
+        imageDescription: c.data.screenshot!.description
       };
     })
 );
@@ -335,7 +349,7 @@ const serviceGalleryItems: GalleryItem[] = await Promise.all(
     .filter(s => !!s.data.previewImage)
     .map(async s => {
       const opt = await getImage({
-        src: s.data.previewImage!,
+        src: s.data.previewImage!.src || s.data.previewImage!,
         format: "webp",
         width: 640,
         height: 360,
@@ -347,7 +361,9 @@ const serviceGalleryItems: GalleryItem[] = await Promise.all(
         image: opt.src,
         href: `/services/${s.id}/`,
         tagline: s.data.tagline,
-        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120
+        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120,
+        imageTitle: s.data.previewImage!.title,
+        imageDescription: s.data.previewImage!.description
       };
     })
 );
@@ -357,7 +373,7 @@ const moduleGalleryItems: GalleryItem[] = await Promise.all(
     .filter(m => !!m.data.previewImage)
     .map(async m => {
       const opt = await getImage({
-        src: m.data.previewImage!,
+        src: m.data.previewImage!.src || m.data.previewImage!,
         format: "webp",
         width: 640,
         height: 360,
@@ -370,7 +386,9 @@ const moduleGalleryItems: GalleryItem[] = await Promise.all(
         image: opt.src,
         href: `/services/${serviceSlug}/${moduleSlug}/`,
         tagline: m.data.tagline,
-        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120
+        pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120,
+        imageTitle: m.data.previewImage!.title,
+        imageDescription: m.data.previewImage!.description
       };
     })
 );
@@ -380,7 +398,7 @@ const visualizationGalleryItems: GalleryItem[] = await Promise.all(
     .filter(v => !!v.data.screenshot)
     .map(async v => {
       const opt = await getImage({
-        src: v.data.screenshot!,
+        src: v.data.screenshot!.src || v.data.screenshot!,
         format: "webp",
         width: 640,
         height: 360,
@@ -392,7 +410,9 @@ const visualizationGalleryItems: GalleryItem[] = await Promise.all(
         image: opt.src,
         href: `/visualizations/${v.id}/`,
         tagline: v.data.description,
-        pubDate: v.data.pubDate ? new Date(v.data.pubDate).valueOf() : (Date.now() - 1000 * 60 * 60 * 24 * 150)
+        pubDate: v.data.pubDate ? new Date(v.data.pubDate).valueOf() : (Date.now() - 1000 * 60 * 60 * 24 * 150),
+        imageTitle: v.data.screenshot!.title,
+        imageDescription: v.data.screenshot!.description
       };
     })
 );
@@ -403,7 +423,9 @@ const interestGalleryItems: GalleryItem[] = professionalInterests.map(interest =
   image: interest.image,
   href: `/interests/${interest.slug}/`,
   tagline: interest.tagline,
-  pubDate: Date.now() - 1000 * 60 * 60 * 24 * 30
+  pubDate: Date.now() - 1000 * 60 * 60 * 24 * 30,
+  imageTitle: interest.imageTitle,
+  imageDescription: interest.imageDescription
 }));
 
 // Interleave categories to alternate color and topic rhythms in the marquee
@@ -735,6 +757,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   preserveAspectRatio="xMidYMid slice"
                   mask="url(#fadeMask)"
                   class="profile-svg-image"
+                  {...{ title: "Dr. Georg Hackenberg" }}
+                  aria-label="Portrait of Dr. Georg Hackenberg, Professor for Industrial Informatics at FH Upper Austria"
                 />
               </g>
             </svg>
@@ -774,6 +798,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                 <img 
                   src={interest.image} 
                   alt={`${interest.title} illustration`}
+                  title={interest.title}
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />

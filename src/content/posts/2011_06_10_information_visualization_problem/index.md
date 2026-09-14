@@ -3,7 +3,10 @@ title: "The Information Visualization Problem"
 pubDate: "2011-06-09"
 description: "Inspired by my pervious post about Visualizing Software Systems I started to think about the more general problem of information visualization. The major differ..."
 tags: ["data-visualization", "drawing", "ux-design"]
-icon: "./first.jpg"
+icon:
+  src: "./first.jpg"
+  title: "The Information Visualization Problem - First illustration"
+  description: "First illustration from The Information Visualization Problem"
 ---
 First, I introduce my thoughts that preceded the step of creating the illustrations:
 At my work I am trying to understand the interaction between machines and humans.
@@ -13,8 +16,8 @@ Therefore, there has to be a transformation process simplifying the raw data to 
 The user finally perceives the presentation and processes the information cognitively before acting upon it.
 These relationships inspired me to create the following two illustrations.
 
-[![First illustration from The Information Visualization Problem](./first.jpg)](./first.jpg)
-[![Second illustration from The Information Visualization Problem](./second.jpg)](./second.jpg)
+[![First illustration from The Information Visualization Problem](./first.jpg "The Information Visualization Problem - First illustration")](./first.jpg)
+[![Second illustration from The Information Visualization Problem](./second.jpg "The Information Visualization Problem - Second illustration")](./second.jpg)
 
 The illustration to the left preceeded the illustration to the right.
 The idea was to lay out the different information models horizontally (in other words sequentially) to emphazise the natural layering.
@@ -30,7 +33,7 @@ Clearly, the version to the right gives a much cleaner and structured impression
 To understand the structure of the previous two illustrations better, I decided to draw their contents in a tree format (root node, child nodes, leaf nodes).
 This idea resulted in the following picture.
 
-[![Three illustration from The Information Visualization Problem](./three.jpg)](./three.jpg)
+[![Three illustration from The Information Visualization Problem](./three.jpg "The Information Visualization Problem - Three illustration")](./three.jpg)
 
 The main observation is that some image contents (the *meta level* 1 and 2) are solely used to group the actual image content (the *leaf nodes* data/content/presentation/user).
 The really interesting content are the attributes and relationships of the leaf nodes in the information tree.

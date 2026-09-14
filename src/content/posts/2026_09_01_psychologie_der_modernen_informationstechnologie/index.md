@@ -3,7 +3,10 @@ title: "Psychologie der modernen Informationstechnologie: Stand der Wissenschaft
 pubDate: "2026-09-01"
 description: "Eine interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Aufmerksamkeitsökonomie, Cyberpsychologie, Software-Architekturen und kommerzielle KI-Ökosysteme ineinandergreifen."
 tags: ["psychology", "cyberpsychology", "cognitive-science", "artificial-intelligence", "software-architecture", "human-computer-interaction", "social-media"]
-icon: "./icon.jpg"
+icon:
+  src: "./icon.jpg"
+  title: "Titelgrafik: Psychologie der modernen Informationstechnologie: Stand der Wissenschaft und Stand der Technik"
+  description: "Eine interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Aufmerksamkeitsökonomie, Cyberpsychologie, Software-Architekturen und kommerzielle KI-Ökosysteme ineinandergreifen."
 ---
 
 Die Informationstechnologie hat einen fundamentalen Paradigmenwechsel vollzogen: Während die frühe Informatik primär darauf abzielte, Rechenleistung bereitzustellen und funktionale Geschäftsprozesse abzubilden, greifen moderne Softwaresysteme tief in die neurobiologischen, kognitiven und sozialpsychologischen Grundstrukturen des Menschen ein. 
@@ -12,7 +15,7 @@ Ob Empfehlungsalgorithmen sozialer Netzwerke, generative KI-Agenten, persuasive 
 
 Wer heute Softwaresysteme, Datenarchitekturen oder Benutzeroberflächen gestaltet, betreibt unweigerlich angewandte Psychologie. Aus der Perspektive von Software-Architektur und Industrieinformatik fassen wir in diesem Beitrag den aktuellen **Stand der Wissenschaft** (Kognitionspsychologie, Cyberpsychologie, Neurobiologie) sowie den **Stand der Technik** (Software-Architekturen, Recommender-Pipelines, kommerzielle Plattformen) fundiert und anschaulich zusammen.
 
-![Psychologie der modernen Informationstechnologie - Übersicht](./psychology_it_overview.svg)
+![Psychologie der modernen Informationstechnologie - Übersicht](./psychology_it_overview.svg "Psychologie der modernen Informationstechnologie -")
 
 ## 1. Der Stand der Wissenschaft: Wie digitale Systeme den menschlichen Geist fordern
 
@@ -26,7 +29,7 @@ Das menschliche Gehirn ist evolutionär darauf programmiert, auf neuartige Umwel
 * **Prefrontaler Kortex vs. Limbisches System:** Während der präfrontale Kortex für rationale Selbstkontrolle, langfristige Planung und Arbeitsgedächtnisfunktionen zuständig ist, reagiert das limbische System reflexartig auf emotionale Reize und Push-Mitteilungen. Permanente digitale Reize führen zu einer chronischen Erschöpfung der exekutiven Kontrollressourcen (*Ego Depletion*).
 * **Task-Switching & Attention Residue:** Echte Multitasking-Fähigkeit ist eine neurokognitive Illusion. Wechselt ein Nutzer zwischen primärer Arbeit (z. B. Programmieren oder Konzeption) und einer Notification, entstehen hohe kognitive Wechselkosten. Studien der Aufmerksamkeitsforscherin Gloria Mark (University of California, Irvine) zeigen, dass es nach einer Unterbrechung im Schnitt **rund 23 Minuten** dauert, bis der ursprüngliche Fokus wieder vollständig hergestellt ist. Das Phänomen des *Aufmerksamkeitsresiduums* (*Attention Residue*) beschreibt, dass Gedanken noch lange an der vorangegangenen Störung haften bleiben.
 
-![Kognitive Belastung und Aufmerksamkeitsdynamik](./cognitive_load_attention.svg)
+![Kognitive Belastung und Aufmerksamkeitsdynamik](./cognitive_load_attention.svg "Cognitive Load Attention")
 
 ### B. Kognitive Belastung & Informationsverarbeitung (Cognitive Load Theory)
 
@@ -56,7 +59,7 @@ Die Vernetzung von Milliarden Menschen über das World Wide Web und soziale Netz
 
 Um psychologische Prinzipien in großem Maßstab zu operationalisieren, hat die IT-Industrie hochentwickelte, verteilte Software-Architekturen entwickelt. Moderne Systeme basieren auf einer engen Verzahnung von Event-Streaming, mehrstufigen Deep-Learning-Modellen und adaptiver Benutzeroberflächen-Steuerung.
 
-![Architektur moderner Engagement- und Recommender-Systeme](./system_architecture_recommender.svg)
+![Architektur moderner Engagement- und Recommender-Systeme](./system_architecture_recommender.svg "System Architecture Recommender")
 
 ### A. Event-Driven Telemetry & Clickstream-Ingestion
 
@@ -99,7 +102,7 @@ Mit dem Aufkommen großer Sprachmodelle (LLMs) verschiebt sich die Interaktion v
 
 Die praktische Anwendung psychologischer Mechanismen spiegelt sich in einer diversifizierten kommerziellen Marktlandschaft wider. Wir können den Markt entlang zweier Hauptdimensionen strukturieren:
 
-![Kommerzielle Marktlandschaft und Software-Ökosysteme](./market_landscape_matrix.svg)
+![Kommerzielle Marktlandschaft und Software-Ökosysteme](./market_landscape_matrix.svg "Market Landscape Matrix")
 
 ### 1. B2C Attention- & Feed-Ökosysteme
 * **Unternehmen:** ByteDance (TikTok Monolith Algorithm), Meta (Instagram/Reels Discovery Engine), YouTube (Deep Neural Recommenders), X (Twitter Open Source Heavy Ranker).
@@ -128,7 +131,7 @@ Die praktische Anwendung psychologischer Mechanismen spiegelt sich in einer dive
 
 Aus dem Aufeinandertreffen menschlicher Kognition und hochoptimierter IT-Systeme resultieren fundamentale Spannungsfelder:
 
-![Das Autonomie-Paradoxon der Informationstechnologie](./autonomie_paradoxon.svg)
+![Das Autonomie-Paradoxon der Informationstechnologie](./autonomie_paradoxon.svg "Autonomie Paradoxon")
 
 1. **Das Autonomie-Paradoxon:** Je nahtloser und reibungsloser generative KI und Recommender-Systeme Aufgaben übernehmen, desto geringer wird der kognitive Eigenaufwand. Was kurzfristig Zeit spart, birgt langfristig das Risiko von *De-Skilling* und *Automation Bias* – die Fähigkeit zur eigenständigen Problemlösung verkümmert.
 2. **Die Polarisierungsfalle von Optimierungsmetriken:** Wenn Softwarearchitekturen ausschließlich auf messbare Verhaltenssignale (Klicks, Kommentare, Verweildauer) hin optimiert werden, bevorzugen Algorithmen evolutionär bedingt moralische Empörung und Sensationalismus, da diese die stärksten affektiven Reaktionen im menschlichen Gehirn auslösen.

@@ -3,7 +3,10 @@ title: "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3"
 pubDate: "2015-12-20"
 description: "Recently, I added tags to my blog posts and scientific publications. The tags allow me to connect my articles based on keywords and topics. I use the tags to im..."
 tags: ["blog", "cytoscape", "d3", "data-visualization", "hyperkit-software", "javascript", "zumida"]
-icon: "./cytoscape.png"
+icon:
+  src: "./cytoscape.png"
+  title: "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3 - Cytoscape illustration"
+  description: "Cytoscape illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3"
 ---
 The implementation with all three JavaScript libraries was straight forward.
 In all three cases, I had to convert the tag information into a proprietary [JSON](http://www.json.org/) format.
@@ -14,9 +17,9 @@ Then, each JavaScript library requires its own configuration of the display styl
 Furthermore, the library provides a stream processing API, which can be exploited for advanced style manipulations.
 However, [D3](http://d3js.org/) also requires extra code for rendering the graph layout, which can be omitted in [Cytoscape](http://js.cytoscape.org/) and [Sigma](http://sigmajs.org/). Here are the visualization results for the individual JavaScript libraries (**click to run in your browser**):
 
-[![Cytoscape illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./cytoscape.png)](/visualizations/cytoscape/)
-[![Sigma illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./sigma.png)](/visualizations/sigma/)
-[![D3 illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./d3.png)](/visualizations/d3/)
+[![Cytoscape illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./cytoscape.png "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3 - Cytoscape illustration")](/visualizations/cytoscape/)
+[![Sigma illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./sigma.png "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3 - Sigma illustration")](/visualizations/sigma/)
+[![D3 illustration from JavaScript graph libraries: Cytoscape vs. Sigma vs. D3](./d3.png "JavaScript graph libraries: Cytoscape vs. Sigma vs. D3 - D3 illustration")](/visualizations/d3/)
 
 From this first experience with using those three libraries I want to make a first conclusion on in which situation to use which of the JavaScript libraries.
 Please note that my experience is limited to getting started knowledge about the presented libraries only.

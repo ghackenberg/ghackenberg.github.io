@@ -21,7 +21,10 @@ methodologyPhases:
     description: "Implementing automated build-time schema validation fixtures and editorial authoring constraints."
 order: 1
 pubDate: 2026-09-11
-previewImage: ./preview.jpg
+previewImage:
+  src: "./preview.jpg"
+  title: "Dr. Georg Hackenberg im Professorenbüro Campus Wels"
+  description: "Dr. Georg Hackenberg definiert TypeScript- und Zod-Datenschemata am Bildschirm im Büro am FH OÖ Campus Wels"
 inputs:
   - "Existing content archives, Markdown/MDX repositories, or legacy CMS exports"
   - "Catalog of content types (articles, case studies, documentation, services, authors)"

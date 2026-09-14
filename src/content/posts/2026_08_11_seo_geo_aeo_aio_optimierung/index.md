@@ -3,7 +3,10 @@ title: "SEO, GEO, AEO & AIO: Strategische & technische Optimierung für das KI-Z
 pubDate: "2026-08-11"
 description: "Wie man eine Website nicht nur für traditionelle Suchmaschinen (SEO), sondern auch für Generative Engines (GEO), Answer Engines (AEO) und KI-Agenten (AIO) systematisch optimiert."
 tags: ["aeo", "agentic-ai", "aio", "artificial-intelligence", "astro", "geo", "knowledge-graphs", "seo", "web-development"]
-icon: "./diagram.jpg"
+icon:
+  src: "./diagram.jpg"
+  title: "SEO, GEO, AEO & AIO"
+  description: "SEO, GEO, AEO & AIO Optimierungsmodell"
 ---
 
 Die Art und Weise, wie Menschen und Maschinen Informationen im Internet suchen und verarbeiten, hat sich grundlegend verändert. Während vor wenigen Jahren die klassische Suchmaschinenoptimierung (SEO) der alleinige Standard war, um im Netz gefunden zu werden, bestimmen heute **Generative AI Engines** (wie ChatGPT Search, Perplexity, Claude und Gemini) sowie **Answer Engines** (wie Google AI Overviews) maßgeblich die Informationsbeschaffung.
@@ -12,7 +15,7 @@ Damit eine persönliche, wissenschaftliche oder unternehmerische Website im mode
 
 In diesem Artikel erklären wir die vier Begriffe kurz und zeigen anschließend Schritt für Schritt, wie wir diesen Ansatz auf dieser Website ([hackenberg.tech](https://hackenberg.tech), entwickelt auf Basis des modernen Web-Frameworks Astro) strategisch und technisch umgesetzt haben.
 
-![SEO, GEO, AEO & AIO Optimierungsmodell](./diagram.jpg)
+![SEO, GEO, AEO & AIO Optimierungsmodell](./diagram.jpg "SEO, GEO, AEO & AIO")
 
 ## 1. Die vier Dimensionen der modernen Sichtbarkeit
 

@@ -9,7 +9,10 @@ learningGoals:
 terms:
   - "Winter Term 2025/26"
 language: "en"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Dr. Georg Hackenberg im Python FEA Seminar"
+  description: "Dr. Georg Hackenberg erläutert numerische Finite-Elemente-Berechnungen mit Python anhand dreidimensionaler Spannungsmodelle im Hörsaal"
 tags:
   - "python"
   - "software-engineering"

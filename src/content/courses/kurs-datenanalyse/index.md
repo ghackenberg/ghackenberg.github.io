@@ -9,7 +9,10 @@ learningGoals:
 terms:
   - "Summer Term 2025"
 language: "de"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Dr. Georg Hackenberg im Datenanalyse-Labor"
+  description: "Dr. Georg Hackenberg präsentiert SQL-Abfragen, relationale Datenbankschemata und multidimensionale OLAP-Cubes im Computer-Hörsaal"
 tags:
   - "data-integration"
   - "python"

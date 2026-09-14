@@ -209,7 +209,8 @@ const languageColors: Record<string, string> = {
               <>
                 <Image 
                   src={repo.image} 
-                  alt=""
+                  alt={`Vorschau: ${repo.title}`}
+                  title={`GitHub: ${repo.title}`}
                   width={480}
                   height={270}
                   class="absolute inset-0 w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-300 z-0 pointer-events-none" 

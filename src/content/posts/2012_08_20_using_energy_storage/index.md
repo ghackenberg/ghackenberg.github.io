@@ -3,13 +3,16 @@ title: "Using Energy Storage"
 pubDate: "2012-08-19"
 description: "After adding the powerhouse in the previous example we now integrate a model of energy storage components into the picture. This first study explores the behavi..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "optimization", "simulation"]
-icon: "./diagram.png"
+icon:
+  src: "./diagram.png"
+  title: "Using Energy Storage - Diagram illustration"
+  description: "Diagram illustration from Using Energy Storage"
 ---
 The following diagram shows the power curves for the three components: Solar panel, powerhouse and energy storage.
 Again, the powerhouse shuts down when plenty of solar energy is available.
 In contrast, the energy storage loads during high solar power times and unloads afterwards.
 
-![Diagram illustration from Using Energy Storage](./diagram.png)
+![Diagram illustration from Using Energy Storage](./diagram.png "Using Energy Storage - Diagram illustration")
 
 Interestingly, unloading the storage helps to delay powerhouse usage a little therefore decreasing fossil energy usage.
 In following studies we investigate the usage of energy storage further!

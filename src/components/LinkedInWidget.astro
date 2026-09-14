@@ -81,7 +81,8 @@ const hasPosts = formattedPosts.length > 0;
               <>
                 <Image 
                   src={post.image} 
-                  alt=""
+                  alt={post.text ? `LinkedIn Beitrag: ${post.text.slice(0, 80)}` : "Dr. Georg Hackenberg LinkedIn Update"}
+                  title={post.text ? `LinkedIn: ${post.text.slice(0, 40)}` : "LinkedIn Beitrag"}
                   width={480}
                   height={360}
                   class="absolute inset-0 w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-300 z-0 pointer-events-none" 

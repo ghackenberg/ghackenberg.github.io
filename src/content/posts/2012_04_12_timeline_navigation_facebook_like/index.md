@@ -3,12 +3,15 @@ title: "Introducing Timeline Navigation and Facebook Like"
 pubDate: "2012-04-11"
 description: "To improve the usability of my blog I worked on two new features: (1) The timeline navigation and (2) the Facebook like button. When reading an article, the tim..."
 tags: ["blog", "user-interface", "ux-design", "web-development"]
-icon: "./facebook.png"
+icon:
+  src: "./facebook.png"
+  title: "Introducing Timeline Navigation and Facebook Like - Facebook illustration"
+  description: "Facebook illustration from Introducing Timeline Navigation and Facebook Like"
 ---
 First, here are two screenshots of the new features:
 
-[![Facebook illustration from Introducing Timeline Navigation and Facebook Like](./facebook.png)](./facebook.png)
-[![Timeline illustration from Introducing Timeline Navigation and Facebook Like](./timeline.png)](./timeline.png)
+[![Facebook illustration from Introducing Timeline Navigation and Facebook Like](./facebook.png "Introducing Timeline Navigation and Facebook Like - Facebook illustration")](./facebook.png)
+[![Timeline illustration from Introducing Timeline Navigation and Facebook Like](./timeline.png "Introducing Timeline Navigation and Facebook Like - Timeline illustration")](./timeline.png)
 
 The **left** screenshot shows the Facebook like button on the article list pages.
 In fact, you can find the button anywhere where an article is linked.

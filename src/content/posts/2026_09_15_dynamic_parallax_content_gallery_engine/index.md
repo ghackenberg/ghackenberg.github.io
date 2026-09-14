@@ -3,7 +3,10 @@ title: "Building a Dynamic Parallax Content Gallery: Kinematics, Zero-Duplicatio
 pubDate: "2026-09-15"
 description: "How we engineered a living 3-tier parallax content gallery in Astro and TypeScript featuring optical motion kinematics, zero on-screen duplication, and a two-factor probabilistic selection engine powered by localStorage LRU history tracking."
 tags: ["web-development", "astro", "typescript", "localstorage", "ux-design", "user-interface", "software-architecture"]
-icon: "./icon.jpg"
+icon:
+  src: "./icon.jpg"
+  title: "Cover illustration: Building a Dynamic Parallax Content Gallery: Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
+  description: "How we engineered a living 3-tier parallax content gallery in Astro and TypeScript featuring optical motion kinematics, zero on-screen duplication, and a two-factor probabilistic selection engine powered by localStorage LRU history tracking."
 ---
 
 When visitors arrive at a personal technical portfolio or academic website, they are typically greeted by a static hero section followed by a conventional chronological list. While this works well for highlighting the latest few entries, it leaves a vast repository of historical depth unseen. Over the past twenty years, my website has accumulated more than 170 distinct illustrated articles, open-source projects, university course curricula, consulting architectures, interactive physics simulations, and scientific research domains.
@@ -28,7 +31,7 @@ In human visual perception, **motion parallax** is a primary depth cue: objects 
 | **Row 2** | Midground | `w-52 sm:w-60 md:w-64` (256px) | ~42 px/s | ~65% | Compact Title, One-line Tagline |
 | **Row 3** | Background | `w-40 sm:w-48 md:w-52` (208px) | ~26 px/s | ~40% | Subtle Title only |
 
-![3-Tier Motion Parallax Model & Kinematics](./parallax_kinematics.svg)
+![Kinematisches Modell und mathematische Vektordiagramme der dreistufigen Parallaxe für das responsive Web-Rendering](./parallax_kinematics.svg "3-Tier Motion Parallax Model & Kinematics")
 
 ### Why this sizing and velocity ratio works
 1. **Focus Separation**: Row 1 captures primary attention with generous 16:9 canvas areas, crisp typography, and an interactive hover indicator. Row 2 offers density and scanning speed. Row 3 provides ambient, horizon-like movement that gives the entire viewport a cinematic sense of depth.
@@ -44,7 +47,7 @@ Most looping web marquees duplicate their entire DOM tree (e.g., `Sequence A` an
 
 To overcome this, we implemented a **continuous client-side DOM conveyor belt** driven by `requestAnimationFrame`.
 
-![Zero-Jump Continuous DOM Recycling Loop](./dom_recycling_loop.svg)
+![Zero-Jump Continuous DOM Recycling Loop](./dom_recycling_loop.svg "Dom Recycling Loop")
 
 ### The Mathematics of Frictionless Recycling
 Each track maintains a virtual horizontal coordinate `track.x`. On every frame, the scroller calculates the delta time $dt$ and moves the track:

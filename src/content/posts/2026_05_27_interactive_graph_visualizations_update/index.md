@@ -3,7 +3,10 @@ title: "Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic La
 pubDate: "2026-05-27"
 description: "A deep dive into refactoring our website's interactive visualization network. Learn how we integrated 3D Force graphs, Vis.js canvas rendering, smooth coordinate transitions, and real-time theme syncing with URL state persistence."
 tags: ["astro", "computer-graphics", "cytoscape", "d3", "data-visualization", "javascript", "threejs", "visjs", "webgl"]
-icon: "./icon.png"
+icon:
+  src: "./icon.png"
+  title: "Cover illustration: Modernizing Interactive Network Graphs: 3D WebGL, Vis.js, and Dynamic Layout Syncing"
+  description: "A deep dive into refactoring our website's interactive visualization network. Learn how we integrated 3D Force graphs, Vis.js canvas rendering, smooth coordinate transitions, and real-time theme syncing with URL state persistence."
 ---
 To help visitors explore the relationships between topics, blog posts, and academic publications, this website features interactive network graph visualizations. Recently, we gave this visualization system a major architectural and aesthetic overhaul. 
 
@@ -13,7 +16,7 @@ Here is a technical walkthrough of how we restructured the system, implemented l
 
 ## 1. Modular Architecture: Decoupling the Engines
 
-![Visualization System Modular Architecture](./architecture.jpg)
+![Modulare Architektur der Netzwerk-Visualisierungs-Engines](./architecture.jpg "Modulare Graph-Visualisierungsarchitektur in Astro")
 
 Originally, the logic for loading libraries and initializing the graphs was crammed directly inside our Astro page. This made it difficult to maintain and expand. To resolve this, we extracted the code into a modular structure where each graphing engine is defined as a standalone JavaScript ES module.
 
@@ -49,7 +52,7 @@ Alongside our existing Cytoscape, D3, and Sigma engines, we introduced two new v
 ### 3D Force Graph (WebGL & Three.js)
 The 3D Force Graph engine ([3d-force/engine.js](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/content/visualizations/3d-force/engine.js)) renders the network as a floating three-dimensional sphere. 
 
-![3D Force Graph Preview](./3d-force.png)
+![3D Force Graph Preview](./3d-force.png "3d Force")
 
 - **Volumetric Rendering**: Users can rotate, zoom, and pan around the network using an orbit controller.
 - **Dynamic Particles**: To show connections actively, we enabled directional particles traveling along links.
@@ -58,7 +61,7 @@ The 3D Force Graph engine ([3d-force/engine.js](https://github.com/ghackenberg/g
 ### Vis.js Network (HTML5 Canvas)
 The Vis.js engine ([vis-network/engine.js](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/content/visualizations/vis-network/engine.js)) provides an incredibly smooth 2D canvas visualization.
 
-![Vis.js Network Preview](./vis-network.png)
+![Vis.js Network Preview](./vis-network.png "Vis Network")
 
 - **Elastic Physics**: Nodes react like spring-mass dampers, settling into place with organic bouncing effects.
 - **Custom Shapes & Labels**: Each node type (Tag, Post, Publication) is color-coded and sized proportionally based on its degree of connections, with custom font configurations matching our typography.

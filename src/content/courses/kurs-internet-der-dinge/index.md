@@ -9,7 +9,10 @@ learningGoals:
 terms:
   - "Summer Term 2025"
 language: "de"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Dr. Georg Hackenberg im IoT-Hardware-Labor"
+  description: "Dr. Georg Hackenberg demonstriert C#-Firmware, Live-MQTT-Telemetriedaten und ThingsBoard-Dashboards im Elektronik- und Sensoriklabor"
 tags:
   - "iot"
   - "smart-home"

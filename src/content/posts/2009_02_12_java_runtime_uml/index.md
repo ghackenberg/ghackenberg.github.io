@@ -3,11 +3,14 @@ title: "Java Runtime UML."
 pubDate: "2009-02-11"
 description: "Two years ago, I started a project called SoftRay at Siemens Corporate Research in Princeton. The tool generates UML diagrams from running Java programs. It's q..."
 tags: ["data-visualization", "software-architecture", "software-systems"]
-icon: "./uml_diagram.png"
+icon:
+  src: "./uml_diagram.png"
+  title: "UML-Klassendiagramm aus Java-Laufzeitaufrufen (SoftRay)"
+  description: "Generiertes UML-Klassendiagramm mit Aufrufabhängigkeiten aus laufenden Java-Programmen mittels SoftRay."
 ---
 Here's a little sample from my work:
 
-![Uml diagram illustration from Java Runtime UML.](./uml_diagram.png)
+![Generiertes UML-Klassendiagramm mit Aufrufabhängigkeiten aus laufenden Java-Programmen](./uml_diagram.png "UML-Klassendiagramm aus Java-Laufzeitaufrufen (SoftRay)")
 
 The diagram shows a sample Java programm using four different classes.
 The class methods are connected via edges indicating call dependencies.

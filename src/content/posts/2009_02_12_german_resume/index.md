@@ -3,7 +3,10 @@ title: "German Resume."
 pubDate: "2009-02-11"
 description: "For those, who are interested in my career, here is my current resume. Unfortunatelly, for now I only have a German version. The updated English version will fo..."
 tags: ["data-visualization"]
-icon: "./screenshot.png"
+icon:
+  src: "./screenshot.png"
+  title: "Cover illustration: German Resume."
+  description: "For those, who are interested in my career, here is my current resume. Unfortunatelly, for now I only have a German version. The updated English version will fo..."
 ---
 Download the document here:
 

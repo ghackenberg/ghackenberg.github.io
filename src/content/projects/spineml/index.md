@@ -7,7 +7,10 @@ tags: ["data-visualization", "factory-layout", "manufacturing-systems", "open-so
 accentColor: "blue"
 order: 4
 repoName: "spineml"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Fabriklayout- und Materialfluss-Planung"
+  description: "Isometrische Darstellung einer automatisierten Fertigungshalle mit Roboterzellen, Förderbändern und optimierten Materialfluss-Pfaden"
 screenshots:
   - image: "./screenshot1.png"
     title: "Factory Layout Optimization"

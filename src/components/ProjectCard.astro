@@ -10,8 +10,8 @@ interface Props {
   tags: string[];
   activeTag?: string;
   accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
-  screenshot?: ImageMetadata;
-  screenshotLight?: ImageMetadata;
+  screenshot?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  screenshotLight?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
 }
 
 const { 
@@ -20,21 +20,31 @@ const {
   description, 
   href, 
   tags, 
-  activeTag,
+  activeTag, 
   accentColor = 'blue',
   screenshot,
   screenshotLight
 } = Astro.props;
 
-const optimizedScreenshot = screenshot ? await getImage({
-  src: screenshot,
+const isScreenshotObj = Boolean(screenshot && typeof screenshot === 'object' && 'src' in screenshot && screenshot.src);
+const screenshotImg = isScreenshotObj ? (screenshot as { src: ImageMetadata }).src : (screenshot as ImageMetadata | undefined);
+const screenshotTitle = isScreenshotObj ? (screenshot as { title: string }).title : title;
+const screenshotDesc = isScreenshotObj ? (screenshot as { description: string }).description : (tagline ? `${title} – ${tagline}` : `Showcase and project preview for ${title}`);
+
+const isScreenshotLightObj = Boolean(screenshotLight && typeof screenshotLight === 'object' && 'src' in screenshotLight && screenshotLight.src);
+const screenshotLightImg = isScreenshotLightObj ? (screenshotLight as { src: ImageMetadata }).src : (screenshotLight as ImageMetadata | undefined);
+const screenshotLightTitle = isScreenshotLightObj ? (screenshotLight as { title: string }).title : `${title} (Light Mode)`;
+const screenshotLightDesc = isScreenshotLightObj ? (screenshotLight as { description: string }).description : (tagline ? `${title} – ${tagline} (Light Theme)` : `Showcase and project preview for ${title} in light mode`);
+
+const optimizedScreenshot = screenshotImg ? await getImage({
+  src: screenshotImg,
   format: 'webp',
   width: 640,
   quality: 80
 }) : null;
 
-const optimizedScreenshotLight = screenshotLight ? await getImage({
-  src: screenshotLight,
+const optimizedScreenshotLight = screenshotLightImg ? await getImage({
+  src: screenshotLightImg,
   format: 'webp',
   width: 640,
   quality: 80
@@ -95,9 +105,9 @@ const badgeColorClass = {
       <svg 
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
         viewBox="0 0 160 90" 
-        preserveAspectRatio="none"
-        role="img"
-        aria-label={`Project preview: ${title}`}
+        preserveAspectRatio="none" 
+        role="img" 
+        aria-label={screenshotDesc}
       >
         <defs>
           <linearGradient id={`grad-project-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
@@ -112,13 +122,15 @@ const badgeColorClass = {
           </linearGradient>
         </defs>
         <image 
-          href={optimizedScreenshot ? optimizedScreenshot.src : ''} 
+          href={optimizedScreenshot ? optimizedScreenshot.src : (screenshotImg ? screenshotImg.src : '')} 
           x="0" 
           y="0" 
           width="160" 
           height="90" 
           preserveAspectRatio="xMidYMid slice" 
           class={optimizedScreenshotLight ? "block light:hidden" : "block"}
+          {...{ title: screenshotTitle }}
+          aria-label={screenshotDesc}
         />
         {optimizedScreenshotLight && (
           <image 
@@ -129,6 +141,8 @@ const badgeColorClass = {
             height="90" 
             preserveAspectRatio="xMidYMid slice" 
             class="hidden light:block"
+            {...{ title: screenshotLightTitle }}
+            aria-label={screenshotLightDesc}
           />
         )}
         <rect 

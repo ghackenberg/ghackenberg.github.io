@@ -3,7 +3,10 @@ title: "Langzeitgedächtnis für autonome KI-Agenten: Warum Full-Context und nai
 pubDate: "2026-09-04"
 description: "Eine ingenieurwissenschaftliche Analyse des Gedächtnisproblems bei LLM-Agenten: Warum Brute-Force-Kontexte und simples RAG versagen, wie Mem0 das Lifecycle-Problem löst und welche empirischen Benchmarks die Architektur stützen."
 tags: ["artificial-intelligence", "agentic-ai", "mem0", "software-architecture", "machine-learning", "rag", "knowledge-graphs", "benchmarks"]
-icon: "./icon.jpg"
+icon:
+  src: "./icon.jpg"
+  title: "Titelgrafik: Langzeitgedächtnis für autonome KI-Agenten: Warum Full-Context und naive RAG scheitern – Problem, Architektur und empirische Evaluation von Mem0"
+  description: "Eine ingenieurwissenschaftliche Analyse des Gedächtnisproblems bei LLM-Agenten: Warum Brute-Force-Kontexte und simples RAG versagen, wie Mem0 das Lifecycle-Problem löst und welche empirischen Benchmarks die Architektur stützen."
 ---
 
 In unserem gestrigen Beitrag zum [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) haben wir das architektonische Schichtenmodell für produktionsreife Unternehmensagenten vorgestellt. Ein zentraler Pfeiler in Schicht 4 (*Hybrid Data & Memory*) war die Komponente **Mem0** zur Verwaltung des sitzungsübergreifenden Langzeitgedächtnisses.
@@ -14,7 +17,7 @@ Jeder Aufruf einer LLM-Inferenz-API beginnt als tabula rasa. Für autonome Agent
 
 Dieser Artikel liefert die theoretische, mathematische und empirische Tiefenanalyse.
 
-![Langzeitgedächtnis für autonome KI-Agenten: Problem- und Lösungsraum im Überblick](./mem0_problem_and_solution.svg)
+![Langzeitgedächtnis für autonome KI-Agenten: Problem- und Lösungsraum im Überblick](./mem0_problem_and_solution.svg "Langzeitgedächtnis für autonome KI-Agenten")
 
 ## 1. Das Gedächtnis- und Kontextdilemma von LLMs
 
@@ -73,7 +76,7 @@ Die Entwickler von **Mem0** (Chhikara et al., 2025: *„Mem0: Building Productio
 
 Mem0 fungiert als intelligenter Vermittler zwischen dem Agenten-Workflow (z. B. LangGraph) und den physischen Datenbanken.
 
-![Der Mem0-Lifecycle: Von Dialog-Streams zu persistenter Wissensevolution](./mem0_architecture_lifecycle.svg)
+![Der Mem0-Lifecycle: Von Dialog-Streams zu persistenter Wissensevolution](./mem0_architecture_lifecycle.svg "Dialog-Streams zu persistenter Wissensevolution - Der Mem0-Lifecycle:")
 
 Die Architektur stützt sich auf vier fundamentale Design-Prinzipien:
 

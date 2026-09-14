@@ -3,7 +3,10 @@ title: "Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie
 pubDate: "2026-09-02"
 description: "Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken."
 tags: ["artificial-intelligence", "calm-technology", "cognitive-ergonomics", "devops", "human-computer-interaction", "humane-tech", "local-first", "mindful-it", "psychology", "software-architecture"]
-icon: "./icon.jpg"
+icon:
+  src: "./icon.jpg"
+  title: "Titelgrafik: Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist"
+  description: "Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken."
 ---
 
 In unserem vorherigen Beitrag zur [Psychologie der modernen Informationstechnologie](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/) haben wir die Mechanismen analysiert, mit denen heutige Plattformen, Recommender-Pipelines und persuasive Benutzeroberflächen auf das menschliche Gehirn einwirken: dopaminerge Verstärkungsschleifen, kognitive Fragmentierung, *Attention Residue* und das Phänomen des *Information Overload*.
@@ -20,7 +23,7 @@ Doch wie sieht die **konstruktive ingenieurwissenschaftliche Antwort** aus?
 
 **Mindful IT** (Achtsame Informationstechnologie) und **Calm Computing** sind keine esoterischen Wellness-Trends oder bloße Meditations-Apps. Sie markieren einen fundamentalen **Paradigmenwechsel im Software-Engineering und in der Systemarchitektur**. Es geht um den systematischen Entwurf von IT-Systemen, Datenarchitekturen und KI-Agenten, die die biologischen Grenzen der menschlichen Kognition respektieren, mentale Reibung minimieren und den Menschen als intentional handelndes Subjekt in den Mittelpunkt stellen.
 
-![Mindful IT & Calm Computing - Der fokussierte Arbeitsplatz](./mindful_it_header.jpg)
+![Mindful IT & Calm Computing - Der fokussierte Arbeitsplatz](./mindful_it_header.jpg "Mindful IT & Calm Computing")
 
 ## 1. Der Paradigmenwechsel: Von „Attention Extraction“ zu „Kognitiver Resilienz“
 
@@ -69,13 +72,13 @@ Aufbauend auf der *Cognitive Load Theory* von John Sweller unterscheidet **Posit
 * **Extraneous Load minimieren:** Beseitigung von visuellen Störgeräuschen, inkonsistenten Navigationsstrukturen und redundantem Feedback.
 * **Germane Load maximieren:** Bereitstellung präziser mentaler Modelle, klarer Abstraktionen und nachvollziehbarer Systemzustände, die das Verstehen komplexer Zusammenhänge unterstützen.
 
-![Calm Technology und Kognitive Ergonomie](./calm_technology_cognition.svg)
+![Calm Technology und Kognitive Ergonomie](./calm_technology_cognition.svg "Calm Technology Cognition")
 
 ## 3. Software-Architekturen & Engineering-Muster für Mindful Systems
 
 Wie übersetzt man psychologische Achtsamkeitsprinzipien in konkrete Systemarchitekturen, Datenmodelle und Code? Fünf Architekturmuster bilden das technologische Rückgrat:
 
-![Referenzarchitektur eines Mindful-IT-Systems](./mindful_software_architecture.svg)
+![Referenzarchitektur eines Mindful-IT-Systems](./mindful_software_architecture.svg "Mindful Software Architecture")
 
 ### 1. Pull- & Digest-First vs. Realtime-Push-Spam
 
@@ -147,7 +150,7 @@ Ein unterschätzter Treiber von kognitiver Überlastung in Entwicklungsteams ist
 
 Mindful IT besinnt sich auf das Prinzip der **minimalen hinreichenden Komplexität**: Ein gut strukturierter Monolith oder eine klar umrissene Modul-Architektur schont die mentalen Ressourcen des gesamten Teams über Jahre hinweg.
 
-![Mindful Engineering, SRE und Markt-Ökosystem](./mindful_ecosystem_devops.svg)
+![Mindful Engineering, SRE und Markt-Ökosystem](./mindful_ecosystem_devops.svg "Mindful Ecosystem Devops")
 
 ## 5. Marktlandschaft & Referenz-Ökosysteme
 

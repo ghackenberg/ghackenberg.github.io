@@ -9,7 +9,10 @@ learningGoals:
 terms:
   - "Winter Term 2025/26"
 language: "de"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Systems Engineering & Mechatronik-Labor"
+  description: "Dr. Georg Hackenberg erläutert MATLAB-Simulink-Blockschaltbilder und Bode-Diagramme vor einem mechatronischen Motorprüfstand"
 tags:
   - "systems-engineering"
   - "systems-analysis"

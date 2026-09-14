@@ -3,7 +3,10 @@ title: "Empirische Daten zu GEO, AEO & SEO: Was Peer-Reviewed Studien und Indust
 pubDate: "2026-09-11"
 description: "Wissenschaftlich fundierte Synthese empirischer Forschungsergebnisse zu Generative Engine Optimization (GEO) und Answer Engine Optimization (AEO): Peer-Reviewed vs. Non-Peer-Reviewed im kritischen Qualitäts- und Glaubwürdigkeitsvergleich."
 tags: ["aeo", "agentic-ai", "aio", "artificial-intelligence", "benchmarks", "geo", "knowledge-graphs", "rag", "seo", "web-development"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "GEO & AEO empirische Forschung"
+  description: "GEO & AEO empirische Forschung im Labor"
 ---
 
 In unserem [vorherigen Beitrag vom 11. August 2026](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/) haben wir die theoretischen Grundlagen und die technische Umsetzung für die vier Dimensionen moderner Websichtbarkeit vorgestellt: **SEO**, **GEO**, **AEO** und **AIO**. Wir haben dargelegt, wie sich Websites durch Standards wie `llms.txt`, strukturierte JSON-LD Schemas und „Answer-First“-Architekturen für RAG-Systeme und KI-Agenten rüsten lassen.
@@ -19,7 +22,7 @@ In der SEO- und Tech-Branche wird jedoch viel behauptet, wenn neue Buzzwords auf
 
 In diesem Artikel ziehen wir Bilanz über den aktuellen wissenschaftlichen und industriellen Erkenntnisstand. Dabei unterscheiden wir strikt zwischen **Peer-Reviewed Publikationen** (akademisch geprüfte Forschung) und **Non-Peer-Reviewed Publikationen** (Industriereporte und Tool-Benchmarks). Abschließend bewerten wir Methodik, Datenqualität und Glaubwürdigkeit beider Quellen.
 
-![GEO & AEO empirische Forschung im Labor](./hero.jpg)
+![GEO & AEO empirische Forschung im Labor](./hero.jpg "GEO & AEO empirische Forschung")
 
 ## 1. Peer-Reviewed Publikationen: Wissenschaftliche Kausalanalysen
 
@@ -63,7 +66,7 @@ Parallel zur akademischen Forschung erheben SEO-Software-Anbieter und Digital-In
 
 Stellt man die wissenschaftlich isolierten Kausalhebel den makroökonomischen Live-Telemetriedaten der Suchmaschinen gegenüber, wird das Spannungsfeld zwischen Optimierungspotenzial und Marktrealität unmittelbar greifbar: Während akademische Benchmarks präzise quantifizieren, *mit welchen inhaltlichen Anpassungen* man in generativen Antworten zitiert wird, belegen die Industriedaten, *welche gravierenden Konsequenzen* die Verdrängung klassischer Suchergebnisse für den organischen Webtraffic mit sich bringt.
 
-![GEO & AEO empirische Studienlandschaft im Überblick: Wissenschaftliche Kausalhebel vs. Live-Marktdynamik](./empirical_geo_landscape.svg)
+![GEO & AEO empirische Studienlandschaft im Überblick: Wissenschaftliche Kausalhebel vs. Live-Marktdynamik](./empirical_geo_landscape.svg "GEO & AEO empirische Studienlandschaft im Überblick")
 
 Bevor wir aus diesen Zahlen handfeste architektonische Konsequenzen für das Web-Engineering ableiten, müssen wir die beiden Datenwelten methodisch auf Herz und Nieren prüfen.
 

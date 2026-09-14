@@ -19,8 +19,9 @@ const allTags = Array.from(tagsSet).sort();
 // Find the first course's screenshot to preload for LCP
 const firstCourse = courses[0];
 const firstCourseScreenshot = firstCourse?.data.screenshot;
-const optimizedFirstScreenshot = firstCourseScreenshot ? await getImage({
-  src: firstCourseScreenshot,
+const firstCourseScreenshotImg = firstCourseScreenshot ? (typeof firstCourseScreenshot === 'object' && 'src' in firstCourseScreenshot ? firstCourseScreenshot.src : firstCourseScreenshot) : null;
+const optimizedFirstScreenshot = firstCourseScreenshotImg ? await getImage({
+  src: firstCourseScreenshotImg,
   format: 'webp',
   width: 480,
   quality: 80

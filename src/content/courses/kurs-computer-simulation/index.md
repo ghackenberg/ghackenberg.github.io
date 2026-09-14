@@ -9,7 +9,10 @@ learningGoals:
 terms:
   - "Winter Term 2025/26"
 language: "de"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Dr. Georg Hackenberg im Simulationsseminar"
+  description: "Dr. Georg Hackenberg demonstriert kontinuierliche Zustandsraumtrajektorien, Monte-Carlo-Histogramme und Stromnetzmodelle auf einem holografischen Zylinderdisplay"
 tags:
   - "simulation"
   - "manufacturing-systems"

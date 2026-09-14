@@ -378,7 +378,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
                 <!-- Logo Container -->
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-950 border border-element-border-medium shrink-0 overflow-hidden shadow-inner relative z-20 timeline-logo-container">
                   {isSelfEmployed ? (
-                    <img src="/favicon.svg" alt={group.company} class="w-7 h-7 object-contain" />
+                    <img src="/favicon.svg" alt={`Logo von ${group.company}`} title={group.company} class="w-7 h-7 object-contain" />
                   ) : (
                     <svg viewBox="0 0 100 100" class="w-full h-full" set:html={svgContent}></svg>
                   )}

@@ -3,7 +3,10 @@ title: "Research Group Seminar Winter 2011"
 pubDate: "2011-04-20"
 description: "Beginning of this week the research group I currently work at was going onto a two day seminar trip onto the country side south of Munich. Since we are a very l..."
 tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interface", "slideshare-presentation"]
-icon: "./screenshot.png"
+icon:
+  src: "./screenshot.png"
+  title: "Cover illustration: Research Group Seminar Winter 2011"
+  description: "Beginning of this week the research group I currently work at was going onto a two day seminar trip onto the country side south of Munich. Since we are a very l..."
 ---
 The event was situated in the [Seminar Hotel Jonathan](http://www.jonathan-seminarhotel.de), an establishment which focuses on providing a dedicated environment for learning and personal development.
 Over two days my colleagues and I gave talks about their current research status in the field of software engineering.

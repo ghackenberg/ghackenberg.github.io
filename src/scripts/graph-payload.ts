@@ -108,6 +108,16 @@ export interface TagCounts {
   allTags: string[];
 }
 
+type ImageSource = Parameters<typeof getImage>[0]["src"] | { src?: Parameters<typeof getImage>[0]["src"]; image?: Parameters<typeof getImage>[0]["src"]; title?: string; description?: string };
+
+function extractImageSrc(img: ImageSource | undefined): Parameters<typeof getImage>[0]["src"] | undefined {
+  if (!img) return undefined;
+  if (typeof img === "object" && img !== null && "src" in img && img.src) {
+    return img.src;
+  }
+  return img as Parameters<typeof getImage>[0]["src"];
+}
+
 interface RawEntity {
   id: string;
   data: {
@@ -115,10 +125,10 @@ interface RawEntity {
     description?: string;
     pubDate?: string | Date;
     tags?: string[];
-    icon?: Parameters<typeof getImage>[0]["src"];
-    screenshot?: Parameters<typeof getImage>[0]["src"];
-    screenshotLight?: Parameters<typeof getImage>[0]["src"];
-    previewImage?: Parameters<typeof getImage>[0]["src"];
+    icon?: ImageSource;
+    screenshot?: ImageSource;
+    screenshotLight?: ImageSource;
+    previewImage?: ImageSource;
     abstract?: string;
     book?: string;
   };
@@ -241,9 +251,10 @@ export async function buildGraphPayload(options: {
   for (const post of options.posts) {
     const path = `/posts/${post.id}/`;
     let imageSrc: string | undefined = undefined;
-    if (post.data.icon && options.getImage) {
+    const postImg = extractImageSrc(post.data.icon);
+    if (postImg && options.getImage) {
       try {
-        const opt = await options.getImage({ src: post.data.icon, format: "webp", width: 240, quality: 75 });
+        const opt = await options.getImage({ src: postImg, format: "webp", width: 240, quality: 75 });
         imageSrc = opt.src;
       } catch (e) {
         console.warn("Failed to optimize post icon", e);
@@ -291,7 +302,7 @@ export async function buildGraphPayload(options: {
   for (const project of options.projects) {
     const path = `/projects/${project.id}/`;
     let imageSrc: string | undefined = undefined;
-    const projectImg = project.data.screenshot || project.data.screenshotLight;
+    const projectImg = extractImageSrc(project.data.screenshot || project.data.screenshotLight);
     if (projectImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: projectImg, format: "webp", width: 240, quality: 75 });
@@ -322,9 +333,10 @@ export async function buildGraphPayload(options: {
   for (const course of options.courses) {
     const path = `/courses/${course.id}/`;
     let imageSrc: string | undefined = undefined;
-    if (course.data.screenshot && options.getImage) {
+    const courseImg = extractImageSrc(course.data.screenshot);
+    if (courseImg && options.getImage) {
       try {
-        const opt = await options.getImage({ src: course.data.screenshot, format: "webp", width: 240, quality: 75 });
+        const opt = await options.getImage({ src: courseImg, format: "webp", width: 240, quality: 75 });
         imageSrc = opt.src;
       } catch (e) {
         console.warn("Failed to optimize course screenshot", e);
@@ -352,9 +364,10 @@ export async function buildGraphPayload(options: {
   for (const service of options.services) {
     const path = `/services/${service.id}/`;
     let imageSrc: string | undefined = undefined;
-    if (service.data.previewImage && options.getImage) {
+    const serviceImg = extractImageSrc(service.data.previewImage);
+    if (serviceImg && options.getImage) {
       try {
-        const opt = await options.getImage({ src: service.data.previewImage, format: "webp", width: 240, quality: 75 });
+        const opt = await options.getImage({ src: serviceImg, format: "webp", width: 240, quality: 75 });
         imageSrc = opt.src;
       } catch (e) {
         console.warn("Failed to optimize service preview", e);

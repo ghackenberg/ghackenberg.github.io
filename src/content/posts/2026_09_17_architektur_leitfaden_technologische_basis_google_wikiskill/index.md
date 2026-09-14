@@ -3,7 +3,10 @@ title: "Architektur-Leitfaden: Die richtige technologische Basis für Google Wik
 pubDate: "2026-09-17"
 description: "Wie lässt sich das WikiSkill-Paradigma (Inference → Tracing → Wiki Maintenance → Skill Synthesis → Gating) in Software gießen? Ein fundierter Technologie- und Architektur-Vergleich zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph für Web-, CLI- und Enterprise-Ökosysteme."
 tags: ["agentic-ai", "artificial-intelligence", "benchmarks", "enterprise-ai", "hermes-agent", "langgraph", "open-source", "python", "software-architecture", "software-engineering", "typescript", "web-development", "wikiskills"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Architektur-Leitfaden für Google WikiSkill"
+  description: "Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg analysiert am Besprechungstisch im Campus Office Wels die technologische Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph"
 ---
 
 In unserer Beitragsreihe zur softwaretechnischen Realisierung souveräner Agentensysteme haben wir die Bausteine moderner KI-Plattformen schrittweise erschlossen: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das sitzungsübergreifende [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die kollaborative [Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/), das hochperformante Routing via [LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur [Enterprise Identity Governance via Keycloak](/posts/2026_09_10_keycloak_architektur_und_funktionsweise/). Nachdem wir in der theoretischen Fundierung die [persistente Wissensevolution nach Google WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) sowie den [Vergleich zwischen Hermes Agent und WikiSkills](/posts/2026_09_16_skill_evolution_hermes_agent_vs_google_wikiskills/) analysiert haben, stehen Software-Architekten vor der entscheidenden Umsetzungsfrage: **Welche technologische Basis eignet sich am besten, um das WikiSkill-Muster in realen Produktionssystemen verlässlich in Code zu gießen?**
@@ -16,7 +19,7 @@ Anstatt flüchtige Kontextfenster immer wieder mit Versuch-und-Irrtum-Routinen z
 
 Dieser Architektur-Leitfaden definiert die unverzichtbaren Systemkriterien für WikiSkill-Runtimes, unterzieht die fünf maßgeblichen Technologie-Stacks einer softwaretechnischen Eignungsprüfung und gibt konkrete Stack-Empfehlungen für Web-, CLI- und Enterprise-Szenarien.
 
-![Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg analysiert am Besprechungstisch im Campus Office Wels die technologische Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph](./hero.jpg)
+![Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg analysiert am Besprechungstisch im Campus Office Wels die technologische Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph](./hero.jpg "Architektur-Leitfaden für Google WikiSkill")
 
 > [!TIP]
 > **Kompakt-Rekapitulation: Die 3 Schichten des WikiSkill-Paradigmas**
@@ -28,7 +31,7 @@ Dieser Architektur-Leitfaden definiert die unverzichtbaren Systemkriterien für 
 
 Um den iterativen Evolutionszyklus ($\text{Inference} \rightarrow \text{Trace Logging} \rightarrow \text{Wiki Maintenance} \rightarrow \text{Skill Synthesis} \rightarrow \text{Gating/Rollback}$) stabil und deterministisch zu betreiben, muss die zugrunde liegende Software-Architektur drei Kernkriterien erfüllen. Fehlt auch nur eines dieser Kriterien, bricht die Wissensevolution in sich zusammen.
 
-![Das WikiSkill-Paradigma und seine 3 Implementierungskriterien: Zustandstrennung, Deterministisches Gating und Observability](./wikiskill_kriterien_und_pipeline.svg)
+![Das WikiSkill-Paradigma und seine 3 Implementierungskriterien: Zustandstrennung, Deterministisches Gating und Observability](./wikiskill_kriterien_und_pipeline.svg "Das WikiSkill-Paradigma und seine 3 Implementierungskriterien")
 
 ### Kriterium 1: Zustandstrennung (State Separation & Asynchronie)
 
@@ -52,7 +55,7 @@ Die Qualität der Wissensbasis im Wiki hängt direkt von der Vollständigkeit un
 
 Auf Basis dieser Kriterien haben wir fünf prominente technologische Grundlagen untersucht, die heute für den Aufbau agentischer Systeme in Betracht gezogen werden:
 
-![Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes: Mastra vs. Pi Agent vs. PydanticAI vs. Hermes vs. LangGraph](./wikiskill_technologie_matrix.svg)
+![Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes: Mastra vs. Pi Agent vs. PydanticAI vs. Hermes vs. LangGraph](./wikiskill_technologie_matrix.svg "Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes")
 
 | Technologische Basis | Kern-Charakteristik | Implementierungs-Aufwand für WikiSkill | Eignung für WikiSkill | Typisches Einsatzfeld |
 | :--- | :--- | :--- | :--- | :--- |

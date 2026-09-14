@@ -3,13 +3,16 @@ title: "Promotional Smart Grid Videos"
 pubDate: "2011-08-11"
 description: "Currently I am working hard to understand ongoing efforts for revolutionizing the energy supply systems across the globe. In a recent article - a View onto the ..."
 tags: ["drawing", "energy-systems", "youtube-video"]
-icon: "./youtube_research.jpg"
+icon:
+  src: "./youtube_research.jpg"
+  title: "Promotional Smart Grid Videos - Youtube research illustration"
+  description: "Youtube research illustration from Promotional Smart Grid Videos"
 ---
 As usual I have also done some meta-level thinking, i.e. thinking about the causes and effects of watching these YouTube videos.
 What I came up with is an illustration of the process leading from the opaque topic cloud via YouTube to a transparent mental picture.
 The question whether this illustration is complete or even adequate I cannot anwser, but what I can say is that it reflects my own situation rather well.
 
-[![Youtube research illustration from Promotional Smart Grid Videos](./youtube_research.jpg)](./youtube_research.jpg)
+[![Youtube research illustration from Promotional Smart Grid Videos](./youtube_research.jpg "Promotional Smart Grid Videos - Youtube research illustration")](./youtube_research.jpg)
 
 The first video - and my favourite - demonstrates [Cisco](http://www.cisco.com/)'s vision of a revolutionized energy system.
 Of course the video's content is a little coloured towards Cisco's products and services that generate value in the smart grid change process.

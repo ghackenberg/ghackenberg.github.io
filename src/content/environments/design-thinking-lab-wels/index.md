@@ -20,15 +20,50 @@ variants:
     shotType: "wide-angle"
     cameraAngle: "Wide eye-level perspective from the corner showing high-top timber tables, colorful stools, and mobile whiteboards"
     focalTarget: "Entire innovation workshop space"
-    maxCharacters: 6
     visibleObjects: []
     image: "./reference.jpg"
     promptSnippet: "Interior view of the Design Thinking Lab on the 3rd floor at FH OÖ Campus Wels with modular high-top tables, colorful stools, mobile whiteboards, digital presentation displays, and windows showing the historic church tower and rooftops of Wels."
+    characterSlots:
+      - id: "workshop-facilitator"
+        role: "Facilitator / Professor"
+        priority: 1
+        required: false
+        spatialPlacement: "Center-left midground, standing actively beside mobile rolling whiteboard"
+        allowedPoses:
+          - "standing"
+          - "standing-gesturing"
+        prohibitedPoses:
+          - "seated"
+        defaultAction: "Holding whiteboard marker or sticky notes, facilitating workshop"
+        cutline: "Standing full figure with grounded posture"
+      - id: "table-participant-left"
+        role: "Workshop Participant / Student"
+        priority: 2
+        required: false
+        spatialPlacement: "Left midground, perched on colorful ergonomic workshop stool at timber high-top table"
+        allowedPoses:
+          - "seated"
+          - "perched-on-stool"
+        prohibitedPoses:
+          - "lying"
+        defaultAction: "Taking notes or collaborating on table surface"
+        cutline: "Perched medium or full figure"
+      - id: "table-participant-right"
+        role: "Workshop Participant / Innovator"
+        priority: 3
+        required: false
+        spatialPlacement: "Right midground, standing or perched at second high-top workshop table"
+        allowedPoses:
+          - "standing"
+          - "perched-on-stool"
+        prohibitedPoses:
+          - "lying"
+        defaultAction: "Engaged in discussion or examining prototyping materials"
+        cutline: "Medium or full figure"
   - name: "beamer-screen-focus"
     shotType: "eye-level"
     cameraAngle: "Direct eye-level perspective focused tightly on the presentation projection wall"
     focalTarget: "Large motorized projection beamer screen"
-    maxCharacters: 2
     visibleObjects: []
     depthLayers:
       foreground: "Clean presentation stage area with edge of wooden sideboard and floor marker line"
@@ -36,6 +71,33 @@ variants:
       background: "Light grey studio wall framed by potted monstera plant and modern black track lighting above"
     image: "./beamer-screen-focus.jpg"
     promptSnippet: "Close, direct eye-level perspective inside the Design Thinking Lab on the 3rd floor at FH OÖ Campus Wels, tightly focused on the presentation wall. The large, clean, blank white motorized projection beamer screen dominates and fills the vast majority of the frame, brightly illuminated with a soft, even glow, providing an expansive canvas for slides. The surrounding wall is pleasant light grey, with potted monstera leaves on the left, modern ceiling spotlights above, and a neat wooden sideboard below."
+    characterSlots:
+      - id: "stage-keynote-presenter"
+        role: "Lead Presenter / Keynote Speaker"
+        priority: 1
+        required: false
+        spatialPlacement: "Left third of the stage foreground, standing clearly beside the beamer projection screen"
+        allowedPoses:
+          - "standing"
+          - "standing-presenting"
+          - "standing-gesturing-to-screen"
+        prohibitedPoses:
+          - "seated"
+        defaultAction: "Holding remote clicker or gesturing towards projection screen, body turned three-quarters toward audience, beamer screen completely unobstructed"
+        cutline: "Standing medium shot or full figure with feet clearly on stage floor"
+      - id: "stage-co-presenter"
+        role: "Co-Presenter / Panel Moderator"
+        priority: 2
+        required: false
+        spatialPlacement: "Right third of the stage foreground, standing symmetrically on opposite side of screen"
+        allowedPoses:
+          - "standing"
+          - "standing-listening"
+          - "standing-presenting"
+        prohibitedPoses:
+          - "seated"
+        defaultAction: "Standing attentively, engaging with audience and presentation"
+        cutline: "Standing medium shot or full figure"
 characters:
   - "georg"
 objects: []

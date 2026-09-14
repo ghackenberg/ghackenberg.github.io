@@ -10,7 +10,10 @@ terms:
   - "Summer Term 2024"
   - "Summer Term 2025"
 language: "en"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Vorlesung: Cross-Platform & Cloud-Architekturen"
+  description: "Dr. Georg Hackenberg präsentiert im Hörsaal die Interaktion von .NET MAUI Apps mit einem ASP.NET Core Cloud-Server-Rack"
 tags:
   - "software-engineering"
   - "user-interface"

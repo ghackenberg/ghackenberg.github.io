@@ -3,7 +3,10 @@ title: "View onto the Energy System"
 pubDate: "2011-07-21"
 description: "Lately I got interested in the domain of energy supply systems for human society. It is currently one of the hottest topics all in politics, science, research &..."
 tags: ["drawing", "energy-systems", "systems-engineering"]
-icon: "./bus.jpg"
+icon:
+  src: "./bus.jpg"
+  title: "View onto the Energy System - Bus illustration"
+  description: "Bus illustration from View onto the Energy System"
 ---
 When you try to understand the challenges humanity is facing when it comes to energy supply, you probably want to start with learning about the current infrastructure and the way it works.
 Simplified, the current energy network is a rather simple structure supporting single direction energy flow from producers to consumers.
@@ -12,7 +15,7 @@ The producers supply the energy network with energy, usually at high voltages fo
 The more local a physical energy network (the cables) get, the lower voltages are used over the wire.
 Power transformers are used to down-scale the voltage level at discrete locations in the network.
 
-[![End to end illustration from View onto the Energy System](./end_to_end.jpg)](./end_to_end.jpg)
+[![End to end illustration from View onto the Energy System](./end_to_end.jpg "View onto the Energy System - End to end illustration")](./end_to_end.jpg)
 
 This end-to-end view (producer to consumer) is complemented by illustrations of the general network topology.
 Currently, more centralized topologies are in place where energy is produced at few locations and distributed in a star-like fashion (first diagram).
@@ -20,10 +23,10 @@ When taking the down-scaling of voltages for local distribution networks into th
 In general, many different topologies can be imagined as for example a more bus-like setup where everybody is connected directly (third diagram).
 But finally, the political vision is to de-centralize the generation of energy e.g. through local wind power but keeping the network connected for energy and energy-related information exchange (fourth diagram).
 
-[![Central illustration from View onto the Energy System](./central.jpg)](./central.jpg)
-[![Hierarchy illustration from View onto the Energy System](./hierarchy.jpg)](./hierarchy.jpg)
-[![Bus illustration from View onto the Energy System](./bus.jpg)](./bus.jpg)
-[![Decentral illustration from View onto the Energy System](./decentral.jpg)](./decentral.jpg)
+[![Central illustration from View onto the Energy System](./central.jpg "View onto the Energy System - Central illustration")](./central.jpg)
+[![Hierarchy illustration from View onto the Energy System](./hierarchy.jpg "View onto the Energy System - Hierarchy illustration")](./hierarchy.jpg)
+[![Bus illustration from View onto the Energy System](./bus.jpg "View onto the Energy System - Bus illustration")](./bus.jpg)
+[![Decentral illustration from View onto the Energy System](./decentral.jpg "View onto the Energy System - Decentral illustration")](./decentral.jpg)
 
 In sum I believe the energy domain offers an exciting playground for contributing to a technological revolution with planned and anticipated sustainable impact.
 I will try to keep you posted about the process and the progress of this national and international ambition.

@@ -3,7 +3,10 @@ title: "Stick Figure Drawing Exercise"
 pubDate: "2011-03-26"
 description: "To improve my drawing skills recently I bought a book about stick figure drawing. Here is the result of my first exercise, but don't have too high expections ju..."
 tags: ["drawing"]
-icon: "./draft.png"
+icon:
+  src: "./draft.png"
+  title: "Stick Figure Drawing Exercise - Draft illustration"
+  description: "Draft illustration from Stick Figure Drawing Exercise"
 ---
 The book suggests to start with a quick sketch of the figure.
 This way you give your brain minimal chance to disrupt the creative process by starting to think about good and bad.
@@ -12,8 +15,8 @@ To give your picture the final touch you finally can add colors and shading as w
 
 The main two stages (drafting and elaborating) are shown in the following images:
 
-[![Draft illustration from Stick Figure Drawing Exercise](./draft.png)](./draft.png)
-[![Final illustration from Stick Figure Drawing Exercise](./final.png)](./final.png)
+[![Draft illustration from Stick Figure Drawing Exercise](./draft.png "Stick Figure Drawing Exercise - Draft illustration")](./draft.png)
+[![Final illustration from Stick Figure Drawing Exercise](./final.png "Stick Figure Drawing Exercise - Final illustration")](./final.png)
 
 As tools I used a tablet PC and the open source software [MyPaint](http://mypaint.intilinux.com/).
 This digital drawing toolset greatly facilitates the creative process:

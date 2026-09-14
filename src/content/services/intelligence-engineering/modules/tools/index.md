@@ -20,7 +20,10 @@ methodologyPhases:
   - title: "Contract Testing & Sandboxing"
     description: "Validating deterministic execution, error boundaries, rate limits, and rollback mechanisms under edge cases."
 order: 3
-previewImage: ./preview.png
+previewImage:
+  src: "./preview.png"
+  title: "Model Context Protocol (MCP) Integration"
+  description: "Dr. Georg Hackenberg konfiguriert MCP-Tool-Schemas und API-Konnektoren am Curved Monitor im Almtal Arbeitszimmer"
 pubDate: 2026-09-11
 
 inputs:

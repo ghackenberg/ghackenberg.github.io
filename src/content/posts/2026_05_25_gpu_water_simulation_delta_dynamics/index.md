@@ -3,7 +3,10 @@ title: "GPU-Accelerated Water Flow and Subsurface Hydrology Shaders in Delta Dyn
 pubDate: "2026-05-25"
 description: "How we implemented a high-performance, discrete grid-based shallow water and groundwater simulator on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong textures."
 tags: ["computer-graphics", "gpgpu", "hydrology", "shaders", "simulation", "threejs", "webgl"]
-icon: "./icon.png"
+icon:
+  src: "./icon.png"
+  title: "Titelgrafik: GPU-Accelerated Water Flow and Subsurface Hydrology Shaders in Delta Dynamics"
+  description: "How we implemented a high-performance, discrete grid-based shallow water and groundwater simulator on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong textures."
 ---
 In building **Delta Dynamics**, a low-poly ecosystem simulator, we wanted a world that felt hydrodynamically alive. Water shouldn't just be a static visual plane; it should rain down, infiltrate the soil, accumulate in aquifers, flow down mountains, erode terrain, saturate soil, and form dynamic rivers and lakes that direct the growth of vegetation and the behaviors of AI entities.
 
@@ -17,7 +20,7 @@ This post breaks down the mathematics of our discrete grid hydrology model, the 
 
 Most game water systems use simple wave-height maps (like Gerstner waves) that look nice but carry no physical volume. For an ecosystem simulator, we need **mass-conserving volumetric water flow**. We designed a coupled model comprising two main layers: **Surface Water** and **Groundwater (Aquifers)**, connected by vertical fluxes.
 
-![Water Cycle Diagram](./water_cycle.svg)
+![Water Cycle Diagram](./water_cycle.svg "Water Cycle")
 
 ### Lateral Surface Water Flow (Diffusion & Flux Clamping)
 We approximate the shallow water equations using a cell-centered, discrete height-based diffusion model. For each grid cell, we evaluate its 4-neighborhood (Up, Down, Left, Right). 
@@ -75,7 +78,7 @@ Water moves vertically between the surface and the aquifer based on two physical
 
 To run this cellular automata model on the GPU, we store the physical state of the grid in floating-point textures and run a double-buffered simulation loop.
 
-![GPU FBO Loop](./gpu_fbo_loop.svg)
+![GPU FBO Loop](./gpu_fbo_loop.svg "GPU-Accelerated Water Flow and Subsurface Hydrolog")
 
 ### Data Layout in Textures
 We pack our grid variables into two main textures:

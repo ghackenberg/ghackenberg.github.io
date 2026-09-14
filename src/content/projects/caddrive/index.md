@@ -7,7 +7,10 @@ tags: ["cad", "collaborative-software", "education", "open-source", "product-des
 accentColor: "blue"
 order: 1
 repoName: "caddrive"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Kollaboratives CAD-Design am Hologrammtisch"
+  description: "Studierende konstruieren gemeinsam Fahrzeug- und Drohnenmodelle an einem interaktiven holografischen CAD-Arbeitstisch"
 screenshots:
   - image: "./screenshot1.png"
     title: "CADdrive Home Page"

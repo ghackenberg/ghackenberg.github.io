@@ -51,11 +51,12 @@ const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent
 
 const postUrl = `https://hackenberg.tech/posts/${post.id}/`;
 
-const isSvgIcon = post.data.icon?.format === "svg";
-const ogImage = isSvgIcon ? `/posts/${post.id}/og.png` : post.data.icon;
+const iconSrc = post.data.icon?.src;
+const isSvgIcon = iconSrc?.format === "svg";
+const ogImage = isSvgIcon ? `/posts/${post.id}/og.png` : iconSrc;
 const schemaImage = isSvgIcon 
   ? new URL(`/posts/${post.id}/og.png`, Astro.site).href
-  : (post.data.icon?.src ? new URL(post.data.icon.src, Astro.site).href : undefined);
+  : (iconSrc?.src ? new URL(iconSrc.src, Astro.site).href : undefined);
 
 const blogPostingSchema = {
   "@context": "https://schema.org",
@@ -367,5 +368,17 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
   }
   .post-body :global(tr:last-child td) {
     border-bottom: none;
+  }
+
+  /* Reset article styles inside Mermaid diagrams to avoid inflating label boxes */
+  .post-body :global(.mermaid-svg p) {
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    line-height: 1.5 !important;
+    font-size: 13px !important;
+    padding: 0 !important;
+  }
+  .post-body :global(.mermaid-svg text) {
+    font-family: "Inter", system-ui, -apple-system, sans-serif !important;
   }
 </style>

@@ -20,7 +20,10 @@ methodologyPhases:
   - title: "Verification & Benchmarking"
     description: "Conducting stress tests, measuring time-to-first-token (TTFT) and token throughput under concurrent enterprise workloads."
 order: 1
-previewImage: ./preview.png
+previewImage:
+  src: "./preview.png"
+  title: "Model Serving im Almtal Home Office"
+  description: "Dr. Georg Hackenberg überwacht vLLM-Inferenzdurchsatz und LiteLLM-Latenzen auf dem Ultrawide-Display im Almtal Arbeitszimmer"
 pubDate: 2026-09-11
 inputs:
   - "Target infrastructure environment (on-premise datacenter, sovereign cloud, hybrid VPC)"

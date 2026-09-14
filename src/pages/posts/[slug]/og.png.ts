@@ -7,7 +7,7 @@ import path from 'node:path';
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
   return posts
-    .filter((post) => post.data.icon?.format === 'svg')
+    .filter((post) => post.data.icon?.src?.format === 'svg')
     .map((post) => ({
       params: { slug: post.id },
       props: { post },
@@ -25,7 +25,7 @@ export const GET: APIRoute<Props> = async ({ props }) => {
   let svgBuffer: Buffer | undefined;
 
   // Try locating the SVG file via metadata fsPath if available
-  const iconMetadata = post.data.icon as ({ fsPath?: string; src?: string } | undefined);
+  const iconMetadata = post.data.icon?.src as (ImageMetadata & { fsPath?: string }) | undefined;
   if (iconMetadata?.fsPath && fs.existsSync(iconMetadata.fsPath)) {
     svgBuffer = fs.readFileSync(iconMetadata.fsPath);
   } else if (iconMetadata?.src) {

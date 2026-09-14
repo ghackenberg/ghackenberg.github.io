@@ -15,8 +15,9 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 
-const optimizedMainScreenshot = project.data.screenshot ? await getImage({
-  src: project.data.screenshot,
+const mainScreenshotImg = project.data.screenshot?.src;
+const optimizedMainScreenshot = mainScreenshotImg ? await getImage({
+  src: mainScreenshotImg,
   format: 'webp',
   width: 1200,
   quality: 85
@@ -24,8 +25,9 @@ const optimizedMainScreenshot = project.data.screenshot ? await getImage({
 
 const optimizedScreenshots = await Promise.all(
   (project.data.screenshots || []).map(async (shot) => {
+    const shotImg = shot.src || shot.image;
     const opt = await getImage({
-      src: shot.image,
+      src: shotImg,
       format: 'webp',
       width: 1000,
       quality: 85
@@ -237,7 +239,8 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
                   <div class="aspect-video w-full overflow-hidden relative bg-black/40">
                     <img 
                       src={shot.src} 
-                      alt={shot.title} 
+                      alt={shot.description ? `${shot.title}: ${shot.description}` : `Screenshot von ${project.data.title} - ${shot.title}`}
+                      title={shot.title}
                       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
@@ -405,6 +408,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
           id="lightbox-image" 
           src="" 
           alt="" 
+          aria-hidden="true"
           class="max-w-[72vw] sm:max-w-[85vw] max-h-[60vh] md:max-h-[70vh] object-contain rounded-lg shadow-2xl scale-95 opacity-0 transition-all duration-300"
         />
       </div>

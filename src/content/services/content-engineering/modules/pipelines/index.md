@@ -21,7 +21,10 @@ methodologyPhases:
     description: "Conducting Lighthouse performance audits, eliminating render-blocking scripts, and optimizing Core Web Vitals to 100/100."
 order: 4
 pubDate: 2026-09-11
-previewImage: ./preview.jpg
+previewImage:
+  src: "./preview.jpg"
+  title: "Dr. Georg Hackenberg im Almtal Home Office"
+  description: "Dr. Georg Hackenberg überwacht am Breitbildmonitor im Home Office Almtal automatisierte GitHub-Actions-Pipelines mit 100/100 Lighthouse-Score"
 inputs:
   - "Existing content repository, Markdown/MDX archives, or legacy CMS exports"
   - "Target cloud hosting provider (GitHub Pages, Cloudflare Pages, AWS CloudFront)"

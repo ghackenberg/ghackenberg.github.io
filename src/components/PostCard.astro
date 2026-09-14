@@ -7,7 +7,7 @@ interface Props {
   title: string;
   description?: string;
   pubDate: Date;
-  icon?: ImageMetadata;
+  icon?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags: string[];
   activeTag?: string;
   featured?: boolean;
@@ -24,10 +24,15 @@ const {
   featured = false
 } = Astro.props;
 
-const isSvg = icon && typeof icon === 'object' && 'format' in icon && icon.format === 'svg';
+const isCoverObj = Boolean(icon && typeof icon === 'object' && 'src' in icon && icon.src);
+const iconImg = isCoverObj ? (icon as { src: ImageMetadata }).src : (icon as ImageMetadata | undefined);
+const iconTitle = isCoverObj ? (icon as { title: string }).title : title;
+const iconDesc = isCoverObj ? (icon as { description: string }).description : (description || `Preview for ${title}`);
 
-const optimizedIcon = icon && !isSvg ? await getImage({
-  src: icon,
+const isSvg = iconImg && typeof iconImg === 'object' && 'format' in iconImg && iconImg.format === 'svg';
+
+const optimizedIcon = iconImg && !isSvg ? await getImage({
+  src: iconImg,
   format: 'webp',
   width: 800,
   quality: 80
@@ -59,8 +64,9 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
     {icon ? (
       <div class="relative w-full h-full min-h-[160px] overflow-hidden flex items-center justify-center">
         <img 
-          src={optimizedIcon ? optimizedIcon.src : (typeof icon === 'string' ? icon : (icon?.src || ''))}
-          alt={`Preview for ${title}`}
+          src={optimizedIcon ? optimizedIcon.src : (typeof iconImg === 'string' ? iconImg : (iconImg?.src || ''))}
+          alt={iconDesc}
+          title={iconTitle}
           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
           decoding="async"

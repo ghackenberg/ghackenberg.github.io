@@ -27,6 +27,8 @@ temp-old-website/
 # temporary and scratch files
 temp.html
 scratch/
+.cache/
+public/diagrams/
 
 # Lighthouse reports
 lighthouse-reports/

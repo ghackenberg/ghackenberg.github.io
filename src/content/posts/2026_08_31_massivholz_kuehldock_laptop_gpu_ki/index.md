@@ -3,7 +3,10 @@ title: "Thermische Höchstleistung im Naturdesign: Der minimalistische Holz-Lapt
 pubDate: "2026-08-31"
 description: "Wie ein leichtgewichtiger Holz-Laptopständer mit offenen Seitenwangen und horizontal gefrästen Belüftungsschlitzen die thermische Abwärme moderner Hochleistungs-GPUs bewältigt – für lokale KI, 3D-CAD und anspruchsvolles Computing."
 tags: ["hardware", "thermal-engineering", "ergonomics", "local-ai", "cad", "smart-workplace", "industrial-informatics"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Minimalistischer Holz-Laptopständer für GPU- und"
+  description: "Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops - Hero Übersicht"
 ---
 
 In meinem vorigen Beitrag über [KI-basierte ergonomische Arbeitsumgebungen](../2026_08_10_ki_basierte_ergonomische_arbeitsumgebungen/index.md) haben wir beleuchtet, wie adaptive Sensorik, lernende Algorithmen und smarte Möbel den Arbeitsplatz dynamisch an den Menschen anpassen. Doch neben der physiologischen Interaktion zwischen Mensch und Raum entscheidet ein weiterer, oft unterschätzter Faktor über die Produktivität im modernen Wissens- und Ingenieursalltag: die **thermische Leistungsfähigkeit unserer primären Arbeitsgeräte**.
@@ -12,7 +15,7 @@ Ob beim Ausführen lokaler Large Language Models (LLMs) via Ollama, beim Rendern
 
 Um dieses Problem mit einer Symbiose aus minimalistischer Konstruktion, Thermodynamik und zeitlosem Naturdesign zu lösen, stelle ich in diesem Beitrag ein neuartiges Hardware-Konzept vor: **Den CNC-gefertigten Leichtbau-Holzständer mit offenen Seitenwangen und horizontalen Belüftungsschlitzen**.
 
-![Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops - Hero Übersicht](./hero.jpg)
+![Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops - Hero Übersicht](./hero.jpg "Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops")
 
 ## 1. Die Problemstellung: Hitzestau und Thermal Throttling am Schreibtisch
 
@@ -33,7 +36,7 @@ Der Ständer wird aus **heimischem Hartholz (geöltes massives Eichenholz oder A
 
 Die obere Auflageplatte verfügt über eine Reihe **präzise von links nach rechts gefräster, horizontaler Querschlitze**:
 
-![Technische CAD-Zeichnung und Strömungsgeometrie des Holz-Laptopständers](./technical_drawing.jpg)
+![Technische CAD-Zeichnung und Strömungsgeometrie des Holz-Laptopständers](./technical_drawing.jpg "Technische CAD-Zeichnung und Strömungsgeometrie des Laptopständers")
 
 ### Konstruktive & Physikalische Schlüsselmerkmale
 
@@ -46,7 +49,7 @@ Die obere Auflageplatte verfügt über eine Reihe **präzise von links nach rech
 
 Um die Interaktion zwischen Berechnungs-Workload, thermischer Dissipation und Raumumgebung ganzheitlich im Sinne der Industrieinformatik abzubilden, lässt sich das System in drei interagierende Domänen gliedern: **Energiefluss**, **Materialfluss (Fluidik)** und **Datenfluss**.
 
-![Systemarchitektur und Multidomänen-Flussmodell](./system_architecture.jpg)
+![Systemarchitektur und Multidomänen-Flussmodell](./system_architecture.jpg "System Architecture")
 
 ### A. Der Energiefluss (Gelb)
 Elektrische Energie ($P_{\text{el}} \approx 100\text{--}230\text{ W}$) wird primär über USB-C Power Delivery oder das Systemnetzteil bereitgestellt. Innerhalb der Halbleiter (CPU-Cores, GPU Tensor Cores, VRAM) wird diese Leistung nahezu vollständig in thermische Verlustenergie $Q_{\text{diss}}$ umgewandelt. Über Heatpipes und Kühlrippen wird die Wärme auf den Luftmassenstrom übertragen und über den offenen Standbereich als freie Konvektion an den Raum abgegeben.

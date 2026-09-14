@@ -3,7 +3,10 @@ title: "Animated Article Tiles"
 pubDate: "2011-06-28"
 description: "In my previous posts Blog Calender Interface and Blog Timeline Widget I demonstrated how to use the time information to build navigation controls for blogs. In ..."
 tags: ["blog", "data-visualization", "user-interface"]
-icon: "./screenshot.png"
+icon:
+  src: "./screenshot.png"
+  title: "Animated Article Tiles - Screenshot illustration"
+  description: "Screenshot illustration from Animated Article Tiles"
 ---
 The idea of the interface is to list all blog articles chronologically as tiles on a single page.
 The tiles should contain the title of the article as well as all contained images.
@@ -11,8 +14,8 @@ Only one image should be visible at a time and a blend effect should switch betw
 And this is what the prototype of the interface looks like:
 The left screenshot shows the original version, the right screenshot depicts the most recent evolution of the interface.
 
-[![Screenshot illustration from Animated Article Tiles](./screenshot.png)](./screenshot.png)
-[![Screenshot two illustration from Animated Article Tiles](./screenshot_two.png)](./screenshot_two.png)
+[![Screenshot illustration from Animated Article Tiles](./screenshot.png "Animated Article Tiles - Screenshot illustration")](./screenshot.png)
+[![Screenshot two illustration from Animated Article Tiles](./screenshot_two.png "Animated Article Tiles - Screenshot two illustration")](./screenshot_two.png)
 
 Again this is just another try at making blogs more fun and easy to navigate.
 What I like about this attempt is the animation of contents giving a more dynamic and lifely impression of the contents.

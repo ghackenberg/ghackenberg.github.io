@@ -3,7 +3,10 @@ title: "Architektur und Funktionsweise von Mastra: Das TypeScript-native Framewo
 pubDate: "2026-09-19"
 description: "Eine fundierte Architekturanalyse des Mastra TypeScript Frameworks: Wie Typsicherheit via Zod, graphbasierte Workflows mit Suspend/Resume und native MCP-Client/Server-Dualität produktionsreife KI-Backends ermöglichen – inklusive praxisnaher Codebeispiele und Systemschaltbilder."
 tags: ["mastra", "typescript", "agentic-ai", "software-architecture", "open-source", "artificial-intelligence", "enterprise-ai", "mcp", "software-engineering"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Mastra TypeScript Framework Architektur-Schaltbild"
+  description: "Mastra TypeScript Framework: Dr. Georg Hackenberg analysiert die Architektur aus autonomen Agenten, deterministischen Workflows und MCP-Gateway"
 ---
 
 In unserer Beitragsreihe zur praktischen Realisierung moderner KI-Architekturen haben wir die Schichten des [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) schrittweise vertieft: vom [sitzungsübergreifenden Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) über die [Body-Brain-Entkopplung des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/), das hochperformante [Routing via LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) und die kollaborative [Human-in-the-Loop Interaktion via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/) bis hin zu den [Procedural Graphs zur Automatisierung repetitiver Geschäftsprozesse](/posts/2026_09_18_procedural_graphs_praxis_automatisierung_repetitiver_prozesse/).
@@ -17,7 +20,7 @@ Bislang war die Entwicklung von Agenten weitgehend von Python dominiert (LangCha
 
 Mit dem quelloffenen Framework **Mastra** ([github.com/mastra-ai/mastra](https://github.com/mastra-ai/mastra)) existiert nun ein von Grund auf für TypeScript entwickeltes, ganzheitliches „Backend-Betriebssystem“ für KI-Agenten und ausfallsichere Workflows.
 
-![Mastra TypeScript Framework: Dr. Georg Hackenberg analysiert die Architektur aus autonomen Agenten, deterministischen Workflows und MCP-Gateway](./hero.jpg)
+![Mastra TypeScript Framework: Dr. Georg Hackenberg analysiert die Architektur aus autonomen Agenten, deterministischen Workflows und MCP-Gateway](./hero.jpg "Mastra TypeScript Framework Architektur-Schaltbild")
 
 Dieser Artikel analysiert Mastra aus der Perspektive erfahrener Software-Entwickler: Wie ist das Framework aufgebaut? Wie harmonieren autonome ReAct-Schleifen und deterministische State Machines? Wie funktioniert die native MCP-Integration? Und wie sieht der produktive Code in der Praxis aus?
 
@@ -27,7 +30,7 @@ Mastra versteht sich nicht bloß als Wrapper um LLM-APIs, sondern als **vollwert
 
 Das folgende Architekturmodell veranschaulicht die vier Schichten des Gesamtsystems:
 
-![Mastra Systemarchitektur: TypeScript-natives AI Backend Framework](./mastra_system_architecture.svg)
+![Mastra Systemarchitektur: TypeScript-natives AI Backend Framework](./mastra_system_architecture.svg "Mastra Systemarchitektur")
 
 ### Die vier Kernschichten im Überblick
 
@@ -83,7 +86,7 @@ In unserem Artikel zu den [Procedural Graphs in der Praxis](/posts/2026_09_18_pr
 
 Mastra löst dieses Spannungsfeld durch eine saubere, erstklassige Trennung zweier grundlegender Entwurfsmuster:
 
-![Autonome Agenten vs. Deterministische Workflows in Mastra](./mastra_agent_vs_workflow.svg)
+![Autonome Agenten vs. Deterministische Workflows in Mastra](./mastra_agent_vs_workflow.svg "Autonome Agenten vs. Deterministische Workflows")
 
 ### Wann nutzt man `Agent`, wann `Workflow`?
 
@@ -267,7 +270,7 @@ export const sqlQueryTool = createTool({
 
 Das von Anthropic initiierte **Model Context Protocol (MCP)** – ein offener, JSON-RPC-basierter Protokollstandard, der KI-Modellen sichere, bidirektionale Schnittstellen zu externen Datenquellen, Dateisystemen und Tools bereitstellt – hat sich in kürzester Zeit im Enterprise-Ökosystem durchgesetzt. Mastra bietet über das Paket `@mastra/mcp` eine **vollwertige MCP-Dualität**:
 
-![Mastra & Model Context Protocol (MCP): Client- & Server-Dualität](./mastra_mcp_integration.svg)
+![Mastra & Model Context Protocol (MCP): Client- & Server-Dualität](./mastra_mcp_integration.svg "Mastra und Model Context Protocol Integration")
 
 ### Szenario A: Mastra als MCP-Client (Werkzeuge konsumieren)
 

@@ -3,7 +3,10 @@ title: "Designing a Flicker-Free Client-Side Unread Content System in Astro"
 pubDate: "2026-05-24"
 description: "How we implemented a client-side localStorage notification system for unread content, using cached Astro static content manifests and synchronous scripting to eliminate visual flickering."
 tags: ["web-development", "astro", "typescript", "localstorage", "ux-design", "state-management"]
-icon: "./icon.png"
+icon:
+  src: "./icon.png"
+  title: "Cover illustration: Designing a Flicker-Free Client-Side Unread Content System in Astro"
+  description: "How we implemented a client-side localStorage notification system for unread content, using cached Astro static content manifests and synchronous scripting to eliminate visual flickering."
 ---
 After modernizing my personal website to Astro and TypeScript, I wanted to find a way to make it more engaging for returning visitors. Specifically, I wanted to highlight **newly published content** (such as blog posts, projects, courses, publications, and visualizations) that a user has not seen yet. 
 
@@ -19,7 +22,7 @@ We wanted a visual system that instantly guides users. The final interface featu
 
 Here is a mockup of the visual interface:
 
-![Unread UI Mockup](./mockup.svg)
+![Benutzeroberflächen-Mockup für ungelesene Inhalte und Badges](./mockup.svg "UI-Mockup für Benachrichtigungs-Badges in Astro")
 
 ## The Core Challenge: The Visual Flicker
 
@@ -36,7 +39,7 @@ To make indicators render instantly, we split our system into three layers:
 2. **Synchronous Inline Painting**: A tiny render-blocking inline script that uses local cache to update the UI before the browser paints.
 3. **Background Asynchronous Syncing**: A full-featured module that tracks user navigation, fetches the latest manifest, updates `localStorage`, and handles new items.
 
-![Architecture Diagram](./architecture.svg)
+![Entkoppelte Systemarchitektur für flackerfreies Laden von Lesezuständen](./architecture.svg "Systemarchitektur: Build-Time Manifest und Client-Time Cache")
 
 ### 1. Build-Time Content Manifest
 First, we created a dynamic endpoint `src/pages/content-manifest.json.ts` that runs during the Astro build process. It fetches all content collections, extracts their URLs and publication timestamps (validated by Zod schemas), and output a single, pre-compiled static JSON file:
@@ -105,7 +108,7 @@ Once the page is rendered, our primary client-side TypeScript module `src/script
 
 The sequence diagram below displays the step-by-step workflow of the client state machine when a user triggers a page request:
 
-![State Workflow](./workflow.svg)
+![Ablaufdiagramm des clientseitigen Benachrichtigungs-Zustandsautomaten](./workflow.svg "Zustandsdiagramm: Synchrone Anzeige und asynchroner Abgleich")
 
 By utilizing the cached manifest cache from the *previous* session, the client is able to execute Step 2 synchronously. When the background fetch completes in Step 4, if there is a discrepancy (e.g., a new article was published since the user last refreshed), the UI updates smoothly, ensuring they always have accurate, real-time unread counts without sacrificing performance.
 

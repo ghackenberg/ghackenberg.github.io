@@ -3,9 +3,12 @@ title: "IEEE VR 2011 in Singapore"
 pubDate: "2011-03-23"
 description: "Last week I went to Singapore to present the results of my Master thesis at IEEE VR 2011, one of the world's most prestigeous virtual reality conferences. It wa..."
 tags: ["conference", "slideshare-presentation", "motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
-icon: "./esplanade.jpg"
+icon:
+  src: "./esplanade.jpg"
+  title: "IEEE VR 2011 in Singapore - Esplanade illustration"
+  description: "Esplanade illustration from IEEE VR 2011 in Singapore"
 ---
-[![Sands illustration from IEEE VR 2011 in Singapore](./sands.jpg)](./sands.jpg)
+[![Sands illustration from IEEE VR 2011 in Singapore](./sands.jpg "IEEE VR 2011 in Singapore - Sands illustration")](./sands.jpg)
 
 First I want to share some pictures of this amazing city.
 The picture to the right shows the Marina Bay Sands, one of the newest and most impressive buildings in Singapore.
@@ -15,9 +18,9 @@ From left to right you can see the following:
 (2) Stairways inside the Esplanade, a modern art and exibition center with live music events.
 (3) A palm way in front of the Marina Bay Sands, the building that you also see on the top.
 
-[![Suntec illustration from IEEE VR 2011 in Singapore](./suntec.jpg)](./suntec.jpg)
-[![Esplanade illustration from IEEE VR 2011 in Singapore](./esplanade.jpg)](./esplanade.jpg)
-[![Palms illustration from IEEE VR 2011 in Singapore](./palms.jpg)](./palms.jpg)
+[![Suntec illustration from IEEE VR 2011 in Singapore](./suntec.jpg "IEEE VR 2011 in Singapore - Suntec illustration")](./suntec.jpg)
+[![Esplanade illustration from IEEE VR 2011 in Singapore](./esplanade.jpg "IEEE VR 2011 in Singapore - Esplanade illustration")](./esplanade.jpg)
+[![Palms illustration from IEEE VR 2011 in Singapore](./palms.jpg "IEEE VR 2011 in Singapore - Palms illustration")](./palms.jpg)
 
 And finally you can also view my presentation, which I held on the first day of the VR conference.
 The talk was about the 3D multi-touch prototype that I developed during my Master thesis at Fraunhofer FIT:

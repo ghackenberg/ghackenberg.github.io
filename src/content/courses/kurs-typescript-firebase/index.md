@@ -9,7 +9,10 @@ learningGoals:
 terms:
   - "Winter Term 2024/25"
 language: "de"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "TypeScript & Firebase Webentwicklung"
+  description: "Dr. Georg Hackenberg präsentiert TypeScript-Klassenstrukturen, Web-Dashboards und Google-Firebase-Datenmodelle im IT-Hörsaal"
 tags:
   - "typescript"
   - "web-development"

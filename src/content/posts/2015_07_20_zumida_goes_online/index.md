@@ -3,8 +3,11 @@ title: "zumida goes online!"
 pubDate: "2015-07-19"
 description: "I am happy to announce the launch of www.zumida.com! We invented zumida to revolutionize corporate and public knowledge exploration. Check it out and give us fe..."
 tags: ["hyperkit-software", "zumida", "knowledge-management", "data-visualization", "user-interface"]
-icon: "./screenshot.jpg"
+icon:
+  src: "./screenshot.jpg"
+  title: "zumida goes online! - Screenshot illustration"
+  description: "Screenshot illustration from zumida goes online!"
 ---
 Here is a screenshot of the website. On the left side you find the original Wikipedia article. In the center you find a visualization of the first six links visible in the article. On the right side you find a discussion area for feedback.
 
-[![Screenshot illustration from zumida goes online!](./screenshot.jpg)](http://www.zumida.com)
+[![Screenshot illustration from zumida goes online!](./screenshot.jpg "zumida goes online! - Screenshot illustration")](http://www.zumida.com)

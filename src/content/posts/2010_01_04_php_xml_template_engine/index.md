@@ -3,14 +3,17 @@ title: "XML Template Engine using PHP."
 pubDate: "2010-01-03"
 description: "After the success of JSP and JSP tag libraries in the Java world, I was searching for a similar mechanism in PHP. Since the search was not successful and I shar..."
 tags: ["hyperkit-software", "software-systems", "web-development"]
-icon: "./sample.png"
+icon:
+  src: "./sample.png"
+  title: "XML Template Engine using PHP - Sample illustration"
+  description: "Sample illustration from XML Template Engine using PHP."
 ---
 In this article I demonstrate how to use the engine for developing a simple page template for regular websites.
 Then I show how to extend the functionality of the system using the proprietary interface specification (which is not final at the current stage).
 To get started, let's first have a look at a simple sample template which has been developed for testing the first engine prototype.
 Notice, that some code fragments use a new content management framework which I will dedicate an own article later this year.
 
-[![Sample illustration from XML Template Engine using PHP.](./sample.png)](./sample.png)
+[![Sample illustration from XML Template Engine using PHP.](./sample.png "XML Template Engine using PHP - Sample illustration")](./sample.png)
 
 The first thing that springs into the eye is, that we are generating regular HTML content with this template by means of the root element `html`.
 The element also hosts a namespace definition which provides the link with the templating mechanism: `xmlns:code`.
@@ -22,7 +25,7 @@ Each `code:...` will be translated into a static function call on the `Tags` cla
 The convention is that a `code:name` will be converted into the method name `Tags:processName` where the first letter of the tagname is capitalized.
 The following figure shows the interface of the current `Tags` class:
 
-[![Tags illustration from XML Template Engine using PHP.](./tags.png)](./tags.png)
+[![Tags illustration from XML Template Engine using PHP.](./tags.png "XML Template Engine using PHP - Tags illustration")](./tags.png)
 
 First, let's discuss the function signatures which are the same in all cases.
 Each function retrieves a pointer to the target document for creating nodes and other `DOM`-related tasks.

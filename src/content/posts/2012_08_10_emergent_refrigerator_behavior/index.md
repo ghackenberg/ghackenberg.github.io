@@ -3,7 +3,10 @@ title: "True Emergent Refrigerator Behavior"
 pubDate: "2012-08-09"
 description: "We are moving towards larger scale problems! In the past we worked on modeling, optimizing and exploring behavior of up to 20 refrigerators. Computational bound..."
 tags: ["data-visualization", "dynamic-programming", "energy-systems", "simulation"]
-icon: "./diagram.png"
+icon:
+  src: "./diagram.png"
+  title: "True Emergent Refrigerator Behavior - Diagram illustration"
+  description: "Diagram illustration from True Emergent Refrigerator Behavior"
 ---
 To demonstrate this claim we prepared a study with varying number of refrigerators.
 The goal of refrigerator behavior is to use as much solar energy as possible minimizing the additional load on the network.
@@ -16,4 +19,4 @@ Still we observe an increase for 1000 and 5000 refrigerators.
 This increase is due to the percentage of the exponential search space that we can practically explore.
 Nevertheless the costs behave well considering that the results are calculated extremely fast!
 
-![Diagram illustration from True Emergent Refrigerator Behavior](./diagram.png)
+![Diagram illustration from True Emergent Refrigerator Behavior](./diagram.png "True Emergent Refrigerator Behavior - Diagram illustration")

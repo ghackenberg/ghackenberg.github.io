@@ -3,11 +3,14 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
+import remarkValidateImages from './src/plugins/remark-validate-images.js';
+import remarkMermaid from './src/plugins/remark-mermaid.js';
 import rehypeKatex from 'rehype-katex';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildSitemapMetadata } from './scripts/sitemap-config.js';
+import { validateAndEnrichImageSitemaps } from './scripts/validate-and-generate-image-sitemap.js';
 
 /** @type {Record<string, string>} */
 const mimeTypes = {
@@ -59,7 +62,7 @@ function copyContentAssets() {
       /** @param {{ dir: URL }} options */
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
-        const collections = ['posts', 'publications', 'visualizations', 'courses', 'services'];
+        const collections = ['posts', 'publications', 'visualizations', 'courses', 'services', 'projects', 'interests'];
         for (const col of collections) {
           const srcDir = path.resolve('src/content', col);
           if (!fs.existsSync(srcDir)) continue;
@@ -93,6 +96,17 @@ function copyContentAssets() {
           };
           copyFiles(srcDir);
         }
+      }
+    }
+  };
+}
+
+function imageSitemapEnforcer() {
+  return {
+    name: 'image-sitemap-enforcer',
+    hooks: {
+      'astro:build:done': async () => {
+        await validateAndEnrichImageSitemaps();
       }
     }
   };
@@ -151,10 +165,11 @@ export default defineConfig({
         }
       }
     }),
-    copyContentAssets()
+    copyContentAssets(),
+    imageSitemapEnforcer()
   ],
   markdown: {
-    remarkPlugins: [remarkMath],
+    remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid],
     rehypePlugins: [rehypeKatex],
   },
   vite: {

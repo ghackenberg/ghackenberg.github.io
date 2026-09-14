@@ -6,6 +6,8 @@ export interface GalleryItem {
   href: string;
   tagline?: string;
   pubDate: number;
+  imageTitle: string;
+  imageDescription: string;
 }
 
 interface Props {
@@ -76,7 +78,8 @@ function getBadgeColor(href: string): string {
         >
           <img
             src={item.image}
-            alt={item.title}
+            alt={item.imageDescription}
+            title={item.imageTitle}
             width="640"
             height="360"
             class="gallery-card-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -118,7 +121,8 @@ function getBadgeColor(href: string): string {
         >
           <img
             src={item.image}
-            alt={item.title}
+            alt={item.imageDescription}
+            title={item.imageTitle}
             width="640"
             height="360"
             class="gallery-card-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -155,7 +159,8 @@ function getBadgeColor(href: string): string {
         >
           <img
             src={item.image}
-            alt={item.title}
+            alt={item.imageDescription}
+            title={item.imageTitle}
             width="640"
             height="360"
             class="gallery-card-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -381,7 +386,8 @@ function getBadgeColor(href: string): string {
     const img = card.querySelector<HTMLImageElement>('.gallery-card-img');
     if (img) {
       img.src = item.image;
-      img.alt = item.title;
+      img.alt = item.imageDescription;
+      img.title = item.imageTitle;
     }
 
     const title = card.querySelector<HTMLElement>('.gallery-card-title');

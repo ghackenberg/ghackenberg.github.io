@@ -955,4 +955,33 @@ div.vis-tooltip {
   box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2) !important;
 }
 
+/* Mermaid Diagram Styling & Dual Theme Switch */
+.mermaid-svg.mermaid-light {
+  display: none !important;
+}
+.mermaid-svg.mermaid-dark {
+  display: flex !important;
+}
+:root.light .mermaid-svg.mermaid-light,
+.light .mermaid-svg.mermaid-light {
+  display: flex !important;
+}
+:root.light .mermaid-svg.mermaid-dark,
+.light .mermaid-svg.mermaid-dark {
+  display: none !important;
+}
 
+/* Ensure font family consistency for all SVG text elements */
+.mermaid-svg text {
+  font-family: "Inter", system-ui, -apple-system, sans-serif !important;
+}
+
+/* Reset article paragraph styles inside Mermaid diagrams to avoid inflating label boxes */
+.post-body .mermaid-svg p,
+.mermaid-svg p {
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  line-height: 1.5 !important;
+  font-size: 13px !important;
+  padding: 0 !important;
+}

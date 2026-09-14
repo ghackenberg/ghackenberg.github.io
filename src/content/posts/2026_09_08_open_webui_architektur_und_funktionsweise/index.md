@@ -3,7 +3,10 @@ title: "Architektur und Funktionsweise von Open WebUI: Entkoppelte Human-in-the-
 pubDate: "2026-09-08"
 description: "Eine softwaretechnische Tiefenanalyse von Open WebUI: Wie die Entkopplung von SvelteKit und FastAPI echte Multi-Model-Souveränität schafft, warum In-Process Functions externe Pipelines ablösen, wie hybrides RAG mit BM25 und Cross-Encoder Präzision garantiert und welche Rolle die Plattform in Lehre, Forschung und Unternehmen einnimmt."
 tags: ["open-webui", "agentic-ai", "artificial-intelligence", "enterprise-ai", "keycloak", "local-ai", "open-source", "rag", "software-architecture", "user-interface", "ux-design", "vllm"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Open WebUI"
+  description: "Open WebUI: Mensch-Maschine-Schnittstelle und kollaborative Kontrollzentrale für das souveräne KI-Ökosystem"
 ---
 
 In unserer Artikelserie zur Konzeption und Realisierung souveräner, agentischer Unternehmens-KI haben wir die technischen Schichten moderner Architekturen systematisch analysiert: Ausgehend von unserem [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das mathematisch fundierte [sitzungsübergreifende Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) und die [kontinuierliche Wissensevolution via WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) bis hin zur [Body-Brain-Entkopplung und Bounded-Memory-Laufzeit des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/).
@@ -14,11 +17,11 @@ Genau diese Lücke schließt **Open WebUI** als **Schicht 6 (Human-in-the-Loop I
 
 Dieser Beitrag liefert eine umfassende softwaretechnische Analyse von Open WebUI: Wir untersuchen die Entkopplung von SvelteKit-Frontend und FastAPI-Backend, den architektonischen Wandel von Legacy-Pipelines zu nativen In-Process Functions, die Mechanik der hybriden RAG-Engine mit Cross-Encoder-Reranking, Enterprise-Governance via [Keycloak](/tags/keycloak/) sowie die typischen Anwendergruppen und Praxisdomänen.
 
-![Open WebUI: Mensch-Maschine-Schnittstelle und kollaborative Kontrollzentrale für das souveräne KI-Ökosystem](./hero.jpg)
+![Open WebUI: Mensch-Maschine-Schnittstelle und kollaborative Kontrollzentrale für das souveräne KI-Ökosystem](./hero.jpg "Open WebUI")
 
 Bevor wir die internen Kommunikationspfade und Filter-Zyklen im Detail zerlegen, visualisiert das folgende Architekturmodell das Gesamtsystem:
 
-![Umfassende Systemarchitektur von Open WebUI mit SvelteKit-Präsentationsschicht, FastAPI-Core, Funktions- und Tool-Engine, hybridem RAG und IAM-Integration](./open_webui_system_architecture.svg)
+![Umfassende Systemarchitektur von Open WebUI mit SvelteKit-Präsentationsschicht, FastAPI-Core, Funktions- und Tool-Engine, hybridem RAG und IAM-Integration](./open_webui_system_architecture.svg "Open WebUI mit SvelteKit-Präsentationsschicht, FastAPI-Core, Funktions- und Tool-Engine, hybridem RAG und IAM-Integration - Umfassende Systemarchitektur")
 
 ## 1. Systemarchitektur & Entwurfsprinzipien
 
@@ -50,7 +53,7 @@ In verteilten Produktionsumgebungen agiert das FastAPI-Backend vollständig **st
 
 Eine der herausragenden Stärken von Open WebUI ist die vollständige Entkopplung von proprietären Schnittstellen. Die Plattform subsumiert interne und externe Inferenz-Ressourcen unter einer einheitlichen Verwaltungsebene.
 
-![Multi-Provider Inferenz-Orchestrierung und dynamisches Routing in Open WebUI](./open_webui_inference_orchestration.svg)
+![Multi-Provider Inferenz-Orchestrierung und dynamisches Routing in Open WebUI](./open_webui_inference_orchestration.svg "Multi-Provider Inferenz-Orchestrierung und dynamisches Routing")
 
 ### Native Ollama- und OpenAI-kompatible Protokolle
 Open WebUI implementiert duale Provider-Treiber:
@@ -72,13 +75,13 @@ Ein häufig missverstandener Bereich von Open WebUI ist die Evolution seiner Erw
 
 ### Der Paradigmenwechsel: Von Legacy-Pipelines zu nativen Functions
 
-![Architektonischer Vergleich: Legacy Pipelines vs. Modern In-Process Functions](./open_webui_pipelines_vs_functions.svg)
+![Architektonischer Vergleich: Legacy Pipelines vs. Modern In-Process Functions](./open_webui_pipelines_vs_functions.svg "Architektonischer Vergleich")
 
 Früher erforderte jede benutzerdefinierte Pipeline einen separaten Hilfs-Container. Dieser Ansatz brachte gravierende Nachteile mit sich: erhöhte Latenz durch redundante HTTP-Hops, aufwendige Netzwerk-Konfigurationen und keinen direkten Zugriff auf den internen Anwendungszustand (Benutzerrollen, Datenbank-Objekte).
 
 Mit dem modernen **Functions-System** werden Python-Module direkt innerhalb des FastAPI-Laufzeitkontexts ausgeführt. Administratoren können Funktionscode direkt über das Web-Dashboard importieren, versionieren und mit feingranularen Schaltern aktivieren.
 
-![Detaillierter Ausführungszyklus von In-Process Functions und Filtern in Open WebUI](./open_webui_functions_filter_lifecycle.svg)
+![Detaillierter Ausführungszyklus von In-Process Functions und Filtern in Open WebUI](./open_webui_functions_filter_lifecycle.svg "In-Process Functions und Filtern in Open WebUI - Detaillierter Ausführungszyklus")
 
 ### Der 4-Phasen-Filter-Lifecycle
 
@@ -129,7 +132,7 @@ Verarbeitet den fertig generierten Modell-Output vor der Auslieferung an den Cli
 
 Retrieval-Augmented Generation (RAG) gehört zu den Kernfunktionen von Open WebUI. Fachanwender können Dokumente per Drag-and-Drop in den Chat ziehen oder in thematischen **Wissensdatenbanken (Knowledge Bases)** strukturieren.
 
-![Architektur der hybriden Enterprise-RAG-Engine in Open WebUI mit dualer Indizierung und Cross-Encoder Reranking](./open_webui_rag_hybrid_architecture.svg)
+![Architektur der hybriden Enterprise-RAG-Engine in Open WebUI mit dualer Indizierung und Cross-Encoder Reranking](./open_webui_rag_hybrid_architecture.svg "Architektur der hybriden Enterprise-RAG-Engine in Open WebUI")
 
 ### Ingestion & Intelligentes Chunking
 Beim Upload von Dateien (PDF, DOCX, CSV, Markdown, Code) durchläuft der Inhalt eine standardisierte Parsing-Pipeline:
@@ -171,7 +174,7 @@ Das Modell liefert eine kalibrierte Relevanzwahrscheinlichkeit $s_i \in [0, 1]$.
 
 In regulierten Unternehmensumgebungen darf eine KI-Plattform kein isoliertes Datensilo darstellen. Open WebUI integriert umfassende Sicherheits- und Administrationsmerkmale.
 
-![Enterprise IAM Governance und API-Dualismus in Open WebUI](./open_webui_governance_api_dualism.svg)
+![Enterprise IAM Governance und API-Dualismus in Open WebUI](./open_webui_governance_api_dualism.svg "Enterprise IAM Governance und API-Dualismus")
 
 ### Identitätsmanagement & Feingranulares RBAC
 * **Single Sign-On (SSO):** Standardisierte Anbindung an **Keycloak**, Microsoft Entra ID (Azure AD), Okta oder Google Workspace via OpenID Connect (OIDC) und OAuth2.

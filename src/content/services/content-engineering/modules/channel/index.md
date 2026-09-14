@@ -21,7 +21,10 @@ methodologyPhases:
     description: "Codifying unified topic ontologies, cross-channel metadata tagging, and unified analytics tracking."
 order: 2
 pubDate: 2026-09-11
-previewImage: ./preview.jpg
+previewImage:
+  src: "./preview.jpg"
+  title: "Präsentation: Channel Architecture"
+  description: "Dr. Georg Hackenberg erläutert das Hub-and-Spoke-Syndikationsmodell von Astro Core Content zu Web, RSS, LinkedIn und Headless-APIs"
 inputs:
   - "Current digital touchpoints, publishing channels, and audience demographic data"
   - "Corporate communication goals, brand messaging pillars, and target personas"

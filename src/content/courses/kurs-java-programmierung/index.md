@@ -10,7 +10,10 @@ terms:
   - "Winter Term 2024/25"
   - "Winter Term 2025/26"
 language: "de"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Dr. Georg Hackenberg im Java-Hörsaal"
+  description: "Dr. Georg Hackenberg erläutert objektorientierte Vererbungshierarchien und das Java Collection Framework vor Studierenden im Computer-Labor"
 tags:
   - "java"
   - "software-engineering"

@@ -1,7 +1,10 @@
 ---
 title: "Sigma ForceAtlas2"
 description: "Visualizes the relationship between projects, posts, publications, courses, services, and tags using Sigma.js and the ForceAtlas2 layout engine with worker-thread calculations."
-screenshot: "./sigma.png"
+screenshot:
+  src: "./sigma.png"
+  title: "Sigma ForceAtlas2 Graphlayout"
+  description: "Großflächiges Graphlayout mit organisch verteilten Inhaltsclustern und feinen Netzwerkkanten"
 colorClass: "hover:border-brand-green/30 text-brand-green bg-brand-green/10 border-brand-green/20"
 badgeColor: "bg-brand-green/10 text-brand-green border-brand-green/20"
 ---

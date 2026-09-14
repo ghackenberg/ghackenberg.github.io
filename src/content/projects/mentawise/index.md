@@ -6,7 +6,10 @@ href: "https://mentawise.com"
 tags: ["collaborative-software", "data-visualization", "graph-database", "knowledge-graphs", "knowledge-management", "mind-mapping", "saas"]
 accentColor: "blue"
 order: 2
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Interaktive Wissensgraph-Steuerung"
+  description: "Spezialistin navigiert gestenbasiert durch einen dreidimensionalen holografischen Wissensgraphen mit vernetzten Informationsknoten"
 screenshots:
   - image: "./screenshot1.png"
     title: "Mentawise Landing Page"

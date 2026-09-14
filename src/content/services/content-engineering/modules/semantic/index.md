@@ -21,7 +21,10 @@ methodologyPhases:
     description: "Testing microdata against Google Rich Results validators and indexing readiness for modern AI agents."
 order: 5
 pubDate: 2026-09-11
-previewImage: ./preview.jpg
+previewImage:
+  src: "./preview.jpg"
+  title: "Semantische Web-Optimierung im Almtal Office"
+  description: "Dr. Georg Hackenberg überprüft semantische Wissensgraphen, llms.txt und OpenGraph-Vorschauen am Bildschirm im Almtal Home Office"
 inputs:
   - "Existing web templates, layout components, and metadata fields"
   - "Corporate entity details, author profiles, academic credentials, and service hierarchies"

@@ -26,7 +26,7 @@ type JsonLdValue = string | number | boolean | null | undefined | { [key: string
 interface Props {
   title?: string;
   description?: string;
-  image?: string | ImageMetadata;
+  image?: string | ImageMetadata | { src: ImageMetadata | string; title?: string; description?: string };
   type?: "website" | "article";
   pubDate?: Date | string;
   tags?: string[];
@@ -41,7 +41,7 @@ const {
   image,
   type = "website",
   pubDate,
-  tags = [],
+  tags,
   hasMath = false,
   preloadImage,
   jsonLd
@@ -62,16 +62,20 @@ const optimizedDefaultOgImage = await getImage({
 let resolvedImageSrc: string = optimizedDefaultOgImage.src;
 
 if (image) {
-  if (typeof image === 'string') {
-    resolvedImageSrc = image;
-  } else if (typeof image === 'object' && 'src' in image) {
-    if (image.format === 'svg') {
+  let targetImage: string | ImageMetadata = image as string | ImageMetadata;
+  if (typeof image === 'object' && image !== null && 'src' in image && image.src) {
+    targetImage = image.src;
+  }
+  if (typeof targetImage === 'string') {
+    resolvedImageSrc = targetImage;
+  } else if (typeof targetImage === 'object' && targetImage !== null && 'src' in targetImage) {
+    if (targetImage.format === 'svg') {
       // SVGs are not supported for Open Graph / Twitter cards across platforms; fall back to optimized default
       resolvedImageSrc = optimizedDefaultOgImage.src;
     } else {
       try {
         const optimizedCustomImage = await getImage({
-          src: image,
+          src: targetImage,
           format: 'jpeg',
           width: 1200,
           height: 630,
@@ -79,7 +83,7 @@ if (image) {
         });
         resolvedImageSrc = optimizedCustomImage.src;
       } catch (e) {
-        resolvedImageSrc = image.src;
+        resolvedImageSrc = targetImage.src;
       }
     }
   }
@@ -216,7 +220,7 @@ if (pubDate) {
       <>
         {isoDate && <meta property="article:published_time" content={isoDate} />}
         <meta property="article:author" content="Dr. Georg Hackenberg" />
-        {tags.map((tag) => (
+        {tags?.map((tag) => (
           <meta property="article:tag" content={tag} />
         ))}
       </>

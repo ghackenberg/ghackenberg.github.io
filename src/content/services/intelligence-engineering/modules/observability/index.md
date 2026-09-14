@@ -21,7 +21,10 @@ methodologyPhases:
     description: "Establishing automated evaluation test suites with version-controlled ground-truth datasets and safety filters."
 order: 5
 pubDate: 2026-09-11
-previewImage: ./preview.jpg
+previewImage:
+  src: "./preview.jpg"
+  title: "System Observability im Campus Office Wels"
+  description: "Dr. Georg Hackenberg analysiert OpenTelemetry-Traces und Token-Verbrauchskurven an seinem Arbeitsplatz am FH OÖ Campus Wels"
 
 
 inputs:

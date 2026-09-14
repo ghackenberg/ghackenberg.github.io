@@ -3,7 +3,10 @@ title: "Smarte Tiefenbewässerung und Bodenbau: Intelligentes Wurzelzonen-Manage
 pubDate: "2026-08-30"
 description: "Wie die Symbiose aus überbaubarem Baumsubstrat, Unterflur-Tropfschläuchen, nachrüstbaren Tiefenlanzen und Edge-basierter Smart-Home-Sensorik Gehölze auf befahrbaren Pflasterflächen resilient gegen Hitzeperioden macht."
 tags: ["smart-home", "iot", "irrigation", "systems-engineering", "civil-engineering", "sustainability", "industrial-informatics"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Smarte Tiefenbewässerung im Wurzelbereich mit"
+  description: "Smarte Tiefenbewässerung im Wurzelbereich mit Bodenfeuchtesensorik"
 ---
 
 Urbane Grünflächen und private Außenanlagen stehen vor einem fundamentalen Zielkonflikt: Einerseits verlangen Einfahrten, Vorplätze und Parkflächen eine **hohe bauliche Tragfähigkeit für PKW- und Lieferverkehr**. Andererseits benötigen Solitärbäume – wie etwa die beliebte Kupfer-Felsenbirne (*Amelanchier lamarckii*) – ein **ausreichendes Wurzelraumvolumen mit intakter Porenstruktur**, kontinuierlicher Sauerstoffversorgung und bedarfsgerechtem Wasserhaushalt.
@@ -15,13 +18,13 @@ Konventionelle Bewässerungsmethoden stoßen in solchen Mischzonen schnell an ph
 
 In diesem Beitrag stellen wir ein ganzheitliches mechatronisches und bodenbauliches Gesamtkonzept vor: **Die Kombination aus strukturell tragfähigem, überbaubarem Baumsubstrat, unterirdischer Unterflur-Tropfbewässerung, variablen Tiefenlanzen und einer Edge-integrierten Smart-Home-Regelung.**
 
-![Smarte Tiefenbewässerung im Wurzelbereich mit Bodenfeuchtesensorik](./hero.jpg)
+![Dr. Georg Hackenberg inspiziert ein automatisiertes Tiefenbewässerungssystem mit kapillaren Bodenfeuchtesensoren im Wurzelbereich](./hero.jpg "Smarte Tiefenbewässerung im Wurzelbereich")
 
 ## 1. Bautechnische Bodenstruktur: Wurzelraum unter befahrbaren Pflasterflächen
 
 Um Verkehrsflächen dauerhaft befahrbar zu halten, ohne das Wurzelwachstum abzuschnüren, ist ein präzise dimensionierter Schichtenaufbau nach den Richtlinien der FLL (Forschungsgesellschaft Landschaftsentwicklung Landschaftsbau e.V.) erforderlich.
 
-![Baulicher Bodenaufbau und Tiefenbewässerung im Querschnitt](./bodenaufbau_querschnitt.jpg)
+![Querschnittszeichnung des mehrschichtigen Bodenaufbaus mit Tiefenbewässerung und integrierten Messsonden](./bodenaufbau_querschnitt.jpg "Baulicher Bodenaufbau im Querschnitt")
 
 ### Der Schichtenaufbau im Detail
 
@@ -58,7 +61,7 @@ Für bestehende Gehölze oder punktuelle Tiefenversorgung bietet sich die Instal
 
 Ein energie- und wassereffizientes System lebt von der intelligenten Verknüpfung von Messwerten, Aktorik und Regelungsalgorithmen.
 
-![IoT-Ventilsteuerung mit kabelloser Smart-Home-Anbindung](./smart_valve_control.jpg)
+![IoT-Ventilsteuerung mit kabelloser Smart-Home-Anbindung](./smart_valve_control.jpg "Smart Valve Control")
 
 ### 1. Sensorik & Telemetrie
 - **Kapazitive Bodenfeuchtesensoren (FDR/TDR-Prinzip):** In verschiedenen Tiefen ($20\,\text{cm}$ und $50\,\text{cm}$) positioniert, erfassen sie die volumetrische Bodenfeuchte ($\theta$ in Vol.-%) in Echtzeit über hochfrequente elektromagnetische Felder (*Frequency / Time Domain Reflectometry*).

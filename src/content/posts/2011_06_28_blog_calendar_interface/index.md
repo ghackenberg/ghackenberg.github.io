@@ -3,7 +3,10 @@ title: "Blog Calendar Interface"
 pubDate: "2011-06-27"
 description: "In my last post Blog Timeline Widget I demonstrated how to provide a timeline for navigating your blog posts. In this article I show a modified version of the i..."
 tags: ["blog", "data-visualization", "user-interface"]
-icon: "./bubble.png"
+icon:
+  src: "./bubble.png"
+  title: "Blog Calendar Interface - Bubble illustration"
+  description: "Bubble illustration from Blog Calendar Interface"
 ---
 The left screenshot shows the main interface after loading the page.
 The articles are organized in a tabular structure.
@@ -12,8 +15,8 @@ The articles are contained in the table cells.
 When hovering the article icons a bubble is displayed showing detailed information about the blog post.
 This effect is illustrated in the screenshot to the right.
 
-[![Main illustration from Blog Calendar Interface](./main.png)](./main.png)
-[![Bubble illustration from Blog Calendar Interface](./bubble.png)](./bubble.png)
+[![Main illustration from Blog Calendar Interface](./main.png "Blog Calendar Interface - Main illustration")](./main.png)
+[![Bubble illustration from Blog Calendar Interface](./bubble.png "Blog Calendar Interface - Bubble illustration")](./bubble.png)
 
 Again the interface is only work in progress to provide innovative navigation controls for information on the internet (in my particular case blog posts).
 Mainly it is intended to document the progress, showcase ideas, and maybe find some people that are interested in sharing ideas.

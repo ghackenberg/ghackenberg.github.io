@@ -21,7 +21,10 @@ methodologyPhases:
     description: "Delivering visual guidelines, contrast validation checklists, and practical training for content creators."
 order: 3
 pubDate: 2026-09-11
-previewImage: ./preview.jpg
+previewImage:
+  src: "./preview.jpg"
+  title: "Präsentation: Design Systems"
+  description: "Dr. Georg Hackenberg präsentiert Design-Tokens, Farbpaletten, Typografieskalen und modulare UI-Komponenten auf einer Leinwand"
 inputs:
   - "Existing logo files, brand marks, and current social media post archives"
   - "Target social platforms (LinkedIn, YouTube, X, GitHub) and aspect ratio requirements"

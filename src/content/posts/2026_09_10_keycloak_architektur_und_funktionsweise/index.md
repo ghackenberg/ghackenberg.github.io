@@ -3,7 +3,10 @@ title: "Architektur und Funktionsweise von Keycloak: Enterprise Identity Federat
 pubDate: "2026-09-10"
 description: "Eine softwaretechnische Tiefenanalyse von Keycloak im Kontext souveräner Unternehmens-KI: Cloud-native Quarkus-Laufzeit, verteilte Infinispan-Caches, Standard Token Exchange (RFC 8693) für autonome Agenten, feingranulare UMA-2.0-Autorisierung und Zero-Trust-Governance im Zusammenspiel mit LiteLLM und Open WebUI."
 tags: ["keycloak", "agentic-ai", "artificial-intelligence", "enterprise-ai", "litellm", "open-webui", "devops", "software-architecture", "open-source", "vllm", "langgraph"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Keycloak"
+  description: "Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im souveränen AI Tech Stack"
 ---
 
 In unserer fortlaufenden Beitragsreihe zur systematischen Konzeption und ingenieurwissenschaftlichen Realisierung souveräner Unternehmens-KI haben wir die funktionalen Kernkomponenten moderner Plattformen schrittweise analysiert: Ausgehend vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) untersuchten wir das mathematisch formalisierte [sitzungsübergreifende Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die [kontinuierliche Wissensevolution via WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/), die [Body-Brain-Entkopplung und Bounded-Memory-Laufzeit des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/), die kollaborative [Human-in-the-Loop Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/) sowie das universelle Modell-Routing, Caching und Inferenz-Gateway via [LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/).
@@ -18,11 +21,11 @@ In vielen heutigen Pilotprojekten und unreflektierten Enterprise-Deployments her
 
 Genau an dieser Nahtstelle greift **Keycloak** als **Schicht 5 (Gateway, Identity & Access Management)** unseres Referenzmodells ein. Als hochgradig performanter, cloud-nativer Open-Source-Identity-Provider (IdP) standardisiert Keycloak moderne Authentifizierungs- und Autorisierungs-Flows (OAuth 2.0, OpenID Connect, SAML 2.0, UMA 2.0). 
 
-![Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im souveränen AI Tech Stack](./hero.jpg)
+![Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im souveränen AI Tech Stack](./hero.jpg "Keycloak")
 
 Bevor wir die internen Protokollabläufe und Token-Transformationsmechanismen im Detail analysieren, visualisiert das folgende Architekturmodell die Einbettung von Keycloak in die Gesamttopologie unseres Stacks:
 
-![Keycloak Zero-Trust Governance und Schichtenintegration im souveränen AI Tech Stack](./keycloak_stack_integration.svg)
+![Keycloak Zero-Trust Governance und Schichtenintegration im souveränen AI Tech Stack](./keycloak_stack_integration.svg "Keycloak Zero-Trust Governance und Schichtenintegration")
 
 ## 1. Keycloak im Kontext des souveränen AI Tech Stacks
 
@@ -43,7 +46,7 @@ In unserem sechsgliedrigen Referenzstack agiert Keycloak nicht als isolierter Au
 
 Mit der Veröffentlichung von Keycloak 17 vollzog das Projekt den wegweisenden architektonischen Wechsel von der klassischen WildFly-Plattform zur modernen **Quarkus Cloud-Native Java Runtime**. Für containerisierte KI-Umgebungen auf Basis von Kubernetes oder Docker bedeutet dies drastisch reduzierte Kaltstartzeiten (wenige Sekunden statt Minuten) und einen bis zu 60 % geringeren Arbeitsspeicherbedarf.
 
-![Keycloak System-Architektur mit Quarkus Core, verteiltem Infinispan Cache und RDBMS Persistenz](./keycloak_system_architecture.svg)
+![Keycloak System-Architektur mit Quarkus Core, verteiltem Infinispan Cache und RDBMS Persistenz](./keycloak_system_architecture.svg "Keycloak System-Architektur mit Quarkus Core")
 
 ### Der reaktive Netty-Core
 Das Herzstück der Quarkus-basierten Keycloak-Distribution bildet ein asynchroner, nicht-blockierender I/O-Kern auf Basis von **Eclipse Vert.x** und **Netty**. Eingehende HTTP/2- und HTTP/1.1-Verbindungen werden auf Event-Loops entgegengenommen:
@@ -125,7 +128,7 @@ Das gravierendste Sicherheitsproblem agentischer Architekturen ist das **Confuse
 
 Die Lösung bildet der in Keycloak produktionsreif integrierte **Standard Token Exchange nach RFC 8693**:
 
-![OAuth 2.0 Token Exchange (RFC 8693) Flow im Zusammenspiel zwischen Open WebUI, Hermes Agent und Keycloak](./keycloak_token_exchange_flow.svg)
+![OAuth 2.0 Token Exchange (RFC 8693) Flow im Zusammenspiel zwischen Open WebUI, Hermes Agent und Keycloak](./keycloak_token_exchange_flow.svg "OAuth 2.0 Token Exchange (RFC")
 
 #### Der mathematisch-formale Ablauf des Token Exchange:
 1. **Delegations-Trigger:** Open WebUI übergibt dem Hermes Agent die Aufgabe zusammen mit dem aktuellen Benutzer-Token $T_{\text{user}}$ mit Scopes $S_{\text{full}} = \{\text{openid}, \text{ai:chat}, \text{db:read}, \text{db:write}, \text{admin}\}$.
@@ -170,7 +173,7 @@ Ein böswilliger Versuch des Agenten, schreibende SQL-Befehle (`DROP TABLE`) abz
 
 Authentifizierung stellt lediglich fest, *wer* eine Anfrage stellt. Autorisierung entscheidet, *was* der Anfragende tun darf. Im AI Tech Stack kombinieren wir über Keycloak drei Dimensionen der Zugriffskontrolle:
 
-![Autorisierungsmatrix im KI-Ökosystem: RBAC, ABAC und UMA 2.0 im Zusammenspiel](./keycloak_uma_rbac_abac_matrix.svg)
+![Autorisierungsmatrix im KI-Ökosystem: RBAC, ABAC und UMA 2.0 im Zusammenspiel](./keycloak_uma_rbac_abac_matrix.svg "Autorisierungsmatrix im KI-Ökosystem")
 
 ### 1. Rollenbasierte Zugriffskontrolle (RBAC)
 Keycloak unterscheidet zwischen globalen **Realm Roles** und dienstspezifischen **Client Roles**:
@@ -222,7 +225,7 @@ Keycloak implementiert den **OpenID Connect Back-Channel Logout (RFC 7662 / OIDC
 
 Für unternehmenskritische 24/7-Infrastrukturen muss Keycloak redundant und ausfallsicher betrieben werden. In Produktionsumgebungen erfolgt das Deployment standardisiert über den offiziellen **Keycloak Kubernetes Operator**.
 
-![Keycloak High-Availability und Kubernetes-Topologie mit Operator, JGroups und PostgreSQL Cluster](./keycloak_high_availability_topology.svg)
+![Keycloak High-Availability und Kubernetes-Topologie mit Operator, JGroups und PostgreSQL Cluster](./keycloak_high_availability_topology.svg "Keycloak High-Availability Topologie in Kubernetes")
 
 ### Cluster-Discovery mit JGroups & KUBE_PING
 In Kubernetes-Clustern besitzen Pods dynamische IP-Adressen. Das klassische IP-Multicast-Verfahren scheitert in virtualisierten Cloud-Netzwerken. Keycloak nutzt daher **JGroups mit `KUBE_PING` bzw. `DNS_PING`**:
@@ -240,7 +243,7 @@ Um unnötigen Cache-Replikations-Traffic zwischen den Knoten zu minimieren, setz
 
 Um das nahtlose Ineinandergreifen aller Komponenten zu demonstrieren, betrachten wir den Lebenszyklus einer geschützten Benutzeranfrage in unserem AI Tech Stack:
 
-![End-to-End Security Walkthrough: Vollständiger kryptografischer Anfrage-Lebenszyklus im Sovereign AI Tech Stack](./keycloak_e2e_walkthrough.svg)
+![End-to-End Security Walkthrough: Vollständiger kryptografischer Anfrage-Lebenszyklus im Sovereign AI Tech Stack](./keycloak_e2e_walkthrough.svg "End-to-End Security Walkthrough")
 
 ### Die Sicherheitsgarantien dieses Ablaufs:
 1. **Kein Klartext-Secret im Umlauf:** Kein einziger statischer API-Key ist in Konfigurationsdateien exponiert.

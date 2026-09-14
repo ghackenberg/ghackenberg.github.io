@@ -3,7 +3,10 @@ title: "Managing Our Team Roadmap with MediaWiki"
 pubDate: "2012-01-16"
 description: "Recently, a few colleagues and I founded a working group around the topic of software engineering for future energy systems (also called smart grids). To coordi..."
 tags: ["collaborative-software", "hyperkit-software", "knowledge-management", "task-management"]
-icon: "./editor.png"
+icon:
+  src: "./editor.png"
+  title: "Managing Our Team Roadmap with MediaWiki - Editor illustration"
+  description: "Editor illustration from Managing Our Team Roadmap with MediaWiki"
 ---
 The roadmap is basically a collection of current tasks and events.
 The tasks are devided into four time frames:
@@ -12,18 +15,18 @@ Instead, the events are devided into three categories:
 (1) Important, (2) prebooked and (3) publication deadlines.
 Here is a screenshot:
 
-[![Roadmap illustration from Managing Our Team Roadmap with MediaWiki](./roadmap.png)](./roadmap.png)
+[![Roadmap illustration from Managing Our Team Roadmap with MediaWiki](./roadmap.png "Managing Our Team Roadmap with MediaWiki - Roadmap illustration")](./roadmap.png)
 
 The layout of the roadmap is created with a simple MediaWiki table.
 To keep the table code lightweight, the actual tasks and events are outsourced into template pages and included with the `{{PageName}}` syntax (highlighted in the following screenshot).
 
-[![Editor illustration from Managing Our Team Roadmap with MediaWiki](./editor.png)](./editor.png)
+[![Editor illustration from Managing Our Team Roadmap with MediaWiki](./editor.png "Managing Our Team Roadmap with MediaWiki - Editor illustration")](./editor.png)
 
 Finally, the template pages cotain simple bullet point lists of the tasks or events in the given time frame or category respectively.
 Typically we add links from the bullet points to extended information on the topic.
 For example, the last entry in the following screenshot references an encrypted URL for another domain.
 
-[![Template illustration from Managing Our Team Roadmap with MediaWiki](./template.png)](./template.png)
+[![Template illustration from Managing Our Team Roadmap with MediaWiki](./template.png "Managing Our Team Roadmap with MediaWiki - Template illustration")](./template.png)
 
 Once a week we meet to update the common roadmap.
 So far this strategy has proven worthwhile.

@@ -3,7 +3,10 @@ title: "Business Documents using XSL-FO."
 pubDate: "2009-03-20"
 description: "Recently I faced the problem of writing a bill to a customer for which I did Web consulting and development services. I searched for a solution to automatically..."
 tags: ["hyperkit-software", "software-systems"]
-icon: "./bill_xsl.png"
+icon:
+  src: "./bill_xsl.png"
+  title: "Business Documents using XSL-FO - Bill xsl illustration"
+  description: "Bill xsl illustration from Business Documents using XSL-FO."
 ---
 First, let's have a look what *XSL-FO* actually is:
 XSL-FO is an XML-based language for type setting, i.e. for describing textual documents.
@@ -19,13 +22,13 @@ The *XSL stylesheet* is used to transform the original XML document into XSL-FO 
 That's also the final setup, I chose to use.
 The following figure depicts the components graphically:
 
-[![System illustration from Business Documents using XSL-FO.](./system.png)](./system.png)
+[![System illustration from Business Documents using XSL-FO.](./system.png "Business Documents using XSL-FO - System illustration")](./system.png)
 
 As input I provide an *XML document* which contains the data of the business document and the *XSL stylesheet* which takes care about the layout.
 I'll demonstrate this setup using an example bill.
 First let's have a look at the XML data which has to be provided for generating a PDF bill:
 
-[![Xml illustration from Business Documents using XSL-FO.](./xml.png)](./xml.png)
+[![Xml illustration from Business Documents using XSL-FO.](./xml.png "Business Documents using XSL-FO - Xml illustration")](./xml.png)
 
 In the XML document we specify some meta-information such as the *date* and the *service period*.
 Then we give information about the *recipient* and the *items*.
@@ -36,7 +39,7 @@ This document now has to be transformed into a valid *XSL-FO* document.
 Therefore, I have developed one *XSL stylesheet*, which defines some text paragraphs and transforms the bill's*items* into a table layout.
 The stylesheet is depicted in the following figure:
 
-[![Bill xsl illustration from Business Documents using XSL-FO.](./bill_xsl.png)](./bill_xsl.png)
+[![Bill xsl illustration from Business Documents using XSL-FO.](./bill_xsl.png "Business Documents using XSL-FO - Bill xsl illustration")](./bill_xsl.png)
 
 As you can easily see, the template defines a header with *Rechnungsdatum* and other meta-information.
 Then it prints a greeting line according to the *sex* of the recipient followed by a text paragraph.
@@ -45,7 +48,7 @@ Important to notice is that we import another stylesheet in the beginning (`Lett
 This will cause the general letter layout to be wrapped around the bill-specific contents such as the *date* and the *items* table.
 The letter stylesheet is presented in the following figure:
 
-[![Letter xsl illustration from Business Documents using XSL-FO.](./letter_xsl.png)](./letter_xsl.png)
+[![Letter xsl illustration from Business Documents using XSL-FO.](./letter_xsl.png "Business Documents using XSL-FO - Letter xsl illustration")](./letter_xsl.png)
 
 In the *letter styleheet* we define the A4 page layout, the header and footer contents, page margins and much more.
 We also use the *recipient* parameter to automatically write the address header to the PDF file.

@@ -9,7 +9,10 @@ learningGoals:
 terms:
   - "Winter Term 2025/26"
 language: "de"
-screenshot: "./preview.png"
+screenshot:
+  src: "./preview.png"
+  title: "Python-Grundlagen im Hörsaal"
+  description: "Dr. Georg Hackenberg erklärt modulare Python-Funktionen und automatisierte Konsolenausgaben an einem digitalen Großdisplay vor Studierenden"
 tags:
   - "python"
   - "software-engineering"

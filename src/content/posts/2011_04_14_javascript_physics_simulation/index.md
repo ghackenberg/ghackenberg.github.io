@@ -3,7 +3,10 @@ title: "JavaScript Physics Simulation"
 pubDate: "2011-04-13"
 description: "Some time ago I was testing the capabilities of JavaScript and vector graphics toolkits such as SVG (Mozilla Firefox, Opera, Safari) and VML (Microsoft Internet..."
 tags: ["data-visualization", "hyperkit-software", "javascript", "simulation", "youtube-video", "zumida"]
-icon: "./bounce_four.png"
+icon:
+  src: "./bounce_four.png"
+  title: "JavaScript Physics Simulation - Bounce four illustration"
+  description: "Bounce four illustration from JavaScript Physics Simulation"
 ---
 <iframe title="YouTube video player" src="//www.youtube.com/embed/pG4gF7uO_Sg?rel=0" frameborder="0" allowfullscreen="yes"></iframe>
 
@@ -17,10 +20,10 @@ The bounce logic first checks if the position of the ball and its radius cause a
 If that is the case then the velocity of the ball is reflected across the horizontal ground line and due to friction the amount is dampened.
 This phenomena is depicted in the following picture series:
 
-![Bounce one illustration from JavaScript Physics Simulation](./bounce_one.png)
-![Bounce two illustration from JavaScript Physics Simulation](./bounce_two.png)
-![Bounce three illustration from JavaScript Physics Simulation](./bounce_three.png)
-![Bounce four illustration from JavaScript Physics Simulation](./bounce_four.png)
+![Bounce one illustration from JavaScript Physics Simulation](./bounce_one.png "JavaScript Physics Simulation - Bounce one illustration")
+![Bounce two illustration from JavaScript Physics Simulation](./bounce_two.png "JavaScript Physics Simulation - Bounce two illustration")
+![Bounce three illustration from JavaScript Physics Simulation](./bounce_three.png "JavaScript Physics Simulation - Bounce three illustration")
+![Bounce four illustration from JavaScript Physics Simulation](./bounce_four.png "JavaScript Physics Simulation - Bounce four illustration")
 
 The behavior in case of collisions between two separate balls is a little more complex than that.
 If two balls collide the connecting line between the centers of the balls (orange line in the following picture series) defines a local coordinate system.
@@ -32,9 +35,9 @@ And finally the first and the second component have to be added again to obtain 
 The effect of this procedure is visualized in the following picture series.
 Blue lines depict the components of the new velocities.
 
-![Collision one illustration from JavaScript Physics Simulation](./collision_one.png)
-![Collision two illustration from JavaScript Physics Simulation](./collision_two.png)
-![Collision four illustration from JavaScript Physics Simulation](./collision_four.png)
+![Collision one illustration from JavaScript Physics Simulation](./collision_one.png "JavaScript Physics Simulation - Collision one illustration")
+![Collision two illustration from JavaScript Physics Simulation](./collision_two.png "JavaScript Physics Simulation - Collision two illustration")
+![Collision four illustration from JavaScript Physics Simulation](./collision_four.png "JavaScript Physics Simulation - Collision four illustration")
 
 If I find the time I will also make sure to compile a package of the prototype for download.
 So far it is just a bunch of files lying around on the hard disk.

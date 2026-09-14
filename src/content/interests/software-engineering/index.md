@@ -4,7 +4,10 @@ tagline: "Architectures & Web Platforms"
 description: "My passion lies in crafting high-performance, type-safe software architectures, test-driven pipelines, and continuous delivery systems."
 color: "blue"
 icon: "💻"
-heroImage: "./preview.jpg"
+heroImage:
+  src: "./preview.jpg"
+  title: "Research domain: Software Engineering"
+  description: "Focus area in Software Engineering: Architectures & Web Platforms."
 order: 1
 ---
 
@@ -16,7 +19,7 @@ Writing code should never be an act of hopeful guesswork. High-assurance softwar
 
 A core foundation of my development philosophy is **Test-Driven Development (TDD)**. By writing unit tests before implementation, we force ourselves to clarify system specifications and interface contracts up front. The classic *Red-Green-Refactor* cycle provides immediate psychological safety: code is proven correct at every step, and refactoring becomes a confident exercise in architectural refinement rather than a source of anxiety.
 
-![Test-Driven Development & Static Code Analysis](./se-1-tdd-static-analysis.jpg)
+![Test-Driven Development & Static Code Analysis](./se-1-tdd-static-analysis.jpg "Test-Driven Development (TDD) Zyklus und statische Code-Analyse")
 *Figure 1: The Test-Driven Development (TDD) cycle combined with Abstract Syntax Tree (AST) static analysis and automated quality gates.*
 
 Alongside unit testing, **static code analysis** acts as an automated compiler-level guardian. By parsing source code into Abstract Syntax Trees (ASTs), static analyzers and sound type systems (such as TypeScript or Rust) eliminate entire classes of runtime defects—such as null dereferences, concurrency race conditions, and architectural boundary violations—before a single line of code ever runs.
@@ -25,7 +28,7 @@ Alongside unit testing, **static code analysis** acts as an automated compiler-l
 
 The true joy of modern software engineering lies in automated pipelines that remove human friction from the delivery lifecycle. Modern engineering relies on **version control** (Git) as an immutable, collaborative timeline of architectural decisions.
 
-![Version Control & Continuous Delivery Pipeline](./se-2-version-control-ci-cd.jpg)
+![Version Control & Continuous Delivery Pipeline](./se-2-version-control-ci-cd.jpg "Automatisierte Continuous Integration und Delivery Pipeline")
 *Figure 2: End-to-end automated Continuous Integration (CI) and Continuous Delivery (CD) pipeline from trunk-based Git commit to staged deployments.*
 
 When version control is married to **Continuous Integration (CI)** and **Continuous Delivery (CD)**:
@@ -37,7 +40,7 @@ When version control is married to **Continuous Integration (CI)** and **Continu
 
 Shipping software is not the end of the engineering journey; it is the beginning of empirical validation. Software does not exist in a vacuum—it exists to serve human beings. This is where **usability engineering** and **user-centered design (UCD)** intersect with production infrastructure.
 
-![Canary Releases, A/B Testing & Usability Telemetry](./se-3-canary-ab-testing-usability.jpg)
+![Canary Releases, A/B Testing & Usability Telemetry](./se-3-canary-ab-testing-usability.jpg "Canary Deployment Routing und A/B-Testing Telemetrie")
 *Figure 3: Progressive canary deployment routing, live A/B testing telemetry, and user-centered design feedback loops.*
 
 Using modern deployment strategies, we can test architectural and product hypotheses with real users under live conditions:

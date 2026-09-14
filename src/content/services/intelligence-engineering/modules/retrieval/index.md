@@ -20,7 +20,10 @@ methodologyPhases:
   - title: "Evaluation & Grounding Benchmarking"
     description: "Testing retrieval precision, recall metrics, and verifying hallucination mitigation against ground-truth queries."
 order: 2
-previewImage: ./preview.png
+previewImage:
+  src: "./preview.png"
+  title: "Knowledge Retrieval & GraphRAG am Campus Wels"
+  description: "Dr. Georg Hackenberg demonstriert hybride Vektorsuche und Neo4j-Wissensgraphen an der Workstation im Campus Office Wels"
 pubDate: 2026-09-11
 
 inputs:

@@ -21,8 +21,9 @@ const optimizedServices = await Promise.all(
     let optimizedImageSrc = undefined;
 
     if (service.data.previewImage) {
+      const img = service.data.previewImage.src;
       const optimized = await getImage({
-        src: service.data.previewImage,
+        src: img,
         format: "webp",
         width: 800,
         quality: 80
@@ -152,13 +153,17 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
 
                     <!-- Preview Image Column (Top) -->
                     <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
-                      {service.data.previewImage && (
+                      {service.data.previewImage && (() => {
+                        const img = service.data.previewImage.src;
+                        const title = service.data.previewImage.title;
+                        const desc = service.data.previewImage.description;
+                        return (
                         <svg 
                           class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
-                          viewBox={`0 0 ${service.data.previewImage.width} ${service.data.previewImage.height}`} 
+                          viewBox={`0 0 ${img.width} ${img.height}`} 
                           preserveAspectRatio="xMidYMid slice" 
-                          role="img"
-                          aria-label={`Service preview: ${service.data.title}`}
+                          role="img" 
+                          aria-label={desc}
                         >
                           <defs>
                             <linearGradient id={`grad-service-dark-${service.id}`} x1="0" y1="0" x2="0" y2="1">
@@ -173,31 +178,34 @@ const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewI
                             </linearGradient>
                           </defs>
                           <image 
-                            href={service.optimizedImageSrc || service.data.previewImage.src} 
+                            href={service.optimizedImageSrc || img.src} 
                             x="0" 
                             y="0" 
-                            width={service.data.previewImage.width} 
-                            height={service.data.previewImage.height} 
+                            width={img.width} 
+                            height={img.height} 
                             preserveAspectRatio="xMidYMid slice" 
+                            {...{ title }}
+                            aria-label={desc}
                           />
                           <rect 
                             x="0" 
                             y="0" 
-                            width={service.data.previewImage.width} 
-                            height={service.data.previewImage.height + 0.5} 
+                            width={img.width} 
+                            height={img.height + 0.5} 
                             class="block light:hidden"
                             fill={`url(#grad-service-dark-${service.id})`} 
                           />
                           <rect 
                             x="0" 
                             y="0" 
-                            width={service.data.previewImage.width} 
-                            height={service.data.previewImage.height + 0.5} 
+                            width={img.width} 
+                            height={img.height + 0.5} 
                             class="hidden light:block"
                             fill={`url(#grad-service-light-${service.id})`} 
                           />
                         </svg>
-                      )}
+                      );
+                      })()}
                       <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
 
                       <!-- Unread badge -->

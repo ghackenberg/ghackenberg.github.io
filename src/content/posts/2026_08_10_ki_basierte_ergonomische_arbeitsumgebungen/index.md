@@ -3,7 +3,10 @@ title: "KI-basierte ergonomische Arbeitsumgebungen: Dynamische Prävention im B�
 pubDate: "2026-08-10"
 description: "Wie künstliche Intelligenz, multimodale Sensorik und adaptive Möbel Arbeitsumgebungen dynamisch an den Menschen anpassen – im Unternehmensbüro und in häuslichen Wohnräumen."
 tags: ["artificial-intelligence", "cognitive-ergonomics", "computer-vision", "ergonomics", "human-computer-interaction", "industrial-informatics", "iot", "smart-workplace"]
-icon: "./icon.jpg"
+icon:
+  src: "./icon.jpg"
+  title: "Icon"
+  description: "KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht"
 ---
 
 Die Moderne Arbeitswelt ist geprägt von Flexibilität und zeitortsunabhängigem Arbeiten. Während sich Arbeitsinhalte, digitale Tools und Kommunikationskanäle in rasantem Tempo weiterentwickelt haben, hinken unsere physischen Arbeitsplätze diesem Wandel oft hinterher. Sowohl im klassischen Unternehmensbüro als auch im häuslichen Homeoffice verbringen Wissensarbeiter viele Stunden in weitgehend statischen Körperhaltungen. 
@@ -12,7 +15,7 @@ Klassische Ergonomie-Ansätze stoßen hier an ihre Grenzen: Ein höhenverstellba
 
 An unserer **Professur für Industrieinformatik an der FH OÖ Campus Wels** widmen wir uns daher einem zentralen Forschungsthema der Zukunft: Der **Entwicklung KI-basierter ergonomischer Arbeitsumgebungen**, die sich durch multimodale Sensorik, lernende Algorithmen und adaptive Aktorik kontinuierlich und unaufdringlich an den Menschen anpassen.
 
-![KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht](./icon.jpg)
+![KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht](./icon.jpg "KI-gestützte ergonomische Arbeitsumgebung mit Sensorik")
 
 ## 1. Das Kernproblem: Statische Ergonomie trifft auf dynamische Menschen
 
@@ -28,7 +31,7 @@ Unsere Forschung am Forschungsschwerpunkt für Industrieinformatik der FH OÖ (C
 
 Um eine transparente, datenschutzkonforme und reaktionsschnelle Steuerung zu gewährleisten, basiert unser Forschungsansatz auf einer modularen, vierstufigen Systemarchitektur.
 
-![4-Schichten-Systemarchitektur KI-basierter ergonomischer Arbeitsumgebungen](./system_architecture.jpg)
+![4-Schichten-Systemarchitektur KI-basierter ergonomischer Arbeitsumgebungen](./system_architecture.jpg "System Architecture")
 
 ### Schicht 1: Multimodale Sensorik & Edge-Erfassung (Privacy-First)
 Um Haltung und Umgebungsfaktoren präzise zu erfassen, kombinieren wir unterschiedliche Sensor modalitäten:

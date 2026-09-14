@@ -182,8 +182,9 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
           <div class={`glass-card p-2 rounded-3xl border ${colorClasses.border} ${colorClasses.shadowGlow} overflow-hidden group w-full max-w-md`}>
             <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950">
               <Image 
-                src={interest.data.heroImage} 
-                alt={`${interest.data.title} preview illustration`}
+                src={interest.data.heroImage.src} 
+                alt={interest.data.heroImage.description}
+                title={interest.data.heroImage.title}
                 width={800}
                 height={450}
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"

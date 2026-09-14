@@ -3,7 +3,10 @@ title: "Running Local AI Agents in the Browser: Integrating Web-LLM into Delta D
 pubDate: "2026-05-31"
 description: "A deep dive into bringing decentralized, client-side LLM-driven AI behaviors to our low-poly ecosystem simulator using WebGPU, MLC Web-LLM, and asynchronous web workers."
 tags: ["agentic-ai", "artificial-intelligence", "local-ai", "simulation", "threejs", "typescript", "web-llm", "webgpu"]
-icon: "./icon.png"
+icon:
+  src: "./icon.png"
+  title: "Cover illustration: Running Local AI Agents in the Browser: Integrating Web-LLM into Delta Dynamics"
+  description: "A deep dive into bringing decentralized, client-side LLM-driven AI behaviors to our low-poly ecosystem simulator using WebGPU, MLC Web-LLM, and asynchronous web workers."
 ---
 
 In building **Delta Dynamics**, a low-poly ecosystem simulator, we designed a world that is physically alive—featuring GPU-accelerated hydrology, dynamic terrain, and vegetation growth. However, a living world needs intelligent inhabitants. Traditional game AI relies on static finite state machines (FSMs) or behavior trees. While fast, these methods result in highly predictable, repetitive behaviors.
@@ -26,7 +29,7 @@ LLM inference is highly compute-intensive. If we ran the Web-LLM execution loop 
 
 To prevent this, we designed a **decoupled multi-threaded architecture** where the entire LLM lifecycle (initialization, weight loading, and prompt execution) is offloaded to a dedicated browser **Web Worker**.
 
-![Web Worker Multithreaded Architecture](./architecture.svg)
+![Multithreaded Web-Worker-Architektur mit Web-LLM und Three.js](./architecture.svg "Web Worker Architektur für browserbasierte KI-Inferenz")
 
 The main thread runs the Three.js render loop and updates entity coordinates, while the worker thread handles the heavy inference pipeline. The two threads communicate asynchronously using structured message passing via `postMessage` and `onmessage`.
 

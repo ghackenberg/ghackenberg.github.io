@@ -20,23 +20,83 @@ variants:
     shotType: "wide-angle"
     cameraAngle: "Wide eye-level perspective showing the full office layout from the doorway"
     focalTarget: "Entire academic professor office"
-    maxCharacters: 3
     visibleObjects: []
     image: "./reference.png"
     promptSnippet: "Academic office view at FH OÖ Campus Wels showing lockable book cabinets, consultation table, laptop dock with 16:10 monitor and soundbar, single whiteboard, and window overlooking city backyards."
+    characterSlots:
+      - id: "workstation-seat"
+        role: "Professor / Primary Operator"
+        priority: 1
+        required: false
+        spatialPlacement: "Center-right midground, seated in the black ergonomic mesh chair at the main desk"
+        allowedPoses:
+          - "seated"
+          - "seated-working"
+        prohibitedPoses:
+          - "standing"
+        defaultAction: "Seated at desk working or consulting"
+        cutline: "Seated full figure"
+      - id: "consultation-host-seat"
+        role: "Host / Professor"
+        priority: 2
+        required: false
+        spatialPlacement: "Center-left midground, seated at the round consultation table facing right"
+        allowedPoses:
+          - "seated"
+          - "seated-conversing"
+        prohibitedPoses:
+          - "standing"
+        defaultAction: "Seated in armchair at meeting table in discussion"
+        cutline: "Seated full figure"
+      - id: "consultation-guest-seat"
+        role: "Student / Visiting Colleague"
+        priority: 3
+        required: false
+        spatialPlacement: "Far-left midground, seated opposite host at consultation table"
+        allowedPoses:
+          - "seated"
+          - "seated-conversing"
+        prohibitedPoses:
+          - "standing"
+        defaultAction: "Seated in visitor armchair in consultation"
+        cutline: "Seated full figure"
   - name: "visitor-table-focus"
     shotType: "close-up"
     cameraAngle: "Elevated high-angle perspective looking down on the consultation table"
     focalTarget: "Round wooden visitor meeting table"
-    maxCharacters: 2
     visibleObjects: []
     image: "./visitor-table-focus.jpg"
     promptSnippet: "Close, elevated high-angle perspective tightly focused on the intimate two-person round wooden consultation table at FH OÖ Campus Wels, with clean tabletop surface filling the frame, two modern armchairs, and warm sunny indoor lighting."
+    characterSlots:
+      - id: "consultation-host-seat"
+        role: "Professor / Host"
+        priority: 1
+        required: false
+        spatialPlacement: "Right side of the round table, seated comfortably in modern armchair"
+        allowedPoses:
+          - "seated"
+          - "seated-conversing"
+          - "seated-gesturing-to-table"
+        prohibitedPoses:
+          - "standing"
+        defaultAction: "Seated at meeting table with notebook or cup, engaged in consultation"
+        cutline: "High-angle seated medium shot from waist up"
+      - id: "consultation-guest-seat"
+        role: "Visiting Colleague / Student"
+        priority: 2
+        required: false
+        spatialPlacement: "Left side of the round table, seated opposite in modern armchair"
+        allowedPoses:
+          - "seated"
+          - "seated-conversing"
+        prohibitedPoses:
+          - "standing"
+        defaultAction: "Seated at table taking notes or conversing"
+        cutline: "High-angle seated medium shot from waist up"
   - name: "workplace-focus"
     shotType: "three-quarters"
     cameraAngle: "Dynamic three-quarters eye-level perspective facing directly towards the front display screen of the 16:10 monitor"
     focalTarget: "16:10 monitor with integrated soundbar on professor's desk"
-    maxCharacters: 1
     visibleObjects: []
     depthLayers:
       foreground: "Desk front with engraved DR. GEORG HACKENBERG nameplate, FH OÖ ceramic mug, and black keyboard"
@@ -44,6 +104,21 @@ variants:
       background: "Whiteboard with mathematical formulas, glass-door academic bookcase with binders, and sunny window with potted plants"
     image: "./workplace-focus.jpg"
     promptSnippet: "Three-quarters eye-level perspective inside the academic office at FH OÖ Campus Wels focused closely on the workstation desk. A large 16:10 monitor with integrated soundbar underneath is angled towards the viewer with a clean blank screen, alongside a closed laptop on stand, FH OÖ mug, Dr. Georg Hackenberg nameplate, ergonomic black mesh chair, with the formula whiteboard, bookcase, and sunny window in the background."
+    characterSlots:
+      - id: "workstation-operator"
+        role: "Professor / Software Architect"
+        priority: 1
+        required: false
+        spatialPlacement: "Center midground, seated directly in the ergonomic black mesh chair at the workstation desk"
+        allowedPoses:
+          - "seated"
+          - "seated-turning-to-camera"
+          - "seated-working"
+        prohibitedPoses:
+          - "standing"
+          - "walking"
+        defaultAction: "One hand on desk near keyboard or notebook, turning engagingly three-quarters toward viewer"
+        cutline: "Three-quarters medium shot or seated full figure with legs naturally under desk"
 characters:
   - "georg"
 objects: []

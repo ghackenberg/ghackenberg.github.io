@@ -3,7 +3,10 @@ title: "Generative Visual Systems: Warum Diffusionsmodelle an Kamerawinkeln sche
 pubDate: "2026-09-21"
 description: "Vom stochastischen Prompt-Glücksspiel zur deterministischen Grafik-Pipeline: Warum 2D-Bildkonditionierung Diffusionsmodelle in die Layout-Locking-Falle führt, wie wir Kamerawinkel durch semantische 'Room DNA' und Fokus-Varianten entkoppeln, und wie ein relationaler Asset-Graph in Astro für reproduzierbare visuelle Konsistenz sorgt."
 tags: ["generative-ai", "diffusion-models", "software-architecture", "astro", "prompt-engineering", "agentic-ai", "digital-engineering", "design-systems"]
-icon: "./hero.jpg"
+icon:
+  src: "./hero.jpg"
+  title: "Visual Systems Engineering"
+  description: "Visual Systems Engineering: Deterministische Bildgenerierung im Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern"
 ---
 
 In unserer Beitragsreihe zur praktischen IT- und KI-Transformation haben wir uns ausführlich mit skalierbaren Softwarearchitekturen befasst – von [Mastra und TypeScript-basierten Procedural Graphs](/posts/2026_09_20_procedural_graphs_in_mastra_technische_umsetzung/) über das [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) bis zur [Performance-Optimierung moderner Astro-Websites](/posts/2026_05_23_website_relaunch_astro_typescript/). 
@@ -21,7 +24,7 @@ Während Sprachmodelle (LLMs) dank Zod-Schemas, formalen Grammatiken und Functio
 
 Dieser Beitrag dokumentiert die ingenieurwissenschaftlichen Grundlagen unseres **Visual Systems Engineering**: Wie wir die Mechanismen von Diffusionsmodellen analysiert haben, warum herkömmliche Bildkonditionierungen in die sogenannte **2D-Layout-Locking-Falle** tappen, und wie ein relationaler Asset-Graph in Kombination mit **Room DNA**, diskreten **Fokus-Varianten** und strikten **Agenten-Protokollen ([`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md))** eine vollständig deterministische, markenkonforme Bildgenerierungsmaschine ermöglicht.
 
-![Visual Systems Engineering: Deterministische Bildgenerierung im Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern](./hero.jpg)
+![Visual Systems Engineering: Deterministische Bildgenerierung im Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern](./hero.jpg "Visual Systems Engineering")
 
 ## 1. Das Konsistenz-Dilemma generativer Diffusionsmodelle
 
@@ -47,7 +50,7 @@ Die schmerzhafteste Erkenntnis unserer empirischen Testreihen war die Entdeckung
 > **Das 2D-Layout-Locking-Dilemma:**
 > Übergibt man einem Diffusionsmodell ein 2D-Weitwinkelfoto eines realen Zimmers als Bildreferenz (via `ImagePaths` bzw. Vision-Konditionierung) und fordert im Text-Prompt eine Nahaufnahme oder einen Perspektivenwechsel (z. B. *„Close-up shot of the desk facing the window“*), **rotiert das Modell die Kamera nicht im 3D-Raum**. Stattdessen friert es die 2D-Bounding-Boxen des Referenzbildes im latenten Raum ein und erzeugt surreale, schwebende Duplikate.
 
-![Diffusions-Kamerasteuerung im Vergleich: Warum 2D-Bildreferenzen in die Layout-Locking-Falle führen und wie Room DNA mit Fokus-Varianten das Problem löst](./layout_locking_comparison.svg)
+![Diffusions-Kamerasteuerung im Vergleich: Warum 2D-Bildreferenzen in die Layout-Locking-Falle führen und wie Room DNA mit Fokus-Varianten das Problem löst](./layout_locking_comparison.svg "Diffusions-Kamerasteuerung im Vergleich")
 
 ### Warum geschieht das?
 
@@ -113,7 +116,7 @@ Sobald eine Fokus-Variante visuell verifiziert ist, wird sie als statische Bildd
 
 Zur Verwaltung dieser modularen Bausteine haben wir den Astro Content Layer ([`src/content.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content.config.ts)) um drei formal typisierte Kollektionen erweitert, die über Zod-Schemas und relationale `reference()`-Felder bidirektional verknüpft sind.
 
-![Visual Systems Engineering Architecture: Die vier Schichten von der Astro-Kollektion über Agent Governance bis zur Diffusion Engine](./visual_asset_engine_architecture.svg)
+![Visual Systems Engineering Architecture: Die vier Schichten von der Astro-Kollektion über Agent Governance bis zur Diffusion Engine](./visual_asset_engine_architecture.svg "der Astro-Kollektion über Agent Governance bis zur Diffusion Engine - Visual Systems Engineering Architecture: Die vier Schichten")
 
 ### Das Schema in TypeScript ([`src/content.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content.config.ts))
 
@@ -203,7 +206,7 @@ Wer oder was ist hierbei der „Generator“? In unserer agentenbasierten Archit
 
 Anstelle eines unstrukturierten Fließtextes wird der Prompt in drei klar getrennte räumliche Ebenen zerlegt:
 
-![Depth Zonation: Dreidimensionale Prompt-Architektur mit Schichten von Foreground über Midground bis Background](./depth_zonation_layers.svg)
+![Depth Zonation: Dreidimensionale Prompt-Architektur mit Schichten von Foreground über Midground bis Background](./depth_zonation_layers.svg "Foreground über Midground bis Background - Depth Zonation: Dreidimensionale Prompt-Architektur mit Schichten")
 
 ### Warum funktioniert diese Staffelung so verlässlich?
 1. **Keine räumliche Ambiguität:** Das Diffusionsmodell muss nicht raten, ob das Gemälde vor oder hinter der Person platziert werden soll. Durch die explizite Zuweisung zu *Foreground*, *Midground* und *Background* wird die Aufmerksamkeitskarte entlang der simulierten Z-Achse strukturiert.

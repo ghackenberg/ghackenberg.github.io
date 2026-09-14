@@ -3,7 +3,10 @@ title: "Ein standardisierter Open-Source Agentic AI Tech Stack: Architektur, Kom
 pubDate: "2026-09-03"
 description: "Eine detaillierte ingenieurwissenschaftliche Analyse unseres standardisierten Open-Source KI-Tech-Stacks: vLLM, Hermes Agent, Google WikiSkills, LangGraph, Mem0, PostgreSQL/Qdrant + Neo4j, LiteLLM Proxy, Keycloak und Open WebUI."
 tags: ["agentic-ai", "artificial-intelligence", "enterprise-ai", "keycloak", "knowledge-graphs", "langgraph", "local-ai", "mem0", "neo4j", "open-source", "software-architecture", "vllm"]
-icon: "./icon.jpg"
+icon:
+  src: "./icon.jpg"
+  title: "Titelgrafik: Ein standardisierter Open-Source Agentic AI Tech Stack: Architektur, Komponenten und Governance für souveräne Enterprise-Agenten"
+  description: "Eine detaillierte ingenieurwissenschaftliche Analyse unseres standardisierten Open-Source KI-Tech-Stacks: vLLM, Hermes Agent, Google WikiSkills, LangGraph, Mem0, PostgreSQL/Qdrant + Neo4j, LiteLLM Proxy, Keycloak und Open WebUI."
 ---
 
 Die Diskussion um generative künstliche Intelligenz in Industrie und Wissenschaft hat einen kritischen Reifegrad erreicht. Während in den ersten Jahren der Hype-Phase einfache Chatbot-Wrapper und der unreflektierte Konsum proprietärer Cloud-APIs dominierten, erkennen Enterprise-Architekten und IT-Entscheider heute die gravierenden systemischen Risiken dieser Herangehensweise: unkontrollierbare Token-Kosten, intransparente Modell-Änderungen über Nacht, regulatorische Konflikte hinsichtlich des Datenschutzes (DSGVO, AI Act) und ein fataler strategischer Vendor Lock-in.
@@ -12,7 +15,7 @@ Wer Künstliche Intelligenz nicht nur als Spielerei, sondern als tragende Säule
 
 In unserer Beratungspraxis an der Schnittstelle zwischen angewandter Spitzenforschung und industrieller Softwaretechnik haben wir einen **standardisierten, quelloffenen Agentic AI Tech Stack** konzipiert und implementiert. Dieser Beitrag legt die Architektur, das Schichtenmodell und das Zusammenspiel der einzelnen Kernkomponenten detailliert dar.
 
-![Referenzarchitektur des standardisierten Open-Source Agentic AI Tech Stacks](./open_source_agentic_ai_tech_stack.svg)
+![Referenzarchitektur des standardisierten Open-Source Agentic AI Tech Stacks](./open_source_agentic_ai_tech_stack.svg "Referenzarchitektur des standardisierten Open-Source Agentic")
 
 ## 1. Das 6-Schichten-Modell für Souveräne KI-Agenten
 
@@ -65,7 +68,7 @@ Wir nutzen **LangGraph**, um Multi-Agenten-Systeme als zustandsbehaftete, zyklis
 
 LLMs leiden unter zwei systemischen Schwächen: begrenzten Kontextfenstern und vollständiger Amnesie zwischen zwei Sitzungen. Ein produktionsreifer Tech-Stack löst dies durch eine hybride Speicher-Triade in Kombination mit einer dedizierten Gedächtnisschicht:
 
-![Hybride Datenarchitektur und Mem0-Langzeitgedächtnis](./hybrid_memory_architecture.svg)
+![Hybride Datenarchitektur und Mem0-Langzeitgedächtnis](./hybrid_memory_architecture.svg "Hybrid Memory Architecture")
 
 * **PostgreSQL**: Das relationale Rückgrat für transaktionale Integrität, strukturierte Geschäftsdaten, Systemprotokolle und LangGraph-Checkpoint-Tabellen.
 * **Qdrant**: Extrem performante, in Rust geschriebene Vektordatenbank für dichte semantische Ähnlichkeitssuche in unstrukturierten Dokumenten, Handbüchern und Quellcode.

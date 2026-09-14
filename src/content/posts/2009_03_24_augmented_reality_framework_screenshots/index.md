@@ -3,11 +3,14 @@ title: "Augmented Reality Framework Screenshot."
 pubDate: "2009-03-23"
 description: "Last year I started developing an augmented reality framework with a friend of mine from electrical engineering science. We succeeded in providing a QT user int..."
 tags: ["computer-vision", "data-visualization"]
-icon: "./screenshot.png"
+icon:
+  src: "./screenshot.png"
+  title: "Augmented Reality Framework Screenshot - Screenshot illustration"
+  description: "Screenshot illustration from Augmented Reality Framework Screenshot."
 ---
 Here is a screenshot where we apply different image processing steps sequentially and display each of the intermediate frame buffers for comparison:
 
-[![Screenshot illustration from Augmented Reality Framework Screenshot.](./screenshot.png)](./screenshot.png)
+[![Screenshot illustration from Augmented Reality Framework Screenshot.](./screenshot.png "Augmented Reality Framework Screenshot - Screenshot illustration")](./screenshot.png)
 
 As next steps we planned to extract straight lines from the image for detecting the square marker shapes.
 

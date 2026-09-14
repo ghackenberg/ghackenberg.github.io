@@ -14,8 +14,9 @@ export async function getStaticPaths() {
 
 const { type, title, screenshot } = Astro.props;
 
-const optimizedScreenshot = screenshot ? await getImage({
-  src: screenshot,
+const screenshotImg = screenshot ? (typeof screenshot === 'object' && 'src' in screenshot ? screenshot.src : screenshot) : null;
+const optimizedScreenshot = screenshotImg ? await getImage({
+  src: screenshotImg,
   format: 'webp',
   width: 1200,
   quality: 85

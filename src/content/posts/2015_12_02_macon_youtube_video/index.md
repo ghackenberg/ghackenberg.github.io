@@ -3,7 +3,10 @@ title: "MaCon YouTube Video"
 pubDate: "2015-12-01"
 description: "In the last days, I prepared a YouTube video demonstrating MaCon: A tool for consistent cross-discipline conception of manufacturing systems. The video explains..."
 tags: ["manufacturing-engineering", "manufacturing-systems", "mechatronic-systems", "systems-engineering", "user-interface", "youtube-video"]
-icon: "./screenshot.png"
+icon:
+  src: "./screenshot.png"
+  title: "Cover illustration: MaCon YouTube Video"
+  description: "In the last days, I prepared a YouTube video demonstrating MaCon: A tool for consistent cross-discipline conception of manufacturing systems. The video explains..."
 ---
 MaCon is implemented using [Java](http://docs.oracle.com/javase/8/index.htm), [JavaFX](http://docs.oracle.com/javase/8/javase-clienttechnologies.htm), and [JBullet](http://jbullet.advel.cz/).
 For development, we use [Apache Maven](https://maven.apache.org/) and [Eclipse](https://eclipse.org/), but any other Java IDE can be used as well.

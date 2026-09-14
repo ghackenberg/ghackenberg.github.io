@@ -1,10 +1,14 @@
-﻿---
+﻿
+---
 title: "Intelligence Engineering"
 tagline: "Sovereign Agent Architectures, Enterprise Infrastructure & Autonomous Workflows"
 description: "End-to-end consulting for sovereign enterprise AI systems. From private model serving and hybrid knowledge retrieval to standardized tool protocols and stateful multi-agent orchestration."
 order: 1
 ctaText: "Inquire about Intelligence Engineering"
-previewImage: "./preview.png"
+previewImage:
+  src: "./preview.png"
+  title: "Präsentation: Intelligence Engineering Architektur"
+  description: "Dr. Georg Hackenberg erläutert die Komponenten souveräner KI-Infrastrukturen mit Model Serving, Agenten-Orchestrierung und GraphRAG"
 pubDate: 2026-09-11
 tags:
   - "artificial-intelligence"

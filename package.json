@@ -50,6 +50,7 @@
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "lighthouse": "^13.3.0",
+    "mermaid": "^12.0.0",
     "puppeteer": "^25.0.4",
     "quickjs-wasi": "^2.2.0",
     "typescript-eslint": "^8.61.1"
