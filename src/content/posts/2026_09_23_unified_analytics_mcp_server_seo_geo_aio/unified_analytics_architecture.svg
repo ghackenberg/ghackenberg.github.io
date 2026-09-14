@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 380" width="100%" height="100%" style="background-color: #030712; font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="0" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+    <linearGradient id="title-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#818cf8" />
+    </marker>
+  </defs>
+
+  <!-- Frame Background -->
+  <rect x="10" y="10" width="860" height="360" rx="16" fill="#070b16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Header -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="22" fill="url(#title-grad)" font-size="20" font-weight="800" letter-spacing="0.5">UNIFIED ANALYTICS MCP SERVER: ARCHITEKTUR</text>
+    <text x="0" y="42" fill="#94a3b8" font-size="12">Deterministische Datenfusion für autonome KI-Coding-Agenten</text>
+  </g>
+
+  <!-- ==================== 1. KI-AGENTEN ==================== -->
+  <g transform="translate(35, 95)" filter="url(#shadow)">
+    <rect x="0" y="0" width="200" height="240" rx="12" fill="#0b1329" stroke="#38bdf8" stroke-width="2" />
+    <rect x="0" y="0" width="200" height="42" rx="12" fill="#0c2242" stroke="#38bdf8" stroke-width="2" />
+    <text x="20" y="26" fill="#7dd3fc" font-size="13" font-weight="700">KI-Coding-Agenten</text>
+
+    <!-- Agent Icon / Visual -->
+    <g transform="translate(20, 65)">
+      <circle cx="20" cy="20" r="16" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
+      <text x="20" y="25" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="800">AI</text>
+      <text x="50" y="18" fill="#f1f5f9" font-size="13" font-weight="700">Antigravity</text>
+      <text x="50" y="34" fill="#94a3b8" font-size="11">Coding &amp; Audits</text>
+    </g>
+
+    <g transform="translate(20, 125)">
+      <circle cx="20" cy="20" r="16" fill="#1e293b" stroke="#818cf8" stroke-width="1.5" />
+      <text x="20" y="25" text-anchor="middle" fill="#818cf8" font-size="14" font-weight="800">CLI</text>
+      <text x="50" y="18" fill="#f1f5f9" font-size="13" font-weight="700">Claude Code</text>
+      <text x="50" y="34" fill="#94a3b8" font-size="11">Terminal Agents</text>
+    </g>
+
+    <g transform="translate(20, 185)">
+      <rect x="0" y="0" width="160" height="34" rx="6" fill="#070e20" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1" />
+      <text x="80" y="21" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="700">Stdio MCP-Protokoll</text>
+    </g>
+  </g>
+
+  <!-- Connectors: Agenten <-> MCP Server -->
+  <path d="M 235 200 L 295 200" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" />
+  <path d="M 295 220 L 235 220" stroke="#818cf8" stroke-width="2" stroke-dasharray="3 3" fill="none" marker-end="url(#arrow-purple)" />
+
+  <!-- ==================== 2. MCP SERVER ==================== -->
+  <g transform="translate(295, 95)" filter="url(#shadow)">
+    <rect x="0" y="0" width="280" height="240" rx="12" fill="#0e172a" stroke="#818cf8" stroke-width="2" />
+    <rect x="0" y="0" width="280" height="42" rx="12" fill="#1e1b4b" stroke="#818cf8" stroke-width="2" />
+    <text x="20" y="26" fill="#c7d2fe" font-size="13" font-weight="700">Unified Analytics MCP</text>
+    <text x="220" y="26" fill="#818cf8" font-size="10" font-weight="800">SERVER</text>
+
+    <!-- Central Fusion Core -->
+    <g transform="translate(18, 55)">
+      <rect x="0" y="0" width="244" height="68" rx="8" fill="#17203b" stroke="rgba(129, 140, 248, 0.4)" stroke-width="1" />
+      <text x="122" y="28" text-anchor="middle" fill="#a5b4fc" font-size="13" font-weight="800">Deterministischer Join</text>
+      <text x="122" y="50" text-anchor="middle" fill="#94a3b8" font-size="11">URL-Pfad ↔ Markdown-Datei</text>
+    </g>
+
+    <!-- 4 Tools Badge Strip -->
+    <g transform="translate(18, 135)">
+      <rect x="0" y="0" width="244" height="85" rx="8" fill="#0b1120" stroke="rgba(52, 211, 153, 0.3)" stroke-width="1" />
+      <text x="14" y="24" fill="#34d399" font-size="11" font-weight="800">4 MCP-Werkzeuge:</text>
+      <text x="14" y="44" fill="#f1f5f9" font-size="11" font-family="monospace">• get_page_audit</text>
+      <text x="14" y="60" fill="#f1f5f9" font-size="11" font-family="monospace">• find_seo_opportunities</text>
+      <text x="14" y="76" fill="#f1f5f9" font-size="11" font-family="monospace">• aio &amp; index inspection</text>
+    </g>
+  </g>
+
+  <!-- Connectors: MCP Server -> Datenquellen -->
+  <path d="M 575 160 L 635 160" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" />
+  <path d="M 575 270 L 635 270" stroke="#10b981" stroke-width="2.5" fill="none" marker-end="url(#arrow-emerald)" />
+
+  <!-- ==================== 3. DATENQUELLEN ==================== -->
+  <!-- Search Console -->
+  <g transform="translate(635, 95)" filter="url(#shadow)">
+    <rect x="0" y="0" width="210" height="110" rx="12" fill="#081b2c" stroke="#38bdf8" stroke-width="2" />
+    <rect x="0" y="0" width="210" height="34" rx="12" fill="#0c2b45" stroke="#38bdf8" stroke-width="2" />
+    <text x="16" y="22" fill="#7dd3fc" font-size="12" font-weight="700">Google Search Console</text>
+
+    <g transform="translate(16, 48)">
+      <text x="0" y="16" fill="#93c5fd" font-size="11" font-weight="700">Pre-Click (Nachfrage):</text>
+      <text x="0" y="36" fill="#cbd5e1" font-size="11">• Suchanfragen &amp; Klicks</text>
+      <text x="0" y="52" fill="#cbd5e1" font-size="11">• Rankings &amp; Impressionen</text>
+    </g>
+  </g>
+
+  <!-- Plausible Analytics -->
+  <g transform="translate(635, 225)" filter="url(#shadow)">
+    <rect x="0" y="0" width="210" height="110" rx="12" fill="#061c14" stroke="#10b981" stroke-width="2" />
+    <rect x="0" y="0" width="210" height="34" rx="12" fill="#092d20" stroke="#10b981" stroke-width="2" />
+    <text x="16" y="22" fill="#6ee7b7" font-size="12" font-weight="700">Plausible Analytics</text>
+
+    <g transform="translate(16, 48)">
+      <text x="0" y="16" fill="#a7f3d0" font-size="11" font-weight="700">Post-Click (Verhalten):</text>
+      <text x="0" y="36" fill="#cbd5e1" font-size="11">• Besucher &amp; PageViews</text>
+      <text x="0" y="52" fill="#cbd5e1" font-size="11">• Bounces &amp; Verweildauer</text>
+    </g>
+  </g>
+</svg>
