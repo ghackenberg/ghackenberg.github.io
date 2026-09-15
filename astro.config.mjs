@@ -32,11 +32,11 @@ const mimeTypes = {
   '.css': 'text/css'
 };
 
+/** @returns {import('astro').AstroIntegration} */
 function copyContentAssets() {
   return {
     name: 'copy-content-assets',
     hooks: {
-      /** @param {{ server: import('vite').ViteDevServer }} options */
       'astro:server:setup': ({ server }) => {
         server.middlewares.use(
           /**
@@ -104,6 +104,7 @@ function copyContentAssets() {
   };
 }
 
+/** @returns {import('astro').AstroIntegration} */
 function imageSitemapEnforcer() {
   return {
     name: 'image-sitemap-enforcer',
