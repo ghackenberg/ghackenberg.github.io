@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
@@ -171,8 +172,10 @@ export default defineConfig({
     imageSitemapEnforcer()
   ],
   markdown: {
-    remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid],
-    rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts],
+    processor: unified({
+      remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid],
+      rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts],
+    }),
   },
   vite: {
     plugins: [tailwindcss()],
