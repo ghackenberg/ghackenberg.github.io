@@ -1925,6 +1925,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     destroy(): void;
     updateLayout(layout: string, isLight: boolean): void;
     layouts: { id: string; label: string }[];
+    pause?(): void;
+    resume?(): void;
   }
 
   interface GraphPayload {
@@ -1992,16 +1994,25 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       }
     }
 
-    // Lazy-load Vis.js via IntersectionObserver when approaching the graph section
+    // Lazy-load Vis.js via IntersectionObserver and manage lifecycle when entering/leaving viewport
+    let hasInitialized = false;
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            observer.disconnect();
-            initHomeVis();
+            if (!hasInitialized) {
+              hasInitialized = true;
+              initHomeVis();
+            } else if (activeInstance) {
+              activeInstance.resume?.();
+            }
+          } else {
+            if (activeInstance) {
+              activeInstance.pause?.();
+            }
           }
         });
-      }, { rootMargin: '300px 0px' });
+      }, { rootMargin: '200px 0px' });
       observer.observe(container);
     } else {
       initHomeVis();

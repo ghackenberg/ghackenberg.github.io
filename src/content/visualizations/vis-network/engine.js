@@ -243,6 +243,10 @@ export default {
       const finish = () => {
         if (!isDone) {
           isDone = true;
+          if (this.network) {
+            this.network.setOptions({ physics: { enabled: false } });
+            this.network.stopSimulation();
+          }
           resolve();
         }
       };
@@ -250,6 +254,43 @@ export default {
       this.network.once("stabilized", finish);
       setTimeout(finish, 1500);
     });
+
+    if (interactionOptions.dragNodes) {
+      this.isDragging = false;
+      this.dragStabilizeTimeout = null;
+
+      this.network.on("dragStart", () => {
+        this.isDragging = true;
+        if (this.dragStabilizeTimeout) {
+          clearTimeout(this.dragStabilizeTimeout);
+          this.dragStabilizeTimeout = null;
+        }
+        this.network.setOptions({ physics: { enabled: true } });
+      });
+
+      this.network.on("dragEnd", () => {
+        this.isDragging = false;
+
+        const stopAfterDrag = () => {
+          if (this.network && !this.isDragging) {
+            this.network.setOptions({ physics: { enabled: false } });
+            this.network.stopSimulation();
+          }
+          if (this.dragStabilizeTimeout) {
+            clearTimeout(this.dragStabilizeTimeout);
+            this.dragStabilizeTimeout = null;
+          }
+        };
+
+        this.network.once("stabilized", stopAfterDrag);
+
+        if (this.dragStabilizeTimeout) {
+          clearTimeout(this.dragStabilizeTimeout);
+        }
+        // Graceful fallback timeout: if complex graphs oscillate indefinitely, stabilize after 5 seconds
+        this.dragStabilizeTimeout = setTimeout(stopAfterDrag, 5000);
+      });
+    }
 
     this.network.on("click", (params) => {
       if (params.nodes.length > 0) {
@@ -281,22 +322,46 @@ export default {
 
     this.currentLayout = layout;
     this.isLight = isLight;
-    this.updateLayout(layout, isLight);
+    if (layout !== 'force') {
+      this.updateLayout(layout, isLight);
+    }
 
-    // Bind ResizeObserver to handle network container changes dynamically
-    this.resizeObserver = new ResizeObserver(() => {
-      if (this.network) {
-        this.network.redraw();
-        this.network.fit();
+    // Bind ResizeObserver to handle network container changes dynamically with dimension threshold
+    let lastWidth = container.clientWidth;
+    let lastHeight = container.clientHeight;
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (Math.abs(width - lastWidth) >= 2 || Math.abs(height - lastHeight) >= 2) {
+          lastWidth = width;
+          lastHeight = height;
+          if (this.network) {
+            this.network.redraw();
+            this.network.fit();
+          }
+        }
       }
     });
     this.resizeObserver.observe(container);
+
+    // Automatically pause physics/animation when container is scrolled out of view
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) {
+          this.pause();
+        } else {
+          this.resume();
+        }
+      });
+    }, { rootMargin: '100px 0px' });
+    this.intersectionObserver.observe(container);
 
     return this;
   },
 
   updateLayout(layout, isLight) {
     if (!this.network) return;
+    const layoutChanged = this.currentLayout !== layout;
     this.currentLayout = layout;
     this.isLight = isLight;
 
@@ -492,8 +557,48 @@ export default {
 
     } else {
       // default: force directed
-      // Re-enable physics and allow nodes to float freely
-      this.network.setOptions({ physics: { enabled: true } });
+      if (layoutChanged) {
+        this.network.setOptions({
+          physics: {
+            enabled: true,
+            stabilization: { iterations: 100, updateInterval: 25 }
+          }
+        });
+        const stopForce = () => {
+          if (this.network) {
+            this.network.setOptions({ physics: { enabled: false } });
+            this.network.stopSimulation();
+          }
+        };
+        this.network.once("stabilizationIterationsDone", stopForce);
+        this.network.once("stabilized", stopForce);
+        setTimeout(stopForce, 1500);
+      } else {
+        // Layout didn't change (e.g. theme toggle), keep physics frozen to avoid battery/CPU drain
+        this.network.setOptions({ physics: { enabled: false } });
+        this.network.stopSimulation();
+      }
+    }
+  },
+
+  pause() {
+    if (this.dragStabilizeTimeout) {
+      clearTimeout(this.dragStabilizeTimeout);
+      this.dragStabilizeTimeout = null;
+    }
+    if (this.network) {
+      this.network.setOptions({ physics: { enabled: false } });
+      this.network.stopSimulation();
+    }
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+  },
+
+  resume() {
+    if (this.network) {
+      this.network.redraw();
     }
   },
 
@@ -537,13 +642,15 @@ export default {
   },
 
   destroy() {
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+      this.intersectionObserver = null;
+    }
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
     }
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
+    this.pause();
     if (this.network) {
       this.network.destroy();
       this.network = null;
