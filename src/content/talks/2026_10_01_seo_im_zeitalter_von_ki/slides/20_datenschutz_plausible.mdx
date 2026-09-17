@@ -1,0 +1,76 @@
+---
+title: "Datenschutzkonformes Tracking (Plausible)"
+subtitle: "100 % DSGVO- und ePrivacy-Konformität ohne Cookie-Banner – mit präzisem KI-Referrer-Monitoring"
+number: "20"
+slideLayout: "split"
+voiceover: >
+  Wie messen wir den Erfolg im Zeitalter der KIs? 
+  {cue:col-plausible-dash} Mit Plausible Analytics. 
+  {cue:col-plausible-privacy} Viele Unternehmen verlieren 40 Prozent ihrer Besucher allein durch abstoßende Cookie-Banner. 
+  Plausible benötigt keinerlei Cookies und ist zu 100 Prozent DSGVO-konform. 
+  Das Skript ist kleiner als ein Kilobyte – und es liefert uns die spannendste Metrik der Zukunft: 
+  Exakte Referral-Daten, wie viele Anfragen direkt von chatgpt.com, perplexity.ai oder claude.ai auf unsere 
+  Website überschwappen.
+notes: |
+  - Zeit: 46:00 - 48:00 Min.
+  - DSGVO Art. 5/6 & ePrivacy Richtlinie zitieren.
+  - Den B2B-Unternehmen die Augen öffnen: Wer die Nutzer mit Cookie-Bannern quält, verliert Interessenten; cookiefreie Analytik ist schneller, sauberer und datenschutzrechtlich sicher.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="DATENSCHUTZ & ANALYTICS" slideNumber="20" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-plausible-dash" x={0} y={40} width={830} height={680} title="KI-Referrer Dashboard" badge="PLAUSIBLE ANALYTICS" accent="blue">
+    <div class="space-y-6">
+      <div class="p-6 rounded-xl bg-slate-900 text-slate-100 space-y-4">
+        <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
+          <span>REFERRAL SOURCE</span>
+          <span>BESUCHER (30 TAGE)</span>
+        </div>
+        <div class="space-y-3 font-mono text-sm">
+          <div class="flex justify-between items-center text-blue-400 font-bold">
+            <span class="flex items-center gap-2">🤖 chatgpt.com</span>
+            <span>1.420 (High Intent)</span>
+          </div>
+          <div class="flex justify-between items-center text-cyan-400 font-bold">
+            <span class="flex items-center gap-2">🔍 perplexity.ai</span>
+            <span>890 (Research)</span>
+          </div>
+          <div class="flex justify-between items-center text-indigo-400 font-bold">
+            <span class="flex items-center gap-2">🧠 claude.ai</span>
+            <span>340 (Technical)</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-400">
+            <span>google.com (Organic)</span>
+            <span>2.110 (Decreasing)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 leading-relaxed">
+        <strong>Beobachtung:</strong> Besucher, die über ChatGPT oder Perplexity kommen, haben eine 4-mal längere Verweildauer, weil sie bereits mit Vorwissen auf die Produktseite geleitet wurden.
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-plausible-privacy" x={890} y={40} width={830} height={680} title="DSGVO-Exzellenz ohne Reibungsverlust" badge="KEIN BANNER NÖTIG" accent="teal">
+    <div class="space-y-5 text-slate-700 text-base">
+      <div class="flex items-start gap-3">
+        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+        <span><strong>100 % Cookie-Frei:</strong> Keine Speicherung personenbezogener Daten, keine IP-Adress-Verarbeitung.</span>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+        <span><strong>Kein Zustimmungsbanner:</strong> Maximale Konversionsrate ohne nervige Popups oder Abbrüche.</span>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+        <span><strong>Federleichte Ladezeit (&lt; 1 KB):</strong> Im Vergleich zu Google Analytics (45 KB) hat Plausible keinen messbaren Einfluss auf den LCP-Wert.</span>
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

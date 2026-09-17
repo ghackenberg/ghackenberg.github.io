@@ -1,0 +1,68 @@
+---
+title: "Code-Deep-Dive: JSON-LD Syntax"
+subtitle: "Syntaktisch valider Schema.org @graph zur vollständigen Verknüpfung von Autor, Unternehmen und Produkt"
+number: "13"
+slideLayout: "code"
+voiceover: >
+  Betrachten wir den konkreten Code. 
+  {cue:code-jsonld} In JSON-LD nutzen wir das @graph-Array, um mehrere Entitäten miteinander zu verdrahten. 
+  Hier sehen Sie mich als Person mit meiner ORCID-ID und meiner Rolle an der Fachhochschule Oberösterreich. 
+  Darunter wird ein konkretes Industrieprodukt definiert – inklusive MPN-Teilenummer, ISO-Zertifizierung 
+  und Link zum Datenblatt. Ein KI-Crawler wie GPTBot liest diese Daten in fünf Millisekunden aus und speichert 
+  sie als harte Fakten.
+notes: |
+  - Zeit: 28:00 - 31:00 Min.
+  - JSON-LD 1.1 W3C Recommendation zitieren.
+  - Den Entwicklern im Publikum zeigen: Kein komplexer Aufwand – einmal sauber templaten (z. B. in Astro oder Next.js) und alle Seiten sind automatisch semantisch perfekt!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="CODE SHOWCASE" slideNumber="13" totalSlides="30">
+  <CodeContainer
+    id="code-jsonld"
+    x={0}
+    y={40}
+    width={1720}
+    height={680}
+    filename="schema-graph.jsonld"
+    badge="JSON-LD 1.1 W3C COMPLIANT"
+  >
+    <pre class="text-slate-200 text-sm leading-relaxed overflow-x-auto">
+{`{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://hackenberg.tech/#organization",
+      "name": "Dr. Georg Hackenberg Consulting & Research",
+      "url": "https://hackenberg.tech",
+      "sameAs": [
+        "https://www.linkedin.com/in/georghackenberg/",
+        "https://orcid.org/0000-0003-3913-4148"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://hackenberg.tech/#georg",
+      "name": "Dr. Georg Hackenberg",
+      "jobTitle": "Professor für Informatik und Industriesysteme",
+      "worksFor": { "@id": "https://www.fh-ooe.at/#organization" },
+      "sameAs": "https://orcid.org/0000-0003-3913-4148"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://hackenberg.tech/talks/2026_10_01_seo_im_zeitalter_von_ki/#article",
+      "headline": "SEO im Zeitalter von KI",
+      "author": { "@id": "https://hackenberg.tech/#georg" },
+      "publisher": { "@id": "https://hackenberg.tech/#organization" },
+      "about": [
+        { "@type": "Thing", "name": "Generative Engine Optimization" },
+        { "@type": "Thing", "name": "Retrieval-Augmented Generation" }
+      ]
+    }
+  ]
+}`}
+    </pre>
+  </CodeContainer>
+</SlideCanvas>

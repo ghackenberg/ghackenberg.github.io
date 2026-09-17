@@ -1,0 +1,63 @@
+---
+title: "Marketing Automation & Closed-Loop GEO"
+subtitle: "Der geschlossene Regelkreis: Vom KI-Zitationsverlust über autonome Agenten-Anpassung direkt ins CRM"
+number: "26"
+slideLayout: "pipeline"
+voiceover: >
+  Wie sieht die Zukunft der Marketing Automation aus? 
+  {cue:loop-step-1} Sie ist ein geschlossener Regelkreis. 
+  {cue:loop-step-2} Wenn ein Monitoring-Tool meldet, dass Ihre Nennung bei einem wichtigen Suchbegriff sinkt, 
+  {cue:loop-step-3} löst ein Webhook einen Entwickler-Agenten aus. 
+  {cue:loop-step-4} Dieser analysiert die Lücke, erzeugt neue Primärdaten und aktualisiert den Code. 
+  Nach Freigabe durch Ihren Experten geht das Update live – und das CRM trackt den resultierenden Lead. 
+  Die Reaktionszeit auf Marktveränderungen sinkt von sechs Monaten auf vierundzwanzig Stunden!
+notes: |
+  - Zeit: 59:00 - 61:30 Min.
+  - HubSpot Breeze AI & Salesforce Agentforce Architektur zitieren.
+  - Den Wandel verdeutlichen: Marketing und Software-Engineering verschmelzen zu einer datengesteuerten Feedback-Schleife.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="CLOSED-LOOP SYSTEM" slideNumber="26" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "loop-step-1",
+        num: "01",
+        title: "Monitoring Alert",
+        desc: "SaaS-Tool registriert Zitationsverlust bei Schlüssel-Prompt in ChatGPT oder Perplexity.",
+        badge: "TRIGGER",
+        accent: "neutral"
+      },
+      {
+        id: "loop-step-2",
+        num: "02",
+        title: "Agenten-Refactoring",
+        desc: "KI-Agent analysiert Quellcode, ergänzt fehlende technische Spezifikationen und schärft den BLUF-Antwortblock.",
+        badge: "AUTOMATION",
+        accent: "blue"
+      },
+      {
+        id: "loop-step-3",
+        num: "03",
+        title: "Experten-Freigabe",
+        desc: "Fachexperte prüft den Git-Pull-Request in 2 Minuten (Human-in-the-Loop Sicherheit).",
+        badge: "GOVERNANCE",
+        accent: "teal"
+      },
+      {
+        id: "loop-step-4",
+        num: "04",
+        title: "CRM Lead Attribution",
+        desc: "Neuer Lead trifft im CRM (HubSpot/Salesforce) mit Zitations-Referrer ein und schließt den Regelkreis.",
+        badge: "REVENUE",
+        accent: "green"
+      }
+    ]}
+  />
+</SlideCanvas>

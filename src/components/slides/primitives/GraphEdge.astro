@@ -1,0 +1,90 @@
+---
+interface Props {
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+  label?: string;
+  color?: string;
+  animated?: boolean;
+  id?: string;
+  curve?: 'straight' | 'curved';
+  class?: string;
+}
+
+const {
+  from,
+  to,
+  label,
+  color = '#2563eb',
+  animated = false,
+  id,
+  curve = 'straight',
+  class: className = ""
+} = Astro.props;
+
+// Calculate midpoint and angle for label
+const midX = (from.x + to.x) / 2;
+const midY = (from.y + to.y) / 2;
+
+// Path calculation
+let d = `M ${from.x} ${from.y} L ${to.x} ${to.y}`;
+if (curve === 'curved') {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const cx = midX - dy * 0.2;
+  const cy = midY + dx * 0.2;
+  d = `M ${from.x} ${from.y} Q ${cx} ${cy} ${to.x} ${to.y}`;
+}
+---
+
+<g id={id} class={`graph-edge-group ${className}`}>
+  <defs>
+    <marker
+      id={`arrow-${id || 'default'}`}
+      viewBox="0 0 10 10"
+      refX="8"
+      refY="5"
+      markerWidth="6"
+      markerHeight="6"
+      orient="auto-start-reverse"
+    >
+      <path d="M 0 1 L 10 5 L 0 9 z" fill={color} />
+    </marker>
+  </defs>
+
+  <!-- Vector line / path -->
+  <path
+    d={d}
+    fill="none"
+    stroke={color}
+    stroke-width="2.5"
+    stroke-dasharray={animated ? "6 6" : "none"}
+    marker-end={`url(#arrow-${id || 'default'})`}
+    class="graph-edge-path transition-all duration-500"
+  />
+
+  <!-- Optional Edge Label -->
+  {label && (
+    <g transform={`translate(${midX}, ${midY})`}>
+      <rect
+        x={-(label.length * 4.5 + 10)}
+        y="-12"
+        width={label.length * 9 + 20}
+        height="22"
+        rx="6"
+        fill="#ffffff"
+        stroke="#e2e8f0"
+        stroke-width="1.5"
+      />
+      <text
+        y="3"
+        text-anchor="middle"
+        fill="#475569"
+        font-size="12"
+        font-weight="600"
+        font-family="'Inter', sans-serif"
+      >
+        {label}
+      </text>
+    </g>
+  )}
+</g>

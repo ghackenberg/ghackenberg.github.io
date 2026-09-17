@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import tailwindcss from '@tailwindcss/vite';
+import mdx from '@astrojs/mdx';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import remarkValidateImages from './src/plugins/remark-validate-images.js';
@@ -45,7 +46,7 @@ function copyContentAssets() {
            * @param {() => void} next
            */
           (req, res, next) => {
-            const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services)\/(.+)$/);
+            const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services|talks)\/(.+)$/);
             if (match) {
               const [_, collection, rest] = match;
               const cleanRest = rest.split('?')[0];
@@ -65,7 +66,7 @@ function copyContentAssets() {
       /** @param {{ dir: URL }} options */
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
-        const collections = ['posts', 'publications', 'visualizations', 'courses', 'services', 'projects', 'interests'];
+        const collections = ['posts', 'publications', 'visualizations', 'courses', 'services', 'projects', 'interests', 'talks'];
         for (const col of collections) {
           const srcDir = path.resolve('src/content', col);
           if (!fs.existsSync(srcDir)) continue;
@@ -166,9 +167,14 @@ export default defineConfig({
         visualizations: (item) => {
           const pathname = new URL(item.url).pathname;
           return pathname.startsWith('/visualizations/') || pathname === '/visualizations' ? item : undefined;
+        },
+        talks: (item) => {
+          const pathname = new URL(item.url).pathname;
+          return pathname.startsWith('/talks/') || pathname === '/talks' ? item : undefined;
         }
       }
     }),
+    mdx(),
     copyContentAssets(),
     imageSitemapEnforcer()
   ],

@@ -1,0 +1,66 @@
+---
+title: "Q&A, Diskussion & Kontakt"
+subtitle: "Vielen Dank für Ihre Aufmerksamkeit! Diskutieren wir Ihre Fragen und individuelle Herausforderungen."
+number: "30"
+slideLayout: "split"
+voiceover: >
+  Damit schließe ich den Vortragsteil und freue mich auf die Diskussion mit Ihnen. 
+  {cue:col-qa-questions} Wie stark spüren Ihre Betriebe im Traunviertel bereits den Rückgang klassischer Klicks? 
+  Wo sehen Sie die größten Hürden beim Einsatz lokaler Entwickler-Agenten? 
+  {cue:col-qa-contact} Alle Folien, Notizen und weiterführenden Code-Beispiele finden Sie öffentlich auf hackenberg.tech. 
+  Ich danke Ihnen herzlich für Ihre Aufmerksamkeit und freue mich auf Ihre Fragen!
+notes: |
+  - Zeit: Ab 68:00 Min. (ca. 10–15 Min. Fragerunde).
+  - Vorbereitete Impulsfragen nutzen, falls die Diskussion zögerlich startet:
+    1. Zero-Click-Erfahrungen im eigenen Unternehmen?
+    2. Sicherheit bei lokalen MCP-Agenten?
+    3. Budgetierung & Aufwand für KMU?
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="ABSCHLUSS & DISKUSSION" slideNumber="30" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-qa-questions" x={0} y={40} width={820} height={680} title="Impulsfragen für die Diskussion" badge="DISKUSSIONSRUNDE" accent="blue">
+    <div class="space-y-6">
+      <div class="space-y-4 text-slate-800 text-base">
+        <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200 flex items-start gap-3">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0">1</span>
+          <span>Spüren Sie in Ihrem Unternehmen bereits den Rückgang von organischem Klick-Traffic durch AI Overviews?</span>
+        </div>
+
+        <div class="p-4 rounded-xl bg-cyan-50/70 border border-cyan-200 flex items-start gap-3">
+          <span class="w-7 h-7 rounded-lg bg-cyan-600 text-white flex items-center justify-center font-bold text-sm shrink-0">2</span>
+          <span>Welche Bedenken oder Governance-Anforderungen bestehen beim Einsatz lokaler Entwickler-Agenten (MCP)?</span>
+        </div>
+
+        <div class="p-4 rounded-xl bg-indigo-50/70 border border-indigo-200 flex items-start gap-3">
+          <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shrink-0">3</span>
+          <span>Wer im Betrieb übernimmt die Verantwortung für den semantischen Wissensgraphen – Marketing oder IT?</span>
+        </div>
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-qa-contact" x={900} y={40} width={820} height={680} title="Kontakt & weiterführende Ressourcen" badge="NETZWERK" accent="teal">
+    <div class="space-y-6">
+      <div>
+        <h4 class="text-2xl font-bold text-slate-900 font-sans">Dr. rer. nat. Georg Hackenberg</h4>
+        <p class="text-slate-500 text-base">Professor für Informatik und Industriesysteme</p>
+        <p class="text-slate-500 text-sm">FH Oberösterreich, Campus Wels</p>
+      </div>
+
+      <div class="p-5 rounded-xl bg-slate-900 text-slate-100 font-mono text-sm space-y-2">
+        <p>🌐 <strong>Web:</strong> https://hackenberg.tech</p>
+        <p>💼 <strong>LinkedIn:</strong> linkedin.com/in/georghackenberg</p>
+        <p>💻 <strong>GitHub:</strong> github.com/ghackenberg</p>
+        <p>🔬 <strong>ORCID:</strong> 0000-0003-3913-4148</p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs leading-relaxed">
+        <strong>Open Access:</strong> Diese Präsentation, das interaktive Audio-Deck und alle Quellcodes stehen unter freier MIT/CC-Lizenz auf GitHub und hackenberg.tech bereit.
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

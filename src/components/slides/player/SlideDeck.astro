@@ -1,0 +1,333 @@
+---
+import 'reveal.js/reveal.css';
+
+interface SlideMeta {
+  id: string;
+  title: string;
+  audioUrl?: string;
+  cues?: Record<string, number>;
+  notes?: string;
+}
+
+interface Props {
+  talkId: string;
+  slides: SlideMeta[];
+  class?: string;
+}
+
+const { talkId, slides, class: className = "" } = Astro.props;
+---
+
+<div class={`slide-deck-wrapper relative w-full h-[85vh] min-h-[600px] max-h-[1080px] bg-slate-950 light:bg-slate-100 border border-slate-800 light:border-slate-300 rounded-3xl overflow-hidden shadow-2xl flex flex-col ${className}`}>
+  <!-- Reveal.js Container -->
+  <div class="reveal flex-1 w-full h-full relative" id="reveal-root">
+    <div class="slides w-full h-full">
+      <slot />
+    </div>
+  </div>
+
+  <!-- Audio & Slide Navigation Control Bar -->
+  <div class="slide-controls-bar z-50 bg-slate-900/95 light:bg-white/95 backdrop-blur-md border-t border-slate-800 light:border-slate-200 px-6 py-4 flex items-center justify-between gap-6 text-slate-300 light:text-slate-700 select-none">
+    <!-- Left: Play/Pause & Slide Step -->
+    <div class="flex items-center gap-3">
+      <button
+        id="btn-prev"
+        class="w-10 h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        title="Vorherige Folie (←)"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <button
+        id="btn-play-pause"
+        class="px-5 h-10 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-2 transition-all shadow-md cursor-pointer"
+        title="Audio Vortrag abspielen / pausieren (Leertaste)"
+      >
+        <svg id="icon-play" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+        <svg id="icon-pause" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+        </svg>
+        <span id="label-play-pause" class="text-sm">Vortrag anhören</span>
+      </button>
+
+      <button
+        id="btn-next"
+        class="w-10 h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        title="Nächste Folie (→)"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Center: Timeline & Progress Scrubbing -->
+    <div class="flex-1 max-w-xl flex items-center gap-4">
+      <span id="time-current" class="text-xs font-mono text-slate-400 light:text-slate-500 w-10 text-right">0:00</span>
+      <div class="flex-1 relative h-2 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden cursor-pointer group" id="progress-container">
+        <div id="progress-bar" class="h-full bg-blue-500 rounded-full w-0 transition-all duration-100"></div>
+      </div>
+      <span id="time-total" class="text-xs font-mono text-slate-400 light:text-slate-500 w-10">0:00</span>
+    </div>
+
+    <!-- Right: Tools, Speed, Overview, Fullscreen -->
+    <div class="flex items-center gap-3">
+      <!-- Speed Toggle -->
+      <button
+        id="btn-speed"
+        class="px-3 h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 text-xs font-mono font-bold transition-colors cursor-pointer"
+        title="Wiedergabegeschwindigkeit"
+      >
+        1.0x
+      </button>
+
+      <!-- Overview Grid (ESC) -->
+      <button
+        id="btn-overview"
+        class="w-9 h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        title="Folienübersicht (ESC)"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      </button>
+
+      <!-- Fullscreen (F) -->
+      <button
+        id="btn-fullscreen"
+        class="w-9 h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        title="Vollbild (F)"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5h-4m4 0v-4m0 4l-5-5" />
+        </svg>
+      </button>
+
+      <!-- Slide Counter -->
+      <div class="px-3 h-9 rounded-lg bg-slate-800/60 light:bg-slate-100 border border-slate-700/50 light:border-slate-300 flex items-center text-xs font-mono text-slate-400 light:text-slate-600 font-bold">
+        <span id="slide-index-label">1</span>
+        <span class="mx-1">/</span>
+        <span>{slides.length}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slides Metadata Carrier -->
+<script id="slides-meta" is:inline type="application/json" set:html={JSON.stringify(slides)}></script>
+
+<script>
+  import Reveal from 'reveal.js';
+  import { AudioSyncController, type SlideData } from './AudioSyncController';
+
+  // Read metadata
+  const metaEl = document.getElementById('slides-meta');
+  const slidesData: SlideData[] = metaEl ? JSON.parse(metaEl.textContent || '[]') : [];
+
+  // Initialize Reveal.js
+  const deck = new Reveal(document.getElementById('reveal-root') as HTMLElement, {
+    width: 1920,
+    height: 1080,
+    margin: 0.02,
+    minScale: 0.2,
+    maxScale: 2.0,
+    controls: false,
+    progress: false,
+    hash: false,
+    history: false,
+    keyboard: true,
+    overview: true,
+    center: true,
+    transition: 'fade',
+    transitionSpeed: 'fast',
+    embedded: true,
+    mouseWheel: false
+  });
+
+
+  deck.initialize().then(() => {
+    // UI Elements
+    const btnPlayPause = document.getElementById('btn-play-pause');
+    const iconPlay = document.getElementById('icon-play');
+    const iconPause = document.getElementById('icon-pause');
+    const labelPlayPause = document.getElementById('label-play-pause');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const btnSpeed = document.getElementById('btn-speed');
+    const btnOverview = document.getElementById('btn-overview');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+    const progressBar = document.getElementById('progress-bar');
+    const progressContainer = document.getElementById('progress-container');
+    const timeCurrent = document.getElementById('time-current');
+    const timeTotal = document.getElementById('time-total');
+    const slideIndexLabel = document.getElementById('slide-index-label');
+
+    // Format MM:SS
+    const formatTime = (seconds: number) => {
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    // Instantiate Audio Controller
+    const audioSync = new AudioSyncController(slidesData, {
+      onSlideChange: (index) => {
+        if (deck.getIndices().h !== index) {
+          deck.slide(index);
+        }
+        if (slideIndexLabel) slideIndexLabel.textContent = String(index + 1);
+      },
+      onProgress: (current, total) => {
+        if (timeCurrent) timeCurrent.textContent = formatTime(current);
+        if (timeTotal) timeTotal.textContent = formatTime(total);
+        if (progressBar && total > 0) {
+          const pct = Math.min(100, (current / total) * 100);
+          progressBar.style.width = `${pct}%`;
+        }
+      },
+      onPlayStateChange: (isPlaying) => {
+        if (iconPlay && iconPause && labelPlayPause) {
+          if (isPlaying) {
+            iconPlay.classList.add('hidden');
+            iconPause.classList.remove('hidden');
+            labelPlayPause.textContent = 'Pausieren';
+          } else {
+            iconPlay.classList.remove('hidden');
+            iconPause.classList.add('hidden');
+            labelPlayPause.textContent = 'Vortrag anhören';
+          }
+        }
+      }
+    });
+
+    // Reveal Slide Changed Event
+    deck.on('slidechanged', (event: any) => {
+      const idx = event.indexh;
+      if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
+      audioSync.setSlideIndex(idx, false);
+    });
+
+    // Button Listeners
+    btnPlayPause?.addEventListener('click', () => audioSync.togglePlay());
+    btnPrev?.addEventListener('click', () => deck.prev());
+    btnNext?.addEventListener('click', () => deck.next());
+
+    // Speed Cycle: 1.0x -> 1.25x -> 1.5x -> 1.0x
+    const rates = [1.0, 1.25, 1.5];
+    let rateIdx = 0;
+    btnSpeed?.addEventListener('click', () => {
+      rateIdx = (rateIdx + 1) % rates.length;
+      const r = rates[rateIdx];
+      audioSync.setRate(r);
+      if (btnSpeed) btnSpeed.textContent = `${r.toFixed(2)}x`;
+    });
+
+    btnOverview?.addEventListener('click', () => deck.toggleOverview());
+
+    btnFullscreen?.addEventListener('click', () => {
+      const wrapper = document.querySelector('.slide-deck-wrapper');
+      if (!document.fullscreenElement && wrapper) {
+        wrapper.requestFullscreen().catch(() => {});
+      } else if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    });
+
+    // Progress Bar Scrubbing
+    progressContainer?.addEventListener('click', (e) => {
+      const rect = progressContainer.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = Math.max(0, Math.min(1, clickX / rect.width));
+      const totalSec = parseFloat(timeTotal?.textContent?.split(':')[0] || '0') * 60 + parseFloat(timeTotal?.textContent?.split(':')[1] || '0');
+      if (totalSec > 0) {
+        audioSync.seek(pct * totalSec);
+      }
+    });
+
+    // Global Key Listener for Space -> Toggle Audio
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && e.target === document.body) {
+        e.preventDefault();
+        audioSync.togglePlay();
+      }
+    });
+  });
+</script>
+
+<style is:global>
+  /* Reveal custom styling inside Astro component */
+  .reveal {
+    font-family: inherit;
+  }
+  .reveal .slides {
+    text-align: left;
+  }
+  .reveal .slides section {
+    padding: 0 !important;
+    height: 100% !important;
+  }
+
+  /* Slide Canvas Theme Overrides for Dark Mode */
+  :root:not(.light) .bento-card-object .bg-blue-50,
+  :root:not(.light) .bento-card-object .bg-blue-50\/70,
+  :root:not(.light) .bento-card-object .bg-blue-50\/60,
+  :root:not(.light) .bento-card-object .bg-blue-50\/80 {
+    background-color: rgba(30, 58, 138, 0.25) !important;
+    border-color: rgba(59, 130, 246, 0.35) !important;
+    color: #f1f5f9 !important;
+  }
+
+  :root:not(.light) .bento-card-object .bg-cyan-50,
+  :root:not(.light) .bento-card-object .bg-cyan-50\/70 {
+    background-color: rgba(22, 78, 99, 0.25) !important;
+    border-color: rgba(6, 182, 212, 0.35) !important;
+    color: #f1f5f9 !important;
+  }
+
+  :root:not(.light) .bento-card-object .bg-indigo-50,
+  :root:not(.light) .bento-card-object .bg-indigo-50\/70 {
+    background-color: rgba(49, 46, 129, 0.25) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+    color: #f1f5f9 !important;
+  }
+
+  :root:not(.light) .bento-card-object .bg-emerald-50,
+  :root:not(.light) .bento-card-object .bg-emerald-50\/70 {
+    background-color: rgba(6, 78, 59, 0.25) !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+    color: #f1f5f9 !important;
+  }
+
+  :root:not(.light) .bento-card-object .bg-slate-50,
+  :root:not(.light) .bento-card-object .bg-slate-100 {
+    background-color: rgba(30, 41, 59, 0.55) !important;
+    border-color: rgba(71, 85, 105, 0.45) !important;
+    color: #f1f5f9 !important;
+  }
+
+  :root:not(.light) .bento-card-object .bg-white {
+    background-color: rgba(15, 23, 42, 0.85) !important;
+    border-color: rgba(71, 85, 105, 0.5) !important;
+    color: #f1f5f9 !important;
+  }
+
+  :root:not(.light) .bento-card-object .text-slate-800,
+  :root:not(.light) .bento-card-object .text-slate-900,
+  :root:not(.light) .bento-card-object .text-slate-700 {
+    color: #f1f5f9 !important;
+  }
+
+  :root:not(.light) .bento-card-object .text-slate-600,
+  :root:not(.light) .bento-card-object .text-slate-500 {
+    color: #94a3b8 !important;
+  }
+
+  :root:not(.light) .bento-card-object .border-slate-100,
+  :root:not(.light) .bento-card-object .border-slate-200 {
+    border-color: rgba(71, 85, 105, 0.45) !important;
+  }
+</style>

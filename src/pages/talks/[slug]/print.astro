@@ -1,0 +1,77 @@
+---
+import { getCollection, render } from "astro:content";
+import "../../../styles/global.css";
+
+export async function getStaticPaths() {
+  const talks = await getCollection("talks");
+  return talks.map((talk) => ({
+    params: { slug: talk.id },
+    props: { talk },
+  }));
+}
+
+const { talk } = Astro.props;
+
+// Load and sort all slides
+const allSlides = await getCollection("slides");
+const talkSlides = allSlides
+  .filter((s) => s.id.startsWith(talk.id))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
+const renderedSlides = await Promise.all(
+  talkSlides.map(async (slide, idx) => {
+    const { Content } = await render(slide);
+    return {
+      id: slide.id,
+      number: idx + 1,
+      Content
+    };
+  })
+);
+---
+
+<!DOCTYPE html>
+<html lang={talk.data.lang} class="bg-white text-slate-900">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{talk.data.title} - Handout Druckansicht</title>
+    <style>
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .print-slide-page {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        page-break-after: always;
+        break-after: page;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .print-slide-page svg {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    {renderedSlides.map((slide) => (
+      <div class="print-slide-page" id={`slide-${slide.number}`}>
+        <slide.Content />
+      </div>
+    ))}
+  </body>
+</html>

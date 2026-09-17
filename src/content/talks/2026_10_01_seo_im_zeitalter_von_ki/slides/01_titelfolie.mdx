@@ -1,0 +1,67 @@
+---
+title: "SEO im Zeitalter von KI"
+subtitle: "Strategien für SEO, GEO, AEO & AIO – Von Suchmaschinen zu generativen Antwortsystemen"
+number: "01"
+slideLayout: "title"
+voiceover: >
+  Herzlich willkommen zum Vortrag SEO im Zeitalter von KI. {cue:intro-sub} Wir stehen vor 
+  dem größten Paradigmenwechsel der Websuche seit 25 Jahren. {cue:intro-graph} Suchmaschinen 
+  listen nicht mehr nur Hyperlinks auf – sie lesen, analysieren und synthetisieren Inhalte direkt. 
+  In dieser Stunde zeige ich Ihnen, wie sich oberösterreichische Industrie- und B2B-Unternehmen 
+  in generativen Antwortsystemen wie ChatGPT, Perplexity und Google AI Overviews als führende 
+  Autorität verankern.
+notes: |
+  - Zeit: 0:00 - 2:00 Min.
+  - Zielgruppe: Industrie- und B2B-Entscheider im Traunviertel begrüßen.
+  - Kernaussage betonen: Nicht in Panik verfallen, sondern die neuen Mechanismen (Wissensgraphen & Entitäten) verstehen.
+  - Referenzen: FH Oberösterreich, Campus Wels, hackenberg.tech.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import GraphNode from '../../../../components/slides/primitives/GraphNode.astro';
+import GraphEdge from '../../../../components/slides/primitives/GraphEdge.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="KEYNOTE TRAUNVIERTEL" slideNumber="01" totalSlides="30">
+  {/**/}
+  <BentoBox id="intro-sub" x={0} y={40} width={800} height={680} title="Dr. Georg Hackenberg" badge="REFERENT" accent="blue">
+    <div class="space-y-6">
+      <div>
+        <p class="text-xl font-bold text-slate-800">Professor für Informatik & Industriesysteme</p>
+        <p class="text-slate-500 text-base">Fakultät für Technik und Angewandte Naturwissenschaften, FH OÖ Campus Wels</p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-blue-50/60 border border-blue-100/80 space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">#</span>
+          <span class="font-bold text-blue-950 text-base">Themenschwerpunkte:</span>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-bold">
+          <span class="px-3 py-1.5 rounded-md bg-white text-blue-700 border border-blue-200">#WISSENSGRAPHEN</span>
+          <span class="px-3 py-1.5 rounded-md bg-white text-blue-700 border border-blue-200">#GRAPHRAG</span>
+          <span class="px-3 py-1.5 rounded-md bg-white text-blue-700 border border-blue-200">#ENTITÄTEN</span>
+          <span class="px-3 py-1.5 rounded-md bg-white text-blue-700 border border-blue-200">#MCP-AGENTEN</span>
+        </div>
+      </div>
+
+      <div class="text-sm text-slate-500 space-y-1">
+        <p>🌐 <strong>Web:</strong> hackenberg.tech</p>
+        <p>🔬 <strong>Forschung:</strong> Semantische Systeme, Digitale Fabrik & KI-Architekturen</p>
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <g id="intro-graph" transform="translate(900, 40)">
+    <rect width={820} height={680} rx={16} fill="#ffffff" fill-opacity="0.8" stroke="#e2e8f0" stroke-width="1.5" />
+    
+    <GraphEdge id="edge-01" from={{x: 200, y: 180}} to={{x: 480, y: 180}} label="analysiert" animated />
+    <GraphEdge id="edge-02" from={{x: 480, y: 180}} to={{x: 480, y: 480}} label="synthetisiert" animated />
+    <GraphEdge id="edge-03" from={{x: 200, y: 180}} to={{x: 200, y: 480}} label="bezieht Entität" curve="curved" />
+    <GraphEdge id="edge-04" from={{x: 200, y: 480}} to={{x: 480, y: 480}} label="zitiert" />
+
+    <GraphNode id="node-query" x={200} y={180} label="Suchanfrage" type="Query" color="blue" />
+    <GraphNode id="node-kg" x={480} y={180} label="Wissensgraph" type="Knowledge" color="teal" />
+    <GraphNode id="node-entity" x={200} y={480} label="Unternehmen" type="Organization" color="indigo" />
+    <GraphNode id="node-answer" x={480} y={480} label="KI-Synthese" type="Output" color="green" />
+  </g>
+</SlideCanvas>

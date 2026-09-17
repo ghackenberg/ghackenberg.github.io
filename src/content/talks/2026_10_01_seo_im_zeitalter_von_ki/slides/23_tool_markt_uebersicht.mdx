@@ -1,0 +1,72 @@
+---
+title: "Der Tool-Markt: Spezial-GEO vs. Enterprise-Suiten"
+subtitle: "Entscheidungsmatrix zwischen dedizierten KI-Monitoring-Startups und etablierten SEO-Suiten"
+number: "23"
+slideLayout: "split"
+voiceover: >
+  Welche Software brauchen Sie? Der Markt teilt sich in zwei Lager: 
+  {cue:col-tools-special} Auf der einen Seite spezialisierte GEO-Tools wie Limy.ai oder AIclicks, die sich voll 
+  auf Prompt-Panels, Revenue-Attribution und Modell-Monitoring fokussieren. 
+  {cue:col-tools-enterprise} Auf der anderen Seite bewährte Suiten wie Semrush AI oder Ahrefs Brand Intelligence, 
+  die Stärken beim klassischen Web-Crawling und Entitäten-Backlink-Graphen ausspielen. 
+  Für den Einstieg im Mittelstand reicht meist die gezielte Nutzung bestehender Tools kombiniert mit 
+  eigenem Prompt-Testing.
+notes: |
+  - Zeit: 52:30 - 54:30 Min.
+  - G2 Grid for SEO & AI Visibility Software zitieren.
+  - KMU-Rat: Nicht sofort 1.000 €/Monat für ein Spezial-SaaS ausgeben; zuerst die Hausaufgaben auf der eigenen Website (Schema.org, BLUF, Lighthouse) machen!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="MARKTÜBERSICHT" slideNumber="23" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-tools-special" x={0} y={40} width={820} height={680} title="Spezialisierte GEO-Pioniere" badge="KI-MONITORING" accent="blue">
+    <div class="space-y-6">
+      <div class="p-4 rounded-xl bg-blue-50 border border-blue-200">
+        <h4 class="font-bold text-blue-950 text-base">Limy.ai / AIclicks / Peasy.ai</h4>
+        <p class="text-xs text-blue-800 mt-1">Spezialisiert auf tägliches Prompt-Tracking über ChatGPT, Perplexity & Gemini.</p>
+      </div>
+
+      <ul class="space-y-3 text-slate-700 text-sm">
+        <li class="flex items-start gap-2">
+          <span class="text-blue-600 font-bold">✓</span>
+          <span><strong>Share of Model Metriken:</strong> Tägliche Auswertung automatisierter Kaufberatungs-Prompts.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-blue-600 font-bold">✓</span>
+          <span><strong>Citation Gap Analysis:</strong> Zeigt exakt, bei welchen Fragen Konkurrenten bevorzugt werden.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-slate-400 font-bold">✗</span>
+          <span><strong>Hürde:</strong> Hohe monatliche SaaS-Kosten (oft ab $ 500–1.500 / Monat).</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-tools-enterprise" x={900} y={40} width={820} height={680} title="Etablierte Enterprise-Suiten" badge="HYBRIDE SYSTEME" accent="teal">
+    <div class="space-y-6">
+      <div class="p-4 rounded-xl bg-cyan-50 border border-cyan-200">
+        <h4 class="font-bold text-cyan-950 text-base">Semrush AI Solutions / Ahrefs Brand Graph</h4>
+        <p class="text-xs text-cyan-800 mt-1">Verknüpfen klassisches Keyword- und Backlink-Crawling mit KI-Snapshots.</p>
+      </div>
+
+      <ul class="space-y-3 text-slate-700 text-sm">
+        <li class="flex items-start gap-2">
+          <span class="text-cyan-600 font-bold">✓</span>
+          <span><strong>Google AI Overview Tracking:</strong> Erkennt, welche SERPs bereits mit generativen Boxen belegt sind.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-cyan-600 font-bold">✓</span>
+          <span><strong>Entitäten-Graph:</strong> Zeigt unlinked Brand Mentions auf Fachportalen und Wikipedia.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-cyan-600 font-bold">✓</span>
+          <span><strong>Kostenvorteil:</strong> Oft in bestehenden Unternehmensverträgen bereits enthalten.</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+</SlideCanvas>

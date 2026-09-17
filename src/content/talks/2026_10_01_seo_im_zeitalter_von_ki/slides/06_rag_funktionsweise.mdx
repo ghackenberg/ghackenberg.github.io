@@ -1,0 +1,62 @@
+---
+title: "Wie KI-Suchmaschinen arbeiten: RAG"
+subtitle: "Retrieval-Augmented Generation als Brücke zwischen Modell und aktuellem Web"
+number: "06"
+slideLayout: "pipeline"
+voiceover: >
+  Warum halluzinieren Sprachmodelle ohne Websuche? Weil ihr Trainingswissen statisch ist. 
+  {cue:step-query} RAG löst dieses Problem in vier Phasen: Zunächst analysiert der Parser die Nutzerfrage 
+  und extrahiert Entitäten. 
+  {cue:step-retrieval} In Phase zwei ruft das System die semantisch ähnlichsten Text-Chunks live aus dem Web-Index ab. 
+  {cue:step-injection} In Phase drei werden diese Chunks direkt in den Kontext-Prompt des Modells injiziert. 
+  {cue:step-synthesis} Erst jetzt synthetisiert das LLM eine faktengetreue Antwort mit überprüfbaren Quellen-Chips.
+notes: |
+  - Zeit: 11:00 - 13:30 Min.
+  - Grundlagen-Paper zitieren: Lewis et al. (Meta AI / UCL, NeurIPS 2020).
+  - Wichtig: Betonen, dass der Webseiten-Text nicht mehr direkt vom Menschen gelesen wird, sondern als "Kontext-Futter" für den Prompt dient!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="TECHNOLOGISCHE BASIS" slideNumber="06" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "step-query",
+        num: "01",
+        title: "Anfrage-Parsing",
+        desc: "Nutzerfrage wird in semantische Absicht (Intent) und gesuchte Entitäten zerlegt.",
+        badge: "INPUT",
+        accent: "blue"
+      },
+      {
+        id: "step-retrieval",
+        num: "02",
+        title: "Live-Web-Retrieval",
+        desc: "Vektorsuche ruft die Top-Text-Chunks aus dem aktuellen Index ab. Nur hochrelevante Absätze kommen weiter.",
+        badge: "RETRIEVAL",
+        accent: "teal"
+      },
+      {
+        id: "step-injection",
+        num: "03",
+        title: "Kontext-Injektion",
+        desc: "Die gefundenen Chunks werden zusammen mit System-Instruktionen in das Context Window des LLMs injiziert.",
+        badge: "GROUNDING",
+        accent: "indigo"
+      },
+      {
+        id: "step-synthesis",
+        num: "04",
+        title: "LLM-Synthese",
+        desc: "Das Modell erzeugt die finale Antwort mit Zitations-Chips basierend auf den injizierten Daten.",
+        badge: "OUTPUT",
+        accent: "green"
+      }
+    ]}
+  />
+</SlideCanvas>

@@ -1,0 +1,61 @@
+---
+title: "Praxis-Fallstudien & messbare Ergebnisse"
+subtitle: "Zwei reale B2B-Fallbeispiele: Warum nicht mehr Text, sondern eindeutigere semantische Modellierung zum Erfolg führt"
+number: "27"
+slideLayout: "split"
+voiceover: >
+  Sehen wir uns zwei konkrete Fallstudien an: 
+  {cue:col-case-a} Fall A: Ein B2B-Technologiekonzern stellte seine globale Website auf Edge Delivery und Schema-Entitäten um. 
+  Das Ergebnis: 38 Prozent mehr Zitationen in Google AI Overviews und Perplexity – bei einer Reduktion der Ladezeit um sechzig Prozent. 
+  {cue:col-case-b} Fall B: Ein Medizintechnik-Hersteller strukturierte 1.200 Fachartikel in einem semantischen Wissensgraphen. 
+  Ergebnis: 45 Prozent mehr Sichtbarkeit bei hochgradig regulierten Kundenanfragen in ChatGPT Search. 
+  Der gemeinsame Nenner: Nicht mehr Text, sondern präzisere semantische Modellierung war der Schlüssel!
+notes: |
+  - Zeit: 61:30 - 64:00 Min.
+  - Adobe & Sitecore Enterprise Customer Success Stories (2025).
+  - Botschaft: Weniger Müll produzieren, mehr Substanz sauber strukturieren.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="CASE STUDIES" slideNumber="27" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-case-a" x={0} y={40} width={820} height={680} title="Fall A: B2B-Industriekonzern" badge="+38 % ZITATIONEN" accent="blue">
+    <div class="space-y-6">
+      <div class="p-4 rounded-xl bg-blue-50 border border-blue-200">
+        <span class="text-xs font-bold text-blue-700 uppercase">Branche: Sondermaschinen & Robotik</span>
+        <h4 class="font-bold text-slate-900 text-base mt-1">Umstellung auf Edge Delivery & Schema.org</h4>
+      </div>
+
+      <div class="space-y-4 text-slate-700 text-sm">
+        <p><strong>Ausgangslage:</strong> Schwerfälliges Altsystem, LCP-Ladezeiten von 4,8 Sekunden, sinkender organischer Traffic.</p>
+        <p><strong>Maßnahme:</strong> Decoupled Edge Delivery Layer mit standardisiertem Product- und TechArticle-Schema.</p>
+        <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 font-bold space-y-1">
+          <div>✓ +38 % Erwähnungen in Perplexity & Google AIO</div>
+          <div>✓ Ladezeit um 60 % gesenkt (LCP: 1.1s)</div>
+          <div>✓ +24 % mehr qualifizierte Anfrage-Formulare</div>
+        </div>
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-case-b" x={900} y={40} width={820} height={680} title="Fall B: Medizintechnik-Pionier" badge="+45 % SICHTBARKEIT" accent="teal">
+    <div class="space-y-6">
+      <div class="p-4 rounded-xl bg-cyan-50 border border-cyan-200">
+        <span class="text-xs font-bold text-cyan-700 uppercase">Branche: Medizinische Sensorik & Diagnostik</span>
+        <h4 class="font-bold text-slate-900 text-base mt-1">Strukturierung von 1.200 Fachbeiträgen im Wissensgraphen</h4>
+      </div>
+
+      <div class="space-y-4 text-slate-700 text-sm">
+        <p><strong>Ausgangslage:</strong> Hochwertige Studien lagen als unstrukturierte PDF-Dateien ohne Entitäten-Metadaten vor.</p>
+        <p><strong>Maßnahme:</strong> Überführung in BLUF-Informationsblöcke mit verknüpften Autoren-Profilen (ORCID).</p>
+        <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 font-bold space-y-1">
+          <div>✓ +45 % LLM-Sichtbarkeit bei regulatorischen Anfragen</div>
+          <div>✓ Bevorzugte Zitation bei ChatGPT Search</div>
+          <div>✓ Etablierung als Referenz-Standard im Fachbereich</div>
+        </div>
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

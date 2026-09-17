@@ -427,6 +427,44 @@ const environments = defineCollection({
 });
 
 
+const talks = defineCollection({
+  loader: glob({
+    base: './src/content/talks',
+    pattern: '*/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+    pubDate: z.coerce.date(),
+    event: z.string(),
+    location: z.string().optional(),
+    audience: z.string().optional(),
+    lang: z.enum(['de', 'en']).default('de'),
+    description: z.string().optional(),
+    tags: z.array(tagReference).default([]),
+    icon: coverImageSchema({ image }).optional(),
+  }),
+});
+
+const slides = defineCollection({
+  loader: glob({
+    base: './src/content/talks',
+    pattern: '*/slides/*.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, '')
+  }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+    number: z.string().optional(),
+    slideLayout: z.string().default('custom'),
+    voiceover: z.string().default(''),
+    notes: z.string().default(''),
+    badge: z.string().optional(),
+    durationSec: z.number().optional(),
+  }),
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -447,6 +485,8 @@ export const collections = {
   'characters': characters,
   'objects': objects,
   'environments': environments,
+  'talks': talks,
+  'slides': slides,
 };
 
 

@@ -1,0 +1,70 @@
+---
+title: "Agenda & Leitfaden"
+subtitle: "Gliederung des 60-Minuten-Vortrags in 5 didaktische Blöcke"
+number: "02"
+slideLayout: "pipeline"
+voiceover: >
+  Unsere heutige Agenda gliedert sich in fünf logische Blöcke. 
+  {cue:step-01} Zunächst beleuchten wir den Paradigmenwechsel vom Web-Index zur Antwortsynthese. 
+  {cue:step-02} Danach steigen wir in die technischen Grundlagen ein: RAG, Embeddings und Wissensgraphen. 
+  {cue:step-03} Im dritten Block stelle ich Ihnen die konkrete Drei-Säulen-Methodik inklusive Schema.org-Implementierung vor. 
+  {cue:step-04} Block vier widmet sich autonomen Entwickler-Agenten und dem Model Context Protocol im Live-Workflow. 
+  {cue:step-05} Schließlich betrachten wir Architekturen für den Mittelstand, Share of Model und beantworten Ihre Fragen.
+notes: |
+  - Zeit: 2:00 - 4:00 Min.
+  - Hinweis auf Konferenz-Standard (ACM/IEEE Didaktik).
+  - Dem Publikum signalisieren: Erst Verständnis, dann Technik, dann konkrete Hands-On-Praxis.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="ÜBERSICHT" slideNumber="02" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "step-01",
+        num: "01",
+        title: "Paradigmenwechsel",
+        desc: "Vom Web-Index zur generativen Antwortsynthese. Warum 10 blaue Links Geschichte sind.",
+        badge: "STATUS QUO",
+        accent: "blue"
+      },
+      {
+        id: "step-02",
+        num: "02",
+        title: "Technologische Basis",
+        desc: "RAG, semantische Embeddings und GraphRAG. Wie Sprachmodelle Fakten verarbeiten.",
+        badge: "THEORIE",
+        accent: "teal"
+      },
+      {
+        id: "step-03",
+        num: "03",
+        title: "3-Säulen-Methodik",
+        desc: "Strukturierte Daten, Schema.org Code, Information Gain und E-E-A-T Autoritätssignale.",
+        badge: "STRATEGIE",
+        accent: "indigo"
+      },
+      {
+        id: "step-04",
+        num: "04",
+        title: "Dev-Agenten & MCP",
+        desc: "Model Context Protocol im Entwicklerstack. Qualitätssicherung vor dem Deployment.",
+        badge: "HANDS-ON",
+        accent: "green"
+      },
+      {
+        id: "step-05",
+        num: "05",
+        title: "Enterprise & Mittelstand",
+        desc: "Zwei-Geschwindigkeiten-Architektur für KMU, Share of Model Kennzahlen & Diskussion.",
+        badge: "ROADMAP",
+        accent: "amber"
+      }
+    ]}
+  />
+</SlideCanvas>

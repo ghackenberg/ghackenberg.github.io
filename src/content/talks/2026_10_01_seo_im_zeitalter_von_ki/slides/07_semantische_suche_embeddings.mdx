@@ -1,0 +1,70 @@
+---
+title: "Semantische Suche & Embeddings"
+subtitle: "Von Zeichenketten (Strings) zu Bedeutungen (Things) im hochdimensionalen Vektorraum"
+number: "07"
+slideLayout: "split"
+voiceover: >
+  Wie entscheidet die Suchmaschine, welche Chunks relevant sind? 
+  {cue:col-embeddings} Durch Embeddings. Texte werden durch neuronale Netze in hochdimensionale 
+  Zahlenvektoren mit über 1.500 Dimensionen übersetzt. 
+  {cue:col-math} Entscheidend ist die Kosinus-Ähnlichkeit: Themen, die dieselbe Bedeutung haben – wie 
+  industrielle Wärmepumpen und B2B-Dekarbonisierung –, liegen im Vektorraum eng beieinander. 
+  Wer heute noch reine Keyword-Wiederholungen betreibt, optimiert für ein System, das längst nicht 
+  mehr existiert.
+notes: |
+  - Zeit: 13:30 - 15:30 Min.
+  - Zitat von Google: "Strings to Things" (Amit Singhal).
+  - Mathematische Formel Kosinus-Ähnlichkeit erklären: cos(theta) = (A * B) / (||A|| * ||B||).
+  - Referenzen: Mikolov et al. (Word2Vec), OpenAI Text Embeddings Documentation (2024-2026).
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="DATEN-ARCHITEKTUR" slideNumber="07" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-embeddings" x={0} y={40} width={830} height={680} title="Der semantische Vektorraum" badge="1536 DIMENSIONEN" accent="teal">
+    <div class="space-y-6">
+      <div class="p-6 rounded-xl bg-slate-900 text-slate-200 font-mono text-xs space-y-2">
+        <p class="text-slate-400">// Text-Passage "Industrielle Wärmepumpe"</p>
+        <p class="text-cyan-400">[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
+        <p class="text-slate-400 mt-3">// Text-Passage "Energieeffiziente Prozesswärme B2B"</p>
+        <p class="text-blue-400">[0.0209, -0.0518, 0.0874, 0.0125, -0.0421, ...]</p>
+      </div>
+
+      <div class="space-y-4 text-slate-700 text-base">
+        <div class="flex items-start gap-3">
+          <span class="text-cyan-600 font-bold text-lg">●</span>
+          <span><strong>Bedeutung statt Buchstabengleichheit:</strong> Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel.</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-cyan-600 font-bold text-lg">●</span>
+          <span><strong>Wirkungslosigkeit von Keyword-Stuffing:</strong> Künstliche Keyword-Wiederholungen verzerren den Vektor und senken die semantische Relevanz.</span>
+        </div>
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-math" x={890} y={40} width={830} height={680} title="Kosinus-Ähnlichkeit (Kriterium für Relevanz)" badge="MATHEMATIK" accent="blue">
+    <div class="space-y-6">
+      <div class="p-6 rounded-xl bg-blue-50/80 border border-blue-200 text-center">
+        <div class="text-2xl font-mono font-bold text-blue-900 mb-2">
+          cos(θ) = (A · B) / (||A|| ||B||)
+        </div>
+        <p class="text-sm text-blue-700">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
+      </div>
+
+      <div class="space-y-4 text-slate-700 text-base">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white">
+          <h4 class="font-bold text-slate-900 mb-1">Retrieval-Schwellenwert (Top-K)</h4>
+          <p class="text-sm text-slate-600">RAG-Systeme rufen nur jene Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über <strong>0.82</strong> liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.</p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white">
+          <h4 class="font-bold text-slate-900 mb-1">Konsequenz für B2B-Texte</h4>
+          <p class="text-sm text-slate-600">Texte müssen präzise Fachbegriffe, physikalische Einheiten und logische Zusammenhänge enthalten, um maximale Vektornähe zu anspruchsvollen B2B-Kaufanfragen zu erreichen.</p>
+        </div>
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

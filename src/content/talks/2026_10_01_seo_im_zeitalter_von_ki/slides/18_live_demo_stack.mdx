@@ -1,0 +1,61 @@
+---
+title: "Live-Demo-Stack im Detail"
+subtitle: "Vier aufeinander abgestimmte Komponenten für maximale Geschwindigkeit und Maschinenlesbarkeit"
+number: "18"
+slideLayout: "code"
+voiceover: >
+  In unserer Live-Demo sehen Sie das Gesamtsystem in Aktion. 
+  {cue:card-astro} Als Frontend-Framework nutzen wir Astro: Es erzeugt statisches HTML mit null JavaScript-Ballast. 
+  {cue:card-agent} Die Optimierung übernimmt der Google Anti-Gravity Agent direkt auf der Konsole. 
+  {cue:card-github} Als Versionskontrolle und CI/CD-Pipeline dient GitHub Pages mit automatisierten Actions. 
+  {cue:card-plausible} Und die Erfolgsmessung erfolgt über Plausible Analytics – zu 100 Prozent DSGVO-konform 
+  und ohne nervigen Cookie-Banner.
+notes: |
+  - Zeit: 41:00 - 43:30 Min.
+  - Hinweis auf die Live-Website hackenberg.tech: Genau dieser Stack treibt die Website an, auf der diese Folien gehostet sind!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="TOOL-CHAIN" slideNumber="18" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "card-astro",
+        num: "01",
+        title: "Astro Frontend",
+        desc: "Islands Architecture. Rendert reines semantisches HTML & SVG. Keine Ladezeit-Verzögerung für GPTBot.",
+        badge: "STATIC SITE",
+        accent: "blue"
+      },
+      {
+        id: "card-agent",
+        num: "02",
+        title: "Anti-Gravity Agent",
+        desc: "Autonome KI-Coding-Umgebung mit MCP-Schnittstellen. Validiert Schemas und optimiert Code im Sekundentakt.",
+        badge: "AGENTIC AI",
+        accent: "teal"
+      },
+      {
+        id: "card-github",
+        num: "03",
+        title: "GitHub Actions",
+        desc: "Automatisierte CI/CD-Pipeline mit integriertem Lighthouse-Gatekeeper und globalem CDN-Deployment.",
+        badge: "DEVOPS",
+        accent: "indigo"
+      },
+      {
+        id: "card-plausible",
+        num: "04",
+        title: "Plausible Analytics",
+        desc: "DSGVO-konformes Web-Tracking ohne Cookies. Erkennt Referrals von chatgpt.com und perplexity.ai.",
+        badge: "DATENSCHUTZ",
+        accent: "green"
+      }
+    ]}
+  />
+</SlideCanvas>

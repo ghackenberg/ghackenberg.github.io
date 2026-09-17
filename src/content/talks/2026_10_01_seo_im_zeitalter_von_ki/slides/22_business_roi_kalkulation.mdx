@@ -1,0 +1,92 @@
+---
+title: "Kalkulation des Business ROI (GEO vs. SEO)"
+subtitle: "Warum sinkende Gesamtklicks bei verdreifachtem Pipeline-Wert das beste Geschäftsergebnis bedeuten"
+number: "22"
+slideLayout: "metric"
+voiceover: >
+  Wie argumentieren Sie dieses Budget vor der kaufmännischen Geschäftsführung? 
+  {cue:roi-metric} Mit dem betriebswirtschaftlichen Pipeline-Wert. 
+  {cue:roi-table} Ein traditioneller SEO-Trichter generiert vielleicht 10.000 Klicks mit einer Konversionsrate 
+  von 1,2 Prozent – das sind 120 weitgehend unqualifizierte Leads. 
+  Im GEO-Trichter bricht der Traffic durch Zero-Click zwar um 55 Prozent auf 4.500 Klicks ein, aber die 
+  Konversionsrate vervierfacht sich auf 4,8 Prozent. Das Ergebnis: 216 abschlussreife Leads und ein 
+  mehr als verdreifachter Pipeline-Wert. Weniger Klicks – aber deutlich mehr Umsatz!
+notes: |
+  - Zeit: 50:30 - 52:30 Min.
+  - Datenquelle: Forrester / B2B Pipeline Conversion Benchmark Reports (2025/2026).
+  - Kernbotschaft an CFOs: Traffic ist eine Eitelkeits-Metrik; Pipeline-Wert ist die Realität.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="BUSINESS CASE" slideNumber="22" totalSlides="30">
+  {/**/}
+  <MetricStat
+    id="roi-metric"
+    x={0}
+    y={40}
+    width={700}
+    height={680}
+    value="+304"
+    unit="%"
+    label="Wachstum des B2B-Pipeline-Werts"
+    sublabel="Vergleichsrechnung basierend auf Forrester B2B Lead-Conversion Benchmarks 2025/2026"
+    badge="CFO-PERSPEKTIVE"
+    color="green"
+  />
+
+  {/**/}
+  <BentoBox id="roi-table" x={780} y={40} width={940} height={680} title="Trichter-Vergleich: Klassisch vs. GEO" badge="ROI KALKULATION" accent="blue">
+    <div class="space-y-6">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-slate-500 font-bold uppercase text-xs">
+              <th class="py-3">Metrik</th>
+              <th class="py-3 text-slate-600">Traditionelles SEO</th>
+              <th class="py-3 text-blue-700">GEO-Trichter</th>
+              <th class="py-3 text-right">Delta</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-800">
+            <tr>
+              <td class="py-3.5 font-bold">Monatlicher Traffic</td>
+              <td class="py-3.5 font-mono">10.000 Klicks</td>
+              <td class="py-3.5 font-mono font-bold text-blue-600">4.500 Klicks</td>
+              <td class="py-3.5 font-mono text-rose-500 text-right">-55 %</td>
+            </tr>
+            <tr>
+              <td class="py-3.5 font-bold">Conversion-Rate</td>
+              <td class="py-3.5 font-mono">1,2 %</td>
+              <td class="py-3.5 font-mono font-bold text-emerald-600">4,8 %</td>
+              <td class="py-3.5 font-mono text-emerald-600 text-right">+300 %</td>
+            </tr>
+            <tr>
+              <td class="py-3.5 font-bold">Qualifizierte B2B-Leads</td>
+              <td class="py-3.5 font-mono">120 Leads</td>
+              <td class="py-3.5 font-mono font-bold text-blue-600">216 Leads</td>
+              <td class="py-3.5 font-mono text-emerald-600 text-right">+80 %</td>
+            </tr>
+            <tr>
+              <td class="py-3.5 font-bold">Abschlussquote Vertrieb</td>
+              <td class="py-3.5 font-mono">15 % (18 Deals)</td>
+              <td class="py-3.5 font-mono font-bold text-emerald-600">35 % (75 Deals)</td>
+              <td class="py-3.5 font-mono text-emerald-600 text-right">+316 %</td>
+            </tr>
+            <tr class="bg-blue-50/60 font-bold text-blue-950">
+              <td class="py-4">Pipeline-Wert (€ 25k Deal)</td>
+              <td class="py-4 font-mono">450.000 €</td>
+              <td class="py-4 font-mono text-emerald-600 text-base">1.875.000 €</td>
+              <td class="py-4 font-mono text-emerald-600 text-right text-base">+316 %</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-950 font-medium">
+        <strong>Fazit für die Geschäftsleitung:</strong> Wer den Erfolg an Klicks misst, spart am falschen Ende. Wer für KI-Zitationen optimiert, schickt kaufbereite Entscheider direkt in die Vertriebspipeline.
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

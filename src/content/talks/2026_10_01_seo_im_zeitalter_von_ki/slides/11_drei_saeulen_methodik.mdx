@@ -1,0 +1,53 @@
+---
+title: "Die Drei-Säulen-Methodik für GEO"
+subtitle: "Das ganzheitliche Framework für nachhaltige Sichtbarkeit in generativen KI-Modellen"
+number: "11"
+slideLayout: "pipeline"
+voiceover: >
+  Wie setzen wir das in der unternehmerischen Praxis um? Ich habe dafür die Drei-Säulen-Methodik entwickelt. 
+  {cue:pillar-struct} Säule eins ist die Struktur: Maschinenlesbare Schema.org-Auszeichnungen und semantisches HTML5. 
+  {cue:pillar-content} Säule zwei ist der Inhalt: Hoher Information Gain, Primärdaten und das BLUF-Prinzip. 
+  {cue:pillar-auth} Säule drei ist die Autorität: E-E-A-T-Signale, Peer-Review und verifizierte Experten-Entitäten. 
+  Zusammen tragen diese drei Säulen Ihr Share of Model in allen führenden Sprachmodellen.
+notes: |
+  - Zeit: 23:00 - 25:30 Min.
+  - Das Framework als übergeordnete Orientierung für die folgenden Detailfolien 12-15 vorstellen.
+  - Eigene Methodik Dr. Georg Hackenberg (2026).
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="STRATEGISCHES FRAMEWORK" slideNumber="11" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "pillar-struct",
+        num: "01",
+        title: "Säule 1: Struktur",
+        desc: "Schema.org @graph Architektur, JSON-LD, standardisiertes semantisches HTML5 und eindeutige Entitäten-URIs.",
+        badge: "MASCHINENLESBARKEIT",
+        accent: "blue"
+      },
+      {
+        id: "pillar-content",
+        num: "02",
+        title: "Säule 2: Content",
+        desc: "Information Gain Scores maximieren, BLUF-Informationsarchitektur, dichte Vergleichstabellen und proprietäre Messdaten.",
+        badge: "MEHRWERT",
+        accent: "teal"
+      },
+      {
+        id: "pillar-auth",
+        num: "03",
+        title: "Säule 3: Autorität",
+        desc: "E-E-A-T-Signale, Co-Citations, Autorenvalidierung via ORCID / Wikidata und institutionelle akademische Verankerung.",
+        badge: "VERTRAUEN",
+        accent: "indigo"
+      }
+    ]}
+  />
+</SlideCanvas>

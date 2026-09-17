@@ -1,0 +1,265 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import SlideDeck from "../../../components/slides/player/SlideDeck.astro";
+import { getCollection, render } from "astro:content";
+import fs from "node:fs";
+import path from "node:path";
+
+export async function getStaticPaths() {
+  const talks = await getCollection("talks");
+  return talks.map((talk) => ({
+    params: { slug: talk.id },
+    props: { talk },
+  }));
+}
+
+const { talk } = Astro.props;
+
+// Load all slides for this talk, sorted by filename
+const allSlides = await getCollection("slides");
+console.log('[TALK DEBUG] talk.id:', talk.id, 'allSlides count:', allSlides.length, 'ids:', allSlides.map(s => s.id));
+const talkSlides = allSlides
+  .filter((s) => s.id.startsWith(talk.id))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
+// Prepare slide metadata and rendered components
+const renderedSlides = await Promise.all(
+  talkSlides.map(async (slide, idx) => {
+    const { Content } = await render(slide);
+    const slideBase = path.basename(slide.id);
+
+    // Check if audio file and cues file exist
+    const talkDir = path.resolve("src/content/talks", talk.id);
+    const audioFilePath = path.join(talkDir, "audio", `${slideBase}.mp3`);
+    const cuesFilePath = path.join(talkDir, "audio", `${slideBase}.cues.json`);
+
+    let audioUrl = undefined;
+    if (fs.existsSync(audioFilePath)) {
+      audioUrl = `/talks/${talk.id}/audio/${slideBase}.mp3`;
+    }
+
+    let cues: Record<string, number> = {};
+    if (fs.existsSync(cuesFilePath)) {
+      try {
+        cues = JSON.parse(fs.readFileSync(cuesFilePath, "utf8"));
+      } catch {
+        cues = {};
+      }
+    }
+
+    return {
+      id: slideBase,
+      number: idx + 1,
+      title: slide.data.title,
+      subtitle: slide.data.subtitle,
+      voiceover: slide.data.voiceover,
+      notes: slide.data.notes,
+      audioUrl,
+      cues,
+      Content
+    };
+  })
+);
+
+// Check if slides.pdf exists for download button
+const pdfFilePath = path.resolve("src/content/talks", talk.id, "slides.pdf");
+const hasPdf = fs.existsSync(pdfFilePath);
+const pdfDownloadUrl = `/talks/${talk.id}/slides.pdf`;
+
+const stripCues = (text: string) => (text ? text.replace(/\{cue:[^}]+\}/g, "") : "");
+
+// Schema.org Event & PresentationDigitalDocument
+const talkSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Event",
+      "@id": `https://hackenberg.tech/talks/${talk.id}/#event`,
+      "name": talk.data.title,
+      "description": talk.data.description,
+      "startDate": talk.data.pubDate.toISOString(),
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "location": {
+        "@type": "Place",
+        "name": talk.data.location || "Oberösterreich",
+        "address": {
+          "@type": "PostalAddress",
+          "addressRegion": "Oberösterreich",
+          "addressCountry": "AT"
+        }
+      },
+      "performer": {
+        "@type": "Person",
+        "@id": "https://hackenberg.tech/#georg",
+        "name": "Dr. Georg Hackenberg",
+        "jobTitle": "Professor für Informatik und Industriesysteme"
+      }
+    },
+    {
+      "@type": "PresentationDigitalDocument",
+      "@id": `https://hackenberg.tech/talks/${talk.id}/#presentation`,
+      "name": talk.data.title,
+      "headline": talk.data.subtitle || talk.data.title,
+      "description": talk.data.description,
+      "author": {
+        "@id": "https://hackenberg.tech/#georg"
+      },
+      "datePublished": talk.data.pubDate.toISOString(),
+      "inLanguage": talk.data.lang,
+      "url": `https://hackenberg.tech/talks/${talk.id}/`
+    }
+  ]
+};
+---
+
+<Layout
+  title={`${talk.data.title} | Vortrag Dr. Georg Hackenberg`}
+  description={talk.data.description || `${talk.data.title} - Fachvortrag von Dr. Georg Hackenberg`}
+  jsonLd={talkSchema}
+  lang={talk.data.lang}
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 w-full relative z-10">
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-xs font-medium text-gray-400 mb-6">
+      <a href="/" class="hover:text-brand-blue transition-colors">Home</a>
+      <span>/</span>
+      <a href="/talks/" class="hover:text-brand-blue transition-colors">Talks & Keynotes</a>
+      <span>/</span>
+      <span class="text-gray-200 truncate">{talk.data.title}</span>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-element-border-medium">
+      <div class="max-w-4xl">
+        <div class="flex flex-wrap items-center gap-3 mb-3">
+          <span class="px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/30 text-brand-blue text-xs font-bold uppercase tracking-wider">
+            {talk.data.event}
+          </span>
+          <time datetime={talk.data.pubDate.toISOString()} class="text-gray-400 text-xs font-mono">
+            {talk.data.pubDate.toLocaleDateString("de-AT", { year: "numeric", month: "long", day: "numeric" })}
+          </time>
+          {talk.data.location && (
+            <span class="text-gray-400 text-xs">
+              📍 {talk.data.location}
+            </span>
+          )}
+        </div>
+
+        <h1 class="text-3xl md:text-5xl font-black text-gray-100 tracking-tight font-sans">
+          {talk.data.title}
+        </h1>
+        {talk.data.subtitle && (
+          <p class="text-lg md:text-xl text-gray-300 mt-2 font-medium">
+            {talk.data.subtitle}
+          </p>
+        )}
+      </div>
+
+      <!-- PDF Download Button -->
+      <div class="flex items-center gap-3 shrink-0">
+        <a
+          href={`/talks/${talk.id}/print/`}
+          target="_blank"
+          class="px-4 py-2.5 rounded-xl border border-element-border-medium bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
+          title="Druckansicht aller Folien öffnen"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Druckansicht
+        </a>
+
+        {hasPdf && (
+          <a
+            href={pdfDownloadUrl}
+            download={`Vortrag_${talk.id}.pdf`}
+            class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            PDF Handout herunterladen
+          </a>
+        )}
+      </div>
+    </header>
+
+    <!-- Interactive Slide & Audio Deck -->
+    <section class="mb-12">
+      <SlideDeck
+        talkId={talk.id}
+        slides={renderedSlides.map((s) => ({
+          id: s.id,
+          title: s.title,
+          audioUrl: s.audioUrl,
+          cues: s.cues,
+          notes: s.notes
+        }))}
+      >
+        {renderedSlides.map((slide) => (
+          <section data-slide-id={slide.id}>
+            <slide.Content />
+          </section>
+        ))}
+      </SlideDeck>
+    </section>
+
+    <!-- Slide Transcripts, Notes & Key Takeaways Accordion (SEO & Reader Mode) -->
+    <section class="p-8 rounded-2xl glass-panel border border-element-border-medium">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-100 tracking-tight font-sans">
+            Vollständiges Transkript & Foliennotizen
+          </h2>
+          <p class="text-sm text-gray-400 mt-1">
+            Lesen Sie den gesamten gesprochenen Inhalt des Vortrags und alle wissenschaftlichen Quellenangaben mit.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-6 divide-y divide-element-border-medium">
+        {renderedSlides.map((slide) => (
+          <div class="pt-6 first:pt-0" id={`transcript-${slide.id}`}>
+            <div class="flex items-start justify-between gap-4 mb-2">
+              <h3 class="text-lg font-bold text-gray-100 flex items-center gap-3">
+                <span class="w-7 h-7 rounded-lg bg-brand-blue/20 text-brand-blue font-mono text-xs flex items-center justify-center font-bold">
+                  {String(slide.number).padStart(2, '0')}
+                </span>
+                {slide.title}
+              </h3>
+              {slide.subtitle && (
+                <span class="text-xs text-gray-400 hidden sm:inline-block">
+                  {slide.subtitle}
+                </span>
+              )}
+            </div>
+
+            <!-- Voiceover Script -->
+            {slide.voiceover && (
+              <div class="text-gray-200 text-sm leading-relaxed mb-3 bg-element-bg p-4 rounded-xl border border-element-border">
+                <strong class="text-brand-blue text-xs uppercase tracking-wider block mb-1 font-bold">
+                  Gesprochener Vortragstext (Voice-Over):
+                </strong>
+                {stripCues(slide.voiceover)}
+              </div>
+            )}
+
+            <!-- Speaker Notes -->
+            {slide.notes && (
+              <div class="text-gray-400 text-xs leading-relaxed whitespace-pre-line pl-4 border-l-2 border-brand-blue/30">
+                <strong class="text-gray-500 uppercase tracking-wider block mb-1 font-semibold">
+                  Referenten-Notizen & Quellen:
+                </strong>
+                {slide.notes}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>

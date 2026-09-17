@@ -1,0 +1,61 @@
+---
+title: "Agentengestützte Web-Optimierung"
+subtitle: "Vom manuellen SEO-Audit zum autonomen Entwickleragenten im CI/CD-Pre-Commit-Workflow"
+number: "16"
+slideLayout: "pipeline"
+voiceover: >
+  Wie lässt sich diese Qualität kontinuierlich sichern, ohne dass Entwickler und Redakteure verzweifeln? 
+  {cue:step-loop-1} Durch autonome Entwickler-Agenten. 
+  {cue:step-loop-2} Statt einmal im Quartal eine SEO-Agentur für teures Geld drüberschauen zu lassen, fungiert der Agent 
+  als intelligenter Pre-Gatekeeper. 
+  {cue:step-loop-3} Vor jedem Git-Commit analysiert er den Code, injiziert fehlende Schema-Entitäten, 
+  {cue:step-loop-4} prüft die Barrierefreiheit und deployt fehlerfreien Code vollautomatisch auf das globale Edge-Netzwerk.
+notes: |
+  - Zeit: 36:00 - 38:30 Min.
+  - Paradigmenwechsel betonen: Nicht ex-post reparieren, sondern ex-ante durch Agenten-Feedback-Schleife absichern.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="AUTONOME WORKFLOWS" slideNumber="16" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "step-loop-1",
+        num: "01",
+        title: "Perzeption",
+        desc: "Agent scannt Git-Diff, Markdown-Dateien und Quellcode auf Inkonsistenzen und fehlende Metadaten.",
+        badge: "CODE-AUDIT",
+        accent: "blue"
+      },
+      {
+        id: "step-loop-2",
+        num: "02",
+        title: "Reasoning & Schema",
+        desc: "LLM-Reasoning erzeugt validen Schema.org @graph und optimiert Überschriften nach dem BLUF-Prinzip.",
+        badge: "SYNTHESE",
+        accent: "teal"
+      },
+      {
+        id: "step-loop-3",
+        num: "03",
+        title: "Automatischer Test",
+        desc: "Lighthouse-Audit prüft Core Web Vitals, Kontraste und Ladezeiten im lokalen Headless Chrome.",
+        badge: "QUALITY-GATE",
+        accent: "indigo"
+      },
+      {
+        id: "step-loop-4",
+        num: "04",
+        title: "Edge Deployment",
+        desc: "Bei 100/100 Scores führt der Agent den Git-Commit aus und pusht auf die weltweite Edge-Infrastruktur.",
+        badge: "CI/CD",
+        accent: "green"
+      }
+    ]}
+  />
+</SlideCanvas>

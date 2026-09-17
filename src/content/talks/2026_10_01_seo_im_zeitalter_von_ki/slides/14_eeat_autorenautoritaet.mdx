@@ -1,0 +1,78 @@
+---
+title: "E-E-A-T & Autorenautorität"
+subtitle: "Warum Sprachmodelle anonyme Artikel abwerten und verifizierte Experten im B2B bevorzugen"
+number: "14"
+slideLayout: "split"
+voiceover: >
+  Generative KIs haben gelernt: Anonyme Texte im Internet sind oft Falschinformationen oder billiger KI-Spam. 
+  {cue:col-eeat-triad} Deshalb evaluieren Modelle sogenannte E-E-A-T-Signale: Experience, Expertise, 
+  Authoritativeness und Trustworthiness. 
+  {cue:col-eeat-checklist} Wer seine Autorenprofile mit akademischen Datenbanken wie ORCID, Patentregistern 
+  oder Branchenverbänden verknüpft, vervierfacht seine Glaubwürdigkeit bei KI-Suchanfragen. 
+  Machen Sie Ihre Ingenieure und Fachexperten auf der Website namentlich sichtbar!
+notes: |
+  - Zeit: 31:00 - 33:30 Min.
+  - Google Search Quality Rater Guidelines (E-E-A-T) & Semantic Scholar Authority Metrics zitieren.
+  - Wichtig für B2B-Mittelstand: Weg von "Geschrieben von Redaktion Team" hin zu echten Ingenieuren mit Foto, Vita und LinkedIn-Profil.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="AUTORITÄTSSIGNALE" slideNumber="14" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-eeat-triad" x={0} y={40} width={820} height={680} title="Das Dreieck der Autoren-Validierung" badge="VERIFIKATION" accent="blue">
+    <div class="space-y-6">
+      <div class="grid grid-cols-2 gap-4 text-center">
+        <div class="p-4 rounded-xl bg-blue-50 border border-blue-200">
+          <div class="text-3xl font-black text-blue-700">E</div>
+          <div class="text-xs font-bold text-slate-800 uppercase mt-1">Experience</div>
+          <p class="text-xs text-slate-600 mt-1">Praktische Projekterfahrung & Fallstudien</p>
+        </div>
+        <div class="p-4 rounded-xl bg-cyan-50 border border-cyan-200">
+          <div class="text-3xl font-black text-cyan-700">E</div>
+          <div class="text-xs font-bold text-slate-800 uppercase mt-1">Expertise</div>
+          <p class="text-xs text-slate-600 mt-1">Fachausbildung, Patente & Publikationen</p>
+        </div>
+        <div class="p-4 rounded-xl bg-indigo-50 border border-indigo-200">
+          <div class="text-3xl font-black text-indigo-700">A</div>
+          <div class="text-xs font-bold text-slate-800 uppercase mt-1">Authoritativeness</div>
+          <p class="text-xs text-slate-600 mt-1">Zitate in Fachmedien & Branchennormen</p>
+        </div>
+        <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+          <div class="text-3xl font-black text-emerald-700">T</div>
+          <div class="text-xs font-bold text-slate-800 uppercase mt-1">Trustworthiness</div>
+          <p class="text-xs text-slate-600 mt-1">Sichere Website, Impressum & Datenechtheit</p>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-600">
+        <strong>Modell-Verhalten:</strong> Wenn zwei Webseiten denselben technischen Sachverhalt erklären, zitiert das LLM stets jene Quelle, deren Autor über externe Knowledge-Graphen (z. B. Wikidata/ORCID) validiert ist.
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-eeat-checklist" x={900} y={40} width={820} height={680} title="B2B Best-Practice Autorenprofil" badge="CHECKLISTE" accent="teal">
+    <div class="space-y-5 text-slate-700 text-base">
+      <div class="flex items-start gap-3">
+        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+        <span><strong>Dedizierte Autoren-URL:</strong> Eigene Profilseite für jeden Fachautor (z. B. <code>/team/dr-schmidt/</code>).</span>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+        <span><strong>Externe ID-Verknüpfung:</strong> <code>sameAs</code> Links zu LinkedIn, ORCID, Google Scholar oder Wikidata.</span>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+        <span><strong>Verifizierte Zitate & Peer-Reviews:</strong> Verlinkung relevanter Industrienormen und Forschungsberichte.</span>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+        <span><strong>Keine anonymen Blogbeiträge:</strong> Verfasser mit Titel, akademischem Grad und konkreter Rolle im Betrieb angeben.</span>
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

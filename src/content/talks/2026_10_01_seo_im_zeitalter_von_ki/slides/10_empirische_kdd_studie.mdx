@@ -1,0 +1,92 @@
+---
+title: "Die empirische Benchmark-Studie (KDD 2024)"
+subtitle: "Wissenschaftlicher Nachweis: Wie sich die Zitationswahrscheinlichkeit in Sprachmodellen um bis zu 40 % steigern lässt"
+number: "10"
+slideLayout: "metric"
+voiceover: >
+  Dass Generative Engine Optimization funktioniert, ist keine Spekulation, sondern wissenschaftlich bewiesen. 
+  {cue:kdd-study} Eine wegweisende Studie von Princeton, Georgia Tech und dem Allen Institute for AI evaluierte 
+  über 10.000 Suchabfragen. 
+  {cue:kdd-bars} Das Ergebnis: Strukturierte Primärdaten-Zitationen und statistische Belege steigern die Sichtbarkeit 
+  in LLMs um bis zu 40 Prozent. Reine Marketing-Floskeln und Keyword-Stuffing hingegen senken die Zitationswahrscheinlichkeit 
+  messbar um 15 Prozent ab.
+notes: |
+  - Zeit: 20:30 - 23:00 Min.
+  - Studie: Aggarwal et al. (Princeton / Allen AI / Georgia Tech), "GEO: Generative Engine Optimization" (ACM SIGKDD 2024).
+  - Wichtig: Dem B2B-Mittelstand klarmachen: Technische Datenblätter, Whitepapers und Primärforschung sind das Gold der KI-Ära!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="WISSENSCHAFTLICHE EVIDENZ" slideNumber="10" totalSlides="30">
+  {/**/}
+  <MetricStat
+    id="kdd-study"
+    x={0}
+    y={40}
+    width={700}
+    height={680}
+    value="+40"
+    unit="%"
+    label="Maximale Zitationssteigerung in LLMs"
+    sublabel="Studie: ACM SIGKDD 2024 (Princeton, Georgia Tech, Allen AI) über 10.000 Queries"
+    badge="ACM KDD 2024 BEST PAPER CANDIDATE"
+    color="green"
+  />
+
+  {/**/}
+  <BentoBox id="kdd-bars" x={780} y={40} width={940} height={680} title="Effektivität von Optimierungs-Methoden" badge="BENCHMARK-STUDIE" accent="blue">
+    <div class="space-y-6">
+      <div class="space-y-4">
+        {/**/}
+        <div>
+          <div class="flex justify-between text-base font-bold text-slate-900 mb-1">
+            <span>Cite Sources (Quellen & Autoren belegen)</span>
+            <span class="text-emerald-600 font-mono">+40.2 %</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-emerald-500 rounded-full" style="width: 90%;"></div>
+          </div>
+        </div>
+
+        {/**/}
+        <div>
+          <div class="flex justify-between text-base font-bold text-slate-900 mb-1">
+            <span>Quotation Addition (Fachzitate & O-Töne)</span>
+            <span class="text-emerald-600 font-mono">+32.4 %</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-teal-500 rounded-full" style="width: 75%;"></div>
+          </div>
+        </div>
+
+        {/**/}
+        <div>
+          <div class="flex justify-between text-base font-bold text-slate-900 mb-1">
+            <span>Statistical Evidence (Messwerte & Kennzahlen)</span>
+            <span class="text-emerald-600 font-mono">+28.1 %</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-blue-500 rounded-full" style="width: 65%;"></div>
+          </div>
+        </div>
+
+        {/**/}
+        <div class="pt-4 border-t border-slate-100">
+          <div class="flex justify-between text-base font-bold text-slate-900 mb-1">
+            <span>Keyword Stuffing (Klassische SEO-Worthülsen)</span>
+            <span class="text-rose-600 font-mono">-15.3 %</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-rose-500 rounded-full" style="width: 35%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
+        <strong>Takeaway für den Vertrieb:</strong> LLMs bevorzugen verifizierbare Fakten gegenüber Marketingprosa. Je technischer und datengestützter die Produktseite, desto höher die Zitation.
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

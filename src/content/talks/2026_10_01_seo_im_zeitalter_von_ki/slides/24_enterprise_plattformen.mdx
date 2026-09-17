@@ -1,0 +1,71 @@
+---
+title: "Enterprise-Plattformen: Adobe AEM & Sitecore"
+subtitle: "Wie globale Technologiekonzerne Edge Delivery Services und semantische Content Hubs für GEO skalieren"
+number: "24"
+slideLayout: "split"
+voiceover: >
+  Wie lösen Großkonzerne diese Herausforderung im Weltmaßstab? 
+  {cue:col-aem} Adobe Experience Manager setzt auf Edge Delivery Services, um weltweite Ladezeiten unter 
+  fünfhundert Millisekunden zu garantieren und Content-Fragmente automatisch mit semantischen Entitäten zu taggen. 
+  {cue:col-sitecore} Sitecore nutzt XM Cloud und den Content Hub als zentralen Produkt- und Wissensgraphen, 
+  der per GraphQL-Schnittstelle sowohl Webseiten als auch KI-Bots synchron speist. 
+  Beide Systeme beweisen: Die Entkopplung von Inhaltsgraphen und Auslieferungsschicht ist der Schlüssel zur Zukunft.
+notes: |
+  - Zeit: 54:30 - 56:30 Min.
+  - Gartner Magic Quadrant for Digital Experience Platforms (DXP) 2024/2025 zitieren.
+  - Wichtig: Den Mittelstand nicht einschüchtern, sondern zeigen: Dieselben Architekturmuster können KMU mit schlanken Open-Source-Tools (Astro + Headless APIs) für einen Bruchteil des Budgets realisieren!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="ENTERPRISE DXP" slideNumber="24" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-aem" x={0} y={40} width={820} height={680} title="Adobe Experience Manager (AEM)" badge="EDGE DELIVERY" accent="blue">
+    <div class="space-y-6">
+      <div class="p-4 rounded-xl bg-blue-50 border border-blue-200 text-sm">
+        <strong class="text-blue-950 block">AEM Edge Delivery Services</strong>
+        <p class="text-blue-900 mt-1">Auslieferung direkt am CDN-Edge. Erreicht standardmäßig 100er-Lighthouse-Scores für globale LLM-Crawl-Geschwindigkeit.</p>
+      </div>
+
+      <ul class="space-y-3 text-slate-700 text-sm">
+        <li class="flex items-start gap-2">
+          <span class="text-blue-600 font-bold">●</span>
+          <span><strong>Adobe Sensei GenAI:</strong> Automatisches semantisches Tagging aller Inhalts-Fragmente.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-blue-600 font-bold">●</span>
+          <span><strong>Content Fragments:</strong> Strukturierte Inhaltsblöcke werden als maschinenlesbares JSON-LD ausgeliefert.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-blue-600 font-bold">●</span>
+          <span><strong>Global Consistency:</strong> Identische Entitäten über hunderte Länderportale hinweg.</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-sitecore" x={900} y={40} width={820} height={680} title="Sitecore XM Cloud & Content Hub" badge="SEMANTIC HUB" accent="teal">
+    <div class="space-y-6">
+      <div class="p-4 rounded-xl bg-cyan-50 border border-cyan-200 text-sm">
+        <strong class="text-cyan-950 block">Zentraler B2B-Wissensgraph</strong>
+        <p class="text-cyan-900 mt-1">Content Hub fungiert als "Single Source of Truth" für Produkt-Spezifikationen und Zertifikate.</p>
+      </div>
+
+      <ul class="space-y-3 text-slate-700 text-sm">
+        <li class="flex items-start gap-2">
+          <span class="text-cyan-600 font-bold">●</span>
+          <span><strong>Sitecore Search & Vektoren:</strong> Proprietäre semantische Suche bereitet Daten für externe RAG-Bots auf.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-cyan-600 font-bold">●</span>
+          <span><strong>Composable Architecture:</strong> Headless Entkopplung trennt ERP-Daten von der schnellen Präsentationsschicht.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-cyan-600 font-bold">●</span>
+          <span><strong>Automatisierte Schema-Pipelines:</strong> Automatische Injektion von ISO-Normen und Spezifikationen.</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+</SlideCanvas>

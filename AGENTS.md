@@ -120,5 +120,28 @@ To avoid mixed-language indexing penalties and ensure search engines and generat
   - Never place German body text onto English-titled or English-navigated pages without explicit language declarations. Maintain linguistic consistency across headings, body paragraphs, and UI labels.
 
 
-
-
+## 5. Presentation & Slide-as-Code Protocol (Talks)
+Whenever authoring, modifying, or managing public talks, lectures, or keynotes in this repository:
+1. **Repository Structure & Location**:
+   - Every talk is located in its own subfolder: `src/content/talks/[YYYY_MM_DD_slug]/`.
+   - The talk metadata is defined in `index.md` (with `title`, `event`, `location`, `pubDate`, `audience`, `lang`, `description`, `tags`).
+   - All individual slides are co-located in `src/content/talks/[YYYY_MM_DD_slug]/slides/` as numbered files (e.g. `01_titelfolie.mdx`, `02_agenda.mdx`).
+2. **Self-Contained Slide Bundle Requirement**:
+   - Each slide file is an autonomous bundle. It **must** define:
+     - `title`: Concise slide title
+     - `voiceover`: Complete, natural German or English speech script for automated neural TTS synthesis
+     - `notes`: Detailed speaker notes, time milestones, and academic/industry references for the Presenter Console (`S` key)
+     - `slideLayout`: Layout archetype (`title`, `pipeline`, `split`, `metric`, `matrix`, `graph`, `code`, `custom`)
+     - Body: The visual vector stage built with reusable slide primitives
+3. **Strict Cue-Based Audio-Animation Synchronization**:
+   - **NEVER hardcode absolute wall-clock timestamps in seconds** (e.g. `atSec: 14.5`) in slide code.
+   - **ALWAYS couple visual animations to the voice-over via inline semantic cue tags**: `{cue:target-id}` placed in the prose text immediately preceding the spoken trigger word.
+   - Every `{cue:target-id}` tag **must** have a corresponding SVG/DOM element in the slide with matching `id="target-id"`.
+4. **Vector Design System & 1920x1080 16:9 Canvas**:
+   - All slides must be wrapped in `<SlideCanvas>` with a fixed `1920x1080` coordinate space, technical dot-matrix background, and standardized presenter footer.
+   - Use `<BentoBox>` (`<foreignObject>` wrapper) for Tailwind-styled HTML cards and multiline text.
+   - Use `<GraphNode>`, `<GraphEdge>`, `<Pipeline>`, `<MetricStat>`, and `<CodeContainer>` primitives for diagrams and KPIs.
+5. **Quality Gates & Automation**:
+   - Always run `npm run validate:slides` to verify cue consistency, frontmatter completeness, and DOM target matching.
+   - Run `npm run audio:talks` to synthesize neural speech audio (`.mp3`) and WordBoundary cue timings (`.cues.json`) with MD5 caching.
+   - Run `npm run export:slides` to render the high-resolution vector PDF handout via Puppeteer.

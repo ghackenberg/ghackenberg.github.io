@@ -1,0 +1,81 @@
+---
+title: "Das Zero-Click-Dilemma"
+subtitle: "Wenn Suchmaschinen den Klick auf Ihre Website überflüssig machen"
+number: "04"
+slideLayout: "metric"
+voiceover: >
+  Die empirischen Daten sprechen eine deutliche Sprache: 
+  {cue:stat-zeroclick} Über 64 Prozent aller Suchanfragen weltweit enden heute ohne einen einzigen Klick. 
+  {cue:bento-impact} Für Verlage und traditionelle Webportale ist das eine existenzielle Krise. 
+  Für den B2B-Mittelstand in Oberösterreich hingegen eröffnet sich eine historische Chance: 
+  Denn wer in der Antwortbox als technologischer Benchmark zitiert wird, gewinnt Kunden mit 
+  höchster Kaufabsicht.
+notes: |
+  - Zeit: 6:00 - 8:00 Min.
+  - Datenquelle: SparkToro / Similarweb Zero-Click Search Study (2024/2025).
+  - Wichtig: Den Industrievertretern die Angst vor Traffic-Verlusten nehmen; Konversionsrate und Lead-Qualität steigen, wenn die Antwortbox autoritativ ist.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="EMPIRISCHE REALITÄT" slideNumber="04" totalSlides="30">
+  {/**/}
+  <MetricStat
+    id="stat-zeroclick"
+    x={0}
+    y={40}
+    width={750}
+    height={680}
+    value="64"
+    unit="%"
+    label="Zero-Click Suchanfragen"
+    sublabel="Quelle: SparkToro / Similarweb Global Search Study (2024/2025) über 1 Mrd. analysierte Sessions"
+    badge="GLOBALER DURCHSCHNITT"
+    color="blue"
+  />
+
+  {/**/}
+  <BentoBox id="bento-impact" x={830} y={40} width={890} height={680} title="Konsequenzen für Industrie & B2B" badge="STRATEGISCHE ABLEITUNG" accent="teal">
+    <div class="space-y-6">
+      <div class="p-5 rounded-xl bg-cyan-50/70 border border-cyan-200/80">
+        <h4 class="font-bold text-cyan-950 text-lg mb-1">Kernaussage für die Geschäftsführung:</h4>
+        <p class="text-cyan-900 text-base leading-relaxed">
+          „Wir optimieren nicht mehr für Klicks – wir optimieren für Zitation und unumstößliche Markennennung.“
+        </p>
+      </div>
+
+      <div class="space-y-4 text-slate-700">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 shrink-0">
+            📉
+          </div>
+          <div>
+            <h5 class="font-bold text-slate-900 text-lg">Verlust unqualifizierten Traffics</h5>
+            <p class="text-slate-600 text-sm">Oberflächliche Informational-Queries werden direkt vom Modell beantwortet. Reiner Massen-Traffic bricht um 40–60 % ein.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center font-bold text-blue-700 shrink-0">
+            🎯
+          </div>
+          <div>
+            <h5 class="font-bold text-slate-900 text-lg">Drastisch höhere Lead-Qualität</h5>
+            <p class="text-slate-600 text-sm">Wer die Website nach einer KI-Antwort noch aufsucht, hat bereits eine vorgefilterte Kauf- oder Projektierungsabsicht.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center justify-center font-bold text-emerald-700 shrink-0">
+            🏛️
+          </div>
+          <div>
+            <h5 class="font-bold text-slate-900 text-lg">Entitäten-Präsenz als Markenschutz</h5>
+            <p class="text-slate-600 text-sm">Wird Ihr Unternehmen bei Suchanfragen wie „Beste Fertigungslinie für Traunviertler Zerspanung“ nicht erwähnt, existieren Sie im Markt nicht mehr.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>
