@@ -90,7 +90,7 @@ Das vollständige Visionsdokument liegt aktuell als **Version 0.1 (Initialer Dis
   <h3 class="text-xl font-bold mb-2 text-brand-blue">Visionsdokument herunterladen</h3>
   <p class="text-sm text-gray-300 light:text-gray-600 mb-4">Laden Sie das detaillierte Konzeptpapier als PDF herunter (Version 0.1, Stand Juli 2026):</p>
   <a 
-    href="/documents/Vision_Almtal_2035.pdf" 
+    href="/posts/2026_08_09_fh_ooe_campus_almtal_vision/vision_almtal_2035.pdf" 
     target="_blank"
     download="Vision_Almtal_2035_v0.1.pdf"
     style="color: #ffffff !important; text-decoration: none;"
