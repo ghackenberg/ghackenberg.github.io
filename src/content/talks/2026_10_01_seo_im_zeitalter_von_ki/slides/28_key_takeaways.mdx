@@ -1,0 +1,55 @@
+---
+title: "Strategische Key Takeaways"
+subtitle: "Die drei goldenen Leitregeln für Geschäftsführer, Marketingleiter und IT-Architekten"
+number: "28"
+slideLayout: "matrix"
+voiceover: >
+  Fassen wir die drei wichtigsten Leitregeln zusammen: 
+  {cue:takeaway-1} Erstens: Vom Keyword zur Entität. Bauen Sie Wissensgraphen, keine Keyword-Friedhöfe. 
+  Strukturierte Daten nach Schema.org sind ab heute die Pflicht, nicht mehr die Kür. 
+  {cue:takeaway-2} Zweitens: Entwickler-Agenten als Gatekeeper. Nutzen Sie autonome Dev-Agenten via MCP, 
+  um Qualität, Ladezeiten und Semantik vor jedem Release automatisiert abzusichern. 
+  {cue:takeaway-3} Drittens: Information Gain erzeugen. Publizieren Sie exklusive Primärdaten, Praxismessungen 
+  und technische Fakten – denn Sprachmodelle zitieren nur das, was einzigartig ist.
+notes: |
+  - Zeit: 64:00 - 66:00 Min.
+  - Das ist die prägnante Management-Zusammenfassung des Gesamtvortrags.
+  - Mit Nachdruck vortragen!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="EXECUTIVE SUMMARY" slideNumber="28" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "takeaway-1",
+        num: "01",
+        title: "Vom Keyword zur Entität",
+        desc: "Bauen Sie Wissensgraphen, keine Keyword-Friedhöfe. Eindeutige Schema.org-URIs verankern Ihre Produkte im Modellwissen.",
+        badge: "STRUKTUR",
+        accent: "blue"
+      },
+      {
+        id: "takeaway-2",
+        num: "02",
+        title: "Agenten als Gatekeeper",
+        desc: "Automatisieren Sie die Qualitätssicherung mit MCP-Dev-Agenten. Keine unfertigen oder fehlerhaften Seiten mehr auf dem Edge-Server.",
+        badge: "EFFIZIENZ",
+        accent: "teal"
+      },
+      {
+        id: "takeaway-3",
+        num: "03",
+        title: "Information Gain erzeugen",
+        desc: "Liefern Sie Primärdaten, Studien und messbare Benchmarks. Nur einzigartiges, verifiziertes Wissen wird von LLMs zitiert.",
+        badge: "AUTORITÄT",
+        accent: "indigo"
+      }
+    ]}
+  />
+</SlideCanvas>

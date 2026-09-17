@@ -1,0 +1,77 @@
+---
+title: "Das Model Context Protocol (MCP)"
+subtitle: "Der offene Standard von Anthropic zur Entkopplung von LLM-Intelligenz und lokaler Werkzeug-Ausführung"
+number: "17"
+slideLayout: "split"
+voiceover: >
+  Wie kann ein KI-Modell sicher auf lokale Daten zugreifen? 
+  {cue:col-mcp-arch} Die Antwort ist MCP – das Model Context Protocol. MCP trennt die reine Sprachintelligenz 
+  von der Ausführungsumgebung. 
+  {cue:col-mcp-tools} Der Agent kommuniziert über ein standardisiertes JSON-RPC-Protokoll mit lokalen Servern: 
+  einem Server für das Dateisystem, einem für Chrome DevTools und einem für die Google Search Console API. 
+  Damit kann der Agent Fehler nicht nur beschreiben, sondern direkt im Code beheben.
+notes: |
+  - Zeit: 38:30 - 41:00 Min.
+  - Anthropic MCP Open Standard Specification (2024-2026) zitieren.
+  - Den Entwicklern im Raum den Durchbruch erklären: Kein Vendor-Lockin mehr; jeder Entwickler kann eigene MCP-Tools schreiben!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="OFFENER STANDARD" slideNumber="17" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-mcp-arch" x={0} y={40} width={820} height={680} title="3-Schichten-Architektur von MCP" badge="PROTOKOLL-STACK" accent="blue">
+    <div class="space-y-4">
+      <div class="p-4 rounded-xl bg-blue-50 border border-blue-200">
+        <span class="text-xs font-bold text-blue-700 uppercase">Ebene 1: Agent Host / LLM</span>
+        <h4 class="font-bold text-slate-900 text-base">Google Anti-Gravity / Claude / Gemini</h4>
+        <p class="text-xs text-slate-600 mt-1">Übernimmt Planung, Code-Generierung und Entscheidungsfindung.</p>
+      </div>
+
+      <div class="flex justify-center text-blue-500 font-bold text-lg">↓ JSON-RPC 2.0 Client Interface ↓</div>
+
+      <div class="p-4 rounded-xl bg-cyan-50 border border-cyan-200">
+        <span class="text-xs font-bold text-cyan-700 uppercase">Ebene 2: MCP Protocol Router</span>
+        <h4 class="font-bold text-slate-900 text-base">Standardisierte Tool Discovery</h4>
+        <p class="text-xs text-slate-600 mt-1">Vermittelt Funktionsaufrufe und serialisiert Kontext und Berechtigungen.</p>
+      </div>
+
+      <div class="flex justify-center text-cyan-500 font-bold text-lg">↓ Standardisierte Tool-Ausführung ↓</div>
+
+      <div class="p-4 rounded-xl bg-indigo-50 border border-indigo-200">
+        <span class="text-xs font-bold text-indigo-700 uppercase">Ebene 3: Lokale & Cloud MCP Server</span>
+        <h4 class="font-bold text-slate-900 text-base">Lighthouse / Filesystem / Git / Analytics</h4>
+        <p class="text-xs text-slate-600 mt-1">Führt reale Operationen in der kontrollierten Host-Umgebung aus.</p>
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-mcp-tools" x={900} y={40} width={820} height={680} title="Unsere konkreten MCP-Werkzeuge" badge="WERKZEUGE" accent="teal">
+    <div class="space-y-5 text-slate-700 text-base">
+      <div class="flex items-start gap-3">
+        <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">1</span>
+        <div>
+          <strong class="text-slate-900 block">Filesystem MCP Server:</strong>
+          <span class="text-sm text-slate-600">Erlaubt dem Agenten das Lesen von Markdown-Dateien und präzise Code-Edits.</span>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-700 font-bold flex items-center justify-center shrink-0">2</span>
+        <div>
+          <strong class="text-slate-900 block">Chrome DevTools / Lighthouse MCP:</strong>
+          <span class="text-sm text-slate-600">Führt vollautomatische Performance-, Barrierefreiheits- und SEO-Audits aus.</span>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center shrink-0">3</span>
+        <div>
+          <strong class="text-slate-900 block">Unified Analytics MCP:</strong>
+          <span class="text-sm text-slate-600">Verbindet Google Search Console und Plausible zur opportunistischen Keyword-Erkennung.</span>
+        </div>
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

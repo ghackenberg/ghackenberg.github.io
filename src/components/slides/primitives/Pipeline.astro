@@ -1,0 +1,98 @@
+---
+interface Step {
+  id?: string;
+  num: string;
+  title: string;
+  desc?: string;
+  badge?: string;
+  accent?: 'blue' | 'teal' | 'indigo' | 'green' | 'amber';
+}
+
+interface Props {
+  steps: Step[];
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  id?: string;
+  class?: string;
+}
+
+const {
+  steps,
+  x = 0,
+  y = 0,
+  width = 1720,
+  height = 480,
+  id,
+  class: className = ""
+} = Astro.props;
+
+const accentPills = {
+  blue: 'bg-blue-600 text-white',
+  teal: 'bg-cyan-600 text-white',
+  indigo: 'bg-indigo-600 text-white',
+  green: 'bg-emerald-600 text-white',
+  amber: 'bg-amber-600 text-white'
+};
+---
+
+<foreignObject
+  id={id}
+  x={x}
+  y={y}
+  width={width}
+  height={height}
+  class={`pipeline-container overflow-visible ${className}`}
+>
+  <div class="w-full h-full flex items-center justify-between gap-6">
+    {steps.map((step, idx) => {
+      const accent = step.accent || (idx % 2 === 0 ? 'blue' : 'teal');
+      return (
+        <div class="flex-1 flex items-center h-full">
+          <!-- Step Card -->
+          <div
+            id={step.id}
+            class="step-card flex-1 h-full p-8 rounded-2xl border border-slate-800/90 bg-slate-900/90 light:border-slate-200/80 light:bg-white/95 shadow-sm flex flex-col justify-between relative transition-all duration-300 hover:shadow-md hover:border-blue-500"
+          >
+            <!-- Top badge row -->
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <span class={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-xs ${accentPills[accent]}`}>
+                {step.num}
+              </span>
+              {step.badge && (
+                <span class="text-xs uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-600 border border-slate-700 light:border-slate-200">
+                  {step.badge}
+                </span>
+              )}
+            </div>
+
+            <!-- Title & description -->
+            <div class="flex-1 flex flex-col justify-center">
+              <h4 class="text-2xl font-bold text-slate-100 light:text-slate-900 mb-3 tracking-tight">
+                {step.title}
+              </h4>
+              {step.desc && (
+                <p class="text-slate-400 light:text-slate-600 text-base leading-relaxed">
+                  {step.desc}
+                </p>
+              )}
+            </div>
+
+            <!-- Bottom decorative progress bar -->
+            <div class="w-full h-1.5 rounded-full bg-slate-800 light:bg-slate-100 overflow-hidden mt-6">
+              <div class={`h-full rounded-full ${accent === 'blue' ? 'bg-blue-600' : 'bg-cyan-500'}`} style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <!-- Connector arrow to next step -->
+          {idx < steps.length - 1 && (
+            <div class="flex items-center justify-center px-2 text-slate-300 font-bold text-2xl select-none">
+              →
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</foreignObject>

@@ -1,0 +1,89 @@
+---
+title: "Automatisierte Qualitätsaudits (Lighthouse MCP)"
+subtitle: "Warum perfekte 100er-Scores in Performance und SEO die Eintrittskarte für KI-Crawler sind"
+number: "19"
+slideLayout: "matrix"
+voiceover: >
+  Warum sind Ladezeit und Barrierefreiheit für KI-Modelle lebenswichtig? 
+  {cue:lh-scores} Crawler wie GPTBot und Google-Extended haben strenge Timeout-Limits von wenigen Sekunden. 
+  Wenn Ihre Website schwerfälliges JavaScript lädt oder fehlerhafte HTML-Hierarchien aufweist, bricht der Crawler ab. 
+  {cue:lh-terminal} Durch unseren Lighthouse MCP führt der Entwickler-Agent vor jedem Release einen automatischen Test durch. 
+  Das Ziel: Perfekte 100 von 100 Punkten in Performance, Accessibility, Best Practices und SEO.
+notes: |
+  - Zeit: 43:30 - 46:00 Min.
+  - Technische Begründung: Headless Browser der Suchmaschinen schalten bei > 3 Sekunden LCP oft die JavaScript-Ausführung ab ("Soft 404" für KI-Crawler!).
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="PERFORMANCE-GATE" slideNumber="19" totalSlides="30">
+  {/**/}
+  <g id="lh-scores" transform="translate(0, 40)">
+    <MetricStat
+      x={0}
+      y={0}
+      width={400}
+      height={320}
+      value="100"
+      label="Performance"
+      sublabel="LCP < 0.8s, First Contentful Paint 0.4s"
+      badge="CORE WEB VITALS"
+      color="green"
+    />
+    <MetricStat
+      x={430}
+      y={0}
+      width={400}
+      height={320}
+      value="100"
+      label="Accessibility"
+      sublabel="Kontraste, ARIA-Rollen & Tastaturfokus"
+      badge="BARRIEREFREI"
+      color="green"
+    />
+    <MetricStat
+      x={0}
+      y={350}
+      width={400}
+      height={320}
+      value="100"
+      label="Best Practices"
+      sublabel="HTTPS, CSP, moderne Web-Standards"
+      badge="SICHERHEIT"
+      color="green"
+    />
+    <MetricStat
+      x={430}
+      y={350}
+      width={400}
+      height={320}
+      value="100"
+      label="SEO"
+      sublabel="Metadaten, Canonical URLs & OpenGraph"
+      badge="INDEXIERUNG"
+      color="green"
+    />
+  </g>
+
+  {/**/}
+  <BentoBox id="lh-terminal" x={900} y={40} width={820} height={680} title="Automatisierter Audit-Log des Agenten" badge="MCP LOG" accent="blue">
+    <div class="space-y-4">
+      <div class="p-5 rounded-xl bg-slate-950 text-emerald-400 font-mono text-xs leading-relaxed space-y-2 shadow-inner">
+        <p class="text-slate-400">// Starte automatisiertes Lighthouse Audit via MCP...</p>
+        <p>✓ Chrome Headless gestartet auf Port 9222</p>
+        <p>✓ LCP (Largest Contentful Paint): 620 ms (Target: &lt; 2500 ms)</p>
+        <p>✓ CLS (Cumulative Layout Shift): 0.00 (Target: &lt; 0.1)</p>
+        <p>✓ Validierung aller 32 Schema.org Entitäten: OK</p>
+        <p>✓ Prüfe GPTBot Roboter-Zugriffsrechte: Erlaubt</p>
+        <p class="text-slate-200 mt-2 font-bold">=========================================</p>
+        <p class="text-white font-bold">Lighthouse Score: 100 / 100 / 100 / 100</p>
+        <p class="text-emerald-400 font-bold">STATUS: QUALITY-GATE BESTANDEN → COMMIT ERLAUBT</p>
+      </div>
+
+      <p class="text-sm text-slate-600 leading-relaxed">
+        <strong>Der Mehrwert:</strong> Kein Release gelangt je auf den Server, wenn die Seite für KI-Crawler zu langsam oder semantisch defekt ist.
+      </p>
+    </div>
+  </BentoBox>
+</SlideCanvas>

@@ -1,0 +1,91 @@
+---
+title: "Share of Model (SoM) als neue Leitwährung"
+subtitle: "Vom Share of Voice zum relativen Anteil, mit dem eine Marke in generativen Kaufberatungen genannt wird"
+number: "21"
+slideLayout: "split"
+voiceover: >
+  Was ist die entscheidende KPI der Zukunft? Es ist nicht mehr das Keyword-Ranking, 
+  {cue:col-som-formula} sondern der Share of Model – kurz SoM. 
+  Share of Model misst den prozentualen Anteil, zu dem Ihr Unternehmen von Sprachmodellen auf 
+  branchenspezifische Kaufberatungs-Prompts als bevorzugter Anbieter empfohlen wird. 
+  {cue:col-som-bench} Auch sogenannte Unlinked Brand Mentions zählen: Selbst wenn kein klickbarer Link 
+  ausgegeben wird, verankert die Nennung Ihre Marke fest in den semantischen Vektorräumen der KI.
+notes: |
+  - Zeit: 48:00 - 50:30 Min.
+  - Eigene Methodik / B2B AI Visibility Index Dr. Georg Hackenberg (2026).
+  - Formel: SoM (%) = (Anzahl KI-Nennungen / Gesamte Test-Prompts) * 100.
+  - Testpanel: 50–200 standardisierte B2B-Kaufberatungs-Prompts in ChatGPT, Perplexity, Gemini.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="STRATEGISCHE KPI" slideNumber="21" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-som-formula" x={0} y={40} width={820} height={680} title="Definition & Berechnungsformel" badge="MATHEMATIK" accent="blue">
+    <div class="space-y-6">
+      <div class="p-6 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+        <span class="text-xs font-bold text-blue-700 uppercase tracking-wider block mb-2">Share of Model (SoM) Index</span>
+        <div class="text-2xl font-mono font-bold text-blue-950">
+          SoM (%) = ( M<sub>erwähnt</sub> / P<sub>gesamt</sub> ) × 100
+        </div>
+        <p class="text-xs text-blue-800 mt-2">M = Prompt-Antworten mit Marken-Nennung | P = Gesamte Kaufberatungs-Prompts</p>
+      </div>
+
+      <div class="space-y-3 text-slate-700 text-base">
+        <p><strong>Systematisches Prompt-Testing:</strong> Ein standardisiertes Panel von 100–200 industriespezifischen Kaufberatungs-Prompts (z. B. <em>„Welche Automatisierungs-Partner im Traunviertel eignen sich für Sondermaschinenbau?“</em>).</p>
+        <p><strong>Unlinked Brand Mentions:</strong> Jede Erwähnung festigt die Gewichtung im Modell und erhöht die Wahrscheinlichkeit zukünftiger Empfehlungen.</p>
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-som-bench" x={900} y={40} width={820} height={680} title="Wettbewerbs-Benchmark (Beispiel B2B)" badge="BENCHMARK" accent="teal">
+    <div class="space-y-6">
+      <div class="space-y-4">
+        <div>
+          <div class="flex justify-between text-base font-bold text-slate-900 mb-1">
+            <span>Ihr Unternehmen (GEO-optimiert)</span>
+            <span class="text-blue-600 font-mono">42 % SoM</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-blue-600 rounded-full" style="width: 42%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-base font-bold text-slate-900 mb-1">
+            <span>Wettbewerber A (Großkonzern)</span>
+            <span class="text-slate-600 font-mono">24 % SoM</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-slate-400 rounded-full" style="width: 24%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-base font-bold text-slate-900 mb-1">
+            <span>Wettbewerber B (Klassisches SEO)</span>
+            <span class="text-slate-600 font-mono">11 % SoM</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-slate-300 rounded-full" style="width: 11%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-base font-bold text-slate-900 mb-1">
+            <span>Nicht im Modell präsent (Nischen-KMU)</span>
+            <span class="text-slate-400 font-mono">23 % SoM</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-slate-200 rounded-full" style="width: 23%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
+        <strong>Erkenntnis:</strong> Selbst kleinere Mittelständler können weltweite Marktführer im SoM schlagen, wenn ihre Daten sauberer strukturiert sind!
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

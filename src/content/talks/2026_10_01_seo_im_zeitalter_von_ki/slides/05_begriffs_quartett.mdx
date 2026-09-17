@@ -1,0 +1,61 @@
+---
+title: "Das Begriffs-Quartett: SEO, AEO, GEO & AIO"
+subtitle: "Vier Optimierungsdisziplinen und ihre Zielsysteme in der 2x2-Matrix"
+number: "05"
+slideLayout: "matrix"
+voiceover: >
+  In der aktuellen Diskussion kursieren viele Akronyme. 
+  {cue:box-seo} SEO optimiert URLs für die Plätze eins bis zehn im klassischen Web-Index. 
+  {cue:box-aeo} AEO zielt auf Position Zero: prägnante Antworten in Google Featured Snippets. 
+  {cue:box-geo} GEO – Generative Engine Optimization – optimiert für Zitationen in reinen Sprachmodellen 
+  wie ChatGPT, Perplexity und Claude. 
+  {cue:box-aio} AIO schließlich fokussiert auf die Einbindung in KI-Snapshots traditioneller Suchmaschinen 
+  wie Google AI Overviews.
+notes: |
+  - Zeit: 8:00 - 11:00 Min.
+  - Didaktik: 2x2 Matrix klar aufspannen:
+    X-Achse: Klassische Suche vs. Generatives Sprachmodell.
+    Y-Achse: Ziel Klick vs. Ziel Direktsynthese.
+  - Eigene Systematik Dr. Georg Hackenberg (2026).
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="TERMINOLOGIE" slideNumber="05" totalSlides="30">
+  {/**/}
+  {/**/}
+  <BentoBox id="box-seo" x={0} y={40} width={830} height={320} title="SEO: Search Engine Optimization" badge="KLASSISCH" accent="neutral">
+    <div class="text-sm space-y-2 text-slate-700">
+      <p><strong>Zielsystem:</strong> Google Web Search, Bing (10 blaue Links).</p>
+      <p><strong>Mechanismus:</strong> Keywords, Backlink-Autorität, PageSpeed & Core Web Vitals.</p>
+      <p><strong>Nutzerziel:</strong> Klick auf die eigene URL auf den Positionen 1 bis 10.</p>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="box-aeo" x={890} y={40} width={830} height={320} title="AEO: Answer Engine Optimization" badge="POSITION ZERO" accent="teal">
+    <div class="text-sm space-y-2 text-slate-700">
+      <p><strong>Zielsystem:</strong> Google Featured Snippets, Voice Search (Alexa, Siri).</p>
+      <p><strong>Mechanismus:</strong> Q&A-Struktur, Tabellen, Schema.org FAQPage-Markup.</p>
+      <p><strong>Nutzerziel:</strong> Direkte Beantwortung der Suchanfrage in Box 0 über den organischen Links.</p>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="box-geo" x={0} y={400} width={830} height={320} title="GEO: Generative Engine Optimization" badge="LLM ZITATION" accent="blue">
+    <div class="text-sm space-y-2 text-slate-700">
+      <p><strong>Zielsystem:</strong> ChatGPT Search, Perplexity AI, Claude Web Search.</p>
+      <p><strong>Mechanismus:</strong> GraphRAG, Information Gain, Entitäten-Autorität & Primärquellen.</p>
+      <p><strong>Nutzerziel:</strong> Nennung als führende Marke in der generierten synthetischen Antwort.</p>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="box-aio" x={890} y={400} width={830} height={320} title="AIO: AI Overview Optimization" badge="HYBRIDE SUCHE" accent="indigo">
+    <div class="text-sm space-y-2 text-slate-700">
+      <p><strong>Zielsystem:</strong> Google AI Overviews, Microsoft Copilot in Bing.</p>
+      <p><strong>Mechanismus:</strong> Kombination aus klassischem Rank-Graph und LLM-Chunk-Retrieval.</p>
+      <p><strong>Nutzerziel:</strong> Präsenz in den farbigen Quellencups und als Textzitat im Antwortblock.</p>
+    </div>
+  </BentoBox>
+</SlideCanvas>

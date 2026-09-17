@@ -1,0 +1,192 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  badge?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  badge,
+  slideNumber,
+  totalSlides = 30,
+  class: className = ""
+} = Astro.props;
+---
+
+<div class={`slide-canvas-wrapper w-full h-full flex items-center justify-center select-none ${className}`}>
+  <svg
+    viewBox="0 0 1920 1080"
+    class="w-full h-full max-w-full max-h-full block shadow-2xl font-sans"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <!-- Technical dot grid background -->
+      <pattern id="slide-dot-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1.2" class="slide-dot-circle" />
+      </pattern>
+
+      <!-- Soft gradient for subtle highlights -->
+      <linearGradient id="primary-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.12" />
+        <stop offset="100%" stop-color="#0891b2" stop-opacity="0.03" />
+      </linearGradient>
+
+      <!-- Drop shadow filter for bento cards -->
+      <filter id="card-shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+        <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.1" />
+      </filter>
+    </defs>
+
+    <!-- Canvas Background -->
+    <rect width="1920" height="1080" class="slide-canvas-bg" />
+    <rect width="1920" height="1080" fill="url(#slide-dot-grid)" />
+    <rect width="1920" height="1080" fill="url(#primary-glow)" />
+
+    <!-- Top Border Accent Line -->
+    <rect x="0" y="0" width="1920" height="6" fill="#2563eb" />
+
+    <!-- Header Section -->
+    {title && (
+      <g id="slide-header" transform="translate(100, 80)">
+        {badge && (
+          <g transform="translate(0, 0)">
+            <rect
+              x="0"
+              y="0"
+              width={badge.length * 10 + 28}
+              height="28"
+              rx="14"
+              fill="#2563eb"
+              fill-opacity="0.15"
+              stroke="#2563eb"
+              stroke-width="1.5"
+              stroke-opacity="0.4"
+            />
+            <text
+              x={badge.length * 5 + 14}
+              y="18"
+              text-anchor="middle"
+              fill="#3b82f6"
+              font-size="12"
+              font-weight="700"
+              letter-spacing="1.5"
+              font-family="'Outfit', 'Inter', sans-serif"
+            >
+              {badge.toUpperCase()}
+            </text>
+          </g>
+        )}
+
+        <text
+          x="0"
+          y={badge ? 55 : 35}
+          class="slide-title-text"
+          font-size="46"
+          font-weight="800"
+          letter-spacing="-0.02em"
+          font-family="'Outfit', 'Inter', sans-serif"
+        >
+          {title}
+        </text>
+
+        {subtitle && (
+          <text
+            x="0"
+            y={badge ? 95 : 75}
+            class="slide-subtitle-text"
+            font-size="22"
+            font-weight="500"
+            font-family="'Inter', sans-serif"
+          >
+            {subtitle}
+          </text>
+        )}
+      </g>
+    )}
+
+    <!-- Main Content Area -->
+    <g id="slide-content" transform="translate(100, 220)">
+      <slot />
+    </g>
+
+    <!-- Footer Section -->
+    <g id="slide-footer" transform="translate(100, 1030)">
+      <!-- Left: Presenter & Affiliation -->
+      <text x="0" y="0" class="slide-footer-text" font-size="15" font-weight="600" font-family="'Inter', sans-serif">
+        Dr. Georg Hackenberg | Professor für Informatik und Industriesysteme | FH Oberösterreich
+      </text>
+
+      <!-- Center: Domain -->
+      <text x="860" y="0" text-anchor="middle" fill="#3b82f6" font-size="15" font-weight="700" font-family="'Outfit', sans-serif">
+        hackenberg.tech
+      </text>
+
+      <!-- Right: Slide Number -->
+      {slideNumber && (
+        <text x="1720" y="0" text-anchor="end" class="slide-footer-num" font-size="16" font-weight="700" font-family="'Outfit', monospace">
+          {typeof slideNumber === 'number' ? String(slideNumber).padStart(2, '0') : slideNumber} / {totalSlides}
+        </text>
+      )}
+    </g>
+  </svg>
+</div>
+
+<style is:global>
+  .slide-canvas-bg {
+    fill: #090d16;
+    transition: fill 0.3s ease;
+  }
+  html.light .slide-canvas-bg,
+  .light .slide-canvas-bg {
+    fill: #f8fafc !important;
+  }
+
+  .slide-dot-circle {
+    fill: #ffffff;
+    opacity: 0.08;
+  }
+  html.light .slide-dot-circle,
+  .light .slide-dot-circle {
+    fill: #cbd5e1 !important;
+    opacity: 0.45 !important;
+  }
+
+  .slide-title-text {
+    fill: #f8fafc;
+    transition: fill 0.3s ease;
+  }
+  html.light .slide-title-text,
+  .light .slide-title-text {
+    fill: #0f172a !important;
+  }
+
+  .slide-subtitle-text {
+    fill: #94a3b8;
+    transition: fill 0.3s ease;
+  }
+  html.light .slide-subtitle-text,
+  .light .slide-subtitle-text {
+    fill: #475569 !important;
+  }
+
+  .slide-footer-text {
+    fill: #64748b;
+  }
+  html.light .slide-footer-text,
+  .light .slide-footer-text {
+    fill: #64748b !important;
+  }
+
+  .slide-footer-num {
+    fill: #64748b;
+  }
+  html.light .slide-footer-num,
+  .light .slide-footer-num {
+    fill: #94a3b8 !important;
+  }
+</style>

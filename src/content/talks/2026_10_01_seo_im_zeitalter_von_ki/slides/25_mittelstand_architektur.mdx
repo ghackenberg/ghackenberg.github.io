@@ -1,0 +1,55 @@
+---
+title: "Architektur für den Mittelstand (OÖ Fokus)"
+subtitle: "Die Zwei-Geschwindigkeiten-Architektur: TYPO3, WordPress & SAP ERP behalten – blitzschnellen Astro-Edge-Layer vorschalten"
+number: "25"
+slideLayout: "graph"
+voiceover: >
+  Jetzt zur entscheidenden Frage für unsere Unternehmen im Traunviertel: Müssen Sie Ihr bestehendes 
+  TYPO3, WordPress oder SAP-System für ein Vermögen wegwerfen? 
+  {cue:arch-layer-3} Die klare Antwort lautet: Nein! Wir etablieren die Zwei-Geschwindigkeiten-Architektur. 
+  {cue:arch-layer-2} Ihr stabiles Kernsystem bleibt als System of Record im Hintergrund bestehen. 
+  {cue:arch-layer-1} Davor schalten wir eine extrem schlanke, blitzschnelle Semantik- und Edge-Schicht mit Astro. 
+  Diese Schicht zieht sich Produktdaten per API, reichert sie mit Schema.org-Wissensgraphen an und liefert sie 
+  in 300 Millisekunden an KI-Crawler aus. Maximale Zukunftssicherheit bei minimalem Budget!
+notes: |
+  - Zeit: 56:30 - 59:00 Min.
+  - Das ist die wichtigste Entlastungs-Folie für IT-Leiter im Raum: Kein Relaunch-Albtraum nötig!
+  - IT-Cluster Oberösterreich Referenzarchitektur.
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="KMU-PRAXIS" slideNumber="25" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "arch-layer-3",
+        num: "01",
+        title: "System of Record (Backend)",
+        desc: "Bestehende Unternehmenssysteme bleiben unangetastet: TYPO3, WordPress, Pimcore, SAP ERP oder Microsoft Dynamics.",
+        badge: "STABILITÄT",
+        accent: "neutral"
+      },
+      {
+        id: "arch-layer-2",
+        num: "02",
+        title: "Semantischer Graph-Layer",
+        desc: "Schlanke Headless API aggregiert Produkte, Normen und Referenten. Generiert automatisch den Schema.org @graph.",
+        badge: "INTEGRATION",
+        accent: "teal"
+      },
+      {
+        id: "arch-layer-1",
+        num: "03",
+        title: "Astro Edge Layer (Frontend)",
+        desc: "Hochoptimierte, statische Auslieferung an CDN-Knoten. Ladezeit < 0.5s für GPTBot, Google-Extended und mobile Nutzer.",
+        badge: "PERFORMANCE",
+        accent: "blue"
+      }
+    ]}
+  />
+</SlideCanvas>

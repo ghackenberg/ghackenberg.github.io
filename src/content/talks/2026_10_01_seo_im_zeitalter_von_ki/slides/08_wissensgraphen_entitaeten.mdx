@@ -1,0 +1,64 @@
+---
+title: "Wissensgraphen & Entitäten"
+subtitle: "Warum unstrukturierte Vektoren für komplexe Abfragen versagen und Relationen entscheiden"
+number: "08"
+slideLayout: "graph"
+voiceover: >
+  Reine Vektoren haben eine gravierende Schwachstelle: Sie verstehen keine logischen Beziehungen. 
+  {cue:graph-area} Hier kommen Wissensgraphen ins Spiel. Entitäten wie Unternehmen, Personen, Produkte 
+  und Industriestandards werden als eindeutige Knoten modelliert. 
+  {cue:edge-01} Über gerichtete Kanten – wie 'entwickelt' oder 'zertifiziert nach' – weiß das Sprachmodell 
+  zweifelsfrei, dass ein bestimmtes Produkt von Ihrem Unternehmen stammt und welchen Normen es genügt.
+notes: |
+  - Zeit: 15:30 - 18:00 Min.
+  - Google Knowledge Graph Architektur zitieren (Singhal 2012).
+  - Praxisbezug: Wenn eine KI nach "Lieferant für ISO 9001 zertifizierte Wechselrichter in OÖ" gefragt wird, hilft kein Keyword – das Modell traversiert den Wissensgraphen!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import GraphNode from '../../../../components/slides/primitives/GraphNode.astro';
+import GraphEdge from '../../../../components/slides/primitives/GraphEdge.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="ENTITÄTEN-MODELL" slideNumber="08" totalSlides="30">
+  {/**/}
+  <g id="graph-area" transform="translate(0, 40)">
+    <rect width={880} height={680} rx={16} fill="#ffffff" fill-opacity="0.9" stroke="#e2e8f0" stroke-width="1.5" />
+
+    <GraphEdge id="edge-01" from={{x: 220, y: 340}} to={{x: 640, y: 180}} label="entwickelt" animated />
+    <GraphEdge id="edge-02" from={{x: 640, y: 180}} to={{x: 640, y: 500}} label="zertifiziert nach" animated />
+    <GraphEdge id="edge-03" from={{x: 220, y: 340}} to={{x: 220, y: 550}} label="Standort in" />
+    <GraphEdge id="edge-04" from={{x: 220, y: 550}} to={{x: 640, y: 500}} label="reguliert durch" curve="curved" />
+
+    <GraphNode id="node-org" x={220} y={340} label="Fronius International" type="Organization" color="blue" />
+    <GraphNode id="node-prod" x={640} y={180} label="Symo GEN24 Plus" type="Product" color="teal" />
+    <GraphNode id="node-std" x={640} y={500} label="VDE-AR-N 4105" type="Standard" color="indigo" />
+    <GraphNode id="node-loc" x={220} y={550} label="Pettenbach (Traunviertel)" type="Place" color="amber" />
+  </g>
+
+  {/**/}
+  <BentoBox id="bento-graph-benefits" x={920} y={40} width={800} height={680} title="Der Vorteil deterministischer Graphen" badge="VERIFIKATION" accent="blue">
+    <div class="space-y-6">
+      <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-100">
+        <h4 class="font-bold text-blue-950 text-base mb-1">Subjekt – Prädikat – Objekt</h4>
+        <p class="text-blue-900 text-sm">
+          [Unternehmen X] --(produziert)--> [Produkt Y] --(Norm)--> [ISO 9001]
+        </p>
+      </div>
+
+      <ul class="space-y-4 text-slate-700 text-base">
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">1</span>
+          <span><strong>Keine Halluzinationen:</strong> Relationen sind im Graphen eindeutig verankert. Das Modell muss keine Zusammenhänge raten.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">2</span>
+          <span><strong>Eindeutige URIs (@id):</strong> Verhindert Verwechslungen gleichnamiger Marken und Produkte.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">3</span>
+          <span><strong>Multi-Hop Reasoning:</strong> Ermöglicht der KI komplexe Schlussfolgerungen über mehrere Beziehungsebenen hinweg.</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+</SlideCanvas>

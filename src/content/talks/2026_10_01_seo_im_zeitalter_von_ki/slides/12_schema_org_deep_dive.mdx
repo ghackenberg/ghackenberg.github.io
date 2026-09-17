@@ -1,0 +1,78 @@
+---
+title: "Deep-Dive: Schema.org im Detail"
+subtitle: "Die verbindliche Lingua Franca zwischen Unternehmenswebsite und LLM-Webcrawlern"
+number: "12"
+slideLayout: "split"
+voiceover: >
+  Schema.org ist die Lingua Franca für KI-Suchmaschinen. 
+  {cue:col-schema-types} Für den B2B-Bereich sind fünf Typen unverzichtbar: Organization für Ihr Unternehmen, 
+  Person für Ihre Experten, Product für Ihre Maschinen, TechArticle für Fachbeiträge und FAQPage für Q&A. 
+  {cue:col-schema-id} Der wichtigste Schlüssel lautet @id: Er fungiert als globale, eindeutige URI. 
+  Damit weiß Perplexity oder Google zweifelsfrei, dass ein bestimmter Fachartikel von einem verifizierten 
+  Ingenieur Ihres Unternehmens stammt.
+notes: |
+  - Zeit: 25:30 - 28:00 Min.
+  - W3C Semantic Web Standards & Schema.org Community Group zitieren.
+  - Den Unterschied erklären: Schema.org ist nicht nur Rich Snippets für Sterne in Google, sondern der Wissensgraph-Parser für LLMs!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="STRUKTURIERTE DATEN" slideNumber="12" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-schema-types" x={0} y={40} width={820} height={680} title="Die 5 B2B-Kern-Entitätstypen" badge="TAXONOMIE" accent="blue">
+    <div class="space-y-4">
+      <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200">
+        <strong class="text-blue-900 font-mono text-sm block">1. Organization</strong>
+        <p class="text-xs text-slate-600">Rechtlicher Name, Logo, selbe Identität wie Wikidata/LinkedIn (sameAs), Gründungsort und Standorte.</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-cyan-50/70 border border-cyan-200">
+        <strong class="text-cyan-900 font-mono text-sm block">2. Person</strong>
+        <p class="text-xs text-slate-600">Geschäftsführung, Lead-Ingenieure, Autoren. Verknüpfung mit ORCID, ResearchGate und Patenten.</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200">
+        <strong class="text-indigo-900 font-mono text-sm block">3. Product</strong>
+        <p class="text-xs text-slate-600">Industrieprodukte mit GTIN, MPN, ISO-Zertifikaten, Betriebsdaten und PDF-Datenblättern.</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+        <strong class="text-emerald-900 font-mono text-sm block">4. TechArticle</strong>
+        <p class="text-xs text-slate-600">Fachbeiträge mit deklariertem Autor (Person) und Herausgeber (Organization).</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-slate-100 border border-slate-200">
+        <strong class="text-slate-900 font-mono text-sm block">5. FAQPage</strong>
+        <p class="text-xs text-slate-600">Direktes Frage-Antwort-Paar. Wird von LLMs mit höchster Priorität für Zitations-Snippets herangezogen.</p>
+      </div>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-schema-id" x={900} y={40} width={820} height={680} title="Das @id-Prinzip: Eindeutige URIs" badge="BEST PRACTICE" accent="indigo">
+    <div class="space-y-6">
+      <div class="p-5 rounded-xl bg-indigo-50 border border-indigo-200 font-mono text-xs text-indigo-950 space-y-2">
+        <p class="text-indigo-600 font-bold">// Canonical Entity URI</p>
+        <p>https://firma.at/#organization</p>
+        <p>https://firma.at/team/dr-mueller/#author</p>
+        <p>https://firma.at/produkte/serie-x/#product</p>
+      </div>
+
+      <div class="space-y-4 text-slate-700 text-base">
+        <div class="flex items-start gap-3">
+          <span class="text-indigo-600 font-bold text-lg">●</span>
+          <span><strong>Keine Entitäts-Duplikate:</strong> Verhindert, dass die KI zehn Varianten desselben Unternehmens erfindet.</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-indigo-600 font-bold text-lg">●</span>
+          <span><strong>Vernetzter @graph:</strong> Alle Entitäten einer Website bilden einen geschlossenen, logischen Graphen.</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-indigo-600 font-bold text-lg">●</span>
+          <span><strong>Plattformübergreifende Co-Referenzierung:</strong> Ermöglicht Modellen den Abgleich zwischen Website, Wikipedia und Patentregistern.</span>
+        </div>
+      </div>
+    </div>
+  </BentoBox>
+</SlideCanvas>

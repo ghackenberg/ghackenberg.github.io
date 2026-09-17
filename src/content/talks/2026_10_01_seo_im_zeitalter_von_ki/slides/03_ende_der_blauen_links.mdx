@@ -1,0 +1,81 @@
+---
+title: "Das Ende der 10 blauen Links"
+subtitle: "Der fundamentale Bruch mit 25 Jahren Suchmaschinengeschichte"
+number: "03"
+slideLayout: "split"
+voiceover: >
+  Über ein Vierteljahrhundert funktionierte die Websuche nach einem einfachen Prinzip: 
+  {cue:col-classic} Der Nutzer gibt Suchbegriffe ein, und die Suchmaschine liefert zehn blaue Hyperlinks. 
+  Wer Informationen wollte, musste auf externe Dokumente klicken. 
+  {cue:col-modern} Heute erleben wir einen radikalen Bruch: Generative Antwortsysteme listen nicht mehr 
+  nur Dokumente auf – sie lesen sie, vergleichen Aussagen und synthetisieren eine maßgeschneiderte 
+  Antwort direkt im Antwortfenster.
+notes: |
+  - Zeit: 4:00 - 6:00 Min.
+  - Historischen Kontrast herausarbeiten: Google (1998-2023) war ein "Dokumenten-Finder". Google & ChatGPT (2024+) sind "Wissens-Synthesizer".
+  - Referenzen: Google Search Evolution Whitepapers, Gartner Research (2024/2025).
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="PARADIGMENWECHSEL" slideNumber="03" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-classic" x={0} y={40} width={820} height={680} title="Klassischer Web-Index (1998–2023)" badge="DOKUMENTEN-RETRIEVAL" accent="neutral">
+    <div class="space-y-6">
+      <div class="p-5 rounded-xl bg-slate-100 border border-slate-200 font-mono text-sm text-slate-600">
+        <span class="text-blue-600 underline">https://example.com/industriepumpen</span><br />
+        <strong class="text-blue-800 text-base">Hocheffiziente Industriepumpen für B2B</strong><br />
+        Entdecken Sie unsere energieeffizienten Pumpensysteme für die chemische Industrie...
+      </div>
+
+      <ul class="space-y-4 text-slate-700 text-lg">
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0">1</span>
+          <span><strong>Keyword-Matching:</strong> Abgleich exakter Zeichenketten im Web-Index.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0">2</span>
+          <span><strong>Hyperlink-Weiterleitung:</strong> Der Nutzer muss die Website besuchen, um die Antwort zu finden.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+          <span><strong>Monetarisierung via Traffic:</strong> Webseiten lebten von reinen Klickzahlen.</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-modern" x={900} y={40} width={820} height={680} title="Synthese-Maschine (2024+)" badge="MULTIMODALE SYNTHESE" accent="blue">
+    <div class="space-y-6">
+      <div class="p-5 rounded-xl bg-blue-50 border border-blue-200 text-sm text-slate-800 space-y-2">
+        <div class="flex items-center gap-2 text-blue-700 font-bold text-xs uppercase tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+          AI Overview (Google / Perplexity / ChatGPT)
+        </div>
+        <p class="text-slate-700 leading-relaxed">
+          Für chemische Anlagen im B2B-Einsatz eignen sich Magnetkupplungspumpen nach ISO 2858. Führende europäische Hersteller bieten Wirkungsgrade über 82 % mit integrierter Schwingungssensorik...
+        </p>
+        <div class="flex gap-2 pt-2 text-xs font-bold">
+          <span class="px-2.5 py-1 rounded bg-white text-blue-700 border border-blue-200 shadow-xs">[Quelle: Hersteller A]</span>
+          <span class="px-2.5 py-1 rounded bg-white text-blue-700 border border-blue-200 shadow-xs">[Norm: ISO 2858]</span>
+        </div>
+      </div>
+
+      <ul class="space-y-4 text-slate-700 text-lg">
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+          <span><strong>Semantisches Verständnis:</strong> Sprachmodelle erfassen den Kontext hinter der Frage.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+          <span><strong>Direkte Beantwortung:</strong> Keine Klicks notwendig – Information wird sofort serviert.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+          <span><strong>Zitation entscheidet:</strong> Relevanz entsteht durch Nennung und Quellen-Verankerung.</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+</SlideCanvas>

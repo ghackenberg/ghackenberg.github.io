@@ -1,0 +1,73 @@
+---
+title: "Information Gain & Content-Design"
+subtitle: "Google Patent US 10,642,919 B2: Warum die Kernaussage in die ersten 50 Wörter gehört (BLUF-Prinzip)"
+number: "15"
+slideLayout: "split"
+voiceover: >
+  Wie muss Content für KI-Crawler aufgebaut sein? Google hat dafür ein entscheidendes Patent angemeldet: 
+  den Information Gain Score. 
+  {cue:col-bad-content} Wer den Leser mit langatmigen Einleitungen quält, wird abgewertet. 
+  {cue:col-bluf-content} Das Erfolgsprinzip heißt BLUF: Bottom Line Up Front. Die präzise Antwort gehört in 
+  die ersten vierzig bis fünfzig Wörter direkt unter die Überschrift. Dahinter folgen dichte Vergleichstabellen 
+  und echte Messwerte. Nur was neues, unersetzliches Wissen liefert, wird von der KI zitiert.
+notes: |
+  - Zeit: 33:30 - 36:00 Min.
+  - US Patent 10,642,919 B2 zitieren (Google LLC, Contextual Estimation of Information Gain).
+  - Redaktions-Leitfaden vorstellen: Kein "In diesem Artikel erfahren Sie...", sondern sofort die Antwort!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="CONTENT-ARCHITEKTUR" slideNumber="15" totalSlides="30">
+  {/**/}
+  <BentoBox id="col-bad-content" x={0} y={40} width={820} height={680} title="Klassischer SEO-Fülltext (Abstrafung)" badge="LOW INFORMATION GAIN" accent="neutral">
+    <div class="space-y-6">
+      <div class="p-5 rounded-xl bg-rose-50/60 border border-rose-200 text-sm text-slate-700 space-y-2">
+        <p class="italic text-rose-900">
+          „In der heutigen modernen Welt wird Energieeffizienz für Unternehmen immer wichtiger. Viele fragen sich daher, was eine Industriepumpe ist und worauf man achten sollte. In diesem Beitrag beleuchten wir ausführlich...“
+        </p>
+      </div>
+
+      <ul class="space-y-3 text-slate-600 text-sm">
+        <li class="flex items-start gap-2">
+          <span class="text-rose-500 font-bold">✗</span>
+          <span>Floskelhafte Einleitung ohne neue Information für das Modell.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-rose-500 font-bold">✗</span>
+          <span>Wichtigste Kennzahlen erst am Ende der Seite versteckt.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-rose-500 font-bold">✗</span>
+          <span>Chunker extrahiert irrelevante Füllsätze in das Context Window.</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+
+  {/**/}
+  <BentoBox id="col-bluf-content" x={900} y={40} width={820} height={680} title="BLUF-Prinzip: Bottom Line Up Front" badge="HIGH INFORMATION GAIN" accent="blue">
+    <div class="space-y-6">
+      <div class="p-5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-sm text-slate-800 space-y-2">
+        <p class="font-medium text-emerald-950">
+          <strong>Direktantwort (45 Wörter):</strong> Magnetkupplungspumpen der Serie X erreichen bei 2.900 U/min einen Wirkungsgrad von 84,2 % und sparen gegenüber herkömmlichen Stopfbuchspumpen bis zu 14,8 kWh pro Betriebstag ein. Sie sind nach ATEX Zone 1 für explosive Medien zertifiziert.
+        </p>
+      </div>
+
+      <ul class="space-y-3 text-slate-700 text-sm">
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-600 font-bold">✓</span>
+          <span><strong>Antwort in den ersten 50 Wörtern:</strong> Perfekt als Zitationsblock für Perplexity & Gemini.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-600 font-bold">✓</span>
+          <span><strong>Proprietäre Messwerte:</strong> Konkrete Kilowattstunden, Wirkungsgrade und Normen.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-600 font-bold">✓</span>
+          <span><strong>Strukturierte Tabellen:</strong> LLMs lieben Markdown- und HTML-Tabellen zur Vergleichbarkeit.</span>
+        </li>
+      </ul>
+    </div>
+  </BentoBox>
+</SlideCanvas>

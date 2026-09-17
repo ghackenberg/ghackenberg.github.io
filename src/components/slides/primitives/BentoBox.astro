@@ -1,0 +1,76 @@
+---
+interface Props {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  id?: string;
+  title?: string;
+  badge?: string;
+  accent?: 'blue' | 'teal' | 'indigo' | 'green' | 'amber' | 'neutral';
+  class?: string;
+}
+
+const {
+  x,
+  y,
+  width,
+  height,
+  id,
+  title,
+  badge,
+  accent = 'neutral',
+  class: className = ""
+} = Astro.props;
+
+const borderStyles = {
+  blue: 'border-blue-900/60 bg-blue-950/40 text-blue-100 light:border-blue-200 light:bg-blue-50/70 light:text-blue-950',
+  teal: 'border-cyan-900/60 bg-cyan-950/40 text-cyan-100 light:border-cyan-200 light:bg-cyan-50/70 light:text-cyan-950',
+  indigo: 'border-indigo-900/60 bg-indigo-950/40 text-indigo-100 light:border-indigo-200 light:bg-indigo-50/70 light:text-indigo-950',
+  green: 'border-emerald-900/60 bg-emerald-950/40 text-emerald-100 light:border-emerald-200 light:bg-emerald-50/70 light:text-emerald-950',
+  amber: 'border-amber-900/60 bg-amber-950/40 text-amber-100 light:border-amber-200 light:bg-amber-50/70 light:text-amber-950',
+  neutral: 'border-slate-800/90 bg-slate-900/90 text-slate-100 light:border-slate-200/90 light:bg-white/95 light:text-slate-900'
+};
+
+const badgeStyles = {
+  blue: 'bg-blue-950 text-blue-300 border-blue-800/60 light:bg-blue-100 light:text-blue-700 light:border-blue-200',
+  teal: 'bg-cyan-950 text-cyan-300 border-cyan-800/60 light:bg-cyan-100 light:text-cyan-700 light:border-cyan-200',
+  indigo: 'bg-indigo-950 text-indigo-300 border-indigo-800/60 light:bg-indigo-100 light:text-indigo-700 light:border-indigo-200',
+  green: 'bg-emerald-950 text-emerald-300 border-emerald-800/60 light:bg-emerald-100 light:text-emerald-700 light:border-emerald-200',
+  amber: 'bg-amber-950 text-amber-300 border-amber-800/60 light:bg-amber-100 light:text-amber-700 light:border-amber-200',
+  neutral: 'bg-slate-800 text-slate-300 border-slate-700 light:bg-slate-100 light:text-slate-600 light:border-slate-200'
+};
+---
+
+<foreignObject
+  id={id}
+  x={x}
+  y={y}
+  width={width}
+  height={height}
+  class={`bento-card-object overflow-visible ${className}`}
+>
+  <div
+    class={`w-full h-full p-8 rounded-2xl border shadow-sm flex flex-col justify-between backdrop-blur-xs transition-all duration-300 ${borderStyles[accent]}`}
+    style="box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);"
+  >
+    {(title || badge) && (
+      <div class="flex items-center justify-between gap-4 mb-4 border-b border-slate-800/70 light:border-slate-100 pb-3">
+        {title && (
+          <h3 class="text-2xl font-bold text-slate-100 light:text-slate-900 tracking-tight font-sans">
+            {title}
+          </h3>
+        )}
+        {badge && (
+          <span class={`text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-full border ${badgeStyles[accent]}`}>
+            {badge}
+          </span>
+        )}
+      </div>
+    )}
+
+    <div class="flex-1 flex flex-col justify-center text-slate-300 light:text-slate-600 text-lg leading-relaxed">
+      <slot />
+    </div>
+  </div>
+</foreignObject>

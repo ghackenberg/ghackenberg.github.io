@@ -1,0 +1,108 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import { getCollection } from "astro:content";
+
+const talks = (await getCollection("talks")).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Talks & Keynotes",
+      "item": "https://hackenberg.tech/talks/"
+    }
+  ]
+};
+---
+
+<Layout
+  title="Talks & Keynotes | Dr. Georg Hackenberg"
+  description="Fachvorträge, Keynotes und Präsentationen von Dr. Georg Hackenberg zu KI, Wissensgraphen, Software-Architektur und industrieller Digitalisierung."
+  jsonLd={breadcrumbSchema}
+  lang="de"
+>
+  <Navbar />
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Header Section -->
+    <header class="mb-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-brand-blue text-xs font-bold uppercase tracking-wider mb-4">
+        Öffentliche Vorträge & Keynotes
+      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-slate-100 tracking-tight mb-4 font-sans">
+        Fachvorträge & Präsentationen
+      </h1>
+      <p class="text-lg text-slate-400 max-w-3xl leading-relaxed">
+        Interaktive Präsentationen mit synchronisiertem KI-Voice-Over, Vektor-Foliensätzen und voll ausformulierten Transkripten für Industrie, Wirtschaft und Wissenschaft.
+      </p>
+    </header>
+
+    <!-- Talks Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {talks.map((talk) => (
+        <a
+          href={`/talks/${talk.id}/`}
+          class="group block p-8 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-900/90 transition-all duration-300 shadow-lg hover:shadow-blue-500/5 flex flex-col justify-between"
+        >
+          <div>
+            <!-- Top Badges -->
+            <div class="flex items-center justify-between gap-4 mb-4 text-xs">
+              <span class="px-3 py-1 rounded-full bg-blue-600/20 text-blue-400 border border-blue-500/30 font-bold uppercase tracking-wide">
+                {talk.data.event}
+              </span>
+              <time datetime={talk.data.pubDate.toISOString()} class="text-slate-400 font-mono">
+                {talk.data.pubDate.toLocaleDateString("de-AT", { year: "numeric", month: "long", day: "numeric" })}
+              </time>
+            </div>
+
+            <!-- Title & Subtitle -->
+            <h2 class="text-2xl font-bold text-slate-100 group-hover:text-blue-400 transition-colors mb-2 font-sans tracking-tight">
+              {talk.data.title}
+            </h2>
+            {talk.data.subtitle && (
+              <p class="text-sm font-medium text-slate-300 mb-4">
+                {talk.data.subtitle}
+              </p>
+            )}
+
+            <!-- Description -->
+            {talk.data.description && (
+              <p class="text-slate-400 text-sm leading-relaxed mb-6 line-clamp-3">
+                {talk.data.description}
+              </p>
+            )}
+          </div>
+
+          <!-- Bottom: Location & CTA -->
+          <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+            {talk.data.location && (
+              <span class="flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 116 0z" />
+                </svg>
+                {talk.data.location}
+              </span>
+            )}
+
+            <span class="inline-flex items-center gap-1 text-blue-400 font-bold group-hover:translate-x-1 transition-transform">
+              Vortrag ansehen & anhören →
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>

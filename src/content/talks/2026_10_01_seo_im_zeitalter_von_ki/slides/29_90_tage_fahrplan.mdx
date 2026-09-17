@@ -1,0 +1,55 @@
+---
+title: "Der 90-Tage-Fahrplan für Unternehmen"
+subtitle: "In drei aufeinander aufbauenden Phasen zur zukunftssicheren GEO-Architektur im Mittelstand"
+number: "29"
+slideLayout: "pipeline"
+voiceover: >
+  Wie starten Sie ab morgen? Ich empfehle einen dreistufigen 90-Tage-Fahrplan: 
+  {cue:phase-30} Tage eins bis dreißig: Audit und Baseline. Messen Sie Ihren aktuellen Share of Model mit einem 
+  Panel aus 50 Prompts und prüfen Sie Ihre Schema.org-Validität. 
+  {cue:phase-60} Tage einunddreißig bis sechzig: Struktur und Content. Verknüpfen Sie E-E-A-T-Autorenprofile, 
+  bauen Sie BLUF-Antwortmodule auf Ihren wichtigsten Produktseiten und testen Sie lokale MCP-Agenten. 
+  {cue:phase-90} Tage einundsechzig bis neunzig: Closed-Loop und Skalierung. Etablieren Sie die Zwei-Geschwindigkeiten-Architektur 
+  und verknüpfen Sie das Zitations-Monitoring direkt mit Ihrer Lead-Pipeline im CRM.
+notes: |
+  - Zeit: 66:00 - 68:00 Min.
+  - Praxis-Roadmap für die Industrie in OÖ.
+  - Den Zuhörern ein klares Gefühl der Machbarkeit mitgeben: Schritt für Schritt!
+---
+import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="UMSETZUNGS-ROADMAP" slideNumber="29" totalSlides="30">
+  <Pipeline
+    x={0}
+    y={60}
+    width={1720}
+    height={620}
+    steps={[
+      {
+        id: "phase-30",
+        num: "01",
+        title: "Tage 1–30: Audit & Baseline",
+        desc: "Share of Model mit 50 Kern-Prompts ermitteln. Schema.org-Validierung durchführen. Wettbewerber-Zitationen erfassen.",
+        badge: "STATUS QUO",
+        accent: "blue"
+      },
+      {
+        id: "phase-60",
+        num: "02",
+        title: "Tage 31–60: Struktur & Content",
+        desc: "Autorenprofile mit Wikidata/ORCID verknüpfen. Top-10-Produktseiten nach dem BLUF-Prinzip überarbeiten. MCP-Dev-Agenten testen.",
+        badge: "TRANSFORMATION",
+        accent: "teal"
+      },
+      {
+        id: "phase-90",
+        num: "03",
+        title: "Tage 61–90: Scale & Closed-Loop",
+        desc: "Zwei-Geschwindigkeiten-Edge-Layer aufsetzen. Zitations-Monitoring etablieren und CRM-Lead-Attribution automatisieren.",
+        badge: "SKALIERUNG",
+        accent: "green"
+      }
+    ]}
+  />
+</SlideCanvas>

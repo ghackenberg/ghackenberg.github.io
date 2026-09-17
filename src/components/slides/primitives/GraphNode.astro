@@ -1,0 +1,81 @@
+---
+interface Props {
+  x: number;
+  y: number;
+  label: string;
+  type?: string;
+  color?: 'blue' | 'teal' | 'indigo' | 'green' | 'amber';
+  id?: string;
+  radius?: number;
+  class?: string;
+}
+
+const {
+  x,
+  y,
+  label,
+  type,
+  color = 'blue',
+  id,
+  radius = 65,
+  class: className = ""
+} = Astro.props;
+
+const colorSchemes = {
+  blue: { fill: '#eff6ff', stroke: '#2563eb', text: '#1e40af', pill: '#3b82f6' },
+  teal: { fill: '#ecfeff', stroke: '#0891b2', text: '#155e75', pill: '#06b6d4' },
+  indigo: { fill: '#eef2ff', stroke: '#4f46e5', text: '#3730a3', pill: '#6366f1' },
+  green: { fill: '#f0fdf4', stroke: '#059669', text: '#166534', pill: '#10b981' },
+  amber: { fill: '#fffbeb', stroke: '#d97706', text: '#92400e', pill: '#f59e0b' }
+};
+
+const scheme = colorSchemes[color];
+---
+
+<g id={id} class={`graph-node transition-transform duration-300 ${className}`} transform={`translate(${x}, ${y})`}>
+  <!-- Outer glowing border -->
+  <circle
+    r={radius}
+    fill={scheme.fill}
+    stroke={scheme.stroke}
+    stroke-width="3"
+    filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))"
+  />
+
+  <!-- Type Badge (optional top pill) -->
+  {type && (
+    <g transform={`translate(0, -${radius - 12})`}>
+      <rect
+        x={-(type.length * 4.5 + 10)}
+        y="-10"
+        width={type.length * 9 + 20}
+        height="20"
+        rx="10"
+        fill={scheme.stroke}
+      />
+      <text
+        y="4"
+        text-anchor="middle"
+        fill="#ffffff"
+        font-size="11"
+        font-weight="700"
+        letter-spacing="0.5"
+        font-family="'Outfit', sans-serif"
+      >
+        {type.toUpperCase()}
+      </text>
+    </g>
+  )}
+
+  <!-- Node Label -->
+  <text
+    y={type ? "8" : "6"}
+    text-anchor="middle"
+    fill={scheme.text}
+    font-size="16"
+    font-weight="700"
+    font-family="'Outfit', sans-serif"
+  >
+    {label}
+  </text>
+</g>
