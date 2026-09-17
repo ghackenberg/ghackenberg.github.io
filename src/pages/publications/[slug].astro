@@ -1,6 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
+import RelatedContent from "../../components/RelatedContent.astro";
+import GetInTouchCard from "../../components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -13,18 +15,6 @@ export async function getStaticPaths() {
 
 const { pub } = Astro.props;
 const { Content } = await render(pub);
-
-// Get related publications
-const allPubs = await getCollection("publications");
-const relatedPubs = allPubs
-  .filter((p) => p.id !== pub.id)
-  .map((p) => {
-    const commonTags = p.data.tags.filter((t) => pub.data.tags.includes(t)).length;
-    return { pub: p, commonTags };
-  })
-  .sort((a, b) => b.commonTags - a.commonTags || b.pub.id.localeCompare(a.pub.id))
-  .slice(0, 3)
-  .map((x) => x.pub);
 
 // Format slides URL
 let slidesUrl = pub.data.slides;
@@ -241,35 +231,24 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         </section>
       )}
 
+      <!-- Contact Section -->
+      <GetInTouchCard
+        sectionHeading="Start a Conversation"
+        sectionDescription="Interested in collaborative research, citations, or discussing empirical findings and methodology? Feel free to reach out directly via email."
+        cardHeading="Research & Academic Inquiry"
+        emailSubject={`Research Inquiry: ${pub.data.title}`}
+        accentColor="purple"
+        primaryButtonText="Open Email Client"
+      />
     </div>
-
-    <!-- Related Publications -->
-    {relatedPubs.length > 0 && (
-      <section class="border-t border-element-border pt-16">
-        <h2 class="text-2xl font-bold text-gray-100 mb-8 tracking-tight">
-          You might also be interested in
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {relatedPubs.map(p => (
-            <a href={`/publications/${p.id}/`} class="glass-card p-5 rounded-2xl border border-element-border group flex flex-col h-full justify-between">
-              <div>
-                <span class="text-[10px] font-semibold text-brand-purple/80 block mb-2">
-                  {p.id.substring(0, 4)}
-                </span>
-                <h3 class="text-sm font-bold text-gray-100 group-hover:text-brand-purple transition-colors line-clamp-3 mb-2 leading-snug">
-                  {p.data.title}
-                </h3>
-              </div>
-              <span class="text-xs font-semibold text-brand-purple/80 mt-4 flex items-center space-x-1 group-hover:translate-x-1 transition-transform">
-                <span>View publication</span>
-                <span>&rarr;</span>
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
-    )}
   </main>
+
+  <!-- Standardized Related Content (Edge-to-Edge) -->
+  <RelatedContent 
+    currentCollection="publications" 
+    currentId={pub.id} 
+    tags={pub.data.tags} 
+  />
 </Layout>
 
 <script>

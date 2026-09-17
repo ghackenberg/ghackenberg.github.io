@@ -9,7 +9,7 @@ interface Props {
   pubDate: Date;
   icon?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags: string[];
-  activeTag?: string;
+  activeTag?: string | string[];
   featured?: boolean;
 }
 
@@ -23,6 +23,8 @@ const {
   activeTag,
   featured = false
 } = Astro.props;
+
+const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 
 const isCoverObj = Boolean(icon && typeof icon === 'object' && 'src' in icon && icon.src);
 const iconImg = isCoverObj ? (icon as { src: ImageMetadata }).src : (icon as ImageMetadata | undefined);
@@ -132,7 +134,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
             href={`/tags/${tag}/`}
             data-tag={tag}
             class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
-              tag === activeTag ? 'active-tag-match' : ''
+              isTagActive(tag) ? 'active-tag-match' : ''
             }`}
           >
             #{tag}

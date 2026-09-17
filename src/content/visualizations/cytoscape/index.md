@@ -5,8 +5,11 @@ screenshot:
   src: "./cytoscape.png"
   title: "Cytoscape Force-Directed Network"
   description: "Planar 2D network diagram displaying centered data hubs and colored interconnects on a dark slate background"
-colorClass: "hover:border-brand-blue/30 text-brand-blue bg-brand-blue/10 border-brand-blue/20"
-badgeColor: "bg-brand-blue/10 text-brand-blue border-brand-blue/20"
+tags:
+  - cytoscape
+  - data-visualization
+  - javascript
+  - web-development
 ---
 
 ## What Characterizes the Cytoscape.js Visualization?

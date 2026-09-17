@@ -1,6 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
+import RelatedContent from "../../components/RelatedContent.astro";
+import GetInTouchCard from "../../components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
@@ -14,19 +16,18 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const tocHeadings = (headings || []).filter((h) => h.depth === 2 || h.depth === 3);
 
-// Get related posts
-const allPosts = await getCollection("posts");
-const relatedPosts = allPosts
-  .filter((p) => p.id !== post.id)
-  .map((p) => {
-    const commonTags = p.data.tags.filter((t) => post.data.tags.includes(t)).length;
-    return { post: p, commonTags };
-  })
-  .sort((a, b) => b.commonTags - a.commonTags || b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf())
-  .slice(0, 3)
-  .map((x) => x.post);
+const ui = {
+  back: "Back to Posts",
+  keyTakeaways: "Key Takeaways / Executive Summary",
+  tocTitle: "Table of Contents",
+  discussionHeading: "Questions, feedback, or discussion?",
+  discussionText: "Want to discuss this topic or have feedback on this article? Feel free to reach out directly or connect on LinkedIn.",
+  contactBtn: "Send message",
+  linkedInBtn: "Connect on LinkedIn",
+};
 
 const seoDescription = post.data.description 
   ? post.data.description.replace(/\s+/g, " ").trim().substring(0, 156)
@@ -132,7 +133,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
-      <span>Back to Posts</span>
+      <span>{ui.back}</span>
     </a>
 
     <!-- Post Header -->
@@ -164,10 +165,10 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
     </header>
 
     {post.data.description && (
-      <aside class="mb-10 p-6 rounded-2xl bg-brand-blue/5 light:bg-blue-50/80 border border-brand-blue/20 light:border-brand-blue/30 text-gray-200 light:text-slate-900 shadow-sm" aria-label="Key Takeaways">
+      <aside class="mb-10 p-6 rounded-2xl bg-brand-blue/5 light:bg-blue-50/80 border border-brand-blue/20 light:border-brand-blue/30 text-gray-200 light:text-slate-900 shadow-sm" aria-label={ui.keyTakeaways}>
         <div class="text-xs font-bold text-brand-blue light:text-brand-blue uppercase tracking-wider mb-2 flex items-center gap-2">
           <span class="text-base">⚡</span>
-          <span>Key Takeaways / Executive Summary</span>
+          <span>{ui.keyTakeaways}</span>
         </div>
         <p class="text-sm sm:text-base leading-relaxed text-gray-300 light:text-slate-800">
           {post.data.description}
@@ -175,45 +176,53 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
       </aside>
     )}
 
+    <!-- Table of Contents for deep content exploration -->
+    {tocHeadings.length >= 3 && (
+      <nav class="mb-10 p-6 rounded-2xl glass-card border border-element-border/80 shadow-sm" aria-label={ui.tocTitle}>
+        <div class="text-xs font-bold text-brand-blue uppercase tracking-wider mb-3 flex items-center gap-2">
+          <span class="text-base">📑</span>
+          <span>{ui.tocTitle}</span>
+        </div>
+        <ul class="space-y-1.5 text-sm">
+          {tocHeadings.map(h => (
+            <li class={h.depth === 3 ? "ml-4" : ""}>
+              <a 
+                href={`#${h.slug}`} 
+                class="text-gray-300 hover:text-brand-blue transition-colors block py-0.5 leading-snug"
+              >
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
     <!-- Post Body -->
-    <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-element-border mb-16 relative overflow-hidden prose-custom">
+    <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-element-border mb-12 relative overflow-hidden prose-custom">
       <!-- Top accent line -->
       <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-blue"></div>
       
       <Content />
     </div>
 
-    <!-- Related Posts -->
-    {relatedPosts.length > 0 && (
-      <section class="border-t border-element-border pt-16">
-        <h2 class="text-2xl font-bold mb-8 tracking-tight">
-          You might also be interested in
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {relatedPosts.map(p => (
-            <a href={`/posts/${p.id}/`} class="glass-card p-5 rounded-2xl border border-element-border group flex flex-col h-full justify-between">
-              <div>
-                <time class="text-[10px] font-semibold text-brand-blue/80 block mb-2">
-                  {p.data.pubDate.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
-                  })}
-                </time>
-                <h3 class="text-sm font-bold group-hover:text-brand-blue transition-colors line-clamp-2 mb-2">
-                  {p.data.title}
-                </h3>
-              </div>
-              <span class="text-xs font-semibold text-brand-blue/80 mt-4 flex items-center space-x-1 group-hover:translate-x-1 transition-transform">
-                <span>Read article</span>
-                <span>&rarr;</span>
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
-    )}
+    <!-- Contact & Discussion Section -->
+    <GetInTouchCard
+      sectionHeading="Start a Conversation"
+      sectionDescription="Want to discuss this topic or have feedback on this article? Feel free to reach out directly via email."
+      cardHeading="Feedback & Topic Discussion"
+      emailSubject={`Feedback: ${post.data.title}`}
+      accentColor="blue"
+      primaryButtonText="Open Email Client"
+    />
   </main>
+
+  <!-- Standardized Related Content (Edge-to-Edge) -->
+  <RelatedContent 
+    currentCollection="posts" 
+    currentId={post.id} 
+    tags={post.data.tags} 
+  />
 </Layout>
 
 <style>

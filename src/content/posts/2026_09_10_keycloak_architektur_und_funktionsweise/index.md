@@ -1,7 +1,8 @@
 ---
-title: "Architektur und Funktionsweise von Keycloak: Enterprise Identity Federation, Token Exchange, Zero-Trust Governance und IAM im Agentic AI Tech Stack"
+title: "Keycloak Architektur & Funktionsweise im AI Tech Stack"
 pubDate: "2026-09-10"
-description: "Eine softwaretechnische Tiefenanalyse von Keycloak im Kontext souveräner Unternehmens-KI: Cloud-native Quarkus-Laufzeit, verteilte Infinispan-Caches, Standard Token Exchange (RFC 8693) für autonome Agenten, feingranulare UMA-2.0-Autorisierung und Zero-Trust-Governance im Zusammenspiel mit LiteLLM und Open WebUI."
+lang: "de"
+description: "Softwaretechnische Analyse von Keycloak: Cloud-native Quarkus-Laufzeit, Token Exchange (RFC 8693) für KI-Agenten, UMA 2.0 und Zero-Trust-Governance."
 tags: ["keycloak", "agentic-ai", "artificial-intelligence", "enterprise-ai", "litellm", "open-webui", "devops", "software-architecture", "open-source", "vllm", "langgraph"]
 icon:
   src: "./hero.jpg"

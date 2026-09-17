@@ -243,3 +243,60 @@ export async function inspectUrlIndexStatus(urlOrPath: string): Promise<UrlInspe
     rawIssues: rawIssues.length > 0 ? rawIssues : undefined,
   };
 }
+
+/**
+ * Fetches GSC aggregate metrics for the entire site/property.
+ */
+export async function getGscSiteOverview(
+  period: string = 'last_28_days'
+): Promise<GscMetricSummary> {
+  const config = getConfig();
+  const sc = getSearchConsole();
+  const { startDate, endDate } = resolveDateRange(period);
+
+  const res = await sc.searchanalytics.query({
+    siteUrl: config.gsc.siteUrl,
+    requestBody: {
+      startDate,
+      endDate,
+    },
+  });
+
+  const row = res.data.rows?.[0];
+  return {
+    clicks: row?.clicks || 0,
+    impressions: row?.impressions || 0,
+    ctr: Number((row?.ctr || 0).toFixed(4)),
+    position: Number((row?.position || 0).toFixed(1)),
+  };
+}
+
+/**
+ * Fetches top search queries across the entire site.
+ */
+export async function getGscSiteTopQueries(
+  period: string = 'last_28_days',
+  rowLimit: number = 25
+): Promise<GscQueryMetric[]> {
+  const config = getConfig();
+  const sc = getSearchConsole();
+  const { startDate, endDate } = resolveDateRange(period);
+
+  const res = await sc.searchanalytics.query({
+    siteUrl: config.gsc.siteUrl,
+    requestBody: {
+      startDate,
+      endDate,
+      dimensions: ['query'],
+      rowLimit,
+    },
+  });
+
+  return (res.data.rows || []).map((row) => ({
+    query: row.keys?.[0] || '',
+    clicks: row.clicks || 0,
+    impressions: row.impressions || 0,
+    ctr: Number((row.ctr || 0).toFixed(4)),
+    position: Number((row.position || 0).toFixed(1)),
+  }));
+}

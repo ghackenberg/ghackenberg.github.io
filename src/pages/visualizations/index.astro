@@ -29,7 +29,7 @@ const breadcrumbSchema = {
 
 <Layout 
   title="Content Visualizations | Dr. Georg Hackenberg" 
-  description="Explore the relationships between projects, blog posts, publications, courses, services, and topic tags on Dr. Georg Hackenberg's website through interactive real-time graphs."
+  description="Explore interactive real-time knowledge graphs, network diagrams, and WebGL visualizations connecting research, software projects, and topics."
   image={firstVisScreenshot}
   jsonLd={breadcrumbSchema}
 >
@@ -53,9 +53,8 @@ const breadcrumbSchema = {
           title={vis.data.title}
           description={vis.data.description}
           href={`/visualizations/${vis.id}/`}
-          engineId={vis.id}
-          badgeColor={vis.data.badgeColor}
           screenshot={vis.data.screenshot}
+          tags={vis.data.tags}
         />
       ))}
     </div>

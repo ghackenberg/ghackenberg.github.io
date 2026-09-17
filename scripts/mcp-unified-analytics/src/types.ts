@@ -185,3 +185,48 @@ export interface AioDiffResult {
   after: AioEvaluationResult;
 }
 
+export interface SiteOverviewSummary {
+  period: string;
+  gsc: {
+    totalClicks: number;
+    totalImpressions: number;
+    averageCtr: number;
+    averagePosition: number;
+  };
+  plausible: {
+    totalVisitors: number;
+    totalPageviews: number;
+    averageBounceRate: number | null;
+    averageVisitDuration: number | null;
+  };
+  assessment: {
+    summary: string;
+    trafficHealth: 'thriving' | 'growing' | 'early_stage' | 'low_traffic';
+    keyRecommendations: string[];
+  };
+}
+
+export interface TrafficSourceMetric {
+  source: string;
+  visitors: number;
+  bounceRate: number | null;
+  visitDuration: number | null;
+}
+
+export interface TopQueriesReport {
+  period: string;
+  totalQueries: number;
+  queries: GscQueryMetric[];
+}
+
+export interface RetentionBottleneck {
+  path: string;
+  visitors: number;
+  pageviews: number;
+  bounceRate: number;
+  visitDuration: number | null;
+  severity: 'critical' | 'high' | 'moderate';
+  issue: string;
+  recommendation: string;
+}
+

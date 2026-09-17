@@ -8,7 +8,7 @@ interface Props {
   tags: string[];
   icon?: string;
   publisherUrl?: string;
-  activeTag?: string;
+  activeTag?: string | string[];
 }
 
 const { 
@@ -21,6 +21,8 @@ const {
   icon, 
   activeTag
 } = Astro.props;
+
+const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 ---
 
 <div class="glass-card p-6 rounded-2xl border border-element-border group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-purple/30 h-full w-full">
@@ -113,7 +115,7 @@ const {
             href={`/tags/${tag}/`}
             data-tag={tag}
             class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
-              tag === activeTag ? 'active-tag-match' : ''
+              isTagActive(tag) ? 'active-tag-match' : ''
             }`}
           >
             #{tag}

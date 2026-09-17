@@ -12,6 +12,12 @@ import {
 } from './services/aio-evaluator.js';
 import { auditInternalLinking } from './services/internal-links.js';
 import { auditSerpSnippets } from './services/serp-snippets.js';
+import {
+  getSiteOverview,
+  getTrafficSourcesReport,
+  getTopQueriesReport,
+  findRetentionBottlenecks,
+} from './services/site-overview.js';
 
 const server = new McpServer({
   name: 'unified-analytics',
@@ -345,6 +351,165 @@ server.tool(
           {
             type: 'text',
             text: `Error computing AIO diff: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 9: get_site_overview
+server.tool(
+  'get_site_overview',
+  'Retrieve site-wide consolidated performance and engagement metrics across the entire domain from Google Search Console (clicks, impressions, average CTR, average position) and Plausible Analytics (visitors, pageviews, average bounce rate, visit duration).',
+  {
+    period: z
+      .enum(['last_7_days', 'last_14_days', 'last_28_days', 'last_90_days'])
+      .optional()
+      .default('last_28_days')
+      .describe('Time window for metrics aggregation'),
+  },
+  async ({ period }) => {
+    try {
+      const overview = await getSiteOverview(period);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(overview, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error fetching site overview: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 10: get_traffic_sources
+server.tool(
+  'get_traffic_sources',
+  'Retrieve breakdown of traffic channels and referrers (e.g. Google, Direct, LinkedIn, search engines, AI platforms) with visitor counts, bounce rate, and visit duration from Plausible.',
+  {
+    period: z
+      .enum(['last_7_days', 'last_14_days', 'last_28_days', 'last_90_days'])
+      .optional()
+      .default('last_28_days')
+      .describe('Time window for metrics aggregation'),
+    limit: z
+      .number()
+      .optional()
+      .default(20)
+      .describe('Maximum number of sources to return'),
+  },
+  async ({ period, limit }) => {
+    try {
+      const report = await getTrafficSourcesReport(period, limit);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(report, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error fetching traffic sources: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 11: get_top_search_queries
+server.tool(
+  'get_top_search_queries',
+  'Retrieve top search queries across the entire domain from Google Search Console, including clicks, impressions, CTR, and average ranking positions.',
+  {
+    period: z
+      .enum(['last_7_days', 'last_14_days', 'last_28_days', 'last_90_days'])
+      .optional()
+      .default('last_28_days')
+      .describe('Time window for metrics aggregation'),
+    limit: z
+      .number()
+      .optional()
+      .default(25)
+      .describe('Maximum number of queries to return'),
+  },
+  async ({ period, limit }) => {
+    try {
+      const report = await getTopQueriesReport(period, limit);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(report, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error fetching top queries: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 12: find_retention_bottlenecks
+server.tool(
+  'find_retention_bottlenecks',
+  'Detect dead-end pages and retention bottlenecks with high bounce rates (>= 70%) or short visit durations, providing specific content and UX recommendations to keep visitors engaged.',
+  {
+    period: z
+      .enum(['last_7_days', 'last_14_days', 'last_28_days', 'last_90_days'])
+      .optional()
+      .default('last_28_days')
+      .describe('Time window for metrics evaluation'),
+    min_visitors: z
+      .number()
+      .optional()
+      .default(2)
+      .describe('Minimum visitor count to consider a page'),
+  },
+  async ({ period, min_visitors }) => {
+    try {
+      const report = await findRetentionBottlenecks(period, min_visitors);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(report, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error finding retention bottlenecks: ${err.message}`,
           },
         ],
       };

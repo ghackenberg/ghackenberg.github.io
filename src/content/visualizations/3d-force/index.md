@@ -5,8 +5,11 @@ screenshot:
   src: "./3d-force.png"
   title: "3D Network Graph in Spatial Space"
   description: "Three-dimensional visualization of the interconnected content network featuring spherical nodes and glowing link particles on a dark background"
-colorClass: "hover:border-brand-yellow/30 text-brand-yellow bg-brand-yellow/10 border-brand-yellow/20"
-badgeColor: "bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20"
+tags:
+  - threejs
+  - webgl
+  - data-visualization
+  - typescript
 ---
 
 ## What Characterizes the 3D Force-Directed Visualization?

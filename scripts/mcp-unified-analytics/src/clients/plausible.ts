@@ -151,3 +151,111 @@ export async function getPlausibleTopPages(
     return pageMap;
   }
 }
+
+/**
+ * Fetches site-wide Plausible aggregate metrics.
+ */
+export async function getPlausibleSiteOverview(
+  period: string = 'last_28_days'
+): Promise<PlausiblePageMetrics> {
+  const config = getConfig();
+
+  if (!config.plausible.apiKey) {
+    return {
+      visitors: 0,
+      pageviews: 0,
+      bounceRate: null,
+      visitDuration: null,
+    };
+  }
+
+  const plausiblePeriod = mapPeriodToPlausible(period);
+  const url = new URL(`${config.plausible.host}/api/v1/stats/aggregate`);
+  url.searchParams.set('site_id', config.plausible.siteId);
+  url.searchParams.set('period', plausiblePeriod);
+  url.searchParams.set('metrics', 'visitors,pageviews,bounce_rate,visit_duration');
+
+  try {
+    const res = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${config.plausible.apiKey}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.warn(`Plausible aggregate API error (${res.status}): ${errText}`);
+      return {
+        visitors: 0,
+        pageviews: 0,
+        bounceRate: null,
+        visitDuration: null,
+      };
+    }
+
+    const data = await res.json();
+    const results = data.results || {};
+
+    return {
+      visitors: results.visitors?.value ?? 0,
+      pageviews: results.pageviews?.value ?? 0,
+      bounceRate: results.bounce_rate?.value != null ? Number(results.bounce_rate.value.toFixed(1)) : null,
+      visitDuration: results.visit_duration?.value != null ? Math.round(results.visit_duration.value) : null,
+    };
+  } catch (err: any) {
+    console.warn(`Failed to contact Plausible aggregate API: ${err.message}`);
+    return {
+      visitors: 0,
+      pageviews: 0,
+      bounceRate: null,
+      visitDuration: null,
+    };
+  }
+}
+
+/**
+ * Fetches breakdown of traffic sources (referrers) from Plausible.
+ */
+export async function getPlausibleTrafficSources(
+  period: string = 'last_28_days',
+  limit: number = 20
+): Promise<Array<{ source: string; visitors: number; bounceRate: number | null; visitDuration: number | null }>> {
+  const config = getConfig();
+
+  if (!config.plausible.apiKey) {
+    return [];
+  }
+
+  const plausiblePeriod = mapPeriodToPlausible(period);
+  const url = new URL(`${config.plausible.host}/api/v1/stats/breakdown`);
+  url.searchParams.set('site_id', config.plausible.siteId);
+  url.searchParams.set('period', plausiblePeriod);
+  url.searchParams.set('property', 'visit:source');
+  url.searchParams.set('metrics', 'visitors,bounce_rate,visit_duration');
+  url.searchParams.set('limit', String(limit));
+
+  try {
+    const res = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${config.plausible.apiKey}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.warn(`Plausible sources breakdown API error (${res.status}): ${errText}`);
+      return [];
+    }
+
+    const data = await res.json();
+    return (data.results || []).map((item: any) => ({
+      source: item.source || 'Direct / None',
+      visitors: item.visitors || 0,
+      bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
+      visitDuration: item.visit_duration != null ? Math.round(item.visit_duration) : null,
+    }));
+  } catch (err: any) {
+    console.warn(`Failed to contact Plausible breakdown API: ${err.message}`);
+    return [];
+  }
+}

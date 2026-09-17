@@ -6,11 +6,19 @@ A lightweight, local Model Context Protocol (MCP) server that seamlessly unifies
 
 - **Deterministic Joins:** Resolves trailing slash, URL scheme, and domain differences to merge search performance and on-site engagement per URL path deterministically.
 - **Token Efficiency:** Pre-aggregates metrics locally before serving structured JSON to the LLM agent, preserving context window budget.
-- **4 Core Tools:**
-  - `get_page_audit`: Consolidated GSC (clicks, impressions, CTR, position, queries) + Plausible (visitors, pageviews, bounce rate, visit duration) for any path.
+- **12 Specialized Tools:**
+  - `get_site_overview`: Domain-wide consolidated search performance (GSC) and visitor engagement (Plausible).
+  - `get_traffic_sources`: Breakdown of traffic channels and referrers with visitor counts, bounce rate, and visit duration.
+  - `get_top_search_queries`: Domain-wide search query rankings, impressions, clicks, and CTR from GSC.
+  - `find_retention_bottlenecks`: Identification of dead-end pages with high bounce rates or low durations.
+  - `get_page_audit`: Consolidated GSC + Plausible metrics for any path.
   - `find_seo_opportunities`: Heuristic scanner identifying striking distance rankings, high-bounce top performers, underperforming SERP snippets, and hidden champions.
   - `inspect_url_index_status`: Live GSC URL Inspection API wrapper for indexing state, canonical checks, and crawl timestamps.
-  - `evaluate_aio_extractability`: Source content auditor for LLM citability, question-oriented headings, direct answer snippets, tables, and Schema.org metadata.
+  - `evaluate_aio_extractability`: Source content auditor for LLM citability, question-oriented headings, direct answers, tables, and Schema.org metadata.
+  - `scan_aio_readiness`: Batch scanner for markdown collections to compute AIO extractability scores.
+  - `audit_internal_linking`: Orphan page detector and internal backlink opportunity scanner.
+  - `audit_serp_snippets`: SERP snippet length and keyword inclusion auditor.
+  - `diff_aio_impact`: Impact evaluation comparing current content against Git revisions.
 
 ## Setup & Installation
 

@@ -1,0 +1,155 @@
+---
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  id: string;
+  title: string;
+  tagline: string;
+  description: string;
+  tags?: string[];
+  activeTag?: string | string[];
+  previewImage?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  ctaText?: string;
+}
+
+const {
+  id,
+  title,
+  tagline,
+  description,
+  tags = [],
+  activeTag,
+  previewImage,
+  ctaText = "Learn More",
+} = Astro.props;
+
+const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
+
+const isPreviewObj = Boolean(previewImage && typeof previewImage === 'object' && 'src' in previewImage && previewImage.src);
+const previewImg = isPreviewObj ? (previewImage as { src: ImageMetadata }).src : (previewImage as ImageMetadata | undefined);
+const previewTitle = isPreviewObj ? (previewImage as { title: string }).title : title;
+const previewDesc = isPreviewObj ? (previewImage as { description: string }).description : (description ? `${title} – ${description}` : `Service overview for ${title}`);
+
+const optimizedImage = previewImg ? await getImage({
+  src: previewImg,
+  format: 'webp',
+  width: 800,
+  quality: 80
+}) : null;
+---
+
+<div class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-brand-purple/40 transition-all duration-300">
+  <!-- Card Clickable Overlay Link -->
+  <a 
+    href={`/services/${id}/`} 
+    class="absolute inset-0 z-10 cursor-pointer" 
+    aria-label={`View details for ${title}`}
+  ></a>
+
+  <!-- Preview Image Column (Top) -->
+  <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
+    {previewImg && optimizedImage ? (
+      <svg 
+        class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
+        viewBox={`0 0 ${previewImg.width || 800} ${previewImg.height || 450}`} 
+        preserveAspectRatio="xMidYMid slice" 
+        role="img" 
+        aria-label={previewDesc}
+      >
+        <defs>
+          <linearGradient id={`grad-service-dark-${id}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+            <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.75" />
+          </linearGradient>
+          <linearGradient id={`grad-service-light-${id}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+            <stop offset="50%" stop-color="#000000" stop-opacity="0.10" />
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.40" />
+          </linearGradient>
+        </defs>
+        <image 
+          href={optimizedImage.src} 
+          x="0" 
+          y="0" 
+          width={previewImg.width || 800} 
+          height={previewImg.height || 450} 
+          preserveAspectRatio="xMidYMid slice" 
+          {...{ title: previewTitle }}
+          aria-label={previewDesc}
+        />
+        <rect 
+          x="0" 
+          y="0" 
+          width={previewImg.width || 800} 
+          height={(previewImg.height || 450) + 0.5} 
+          class="block light:hidden"
+          fill={`url(#grad-service-dark-${id})`} 
+        />
+        <rect 
+          x="0" 
+          y="0" 
+          width={previewImg.width || 800} 
+          height={(previewImg.height || 450) + 0.5} 
+          class="hidden light:block"
+          fill={`url(#grad-service-light-${id})`} 
+        />
+      </svg>
+    ) : (
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-purple/20 via-brand-purple/10 to-indigo-950/40 flex items-center justify-center">
+        <svg class="w-12 h-12 text-brand-purple/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
+        </svg>
+      </div>
+    )}
+    <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+  </div>
+
+  <!-- Content Body -->
+  <div class="p-6 md:p-8 flex flex-col flex-grow">
+    <div class="mb-4">
+      <div class="mb-2">
+        <h3 class="text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-brand-purple transition-colors">
+          {title}
+        </h3>
+      </div>
+      <p class="text-xs font-bold uppercase tracking-wider text-brand-purple mb-3">
+        {tagline}
+      </p>
+      <p class="text-gray-400 text-sm leading-relaxed font-normal">
+        {description}
+      </p>
+    </div>
+
+    <div class="flex-grow flex flex-col mt-4">
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 self-start relative z-20">
+          {tags.map((t) => (
+            <a
+              href={`/tags/${t}/`}
+              data-tag={t}
+              class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+                isTagActive(t) ? 'active-tag-match' : ''
+              }`}
+            >
+              #{t}
+            </a>
+          ))}
+        </div>
+      )}
+
+      <div class="mt-auto pt-6 w-full relative z-20">
+        <a
+          href={`/services/${id}/`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
+        >
+          <span>{ctaText}</span>
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

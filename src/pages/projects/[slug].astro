@@ -1,6 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
+import RelatedContent from "../../components/RelatedContent.astro";
+import GetInTouchCard from "../../components/GetInTouchCard.astro";
 import { getCollection, getEntry, render } from "astro:content";
 import { getImage } from "astro:assets";
 
@@ -376,7 +378,24 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
         )}
       </div>
     </div>
+
+    <!-- Contact Section -->
+    <GetInTouchCard
+      sectionHeading="Start a Conversation"
+      sectionDescription="Have questions about the architecture, want to contribute, or discuss commercial adoption and licensing? Feel free to reach out directly via email."
+      cardHeading="Project Inquiry & Collaboration"
+      emailSubject={`Project Inquiry: ${project.data.title}`}
+      accentColor={project.data.accentColor || "blue"}
+      primaryButtonText="Open Email Client"
+    />
   </main>
+
+  <!-- Standardized Related Content (Edge-to-Edge) -->
+  <RelatedContent 
+    currentCollection="projects" 
+    currentId={project.id} 
+    tags={project.data.tags} 
+  />
 
   <!-- Lightbox Modal -->
   <div 

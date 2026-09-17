@@ -5,8 +5,11 @@ screenshot:
   src: "./sigma.png"
   title: "Sigma ForceAtlas2 Graph Layout"
   description: "Large-scale network graph layout with organically distributed content clusters and delicate edges rendered on a dark background"
-colorClass: "hover:border-brand-green/30 text-brand-green bg-brand-green/10 border-brand-green/20"
-badgeColor: "bg-brand-green/10 text-brand-green border-brand-green/20"
+tags:
+  - webgl
+  - data-visualization
+  - javascript
+  - graph-database
 ---
 
 ## What Characterizes the Sigma.js Visualization?

@@ -1,0 +1,140 @@
+---
+interface Props {
+  id?: string;
+  mailLinkId?: string;
+  class?: string;
+  sectionHeading?: string;
+  sectionDescription?: string;
+  cardHeading?: string;
+  emailSubject: string;
+  accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
+  primaryButtonText?: string;
+  responseTimeText?: string;
+}
+
+const {
+  id = "contact-section",
+  mailLinkId = "direct-mail-link",
+  class: className = "",
+  sectionHeading = "Start a Conversation",
+  sectionDescription = "Feel free to reach out directly to discuss this topic, ask questions, or explore potential collaboration.",
+  cardHeading = "Contact & Booking Inquiry",
+  emailSubject,
+  accentColor = "blue",
+  primaryButtonText = "Open Email Client",
+  responseTimeText = "Typically responding within 2 business days."
+} = Astro.props;
+
+const emailAddress = "georg.hackenberg@fh-wels.at";
+const mailtoHref = `mailto:${emailAddress}?subject=${encodeURIComponent(emailSubject)}`;
+
+const colorStyles = {
+  blue: {
+    text: "text-brand-blue light:text-blue-700",
+    glow: "from-brand-blue to-indigo-500 light:to-indigo-600",
+    btnPrimary: "bg-brand-blue hover:bg-brand-blue/90 text-slate-950 shadow-brand-blue/20 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white",
+  },
+  yellow: {
+    text: "text-brand-yellow light:text-amber-800",
+    glow: "from-brand-yellow to-orange-500 light:to-orange-600",
+    btnPrimary: "bg-brand-yellow hover:bg-brand-yellow/90 text-slate-950 shadow-brand-yellow/20 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white",
+  },
+  purple: {
+    text: "text-brand-purple light:text-purple-700",
+    glow: "from-brand-purple to-pink-500 light:to-pink-600",
+    btnPrimary: "bg-brand-purple hover:bg-brand-purple/90 text-slate-950 font-bold shadow-brand-purple/20 light:bg-purple-600 light:hover:bg-purple-700 light:text-white",
+  },
+  green: {
+    text: "text-brand-green light:text-emerald-700",
+    glow: "from-brand-green to-cyan-500 light:to-cyan-600",
+    btnPrimary: "bg-brand-green hover:bg-brand-green/90 text-slate-950 shadow-brand-green/20 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white",
+  }
+}[accentColor];
+---
+
+<!-- Contact Section (Modeled after the Service Section pattern) -->
+<section id={id} class={`py-16 mt-16 border-t border-element-border scroll-mt-24 ${className}`}>
+  <!-- Section Title & Intro Description -->
+  <div class="max-w-3xl mx-auto text-center mb-12">
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
+      {sectionHeading}
+    </h2>
+    {sectionDescription && (
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+        {sectionDescription}
+      </p>
+    )}
+  </div>
+
+  <!-- Inner Glass Card -->
+  <div class="max-w-2xl mx-auto">
+    <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
+      <!-- Glow Accent Line -->
+      <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${colorStyles.glow}`}></div>
+
+      <h3 class="text-lg font-bold mb-6">{cardHeading}</h3>
+
+      <div class="space-y-6">
+        <!-- Email & Copy Action Row -->
+        <div class="flex items-start space-x-4">
+          <div class={`${colorStyles.text} mt-1.5 shrink-0`}>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"></path>
+            </svg>
+          </div>
+          <div class="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Send an email request to</p>
+              <p class="font-mono font-medium mt-0.5 select-all text-sm sm:text-base">{emailAddress}</p>
+            </div>
+            <button
+              type="button"
+              data-copy-email={emailAddress}
+              class="copy-email-btn px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2 cursor-pointer"
+            >
+              <span class="copy-email-text">Copy Email</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bottom Action Row: Response Time & Direct Mail Client Action -->
+        <div class="pt-6 border-t border-element-border flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
+          <p>{responseTimeText}</p>
+          <a
+            id={mailLinkId}
+            href={mailtoHref}
+            class={`px-5 py-2.5 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-md ${colorStyles.btnPrimary}`}
+          >
+            {primaryButtonText} &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Copy email click handler
+  document.querySelectorAll<HTMLButtonElement>('.copy-email-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const email = btn.getAttribute('data-copy-email') || 'georg.hackenberg@fh-wels.at';
+      const label = btn.querySelector<HTMLElement>('.copy-email-text');
+      try {
+        await navigator.clipboard.writeText(email);
+        if (label) {
+          label.textContent = 'Copied!';
+          btn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
+          btn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+
+          setTimeout(() => {
+            label.textContent = 'Copy Email';
+            btn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
+            btn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
+          }, 2500);
+        }
+      } catch (err) {
+        console.error('Failed to copy email:', err);
+      }
+    });
+  });
+</script>

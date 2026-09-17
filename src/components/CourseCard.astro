@@ -10,7 +10,7 @@ interface Props {
   screenshot?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   screenshotLight?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags?: string[];
-  activeTag?: string;
+  activeTag?: string | string[];
 }
 
 const { 
@@ -23,6 +23,8 @@ const {
   tags = [],
   activeTag
 } = Astro.props;
+
+const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 
 const isScreenshotObj = Boolean(screenshot && typeof screenshot === 'object' && 'src' in screenshot && screenshot.src);
 const screenshotImg = isScreenshotObj ? (screenshot as { src: ImageMetadata }).src : (screenshot as ImageMetadata | undefined);
@@ -162,7 +164,7 @@ const optimizedScreenshotLight = screenshotLightImg ? await getImage({
               href={`/tags/${tag}/`}
               data-tag={tag}
               class={`tag-chip tag-chip-yellow inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
-                activeTag === tag ? 'active-tag-match' : ''
+                isTagActive(tag) ? 'active-tag-match' : ''
               }`}
             >
               #{tag}

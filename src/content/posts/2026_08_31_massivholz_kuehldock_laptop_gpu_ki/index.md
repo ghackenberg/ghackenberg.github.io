@@ -1,6 +1,7 @@
 ---
 title: "Massivholz-Kühldock: Minimalistischer Laptopständer"
 pubDate: "2026-08-31"
+lang: "de"
 description: "Leichtgewichtiger Holz-Laptopständer mit Kamineffekt: Passive Kühlung für anspruchsvolle GPU-Workstations im eleganten, minimalistischen Naturdesign."
 tags: ["hardware", "thermal-engineering", "ergonomics", "local-ai", "cad", "smart-workplace", "industrial-informatics"]
 icon:
@@ -80,10 +81,21 @@ Während die passive Konvektion des offenen Holzständers für die allermeisten 
 - **Passiv-Modus (Standard):** Völlig geräuschlos, wartungsfrei und ohne zusätzliche Kabel. Reine Ausnutzung von Naturkonvektion, Strömungsdynamik und Werkstoffdämpfung.
 - **Aktiv-Modus (Power-User):** In den offenen Freiraum unter der Deckplatte können magnetisch fixierbare, ultraleise $120\,\text{mm}$-Fluid-Dynamic-Lüfter eingehängt werden. Über ein kurzes, im Holz versenktes USB-C-Kabel mit integriertem Drehzahl-Potentiometer lässt sich bei extremen Render-Sessions ein zusätzlicher, flüsterleiser Frischluftstrom direkt an die Notebook-Bodenansaugung leiten.
 
-## 6. Fazit & Ausblick
+### Vergleich: Thermisches Verhalten und Akustik im Benchmark
+
+| Kühlszenario | GPU Hotspot ($T_j$) | Taktabfall (Throttling) | Lautstärke @ 50cm | Ästhetik & Stromverbrauch |
+| :--- | :--- | :--- | :--- | :--- |
+| **Flach auf Schreibtisch** | $96\text{--}102\,^\circ\text{C}$ | 20–35 % Taktverlust | 52 dB(A) (hochfrequent) | Hohe Erwärmung der Tischplatte |
+| **Massivholz-Kühldock (Passiv)** | $84\text{--}88\,^\circ\text{C}$ | < 5 % Taktverlust | 44 dB(A) (gedämpft) | 0 Watt, lautlos, zeitloses Holz |
+| **Erweiterungsmodul (Aktiv)** | $78\text{--}82\,^\circ\text{C}$ | 0 % Taktverlust (Max Boost) | 41 dB(A) (Tiefes Rauschen) | 1.2 Watt USB-C, maximaler Airflow |
+
+## 6. Fazit & Weiterführende Themen
 
 Gutes Arbeitsplatzdesign der Zukunft besteht nicht nur aus Software und Bildschirmen. Es entsteht dort, wo **High-Tech-Computing und natürliche, haptisch ansprechende Materialien** intelligent zusammenfinden. 
 
 Der minimalistische Leichtbau-Holzständer beweist, dass thermische Ingenieurskunst und nachhaltiges Produktdesign keine Gegensätze sind: Er schützt teure Workstation-Hardware vor thermischem Verschleiß, sichert maximale Rechenleistung für anspruchsvolle KI- und CAD-Aufgaben und bereichert den Schreibtisch als ästhetisches Statement gegen die Wegwerfkultur aus Plastik.
 
-*Wie betreiben Sie Ihre mobilen Workstations unter Volllast? Haben Sie bereits Erfahrungen mit thermischen Engpässen bei lokaler KI gesammelt? Ich freue mich auf den Austausch und Ihr Feedback!*
+Vertiefende Einblicke in moderne Arbeitsplatz- und Hardware-Systeme finden Sie in den folgenden Beiträgen:
+- [KI-basierte ergonomische Arbeitsumgebungen: Sensorik, Aktorik und adaptive Möbel](/posts/2026_08_10_ki_basierte_ergonomische_arbeitsumgebungen/)
+- [Standardisierter Open-Source Agentic AI Tech Stack für lokale Entwicklung](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/)
+- [Consulting & Systemarchitektur für Künstliche Intelligenz](/services/ai/)

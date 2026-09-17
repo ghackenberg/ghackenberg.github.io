@@ -1,6 +1,7 @@
 ---
 title: "WebGL Network Visualization & Graph Engines"
 pubDate: "2026-05-27"
+lang: "en"
 description: "Explore interactive network graph visualizations in Astro: How we unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware styling."
 tags: ["astro", "computer-graphics", "cytoscape", "d3", "data-visualization", "javascript", "threejs", "visjs", "webgl"]
 icon:

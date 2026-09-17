@@ -1,6 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
+import RelatedContent from "../../components/RelatedContent.astro";
+import GetInTouchCard from "../../components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -271,7 +273,24 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
         )}
       </div>
     </div>
+
+    <!-- Contact Section -->
+    <GetInTouchCard
+      sectionHeading="Start a Conversation"
+      sectionDescription="Interested in guest lectures, student thesis topics, or academic course materials? Feel free to reach out directly via email."
+      cardHeading="Course & Academic Inquiry"
+      emailSubject={`Course Inquiry: ${course.data.title}`}
+      accentColor="yellow"
+      primaryButtonText="Open Email Client"
+    />
   </main>
+
+  <!-- Standardized Related Content (Edge-to-Edge) -->
+  <RelatedContent 
+    currentCollection="courses" 
+    currentId={course.id} 
+    tags={course.data.tags} 
+  />
 </Layout>
 
 <style>

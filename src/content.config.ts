@@ -175,9 +175,8 @@ const visualizations = defineCollection({
     title: z.string(),
     description: z.string(),
     screenshot: coverImageSchema({ image }).optional(),
-    colorClass: z.string(),
-    badgeColor: z.string(),
     pubDate: z.coerce.date().optional(),
+    tags: z.array(tagReference).default([]),
   }),
 });
 

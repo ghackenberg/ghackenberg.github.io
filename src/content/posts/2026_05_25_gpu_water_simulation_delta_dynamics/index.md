@@ -1,6 +1,7 @@
 ---
 title: "GPU Water Flow & Hydrology Shaders in Delta Dynamics"
 pubDate: "2026-05-25"
+lang: "en"
 description: "Real-time shallow water and groundwater simulation shaders on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong texture computation."
 tags: ["computer-graphics", "gpgpu", "hydrology", "shaders", "simulation", "threejs", "webgl"]
 icon:
@@ -184,9 +185,14 @@ Numerical instability in discrete shallow water models is governed by the Couran
 ### How do CPU game entities interact with GPU-computed water?
 Game entities require height queries to navigate terrain or consume groundwater. We implement an asynchronous `readBack()` pipeline that extracts raw pixel buffers via `renderer.readRenderTargetPixels` into typed arrays. Throttling readbacks to several frames per second ensures that GPU synchronization never stalls rendering.
 
-## 5. Conclusion
+## 5. Conclusion & Next Steps
 
 By combining discrete cellular automata logic with GPGPU techniques, **Delta Dynamics** achieves a rich, physically active hydrological cycle in a standard web browser. Offloading the lateral diffusion and vertical infiltration equations to WebGL shaders guarantees that the water simulation stays incredibly fast, leaving the CPU free to focus on entity logic, pathfinding, and local LLM AI agents.
 
-This hybrid approach demonstrates that modern browsers are fully capable of hosting complex, real-time physical simulations, bringing premium desktop-grade simulation mechanics directly to web applications. For related WebGL and high-performance browser rendering architectures, explore our [WebGPU analysis](/tags/webgpu/) and our overview of [Interactive Content Visualizations](/visualizations/).
+This hybrid approach demonstrates that modern browsers are fully capable of hosting complex, real-time physical simulations, bringing premium desktop-grade simulation mechanics directly to web applications. 
+
+Explore related high-performance graphics and simulation materials across our platform:
+- [Content Visualizations & Graph Engines](/visualizations/)
+- [University Course: Computer Simulation Course Materials](/courses/kurs-computer-simulation/)
+- [WebGL Network Visualization & Graph Engines Architecture](/posts/2026_05_27_interactive_graph_visualizations_update/)
 

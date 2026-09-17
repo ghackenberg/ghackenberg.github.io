@@ -1,6 +1,7 @@
 ---
 title: "Vision Campus Almtal 2035: Dezentraler Innovationsraum"
 pubDate: "2026-08-09"
+lang: "de"
 description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im Wandel."
 tags: ["education", "innovation", "regional-development", "sustainability", "almtal"]
 icon:
@@ -101,5 +102,10 @@ Das vollständige Visionsdokument liegt aktuell als **Version 0.1 (Initialer Dis
     <span style="color: #ffffff !important;" class="!text-white">Vision Almtal 2035 (PDF herunterladen)</span>
   </a>
 </div>
+
+Weiterführende Informationen zu meinen akademischen Aktivitäten und Beratungsangeboten:
+- [Akademische Vorlesungen & Lehre an der FH Oberösterreich](/courses/)
+- [Scientific Advisory & Forschungskooperationen](/services/scientific-advisory/)
+- [Hardware & smarte Arbeitsplatzsysteme: Massivholz-Kühldock](/posts/2026_08_31_massivholz_kuehldock_laptop_gpu_ki/)
 
 Ich freue mich über Ihr Feedback, Ihre Anregungen und interessante Kooperationsgespräche!

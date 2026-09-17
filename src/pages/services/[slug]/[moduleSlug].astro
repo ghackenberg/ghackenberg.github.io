@@ -1,6 +1,7 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import Navbar from "../../../components/Navbar.astro";
+import RelatedContent from "../../../components/RelatedContent.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -334,7 +335,6 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     <!-- Contact Section -->
     <section id="contact-services" class="py-16 mt-16 border-t border-element-border scroll-mt-24">
       <div class="max-w-3xl mx-auto text-center mb-12">
-
         <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
           Start a Conversation
         </h2>
@@ -385,6 +385,13 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       </div>
     </section>
   </main>
+
+  <!-- Standardized Related Content (Edge-to-Edge) -->
+  <RelatedContent 
+    currentCollection="services" 
+    currentId={parentService.id} 
+    tags={parentService.data.tags} 
+  />
 </Layout>
 
 <style>

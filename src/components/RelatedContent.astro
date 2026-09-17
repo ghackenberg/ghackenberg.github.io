@@ -1,0 +1,241 @@
+---
+import type { ContentCollectionName } from "../utils/related-content";
+import { getRelatedContent } from "../utils/related-content";
+import PostCard from "./PostCard.astro";
+import CourseCard from "./CourseCard.astro";
+import ProjectCard from "./ProjectCard.astro";
+import PublicationCard from "./PublicationCard.astro";
+import VisualizationCard from "./VisualizationCard.astro";
+import ServiceCard from "./ServiceCard.astro";
+
+interface Props {
+  currentCollection: ContentCollectionName;
+  currentId: string;
+  tags?: string[];
+  class?: string;
+}
+
+const {
+  currentCollection,
+  currentId,
+  tags = [],
+  class: className = "",
+} = Astro.props;
+
+const related = await getRelatedContent({
+  currentCollection,
+  currentId,
+  tags,
+});
+
+const totalRelated =
+  related.posts.length +
+  related.projects.length +
+  related.courses.length +
+  related.publications.length +
+  related.visualizations.length +
+  related.services.length;
+
+// Section configuration helper
+const sectionConfig = {
+  posts: {
+    title: "Blog Posts",
+    icon: "✍️",
+    hubHref: "/posts/",
+    hubLabel: "All Posts",
+    badgeClass: "bg-brand-blue/20 text-brand-blue border border-brand-blue/30",
+    hubLinkClass: "text-brand-blue",
+    gridClass: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
+  },
+  courses: {
+    title: "University Courses",
+    icon: "🎓",
+    hubHref: "/courses/",
+    hubLabel: "All Courses",
+    badgeClass: "bg-brand-yellow/20 text-brand-yellow border border-brand-yellow/30",
+    hubLinkClass: "text-brand-yellow",
+    gridClass: "grid grid-cols-1 md:grid-cols-2 gap-6",
+  },
+  projects: {
+    title: "Software Projects",
+    icon: "🚀",
+    hubHref: "/projects/",
+    hubLabel: "All Projects",
+    badgeClass: "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30",
+    hubLinkClass: "text-emerald-400",
+    gridClass: "grid grid-cols-1 md:grid-cols-2 gap-6",
+  },
+  services: {
+    title: "Business Services",
+    icon: "💼",
+    hubHref: "/services/",
+    hubLabel: "All Services",
+    badgeClass: "bg-brand-purple/20 text-brand-purple border border-brand-purple/30",
+    hubLinkClass: "text-brand-purple",
+    gridClass: "grid grid-cols-1 md:grid-cols-2 gap-6",
+  },
+  publications: {
+    title: "Reviewed Publications",
+    icon: "📚",
+    hubHref: "/publications/",
+    hubLabel: "All Publications",
+    badgeClass: "bg-brand-purple/20 text-brand-purple border border-brand-purple/30",
+    hubLinkClass: "text-brand-purple",
+    gridClass: "space-y-4 w-full",
+  },
+  visualizations: {
+    title: "Content Visualizations",
+    icon: "🌐",
+    hubHref: "/visualizations/",
+    hubLabel: "All Visualizations",
+    badgeClass: "bg-brand-green/20 text-brand-green border border-brand-green/30",
+    hubLinkClass: "text-brand-green",
+    gridClass: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
+  },
+};
+
+// Display order strictly follows main navigation: Posts, Courses, Projects, Services, Publications, Visualizations
+const orderedKeys: ContentCollectionName[] = [
+  "posts",
+  "courses",
+  "projects",
+  "services",
+  "publications",
+  "visualizations",
+];
+
+// Typed per-collection references (avoids inline generics in the JSX template)
+const relatedPosts = related.posts;
+const relatedProjects = related.projects;
+const relatedCourses = related.courses;
+const relatedVisualizations = related.visualizations;
+const relatedPublications = related.publications;
+const relatedServices = related.services;
+---
+
+{totalRelated > 0 && (
+  <aside class={`w-full pb-16 md:pb-24 relative z-10 ${className}`} aria-label="Related Content">
+    <div class="max-w-6xl mx-auto px-4 md:px-8">
+      <div class="pt-12 md:pt-16 border-t border-element-border space-y-16">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4 flex items-center gap-3.5">
+          <span>Related <span class="heading-gradient-brand">Content</span></span>
+          <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-element-bg border border-element-border-medium text-gray-400">
+            {totalRelated}
+          </span>
+        </h2>
+        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+          Discovered and ranked automatically based on shared topic tags. Matching tags are highlighted to reveal direct connections across articles, courses, projects, publications, and visualizations.
+        </p>
+      </div>
+
+      {orderedKeys.map((key) => {
+        const items = related[key];
+        if (!items || items.length === 0) return null;
+        const config = sectionConfig[key];
+
+      return (
+        <section class="space-y-6" id={`related-${key}`}>
+          <div class="flex items-center justify-between pb-3 border-b border-element-border">
+            <h3 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>{config.icon}</span>
+              <span>{config.title}</span>
+              <span class={`text-xs font-bold px-2 py-0.5 rounded-full ${config.badgeClass} ml-2`}>
+                {items.length}
+              </span>
+            </h3>
+            <a href={config.hubHref} class={`text-xs font-semibold ${config.hubLinkClass} hover:underline`}>
+              {config.hubLabel} &rarr;
+            </a>
+          </div>
+
+          <div class={config.gridClass}>
+            {key === "posts" &&
+              relatedPosts.map((post) => (
+                <PostCard
+                  id={post.id}
+                  title={post.data.title}
+                  description={post.data.description}
+                  pubDate={post.data.pubDate}
+                  icon={post.data.icon}
+                  tags={post.data.tags}
+                  activeTag={tags}
+                />
+              ))}
+
+            {key === "projects" &&
+              relatedProjects.map((project) => (
+                <ProjectCard
+                  title={project.data.title}
+                  tagline={project.data.tagline}
+                  description={project.data.description}
+                  href={`/projects/${project.id}/`}
+                  tags={project.data.tags}
+                  accentColor={project.data.accentColor}
+                  screenshot={project.data.screenshot}
+                  screenshotLight={project.data.screenshotLight}
+                  activeTag={tags}
+                />
+              ))}
+
+            {key === "courses" &&
+              relatedCourses.map((course) => (
+                <CourseCard
+                  title={course.data.title}
+                  description={course.data.description}
+                  href={`/courses/${course.id}/`}
+                  language={course.data.language}
+                  screenshot={course.data.screenshot}
+                  tags={course.data.tags}
+                  activeTag={tags}
+                />
+              ))}
+
+            {key === "visualizations" &&
+              relatedVisualizations.map((vis) => (
+                <VisualizationCard
+                  title={vis.data.title}
+                  description={vis.data.description}
+                  href={`/visualizations/${vis.id}/`}
+                  screenshot={vis.data.screenshot}
+                  tags={vis.data.tags}
+                  activeTag={tags}
+                />
+              ))}
+
+            {key === "publications" &&
+              relatedPublications.map((pub) => (
+                <PublicationCard
+                  id={pub.id}
+                  title={pub.data.title}
+                  author={pub.data.author}
+                  pubDate={pub.data.pubDate}
+                  book={pub.data.book}
+                  tags={pub.data.tags}
+                  icon={pub.data.icon}
+                  publisherUrl={pub.data.publisherUrl}
+                  activeTag={tags}
+                />
+              ))}
+
+            {key === "services" &&
+              relatedServices.map((service) => (
+                <ServiceCard
+                  id={service.id}
+                  title={service.data.title}
+                  tagline={service.data.tagline}
+                  description={service.data.description}
+                  tags={service.data.tags}
+                  previewImage={service.data.previewImage}
+                  ctaText={service.data.ctaText}
+                  activeTag={tags}
+                />
+              ))}
+          </div>
+        </section>
+      );
+    })}
+      </div>
+    </div>
+  </aside>
+)}

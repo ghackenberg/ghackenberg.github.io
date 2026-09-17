@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
+import RelatedContent from "../../components/RelatedContent.astro";
 import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 
@@ -239,10 +240,10 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
           </div>
         </section>
 
+
     <!-- Contact & Booking Section -->
     <section id="contact-services" class="py-16 mt-16 border-t border-element-border scroll-mt-24">
       <div class="max-w-3xl mx-auto text-center mb-12">
-
         <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
           Start a Conversation
         </h2>
@@ -293,6 +294,13 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
       </div>
     </section>
   </main>
+
+  <!-- Standardized Related Content (Edge-to-Edge) -->
+  <RelatedContent 
+    currentCollection="services" 
+    currentId={service.id} 
+    tags={service.data.tags} 
+  />
 </Layout>
 
 <style>

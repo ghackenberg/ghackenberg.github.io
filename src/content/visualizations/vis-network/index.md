@@ -5,8 +5,11 @@ screenshot:
   src: "./vis-network.png"
   title: "Vis.js Interactive Particle Network"
   description: "Two-dimensional node network with dynamic data clusters and fine interconnecting edges rendered on a dark background"
-colorClass: "hover:border-brand-blue/30 text-brand-blue bg-brand-blue/10 border-brand-blue/20"
-badgeColor: "bg-brand-blue/10 text-brand-blue border-brand-blue/20"
+tags:
+  - visjs
+  - data-visualization
+  - javascript
+  - web-development
 ---
 
 ## What Characterizes the Vis.js Visualization?

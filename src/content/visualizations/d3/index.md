@@ -5,8 +5,11 @@ screenshot:
   src: "./d3.png"
   title: "D3 Physics-Based Force Graph"
   description: "Physics-driven network diagram featuring centrifugally organized topic clusters and fine link lines on a dark background"
-colorClass: "hover:border-brand-purple/30 text-brand-purple bg-brand-purple/10 border-brand-purple/20"
-badgeColor: "bg-brand-purple/10 text-brand-purple border-brand-purple/20"
+tags:
+  - d3
+  - data-visualization
+  - javascript
+  - web-development
 ---
 
 ## What Characterizes the D3.js Visualization?

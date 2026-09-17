@@ -1,6 +1,7 @@
 ---
-title: "Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist"
+title: "Mindful IT & Calm Computing: Kognitive IT-Architektur"
 pubDate: "2026-09-02"
+lang: "de"
 description: "Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken."
 tags: ["artificial-intelligence", "calm-technology", "cognitive-ergonomics", "devops", "human-computer-interaction", "humane-tech", "local-first", "mindful-it", "psychology", "software-architecture"]
 icon:
