@@ -4,7 +4,6 @@ import SlideBase from '../primitives/SlideBase.astro';
 interface Props {
   title?: string;
   subtitle?: string;
-  badge?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
   cols?: 2 | 3 | 4;
@@ -14,7 +13,6 @@ interface Props {
 const {
   title,
   subtitle,
-  badge,
   slideNumber,
   totalSlides,
   cols = 2,
@@ -31,7 +29,6 @@ const gridCols = {
 <SlideBase
   title={title}
   subtitle={subtitle}
-  badge={badge}
   slideNumber={slideNumber}
   totalSlides={totalSlides}
   class={className}

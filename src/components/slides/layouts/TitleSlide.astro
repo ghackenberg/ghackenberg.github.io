@@ -4,7 +4,6 @@ import SlideBase from '../primitives/SlideBase.astro';
 interface Props {
   title: string;
   subtitle?: string;
-  badge?: string;
   cue?: string;
   speaker?: string;
   role?: string;
@@ -23,7 +22,6 @@ interface Props {
 const {
   title,
   subtitle,
-  badge = "KEYNOTE",
   cue,
   speaker,
   role,
@@ -43,21 +41,15 @@ const isCenter = align === "center";
 ---
 
 <SlideBase
-  badge={badge}
   slideNumber={slideNumber}
   totalSlides={totalSlides}
   showFooter={showFooter}
   class={className}
 >
   <div class={`h-full w-full flex flex-col justify-center max-w-6xl mx-auto py-6 px-4 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
-    <!-- Category / Keynote Badge & Date -->
-    {(badge || date || event) && (
+    <!-- Date & Event Header -->
+    {(date || event) && (
       <div class={`mb-8 flex flex-wrap items-center gap-4 ${isCenter ? 'justify-center' : 'justify-start'}`}>
-        {badge && (
-          <span class="inline-flex items-center px-6 py-2.5 rounded-full text-xl font-mono font-bold tracking-widest uppercase bg-blue-500/20 text-blue-400 light:bg-blue-100 light:text-blue-700 border border-blue-500/30 light:border-blue-300">
-            {badge}
-          </span>
-        )}
         {event && (
           <span class="text-lg lg:text-xl font-mono text-slate-400 light:text-slate-500 font-medium">
             {event}
@@ -101,9 +93,8 @@ const isCenter = align === "center";
         )}
 
         {(role || affiliation) && (
-          <div class={`text-2xl lg:text-3xl xl:text-[34px] text-slate-300 light:text-slate-600 font-normal flex flex-wrap items-center gap-4 ${isCenter ? 'justify-center' : 'justify-start'}`}>
+          <div class={`text-2xl lg:text-3xl xl:text-[34px] text-slate-300 light:text-slate-600 font-normal flex flex-col gap-2 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
             {role && <span>{role}</span>}
-            {role && affiliation && <span class="text-slate-500 light:text-slate-400">•</span>}
             {affiliation && <span class="text-slate-400 light:text-slate-500">{affiliation}</span>}
           </div>
         )}

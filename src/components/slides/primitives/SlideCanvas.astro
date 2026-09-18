@@ -2,7 +2,6 @@
 interface Props {
   title?: string;
   subtitle?: string;
-  badge?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
   class?: string;
@@ -11,7 +10,6 @@ interface Props {
 const {
   title,
   subtitle,
-  badge,
   slideNumber,
   totalSlides = 30,
   class: className = ""
@@ -25,11 +23,6 @@ const {
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      <!-- Technical dot grid background -->
-      <pattern id="slide-dot-grid" width="24" height="24" patternUnits="userSpaceOnUse">
-        <circle cx="2" cy="2" r="1.2" class="slide-dot-circle" />
-      </pattern>
-
       <!-- Soft gradient for subtle highlights -->
       <linearGradient id="primary-glow" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#2563eb" stop-opacity="0.12" />
@@ -44,7 +37,6 @@ const {
 
     <!-- Canvas Background -->
     <rect width="1920" height="1080" class="slide-canvas-bg" />
-    <rect width="1920" height="1080" fill="url(#slide-dot-grid)" />
     <rect width="1920" height="1080" fill="url(#primary-glow)" />
 
     <!-- Top Border Accent Line -->
@@ -52,39 +44,10 @@ const {
 
     <!-- Header Section -->
     {title && (
-      <g id="slide-header" transform="translate(100, 80)">
-        {badge && (
-          <g transform="translate(0, 0)">
-            <rect
-              x="0"
-              y="0"
-              width={badge.length * 10 + 28}
-              height="28"
-              rx="14"
-              fill="#2563eb"
-              fill-opacity="0.15"
-              stroke="#2563eb"
-              stroke-width="1.5"
-              stroke-opacity="0.4"
-            />
-            <text
-              x={badge.length * 5 + 14}
-              y="18"
-              text-anchor="middle"
-              fill="#3b82f6"
-              font-size="12"
-              font-weight="700"
-              letter-spacing="1.5"
-              font-family="'Outfit', 'Inter', sans-serif"
-            >
-              {badge.toUpperCase()}
-            </text>
-          </g>
-        )}
-
+      <g id="slide-header" transform="translate(100, 55)">
         <text
           x="0"
-          y={badge ? 55 : 35}
+          y="35"
           class="slide-title-text"
           font-size="46"
           font-weight="800"
@@ -97,7 +60,7 @@ const {
         {subtitle && (
           <text
             x="0"
-            y={badge ? 95 : 75}
+            y="75"
             class="slide-subtitle-text"
             font-size="22"
             font-weight="500"
@@ -123,7 +86,7 @@ const {
 
       <!-- Center: Domain -->
       <text x="860" y="0" text-anchor="middle" fill="#3b82f6" font-size="15" font-weight="700" font-family="'Outfit', sans-serif">
-        hackenberg.tech
+        https://hackenberg.tech
       </text>
 
       <!-- Right: Slide Number -->
@@ -144,16 +107,6 @@ const {
   html.light .slide-canvas-bg,
   .light .slide-canvas-bg {
     fill: #f8fafc !important;
-  }
-
-  .slide-dot-circle {
-    fill: #ffffff;
-    opacity: 0.08;
-  }
-  html.light .slide-dot-circle,
-  .light .slide-dot-circle {
-    fill: #cbd5e1 !important;
-    opacity: 0.45 !important;
   }
 
   .slide-title-text {

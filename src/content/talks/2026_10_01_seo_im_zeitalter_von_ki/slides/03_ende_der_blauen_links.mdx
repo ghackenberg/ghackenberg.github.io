@@ -24,11 +24,10 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="PARADIGMENWECHSEL"
   slideNumber="03"
   totalSlides="30"
 >
-  <BentoCard slot="left" cue="col-classic" title="Klassischer Web-Index (1998–2023)" badge="DOKUMENTEN-RETRIEVAL" accent="neutral">
+  <BentoCard slot="left" cue="col-classic" title="Klassischer Web-Index (1998–2023)" accent="neutral">
     <CalloutBox type="quote" color="neutral">
       <span class="text-blue-400 underline block font-mono text-xl mb-1">https://example.com/industriepumpen</span>
       <strong class="text-slate-100 light:text-slate-900 block font-bold mb-1">Hocheffiziente Industriepumpen für B2B</strong>
@@ -42,15 +41,15 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-modern" title="Synthese-Maschine (2024+)" badge="MULTIMODALE SYNTHESE" accent="blue">
-    <CalloutBox type="statement" color="blue" badge="AI OVERVIEW" title="Google / Perplexity / ChatGPT">
+  <BentoCard slot="right" cue="col-modern" title="Synthese-Maschine (2024+)" accent="blue">
+    <CalloutBox type="statement" color="blue" title="Google / Perplexity / ChatGPT">
       Für chemische Anlagen im B2B-Einsatz eignen sich Magnetkupplungspumpen nach ISO 2858. Führende europäische Hersteller bieten Wirkungsgrade über 82 % mit integrierter Sensorik.
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", accent: "blue", title: "Semantisches Verständnis", desc: "Sprachmodelle erfassen den Kontext hinter der Nutzerfrage." },
-      { icon: "check", accent: "blue", title: "Direkte Beantwortung", desc: "Zero-Click – Information wird sofort serviert." },
-      { icon: "check", accent: "blue", title: "Zitation entscheidet", desc: "Relevanz entsteht durch Nennung und Entitäts-Verankerung.", cue: "hl-zitation" }
+      { icon: "check", title: "Semantisches Verständnis", desc: "Sprachmodelle erfassen den Kontext hinter der Nutzerfrage." },
+      { icon: "check", title: "Direkte Beantwortung", desc: "Zero-Click – Information wird sofort serviert." },
+      { icon: "check", title: "Zitation entscheidet", desc: "Relevanz entsteht durch Nennung und Entitäts-Verankerung.", cue: "hl-zitation" }
     ]} />
   </BentoCard>
 </SplitSlide>

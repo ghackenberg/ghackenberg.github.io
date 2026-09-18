@@ -325,11 +325,20 @@ export class AudioSyncController {
 
   private fastForwardAllCues() {
     const slide = this.slides[this.currentIndex];
-    if (!slide?.cues) return;
-    for (const [cueId, cueVal] of Object.entries(slide.cues)) {
-      const timing = getCueTiming(cueVal);
-      this.triggeredCues.add(cueId);
-      this.fastForwardElement(cueId, timing);
+    if (slide?.cues) {
+      for (const [cueId, cueVal] of Object.entries(slide.cues)) {
+        const timing = getCueTiming(cueVal);
+        this.triggeredCues.add(cueId);
+        this.fastForwardElement(cueId, timing);
+      }
+    }
+    // Also ensure all data-cue elements on this slide are active in non-playing mode
+    const slideEl = document.querySelector(`.reveal .slides section[data-slide-index="${this.currentIndex}"]`);
+    if (slideEl) {
+      slideEl.querySelectorAll<HTMLElement>('[data-cue], .cue-target').forEach((el) => {
+        el.classList.remove('is-dimmed', 'is-exited');
+        el.classList.add('is-active');
+      });
     }
   }
 

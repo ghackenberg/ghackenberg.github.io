@@ -1,6 +1,6 @@
 ---
 title: "Das Begriffs-Quartett: SEO, AEO, GEO & AIO"
-subtitle: "Vier Optimierungsdisziplinen und ihre Zielsysteme in der 2x2-Matrix"
+subtitle: "Vier Optimierungsdisziplinen, ihre Zielsysteme und Erfolgsmetriken im Vergleich"
 number: "05"
 slideLayout: "matrix"
 voiceover: >
@@ -13,44 +13,68 @@ voiceover: >
   wie Google AI Overviews.
 notes: |
   - Zeit: 8:00 - 11:00 Min.
-  - Didaktik: 2x2 Matrix klar aufspannen:
-    X-Achse: Klassische Suche vs. Generatives Sprachmodell.
-    Y-Achse: Ziel Klick vs. Ziel Direktsynthese.
+  - Didaktik: Systematische Gegenüberstellung von SEO, AEO, GEO und AIO:
+    Plattform, Technologie-Mechanismus und unternehmerische Erfolgsmetrik (Klick vs. Zitation).
   - Eigene Systematik Dr. Georg Hackenberg (2026).
 ---
-import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
-import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import SlideBase from '../../../../components/slides/primitives/SlideBase.astro';
+import ComparisonTable from '../../../../components/slides/primitives/ComparisonTable.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
-<GridSlide
+<SlideBase
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="TERMINOLOGIE"
   slideNumber="05"
   totalSlides="30"
-  cols={2}
 >
-  <BentoCard cue="box-seo" title="SEO: Search Engine Optimization" badge="KLASSISCH" accent="neutral" density="compact">
-    <p><strong>Zielsystem:</strong> Google Web Search, Bing (10 blaue Links).</p>
-    <p><strong>Mechanismus:</strong> Keywords, Backlink-Autorität, PageSpeed & Core Web Vitals.</p>
-    <p><strong>Nutzerziel:</strong> Klick auf die eigene URL auf den <Highlight cue="hl-plaetze-eins-zehn" color="amber">Positionen 1 bis 10</Highlight>.</p>
-  </BentoCard>
-
-  <BentoCard cue="box-aeo" title="AEO: Answer Engine Optimization" badge="POSITION ZERO" accent="cyan" density="compact">
-    <p><strong>Zielsystem:</strong> Google Featured Snippets, Voice Search (Alexa, Siri).</p>
-    <p><strong>Mechanismus:</strong> Q&A-Struktur, Tabellen, Schema.org FAQPage-Markup.</p>
-    <p><strong>Nutzerziel:</strong> Direkte Beantwortung der Suchanfrage in <Highlight cue="hl-pos-zero" color="cyan">Position Zero</Highlight> über den organischen Links.</p>
-  </BentoCard>
-
-  <BentoCard cue="box-geo" title="GEO: Generative Engine Optimization" badge="LLM ZITATION" accent="blue" density="compact">
-    <p><strong>Zielsystem:</strong> ChatGPT Search, Perplexity AI, Claude Web Search.</p>
-    <p><strong>Mechanismus:</strong> GraphRAG, Information Gain, Entitäten-Autorität & Primärquellen.</p>
-    <p><strong>Nutzerziel:</strong> <Highlight cue="hl-llm-zitation" color="blue">Nennung als führende Marke</Highlight> in der generierten synthetischen Antwort.</p>
-  </BentoCard>
-
-  <BentoCard cue="box-aio" title="AIO: AI Overview Optimization" badge="HYBRIDE SUCHE" accent="indigo" density="compact">
-    <p><strong>Zielsystem:</strong> Google AI Overviews, Microsoft Copilot in Bing.</p>
-    <p><strong>Mechanismus:</strong> Kombination aus klassischem Rank-Graph und LLM-Chunk-Retrieval.</p>
-    <p><strong>Nutzerziel:</strong> Präsenz in den farbigen Quellencups und als <Highlight cue="hl-ki-snapshots" color="purple">Textzitat im Antwortblock</Highlight>.</p>
-  </BentoCard>
-</GridSlide>
+  <ComparisonTable
+    columns={["Disziplin", "Zielsystem", "Kernmechanismus", "Nutzerziel & Erfolgsmetrik"]}
+    rows={[
+      {
+        cue: "box-seo",
+        accent: "neutral",
+        title: "SEO",
+        subtitle: "Search Engine Optimization",
+        targetSystem: "Google & Bing Web Search (10 blaue Links)",
+        mechanism: "Keywords, Backlink-Autorität, PageSpeed & Core Web Vitals"
+      },
+      {
+        cue: "box-aeo",
+        accent: "cyan",
+        title: "AEO",
+        subtitle: "Answer Engine Optimization",
+        targetSystem: "Google Featured Snippets, Voice Search (Siri, Alexa)",
+        mechanism: "Q&A-Struktur, Tabellen, Schema.org FAQ-Markup"
+      },
+      {
+        cue: "box-geo",
+        accent: "blue",
+        title: "GEO",
+        subtitle: "Generative Engine Optimization",
+        targetSystem: "ChatGPT Search, Perplexity AI, Claude Web Search",
+        mechanism: "GraphRAG, Information Gain, Entitäten & Wissensgraphen"
+      },
+      {
+        cue: "box-aio",
+        accent: "indigo",
+        title: "AIO",
+        subtitle: "AI Overview Optimization",
+        targetSystem: "Google AI Overviews, Microsoft Copilot in Bing",
+        mechanism: "Kombination aus Rank-Graph und LLM-Chunk-Retrieval"
+      }
+    ]}
+  >
+    <div slot="goal-0">
+      Klick auf die eigene URL auf den <Highlight cue="hl-plaetze-eins-zehn" color="amber">Positionen 1 bis 10</Highlight> der organischen Treffer.
+    </div>
+    <div slot="goal-1">
+      Direkte Beantwortung in <Highlight cue="hl-pos-zero" color="cyan">Position Zero</Highlight> als Antwortbox über den organischen Links.
+    </div>
+    <div slot="goal-2">
+      <Highlight cue="hl-llm-zitation" color="blue">Nennung als führende Marke</Highlight> und Primärquelle in der synthetisierten KI-Antwort.
+    </div>
+    <div slot="goal-3">
+      Präsenz in Quellencups und als <Highlight cue="hl-ki-snapshots" color="purple">Textzitat im KI-Snapshot</Highlight> der Suchmaschine.
+    </div>
+  </ComparisonTable>
+</SlideBase>

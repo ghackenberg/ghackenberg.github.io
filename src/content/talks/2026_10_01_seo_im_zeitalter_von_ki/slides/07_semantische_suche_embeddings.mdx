@@ -27,11 +27,10 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="DATEN-ARCHITEKTUR"
   slideNumber="07"
   totalSlides="30"
 >
-  <BentoCard slot="left" cue="col-embeddings" title="Der semantische Vektorraum" badge="1536 DIMENSIONEN" accent="cyan">
+  <BentoCard slot="left" cue="col-embeddings" title="Der semantische Vektorraum" accent="cyan">
     <CalloutBox color="neutral" type="info">
       <p class="text-slate-400 font-mono text-lg">// Passage A: "Industrielle Wärmepumpe"</p>
       <p class="text-cyan-400 font-mono font-bold text-lg">[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
@@ -40,8 +39,8 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "→", accent: "cyan", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel." },
-      { icon: "→", accent: "cyan", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche Wiederholungen verzerren den Vektor und senken die semantische Relevanz." }
+      { icon: "→", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel." },
+      { icon: "→", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche Wiederholungen verzerren den Vektor und senken die semantische Relevanz." }
     ]}>
       <div slot="item-1">
         <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
@@ -51,12 +50,12 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </BulletList>
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit" badge="RELEVANZ-KRITERIUM" accent="blue">
+  <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit" accent="blue">
     <CalloutBox color="blue" type="takeaway" title="cos(θ) = (A · B) / (||A|| ||B||)">
       <p class="text-lg font-mono text-blue-300 light:text-blue-800 font-bold">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
     </CalloutBox>
 
-    <CalloutBox color="neutral" type="statement" badge="RETRIEVAL" title="Retrieval-Schwellenwert (Top-K)">
+    <CalloutBox color="neutral" type="statement" title="Retrieval-Schwellenwert (Top-K)">
       RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über <Highlight cue="hl-kosinus-threshold" color="blue">0.82</Highlight> liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
     </CalloutBox>
   </BentoCard>

@@ -502,7 +502,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
           const width = Math.floor(container.clientWidth * dpr);
           const height = Math.floor(container.clientHeight * dpr);
 
-          if (canvasEl.width !== width || canvasEl.height !== height) {
+          if (width > 0 && height > 0 && (canvasEl.width !== width || canvasEl.height !== height)) {
             canvasEl.width = width;
             canvasEl.height = height;
             glCtx.viewport(0, 0, width, height);
@@ -511,6 +511,18 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
 
         resize();
         window.addEventListener('resize', resize, { passive: true });
+
+        // Observe container size changes (e.g. Reveal.js slide transitions)
+        if ('ResizeObserver' in window) {
+          const ro = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+              if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+                resize();
+              }
+            }
+          });
+          ro.observe(container);
+        }
 
         // Motion tracking variables
         let targetX = 0;
@@ -551,9 +563,12 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             isVisible = entry.isIntersecting;
-            if (isVisible && animId === null) {
-              lastTimestamp = performance.now();
-              render(lastTimestamp);
+            if (isVisible) {
+              resize();
+              if (animId === null) {
+                lastTimestamp = performance.now();
+                render(lastTimestamp);
+              }
             }
           });
         }, { threshold: 0.05 });
@@ -565,6 +580,10 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
           if (!isVisible) {
             animId = null;
             return;
+          }
+
+          if (canvasEl.width === 0 || canvasEl.height === 0) {
+            resize();
           }
 
           const dt = Math.min((timestamp - lastTimestamp) / 1000, 0.1);

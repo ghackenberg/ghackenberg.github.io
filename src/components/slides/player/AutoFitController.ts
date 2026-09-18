@@ -101,7 +101,7 @@ export class AutoFitController {
 
     try {
       const cards = slideEl.querySelectorAll<HTMLElement>(
-        '.bento-card-root, .step-card, .metric-stat-card, .code-container-root, [data-autofit]'
+        '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]'
       );
       cards.forEach((card) => this.fitCard(card));
     } finally {

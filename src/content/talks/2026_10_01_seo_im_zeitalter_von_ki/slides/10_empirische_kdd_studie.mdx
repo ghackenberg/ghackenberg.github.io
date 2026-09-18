@@ -17,12 +17,11 @@ notes: |
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
 
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="WISSENSCHAFTLICHE EVIDENZ"
   slideNumber="10"
   totalSlides="30"
   ratio="40/60"
@@ -34,51 +33,42 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     unit="%"
     label="Maximale Zitationssteigerung in LLMs"
     sublabel="Studie: ACM SIGKDD 2024 (Princeton, Georgia Tech, Allen AI) über 10.000 Queries"
-    badge="ACM KDD 2024"
     color="green"
   />
 
-  <BentoCard slot="right" cue="kdd-bars" title="Effektivität von Optimierungs-Methoden" badge="BENCHMARK-STUDIE" accent="blue">
-    <div class="flex-1 flex flex-col justify-around gap-6 text-slate-200 light:text-slate-800">
-      <div>
-        <div class="flex justify-between text-lg lg:text-xl font-bold mb-2">
-          <span><Highlight cue="hl-cite-sources" color="emerald">Cite Sources (Quellen & Autoren belegen)</Highlight></span>
-          <span class="text-emerald-400 font-mono text-xl lg:text-2xl font-black">+40.2 %</span>
-        </div>
-        <div class="w-full h-5 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden p-0.5">
-          <div class="h-full bg-emerald-500 rounded-full" style="width: 90%;"></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="flex justify-between text-lg lg:text-xl font-bold mb-2">
-          <span>Quotation Addition (Fachzitate & O-Töne)</span>
-          <span class="text-cyan-400 font-mono text-xl lg:text-2xl font-black">+32.4 %</span>
-        </div>
-        <div class="w-full h-5 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden p-0.5">
-          <div class="h-full bg-cyan-500 rounded-full" style="width: 75%;"></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="flex justify-between text-lg lg:text-xl font-bold mb-2">
-          <span>Statistics Addition (Konkrete Messdaten)</span>
-          <span class="text-blue-400 font-mono text-xl lg:text-2xl font-black">+28.7 %</span>
-        </div>
-        <div class="w-full h-5 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden p-0.5">
-          <div class="h-full bg-blue-500 rounded-full" style="width: 65%;"></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="flex justify-between text-lg lg:text-xl font-bold mb-2">
-          <span><Highlight cue="hl-kdd-penalty" color="amber">Keyword Stuffing (Klassische SEO-Methode)</Highlight></span>
-          <span class="text-rose-400 font-mono text-xl lg:text-2xl font-black">-15.3 %</span>
-        </div>
-        <div class="w-full h-5 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden p-0.5">
-          <div class="h-full bg-rose-500 rounded-full" style="width: 25%;"></div>
-        </div>
-      </div>
-    </div>
+  <BentoCard slot="right" cue="kdd-bars" title="Effektivität von Optimierungs-Methoden" accent="blue">
+    <BarChart
+      unit="%"
+      items={[
+        {
+          label: "Cite Sources (Quellen & Autoren belegen)",
+          value: 40.2,
+          formattedValue: "+40.2 %",
+          accent: "emerald",
+          cue: "hl-cite-sources",
+          highlightColor: "emerald"
+        },
+        {
+          label: "Quotation Addition (Fachzitate & O-Töne)",
+          value: 32.4,
+          formattedValue: "+32.4 %",
+          accent: "cyan"
+        },
+        {
+          label: "Statistics Addition (Konkrete Messdaten)",
+          value: 28.7,
+          formattedValue: "+28.7 %",
+          accent: "blue"
+        },
+        {
+          label: "Keyword Stuffing (Klassische SEO-Methode)",
+          value: -15.3,
+          formattedValue: "-15.3 %",
+          accent: "rose",
+          cue: "hl-kdd-penalty",
+          highlightColor: "amber"
+        }
+      ]}
+    />
   </BentoCard>
 </SplitSlide>

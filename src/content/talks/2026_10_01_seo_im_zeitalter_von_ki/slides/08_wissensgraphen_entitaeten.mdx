@@ -16,9 +16,7 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import SlideMedia from '../../../../components/slides/primitives/SlideMedia.astro';
-import GraphNode from '../../../../components/slides/primitives/GraphNode.astro';
-import GraphEdge from '../../../../components/slides/primitives/GraphEdge.astro';
+import EntityGraphVisual from '../../../../components/slides/primitives/EntityGraphVisual.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
@@ -26,26 +24,15 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="ENTITÄTEN-MODELL"
   slideNumber="08"
   totalSlides="30"
   ratio="50/50"
 >
-  <SlideMedia slot="left" cue="graph-area" fit="contain" class="h-full p-4">
-    <svg viewBox="0 0 800 600" class="w-full h-full">
-      <GraphEdge id="edge-01" from={{x: 200, y: 280}} to={{x: 600, y: 140}} label="entwickelt" animated />
-      <GraphEdge id="edge-02" from={{x: 600, y: 140}} to={{x: 600, y: 440}} label="zertifiziert nach" animated />
-      <GraphEdge id="edge-03" from={{x: 200, y: 280}} to={{x: 200, y: 480}} label="Standort in" />
-      <GraphEdge id="edge-04" from={{x: 200, y: 480}} to={{x: 600, y: 440}} label="reguliert durch" curve="curved" />
+  <BentoCard slot="left" title="Semantisches Entitäten-Netzwerk" accent="cyan">
+    <EntityGraphVisual cue="graph-area" id="edge-01" />
+  </BentoCard>
 
-      <GraphNode id="node-org" x={200} y={280} label="Fronius International" type="Organization" color="blue" />
-      <GraphNode id="node-prod" x={600} y={140} label="Symo GEN24 Plus" type="Product" color="teal" />
-      <GraphNode id="node-std" x={600} y={440} label="VDE-AR-N 4105" type="Standard" color="indigo" />
-      <GraphNode id="node-loc" x={200} y={480} label="Pettenbach (OÖ)" type="Place" color="amber" />
-    </svg>
-  </SlideMedia>
-
-  <BentoCard slot="right" cue="bento-graph-benefits" title="Der Vorteil deterministischer Graphen" badge="VERIFIKATION" accent="blue">
+  <BentoCard slot="right" title="Der Vorteil deterministischer Graphen" accent="blue">
     <CalloutBox color="blue" type="takeaway" title="Tripel: Subjekt – Prädikat – Objekt">
       <p class="text-blue-200 light:text-blue-900 font-mono font-bold text-xl">
         [Unternehmen X] --(produziert)--> [Produkt Y] --(Norm)--> [ISO 9001]
@@ -53,13 +40,13 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </CalloutBox>
 
     <BulletList items={[
-      { num: "1", accent: "blue", title: "Keine Halluzinationen", desc: "Relationen sind im Graphen eindeutig verankert. Das Modell muss keine Zusammenhänge raten." },
-      { num: "2", accent: "blue", title: "Eindeutige URIs (@id)", desc: "Verhindert Verwechslungen gleichnamiger Marken und Produkte." },
-      { num: "3", accent: "blue", title: "Multi-Hop Reasoning", desc: "Ermöglicht der KI komplexe Schlussfolgerungen über mehrere Beziehungsebenen hinweg." }
+      { num: "1", title: "Deterministische Fakten" },
+      { num: "2", title: "Eindeutige URIs (@id)", desc: "Verhindert Verwechslungen gleichnamiger Marken und Produkte." },
+      { num: "3", title: "Multi-Hop Reasoning", desc: "Ermöglicht der KI komplexe Schlussfolgerungen über mehrere Beziehungsebenen hinweg." }
     ]}>
       <div slot="item-0">
         <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          <Highlight cue="hl-keine-hallu" color="emerald">Keine Halluzinationen:</Highlight> Relationen sind im Graphen eindeutig verankert. Das Modell muss keine Zusammenhänge raten.
+          <Highlight cue="hl-keine-hallu" color="emerald">Keine Halluzinationen:</Highlight> Relationen sind im Graphen eindeutig verankert. Das Modell muss Zusammenhänge nicht erraten.
         </p>
       </div>
     </BulletList>

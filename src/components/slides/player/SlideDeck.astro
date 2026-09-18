@@ -68,20 +68,21 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
               type="button"
               data-slide-index={idx}
               data-active={idx === 0 ? "true" : undefined}
-              class={`slide-list-item w-full text-left p-3 rounded-xl flex items-start gap-3 transition-all duration-200 cursor-pointer border ${
+              title={slide.title || `Folie ${idx + 1}`}
+              class={`slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 ${
                 idx === 0
                   ? 'bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold'
                   : 'bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700'
               }`}
             >
-              <span class={`font-mono text-xs px-2 py-0.5 rounded-md font-bold shrink-0 mt-0.5 ${
+              <span class={`font-mono text-xs px-2 py-0.5 rounded-md font-bold shrink-0 ${
                 idx === 0
                   ? 'bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800'
                   : 'bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600'
               }`}>
                 {String(idx + 1).padStart(2, '0')}
               </span>
-              <span class="text-xs sm:text-sm line-clamp-2 flex-1 leading-snug">
+              <span class="text-xs sm:text-sm truncate min-w-0 flex-1 leading-snug" title={slide.title || `Folie ${idx + 1}`}>
                 {slide.title || `Folie ${idx + 1}`}
               </span>
             </button>
@@ -335,15 +336,15 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
         const numBadge = item.querySelector('span:first-child');
         if (idx === currentIndex) {
           item.setAttribute('data-active', 'true');
-          item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-start gap-3 transition-all duration-200 cursor-pointer border bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold';
+          item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold';
           if (numBadge) {
-            numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800 font-bold shrink-0 mt-0.5';
+            numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800 font-bold shrink-0';
           }
         } else {
           item.removeAttribute('data-active');
-          item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-start gap-3 transition-all duration-200 cursor-pointer border bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700';
+          item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700';
           if (numBadge) {
-            numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600 font-bold shrink-0 mt-0.5';
+            numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600 font-bold shrink-0';
           }
         }
       });

@@ -20,7 +20,6 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
 <PipelineSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="AUTONOME WORKFLOWS"
   slideNumber="16"
   totalSlides="30"
 >
@@ -30,33 +29,25 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         cue: "step-loop-1",
         num: "01",
         title: "Perzeption",
-        desc: "Agent scannt Git-Diff, Markdown-Dateien und Quellcode auf Inkonsistenzen und fehlende Metadaten.",
-        badge: "CODE-AUDIT",
-        accent: "blue"
+        desc: "Agent scannt Git-Diff, Markdown-Dateien und Quellcode auf Inkonsistenzen und fehlende Metadaten."
       },
       {
         cue: "step-loop-2",
         num: "02",
         title: "Reasoning & Schema",
-        desc: "LLM-Reasoning erzeugt validen Schema.org @graph und optimiert Überschriften nach dem BLUF-Prinzip.",
-        badge: "SYNTHESE",
-        accent: "teal"
+        desc: "LLM-Reasoning erzeugt validen Schema.org @graph und optimiert Überschriften nach dem BLUF-Prinzip."
       },
       {
         cue: "step-loop-3",
         num: "03",
         title: "Automatischer Test",
-        desc: "Lighthouse-Audit prüft Core Web Vitals, Kontraste und Ladezeiten im lokalen Headless Chrome.",
-        badge: "QUALITY-GATE",
-        accent: "indigo"
+        desc: "Lighthouse-Audit prüft Core Web Vitals, Kontraste und Ladezeiten im lokalen Headless Chrome."
       },
       {
         cue: "step-loop-4",
         num: "04",
         title: "Edge Deployment",
-        desc: "Bei 100/100 Scores führt der Agent den Git-Commit aus und pusht auf die weltweite Edge-Infrastruktur.",
-        badge: "CI/CD",
-        accent: "green"
+        desc: "Bei 100/100 Scores führt der Agent den Git-Commit aus und pusht auf die weltweite Edge-Infrastruktur."
       }
     ]}
   />

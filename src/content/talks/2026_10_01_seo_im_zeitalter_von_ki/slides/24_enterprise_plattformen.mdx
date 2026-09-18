@@ -24,58 +24,51 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="ENTERPRISE DXP"
   slideNumber="24"
   totalSlides="30"
 >
-  <BentoCard slot="left" cue="col-aem" title="Adobe Experience Manager (AEM)" badge="EDGE DELIVERY" accent="blue">
-    <CalloutBox type="statement" color="blue" badge="EDGE CDN" title="AEM Edge Delivery Services">
+  <BentoCard slot="left" cue="col-aem" title="Adobe Experience Manager (AEM)" accent="blue">
+    <CalloutBox type="statement" color="blue" title="AEM Edge Delivery Services">
       <p><Highlight cue="hl-aem-edge" color="blue">Auslieferung direkt am weltweiten CDN-Edge.</Highlight> Garantiert 100er-Lighthouse-Scores für blitzschnelle Antwortzeiten bei KI-Crawlern.</p>
     </CalloutBox>
 
     <BulletList items={[
       {
         num: "1",
-        accent: "blue",
         title: "Adobe Sensei GenAI",
         desc: "Automatisches semantisches Tagging und Entitäten-Klassifizierung aller Inhalts-Fragmente."
       },
       {
         num: "2",
-        accent: "blue",
         title: "Content Fragments",
         desc: "Strukturierte Inhaltsblöcke werden parallel als maschinenlesbares JSON-LD ausgeliefert."
       },
       {
         num: "3",
-        accent: "blue",
         title: "Globale Konsistenz",
         desc: "Identische Entitäten und Taxonomien über hunderte weltweite Länderportale hinweg."
       }
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-sitecore" title="Sitecore XM Cloud & Content Hub" badge="SEMANTIC HUB" accent="cyan">
-    <CalloutBox type="statement" color="cyan" badge="SINGLE SOURCE" title="Zentraler B2B-Wissensgraph">
+  <BentoCard slot="right" cue="col-sitecore" title="Sitecore XM Cloud & Content Hub" accent="cyan">
+    <CalloutBox type="statement" color="cyan" title="Zentraler B2B-Wissensgraph">
       <p><Highlight cue="hl-single-source" color="cyan">Content Hub als Single Source of Truth</Highlight> für komplexe technische Produktdaten, CAD-Modelle und Zertifikate.</p>
     </CalloutBox>
 
     <BulletList items={[
       {
         num: "1",
-        accent: "cyan",
         title: "Sitecore Search & Vektoren",
         desc: "Bereitet proprietäre Produktdaten direkt für externe RAG-Bots und KI-Suchmaschinen auf."
       },
       {
         num: "2",
-        accent: "cyan",
         title: "GraphQL-Schnittstellen",
         desc: "Einheitliche Hochgeschwindigkeits-API für Webfrontend und direkte Modell-Injektion."
       },
       {
         num: "3",
-        accent: "cyan",
         title: "Headless DXP Architektur",
         desc: "Strikte Trennung von Inhaltsverwaltung und extrem schneller Auslieferungsschicht."
       }

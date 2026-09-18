@@ -21,26 +21,36 @@ import BentoCard from '../../../../components/slides/primitives/BentoCard.astro'
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
+import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
 
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="ABSCHLUSS & DISKUSSION"
   slideNumber="30"
   totalSlides="30"
 >
-  <BentoCard slot="left" cue="col-qa-questions" title="Impulsfragen für die Diskussion" badge="DISKUSSIONSRUNDE" accent="blue">
+  <BentoCard slot="left" cue="col-qa-questions" title="Impulsfragen für die Diskussion" accent="blue">
     <BulletList items={[
-      { num: "1", accent: "blue", title: "Klick-Rückgang", desc: "Spüren Sie in Ihrem Unternehmen bereits den Rückgang von organischem Klick-Traffic durch generative AI Overviews?" },
-      { num: "2", accent: "cyan", title: "Agenten & Governance", desc: "Welche Bedenken oder Governance-Anforderungen bestehen beim Einsatz lokaler autonomer Entwickler-Agenten (MCP)?" },
-      { num: "3", accent: "purple", title: "Zuständigkeit im Betrieb", desc: "Wer im Betrieb übernimmt künftig die Verantwortung für den semantischen Wissensgraphen – Marketing, Produkt oder IT?" }
+      { num: "1", title: "Klick-Rückgang", desc: "Spüren Sie in Ihrem Unternehmen bereits den Rückgang von organischem Klick-Traffic durch generative AI Overviews?" },
+      { num: "2", title: "Agenten & Governance", desc: "Welche Bedenken oder Governance-Anforderungen bestehen beim Einsatz lokaler autonomer Entwickler-Agenten (MCP)?" },
+      { num: "3", title: "Zuständigkeit im Betrieb", desc: "Wer im Betrieb übernimmt künftig die Verantwortung für den semantischen Wissensgraphen – Marketing, Produkt oder IT?" }
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-qa-contact" title="Kontakt & Ressourcen" badge="NETZWERK" accent="cyan">
-    <CalloutBox color="cyan" type="takeaway" badge="SPEAKER" title="Dr. rer. nat. Georg Hackenberg">
-      <p class="text-xl text-slate-200 light:text-slate-800 font-semibold">Professor für Informatik und Industriesysteme</p>
-      <p class="text-base text-cyan-400 light:text-cyan-700 font-medium">FH Oberösterreich · Campus Wels</p>
+  <BentoCard slot="right" cue="col-qa-contact" title="Kontakt & Ressourcen" accent="cyan">
+    <CalloutBox color="cyan" type="takeaway">
+      <div class="flex items-center gap-6">
+        <div class="relative w-44 h-44 lg:w-48 lg:h-48 shrink-0">
+          <Avatar3D class="w-full h-full" />
+        </div>
+        <div class="flex flex-col justify-center min-w-0">
+          <h4 class="font-black text-2xl lg:text-3xl tracking-tight leading-snug text-slate-100 light:text-slate-900">
+            Dr. rer. nat. Georg Hackenberg
+          </h4>
+          <p class="text-xl text-slate-200 light:text-slate-800 font-semibold mt-1">Professor für Informatik und Industriesysteme</p>
+          <p class="text-lg text-cyan-400 light:text-cyan-700 font-medium mt-0.5">FH Oberösterreich · Campus Wels</p>
+        </div>
+      </div>
     </CalloutBox>
 
     <CalloutBox color="neutral" type="info">
