@@ -1,14 +1,28 @@
 import { Howl } from 'howler';
 import { animate } from 'motion';
 
+export type CueTiming = number | { start: number; duration?: number; end?: number };
+
 export interface SlideCueMap {
-  [cueId: string]: number; // timestamp in seconds
+  [cueId: string]: CueTiming;
 }
 
 export interface SlideData {
   id: string;
   audioUrl?: string;
   cues?: SlideCueMap;
+}
+
+function getCueTiming(val: CueTiming | undefined): { start: number; duration: number; end?: number } {
+  if (val === undefined) return { start: 0, duration: 0.5 };
+  if (typeof val === 'number') {
+    return { start: val, duration: 0.5 };
+  }
+  return {
+    start: val.start,
+    duration: val.duration ?? 0.5,
+    end: val.end
+  };
 }
 
 export class AudioSyncController {
@@ -65,8 +79,17 @@ export class AudioSyncController {
 
     this.currentHowl = new Howl({
       src: [slide.audioUrl],
-      html5: true, // stream audio
+      html5: false, // Use Web Audio API for exact duration & timing without streaming bugs
       rate: this.playbackRate,
+      onload: () => {
+        const total = this.currentHowl?.duration();
+        const totalSec = (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
+        if (this.onProgressCallback) {
+          const current = this.currentHowl?.seek();
+          const currentSec = (typeof current === 'number' && Number.isFinite(current)) ? current : 0;
+          this.onProgressCallback(currentSec, totalSec);
+        }
+      },
       onplay: () => {
         this.isPlaying = true;
         this.notifyPlayState(true);
@@ -112,24 +135,21 @@ export class AudioSyncController {
 
     this.nextHowl = new Howl({
       src: [nextSlide.audioUrl],
-      html5: true,
+      html5: false,
       preload: true
     });
   }
 
   public play() {
-    if (this.currentHowl) {
+    if (this.currentHowl && !this.currentHowl.playing()) {
       this.currentHowl.play();
-    } else {
-      const slide = this.slides[this.currentIndex];
-      if (slide?.audioUrl) {
-        this.loadSlideAudio(slide, true);
-      }
+    } else if (!this.currentHowl) {
+      this.setSlideIndex(this.currentIndex, true);
     }
   }
 
   public pause() {
-    if (this.currentHowl) {
+    if (this.currentHowl && this.currentHowl.playing()) {
       this.currentHowl.pause();
     }
   }
@@ -142,6 +162,18 @@ export class AudioSyncController {
     }
   }
 
+  public seek(targetSec: number) {
+    if (this.currentHowl) {
+      this.currentHowl.seek(targetSec);
+      this.syncCuesToTime(targetSec);
+      if (this.onProgressCallback) {
+        const total = this.currentHowl.duration();
+        const totalSec = (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
+        this.onProgressCallback(targetSec, totalSec);
+      }
+    }
+  }
+
   public setRate(rate: number) {
     this.playbackRate = rate;
     if (this.currentHowl) {
@@ -149,28 +181,25 @@ export class AudioSyncController {
     }
   }
 
-  public seek(seconds: number) {
-    if (this.currentHowl) {
-      this.currentHowl.seek(seconds);
-      this.syncCuesToTime(seconds);
-    }
-  }
-
   private startTickLoop() {
     this.stopTickLoop();
-    const tick = () => {
-      if (this.currentHowl && this.isPlaying) {
-        const currentSec = (this.currentHowl.seek() as number) || 0;
-        const totalSec = this.currentHowl.duration() || 0;
 
-        this.checkCues(currentSec);
+    const tick = () => {
+      if (this.currentHowl && this.currentHowl.playing()) {
+        const current = this.currentHowl.seek();
+        const currentSec = (typeof current === 'number' && Number.isFinite(current)) ? current : 0;
+        const total = this.currentHowl.duration();
+        const totalSec = (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
 
         if (this.onProgressCallback) {
           this.onProgressCallback(currentSec, totalSec);
         }
+
+        this.checkCues(currentSec);
       }
       this.rafId = requestAnimationFrame(tick);
     };
+
     this.rafId = requestAnimationFrame(tick);
   }
 
@@ -185,10 +214,11 @@ export class AudioSyncController {
     const slide = this.slides[this.currentIndex];
     if (!slide?.cues) return;
 
-    for (const [cueId, timestamp] of Object.entries(slide.cues)) {
-      if (currentSec >= timestamp && !this.triggeredCues.has(cueId)) {
+    for (const [cueId, cueVal] of Object.entries(slide.cues)) {
+      const timing = getCueTiming(cueVal);
+      if (currentSec >= timing.start && !this.triggeredCues.has(cueId)) {
         this.triggeredCues.add(cueId);
-        this.triggerAnimation(cueId);
+        this.triggerAnimation(cueId, timing);
       }
     }
   }
@@ -197,10 +227,11 @@ export class AudioSyncController {
     const slide = this.slides[this.currentIndex];
     if (!slide?.cues) return;
 
-    for (const [cueId, timestamp] of Object.entries(slide.cues)) {
-      if (currentSec >= timestamp) {
+    for (const [cueId, cueVal] of Object.entries(slide.cues)) {
+      const timing = getCueTiming(cueVal);
+      if (currentSec >= timing.start) {
         this.triggeredCues.add(cueId);
-        this.fastForwardElement(cueId);
+        this.fastForwardElement(cueId, timing, currentSec);
       } else {
         this.triggeredCues.delete(cueId);
         this.resetElement(cueId);
@@ -211,29 +242,37 @@ export class AudioSyncController {
   private fastForwardAllCues() {
     const slide = this.slides[this.currentIndex];
     if (!slide?.cues) return;
-    for (const cueId of Object.keys(slide.cues)) {
+    for (const [cueId, cueVal] of Object.entries(slide.cues)) {
+      const timing = getCueTiming(cueVal);
       this.triggeredCues.add(cueId);
-      this.fastForwardElement(cueId);
+      this.fastForwardElement(cueId, timing);
     }
   }
 
-  private triggerAnimation(cueId: string) {
+  private triggerAnimation(cueId: string, timing: { start: number; duration: number; end?: number }) {
     const el = document.getElementById(cueId);
     if (!el) return;
 
-    // Smooth entry animation for target element
-    animate(
-      el,
-      {
-        opacity: [0, 1],
-        scale: [0.96, 1],
-        y: [12, 0]
-      },
-      {
-        duration: 0.5,
-        ease: [0.16, 1, 0.3, 1]
-      }
-    );
+    el.style.setProperty('--cue-duration', `${timing.duration}s`);
+    el.classList.add('is-active');
+    el.classList.remove('is-dimmed');
+
+    // Smooth entry animation for non-inline target elements
+    const isHighlight = el.classList.contains('highlight-marker');
+    if (!isHighlight) {
+      animate(
+        el,
+        {
+          opacity: [0, 1],
+          scale: [0.96, 1],
+          y: [12, 0]
+        },
+        {
+          duration: Math.min(timing.duration, 0.6),
+          ease: [0.16, 1, 0.3, 1]
+        }
+      );
+    }
 
     // If element contains vector paths, animate line drawing
     const paths = el.querySelectorAll('path.graph-edge-path');
@@ -242,17 +281,35 @@ export class AudioSyncController {
     }
   }
 
-  private fastForwardElement(cueId: string) {
+  private fastForwardElement(cueId: string, timing: { start: number; duration: number; end?: number }, currentSec?: number) {
     const el = document.getElementById(cueId);
     if (!el) return;
-    el.style.opacity = '1';
-    el.style.transform = 'none';
+    el.style.setProperty('--cue-duration', `${timing.duration}s`);
+    el.classList.add('is-active');
+
+    const isHighlight = el.classList.contains('highlight-marker');
+    if (timing.end !== undefined && currentSec !== undefined && currentSec > timing.end) {
+      if (!isHighlight) {
+        el.classList.add('is-dimmed');
+        el.classList.remove('is-active');
+      }
+    } else {
+      el.classList.remove('is-dimmed');
+    }
+
+    if (!isHighlight) {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    }
   }
 
   private resetElement(cueId: string) {
     const el = document.getElementById(cueId);
     if (!el) return;
-    el.style.opacity = '0.15';
+    el.classList.remove('is-active', 'is-dimmed');
+    if (!el.classList.contains('highlight-marker')) {
+      el.style.opacity = '0.2';
+    }
   }
 
   private notifyPlayState(state: boolean) {

@@ -7,70 +7,71 @@ voiceover: >
   Wie messen wir den Erfolg im Zeitalter der KIs? 
   {cue:col-plausible-dash} Mit Plausible Analytics. 
   {cue:col-plausible-privacy} Viele Unternehmen verlieren 40 Prozent ihrer Besucher allein durch abstoßende Cookie-Banner. 
-  Plausible benötigt keinerlei Cookies und ist zu 100 Prozent DSGVO-konform. 
-  Das Skript ist kleiner als ein Kilobyte – und es liefert uns die spannendste Metrik der Zukunft: 
-  Exakte Referral-Daten, wie viele Anfragen direkt von chatgpt.com, perplexity.ai oder claude.ai auf unsere 
-  Website überschwappen.
+  Plausible benötigt keinerlei Cookies und ist {cue:hl-plausible-nobanner}zu 100 Prozent DSGVO-konform{/cue}. 
+  Das Skript ist kleiner als ein Kilobyte – und {cue:hl-plausible-verweildauer}Besucher über KIs verweilen viermal länger{/cue}, 
+  weil sie bereits vorqualifiziert sind. Exakte Referral-Daten zeigen sofort, wie viele Anfragen direkt von chatgpt.com, 
+  perplexity.ai oder claude.ai auf unsere Website überschwappen.
 notes: |
   - Zeit: 46:00 - 48:00 Min.
   - DSGVO Art. 5/6 & ePrivacy Richtlinie zitieren.
   - Den B2B-Unternehmen die Augen öffnen: Wer die Nutzer mit Cookie-Bannern quält, verliert Interessenten; cookiefreie Analytik ist schneller, sauberer und datenschutzrechtlich sicher.
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
-import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="DATENSCHUTZ & ANALYTICS" slideNumber="20" totalSlides="30">
-  {/**/}
-  <BentoBox id="col-plausible-dash" x={0} y={40} width={830} height={680} title="KI-Referrer Dashboard" badge="PLAUSIBLE ANALYTICS" accent="blue">
-    <div class="space-y-6">
-      <div class="p-6 rounded-xl bg-slate-900 text-slate-100 space-y-4">
-        <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
-          <span>REFERRAL SOURCE</span>
-          <span>BESUCHER (30 TAGE)</span>
-        </div>
-        <div class="space-y-3 font-mono text-sm">
-          <div class="flex justify-between items-center text-blue-400 font-bold">
-            <span class="flex items-center gap-2">🤖 chatgpt.com</span>
-            <span>1.420 (High Intent)</span>
-          </div>
-          <div class="flex justify-between items-center text-cyan-400 font-bold">
-            <span class="flex items-center gap-2">🔍 perplexity.ai</span>
-            <span>890 (Research)</span>
-          </div>
-          <div class="flex justify-between items-center text-indigo-400 font-bold">
-            <span class="flex items-center gap-2">🧠 claude.ai</span>
-            <span>340 (Technical)</span>
-          </div>
-          <div class="flex justify-between items-center text-slate-400">
-            <span>google.com (Organic)</span>
-            <span>2.110 (Decreasing)</span>
-          </div>
-        </div>
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="DATENSCHUTZ & ANALYTICS"
+  slideNumber="20"
+  totalSlides="30"
+>
+  <BentoCard slot="left" cue="col-plausible-dash" title="KI-Referrer Dashboard" badge="PLAUSIBLE ANALYTICS" accent="blue">
+    <div class="p-6 rounded-2xl bg-slate-950/80 border border-slate-800 text-slate-100 space-y-4 my-auto">
+      <div class="flex justify-between items-center text-sm lg:text-base text-slate-400 border-b border-slate-800 pb-3 font-mono uppercase tracking-wider">
+        <span>Referral Source</span>
+        <span>Besucher (30 Tage)</span>
       </div>
-
-      <div class="p-4 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 leading-relaxed">
-        <strong>Beobachtung:</strong> Besucher, die über ChatGPT oder Perplexity kommen, haben eine 4-mal längere Verweildauer, weil sie bereits mit Vorwissen auf die Produktseite geleitet wurden.
+      <div class="space-y-3 font-mono text-base lg:text-lg">
+        <div class="flex justify-between items-center text-blue-400 font-bold">
+          <span class="flex items-center gap-3 text-lg lg:text-xl">🤖 chatgpt.com</span>
+          <span>1.420 (High Intent)</span>
+        </div>
+        <div class="flex justify-between items-center text-cyan-400 font-bold">
+          <span class="flex items-center gap-3 text-lg lg:text-xl">🔍 perplexity.ai</span>
+          <span>890 (Research)</span>
+        </div>
+        <div class="flex justify-between items-center text-indigo-400 font-bold">
+          <span class="flex items-center gap-3 text-lg lg:text-xl">🧠 claude.ai</span>
+          <span>340 (Technical)</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-400">
+          <span class="flex items-center gap-3 text-lg lg:text-xl">🌐 google.com (Organic)</span>
+          <span>2.110 (Decreasing)</span>
+        </div>
       </div>
     </div>
-  </BentoBox>
 
-  {/**/}
-  <BentoBox id="col-plausible-privacy" x={890} y={40} width={830} height={680} title="DSGVO-Exzellenz ohne Reibungsverlust" badge="KEIN BANNER NÖTIG" accent="teal">
-    <div class="space-y-5 text-slate-700 text-base">
-      <div class="flex items-start gap-3">
-        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
-        <span><strong>100 % Cookie-Frei:</strong> Keine Speicherung personenbezogener Daten, keine IP-Adress-Verarbeitung.</span>
+    <div class="p-4 rounded-xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20 text-base lg:text-lg text-blue-300 light:text-blue-900 leading-relaxed">
+      <strong>Erkenntnis:</strong> Besucher über ChatGPT oder Perplexity haben eine <Highlight cue="hl-plausible-verweildauer" color="emerald">4-mal längere Verweildauer</Highlight>, weil sie bereits hochqualifiziert auf die Zielseite gelangen.
+    </div>
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-plausible-privacy" title="DSGVO-Exzellenz ohne Reibung" badge="KEIN BANNER NÖTIG" accent="cyan">
+    <div class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl my-auto">
+      <div class="flex items-start gap-4">
+        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 light:bg-cyan-100 light:text-cyan-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
+        <span><strong>Keine Cookies, kein Fingerprinting:</strong> <Highlight cue="hl-plausible-nobanner" color="blue">Vollständig konform mit DSGVO</Highlight>, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner.</span>
       </div>
-
-      <div class="flex items-start gap-3">
-        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
-        <span><strong>Kein Zustimmungsbanner:</strong> Maximale Konversionsrate ohne nervige Popups oder Abbrüche.</span>
+      <div class="flex items-start gap-4">
+        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 light:bg-cyan-100 light:text-cyan-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
+        <span><strong>Unter 1 KB Ladezeit:</strong> Verhindert jegliche Performance-Einbußen und garantiert maximale Ladezeiten für KI-Crawler.</span>
       </div>
-
-      <div class="flex items-start gap-3">
-        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
-        <span><strong>Federleichte Ladezeit (&lt; 1 KB):</strong> Im Vergleich zu Google Analytics (45 KB) hat Plausible keinen messbaren Einfluss auf den LCP-Wert.</span>
+      <div class="flex items-start gap-4">
+        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 light:bg-cyan-100 light:text-cyan-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
+        <span><strong>100 % Datenqualität:</strong> Vollständige Erfassung des realen Traffics ohne 40 % Datenverlust durch Banner-Ablehnungen.</span>
       </div>
     </div>
-  </BentoBox>
-</SlideCanvas>
+  </BentoCard>
+</SplitSlide>

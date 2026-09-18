@@ -15,18 +15,20 @@ notes: |
   - Grundlagen-Paper zitieren: Lewis et al. (Meta AI / UCL, NeurIPS 2020).
   - Wichtig: Betonen, dass der Webseiten-Text nicht mehr direkt vom Menschen gelesen wird, sondern als "Kontext-Futter" für den Prompt dient!
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="TECHNOLOGISCHE BASIS" slideNumber="06" totalSlides="30">
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="TECHNOLOGISCHE BASIS"
+  slideNumber="06"
+  totalSlides="30"
+>
   <Pipeline
-    x={0}
-    y={60}
-    width={1720}
-    height={620}
     steps={[
       {
-        id: "step-query",
+        cue: "step-query",
         num: "01",
         title: "Anfrage-Parsing",
         desc: "Nutzerfrage wird in semantische Absicht (Intent) und gesuchte Entitäten zerlegt.",
@@ -34,7 +36,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "blue"
       },
       {
-        id: "step-retrieval",
+        cue: "step-retrieval",
         num: "02",
         title: "Live-Web-Retrieval",
         desc: "Vektorsuche ruft die Top-Text-Chunks aus dem aktuellen Index ab. Nur hochrelevante Absätze kommen weiter.",
@@ -42,7 +44,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "teal"
       },
       {
-        id: "step-injection",
+        cue: "step-injection",
         num: "03",
         title: "Kontext-Injektion",
         desc: "Die gefundenen Chunks werden zusammen mit System-Instruktionen in das Context Window des LLMs injiziert.",
@@ -50,7 +52,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "indigo"
       },
       {
-        id: "step-synthesis",
+        cue: "step-synthesis",
         num: "04",
         title: "LLM-Synthese",
         desc: "Das Modell erzeugt die finale Antwort mit Zitations-Chips basierend auf den injizierten Daten.",
@@ -59,4 +61,4 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
       }
     ]}
   />
-</SlideCanvas>
+</PipelineSlide>

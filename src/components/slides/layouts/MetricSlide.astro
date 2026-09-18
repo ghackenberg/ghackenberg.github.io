@@ -1,0 +1,41 @@
+---
+import SlideBase from '../primitives/SlideBase.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  badge?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  badge,
+  slideNumber,
+  totalSlides,
+  class: className = ""
+} = Astro.props;
+---
+
+<SlideBase
+  title={title}
+  subtitle={subtitle}
+  badge={badge}
+  slideNumber={slideNumber}
+  totalSlides={totalSlides}
+  class={className}
+>
+  <div class="h-full w-full flex flex-col justify-between gap-8 min-h-0">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch flex-1 min-h-0">
+      <slot name="metrics" />
+    </div>
+    {Astro.slots.has('default') && (
+      <div class="shrink-0">
+        <slot />
+      </div>
+    )}
+  </div>
+</SlideBase>

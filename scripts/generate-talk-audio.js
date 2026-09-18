@@ -54,36 +54,54 @@ function parseFrontmatter(content) {
 }
 
 /**
- * Extracts cues from text and cleans text for speech synthesis
+ * Extracts cues (both point cues and span cues) from text and cleans text for speech synthesis
  * @param {string} rawVoiceover
  * @returns {{
  *   cleanText: string;
- *   cueTargets: Array<{ id: string; targetWordIndex: number }>;
+ *   cues: Array<{ id: string; startWordIndex: number; endWordIndex?: number }>;
  * }}
  */
 function extractCuesAndCleanText(rawVoiceover) {
-  const cueRegex = /\{cue:([a-zA-Z0-9_-]+)\}/g;
-  /** @type {Array<{ id: string; indexInRaw: number }>} */
+  const tagRegex = /\{cue:([a-zA-Z0-9_-]+)\}|\{\/cue\}/g;
+  let cleanText = '';
+  /** @type {Array<{ id: string; startWordIndex: number; endWordIndex?: number }>} */
   const cues = [];
+  /** @type {Array<{ id: string; startWordIndex: number; endWordIndex?: number }>} */
+  const openSpans = [];
+
+  let lastIndex = 0;
+  let currentWordCount = 0;
   let match;
-  while ((match = cueRegex.exec(rawVoiceover)) !== null) {
-    cues.push({ id: match[1], indexInRaw: match.index });
+
+  while ((match = tagRegex.exec(rawVoiceover)) !== null) {
+    const textBefore = rawVoiceover.slice(lastIndex, match.index);
+    if (textBefore) {
+      cleanText += textBefore;
+      const words = textBefore.trim().split(/\s+/).filter(Boolean);
+      currentWordCount += words.length;
+    }
+    lastIndex = tagRegex.lastIndex;
+
+    if (match[0].startsWith('{cue:')) {
+      const id = match[1];
+      const cueObj = { id, startWordIndex: currentWordCount };
+      cues.push(cueObj);
+      openSpans.push(cueObj);
+    } else if (match[0] === '{/cue}') {
+      const lastSpan = openSpans.pop();
+      if (lastSpan) {
+        lastSpan.endWordIndex = currentWordCount;
+      }
+    }
   }
 
-  // Remove cue tags to create spoken text
-  const cleanText = rawVoiceover.replace(cueRegex, '').replace(/\s+/g, ' ').trim();
+  const trailingText = rawVoiceover.slice(lastIndex);
+  if (trailingText) {
+    cleanText += trailingText;
+  }
 
-  // Find target word index for each cue
-  const cueTargets = cues.map((cue) => {
-    const textBeforeCue = rawVoiceover.slice(0, cue.indexInRaw).replace(cueRegex, '').trim();
-    const wordsBefore = textBeforeCue ? textBeforeCue.split(/\s+/).length : 0;
-    return {
-      id: cue.id,
-      targetWordIndex: wordsBefore
-    };
-  });
-
-  return { cleanText, cueTargets };
+  cleanText = cleanText.replace(/\s+/g, ' ').trim();
+  return { cleanText, cues };
 }
 
 /**
@@ -148,7 +166,7 @@ async function generateAllTalkAudio() {
 
       console.log(`  ▶ Synthesizing audio for: ${slideId}...`);
 
-      const { cleanText, cueTargets } = extractCuesAndCleanText(voiceover);
+      const { cleanText, cues } = extractCuesAndCleanText(voiceover);
 
       try {
         // Use German neural voice by default
@@ -160,7 +178,7 @@ async function generateAllTalkAudio() {
 
         /** @type {Buffer[]} */
         const audioChunks = [];
-        /** @type {Array<{ offsetSec: number; text: string }>} */
+        /** @type {Array<{ offsetSec: number; durationSec: number; text: string }>} */
         const wordBoundaries = [];
 
         for await (const chunk of communicate.stream()) {
@@ -169,7 +187,8 @@ async function generateAllTalkAudio() {
           } else if (chunk.type === 'WordBoundary') {
             // chunk.offset is in 100ns units -> / 10,000,000 for seconds
             const sec = (chunk.offset || 0) / 10000000;
-            wordBoundaries.push({ offsetSec: sec, text: chunk.text || '' });
+            const dur = (chunk.duration || 0) / 10000000;
+            wordBoundaries.push({ offsetSec: sec, durationSec: dur, text: chunk.text || '' });
           }
         }
 
@@ -183,16 +202,30 @@ async function generateAllTalkAudio() {
         fs.writeFileSync(mp3Path, finalAudioBuffer);
 
         // Compute Cues Map
-        /** @type {Record<string, number>} */
+        /** @type {Record<string, { start: number; duration?: number; end?: number }>} */
         const cuesMap = {};
-        for (const cue of cueTargets) {
+        for (const cue of cues) {
           if (wordBoundaries.length === 0) {
-            cuesMap[cue.id] = 0;
-          } else if (cue.targetWordIndex < wordBoundaries.length) {
-            cuesMap[cue.id] = Number(wordBoundaries[cue.targetWordIndex].offsetSec.toFixed(2));
+            cuesMap[cue.id] = { start: 0, duration: 0.5 };
+            continue;
+          }
+          const startIndex = Math.min(cue.startWordIndex, wordBoundaries.length - 1);
+          const startSec = Number(wordBoundaries[startIndex].offsetSec.toFixed(2));
+
+          if (cue.endWordIndex !== undefined) {
+            const endIndex = Math.min(Math.max(cue.endWordIndex - 1, startIndex), wordBoundaries.length - 1);
+            const endBoundary = wordBoundaries[endIndex];
+            const endSec = Number(((endBoundary.offsetSec || 0) + (endBoundary.durationSec || 0)).toFixed(2));
+            const durationSec = Number(Math.max(0.1, endSec - startSec).toFixed(2));
+            cuesMap[cue.id] = {
+              start: startSec,
+              duration: durationSec,
+              end: endSec
+            };
           } else {
-            const last = wordBoundaries[wordBoundaries.length - 1];
-            cuesMap[cue.id] = Number(last.offsetSec.toFixed(2));
+            cuesMap[cue.id] = {
+              start: startSec
+            };
           }
         }
 

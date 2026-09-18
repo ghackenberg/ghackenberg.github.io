@@ -8,60 +8,58 @@ voiceover: >
   dem größten Paradigmenwechsel der Websuche seit 25 Jahren. {cue:intro-graph} Suchmaschinen 
   listen nicht mehr nur Hyperlinks auf – sie lesen, analysieren und synthetisieren Inhalte direkt. 
   In dieser Stunde zeige ich Ihnen, wie sich oberösterreichische Industrie- und B2B-Unternehmen 
-  in generativen Antwortsystemen wie ChatGPT, Perplexity und Google AI Overviews als führende 
-  Autorität verankern.
+  in generativen Antwortsystemen wie ChatGPT, Perplexity und Google AI Overviews als {cue:hl-autoritaet}führende Autorität verankern{/cue}.
 notes: |
   - Zeit: 0:00 - 2:00 Min.
   - Zielgruppe: Industrie- und B2B-Entscheider im Traunviertel begrüßen.
   - Kernaussage betonen: Nicht in Panik verfallen, sondern die neuen Mechanismen (Wissensgraphen & Entitäten) verstehen.
   - Referenzen: FH Oberösterreich, Campus Wels, hackenberg.tech.
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
-import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import TitleSlide from '../../../../components/slides/layouts/TitleSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import SlideMedia from '../../../../components/slides/primitives/SlideMedia.astro';
 import GraphNode from '../../../../components/slides/primitives/GraphNode.astro';
 import GraphEdge from '../../../../components/slides/primitives/GraphEdge.astro';
+import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="KEYNOTE TRAUNVIERTEL" slideNumber="01" totalSlides="30">
-  {/**/}
-  <BentoBox id="intro-sub" x={0} y={40} width={800} height={680} title="Dr. Georg Hackenberg" badge="REFERENT" accent="blue">
-    <div class="space-y-6">
-      <div>
-        <p class="text-xl font-bold text-slate-800">Professor für Informatik & Industriesysteme</p>
-        <p class="text-slate-500 text-base">Fakultät für Technik und Angewandte Naturwissenschaften, FH OÖ Campus Wels</p>
+<TitleSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="KEYNOTE TRAUNVIERTEL"
+  slideNumber="01"
+  totalSlides="30"
+>
+  <div class="flex flex-col gap-5 h-full justify-between min-h-0">
+    <BentoCard cue="intro-sub" title="Dr. Georg Hackenberg" badge="REFERENT" accent="blue" class="flex-1 min-h-0 p-6 lg:p-8">
+      <div class="space-y-1">
+        <p class="text-2xl font-bold text-slate-100 light:text-slate-900"><Highlight cue="hl-autoritaet" color="blue">Professor für Informatik & Industriesysteme</Highlight></p>
+        <p class="text-slate-300 light:text-slate-600 text-lg">Fakultät für Technik & Angewandte Naturwissenschaften, FH OÖ Campus Wels</p>
       </div>
 
-      <div class="p-6 rounded-xl bg-blue-50/60 border border-blue-100/80 space-y-3">
-        <div class="flex items-center gap-3">
-          <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">#</span>
-          <span class="font-bold text-blue-950 text-base">Themenschwerpunkte:</span>
+      <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 space-y-2.5">
+        <span class="text-sm font-mono font-bold text-blue-400 light:text-blue-800 uppercase tracking-wider block">Themenschwerpunkte</span>
+        <div class="flex flex-wrap gap-2 text-sm font-bold font-mono">
+          <span class="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30 light:border-blue-200">#WISSENSGRAPHEN</span>
+          <span class="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30 light:border-blue-200">#GRAPHRAG</span>
+          <span class="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30 light:border-blue-200">#ENTITÄTEN</span>
+          <span class="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30 light:border-blue-200">#DEV-AGENTEN</span>
         </div>
-        <div class="flex flex-wrap gap-2 text-xs font-bold">
-          <span class="px-3 py-1.5 rounded-md bg-white text-blue-700 border border-blue-200">#WISSENSGRAPHEN</span>
-          <span class="px-3 py-1.5 rounded-md bg-white text-blue-700 border border-blue-200">#GRAPHRAG</span>
-          <span class="px-3 py-1.5 rounded-md bg-white text-blue-700 border border-blue-200">#ENTITÄTEN</span>
-          <span class="px-3 py-1.5 rounded-md bg-white text-blue-700 border border-blue-200">#MCP-AGENTEN</span>
-        </div>
       </div>
 
-      <div class="text-sm text-slate-500 space-y-1">
-        <p>🌐 <strong>Web:</strong> hackenberg.tech</p>
-        <p>🔬 <strong>Forschung:</strong> Semantische Systeme, Digitale Fabrik & KI-Architekturen</p>
+      <div class="text-sm font-mono text-slate-400 light:text-slate-500 flex justify-between pt-2 border-t border-slate-800/80 light:border-slate-200">
+        <span>🌐 hackenberg.tech</span>
+        <span>🔬 Semantische KI-Systeme</span>
       </div>
-    </div>
-  </BentoBox>
+    </BentoCard>
 
-  {/**/}
-  <g id="intro-graph" transform="translate(900, 40)">
-    <rect width={820} height={680} rx={16} fill="#ffffff" fill-opacity="0.8" stroke="#e2e8f0" stroke-width="1.5" />
-    
-    <GraphEdge id="edge-01" from={{x: 200, y: 180}} to={{x: 480, y: 180}} label="analysiert" animated />
-    <GraphEdge id="edge-02" from={{x: 480, y: 180}} to={{x: 480, y: 480}} label="synthetisiert" animated />
-    <GraphEdge id="edge-03" from={{x: 200, y: 180}} to={{x: 200, y: 480}} label="bezieht Entität" curve="curved" />
-    <GraphEdge id="edge-04" from={{x: 200, y: 480}} to={{x: 480, y: 480}} label="zitiert" />
-
-    <GraphNode id="node-query" x={200} y={180} label="Suchanfrage" type="Query" color="blue" />
-    <GraphNode id="node-kg" x={480} y={180} label="Wissensgraph" type="Knowledge" color="teal" />
-    <GraphNode id="node-entity" x={200} y={480} label="Unternehmen" type="Organization" color="indigo" />
-    <GraphNode id="node-answer" x={480} y={480} label="KI-Synthese" type="Output" color="green" />
-  </g>
-</SlideCanvas>
+    <SlideMedia cue="intro-graph" fit="contain" class="h-36 shrink-0">
+      <svg viewBox="0 0 680 180" class="w-full h-full">
+        <GraphEdge id="edge-01" from={{x: 100, y: 90}} to={{x: 340, y: 90}} label="analysiert" animated />
+        <GraphEdge id="edge-02" from={{x: 340, y: 90}} to={{x: 580, y: 90}} label="synthetisiert" animated />
+        <GraphNode id="node-query" x={100} y={90} label="Suche" type="Query" color="blue" />
+        <GraphNode id="node-kg" x={340} y={90} label="Wissensgraph" type="Knowledge" color="teal" />
+        <GraphNode id="node-answer" x={580} y={90} label="KI-Antwort" type="Output" color="green" />
+      </svg>
+    </SlideMedia>
+  </div>
+</TitleSlide>

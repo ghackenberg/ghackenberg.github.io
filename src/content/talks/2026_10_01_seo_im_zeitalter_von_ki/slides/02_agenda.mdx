@@ -15,18 +15,20 @@ notes: |
   - Hinweis auf Konferenz-Standard (ACM/IEEE Didaktik).
   - Dem Publikum signalisieren: Erst Verständnis, dann Technik, dann konkrete Hands-On-Praxis.
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="ÜBERSICHT" slideNumber="02" totalSlides="30">
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="ÜBERSICHT"
+  slideNumber="02"
+  totalSlides="30"
+>
   <Pipeline
-    x={0}
-    y={60}
-    width={1720}
-    height={620}
     steps={[
       {
-        id: "step-01",
+        cue: "step-01",
         num: "01",
         title: "Paradigmenwechsel",
         desc: "Vom Web-Index zur generativen Antwortsynthese. Warum 10 blaue Links Geschichte sind.",
@@ -34,7 +36,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "blue"
       },
       {
-        id: "step-02",
+        cue: "step-02",
         num: "02",
         title: "Technologische Basis",
         desc: "RAG, semantische Embeddings und GraphRAG. Wie Sprachmodelle Fakten verarbeiten.",
@@ -42,7 +44,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "teal"
       },
       {
-        id: "step-03",
+        cue: "step-03",
         num: "03",
         title: "3-Säulen-Methodik",
         desc: "Strukturierte Daten, Schema.org Code, Information Gain und E-E-A-T Autoritätssignale.",
@@ -50,7 +52,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "indigo"
       },
       {
-        id: "step-04",
+        cue: "step-04",
         num: "04",
         title: "Dev-Agenten & MCP",
         desc: "Model Context Protocol im Entwicklerstack. Qualitätssicherung vor dem Deployment.",
@@ -58,13 +60,13 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "green"
       },
       {
-        id: "step-05",
+        cue: "step-05",
         num: "05",
-        title: "Enterprise & Mittelstand",
-        desc: "Zwei-Geschwindigkeiten-Architektur für KMU, Share of Model Kennzahlen & Diskussion.",
-        badge: "ROADMAP",
+        title: "Praxis & ROI",
+        desc: "Closed-Loop Analytics, Mittelstands-Architekturen und Share-of-Model Messung.",
+        badge: "DEPLOYMENT",
         accent: "amber"
       }
     ]}
   />
-</SlideCanvas>
+</PipelineSlide>

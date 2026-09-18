@@ -9,62 +9,61 @@ voiceover: >
   Zahlenvektoren mit über 1.500 Dimensionen übersetzt. 
   {cue:col-math} Entscheidend ist die Kosinus-Ähnlichkeit: Themen, die dieselbe Bedeutung haben – wie 
   industrielle Wärmepumpen und B2B-Dekarbonisierung –, liegen im Vektorraum eng beieinander. 
-  Wer heute noch reine Keyword-Wiederholungen betreibt, optimiert für ein System, das längst nicht 
-  mehr existiert.
+  {cue:hl-kosinus-threshold}Typischerweise sind Werte über null Komma zweiundachtzig nötig.{/cue} 
+  Wer heute noch {cue:hl-keyword-stuffing}reine Keyword-Wiederholungen{/cue} betreibt, optimiert für ein System, 
+  das längst nicht mehr existiert.
 notes: |
   - Zeit: 13:30 - 15:30 Min.
   - Zitat von Google: "Strings to Things" (Amit Singhal).
   - Mathematische Formel Kosinus-Ähnlichkeit erklären: cos(theta) = (A * B) / (||A|| * ||B||).
   - Referenzen: Mikolov et al. (Word2Vec), OpenAI Text Embeddings Documentation (2024-2026).
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
-import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="DATEN-ARCHITEKTUR" slideNumber="07" totalSlides="30">
-  {/**/}
-  <BentoBox id="col-embeddings" x={0} y={40} width={830} height={680} title="Der semantische Vektorraum" badge="1536 DIMENSIONEN" accent="teal">
-    <div class="space-y-6">
-      <div class="p-6 rounded-xl bg-slate-900 text-slate-200 font-mono text-xs space-y-2">
-        <p class="text-slate-400">// Text-Passage "Industrielle Wärmepumpe"</p>
-        <p class="text-cyan-400">[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
-        <p class="text-slate-400 mt-3">// Text-Passage "Energieeffiziente Prozesswärme B2B"</p>
-        <p class="text-blue-400">[0.0209, -0.0518, 0.0874, 0.0125, -0.0421, ...]</p>
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="DATEN-ARCHITEKTUR"
+  slideNumber="07"
+  totalSlides="30"
+>
+  <BentoCard slot="left" cue="col-embeddings" title="Der semantische Vektorraum" badge="1536 DIMENSIONEN" accent="cyan">
+    <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 font-mono text-sm lg:text-base space-y-2 shrink-0">
+      <p class="text-slate-400">// Passage A: "Industrielle Wärmepumpe"</p>
+      <p class="text-cyan-400 font-bold">[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
+      <p class="text-slate-400 mt-2">// Passage B: "Energieeffiziente Prozesswärme B2B"</p>
+      <p class="text-blue-400 font-bold">[0.0209, -0.0518, 0.0874, 0.0125, -0.0421, ...]</p>
+    </div>
+
+    <div class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
+      <div class="flex items-start gap-4">
+        <span class="text-cyan-400 font-bold text-2xl">●</span>
+        <span><strong>Bedeutung statt Buchstabengleichheit:</strong> Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel.</span>
       </div>
-
-      <div class="space-y-4 text-slate-700 text-base">
-        <div class="flex items-start gap-3">
-          <span class="text-cyan-600 font-bold text-lg">●</span>
-          <span><strong>Bedeutung statt Buchstabengleichheit:</strong> Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel.</span>
-        </div>
-        <div class="flex items-start gap-3">
-          <span class="text-cyan-600 font-bold text-lg">●</span>
-          <span><strong>Wirkungslosigkeit von Keyword-Stuffing:</strong> Künstliche Keyword-Wiederholungen verzerren den Vektor und senken die semantische Relevanz.</span>
-        </div>
+      <div class="flex items-start gap-4">
+        <span class="text-cyan-400 font-bold text-2xl">●</span>
+        <span><Highlight cue="hl-keyword-stuffing" color="amber">Wirkungslosigkeit von Keyword-Stuffing:</Highlight> Künstliche Keyword-Wiederholungen verzerren den Vektor und senken die semantische Relevanz.</span>
       </div>
     </div>
-  </BentoBox>
+  </BentoCard>
 
-  {/**/}
-  <BentoBox id="col-math" x={890} y={40} width={830} height={680} title="Kosinus-Ähnlichkeit (Kriterium für Relevanz)" badge="MATHEMATIK" accent="blue">
-    <div class="space-y-6">
-      <div class="p-6 rounded-xl bg-blue-50/80 border border-blue-200 text-center">
-        <div class="text-2xl font-mono font-bold text-blue-900 mb-2">
-          cos(θ) = (A · B) / (||A|| ||B||)
-        </div>
-        <p class="text-sm text-blue-700">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
+  <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit" badge="RELEVANZ-KRITERIUM" accent="blue">
+    <div class="p-6 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 text-center shrink-0">
+      <div class="text-3xl lg:text-4xl font-mono font-bold text-blue-300 light:text-blue-900 mb-2">
+        cos(θ) = (A · B) / (||A|| ||B||)
       </div>
+      <p class="text-sm lg:text-base font-mono text-blue-400 light:text-blue-700 font-bold">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
+    </div>
 
-      <div class="space-y-4 text-slate-700 text-base">
-        <div class="p-4 rounded-xl border border-slate-200 bg-white">
-          <h4 class="font-bold text-slate-900 mb-1">Retrieval-Schwellenwert (Top-K)</h4>
-          <p class="text-sm text-slate-600">RAG-Systeme rufen nur jene Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über <strong>0.82</strong> liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.</p>
-        </div>
-
-        <div class="p-4 rounded-xl border border-slate-200 bg-white">
-          <h4 class="font-bold text-slate-900 mb-1">Konsequenz für B2B-Texte</h4>
-          <p class="text-sm text-slate-600">Texte müssen präzise Fachbegriffe, physikalische Einheiten und logische Zusammenhänge enthalten, um maximale Vektornähe zu anspruchsvollen B2B-Kaufanfragen zu erreichen.</p>
-        </div>
+    <div class="space-y-4 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
+      <div class="p-6 rounded-2xl border border-slate-700 light:border-slate-200 bg-slate-950/40 light:bg-white space-y-2">
+        <h4 class="font-extrabold text-slate-100 light:text-slate-900 text-xl lg:text-2xl">Retrieval-Schwellenwert (Top-K)</h4>
+        <p class="text-slate-300 light:text-slate-600 text-lg lg:text-xl leading-relaxed">
+          RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über <Highlight cue="hl-kosinus-threshold" color="blue">0.82</Highlight> liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
+        </p>
       </div>
     </div>
-  </BentoBox>
-</SlideCanvas>
+  </BentoCard>
+</SplitSlide>

@@ -444,6 +444,7 @@ const talks = defineCollection({
     description: z.string().optional(),
     tags: z.array(tagReference).default([]),
     icon: coverImageSchema({ image }).optional(),
+    previewImage: coverImageSchema({ image }).optional(),
   }),
 });
 

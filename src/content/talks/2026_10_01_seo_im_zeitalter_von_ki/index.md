@@ -8,6 +8,10 @@ audience: "Geschäftsführer, IT-Leiter und Marketingverantwortliche aus Industr
 lang: "de"
 description: "Strategischer Leitfaden und Fachvortrag zur Transformation von traditioneller Suchmaschinenoptimierung hin zu Generative Engine Optimization (GEO), RAG-Architekturen, Schema.org-Wissensgraphen und autonomen MCP-Entwickleragenten."
 tags: ["seo", "geo", "aio", "aeo", "rag", "mcp", "knowledge-graphs", "enterprise-ai"]
+previewImage:
+  src: "./preview.jpg"
+  title: "Dr. Georg Hackenberg präsentiert 'SEO im Zeitalter von KI' im Design Thinking Lab"
+  description: "Fachvortrag über Generative Engine Optimization, Wissensgraphen und KI-Antwortsysteme vor der beamergestützten Präsentationswand am FH OÖ Campus Wels"
 ---
 
 ## Über diesen Vortrag

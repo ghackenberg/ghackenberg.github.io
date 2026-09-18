@@ -1,0 +1,45 @@
+---
+interface Props {
+  id?: string;
+  cue?: string;
+  src?: string;
+  alt?: string;
+  fit?: 'cover' | 'contain';
+  class?: string;
+}
+
+const {
+  id: explicitId,
+  cue,
+  src,
+  alt = "",
+  fit = 'contain',
+  class: className = ""
+} = Astro.props;
+
+const elementId = explicitId || cue;
+const hasCustomHeight = /(?:^|\s)h-/.test(className);
+---
+
+<div
+  id={elementId}
+  data-cue={cue}
+  class={`slide-media-container relative w-full ${hasCustomHeight ? '' : 'h-full'} rounded-3xl overflow-hidden bg-slate-900/60 light:bg-slate-100 border border-slate-800/80 light:border-slate-300 flex items-center justify-center shadow-lg ${className}`}
+>
+  {src ? (
+    <img
+      src={src}
+      alt={alt}
+      class={`w-full h-full ${
+        fit === 'cover'
+          ? 'object-cover'
+          : 'object-contain p-6'
+      }`}
+      loading="lazy"
+    />
+  ) : (
+    <div class={`w-full h-full flex items-center justify-center ${fit === 'contain' ? 'p-6' : ''}`}>
+      <slot />
+    </div>
+  )}
+</div>

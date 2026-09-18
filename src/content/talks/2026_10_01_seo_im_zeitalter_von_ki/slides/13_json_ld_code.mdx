@@ -8,34 +8,39 @@ voiceover: >
   {cue:code-jsonld} In JSON-LD nutzen wir das @graph-Array, um mehrere Entitäten miteinander zu verdrahten. 
   Hier sehen Sie mich als Person mit meiner ORCID-ID und meiner Rolle an der Fachhochschule Oberösterreich. 
   Darunter wird ein konkretes Industrieprodukt definiert – inklusive MPN-Teilenummer, ISO-Zertifizierung 
-  und Link zum Datenblatt. Ein KI-Crawler wie GPTBot liest diese Daten in fünf Millisekunden aus und speichert 
-  sie als harte Fakten.
+  und Link zum Datenblatt. Ein KI-Crawler wie GPTBot liest diese Daten {cue:hl-fakten-5ms}in fünf Millisekunden aus und speichert 
+  sie als harte Fakten{/cue}.
 notes: |
   - Zeit: 28:00 - 31:00 Min.
   - JSON-LD 1.1 W3C Recommendation zitieren.
   - Den Entwicklern im Publikum zeigen: Kein komplexer Aufwand – einmal sauber templaten (z. B. in Astro oder Next.js) und alle Seiten sind automatisch semantisch perfekt!
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="CODE SHOWCASE" slideNumber="13" totalSlides="30">
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="CODE SHOWCASE"
+  slideNumber="13"
+  totalSlides="30"
+>
   <CodeContainer
-    id="code-jsonld"
-    x={0}
-    y={40}
-    width={1720}
-    height={680}
+    slot="code"
+    cue="code-jsonld"
     filename="schema-graph.jsonld"
-    badge="JSON-LD 1.1 W3C COMPLIANT"
+    badge="JSON-LD 1.1 W3C"
   >
-    <pre class="text-slate-200 text-sm leading-relaxed overflow-x-auto">
+    <pre class="text-slate-200 text-sm lg:text-base font-mono leading-relaxed overflow-x-auto my-auto">
 {`{
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Organization",
       "@id": "https://hackenberg.tech/#organization",
-      "name": "Dr. Georg Hackenberg Consulting & Research",
+      "name": "Dr. Georg Hackenberg Consulting",
       "url": "https://hackenberg.tech",
       "sameAs": [
         "https://www.linkedin.com/in/georghackenberg/",
@@ -46,23 +51,36 @@ import CodeContainer from '../../../../components/slides/primitives/CodeContaine
       "@type": "Person",
       "@id": "https://hackenberg.tech/#georg",
       "name": "Dr. Georg Hackenberg",
-      "jobTitle": "Professor für Informatik und Industriesysteme",
+      "jobTitle": "Professor für Informatik",
       "worksFor": { "@id": "https://www.fh-ooe.at/#organization" },
       "sameAs": "https://orcid.org/0000-0003-3913-4148"
     },
     {
       "@type": "TechArticle",
-      "@id": "https://hackenberg.tech/talks/2026_10_01_seo_im_zeitalter_von_ki/#article",
+      "@id": "https://hackenberg.tech/talks/ki/#article",
       "headline": "SEO im Zeitalter von KI",
       "author": { "@id": "https://hackenberg.tech/#georg" },
-      "publisher": { "@id": "https://hackenberg.tech/#organization" },
-      "about": [
-        { "@type": "Thing", "name": "Generative Engine Optimization" },
-        { "@type": "Thing", "name": "Retrieval-Augmented Generation" }
-      ]
+      "publisher": { "@id": "https://hackenberg.tech/#organization" }
     }
   ]
 }`}
     </pre>
   </CodeContainer>
-</SlideCanvas>
+
+  <BentoCard slot="explanation" title="Entitäten-Vorteile im Quelltext" badge="KEY TAKEAWAYS" accent="emerald">
+    <ul class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl my-auto">
+      <li class="flex items-start gap-4">
+        <span class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">1</span>
+        <span><strong>@graph Array:</strong> Bündelt Organisation, Autor und Artikel konsistent in einem einzigen HTTP-Request.</span>
+      </li>
+      <li class="flex items-start gap-4">
+        <span class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">2</span>
+        <span><strong>ORCID & sameAs:</strong> Verknüpft die Autorenidentität unmissverständlich mit globalen akademischen Registern.</span>
+      </li>
+      <li class="flex items-start gap-4">
+        <span class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">3</span>
+        <span><Highlight cue="hl-fakten-5ms" color="emerald">Maschinenlesbare Fakten:</Highlight> GPTBot und Perplexity extrahieren Entitäten fehlerfrei in unter 5 Millisekunden.</span>
+      </li>
+    </ul>
+  </BentoCard>
+</CodeSlide>

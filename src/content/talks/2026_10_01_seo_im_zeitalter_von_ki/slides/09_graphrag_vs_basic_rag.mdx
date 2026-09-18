@@ -8,64 +8,65 @@ voiceover: >
   {cue:col-basic-rag} Basic RAG scheitert an globalen Fragen wie 'Welche Trends prägen die Industrie in Oberösterreich?', 
   weil es nur nach isolierten Wortübereinstimmungen sucht. 
   {cue:col-graph-rag} GraphRAG hingegen baut hierarchische Entitäten-Graphen und fasst ganze Themen-Cluster 
-  in sogenannten Community Summaries zusammen. Das Ergebnis: Bis zu achtzig Prozent höhere Antwortqualität 
+  in sogenannten {cue:hl-community-summaries}Community Summaries{/cue} zusammen. Das Ergebnis: Bis zu {cue:hl-graphrag-qualitaet}achtzig Prozent höhere Antwortqualität{/cue} 
   bei komplexen Marktanalysen.
 notes: |
   - Zeit: 18:00 - 20:30 Min.
   - Microsoft Research Paper zitieren: Edge et al. (arXiv:2404.16130, April 2024).
   - Kernaussage für Entscheider: Wer nur simple Blogartikel ins Web stellt, wird von GraphRAG fragmentiert; wer strukturierte Themengraphen liefert, dominiert die Community Summaries.
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
-import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="STATE OF THE ART" slideNumber="09" totalSlides="30">
-  {/**/}
-  <BentoBox id="col-basic-rag" x={0} y={40} width={820} height={680} title="Basic RAG (Vector-only)" badge="BEGRENZT" accent="neutral">
-    <div class="space-y-6">
-      <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 text-sm">
-        <strong class="text-slate-800 block mb-1">Methode: Naives Text-Chunking</strong>
-        <p class="text-slate-600">Dokumente werden in 500-Token-Blöcke zerschnitten und isoliert eingebettet.</p>
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="STATE OF THE ART"
+  slideNumber="09"
+  totalSlides="30"
+>
+  <BentoCard slot="left" cue="col-basic-rag" title="Basic RAG (Vector-only)" badge="BEGRENZT" accent="neutral">
+    <div class="p-5 rounded-2xl bg-slate-950/70 border border-slate-800 text-base shrink-0 space-y-1">
+      <strong class="text-slate-100 block text-lg font-bold">Methode: Naives Text-Chunking</strong>
+      <p class="text-slate-400 text-base">Dokumente werden in 500-Token-Blöcke zerschnitten und isoliert eingebettet.</p>
+    </div>
+
+    <div class="space-y-5 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
+      <div class="flex items-start gap-4">
+        <span class="text-rose-500 font-bold text-2xl">✗</span>
+        <span><strong>Fehlender Gesamtzusammenhang:</strong> Das Modell sieht nur einzelne Bäume, aber nie den ganzen Wald.</span>
       </div>
-
-      <div class="space-y-4 text-slate-700 text-base">
-        <div class="flex items-start gap-3">
-          <span class="text-rose-500 font-bold text-lg">✗</span>
-          <span><strong>Fehlender Gesamtzusammenhang:</strong> Das Modell sieht nur einzelne Bäume, aber nie den ganzen Wald.</span>
-        </div>
-        <div class="flex items-start gap-3">
-          <span class="text-rose-500 font-bold text-lg">✗</span>
-          <span><strong>Versagen bei Aggregationen:</strong> Fragen wie „Vergleiche alle Traunviertler Hersteller“ liefern unvollständige Zufallstreffer.</span>
-        </div>
-        <div class="flex items-start gap-3">
-          <span class="text-rose-500 font-bold text-lg">✗</span>
-          <span><strong>Hohe Halluzinationsrate:</strong> Kontextlücken werden durch Modell-Fantasie geschlossen.</span>
-        </div>
+      <div class="flex items-start gap-4">
+        <span class="text-rose-500 font-bold text-2xl">✗</span>
+        <span><strong>Versagen bei Aggregationen:</strong> Fragen wie „Vergleiche alle Traunviertler Hersteller“ liefern unvollständige Zufallstreffer.</span>
+      </div>
+      <div class="flex items-start gap-4">
+        <span class="text-rose-500 font-bold text-2xl">✗</span>
+        <span><strong>Hohe Halluzinationsrate:</strong> Kontextlücken werden durch Modell-Fantasie geschlossen.</span>
       </div>
     </div>
-  </BentoBox>
+  </BentoCard>
 
-  {/**/}
-  <BentoBox id="col-graph-rag" x={900} y={40} width={820} height={680} title="GraphRAG (Microsoft Research)" badge="HOLISTISCH" accent="blue">
-    <div class="space-y-6">
-      <div class="p-4 rounded-xl bg-blue-50 border border-blue-200 text-sm">
-        <strong class="text-blue-950 block mb-1">Methode: Knowledge Graph + Community Summaries</strong>
-        <p class="text-blue-900">LLM extrahiert Entitäten und generiert hierarchische Synthesen auf Clusterebene.</p>
+  <BentoCard slot="right" cue="col-graph-rag" title="GraphRAG (Microsoft Research)" badge="HOLISTISCH" accent="blue">
+    <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 text-base shrink-0 space-y-1">
+      <strong class="text-blue-300 light:text-blue-950 block text-lg font-bold">Methode: Knowledge Graph + Community Summaries</strong>
+      <p class="text-blue-200 light:text-blue-900 text-base">LLM extrahiert Entitäten und generiert hierarchische Synthesen auf Clusterebene.</p>
+    </div>
+
+    <div class="space-y-5 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
+      <div class="flex items-start gap-4">
+        <span class="text-emerald-400 font-bold text-2xl">✓</span>
+        <span><strong>Globale Fragestellungen lösbar:</strong> Liefert vollständige Marktübersichten ohne Auslassungen.</span>
       </div>
-
-      <div class="space-y-4 text-slate-700 text-base">
-        <div class="flex items-start gap-3">
-          <span class="text-emerald-600 font-bold text-lg">✓</span>
-          <span><strong>Globale Fragestellungen lösbar:</strong> Liefert vollständige Marktübersichten ohne Auslassungen.</span>
-        </div>
-        <div class="flex items-start gap-3">
-          <span class="text-emerald-600 font-bold text-lg">✓</span>
-          <span><strong>Hierarchische Synthese:</strong> Beantwortet Detailfragen und strategische Überblicke gleichermaßen präzise.</span>
-        </div>
-        <div class="flex items-start gap-3">
-          <span class="text-emerald-600 font-bold text-lg">✓</span>
-          <span><strong>Überlegene Zitationschance:</strong> Unternehmen, die semantisch miteinander vernetzt sind, werden gemeinsam genannt.</span>
-        </div>
+      <div class="flex items-start gap-4">
+        <span class="text-emerald-400 font-bold text-2xl">✓</span>
+        <span><Highlight cue="hl-community-summaries" color="blue">Community Summaries:</Highlight> Übergreifende Themenzusammenfassungen werden bevorzugt zitiert.</span>
+      </div>
+      <div class="flex items-start gap-4">
+        <span class="text-emerald-400 font-bold text-2xl">✓</span>
+        <span><Highlight cue="hl-graphrag-qualitaet" color="emerald">+80 % Informationsfülle:</Highlight> Empirisch belegte Überlegenheit bei Benchmark-Fragen.</span>
       </div>
     </div>
-  </BentoBox>
-</SlideCanvas>
+  </BentoCard>
+</SplitSlide>

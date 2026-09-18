@@ -1,84 +1,80 @@
 ---
 interface Props {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
   value: string | number;
   unit?: string;
   label: string;
   sublabel?: string;
   badge?: string;
-  color?: 'blue' | 'teal' | 'green' | 'red';
+  color?: 'blue' | 'teal' | 'green' | 'red' | 'amber';
+  cue?: string;
   id?: string;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
   class?: string;
 }
 
 const {
-  x,
-  y,
-  width,
-  height,
   value,
   unit,
   label,
   sublabel,
   badge,
   color = 'blue',
-  id,
+  cue,
+  id: explicitId,
   class: className = ""
 } = Astro.props;
 
+const elementId = explicitId || cue;
+
 const colorClasses = {
-  blue: 'text-blue-600',
-  teal: 'text-cyan-600',
-  green: 'text-emerald-600',
-  red: 'text-rose-600'
+  blue: 'text-blue-500 light:text-blue-600',
+  teal: 'text-cyan-400 light:text-cyan-600',
+  green: 'text-emerald-400 light:text-emerald-600',
+  red: 'text-rose-500 light:text-rose-600',
+  amber: 'text-amber-400 light:text-amber-600'
 };
 ---
 
-<foreignObject
-  id={id}
-  x={x}
-  y={y}
-  width={width}
-  height={height}
-  class={`metric-stat-container overflow-visible ${className}`}
+<div
+  id={elementId}
+  data-cue={cue}
+  class={`metric-stat-card p-8 lg:p-10 rounded-3xl border border-slate-700/80 bg-slate-900/95 light:border-slate-300 light:bg-white shadow-2xl flex flex-col justify-between h-full flex-1 transition-all duration-300 min-h-0 ${className}`}
 >
-  <div class="w-full h-full p-10 rounded-2xl border border-slate-800/90 bg-slate-900/90 light:border-slate-200/80 light:bg-white/95 shadow-sm flex flex-col justify-between">
-    <div class="flex items-center justify-between">
-      <span class="text-sm uppercase font-bold tracking-wider text-slate-400 light:text-slate-500">
-        Key Metric
+  <div class="flex items-center justify-between mb-4 shrink-0">
+    <span class="text-sm uppercase font-mono font-bold tracking-wider text-slate-400 light:text-slate-500">
+      Key Metric
+    </span>
+    {badge && (
+      <span class="text-sm uppercase font-mono font-bold tracking-wider px-3.5 py-1 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 light:bg-blue-100 light:text-blue-700 light:border-blue-200">
+        {badge}
       </span>
-      {badge && (
-        <span class="text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-blue-950 text-blue-300 border border-blue-800/60 light:bg-blue-50 light:text-blue-700 light:border-blue-200">
-          {badge}
+    )}
+  </div>
+
+  <!-- Big Number Display -->
+  <div class="my-auto py-4 flex-1 flex flex-col justify-center">
+    <div class="flex items-baseline gap-2">
+      <span class={`text-7xl lg:text-8xl xl:text-9xl font-black tracking-tight ${colorClasses[color]}`}>
+        {value}
+      </span>
+      {unit && (
+        <span class="text-4xl lg:text-5xl font-bold text-slate-400 light:text-slate-500">
+          {unit}
         </span>
       )}
     </div>
 
-    <!-- Big Number Display -->
-    <div class="my-auto">
-      <div class="flex items-baseline gap-1">
-        <span class={`text-8xl font-black tracking-tighter ${colorClasses[color]}`}>
-          {value}
-        </span>
-        {unit && (
-          <span class="text-5xl font-bold text-slate-400 light:text-slate-500">
-            {unit}
-          </span>
-        )}
-      </div>
-
-      <h4 class="text-2xl font-bold text-slate-100 light:text-slate-900 mt-2 tracking-tight">
-        {label}
-      </h4>
-    </div>
-
-    {sublabel && (
-      <p class="text-slate-400 light:text-slate-500 text-sm border-t border-slate-800/80 light:border-slate-100 pt-3">
-        {sublabel}
-      </p>
-    )}
+    <h4 class="text-2xl lg:text-3xl font-extrabold text-slate-100 light:text-slate-900 mt-4 tracking-tight leading-snug">
+      {label}
+    </h4>
   </div>
-</foreignObject>
+
+  {sublabel && (
+    <p class="text-slate-300 light:text-slate-600 text-base lg:text-lg border-t border-slate-800/80 light:border-slate-200 pt-4 mt-4 leading-relaxed shrink-0">
+      {sublabel}
+    </p>
+  )}
+</div>
