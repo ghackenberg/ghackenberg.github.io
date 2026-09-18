@@ -22,7 +22,6 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="PERFORMANCE-GATE"
   slideNumber="19"
   totalSlides="30"
   ratio="50/50"
@@ -32,7 +31,6 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       value="100"
       label="Performance"
       sublabel="LCP < 0.8s, FCP 0.4s"
-      badge="CORE WEB VITALS"
       color="green"
       size="compact"
     />
@@ -40,7 +38,6 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       value="100"
       label="Accessibility"
       sublabel="Kontraste & ARIA"
-      badge="BARRIEREFREI"
       color="green"
       size="compact"
     />
@@ -48,7 +45,6 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       value="100"
       label="Best Practices"
       sublabel="HTTPS & CSP"
-      badge="SICHERHEIT"
       color="green"
       size="compact"
     />
@@ -56,13 +52,12 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       value="100"
       label="SEO"
       sublabel="Metadaten & Canonical"
-      badge="INDEXIERBARKEIT"
       color="green"
       size="compact"
     />
   </div>
 
-  <BentoCard slot="right" cue="lh-terminal" title="Pre-Commit CI/CD Gatekeeper" badge="TERMINAL OUTPUT" accent="emerald">
+  <BentoCard slot="right" cue="lh-terminal" title="Pre-Commit CI/CD Gatekeeper" accent="emerald">
     <div class="p-6 rounded-2xl bg-slate-950 font-mono text-base lg:text-lg text-slate-300 space-y-2.5 border border-slate-800 my-auto">
       <p class="text-slate-500 font-bold">$ npx lighthouse-mcp audit http://localhost:4321</p>
       <p class="text-emerald-400">✓ Performance: 100/100 (Speed Index: 0.6s)</p>
@@ -72,7 +67,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       <p class="text-cyan-400 font-black pt-2 text-lg">✨ All Quality Gates Passed. Proceeding to Edge Deploy.</p>
     </div>
 
-    <CalloutBox type="statement" color="emerald" badge="CRAWL-BUDGET" title="Indexierungs-Garantie">
+    <CalloutBox type="statement" color="emerald" title="Indexierungs-Garantie">
       Wenn eine Seite Ladezeitverzögerungen aufweist, brechen KI-Crawler wie GPTBot den Render-Prozess vorzeitig ab. <Highlight cue="hl-100-scores" color="emerald">100/100 Scores garantieren 100 % Indexierungsrate.</Highlight>
     </CalloutBox>
   </BentoCard>

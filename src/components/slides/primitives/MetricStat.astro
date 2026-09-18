@@ -4,7 +4,6 @@ interface Props {
   unit?: string;
   label: string;
   sublabel?: string;
-  badge?: string;
   color?: 'blue' | 'teal' | 'green' | 'red' | 'amber';
   size?: 'hero' | 'compact';
   cue?: string;
@@ -21,7 +20,6 @@ const {
   unit,
   label,
   sublabel,
-  badge,
   color = 'blue',
   size = 'hero',
   cue,
@@ -49,11 +47,6 @@ const colorClasses = {
     <span class="text-sm lg:text-base uppercase font-mono font-bold tracking-wider text-slate-400 light:text-slate-500">
       Key Metric
     </span>
-    {badge && (
-      <span class="text-xs lg:text-sm uppercase font-mono font-bold tracking-wider px-3 py-1 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 light:bg-blue-100 light:text-blue-700 light:border-blue-200">
-        {badge}
-      </span>
-    )}
   </div>
 
   <!-- Big Number Display -->

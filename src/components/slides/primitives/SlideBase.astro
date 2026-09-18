@@ -2,7 +2,6 @@
 interface Props {
   title?: string;
   subtitle?: string;
-  badge?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
   showFooter?: boolean;
@@ -12,7 +11,6 @@ interface Props {
 const {
   title,
   subtitle,
-  badge,
   slideNumber,
   totalSlides = 30,
   showFooter = true,
@@ -22,35 +20,26 @@ const {
 
 <div
   lang="de"
-  class={`slide-base-frame relative w-[1920px] h-[1080px] max-w-full max-h-full bg-slate-950 light:bg-slate-50 text-slate-100 light:text-slate-900 flex flex-col justify-between p-12 select-none font-sans overflow-hidden box-border ${className}`}
+  class={`slide-base-frame relative w-[1920px] h-[1080px] max-w-full max-h-full bg-slate-950 light:bg-slate-50 text-slate-100 light:text-slate-900 flex flex-col justify-between pt-9 px-12 pb-7 select-none font-sans overflow-hidden box-border ${className}`}
 >
-  <!-- Technical Dot Matrix Grid -->
-  <div class="absolute inset-0 pointer-events-none opacity-20 light:opacity-10 bg-dot-grid"></div>
-  
-  <!-- Subtle Gradient Glow (Contained inside frame) -->
-  <div class="absolute top-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-  <div class="absolute bottom-0 right-0 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <!-- Ambient Gradient Glow (Large radius, seamless color blending) -->
+  <div class="slide-ambient-glow absolute inset-0 pointer-events-none" aria-hidden="true"></div>
 
   <!-- Top Accent Bar -->
   <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400"></div>
 
   <!-- Slide Header -->
   {title && (
-    <header class="relative z-10 mb-4 shrink-0">
-      <div class="flex items-center justify-between gap-6 mb-2">
-        {badge && (
-          <span class="inline-flex items-center px-4 py-1.5 rounded-full text-base font-mono font-bold tracking-widest uppercase bg-blue-500/20 text-blue-400 light:bg-blue-100 light:text-blue-700 border border-blue-500/30 light:border-blue-300">
-            {badge}
-          </span>
-        )}
-        {slideNumber && (
-          <span class="text-lg font-mono text-slate-400 light:text-slate-500 font-bold ml-auto">
+    <header class="relative z-10 mb-5 shrink-0">
+      {slideNumber && (
+        <div class="absolute top-1.5 right-0">
+          <span class="text-xl font-mono text-slate-400 light:text-slate-500 font-bold">
             {String(slideNumber).padStart(2, '0')} / {totalSlides}
           </span>
-        )}
-      </div>
+        </div>
+      )}
 
-      <h1 class="text-5xl lg:text-6xl xl:text-[62px] font-black tracking-tight text-slate-100 light:text-slate-900 leading-[1.12] text-balance slide-hyphens">
+      <h1 class="text-5xl lg:text-6xl xl:text-[62px] font-black tracking-tight text-slate-100 light:text-slate-900 leading-[1.12] text-balance slide-hyphens pr-36">
         {title}
       </h1>
 
@@ -69,7 +58,7 @@ const {
 
   <!-- Slide Standardized Footer -->
   {showFooter && (
-    <footer class="relative z-10 pt-4 mt-3 border-t border-slate-800/80 light:border-slate-200 flex items-center justify-between text-base font-mono text-slate-400 light:text-slate-600 shrink-0">
+    <footer class="relative z-10 pt-2 mt-2 flex items-center justify-between text-base font-mono text-slate-400 light:text-slate-600 shrink-0">
       <div class="flex items-center gap-4">
         <span class="font-bold text-slate-300 light:text-slate-800">Dr. Georg Hackenberg</span>
         <span>•</span>
@@ -78,7 +67,7 @@ const {
         <span>SEO im Zeitalter von KI</span>
       </div>
       <div class="flex items-center gap-3">
-        <span>hackenberg.tech</span>
+        <span>https://hackenberg.tech</span>
       </div>
     </footer>
   )}
@@ -89,11 +78,37 @@ const {
   .slide-base-frame {
     font-size: calc(28px * var(--content-scale, 1));
     line-height: 1.55;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphenate-limit-chars: 6 3 3;
+    -webkit-hyphenate-limit-chars: 6 3 3;
   }
 
   .slide-base-frame :global(p) {
     font-size: calc(28px * var(--content-scale, 1));
     line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .slide-base-frame :global(h1),
+  .slide-base-frame :global(h2),
+  .slide-base-frame :global(h3),
+  .slide-base-frame :global(h4),
+  .slide-base-frame :global(h5),
+  .slide-base-frame :global(h6) {
+    text-wrap: balance;
+  }
+
+  /* Exclude code, monospace, badges and footers from hyphenation */
+  .slide-base-frame :global(pre),
+  .slide-base-frame :global(code),
+  .slide-base-frame :global(kbd),
+  .slide-base-frame :global(samp),
+  .slide-base-frame :global([class*="font-mono"]),
+  .slide-base-frame :global(.no-hyphens),
+  .slide-base-frame :global(footer) {
+    hyphens: none;
+    -webkit-hyphens: none;
   }
 
   /* Enforced minimum floor with adaptive content-scale scaling */
@@ -151,10 +166,18 @@ const {
     line-height: 1.55;
   }
 
-  /* Technical dot grid pattern */
-  .bg-dot-grid {
-    background-image: radial-gradient(rgba(148, 163, 184, 0.4) 1.5px, transparent 1.5px);
-    background-size: 28px 28px;
+  /* Ambient Background Gradients (Extended radius for seamless, circle-free blending) */
+  .slide-ambient-glow {
+    background-image: 
+      radial-gradient(1500px 1000px at 0% 0%, rgba(37, 99, 235, 0.18) 0%, rgba(37, 99, 235, 0.08) 35%, rgba(37, 99, 235, 0.02) 65%, transparent 85%),
+      radial-gradient(1500px 1000px at 100% 100%, rgba(6, 182, 212, 0.16) 0%, rgba(6, 182, 212, 0.07) 35%, rgba(6, 182, 212, 0.02) 65%, transparent 85%);
+  }
+
+  :global(.light) .slide-ambient-glow,
+  :global(.light:root) .slide-ambient-glow {
+    background-image: 
+      radial-gradient(1500px 1000px at 0% 0%, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.05) 35%, rgba(59, 130, 246, 0.015) 65%, transparent 85%),
+      radial-gradient(1500px 1000px at 100% 100%, rgba(6, 182, 212, 0.10) 0%, rgba(6, 182, 212, 0.04) 35%, rgba(6, 182, 212, 0.015) 65%, transparent 85%);
   }
 
   /* German Typography & Hyphenation */

@@ -18,12 +18,12 @@ notes: |
 import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <CodeSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="CODE SHOWCASE"
   slideNumber="13"
   totalSlides="30"
 >
@@ -31,7 +31,6 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     slot="code"
     cue="code-jsonld"
     filename="schema-graph.jsonld"
-    badge="JSON-LD 1.1 W3C"
   >
     <pre class="text-slate-200 font-mono overflow-x-auto my-auto">
 {`{
@@ -67,20 +66,28 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </pre>
   </CodeContainer>
 
-  <BentoCard slot="explanation" title="Entitäten-Vorteile im Quelltext" badge="KEY TAKEAWAYS" accent="emerald">
-    <ul class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl my-auto">
-      <li class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">1</span>
-        <span><strong>@graph Array:</strong> Bündelt Organisation, Autor und Artikel konsistent in einem einzigen HTTP-Request.</span>
-      </li>
-      <li class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">2</span>
-        <span><strong>ORCID & sameAs:</strong> Verknüpft die Autorenidentität unmissverständlich mit globalen akademischen Registern.</span>
-      </li>
-      <li class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">3</span>
-        <span><Highlight cue="hl-fakten-5ms" color="emerald">Maschinenlesbare Fakten:</Highlight> GPTBot und Perplexity extrahieren Entitäten fehlerfrei in unter 5 Millisekunden.</span>
-      </li>
-    </ul>
+  <BentoCard slot="explanation" title="Entitäten-Vorteile im Quelltext" accent="blue">
+    <BulletList items={[
+      {
+        num: "1",
+        title: "@graph Array",
+        desc: "Bündelt Organisation, Autor und Artikel konsistent in einem einzigen HTTP-Request."
+      },
+      {
+        num: "2",
+        title: "ORCID & sameAs",
+        desc: "Verknüpft die Autorenidentität unmissverständlich mit globalen akademischen Registern."
+      },
+      {
+        num: "3",
+        title: "Maschinenlesbare Fakten"
+      }
+    ]}>
+      <div slot="item-2">
+        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+          <Highlight cue="hl-fakten-5ms" color="emerald">GPTBot und Perplexity</Highlight> extrahieren Entitäten fehlerfrei in unter 5 Millisekunden.
+        </p>
+      </div>
+    </BulletList>
   </BentoCard>
 </CodeSlide>

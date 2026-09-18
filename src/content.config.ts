@@ -461,7 +461,6 @@ const slides = defineCollection({
     slideLayout: z.string().default('custom'),
     voiceover: z.string().default(''),
     notes: z.string().default(''),
-    badge: z.string().optional(),
     durationSec: z.number().optional(),
   }),
 });

@@ -146,10 +146,11 @@ Each slide file is an autonomous bundle. It **must** define:
     - **Slide Title (`h1`)**: 56px–64px (`leading-[1.12]`)
     - **Card Headings (`h3`, `h4`)**: 32px–38px
     - **Body Text & Bullets (`p`, `li`)**: **24px–28px** (`leading-relaxed`)
-    - **Badges & Footnotes**: 18px–21px (absolute minimum allowed font size)
+    - **Footnotes & Metadata**: 18px–21px (absolute minimum allowed font size)
 - **NO Bespoke Free-Form HTML**:
   - **NEVER** invent complex nested `<div>` layouts with manual pixel margins, ad-hoc emoji boxes, or custom grid styling.
-  - **ALWAYS** use the 6 standardized slide archetypes and high-level primitives (`BentoCard`, `CalloutBox`, `BulletList`, `MetricStat`, `Pipeline`).
+  - **ALWAYS** use the 6 standardized slide archetypes and high-level primitives (`BentoCard`, `CalloutBox`, `BulletList`, `MetricStat`, `Pipeline`, `BarChart`).
+  - **NEVER guess chart bar widths or zero-lines**: For data visualizations, always use `<BarChart items={[...]} />`. Numerical scaling, bounds, and the zero-line are computed mathematically at presentation time by client-side JavaScript.
 
 ### 4. The 6 Master Slide Archetypes
 
@@ -159,15 +160,13 @@ Each slide file is an autonomous bundle. It **must** define:
    <TitleSlide
      title={frontmatter.title}
      subtitle={frontmatter.subtitle}
-     badge="KEYNOTE"
      slideNumber="01"
      totalSlides="30"
      speaker="Dr. Georg Hackenberg"
      role="Professor für Informatik & Industriesysteme"
      affiliation="FH Oberösterreich · Campus Wels"
-     event="Industrie & B2B Traunviertel"
      date="Oktober 2026"
-     website="hackenberg.tech"
+     website="https://hackenberg.tech"
      cue="intro-sub"
    />
    ```
@@ -178,11 +177,10 @@ Each slide file is an autonomous bundle. It **must** define:
    <SplitSlide
      title={frontmatter.title}
      subtitle={frontmatter.subtitle}
-     badge="PARADIGMENWECHSEL"
      slideNumber="03"
      totalSlides="30"
    >
-     <BentoCard slot="left" cue="col-classic" title="Klassischer Web-Index" badge="1998–2023" accent="neutral">
+     <BentoCard slot="left" cue="col-classic" title="Klassischer Web-Index" accent="neutral">
        <CalloutBox type="quote" color="neutral">
          https://example.com/pumpen: Hocheffiziente Industriepumpen...
        </CalloutBox>
@@ -192,8 +190,8 @@ Each slide file is an autonomous bundle. It **must** define:
        ]} />
      </BentoCard>
 
-     <BentoCard slot="right" cue="col-modern" title="Synthese-Maschine" badge="2024+" accent="blue">
-       <CalloutBox type="statement" color="blue" badge="AI OVERVIEW" title="Google / Perplexity">
+     <BentoCard slot="right" cue="col-modern" title="Synthese-Maschine" accent="blue">
+       <CalloutBox type="statement" color="blue" title="Google / Perplexity">
          Für chemische Anlagen im B2B-Einsatz eignen sich Magnetkupplungspumpen...
        </CalloutBox>
        <BulletList items={[
@@ -210,14 +208,13 @@ Each slide file is an autonomous bundle. It **must** define:
    <PipelineSlide
      title={frontmatter.title}
      subtitle={frontmatter.subtitle}
-     badge="ÜBERSICHT"
      slideNumber="02"
      totalSlides="30"
    >
      <Pipeline steps={[
-       { cue: "step-01", num: "01", title: "Paradigmenwechsel", desc: "Vom Web-Index zur Synthese.", badge: "STATUS QUO", accent: "blue" },
-       { cue: "step-02", num: "02", title: "Technologie", desc: "RAG und Embeddings.", badge: "THEORIE", accent: "teal" },
-       { cue: "step-03", num: "03", title: "3-Säulen-Methodik", desc: "Struktur, Inhalt, Autorität.", badge: "STRATEGIE", accent: "indigo" }
+       { cue: "step-01", num: "01", title: "Paradigmenwechsel", desc: "Vom Web-Index zur Synthese.", accent: "blue" },
+       { cue: "step-02", num: "02", title: "Technologie", desc: "RAG und Embeddings.", accent: "teal" },
+       { cue: "step-03", num: "03", title: "3-Säulen-Methodik", desc: "Struktur, Inhalt, Autorität.", accent: "indigo" }
      ]} />
    </PipelineSlide>
    ```
@@ -228,16 +225,15 @@ Each slide file is an autonomous bundle. It **must** define:
    <GridSlide
      title={frontmatter.title}
      subtitle={frontmatter.subtitle}
-     badge="TERMINOLOGIE"
      slideNumber="05"
      totalSlides="30"
      cols={2}
    >
-     <BentoCard cue="box-seo" title="SEO: Search Engine Optimization" badge="KLASSISCH" accent="neutral">
+     <BentoCard cue="box-seo" title="SEO: Search Engine Optimization" accent="neutral">
        <p><strong>Zielsystem:</strong> Google Web Search (10 blaue Links).</p>
        <p><strong>Mechanismus:</strong> Keywords, Backlinks, Core Web Vitals.</p>
      </BentoCard>
-     <BentoCard cue="box-aeo" title="AEO: Answer Engine Optimization" badge="POSITION ZERO" accent="cyan">
+     <BentoCard cue="box-aeo" title="AEO: Answer Engine Optimization" accent="cyan">
        <p><strong>Zielsystem:</strong> Google Featured Snippets, Voice Search.</p>
        <p><strong>Mechanismus:</strong> Q&A-Struktur, Tabellen, Schema.org.</p>
      </BentoCard>
@@ -248,7 +244,7 @@ Each slide file is an autonomous bundle. It **must** define:
 5. **Metric Hero Slide (`<MetricSlide />` or `<SplitSlide ratio="40/60" />`)**:
    High-impact data slide with a massive numeric KPI stat on one side and strategic takeaways on the other.
    ```mdx
-   <SplitSlide title={frontmatter.title} subtitle={frontmatter.subtitle} badge="EMPIRISCH" ratio="40/60">
+   <SplitSlide title={frontmatter.title} subtitle={frontmatter.subtitle} ratio="40/60">
      <MetricStat
        slot="left"
        cue="stat-zeroclick"
@@ -256,11 +252,10 @@ Each slide file is an autonomous bundle. It **must** define:
        unit="%"
        label="Zero-Click Suchanfragen"
        sublabel="SparkToro / Similarweb Global Search Study"
-       badge="GLOBALER DURCHSCHNITT"
        color="blue"
      />
-     <BentoCard slot="right" cue="bento-impact" title="Konsequenzen für B2B" badge="STRATEGIE" accent="cyan">
-       <CalloutBox type="statement" color="cyan" badge="KERNAUSSAGE" title="Geschäftsführung">
+     <BentoCard slot="right" cue="bento-impact" title="Konsequenzen für B2B" accent="cyan">
+       <CalloutBox type="statement" color="cyan" title="Geschäftsführung">
          „Wir optimieren nicht mehr für Klicks – wir optimieren für Zitation.“
        </CalloutBox>
        <BulletList items={[

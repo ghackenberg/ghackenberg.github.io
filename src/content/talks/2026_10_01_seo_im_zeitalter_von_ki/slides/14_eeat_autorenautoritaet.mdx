@@ -24,11 +24,10 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="AUTORITÄTSSIGNALE"
   slideNumber="14"
   totalSlides="30"
 >
-  <BentoCard slot="left" cue="col-eeat-triad" title="Das Dreieck der Autoren-Validierung" badge="VERIFIKATION" accent="blue">
+  <BentoCard slot="left" cue="col-eeat-triad" title="Das Dreieck der Autoren-Validierung" accent="blue">
     <div class="grid grid-cols-2 gap-4 text-center">
       <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20 light:border-blue-200 flex flex-col justify-center">
         <div class="text-4xl font-black text-blue-400 light:text-blue-700">E</div>
@@ -57,11 +56,11 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </CalloutBox>
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-eeat-checklist" title="B2B Best-Practice Autorenprofil" badge="CHECKLISTE" accent="cyan">
+  <BentoCard slot="right" cue="col-eeat-checklist" title="B2B Best-Practice Autorenprofil" accent="cyan">
     <BulletList items={[
-      { icon: "check", accent: "emerald", title: "Dedizierte Autoren-URL", desc: "Eigene Profilseite für jeden Fachautor (z. B. /team/dr-schmidt/)." },
-      { icon: "check", accent: "emerald", title: "sameAs-Verknüpfung", desc: "Direkte Links auf ORCID, Google Scholar, ResearchGate und LinkedIn." },
-      { icon: "check", accent: "emerald", title: "Transparente Vita", desc: "Relevante Industrieprojekte, Normengremien und Ausbildung nachvollziehbar auflisten." }
+      { icon: "check", title: "Dedizierte Autoren-URL", desc: "Eigene Profilseite für jeden Fachautor (z. B. /team/dr-schmidt/)." },
+      { icon: "check", title: "sameAs-Verknüpfung", desc: "Direkte Links auf ORCID, Google Scholar, ResearchGate und LinkedIn." },
+      { icon: "check", title: "Transparente Vita", desc: "Relevante Industrieprojekte, Normengremien und Ausbildung nachvollziehbar auflisten." }
     ]}>
       <div slot="item-0">
         <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">

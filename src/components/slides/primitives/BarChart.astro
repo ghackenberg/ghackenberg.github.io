@@ -1,0 +1,265 @@
+---
+import Highlight from './Highlight.astro';
+
+export interface BarChartItem {
+  label: string;
+  value: number;
+  formattedValue?: string;
+  unit?: string;
+  sublabel?: string;
+  cue?: string;
+  accent?: 'blue' | 'cyan' | 'teal' | 'indigo' | 'emerald' | 'green' | 'amber' | 'purple' | 'rose' | 'neutral';
+  highlightCue?: string;
+  highlightColor?: 'amber' | 'cyan' | 'emerald' | 'purple' | 'blue';
+  highlightTarget?: 'label' | 'value';
+}
+
+interface Props {
+  items: BarChartItem[];
+  min?: number;
+  max?: number;
+  unit?: string;
+  cue?: string;
+  id?: string;
+  class?: string;
+}
+
+const {
+  items = [],
+  min: explicitMin,
+  max: explicitMax,
+  unit = "",
+  cue,
+  id: explicitId,
+  class: className = ""
+} = Astro.props;
+
+const elementId = explicitId || cue;
+
+// Presentation-wide standard sequential accent cycle
+const ACCENT_CYCLE = ['blue', 'cyan', 'indigo', 'emerald', 'amber', 'purple'] as const;
+
+const accentColors: Record<string, { bar: string; text: string }> = {
+  blue: { bar: 'bg-blue-500', text: 'text-blue-400 light:text-blue-600' },
+  cyan: { bar: 'bg-cyan-400', text: 'text-cyan-400 light:text-cyan-600' },
+  teal: { bar: 'bg-cyan-400', text: 'text-cyan-400 light:text-cyan-600' },
+  indigo: { bar: 'bg-indigo-500', text: 'text-indigo-400 light:text-indigo-600' },
+  emerald: { bar: 'bg-emerald-500', text: 'text-emerald-400 light:text-emerald-600' },
+  green: { bar: 'bg-emerald-500', text: 'text-emerald-400 light:text-emerald-600' },
+  amber: { bar: 'bg-amber-400', text: 'text-amber-400 light:text-amber-600' },
+  purple: { bar: 'bg-purple-500', text: 'text-purple-400 light:text-purple-600' },
+  rose: { bar: 'bg-rose-500', text: 'text-rose-400 light:text-rose-600' },
+  neutral: { bar: 'bg-slate-500', text: 'text-slate-400 light:text-slate-600' }
+};
+
+// Initial SSR Calculation for zero-flash layout
+const values = items.map(i => i.value);
+const hasNegativeValues = values.some(v => v < 0);
+
+let initialMin = explicitMin !== undefined ? explicitMin : Math.min(0, ...values);
+let initialMax = explicitMax !== undefined ? explicitMax : Math.max(0, ...values);
+
+if (hasNegativeValues) {
+  initialMin = explicitMin !== undefined ? explicitMin : Math.floor(initialMin * 1.15);
+  initialMax = explicitMax !== undefined ? explicitMax : Math.ceil(initialMax * 1.1);
+} else {
+  initialMin = 0;
+  if (explicitMax !== undefined) {
+    initialMax = explicitMax;
+  } else if (Math.max(...values) > 30 && Math.max(...values) <= 100) {
+    initialMax = 100;
+  } else {
+    initialMax = Math.ceil(initialMax * 1.05);
+  }
+}
+
+const initialRange = initialMax - initialMin || 1;
+const initialZeroPercent = ((0 - initialMin) / initialRange) * 100;
+const hasInternalZeroLine = initialZeroPercent > 0.5 && initialZeroPercent < 99.5;
+
+function resolveBarAccent(item: BarChartItem, idx: number): string {
+  if (item.accent) return item.accent;
+  if (item.value < 0) return 'rose';
+  return ACCENT_CYCLE[idx % ACCENT_CYCLE.length];
+}
+
+function computeSsrBarStyle(value: number) {
+  if (value >= 0) {
+    const left = initialZeroPercent;
+    const width = (value / initialRange) * 100;
+    return `left: ${left.toFixed(2)}%; width: ${width.toFixed(2)}%;`;
+  } else {
+    const width = (Math.abs(value) / initialRange) * 100;
+    const left = initialZeroPercent - width;
+    return `left: ${left.toFixed(2)}%; width: ${width.toFixed(2)}%;`;
+  }
+}
+
+function computeSsrBarRounding(value: number) {
+  if (!hasInternalZeroLine) {
+    return 'rounded-full';
+  }
+  if (value >= 0) {
+    return 'rounded-r-full rounded-l-none';
+  } else {
+    return 'rounded-l-full rounded-r-none';
+  }
+}
+---
+
+<div
+  id={elementId}
+  data-cue={cue}
+  data-min={explicitMin !== undefined ? explicitMin : ''}
+  data-max={explicitMax !== undefined ? explicitMax : ''}
+  class={`bar-chart-container flex-1 flex flex-col justify-around gap-6 text-slate-200 light:text-slate-800 w-full select-none ${className}`}
+>
+  {items.map((item, idx) => {
+    const accent = resolveBarAccent(item, idx);
+    const colorStyle = accentColors[accent] || accentColors.blue;
+    const itemUnit = item.unit || unit;
+    const formattedVal = item.formattedValue || (item.value > 0 ? `+${item.value} ${itemUnit}` : `${item.value} ${itemUnit}`).trim();
+    const cueId = item.highlightCue || item.cue;
+    const isLabelHighlight = cueId && (item.highlightTarget === 'label' || !item.highlightTarget);
+    const isValueHighlight = cueId && item.highlightTarget === 'value';
+
+    return (
+      <div
+        id={item.cue}
+        data-cue={item.cue}
+        data-value={item.value}
+        class="bar-chart-row flex flex-col gap-2 w-full transition-opacity duration-300"
+      >
+        <!-- Row Header: Label & Formatted Value -->
+        <div class="flex justify-between items-baseline text-lg lg:text-xl font-bold">
+          <div class="flex items-center gap-2 min-w-0 pr-4">
+            {isLabelHighlight ? (
+              <Highlight cue={cueId} color={item.highlightColor || 'emerald'}>
+                {item.label}
+              </Highlight>
+            ) : (
+              <span class="truncate">{item.label}</span>
+            )}
+            {item.sublabel && (
+              <span class="text-sm text-slate-400 font-normal">({item.sublabel})</span>
+            )}
+          </div>
+
+          <div class={`font-mono text-xl lg:text-2xl font-black shrink-0 ${colorStyle.text}`}>
+            {isValueHighlight ? (
+              <Highlight cue={cueId} color={item.highlightColor || 'cyan'}>
+                {formattedVal}
+              </Highlight>
+            ) : (
+              <span>{formattedVal}</span>
+            )}
+          </div>
+        </div>
+
+        <!-- Track & Bar Container -->
+        <div class="chart-track-container w-full h-5 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden p-0.5 relative">
+          <!-- Zero Line Marker -->
+          <div
+            class="chart-zero-line absolute top-0 bottom-0 w-0.5 -translate-x-1/2 bg-slate-400/80 light:bg-slate-500 z-10 pointer-events-none"
+            style={`left: ${initialZeroPercent.toFixed(2)}%; display: ${hasInternalZeroLine ? 'block' : 'none'};`}
+          ></div>
+
+          <!-- Dynamic Animated Fill Bar -->
+          <div
+            class={`chart-bar-fill absolute top-0.5 bottom-0.5 transition-all duration-700 ease-out ${computeSsrBarRounding(item.value)} ${colorStyle.bar}`}
+            style={computeSsrBarStyle(item.value)}
+          ></div>
+        </div>
+      </div>
+    );
+  })}
+</div>
+
+<script>
+  function initBarCharts() {
+    document.querySelectorAll<HTMLElement>('.bar-chart-container').forEach(container => {
+      const minAttr = container.dataset.min;
+      const maxAttr = container.dataset.max;
+      const rows = Array.from(container.querySelectorAll<HTMLElement>('.bar-chart-row'));
+      if (rows.length === 0) return;
+
+      const values = rows.map(r => parseFloat(r.dataset.value || '0'));
+      const hasNegative = values.some(v => v < 0);
+
+      let min = minAttr !== undefined && minAttr !== '' ? parseFloat(minAttr) : Math.min(0, ...values);
+      let max = maxAttr !== undefined && maxAttr !== '' ? parseFloat(maxAttr) : Math.max(0, ...values);
+
+      if (hasNegative) {
+        min = minAttr ? parseFloat(minAttr) : Math.floor(min * 1.15);
+        max = maxAttr ? parseFloat(maxAttr) : Math.ceil(max * 1.1);
+      } else {
+        min = 0;
+        if (maxAttr) {
+          max = parseFloat(maxAttr);
+        } else if (Math.max(...values) > 30 && Math.max(...values) <= 100) {
+          max = 100;
+        } else {
+          max = Math.ceil(max * 1.05);
+        }
+      }
+
+      const range = max - min || 1;
+      const zeroPercent = ((0 - min) / range) * 100;
+      const hasInternalZero = zeroPercent > 0.5 && zeroPercent < 99.5;
+
+      // Position Zero Line
+      const zeroLines = container.querySelectorAll<HTMLElement>('.chart-zero-line');
+      zeroLines.forEach(zl => {
+        if (hasInternalZero) {
+          zl.style.display = 'block';
+          zl.style.left = `${zeroPercent}%`;
+        } else {
+          zl.style.display = 'none';
+        }
+      });
+
+      // Compute and apply precise bar positions & roundings
+      rows.forEach(row => {
+        const val = parseFloat(row.dataset.value || '0');
+        const bar = row.querySelector<HTMLElement>('.chart-bar-fill');
+        if (!bar) return;
+
+        if (hasInternalZero) {
+          if (val >= 0) {
+            bar.classList.remove('rounded-full', 'rounded-l-full');
+            bar.classList.add('rounded-r-full', 'rounded-l-none');
+          } else {
+            bar.classList.remove('rounded-full', 'rounded-r-full');
+            bar.classList.add('rounded-l-full', 'rounded-r-none');
+          }
+        } else {
+          bar.classList.remove('rounded-l-none', 'rounded-r-none', 'rounded-l-full', 'rounded-r-full');
+          bar.classList.add('rounded-full');
+        }
+
+        if (val >= 0) {
+          const left = zeroPercent;
+          const width = (val / range) * 100;
+          bar.style.left = `${left}%`;
+          bar.style.width = `${width}%`;
+        } else {
+          const width = (Math.abs(val) / range) * 100;
+          const left = zeroPercent - width;
+          bar.style.left = `${left}%`;
+          bar.style.width = `${width}%`;
+        }
+      });
+    });
+  }
+
+  // Initialize immediately on DOM load
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initBarCharts();
+  } else {
+    document.addEventListener('DOMContentLoaded', initBarCharts);
+  }
+
+  // Re-run whenever slide changes or viewport resizes
+  window.addEventListener('slide:changed', initBarCharts);
+  window.addEventListener('resize', initBarCharts);
+</script>

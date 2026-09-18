@@ -19,17 +19,16 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
 
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="STRATEGISCHE KPI"
   slideNumber="21"
   totalSlides="30"
 >
-  <BentoCard slot="left" cue="col-som-formula" title="Definition & Berechnungsformel" badge="MATHEMATIK" accent="blue">
-    <CalloutBox type="statement" color="blue" badge="INDEX-FORMEL" title="Share of Model (SoM)">
+  <BentoCard slot="left" cue="col-som-formula" title="Definition & Berechnungsformel" accent="blue">
+    <CalloutBox type="statement" color="blue" title="Share of Model (SoM)">
       <div class="text-3xl lg:text-4xl xl:text-5xl font-mono font-black text-blue-300 light:text-blue-950 my-2 text-center">
         SoM (%) = ( M<sub>erwähnt</sub> / P<sub>gesamt</sub> ) × 100
       </div>
@@ -39,13 +38,11 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     <BulletList items={[
       {
         num: "1",
-        accent: "blue",
         title: "Systematisches Prompt-Testing",
         desc: "100–200 industriespezifische Kaufberatungs-Prompts in standardisierten Modell-Panels testen."
       },
       {
         num: "2",
-        accent: "amber",
         cue: "hl-unlinked-mentions",
         title: "Unlinked Brand Mentions",
         desc: "Jede Nennung festigt die Gewichtung im Modell und erhöht zukünftige Empfehlungen."
@@ -53,37 +50,33 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-som-bench" title="Wettbewerbs-Benchmark (B2B Beispiel)" badge="BENCHMARK" accent="cyan">
-    <div class="flex-1 flex flex-col justify-around gap-6 text-slate-200 light:text-slate-800">
-      <div>
-        <div class="flex justify-between text-lg lg:text-xl font-bold mb-2">
-          <span>Ihr Unternehmen (GEO-optimiert)</span>
-          <span class="text-cyan-400 font-mono font-black text-2xl"><Highlight cue="hl-som-winner" color="cyan">42 % SoM</Highlight></span>
-        </div>
-        <div class="w-full h-5 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden p-0.5">
-          <div class="h-full bg-cyan-400 rounded-full" style="width: 42%;"></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="flex justify-between text-lg lg:text-xl font-bold mb-2">
-          <span>Wettbewerber A (Konzern)</span>
-          <span class="text-slate-400 font-mono font-bold text-2xl">24 % SoM</span>
-        </div>
-        <div class="w-full h-5 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden p-0.5">
-          <div class="h-full bg-slate-500 rounded-full" style="width: 24%;"></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="flex justify-between text-lg lg:text-xl font-bold mb-2">
-          <span>Wettbewerber B (Traditionell)</span>
-          <span class="text-slate-400 font-mono font-bold text-2xl">11 % SoM</span>
-        </div>
-        <div class="w-full h-5 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden p-0.5">
-          <div class="h-full bg-slate-600 rounded-full" style="width: 11%;"></div>
-        </div>
-      </div>
-    </div>
+  <BentoCard slot="right" cue="col-som-bench" title="Wettbewerbs-Benchmark (B2B Beispiel)" accent="cyan">
+    <BarChart
+      unit="% SoM"
+      max={100}
+      items={[
+        {
+          label: "Ihr Unternehmen (GEO-optimiert)",
+          value: 42,
+          formattedValue: "42 % SoM",
+          accent: "cyan",
+          cue: "hl-som-winner",
+          highlightColor: "cyan",
+          highlightTarget: "value"
+        },
+        {
+          label: "Wettbewerber A (Konzern)",
+          value: 24,
+          formattedValue: "24 % SoM",
+          accent: "neutral"
+        },
+        {
+          label: "Wettbewerber B (Traditionell)",
+          value: 11,
+          formattedValue: "11 % SoM",
+          accent: "neutral"
+        }
+      ]}
+    />
   </BentoCard>
 </SplitSlide>

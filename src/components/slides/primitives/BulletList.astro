@@ -5,8 +5,7 @@ export interface BulletItem {
   title?: string;
   desc?: string;
   cue?: string;
-  badge?: string;
-  accent?: 'blue' | 'cyan' | 'amber' | 'emerald' | 'purple' | 'rose' | 'red' | 'neutral';
+  accent?: 'blue' | 'cyan' | 'teal' | 'indigo' | 'amber' | 'emerald' | 'green' | 'purple' | 'rose' | 'red' | 'neutral';
 }
 
 interface Props {
@@ -16,21 +15,46 @@ interface Props {
 
 const { items = [], class: className = "" } = Astro.props;
 
-const accentBadge = {
+// Presentation-wide standard sequential accent cycle
+const ACCENT_CYCLE = ['blue', 'cyan', 'indigo', 'emerald', 'amber', 'purple'] as const;
+
+const accentBadge: Record<string, string> = {
   blue: 'bg-blue-600 text-white',
   cyan: 'bg-cyan-600 text-white',
+  teal: 'bg-cyan-600 text-white',
+  indigo: 'bg-indigo-600 text-white',
   amber: 'bg-amber-600 text-white',
   emerald: 'bg-emerald-600 text-white',
+  green: 'bg-emerald-600 text-white',
   purple: 'bg-purple-600 text-white',
   rose: 'bg-rose-600 text-white',
   red: 'bg-rose-600 text-white',
   neutral: 'bg-slate-800 light:bg-slate-200 text-slate-200 light:text-slate-800'
 };
+
+function getBadgeAccent(item: BulletItem, idx: number): string {
+  // 1. Semantic icons have strict color semantics across the presentation:
+  // Checkmarks always default to green (emerald), crosses to red (rose)
+  if (item.icon === 'check' || item.icon === '✓') {
+    return 'emerald';
+  }
+  if (item.icon === 'cross' || item.icon === '✗') {
+    return 'rose';
+  }
+
+  // 2. Explicit manual accent override if explicitly given
+  if (item.accent) {
+    return item.accent;
+  }
+
+  // 3. Numbered elements and generic items automatically follow the unified presentation cycle
+  return ACCENT_CYCLE[idx % ACCENT_CYCLE.length];
+}
 ---
 
 <ul class={`bullet-list flex flex-col justify-around gap-6 flex-1 my-auto pb-1 ${className}`}>
   {items.map((item, idx) => {
-    const accent = item.accent || (idx % 2 === 0 ? 'blue' : 'cyan');
+    const accent = getBadgeAccent(item, idx);
     return (
       <li id={item.cue} data-cue={item.cue} class="flex items-start gap-5">
         {(item.num !== undefined || item.icon) && (
@@ -44,11 +68,6 @@ const accentBadge = {
               <strong class="font-extrabold text-slate-100 light:text-slate-900 text-2xl lg:text-3xl leading-snug">
                 {item.title}
               </strong>
-              {item.badge && (
-                <span class="text-base uppercase font-mono font-bold tracking-wider px-3.5 py-1 rounded-full bg-slate-800 light:bg-slate-200 text-slate-300 light:text-slate-700">
-                  {item.badge}
-                </span>
-              )}
             </div>
           )}
           {item.desc && (

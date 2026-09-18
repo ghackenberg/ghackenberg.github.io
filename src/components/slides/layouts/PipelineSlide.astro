@@ -4,7 +4,6 @@ import SlideBase from '../primitives/SlideBase.astro';
 interface Props {
   title?: string;
   subtitle?: string;
-  badge?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
   direction?: 'horizontal' | 'vertical';
@@ -14,7 +13,6 @@ interface Props {
 const {
   title,
   subtitle,
-  badge,
   slideNumber,
   totalSlides,
   direction = 'horizontal',
@@ -25,7 +23,6 @@ const {
 <SlideBase
   title={title}
   subtitle={subtitle}
-  badge={badge}
   slideNumber={slideNumber}
   totalSlides={totalSlides}
   class={className}

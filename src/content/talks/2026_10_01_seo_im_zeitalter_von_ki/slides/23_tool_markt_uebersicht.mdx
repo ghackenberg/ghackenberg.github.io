@@ -25,60 +25,53 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="MARKTÜBERSICHT"
   slideNumber="23"
   totalSlides="30"
 >
-  <BentoCard slot="left" cue="col-tools-special" title="Spezialisierte GEO-Pioniere" badge="KI-MONITORING" accent="blue">
-    <CalloutBox type="statement" color="blue" badge="PROMPT-TRACKING" title="Limy.ai / AIclicks / Peasy.ai">
+  <BentoCard slot="left" cue="col-tools-special" title="Spezialisierte GEO-Pioniere" accent="blue">
+    <CalloutBox type="statement" color="blue" title="Limy.ai / AIclicks / Peasy.ai">
       Spezialisiert auf tägliches Prompt-Tracking über ChatGPT, Perplexity & Gemini.
     </CalloutBox>
 
     <BulletList items={[
       {
         icon: "check",
-        accent: "blue",
         cue: "hl-som-metriken",
         title: "Share of Model Metriken",
         desc: "Tägliche automatisierte Auswertung von Kaufberatungs-Prompts in standardisierten Modell-Panels."
       },
       {
         icon: "check",
-        accent: "blue",
         title: "Citation Gap Analysis",
         desc: "Deckt exakt auf, bei welchen Fragen Konkurrenten als primäre Quellen genannt werden."
       },
       {
         icon: "cross",
-        accent: "rose",
         title: "Kostenfaktor",
         desc: "Hohe monatliche SaaS-Abogebühren (oft ab $ 500–1.500 monatlich) bei fragmentiertem Markt."
       }
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-tools-enterprise" title="Etablierte Enterprise-Suiten" badge="HYBRIDE SYSTEME" accent="cyan">
-    <CalloutBox type="statement" color="cyan" badge="HYBRIDE SYSTEME" title="Semrush AI Solutions / Ahrefs Brand Graph">
+  <BentoCard slot="right" cue="col-tools-enterprise" title="Etablierte Enterprise-Suiten" accent="cyan">
+    <CalloutBox type="statement" color="cyan" title="Semrush AI Solutions / Ahrefs Brand Graph">
       Verknüpfen klassisches Keyword- und Backlink-Crawling mit generativen SERP-Snapshots.
     </CalloutBox>
 
     <BulletList items={[
       {
         icon: "check",
-        accent: "cyan",
         cue: "hl-aio-tracking",
         title: "Google AI Overview Tracking",
         desc: "Erkennt sofort, welche SERPs bereits von generativen KI-Boxen dominiert werden."
       },
       {
         icon: "check",
-        accent: "cyan",
         title: "Entitäten-Backlink-Graphen",
         desc: "Vollständige Sichtbarmachung von Unlinked Brand Mentions und Markenzitaten im Web."
       },
       {
         icon: "check",
-        accent: "cyan",
         title: "All-in-One Plattform",
         desc: "Integriert technische Audits, Linkanalyse und Content-Lücken in einem System."
       }

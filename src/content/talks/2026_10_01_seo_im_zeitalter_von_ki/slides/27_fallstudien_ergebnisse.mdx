@@ -25,19 +25,18 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  badge="CASE STUDIES"
   slideNumber="27"
   totalSlides="30"
 >
-  <BentoCard slot="left" cue="col-case-a" title="Fall A: B2B-Industriekonzern" badge="+38 % ZITATIONEN" accent="blue">
-    <CalloutBox color="blue" type="takeaway" badge="SONDERMASCHINEN & ROBOTIK" title="Umstellung auf Edge Delivery & Schema.org">
+  <BentoCard slot="left" cue="col-case-a" title="Fall A: B2B-Industriekonzern" accent="blue">
+    <CalloutBox color="blue" type="takeaway" title="Umstellung auf Edge Delivery & Schema.org">
       <p class="text-base text-slate-300 light:text-slate-700">Decoupled Edge Layer mit standardisiertem Product- und TechArticle-Schema.</p>
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", accent: "emerald", title: "+38 % Zitationen", desc: "Erwähnungen in Perplexity und Google AI Overviews." },
-      { icon: "check", accent: "emerald", title: "Ladezeit um 60 % gesenkt", desc: "LCP von 4,8 s auf 1,1 s reduziert." },
-      { icon: "check", accent: "emerald", title: "+24 % qualifizierte Leads", desc: "Direkte Anfragen über technische Produktdatenblätter." }
+      { icon: "check", title: "+38 % Zitationen", desc: "Erwähnungen in Perplexity und Google AI Overviews." },
+      { icon: "check", title: "Ladezeit um 60 % gesenkt", desc: "LCP von 4,8 s auf 1,1 s reduziert." },
+      { icon: "check", title: "+24 % qualifizierte Leads", desc: "Direkte Anfragen über technische Produktdatenblätter." }
     ]}>
       <div slot="item-0">
         <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
@@ -47,15 +46,15 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </BulletList>
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-case-b" title="Fall B: Medizintechnik-Pionier" badge="+45 % SICHTBARKEIT" accent="cyan">
-    <CalloutBox color="cyan" type="takeaway" badge="SENSORIK & DIAGNOSTIK" title="1.200 Fachbeiträge im Wissensgraphen">
+  <BentoCard slot="right" cue="col-case-b" title="Fall B: Medizintechnik-Pionier" accent="cyan">
+    <CalloutBox color="cyan" type="takeaway" title="1.200 Fachbeiträge im Wissensgraphen">
       <p class="text-base text-slate-300 light:text-slate-700">BLUF-Informationsblöcke mit verknüpften Autoren-Profilen (ORCID/Wikidata).</p>
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", accent: "emerald", title: "+45 % LLM-Sichtbarkeit", desc: "Präsenz bei hochgradig regulierten Kundenanfragen." },
-      { icon: "check", accent: "emerald", title: "Bevorzugte Zitation", desc: "Direktantworten in ChatGPT Search und Claude." },
-      { icon: "check", accent: "emerald", title: "Branchen-Referenz", desc: "Etablierung als anerkannte Primärquelle im Fachbereich." }
+      { icon: "check", title: "+45 % LLM-Sichtbarkeit", desc: "Präsenz bei hochgradig regulierten Kundenanfragen." },
+      { icon: "check", title: "Bevorzugte Zitation", desc: "Direktantworten in ChatGPT Search und Claude." },
+      { icon: "check", title: "Branchen-Referenz", desc: "Etablierung als anerkannte Primärquelle im Fachbereich." }
     ]}>
       <div slot="item-0">
         <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
