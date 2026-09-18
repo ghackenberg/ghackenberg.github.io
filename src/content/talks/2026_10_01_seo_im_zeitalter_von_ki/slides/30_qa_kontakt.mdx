@@ -18,6 +18,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -28,38 +30,26 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-qa-questions" title="Impulsfragen für die Diskussion" badge="DISKUSSIONSRUNDE" accent="blue">
-    <div class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl my-auto">
-      <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20 flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">1</span>
-        <span>Spüren Sie in Ihrem Unternehmen bereits den Rückgang von organischem Klick-Traffic durch generative AI Overviews?</span>
-      </div>
-
-      <div class="p-5 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/20 flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-cyan-600 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">2</span>
-        <span>Welche Bedenken oder Governance-Anforderungen bestehen beim Einsatz lokaler autonomer Entwickler-Agenten (MCP)?</span>
-      </div>
-
-      <div class="p-5 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-500/20 flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">3</span>
-        <span>Wer im Betrieb übernimmt künftig die Verantwortung für den semantischen Wissensgraphen – Marketing, Produktmanagement oder IT?</span>
-      </div>
-    </div>
+    <BulletList items={[
+      { num: "1", accent: "blue", title: "Klick-Rückgang", desc: "Spüren Sie in Ihrem Unternehmen bereits den Rückgang von organischem Klick-Traffic durch generative AI Overviews?" },
+      { num: "2", accent: "cyan", title: "Agenten & Governance", desc: "Welche Bedenken oder Governance-Anforderungen bestehen beim Einsatz lokaler autonomer Entwickler-Agenten (MCP)?" },
+      { num: "3", accent: "purple", title: "Zuständigkeit im Betrieb", desc: "Wer im Betrieb übernimmt künftig die Verantwortung für den semantischen Wissensgraphen – Marketing, Produkt oder IT?" }
+    ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-qa-contact" title="Kontakt & Ressourcen" badge="NETZWERK" accent="cyan">
-    <div class="my-auto space-y-6">
-      <div>
-        <h4 class="text-3xl lg:text-4xl font-black text-slate-100 light:text-slate-900">Dr. rer. nat. Georg Hackenberg</h4>
-        <p class="text-slate-300 light:text-slate-700 text-lg lg:text-xl mt-1">Professor für Informatik und Industriesysteme</p>
-        <p class="text-slate-400 light:text-slate-500 text-base">FH Oberösterreich, Campus Wels</p>
-      </div>
+    <CalloutBox color="cyan" type="takeaway" badge="SPEAKER" title="Dr. rer. nat. Georg Hackenberg">
+      <p class="text-xl text-slate-200 light:text-slate-800 font-semibold">Professor für Informatik und Industriesysteme</p>
+      <p class="text-base text-cyan-400 light:text-cyan-700 font-medium">FH Oberösterreich · Campus Wels</p>
+    </CalloutBox>
 
-      <div class="p-6 rounded-2xl bg-slate-950/80 border border-slate-800 text-slate-200 font-mono text-base lg:text-lg space-y-3">
+    <CalloutBox color="neutral" type="info">
+      <div class="font-mono text-lg space-y-2">
         <p>🌐 <strong>Web:</strong> <span class="text-cyan-400"><Highlight cue="hl-folien-online" color="blue">https://hackenberg.tech</Highlight></span></p>
         <p>💼 <strong>LinkedIn:</strong> <span class="text-blue-400">linkedin.com/in/georghackenberg</span></p>
         <p>💻 <strong>GitHub:</strong> <span class="text-purple-400">github.com/ghackenberg</span></p>
         <p>🔬 <strong>ORCID:</strong> <span class="text-emerald-400">0000-0003-3913-4148</span></p>
       </div>
-    </div>
+    </CalloutBox>
   </BentoCard>
 </SplitSlide>

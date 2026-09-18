@@ -1,6 +1,14 @@
 {
-  "step-loop-1": 6.58,
-  "step-loop-2": 9.38,
-  "step-loop-3": 17.68,
-  "step-loop-4": 22.36
+  "step-loop-1": {
+    "start": 6.58
+  },
+  "step-loop-2": {
+    "start": 9.38
+  },
+  "step-loop-3": {
+    "start": 17.68
+  },
+  "step-loop-4": {
+    "start": 22.36
+  }
 }

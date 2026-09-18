@@ -1,5 +1,11 @@
 {
-  "pillar-struct": 7.17,
-  "pillar-content": 12.4,
-  "pillar-auth": 18.57
+  "pillar-struct": {
+    "start": 7.17
+  },
+  "pillar-content": {
+    "start": 14.19
+  },
+  "pillar-auth": {
+    "start": 20.19
+  }
 }

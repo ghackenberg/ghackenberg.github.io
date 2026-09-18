@@ -17,6 +17,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -27,46 +29,32 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-schema-types" title="Die 5 B2B-Kern-Entitätstypen" badge="TAXONOMIE" accent="blue">
-    <div class="space-y-4 flex-1 flex flex-col justify-around my-2">
-      <div class="p-4 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20 light:border-blue-200">
-        <strong class="text-blue-300 light:text-blue-900 font-mono text-lg block font-bold">1. Organization</strong>
-        <p class="text-base text-slate-300 light:text-slate-700 mt-0.5">Rechtlicher Name, Logo, sameAs zu Wikidata/LinkedIn, Standorte.</p>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/20 light:border-cyan-200">
-        <strong class="text-cyan-300 light:text-cyan-900 font-mono text-lg block font-bold">2. Person</strong>
-        <p class="text-base text-slate-300 light:text-slate-700 mt-0.5">Geschäftsführung, Lead-Ingenieure, Autoren mit ORCID und Patenten.</p>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-500/20 light:border-indigo-200">
-        <strong class="text-indigo-300 light:text-indigo-900 font-mono text-lg block font-bold">3. Product</strong>
-        <p class="text-base text-slate-300 light:text-slate-700 mt-0.5">Industrieprodukte mit GTIN, MPN, ISO-Zertifikaten und Datenblättern.</p>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-emerald-500/10 light:bg-emerald-50 border border-emerald-500/20 light:border-emerald-200">
-        <strong class="text-emerald-300 light:text-emerald-900 font-mono text-lg block font-bold">4. TechArticle & 5. FAQPage</strong>
-        <p class="text-base text-slate-300 light:text-slate-700 mt-0.5">Direkte Frage-Antwort-Paare mit autoritativem Verfasser.</p>
-      </div>
-    </div>
+    <BulletList items={[
+      { num: "1", accent: "blue", title: "Organization", desc: "Rechtlicher Name, Logo, sameAs zu Wikidata/LinkedIn, Standorte." },
+      { num: "2", accent: "cyan", title: "Person", desc: "Geschäftsführung, Lead-Ingenieure, Autoren mit ORCID und Patenten." },
+      { num: "3", accent: "indigo", title: "Product", desc: "Industrieprodukte mit GTIN, MPN, ISO-Zertifikaten und Datenblättern." },
+      { num: "4", accent: "emerald", title: "TechArticle & FAQPage", desc: "Direkte Frage-Antwort-Paare mit autoritativem Verfasser." }
+    ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-schema-id" title="Das @id-Prinzip: Eindeutige URIs" badge="BEST PRACTICE" accent="indigo">
-    <div class="p-6 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-500/30 light:border-indigo-200 font-mono text-base space-y-1.5 shrink-0">
-      <p class="text-indigo-400 font-bold text-lg">// Canonical Entity URIs</p>
-      <p class="text-slate-200 light:text-slate-800">https://firma.at/#organization</p>
-      <p class="text-slate-200 light:text-slate-800">https://firma.at/team/dr-mueller/#author</p>
-      <p class="text-slate-200 light:text-slate-800">https://firma.at/produkte/serie-x/#product</p>
-    </div>
+    <CalloutBox color="indigo" type="info" title="// Canonical Entity URIs">
+      <div class="font-mono text-lg space-y-1">
+        <p class="text-slate-200 light:text-slate-800">https://firma.at/#organization</p>
+        <p class="text-slate-200 light:text-slate-800">https://firma.at/team/dr-mueller/#author</p>
+        <p class="text-slate-200 light:text-slate-800">https://firma.at/produkte/serie-x/#product</p>
+      </div>
+    </CalloutBox>
 
-    <ul class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
-      <li class="flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-indigo-500 text-white flex items-center justify-center font-bold text-base shrink-0">✓</span>
-        <span><strong>Keine redundante Doppel-Definition:</strong> Entitäten werden einmal deklariert und via URI referenziert.</span>
-      </li>
-      <li class="flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-indigo-500 text-white flex items-center justify-center font-bold text-base shrink-0">✓</span>
-        <span><Highlight cue="hl-schema-fusion" color="blue">Global eindeutiger Wissensgraph:</Highlight> Sprachmodelle fusionieren alle Aussagen unter derselben ID.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      { icon: "check", accent: "indigo", title: "Keine redundante Doppel-Definition", desc: "Entitäten werden einmal deklariert und via URI referenziert." },
+      { icon: "check", accent: "indigo", title: "Global eindeutiger Wissensgraph", desc: "Sprachmodelle fusionieren alle Aussagen unter derselben ID." }
+    ]}>
+      <div slot="item-1">
+        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+          <Highlight cue="hl-schema-fusion" color="blue">Global eindeutiger Wissensgraph:</Highlight> Sprachmodelle fusionieren alle Aussagen unter derselben ID.
+        </p>
+      </div>
+    </BulletList>
   </BentoCard>
 </SplitSlide>

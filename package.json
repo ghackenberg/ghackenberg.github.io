@@ -45,7 +45,6 @@
     "googleapis": "^172.0.0",
     "howler": "^2.2.4",
     "katex": "^0.17.0",
-    "motion": "^13.4.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "reveal.js": "^6.0.2",

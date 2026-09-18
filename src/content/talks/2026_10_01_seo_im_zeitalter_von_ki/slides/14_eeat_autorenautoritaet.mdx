@@ -17,6 +17,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -27,48 +29,45 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-eeat-triad" title="Das Dreieck der Autoren-Validierung" badge="VERIFIKATION" accent="blue">
-    <div class="grid grid-cols-2 gap-4 text-center my-auto">
-      <div class="p-4 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20 light:border-blue-200 flex flex-col justify-center">
-        <div class="text-3xl lg:text-4xl font-black text-blue-400 light:text-blue-700">E</div>
-        <div class="text-base lg:text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Experience</div>
-        <p class="text-sm lg:text-base text-slate-400 light:text-slate-600 mt-1">Praktische Projekterfahrung</p>
+    <div class="grid grid-cols-2 gap-4 text-center">
+      <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20 light:border-blue-200 flex flex-col justify-center">
+        <div class="text-4xl font-black text-blue-400 light:text-blue-700">E</div>
+        <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Experience</div>
+        <p class="text-base text-slate-400 light:text-slate-600 mt-1">Praktische Projekterfahrung</p>
       </div>
-      <div class="p-4 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/20 light:border-cyan-200 flex flex-col justify-center">
-        <div class="text-3xl lg:text-4xl font-black text-cyan-400 light:text-cyan-700">E</div>
-        <div class="text-base lg:text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Expertise</div>
-        <p class="text-sm lg:text-base text-slate-400 light:text-slate-600 mt-1">Patente & Publikationen</p>
+      <div class="p-5 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/20 light:border-cyan-200 flex flex-col justify-center">
+        <div class="text-4xl font-black text-cyan-400 light:text-cyan-700">E</div>
+        <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Expertise</div>
+        <p class="text-base text-slate-400 light:text-slate-600 mt-1">Patente & Publikationen</p>
       </div>
-      <div class="p-4 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-500/20 light:border-indigo-200 flex flex-col justify-center">
-        <div class="text-3xl lg:text-4xl font-black text-indigo-400 light:text-indigo-700">A</div>
-        <div class="text-base lg:text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Authority</div>
-        <p class="text-sm lg:text-base text-slate-400 light:text-slate-600 mt-1">Fachzitate & Gremien</p>
+      <div class="p-5 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-500/20 light:border-indigo-200 flex flex-col justify-center">
+        <div class="text-4xl font-black text-indigo-400 light:text-indigo-700">A</div>
+        <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Authority</div>
+        <p class="text-base text-slate-400 light:text-slate-600 mt-1">Fachzitate & Gremien</p>
       </div>
-      <div class="p-4 rounded-2xl bg-emerald-500/10 light:bg-emerald-50 border border-emerald-500/20 light:border-emerald-200 flex flex-col justify-center">
-        <div class="text-3xl lg:text-4xl font-black text-emerald-400 light:text-emerald-700">T</div>
-        <div class="text-base lg:text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Trust</div>
-        <p class="text-sm lg:text-base text-slate-400 light:text-slate-600 mt-1">Verifizierte Profile & Peers</p>
+      <div class="p-5 rounded-2xl bg-emerald-500/10 light:bg-emerald-50 border border-emerald-500/20 light:border-emerald-200 flex flex-col justify-center">
+        <div class="text-4xl font-black text-emerald-400 light:text-emerald-700">T</div>
+        <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Trust</div>
+        <p class="text-base text-slate-400 light:text-slate-600 mt-1">Verifizierte Profile & Peers</p>
       </div>
     </div>
 
-    <div class="p-4 rounded-xl bg-slate-950/60 light:bg-slate-100 border border-slate-800 text-base lg:text-lg text-slate-300 light:text-slate-600">
-      <strong class="text-blue-400 light:text-blue-600"><Highlight cue="hl-glaubwuerdigkeit" color="blue">Modell-Verhalten:</Highlight></strong> Wenn zwei Webseiten denselben Sachverhalt erklären, zitiert das LLM bevorzugt jene Quelle, deren Autor über Wissensgraphen (Wikidata/ORCID) verifiziert ist.
-    </div>
+    <CalloutBox color="blue" type="takeaway" title="Modell-Verhalten">
+      Wenn zwei Webseiten denselben Sachverhalt erklären, zitiert das LLM bevorzugt jene Quelle, deren Autor über <Highlight cue="hl-glaubwuerdigkeit" color="blue">Wissensgraphen (Wikidata/ORCID)</Highlight> verifiziert ist.
+    </CalloutBox>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-eeat-checklist" title="B2B Best-Practice Autorenprofil" badge="CHECKLISTE" accent="cyan">
-    <div class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl my-auto">
-      <div class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 light:bg-emerald-100 light:text-emerald-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
-        <span><strong>Dedizierte Autoren-URL:</strong> <Highlight cue="hl-autoren-sichtbar" color="emerald">Eigene Profilseite für jeden Fachautor</Highlight> (z. B. <code class="text-cyan-400 light:text-cyan-600 text-base">/team/dr-schmidt/</code>).</span>
+    <BulletList items={[
+      { icon: "check", accent: "emerald", title: "Dedizierte Autoren-URL", desc: "Eigene Profilseite für jeden Fachautor (z. B. /team/dr-schmidt/)." },
+      { icon: "check", accent: "emerald", title: "sameAs-Verknüpfung", desc: "Direkte Links auf ORCID, Google Scholar, ResearchGate und LinkedIn." },
+      { icon: "check", accent: "emerald", title: "Transparente Vita", desc: "Relevante Industrieprojekte, Normengremien und Ausbildung nachvollziehbar auflisten." }
+    ]}>
+      <div slot="item-0">
+        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+          <Highlight cue="hl-autoren-sichtbar" color="emerald">Eigene Profilseite für jeden Fachautor</Highlight> (z. B. <code class="text-cyan-400 light:text-cyan-600 text-base">/team/dr-schmidt/</code>).
+        </p>
       </div>
-      <div class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 light:bg-emerald-100 light:text-emerald-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
-        <span><strong>sameAs-Verknüpfung:</strong> Direkte Links auf ORCID, Google Scholar, ResearchGate und LinkedIn.</span>
-      </div>
-      <div class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 light:bg-emerald-100 light:text-emerald-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
-        <span><strong>Transparente Vita:</strong> Relevante Industrieprojekte, Normengremien und akademische Ausbildung nachvollziehbar auflisten.</span>
-      </div>
-    </div>
+    </BulletList>
   </BentoCard>
 </SplitSlide>

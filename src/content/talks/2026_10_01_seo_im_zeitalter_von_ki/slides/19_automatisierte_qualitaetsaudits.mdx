@@ -16,6 +16,7 @@ notes: |
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -33,6 +34,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       sublabel="LCP < 0.8s, FCP 0.4s"
       badge="CORE WEB VITALS"
       color="green"
+      size="compact"
     />
     <MetricStat
       value="100"
@@ -40,6 +42,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       sublabel="Kontraste & ARIA"
       badge="BARRIEREFREI"
       color="green"
+      size="compact"
     />
     <MetricStat
       value="100"
@@ -47,6 +50,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       sublabel="HTTPS & CSP"
       badge="SICHERHEIT"
       color="green"
+      size="compact"
     />
     <MetricStat
       value="100"
@@ -54,6 +58,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       sublabel="Metadaten & Canonical"
       badge="INDEXIERBARKEIT"
       color="green"
+      size="compact"
     />
   </div>
 
@@ -67,8 +72,8 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       <p class="text-cyan-400 font-black pt-2 text-lg">✨ All Quality Gates Passed. Proceeding to Edge Deploy.</p>
     </div>
 
-    <p class="text-base lg:text-lg text-slate-300 light:text-slate-600 leading-relaxed">
+    <CalloutBox type="statement" color="emerald" badge="CRAWL-BUDGET" title="Indexierungs-Garantie">
       Wenn eine Seite Ladezeitverzögerungen aufweist, brechen KI-Crawler wie GPTBot den Render-Prozess vorzeitig ab. <Highlight cue="hl-100-scores" color="emerald">100/100 Scores garantieren 100 % Indexierungsrate.</Highlight>
-    </p>
+    </CalloutBox>
   </BentoCard>
 </SplitSlide>

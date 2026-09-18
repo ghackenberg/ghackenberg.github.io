@@ -226,6 +226,7 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
 <script>
   import Reveal from 'reveal.js';
   import { AudioSyncController, type SlideData } from './AudioSyncController';
+  import { AutoFitController } from './AutoFitController';
 
   // Read metadata
   const metaEl = document.getElementById('slides-meta');
@@ -254,6 +255,10 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
 
 
   deck.initialize().then(() => {
+    // AutoFit Controller
+    const autoFit = new AutoFitController();
+    autoFit.fitAll(document.getElementById('reveal-root'));
+
     // UI Elements
     const btnPlayPause = document.getElementById('btn-play-pause');
     const iconPlay = document.getElementById('icon-play');
@@ -401,6 +406,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
       updateActiveSlideInList(idx);
       audioSync.setSlideIndex(idx, false);
+      const currentSlide = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[idx];
+      autoFit.fitSlide(currentSlide);
     });
 
     // Button Listeners
@@ -439,6 +446,9 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     if (revealRoot && typeof ResizeObserver !== 'undefined') {
       const ro = new ResizeObserver(() => {
         deck.layout();
+        const idx = deck.getIndices().h;
+        const currentSlide = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[idx];
+        autoFit.fitSlide(currentSlide);
       });
       ro.observe(revealRoot);
     }
@@ -539,6 +549,9 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
         audioSync.togglePlay();
       }
     });
+
+    // Initialize initial slide cues
+    audioSync.setSlideIndex(0, false);
   });
 </script>
 
@@ -681,7 +694,7 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
   }
 
   /* Fullscreen handling */
-  :global(.slide-deck-wrapper:fullscreen) {
+  .slide-deck-wrapper:fullscreen {
     width: 100vw !important;
     height: 100vh !important;
     max-height: 100vh !important;
@@ -689,11 +702,11 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     border-radius: 0 !important;
     border: none !important;
   }
-  :global(.slide-deck-wrapper:fullscreen .aspect-video) {
+  .slide-deck-wrapper:fullscreen .aspect-video {
     aspect-ratio: auto !important;
     flex: 1 1 0% !important;
   }
-  :global(.slide-deck-wrapper:-webkit-full-screen) {
+  .slide-deck-wrapper:-webkit-full-screen {
     width: 100vw !important;
     height: 100vh !important;
     max-height: 100vh !important;
@@ -701,8 +714,183 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     border-radius: 0 !important;
     border: none !important;
   }
-  :global(.slide-deck-wrapper:-webkit-full-screen .aspect-video) {
+  .slide-deck-wrapper:-webkit-full-screen .aspect-video {
     aspect-ratio: auto !important;
     flex: 1 1 0% !important;
+  }
+
+  /* ==========================================================================
+     Presentation Animation Architecture (Pure CSS Synchronized to Speech Cues)
+     ========================================================================== */
+
+  /* 1. Containers, Cards, and Graphical Nodes (Boxes) */
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker),
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker) {
+    transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.4s ease;
+    will-change: opacity, transform;
+  }
+
+  /* Pre-cue pending state: hidden until spoken (Fade-In Pre-state) */
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker):not(.is-active),
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker):not(.is-active) {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+    pointer-events: none;
+  }
+
+  /* Active cue state: fully visible & in position (Fade-In Result) */
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker).is-active,
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker).is-active {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+    pointer-events: auto !important;
+  }
+
+  /* Dimmed cue state: earlier points step down for spotlight focus */
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker).is-dimmed,
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker).is-dimmed {
+    opacity: 0.32 !important;
+    transform: scale(0.985) !important;
+    filter: saturate(0.85);
+  }
+
+  /* Exited cue state: explicit fade-out via {/cue} or replacement (Fade-Out Result) */
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker).is-exited,
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker).is-exited {
+    opacity: 0 !important;
+    transform: translateY(-16px) scale(0.97) !important;
+    pointer-events: none !important;
+  }
+
+  /* SVG Graph edge path transitions */
+  .reveal .slides .graph-edge-group:not(.is-active) .graph-edge-path {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+  }
+  .reveal .slides .graph-edge-group.is-active .graph-edge-path {
+    opacity: 1 !important;
+  }
+
+  /* ==========================================================================
+     Highlighter Marker System (CSS Marker Pen Animation)
+     ========================================================================== */
+
+  .reveal mark,
+  .reveal .highlight-marker {
+    background-color: transparent !important;
+    color: inherit;
+    padding: 0.12em 0.4em;
+    margin: 0 -0.1em;
+    border-radius: 0.375rem;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    background-repeat: no-repeat;
+    background-image: var(--hl-bg-dark);
+    background-size: 100% 100%;
+    transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.25s ease;
+    will-change: background-size, color;
+  }
+
+  /* Color: Amber (Default) */
+  .reveal mark,
+  .reveal .highlight-marker,
+  .reveal mark[data-color="amber"],
+  .reveal [data-color="amber"].highlight-marker {
+    --hl-bg-dark: linear-gradient(120deg, rgba(245, 158, 11, 0.35) 0%, rgba(251, 191, 36, 0.45) 100%);
+    --hl-text-dark: #fef08a;
+    --hl-bg-light: linear-gradient(120deg, rgba(251, 191, 36, 0.45) 0%, rgba(245, 158, 11, 0.5) 100%);
+    --hl-text-light: #78350f;
+  }
+
+  /* Color: Cyan */
+  .reveal mark[data-color="cyan"],
+  .reveal [data-color="cyan"].highlight-marker {
+    --hl-bg-dark: linear-gradient(120deg, rgba(6, 182, 212, 0.35) 0%, rgba(34, 211, 238, 0.45) 100%);
+    --hl-text-dark: #a5f3fc;
+    --hl-bg-light: linear-gradient(120deg, rgba(34, 211, 238, 0.4) 0%, rgba(6, 182, 212, 0.45) 100%);
+    --hl-text-light: #0e7490;
+  }
+
+  /* Color: Emerald */
+  .reveal mark[data-color="emerald"],
+  .reveal [data-color="emerald"].highlight-marker {
+    --hl-bg-dark: linear-gradient(120deg, rgba(16, 185, 129, 0.35) 0%, rgba(52, 211, 153, 0.45) 100%);
+    --hl-text-dark: #a7f3d0;
+    --hl-bg-light: linear-gradient(120deg, rgba(52, 211, 153, 0.4) 0%, rgba(16, 185, 129, 0.45) 100%);
+    --hl-text-light: #065f46;
+  }
+
+  /* Color: Purple */
+  .reveal mark[data-color="purple"],
+  .reveal [data-color="purple"].highlight-marker {
+    --hl-bg-dark: linear-gradient(120deg, rgba(168, 85, 247, 0.35) 0%, rgba(192, 132, 252, 0.45) 100%);
+    --hl-text-dark: #e9d5ff;
+    --hl-bg-light: linear-gradient(120deg, rgba(192, 132, 252, 0.4) 0%, rgba(168, 85, 247, 0.45) 100%);
+    --hl-text-light: #581c87;
+  }
+
+  /* Color: Blue */
+  .reveal mark[data-color="blue"],
+  .reveal [data-color="blue"].highlight-marker {
+    --hl-bg-dark: linear-gradient(120deg, rgba(59, 130, 246, 0.35) 0%, rgba(96, 165, 250, 0.45) 100%);
+    --hl-text-dark: #bfdbfe;
+    --hl-bg-light: linear-gradient(120deg, rgba(96, 165, 250, 0.4) 0%, rgba(59, 130, 246, 0.45) 100%);
+    --hl-text-light: #1e40af;
+  }
+
+  /* Apply theme gradient */
+  .reveal mark,
+  .reveal .highlight-marker {
+    background-image: var(--hl-bg-dark);
+  }
+  .light .reveal mark,
+  .light .reveal .highlight-marker {
+    background-image: var(--hl-bg-light);
+  }
+
+  /* Pre-cue pending state for marker: 0% width (unmarked) */
+  .reveal mark[data-cue]:not(.is-active),
+  .reveal .highlight-marker[data-cue]:not(.is-active) {
+    background-size: 0% 100%;
+  }
+
+  /* Active state for marker: 100% width (swept) + text contrast */
+  .reveal mark.is-active,
+  .reveal .highlight-marker.is-active {
+    background-size: 100% 100% !important;
+    color: var(--hl-text-dark) !important;
+  }
+  .light .reveal mark.is-active,
+  .light .reveal .highlight-marker.is-active {
+    color: var(--hl-text-light) !important;
+  }
+
+  /* ==========================================================================
+     Accessibility & Print Handout Modes
+     ========================================================================== */
+
+  /* Print / Handout mode: keep everything fully visible with zero transform offset */
+  .print-slide-page [data-cue],
+  .print-slide-page .cue-target,
+  .print-slide-page mark,
+  .print-slide-page .highlight-marker {
+    opacity: 1 !important;
+    transform: none !important;
+    background-size: 100% 100% !important;
+  }
+
+  /* Accessibility: Prefers reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal .slides [data-cue],
+    .reveal .slides .cue-target,
+    .reveal mark,
+    .reveal .highlight-marker {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      transform: none !important;
+    }
   }
 </style>

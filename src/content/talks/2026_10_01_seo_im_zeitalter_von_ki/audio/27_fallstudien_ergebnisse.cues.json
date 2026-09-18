@@ -4,15 +4,15 @@
   },
   "hl-case-a-stat": {
     "start": 11.36,
-    "duration": 5.19,
-    "end": 16.55
+    "duration": 4.85,
+    "end": 16.21
   },
   "col-case-b": {
-    "start": 21.04
+    "start": 20.3
   },
   "hl-case-b-stat": {
-    "start": 30.26,
-    "duration": 4.34,
-    "end": 34.6
+    "start": 28.69,
+    "duration": 4.6,
+    "end": 33.29
   }
 }

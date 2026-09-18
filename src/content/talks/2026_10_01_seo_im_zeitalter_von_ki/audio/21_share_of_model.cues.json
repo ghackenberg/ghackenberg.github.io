@@ -3,16 +3,16 @@
     "start": 5.41
   },
   "hl-som-winner": {
-    "start": 8.78,
-    "duration": 2.4,
-    "end": 11.18
+    "start": 8.54,
+    "duration": 2.14,
+    "end": 10.68
   },
   "col-som-bench": {
-    "start": 14.66
+    "start": 14.36
   },
   "hl-unlinked-mentions": {
-    "start": 15.68,
-    "duration": 1.66,
-    "end": 17.34
+    "start": 15.24,
+    "duration": 1.56,
+    "end": 16.8
   }
 }

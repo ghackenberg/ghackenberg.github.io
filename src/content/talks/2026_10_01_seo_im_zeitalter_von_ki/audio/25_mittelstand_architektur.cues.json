@@ -1,5 +1,11 @@
 {
-  "arch-layer-3": 10.66,
-  "arch-layer-2": 17.35,
-  "arch-layer-1": 22.31
+  "arch-layer-3": {
+    "start": 10.66
+  },
+  "arch-layer-2": {
+    "start": 17.35
+  },
+  "arch-layer-1": {
+    "start": 22.31
+  }
 }

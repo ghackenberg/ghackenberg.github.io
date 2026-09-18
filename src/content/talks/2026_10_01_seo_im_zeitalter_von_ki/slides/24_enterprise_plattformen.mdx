@@ -17,6 +17,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -27,46 +29,56 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-aem" title="Adobe Experience Manager (AEM)" badge="EDGE DELIVERY" accent="blue">
-    <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 my-auto">
-      <strong class="text-blue-300 light:text-blue-950 text-xl lg:text-2xl block mb-2"><Highlight cue="hl-aem-edge" color="blue">AEM Edge Delivery Services</Highlight></strong>
-      <p class="text-base lg:text-lg text-blue-200 light:text-blue-900 leading-relaxed">Auslieferung direkt am weltweiten CDN-Edge. Garantiert 100er-Lighthouse-Scores für blitzschnelle Antwortzeiten bei KI-Crawlern.</p>
-    </div>
+    <CalloutBox type="statement" color="blue" badge="EDGE CDN" title="AEM Edge Delivery Services">
+      <p><Highlight cue="hl-aem-edge" color="blue">Auslieferung direkt am weltweiten CDN-Edge.</Highlight> Garantiert 100er-Lighthouse-Scores für blitzschnelle Antwortzeiten bei KI-Crawlern.</p>
+    </CalloutBox>
 
-    <ul class="space-y-4 text-slate-200 light:text-slate-800 text-base lg:text-lg my-auto">
-      <li class="flex items-start gap-3">
-        <span class="text-blue-400 light:text-blue-600 font-bold text-xl">●</span>
-        <span><strong>Adobe Sensei GenAI:</strong> Automatisches semantisches Tagging und Entitäten-Klassifizierung aller Inhalts-Fragmente.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-blue-400 light:text-blue-600 font-bold text-xl">●</span>
-        <span><strong>Content Fragments:</strong> Strukturierte Inhaltsblöcke werden parallel als maschinenlesbares JSON-LD ausgeliefert.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-blue-400 light:text-blue-600 font-bold text-xl">●</span>
-        <span><strong>Global Consistency:</strong> Identische Entitäten und Taxonomien über hunderte Länderportale hinweg.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      {
+        num: "1",
+        accent: "blue",
+        title: "Adobe Sensei GenAI",
+        desc: "Automatisches semantisches Tagging und Entitäten-Klassifizierung aller Inhalts-Fragmente."
+      },
+      {
+        num: "2",
+        accent: "blue",
+        title: "Content Fragments",
+        desc: "Strukturierte Inhaltsblöcke werden parallel als maschinenlesbares JSON-LD ausgeliefert."
+      },
+      {
+        num: "3",
+        accent: "blue",
+        title: "Globale Konsistenz",
+        desc: "Identische Entitäten und Taxonomien über hunderte weltweite Länderportale hinweg."
+      }
+    ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-sitecore" title="Sitecore XM Cloud & Content Hub" badge="SEMANTIC HUB" accent="cyan">
-    <div class="p-5 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/30 my-auto">
-      <strong class="text-cyan-300 light:text-cyan-950 text-xl lg:text-2xl block mb-2"><Highlight cue="hl-single-source" color="cyan">Zentraler B2B-Wissensgraph</Highlight></strong>
-      <p class="text-base lg:text-lg text-cyan-200 light:text-cyan-900 leading-relaxed">Content Hub fungiert als "Single Source of Truth" für komplexe technische Produktdaten, CAD-Modelle und Zertifikate.</p>
-    </div>
+    <CalloutBox type="statement" color="cyan" badge="SINGLE SOURCE" title="Zentraler B2B-Wissensgraph">
+      <p><Highlight cue="hl-single-source" color="cyan">Content Hub als Single Source of Truth</Highlight> für komplexe technische Produktdaten, CAD-Modelle und Zertifikate.</p>
+    </CalloutBox>
 
-    <ul class="space-y-5 text-slate-200 light:text-slate-800 text-base lg:text-lg my-auto">
-      <li class="flex items-start gap-3">
-        <span class="text-cyan-400 light:text-cyan-600 font-bold text-xl">●</span>
-        <span><strong>Sitecore Search & Vektoren:</strong> Bereitet proprietäre Produktdaten direkt für externe RAG-Bots und KI-Suchmaschinen auf.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-cyan-400 light:text-cyan-600 font-bold text-xl">●</span>
-        <span><strong>GraphQL-Schnittstellen:</strong> Einheitliche Hochgeschwindigkeits-API für Webfrontend und direkte Modell-Injektion.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-cyan-400 light:text-cyan-600 font-bold text-xl">●</span>
-        <span><strong>Headless DXP Architektur:</strong> Strikte Trennung von Inhaltsverwaltung und Auslieferungsschicht.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      {
+        num: "1",
+        accent: "cyan",
+        title: "Sitecore Search & Vektoren",
+        desc: "Bereitet proprietäre Produktdaten direkt für externe RAG-Bots und KI-Suchmaschinen auf."
+      },
+      {
+        num: "2",
+        accent: "cyan",
+        title: "GraphQL-Schnittstellen",
+        desc: "Einheitliche Hochgeschwindigkeits-API für Webfrontend und direkte Modell-Injektion."
+      },
+      {
+        num: "3",
+        accent: "cyan",
+        title: "Headless DXP Architektur",
+        desc: "Strikte Trennung von Inhaltsverwaltung und extrem schneller Auslieferungsschicht."
+      }
+    ]} />
   </BentoCard>
 </SplitSlide>

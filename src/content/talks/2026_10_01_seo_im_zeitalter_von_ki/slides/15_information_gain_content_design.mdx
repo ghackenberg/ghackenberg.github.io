@@ -17,6 +17,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -27,44 +29,29 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-bad-content" title="Klassischer SEO-Fülltext (Abstrafung)" badge="LOW INFORMATION GAIN" accent="neutral">
-    <div class="p-5 rounded-2xl bg-rose-500/10 light:bg-rose-50 border border-rose-500/20 text-base lg:text-lg text-slate-300 light:text-slate-700">
-      <p class="italic text-rose-300 light:text-rose-900 leading-relaxed">
+    <CalloutBox color="amber" type="warning">
+      <p class="italic">
         <Highlight cue="hl-langatmig" color="amber">„In der heutigen modernen Welt wird Energieeffizienz für Unternehmen immer wichtiger. Viele fragen sich daher, was eine Industriepumpe ist...</Highlight> In diesem Beitrag beleuchten wir ausführlich...“
       </p>
-    </div>
+    </CalloutBox>
 
-    <ul class="space-y-4 text-slate-300 light:text-slate-700 text-base lg:text-lg my-auto">
-      <li class="flex items-start gap-3">
-        <span class="text-rose-500 font-bold text-xl">✗</span>
-        <span>Floskelhafte Einleitung ohne neue Information für das Modell.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-rose-500 font-bold text-xl">✗</span>
-        <span>Wichtigste Kennzahlen erst am Ende der Seite versteckt.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-rose-500 font-bold text-xl">✗</span>
-        <span>Chunker extrahiert irrelevante Füllsätze in das Context Window.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      { icon: "cross", accent: "rose", title: "Floskelhafte Einleitung", desc: "Keine neue Information für das Retrieval-Modell." },
+      { icon: "cross", accent: "rose", title: "Versteckte Kennzahlen", desc: "Wichtigste Daten erst am Ende der Seite versteckt." },
+      { icon: "cross", accent: "rose", title: "Irrelevante Chunks", desc: "Chunker extrahiert Füllsätze in das Context Window." }
+    ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-bluf-content" title="BLUF-Prinzip: Bottom Line Up Front" badge="HIGH INFORMATION GAIN" accent="emerald">
-    <div class="p-5 rounded-2xl bg-emerald-500/10 light:bg-emerald-50 border border-emerald-500/30 text-base lg:text-lg text-slate-200 light:text-slate-800">
-      <p class="font-medium text-emerald-300 light:text-emerald-950 leading-relaxed">
+    <CalloutBox color="emerald" type="takeaway">
+      <p>
         <strong><Highlight cue="hl-direktantwort-bluf" color="emerald">Direktantwort (45 Wörter):</Highlight></strong> Magnetkupplungspumpen der Serie X erreichen bei 2.900 U/min einen Wirkungsgrad von 84,2 % und sparen gegenüber herkömmlichen Stopfbuchspumpen bis zu 14,8 kWh pro Betriebstag ein. Sie sind nach ATEX Zone 1 zertifiziert.
       </p>
-    </div>
+    </CalloutBox>
 
-    <ul class="space-y-5 text-slate-200 light:text-slate-800 text-base lg:text-lg my-auto">
-      <li class="flex items-start gap-3">
-        <span class="text-emerald-400 light:text-emerald-600 font-bold text-xl">✓</span>
-        <span><strong>Antwort in den ersten 50 Wörtern:</strong> Perfekt als Zitationsblock für Perplexity, ChatGPT Search & Gemini.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-emerald-400 light:text-emerald-600 font-bold text-xl">✓</span>
-        <span><strong>Proprietäre Messwerte:</strong> Hoher Information Gain Score durch exklusive Primärdaten und Benchmarks.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      { icon: "check", accent: "emerald", title: "Antwort in den ersten 50 Wörtern", desc: "Perfekt als Zitationsblock für Perplexity, ChatGPT Search & Gemini." },
+      { icon: "check", accent: "emerald", title: "Proprietäre Messwerte", desc: "Hoher Information Gain Score durch exklusive Primärdaten und Benchmarks." }
+    ]} />
   </BentoCard>
 </SplitSlide>

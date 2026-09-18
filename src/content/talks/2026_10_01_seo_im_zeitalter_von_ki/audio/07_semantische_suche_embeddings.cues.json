@@ -3,16 +3,16 @@
     "start": 4.35
   },
   "col-math": {
-    "start": 14.5
+    "start": 13.76
   },
   "hl-kosinus-threshold": {
-    "start": 26.52,
-    "duration": 3.61,
-    "end": 30.13
+    "start": 24.9,
+    "duration": 3.3,
+    "end": 28.2
   },
   "hl-keyword-stuffing": {
-    "start": 32.42,
-    "duration": 0.37,
-    "end": 32.79
+    "start": 29.88,
+    "duration": 1.33,
+    "end": 31.21
   }
 }

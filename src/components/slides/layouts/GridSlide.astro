@@ -40,3 +40,17 @@ const gridCols = {
     <slot />
   </div>
 </SlideBase>
+
+<style>
+  .grid :global(.bento-card-root) {
+    padding: 1.5rem !important;
+  }
+  .grid :global(.bento-card-root h3) {
+    font-size: calc(1.85rem * var(--content-scale, 1)) !important;
+    margin-top: 0.35rem !important;
+  }
+  .grid :global(.bento-card-root p) {
+    font-size: calc(1.4rem * var(--content-scale, 1)) !important;
+    line-height: 1.45 !important;
+  }
+</style>

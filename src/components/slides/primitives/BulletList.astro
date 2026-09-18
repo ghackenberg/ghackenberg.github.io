@@ -1,0 +1,65 @@
+---
+export interface BulletItem {
+  num?: string | number;
+  icon?: string; // 'check' | 'arrow' | 'cross' | emoji
+  title?: string;
+  desc?: string;
+  cue?: string;
+  badge?: string;
+  accent?: 'blue' | 'cyan' | 'amber' | 'emerald' | 'purple' | 'rose' | 'red' | 'neutral';
+}
+
+interface Props {
+  items?: BulletItem[];
+  class?: string;
+}
+
+const { items = [], class: className = "" } = Astro.props;
+
+const accentBadge = {
+  blue: 'bg-blue-600 text-white',
+  cyan: 'bg-cyan-600 text-white',
+  amber: 'bg-amber-600 text-white',
+  emerald: 'bg-emerald-600 text-white',
+  purple: 'bg-purple-600 text-white',
+  rose: 'bg-rose-600 text-white',
+  red: 'bg-rose-600 text-white',
+  neutral: 'bg-slate-800 light:bg-slate-200 text-slate-200 light:text-slate-800'
+};
+---
+
+<ul class={`bullet-list flex flex-col justify-around gap-6 flex-1 my-auto pb-1 ${className}`}>
+  {items.map((item, idx) => {
+    const accent = item.accent || (idx % 2 === 0 ? 'blue' : 'cyan');
+    return (
+      <li id={item.cue} data-cue={item.cue} class="flex items-start gap-5">
+        {(item.num !== undefined || item.icon) && (
+          <span class={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shrink-0 shadow-md ${accentBadge[accent]}`}>
+            {item.icon === 'check' ? '✓' : item.icon === 'arrow' ? '→' : item.icon === 'cross' ? '✗' : (item.num ?? item.icon)}
+          </span>
+        )}
+        <div class="flex-1 flex flex-col justify-center">
+          {item.title && (
+            <div class="flex items-center gap-3">
+              <strong class="font-extrabold text-slate-100 light:text-slate-900 text-2xl lg:text-3xl leading-snug">
+                {item.title}
+              </strong>
+              {item.badge && (
+                <span class="text-base uppercase font-mono font-bold tracking-wider px-3.5 py-1 rounded-full bg-slate-800 light:bg-slate-200 text-slate-300 light:text-slate-700">
+                  {item.badge}
+                </span>
+              )}
+            </div>
+          )}
+          {item.desc && (
+            <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+              {item.desc}
+            </p>
+          )}
+          <slot name={`item-${idx}`} />
+        </div>
+      </li>
+    );
+  })}
+  <slot />
+</ul>

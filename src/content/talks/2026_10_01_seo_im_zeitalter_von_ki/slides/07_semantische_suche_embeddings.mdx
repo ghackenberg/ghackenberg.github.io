@@ -20,6 +20,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -30,40 +32,32 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-embeddings" title="Der semantische Vektorraum" badge="1536 DIMENSIONEN" accent="cyan">
-    <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 font-mono text-sm lg:text-base space-y-2 shrink-0">
-      <p class="text-slate-400">// Passage A: "Industrielle Wärmepumpe"</p>
-      <p class="text-cyan-400 font-bold">[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
-      <p class="text-slate-400 mt-2">// Passage B: "Energieeffiziente Prozesswärme B2B"</p>
-      <p class="text-blue-400 font-bold">[0.0209, -0.0518, 0.0874, 0.0125, -0.0421, ...]</p>
-    </div>
+    <CalloutBox color="neutral" type="info">
+      <p class="text-slate-400 font-mono text-lg">// Passage A: "Industrielle Wärmepumpe"</p>
+      <p class="text-cyan-400 font-mono font-bold text-lg">[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
+      <p class="text-slate-400 font-mono text-lg mt-2">// Passage B: "Energieeffiziente Prozesswärme B2B"</p>
+      <p class="text-blue-400 font-mono font-bold text-lg">[0.0209, -0.0518, 0.0874, 0.0125, -0.0421, ...]</p>
+    </CalloutBox>
 
-    <div class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
-      <div class="flex items-start gap-4">
-        <span class="text-cyan-400 font-bold text-2xl">●</span>
-        <span><strong>Bedeutung statt Buchstabengleichheit:</strong> Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel.</span>
+    <BulletList items={[
+      { icon: "→", accent: "cyan", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel." },
+      { icon: "→", accent: "cyan", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche Wiederholungen verzerren den Vektor und senken die semantische Relevanz." }
+    ]}>
+      <div slot="item-1">
+        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+          Künstliche <Highlight cue="hl-keyword-stuffing" color="amber">Keyword-Wiederholungen</Highlight> verzerren den Vektor und senken die semantische Relevanz.
+        </p>
       </div>
-      <div class="flex items-start gap-4">
-        <span class="text-cyan-400 font-bold text-2xl">●</span>
-        <span><Highlight cue="hl-keyword-stuffing" color="amber">Wirkungslosigkeit von Keyword-Stuffing:</Highlight> Künstliche Keyword-Wiederholungen verzerren den Vektor und senken die semantische Relevanz.</span>
-      </div>
-    </div>
+    </BulletList>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit" badge="RELEVANZ-KRITERIUM" accent="blue">
-    <div class="p-6 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 text-center shrink-0">
-      <div class="text-3xl lg:text-4xl font-mono font-bold text-blue-300 light:text-blue-900 mb-2">
-        cos(θ) = (A · B) / (||A|| ||B||)
-      </div>
-      <p class="text-sm lg:text-base font-mono text-blue-400 light:text-blue-700 font-bold">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
-    </div>
+    <CalloutBox color="blue" type="takeaway" title="cos(θ) = (A · B) / (||A|| ||B||)">
+      <p class="text-lg font-mono text-blue-300 light:text-blue-800 font-bold">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
+    </CalloutBox>
 
-    <div class="space-y-4 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
-      <div class="p-6 rounded-2xl border border-slate-700 light:border-slate-200 bg-slate-950/40 light:bg-white space-y-2">
-        <h4 class="font-extrabold text-slate-100 light:text-slate-900 text-xl lg:text-2xl">Retrieval-Schwellenwert (Top-K)</h4>
-        <p class="text-slate-300 light:text-slate-600 text-lg lg:text-xl leading-relaxed">
-          RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über <Highlight cue="hl-kosinus-threshold" color="blue">0.82</Highlight> liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
-        </p>
-      </div>
-    </div>
+    <CalloutBox color="neutral" type="statement" badge="RETRIEVAL" title="Retrieval-Schwellenwert (Top-K)">
+      RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über <Highlight cue="hl-kosinus-threshold" color="blue">0.82</Highlight> liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
+    </CalloutBox>
   </BentoCard>
 </SplitSlide>
