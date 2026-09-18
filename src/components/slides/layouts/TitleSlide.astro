@@ -5,8 +5,18 @@ interface Props {
   title: string;
   subtitle?: string;
   badge?: string;
+  cue?: string;
+  speaker?: string;
+  role?: string;
+  affiliation?: string;
+  date?: string;
+  event?: string;
+  website?: string;
+  align?: "center" | "left";
   slideNumber?: string | number;
   totalSlides?: string | number;
+  showFooter?: boolean;
+  subtitleCue?: string;
   class?: string;
 }
 
@@ -14,51 +24,100 @@ const {
   title,
   subtitle,
   badge = "KEYNOTE",
+  cue,
+  speaker,
+  role,
+  affiliation,
+  date,
+  event,
+  website,
+  align = "center",
   slideNumber = 1,
   totalSlides = 30,
+  showFooter = false,
+  subtitleCue = cue,
   class: className = ""
 } = Astro.props;
+
+const isCenter = align === "center";
 ---
 
 <SlideBase
   badge={badge}
   slideNumber={slideNumber}
   totalSlides={totalSlides}
+  showFooter={showFooter}
   class={className}
 >
-  <div class="grid grid-cols-12 gap-10 h-full w-full items-stretch">
-    <!-- Left: Hero Titles & Topic Presentation -->
-    <div class="col-span-7 h-full flex flex-col justify-between py-4 min-h-0">
-      <div class="flex flex-col gap-6">
-        <div class="inline-flex items-center gap-3">
-          <span class="px-5 py-2 rounded-full text-sm font-mono font-bold tracking-widest uppercase bg-blue-500/20 text-blue-400 light:bg-blue-100 light:text-blue-700 border border-blue-500/40 light:border-blue-300">
+  <div class={`h-full w-full flex flex-col justify-center max-w-6xl mx-auto py-6 px-4 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
+    <!-- Category / Keynote Badge & Date -->
+    {(badge || date || event) && (
+      <div class={`mb-8 flex flex-wrap items-center gap-4 ${isCenter ? 'justify-center' : 'justify-start'}`}>
+        {badge && (
+          <span class="inline-flex items-center px-6 py-2.5 rounded-full text-xl font-mono font-bold tracking-widest uppercase bg-blue-500/20 text-blue-400 light:bg-blue-100 light:text-blue-700 border border-blue-500/30 light:border-blue-300">
             {badge}
           </span>
-        </div>
-
-        <h1 class="text-5xl lg:text-6xl xl:text-7xl font-black text-slate-100 light:text-slate-900 tracking-tight leading-[1.12] text-balance">
-          {title}
-        </h1>
-
-        {subtitle && (
-          <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-600 leading-relaxed font-normal text-pretty">
-            {subtitle}
-          </p>
+        )}
+        {event && (
+          <span class="text-lg lg:text-xl font-mono text-slate-400 light:text-slate-500 font-medium">
+            {event}
+          </span>
+        )}
+        {date && (
+          <span class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-lg lg:text-xl font-mono font-semibold text-slate-300 light:text-slate-700 bg-slate-900/60 light:bg-slate-200/60 border border-slate-800 light:border-slate-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+            {date}
+          </span>
         )}
       </div>
+    )}
 
-      <div class="pt-6 flex items-center gap-6 text-base font-mono text-slate-400 light:text-slate-500 border-t border-slate-800/80 light:border-slate-200">
-        <span class="flex items-center gap-2 font-bold text-slate-300 light:text-slate-700">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-          Oktober 2026
-        </span>
-        <span>•</span>
-        <span>Industrie & B2B Traunviertel</span>
+    <!-- Main Presentation Title -->
+    <h1 class="text-7xl lg:text-8xl xl:text-[88px] font-black text-slate-100 light:text-slate-900 tracking-tight leading-[1.06] text-balance max-w-5xl">
+      {title}
+    </h1>
+
+    <!-- Subtitle -->
+    {subtitle && (
+      <p
+        id={subtitleCue}
+        data-cue={subtitleCue}
+        class="text-3xl lg:text-4xl xl:text-[40px] text-slate-300 light:text-slate-600 font-normal leading-relaxed text-pretty mt-8 max-w-5xl"
+      >
+        {subtitle}
+      </p>
+    )}
+
+    <!-- Elegant Accent Line -->
+    <div class={`w-36 h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 rounded-full my-8 ${isCenter ? 'mx-auto' : 'ml-0'}`}></div>
+
+    <!-- Speaker & Presentation Meta (Directly below title & subtitle) -->
+    {(speaker || role || affiliation || website) && (
+      <div class={`flex flex-col gap-4 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
+        {speaker && (
+          <div class="text-4xl lg:text-5xl xl:text-[50px] font-extrabold text-slate-100 light:text-slate-900 tracking-tight">
+            {speaker}
+          </div>
+        )}
+
+        {(role || affiliation) && (
+          <div class={`text-2xl lg:text-3xl xl:text-[34px] text-slate-300 light:text-slate-600 font-normal flex flex-wrap items-center gap-4 ${isCenter ? 'justify-center' : 'justify-start'}`}>
+            {role && <span>{role}</span>}
+            {role && affiliation && <span class="text-slate-500 light:text-slate-400">•</span>}
+            {affiliation && <span class="text-slate-400 light:text-slate-500">{affiliation}</span>}
+          </div>
+        )}
+
+        {website && (
+          <div class="text-2xl lg:text-3xl font-mono text-blue-400 light:text-blue-600 pt-1">
+            {website}
+          </div>
+        )}
       </div>
-    </div>
+    )}
 
-    <!-- Right: Speaker Card or Custom Visual Slot -->
-    <div class="col-span-5 h-full flex flex-col justify-stretch items-stretch min-h-0">
+    <!-- Optional Custom Content -->
+    <div class={`w-full flex ${isCenter ? 'justify-center' : 'justify-start'}`}>
       <slot />
     </div>
   </div>

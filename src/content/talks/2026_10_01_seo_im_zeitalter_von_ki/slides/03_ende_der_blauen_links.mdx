@@ -17,6 +17,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -27,56 +29,28 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-classic" title="Klassischer Web-Index (1998–2023)" badge="DOKUMENTEN-RETRIEVAL" accent="neutral">
-    <div class="p-5 rounded-2xl bg-slate-950/60 light:bg-slate-100 border border-slate-800 light:border-slate-200 font-mono text-base text-slate-400 light:text-slate-600 space-y-1 shrink-0">
-      <span class="text-blue-400 underline">https://example.com/industriepumpen</span><br />
-      <strong class="text-slate-100 light:text-slate-900 text-xl block">Hocheffiziente Industriepumpen für B2B</strong>
-      <span class="text-slate-300 light:text-slate-700 text-base">Entdecken Sie unsere energieeffizienten Pumpensysteme für die chemische Industrie...</span>
-    </div>
+    <CalloutBox type="quote" color="neutral">
+      <span class="text-blue-400 underline block font-mono text-xl mb-1">https://example.com/industriepumpen</span>
+      <strong class="text-slate-100 light:text-slate-900 block font-bold mb-1">Hocheffiziente Industriepumpen für B2B</strong>
+      <span class="text-slate-300 light:text-slate-700 text-xl">Entdecken Sie unsere energieeffizienten Pumpensysteme für die chemische Industrie...</span>
+    </CalloutBox>
 
-    <ul class="space-y-5 text-slate-200 light:text-slate-800 text-xl lg:text-2xl flex-1 flex flex-col justify-around my-2">
-      <li class="flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-base shrink-0">1</span>
-        <span><strong>Keyword-Matching:</strong> Abgleich exakter Zeichenketten im statischen Index.</span>
-      </li>
-      <li class="flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-base shrink-0">2</span>
-        <span><strong>Hyperlink-Weiterleitung:</strong> Der Nutzer muss die Website besuchen, um die Antwort zu finden.</span>
-      </li>
-      <li class="flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-base shrink-0">3</span>
-        <span><strong>Monetarisierung via Traffic:</strong> Webseiten lebten von reinen Klickzahlen.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      { num: "1", title: "Keyword-Matching", desc: "Abgleich exakter Zeichenketten im statischen Index." },
+      { num: "2", title: "Hyperlink-Weiterleitung", desc: "Der Nutzer muss die Website besuchen, um die Antwort zu finden." },
+      { num: "3", title: "Monetarisierung via Traffic", desc: "Webseiten lebten von reinen Klickzahlen." }
+    ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-modern" title="Synthese-Maschine (2024+)" badge="MULTIMODALE SYNTHESE" accent="blue">
-    <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 text-base text-slate-200 light:text-slate-800 space-y-2 shrink-0">
-      <div class="flex items-center gap-2 text-blue-400 light:text-blue-700 font-bold text-sm uppercase font-mono tracking-wider">
-        <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping"></span>
-        AI Overview (Google / Perplexity / ChatGPT)
-      </div>
-      <p class="text-slate-200 light:text-slate-800 leading-relaxed text-base lg:text-lg">
-        Für chemische Anlagen im B2B-Einsatz eignen sich Magnetkupplungspumpen nach ISO 2858. Führende europäische Hersteller bieten Wirkungsgrade über 82 % mit integrierter Schwingungssensorik...
-      </p>
-      <div class="flex gap-2.5 pt-1 text-sm font-mono font-bold">
-        <span class="px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30">[Quelle: Hersteller A]</span>
-        <span class="px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30">[Norm: ISO 2858]</span>
-      </div>
-    </div>
+    <CalloutBox type="statement" color="blue" badge="AI OVERVIEW" title="Google / Perplexity / ChatGPT">
+      Für chemische Anlagen im B2B-Einsatz eignen sich Magnetkupplungspumpen nach ISO 2858. Führende europäische Hersteller bieten Wirkungsgrade über 82 % mit integrierter Sensorik.
+    </CalloutBox>
 
-    <ul class="space-y-5 text-slate-200 light:text-slate-800 text-xl lg:text-2xl flex-1 flex flex-col justify-around my-2">
-      <li class="flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base shrink-0">✓</span>
-        <span><strong>Semantisches Verständnis:</strong> Sprachmodelle erfassen den Kontext hinter der Nutzerfrage.</span>
-      </li>
-      <li class="flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base shrink-0">✓</span>
-        <span><strong>Direkte Beantwortung:</strong> Zero-Click – Information wird sofort serviert.</span>
-      </li>
-      <li class="flex items-start gap-4">
-        <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base shrink-0">✓</span>
-        <span><Highlight cue="hl-zitation" color="amber">Zitation entscheidet:</Highlight> Relevanz entsteht durch Nennung und Entitäts-Verankerung.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      { icon: "check", accent: "blue", title: "Semantisches Verständnis", desc: "Sprachmodelle erfassen den Kontext hinter der Nutzerfrage." },
+      { icon: "check", accent: "blue", title: "Direkte Beantwortung", desc: "Zero-Click – Information wird sofort serviert." },
+      { icon: "check", accent: "blue", title: "Zitation entscheidet", desc: "Relevanz entsteht durch Nennung und Entitäts-Verankerung.", cue: "hl-zitation" }
+    ]} />
   </BentoCard>
 </SplitSlide>

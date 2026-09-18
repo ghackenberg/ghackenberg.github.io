@@ -61,12 +61,92 @@ function parseFrontmatter(content) {
  *   cues: Array<{ id: string; startWordIndex: number; endWordIndex?: number }>;
  * }}
  */
+/**
+ * Normalizes a word for robust acoustic anchor matching.
+ * Converts to lowercase and removes all punctuation and symbols.
+ * @param {string | undefined} w
+ * @returns {string}
+ */
+function normalizeWord(w) {
+  return (w || '').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+}
+
+/**
+ * Searches wordBoundaries for the best matching boundary corresponding to targetWord,
+ * searching in a window around seedIndex.
+ * @param {string | undefined} targetWord
+ * @param {number} seedIndex
+ * @param {Array<{ offsetSec: number; durationSec: number; text: string }>} wordBoundaries
+ * @returns {number}
+ */
+function findAnchorWordBoundary(targetWord, seedIndex, wordBoundaries) {
+  if (!targetWord || wordBoundaries.length === 0) {
+    return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
+  }
+
+  const targetNorm = normalizeWord(targetWord);
+  if (!targetNorm) {
+    return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
+  }
+
+  const minIdx = Math.max(0, seedIndex - 12);
+  const maxIdx = Math.min(wordBoundaries.length, seedIndex + 30);
+
+  let bestIdx = -1;
+  let minDistance = Infinity;
+
+  // 1. Exact match on normalized word
+  for (let i = minIdx; i < maxIdx; i++) {
+    const boundaryNorm = normalizeWord(wordBoundaries[i].text);
+    if (boundaryNorm === targetNorm) {
+      const dist = Math.abs(i - seedIndex);
+      if (dist < minDistance) {
+        minDistance = dist;
+        bestIdx = i;
+      }
+    }
+  }
+
+  if (bestIdx !== -1) {
+    return bestIdx;
+  }
+
+  // 2. Prefix or substring match for compound/hyphenated tokens (e.g. "Schema" in "Schema.org")
+  for (let i = minIdx; i < maxIdx; i++) {
+    const boundaryNorm = normalizeWord(wordBoundaries[i].text);
+    if (boundaryNorm && (targetNorm.startsWith(boundaryNorm) || boundaryNorm.startsWith(targetNorm))) {
+      const dist = Math.abs(i - seedIndex);
+      if (dist < minDistance) {
+        minDistance = dist;
+        bestIdx = i;
+      }
+    }
+  }
+
+  if (bestIdx !== -1) {
+    return bestIdx;
+  }
+
+  // 3. Fallback to seed index
+  return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
+}
+
+/**
+ * Extracts {cue:id} tags from voiceover text, computing clean speech text,
+ * anchor target words, and seed word indexes.
+ *
+ * @param {string} rawVoiceover
+ * @returns {{
+ *   cleanText: string;
+ *   cues: Array<{ id: string; startWordIndex: number; endWordIndex?: number; wordAfter?: string; wordBefore?: string }>;
+ * }}
+ */
 function extractCuesAndCleanText(rawVoiceover) {
   const tagRegex = /\{cue:([a-zA-Z0-9_-]+)\}|\{\/cue\}/g;
   let cleanText = '';
-  /** @type {Array<{ id: string; startWordIndex: number; endWordIndex?: number }>} */
+  /** @type {Array<{ id: string; startWordIndex: number; endWordIndex?: number; wordAfter?: string; wordBefore?: string }>} */
   const cues = [];
-  /** @type {Array<{ id: string; startWordIndex: number; endWordIndex?: number }>} */
+  /** @type {Array<{ id: string; startWordIndex: number; endWordIndex?: number; wordAfter?: string; wordBefore?: string }>} */
   const openSpans = [];
 
   let lastIndex = 0;
@@ -84,13 +164,22 @@ function extractCuesAndCleanText(rawVoiceover) {
 
     if (match[0].startsWith('{cue:')) {
       const id = match[1];
-      const cueObj = { id, startWordIndex: currentWordCount };
+      const textAfter = rawVoiceover.slice(lastIndex).replace(/\{cue:[^}]+\}|\{\/cue\}/g, '').trim();
+      const firstWord = textAfter.split(/\s+/)[0]?.replace(/^[^\p{L}\p{N}]+/gu, '').replace(/[^\p{L}\p{N}]+$/gu, '') || '';
+      const cueObj = { 
+        id, 
+        startWordIndex: currentWordCount,
+        wordAfter: firstWord
+      };
       cues.push(cueObj);
       openSpans.push(cueObj);
     } else if (match[0] === '{/cue}') {
       const lastSpan = openSpans.pop();
       if (lastSpan) {
         lastSpan.endWordIndex = currentWordCount;
+        const cleanBefore = cleanText.trim();
+        const lastWord = cleanBefore.split(/\s+/).pop()?.replace(/^[^\p{L}\p{N}]+/gu, '').replace(/[^\p{L}\p{N}]+$/gu, '') || '';
+        lastSpan.wordBefore = lastWord;
       }
     }
   }
@@ -102,6 +191,24 @@ function extractCuesAndCleanText(rawVoiceover) {
 
   cleanText = cleanText.replace(/\s+/g, ' ').trim();
   return { cleanText, cues };
+}
+
+/**
+ * Safely writes a JSON file, retrying on transient Windows file lock errors (EBUSY / UNKNOWN).
+ * @param {string} filePath
+ * @param {any} data
+ */
+function safeWriteJson(filePath, data) {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+      return;
+    } catch (e) {
+      if (attempt === 3) throw e;
+      const end = Date.now() + 150;
+      while (Date.now() < end) {}
+    }
+  }
 }
 
 /**
@@ -143,8 +250,18 @@ async function generateAllTalkAudio() {
 
     console.log(`\n[Audio Generator] Processing talk: "${talkFolder}" (${slideFiles.length} slides)`);
 
+    const forceFlag = process.argv.includes('--force') || process.argv.includes('-f');
+    const slideArg = process.argv.find((a) => a.startsWith('--slide='));
+    const targetSlide = slideArg ? slideArg.replace('--slide=', '') : null;
+
+    const GENERATOR_VERSION = 'v2-anchor';
+
     for (const slideFile of slideFiles) {
       const slideId = slideFile.replace(/\.(md|mdx)$/, '');
+      if (targetSlide && slideId !== targetSlide) {
+        continue;
+      }
+
       const slidePath = path.join(slidesDir, slideFile);
       const content = fs.readFileSync(slidePath, 'utf8');
       const frontmatter = parseFrontmatter(content);
@@ -155,11 +272,11 @@ async function generateAllTalkAudio() {
       }
 
       // Hash to determine if regenerated audio is needed
-      const hash = crypto.createHash('md5').update(voiceover).digest('hex');
+      const hash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${voiceover}`).digest('hex');
       const mp3Path = path.join(audioDir, `${slideId}.mp3`);
       const cuesPath = path.join(audioDir, `${slideId}.cues.json`);
 
-      if (cache[slideId] === hash && fs.existsSync(mp3Path) && fs.existsSync(cuesPath)) {
+      if (!forceFlag && cache[slideId] === hash && fs.existsSync(mp3Path) && fs.existsSync(cuesPath)) {
         // Cached, no need to synthesize again
         continue;
       }
@@ -201,7 +318,7 @@ async function generateAllTalkAudio() {
         const finalAudioBuffer = Buffer.concat(audioChunks);
         fs.writeFileSync(mp3Path, finalAudioBuffer);
 
-        // Compute Cues Map
+        // Compute Cues Map with acoustic anchor word matching
         /** @type {Record<string, { start: number; duration?: number; end?: number }>} */
         const cuesMap = {};
         for (const cue of cues) {
@@ -209,11 +326,15 @@ async function generateAllTalkAudio() {
             cuesMap[cue.id] = { start: 0, duration: 0.5 };
             continue;
           }
-          const startIndex = Math.min(cue.startWordIndex, wordBoundaries.length - 1);
-          const startSec = Number(wordBoundaries[startIndex].offsetSec.toFixed(2));
+          const startIndex = findAnchorWordBoundary(cue.wordAfter, cue.startWordIndex, wordBoundaries);
+          const startBoundary = wordBoundaries[startIndex];
+          const startSec = Number(startBoundary.offsetSec.toFixed(2));
 
           if (cue.endWordIndex !== undefined) {
-            const endIndex = Math.min(Math.max(cue.endWordIndex - 1, startIndex), wordBoundaries.length - 1);
+            const endIndex = Math.max(
+              startIndex,
+              findAnchorWordBoundary(cue.wordBefore, cue.endWordIndex - 1, wordBoundaries)
+            );
             const endBoundary = wordBoundaries[endIndex];
             const endSec = Number(((endBoundary.offsetSec || 0) + (endBoundary.durationSec || 0)).toFixed(2));
             const durationSec = Number(Math.max(0.1, endSec - startSec).toFixed(2));
@@ -229,17 +350,18 @@ async function generateAllTalkAudio() {
           }
         }
 
-        fs.writeFileSync(cuesPath, JSON.stringify(cuesMap, null, 2), 'utf8');
+        safeWriteJson(cuesPath, cuesMap);
 
         // Update cache
         cache[slideId] = hash;
-        fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2), 'utf8');
+        safeWriteJson(cacheFile, cache);
 
         console.log(`    ✓ Saved: ${slideId}.mp3 (${(finalAudioBuffer.length / 1024).toFixed(1)} KB) and ${Object.keys(cuesMap).length} cues.`);
       } catch (err) {
         console.error(`    ❌ Failed to synthesize audio for ${slideId}:`, err);
       }
     }
+    safeWriteJson(cacheFile, cache);
   }
 
   console.log('\n[Audio Generator] Done.');

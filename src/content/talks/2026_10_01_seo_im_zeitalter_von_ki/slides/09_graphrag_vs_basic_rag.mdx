@@ -17,6 +17,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -27,46 +29,37 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-basic-rag" title="Basic RAG (Vector-only)" badge="BEGRENZT" accent="neutral">
-    <div class="p-5 rounded-2xl bg-slate-950/70 border border-slate-800 text-base shrink-0 space-y-1">
-      <strong class="text-slate-100 block text-lg font-bold">Methode: Naives Text-Chunking</strong>
-      <p class="text-slate-400 text-base">Dokumente werden in 500-Token-Blöcke zerschnitten und isoliert eingebettet.</p>
-    </div>
+    <CalloutBox color="neutral" type="warning" title="Methode: Naives Text-Chunking">
+      <p class="text-slate-300 light:text-slate-600">Dokumente werden in 500-Token-Blöcke zerschnitten und isoliert eingebettet.</p>
+    </CalloutBox>
 
-    <div class="space-y-5 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
-      <div class="flex items-start gap-4">
-        <span class="text-rose-500 font-bold text-2xl">✗</span>
-        <span><strong>Fehlender Gesamtzusammenhang:</strong> Das Modell sieht nur einzelne Bäume, aber nie den ganzen Wald.</span>
-      </div>
-      <div class="flex items-start gap-4">
-        <span class="text-rose-500 font-bold text-2xl">✗</span>
-        <span><strong>Versagen bei Aggregationen:</strong> Fragen wie „Vergleiche alle Traunviertler Hersteller“ liefern unvollständige Zufallstreffer.</span>
-      </div>
-      <div class="flex items-start gap-4">
-        <span class="text-rose-500 font-bold text-2xl">✗</span>
-        <span><strong>Hohe Halluzinationsrate:</strong> Kontextlücken werden durch Modell-Fantasie geschlossen.</span>
-      </div>
-    </div>
+    <BulletList items={[
+      { icon: "cross", accent: "rose", title: "Fehlender Gesamtzusammenhang", desc: "Das Modell sieht nur einzelne Bäume, aber nie den ganzen Wald." },
+      { icon: "cross", accent: "rose", title: "Versagen bei Aggregationen", desc: "Fragen wie „Vergleiche alle Hersteller“ liefern unvollständige Zufallstreffer." },
+      { icon: "cross", accent: "rose", title: "Hohe Halluzinationsrate", desc: "Kontextlücken werden durch Modell-Fantasie geschlossen." }
+    ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-graph-rag" title="GraphRAG (Microsoft Research)" badge="HOLISTISCH" accent="blue">
-    <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 text-base shrink-0 space-y-1">
-      <strong class="text-blue-300 light:text-blue-950 block text-lg font-bold">Methode: Knowledge Graph + Community Summaries</strong>
-      <p class="text-blue-200 light:text-blue-900 text-base">LLM extrahiert Entitäten und generiert hierarchische Synthesen auf Clusterebene.</p>
-    </div>
+    <CalloutBox color="blue" type="takeaway" title="Methode: Knowledge Graph + Community Summaries">
+      <p class="text-blue-200 light:text-blue-900">LLM extrahiert Entitäten und generiert hierarchische Synthesen auf Clusterebene.</p>
+    </CalloutBox>
 
-    <div class="space-y-5 text-slate-200 light:text-slate-800 text-lg lg:text-xl flex-1 flex flex-col justify-around my-2">
-      <div class="flex items-start gap-4">
-        <span class="text-emerald-400 font-bold text-2xl">✓</span>
-        <span><strong>Globale Fragestellungen lösbar:</strong> Liefert vollständige Marktübersichten ohne Auslassungen.</span>
+    <BulletList items={[
+      { icon: "check", accent: "emerald", title: "Globale Fragestellungen lösbar", desc: "Liefert vollständige Marktübersichten ohne Auslassungen." },
+      { icon: "check", accent: "emerald", title: "Community Summaries", desc: "Übergreifende Themenzusammenfassungen werden bevorzugt zitiert." },
+      { icon: "check", accent: "emerald", title: "+80 % Informationsfülle", desc: "Empirisch belegte Überlegenheit bei Benchmark-Fragen." }
+    ]}>
+      <div slot="item-1">
+        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+          <Highlight cue="hl-community-summaries" color="blue">Community Summaries:</Highlight> Übergreifende Themenzusammenfassungen werden bevorzugt zitiert.
+        </p>
       </div>
-      <div class="flex items-start gap-4">
-        <span class="text-emerald-400 font-bold text-2xl">✓</span>
-        <span><Highlight cue="hl-community-summaries" color="blue">Community Summaries:</Highlight> Übergreifende Themenzusammenfassungen werden bevorzugt zitiert.</span>
+      <div slot="item-2">
+        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+          <Highlight cue="hl-graphrag-qualitaet" color="emerald">+80 % Informationsfülle:</Highlight> Empirisch belegte Überlegenheit bei Benchmark-Fragen.
+        </p>
       </div>
-      <div class="flex items-start gap-4">
-        <span class="text-emerald-400 font-bold text-2xl">✓</span>
-        <span><Highlight cue="hl-graphrag-qualitaet" color="emerald">+80 % Informationsfülle:</Highlight> Empirisch belegte Überlegenheit bei Benchmark-Fragen.</span>
-      </div>
-    </div>
+    </BulletList>
   </BentoCard>
 </SplitSlide>

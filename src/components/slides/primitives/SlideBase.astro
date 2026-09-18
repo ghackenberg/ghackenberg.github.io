@@ -5,6 +5,7 @@ interface Props {
   badge?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
+  showFooter?: boolean;
   class?: string;
 }
 
@@ -14,6 +15,7 @@ const {
   badge,
   slideNumber,
   totalSlides = 30,
+  showFooter = true,
   class: className = ""
 } = Astro.props;
 ---
@@ -66,21 +68,89 @@ const {
   </main>
 
   <!-- Slide Standardized Footer -->
-  <footer class="relative z-10 pt-4 mt-3 border-t border-slate-800/80 light:border-slate-200 flex items-center justify-between text-base font-mono text-slate-400 light:text-slate-600 shrink-0">
-    <div class="flex items-center gap-4">
-      <span class="font-bold text-slate-300 light:text-slate-800">Dr. Georg Hackenberg</span>
-      <span>•</span>
-      <span>FH OÖ Campus Wels</span>
-      <span>•</span>
-      <span>SEO im Zeitalter von KI</span>
-    </div>
-    <div class="flex items-center gap-3">
-      <span>hackenberg.tech</span>
-    </div>
-  </footer>
+  {showFooter && (
+    <footer class="relative z-10 pt-4 mt-3 border-t border-slate-800/80 light:border-slate-200 flex items-center justify-between text-base font-mono text-slate-400 light:text-slate-600 shrink-0">
+      <div class="flex items-center gap-4">
+        <span class="font-bold text-slate-300 light:text-slate-800">Dr. Georg Hackenberg</span>
+        <span>•</span>
+        <span>FH OÖ Campus Wels</span>
+        <span>•</span>
+        <span>SEO im Zeitalter von KI</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span>hackenberg.tech</span>
+      </div>
+    </footer>
+  )}
 </div>
 
 <style>
+  /* Presentation Slide Typography System (1920x1080 canvas) */
+  .slide-base-frame {
+    font-size: calc(28px * var(--content-scale, 1));
+    line-height: 1.55;
+  }
+
+  .slide-base-frame :global(p) {
+    font-size: calc(28px * var(--content-scale, 1));
+    line-height: 1.55;
+  }
+
+  /* Enforced minimum floor with adaptive content-scale scaling */
+  .slide-base-frame :global(.text-xs),
+  .slide-base-frame :global(.text-\[11px\]),
+  .slide-base-frame :global(.text-\[10px\]) {
+    font-size: calc(21px * var(--content-scale, 1)) !important;
+    line-height: 1.4 !important;
+  }
+
+  .slide-base-frame :global(.text-sm) {
+    font-size: calc(23px * var(--content-scale, 1)) !important;
+    line-height: 1.4 !important;
+  }
+
+  .slide-base-frame :global(.text-base) {
+    font-size: calc(26px * var(--content-scale, 1)) !important;
+    line-height: 1.45 !important;
+  }
+
+  .slide-base-frame :global(.text-lg) {
+    font-size: calc(30px * var(--content-scale, 1)) !important;
+    line-height: 1.45 !important;
+  }
+
+  .slide-base-frame :global(.text-xl) {
+    font-size: calc(34px * var(--content-scale, 1)) !important;
+    line-height: 1.4 !important;
+  }
+
+  .slide-base-frame :global(.text-2xl) {
+    font-size: calc(38px * var(--content-scale, 1)) !important;
+    line-height: 1.35 !important;
+  }
+
+  .slide-base-frame :global(.text-3xl) {
+    font-size: calc(44px * var(--content-scale, 1)) !important;
+    line-height: 1.3 !important;
+  }
+
+  .slide-base-frame :global(.text-4xl) {
+    font-size: calc(52px * var(--content-scale, 1)) !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Bullet list presentation defaults */
+  .slide-base-frame :global(ul:not([class*="space-y-"])) {
+    display: flex;
+    flex-direction: column;
+    gap: calc(1.5rem * var(--content-scale, 1));
+  }
+
+  .slide-base-frame :global(li) {
+    font-size: calc(28px * var(--content-scale, 1));
+    line-height: 1.55;
+  }
+
   /* Technical dot grid pattern */
   .bg-dot-grid {
     background-image: radial-gradient(rgba(148, 163, 184, 0.4) 1.5px, transparent 1.5px);

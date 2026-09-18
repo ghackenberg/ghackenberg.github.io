@@ -18,6 +18,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -28,46 +30,58 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-tools-special" title="Spezialisierte GEO-Pioniere" badge="KI-MONITORING" accent="blue">
-    <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 my-auto">
-      <h4 class="font-black text-blue-300 light:text-blue-950 text-xl lg:text-2xl">Limy.ai / AIclicks / Peasy.ai</h4>
-      <p class="text-base lg:text-lg text-blue-200 light:text-blue-800 mt-2">Spezialisiert auf tägliches Prompt-Tracking über ChatGPT, Perplexity & Gemini.</p>
-    </div>
+    <CalloutBox type="statement" color="blue" badge="PROMPT-TRACKING" title="Limy.ai / AIclicks / Peasy.ai">
+      Spezialisiert auf tägliches Prompt-Tracking über ChatGPT, Perplexity & Gemini.
+    </CalloutBox>
 
-    <ul class="space-y-4 text-slate-200 light:text-slate-800 text-base lg:text-lg my-auto">
-      <li class="flex items-start gap-3">
-        <span class="text-blue-400 light:text-blue-600 font-bold text-xl">✓</span>
-        <span><strong><Highlight cue="hl-som-metriken" color="blue">Share of Model Metriken:</Highlight></strong> Tägliche automatisierte Auswertung von Kaufberatungs-Prompts in standardisierten Modell-Panels.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-blue-400 light:text-blue-600 font-bold text-xl">✓</span>
-        <span><strong>Citation Gap Analysis:</strong> Deckt exakt auf, bei welchen Fragen Konkurrenten als primäre Quellen genannt werden.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-rose-400 font-bold text-xl">✗</span>
-        <span><strong>Kostenfaktor:</strong> Hohe monatliche SaaS-Abogebühren (oft ab $ 500–1.500 monatlich) bei fragmentiertem Markt.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      {
+        icon: "check",
+        accent: "blue",
+        cue: "hl-som-metriken",
+        title: "Share of Model Metriken",
+        desc: "Tägliche automatisierte Auswertung von Kaufberatungs-Prompts in standardisierten Modell-Panels."
+      },
+      {
+        icon: "check",
+        accent: "blue",
+        title: "Citation Gap Analysis",
+        desc: "Deckt exakt auf, bei welchen Fragen Konkurrenten als primäre Quellen genannt werden."
+      },
+      {
+        icon: "cross",
+        accent: "rose",
+        title: "Kostenfaktor",
+        desc: "Hohe monatliche SaaS-Abogebühren (oft ab $ 500–1.500 monatlich) bei fragmentiertem Markt."
+      }
+    ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-tools-enterprise" title="Etablierte Enterprise-Suiten" badge="HYBRIDE SYSTEME" accent="cyan">
-    <div class="p-5 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/30 my-auto">
-      <h4 class="font-black text-cyan-300 light:text-cyan-950 text-xl lg:text-2xl">Semrush AI Solutions / Ahrefs Brand Graph</h4>
-      <p class="text-base lg:text-lg text-cyan-200 light:text-cyan-800 mt-2">Verknüpfen klassisches Keyword- und Backlink-Crawling mit generativen SERP-Snapshots.</p>
-    </div>
+    <CalloutBox type="statement" color="cyan" badge="HYBRIDE SYSTEME" title="Semrush AI Solutions / Ahrefs Brand Graph">
+      Verknüpfen klassisches Keyword- und Backlink-Crawling mit generativen SERP-Snapshots.
+    </CalloutBox>
 
-    <ul class="space-y-5 text-slate-200 light:text-slate-800 text-base lg:text-lg my-auto">
-      <li class="flex items-start gap-3">
-        <span class="text-cyan-400 light:text-cyan-600 font-bold text-xl">✓</span>
-        <span><strong><Highlight cue="hl-aio-tracking" color="cyan">Google AI Overview Tracking:</Highlight></strong> Erkennt sofort, welche SERPs bereits von generativen KI-Boxen dominiert werden.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-cyan-400 light:text-cyan-600 font-bold text-xl">✓</span>
-        <span><strong>Entitäten-Backlink-Graphen:</strong> Vollständige Sichtbarmachung von Unlinked Brand Mentions und Markenzitaten im Web.</span>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="text-cyan-400 light:text-cyan-600 font-bold text-xl">✓</span>
-        <span><strong>All-in-One Plattform:</strong> Integriert technische Audits, Linkanalyse und Content-Lücken in einem System.</span>
-      </li>
-    </ul>
+    <BulletList items={[
+      {
+        icon: "check",
+        accent: "cyan",
+        cue: "hl-aio-tracking",
+        title: "Google AI Overview Tracking",
+        desc: "Erkennt sofort, welche SERPs bereits von generativen KI-Boxen dominiert werden."
+      },
+      {
+        icon: "check",
+        accent: "cyan",
+        title: "Entitäten-Backlink-Graphen",
+        desc: "Vollständige Sichtbarmachung von Unlinked Brand Mentions und Markenzitaten im Web."
+      },
+      {
+        icon: "check",
+        accent: "cyan",
+        title: "All-in-One Plattform",
+        desc: "Integriert technische Audits, Linkanalyse und Content-Lücken in einem System."
+      }
+    ]} />
   </BentoCard>
 </SplitSlide>

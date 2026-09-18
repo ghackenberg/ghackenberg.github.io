@@ -120,28 +120,166 @@ To avoid mixed-language indexing penalties and ensure search engines and generat
   - Never place German body text onto English-titled or English-navigated pages without explicit language declarations. Maintain linguistic consistency across headings, body paragraphs, and UI labels.
 
 
-## 5. Presentation & Slide-as-Code Protocol (Talks)
+## 5. Presentation & Slide-as-Code Protocol (PowerPoint-Style Architecture)
 Whenever authoring, modifying, or managing public talks, lectures, or keynotes in this repository:
-1. **Repository Structure & Location**:
-   - Every talk is located in its own subfolder: `src/content/talks/[YYYY_MM_DD_slug]/`.
-   - The talk metadata is defined in `index.md` (with `title`, `event`, `location`, `pubDate`, `audience`, `lang`, `description`, `tags`).
-   - All individual slides are co-located in `src/content/talks/[YYYY_MM_DD_slug]/slides/` as numbered files (e.g. `01_titelfolie.mdx`, `02_agenda.mdx`).
-2. **Self-Contained Slide Bundle Requirement**:
-   - Each slide file is an autonomous bundle. It **must** define:
-     - `title`: Concise slide title
-     - `voiceover`: Complete, natural German or English speech script for automated neural TTS synthesis
-     - `notes`: Detailed speaker notes, time milestones, and academic/industry references for the Presenter Console (`S` key)
-     - `slideLayout`: Layout archetype (`title`, `pipeline`, `split`, `metric`, `matrix`, `graph`, `code`, `custom`)
-     - Body: The visual vector stage built with reusable slide primitives
-3. **Strict Cue-Based Audio-Animation Synchronization**:
-   - **NEVER hardcode absolute wall-clock timestamps in seconds** (e.g. `atSec: 14.5`) in slide code.
-   - **ALWAYS couple visual animations to the voice-over via inline semantic cue tags**: `{cue:target-id}` placed in the prose text immediately preceding the spoken trigger word.
-   - Every `{cue:target-id}` tag **must** have a corresponding SVG/DOM element in the slide with matching `id="target-id"`.
-4. **Vector Design System & 1920x1080 16:9 Canvas**:
-   - All slides must be wrapped in `<SlideCanvas>` with a fixed `1920x1080` coordinate space, technical dot-matrix background, and standardized presenter footer.
-   - Use `<BentoBox>` (`<foreignObject>` wrapper) for Tailwind-styled HTML cards and multiline text.
-   - Use `<GraphNode>`, `<GraphEdge>`, `<Pipeline>`, `<MetricStat>`, and `<CodeContainer>` primitives for diagrams and KPIs.
-5. **Quality Gates & Automation**:
-   - Always run `npm run validate:slides` to verify cue consistency, frontmatter completeness, and DOM target matching.
-   - Run `npm run audio:talks` to synthesize neural speech audio (`.mp3`) and WordBoundary cue timings (`.cues.json`) with MD5 caching.
-   - Run `npm run export:slides` to render the high-resolution vector PDF handout via Puppeteer.
+
+### 1. Repository Structure & Location
+- Every talk is located in its own subfolder: `src/content/talks/[YYYY_MM_DD_slug]/`.
+- The talk metadata is defined in `index.md` (with `title`, `event`, `location`, `pubDate`, `audience`, `lang`, `description`, `tags`).
+- All individual slides are co-located in `src/content/talks/[YYYY_MM_DD_slug]/slides/` as numbered files (e.g. `01_titelfolie.mdx`, `02_agenda.mdx`).
+
+### 2. Self-Contained Slide Bundle Requirement
+Each slide file is an autonomous bundle. It **must** define:
+- `title`: Concise slide title
+- `subtitle`: Descriptive secondary headline
+- `number`: Slide number string (e.g. `"01"`, `"02"`)
+- `slideLayout`: Layout archetype (`title`, `split`, `pipeline`, `matrix`, `metric`, `code`)
+- `voiceover`: Natural speech script with `{cue:id}` triggers (and optional `{/cue}` spans) for neural TTS synthesis
+- `notes`: Speaker notes, time milestones, and academic/industry references for Presenter Console (`S` key)
+- Body: Declarative markup composed strictly of the 6 standardized master archetypes and slide primitives.
+
+### 3. Strict Typography Scale & "First-Shot" Rules for Coding Agents
+- **Virtual 1920x1080 Canvas Scaling**: Slides run on a virtual 1920x1080 canvas that is scaled down by ~50% on standard laptop and desktop screens.
+- **NO Microscopic Web Fonts**:
+  - **NEVER** use web-document Tailwind sizes like `text-xs` (12px), `text-sm` (14px), or `text-base` (16px) inside slides (they scale to unreadable 6–8px).
+  - The framework (`SlideBase.astro`) enforces a hard floor:
+    - **Slide Title (`h1`)**: 56px–64px (`leading-[1.12]`)
+    - **Card Headings (`h3`, `h4`)**: 32px–38px
+    - **Body Text & Bullets (`p`, `li`)**: **24px–28px** (`leading-relaxed`)
+    - **Badges & Footnotes**: 18px–21px (absolute minimum allowed font size)
+- **NO Bespoke Free-Form HTML**:
+  - **NEVER** invent complex nested `<div>` layouts with manual pixel margins, ad-hoc emoji boxes, or custom grid styling.
+  - **ALWAYS** use the 6 standardized slide archetypes and high-level primitives (`BentoCard`, `CalloutBox`, `BulletList`, `MetricStat`, `Pipeline`).
+
+### 4. The 6 Master Slide Archetypes
+
+1. **Title Slide (`<TitleSlide />`)**:
+   Classic keynote title layout with prominent headline, subtitle, and speaker/institution details placed directly beneath.
+   ```mdx
+   <TitleSlide
+     title={frontmatter.title}
+     subtitle={frontmatter.subtitle}
+     badge="KEYNOTE"
+     slideNumber="01"
+     totalSlides="30"
+     speaker="Dr. Georg Hackenberg"
+     role="Professor für Informatik & Industriesysteme"
+     affiliation="FH Oberösterreich · Campus Wels"
+     event="Industrie & B2B Traunviertel"
+     date="Oktober 2026"
+     website="hackenberg.tech"
+     cue="intro-sub"
+   />
+   ```
+
+2. **Split / Comparison Slide (`<SplitSlide />`)**:
+   Two-column layout (50/50 or 40/60) for comparisons, contrasts (Old vs. New), and problem/solution pairs.
+   ```mdx
+   <SplitSlide
+     title={frontmatter.title}
+     subtitle={frontmatter.subtitle}
+     badge="PARADIGMENWECHSEL"
+     slideNumber="03"
+     totalSlides="30"
+   >
+     <BentoCard slot="left" cue="col-classic" title="Klassischer Web-Index" badge="1998–2023" accent="neutral">
+       <CalloutBox type="quote" color="neutral">
+         https://example.com/pumpen: Hocheffiziente Industriepumpen...
+       </CalloutBox>
+       <BulletList items={[
+         { num: "1", title: "Keyword-Matching", desc: "Abgleich exakter Zeichenketten im Index." },
+         { num: "2", title: "Hyperlink-Weiterleitung", desc: "Nutzer muss Website besuchen." }
+       ]} />
+     </BentoCard>
+
+     <BentoCard slot="right" cue="col-modern" title="Synthese-Maschine" badge="2024+" accent="blue">
+       <CalloutBox type="statement" color="blue" badge="AI OVERVIEW" title="Google / Perplexity">
+         Für chemische Anlagen im B2B-Einsatz eignen sich Magnetkupplungspumpen...
+       </CalloutBox>
+       <BulletList items={[
+         { icon: "check", accent: "blue", title: "Semantisches Verständnis", desc: "Sprachmodelle erfassen Kontext." },
+         { icon: "check", accent: "blue", cue: "hl-zitation", title: "Zitation entscheidet", desc: "Relevanz entsteht durch Nennung." }
+       ]} />
+     </BentoCard>
+   </SplitSlide>
+   ```
+
+3. **Process & Pipeline Slide (`<PipelineSlide />`)**:
+   Horizontal or vertical progression for agendas, chronological phases, and multi-step architectures.
+   ```mdx
+   <PipelineSlide
+     title={frontmatter.title}
+     subtitle={frontmatter.subtitle}
+     badge="ÜBERSICHT"
+     slideNumber="02"
+     totalSlides="30"
+   >
+     <Pipeline steps={[
+       { cue: "step-01", num: "01", title: "Paradigmenwechsel", desc: "Vom Web-Index zur Synthese.", badge: "STATUS QUO", accent: "blue" },
+       { cue: "step-02", num: "02", title: "Technologie", desc: "RAG und Embeddings.", badge: "THEORIE", accent: "teal" },
+       { cue: "step-03", num: "03", title: "3-Säulen-Methodik", desc: "Struktur, Inhalt, Autorität.", badge: "STRATEGIE", accent: "indigo" }
+     ]} />
+   </PipelineSlide>
+   ```
+
+4. **Grid / Matrix Slide (`<GridSlide />`)**:
+   2x2 quadrant or 3-column layout for terminology, taxonomies, and multi-pillar overviews.
+   ```mdx
+   <GridSlide
+     title={frontmatter.title}
+     subtitle={frontmatter.subtitle}
+     badge="TERMINOLOGIE"
+     slideNumber="05"
+     totalSlides="30"
+     cols={2}
+   >
+     <BentoCard cue="box-seo" title="SEO: Search Engine Optimization" badge="KLASSISCH" accent="neutral">
+       <p><strong>Zielsystem:</strong> Google Web Search (10 blaue Links).</p>
+       <p><strong>Mechanismus:</strong> Keywords, Backlinks, Core Web Vitals.</p>
+     </BentoCard>
+     <BentoCard cue="box-aeo" title="AEO: Answer Engine Optimization" badge="POSITION ZERO" accent="cyan">
+       <p><strong>Zielsystem:</strong> Google Featured Snippets, Voice Search.</p>
+       <p><strong>Mechanismus:</strong> Q&A-Struktur, Tabellen, Schema.org.</p>
+     </BentoCard>
+     <!-- Additional 2 cards -->
+   </GridSlide>
+   ```
+
+5. **Metric Hero Slide (`<MetricSlide />` or `<SplitSlide ratio="40/60" />`)**:
+   High-impact data slide with a massive numeric KPI stat on one side and strategic takeaways on the other.
+   ```mdx
+   <SplitSlide title={frontmatter.title} subtitle={frontmatter.subtitle} badge="EMPIRISCH" ratio="40/60">
+     <MetricStat
+       slot="left"
+       cue="stat-zeroclick"
+       value="64"
+       unit="%"
+       label="Zero-Click Suchanfragen"
+       sublabel="SparkToro / Similarweb Global Search Study"
+       badge="GLOBALER DURCHSCHNITT"
+       color="blue"
+     />
+     <BentoCard slot="right" cue="bento-impact" title="Konsequenzen für B2B" badge="STRATEGIE" accent="cyan">
+       <CalloutBox type="statement" color="cyan" badge="KERNAUSSAGE" title="Geschäftsführung">
+         „Wir optimieren nicht mehr für Klicks – wir optimieren für Zitation.“
+       </CalloutBox>
+       <BulletList items={[
+         { icon: "📉", title: "Verlust unqualifizierten Traffics", desc: "Massen-Traffic bricht um 40–60 % ein." },
+         { icon: "🎯", accent: "cyan", title: "Höhere Konversionsrate", desc: "Kunden mit hoher Kaufabsicht konvertieren." }
+       ]} />
+     </BentoCard>
+   </SplitSlide>
+   ```
+
+6. **Code & Architecture Slide (`<CodeSlide />`)**:
+   Side-by-side layout with code syntax container on the left (`col-span-7`) and structured explanations on the right (`col-span-5`).
+
+### 5. Acoustic Word-Anchor Synchronization
+- Animations are coupled to the neural voiceover via `{cue:id}` tags.
+- The build engine uses semantic acoustic word-anchor matching to bind cues to spoken words with microsecond precision.
+- Use `{cue:hl-id}marked text{/cue}` to trigger live highlighter sweeps.
+
+### 6. Quality Gates & Automation
+- Always run `npm run validate:slides` to verify cue consistency, frontmatter completeness, and DOM target matching.
+- Run `npm run audio:talks` to synthesize neural speech audio (`.mp3`) and WordBoundary cue timings (`.cues.json`).
+- Run `npm run typecheck`, `npm run lint`, and `npm run build` before committing.

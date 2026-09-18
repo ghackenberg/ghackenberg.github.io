@@ -17,6 +17,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -27,53 +29,26 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-mcp-arch" title="3-Schichten-Architektur von MCP" badge="PROTOKOLL-STACK" accent="blue">
-    <div class="space-y-4 my-auto">
-      <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20">
-        <span class="text-sm font-mono font-bold text-blue-400 light:text-blue-700 uppercase tracking-wide">Ebene 1: Host / LLM</span>
-        <h4 class="font-black text-slate-100 light:text-slate-900 text-xl lg:text-2xl mt-1">Google Anti-Gravity / Claude / Gemini</h4>
-      </div>
-
-      <div class="text-center text-blue-400 font-mono text-base font-bold">↓ JSON-RPC 2.0 Interface ↓</div>
-
-      <div class="p-5 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/20">
-        <span class="text-sm font-mono font-bold text-cyan-400 light:text-cyan-700 uppercase tracking-wide">Ebene 2: MCP Router</span>
-        <h4 class="font-black text-slate-100 light:text-slate-900 text-xl lg:text-2xl mt-1">Standardisierte Tool Discovery & Security</h4>
-      </div>
-
-      <div class="text-center text-cyan-400 font-mono text-base font-bold">↓ Tool Execution ↓</div>
-
-      <div class="p-5 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-500/20">
-        <span class="text-sm font-mono font-bold text-indigo-400 light:text-indigo-700 uppercase tracking-wide">Ebene 3: MCP Server</span>
-        <h4 class="font-black text-slate-100 light:text-slate-900 text-xl lg:text-2xl mt-1">Lighthouse / Filesystem / Git / Search Console</h4>
-      </div>
+    <div class="flex flex-col justify-around flex-1 gap-3 my-auto">
+      <CalloutBox color="blue" type="takeaway" badge="EBENE 1: HOST / LLM" title="Google Anti-Gravity / Claude / Gemini" />
+      <div class="text-center text-blue-400 font-mono text-base font-bold select-none">↓ JSON-RPC 2.0 Interface ↓</div>
+      <CalloutBox color="cyan" type="statement" badge="EBENE 2: MCP ROUTER" title="Standardisierte Tool Discovery & Security" />
+      <div class="text-center text-cyan-400 font-mono text-base font-bold select-none">↓ Tool Execution ↓</div>
+      <CalloutBox color="purple" type="info" badge="EBENE 3: MCP SERVER" title="Lighthouse / Filesystem / Git / Search Console" />
     </div>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-mcp-tools" title="Unsere konkreten MCP-Werkzeuge" badge="WERKZEUGE" accent="cyan">
-    <div class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl my-auto">
-      <div class="flex items-start gap-4">
-        <span class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-300 light:bg-blue-100 light:text-blue-700 font-mono font-bold text-lg flex items-center justify-center shrink-0">1</span>
-        <div>
-          <strong class="text-slate-100 light:text-slate-900 text-xl block">Filesystem MCP Server:</strong>
-          <span class="text-base lg:text-lg text-slate-300 light:text-slate-600">Erlaubt dem Agenten das autonome Lesen von Markdown-Quellen und <Highlight cue="hl-mcp-beheben" color="purple">präzise Code-Edits direkt im Repository</Highlight>.</span>
-        </div>
+    <BulletList items={[
+      { num: "1", accent: "blue", title: "Filesystem MCP Server", desc: "Erlaubt dem Agenten das autonome Lesen von Markdown-Quellen und präzise Code-Edits direkt im Repository." },
+      { num: "2", accent: "cyan", title: "Chrome DevTools MCP", desc: "Automatisierte Headless-Browser-Audits für Performance, Barrierefreiheit und interaktive UI-Validierung." },
+      { num: "3", accent: "purple", title: "Unified Analytics MCP", desc: "Führt Search Console KPIs direkt mit datenschutzkonformen Plausible On-Site-Engagement-Daten zusammen." }
+    ]}>
+      <div slot="item-0">
+        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+          Erlaubt dem Agenten das autonome Lesen von Markdown-Quellen und <Highlight cue="hl-mcp-beheben" color="purple">präzise Code-Edits direkt im Repository</Highlight>.
+        </p>
       </div>
-
-      <div class="flex items-start gap-4">
-        <span class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 light:bg-cyan-100 light:text-cyan-700 font-mono font-bold text-lg flex items-center justify-center shrink-0">2</span>
-        <div>
-          <strong class="text-slate-100 light:text-slate-900 text-xl block">Chrome DevTools MCP:</strong>
-          <span class="text-base lg:text-lg text-slate-300 light:text-slate-600">Automatisierte Headless-Browser-Audits für Performance, Barrierefreiheit und interaktive UI-Validierung.</span>
-        </div>
-      </div>
-
-      <div class="flex items-start gap-4">
-        <span class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-300 light:bg-indigo-100 light:text-indigo-700 font-mono font-bold text-lg flex items-center justify-center shrink-0">3</span>
-        <div>
-          <strong class="text-slate-100 light:text-slate-900 text-xl block">Unified Analytics MCP:</strong>
-          <span class="text-base lg:text-lg text-slate-300 light:text-slate-600">Führt Search Console KPIs direkt mit datenschutzkonformen Plausible On-Site-Engagement-Daten zusammen.</span>
-        </div>
-      </div>
-    </div>
+    </BulletList>
   </BentoCard>
 </SplitSlide>

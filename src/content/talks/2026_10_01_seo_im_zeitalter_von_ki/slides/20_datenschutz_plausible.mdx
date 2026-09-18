@@ -18,6 +18,8 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
@@ -28,50 +30,47 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-plausible-dash" title="KI-Referrer Dashboard" badge="PLAUSIBLE ANALYTICS" accent="blue">
-    <div class="p-6 rounded-2xl bg-slate-950/80 border border-slate-800 text-slate-100 space-y-4 my-auto">
-      <div class="flex justify-between items-center text-sm lg:text-base text-slate-400 border-b border-slate-800 pb-3 font-mono uppercase tracking-wider">
+    <CalloutBox color="neutral" type="info">
+      <div class="flex justify-between items-center text-base text-slate-400 border-b border-slate-800 pb-2 font-mono uppercase tracking-wider">
         <span>Referral Source</span>
         <span>Besucher (30 Tage)</span>
       </div>
-      <div class="space-y-3 font-mono text-base lg:text-lg">
+      <div class="space-y-2 font-mono text-lg mt-2">
         <div class="flex justify-between items-center text-blue-400 font-bold">
-          <span class="flex items-center gap-3 text-lg lg:text-xl">🤖 chatgpt.com</span>
+          <span>🤖 chatgpt.com</span>
           <span>1.420 (High Intent)</span>
         </div>
         <div class="flex justify-between items-center text-cyan-400 font-bold">
-          <span class="flex items-center gap-3 text-lg lg:text-xl">🔍 perplexity.ai</span>
+          <span>🔍 perplexity.ai</span>
           <span>890 (Research)</span>
         </div>
         <div class="flex justify-between items-center text-indigo-400 font-bold">
-          <span class="flex items-center gap-3 text-lg lg:text-xl">🧠 claude.ai</span>
+          <span>🧠 claude.ai</span>
           <span>340 (Technical)</span>
         </div>
         <div class="flex justify-between items-center text-slate-400">
-          <span class="flex items-center gap-3 text-lg lg:text-xl">🌐 google.com (Organic)</span>
+          <span>🌐 google.com (Organic)</span>
           <span>2.110 (Decreasing)</span>
         </div>
       </div>
-    </div>
+    </CalloutBox>
 
-    <div class="p-4 rounded-xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20 text-base lg:text-lg text-blue-300 light:text-blue-900 leading-relaxed">
+    <CalloutBox color="blue" type="takeaway">
       <strong>Erkenntnis:</strong> Besucher über ChatGPT oder Perplexity haben eine <Highlight cue="hl-plausible-verweildauer" color="emerald">4-mal längere Verweildauer</Highlight>, weil sie bereits hochqualifiziert auf die Zielseite gelangen.
-    </div>
+    </CalloutBox>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-plausible-privacy" title="DSGVO-Exzellenz ohne Reibung" badge="KEIN BANNER NÖTIG" accent="cyan">
-    <div class="space-y-6 text-slate-200 light:text-slate-800 text-lg lg:text-xl my-auto">
-      <div class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 light:bg-cyan-100 light:text-cyan-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
-        <span><strong>Keine Cookies, kein Fingerprinting:</strong> <Highlight cue="hl-plausible-nobanner" color="blue">Vollständig konform mit DSGVO</Highlight>, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner.</span>
+    <BulletList items={[
+      { icon: "check", accent: "cyan", title: "Keine Cookies, kein Fingerprinting", desc: "Vollständig konform mit DSGVO, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner." },
+      { icon: "check", accent: "cyan", title: "Unter 1 KB Ladezeit", desc: "Verhindert jegliche Performance-Einbußen und garantiert maximale Ladezeiten für KI-Crawler." },
+      { icon: "check", accent: "cyan", title: "100 % Datenqualität", desc: "Vollständige Erfassung des realen Traffics ohne 40 % Datenverlust durch Banner-Ablehnungen." }
+    ]}>
+      <div slot="item-0">
+        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
+          <Highlight cue="hl-plausible-nobanner" color="blue">Vollständig konform mit DSGVO</Highlight>, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner.
+        </p>
       </div>
-      <div class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 light:bg-cyan-100 light:text-cyan-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
-        <span><strong>Unter 1 KB Ladezeit:</strong> Verhindert jegliche Performance-Einbußen und garantiert maximale Ladezeiten für KI-Crawler.</span>
-      </div>
-      <div class="flex items-start gap-4">
-        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 light:bg-cyan-100 light:text-cyan-700 flex items-center justify-center font-bold text-base shrink-0 mt-0.5">✓</span>
-        <span><strong>100 % Datenqualität:</strong> Vollständige Erfassung des realen Traffics ohne 40 % Datenverlust durch Banner-Ablehnungen.</span>
-      </div>
-    </div>
+    </BulletList>
   </BentoCard>
 </SplitSlide>

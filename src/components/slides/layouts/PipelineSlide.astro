@@ -30,7 +30,7 @@ const {
   totalSlides={totalSlides}
   class={className}
 >
-  <div class={`h-full w-full flex ${direction === 'horizontal' ? 'flex-row items-stretch gap-6' : 'flex-col justify-between gap-4'}`}>
+  <div data-direction={direction} class={`h-full w-full min-h-0 min-w-0 flex flex-col items-stretch ${className}`}>
     <slot />
   </div>
 </SlideBase>

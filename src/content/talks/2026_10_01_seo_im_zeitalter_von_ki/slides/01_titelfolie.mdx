@@ -5,10 +5,10 @@ number: "01"
 slideLayout: "title"
 voiceover: >
   Herzlich willkommen zum Vortrag SEO im Zeitalter von KI. {cue:intro-sub} Wir stehen vor 
-  dem größten Paradigmenwechsel der Websuche seit 25 Jahren. {cue:intro-graph} Suchmaschinen 
+  dem größten Paradigmenwechsel der Websuche seit 25 Jahren. Suchmaschinen 
   listen nicht mehr nur Hyperlinks auf – sie lesen, analysieren und synthetisieren Inhalte direkt. 
   In dieser Stunde zeige ich Ihnen, wie sich oberösterreichische Industrie- und B2B-Unternehmen 
-  in generativen Antwortsystemen wie ChatGPT, Perplexity und Google AI Overviews als {cue:hl-autoritaet}führende Autorität verankern{/cue}.
+  in generativen Antwortsystemen wie ChatGPT, Perplexity und Google AI Overviews als führende Autorität verankern.
 notes: |
   - Zeit: 0:00 - 2:00 Min.
   - Zielgruppe: Industrie- und B2B-Entscheider im Traunviertel begrüßen.
@@ -16,11 +16,6 @@ notes: |
   - Referenzen: FH Oberösterreich, Campus Wels, hackenberg.tech.
 ---
 import TitleSlide from '../../../../components/slides/layouts/TitleSlide.astro';
-import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import SlideMedia from '../../../../components/slides/primitives/SlideMedia.astro';
-import GraphNode from '../../../../components/slides/primitives/GraphNode.astro';
-import GraphEdge from '../../../../components/slides/primitives/GraphEdge.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <TitleSlide
   title={frontmatter.title}
@@ -28,38 +23,10 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   badge="KEYNOTE TRAUNVIERTEL"
   slideNumber="01"
   totalSlides="30"
->
-  <div class="flex flex-col gap-5 h-full justify-between min-h-0">
-    <BentoCard cue="intro-sub" title="Dr. Georg Hackenberg" badge="REFERENT" accent="blue" class="flex-1 min-h-0 p-6 lg:p-8">
-      <div class="space-y-1">
-        <p class="text-2xl font-bold text-slate-100 light:text-slate-900"><Highlight cue="hl-autoritaet" color="blue">Professor für Informatik & Industriesysteme</Highlight></p>
-        <p class="text-slate-300 light:text-slate-600 text-lg">Fakultät für Technik & Angewandte Naturwissenschaften, FH OÖ Campus Wels</p>
-      </div>
-
-      <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 space-y-2.5">
-        <span class="text-sm font-mono font-bold text-blue-400 light:text-blue-800 uppercase tracking-wider block">Themenschwerpunkte</span>
-        <div class="flex flex-wrap gap-2 text-sm font-bold font-mono">
-          <span class="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30 light:border-blue-200">#WISSENSGRAPHEN</span>
-          <span class="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30 light:border-blue-200">#GRAPHRAG</span>
-          <span class="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30 light:border-blue-200">#ENTITÄTEN</span>
-          <span class="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 light:bg-white light:text-blue-700 border border-blue-500/30 light:border-blue-200">#DEV-AGENTEN</span>
-        </div>
-      </div>
-
-      <div class="text-sm font-mono text-slate-400 light:text-slate-500 flex justify-between pt-2 border-t border-slate-800/80 light:border-slate-200">
-        <span>🌐 hackenberg.tech</span>
-        <span>🔬 Semantische KI-Systeme</span>
-      </div>
-    </BentoCard>
-
-    <SlideMedia cue="intro-graph" fit="contain" class="h-36 shrink-0">
-      <svg viewBox="0 0 680 180" class="w-full h-full">
-        <GraphEdge id="edge-01" from={{x: 100, y: 90}} to={{x: 340, y: 90}} label="analysiert" animated />
-        <GraphEdge id="edge-02" from={{x: 340, y: 90}} to={{x: 580, y: 90}} label="synthetisiert" animated />
-        <GraphNode id="node-query" x={100} y={90} label="Suche" type="Query" color="blue" />
-        <GraphNode id="node-kg" x={340} y={90} label="Wissensgraph" type="Knowledge" color="teal" />
-        <GraphNode id="node-answer" x={580} y={90} label="KI-Antwort" type="Output" color="green" />
-      </svg>
-    </SlideMedia>
-  </div>
-</TitleSlide>
+  speaker="Dr. Georg Hackenberg"
+  role="Professor für Informatik & Industriesysteme"
+  affiliation="FH Oberösterreich · Campus Wels"
+  date="Oktober 2026"
+  website="hackenberg.tech"
+  cue="intro-sub"
+/>
