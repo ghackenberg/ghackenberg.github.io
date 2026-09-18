@@ -1,0 +1,133 @@
+---
+interface Props {
+  id?: string;
+  cue?: string;
+  title?: string;
+  subtitle?: string;
+  badge?: string;
+  accent?: 'blue' | 'emerald' | 'amber' | 'purple' | 'cyan' | 'indigo' | 'neutral';
+  animate?: string;
+  class?: string;
+}
+
+const {
+  id: explicitId,
+  cue,
+  title,
+  subtitle,
+  badge,
+  accent = 'blue',
+  animate = 'fade-up',
+  class: className = ""
+} = Astro.props;
+
+const elementId = explicitId || cue;
+
+// Accent border and glow mappings
+const accentStyles = {
+  blue: {
+    border: 'border-blue-500/30 light:border-blue-300',
+    badgeBg: 'bg-blue-500/15 light:bg-blue-100 text-blue-400 light:text-blue-700 border-blue-500/30 light:border-blue-300',
+    bar: 'bg-blue-500',
+    title: 'text-blue-300 light:text-blue-900'
+  },
+  emerald: {
+    border: 'border-emerald-500/30 light:border-emerald-300',
+    badgeBg: 'bg-emerald-500/15 light:bg-emerald-100 text-emerald-400 light:text-emerald-700 border-emerald-500/30 light:border-emerald-300',
+    bar: 'bg-emerald-500',
+    title: 'text-emerald-300 light:text-emerald-900'
+  },
+  amber: {
+    border: 'border-amber-500/30 light:border-amber-300',
+    badgeBg: 'bg-amber-500/15 light:bg-amber-100 text-amber-400 light:text-amber-700 border-amber-500/30 light:border-amber-300',
+    bar: 'bg-amber-500',
+    title: 'text-amber-300 light:text-amber-900'
+  },
+  purple: {
+    border: 'border-purple-500/30 light:border-purple-300',
+    badgeBg: 'bg-purple-500/15 light:bg-purple-100 text-purple-400 light:text-purple-700 border-purple-500/30 light:border-purple-300',
+    bar: 'bg-purple-500',
+    title: 'text-purple-300 light:text-purple-900'
+  },
+  cyan: {
+    border: 'border-cyan-500/30 light:border-cyan-300',
+    badgeBg: 'bg-cyan-500/15 light:bg-cyan-100 text-cyan-400 light:text-cyan-700 border-cyan-500/30 light:border-cyan-300',
+    bar: 'bg-cyan-500',
+    title: 'text-cyan-300 light:text-cyan-900'
+  },
+  indigo: {
+    border: 'border-indigo-500/30 light:border-indigo-300',
+    badgeBg: 'bg-indigo-500/15 light:bg-indigo-100 text-indigo-400 light:text-indigo-700 border-indigo-500/30 light:border-indigo-300',
+    bar: 'bg-indigo-500',
+    title: 'text-indigo-300 light:text-indigo-900'
+  },
+  neutral: {
+    border: 'border-slate-800 light:border-slate-200',
+    badgeBg: 'bg-slate-800 light:bg-slate-100 text-slate-300 light:text-slate-700 border-slate-700 light:border-slate-300',
+    bar: 'bg-slate-500',
+    title: 'text-slate-200 light:text-slate-800'
+  }
+}[accent];
+---
+
+<div
+  id={elementId}
+  data-cue={cue}
+  data-animate={animate}
+  class={`bento-card-root relative p-8 lg:p-10 rounded-3xl bg-slate-900/95 light:bg-white/95 backdrop-blur-md border shadow-2xl flex flex-col justify-between overflow-hidden transition-all duration-300 w-full h-full flex-1 ${accentStyles.border} ${className}`}
+>
+  <!-- Accent Top Glow Line -->
+  <div class={`absolute top-0 left-0 right-0 h-2 ${accentStyles.bar}`}></div>
+
+  <!-- Header -->
+  {(title || badge) && (
+    <div class="mb-5 shrink-0">
+      <div class="flex items-center justify-between gap-4">
+        {badge && (
+          <span class={`inline-block px-4 py-1.5 rounded-full text-sm font-mono font-bold tracking-wider uppercase border ${accentStyles.badgeBg}`}>
+            {badge}
+          </span>
+        )}
+      </div>
+
+      {title && (
+        <h3 class={`text-3xl lg:text-4xl xl:text-[40px] font-black mt-3 tracking-tight leading-tight ${accentStyles.title}`}>
+          {title}
+        </h3>
+      )}
+
+      {subtitle && (
+        <p class="text-xl lg:text-2xl text-slate-300 light:text-slate-600 mt-2 font-normal">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  )}
+
+  <!-- Body Content -->
+  <div class="flex-1 min-h-0 text-slate-200 light:text-slate-800 text-xl lg:text-2xl leading-relaxed flex flex-col justify-between gap-6 bento-hyphens">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .bento-hyphens {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    text-wrap: pretty;
+  }
+  .bento-hyphens :global(ul) {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: space-around;
+  }
+  .bento-hyphens :global(li) {
+    font-size: 1.45rem;
+    line-height: 1.55;
+  }
+  .bento-hyphens :global(p) {
+    font-size: 1.45rem;
+    line-height: 1.55;
+  }
+</style>

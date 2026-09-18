@@ -1,4 +1,18 @@
 {
-  "col-bad-content": 9.19,
-  "col-bluf-content": 13.96
+  "col-bad-content": {
+    "start": 9.19
+  },
+  "hl-langatmig": {
+    "start": 10.11,
+    "duration": 1.79,
+    "end": 11.9
+  },
+  "col-bluf-content": {
+    "start": 14.24
+  },
+  "hl-direktantwort-bluf": {
+    "start": 18.68,
+    "duration": 3.2,
+    "end": 21.88
+  }
 }

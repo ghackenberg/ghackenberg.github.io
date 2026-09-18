@@ -1,4 +1,18 @@
 {
-  "col-plausible-dash": 3.92,
-  "col-plausible-privacy": 6.25
+  "col-plausible-dash": {
+    "start": 3.92
+  },
+  "col-plausible-privacy": {
+    "start": 6.25
+  },
+  "hl-plausible-nobanner": {
+    "start": 15.8,
+    "duration": 2.64,
+    "end": 18.44
+  },
+  "hl-plausible-verweildauer": {
+    "start": 22.32,
+    "duration": 2.57,
+    "end": 24.89
+  }
 }

@@ -1,4 +1,18 @@
 {
-  "col-eeat-triad": 7.9,
-  "col-eeat-checklist": 16.14
+  "col-eeat-triad": {
+    "start": 7.9
+  },
+  "col-eeat-checklist": {
+    "start": 16.14
+  },
+  "hl-glaubwuerdigkeit": {
+    "start": 22.76,
+    "duration": 3.12,
+    "end": 25.88
+  },
+  "hl-autoren-sichtbar": {
+    "start": 29.52,
+    "duration": 1.57,
+    "end": 31.09
+  }
 }

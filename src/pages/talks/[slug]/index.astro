@@ -112,86 +112,80 @@ const talkSchema = {
     }
   ]
 };
+const ui = {
+  back: talk.data.lang === "de" ? "Zurück zu Vorträgen" : "Back to Talks",
+};
+
+const previewImg = talk.data.previewImage || talk.data.icon;
 ---
 
 <Layout
   title={`${talk.data.title} | Vortrag Dr. Georg Hackenberg`}
   description={talk.data.description || `${talk.data.title} - Fachvortrag von Dr. Georg Hackenberg`}
+  image={previewImg}
   jsonLd={talkSchema}
   lang={talk.data.lang}
 >
   <Navbar />
 
-  <main class="flex-grow max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 w-full relative z-10">
-    <!-- Breadcrumbs -->
-    <nav class="flex items-center gap-2 text-xs font-medium text-gray-400 mb-6">
-      <a href="/" class="hover:text-brand-blue transition-colors">Home</a>
-      <span>/</span>
-      <a href="/talks/" class="hover:text-brand-blue transition-colors">Talks & Keynotes</a>
-      <span>/</span>
-      <span class="text-gray-200 truncate">{talk.data.title}</span>
-    </nav>
+  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+    <!-- Back button -->
+    <a 
+      href="/talks/" 
+      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
+    >
+      <span>&larr;</span>
+      <span>{ui.back}</span>
+    </a>
 
     <!-- Header Section -->
-    <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-element-border-medium">
+    <header class="mb-10 pb-8 border-b border-element-border">
       <div class="max-w-4xl">
-        <div class="flex flex-wrap items-center gap-3 mb-3">
-          <span class="px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/30 text-brand-blue text-xs font-bold uppercase tracking-wider">
-            {talk.data.event}
-          </span>
-          <time datetime={talk.data.pubDate.toISOString()} class="text-gray-400 text-xs font-mono">
-            {talk.data.pubDate.toLocaleDateString("de-AT", { year: "numeric", month: "long", day: "numeric" })}
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <time datetime={talk.data.pubDate.toISOString()} class="text-sm font-semibold text-brand-blue/80">
+            {talk.data.pubDate.toLocaleDateString(talk.data.lang === "de" ? "de-AT" : "en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric"
+            })}
           </time>
           {talk.data.location && (
-            <span class="text-gray-400 text-xs">
-              📍 {talk.data.location}
-            </span>
+            <>
+              <span class="text-gray-500">•</span>
+              <span class="text-sm text-gray-400">📍 {talk.data.location}</span>
+            </>
           )}
         </div>
 
-        <h1 class="text-3xl md:text-5xl font-black text-gray-100 tracking-tight font-sans">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
           {talk.data.title}
         </h1>
         {talk.data.subtitle && (
-          <p class="text-lg md:text-xl text-gray-300 mt-2 font-medium">
+          <p class="text-base sm:text-lg text-gray-300 font-normal leading-relaxed mb-6">
             {talk.data.subtitle}
           </p>
         )}
-      </div>
 
-      <!-- PDF Download Button -->
-      <div class="flex items-center gap-3 shrink-0">
-        <a
-          href={`/talks/${talk.id}/print/`}
-          target="_blank"
-          class="px-4 py-2.5 rounded-xl border border-element-border-medium bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
-          title="Druckansicht aller Folien öffnen"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-          </svg>
-          Druckansicht
-        </a>
-
-        {hasPdf && (
-          <a
-            href={pdfDownloadUrl}
-            download={`Vortrag_${talk.id}.pdf`}
-            class="px-5 py-2.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            PDF Handout herunterladen
-          </a>
+        {talk.data.tags && talk.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-6">
+            {talk.data.tags.map((tag) => (
+              <a 
+                href={`/tags/${tag.id || tag}/`}
+                class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
+              >
+                #{tag.id || tag}
+              </a>
+            ))}
+          </div>
         )}
       </div>
     </header>
 
     <!-- Interactive Slide & Audio Deck -->
-    <section class="mb-12">
+    <section class="mb-14 w-full">
       <SlideDeck
         talkId={talk.id}
+        pdfUrl={hasPdf ? pdfDownloadUrl : undefined}
         slides={renderedSlides.map((s) => ({
           id: s.id,
           title: s.title,
@@ -209,7 +203,7 @@ const talkSchema = {
     </section>
 
     <!-- Slide Transcripts, Notes & Key Takeaways Accordion (SEO & Reader Mode) -->
-    <section class="p-8 rounded-2xl glass-panel border border-element-border-medium">
+    <section class="p-6 md:p-8 w-full rounded-2xl glass-panel border border-element-border-medium">
       <div class="flex items-center justify-between mb-6">
         <div>
           <h2 class="text-2xl font-bold text-gray-100 tracking-tight font-sans">

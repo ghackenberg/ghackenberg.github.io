@@ -14,18 +14,20 @@ notes: |
   - Zeit: 36:00 - 38:30 Min.
   - Paradigmenwechsel betonen: Nicht ex-post reparieren, sondern ex-ante durch Agenten-Feedback-Schleife absichern.
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="AUTONOME WORKFLOWS" slideNumber="16" totalSlides="30">
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="AUTONOME WORKFLOWS"
+  slideNumber="16"
+  totalSlides="30"
+>
   <Pipeline
-    x={0}
-    y={60}
-    width={1720}
-    height={620}
     steps={[
       {
-        id: "step-loop-1",
+        cue: "step-loop-1",
         num: "01",
         title: "Perzeption",
         desc: "Agent scannt Git-Diff, Markdown-Dateien und Quellcode auf Inkonsistenzen und fehlende Metadaten.",
@@ -33,7 +35,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "blue"
       },
       {
-        id: "step-loop-2",
+        cue: "step-loop-2",
         num: "02",
         title: "Reasoning & Schema",
         desc: "LLM-Reasoning erzeugt validen Schema.org @graph und optimiert Überschriften nach dem BLUF-Prinzip.",
@@ -41,7 +43,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "teal"
       },
       {
-        id: "step-loop-3",
+        cue: "step-loop-3",
         num: "03",
         title: "Automatischer Test",
         desc: "Lighthouse-Audit prüft Core Web Vitals, Kontraste und Ladezeiten im lokalen Headless Chrome.",
@@ -49,7 +51,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "indigo"
       },
       {
-        id: "step-loop-4",
+        cue: "step-loop-4",
         num: "04",
         title: "Edge Deployment",
         desc: "Bei 100/100 Scores führt der Agent den Git-Commit aus und pusht auf die weltweite Edge-Infrastruktur.",
@@ -58,4 +60,4 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
       }
     ]}
   />
-</SlideCanvas>
+</PipelineSlide>

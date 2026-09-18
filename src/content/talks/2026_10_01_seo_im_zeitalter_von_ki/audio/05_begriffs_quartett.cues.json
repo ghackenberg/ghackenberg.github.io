@@ -1,6 +1,34 @@
 {
-  "box-seo": 3.89,
-  "box-aeo": 9.09,
-  "box-geo": 14.72,
-  "box-aio": 24.14
+  "box-seo": {
+    "start": 3.89
+  },
+  "hl-plaetze-eins-zehn": {
+    "start": 5.67,
+    "duration": 1.16,
+    "end": 6.83
+  },
+  "box-aeo": {
+    "start": 9.09
+  },
+  "hl-pos-zero": {
+    "start": 10.22,
+    "duration": 1.02,
+    "end": 11.24
+  },
+  "box-geo": {
+    "start": 15.18
+  },
+  "hl-llm-zitation": {
+    "start": 18.88,
+    "duration": 2.71,
+    "end": 21.59
+  },
+  "box-aio": {
+    "start": 24.74
+  },
+  "hl-ki-snapshots": {
+    "start": 28.2,
+    "duration": 0.1,
+    "end": 28.27
+  }
 }

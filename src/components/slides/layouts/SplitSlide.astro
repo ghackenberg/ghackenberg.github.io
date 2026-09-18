@@ -1,0 +1,65 @@
+---
+import SlideBase from '../primitives/SlideBase.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  badge?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  ratio?: '50/50' | '40/60' | '60/40' | '35/65' | '65/35';
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  badge,
+  slideNumber,
+  totalSlides,
+  ratio = '50/50',
+  class: className = ""
+} = Astro.props;
+
+const gridCols = {
+  '50/50': 'grid-cols-2',
+  '40/60': 'grid-cols-12',
+  '60/40': 'grid-cols-12',
+  '35/65': 'grid-cols-12',
+  '65/35': 'grid-cols-12'
+}[ratio];
+
+const leftSpan = {
+  '50/50': '',
+  '40/60': 'col-span-5',
+  '60/40': 'col-span-7',
+  '35/65': 'col-span-4',
+  '65/35': 'col-span-8'
+}[ratio];
+
+const rightSpan = {
+  '50/50': '',
+  '40/60': 'col-span-7',
+  '60/40': 'col-span-5',
+  '35/65': 'col-span-8',
+  '65/35': 'col-span-4'
+}[ratio];
+---
+
+<SlideBase
+  title={title}
+  subtitle={subtitle}
+  badge={badge}
+  slideNumber={slideNumber}
+  totalSlides={totalSlides}
+  class={className}
+>
+  <div class={`grid ${gridCols} gap-8 h-full w-full items-stretch min-h-0`}>
+    <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${leftSpan}`}>
+      <slot name="left" />
+    </div>
+    <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${rightSpan}`}>
+      <slot name="right" />
+    </div>
+  </div>
+</SlideBase>

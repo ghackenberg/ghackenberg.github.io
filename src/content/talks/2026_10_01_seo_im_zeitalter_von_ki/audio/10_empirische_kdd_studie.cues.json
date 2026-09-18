@@ -1,4 +1,18 @@
 {
-  "kdd-study": 6.76,
-  "kdd-bars": 15.09
+  "kdd-study": {
+    "start": 6.76
+  },
+  "kdd-bars": {
+    "start": 15.09
+  },
+  "hl-cite-sources": {
+    "start": 19.45,
+    "duration": 6.48,
+    "end": 25.93
+  },
+  "hl-kdd-penalty": {
+    "start": 27.69,
+    "duration": 3.17,
+    "end": 30.86
+  }
 }

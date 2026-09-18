@@ -1,3 +1,10 @@
 {
-  "code-jsonld": 2.7
+  "code-jsonld": {
+    "start": 2.7
+  },
+  "hl-fakten-5ms": {
+    "start": 26.07,
+    "duration": 3.11,
+    "end": 29.18
+  }
 }

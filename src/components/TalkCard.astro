@@ -1,0 +1,180 @@
+---
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  id: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  pubDate: Date;
+  event: string;
+  location?: string;
+  icon?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  previewImage?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  tags?: string[];
+  activeTag?: string | string[];
+  featured?: boolean;
+}
+
+const { 
+  id, 
+  title, 
+  subtitle,
+  description, 
+  pubDate, 
+  event,
+  location,
+  icon, 
+  previewImage,
+  tags = [], 
+  activeTag,
+  featured = false
+} = Astro.props;
+
+const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
+
+const rawImage = previewImage || icon;
+const isCoverObj = Boolean(rawImage && typeof rawImage === 'object' && 'src' in rawImage && rawImage.src);
+const iconImg = isCoverObj ? (rawImage as { src: ImageMetadata }).src : (rawImage as ImageMetadata | undefined);
+const iconTitle = isCoverObj ? (rawImage as { title: string }).title : title;
+const iconDesc = isCoverObj ? (rawImage as { description: string }).description : (description || `Preview for ${title}`);
+
+const isSvg = iconImg && typeof iconImg === 'object' && 'format' in iconImg && iconImg.format === 'svg';
+
+const optimizedIcon = iconImg && !isSvg ? await getImage({
+  src: iconImg,
+  format: 'webp',
+  width: 800,
+  quality: 80
+}) : null;
+
+// Article wrapper classes
+const articleClass = featured
+  ? "glass-card preview-card border-2 border-brand-blue/50 light:border-brand-blue/40 shadow-2xl shadow-brand-blue/15 light:shadow-xl light:shadow-brand-blue/10 bg-gradient-to-br from-brand-blue/20 via-slate-900/90 to-indigo-950/80 light:from-blue-50/90 light:via-white light:to-sky-100/70 flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/80 transition-all duration-300 h-full w-full"
+  : "glass-card preview-card border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-brand-blue/40 transition-all duration-300 h-full w-full";
+
+// Image container classes
+const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 light:bg-slate-100 flex items-center justify-center relative z-10";
+---
+
+<article class={articleClass}>
+  {featured && (
+    <>
+      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-blue z-20"></div>
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-blue/15 via-transparent to-brand-purple/15 light:from-brand-blue/10 light:to-sky-200/20 opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
+    </>
+  )}
+
+  <!-- Image panel -->
+  <div class={imageContainerClass}>
+    <!-- Transparent click overlay so the image panel navigates on click -->
+    <a href={`/talks/${id}/`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
+    {rawImage ? (
+      <div class="relative w-full h-full min-h-[160px] overflow-hidden flex items-center justify-center">
+        <img 
+          src={optimizedIcon ? optimizedIcon.src : (typeof iconImg === 'string' ? iconImg : (iconImg?.src || ''))}
+          alt={iconDesc}
+          title={iconTitle}
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+          decoding="async"
+        />
+        <!-- Ambient overlay for depth & contrast in dark and light modes -->
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent block light:hidden pointer-events-none z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent hidden light:block pointer-events-none z-10"></div>
+      </div>
+    ) : (
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-blue/20 via-brand-purple/10 to-indigo-950/40 light:from-blue-50/90 light:via-indigo-50/40 light:to-sky-100/60 flex items-center justify-center p-6 text-center group-hover:scale-105 transition-transform duration-500">
+        <!-- Stylized presentation slide illustration -->
+        <div class="relative w-36 sm:w-44 aspect-video rounded-xl bg-slate-950/90 light:bg-white border border-brand-blue/30 light:border-brand-blue/25 shadow-xl flex flex-col p-3 overflow-hidden">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            </div>
+            <span class="text-[9px] font-mono font-bold text-brand-blue uppercase tracking-widest">KEYNOTE</span>
+          </div>
+          <div class="flex-1 flex flex-col justify-center space-y-1.5">
+            <div class="h-2 w-3/4 bg-brand-blue/40 light:bg-brand-blue/30 rounded"></div>
+            <div class="h-1.5 w-1/2 bg-gray-500/30 light:bg-slate-300 rounded"></div>
+            <div class="h-1.5 w-5/6 bg-gray-500/20 light:bg-slate-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+  
+  <!-- Content -->
+  <div class="flex-grow flex flex-col relative z-10 preview-card-body">
+
+    <!-- Meta row: date + location -->
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+      {featured && (
+        <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-blue text-white shadow-md shadow-brand-blue/30">
+          ★ Featured
+        </span>
+      )}
+      <time class="text-xs font-semibold text-brand-blue/80">
+        {pubDate.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric"
+        })}
+      </time>
+      {location && (
+        <>
+          <span class="text-gray-500 light:text-slate-400 text-xs">•</span>
+          <span class="text-xs text-gray-400 light:text-slate-500 truncate max-w-[170px]" title={location}>
+            📍 {location}
+          </span>
+        </>
+      )}
+    </div>
+
+    <!-- Title -->
+    <h2 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 mb-2 group-hover:text-brand-blue transition-colors leading-snug">
+      <a href={`/talks/${id}/`} class="after:absolute after:inset-0 after:z-10">
+        {title}
+      </a>
+    </h2>
+
+    <!-- Subtitle / Description -->
+    {(subtitle || description) && (
+      <p class="text-gray-400 light:text-slate-500 text-sm mb-3 leading-relaxed font-normal line-clamp-3">
+        {subtitle || description}
+      </p>
+    )}
+
+    <!-- Tags & Action Button Area -->
+    <div class="flex-grow flex flex-col mt-3">
+      <div class="flex flex-wrap gap-1.5 self-start">
+        {tags.map(tag => (
+          <a 
+            href={`/tags/${tag}/`}
+            data-tag={tag}
+            class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              isTagActive(tag) ? 'active-tag-match' : ''
+            }`}
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+
+      <!-- View Presentation button — full width, pinned to bottom -->
+      <div class="mt-auto pt-6 w-full">
+        <a 
+          href={`/talks/${id}/`} 
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs font-bold relative z-20 transition-all duration-200"
+        >
+          <span>View Presentation</span>
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</article>

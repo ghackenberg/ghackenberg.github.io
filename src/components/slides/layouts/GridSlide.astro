@@ -1,0 +1,42 @@
+---
+import SlideBase from '../primitives/SlideBase.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  badge?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  cols?: 2 | 3 | 4;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  badge,
+  slideNumber,
+  totalSlides,
+  cols = 2,
+  class: className = ""
+} = Astro.props;
+
+const gridCols = {
+  2: 'grid-cols-2',
+  3: 'grid-cols-3',
+  4: 'grid-cols-4'
+}[cols];
+---
+
+<SlideBase
+  title={title}
+  subtitle={subtitle}
+  badge={badge}
+  slideNumber={slideNumber}
+  totalSlides={totalSlides}
+  class={className}
+>
+  <div class={`grid ${gridCols} ${cols === 2 ? 'grid-rows-2' : ''} gap-6 h-full w-full items-stretch min-h-0`}>
+    <slot />
+  </div>
+</SlideBase>

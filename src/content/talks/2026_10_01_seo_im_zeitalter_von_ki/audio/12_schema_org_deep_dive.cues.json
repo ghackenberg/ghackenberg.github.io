@@ -1,4 +1,13 @@
 {
-  "col-schema-types": 4.36,
-  "col-schema-id": 17.07
+  "col-schema-types": {
+    "start": 4.36
+  },
+  "col-schema-id": {
+    "start": 17.07
+  },
+  "hl-schema-fusion": {
+    "start": 24.49,
+    "duration": 5.6,
+    "end": 30.09
+  }
 }

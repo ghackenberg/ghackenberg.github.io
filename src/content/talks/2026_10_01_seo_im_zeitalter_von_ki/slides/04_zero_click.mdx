@@ -8,74 +8,64 @@ voiceover: >
   {cue:stat-zeroclick} Über 64 Prozent aller Suchanfragen weltweit enden heute ohne einen einzigen Klick. 
   {cue:bento-impact} Für Verlage und traditionelle Webportale ist das eine existenzielle Krise. 
   Für den B2B-Mittelstand in Oberösterreich hingegen eröffnet sich eine historische Chance: 
-  Denn wer in der Antwortbox als technologischer Benchmark zitiert wird, gewinnt Kunden mit 
-  höchster Kaufabsicht.
+  Wir optimieren nicht mehr für Klicks, sondern für {cue:hl-zitation-kaufabsicht}Zitation und unumstößliche Markennennung{/cue} – denn das gewinnt Kunden mit höchster Kaufabsicht.
 notes: |
   - Zeit: 6:00 - 8:00 Min.
   - Datenquelle: SparkToro / Similarweb Zero-Click Search Study (2024/2025).
   - Wichtig: Den Industrievertretern die Angst vor Traffic-Verlusten nehmen; Konversionsrate und Lead-Qualität steigen, wenn die Antwortbox autoritativ ist.
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
-import BentoBox from '../../../../components/slides/primitives/BentoBox.astro';
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="EMPIRISCHE REALITÄT" slideNumber="04" totalSlides="30">
-  {/**/}
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="EMPIRISCHE REALITÄT"
+  slideNumber="04"
+  totalSlides="30"
+  ratio="40/60"
+>
   <MetricStat
-    id="stat-zeroclick"
-    x={0}
-    y={40}
-    width={750}
-    height={680}
+    slot="left"
+    cue="stat-zeroclick"
     value="64"
     unit="%"
     label="Zero-Click Suchanfragen"
-    sublabel="Quelle: SparkToro / Similarweb Global Search Study (2024/2025) über 1 Mrd. analysierte Sessions"
+    sublabel="SparkToro / Similarweb Global Search Study über 1 Mrd. analysierte Sessions"
     badge="GLOBALER DURCHSCHNITT"
     color="blue"
   />
 
-  {/**/}
-  <BentoBox id="bento-impact" x={830} y={40} width={890} height={680} title="Konsequenzen für Industrie & B2B" badge="STRATEGISCHE ABLEITUNG" accent="teal">
-    <div class="space-y-6">
-      <div class="p-5 rounded-xl bg-cyan-50/70 border border-cyan-200/80">
-        <h4 class="font-bold text-cyan-950 text-lg mb-1">Kernaussage für die Geschäftsführung:</h4>
-        <p class="text-cyan-900 text-base leading-relaxed">
-          „Wir optimieren nicht mehr für Klicks – wir optimieren für Zitation und unumstößliche Markennennung.“
-        </p>
+  <BentoCard slot="right" cue="bento-impact" title="Konsequenzen für Industrie & B2B" badge="STRATEGISCHE ABLEITUNG" accent="cyan">
+    <div class="p-6 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/30 light:border-cyan-200 shrink-0">
+      <h4 class="font-bold text-cyan-300 light:text-cyan-950 text-xl lg:text-2xl mb-2">Kernaussage für die Geschäftsführung:</h4>
+      <p class="text-cyan-200 light:text-cyan-900 text-lg lg:text-xl leading-relaxed font-medium">
+        „Wir optimieren nicht mehr für Klicks – wir optimieren für <Highlight cue="hl-zitation-kaufabsicht" color="amber">Zitation und unumstößliche Markennennung.</Highlight>“
+      </p>
+    </div>
+
+    <div class="space-y-6 text-slate-200 light:text-slate-800 flex-1 flex flex-col justify-around my-2">
+      <div class="flex items-start gap-5">
+        <div class="w-12 h-12 rounded-2xl bg-slate-800 light:bg-slate-100 border border-slate-700 light:border-slate-200 flex items-center justify-center text-2xl font-bold text-slate-300 shrink-0">
+          📉
+        </div>
+        <div>
+          <h5 class="font-extrabold text-slate-100 light:text-slate-900 text-xl lg:text-2xl">Verlust unqualifizierten Traffics</h5>
+          <p class="text-slate-300 light:text-slate-600 text-lg lg:text-xl leading-relaxed mt-1">Oberflächliche Informational-Queries werden direkt vom Modell beantwortet. Reiner Massen-Traffic bricht um 40–60 % ein.</p>
+        </div>
       </div>
 
-      <div class="space-y-4 text-slate-700">
-        <div class="flex items-start gap-4">
-          <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 shrink-0">
-            📉
-          </div>
-          <div>
-            <h5 class="font-bold text-slate-900 text-lg">Verlust unqualifizierten Traffics</h5>
-            <p class="text-slate-600 text-sm">Oberflächliche Informational-Queries werden direkt vom Modell beantwortet. Reiner Massen-Traffic bricht um 40–60 % ein.</p>
-          </div>
+      <div class="flex items-start gap-5">
+        <div class="w-12 h-12 rounded-2xl bg-blue-500/20 light:bg-blue-100 border border-blue-500/30 light:border-blue-200 flex items-center justify-center text-2xl font-bold text-blue-400 light:text-blue-700 shrink-0">
+          🎯
         </div>
-
-        <div class="flex items-start gap-4">
-          <div class="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center font-bold text-blue-700 shrink-0">
-            🎯
-          </div>
-          <div>
-            <h5 class="font-bold text-slate-900 text-lg">Drastisch höhere Lead-Qualität</h5>
-            <p class="text-slate-600 text-sm">Wer die Website nach einer KI-Antwort noch aufsucht, hat bereits eine vorgefilterte Kauf- oder Projektierungsabsicht.</p>
-          </div>
-        </div>
-
-        <div class="flex items-start gap-4">
-          <div class="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center justify-center font-bold text-emerald-700 shrink-0">
-            🏛️
-          </div>
-          <div>
-            <h5 class="font-bold text-slate-900 text-lg">Entitäten-Präsenz als Markenschutz</h5>
-            <p class="text-slate-600 text-sm">Wird Ihr Unternehmen bei Suchanfragen wie „Beste Fertigungslinie für Traunviertler Zerspanung“ nicht erwähnt, existieren Sie im Markt nicht mehr.</p>
-          </div>
+        <div>
+          <h5 class="font-extrabold text-slate-100 light:text-slate-900 text-xl lg:text-2xl">Extrem hohe Konversionsrate der Zitierten</h5>
+          <p class="text-slate-300 light:text-slate-600 text-lg lg:text-xl leading-relaxed mt-1">Kunden, die nach einer synthetisierten KI-Antwort noch klicken, haben höchste Kauf- und Projektabsicht (High-Intent B2B).</p>
         </div>
       </div>
     </div>
-  </BentoBox>
-</SlideCanvas>
+  </BentoCard>
+</SplitSlide>

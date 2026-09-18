@@ -61,9 +61,22 @@ const renderedSlides = await Promise.all(
         box-sizing: border-box;
         overflow: hidden;
       }
-      .print-slide-page svg {
-        width: 100%;
-        height: 100%;
+      .print-slide-page .slide-base-frame {
+        width: 100vw;
+        height: 56.25vw;
+        max-height: 100vh;
+        max-width: 177.78vh;
+      }
+      /* Ensure everything is visible in print handout */
+      .print-slide-page [data-animate],
+      .print-slide-page .bento-card-root,
+      .print-slide-page .step-card,
+      .print-slide-page .metric-stat-card {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .print-slide-page .highlight-marker {
+        background-size: 100% 100% !important;
       }
     </style>
   </head>

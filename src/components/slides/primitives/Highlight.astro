@@ -1,0 +1,51 @@
+---
+interface Props {
+  id?: string;
+  cue?: string;
+  type?: 'marker' | 'glow' | 'badge';
+  color?: 'blue' | 'amber' | 'emerald' | 'purple';
+  class?: string;
+}
+
+const {
+  id: explicitId,
+  cue,
+  type = 'marker',
+  color = 'blue',
+  class: className = ""
+} = Astro.props;
+
+const elementId = explicitId || cue;
+
+const colorGradients = {
+  blue: 'linear-gradient(120deg, rgba(59, 130, 246, 0.45) 0%, rgba(59, 130, 246, 0.45) 100%)',
+  amber: 'linear-gradient(120deg, rgba(245, 158, 11, 0.5) 0%, rgba(245, 158, 11, 0.5) 100%)',
+  emerald: 'linear-gradient(120deg, rgba(16, 185, 129, 0.45) 0%, rgba(16, 185, 129, 0.45) 100%)',
+  purple: 'linear-gradient(120deg, rgba(168, 85, 247, 0.45) 0%, rgba(168, 85, 247, 0.45) 100%)'
+}[color];
+
+const lightColorGradients = {
+  blue: 'linear-gradient(120deg, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%)',
+  amber: 'linear-gradient(120deg, rgba(245, 158, 11, 0.3) 0%, rgba(245, 158, 11, 0.3) 100%)',
+  emerald: 'linear-gradient(120deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.25) 100%)',
+  purple: 'linear-gradient(120deg, rgba(168, 85, 247, 0.25) 0%, rgba(168, 85, 247, 0.25) 100%)'
+}[color];
+---
+
+<span
+  id={elementId}
+  data-cue={cue}
+  class={`highlight-marker inline-block font-semibold transition-all duration-300 rounded px-1.5 py-0.5 ${className}`}
+  style={`--hl-grad-dark: ${colorGradients}; --hl-grad-light: ${lightColorGradients};`}
+>
+  <slot />
+</span>
+
+<style>
+  .highlight-marker {
+    background-image: var(--hl-grad-dark);
+  }
+  :global(.light) .highlight-marker {
+    background-image: var(--hl-grad-light);
+  }
+</style>

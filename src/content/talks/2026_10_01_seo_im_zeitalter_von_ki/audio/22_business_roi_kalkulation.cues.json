@@ -1,4 +1,13 @@
 {
-  "roi-metric": 4.83,
-  "roi-table": 7.97
+  "roi-metric": {
+    "start": 4.83
+  },
+  "roi-table": {
+    "start": 7.97
+  },
+  "hl-pipeline-wert": {
+    "start": 39.1,
+    "duration": 1.88,
+    "end": 40.98
+  }
 }

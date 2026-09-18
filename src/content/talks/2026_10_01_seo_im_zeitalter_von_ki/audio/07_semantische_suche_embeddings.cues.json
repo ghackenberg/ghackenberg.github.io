@@ -1,4 +1,18 @@
 {
-  "col-embeddings": 4.35,
-  "col-math": 14.5
+  "col-embeddings": {
+    "start": 4.35
+  },
+  "col-math": {
+    "start": 14.5
+  },
+  "hl-kosinus-threshold": {
+    "start": 26.52,
+    "duration": 3.61,
+    "end": 30.13
+  },
+  "hl-keyword-stuffing": {
+    "start": 32.42,
+    "duration": 0.37,
+    "end": 32.79
+  }
 }

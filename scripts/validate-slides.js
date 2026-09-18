@@ -62,12 +62,19 @@ function validateSlides() {
         console.warn(`  ⚠️ [${slideFile}] Missing "notes" for presenter mode.`);
       }
 
-      // Check cue target matching in body
       const cueRegex = /\{cue:([a-zA-Z0-9_-]+)\}/g;
       let match;
       while ((match = cueRegex.exec(fm)) !== null) {
         const cueId = match[1];
-        const hasElement = body.includes(`id="${cueId}"`) || body.includes(`id='${cueId}'`) || body.includes(`id: "${cueId}"`) || body.includes(`id: '${cueId}'`);
+        const hasElement =
+          body.includes(`id="${cueId}"`) ||
+          body.includes(`id='${cueId}'`) ||
+          body.includes(`id: "${cueId}"`) ||
+          body.includes(`id: '${cueId}'`) ||
+          body.includes(`cue="${cueId}"`) ||
+          body.includes(`cue='${cueId}'`) ||
+          body.includes(`cue: "${cueId}"`) ||
+          body.includes(`cue: '${cueId}'`);
         if (!hasElement) {
           console.warn(`  ⚠️ [${slideFile}] Cue "{cue:${cueId}}" has no matching element with id="${cueId}" in slide body.`);
         }

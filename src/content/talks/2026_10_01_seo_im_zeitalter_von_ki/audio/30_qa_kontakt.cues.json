@@ -1,4 +1,13 @@
 {
-  "col-qa-questions": 5.13,
-  "col-qa-contact": 15.26
+  "col-qa-questions": {
+    "start": 5.13
+  },
+  "col-qa-contact": {
+    "start": 15.26
+  },
+  "hl-folien-online": {
+    "start": 18.98,
+    "duration": 1.16,
+    "end": 20.14
+  }
 }

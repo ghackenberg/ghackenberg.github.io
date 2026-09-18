@@ -1,4 +1,18 @@
 {
-  "col-aem": 4.61,
-  "col-sitecore": 16.59
+  "col-aem": {
+    "start": 4.61
+  },
+  "hl-aem-edge": {
+    "start": 6.74,
+    "duration": 1.29,
+    "end": 8.03
+  },
+  "col-sitecore": {
+    "start": 17.26
+  },
+  "hl-single-source": {
+    "start": 20.2,
+    "duration": 2.04,
+    "end": 22.24
+  }
 }

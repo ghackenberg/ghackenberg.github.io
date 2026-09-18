@@ -1,4 +1,13 @@
 {
-  "col-classic": 4.56,
-  "col-modern": 14.54
+  "col-classic": {
+    "start": 4.56
+  },
+  "col-modern": {
+    "start": 14.54
+  },
+  "hl-zitation": {
+    "start": 27.27,
+    "duration": 1.34,
+    "end": 28.61
+  }
 }

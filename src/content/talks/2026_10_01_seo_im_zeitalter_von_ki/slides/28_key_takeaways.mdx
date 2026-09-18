@@ -16,18 +16,20 @@ notes: |
   - Das ist die prägnante Management-Zusammenfassung des Gesamtvortrags.
   - Mit Nachdruck vortragen!
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="EXECUTIVE SUMMARY" slideNumber="28" totalSlides="30">
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="EXECUTIVE SUMMARY"
+  slideNumber="28"
+  totalSlides="30"
+>
   <Pipeline
-    x={0}
-    y={60}
-    width={1720}
-    height={620}
     steps={[
       {
-        id: "takeaway-1",
+        cue: "takeaway-1",
         num: "01",
         title: "Vom Keyword zur Entität",
         desc: "Bauen Sie Wissensgraphen, keine Keyword-Friedhöfe. Eindeutige Schema.org-URIs verankern Ihre Produkte im Modellwissen.",
@@ -35,15 +37,15 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "blue"
       },
       {
-        id: "takeaway-2",
+        cue: "takeaway-2",
         num: "02",
         title: "Agenten als Gatekeeper",
-        desc: "Automatisieren Sie die Qualitätssicherung mit MCP-Dev-Agenten. Keine unfertigen oder fehlerhaften Seiten mehr auf dem Edge-Server.",
+        desc: "Automatisieren Sie die Qualitätssicherung mit MCP-Dev-Agenten. Keine fehlerhaften Seiten mehr auf dem Edge-Server.",
         badge: "EFFIZIENZ",
         accent: "teal"
       },
       {
-        id: "takeaway-3",
+        cue: "takeaway-3",
         num: "03",
         title: "Information Gain erzeugen",
         desc: "Liefern Sie Primärdaten, Studien und messbare Benchmarks. Nur einzigartiges, verifiziertes Wissen wird von LLMs zitiert.",
@@ -52,4 +54,4 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
       }
     ]}
   />
-</SlideCanvas>
+</PipelineSlide>

@@ -1,0 +1,130 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  badge?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  badge,
+  slideNumber,
+  totalSlides = 30,
+  class: className = ""
+} = Astro.props;
+---
+
+<div
+  lang="de"
+  class={`slide-base-frame relative w-[1920px] h-[1080px] max-w-full max-h-full bg-slate-950 light:bg-slate-50 text-slate-100 light:text-slate-900 flex flex-col justify-between p-12 select-none font-sans overflow-hidden box-border ${className}`}
+>
+  <!-- Technical Dot Matrix Grid -->
+  <div class="absolute inset-0 pointer-events-none opacity-20 light:opacity-10 bg-dot-grid"></div>
+  
+  <!-- Subtle Gradient Glow (Contained inside frame) -->
+  <div class="absolute top-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-0 right-0 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+  <!-- Top Accent Bar -->
+  <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400"></div>
+
+  <!-- Slide Header -->
+  {title && (
+    <header class="relative z-10 mb-4 shrink-0">
+      <div class="flex items-center justify-between gap-6 mb-2">
+        {badge && (
+          <span class="inline-flex items-center px-4 py-1.5 rounded-full text-base font-mono font-bold tracking-widest uppercase bg-blue-500/20 text-blue-400 light:bg-blue-100 light:text-blue-700 border border-blue-500/30 light:border-blue-300">
+            {badge}
+          </span>
+        )}
+        {slideNumber && (
+          <span class="text-lg font-mono text-slate-400 light:text-slate-500 font-bold ml-auto">
+            {String(slideNumber).padStart(2, '0')} / {totalSlides}
+          </span>
+        )}
+      </div>
+
+      <h1 class="text-5xl lg:text-6xl xl:text-[62px] font-black tracking-tight text-slate-100 light:text-slate-900 leading-[1.12] text-balance slide-hyphens">
+        {title}
+      </h1>
+
+      {subtitle && (
+        <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-600 mt-2 font-normal leading-relaxed text-pretty">
+          {subtitle}
+        </p>
+      )}
+    </header>
+  )}
+
+  <!-- Slide Main Stage (Full Vertical Stretch) -->
+  <main class="relative z-10 flex-1 min-h-0 w-full flex flex-col justify-stretch items-stretch">
+    <slot />
+  </main>
+
+  <!-- Slide Standardized Footer -->
+  <footer class="relative z-10 pt-4 mt-3 border-t border-slate-800/80 light:border-slate-200 flex items-center justify-between text-base font-mono text-slate-400 light:text-slate-600 shrink-0">
+    <div class="flex items-center gap-4">
+      <span class="font-bold text-slate-300 light:text-slate-800">Dr. Georg Hackenberg</span>
+      <span>•</span>
+      <span>FH OÖ Campus Wels</span>
+      <span>•</span>
+      <span>SEO im Zeitalter von KI</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span>hackenberg.tech</span>
+    </div>
+  </footer>
+</div>
+
+<style>
+  /* Technical dot grid pattern */
+  .bg-dot-grid {
+    background-image: radial-gradient(rgba(148, 163, 184, 0.4) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+  }
+
+  /* German Typography & Hyphenation */
+  .slide-hyphens {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    text-wrap: balance;
+  }
+
+  /* Text Marker Sweep Animation */
+  :global(.highlight-marker) {
+    background-image: var(--hl-grad-dark, linear-gradient(120deg, rgba(59, 130, 246, 0.45) 0%, rgba(59, 130, 246, 0.45) 100%));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    padding: 0.1em 0.3em;
+    border-radius: 0.25rem;
+    transition: background-size var(--cue-duration, 0.5s) cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.highlight-marker.is-active) {
+    background-size: 100% 100%;
+    color: #ffffff;
+  }
+
+  :global(.light .highlight-marker) {
+    background-image: var(--hl-grad-light, linear-gradient(120deg, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%));
+  }
+
+  :global(.light .highlight-marker.is-active) {
+    color: #0f172a;
+  }
+
+  /* Audio-Sync Dimming of inactive neighbors */
+  :global(.is-dimmed) {
+    opacity: 0.35 !important;
+    transition: opacity 0.5s ease-out;
+  }
+
+  :global(.is-active) {
+    opacity: 1 !important;
+    transition: opacity 0.4s ease-in, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+</style>

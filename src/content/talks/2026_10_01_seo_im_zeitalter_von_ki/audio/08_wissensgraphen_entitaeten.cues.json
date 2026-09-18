@@ -1,4 +1,13 @@
 {
-  "graph-area": 5.91,
-  "edge-01": 15.99
+  "graph-area": {
+    "start": 5.91
+  },
+  "edge-01": {
+    "start": 15.99
+  },
+  "hl-keine-hallu": {
+    "start": 22.34,
+    "duration": 1.84,
+    "end": 24.18
+  }
 }

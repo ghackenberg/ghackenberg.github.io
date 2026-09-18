@@ -1,4 +1,18 @@
 {
-  "col-tools-special": 4.61,
-  "col-tools-enterprise": 15.07
+  "col-tools-special": {
+    "start": 4.6
+  },
+  "hl-som-metriken": {
+    "start": 10.11,
+    "duration": 1.93,
+    "end": 12.04
+  },
+  "col-tools-enterprise": {
+    "start": 13.65
+  },
+  "hl-aio-tracking": {
+    "start": 17.07,
+    "duration": 1.54,
+    "end": 18.61
+  }
 }

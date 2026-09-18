@@ -14,18 +14,20 @@ notes: |
   - Das Framework als übergeordnete Orientierung für die folgenden Detailfolien 12-15 vorstellen.
   - Eigene Methodik Dr. Georg Hackenberg (2026).
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="STRATEGISCHES FRAMEWORK" slideNumber="11" totalSlides="30">
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="STRATEGISCHES FRAMEWORK"
+  slideNumber="11"
+  totalSlides="30"
+>
   <Pipeline
-    x={0}
-    y={60}
-    width={1720}
-    height={620}
     steps={[
       {
-        id: "pillar-struct",
+        cue: "pillar-struct",
         num: "01",
         title: "Säule 1: Struktur",
         desc: "Schema.org @graph Architektur, JSON-LD, standardisiertes semantisches HTML5 und eindeutige Entitäten-URIs.",
@@ -33,7 +35,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "blue"
       },
       {
-        id: "pillar-content",
+        cue: "pillar-content",
         num: "02",
         title: "Säule 2: Content",
         desc: "Information Gain Scores maximieren, BLUF-Informationsarchitektur, dichte Vergleichstabellen und proprietäre Messdaten.",
@@ -41,7 +43,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "teal"
       },
       {
-        id: "pillar-auth",
+        cue: "pillar-auth",
         num: "03",
         title: "Säule 3: Autorität",
         desc: "E-E-A-T-Signale, Co-Citations, Autorenvalidierung via ORCID / Wikidata und institutionelle akademische Verankerung.",
@@ -50,4 +52,4 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
       }
     ]}
   />
-</SlideCanvas>
+</PipelineSlide>

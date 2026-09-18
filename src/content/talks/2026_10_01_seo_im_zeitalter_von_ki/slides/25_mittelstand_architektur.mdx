@@ -16,26 +16,28 @@ notes: |
   - Das ist die wichtigste Entlastungs-Folie für IT-Leiter im Raum: Kein Relaunch-Albtraum nötig!
   - IT-Cluster Oberösterreich Referenzarchitektur.
 ---
-import SlideCanvas from '../../../../components/slides/primitives/SlideCanvas.astro';
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
 
-<SlideCanvas title={frontmatter.title} subtitle={frontmatter.subtitle} badge="KMU-PRAXIS" slideNumber="25" totalSlides="30">
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  badge="KMU-PRAXIS"
+  slideNumber="25"
+  totalSlides="30"
+>
   <Pipeline
-    x={0}
-    y={60}
-    width={1720}
-    height={620}
     steps={[
       {
-        id: "arch-layer-3",
+        cue: "arch-layer-3",
         num: "01",
         title: "System of Record (Backend)",
-        desc: "Bestehende Unternehmenssysteme bleiben unangetastet: TYPO3, WordPress, Pimcore, SAP ERP oder Microsoft Dynamics.",
+        desc: "Bestehende Unternehmenssysteme bleiben unangetastet: TYPO3, WordPress, Pimcore, SAP ERP oder Dynamics.",
         badge: "STABILITÄT",
         accent: "neutral"
       },
       {
-        id: "arch-layer-2",
+        cue: "arch-layer-2",
         num: "02",
         title: "Semantischer Graph-Layer",
         desc: "Schlanke Headless API aggregiert Produkte, Normen und Referenten. Generiert automatisch den Schema.org @graph.",
@@ -43,7 +45,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "teal"
       },
       {
-        id: "arch-layer-1",
+        cue: "arch-layer-1",
         num: "03",
         title: "Astro Edge Layer (Frontend)",
         desc: "Hochoptimierte, statische Auslieferung an CDN-Knoten. Ladezeit < 0.5s für GPTBot, Google-Extended und mobile Nutzer.",
@@ -52,4 +54,4 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
       }
     ]}
   />
-</SlideCanvas>
+</PipelineSlide>

@@ -1,4 +1,18 @@
 {
-  "col-case-a": 2.63,
-  "col-case-b": 21.04
+  "col-case-a": {
+    "start": 2.63
+  },
+  "hl-case-a-stat": {
+    "start": 11.36,
+    "duration": 5.19,
+    "end": 16.55
+  },
+  "col-case-b": {
+    "start": 21.04
+  },
+  "hl-case-b-stat": {
+    "start": 30.26,
+    "duration": 4.34,
+    "end": 34.6
+  }
 }
