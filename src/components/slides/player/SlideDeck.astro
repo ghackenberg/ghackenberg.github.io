@@ -1,11 +1,12 @@
 ---
 import 'reveal.js/reveal.css';
+import type { SlideCueMap } from './AudioSyncController';
 
 interface SlideMeta {
   id: string;
   title: string;
   audioUrl?: string;
-  cues?: Record<string, any>;
+  cues?: SlideCueMap;
   notes?: string;
 }
 
@@ -19,7 +20,7 @@ interface Props {
 const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
 ---
 
-<div class={`slide-deck-wrapper relative w-full aspect-[16/9.6] max-h-[88vh] bg-slate-950 light:bg-slate-100 border border-slate-800 light:border-slate-300 rounded-3xl overflow-hidden shadow-2xl flex flex-col ${className}`}>
+<div class={`slide-deck-wrapper relative w-full lg:aspect-[16/9.6] lg:max-h-[88vh] bg-slate-950 light:bg-slate-100 border border-slate-800 light:border-slate-300 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col ${className}`}>
   <!-- Slide Stage Viewport with Drawer / Sidebar Layer -->
   <div class="relative flex-1 w-full min-h-0 flex overflow-hidden">
     <!-- Slide List Backdrop (Mobile only: dims & blurs slide stage) -->
@@ -36,7 +37,7 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       aria-label="Folienübersicht"
       aria-hidden="true"
     >
-      <div class="w-80 h-full flex flex-col">
+      <div class="w-72 sm:w-80 max-w-[85vw] h-full flex flex-col">
         <!-- Drawer Header -->
         <div class="p-4 border-b border-slate-800 light:border-slate-200 flex items-center justify-between shrink-0">
           <div class="flex items-center gap-2.5">
@@ -90,7 +91,7 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     </aside>
 
     <!-- Slide Canvas Viewport (Crisp, unblurred, auto-scaling) -->
-    <div class="relative flex-1 h-full min-w-0 overflow-hidden bg-slate-950 light:bg-slate-100 flex items-center justify-center">
+    <div class="relative flex-1 w-full min-w-0 overflow-hidden bg-slate-950 light:bg-slate-100 flex items-center justify-center aspect-video lg:aspect-auto">
       <!-- Reveal.js Container -->
       <div class="reveal w-full h-full relative" id="reveal-root">
         <div class="slides w-full h-full">
@@ -101,60 +102,67 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
   </div>
 
   <!-- Audio & Slide Navigation Control Bar -->
-  <div class="slide-controls-bar z-50 bg-slate-900/95 light:bg-white/95 backdrop-blur-md border-t border-slate-800 light:border-slate-200 px-6 py-4 flex items-center justify-between gap-6 text-slate-300 light:text-slate-700 select-none">
-    <!-- Left: Play/Pause & Slide Step -->
-    <div class="flex items-center gap-3">
+  <div class="slide-controls-bar z-20 bg-slate-900/95 light:bg-white/95 backdrop-blur-md border-t border-slate-800 light:border-slate-200 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-3.5 flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-2.5 gap-x-2 sm:gap-x-3 lg:gap-6 text-slate-300 light:text-slate-700 select-none">
+
+    <!-- Timeline & Progress Scrubbing: Full-width on mobile & tablet (order-1), centered flex-1 on desktop (lg:order-2) -->
+    <div class="w-full order-1 lg:order-2 lg:flex-1 lg:max-w-xl flex items-center gap-2 sm:gap-3">
+      <span id="time-current" class="text-xs font-mono text-slate-400 light:text-slate-500 w-9 sm:w-10 text-right shrink-0 select-none">0:00</span>
+      <div class="flex-1 relative py-2 cursor-pointer group" id="progress-container">
+        <div class="h-1.5 sm:h-2 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-blue-500 rounded-full w-0 transition-all duration-100"></div>
+        </div>
+      </div>
+      <span id="time-total" class="text-xs font-mono text-slate-400 light:text-slate-500 w-9 sm:w-10 shrink-0 select-none">0:00</span>
+    </div>
+
+    <!-- Left: Play/Pause & Slide Navigation (order-2 on mobile/tablet, lg:order-1 on desktop) -->
+    <div class="order-2 lg:order-1 flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
       <button
         id="btn-prev"
-        class="w-10 h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
         title="Vorherige Folie (←)"
+        aria-label="Vorherige Folie"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
       <button
         id="btn-play-pause"
-        class="px-5 h-10 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-2 transition-all shadow-md cursor-pointer"
+        class="h-9 sm:h-10 px-3 sm:px-4 md:px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-1.5 sm:gap-2 transition-all shadow-md cursor-pointer text-xs sm:text-sm"
         title="Audio Vortrag abspielen / pausieren (Leertaste)"
+        aria-label="Vortrag abspielen oder pausieren"
       >
-        <svg id="icon-play" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <svg id="icon-play" class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z" />
         </svg>
-        <svg id="icon-pause" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+        <svg id="icon-pause" class="w-4 h-4 sm:w-5 sm:h-5 hidden shrink-0" fill="currentColor" viewBox="0 0 24 24">
           <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
         </svg>
-        <span id="label-play-pause" class="text-sm">Vortrag anhören</span>
+        <span id="label-play-pause" class="hidden sm:inline">Vortrag anhören</span>
       </button>
 
       <button
         id="btn-next"
-        class="w-10 h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
         title="Nächste Folie (→)"
+        aria-label="Nächste Folie"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
         </svg>
       </button>
     </div>
 
-    <!-- Center: Timeline & Progress Scrubbing -->
-    <div class="flex-1 max-w-xl flex items-center gap-4">
-      <span id="time-current" class="text-xs font-mono text-slate-400 light:text-slate-500 w-10 text-right">0:00</span>
-      <div class="flex-1 relative h-2 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden cursor-pointer group" id="progress-container">
-        <div id="progress-bar" class="h-full bg-blue-500 rounded-full w-0 transition-all duration-100"></div>
-      </div>
-      <span id="time-total" class="text-xs font-mono text-slate-400 light:text-slate-500 w-10">0:00</span>
-    </div>
-
-    <!-- Right: Tools, Speed, Overview, Fullscreen -->
-    <div class="flex items-center gap-3">
+    <!-- Right: Tools, Speed, Overview, Fullscreen, Counter (order-3 on both) -->
+    <div class="order-3 flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
       <!-- Speed Toggle -->
       <button
         id="btn-speed"
-        class="px-3 h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 text-xs font-mono font-bold transition-colors cursor-pointer"
+        class="px-2 sm:px-2.5 md:px-3 h-8 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer"
         title="Wiedergabegeschwindigkeit"
+        aria-label="Wiedergabegeschwindigkeit ändern"
       >
         1.0x
       </button>
@@ -162,11 +170,11 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <!-- Slide List Drawer Toggle (ESC) -->
       <button
         id="btn-overview"
-        class="w-9 h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
         title="Folienübersicht (ESC)"
         aria-label="Folienübersicht öffnen oder schließen"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
@@ -174,11 +182,15 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <!-- Fullscreen (F) -->
       <button
         id="btn-fullscreen"
-        class="w-9 h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
         title="Vollbild (F)"
+        aria-label="Vollbild umschalten"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="icon-fullscreen-enter" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5h-4m4 0v-4m0 4l-5-5" />
+        </svg>
+        <svg id="icon-fullscreen-exit" class="w-3.5 h-3.5 sm:w-4 sm:h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v6H3m0 0l5-5M15 3v6h6m0 0l-5-5M9 21v-6H3m0 0l5 5M15 21v-6h6m0 0l-5 5" />
         </svg>
       </button>
 
@@ -188,20 +200,20 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
           id="btn-download-pdf"
           href={pdfUrl}
           download={`Vortrag_${talkId}.pdf`}
-          class="w-9 h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+          class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
           title="PDF Handout herunterladen"
           aria-label="PDF Handout herunterladen"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
         </a>
       )}
 
       <!-- Slide Counter -->
-      <div class="px-3 h-9 rounded-lg bg-slate-800/60 light:bg-slate-100 border border-slate-700/50 light:border-slate-300 flex items-center text-xs font-mono text-slate-400 light:text-slate-600 font-bold">
+      <div class="px-2 sm:px-2.5 md:px-3 h-8 sm:h-9 rounded-lg bg-slate-800/60 light:bg-slate-100 border border-slate-700/50 light:border-slate-300 flex items-center text-[11px] sm:text-xs font-mono text-slate-400 light:text-slate-600 font-bold shrink-0 select-none">
         <span id="slide-index-label">1</span>
-        <span class="mx-1">/</span>
+        <span class="mx-0.5 sm:mx-1">/</span>
         <span>{slides.length}</span>
       </div>
     </div>
@@ -236,7 +248,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     transition: 'fade',
     transitionSpeed: 'fast',
     embedded: true,
-    mouseWheel: false
+    mouseWheel: false,
+    touch: true
   });
 
 
@@ -364,23 +377,27 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
         }
       },
       onPlayStateChange: (isPlaying) => {
-        if (iconPlay && iconPause && labelPlayPause) {
+        if (iconPlay && iconPause) {
           if (isPlaying) {
             iconPlay.classList.add('hidden');
             iconPause.classList.remove('hidden');
-            labelPlayPause.textContent = 'Pausieren';
+            if (labelPlayPause) labelPlayPause.textContent = 'Pausieren';
+            btnPlayPause?.setAttribute('title', 'Pausieren (Leertaste)');
+            btnPlayPause?.setAttribute('aria-label', 'Pausieren');
           } else {
             iconPlay.classList.remove('hidden');
             iconPause.classList.add('hidden');
-            labelPlayPause.textContent = 'Vortrag anhören';
+            if (labelPlayPause) labelPlayPause.textContent = 'Vortrag anhören';
+            btnPlayPause?.setAttribute('title', 'Audio Vortrag abspielen (Leertaste)');
+            btnPlayPause?.setAttribute('aria-label', 'Audio Vortrag abspielen');
           }
         }
       }
     });
 
     // Reveal Slide Changed Event
-    deck.on('slidechanged', (event: any) => {
-      const idx = event.indexh;
+    deck.on('slidechanged', () => {
+      const idx = deck.getIndices().h;
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
       updateActiveSlideInList(idx);
       audioSync.setSlideIndex(idx, false);
@@ -450,6 +467,22 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       if (btnSpeed) btnSpeed.textContent = `${r.toFixed(2)}x`;
     });
 
+    const updateFullscreenIcons = () => {
+      const isFs = Boolean(document.fullscreenElement);
+      const iconEnter = document.getElementById('icon-fullscreen-enter');
+      const iconExit = document.getElementById('icon-fullscreen-exit');
+      if (iconEnter && iconExit) {
+        if (isFs) {
+          iconEnter.classList.add('hidden');
+          iconExit.classList.remove('hidden');
+        } else {
+          iconEnter.classList.remove('hidden');
+          iconExit.classList.add('hidden');
+        }
+      }
+      setTimeout(() => deck.layout(), 60);
+    };
+
     btnFullscreen?.addEventListener('click', () => {
       const wrapper = document.querySelector('.slide-deck-wrapper');
       if (!document.fullscreenElement && wrapper) {
@@ -459,10 +492,14 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       }
     });
 
-    // Progress Bar Scrubbing
-    progressContainer?.addEventListener('click', (e) => {
+    document.addEventListener('fullscreenchange', updateFullscreenIcons);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenIcons);
+
+    // Progress Bar Scrubbing (Click + Touch)
+    const handleScrub = (clientX: number) => {
+      if (!progressContainer) return;
       const rect = progressContainer.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
+      const clickX = clientX - rect.left;
       const pct = Math.max(0, Math.min(1, clickX / rect.width));
       const parts = (timeTotal?.textContent || '0:00').split(':');
       const min = parseFloat(parts[0]) || 0;
@@ -471,6 +508,25 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       if (Number.isFinite(totalSec) && totalSec > 0) {
         audioSync.seek(pct * totalSec);
       }
+    };
+
+    progressContainer?.addEventListener('click', (e) => {
+      handleScrub(e.clientX);
+    });
+
+    let isScrubbing = false;
+    progressContainer?.addEventListener('touchstart', (e) => {
+      isScrubbing = true;
+      if (e.touches[0]) handleScrub(e.touches[0].clientX);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isScrubbing) return;
+      if (e.touches[0]) handleScrub(e.touches[0].clientX);
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      isScrubbing = false;
     });
 
     // Global Key Listener for Space -> Toggle Audio & Escape -> Toggle Drawer
@@ -622,5 +678,31 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       transform: translateX(-100%);
       pointer-events: none;
     }
+  }
+
+  /* Fullscreen handling */
+  :global(.slide-deck-wrapper:fullscreen) {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    aspect-ratio: auto !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+  :global(.slide-deck-wrapper:fullscreen .aspect-video) {
+    aspect-ratio: auto !important;
+    flex: 1 1 0% !important;
+  }
+  :global(.slide-deck-wrapper:-webkit-full-screen) {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    aspect-ratio: auto !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+  :global(.slide-deck-wrapper:-webkit-full-screen .aspect-video) {
+    aspect-ratio: auto !important;
+    flex: 1 1 0% !important;
   }
 </style>

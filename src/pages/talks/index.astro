@@ -14,8 +14,7 @@ const tagsSet = new Set<string>();
 for (const talk of talks) {
   if (talk.data.tags) {
     talk.data.tags.forEach((tag) => {
-      const tagStr = typeof tag === "string" ? tag : (tag as any).id || String(tag);
-      tagsSet.add(tagStr);
+      tagsSet.add(tag);
     });
   }
 }
@@ -116,7 +115,6 @@ const breadcrumbSchema = {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 scroll-mt-28" id="talks-grid">
             {talks.map((talk) => {
               const tagsJoined = (talk.data.tags || [])
-                .map((t) => (typeof t === "string" ? t : (t as any).id || String(t)))
                 .join(" ")
                 .toLowerCase();
               return (
@@ -136,9 +134,7 @@ const breadcrumbSchema = {
                     event={talk.data.event}
                     location={talk.data.location}
                     icon={talk.data.previewImage || talk.data.icon}
-                    tags={(talk.data.tags || []).map((t) =>
-                      typeof t === "string" ? t : (t as any).id || String(t)
-                    )}
+                    tags={talk.data.tags || []}
                   />
                 </div>
               );
