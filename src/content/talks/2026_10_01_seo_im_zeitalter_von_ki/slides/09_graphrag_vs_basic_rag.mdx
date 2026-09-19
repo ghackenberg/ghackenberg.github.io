@@ -19,7 +19,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -46,19 +45,8 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 
     <BulletList items={[
       { icon: "check", title: "Globale Fragestellungen lösbar", desc: "Liefert vollständige Marktübersichten ohne Auslassungen." },
-      { icon: "check", title: "Community Summaries", desc: "Übergreifende Themenzusammenfassungen werden bevorzugt zitiert." },
-      { icon: "check", title: "+80 % Informationsfülle", desc: "Empirisch belegte Überlegenheit bei Benchmark-Fragen." }
-    ]}>
-      <div slot="item-1">
-        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          <Highlight cue="hl-community-summaries" color="blue">Community Summaries:</Highlight> Übergreifende Themenzusammenfassungen werden bevorzugt zitiert.
-        </p>
-      </div>
-      <div slot="item-2">
-        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          <Highlight cue="hl-graphrag-qualitaet" color="emerald">+80 % Informationsfülle:</Highlight> Empirisch belegte Überlegenheit bei Benchmark-Fragen.
-        </p>
-      </div>
-    </BulletList>
+      { icon: "check", title: "{cue:hl-community-summaries:blue}Community Summaries{/cue}", desc: "Übergreifende Themenzusammenfassungen werden bevorzugt zitiert." },
+      { icon: "check", title: "{cue:hl-graphrag-qualitaet:emerald}+80 % Informationsfülle{/cue}", desc: "Empirisch belegte Überlegenheit bei Benchmark-Fragen." }
+    ]} />
   </BentoCard>
 </SplitSlide>

@@ -20,7 +20,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
 
 <SplitSlide
@@ -55,7 +54,7 @@ import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
 
     <CalloutBox color="neutral" type="info">
       <div class="font-mono text-lg space-y-2">
-        <p>🌐 <strong>Web:</strong> <span class="text-cyan-400"><Highlight cue="hl-folien-online" color="blue">https://hackenberg.tech</Highlight></span></p>
+        <p>🌐 <strong>Web:</strong> <span class="text-cyan-400">{cue:hl-folien-online:blue}https://hackenberg.tech{/cue}</span></p>
         <p>💼 <strong>LinkedIn:</strong> <span class="text-blue-400">linkedin.com/in/georghackenberg</span></p>
         <p>💻 <strong>GitHub:</strong> <span class="text-purple-400">github.com/ghackenberg</span></p>
         <p>🔬 <strong>ORCID:</strong> <span class="text-emerald-400">0000-0003-3913-4148</span></p>

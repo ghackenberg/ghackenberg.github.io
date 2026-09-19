@@ -19,7 +19,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -49,7 +48,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     <BulletList items={[
       { icon: "check", title: "Semantisches Verständnis", desc: "Sprachmodelle erfassen den Kontext hinter der Nutzerfrage." },
       { icon: "check", title: "Direkte Beantwortung", desc: "Zero-Click – Information wird sofort serviert." },
-      { icon: "check", title: "Zitation entscheidet", desc: "Relevanz entsteht durch Nennung und Entitäts-Verankerung.", cue: "hl-zitation" }
+      { icon: "check", title: "{cue:hl-zitation:blue}Zitation entscheidet{/cue}", desc: "Relevanz entsteht durch Nennung und Entitäts-Verankerung." }
     ]} />
   </BentoCard>
 </SplitSlide>

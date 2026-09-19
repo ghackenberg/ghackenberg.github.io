@@ -1,4 +1,6 @@
 ---
+import { renderSlideCues } from '../../../utils/slide-cues';
+
 interface Step {
   id?: string;
   cue?: string;
@@ -100,13 +102,9 @@ function getStepAccent(step: Step, idx: number): string {
 
           <!-- Center: Title & description -->
           <div class="flex-1 flex flex-col justify-center min-w-0 py-4 px-6 lg:px-8 gap-1">
-            <h4 class="text-2xl lg:text-[28px] font-black text-slate-100 light:text-slate-900 tracking-tight leading-snug">
-              {step.title}
-            </h4>
+            <h4 class="text-2xl lg:text-[28px] font-black text-slate-100 light:text-slate-900 tracking-tight leading-snug" set:html={renderSlideCues(step.title)} />
             {step.desc && (
-              <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed font-normal">
-                {step.desc}
-              </p>
+              <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed font-normal" set:html={renderSlideCues(step.desc)} />
             )}
           </div>
         </div>
@@ -175,13 +173,9 @@ function getStepAccent(step: Step, idx: number): string {
             <div class="step-content-area flex-1 p-6 lg:p-7 pt-5 flex flex-col justify-between min-h-0 min-w-0">
               <!-- Title & description (Priority content) -->
               <div class="step-text-container flex-1 flex flex-col justify-start gap-3 min-w-0">
-                <h4 class="text-2xl lg:text-3xl font-black text-slate-100 light:text-slate-900 tracking-tight leading-snug">
-                  {step.title}
-                </h4>
+                <h4 class="text-2xl lg:text-3xl font-black text-slate-100 light:text-slate-900 tracking-tight leading-snug" set:html={renderSlideCues(step.title)} />
                 {step.desc && (
-                  <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed text-pretty font-normal">
-                    {step.desc}
-                  </p>
+                  <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed text-pretty font-normal" set:html={renderSlideCues(step.desc)} />
                 )}
               </div>
 

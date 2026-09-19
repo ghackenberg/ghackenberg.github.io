@@ -19,7 +19,6 @@ import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <CodeSlide
   title={frontmatter.title}
@@ -80,14 +79,9 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
       },
       {
         num: "3",
-        title: "Maschinenlesbare Fakten"
+        title: "Maschinenlesbare Fakten",
+        desc: "{cue:hl-fakten-5ms:emerald}GPTBot und Perplexity{/cue} extrahieren Entitäten fehlerfrei in unter 5 Millisekunden."
       }
-    ]}>
-      <div slot="item-2">
-        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          <Highlight cue="hl-fakten-5ms" color="emerald">GPTBot und Perplexity</Highlight> extrahieren Entitäten fehlerfrei in unter 5 Millisekunden.
-        </p>
-      </div>
-    </BulletList>
+    ]} />
   </BentoCard>
 </CodeSlide>

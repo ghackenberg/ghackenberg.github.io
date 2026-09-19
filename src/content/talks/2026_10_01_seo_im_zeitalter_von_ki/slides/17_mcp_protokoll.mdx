@@ -19,7 +19,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -39,15 +38,9 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 
   <BentoCard slot="right" cue="col-mcp-tools" title="Unsere konkreten MCP-Werkzeuge" accent="cyan">
     <BulletList items={[
-      { num: "1", title: "Filesystem MCP Server", desc: "Erlaubt dem Agenten das autonome Lesen von Markdown-Quellen und präzise Code-Edits direkt im Repository." },
+      { num: "1", title: "Filesystem MCP Server", desc: "Erlaubt dem Agenten das autonome Lesen von Markdown-Quellen und {cue:hl-mcp-beheben:purple}präzise Code-Edits direkt im Repository{/cue}." },
       { num: "2", title: "Chrome DevTools MCP", desc: "Automatisierte Headless-Browser-Audits für Performance, Barrierefreiheit und interaktive UI-Validierung." },
       { num: "3", title: "Unified Analytics MCP", desc: "Führt Search Console KPIs direkt mit datenschutzkonformen Plausible On-Site-Engagement-Daten zusammen." }
-    ]}>
-      <div slot="item-0">
-        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          Erlaubt dem Agenten das autonome Lesen von Markdown-Quellen und <Highlight cue="hl-mcp-beheben" color="purple">präzise Code-Edits direkt im Repository</Highlight>.
-        </p>
-      </div>
-    </BulletList>
+    ]} />
   </BentoCard>
 </SplitSlide>

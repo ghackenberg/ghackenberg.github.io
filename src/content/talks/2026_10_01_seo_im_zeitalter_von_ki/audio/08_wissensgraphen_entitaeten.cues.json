@@ -1,13 +1,13 @@
 {
-  "graph-area": {
+  "col-graph": {
     "start": 5.91
   },
-  "edge-01": {
-    "start": 15.99
+  "col-advantages": {
+    "start": 17.9
   },
   "hl-keine-hallu": {
-    "start": 21.25,
-    "duration": 2.35,
-    "end": 23.6
+    "start": 21.01,
+    "duration": 2.3,
+    "end": 23.31
   }
 }

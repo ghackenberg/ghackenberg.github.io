@@ -6,9 +6,10 @@ slideLayout: "split"
 voiceover: >
   Was ist die entscheidende KPI der Zukunft? Es ist nicht mehr das Keyword-Ranking, 
   {cue:col-som-formula} sondern der Share of Model – kurz SoM. 
-  {cue:hl-som-winner}Mit zweiundvierzig Prozent Share of Model{/cue} dominiert das optimierte Unternehmen die Kaufberatung. 
-  {cue:col-som-bench} Auch sogenannte {cue:hl-unlinked-mentions}Unlinked Brand Mentions zählen{/cue}: Selbst wenn kein klickbarer Link 
-  ausgegeben wird, verankert die Nennung Ihre Marke fest in den semantischen Vektorräumen der KI.
+  Hier zählen auch sogenannte {cue:hl-unlinked-mentions}Unlinked Brand Mentions{/cue}: Selbst wenn kein klickbarer Link 
+  ausgegeben wird, verankert die reine Nennung Ihre Marke fest im Modell. 
+  {cue:col-som-bench} Der Wettbewerbs-Benchmark zeigt die Wirkung: 
+  {cue:hl-som-winner}Mit zweiundvierzig Prozent Share of Model{/cue} dominiert das optimierte Unternehmen die Kaufberatung gegenüber dem Wettbewerb.
 notes: |
   - Zeit: 48:00 - 50:30 Min.
   - Eigene Methodik / B2B AI Visibility Index Dr. Georg Hackenberg (2026).
@@ -43,8 +44,7 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
       },
       {
         num: "2",
-        cue: "hl-unlinked-mentions",
-        title: "Unlinked Brand Mentions",
+        title: "{cue:hl-unlinked-mentions:blue}Unlinked Brand Mentions{/cue}",
         desc: "Jede Nennung festigt die Gewichtung im Modell und erhöht zukünftige Empfehlungen."
       }
     ]} />

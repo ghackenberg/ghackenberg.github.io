@@ -17,7 +17,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -26,7 +25,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
   totalSlides="30"
   ratio="50/50"
 >
-  <div slot="left" id="lh-scores" class="grid grid-cols-2 grid-rows-2 gap-5 h-full">
+  <div slot="left" id="lh-scores" cue="lh-scores" class="grid grid-cols-2 grid-rows-2 gap-5 h-full">
     <MetricStat
       value="100"
       label="Performance"
@@ -68,7 +67,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </div>
 
     <CalloutBox type="statement" color="emerald" title="Indexierungs-Garantie">
-      Wenn eine Seite Ladezeitverzögerungen aufweist, brechen KI-Crawler wie GPTBot den Render-Prozess vorzeitig ab. <Highlight cue="hl-100-scores" color="emerald">100/100 Scores garantieren 100 % Indexierungsrate.</Highlight>
+      Wenn eine Seite Ladezeitverzögerungen aufweist, brechen KI-Crawler wie GPTBot den Render-Prozess vorzeitig ab. {cue:hl-100-scores:emerald}100/100 Scores garantieren 100 % Indexierungsrate.{/cue}
     </CalloutBox>
   </BentoCard>
 </SplitSlide>

@@ -19,7 +19,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -29,7 +28,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 >
   <BentoCard slot="left" cue="col-aem" title="Adobe Experience Manager (AEM)" accent="blue">
     <CalloutBox type="statement" color="blue" title="AEM Edge Delivery Services">
-      <p><Highlight cue="hl-aem-edge" color="blue">Auslieferung direkt am weltweiten CDN-Edge.</Highlight> Garantiert 100er-Lighthouse-Scores für blitzschnelle Antwortzeiten bei KI-Crawlern.</p>
+      <p>{cue:hl-aem-edge:blue}Auslieferung direkt am weltweiten CDN-Edge.{/cue} Garantiert 100er-Lighthouse-Scores für blitzschnelle Antwortzeiten bei KI-Crawlern.</p>
     </CalloutBox>
 
     <BulletList items={[
@@ -53,7 +52,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 
   <BentoCard slot="right" cue="col-sitecore" title="Sitecore XM Cloud & Content Hub" accent="cyan">
     <CalloutBox type="statement" color="cyan" title="Zentraler B2B-Wissensgraph">
-      <p><Highlight cue="hl-single-source" color="cyan">Content Hub als Single Source of Truth</Highlight> für komplexe technische Produktdaten, CAD-Modelle und Zertifikate.</p>
+      <p>{cue:hl-single-source:cyan}Content Hub als Single Source of Truth{/cue} für komplexe technische Produktdaten, CAD-Modelle und Zertifikate.</p>
     </CalloutBox>
 
     <BulletList items={[

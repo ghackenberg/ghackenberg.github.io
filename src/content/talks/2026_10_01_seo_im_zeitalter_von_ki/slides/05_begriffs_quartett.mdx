@@ -19,7 +19,6 @@ notes: |
 ---
 import SlideBase from '../../../../components/slides/primitives/SlideBase.astro';
 import ComparisonTable from '../../../../components/slides/primitives/ComparisonTable.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SlideBase
   title={frontmatter.title}
@@ -36,7 +35,8 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
         title: "SEO",
         subtitle: "Search Engine Optimization",
         targetSystem: "Google & Bing Web Search (10 blaue Links)",
-        mechanism: "Keywords, Backlink-Autorität, PageSpeed & Core Web Vitals"
+        mechanism: "Keywords, Backlink-Autorität, PageSpeed & Core Web Vitals",
+        goal: "Klick auf die eigene URL auf den {cue:hl-plaetze-eins-zehn:amber}Positionen 1 bis 10{/cue} der organischen Treffer."
       },
       {
         cue: "box-aeo",
@@ -44,7 +44,8 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
         title: "AEO",
         subtitle: "Answer Engine Optimization",
         targetSystem: "Google Featured Snippets, Voice Search (Siri, Alexa)",
-        mechanism: "Q&A-Struktur, Tabellen, Schema.org FAQ-Markup"
+        mechanism: "Q&A-Struktur, Tabellen, Schema.org FAQ-Markup",
+        goal: "Direkte Beantwortung in {cue:hl-pos-zero:cyan}Position Zero{/cue} als Antwortbox über den organischen Links."
       },
       {
         cue: "box-geo",
@@ -52,7 +53,8 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
         title: "GEO",
         subtitle: "Generative Engine Optimization",
         targetSystem: "ChatGPT Search, Perplexity AI, Claude Web Search",
-        mechanism: "GraphRAG, Information Gain, Entitäten & Wissensgraphen"
+        mechanism: "GraphRAG, Information Gain, Entitäten & Wissensgraphen",
+        goal: "{cue:hl-llm-zitation:blue}Nennung als führende Marke{/cue} und Primärquelle in der synthetisierten KI-Antwort."
       },
       {
         cue: "box-aio",
@@ -60,21 +62,9 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
         title: "AIO",
         subtitle: "AI Overview Optimization",
         targetSystem: "Google AI Overviews, Microsoft Copilot in Bing",
-        mechanism: "Kombination aus Rank-Graph und LLM-Chunk-Retrieval"
+        mechanism: "Kombination aus Rank-Graph und LLM-Chunk-Retrieval",
+        goal: "Präsenz in Quellencups und als {cue:hl-ki-snapshots:purple}Textzitat im KI-Snapshot{/cue} der Suchmaschine."
       }
     ]}
-  >
-    <div slot="goal-0">
-      Klick auf die eigene URL auf den <Highlight cue="hl-plaetze-eins-zehn" color="amber">Positionen 1 bis 10</Highlight> der organischen Treffer.
-    </div>
-    <div slot="goal-1">
-      Direkte Beantwortung in <Highlight cue="hl-pos-zero" color="cyan">Position Zero</Highlight> als Antwortbox über den organischen Links.
-    </div>
-    <div slot="goal-2">
-      <Highlight cue="hl-llm-zitation" color="blue">Nennung als führende Marke</Highlight> und Primärquelle in der synthetisierten KI-Antwort.
-    </div>
-    <div slot="goal-3">
-      Präsenz in Quellencups und als <Highlight cue="hl-ki-snapshots" color="purple">Textzitat im KI-Snapshot</Highlight> der Suchmaschine.
-    </div>
-  </ComparisonTable>
+  />
 </SlideBase>

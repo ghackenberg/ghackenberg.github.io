@@ -2,17 +2,17 @@
   "col-eeat-triad": {
     "start": 7.9
   },
-  "col-eeat-checklist": {
-    "start": 16.14
-  },
   "hl-glaubwuerdigkeit": {
-    "start": 22.76,
-    "duration": 3.12,
-    "end": 25.88
+    "start": 18.55,
+    "duration": 3.09,
+    "end": 21.64
+  },
+  "col-eeat-checklist": {
+    "start": 22.64
   },
   "hl-autoren-sichtbar": {
-    "start": 29.35,
-    "duration": 1.74,
-    "end": 31.09
+    "start": 28.66,
+    "duration": 1.69,
+    "end": 30.35
   }
 }

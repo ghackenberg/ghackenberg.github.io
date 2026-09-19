@@ -1,6 +1,4 @@
 ---
-import Highlight from './Highlight.astro';
-
 export interface BarChartItem {
   label: string;
   value: number;
@@ -125,8 +123,6 @@ function computeSsrBarRounding(value: number) {
 
     return (
       <div
-        id={item.cue}
-        data-cue={item.cue}
         data-value={item.value}
         class="bar-chart-row flex flex-col gap-2 w-full transition-opacity duration-300"
       >
@@ -134,9 +130,9 @@ function computeSsrBarRounding(value: number) {
         <div class="flex justify-between items-baseline text-lg lg:text-xl font-bold">
           <div class="flex items-center gap-2 min-w-0 pr-4">
             {isLabelHighlight ? (
-              <Highlight cue={cueId} color={item.highlightColor || 'emerald'}>
+              <mark id={cueId} data-cue={cueId} data-color={item.highlightColor || 'emerald'} class="highlight-marker inline-block font-semibold rounded-md">
                 {item.label}
-              </Highlight>
+              </mark>
             ) : (
               <span class="truncate">{item.label}</span>
             )}
@@ -147,9 +143,9 @@ function computeSsrBarRounding(value: number) {
 
           <div class={`font-mono text-xl lg:text-2xl font-black shrink-0 ${colorStyle.text}`}>
             {isValueHighlight ? (
-              <Highlight cue={cueId} color={item.highlightColor || 'cyan'}>
+              <mark id={cueId} data-cue={cueId} data-color={item.highlightColor || 'cyan'} class="highlight-marker inline-block font-semibold rounded-md">
                 {formattedVal}
-              </Highlight>
+              </mark>
             ) : (
               <span>{formattedVal}</span>
             )}

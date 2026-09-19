@@ -2,17 +2,17 @@
   "col-som-formula": {
     "start": 5.41
   },
-  "hl-som-winner": {
-    "start": 8.54,
-    "duration": 2.14,
-    "end": 10.68
+  "hl-unlinked-mentions": {
+    "start": 10.03,
+    "duration": 1.27,
+    "end": 11.3
   },
   "col-som-bench": {
-    "start": 14.36
+    "start": 17.81
   },
-  "hl-unlinked-mentions": {
-    "start": 15.24,
-    "duration": 1.56,
-    "end": 16.8
+  "hl-som-winner": {
+    "start": 20.06,
+    "duration": 2.12,
+    "end": 22.18
   }
 }
