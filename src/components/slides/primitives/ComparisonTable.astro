@@ -1,4 +1,6 @@
 ---
+import { renderSlideCues } from '../../../utils/slide-cues';
+
 export interface TableRow {
   cue?: string;
   id?: string;
@@ -67,13 +69,9 @@ const accentTitles = {
           <div class="col-span-3 flex items-center gap-4 min-w-0">
             <div class={`w-2.5 h-16 rounded-full shrink-0 ${accentBars[accent]}`}></div>
             <div class="flex flex-col min-w-0">
-              <h3 class={`text-3xl lg:text-4xl font-black tracking-tight leading-none ${accentTitles[accent]}`}>
-                {row.title}
-              </h3>
+              <h3 class={`text-3xl lg:text-4xl font-black tracking-tight leading-none ${accentTitles[accent]}`} set:html={renderSlideCues(row.title)} />
               {row.subtitle && (
-                <span class="text-sm lg:text-base text-slate-400 light:text-slate-500 font-medium leading-tight mt-1 truncate">
-                  {row.subtitle}
-                </span>
+                <span class="text-sm lg:text-base text-slate-400 light:text-slate-500 font-medium leading-tight mt-1 truncate" set:html={renderSlideCues(row.subtitle)} />
               )}
             </div>
           </div>
@@ -81,21 +79,21 @@ const accentTitles = {
           <!-- Col 2: Zielsystem -->
           <div class="col-span-3 font-semibold text-xl lg:text-2xl text-slate-100 light:text-slate-900 leading-snug">
             <slot name={`target-${idx}`}>
-              {row.targetSystem}
+              <span set:html={renderSlideCues(row.targetSystem)} />
             </slot>
           </div>
 
           <!-- Col 3: Kernmechanismus -->
           <div class="col-span-3 text-lg lg:text-xl text-slate-300 light:text-slate-600 leading-relaxed font-normal">
             <slot name={`mechanism-${idx}`}>
-              {row.mechanism}
+              <span set:html={renderSlideCues(row.mechanism)} />
             </slot>
           </div>
 
           <!-- Col 4: Nutzerziel & Erfolgsmetrik -->
           <div class="col-span-3 text-lg lg:text-xl text-slate-200 light:text-slate-800 leading-relaxed font-normal">
             <slot name={`goal-${idx}`}>
-              {row.goal}
+              <span set:html={renderSlideCues(row.goal)} />
             </slot>
           </div>
         </div>

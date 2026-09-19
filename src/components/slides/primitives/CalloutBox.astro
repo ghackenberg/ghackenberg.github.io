@@ -1,9 +1,10 @@
 ---
+import { renderSlideCues } from '../../../utils/slide-cues';
+
 interface Props {
   title?: string;
   type?: 'quote' | 'takeaway' | 'statement' | 'warning' | 'info';
   color?: 'blue' | 'cyan' | 'indigo' | 'amber' | 'emerald' | 'purple' | 'neutral';
-  cue?: string;
   class?: string;
 }
 
@@ -11,7 +12,6 @@ const {
   title,
   type = 'takeaway',
   color = 'blue',
-  cue,
   class: className = ""
 } = Astro.props;
 
@@ -27,15 +27,12 @@ const colorStyles = {
 ---
 
 <div
-  data-cue={cue}
   data-type={type}
   class={`callout-box p-6 lg:p-7 rounded-2xl border shadow-lg flex flex-col gap-2.5 shrink-0 ${colorStyles} ${className}`}
 >
   {title && (
     <div class="flex items-center gap-3 mb-1">
-      <h4 class="font-black text-2xl lg:text-3xl tracking-tight leading-snug">
-        {title}
-      </h4>
+      <h4 class="font-black text-2xl lg:text-3xl tracking-tight leading-snug" set:html={renderSlideCues(title)} />
     </div>
   )}
   <div class="text-2xl lg:text-[28px] leading-relaxed font-medium">

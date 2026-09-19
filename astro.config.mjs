@@ -7,6 +7,7 @@ import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import remarkValidateImages from './src/plugins/remark-validate-images.js';
 import remarkMermaid from './src/plugins/remark-mermaid.js';
+import remarkSlideCues from './src/plugins/remark-slide-cues.js';
 import rehypeKatex from 'rehype-katex';
 import rehypeResponsiveTables from './src/plugins/rehype-responsive-tables.js';
 import rehypeCallouts from './src/plugins/rehype-callouts.js';
@@ -119,6 +120,47 @@ function imageSitemapEnforcer() {
 
 const { getMetadataForPath } = buildSitemapMetadata();
 
+/** @returns {import('vite').Plugin} */
+function vitePreSlideCues() {
+  return {
+    name: 'vite-pre-slide-cues',
+    enforce: 'pre',
+    transform(code, id) {
+      if (!id.endsWith('.mdx') && !id.endsWith('.md')) return null;
+      if (!id.includes('talks') && !id.includes('slides')) return null;
+
+      const fmMatch = code.match(/^---\r?\n[\s\S]*?\r?\n---/);
+      if (!fmMatch) return null;
+
+      const frontmatter = fmMatch[0];
+      const body = code.slice(frontmatter.length);
+
+      const transformedBody = body.replace(
+        /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\{cue:([a-zA-Z0-9_-]+)(?::([a-zA-Z0-9_-]+))?\}([\s\S]*?)\{\/cue(?::[a-zA-Z0-9_-]+)?\}|\{cue:([a-zA-Z0-9_-]+)(?::([a-zA-Z0-9_-]+))?\})/g,
+        (match, stringLiteral, _cueBlock, cueId1, color1, content, cueId2, color2) => {
+          if (stringLiteral) {
+            return stringLiteral;
+          }
+          if (content !== undefined) {
+            const colorAttr = color1 ? ` data-color="${color1}"` : '';
+            return `<mark id="${cueId1}" data-cue="${cueId1}"${colorAttr} class="highlight-marker font-semibold rounded-md">${content}</mark>`;
+          }
+          if (cueId2 !== undefined) {
+            const colorAttr = color2 ? ` data-color="${color2}"` : '';
+            return `<span id="${cueId2}" data-cue="${cueId2}"${colorAttr} class="cue-target"></span>`;
+          }
+          return match;
+        }
+      );
+
+      return {
+        code: frontmatter + transformedBody,
+        map: null
+      };
+    }
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://hackenberg.tech',
@@ -180,12 +222,12 @@ export default defineConfig({
   ],
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid],
+      remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid, remarkSlideCues],
       rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts],
     }),
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), vitePreSlideCues()],
   },
 });
 

@@ -5,12 +5,13 @@ number: "20"
 slideLayout: "split"
 voiceover: >
   Wie messen wir den Erfolg im Zeitalter der KIs? 
-  {cue:col-plausible-dash} Mit Plausible Analytics. 
-  {cue:col-plausible-privacy} Viele Unternehmen verlieren 40 Prozent ihrer Besucher allein durch abstoßende Cookie-Banner. 
-  Plausible benötigt keinerlei Cookies und ist {cue:hl-plausible-nobanner}zu 100 Prozent DSGVO-konform{/cue}. 
-  Das Skript ist kleiner als ein Kilobyte – und {cue:hl-plausible-verweildauer}Besucher über KIs verweilen viermal länger{/cue}, 
-  weil sie bereits vorqualifiziert sind. Exakte Referral-Daten zeigen sofort, wie viele Anfragen direkt von chatgpt.com, 
-  perplexity.ai oder claude.ai auf unsere Website überschwappen.
+  {cue:col-plausible-dash} Mit unserem KI-Referrer Dashboard in Plausible Analytics. 
+  Exakte Referral-Daten zeigen sofort, wie viele Anfragen direkt von chatgpt.com, 
+  perplexity.ai oder claude.ai überschwappen – und {cue:hl-plausible-verweildauer}Besucher über KIs verweilen viermal länger{/cue}, 
+  weil sie bereits durch die Synthese vorqualifiziert sind.
+  {cue:col-plausible-privacy} Gleichzeitig wahren wir maximale Datenschutz-Exzellenz: 
+  Plausible benötigt keinerlei Cookies, ist {cue:hl-plausible-nobanner}zu 100 Prozent DSGVO-konform{/cue} 
+  und das Skript wiegt weniger als ein Kilobyte – ganz ohne lästiges Consent-Banner!
 notes: |
   - Zeit: 46:00 - 48:00 Min.
   - DSGVO Art. 5/6 & ePrivacy Richtlinie zitieren.
@@ -20,7 +21,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -55,21 +55,15 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </CalloutBox>
 
     <CalloutBox color="blue" type="takeaway">
-      <strong>Erkenntnis:</strong> Besucher über ChatGPT oder Perplexity haben eine <Highlight cue="hl-plausible-verweildauer" color="emerald">4-mal längere Verweildauer</Highlight>, weil sie bereits hochqualifiziert auf die Zielseite gelangen.
+      <strong>Erkenntnis:</strong> Besucher über ChatGPT oder Perplexity haben eine {cue:hl-plausible-verweildauer:emerald}4-mal längere Verweildauer{/cue}, weil sie bereits hochqualifiziert auf die Zielseite gelangen.
     </CalloutBox>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-plausible-privacy" title="DSGVO-Exzellenz ohne Reibung" accent="cyan">
     <BulletList items={[
-      { icon: "check", title: "Keine Cookies, kein Fingerprinting", desc: "Vollständig konform mit DSGVO, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner." },
+      { icon: "check", title: "Keine Cookies, kein Fingerprinting", desc: "{cue:hl-plausible-nobanner:blue}Vollständig konform mit DSGVO{/cue}, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner." },
       { icon: "check", title: "Unter 1 KB Ladezeit", desc: "Verhindert jegliche Performance-Einbußen und garantiert maximale Ladezeiten für KI-Crawler." },
       { icon: "check", title: "100 % Datenqualität", desc: "Vollständige Erfassung des realen Traffics ohne 40 % Datenverlust durch Banner-Ablehnungen." }
-    ]}>
-      <div slot="item-0">
-        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          <Highlight cue="hl-plausible-nobanner" color="blue">Vollständig konform mit DSGVO</Highlight>, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner.
-        </p>
-      </div>
-    </BulletList>
+    ]} />
   </BentoCard>
 </SplitSlide>

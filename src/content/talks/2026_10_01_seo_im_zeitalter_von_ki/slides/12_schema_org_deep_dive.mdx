@@ -19,7 +19,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -47,13 +46,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 
     <BulletList items={[
       { icon: "check", title: "Keine redundante Doppel-Definition", desc: "Entitäten werden einmal deklariert und via URI referenziert." },
-      { icon: "check", title: "Wissensgraph-Fusion" }
-    ]}>
-      <div slot="item-1">
-        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          <Highlight cue="hl-schema-fusion" color="blue">Global eindeutiger Wissensgraph:</Highlight> Sprachmodelle fusionieren alle Aussagen unter derselben ID.
-        </p>
-      </div>
-    </BulletList>
+      { icon: "check", title: "{cue:hl-schema-fusion:blue}Global eindeutiger Wissensgraph{/cue}", desc: "Sprachmodelle fusionieren alle Aussagen unter derselben ID." }
+    ]} />
   </BentoCard>
 </SplitSlide>

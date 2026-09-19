@@ -19,7 +19,6 @@ import BentoCard from '../../../../components/slides/primitives/BentoCard.astro'
 import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -40,7 +39,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 
   <BentoCard slot="right" cue="bento-impact" title="Konsequenzen für Industrie & B2B" accent="cyan">
     <CalloutBox type="statement" color="cyan" title="Geschäftsführung">
-      „Wir optimieren nicht mehr für Klicks – wir optimieren für <Highlight cue="hl-zitation-kaufabsicht" color="amber">Zitation und unumstößliche Markennennung.</Highlight>“
+      „Wir optimieren nicht mehr für Klicks – wir optimieren für {cue:hl-zitation-kaufabsicht:amber}Zitation und unumstößliche Markennennung{/cue}.“
     </CalloutBox>
 
     <BulletList items={[

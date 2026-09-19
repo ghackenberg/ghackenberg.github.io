@@ -6,12 +6,11 @@ slideLayout: "split"
 voiceover: >
   Wie entscheidet die Suchmaschine, welche Chunks relevant sind? 
   {cue:col-embeddings} Durch Embeddings. Texte werden durch neuronale Netze in hochdimensionale 
-  Zahlenvektoren mit über 1.500 Dimensionen übersetzt. 
+  Zahlenvektoren mit über 1.500 Dimensionen übersetzt. Wer heute noch {cue:hl-keyword-stuffing}reine Keyword-Wiederholungen{/cue} betreibt, 
+  optimiert für ein System, das längst nicht mehr existiert.
   {cue:col-math} Entscheidend ist die Kosinus-Ähnlichkeit: Themen, die dieselbe Bedeutung haben – wie 
   industrielle Wärmepumpen und B2B-Dekarbonisierung –, liegen im Vektorraum eng beieinander. 
-  {cue:hl-kosinus-threshold}Typischerweise sind Werte über null Komma zweiundachtzig nötig.{/cue} 
-  Wer heute noch {cue:hl-keyword-stuffing}reine Keyword-Wiederholungen{/cue} betreibt, optimiert für ein System, 
-  das längst nicht mehr existiert.
+  {cue:hl-kosinus-threshold}Typischerweise sind Werte über null Komma zweiundachtzig nötig{/cue}, um in das Kontextfenster zu gelangen.
 notes: |
   - Zeit: 13:30 - 15:30 Min.
   - Zitat von Google: "Strings to Things" (Amit Singhal).
@@ -22,7 +21,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -40,14 +38,8 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
 
     <BulletList items={[
       { icon: "→", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel." },
-      { icon: "→", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche Wiederholungen verzerren den Vektor und senken die semantische Relevanz." }
-    ]}>
-      <div slot="item-1">
-        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          Künstliche <Highlight cue="hl-keyword-stuffing" color="amber">Keyword-Wiederholungen</Highlight> verzerren den Vektor und senken die semantische Relevanz.
-        </p>
-      </div>
-    </BulletList>
+      { icon: "→", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche {cue:hl-keyword-stuffing:amber}Keyword-Wiederholungen{/cue} verzerren den Vektor und senken die semantische Relevanz." }
+    ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit" accent="blue">
@@ -56,7 +48,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </CalloutBox>
 
     <CalloutBox color="neutral" type="statement" title="Retrieval-Schwellenwert (Top-K)">
-      RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über <Highlight cue="hl-kosinus-threshold" color="blue">0.82</Highlight> liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
+      RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über {cue:hl-kosinus-threshold:blue}0.82{/cue} liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
     </CalloutBox>
   </BentoCard>
 </SplitSlide>

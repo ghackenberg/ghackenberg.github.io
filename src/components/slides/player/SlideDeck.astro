@@ -765,15 +765,6 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     pointer-events: none !important;
   }
 
-  /* SVG Graph edge path transitions */
-  .reveal .slides .graph-edge-group:not(.is-active) .graph-edge-path {
-    opacity: 0;
-    transition: opacity 0.5s ease-out;
-  }
-  .reveal .slides .graph-edge-group.is-active .graph-edge-path {
-    opacity: 1 !important;
-  }
-
   /* ==========================================================================
      Highlighter Marker System (CSS Marker Pen Animation)
      ========================================================================== */

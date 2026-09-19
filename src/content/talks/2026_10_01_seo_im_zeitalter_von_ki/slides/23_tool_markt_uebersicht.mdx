@@ -20,7 +20,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -36,8 +35,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     <BulletList items={[
       {
         icon: "check",
-        cue: "hl-som-metriken",
-        title: "Share of Model Metriken",
+        title: "{cue:hl-som-metriken:blue}Share of Model Metriken{/cue}",
         desc: "Tägliche automatisierte Auswertung von Kaufberatungs-Prompts in standardisierten Modell-Panels."
       },
       {
@@ -61,8 +59,7 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     <BulletList items={[
       {
         icon: "check",
-        cue: "hl-aio-tracking",
-        title: "Google AI Overview Tracking",
+        title: "{cue:hl-aio-tracking:cyan}Google AI Overview Tracking{/cue}",
         desc: "Erkennt sofort, welche SERPs bereits von generativen KI-Boxen dominiert werden."
       },
       {

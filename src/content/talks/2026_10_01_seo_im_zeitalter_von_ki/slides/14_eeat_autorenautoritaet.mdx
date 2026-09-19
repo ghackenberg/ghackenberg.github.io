@@ -6,10 +6,11 @@ slideLayout: "split"
 voiceover: >
   Generative KIs haben gelernt: Anonyme Texte im Internet sind oft Falschinformationen oder billiger KI-Spam. 
   {cue:col-eeat-triad} Deshalb evaluieren Modelle sogenannte E-E-A-T-Signale: Experience, Expertise, 
-  Authoritativeness und Trustworthiness. 
-  {cue:col-eeat-checklist} Wer seine Autorenprofile mit akademischen Datenbanken wie ORCID, Patentregistern 
-  oder Branchenverbänden verknüpft, {cue:hl-glaubwuerdigkeit}vervierfacht seine Glaubwürdigkeit bei KI-Suchanfragen{/cue}. 
-  Machen Sie Ihre Ingenieure und Fachexperten {cue:hl-autoren-sichtbar}auf der Website namentlich sichtbar{/cue}!
+  Authoritativeness und Trustworthiness. Wer über Wissensgraphen verifiziert ist, 
+  {cue:hl-glaubwuerdigkeit}vervierfacht seine Glaubwürdigkeit bei KI-Suchanfragen{/cue}.
+  {cue:col-eeat-checklist} Im B2B-Mittelstand gilt daher eine klare Regel: 
+  Machen Sie Ihre Ingenieure und Fachexperten {cue:hl-autoren-sichtbar}auf der Website namentlich sichtbar{/cue} 
+  und verknüpfen Sie deren Profile mit akademischen Datenbanken und Patentregistern!
 notes: |
   - Zeit: 31:00 - 33:30 Min.
   - Google Search Quality Rater Guidelines (E-E-A-T) & Semantic Scholar Authority Metrics zitieren.
@@ -19,7 +20,6 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Highlight from '../../../../components/slides/primitives/Highlight.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -52,21 +52,15 @@ import Highlight from '../../../../components/slides/primitives/Highlight.astro'
     </div>
 
     <CalloutBox color="blue" type="takeaway" title="Modell-Verhalten">
-      Wenn zwei Webseiten denselben Sachverhalt erklären, zitiert das LLM bevorzugt jene Quelle, deren Autor über <Highlight cue="hl-glaubwuerdigkeit" color="blue">Wissensgraphen (Wikidata/ORCID)</Highlight> verifiziert ist.
+      Wenn zwei Webseiten denselben Sachverhalt erklären, zitiert das LLM bevorzugt jene Quelle, deren Autor über {cue:hl-glaubwuerdigkeit:blue}Wissensgraphen (Wikidata/ORCID){/cue} verifiziert ist.
     </CalloutBox>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-eeat-checklist" title="B2B Best-Practice Autorenprofil" accent="cyan">
     <BulletList items={[
-      { icon: "check", title: "Dedizierte Autoren-URL", desc: "Eigene Profilseite für jeden Fachautor (z. B. /team/dr-schmidt/)." },
+      { icon: "check", title: "Dedizierte Autoren-URL", desc: "{cue:hl-autoren-sichtbar:emerald}Eigene Profilseite für jeden Fachautor{/cue} (z. B. <code class=\"text-cyan-400 light:text-cyan-600 text-base\">/team/dr-schmidt/</code>)." },
       { icon: "check", title: "sameAs-Verknüpfung", desc: "Direkte Links auf ORCID, Google Scholar, ResearchGate und LinkedIn." },
       { icon: "check", title: "Transparente Vita", desc: "Relevante Industrieprojekte, Normengremien und Ausbildung nachvollziehbar auflisten." }
-    ]}>
-      <div slot="item-0">
-        <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-1 font-normal">
-          <Highlight cue="hl-autoren-sichtbar" color="emerald">Eigene Profilseite für jeden Fachautor</Highlight> (z. B. <code class="text-cyan-400 light:text-cyan-600 text-base">/team/dr-schmidt/</code>).
-        </p>
-      </div>
-    </BulletList>
+    ]} />
   </BentoCard>
 </SplitSlide>

@@ -1,15 +1,13 @@
 ---
 interface Props {
   id?: string;
-  cue?: string;
   class?: string;
 }
 
-const { id, cue = "graph-area", class: className = "" } = Astro.props;
-const elementId = id || cue;
+const { id, class: className = "" } = Astro.props;
 ---
 
-<div id={elementId} data-cue={cue} class={`entity-graph-visual w-full h-full flex items-center justify-center p-1 min-h-0 ${className}`}>
+<div id={id} class={`entity-graph-visual w-full h-full flex items-center justify-center p-1 min-h-0 ${className}`}>
   <svg viewBox="0 0 800 490" class="w-full h-full max-h-full" preserveAspectRatio="xMidYMid meet">
     <defs>
       <!-- Drop Shadows -->
@@ -51,7 +49,7 @@ const elementId = id || cue;
     <!-- RELATION CONNECTORS (BEHIND CARDS) -->
     
     <!-- 1. Top Edge: Fronius -> Symo GEN24 (entwickelt) -->
-    <g id="edge-01" data-cue="edge-01" class="transition-all duration-500">
+    <g id="edge-01" class="transition-all duration-500">
       <path
         d="M 325 92 L 465 92"
         fill="none"
@@ -71,7 +69,7 @@ const elementId = id || cue;
     </g>
 
     <!-- 2. Left Edge: Fronius -> Pettenbach (Standort in) -->
-    <g id="edge-03" data-cue="edge-03" class="transition-all duration-500">
+    <g id="edge-03" class="transition-all duration-500">
       <path
         d="M 180 150 L 180 335"
         fill="none"
@@ -90,7 +88,7 @@ const elementId = id || cue;
     </g>
 
     <!-- 3. Right Edge: Symo GEN24 -> VDE Norm (zertifiziert nach) -->
-    <g id="edge-02" data-cue="edge-02" class="transition-all duration-500">
+    <g id="edge-02" class="transition-all duration-500">
       <path
         d="M 620 150 L 620 335"
         fill="none"
@@ -109,7 +107,7 @@ const elementId = id || cue;
     </g>
 
     <!-- 4. Bottom Edge: Pettenbach -> VDE Norm (reguliert durch) -->
-    <g id="edge-04" data-cue="edge-04" class="transition-all duration-500">
+    <g id="edge-04" class="transition-all duration-500">
       <path
         d="M 325 402 L 465 402"
         fill="none"
