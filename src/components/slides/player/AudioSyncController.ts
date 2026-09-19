@@ -6,6 +6,13 @@ export interface SlideCueMap {
   [cueId: string]: CueTiming;
 }
 
+export interface CueItem {
+  cueId: string;
+  start: number;
+  duration: number;
+  end?: number;
+}
+
 export interface SlideData {
   id: string;
   audioUrl?: string;
@@ -37,6 +44,7 @@ export class AudioSyncController {
   private onSlideChangeCallback?: (index: number) => void;
   private onProgressCallback?: (currentSec: number, totalSec: number) => void;
   private onPlayStateChangeCallback?: (isPlaying: boolean) => void;
+  private onCuesLoadedCallback?: (cues: CueItem[], totalSec: number) => void;
 
   constructor(
     slides: SlideData[],
@@ -44,12 +52,14 @@ export class AudioSyncController {
       onSlideChange?: (index: number) => void;
       onProgress?: (currentSec: number, totalSec: number) => void;
       onPlayStateChange?: (isPlaying: boolean) => void;
+      onCuesLoaded?: (cues: CueItem[], totalSec: number) => void;
     }
   ) {
     this.slides = slides;
     this.onSlideChangeCallback = options?.onSlideChange;
     this.onProgressCallback = options?.onProgress;
     this.onPlayStateChangeCallback = options?.onPlayStateChange;
+    this.onCuesLoadedCallback = options?.onCuesLoaded;
   }
 
   public setSlideIndex(index: number, shouldPlay: boolean = false) {
@@ -86,6 +96,10 @@ export class AudioSyncController {
     if (this.onSlideChangeCallback) {
       this.onSlideChangeCallback(index);
     }
+
+    if (this.onCuesLoadedCallback) {
+      this.onCuesLoadedCallback(this.getCurrentSlideCues(), 0);
+    }
   }
 
   private loadSlideAudio(slide: SlideData, autoPlay: boolean) {
@@ -102,6 +116,9 @@ export class AudioSyncController {
           const current = this.currentHowl?.seek();
           const currentSec = (typeof current === 'number' && Number.isFinite(current)) ? current : 0;
           this.onProgressCallback(currentSec, totalSec);
+        }
+        if (this.onCuesLoadedCallback) {
+          this.onCuesLoadedCallback(this.getCurrentSlideCues(), totalSec);
         }
       },
       onplay: () => {
@@ -196,6 +213,80 @@ export class AudioSyncController {
         const total = this.currentHowl.duration();
         const totalSec = (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
         this.onProgressCallback(targetSec, totalSec);
+      }
+    }
+  }
+
+  public getCurrentSlideCues(): CueItem[] {
+    const slide = this.slides[this.currentIndex];
+    if (!slide?.cues) return [];
+    return Object.entries(slide.cues)
+      .map(([cueId, val]) => {
+        const timing = getCueTiming(val);
+        return { cueId, ...timing };
+      })
+      .sort((a, b) => a.start - b.start);
+  }
+
+  public getDuration(): number {
+    const total = this.currentHowl?.duration();
+    return (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
+  }
+
+  public getCurrentTime(): number {
+    const current = this.currentHowl?.seek();
+    return (typeof current === 'number' && Number.isFinite(current) && current >= 0) ? current : 0;
+  }
+
+  public seekToCue(cueId: string) {
+    const cues = this.getCurrentSlideCues();
+    const target = cues.find(c => c.cueId === cueId);
+    if (target) {
+      this.seek(target.start);
+    }
+  }
+
+  public prevCue() {
+    const cues = this.getCurrentSlideCues();
+    const currentSec = this.getCurrentTime();
+    // Milestones include the beginning of the slide (0.0s) and all cue start points
+    const milestones = [0, ...cues.map(c => c.start)].sort((a, b) => a - b);
+    
+    // Find highest milestone strictly less than currentSec - 0.5s threshold
+    let target = 0;
+    for (let i = milestones.length - 1; i >= 0; i--) {
+      if (milestones[i] < currentSec - 0.5) {
+        target = milestones[i];
+        break;
+      }
+    }
+
+    // If already at 0s, or currentSec is very close to 0:
+    if (currentSec <= 0.4 && this.currentIndex > 0) {
+      // Step back to previous slide
+      this.setSlideIndex(this.currentIndex - 1, this.isPlaying);
+      return;
+    }
+
+    this.seek(target);
+  }
+
+  public nextCue() {
+    const cues = this.getCurrentSlideCues();
+    const currentSec = this.getCurrentTime();
+    
+    // Find the first cue with start time strictly greater than currentSec + 0.25s
+    const nextCue = cues.find(c => c.start > currentSec + 0.25);
+    if (nextCue) {
+      this.seek(nextCue.start);
+    } else {
+      // Past the last cue on this slide -> advance to next slide if available
+      if (this.currentIndex < this.slides.length - 1) {
+        this.setSlideIndex(this.currentIndex + 1, this.isPlaying);
+      } else {
+        // Last slide -> jump to end
+        const dur = this.getDuration();
+        if (dur > 0) this.seek(dur);
       }
     }
   }

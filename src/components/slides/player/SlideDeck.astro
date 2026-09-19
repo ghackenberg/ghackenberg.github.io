@@ -108,50 +108,80 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     <!-- Timeline & Progress Scrubbing: Full-width on mobile & tablet (order-1), centered flex-1 on desktop (lg:order-2) -->
     <div class="w-full order-1 lg:order-2 lg:flex-1 lg:max-w-xl flex items-center gap-2 sm:gap-3">
       <span id="time-current" class="text-xs font-mono text-slate-400 light:text-slate-500 w-9 sm:w-10 text-right shrink-0 select-none">0:00</span>
-      <div class="flex-1 relative py-2 cursor-pointer group" id="progress-container">
-        <div class="h-1.5 sm:h-2 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden">
+      <div class="flex-1 relative py-2.5 cursor-pointer group" id="progress-container">
+        <!-- Background Track -->
+        <div class="h-1.5 sm:h-2 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden relative">
           <div id="progress-bar" class="h-full bg-blue-500 rounded-full w-0 transition-all duration-100"></div>
         </div>
+        <!-- Cue Markers Container -->
+        <div id="cue-markers-container" class="absolute inset-x-0 top-0 bottom-0 pointer-events-none flex items-center"></div>
       </div>
       <span id="time-total" class="text-xs font-mono text-slate-400 light:text-slate-500 w-9 sm:w-10 shrink-0 select-none">0:00</span>
     </div>
 
-    <!-- Left: Play/Pause & Slide Navigation (order-2 on mobile/tablet, lg:order-1 on desktop) -->
-    <div class="order-2 lg:order-1 flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
+    <!-- Left: Play/Pause & Slide/Cue Navigation (order-2 on mobile/tablet, lg:order-1 on desktop) -->
+    <div class="order-2 lg:order-1 flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0">
+      <!-- Vorherige Folie -->
       <button
         id="btn-prev"
-        class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
         title="Vorherige Folie (←)"
         aria-label="Vorherige Folie"
       >
-        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 19L11 12l7-7M6 5v14" />
+        </svg>
+      </button>
+
+      <!-- Vorherige Sprungmarke / Cue (Intra-Slide) -->
+      <button
+        id="btn-prev-cue"
+        class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        title="Vorherige Sprungmarke (↑ / Shift+←)"
+        aria-label="Vorherige Sprungmarke"
+      >
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
+      <!-- Play / Pause -->
       <button
         id="btn-play-pause"
-        class="h-9 sm:h-10 px-3 sm:px-4 md:px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-1.5 sm:gap-2 transition-all shadow-md cursor-pointer text-xs sm:text-sm"
+        class="h-8 sm:h-9 md:h-10 px-3 sm:px-4 md:px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-1.5 sm:gap-2 transition-all shadow-md cursor-pointer text-xs sm:text-sm"
         title="Audio Vortrag abspielen / pausieren (Leertaste)"
         aria-label="Vortrag abspielen oder pausieren"
       >
-        <svg id="icon-play" class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+        <svg id="icon-play" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z" />
         </svg>
-        <svg id="icon-pause" class="w-4 h-4 sm:w-5 sm:h-5 hidden shrink-0" fill="currentColor" viewBox="0 0 24 24">
+        <svg id="icon-pause" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 hidden shrink-0" fill="currentColor" viewBox="0 0 24 24">
           <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
         </svg>
         <span id="label-play-pause" class="hidden sm:inline">Vortrag anhören</span>
       </button>
 
+      <!-- Nächste Sprungmarke / Cue (Intra-Slide) -->
+      <button
+        id="btn-next-cue"
+        class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        title="Nächste Sprungmarke (↓ / Shift+→)"
+        aria-label="Nächste Sprungmarke"
+      >
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <!-- Nächste Folie -->
       <button
         id="btn-next"
-        class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
         title="Nächste Folie (→)"
         aria-label="Nächste Folie"
       >
-        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 5l7 7-7 7M18 5v14" />
         </svg>
       </button>
     </div>
@@ -226,7 +256,7 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
 
 <script>
   import Reveal from 'reveal.js';
-  import { AudioSyncController, type SlideData } from './AudioSyncController';
+  import { AudioSyncController, type SlideData, type CueItem } from './AudioSyncController';
   import { AutoFitController } from './AutoFitController';
 
   // Read metadata
@@ -267,11 +297,14 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     const labelPlayPause = document.getElementById('label-play-pause');
     const btnPrev = document.getElementById('btn-prev');
     const btnNext = document.getElementById('btn-next');
+    const btnPrevCue = document.getElementById('btn-prev-cue');
+    const btnNextCue = document.getElementById('btn-next-cue');
     const btnSpeed = document.getElementById('btn-speed');
     const btnOverview = document.getElementById('btn-overview');
     const btnFullscreen = document.getElementById('btn-fullscreen');
     const progressBar = document.getElementById('progress-bar');
     const progressContainer = document.getElementById('progress-container');
+    const cueMarkersContainer = document.getElementById('cue-markers-container');
     const timeCurrent = document.getElementById('time-current');
     const timeTotal = document.getElementById('time-total');
     const slideIndexLabel = document.getElementById('slide-index-label');
@@ -360,6 +393,47 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       return `${m}:${s.toString().padStart(2, '0')}`;
     };
 
+    const renderCueMarkers = (cues: CueItem[], totalSec: number) => {
+      if (!cueMarkersContainer) return;
+      cueMarkersContainer.innerHTML = '';
+
+      if (!cues || cues.length === 0 || !totalSec || totalSec <= 0) return;
+
+      cues.forEach((cue) => {
+        const pct = Math.max(0, Math.min(100, (cue.start / totalSec) * 100));
+        const marker = document.createElement('button');
+        marker.type = 'button';
+        marker.className = 'cue-timeline-marker absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-3.5 sm:w-2.5 sm:h-4 rounded-full bg-slate-400 light:bg-slate-500 border border-slate-900 light:border-white transition-all duration-150 pointer-events-auto hover:scale-135 hover:bg-cyan-400 light:hover:bg-cyan-500 cursor-pointer z-10 shadow-sm';
+        marker.style.left = `${pct}%`;
+        marker.setAttribute('data-cue-id', cue.cueId);
+        marker.setAttribute('data-cue-start', String(cue.start));
+        marker.title = `${formatTime(cue.start)} · ${cue.cueId}`;
+        marker.setAttribute('aria-label', `Springe zu ${cue.cueId} (${formatTime(cue.start)})`);
+
+        marker.addEventListener('click', (e) => {
+          e.stopPropagation();
+          audioSync.seek(cue.start);
+        });
+
+        cueMarkersContainer.appendChild(marker);
+      });
+    };
+
+    const updateCueMarkersState = (currentSec: number) => {
+      if (!cueMarkersContainer) return;
+      const markers = cueMarkersContainer.querySelectorAll<HTMLButtonElement>('.cue-timeline-marker');
+      markers.forEach((m) => {
+        const start = parseFloat(m.getAttribute('data-cue-start') || '0');
+        if (currentSec >= start) {
+          m.classList.add('bg-blue-400', 'light:bg-blue-600', 'ring-2', 'ring-blue-400/50');
+          m.classList.remove('bg-slate-400', 'light:bg-slate-500');
+        } else {
+          m.classList.remove('bg-blue-400', 'light:bg-blue-600', 'ring-2', 'ring-blue-400/50');
+          m.classList.add('bg-slate-400', 'light:bg-slate-500');
+        }
+      });
+    };
+
     // Instantiate Audio Controller
     const audioSync = new AudioSyncController(slidesData, {
       onSlideChange: (index) => {
@@ -371,6 +445,7 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
         if (progressBar) progressBar.style.width = '0%';
         if (timeCurrent) timeCurrent.textContent = '0:00';
         if (timeTotal) timeTotal.textContent = '0:00';
+        renderCueMarkers([], 0);
       },
       onProgress: (current, total) => {
         if (timeCurrent) timeCurrent.textContent = formatTime(current);
@@ -381,6 +456,10 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
           const pct = Math.min(100, Math.max(0, (current / total) * 100));
           progressBar.style.width = `${pct}%`;
         }
+        updateCueMarkersState(current);
+      },
+      onCuesLoaded: (cues, totalSec) => {
+        renderCueMarkers(cues, totalSec);
       },
       onPlayStateChange: (isPlaying) => {
         if (iconPlay && iconPause) {
@@ -415,6 +494,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     btnPlayPause?.addEventListener('click', () => audioSync.togglePlay());
     btnPrev?.addEventListener('click', () => deck.prev());
     btnNext?.addEventListener('click', () => deck.next());
+    btnPrevCue?.addEventListener('click', () => audioSync.prevCue());
+    btnNextCue?.addEventListener('click', () => audioSync.nextCue());
 
     // Slide List Item Navigation Click Listeners
     slideListItems.forEach((item) => {
@@ -540,14 +621,20 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       isScrubbing = false;
     });
 
-    // Global Key Listener for Space -> Toggle Audio & Escape -> Toggle Drawer
+    // Global Key Listener for Space -> Toggle Audio, Escape -> Toggle Drawer, Up/Down -> Cue Navigation
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Escape') {
         e.preventDefault();
         toggleDrawer();
-      } else if (e.code === 'Space' && e.target === document.body) {
+      } else if (e.code === 'Space' && (e.target === document.body || (e.target as HTMLElement)?.classList.contains('reveal'))) {
         e.preventDefault();
         audioSync.togglePlay();
+      } else if (e.code === 'ArrowDown' || (e.shiftKey && e.code === 'ArrowRight') || e.code === 'KeyJ') {
+        e.preventDefault();
+        audioSync.nextCue();
+      } else if (e.code === 'ArrowUp' || (e.shiftKey && e.code === 'ArrowLeft') || e.code === 'KeyK') {
+        e.preventDefault();
+        audioSync.prevCue();
       }
     });
 
