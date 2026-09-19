@@ -485,7 +485,9 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       const idx = deck.getIndices().h;
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
       updateActiveSlideInList(idx);
-      audioSync.setSlideIndex(idx, false);
+      if (audioSync.getCurrentSlideIndex() !== idx) {
+        audioSync.setSlideIndex(idx, { entryMode: 'full' });
+      }
       const currentSlide = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[idx];
       autoFit.fitSlide(currentSlide);
     });
@@ -638,8 +640,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       }
     });
 
-    // Initialize initial slide cues
-    audioSync.setSlideIndex(0, false);
+    // Initialize initial slide cues (Titelfolie in full mode)
+    audioSync.setSlideIndex(0, { entryMode: 'full' });
   });
 </script>
 
