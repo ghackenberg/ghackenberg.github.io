@@ -47,7 +47,18 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     output += `\n${post.body}\n\n---\n\n`;
   }
 
-  output += `## 3. Keynote Presentations & Slide Decks\n\n`;
+  output += `## 3. Academic Publications & Research Papers\n\n`;
+  for (const pub of publications) {
+    output += `### ${pub.data.title}\n`;
+    output += `- URL: https://hackenberg.tech/publications/${pub.id}/\n`;
+    output += `- Date/Venue: ${pub.data.pubDate}${pub.data.book ? ` (${pub.data.book})` : ''}\n`;
+    output += `- Authors: ${pub.data.author}\n`;
+    if (pub.data.abstract) output += `- Abstract: ${pub.data.abstract}\n`;
+    if (pub.data.bibtex) output += `\n\`\`\`bibtex\n${pub.data.bibtex}\n\`\`\`\n`;
+    output += `\n${pub.body}\n\n---\n\n`;
+  }
+
+  output += `## 4. Keynote Presentations & Slide Decks\n\n`;
   for (const pres of sortedPresentations) {
     const rawDate = pres.data.pubDate instanceof Date ? pres.data.pubDate.toISOString().split('T')[0] : (pres.data.pubDate || '');
     const tags = pres.data.tags ? pres.data.tags.join(', ') : '';
@@ -60,17 +71,6 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     if (tags) output += `- Tags: ${tags}\n`;
     if (pres.data.description) output += `- Summary: ${pres.data.description}\n`;
     output += `\n${pres.body}\n\n---\n\n`;
-  }
-
-  output += `## 4. Academic Publications & Research Papers\n\n`;
-  for (const pub of publications) {
-    output += `### ${pub.data.title}\n`;
-    output += `- URL: https://hackenberg.tech/publications/${pub.id}/\n`;
-    output += `- Date/Venue: ${pub.data.pubDate}${pub.data.book ? ` (${pub.data.book})` : ''}\n`;
-    output += `- Authors: ${pub.data.author}\n`;
-    if (pub.data.abstract) output += `- Abstract: ${pub.data.abstract}\n`;
-    if (pub.data.bibtex) output += `\n\`\`\`bibtex\n${pub.data.bibtex}\n\`\`\`\n`;
-    output += `\n${pub.body}\n\n---\n\n`;
   }
 
   output += `## 5. University Courses & Educational Content\n\n`;

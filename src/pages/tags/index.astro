@@ -134,13 +134,13 @@ const breadcrumbSchema = {
             {tag.pubCount > 0 && (
               <span class="inline-flex items-center gap-1 text-indigo-400">
                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                <span>{tag.pubCount} Paper{tag.pubCount !== 1 ? 's' : ''}</span>
+                <span>{tag.pubCount} Publication{tag.pubCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.presCount > 0 && (
               <span class="inline-flex items-center gap-1 text-cyan-400">
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                <span>{tag.presCount} Talk{tag.presCount !== 1 ? 's' : ''}</span>
+                <span>{tag.presCount} Presentation{tag.presCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.courseCount > 0 && (
