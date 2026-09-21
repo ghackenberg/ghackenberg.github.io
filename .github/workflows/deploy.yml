@@ -43,6 +43,9 @@ jobs:
       - name: Run Type Check
         run: npm run typecheck
 
+      - name: Validate Presentation Slides
+        run: npm run validate:slides
+
       - name: Build Astro Site
         run: npm run build
 
