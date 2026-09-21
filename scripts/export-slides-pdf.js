@@ -88,14 +88,24 @@ async function exportAllPresentationsToPdf() {
       if (!darkResponse || !darkResponse.ok()) {
         console.warn(`  ⚠️ Could not load dark print page for ${presentationFolder} (status: ${darkResponse?.status()}). Skipping.`);
       } else {
+        await darkPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
+        await darkPage.evaluateHandle('document.fonts.ready');
         await darkPage.pdf({
           path: darkOutPdfPath,
           printBackground: true,
+          preferCSSPageSize: true,
           width: '1920px',
           height: '1080px',
           margin: { top: 0, right: 0, bottom: 0, left: 0 }
         });
         fs.copyFileSync(darkOutPdfPath, defaultOutPdfPath);
+
+        const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
+        if (fs.existsSync(distPresentationPath)) {
+          fs.copyFileSync(darkOutPdfPath, path.join(distPresentationPath, 'slides-dark.pdf'));
+          fs.copyFileSync(defaultOutPdfPath, path.join(distPresentationPath, 'slides.pdf'));
+        }
+
         console.log(`  ✓ Successfully generated Dark Mode PDF: ${darkOutPdfPath}`);
       }
       await darkPage.close();
@@ -112,13 +122,22 @@ async function exportAllPresentationsToPdf() {
       if (!lightResponse || !lightResponse.ok()) {
         console.warn(`  ⚠️ Could not load light print page for ${presentationFolder} (status: ${lightResponse?.status()}). Skipping.`);
       } else {
+        await lightPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
+        await lightPage.evaluateHandle('document.fonts.ready');
         await lightPage.pdf({
           path: lightOutPdfPath,
           printBackground: true,
+          preferCSSPageSize: true,
           width: '1920px',
           height: '1080px',
           margin: { top: 0, right: 0, bottom: 0, left: 0 }
         });
+
+        const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
+        if (fs.existsSync(distPresentationPath)) {
+          fs.copyFileSync(lightOutPdfPath, path.join(distPresentationPath, 'slides-light.pdf'));
+        }
+
         console.log(`  ✓ Successfully generated Light Mode PDF: ${lightOutPdfPath}`);
       }
       await lightPage.close();
