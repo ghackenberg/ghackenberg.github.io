@@ -487,6 +487,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       updateActiveSlideInList(idx);
       if (audioSync.getCurrentSlideIndex() !== idx) {
         audioSync.setSlideIndex(idx, { entryMode: 'full' });
+      } else {
+        audioSync.updateSlideIntroState();
       }
       const currentSlide = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[idx];
       autoFit.fitSlide(currentSlide);

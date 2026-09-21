@@ -117,6 +117,7 @@ export class AudioSyncController {
       // 'start': reset all cues to unrevealed
       this.resetAllCues();
     }
+    this.updateSlideIntroState();
 
     if (slide?.audioUrl) {
       this.loadSlideAudio(slide, shouldPlay, entryMode);
@@ -129,6 +130,27 @@ export class AudioSyncController {
 
     if (this.onCuesLoadedCallback) {
       this.onCuesLoadedCallback(this.getCurrentSlideCues(), 0);
+    }
+  }
+
+  public updateSlideIntroState() {
+    const slideEl = document.querySelector(`.reveal .slides section[data-slide-index="${this.currentIndex}"]`);
+    if (!slideEl) return;
+    const baseFrame = slideEl.querySelector('.slide-base-frame');
+    if (!baseFrame) return;
+
+    // Slide 1 (title slide) is never in intro state because it's already a dedicated hero slide
+    if (this.currentIndex === 0) {
+      baseFrame.classList.remove('is-intro-state');
+      return;
+    }
+
+    // If in 'full' mode, or at least one cue is triggered: NOT in intro state
+    if (this.currentEntryMode === 'full' || this.triggeredCues.size > 0) {
+      baseFrame.classList.remove('is-intro-state');
+    } else {
+      // In 'start' mode with 0 cues triggered: INTRO STATE ACTIVE!
+      baseFrame.classList.add('is-intro-state');
     }
   }
 
@@ -150,6 +172,7 @@ export class AudioSyncController {
         el.classList.remove('is-active');
       });
     }
+    this.updateSlideIntroState();
   }
 
   private loadSlideAudio(slide: SlideData, autoPlay: boolean, entryMode: SlideEntryMode = 'full') {
@@ -493,6 +516,7 @@ export class AudioSyncController {
       if (currentSec >= timing.start && !this.triggeredCues.has(cueId)) {
         this.triggeredCues.add(cueId);
         this.triggerAnimation(cueId, timing);
+        this.updateSlideIntroState();
       }
 
       // Exit animation (fade out via {/cue} on boxes)
@@ -523,6 +547,7 @@ export class AudioSyncController {
         this.resetElement(cueId);
       }
     }
+    this.updateSlideIntroState();
   }
 
   private fastForwardAllCues() {
@@ -542,6 +567,7 @@ export class AudioSyncController {
         el.classList.add('is-active');
       });
     }
+    this.updateSlideIntroState();
   }
 
   private triggerAnimation(cueId: string, timing: { start: number; duration: number; end?: number }) {
