@@ -1,9 +1,60 @@
 // @ts-check
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
+import { execSync } from 'node:child_process';
 
 /**
- * Validates slide frontmatter and cue consistency, completeness, and sequential order
+ * Extracts YAML frontmatter fields from markdown/mdx content
+ * @param {string} content
+ * @returns {Record<string, string>}
+ */
+function parseFrontmatter(content) {
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!match) return {};
+  const yamlText = match[1];
+  /** @type {Record<string, string>} */
+  const result = {};
+
+  const lines = yamlText.split('\n');
+  let currentKey = '';
+  let currentValue = '';
+  let inMultiline = false;
+
+  for (const line of lines) {
+    if (inMultiline) {
+      if (/^\s{2,}/.test(line) || line.trim() === '') {
+        currentValue += ' ' + line.trim();
+        continue;
+      } else {
+        result[currentKey] = currentValue.trim();
+        inMultiline = false;
+      }
+    }
+
+    const colonIdx = line.indexOf(':');
+    if (colonIdx !== -1 && !inMultiline) {
+      const key = line.slice(0, colonIdx).trim();
+      const val = line.slice(colonIdx + 1).trim();
+      if (val === '>' || val === '|' || val === '') {
+        currentKey = key;
+        currentValue = '';
+        inMultiline = true;
+      } else {
+        result[key] = val.replace(/^["']|["']$/g, '');
+      }
+    }
+  }
+
+  if (inMultiline && currentKey) {
+    result[currentKey] = currentValue.trim();
+  }
+
+  return result;
+}
+
+/**
+ * Validates slide frontmatter, cue consistency, audio sync, orphan assets, and PDF handouts
  */
 function validateSlides() {
   const presentationsBase = path.resolve('src/content/presentations');
@@ -17,6 +68,7 @@ function validateSlides() {
   let totalSlides = 0;
 
   const presentationFolders = fs.readdirSync(presentationsBase);
+  const GENERATOR_VERSION = 'v2-anchor';
 
   for (const presentationFolder of presentationFolders) {
     const presentationPath = path.join(presentationsBase, presentationFolder);
@@ -25,14 +77,32 @@ function validateSlides() {
     const slidesDir = path.join(presentationPath, 'slides');
     if (!fs.existsSync(slidesDir)) continue;
 
+    const audioDir = path.join(presentationPath, 'audio');
+    const cacheFile = path.join(audioDir, '.cache.json');
+    /** @type {Record<string, string>} */
+    let audioCache = {};
+    if (fs.existsSync(cacheFile)) {
+      try {
+        audioCache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+      } catch {
+        audioCache = {};
+      }
+    }
+
     const slideFiles = fs.readdirSync(slidesDir)
       .filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
       .sort();
 
     console.log(`\n[Slide Validator] Checking presentation: "${presentationFolder}" (${slideFiles.length} slides)`);
 
+    /** @type {Set<string>} */
+    const activeSlideIds = new Set();
+
     for (const slideFile of slideFiles) {
       totalSlides++;
+      const slideId = slideFile.replace(/\.(md|mdx)$/, '');
+      activeSlideIds.add(slideId);
+
       const slidePath = path.join(slidesDir, slideFile);
       const content = fs.readFileSync(slidePath, 'utf8');
 
@@ -66,15 +136,15 @@ function validateSlides() {
       }
 
       // Extract voiceover script content
-      const voMatch = fm.match(/voiceover:\s*(?:>|\|)?\s*\r?\n([\s\S]*?)(?=\r?\n[a-zA-Z0-9_-]+:|$)/);
-      const voText = voMatch ? voMatch[1] : '';
+      const parsedFm = parseFrontmatter(content);
+      const voiceoverText = parsedFm.voiceover || '';
 
       // 1. Extract voiceover cues in sequence
       /** @type {string[]} */
       const voCues = [];
       const voCueRegex = /\{cue:([a-zA-Z0-9_-]+)(?::[a-zA-Z0-9_-]+)?\}/g;
       let voMatchItem;
-      while ((voMatchItem = voCueRegex.exec(voText)) !== null) {
+      while ((voMatchItem = voCueRegex.exec(voiceoverText)) !== null) {
         voCues.push(voMatchItem[1]);
       }
 
@@ -141,6 +211,118 @@ function validateSlides() {
           lastCueId = cueId;
         }
       }
+
+      // 6. Audio & Cues Synchronization Gate
+      if (voiceoverText.trim()) {
+        const mp3Path = path.join(audioDir, `${slideId}.mp3`);
+        const cuesPath = path.join(audioDir, `${slideId}.cues.json`);
+
+        if (!fs.existsSync(mp3Path)) {
+          console.error(`  ❌ [${slideFile}] Missing audio file: "audio/${slideId}.mp3". Run "npm run audio:presentations".`);
+          totalErrors++;
+        }
+
+        if (!fs.existsSync(cuesPath)) {
+          console.error(`  ❌ [${slideFile}] Missing cue timings file: "audio/${slideId}.cues.json". Run "npm run audio:presentations".`);
+          totalErrors++;
+        } else {
+          // Verify that all spoken cues exist in cues.json
+          try {
+            const cuesData = JSON.parse(fs.readFileSync(cuesPath, 'utf8'));
+            for (const cueId of voCues) {
+              if (!cuesData[cueId]) {
+                console.error(`  ❌ [${slideFile}] Cue "{cue:${cueId}}" is spoken in voiceover but missing in "audio/${slideId}.cues.json". Run "npm run audio:presentations".`);
+                totalErrors++;
+              }
+            }
+          } catch {
+            console.error(`  ❌ [${slideFile}] Corrupted JSON in "audio/${slideId}.cues.json". Run "npm run audio:presentations".`);
+            totalErrors++;
+          }
+        }
+
+        // Verify that audio is up-to-date with current voiceover text via MD5 hash
+        const expectedHash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${voiceoverText}`).digest('hex');
+        if (audioCache[slideId] !== expectedHash) {
+          console.error(
+            `  ❌ [${slideFile}] Audio is out-of-date: Voiceover text was modified since last audio synthesis (hash mismatch). Run "npm run audio:presentations".`
+          );
+          totalErrors++;
+        }
+      }
+    }
+
+    // 7. Backward Audio Orphan Check: Detect leftover .mp3 / .cues.json without matching slide
+    if (fs.existsSync(audioDir)) {
+      const audioFiles = fs.readdirSync(audioDir);
+      for (const file of audioFiles) {
+        if (file === '.cache.json') continue;
+        const match = file.match(/^(.+?)\.(mp3|cues\.json)$/);
+        if (match) {
+          const slideId = match[1];
+          if (!activeSlideIds.has(slideId)) {
+            console.error(`  ❌ [audio-orphan] Orphaned file "audio/${file}" has no matching slide in "slides/". Run "npm run audio:presentations" or delete the file.`);
+            totalErrors++;
+          }
+        }
+      }
+
+      // Orphan cache keys
+      for (const cachedId of Object.keys(audioCache)) {
+        if (!activeSlideIds.has(cachedId)) {
+          console.error(`  ❌ [audio-orphan] Orphaned entry "${cachedId}" in "audio/.cache.json" has no matching slide in "slides/". Run "npm run audio:presentations".`);
+          totalErrors++;
+        }
+      }
+    }
+
+    // 8. PDF Handouts Existence & Git Up-To-Date Check
+    const pdfDarkPath = path.join(presentationPath, 'slides-dark.pdf');
+    const pdfLightPath = path.join(presentationPath, 'slides-light.pdf');
+
+    if (!fs.existsSync(pdfDarkPath)) {
+      console.error(`  ❌ [pdf] Missing Dark Mode PDF handout: "slides-dark.pdf". Run "npm run export:slides".`);
+      totalErrors++;
+    }
+    if (!fs.existsSync(pdfLightPath)) {
+      console.error(`  ❌ [pdf] Missing Light Mode PDF handout: "slides-light.pdf". Run "npm run export:slides".`);
+      totalErrors++;
+    }
+
+    try {
+      const slidesRelPath = path.relative(process.cwd(), slidesDir).replace(/\\/g, '/');
+      const pdfDarkRelPath = path.relative(process.cwd(), pdfDarkPath).replace(/\\/g, '/');
+      const pdfLightRelPath = path.relative(process.cwd(), pdfLightPath).replace(/\\/g, '/');
+
+      const slidesTimeStr = execSync(`git log -1 --format=%ct -- "${slidesRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      const pdfDarkTimeStr = execSync(`git log -1 --format=%ct -- "${pdfDarkRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      const pdfLightTimeStr = execSync(`git log -1 --format=%ct -- "${pdfLightRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+
+      const slidesTime = parseInt(slidesTimeStr, 10);
+      const pdfDarkTime = parseInt(pdfDarkTimeStr, 10);
+      const pdfLightTime = parseInt(pdfLightTimeStr, 10);
+
+      if (!isNaN(slidesTime) && !isNaN(pdfDarkTime) && slidesTime > pdfDarkTime) {
+        console.error(
+          `  ❌ [pdf] "slides-dark.pdf" is out-of-date: Slides were modified in commit history after the PDF was committed. Run "npm run export:slides".`
+        );
+        totalErrors++;
+      }
+      if (!isNaN(slidesTime) && !isNaN(pdfLightTime) && slidesTime > pdfLightTime) {
+        console.error(
+          `  ❌ [pdf] "slides-light.pdf" is out-of-date: Slides were modified in commit history after the PDF was committed. Run "npm run export:slides".`
+        );
+        totalErrors++;
+      }
+
+      // Check for uncommitted working tree changes in slides/
+      const dirtySlides = execSync(`git status --porcelain -- "${slidesRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      if (dirtySlides) {
+        console.warn(`  ⚠️ [pdf] Slides have uncommitted changes in working tree. Run "npm run export:slides" before committing.`);
+        totalWarnings++;
+      }
+    } catch {
+      // Git command failed or not a git repository; skip timestamp check
     }
   }
 
@@ -148,7 +330,7 @@ function validateSlides() {
     console.error(`\n[Slide Validator] Validation FAILED with ${totalErrors} error(s) and ${totalWarnings} warning(s) across ${totalSlides} slides.\n`);
     process.exit(1);
   } else {
-    console.log(`\n[Slide Validator] Passed! All ${totalSlides} slides validated successfully (${totalWarnings} warning(s)).\n`);
+    console.log(`\n[Slide Validator] Passed! All ${totalSlides} slides, audio assets, cues, and PDF handouts are valid and up-to-date (${totalWarnings} warning(s)).\n`);
   }
 }
 

@@ -361,6 +361,32 @@ async function generateAllPresentationAudio() {
         console.error(`    ❌ Failed to synthesize audio for ${slideId}:`, err);
       }
     }
+
+    // Prune orphaned audio files and dead cache entries for slides that no longer exist
+    if (!targetSlide) {
+      const activeSlideIds = new Set(slideFiles.map((f) => f.replace(/\.(md|mdx)$/, '')));
+      const audioFiles = fs.readdirSync(audioDir);
+      for (const file of audioFiles) {
+        if (file === '.cache.json') continue;
+        const match = file.match(/^(.+?)\.(mp3|cues\.json)$/);
+        if (match) {
+          const slideId = match[1];
+          if (!activeSlideIds.has(slideId)) {
+            const orphanPath = path.join(audioDir, file);
+            fs.unlinkSync(orphanPath);
+            console.log(`  🗑️ Removed orphaned audio file: ${file}`);
+          }
+        }
+      }
+
+      for (const cachedId of Object.keys(cache)) {
+        if (!activeSlideIds.has(cachedId)) {
+          delete cache[cachedId];
+          console.log(`  🗑️ Pruned orphaned cache entry: ${cachedId}`);
+        }
+      }
+    }
+
     safeWriteJson(cacheFile, cache);
   }
 
