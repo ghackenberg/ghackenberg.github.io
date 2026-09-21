@@ -5,7 +5,7 @@
 
 <div 
   id="privacy-modal-backdrop" 
-  class="fixed inset-0 z-[100] bg-black/75 light:bg-slate-900/20 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
+  class="fixed inset-0 z-[110] bg-black/75 light:bg-slate-900/20 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
   role="dialog"
   aria-modal="true"
   aria-labelledby="privacy-modal-title"
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Scrollable Content Body -->
-    <div class="modal-body flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 py-3 sm:py-4 space-y-3 sm:space-y-4">
+    <div class="modal-body flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 space-y-3 sm:space-y-4">
       
       <!-- Section 1: Local Read Status (Opt-In) -->
       <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
@@ -104,7 +104,7 @@
         <!-- Opt-Out Action Row -->
         <div class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] sm:text-xs">
           <div class="text-gray-400 light:text-slate-500 text-[10px] sm:text-xs">
-            Legal basis: Art. 6(1)(f) GDPR
+            Legal basis: Art. 6(1)(f) GDPR · <a href="/datenschutz/" class="underline hover:text-brand-blue light:hover:text-blue-600 transition-colors">Privacy Policy</a>
           </div>
           <button 
             id="toggle-analytics-optout-btn"
@@ -114,23 +114,6 @@
           </button>
         </div>
       </div>
-    </div>
-
-    <!-- Footer Note & Links (Sticky/Shrink-0) -->
-    <div class="modal-footer shrink-0 p-3.5 sm:p-6 pt-3 sm:pt-3.5 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs bg-[#090d16]/90">
-      <a 
-        href="/datenschutz/" 
-        class="text-[11px] sm:text-xs text-gray-400 light:text-slate-600 hover:text-brand-blue light:hover:text-brand-blue transition-colors flex items-center gap-1 group"
-      >
-        <span>Full Privacy Policy</span>
-        <span class="group-hover:translate-x-0.5 transition-transform">→</span>
-      </a>
-      <button 
-        id="privacy-modal-save-btn"
-        class="w-full sm:w-auto px-5 py-2 rounded-xl bg-gradient-brand text-white font-semibold text-xs hover:opacity-95 transition-opacity cursor-pointer shadow-md shadow-brand-blue/20 text-center active:scale-95"
-      >
-        Done
-      </button>
     </div>
   </div>
 </div>
@@ -144,7 +127,6 @@
     const backdrop = document.getElementById('privacy-modal-backdrop');
     const container = document.getElementById('privacy-modal-container');
     const closeBtn = document.getElementById('privacy-modal-close-btn');
-    const saveBtn = document.getElementById('privacy-modal-save-btn');
     const toggleReadStatus = document.getElementById('toggle-read-status');
     const readingStatusText = document.getElementById('reading-status-text');
     const clearReadingDataBtn = document.getElementById('clear-reading-data-btn');
@@ -207,6 +189,9 @@
     }
 
     function openModal() {
+      if (typeof window.closeWhatsNewModal === 'function') {
+        window.closeWhatsNewModal();
+      }
       updateModalUI();
       if (backdrop && container) {
         backdrop.classList.remove('opacity-0', 'pointer-events-none');
@@ -232,7 +217,6 @@
     window.closePrivacyModal = closeModal;
 
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (saveBtn) saveBtn.addEventListener('click', closeModal);
 
     // Dismiss on backdrop click
     if (backdrop) {
@@ -341,9 +325,5 @@
   }
   html.light #privacy-modal-container .modal-header p {
     color: #64748b !important;
-  }
-  html.light #privacy-modal-container .modal-footer {
-    background-color: #f8fafc !important;
-    border-color: rgba(15, 23, 42, 0.08) !important;
   }
 </style>

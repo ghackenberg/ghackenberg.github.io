@@ -1,0 +1,198 @@
+---
+// What's New Discovery Modal Component
+// Centered modal dialog, fully responsive, light- & dark-mode polished, matching PrivacyModal architecture
+---
+
+<div 
+  id="whats-new-modal-backdrop" 
+  class="fixed inset-0 z-[100] bg-black/75 light:bg-slate-900/25 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-3 sm:p-4 sm:py-6 overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="whats-new-modal-title"
+>
+  <div 
+    id="whats-new-modal-container"
+    class="glass-panel w-full max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(90dvh,840px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
+  >
+    <!-- Top Accent Bar -->
+    <div class="h-1 sm:h-1.5 bg-gradient-blue shrink-0"></div>
+
+    <!-- Header (Sticky/Shrink-0) -->
+    <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-white/5 light:border-slate-200/80 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-blue/15 border border-brand-blue/30 text-brand-blue flex items-center justify-center shrink-0">
+          <svg class="w-4.5 h-4.5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2.5">
+            <h2 id="whats-new-modal-title" class="text-xl sm:text-2xl font-bold tracking-tight text-white light:text-slate-900">
+              What's <span class="heading-gradient-blue">New</span>
+            </h2>
+            <span id="whats-new-count-pill" class="hidden text-xs font-bold px-2.5 py-0.5 rounded-full bg-brand-blue/15 text-brand-blue border border-brand-blue/30">
+              0 new
+            </span>
+          </div>
+          <p class="text-xs text-gray-400 light:text-slate-500 mt-1 leading-normal truncate">
+            Recent articles, research papers, presentations, courses, and interactive tools.
+          </p>
+        </div>
+      </div>
+
+      <!-- Actions: Mark all as read + Close Button -->
+      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+        <button
+          id="whats-new-mark-read-btn"
+          type="button"
+          class="hidden h-8 sm:h-9 w-8 sm:w-auto px-0 sm:px-3.5 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-300 light:text-slate-600 hover:text-brand-blue light:hover:text-blue-600 items-center justify-center gap-1.5 text-xs font-medium transition-all duration-200 cursor-pointer active:scale-95 shrink-0 shadow-sm"
+          title="Mark all items as read"
+        >
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-blue shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+          <span class="hidden sm:inline">Mark all as read</span>
+        </button>
+
+        <button 
+          id="whats-new-close-btn"
+          class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-element-border-high text-gray-400 hover:text-gray-100 light:hover:text-slate-900 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
+          aria-label="Close What's New"
+        >
+          <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable Content Body -->
+    <div id="whats-new-list" class="flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 space-y-4">
+      <!-- Activity Feed Items rendered by notifications.ts -->
+    </div>
+  </div>
+</div>
+
+<script>
+  declare global {
+  interface Window {
+    openWhatsNewModal?: () => void;
+    closeWhatsNewModal?: () => void;
+    openPrivacyModal?: () => void;
+    closePrivacyModal?: () => void;
+  }
+}
+
+(function() {
+  const backdrop = document.getElementById('whats-new-modal-backdrop');
+  const container = document.getElementById('whats-new-modal-container');
+  const closeBtn = document.getElementById('whats-new-close-btn');
+
+  function openModal() {
+    if (typeof window.closePrivacyModal === 'function') {
+      window.closePrivacyModal();
+    }
+    if (backdrop && container) {
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      backdrop.classList.add('opacity-100');
+      container.classList.remove('scale-95');
+      container.classList.add('scale-100');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeModal() {
+    if (backdrop && container) {
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      container.classList.remove('scale-100');
+      container.classList.add('scale-95');
+      document.body.style.overflow = '';
+    }
+  }
+
+  window.openWhatsNewModal = openModal;
+  window.closeWhatsNewModal = closeModal;
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    // Dismiss on backdrop click
+    if (backdrop) {
+      backdrop.addEventListener('click', function(e) {
+        if (e.target === backdrop) closeModal();
+      });
+    }
+
+    // Escape key
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && backdrop && !backdrop.classList.contains('pointer-events-none')) {
+        closeModal();
+      }
+    });
+
+    // Close when clicking any link or privacy settings trigger inside the modal
+    if (backdrop) {
+      backdrop.addEventListener('click', function(e) {
+        const target = e.target as HTMLElement;
+        if (target && (target.closest('a') || target.closest('[data-open-privacy-modal]'))) {
+          closeModal();
+        }
+      });
+    }
+
+    // Trigger button clicks (desktop & mobile)
+    document.addEventListener('click', function(e) {
+      const target = e.target as HTMLElement;
+      if (target && (target.closest('#whats-new-btn-desktop') || target.closest('#whats-new-btn-mobile') || target.closest('[data-open-whats-new-modal]'))) {
+        e.preventDefault();
+        e.stopPropagation();
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+          const hamburger = document.getElementById('hamburger-icon');
+          const closeIcon = document.getElementById('close-icon');
+          if (hamburger) hamburger.classList.remove('hidden');
+          if (closeIcon) closeIcon.classList.add('hidden');
+        }
+        openModal();
+      }
+    });
+  })();
+</script>
+
+<style is:global>
+  /* Light mode crystal-bright appearance matching Privacy Modal */
+  html.light #whats-new-modal-backdrop {
+    background-color: rgba(15, 23, 42, 0.25) !important;
+  }
+  html.light #whats-new-modal-container {
+    background-color: #ffffff !important;
+    border-color: rgba(15, 23, 42, 0.12) !important;
+    color: #1e293b !important;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
+  }
+  html.light #whats-new-modal-container .modal-header,
+  html.light #whats-new-modal-container #whats-new-list {
+    background-color: #ffffff !important;
+  }
+  html.light #whats-new-modal-container .modal-header {
+    border-color: rgba(15, 23, 42, 0.08) !important;
+  }
+  html.light #whats-new-modal-container .modal-header h2 {
+    color: #0f172a !important;
+  }
+  html.light #whats-new-modal-container .modal-header p {
+    color: #64748b !important;
+  }
+
+  /* Unread badge corner radius in What's New modal */
+  #whats-new-modal-container .badge-corner-tr {
+    border-top-right-radius: 0.75rem !important;
+    border-bottom-left-radius: 0.75rem !important;
+  }
+
+  /* Mark all as read button display flex when visible */
+  #whats-new-mark-read-btn:not(.hidden) {
+    display: inline-flex !important;
+  }
+</style>
