@@ -21,6 +21,7 @@ import defaultOgImage from "../assets/images/og-share-preview.png";
 import Background from "../components/Background.astro";
 import JsonLd from "../components/JsonLd.astro";
 import PrivacyModal from "../components/PrivacyModal.astro";
+import WhatsNewModal from "../components/WhatsNewModal.astro";
 
 type JsonLdValue = string | number | boolean | null | undefined | { [key: string]: JsonLdValue } | JsonLdValue[];
 
@@ -166,6 +167,48 @@ if (pubDate) {
             }
           });
         }
+
+        // Synchronous check for unread notifications before first paint to eliminate icon color flicker
+        try {
+          const rawState = localStorage.getItem('gh_site_notifications_v1');
+          if (rawState) {
+            const state = JSON.parse(rawState);
+            if (state && state.enabled === true) {
+              const rawManifest = localStorage.getItem('gh_content_manifest_cache');
+              if (rawManifest) {
+                const manifest = JSON.parse(rawManifest);
+                if (manifest) {
+                  const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations'];
+                  let hasUnread = false;
+                  for (let i = 0; i < SECTIONS.length; i++) {
+                    const section = SECTIONS[i];
+                    const items = manifest[section];
+                    if (!Array.isArray(items)) continue;
+                    const lastVisit = (state.lastVisitedSections && state.lastVisitedSections[section] !== undefined)
+                      ? state.lastVisitedSections[section]
+                      : 0;
+                    for (let j = 0; j < items.length; j++) {
+                      const item = items[j];
+                      if (!item || !item.url) continue;
+                      let itemUrl = item.url.replace(/\/$/, '');
+                      if (!itemUrl.startsWith('/')) itemUrl = '/' + itemUrl;
+                      const isNew = lastVisit === 0 ? true : (item.date || 0) > lastVisit;
+                      const isUnvisited = !(state.visitedItems && state.visitedItems[itemUrl]);
+                      if (isNew && isUnvisited) {
+                        hasUnread = true;
+                        break;
+                      }
+                    }
+                    if (hasUnread) break;
+                  }
+                  if (hasUnread) {
+                    document.documentElement.classList.add('has-unread-notifications');
+                  }
+                }
+              }
+            }
+          }
+        } catch (e) {}
       })();
     </script>
     
@@ -431,6 +474,9 @@ if (pubDate) {
     <!-- Privacy & Settings Modal -->
     <PrivacyModal />
 
+    <!-- What's New Discovery Modal -->
+    <WhatsNewModal />
+
     <!-- Synchronous initialization of notifications to prevent badge/dot flickering -->
     <script is:inline>
       (function() {
@@ -464,6 +510,9 @@ if (pubDate) {
         if (!isOptedIn || !state) {
           document.querySelectorAll('.unread-dot').forEach(dot => dot.classList.add('hidden'));
           document.querySelectorAll('.nav-badge').forEach(badge => badge.classList.add('hidden'));
+          document.documentElement.classList.remove('has-unread-notifications');
+          document.getElementById('whats-new-btn-desktop')?.classList.remove('whats-new-luminous');
+          document.getElementById('whats-new-btn-mobile')?.classList.remove('whats-new-luminous');
           return;
         }
         
@@ -490,6 +539,7 @@ if (pubDate) {
         } catch(e) {}
         
         if (manifest) {
+          let totalUnreadCount = 0;
           SECTIONS.forEach(section => {
             const items = manifest[section] || [];
             const lastVisit = (state.lastVisitedSections && state.lastVisitedSections[section] !== undefined)
@@ -503,6 +553,8 @@ if (pubDate) {
               return isNew && isUnvisited;
             }).length;
             
+            totalUnreadCount += newItemsCount;
+
             const badges = document.querySelectorAll('.nav-badge[data-section="' + section + '"]');
             badges.forEach(badge => {
               if (newItemsCount > 0) {
@@ -512,6 +564,16 @@ if (pubDate) {
               }
             });
           });
+
+          if (totalUnreadCount > 0) {
+            document.documentElement.classList.add('has-unread-notifications');
+            document.getElementById('whats-new-btn-desktop')?.classList.add('whats-new-luminous');
+            document.getElementById('whats-new-btn-mobile')?.classList.add('whats-new-luminous');
+          } else {
+            document.documentElement.classList.remove('has-unread-notifications');
+            document.getElementById('whats-new-btn-desktop')?.classList.remove('whats-new-luminous');
+            document.getElementById('whats-new-btn-mobile')?.classList.remove('whats-new-luminous');
+          }
         }
       })();
     </script>

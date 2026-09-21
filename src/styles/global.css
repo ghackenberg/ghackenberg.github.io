@@ -478,6 +478,13 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   }
 }
 
+/* What's New Feed unread badge radius matches rounded-xl (0.75rem / 12px) preview containers */
+#whats-new-modal-container .badge-corner-tr,
+#whats-new-overlay .badge-corner-tr {
+  border-top-right-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+
 /* Gallery Marquee Corner Ribbon Badges */
 .gallery-badge {
   position: absolute;
@@ -535,12 +542,16 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
 }
 
 /* What's New Icon Highlight (Option A: Only the icon inside the circle is highlighted) */
+html.has-unread-notifications #whats-new-btn-desktop svg,
+html.has-unread-notifications #whats-new-btn-mobile svg,
 .whats-new-luminous svg {
   color: #3b82f6 !important;
   filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.7));
   transition: color 0.3s ease, filter 0.3s ease;
 }
 
+html.light.has-unread-notifications #whats-new-btn-desktop svg,
+html.light.has-unread-notifications #whats-new-btn-mobile svg,
 html.light .whats-new-luminous svg {
   color: #2563eb !important;
   filter: drop-shadow(0 0 3px rgba(37, 99, 235, 0.45));

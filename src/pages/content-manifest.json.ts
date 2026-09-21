@@ -51,7 +51,7 @@ async function resolveImage(rawImage: ResolvableImage): Promise<string | undefin
   try {
     const optimized = await getImage({
       src: imgObj,
-      width: 240,
+      width: 480,
       format: 'webp',
       quality: 80
     });

@@ -24,7 +24,7 @@ const navItems = [
 
 <div class="sticky top-0 left-0 right-0 z-50 w-full">
   <header class="transition-all duration-300 w-full glass-panel border-b border-white/5 py-4 backdrop-blur-md relative">
-  <div class="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between">
+  <div class="max-w-6xl mx-auto px-4 md:px-8 relative flex items-center justify-between">
     
     <!-- Logo / Brand -->
     <a href="/" class="flex items-center space-x-3 group shrink-0">
@@ -88,10 +88,10 @@ const navItems = [
         <button 
           id="whats-new-btn-desktop"
           type="button"
+          data-open-whats-new-modal
           class="relative w-9 h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-300 cursor-pointer active:scale-90"
           aria-label="What's New"
           title="What's New"
-          aria-expanded="false"
         >
           <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
@@ -139,10 +139,10 @@ const navItems = [
         <button 
           id="whats-new-btn-mobile"
           type="button"
+          data-open-whats-new-modal
           class="relative w-11 h-11 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-300 cursor-pointer active:scale-90"
           aria-label="What's New"
           title="What's New"
-          aria-expanded="false"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
@@ -173,80 +173,6 @@ const navItems = [
           <path id="hamburger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
           <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- What's New Popover Flyout -->
-  <div 
-    id="whats-new-popover" 
-    class="hidden absolute right-4 md:right-8 top-[calc(100%+0.5rem)] w-[420px] max-w-[calc(100vw-2rem)] rounded-2xl border border-white/10 light:border-slate-200 bg-[#090d16]/95 light:bg-white/95 backdrop-blur-xl shadow-2xl shadow-black/50 light:shadow-slate-300/40 z-50 overflow-hidden transition-all duration-200"
-    role="dialog"
-    aria-modal="false"
-    aria-label="What's New Updates"
-  >
-    <div class="px-4 py-3 border-b border-white/10 light:border-slate-100 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <span class="text-brand-blue font-bold text-sm tracking-wide flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-          </svg>
-          What's New
-        </span>
-        <span id="whats-new-count-pill" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-blue/15 text-brand-blue border border-brand-blue/30">
-          0 new
-        </span>
-      </div>
-      <button 
-        id="whats-new-close-btn"
-        type="button"
-        class="text-gray-400 hover:text-gray-200 light:text-slate-400 light:hover:text-slate-700 p-1 rounded-lg hover:bg-white/5 light:hover:bg-slate-100 transition-colors cursor-pointer"
-        aria-label="Close updates"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Tracking Hint Banner (Shown when tracking is off) -->
-    <div id="whats-new-tracking-hint" class="hidden mx-3 mt-3 p-2.5 rounded-xl bg-brand-blue/10 border border-brand-blue/20 text-xs text-gray-300 light:text-slate-600 flex items-start gap-2">
-      <svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-      </svg>
-      <div class="leading-snug">
-        <span>Read tracking is disabled. </span>
-        <button type="button" data-open-privacy-modal class="text-brand-blue hover:underline font-medium inline cursor-pointer">Enable in Privacy Settings</button>
-        <span> to highlight unread content.</span>
-      </div>
-    </div>
-
-    <!-- Content List -->
-    <div id="whats-new-list" class="max-h-[min(440px,65dvh)] overflow-y-auto p-2 space-y-1.5 focus:outline-none">
-      <!-- Populated by notifications.ts -->
-    </div>
-
-    <!-- Footer -->
-    <div class="px-4 py-2.5 border-t border-white/10 light:border-slate-100 bg-black/10 light:bg-slate-50/80 flex items-center justify-between text-xs">
-      <button
-        id="whats-new-mark-read-btn"
-        type="button"
-        class="hidden text-xs font-medium text-gray-400 hover:text-brand-blue light:text-slate-500 light:hover:text-brand-blue flex items-center gap-1.5 transition-colors cursor-pointer"
-      >
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-        </svg>
-        <span>Mark all as read</span>
-      </button>
-      <button
-        type="button"
-        data-open-privacy-modal
-        class="text-xs text-gray-400 hover:text-gray-200 light:text-slate-500 light:hover:text-slate-800 flex items-center gap-1 ml-auto transition-colors cursor-pointer"
-      >
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-        </svg>
-        <span>Privacy Settings</span>
       </button>
     </div>
   </div>
@@ -312,7 +238,7 @@ const navItems = [
         header.classList.add('py-4');
       }
     }
-  });
+  }, { passive: true });
 
   // Theme Toggle Client Logic
   const initThemeToggle = () => {
@@ -415,98 +341,12 @@ const navItems = [
     }
   };
 
-  // What's New Popover Toggle Logic
-  const initWhatsNewPopover = () => {
-    const desktopBtn = document.getElementById('whats-new-btn-desktop');
-    const mobileBtn = document.getElementById('whats-new-btn-mobile');
-    const popover = document.getElementById('whats-new-popover');
-    const closeBtn = document.getElementById('whats-new-close-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    if (!popover) return;
-
-    const togglePopover = (e?: Event) => {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      const isHidden = popover.classList.contains('hidden');
-      if (isHidden) {
-        // If mobile menu is open, close it
-        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-          mobileMenu.classList.add('hidden');
-          const hamburger = document.getElementById('hamburger-icon');
-          const closeIcon = document.getElementById('close-icon');
-          if (hamburger) hamburger.classList.remove('hidden');
-          if (closeIcon) closeIcon.classList.add('hidden');
-        }
-        popover.classList.remove('hidden');
-        desktopBtn?.setAttribute('aria-expanded', 'true');
-        mobileBtn?.setAttribute('aria-expanded', 'true');
-      } else {
-        closePopover();
-      }
-    };
-
-    const closePopover = () => {
-      popover.classList.add('hidden');
-      desktopBtn?.setAttribute('aria-expanded', 'false');
-      mobileBtn?.setAttribute('aria-expanded', 'false');
-    };
-
-    // Clean listeners by replacing elements with clones
-    [desktopBtn, mobileBtn, closeBtn].forEach(b => {
-      if (b) {
-        const clone = b.cloneNode(true);
-        b.replaceWith(clone);
-      }
-    });
-
-    const newDesktopBtn = document.getElementById('whats-new-btn-desktop');
-    const newMobileBtn = document.getElementById('whats-new-btn-mobile');
-    const newCloseBtn = document.getElementById('whats-new-close-btn');
-
-    newDesktopBtn?.addEventListener('click', togglePopover);
-    newMobileBtn?.addEventListener('click', togglePopover);
-    newCloseBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closePopover();
-    });
-
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      if (!popover.classList.contains('hidden')) {
-        const target = e.target as Node;
-        if (!popover.contains(target) && !newDesktopBtn?.contains(target) && !newMobileBtn?.contains(target)) {
-          closePopover();
-        }
-      }
-    });
-
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !popover.classList.contains('hidden')) {
-        closePopover();
-      }
-    });
-
-    // Close when navigating via any link inside popover, or opening privacy modal
-    popover.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('a') || target.closest('[data-open-privacy-modal]')) {
-        closePopover();
-      }
-    });
-  };
-
   // Initialize immediately
   initThemeToggle();
-  initWhatsNewPopover();
 
   // Re-run if Astro uses page load events
   document.addEventListener('astro:page-load', () => {
     initThemeToggle();
-    initWhatsNewPopover();
   });
 </script>
 
@@ -526,20 +366,5 @@ const navItems = [
   }
   html[data-theme-setting="dark"] .theme-icon-dark {
     display: block !important;
-  }
-
-  /* What's New Popover Light Mode */
-  html.light #whats-new-popover {
-    background-color: #ffffff !important;
-    border-color: rgba(15, 23, 42, 0.12) !important;
-    color: #1e293b !important;
-    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
-  }
-  html.light #whats-new-popover > div:first-child {
-    border-color: rgba(15, 23, 42, 0.08) !important;
-  }
-  html.light #whats-new-popover > div:last-child {
-    background-color: #f8fafc !important;
-    border-color: rgba(15, 23, 42, 0.08) !important;
   }
 </style>

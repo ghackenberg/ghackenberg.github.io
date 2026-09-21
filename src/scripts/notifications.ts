@@ -39,41 +39,48 @@ const STORAGE_KEY = 'gh_site_notifications_v1';
 const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
 const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations'];
 
-const SECTION_CONFIG: Record<string, { label: string; badgeClass: string; icon: string }> = {
+const SECTION_CONFIG: Record<string, { label: string; badgeClass: string; icon: string; actionText: string }> = {
   posts: { 
     label: 'Post', 
     badgeClass: 'bg-blue-500/15 text-blue-400 light:text-blue-700 border border-blue-500/25',
-    icon: '📝'
+    icon: '📝',
+    actionText: 'Read Post'
   },
   publications: { 
     label: 'Publication', 
     badgeClass: 'bg-purple-500/15 text-purple-400 light:text-purple-700 border border-purple-500/25',
-    icon: '📄'
+    icon: '📄',
+    actionText: 'View Publication'
   },
   presentations: { 
     label: 'Presentation', 
     badgeClass: 'bg-blue-500/15 text-blue-400 light:text-blue-700 border border-blue-500/25',
-    icon: '📊'
+    icon: '📊',
+    actionText: 'View Presentation'
   },
   courses: { 
     label: 'Course', 
     badgeClass: 'bg-amber-500/15 text-amber-400 light:text-amber-700 border border-amber-500/25',
-    icon: '🎓'
+    icon: '🎓',
+    actionText: 'Explore Course'
   },
   projects: { 
     label: 'Project', 
     badgeClass: 'bg-blue-500/15 text-blue-400 light:text-blue-700 border border-blue-500/25',
-    icon: '💻'
+    icon: '💻',
+    actionText: 'Open Project'
   },
   services: { 
     label: 'Service', 
     badgeClass: 'bg-purple-500/15 text-purple-400 light:text-purple-700 border border-purple-500/25',
-    icon: '⚙️'
+    icon: '⚙️',
+    actionText: 'View Service'
   },
   visualizations: { 
     label: 'Visualization', 
     badgeClass: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-700 border border-emerald-500/25',
-    icon: '📈'
+    icon: '📈',
+    actionText: 'Open Tool'
   }
 };
 
@@ -151,6 +158,8 @@ function escapeHtml(str: string): string {
 }
 
 function hideAllIndicators() {
+  document.documentElement.classList.remove('has-unread-notifications');
+
   const unreadDots = document.querySelectorAll('.unread-dot');
   unreadDots.forEach(dot => dot.classList.add('hidden'));
 
@@ -165,97 +174,130 @@ function hideAllIndicators() {
   const markReadBtn = document.getElementById('whats-new-mark-read-btn');
   markReadBtn?.classList.add('hidden');
 
-  const hintBanner = document.getElementById('whats-new-tracking-hint');
-  hintBanner?.classList.remove('hidden');
+  renderActivityFeed([], false, 0);
 }
 
-function renderPopoverList(items: FeedItem[], isTracking: boolean, unreadCount: number) {
+function getUnreadBadgeClass(section: string): string {
+  if (section === 'courses') return 'badge-new-yellow';
+  if (section === 'services' || section === 'publications') return 'badge-new-purple';
+  if (section === 'visualizations') return 'badge-new-green';
+  return 'badge-new-blue';
+}
+
+function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount: number) {
   const listEl = document.getElementById('whats-new-list');
   if (!listEl) return;
 
-  let displayItems: FeedItem[] = [];
-  if (isTracking && unreadCount > 0) {
-    const unread = items.filter(it => it.isUnread);
-    const read = items.filter(it => !it.isUnread);
-    displayItems = [...unread, ...read].slice(0, 8);
-  } else {
-    displayItems = items.slice(0, 6);
-  }
-
-  if (displayItems.length === 0) {
+  // Case 1: Read tracking is disabled -> show no items, show clean prompt to activate tracking
+  if (!isTracking) {
     listEl.innerHTML = `
-      <div class="py-8 text-center text-gray-400 light:text-slate-500">
-        <p class="text-sm font-medium">No updates available at this moment.</p>
+      <div class="py-16 px-6 text-center glass-card rounded-3xl border border-white/10 light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-brand-blue/15 text-brand-blue flex items-center justify-center border border-brand-blue/30 shadow-inner">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-100 light:text-slate-900 mb-2">Read Tracking is Disabled</h3>
+        <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed mb-6">
+          To highlight new articles, presentations, and courses since your last visit, please enable read tracking in your Privacy Settings. 100% private, stored only in your browser.
+        </p>
+        <button 
+          type="button" 
+          data-open-privacy-modal 
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-blue text-white font-semibold text-xs sm:text-sm hover:bg-brand-blue/90 transition-all shadow-lg shadow-brand-blue/25 cursor-pointer active:scale-95"
+        >
+          <span>Open Privacy Settings</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </button>
       </div>
     `;
     return;
   }
 
-  let html = '';
-
-  if (isTracking && unreadCount === 0) {
-    html += `
-      <div class="mx-1 mb-2 px-3 py-2 rounded-xl bg-white/5 light:bg-slate-100/70 border border-white/5 light:border-slate-200/60 flex items-center justify-between text-xs text-gray-400 light:text-slate-600">
-        <span class="flex items-center gap-1.5 font-medium text-emerald-400 light:text-emerald-600">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+  // Case 2: Tracking enabled, but all items are read -> show no items, show "All caught up"
+  if (unreadCount === 0) {
+    listEl.innerHTML = `
+      <div class="py-16 px-6 text-center glass-card rounded-3xl border border-white/10 light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-emerald-500/15 text-emerald-400 light:text-emerald-600 flex items-center justify-center border border-emerald-500/30 shadow-inner">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          All caught up!
-        </span>
-        <span class="text-[11px] text-gray-400 light:text-slate-400">Recent updates:</span>
+        </div>
+        <h3 class="text-lg font-bold text-gray-100 light:text-slate-900 mb-2">You're all caught up!</h3>
+        <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
+          There are currently no unread updates. New blog posts, research publications, presentations, courses, and tools will appear here as soon as they are published.
+        </p>
       </div>
     `;
+    return;
   }
 
-  html += displayItems.map(item => {
+  // Case 3: Tracking enabled and there are unread items -> Show ONLY unread items
+  const unreadItems = items.filter(it => it.isUnread);
+  const displayItems = unreadItems.slice(0, 30);
+
+  const html = displayItems.map(item => {
     const config = SECTION_CONFIG[item.section] || { 
       label: item.section, 
       badgeClass: 'bg-blue-500/15 text-blue-400 light:text-blue-700 border border-blue-500/25',
-      icon: '📌'
+      icon: '📌',
+      actionText: 'Open'
     };
     const dateFormatted = formatItemDate(item.date);
 
     return `
       <a 
         href="${item.url}" 
-        class="group flex items-start gap-3 p-2.5 rounded-xl hover:bg-white/5 light:hover:bg-slate-100 transition-all border border-transparent hover:border-white/5 light:hover:border-slate-200 cursor-pointer"
+        class="group block p-4 sm:p-5 rounded-2xl border transition-all duration-300 cursor-pointer border-brand-blue/50 bg-brand-blue/[0.04] shadow-lg shadow-brand-blue/5 hover:border-brand-blue/80 light:bg-blue-50/40 light:border-brand-blue/30"
       >
-        ${item.image ? `
-          <div class="w-[116px] h-[74px] rounded-lg overflow-hidden shrink-0 border border-white/10 light:border-slate-200 bg-slate-900/50 light:bg-slate-100 flex items-center justify-center">
-            <img 
-              src="${item.image}" 
-              alt="${escapeHtml(item.title)}" 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-              loading="lazy"
-            />
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6">
+          <!-- 16:9 Thumbnail Image -->
+          <div class="w-full sm:w-52 md:w-60 aspect-video rounded-xl overflow-hidden shrink-0 border border-white/10 light:border-slate-200 bg-slate-900/60 light:bg-slate-100 flex items-center justify-center relative shadow-sm">
+            ${item.image ? `
+              <img 
+                src="${item.image}" 
+                alt="${escapeHtml(item.title)}" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                loading="lazy"
+              />
+            ` : `
+              <span class="text-3xl">${config.icon}</span>
+            `}
+            <span class="badge-new ${getUnreadBadgeClass(item.section)} badge-corner-tr">UNREAD</span>
           </div>
-        ` : `
-          <div class="w-[116px] h-[74px] rounded-lg overflow-hidden shrink-0 border border-white/10 light:border-slate-200 bg-white/5 light:bg-slate-100 flex items-center justify-center text-gray-400 light:text-slate-500">
-            <span class="text-xl">${config.icon}</span>
-          </div>
-        `}
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between gap-1.5 mb-1">
-            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${config.badgeClass}">
-              ${config.label}
-            </span>
-            <div class="flex items-center gap-1.5">
-              <span class="text-[11px] text-gray-400 light:text-slate-400">
-                ${dateFormatted}
-              </span>
-              ${item.isUnread ? `
-                <span class="w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(59,130,246,0.8)] shrink-0" title="Unread"></span>
+
+          <!-- Content Details -->
+          <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+            <div>
+              <div class="flex items-center gap-2 mb-2 flex-wrap">
+                <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${config.badgeClass}">
+                  ${config.label}
+                </span>
+                <span class="text-xs text-gray-400 light:text-slate-400 font-medium">
+                  ${dateFormatted}
+                </span>
+              </div>
+
+              <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 group-hover:text-brand-blue light:group-hover:text-brand-blue transition-colors line-clamp-2 leading-snug">
+                ${escapeHtml(item.title)}
+              </h3>
+
+              ${item.description ? `
+                <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 line-clamp-2 mt-2 leading-relaxed font-normal">
+                  ${escapeHtml(item.description)}
+                </p>
               ` : ''}
             </div>
+
+            <div class="mt-3 sm:mt-4 flex items-center text-xs font-semibold text-brand-blue group-hover:translate-x-1 transition-transform">
+              <span>${config.actionText}</span>
+              <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </div>
           </div>
-          <h4 class="text-xs font-semibold text-gray-200 light:text-slate-900 group-hover:text-brand-blue light:group-hover:text-brand-blue transition-colors line-clamp-1 leading-snug">
-            ${escapeHtml(item.title)}
-          </h4>
-          ${item.description ? `
-            <p class="text-[11px] text-gray-400 light:text-slate-500 line-clamp-2 mt-0.5 leading-snug font-normal">
-              ${escapeHtml(item.description)}
-            </p>
-          ` : ''}
         </div>
       </a>
     `;
@@ -380,6 +422,7 @@ async function initNotifications() {
     const markReadBtn = document.getElementById('whats-new-mark-read-btn');
 
     if (isTracking && unreadCount > 0) {
+      document.documentElement.classList.add('has-unread-notifications');
       desktopBtn?.classList.add('whats-new-luminous');
       mobileBtn?.classList.add('whats-new-luminous');
       const titleText = `What's New (${unreadCount} unread)`;
@@ -394,6 +437,7 @@ async function initNotifications() {
       }
       markReadBtn?.classList.remove('hidden');
     } else {
+      document.documentElement.classList.remove('has-unread-notifications');
       desktopBtn?.classList.remove('whats-new-luminous');
       mobileBtn?.classList.remove('whats-new-luminous');
       const titleText = "What's New";
@@ -412,7 +456,7 @@ async function initNotifications() {
       hintBanner?.classList.add('hidden');
     }
 
-    renderPopoverList(allFeedItems, isTracking, unreadCount);
+    renderActivityFeed(allFeedItems, isTracking, unreadCount);
     setupMarkAllAsRead(manifest);
   }
 
