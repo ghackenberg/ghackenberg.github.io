@@ -33,6 +33,7 @@ function parseItemDate(id: string, dateVal?: string | Date): number {
 
 export async function GET() {
   const posts = await getCollection("posts");
+  const presentations = await getCollection("presentations");
   const courses = await getCollection("courses");
   const projects = await getCollection("projects");
   const publications = await getCollection("publications");
@@ -48,6 +49,7 @@ export async function GET() {
       title: t.data.title,
       description: t.data.description,
       postsCount: posts.filter(p => p.data.tags.includes(t.id)).length,
+      presentationsCount: presentations.filter(pres => pres.data.tags && pres.data.tags.includes(t.id)).length,
       publicationsCount: publications.filter(pub => pub.data.tags.includes(t.id)).length,
       projectsCount: projects.filter(proj => proj.data.tags && proj.data.tags.includes(t.id)).length,
       coursesCount: courses.filter(c => c.data.tags && c.data.tags.includes(t.id)).length,
@@ -58,6 +60,16 @@ export async function GET() {
       url: `/posts/${p.id}/`,
       title: p.data.title,
       description: p.data.description || '',
+      tags: p.data.tags || [],
+      date: parseItemDate(p.id, p.data.pubDate)
+    })),
+    presentations: presentations.map(p => ({
+      id: p.id,
+      url: `/presentations/${p.id}/`,
+      title: p.data.title,
+      subtitle: p.data.subtitle || '',
+      description: p.data.description || '',
+      event: p.data.event || '',
       tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
     })),

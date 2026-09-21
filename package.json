@@ -24,7 +24,8 @@
     "generate-assets": "node scripts/generate-assets.js",
     "lighthouse": "node scripts/run-lighthouse.js",
     "setup:mcp": "npm --prefix scripts/mcp-unified-analytics install && npm --prefix scripts/mcp-unified-analytics run build && npm --prefix scripts/mcp-unified-analytics link",
-    "audio:talks": "node scripts/generate-talk-audio.js",
+    "audio:presentations": "node scripts/generate-presentation-audio.js",
+    "audio:talks": "node scripts/generate-presentation-audio.js",
     "export:slides": "node scripts/export-slides-pdf.js",
     "validate:slides": "node scripts/validate-slides.js",
     "astro": "astro"

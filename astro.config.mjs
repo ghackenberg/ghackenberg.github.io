@@ -47,7 +47,7 @@ function copyContentAssets() {
            * @param {() => void} next
            */
           (req, res, next) => {
-            const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services|talks)\/(.+)$/);
+            const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services|presentations|talks)\/(.+)$/);
             if (match) {
               const [_, collection, rest] = match;
               const cleanRest = rest.split('?')[0];
@@ -67,7 +67,7 @@ function copyContentAssets() {
       /** @param {{ dir: URL }} options */
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
-        const collections = ['posts', 'publications', 'visualizations', 'courses', 'services', 'projects', 'interests', 'talks'];
+        const collections = ['posts', 'publications', 'visualizations', 'courses', 'services', 'projects', 'interests', 'presentations'];
         for (const col of collections) {
           const srcDir = path.resolve('src/content', col);
           if (!fs.existsSync(srcDir)) continue;
@@ -210,9 +210,9 @@ export default defineConfig({
           const pathname = new URL(item.url).pathname;
           return pathname.startsWith('/visualizations/') || pathname === '/visualizations' ? item : undefined;
         },
-        talks: (item) => {
+        presentations: (item) => {
           const pathname = new URL(item.url).pathname;
-          return pathname.startsWith('/talks/') || pathname === '/talks' ? item : undefined;
+          return pathname.startsWith('/presentations/') || pathname === '/presentations' ? item : undefined;
         }
       }
     }),

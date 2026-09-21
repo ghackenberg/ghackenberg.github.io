@@ -427,9 +427,9 @@ const environments = defineCollection({
 });
 
 
-const talks = defineCollection({
+const presentations = defineCollection({
   loader: glob({
-    base: './src/content/talks',
+    base: './src/content/presentations',
     pattern: '*/index.{md,mdx}',
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
@@ -437,7 +437,7 @@ const talks = defineCollection({
     title: z.string(),
     subtitle: z.string().optional(),
     pubDate: z.coerce.date(),
-    event: z.string(),
+    event: z.string().optional(),
     location: z.string().optional(),
     audience: z.string().optional(),
     lang: z.enum(['de', 'en']).default('de'),
@@ -450,7 +450,7 @@ const talks = defineCollection({
 
 const slides = defineCollection({
   loader: glob({
-    base: './src/content/talks',
+    base: './src/content/presentations',
     pattern: '*/slides/*.{md,mdx}',
     generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, '')
   }),
@@ -485,7 +485,7 @@ export const collections = {
   'characters': characters,
   'objects': objects,
   'environments': environments,
-  'talks': talks,
+  'presentations': presentations,
   'slides': slides,
 };
 

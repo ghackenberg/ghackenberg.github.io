@@ -212,25 +212,25 @@ function safeWriteJson(filePath, data) {
 }
 
 /**
- * Generates audio and word-level cues for all talks
+ * Generates audio and word-level cues for all presentations
  */
-async function generateAllTalkAudio() {
-  const talksBase = path.resolve('src/content/talks');
-  if (!fs.existsSync(talksBase)) {
-    console.log('[Audio Generator] No talks directory found at src/content/talks');
+async function generateAllPresentationAudio() {
+  const presentationsBase = path.resolve('src/content/presentations');
+  if (!fs.existsSync(presentationsBase)) {
+    console.log('[Audio Generator] No presentations directory found at src/content/presentations');
     return;
   }
 
-  const talkFolders = fs.readdirSync(talksBase);
+  const presentationFolders = fs.readdirSync(presentationsBase);
 
-  for (const talkFolder of talkFolders) {
-    const talkPath = path.join(talksBase, talkFolder);
-    if (!fs.statSync(talkPath).isDirectory()) continue;
+  for (const presentationFolder of presentationFolders) {
+    const presentationPath = path.join(presentationsBase, presentationFolder);
+    if (!fs.statSync(presentationPath).isDirectory()) continue;
 
-    const slidesDir = path.join(talkPath, 'slides');
+    const slidesDir = path.join(presentationPath, 'slides');
     if (!fs.existsSync(slidesDir)) continue;
 
-    const audioDir = path.join(talkPath, 'audio');
+    const audioDir = path.join(presentationPath, 'audio');
     fs.mkdirSync(audioDir, { recursive: true });
 
     const cacheFile = path.join(audioDir, '.cache.json');
@@ -248,7 +248,7 @@ async function generateAllTalkAudio() {
       .filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
       .sort();
 
-    console.log(`\n[Audio Generator] Processing talk: "${talkFolder}" (${slideFiles.length} slides)`);
+    console.log(`\n[Audio Generator] Processing presentation: "${presentationFolder}" (${slideFiles.length} slides)`);
 
     const forceFlag = process.argv.includes('--force') || process.argv.includes('-f');
     const slideArg = process.argv.find((a) => a.startsWith('--slide='));
@@ -367,7 +367,7 @@ async function generateAllTalkAudio() {
   console.log('\n[Audio Generator] Done.');
 }
 
-generateAllTalkAudio().catch((err) => {
+generateAllPresentationAudio().catch((err) => {
   console.error('[Audio Generator] Fatal error:', err);
   process.exit(1);
 });

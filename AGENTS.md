@@ -121,12 +121,12 @@ To avoid mixed-language indexing penalties and ensure search engines and generat
 
 
 ## 5. Presentation & Slide-as-Code Protocol (PowerPoint-Style Architecture)
-Whenever authoring, modifying, or managing public talks, lectures, or keynotes in this repository:
+Whenever authoring, modifying, or managing presentations, public talks, lectures, or keynotes in this repository:
 
 ### 1. Repository Structure & Location
-- Every talk is located in its own subfolder: `src/content/talks/[YYYY_MM_DD_slug]/`.
-- The talk metadata is defined in `index.md` (with `title`, `event`, `location`, `pubDate`, `audience`, `lang`, `description`, `tags`).
-- All individual slides are co-located in `src/content/talks/[YYYY_MM_DD_slug]/slides/` as numbered files (e.g. `01_titelfolie.mdx`, `02_agenda.mdx`).
+- Every presentation is located in its own subfolder: `src/content/presentations/[YYYY_MM_DD_slug]/`.
+- The presentation metadata is defined in `index.md` (with `title`, `pubDate`, `lang`, `description`, `tags`, and optional `event`, `location`, `audience`).
+- All individual slides are co-located in `src/content/presentations/[YYYY_MM_DD_slug]/slides/` as numbered files (e.g. `01_titelfolie.mdx`, `02_agenda.mdx`).
 
 ### 2. Self-Contained Slide Bundle Requirement
 Each slide file is an autonomous bundle. It **must** define:
@@ -276,5 +276,5 @@ Each slide file is an autonomous bundle. It **must** define:
 
 ### 6. Quality Gates & Automation
 - Always run `npm run validate:slides` to verify cue consistency, frontmatter completeness, and DOM target matching.
-- Run `npm run audio:talks` to synthesize neural speech audio (`.mp3`) and WordBoundary cue timings (`.cues.json`).
+- Run `npm run audio:presentations` to synthesize neural speech audio (`.mp3`) and WordBoundary cue timings (`.cues.json`).
 - Run `npm run typecheck`, `npm run lint`, and `npm run build` before committing.

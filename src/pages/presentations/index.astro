@@ -1,26 +1,26 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
-import TalkCard from "../../components/TalkCard.astro";
+import PresentationCard from "../../components/PresentationCard.astro";
 import { getCollection } from "astro:content";
 
-const allTalks = await getCollection("talks");
-const talks = allTalks.sort(
+const allPresentations = await getCollection("presentations");
+const presentations = allPresentations.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-// Collect all unique tags for tag filter across all talks
+// Collect all unique tags for tag filter across all presentations
 const tagsSet = new Set<string>();
-for (const talk of talks) {
-  if (talk.data.tags) {
-    talk.data.tags.forEach((tag) => {
+for (const presentation of presentations) {
+  if (presentation.data.tags) {
+    presentation.data.tags.forEach((tag) => {
       tagsSet.add(tag);
     });
   }
 }
 const allTags = Array.from(tagsSet).sort();
 
-const pagePreviewImage = talks.find(t => t.data.previewImage || t.data.icon)?.data.previewImage || talks.find(t => t.data.previewImage || t.data.icon)?.data.icon;
+const pagePreviewImage = presentations.find(t => t.data.previewImage || t.data.icon)?.data.previewImage || presentations.find(t => t.data.previewImage || t.data.icon)?.data.icon;
 
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -35,16 +35,16 @@ const breadcrumbSchema = {
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Virtual Talks",
-      "item": "https://hackenberg.tech/talks/"
+      "name": "Interactive Presentations",
+      "item": "https://hackenberg.tech/presentations/"
     }
   ]
 };
 ---
 
 <Layout
-  title="Virtual Talks | Dr. Georg Hackenberg"
-  description="Explore keynote presentations, conference talks, and technical slide decks by Dr. Georg Hackenberg on AI, search engines, knowledge graphs, and software architecture."
+  title="Interactive Presentations | Dr. Georg Hackenberg"
+  description="Explore interactive presentations, keynote slide decks, and executive briefings by Dr. Georg Hackenberg on AI, search engines, knowledge graphs, and software architecture."
   image={pagePreviewImage}
   jsonLd={breadcrumbSchema}
   lang="en"
@@ -54,10 +54,10 @@ const breadcrumbSchema = {
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <div class="mb-12">
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-        Virtual <span class="heading-gradient-blue">Talks</span>
+        Interactive <span class="heading-gradient-blue">Presentations</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-        Keynotes, conference presentations, and technical slide decks featuring synchronized neural voiceovers, vector diagrams, and complete transcripts for industry and science.
+        Keynotes, technical slide decks, and executive briefings featuring synchronized neural voiceovers, vector diagrams, and complete transcripts for industry and science.
       </p>
     </div>
 
@@ -68,17 +68,17 @@ const breadcrumbSchema = {
           <div class="mb-4 shrink-0">
             <h2 class="text-lg font-bold flex items-center space-x-2">
               <span>⚙️</span>
-              <span>Filter Talks</span>
+              <span>Filter Presentations</span>
             </h2>
           </div>
 
           <!-- Text Search -->
           <div class="mb-4 shrink-0">
-            <label for="talk-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
+            <label for="presentation-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
             <div class="relative">
               <input 
                 type="text" 
-                id="talk-search" 
+                id="presentation-search" 
                 placeholder="Search presentations..." 
                 class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all duration-200"
               />
@@ -107,34 +107,34 @@ const breadcrumbSchema = {
         </div>
       </div>
 
-      <!-- Talks Grid (Column 2) -->
+      <!-- Presentations Grid (Column 2) -->
       <div class="lg:col-span-9 order-2 lg:order-1">
-        {talks.length === 0 ? (
+        {presentations.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No presentations found.</p>
         ) : (
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 scroll-mt-28" id="talks-grid">
-            {talks.map((talk) => {
-              const tagsJoined = (talk.data.tags || [])
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 scroll-mt-28" id="presentations-grid">
+            {presentations.map((presentation) => {
+              const tagsJoined = (presentation.data.tags || [])
                 .join(" ")
                 .toLowerCase();
               return (
                 <div 
-                  class="talk-card-item h-full"
-                  data-title={talk.data.title.toLowerCase()}
-                  data-desc={(talk.data.subtitle || talk.data.description || "").toLowerCase()}
-                  data-event={(talk.data.event || "").toLowerCase()}
+                  class="presentation-card-item h-full"
+                  data-title={presentation.data.title.toLowerCase()}
+                  data-desc={(presentation.data.subtitle || presentation.data.description || "").toLowerCase()}
+                  data-event={(presentation.data.event || "").toLowerCase()}
                   data-tags={tagsJoined}
                 >
-                  <TalkCard
-                    id={talk.id}
-                    title={talk.data.title}
-                    subtitle={talk.data.subtitle}
-                    description={talk.data.description}
-                    pubDate={talk.data.pubDate}
-                    event={talk.data.event}
-                    location={talk.data.location}
-                    icon={talk.data.previewImage || talk.data.icon}
-                    tags={talk.data.tags || []}
+                  <PresentationCard
+                    id={presentation.id}
+                    title={presentation.data.title}
+                    subtitle={presentation.data.subtitle}
+                    description={presentation.data.description}
+                    pubDate={presentation.data.pubDate}
+                    event={presentation.data.event}
+                    location={presentation.data.location}
+                    icon={presentation.data.previewImage || presentation.data.icon}
+                    tags={presentation.data.tags || []}
                   />
                 </div>
               );
@@ -142,12 +142,12 @@ const breadcrumbSchema = {
           </div>
         )}
 
-        <p id="no-talks-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+        <p id="no-presentations-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
           No presentations match your selected filter criteria.
         </p>
 
         <!-- Pagination Controls -->
-        <nav id="talks-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Talks Pagination">
+        <nav id="presentations-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Presentations Pagination">
           <div class="flex-1 w-full sm:w-auto text-left">
             <button 
               type="button" 
@@ -160,13 +160,16 @@ const breadcrumbSchema = {
             </button>
           </div>
 
-          <div class="page-numbers-container flex items-center justify-center gap-1.5 order-3 sm:order-2 flex-wrap"></div>
+          <div class="pagination-pages flex items-center justify-center gap-1.5 flex-wrap">
+            <!-- Dynamic page buttons injected by ClientListFilter -->
+          </div>
 
-          <div class="flex-1 w-full sm:w-auto text-right order-2 sm:order-3">
+          <div class="flex-1 w-full sm:w-auto text-right">
             <button 
               type="button" 
               data-action="next" 
-              class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+              disabled 
+              class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200"
             >
               <span>Next</span>
               <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
@@ -183,8 +186,8 @@ const breadcrumbSchema = {
 
   function initFilter() {
     new ClientListFilter({
-      itemSelector: ".talk-card-item",
-      searchFieldSelector: "#talk-search",
+      itemSelector: ".presentation-card-item",
+      searchFieldSelector: "#presentation-search",
       searchDataAttributes: ["data-title", "data-desc", "data-event", "data-tags"],
       searchParamKey: "q",
       buttonFilters: [
@@ -199,13 +202,13 @@ const breadcrumbSchema = {
       ],
       pagination: {
         pageSize: 10,
-        navSelector: "#talks-pagination",
+        navSelector: "#presentations-pagination",
         pageParamKey: "page",
         theme: "blue",
-        scrollToSelector: "#talks-grid"
+        scrollToSelector: "#presentations-grid"
       },
-      scrollToSelector: "#talks-grid",
-      noResultsSelector: "#no-talks-message"
+      scrollToSelector: "#presentations-grid",
+      noResultsSelector: "#no-presentations-message"
     });
   }
 
