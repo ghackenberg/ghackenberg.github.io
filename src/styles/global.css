@@ -299,13 +299,25 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
 
 
 
-/* Responsive Logo Name Visibility */
+/* Responsive Logo Name & Subtitle Visibility */
 .nav-logo-name {
   display: none !important;
 }
-@media (min-width: 380px) {
+.nav-logo-subtitle {
+  display: none !important;
+}
+
+/* 440px+: Show title 'Dr. Georg Hackenberg' alongside monogram and 4 action buttons */
+@media (min-width: 440px) {
   .nav-logo-name {
     display: flex !important;
+  }
+}
+
+/* 520px+: Ample space to comfortably display full title AND subtitle without line wrapping */
+@media (min-width: 520px) {
+  .nav-logo-subtitle {
+    display: block !important;
   }
 }
 
@@ -522,6 +534,18 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   border-bottom-left-radius: 0.5rem;
 }
 
+/* What's New Icon Highlight (Option A: Only the icon inside the circle is highlighted) */
+.whats-new-luminous svg {
+  color: #3b82f6 !important;
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.7));
+  transition: color 0.3s ease, filter 0.3s ease;
+}
+
+html.light .whats-new-luminous svg {
+  color: #2563eb !important;
+  filter: drop-shadow(0 0 3px rgba(37, 99, 235, 0.45));
+}
+
 /* Navigation Section Unread Notification Dot */
 .nav-badge {
   width: 0.45rem;
@@ -534,7 +558,8 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   line-height: 0 !important;
   flex-shrink: 0;
   vertical-align: middle;
-  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  transform: none !important;
+  transition: opacity 0.2s ease-in-out;
 }
 
 .nav-badge:not(.hidden) {
