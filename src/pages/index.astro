@@ -280,13 +280,15 @@ const remainingTags = sortedByFreq.slice(7, 21);
 const overflowTags = sortedByFreq.slice(21);
 
 const restTagsCount = overflowTags.length;
-const restTotalContentCount = overflowTags.reduce((sum, t) => sum + t.totalCount, 0);
-const restPostsCount = overflowTags.reduce((sum, t) => sum + t.postsCount, 0);
-const restPubsCount = overflowTags.reduce((sum, t) => sum + t.pubsCount, 0);
-const restPresCount = overflowTags.reduce((sum, t) => sum + t.presCount, 0);
-const restCoursesCount = overflowTags.reduce((sum, t) => sum + t.coursesCount, 0);
-const restProjectsCount = overflowTags.reduce((sum, t) => sum + t.projectsCount, 0);
-const restServicesCount = overflowTags.reduce((sum, t) => sum + t.servicesCount, 0);
+const overflowTagIds = new Set(overflowTags.map(t => t.id));
+
+const restPostsCount = posts.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restPubsCount = publications.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restPresCount = presentations.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restCoursesCount = courses.filter(c => c.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restProjectsCount = projects.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restServicesCount = services.filter(s => s.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restTotalContentCount = restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount;
 
 const restPostsPct = restTotalContentCount > 0 ? Math.round((restPostsCount / restTotalContentCount) * 100) : 0;
 const restPubsPct = restTotalContentCount > 0 ? Math.round((restPubsCount / restTotalContentCount) * 100) : 0;
