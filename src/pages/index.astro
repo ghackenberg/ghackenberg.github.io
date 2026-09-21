@@ -610,6 +610,34 @@ const websiteSections = [
     radialGlow: "bg-brand-blue/10"
   },
   {
+    title: "Publications",
+    emoji: "📄",
+    href: "/publications/",
+    section: "publications",
+    count: publications.length,
+    unit: "Publications",
+    description: "Peer-reviewed scientific papers, academic publications, and conference proceedings.",
+    borderHover: "group-hover:border-indigo-400/40",
+    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(129,140,248,0.25)]",
+    badgeStyle: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    buttonGradient: "bg-gradient-to-r from-indigo-500 to-purple-600 text-white",
+    radialGlow: "bg-indigo-400/10"
+  },
+  {
+    title: "Presentations",
+    emoji: "🎙️",
+    href: "/presentations/",
+    section: "presentations",
+    count: presentations.length,
+    unit: "Keynotes",
+    description: "Interactive slide decks, keynote presentations, and executive briefings with synchronized neural voiceovers.",
+    borderHover: "group-hover:border-cyan-400/40",
+    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(6,182,212,0.25)]",
+    badgeStyle: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+    buttonGradient: "bg-gradient-to-r from-cyan-500 to-blue-600 text-white",
+    radialGlow: "bg-cyan-400/10"
+  },
+  {
     title: "Courses",
     emoji: "🎓",
     href: "/courses/",
@@ -631,11 +659,11 @@ const websiteSections = [
     count: projects.length,
     unit: "Projects",
     description: "Open-source software repositories, production web applications, and developer tools.",
-    borderHover: "group-hover:border-sky-400/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(56,189,248,0.25)]",
-    badgeStyle: "bg-sky-500/10 text-sky-400 border-sky-500/20",
-    buttonGradient: "bg-gradient-blue text-white",
-    radialGlow: "bg-sky-400/10"
+    borderHover: "group-hover:border-brand-green/40",
+    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(16,185,129,0.25)]",
+    badgeStyle: "bg-brand-green/10 text-brand-green border-brand-green/20",
+    buttonGradient: "bg-gradient-green text-white",
+    radialGlow: "bg-brand-green/10"
   },
   {
     title: "Services",
@@ -650,34 +678,6 @@ const websiteSections = [
     badgeStyle: "bg-brand-purple/10 text-brand-purple border-brand-purple/20",
     buttonGradient: "bg-gradient-purple text-white",
     radialGlow: "bg-brand-purple/10"
-  },
-  {
-    title: "Publications",
-    emoji: "📄",
-    href: "/publications/",
-    section: "publications",
-    count: publications.length,
-    unit: "Publications",
-    description: "Peer-reviewed scientific papers, academic publications, and conference proceedings.",
-    borderHover: "group-hover:border-indigo-400/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(129,140,248,0.25)]",
-    badgeStyle: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-    buttonGradient: "bg-gradient-purple text-white",
-    radialGlow: "bg-indigo-400/10"
-  },
-  {
-    title: "Visualizations",
-    emoji: "✨",
-    href: "/visualizations/",
-    section: "visualizations",
-    count: visualizations.length,
-    unit: "Simulations",
-    description: "Interactive 2D/3D content visualizations, graph network explorers, and dynamic models.",
-    borderHover: "group-hover:border-brand-green/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(16,185,129,0.25)]",
-    badgeStyle: "bg-brand-green/10 text-brand-green border-brand-green/20",
-    buttonGradient: "bg-gradient-green text-white",
-    radialGlow: "bg-brand-green/10"
   }
 ];
 
@@ -802,7 +802,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </p>
           
           <p class="text-gray-400 text-base sm:text-lg leading-relaxed mb-10 font-normal">
-            Welcome to my personal website! I am a computer science professor, digital entrepreneur, and software engineer from <strong class="font-bold text-gray-200 light:text-slate-900">Hohenschwangau 🏰</strong> in Bavaria (under the world famous Castle Neuschwanstein) living in <strong class="font-bold text-gray-200 light:text-slate-900">Grünau im Almtal 🌄</strong> and working at <strong class="font-bold text-gray-200 light:text-slate-900">UAP Campus Wels 🏙️</strong> in Upper Austria. Dive in to explore my blog posts, university courses, software projects, business services, reviewed publications, and content visualizations, and feel free to reach out anytime if you would like to connect or collaborate.
+            Welcome to my personal website! I am a computer science professor, digital entrepreneur, and software engineer from <strong class="font-bold text-gray-200 light:text-slate-900">Hohenschwangau 🏰</strong> in Bavaria (under the world famous Castle Neuschwanstein) living in <strong class="font-bold text-gray-200 light:text-slate-900">Grünau im Almtal 🌄</strong> and working at <strong class="font-bold text-gray-200 light:text-slate-900">UAP Campus Wels 🏙️</strong> in Upper Austria. Dive in to explore my blog posts, reviewed publications, interactive presentations, university courses, software projects, and business services, and feel free to reach out anytime if you would like to connect or collaborate.
           </p>
           
           <div class="flex flex-wrap items-center gap-4">
@@ -964,7 +964,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           Website <span class="heading-gradient-brand">Sections</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
-          Quickly access core content areas across technical writing, academic teaching, software engineering, services, research, and interactive web tools.
+          Quickly access core content areas across technical writing, academic research, interactive presentations, university teaching, software engineering, and business services.
         </p>
       </div>
 
