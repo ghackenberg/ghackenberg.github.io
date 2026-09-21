@@ -24,7 +24,7 @@ const breadcrumbSchema = {
 
 <Layout 
   title="Datenschutzerklärung | Dr. Georg Hackenberg" 
-  description="Datenschutzerklärung von Dr. Georg Hackenberg gemäß EU-Datenschutz-Grundverordnung (DSGVO)."
+  description="Datenschutzerklärung von Dr. Georg Hackenberg gemäß EU-Datenschutz-Grundverordnung (DSGVO), TDDDG und TKG 2021."
   jsonLd={breadcrumbSchema}
 >
   <Navbar />
@@ -35,15 +35,28 @@ const breadcrumbSchema = {
         Datenschutzerklärung
       </h1>
       <p class="text-gray-400 text-sm md:text-base max-w-xl font-normal leading-relaxed">
-        Informationen darüber, wie wir personenbezogene Daten auf dieser Website verarbeiten, schützen und welche Rechte Ihnen gemäß DSGVO zustehen.
+        Informationen darüber, wie wir personenbezogene Daten auf dieser Website verarbeiten, schützen und welche Rechte Ihnen gemäß DSGVO, TDDDG und TKG 2021 zustehen.
       </p>
+
+      <div class="mt-5">
+        <button 
+          type="button" 
+          data-open-privacy-modal 
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-element-bg border border-element-border-medium hover:border-brand-purple/40 text-gray-200 hover:text-white text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer shadow-sm"
+        >
+          <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          <span>Privatsphäre-Einstellungen anpassen</span>
+        </button>
+      </div>
     </div>
 
     <!-- Main Content Panel -->
     <div class="glass-card rounded-3xl border border-white/5 overflow-hidden p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8 relative">
       <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-purple"></div>
 
-      <!-- Section: Controller -->
+      <!-- Section 1: Controller -->
       <div>
         <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple mb-3">1. Verantwortlicher</h2>
         <div class="text-sm text-gray-300">
@@ -59,7 +72,7 @@ const breadcrumbSchema = {
 
       <hr class="border-white/5" />
 
-      <!-- Section: Web Hosting / Server Logs -->
+      <!-- Section 2: Web Hosting / Server Logs -->
       <div class="space-y-3">
         <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">2. Webhosting & Server-Logfiles</h2>
         <p class="text-gray-300 text-sm leading-relaxed">
@@ -79,22 +92,58 @@ const breadcrumbSchema = {
 
       <hr class="border-white/5" />
 
-      <!-- Section: Analytics -->
+      <!-- Section 3: Analytics -->
       <div class="space-y-3">
-        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">3. Web-Analyse (Plausible Analytics)</h2>
+        <h2 id="analytics" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">3. Web-Analyse (Plausible Analytics)</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          Wir nutzen auf dieser Website <strong>Plausible Analytics</strong>, einen datenschutzfreundlichen Webanalysedienst der Plausible Insights OÜ (Västriku tn 2, Tartu 50403, Estland). 
+          Wir nutzen auf dieser Website <strong>Plausible Analytics</strong>, einen datenschutzfreundlichen Webanalysedienst der Plausible Insights OÜ (Västriku tn 2, Tartu 50403, Estland). Die Erfassung erfolgt über eine europäische Server-Instanz (<code class="text-gray-300 font-mono text-xs">analytics.mentawise.com</code>) auf Servern innerhalb der Europäischen Union.
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          Plausible Analytics verwendet <strong>keine Cookies</strong> und speichert keine Daten auf Ihrem Endgerät. Es werden keine personenbezogenen Daten erfasst, mit denen einzelne Besucher identifiziert werden können. IP-Adressen werden unmittelbar nach dem Zugriff kryptografisch in eine anonyme Kennzahl (Hash-Wert) umgewandelt, die sich täglich ändert. Es findet keine Nachverfolgung über mehrere Tage hinweg oder über andere Websites statt. Die Erfassung erfolgt ausschließlich zur statistischen Auswertung und Optimierung unseres Online-Angebots auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO).
+          Plausible Analytics verwendet <strong>keine Cookies</strong> und speichert keine dauerhaften Kennungen auf Ihrem Endgerät. Es werden keine personenbezogenen Daten erfasst, mit denen einzelne Besucher identifiziert oder über mehrere Tage bzw. Websites hinweg verfolgt werden können. IP-Adressen werden unmittelbar nach dem Zugriff kryptografisch mit einem täglich wechselnden Zufallswert (Salt) in einen Hash-Wert umgewandelt. Eine Rekonstruktion der ursprünglichen IP-Adresse ist technisch ausgeschlossen.
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Die Erfassung erfolgt ausschließlich zur statistischen Auswertung und Optimierung unseres Online-Angebots auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO).
+        </p>
+        <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
+          <p class="text-xs text-gray-300 font-semibold">Widerspruchsmöglichkeit (Opt-Out gem. Art. 21 DSGVO & CNIL-Richtlinie):</p>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Sie können der statistischen Erfassung Ihrer Besuche jederzeit widersprechen. Zudem respektiert unsere Seite automatisch Browser-Signale wie <em>Global Privacy Control (GPC)</em> und <em>Do Not Track (DNT)</em>.
+          </p>
+          <button 
+            type="button" 
+            data-open-privacy-modal 
+            class="text-xs text-brand-purple hover:underline font-medium inline-flex items-center gap-1 cursor-pointer pt-1"
+          >
+            <span>Plausible Opt-Out in den Privatsphäre-Einstellungen verwalten</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <hr class="border-white/5" />
+
+      <!-- Section 4: Local Storage & Read State -->
+      <div class="space-y-3">
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">4. Lokale Speicherung im Browser (Local Storage & Lesestatus)</h2>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Um Ihnen das Wiederfinden neuer und ungelesener Beiträge zu erleichtern, bietet diese Website eine optionale Funktion zur Hervorhebung des Lesestatus (Unread-Badges und Hinweispunkte in der Navigation).
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          <strong>100 % Client-seitig:</strong> Wenn Sie diese Funktion aktivieren, speichert Ihr Webbrowser die URLs besuchter Artikel und den Zeitstempel Ihres letzten Bereichsaufrufs ausschließlich lokal in Ihrem Endgerät (<code class="text-gray-300 font-mono text-xs">localStorage</code> unter dem Schlüssel <code class="text-gray-300 font-mono text-xs">gh_site_notifications_v1</code>). Diese Daten verbleiben vollständig auf Ihrem Gerät und werden zu keinem Zeitpunkt an unsere Server oder an Dritte übermittelt.
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          <strong>Freiwilliges Opt-In:</strong> Diese Funktion ist standardmäßig <strong>deaktiviert</strong>. Vor einer ausdrücklichen Aktivierung durch Sie wird kein Lesestatus erfasst und kein Speicherplatz in Ihrem Browser belegt. Die Speicherung erfolgt erst nach Ihrer ausdrücklichen Aktivierung (§ 25 Abs. 2 Nr. 2 TDDDG in Deutschland, § 165 Abs. 3 Z 2 TKG 2021 in Österreich, Art. 5 Abs. 3 ePrivacy-Richtlinie).
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          <strong>Löschbarkeit & Deaktivierung:</strong> Sie können das Feature jederzeit in den Privatsphäre-Einstellungen wieder deaktivieren oder Ihren gespeicherten Leseverlauf mit einem Klick rückstandslos löschen. Alternativ können Sie den Verlauf über die Browser-Funktion „Websitedaten / Cookies löschen“ entfernen.
         </p>
       </div>
 
       <hr class="border-white/5" />
 
-      <!-- Section: E-Mail Inquiries -->
+      <!-- Section 5: E-Mail Inquiries -->
       <div class="space-y-3">
-        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">4. Kontaktaufnahme per E-Mail</h2>
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">5. Kontaktaufnahme per E-Mail</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Wenn Sie uns per E-Mail (z. B. für eine Projekt- oder Buchungsanfrage) kontaktieren, werden die von Ihnen gemachten Angaben (Name, E-Mail-Adresse sowie der Inhalt der Nachricht) zur Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert.
         </p>
@@ -105,9 +154,9 @@ const breadcrumbSchema = {
 
       <hr class="border-white/5" />
 
-      <!-- Section: User Rights -->
+      <!-- Section 6: User Rights -->
       <div class="space-y-3">
-        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">5. Ihre Rechte gemäß DSGVO</h2>
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">6. Ihre Rechte gemäß DSGVO</h2>
         <p class="text-gray-300 text-sm leading-relaxed">
           Ihnen stehen als betroffene Person bezüglich Ihrer bei uns verarbeiteten Daten folgende gesetzliche Rechte zu:
         </p>

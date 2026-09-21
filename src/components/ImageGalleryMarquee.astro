@@ -351,12 +351,27 @@ function getBadgeColor(href: string): string {
     return 'badge-new-blue';
   }
 
+  function isOptedIn(): boolean {
+    try {
+      const raw = localStorage.getItem('gh_site_notifications_v1');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed && parsed.enabled === true;
+      }
+    } catch {
+      // Storage access failure
+    }
+    return false;
+  }
+
   function getVisitedItems(): Record<string, number> {
     try {
       const raw = localStorage.getItem('gh_site_notifications_v1');
       if (raw) {
         const parsed = JSON.parse(raw);
-        return parsed.visitedItems || {};
+        if (parsed && parsed.enabled === true) {
+          return parsed.visitedItems || {};
+        }
       }
     } catch {
       // Storage access failure
@@ -412,9 +427,13 @@ function getBadgeColor(href: string): string {
       badge.classList.remove('badge-new-blue', 'badge-new-yellow', 'badge-new-purple', 'badge-new-green');
       badge.classList.add(getBadgeColor(item.href));
 
-      const isVisited = isPathVisited(item.href, visitedItemsCache);
-      if (!isVisited) {
-        badge.classList.remove('hidden');
+      if (isOptedIn()) {
+        const isVisited = isPathVisited(item.href, visitedItemsCache);
+        if (!isVisited) {
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
       } else {
         badge.classList.add('hidden');
       }
@@ -921,6 +940,7 @@ function getBadgeColor(href: string): string {
   // Support Astro View Transitions and initial load
   setupGalleryEngine();
   document.addEventListener('astro:page-load', setupGalleryEngine);
+  window.addEventListener('gh-notifications-toggle', setupGalleryEngine);
   document.addEventListener('astro:before-swap', () => {
     if (activeAnimationId !== null) {
       cancelAnimationFrame(activeAnimationId);

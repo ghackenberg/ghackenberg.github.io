@@ -1,0 +1,349 @@
+---
+// Privacy & Settings Modal Component
+// Fully accessible, responsive (mobile/tablet/desktop/landscape), light- & dark-mode polished
+---
+
+<div 
+  id="privacy-modal-backdrop" 
+  class="fixed inset-0 z-[100] bg-black/75 light:bg-slate-900/20 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="privacy-modal-title"
+>
+  <div 
+    id="privacy-modal-container"
+    class="glass-panel w-full max-w-lg rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(92dvh,760px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
+  >
+    <!-- Top Accent Bar -->
+    <div class="h-1 sm:h-1.5 bg-gradient-brand shrink-0"></div>
+
+    <!-- Header (Sticky/Shrink-0) -->
+    <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-white/5 flex items-start justify-between gap-3">
+      <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-blue/15 border border-brand-blue/30 text-brand-blue flex items-center justify-center shrink-0">
+          <svg class="w-4.5 h-4.5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <h2 id="privacy-modal-title" class="text-base sm:text-xl font-bold text-gray-100 tracking-tight leading-snug truncate">
+            Privacy Settings
+          </h2>
+          <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 leading-normal truncate">
+            Full control over your data and local preferences
+          </p>
+        </div>
+      </div>
+
+      <!-- Close Button -->
+      <button 
+        id="privacy-modal-close-btn"
+        class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
+        aria-label="Close privacy settings"
+      >
+        <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scrollable Content Body -->
+    <div class="modal-body flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 py-3 sm:py-4 space-y-3 sm:space-y-4">
+      
+      <!-- Section 1: Local Read Status (Opt-In) -->
+      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
+        <div class="flex items-start justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="text-xs sm:text-sm font-semibold text-gray-100 light:text-slate-900">Local Read Status</h3>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-medium bg-brand-blue/15 text-brand-blue border border-brand-blue/30 light:bg-blue-50 light:text-blue-700 light:border-blue-200 shrink-0">
+                100% Client-Side
+              </span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-gray-400 light:text-slate-600 leading-relaxed">
+              Highlights new and unread content with subtle indicator dots. Stored <strong>strictly locally in your browser (<code class="text-gray-200 light:text-slate-800 font-mono text-[10px] sm:text-[11px] bg-white/5 light:bg-slate-200/60 px-1 py-0.5 rounded">localStorage</code>)</strong>. No data is ever transmitted to a server.
+            </p>
+          </div>
+
+          <!-- Toggle Switch -->
+          <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
+            <input type="checkbox" id="toggle-read-status" class="sr-only peer">
+            <div class="w-10 sm:w-11 h-5.5 sm:h-6 bg-gray-700 light:bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 light:after:border-slate-200 after:border after:rounded-full after:h-4.5 sm:after:h-5 after:w-4.5 sm:after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+            <span class="sr-only">Enable local read status</span>
+          </label>
+        </div>
+
+        <!-- Action Row: Status & Clear History -->
+        <div id="reading-data-actions" class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] sm:text-xs">
+          <span id="reading-status-summary" class="text-gray-400 light:text-slate-500">
+            Status: <span id="reading-status-text" class="text-gray-300 light:text-slate-700 font-medium">Disabled (No local storage)</span>
+          </span>
+          <button 
+            id="clear-reading-data-btn"
+            class="hidden px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 light:text-red-700 light:bg-red-50 light:border-red-200 light:hover:bg-red-100 transition-colors text-[11px] sm:text-xs font-medium cursor-pointer self-start sm:self-auto"
+          >
+            Clear reading history
+          </button>
+        </div>
+      </div>
+
+      <!-- Section 2: Plausible Web Analytics -->
+      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
+        <div class="space-y-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <h3 class="text-xs sm:text-sm font-semibold text-gray-100 light:text-slate-900">Web Analytics (Plausible)</h3>
+            <span id="analytics-badge" class="text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-200 shrink-0">
+              Active (Cookie-Free)
+            </span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-gray-400 light:text-slate-600 leading-relaxed">
+            We use an EU-hosted instance of <strong>Plausible Analytics</strong> for privacy-friendly audience measurement. <strong>No cookies</strong> are set, no IP addresses are stored, and no cross-site tracking takes place.
+          </p>
+        </div>
+
+        <!-- Opt-Out Action Row -->
+        <div class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] sm:text-xs">
+          <div class="text-gray-400 light:text-slate-500 text-[10px] sm:text-xs">
+            Legal basis: Art. 6(1)(f) GDPR
+          </div>
+          <button 
+            id="toggle-analytics-optout-btn"
+            class="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-300 light:text-slate-700 hover:text-gray-100 light:hover:text-slate-900 light:hover:bg-slate-100 transition-colors text-[11px] sm:text-xs font-medium cursor-pointer self-start sm:self-auto shadow-sm"
+          >
+            Opt out of analytics
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Note & Links (Sticky/Shrink-0) -->
+    <div class="modal-footer shrink-0 p-3.5 sm:p-6 pt-3 sm:pt-3.5 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs bg-[#090d16]/90">
+      <a 
+        href="/datenschutz/" 
+        class="text-[11px] sm:text-xs text-gray-400 light:text-slate-600 hover:text-brand-blue light:hover:text-brand-blue transition-colors flex items-center gap-1 group"
+      >
+        <span>Full Privacy Policy</span>
+        <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+      </a>
+      <button 
+        id="privacy-modal-save-btn"
+        class="w-full sm:w-auto px-5 py-2 rounded-xl bg-gradient-brand text-white font-semibold text-xs hover:opacity-95 transition-opacity cursor-pointer shadow-md shadow-brand-blue/20 text-center active:scale-95"
+      >
+        Done
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function() {
+    const NOTIF_STORAGE_KEY = 'gh_site_notifications_v1';
+    const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
+    const PLAUSIBLE_IGNORE_KEY = 'plausible_ignore';
+
+    const backdrop = document.getElementById('privacy-modal-backdrop');
+    const container = document.getElementById('privacy-modal-container');
+    const closeBtn = document.getElementById('privacy-modal-close-btn');
+    const saveBtn = document.getElementById('privacy-modal-save-btn');
+    const toggleReadStatus = document.getElementById('toggle-read-status');
+    const readingStatusText = document.getElementById('reading-status-text');
+    const clearReadingDataBtn = document.getElementById('clear-reading-data-btn');
+    const toggleAnalyticsBtn = document.getElementById('toggle-analytics-optout-btn');
+    const analyticsBadge = document.getElementById('analytics-badge');
+
+    function isNotificationsEnabled() {
+      try {
+        const data = localStorage.getItem(NOTIF_STORAGE_KEY);
+        if (data) {
+          const parsed = JSON.parse(data);
+          return parsed.enabled === true;
+        }
+      } catch(e) {}
+      return false;
+    }
+
+    function isAnalyticsOptedOut() {
+      try {
+        return localStorage.getItem(PLAUSIBLE_IGNORE_KEY) === 'true';
+      } catch(e) {
+        return false;
+      }
+    }
+
+    function updateModalUI() {
+      // 1. Read status toggle
+      const enabled = isNotificationsEnabled();
+      if (toggleReadStatus) {
+        toggleReadStatus.checked = enabled;
+      }
+      if (readingStatusText) {
+        readingStatusText.textContent = enabled ? 'Enabled (Stored locally)' : 'Disabled (No local storage)';
+        readingStatusText.className = enabled 
+          ? 'text-brand-blue light:text-blue-600 font-medium' 
+          : 'text-gray-400 light:text-slate-500 font-medium';
+      }
+      if (clearReadingDataBtn) {
+        if (enabled) {
+          clearReadingDataBtn.classList.remove('hidden');
+        } else {
+          clearReadingDataBtn.classList.add('hidden');
+        }
+      }
+
+      // 2. Analytics opt-out
+      const optedOut = isAnalyticsOptedOut();
+      if (toggleAnalyticsBtn) {
+        toggleAnalyticsBtn.textContent = optedOut ? 'Re-enable analytics' : 'Opt out of analytics';
+        toggleAnalyticsBtn.className = optedOut
+          ? 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-300 hover:bg-emerald-500/20 transition-colors text-[11px] sm:text-xs font-medium cursor-pointer self-start sm:self-auto'
+          : 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-300 light:text-slate-700 hover:text-gray-100 light:hover:text-slate-900 light:hover:bg-slate-100 transition-colors text-[11px] sm:text-xs font-medium cursor-pointer self-start sm:self-auto shadow-sm';
+      }
+      if (analyticsBadge) {
+        analyticsBadge.textContent = optedOut ? 'Disabled (Opt-out active)' : 'Active (Cookie-Free)';
+        analyticsBadge.className = optedOut
+          ? 'text-[10px] px-2 py-0.5 rounded-full font-medium bg-amber-500/15 text-amber-400 border border-amber-500/30 light:bg-amber-50 light:text-amber-700 light:border-amber-300 shrink-0'
+          : 'text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-200 shrink-0';
+      }
+    }
+
+    function openModal() {
+      updateModalUI();
+      if (backdrop && container) {
+        backdrop.classList.remove('opacity-0', 'pointer-events-none');
+        backdrop.classList.add('opacity-100');
+        container.classList.remove('scale-95');
+        container.classList.add('scale-100');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal() {
+      if (backdrop && container) {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
+        container.classList.remove('scale-100');
+        container.classList.add('scale-95');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Expose openPrivacyModal globally
+    window.openPrivacyModal = openModal;
+    window.closePrivacyModal = closeModal;
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (saveBtn) saveBtn.addEventListener('click', closeModal);
+
+    // Dismiss on backdrop click
+    if (backdrop) {
+      backdrop.addEventListener('click', function(e) {
+        if (e.target === backdrop) closeModal();
+      });
+    }
+
+    // Escape key
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && backdrop && !backdrop.classList.contains('pointer-events-none')) {
+        closeModal();
+      }
+    });
+
+    // Toggle Read Status
+    if (toggleReadStatus) {
+      toggleReadStatus.addEventListener('change', function() {
+        const shouldEnable = toggleReadStatus.checked;
+        if (shouldEnable) {
+          const freshState = {
+            enabled: true,
+            firstVisitTime: Date.now(),
+            lastVisitedSections: {},
+            visitedItems: {}
+          };
+          localStorage.setItem(NOTIF_STORAGE_KEY, JSON.stringify(freshState));
+          window.dispatchEvent(new CustomEvent('gh-notifications-toggle', { detail: { enabled: true } }));
+        } else {
+          // If disabled, delete all stored data
+          localStorage.removeItem(NOTIF_STORAGE_KEY);
+          localStorage.removeItem(MANIFEST_CACHE_KEY);
+          window.dispatchEvent(new CustomEvent('gh-notifications-toggle', { detail: { enabled: false } }));
+        }
+        updateModalUI();
+      });
+    }
+
+    // Clear reading data button
+    if (clearReadingDataBtn) {
+      clearReadingDataBtn.addEventListener('click', function() {
+        if (confirm('Do you really want to clear your locally stored reading history?')) {
+          const enabled = isNotificationsEnabled();
+          if (enabled) {
+            const emptyState = {
+              enabled: true,
+              firstVisitTime: Date.now(),
+              lastVisitedSections: {},
+              visitedItems: {}
+            };
+            localStorage.setItem(NOTIF_STORAGE_KEY, JSON.stringify(emptyState));
+            window.dispatchEvent(new CustomEvent('gh-notifications-toggle', { detail: { enabled: true, cleared: true } }));
+          } else {
+            localStorage.removeItem(NOTIF_STORAGE_KEY);
+            localStorage.removeItem(MANIFEST_CACHE_KEY);
+          }
+          updateModalUI();
+        }
+      });
+    }
+
+    // Toggle Analytics Opt-Out
+    if (toggleAnalyticsBtn) {
+      toggleAnalyticsBtn.addEventListener('click', function() {
+        const currentlyOptedOut = isAnalyticsOptedOut();
+        if (currentlyOptedOut) {
+          localStorage.removeItem(PLAUSIBLE_IGNORE_KEY);
+        } else {
+          localStorage.setItem(PLAUSIBLE_IGNORE_KEY, 'true');
+        }
+        updateModalUI();
+      });
+    }
+
+    // Wire up any elements with data-open-privacy-modal
+    document.addEventListener('click', function(e) {
+      const target = e.target.closest('[data-open-privacy-modal]');
+      if (target) {
+        e.preventDefault();
+        openModal();
+      }
+    });
+  })();
+</script>
+
+<style is:global>
+  /* Light mode crystal-bright appearance matching navbar */
+  html.light #privacy-modal-backdrop {
+    background-color: rgba(15, 23, 42, 0.25) !important;
+  }
+  html.light #privacy-modal-container {
+    background-color: #ffffff !important;
+    border-color: rgba(15, 23, 42, 0.12) !important;
+    color: #1e293b !important;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
+  }
+  html.light #privacy-modal-container .modal-header,
+  html.light #privacy-modal-container .modal-body {
+    background-color: #ffffff !important;
+  }
+  html.light #privacy-modal-container .modal-header {
+    border-color: rgba(15, 23, 42, 0.08) !important;
+  }
+  html.light #privacy-modal-container .modal-header h2 {
+    color: #0f172a !important;
+  }
+  html.light #privacy-modal-container .modal-header p {
+    color: #64748b !important;
+  }
+  html.light #privacy-modal-container .modal-footer {
+    background-color: #f8fafc !important;
+    border-color: rgba(15, 23, 42, 0.08) !important;
+  }
+</style>

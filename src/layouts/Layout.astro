@@ -20,6 +20,7 @@ import { getImage } from "astro:assets";
 import defaultOgImage from "../assets/images/og-share-preview.png";
 import Background from "../components/Background.astro";
 import JsonLd from "../components/JsonLd.astro";
+import PrivacyModal from "../components/PrivacyModal.astro";
 
 type JsonLdValue = string | number | boolean | null | undefined | { [key: string]: JsonLdValue } | JsonLdValue[];
 
@@ -152,6 +153,7 @@ if (pubDate) {
             }));
           }
         }
+        window.applyThemeGlobal = applyTheme;
 
         applyTheme(themeSetting);
 
@@ -229,7 +231,14 @@ if (pubDate) {
     )}
     
     <!-- Plausible Analytics -->
-    <script async data-domain="hackenberg.tech" src="https://analytics.mentawise.com/js/script.file-downloads.outbound-links.pageview-props.tagged-events.js"></script>
+    <script is:inline>
+      try {
+        if (navigator.globalPrivacyControl === true || navigator.doNotTrack === '1' || window.doNotTrack === '1') {
+          localStorage.setItem('plausible_ignore', 'true');
+        }
+      } catch(e) {}
+    </script>
+    <script is:inline async data-domain="hackenberg.tech" src="https://analytics.mentawise.com/js/script.file-downloads.outbound-links.pageview-props.tagged-events.js"></script>
     <script is:inline>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
       plausible.init({
@@ -408,6 +417,7 @@ if (pubDate) {
             <div class="flex flex-wrap items-center justify-center lg:justify-end gap-x-6 gap-y-2">
               <a href="/impressum/" class="hover:text-white transition-colors">Impressum</a>
               <a href="/datenschutz/" class="hover:text-white transition-colors">Datenschutz</a>
+              <button type="button" data-open-privacy-modal class="hover:text-white transition-colors cursor-pointer">Privacy Settings</button>
               <a href="https://github.com/ghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="GitHub">GitHub</a>
               <a href="https://www.linkedin.com/in/georghackenberg/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="LinkedIn">LinkedIn</a>
               <a href="https://youtube.com/@georghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="YouTube">YouTube</a>
@@ -417,6 +427,9 @@ if (pubDate) {
         </div>
       </footer>
     </div>
+
+    <!-- Privacy & Settings Modal -->
+    <PrivacyModal />
 
     <!-- Synchronous initialization of notifications to prevent badge/dot flickering -->
     <script is:inline>
@@ -430,11 +443,29 @@ if (pubDate) {
           return n.startsWith('/') ? n : '/' + n;
         }
         
-        let state = { lastVisitedSections: {}, visitedItems: {} };
+        let isOptedIn = false;
+        let state = null;
         try {
           const stored = localStorage.getItem(STORAGE_KEY);
-          if (stored) state = JSON.parse(stored);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed && parsed.enabled === true) {
+              isOptedIn = true;
+              state = parsed;
+            } else {
+              // Automatic cleanup of unconsented legacy data!
+              localStorage.removeItem(STORAGE_KEY);
+              localStorage.removeItem(MANIFEST_CACHE_KEY);
+            }
+          }
         } catch(e) {}
+
+        // If user has not explicitly opted in, ensure all badges and dots remain hidden and exit immediately!
+        if (!isOptedIn || !state) {
+          document.querySelectorAll('.unread-dot').forEach(dot => dot.classList.add('hidden'));
+          document.querySelectorAll('.nav-badge').forEach(badge => badge.classList.add('hidden'));
+          return;
+        }
         
         // 1. Update unread dots synchronously
         const unreadDots = document.querySelectorAll('.unread-dot');
@@ -442,7 +473,7 @@ if (pubDate) {
           const rawUrl = dot.getAttribute('data-item-url');
           if (rawUrl) {
             const itemUrl = normalizePath(rawUrl);
-            const isVisited = !!state.visitedItems[itemUrl];
+            const isVisited = !!(state.visitedItems && state.visitedItems[itemUrl]);
             if (!isVisited) {
               dot.classList.remove('hidden');
             } else {
@@ -461,14 +492,14 @@ if (pubDate) {
         if (manifest) {
           SECTIONS.forEach(section => {
             const items = manifest[section] || [];
-            const lastVisit = state.lastVisitedSections[section] !== undefined
+            const lastVisit = (state.lastVisitedSections && state.lastVisitedSections[section] !== undefined)
               ? state.lastVisitedSections[section]
               : 0;
             
             const newItemsCount = items.filter(item => {
               const itemUrl = normalizePath(item.url);
               const isNew = lastVisit === 0 ? true : item.date > lastVisit;
-              const isUnvisited = !state.visitedItems[itemUrl];
+              const isUnvisited = !(state.visitedItems && state.visitedItems[itemUrl]);
               return isNew && isUnvisited;
             }).length;
             
