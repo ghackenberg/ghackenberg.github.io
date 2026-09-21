@@ -78,7 +78,6 @@ async function exportAllPresentationsToPdf() {
       // 1. Dark Mode PDF
       const darkPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=dark`;
       const darkOutPdfPath = path.join(presentationPath, 'slides-dark.pdf');
-      const defaultOutPdfPath = path.join(presentationPath, 'slides.pdf');
 
       console.log(`[PDF Exporter] Rendering Dark Mode PDF for "${presentationFolder}"...`);
       const darkPage = await browser.newPage();
@@ -98,12 +97,10 @@ async function exportAllPresentationsToPdf() {
           height: '1080px',
           margin: { top: 0, right: 0, bottom: 0, left: 0 }
         });
-        fs.copyFileSync(darkOutPdfPath, defaultOutPdfPath);
 
         const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
         if (fs.existsSync(distPresentationPath)) {
           fs.copyFileSync(darkOutPdfPath, path.join(distPresentationPath, 'slides-dark.pdf'));
-          fs.copyFileSync(defaultOutPdfPath, path.join(distPresentationPath, 'slides.pdf'));
         }
 
         console.log(`  ✓ Successfully generated Dark Mode PDF: ${darkOutPdfPath}`);
