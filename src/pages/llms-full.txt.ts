@@ -2,6 +2,7 @@ import { getCollection } from "astro:content";
 
 export async function GET() {
   const posts = await getCollection("posts");
+  const presentations = await getCollection("presentations");
   const publications = await getCollection("publications");
   const courses = await getCollection("courses");
   const projects = await getCollection("projects");
@@ -9,8 +10,13 @@ export async function GET() {
   const modules = await getCollection("modules");
   const tags = await getCollection("tags");
 
-  // Sort posts by date descending
+  // Sort posts and presentations by date descending
   const sortedPosts = posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+  const sortedPresentations = presentations.sort((a, b) => {
+    const da = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : new Date(a.data.pubDate || '').getTime();
+    const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || '').getTime();
+    return db - da;
+  });
 
   let output = `# Dr. Georg Hackenberg - Complete Website Corpus (llms-full.txt)
 
@@ -41,7 +47,22 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     output += `\n${post.body}\n\n---\n\n`;
   }
 
-  output += `## 3. Academic Publications & Research Papers\n\n`;
+  output += `## 3. Keynote Presentations & Slide Decks\n\n`;
+  for (const pres of sortedPresentations) {
+    const rawDate = pres.data.pubDate instanceof Date ? pres.data.pubDate.toISOString().split('T')[0] : (pres.data.pubDate || '');
+    const tags = pres.data.tags ? pres.data.tags.join(', ') : '';
+    output += `### ${pres.data.title}\n`;
+    output += `- URL: https://hackenberg.tech/presentations/${pres.id}/\n`;
+    if (pres.data.subtitle) output += `- Subtitle: ${pres.data.subtitle}\n`;
+    output += `- Date: ${rawDate}\n`;
+    if (pres.data.event) output += `- Event: ${pres.data.event}\n`;
+    if (pres.data.location) output += `- Location: ${pres.data.location}\n`;
+    if (tags) output += `- Tags: ${tags}\n`;
+    if (pres.data.description) output += `- Summary: ${pres.data.description}\n`;
+    output += `\n${pres.body}\n\n---\n\n`;
+  }
+
+  output += `## 4. Academic Publications & Research Papers\n\n`;
   for (const pub of publications) {
     output += `### ${pub.data.title}\n`;
     output += `- URL: https://hackenberg.tech/publications/${pub.id}/\n`;
@@ -52,7 +73,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     output += `\n${pub.body}\n\n---\n\n`;
   }
 
-  output += `## 4. University Courses & Educational Content\n\n`;
+  output += `## 5. University Courses & Educational Content\n\n`;
   for (const course of courses) {
     output += `### ${course.data.title}\n`;
     output += `- URL: https://hackenberg.tech/courses/${course.id}/\n`;
@@ -65,7 +86,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     output += `\n${course.body}\n\n---\n\n`;
   }
 
-  output += `## 5. Software Projects & Systems\n\n`;
+  output += `## 6. Software Projects & Systems\n\n`;
   for (const project of projects) {
     output += `### ${project.data.title}\n`;
     output += `- URL: https://hackenberg.tech/projects/${project.id}/\n`;
@@ -78,7 +99,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     output += `\n${project.body}\n\n---\n\n`;
   }
 
-  output += `## 6. Business Services & Modules\n\n`;
+  output += `## 7. Business Services & Modules\n\n`;
   for (const service of services) {
     output += `### Service: ${service.data.title}\n`;
     output += `- URL: https://hackenberg.tech/services/${service.id}/\n`;
@@ -96,7 +117,7 @@ Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the Unive
     output += `\n${mod.body}\n\n---\n\n`;
   }
 
-  output += `## 7. Knowledge Index & Topic Tags\n\n`;
+  output += `## 8. Knowledge Index & Topic Tags\n\n`;
   const sortedTags = tags.sort((a, b) => a.data.title.localeCompare(b.data.title));
   for (const tag of sortedTags) {
     output += `### #${tag.data.title}\n`;

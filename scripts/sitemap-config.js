@@ -216,6 +216,8 @@ export function buildSitemapMetadata() {
   const postTagDates = new Map();
   /** @type {Map<string, Date[]>} */
   const publicationTagDates = new Map();
+  /** @type {Map<string, Date[]>} */
+  const presentationTagDates = new Map();
 
   const contentBase = path.resolve('src/content');
 
@@ -453,6 +455,14 @@ export function buildSitemapMetadata() {
         changefreq: 'monthly',
         priority: 0.8
       });
+
+      // Tags
+      const tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
+      for (const tag of tags) {
+        const normTag = String(tag).toLowerCase();
+        if (!presentationTagDates.has(normTag)) presentationTagDates.set(normTag, []);
+        presentationTagDates.get(normTag)?.push(date);
+      }
     }
   }
 
@@ -527,7 +537,11 @@ export function buildSitemapMetadata() {
     const tagMatch = pathname.match(/^\/tags\/([^\/]+)\/$/);
     if (tagMatch) {
       const tag = tagMatch[1];
-      const tagDates = [...(postTagDates.get(tag) || []), ...(publicationTagDates.get(tag) || [])];
+      const tagDates = [
+        ...(postTagDates.get(tag) || []),
+        ...(publicationTagDates.get(tag) || []),
+        ...(presentationTagDates.get(tag) || [])
+      ];
       const tagDate = getMaxDate(tagDates);
       return { lastmod: tagDate, changefreq: 'monthly', priority: 0.6 };
     }

@@ -75,8 +75,9 @@ export const GRAPH_GROUP_NAMES = [
   'Tag',
   'Post',
   'Publication',
-  'Project',
+  'Presentation',
   'Course',
+  'Project',
   'Service'
 ] as const;
 
@@ -85,25 +86,28 @@ export const GRAPH_COLORS = {
     '#0ea5e9', // 0: Tag (Sky)
     '#3b82f6', // 1: Post (Blue)
     '#6366f1', // 2: Publication (Indigo)
-    '#10b981', // 3: Project (Green)
+    '#06b6d4', // 3: Presentation (Cyan)
     '#f59e0b', // 4: Course (Yellow)
-    '#a855f7'  // 5: Service (Purple)
+    '#10b981', // 5: Project (Green)
+    '#a855f7'  // 6: Service (Purple)
   ],
   light: [
     '#0284c7', // 0: Tag (Sky)
     '#2563eb', // 1: Post (Blue)
     '#4f46e5', // 2: Publication (Indigo)
-    '#059669', // 3: Project (Green)
+    '#0891b2', // 3: Presentation (Cyan)
     '#d97706', // 4: Course (Yellow)
-    '#9333ea'  // 5: Service (Purple)
+    '#059669', // 5: Project (Green)
+    '#9333ea'  // 6: Service (Purple)
   ]
 };
 
 export interface TagCounts {
   posts: Record<string, number>;
   publications: Record<string, number>;
-  projects: Record<string, number>;
+  presentations: Record<string, number>;
   courses: Record<string, number>;
+  projects: Record<string, number>;
   services: Record<string, number>;
   allTags: string[];
 }
@@ -122,6 +126,7 @@ interface RawEntity {
   id: string;
   data: {
     title: string;
+    subtitle?: string;
     description?: string;
     pubDate?: string | Date;
     tags?: string[];
@@ -131,6 +136,8 @@ interface RawEntity {
     previewImage?: ImageSource;
     abstract?: string;
     book?: string;
+    event?: string;
+    location?: string;
   };
 }
 
@@ -145,8 +152,9 @@ interface RawTag {
 export function calculateTagCounts(options: {
   posts: RawEntity[];
   publications: RawEntity[];
-  projects: RawEntity[];
+  presentations?: RawEntity[];
   courses: RawEntity[];
+  projects: RawEntity[];
   services: RawEntity[];
 }): TagCounts {
   const tagPosts: Record<string, number> = {};
@@ -167,11 +175,11 @@ export function calculateTagCounts(options: {
     }
   });
 
-  const tagProjects: Record<string, number> = {};
-  options.projects.forEach(p => {
+  const tagPres: Record<string, number> = {};
+  (options.presentations || []).forEach(p => {
     if (p.data.tags) {
       p.data.tags.forEach(t => {
-        tagProjects[t] = (tagProjects[t] || 0) + 1;
+        tagPres[t] = (tagPres[t] || 0) + 1;
       });
     }
   });
@@ -181,6 +189,15 @@ export function calculateTagCounts(options: {
     if (c.data.tags) {
       c.data.tags.forEach(t => {
         tagCourses[t] = (tagCourses[t] || 0) + 1;
+      });
+    }
+  });
+
+  const tagProjects: Record<string, number> = {};
+  options.projects.forEach(p => {
+    if (p.data.tags) {
+      p.data.tags.forEach(t => {
+        tagProjects[t] = (tagProjects[t] || 0) + 1;
       });
     }
   });
@@ -197,16 +214,18 @@ export function calculateTagCounts(options: {
   const allTags = Array.from(new Set([
     ...Object.keys(tagPosts),
     ...Object.keys(tagPubs),
-    ...Object.keys(tagProjects),
+    ...Object.keys(tagPres),
     ...Object.keys(tagCourses),
+    ...Object.keys(tagProjects),
     ...Object.keys(tagServices)
   ]));
 
   return {
     posts: tagPosts,
     publications: tagPubs,
-    projects: tagProjects,
+    presentations: tagPres,
     courses: tagCourses,
+    projects: tagProjects,
     services: tagServices,
     allTags
   };
@@ -215,8 +234,9 @@ export function calculateTagCounts(options: {
 export async function buildGraphPayload(options: {
   posts: RawEntity[];
   publications: RawEntity[];
-  projects: RawEntity[];
+  presentations?: RawEntity[];
   courses: RawEntity[];
+  projects: RawEntity[];
   services: RawEntity[];
   tags: RawTag[];
   getImage?: typeof getImage;
@@ -231,8 +251,9 @@ export async function buildGraphPayload(options: {
   tagCounts.allTags.forEach(tag => {
     const count = (tagCounts.posts[tag] || 0) +
       (tagCounts.publications[tag] || 0) +
-      (tagCounts.projects[tag] || 0) +
+      (tagCounts.presentations[tag] || 0) +
       (tagCounts.courses[tag] || 0) +
+      (tagCounts.projects[tag] || 0) +
       (tagCounts.services[tag] || 0);
 
     const tagEntry = tagMap.get(tag);
@@ -298,32 +319,32 @@ export async function buildGraphPayload(options: {
     }
   }
 
-  // Group 3: Projects
-  for (const project of options.projects) {
-    const path = `/projects/${project.id}/`;
+  // Group 3: Presentations
+  for (const pres of options.presentations || []) {
+    const path = `/presentations/${pres.id}/`;
     let imageSrc: string | undefined = undefined;
-    const projectImg = extractImageSrc(project.data.screenshot || project.data.screenshotLight);
-    if (projectImg && options.getImage) {
+    const presImg = extractImageSrc(pres.data.previewImage || pres.data.icon);
+    if (presImg && options.getImage) {
       try {
-        const opt = await options.getImage({ src: projectImg, format: "webp", width: 240, quality: 75 });
+        const opt = await options.getImage({ src: presImg, format: "webp", width: 240, quality: 75 });
         imageSrc = opt.src;
       } catch (e) {
-        console.warn("Failed to optimize project screenshot", e);
+        console.warn("Failed to optimize presentation preview", e);
       }
     }
     visNodes.push({
       id: path,
-      name: project.data.title,
-      size: 1.1,
+      name: pres.data.title,
+      size: 1.15,
       group: 3,
-      typeLabel: "Project",
-      description: project.data.description,
-      date: project.data.pubDate ? new Date(project.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      typeLabel: "Presentation",
+      description: pres.data.subtitle || pres.data.description,
+      date: pres.data.pubDate ? new Date(pres.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
       image: imageSrc,
-      tags: project.data.tags ? project.data.tags.slice(0, 3) : []
+      tags: pres.data.tags ? pres.data.tags.slice(0, 3) : []
     });
-    if (project.data.tags) {
-      project.data.tags.forEach(tag => {
+    if (pres.data.tags) {
+      pres.data.tags.forEach(tag => {
         visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }
@@ -360,7 +381,38 @@ export async function buildGraphPayload(options: {
     }
   }
 
-  // Group 5: Services
+  // Group 5: Projects
+  for (const project of options.projects) {
+    const path = `/projects/${project.id}/`;
+    let imageSrc: string | undefined = undefined;
+    const projectImg = extractImageSrc(project.data.screenshot || project.data.screenshotLight);
+    if (projectImg && options.getImage) {
+      try {
+        const opt = await options.getImage({ src: projectImg, format: "webp", width: 240, quality: 75 });
+        imageSrc = opt.src;
+      } catch (e) {
+        console.warn("Failed to optimize project screenshot", e);
+      }
+    }
+    visNodes.push({
+      id: path,
+      name: project.data.title,
+      size: 1.1,
+      group: 5,
+      typeLabel: "Project",
+      description: project.data.description,
+      date: project.data.pubDate ? new Date(project.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      image: imageSrc,
+      tags: project.data.tags ? project.data.tags.slice(0, 3) : []
+    });
+    if (project.data.tags) {
+      project.data.tags.forEach(tag => {
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
+      });
+    }
+  }
+
+  // Group 6: Services
   for (const service of options.services) {
     const path = `/services/${service.id}/`;
     let imageSrc: string | undefined = undefined;
@@ -377,7 +429,7 @@ export async function buildGraphPayload(options: {
       id: path,
       name: service.data.title,
       size: 1.15,
-      group: 5,
+      group: 6,
       typeLabel: "Service",
       description: service.data.description,
       date: service.data.pubDate ? new Date(service.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,

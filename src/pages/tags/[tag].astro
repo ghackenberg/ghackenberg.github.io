@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import PostCard from "../../components/PostCard.astro";
 import PublicationCard from "../../components/PublicationCard.astro";
+import PresentationCard from "../../components/PresentationCard.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import CourseCard from "../../components/CourseCard.astro";
 import VisualizationCard from "../../components/VisualizationCard.astro";
@@ -13,6 +14,7 @@ export async function getStaticPaths() {
   const tags = await getCollection("tags");
   const posts = await getCollection("posts");
   const publications = await getCollection("publications");
+  const presentations = await getCollection("presentations");
   const projects = await getCollection("projects");
   const courses = await getCollection("courses");
   const services = await getCollection("services");
@@ -33,12 +35,20 @@ export async function getStaticPaths() {
       .filter((pub) => pub.data.tags.includes(tag.id))
       .sort((a, b) => b.id.localeCompare(a.id));
 
-    const relatedProjects = projects
-      .filter((proj) => proj.data.tags && proj.data.tags.includes(tag.id))
-      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+    const relatedPres = presentations
+      .filter((pres) => pres.data.tags && pres.data.tags.includes(tag.id))
+      .sort((a, b) => {
+        const da = a.data.pubDate instanceof Date ? a.data.pubDate.valueOf() : new Date(a.data.pubDate || '').valueOf();
+        const db = b.data.pubDate instanceof Date ? b.data.pubDate.valueOf() : new Date(b.data.pubDate || '').valueOf();
+        return db - da;
+      });
 
     const relatedCourses = courses
       .filter((c) => c.data.tags && c.data.tags.includes(tag.id));
+
+    const relatedProjects = projects
+      .filter((proj) => proj.data.tags && proj.data.tags.includes(tag.id))
+      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
     const relatedServices = services
       .filter((s) => s.data.tags && s.data.tags.includes(tag.id))
@@ -53,8 +63,9 @@ export async function getStaticPaths() {
         tag,
         posts: relatedPosts,
         publications: relatedPubs,
-        projects: relatedProjects,
+        presentations: relatedPres,
         courses: relatedCourses,
+        projects: relatedProjects,
         services: relatedServices,
         visualizations: relatedVis,
       },
@@ -66,14 +77,15 @@ interface Props {
   tag: CollectionEntry<"tags">;
   posts: CollectionEntry<"posts">[];
   publications: CollectionEntry<"publications">[];
-  projects: CollectionEntry<"projects">[];
+  presentations: CollectionEntry<"presentations">[];
   courses: (CollectionEntry<"courses"> & { tech: string; starCount: number })[];
+  projects: CollectionEntry<"projects">[];
   services: CollectionEntry<"services">[];
   visualizations: CollectionEntry<"visualizations">[];
 }
 
-const { tag, posts, publications, projects, courses, services, visualizations } = Astro.props;
-const totalCount = posts.length + publications.length + projects.length + courses.length + services.length + visualizations.length;
+const { tag, posts, publications, presentations, courses, projects, services, visualizations } = Astro.props;
+const totalCount = posts.length + publications.length + presentations.length + courses.length + projects.length + services.length + visualizations.length;
 
 // Page sizes divisible by 1, 2, and 3 for responsive grid harmony (1 col mobile, 2 col tablet, 3 col desktop)
 const POSTS_PER_PAGE = 6;
@@ -345,34 +357,35 @@ const breadcrumbSchema = {
         </section>
       )}
 
-      <!-- 3. Software Projects -->
-      {projects.length > 0 && (
-        <section id="projects" class="scroll-mt-24">
+      <!-- 3. Interactive Presentations -->
+      {presentations.length > 0 && (
+        <section id="presentations" class="scroll-mt-24">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>🚀</span>
-              <span>Software Projects</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-2">
-                {projects.length}
+              <span>🖥️</span>
+              <span>Interactive Presentations</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue border border-brand-blue/30 ml-2">
+                {presentations.length}
               </span>
             </h2>
-            <a href="/projects/" class="text-xs font-semibold text-emerald-400 hover:underline">
-              All Projects &rarr;
+            <a href="/presentations/" class="text-xs font-semibold text-brand-blue hover:underline">
+              All Presentations &rarr;
             </a>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {projects.map((project) => (
-              <ProjectCard
-                title={project.data.title}
-                tagline={project.data.tagline}
-                description={project.data.description}
-                href={`/projects/${project.id}/`}
-                tags={project.data.tags}
+            {presentations.map((pres) => (
+              <PresentationCard
+                id={pres.id}
+                title={pres.data.title}
+                subtitle={pres.data.subtitle}
+                description={pres.data.description}
+                pubDate={pres.data.pubDate instanceof Date ? pres.data.pubDate : new Date(pres.data.pubDate || '')}
+                event={pres.data.event}
+                location={pres.data.location}
+                previewImage={pres.data.previewImage}
+                tags={pres.data.tags}
                 activeTag={tag.id}
-                accentColor={project.data.accentColor}
-                screenshot={project.data.screenshot}
-                screenshotLight={project.data.screenshotLight}
               />
             ))}
           </div>
@@ -411,7 +424,41 @@ const breadcrumbSchema = {
         </section>
       )}
 
-      <!-- 5. Business Services -->
+      <!-- 5. Software Projects -->
+      {projects.length > 0 && (
+        <section id="projects" class="scroll-mt-24">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>🚀</span>
+              <span>Software Projects</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-2">
+                {projects.length}
+              </span>
+            </h2>
+            <a href="/projects/" class="text-xs font-semibold text-emerald-400 hover:underline">
+              All Projects &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {projects.map((project) => (
+              <ProjectCard
+                title={project.data.title}
+                tagline={project.data.tagline}
+                description={project.data.description}
+                href={`/projects/${project.id}/`}
+                tags={project.data.tags}
+                activeTag={tag.id}
+                accentColor={project.data.accentColor}
+                screenshot={project.data.screenshot}
+                screenshotLight={project.data.screenshotLight}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- 6. Business Services -->
       {services.length > 0 && (
         <section id="services" class="scroll-mt-24">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
@@ -444,7 +491,7 @@ const breadcrumbSchema = {
         </section>
       )}
 
-      <!-- 6. Content Visualizations -->
+      <!-- 7. Content Visualizations -->
       {visualizations && visualizations.length > 0 && (
         <section id="visualizations" class="scroll-mt-24">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">

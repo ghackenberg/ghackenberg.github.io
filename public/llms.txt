@@ -26,6 +26,9 @@
 ### Posts & Articles
 - [Blog Posts Index](https://hackenberg.tech/posts): Technical essays on AI agents, Web-LLMs, system architecture, and software engineering.
 
+### Presentations & Keynotes
+- [Presentations Index](https://hackenberg.tech/presentations): Interactive slide decks, voiceover keynotes, and presentation handouts on SEO/GEO/AIO, software architecture, and industrial computing.
+
 ### Academic Publications & Research
 - [Publications Index](https://hackenberg.tech/publications): Peer-reviewed research papers, conference proceedings, and book chapters on industrial informatics and systems engineering.
 

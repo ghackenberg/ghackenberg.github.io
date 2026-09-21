@@ -174,17 +174,19 @@ const posts = await getCollection("posts");
 const sortedPosts = posts.slice().sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
 const recentPosts = sortedPosts.slice(0, 5);
 const publications = await getCollection("publications");
+const presentations = await getCollection("presentations");
 const courses = await getCollection("courses");
 const visualizations = await getCollection("visualizations");
 const tagsCollection = await getCollection("tags");
 const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
 
 // Calculate tags and graph payload for the home page Vis.js Network
-const tagCounts = calculateTagCounts({ posts, publications, projects, courses, services });
+const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services });
 const tagPosts = tagCounts.posts;
 const tagPubs = tagCounts.publications;
-const tagProjects = tagCounts.projects;
+const tagPresentations = tagCounts.presentations;
 const tagCourses = tagCounts.courses;
+const tagProjects = tagCounts.projects;
 const tagServices = tagCounts.services;
 const allTags = tagCounts.allTags;
 
@@ -195,13 +197,15 @@ interface TagCloudItem {
   totalCount: number;
   postsCount: number;
   pubsCount: number;
-  projectsCount: number;
+  presCount: number;
   coursesCount: number;
+  projectsCount: number;
   servicesCount: number;
   postsPct: number;
   pubsPct: number;
-  projectsPct: number;
+  presPct: number;
   coursesPct: number;
+  projectsPct: number;
   servicesPct: number;
   fontSizeClass: string;
   fontWeightClass: string;
@@ -210,15 +214,17 @@ interface TagCloudItem {
 const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const postsCount = tagPosts[tagId] || 0;
   const pubsCount = tagPubs[tagId] || 0;
-  const projectsCount = tagProjects[tagId] || 0;
+  const presCount = tagPresentations[tagId] || 0;
   const coursesCount = tagCourses[tagId] || 0;
+  const projectsCount = tagProjects[tagId] || 0;
   const servicesCount = tagServices[tagId] || 0;
-  const totalCount = postsCount + pubsCount + projectsCount + coursesCount + servicesCount;
+  const totalCount = postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount;
   
   const postsPct = totalCount > 0 ? Math.round((postsCount / totalCount) * 100) : 0;
   const pubsPct = totalCount > 0 ? Math.round((pubsCount / totalCount) * 100) : 0;
-  const projectsPct = totalCount > 0 ? Math.round((projectsCount / totalCount) * 100) : 0;
+  const presPct = totalCount > 0 ? Math.round((presCount / totalCount) * 100) : 0;
   const coursesPct = totalCount > 0 ? Math.round((coursesCount / totalCount) * 100) : 0;
+  const projectsPct = totalCount > 0 ? Math.round((projectsCount / totalCount) * 100) : 0;
   const servicesPct = totalCount > 0 ? Math.round((servicesCount / totalCount) * 100) : 0;
 
   const tagEntry = tagMap.get(tagId);
@@ -232,13 +238,15 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     totalCount,
     postsCount,
     pubsCount,
-    projectsCount,
+    presCount,
     coursesCount,
+    projectsCount,
     servicesCount,
     postsPct,
     pubsPct,
-    projectsPct,
+    presPct,
     coursesPct,
+    projectsPct,
     servicesPct,
     fontSizeClass: "text-xs sm:text-sm",
     fontWeightClass: "font-medium",
@@ -275,14 +283,16 @@ const restTagsCount = overflowTags.length;
 const restTotalContentCount = overflowTags.reduce((sum, t) => sum + t.totalCount, 0);
 const restPostsCount = overflowTags.reduce((sum, t) => sum + t.postsCount, 0);
 const restPubsCount = overflowTags.reduce((sum, t) => sum + t.pubsCount, 0);
-const restProjectsCount = overflowTags.reduce((sum, t) => sum + t.projectsCount, 0);
+const restPresCount = overflowTags.reduce((sum, t) => sum + t.presCount, 0);
 const restCoursesCount = overflowTags.reduce((sum, t) => sum + t.coursesCount, 0);
+const restProjectsCount = overflowTags.reduce((sum, t) => sum + t.projectsCount, 0);
 const restServicesCount = overflowTags.reduce((sum, t) => sum + t.servicesCount, 0);
 
 const restPostsPct = restTotalContentCount > 0 ? Math.round((restPostsCount / restTotalContentCount) * 100) : 0;
 const restPubsPct = restTotalContentCount > 0 ? Math.round((restPubsCount / restTotalContentCount) * 100) : 0;
-const restProjectsPct = restTotalContentCount > 0 ? Math.round((restProjectsCount / restTotalContentCount) * 100) : 0;
+const restPresPct = restTotalContentCount > 0 ? Math.round((restPresCount / restTotalContentCount) * 100) : 0;
 const restCoursesPct = restTotalContentCount > 0 ? Math.round((restCoursesCount / restTotalContentCount) * 100) : 0;
+const restProjectsPct = restTotalContentCount > 0 ? Math.round((restProjectsCount / restTotalContentCount) * 100) : 0;
 const restServicesPct = restTotalContentCount > 0 ? Math.round((restServicesCount / restTotalContentCount) * 100) : 0;
 
 // Dynamic weight sizing for the remaining badge, capped to max tag weight
@@ -304,6 +314,7 @@ if (restRatio > 0.75) {
 const graphPayloads = await buildGraphPayload({
   posts,
   publications,
+  presentations,
   projects,
   courses,
   services,
@@ -1125,11 +1136,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   {tag.pubsCount > 0 && (
                     <div style={`width: ${tag.pubsPct}%`} class="bg-gradient-to-r from-indigo-500 to-indigo-400 h-full" title={`Publications: ${tag.pubsCount}`} />
                   )}
-                  {tag.projectsCount > 0 && (
-                    <div style={`width: ${tag.projectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${tag.projectsCount}`} />
+                  {tag.presCount > 0 && (
+                    <div style={`width: ${tag.presPct}%`} class="bg-gradient-to-r from-cyan-400 to-teal-400 h-full" title={`Presentations: ${tag.presCount}`} />
                   )}
                   {tag.coursesCount > 0 && (
                     <div style={`width: ${tag.coursesPct}%`} class="bg-gradient-to-r from-yellow-400 to-brand-yellow h-full" title={`Courses: ${tag.coursesCount}`} />
+                  )}
+                  {tag.projectsCount > 0 && (
+                    <div style={`width: ${tag.projectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${tag.projectsCount}`} />
                   )}
                   {tag.servicesCount > 0 && (
                     <div style={`width: ${tag.servicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${tag.servicesCount}`} />
@@ -1152,11 +1166,11 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
                     </span>
                   )}
-                  {tag.projectsCount > 0 && (
+                  {tag.presCount > 0 && (
                     <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                      <span>{tag.projectsCount} Project{tag.projectsCount > 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
+                      <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                      <span>{tag.presCount} Talk{tag.presCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.presPct}%)</span>
                     </span>
                   )}
                   {tag.coursesCount > 0 && (
@@ -1164,6 +1178,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
                       <span>{tag.coursesCount} Course{tag.coursesCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({tag.coursesPct}%)</span>
+                    </span>
+                  )}
+                  {tag.projectsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                      <span>{tag.projectsCount} Project{tag.projectsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
                     </span>
                   )}
                   {tag.servicesCount > 0 && (
@@ -1193,7 +1214,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
               </a>
 
               <!-- Glass Hover Tooltip with Segmented Progress Bar -->
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-white/15 light:border-slate-200/80 shadow-2xl text-xs w-64 sm:w-72 pointer-events-none z-30 transition-all duration-200 transform animate-in fade-in zoom-in-95">
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-element-border-medium light:border-slate-200/80 shadow-2xl text-xs w-64 sm:w-72 pointer-events-none z-30 transition-all duration-200 transform animate-in fade-in zoom-in-95">
                 <!-- Tooltip Header -->
                 <div class="flex items-center justify-between text-gray-200 light:text-slate-900 font-bold text-xs">
                   <span class="truncate">#{tag.name}</span>
@@ -1214,11 +1235,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   {tag.pubsCount > 0 && (
                     <div style={`width: ${tag.pubsPct}%`} class="bg-gradient-to-r from-indigo-500 to-indigo-400 h-full" title={`Publications: ${tag.pubsCount}`} />
                   )}
-                  {tag.projectsCount > 0 && (
-                    <div style={`width: ${tag.projectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${tag.projectsCount}`} />
+                  {tag.presCount > 0 && (
+                    <div style={`width: ${tag.presPct}%`} class="bg-gradient-to-r from-cyan-400 to-teal-400 h-full" title={`Presentations: ${tag.presCount}`} />
                   )}
                   {tag.coursesCount > 0 && (
                     <div style={`width: ${tag.coursesPct}%`} class="bg-gradient-to-r from-yellow-400 to-brand-yellow h-full" title={`Courses: ${tag.coursesCount}`} />
+                  )}
+                  {tag.projectsCount > 0 && (
+                    <div style={`width: ${tag.projectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${tag.projectsCount}`} />
                   )}
                   {tag.servicesCount > 0 && (
                     <div style={`width: ${tag.servicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${tag.servicesCount}`} />
@@ -1241,11 +1265,11 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
                     </span>
                   )}
-                  {tag.projectsCount > 0 && (
+                  {tag.presCount > 0 && (
                     <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                      <span>{tag.projectsCount} Project{tag.projectsCount > 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
+                      <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                      <span>{tag.presCount} Talk{tag.presCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.presPct}%)</span>
                     </span>
                   )}
                   {tag.coursesCount > 0 && (
@@ -1253,6 +1277,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
                       <span>{tag.coursesCount} Course{tag.coursesCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({tag.coursesPct}%)</span>
+                    </span>
+                  )}
+                  {tag.projectsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                      <span>{tag.projectsCount} Project{tag.projectsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
                     </span>
                   )}
                   {tag.servicesCount > 0 && (
@@ -1297,11 +1328,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   {restPubsCount > 0 && (
                     <div style={`width: ${restPubsPct}%`} class="bg-gradient-to-r from-indigo-500 to-indigo-400 h-full" title={`Publications: ${restPubsCount}`} />
                   )}
-                  {restProjectsCount > 0 && (
-                    <div style={`width: ${restProjectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${restProjectsCount}`} />
+                  {restPresCount > 0 && (
+                    <div style={`width: ${restPresPct}%`} class="bg-gradient-to-r from-cyan-400 to-teal-400 h-full" title={`Presentations: ${restPresCount}`} />
                   )}
                   {restCoursesCount > 0 && (
                     <div style={`width: ${restCoursesPct}%`} class="bg-gradient-to-r from-yellow-400 to-brand-yellow h-full" title={`Courses: ${restCoursesCount}`} />
+                  )}
+                  {restProjectsCount > 0 && (
+                    <div style={`width: ${restProjectsPct}%`} class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full" title={`Projects: ${restProjectsCount}`} />
                   )}
                   {restServicesCount > 0 && (
                     <div style={`width: ${restServicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${restServicesCount}`} />
@@ -1324,11 +1358,11 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="text-gray-400 text-[10px]">({restPubsPct}%)</span>
                     </span>
                   )}
-                  {restProjectsCount > 0 && (
+                  {restPresCount > 0 && (
                     <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                      <span>{restProjectsCount} Project{restProjectsCount > 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restProjectsPct}%)</span>
+                      <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                      <span>{restPresCount} Talk{restPresCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({restPresPct}%)</span>
                     </span>
                   )}
                   {restCoursesCount > 0 && (
@@ -1336,6 +1370,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="w-2 h-2 rounded-full bg-brand-yellow"></span>
                       <span>{restCoursesCount} Course{restCoursesCount > 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({restCoursesPct}%)</span>
+                    </span>
+                  )}
+                  {restProjectsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                      <span>{restProjectsCount} Project{restProjectsCount > 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({restProjectsPct}%)</span>
                     </span>
                   )}
                   {restServicesCount > 0 && (
@@ -1375,7 +1416,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           Content <span class="heading-gradient-green">Graph</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
-          Explore an interactive network graph mapping my software projects, technical blog posts, research publications, university courses, business services, and core topic tags.
+          Explore an interactive network graph mapping my software projects, technical blog posts, research publications, presentations, university courses, business services, and core topic tags.
         </p>
       </div>
 
@@ -1392,16 +1433,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Posts</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
-            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Projects</span>
-          </div>
-          <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 border border-white/20 shadow-sm shadow-indigo-500/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Publications</span>
           </div>
           <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-500 border border-white/20 shadow-sm shadow-cyan-500/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Presentations</span>
+          </div>
+          <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-brand-yellow border border-white/20 shadow-sm shadow-brand-yellow/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Courses</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Projects</span>
           </div>
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-brand-purple border border-white/20 shadow-sm shadow-brand-purple/30"></span>

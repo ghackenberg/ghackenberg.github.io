@@ -2,11 +2,12 @@
 import type { ContentCollectionName } from "../utils/related-content";
 import { getRelatedContent } from "../utils/related-content";
 import PostCard from "./PostCard.astro";
+import PublicationCard from "./PublicationCard.astro";
+import PresentationCard from "./PresentationCard.astro";
 import CourseCard from "./CourseCard.astro";
 import ProjectCard from "./ProjectCard.astro";
-import PublicationCard from "./PublicationCard.astro";
-import VisualizationCard from "./VisualizationCard.astro";
 import ServiceCard from "./ServiceCard.astro";
+import VisualizationCard from "./VisualizationCard.astro";
 
 interface Props {
   currentCollection: ContentCollectionName;
@@ -30,11 +31,12 @@ const related = await getRelatedContent({
 
 const totalRelated =
   related.posts.length +
-  related.projects.length +
-  related.courses.length +
   related.publications.length +
-  related.visualizations.length +
-  related.services.length;
+  related.presentations.length +
+  related.courses.length +
+  related.projects.length +
+  related.services.length +
+  related.visualizations.length;
 
 // Section configuration helper
 const sectionConfig = {
@@ -46,6 +48,24 @@ const sectionConfig = {
     badgeClass: "bg-brand-blue/20 text-brand-blue border border-brand-blue/30",
     hubLinkClass: "text-brand-blue",
     gridClass: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
+  },
+  publications: {
+    title: "Reviewed Publications",
+    icon: "📚",
+    hubHref: "/publications/",
+    hubLabel: "All Publications",
+    badgeClass: "bg-brand-purple/20 text-brand-purple border border-brand-purple/30",
+    hubLinkClass: "text-brand-purple",
+    gridClass: "space-y-4 w-full",
+  },
+  presentations: {
+    title: "Interactive Presentations",
+    icon: "🖥️",
+    hubHref: "/presentations/",
+    hubLabel: "All Presentations",
+    badgeClass: "bg-brand-blue/20 text-brand-blue border border-brand-blue/30",
+    hubLinkClass: "text-brand-blue",
+    gridClass: "grid grid-cols-1 md:grid-cols-2 gap-6",
   },
   courses: {
     title: "University Courses",
@@ -74,15 +94,6 @@ const sectionConfig = {
     hubLinkClass: "text-brand-purple",
     gridClass: "grid grid-cols-1 md:grid-cols-2 gap-6",
   },
-  publications: {
-    title: "Reviewed Publications",
-    icon: "📚",
-    hubHref: "/publications/",
-    hubLabel: "All Publications",
-    badgeClass: "bg-brand-purple/20 text-brand-purple border border-brand-purple/30",
-    hubLinkClass: "text-brand-purple",
-    gridClass: "space-y-4 w-full",
-  },
   visualizations: {
     title: "Content Visualizations",
     icon: "🌐",
@@ -94,23 +105,25 @@ const sectionConfig = {
   },
 };
 
-// Display order strictly follows main navigation: Posts, Courses, Projects, Services, Publications, Visualizations
+// Display order strictly follows main navigation: Posts, Publications, Presentations, Courses, Projects, Services, Visualizations
 const orderedKeys: ContentCollectionName[] = [
   "posts",
+  "publications",
+  "presentations",
   "courses",
   "projects",
   "services",
-  "publications",
   "visualizations",
 ];
 
 // Typed per-collection references (avoids inline generics in the JSX template)
 const relatedPosts = related.posts;
-const relatedProjects = related.projects;
-const relatedCourses = related.courses;
-const relatedVisualizations = related.visualizations;
 const relatedPublications = related.publications;
+const relatedPresentations = related.presentations;
+const relatedCourses = related.courses;
+const relatedProjects = related.projects;
 const relatedServices = related.services;
+const relatedVisualizations = related.visualizations;
 ---
 
 {totalRelated > 0 && (
@@ -163,17 +176,33 @@ const relatedServices = related.services;
                 />
               ))}
 
-            {key === "projects" &&
-              relatedProjects.map((project) => (
-                <ProjectCard
-                  title={project.data.title}
-                  tagline={project.data.tagline}
-                  description={project.data.description}
-                  href={`/projects/${project.id}/`}
-                  tags={project.data.tags}
-                  accentColor={project.data.accentColor}
-                  screenshot={project.data.screenshot}
-                  screenshotLight={project.data.screenshotLight}
+            {key === "publications" &&
+              relatedPublications.map((pub) => (
+                <PublicationCard
+                  id={pub.id}
+                  title={pub.data.title}
+                  author={pub.data.author}
+                  pubDate={pub.data.pubDate}
+                  book={pub.data.book}
+                  tags={pub.data.tags}
+                  icon={pub.data.icon}
+                  publisherUrl={pub.data.publisherUrl}
+                  activeTag={tags}
+                />
+              ))}
+
+            {key === "presentations" &&
+              relatedPresentations.map((pres) => (
+                <PresentationCard
+                  id={pres.id}
+                  title={pres.data.title}
+                  subtitle={pres.data.subtitle}
+                  description={pres.data.description}
+                  pubDate={pres.data.pubDate instanceof Date ? pres.data.pubDate : new Date(pres.data.pubDate || '')}
+                  event={pres.data.event}
+                  location={pres.data.location}
+                  previewImage={pres.data.previewImage}
+                  tags={pres.data.tags}
                   activeTag={tags}
                 />
               ))}
@@ -191,29 +220,17 @@ const relatedServices = related.services;
                 />
               ))}
 
-            {key === "visualizations" &&
-              relatedVisualizations.map((vis) => (
-                <VisualizationCard
-                  title={vis.data.title}
-                  description={vis.data.description}
-                  href={`/visualizations/${vis.id}/`}
-                  screenshot={vis.data.screenshot}
-                  tags={vis.data.tags}
-                  activeTag={tags}
-                />
-              ))}
-
-            {key === "publications" &&
-              relatedPublications.map((pub) => (
-                <PublicationCard
-                  id={pub.id}
-                  title={pub.data.title}
-                  author={pub.data.author}
-                  pubDate={pub.data.pubDate}
-                  book={pub.data.book}
-                  tags={pub.data.tags}
-                  icon={pub.data.icon}
-                  publisherUrl={pub.data.publisherUrl}
+            {key === "projects" &&
+              relatedProjects.map((project) => (
+                <ProjectCard
+                  title={project.data.title}
+                  tagline={project.data.tagline}
+                  description={project.data.description}
+                  href={`/projects/${project.id}/`}
+                  tags={project.data.tags}
+                  accentColor={project.data.accentColor}
+                  screenshot={project.data.screenshot}
+                  screenshotLight={project.data.screenshotLight}
                   activeTag={tags}
                 />
               ))}
@@ -228,6 +245,18 @@ const relatedServices = related.services;
                   tags={service.data.tags}
                   previewImage={service.data.previewImage}
                   ctaText={service.data.ctaText}
+                  activeTag={tags}
+                />
+              ))}
+
+            {key === "visualizations" &&
+              relatedVisualizations.map((vis) => (
+                <VisualizationCard
+                  title={vis.data.title}
+                  description={vis.data.description}
+                  href={`/visualizations/${vis.id}/`}
+                  screenshot={vis.data.screenshot}
+                  tags={vis.data.tags}
                   activeTag={tags}
                 />
               ))}

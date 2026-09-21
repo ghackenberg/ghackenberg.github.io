@@ -31,11 +31,11 @@ export default {
         highlight: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' },
         hover: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' }
       },
-      { // 3: Project (Green)
-        background: isLight ? '#059669' : '#10b981', 
-        border: isLight ? '#047857' : '#34d399', 
-        highlight: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' },
-        hover: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' }
+      { // 3: Presentation (Cyan)
+        background: isLight ? '#0891b2' : '#06b6d4', 
+        border: isLight ? '#0e7490' : '#22d3ee', 
+        highlight: { background: isLight ? '#155e75' : '#0891b2', border: isLight ? '#0891b2' : '#67e8f9' },
+        hover: { background: isLight ? '#155e75' : '#0891b2', border: isLight ? '#0891b2' : '#67e8f9' }
       },
       { // 4: Course (Yellow)
         background: isLight ? '#d97706' : '#f59e0b', 
@@ -43,7 +43,13 @@ export default {
         highlight: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' },
         hover: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' }
       },
-      { // 5: Service (Purple)
+      { // 5: Project (Green)
+        background: isLight ? '#059669' : '#10b981', 
+        border: isLight ? '#047857' : '#34d399', 
+        highlight: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' },
+        hover: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' }
+      },
+      { // 6: Service (Purple)
         background: isLight ? '#9333ea' : '#a855f7', 
         border: isLight ? '#7e22ce' : '#c084fc', 
         highlight: { background: isLight ? '#6b21a8' : '#9333ea', border: isLight ? '#7e22ce' : '#e9d5ff' },
@@ -51,14 +57,15 @@ export default {
       }
     ];
 
-    const groupNames = ['Tag', 'Post', 'Publication', 'Project', 'Course', 'Service'];
+    const groupNames = ['Tag', 'Post', 'Publication', 'Presentation', 'Course', 'Project', 'Service'];
     const groupColors = [
       isLight ? '#0284c7' : '#38bdf8', // 0: Tag (sky)
       isLight ? '#2563eb' : '#60a5fa', // 1: Post (blue)
       isLight ? '#4f46e5' : '#818cf8', // 2: Publication (indigo)
-      isLight ? '#059669' : '#34d399', // 3: Project (green)
+      isLight ? '#0891b2' : '#22d3ee', // 3: Presentation (cyan)
       isLight ? '#b45309' : '#fbbf24', // 4: Course (yellow)
-      isLight ? '#7e22ce' : '#c084fc'  // 5: Service (purple)
+      isLight ? '#059669' : '#34d399', // 5: Project (green)
+      isLight ? '#7e22ce' : '#c084fc'  // 6: Service (purple)
     ];
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
@@ -382,17 +389,22 @@ export default {
         border: isLight ? '#4338ca' : '#818cf8', 
         highlight: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' } 
       },
-      { // 3: Project (Green)
-        background: isLight ? '#059669' : '#10b981', 
-        border: isLight ? '#047857' : '#34d399', 
-        highlight: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' } 
+      { // 3: Presentation (Cyan)
+        background: isLight ? '#0891b2' : '#06b6d4', 
+        border: isLight ? '#0e7490' : '#22d3ee', 
+        highlight: { background: isLight ? '#155e75' : '#0891b2', border: isLight ? '#0891b2' : '#67e8f9' } 
       },
       { // 4: Course (Yellow)
         background: isLight ? '#d97706' : '#f59e0b', 
         border: isLight ? '#b45309' : '#fbbf24', 
         highlight: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' } 
       },
-      { // 5: Service (Purple)
+      { // 5: Project (Green)
+        background: isLight ? '#059669' : '#10b981', 
+        border: isLight ? '#047857' : '#34d399', 
+        highlight: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' } 
+      },
+      { // 6: Service (Purple)
         background: isLight ? '#9333ea' : '#a855f7', 
         border: isLight ? '#7e22ce' : '#c084fc', 
         highlight: { background: isLight ? '#6b21a8' : '#9333ea', border: isLight ? '#7e22ce' : '#e9d5ff' } 
@@ -459,9 +471,10 @@ export default {
       const tags = this.nodes.filter(n => n.group === 0);
       const posts = this.nodes.filter(n => n.group === 1);
       const publications = this.nodes.filter(n => n.group === 2);
-      const projects = this.nodes.filter(n => n.group === 3);
+      const presentations = this.nodes.filter(n => n.group === 3);
       const courses = this.nodes.filter(n => n.group === 4);
-      const services = this.nodes.filter(n => n.group === 5);
+      const projects = this.nodes.filter(n => n.group === 5);
+      const services = this.nodes.filter(n => n.group === 6);
 
       const isMobile = window.innerWidth < 768;
       const heightFactor = 45;
@@ -471,84 +484,98 @@ export default {
         posts.forEach((n, idx) => {
           targets[n.id] = {
             x: posts.length > 1 ? (idx - (posts.length - 1) / 2) * widthFactor : 0,
-            y: -350
-          };
-        });
-
-        courses.forEach((n, idx) => {
-          targets[n.id] = {
-            x: courses.length > 1 ? (idx - (courses.length - 1) / 2) * widthFactor : 0,
-            y: -210
-          };
-        });
-
-        tags.forEach((n, idx) => {
-          targets[n.id] = {
-            x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * widthFactor : 0,
-            y: -70
-          };
-        });
-
-        projects.forEach((n, idx) => {
-          targets[n.id] = {
-            x: projects.length > 1 ? (idx - (projects.length - 1) / 2) * widthFactor : 0,
-            y: 70
-          };
-        });
-
-        services.forEach((n, idx) => {
-          targets[n.id] = {
-            x: services.length > 1 ? (idx - (services.length - 1) / 2) * widthFactor : 0,
-            y: 210
+            y: -360
           };
         });
 
         publications.forEach((n, idx) => {
           targets[n.id] = {
             x: publications.length > 1 ? (idx - (publications.length - 1) / 2) * widthFactor : 0,
-            y: 350
-          };
-        });
-      } else {
-        posts.forEach((n, idx) => {
-          targets[n.id] = {
-            x: -500,
-            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0
+            y: -240
           };
         });
 
-        courses.forEach((n, idx) => {
+        presentations.forEach((n, idx) => {
           targets[n.id] = {
-            x: -300,
-            y: courses.length > 1 ? (idx - (courses.length - 1) / 2) * heightFactor : 0
+            x: presentations.length > 1 ? (idx - (presentations.length - 1) / 2) * widthFactor : 0,
+            y: -120
           };
         });
 
         tags.forEach((n, idx) => {
           targets[n.id] = {
-            x: -100,
-            y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0
+            x: tags.length > 1 ? (idx - (tags.length - 1) / 2) * widthFactor : 0,
+            y: 0
+          };
+        });
+
+        courses.forEach((n, idx) => {
+          targets[n.id] = {
+            x: courses.length > 1 ? (idx - (courses.length - 1) / 2) * widthFactor : 0,
+            y: 120
           };
         });
 
         projects.forEach((n, idx) => {
           targets[n.id] = {
-            x: 100,
+            x: projects.length > 1 ? (idx - (projects.length - 1) / 2) * widthFactor : 0,
+            y: 240
+          };
+        });
+
+        services.forEach((n, idx) => {
+          targets[n.id] = {
+            x: services.length > 1 ? (idx - (services.length - 1) / 2) * widthFactor : 0,
+            y: 360
+          };
+        });
+      } else {
+        posts.forEach((n, idx) => {
+          targets[n.id] = {
+            x: -600,
+            y: posts.length > 1 ? (idx - (posts.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        publications.forEach((n, idx) => {
+          targets[n.id] = {
+            x: -400,
+            y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        presentations.forEach((n, idx) => {
+          targets[n.id] = {
+            x: -200,
+            y: presentations.length > 1 ? (idx - (presentations.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        tags.forEach((n, idx) => {
+          targets[n.id] = {
+            x: 0,
+            y: tags.length > 1 ? (idx - (tags.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        courses.forEach((n, idx) => {
+          targets[n.id] = {
+            x: 200,
+            y: courses.length > 1 ? (idx - (courses.length - 1) / 2) * heightFactor : 0
+          };
+        });
+
+        projects.forEach((n, idx) => {
+          targets[n.id] = {
+            x: 400,
             y: projects.length > 1 ? (idx - (projects.length - 1) / 2) * heightFactor : 0
           };
         });
 
         services.forEach((n, idx) => {
           targets[n.id] = {
-            x: 300,
+            x: 600,
             y: services.length > 1 ? (idx - (services.length - 1) / 2) * heightFactor : 0
-          };
-        });
-
-        publications.forEach((n, idx) => {
-          targets[n.id] = {
-            x: 500,
-            y: publications.length > 1 ? (idx - (publications.length - 1) / 2) * heightFactor : 0
           };
         });
       }

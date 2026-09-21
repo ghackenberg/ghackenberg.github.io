@@ -1,5 +1,5 @@
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#10b981', '#f59e0b', '#a855f7'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#059669', '#d97706', '#9333ea'];
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
 function getNodeColor(node, isLight) {
   const grp = node.data('group') ?? 0;
@@ -123,13 +123,14 @@ export default {
       const nodes = this.cy.nodes();
 
       const posts = nodes.filter(n => n.data('group') === 1);
-      const courses = nodes.filter(n => n.data('group') === 4);
-      const tags = nodes.filter(n => n.data('group') === 0);
-      const projects = nodes.filter(n => n.data('group') === 3);
-      const services = nodes.filter(n => n.data('group') === 5);
       const publications = nodes.filter(n => n.data('group') === 2);
+      const presentations = nodes.filter(n => n.data('group') === 3);
+      const tags = nodes.filter(n => n.data('group') === 0);
+      const courses = nodes.filter(n => n.data('group') === 4);
+      const projects = nodes.filter(n => n.data('group') === 5);
+      const services = nodes.filter(n => n.data('group') === 6);
 
-      const categories = [posts, courses, tags, projects, services, publications];
+      const categories = [posts, publications, presentations, tags, courses, projects, services];
       const pos = {};
       const isMobile = width < 768 || window.innerWidth < 768;
       
