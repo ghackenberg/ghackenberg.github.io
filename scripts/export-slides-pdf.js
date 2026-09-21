@@ -47,10 +47,10 @@ function createStaticServer() {
   });
 }
 
-async function exportAllTalksToPdf() {
-  const talksBase = path.resolve('src/content/talks');
-  if (!fs.existsSync(talksBase)) {
-    console.log('[PDF Exporter] No talks found.');
+async function exportAllPresentationsToPdf() {
+  const presentationsBase = path.resolve('src/content/presentations');
+  if (!fs.existsSync(presentationsBase)) {
+    console.log('[PDF Exporter] No presentations found.');
     return;
   }
 
@@ -68,38 +68,60 @@ async function exportAllTalksToPdf() {
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
-  const talkFolders = fs.readdirSync(talksBase);
+  const presentationFolders = fs.readdirSync(presentationsBase);
 
   try {
-    for (const talkFolder of talkFolders) {
-      const talkPath = path.join(talksBase, talkFolder);
-      if (!fs.statSync(talkPath).isDirectory()) continue;
+    for (const presentationFolder of presentationFolders) {
+      const presentationPath = path.join(presentationsBase, presentationFolder);
+      if (!fs.statSync(presentationPath).isDirectory()) continue;
 
-      const printUrl = `http://127.0.0.1:${PORT}/talks/${talkFolder}/print/`;
-      const outPdfPath = path.join(talkPath, 'slides.pdf');
+      // 1. Dark Mode PDF
+      const darkPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=dark`;
+      const darkOutPdfPath = path.join(presentationPath, 'slides-dark.pdf');
+      const defaultOutPdfPath = path.join(presentationPath, 'slides.pdf');
 
-      console.log(`[PDF Exporter] Rendering PDF for talk "${talkFolder}" from ${printUrl}...`);
+      console.log(`[PDF Exporter] Rendering Dark Mode PDF for "${presentationFolder}"...`);
+      const darkPage = await browser.newPage();
+      await darkPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
 
-      const page = await browser.newPage();
-      await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
-
-      const response = await page.goto(printUrl, { waitUntil: 'networkidle0', timeout: 60000 });
-      if (!response || !response.ok()) {
-        console.warn(`  ⚠️ Could not load print page for ${talkFolder} (status: ${response?.status()}). Skipping.`);
-        await page.close();
-        continue;
+      const darkResponse = await darkPage.goto(darkPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+      if (!darkResponse || !darkResponse.ok()) {
+        console.warn(`  ⚠️ Could not load dark print page for ${presentationFolder} (status: ${darkResponse?.status()}). Skipping.`);
+      } else {
+        await darkPage.pdf({
+          path: darkOutPdfPath,
+          printBackground: true,
+          width: '1920px',
+          height: '1080px',
+          margin: { top: 0, right: 0, bottom: 0, left: 0 }
+        });
+        fs.copyFileSync(darkOutPdfPath, defaultOutPdfPath);
+        console.log(`  ✓ Successfully generated Dark Mode PDF: ${darkOutPdfPath}`);
       }
+      await darkPage.close();
 
-      await page.pdf({
-        path: outPdfPath,
-        printBackground: true,
-        landscape: true,
-        format: 'A4',
-        margin: { top: 0, right: 0, bottom: 0, left: 0 }
-      });
+      // 2. Light Mode PDF
+      const lightPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=light`;
+      const lightOutPdfPath = path.join(presentationPath, 'slides-light.pdf');
 
-      console.log(`  ✓ Successfully generated: ${outPdfPath}`);
-      await page.close();
+      console.log(`[PDF Exporter] Rendering Light Mode PDF for "${presentationFolder}"...`);
+      const lightPage = await browser.newPage();
+      await lightPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
+
+      const lightResponse = await lightPage.goto(lightPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+      if (!lightResponse || !lightResponse.ok()) {
+        console.warn(`  ⚠️ Could not load light print page for ${presentationFolder} (status: ${lightResponse?.status()}). Skipping.`);
+      } else {
+        await lightPage.pdf({
+          path: lightOutPdfPath,
+          printBackground: true,
+          width: '1920px',
+          height: '1080px',
+          margin: { top: 0, right: 0, bottom: 0, left: 0 }
+        });
+        console.log(`  ✓ Successfully generated Light Mode PDF: ${lightOutPdfPath}`);
+      }
+      await lightPage.close();
     }
   } finally {
     await browser.close();
@@ -109,7 +131,7 @@ async function exportAllTalksToPdf() {
   console.log('[PDF Exporter] Complete.');
 }
 
-exportAllTalksToPdf().catch((err) => {
+exportAllPresentationsToPdf().catch((err) => {
   console.error('[PDF Exporter] Fatal error:', err);
   process.exit(1);
 });

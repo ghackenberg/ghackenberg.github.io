@@ -6,9 +6,9 @@ import path from 'node:path';
  * Validates slide frontmatter and cue consistency, completeness, and sequential order
  */
 function validateSlides() {
-  const talksBase = path.resolve('src/content/talks');
-  if (!fs.existsSync(talksBase)) {
-    console.log('[Slide Validator] No talks found in src/content/talks.');
+  const presentationsBase = path.resolve('src/content/presentations');
+  if (!fs.existsSync(presentationsBase)) {
+    console.log('[Slide Validator] No presentations found in src/content/presentations.');
     return;
   }
 
@@ -16,20 +16,20 @@ function validateSlides() {
   let totalWarnings = 0;
   let totalSlides = 0;
 
-  const talkFolders = fs.readdirSync(talksBase);
+  const presentationFolders = fs.readdirSync(presentationsBase);
 
-  for (const talkFolder of talkFolders) {
-    const talkPath = path.join(talksBase, talkFolder);
-    if (!fs.statSync(talkPath).isDirectory()) continue;
+  for (const presentationFolder of presentationFolders) {
+    const presentationPath = path.join(presentationsBase, presentationFolder);
+    if (!fs.statSync(presentationPath).isDirectory()) continue;
 
-    const slidesDir = path.join(talkPath, 'slides');
+    const slidesDir = path.join(presentationPath, 'slides');
     if (!fs.existsSync(slidesDir)) continue;
 
     const slideFiles = fs.readdirSync(slidesDir)
       .filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
       .sort();
 
-    console.log(`\n[Slide Validator] Checking talk: "${talkFolder}" (${slideFiles.length} slides)`);
+    console.log(`\n[Slide Validator] Checking presentation: "${presentationFolder}" (${slideFiles.length} slides)`);
 
     for (const slideFile of slideFiles) {
       totalSlides++;

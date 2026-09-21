@@ -1,0 +1,155 @@
+---
+import { getCollection, render } from "astro:content";
+import "../../../styles/global.css";
+import "@fontsource/inter/300.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/outfit/300.css";
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/outfit/600.css";
+import "@fontsource/outfit/700.css";
+import "@fontsource/outfit/800.css";
+import "@fontsource/caveat/400.css";
+import "@fontsource/caveat/600.css";
+import "@fontsource/caveat/700.css";
+
+export async function getStaticPaths() {
+  const presentations = await getCollection("presentations");
+  return presentations.map((presentation) => ({
+    params: { slug: presentation.id },
+    props: { presentation },
+  }));
+}
+
+const { presentation } = Astro.props;
+
+// Load and sort all slides
+const allSlides = await getCollection("slides");
+const presentationSlides = allSlides
+  .filter((s) => s.id.startsWith(presentation.id))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
+const renderedSlides = await Promise.all(
+  presentationSlides.map(async (slide, idx) => {
+    const { Content } = await render(slide);
+    return {
+      id: slide.id,
+      number: idx + 1,
+      Content
+    };
+  })
+);
+---
+
+<!DOCTYPE html>
+<html lang={presentation.data.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{presentation.data.title} - Handout Druckansicht</title>
+    <script is:inline>
+      const params = new URLSearchParams(window.location.search);
+      const theme = params.get('theme') || 'dark';
+      if (theme === 'light') {
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.remove('light');
+      }
+    </script>
+    <style>
+      @page {
+        size: 1920px 1080px;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      html:not(.light) body {
+        background-color: #020617;
+        color: #f8fafc;
+      }
+      html.light body {
+        background-color: #ffffff;
+        color: #0f172a;
+      }
+      .print-slide-page {
+        width: 1920px !important;
+        height: 1080px !important;
+        max-width: 1920px !important;
+        max-height: 1080px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        page-break-after: always;
+        break-after: page;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      html:not(.light) .print-slide-page {
+        background-color: #020617;
+      }
+      html.light .print-slide-page {
+        background-color: #ffffff;
+      }
+      .print-slide-page .slide-base-frame {
+        width: 1920px !important;
+        height: 1080px !important;
+        max-width: 1920px !important;
+        max-height: 1080px !important;
+      }
+      /* Ensure everything is fully visible in print handout */
+      .print-slide-page [data-animate],
+      .print-slide-page [data-cue],
+      .print-slide-page .bento-card-root,
+      .print-slide-page .step-card,
+      .print-slide-page .metric-stat-card,
+      .print-slide-page .pipeline-arrow {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+      }
+      .print-slide-page .highlight-marker {
+        background-size: 100% 100% !important;
+      }
+      .print-slide-page .slide-base-frame.is-intro-state .slide-title,
+      .print-slide-page .slide-base-frame.is-intro-state .slide-subtitle {
+        transform: none !important;
+        opacity: 1 !important;
+        animation: none !important;
+      }
+      .print-slide-page .slide-base-frame.is-intro-state .slide-main-stage {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+
+      /* Dark mode card contrast overrides matching live player */
+      html:not(.light) .bento-card-object .bg-blue-50,
+      html:not(.light) .bento-card-object .bg-blue-50\/70,
+      html:not(.light) .bento-card-object .bg-blue-50\/60,
+      html:not(.light) .bento-card-object .bg-blue-50\/80 {
+        background-color: rgba(30, 58, 138, 0.25) !important;
+        border-color: rgba(59, 130, 246, 0.35) !important;
+        color: #f1f5f9 !important;
+      }
+      html:not(.light) .bento-card-object .bg-cyan-50,
+      html:not(.light) .bento-card-object .bg-cyan-50\/70 {
+        background-color: rgba(22, 78, 99, 0.25) !important;
+        border-color: rgba(6, 182, 212, 0.35) !important;
+        color: #f1f5f9 !important;
+      }
+    </style>
+  </head>
+  <body>
+    {renderedSlides.map((slide) => (
+      <div class="print-slide-page" id={`slide-${slide.number}`}>
+        <slide.Content />
+      </div>
+    ))}
+  </body>
+</html>

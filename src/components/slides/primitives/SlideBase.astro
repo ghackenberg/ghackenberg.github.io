@@ -16,11 +16,14 @@ const {
   showFooter = true,
   class: className = ""
 } = Astro.props;
+
+const num = typeof slideNumber === 'string' ? parseInt(slideNumber, 10) : (slideNumber || 1);
+const isNotFirstSlide = num > 1;
 ---
 
 <div
   lang="de"
-  class={`slide-base-frame relative w-[1920px] h-[1080px] max-w-full max-h-full bg-slate-950 light:bg-slate-50 text-slate-100 light:text-slate-900 flex flex-col justify-between pt-9 px-12 pb-7 select-none font-sans overflow-hidden box-border ${className}`}
+  class={`slide-base-frame relative w-[1920px] h-[1080px] max-w-full max-h-full bg-slate-950 light:bg-slate-50 text-slate-100 light:text-slate-900 flex flex-col justify-between pt-9 px-12 pb-7 select-none font-sans overflow-hidden box-border ${isNotFirstSlide ? 'is-intro-state' : ''} ${className}`}
 >
   <!-- Ambient Gradient Glow (Large radius, seamless color blending) -->
   <div class="slide-ambient-glow absolute inset-0 pointer-events-none" aria-hidden="true"></div>
@@ -253,6 +256,48 @@ const {
   :global(.slide-base-frame.is-intro-state) .slide-subtitle {
     /* Independent horizontal centering: 960px is horizontal center; 48px left padding subtracted */
     transform: translateX(calc(960px - 50% - 48px));
+  }
+
+  /* Transition suppression for instantaneous slide-change repositioning */
+  :global(.slide-base-frame.no-intro-transition) .slide-header-content,
+  :global(.slide-base-frame.no-intro-transition) .slide-title,
+  :global(.slide-base-frame.no-intro-transition) .slide-subtitle {
+    transition: none !important;
+  }
+
+  /* Default in intro state: opacity 1, normal transform (used on rewind on same slide) */
+  :global(.slide-base-frame.is-intro-state) .slide-title,
+  :global(.slide-base-frame.is-intro-state) .slide-subtitle {
+    opacity: 1;
+  }
+
+  /* Animated Transparency / Fade-In ONLY when explicitly entering a new slide */
+  :global(.slide-base-frame.is-intro-state.is-entering) .slide-title {
+    opacity: 0;
+    animation: intro-title-fade-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+  }
+
+  :global(.slide-base-frame.is-intro-state.is-entering) .slide-subtitle {
+    opacity: 0;
+    animation: intro-subtitle-fade-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  }
+
+  @keyframes intro-title-fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes intro-subtitle-fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
   :global(.slide-base-frame.is-intro-state) .slide-number-badge {

@@ -11,13 +11,17 @@ interface SlideMeta {
 }
 
 interface Props {
-  talkId: string;
+  presentationId?: string;
+  talkId?: string;
   slides: SlideMeta[];
   class?: string;
   pdfUrl?: string;
+  pdfDarkUrl?: string;
+  pdfLightUrl?: string;
 }
 
-const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
+const { presentationId, talkId, slides, class: className = "", pdfUrl, pdfDarkUrl, pdfLightUrl } = Astro.props;
+const currentDeckId = presentationId || talkId || "presentation";
 ---
 
 <div class={`slide-deck-wrapper relative w-full lg:aspect-[16/9.6] lg:max-h-[88vh] bg-slate-950 light:bg-slate-100 border border-slate-800 light:border-slate-300 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col ${className}`}>
@@ -27,14 +31,14 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     <div
       id="slide-list-backdrop"
       class="lg:hidden absolute inset-0 bg-slate-950/60 light:bg-slate-900/30 backdrop-blur-xs z-30 opacity-0 pointer-events-none transition-opacity duration-300 cursor-pointer"
-      title="Schließen"
+      title="Close"
     ></div>
 
     <!-- Slide List Sidebar (Side-by-side on desktop lg+, overlay drawer on mobile <lg) -->
     <aside
       id="slide-list-drawer"
       class="drawer-closed bg-slate-900/95 light:bg-white/95 lg:bg-slate-900 lg:light:bg-slate-50 border-r border-slate-800 light:border-slate-200 z-40 flex flex-col shadow-2xl lg:shadow-none select-none shrink-0"
-      aria-label="Folienübersicht"
+      aria-label="Slide overview"
       aria-hidden="true"
     >
       <div class="w-72 sm:w-80 max-w-[85vw] h-full flex flex-col">
@@ -44,7 +48,7 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
             <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-            <h2 class="font-bold text-xs uppercase tracking-wider text-slate-200 light:text-slate-800">Folienübersicht</h2>
+            <h2 class="font-bold text-xs uppercase tracking-wider text-slate-200 light:text-slate-800">Slide Overview</h2>
             <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-slate-800 light:bg-slate-100 text-slate-400 light:text-slate-500 font-bold ml-1">
               {slides.length}
             </span>
@@ -52,8 +56,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
           <button
             id="btn-close-drawer"
             class="w-8 h-8 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-400 hover:text-slate-200 light:text-slate-500 light:hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
-            title="Schließen (ESC)"
-            aria-label="Folienübersicht schließen"
+            title="Close (ESC)"
+            aria-label="Close slide overview"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -68,7 +72,7 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
               type="button"
               data-slide-index={idx}
               data-active={idx === 0 ? "true" : undefined}
-              title={slide.title || `Folie ${idx + 1}`}
+              title={slide.title || `Slide ${idx + 1}`}
               class={`slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 ${
                 idx === 0
                   ? 'bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold'
@@ -82,8 +86,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
               }`}>
                 {String(idx + 1).padStart(2, '0')}
               </span>
-              <span class="text-xs sm:text-sm truncate min-w-0 flex-1 leading-snug" title={slide.title || `Folie ${idx + 1}`}>
-                {slide.title || `Folie ${idx + 1}`}
+              <span class="text-xs sm:text-sm truncate min-w-0 flex-1 leading-snug" title={slide.title || `Slide ${idx + 1}`}>
+                {slide.title || `Slide ${idx + 1}`}
               </span>
             </button>
           ))}
@@ -93,8 +97,25 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
 
     <!-- Slide Canvas Viewport (Crisp, unblurred, auto-scaling) -->
     <div class="relative flex-1 w-full min-w-0 overflow-hidden bg-slate-950 light:bg-slate-100 flex items-center justify-center aspect-video lg:aspect-auto">
+      <!-- Loading Indicator / Shield (Active until Reveal & AutoFit finish) -->
+      <div 
+        id="deck-loader" 
+        class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-950 light:bg-slate-50 transition-opacity duration-300 pointer-events-none select-none"
+      >
+        <div class="flex flex-col items-center gap-4">
+          <div class="relative flex items-center justify-center">
+            <div class="w-12 h-12 rounded-2xl border border-blue-500/30 bg-blue-500/10 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <span class="text-base font-black tracking-tight text-blue-400 font-sans">GH</span>
+            </div>
+            <!-- Concentric circular orbit spinner (symmetrical, non-wobbling) -->
+            <div class="absolute -inset-2 rounded-full border-2 border-blue-500/20 border-t-blue-500 animate-spin"></div>
+          </div>
+          <span class="text-xs font-mono font-medium text-slate-400 light:text-slate-500 tracking-wider uppercase">Loading presentation...</span>
+        </div>
+      </div>
+
       <!-- Reveal.js Container -->
-      <div class="reveal w-full h-full relative" id="reveal-root">
+      <div class="reveal w-full h-full relative opacity-0 transition-opacity duration-300" id="reveal-root">
         <div class="slides w-full h-full">
           <slot />
         </div>
@@ -125,8 +146,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <button
         id="btn-prev"
         class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
-        title="Vorherige Folie (←)"
-        aria-label="Vorherige Folie"
+        title="Previous slide (←)"
+        aria-label="Previous slide"
       >
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 19L11 12l7-7M6 5v14" />
@@ -137,8 +158,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <button
         id="btn-prev-cue"
         class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
-        title="Vorherige Sprungmarke (↑ / Shift+←)"
-        aria-label="Vorherige Sprungmarke"
+        title="Previous cue (↑ / Shift+←)"
+        aria-label="Previous cue"
       >
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
@@ -149,8 +170,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <button
         id="btn-play-pause"
         class="h-8 sm:h-9 md:h-10 px-3 sm:px-4 md:px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-1.5 sm:gap-2 transition-all shadow-md cursor-pointer text-xs sm:text-sm"
-        title="Audio Vortrag abspielen / pausieren (Leertaste)"
-        aria-label="Vortrag abspielen oder pausieren"
+        title="Play audio presentation (Space)"
+        aria-label="Play or pause audio presentation"
       >
         <svg id="icon-play" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z" />
@@ -158,15 +179,15 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
         <svg id="icon-pause" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 hidden shrink-0" fill="currentColor" viewBox="0 0 24 24">
           <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
         </svg>
-        <span id="label-play-pause" class="hidden sm:inline">Vortrag anhören</span>
+        <span id="label-play-pause" class="hidden sm:inline">Listen to presentation</span>
       </button>
 
       <!-- Nächste Sprungmarke / Cue (Intra-Slide) -->
       <button
         id="btn-next-cue"
         class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
-        title="Nächste Sprungmarke (↓ / Shift+→)"
-        aria-label="Nächste Sprungmarke"
+        title="Next cue (↓ / Shift+→)"
+        aria-label="Next cue"
       >
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
@@ -177,8 +198,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <button
         id="btn-next"
         class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-200 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
-        title="Nächste Folie (→)"
-        aria-label="Nächste Folie"
+        title="Next slide (→)"
+        aria-label="Next slide"
       >
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 5l7 7-7 7M18 5v14" />
@@ -192,8 +213,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <button
         id="btn-speed"
         class="px-2 sm:px-2.5 md:px-3 h-8 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer"
-        title="Wiedergabegeschwindigkeit"
-        aria-label="Wiedergabegeschwindigkeit ändern"
+        title="Playback speed"
+        aria-label="Change playback speed"
       >
         1.0x
       </button>
@@ -202,8 +223,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <button
         id="btn-overview"
         class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
-        title="Folienübersicht (ESC)"
-        aria-label="Folienübersicht öffnen oder schließen"
+        title="Slide overview (ESC)"
+        aria-label="Toggle slide overview"
       >
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -214,8 +235,8 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       <button
         id="btn-fullscreen"
         class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
-        title="Vollbild (F)"
-        aria-label="Vollbild umschalten"
+        title="Fullscreen (F)"
+        aria-label="Toggle fullscreen"
       >
         <svg id="icon-fullscreen-enter" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5h-4m4 0v-4m0 4l-5-5" />
@@ -225,20 +246,76 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
         </svg>
       </button>
 
-      <!-- Download PDF Handout -->
-      {pdfUrl && (
-        <a
-          id="btn-download-pdf"
-          href={pdfUrl}
-          download={`Vortrag_${talkId}.pdf`}
-          class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
-          title="PDF Handout herunterladen"
-          aria-label="PDF Handout herunterladen"
-        >
-          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-        </a>
+      <!-- Download PDF Handout with Theme Matching & Selector -->
+      {(pdfDarkUrl || pdfLightUrl || pdfUrl) && (
+        <div class="relative flex items-center" id="pdf-download-container">
+          <a
+            id="btn-download-pdf"
+            href={pdfDarkUrl || pdfUrl}
+            data-pdf-dark={pdfDarkUrl || pdfUrl}
+            data-pdf-light={pdfLightUrl}
+            data-deck-id={currentDeckId}
+            download={`Presentation_${currentDeckId}.pdf`}
+            class={`h-8 sm:h-9 bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer ${
+              pdfLightUrl && (pdfDarkUrl || pdfUrl) ? 'w-7 sm:w-8 rounded-l-lg' : 'w-8 h-8 sm:w-9 sm:h-9 rounded-lg'
+            }`}
+            title="Download PDF handout"
+            aria-label="Download PDF handout"
+          >
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+          </a>
+
+          {pdfLightUrl && (pdfDarkUrl || pdfUrl) && (
+            <>
+              <button
+                id="btn-toggle-pdf-menu"
+                type="button"
+                class="w-4 h-8 sm:h-9 rounded-r-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-400 light:text-slate-500 border-l border-slate-700/60 light:border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                title="Select PDF format (Light / Dark)"
+                aria-label="Select PDF format"
+              >
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div 
+                id="pdf-download-menu" 
+                class="hidden absolute bottom-full mb-2 right-0 w-60 p-2 bg-slate-900/95 light:bg-white/95 backdrop-blur-md border border-slate-700 light:border-slate-200 rounded-xl shadow-2xl z-50 flex flex-col gap-1 text-xs"
+              >
+                <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 light:text-slate-500 border-b border-slate-800 light:border-slate-100 mb-1">
+                  PDF Handout Format
+                </div>
+                <a
+                  id="menu-item-pdf-dark"
+                  href={pdfDarkUrl || pdfUrl}
+                  download={`Presentation_${currentDeckId}_Dark.pdf`}
+                  class="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 light:hover:bg-slate-100 text-slate-200 light:text-slate-800 transition-colors cursor-pointer"
+                >
+                  <div class="flex items-center gap-2">
+                    <span>🌙</span>
+                    <span class="font-medium">Dark Mode</span>
+                  </div>
+                  <span class="text-[10px] font-mono text-slate-400">Original</span>
+                </a>
+                <a
+                  id="menu-item-pdf-light"
+                  href={pdfLightUrl}
+                  download={`Presentation_${currentDeckId}_Light.pdf`}
+                  class="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 light:hover:bg-slate-100 text-slate-200 light:text-slate-800 transition-colors cursor-pointer"
+                >
+                  <div class="flex items-center gap-2">
+                    <span>☀️</span>
+                    <span class="font-medium">Light Mode</span>
+                  </div>
+                  <span class="text-[10px] font-mono text-slate-400">Print</span>
+                </a>
+              </div>
+            </>
+          )}
+        </div>
       )}
 
       <!-- Slide Counter -->
@@ -286,9 +363,12 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
 
 
   deck.initialize().then(() => {
+    const revealRoot = document.getElementById('reveal-root');
+    const deckLoader = document.getElementById('deck-loader');
+
     // AutoFit Controller
     const autoFit = new AutoFitController();
-    autoFit.fitAll(document.getElementById('reveal-root'));
+    autoFit.fitAll(revealRoot);
 
     // UI Elements
     const btnPlayPause = document.getElementById('btn-play-pause');
@@ -466,15 +546,15 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
           if (isPlaying) {
             iconPlay.classList.add('hidden');
             iconPause.classList.remove('hidden');
-            if (labelPlayPause) labelPlayPause.textContent = 'Pausieren';
-            btnPlayPause?.setAttribute('title', 'Pausieren (Leertaste)');
-            btnPlayPause?.setAttribute('aria-label', 'Pausieren');
+            if (labelPlayPause) labelPlayPause.textContent = 'Pause';
+            btnPlayPause?.setAttribute('title', 'Pause audio (Space)');
+            btnPlayPause?.setAttribute('aria-label', 'Pause audio presentation');
           } else {
             iconPlay.classList.remove('hidden');
             iconPause.classList.add('hidden');
-            if (labelPlayPause) labelPlayPause.textContent = 'Vortrag anhören';
-            btnPlayPause?.setAttribute('title', 'Audio Vortrag abspielen (Leertaste)');
-            btnPlayPause?.setAttribute('aria-label', 'Audio Vortrag abspielen');
+            if (labelPlayPause) labelPlayPause.textContent = 'Listen to presentation';
+            btnPlayPause?.setAttribute('title', 'Play audio presentation (Space)');
+            btnPlayPause?.setAttribute('aria-label', 'Play audio presentation');
           }
         }
       }
@@ -486,7 +566,11 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
       updateActiveSlideInList(idx);
       if (audioSync.getCurrentSlideIndex() !== idx) {
-        audioSync.setSlideIndex(idx, { entryMode: 'full' });
+        const isPlaying = audioSync.getIsPlaying();
+        audioSync.setSlideIndex(idx, {
+          shouldPlay: isPlaying,
+          entryMode: isPlaying ? 'start' : 'full'
+        });
       } else {
         audioSync.updateSlideIntroState();
       }
@@ -528,7 +612,6 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
     }
 
     // Auto-adapt Reveal scale whenever slide canvas viewport resizes
-    const revealRoot = document.getElementById('reveal-root');
     if (revealRoot && typeof ResizeObserver !== 'undefined') {
       const ro = new ResizeObserver(() => {
         deck.layout();
@@ -642,12 +725,67 @@ const { talkId, slides, class: className = "", pdfUrl } = Astro.props;
       }
     });
 
+    // PDF Handout Dynamic Theme Detection & Menu Toggle
+    const btnDownloadPdf = document.getElementById('btn-download-pdf') as HTMLAnchorElement | null;
+    const btnTogglePdfMenu = document.getElementById('btn-toggle-pdf-menu');
+    const pdfDownloadMenu = document.getElementById('pdf-download-menu');
+
+    const updatePdfDownload = () => {
+      if (!btnDownloadPdf) return;
+      const pdfDark = btnDownloadPdf.getAttribute('data-pdf-dark');
+      const pdfLight = btnDownloadPdf.getAttribute('data-pdf-light');
+      const deckId = btnDownloadPdf.getAttribute('data-deck-id') || 'presentation';
+      const isLight = document.documentElement.classList.contains('light');
+
+      if (isLight && pdfLight) {
+        btnDownloadPdf.href = pdfLight;
+        btnDownloadPdf.setAttribute('download', `Presentation_${deckId}_Light.pdf`);
+        btnDownloadPdf.title = 'Download PDF handout (Light mode / print-friendly)';
+        btnDownloadPdf.setAttribute('aria-label', 'Download PDF handout (Light mode)');
+      } else if (pdfDark) {
+        btnDownloadPdf.href = pdfDark;
+        btnDownloadPdf.setAttribute('download', `Presentation_${deckId}_Dark.pdf`);
+        btnDownloadPdf.title = 'Download PDF handout (Dark mode)';
+        btnDownloadPdf.setAttribute('aria-label', 'Download PDF handout (Dark mode)');
+      }
+    };
+
+    updatePdfDownload();
+    window.addEventListener('theme-changed', updatePdfDownload);
+
+    if (btnTogglePdfMenu && pdfDownloadMenu) {
+      btnTogglePdfMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        pdfDownloadMenu.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!pdfDownloadMenu.contains(e.target as Node) && e.target !== btnTogglePdfMenu) {
+          pdfDownloadMenu.classList.add('hidden');
+        }
+      });
+    }
+
     // Initialize initial slide cues (Titelfolie in full mode)
     audioSync.setSlideIndex(0, { entryMode: 'full' });
+
+    // Dismiss loading indicator & reveal deck smoothly
+    if (revealRoot) revealRoot.classList.add('deck-ready');
+    if (deckLoader) {
+      deckLoader.classList.add('opacity-0');
+      setTimeout(() => deckLoader.remove(), 350);
+    }
   });
 </script>
 
 <style is:global>
+  #reveal-root.deck-ready {
+    opacity: 1 !important;
+  }
+  .reveal:not(.ready) .slides > section:not(:first-child) {
+    display: none !important;
+  }
+
   /* Reveal custom styling inside Astro component */
   .reveal {
     font-family: inherit;

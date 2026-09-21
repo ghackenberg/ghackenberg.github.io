@@ -7,35 +7,35 @@ import fs from "node:fs";
 import path from "node:path";
 
 export async function getStaticPaths() {
-  const talks = await getCollection("talks");
-  return talks.map((talk) => ({
-    params: { slug: talk.id },
-    props: { talk },
+  const presentations = await getCollection("presentations");
+  return presentations.map((presentation) => ({
+    params: { slug: presentation.id },
+    props: { presentation },
   }));
 }
 
-const { talk } = Astro.props;
+const { presentation } = Astro.props;
 
-// Load all slides for this talk, sorted by filename
+// Load all slides for this presentation, sorted by filename
 const allSlides = await getCollection("slides");
-const talkSlides = allSlides
-  .filter((s) => s.id.startsWith(talk.id))
+const presentationSlides = allSlides
+  .filter((s) => s.id.startsWith(presentation.id))
   .sort((a, b) => a.id.localeCompare(b.id));
 
 // Prepare slide metadata and rendered components
 const renderedSlides = await Promise.all(
-  talkSlides.map(async (slide, idx) => {
+  presentationSlides.map(async (slide, idx) => {
     const { Content } = await render(slide);
     const slideBase = path.basename(slide.id);
 
     // Check if audio file and cues file exist
-    const talkDir = path.resolve("src/content/talks", talk.id);
-    const audioFilePath = path.join(talkDir, "audio", `${slideBase}.mp3`);
-    const cuesFilePath = path.join(talkDir, "audio", `${slideBase}.cues.json`);
+    const presentationDir = path.resolve("src/content/presentations", presentation.id);
+    const audioFilePath = path.join(presentationDir, "audio", `${slideBase}.mp3`);
+    const cuesFilePath = path.join(presentationDir, "audio", `${slideBase}.cues.json`);
 
     let audioUrl = undefined;
     if (fs.existsSync(audioFilePath)) {
-      audioUrl = `/talks/${talk.id}/audio/${slideBase}.mp3`;
+      audioUrl = `/presentations/${presentation.id}/audio/${slideBase}.mp3`;
     }
 
     let cues: Record<string, number> = {};
@@ -61,76 +61,106 @@ const renderedSlides = await Promise.all(
   })
 );
 
-// Check if slides.pdf exists for download button
-const pdfFilePath = path.resolve("src/content/talks", talk.id, "slides.pdf");
-const hasPdf = fs.existsSync(pdfFilePath);
-const pdfDownloadUrl = `/talks/${talk.id}/slides.pdf`;
+// Check if slides-dark.pdf, slides-light.pdf, or slides.pdf exist for download button
+const presentationDir = path.resolve("src/content/presentations", presentation.id);
+const pdfDarkPath = path.join(presentationDir, "slides-dark.pdf");
+const pdfLightPath = path.join(presentationDir, "slides-light.pdf");
+const legacyPdfPath = path.join(presentationDir, "slides.pdf");
+
+const pdfDarkUrl = fs.existsSync(pdfDarkPath) 
+  ? `/presentations/${presentation.id}/slides-dark.pdf` 
+  : (fs.existsSync(legacyPdfPath) ? `/presentations/${presentation.id}/slides.pdf` : undefined);
+
+const pdfLightUrl = fs.existsSync(pdfLightPath) 
+  ? `/presentations/${presentation.id}/slides-light.pdf` 
+  : undefined;
+
+const pdfDownloadUrl = pdfDarkUrl || pdfLightUrl;
 
 const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\}/g, "") : "");
 
-// Schema.org Event & PresentationDigitalDocument
-const talkSchema = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Event",
-      "@id": `https://hackenberg.tech/talks/${talk.id}/#event`,
-      "name": talk.data.title,
-      "description": talk.data.description,
-      "startDate": talk.data.pubDate.toISOString(),
-      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-      "eventStatus": "https://schema.org/EventScheduled",
+type JsonLdValue = string | number | boolean | null | undefined | { [key: string]: JsonLdValue } | JsonLdValue[];
+type JsonLdNode = Record<string, JsonLdValue>;
+
+// Schema.org Dynamic Dual Architecture: Event + PresentationDigitalDocument or Pure Digital Document
+const schemaGraph: JsonLdNode[] = [];
+
+if (presentation.data.event) {
+  schemaGraph.push({
+    "@type": "Event",
+    "@id": `https://hackenberg.tech/presentations/${presentation.id}/#event`,
+    "name": presentation.data.event,
+    "description": presentation.data.description,
+    "startDate": presentation.data.pubDate.toISOString(),
+    "eventAttendanceMode": presentation.data.location ? "https://schema.org/OfflineEventAttendanceMode" : "https://schema.org/OnlineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    ...(presentation.data.location ? {
       "location": {
         "@type": "Place",
-        "name": talk.data.location || "Oberösterreich",
+        "name": presentation.data.location,
         "address": {
           "@type": "PostalAddress",
           "addressRegion": "Oberösterreich",
           "addressCountry": "AT"
         }
-      },
-      "performer": {
-        "@type": "Person",
-        "@id": "https://hackenberg.tech/#georg",
-        "name": "Dr. Georg Hackenberg",
-        "jobTitle": "Professor für Informatik und Industriesysteme"
       }
+    } : {}),
+    "performer": {
+      "@type": "Person",
+      "@id": "https://hackenberg.tech/#georg",
+      "name": "Dr. Georg Hackenberg",
+      "jobTitle": "Professor für Informatik und Industriesysteme"
     },
-    {
-      "@type": "PresentationDigitalDocument",
-      "@id": `https://hackenberg.tech/talks/${talk.id}/#presentation`,
-      "name": talk.data.title,
-      "headline": talk.data.subtitle || talk.data.title,
-      "description": talk.data.description,
-      "author": {
-        "@id": "https://hackenberg.tech/#georg"
-      },
-      "datePublished": talk.data.pubDate.toISOString(),
-      "inLanguage": talk.data.lang,
-      "url": `https://hackenberg.tech/talks/${talk.id}/`
+    "workPerformed": {
+      "@id": `https://hackenberg.tech/presentations/${presentation.id}/#presentation`
     }
-  ]
-};
-const ui = {
-  back: "Back to Talks",
+  });
+}
+
+schemaGraph.push({
+  "@type": "PresentationDigitalDocument",
+  "@id": `https://hackenberg.tech/presentations/${presentation.id}/#presentation`,
+  "name": presentation.data.title,
+  "headline": presentation.data.subtitle || presentation.data.title,
+  "description": presentation.data.description,
+  "author": {
+    "@id": "https://hackenberg.tech/#georg"
+  },
+  "datePublished": presentation.data.pubDate.toISOString(),
+  "inLanguage": presentation.data.lang,
+  "url": `https://hackenberg.tech/presentations/${presentation.id}/`,
+  ...(presentation.data.event ? {
+    "recordedAt": {
+      "@id": `https://hackenberg.tech/presentations/${presentation.id}/#event`
+    }
+  } : {})
+});
+
+const presentationSchema = {
+  "@context": "https://schema.org",
+  "@graph": schemaGraph
 };
 
-const previewImg = talk.data.previewImage || talk.data.icon;
+const ui = {
+  back: "Back to Presentations",
+};
+
+const previewImg = presentation.data.previewImage || presentation.data.icon;
 ---
 
 <Layout
-  title={`${talk.data.title} | Keynote Dr. Georg Hackenberg`}
-  description={talk.data.description || `${talk.data.title} - Keynote presentation by Dr. Georg Hackenberg`}
+  title={`${presentation.data.title} | Keynote Dr. Georg Hackenberg`}
+  description={presentation.data.description || `${presentation.data.title} - Interactive presentation by Dr. Georg Hackenberg`}
   image={previewImg}
-  jsonLd={talkSchema}
-  lang={talk.data.lang}
+  jsonLd={presentationSchema}
+  lang={presentation.data.lang}
 >
   <Navbar />
 
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
     <!-- Back button -->
     <a 
-      href="/talks/" 
+      href="/presentations/" 
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
@@ -141,33 +171,45 @@ const previewImg = talk.data.previewImage || talk.data.icon;
     <header class="mb-10 pb-8 border-b border-element-border">
       <div class="max-w-4xl">
         <div class="flex flex-wrap items-center gap-3 mb-4">
-          <time datetime={talk.data.pubDate.toISOString()} class="text-sm font-semibold text-brand-blue/80">
-            {talk.data.pubDate.toLocaleDateString(talk.data.lang === "de" ? "de-AT" : "en-US", {
+          <time datetime={presentation.data.pubDate.toISOString()} class="text-sm font-semibold text-brand-blue/80">
+            {presentation.data.pubDate.toLocaleDateString(presentation.data.lang === "de" ? "de-AT" : "en-US", {
               year: "numeric",
               month: "long",
               day: "numeric"
             })}
           </time>
-          {talk.data.location && (
+          {presentation.data.event && (
             <>
               <span class="text-gray-500">•</span>
-              <span class="text-sm text-gray-400">📍 {talk.data.location}</span>
+              <span class="text-sm font-semibold text-brand-blue/80">{presentation.data.event}</span>
+            </>
+          )}
+          {presentation.data.location && (
+            <>
+              <span class="text-gray-500">•</span>
+              <span class="text-sm text-gray-400">📍 {presentation.data.location}</span>
+            </>
+          )}
+          {!presentation.data.event && !presentation.data.location && (
+            <>
+              <span class="text-gray-500">•</span>
+              <span class="text-xs font-medium text-slate-400">🎙️ Interactive Presentation</span>
             </>
           )}
         </div>
 
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
-          {talk.data.title}
+          {presentation.data.title}
         </h1>
-        {talk.data.subtitle && (
+        {presentation.data.subtitle && (
           <p class="text-base sm:text-lg text-gray-300 font-normal leading-relaxed mb-6">
-            {talk.data.subtitle}
+            {presentation.data.subtitle}
           </p>
         )}
 
-        {talk.data.tags && talk.data.tags.length > 0 && (
+        {presentation.data.tags && presentation.data.tags.length > 0 && (
           <div class="flex flex-wrap gap-2 mt-6">
-            {talk.data.tags.map((tag) => (
+            {presentation.data.tags.map((tag) => (
               <a 
                 href={`/tags/${tag}/`}
                 class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
@@ -183,8 +225,10 @@ const previewImg = talk.data.previewImage || talk.data.icon;
     <!-- Interactive Slide & Audio Deck -->
     <section class="mb-14 w-full">
       <SlideDeck
-        talkId={talk.id}
-        pdfUrl={hasPdf ? pdfDownloadUrl : undefined}
+        presentationId={presentation.id}
+        pdfUrl={pdfDownloadUrl}
+        pdfDarkUrl={pdfDarkUrl}
+        pdfLightUrl={pdfLightUrl}
         slides={renderedSlides.map((s) => ({
           id: s.id,
           title: s.title,

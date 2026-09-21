@@ -210,7 +210,7 @@ export function buildSitemapMetadata() {
     projects: [],
     services: [],
     visualizations: [],
-    talks: []
+    presentations: []
   };
   /** @type {Map<string, Date[]>} */
   const postTagDates = new Map();
@@ -425,12 +425,12 @@ export function buildSitemapMetadata() {
     }
   }
 
-  // 7. Talks
-  const talksDir = path.join(contentBase, 'talks');
-  if (fs.existsSync(talksDir)) {
-    const talkFolders = fs.readdirSync(talksDir);
-    for (const folder of talkFolders) {
-      const folderPath = path.join(talksDir, folder);
+  // 7. Presentations
+  const presentationsDir = path.join(contentBase, 'presentations');
+  if (fs.existsSync(presentationsDir)) {
+    const presentationFolders = fs.readdirSync(presentationsDir);
+    for (const folder of presentationFolders) {
+      const folderPath = path.join(presentationsDir, folder);
       if (!fs.statSync(folderPath).isDirectory()) continue;
       const targetFile = fs.existsSync(path.join(folderPath, 'index.md'))
         ? path.join(folderPath, 'index.md')
@@ -441,14 +441,14 @@ export function buildSitemapMetadata() {
 
       const content = fs.readFileSync(targetFile, 'utf8');
       const frontmatter = parseSimpleFrontmatter(content);
-      const gitDate = getLatestGitDate(`src/content/talks/${folder}`, gitMap);
+      const gitDate = getLatestGitDate(`src/content/presentations/${folder}`, gitMap);
       const fileMtime = fs.statSync(targetFile).mtime;
 
       const date = resolveItemDate(folder, frontmatter.pubDate, gitDate, fileMtime);
       allDates.push(date);
-      sectionDates.talks.push(date);
+      sectionDates.presentations.push(date);
 
-      metaMap.set(`/talks/${folder}/`, {
+      metaMap.set(`/presentations/${folder}/`, {
         lastmod: date,
         changefreq: 'monthly',
         priority: 0.8
@@ -499,7 +499,7 @@ export function buildSitemapMetadata() {
   const projectsMaxDate = getMaxDate(sectionDates.projects);
   const servicesMaxDate = getMaxDate(sectionDates.services);
   const visualizationsMaxDate = getMaxDate(sectionDates.visualizations);
-  const talksMaxDate = getMaxDate(sectionDates.talks);
+  const presentationsMaxDate = getMaxDate(sectionDates.presentations);
 
   metaMap.set('/posts/', { lastmod: postsMaxDate, changefreq: 'weekly', priority: 0.8 });
   metaMap.set('/courses/', { lastmod: coursesMaxDate, changefreq: 'weekly', priority: 0.8 });
@@ -507,7 +507,7 @@ export function buildSitemapMetadata() {
   metaMap.set('/projects/', { lastmod: projectsMaxDate, changefreq: 'weekly', priority: 0.8 });
   metaMap.set('/services/', { lastmod: servicesMaxDate, changefreq: 'weekly', priority: 0.8 });
   metaMap.set('/visualizations/', { lastmod: visualizationsMaxDate, changefreq: 'weekly', priority: 0.8 });
-  metaMap.set('/talks/', { lastmod: talksMaxDate, changefreq: 'weekly', priority: 0.8 });
+  metaMap.set('/presentations/', { lastmod: presentationsMaxDate, changefreq: 'weekly', priority: 0.8 });
 
   /**
    * Helper to match any pathname to its best metadata entry
@@ -523,25 +523,11 @@ export function buildSitemapMetadata() {
       return /** @type {PageMetadata} */ (metaMap.get(pathname));
     }
 
-    // Check pagination: /posts/2/, /posts/3/, etc.
-    if (pathname.startsWith('/posts/') && /^\/posts\/\d+\/$/.test(pathname)) {
-      return { lastmod: postsMaxDate, changefreq: 'weekly', priority: 0.7 };
-    }
-
-    // Check post tags: /posts/tags/[tag]/ or /posts/tags/[tag]/2/
-    const postTagMatch = pathname.match(/^\/posts\/tags\/([^/]+)/);
-    if (postTagMatch) {
-      const tag = decodeURIComponent(postTagMatch[1]).toLowerCase();
-      const tagDates = postTagDates.get(tag) || [];
-      const tagDate = getMaxDate(tagDates);
-      return { lastmod: tagDate, changefreq: 'weekly', priority: 0.6 };
-    }
-
-    // Check publication tags: /publications/tags/[tag]/
-    const pubTagMatch = pathname.match(/^\/publications\/tags\/([^/]+)/);
-    if (pubTagMatch) {
-      const tag = decodeURIComponent(pubTagMatch[1]).toLowerCase();
-      const tagDates = publicationTagDates.get(tag) || [];
+    // Match tag pages: /tags/<tag>/
+    const tagMatch = pathname.match(/^\/tags\/([^\/]+)\/$/);
+    if (tagMatch) {
+      const tag = tagMatch[1];
+      const tagDates = [...(postTagDates.get(tag) || []), ...(publicationTagDates.get(tag) || [])];
       const tagDate = getMaxDate(tagDates);
       return { lastmod: tagDate, changefreq: 'monthly', priority: 0.6 };
     }
@@ -552,7 +538,7 @@ export function buildSitemapMetadata() {
     if (pathname.startsWith('/publications/')) return { lastmod: publicationsMaxDate, changefreq: 'monthly', priority: 0.7 };
     if (pathname.startsWith('/projects/')) return { lastmod: projectsMaxDate, changefreq: 'monthly', priority: 0.7 };
     if (pathname.startsWith('/services/')) return { lastmod: servicesMaxDate, changefreq: 'monthly', priority: 0.7 };
-    if (pathname.startsWith('/talks/')) return { lastmod: talksMaxDate, changefreq: 'monthly', priority: 0.7 };
+    if (pathname.startsWith('/presentations/')) return { lastmod: presentationsMaxDate, changefreq: 'monthly', priority: 0.7 };
     if (pathname.startsWith('/visualizations/')) return { lastmod: visualizationsMaxDate, changefreq: 'monthly', priority: 0.7 };
 
     return {

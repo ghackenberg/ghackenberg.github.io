@@ -12,6 +12,7 @@ interface ManifestItem {
 
 interface ContentManifest {
   posts: ManifestItem[];
+  presentations: ManifestItem[];
   courses: ManifestItem[];
   projects: ManifestItem[];
   services: ManifestItem[];
@@ -21,7 +22,7 @@ interface ContentManifest {
 
 const STORAGE_KEY = 'gh_site_notifications_v1';
 const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
-const SECTIONS = ['posts', 'courses', 'projects', 'services', 'publications', 'visualizations'];
+const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations'];
 
 function getStorageState(): NotificationState {
   try {

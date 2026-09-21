@@ -78,6 +78,10 @@ export class AudioSyncController {
     return this.currentEntryMode;
   }
 
+  public getIsPlaying(): boolean {
+    return this.isPlaying;
+  }
+
   public setSlideIndex(index: number, options?: boolean | SetSlideOptions) {
     if (index < 0 || index >= this.slides.length) return;
 
@@ -103,7 +107,17 @@ export class AudioSyncController {
     this.bindSlideCues(index);
 
     const slide = this.slides[index];
+    const slideEl = document.querySelector(`.reveal .slides section[data-slide-index="${index}"]`);
+    const baseFrame = slideEl?.querySelector('.slide-base-frame');
+
     if (entryMode === 'full') {
+      if (baseFrame) {
+        baseFrame.classList.add('no-intro-transition');
+        baseFrame.classList.remove('is-intro-state');
+        baseFrame.classList.remove('is-entering');
+        void (baseFrame as HTMLElement).offsetWidth;
+        baseFrame.classList.remove('no-intro-transition');
+      }
       this.fastForwardAllCues();
     } else if (entryMode === 'last-cue') {
       const cues = this.getCurrentSlideCues();
@@ -116,6 +130,19 @@ export class AudioSyncController {
     } else {
       // 'start': reset all cues to unrevealed
       this.resetAllCues();
+      if (baseFrame && index > 0) {
+        // Instantly position centered without flying in from top-left
+        baseFrame.classList.add('no-intro-transition');
+        baseFrame.classList.add('is-intro-state');
+        baseFrame.classList.add('is-entering');
+        void (baseFrame as HTMLElement).offsetWidth;
+        baseFrame.classList.remove('no-intro-transition');
+
+        // Clean up is-entering after animation completes so rewinding on same slide won't re-trigger fade-in
+        setTimeout(() => {
+          baseFrame.classList.remove('is-entering');
+        }, 900);
+      }
     }
     this.updateSlideIntroState();
 
@@ -142,14 +169,18 @@ export class AudioSyncController {
     // Slide 1 (title slide) is never in intro state because it's already a dedicated hero slide
     if (this.currentIndex === 0) {
       baseFrame.classList.remove('is-intro-state');
+      baseFrame.classList.remove('is-entering');
       return;
     }
 
     // If in 'full' mode, or at least one cue is triggered: NOT in intro state
     if (this.currentEntryMode === 'full' || this.triggeredCues.size > 0) {
       baseFrame.classList.remove('is-intro-state');
+      baseFrame.classList.remove('is-entering');
     } else {
       // In 'start' mode with 0 cues triggered: INTRO STATE ACTIVE!
+      // Notice: We do NOT add is-entering here, so rewinding on the same slide
+      // smoothly glides the header back to center with full opacity!
       baseFrame.classList.add('is-intro-state');
     }
   }
@@ -214,6 +245,9 @@ export class AudioSyncController {
           if (this.onCuesLoadedCallback) {
             this.onCuesLoadedCallback(this.getCurrentSlideCues(), totalSec);
           }
+        }
+        if (autoPlay) {
+          this.currentHowl?.play();
         }
       },
       onplay: () => {
