@@ -1,5 +1,5 @@
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#10b981', '#f59e0b', '#a855f7'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#059669', '#d97706', '#9333ea'];
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
 function getNodeColor(group, isLight) {
   return isLight ? (colorsLight[group] || colorsLight[0]) : (colorsDark[group] || colorsDark[0]);
@@ -144,18 +144,19 @@ export default {
     } else if (layout === 'columns') {
       const nodes = this.graph.nodes();
       const posts = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 1);
-      const courses = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 4);
-      const tags = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 0);
-      const projects = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 3);
-      const services = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 5);
       const publications = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 2);
+      const presentations = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 3);
+      const tags = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 0);
+      const courses = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 4);
+      const projects = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 5);
+      const services = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 6);
 
-      const categories = [posts, courses, tags, projects, services, publications];
+      const categories = [posts, publications, presentations, tags, courses, projects, services];
       const isMobile = window.innerWidth < 768;
 
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx - 2.5) * 4;
+          const rowY = (catIdx - 3) * 4;
           catNodes.forEach((n, idx) => {
             targets[n] = {
               x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0,
@@ -165,7 +166,7 @@ export default {
         });
       } else {
         categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx - 2.5) * 5;
+          const colX = (catIdx - 3) * 5;
           catNodes.forEach((n, idx) => {
             targets[n] = {
               x: colX,

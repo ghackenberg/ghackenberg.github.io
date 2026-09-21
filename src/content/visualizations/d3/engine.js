@@ -1,5 +1,5 @@
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#10b981', '#f59e0b', '#a855f7'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#059669', '#d97706', '#9333ea'];
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
 export default {
   layouts: [
@@ -241,13 +241,14 @@ export default {
 
     } else if (layout === 'columns') {
       const posts = this.nodes.filter(n => n.group === 1);
-      const courses = this.nodes.filter(n => n.group === 4);
-      const tags = this.nodes.filter(n => n.group === 0);
-      const projects = this.nodes.filter(n => n.group === 3);
-      const services = this.nodes.filter(n => n.group === 5);
       const publications = this.nodes.filter(n => n.group === 2);
+      const presentations = this.nodes.filter(n => n.group === 3);
+      const tags = this.nodes.filter(n => n.group === 0);
+      const courses = this.nodes.filter(n => n.group === 4);
+      const projects = this.nodes.filter(n => n.group === 5);
+      const services = this.nodes.filter(n => n.group === 6);
 
-      const categories = [posts, courses, tags, projects, services, publications];
+      const categories = [posts, publications, presentations, tags, courses, projects, services];
       const isMobile = this.width < 768 || window.innerWidth < 768;
 
       const padX = Math.max(40, this.width * 0.08);

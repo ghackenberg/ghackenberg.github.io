@@ -170,6 +170,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      filter: (page) => !page.includes('/print/'),
       serialize(item) {
         try {
           const urlObj = new URL(item.url);

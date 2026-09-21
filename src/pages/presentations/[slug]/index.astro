@@ -2,6 +2,7 @@
 import Layout from "../../../layouts/Layout.astro";
 import Navbar from "../../../components/Navbar.astro";
 import SlideDeck from "../../../components/slides/player/SlideDeck.astro";
+import RelatedContent from "../../../components/RelatedContent.astro";
 import { getCollection, render } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
@@ -299,4 +300,11 @@ const previewImg = presentation.data.previewImage || presentation.data.icon;
       </div>
     </section>
   </main>
+
+  <!-- Related Content -->
+  <RelatedContent
+    currentCollection="presentations"
+    currentId={presentation.id}
+    tags={presentation.data.tags}
+  />
 </Layout>

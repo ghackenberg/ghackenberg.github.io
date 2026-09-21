@@ -6,6 +6,7 @@ import { getCollection } from "astro:content";
 const tags = await getCollection("tags");
 const posts = await getCollection("posts");
 const publications = await getCollection("publications");
+const presentations = await getCollection("presentations");
 const projects = await getCollection("projects");
 const courses = await getCollection("courses");
 const services = await getCollection("services");
@@ -14,10 +15,11 @@ const services = await getCollection("services");
 const tagStats = tags.map((tag) => {
   const postCount = posts.filter((p) => p.data.tags.includes(tag.id)).length;
   const pubCount = publications.filter((p) => p.data.tags.includes(tag.id)).length;
-  const projCount = projects.filter((p) => p.data.tags && p.data.tags.includes(tag.id)).length;
+  const presCount = presentations.filter((pres) => pres.data.tags && pres.data.tags.includes(tag.id)).length;
   const courseCount = courses.filter((c) => c.data.tags && c.data.tags.includes(tag.id)).length;
+  const projCount = projects.filter((p) => p.data.tags && p.data.tags.includes(tag.id)).length;
   const serviceCount = services.filter((s) => s.data.tags && s.data.tags.includes(tag.id)).length;
-  const total = postCount + pubCount + projCount + courseCount + serviceCount;
+  const total = postCount + pubCount + presCount + courseCount + projCount + serviceCount;
 
   return {
     id: tag.id,
@@ -25,8 +27,9 @@ const tagStats = tags.map((tag) => {
     description: tag.data.description,
     postCount,
     pubCount,
-    projCount,
+    presCount,
     courseCount,
+    projCount,
     serviceCount,
     total,
   };
@@ -134,16 +137,22 @@ const breadcrumbSchema = {
                 <span>{tag.pubCount} Paper{tag.pubCount !== 1 ? 's' : ''}</span>
               </span>
             )}
-            {tag.projCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-emerald-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                <span>{tag.projCount} Project{tag.projCount !== 1 ? 's' : ''}</span>
+            {tag.presCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-cyan-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                <span>{tag.presCount} Talk{tag.presCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.courseCount > 0 && (
               <span class="inline-flex items-center gap-1 text-amber-400">
                 <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow"></span>
                 <span>{tag.courseCount} Course{tag.courseCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
+            {tag.projCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>{tag.projCount} Project{tag.projCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.serviceCount > 0 && (
