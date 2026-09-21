@@ -60,7 +60,7 @@ const renderedSlides = await Promise.all(
         document.documentElement.classList.remove('light');
       }
     </script>
-    <style>
+    <style is:global>
       @page {
         size: 1920px 1080px;
         margin: 0;
@@ -118,6 +118,7 @@ const renderedSlides = await Promise.all(
       .print-slide-page .highlight-marker {
         background-size: 100% 100% !important;
       }
+      .print-slide-page .slide-base-frame.is-intro-state .slide-header-content,
       .print-slide-page .slide-base-frame.is-intro-state .slide-title,
       .print-slide-page .slide-base-frame.is-intro-state .slide-subtitle {
         transform: none !important;
@@ -125,6 +126,12 @@ const renderedSlides = await Promise.all(
         animation: none !important;
       }
       .print-slide-page .slide-base-frame.is-intro-state .slide-main-stage {
+        opacity: 1 !important;
+        transform: none !important;
+        pointer-events: auto !important;
+      }
+      .print-slide-page .slide-base-frame.is-intro-state .slide-number-badge,
+      .print-slide-page .slide-base-frame.is-intro-state .slide-footer {
         opacity: 1 !important;
         pointer-events: auto !important;
       }
@@ -152,5 +159,30 @@ const renderedSlides = await Promise.all(
         <slide.Content />
       </div>
     ))}
+
+    <script>
+      import { AutoFitController } from "../../../components/slides/player/AutoFitController";
+
+      // 1. Remove intro states from all slides
+      document.querySelectorAll('.is-intro-state').forEach((el) => {
+        el.classList.remove('is-intro-state');
+      });
+
+      // 2. Run AutoFitController across all cards to match live player typography scale
+      const autoFit = new AutoFitController({
+        minScale: 0.65,
+        maxScale: 1.0,
+        minClearance: 16,
+        iterations: 5,
+      });
+
+      const cards = document.querySelectorAll<HTMLElement>(
+        '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]'
+      );
+      cards.forEach((card) => autoFit.fitCard(card));
+
+      // 3. Mark document ready for Puppeteer PDF export
+      document.documentElement.setAttribute('data-print-ready', 'true');
+    </script>
   </body>
 </html>
