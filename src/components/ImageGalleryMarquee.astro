@@ -32,7 +32,7 @@ function getBadgeColor(href: string): string {
 <section id="gallery" class="w-full pb-12 md:pb-16 scroll-mt-20 overflow-hidden relative">
   <!-- Section Header (Aligned to standard grid max-w-6xl) -->
   <div class="max-w-6xl mx-auto px-4 md:px-8">
-    <div class="border-t border-white/5 pt-12 md:pt-16 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div class="border-t border-white/5 pt-12 md:pt-16 mb-8">
       <div>
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
           Content <span class="heading-gradient-brand">Gallery</span>
@@ -40,27 +40,6 @@ function getBadgeColor(href: string): string {
         <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           A multi-tier perspective preview across articles, interactive platforms, academic courses, business services, and scientific models.
         </p>
-      </div>
-
-      <!-- Accessible Play/Pause Toggle -->
-      <div class="flex items-center gap-3 shrink-0 self-start sm:self-end">
-        <button
-          id="marquee-toggle-btn"
-          type="button"
-          class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card border border-white/10 light:border-slate-300 light:bg-white/80 hover:border-white/30 light:hover:border-brand-blue/40 text-xs font-semibold text-gray-300 light:text-slate-700 hover:text-white light:hover:text-brand-blue transition-all duration-200 cursor-pointer shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
-          aria-label="Pause flying gallery animation"
-          aria-pressed="false"
-        >
-          <!-- Pause Icon -->
-          <svg id="marquee-icon-pause" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
-          </svg>
-          <!-- Play Icon -->
-          <svg id="marquee-icon-play" class="w-3.5 h-3.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-          </svg>
-          <span id="marquee-toggle-label">Pause</span>
-        </button>
       </div>
     </div>
   </div>
@@ -192,6 +171,25 @@ function getBadgeColor(href: string): string {
   /* Edge fade overlays: GPU-friendly linear gradient overlays instead of heavy off-screen alpha mask */
   .gallery-viewport {
     position: relative;
+    touch-action: pan-y;
+    cursor: grab;
+  }
+
+  .gallery-viewport.is-dragging,
+  .gallery-viewport.is-dragging * {
+    cursor: grabbing !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
+
+  .gallery-card {
+    cursor: pointer;
+  }
+
+  .gallery-card-img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
   }
 
   .gallery-viewport::before,
@@ -263,6 +261,7 @@ function getBadgeColor(href: string): string {
   let galleryObserver: IntersectionObserver | null = null;
   let saveLedgerTimer: number | null = null;
   let inMemorySeenLedger: Record<string, number> = {};
+  let abortController: AbortController | null = null;
 
   function loadSeenLedger(): Record<string, number> {
     try {
@@ -431,13 +430,13 @@ function getBadgeColor(href: string): string {
       galleryObserver.disconnect();
       galleryObserver = null;
     }
+    if (abortController !== null) {
+      abortController.abort();
+      abortController = null;
+    }
 
     const viewport = document.getElementById('gallery-marquee-viewport');
     const catalogDataEl = document.getElementById('gallery-catalog-data');
-    const toggleBtn = document.getElementById('marquee-toggle-btn');
-    const iconPause = document.getElementById('marquee-icon-pause');
-    const iconPlay = document.getElementById('marquee-icon-play');
-    const label = document.getElementById('marquee-toggle-label');
 
     if (!viewport || !catalogDataEl) return;
 
@@ -449,6 +448,9 @@ function getBadgeColor(href: string): string {
     }
 
     if (!catalog.length) return;
+
+    abortController = new AbortController();
+    const { signal } = abortController;
 
     inMemorySeenLedger = loadSeenLedger();
     refreshVisitedItemsCache();
@@ -506,51 +508,170 @@ function getBadgeColor(href: string): string {
         }
       });
     };
-    window.addEventListener('resize', onResize, { passive: true });
+    window.addEventListener('resize', onResize, { signal, passive: true });
 
-    let isManuallyPaused = false;
-    let isHovered = false;
-    let isFocused = false;
+    const TOTAL_IDLE_BEFORE_RESUME = 3000; // 3 seconds of inactivity before auto-resume
+
+    // Direction of automatic motion: -1 (leftward/forward), 1 (rightward/backward)
+    let autoDirection = -1;
+    let isInteracting = false;
+    let interactionEndTimer: number | null = null;
+    let interactionEndTime = -TOTAL_IDLE_BEFORE_RESUME;
+
+    function startInteraction() {
+      isInteracting = true;
+      interactionEndTime = 0;
+      if (interactionEndTimer !== null) {
+        window.clearTimeout(interactionEndTimer);
+      }
+      interactionEndTimer = window.setTimeout(() => {
+        isInteracting = false;
+        interactionEndTime = performance.now();
+      }, 250);
+    }
+
+    // Bidirectional continuous card recycling
+    function applyTrackOffset(track: TrackState, deltaX: number) {
+      track.x += deltaX;
+
+      // Moving leftwards: recycle from head to tail
+      while (track.x <= -track.cardWidthWithGap) {
+        track.x += track.cardWidthWithGap;
+        const cardToRecycle = track.el.firstElementChild as HTMLElement | null;
+        if (cardToRecycle) {
+          const oldId = cardToRecycle.dataset.id;
+          if (oldId) inUseIds.delete(oldId);
+
+          const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
+          inUseIds.add(nextItem.id);
+          hydrateCard(cardToRecycle, nextItem);
+          recordSeen(nextItem.id);
+
+          track.el.appendChild(cardToRecycle);
+        }
+      }
+
+      // Moving rightwards: recycle from tail to head
+      while (track.x > 0) {
+        track.x -= track.cardWidthWithGap;
+        const cardToRecycle = track.el.lastElementChild as HTMLElement | null;
+        if (cardToRecycle) {
+          const oldId = cardToRecycle.dataset.id;
+          if (oldId) inUseIds.delete(oldId);
+
+          const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
+          inUseIds.add(nextItem.id);
+          hydrateCard(cardToRecycle, nextItem);
+          recordSeen(nextItem.id);
+
+          track.el.prepend(cardToRecycle);
+        }
+      }
+
+      track.el.style.transform = `translate3d(${track.x}px, 0, 0)`;
+    }
+
+    // Parallax depth distribution across all 3 tiers + direction tracking
+    function applyScrollParallax(deltaX: number, targetTrack: TrackState | null) {
+      if (Math.abs(deltaX) > 0.5) {
+        autoDirection = deltaX < 0 ? -1 : 1;
+      }
+      const baseTrack = targetTrack || tracks[0];
+      const baseSpeed = baseTrack ? baseTrack.speed : 65;
+
+      for (const track of tracks) {
+        const ratio = baseSpeed > 0 ? track.speed / baseSpeed : 1.0;
+        const trackDelta = deltaX * ratio;
+        applyTrackOffset(track, trackDelta);
+      }
+    }
+
+    function getTargetTrack(e: Event): TrackState {
+      const target = e.target as HTMLElement | null;
+      const trackEl = target?.closest('.gallery-track') as HTMLElement | null;
+      if (trackEl) {
+        const found = tracks.find(t => t.el === trackEl);
+        if (found) return found;
+      }
+
+      const clientY = 'clientY' in e ? (e as MouseEvent).clientY : 0;
+      if (clientY && tracks.length > 0) {
+        let closestTrack = tracks[0];
+        let minDistance = Infinity;
+        for (const track of tracks) {
+          const rect = track.el.getBoundingClientRect();
+          const midY = (rect.top + rect.bottom) / 2;
+          const dist = Math.abs(clientY - midY);
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestTrack = track;
+          }
+        }
+        return closestTrack;
+      }
+      return tracks[0];
+    }
+
     let isDocumentHidden = false;
     let isInView = false;
     let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Viewport hover & focus events
-    viewport.addEventListener('mouseenter', () => { isHovered = true; });
-    viewport.addEventListener('mouseleave', () => { isHovered = false; });
-    viewport.addEventListener('focusin', () => { isFocused = true; });
-    viewport.addEventListener('focusout', () => { isFocused = false; });
+    let isMouseOver = false;
+    let lastPointerType = 'mouse';
 
-    // Toggle button handler
-    if (toggleBtn && iconPause && iconPlay && label) {
-      toggleBtn.addEventListener('click', () => {
-        isManuallyPaused = !isManuallyPaused;
-        if (isManuallyPaused) {
-          iconPause.classList.add('hidden');
-          iconPlay.classList.remove('hidden');
-          label.textContent = 'Resume';
-          toggleBtn.setAttribute('aria-pressed', 'true');
-          toggleBtn.setAttribute('aria-label', 'Resume flying gallery animation');
-        } else {
-          iconPlay.classList.add('hidden');
-          iconPause.classList.remove('hidden');
-          label.textContent = 'Pause';
-          toggleBtn.setAttribute('aria-pressed', 'false');
-          toggleBtn.setAttribute('aria-label', 'Pause flying gallery animation');
-          if (isInView && activeAnimationId === null) {
-            lastTime = null;
-            activeAnimationId = requestAnimationFrame(tick);
-          }
+    // Viewport hover, movement & focus events
+    let lastMouseMoveX = 0;
+    let lastMouseMoveY = 0;
+
+    viewport.addEventListener('mouseenter', (e: MouseEvent) => {
+      isMouseOver = true;
+      lastMouseMoveX = e.clientX;
+      lastMouseMoveY = e.clientY;
+      startInteraction();
+    }, { signal });
+
+    viewport.addEventListener('mousemove', (e: MouseEvent) => {
+      isMouseOver = true;
+      if (Math.abs(e.clientX - lastMouseMoveX) > 3 || Math.abs(e.clientY - lastMouseMoveY) > 3) {
+        lastMouseMoveX = e.clientX;
+        lastMouseMoveY = e.clientY;
+        startInteraction();
+      }
+    }, { signal, passive: true });
+
+    viewport.addEventListener('mouseleave', () => {
+      isMouseOver = false;
+      if (!isPointerDown) {
+        if (interactionEndTimer !== null) {
+          window.clearTimeout(interactionEndTimer);
+          interactionEndTimer = null;
         }
-      });
-    }
+        isInteracting = false;
+        interactionEndTime = -TOTAL_IDLE_BEFORE_RESUME;
+      }
+    }, { signal });
+
+    viewport.addEventListener('focusin', () => {
+      startInteraction();
+    }, { signal });
+
+    viewport.addEventListener('focusout', () => {
+      if (!isPointerDown) {
+        if (interactionEndTimer !== null) {
+          window.clearTimeout(interactionEndTimer);
+          interactionEndTimer = null;
+        }
+        isInteracting = false;
+        interactionEndTime = -TOTAL_IDLE_BEFORE_RESUME;
+      }
+    }, { signal });
 
     // Media query listener
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const handleMotionChange = (e: MediaQueryListEvent) => {
       reducedMotion = e.matches;
     };
-    motionQuery.addEventListener('change', handleMotionChange);
+    motionQuery.addEventListener('change', handleMotionChange, { signal });
 
     // Tab visibility handler & storage sync
     const handleVisibilityChange = () => {
@@ -563,8 +684,169 @@ function getBadgeColor(href: string): string {
         }
       }
     };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('storage', refreshVisitedItemsCache, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibilityChange, { signal });
+    window.addEventListener('storage', refreshVisitedItemsCache, { signal, passive: true });
+
+    // 2. Horizontal Scrolling: Apple Touchpad & Classic Mouse Wheel (with Shift or tilt)
+    viewport.addEventListener(
+      'wheel',
+      (e: WheelEvent) => {
+        if (reducedMotion) return;
+
+        // Check for horizontal gesture or Shift + scroll wheel
+        const isShiftWheel = e.shiftKey && (e.deltaY !== 0 || e.deltaX !== 0);
+        const isHorizontalScroll = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+
+        if (isShiftWheel || isHorizontalScroll) {
+          let delta = e.deltaX !== 0 ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
+
+          if (e.deltaMode === 1) {
+            delta *= 24; // Lines to pixels
+          } else if (e.deltaMode === 2) {
+            delta *= 200; // Pages to pixels
+          }
+
+          if (delta !== 0) {
+            // Prevent browser back/forward swipe history navigation on macOS/Safari
+            e.preventDefault();
+
+            startInteraction();
+            const targetTrack = getTargetTrack(e);
+            applyScrollParallax(-delta, targetTrack);
+          }
+        }
+      },
+      { signal, passive: false }
+    );
+
+    // 3. Pointer & Touch Dragging with Momentum Glide
+    let isPointerDown = false;
+    let startX = 0;
+    let startY = 0;
+    let lastPointerX = 0;
+    let lastPointerTime = 0;
+    let pointerVelocity = 0;
+    let momentumVelocity = 0;
+    let activeDragTrack: TrackState | null = null;
+    let dragPointerId: number | null = null;
+    let hasDragged = false;
+
+    viewport.addEventListener(
+      'pointerdown',
+      (e: PointerEvent) => {
+        if (e.button !== 0 || reducedMotion) return;
+        lastPointerType = e.pointerType;
+        if (e.pointerType === 'mouse') {
+          isMouseOver = true;
+        }
+        isPointerDown = true;
+        hasDragged = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        lastPointerX = e.clientX;
+        lastPointerTime = performance.now();
+        pointerVelocity = 0;
+        momentumVelocity = 0;
+        activeDragTrack = getTargetTrack(e);
+        dragPointerId = e.pointerId;
+        startInteraction();
+      },
+      { signal }
+    );
+
+    window.addEventListener(
+      'pointermove',
+      (e: PointerEvent) => {
+        if (!isPointerDown || e.pointerId !== dragPointerId || !activeDragTrack) return;
+
+        const totalDx = Math.abs(e.clientX - startX);
+        const totalDy = Math.abs(e.clientY - startY);
+
+        if (!hasDragged) {
+          if (totalDx > 6 && totalDx > totalDy) {
+            hasDragged = true;
+            viewport.classList.add('is-dragging');
+          } else if (totalDy > 10) {
+            // Allow natural vertical page scroll
+            isPointerDown = false;
+            dragPointerId = null;
+            activeDragTrack = null;
+            return;
+          }
+        }
+
+        if (hasDragged) {
+          const dx = e.clientX - lastPointerX;
+          const now = performance.now();
+          const dt = Math.max((now - lastPointerTime) / 1000, 0.001);
+          pointerVelocity = dx / dt;
+          lastPointerX = e.clientX;
+          lastPointerTime = now;
+
+          startInteraction();
+          applyScrollParallax(dx, activeDragTrack);
+        }
+      },
+      { signal, passive: true }
+    );
+
+    const onPointerEnd = (e: PointerEvent) => {
+      if (e.pointerId !== dragPointerId) return;
+      isPointerDown = false;
+      dragPointerId = null;
+      viewport.classList.remove('is-dragging');
+
+      if (hasDragged) {
+        if (Math.abs(pointerVelocity) > 60) {
+          momentumVelocity = Math.max(-2000, Math.min(2000, pointerVelocity));
+        }
+        hasDragged = false;
+
+        // Suppress unintentional click after drag
+        const captureClick = (clickEvent: MouseEvent) => {
+          clickEvent.preventDefault();
+          clickEvent.stopPropagation();
+          window.removeEventListener('click', captureClick, true);
+        };
+        window.addEventListener('click', captureClick, true);
+        window.setTimeout(() => {
+          window.removeEventListener('click', captureClick, true);
+        }, 100);
+      }
+
+      if (e.pointerType === 'mouse' && !isMouseOver && Math.abs(momentumVelocity) <= 5) {
+        if (interactionEndTimer !== null) {
+          window.clearTimeout(interactionEndTimer);
+          interactionEndTimer = null;
+        }
+        isInteracting = false;
+        interactionEndTime = -TOTAL_IDLE_BEFORE_RESUME;
+      } else {
+        startInteraction();
+      }
+    };
+
+    window.addEventListener('pointerup', onPointerEnd, { signal });
+    window.addEventListener('pointercancel', onPointerEnd, { signal });
+    viewport.addEventListener('dragstart', (e) => e.preventDefault(), { signal });
+
+    // 4. Keyboard Arrow Key Navigation
+    viewport.addEventListener(
+      'keydown',
+      (e: KeyboardEvent) => {
+        if (reducedMotion) return;
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          startInteraction();
+          applyScrollParallax(140, getTargetTrack(e));
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          startInteraction();
+          applyScrollParallax(-140, getTargetTrack(e));
+        }
+      },
+      { signal }
+    );
 
     let lastTime: number | null = null;
 
@@ -581,31 +863,38 @@ function getBadgeColor(href: string): string {
       const dt = Math.min((timestamp - lastTime) / 1000, 0.1);
       lastTime = timestamp;
 
-      const shouldAnimate = !isManuallyPaused && !isHovered && !isFocused && !isDocumentHidden && !reducedMotion;
-
-      if (shouldAnimate) {
-        // 2. Zero-DOM-Reads Pure Mathematical Loop:
-        // By using pure coordinate offsets, we trigger ZERO forced synchronous layouts per frame.
-        for (const track of tracks) {
-          track.x -= track.speed * dt;
-
-          while (track.x <= -track.cardWidthWithGap) {
-            track.x += track.cardWidthWithGap;
-            const cardToRecycle = track.el.firstElementChild as HTMLElement | null;
-            if (cardToRecycle) {
-              const oldId = cardToRecycle.dataset.id;
-              if (oldId) inUseIds.delete(oldId);
-
-              const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
-              inUseIds.add(nextItem.id);
-              hydrateCard(cardToRecycle, nextItem);
-              recordSeen(nextItem.id);
-
-              track.el.appendChild(cardToRecycle);
+      // Apply drag momentum glide if present
+      if (Math.abs(momentumVelocity) > 5) {
+        const step = momentumVelocity * dt;
+        applyScrollParallax(step, activeDragTrack || tracks[0]);
+        momentumVelocity *= Math.pow(0.88, dt * 60);
+        interactionEndTime = 0;
+      } else {
+        if (momentumVelocity !== 0) {
+          momentumVelocity = 0;
+          if (!isPointerDown && !isInteracting) {
+            if (lastPointerType === 'mouse' && !isMouseOver) {
+              interactionEndTime = -TOTAL_IDLE_BEFORE_RESUME;
+            } else {
+              interactionEndTime = timestamp;
             }
           }
+        }
+      }
 
-          track.el.style.transform = `translate3d(${track.x}px, 0, 0)`;
+      const isMotionActive = !isDocumentHidden && !reducedMotion;
+
+      if (isMotionActive) {
+        if (isPointerDown || isInteracting || Math.abs(momentumVelocity) > 5) {
+          interactionEndTime = timestamp;
+        } else {
+          const elapsed = timestamp - interactionEndTime;
+          if (elapsed >= TOTAL_IDLE_BEFORE_RESUME) {
+            // Smooth continuous animation in the last scrolled direction
+            for (const track of tracks) {
+              applyTrackOffset(track, autoDirection * track.speed * dt);
+            }
+          }
         }
       }
 
@@ -640,6 +929,10 @@ function getBadgeColor(href: string): string {
     if (galleryObserver !== null) {
       galleryObserver.disconnect();
       galleryObserver = null;
+    }
+    if (abortController !== null) {
+      abortController.abort();
+      abortController = null;
     }
   });
 </script>
