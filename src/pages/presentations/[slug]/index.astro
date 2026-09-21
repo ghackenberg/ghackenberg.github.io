@@ -62,15 +62,14 @@ const renderedSlides = await Promise.all(
   })
 );
 
-// Check if slides-dark.pdf, slides-light.pdf, or slides.pdf exist for download button
+// Check if slides-dark.pdf or slides-light.pdf exist for download button
 const presentationDir = path.resolve("src/content/presentations", presentation.id);
 const pdfDarkPath = path.join(presentationDir, "slides-dark.pdf");
 const pdfLightPath = path.join(presentationDir, "slides-light.pdf");
-const legacyPdfPath = path.join(presentationDir, "slides.pdf");
 
 const pdfDarkUrl = fs.existsSync(pdfDarkPath) 
   ? `/presentations/${presentation.id}/slides-dark.pdf` 
-  : (fs.existsSync(legacyPdfPath) ? `/presentations/${presentation.id}/slides.pdf` : undefined);
+  : undefined;
 
 const pdfLightUrl = fs.existsSync(pdfLightPath) 
   ? `/presentations/${presentation.id}/slides-light.pdf` 
