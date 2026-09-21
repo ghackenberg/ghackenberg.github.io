@@ -392,10 +392,37 @@ const currentDeckId = presentationId || talkId || "presentation";
     // Drawer Elements
     const slideListDrawer = document.getElementById('slide-list-drawer');
     const slideListBackdrop = document.getElementById('slide-list-backdrop');
+    const slideListContainer = document.getElementById('slide-list-items');
     const btnCloseDrawer = document.getElementById('btn-close-drawer');
     const slideListItems = document.querySelectorAll<HTMLButtonElement>('.slide-list-item');
 
     let isDrawerOpen = false;
+
+    const scrollActiveSlideIntoView = (activeItem: HTMLElement | null, smooth = true) => {
+      const listEl = slideListContainer || document.getElementById('slide-list-items');
+      if (!listEl || !activeItem) return;
+      const listRect = listEl.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
+
+      if (listRect.height === 0 || itemRect.height === 0) return;
+
+      const isAbove = itemRect.top < listRect.top + 8;
+      const isBelow = itemRect.bottom > listRect.bottom - 8;
+
+      if (isAbove) {
+        const delta = itemRect.top - (listRect.top + 8);
+        listEl.scrollTo({
+          top: Math.max(0, listEl.scrollTop + delta),
+          behavior: smooth ? 'smooth' : 'auto',
+        });
+      } else if (isBelow) {
+        const delta = itemRect.bottom - (listRect.bottom - 8);
+        listEl.scrollTo({
+          top: listEl.scrollTop + delta,
+          behavior: smooth ? 'smooth' : 'auto',
+        });
+      }
+    };
 
     const openDrawer = (shouldScroll = true) => {
       if (!slideListDrawer) return;
@@ -415,7 +442,13 @@ const currentDeckId = presentationId || talkId || "presentation";
       if (shouldScroll) {
         const activeItem = document.querySelector<HTMLElement>('.slide-list-item[data-active="true"]');
         if (activeItem) {
-          activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          scrollActiveSlideIntoView(activeItem, false);
+          // Wait for drawer width/transform transition (300ms) to ensure exact positioning
+          setTimeout(() => {
+            if (isDrawerOpen) {
+              scrollActiveSlideIntoView(activeItem, true);
+            }
+          }, 320);
         }
       }
     };
@@ -445,6 +478,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     };
 
     const updateActiveSlideInList = (currentIndex: number) => {
+      let activeItemEl: HTMLElement | null = null;
       slideListItems.forEach((item, idx) => {
         const numBadge = item.querySelector('span:first-child');
         if (idx === currentIndex) {
@@ -453,6 +487,7 @@ const currentDeckId = presentationId || talkId || "presentation";
           if (numBadge) {
             numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800 font-bold shrink-0';
           }
+          activeItemEl = item;
         } else {
           item.removeAttribute('data-active');
           item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700';
@@ -461,6 +496,10 @@ const currentDeckId = presentationId || talkId || "presentation";
           }
         }
       });
+
+      if (isDrawerOpen && activeItemEl) {
+        scrollActiveSlideIntoView(activeItemEl, true);
+      }
     };
 
     // Format MM:SS with strict finite validation
