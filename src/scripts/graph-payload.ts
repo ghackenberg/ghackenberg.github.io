@@ -160,7 +160,7 @@ export function calculateTagCounts(options: {
   const tagPosts: Record<string, number> = {};
   options.posts.forEach(p => {
     if (p.data.tags) {
-      p.data.tags.forEach(t => {
+      new Set(p.data.tags).forEach(t => {
         tagPosts[t] = (tagPosts[t] || 0) + 1;
       });
     }
@@ -169,7 +169,7 @@ export function calculateTagCounts(options: {
   const tagPubs: Record<string, number> = {};
   options.publications.forEach(p => {
     if (p.data.tags) {
-      p.data.tags.forEach(t => {
+      new Set(p.data.tags).forEach(t => {
         tagPubs[t] = (tagPubs[t] || 0) + 1;
       });
     }
@@ -178,7 +178,7 @@ export function calculateTagCounts(options: {
   const tagPres: Record<string, number> = {};
   (options.presentations || []).forEach(p => {
     if (p.data.tags) {
-      p.data.tags.forEach(t => {
+      new Set(p.data.tags).forEach(t => {
         tagPres[t] = (tagPres[t] || 0) + 1;
       });
     }
@@ -187,7 +187,7 @@ export function calculateTagCounts(options: {
   const tagCourses: Record<string, number> = {};
   options.courses.forEach(c => {
     if (c.data.tags) {
-      c.data.tags.forEach(t => {
+      new Set(c.data.tags).forEach(t => {
         tagCourses[t] = (tagCourses[t] || 0) + 1;
       });
     }
@@ -196,7 +196,7 @@ export function calculateTagCounts(options: {
   const tagProjects: Record<string, number> = {};
   options.projects.forEach(p => {
     if (p.data.tags) {
-      p.data.tags.forEach(t => {
+      new Set(p.data.tags).forEach(t => {
         tagProjects[t] = (tagProjects[t] || 0) + 1;
       });
     }
@@ -205,7 +205,7 @@ export function calculateTagCounts(options: {
   const tagServices: Record<string, number> = {};
   options.services.forEach(s => {
     if (s.data.tags) {
-      s.data.tags.forEach(t => {
+      new Set(s.data.tags).forEach(t => {
         tagServices[t] = (tagServices[t] || 0) + 1;
       });
     }
