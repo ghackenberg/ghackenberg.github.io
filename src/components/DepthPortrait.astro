@@ -184,8 +184,28 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
         uniform vec2 u_offset;
         uniform float u_intensity;
         uniform int u_vignette;
+        uniform vec2 u_tex_size;
 
-        const int NUM_STEPS = 40;
+        const int NUM_STEPS = 64;
+
+        // Smooth quintic Hermite interpolation for C2-continuous depth sampling.
+        // Upgrades hardware bilinear filtering to smooth bicubic B-spline interpolation,
+        // completely eliminating staircasing, faceted pixel grid bands, and derivative discontinuities.
+        float sampleDepthSmooth(sampler2D tex, vec2 uv) {
+          vec2 p = uv * u_tex_size - 0.5;
+          vec2 i = floor(p);
+          vec2 f = p - i;
+          // Quintic Hermite curve: 6f^5 - 15f^4 + 10f^3
+          vec2 w = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+          vec2 uvSmooth = (i + 0.5 + w) / u_tex_size;
+          return texture2D(tex, uvSmooth).r;
+        }
+
+        float getBlendedDepth(vec2 uv) {
+          float dCurr = sampleDepthSmooth(u_curr_depth, uv);
+          float dNext = sampleDepthSmooth(u_next_depth, uv);
+          return mix(dCurr, dNext, u_blend);
+        }
 
         void main() {
           // Check if initial surface pixel contains any non-transparent geometry.
@@ -216,9 +236,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
             currUV = v_uv - (currZ - pivotZ) * rayDir;
 
             if (currUV.x >= 0.0 && currUV.x <= 1.0 && currUV.y >= 0.0 && currUV.y <= 1.0) {
-              float dCurr = texture2D(u_curr_depth, currUV).r;
-              float dNext = texture2D(u_next_depth, currUV).r;
-              currDepth = mix(dCurr, dNext, u_blend);
+              currDepth = getBlendedDepth(currUV);
 
               if (currDepth > 0.001 && currDepth >= currZ) {
                 hit = true;
@@ -259,25 +277,59 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
             return;
           }
 
-          // Surface normal calculation from blended depth map for 3D curvature lighting
-          vec2 texel = vec2(0.003, 0.003);
-          float dL = mix(texture2D(u_curr_depth, finalUV - vec2(texel.x, 0.0)).r, texture2D(u_next_depth, finalUV - vec2(texel.x, 0.0)).r, u_blend);
-          float dR = mix(texture2D(u_curr_depth, finalUV + vec2(texel.x, 0.0)).r, texture2D(u_next_depth, finalUV + vec2(texel.x, 0.0)).r, u_blend);
-          float dU = mix(texture2D(u_curr_depth, finalUV - vec2(0.0, texel.y)).r, texture2D(u_next_depth, finalUV - vec2(0.0, texel.y)).r, u_blend);
-          float dD = mix(texture2D(u_curr_depth, finalUV + vec2(0.0, texel.y)).r, texture2D(u_next_depth, finalUV + vec2(0.0, texel.y)).r, u_blend);
+          // Isotropic multi-scale Sobel surface normal calculation
+          // Spans across 8-bit depth quantization plateaus (radius 5 to 11 texels)
+          // to yield an organic, continuous 3D surface gradient without contour banding
+          vec2 r1 = vec2(5.0) / u_tex_size;
+          vec2 r2 = vec2(11.0) / u_tex_size;
+
+          float dL1 = getBlendedDepth(finalUV - vec2(r1.x, 0.0));
+          float dR1 = getBlendedDepth(finalUV + vec2(r1.x, 0.0));
+          float dU1 = getBlendedDepth(finalUV - vec2(0.0, r1.y));
+          float dD1 = getBlendedDepth(finalUV + vec2(0.0, r1.y));
+
+          float dL2 = getBlendedDepth(finalUV - vec2(r2.x, 0.0));
+          float dR2 = getBlendedDepth(finalUV + vec2(r2.x, 0.0));
+          float dU2 = getBlendedDepth(finalUV - vec2(0.0, r2.y));
+          float dD2 = getBlendedDepth(finalUV + vec2(0.0, r2.y));
+
+          vec2 diag1 = r1 * 0.7071;
+          vec2 diag2 = r2 * 0.7071;
+
+          float dTL1 = getBlendedDepth(finalUV + vec2(-diag1.x, -diag1.y));
+          float dTR1 = getBlendedDepth(finalUV + vec2( diag1.x, -diag1.y));
+          float dBL1 = getBlendedDepth(finalUV + vec2(-diag1.x,  diag1.y));
+          float dBR1 = getBlendedDepth(finalUV + vec2( diag1.x,  diag1.y));
+
+          float dTL2 = getBlendedDepth(finalUV + vec2(-diag2.x, -diag2.y));
+          float dTR2 = getBlendedDepth(finalUV + vec2( diag2.x, -diag2.y));
+          float dBL2 = getBlendedDepth(finalUV + vec2(-diag2.x,  diag2.y));
+          float dBR2 = getBlendedDepth(finalUV + vec2( diag2.x,  diag2.y));
+
+          float dx1 = ((dL1 - dR1) * 2.0 + (dTL1 - dTR1) + (dBL1 - dBR1)) * 0.25;
+          float dy1 = ((dU1 - dD1) * 2.0 + (dTL1 - dBL1) + (dTR1 - dBR1)) * 0.25;
+
+          float dx2 = ((dL2 - dR2) * 2.0 + (dTL2 - dTR2) + (dBL2 - dBR2)) * 0.25;
+          float dy2 = ((dU2 - dD2) * 2.0 + (dTL2 - dBL2) + (dTR2 - dBR2)) * 0.25;
+
+          // Combine multi-scale gradients: broad scale eliminates 8-bit contour rings, fine scale preserves nose/brow features
+          float dx = (dx1 * 0.35 + dx2 * 0.65) * 1.6;
+          float dy = (dy1 * 0.35 + dy2 * 0.65) * 1.6;
 
           // Taper normal gradient near silhouette boundary to prevent extreme side lighting shadows
           float normalWeight = smoothstep(0.005, 0.08, currDepth);
-          vec3 rawNormal = vec3((dL - dR) * 12.0 * normalWeight, (dU - dD) * 12.0 * normalWeight, 1.0);
+          vec3 rawNormal = vec3(dx * 8.0 * normalWeight, dy * 8.0 * normalWeight, 1.0);
           vec3 normal = normalize(rawNormal);
 
           // Dynamic 3D lighting responding to cursor offset
           vec3 lightDir = normalize(vec3(u_offset.x * 0.7, -u_offset.y * 0.7, 0.85));
           float diff = max(dot(normal, lightDir), 0.0);
-          float spec = pow(max(dot(reflect(-lightDir, normal), vec3(0.0, 0.0, 1.0)), 0.0), 16.0);
+          // Soft Half-Lambert diffuse wrap for organic comic shading
+          float diffWrap = (diff + 0.35) / 1.35;
+          float spec = pow(max(dot(reflect(-lightDir, normal), vec3(0.0, 0.0, 1.0)), 0.0), 32.0);
 
-          // Tactile 3D illumination
-          color.rgb = color.rgb * (0.84 + 0.26 * diff) + vec3(spec * 0.12);
+          // Silky smooth illumination with alpha-preserving specular
+          color.rgb = color.rgb * (0.80 + 0.28 * diffWrap) + vec3(spec * 0.06 * color.a);
 
           // Soft radial vignette fade if enabled
           if (u_vignette == 1) {
@@ -350,6 +402,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       const uOffsetLoc = glCtx.getUniformLocation(program, 'u_offset');
       const uIntensityLoc = glCtx.getUniformLocation(program, 'u_intensity');
       const uVignetteLoc = glCtx.getUniformLocation(program, 'u_vignette');
+      const uTexSizeLoc = glCtx.getUniformLocation(program, 'u_tex_size');
 
       glCtx.uniform1i(uCurrImageLoc, 0);
       glCtx.uniform1i(uCurrDepthLoc, 1);
@@ -358,9 +411,10 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       glCtx.uniform1f(uBlendLoc, 0.0);
       glCtx.uniform1f(uIntensityLoc, intensity);
       glCtx.uniform1i(uVignetteLoc, hasVignette ? 1 : 0);
+      glCtx.uniform2f(uTexSizeLoc, 800.0, 800.0);
 
       // Load texture helper
-      function loadTexture(glContext: WebGLRenderingContext, src: string): Promise<WebGLTexture> {
+      function loadTexture(glContext: WebGLRenderingContext, src: string): Promise<{ texture: WebGLTexture; width: number; height: number }> {
         return new Promise((resolve, reject) => {
           const texture = glContext.createTexture();
           if (!texture) return reject(new Error('Failed to create texture'));
@@ -374,11 +428,18 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
             glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_MIN_FILTER, glContext.LINEAR);
             glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_MAG_FILTER, glContext.LINEAR);
             glContext.texImage2D(glContext.TEXTURE_2D, 0, glContext.RGBA, glContext.RGBA, glContext.UNSIGNED_BYTE, img);
-            resolve(texture);
+            resolve({ texture, width: img.naturalWidth || 800, height: img.naturalHeight || 800 });
           };
           img.onerror = reject;
           img.src = src;
         });
+      }
+
+      interface LoadedTexturePair {
+        imageTex: WebGLTexture;
+        depthTex: WebGLTexture;
+        width: number;
+        height: number;
       }
 
       // Preload all expressions into texture cache
@@ -387,11 +448,16 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       expressions.forEach(e => exprMap.set(e.id, e));
 
       const loadPromises = expressions.map(async expr => {
-        const [imageTex, depthTex] = await Promise.all([
+        const [imageRes, depthRes] = await Promise.all([
           loadTexture(glCtx, expr.imageSrc),
           loadTexture(glCtx, expr.depthSrc)
         ]);
-        textureCache.set(expr.id, { imageTex, depthTex });
+        textureCache.set(expr.id, {
+          imageTex: imageRes.texture,
+          depthTex: depthRes.texture,
+          width: depthRes.width,
+          height: depthRes.height
+        });
       });
 
       Promise.all(loadPromises).then(() => {
@@ -405,6 +471,9 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
           glCtx.bindTexture(glCtx.TEXTURE_2D, pair.imageTex);
           glCtx.activeTexture(glCtx.TEXTURE0 + depthUnit);
           glCtx.bindTexture(glCtx.TEXTURE_2D, pair.depthTex);
+          if (uTexSizeLoc && pair.width > 0 && pair.height > 0) {
+            glCtx.uniform2f(uTexSizeLoc, pair.width, pair.height);
+          }
         }
 
         // State machine variables: Start with first expression in list

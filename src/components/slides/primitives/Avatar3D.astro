@@ -34,16 +34,16 @@ const {
   title = "Dr. Georg Hackenberg"
 } = Astro.props;
 
-const optimizedProfile = await getImage({ src: profileImage, format: "webp", width: 600, quality: 80 });
-const optimizedDepth = await getImage({ src: profileDepthImage, format: "webp", width: 600, quality: 80 });
-const optimizedWink = await getImage({ src: profileWinkImage, format: "webp", width: 600, quality: 80 });
-const optimizedWinkDepth = await getImage({ src: profileWinkDepthImage, format: "webp", width: 600, quality: 80 });
-const optimizedBlink = await getImage({ src: profileBlinkImage, format: "webp", width: 600, quality: 80 });
-const optimizedBlinkDepth = await getImage({ src: profileBlinkDepthImage, format: "webp", width: 600, quality: 80 });
-const optimizedClosedMouth = await getImage({ src: profileClosedMouthImage, format: "webp", width: 600, quality: 80 });
-const optimizedClosedMouthDepth = await getImage({ src: profileClosedMouthDepthImage, format: "webp", width: 600, quality: 80 });
-const optimizedClosedMouthBlink = await getImage({ src: profileClosedMouthBlinkImage, format: "webp", width: 600, quality: 80 });
-const optimizedClosedMouthBlinkDepth = await getImage({ src: profileClosedMouthBlinkDepthImage, format: "webp", width: 600, quality: 80 });
+const optimizedProfile = await getImage({ src: profileImage, format: "webp", width: 800, quality: 95 });
+const optimizedDepth = await getImage({ src: profileDepthImage, format: "png", width: 800 });
+const optimizedWink = await getImage({ src: profileWinkImage, format: "webp", width: 800, quality: 95 });
+const optimizedWinkDepth = await getImage({ src: profileWinkDepthImage, format: "png", width: 800 });
+const optimizedBlink = await getImage({ src: profileBlinkImage, format: "webp", width: 800, quality: 95 });
+const optimizedBlinkDepth = await getImage({ src: profileBlinkDepthImage, format: "png", width: 800 });
+const optimizedClosedMouth = await getImage({ src: profileClosedMouthImage, format: "webp", width: 800, quality: 95 });
+const optimizedClosedMouthDepth = await getImage({ src: profileClosedMouthDepthImage, format: "png", width: 800 });
+const optimizedClosedMouthBlink = await getImage({ src: profileClosedMouthBlinkImage, format: "webp", width: 800, quality: 95 });
+const optimizedClosedMouthBlinkDepth = await getImage({ src: profileClosedMouthBlinkDepthImage, format: "png", width: 800 });
 
 const faceExpressions: FacialExpression[] = [
   {
