@@ -30,35 +30,37 @@ const {
 
   <!-- Slide Header -->
   {title && (
-    <header class="relative z-10 mb-5 shrink-0">
+    <header class="slide-header relative z-20 mb-5 shrink-0">
       {slideNumber && (
-        <div class="absolute top-1.5 right-0">
+        <div class="slide-number-badge absolute top-1.5 right-0 transition-opacity duration-500">
           <span class="text-xl font-mono text-slate-400 light:text-slate-500 font-bold">
             {String(slideNumber).padStart(2, '0')} / {totalSlides}
           </span>
         </div>
       )}
 
-      <h1 class="text-5xl lg:text-6xl xl:text-[62px] font-black tracking-tight text-slate-100 light:text-slate-900 leading-[1.12] text-balance slide-hyphens pr-36">
-        {title}
-      </h1>
+      <div class="slide-header-content w-fit max-w-[1600px]">
+        <h1 class="slide-title text-5xl lg:text-6xl xl:text-[62px] font-black tracking-tight text-slate-100 light:text-slate-900 leading-[1.12]">
+          {title}
+        </h1>
 
-      {subtitle && (
-        <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-600 mt-2 font-normal leading-relaxed text-pretty">
-          {subtitle}
-        </p>
-      )}
+        {subtitle && (
+          <p class="slide-subtitle text-2xl lg:text-3xl text-slate-300 light:text-slate-600 mt-2 font-normal leading-relaxed">
+            {subtitle}
+          </p>
+        )}
+      </div>
     </header>
   )}
 
   <!-- Slide Main Stage (Full Vertical Stretch) -->
-  <main class="relative z-10 flex-1 min-h-0 w-full flex flex-col justify-stretch items-stretch">
+  <main class="slide-main-stage relative z-10 flex-1 min-h-0 w-full flex flex-col justify-stretch items-stretch transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]">
     <slot />
   </main>
 
   <!-- Slide Standardized Footer -->
   {showFooter && (
-    <footer class="relative z-10 pt-2 mt-2 flex items-center justify-between text-base font-mono text-slate-400 light:text-slate-600 shrink-0">
+    <footer class="slide-footer relative z-10 pt-2 mt-2 flex items-center justify-between text-base font-mono text-slate-400 light:text-slate-600 shrink-0 transition-opacity duration-500">
       <div class="flex items-center gap-4">
         <span class="font-bold text-slate-300 light:text-slate-800">Dr. Georg Hackenberg</span>
         <span>•</span>
@@ -219,5 +221,53 @@ const {
   :global(.is-active) {
     opacity: 1 !important;
     transition: opacity 0.4s ease-in, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Slide Title & Subtitle Truncation & Independent Alignment Transitions */
+  .slide-title,
+  .slide-subtitle {
+    width: fit-content;
+    max-width: 1600px;
+    white-space: nowrap !important;
+    text-wrap: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    transform-origin: top left;
+    transform: translateX(0);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Stage Intro State (Exact Center Hero Stage before 1st Cue) */
+  .slide-header-content {
+    transform-origin: top left;
+    transform: translateY(0);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.slide-base-frame.is-intro-state) .slide-header-content {
+    /* Exact vertical centering: 540px is vertical center; 36px top padding subtracted */
+    transform: translateY(calc(540px - 50% - 36px));
+  }
+
+  :global(.slide-base-frame.is-intro-state) .slide-title,
+  :global(.slide-base-frame.is-intro-state) .slide-subtitle {
+    /* Independent horizontal centering: 960px is horizontal center; 48px left padding subtracted */
+    transform: translateX(calc(960px - 50% - 48px));
+  }
+
+  :global(.slide-base-frame.is-intro-state) .slide-number-badge {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  :global(.slide-base-frame.is-intro-state) .slide-main-stage {
+    opacity: 0;
+    transform: translateY(28px);
+    pointer-events: none;
+  }
+
+  :global(.slide-base-frame.is-intro-state) .slide-footer {
+    opacity: 0;
+    pointer-events: none;
   }
 </style>
