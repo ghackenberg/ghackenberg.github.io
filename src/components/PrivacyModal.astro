@@ -12,7 +12,7 @@
 >
   <div 
     id="privacy-modal-container"
-    class="glass-panel w-full max-w-lg rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(92dvh,760px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
+    class="glass-panel w-full max-w-lg sm:max-w-xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(92dvh,760px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
   >
     <!-- Top Accent Bar -->
     <div class="h-1 sm:h-1.5 bg-gradient-brand shrink-0"></div>
@@ -26,10 +26,10 @@
           </svg>
         </div>
         <div class="min-w-0">
-          <h2 id="privacy-modal-title" class="text-base sm:text-xl font-bold text-gray-100 tracking-tight leading-snug truncate">
+          <h2 id="privacy-modal-title" class="text-xl sm:text-2xl font-bold tracking-tight text-white light:text-slate-900 leading-snug truncate">
             Privacy Settings
           </h2>
-          <p class="text-[11px] sm:text-xs text-gray-400 mt-0.5 leading-normal truncate">
+          <p class="text-xs text-gray-400 light:text-slate-500 mt-1 leading-normal truncate">
             Full control over your data and local preferences
           </p>
         </div>
@@ -55,13 +55,13 @@
         <div class="flex items-start justify-between gap-3">
           <div class="space-y-1 min-w-0">
             <div class="flex flex-wrap items-center gap-2">
-              <h3 class="text-xs sm:text-sm font-semibold text-gray-100 light:text-slate-900">Local Read Status</h3>
-              <span class="text-[10px] px-2 py-0.5 rounded-full font-medium bg-brand-blue/15 text-brand-blue border border-brand-blue/30 light:bg-blue-50 light:text-blue-700 light:border-blue-200 shrink-0">
+              <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900">Local Read Status</h3>
+              <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-blue/15 text-brand-blue border border-brand-blue/30 light:bg-blue-50 light:text-blue-700 light:border-blue-200 shrink-0">
                 100% Client-Side
               </span>
             </div>
-            <p class="text-[11px] sm:text-xs text-gray-400 light:text-slate-600 leading-relaxed">
-              Highlights new and unread content with subtle indicator dots. Stored <strong>strictly locally in your browser (<code class="text-gray-200 light:text-slate-800 font-mono text-[10px] sm:text-[11px] bg-white/5 light:bg-slate-200/60 px-1 py-0.5 rounded">localStorage</code>)</strong>. No data is ever transmitted to a server.
+            <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
+              Highlights new and unread content with subtle indicator dots. Stored <strong>strictly locally in your browser (<code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-white/5 light:bg-slate-200/60 px-1.5 py-0.5 rounded">localStorage</code>)</strong>. No data is ever transmitted to a server.
             </p>
           </div>
 
@@ -74,13 +74,13 @@
         </div>
 
         <!-- Action Row: Status & Clear History -->
-        <div id="reading-data-actions" class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] sm:text-xs">
+        <div id="reading-data-actions" class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm">
           <span id="reading-status-summary" class="text-gray-400 light:text-slate-500">
             Status: <span id="reading-status-text" class="text-gray-300 light:text-slate-700 font-medium">Disabled (No local storage)</span>
           </span>
           <button 
             id="clear-reading-data-btn"
-            class="hidden px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 light:text-red-700 light:bg-red-50 light:border-red-200 light:hover:bg-red-100 transition-colors text-[11px] sm:text-xs font-medium cursor-pointer self-start sm:self-auto"
+            class="hidden px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 light:text-red-700 light:bg-red-50 light:border-red-200 light:hover:bg-red-100 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto"
           >
             Clear reading history
           </button>
@@ -91,29 +91,37 @@
       <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
-            <h3 class="text-xs sm:text-sm font-semibold text-gray-100 light:text-slate-900">Web Analytics (Plausible)</h3>
-            <span id="analytics-badge" class="text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-200 shrink-0">
+            <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900">Web Analytics (Plausible)</h3>
+            <span id="analytics-badge" class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-200 shrink-0">
               Active (Cookie-Free)
             </span>
           </div>
-          <p class="text-[11px] sm:text-xs text-gray-400 light:text-slate-600 leading-relaxed">
+          <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
             We use an EU-hosted instance of <strong>Plausible Analytics</strong> for privacy-friendly audience measurement. <strong>No cookies</strong> are set, no IP addresses are stored, and no cross-site tracking takes place.
           </p>
         </div>
 
         <!-- Opt-Out Action Row -->
-        <div class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] sm:text-xs">
-          <div class="text-gray-400 light:text-slate-500 text-[10px] sm:text-xs">
-            Legal basis: Art. 6(1)(f) GDPR · <a href="/datenschutz/" class="underline hover:text-brand-blue light:hover:text-blue-600 transition-colors">Privacy Policy</a>
-          </div>
+        <div class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm">
+          <span class="text-gray-400 light:text-slate-500">
+            Legal basis: Art. 6(1)(f) GDPR
+          </span>
           <button 
             id="toggle-analytics-optout-btn"
-            class="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-300 light:text-slate-700 hover:text-gray-100 light:hover:text-slate-900 light:hover:bg-slate-100 transition-colors text-[11px] sm:text-xs font-medium cursor-pointer self-start sm:self-auto shadow-sm"
+            class="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-300 light:text-slate-700 hover:text-gray-100 light:hover:text-slate-900 light:hover:bg-slate-100 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto shadow-sm"
           >
             Opt out of analytics
           </button>
         </div>
       </div>
+    </div>
+
+    <!-- Footer (Sticky/Shrink-0) -->
+    <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-white/5 light:border-slate-200/80 flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
+      <span>Data protection details</span>
+      <a href="/datenschutz/" class="underline hover:text-brand-blue light:hover:text-blue-600 transition-colors">
+        Privacy Policy
+      </a>
     </div>
   </div>
 </div>
@@ -177,14 +185,14 @@
       if (toggleAnalyticsBtn) {
         toggleAnalyticsBtn.textContent = optedOut ? 'Re-enable analytics' : 'Opt out of analytics';
         toggleAnalyticsBtn.className = optedOut
-          ? 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-300 hover:bg-emerald-500/20 transition-colors text-[11px] sm:text-xs font-medium cursor-pointer self-start sm:self-auto'
-          : 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-300 light:text-slate-700 hover:text-gray-100 light:hover:text-slate-900 light:hover:bg-slate-100 transition-colors text-[11px] sm:text-xs font-medium cursor-pointer self-start sm:self-auto shadow-sm';
+          ? 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-300 hover:bg-emerald-500/20 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto'
+          : 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-300 light:text-slate-700 hover:text-gray-100 light:hover:text-slate-900 light:hover:bg-slate-100 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto shadow-sm';
       }
       if (analyticsBadge) {
         analyticsBadge.textContent = optedOut ? 'Disabled (Opt-out active)' : 'Active (Cookie-Free)';
         analyticsBadge.className = optedOut
-          ? 'text-[10px] px-2 py-0.5 rounded-full font-medium bg-amber-500/15 text-amber-400 border border-amber-500/30 light:bg-amber-50 light:text-amber-700 light:border-amber-300 shrink-0'
-          : 'text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-200 shrink-0';
+          ? 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 light:bg-amber-50 light:text-amber-700 light:border-amber-300 shrink-0'
+          : 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-200 shrink-0';
       }
     }
 
@@ -222,6 +230,16 @@
     if (backdrop) {
       backdrop.addEventListener('click', function(e) {
         if (e.target === backdrop) closeModal();
+      });
+    }
+
+    // Close when clicking any link inside the modal
+    if (backdrop) {
+      backdrop.addEventListener('click', function(e) {
+        const target = e.target;
+        if (target && target.closest && target.closest('a')) {
+          closeModal();
+        }
       });
     }
 
@@ -325,5 +343,9 @@
   }
   html.light #privacy-modal-container .modal-header p {
     color: #64748b !important;
+  }
+  html.light #privacy-modal-container .modal-footer {
+    background-color: #f8fafc !important;
+    border-color: rgba(15, 23, 42, 0.08) !important;
   }
 </style>
