@@ -124,7 +124,7 @@ const currentDeckId = presentationId || talkId || "presentation";
   </div>
 
   <!-- Audio & Slide Navigation Control Bar -->
-  <div class="slide-controls-bar z-20 bg-slate-900/95 light:bg-white/95 backdrop-blur-md border-t border-slate-800 light:border-slate-200 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-3.5 flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-2.5 gap-x-2 sm:gap-x-3 lg:gap-6 text-slate-300 light:text-slate-700 select-none">
+  <div class="slide-controls-bar z-20 bg-slate-900/95 light:bg-white/95 backdrop-blur-md border-t border-slate-800 light:border-slate-200 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-3.5 flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-between gap-y-2.5 gap-x-2 sm:gap-x-3 lg:gap-6 text-slate-300 light:text-slate-700 select-none">
 
     <!-- Timeline & Progress Scrubbing: Full-width on mobile & tablet (order-1), centered flex-1 on desktop (lg:order-2) -->
     <div class="w-full order-1 lg:order-2 lg:flex-1 lg:max-w-xl flex items-center gap-2 sm:gap-3">
@@ -283,7 +283,7 @@ const currentDeckId = presentationId || talkId || "presentation";
 
               <div 
                 id="pdf-download-menu" 
-                class="hidden absolute bottom-full mb-2 right-0 w-60 p-2 bg-slate-900/95 light:bg-white/95 backdrop-blur-md border border-slate-700 light:border-slate-200 rounded-xl shadow-2xl z-50 flex flex-col gap-1 text-xs"
+                class="hidden absolute bottom-full mb-2 right-1/2 translate-x-1/2 sm:right-0 sm:translate-x-0 w-60 p-2 bg-slate-900/95 light:bg-white/95 backdrop-blur-md border border-slate-700 light:border-slate-200 rounded-xl shadow-2xl z-50 flex flex-col gap-1 text-xs"
               >
                 <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 light:text-slate-500 border-b border-slate-800 light:border-slate-100 mb-1">
                   PDF Handout Format
