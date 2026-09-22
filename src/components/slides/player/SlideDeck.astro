@@ -730,8 +730,30 @@ const currentDeckId = presentationId || talkId || "presentation";
       if (btnSpeed) btnSpeed.textContent = `${r.toFixed(2)}x`;
     });
 
+    interface WebkitDocument extends Document {
+      webkitFullscreenElement?: Element;
+      webkitExitFullscreen?: () => Promise<void> | void;
+    }
+
+    interface WebkitElement extends HTMLElement {
+      webkitRequestFullscreen?: () => Promise<void> | void;
+    }
+
+    const webkitDoc = document as WebkitDocument;
+
+    const isPseudoFullscreen = () => {
+      const wrapper = document.querySelector('.slide-deck-wrapper');
+      return Boolean(wrapper?.classList.contains('is-pseudo-fullscreen'));
+    };
+
+    const isFullscreenActive = () => Boolean(
+      document.fullscreenElement ||
+      webkitDoc.webkitFullscreenElement ||
+      isPseudoFullscreen()
+    );
+
     const updateFullscreenIcons = () => {
-      const isFs = Boolean(document.fullscreenElement);
+      const isFs = isFullscreenActive();
       const iconEnter = document.getElementById('icon-fullscreen-enter');
       const iconExit = document.getElementById('icon-fullscreen-exit');
       if (iconEnter && iconExit) {
@@ -744,19 +766,65 @@ const currentDeckId = presentationId || talkId || "presentation";
         }
       }
       setTimeout(() => deck.layout(), 60);
+      setTimeout(() => deck.layout(), 300);
+    };
+
+    const togglePseudoFullscreen = (force?: boolean) => {
+      const wrapper = document.querySelector('.slide-deck-wrapper');
+      if (!wrapper) return;
+      const shouldEnter = force !== undefined ? force : !wrapper.classList.contains('is-pseudo-fullscreen');
+      if (shouldEnter) {
+        wrapper.classList.add('is-pseudo-fullscreen');
+        document.documentElement.classList.add('overflow-hidden');
+        document.body.classList.add('overflow-hidden');
+      } else {
+        wrapper.classList.remove('is-pseudo-fullscreen');
+        document.documentElement.classList.remove('overflow-hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+      updateFullscreenIcons();
     };
 
     btnFullscreen?.addEventListener('click', () => {
-      const wrapper = document.querySelector('.slide-deck-wrapper');
-      if (!document.fullscreenElement && wrapper) {
-        wrapper.requestFullscreen().catch(() => {});
-      } else if (document.exitFullscreen) {
-        document.exitFullscreen();
+      const wrapper = document.querySelector('.slide-deck-wrapper') as HTMLElement | null;
+      if (!wrapper) return;
+
+      if (isFullscreenActive()) {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (webkitDoc.webkitFullscreenElement && webkitDoc.webkitExitFullscreen) {
+          webkitDoc.webkitExitFullscreen();
+        }
+        if (isPseudoFullscreen()) {
+          togglePseudoFullscreen(false);
+        }
+      } else {
+        const webkitEl = wrapper as WebkitElement;
+        const reqFs = wrapper.requestFullscreen || webkitEl.webkitRequestFullscreen;
+        if (typeof reqFs === 'function') {
+          try {
+            const promise = reqFs.call(wrapper);
+            if (promise && typeof promise.catch === 'function') {
+              promise.catch(() => {
+                togglePseudoFullscreen(true);
+              });
+            }
+          } catch {
+            togglePseudoFullscreen(true);
+          }
+        } else {
+          togglePseudoFullscreen(true);
+        }
       }
     });
 
     document.addEventListener('fullscreenchange', updateFullscreenIcons);
     document.addEventListener('webkitfullscreenchange', updateFullscreenIcons);
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isPseudoFullscreen()) {
+        togglePseudoFullscreen(false);
+      }
+    });
 
     // Progress Bar Scrubbing (Click + Touch)
     const handleScrub = (clientX: number) => {
@@ -1007,28 +1075,34 @@ const currentDeckId = presentationId || talkId || "presentation";
     }
   }
 
-  /* Fullscreen handling */
-  .slide-deck-wrapper:fullscreen {
+  /* Fullscreen handling (Native + iOS Pseudo-Fullscreen Fallback) */
+  .slide-deck-wrapper:fullscreen,
+  .slide-deck-wrapper:-webkit-full-screen,
+  .slide-deck-wrapper.is-pseudo-fullscreen {
     width: 100vw !important;
     height: 100vh !important;
+    height: 100dvh !important;
     max-height: 100vh !important;
+    max-height: 100dvh !important;
     aspect-ratio: auto !important;
     border-radius: 0 !important;
     border: none !important;
   }
-  .slide-deck-wrapper:fullscreen .aspect-video {
-    aspect-ratio: auto !important;
-    flex: 1 1 0% !important;
+  .slide-deck-wrapper.is-pseudo-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 99999 !important;
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    padding-left: env(safe-area-inset-left, 0px) !important;
+    padding-right: env(safe-area-inset-right, 0px) !important;
   }
-  .slide-deck-wrapper:-webkit-full-screen {
-    width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    aspect-ratio: auto !important;
-    border-radius: 0 !important;
-    border: none !important;
-  }
-  .slide-deck-wrapper:-webkit-full-screen .aspect-video {
+  .slide-deck-wrapper:fullscreen .aspect-video,
+  .slide-deck-wrapper:-webkit-full-screen .aspect-video,
+  .slide-deck-wrapper.is-pseudo-fullscreen .aspect-video {
     aspect-ratio: auto !important;
     flex: 1 1 0% !important;
   }
