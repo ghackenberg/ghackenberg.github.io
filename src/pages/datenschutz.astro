@@ -122,20 +122,31 @@ const breadcrumbSchema = {
 
       <hr class="border-white/5" />
 
-      <!-- Section 4: Local Storage & Read State -->
+      <!-- Section 4: Local Storage & Read State / Gallery Ledger -->
       <div class="space-y-3">
-        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">4. Lokale Speicherung im Browser (Local Storage & Lesestatus)</h2>
+        <h2 class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">4. Lokale Speicherung im Browser (Local Storage, Lesestatus & Galerie-Rotation)</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          Um Ihnen das Wiederfinden neuer und ungelesener Beiträge zu erleichtern, bietet diese Website eine optionale Funktion zur Hervorhebung des Lesestatus (Unread-Badges und Hinweispunkte in der Navigation).
+          Um Ihnen das Wiederfinden neuer und ungelesener Beiträge zu erleichtern sowie eine abwechslungsreiche Rotation der interaktiven Bildergalerie auf der Startseite über wiederholte Besuche hinweg zu gewährleisten, bietet diese Website optionale lokale Komfortfunktionen.
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          <strong>100 % Client-seitig:</strong> Wenn Sie diese Funktion aktivieren, speichert Ihr Webbrowser die URLs besuchter Artikel und den Zeitstempel Ihres letzten Bereichsaufrufs ausschließlich lokal in Ihrem Endgerät (<code class="text-gray-300 font-mono text-xs">localStorage</code> unter dem Schlüssel <code class="text-gray-300 font-mono text-xs">gh_site_notifications_v1</code>). Diese Daten verbleiben vollständig auf Ihrem Gerät und werden zu keinem Zeitpunkt an unsere Server oder an Dritte übermittelt.
+          <strong>100 % Client-seitig:</strong> Wenn Sie diese Funktion in den Privatsphäre-Einstellungen aktivieren, speichert Ihr Webbrowser folgende Daten ausschließlich lokal in Ihrem Endgerät (<code class="text-gray-300 font-mono text-xs">localStorage</code>):
+        </p>
+        <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs md:text-sm pl-2">
+          <li>
+            <code class="text-gray-300 font-mono text-xs">gh_site_notifications_v1</code>: URLs besuchter Artikel und Zeitstempel Ihres letzten Bereichsaufrufs zur Steuerung der dezenten Hinweispunkte (Unread-Badges).
+          </li>
+          <li>
+            <code class="text-gray-300 font-mono text-xs">gh_gallery_impressions</code>: Lokale Anzeige-Zeitstempel der Startseiten-Galeriekarten, um kürzlich gesehene Inhalte bei Folgebildläufen zurückzustellen und ungesehene Inhalte bevorzugt zu präsentieren.
+          </li>
+        </ul>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Diese Daten verbleiben vollständig auf Ihrem Gerät und werden zu keinem Zeitpunkt an unsere Server oder an Dritte übermittelt.
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          <strong>Freiwilliges Opt-In:</strong> Diese Funktion ist standardmäßig <strong>deaktiviert</strong>. Vor einer ausdrücklichen Aktivierung durch Sie wird kein Lesestatus erfasst und kein Speicherplatz in Ihrem Browser belegt. Die Speicherung erfolgt erst nach Ihrer ausdrücklichen Aktivierung (§ 25 Abs. 2 Nr. 2 TDDDG in Deutschland, § 165 Abs. 3 Z 2 TKG 2021 in Österreich, Art. 5 Abs. 3 ePrivacy-Richtlinie).
+          <strong>Freiwilliges Opt-In:</strong> Diese Komfortfunktionen sind standardmäßig <strong>deaktiviert</strong>. Ohne Ihre ausdrückliche Aktivierung werden keine Lesestände oder Galerie-Zeitstempel persistent gespeichert (§ 25 Abs. 2 Nr. 2 TDDDG in Deutschland, § 165 Abs. 3 Z 2 TKG 2021 in Österreich, Art. 5 Abs. 3 ePrivacy-Richtlinie).
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          <strong>Löschbarkeit & Deaktivierung:</strong> Sie können das Feature jederzeit in den Privatsphäre-Einstellungen wieder deaktivieren oder Ihren gespeicherten Leseverlauf mit einem Klick rückstandslos löschen. Alternativ können Sie den Verlauf über die Browser-Funktion „Websitedaten / Cookies löschen“ entfernen.
+          <strong>Löschbarkeit & Deaktivierung:</strong> Sie können die lokalen Einstellungen jederzeit über das Schloss-Symbol in der Fußzeile („Privatsphäre“) mit einem einzigen Klick deaktivieren oder den gesamten lokalen Speicherstand rückstandslos bereinigen. Alternativ können Sie die Daten über die Browser-Funktion „Websitedaten / Cookies löschen“ entfernen.
         </p>
       </div>
 
