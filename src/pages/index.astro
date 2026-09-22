@@ -689,12 +689,125 @@ const personSchema = {
   "jobTitle": "Professor for Industrial Informatics",
   "worksFor": {
     "@type": "EducationalOrganization",
-    "name": "University of Applied Sciences Upper Austria",
-    "sameAs": "https://www.fh-ooe.at/"
+    "@id": "https://www.wikidata.org/wiki/Q1390494",
+    "name": "UAP - University of Applied Sciences Upper Austria",
+    "alternateName": [
+      "UAP",
+      "UAP Technology Campus Wels",
+      "UAP Campus Wels",
+      "FH Upper Austria",
+      "FH Oberösterreich",
+      "FH OÖ Technology Campus Wels",
+      "FH OÖ Campus Wels",
+      "University of Applied Sciences Upper Austria"
+    ],
+    "url": "https://www.fh-ooe.at/",
+    "sameAs": "https://www.wikidata.org/wiki/Q1390494"
   },
+  "alumniOf": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://www.wikidata.org/wiki/Q157808",
+      "name": "Technical University of Munich",
+      "alternateName": ["TUM", "Technische Universität München"],
+      "url": "https://www.tum.de/",
+      "sameAs": "https://www.wikidata.org/wiki/Q157808"
+    },
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://www.wikidata.org/wiki/Q2732",
+      "name": "RWTH Aachen University",
+      "alternateName": ["RWTH Aachen", "Rheinisch-Westfälische Technische Hochschule Aachen"],
+      "url": "https://www.rwth-aachen.de/",
+      "sameAs": "https://www.wikidata.org/wiki/Q2732"
+    },
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://www.wikidata.org/wiki/Q317070",
+      "name": "University of Mannheim",
+      "alternateName": ["Universität Mannheim"],
+      "url": "https://www.uni-mannheim.de/",
+      "sameAs": "https://www.wikidata.org/wiki/Q317070"
+    }
+  ],
+  "hasCredential": [
+    {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "degree",
+      "name": "Doctor rerum naturalium (Dr. rer. nat.)",
+      "recognizedBy": {
+        "@type": "EducationalOrganization",
+        "@id": "https://www.wikidata.org/wiki/Q157808",
+        "name": "Technical University of Munich"
+      }
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "degree",
+      "name": "Master of Science (M.Sc.) in Software Systems Engineering",
+      "recognizedBy": {
+        "@type": "EducationalOrganization",
+        "@id": "https://www.wikidata.org/wiki/Q2732",
+        "name": "RWTH Aachen University"
+      }
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "degree",
+      "name": "Bachelor of Science (B.Sc.) in Software- und Internettechnologie",
+      "recognizedBy": {
+        "@type": "EducationalOrganization",
+        "@id": "https://www.wikidata.org/wiki/Q317070",
+        "name": "University of Mannheim"
+      }
+    }
+  ],
+  "hasOccupation": [
+    {
+      "@type": "Occupation",
+      "name": "Professor of Computer Science & Industrial Informatics",
+      "occupationalCategory": "25-1021.00",
+      "description": "Teaching and conducting research in industrial informatics, cyber-physical systems, and model-based software engineering."
+    },
+    {
+      "@type": "Occupation",
+      "name": "Software Architect",
+      "occupationalCategory": "15-1252.00",
+      "description": "Designing type-safe, resilient cloud software architectures, web platforms, and discrete-event simulation engines."
+    },
+    {
+      "@type": "Occupation",
+      "name": "AI Systems Consultant",
+      "occupationalCategory": "15-1221.00",
+      "description": "Advising on sovereign AI tech stacks, local LLM orchestration, and autonomous agent workflows."
+    },
+    {
+      "@type": "Occupation",
+      "name": "Digital Content Creator & Technical Publisher",
+      "occupationalCategory": "27-3042.00",
+      "description": "Creating multi-channel technical content, video lectures, and open-source publications across Web, YouTube, LinkedIn, and GitHub."
+    }
+  ],
+  "founder": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "CADdrive",
+      "url": "https://caddrive.com",
+      "applicationCategory": "DesignApplication",
+      "description": "Cloud-based CAD collaboration platform and file manager."
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Mentawise",
+      "url": "https://mentawise.com",
+      "applicationCategory": "EducationalApplication",
+      "description": "Knowledge graph engine and digital learning platform."
+    }
+  ],
   "url": "https://hackenberg.tech",
   "email": "georg.hackenberg@fh-wels.at",
   "sameAs": [
+    "https://www.wikidata.org/wiki/Q141537961",
     "https://github.com/ghackenberg",
     "https://www.linkedin.com/in/georghackenberg/",
     "https://youtube.com/@georghackenberg",
@@ -707,7 +820,14 @@ const personSchema = {
     "Knowledge Graphs",
     "Model-Based Systems Engineering",
     "Model-Driven Software Engineering",
-    "AI Agents",
+    "AI-Augmented Engineering",
+    "Agentic AI",
+    "Artificial Intelligence Agents",
+    "Digital Content Production",
+    "Cross-Channel Media Publishing",
+    "Agentic Workflow Automation",
+    "Cyber-Physical Systems",
+    "Computer Simulation",
     "Digital Engineering"
   ]
 };
@@ -740,7 +860,7 @@ const faqSchema = {
       "name": "Who is Dr. Georg Hackenberg?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Dr. Georg Hackenberg is a Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (School of Engineering, Wels), digital entrepreneur, and software engineer with over 20 years of experience in model-based engineering, knowledge graph architectures, and software design."
+        "text": "Dr. Georg Hackenberg is a Professor for Industrial Informatics at UAP (University of Applied Sciences Upper Austria / FH Upper Austria, Technology Campus Wels) and an enterprise software architect. He holds a doctorate (Dr. rer. nat.) from the Technical University of Munich (TUM), a Master of Science in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science in Software- und Internettechnologie from the University of Mannheim."
       }
     },
     {
@@ -766,8 +886,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 ---
 
 <Layout 
-  title="Dr. Georg Hackenberg | Professor for Industrial Informatics @ UAP" 
-  description="Explore the portfolio, academic lectures, research publications, and computer science insights of Dr. Georg Hackenberg, Full Professor for Industrial Informatics."
+  title="Dr. Georg Hackenberg | Professor for Industrial Informatics & Software Architect" 
+  description="Explore the portfolio, research publications, and computer science lectures of Dr. Georg Hackenberg, Professor for Industrial Informatics at UAP / FH Upper Austria."
   preloadImage={optimizedProfile.src}
   jsonLd={homeJsonLd}
 >
@@ -795,12 +915,61 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </h1>
           
           <p class="text-xl sm:text-2xl font-bold text-gray-300 mb-8 leading-normal tracking-wide">
-            Professor for Industrial Informatics @ UAP &bull; Digital Entrepreneur &bull; Software Engineer &bull; 20+ Years of Experience
+            Professor for Industrial Informatics @ UAP / FH Upper Austria &bull; AI-Augmented Workflows &bull; Digital Content Creation
           </p>
-          
-          <p class="text-gray-400 text-base sm:text-lg leading-relaxed mb-10 font-normal">
-            Welcome to my personal website! I am a computer science professor, digital entrepreneur, and software engineer from <strong class="font-bold text-gray-200 light:text-slate-900">Hohenschwangau 🏰</strong> in Bavaria (under the world famous Castle Neuschwanstein) living in <strong class="font-bold text-gray-200 light:text-slate-900">Grünau im Almtal 🌄</strong> and working at <strong class="font-bold text-gray-200 light:text-slate-900">UAP Campus Wels 🏙️</strong> in Upper Austria. Dive in to explore my blog posts, reviewed publications, interactive presentations, university courses, software projects, and business services, and feel free to reach out anytime if you would like to connect or collaborate.
+
+          <p class="text-gray-400 text-base sm:text-lg leading-relaxed mb-6 font-normal">
+            Welcome to my personal website! I explore and practice the frontier of <strong class="font-bold text-gray-200 light:text-slate-900">AI-augmented engineering</strong> and <strong class="font-bold text-gray-200 light:text-slate-900">cross-channel content creation</strong> across Web, LinkedIn, YouTube, and GitHub. As a computer science professor in <strong class="font-bold text-gray-200 light:text-slate-900">Wels 🏙️</strong> originally from <strong class="font-bold text-gray-200 light:text-slate-900">Hohenschwangau 🏰</strong> living in <strong class="font-bold text-gray-200 light:text-slate-900">Grünau 🌄</strong>, I bridge academic systems engineering at <strong class="font-bold text-gray-200 light:text-slate-900">UAP (FH Upper Austria)</strong> with autonomous agent workflows and modern digital production.
           </p>
+
+          <!-- Entity Trust Pills (Modular Micro-Chips) -->
+          <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-8">
+            <a 
+              href="https://www.fh-ooe.at/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-white/10 hover:border-brand-blue/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
+              title="University of Applied Sciences Upper Austria (rebranding to UAP)"
+            >
+              <span class="text-sm select-none">🏛️</span>
+              <span><strong>UAP / FH Upper Austria</strong> <span class="text-gray-400 group-hover:text-gray-300 font-normal">(Technology Campus Wels)</span></span>
+            </a>
+            
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-white/10 text-gray-300 shadow-sm" title="Doctorate (Dr. rer. nat.) - Technical University of Munich">
+              <span class="text-sm select-none">🎓</span>
+              <span><strong>TU Munich</strong> <span class="text-gray-400 font-normal">(Dr. rer. nat.)</span></span>
+            </div>
+
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-white/10 text-gray-300 shadow-sm" title="Master of Science in Software Systems Engineering - RWTH Aachen University">
+              <span class="text-sm select-none">🎓</span>
+              <span><strong>RWTH Aachen</strong> <span class="text-gray-400 font-normal">(M.Sc.)</span></span>
+            </div>
+
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-white/10 text-gray-300 shadow-sm" title="Bachelor of Science in Software- und Internettechnologie - University of Mannheim">
+              <span class="text-sm select-none">🎓</span>
+              <span><strong>Uni Mannheim</strong> <span class="text-gray-400 font-normal">(B.Sc.)</span></span>
+            </div>
+
+            <a 
+              href="https://caddrive.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-white/10 hover:border-brand-blue/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
+            >
+              <span class="text-sm select-none">🚀</span>
+              <span><strong>CADdrive</strong></span>
+            </a>
+
+            <a 
+              href="https://mentawise.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-white/10 hover:border-brand-purple/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
+            >
+              <span class="text-sm select-none">🚀</span>
+              <span><strong>Mentawise</strong></span>
+            </a>
+          </div>
           
           <div class="flex flex-wrap items-center gap-4">
             <a 
@@ -1635,8 +1804,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   </svg>
                 </div>
                 <div>
-                  <p class="text-gray-100 font-semibold">School of Engineering</p>
-                  <p class="text-gray-400 text-sm">UAP Campus Wels</p>
+                  <p class="text-gray-100 font-semibold">Technology Campus Wels</p>
+                  <p class="text-gray-400 text-sm">UAP / FH Upper Austria</p>
                 </div>
               </div>
 

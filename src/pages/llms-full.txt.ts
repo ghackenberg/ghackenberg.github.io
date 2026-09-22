@@ -20,15 +20,16 @@ export async function GET() {
 
   let output = `# Dr. Georg Hackenberg - Complete Website Corpus (llms-full.txt)
 
-> Full Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (School of Engineering, Wels). Software engineer, digital entrepreneur, and researcher specializing in industrial informatics, knowledge graph architectures, model-based system validation, and AI agent integration.
+> Professor for Industrial Informatics at UAP - University of Applied Sciences Upper Austria (Technology Campus Wels) and enterprise software architect. He bridges academic systems engineering with autonomous agent workflows and modern digital production across Web, YouTube, LinkedIn, and GitHub. Founder of CADdrive (caddrive.com) and Mentawise (mentawise.com).
 > Website: https://hackenberg.tech
+> Wikidata: https://www.wikidata.org/wiki/Q141537961
 > Contact: georg.hackenberg@fh-wels.at
 
 ---
 
 ## 1. About Dr. Georg Hackenberg
 
-Dr. Georg Hackenberg is a Full Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (FH OÖ, Campus Wels). He holds a Doctorate in Computer Science and has extensive academic and industry experience in model-based software engineering, knowledge representation, automated system validation, and web applications. He is the founder/creator of software platforms including CADdrive (https://caddrive.com) and Mentawise (https://mentawise.com).
+Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industrial Informatics at UAP – University of Applied Sciences Upper Austria (Technology Campus Wels). He holds a Doctorate in Computer Science (Dr. rer. nat.) from the Technical University of Munich (TUM), a Master of Science (M.Sc.) in Software Systems Engineering from RWTH Aachen University, and a Bachelor of Science (B.Sc.) in Software- und Internettechnologie from the University of Mannheim. His academic research and software engineering practice bridge model-based systems engineering, cyber-physical systems simulation, knowledge graph architectures, and sovereign agentic AI workflows. He is the founder and architect of software platforms including CADdrive (https://caddrive.com) and Mentawise (https://mentawise.com).
 
 ---
 
