@@ -425,7 +425,7 @@ async function initNotifications() {
       document.documentElement.classList.add('has-unread-notifications');
       desktopBtn?.classList.add('whats-new-luminous');
       mobileBtn?.classList.add('whats-new-luminous');
-      const titleText = `What's New (${unreadCount} unread)`;
+      const titleText = `Content Updates (${unreadCount} unread)`;
       desktopBtn?.setAttribute('title', titleText);
       desktopBtn?.setAttribute('aria-label', titleText);
       mobileBtn?.setAttribute('title', titleText);
@@ -440,7 +440,7 @@ async function initNotifications() {
       document.documentElement.classList.remove('has-unread-notifications');
       desktopBtn?.classList.remove('whats-new-luminous');
       mobileBtn?.classList.remove('whats-new-luminous');
-      const titleText = "What's New";
+      const titleText = "Content Updates";
       desktopBtn?.setAttribute('title', titleText);
       desktopBtn?.setAttribute('aria-label', titleText);
       mobileBtn?.setAttribute('title', titleText);
