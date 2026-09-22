@@ -229,6 +229,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss(), vitePreSlideCues()],
+    optimizeDeps: {
+      include: ['reveal.js', 'howler'],
+    },
   },
 });
 

@@ -264,6 +264,7 @@ function getBadgeColor(href: string): string {
   let abortController: AbortController | null = null;
 
   function loadSeenLedger(): Record<string, number> {
+    if (!isOptedIn()) return {};
     try {
       const raw = localStorage.getItem('gh_gallery_impressions');
       if (raw) {
@@ -276,6 +277,7 @@ function getBadgeColor(href: string): string {
   }
 
   function scheduleSaveLedger() {
+    if (!isOptedIn()) return;
     if (saveLedgerTimer !== null) return;
     saveLedgerTimer = window.setTimeout(() => {
       saveLedgerTimer = null;
@@ -448,6 +450,10 @@ function getBadgeColor(href: string): string {
     if (galleryObserver !== null) {
       galleryObserver.disconnect();
       galleryObserver = null;
+    }
+    if (saveLedgerTimer !== null) {
+      window.clearTimeout(saveLedgerTimer);
+      saveLedgerTimer = null;
     }
     if (abortController !== null) {
       abortController.abort();
@@ -949,6 +955,10 @@ function getBadgeColor(href: string): string {
     if (galleryObserver !== null) {
       galleryObserver.disconnect();
       galleryObserver = null;
+    }
+    if (saveLedgerTimer !== null) {
+      window.clearTimeout(saveLedgerTimer);
+      saveLedgerTimer = null;
     }
     if (abortController !== null) {
       abortController.abort();

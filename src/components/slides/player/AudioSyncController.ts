@@ -1,4 +1,4 @@
-import { Howl } from 'howler';
+import { Howl, Howler } from 'howler';
 
 export type CueTiming = number | { start: number; duration?: number; end?: number };
 
@@ -97,10 +97,28 @@ export class AudioSyncController {
     this.triggeredCues.clear();
     this.exitedCues.clear();
 
+    this.stopTickLoop();
+
+    // Forcefully stop all audio globally in Howler to avoid rogue parallel tracks
+    Howler.stop();
+
     if (this.currentHowl) {
+      this.currentHowl.off();
       this.currentHowl.stop();
       this.currentHowl.unload();
       this.currentHowl = null;
+    }
+
+    if (this.nextHowl) {
+      this.nextHowl.off();
+      this.nextHowl.stop();
+      this.nextHowl.unload();
+      this.nextHowl = null;
+    }
+
+    if (!shouldPlay) {
+      this.isPlaying = false;
+      this.notifyPlayState(false);
     }
 
     // Auto-bind slide cues (unassigned <mark> or boxes)
@@ -141,7 +159,7 @@ export class AudioSyncController {
         // Clean up is-entering after animation completes so rewinding on same slide won't re-trigger fade-in
         setTimeout(() => {
           baseFrame.classList.remove('is-entering');
-        }, 900);
+        }, 1500);
       }
     }
     this.updateSlideIntroState();
@@ -207,14 +225,30 @@ export class AudioSyncController {
   }
 
   private loadSlideAudio(slide: SlideData, autoPlay: boolean, entryMode: SlideEntryMode = 'full') {
-    if (!slide.audioUrl) return;
+    if (!slide.audioUrl) {
+      this.isPlaying = false;
+      this.notifyPlayState(false);
+      return;
+    }
 
-    this.currentHowl = new Howl({
+    this.isPlaying = autoPlay;
+    this.notifyPlayState(autoPlay);
+
+    const thisSlideIndex = this.currentIndex;
+    const howlInstance = new Howl({
       src: [slide.audioUrl],
       html5: false, // Use Web Audio API for exact duration & timing without streaming bugs
       rate: this.playbackRate,
       onload: () => {
-        const total = this.currentHowl?.duration();
+        // Concurrency guard: If user navigated away or instance was replaced, abort immediately
+        if (this.currentIndex !== thisSlideIndex || this.currentHowl !== howlInstance) {
+          howlInstance.off();
+          howlInstance.stop();
+          howlInstance.unload();
+          return;
+        }
+
+        const total = howlInstance.duration();
         const totalSec = (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
         
         if (entryMode === 'full') {
@@ -228,7 +262,7 @@ export class AudioSyncController {
           const cues = this.getCurrentSlideCues();
           const lastCue = cues[cues.length - 1];
           const targetTime = lastCue ? lastCue.start : 0;
-          this.currentHowl?.seek(targetTime);
+          howlInstance.seek(targetTime);
           this.syncCuesToTime(targetTime);
           if (this.onProgressCallback) {
             this.onProgressCallback(targetTime, totalSec);
@@ -238,7 +272,7 @@ export class AudioSyncController {
           }
         } else {
           // 'start': 0:00 and all cues inactive
-          this.currentHowl?.seek(0);
+          howlInstance.seek(0);
           if (this.onProgressCallback) {
             this.onProgressCallback(0, totalSec);
           }
@@ -246,26 +280,36 @@ export class AudioSyncController {
             this.onCuesLoadedCallback(this.getCurrentSlideCues(), totalSec);
           }
         }
-        if (autoPlay) {
-          this.currentHowl?.play();
-        }
+
+        // NOTE: If autoPlay was requested, howlInstance.play() was already called upon creation.
+        // Howler queues playback automatically and starts once loaded.
+        // Do NOT call play() here, as that would spawn duplicate simultaneous audio voices!
       },
       onplay: () => {
+        if (this.currentIndex !== thisSlideIndex || this.currentHowl !== howlInstance) {
+          howlInstance.off();
+          howlInstance.stop();
+          howlInstance.unload();
+          return;
+        }
         this.isPlaying = true;
         this.notifyPlayState(true);
         this.startTickLoop();
       },
       onpause: () => {
+        if (this.currentIndex !== thisSlideIndex || this.currentHowl !== howlInstance) return;
         this.isPlaying = false;
         this.notifyPlayState(false);
         this.stopTickLoop();
       },
       onstop: () => {
+        if (this.currentIndex !== thisSlideIndex || this.currentHowl !== howlInstance) return;
         this.isPlaying = false;
         this.notifyPlayState(false);
         this.stopTickLoop();
       },
       onend: () => {
+        if (this.currentIndex !== thisSlideIndex || this.currentHowl !== howlInstance) return;
         this.stopTickLoop();
         // Trigger all remaining cues so the slide ends in completed state
         this.fastForwardAllCues();
@@ -279,8 +323,10 @@ export class AudioSyncController {
       }
     });
 
+    this.currentHowl = howlInstance;
+
     if (autoPlay) {
-      this.currentHowl.play();
+      howlInstance.play();
     }
   }
 
@@ -290,7 +336,10 @@ export class AudioSyncController {
     if (!nextSlide?.audioUrl) return;
 
     if (this.nextHowl) {
+      this.nextHowl.off();
+      this.nextHowl.stop();
       this.nextHowl.unload();
+      this.nextHowl = null;
     }
 
     this.nextHowl = new Howl({
@@ -301,7 +350,10 @@ export class AudioSyncController {
   }
 
   public play() {
-    if (this.currentHowl && !this.currentHowl.playing()) {
+    if (this.isPlaying && this.currentHowl?.playing()) {
+      return;
+    }
+    if (this.currentHowl) {
       const current = this.currentHowl.seek();
       const currentSec = typeof current === 'number' ? current : 0;
       const total = this.currentHowl.duration();
@@ -315,8 +367,10 @@ export class AudioSyncController {
       } else if (currentSec < 0.2) {
         this.resetAllCues();
       }
-      this.currentHowl.play();
-    } else if (!this.currentHowl) {
+      if (!this.currentHowl.playing()) {
+        this.currentHowl.play();
+      }
+    } else {
       this.setSlideIndex(this.currentIndex, { shouldPlay: true, entryMode: 'start' });
     }
   }
@@ -324,6 +378,11 @@ export class AudioSyncController {
   public pause() {
     if (this.currentHowl && this.currentHowl.playing()) {
       this.currentHowl.pause();
+    } else {
+      Howler.stop();
+      this.isPlaying = false;
+      this.notifyPlayState(false);
+      this.stopTickLoop();
     }
   }
 
@@ -668,12 +727,16 @@ export class AudioSyncController {
 
   public destroy() {
     this.stopTickLoop();
+    Howler.stop();
     if (this.currentHowl) {
+      this.currentHowl.off();
       this.currentHowl.stop();
       this.currentHowl.unload();
       this.currentHowl = null;
     }
     if (this.nextHowl) {
+      this.nextHowl.off();
+      this.nextHowl.stop();
       this.nextHowl.unload();
       this.nextHowl = null;
     }
