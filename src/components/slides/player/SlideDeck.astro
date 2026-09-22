@@ -27,17 +27,17 @@ const currentDeckId = presentationId || talkId || "presentation";
 <div class={`slide-deck-wrapper relative w-full lg:aspect-[16/9.6] lg:max-h-[88vh] bg-slate-950 light:bg-slate-100 border border-slate-800 light:border-slate-300 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col ${className}`}>
   <!-- Slide Stage Viewport with Drawer / Sidebar Layer -->
   <div class="relative flex-1 w-full min-h-0 flex overflow-hidden">
-    <!-- Slide List Backdrop (Mobile only: dims & blurs slide stage) -->
+    <!-- Slide List Backdrop (Tablet only md to < lg: dims & blurs slide stage) -->
     <div
       id="slide-list-backdrop"
-      class="lg:hidden absolute inset-0 bg-slate-950/60 light:bg-slate-900/30 backdrop-blur-xs z-30 opacity-0 pointer-events-none transition-opacity duration-300 cursor-pointer"
+      class="hidden md:block lg:hidden absolute inset-0 bg-slate-950/60 light:bg-slate-900/30 backdrop-blur-xs z-30 opacity-0 pointer-events-none transition-opacity duration-300 cursor-pointer"
       title="Close"
     ></div>
 
-    <!-- Slide List Sidebar (Side-by-side on desktop lg+, overlay drawer on mobile <lg) -->
+    <!-- Slide List Sidebar (Side-by-side on desktop lg+, overlay drawer on tablet md to <lg, disabled on mobile <md) -->
     <aside
       id="slide-list-drawer"
-      class="drawer-closed bg-slate-900/95 light:bg-white/95 lg:bg-slate-900 lg:light:bg-slate-50 border-r border-slate-800 light:border-slate-200 z-40 flex flex-col shadow-2xl lg:shadow-none select-none shrink-0"
+      class="hidden md:flex drawer-closed bg-slate-900/95 light:bg-white/95 lg:bg-slate-900 lg:light:bg-slate-50 border-r border-slate-800 light:border-slate-200 z-40 flex-col shadow-2xl lg:shadow-none select-none shrink-0"
       aria-label="Slide overview"
       aria-hidden="true"
     >
@@ -219,10 +219,10 @@ const currentDeckId = presentationId || talkId || "presentation";
         1.0x
       </button>
 
-      <!-- Slide List Drawer Toggle (ESC) -->
+      <!-- Slide List Drawer Toggle (ESC) - Hidden on mobile & small screens (< md) where Transcript serves as overview -->
       <button
         id="btn-overview"
-        class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+        class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 items-center justify-center transition-colors cursor-pointer"
         title="Slide overview (ESC)"
         aria-label="Toggle slide overview"
       >
@@ -405,6 +405,13 @@ const currentDeckId = presentationId || talkId || "presentation";
 
     let isDrawerOpen = false;
 
+    // In-memory user preference during current page visit (zero storage / strict privacy)
+    let userDrawerPreference: 'open' | 'closed' | null = null;
+
+    const setDrawerPreference = (pref: 'open' | 'closed') => {
+      userDrawerPreference = pref;
+    };
+
     const scrollActiveSlideIntoView = (activeItem: HTMLElement | null, smooth = true) => {
       const listEl = slideListContainer || document.getElementById('slide-list-items');
       if (!listEl || !activeItem) return;
@@ -432,7 +439,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     };
 
     const openDrawer = (shouldScroll = true) => {
-      if (!slideListDrawer) return;
+      if (!slideListDrawer || window.innerWidth < 768) return;
       isDrawerOpen = true;
       slideListDrawer.classList.remove('drawer-closed');
       slideListDrawer.classList.add('drawer-open');
@@ -476,10 +483,12 @@ const currentDeckId = presentationId || talkId || "presentation";
       btnOverview?.classList.add('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
     };
 
-    const toggleDrawer = () => {
+    const toggleDrawer = (isUserExplicit = true) => {
       if (isDrawerOpen) {
+        if (isUserExplicit) setDrawerPreference('closed');
         closeDrawer();
       } else {
+        if (isUserExplicit) setDrawerPreference('open');
         openDrawer(true);
       }
     };
@@ -671,9 +680,15 @@ const currentDeckId = presentationId || talkId || "presentation";
       });
     });
 
-    btnOverview?.addEventListener('click', () => toggleDrawer());
-    btnCloseDrawer?.addEventListener('click', () => closeDrawer());
-    slideListBackdrop?.addEventListener('click', () => closeDrawer());
+    btnOverview?.addEventListener('click', () => toggleDrawer(true));
+    btnCloseDrawer?.addEventListener('click', () => {
+      setDrawerPreference('closed');
+      closeDrawer();
+    });
+    slideListBackdrop?.addEventListener('click', () => {
+      setDrawerPreference('closed');
+      closeDrawer();
+    });
 
     // Listen for external jump-to-slide events (e.g. from the Transcript Timeline Feed)
     window.addEventListener('deck:jump-to-slide', ((e: CustomEvent<{ index: number; autoPlay?: boolean }>) => {
@@ -688,9 +703,13 @@ const currentDeckId = presentationId || talkId || "presentation";
     }) as EventListener);
     window.__revealDeck = deck;
 
-    // Initial drawer state: open on desktop (side-by-side), closed on mobile
+    // Initial drawer state: open on desktop (side-by-side) unless explicitly closed by user
     if (window.innerWidth >= 1024) {
-      openDrawer(false);
+      if (userDrawerPreference !== 'closed') {
+        openDrawer(false);
+      } else {
+        closeDrawer();
+      }
     } else {
       closeDrawer();
     }
@@ -706,16 +725,35 @@ const currentDeckId = presentationId || talkId || "presentation";
       ro.observe(revealRoot);
     }
 
-    // Responsive breakpoint listener for mobile <-> desktop transitions
+    // Responsive breakpoint listener for mobile <-> tablet <-> desktop transitions
+    const deckWrapper = document.querySelector('.slide-deck-wrapper');
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let prevIsDesktop = window.innerWidth >= 1024;
     window.addEventListener('resize', () => {
+      if (deckWrapper) {
+        deckWrapper.classList.add('is-resizing');
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          deckWrapper.classList.remove('is-resizing');
+        }, 120);
+      }
+
+      if (window.innerWidth < 768 && isDrawerOpen) {
+        closeDrawer();
+      }
       const isDesktop = window.innerWidth >= 1024;
       if (isDesktop !== prevIsDesktop) {
         prevIsDesktop = isDesktop;
-        if (isDesktop && !isDrawerOpen) {
-          openDrawer(false);
-        } else if (!isDesktop && isDrawerOpen) {
-          closeDrawer();
+        if (isDesktop) {
+          // Re-opening when resizing to desktop only if user did not explicitly close it
+          if (userDrawerPreference !== 'closed' && !isDrawerOpen) {
+            openDrawer(false);
+          }
+        } else {
+          // Auto-close overlay drawer when resizing to mobile/tablet so it doesn't cover stage
+          if (isDrawerOpen) {
+            closeDrawer();
+          }
         }
       }
     });
@@ -863,8 +901,10 @@ const currentDeckId = presentationId || talkId || "presentation";
     // Global Key Listener for Space -> Toggle Audio, Escape -> Toggle Drawer, Up/Down -> Cue Navigation
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Escape') {
-        e.preventDefault();
-        toggleDrawer();
+        if (window.innerWidth >= 768) {
+          e.preventDefault();
+          toggleDrawer();
+        }
       } else if (e.code === 'Space' && (e.target === document.body || (e.target as HTMLElement)?.classList.contains('reveal'))) {
         e.preventDefault();
         audioSync.togglePlay();
@@ -1029,6 +1069,25 @@ const currentDeckId = presentationId || talkId || "presentation";
     background: rgba(148, 163, 184, 0.4);
   }
 
+  /* Suppress layout transitions while window is being resized */
+  .slide-deck-wrapper.is-resizing #slide-list-drawer {
+    transition: none !important;
+  }
+
+  /* Globally guarantee that closed drawer has zero width, zero opacity and is completely invisible */
+  #slide-list-drawer.drawer-closed {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
   /* Slide List Sidebar / Drawer Styles */
   @media (min-width: 1024px) {
     #slide-list-drawer {
@@ -1039,13 +1098,12 @@ const currentDeckId = presentationId || talkId || "presentation";
     #slide-list-drawer.drawer-open {
       width: 20rem; /* 320px */
       opacity: 1;
+      visibility: visible !important;
       pointer-events: auto;
       border-right-width: 1px;
     }
     #slide-list-drawer.drawer-closed {
       width: 0 !important;
-      opacity: 0;
-      pointer-events: none;
       border-right-width: 0 !important;
       overflow: hidden;
     }
@@ -1054,7 +1112,18 @@ const currentDeckId = presentationId || talkId || "presentation";
     }
   }
 
-  @media (max-width: 1023px) {
+  @media (max-width: 767px) {
+    #slide-list-drawer,
+    #slide-list-backdrop,
+    #btn-overview {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      width: 0 !important;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
     #slide-list-drawer {
       position: absolute;
       top: 0;
@@ -1067,11 +1136,13 @@ const currentDeckId = presentationId || talkId || "presentation";
     }
     #slide-list-drawer.drawer-open {
       transform: translateX(0);
+      opacity: 1;
+      visibility: visible !important;
       pointer-events: auto;
     }
     #slide-list-drawer.drawer-closed {
       transform: translateX(-100%);
-      pointer-events: none;
+      width: 0 !important;
     }
   }
 
