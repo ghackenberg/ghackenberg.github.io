@@ -1,14 +1,14 @@
 {
   "card-astro": {
-    "start": 4.28
+    "start": 9.8
   },
   "card-agent": {
-    "start": 10.95
+    "start": 16.56
   },
   "card-github": {
-    "start": 16.01
+    "start": 21.63
   },
   "card-plausible": {
-    "start": 22.2
+    "start": 27.9
   }
 }

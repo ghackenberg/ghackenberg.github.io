@@ -1,18 +1,18 @@
 {
   "col-basic-rag": {
-    "start": 6.65
+    "start": 9.82
   },
   "col-graph-rag": {
-    "start": 15.63
+    "start": 19.81
   },
   "hl-community-summaries": {
-    "start": 21.25,
-    "duration": 0.84,
-    "end": 22.09
+    "start": 25.46,
+    "duration": 1.04,
+    "end": 26.5
   },
   "hl-graphrag-qualitaet": {
-    "start": 25,
-    "duration": 2.17,
-    "end": 27.17
+    "start": 29.45,
+    "duration": 2.18,
+    "end": 31.63
   }
 }

@@ -1,14 +1,14 @@
 {
   "step-query": {
-    "start": 6.69
+    "start": 15.65
   },
   "step-retrieval": {
-    "start": 13.97
+    "start": 23.09
   },
   "step-injection": {
-    "start": 19.81
+    "start": 28.89
   },
   "step-synthesis": {
-    "start": 25.18
+    "start": 34.3
   }
 }

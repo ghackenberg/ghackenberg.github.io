@@ -1,13 +1,13 @@
 {
   "stat-zeroclick": {
-    "start": 3.09
+    "start": 13.91
   },
   "bento-impact": {
-    "start": 9.19
+    "start": 20.04
   },
   "hl-zitation-kaufabsicht": {
-    "start": 22.43,
-    "duration": 2.41,
-    "end": 24.84
+    "start": 32.8,
+    "duration": 2.45,
+    "end": 35.25
   }
 }
