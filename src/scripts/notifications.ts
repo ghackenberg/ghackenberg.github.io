@@ -417,7 +417,6 @@ async function initNotifications() {
     // Update Sparkle buttons & UI states
     const desktopBtn = document.getElementById('whats-new-btn-desktop');
     const mobileBtn = document.getElementById('whats-new-btn-mobile');
-    const countPill = document.getElementById('whats-new-count-pill');
     const hintBanner = document.getElementById('whats-new-tracking-hint');
     const markReadBtn = document.getElementById('whats-new-mark-read-btn');
 
@@ -431,10 +430,6 @@ async function initNotifications() {
       mobileBtn?.setAttribute('title', titleText);
       mobileBtn?.setAttribute('aria-label', titleText);
 
-      if (countPill) {
-        countPill.textContent = `${unreadCount} new`;
-        countPill.classList.remove('hidden');
-      }
       markReadBtn?.classList.remove('hidden');
     } else {
       document.documentElement.classList.remove('has-unread-notifications');
@@ -446,7 +441,6 @@ async function initNotifications() {
       mobileBtn?.setAttribute('title', titleText);
       mobileBtn?.setAttribute('aria-label', titleText);
 
-      countPill?.classList.add('hidden');
       markReadBtn?.classList.add('hidden');
     }
 
