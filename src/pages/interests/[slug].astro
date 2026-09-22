@@ -83,13 +83,14 @@ const interestSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   "@id": `${interestUrl}#webpage`,
-  "name": `${interest.data.title} - Personal Interests | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP Campus Wels`,
+  "name": `${interest.data.title} - Personal Interests | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP / FH Upper Austria Technology Campus Wels`,
   "description": interest.data.description,
   "url": interestUrl,
   "author": {
     "@type": "Person",
     "name": "Dr. Georg Hackenberg",
-    "url": "https://hackenberg.tech"
+    "url": "https://hackenberg.tech",
+    "sameAs": "https://www.wikidata.org/wiki/Q141537961"
   }
 };
 

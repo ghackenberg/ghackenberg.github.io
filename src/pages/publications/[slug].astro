@@ -64,10 +64,18 @@ const scholarlyArticleSchema = {
   "headline": pub.data.title,
   "name": pub.data.title,
   "url": pubUrl,
-  "author": pub.data.author.split(/,| and /).map(a => ({
-    "@type": "Person",
-    "name": a.trim()
-  })),
+  "author": pub.data.author.split(/,| and /).map(a => {
+    const trimmed = a.trim();
+    const isGeorg = /Georg Hackenberg/i.test(trimmed);
+    return {
+      "@type": "Person",
+      "name": trimmed,
+      ...(isGeorg ? {
+        "url": "https://hackenberg.tech",
+        "sameAs": "https://www.wikidata.org/wiki/Q141537961"
+      } : {})
+    };
+  }),
   "datePublished": pub.data.pubDate,
   "description": cleanAbstract || `${pub.data.title} - Academic publication by ${pub.data.author}.`,
   "publication": pub.data.book ? {
