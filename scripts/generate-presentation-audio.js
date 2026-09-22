@@ -299,8 +299,7 @@ async function generateAllPresentationAudio() {
     const targetSlide = slideArg ? slideArg.replace('--slide=', '') : null;
 
     const lexicon = loadTtsLexicon();
-    const lexiconHash = crypto.createHash('md5').update(JSON.stringify(lexicon)).digest('hex').slice(0, 8);
-    const GENERATOR_VERSION = `v3-${lexiconHash}`;
+    const GENERATOR_VERSION = 'v3-spoken';
 
     for (const slideFile of slideFiles) {
       const slideId = slideFile.replace(/\.(md|mdx)$/, '');
@@ -317,8 +316,11 @@ async function generateAllPresentationAudio() {
         continue;
       }
 
-      // Hash to determine if regenerated audio is needed
-      const hash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${voiceover}`).digest('hex');
+      const { cleanText, cues } = extractCuesAndCleanText(voiceover);
+      const spokenText = applyLexicon(cleanText, lexicon);
+
+      // Hash spokenText: audio is only re-synthesized if this specific slide's spoken output changed
+      const hash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}`).digest('hex');
       const mp3Path = path.join(audioDir, `${slideId}.mp3`);
       const cuesPath = path.join(audioDir, `${slideId}.cues.json`);
 
@@ -328,9 +330,6 @@ async function generateAllPresentationAudio() {
       }
 
       console.log(`  ▶ Synthesizing audio for: ${slideId}...`);
-
-      const { cleanText, cues } = extractCuesAndCleanText(voiceover);
-      const spokenText = applyLexicon(cleanText, lexicon);
 
       try {
         // Use German neural voice by default

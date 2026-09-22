@@ -54,6 +54,43 @@ function parseFrontmatter(content) {
 }
 
 /**
+ * Transforms clean text into pronunciation-optimized text for TTS synthesis.
+ * Applies acronym expansions (e.g. RAG -> R-A-G) and phonetic transcriptions (e.g. Snapshot -> Snäpschott).
+ * @param {string} text
+ * @param {{ acronyms?: Record<string, string>; phonetics?: Record<string, string> }} lexicon
+ * @returns {string}
+ */
+function applyLexicon(text, lexicon) {
+  if (!text) return '';
+  let result = text;
+
+  const allMappings = {
+    ...(lexicon.phonetics || {}),
+    ...(lexicon.acronyms || {})
+  };
+
+  const sortedKeys = Object.keys(allMappings).sort((a, b) => b.length - a.length);
+
+  for (const term of sortedKeys) {
+    const replacement = allMappings[term];
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'gu');
+    result = result.replace(regex, replacement);
+  }
+
+  return result;
+}
+
+/**
+ * Strips cue tags to obtain clean text
+ * @param {string} voiceover
+ * @returns {string}
+ */
+function extractCleanText(voiceover) {
+  return (voiceover || '').replace(/\{cue:[^}]+\}|\{\/cue\}/g, '').replace(/\s+/g, ' ').trim();
+}
+
+/**
  * Validates slide frontmatter, cue consistency, audio sync, orphan assets, and PDF handouts
  */
 function validateSlides() {
@@ -77,8 +114,7 @@ function validateSlides() {
       lexicon = JSON.parse(fs.readFileSync(lexiconPath, 'utf8'));
     } catch {}
   }
-  const lexiconHash = crypto.createHash('md5').update(JSON.stringify(lexicon)).digest('hex').slice(0, 8);
-  const GENERATOR_VERSION = `v3-${lexiconHash}`;
+  const GENERATOR_VERSION = 'v3-spoken';
 
   for (const presentationFolder of presentationFolders) {
     const presentationPath = path.join(presentationsBase, presentationFolder);
@@ -262,11 +298,13 @@ function validateSlides() {
           }
         }
 
-        // Verify that audio is up-to-date with current voiceover text via MD5 hash
-        const expectedHash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${voiceoverText}`).digest('hex');
+        // Verify that audio is up-to-date with current spoken text via MD5 hash
+        const cleanText = extractCleanText(voiceoverText);
+        const spokenText = applyLexicon(cleanText, lexicon);
+        const expectedHash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}`).digest('hex');
         if (audioCache[slideId] !== expectedHash) {
           console.error(
-            `  ❌ [${slideFile}] Audio is out-of-date: Voiceover text was modified since last audio synthesis (hash mismatch). Run "npm run audio:presentations".`
+            `  ❌ [${slideFile}] Audio is out-of-date: Spoken text was modified since last audio synthesis (hash mismatch). Run "npm run audio:presentations".`
           );
           totalErrors++;
         }
