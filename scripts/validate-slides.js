@@ -68,7 +68,17 @@ function validateSlides() {
   let totalSlides = 0;
 
   const presentationFolders = fs.readdirSync(presentationsBase);
-  const GENERATOR_VERSION = 'v2-anchor';
+
+  const lexiconPath = path.resolve('src/content/presentations/tts-lexicon.json');
+  /** @type {{ acronyms: Record<string, string>; phonetics: Record<string, string> }} */
+  let lexicon = { acronyms: {}, phonetics: {} };
+  if (fs.existsSync(lexiconPath)) {
+    try {
+      lexicon = JSON.parse(fs.readFileSync(lexiconPath, 'utf8'));
+    } catch {}
+  }
+  const lexiconHash = crypto.createHash('md5').update(JSON.stringify(lexicon)).digest('hex').slice(0, 8);
+  const GENERATOR_VERSION = `v3-${lexiconHash}`;
 
   for (const presentationFolder of presentationFolders) {
     const presentationPath = path.join(presentationsBase, presentationFolder);
@@ -138,6 +148,17 @@ function validateSlides() {
       // Extract voiceover script content
       const parsedFm = parseFrontmatter(content);
       const voiceoverText = parsedFm.voiceover || '';
+
+      // Check for unregistered technical acronyms in voiceover
+      const cleanVoiceover = voiceoverText.replace(/\{cue:[^}]+\}|\{\/cue\}/g, '');
+      const potentialAcronyms = cleanVoiceover.match(/\b[A-Z]{2,}\b/g) || [];
+      const knownExceptions = new Set(['OK', 'II', 'III', 'IV', 'VI', 'VII', 'VIII', 'IX']);
+      for (const acr of potentialAcronyms) {
+        if (!lexicon.acronyms[acr] && !lexicon.phonetics[acr] && !knownExceptions.has(acr)) {
+          console.warn(`  ⚠️ [${slideFile}] Unregistered acronym "${acr}" found in voiceover. Consider adding it to "src/content/presentations/tts-lexicon.json" for consistent TTS pronunciation.`);
+          totalWarnings++;
+        }
+      }
 
       // 1. Extract voiceover cues in sequence
       /** @type {string[]} */

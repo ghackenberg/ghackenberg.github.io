@@ -269,12 +269,32 @@ Each slide file is an autonomous bundle. It **must** define:
 6. **Code & Architecture Slide (`<CodeSlide />`)**:
    Side-by-side layout with code syntax container on the left (`col-span-7`) and structured explanations on the right (`col-span-5`).
 
-### 5. Acoustic Word-Anchor Synchronization
+### 5. Acoustic Word-Anchor Synchronization & The "Title-Hook" Voiceover Protocol
 - Animations are coupled to the neural voiceover via `{cue:id}` tags.
 - The build engine uses semantic acoustic word-anchor matching to bind cues to spoken words with microsecond precision.
 - Use `{cue:hl-id}marked text{/cue}` to trigger live highlighter sweeps.
 
-### 6. Quality Gates & Automation
-- Always run `npm run validate:slides` to verify cue consistency, frontmatter completeness, and DOM target matching.
+#### The 2-Phase Voiceover Architecture ("Title-Hook Protocol")
+When a slide appears on screen, all content cards, metrics, or pipeline steps start in an inactive, dimmed state while the audience reads the slide `title` and `subtitle` at the top of the canvas:
+1. **Phase 1: Title-Hook Orientation (0–4s, Pre-Cue)**:
+   - Every slide voiceover **MUST** start with 1–2 orienting sentences (minimum 12–20 words, ~3–5 seconds) that verbally introduce, mirror, or contextualize the slide's `title` and `subtitle` **BEFORE** the first `{cue:...}` trigger fires.
+   - **Prohibited**: Never fire a cue in the very first sentence without an introductory title hook (e.g., do NOT start with `{cue:step-01}` or jump straight into bullet points). Give the audience cognitive space to absorb the slide title before spotlights and highlights begin.
+2. **Phase 2: Progressive Cued Content**:
+   - Deliver cards, steps, comparisons, and text highlights sequentially, perfectly paced to spoken voiceover cues.
+
+### 6. Central TTS Pronunciation & Acronym Lexicon (`tts-lexicon.json`)
+Neural speech synthesis engines (such as Microsoft Edge TTS `de-DE-ConradNeural`) struggle with English loanwords embedded in German prose (e.g. *Snapshot*, *Knowledge Graph*) and technical acronyms (e.g. *RAG*, *URL*, *MCP*):
+- **Single Source of Truth (`src/content/presentations/tts-lexicon.json`)**:
+  - `acronyms`: Technical abbreviations hyphenated for correct spell-out pronunciation (e.g. `"RAG": "R-A-G"`, `"URL": "U-R-L"`, `"MCP": "M-C-P"`, `"LLM": "L-L-M"`, `"JSON-LD": "Dschäison-L-D"`).
+  - `phonetics`: German phonetic respellings for English loanwords and terminology (e.g. `"Snapshot": "Snäpschott"`, `"Zero-Click": "Siero-Klick"`, `"Knowledge Graph": "Nolledsch Graf"`).
+- **Clean Markdown vs. Phonetic Audio**:
+  - Slide frontmatter `voiceover` **MUST** remain clean, grammatically correct German/English text for the presenter notes and the website's accessible transcript.
+  - The build script (`scripts/generate-presentation-audio.js`) dynamically applies the lexicon mapping to generate `spokenText` strictly for the TTS stream.
+- **Automated Lexicon Hygiene Gate**:
+  - `npm run validate:slides` scans all slide voiceovers for unregistered uppercase acronyms (`\b[A-Z]{2,}\b`) and alerts the developer if an abbreviation is missing in `tts-lexicon.json`.
+  - Audio cache invalidation is tied to a composite hash (`v3-${lexiconHash}:${voiceover}`), ensuring audio is automatically flagged for re-synthesis whenever `tts-lexicon.json` is modified.
+
+### 7. Quality Gates & Automation
+- Always run `npm run validate:slides` to verify cue consistency, frontmatter completeness, acronym coverage, and DOM target matching.
 - Run `npm run audio:presentations` to synthesize neural speech audio (`.mp3`) and WordBoundary cue timings (`.cues.json`).
 - Run `npm run typecheck`, `npm run lint`, and `npm run build` before committing.

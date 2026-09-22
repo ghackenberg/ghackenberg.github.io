@@ -54,6 +54,50 @@ function parseFrontmatter(content) {
 }
 
 /**
+ * Loads the central TTS pronunciation and acronym lexicon
+ * @returns {{ acronyms: Record<string, string>; phonetics: Record<string, string> }}
+ */
+function loadTtsLexicon() {
+  const lexiconPath = path.resolve('src/content/presentations/tts-lexicon.json');
+  if (fs.existsSync(lexiconPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(lexiconPath, 'utf8'));
+    } catch (e) {
+      console.warn('[Audio Generator] Warning: Could not parse tts-lexicon.json:', e);
+    }
+  }
+  return { acronyms: {}, phonetics: {} };
+}
+
+/**
+ * Transforms clean text into pronunciation-optimized text for TTS synthesis.
+ * Applies acronym expansions (e.g. RAG -> R-A-G) and phonetic transcriptions (e.g. Snapshot -> Snäpschott).
+ * @param {string} text
+ * @param {{ acronyms?: Record<string, string>; phonetics?: Record<string, string> }} lexicon
+ * @returns {string}
+ */
+function applyLexicon(text, lexicon) {
+  if (!text) return '';
+  let result = text;
+
+  const allMappings = {
+    ...(lexicon.phonetics || {}),
+    ...(lexicon.acronyms || {})
+  };
+
+  const sortedKeys = Object.keys(allMappings).sort((a, b) => b.length - a.length);
+
+  for (const term of sortedKeys) {
+    const replacement = allMappings[term];
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'gu');
+    result = result.replace(regex, replacement);
+  }
+
+  return result;
+}
+
+/**
  * Extracts cues (both point cues and span cues) from text and cleans text for speech synthesis
  * @param {string} rawVoiceover
  * @returns {{
@@ -254,7 +298,9 @@ async function generateAllPresentationAudio() {
     const slideArg = process.argv.find((a) => a.startsWith('--slide='));
     const targetSlide = slideArg ? slideArg.replace('--slide=', '') : null;
 
-    const GENERATOR_VERSION = 'v2-anchor';
+    const lexicon = loadTtsLexicon();
+    const lexiconHash = crypto.createHash('md5').update(JSON.stringify(lexicon)).digest('hex').slice(0, 8);
+    const GENERATOR_VERSION = `v3-${lexiconHash}`;
 
     for (const slideFile of slideFiles) {
       const slideId = slideFile.replace(/\.(md|mdx)$/, '');
@@ -284,10 +330,11 @@ async function generateAllPresentationAudio() {
       console.log(`  ▶ Synthesizing audio for: ${slideId}...`);
 
       const { cleanText, cues } = extractCuesAndCleanText(voiceover);
+      const spokenText = applyLexicon(cleanText, lexicon);
 
       try {
         // Use German neural voice by default
-        const communicate = new UniversalCommunicate(cleanText, {
+        const communicate = new UniversalCommunicate(spokenText, {
           voice: 'de-DE-ConradNeural',
           rate: '+0%',
           pitch: '+0Hz'
@@ -326,14 +373,16 @@ async function generateAllPresentationAudio() {
             cuesMap[cue.id] = { start: 0, duration: 0.5 };
             continue;
           }
-          const startIndex = findAnchorWordBoundary(cue.wordAfter, cue.startWordIndex, wordBoundaries);
+          const targetAfter = cue.wordAfter ? applyLexicon(cue.wordAfter, lexicon).trim().split(/\s+/)[0] : '';
+          const startIndex = findAnchorWordBoundary(targetAfter, cue.startWordIndex, wordBoundaries);
           const startBoundary = wordBoundaries[startIndex];
           const startSec = Number(startBoundary.offsetSec.toFixed(2));
 
           if (cue.endWordIndex !== undefined) {
+            const targetBefore = cue.wordBefore ? applyLexicon(cue.wordBefore, lexicon).trim().split(/\s+/).pop() : '';
             const endIndex = Math.max(
               startIndex,
-              findAnchorWordBoundary(cue.wordBefore, cue.endWordIndex - 1, wordBoundaries)
+              findAnchorWordBoundary(targetBefore, cue.endWordIndex - 1, wordBoundaries)
             );
             const endBoundary = wordBoundaries[endIndex];
             const endSec = Number(((endBoundary.offsetSec || 0) + (endBoundary.durationSec || 0)).toFixed(2));
