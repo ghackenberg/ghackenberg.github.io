@@ -26,6 +26,12 @@ export interface SlideData {
   cues?: SlideCueMap;
 }
 
+interface NavigatorWithAudioSession extends Navigator {
+  audioSession?: {
+    type?: string;
+  };
+}
+
 function getCueTiming(val: CueTiming | undefined): { start: number; duration: number; end?: number } {
   if (val === undefined) return { start: 0, duration: 0.5 };
   if (typeof val === 'number') {
@@ -349,7 +355,45 @@ export class AudioSyncController {
     });
   }
 
+  /**
+   * Unlocks iOS Safari audio playback and bypasses the physical silent switch.
+   * Web Audio defaults to 'ambient' category on iOS, muting output if the silent switch is active.
+   * Setting navigator.audioSession.type = 'playback' (iOS 17+) moves it to the media channel.
+   * Resumes suspended AudioContext and plays a micro silent buffer for legacy iOS.
+   */
+  public unlockAudioSession(): void {
+    if (typeof window === 'undefined') return;
+
+    // 1. Modern iOS (iOS 17+) AudioSession API
+    const nav = navigator as NavigatorWithAudioSession;
+    if (nav.audioSession) {
+      try {
+        nav.audioSession.type = 'playback';
+      } catch {
+        // Ignore unsupported environments
+      }
+    }
+
+    // 2. Resume suspended WebAudio AudioContext
+    try {
+      if (Howler.ctx && Howler.ctx.state === 'suspended') {
+        Howler.ctx.resume().catch(() => {});
+      }
+    } catch {
+      // Ignore
+    }
+
+    // 3. Fallback for legacy iOS (< 17): trigger short silent HTML5 audio
+    try {
+      const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+      silentAudio.play().catch(() => {});
+    } catch {
+      // Ignore
+    }
+  }
+
   public play() {
+    this.unlockAudioSession();
     if (this.isPlaying && this.currentHowl?.playing()) {
       return;
     }
@@ -395,6 +439,7 @@ export class AudioSyncController {
   }
 
   public seek(targetSec: number) {
+    this.unlockAudioSession();
     this.currentEntryMode = 'start';
     if (this.currentHowl) {
       this.currentHowl.seek(targetSec);
