@@ -351,7 +351,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     width: 1920,
     height: 1080,
     margin: 0.02,
-    minScale: 0.2,
+    minScale: 0.05,
     maxScale: 2.0,
     controls: false,
     progress: false,
@@ -623,16 +623,41 @@ const currentDeckId = presentationId || talkId || "presentation";
       autoFit.fitSlide(currentSlide);
     });
 
+    // Global user interaction gesture to unlock iOS Safari AudioSession as early as possible
+    const unlockAudioOnTouch = () => {
+      audioSync.unlockAudioSession();
+      window.removeEventListener('pointerdown', unlockAudioOnTouch);
+      window.removeEventListener('touchstart', unlockAudioOnTouch);
+    };
+    window.addEventListener('pointerdown', unlockAudioOnTouch, { passive: true, once: true });
+    window.addEventListener('touchstart', unlockAudioOnTouch, { passive: true, once: true });
+
     // Button Listeners
-    btnPlayPause?.addEventListener('click', () => audioSync.togglePlay());
-    btnPrev?.addEventListener('click', () => deck.prev());
-    btnNext?.addEventListener('click', () => deck.next());
-    btnPrevCue?.addEventListener('click', () => audioSync.prevCue());
-    btnNextCue?.addEventListener('click', () => audioSync.nextCue());
+    btnPlayPause?.addEventListener('click', () => {
+      audioSync.unlockAudioSession();
+      audioSync.togglePlay();
+    });
+    btnPrev?.addEventListener('click', () => {
+      audioSync.unlockAudioSession();
+      deck.prev();
+    });
+    btnNext?.addEventListener('click', () => {
+      audioSync.unlockAudioSession();
+      deck.next();
+    });
+    btnPrevCue?.addEventListener('click', () => {
+      audioSync.unlockAudioSession();
+      audioSync.prevCue();
+    });
+    btnNextCue?.addEventListener('click', () => {
+      audioSync.unlockAudioSession();
+      audioSync.nextCue();
+    });
 
     // Slide List Item Navigation Click Listeners
     slideListItems.forEach((item) => {
       item.addEventListener('click', () => {
+        audioSync.unlockAudioSession();
         const slideIdxStr = item.getAttribute('data-slide-index');
         if (slideIdxStr !== null) {
           const targetIdx = parseInt(slideIdxStr, 10);
@@ -651,6 +676,7 @@ const currentDeckId = presentationId || talkId || "presentation";
 
     // Listen for external jump-to-slide events (e.g. from the Transcript Timeline Feed)
     window.addEventListener('deck:jump-to-slide', ((e: CustomEvent<{ index: number; autoPlay?: boolean }>) => {
+      audioSync.unlockAudioSession();
       const targetIdx = e.detail?.index;
       if (typeof targetIdx === 'number' && targetIdx >= 0) {
         deck.slide(targetIdx);
