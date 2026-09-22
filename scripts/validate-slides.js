@@ -324,6 +324,53 @@ function validateSlides() {
     } catch {
       // Git command failed or not a git repository; skip timestamp check
     }
+
+    // 9. Slide WebP Thumbnails Existence & Freshness Check
+    const thumbnailsDir = path.join(presentationPath, 'thumbnails');
+    if (!fs.existsSync(thumbnailsDir)) {
+      console.error(`  ❌ [thumbnail] Missing "thumbnails/" directory for "${presentationFolder}". Run "npm run export:slides-thumbs".`);
+      totalErrors++;
+    } else {
+      // Check each active slide has a thumbnail
+      for (const slideId of activeSlideIds) {
+        const thumbPath = path.join(thumbnailsDir, `${slideId}.webp`);
+        if (!fs.existsSync(thumbPath)) {
+          console.error(`  ❌ [thumbnail] Missing thumbnail for slide "${slideId}": "thumbnails/${slideId}.webp". Run "npm run export:slides-thumbs".`);
+          totalErrors++;
+        }
+      }
+
+      // Check for orphan thumbnails
+      const thumbFiles = fs.readdirSync(thumbnailsDir).filter(f => f.endsWith('.webp'));
+      for (const tFile of thumbFiles) {
+        const tId = tFile.replace(/\.webp$/, '');
+        if (!activeSlideIds.has(tId)) {
+          console.error(`  ❌ [thumbnail-orphan] Orphaned thumbnail "thumbnails/${tFile}" has no matching slide in "slides/". Run "npm run export:slides-thumbs" or delete the file.`);
+          totalErrors++;
+        }
+      }
+
+      // Check git timestamp freshness
+      try {
+        const slidesRelPath = path.relative(process.cwd(), slidesDir).replace(/\\/g, '/');
+        const thumbsRelPath = path.relative(process.cwd(), thumbnailsDir).replace(/\\/g, '/');
+
+        const slidesTimeStr = execSync(`git log -1 --format=%ct -- "${slidesRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+        const thumbsTimeStr = execSync(`git log -1 --format=%ct -- "${thumbsRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+
+        const slidesTime = parseInt(slidesTimeStr, 10);
+        const thumbsTime = parseInt(thumbsTimeStr, 10);
+
+        if (!isNaN(slidesTime) && !isNaN(thumbsTime) && slidesTime > thumbsTime) {
+          console.error(
+            `  ❌ [thumbnail] Slide thumbnails in "${thumbsRelPath}" are out-of-date: Slides were modified in commit history after thumbnails were committed. Run "npm run export:slides-thumbs".`
+          );
+          totalErrors++;
+        }
+      } catch {
+        // Git command failed; skip
+      }
+    }
   }
 
   if (totalErrors > 0) {

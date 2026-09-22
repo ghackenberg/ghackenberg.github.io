@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
+import path from "node:path";
 import "../../../styles/global.css";
 import "@fontsource/inter/300.css";
 import "@fontsource/inter/400.css";
@@ -155,7 +156,7 @@ const renderedSlides = await Promise.all(
   </head>
   <body>
     {renderedSlides.map((slide) => (
-      <div class="print-slide-page" id={`slide-${slide.number}`}>
+      <div class="print-slide-page" id={`slide-${slide.number}`} data-slide-id={path.basename(slide.id)} data-slide-number={slide.number}>
         <slide.Content />
       </div>
     ))}
