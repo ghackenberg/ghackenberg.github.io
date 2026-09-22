@@ -3,16 +3,16 @@
     "start": 6.76
   },
   "kdd-bars": {
-    "start": 15.43
+    "start": 15.26
   },
   "hl-cite-sources": {
-    "start": 19.79,
+    "start": 19.63,
     "duration": 6.47,
-    "end": 26.26
+    "end": 26.1
   },
   "hl-kdd-penalty": {
-    "start": 26.31,
+    "start": 26.15,
     "duration": 3.14,
-    "end": 29.45
+    "end": 29.29
   }
 }
