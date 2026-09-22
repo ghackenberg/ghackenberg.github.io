@@ -286,14 +286,14 @@ const previewImg = presentation.data.previewImage || presentation.data.icon;
             <button
               type="button"
               data-jump-to-slide={idx}
-              class="relative z-10 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0 rounded-2xl bg-[#030712] light:bg-white border-2 border-element-border light:border-slate-300 group-hover:border-brand-blue group-hover:bg-brand-blue/10 flex flex-col items-center justify-center transition-all duration-300 shadow-md group-hover:shadow-brand-blue/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-blue"
+              class="relative z-10 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0 rounded-2xl bg-slate-900 light:bg-white border-2 border-slate-700/80 light:border-slate-300 group-hover:border-brand-blue group-hover:bg-[#162238] light:group-hover:bg-[#f0f7ff] flex flex-col items-center justify-center transition-all duration-300 shadow-lg shadow-black/40 light:shadow-sm group-hover:shadow-brand-blue/25 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-blue"
               title={`Jump to slide ${slide.number} in player`}
               aria-label={`Jump to slide ${slide.number}: ${slide.title}`}
             >
-              <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-gray-400 light:text-slate-500 group-hover:text-brand-blue transition-colors">
+              <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-slate-400 light:text-slate-500 group-hover:text-brand-blue transition-colors">
                 Slide
               </span>
-              <span class="font-mono text-sm sm:text-base md:text-lg font-extrabold text-gray-100 light:text-slate-800 group-hover:text-brand-blue transition-colors">
+              <span class="font-mono text-sm sm:text-base md:text-lg font-black text-white light:text-slate-800 group-hover:text-brand-blue transition-colors">
                 {String(slide.number).padStart(2, '0')}
               </span>
             </button>
