@@ -3,6 +3,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import puppeteer from 'puppeteer';
+import { generateSlideThumbnailsForPresentation } from './generate-slide-thumbnails.js';
 
 const PORT = 4322;
 const distDir = path.resolve('dist');
@@ -138,6 +139,9 @@ async function exportAllPresentationsToPdf() {
         console.log(`  ✓ Successfully generated Light Mode PDF: ${lightOutPdfPath}`);
       }
       await lightPage.close();
+
+      // 3. WebP Slide Thumbnails
+      await generateSlideThumbnailsForPresentation(browser, PORT, presentationFolder);
     }
   } finally {
     await browser.close();

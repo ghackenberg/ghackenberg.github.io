@@ -332,9 +332,15 @@ const currentDeckId = presentationId || talkId || "presentation";
 <script id="slides-meta" is:inline type="application/json" set:html={JSON.stringify(slides)}></script>
 
 <script>
-  import Reveal from 'reveal.js';
+  import Reveal, { type RevealApi } from 'reveal.js';
   import { AudioSyncController, type SlideData, type CueItem } from './AudioSyncController';
   import { AutoFitController } from './AutoFitController';
+
+  declare global {
+    interface Window {
+      __revealDeck?: RevealApi;
+    }
+  }
 
   // Read metadata
   const metaEl = document.getElementById('slides-meta');
@@ -642,6 +648,18 @@ const currentDeckId = presentationId || talkId || "presentation";
     btnOverview?.addEventListener('click', () => toggleDrawer());
     btnCloseDrawer?.addEventListener('click', () => closeDrawer());
     slideListBackdrop?.addEventListener('click', () => closeDrawer());
+
+    // Listen for external jump-to-slide events (e.g. from the Transcript Timeline Feed)
+    window.addEventListener('deck:jump-to-slide', ((e: CustomEvent<{ index: number; autoPlay?: boolean }>) => {
+      const targetIdx = e.detail?.index;
+      if (typeof targetIdx === 'number' && targetIdx >= 0) {
+        deck.slide(targetIdx);
+        if (e.detail?.autoPlay && !audioSync.getIsPlaying()) {
+          audioSync.play();
+        }
+      }
+    }) as EventListener);
+    window.__revealDeck = deck;
 
     // Initial drawer state: open on desktop (side-by-side), closed on mobile
     if (window.innerWidth >= 1024) {

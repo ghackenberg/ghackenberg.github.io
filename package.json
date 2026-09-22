@@ -27,6 +27,7 @@
     "audio:presentations": "node scripts/generate-presentation-audio.js",
     "audio:talks": "node scripts/generate-presentation-audio.js",
     "export:slides": "node scripts/export-slides-pdf.js",
+    "export:slides-thumbs": "node scripts/generate-slide-thumbnails.js",
     "validate:slides": "node scripts/validate-slides.js",
     "astro": "astro"
   },
