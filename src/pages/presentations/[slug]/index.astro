@@ -277,7 +277,7 @@ const previewImg = presentation.data.previewImage || presentation.data.icon;
             <!-- Timeline vertical connector line to next slide (omitted on the last slide) -->
             {idx < renderedSlides.length - 1 && (
               <div 
-                class="absolute left-6 sm:left-7 md:left-8 -translate-x-1/2 top-6 sm:top-7 md:top-8 -bottom-8 md:-bottom-10 w-[2px] bg-element-border-medium light:bg-slate-300 pointer-events-none z-0"
+                class="absolute left-6 sm:left-7 md:left-8 -translate-x-1/2 top-12 sm:top-14 md:top-16 -bottom-8 md:-bottom-10 w-[2px] bg-element-border-medium light:bg-slate-300 pointer-events-none z-0"
                 aria-hidden="true"
               ></div>
             )}
@@ -286,14 +286,14 @@ const previewImg = presentation.data.previewImage || presentation.data.icon;
             <button
               type="button"
               data-jump-to-slide={idx}
-              class="relative z-10 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0 rounded-2xl bg-slate-900 light:bg-white border-2 border-slate-700/80 light:border-slate-300 group-hover:border-brand-blue group-hover:bg-[#162238] light:group-hover:bg-[#f0f7ff] flex flex-col items-center justify-center transition-all duration-300 shadow-lg shadow-black/40 light:shadow-sm group-hover:shadow-brand-blue/25 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-blue"
+              class="timeline-step-badge relative z-10 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-blue"
               title={`Jump to slide ${slide.number} in player`}
               aria-label={`Jump to slide ${slide.number}: ${slide.title}`}
             >
-              <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-slate-400 light:text-slate-500 group-hover:text-brand-blue transition-colors">
+              <span class="badge-label text-[9px] sm:text-[10px] uppercase font-bold tracking-wider transition-colors">
                 Slide
               </span>
-              <span class="font-mono text-sm sm:text-base md:text-lg font-black text-white light:text-slate-800 group-hover:text-brand-blue transition-colors">
+              <span class="badge-number font-mono text-sm sm:text-base md:text-lg font-black transition-colors">
                 {String(slide.number).padStart(2, '0')}
               </span>
             </button>
@@ -303,7 +303,7 @@ const previewImg = presentation.data.previewImage || presentation.data.icon;
               <!-- Card Header -->
               <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 pb-3 border-b border-element-border/60 light:border-slate-200/60">
                 <div class="min-w-0">
-                  <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-100 light:text-slate-900 group-hover:text-brand-blue light:group-hover:text-brand-blue transition-colors">
+                  <h3 class="slide-card-title text-base sm:text-lg md:text-xl font-bold text-gray-100 light:text-slate-900 group-hover:text-brand-blue transition-colors">
                     {slide.title}
                   </h3>
                   {slide.subtitle && (
@@ -515,4 +515,76 @@ const previewImg = presentation.data.previewImage || presentation.data.icon;
     currentId={presentation.id}
     tags={presentation.data.tags}
   />
+
+  <style>
+    /* Timeline Step Badge Node */
+    .timeline-step-badge {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-width: 2px;
+      border-style: solid;
+    }
+
+    /* --- DARK MODE (Default) --- */
+    .timeline-step-badge {
+      background-color: #0f172a;
+      border-color: rgba(51, 65, 85, 0.8);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    }
+    .timeline-step-badge .badge-label {
+      color: #94a3b8;
+      transition: color 0.3s ease;
+    }
+    .timeline-step-badge .badge-number {
+      color: #ffffff;
+      transition: color 0.3s ease;
+    }
+
+    /* Dark Mode Hover: when hovering over entry or badge */
+    .timeline-slide-entry:hover .timeline-step-badge,
+    .timeline-step-badge:hover {
+      background-color: #162238 !important;
+      border-color: var(--color-brand-blue) !important;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.25) !important;
+    }
+    .timeline-slide-entry:hover .timeline-step-badge .badge-label,
+    .timeline-slide-entry:hover .timeline-step-badge .badge-number,
+    .timeline-step-badge:hover .badge-label,
+    .timeline-step-badge:hover .badge-number {
+      color: var(--color-brand-blue) !important;
+    }
+
+    /* --- LIGHT MODE --- */
+    :global(html.light) .timeline-step-badge {
+      background-color: var(--color-bg-card);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-color: rgb(226, 232, 240);
+      box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06);
+    }
+    :global(html.light) .timeline-step-badge .badge-label {
+      color: rgb(100, 116, 139);
+      transition: color 0.3s ease;
+    }
+    :global(html.light) .timeline-step-badge .badge-number {
+      color: rgb(15, 23, 42);
+      transition: color 0.3s ease;
+    }
+
+    /* Light Mode Hover: synchronized with card hover */
+    :global(html.light) .timeline-slide-entry:hover .timeline-step-badge,
+    :global(html.light) .timeline-step-badge:hover {
+      background-color: #eff6ff !important;
+      border-color: var(--color-brand-blue) !important;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2) !important;
+    }
+    :global(html.light) .timeline-slide-entry:hover .timeline-step-badge .badge-label,
+    :global(html.light) .timeline-slide-entry:hover .timeline-step-badge .badge-number,
+    :global(html.light) .timeline-step-badge:hover .badge-label,
+    :global(html.light) .timeline-step-badge:hover .badge-number {
+      color: var(--color-brand-blue) !important;
+    }
+    :global(html.light) .timeline-slide-entry:hover .slide-card-title {
+      color: var(--color-brand-blue) !important;
+    }
+  </style>
 </Layout>
