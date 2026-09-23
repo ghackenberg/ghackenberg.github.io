@@ -1,15 +1,13 @@
 ---
 title: "Das Model Context Protocol (MCP)"
-subtitle: "Der offene Standard von Anthropic zur Entkopplung von LLM-Intelligenz und lokaler Werkzeug-Ausführung"
+subtitle: "Der offene Standard zur {cue:hl-sub-mcp-1001:cyan}Entkopplung von Intelligenz und Werkzeug-Ausführung{/cue}"
 number: "17"
 slideLayout: "split"
 voiceover: >
-  Kommen wir nun zum technologischen Bindeglied moderner KI-Agenten: Dem Model Context Protocol, kurz MCP, als offenem Standard zur Entkopplung von Modellintelligenz und Werkzeugausführung. 
-  {cue:col-mcp-arch} MCP trennt die reine Sprachintelligenz 
-  von der Ausführungsumgebung. 
-  {cue:col-mcp-tools} Der Agent kommuniziert über ein standardisiertes JSON-RPC-Protokoll mit lokalen Servern: 
-  einem Server für das Dateisystem, einem für Chrome DevTools und einem für die Google Search Console API. 
-  Damit kann der Agent Fehler nicht nur beschreiben, sondern {cue:hl-mcp-beheben}direkt im Code beheben{/cue}.
+  Kommen wir nun zum technologischen Bindeglied moderner KI-Agenten: dem Model Context Protocol.
+  {cue:sub} Es bildet den offenen Standard zur {cue:hl-sub-mcp-1001}Entkopplung von Intelligenz und Werkzeug-Ausführung{/cue}.
+  {cue:col-mcp-arch} MCP trennt die Sprachintelligenz in {cue:hl-mcp-hosts}Google Anti-Gravity oder Claude{/cue} von der Umgebung, ermöglicht über JSON-RPC {cue:hl-mcp-jsonrpc}standardisierte Tool Discovery{/cue} und bindet lokale Server wie {cue:hl-mcp-servers}Lighthouse, Filesystem und Git{/cue} an.
+  {cue:col-mcp-tools} Der Agent führt {cue:hl-mcp-beheben}präzise Code-Edits direkt im Repository{/cue} durch, nutzt {cue:hl-mcp-devtools}automatisierte Headless-Browser-Audits{/cue} und analysiert {cue:hl-mcp-analytics}datenschutzkonforme Engagement-Metriken{/cue}.
 notes: |
   - Zeit: 38:30 - 41:00 Min.
   - Den Entwicklern im Raum den Durchbruch erklären: Kein Vendor-Lockin mehr; jeder Entwickler kann eigene MCP-Tools schreiben!
@@ -34,19 +32,19 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 >
   <BentoCard slot="left" cue="col-mcp-arch" title="3-Schichten-Architektur von MCP" accent="blue">
     <div class="flex flex-col justify-around flex-1 gap-3 my-auto">
-      <CalloutBox color="blue" type="takeaway" title="Google Anti-Gravity / Claude / Gemini" />
+      <CalloutBox color="blue" type="takeaway" title="{cue:hl-mcp-hosts:blue}Google Anti-Gravity / Claude / Gemini{/cue}" />
       <div class="text-center text-blue-400 font-mono text-base font-bold select-none">↓ JSON-RPC 2.0 Interface ↓</div>
-      <CalloutBox color="cyan" type="statement" title="Standardisierte Tool Discovery & Security" />
+      <CalloutBox color="cyan" type="statement" title="{cue:hl-mcp-jsonrpc:cyan}Standardisierte Tool Discovery{/cue} & Security" />
       <div class="text-center text-cyan-400 font-mono text-base font-bold select-none">↓ Tool Execution ↓</div>
-      <CalloutBox color="purple" type="info" title="Lighthouse / Filesystem / Git / Search Console" />
+      <CalloutBox color="purple" type="info" title="{cue:hl-mcp-servers:purple}Lighthouse / Filesystem / Git / Search Console{/cue}" />
     </div>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-mcp-tools" title="Unsere konkreten MCP-Werkzeuge" accent="cyan">
     <BulletList items={[
-      { num: "1", title: "Filesystem MCP Server", desc: "Erlaubt dem Agenten das autonome Lesen von Markdown-Quellen und {cue:hl-mcp-beheben:purple}präzise Code-Edits direkt im Repository{/cue}." },
-      { num: "2", title: "Chrome DevTools MCP", desc: "Automatisierte Headless-Browser-Audits für Performance, Barrierefreiheit und interaktive UI-Validierung." },
-      { num: "3", title: "Unified Analytics MCP", desc: "Führt Search Console KPIs direkt mit datenschutzkonformen Plausible On-Site-Engagement-Daten zusammen." }
+      { num: "1", title: "Filesystem MCP Server", desc: "Erlaubt autonomes Lesen von Markdown-Quellen und {cue:hl-mcp-beheben:purple}präzise Code-Edits direkt im Repository{/cue}." },
+      { num: "2", title: "Chrome DevTools MCP", desc: "Ermöglicht {cue:hl-mcp-devtools:cyan}automatisierte Headless-Browser-Audits{/cue} für Performance und Barrierefreiheit." },
+      { num: "3", title: "Unified Analytics MCP", desc: "Führt Suchleistungsdaten mit {cue:hl-mcp-analytics:blue}datenschutzkonformen Engagement-Metriken{/cue} zusammen." }
     ]} />
   </BentoCard>
 </SplitSlide>

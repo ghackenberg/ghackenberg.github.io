@@ -256,6 +256,24 @@ function safeWriteJson(filePath, data) {
 }
 
 /**
+ * Safely writes a buffer to file, retrying on transient Windows file lock errors (EBUSY / UNKNOWN).
+ * @param {string} filePath
+ * @param {Buffer} buffer
+ */
+function safeWriteBuffer(filePath, buffer) {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      fs.writeFileSync(filePath, buffer);
+      return;
+    } catch (e) {
+      if (attempt === 3) throw e;
+      const end = Date.now() + 200;
+      while (Date.now() < end) {}
+    }
+  }
+}
+
+/**
  * Generates audio and word-level cues for all presentations
  */
 async function generateAllPresentationAudio() {
@@ -319,8 +337,9 @@ async function generateAllPresentationAudio() {
       const { cleanText, cues } = extractCuesAndCleanText(voiceover);
       const spokenText = applyLexicon(cleanText, lexicon);
 
-      // Hash spokenText: audio is only re-synthesized if this specific slide's spoken output changed
-      const hash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}`).digest('hex');
+      // Hash spokenText and voiceover: audio and cues are re-synthesized if spoken output or cue markers changed
+      const normalizedVo = voiceover.replace(/\r\n/g, '\n').trim();
+      const hash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}:${normalizedVo}`).digest('hex');
       const mp3Path = path.join(audioDir, `${slideId}.mp3`);
       const cuesPath = path.join(audioDir, `${slideId}.cues.json`);
 
@@ -362,7 +381,7 @@ async function generateAllPresentationAudio() {
 
         // Save MP3
         const finalAudioBuffer = Buffer.concat(audioChunks);
-        fs.writeFileSync(mp3Path, finalAudioBuffer);
+        safeWriteBuffer(mp3Path, finalAudioBuffer);
 
         // Compute Cues Map with acoustic anchor word matching
         /** @type {Record<string, { start: number; duration?: number; end?: number }>} */

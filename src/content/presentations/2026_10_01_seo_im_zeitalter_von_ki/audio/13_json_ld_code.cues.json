@@ -1,10 +1,28 @@
 {
+  "sub": {
+    "start": 5.9
+  },
+  "hl-sub-jsonld-1001": {
+    "start": 8.45,
+    "duration": 2.2,
+    "end": 10.65
+  },
   "code-jsonld": {
-    "start": 9.91
+    "start": 11.65
+  },
+  "hl-jsonld-graph": {
+    "start": 16.13,
+    "duration": 2.05,
+    "end": 18.18
+  },
+  "hl-jsonld-orcid": {
+    "start": 20.89,
+    "duration": 1.62,
+    "end": 22.51
   },
   "hl-fakten-5ms": {
-    "start": 33.33,
-    "duration": 3.26,
-    "end": 36.59
+    "start": 23.6,
+    "duration": 3.28,
+    "end": 26.88
   }
 }

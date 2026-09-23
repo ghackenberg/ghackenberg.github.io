@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 6.01
+  },
+  "hl-sub-repurpose-923": {
+    "start": 8.53,
+    "duration": 2.43,
+    "end": 10.96
+  },
+  "step-repo": {
+    "start": 11.93
+  },
+  "hl-repurpose-repo": {
+    "start": 12.96,
+    "duration": 2.84,
+    "end": 15.8
+  },
+  "step-keynote": {
+    "start": 16.75
+  },
+  "hl-repurpose-keynote": {
+    "start": 18.79,
+    "duration": 1.92,
+    "end": 20.71
+  },
+  "step-deepdive": {
+    "start": 22.89
+  },
+  "hl-repurpose-deepdive": {
+    "start": 24.75,
+    "duration": 2.54,
+    "end": 27.29
+  },
+  "step-graph": {
+    "start": 28.29
+  },
+  "hl-repurpose-graph": {
+    "start": 30.02,
+    "duration": 2.69,
+    "end": 32.71
+  }
+}

@@ -1,14 +1,13 @@
 ---
 title: "Q&A, Diskussion & Kontakt"
-subtitle: "Vielen Dank für Ihre Aufmerksamkeit! Diskutieren wir Ihre Fragen und individuelle Herausforderungen."
+subtitle: "Vielen Dank für Ihre Aufmerksamkeit! {cue:hl-sub-qa-1001:cyan}Diskutieren wir Ihre Fragen und Projekte{/cue}."
 number: "30"
 slideLayout: "split"
 voiceover: >
-  Damit schließe ich den Vortragsteil und freue mich auf die Diskussion mit Ihnen. 
-  {cue:col-qa-questions} Wie stark spüren Ihre Betriebe im Traunviertel bereits den Rückgang klassischer Klicks? 
-  Wo sehen Sie die größten Hürden beim Einsatz lokaler Entwickler-Agenten? 
-  {cue:col-qa-contact} Alle Folien, Notizen und weiterführenden Code-Beispiele finden Sie {cue:hl-folien-online}öffentlich auf hackenberg.tech{/cue}. 
-  Ich danke Ihnen herzlich für Ihre Aufmerksamkeit und freue mich auf Ihre Fragen!
+  Damit schließe ich den Vortragsteil und freue mich auf den Austausch mit Ihnen.
+  {cue:sub} Vielen Dank für Ihre Aufmerksamkeit, {cue:hl-sub-qa-1001}diskutieren wir Ihre Fragen und Projekte{/cue}.
+  {cue:col-qa-questions} Spüren Sie bereits den {cue:hl-qa-klick}Rückgang von organischem Klick-Traffic{/cue}? Welche Hürden sehen Sie beim {cue:hl-qa-governance}Einsatz lokaler autonomer Entwickler-Agenten{/cue}, und wer trägt die {cue:hl-qa-ownership}Verantwortung für semantische Wissensgraphen{/cue}?
+  {cue:col-qa-contact} {cue:hl-callout-speaker-prof}Dr. Georg Hackenberg{/cue}, Professor für Informatik und Industriesysteme. Alle Folien, Notizen und weiterführenden Code-Beispiele finden Sie {cue:hl-folien-online}öffentlich auf hackenberg.tech{/cue}. Ich danke Ihnen herzlich für Ihre Aufmerksamkeit!
 notes: |
   - Zeit: Ab 68:00 Min. (ca. 10–15 Min. Fragerunde).
   - Vorbereitete Impulsfragen nutzen, falls die Diskussion zögerlich startet:
@@ -30,31 +29,28 @@ import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
 >
   <BentoCard slot="left" cue="col-qa-questions" title="Impulsfragen für die Diskussion" accent="blue">
     <BulletList items={[
-      { num: "1", title: "Klick-Rückgang", desc: "Spüren Sie in Ihrem Unternehmen bereits den Rückgang von organischem Klick-Traffic durch generative AI Overviews?" },
-      { num: "2", title: "Agenten & Governance", desc: "Welche Bedenken oder Governance-Anforderungen bestehen beim Einsatz lokaler autonomer Entwickler-Agenten (MCP)?" },
-      { num: "3", title: "Zuständigkeit im Betrieb", desc: "Wer im Betrieb übernimmt künftig die Verantwortung für den semantischen Wissensgraphen – Marketing, Produkt oder IT?" }
+      { num: "1", title: "Klick-Rückgang", desc: "Spüren Sie in Ihrem Unternehmen bereits den {cue:hl-qa-klick:rose}Rückgang von organischem Klick-Traffic{/cue} durch KI-Overviews?" },
+      { num: "2", title: "Agenten & Governance", desc: "Welche Governance-Anforderungen bestehen beim {cue:hl-qa-governance:blue}Einsatz lokaler autonomer Entwickler-Agenten{/cue}?" },
+      { num: "3", title: "Zuständigkeit im Betrieb", desc: "Wer übernimmt im Betrieb künftig die {cue:hl-qa-ownership:cyan}Verantwortung für semantische Wissensgraphen{/cue}?" }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-qa-contact" title="Kontakt & Ressourcen" accent="cyan">
-    <CalloutBox color="cyan" type="takeaway">
+    <CalloutBox color="cyan" type="takeaway" title="{cue:hl-callout-speaker-prof:cyan}Dr. rer. nat. Georg Hackenberg{/cue}">
       <div class="flex items-center gap-6">
         <div class="relative w-44 h-44 lg:w-48 lg:h-48 shrink-0">
           <Avatar3D class="w-full h-full" />
         </div>
         <div class="flex flex-col justify-center min-w-0">
-          <h4 class="font-black text-2xl lg:text-3xl tracking-tight leading-snug text-slate-100 light:text-slate-900">
-            Dr. rer. nat. Georg Hackenberg
-          </h4>
           <p class="text-xl text-slate-200 light:text-slate-800 font-semibold mt-1">Professor für Informatik und Industriesysteme</p>
           <p class="text-lg text-cyan-400 light:text-cyan-700 font-medium mt-0.5">FH Oberösterreich · Campus Wels</p>
         </div>
       </div>
     </CalloutBox>
 
-    <CalloutBox color="neutral" type="info">
+    <CalloutBox color="neutral" type="info" title="{cue:hl-folien-online:blue}Online-Ressourcen & Profile{/cue}">
       <div class="font-mono text-lg space-y-2">
-        <p>🌐 <strong>Web:</strong> <span class="text-cyan-400">{cue:hl-folien-online:blue}https://hackenberg.tech{/cue}</span></p>
+        <p>🌐 <strong>Web:</strong> <span class="text-cyan-400">https://hackenberg.tech</span></p>
         <p>💼 <strong>LinkedIn:</strong> <span class="text-blue-400">linkedin.com/in/georghackenberg</span></p>
         <p>💻 <strong>GitHub:</strong> <span class="text-purple-400">github.com/ghackenberg</span></p>
         <p>🔬 <strong>ORCID:</strong> <span class="text-emerald-400">0000-0003-3913-4148</span></p>

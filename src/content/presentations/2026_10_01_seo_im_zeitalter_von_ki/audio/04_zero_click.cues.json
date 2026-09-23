@@ -1,13 +1,31 @@
 {
+  "sub": {
+    "start": 5.36
+  },
+  "hl-sub-zeroclick-1001": {
+    "start": 8.18,
+    "duration": 2.21,
+    "end": 10.39
+  },
   "stat-zeroclick": {
-    "start": 13.91
+    "start": 11.38
   },
   "bento-impact": {
-    "start": 20.04
+    "start": 17.43
   },
-  "hl-zitation-kaufabsicht": {
-    "start": 32.8,
-    "duration": 2.45,
-    "end": 35.25
+  "hl-callout-zitation-marke": {
+    "start": 19.6,
+    "duration": 2.4,
+    "end": 22
+  },
+  "hl-zeroclick-traffic": {
+    "start": 23.49,
+    "duration": 2.99,
+    "end": 26.48
+  },
+  "hl-zeroclick-intent": {
+    "start": 28.2,
+    "duration": 1.79,
+    "end": 29.99
   }
 }

@@ -1,18 +1,41 @@
 {
+  "sub": {
+    "start": 5.78
+  },
+  "hl-sub-plausible-1001": {
+    "start": 8.76,
+    "duration": 1.89,
+    "end": 10.65
+  },
   "col-plausible-dash": {
-    "start": 11.3
+    "start": 11.61
+  },
+  "hl-callout-referrer-chatgpt": {
+    "start": 14.35,
+    "duration": 1.06,
+    "end": 15.41
   },
   "hl-plausible-verweildauer": {
-    "start": 25.21,
+    "start": 15.56,
     "duration": 2.33,
-    "end": 27.54
+    "end": 17.89
   },
   "col-plausible-privacy": {
-    "start": 31.54
+    "start": 21.9
   },
   "hl-plausible-nobanner": {
-    "start": 37.17,
-    "duration": 2.24,
-    "end": 39.41
+    "start": 22.76,
+    "duration": 2.25,
+    "end": 25.01
+  },
+  "hl-plausible-weight": {
+    "start": 26.13,
+    "duration": 2.62,
+    "end": 28.75
+  },
+  "hl-plausible-quality": {
+    "start": 29.35,
+    "duration": 2.63,
+    "end": 31.98
   }
 }

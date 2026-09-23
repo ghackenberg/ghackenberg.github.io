@@ -1,10 +1,14 @@
 ---
 import SlideBase from '../primitives/SlideBase.astro';
+import { renderSlideCues } from '../../../utils/slide-cues';
 
 interface Props {
   title: string;
   subtitle?: string;
   cue?: string;
+  titleCue?: string;
+  subtitleCue?: string;
+  speakerCue?: string;
   speaker?: string;
   role?: string;
   affiliation?: string;
@@ -15,14 +19,17 @@ interface Props {
   slideNumber?: string | number;
   totalSlides?: string | number;
   showFooter?: boolean;
-  subtitleCue?: string;
   class?: string;
+  lang?: string;
 }
 
 const {
   title,
   subtitle,
   cue,
+  titleCue = cue || "title-main",
+  subtitleCue = "title-sub",
+  speakerCue = "title-speaker",
   speaker,
   role,
   affiliation,
@@ -33,9 +40,34 @@ const {
   slideNumber = 1,
   totalSlides = 30,
   showFooter = false,
-  subtitleCue = cue,
-  class: className = ""
+  class: className = "",
+  lang = "de"
 } = Astro.props;
+
+// Helper to derive human-readable date from presentation folder name (YYYY_MM_DD_...)
+function derivePresentationDate(slugOrDate?: string, locale = 'de-AT'): string | undefined {
+  if (!slugOrDate) return undefined;
+  const match = slugOrDate.match(/^(\d{4})[_-](\d{2})[_-](\d{2})/);
+  if (match) {
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1;
+    const day = parseInt(match[3], 10);
+    const d = new Date(year, month, day);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString(locale === 'en' ? 'en-US' : 'de-AT', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+  }
+  return undefined;
+}
+
+// Derive date from folder name (Astro.params.slug) to eliminate inconsistencies
+const slug = (Astro.params?.slug as string) || '';
+const derivedDate = derivePresentationDate(slug, lang) || derivePresentationDate(date, lang);
+const displayDate = derivedDate || date;
 
 const isCenter = align === "center";
 ---
@@ -48,61 +80,86 @@ const isCenter = align === "center";
 >
   <div class={`h-full w-full flex flex-col justify-center max-w-6xl mx-auto py-6 px-4 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
     <!-- Date & Event Header -->
-    {(date || event) && (
-      <div class={`mb-8 flex flex-wrap items-center gap-4 ${isCenter ? 'justify-center' : 'justify-start'}`}>
+    {(displayDate || event) && (
+      <div class={`transition-all duration-700 ease-out flex flex-wrap items-center gap-4 ${isCenter ? 'justify-center' : 'justify-start'} mb-8`}>
         {event && (
-          <span class="text-lg lg:text-xl font-mono text-slate-400 light:text-slate-500 font-medium">
+          <span class="text-xl lg:text-2xl font-mono text-slate-400 light:text-slate-500 font-medium">
             {event}
           </span>
         )}
-        {date && (
-          <span class="inline-flex items-center px-5 py-2.5 rounded-full text-lg lg:text-xl font-mono font-semibold text-slate-300 light:text-slate-700 bg-slate-900/60 light:bg-slate-200/60 border border-slate-800 light:border-slate-300">
-            {date}
+        {displayDate && (
+          <span class="inline-flex items-center px-6 py-3 rounded-full text-xl lg:text-2xl font-mono font-semibold text-slate-300 light:text-slate-700 bg-slate-900/80 light:bg-slate-200/80 border border-slate-800 light:border-slate-300 shadow-xl">
+            {displayDate}
           </span>
         )}
       </div>
     )}
 
     <!-- Main Presentation Title -->
-    <h1 class="text-7xl lg:text-8xl xl:text-[88px] font-black text-slate-100 light:text-slate-900 tracking-tight leading-[1.06] text-balance max-w-5xl">
-      {title}
-    </h1>
+    <div
+      id={titleCue}
+      data-cue={titleCue}
+      data-dim="false"
+      class="title-reveal-item grid transition-all duration-700 ease-out w-full"
+    >
+      <div class="overflow-hidden py-1">
+        <h1
+          class="text-7xl lg:text-8xl xl:text-[88px] font-black text-slate-100 light:text-slate-900 tracking-tight leading-[1.06] text-balance max-w-5xl mx-auto"
+          set:html={renderSlideCues(title)}
+        />
+      </div>
+    </div>
 
     <!-- Subtitle -->
     {subtitle && (
-      <p
+      <div
         id={subtitleCue}
         data-cue={subtitleCue}
-        class="text-3xl lg:text-4xl xl:text-[40px] text-slate-300 light:text-slate-600 font-normal leading-relaxed text-pretty mt-8 max-w-5xl"
+        data-dim="false"
+        class="title-reveal-item grid transition-all duration-700 ease-out w-full"
       >
-        {subtitle}
-      </p>
+        <div class="overflow-hidden py-1">
+          <p
+            class="slide-subtitle text-3xl lg:text-4xl xl:text-[40px] text-slate-300 light:text-slate-600 font-normal leading-relaxed text-pretty mt-6 max-w-5xl mx-auto"
+            set:html={renderSlideCues(subtitle)}
+          />
+        </div>
+      </div>
     )}
-
-    <!-- Elegant Accent Line -->
-    <div class={`w-36 h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 rounded-full my-8 ${isCenter ? 'mx-auto' : 'ml-0'}`}></div>
 
     <!-- Speaker & Presentation Meta (Directly below title & subtitle) -->
     {(speaker || role || affiliation || website) && (
-      <div class={`flex flex-col gap-4 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
-        {speaker && (
-          <div class="text-4xl lg:text-5xl xl:text-[50px] font-extrabold text-slate-100 light:text-slate-900 tracking-tight">
-            {speaker}
-          </div>
-        )}
+      <div
+        id={speakerCue}
+        data-cue={speakerCue}
+        data-dim="false"
+        class="title-reveal-item grid transition-all duration-700 ease-out w-full"
+      >
+        <div class="overflow-hidden flex flex-col items-center">
+          <!-- Elegant Accent Line -->
+          <div class={`speaker-divider w-36 h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 rounded-full my-8 ${isCenter ? 'mx-auto' : 'ml-0'}`}></div>
 
-        {(role || affiliation) && (
-          <div class={`text-2xl lg:text-3xl xl:text-[34px] text-slate-300 light:text-slate-600 font-normal flex flex-col gap-2 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
-            {role && <span>{role}</span>}
-            {affiliation && <span class="text-slate-400 light:text-slate-500">{affiliation}</span>}
-          </div>
-        )}
+          <div class={`flex flex-col gap-4 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
+            {speaker && (
+              <div class="speaker-name text-4xl lg:text-5xl xl:text-[50px] font-extrabold text-slate-100 light:text-slate-900 tracking-tight">
+                {speaker}
+              </div>
+            )}
 
-        {website && (
-          <div class="text-2xl lg:text-3xl font-mono text-blue-400 light:text-blue-600 pt-1">
-            {website}
+            {(role || affiliation) && (
+              <div class={`text-2xl lg:text-3xl xl:text-[34px] text-slate-300 light:text-slate-600 font-normal flex flex-col gap-2 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}>
+                {role && <span class="speaker-role inline-block">{role}</span>}
+                {affiliation && <span class="speaker-affiliation inline-block text-slate-400 light:text-slate-500">{affiliation}</span>}
+              </div>
+            )}
+
+            {website && (
+              <div class="speaker-website text-2xl lg:text-3xl font-mono text-blue-400 light:text-blue-600 pt-1">
+                {website}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     )}
 

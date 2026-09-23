@@ -1,0 +1,34 @@
+{
+  "sub": {
+    "start": 6.24
+  },
+  "hl-sub-ci-923": {
+    "start": 10.25,
+    "duration": 1.67,
+    "end": 11.92
+  },
+  "step-synthese": {
+    "start": 12.91
+  },
+  "hl-agent-synthese": {
+    "start": 16.73,
+    "duration": 2.65,
+    "end": 19.38
+  },
+  "step-audio": {
+    "start": 20.36
+  },
+  "hl-agent-audio": {
+    "start": 24.18,
+    "duration": 2.07,
+    "end": 26.25
+  },
+  "step-gate": {
+    "start": 27.24
+  },
+  "hl-agent-gate": {
+    "start": 31.95,
+    "duration": 2.91,
+    "end": 34.86
+  }
+}

@@ -1,0 +1,48 @@
+---
+title: "Evaluierte Optionen im Härtetest"
+subtitle: "Warum bestehende Cloud-Lösungen und Entwickler-Tools für unsere {cue:hl-sub-alternatives-923:cyan}Anforderungen scheiterten{/cue}"
+number: "06"
+slideLayout: "split"
+voiceover: >
+  Vor der Eigenentwicklung haben wir bestehende Technologien am Markt gründlich analysiert.
+  {cue:sub} Die Gegenüberstellung zeigt, warum Standardlösungen für unsere {cue:hl-sub-alternatives-923}Anforderungen scheiterten{/cue}.
+  {cue:col-cloud} Cloud-Embeds wie Google Slides oder Pitch wirken wie eine {cue:hl-alt-cloud}unzugängliche Black Box{/cue}: Folientext bleibt im iFrame {cue:hl-alt-invisible}vollständig unsichtbar{/cue}, Tracking-Overhead widerspricht {cue:hl-alt-privacy}datensparsamem Webdesign{/cue} und das gesprochene Wort kann {cue:hl-alt-nosync}keine Folien-Animationen triggern{/cue}.
+  {cue:col-dev} Auch reine Entwicklertools bedeuten einen {cue:hl-alt-dev}Architektur-Bruch{/cue}: Frameworks wie Slidev erzwingen {cue:hl-alt-vue}eigene Laufzeiten und Builds{/cue}, bieten keine Integration in {cue:hl-alt-schema}globale Content-Layer-Schemata{/cue} und besitzen keinen Abgleich zwischen {cue:hl-alt-ttsdom}Edge-TTS Wortgrenzen und DOM-Cues{/cue}.
+notes: |
+  - Zeit: 8:15 - 10:00 Min.
+  - Sachliche Differenzierung: Die Tools sind nicht per se schlecht, aber sie passen nicht zu den Anforderungen eines monolithischen SSG-Astro-Stacks.
+  - Betonung der Kompromisslosigkeit bei Performance und Barrierefreiheit.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="06"
+  totalSlides="10"
+>
+  <BentoCard slot="left" cue="col-cloud" title="Cloud-Embeds (Pitch, Google Slides)" accent="neutral">
+    <CalloutBox type="quote" color="neutral">
+      Isolierte iFrame-Sandboxen als {cue:hl-alt-cloud:neutral}unzugängliche Black Box{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { num: "❌", title: "Zero SEO & GEO", desc: "Folientext ist für Google und Sprachmodelle im iFrame {cue:hl-alt-invisible:amber}vollständig unsichtbar{/cue}." },
+      { num: "❌", title: "Cookie- & Tracking-Overhead", desc: "Exzessives Tracking verstößt gegen {cue:hl-alt-privacy:amber}datensparsames Webdesign{/cue}." },
+      { num: "❌", title: "Keine Audio-Synchronisation", desc: "Das gesprochene Wort kann {cue:hl-alt-nosync:amber}keine Folien-Animationen triggern{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-dev" title="Code-Frameworks (Reveal.js, Slidev, Marp)" accent="amber">
+    <CalloutBox type="statement" color="amber" title="Isolierte Standalone-Lösungen">
+      {cue:hl-alt-dev:amber}Architektur-Bruch{/cue} durch getrennte SPAs ohne Audio-Sync.
+    </CalloutBox>
+    <BulletList items={[
+      { num: "⚠️", title: "Architektur-Bruch (SPA)", desc: "Separate Tools erfordern {cue:hl-alt-vue:amber}eigene Laufzeiten und Builds{/cue}." },
+      { num: "⚠️", title: "Fehlende Astro-Collections", desc: "Keine native Typisierung über {cue:hl-alt-schema:amber}globale Content-Layer-Schemata{/cue}." },
+      { num: "⚠️", title: "Kein TTS-Audio-Ökosystem", desc: "Kein fertiger Abgleich zwischen {cue:hl-alt-ttsdom:amber}Edge-TTS Wortgrenzen und DOM-Cues{/cue}." }
+    ]} />
+  </BentoCard>
+</SplitSlide>

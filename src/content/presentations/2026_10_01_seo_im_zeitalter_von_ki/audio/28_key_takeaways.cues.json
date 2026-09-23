@@ -1,11 +1,34 @@
 {
+  "sub": {
+    "start": 4.29
+  },
+  "hl-sub-takeaways-1001": {
+    "start": 6.26,
+    "duration": 2.69,
+    "end": 8.95
+  },
   "takeaway-1": {
-    "start": 8.63
+    "start": 10.41
+  },
+  "hl-takeaway-graphen": {
+    "start": 13.94,
+    "duration": 2.01,
+    "end": 15.95
   },
   "takeaway-2": {
-    "start": 20.66
+    "start": 22.18
+  },
+  "hl-takeaway-agenten": {
+    "start": 26.89,
+    "duration": 1.31,
+    "end": 28.2
   },
   "takeaway-3": {
-    "start": 33.21
+    "start": 34.35
+  },
+  "hl-takeaway-primaer": {
+    "start": 38.39,
+    "duration": 2.21,
+    "end": 40.6
   }
 }

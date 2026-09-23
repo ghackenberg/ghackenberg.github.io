@@ -1,18 +1,56 @@
 {
+  "sub": {
+    "start": 6.14
+  },
+  "hl-sub-graphrag-1001": {
+    "start": 9.63,
+    "duration": 1.19,
+    "end": 10.82
+  },
   "col-basic-rag": {
-    "start": 9.82
+    "start": 11.81
+  },
+  "hl-callout-500-tokens": {
+    "start": 13.94,
+    "duration": 1.24,
+    "end": 15.18
+  },
+  "hl-basic-chunking": {
+    "start": 15.54,
+    "duration": 1.09,
+    "end": 16.63
+  },
+  "hl-basic-agg": {
+    "start": 18.4,
+    "duration": 1.68,
+    "end": 20.08
+  },
+  "hl-basic-hallu": {
+    "start": 21.81,
+    "duration": 1.25,
+    "end": 23.06
   },
   "col-graph-rag": {
-    "start": 19.81
+    "start": 24.04
+  },
+  "hl-callout-hierarchisch": {
+    "start": 25.31,
+    "duration": 2.08,
+    "end": 27.39
+  },
+  "hl-graphrag-global": {
+    "start": 29.24,
+    "duration": 1.25,
+    "end": 30.49
   },
   "hl-community-summaries": {
-    "start": 25.46,
-    "duration": 1.04,
-    "end": 26.5
+    "start": 32.26,
+    "duration": 1.28,
+    "end": 33.54
   },
   "hl-graphrag-qualitaet": {
-    "start": 29.45,
-    "duration": 2.18,
-    "end": 31.63
+    "start": 34.11,
+    "duration": 1.8,
+    "end": 35.91
   }
 }

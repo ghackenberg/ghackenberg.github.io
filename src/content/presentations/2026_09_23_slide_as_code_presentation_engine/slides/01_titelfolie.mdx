@@ -1,0 +1,29 @@
+---
+title: "Interactive Presentations"
+subtitle: "Motivation, Content-Strategie und Architektur {cue:hl-title-keynotes:cyan}web-nativer Keynotes mit Neural-Voiceover{/cue}"
+number: "01"
+slideLayout: "title"
+voiceover: >
+  Herzlich willkommen zum heutigen Architektur-Briefing über unsere neue Slide-as-Code Presentation Engine. 
+  {cue:title-main} Unter dem Titel Interactive Presentations 
+  {cue:title-sub} betrachten wir die strategische und didaktische Konzeption 
+  {cue:hl-title-keynotes}web-nativer Keynotes mit Neural-Voiceover{/cue}. 
+  {cue:title-speaker} Mein Name ist Dr. Georg Hackenberg, Professor für Informatik und Industriesysteme an der Fachhochschule Oberösterreich. 
+  Begleiten Sie mich durch die architektonischen Grundlagen und technischen Meilensteine dieses neuen Formats.
+notes: |
+  - Zeit: 0:00 - 1:30 Min.
+  - Zielgruppe: Software-Architekten, Web-Entwickler, Dozierende und Technologie-Entscheider begrüßen.
+  - Kernaussage: Präsentationen sind kein Anhängsel, sondern ein vollwertiges, web-natives Content-Format.
+---
+import TitleSlide from '../../../../components/slides/layouts/TitleSlide.astro';
+
+<TitleSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="01"
+  totalSlides="10"
+  speaker="Dr. Georg Hackenberg"
+  role="Professor für Informatik & Industriesysteme"
+  affiliation="FH Oberösterreich · Campus Wels"
+  website="https://hackenberg.tech"
+/>

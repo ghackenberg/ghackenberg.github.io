@@ -1,11 +1,34 @@
 {
+  "sub": {
+    "start": 7.11
+  },
+  "hl-sub-roadmap-1001": {
+    "start": 10.06,
+    "duration": 2.79,
+    "end": 12.85
+  },
   "phase-30": {
-    "start": 11.16
+    "start": 13.78
+  },
+  "hl-phase-baseline": {
+    "start": 18.79,
+    "duration": 2.06,
+    "end": 20.85
   },
   "phase-60": {
-    "start": 22.27
+    "start": 24.3
+  },
+  "hl-phase-bluf": {
+    "start": 30.41,
+    "duration": 2.9,
+    "end": 33.31
   },
   "phase-90": {
-    "start": 35.71
+    "start": 34.27
+  },
+  "hl-phase-edge": {
+    "start": 39.55,
+    "duration": 1.51,
+    "end": 41.06
   }
 }

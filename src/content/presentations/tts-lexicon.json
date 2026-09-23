@@ -59,7 +59,20 @@
     "CD": "C-D",
     "XM": "X-M",
     "AEM": "A-E-M",
-    "IT": "I-T"
+    "IT": "I-T",
+    "PDF": "P-D-F",
+    "PDFs": "P-D-Fs",
+    "SSG": "S-S-G",
+    "MDX": "M-D-X",
+    "SPA": "S-P-A",
+    "SPAs": "S-P-As",
+    "CSS": "C-S-S",
+    "UI": "U-I",
+    "UX": "U-X",
+    "SSR": "S-S-R",
+    "CDN": "C-D-N",
+    "GTIN": "G-T-I-N",
+    "W3C": "W-3-C"
   },
   "phonetics": {
     "Schema.org": "Schema-Punkt-Org",
@@ -102,6 +115,22 @@
     "High-Intent": "Hai-Intent",
     "Dashboard": "Däschbohrd",
     "Community": "Kommjunitie",
-    "Enterprise": "Enterpreis"
+    "Enterprise": "Enterpreis",
+    "Slide": "Sleid",
+    "Slides": "Sleids",
+    "Slide-as-Code": "Sleid-äs-Kohd",
+    "Slide as Code": "Sleid äs Kohd",
+    "Keynote": "Kie-Noht",
+    "Keynotes": "Kie-Nohts",
+    "Deck": "Däck",
+    "Decks": "Däcks",
+    "Touchpoint": "Tatsch-Point",
+    "Touchpoints": "Tatsch-Points",
+    "Highlighting": "Heileiting",
+    "Player": "Pläier",
+    "Showcase": "Schoh-Käis",
+    "Spotlight": "Spott-Leit",
+    "Responsive": "Risponsiff",
+    "Repurposing": "Rie-Pörpösing"
   }
 }

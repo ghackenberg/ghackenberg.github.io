@@ -1,15 +1,15 @@
 ---
 title: "Wie KI-Suchmaschinen arbeiten: RAG"
-subtitle: "Retrieval-Augmented Generation als Brücke zwischen Modell und aktuellem Web"
+subtitle: "Retrieval-Augmented Generation als {cue:hl-sub-rag-1001:cyan}Brücke zwischen Modell und aktuellem Web{/cue}"
 number: "06"
 slideLayout: "pipeline"
 voiceover: >
-  Sehen wir uns nun an, wie moderne KI-Suchmaschinen unter der Haube arbeiten: Die Schlüsseltechnologie heißt Retrieval-Augmented Generation, kurz RAG. Sie schlägt die entscheidende Brücke zwischen statischem Trainingswissen und aktuellem Webinhalten. 
-  {cue:step-query} RAG löst dieses Problem in vier Phasen: Zunächst analysiert der Parser die Nutzerfrage 
-  und extrahiert Entitäten. 
-  {cue:step-retrieval} In Phase zwei ruft das System die semantisch ähnlichsten Text-Chunks live aus dem Web-Index ab. 
-  {cue:step-injection} In Phase drei werden diese Chunks direkt in den Kontext-Prompt des Modells injiziert. 
-  {cue:step-synthesis} Erst jetzt synthetisiert das LLM eine faktengetreue Antwort mit überprüfbaren Quellen-Chips.
+  Sehen wir uns nun an, wie moderne KI-Suchmaschinen unter der Haube arbeiten.
+  {cue:sub} Retrieval-Augmented Generation bildet die entscheidende {cue:hl-sub-rag-1001}Brücke zwischen Modell und aktuellem Web{/cue}.
+  {cue:step-query} RAG löst dieses Problem in vier Phasen: Zunächst analysiert der Parser die Nutzerfrage und extrahiert {cue:hl-rag-parsing}gesuchte Entitäten{/cue}.
+  {cue:step-retrieval} In Phase zwei ruft das System die semantisch ähnlichsten {cue:hl-rag-retrieval}Text-Chunks{/cue} live aus dem Web-Index ab.
+  {cue:step-injection} In Phase drei werden diese Chunks direkt in das {cue:hl-rag-injection}Context Window{/cue} des Modells injiziert.
+  {cue:step-synthesis} Erst jetzt synthetisiert das LLM eine faktengetreue Antwort mit überprüfbaren {cue:hl-rag-synthesis}Zitations-Chips{/cue}.
 notes: |
   - Zeit: 11:00 - 13:30 Min.
   - Wichtig: Betonen, dass der Webseiten-Text nicht mehr direkt vom Menschen gelesen wird, sondern als "Kontext-Futter" für den Prompt dient!
@@ -38,28 +38,28 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         cue: "step-query",
         num: "01",
         title: "Anfrage-Parsing",
-        desc: "Nutzerfrage wird in semantische Absicht (Intent) und gesuchte Entitäten zerlegt.",
+        desc: "Nutzerfrage wird in semantische Absicht (Intent) und {cue:hl-rag-parsing:cyan}gesuchte Entitäten{/cue} zerlegt.",
         image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step1_parsing.jpg"
       },
       {
         cue: "step-retrieval",
         num: "02",
         title: "Live-Web-Retrieval",
-        desc: "Vektorsuche ruft die Top-Text-Chunks aus dem aktuellen Index ab. Nur hochrelevante Absätze kommen weiter.",
+        desc: "Vektorsuche ruft die Top-{cue:hl-rag-retrieval:teal}Text-Chunks{/cue} aus dem aktuellen Index ab. Nur hochrelevante Absätze kommen weiter.",
         image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step2_retrieval.jpg"
       },
       {
         cue: "step-injection",
         num: "03",
         title: "Kontext-Injektion",
-        desc: "Die gefundenen Chunks werden zusammen mit System-Instruktionen in das Context Window des LLMs injiziert.",
+        desc: "Die gefundenen Chunks werden zusammen mit System-Instruktionen in das {cue:hl-rag-injection:blue}Context Window{/cue} des LLMs injiziert.",
         image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step3_injection.jpg"
       },
       {
         cue: "step-synthesis",
         num: "04",
         title: "LLM-Synthese",
-        desc: "Das Modell erzeugt die finale Antwort mit Zitations-Chips basierend auf den injizierten Daten.",
+        desc: "Das Modell erzeugt die finale Antwort mit {cue:hl-rag-synthesis:emerald}Zitations-Chips{/cue} basierend auf den injizierten Daten.",
         image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step4_synthesis.jpg"
       }
     ]}

@@ -85,20 +85,38 @@ export async function generateSlideThumbnailsForPresentation(browser, port, pres
       fs.mkdirSync(distThumbDir, { recursive: true });
     }
 
+/**
+ * Safely writes a file buffer to disk, retrying on transient Windows file lock errors
+ * @param {string} filePath
+ * @param {Buffer | Uint8Array} buffer
+ * @param {number} [maxRetries=5]
+ */
+async function safeWriteFile(filePath, buffer, maxRetries = 5) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      fs.writeFileSync(filePath, buffer);
+      return;
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      await new Promise(r => setTimeout(r, 200 * attempt));
+    }
+  }
+}
+
     let count = 0;
     for (const el of slideElements) {
       const slideId = await el.evaluate(node => node.getAttribute('data-slide-id'));
       if (!slideId) continue;
 
       const outPath = path.join(thumbnailsDir, `${slideId}.webp`);
-      await el.screenshot({
-        path: outPath,
+      const buffer = await el.screenshot({
         type: 'webp',
         quality: 82
       });
+      await safeWriteFile(outPath, buffer);
 
       if (fs.existsSync(distThumbDir)) {
-        fs.copyFileSync(outPath, path.join(distThumbDir, `${slideId}.webp`));
+        await safeWriteFile(path.join(distThumbDir, `${slideId}.webp`), buffer);
       }
       count++;
     }

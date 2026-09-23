@@ -1,18 +1,36 @@
 {
-  "col-eeat-triad": {
+  "sub": {
     "start": 7.9
   },
+  "hl-sub-eeat-1001": {
+    "start": 11.2,
+    "duration": 1.96,
+    "end": 13.16
+  },
+  "col-eeat-triad": {
+    "start": 14.16
+  },
   "hl-glaubwuerdigkeit": {
-    "start": 18.55,
-    "duration": 3.09,
-    "end": 21.64
+    "start": 21.45,
+    "duration": 2.14,
+    "end": 23.59
   },
   "col-eeat-checklist": {
-    "start": 22.64
+    "start": 24.59
   },
   "hl-autoren-sichtbar": {
-    "start": 28.21,
-    "duration": 1.68,
-    "end": 29.89
+    "start": 27.05,
+    "duration": 2.27,
+    "end": 29.32
+  },
+  "hl-eeat-sameas": {
+    "start": 30.2,
+    "duration": 1.64,
+    "end": 31.84
+  },
+  "hl-eeat-vita": {
+    "start": 33.02,
+    "duration": 2.08,
+    "end": 35.1
   }
 }

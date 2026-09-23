@@ -1,14 +1,42 @@
 {
+  "sub": {
+    "start": 5.1
+  },
+  "hl-sub-closedloop-1001": {
+    "start": 7.25,
+    "duration": 2.07,
+    "end": 9.32
+  },
   "loop-step-1": {
-    "start": 10.9
+    "start": 9.4
+  },
+  "hl-loop-zitation": {
+    "start": 10.81,
+    "duration": 0.99,
+    "end": 11.8
   },
   "loop-step-2": {
-    "start": 15.26
+    "start": 13.13
+  },
+  "hl-loop-bluf": {
+    "start": 15.21,
+    "duration": 1.11,
+    "end": 16.32
   },
   "loop-step-3": {
-    "start": 20.07
+    "start": 17.27
+  },
+  "hl-loop-hitl": {
+    "start": 19.35,
+    "duration": 0.69,
+    "end": 20.04
   },
   "loop-step-4": {
-    "start": 23.44
+    "start": 20.45
+  },
+  "hl-loop-crm": {
+    "start": 20.86,
+    "duration": 1.78,
+    "end": 22.64
   }
 }

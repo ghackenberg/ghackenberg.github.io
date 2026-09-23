@@ -39,7 +39,7 @@ export default function remarkSlideCues() {
           const colorAttr = color ? ` data-color="${color}"` : '';
           nodes.push({
             type: 'html',
-            value: `<mark id="${cueId}" data-cue="${cueId}"${colorAttr} class="highlight-marker font-semibold rounded-md">${content}</mark>`
+            value: `<mark id="${cueId}" data-cue="${cueId}"${colorAttr} class="highlight-marker font-semibold rounded-[0.38em]">${content}</mark>`
           });
         } else {
           // Standalone cue: {cue:id:color}

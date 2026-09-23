@@ -107,7 +107,7 @@ const renderedSlides = await Promise.all(
       }
       /* Ensure everything is fully visible in print handout */
       .print-slide-page [data-animate],
-      .print-slide-page [data-cue],
+      .print-slide-page [data-cue]:not(mark):not(.highlight-marker),
       .print-slide-page .bento-card-root,
       .print-slide-page .step-card,
       .print-slide-page .metric-stat-card,
@@ -116,8 +116,13 @@ const renderedSlides = await Promise.all(
         transform: none !important;
         filter: none !important;
       }
+      .print-slide-page mark,
       .print-slide-page .highlight-marker {
-        background-size: 100% 100% !important;
+        background-size: 0% 100% !important;
+        background-image: none !important;
+        background: transparent !important;
+        color: inherit !important;
+        padding: 0 !important;
       }
       .print-slide-page .slide-base-frame.is-intro-state .slide-header-content,
       .print-slide-page .slide-base-frame.is-intro-state .slide-title,

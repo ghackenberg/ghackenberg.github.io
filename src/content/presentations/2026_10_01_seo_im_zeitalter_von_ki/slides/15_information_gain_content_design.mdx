@@ -1,15 +1,13 @@
 ---
 title: "Information Gain & Content-Design"
-subtitle: "Google Patent US 10,642,919 B2: Warum die Kernaussage in die ersten 50 Wörter gehört (BLUF-Prinzip)"
+subtitle: "Google Patent US 10,642,919 B2: {cue:hl-sub-bluf-1001:cyan}Warum die Kernaussage nach vorne gehört{/cue}"
 number: "15"
 slideLayout: "split"
 voiceover: >
-  Wie muss Content für KI-Crawler aufgebaut sein? Google hat dafür ein entscheidendes Patent angemeldet: 
-  den Information Gain Score. 
-  {cue:col-bad-content} Wer den Leser mit {cue:hl-langatmig}langatmigen Einleitungen quält{/cue}, wird abgewertet. 
-  {cue:col-bluf-content} Das Erfolgsprinzip heißt BLUF: Bottom Line Up Front. Die {cue:hl-direktantwort-bluf}präzise Antwort gehört in 
-  die ersten vierzig bis fünfzig Wörter{/cue} direkt unter die Überschrift. Dahinter folgen dichte Vergleichstabellen 
-  und echte Messwerte. Nur was neues, unersetzliches Wissen liefert, wird von der KI zitiert.
+  Wie muss Content für moderne KI-Crawler redaktionell und visuell aufgebaut sein?
+  {cue:sub} Googles Patent zum Information Gain belegt, {cue:hl-sub-bluf-1001}warum die Kernaussage nach vorne gehört{/cue}.
+  {cue:col-bad-content} Wer mit {cue:hl-langatmig}langatmigen Einleitungen{/cue} startet, bietet {cue:hl-keine-information}keine neue Information{/cue}. Wenn Daten {cue:hl-versteckte-daten}erst am Seitenende versteckt{/cue} sind, fließen {cue:hl-fuellsaetze}wertlose Füllsätze ins Kontextfenster{/cue}.
+  {cue:col-bluf-content} Das Erfolgsprinzip heißt BLUF: Die {cue:hl-direktantwort-bluf}Direktantwort in den ersten Sätzen{/cue} fungiert als {cue:hl-zitationsblock}idealer Zitationsblock für Perplexity und Gemini{/cue}, gestützt durch {cue:hl-information-gain}hohen Information Gain durch exklusive Primärdaten{/cue}.
 notes: |
   - Zeit: 33:30 - 36:00 Min.
   - Redaktions-Leitfaden vorstellen: Kein "In diesem Artikel erfahren Sie...", sondern sofort die Antwort!
@@ -40,9 +38,9 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "cross", title: "Floskelhafte Einleitung", desc: "Keine neue Information für das Retrieval-Modell." },
-      { icon: "cross", title: "Versteckte Kennzahlen", desc: "Wichtigste Daten erst am Ende der Seite versteckt." },
-      { icon: "cross", title: "Irrelevante Chunks", desc: "Chunker extrahiert Füllsätze in das Context Window." }
+      { icon: "cross", title: "Floskelhafte Einleitung", desc: "Liefert {cue:hl-keine-information:amber}keine neue Information{/cue} für das Retrieval-Modell." },
+      { icon: "cross", title: "Versteckte Kennzahlen", desc: "Wichtigste Daten werden {cue:hl-versteckte-daten:amber}erst am Seitenende versteckt{/cue}." },
+      { icon: "cross", title: "Irrelevante Chunks", desc: "Chunker extrahiert {cue:hl-fuellsaetze:amber}wertlose Füllsätze ins Kontextfenster{/cue}." }
     ]} />
   </BentoCard>
 
@@ -54,8 +52,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", title: "Antwort in den ersten 50 Wörtern", desc: "Perfekt als Zitationsblock für Perplexity, ChatGPT Search & Gemini." },
-      { icon: "check", title: "Proprietäre Messwerte", desc: "Hoher Information Gain Score durch exklusive Primärdaten und Benchmarks." }
+      { icon: "check", title: "Antwort in den ersten 50 Wörtern", desc: "Dient als {cue:hl-zitationsblock:emerald}idealer Zitationsblock für Perplexity und Gemini{/cue}." },
+      { icon: "check", title: "Proprietäre Messwerte", desc: "Sichert {cue:hl-information-gain:emerald}hohen Information Gain durch exklusive Primärdaten{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>

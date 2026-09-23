@@ -1,0 +1,50 @@
+{
+  "sub": {
+    "start": 5.33
+  },
+  "hl-sub-agenda-923": {
+    "start": 7.5,
+    "duration": 2.15,
+    "end": 9.65
+  },
+  "step-01": {
+    "start": 10.64
+  },
+  "hl-agenda-motivation": {
+    "start": 13.97,
+    "duration": 2.63,
+    "end": 16.6
+  },
+  "step-02": {
+    "start": 19.36
+  },
+  "hl-agenda-oekosystem": {
+    "start": 23.45,
+    "duration": 2.21,
+    "end": 25.66
+  },
+  "step-03": {
+    "start": 26.63
+  },
+  "hl-agenda-strategie": {
+    "start": 29.43,
+    "duration": 2.46,
+    "end": 31.89
+  },
+  "step-04": {
+    "start": 32.86
+  },
+  "hl-agenda-optionen": {
+    "start": 34.69,
+    "duration": 2.2,
+    "end": 36.89
+  },
+  "step-05": {
+    "start": 39.19
+  },
+  "hl-agenda-engine": {
+    "start": 41.77,
+    "duration": 2.73,
+    "end": 44.5
+  }
+}

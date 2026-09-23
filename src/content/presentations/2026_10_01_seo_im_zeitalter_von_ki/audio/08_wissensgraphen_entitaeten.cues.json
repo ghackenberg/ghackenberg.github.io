@@ -1,13 +1,41 @@
 {
+  "sub": {
+    "start": 6.74
+  },
+  "hl-sub-graph-1001": {
+    "start": 10.16,
+    "duration": 2.13,
+    "end": 12.29
+  },
   "col-graph": {
-    "start": 11.46
+    "start": 13.31
+  },
+  "hl-graph-knoten": {
+    "start": 16.68,
+    "duration": 1.43,
+    "end": 18.11
   },
   "col-advantages": {
-    "start": 23.45
+    "start": 21.55
+  },
+  "hl-callout-graph-tripel": {
+    "start": 23.02,
+    "duration": 2.05,
+    "end": 25.07
   },
   "hl-keine-hallu": {
-    "start": 26.56,
-    "duration": 2.3,
-    "end": 28.86
+    "start": 25.41,
+    "duration": 1.05,
+    "end": 26.46
+  },
+  "hl-eindeutige-uris": {
+    "start": 27.39,
+    "duration": 1.21,
+    "end": 28.6
+  },
+  "hl-multi-hop": {
+    "start": 29.39,
+    "duration": 2,
+    "end": 31.39
   }
 }

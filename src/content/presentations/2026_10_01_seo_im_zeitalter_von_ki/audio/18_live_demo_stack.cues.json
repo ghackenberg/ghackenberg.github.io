@@ -1,14 +1,42 @@
 {
+  "sub": {
+    "start": 3.65
+  },
+  "hl-sub-demostack-1001": {
+    "start": 5.22,
+    "duration": 2.25,
+    "end": 7.47
+  },
   "card-astro": {
-    "start": 9.8
+    "start": 8.44
+  },
+  "hl-stack-astro": {
+    "start": 11.22,
+    "duration": 1.07,
+    "end": 12.29
   },
   "card-agent": {
-    "start": 16.56
+    "start": 14.74
+  },
+  "hl-stack-agent": {
+    "start": 17.95,
+    "duration": 1.36,
+    "end": 19.31
   },
   "card-github": {
-    "start": 21.63
+    "start": 21.54
+  },
+  "hl-stack-ci": {
+    "start": 24.76,
+    "duration": 0.94,
+    "end": 25.7
   },
   "card-plausible": {
-    "start": 27.9
+    "start": 26.65
+  },
+  "hl-stack-plausible": {
+    "start": 29.34,
+    "duration": 1.84,
+    "end": 31.18
   }
 }

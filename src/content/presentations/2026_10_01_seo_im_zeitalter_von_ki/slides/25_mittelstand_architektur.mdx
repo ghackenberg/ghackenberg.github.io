@@ -1,16 +1,15 @@
 ---
 title: "Architektur für den Mittelstand (OÖ Fokus)"
-subtitle: "Die Zwei-Geschwindigkeiten-Architektur: TYPO3, WordPress & SAP ERP behalten – blitzschnellen Astro-Edge-Layer vorschalten"
+subtitle: "Die Zwei-Geschwindigkeiten-Architektur: {cue:hl-sub-mittelstand-1001:cyan}SAP behalten und Astro-Edge vorschalten{/cue}"
 number: "25"
 slideLayout: "graph"
 voiceover: >
-  Jetzt zur entscheidenden Frage für unsere Unternehmen im Traunviertel: Müssen Sie Ihr bestehendes 
-  TYPO3, WordPress oder SAP-System für ein Vermögen wegwerfen? 
-  {cue:arch-layer-3} Die klare Antwort lautet: Nein! Wir etablieren die Zwei-Geschwindigkeiten-Architektur. 
-  {cue:arch-layer-2} Ihr stabiles Kernsystem bleibt als System of Record im Hintergrund bestehen. 
-  {cue:arch-layer-1} Davor schalten wir eine extrem schlanke, blitzschnelle Semantik- und Edge-Schicht mit Astro. 
-  Diese Schicht zieht sich Produktdaten per API, reichert sie mit Schema.org-Wissensgraphen an und liefert sie 
-  in 300 Millisekunden an KI-Crawler aus. Maximale Zukunftssicherheit bei minimalem Budget!
+  Jetzt zur entscheidenden Frage für unsere Industrieunternehmen im Mittelstand.
+  {cue:sub} Die Antwort ist die Zwei-Geschwindigkeiten-Architektur: {cue:hl-sub-mittelstand-1001}SAP behalten und Astro-Edge vorschalten{/cue}.
+  {cue:arch-layer-3} Ihr stabiles Kernsystem als System of Record {cue:hl-arch-record}bleibt unangetastet{/cue}.
+  {cue:arch-layer-2} Dazwischen generiert ein semantischer Layer automatisch den {cue:hl-arch-graph}Schema.org @graph{/cue}.
+  {cue:arch-layer-1} Davor schalten wir einen Astro Edge Layer mit {cue:hl-arch-edge}Ladezeiten unter 300 Millisekunden{/cue} für KI-Crawler.
+  Maximale Zukunftssicherheit bei minimalem Budget!
 notes: |
   - Zeit: 56:30 - 59:00 Min.
   - Das ist die wichtigste Entlastungs-Folie für IT-Leiter im Raum: Kein Relaunch-Albtraum nötig!
@@ -31,19 +30,19 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         cue: "arch-layer-3",
         num: "01",
         title: "System of Record (Backend)",
-        desc: "Bestehende Unternehmenssysteme bleiben unangetastet: TYPO3, WordPress, Pimcore, SAP ERP oder Dynamics."
+        desc: "Bestehende Unternehmenssysteme {cue:hl-arch-record:slate}bleiben unangetastet{/cue}: TYPO3, WordPress, Pimcore oder SAP ERP."
       },
       {
         cue: "arch-layer-2",
         num: "02",
         title: "Semantischer Graph-Layer",
-        desc: "Schlanke Headless API aggregiert Produkte, Normen und Referenten. Generiert automatisch den Schema.org @graph."
+        desc: "Schlanke Headless API aggregiert Produkte und Normen. Generiert automatisch den {cue:hl-arch-graph:cyan}Schema.org @graph{/cue}."
       },
       {
         cue: "arch-layer-1",
         num: "03",
         title: "Astro Edge Layer (Frontend)",
-        desc: "Hochoptimierte, statische Auslieferung an CDN-Knoten. Ladezeit < 0.5s für GPTBot, Google-Extended und mobile Nutzer."
+        desc: "Hochoptimierte Auslieferung an CDN-Knoten mit {cue:hl-arch-edge:emerald}Ladezeiten unter 300 Millisekunden{/cue} für KI-Crawler."
       }
     ]}
   />
