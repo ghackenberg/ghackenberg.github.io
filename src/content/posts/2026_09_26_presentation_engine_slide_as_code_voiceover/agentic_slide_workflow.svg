@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 330" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="workflow-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="100%" stop-color="#030712" />
+    </linearGradient>
+
+    <!-- Card Gradient -->
+    <linearGradient id="card-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <!-- Arrow Marker -->
+    <marker id="arrow-workflow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#3b82f6" />
+    </marker>
+
+    <style>
+      text {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+    </style>
+  </defs>
+
+  <!-- Frame Background -->
+  <rect width="860" height="330" rx="14" fill="url(#workflow-bg)" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Diagram Title & Subtitle -->
+  <text x="32" y="38" fill="#f8fafc" font-size="16" font-weight="700">Agentischer Erstellungs- und Validierungs-Workflow</text>
+  <text x="32" y="58" fill="#94a3b8" font-size="12">Vom deklarativen MDX-Entwurf über Edge-TTS-Synthese zum deterministischen CI-Qualitätsgate</text>
+
+  <!-- 3 Stages (Cards) -->
+
+  <!-- Stage 1: Folien-Synthese (LLM) -->
+  <g transform="translate(32, 85)">
+    <rect width="240" height="205" rx="10" fill="url(#card-grad)" stroke="#3b82f6" stroke-width="1.2" />
+    <circle cx="28" cy="28" r="14" fill="#3b82f6" fill-opacity="0.2" />
+    <text x="28" y="33" fill="#60a5fa" font-size="12" font-weight="700" text-anchor="middle">1</text>
+    <text x="50" y="33" fill="#f8fafc" font-size="13" font-weight="700">Folien-Synthese (LLM)</text>
+
+    <text x="18" y="65" fill="#93c5fd" font-size="11" font-weight="600">Deklarative Archetypen</text>
+    <text x="18" y="80" fill="#60a5fa" font-size="10.5">Coding-Agent (Antigravity)</text>
+
+    <line x1="18" y1="92" x2="222" y2="92" stroke="#334155" stroke-width="1" />
+    <text x="18" y="112" fill="#cbd5e1" font-size="10.5">• MDX-Bündel (01_ bis 30_)</text>
+    <text x="18" y="132" fill="#cbd5e1" font-size="10.5">• 6 Master-Layout-Archetypen</text>
+    <text x="18" y="152" fill="#cbd5e1" font-size="10.5">• {cue:id} im Voiceover &amp; Body</text>
+    <text x="18" y="172" fill="#cbd5e1" font-size="10.5">• First-Shot Typografie-Boden</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="282" y1="187" x2="306" y2="187" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-workflow)" />
+
+  <!-- Stage 2: Audio-Generierung & Lexicon -->
+  <g transform="translate(310, 85)">
+    <rect width="240" height="205" rx="10" fill="url(#card-grad)" stroke="#a855f7" stroke-width="1.2" />
+    <circle cx="28" cy="28" r="14" fill="#a855f7" fill-opacity="0.2" />
+    <text x="28" y="33" fill="#c084fc" font-size="12" font-weight="700" text-anchor="middle">2</text>
+    <text x="50" y="33" fill="#f8fafc" font-size="13" font-weight="700">Audio &amp; Lexicon</text>
+
+    <text x="18" y="65" fill="#d8b4fe" font-size="11" font-weight="600">npm run audio:presentations</text>
+    <text x="18" y="80" fill="#c084fc" font-size="10.5">Edge-TTS &amp; Word-Boundaries</text>
+
+    <line x1="18" y1="92" x2="222" y2="92" stroke="#334155" stroke-width="1" />
+    <text x="18" y="112" fill="#cbd5e1" font-size="10.5">• tts-lexicon.json Normalisierung</text>
+    <text x="18" y="132" fill="#cbd5e1" font-size="10.5">• Subsekunden Cue-Offsets</text>
+    <text x="18" y="152" fill="#cbd5e1" font-size="10.5">• Erzeugung von .mp3 &amp; .json</text>
+    <text x="18" y="172" fill="#cbd5e1" font-size="10.5">• SHA-256 Incremental Cache</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="560" y1="187" x2="584" y2="187" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-workflow)" />
+
+  <!-- Stage 3: CI-Qualitätsgate -->
+  <g transform="translate(588, 85)">
+    <rect width="240" height="205" rx="10" fill="url(#card-grad)" stroke="#10b981" stroke-width="1.2" />
+    <circle cx="28" cy="28" r="14" fill="#10b981" fill-opacity="0.2" />
+    <text x="28" y="33" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">3</text>
+    <text x="50" y="33" fill="#f8fafc" font-size="13" font-weight="700">CI-Qualitätsgate</text>
+
+    <text x="18" y="65" fill="#6ee7b7" font-size="11" font-weight="600">npm run validate:slides</text>
+    <text x="18" y="80" fill="#34d399" font-size="10.5">Automatisierte Release-Checks</text>
+
+    <line x1="18" y1="92" x2="222" y2="92" stroke="#334155" stroke-width="1" />
+    <text x="18" y="112" fill="#cbd5e1" font-size="10.5">• Cue-Parität: Body == Voiceover</text>
+    <text x="18" y="132" fill="#cbd5e1" font-size="10.5">• Title-Hook: Pre-Cue Orientierung</text>
+    <text x="18" y="152" fill="#cbd5e1" font-size="10.5">• Akronym-Hygiene &amp; Audio-Status</text>
+    <text x="18" y="172" fill="#cbd5e1" font-size="10.5">• PDF-Handout- &amp; Asset-Prüfung</text>
+  </g>
+</svg>
