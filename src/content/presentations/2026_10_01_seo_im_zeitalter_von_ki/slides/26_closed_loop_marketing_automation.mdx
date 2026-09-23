@@ -1,15 +1,15 @@
 ---
 title: "Marketing Automation & Closed-Loop GEO"
-subtitle: "Der geschlossene Regelkreis: Vom KI-Zitationsverlust über autonome Agenten-Anpassung direkt ins CRM"
+subtitle: "Der geschlossene Regelkreis: Vom KI-Zitationsverlust {cue:hl-sub-closedloop-1001:cyan}über autonome Agenten ins CRM{/cue}"
 number: "26"
 slideLayout: "pipeline"
 voiceover: >
-  Die nächste Evolutionsstufe im B2B-Marketing ist Closed-Loop GEO: Ein vollständig geschlossener Regelkreis vom KI-Zitationsverlust über autonome Agenten-Anpassung direkt ins CRM. 
-  {cue:loop-step-1} Marketing Automation funktioniert hier als adaptiver Zyklus. 
-  {cue:loop-step-2} Wenn ein Monitoring-Tool meldet, dass Ihre Nennung bei einem wichtigen Suchbegriff sinkt, 
-  {cue:loop-step-3} löst ein Webhook einen Entwickler-Agenten aus. 
-  {cue:loop-step-4} Dieser analysiert die Lücke, erzeugt neue Primärdaten und aktualisiert den Code. 
-  Nach Freigabe durch Ihren Experten geht das Update live – und das CRM trackt den resultierenden Lead. 
+  Die nächste Evolutionsstufe im B2B-Marketing ist Closed-Loop GEO.
+  {cue:sub} Sie beschreibt den geschlossenen Regelkreis {cue:hl-sub-closedloop-1001}über autonome Agenten ins CRM{/cue}.
+  {cue:loop-step-1} Meldet das Monitoring einen {cue:hl-loop-zitation}Zitationsverlust{/cue} bei Kernabfragen,
+  {cue:loop-step-2} optimiert ein Entwickler-Agent sofort den {cue:hl-loop-bluf}BLUF-Antwortblock{/cue}.
+  {cue:loop-step-3} Ihr Fachexperte sichert die Freigabe per {cue:hl-loop-hitl}Human-in-the-Loop{/cue} ab,
+  {cue:loop-step-4} und das {cue:hl-loop-crm}CRM mit Zitations-Referrer{/cue} schließt den erfolgreichen Regelkreis.
   Die Reaktionszeit auf Marktveränderungen sinkt von sechs Monaten auf vierundzwanzig Stunden!
 notes: |
   - Zeit: 59:00 - 61:30 Min.
@@ -31,25 +31,25 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         cue: "loop-step-1",
         num: "01",
         title: "Monitoring Alert",
-        desc: "Tool registriert Zitationsverlust bei Schlüssel-Prompt in ChatGPT oder Perplexity."
+        desc: "Tool registriert {cue:hl-loop-zitation:rose}Zitationsverlust{/cue} bei Schlüssel-Prompt in ChatGPT oder Perplexity."
       },
       {
         cue: "loop-step-2",
         num: "02",
         title: "Agenten-Refactoring",
-        desc: "KI-Agent analysiert Quellcode, ergänzt fehlende Spezifikationen und schärft den BLUF-Antwortblock."
+        desc: "KI-Agent analysiert Quellcode, ergänzt Spezifikationen und schärft den {cue:hl-loop-bluf:blue}BLUF-Antwortblock{/cue}."
       },
       {
         cue: "loop-step-3",
         num: "03",
         title: "Experten-Freigabe",
-        desc: "Fachexperte prüft den Git-Pull-Request in 2 Minuten (Human-in-the-Loop Sicherheit)."
+        desc: "Fachexperte prüft den Git-Pull-Request via {cue:hl-loop-hitl:amber}Human-in-the-Loop{/cue} Sicherheit."
       },
       {
         cue: "loop-step-4",
         num: "04",
         title: "CRM Lead Attribution",
-        desc: "Neuer Lead trifft im CRM (HubSpot/Salesforce) mit Zitations-Referrer ein und schließt den Regelkreis."
+        desc: "Neuer Lead trifft im {cue:hl-loop-crm:emerald}CRM mit Zitations-Referrer{/cue} ein und schließt den Regelkreis."
       }
     ]}
   />

@@ -205,16 +205,295 @@ function validateSlides() {
         voCues.push(voMatchItem[1]);
       }
 
+      // 1b. Check cue syntax rules: only inline text-highlights (hl-* / mark-*) may have closing tags!
+      const cueTagRegex = /\{cue:([a-zA-Z0-9_-]+)(?::[a-zA-Z0-9_-]+)?\}|\{\/cue(?::([a-zA-Z0-9_-]+))?\}/g;
+      /** @type {string[]} */
+      const openCueStack = [];
+      let tagMatch;
+      while ((tagMatch = cueTagRegex.exec(voiceoverText)) !== null) {
+        if (tagMatch[0].startsWith('{cue:')) {
+          const id = tagMatch[1];
+          openCueStack.push(id);
+        } else if (tagMatch[0].startsWith('{/cue')) {
+          if (openCueStack.length === 0) {
+            console.error(`  ❌ [${slideFile}] Unexpected closing tag "${tagMatch[0]}" without preceding open cue.`);
+            totalErrors++;
+          } else {
+            const closedId = openCueStack.pop();
+            const isHighlight = closedId.startsWith('hl-') || closedId.startsWith('mark-');
+            if (!isHighlight) {
+              console.error(
+                `  ❌ [${slideFile}] Structural cue "${closedId}" has a closing tag "${tagMatch[0]}". Structural cues (col-, box-, card-, step-, stat-) must be point cues without closing tags to prevent content from vanishing. Only inline text-highlights ("hl-*") may have closing tags.`
+              );
+              totalErrors++;
+            }
+          }
+        }
+      }
+      for (const unclosedId of openCueStack) {
+        if (unclosedId.startsWith('hl-') || unclosedId.startsWith('mark-')) {
+          console.error(`  ❌ [${slideFile}] Text highlight cue "{cue:${unclosedId}}" was never closed with "{/cue}".`);
+          totalErrors++;
+        }
+      }
+
       // 2. Extract slide body cues in order of visual appearance
       /** @type {string[]} */
       const bodyCues = [];
       const bodyCueRegex = /(?:(?:cue|data-cue)\s*[:=]\s*["']([a-zA-Z0-9_-]+)["']|id\s*[:=]\s*["']((?:col|box|card|step|stat|hl|mark)-[a-zA-Z0-9_-]+)["']|\{cue:([a-zA-Z0-9_-]+)(?::[a-zA-Z0-9_-]+)?\})/g;
       
+      const subtitleFmMatch = fm.match(/^subtitle:\s*["']?([^\r\n]+)/m);
+      const subtitleText = subtitleFmMatch ? subtitleFmMatch[1] : '';
+      const contentToScan = `${subtitleText}\n${body}`;
+
       let bodyMatch;
-      while ((bodyMatch = bodyCueRegex.exec(body)) !== null) {
+      while ((bodyMatch = bodyCueRegex.exec(contentToScan)) !== null) {
         const cueId = bodyMatch[1] || bodyMatch[2] || bodyMatch[3];
         if (cueId && !bodyCues.includes(cueId)) {
           bodyCues.push(cueId);
+        }
+      }
+
+      // 2b. Structural vs. Highlight Target Validation in Slide Body
+      const invalidContainerHl = body.match(/<(?:BentoCard|Pipeline|MetricStat)[^>]*\bcue=["'](hl-[a-zA-Z0-9_-]+)["']/g);
+      if (invalidContainerHl) {
+        for (const match of invalidContainerHl) {
+          console.error(`  ❌ [${slideFile}] Container component cannot use highlight cue in "${match}". Highlight cues (hl-*) are reserved for inline text marks.`);
+          totalErrors++;
+        }
+      }
+      // 2c. Mandatory Highlight Marker Enforcement: Every BentoCard and Pipeline step must have at least one highlight marker
+      const bentoCardBlocks = body.match(/<BentoCard[\s\S]*?<\/BentoCard>/g) || [];
+      for (const card of bentoCardBlocks) {
+        const hasHl = /\{cue:hl-[^}]+\}|<mark|<Highlight|\bcue:\s*["']hl-/.test(card);
+        if (!hasHl) {
+          const titleMatch = card.match(/title=["']([^"']+)["']/);
+          const cueMatch = card.match(/\bcue=["']([^"']+)["']/);
+          const cardName = titleMatch ? titleMatch[1] : (cueMatch ? cueMatch[1] : 'unnamed card');
+          console.error(`  ❌ [${slideFile}] BentoCard "${cardName}" has no highlight marker. Every content card must have at least one inline {cue:hl-...} to ensure visual focus and voiceover parity.`);
+          totalErrors++;
+        }
+      }
+
+      const pipelineBlocks = body.match(/<Pipeline[\s\S]*?\/>/g) || [];
+      for (const pipeline of pipelineBlocks) {
+        const stepItems = pipeline.match(/\{[\s\S]*?(?:num:|title:)[\s\S]*?\}/g) || [];
+        for (let sIdx = 0; sIdx < stepItems.length; sIdx++) {
+          const step = stepItems[sIdx];
+          const titleMatch = step.match(/title:\s*["']([^"']+)["']/);
+          const numMatch = step.match(/num:\s*["']([^"']+)["']/);
+          const stepName = titleMatch ? titleMatch[1] : (numMatch ? `Step ${numMatch[1]}` : `Step #${sIdx + 1}`);
+
+          if (/title:\s*(["'])(?:(?!\1)[\s\S])*?\{cue:hl-/.test(step)) {
+            console.error(`  ❌ [${slideFile}] Pipeline step "${stepName}" has a highlight marker in title. Highlight markers must NOT be on step title, but in desc.`);
+            totalErrors++;
+          }
+
+          const hasDescHl = /desc:\s*(["'])(?:(?!\1)[\s\S])*?\{cue:hl-/.test(step);
+          if (!hasDescHl) {
+            console.error(`  ❌ [${slideFile}] Pipeline step "${stepName}" has no highlight marker in desc. Every pipeline step must contain at least one inline {cue:hl-...} in desc.`);
+            totalErrors++;
+          }
+        }
+      }
+
+      // 2c-2. Mandatory Highlight Marker Enforcement for BulletList items:
+      // Every bullet point item must have at least one inline {cue:hl-...} in desc, and NOT in title.
+      const bListMatches = body.match(/<BulletList[\s\S]*?\/>/g) || [];
+      for (const bList of bListMatches) {
+        const bulletItems = bList.match(/\{[\s\S]*?(?:title:|desc:)[\s\S]*?\}/g) || [];
+        for (let bIdx = 0; bIdx < bulletItems.length; bIdx++) {
+          const item = bulletItems[bIdx];
+          const titleMatch = item.match(/title:\s*["']([^"']+)["']/);
+          const numMatch = item.match(/num:\s*["']([^"']+)["']/);
+          const itemName = titleMatch ? titleMatch[1] : (numMatch ? `Item ${numMatch[1]}` : `Bullet #${bIdx + 1}`);
+
+          if (/title:\s*(["'])(?:(?!\1)[\s\S])*?\{cue:hl-/.test(item)) {
+            console.error(`  ❌ [${slideFile}] BulletList item "${itemName}" has a highlight marker in title. Highlight markers must NOT be on item title, but in desc.`);
+            totalErrors++;
+          }
+
+          const hasDescHl = /desc:\s*(["'])(?:(?!\1)[\s\S])*?\{cue:hl-/.test(item);
+          if (!hasDescHl) {
+            console.error(`  ❌ [${slideFile}] BulletList item "${itemName}" has no highlight marker in desc. Every bullet point item must contain at least one inline {cue:hl-...} in desc.`);
+            totalErrors++;
+          }
+        }
+      }
+
+      // 2c-3. Mandatory Highlight Marker Enforcement for CalloutBox components:
+      // Every CalloutBox must contain at least one inline {cue:hl-...} to ensure voiceover parity.
+      const calloutMatches = [];
+      const calloutStartRegex = /<CalloutBox\b/g;
+      let cbMatch;
+      while ((cbMatch = calloutStartRegex.exec(body)) !== null) {
+        const startIndex = cbMatch.index;
+        let i = startIndex + '<CalloutBox'.length;
+        let inQuote = null;
+        let isSelfClosing = false;
+        while (i < body.length) {
+          const char = body[i];
+          if (inQuote) {
+            if (char === inQuote) inQuote = null;
+          } else {
+            if (char === '"' || char === "'") {
+              inQuote = char;
+            } else if (char === '/' && body[i + 1] === '>') {
+              isSelfClosing = true;
+              i += 2;
+              break;
+            } else if (char === '>') {
+              i += 1;
+              break;
+            }
+          }
+          i++;
+        }
+        if (isSelfClosing) {
+          calloutMatches.push(body.slice(startIndex, i));
+        } else {
+          const closeTag = '</CalloutBox>';
+          const closeIndex = body.indexOf(closeTag, i);
+          if (closeIndex !== -1) {
+            calloutMatches.push(body.slice(startIndex, closeIndex + closeTag.length));
+          }
+        }
+      }
+
+      for (let cIdx = 0; cIdx < calloutMatches.length; cIdx++) {
+        const callout = calloutMatches[cIdx];
+        const titleMatch = callout.match(/title=["']([^"']+)["']/);
+        const calloutName = titleMatch ? titleMatch[1] : `Callout #${cIdx + 1}`;
+
+        const hasHl = /\{cue:hl-[^}]+\}/.test(callout);
+        if (!hasHl) {
+          console.error(`  ❌ [${slideFile}] CalloutBox "${calloutName}" has no highlight marker. Every CalloutBox must contain at least one inline {cue:hl-...} to ensure the voiceover discusses its content.`);
+          totalErrors++;
+        }
+      }
+
+      // 2d. Mandatory Cue & Highlight Enforcement for Title Slides:
+      // Title slides (slideLayout: "title" or containing <TitleSlide) must have:
+      // 1. Title entrance cue (default title-main)
+      // 2. Subtitle entrance cue (default title-sub)
+      // 3. Subtitle inline highlight marker ({cue:hl-...})
+      // 4. Speaker info entrance cue (default title-speaker)
+      // in strictly sequential order in the voiceover!
+      const isTitleSlide = /slideLayout:\s*["']?title["']?/m.test(fm) || /<TitleSlide/m.test(body);
+      if (isTitleSlide) {
+        const titleCueMatch = body.match(/titleCue=["']([^"']+)["']/);
+        const titleCue = titleCueMatch ? titleCueMatch[1] : 'title-main';
+
+        const subtitleCueMatch = body.match(/subtitleCue=["']([^"']+)["']/);
+        const subtitleCue = subtitleCueMatch ? subtitleCueMatch[1] : 'title-sub';
+
+        const speakerCueMatch = body.match(/speakerCue=["']([^"']+)["']/);
+        const speakerCue = speakerCueMatch ? speakerCueMatch[1] : 'title-speaker';
+
+        // Ensure default title cues are in bodyCues in their physical display order
+        if (!bodyCues.includes(titleCue)) bodyCues.unshift(titleCue);
+        const subIdx = bodyCues.indexOf(subtitleCue);
+        if (subIdx === -1) {
+          const tIdx = bodyCues.indexOf(titleCue);
+          bodyCues.splice(tIdx + 1, 0, subtitleCue);
+        }
+        if (!bodyCues.includes(speakerCue)) bodyCues.push(speakerCue);
+
+        if (!voCues.includes(titleCue)) {
+          console.error(`  ❌ [${slideFile}] Title slide must contain a cue for the main title ("{cue:${titleCue}}") in voiceover.`);
+          totalErrors++;
+        }
+        if (!voCues.includes(subtitleCue)) {
+          console.error(`  ❌ [${slideFile}] Title slide must contain a cue for the subtitle ("{cue:${subtitleCue}}") in voiceover.`);
+          totalErrors++;
+        }
+        const hasSubtitleHl = /\{cue:hl-[^}]+\}|<mark|<Highlight/.test(subtitleText) || 
+          /<TitleSlide[^>]*subtitle=["'][^"']*\{cue:hl-/.test(body);
+        if (!hasSubtitleHl) {
+          console.error(`  ❌ [${slideFile}] Title slide must contain at least one highlight marker {cue:hl-...} in its subtitle to ensure visual focus and voiceover parity.`);
+          totalErrors++;
+        }
+        if (!voCues.includes(speakerCue)) {
+          console.error(`  ❌ [${slideFile}] Title slide must contain a cue for the speaker information ("{cue:${speakerCue}}") in voiceover.`);
+          totalErrors++;
+        }
+
+        const tIdx = voCues.indexOf(titleCue);
+        const sIdx = voCues.indexOf(subtitleCue);
+        const spkIdx = voCues.indexOf(speakerCue);
+        const hlCuesInVo = voCues.filter(c => c.startsWith('hl-') || c.startsWith('mark-'));
+        const firstHlIdx = hlCuesInVo.length > 0 ? voCues.indexOf(hlCuesInVo[0]) : -1;
+
+        if (tIdx !== -1 && sIdx !== -1 && tIdx > sIdx) {
+          console.error(`  ❌ [${slideFile}] Title cue "{cue:${titleCue}}" must appear before subtitle cue "{cue:${subtitleCue}}" in voiceover.`);
+          totalErrors++;
+        }
+        if (sIdx !== -1 && firstHlIdx !== -1 && sIdx > firstHlIdx) {
+          console.error(`  ❌ [${slideFile}] Subtitle cue "{cue:${subtitleCue}}" must appear before subtitle highlight marker in voiceover.`);
+          totalErrors++;
+        }
+        if (firstHlIdx !== -1 && spkIdx !== -1 && firstHlIdx > spkIdx) {
+          console.error(`  ❌ [${slideFile}] Subtitle highlight marker must appear before speaker cue "{cue:${speakerCue}}" in voiceover.`);
+          totalErrors++;
+        }
+
+        // Date consistency check: Warn if hardcoded date is specified in <TitleSlide>
+        const dateAttrMatch = body.match(/<TitleSlide[^>]*\bdate=["']([^"']+)["']/);
+        if (dateAttrMatch) {
+          console.warn(`  ⚠️ [${slideFile}] <TitleSlide> specifies hardcoded date "${dateAttrMatch[1]}". Omit the "date" prop so it is automatically derived from the presentation folder name to guarantee date consistency.`);
+          totalWarnings++;
+        }
+      }
+
+      // 2e. Mandatory Subtitle Cue & Highlight Enforcement for Content Slides:
+      // Content slides (all slides after slide 1) must have:
+      // 1. Subtitle defined in frontmatter
+      // 2. At least one inline highlight marker ({cue:hl-...}) in the subtitle
+      // 3. Subtitle entrance cue in voiceover ({cue:sub} or custom {cue:subtitleCue})
+      // 4. Subtitle entrance cue must appear BEFORE any stage cues (col-*, box-*, card-*, step-*, stat-*)
+      // 5. Subtitle entrance cue must appear BEFORE the subtitle highlight marker
+      if (!isTitleSlide) {
+        const subCueMatch = body.match(/subtitleCue=["']([^"']+)["']/);
+        const subCue = subCueMatch ? subCueMatch[1] : 'sub';
+
+        // Prepend subtitleCue to bodyCues at index 0 so it comes BEFORE any subtitle highlight and stage cues!
+        const existingIdx = bodyCues.indexOf(subCue);
+        if (existingIdx !== -1) {
+          bodyCues.splice(existingIdx, 1);
+        }
+        bodyCues.unshift(subCue);
+
+        if (!subtitleText.trim()) {
+          console.error(`  ❌ [${slideFile}] Content slide is missing "subtitle" in frontmatter.`);
+          totalErrors++;
+        } else {
+          const hasSubHl = /\{cue:hl-[^}]+\}|<mark|<Highlight/.test(subtitleText);
+          if (!hasSubHl) {
+            console.error(`  ❌ [${slideFile}] Content slide subtitle must contain at least one highlight marker {cue:hl-...} to ensure visual focus and voiceover parity.`);
+            totalErrors++;
+          }
+        }
+
+        if (!voCues.includes(subCue)) {
+          console.error(`  ❌ [${slideFile}] Content slide must contain a cue for the subtitle ("{cue:${subCue}}") in voiceover.`);
+          totalErrors++;
+        } else {
+          const subIdx = voCues.indexOf(subCue);
+          const firstStageIdx = voCues.findIndex(c => /^(?:col|box|card|step|stat)-/.test(c));
+          if (firstStageIdx !== -1 && subIdx > firstStageIdx) {
+            console.error(`  ❌ [${slideFile}] Subtitle cue "{cue:${subCue}}" must appear before stage cue "{cue:${voCues[firstStageIdx]}}" in voiceover.`);
+            totalErrors++;
+          }
+
+          const subHlMatch = subtitleText.match(/\{cue:(hl-[a-zA-Z0-9_-]+)/);
+          if (subHlMatch) {
+            const subHlCue = subHlMatch[1];
+            const hlIdx = voCues.indexOf(subHlCue);
+            if (hlIdx !== -1 && subIdx > hlIdx) {
+              console.error(`  ❌ [${slideFile}] Subtitle cue "{cue:${subCue}}" must appear before subtitle highlight marker "{cue:${subHlCue}}" in voiceover.`);
+              totalErrors++;
+            }
+          }
         }
       }
 
@@ -301,7 +580,8 @@ function validateSlides() {
         // Verify that audio is up-to-date with current spoken text via MD5 hash
         const cleanText = extractCleanText(voiceoverText);
         const spokenText = applyLexicon(cleanText, lexicon);
-        const expectedHash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}`).digest('hex');
+        const normalizedVo = voiceoverText.replace(/\r\n/g, '\n').trim();
+        const expectedHash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}:${normalizedVo}`).digest('hex');
         if (audioCache[slideId] !== expectedHash) {
           console.error(
             `  ❌ [${slideFile}] Audio is out-of-date: Spoken text was modified since last audio synthesis (hash mismatch). Run "npm run audio:presentations".`

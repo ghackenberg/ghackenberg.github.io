@@ -1,15 +1,13 @@
 ---
 title: "Share of Model (SoM) als neue Leitwährung"
-subtitle: "Vom Share of Voice zum relativen Anteil, mit dem eine Marke in generativen Kaufberatungen genannt wird"
+subtitle: "Vom Share of Voice zum {cue:hl-sub-som-1001:cyan}relativen Anteil in generativen Kaufberatungen{/cue}"
 number: "21"
 slideLayout: "split"
 voiceover: >
-  Was ist die entscheidende KPI der Zukunft? Es ist nicht mehr das Keyword-Ranking, 
-  {cue:col-som-formula} sondern der Share of Model – kurz SoM. 
-  Hier zählen auch sogenannte {cue:hl-unlinked-mentions}Unlinked Brand Mentions{/cue}: Selbst wenn kein klickbarer Link 
-  ausgegeben wird, verankert die reine Nennung Ihre Marke fest im Modell. 
-  {cue:col-som-bench} Der Wettbewerbs-Benchmark zeigt die Wirkung: 
-  {cue:hl-som-winner}Mit zweiundvierzig Prozent Share of Model{/cue} dominiert das optimierte Unternehmen die Kaufberatung gegenüber dem Wettbewerb.
+  Was ist die entscheidende unternehmerische Leitwährung der generativen Zukunft?
+  {cue:sub} Sie führt uns vom Share of Voice zum {cue:hl-sub-som-1001}relativen Anteil in generativen Kaufberatungen{/cue}.
+  {cue:col-som-formula} Es ist der Share of Model mit der Formel {cue:hl-callout-som-formula}Erwähnungen geteilt durch Gesamttests{/cue}. Wir evaluieren {cue:hl-som-prompt-testing}standardisierte Kaufberatungs-Prompts{/cue}, und selbst jede {cue:hl-unlinked-mentions}Nennung ohne Hyperlink{/cue} festigt Ihre Marktpräsenz.
+  {cue:col-som-bench} Der Wettbewerbs-Benchmark zeigt die Wirkung: {cue:hl-som-winner}Mit zweiundvierzig Prozent Share of Model{/cue} dominiert das optimierte Unternehmen die Kaufberatung gegenüber dem Wettbewerb.
 notes: |
   - Zeit: 48:00 - 50:30 Min.
   - Eigene Methodik / B2B AI Visibility Index Dr. Georg Hackenberg (2026).
@@ -29,7 +27,7 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-som-formula" title="Definition & Berechnungsformel" accent="blue">
-    <CalloutBox type="statement" color="blue" title="Share of Model (SoM)">
+    <CalloutBox type="statement" color="blue" title="{cue:hl-callout-som-formula:blue}Share of Model (SoM) Formel{/cue}">
       <div class="text-3xl lg:text-4xl xl:text-5xl font-mono font-black text-blue-300 light:text-blue-950 my-2 text-center">
         SoM (%) = ( M<sub>erwähnt</sub> / P<sub>gesamt</sub> ) × 100
       </div>
@@ -40,12 +38,12 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
       {
         num: "1",
         title: "Systematisches Prompt-Testing",
-        desc: "100–200 industriespezifische Kaufberatungs-Prompts in standardisierten Modell-Panels testen."
+        desc: "Prüfung über {cue:hl-som-prompt-testing:blue}standardisierte industriespezifische Kaufberatungs-Prompts{/cue} in Modell-Panels."
       },
       {
         num: "2",
-        title: "{cue:hl-unlinked-mentions:blue}Unlinked Brand Mentions{/cue}",
-        desc: "Jede Nennung festigt die Gewichtung im Modell und erhöht zukünftige Empfehlungen."
+        title: "Unlinked Brand Mentions",
+        desc: "Jede {cue:hl-unlinked-mentions:blue}Nennung ohne Hyperlink{/cue} festigt die Gewichtung im Modell und erhöht Empfehlungen."
       }
     ]} />
   </BentoCard>

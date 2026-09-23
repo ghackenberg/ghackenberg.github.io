@@ -1,16 +1,13 @@
 ---
 title: "Der Tool-Markt: Spezial-GEO vs. Enterprise-Suiten"
-subtitle: "Entscheidungsmatrix zwischen dedizierten KI-Monitoring-Startups und etablierten SEO-Suiten"
+subtitle: "Entscheidungsmatrix zwischen {cue:hl-sub-tools-1001:cyan}GEO-Startups und etablierten SEO-Suiten{/cue}"
 number: "23"
 slideLayout: "split"
 voiceover: >
-  Werfen wir nun einen Blick auf den aktuellen Tool-Markt und die Entscheidungsmatrix zwischen spezialisierten GEO-Plattformen und etablierten Enterprise-Suiten. 
-  {cue:col-tools-special} Auf der einen Seite spezialisierte GEO-Tools wie Limy.ai oder AIclicks, die sich voll 
-  auf {cue:hl-som-metriken}automatisierte Share-of-Model-Metriken{/cue} fokussieren. 
-  {cue:col-tools-enterprise} Auf der anderen Seite bewährte Enterprise-Suiten, die Stärken beim 
-  {cue:hl-aio-tracking}Google AI Overview Tracking{/cue} und bei Entitäten-Backlink-Graphen ausspielen. 
-  Für den Einstieg im Mittelstand reicht meist die gezielte Nutzung bestehender Tools kombiniert mit 
-  eigenem Prompt-Testing.
+  Werfen wir nun einen Blick auf den dynamischen Tool-Markt der Optimierung.
+  {cue:sub} Er erfordert eine fundierte Entscheidungsmatrix zwischen {cue:hl-sub-tools-1001}GEO-Startups und etablierten SEO-Suiten{/cue}.
+  {cue:col-tools-special} Spezialisierte Pioniere wie {cue:hl-callout-geo-pioniere}Limy punkt ai oder AIclicks{/cue} fokussieren die {cue:hl-som-metriken}Auswertung von Kaufberatungs-Prompts{/cue} und zeigen, {cue:hl-citation-gap}bei welchen Fragen Konkurrenten zitiert werden{/cue}, verlangen aber oft hohe {cue:hl-saas-kosten}monatliche SaaS-Abogebühren{/cue}.
+  {cue:col-tools-enterprise} Etablierte Suiten wie {cue:hl-callout-enterprise-suiten}Semrush oder Ahrefs{/cue} erkennen, {cue:hl-aio-tracking}welche Suchergebnisse von KI-Boxen dominiert werden{/cue}, tracken {cue:hl-unlinked-graph}Unlinked Brand Mentions und Markenzitate{/cue} und bündeln alles in {cue:hl-allinone-platform}einem etablierten Gesamtsystem{/cue}.
 notes: |
   - Zeit: 52:30 - 54:30 Min.
   - G2 Grid for SEO & AI Visibility Software zitieren.
@@ -28,49 +25,49 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-tools-special" title="Spezialisierte GEO-Pioniere" accent="blue">
-    <CalloutBox type="statement" color="blue" title="Limy.ai / AIclicks / Peasy.ai">
+    <CalloutBox type="statement" color="blue" title="{cue:hl-callout-geo-pioniere:blue}Limy.ai / AIclicks / Peasy.ai{/cue}">
       Spezialisiert auf tägliches Prompt-Tracking über ChatGPT, Perplexity & Gemini.
     </CalloutBox>
 
     <BulletList items={[
       {
         icon: "check",
-        title: "{cue:hl-som-metriken:blue}Share of Model Metriken{/cue}",
-        desc: "Tägliche automatisierte Auswertung von Kaufberatungs-Prompts in standardisierten Modell-Panels."
+        title: "Share of Model Metriken",
+        desc: "Tägliche automatisierte {cue:hl-som-metriken:blue}Auswertung von Kaufberatungs-Prompts{/cue} in Modell-Panels."
       },
       {
         icon: "check",
         title: "Citation Gap Analysis",
-        desc: "Deckt exakt auf, bei welchen Fragen Konkurrenten als primäre Quellen genannt werden."
+        desc: "Deckt exakt auf, {cue:hl-citation-gap:blue}bei welchen Fragen Konkurrenten zitiert werden{/cue}."
       },
       {
         icon: "cross",
         title: "Kostenfaktor",
-        desc: "Hohe monatliche SaaS-Abogebühren (oft ab $ 500–1.500 monatlich) bei fragmentiertem Markt."
+        desc: "Hohe {cue:hl-saas-kosten:amber}monatliche SaaS-Abogebühren{/cue} bei noch fragmentiertem Tool-Markt."
       }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-tools-enterprise" title="Etablierte Enterprise-Suiten" accent="cyan">
-    <CalloutBox type="statement" color="cyan" title="Semrush AI Solutions / Ahrefs Brand Graph">
+    <CalloutBox type="statement" color="cyan" title="{cue:hl-callout-enterprise-suiten:cyan}Semrush AI Solutions / Ahrefs Brand Graph{/cue}">
       Verknüpfen klassisches Keyword- und Backlink-Crawling mit generativen SERP-Snapshots.
     </CalloutBox>
 
     <BulletList items={[
       {
         icon: "check",
-        title: "{cue:hl-aio-tracking:cyan}Google AI Overview Tracking{/cue}",
-        desc: "Erkennt sofort, welche SERPs bereits von generativen KI-Boxen dominiert werden."
+        title: "Google AI Overview Tracking",
+        desc: "Erkennt sofort, {cue:hl-aio-tracking:cyan}welche Suchergebnisse von KI-Boxen dominiert werden{/cue}."
       },
       {
         icon: "check",
         title: "Entitäten-Backlink-Graphen",
-        desc: "Vollständige Sichtbarmachung von Unlinked Brand Mentions und Markenzitaten im Web."
+        desc: "Macht {cue:hl-unlinked-graph:cyan}Unlinked Brand Mentions und Markenzitate{/cue} im Web sichtbar."
       },
       {
         icon: "check",
         title: "All-in-One Plattform",
-        desc: "Integriert technische Audits, Linkanalyse und Content-Lücken in einem System."
+        desc: "Integriert technische Audits und Content-Lücken in {cue:hl-allinone-platform:cyan}einem etablierten Gesamtsystem{/cue}."
       }
     ]} />
   </BentoCard>

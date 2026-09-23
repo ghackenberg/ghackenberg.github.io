@@ -1,0 +1,60 @@
+---
+title: "Die 4 Säulen der technischen Umsetzung"
+subtitle: "Wie unsere maßgeschneiderte Slide-as-Code Engine im {cue:hl-sub-architektur-923:cyan}Astro-Ökosystem implementiert{/cue} ist"
+number: "07"
+slideLayout: "grid"
+voiceover: >
+  Die technische Architektur unserer Custom Presentation Engine ruht auf vier eng verzahnten Säulen.
+  {cue:sub} Sie zeigt, wie die Slide-as-Code Engine im {cue:hl-sub-architektur-923}Astro-Ökosystem implementiert{/cue} ist.
+  {cue:card-ssg} Erstens ermöglicht der Astro Content Layer ein {cue:hl-arch-ssg}statisches SSG-Build{/cue}: Er erzielt {cue:hl-arch-speed}ultraschnelle Ladezeiten unter 500 ms{/cue} und nutzt {cue:hl-arch-tokens}identische Tailwind CSS Tokens{/cue}.
+  {cue:card-canvas} Zweitens garantiert der {cue:hl-arch-canvas}AutoFitController der Vektorbühne{/cue} eine {cue:hl-arch-scaling}mathematische Skalierung{/cue}, sodass Typografie und Boxen stets ihr {cue:hl-arch-layout}exaktes 16:9-Layout{/cue} bewahren.
+  {cue:card-archetypes} Drittens stellen {cue:hl-arch-archetypes}sechs standardisierte Archetypen{/cue} wie {cue:hl-arch-masters}Title-, Split-, Pipeline-, Grid- und MetricSlide{/cue} sicher, dass LLMs Folien {cue:hl-arch-agentcss}fehlerfrei ohne Freiform-CSS{/cue} erzeugen.
+  {cue:card-schema} Viertens erzeugen {cue:hl-arch-schema}duale Schema.org Wissensgraphen{/cue} für jede Folie ein {cue:hl-arch-creativework}semantisches CreativeWork{/cue} und maximale {cue:hl-arch-citation}Zitationsfähigkeit in KI-Antwortmaschinen{/cue}.
+notes: |
+  - Zeit: 10:00 - 11:45 Min.
+  - Das Zusammenspiel der 4 Säulen erklären.
+  - Hervorheben: Warum Astro die perfekte Plattform für inhaltszentrierte Präsentationen ist.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="07"
+  totalSlides="10"
+  cols={2}
+>
+  <BentoCard cue="card-ssg" title="1. Astro Content Layer" accent="blue">
+    <p><strong>Mechanismus:</strong> {cue:hl-arch-ssg:blue}Statisches SSG{/cue} & MDX-Bundles.</p>
+    <BulletList items={[
+      { icon: "check", accent: "blue", title: "Zero Runtime Overhead", desc: "Kein unnötiges JavaScript und {cue:hl-arch-speed:blue}ultraschnelle Ladezeiten unter 500 ms{/cue}." },
+      { icon: "check", accent: "blue", title: "Gemeinsames Designsystem", desc: "{cue:hl-arch-tokens:blue}Identische Tailwind CSS Tokens{/cue} wie im Rest der Website." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="card-canvas" title="2. 1920x1080 Vektorbühne" accent="purple">
+    <p><strong>Mechanismus:</strong> {cue:hl-arch-canvas:purple}AutoFitController & Vektorbühne{/cue}.</p>
+    <BulletList items={[
+      { icon: "check", accent: "purple", title: "Verlustfreie Geometrie", desc: "{cue:hl-arch-scaling:purple}Mathematische Skalierung{/cue} basierend auf der Viewport-Größe." },
+      { icon: "check", accent: "purple", title: "Kein Zeilenumbruch-Chaos", desc: "Typografie und Boxen behalten immer ihr {cue:hl-arch-layout:purple}exaktes 16:9-Layout{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="card-archetypes" title="3. 6 Master-Archetypen" accent="emerald">
+    <p><strong>Mechanismus:</strong> {cue:hl-arch-archetypes:emerald}6 standardisierte Archetypen{/cue}.</p>
+    <BulletList items={[
+      { icon: "check", accent: "emerald", title: "Schutz vor CSS-Fehlern", desc: "Feste Master-Komponenten wie {cue:hl-arch-masters:emerald}Title-, Split-, Pipeline-, Grid- und MetricSlide{/cue}." },
+      { icon: "check", accent: "emerald", title: "Agenten-Ergonomie", desc: "Autonome LLM-Agenten generieren Folien auf Anhieb {cue:hl-arch-agentcss:emerald}fehlerfrei ohne Freiform-CSS{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="card-schema" title="4. Duale Schema.org Graphen" accent="amber">
+    <p><strong>Mechanismus:</strong> {cue:hl-arch-schema:amber}Duale Schema.org Wissensgraphen{/cue}.</p>
+    <BulletList items={[
+      { icon: "check", accent: "amber", title: "Folien-Transkripte", desc: "Jede Folie wird als {cue:hl-arch-creativework:amber}semantisches CreativeWork{/cue} strukturiert." },
+      { icon: "check", accent: "amber", title: "AIO & GEO Optimierung", desc: "Vollständige {cue:hl-arch-citation:amber}Zitationsfähigkeit in KI-Antwortmaschinen{/cue}." }
+    ]} />
+  </BentoCard>
+</GridSlide>

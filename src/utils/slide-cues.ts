@@ -14,7 +14,7 @@ export function renderSlideCues(text: string | undefined | null): string {
     /\{cue:([a-zA-Z0-9_-]+)(?::([a-zA-Z0-9_-]+))?\}([\s\S]*?)\{\/cue(?::[a-zA-Z0-9_-]+)?\}/g,
     (_, cueId, color, content) => {
       const colorAttr = color ? ` data-color="${color}"` : '';
-      return `<mark id="${cueId}" data-cue="${cueId}"${colorAttr} class="highlight-marker font-semibold rounded-md">${content}</mark>`;
+      return `<mark id="${cueId}" data-cue="${cueId}"${colorAttr} class="highlight-marker font-semibold rounded-[0.38em]">${content}</mark>`;
     }
   );
 

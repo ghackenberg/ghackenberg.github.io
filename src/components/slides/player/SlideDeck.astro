@@ -2,12 +2,30 @@
 import 'reveal.js/reveal.css';
 import type { SlideCueMap } from './AudioSyncController';
 
+export interface SlideReference {
+  type: string;
+  author: string;
+  title: string;
+  year?: number;
+  url?: string;
+  siteName?: string;
+  booktitle?: string;
+  journal?: string;
+  volume?: string;
+  number?: string;
+  pages?: string;
+  publisher?: string;
+  howpublished?: string;
+  doi?: string;
+}
+
 interface SlideMeta {
   id: string;
   title: string;
   audioUrl?: string;
   cues?: SlideCueMap;
   notes?: string;
+  references?: SlideReference[];
 }
 
 interface Props {
@@ -231,6 +249,26 @@ const currentDeckId = presentationId || talkId || "presentation";
         </svg>
       </button>
 
+      <!-- References Modal Toggle with Count Badge (R) -->
+      <button
+        id="btn-references"
+        type="button"
+        class="h-8 sm:h-9 px-2 sm:px-2.5 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer opacity-40 cursor-not-allowed"
+        title="References for this slide (R)"
+        aria-label="Toggle references for this slide"
+        aria-disabled="true"
+      >
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-400 light:text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <span
+          id="references-badge"
+          class="font-mono text-[10px] sm:text-xs font-bold px-1.5 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-800 border border-purple-500/30 light:border-purple-200 transition-colors"
+        >
+          0
+        </span>
+      </button>
+
       <!-- Fullscreen (F) -->
       <button
         id="btn-fullscreen"
@@ -326,6 +364,79 @@ const currentDeckId = presentationId || talkId || "presentation";
       </div>
     </div>
   </div>
+
+  <!-- References Modal Dialog (Centered Architecture matching PrivacyModal, Fully Accessible & Fullscreen Ready) -->
+  <div 
+    id="references-modal-backdrop" 
+    class="fixed inset-0 z-[110] bg-black/75 light:bg-slate-900/30 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="references-modal-title"
+    aria-hidden="true"
+  >
+    <div 
+      id="references-modal-container"
+      class="glass-panel w-full max-w-lg sm:max-w-xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(92dvh,760px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
+    >
+      <!-- Top Accent Bar -->
+      <div class="h-1 sm:h-1.5 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 shrink-0"></div>
+
+      <!-- Header (Sticky/Shrink-0) -->
+      <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-white/5 light:border-slate-200/80 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 light:text-purple-600 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div class="min-w-0 flex flex-col justify-center">
+            <div class="flex items-center gap-2">
+              <h2 id="references-modal-title" class="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white light:text-slate-900 leading-tight truncate">
+                Slide <span class="text-purple-400 light:text-purple-600">References</span>
+              </h2>
+              <span id="references-modal-slide-badge" class="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-800 border border-purple-500/30 light:border-purple-200 shrink-0">
+                Slide 01
+              </span>
+            </div>
+            <p id="references-modal-subtitle" class="text-xs text-gray-400 light:text-slate-500 mt-0.5 leading-tight truncate">
+              Academic citations & source materials
+            </p>
+          </div>
+        </div>
+
+        <!-- Close Button -->
+        <button 
+          id="btn-close-references-modal"
+          type="button"
+          class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-gray-100 light:text-slate-500 light:hover:text-slate-800 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
+          aria-label="Close references modal"
+          title="Close (ESC / R)"
+        >
+          <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scrollable Content Body -->
+      <div id="references-modal-body" class="modal-body flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 space-y-3 sm:space-y-3.5 custom-scrollbar min-h-0">
+        <!-- Dynamically populated per slide -->
+      </div>
+
+      <!-- Footer (Sticky/Shrink-0) -->
+      <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-white/5 light:border-slate-200/80 flex items-center justify-between text-xs text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
+        <span class="hidden sm:inline">Shortcut: <kbd class="px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 font-mono text-[10px] text-gray-300 light:text-slate-700 border border-white/10 light:border-slate-300">R</kbd> or <kbd class="px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 font-mono text-[10px] text-gray-300 light:text-slate-700 border border-white/10 light:border-slate-300">ESC</kbd></span>
+        <button
+          id="btn-jump-to-transcript-from-modal"
+          type="button"
+          class="inline-flex items-center gap-1.5 text-purple-400 light:text-purple-600 hover:text-purple-300 light:hover:text-purple-800 hover:underline font-semibold transition-colors cursor-pointer ml-auto"
+        >
+          <span>View in full transcript</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Slides Metadata Carrier -->
@@ -356,9 +467,13 @@ const currentDeckId = presentationId || talkId || "presentation";
     controls: false,
     progress: false,
     hash: false,
-    history: false,
-    keyboard: true,
-    overview: false,
+    keyboard: {
+      38: null, // ArrowUp (managed by audioSync.prevCue)
+      40: null, // ArrowDown (managed by audioSync.nextCue)
+      74: null, // KeyJ (managed by audioSync.nextCue)
+      75: null, // KeyK (managed by audioSync.prevCue)
+      32: null  // Space (managed by audioSync.togglePlay)
+    },
     center: true,
     transition: 'fade',
     transitionSpeed: 'fast',
@@ -388,6 +503,17 @@ const currentDeckId = presentationId || talkId || "presentation";
     const btnNextCue = document.getElementById('btn-next-cue');
     const btnSpeed = document.getElementById('btn-speed');
     const btnOverview = document.getElementById('btn-overview');
+    const btnReferences = document.getElementById('btn-references');
+    const referencesBadge = document.getElementById('references-badge');
+    const referencesModalBackdrop = document.getElementById('references-modal-backdrop');
+    const referencesModalContainer = document.getElementById('references-modal-container');
+    const btnCloseReferencesModal = document.getElementById('btn-close-references-modal');
+    const referencesModalSlideBadge = document.getElementById('references-modal-slide-badge');
+    const referencesModalSubtitle = document.getElementById('references-modal-subtitle');
+    const referencesModalBody = document.getElementById('references-modal-body');
+    const btnJumpToTranscriptFromModal = document.getElementById('btn-jump-to-transcript-from-modal');
+
+    let isReferencesModalOpen = false;
     const btnFullscreen = document.getElementById('btn-fullscreen');
     const progressBar = document.getElementById('progress-bar');
     const progressContainer = document.getElementById('progress-container');
@@ -493,6 +619,162 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
     };
 
+    // =========================================================================
+    // References Modal Controller
+    // =========================================================================
+    const escapeHtml = (str: string): string => {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    };
+
+    const renderReferenceItem = (ref: SlideReference): string => {
+      let pubDetails = '';
+      if (ref.type === 'inproceedings' && ref.booktitle) {
+        pubDetails = ` In <span class="text-gray-200 light:text-slate-700 font-medium">${escapeHtml(ref.booktitle)}</span>${ref.pages ? `, pp. ${escapeHtml(ref.pages)}` : ''}.`;
+      } else if (ref.type === 'article' && ref.journal) {
+        pubDetails = ` <span class="text-gray-200 light:text-slate-700 font-medium">${escapeHtml(ref.journal)}</span>${ref.volume ? ` ${escapeHtml(ref.volume)}` : ''}${ref.number ? `(${escapeHtml(ref.number)})` : ''}${ref.pages ? `, pp. ${escapeHtml(ref.pages)}` : ''}.`;
+      } else if (ref.type === 'book' && ref.publisher) {
+        pubDetails = ` <span class="text-gray-200 light:text-slate-700">${escapeHtml(ref.publisher)}</span>.`;
+      } else if (ref.type === 'online' && ref.siteName) {
+        pubDetails = ` <span class="text-gray-200 light:text-slate-700 font-medium">${escapeHtml(ref.siteName)}</span>.`;
+      } else if (ref.type === 'misc' && ref.howpublished) {
+        pubDetails = ` <span class="text-gray-200 light:text-slate-700">${escapeHtml(ref.howpublished)}</span>.`;
+      }
+
+      let badges = '';
+      if (ref.url) {
+        badges += `
+          <a
+            href="${escapeHtml(ref.url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-[11px] font-semibold text-purple-400 light:text-purple-700 hover:text-purple-300 light:hover:text-purple-900 hover:underline"
+          >
+            <span>Open Source</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 01-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>`;
+      }
+      if (ref.doi) {
+        badges += `
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-500/15 light:bg-purple-100 text-purple-300 light:text-purple-800 border border-purple-500/25 light:border-purple-300">
+            DOI: ${escapeHtml(ref.doi)}
+          </span>`;
+      }
+      if (ref.type) {
+        badges += `
+          <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 text-gray-400 light:text-slate-700 border border-white/10 light:border-slate-300">
+            ${escapeHtml(ref.type)}
+          </span>`;
+      }
+
+      return `
+        <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2">
+          <div class="text-xs sm:text-sm text-gray-300 light:text-slate-600 leading-relaxed pl-2.5 border-l-2 border-purple-500/50 light:border-purple-400">
+            <span class="font-bold text-gray-100 light:text-slate-900">${escapeHtml(ref.author)}</span>
+            ${ref.year ? `<span class="text-gray-400 light:text-slate-500"> (${escapeHtml(String(ref.year))})</span>` : ''}:
+            <span class="italic text-gray-200 light:text-slate-800"> "${escapeHtml(ref.title)}"</span>.
+            <span class="text-gray-400 light:text-slate-500 block sm:inline">${pubDetails}</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 pt-1 pl-2.5">
+            ${badges}
+          </div>
+        </div>
+      `;
+    };
+
+    const updateReferencesButton = (slideIndex: number) => {
+      const slide = slidesData[slideIndex];
+      const refs = slide?.references || [];
+      const count = refs.length;
+
+      if (referencesBadge) {
+        referencesBadge.textContent = String(count);
+      }
+
+      if (btnReferences) {
+        if (count === 0) {
+          btnReferences.classList.add('opacity-40', 'cursor-not-allowed');
+          btnReferences.classList.remove('hover:bg-slate-700', 'light:hover:bg-slate-200');
+          btnReferences.setAttribute('title', 'No references for this slide');
+          btnReferences.setAttribute('aria-disabled', 'true');
+        } else {
+          btnReferences.classList.remove('opacity-40', 'cursor-not-allowed');
+          btnReferences.classList.add('hover:bg-slate-700', 'light:hover:bg-slate-200');
+          btnReferences.setAttribute('title', `References for this slide (${count}) (R)`);
+          btnReferences.removeAttribute('aria-disabled');
+        }
+      }
+
+      // If modal is currently open, dynamically update its citations to match the active slide
+      if (isReferencesModalOpen) {
+        populateReferencesModal(slideIndex);
+      }
+    };
+
+    const populateReferencesModal = (slideIndex: number) => {
+      const slide = slidesData[slideIndex];
+      const refs = slide?.references || [];
+
+      if (referencesModalSlideBadge) {
+        referencesModalSlideBadge.textContent = `Slide ${String(slideIndex + 1).padStart(2, '0')}`;
+      }
+      if (referencesModalSubtitle) {
+        referencesModalSubtitle.textContent = slide?.title || 'Academic & industry sources';
+      }
+
+      if (referencesModalBody) {
+        if (refs.length === 0) {
+          referencesModalBody.innerHTML = `
+            <div class="p-8 text-center text-slate-400 light:text-slate-500 flex flex-col items-center justify-center gap-2">
+              <svg class="w-8 h-8 opacity-40 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              <p class="font-medium text-xs sm:text-sm">No specific citations listed for this slide.</p>
+            </div>
+          `;
+        } else {
+          referencesModalBody.innerHTML = refs.map((ref) => renderReferenceItem(ref)).join('');
+        }
+      }
+    };
+
+    const openReferencesModal = () => {
+      const idx = deck.getIndices().h;
+      populateReferencesModal(idx);
+
+      isReferencesModalOpen = true;
+      if (referencesModalBackdrop && referencesModalContainer) {
+        referencesModalBackdrop.classList.remove('opacity-0', 'pointer-events-none');
+        referencesModalBackdrop.classList.add('opacity-100', 'pointer-events-auto');
+        referencesModalContainer.classList.remove('scale-95');
+        referencesModalContainer.classList.add('scale-100');
+        referencesModalBackdrop.setAttribute('aria-hidden', 'false');
+      }
+      btnReferences?.classList.add('bg-purple-600/20', 'border-purple-500/50');
+    };
+
+    const closeReferencesModal = () => {
+      isReferencesModalOpen = false;
+      if (referencesModalBackdrop && referencesModalContainer) {
+        referencesModalBackdrop.classList.remove('opacity-100', 'pointer-events-auto');
+        referencesModalBackdrop.classList.add('opacity-0', 'pointer-events-none');
+        referencesModalContainer.classList.remove('scale-100');
+        referencesModalContainer.classList.add('scale-95');
+        referencesModalBackdrop.setAttribute('aria-hidden', 'true');
+      }
+      btnReferences?.classList.remove('bg-purple-600/20', 'border-purple-500/50');
+    };
+
+    const toggleReferencesModal = () => {
+      if (isReferencesModalOpen) {
+        closeReferencesModal();
+      } else {
+        openReferencesModal();
+      }
+    };
+
     const updateActiveSlideInList = (currentIndex: number) => {
       let activeItemEl: HTMLElement | null = null;
       slideListItems.forEach((item, idx) => {
@@ -577,6 +859,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         }
         if (slideIndexLabel) slideIndexLabel.textContent = String(index + 1);
         updateActiveSlideInList(index);
+        updateReferencesButton(index);
         if (progressBar) progressBar.style.width = '0%';
         if (timeCurrent) timeCurrent.textContent = '0:00';
         if (timeTotal) timeTotal.textContent = '0:00';
@@ -614,12 +897,14 @@ const currentDeckId = presentationId || talkId || "presentation";
         }
       }
     });
+    (window as any).audioSync = audioSync;
 
     // Reveal Slide Changed Event
     deck.on('slidechanged', () => {
       const idx = deck.getIndices().h;
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
       updateActiveSlideInList(idx);
+      updateReferencesButton(idx);
       if (audioSync.getCurrentSlideIndex() !== idx) {
         const isPlaying = audioSync.getIsPlaying();
         audioSync.setSlideIndex(idx, {
@@ -632,6 +917,9 @@ const currentDeckId = presentationId || talkId || "presentation";
       const currentSlide = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[idx];
       autoFit.fitSlide(currentSlide);
     });
+
+    // Initialize references button for initial slide
+    updateReferencesButton(deck.getIndices().h || 0);
 
     // Global user interaction gesture to unlock iOS Safari AudioSession as early as possible
     const unlockAudioOnTouch = () => {
@@ -688,6 +976,48 @@ const currentDeckId = presentationId || talkId || "presentation";
     slideListBackdrop?.addEventListener('click', () => {
       setDrawerPreference('closed');
       closeDrawer();
+    });
+
+    // References Button & Modal Listeners
+    btnReferences?.addEventListener('click', () => {
+      audioSync.unlockAudioSession();
+      const idx = deck.getIndices().h;
+      const refs = slidesData[idx]?.references || [];
+      if (refs.length > 0 || isReferencesModalOpen) {
+        toggleReferencesModal();
+      }
+    });
+
+    btnCloseReferencesModal?.addEventListener('click', () => {
+      closeReferencesModal();
+    });
+
+    referencesModalBackdrop?.addEventListener('click', (e) => {
+      if (e.target === referencesModalBackdrop) {
+        closeReferencesModal();
+      }
+    });
+
+    btnJumpToTranscriptFromModal?.addEventListener('click', () => {
+      closeReferencesModal();
+      if (isFullscreenActive()) {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (webkitDoc.webkitFullscreenElement && webkitDoc.webkitExitFullscreen) {
+          webkitDoc.webkitExitFullscreen();
+        }
+        if (isPseudoFullscreen()) {
+          togglePseudoFullscreen(false);
+        }
+      }
+      const idx = deck.getIndices().h;
+      const slide = slidesData[idx];
+      if (slide) {
+        const targetEl = document.getElementById(`transcript-${slide.id}`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
     });
 
     // Listen for external jump-to-slide events (e.g. from the Transcript Timeline Feed)
@@ -898,24 +1228,47 @@ const currentDeckId = presentationId || talkId || "presentation";
       isScrubbing = false;
     });
 
-    // Global Key Listener for Space -> Toggle Audio, Escape -> Toggle Drawer, Up/Down -> Cue Navigation
+    // Global Key Listener for Space -> Toggle Audio, Escape -> Toggle Modal/Drawer, R -> Toggle References, Up/Down -> Cue Navigation
     window.addEventListener('keydown', (e) => {
+      const targetTag = (e.target as HTMLElement)?.tagName;
+      if (['INPUT', 'TEXTAREA'].includes(targetTag)) return;
+
       if (e.code === 'Escape') {
+        if (isReferencesModalOpen) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          closeReferencesModal();
+          return;
+        }
         if (window.innerWidth >= 768) {
           e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
           toggleDrawer();
         }
-      } else if (e.code === 'Space' && (e.target === document.body || (e.target as HTMLElement)?.classList.contains('reveal'))) {
+      } else if (e.key === 'r' || e.key === 'R') {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        toggleReferencesModal();
+      } else if (e.code === 'Space') {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         audioSync.togglePlay();
       } else if (e.code === 'ArrowDown' || (e.shiftKey && e.code === 'ArrowRight') || e.code === 'KeyJ') {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         audioSync.nextCue();
       } else if (e.code === 'ArrowUp' || (e.shiftKey && e.code === 'ArrowLeft') || e.code === 'KeyK') {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         audioSync.prevCue();
       }
-    });
+    }, true);
 
     // PDF Handout Dynamic Theme Detection & Menu Toggle
     const btnDownloadPdf = document.getElementById('btn-download-pdf') as HTMLAnchorElement | null;
@@ -1183,8 +1536,8 @@ const currentDeckId = presentationId || talkId || "presentation";
      ========================================================================== */
 
   /* 1. Containers, Cards, and Graphical Nodes (Boxes) */
-  .reveal .slides [data-cue]:not(mark):not(.highlight-marker),
-  .reveal .slides .cue-target:not(mark):not(.highlight-marker) {
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker):not(.slide-subtitle),
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker):not(.slide-subtitle) {
     transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
                 filter 0.4s ease;
@@ -1192,35 +1545,198 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
 
   /* Pre-cue pending state: hidden until spoken (Fade-In Pre-state) */
-  .reveal .slides [data-cue]:not(mark):not(.highlight-marker):not(.is-active),
-  .reveal .slides .cue-target:not(mark):not(.highlight-marker):not(.is-active) {
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker):not(.slide-subtitle):not(.is-active),
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker):not(.slide-subtitle):not(.is-active) {
     opacity: 0;
     transform: translateY(24px) scale(0.97);
     pointer-events: none;
   }
 
   /* Active cue state: fully visible & in position (Fade-In Result) */
-  .reveal .slides [data-cue]:not(mark):not(.highlight-marker).is-active,
-  .reveal .slides .cue-target:not(mark):not(.highlight-marker).is-active {
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker):not(.slide-subtitle).is-active,
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker):not(.slide-subtitle).is-active {
     opacity: 1 !important;
     transform: translateY(0) scale(1) !important;
     pointer-events: auto !important;
   }
 
   /* Dimmed cue state: earlier points step down for spotlight focus */
-  .reveal .slides [data-cue]:not(mark):not(.highlight-marker).is-dimmed,
-  .reveal .slides .cue-target:not(mark):not(.highlight-marker).is-dimmed {
+  .reveal .slides [data-cue]:not(mark):not(.highlight-marker):not(.slide-subtitle).is-dimmed,
+  .reveal .slides .cue-target:not(mark):not(.highlight-marker):not(.slide-subtitle).is-dimmed {
     opacity: 0.32 !important;
     transform: scale(0.985) !important;
     filter: saturate(0.85);
   }
 
-  /* Exited cue state: explicit fade-out via {/cue} or replacement (Fade-Out Result) */
-  .reveal .slides [data-cue]:not(mark):not(.highlight-marker).is-exited,
-  .reveal .slides .cue-target:not(mark):not(.highlight-marker).is-exited {
+  /* Exited cue state: explicit fade-out only if element explicitly specifies data-exit="hide" */
+  .reveal .slides [data-cue][data-exit="hide"]:not(.slide-subtitle).is-exited,
+  .reveal .slides .cue-target[data-exit="hide"]:not(.slide-subtitle).is-exited {
     opacity: 0 !important;
     transform: translateY(-16px) scale(0.97) !important;
     pointer-events: none !important;
+  }
+
+  /* 1b. Title Slide Sequential Reveal Items (Collapsible Grid) */
+  .reveal .slides .title-reveal-item {
+    transition: grid-template-rows 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    will-change: grid-template-rows, opacity, transform;
+  }
+
+  .reveal .slides .title-reveal-item:not(.is-active) {
+    grid-template-rows: 0fr !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateY(16px) scale(0.98) !important;
+  }
+
+  .reveal .slides .title-reveal-item.is-active {
+    grid-template-rows: 1fr !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) scale(1) !important;
+  }
+
+  /* Ensure exported PDFs and thumbnails render the full title slide */
+  .print-pdf .reveal .slides .title-reveal-item,
+  .reveal-viewport.export-mode .reveal .slides .title-reveal-item {
+    grid-template-rows: 1fr !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+  }
+
+  /* 1b-2. Title Slide Speaker Sequential Cascade (Divider Line Leads First) */
+  .reveal .slides .speaker-divider {
+    transition: opacity 0.25s ease-out,
+                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center;
+    will-change: opacity, transform;
+  }
+
+  .reveal .slides .speaker-name,
+  .reveal .slides .speaker-role,
+  .reveal .slides .speaker-affiliation,
+  .reveal .slides .speaker-website {
+    transition: opacity 0.45s ease-out,
+                transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal .slides .title-reveal-item:not(.is-active) .speaker-divider {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .reveal .slides .title-reveal-item:not(.is-active) .speaker-name,
+  .reveal .slides .title-reveal-item:not(.is-active) .speaker-role,
+  .reveal .slides .title-reveal-item:not(.is-active) .speaker-affiliation,
+  .reveal .slides .title-reveal-item:not(.is-active) .speaker-website {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  /* Reveal divider line first when title-speaker cue fires (delay 0s) */
+  .reveal .slides .title-reveal-item.is-active .speaker-divider {
+    opacity: 1;
+    transform: scaleX(1);
+    transition-delay: 0s;
+  }
+
+  /* Reveal all author details together as a unified block after the divider is established (delay 0.22s) */
+  .reveal .slides .title-reveal-item.is-active .speaker-name,
+  .reveal .slides .title-reveal-item.is-active .speaker-role,
+  .reveal .slides .title-reveal-item.is-active .speaker-affiliation,
+  .reveal .slides .title-reveal-item.is-active .speaker-website {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.22s;
+  }
+
+  /* When immediate reveal is requested (fast-forward, seeking past cue, or full mode) */
+  .reveal .slides .title-reveal-item.is-immediate .speaker-divider,
+  .reveal .slides .title-reveal-item.is-immediate .speaker-name,
+  .reveal .slides .title-reveal-item.is-immediate .speaker-role,
+  .reveal .slides .title-reveal-item.is-immediate .speaker-affiliation,
+  .reveal .slides .title-reveal-item.is-immediate .speaker-website {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    transition-delay: 0s !important;
+  }
+
+  /* In print and export mode, display all speaker items immediately without delays */
+  .print-pdf .reveal .slides .speaker-divider,
+  .print-pdf .reveal .slides .speaker-name,
+  .print-pdf .reveal .slides .speaker-role,
+  .print-pdf .reveal .slides .speaker-affiliation,
+  .print-pdf .reveal .slides .speaker-website,
+  .print-slide-page .speaker-divider,
+  .print-slide-page .speaker-name,
+  .print-slide-page .speaker-role,
+  .print-slide-page .speaker-affiliation,
+  .print-slide-page .speaker-website,
+  .reveal-viewport.export-mode .reveal .slides .speaker-divider,
+  .reveal-viewport.export-mode .reveal .slides .speaker-name,
+  .reveal-viewport.export-mode .reveal .slides .speaker-role,
+  .reveal-viewport.export-mode .reveal .slides .speaker-affiliation,
+  .reveal-viewport.export-mode .reveal .slides .speaker-website {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    transition-delay: 0s !important;
+  }
+
+  /* 1c. Content Slide Subtitle Reveal */
+  .reveal .slides .slide-subtitle[data-cue] {
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .reveal .slides .slide-subtitle[data-cue]:not(.is-active) {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .reveal .slides .slide-subtitle[data-cue].is-active {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Ensure exported PDFs and thumbnails render the subtitle and full slide layout */
+  .print-pdf .reveal .slides .slide-subtitle[data-cue],
+  .print-slide-page .slide-subtitle,
+  .reveal-viewport.export-mode .reveal .slides .slide-subtitle[data-cue] {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .print-pdf .reveal .slides .slide-base-frame.is-intro-state .slide-header-content,
+  .print-pdf .reveal .slides .slide-base-frame.is-intro-state .slide-title,
+  .print-pdf .reveal .slides .slide-base-frame.is-intro-state .slide-subtitle,
+  .reveal-viewport.export-mode .reveal .slides .slide-base-frame.is-intro-state .slide-header-content,
+  .reveal-viewport.export-mode .reveal .slides .slide-base-frame.is-intro-state .slide-title,
+  .reveal-viewport.export-mode .reveal .slides .slide-base-frame.is-intro-state .slide-subtitle {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .print-pdf .reveal .slides .slide-base-frame.is-intro-state .slide-main-stage,
+  .reveal-viewport.export-mode .reveal .slides .slide-base-frame.is-intro-state .slide-main-stage {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  @property --hl-alpha-1 {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0.38;
+  }
+  @property --hl-alpha-2 {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0.48;
   }
 
   /* ==========================================================================
@@ -1229,19 +1745,38 @@ const currentDeckId = presentationId || talkId || "presentation";
 
   .reveal mark,
   .reveal .highlight-marker {
+    --hl-alpha-1: 0.38;
+    --hl-alpha-2: 0.48;
     background-color: transparent !important;
     color: inherit;
-    padding: 0.12em 0.4em;
-    margin: 0 -0.1em;
-    border-radius: 0.375rem;
+    padding: 0.14em 0.45em;
+    margin: 0 -0.05em;
+    border-radius: 0.38em !important;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
     background-repeat: no-repeat;
-    background-image: var(--hl-bg-dark);
+    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-2)) 100%);
     background-size: 100% 100%;
     transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
-                color 0.25s ease;
-    will-change: background-size, color;
+                --hl-alpha-1 0.45s ease,
+                --hl-alpha-2 0.45s ease,
+                color 0.45s ease,
+                filter 0.45s ease;
+    will-change: background-size, color, filter;
+  }
+
+  .light .reveal mark,
+  .light .reveal .highlight-marker {
+    --hl-alpha-1: 0.42;
+    --hl-alpha-2: 0.48;
+    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-2)) 100%);
+  }
+
+  .reveal .slide-subtitle mark,
+  .reveal .slide-subtitle .highlight-marker {
+    border-radius: 0.4em !important;
+    padding: 0.14em 0.5em !important;
+    margin: 0 0.05em !important;
   }
 
   /* Color: Amber (Default) */
@@ -1249,87 +1784,119 @@ const currentDeckId = presentationId || talkId || "presentation";
   .reveal .highlight-marker,
   .reveal mark[data-color="amber"],
   .reveal [data-color="amber"].highlight-marker {
-    --hl-bg-dark: linear-gradient(120deg, rgba(245, 158, 11, 0.35) 0%, rgba(251, 191, 36, 0.45) 100%);
+    --hl-glow-rgb: 245, 158, 11;
+    --hl-glow-rgb-2: 251, 191, 36;
     --hl-text-dark: #fef08a;
-    --hl-bg-light: linear-gradient(120deg, rgba(251, 191, 36, 0.45) 0%, rgba(245, 158, 11, 0.5) 100%);
     --hl-text-light: #78350f;
   }
 
   /* Color: Cyan */
   .reveal mark[data-color="cyan"],
   .reveal [data-color="cyan"].highlight-marker {
-    --hl-bg-dark: linear-gradient(120deg, rgba(6, 182, 212, 0.35) 0%, rgba(34, 211, 238, 0.45) 100%);
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
     --hl-text-dark: #a5f3fc;
-    --hl-bg-light: linear-gradient(120deg, rgba(34, 211, 238, 0.4) 0%, rgba(6, 182, 212, 0.45) 100%);
     --hl-text-light: #0e7490;
   }
 
   /* Color: Emerald */
   .reveal mark[data-color="emerald"],
   .reveal [data-color="emerald"].highlight-marker {
-    --hl-bg-dark: linear-gradient(120deg, rgba(16, 185, 129, 0.35) 0%, rgba(52, 211, 153, 0.45) 100%);
+    --hl-glow-rgb: 16, 185, 129;
+    --hl-glow-rgb-2: 52, 211, 153;
     --hl-text-dark: #a7f3d0;
-    --hl-bg-light: linear-gradient(120deg, rgba(52, 211, 153, 0.4) 0%, rgba(16, 185, 129, 0.45) 100%);
     --hl-text-light: #065f46;
   }
 
   /* Color: Purple */
   .reveal mark[data-color="purple"],
   .reveal [data-color="purple"].highlight-marker {
-    --hl-bg-dark: linear-gradient(120deg, rgba(168, 85, 247, 0.35) 0%, rgba(192, 132, 252, 0.45) 100%);
+    --hl-glow-rgb: 168, 85, 247;
+    --hl-glow-rgb-2: 192, 132, 252;
     --hl-text-dark: #e9d5ff;
-    --hl-bg-light: linear-gradient(120deg, rgba(192, 132, 252, 0.4) 0%, rgba(168, 85, 247, 0.45) 100%);
     --hl-text-light: #581c87;
   }
 
   /* Color: Blue */
   .reveal mark[data-color="blue"],
   .reveal [data-color="blue"].highlight-marker {
-    --hl-bg-dark: linear-gradient(120deg, rgba(59, 130, 246, 0.35) 0%, rgba(96, 165, 250, 0.45) 100%);
+    --hl-glow-rgb: 59, 130, 246;
+    --hl-glow-rgb-2: 96, 165, 250;
     --hl-text-dark: #bfdbfe;
-    --hl-bg-light: linear-gradient(120deg, rgba(96, 165, 250, 0.4) 0%, rgba(59, 130, 246, 0.45) 100%);
     --hl-text-light: #1e40af;
-  }
-
-  /* Apply theme gradient */
-  .reveal mark,
-  .reveal .highlight-marker {
-    background-image: var(--hl-bg-dark);
-  }
-  .light .reveal mark,
-  .light .reveal .highlight-marker {
-    background-image: var(--hl-bg-light);
   }
 
   /* Pre-cue pending state for marker: 0% width (unmarked) */
   .reveal mark[data-cue]:not(.is-active),
   .reveal .highlight-marker[data-cue]:not(.is-active) {
     background-size: 0% 100%;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0));
   }
 
-  /* Active state for marker: 100% width (swept) + text contrast */
-  .reveal mark.is-active,
-  .reveal .highlight-marker.is-active {
+  /* Active Spotlight: Currently spoken highlight (vibrant gradient, glowing text, full brightness) */
+  .reveal mark.is-active:not(.is-dimmed),
+  .reveal .highlight-marker.is-active:not(.is-dimmed) {
+    --hl-alpha-1: 0.38;
+    --hl-alpha-2: 0.48;
     background-size: 100% 100% !important;
     color: var(--hl-text-dark) !important;
+    filter: drop-shadow(0 0 10px rgba(var(--hl-glow-rgb, 59, 130, 246), 0.45));
+    transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
+                --hl-alpha-1 0.4s ease,
+                --hl-alpha-2 0.4s ease,
+                color 0.4s ease,
+                filter 0.4s ease;
+    will-change: background-size, color, filter;
   }
-  .light .reveal mark.is-active,
-  .light .reveal .highlight-marker.is-active {
+  .light .reveal mark.is-active:not(.is-dimmed),
+  .light .reveal .highlight-marker.is-active:not(.is-dimmed) {
+    --hl-alpha-1: 0.42;
+    --hl-alpha-2: 0.48;
     color: var(--hl-text-light) !important;
+    filter: drop-shadow(0 0 8px rgba(var(--hl-glow-rgb, 59, 130, 246), 0.25));
+  }
+
+  /* Settled Spotlight: Previously spoken highlight on this slide (persistent muted marker) */
+  .reveal mark.is-active.is-dimmed,
+  .reveal .highlight-marker.is-active.is-dimmed {
+    --hl-alpha-1: 0.13;
+    --hl-alpha-2: 0.17;
+    background-size: 100% 100% !important;
+    color: inherit !important;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
+    opacity: 1 !important;
+    transition: --hl-alpha-1 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                --hl-alpha-2 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .light .reveal mark.is-active.is-dimmed,
+  .light .reveal .highlight-marker.is-active.is-dimmed {
+    --hl-alpha-1: 0.16;
+    --hl-alpha-2: 0.20;
+    color: inherit !important;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
+    opacity: 1 !important;
   }
 
   /* ==========================================================================
      Accessibility & Print Handout Modes
      ========================================================================== */
 
-  /* Print / Handout mode: keep everything fully visible with zero transform offset */
-  .print-slide-page [data-cue],
-  .print-slide-page .cue-target,
-  .print-slide-page mark,
-  .print-slide-page .highlight-marker {
+  /* Print / Handout mode: keep content visible but markers unhighlighted */
+  .print-slide-page [data-cue]:not(mark):not(.highlight-marker),
+  .print-slide-page .cue-target:not(mark):not(.highlight-marker) {
     opacity: 1 !important;
     transform: none !important;
-    background-size: 100% 100% !important;
+  }
+
+  .print-slide-page mark,
+  .print-slide-page .highlight-marker {
+    background-size: 0% 100% !important;
+    background-image: none !important;
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0 !important;
   }
 
   /* Accessibility: Prefers reduced motion */
@@ -1342,5 +1909,21 @@ const currentDeckId = presentationId || talkId || "presentation";
       animation-duration: 0.01ms !important;
       transform: none !important;
     }
+  }
+  /* References Modal Light Mode Overrides matching PrivacyModal */
+  :global(html.light) #references-modal-backdrop {
+    background-color: rgba(15, 23, 42, 0.45) !important;
+  }
+  :global(html.light) #references-modal-container {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+  }
+  :global(html.light) #references-modal-container .modal-header,
+  :global(html.light) #references-modal-container .modal-footer {
+    border-color: #e2e8f0 !important;
+  }
+  :global(html.light) #references-modal-container .modal-footer {
+    background-color: #f8fafc !important;
   }
 </style>
