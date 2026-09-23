@@ -5,8 +5,8 @@ description: "Datengestützte Content-Optimierung im Zeitalter von KI-Suchmaschi
 tags: ["aeo", "agentic-ai", "aio", "astro", "data-visualization", "geo", "knowledge-graphs", "mcp", "seo", "software-architecture", "typescript", "web-development"]
 icon:
   src: "./hero.jpg"
-  title: "Dr. Georg Hackenberg auf der Almtal-Terrasse"
-  description: "Dr. Georg Hackenberg analysiert vereinte Such- und Engagement-Metriken im Freien auf der Holzterrasse in Grünau im Almtal"
+  title: "Dr. Georg Hackenberg am Flipchart auf der Almtal-Terrasse"
+  description: "Dr. Georg Hackenberg präsentiert die Architektur des Unified Analytics MCP Servers am Flipchart auf der Holzterrasse in Grünau im Almtal"
 ---
 
 In unserer fortlaufenden Beitragsreihe zur Websichtbarkeit im Zeitalter generativer Sprachmodelle haben wir die Evolution von klassischem SEO hin zu modernen Standards schrittweise analysiert: von den [theoretischen Grundlagen und 4 Dimensionen moderner Sichtbarkeit (SEO, GEO, AEO, AIO)](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/) über die [empirische Studienlage zu Zitationshebeln und Zero-Click-Suchen](/posts/2026_09_11_empirische_daten_geo_aeo_seo_studien/) bis hin zu den [industriellen Anforderungen im B2B-Bereich](/posts/2026_09_12_b2b_industrial_geo_maschinenlesbare_industrie/) und dem [vierstufigen GEO-Reifegradmodell](/posts/2026_09_13_geo_reifegradmodell_industrie_unternehmen/).
@@ -15,7 +15,7 @@ In jenem Reifegradmodell markiert **Level 4** den entscheidenden Schritt: die Tr
 
 In diesem Beitrag überführen wir die Theorie in die betriebliche Praxis. Wir stellen die Architektur unseres eigens entwickelten, quelloffenen **Unified Analytics MCP Servers** vor: wie er Google Search Console und die datenschutzfreundliche Open-Source-Plattform Plausible Analytics deterministisch zusammenführt, Rohdaten vor dem Kontext-Inject token-effizient aggregiert und autonomen Coding-Agenten (wie Antigravity oder Claude Code) acht mächtige Werkzeuge für automatische Inhaltsaudits, Graph-Analysen und Pre-Commit-Prüfungen an die Hand gibt.
 
-![Dr. Georg Hackenberg analysiert vereinte Such- und Engagement-Metriken im Freien auf der Holzterrasse in Grünau im Almtal](./hero.jpg "Dr. Georg Hackenberg auf der Almtal-Terrasse")
+![Dr. Georg Hackenberg präsentiert die Architektur des Unified Analytics MCP Servers am Flipchart auf der Holzterrasse in Grünau im Almtal](./hero.jpg "Dr. Georg Hackenberg am Flipchart auf der Almtal-Terrasse")
 
 ## 1. Das Dilemma isolierter Datensilos: Warum SEO und Web-Analytics bisher getrennt waren
 
