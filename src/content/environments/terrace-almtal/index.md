@@ -1,4 +1,4 @@
-﻿---
+---
 name: "Terrace Grünau im Almtal"
 category: "Outdoor Workspace"
 canonicalPrompt: "A scenic modern outdoor timber terrace of a contemporary wooden house (Wolf Haus) in Grünau im Almtal, Upper Austria. The terrace floor consists of dark horizontal bamboo decking boards with subtle natural grain ink outlines. Above spans a sturdy contemporary wooden timber pergola: half of the pergola roof is covered with clean transparent safety glass, while the other half is covered with warm solid horizontal timber planks. In the center stands a charming white rectangular garden table, surrounded by vintage white-painted ornate wrought-iron chairs featuring open lattice mesh grid seats and decorative curved filigree scrollwork. Beyond the bamboo deck, a breathtaking alpine landscape unfolds with lush green meadows, dense pine forests, and rocky mountain peaks under a clear blue sky. Disney/Pixar comic-book illustration style, crisp clean dark ink line art, bold cel shading, rich organic colors."
@@ -50,32 +50,30 @@ variants:
           - "seated"
         defaultAction: "Standing by railing looking at alpine panorama"
         cutline: "Standing full figure"
-  - name: "table-focus"
-    shotType: "three-quarters"
-    cameraAngle: "Three-quarters eye-level perspective tightly focused on the white outdoor table and ornate white wrought-iron chairs"
-    focalTarget: "White garden table and ornate vintage white wrought-iron chairs"
+  - name: "flipchart-focus"
+    shotType: "close-up"
+    cameraAngle: "Direct eye-level close-up perspective focused on the standing flipchart on the outdoor timber terrace"
+    focalTarget: "Centered-left upright presentation flipchart with blank white paper pad"
     visibleObjects: []
     depthLayers:
-      foreground: "Foreground ornate white wrought-iron chair back with curved scrollwork and dark bamboo deck"
-      midground: "White rectangular garden table with seating positions and open mountain view"
-      background: "Pergola wooden beam structure with glass roof and alpine green mountain backdrop"
-    image: "./table-focus.jpg"
-    promptSnippet: "Three-quarters perspective closely framed on the white garden table and ornate white wrought-iron chairs on the dark bamboo terrace in Grünau im Almtal, with timber pergola beams overhead and panoramic green alpine mountains in the background."
+      foreground: "Dark horizontal bamboo decking floor with clean ink lines"
+      midground: "Centered-left presentation flipchart on tripod stand with upright blank white paper surface and open presenter space on the right"
+      background: "Contemporary timber pergola with glass panels, terrace railing, and panoramic green alpine mountains of Grünau im Almtal"
+    image: "./flipchart-focus.jpg"
+    promptSnippet: "Close-up eye-level perspective focused on the presentation flipchart with blank white paper on the dark bamboo terrace in Grünau im Almtal, with timber pergola beams overhead, open space for a presenter on the right, and panoramic green alpine mountains in the background."
     characterSlots:
-      - id: "table-operator"
-        role: "Software Architect / Operator"
+      - id: "flipchart-presenter"
+        role: "Outdoor Architecture Presenter / Facilitator"
         priority: 1
         required: false
-        spatialPlacement: "Midground, seated in one of the ornate white wrought-iron chairs at the white table"
+        spatialPlacement: "Right third of frame, standing on the bamboo terrace beside the flipchart"
         allowedPoses:
-          - "seated"
-          - "seated-working"
-          - "seated-turning-to-camera"
-        prohibitedPoses:
           - "standing"
-          - "walking"
-        defaultAction: "Working on laptop on the white table or holding coffee mug, turned towards viewer"
-        cutline: "Three-quarters medium shot or seated full figure with legs naturally under table"
+          - "standing-gesturing"
+        prohibitedPoses:
+          - "seated"
+        defaultAction: "Holding a flipchart marker, turned towards the camera, gesturing towards the flipchart while keeping the presentation surface completely visible"
+        cutline: "Standing three-quarters or full figure with feet grounded on bamboo deck"
 characters:
   - "georg"
 objects: []
