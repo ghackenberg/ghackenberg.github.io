@@ -665,36 +665,50 @@ function validateSlides() {
       totalErrors++;
     }
 
+    // Determine all source paths for this presentation (slides, co-located images, and metadata)
+    const sourcePaths = [slidesDir];
+    const imagesDir = path.join(presentationPath, 'images');
+    if (fs.existsSync(imagesDir)) {
+      sourcePaths.push(imagesDir);
+    }
+    const indexFile = path.join(presentationPath, 'index.md');
+    if (fs.existsSync(indexFile)) {
+      sourcePaths.push(indexFile);
+    }
+    const sourceRelPaths = sourcePaths.map((p) => path.relative(process.cwd(), p).replace(/\\/g, '/'));
+    const sourcePathsGitArg = sourceRelPaths.map((p) => `"${p}"`).join(' ');
+
+    let sourcesTime = NaN;
+
     try {
-      const slidesRelPath = path.relative(process.cwd(), slidesDir).replace(/\\/g, '/');
       const pdfDarkRelPath = path.relative(process.cwd(), pdfDarkPath).replace(/\\/g, '/');
       const pdfLightRelPath = path.relative(process.cwd(), pdfLightPath).replace(/\\/g, '/');
 
-      const slidesTimeStr = execSync(`git log -1 --format=%ct -- "${slidesRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      const sourcesTimeStr = execSync(`git log -1 --format=%ct -- ${sourcePathsGitArg}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
       const pdfDarkTimeStr = execSync(`git log -1 --format=%ct -- "${pdfDarkRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
       const pdfLightTimeStr = execSync(`git log -1 --format=%ct -- "${pdfLightRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
 
-      const slidesTime = parseInt(slidesTimeStr, 10);
+      sourcesTime = parseInt(sourcesTimeStr, 10);
       const pdfDarkTime = parseInt(pdfDarkTimeStr, 10);
       const pdfLightTime = parseInt(pdfLightTimeStr, 10);
 
-      if (!isNaN(slidesTime) && !isNaN(pdfDarkTime) && slidesTime > pdfDarkTime) {
+      if (!isNaN(sourcesTime) && !isNaN(pdfDarkTime) && sourcesTime > pdfDarkTime) {
         console.error(
-          `  ❌ [pdf] "slides-dark.pdf" is out-of-date: Slides were modified in commit history after the PDF was committed. Run "npm run export:slides".`
+          `  ❌ [pdf] "slides-dark.pdf" is out-of-date: Slides or presentation assets were modified in commit history after the PDF was committed. Run "npm run export:slides".`
         );
         totalErrors++;
       }
-      if (!isNaN(slidesTime) && !isNaN(pdfLightTime) && slidesTime > pdfLightTime) {
+      if (!isNaN(sourcesTime) && !isNaN(pdfLightTime) && sourcesTime > pdfLightTime) {
         console.error(
-          `  ❌ [pdf] "slides-light.pdf" is out-of-date: Slides were modified in commit history after the PDF was committed. Run "npm run export:slides".`
+          `  ❌ [pdf] "slides-light.pdf" is out-of-date: Slides or presentation assets were modified in commit history after the PDF was committed. Run "npm run export:slides".`
         );
         totalErrors++;
       }
 
-      // Check for uncommitted working tree changes in slides/
-      const dirtySlides = execSync(`git status --porcelain -- "${slidesRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-      if (dirtySlides) {
-        console.warn(`  ⚠️ [pdf] Slides have uncommitted changes in working tree. Run "npm run export:slides" before committing.`);
+      // Check for uncommitted working tree changes in slides/, images/, or index.md
+      const dirtySources = execSync(`git status --porcelain -- ${sourcePathsGitArg}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      if (dirtySources) {
+        console.warn(`  ⚠️ [export] Slides or presentation assets have uncommitted changes in working tree. Run "npm run export:slides" before committing.`);
         totalWarnings++;
       }
     } catch {
@@ -728,18 +742,15 @@ function validateSlides() {
 
       // Check git timestamp freshness
       try {
-        const slidesRelPath = path.relative(process.cwd(), slidesDir).replace(/\\/g, '/');
         const thumbsRelPath = path.relative(process.cwd(), thumbnailsDir).replace(/\\/g, '/');
 
-        const slidesTimeStr = execSync(`git log -1 --format=%ct -- "${slidesRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
         const thumbsTimeStr = execSync(`git log -1 --format=%ct -- "${thumbsRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
 
-        const slidesTime = parseInt(slidesTimeStr, 10);
         const thumbsTime = parseInt(thumbsTimeStr, 10);
 
-        if (!isNaN(slidesTime) && !isNaN(thumbsTime) && slidesTime > thumbsTime) {
+        if (!isNaN(sourcesTime) && !isNaN(thumbsTime) && sourcesTime > thumbsTime) {
           console.error(
-            `  ❌ [thumbnail] Slide thumbnails in "${thumbsRelPath}" are out-of-date: Slides were modified in commit history after thumbnails were committed. Run "npm run export:slides-thumbs".`
+            `  ❌ [thumbnail] Slide thumbnails in "${thumbsRelPath}" are out-of-date: Slides or presentation assets were modified in commit history after thumbnails were committed. Run "npm run export:slides-thumbs".`
           );
           totalErrors++;
         }
