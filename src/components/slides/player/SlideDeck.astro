@@ -1784,52 +1784,174 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
 
   /* ==========================================================================
-     Bullet Badge System (Container-Driven Palette)
+     Bullet Badge System (Ton-in-Ton Container-Driven Palette)
      ========================================================================== */
 
-  .reveal .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+  .reveal .bullet-badge {
     background-color: #334155; /* slate-700 */
     color: #f8fafc;
   }
-  .light .reveal .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+  .light .reveal .bullet-badge {
     background-color: #e2e8f0; /* slate-200 */
     color: #0f172a;
   }
 
-  /* Complementary Bullet Badges per Container Accent */
-  .reveal [data-accent="blue"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
-    background-color: #d97706; /* amber-600 (complementary to blue) */
+  /* Ton-in-Ton Bullet Badges per Container Accent */
+  .reveal [data-accent="blue"] .bullet-badge {
+    background-color: #2563eb; /* blue-600 */
     color: #ffffff;
   }
-  .reveal [data-accent="cyan"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross),
-  .reveal [data-accent="teal"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
-    background-color: #d97706; /* amber-600 (warm complementary to cyan) */
+  .light .reveal [data-accent="blue"] .bullet-badge {
+    background-color: #3b82f6; /* blue-500 */
     color: #ffffff;
   }
-  .reveal [data-accent="emerald"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross),
-  .reveal [data-accent="green"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
-    background-color: #d97706; /* amber-600 (warm contrast to emerald) */
+  .reveal [data-accent="cyan"] .bullet-badge,
+  .reveal [data-accent="teal"] .bullet-badge {
+    background-color: #0891b2; /* cyan-600 */
     color: #ffffff;
   }
-  .reveal [data-accent="purple"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
-    background-color: #d97706; /* amber-600 (gold contrast to purple) */
+  .light .reveal [data-accent="cyan"] .bullet-badge,
+  .light .reveal [data-accent="teal"] .bullet-badge {
+    background-color: #06b6d4; /* cyan-500 */
     color: #ffffff;
   }
-  .reveal [data-accent="indigo"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
-    background-color: #d97706; /* amber-600 (warm contrast to indigo) */
+  .reveal [data-accent="emerald"] .bullet-badge,
+  .reveal [data-accent="green"] .bullet-badge {
+    background-color: #059669; /* emerald-600 */
     color: #ffffff;
   }
-  .reveal [data-accent="amber"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
-    background-color: #0891b2; /* cyan-600 (cool complementary to amber) */
+  .light .reveal [data-accent="emerald"] .bullet-badge,
+  .light .reveal [data-accent="green"] .bullet-badge {
+    background-color: #10b981; /* emerald-500 */
     color: #ffffff;
   }
-  .reveal [data-accent="neutral"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
-    background-color: #334155; /* slate-700 (clean subtle slate) */
+  .reveal [data-accent="purple"] .bullet-badge {
+    background-color: #9333ea; /* purple-600 */
+    color: #ffffff;
+  }
+  .light .reveal [data-accent="purple"] .bullet-badge {
+    background-color: #a855f7; /* purple-500 */
+    color: #ffffff;
+  }
+  .reveal [data-accent="indigo"] .bullet-badge {
+    background-color: #4f46e5; /* indigo-600 */
+    color: #ffffff;
+  }
+  .light .reveal [data-accent="indigo"] .bullet-badge {
+    background-color: #6366f1; /* indigo-500 */
+    color: #ffffff;
+  }
+  .reveal [data-accent="amber"] .bullet-badge {
+    background-color: #d97706; /* amber-600 */
+    color: #ffffff;
+  }
+  .light .reveal [data-accent="amber"] .bullet-badge {
+    background-color: #f59e0b; /* amber-500 */
+    color: #ffffff;
+  }
+  .reveal [data-accent="neutral"] .bullet-badge {
+    background-color: #334155; /* slate-700 */
     color: #f8fafc;
   }
-  .light .reveal [data-accent="neutral"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+  .light .reveal [data-accent="neutral"] .bullet-badge {
     background-color: #e2e8f0; /* slate-200 */
     color: #0f172a;
+  }
+
+  /* ==========================================================================
+     Callout Box System (Container-Driven Palette)
+     ========================================================================== */
+
+  .reveal .callout-box {
+    background-color: rgba(30, 41, 59, 0.55);
+    border-color: rgba(71, 85, 105, 0.45);
+    color: #f1f5f9;
+  }
+  .light .reveal .callout-box {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
+  }
+
+  .reveal [data-accent="blue"] .callout-box {
+    background-color: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #bfdbfe;
+  }
+  .light .reveal [data-accent="blue"] .callout-box {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e3a8a;
+  }
+
+  .reveal [data-accent="cyan"] .callout-box,
+  .reveal [data-accent="teal"] .callout-box {
+    background-color: rgba(6, 182, 212, 0.12);
+    border-color: rgba(6, 182, 212, 0.35);
+    color: #a5f3fc;
+  }
+  .light .reveal [data-accent="cyan"] .callout-box,
+  .light .reveal [data-accent="teal"] .callout-box {
+    background-color: #ecfeff;
+    border-color: #a5f3fc;
+    color: #155e75;
+  }
+
+  .reveal [data-accent="emerald"] .callout-box,
+  .reveal [data-accent="green"] .callout-box {
+    background-color: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: #a7f3d0;
+  }
+  .light .reveal [data-accent="emerald"] .callout-box,
+  .light .reveal [data-accent="green"] .callout-box {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #065f46;
+  }
+
+  .reveal [data-accent="purple"] .callout-box {
+    background-color: rgba(168, 85, 247, 0.12);
+    border-color: rgba(168, 85, 247, 0.35);
+    color: #e9d5ff;
+  }
+  .light .reveal [data-accent="purple"] .callout-box {
+    background-color: #faf5ff;
+    border-color: #e9d5ff;
+    color: #581c87;
+  }
+
+  .reveal [data-accent="indigo"] .callout-box {
+    background-color: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: #c7d2fe;
+  }
+  .light .reveal [data-accent="indigo"] .callout-box {
+    background-color: #eef2ff;
+    border-color: #c7d2fe;
+    color: #3730a3;
+  }
+
+  .reveal [data-accent="amber"] .callout-box {
+    background-color: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: #fef08a;
+  }
+  .light .reveal [data-accent="amber"] .callout-box {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+    color: #78350f;
+  }
+
+  .reveal [data-accent="neutral"] .callout-box {
+    background-color: rgba(30, 41, 59, 0.55);
+    border-color: rgba(71, 85, 105, 0.45);
+    color: #f1f5f9;
+  }
+  .light .reveal [data-accent="neutral"] .callout-box {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
   }
 
   /* ==========================================================================

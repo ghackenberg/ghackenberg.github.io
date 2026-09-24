@@ -27,7 +27,7 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-som-formula" title="Definition & Berechnungsformel" accent="blue">
-    <CalloutBox type="statement" color="blue" title="{cue:hl-callout-som-formula}Share of Model (SoM) Formel{/cue}">
+    <CalloutBox type="statement" title="{cue:hl-callout-som-formula}Share of Model (SoM) Formel{/cue}">
       <div class="text-3xl lg:text-4xl xl:text-5xl font-mono font-black text-blue-300 light:text-blue-950 my-2 text-center">
         SoM (%) = ( M<sub>erwähnt</sub> / P<sub>gesamt</sub> ) × 100
       </div>
@@ -36,12 +36,12 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
 
     <BulletList items={[
       {
-        num: "1",
+        icon: "target",
         title: "Systematisches Prompt-Testing",
         desc: "Prüfung über {cue:hl-som-prompt-testing}standardisierte industriespezifische Kaufberatungs-Prompts{/cue} in Modell-Panels."
       },
       {
-        num: "2",
+        icon: "trending-up",
         title: "Unlinked Brand Mentions",
         desc: "Jede {cue:hl-unlinked-mentions}Nennung ohne Hyperlink{/cue} festigt die Gewichtung im Modell und erhöht Empfehlungen."
       }

@@ -32,7 +32,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-basic-rag" title="Basic RAG (Vector-only)" accent="neutral">
-    <CalloutBox color="neutral" type="warning" title="Methode: Naives Text-Chunking">
+    <CalloutBox type="warning" title="Methode: Naives Text-Chunking">
       <p class="text-slate-300 light:text-slate-600">Dokumente werden in {cue:hl-callout-500-tokens}500-Token-Blöcke zerschnitten{/cue} und isoliert eingebettet.</p>
     </CalloutBox>
 
@@ -44,7 +44,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   </BentoCard>
 
   <BentoCard slot="right" cue="col-graph-rag" title="GraphRAG (Microsoft Research)" accent="blue">
-    <CalloutBox color="blue" type="takeaway" title="Methode: Knowledge Graph + Community Summaries">
+    <CalloutBox type="takeaway" title="Methode: Knowledge Graph + Community Summaries">
       <p class="text-blue-200 light:text-blue-900">LLM extrahiert Entitäten und generiert {cue:hl-callout-hierarchisch}hierarchische Synthesen auf Clusterebene{/cue}.</p>
     </CalloutBox>
 

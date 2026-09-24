@@ -1,9 +1,9 @@
 ---
 import { renderSlideCues } from '../../../utils/slide-cues';
+import SlideIcon, { type SlideIconName } from './SlideIcon.astro';
 
 export interface BulletItem {
-  num?: string | number;
-  icon?: string; // 'check' | 'arrow' | 'cross' | emoji
+  icon: SlideIconName;
   title?: string;
   desc?: string;
 }
@@ -18,25 +18,11 @@ const { items = [], class: className = "" } = Astro.props;
 
 <ul class={`bullet-list flex flex-col justify-around gap-6 flex-1 my-auto pb-1 ${className}`}>
   {items.map((item, idx) => {
-    const isCheck = item.icon === 'check' || item.icon === '✓';
-    const isCross = item.icon === 'cross' || item.icon === '✗';
-    const hasBadge = item.num !== undefined || item.icon;
-
     return (
       <li class="flex items-start gap-5">
-        {hasBadge && (
-          <span
-            class={`bullet-badge w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shrink-0 shadow-md ${
-              isCheck
-                ? 'bullet-badge-check bg-emerald-600 text-white'
-                : isCross
-                  ? 'bullet-badge-cross bg-rose-600 text-white'
-                  : ''
-            }`}
-          >
-            {isCheck ? '✓' : isCross ? '✗' : item.icon === 'arrow' ? '→' : (item.num ?? item.icon)}
-          </span>
-        )}
+        <span class="bullet-badge w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shrink-0 shadow-md">
+          <SlideIcon name={item.icon} class="w-7 h-7" />
+        </span>
         <div class="flex-1 flex flex-col justify-center">
           {item.title && (
             <div class="flex items-center gap-3">
