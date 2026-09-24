@@ -124,13 +124,14 @@ function computeSsrBarRounding(value: number) {
     return (
       <div
         data-value={item.value}
+        data-accent={accent}
         class="bar-chart-row flex flex-col gap-2 w-full transition-opacity duration-300"
       >
         <!-- Row Header: Label & Formatted Value -->
         <div class="flex justify-between items-baseline text-lg lg:text-xl font-bold">
           <div class="flex items-center gap-2 min-w-0 pr-4">
             {isLabelHighlight ? (
-              <mark id={cueId} data-cue={cueId} data-color={item.highlightColor || 'emerald'} class="highlight-marker inline-block font-semibold rounded-md">
+              <mark id={cueId} data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
                 {item.label}
               </mark>
             ) : (
@@ -143,7 +144,7 @@ function computeSsrBarRounding(value: number) {
 
           <div class={`font-mono text-xl lg:text-2xl font-black shrink-0 ${colorStyle.text}`}>
             {isValueHighlight ? (
-              <mark id={cueId} data-cue={cueId} data-color={item.highlightColor || 'cyan'} class="highlight-marker inline-block font-semibold rounded-md">
+              <mark id={cueId} data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
                 {formattedVal}
               </mark>
             ) : (

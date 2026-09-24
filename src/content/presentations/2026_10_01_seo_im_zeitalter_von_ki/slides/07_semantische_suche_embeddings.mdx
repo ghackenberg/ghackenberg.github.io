@@ -1,15 +1,13 @@
 ---
 title: "Semantische Suche & Embeddings"
-subtitle: "Von Zeichenketten (Strings) zu Bedeutungen (Things) im hochdimensionalen Vektorraum"
+subtitle: "Von Zeichenketten zu Bedeutungen im {cue:hl-sub-embeddings-1001}hochdimensionalen Vektorraum{/cue}"
 number: "07"
 slideLayout: "split"
 voiceover: >
-  Das technologische Herzstück von RAG ist die semantische Suche über sogenannte Embeddings – der fundamentale Übergang von reinen Zeichenketten hin zu echten Bedeutungen im hochdimensionalen Vektorraum. 
-  {cue:col-embeddings} Texte werden durch neuronale Netze in Vektoren mit über 1.500 Dimensionen übersetzt. Wer heute noch {cue:hl-keyword-stuffing}reine Keyword-Wiederholungen{/cue} betreibt, 
-  optimiert für ein System, das längst nicht mehr existiert.
-  {cue:col-math} Entscheidend ist die Kosinus-Ähnlichkeit: Themen, die dieselbe Bedeutung haben – wie 
-  industrielle Wärmepumpen und B2B-Dekarbonisierung –, liegen im Vektorraum eng beieinander. 
-  {cue:hl-kosinus-threshold}Typischerweise sind Werte über null Komma zweiundachtzig nötig{/cue}, um in das Kontextfenster zu gelangen.
+  Das technologische Herzstück von RAG ist die semantische Suche über hochdimensionale Embeddings.
+  {cue:sub} Sie markiert den Übergang von reinen Zeichenketten zu Bedeutungen im {cue:hl-sub-embeddings-1001}hochdimensionalen Vektorraum{/cue}.
+  {cue:col-embeddings} Texte wie {cue:hl-callout-vektor-beispiel}Energieeffiziente Prozesswärme B2B{/cue} werden in Vektoren übersetzt, sodass verwandte Konzepte {cue:hl-vektor-winkel}nahezu identische Vektor-Winkel{/cue} besitzen. Wer dagegen {cue:hl-keyword-stuffing}reine Keyword-Wiederholungen{/cue} betreibt, verzieht den semantischen Vektor.
+  {cue:col-math} Über die {cue:hl-callout-kosinus-formel}Kosinus-Formel{/cue} fordern RAG-Systeme typischerweise {cue:hl-kosinus-threshold}Werte über null Komma zweiundachtzig{/cue}, um in das Kontextfenster zu gelangen.
 notes: |
   - Zeit: 13:30 - 15:30 Min.
   - Zitat von Google: "Strings to Things" (Amit Singhal).
@@ -35,7 +33,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-embeddings" title="Der semantische Vektorraum" accent="cyan">
-    <CalloutBox color="neutral" type="info">
+    <CalloutBox type="info" title="{cue:hl-callout-vektor-beispiel}Passage B: Energieeffiziente Prozesswärme B2B{/cue}">
       <p class="text-slate-400 font-mono text-lg">// Passage A: "Industrielle Wärmepumpe"</p>
       <p class="text-cyan-400 font-mono font-bold text-lg">[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
       <p class="text-slate-400 font-mono text-lg mt-2">// Passage B: "Energieeffiziente Prozesswärme B2B"</p>
@@ -43,18 +41,18 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "→", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen nahezu identische Vektor-Winkel." },
-      { icon: "→", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche {cue:hl-keyword-stuffing:amber}Keyword-Wiederholungen{/cue} verzerren den Vektor und senken die semantische Relevanz." }
+      { icon: "arrow", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen {cue:hl-vektor-winkel}nahezu identische Vektor-Winkel{/cue}." },
+      { icon: "arrow", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche {cue:hl-keyword-stuffing}Keyword-Wiederholungen{/cue} verzerren den Vektor und senken die semantische Relevanz." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit" accent="blue">
-    <CalloutBox color="blue" type="takeaway" title="cos(θ) = (A · B) / (||A|| ||B||)">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-kosinus-formel}cos(θ) = (A · B) / (||A|| ||B||){/cue}">
       <p class="text-lg font-mono text-blue-300 light:text-blue-800 font-bold">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
     </CalloutBox>
 
-    <CalloutBox color="neutral" type="statement" title="Retrieval-Schwellenwert (Top-K)">
-      RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über {cue:hl-kosinus-threshold:blue}0.82{/cue} liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
+    <CalloutBox type="statement" title="Retrieval-Schwellenwert (Top-K)">
+      RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über {cue:hl-kosinus-threshold}0.82{/cue} liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
     </CalloutBox>
   </BentoCard>
 </SplitSlide>

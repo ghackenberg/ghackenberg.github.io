@@ -1,15 +1,13 @@
 ---
 title: "Deep-Dive: Schema.org im Detail"
-subtitle: "Die verbindliche Lingua Franca zwischen Unternehmenswebsite und LLM-Webcrawlern"
+subtitle: "Die verbindliche Lingua Franca zwischen {cue:hl-sub-schema-1001}Unternehmenswebsite und KI-Webcrawlern{/cue}"
 number: "12"
 slideLayout: "split"
 voiceover: >
-  Steigen wir nun tiefer in die technische Umsetzung ein: Unser Deep-Dive zu Schema.org zeigt, wie dieser Standard zur verbindlichen Lingua Franca für moderne Webcrawler wird. 
-  {cue:col-schema-types} Für den B2B-Bereich sind fünf Typen unverzichtbar: Organization für Ihr Unternehmen, 
-  Person für Ihre Experten, Product für Ihre Maschinen, TechArticle für Fachbeiträge und FAQPage für Q&A. 
-  {cue:col-schema-id} Der wichtigste Schlüssel lautet @id: Er fungiert als globale, eindeutige URI. 
-  Damit weiß Perplexity oder Google {cue:hl-schema-fusion}zweifelsfrei, dass ein bestimmter Fachartikel von einem verifizierten 
-  Ingenieur Ihres Unternehmens stammt{/cue}.
+  Steigen wir nun tiefer in die technische Umsetzung unserer Methodik ein.
+  {cue:sub} Schema.org fungiert als verbindliche Lingua Franca zwischen {cue:hl-sub-schema-1001}Unternehmenswebsite und KI-Webcrawlern{/cue}.
+  {cue:col-schema-types} Wir verknüpfen Unternehmen über {cue:hl-schema-org}sameAs zu Wikidata und LinkedIn{/cue}, Experten über {cue:hl-schema-person}ORCID und Patente{/cue}, Produkte über {cue:hl-schema-product}GTIN und ISO-Zertifikate{/cue} sowie Fachinhalte als {cue:hl-schema-article}Frage-Antwort-Paare mit autoritativem Verfasser{/cue}.
+  {cue:col-schema-id} Über {cue:hl-callout-canonical-uris}kanonische Entity-URIs{/cue} werden Entitäten {cue:hl-schema-uri}via URI referenziert{/cue}, sodass Sprachmodelle {cue:hl-schema-fusion}alle Aussagen unter derselben ID fusionieren{/cue}.
 notes: |
   - Zeit: 25:30 - 28:00 Min.
   - Den Unterschied erklären: Schema.org ist nicht nur Rich Snippets für Sterne in Google, sondern der Wissensgraph-Parser für LLMs!
@@ -38,15 +36,15 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 >
   <BentoCard slot="left" cue="col-schema-types" title="Die 5 B2B-Kern-Entitätstypen" accent="blue">
     <BulletList items={[
-      { num: "1", title: "Organization", desc: "Rechtlicher Name, Logo, sameAs zu Wikidata/LinkedIn, Standorte." },
-      { num: "2", title: "Person", desc: "Geschäftsführung, Lead-Ingenieure, Autoren mit ORCID und Patenten." },
-      { num: "3", title: "Product", desc: "Industrieprodukte mit GTIN, MPN, ISO-Zertifikaten und Datenblättern." },
-      { num: "4", title: "TechArticle & FAQPage", desc: "Direkte Frage-Antwort-Paare mit autoritativem Verfasser." }
+      { icon: "network", title: "Organization", desc: "Rechtlicher Name, Logo, {cue:hl-schema-org}sameAs zu Wikidata und LinkedIn{/cue}, Standorte." },
+      { icon: "shield", title: "Person", desc: "Geschäftsführung und Lead-Ingenieure mit {cue:hl-schema-person}ORCID und Patenten{/cue}." },
+      { icon: "target", title: "Product", desc: "Industrieprodukte mit {cue:hl-schema-product}GTIN, MPN und ISO-Zertifikaten{/cue}." },
+      { icon: "document", title: "TechArticle & FAQPage", desc: "Direkte {cue:hl-schema-article}Frage-Antwort-Paare mit autoritativem Verfasser{/cue}." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-schema-id" title="Das @id-Prinzip: Eindeutige URIs" accent="indigo">
-    <CalloutBox color="indigo" type="info" title="// Canonical Entity URIs">
+    <CalloutBox type="info" title="{cue:hl-callout-canonical-uris}// Canonical Entity URIs{/cue}">
       <div class="font-mono text-lg space-y-1">
         <p class="text-slate-200 light:text-slate-800">https://firma.at/#organization</p>
         <p class="text-slate-200 light:text-slate-800">https://firma.at/team/dr-mueller/#author</p>
@@ -55,8 +53,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", title: "Keine redundante Doppel-Definition", desc: "Entitäten werden einmal deklariert und via URI referenziert." },
-      { icon: "check", title: "{cue:hl-schema-fusion:blue}Global eindeutiger Wissensgraph{/cue}", desc: "Sprachmodelle fusionieren alle Aussagen unter derselben ID." }
+      { icon: "check", title: "Keine redundante Doppel-Definition", desc: "Entitäten werden einmal deklariert und {cue:hl-schema-uri}via URI referenziert{/cue}." },
+      { icon: "check", title: "Global eindeutiger Wissensgraph", desc: "Sprachmodelle {cue:hl-schema-fusion}fusionieren alle Aussagen unter derselben ID{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>

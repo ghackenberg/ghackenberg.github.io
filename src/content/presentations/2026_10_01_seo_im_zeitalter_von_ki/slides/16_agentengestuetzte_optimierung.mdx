@@ -1,15 +1,15 @@
 ---
 title: "Agentengestützte Web-Optimierung"
-subtitle: "Vom manuellen SEO-Audit zum autonomen Entwickleragenten im CI/CD-Pre-Commit-Workflow"
+subtitle: "Vom manuellen SEO-Audit zum autonomen Entwickleragenten im {cue:hl-sub-ci-1001}CI/CD-Workflow{/cue}"
 number: "16"
 slideLayout: "pipeline"
 voiceover: >
-  Wie lässt sich diese Qualität kontinuierlich sichern, ohne dass Entwickler und Redakteure verzweifeln? 
-  {cue:step-loop-1} Durch autonome Entwickler-Agenten. 
-  {cue:step-loop-2} Statt einmal im Quartal eine SEO-Agentur für teures Geld drüberschauen zu lassen, fungiert der Agent 
-  als intelligenter Pre-Gatekeeper. 
-  {cue:step-loop-3} Vor jedem Git-Commit analysiert er den Code, injiziert fehlende Schema-Entitäten, 
-  {cue:step-loop-4} prüft die Barrierefreiheit und deployt fehlerfreien Code vollautomatisch auf das globale Edge-Netzwerk.
+  Wie lässt sich diese Qualität kontinuierlich sichern, ohne dass Entwickler und Redakteure verzweifeln?
+  {cue:sub} Sie gelingt durch autonome Entwickleragenten im {cue:hl-sub-ci-1001}CI/CD-Workflow{/cue}.
+  {cue:step-loop-1} In Phase eins scannt der Agent {cue:hl-loop-scan}Git-Diff und Quellcode{/cue} auf Inkonsistenzen.
+  {cue:step-loop-2} Statt teurer Agenturen fungiert der Agent als Pre-Gatekeeper: Er erzeugt validen {cue:hl-loop-reasoning}Schema.org @graph{/cue} Code.
+  {cue:step-loop-3} Vor jedem Git-Commit analysiert ein {cue:hl-loop-lighthouse}Lighthouse-Audit{/cue} alle Core Web Vitals,
+  {cue:step-loop-4} und deployt fehlerfreien Code vollautomatisch als {cue:hl-loop-deploy}Edge Deployment{/cue} auf das globale Netzwerk.
 notes: |
   - Zeit: 36:00 - 38:30 Min.
   - Paradigmenwechsel betonen: Nicht ex-post reparieren, sondern ex-ante durch Agenten-Feedback-Schleife absichern.
@@ -29,25 +29,29 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         cue: "step-loop-1",
         num: "01",
         title: "Perzeption",
-        desc: "Agent scannt Git-Diff, Markdown-Dateien und Quellcode auf Inkonsistenzen und fehlende Metadaten."
+        desc: "Agent scannt {cue:hl-loop-scan}Git-Diff, Markdown und Quellcode{/cue} auf Inkonsistenzen und fehlende Metadaten.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step1_loop_perzeption.jpg"
       },
       {
         cue: "step-loop-2",
         num: "02",
         title: "Reasoning & Schema",
-        desc: "LLM-Reasoning erzeugt validen Schema.org @graph und optimiert Überschriften nach dem BLUF-Prinzip."
+        desc: "LLM-Reasoning erzeugt validen {cue:hl-loop-reasoning}Schema.org @graph{/cue} und optimiert Überschriften nach dem BLUF-Prinzip.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step2_loop_reasoning.jpg"
       },
       {
         cue: "step-loop-3",
         num: "03",
         title: "Automatischer Test",
-        desc: "Lighthouse-Audit prüft Core Web Vitals, Kontraste und Ladezeiten im lokalen Headless Chrome."
+        desc: "{cue:hl-loop-lighthouse}Lighthouse-Audit{/cue} prüft Core Web Vitals, Kontraste und Ladezeiten im lokalen Headless Chrome.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step3_loop_test.jpg"
       },
       {
         cue: "step-loop-4",
         num: "04",
         title: "Edge Deployment",
-        desc: "Bei 100/100 Scores führt der Agent den Git-Commit aus und pusht auf die weltweite Edge-Infrastruktur."
+        desc: "Bei perfekten Scores führt der Agent das {cue:hl-loop-deploy}Edge Deployment{/cue} auf weltweite Infrastruktur aus.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step4_loop_deploy.jpg"
       }
     ]}
   />

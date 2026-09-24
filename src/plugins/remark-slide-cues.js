@@ -3,15 +3,15 @@
 /**
  * Remark plugin to transform slide cues ({cue:id}text{/cue}) into interactive highlight marks (<mark>).
  * Supports:
- *   - Paired highlight sweeps: {cue:id}marked text{/cue} or {cue:id:color}marked text{/cue}
- *   - Standalone trigger points: {cue:id} or {cue:id:color}
+ *   - Paired highlight sweeps: {cue:id}marked text{/cue}
+ *   - Standalone trigger points: {cue:id}
  */
 export default function remarkSlideCues() {
   /**
    * @param {any} tree
    */
   return function transformer(tree) {
-    const CUE_REGEX = /\{cue:([a-zA-Z0-9_-]+)(?::([a-zA-Z0-9_-]+))?\}([\s\S]*?)\{\/cue(?::[a-zA-Z0-9_-]+)?\}|\{cue:([a-zA-Z0-9_-]+)(?::([a-zA-Z0-9_-]+))?\}/g;
+    const CUE_REGEX = /\{cue:([a-zA-Z0-9_-]+)\}([\s\S]*?)\{\/cue(?::[a-zA-Z0-9_-]+)?\}|\{cue:([a-zA-Z0-9_-]+)\}/g;
 
     /**
      * @param {string} text
@@ -32,23 +32,19 @@ export default function remarkSlideCues() {
         }
 
         if (match[3] !== undefined) {
-          // Paired cue: {cue:id:color}content{/cue}
+          // Paired cue: {cue:id}content{/cue}
           const cueId = match[1];
-          const color = match[2];
           const content = match[3];
-          const colorAttr = color ? ` data-color="${color}"` : '';
           nodes.push({
             type: 'html',
-            value: `<mark id="${cueId}" data-cue="${cueId}"${colorAttr} class="highlight-marker font-semibold rounded-md">${content}</mark>`
+            value: `<mark id="${cueId}" data-cue="${cueId}" class="highlight-marker font-semibold rounded-[0.38em]">${content}</mark>`
           });
         } else {
-          // Standalone cue: {cue:id:color}
+          // Standalone cue: {cue:id}
           const cueId = match[4];
-          const color = match[5];
-          const colorAttr = color ? ` data-color="${color}"` : '';
           nodes.push({
             type: 'html',
-            value: `<span id="${cueId}" data-cue="${cueId}"${colorAttr} class="cue-target"></span>`
+            value: `<span id="${cueId}" data-cue="${cueId}" class="cue-target"></span>`
           });
         }
 

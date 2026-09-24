@@ -1,0 +1,48 @@
+---
+title: "Zusammenfassung & Ausblick"
+subtitle: "Der neue Bereich Interactive Presentations als {cue:hl-sub-fazit-923}moderner Wissens-Hub auf hackenberg.tech{/cue}"
+number: "10"
+slideLayout: "split"
+voiceover: >
+  Fassen wir die wichtigsten Erkenntnisse unseres heutigen Briefings kurz zusammen.
+  {cue:sub} Sie etablieren interaktive Präsentationen als {cue:hl-sub-fazit-923}modernen Wissens-Hub auf hackenberg.tech{/cue}.
+  {cue:col-summary} Mit der Slide-as-Code Engine schaffen wir dieselbe {cue:hl-summary-excellence}architektonische Exzellenz wie bei modernem Quellcode{/cue}: Sie verbindet visuelle Reduktion mit {cue:hl-fazit-audit}auditiver Führung auf den Punkt{/cue}, garantiert 100 % Maschinenlesbarkeit {cue:hl-fazit-lockin}ohne Drittanbieter-Lock-in{/cue} und profitiert von automatischer {cue:hl-fazit-ci}CI-Validierung mit KI-Unterstützung{/cue}.
+  {cue:col-next} Erleben Sie dieses Format ab sofort live: Als nächste große Premiere erwartet Sie unser Fachvortrag {cue:hl-summary-keynote}SEO im Zeitalter von KI{/cue}. Der umfassende {cue:hl-fazit-keynote}60-Minuten-Vortrag für Industrie und Mittelstand{/cue} bietet eine interaktive {cue:hl-fazit-keys}Presenter Console mit Sprechernotizen{/cue} sowie druckfertige Handouts im {cue:hl-fazit-pdf}Dark- und Light-Mode auf Knopfdruck{/cue}.
+notes: |
+  - Zeit: 15:00 - 16:30 Min.
+  - Call to Action: Tastaturkürzel erwähnen ('S' für Presenter Console, 'F' für Fullscreen).
+  - Überleitung zur SEO-Keynote schaffen.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="10"
+  totalSlides="10"
+>
+  <BentoCard slot="left" cue="col-summary" title="Kern-Erkenntnisse" accent="blue">
+    <CalloutBox type="statement" title="Slide-as-Code Nutzen">
+      Vorträge verdienen dieselbe {cue:hl-summary-excellence}architektonische Exzellenz wie moderner Quellcode{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Multimodale Synthese", desc: "Verbindet visuelle Präzision mit {cue:hl-fazit-audit}auditiver Führung auf den Punkt{/cue}." },
+      { icon: "check", title: "Volle Daten- und SEO-Hoheit", desc: "100 % Maschinenlesbarkeit via Schema.org {cue:hl-fazit-lockin}ohne Drittanbieter-Lock-in{/cue}." },
+      { icon: "check", title: "Effiziente Agenten-Pipeline", desc: "Rasche Erstellung und automatische {cue:hl-fazit-ci}CI-Validierung mit KI-Unterstützung{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-next" title="Ausblick & Flagship-Keynote" accent="emerald">
+    <CalloutBox type="fact" title="Nächster Vortrag online">
+      {cue:hl-summary-keynote}SEO im Zeitalter von KI{/cue}: Strategien für SEO, GEO, AIO und AEO.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "target", title: "30 synchronisierte Folien", desc: "Der {cue:hl-fazit-keynote}60-Minuten-Vortrag für Industrie und Mittelstand{/cue} ist live abrufbar." },
+      { icon: "keyboard", title: "Interaktive Tastatur-Steuerung", desc: "Taste 'S' öffnet die {cue:hl-fazit-keys}Presenter Console mit Sprechernotizen{/cue}." },
+      { icon: "document", title: "Druckoptimierte PDF-Handouts", desc: "Vollständige Handout-Exporte im {cue:hl-fazit-pdf}Dark- und Light-Mode auf Knopfdruck{/cue}." }
+    ]} />
+  </BentoCard>
+</SplitSlide>

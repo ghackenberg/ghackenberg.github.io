@@ -1,16 +1,13 @@
 ---
 title: "Praxis-Fallstudien & messbare Ergebnisse"
-subtitle: "Zwei reale B2B-Fallbeispiele: Warum nicht mehr Text, sondern eindeutigere semantische Modellierung zum Erfolg führt"
+subtitle: "Zwei reale Fallbeispiele: Warum {cue:hl-sub-cases-1001}präzise semantische Modellierung zum Erfolg führt{/cue}"
 number: "27"
 slideLayout: "split"
 voiceover: >
-  Lassen Sie uns die theoretischen Konzepte anhand von zwei echten Praxis-Fallstudien mit konkreten, messbaren Ergebnissen untermauern. 
-  {cue:col-case-a} Fall A: Ein B2B-Technologiekonzern stellte seine globale Website auf Edge Delivery und Schema-Entitäten um. 
-  Das Ergebnis: {cue:hl-case-a-stat}38 Prozent mehr Zitationen in Google AI Overviews und Perplexity{/cue} – bei einer Reduktion 
-  der Ladezeit um sechzig Prozent. 
-  {cue:col-case-b} Fall B: Ein Medizintechnik-Hersteller strukturierte 1.200 Fachartikel in einem semantischen Wissensgraphen. 
-  Ergebnis: {cue:hl-case-b-stat}45 Prozent mehr Sichtbarkeit bei hochgradig regulierten Kundenanfragen{/cue} in ChatGPT Search. 
-  Der gemeinsame Nenner: Nicht mehr Text, sondern präzisere semantische Modellierung war der Schlüssel!
+  Lassen Sie uns diese Konzepte anhand von zwei echten Fallstudien untermauern.
+  {cue:sub} Sie demonstrieren, warum {cue:hl-sub-cases-1001}präzise semantische Modellierung zum Erfolg führt{/cue}.
+  {cue:col-case-a} Fall A implementierte einen {cue:hl-callout-case-a}Decoupled Edge Layer mit Schema-Entitäten{/cue}, erzielte {cue:hl-case-a-stat}38 Prozent mehr Zitationen in Google AI Overviews und Perplexity{/cue}, senkte die {cue:hl-case-a-lcp}Ladezeit um 60 Prozent auf 1,1 Sekunden{/cue} und gewann {cue:hl-case-a-leads}24 Prozent mehr qualifizierte Leads{/cue}.
+  {cue:col-case-b} Fall B nutzte {cue:hl-callout-case-b}BLUF-Informationsblöcke mit verknüpften Autoren-Profilen{/cue}, sicherte sich {cue:hl-case-b-stat}45 Prozent mehr LLM-Sichtbarkeit bei regulierten Kundenanfragen{/cue}, liefert die {cue:hl-case-b-direct}bevorzugte Direktantwort in ChatGPT Search und Claude{/cue} und festigte die {cue:hl-case-b-authority}Etablierung als anerkannte Primärquelle im Fachbereich{/cue}.
 notes: |
   - Zeit: 61:30 - 64:00 Min.
   - Adobe & Sitecore Enterprise Customer Success Stories (2025).
@@ -28,26 +25,26 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-case-a" title="Fall A: B2B-Industriekonzern" accent="blue">
-    <CalloutBox color="blue" type="takeaway" title="Umstellung auf Edge Delivery & Schema.org">
-      <p class="text-base text-slate-300 light:text-slate-700">Decoupled Edge Layer mit standardisiertem Product- und TechArticle-Schema.</p>
+    <CalloutBox type="takeaway" title="{cue:hl-callout-case-a}Decoupled Edge Layer mit Schema-Entitäten{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Umstellung auf standardisiertes Product- und TechArticle-Schema.</p>
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", title: "{cue:hl-case-a-stat:emerald}+38 % Zitationen{/cue}", desc: "Erwähnungen in Perplexity und Google AI Overviews." },
-      { icon: "check", title: "Ladezeit um 60 % gesenkt", desc: "LCP von 4,8 s auf 1,1 s reduziert." },
-      { icon: "check", title: "+24 % qualifizierte Leads", desc: "Direkte Anfragen über technische Produktdatenblätter." }
+      { icon: "check", title: "+38 % Zitationen", desc: "Verzeichnet {cue:hl-case-a-stat}38 Prozent mehr Zitationen in Google AI Overviews und Perplexity{/cue}." },
+      { icon: "check", title: "Ladezeit um 60 % gesenkt", desc: "Reduzierte die {cue:hl-case-a-lcp}Ladezeit um 60 Prozent auf 1,1 Sekunden{/cue}." },
+      { icon: "check", title: "+24 % qualifizierte Leads", desc: "Erzielte {cue:hl-case-a-leads}24 Prozent mehr qualifizierte Leads{/cue} über Datenblätter." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-case-b" title="Fall B: Medizintechnik-Pionier" accent="cyan">
-    <CalloutBox color="cyan" type="takeaway" title="1.200 Fachbeiträge im Wissensgraphen">
-      <p class="text-base text-slate-300 light:text-slate-700">BLUF-Informationsblöcke mit verknüpften Autoren-Profilen (ORCID/Wikidata).</p>
+    <CalloutBox type="takeaway" title="{cue:hl-callout-case-b}BLUF-Informationsblöcke mit verknüpften Autoren-Profilen{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">1.200 Fachbeiträge verknüpft mit ORCID und Wikidata.</p>
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", title: "{cue:hl-case-b-stat:emerald}+45 % LLM-Sichtbarkeit{/cue}", desc: "Präsenz bei hochgradig regulierten Kundenanfragen." },
-      { icon: "check", title: "Bevorzugte Zitation", desc: "Direktantworten in ChatGPT Search und Claude." },
-      { icon: "check", title: "Branchen-Referenz", desc: "Etablierung als anerkannte Primärquelle im Fachbereich." }
+      { icon: "check", title: "+45 % LLM-Sichtbarkeit", desc: "Erzielte {cue:hl-case-b-stat}45 Prozent mehr LLM-Sichtbarkeit bei regulierten Kundenanfragen{/cue}." },
+      { icon: "check", title: "Bevorzugte Zitation", desc: "Wird als {cue:hl-case-b-direct}bevorzugte Direktantwort in ChatGPT Search und Claude{/cue} gewählt." },
+      { icon: "check", title: "Branchen-Referenz", desc: "Feste {cue:hl-case-b-authority}Etablierung als anerkannte Primärquelle im Fachbereich{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>

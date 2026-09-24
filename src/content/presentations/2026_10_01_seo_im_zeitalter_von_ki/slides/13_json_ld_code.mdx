@@ -1,15 +1,12 @@
 ---
 title: "Code-Deep-Dive: JSON-LD Syntax"
-subtitle: "Syntaktisch valider Schema.org @graph zur vollständigen Verknüpfung von Autor, Unternehmen und Produkt"
+subtitle: "Syntaktisch valider Schema.org @graph zur {cue:hl-sub-jsonld-1001}vollständigen Verknüpfung von Entitäten{/cue}"
 number: "13"
 slideLayout: "code"
 voiceover: >
-  In unserem Code-Deep-Dive werfen wir einen genauen Blick auf die praktische JSON-LD Syntax und sehen, wie ein syntaktisch valider Schema.org-Graph aufgebaut wird. 
-  {cue:code-jsonld} In JSON-LD nutzen wir das @graph-Array, um mehrere Entitäten miteinander zu verdrahten. 
-  Hier sehen Sie mich als Person mit meiner ORCID-ID und meiner Rolle an der Fachhochschule Oberösterreich. 
-  Darunter wird ein konkretes Industrieprodukt definiert – inklusive MPN-Teilenummer, ISO-Zertifizierung 
-  und Link zum Datenblatt. Ein KI-Crawler wie GPTBot liest diese Daten {cue:hl-fakten-5ms}in fünf Millisekunden aus und speichert 
-  sie als harte Fakten{/cue}.
+  In unserem Code-Deep-Dive werfen wir einen genauen Blick auf die praktische JSON-LD Syntax.
+  {cue:sub} Sie zeigt einen validen Schema.org-Graph zur {cue:hl-sub-jsonld-1001}vollständigen Verknüpfung von Entitäten{/cue}.
+  {cue:code-jsonld} In JSON-LD bündelt das Graph-Array Organisation, Autor und Artikel in {cue:hl-jsonld-graph}einem einzigen JSON-LD-Dokument{/cue}. Die Autorenidentität wird mit {cue:hl-jsonld-orcid}globalen akademischen Registern{/cue} verknüpft, sodass {cue:hl-fakten-5ms}GPTBot und Perplexity Fakten fehlerfrei extrahieren{/cue}.
 notes: |
   - Zeit: 28:00 - 31:00 Min.
   - Den Entwicklern im Publikum zeigen: Kein komplexer Aufwand – einmal sauber templaten (z. B. in Astro oder Next.js) und alle Seiten sind automatisch semantisch perfekt!
@@ -74,19 +71,19 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   <BentoCard slot="explanation" title="Entitäten-Vorteile im Quelltext" accent="blue">
     <BulletList items={[
       {
-        num: "1",
+        icon: "code",
         title: "@graph Array",
-        desc: "Bündelt Organisation, Autor und Artikel konsistent in einem einzigen HTTP-Request."
+        desc: "Bündelt Organisation, Autor und Artikel konsistent in {cue:hl-jsonld-graph}einem einzigen JSON-LD-Dokument{/cue}."
       },
       {
-        num: "2",
+        icon: "shield",
         title: "ORCID & sameAs",
-        desc: "Verknüpft die Autorenidentität unmissverständlich mit globalen akademischen Registern."
+        desc: "Verknüpft die Autorenidentität unmissverständlich mit {cue:hl-jsonld-orcid}globalen akademischen Registern{/cue}."
       },
       {
-        num: "3",
+        icon: "zap",
         title: "Maschinenlesbare Fakten",
-        desc: "{cue:hl-fakten-5ms:emerald}GPTBot und Perplexity{/cue} extrahieren Entitäten fehlerfrei in unter 5 Millisekunden."
+        desc: "{cue:hl-fakten-5ms}GPTBot und Perplexity extrahieren Fakten{/cue} fehlerfrei in unter 5 Millisekunden."
       }
     ]} />
   </BentoCard>

@@ -1,15 +1,13 @@
 ---
 title: "Enterprise-Plattformen: Adobe AEM & Sitecore"
-subtitle: "Wie globale Technologiekonzerne Edge Delivery Services und semantische Content Hubs für GEO skalieren"
+subtitle: "Wie globale Technologiekonzerne {cue:hl-sub-enterprise-1001}Edge Delivery Services und Content Hubs{/cue} skalieren"
 number: "24"
 slideLayout: "split"
 voiceover: >
-  Betrachten wir, wie globale Großkonzerne führende Enterprise-Plattformen wie Adobe AEM und Sitecore für generative Antwortsysteme skalieren. 
-  {cue:col-aem} Adobe Experience Manager setzt auf {cue:hl-aem-edge}Edge Delivery Services{/cue}, um weltweite Ladezeiten unter 
-  fünfhundert Millisekunden zu garantieren und Content-Fragmente automatisch mit semantischen Entitäten zu taggen. 
-  {cue:col-sitecore} Sitecore nutzt XM Cloud und den Content Hub als {cue:hl-single-source}zentralen B2B-Wissensgraphen{/cue}, 
-  der per GraphQL-Schnittstelle sowohl Webseiten als auch KI-Bots synchron speist. 
-  Beide Systeme beweisen: Die Entkopplung von Inhaltsgraphen und Auslieferungsschicht ist der Schlüssel zur Zukunft.
+  Betrachten wir nun, wie weltweite Konzerne Enterprise-Plattformen für KI-Systeme skalieren.
+  {cue:sub} Sie demonstrieren, wie globale Konzerne {cue:hl-sub-enterprise-1001}Edge Delivery Services und Content Hubs{/cue} skalieren.
+  {cue:col-aem} Adobe Experience Manager nutzt {cue:hl-aem-edge}Auslieferung direkt am CDN-Edge{/cue}, betreibt {cue:hl-aem-tagging}automatisches semantisches Tagging{/cue}, exportiert {cue:hl-aem-fragments}maschinenlesbares JSON-LD{/cue} und sichert {cue:hl-aem-consistency}identische Entitäten und Taxonomien{/cue}.
+  {cue:col-sitecore} Sitecore nutzt den {cue:hl-single-source}Content Hub als Single Source of Truth{/cue}, bereitet {cue:hl-sitecore-rag}proprietäre Produktdaten für externe RAG-Bots{/cue} auf, liefert per {cue:hl-sitecore-graphql}Hochgeschwindigkeits-API für Web und Modell-Injektion{/cue} und sichert {cue:hl-sitecore-headless}strikte Trennung von Inhalt und Auslieferung{/cue}.
 notes: |
   - Zeit: 54:30 - 56:30 Min.
   - Gartner Magic Quadrant for Digital Experience Platforms (DXP) 2024/2025 zitieren.
@@ -27,49 +25,49 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-aem" title="Adobe Experience Manager (AEM)" accent="blue">
-    <CalloutBox type="statement" color="blue" title="AEM Edge Delivery Services">
-      <p>{cue:hl-aem-edge:blue}Auslieferung direkt am weltweiten CDN-Edge.{/cue} Garantiert 100er-Lighthouse-Scores für blitzschnelle Antwortzeiten bei KI-Crawlern.</p>
+    <CalloutBox type="statement" title="AEM Edge Delivery Services">
+      <p>{cue:hl-aem-edge}Auslieferung direkt am weltweiten CDN-Edge.{/cue} Garantiert 100er-Lighthouse-Scores für blitzschnelle Antwortzeiten bei KI-Crawlern.</p>
     </CalloutBox>
 
     <BulletList items={[
       {
-        num: "1",
+        icon: "sparkles",
         title: "Adobe Sensei GenAI",
-        desc: "Automatisches semantisches Tagging und Entitäten-Klassifizierung aller Inhalts-Fragmente."
+        desc: "Führt {cue:hl-aem-tagging}automatisches semantisches Tagging{/cue} aller Inhalts-Fragmente durch."
       },
       {
-        num: "2",
+        icon: "document",
         title: "Content Fragments",
-        desc: "Strukturierte Inhaltsblöcke werden parallel als maschinenlesbares JSON-LD ausgeliefert."
+        desc: "Liefert strukturierte Inhaltsblöcke parallel als {cue:hl-aem-fragments}maschinenlesbares JSON-LD{/cue} aus."
       },
       {
-        num: "3",
+        icon: "network",
         title: "Globale Konsistenz",
-        desc: "Identische Entitäten und Taxonomien über hunderte weltweite Länderportale hinweg."
+        desc: "Garantiert {cue:hl-aem-consistency}identische Entitäten und Taxonomien{/cue} über weltweite Länderportale."
       }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-sitecore" title="Sitecore XM Cloud & Content Hub" accent="cyan">
-    <CalloutBox type="statement" color="cyan" title="Zentraler B2B-Wissensgraph">
-      <p>{cue:hl-single-source:cyan}Content Hub als Single Source of Truth{/cue} für komplexe technische Produktdaten, CAD-Modelle und Zertifikate.</p>
+    <CalloutBox type="statement" title="Zentraler B2B-Wissensgraph">
+      <p>{cue:hl-single-source}Content Hub als Single Source of Truth{/cue} für komplexe technische Produktdaten, CAD-Modelle und Zertifikate.</p>
     </CalloutBox>
 
     <BulletList items={[
       {
-        num: "1",
+        icon: "search",
         title: "Sitecore Search & Vektoren",
-        desc: "Bereitet proprietäre Produktdaten direkt für externe RAG-Bots und KI-Suchmaschinen auf."
+        desc: "Bereitet {cue:hl-sitecore-rag}proprietäre Produktdaten für externe RAG-Bots{/cue} auf."
       },
       {
-        num: "2",
+        icon: "code",
         title: "GraphQL-Schnittstellen",
-        desc: "Einheitliche Hochgeschwindigkeits-API für Webfrontend und direkte Modell-Injektion."
+        desc: "Bietet eine {cue:hl-sitecore-graphql}Hochgeschwindigkeits-API für Web und Modell-Injektion{/cue}."
       },
       {
-        num: "3",
+        icon: "cpu",
         title: "Headless DXP Architektur",
-        desc: "Strikte Trennung von Inhaltsverwaltung und extrem schneller Auslieferungsschicht."
+        desc: "Sichert {cue:hl-sitecore-headless}strikte Trennung von Inhalt und Auslieferung{/cue}."
       }
     ]} />
   </BentoCard>

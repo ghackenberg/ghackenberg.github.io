@@ -20,10 +20,30 @@ export interface SetSlideOptions {
   entryMode?: SlideEntryMode;
 }
 
+export interface SlideReference {
+  type: string;
+  author: string;
+  title: string;
+  year?: number;
+  url?: string;
+  siteName?: string;
+  booktitle?: string;
+  journal?: string;
+  volume?: string;
+  number?: string;
+  pages?: string;
+  publisher?: string;
+  howpublished?: string;
+  doi?: string;
+}
+
 export interface SlideData {
   id: string;
+  title?: string;
   audioUrl?: string;
   cues?: SlideCueMap;
+  notes?: string;
+  references?: SlideReference[];
 }
 
 interface NavigatorWithAudioSession extends Navigator {
@@ -54,6 +74,7 @@ export class AudioSyncController {
   private playbackRate: number = 1.0;
   private triggeredCues: Set<string> = new Set();
   private exitedCues: Set<string> = new Set();
+  private manualTime: number = 0;
   private rafId: number | null = null;
   private onSlideChangeCallback?: (index: number) => void;
   private onProgressCallback?: (currentSec: number, totalSec: number) => void;
@@ -135,6 +156,7 @@ export class AudioSyncController {
     const baseFrame = slideEl?.querySelector('.slide-base-frame');
 
     if (entryMode === 'full') {
+      this.manualTime = 99999;
       if (baseFrame) {
         baseFrame.classList.add('no-intro-transition');
         baseFrame.classList.remove('is-intro-state');
@@ -147,12 +169,15 @@ export class AudioSyncController {
       const cues = this.getCurrentSlideCues();
       const lastCue = cues[cues.length - 1];
       if (lastCue) {
+        this.manualTime = lastCue.start;
         this.syncCuesToTime(lastCue.start);
       } else {
+        this.manualTime = 99999;
         this.fastForwardAllCues();
       }
     } else {
       // 'start': reset all cues to unrevealed
+      this.manualTime = 0;
       this.resetAllCues();
       if (baseFrame && index > 0) {
         // Instantly position centered without flying in from top-left
@@ -197,14 +222,43 @@ export class AudioSyncController {
       return;
     }
 
-    // If in 'full' mode, or at least one cue is triggered: NOT in intro state
-    if (this.currentEntryMode === 'full' || this.triggeredCues.size > 0) {
+    // If in 'full' mode: NOT in intro state
+    if (this.currentEntryMode === 'full') {
+      baseFrame.classList.remove('is-intro-state');
+      baseFrame.classList.remove('is-entering');
+      return;
+    }
+
+    // Check if any stage content cue has been triggered.
+    // Subtitle reveal ('sub') and subtitle highlights ('hl-sub-*', 'mark-sub-*')
+    // are part of the centered intro orientation.
+    // The slide only leaves intro state when the first actual STAGE cue is triggered!
+    let hasStageCueTriggered = false;
+    for (const cueId of this.triggeredCues) {
+      if (cueId === 'sub' || cueId.startsWith('hl-sub') || cueId.startsWith('mark-sub')) {
+        continue;
+      }
+      const el = this.getCueElement(cueId);
+      if (el) {
+        if (el.closest('.slide-header')) {
+          continue;
+        }
+        if (el.closest('.slide-main-stage')) {
+          hasStageCueTriggered = true;
+          break;
+        }
+      }
+      // If cue element is not inside .slide-header and not a subtitle cue, it's a stage cue
+      hasStageCueTriggered = true;
+      break;
+    }
+
+    if (hasStageCueTriggered) {
       baseFrame.classList.remove('is-intro-state');
       baseFrame.classList.remove('is-entering');
     } else {
-      // In 'start' mode with 0 cues triggered: INTRO STATE ACTIVE!
-      // Notice: We do NOT add is-entering here, so rewinding on the same slide
-      // smoothly glides the header back to center with full opacity!
+      // In 'start' mode without stage cues triggered: INTRO STATE ACTIVE!
+      // (Title alone, or Title + Subtitle centered together)
       baseFrame.classList.add('is-intro-state');
     }
   }
@@ -224,7 +278,7 @@ export class AudioSyncController {
         el.classList.remove('is-active', 'is-dimmed', 'is-exited');
       });
       slideEl.querySelectorAll<HTMLElement>('mark, .highlight-marker').forEach((el) => {
-        el.classList.remove('is-active');
+        el.classList.remove('is-active', 'is-dimmed');
       });
     }
     this.updateSlideIntroState();
@@ -258,6 +312,8 @@ export class AudioSyncController {
         const totalSec = (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
         
         if (entryMode === 'full') {
+          this.manualTime = totalSec;
+          howlInstance.seek(totalSec);
           if (this.onProgressCallback) {
             this.onProgressCallback(totalSec, totalSec);
           }
@@ -268,6 +324,7 @@ export class AudioSyncController {
           const cues = this.getCurrentSlideCues();
           const lastCue = cues[cues.length - 1];
           const targetTime = lastCue ? lastCue.start : 0;
+          this.manualTime = targetTime;
           howlInstance.seek(targetTime);
           this.syncCuesToTime(targetTime);
           if (this.onProgressCallback) {
@@ -278,6 +335,7 @@ export class AudioSyncController {
           }
         } else {
           // 'start': 0:00 and all cues inactive
+          this.manualTime = 0;
           howlInstance.seek(0);
           if (this.onProgressCallback) {
             this.onProgressCallback(0, totalSec);
@@ -441,6 +499,7 @@ export class AudioSyncController {
   public seek(targetSec: number) {
     this.unlockAudioSession();
     this.currentEntryMode = 'start';
+    this.manualTime = targetSec;
     if (this.currentHowl) {
       this.currentHowl.seek(targetSec);
       this.syncCuesToTime(targetSec);
@@ -471,8 +530,14 @@ export class AudioSyncController {
   }
 
   public getCurrentTime(): number {
-    const current = this.currentHowl?.seek();
-    return (typeof current === 'number' && Number.isFinite(current) && current >= 0) ? current : 0;
+    if (this.currentHowl && this.currentHowl.state() === 'loaded') {
+      const current = this.currentHowl.seek();
+      if (typeof current === 'number' && Number.isFinite(current) && current >= 0) {
+        this.manualTime = current;
+        return current;
+      }
+    }
+    return this.manualTime;
   }
 
   public seekToCue(cueId: string) {
@@ -486,7 +551,7 @@ export class AudioSyncController {
   public prevCue() {
     const cues = this.getCurrentSlideCues();
 
-    // If on a slide with no cues (e.g. Title slide 1):
+    // If on a slide with no cues:
     if (cues.length === 0) {
       if (this.currentIndex > 0) {
         this.setSlideIndex(this.currentIndex - 1, { entryMode: 'last-cue', shouldPlay: this.isPlaying });
@@ -506,21 +571,21 @@ export class AudioSyncController {
 
     const currentSec = this.getCurrentTime();
     const milestones = [0, ...cues.map(c => c.start)].sort((a, b) => a - b);
-    
-    // Find highest milestone strictly less than currentSec - 0.5s threshold
-    let target = 0;
-    for (let i = milestones.length - 1; i >= 0; i--) {
-      if (milestones[i] < currentSec - 0.5) {
-        target = milestones[i];
-        break;
-      }
-    }
 
-    // If already at 0s, or currentSec is very close to 0:
-    if (currentSec <= 0.4 && this.currentIndex > 0) {
+    // If already at beginning of slide (no cues active or currentSec <= 0.2s):
+    if ((this.triggeredCues.size === 0 || currentSec <= 0.2) && this.currentIndex > 0) {
       // Step back to previous slide at its last cue
       this.setSlideIndex(this.currentIndex - 1, { entryMode: 'last-cue', shouldPlay: this.isPlaying });
       return;
+    }
+
+    // Find highest milestone strictly less than currentSec - 0.4s threshold
+    let target = 0;
+    for (let i = milestones.length - 1; i >= 0; i--) {
+      if (milestones[i] < currentSec - 0.4) {
+        target = milestones[i];
+        break;
+      }
     }
 
     this.seek(target);
@@ -529,7 +594,7 @@ export class AudioSyncController {
   public nextCue() {
     const cues = this.getCurrentSlideCues();
 
-    // If on a slide with no cues (e.g. Title slide 1):
+    // If on a slide with no cues:
     if (cues.length === 0) {
       if (this.currentIndex < this.slides.length - 1) {
         this.setSlideIndex(this.currentIndex + 1, { entryMode: 'start', shouldPlay: this.isPlaying });
@@ -547,8 +612,8 @@ export class AudioSyncController {
     }
 
     const currentSec = this.getCurrentTime();
-    // Find the first cue with start time strictly greater than currentSec + 0.25s
-    const nextCue = cues.find(c => c.start > currentSec + 0.25);
+    // Find the first cue with start time strictly greater than currentSec + 0.15s
+    const nextCue = cues.find(c => c.start > currentSec + 0.15);
     if (nextCue) {
       this.seek(nextCue.start);
     } else {
@@ -620,7 +685,8 @@ export class AudioSyncController {
     const tick = () => {
       if (this.currentHowl && this.currentHowl.playing()) {
         const current = this.currentHowl.seek();
-        const currentSec = (typeof current === 'number' && Number.isFinite(current)) ? current : 0;
+        const currentSec = (typeof current === 'number' && Number.isFinite(current)) ? current : this.manualTime;
+        this.manualTime = currentSec;
         const total = this.currentHowl.duration();
         const totalSec = (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
 
@@ -663,6 +729,8 @@ export class AudioSyncController {
         this.triggerExit(cueId);
       }
     }
+
+    this.updateHighlightSpotlight(currentSec);
   }
 
   private syncCuesToTime(currentSec: number) {
@@ -685,7 +753,117 @@ export class AudioSyncController {
         this.resetElement(cueId);
       }
     }
+    this.updateStructuralSpotlight(currentSec);
+    this.updateHighlightSpotlight(currentSec);
     this.updateSlideIntroState();
+  }
+
+  private updateStructuralSpotlight(currentSec: number) {
+    const slide = this.slides[this.currentIndex];
+    if (!slide?.cues) return;
+
+    // Collect all structural cues for this slide
+    const structuralItems: Array<{ cueId: string; el: HTMLElement; start: number; end?: number }> = [];
+
+    for (const [cueId, cueVal] of Object.entries(slide.cues)) {
+      const el = this.getCueElement(cueId);
+      if (!el) continue;
+      const isHighlight = el.tagName === 'MARK' || el.classList.contains('highlight-marker');
+      if (isHighlight) continue;
+
+      if (el.dataset.dim === 'false' || el.classList.contains('no-dim')) {
+        continue;
+      }
+
+      const timing = getCueTiming(cueVal);
+      structuralItems.push({ cueId, el, start: timing.start, end: timing.end });
+    }
+
+    if (structuralItems.length === 0) return;
+
+    structuralItems.sort((a, b) => a.start - b.start);
+
+    // Find all structural items that have started by currentSec
+    const triggered = structuralItems.filter(item => currentSec >= item.start);
+    if (triggered.length === 0) {
+      for (const item of structuralItems) {
+        item.el.classList.remove('is-active', 'is-dimmed', 'is-exited');
+      }
+      return;
+    }
+
+    // The most recently triggered structural item is the active spotlight
+    const activeItem = triggered[triggered.length - 1];
+
+    for (const item of structuralItems) {
+      if (currentSec < item.start) {
+        item.el.classList.remove('is-active', 'is-dimmed', 'is-exited');
+      } else if (item.el === activeItem.el) {
+        if (item.end !== undefined && currentSec >= item.end && item.el.dataset.exit === 'hide') {
+          item.el.classList.remove('is-active', 'is-dimmed');
+          item.el.classList.add('is-exited');
+        } else {
+          item.el.classList.remove('is-dimmed', 'is-exited');
+          item.el.classList.add('is-active');
+        }
+      } else {
+        // Earlier triggered item: dimmed spotlight
+        if (item.end !== undefined && currentSec >= item.end && item.el.dataset.exit === 'hide') {
+          item.el.classList.remove('is-active', 'is-dimmed');
+          item.el.classList.add('is-exited');
+        } else {
+          item.el.classList.remove('is-exited');
+          item.el.classList.add('is-active', 'is-dimmed');
+        }
+      }
+    }
+  }
+
+  private updateHighlightSpotlight(currentSec: number) {
+    const slide = this.slides[this.currentIndex];
+    if (!slide?.cues) return;
+
+    // Collect all highlight cues for this slide
+    const highlightItems: Array<{ cueId: string; el: HTMLElement; start: number; end?: number }> = [];
+
+    for (const [cueId, cueVal] of Object.entries(slide.cues)) {
+      const el = this.getCueElement(cueId);
+      if (!el) continue;
+      const isHighlight = el.tagName === 'MARK' || el.classList.contains('highlight-marker');
+      if (!isHighlight) continue;
+
+      const timing = getCueTiming(cueVal);
+      highlightItems.push({ cueId, el, start: timing.start, end: timing.end });
+    }
+
+    if (highlightItems.length === 0) return;
+
+    highlightItems.sort((a, b) => a.start - b.start);
+
+    // Find all highlight items that have started by currentSec
+    const triggered = highlightItems.filter(item => currentSec >= item.start);
+    if (triggered.length === 0) {
+      for (const item of highlightItems) {
+        item.el.classList.remove('is-active', 'is-dimmed');
+      }
+      return;
+    }
+
+    // The most recently triggered highlight item is the active spotlight
+    const activeItem = triggered[triggered.length - 1];
+
+    for (const item of highlightItems) {
+      if (currentSec < item.start) {
+        item.el.classList.remove('is-active', 'is-dimmed');
+      } else if (item.el === activeItem.el) {
+        // Active spotlight: full brightness, glow, contrast
+        item.el.classList.remove('is-dimmed');
+        item.el.classList.add('is-active');
+      } else {
+        // Earlier highlight on this slide: persistent muted marker
+        item.el.classList.add('is-active', 'is-dimmed');
+      }
+    }
   }
 
   private fastForwardAllCues() {
@@ -697,12 +875,12 @@ export class AudioSyncController {
         this.fastForwardElement(cueId, timing);
       }
     }
-    // Also ensure all data-cue elements on this slide are active in non-playing mode
+    // Also ensure all data-cue and highlight elements on this slide are active and un-dimmed in full/overview mode
     const slideEl = document.querySelector(`.reveal .slides section[data-slide-index="${this.currentIndex}"]`);
     if (slideEl) {
-      slideEl.querySelectorAll<HTMLElement>('[data-cue], .cue-target').forEach((el) => {
+      slideEl.querySelectorAll<HTMLElement>('[data-cue], .cue-target, mark, .highlight-marker').forEach((el) => {
         el.classList.remove('is-dimmed', 'is-exited');
-        el.classList.add('is-active');
+        el.classList.add('is-active', 'is-immediate');
       });
     }
     this.updateSlideIntroState();
@@ -712,21 +890,19 @@ export class AudioSyncController {
     const el = this.getCueElement(cueId);
     if (!el) return;
 
+    el.classList.remove('is-immediate');
     el.style.setProperty('--cue-duration', `${timing.duration}s`);
-    el.classList.remove('is-dimmed', 'is-exited');
-    el.classList.add('is-active');
 
     const isHighlight = el.tagName === 'MARK' || el.classList.contains('highlight-marker');
-    if (!isHighlight) {
-      // Step down previous active cards on the same slide to dimmed spotlight
-      const slideEl = document.querySelector(`.reveal .slides section[data-slide-index="${this.currentIndex}"]`);
-      if (slideEl) {
-        slideEl.querySelectorAll<HTMLElement>('[data-cue].is-active, .cue-target.is-active').forEach((activeEl) => {
-          const isOtherHighlight = activeEl.tagName === 'MARK' || activeEl.classList.contains('highlight-marker');
-          if (activeEl !== el && !activeEl.contains(el) && !el.contains(activeEl) && !isOtherHighlight) {
-            activeEl.classList.add('is-dimmed');
-          }
-        });
+    if (isHighlight) {
+      el.classList.remove('is-dimmed', 'is-exited');
+      el.classList.add('is-active');
+      this.updateHighlightSpotlight(timing.start);
+    } else {
+      this.updateStructuralSpotlight(timing.start);
+      if (el.dataset.dim === 'false' || el.classList.contains('no-dim')) {
+        el.classList.remove('is-dimmed', 'is-exited');
+        el.classList.add('is-active');
       }
     }
   }
@@ -736,10 +912,15 @@ export class AudioSyncController {
     if (!el) return;
 
     const isHighlight = el.tagName === 'MARK' || el.classList.contains('highlight-marker');
-    // Words stay highlighted on the slide; only cards/boxes fade out on exit
+    // Words stay highlighted on the slide; structural cards default to dimmed unless explicitly marked for hiding
     if (!isHighlight) {
-      el.classList.remove('is-active', 'is-dimmed');
-      el.classList.add('is-exited');
+      if (el.dataset.exit === 'hide') {
+        el.classList.remove('is-active', 'is-dimmed');
+        el.classList.add('is-exited');
+      } else {
+        el.classList.remove('is-active');
+        el.classList.add('is-dimmed');
+      }
     }
   }
 
@@ -748,10 +929,23 @@ export class AudioSyncController {
     if (!el) return;
     el.style.setProperty('--cue-duration', `${timing.duration}s`);
 
+    if (cueId.endsWith('-speaker') || cueId === 'title-speaker') {
+      if (currentSec === undefined || currentSec >= timing.start + 7.0) {
+        el.classList.add('is-immediate');
+      } else {
+        el.classList.remove('is-immediate');
+      }
+    }
+
     const isHighlight = el.tagName === 'MARK' || el.classList.contains('highlight-marker');
     if (!isHighlight && timing.end !== undefined && currentSec !== undefined && currentSec >= timing.end) {
-      el.classList.remove('is-active', 'is-dimmed');
-      el.classList.add('is-exited');
+      if (el.dataset.exit === 'hide') {
+        el.classList.remove('is-active', 'is-dimmed');
+        el.classList.add('is-exited');
+      } else {
+        el.classList.remove('is-active');
+        el.classList.add('is-dimmed');
+      }
     } else {
       el.classList.remove('is-dimmed', 'is-exited');
       el.classList.add('is-active');
@@ -761,7 +955,7 @@ export class AudioSyncController {
   private resetElement(cueId: string) {
     const el = this.getCueElement(cueId);
     if (!el) return;
-    el.classList.remove('is-active', 'is-dimmed', 'is-exited');
+    el.classList.remove('is-active', 'is-dimmed', 'is-exited', 'is-immediate');
   }
 
   private notifyPlayState(state: boolean) {

@@ -1,0 +1,59 @@
+---
+title: "Übergeordnete Content-Strategie"
+subtitle: "Holistisches Wissens-Repurposing von der {cue:hl-sub-repurpose-923}Forschung bis zur KI-Zitationsfähigkeit{/cue}"
+number: "05"
+slideLayout: "pipeline"
+voiceover: >
+  In unserer übergeordneten Content-Strategie steht jedes Format in einer synergetischen Beziehung.
+  {cue:sub} Sie beschreibt das holistische Repurposing von der {cue:hl-sub-repurpose-923}Forschung bis zur KI-Zitationsfähigkeit{/cue}.
+  {cue:step-repo} Ausgangspunkt sind {cue:hl-repurpose-repo}originäre Forschungsdaten aus industrieller Entwicklung{/cue}.
+  {cue:step-keynote} Diese Erkenntnisse überführen wir in eine {cue:hl-repurpose-keynote}akustisch synchronisierte Vektorbühne{/cue} für rasche Orientierung.
+  {cue:step-deepdive} Der begleitende Blogartikel liefert {cue:hl-repurpose-deepdive}vollständigen Quellcode und Benchmark-Analysen{/cue}.
+  {cue:step-graph} Schließlich sorgt der Wissensgraph für {cue:hl-repurpose-graph}maximale Zitationsfähigkeit in Sprachmodellen{/cue}.
+notes: |
+  - Zeit: 6:30 - 8:15 Min.
+  - Das Kreislauf-Prinzip hervorheben: Ein Inhalt wird nicht einmalig veröffentlicht, sondern entfaltet in vier Verarbeitungsstufen seine volle Wirkung.
+  - Stichwort GEO & AIO: Maschinenlesbare Entitätenverknüpfung.
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="05"
+  totalSlides="10"
+>
+  <Pipeline
+    steps={[
+      {
+        cue: "step-repo",
+        num: "01",
+        title: "Forschung & Code",
+        desc: "Akademische Entdeckung und {cue:hl-repurpose-repo}originäre Forschungsdaten aus industrieller Entwicklung{/cue}.",
+        image: "/presentations/2026_09_23_slide_as_code_presentation_engine/images/step1_research_code.jpg"
+      },
+      {
+        cue: "step-keynote",
+        num: "02",
+        title: "Interaktive Keynote",
+        desc: "Kompakte multimediale Essenz mit {cue:hl-repurpose-keynote}akustisch synchronisierter Vektorbühne{/cue}.",
+        image: "/presentations/2026_09_23_slide_as_code_presentation_engine/images/step2_keynote.jpg"
+      },
+      {
+        cue: "step-deepdive",
+        num: "03",
+        title: "Blog Deep Dive",
+        desc: "Umfassender Erfahrungsbericht mit {cue:hl-repurpose-deepdive}vollständigem Quellcode und Benchmark-Analysen{/cue}.",
+        image: "/presentations/2026_09_23_slide_as_code_presentation_engine/images/step3_blog_deepdive.jpg"
+      },
+      {
+        cue: "step-graph",
+        num: "04",
+        title: "Wissensgraph & AIO",
+        desc: "Semantische Verknüpfung aller Artefakte für {cue:hl-repurpose-graph}maximale Zitationsfähigkeit in Sprachmodellen{/cue}.",
+        image: "/presentations/2026_09_23_slide_as_code_presentation_engine/images/step4_knowledge_graph.jpg"
+      }
+    ]}
+  />
+</PipelineSlide>

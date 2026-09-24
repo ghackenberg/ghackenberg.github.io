@@ -143,7 +143,7 @@ function vitePreSlideCues() {
           }
           if (content !== undefined) {
             const colorAttr = color1 ? ` data-color="${color1}"` : '';
-            return `<mark id="${cueId1}" data-cue="${cueId1}"${colorAttr} class="highlight-marker font-semibold rounded-md">${content}</mark>`;
+            return `<mark id="${cueId1}" data-cue="${cueId1}"${colorAttr} class="highlight-marker font-semibold rounded-[0.38em]">${content}</mark>`;
           }
           if (cueId2 !== undefined) {
             const colorAttr = color2 ? ` data-color="${color2}"` : '';

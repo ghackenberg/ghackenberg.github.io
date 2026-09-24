@@ -1,0 +1,48 @@
+---
+title: "Motivation: Das Dilemma digitaler Vorträge"
+subtitle: "Warum statische PDF-Dateien und Fremd-iFrames die {cue:hl-sub-motivation-923}Wissensvermittlung im Web zerstören{/cue}"
+number: "03"
+slideLayout: "split"
+voiceover: >
+  Beim Betrachten des Status Quo digitaler Präsentationen stoßen wir auf ein grundlegendes Dilemma.
+  {cue:sub} Bisherige Formate verdeutlichen, wie statische PDFs und Fremd-iFrames die {cue:hl-sub-motivation-923}Wissensvermittlung im Web zerstören{/cue}.
+  {cue:col-silo} Herkömmliche Folien landen meist als stumme PDF-Dateien in Dateiablagen – wie ein {cue:hl-pdf-silo}Notenblatt ohne Orchester{/cue}. Sie transportieren nur Bruchteile des {cue:hl-silo-kontext}eigentlichen Vortragskontexts{/cue}, sperren {cue:hl-silo-crawler}KI- und Web-Crawler{/cue} komplett aus und erzwingen auf Mobilgeräten ständiges {cue:hl-silo-zoom}Zoomen und horizontales Scrollen{/cue}.
+  {cue:col-native} Unsere Vision ist eine native Web-Engine: Vollwertige Keynotes als {cue:hl-web-native}erstklassige Bürger im Web{/cue}. Wir verbinden eine lebendige Vektorbühne synchron mit {cue:hl-native-synchro}neuronaler Sprachausgabe{/cue}, garantieren {cue:hl-native-a11y}Bildschirmleser-Unterstützung und Barrierefreiheit{/cue} und sichern {cue:hl-native-hoheit}volle Daten- und Plattform-Hoheit{/cue}.
+notes: |
+  - Zeit: 3:00 - 4:45 Min.
+  - Emotionale Brücke: Jeder kennt den Frust, eine Folie ohne den mündlichen Kommentar des Sprechers verstehen zu müssen.
+  - Kernbotschaft: Vorträge leben von der Symbiose aus visueller Reduktion und mündlicher Erläuterung.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="03"
+  totalSlides="10"
+>
+  <BentoCard slot="left" cue="col-silo" title="Status Quo: Das PDF- & iFrame-Silo" accent="neutral">
+    <CalloutBox type="quote">
+      „Folien ohne gesprochene Worte sind wie ein {cue:hl-pdf-silo}Notenblatt ohne Orchester{/cue}.“
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "cross", title: "Fehlende auditive Ebene", desc: "Stumme Folien transportieren nur Bruchteile des {cue:hl-silo-kontext}eigentlichen Vortragskontexts{/cue}." },
+      { icon: "cross", title: "Unsichtbar für Suchmaschinen", desc: "PDFs und iFrame-Sandboxes sperren {cue:hl-silo-crawler}KI- und Web-Crawler{/cue} komplett aus." },
+      { icon: "cross", title: "Miserable mobile Usability", desc: "Starre Pixelformate erzwingen ständiges {cue:hl-silo-zoom}Zoomen und horizontales Scrollen{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-native" title="Die Web-Native Vision" accent="blue">
+    <CalloutBox type="statement" title="Slide-as-Code Paradigma">
+      Vollwertige Keynotes als {cue:hl-web-native}erstklassige Bürger im Web{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Multimodale Immersion", desc: "Pixelgenaue Vektorbühne synchronisiert mit {cue:hl-native-synchro}neuronaler Sprachausgabe{/cue}." },
+      { icon: "check", title: "Vollständige Zugänglichkeit", desc: "100 % semantisches HTML mit {cue:hl-native-a11y}Bildschirmleser-Unterstützung und Barrierefreiheit{/cue}." },
+      { icon: "check", title: "Offene Datenhoheit", desc: "Self-Hosted ohne externe Tracker, mit {cue:hl-native-hoheit}voller Daten- und Plattform-Hoheit{/cue}." }
+    ]} />
+  </BentoCard>
+</SplitSlide>
