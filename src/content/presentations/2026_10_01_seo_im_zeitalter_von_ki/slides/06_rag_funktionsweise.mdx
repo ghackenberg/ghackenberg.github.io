@@ -1,6 +1,6 @@
 ---
 title: "Wie KI-Suchmaschinen arbeiten: RAG"
-subtitle: "Retrieval-Augmented Generation als {cue:hl-sub-rag-1001:cyan}Brücke zwischen Modell und aktuellem Web{/cue}"
+subtitle: "Retrieval-Augmented Generation als {cue:hl-sub-rag-1001}Brücke zwischen Modell und aktuellem Web{/cue}"
 number: "06"
 slideLayout: "pipeline"
 voiceover: >
@@ -38,28 +38,28 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         cue: "step-query",
         num: "01",
         title: "Anfrage-Parsing",
-        desc: "Nutzerfrage wird in semantische Absicht (Intent) und {cue:hl-rag-parsing:cyan}gesuchte Entitäten{/cue} zerlegt.",
+        desc: "Nutzerfrage wird in semantische Absicht (Intent) und {cue:hl-rag-parsing}gesuchte Entitäten{/cue} zerlegt.",
         image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step1_parsing.jpg"
       },
       {
         cue: "step-retrieval",
         num: "02",
         title: "Live-Web-Retrieval",
-        desc: "Vektorsuche ruft die Top-{cue:hl-rag-retrieval:teal}Text-Chunks{/cue} aus dem aktuellen Index ab. Nur hochrelevante Absätze kommen weiter.",
+        desc: "Vektorsuche ruft die Top-{cue:hl-rag-retrieval}Text-Chunks{/cue} aus dem aktuellen Index ab. Nur hochrelevante Absätze kommen weiter.",
         image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step2_retrieval.jpg"
       },
       {
         cue: "step-injection",
         num: "03",
         title: "Kontext-Injektion",
-        desc: "Die gefundenen Chunks werden zusammen mit System-Instruktionen in das {cue:hl-rag-injection:blue}Context Window{/cue} des LLMs injiziert.",
+        desc: "Die gefundenen Chunks werden zusammen mit System-Instruktionen in das {cue:hl-rag-injection}Context Window{/cue} des LLMs injiziert.",
         image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step3_injection.jpg"
       },
       {
         cue: "step-synthesis",
         num: "04",
         title: "LLM-Synthese",
-        desc: "Das Modell erzeugt die finale Antwort mit {cue:hl-rag-synthesis:emerald}Zitations-Chips{/cue} basierend auf den injizierten Daten.",
+        desc: "Das Modell erzeugt die finale Antwort mit {cue:hl-rag-synthesis}Zitations-Chips{/cue} basierend auf den injizierten Daten.",
         image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step4_synthesis.jpg"
       }
     ]}

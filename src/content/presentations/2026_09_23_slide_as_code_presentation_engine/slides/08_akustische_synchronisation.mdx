@@ -1,6 +1,6 @@
 ---
 title: "Akustische Wort-Anker-Synchronisation"
-subtitle: "Wie Edge TTS, phonetische Wörterbücher und Howler.js im {cue:hl-sub-audio-923:cyan}Browser nahtlos verschmelzen{/cue}"
+subtitle: "Wie Edge TTS, phonetische Wörterbücher und Howler.js im {cue:hl-sub-audio-923}Browser nahtlos verschmelzen{/cue}"
 number: "08"
 slideLayout: "split"
 voiceover: >
@@ -27,23 +27,23 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 >
   <BentoCard slot="left" cue="col-audio" title="Die Synthese-Pipeline" accent="purple">
     <CalloutBox type="statement" color="purple" title="Edge TTS & Lexikon">
-      {cue:hl-sync-audio:purple}Präzise Aussprache{/cue} technischer Akronyme und Anglizismen.
+      {cue:hl-sync-audio}Präzise Aussprache{/cue} technischer Akronyme und Anglizismen.
     </CalloutBox>
     <BulletList items={[
-      { num: "1", title: "Phonetische Normalisierung", desc: "tts-lexicon.json korrigiert {cue:hl-sync-lexicon:purple}R-A-G, Schema.org und Zero-Click{/cue}." },
-      { num: "2", title: "Subsekunden-Wortgrenzen", desc: "Edge TTS liefert {cue:hl-sync-words:purple}millimetergenaue Zeitstempel{/cue} für jedes gesprochene Wort." },
-      { num: "3", title: "Inkrementeller SHA-Cache", desc: "Unveränderte Folien werden dank {cue:hl-sync-cache:purple}inkrementellem Hash-Cache{/cue} übersprungen." }
+      { num: "1", title: "Phonetische Normalisierung", desc: "tts-lexicon.json korrigiert {cue:hl-sync-lexicon}R-A-G, Schema.org und Zero-Click{/cue}." },
+      { num: "2", title: "Subsekunden-Wortgrenzen", desc: "Edge TTS liefert {cue:hl-sync-words}millimetergenaue Zeitstempel{/cue} für jedes gesprochene Wort." },
+      { num: "3", title: "Inkrementeller SHA-Cache", desc: "Unveränderte Folien werden dank {cue:hl-sync-cache}inkrementellem Hash-Cache{/cue} übersprungen." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-sync" title="Der AudioSyncController" accent="blue">
     <CalloutBox type="fact" color="blue" title="60fps Client-Side Controller">
-      {cue:hl-sync-controller:blue}requestAnimationFrame steuert die visuelle Regie{/cue} im DOM.
+      {cue:hl-sync-controller}requestAnimationFrame steuert die visuelle Regie{/cue} im DOM.
     </CalloutBox>
     <BulletList items={[
-      { icon: "check", accent: "blue", title: "Spotlight-State-Machine", desc: "Wechselt Klassen dynamisch von {cue:hl-sync-state:blue}data-cue-active zu data-cue-past{/cue}." },
-      { icon: "check", accent: "blue", title: "Kinetische Highlighter-Wellen", desc: "Animiert {cue:hl-sync-kinetic:blue}farbige Textmarker unter Schriftzeilen{/cue} passend zum Sprechtempo." },
-      { icon: "check", accent: "blue", title: "2-Phasen Title-Hook Protokoll", desc: "Garantiert {cue:hl-sync-hook:blue}12 bis 20 Wörter Orientierungszeit{/cue} vor dem ersten optischen Cue-Trigger." }
+      { icon: "check", title: "Spotlight-State-Machine", desc: "Wechselt Klassen dynamisch von {cue:hl-sync-state}data-cue-active zu data-cue-past{/cue}." },
+      { icon: "check", title: "Kinetische Highlighter-Wellen", desc: "Animiert {cue:hl-sync-kinetic}farbige Textmarker unter Schriftzeilen{/cue} passend zum Sprechtempo." },
+      { icon: "check", title: "2-Phasen Title-Hook Protokoll", desc: "Garantiert {cue:hl-sync-hook}12 bis 20 Wörter Orientierungszeit{/cue} vor dem ersten optischen Cue-Trigger." }
     ]} />
   </BentoCard>
 </SplitSlide>
