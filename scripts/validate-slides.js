@@ -217,7 +217,7 @@ function validateSlides() {
             totalErrors++;
           } else {
             const closedId = openCueStack.pop();
-            const isHighlight = closedId.startsWith('hl-') || closedId.startsWith('mark-');
+            const isHighlight = closedId ? (closedId.startsWith('hl-') || closedId.startsWith('mark-')) : false;
             if (!isHighlight) {
               console.error(
                 `  ❌ [${slideFile}] Structural cue "${closedId}" has a closing tag "${tagMatch[0]}". Structural cues (col-, box-, card-, step-, stat-) must be point cues without closing tags to prevent content from vanishing. Only inline text-highlights ("hl-*") may have closing tags.`

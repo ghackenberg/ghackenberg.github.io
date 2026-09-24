@@ -20,10 +20,30 @@ export interface SetSlideOptions {
   entryMode?: SlideEntryMode;
 }
 
+export interface SlideReference {
+  type: string;
+  author: string;
+  title: string;
+  year?: number;
+  url?: string;
+  siteName?: string;
+  booktitle?: string;
+  journal?: string;
+  volume?: string;
+  number?: string;
+  pages?: string;
+  publisher?: string;
+  howpublished?: string;
+  doi?: string;
+}
+
 export interface SlideData {
   id: string;
+  title?: string;
   audioUrl?: string;
   cues?: SlideCueMap;
+  notes?: string;
+  references?: SlideReference[];
 }
 
 interface NavigatorWithAudioSession extends Navigator {
