@@ -1,23 +1,8 @@
 ---
 import 'reveal.js/reveal.css';
-import type { SlideCueMap } from './AudioSyncController';
+import type { SlideCueMap, SlideReference } from './AudioSyncController';
 
-export interface SlideReference {
-  type: string;
-  author: string;
-  title: string;
-  year?: number;
-  url?: string;
-  siteName?: string;
-  booktitle?: string;
-  journal?: string;
-  volume?: string;
-  number?: string;
-  pages?: string;
-  publisher?: string;
-  howpublished?: string;
-  doi?: string;
-}
+export type { SlideReference };
 
 interface SlideMeta {
   id: string;
@@ -444,12 +429,13 @@ const currentDeckId = presentationId || talkId || "presentation";
 
 <script>
   import Reveal, { type RevealApi } from 'reveal.js';
-  import { AudioSyncController, type SlideData, type CueItem } from './AudioSyncController';
+  import { AudioSyncController, type SlideData, type CueItem, type SlideReference } from './AudioSyncController';
   import { AutoFitController } from './AutoFitController';
 
   declare global {
     interface Window {
       __revealDeck?: RevealApi;
+      audioSync?: AudioSyncController;
     }
   }
 
@@ -468,11 +454,11 @@ const currentDeckId = presentationId || talkId || "presentation";
     progress: false,
     hash: false,
     keyboard: {
-      38: null, // ArrowUp (managed by audioSync.prevCue)
-      40: null, // ArrowDown (managed by audioSync.nextCue)
-      74: null, // KeyJ (managed by audioSync.nextCue)
-      75: null, // KeyK (managed by audioSync.prevCue)
-      32: null  // Space (managed by audioSync.togglePlay)
+      38: () => {}, // ArrowUp (managed by audioSync.prevCue)
+      40: () => {}, // ArrowDown (managed by audioSync.nextCue)
+      74: () => {}, // KeyJ (managed by audioSync.nextCue)
+      75: () => {}, // KeyK (managed by audioSync.prevCue)
+      32: () => {}  // Space (managed by audioSync.togglePlay)
     },
     center: true,
     transition: 'fade',
@@ -735,7 +721,7 @@ const currentDeckId = presentationId || talkId || "presentation";
             </div>
           `;
         } else {
-          referencesModalBody.innerHTML = refs.map((ref) => renderReferenceItem(ref)).join('');
+          referencesModalBody.innerHTML = refs.map((ref: SlideReference) => renderReferenceItem(ref)).join('');
         }
       }
     };
@@ -897,7 +883,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         }
       }
     });
-    (window as any).audioSync = audioSync;
+    window.audioSync = audioSync;
 
     // Reveal Slide Changed Event
     deck.on('slidechanged', () => {
