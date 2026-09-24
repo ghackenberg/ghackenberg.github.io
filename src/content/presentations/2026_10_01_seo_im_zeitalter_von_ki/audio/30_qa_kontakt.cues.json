@@ -1,13 +1,41 @@
 {
+  "sub": {
+    "start": 4.3
+  },
+  "hl-sub-qa-1001": {
+    "start": 6.39,
+    "duration": 2.25,
+    "end": 8.64
+  },
   "col-qa-questions": {
-    "start": 5.13
+    "start": 8.97
+  },
+  "hl-qa-klick": {
+    "start": 10.1,
+    "duration": 1.65,
+    "end": 11.75
+  },
+  "hl-qa-governance": {
+    "start": 14.18,
+    "duration": 2.32,
+    "end": 16.5
+  },
+  "hl-qa-ownership": {
+    "start": 17.55,
+    "duration": 2.1,
+    "end": 19.65
   },
   "col-qa-contact": {
-    "start": 15.26
+    "start": 19.99
+  },
+  "hl-callout-speaker-prof": {
+    "start": 19.99,
+    "duration": 9.57,
+    "end": 29.56
   },
   "hl-folien-online": {
-    "start": 18.98,
-    "duration": 1.16,
-    "end": 20.14
+    "start": 28.38,
+    "duration": 1.18,
+    "end": 29.56
   }
 }

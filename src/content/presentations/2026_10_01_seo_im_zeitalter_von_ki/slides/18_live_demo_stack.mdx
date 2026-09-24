@@ -1,15 +1,15 @@
 ---
 title: "Live-Demo-Stack im Detail"
-subtitle: "Vier aufeinander abgestimmte Komponenten für maximale Geschwindigkeit und Maschinenlesbarkeit"
+subtitle: "Vier aufeinander abgestimmte Komponenten für {cue:hl-sub-demostack-1001}Geschwindigkeit und Maschinenlesbarkeit{/cue}"
 number: "18"
 slideLayout: "pipeline"
 voiceover: >
-  Betrachten wir nun unseren Live-Demo-Stack im Detail: Vier aufeinander abgestimmte Komponenten für kompromisslose Geschwindigkeit und optimale Maschinenlesbarkeit. 
-  {cue:card-astro} Als Frontend-Framework nutzen wir Astro: Es erzeugt statisches HTML mit null JavaScript-Ballast. 
-  {cue:card-agent} Die Optimierung übernimmt der Google Anti-Gravity Agent direkt auf der Konsole. 
-  {cue:card-github} Als Versionskontrolle und CI/CD-Pipeline dient GitHub Pages mit automatisierten Actions. 
-  {cue:card-plausible} Und die Erfolgsmessung erfolgt über Plausible Analytics – zu 100 Prozent DSGVO-konform 
-  und ohne nervigen Cookie-Banner.
+  Betrachten wir nun unseren Live-Demo-Stack im Detail.
+  {cue:sub} Er vereint vier Komponenten für {cue:hl-sub-demostack-1001}Geschwindigkeit und Maschinenlesbarkeit{/cue}.
+  {cue:card-astro} Als Frontend-Framework nutzen wir Astro mit seiner {cue:hl-stack-astro}Islands Architecture{/cue} und null JavaScript-Ballast.
+  {cue:card-agent} Die Optimierung übernimmt der Google Antigravity Agent als {cue:hl-stack-agent}autonome Coding-Umgebung{/cue} mit MCP-Schnittstellen.
+  {cue:card-github} Als Versionskontrolle dient GitHub Actions mit integriertem {cue:hl-stack-ci}Lighthouse-Gatekeeper{/cue}.
+  {cue:card-plausible} Und die Erfolgsmessung erfolgt über Plausible als {cue:hl-stack-plausible}DSGVO-konformes Web-Tracking{/cue} ohne nervigen Cookie-Banner.
 notes: |
   - Zeit: 41:00 - 43:30 Min.
   - Hinweis auf die Live-Website hackenberg.tech: Genau dieser Stack treibt die Website an, auf der diese Folien gehostet sind!
@@ -29,25 +29,29 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         cue: "card-astro",
         num: "01",
         title: "Astro Frontend",
-        desc: "Islands Architecture. Rendert reines semantisches HTML. Keine Ladezeit-Verzögerung für Crawler."
+        desc: "{cue:hl-stack-astro}Islands Architecture{/cue}. Rendert reines semantisches HTML. Keine Ladezeit-Verzögerung für Crawler.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step1_stack_astro.jpg"
       },
       {
         cue: "card-agent",
         num: "02",
-        title: "Anti-Gravity Agent",
-        desc: "Autonome Coding-Umgebung mit MCP-Schnittstellen. Validiert Schemas und optimiert Code im Sekundentakt."
+        title: "Antigravity Agent",
+        desc: "{cue:hl-stack-agent}Autonome Coding-Umgebung{/cue} mit MCP-Schnittstellen. Validiert Schemas und optimiert Code im Sekundentakt.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step2_stack_agent.jpg"
       },
       {
         cue: "card-github",
         num: "03",
         title: "GitHub Actions",
-        desc: "Automatisierte CI/CD-Pipeline mit integriertem Lighthouse-Gatekeeper und globalem CDN-Deployment."
+        desc: "Automatisierte CI/CD-Pipeline mit integriertem {cue:hl-stack-ci}Lighthouse-Gatekeeper{/cue} und globalem CDN-Deployment.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step3_stack_github.jpg"
       },
       {
         cue: "card-plausible",
         num: "04",
         title: "Plausible Analytics",
-        desc: "DSGVO-konformes Web-Tracking ohne Cookies. Erkennt Referrals von chatgpt.com und perplexity.ai."
+        desc: "{cue:hl-stack-plausible}DSGVO-konformes Web-Tracking{/cue} ohne Cookies. Erkennt Referrals von chatgpt.com und perplexity.ai.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step4_stack_plausible.jpg"
       }
     ]}
   />

@@ -1,7 +1,10 @@
 ---
+import { renderSlideCues } from '../../../utils/slide-cues';
+
 interface Props {
   title?: string;
   subtitle?: string;
+  subtitleCue?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
   showFooter?: boolean;
@@ -11,6 +14,7 @@ interface Props {
 const {
   title,
   subtitle,
+  subtitleCue = "sub",
   slideNumber,
   totalSlides = 30,
   showFooter = true,
@@ -48,9 +52,13 @@ const isNotFirstSlide = num > 1;
         </h1>
 
         {subtitle && (
-          <p class="slide-subtitle text-2xl lg:text-3xl text-slate-300 light:text-slate-600 mt-2 font-normal leading-relaxed">
-            {subtitle}
-          </p>
+          <p
+            id={subtitleCue}
+            data-cue={subtitleCue}
+            data-dim="false"
+            class="slide-subtitle text-2xl lg:text-3xl text-slate-300 light:text-slate-600 mt-2 font-normal leading-relaxed"
+            set:html={renderSlideCues(subtitle)}
+          />
         )}
       </div>
     </header>
@@ -192,33 +200,371 @@ const isNotFirstSlide = num > 1;
     text-wrap: balance;
   }
 
-  /* Text Marker Sweep Animation */
-  :global(.highlight-marker) {
-    background-image: var(--hl-grad-dark, linear-gradient(120deg, rgba(59, 130, 246, 0.45) 0%, rgba(59, 130, 246, 0.45) 100%));
-    background-repeat: no-repeat;
-    background-size: 0% 100%;
-    padding: 0.1em 0.3em;
-    border-radius: 0.25rem;
-    transition: background-size var(--cue-duration, 0.5s) cubic-bezier(0.16, 1, 0.3, 1);
+  @property --hl-alpha-1 {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0.38;
+  }
+  @property --hl-alpha-2 {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0.48;
   }
 
-  :global(.highlight-marker.is-active) {
-    background-size: 100% 100%;
-    color: #ffffff;
-  }
+  /* ==========================================================================
+     Bullet Badge System (Ton-in-Ton Container-Driven Palette)
+     ========================================================================== */
 
-  :global(.light .highlight-marker) {
-    background-image: var(--hl-grad-light, linear-gradient(120deg, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%));
+  :global(.bullet-badge) {
+    background-color: #334155; /* slate-700 */
+    color: #f8fafc;
   }
-
-  :global(.light .highlight-marker.is-active) {
+  :global(.light .bullet-badge) {
+    background-color: #e2e8f0; /* slate-200 */
     color: #0f172a;
   }
 
+  /* Ton-in-Ton Bullet Badges per Container Accent */
+  :global([data-accent="blue"] .bullet-badge) {
+    background-color: #2563eb; /* blue-600 */
+    color: #ffffff;
+  }
+  :global(.light [data-accent="blue"] .bullet-badge) {
+    background-color: #3b82f6; /* blue-500 */
+    color: #ffffff;
+  }
+  :global([data-accent="cyan"] .bullet-badge),
+  :global([data-accent="teal"] .bullet-badge) {
+    background-color: #0891b2; /* cyan-600 */
+    color: #ffffff;
+  }
+  :global(.light [data-accent="cyan"] .bullet-badge),
+  :global(.light [data-accent="teal"] .bullet-badge) {
+    background-color: #06b6d4; /* cyan-500 */
+    color: #ffffff;
+  }
+  :global([data-accent="emerald"] .bullet-badge),
+  :global([data-accent="green"] .bullet-badge) {
+    background-color: #059669; /* emerald-600 */
+    color: #ffffff;
+  }
+  :global(.light [data-accent="emerald"] .bullet-badge),
+  :global(.light [data-accent="green"] .bullet-badge) {
+    background-color: #10b981; /* emerald-500 */
+    color: #ffffff;
+  }
+  :global([data-accent="purple"] .bullet-badge) {
+    background-color: #9333ea; /* purple-600 */
+    color: #ffffff;
+  }
+  :global(.light [data-accent="purple"] .bullet-badge) {
+    background-color: #a855f7; /* purple-500 */
+    color: #ffffff;
+  }
+  :global([data-accent="indigo"] .bullet-badge) {
+    background-color: #4f46e5; /* indigo-600 */
+    color: #ffffff;
+  }
+  :global(.light [data-accent="indigo"] .bullet-badge) {
+    background-color: #6366f1; /* indigo-500 */
+    color: #ffffff;
+  }
+  :global([data-accent="amber"] .bullet-badge) {
+    background-color: #d97706; /* amber-600 */
+    color: #ffffff;
+  }
+  :global(.light [data-accent="amber"] .bullet-badge) {
+    background-color: #f59e0b; /* amber-500 */
+    color: #ffffff;
+  }
+  :global([data-accent="neutral"] .bullet-badge) {
+    background-color: #334155; /* slate-700 */
+    color: #f8fafc;
+  }
+  :global(.light [data-accent="neutral"] .bullet-badge) {
+    background-color: #e2e8f0; /* slate-200 */
+    color: #0f172a;
+  }
+
+  /* ==========================================================================
+     Callout Box System (Container-Driven Palette)
+     ========================================================================== */
+
+  :global(.callout-box) {
+    background-color: rgba(30, 41, 59, 0.55);
+    border-color: rgba(71, 85, 105, 0.45);
+    color: #f1f5f9;
+  }
+  :global(.light .callout-box) {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
+  }
+
+  :global([data-accent="blue"] .callout-box) {
+    background-color: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #bfdbfe;
+  }
+  :global(.light [data-accent="blue"] .callout-box) {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e3a8a;
+  }
+
+  :global([data-accent="cyan"] .callout-box),
+  :global([data-accent="teal"] .callout-box) {
+    background-color: rgba(6, 182, 212, 0.12);
+    border-color: rgba(6, 182, 212, 0.35);
+    color: #a5f3fc;
+  }
+  :global(.light [data-accent="cyan"] .callout-box),
+  :global(.light [data-accent="teal"] .callout-box) {
+    background-color: #ecfeff;
+    border-color: #a5f3fc;
+    color: #155e75;
+  }
+
+  :global([data-accent="emerald"] .callout-box),
+  :global([data-accent="green"] .callout-box) {
+    background-color: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: #a7f3d0;
+  }
+  :global(.light [data-accent="emerald"] .callout-box),
+  :global(.light [data-accent="green"] .callout-box) {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #065f46;
+  }
+
+  :global([data-accent="purple"] .callout-box) {
+    background-color: rgba(168, 85, 247, 0.12);
+    border-color: rgba(168, 85, 247, 0.35);
+    color: #e9d5ff;
+  }
+  :global(.light [data-accent="purple"] .callout-box) {
+    background-color: #faf5ff;
+    border-color: #e9d5ff;
+    color: #581c87;
+  }
+
+  :global([data-accent="indigo"] .callout-box) {
+    background-color: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: #c7d2fe;
+  }
+  :global(.light [data-accent="indigo"] .callout-box) {
+    background-color: #eef2ff;
+    border-color: #c7d2fe;
+    color: #3730a3;
+  }
+
+  :global([data-accent="amber"] .callout-box) {
+    background-color: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: #fef08a;
+  }
+  :global(.light [data-accent="amber"] .callout-box) {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+    color: #78350f;
+  }
+
+  :global([data-accent="neutral"] .callout-box) {
+    background-color: rgba(30, 41, 59, 0.55);
+    border-color: rgba(71, 85, 105, 0.45);
+    color: #f1f5f9;
+  }
+  :global(.light [data-accent="neutral"] .callout-box) {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
+  }
+
+  /* ==========================================================================
+     Highlight Marker System (Container-Driven Palette)
+     ========================================================================== */
+
+  :global(mark),
+  :global(.highlight-marker) {
+    --hl-alpha-1: 0.38;
+    --hl-alpha-2: 0.48;
+    background-color: transparent !important;
+    color: inherit;
+    padding: 0.14em 0.45em;
+    margin: 0 -0.05em;
+    border-radius: 0.38em !important;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-2)) 100%);
+    background-size: 100% 100%;
+    transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
+                --hl-alpha-1 0.45s ease,
+                --hl-alpha-2 0.45s ease,
+                color 0.45s ease,
+                filter 0.45s ease;
+    will-change: background-size, color, filter;
+  }
+
+  :global(.light mark),
+  :global(.light .highlight-marker) {
+    --hl-alpha-1: 0.42;
+    --hl-alpha-2: 0.48;
+    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-2)) 100%);
+  }
+
+  :global(.slide-subtitle mark),
+  :global(.slide-subtitle .highlight-marker) {
+    border-radius: 0.4em !important;
+    padding: 0.14em 0.5em !important;
+    margin: 0 0.05em !important;
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
+    --hl-text-dark: #a5f3fc;
+    --hl-text-light: #0e7490;
+  }
+
+  /* Default Marker Colors (Cyan) */
+  :global(mark),
+  :global(.highlight-marker) {
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
+    --hl-text-dark: #a5f3fc;
+    --hl-text-light: #0e7490;
+  }
+
+  /* Container-driven Highlight: Blue */
+  :global([data-accent="blue"] mark),
+  :global([data-accent="blue"] .highlight-marker) {
+    --hl-glow-rgb: 59, 130, 246;
+    --hl-glow-rgb-2: 96, 165, 250;
+    --hl-text-dark: #bfdbfe;
+    --hl-text-light: #1e40af;
+  }
+
+  /* Container-driven Highlight: Cyan / Teal */
+  :global([data-accent="cyan"] mark),
+  :global([data-accent="cyan"] .highlight-marker),
+  :global([data-accent="teal"] mark),
+  :global([data-accent="teal"] .highlight-marker) {
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
+    --hl-text-dark: #a5f3fc;
+    --hl-text-light: #0e7490;
+  }
+
+  /* Container-driven Highlight: Emerald / Green */
+  :global([data-accent="emerald"] mark),
+  :global([data-accent="emerald"] .highlight-marker),
+  :global([data-accent="green"] mark),
+  :global([data-accent="green"] .highlight-marker) {
+    --hl-glow-rgb: 16, 185, 129;
+    --hl-glow-rgb-2: 52, 211, 153;
+    --hl-text-dark: #a7f3d0;
+    --hl-text-light: #065f46;
+  }
+
+  /* Container-driven Highlight: Purple */
+  :global([data-accent="purple"] mark),
+  :global([data-accent="purple"] .highlight-marker) {
+    --hl-glow-rgb: 168, 85, 247;
+    --hl-glow-rgb-2: 192, 132, 252;
+    --hl-text-dark: #e9d5ff;
+    --hl-text-light: #581c87;
+  }
+
+  /* Container-driven Highlight: Indigo */
+  :global([data-accent="indigo"] mark),
+  :global([data-accent="indigo"] .highlight-marker) {
+    --hl-glow-rgb: 99, 102, 241;
+    --hl-glow-rgb-2: 129, 140, 248;
+    --hl-text-dark: #c7d2fe;
+    --hl-text-light: #3730a3;
+  }
+
+  /* Container-driven Highlight: Amber */
+  :global([data-accent="amber"] mark),
+  :global([data-accent="amber"] .highlight-marker) {
+    --hl-glow-rgb: 245, 158, 11;
+    --hl-glow-rgb-2: 251, 191, 36;
+    --hl-text-dark: #fef08a;
+    --hl-text-light: #78350f;
+  }
+
+  /* Container-driven Highlight: Neutral (warm classic amber contrast on slate) */
+  :global([data-accent="neutral"] mark),
+  :global([data-accent="neutral"] .highlight-marker) {
+    --hl-glow-rgb: 245, 158, 11;
+    --hl-glow-rgb-2: 251, 191, 36;
+    --hl-text-dark: #fef08a;
+    --hl-text-light: #78350f;
+  }
+
+  /* Pre-cue pending state for marker: 0% width (unmarked) */
+  :global(mark[data-cue]:not(.is-active)),
+  :global(.highlight-marker[data-cue]:not(.is-active)) {
+    background-size: 0% 100%;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 6, 182, 212), 0));
+  }
+
+  /* Active Spotlight: Currently spoken highlight (vibrant gradient, glowing text, full brightness) */
+  :global(mark.is-active:not(.is-dimmed)),
+  :global(.highlight-marker.is-active:not(.is-dimmed)) {
+    --hl-alpha-1: 0.38;
+    --hl-alpha-2: 0.48;
+    background-size: 100% 100% !important;
+    color: var(--hl-text-dark) !important;
+    filter: drop-shadow(0 0 10px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.45));
+    transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
+                --hl-alpha-1 0.4s ease,
+                --hl-alpha-2 0.4s ease,
+                color 0.4s ease,
+                filter 0.4s ease;
+    will-change: background-size, color, filter;
+  }
+  :global(.light mark.is-active:not(.is-dimmed)),
+  :global(.light .highlight-marker.is-active:not(.is-dimmed)) {
+    --hl-alpha-1: 0.42;
+    --hl-alpha-2: 0.48;
+    color: var(--hl-text-light) !important;
+    filter: drop-shadow(0 0 8px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.25));
+  }
+
+  /* Settled Spotlight: Inactive/dimmed highlight markers transition smoothly into background */
+  :global(.highlight-marker.is-active.is-dimmed),
+  :global(mark.is-active.is-dimmed) {
+    --hl-alpha-1: 0.13;
+    --hl-alpha-2: 0.17;
+    background-size: 100% 100% !important;
+    color: inherit !important;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
+    opacity: 1 !important;
+    transition: --hl-alpha-1 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                --hl-alpha-2 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.light .highlight-marker.is-active.is-dimmed),
+  :global(.light mark.is-active.is-dimmed) {
+    --hl-alpha-1: 0.16;
+    --hl-alpha-2: 0.20;
+    color: inherit !important;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
+    opacity: 1 !important;
+  }
+
   /* Audio-Sync Dimming of inactive neighbors */
-  :global(.is-dimmed) {
+  :global(.is-dimmed:not(mark):not(.highlight-marker)) {
     opacity: 0.35 !important;
     transition: opacity 0.5s ease-out;
+  }
+
+  :global(.highlight-marker.is-dimmed),
+  :global(mark.is-dimmed) {
+    opacity: 1 !important;
   }
 
   :global(.is-active) {
@@ -265,9 +611,9 @@ const isNotFirstSlide = num > 1;
     transition: none !important;
   }
 
-  /* Default in intro state: opacity 1, normal transform (used on rewind on same slide) */
+  /* Default in intro state: opacity 1 for title; subtitle opacity managed by cue if cue-driven */
   :global(.slide-base-frame.is-intro-state) .slide-title,
-  :global(.slide-base-frame.is-intro-state) .slide-subtitle {
+  :global(.slide-base-frame.is-intro-state) .slide-subtitle:not([data-cue]) {
     opacity: 1;
   }
 
@@ -277,7 +623,7 @@ const isNotFirstSlide = num > 1;
     animation: intro-title-fade-in 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
   }
 
-  :global(.slide-base-frame.is-intro-state.is-entering) .slide-subtitle {
+  :global(.slide-base-frame.is-intro-state.is-entering) .slide-subtitle:not([data-cue]) {
     opacity: 0;
     animation: intro-subtitle-fade-in 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
   }

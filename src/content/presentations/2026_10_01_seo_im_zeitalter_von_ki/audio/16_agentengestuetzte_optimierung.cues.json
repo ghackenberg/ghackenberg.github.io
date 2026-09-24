@@ -1,14 +1,42 @@
 {
+  "sub": {
+    "start": 5.64
+  },
+  "hl-sub-ci-1001": {
+    "start": 8.04,
+    "duration": 0.72,
+    "end": 8.76
+  },
   "step-loop-1": {
-    "start": 6.58
+    "start": 9.94
+  },
+  "hl-loop-scan": {
+    "start": 11.69,
+    "duration": 1.2,
+    "end": 12.89
   },
   "step-loop-2": {
-    "start": 9.38
+    "start": 14.43
+  },
+  "hl-loop-reasoning": {
+    "start": 19.31,
+    "duration": 1.15,
+    "end": 20.46
   },
   "step-loop-3": {
-    "start": 17.68
+    "start": 21.24
+  },
+  "hl-loop-lighthouse": {
+    "start": 23.32,
+    "duration": 0.52,
+    "end": 23.84
   },
   "step-loop-4": {
-    "start": 22.36
+    "start": 25.81
+  },
+  "hl-loop-deploy": {
+    "start": 28.21,
+    "duration": 0.73,
+    "end": 28.94
   }
 }

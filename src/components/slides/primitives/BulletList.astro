@@ -1,12 +1,11 @@
 ---
 import { renderSlideCues } from '../../../utils/slide-cues';
+import SlideIcon, { type SlideIconName } from './SlideIcon.astro';
 
 export interface BulletItem {
-  num?: string | number;
-  icon?: string; // 'check' | 'arrow' | 'cross' | emoji
+  icon: SlideIconName;
   title?: string;
   desc?: string;
-  accent?: 'blue' | 'cyan' | 'teal' | 'indigo' | 'amber' | 'emerald' | 'green' | 'purple' | 'rose' | 'red' | 'neutral';
 }
 
 interface Props {
@@ -15,54 +14,15 @@ interface Props {
 }
 
 const { items = [], class: className = "" } = Astro.props;
-
-// Presentation-wide standard sequential accent cycle
-const ACCENT_CYCLE = ['blue', 'cyan', 'indigo', 'emerald', 'amber', 'purple'] as const;
-
-const accentBadge: Record<string, string> = {
-  blue: 'bg-blue-600 text-white',
-  cyan: 'bg-cyan-600 text-white',
-  teal: 'bg-cyan-600 text-white',
-  indigo: 'bg-indigo-600 text-white',
-  amber: 'bg-amber-600 text-white',
-  emerald: 'bg-emerald-600 text-white',
-  green: 'bg-emerald-600 text-white',
-  purple: 'bg-purple-600 text-white',
-  rose: 'bg-rose-600 text-white',
-  red: 'bg-rose-600 text-white',
-  neutral: 'bg-slate-800 light:bg-slate-200 text-slate-200 light:text-slate-800'
-};
-
-function getBadgeAccent(item: BulletItem, idx: number): string {
-  // 1. Semantic icons have strict color semantics across the presentation:
-  // Checkmarks always default to green (emerald), crosses to red (rose)
-  if (item.icon === 'check' || item.icon === '✓') {
-    return 'emerald';
-  }
-  if (item.icon === 'cross' || item.icon === '✗') {
-    return 'rose';
-  }
-
-  // 2. Explicit manual accent override if explicitly given
-  if (item.accent) {
-    return item.accent;
-  }
-
-  // 3. Numbered elements and generic items automatically follow the unified presentation cycle
-  return ACCENT_CYCLE[idx % ACCENT_CYCLE.length];
-}
 ---
 
 <ul class={`bullet-list flex flex-col justify-around gap-6 flex-1 my-auto pb-1 ${className}`}>
   {items.map((item, idx) => {
-    const accent = getBadgeAccent(item, idx);
     return (
       <li class="flex items-start gap-5">
-        {(item.num !== undefined || item.icon) && (
-          <span class={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shrink-0 shadow-md ${accentBadge[accent]}`}>
-            {item.icon === 'check' ? '✓' : item.icon === 'arrow' ? '→' : item.icon === 'cross' ? '✗' : (item.num ?? item.icon)}
-          </span>
-        )}
+        <span class="bullet-badge w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shrink-0 shadow-md">
+          <SlideIcon name={item.icon} class="w-7 h-7" />
+        </span>
         <div class="flex-1 flex flex-col justify-center">
           {item.title && (
             <div class="flex items-center gap-3">

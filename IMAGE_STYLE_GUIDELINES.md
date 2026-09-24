@@ -150,3 +150,18 @@ Before generating any new illustration:
 *   **Subject**: Article-specific technical concepts featuring Dr. Georg Hackenberg and relevant library objects/environments.
 *   **Style**: High-quality technical comic-book illustrations with clean ink outlines, vibrant brand accents, and cel shading.
 *   **Format**: 16:9 ratio.
+
+### F. Presentation Pipeline Step Images
+*   **Subject**: Single, iconic conceptual motif representing a progressive stage or technological component in horizontal pipeline slides (`<Pipeline steps={[...]} />`).
+*   **Style & Aesthetic**: Stylized Disney/Pixar comic illustration style, crisp dark ink linework, bold cel shading.
+*   **Edge-to-Edge Full Bleed**: Absolutely borderless, running seamlessly to all four edges of the canvas with zero perimeter frames, zero border lines, and zero margins.
+*   **Subject Safe Margins & Dynamic Sizing**: The primary motif must be centered and occupy roughly **two-thirds (60–66%)** of both width and height, leaving generous cosmic breathing room around all outer edges. This prevents clipping when `Pipeline.astro` dynamically resizes the container aspect ratio via `object-cover`.
+*   **Cognitive Simplicity**: Exactly 1 prominent, clearly recognizable central subject per step. No visual overload, no dense secondary clutter.
+*   **Background Palette**: Luminous, vibrant blue-violet and deep indigo galaxy nebula with soft ambient starlight. Blends seamlessly into both dark and light presentation modes. Avoid pitch-black slate backgrounds.
+*   **Characters**: No human characters (Georg does not appear in pipeline step cards).
+*   **Agenda Slide Exception**: Agenda slides (Slide 02) require **NO images**.
+*   **Format & Ratio**: 1:1 square aspect ratio (`AspectRatio: "1:1"`), saved as `.jpg` in `src/content/presentations/[presentation_id]/images/` and referenced via `/presentations/[presentation_id]/images/[filename].jpg`.
+*   **Canonical Prompt Template**:
+    ```text
+    Edge-to-edge full bleed artwork, completely borderless, stretching seamlessly across the entire canvas without any frame, without border, and without margins. Centered in the frame and occupying roughly two-thirds of the width and height with generous cosmic breathing room: [single clean iconic motif]. Luminous vibrant blue-violet and deep indigo galaxy nebula background with soft ambient starlight. Disney Pixar style, crisp dark ink linework, bold cel shading, minimal, [adjective], iconic composition. No human characters. 1:1 square aspect ratio.
+    ```

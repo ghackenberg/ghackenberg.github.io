@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 5.51
+  },
+  "hl-sub-audio-923": {
+    "start": 10.65,
+    "duration": 1.64,
+    "end": 12.29
+  },
+  "col-audio": {
+    "start": 12.63
+  },
+  "hl-sync-audio": {
+    "start": 15.11,
+    "duration": 1.1,
+    "end": 16.21
+  },
+  "hl-sync-lexicon": {
+    "start": 17.36,
+    "duration": 2.28,
+    "end": 19.64
+  },
+  "hl-sync-words": {
+    "start": 21.64,
+    "duration": 1.45,
+    "end": 23.09
+  },
+  "hl-sync-cache": {
+    "start": 24.34,
+    "duration": 1.3,
+    "end": 25.64
+  },
+  "col-sync": {
+    "start": 25.98
+  },
+  "hl-sync-controller": {
+    "start": 29.73,
+    "duration": 2.77,
+    "end": 32.5
+  },
+  "hl-sync-state": {
+    "start": 34.54,
+    "duration": 2.05,
+    "end": 36.59
+  },
+  "hl-sync-kinetic": {
+    "start": 38.4,
+    "duration": 1.86,
+    "end": 40.26
+  },
+  "hl-sync-hook": {
+    "start": 40.58,
+    "duration": 2.18,
+    "end": 42.76
+  }
+}

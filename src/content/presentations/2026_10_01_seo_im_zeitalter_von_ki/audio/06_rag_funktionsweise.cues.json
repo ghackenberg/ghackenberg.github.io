@@ -1,14 +1,42 @@
 {
+  "sub": {
+    "start": 4.84
+  },
+  "hl-sub-rag-1001": {
+    "start": 7.78,
+    "duration": 2.16,
+    "end": 9.94
+  },
   "step-query": {
-    "start": 15.65
+    "start": 10.28
+  },
+  "hl-rag-parsing": {
+    "start": 15.97,
+    "duration": 1.16,
+    "end": 17.13
   },
   "step-retrieval": {
-    "start": 23.09
+    "start": 17.46
+  },
+  "hl-rag-retrieval": {
+    "start": 20.4,
+    "duration": 0.55,
+    "end": 20.95
   },
   "step-injection": {
-    "start": 28.89
+    "start": 22.89
+  },
+  "hl-rag-injection": {
+    "start": 25.41,
+    "duration": 0.82,
+    "end": 26.23
   },
   "step-synthesis": {
-    "start": 34.3
+    "start": 27.9
+  },
+  "hl-rag-synthesis": {
+    "start": 32.29,
+    "duration": 1.09,
+    "end": 33.38
   }
 }

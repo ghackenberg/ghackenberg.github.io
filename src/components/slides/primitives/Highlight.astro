@@ -2,14 +2,12 @@
 interface Props {
   id?: string;
   cue?: string;
-  color?: 'amber' | 'cyan' | 'emerald' | 'purple' | 'blue';
   class?: string;
 }
 
 const {
   id: explicitId,
   cue,
-  color = 'amber',
   class: className = ""
 } = Astro.props;
 
@@ -19,8 +17,7 @@ const elementId = explicitId || cue;
 <mark
   id={elementId}
   data-cue={cue}
-  data-color={color}
-  class={`highlight-marker inline-block font-semibold rounded-md ${className}`}
+  class={`highlight-marker inline-block font-semibold rounded-[0.38em] ${className}`}
 >
   <slot />
 </mark>

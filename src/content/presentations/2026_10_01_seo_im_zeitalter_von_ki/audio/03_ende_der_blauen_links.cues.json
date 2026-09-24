@@ -1,13 +1,56 @@
 {
+  "sub": {
+    "start": 5.38
+  },
+  "hl-sub-links-1001": {
+    "start": 7.85,
+    "duration": 2.34,
+    "end": 10.19
+  },
   "col-classic": {
-    "start": 4.56
+    "start": 10.53
+  },
+  "hl-classic-industriepumpen": {
+    "start": 11.5,
+    "duration": 2.38,
+    "end": 13.88
+  },
+  "hl-classic-keyword": {
+    "start": 15.09,
+    "duration": 1.2,
+    "end": 16.29
+  },
+  "hl-hyperlink": {
+    "start": 20.6,
+    "duration": 0.81,
+    "end": 21.41
+  },
+  "hl-traffic": {
+    "start": 23.43,
+    "duration": 0.75,
+    "end": 24.18
   },
   "col-modern": {
-    "start": 14.54
+    "start": 24.51
+  },
+  "hl-synthese-iso": {
+    "start": 26.66,
+    "duration": 3.74,
+    "end": 30.4
+  },
+  "hl-sem-verstaendnis": {
+    "start": 31.05,
+    "duration": 1.6,
+    "end": 32.65
+  },
+  "hl-direkt-beantwortung": {
+    "start": 34.09,
+    "duration": 0.85,
+    "end": 34.94
   },
   "hl-zitation": {
-    "start": 27.01,
-    "duration": 1.39,
-    "end": 28.4
+    "start": 36.52,
+    "duration": 1.88,
+    "end": 38.4
   }
 }

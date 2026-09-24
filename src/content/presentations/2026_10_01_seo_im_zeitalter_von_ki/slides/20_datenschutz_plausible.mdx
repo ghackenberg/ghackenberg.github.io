@@ -1,17 +1,13 @@
 ---
 title: "Datenschutzkonformes Tracking (Plausible)"
-subtitle: "100 % DSGVO- und ePrivacy-Konformität ohne Cookie-Banner – mit präzisem KI-Referrer-Monitoring"
+subtitle: "100 % DSGVO-Konformität ohne Cookie-Banner – mit {cue:hl-sub-plausible-1001}präzisem KI-Referrer-Monitoring{/cue}"
 number: "20"
 slideLayout: "split"
 voiceover: >
-  Auch das Erfolgs-Monitoring muss im Zeitalter der KIs neu gedacht werden: Mit datenschutzkonformem Tracking via Plausible erfassen wir KI-Referrals vollständig ohne störende Cookie-Banner. 
-  {cue:col-plausible-dash} Mit unserem KI-Referrer Dashboard in Plausible Analytics erfassen wir exakte Referral-Daten. 
-  Sie zeigen sofort, wie viele Anfragen direkt von chatgpt.com, 
-  perplexity.ai oder claude.ai überschwappen – und {cue:hl-plausible-verweildauer}Besucher über KIs verweilen viermal länger{/cue}, 
-  weil sie bereits durch die Synthese vorqualifiziert sind.
-  {cue:col-plausible-privacy} Gleichzeitig wahren wir maximale Datenschutz-Exzellenz: 
-  Plausible benötigt keinerlei Cookies, ist {cue:hl-plausible-nobanner}zu 100 Prozent DSGVO-konform{/cue} 
-  und das Skript wiegt weniger als ein Kilobyte – ganz ohne lästiges Consent-Banner!
+  Auch das Erfolgs-Monitoring muss im Zeitalter der KIs grundlegend neu gedacht werden.
+  {cue:sub} Plausible ermöglicht datenschutzkonforme Analytik mit {cue:hl-sub-plausible-1001}präzisem KI-Referrer-Monitoring{/cue}.
+  {cue:col-plausible-dash} Mit unserem Dashboard erfassen wir Referral-Quellen wie {cue:hl-callout-referrer-chatgpt}chatgpt punkt com{/cue}: {cue:hl-plausible-verweildauer}Besucher über KIs verweilen viermal länger{/cue}, weil sie bereits durch die Synthese vorqualifiziert sind.
+  {cue:col-plausible-privacy} Plausible ist {cue:hl-plausible-nobanner}zu 100 Prozent DSGVO-konform{/cue}, glänzt durch einen {cue:hl-plausible-weight}ultraleichten Skript-Footprint unter einem Kilobyte{/cue} und sichert {cue:hl-plausible-quality}vollständige Messgenauigkeit ohne Opt-Out-Verluste{/cue}.
 notes: |
   - Zeit: 46:00 - 48:00 Min.
   - Den B2B-Unternehmen die Augen öffnen: Wer die Nutzer mit Cookie-Bannern quält, verliert Interessenten; cookiefreie Analytik ist schneller, sauberer und datenschutzrechtlich sicher.
@@ -35,41 +31,41 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-plausible-dash" title="KI-Referrer Dashboard" accent="blue">
-    <CalloutBox color="neutral" type="info">
+    <CalloutBox type="info" title="{cue:hl-callout-referrer-chatgpt}Referral-Traffic: chatgpt.com & Perplexity{/cue}">
       <div class="flex justify-between items-center text-base text-slate-400 border-b border-slate-800 pb-2 font-mono uppercase tracking-wider">
         <span>Referral Source</span>
         <span>Besucher (30 Tage)</span>
       </div>
       <div class="space-y-2 font-mono text-lg mt-2">
         <div class="flex justify-between items-center text-blue-400 font-bold">
-          <span>🤖 chatgpt.com</span>
+          <span>chatgpt.com</span>
           <span>1.420 (High Intent)</span>
         </div>
         <div class="flex justify-between items-center text-cyan-400 font-bold">
-          <span>🔍 perplexity.ai</span>
+          <span>perplexity.ai</span>
           <span>890 (Research)</span>
         </div>
         <div class="flex justify-between items-center text-indigo-400 font-bold">
-          <span>🧠 claude.ai</span>
+          <span>claude.ai</span>
           <span>340 (Technical)</span>
         </div>
         <div class="flex justify-between items-center text-slate-400">
-          <span>🌐 google.com (Organic)</span>
+          <span>google.com (Organic)</span>
           <span>2.110 (Decreasing)</span>
         </div>
       </div>
     </CalloutBox>
 
-    <CalloutBox color="blue" type="takeaway">
-      <strong>Erkenntnis:</strong> Besucher über ChatGPT oder Perplexity haben eine {cue:hl-plausible-verweildauer:emerald}4-mal längere Verweildauer{/cue}, weil sie bereits hochqualifiziert auf die Zielseite gelangen.
+    <CalloutBox type="takeaway" title="{cue:hl-plausible-verweildauer}Erkenntnis: 4-mal längere Verweildauer{/cue}">
+      <p class="text-xl leading-relaxed font-medium">Besucher über ChatGPT oder Perplexity gelangen bereits hochqualifiziert auf die Zielseite.</p>
     </CalloutBox>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-plausible-privacy" title="DSGVO-Exzellenz ohne Reibung" accent="cyan">
     <BulletList items={[
-      { icon: "check", title: "Keine Cookies, kein Fingerprinting", desc: "{cue:hl-plausible-nobanner:blue}Vollständig konform mit DSGVO{/cue}, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner." },
-      { icon: "check", title: "Unter 1 KB Ladezeit", desc: "Verhindert jegliche Performance-Einbußen und garantiert maximale Ladezeiten für KI-Crawler." },
-      { icon: "check", title: "100 % Datenqualität", desc: "Vollständige Erfassung des realen Traffics ohne 40 % Datenverlust durch Banner-Ablehnungen." }
+      { icon: "check", title: "Keine Cookies, kein Fingerprinting", desc: "{cue:hl-plausible-nobanner}Vollständig konform mit DSGVO{/cue}, ePrivacy und TTDSG – ganz ohne lästiges Consent-Banner." },
+      { icon: "check", title: "Unter 1 KB Ladezeit", desc: "Verhindert Einbußen durch {cue:hl-plausible-weight}ultraleichten Skript-Footprint unter 1 KB{/cue}." },
+      { icon: "check", title: "100 % Datenqualität", desc: "Erzielt {cue:hl-plausible-quality}vollständige Messgenauigkeit ohne Opt-Out-Verluste{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>

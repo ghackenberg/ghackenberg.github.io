@@ -1,0 +1,61 @@
+---
+title: "Agenda & Leitfaden"
+subtitle: "Gliederung des Architektur-Briefings in {cue:hl-sub-agenda-923}5 didaktische Themenblöcke{/cue}"
+number: "02"
+slideLayout: "pipeline"
+voiceover: >
+  Unsere heutige Agenda dient als klarer roter Faden für das gesamte System.
+  {cue:sub} Sie gliedert das Architektur-Briefing in {cue:hl-sub-agenda-923}fünf aufeinander aufbauende Themenblöcke{/cue}.
+  {cue:step-01} Zunächst beleuchten wir die Motivation und das Dilemma, warum {cue:hl-agenda-motivation}statische PDF-Downloads und Fremd-iFrames{/cue} die Wissensvermittlung im Web blockieren.
+  {cue:step-02} Anschließend betrachten wir unser Content-Ökosystem und wie Präsentationen {cue:hl-agenda-oekosystem}bestehende Wissensformate nahtlos ergänzen{/cue}.
+  {cue:step-03} Im dritten Block widmen wir uns der Content-Strategie für {cue:hl-agenda-strategie}Zitationsfähigkeit in generativen Modellen{/cue}.
+  {cue:step-04} Danach analysieren wir, warum {cue:hl-agenda-optionen}gängige Cloud-Embeds und Entwickler-Tools{/cue} in der Praxis scheiterten.
+  {cue:step-05} Zum Abschluss präsentiere ich die Custom Engine mit {cue:hl-agenda-engine}akustischer Synchronisation und Qualitätsgates{/cue}.
+notes: |
+  - Zeit: 1:30 - 3:00 Min.
+  - Didaktischer Aufbau: Vom Problem über die strategische Einbettung hin zur Code-Implementierung.
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="02"
+  totalSlides="10"
+>
+  <Pipeline
+    steps={[
+      {
+        cue: "step-01",
+        num: "01",
+        title: "Motivation & Dilemma",
+        desc: "Warum {cue:hl-agenda-motivation}statische PDF-Downloads und Fremd-iFrames{/cue} die Wissensvermittlung im Web blockieren."
+      },
+      {
+        cue: "step-02",
+        num: "02",
+        title: "Content-Ökosystem",
+        desc: "Wie Präsentationen {cue:hl-agenda-oekosystem}bestehende Wissensformate nahtlos ergänzen{/cue}."
+      },
+      {
+        cue: "step-03",
+        num: "03",
+        title: "Content-Strategie",
+        desc: "Holistisches Repurposing von Forschungsdaten bis zur {cue:hl-agenda-strategie}Zitationsfähigkeit in generativen Modellen{/cue}."
+      },
+      {
+        cue: "step-04",
+        num: "04",
+        title: "Evaluierte Optionen",
+        desc: "Detaillierte Analyse, warum {cue:hl-agenda-optionen}gängige Cloud-Embeds und Entwickler-Tools{/cue} unzureichend waren."
+      },
+      {
+        cue: "step-05",
+        num: "05",
+        title: "Custom Engine",
+        desc: "Astro SSG, adaptive Vektorbühne und {cue:hl-agenda-engine}akustische Synchronisation mit Qualitätsgates{/cue}."
+      }
+    ]}
+  />
+</PipelineSlide>

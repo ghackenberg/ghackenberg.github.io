@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 5.49
+  },
+  "hl-sub-motivation-923": {
+    "start": 9.96,
+    "duration": 1.75,
+    "end": 11.71
+  },
+  "col-silo": {
+    "start": 12.05
+  },
+  "hl-pdf-silo": {
+    "start": 16.81,
+    "duration": 1.46,
+    "end": 18.27
+  },
+  "hl-silo-kontext": {
+    "start": 20.38,
+    "duration": 1.47,
+    "end": 21.85
+  },
+  "hl-silo-crawler": {
+    "start": 22.5,
+    "duration": 0.99,
+    "end": 23.49
+  },
+  "hl-silo-zoom": {
+    "start": 26.71,
+    "duration": 1.74,
+    "end": 28.45
+  },
+  "col-native": {
+    "start": 28.79
+  },
+  "hl-web-native": {
+    "start": 32.86,
+    "duration": 1.49,
+    "end": 34.35
+  },
+  "hl-native-synchro": {
+    "start": 37.36,
+    "duration": 1.43,
+    "end": 38.79
+  },
+  "hl-native-a11y": {
+    "start": 39.66,
+    "duration": 2.43,
+    "end": 42.09
+  },
+  "hl-native-hoheit": {
+    "start": 42.56,
+    "duration": 2.08,
+    "end": 44.64
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 4.46
+  },
+  "hl-sub-fazit-923": {
+    "start": 7.08,
+    "duration": 1.83,
+    "end": 8.91
+  },
+  "col-summary": {
+    "start": 10.18
+  },
+  "hl-summary-excellence": {
+    "start": 12.94,
+    "duration": 2.54,
+    "end": 15.48
+  },
+  "hl-fazit-audit": {
+    "start": 17.5,
+    "duration": 1.48,
+    "end": 18.98
+  },
+  "hl-fazit-lockin": {
+    "start": 21.29,
+    "duration": 1.14,
+    "end": 22.43
+  },
+  "hl-fazit-ci": {
+    "start": 23.85,
+    "duration": 2.2,
+    "end": 26.05
+  },
+  "col-next": {
+    "start": 26.39
+  },
+  "hl-summary-keynote": {
+    "start": 31.81,
+    "duration": 1.77,
+    "end": 33.58
+  },
+  "hl-fazit-keynote": {
+    "start": 34.67,
+    "duration": 2.6,
+    "end": 37.27
+  },
+  "hl-fazit-keys": {
+    "start": 38.41,
+    "duration": 1.95,
+    "end": 40.36
+  },
+  "hl-fazit-pdf": {
+    "start": 42.01,
+    "duration": 2.13,
+    "end": 44.14
+  }
+}

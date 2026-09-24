@@ -1,11 +1,34 @@
 {
+  "sub": {
+    "start": 4.1
+  },
+  "hl-sub-pillars-1001": {
+    "start": 6.26,
+    "duration": 2.23,
+    "end": 8.49
+  },
   "pillar-struct": {
-    "start": 7.17
+    "start": 9.44
+  },
+  "hl-pillar-schema": {
+    "start": 12.21,
+    "duration": 0.4,
+    "end": 12.61
   },
   "pillar-content": {
-    "start": 13.5
+    "start": 16.48
+  },
+  "hl-pillar-infogain": {
+    "start": 32.44,
+    "duration": 0.19,
+    "end": 32.63
   },
   "pillar-auth": {
-    "start": 19.66
+    "start": 22.18
+  },
+  "hl-pillar-eeat": {
+    "start": 25.04,
+    "duration": 1.14,
+    "end": 26.18
   }
 }

@@ -1,15 +1,13 @@
 ---
 title: "Das Ende der 10 blauen Links"
-subtitle: "Der fundamentale Bruch mit 25 Jahren Suchmaschinengeschichte"
+subtitle: "Der fundamentale Bruch mit {cue:hl-sub-links-1001}25 Jahren Suchmaschinengeschichte{/cue}"
 number: "03"
 slideLayout: "split"
 voiceover: >
-  Über ein Vierteljahrhundert funktionierte die Websuche nach einem einfachen Prinzip: 
-  {cue:col-classic} Der Nutzer gibt Suchbegriffe ein, und die Suchmaschine liefert zehn blaue Hyperlinks. 
-  Wer Informationen wollte, musste auf externe Dokumente klicken. 
-  {cue:col-modern} Heute erleben wir einen radikalen Bruch: Generative Antwortsysteme listen nicht mehr 
-  nur Dokumente auf – sie lesen sie, vergleichen Aussagen und synthetisieren eine maßgeschneiderte 
-  Antwort direkt im Antwortfenster. {cue:hl-zitation}Die Zitation entscheidet{/cue} über den Markenerfolg.
+  Über ein Vierteljahrhundert funktionierte die Websuche nach einem einfachen, vertrauten Prinzip.
+  {cue:sub} Doch nun erleben wir den fundamentalen Bruch mit {cue:hl-sub-links-1001}fünfundzwanzig Jahren Suchmaschinengeschichte{/cue}.
+  {cue:col-classic} Für Treffer wie {cue:hl-classic-industriepumpen}Hocheffiziente Industriepumpen für B2B{/cue} verglich die Suchmaschine {cue:hl-classic-keyword}exakte Zeichenketten{/cue} im Index. Wer Informationen wollte, musste die Website besuchen, um die {cue:hl-hyperlink}Antwort zu finden{/cue}, und Portale lebten von reinen {cue:hl-traffic}Klickzahlen{/cue}.
+  {cue:col-modern} Heute empfehlen Antwortsysteme direkt {cue:hl-synthese-iso}Magnetkupplungspumpen nach ISO 2858{/cue} und erfassen den {cue:hl-sem-verstaendnis}Kontext hinter der Nutzerfrage{/cue}. Die Information wird {cue:hl-direkt-beantwortung}sofort serviert{/cue}, und Relevanz entsteht durch {cue:hl-zitation}Nennung und Entitäts-Verankerung{/cue}.
 notes: |
   - Zeit: 4:00 - 6:00 Min.
   - Historischen Kontrast herausarbeiten: Google (1998-2023) war ein "Dokumenten-Finder". Google & ChatGPT (2024+) sind "Wissens-Synthesizer".
@@ -33,28 +31,27 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-classic" title="Klassischer Web-Index (1998–2023)" accent="neutral">
-    <CalloutBox type="quote" color="neutral">
+    <CalloutBox type="quote" title="{cue:hl-classic-industriepumpen}Hocheffiziente Industriepumpen für B2B{/cue}">
       <span class="text-blue-400 underline block font-mono text-xl mb-1">https://example.com/industriepumpen</span>
-      <strong class="text-slate-100 light:text-slate-900 block font-bold mb-1">Hocheffiziente Industriepumpen für B2B</strong>
       <span class="text-slate-300 light:text-slate-700 text-xl">Entdecken Sie unsere energieeffizienten Pumpensysteme für die chemische Industrie...</span>
     </CalloutBox>
 
     <BulletList items={[
-      { num: "1", title: "Keyword-Matching", desc: "Abgleich exakter Zeichenketten im statischen Index." },
-      { num: "2", title: "Hyperlink-Weiterleitung", desc: "Der Nutzer muss die Website besuchen, um die Antwort zu finden." },
-      { num: "3", title: "Monetarisierung via Traffic", desc: "Webseiten lebten von reinen Klickzahlen." }
+      { icon: "cross", title: "Keyword-Matching", desc: "Abgleich {cue:hl-classic-keyword}exakter Zeichenketten{/cue} im statischen Index." },
+      { icon: "cross", title: "Hyperlink-Weiterleitung", desc: "Der Nutzer muss die Website besuchen, um die {cue:hl-hyperlink}Antwort zu finden{/cue}." },
+      { icon: "cross", title: "Monetarisierung via Traffic", desc: "Webseiten lebten von reinen {cue:hl-traffic}Klickzahlen{/cue}." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-modern" title="Synthese-Maschine (2024+)" accent="blue">
-    <CalloutBox type="statement" color="blue" title="Google / Perplexity / ChatGPT">
-      Für chemische Anlagen im B2B-Einsatz eignen sich Magnetkupplungspumpen nach ISO 2858. Führende europäische Hersteller bieten Wirkungsgrade über 82 % mit integrierter Sensorik.
+    <CalloutBox type="statement" title="Google / Perplexity / ChatGPT">
+      Für chemische Anlagen im B2B-Einsatz eignen sich {cue:hl-synthese-iso}Magnetkupplungspumpen nach ISO 2858{/cue}. Führende europäische Hersteller bieten Wirkungsgrade über 82 % mit integrierter Sensorik.
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", title: "Semantisches Verständnis", desc: "Sprachmodelle erfassen den Kontext hinter der Nutzerfrage." },
-      { icon: "check", title: "Direkte Beantwortung", desc: "Zero-Click – Information wird sofort serviert." },
-      { icon: "check", title: "{cue:hl-zitation:blue}Zitation entscheidet{/cue}", desc: "Relevanz entsteht durch Nennung und Entitäts-Verankerung." }
+      { icon: "check", title: "Semantisches Verständnis", desc: "Sprachmodelle erfassen den {cue:hl-sem-verstaendnis}Kontext hinter der Nutzerfrage{/cue}." },
+      { icon: "check", title: "Direkte Beantwortung", desc: "Zero-Click – Information wird {cue:hl-direkt-beantwortung}sofort serviert{/cue}." },
+      { icon: "check", title: "Zitation entscheidet", desc: "Relevanz entsteht durch {cue:hl-zitation}Nennung und Entitäts-Verankerung{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>

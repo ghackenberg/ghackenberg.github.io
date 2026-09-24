@@ -1,18 +1,26 @@
 {
+  "sub": {
+    "start": 6.7
+  },
+  "hl-sub-kdd-1001": {
+    "start": 9.65,
+    "duration": 2.61,
+    "end": 12.26
+  },
   "kdd-study": {
-    "start": 6.76
+    "start": 12.99
   },
   "kdd-bars": {
-    "start": 15.26
+    "start": 19.07
   },
   "hl-cite-sources": {
-    "start": 19.63,
-    "duration": 6.47,
-    "end": 26.1
+    "start": 23.38,
+    "duration": 5.33,
+    "end": 28.71
   },
   "hl-kdd-penalty": {
-    "start": 26.15,
-    "duration": 3.14,
-    "end": 29.29
+    "start": 28.71,
+    "duration": 3.49,
+    "end": 32.2
   }
 }

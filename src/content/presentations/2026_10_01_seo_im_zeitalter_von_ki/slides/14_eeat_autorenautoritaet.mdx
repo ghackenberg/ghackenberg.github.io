@@ -1,16 +1,13 @@
 ---
 title: "E-E-A-T & Autorenautorität"
-subtitle: "Warum Sprachmodelle anonyme Artikel abwerten und verifizierte Experten im B2B bevorzugen"
+subtitle: "Warum Sprachmodelle anonyme Artikel abwerten und {cue:hl-sub-eeat-1001}verifizierte Experten bevorzugen{/cue}"
 number: "14"
 slideLayout: "split"
 voiceover: >
-  Generative KIs haben gelernt: Anonyme Texte im Internet sind oft Falschinformationen oder billiger KI-Spam. 
-  {cue:col-eeat-triad} Deshalb evaluieren Modelle sogenannte E-E-A-T-Signale: Experience, Expertise, 
-  Authoritativeness und Trustworthiness. Wer über Wissensgraphen verifiziert ist, 
-  {cue:hl-glaubwuerdigkeit}vervierfacht seine Glaubwürdigkeit bei KI-Suchanfragen{/cue}.
-  {cue:col-eeat-checklist} Im B2B-Mittelstand gilt daher eine klare Regel: 
-  Machen Sie Ihre Ingenieure und Fachexperten {cue:hl-autoren-sichtbar}auf der Website namentlich sichtbar{/cue} 
-  und verknüpfen Sie deren Profile mit akademischen Datenbanken und Patentregistern!
+  Generative KIs haben gelernt: Anonyme Texte im Internet sind oft Falschinformationen oder billiger KI-Spam.
+  {cue:sub} Sie zeigen, warum Modelle anonyme Texte abwerten und {cue:hl-sub-eeat-1001}verifizierte Experten bevorzugen{/cue}.
+  {cue:col-eeat-triad} Deshalb evaluieren Modelle sogenannte E-E-A-T-Signale. Wer über Wissensgraphen verifiziert ist, erzielt höchste {cue:hl-glaubwuerdigkeit}Glaubwürdigkeit bei KI-Suchanfragen{/cue}.
+  {cue:col-eeat-checklist} Im B2B-Mittelstand gilt: Schaffen Sie eine {cue:hl-autoren-sichtbar}eigene Profilseite für jeden Fachautor{/cue}, verknüpfen Sie {cue:hl-eeat-sameas}Links auf ORCID und Scholar{/cue}, und dokumentieren Sie {cue:hl-eeat-vita}Industrieprojekte und Normengremien{/cue}.
 notes: |
   - Zeit: 31:00 - 33:30 Min.
   - Wichtig für B2B-Mittelstand: Weg von "Geschrieben von Redaktion Team" hin zu echten Ingenieuren mit Foto, Vita und LinkedIn-Profil.
@@ -45,7 +42,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
         <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Expertise</div>
         <p class="text-base text-slate-400 light:text-slate-600 mt-1">Patente & Publikationen</p>
       </div>
-      <div class="p-5 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-500/20 light:border-indigo-200 flex flex-col justify-center">
+      <div class="p-5 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-200 flex flex-col justify-center">
         <div class="text-4xl font-black text-indigo-400 light:text-indigo-700">A</div>
         <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Authority</div>
         <p class="text-base text-slate-400 light:text-slate-600 mt-1">Fachzitate & Gremien</p>
@@ -57,16 +54,16 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       </div>
     </div>
 
-    <CalloutBox color="blue" type="takeaway" title="Modell-Verhalten">
-      Wenn zwei Webseiten denselben Sachverhalt erklären, zitiert das LLM bevorzugt jene Quelle, deren Autor über {cue:hl-glaubwuerdigkeit:blue}Wissensgraphen (Wikidata/ORCID){/cue} verifiziert ist.
+    <CalloutBox type="takeaway" title="Modell-Verhalten">
+      Wenn zwei Webseiten denselben Sachverhalt erklären, zitiert das LLM bevorzugt jene Quelle, deren Autor über {cue:hl-glaubwuerdigkeit}Wissensgraphen (Wikidata/ORCID){/cue} verifiziert ist.
     </CalloutBox>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-eeat-checklist" title="B2B Best-Practice Autorenprofil" accent="cyan">
     <BulletList items={[
-      { icon: "check", title: "Dedizierte Autoren-URL", desc: "{cue:hl-autoren-sichtbar:emerald}Eigene Profilseite für jeden Fachautor{/cue} (z. B. <code class=\"text-cyan-400 light:text-cyan-600 text-base\">/team/dr-schmidt/</code>)." },
-      { icon: "check", title: "sameAs-Verknüpfung", desc: "Direkte Links auf ORCID, Google Scholar, ResearchGate und LinkedIn." },
-      { icon: "check", title: "Transparente Vita", desc: "Relevante Industrieprojekte, Normengremien und Ausbildung nachvollziehbar auflisten." }
+      { icon: "check", title: "Dedizierte Autoren-URL", desc: "{cue:hl-autoren-sichtbar}Eigene Profilseite für jeden Fachautor{/cue} (z. B. <code class=\"text-cyan-400 light:text-cyan-600 text-base\">/team/dr-schmidt/</code>)." },
+      { icon: "check", title: "sameAs-Verknüpfung", desc: "Direkte {cue:hl-eeat-sameas}Links auf ORCID und Scholar{/cue}, ResearchGate und LinkedIn." },
+      { icon: "check", title: "Transparente Vita", desc: "Relevante {cue:hl-eeat-vita}Industrieprojekte und Normengremien{/cue} nachvollziehbar auflisten." }
     ]} />
   </BentoCard>
 </SplitSlide>

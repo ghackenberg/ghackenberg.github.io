@@ -298,3 +298,14 @@ Neural speech synthesis engines (such as Microsoft Edge TTS `de-DE-ConradNeural`
 - Always run `npm run validate:slides` to verify cue consistency, frontmatter completeness, acronym coverage, and DOM target matching.
 - Run `npm run audio:presentations` to synthesize neural speech audio (`.mp3`) and WordBoundary cue timings (`.cues.json`).
 - Run `npm run typecheck`, `npm run lint`, and `npm run build` before committing.
+
+### 8. Pipeline Step Image Standards
+Whenever illustrating horizontal pipeline steps (`<Pipeline steps={[...]} />`):
+- **Universal Style & Aesthetic**: Stylized Disney/Pixar comic illustration style, crisp dark ink lines, bold cel shading.
+- **Edge-to-Edge Full Bleed**: Absolutely borderless, running seamlessly to all four edges of the canvas with zero perimeter frames, zero border lines, and zero margins.
+- **Subject Safe Margins & Dynamic Sizing**: Centered motif occupying roughly **two-thirds (60–66%)** of width and height, leaving generous cosmic breathing room around all edges to prevent clipping during dynamic `object-cover` resizing in `Pipeline.astro`.
+- **Cognitive Simplicity**: Exactly 1 prominent, iconic central subject per step. No visual overload, no text clutter.
+- **Background**: Luminous vibrant blue-violet and deep indigo galaxy nebula with soft ambient starlight (blends cleanly into both dark and light presentation modes; avoid pitch-black backgrounds).
+- **Characters & Agenda Exception**: No human characters (Georg does not appear in pipeline step cards). Agenda slides (Slide 02) require **NO images**.
+- **Aspect Ratio & Location**: 1:1 square aspect ratio (`AspectRatio: "1:1"`), stored in `src/content/presentations/[presentation_id]/images/` and referenced via `/presentations/[presentation_id]/images/[filename].jpg`.
+- **Single Source of Truth**: For detailed prompt templates, consult `IMAGE_STYLE_GUIDELINES.md` (Section 5.F).

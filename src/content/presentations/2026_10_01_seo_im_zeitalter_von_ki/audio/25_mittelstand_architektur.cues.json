@@ -1,11 +1,34 @@
 {
+  "sub": {
+    "start": 4.49
+  },
+  "hl-sub-mittelstand-1001": {
+    "start": 7.47,
+    "duration": 2.84,
+    "end": 10.31
+  },
   "arch-layer-3": {
-    "start": 10.66
+    "start": 10.65
+  },
+  "hl-arch-record": {
+    "start": 13.63,
+    "duration": 1.23,
+    "end": 14.86
   },
   "arch-layer-2": {
-    "start": 17.35
+    "start": 15.2
+  },
+  "hl-arch-graph": {
+    "start": 17.91,
+    "duration": 1.13,
+    "end": 19.04
   },
   "arch-layer-1": {
-    "start": 22.31
+    "start": 19.04
+  },
+  "hl-arch-edge": {
+    "start": 21.21,
+    "duration": 5.13,
+    "end": 26.34
   }
 }

@@ -1,13 +1,51 @@
 {
+  "sub": {
+    "start": 4.05
+  },
+  "hl-sub-schema-1001": {
+    "start": 7.34,
+    "duration": 2.47,
+    "end": 9.81
+  },
   "col-schema-types": {
-    "start": 10.21
+    "start": 10.15
+  },
+  "hl-schema-org": {
+    "start": 11.6,
+    "duration": 1.99,
+    "end": 13.59
+  },
+  "hl-schema-person": {
+    "start": 14.5,
+    "duration": 1.04,
+    "end": 15.54
+  },
+  "hl-schema-product": {
+    "start": 16.44,
+    "duration": 1.91,
+    "end": 18.35
+  },
+  "hl-schema-article": {
+    "start": 19.5,
+    "duration": 2.42,
+    "end": 21.92
   },
   "col-schema-id": {
-    "start": 22.56
+    "start": 22.26
+  },
+  "hl-callout-canonical-uris": {
+    "start": 22.57,
+    "duration": 1.58,
+    "end": 24.15
+  },
+  "hl-schema-uri": {
+    "start": 25.04,
+    "duration": 1.36,
+    "end": 26.4
   },
   "hl-schema-fusion": {
-    "start": 30.19,
-    "duration": 5.6,
-    "end": 35.79
+    "start": 27.65,
+    "duration": 2.41,
+    "end": 30.06
   }
 }

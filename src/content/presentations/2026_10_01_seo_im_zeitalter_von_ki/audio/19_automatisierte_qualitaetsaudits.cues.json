@@ -1,13 +1,21 @@
 {
+  "sub": {
+    "start": 4.29
+  },
+  "hl-sub-lh-1001": {
+    "start": 6.88,
+    "duration": 1.66,
+    "end": 8.54
+  },
   "lh-scores": {
-    "start": 13.13
+    "start": 8.88
   },
   "lh-terminal": {
-    "start": 26.66
+    "start": 21.77
   },
   "hl-100-scores": {
-    "start": 33.81,
-    "duration": 3.17,
-    "end": 36.98
+    "start": 28.36,
+    "duration": 3.28,
+    "end": 31.64
   }
 }
