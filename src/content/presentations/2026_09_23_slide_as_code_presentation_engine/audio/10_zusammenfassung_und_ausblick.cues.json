@@ -1,56 +1,56 @@
 {
   "sub": {
-    "start": 4.99
+    "start": 4.46
   },
   "hl-sub-fazit-923": {
-    "start": 7.74,
-    "duration": 1.71,
-    "end": 9.45
+    "start": 7.08,
+    "duration": 1.83,
+    "end": 8.91
   },
   "col-summary": {
-    "start": 10.84
+    "start": 10.18
   },
   "hl-summary-excellence": {
-    "start": 13.22,
-    "duration": 2.96,
-    "end": 16.18
+    "start": 12.94,
+    "duration": 2.54,
+    "end": 15.48
   },
   "hl-fazit-audit": {
-    "start": 18.26,
-    "duration": 1.58,
-    "end": 19.84
+    "start": 17.5,
+    "duration": 1.48,
+    "end": 18.98
   },
   "hl-fazit-lockin": {
-    "start": 22.43,
-    "duration": 1.23,
-    "end": 23.66
+    "start": 21.29,
+    "duration": 1.14,
+    "end": 22.43
   },
   "hl-fazit-ci": {
-    "start": 25.52,
-    "duration": 2.13,
-    "end": 27.65
+    "start": 23.85,
+    "duration": 2.2,
+    "end": 26.05
   },
   "col-next": {
-    "start": 28.63
+    "start": 26.39
   },
   "hl-summary-keynote": {
-    "start": 34.23,
-    "duration": 1.91,
-    "end": 36.14
+    "start": 31.81,
+    "duration": 1.77,
+    "end": 33.58
   },
   "hl-fazit-keynote": {
-    "start": 37.96,
-    "duration": 2.94,
-    "end": 40.9
+    "start": 34.67,
+    "duration": 2.6,
+    "end": 37.27
   },
   "hl-fazit-keys": {
-    "start": 42.33,
-    "duration": 1.88,
-    "end": 44.21
+    "start": 38.41,
+    "duration": 1.95,
+    "end": 40.36
   },
   "hl-fazit-pdf": {
-    "start": 45.86,
-    "duration": 1.84,
-    "end": 47.7
+    "start": 42.01,
+    "duration": 2.13,
+    "end": 44.14
   }
 }

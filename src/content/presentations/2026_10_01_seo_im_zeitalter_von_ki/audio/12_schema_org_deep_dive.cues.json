@@ -1,51 +1,51 @@
 {
   "sub": {
-    "start": 4.67
+    "start": 4.05
   },
   "hl-sub-schema-1001": {
-    "start": 8,
-    "duration": 2.25,
-    "end": 10.25
+    "start": 7.34,
+    "duration": 2.47,
+    "end": 9.81
   },
   "col-schema-types": {
-    "start": 11.21
+    "start": 10.15
   },
   "hl-schema-org": {
-    "start": 12.81,
-    "duration": 2.13,
-    "end": 14.94
+    "start": 11.6,
+    "duration": 1.99,
+    "end": 13.59
   },
   "hl-schema-person": {
-    "start": 15.9,
-    "duration": 1.24,
-    "end": 17.14
+    "start": 14.5,
+    "duration": 1.04,
+    "end": 15.54
   },
   "hl-schema-product": {
-    "start": 18.1,
-    "duration": 2.01,
-    "end": 20.11
+    "start": 16.44,
+    "duration": 1.91,
+    "end": 18.35
   },
   "hl-schema-article": {
-    "start": 21.36,
-    "duration": 2.64,
-    "end": 24
+    "start": 19.5,
+    "duration": 2.42,
+    "end": 21.92
   },
   "col-schema-id": {
-    "start": 25
+    "start": 22.26
   },
   "hl-callout-canonical-uris": {
-    "start": 25.31,
-    "duration": 1.39,
-    "end": 26.7
+    "start": 22.57,
+    "duration": 1.58,
+    "end": 24.15
   },
   "hl-schema-uri": {
-    "start": 27.68,
-    "duration": 1.53,
-    "end": 29.21
+    "start": 25.04,
+    "duration": 1.36,
+    "end": 26.4
   },
   "hl-schema-fusion": {
-    "start": 30.52,
-    "duration": 2.39,
-    "end": 32.91
+    "start": 27.65,
+    "duration": 2.41,
+    "end": 30.06
   }
 }

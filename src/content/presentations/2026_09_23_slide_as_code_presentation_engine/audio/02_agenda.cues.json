@@ -1,50 +1,50 @@
 {
   "sub": {
-    "start": 5.33
+    "start": 4.6
   },
   "hl-sub-agenda-923": {
-    "start": 7.5,
-    "duration": 2.15,
-    "end": 9.65
+    "start": 6.69,
+    "duration": 2.23,
+    "end": 8.92
   },
   "step-01": {
-    "start": 10.64
+    "start": 9.26
   },
   "hl-agenda-motivation": {
-    "start": 13.97,
-    "duration": 2.63,
-    "end": 16.6
+    "start": 12.34,
+    "duration": 2.54,
+    "end": 14.88
   },
   "step-02": {
-    "start": 19.36
+    "start": 17.04
   },
   "hl-agenda-oekosystem": {
-    "start": 23.45,
-    "duration": 2.21,
-    "end": 25.66
+    "start": 21.07,
+    "duration": 2.32,
+    "end": 23.39
   },
   "step-03": {
-    "start": 26.63
+    "start": 23.73
   },
   "hl-agenda-strategie": {
-    "start": 29.43,
-    "duration": 2.46,
-    "end": 31.89
+    "start": 26.49,
+    "duration": 2.61,
+    "end": 29.1
   },
   "step-04": {
-    "start": 32.86
+    "start": 29.44
   },
   "hl-agenda-optionen": {
-    "start": 34.69,
-    "duration": 2.2,
-    "end": 36.89
+    "start": 31.34,
+    "duration": 2.06,
+    "end": 33.4
   },
   "step-05": {
-    "start": 39.19
+    "start": 35.35
   },
   "hl-agenda-engine": {
-    "start": 41.77,
-    "duration": 2.73,
-    "end": 44.5
+    "start": 37.83,
+    "duration": 2.81,
+    "end": 40.64
   }
 }

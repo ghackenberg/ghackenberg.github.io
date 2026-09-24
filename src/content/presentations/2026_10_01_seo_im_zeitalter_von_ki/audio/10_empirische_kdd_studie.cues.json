@@ -1,26 +1,26 @@
 {
   "sub": {
-    "start": 7.09
+    "start": 6.7
   },
   "hl-sub-kdd-1001": {
-    "start": 9.96,
-    "duration": 2.8,
-    "end": 12.76
+    "start": 9.65,
+    "duration": 2.61,
+    "end": 12.26
   },
   "kdd-study": {
-    "start": 14
+    "start": 12.99
   },
   "kdd-bars": {
-    "start": 21.2
+    "start": 19.07
   },
   "hl-cite-sources": {
-    "start": 25.56,
-    "duration": 6.48,
-    "end": 32.04
+    "start": 23.38,
+    "duration": 5.33,
+    "end": 28.71
   },
   "hl-kdd-penalty": {
-    "start": 32.09,
-    "duration": 3.13,
-    "end": 35.22
+    "start": 28.71,
+    "duration": 3.49,
+    "end": 32.2
   }
 }

@@ -1,16 +1,16 @@
 {
   "title-main": {
-    "start": 6.81
+    "start": 6.58
   },
   "title-sub": {
-    "start": 9.94
+    "start": 9.16
   },
   "hl-title-antwortsysteme": {
-    "start": 13.25,
-    "duration": 1.51,
-    "end": 14.76
+    "start": 11.78,
+    "duration": 1.41,
+    "end": 13.19
   },
   "title-speaker": {
-    "start": 19.32
+    "start": 17.31
   }
 }

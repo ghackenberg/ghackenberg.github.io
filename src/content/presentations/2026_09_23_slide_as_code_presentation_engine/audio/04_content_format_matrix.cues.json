@@ -1,82 +1,82 @@
 {
   "sub": {
-    "start": 6.29
+    "start": 5.5
   },
   "hl-sub-matrix-923": {
-    "start": 8.79,
-    "duration": 2.46,
-    "end": 11.25
+    "start": 7.86,
+    "duration": 2.61,
+    "end": 10.47
   },
   "card-academic": {
-    "start": 12.19
+    "start": 10.81
   },
   "hl-matrix-academic": {
-    "start": 15.2,
-    "duration": 0.96,
-    "end": 16.16
+    "start": 13.75,
+    "duration": 1.43,
+    "end": 15.18
   },
   "hl-acad-peer": {
-    "start": 17.9,
-    "duration": 1.6,
-    "end": 19.5
+    "start": 16.29,
+    "duration": 1.62,
+    "end": 17.91
   },
   "hl-acad-didaktik": {
-    "start": 19.82,
-    "duration": 1.43,
-    "end": 21.25
+    "start": 18.29,
+    "duration": 1.44,
+    "end": 19.73
   },
   "card-blog": {
-    "start": 25.07
+    "start": 20.96
   },
   "hl-matrix-blog": {
-    "start": 25.07,
-    "duration": 1.14,
-    "end": 26.21
+    "start": 23.1,
+    "duration": 1.4,
+    "end": 24.5
   },
   "hl-blog-arch": {
-    "start": 28.06,
+    "start": 25.82,
     "duration": 2.23,
-    "end": 30.29
+    "end": 28.05
   },
   "hl-blog-code": {
-    "start": 30.51,
-    "duration": 1.68,
-    "end": 32.19
+    "start": 28.21,
+    "duration": 1.8,
+    "end": 30.01
   },
   "card-projects": {
-    "start": 33.17
+    "start": 30.35
   },
   "hl-matrix-projects": {
-    "start": 36.31,
-    "duration": 1.07,
-    "end": 37.38
+    "start": 33.08,
+    "duration": 0.93,
+    "end": 34.01
   },
   "hl-proj-oss": {
-    "start": 38.24,
+    "start": 35.09,
     "duration": 1.37,
-    "end": 39.61
+    "end": 36.46
   },
   "hl-proj-webgl": {
-    "start": 40.74,
-    "duration": 1.66,
-    "end": 42.4
+    "start": 37.51,
+    "duration": 1.9,
+    "end": 39.41
   },
   "card-presentations": {
-    "start": 43.3
+    "start": 40.48
   },
   "hl-matrix-presentations": {
-    "start": 46.91,
-    "duration": 1.23,
-    "end": 48.14
+    "start": 44.1,
+    "duration": 1.19,
+    "end": 45.29
   },
   "hl-pres-density": {
-    "start": 48.38,
-    "duration": 3.82,
-    "end": 52.2
+    "start": 45.45,
+    "duration": 3.59,
+    "end": 49.04
   },
   "hl-pres-audiolead": {
-    "start": 51.02,
-    "duration": 1.18,
-    "end": 52.2
+    "start": 47.74,
+    "duration": 1.3,
+    "end": 49.04
   }
 }

@@ -1,42 +1,42 @@
 {
   "sub": {
-    "start": 3.65
+    "start": 3.4
   },
   "hl-sub-demostack-1001": {
-    "start": 5.22,
-    "duration": 2.25,
-    "end": 7.47
+    "start": 5.05,
+    "duration": 2.23,
+    "end": 7.28
   },
   "card-astro": {
-    "start": 8.44
+    "start": 7.61
   },
   "hl-stack-astro": {
-    "start": 11.22,
-    "duration": 1.07,
-    "end": 12.29
+    "start": 10.15,
+    "duration": 1.1,
+    "end": 11.25
   },
   "card-agent": {
-    "start": 14.74
+    "start": 13.15
   },
   "hl-stack-agent": {
-    "start": 17.95,
-    "duration": 1.36,
-    "end": 19.31
+    "start": 16.2,
+    "duration": 1.45,
+    "end": 17.65
   },
   "card-github": {
-    "start": 21.54
+    "start": 19.35
   },
   "hl-stack-ci": {
-    "start": 24.76,
-    "duration": 0.94,
-    "end": 25.7
+    "start": 22.46,
+    "duration": 0.55,
+    "end": 23.01
   },
   "card-plausible": {
-    "start": 26.65
+    "start": 24.29
   },
   "hl-stack-plausible": {
-    "start": 29.34,
-    "duration": 1.84,
-    "end": 31.18
+    "start": 26.86,
+    "duration": 1.43,
+    "end": 28.29
   }
 }

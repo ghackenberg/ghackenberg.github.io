@@ -1,42 +1,42 @@
 {
   "sub": {
-    "start": 6.01
+    "start": 5.53
   },
   "hl-sub-repurpose-923": {
-    "start": 8.53,
-    "duration": 2.43,
-    "end": 10.96
+    "start": 7.97,
+    "duration": 2.69,
+    "end": 10.66
   },
   "step-repo": {
-    "start": 11.93
+    "start": 11
   },
   "hl-repurpose-repo": {
-    "start": 12.96,
-    "duration": 2.84,
-    "end": 15.8
+    "start": 12.16,
+    "duration": 3.09,
+    "end": 15.25
   },
   "step-keynote": {
-    "start": 16.75
+    "start": 15.59
   },
   "hl-repurpose-keynote": {
-    "start": 18.79,
-    "duration": 1.92,
-    "end": 20.71
+    "start": 17.66,
+    "duration": 2.06,
+    "end": 19.72
   },
   "step-deepdive": {
-    "start": 22.89
+    "start": 21.5
   },
   "hl-repurpose-deepdive": {
-    "start": 24.75,
-    "duration": 2.54,
-    "end": 27.29
+    "start": 23.49,
+    "duration": 2.57,
+    "end": 26.06
   },
   "step-graph": {
-    "start": 28.29
+    "start": 26.4
   },
   "hl-repurpose-graph": {
-    "start": 30.02,
-    "duration": 2.69,
-    "end": 32.71
+    "start": 28.19,
+    "duration": 2.85,
+    "end": 31.04
   }
 }

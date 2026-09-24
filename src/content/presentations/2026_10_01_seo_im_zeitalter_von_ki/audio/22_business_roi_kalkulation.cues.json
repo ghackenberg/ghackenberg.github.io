@@ -1,21 +1,21 @@
 {
   "sub": {
-    "start": 6.14
+    "start": 5.41
   },
   "hl-sub-roi-1001": {
-    "start": 8.65,
-    "duration": 1.39,
-    "end": 10.04
+    "start": 7.92,
+    "duration": 1.49,
+    "end": 9.41
   },
   "roi-metric": {
-    "start": 11.95
+    "start": 10.8
   },
   "roi-table": {
-    "start": 15.47
+    "start": 13.94
   },
   "hl-pipeline-wert": {
-    "start": 47.09,
-    "duration": 0.12,
-    "end": 47.21
+    "start": 42.96,
+    "duration": 0.25,
+    "end": 43.21
   }
 }

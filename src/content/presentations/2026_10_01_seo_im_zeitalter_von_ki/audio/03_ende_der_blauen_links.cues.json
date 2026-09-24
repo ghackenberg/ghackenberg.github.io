@@ -1,56 +1,56 @@
 {
   "sub": {
-    "start": 5.94
+    "start": 5.38
   },
   "hl-sub-links-1001": {
-    "start": 8.38,
-    "duration": 2.36,
-    "end": 10.74
+    "start": 7.85,
+    "duration": 2.34,
+    "end": 10.19
   },
   "col-classic": {
-    "start": 11.72
+    "start": 10.53
   },
   "hl-classic-industriepumpen": {
-    "start": 12.59,
-    "duration": 2.37,
-    "end": 14.96
+    "start": 11.5,
+    "duration": 2.38,
+    "end": 13.88
   },
   "hl-classic-keyword": {
-    "start": 16.25,
-    "duration": 1.14,
-    "end": 17.39
+    "start": 15.09,
+    "duration": 1.2,
+    "end": 16.29
   },
   "hl-hyperlink": {
-    "start": 22.56,
-    "duration": 1.03,
-    "end": 23.59
+    "start": 20.6,
+    "duration": 0.81,
+    "end": 21.41
   },
   "hl-traffic": {
-    "start": 25.38,
-    "duration": 0.62,
-    "end": 26
+    "start": 23.43,
+    "duration": 0.75,
+    "end": 24.18
   },
   "col-modern": {
-    "start": 26.99
+    "start": 24.51
   },
   "hl-synthese-iso": {
-    "start": 29.1,
-    "duration": 4.14,
-    "end": 33.24
+    "start": 26.66,
+    "duration": 3.74,
+    "end": 30.4
   },
   "hl-sem-verstaendnis": {
-    "start": 34.14,
+    "start": 31.05,
     "duration": 1.6,
-    "end": 35.74
+    "end": 32.65
   },
   "hl-direkt-beantwortung": {
-    "start": 37.96,
-    "duration": 0.83,
-    "end": 38.79
+    "start": 34.09,
+    "duration": 0.85,
+    "end": 34.94
   },
   "hl-zitation": {
-    "start": 40.36,
-    "duration": 1.75,
-    "end": 42.11
+    "start": 36.52,
+    "duration": 1.88,
+    "end": 38.4
   }
 }

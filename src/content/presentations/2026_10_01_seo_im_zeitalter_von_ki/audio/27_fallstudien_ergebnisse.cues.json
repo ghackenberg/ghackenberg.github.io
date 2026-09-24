@@ -1,56 +1,56 @@
 {
   "sub": {
-    "start": 5.06
+    "start": 4.55
   },
   "hl-sub-cases-1001": {
-    "start": 6.56,
-    "duration": 2.65,
-    "end": 9.21
+    "start": 6.14,
+    "duration": 2.74,
+    "end": 8.88
   },
   "col-case-a": {
-    "start": 10.18
+    "start": 9.21
   },
   "hl-callout-case-a": {
-    "start": 11.7,
-    "duration": 2.2,
-    "end": 13.9
+    "start": 10.7,
+    "duration": 1.93,
+    "end": 12.63
   },
   "hl-case-a-stat": {
-    "start": 14.59,
-    "duration": 4.97,
-    "end": 19.56
+    "start": 13.3,
+    "duration": 3.99,
+    "end": 17.29
   },
   "hl-case-a-lcp": {
-    "start": 20.25,
-    "duration": 7.63,
-    "end": 27.88
+    "start": 18.04,
+    "duration": 6.25,
+    "end": 24.29
   },
   "hl-case-a-leads": {
-    "start": 24.09,
-    "duration": 2.56,
-    "end": 26.65
+    "start": 21.16,
+    "duration": 2.44,
+    "end": 23.6
   },
   "col-case-b": {
-    "start": 27.57
+    "start": 23.94
   },
   "hl-callout-case-b": {
-    "start": 28.43,
-    "duration": 3.36,
-    "end": 31.79
+    "start": 24.89,
+    "duration": 2.68,
+    "end": 27.57
   },
   "hl-case-b-stat": {
-    "start": 32.55,
-    "duration": 4.49,
-    "end": 37.04
+    "start": 28.39,
+    "duration": 3.94,
+    "end": 32.33
   },
   "hl-case-b-direct": {
-    "start": 37.9,
-    "duration": 3.36,
-    "end": 41.26
+    "start": 33,
+    "duration": 3.04,
+    "end": 36.04
   },
   "hl-case-b-authority": {
-    "start": 42.25,
-    "duration": 2.96,
-    "end": 45.21
+    "start": 36.71,
+    "duration": 2.69,
+    "end": 39.4
   }
 }

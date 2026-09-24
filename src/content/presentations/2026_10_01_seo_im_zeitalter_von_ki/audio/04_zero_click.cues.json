@@ -1,31 +1,31 @@
 {
   "sub": {
-    "start": 5.36
+    "start": 4.75
   },
   "hl-sub-zeroclick-1001": {
-    "start": 8.18,
-    "duration": 2.21,
-    "end": 10.39
+    "start": 8.13,
+    "duration": 2.12,
+    "end": 10.25
   },
   "stat-zeroclick": {
-    "start": 11.38
+    "start": 10.59
   },
   "bento-impact": {
-    "start": 17.43
+    "start": 15.94
   },
   "hl-callout-zitation-marke": {
-    "start": 19.6,
-    "duration": 2.4,
-    "end": 22
+    "start": 18.6,
+    "duration": 2.47,
+    "end": 21.07
   },
   "hl-zeroclick-traffic": {
-    "start": 23.49,
-    "duration": 2.99,
-    "end": 26.48
+    "start": 21.91,
+    "duration": 2.68,
+    "end": 24.59
   },
   "hl-zeroclick-intent": {
-    "start": 28.2,
-    "duration": 1.79,
-    "end": 29.99
+    "start": 26.26,
+    "duration": 2,
+    "end": 28.26
   }
 }

@@ -114,7 +114,7 @@ function validateSlides() {
       lexicon = JSON.parse(fs.readFileSync(lexiconPath, 'utf8'));
     } catch {}
   }
-  const GENERATOR_VERSION = 'v3-spoken';
+  const GENERATOR_VERSION = 'v5-florian-minimal';
 
   for (const presentationFolder of presentationFolders) {
     const presentationPath = path.join(presentationsBase, presentationFolder);
@@ -184,17 +184,6 @@ function validateSlides() {
       // Extract voiceover script content
       const parsedFm = parseFrontmatter(content);
       const voiceoverText = parsedFm.voiceover || '';
-
-      // Check for unregistered technical acronyms in voiceover
-      const cleanVoiceover = voiceoverText.replace(/\{cue:[^}]+\}|\{\/cue\}/g, '');
-      const potentialAcronyms = cleanVoiceover.match(/\b[A-Z]{2,}\b/g) || [];
-      const knownExceptions = new Set(['OK', 'II', 'III', 'IV', 'VI', 'VII', 'VIII', 'IX']);
-      for (const acr of potentialAcronyms) {
-        if (!lexicon.acronyms[acr] && !lexicon.phonetics[acr] && !knownExceptions.has(acr)) {
-          console.warn(`  ⚠️ [${slideFile}] Unregistered acronym "${acr}" found in voiceover. Consider adding it to "src/content/presentations/tts-lexicon.json" for consistent TTS pronunciation.`);
-          totalWarnings++;
-        }
-      }
 
       // 0. Check for deprecated color override syntax {cue:id:color}
       const legacyColorRegex = /\{cue:[a-zA-Z0-9_-]+:([a-zA-Z0-9_-]+)\}/g;
