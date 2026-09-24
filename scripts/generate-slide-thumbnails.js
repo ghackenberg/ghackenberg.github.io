@@ -26,6 +26,20 @@ function createStaticServer() {
 
   return http.createServer((req, res) => {
     const urlPath = (req.url || '/').split('?')[0];
+
+    // Serve presentation assets directly from src/content/presentations if available
+    const presMatch = urlPath.match(/^\/presentations\/(.+)$/);
+    if (presMatch) {
+      const srcPath = path.resolve('src/content/presentations', presMatch[1]);
+      if (fs.existsSync(srcPath) && fs.statSync(srcPath).isFile()) {
+        const ext = path.extname(srcPath).toLowerCase();
+        const contentType = mimeTypes[ext] || 'application/octet-stream';
+        res.writeHead(200, { 'Content-Type': contentType });
+        fs.createReadStream(srcPath).pipe(res);
+        return;
+      }
+    }
+
     let filePath = path.join(distDir, urlPath);
 
     if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
