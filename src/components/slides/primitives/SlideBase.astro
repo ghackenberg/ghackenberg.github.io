@@ -211,23 +211,86 @@ const isNotFirstSlide = num > 1;
     initial-value: 0.48;
   }
 
-  /* Text Marker Sweep Animation */
+  /* ==========================================================================
+     Bullet Badge System (Container-Driven Palette)
+     ========================================================================== */
+
+  :global(.bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #334155; /* slate-700 */
+    color: #f8fafc;
+  }
+  :global(.light .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #e2e8f0; /* slate-200 */
+    color: #0f172a;
+  }
+
+  /* Complementary Bullet Badges per Container Accent */
+  :global([data-accent="blue"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #d97706; /* amber-600 (complementary to blue) */
+    color: #ffffff;
+  }
+  :global([data-accent="cyan"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)),
+  :global([data-accent="teal"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #d97706; /* amber-600 (warm complementary to cyan) */
+    color: #ffffff;
+  }
+  :global([data-accent="emerald"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)),
+  :global([data-accent="green"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #d97706; /* amber-600 (warm contrast to emerald) */
+    color: #ffffff;
+  }
+  :global([data-accent="purple"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #d97706; /* amber-600 (gold contrast to purple) */
+    color: #ffffff;
+  }
+  :global([data-accent="indigo"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #d97706; /* amber-600 (warm contrast to indigo) */
+    color: #ffffff;
+  }
+  :global([data-accent="amber"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #0891b2; /* cyan-600 (cool complementary to amber) */
+    color: #ffffff;
+  }
+  :global([data-accent="neutral"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #334155; /* slate-700 (clean subtle slate) */
+    color: #f8fafc;
+  }
+  :global(.light [data-accent="neutral"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross)) {
+    background-color: #e2e8f0; /* slate-200 */
+    color: #0f172a;
+  }
+
+  /* ==========================================================================
+     Highlight Marker System (Container-Driven Palette)
+     ========================================================================== */
+
+  :global(mark),
   :global(.highlight-marker) {
     --hl-alpha-1: 0.38;
     --hl-alpha-2: 0.48;
-    background-image: var(--hl-grad-dark, linear-gradient(120deg, rgba(59, 130, 246, var(--hl-alpha-1)) 0%, rgba(96, 165, 250, var(--hl-alpha-2)) 100%));
-    background-repeat: no-repeat;
-    background-size: 0% 100%;
+    background-color: transparent !important;
+    color: inherit;
     padding: 0.14em 0.45em;
     margin: 0 -0.05em;
     border-radius: 0.38em !important;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
-    transition: background-size var(--cue-duration, 0.5s) cubic-bezier(0.16, 1, 0.3, 1),
-                --hl-alpha-1 0.4s ease,
-                --hl-alpha-2 0.4s ease,
-                color 0.4s ease,
-                filter 0.4s ease;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-2)) 100%);
+    background-size: 100% 100%;
+    transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
+                --hl-alpha-1 0.45s ease,
+                --hl-alpha-2 0.45s ease,
+                color 0.45s ease,
+                filter 0.45s ease;
+    will-change: background-size, color, filter;
+  }
+
+  :global(.light mark),
+  :global(.light .highlight-marker) {
+    --hl-alpha-1: 0.42;
+    --hl-alpha-2: 0.48;
+    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-2)) 100%);
   }
 
   :global(.slide-subtitle mark),
@@ -235,21 +298,116 @@ const isNotFirstSlide = num > 1;
     border-radius: 0.4em !important;
     padding: 0.14em 0.5em !important;
     margin: 0 0.05em !important;
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
+    --hl-text-dark: #a5f3fc;
+    --hl-text-light: #0e7490;
   }
 
-  :global(.highlight-marker.is-active) {
-    background-size: 100% 100%;
-    color: #ffffff;
+  /* Default Marker Colors (Cyan) */
+  :global(mark),
+  :global(.highlight-marker) {
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
+    --hl-text-dark: #a5f3fc;
+    --hl-text-light: #0e7490;
   }
 
-  :global(.light .highlight-marker) {
+  /* Container-driven Highlight: Blue */
+  :global([data-accent="blue"] mark),
+  :global([data-accent="blue"] .highlight-marker) {
+    --hl-glow-rgb: 59, 130, 246;
+    --hl-glow-rgb-2: 96, 165, 250;
+    --hl-text-dark: #bfdbfe;
+    --hl-text-light: #1e40af;
+  }
+
+  /* Container-driven Highlight: Cyan / Teal */
+  :global([data-accent="cyan"] mark),
+  :global([data-accent="cyan"] .highlight-marker),
+  :global([data-accent="teal"] mark),
+  :global([data-accent="teal"] .highlight-marker) {
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
+    --hl-text-dark: #a5f3fc;
+    --hl-text-light: #0e7490;
+  }
+
+  /* Container-driven Highlight: Emerald / Green */
+  :global([data-accent="emerald"] mark),
+  :global([data-accent="emerald"] .highlight-marker),
+  :global([data-accent="green"] mark),
+  :global([data-accent="green"] .highlight-marker) {
+    --hl-glow-rgb: 16, 185, 129;
+    --hl-glow-rgb-2: 52, 211, 153;
+    --hl-text-dark: #a7f3d0;
+    --hl-text-light: #065f46;
+  }
+
+  /* Container-driven Highlight: Purple */
+  :global([data-accent="purple"] mark),
+  :global([data-accent="purple"] .highlight-marker) {
+    --hl-glow-rgb: 168, 85, 247;
+    --hl-glow-rgb-2: 192, 132, 252;
+    --hl-text-dark: #e9d5ff;
+    --hl-text-light: #581c87;
+  }
+
+  /* Container-driven Highlight: Indigo */
+  :global([data-accent="indigo"] mark),
+  :global([data-accent="indigo"] .highlight-marker) {
+    --hl-glow-rgb: 99, 102, 241;
+    --hl-glow-rgb-2: 129, 140, 248;
+    --hl-text-dark: #c7d2fe;
+    --hl-text-light: #3730a3;
+  }
+
+  /* Container-driven Highlight: Amber */
+  :global([data-accent="amber"] mark),
+  :global([data-accent="amber"] .highlight-marker) {
+    --hl-glow-rgb: 245, 158, 11;
+    --hl-glow-rgb-2: 251, 191, 36;
+    --hl-text-dark: #fef08a;
+    --hl-text-light: #78350f;
+  }
+
+  /* Container-driven Highlight: Neutral (warm classic amber contrast on slate) */
+  :global([data-accent="neutral"] mark),
+  :global([data-accent="neutral"] .highlight-marker) {
+    --hl-glow-rgb: 245, 158, 11;
+    --hl-glow-rgb-2: 251, 191, 36;
+    --hl-text-dark: #fef08a;
+    --hl-text-light: #78350f;
+  }
+
+  /* Pre-cue pending state for marker: 0% width (unmarked) */
+  :global(mark[data-cue]:not(.is-active)),
+  :global(.highlight-marker[data-cue]:not(.is-active)) {
+    background-size: 0% 100%;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 6, 182, 212), 0));
+  }
+
+  /* Active Spotlight: Currently spoken highlight (vibrant gradient, glowing text, full brightness) */
+  :global(mark.is-active:not(.is-dimmed)),
+  :global(.highlight-marker.is-active:not(.is-dimmed)) {
+    --hl-alpha-1: 0.38;
+    --hl-alpha-2: 0.48;
+    background-size: 100% 100% !important;
+    color: var(--hl-text-dark) !important;
+    filter: drop-shadow(0 0 10px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.45));
+    transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
+                --hl-alpha-1 0.4s ease,
+                --hl-alpha-2 0.4s ease,
+                color 0.4s ease,
+                filter 0.4s ease;
+    will-change: background-size, color, filter;
+  }
+  :global(.light mark.is-active:not(.is-dimmed)),
+  :global(.light .highlight-marker.is-active:not(.is-dimmed)) {
     --hl-alpha-1: 0.42;
     --hl-alpha-2: 0.48;
-    background-image: var(--hl-grad-light, linear-gradient(120deg, rgba(96, 165, 250, var(--hl-alpha-1)) 0%, rgba(59, 130, 246, var(--hl-alpha-2)) 100%));
-  }
-
-  :global(.light .highlight-marker.is-active) {
-    color: #0f172a;
+    color: var(--hl-text-light) !important;
+    filter: drop-shadow(0 0 8px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.25));
   }
 
   /* Settled Spotlight: Inactive/dimmed highlight markers transition smoothly into background */
@@ -257,8 +415,9 @@ const isNotFirstSlide = num > 1;
   :global(mark.is-active.is-dimmed) {
     --hl-alpha-1: 0.13;
     --hl-alpha-2: 0.17;
+    background-size: 100% 100% !important;
     color: inherit !important;
-    filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0)) !important;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
     opacity: 1 !important;
     transition: --hl-alpha-1 0.85s cubic-bezier(0.16, 1, 0.3, 1),
                 --hl-alpha-2 0.85s cubic-bezier(0.16, 1, 0.3, 1),
@@ -271,7 +430,7 @@ const isNotFirstSlide = num > 1;
     --hl-alpha-1: 0.16;
     --hl-alpha-2: 0.20;
     color: inherit !important;
-    filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0)) !important;
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
     opacity: 1 !important;
   }
 

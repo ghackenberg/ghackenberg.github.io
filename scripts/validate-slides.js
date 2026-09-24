@@ -196,17 +196,25 @@ function validateSlides() {
         }
       }
 
+      // 0. Check for deprecated color override syntax {cue:id:color}
+      const legacyColorRegex = /\{cue:[a-zA-Z0-9_-]+:([a-zA-Z0-9_-]+)\}/g;
+      let legacyMatch;
+      while ((legacyMatch = legacyColorRegex.exec(content)) !== null) {
+        console.error(`  ❌ [${slideFile}] Deprecated color syntax detected in "${legacyMatch[0]}". Color overrides are removed; highlights and bullet badges automatically follow their container accent.`);
+        totalErrors++;
+      }
+
       // 1. Extract voiceover cues in sequence
       /** @type {string[]} */
       const voCues = [];
-      const voCueRegex = /\{cue:([a-zA-Z0-9_-]+)(?::[a-zA-Z0-9_-]+)?\}/g;
+      const voCueRegex = /\{cue:([a-zA-Z0-9_-]+)\}/g;
       let voMatchItem;
       while ((voMatchItem = voCueRegex.exec(voiceoverText)) !== null) {
         voCues.push(voMatchItem[1]);
       }
 
       // 1b. Check cue syntax rules: only inline text-highlights (hl-* / mark-*) may have closing tags!
-      const cueTagRegex = /\{cue:([a-zA-Z0-9_-]+)(?::[a-zA-Z0-9_-]+)?\}|\{\/cue(?::([a-zA-Z0-9_-]+))?\}/g;
+      const cueTagRegex = /\{cue:([a-zA-Z0-9_-]+)\}|\{\/cue(?::([a-zA-Z0-9_-]+))?\}/g;
       /** @type {string[]} */
       const openCueStack = [];
       let tagMatch;
@@ -240,7 +248,7 @@ function validateSlides() {
       // 2. Extract slide body cues in order of visual appearance
       /** @type {string[]} */
       const bodyCues = [];
-      const bodyCueRegex = /(?:(?:cue|data-cue)\s*[:=]\s*["']([a-zA-Z0-9_-]+)["']|id\s*[:=]\s*["']((?:col|box|card|step|stat|hl|mark)-[a-zA-Z0-9_-]+)["']|\{cue:([a-zA-Z0-9_-]+)(?::[a-zA-Z0-9_-]+)?\})/g;
+      const bodyCueRegex = /(?:(?:cue|data-cue)\s*[:=]\s*["']([a-zA-Z0-9_-]+)["']|id\s*[:=]\s*["']((?:col|box|card|step|stat|hl|mark)-[a-zA-Z0-9_-]+)["']|\{cue:([a-zA-Z0-9_-]+)\})/g;
       
       const subtitleFmMatch = fm.match(/^subtitle:\s*["']?([^\r\n]+)/m);
       const subtitleText = subtitleFmMatch ? subtitleFmMatch[1] : '';
@@ -518,6 +526,10 @@ function validateSlides() {
       for (const bl of bulletListBlocks) {
         if (/\bcue\s*:\s*["'][^"']+["']/.test(bl)) {
           console.error(`  ❌ [${slideFile}] Subelement cue detected in BulletList items. Subelements must not be faded in; use inline text-highlights {cue:...}text{/cue} within item titles/descriptions instead.`);
+          totalErrors++;
+        }
+        if (/\baccent\s*:\s*["'][^"']+["']/.test(bl)) {
+          console.error(`  ❌ [${slideFile}] Deprecated "accent" prop detected in BulletList item. Bullet points automatically receive complementary coloring from their container accent.`);
           totalErrors++;
         }
       }

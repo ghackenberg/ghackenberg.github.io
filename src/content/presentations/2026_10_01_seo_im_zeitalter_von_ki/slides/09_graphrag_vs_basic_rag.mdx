@@ -1,6 +1,6 @@
 ---
 title: "GraphRAG vs. Basic RAG"
-subtitle: "Die Innovation von Microsoft Research: Von Text-Chunks zu {cue:hl-sub-graphrag-1001:cyan}ganzheitlichem Weltwissen{/cue}"
+subtitle: "Die Innovation von Microsoft Research: Von Text-Chunks zu {cue:hl-sub-graphrag-1001}ganzheitlichem Weltwissen{/cue}"
 number: "09"
 slideLayout: "split"
 voiceover: >
@@ -33,25 +33,25 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 >
   <BentoCard slot="left" cue="col-basic-rag" title="Basic RAG (Vector-only)" accent="neutral">
     <CalloutBox color="neutral" type="warning" title="Methode: Naives Text-Chunking">
-      <p class="text-slate-300 light:text-slate-600">Dokumente werden in {cue:hl-callout-500-tokens:amber}500-Token-Blöcke zerschnitten{/cue} und isoliert eingebettet.</p>
+      <p class="text-slate-300 light:text-slate-600">Dokumente werden in {cue:hl-callout-500-tokens}500-Token-Blöcke zerschnitten{/cue} und isoliert eingebettet.</p>
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "cross", title: "Fehlender Gesamtzusammenhang", desc: "Das Modell sieht durch naives Chunking {cue:hl-basic-chunking:amber}nur einzelne Bäume{/cue}, aber nie den Wald." },
-      { icon: "cross", title: "Versagen bei Aggregationen", desc: "Fragen wie „Vergleiche alle Hersteller“ liefern {cue:hl-basic-agg:amber}unvollständige Zufallstreffer{/cue}." },
-      { icon: "cross", title: "Hohe Halluzinationsrate", desc: "Kontextlücken werden durch {cue:hl-basic-hallu:amber}Modell-Fantasie geschlossen{/cue}." }
+      { icon: "cross", title: "Fehlender Gesamtzusammenhang", desc: "Das Modell sieht durch naives Chunking {cue:hl-basic-chunking}nur einzelne Bäume{/cue}, aber nie den Wald." },
+      { icon: "cross", title: "Versagen bei Aggregationen", desc: "Fragen wie „Vergleiche alle Hersteller“ liefern {cue:hl-basic-agg}unvollständige Zufallstreffer{/cue}." },
+      { icon: "cross", title: "Hohe Halluzinationsrate", desc: "Kontextlücken werden durch {cue:hl-basic-hallu}Modell-Fantasie geschlossen{/cue}." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-graph-rag" title="GraphRAG (Microsoft Research)" accent="blue">
     <CalloutBox color="blue" type="takeaway" title="Methode: Knowledge Graph + Community Summaries">
-      <p class="text-blue-200 light:text-blue-900">LLM extrahiert Entitäten und generiert {cue:hl-callout-hierarchisch:blue}hierarchische Synthesen auf Clusterebene{/cue}.</p>
+      <p class="text-blue-200 light:text-blue-900">LLM extrahiert Entitäten und generiert {cue:hl-callout-hierarchisch}hierarchische Synthesen auf Clusterebene{/cue}.</p>
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "check", title: "Globale Fragestellungen lösbar", desc: "Liefert vollständige Marktübersichten {cue:hl-graphrag-global:blue}ohne Informationslücken{/cue}." },
-      { icon: "check", title: "Community Summaries", desc: "Übergreifende {cue:hl-community-summaries:blue}Cluster-Zusammenfassungen{/cue} werden bevorzugt zitiert." },
-      { icon: "check", title: "+80 % Informationsfülle", desc: "Empirisch belegte {cue:hl-graphrag-qualitaet:emerald}Überlegenheit bei Benchmark-Fragen{/cue}." }
+      { icon: "check", title: "Globale Fragestellungen lösbar", desc: "Liefert vollständige Marktübersichten {cue:hl-graphrag-global}ohne Informationslücken{/cue}." },
+      { icon: "check", title: "Community Summaries", desc: "Übergreifende {cue:hl-community-summaries}Cluster-Zusammenfassungen{/cue} werden bevorzugt zitiert." },
+      { icon: "check", title: "+80 % Informationsfülle", desc: "Empirisch belegte {cue:hl-graphrag-qualitaet}Überlegenheit bei Benchmark-Fragen{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>

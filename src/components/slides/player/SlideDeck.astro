@@ -1777,60 +1777,146 @@ const currentDeckId = presentationId || talkId || "presentation";
     border-radius: 0.4em !important;
     padding: 0.14em 0.5em !important;
     margin: 0 0.05em !important;
-  }
-
-  /* Color: Amber (Default) */
-  .reveal mark,
-  .reveal .highlight-marker,
-  .reveal mark[data-color="amber"],
-  .reveal [data-color="amber"].highlight-marker {
-    --hl-glow-rgb: 245, 158, 11;
-    --hl-glow-rgb-2: 251, 191, 36;
-    --hl-text-dark: #fef08a;
-    --hl-text-light: #78350f;
-  }
-
-  /* Color: Cyan */
-  .reveal mark[data-color="cyan"],
-  .reveal [data-color="cyan"].highlight-marker {
     --hl-glow-rgb: 6, 182, 212;
     --hl-glow-rgb-2: 34, 211, 238;
     --hl-text-dark: #a5f3fc;
     --hl-text-light: #0e7490;
   }
 
-  /* Color: Emerald */
-  .reveal mark[data-color="emerald"],
-  .reveal [data-color="emerald"].highlight-marker {
-    --hl-glow-rgb: 16, 185, 129;
-    --hl-glow-rgb-2: 52, 211, 153;
-    --hl-text-dark: #a7f3d0;
-    --hl-text-light: #065f46;
+  /* ==========================================================================
+     Bullet Badge System (Container-Driven Palette)
+     ========================================================================== */
+
+  .reveal .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #334155; /* slate-700 */
+    color: #f8fafc;
+  }
+  .light .reveal .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #e2e8f0; /* slate-200 */
+    color: #0f172a;
   }
 
-  /* Color: Purple */
-  .reveal mark[data-color="purple"],
-  .reveal [data-color="purple"].highlight-marker {
-    --hl-glow-rgb: 168, 85, 247;
-    --hl-glow-rgb-2: 192, 132, 252;
-    --hl-text-dark: #e9d5ff;
-    --hl-text-light: #581c87;
+  /* Complementary Bullet Badges per Container Accent */
+  .reveal [data-accent="blue"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #d97706; /* amber-600 (complementary to blue) */
+    color: #ffffff;
+  }
+  .reveal [data-accent="cyan"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross),
+  .reveal [data-accent="teal"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #d97706; /* amber-600 (warm complementary to cyan) */
+    color: #ffffff;
+  }
+  .reveal [data-accent="emerald"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross),
+  .reveal [data-accent="green"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #d97706; /* amber-600 (warm contrast to emerald) */
+    color: #ffffff;
+  }
+  .reveal [data-accent="purple"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #d97706; /* amber-600 (gold contrast to purple) */
+    color: #ffffff;
+  }
+  .reveal [data-accent="indigo"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #d97706; /* amber-600 (warm contrast to indigo) */
+    color: #ffffff;
+  }
+  .reveal [data-accent="amber"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #0891b2; /* cyan-600 (cool complementary to amber) */
+    color: #ffffff;
+  }
+  .reveal [data-accent="neutral"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #334155; /* slate-700 (clean subtle slate) */
+    color: #f8fafc;
+  }
+  .light .reveal [data-accent="neutral"] .bullet-badge:not(.bullet-badge-check):not(.bullet-badge-cross) {
+    background-color: #e2e8f0; /* slate-200 */
+    color: #0f172a;
   }
 
-  /* Color: Blue */
-  .reveal mark[data-color="blue"],
-  .reveal [data-color="blue"].highlight-marker {
+  /* ==========================================================================
+     Highlight Marker System (Container-Driven Palette)
+     ========================================================================== */
+
+  /* Default Marker Colors (Cyan) */
+  .reveal mark,
+  .reveal .highlight-marker {
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
+    --hl-text-dark: #a5f3fc;
+    --hl-text-light: #0e7490;
+  }
+
+  /* Container-driven Highlight: Blue */
+  .reveal [data-accent="blue"] mark,
+  .reveal [data-accent="blue"] .highlight-marker {
     --hl-glow-rgb: 59, 130, 246;
     --hl-glow-rgb-2: 96, 165, 250;
     --hl-text-dark: #bfdbfe;
     --hl-text-light: #1e40af;
   }
 
+  /* Container-driven Highlight: Cyan / Teal */
+  .reveal [data-accent="cyan"] mark,
+  .reveal [data-accent="cyan"] .highlight-marker,
+  .reveal [data-accent="teal"] mark,
+  .reveal [data-accent="teal"] .highlight-marker {
+    --hl-glow-rgb: 6, 182, 212;
+    --hl-glow-rgb-2: 34, 211, 238;
+    --hl-text-dark: #a5f3fc;
+    --hl-text-light: #0e7490;
+  }
+
+  /* Container-driven Highlight: Emerald / Green */
+  .reveal [data-accent="emerald"] mark,
+  .reveal [data-accent="emerald"] .highlight-marker,
+  .reveal [data-accent="green"] mark,
+  .reveal [data-accent="green"] .highlight-marker {
+    --hl-glow-rgb: 16, 185, 129;
+    --hl-glow-rgb-2: 52, 211, 153;
+    --hl-text-dark: #a7f3d0;
+    --hl-text-light: #065f46;
+  }
+
+  /* Container-driven Highlight: Purple */
+  .reveal [data-accent="purple"] mark,
+  .reveal [data-accent="purple"] .highlight-marker {
+    --hl-glow-rgb: 168, 85, 247;
+    --hl-glow-rgb-2: 192, 132, 252;
+    --hl-text-dark: #e9d5ff;
+    --hl-text-light: #581c87;
+  }
+
+  /* Container-driven Highlight: Indigo */
+  .reveal [data-accent="indigo"] mark,
+  .reveal [data-accent="indigo"] .highlight-marker {
+    --hl-glow-rgb: 99, 102, 241;
+    --hl-glow-rgb-2: 129, 140, 248;
+    --hl-text-dark: #c7d2fe;
+    --hl-text-light: #3730a3;
+  }
+
+  /* Container-driven Highlight: Amber */
+  .reveal [data-accent="amber"] mark,
+  .reveal [data-accent="amber"] .highlight-marker {
+    --hl-glow-rgb: 245, 158, 11;
+    --hl-glow-rgb-2: 251, 191, 36;
+    --hl-text-dark: #fef08a;
+    --hl-text-light: #78350f;
+  }
+
+  /* Container-driven Highlight: Neutral (warm classic amber contrast on slate) */
+  .reveal [data-accent="neutral"] mark,
+  .reveal [data-accent="neutral"] .highlight-marker {
+    --hl-glow-rgb: 245, 158, 11;
+    --hl-glow-rgb-2: 251, 191, 36;
+    --hl-text-dark: #fef08a;
+    --hl-text-light: #78350f;
+  }
+
   /* Pre-cue pending state for marker: 0% width (unmarked) */
   .reveal mark[data-cue]:not(.is-active),
   .reveal .highlight-marker[data-cue]:not(.is-active) {
     background-size: 0% 100%;
-    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0));
+    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 6, 182, 212), 0));
   }
 
   /* Active Spotlight: Currently spoken highlight (vibrant gradient, glowing text, full brightness) */
@@ -1840,7 +1926,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     --hl-alpha-2: 0.48;
     background-size: 100% 100% !important;
     color: var(--hl-text-dark) !important;
-    filter: drop-shadow(0 0 10px rgba(var(--hl-glow-rgb, 59, 130, 246), 0.45));
+    filter: drop-shadow(0 0 10px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.45));
     transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
                 --hl-alpha-1 0.4s ease,
                 --hl-alpha-2 0.4s ease,
@@ -1853,7 +1939,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     --hl-alpha-1: 0.42;
     --hl-alpha-2: 0.48;
     color: var(--hl-text-light) !important;
-    filter: drop-shadow(0 0 8px rgba(var(--hl-glow-rgb, 59, 130, 246), 0.25));
+    filter: drop-shadow(0 0 8px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.25));
   }
 
   /* Settled Spotlight: Previously spoken highlight on this slide (persistent muted marker) */
