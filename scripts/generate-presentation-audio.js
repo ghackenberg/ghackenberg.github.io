@@ -315,9 +315,11 @@ async function generateAllPresentationAudio() {
     const forceFlag = process.argv.includes('--force') || process.argv.includes('-f');
     const slideArg = process.argv.find((a) => a.startsWith('--slide='));
     const targetSlide = slideArg ? slideArg.replace('--slide=', '') : null;
+    const voiceArg = process.argv.find((a) => a.startsWith('--voice='));
+    const selectedVoice = voiceArg ? voiceArg.replace('--voice=', '') : 'de-DE-FlorianMultilingualNeural';
 
     const lexicon = loadTtsLexicon();
-    const GENERATOR_VERSION = 'v3-spoken';
+    const GENERATOR_VERSION = 'v5-florian-minimal';
 
     for (const slideFile of slideFiles) {
       const slideId = slideFile.replace(/\.(md|mdx)$/, '');
@@ -348,12 +350,12 @@ async function generateAllPresentationAudio() {
         continue;
       }
 
-      console.log(`  ▶ Synthesizing audio for: ${slideId}...`);
+      console.log(`  ▶ Synthesizing audio for: ${slideId} (voice: ${selectedVoice})...`);
 
       try {
-        // Use German neural voice by default
+        // Use German multilingual neural voice by default (handles English tech terms cleanly)
         const communicate = new UniversalCommunicate(spokenText, {
-          voice: 'de-DE-ConradNeural',
+          voice: selectedVoice,
           rate: '+0%',
           pitch: '+0Hz'
         });
