@@ -29,14 +29,14 @@ import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
 >
   <BentoCard slot="left" cue="col-qa-questions" title="Impulsfragen für die Diskussion" accent="blue">
     <BulletList items={[
-      { num: "1", title: "Klick-Rückgang", desc: "Spüren Sie in Ihrem Unternehmen bereits den {cue:hl-qa-klick}Rückgang von organischem Klick-Traffic{/cue} durch KI-Overviews?" },
-      { num: "2", title: "Agenten & Governance", desc: "Welche Governance-Anforderungen bestehen beim {cue:hl-qa-governance}Einsatz lokaler autonomer Entwickler-Agenten{/cue}?" },
-      { num: "3", title: "Zuständigkeit im Betrieb", desc: "Wer übernimmt im Betrieb künftig die {cue:hl-qa-ownership}Verantwortung für semantische Wissensgraphen{/cue}?" }
+      { icon: "trending-down", title: "Klick-Rückgang", desc: "Spüren Sie in Ihrem Unternehmen bereits den {cue:hl-qa-klick}Rückgang von organischem Klick-Traffic{/cue} durch KI-Overviews?" },
+      { icon: "cpu", title: "Agenten & Governance", desc: "Welche Governance-Anforderungen bestehen beim {cue:hl-qa-governance}Einsatz lokaler autonomer Entwickler-Agenten{/cue}?" },
+      { icon: "shield", title: "Zuständigkeit im Betrieb", desc: "Wer übernimmt im Betrieb künftig die {cue:hl-qa-ownership}Verantwortung für semantische Wissensgraphen{/cue}?" }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-qa-contact" title="Kontakt & Ressourcen" accent="cyan">
-    <CalloutBox color="cyan" type="takeaway" title="{cue:hl-callout-speaker-prof}Dr. rer. nat. Georg Hackenberg{/cue}">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-speaker-prof}Dr. rer. nat. Georg Hackenberg{/cue}">
       <div class="flex items-center gap-6">
         <div class="relative w-44 h-44 lg:w-48 lg:h-48 shrink-0">
           <Avatar3D class="w-full h-full" />
@@ -48,12 +48,12 @@ import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
       </div>
     </CalloutBox>
 
-    <CalloutBox color="neutral" type="info" title="{cue:hl-folien-online}Online-Ressourcen & Profile{/cue}">
+    <CalloutBox type="info" title="{cue:hl-folien-online}Online-Ressourcen & Profile{/cue}">
       <div class="font-mono text-lg space-y-2">
-        <p>🌐 <strong>Web:</strong> <span class="text-cyan-400">https://hackenberg.tech</span></p>
-        <p>💼 <strong>LinkedIn:</strong> <span class="text-blue-400">linkedin.com/in/georghackenberg</span></p>
-        <p>💻 <strong>GitHub:</strong> <span class="text-purple-400">github.com/ghackenberg</span></p>
-        <p>🔬 <strong>ORCID:</strong> <span class="text-emerald-400">0000-0003-3913-4148</span></p>
+        <p><strong>Web:</strong> <span class="text-cyan-400">https://hackenberg.tech</span></p>
+        <p><strong>LinkedIn:</strong> <span class="text-blue-400">linkedin.com/in/georghackenberg</span></p>
+        <p><strong>GitHub:</strong> <span class="text-purple-400">github.com/ghackenberg</span></p>
+        <p><strong>ORCID:</strong> <span class="text-emerald-400">0000-0003-3913-4148</span></p>
       </div>
     </CalloutBox>
   </BentoCard>

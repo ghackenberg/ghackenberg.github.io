@@ -25,7 +25,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="10"
 >
   <BentoCard slot="left" cue="col-summary" title="Kern-Erkenntnisse" accent="blue">
-    <CalloutBox type="statement" color="blue" title="Slide-as-Code Nutzen">
+    <CalloutBox type="statement" title="Slide-as-Code Nutzen">
       Vorträge verdienen dieselbe {cue:hl-summary-excellence}architektonische Exzellenz wie moderner Quellcode{/cue}.
     </CalloutBox>
     <BulletList items={[
@@ -36,13 +36,13 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   </BentoCard>
 
   <BentoCard slot="right" cue="col-next" title="Ausblick & Flagship-Keynote" accent="emerald">
-    <CalloutBox type="fact" color="emerald" title="Nächster Vortrag online">
+    <CalloutBox type="fact" title="Nächster Vortrag online">
       {cue:hl-summary-keynote}SEO im Zeitalter von KI{/cue}: Strategien für SEO, GEO, AIO und AEO.
     </CalloutBox>
     <BulletList items={[
-      { icon: "🎯", title: "30 synchronisierte Folien", desc: "Der {cue:hl-fazit-keynote}60-Minuten-Vortrag für Industrie und Mittelstand{/cue} ist live abrufbar." },
-      { icon: "⌨️", title: "Interaktive Tastatur-Steuerung", desc: "Taste 'S' öffnet die {cue:hl-fazit-keys}Presenter Console mit Sprechernotizen{/cue}." },
-      { icon: "📄", title: "Druckoptimierte PDF-Handouts", desc: "Vollständige Handout-Exporte im {cue:hl-fazit-pdf}Dark- und Light-Mode auf Knopfdruck{/cue}." }
+      { icon: "target", title: "30 synchronisierte Folien", desc: "Der {cue:hl-fazit-keynote}60-Minuten-Vortrag für Industrie und Mittelstand{/cue} ist live abrufbar." },
+      { icon: "keyboard", title: "Interaktive Tastatur-Steuerung", desc: "Taste 'S' öffnet die {cue:hl-fazit-keys}Presenter Console mit Sprechernotizen{/cue}." },
+      { icon: "document", title: "Druckoptimierte PDF-Handouts", desc: "Vollständige Handout-Exporte im {cue:hl-fazit-pdf}Dark- und Light-Mode auf Knopfdruck{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>

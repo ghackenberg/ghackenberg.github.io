@@ -25,23 +25,23 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="30"
 >
   <BentoCard slot="left" cue="col-aem" title="Adobe Experience Manager (AEM)" accent="blue">
-    <CalloutBox type="statement" color="blue" title="AEM Edge Delivery Services">
+    <CalloutBox type="statement" title="AEM Edge Delivery Services">
       <p>{cue:hl-aem-edge}Auslieferung direkt am weltweiten CDN-Edge.{/cue} Garantiert 100er-Lighthouse-Scores für blitzschnelle Antwortzeiten bei KI-Crawlern.</p>
     </CalloutBox>
 
     <BulletList items={[
       {
-        num: "1",
+        icon: "sparkles",
         title: "Adobe Sensei GenAI",
         desc: "Führt {cue:hl-aem-tagging}automatisches semantisches Tagging{/cue} aller Inhalts-Fragmente durch."
       },
       {
-        num: "2",
+        icon: "document",
         title: "Content Fragments",
         desc: "Liefert strukturierte Inhaltsblöcke parallel als {cue:hl-aem-fragments}maschinenlesbares JSON-LD{/cue} aus."
       },
       {
-        num: "3",
+        icon: "network",
         title: "Globale Konsistenz",
         desc: "Garantiert {cue:hl-aem-consistency}identische Entitäten und Taxonomien{/cue} über weltweite Länderportale."
       }
@@ -49,23 +49,23 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   </BentoCard>
 
   <BentoCard slot="right" cue="col-sitecore" title="Sitecore XM Cloud & Content Hub" accent="cyan">
-    <CalloutBox type="statement" color="cyan" title="Zentraler B2B-Wissensgraph">
+    <CalloutBox type="statement" title="Zentraler B2B-Wissensgraph">
       <p>{cue:hl-single-source}Content Hub als Single Source of Truth{/cue} für komplexe technische Produktdaten, CAD-Modelle und Zertifikate.</p>
     </CalloutBox>
 
     <BulletList items={[
       {
-        num: "1",
+        icon: "search",
         title: "Sitecore Search & Vektoren",
         desc: "Bereitet {cue:hl-sitecore-rag}proprietäre Produktdaten für externe RAG-Bots{/cue} auf."
       },
       {
-        num: "2",
+        icon: "code",
         title: "GraphQL-Schnittstellen",
         desc: "Bietet eine {cue:hl-sitecore-graphql}Hochgeschwindigkeits-API für Web und Modell-Injektion{/cue}."
       },
       {
-        num: "3",
+        icon: "cpu",
         title: "Headless DXP Architektur",
         desc: "Sichert {cue:hl-sitecore-headless}strikte Trennung von Inhalt und Auslieferung{/cue}."
       }

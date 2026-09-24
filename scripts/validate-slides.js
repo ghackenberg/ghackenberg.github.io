@@ -313,8 +313,8 @@ function validateSlides() {
         for (let bIdx = 0; bIdx < bulletItems.length; bIdx++) {
           const item = bulletItems[bIdx];
           const titleMatch = item.match(/title:\s*["']([^"']+)["']/);
-          const numMatch = item.match(/num:\s*["']([^"']+)["']/);
-          const itemName = titleMatch ? titleMatch[1] : (numMatch ? `Item ${numMatch[1]}` : `Bullet #${bIdx + 1}`);
+          const iconMatch = item.match(/icon:\s*["']([^"']+)["']/);
+          const itemName = titleMatch ? titleMatch[1] : (iconMatch ? `Icon ${iconMatch[1]}` : `Bullet #${bIdx + 1}`);
 
           if (/title:\s*(["'])(?:(?!\1)[\s\S])*?\{cue:hl-/.test(item)) {
             console.error(`  ❌ [${slideFile}] BulletList item "${itemName}" has a highlight marker in title. Highlight markers must NOT be on item title, but in desc.`);
@@ -529,7 +529,11 @@ function validateSlides() {
           totalErrors++;
         }
         if (/\baccent\s*:\s*["'][^"']+["']/.test(bl)) {
-          console.error(`  ❌ [${slideFile}] Deprecated "accent" prop detected in BulletList item. Bullet points automatically receive complementary coloring from their container accent.`);
+          console.error(`  ❌ [${slideFile}] Deprecated "accent" prop detected in BulletList item. Bullet points automatically receive ton-in-ton coloring from their container accent.`);
+          totalErrors++;
+        }
+        if (/\bnum\s*:\s*["'][^"']+["']/.test(bl)) {
+          console.error(`  ❌ [${slideFile}] Deprecated "num" property detected in BulletList item. Bullet points support only monochrome vector icons via "icon: ...".`);
           totalErrors++;
         }
       }
@@ -537,9 +541,41 @@ function validateSlides() {
         console.error(`  ❌ [${slideFile}] Subelement cue detected on <CalloutBox>. Subelements must not be faded in; use inline text-highlights {cue:...}text{/cue} instead.`);
         totalErrors++;
       }
+      if (/<CalloutBox[^>]*\bcolor\s*=/g.test(body)) {
+        console.error(`  ❌ [${slideFile}] Deprecated "color" attribute on <CalloutBox>. Callouts automatically inherit color from the container.`);
+        totalErrors++;
+      }
       if (/<EntityGraphVisual[^>]*\b(?:cue|data-cue)\s*=/g.test(body)) {
         console.error(`  ❌ [${slideFile}] Subelement cue detected on <EntityGraphVisual>. Subelements must not be faded in; attach the block cue to the parent BentoCard instead.`);
         totalErrors++;
+      }
+
+      // 4c. Monochrome Icon & Zero-Emoji Enforcement
+      const emojiMatch = content.match(/\p{Extended_Pictographic}/u);
+      if (emojiMatch) {
+        console.error(
+          `  ❌ [${slideFile}] Emoji "${emojiMatch[0]}" detected. Emojis are prohibited on presentation slides; use monochrome vector icons (e.g. 'target', 'trending-down', 'keyboard', 'check') or sequential numbers ('num: ...').`
+        );
+        totalErrors++;
+      }
+
+      const ALLOWED_ICONS = new Set([
+        'check', '✓', 'cross', '✗', 'arrow', '→', 'alert', 'warning',
+        'target', 'trending-down', 'trending-up', 'keyboard', 'document', 'file',
+        'shield', 'zap', 'cpu', 'database', 'search', 'network', 'code', 'sparkles',
+        'globe', 'linkedin', 'github'
+      ]);
+      for (const bl of bulletListBlocks) {
+        const iconMatches = bl.matchAll(/\bicon\s*:\s*["']([^"']+)["']/g);
+        for (const im of iconMatches) {
+          const iconName = im[1];
+          if (!ALLOWED_ICONS.has(iconName)) {
+            console.error(
+              `  ❌ [${slideFile}] Unregistered icon "${iconName}" in BulletList. Allowed monochrome icons are: ${Array.from(ALLOWED_ICONS).join(', ')}`
+            );
+            totalErrors++;
+          }
+        }
       }
 
       // 5. Monotonic sequential order check: VO progression must match visual DOM sequence

@@ -25,18 +25,18 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="10"
 >
   <BentoCard slot="left" cue="col-silo" title="Status Quo: Das PDF- & iFrame-Silo" accent="neutral">
-    <CalloutBox type="quote" color="neutral">
+    <CalloutBox type="quote">
       „Folien ohne gesprochene Worte sind wie ein {cue:hl-pdf-silo}Notenblatt ohne Orchester{/cue}.“
     </CalloutBox>
     <BulletList items={[
-      { num: "1", title: "Fehlende auditive Ebene", desc: "Stumme Folien transportieren nur Bruchteile des {cue:hl-silo-kontext}eigentlichen Vortragskontexts{/cue}." },
-      { num: "2", title: "Unsichtbar für Suchmaschinen", desc: "PDFs und iFrame-Sandboxes sperren {cue:hl-silo-crawler}KI- und Web-Crawler{/cue} komplett aus." },
-      { num: "3", title: "Miserable mobile Usability", desc: "Starre Pixelformate erzwingen ständiges {cue:hl-silo-zoom}Zoomen und horizontales Scrollen{/cue}." }
+      { icon: "cross", title: "Fehlende auditive Ebene", desc: "Stumme Folien transportieren nur Bruchteile des {cue:hl-silo-kontext}eigentlichen Vortragskontexts{/cue}." },
+      { icon: "cross", title: "Unsichtbar für Suchmaschinen", desc: "PDFs und iFrame-Sandboxes sperren {cue:hl-silo-crawler}KI- und Web-Crawler{/cue} komplett aus." },
+      { icon: "cross", title: "Miserable mobile Usability", desc: "Starre Pixelformate erzwingen ständiges {cue:hl-silo-zoom}Zoomen und horizontales Scrollen{/cue}." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-native" title="Die Web-Native Vision" accent="blue">
-    <CalloutBox type="statement" color="blue" title="Slide-as-Code Paradigma">
+    <CalloutBox type="statement" title="Slide-as-Code Paradigma">
       Vollwertige Keynotes als {cue:hl-web-native}erstklassige Bürger im Web{/cue}.
     </CalloutBox>
     <BulletList items={[

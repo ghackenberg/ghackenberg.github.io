@@ -25,24 +25,24 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="10"
 >
   <BentoCard slot="left" cue="col-cloud" title="Cloud-Embeds (Pitch, Google Slides)" accent="neutral">
-    <CalloutBox type="quote" color="neutral">
+    <CalloutBox type="quote">
       Isolierte iFrame-Sandboxen als {cue:hl-alt-cloud}unzugängliche Black Box{/cue}.
     </CalloutBox>
     <BulletList items={[
-      { num: "❌", title: "Zero SEO & GEO", desc: "Folientext ist für Google und Sprachmodelle im iFrame {cue:hl-alt-invisible}vollständig unsichtbar{/cue}." },
-      { num: "❌", title: "Cookie- & Tracking-Overhead", desc: "Exzessives Tracking verstößt gegen {cue:hl-alt-privacy}datensparsames Webdesign{/cue}." },
-      { num: "❌", title: "Keine Audio-Synchronisation", desc: "Das gesprochene Wort kann {cue:hl-alt-nosync}keine Folien-Animationen triggern{/cue}." }
+      { icon: "cross", title: "Zero SEO & GEO", desc: "Folientext ist für Google und Sprachmodelle im iFrame {cue:hl-alt-invisible}vollständig unsichtbar{/cue}." },
+      { icon: "cross", title: "Cookie- & Tracking-Overhead", desc: "Exzessives Tracking verstößt gegen {cue:hl-alt-privacy}datensparsames Webdesign{/cue}." },
+      { icon: "cross", title: "Keine Audio-Synchronisation", desc: "Das gesprochene Wort kann {cue:hl-alt-nosync}keine Folien-Animationen triggern{/cue}." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-dev" title="Code-Frameworks (Reveal.js, Slidev, Marp)" accent="amber">
-    <CalloutBox type="statement" color="amber" title="Isolierte Standalone-Lösungen">
+    <CalloutBox type="statement" title="Isolierte Standalone-Lösungen">
       {cue:hl-alt-dev}Architektur-Bruch{/cue} durch getrennte SPAs ohne Audio-Sync.
     </CalloutBox>
     <BulletList items={[
-      { num: "⚠️", title: "Architektur-Bruch (SPA)", desc: "Separate Tools erfordern {cue:hl-alt-vue}eigene Laufzeiten und Builds{/cue}." },
-      { num: "⚠️", title: "Fehlende Astro-Collections", desc: "Keine native Typisierung über {cue:hl-alt-schema}globale Content-Layer-Schemata{/cue}." },
-      { num: "⚠️", title: "Kein TTS-Audio-Ökosystem", desc: "Kein fertiger Abgleich zwischen {cue:hl-alt-ttsdom}Edge-TTS Wortgrenzen und DOM-Cues{/cue}." }
+      { icon: "alert", title: "Architektur-Bruch (SPA)", desc: "Separate Tools erfordern {cue:hl-alt-vue}eigene Laufzeiten und Builds{/cue}." },
+      { icon: "alert", title: "Fehlende Astro-Collections", desc: "Keine native Typisierung über {cue:hl-alt-schema}globale Content-Layer-Schemata{/cue}." },
+      { icon: "alert", title: "Kein TTS-Audio-Ökosystem", desc: "Kein fertiger Abgleich zwischen {cue:hl-alt-ttsdom}Edge-TTS Wortgrenzen und DOM-Cues{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>

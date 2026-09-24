@@ -36,15 +36,15 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 >
   <BentoCard slot="left" cue="col-schema-types" title="Die 5 B2B-Kern-Entitätstypen" accent="blue">
     <BulletList items={[
-      { num: "1", title: "Organization", desc: "Rechtlicher Name, Logo, {cue:hl-schema-org}sameAs zu Wikidata und LinkedIn{/cue}, Standorte." },
-      { num: "2", title: "Person", desc: "Geschäftsführung und Lead-Ingenieure mit {cue:hl-schema-person}ORCID und Patenten{/cue}." },
-      { num: "3", title: "Product", desc: "Industrieprodukte mit {cue:hl-schema-product}GTIN, MPN und ISO-Zertifikaten{/cue}." },
-      { num: "4", title: "TechArticle & FAQPage", desc: "Direkte {cue:hl-schema-article}Frage-Antwort-Paare mit autoritativem Verfasser{/cue}." }
+      { icon: "network", title: "Organization", desc: "Rechtlicher Name, Logo, {cue:hl-schema-org}sameAs zu Wikidata und LinkedIn{/cue}, Standorte." },
+      { icon: "shield", title: "Person", desc: "Geschäftsführung und Lead-Ingenieure mit {cue:hl-schema-person}ORCID und Patenten{/cue}." },
+      { icon: "target", title: "Product", desc: "Industrieprodukte mit {cue:hl-schema-product}GTIN, MPN und ISO-Zertifikaten{/cue}." },
+      { icon: "document", title: "TechArticle & FAQPage", desc: "Direkte {cue:hl-schema-article}Frage-Antwort-Paare mit autoritativem Verfasser{/cue}." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-schema-id" title="Das @id-Prinzip: Eindeutige URIs" accent="indigo">
-    <CalloutBox color="indigo" type="info" title="{cue:hl-callout-canonical-uris}// Canonical Entity URIs{/cue}">
+    <CalloutBox type="info" title="{cue:hl-callout-canonical-uris}// Canonical Entity URIs{/cue}">
       <div class="font-mono text-lg space-y-1">
         <p class="text-slate-200 light:text-slate-800">https://firma.at/#organization</p>
         <p class="text-slate-200 light:text-slate-800">https://firma.at/team/dr-mueller/#author</p>
