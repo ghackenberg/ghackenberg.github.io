@@ -1,0 +1,44 @@
+---
+title: "Shopfloor & industrielle Wirklichkeit"
+subtitle: "Ingenieurmäßige Nüchternheit: {cue:hl-sub-shopfloor}Moderne Softwarearchitekturen im harten Fabrikeinsatz{/cue}"
+number: "14"
+slideLayout: "story-hero"
+voiceover: >
+  Die wichtigste Erdung für jeden Softwarearchitekten liegt nicht in glänzenden Folien, sondern auf dem Hallenboden der Fabrik.
+  {cue:sub} Zwischen Fertigungsrobotern und SPS-Steuerungen zeigt sich, {cue:hl-sub-shopfloor}was moderne Softwarearchitekturen im harten Fabrikeinsatz leisten müssen{/cue}.
+  {cue:vis-shopfloor} Hier treffen Cloud-Dashboards auf millimetergenaue Kinematik, Taktraten und offene Standards wie OPC UA.
+  {cue:card-shopfloor} Meine Überzeugung: {cue:hl-shopfloor-nuchternheit}Informatik muss auf Augenhöhe mit den Ingenieuren vor Ort sprechen{/cue}. Software muss im Takt der Fabrik bestehen – {cue:hl-shopfloor-takt}unter Schmutz, Vibration und Dauereinsatz{/cue}, verbunden über {cue:hl-shopfloor-opc}moderne Web-Dashboards und offene OPC-UA-Protokolle{/cue}.
+notes: |
+  - Zeit: 12:45 - 13:45 Min.
+  - Shopfloor-Realität: Brückenschlag zwischen SPS/Robotik und moderner IT.
+  - Wert der Bodenhaftung: Industrie 4.0 gelingt nur mit Verständnis für reale Werkbänke und Taktraten.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import shopfloorImage from '../images/08_industry_shopfloor.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="14"
+  totalSlides="21"
+  cue="vis-shopfloor"
+  imageCue="vis-shopfloor"
+  imageSrc={shopfloorImage}
+  imageAlt="Dr. Georg Hackenberg diskutiert auf dem Fabrik-Shopfloor vor einem Roboterarm mit einem Fertigungsingenieur"
+  imageTitle="Brückenschlag zwischen IT-Architektur und industrieller Produktion"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-shopfloor" title="Architektur auf Augenhöhe" accent="amber">
+    <CalloutBox type="statement" title="Ingenieurmäßige Bodenhaftung">
+      <p>{cue:hl-shopfloor-nuchternheit}Informatik muss auf Augenhöhe mit den Ingenieuren vor Ort sprechen{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Keine Elfenbeintürme", desc: "Software muss im Takt der Fabrik bestehen – {cue:hl-shopfloor-takt}unter Schmutz, Vibration und Dauereinsatz{/cue}." },
+      { icon: "code", title: "Offene Standards (OPC UA)", desc: "Herstellerunabhängige Integration von Sensorik, Steuerungen und {cue:hl-shopfloor-opc}modernen Web-Dashboards über offene Protokolle{/cue}." }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>

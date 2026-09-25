@@ -1,0 +1,44 @@
+---
+title: "Lehre ohne Login-Mauern"
+subtitle: "Open Teaching auf GitHub: {cue:hl-sub-lehre}Echte Entwickler-Workflows statt isolierter Moodle-Silos{/cue}"
+number: "17"
+slideLayout: "story-hero"
+voiceover: >
+  Die Überzeugung für offene Standards bestimmt auch meine tägliche Arbeit im Hörsaal und Software-Labor.
+  {cue:sub} In meiner Hochschullehre setze ich auf Open Teaching: {cue:hl-sub-lehre}Echte Entwickler-Workflows statt isolierter Moodle-Silos{/cue}.
+  {cue:vis-teaching} Vorlesungsskripte, Aufgabenstellungen und Code-Templates liegen vollständig und frei zugänglich auf GitHub.
+  {cue:card-lehre} Der didaktische Mehrwert: {cue:hl-lehre-praxisnah}Studierende arbeiten mit den Werkzeugen der echten Softwareindustrie{/cue}. Versionskontrolle und Pull Requests verankern wir in der {cue:hl-lehre-git}täglichen Übungspraxis auf GitHub{/cue}, während alle Materialien weltweit {cue:hl-lehre-oer}als offene Bildungsressourcen{/cue} frei zur Verfügung stehen.
+notes: |
+  - Zeit: 15:45 - 16:45 Min.
+  - Open Educational Resources (OER): Alle Lehrmaterialien auf GitHub.
+  - Didaktik: Versionskontrolle, PRs und CI/CD als fester Bestandteil des Studiums.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import teachingImage from '../images/06_campus_wels_teaching.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="17"
+  totalSlides="21"
+  cue="vis-teaching"
+  imageCue="vis-teaching"
+  imageSrc={teachingImage}
+  imageAlt="Dr. Georg Hackenberg unterrichtet Studierende an Terminal-Plätzen im Software-Labor am FH OÖ Campus Wels"
+  imageTitle="Open Teaching auf GitHub im modernen Informatik-Labor am Campus Wels"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-lehre" title="Industriestandards im Hörsaal" accent="blue">
+    <CalloutBox type="statement" title="Lernen mit echten Werkzeugen">
+      <p>{cue:hl-lehre-praxisnah}Studierende arbeiten mit den Werkzeugen der echten Softwareindustrie{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "GitHub statt Moodle", desc: "Versionskontrolle, Branching und Code-Reviews direkt in der {cue:hl-lehre-git}täglichen Übungspraxis auf GitHub{/cue}." },
+      { icon: "check", title: "Freie OER-Bildungsmaterialien", desc: "Vollständige Vorlesungsskripte weltweit ohne Zugangsbeschränkungen {cue:hl-lehre-oer}als offene Bildungsressourcen{/cue} verfügbar." }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>

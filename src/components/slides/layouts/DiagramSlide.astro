@@ -1,0 +1,45 @@
+---
+import SlideBase from '../primitives/SlideBase.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  subtitleCue?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  presentationTitle?: string;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  subtitleCue,
+  slideNumber,
+  totalSlides,
+  presentationTitle,
+  class: className = ""
+} = Astro.props;
+---
+
+<SlideBase
+  title={title}
+  subtitle={subtitle}
+  subtitleCue={subtitleCue}
+  slideNumber={slideNumber}
+  totalSlides={totalSlides}
+  presentationTitle={presentationTitle}
+  class={className}
+>
+  <div class="flex flex-col gap-6 h-full w-full justify-between items-stretch min-h-0">
+    <!-- Main Full-Width Visual / Diagram Stage -->
+    <div class="flex-1 min-h-0 w-full flex items-center justify-center">
+      <slot name="diagram" />
+    </div>
+
+    <!-- Structured Insights / Takeaway Callout Deck -->
+    <div class="shrink-0 w-full">
+      <slot name="insights" />
+    </div>
+  </div>
+</SlideBase>

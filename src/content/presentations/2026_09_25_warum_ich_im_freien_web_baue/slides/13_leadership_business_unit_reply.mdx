@@ -1,0 +1,50 @@
+---
+title: "Leadership: 5 auf 25 Köpfe in 2 Jahren"
+subtitle: "Business Unit Manager IoT: {cue:hl-sub-bu-scaling}P&L-Verantwortung, Recruiting, Sales und erfolgreiche Delivery{/cue}"
+number: "13"
+slideLayout: "split"
+voiceover: >
+  Wahre Skalierung bedeutet in der Industrie nicht nur Rechenleistung, sondern vor allem Menschen und Teams.
+  {cue:sub} Als Business Unit Manager IoT übernahm ich die Gesamtverantwortung und {cue:hl-sub-bu-scaling}skalierte das Team in zwei Jahren von 5 auf 25 Mitarbeiter{/cue}.
+  {cue:vis-bu-dashboard} Wir bewiesen {cue:hl-bu-unternehmertum}ganzheitliches Unternehmertum von 0 auf 100{/cue}: Durch {cue:hl-bu-team}Mentoring und nachhaltige Talentförderung{/cue} wuchs das Team, während wir 50 Prozent Umsatz mit {cue:hl-bu-auto}sicherheitskritischen Connected-Car-Pipelines{/cue} und 50 Prozent mit {cue:hl-bu-smart}Smart Infrastructure, Smart Factory und Smart Home{/cue} erwirtschafteten.
+  {cue:card-bu-lessons} Hier lernte ich die unternehmerische Dimension von Technologie: {cue:hl-bu-leadership}Exzellenter Code gewinnt erst durch Leadership und verlässliche Partnerschaften{/cue}. Vom ersten Kunden-Pitch über Angebot und Vertrag bis zur {cue:hl-bu-abnahme}finalen technischen Abnahme{/cue} braucht es Belastbarkeit und {cue:hl-bu-c_level}vertrauensvolle Verhandlungen mit Projektmanagern und Teamleitern{/cue}.
+notes: |
+  - Zeit: 11:45 - 12:45 Min.
+  - Unternehmerische Führung: Business Unit Manager IoT bei Reply (2018–2019).
+  - Skalierung & P&L: 5 auf 25 Entwickler & Berater, 50 % Automotive / 50 % Smart Infrastructure, Smart Factory & Smart Home.
+  - Stakeholder: Verhandlungen und Kundenbeziehungen mit Projektmanagern und Teamleitern.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="13"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-bu-dashboard" title="Business Unit Skalierung (Reply IoT)" accent="blue">
+    <CalloutBox type="statement" title="Unternehmertum von 0 auf 100">
+      Aufbau, P&L und Portfolio: {cue:hl-bu-unternehmertum}Unternehmertum von 0 auf 100{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Teamwachstum: 5 → 25 Köpfe", desc: "Systematisches Recruiting, {cue:hl-bu-team}Mentoring und nachhaltige Talentförderung{/cue}." },
+      { icon: "network", title: "50 % Automotive Connected Cars", desc: "Telematik-Plattformen und {cue:hl-bu-auto}sicherheitskritische Flotten-Pipelines{/cue}." },
+      { icon: "zap", title: "50 % Smart Infra, Factory & Home", desc: "Gebäude- und Industrieautomation mit {cue:hl-bu-smart}Smart Infrastructure, Smart Factory und Smart Home{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-bu-lessons" title="Erkenntnis: Leadership & Delivery" accent="amber">
+    <CalloutBox type="statement" title="Technologie trifft Business-Verantwortung">
+      <p>{cue:hl-bu-leadership}Exzellenter Code gewinnt erst durch Leadership und vertrauensvolle Kundenbeziehungen{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Full-Lifecycle Verantwortung", desc: "Vom Kunden-Pitch über Angebot und Vertrag bis zur {cue:hl-bu-abnahme}finalen technischen Abnahme{/cue}." },
+      { icon: "check", title: "Partnerschaft & Delivery", desc: "Professionelles Stakeholder-Management und {cue:hl-bu-c_level}Verhandlungen mit Projektmanagern und Teamleitern{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

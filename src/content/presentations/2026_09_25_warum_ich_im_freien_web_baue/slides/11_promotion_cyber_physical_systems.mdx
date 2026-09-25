@@ -1,0 +1,49 @@
+---
+title: "Promotion: Cyber-Physical Systems"
+subtitle: "Testgetriebenes Systemdesign (2018): {cue:hl-sub-promotion}Wissenschaftliche Publikationen mit über 400 Zitationen{/cue}"
+number: "11"
+slideLayout: "split"
+voiceover: >
+  Den wissenschaftlichen Höhepunkt dieser universitären Phase markierte der Abschluss der Promotion an der TU München.
+  {cue:sub} Unter dem Titel Test-driven conceptual design of cyber-physical manufacturing systems entstand {cue:hl-sub-promotion}das methodische Fundament meiner wissenschaftlichen Publikationen{/cue}.
+  {cue:vis-diss} Wir entwickelten formale Modelle für {cue:hl-diss-modell}Test-driven Conceptual Design of CPS{/cue}: Um das Zusammenspiel von {cue:hl-diss-cps}Software, Mechanik und Steuerungstechnik{/cue} exakt abzubilden, Spezifikationsfehler durch {cue:hl-diss-auto}automatisierte Tests frühzeitig aufzudecken{/cue}, eingebettet in Publikationen mit {cue:hl-diss-scholar}insgesamt über 400 Zitationen auf Google Scholar{/cue}.
+  {cue:card-diss} Die wichtigste Erkenntnis für die Praxis: {cue:hl-diss-tests}Testgetriebene Entwicklung ist kein Selbstzweck{/cue}! Virtuelle Absicherung erspart {cue:hl-diss-praevention}millionenschwere Nachbesserungen an physischen Maschinen{/cue} und schafft das Vertrauen, um {cue:hl-diss-vertrauen}kontinuierlich und sicher neue Features zu deployen{/cue}.
+notes: |
+  - Zeit: 9:45 - 10:45 Min.
+  - TU München: Promotion zum Dr. rer. nat. bei Prof. Manfred Broy.
+  - Wissenschaftlicher Impact: 400+ Zitationen auf Google Scholar über alle Forschungsarbeiten hinweg (CIRP, IEEE, ACM).
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="11"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-diss" title="Dissertation: Dr. rer. nat. (TUM 2018)" accent="blue">
+    <CalloutBox type="statement" title="Test-driven Conceptual Design of CPS">
+      Wissenschaftliche Verifikation: {cue:hl-diss-modell}Test-driven Conceptual Design of CPS{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Cyber-Physical Systems", desc: "Formale Modellierung des Zusammenspiels von {cue:hl-diss-cps}Software, Mechanik und Steuerungstechnik{/cue}." },
+      { icon: "check", title: "Automatisierte Tests", desc: "Testgetriebener Entwurf zur {cue:hl-diss-auto}frühzeitigen Erkennung von Spezifikationsfehlern{/cue}." },
+      { icon: "check", title: "400+ Zitationen insgesamt", desc: "Die Forschungsarbeiten erzielen auf Google Scholar {cue:hl-diss-scholar}über 400 Zitationen in Journalen wie CIRP und IEEE{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-diss" title="Erkenntnis: Methodische Beherrschbarkeit" accent="cyan">
+    <CalloutBox type="statement" title="Sicherheit durch formale Strenge">
+      <p>{cue:hl-diss-tests}Testgetriebene Entwicklung ist kein Selbstzweck{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Fehlerprävention vor dem Bau", desc: "Virtuelle Absicherung erspart {cue:hl-diss-praevention}millionenschwere Nachbesserungen an physischen Maschinen{/cue}." },
+      { icon: "code", title: "Skalierbarkeit von Vertrauen", desc: "Nur wer Architekturen durch Test-Suiten absichert, kann {cue:hl-diss-vertrauen}kontinuierlich und sicher neue Features deployen{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

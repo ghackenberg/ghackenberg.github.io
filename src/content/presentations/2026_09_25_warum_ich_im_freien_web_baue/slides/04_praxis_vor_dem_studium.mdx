@@ -1,0 +1,49 @@
+---
+title: "Praxis vor dem Studium: Webshop & Plugins"
+subtitle: "Erste Praxisschritte: {cue:hl-sub-agentur}Custom Webshop und TYPO3-Plugins wecken den Wissensdurst{/cue}"
+number: "04"
+slideLayout: "split"
+voiceover: >
+  Noch vor dem ersten Tag an der Universität sammelte ich erste wertvolle Praxiserfahrungen im Web.
+  {cue:sub} Als Freelancer für eine Marketing-Agentur entstanden {cue:hl-sub-agentur}ein unabhängiger Custom Webshop sowie zwei TYPO3-Plugins{/cue}.
+  {cue:vis-stack} Ich lieferte {cue:hl-praxis-agentur}funktionierende Lösungen für reale Kunden{/cue}: Einen eigenständigen Shop mit {cue:hl-praxis-shop}Warenkorb, Bestandsverwaltung und Checkout{/cue}, und {cue:hl-praxis-typo3}zwei maßgeschneiderte TYPO3-Plugins{/cue} – doch der Code war {cue:hl-praxis-live}weit entfernt von professionellen Standards{/cue}.
+  {cue:card-praxis} Genau diese Selbsterkenntnis war entscheidend: {cue:hl-praxis-architektur}Funktionierender Code ist noch kein professionelles Engineering{/cue}! Weil sich Architektur und Wartbarkeit {cue:hl-praxis-zuverlaessigkeit}autodidaktisch nicht meistern ließen{/cue}, entstand der feste Entschluss, {cue:hl-praxis-studium}Software und Internettechnologie an der Universität fundiert zu lernen{/cue}.
+notes: |
+  - Zeit: 2:45 - 3:45 Min.
+  - Reale Berufspraxis vor Uni-Start: Selbstständige Entwicklung für Marketing-Agentur (Webshop & zwei TYPO3-Plugins unabhängig).
+  - Erkenntnis: Code funktionierte, war aber unprofessionell – Auslöser für das Hochschulstudium in Mannheim.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="04"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-stack" title="Agentur- und Kundenprojekte (Pre-Uni)" accent="amber">
+    <CalloutBox type="statement" title="Erste Praxisprojekte für Agenturkunden">
+      Erste Freelance-Erfahrungen: {cue:hl-praxis-agentur}Reale Web-Lösungen im Praxiseinsatz{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Eigenständiger Webshop", desc: "Unabhängige E-Commerce-Lösung mit {cue:hl-praxis-shop}Warenkorb, Bestandsverwaltung und Checkout{/cue} in PHP & SQL." },
+      { icon: "code", title: "Zwei TYPO3-Plugins", desc: "Entwicklung von {cue:hl-praxis-typo3}zwei maßgeschneiderten Erweiterungs-Plugins{/cue} für das Enterprise-CMS." },
+      { icon: "check", title: "Funktional, aber ungeschliffen", desc: "Der Code erfüllte seinen Zweck, war aber {cue:hl-praxis-live}weit entfernt von professionellen Standards{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-praxis" title="Der Wegweiser zur Universität" accent="blue">
+    <CalloutBox type="statement" title="Vom Projekt zum Studium">
+      <p>Wichtige Selbsterkenntnis: {cue:hl-praxis-architektur}Funktionierender Code ist noch kein professionelles Engineering{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Grenzen des Autodidakten", desc: "Wartbarkeit und saubere Software-Architektur {cue:hl-praxis-zuverlaessigkeit}ließen sich autodidaktisch nicht meistern{/cue}." },
+      { icon: "check", title: "Die zündende Motivation", desc: "Der feste Entschluss, Software- und Internettechnologie {cue:hl-praxis-studium}im Universitätsstudium von Grund auf fundiert zu lernen{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

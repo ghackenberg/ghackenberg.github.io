@@ -1,0 +1,49 @@
+---
+title: "Mannheim: Software- & Internettechnologie"
+subtitle: "Moderne Internet-Systeme: {cue:hl-sub-datenbank}Saubere Programmierung in C++ und Anfrageoptimierung{/cue}"
+number: "05"
+slideLayout: "split"
+voiceover: >
+  Die bewusste Entscheidung für Mannheim brachte mich genau dorthin, wo das moderne Internet akademisch vertieft wurde.
+  {cue:sub} Im Studiengang Software- und Internettechnologie tauchte ich tief in die {cue:hl-sub-datenbank}C++ Entwicklung an einer nativen XML-Datenbank{/cue} ein.
+  {cue:vis-mannheim} Am Lehrstuhl für Datenbanken lernte ich {cue:hl-mannheim-engine}die harte Schule der Systemprogrammierung{/cue}: Über C++ lernte ich {cue:hl-mannheim-xml}erstmals wirklich sauberes Programmieren{/cue}, und über die Anfrageoptimierung eignete ich mir {cue:hl-mannheim-opt}präzises Speichermanagement und Multi-Threading{/cue} an, eingebettet in {cue:hl-mannheim-netz}moderne Internet- und Web-Architekturen{/cue}.
+  {cue:card-mannheim} Hier entstand mein tiefes Verständnis für Systemsoftware: {cue:hl-mannheim-maschinenraum}Nicht nur Frameworks anwenden, sondern den Maschinenraum verstehen{/cue}. Wer Threads, Pointer und Allokationen beherrscht, baut {cue:hl-mannheim-stabil}weitaus stabilere und performantere Systeme{/cue} und begreift den wahren Wert {cue:hl-mannheim-standards}offener standardisierter Datenstrukturen{/cue}.
+notes: |
+  - Zeit: 3:45 - 4:45 Min.
+  - Akademischer Start: BSc Software- und Internettechnologie, Universität Mannheim.
+  - Technische Härte: Über C++ sauberes Programmieren gelernt, über Anfrageoptimierung Speichermanagement & Multi-Threading gemeistert.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="05"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-mannheim" title="Lehrstuhl Datenbanken (Prof. Moerkotte)" accent="blue">
+    <CalloutBox type="statement" title="Im Inneren der Datenbank-Engine">
+      Systemprogrammierung: {cue:hl-mannheim-engine}C++ und native XML-Datenbank-Architektur{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "C++ & Sauberes Programmieren", desc: "Durch die strenge Systemprogrammierung in C++ {cue:hl-mannheim-xml}saubere Softwareentwicklung von Grund auf gelernt{/cue}." },
+      { icon: "code", title: "Anfrageoptimierung", desc: "Bei der Entwicklung von Ausführungsplänen {cue:hl-mannheim-opt}tiefes Speichermanagement und Multi-Threading gemeistert{/cue}." },
+      { icon: "check", title: "Internet-Fokus", desc: "Akademische Vertiefung von {cue:hl-mannheim-netz}verteilten Systemen, Protokollen und Web-Architekturen{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-mannheim" title="Erkenntnis: Der Wert des Maschinenraums" accent="neutral">
+    <CalloutBox type="statement" title="Tiefe statt Oberfläche">
+      <p>{cue:hl-mannheim-maschinenraum}Nicht nur Frameworks anwenden, sondern den Maschinenraum verstehen{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Fundamente zählen", desc: "Wer Pointer, Threads und Speicherallokation beherrscht, baut {cue:hl-mannheim-stabil}weitaus stabilere und performantere Systeme{/cue}." },
+      { icon: "check", title: "Strukturierte Daten", desc: "Die fundamentale Bedeutung {cue:hl-mannheim-standards}offener standardisierter Datenstrukturen{/cue} für das vernetzte Web." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

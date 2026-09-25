@@ -1,0 +1,144 @@
+---
+import SlideBase from '../primitives/SlideBase.astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  subtitleCue?: string;
+  cue?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  presentationTitle?: string;
+  imageSrc?: ImageMetadata | string;
+  imageAlt?: string;
+  imageTitle?: string;
+  imageCue?: string;
+  ratio?: '55/45' | '60/40' | '50/50';
+  reverse?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  subtitleCue,
+  cue,
+  slideNumber,
+  totalSlides,
+  presentationTitle,
+  imageSrc,
+  imageAlt = "Comic Illustration zur Präsentation",
+  imageTitle = "Visuelle Szene zur Slide-Keynote",
+  imageCue = cue || "vis-story",
+  ratio = '55/45',
+  reverse = false,
+  class: className = ""
+} = Astro.props;
+
+const visualSpan = ratio === '60/40' ? 'col-span-7' : ratio === '55/45' ? 'col-span-7' : 'col-span-6';
+const narrativeSpan = ratio === '60/40' ? 'col-span-5' : ratio === '55/45' ? 'col-span-5' : 'col-span-6';
+---
+
+<SlideBase
+  title={title}
+  subtitle={subtitle}
+  subtitleCue={subtitleCue}
+  slideNumber={slideNumber}
+  totalSlides={totalSlides}
+  presentationTitle={presentationTitle}
+  class={className}
+>
+  <div class="grid grid-cols-12 gap-8 h-full w-full items-stretch min-h-0">
+    {!reverse ? (
+      <>
+        <!-- Story Visual Stage (Left) -->
+        <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${visualSpan}`}>
+          <div
+            id={imageCue}
+            data-cue={imageCue}
+            class="story-visual-card relative w-full h-full rounded-3xl overflow-hidden border border-slate-800 light:border-slate-200/90 bg-slate-900 light:bg-slate-100 shadow-2xl light:shadow-xl flex flex-col justify-center items-center"
+          >
+            {imageSrc ? (
+              typeof imageSrc === 'string' ? (
+                <img
+                  src={imageSrc}
+                  alt={imageAlt}
+                  title={imageTitle}
+                  class="w-full h-full object-cover object-center select-none"
+                  loading="eager"
+                />
+              ) : (
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  title={imageTitle}
+                  class="w-full h-full object-cover object-center select-none"
+                  loading="eager"
+                />
+              )
+            ) : (
+              <slot name="visual" />
+            )}
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent light:from-slate-950/20 pointer-events-none"></div>
+          </div>
+        </div>
+
+        <!-- Narrative & Insights Column (Right) -->
+        <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${narrativeSpan}`}>
+          <slot name="narrative" />
+          <slot />
+        </div>
+      </>
+    ) : (
+      <>
+        <!-- Narrative & Insights Column (Left) -->
+        <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${narrativeSpan}`}>
+          <slot name="narrative" />
+          <slot />
+        </div>
+
+        <!-- Story Visual Stage (Right) -->
+        <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${visualSpan}`}>
+          <div
+            id={imageCue}
+            data-cue={imageCue}
+            class="story-visual-card relative w-full h-full rounded-3xl overflow-hidden border border-slate-800 light:border-slate-200/90 bg-slate-900 light:bg-slate-100 shadow-2xl light:shadow-xl flex flex-col justify-center items-center"
+          >
+            {imageSrc ? (
+              typeof imageSrc === 'string' ? (
+                <img
+                  src={imageSrc}
+                  alt={imageAlt}
+                  title={imageTitle}
+                  class="w-full h-full object-cover object-center select-none"
+                  loading="eager"
+                />
+              ) : (
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  title={imageTitle}
+                  class="w-full h-full object-cover object-center select-none"
+                  loading="eager"
+                />
+              )
+            ) : (
+              <slot name="visual" />
+            )}
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent light:from-slate-950/20 pointer-events-none"></div>
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+</SlideBase>
+
+<style>
+  .story-visual-card {
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  :global(.light) .story-visual-card {
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
+  }
+</style>

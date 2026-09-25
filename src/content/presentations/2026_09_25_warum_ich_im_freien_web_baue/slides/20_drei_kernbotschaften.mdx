@@ -1,0 +1,59 @@
+---
+title: "Drei Kernbotschaften für die Praxis"
+subtitle: "Erkenntnisse aus 25 Jahren: {cue:hl-sub-fazit}Fundamente, Methodentransfer und wirksames Leadership{/cue}"
+number: "20"
+slideLayout: "grid"
+voiceover: >
+  Aus einem Vierteljahrhundert zwischen Compiler, Konferenzbühnen und Vorstandsetagen kristallisieren sich drei handlungsleitende Prinzipien heraus.
+  {cue:sub} Drei Kernbotschaften für die Praxis: {cue:hl-sub-fazit}Fundamente, Methodentransfer und wirksames Leadership{/cue}.
+  {cue:card-handwerk} Erstens: Fundamente meistern. {cue:hl-fazit-verstaendnis}Tiefes technisches Verständnis schlägt oberflächliche Tool-Hypes{/cue}: Wer Systeme {cue:hl-fazit-maschinenraum}vom Bit bis zum Netzwerk durchdringt{/cue}, baut Lösungen, die {cue:hl-fazit-robustheit}über Technologiewellen hinweg stabil bleiben{/cue}.
+  {cue:card-transfer} Zweitens: Prinzipien übertragen. {cue:hl-fazit-methoden}Software-Methoden in klassische Ingenieursdisziplinen tragen{/cue}: Wir wenden Git-Konzepte auf {cue:hl-fazit-git}CAD, Simulation und Fertigung an{/cue} und machen Werkzeuge über {cue:hl-fazit-web}moderne Browser-Schnittstellen barrierefrei bereitgestellt{/cue}.
+  {cue:card-leadership} Drittens: Code mit Leadership einen. {cue:hl-fazit-vertrauen}Technologie skaliert nur durch Vertrauen und klare Verantwortung{/cue}: Indem wir {cue:hl-fazit-kultur}psychologische Sicherheit schaffen und gemeinsam wachsen{/cue} sowie {cue:hl-fazit-partnerschaft}echte Partnerschaften auf Augenhöhe{/cue} leben.
+notes: |
+  - Zeit: 18:45 - 20:00 Min.
+  - Das persönliche Fazit aus 25 Jahren Informatik-Reise.
+  - Drei handlungsleitende Maximen für das Publikum.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="20"
+  totalSlides="21"
+  cols={3}
+>
+  <BentoCard cue="card-handwerk" title="1. Fundamente meistern" accent="blue">
+    <CalloutBox type="statement" title="Vom Byte bis zur Cloud">
+      <p>{cue:hl-fazit-verstaendnis}Tiefes technisches Verständnis schlägt oberflächliche Tool-Hypes{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Den Maschinenraum kennen", desc: "Speicher, Latenzen und Protokolle {cue:hl-fazit-maschinenraum}vom Bit bis zum Netzwerk durchdringen{/cue}." },
+      { icon: "check", title: "Langlebige Robustheit", desc: "Softwarearchitekturen entwerfen, die {cue:hl-fazit-robustheit}über Technologiewellen hinweg stabil bleiben{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="card-transfer" title="2. Prinzipien übertragen" accent="cyan">
+    <CalloutBox type="statement" title="Informatik als Katalysator">
+      <p>{cue:hl-fazit-methoden}Software-Methoden in klassische Ingenieursdisziplinen tragen{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Git & Versionierung überall", desc: "Branching, Merging und Diffs auf {cue:hl-fazit-git}CAD, Simulation und Fertigung anwenden{/cue}." },
+      { icon: "check", title: "Web als Trägerplattform", desc: "Komplexe Werkzeuge über {cue:hl-fazit-web}moderne Browser-Schnittstellen barrierefrei bereitstellen{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="card-leadership" title="3. Code mit Leadership einen" accent="amber">
+    <CalloutBox type="statement" title="Wirkung durch Menschen">
+      <p>{cue:hl-fazit-vertrauen}Technologie skaliert nur durch Vertrauen und klare Verantwortung{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Teams & Kultur", desc: "Talente fördern, {cue:hl-fazit-kultur}psychologische Sicherheit schaffen und gemeinsam wachsen{/cue}." },
+      { icon: "check", title: "Delivery & Unternehmertum", desc: "Verlässliche Umsetzung und {cue:hl-fazit-partnerschaft}echte Partnerschaften auf Augenhöhe{/cue} pflegen." }
+    ]} />
+  </BentoCard>
+</GridSlide>

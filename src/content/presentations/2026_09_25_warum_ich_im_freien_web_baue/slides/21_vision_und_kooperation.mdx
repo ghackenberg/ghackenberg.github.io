@@ -1,0 +1,53 @@
+---
+title: "Vision, Dialog & Kooperation"
+subtitle: "Gemeinsam Zukunft gestalten: {cue:hl-sub-dialog}Offener Austausch zu KI-Workflows, digitalem Content und Lehre{/cue}"
+number: "21"
+slideLayout: "split"
+voiceover: >
+  Technologie erreicht ihren wahren Zweck erst dann, wenn sie Menschen inspiriert, verbindet und gemeinsam weiterentwickelt wird.
+  {cue:sub} Diese Keynote ist eine Einladung zum fortlaufenden Dialog: {cue:hl-sub-dialog}Lassen Sie uns Lehre, Forschung und industrielle Praxis gemeinsam gestalten{/cue}.
+  {cue:vis-dialog} Mein aktueller Schwerpunkt liegt auf {cue:hl-dialog-vision}AI-Augmented Workflows und moderner Digital Content Creation{/cue}.
+  {cue:card-dialog} Mein Leitspruch bleibt: {cue:hl-dialog-teilen}Wissen vermehrt sich, indem man es teilt{/cue}. Ob in Lehre und Projekten am {cue:hl-dialog-wels}FH OÖ Campus Wels{/cue}, in freiem Quellcode auf {cue:hl-dialog-github}GitHub (@ghackenberg){/cue} oder über kanalübergreifenden Content auf {cue:hl-dialog-social}LinkedIn und YouTube (@georghackenberg){/cue} – ich freue mich auf den persönlichen Austausch mit Ihnen.
+notes: |
+  - Zeit: 20:00 - 21:00 Min.
+  - Fokus: AI-Augmented Workflows und Digital Content Creation.
+  - Ausklang & Call to Action: Einladung zu Kooperationen, Studium und Fachdialog.
+  - Kanäle: FH OÖ Campus Wels, LinkedIn, YouTube, GitHub, hackenberg.tech.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="21"
+  totalSlides="21"
+  ratio="45/55"
+>
+  <BentoCard slot="visual" cue="vis-dialog" title="Dr. Georg Hackenberg" accent="blue">
+    <CalloutBox type="statement" title="Zukunftsthemen & Fokus">
+      <p>{cue:hl-dialog-vision}AI-Augmented Workflows und Digital Content Creation{/cue}.</p>
+    </CalloutBox>
+    <div class="w-full flex-1 flex flex-col items-center justify-center min-h-[300px] overflow-hidden rounded-2xl bg-slate-950/60 light:bg-slate-100 border border-slate-800 light:border-slate-200">
+      <Avatar3D intensity={0.08} maxTilt={6} class="w-64 h-64" />
+    </div>
+    <div class="mt-3 text-center">
+      <span class="font-mono text-xl text-blue-400 light:text-blue-600 font-bold">https://hackenberg.tech</span>
+    </div>
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-dialog" title="Offene Kanäle & Kooperation" accent="amber">
+    <CalloutBox type="statement" title="Gemeinsam Zukunft gestalten">
+      <p>{cue:hl-dialog-teilen}Wissen vermehrt sich, indem man es teilt{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Forschung & Lehre an der FH OÖ", desc: "Fachbereich Informatik und moderne Systems-Engineering-Methoden am {cue:hl-dialog-wels}FH OÖ Campus Wels{/cue}." },
+      { icon: "code", title: "Open Source & Code", desc: "Freie Repositories, Vorlesungsskripte und KI-Agenten auf {cue:hl-dialog-github}GitHub (@ghackenberg){/cue}." },
+      { icon: "network", title: "Digital Content & Austausch", desc: "Cross-Channel Content Creation und Impulse auf {cue:hl-dialog-social}LinkedIn und YouTube (@georghackenberg){/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

@@ -1,0 +1,49 @@
+---
+title: "Lehre & Fachbereichsleitung Informatik"
+subtitle: "FH Oberösterreich Campus Wels: {cue:hl-sub-professur}Verantwortung für die Informatiklehre mit agilem Intrapreneurship{/cue}"
+number: "15"
+slideLayout: "split"
+voiceover: >
+  Ende 2019 folgte der Wechsel an die Fakultät für Technik und angewandte Naturwissenschaften in Wels.
+  {cue:sub} Als Lehrender für Informatik und Industriesysteme sowie Fachbereichsleiter verbinde ich {cue:hl-sub-professur}akademische Freiheit mit unternehmerischem Intrapreneurship{/cue}.
+  {cue:vis-wels-mission} An der FH Oberösterreich verantworte ich {cue:hl-wels-mission}die strategische Weiterentwicklung der Informatiklehre{/cue}: Mit Schwerpunkt auf {cue:hl-wels-systems}industriellen Systems-Engineering-Methoden{/cue}, der Fachbereichsleitung für {cue:hl-wels-curricula}moderne Curricula und zukunftsfähige Labore{/cue} und F&E-Projekten für den {cue:hl-wels-mittelstand}starken industriellen Mittelstand Oberösterreichs{/cue}.
+  {cue:card-wels-vision} Mein Führungsverständnis an der Hochschule: {cue:hl-professur-intrapreneur}Wir agieren mit der Umsetzungsgeschwindigkeit moderner Tech-Teams{/cue}. Zukunftsweisende Fragestellungen erforschen wir {cue:hl-wels-freiheit}ohne kurzfristigen quartalsgetriebenen Druck{/cue}, aber mit klaren agilen Methoden und {cue:hl-wels-agil}messbaren Projektergebnissen in Lehre und Forschung{/cue}.
+notes: |
+  - Zeit: 13:45 - 14:45 Min.
+  - Berufung 2019: Informatik und Industriesysteme an der FH OÖ Campus Wels.
+  - Leitung seit 2020: Fachbereichsleiter Informatik – verantwortlich für die gesamte Informatiklehre an der Fakultät.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="15"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-wels-mission" title="Fachbereich Informatik (Campus Wels)" accent="blue">
+    <CalloutBox type="statement" title="Verantwortung für die Fakultätslehre">
+      Fakultät für Technik und angewandte Naturwissenschaften: {cue:hl-wels-mission}Verantwortung für die gesamte Informatiklehre{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Lehre & Forschung seit 2019", desc: "Lehr- und Forschungsgebiet Informatik und {cue:hl-wels-systems}industrielle Systems-Engineering-Methoden{/cue}." },
+      { icon: "check", title: "Fachbereichsleiter seit 2020", desc: "Gesamtverantwortung für die Informatiklehre der Fakultät sowie {cue:hl-wels-curricula}moderne Curricula und Hightech-Labore{/cue}." },
+      { icon: "network", title: "Regionale F&E-Brücke", desc: "Direkte Kooperationsprojekte mit dem {cue:hl-wels-mittelstand}starken industriellen Mittelstand Oberösterreichs{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-wels-vision" title="Erkenntnis: Der akademische Intrapreneur" accent="cyan">
+    <CalloutBox type="statement" title="Gestaltungsfreiheit mit Delivery-Fokus">
+      <p>{cue:hl-professur-intrapreneur}Wir agieren mit der Umsetzungsgeschwindigkeit moderner Tech-Teams{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Akademische Freiheit nutzen", desc: "Zukunftsweisende Fragestellungen erforschen {cue:hl-wels-freiheit}ohne kurzfristigen quartalsgetriebenen Druck{/cue}." },
+      { icon: "code", title: "Industrielle Professionalität", desc: "Klare Ziele, agile Methoden und {cue:hl-wels-agil}messbare Projektergebnisse in Lehre und Forschung{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

@@ -1,0 +1,71 @@
+---
+title: "Die Magie des Quelltexts"
+subtitle: "„View Source“ im Browser als {cue:hl-sub-quelltext}Demokratisierung des Programmierens{/cue}"
+number: "03"
+slideLayout: "code"
+voiceover: >
+  Die wichtigste didaktische Funktion der frühen Web-Ära war eine einfache Menüoption im Browser.
+  {cue:sub} Die Rede ist von View Source – {cue:hl-sub-quelltext}der radikalen Demokratisierung des Programmierens{/cue}.
+  {cue:code-vintage} Jede Webseite war zugleich ein offenes Lehrbuch: Ein Klick auf Quelltext anzeigen offenbarte die exakte Syntax, wie HTML und JavaScript zusammenspielten.
+  {cue:card-erkenntnis} Dieses Prinzip hat mein Verständnis für Informatik bis heute geprägt: Technologie entmystifiziert sich durch {cue:hl-quelltext-offenheit}radikale Offenheit und Zugänglichkeit{/cue}. Jede Webseite offenbarte ihre {cue:hl-quelltext-blackbox}Funktionsweise direkt per Rechtsklick{/cue}, und wer den Code {cue:hl-quelltext-verstehen}lesen und direkt modifizieren{/cue} kann, begreift Software von Grund auf.
+notes: |
+  - Zeit: 1:45 - 2:45 Min.
+  - Technische Tiefe: HTML4 und Vanilla JavaScript ohne Frameworks.
+  - Philosophie: Das Web als offenes Lernmedium für jeden Menschen ohne Hürden.
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="03"
+  totalSlides="21"
+>
+  <CodeContainer
+    slot="code"
+    cue="code-vintage"
+    filename="selfhtml-beispiel.html (circa 1999)"
+  >
+    <pre class="text-slate-200 font-mono overflow-x-auto my-auto">
+{`<!DOCTYPE html>
+<html>
+  <head>
+    <title>Meine erste Homepage</title>
+    <!-- Inspiriert durch SELFHTML und Neugier -->
+    <script type="text/javascript">
+      function klickMich() {
+        var status = "Code erwacht zum Leben!";
+        alert(status);
+        document.getElementById("log").innerText = 
+          "Direkt im Browser ausgeführt!";
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Schulzeit & Web 1.0</h1>
+    <button onclick="klickMich()">
+      Interaktion starten
+    </button>
+    <p id="log">
+      Bereit für interaktive Logik im Browser.
+    </p>
+  </body>
+</html>`}
+    </pre>
+  </CodeContainer>
+
+  <BentoCard slot="explanation" cue="card-erkenntnis" title="Entmystifizierung durch Quelltext" accent="blue">
+    <CalloutBox type="statement" title="Offener Quelltext als Lehrmeister">
+      <p>Technologie entmystifiziert sich durch {cue:hl-quelltext-offenheit}radikale Offenheit und Zugänglichkeit{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Keine Black Box", desc: "Jede Webseite offenbarte ihre {cue:hl-quelltext-blackbox}Funktionsweise direkt per Rechtsklick{/cue}." },
+      { icon: "check", title: "Lernen durch Verändern", desc: "Wer Code {cue:hl-quelltext-verstehen}lesen und direkt modifizieren{/cue} kann, versteht die Kernprinzipien von Grund auf." }
+    ]} />
+  </BentoCard>
+</CodeSlide>
