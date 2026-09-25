@@ -94,10 +94,16 @@ function extractCleanText(voiceover) {
  * Validates slide frontmatter, cue consistency, audio sync, orphan assets, and PDF handouts
  */
 function validateSlides() {
+  const isSyntaxOnly = process.argv.includes('--syntax-only') || process.argv.includes('--structure-only');
+
   const presentationsBase = path.resolve('src/content/presentations');
   if (!fs.existsSync(presentationsBase)) {
     console.log('[Slide Validator] No presentations found in src/content/presentations.');
     return;
+  }
+
+  if (isSyntaxOnly) {
+    console.log('[Slide Validator] Running in SYNTAX-ONLY mode: Skipping audio files, TTS hashes, thumbnails, and PDF checks.\n');
   }
 
   let totalErrors = 0;
@@ -586,7 +592,7 @@ function validateSlides() {
       }
 
       // 6. Audio & Cues Synchronization Gate
-      if (voiceoverText.trim()) {
+      if (!isSyntaxOnly && voiceoverText.trim()) {
         const mp3Path = path.join(audioDir, `${slideId}.mp3`);
         const cuesPath = path.join(audioDir, `${slideId}.cues.json`);
 
@@ -629,7 +635,7 @@ function validateSlides() {
     }
 
     // 7. Backward Audio Orphan Check: Detect leftover .mp3 / .cues.json without matching slide
-    if (fs.existsSync(audioDir)) {
+    if (!isSyntaxOnly && fs.existsSync(audioDir)) {
       const audioFiles = fs.readdirSync(audioDir);
       for (const file of audioFiles) {
         if (file === '.cache.json') continue;
@@ -653,109 +659,111 @@ function validateSlides() {
     }
 
     // 8. PDF Handouts Existence & Git Up-To-Date Check
-    const pdfDarkPath = path.join(presentationPath, 'slides-dark.pdf');
-    const pdfLightPath = path.join(presentationPath, 'slides-light.pdf');
+    if (!isSyntaxOnly) {
+      const pdfDarkPath = path.join(presentationPath, 'slides-dark.pdf');
+      const pdfLightPath = path.join(presentationPath, 'slides-light.pdf');
 
-    if (!fs.existsSync(pdfDarkPath)) {
-      console.error(`  ❌ [pdf] Missing Dark Mode PDF handout: "slides-dark.pdf". Run "npm run export:slides".`);
-      totalErrors++;
-    }
-    if (!fs.existsSync(pdfLightPath)) {
-      console.error(`  ❌ [pdf] Missing Light Mode PDF handout: "slides-light.pdf". Run "npm run export:slides".`);
-      totalErrors++;
-    }
-
-    // Determine all source paths for this presentation (slides, co-located images, and metadata)
-    const sourcePaths = [slidesDir];
-    const imagesDir = path.join(presentationPath, 'images');
-    if (fs.existsSync(imagesDir)) {
-      sourcePaths.push(imagesDir);
-    }
-    const indexFile = path.join(presentationPath, 'index.md');
-    if (fs.existsSync(indexFile)) {
-      sourcePaths.push(indexFile);
-    }
-    const sourceRelPaths = sourcePaths.map((p) => path.relative(process.cwd(), p).replace(/\\/g, '/'));
-    const sourcePathsGitArg = sourceRelPaths.map((p) => `"${p}"`).join(' ');
-
-    let sourcesTime = NaN;
-
-    try {
-      const pdfDarkRelPath = path.relative(process.cwd(), pdfDarkPath).replace(/\\/g, '/');
-      const pdfLightRelPath = path.relative(process.cwd(), pdfLightPath).replace(/\\/g, '/');
-
-      const sourcesTimeStr = execSync(`git log -1 --format=%ct -- ${sourcePathsGitArg}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-      const pdfDarkTimeStr = execSync(`git log -1 --format=%ct -- "${pdfDarkRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-      const pdfLightTimeStr = execSync(`git log -1 --format=%ct -- "${pdfLightRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-
-      sourcesTime = parseInt(sourcesTimeStr, 10);
-      const pdfDarkTime = parseInt(pdfDarkTimeStr, 10);
-      const pdfLightTime = parseInt(pdfLightTimeStr, 10);
-
-      if (!isNaN(sourcesTime) && !isNaN(pdfDarkTime) && sourcesTime > pdfDarkTime) {
-        console.error(
-          `  ❌ [pdf] "slides-dark.pdf" is out-of-date: Slides or presentation assets were modified in commit history after the PDF was committed. Run "npm run export:slides".`
-        );
+      if (!fs.existsSync(pdfDarkPath)) {
+        console.error(`  ❌ [pdf] Missing Dark Mode PDF handout: "slides-dark.pdf". Run "npm run export:slides".`);
         totalErrors++;
       }
-      if (!isNaN(sourcesTime) && !isNaN(pdfLightTime) && sourcesTime > pdfLightTime) {
-        console.error(
-          `  ❌ [pdf] "slides-light.pdf" is out-of-date: Slides or presentation assets were modified in commit history after the PDF was committed. Run "npm run export:slides".`
-        );
+      if (!fs.existsSync(pdfLightPath)) {
+        console.error(`  ❌ [pdf] Missing Light Mode PDF handout: "slides-light.pdf". Run "npm run export:slides".`);
         totalErrors++;
       }
 
-      // Check for uncommitted working tree changes in slides/, images/, or index.md
-      const dirtySources = execSync(`git status --porcelain -- ${sourcePathsGitArg}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-      if (dirtySources) {
-        console.warn(`  ⚠️ [export] Slides or presentation assets have uncommitted changes in working tree. Run "npm run export:slides" before committing.`);
-        totalWarnings++;
+      // Determine all source paths for this presentation (slides, co-located images, and metadata)
+      const sourcePaths = [slidesDir];
+      const imagesDir = path.join(presentationPath, 'images');
+      if (fs.existsSync(imagesDir)) {
+        sourcePaths.push(imagesDir);
       }
-    } catch {
-      // Git command failed or not a git repository; skip timestamp check
-    }
-
-    // 9. Slide WebP Thumbnails Existence & Freshness Check
-    const thumbnailsDir = path.join(presentationPath, 'thumbnails');
-    if (!fs.existsSync(thumbnailsDir)) {
-      console.error(`  ❌ [thumbnail] Missing "thumbnails/" directory for "${presentationFolder}". Run "npm run export:slides-thumbs".`);
-      totalErrors++;
-    } else {
-      // Check each active slide has a thumbnail
-      for (const slideId of activeSlideIds) {
-        const thumbPath = path.join(thumbnailsDir, `${slideId}.webp`);
-        if (!fs.existsSync(thumbPath)) {
-          console.error(`  ❌ [thumbnail] Missing thumbnail for slide "${slideId}": "thumbnails/${slideId}.webp". Run "npm run export:slides-thumbs".`);
-          totalErrors++;
-        }
+      const indexFile = path.join(presentationPath, 'index.md');
+      if (fs.existsSync(indexFile)) {
+        sourcePaths.push(indexFile);
       }
+      const sourceRelPaths = sourcePaths.map((p) => path.relative(process.cwd(), p).replace(/\\/g, '/'));
+      const sourcePathsGitArg = sourceRelPaths.map((p) => `"${p}"`).join(' ');
 
-      // Check for orphan thumbnails
-      const thumbFiles = fs.readdirSync(thumbnailsDir).filter(f => f.endsWith('.webp'));
-      for (const tFile of thumbFiles) {
-        const tId = tFile.replace(/\.webp$/, '');
-        if (!activeSlideIds.has(tId)) {
-          console.error(`  ❌ [thumbnail-orphan] Orphaned thumbnail "thumbnails/${tFile}" has no matching slide in "slides/". Run "npm run export:slides-thumbs" or delete the file.`);
-          totalErrors++;
-        }
-      }
+      let sourcesTime = NaN;
 
-      // Check git timestamp freshness
       try {
-        const thumbsRelPath = path.relative(process.cwd(), thumbnailsDir).replace(/\\/g, '/');
+        const pdfDarkRelPath = path.relative(process.cwd(), pdfDarkPath).replace(/\\/g, '/');
+        const pdfLightRelPath = path.relative(process.cwd(), pdfLightPath).replace(/\\/g, '/');
 
-        const thumbsTimeStr = execSync(`git log -1 --format=%ct -- "${thumbsRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+        const sourcesTimeStr = execSync(`git log -1 --format=%ct -- ${sourcePathsGitArg}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+        const pdfDarkTimeStr = execSync(`git log -1 --format=%ct -- "${pdfDarkRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+        const pdfLightTimeStr = execSync(`git log -1 --format=%ct -- "${pdfLightRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
 
-        const thumbsTime = parseInt(thumbsTimeStr, 10);
+        sourcesTime = parseInt(sourcesTimeStr, 10);
+        const pdfDarkTime = parseInt(pdfDarkTimeStr, 10);
+        const pdfLightTime = parseInt(pdfLightTimeStr, 10);
 
-        if (!isNaN(sourcesTime) && !isNaN(thumbsTime) && sourcesTime > thumbsTime) {
+        if (!isNaN(sourcesTime) && !isNaN(pdfDarkTime) && sourcesTime > pdfDarkTime) {
           console.error(
-            `  ❌ [thumbnail] Slide thumbnails in "${thumbsRelPath}" are out-of-date: Slides or presentation assets were modified in commit history after thumbnails were committed. Run "npm run export:slides-thumbs".`
+            `  ❌ [pdf] "slides-dark.pdf" is out-of-date: Slides or presentation assets were modified in commit history after the PDF was committed. Run "npm run export:slides".`
           );
           totalErrors++;
         }
+        if (!isNaN(sourcesTime) && !isNaN(pdfLightTime) && sourcesTime > pdfLightTime) {
+          console.error(
+            `  ❌ [pdf] "slides-light.pdf" is out-of-date: Slides or presentation assets were modified in commit history after the PDF was committed. Run "npm run export:slides".`
+          );
+          totalErrors++;
+        }
+
+        // Check for uncommitted working tree changes in slides/, images/, or index.md
+        const dirtySources = execSync(`git status --porcelain -- ${sourcePathsGitArg}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+        if (dirtySources) {
+          console.warn(`  ⚠️ [export] Slides or presentation assets have uncommitted changes in working tree. Run "npm run export:slides" before committing.`);
+          totalWarnings++;
+        }
       } catch {
-        // Git command failed; skip
+        // Git command failed or not a git repository; skip timestamp check
+      }
+
+      // 9. Slide WebP Thumbnails Existence & Freshness Check
+      const thumbnailsDir = path.join(presentationPath, 'thumbnails');
+      if (!fs.existsSync(thumbnailsDir)) {
+        console.error(`  ❌ [thumbnail] Missing "thumbnails/" directory for "${presentationFolder}". Run "npm run export:slides-thumbs".`);
+        totalErrors++;
+      } else {
+        // Check each active slide has a thumbnail
+        for (const slideId of activeSlideIds) {
+          const thumbPath = path.join(thumbnailsDir, `${slideId}.webp`);
+          if (!fs.existsSync(thumbPath)) {
+            console.error(`  ❌ [thumbnail] Missing thumbnail for slide "${slideId}": "thumbnails/${slideId}.webp". Run "npm run export:slides-thumbs".`);
+            totalErrors++;
+          }
+        }
+
+        // Check for orphan thumbnails
+        const thumbFiles = fs.readdirSync(thumbnailsDir).filter(f => f.endsWith('.webp'));
+        for (const tFile of thumbFiles) {
+          const tId = tFile.replace(/\.webp$/, '');
+          if (!activeSlideIds.has(tId)) {
+            console.error(`  ❌ [thumbnail-orphan] Orphaned thumbnail "thumbnails/${tFile}" has no matching slide in "slides/". Run "npm run export:slides-thumbs" or delete the file.`);
+            totalErrors++;
+          }
+        }
+
+        // Check git timestamp freshness
+        try {
+          const thumbsRelPath = path.relative(process.cwd(), thumbnailsDir).replace(/\\/g, '/');
+
+          const thumbsTimeStr = execSync(`git log -1 --format=%ct -- "${thumbsRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+
+          const thumbsTime = parseInt(thumbsTimeStr, 10);
+
+          if (!isNaN(sourcesTime) && !isNaN(thumbsTime) && sourcesTime > thumbsTime) {
+            console.error(
+              `  ❌ [thumbnail] Slide thumbnails in "${thumbsRelPath}" are out-of-date: Slides or presentation assets were modified in commit history after thumbnails were committed. Run "npm run export:slides-thumbs".`
+            );
+            totalErrors++;
+          }
+        } catch {
+          // Git command failed; skip
+        }
       }
     }
   }
@@ -764,7 +772,11 @@ function validateSlides() {
     console.error(`\n[Slide Validator] Validation FAILED with ${totalErrors} error(s) and ${totalWarnings} warning(s) across ${totalSlides} slides.\n`);
     process.exit(1);
   } else {
-    console.log(`\n[Slide Validator] Passed! All ${totalSlides} slides, audio assets, cues, and PDF handouts are valid and up-to-date (${totalWarnings} warning(s)).\n`);
+    if (isSyntaxOnly) {
+      console.log(`\n[Slide Validator] Passed! All ${totalSlides} slides have valid frontmatter, cues, highlights, and structure (${totalWarnings} warning(s)).\n`);
+    } else {
+      console.log(`\n[Slide Validator] Passed! All ${totalSlides} slides, audio assets, cues, and PDF handouts are valid and up-to-date (${totalWarnings} warning(s)).\n`);
+    }
   }
 }
 

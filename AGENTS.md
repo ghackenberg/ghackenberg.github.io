@@ -45,7 +45,16 @@ Whenever asked to generate or modify an image (preview, hero, social card, or di
 - Always use PowerShell commands (`Copy-Item`, `New-Item`, `;`, etc.).
 
 
-## 3. Blog Post Writing & Formatting Guidelines
+## 3. Content Authoring, Alignment & Formatting Guidelines
+- **Storyline & Interview-Gate Protocol (Mandatory for ALL Content Creation)**:
+  - Whenever tasked with creating, revising, or restructuring any content (blog posts, presentations, lecture courses, academic descriptions, documentation, or conceptual roadmaps):
+    - **Zero Assumptions / Anti-Hallucination Gate**: Never invent personal opinions, technical stances, career milestones, evaluations of commercial tools, or organizational judgments without explicit user alignment.
+    - **Interview-First (`/grill-me` or Structured Q&A)**: Propose a concise list of 4–8 targeted interview questions to establish:
+      1. Core message & central thesis
+      2. Key milestones, facts, dates, benchmarks, or quantitative metrics
+      3. Industry partners, client projects, or specific tool/framework references
+      4. Explicit terminology preferences and *No-Go* terms/framings (e.g. avoided controversies, positive vs. negative framing)
+    - Only after the user confirms the outline and key positions may the actual content drafting begin.
 - **NO Horizontal Dividers**: **NEVER** use horizontal rules (`---`) between sections in blog posts (only use `---` to enclose the YAML frontmatter at the very top of the file). Rely solely on clean semantic heading hierarchies (`##`, `###`) for visual and document section separation.
 - **Nested Code Blocks**: When demonstrating code blocks inside Markdown (e.g. showing an example Markdown snippet that contains backticks), **ALWAYS** use 4 backticks (` ````markdown ... ```` `) for the outer block to avoid terminating code blocks early and breaking the markdown parser.
 - **Mermaid Diagram Frontmatter (`title` & `caption`)**:
@@ -282,6 +291,14 @@ When a slide appears on screen, all content cards, metrics, or pipeline steps st
 2. **Phase 2: Progressive Cued Content**:
    - Deliver cards, steps, comparisons, and text highlights sequentially, perfectly paced to spoken voiceover cues.
 
+#### The 5-Point Cue Pre-Flight Checklist (Mandatory before saving any slide)
+Before saving any slide file (`.mdx`), verify that all 5 criteria are met to avoid validation loops:
+1. **Highlights on every bullet & callout**: Every `BulletList` item `desc` and every `CalloutBox` MUST contain at least one inline `{cue:hl-...}` marker to ensure the spoken voiceover explicitly focuses on each element.
+2. **Monotonic visual DOM progression**: Spoken cues in `voiceover` MUST follow the exact sequence in which elements appear in the slide DOM (from top-to-bottom, left-to-right). Never reference a right-hand card before a left-hand card, or a lower bullet before an upper bullet.
+3. **Structural point-cues vs. inline highlight spans**: Structural cues (`card-`, `box-`, `col-`, `step-`, `stat-`) are POINT cues and MUST NEVER have a closing tag (`{/cue}`). Only inline text-highlights (`hl-*`) have closing tags (`{cue:hl-...}...{/cue}`).
+4. **Title Slide Quadruple**: Title slides must include `title-main`, `title-sub`, a highlight `{cue:hl-...}` in subtitle, and `title-speaker` in that exact spoken order.
+5. **Title-Hook Orientation**: Voiceover MUST begin with 12–20 words (~3–5s) introducing the slide before the first `{cue:...}` trigger fires.
+
 ### 6. Central TTS Pronunciation & Acronym Lexicon (`tts-lexicon.json`)
 Neural speech synthesis engines (such as Microsoft Edge TTS `de-DE-ConradNeural`) struggle with English loanwords embedded in German prose (e.g. *Snapshot*, *Knowledge Graph*) and technical acronyms (e.g. *RAG*, *URL*, *MCP*):
 - **Single Source of Truth (`src/content/presentations/tts-lexicon.json`)**:
@@ -294,9 +311,18 @@ Neural speech synthesis engines (such as Microsoft Edge TTS `de-DE-ConradNeural`
   - `npm run validate:slides` scans all slide voiceovers for unregistered uppercase acronyms (`\b[A-Z]{2,}\b`) and alerts the developer if an abbreviation is missing in `tts-lexicon.json`.
   - Audio cache invalidation is tied to a composite hash (`v3-${lexiconHash}:${voiceover}`), ensuring audio is automatically flagged for re-synthesis whenever `tts-lexicon.json` is modified.
 
-### 7. Quality Gates & Automation
-- Always run `npm run validate:slides` to verify cue consistency, frontmatter completeness, acronym coverage, and DOM target matching.
-- Run `npm run audio:presentations` to synthesize neural speech audio (`.mp3`) and WordBoundary cue timings (`.cues.json`).
+### 7. Quality Gates, Two-Phase Generation & Automation
+- **The 2-Phase Generation Protocol ("Text-Freeze Principle")**:
+  - **Phase 1 (Lightweight Drafting & Syntax-Only Validation)**:
+    - Author and refine slide texts, frontmatter, and voiceovers.
+    - Run `npm run validate:slides:syntax` to check syntax, cue order, and highlights in <300ms **without** generating audio or requiring PDF exports.
+    - Do NOT run TTS audio synthesis or PDF exports during iterative text authoring!
+  - **Phase 2 (Heavy Build & Final Release)**:
+    - Once the user explicitly reviews and freezes the text (*"Text steht"*):
+      1. `npm run audio:presentations`: Synthesizes neural TTS audio and aligns WordBoundary cue timings.
+      2. `npm run export:slides-thumbs`: Generates slide WebP thumbnails.
+      3. `npm run export:slides`: Generates dark and light PDF handouts.
+      4. `npm run validate:slides`: Verifies 100% full green state (syntax, hashes, assets, PDFs).
 - Run `npm run typecheck`, `npm run lint`, and `npm run build` before committing.
 
 ### 8. Pipeline Step Image Standards
