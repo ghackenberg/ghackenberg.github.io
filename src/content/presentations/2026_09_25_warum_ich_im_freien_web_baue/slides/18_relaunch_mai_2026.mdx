@@ -1,0 +1,69 @@
+---
+title: "Der Relaunch im Mai 2026"
+subtitle: "Fokus im Real Life – {cue:hl-sub-relaunch}und Rückkehr ins Web mit Astro, TypeScript und KI-Agenten{/cue}"
+number: "18"
+slideLayout: "code"
+voiceover: >
+  Über viele Jahre hinweg erforderte die reale Führungsarbeit in Industrie und Hochschule meine ungeteilte Aufmerksamkeit.
+  {cue:sub} Doch am 23. Mai 2026 kehrte meine persönliche Webplattform zurück: {cue:hl-sub-relaunch}Gebaut mit Astro, TypeScript und agentischen KI-Workflows{/cue}.
+  {cue:code-astro} In einer modernen Static-Site-Architektur migrierten KI-Agenten über 17 Jahre historische Fachbeiträge vollautomatisiert in typensichere Content Collections.
+  {cue:card-relaunch} Das moderne Web neu gedacht: {cue:hl-relaunch-agilitaet}Keine trägen CMS-Datenbanken mehr, sondern typensicherer Quellcode{/cue}. Mit Astro erzielen wir {cue:hl-relaunch-coreweb}maximale Core Web Vitals{/cue}, während wir Content und Code durch {cue:hl-relaunch-agentic}Antigravity-Agenten-Workflows{/cue} hochgradig automatisieren.
+notes: |
+  - Zeit: 16:45 - 17:45 Min.
+  - Web-Relaunch: 23. Mai 2026 mit Astro SSG & TypeScript.
+  - KI-Agenten-Workflow: Automatisierte Migration historischer Blog-Posts aus 17 Jahren via Antigravity & Gemini.
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="18"
+  totalSlides="21"
+>
+  <CodeContainer
+    slot="code"
+    cue="code-astro"
+    filename="src/content.config.ts (Astro Content Collections)"
+  >
+    <pre class="text-slate-200 font-mono overflow-x-auto my-auto">
+{`import { defineCollection, z } from 'astro:content';
+
+export const collections = {
+  // 17 Jahre Blogposts & Deep Dives
+  posts: defineCollection({
+    schema: z.object({
+      title: z.string(),
+      pubDate: z.date(),
+      lang: z.enum(['de', 'en']),
+      tags: z.array(z.string()),
+      description: z.string()
+    })
+  }),
+  // Slide-as-Code Präsentationen
+  presentations: defineCollection({
+    schema: z.object({
+      title: z.string(),
+      pubDate: z.date(),
+      totalSlides: z.number()
+    })
+  })
+};`}
+    </pre>
+  </CodeContainer>
+
+  <BentoCard slot="explanation" cue="card-relaunch" title="Statische Perfektion & KI" accent="blue">
+    <CalloutBox type="statement" title="Wiedergeburt im modernen Web">
+      <p>{cue:hl-relaunch-agilitaet}Keine trägen CMS-Datenbanken mehr, sondern typensicherer Quellcode{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Astro & TypeScript", desc: "100 % statische HTML-Generierung, null Client-Overhead und {cue:hl-relaunch-coreweb}maximale Core Web Vitals{/cue}." },
+      { icon: "check", title: "Agentische KI-Migration", desc: "Vollständige Automatisierung von Metadaten, Schemas und Links via {cue:hl-relaunch-agentic}Antigravity-Agenten-Workflows{/cue}." }
+    ]} />
+  </BentoCard>
+</CodeSlide>

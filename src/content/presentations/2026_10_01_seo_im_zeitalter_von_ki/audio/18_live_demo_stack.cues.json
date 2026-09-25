@@ -11,32 +11,32 @@
     "start": 7.61
   },
   "hl-stack-astro": {
-    "start": 10.15,
+    "start": 10.1,
     "duration": 1.1,
-    "end": 11.25
+    "end": 11.2
   },
   "card-agent": {
-    "start": 13.15
+    "start": 13.13
   },
   "hl-stack-agent": {
-    "start": 16.2,
+    "start": 16.18,
     "duration": 1.45,
-    "end": 17.65
+    "end": 17.63
   },
   "card-github": {
-    "start": 19.35
+    "start": 19.32
   },
   "hl-stack-ci": {
-    "start": 22.46,
+    "start": 22.85,
     "duration": 0.55,
-    "end": 23.01
+    "end": 23.4
   },
   "card-plausible": {
-    "start": 24.29
+    "start": 24.66
   },
   "hl-stack-plausible": {
-    "start": 26.86,
-    "duration": 1.43,
-    "end": 28.29
+    "start": 27.24,
+    "duration": 1.42,
+    "end": 28.66
   }
 }

@@ -1,0 +1,31 @@
+{
+  "sub": {
+    "start": 5.44
+  },
+  "hl-sub-quelltext": {
+    "start": 7.41,
+    "duration": 2.68,
+    "end": 10.09
+  },
+  "code-vintage": {
+    "start": 10.43
+  },
+  "card-erkenntnis": {
+    "start": 19.5
+  },
+  "hl-quelltext-offenheit": {
+    "start": 25.21,
+    "duration": 2.27,
+    "end": 27.48
+  },
+  "hl-quelltext-blackbox": {
+    "start": 29.45,
+    "duration": 1.9,
+    "end": 31.35
+  },
+  "hl-quelltext-verstehen": {
+    "start": 32.38,
+    "duration": 1.41,
+    "end": 33.79
+  }
+}

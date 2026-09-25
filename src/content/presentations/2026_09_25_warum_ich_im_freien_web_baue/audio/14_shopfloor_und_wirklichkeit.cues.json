@@ -1,0 +1,31 @@
+{
+  "sub": {
+    "start": 6.86
+  },
+  "hl-sub-shopfloor": {
+    "start": 10.36,
+    "duration": 3.74,
+    "end": 14.1
+  },
+  "vis-shopfloor": {
+    "start": 14.44
+  },
+  "card-shopfloor": {
+    "start": 21.23
+  },
+  "hl-shopfloor-nuchternheit": {
+    "start": 22.65,
+    "duration": 3.3,
+    "end": 25.95
+  },
+  "hl-shopfloor-takt": {
+    "start": 28.61,
+    "duration": 2.16,
+    "end": 30.77
+  },
+  "hl-shopfloor-opc": {
+    "start": 31.71,
+    "duration": 3.18,
+    "end": 34.89
+  }
+}

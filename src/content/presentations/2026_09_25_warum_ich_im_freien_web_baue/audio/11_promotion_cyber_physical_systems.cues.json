@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 6.29
+  },
+  "hl-sub-promotion": {
+    "start": 11.65,
+    "duration": 3.02,
+    "end": 14.67
+  },
+  "vis-diss": {
+    "start": 15.01
+  },
+  "hl-diss-modell": {
+    "start": 16.73,
+    "duration": 2.2,
+    "end": 18.93
+  },
+  "hl-diss-cps": {
+    "start": 20.3,
+    "duration": 2.2,
+    "end": 22.5
+  },
+  "hl-diss-auto": {
+    "start": 25.19,
+    "duration": 2.25,
+    "end": 27.44
+  },
+  "hl-diss-scholar": {
+    "start": 29.29,
+    "duration": 2.77,
+    "end": 32.06
+  },
+  "card-diss": {
+    "start": 33.74
+  },
+  "hl-diss-tests": {
+    "start": 34.85,
+    "duration": 2.54,
+    "end": 37.39
+  },
+  "hl-diss-praevention": {
+    "start": 39.34,
+    "duration": 2.54,
+    "end": 41.88
+  },
+  "hl-diss-vertrauen": {
+    "start": 43.31,
+    "duration": 2.63,
+    "end": 45.94
+  }
+}

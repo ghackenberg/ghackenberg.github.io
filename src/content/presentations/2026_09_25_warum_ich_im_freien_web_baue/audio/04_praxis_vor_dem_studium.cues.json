@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 5.44
+  },
+  "hl-sub-agentur": {
+    "start": 8.19,
+    "duration": 3.56,
+    "end": 11.75
+  },
+  "vis-stack": {
+    "start": 12.09
+  },
+  "hl-praxis-agentur": {
+    "start": 12.71,
+    "duration": 2.05,
+    "end": 14.76
+  },
+  "hl-praxis-shop": {
+    "start": 16.54,
+    "duration": 2.32,
+    "end": 18.86
+  },
+  "hl-praxis-typo3": {
+    "start": 19.31,
+    "duration": 2,
+    "end": 21.31
+  },
+  "hl-praxis-live": {
+    "start": 22.44,
+    "duration": 2.05,
+    "end": 24.49
+  },
+  "card-praxis": {
+    "start": 24.82
+  },
+  "hl-praxis-architektur": {
+    "start": 27.36,
+    "duration": 3.15,
+    "end": 30.51
+  },
+  "hl-praxis-zuverlaessigkeit": {
+    "start": 32.81,
+    "duration": 1.6,
+    "end": 34.41
+  },
+  "hl-praxis-studium": {
+    "start": 36.19,
+    "duration": 3.5,
+    "end": 39.69
+  }
+}

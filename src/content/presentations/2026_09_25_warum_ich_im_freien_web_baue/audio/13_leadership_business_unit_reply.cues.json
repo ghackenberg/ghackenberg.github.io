@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 5.92
+  },
+  "hl-sub-bu-scaling": {
+    "start": 9.51,
+    "duration": 12.56,
+    "end": 22.07
+  },
+  "vis-bu-dashboard": {
+    "start": 13.57
+  },
+  "hl-bu-unternehmertum": {
+    "start": 14.21,
+    "duration": 2.5,
+    "end": 16.71
+  },
+  "hl-bu-team": {
+    "start": 17.31,
+    "duration": 1.99,
+    "end": 19.3
+  },
+  "hl-bu-auto": {
+    "start": 22.07,
+    "duration": 1.92,
+    "end": 23.99
+  },
+  "hl-bu-smart": {
+    "start": 27.3,
+    "duration": 0.52,
+    "end": 27.82
+  },
+  "card-bu-lessons": {
+    "start": 29.02
+  },
+  "hl-bu-leadership": {
+    "start": 32.59,
+    "duration": 3.74,
+    "end": 36.33
+  },
+  "hl-bu-abnahme": {
+    "start": 39.56,
+    "duration": 1.45,
+    "end": 41.01
+  },
+  "hl-bu-c_level": {
+    "start": 42.27,
+    "duration": 3.09,
+    "end": 45.36
+  }
+}

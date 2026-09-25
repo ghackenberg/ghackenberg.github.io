@@ -11,31 +11,31 @@
     "start": 10.47
   },
   "hl-callout-referrer-chatgpt": {
-    "start": 13.07,
-    "duration": 0.99,
-    "end": 14.06
+    "start": 13.18,
+    "duration": 0.98,
+    "end": 14.16
   },
   "hl-plausible-verweildauer": {
-    "start": 14.61,
+    "start": 14.75,
     "duration": 2.13,
-    "end": 16.74
+    "end": 16.88
   },
   "col-plausible-privacy": {
-    "start": 19.75
+    "start": 19.9
   },
   "hl-plausible-nobanner": {
-    "start": 20.66,
+    "start": 20.81,
     "duration": 2.17,
-    "end": 22.83
+    "end": 22.98
   },
   "hl-plausible-weight": {
-    "start": 23.85,
+    "start": 24,
     "duration": 2.46,
-    "end": 26.31
+    "end": 26.46
   },
   "hl-plausible-quality": {
-    "start": 26.76,
+    "start": 26.91,
     "duration": 2.73,
-    "end": 29.49
+    "end": 29.64
   }
 }

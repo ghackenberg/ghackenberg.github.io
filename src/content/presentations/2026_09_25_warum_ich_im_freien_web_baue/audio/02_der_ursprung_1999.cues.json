@@ -1,0 +1,26 @@
+{
+  "sub": {
+    "start": 5.83
+  },
+  "hl-sub-ursprung": {
+    "start": 9.95,
+    "duration": 3.1,
+    "end": 13.05
+  },
+  "vis-origins": {
+    "start": 13.39
+  },
+  "card-ursprung": {
+    "start": 19.27
+  },
+  "hl-ursprung-browser": {
+    "start": 20.43,
+    "duration": 2.05,
+    "end": 22.48
+  },
+  "hl-ursprung-freiheit": {
+    "start": 25.64,
+    "duration": 2.72,
+    "end": 28.36
+  }
+}

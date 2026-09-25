@@ -1,0 +1,49 @@
+---
+title: "Computer Vision & Motion Tracking"
+subtitle: "3D-Gestensteuerung und Tracking: {cue:hl-sub-cv}Multi-Threading, Geometrie und erste Ansätze maschinellen Lernens{/cue}"
+number: "08"
+slideLayout: "split"
+voiceover: >
+  Nach Datenbanken und Webarchitekturen folgte der Einstieg in die anspruchsvolle Welt von Computer Vision und Bildverarbeitung.
+  {cue:sub} Bei Fraunhofer FIT und an der EPFL Lausanne entstanden {cue:hl-sub-cv}Echtzeitsysteme für 3D-Gestensteuerung und Motion-Tracking{/cue}.
+  {cue:vis-cv} Hier konnte ich {cue:hl-cv-grafik}die Fundamente aus Mannheim unmittelbar anwenden{/cue}: Wir nutzten tiefes {cue:hl-cv-fit}Speichermanagement und Multi-Threading in C++{/cue}, kombinierten 3D-Geometrie mit {cue:hl-cv-epfl}ersten Ansätzen des maschinellen Lernens{/cue} und bauten {cue:hl-cv-signale}robuste Motion-Tracking-Frameworks mit OpenCV und Qt{/cue}.
+  {cue:card-cv} Die Erkenntnis: {cue:hl-cv-raeumlich}Software muss die physikalische Umwelt in Echtzeit begreifen{/cue}! Durch parallele Pipelines und {cue:hl-cv-latenz}geometrische Algorithmen zur robusten Mustererkennung{/cue} legten wir den Grundstein, der {cue:hl-cv-cps}meine spätere Forschung an Cyber-Physical Systems begründete{/cue}.
+notes: |
+  - Zeit: 6:45 - 7:45 Min.
+  - Angewandte Forschung: Fraunhofer FIT (Sankt Augustin) & EPFL (Lausanne, Schweiz).
+  - High-Performance C++, OpenCV, OpenGL, Qt: Speichermanagement, Multi-Threading, Geometrie & erste Machine-Learning-Ansätze.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="08"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-cv" title="Fraunhofer FIT & EPFL Lausanne" accent="cyan">
+    <CalloutBox type="statement" title="Echtzeit-Tracking & 3D-Simulation">
+      High-Performance Computer Vision: {cue:hl-cv-grafik}Echtzeit-Tracking und 3D-Geometrie{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Speichermanagement & Threads", desc: "Anwendung des Mannheimer Wissens zu {cue:hl-cv-fit}Speicherallokation und Multi-Threading in C++{/cue}." },
+      { icon: "code", title: "Geometrie & Erste ML-Ansätze", desc: "Verknüpfung von dreidimensionaler Raumgeometrie mit {cue:hl-cv-epfl}ersten Ansätzen des maschinellen Lernens{/cue}." },
+      { icon: "check", title: "Fraunhofer FIT & EPFL", desc: "Markerlose 3D-Gestensteuerung und {cue:hl-cv-signale}Motion-Tracking-Frameworks mit OpenCV und Qt{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-cv" title="Erkenntnis: Brücke zur physischen Welt" accent="blue">
+    <CalloutBox type="statement" title="Präzision im dreidimensionalen Raum">
+      <p>{cue:hl-cv-raeumlich}Software muss die physikalische Umwelt in Echtzeit begreifen{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Latenz & Parallelität", desc: "Parallele Bildverarbeitung und {cue:hl-cv-latenz}geometrische Filter zur robusten Gestenerkennung{/cue}." },
+      { icon: "check", title: "Grundstein für CPS", desc: "Sensorik, Raumgeometrie und Algorithmen {cue:hl-cv-cps}bildeten das Fundament für Cyber-Physical Systems{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

@@ -1,0 +1,43 @@
+---
+title: "1999: Das freie Web als Lehrmeister"
+subtitle: "Röhrenmonitor, DFÜ-Einwahl und {cue:hl-sub-ursprung}der autodidaktische Einstieg über SELFHTML{/cue}"
+number: "02"
+slideLayout: "story-hero"
+voiceover: >
+  Jeder lange Weg in der Informatik beginnt mit einem ersten prägenden Moment des Entdeckens und Verstehens.
+  {cue:sub} Für mich war es ein Jugendzimmer in den späten Neunzigerjahren mit Röhrenmonitor, {cue:hl-sub-ursprung}wo der autodidaktische Einstieg über SELFHTML begann{/cue}.
+  {cue:vis-origins} Im Schein der Schreibtischlampe flimmerte der Bildschirm, daneben lag die frisch ausgedruckte Dokumentation.
+  {cue:card-ursprung} Die Erkenntnis: {cue:hl-ursprung-browser}Code direkt im Browser zum Leben zu erwecken{/cue}, ohne Compiler und ohne Erlaubnis fragen zu müssen, war {cue:hl-ursprung-freiheit}ein überwältigendes Gefühl digitaler Selbstermächtigung{/cue}.
+notes: |
+  - Zeit: 1:15 - 1:45 Min.
+  - Emotionaler Einstieg: Die Faszination der ersten Schritte im Web 1.0.
+  - Pacing: Kurzer, atmosphärischer Story-Hero-Moment vor dem Einstieg in Quelltext und Praxis.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import originsImage from '../images/02_origins_1999.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="02"
+  totalSlides="21"
+  cue="vis-origins"
+  imageCue="vis-origins"
+  imageSrc={originsImage}
+  imageAlt="Dr. Georg Hackenberg als Schüler im Jugendzimmer der späten 90er-Jahre vor einem Röhrenmonitor mit SELFHTML"
+  imageTitle="Ursprung der Web-Begeisterung im Jahr 1999 mit SELFHTML und Röhrenmonitor"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-ursprung" title="Die Magie der Selbstermächtigung" accent="amber">
+    <CalloutBox type="statement" title="Schulzeit & Web 1.0">
+      <p>Im Browser erwachte Code sofort zum Leben – {cue:hl-ursprung-browser}ohne Compiler und ohne Gatekeeper{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Autonomie als Haltung", desc: "Von der ersten HTML-Zeile an galt: Das Netz schenkt {cue:hl-ursprung-freiheit}ein überwältigendes Gefühl digitaler Selbstermächtigung{/cue}." }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>

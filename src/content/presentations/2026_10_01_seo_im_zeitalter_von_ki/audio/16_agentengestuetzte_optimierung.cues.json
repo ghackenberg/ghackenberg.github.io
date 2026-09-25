@@ -11,32 +11,32 @@
     "start": 9.94
   },
   "hl-loop-scan": {
-    "start": 11.69,
+    "start": 11.71,
     "duration": 1.2,
-    "end": 12.89
+    "end": 12.91
   },
   "step-loop-2": {
-    "start": 14.43
+    "start": 14.45
   },
   "hl-loop-reasoning": {
-    "start": 19.31,
+    "start": 19.34,
     "duration": 1.15,
-    "end": 20.46
+    "end": 20.49
   },
   "step-loop-3": {
-    "start": 21.24
+    "start": 21.26
   },
   "hl-loop-lighthouse": {
-    "start": 23.32,
-    "duration": 0.52,
-    "end": 23.84
+    "start": 23.35,
+    "duration": 0.51,
+    "end": 23.86
   },
   "step-loop-4": {
-    "start": 25.81
+    "start": 25.84
   },
   "hl-loop-deploy": {
-    "start": 28.21,
-    "duration": 0.73,
-    "end": 28.94
+    "start": 28.24,
+    "duration": 0.72,
+    "end": 28.96
   }
 }

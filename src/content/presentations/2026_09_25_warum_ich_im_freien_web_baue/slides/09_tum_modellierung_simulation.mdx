@@ -1,0 +1,49 @@
+---
+title: "Sechs Jahre Spitzenforschung an der TUM"
+subtitle: "Operations Research an der TUM: {cue:hl-sub-tum}Smart Grid Energieoptimierung, Wasserkraft und Transportlogistik{/cue}"
+number: "09"
+slideLayout: "split"
+voiceover: >
+  Sechs intensive Forschungsjahre an der Technischen Universität München führten alle Disziplinen zusammen.
+  {cue:sub} Am Lehrstuhl für Software and Systems Engineering entstanden {cue:hl-sub-tum}große Optimierungs- und Simulationswerkzeuge für vernetzte Systeme{/cue}.
+  {cue:vis-tum} Wir entwickelten an der TUM {cue:hl-tum-plattform}leistungsfähige Operations-Research-Frameworks{/cue}: Entwickelt zur Energieoptimierung im Smart Grid, steuerten wir {cue:hl-tum-or}Verbraucher im Smart Home und regenerative Wasserkraftwerke{/cue}, optimierten {cue:hl-tum-3d}Logistik- und Transportsysteme mit interaktiver 3D-JavaFX-Visualisierung{/cue} und schufen {cue:hl-tum-kopplung}robuste Kopplungen zu industriellen Automatisierungssystemen{/cue}.
+  {cue:card-tum} Der entscheidende Durchbruch: {cue:hl-tum-ingenieure}Wir bauten mathematische Werkzeuge für reale Infrastrukturen{/cue}. Mit präzisen Modellen für {cue:hl-tum-dsl}komplexe Transport- und Energielogistik{/cue} machten wir das Verhalten vernetzter Systeme {cue:hl-tum-simulation}mittels mathematischer Simulation exakt berechenbar{/cue}.
+notes: |
+  - Zeit: 7:45 - 8:45 Min.
+  - TU München: 6 Jahre am Lehrstuhl für Software and Systems Engineering.
+  - OR-Framework: Energieoptimierung im Smart Grid (Smart Home, Wasserkraftwerke) sowie Optimierung von Logistik- und Transportsystemen.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="09"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-tum" title="Systems Engineering & Operations Research (TUM)" accent="blue">
+    <CalloutBox type="statement" title="Optimierungs-Frameworks & Modellierung">
+      Energie- und Systemoptimierung: {cue:hl-tum-plattform}Operations Research und Modellierung an der TUM{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Smart Grid Energieoptimierung", desc: "Operations Research Framework für das Smart Grid, {cue:hl-tum-or}angewandt in Smart Homes und Wasserkraftwerken{/cue}." },
+      { icon: "code", title: "Logistik & 3D-Simulation", desc: "Optimierung von Transportsystemen und {cue:hl-tum-3d}interaktive 3D-Modellierung mit JavaFX{/cue}." },
+      { icon: "check", title: "Interdisziplinäre Kopplung", desc: "Mathematische Optimierung verknüpft mit {cue:hl-tum-kopplung}industriellen Automatisierungs- und Energiesystemen{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-tum" title="Erkenntnis: Werkzeugbau für Fachdisziplinen" accent="amber">
+    <CalloutBox type="statement" title="Informatik als Katalysator">
+      <p>{cue:hl-tum-ingenieure}Wir bauten mathematische Werkzeuge für reale Infrastrukturen{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Reale physikalische Domänen", desc: "Optimierungsalgorithmen für Netze, Speicher und {cue:hl-tum-dsl}komplexe Transport- und Energielogistik{/cue}." },
+      { icon: "check", title: "Beherrschung von Komplexität", desc: "Validierung und Steuerung vernetzter Infrastrukturen {cue:hl-tum-simulation}mittels mathematischer Simulation{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

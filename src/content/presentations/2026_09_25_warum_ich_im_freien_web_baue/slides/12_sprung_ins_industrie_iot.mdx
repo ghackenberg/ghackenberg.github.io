@@ -1,0 +1,49 @@
+---
+title: "Der Sprung ins Industrie-IoT"
+subtitle: "Senior Consultant bei Reply: {cue:hl-sub-reply-iot}Cloud-Native mit Serverless & PaaS sowie IaaS mit Docker & Kubernetes{/cue}"
+number: "12"
+slideLayout: "split"
+voiceover: >
+  Nach den akademischen Jahren an der Universität suchte ich den ultimativen Härtetest unter realen industriellen Betriebsbedingungen.
+  {cue:sub} Als Senior Consultant für das Internet of Things bei Reply in München ging es um {cue:hl-sub-reply-iot}skalierbare Cloud-native Architekturen für vernetzte Großflotten{/cue}.
+  {cue:vis-reply-stack} Wir bauten Architekturen für {cue:hl-reply-fleet}Großflotten im industriellen Dauereinsatz{/cue}: Einerseits Cloud Native {cue:hl-reply-cloud}auf Basis von Serverless- und PaaS-Diensten{/cue}, andererseits Infrastructure-as-a-Service für {cue:hl-reply-telematik}Docker und Kubernetes in Flottensteuerung und Telematik{/cue}, ergänzt um moderne {cue:hl-reply-dashboards}Dashboards zur Überwachung direkt im Web-Browser{/cue}.
+  {cue:card-reply-check} Der Realitätscheck: {cue:hl-reply-realitaet}In der Industrie zählt der unterbrechungsfreie 24/7-Betrieb{/cue}. Systeme müssen Lastspitzen und Netzwerkabbrüche {cue:hl-reply-ausfall}ohne Datenverlust fehlertolerant überstehen{/cue}, damit Software im {cue:hl-reply-delivery}Zusammenspiel von Cloud, Edge und Endanwendern{/cue} echten Mehrwert stiftet.
+notes: |
+  - Zeit: 10:45 - 11:45 Min.
+  - Industrie-Einstieg: Senior Consultant IoT bei Reply (München, 2017).
+  - Architekturen: Cloud Native (Serverless, PaaS) und IaaS mit Docker + Kubernetes für Großflotten.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="12"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-reply-stack" title="Cloud-Native IoT Architecture" accent="blue">
+    <CalloutBox type="statement" title="Großflotten im Dauereinsatz">
+      Enterprise-Cloud und Edge: {cue:hl-reply-fleet}Großflotten im industriellen Dauereinsatz{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Cloud-Native: Serverless & PaaS", desc: "Entwicklung hochskalierbarer Event-Pipelines {cue:hl-reply-cloud}auf Basis von Serverless- und PaaS-Diensten{/cue}." },
+      { icon: "code", title: "IaaS mit Docker & Kubernetes", desc: "Betrieb robuster Container-Infrastrukturen für {cue:hl-reply-telematik}Flottensteuerung, Telematik und Edge-Anbindung{/cue}." },
+      { icon: "check", title: "Moderne Web-Frontends", desc: "Intuitive Dashboards zur {cue:hl-reply-dashboards}Überwachung und Konfiguration direkt im Browser{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-reply-check" title="Erkenntnis: Der industrielle Realitätscheck" accent="cyan">
+    <CalloutBox type="statement" title="Betriebssicherheit schlägt Theorie">
+      <p>{cue:hl-reply-realitaet}In der Industrie zählt der unterbrechungsfreie 24/7-Betrieb{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Ausfallsicherheit & Latenz", desc: "Großsysteme müssen Netzwerkabbrüche und Lastspitzen {cue:hl-reply-ausfall}ohne Datenverlust fehlertolerant überstehen{/cue}." },
+      { icon: "check", title: "Ganzheitliche Delivery", desc: "Erfolgreiche Software entsteht erst im harmonischen {cue:hl-reply-delivery}Zusammenspiel von Cloud, Edge und Endanwendern{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

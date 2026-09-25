@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 6.56
+  },
+  "hl-sub-cv": {
+    "start": 9.59,
+    "duration": 3.35,
+    "end": 12.94
+  },
+  "vis-cv": {
+    "start": 13.99
+  },
+  "hl-cv-grafik": {
+    "start": 14.63,
+    "duration": 2.21,
+    "end": 16.84
+  },
+  "hl-cv-fit": {
+    "start": 18.29,
+    "duration": 2.56,
+    "end": 20.85
+  },
+  "hl-cv-epfl": {
+    "start": 23.05,
+    "duration": 1.75,
+    "end": 24.8
+  },
+  "hl-cv-signale": {
+    "start": 25.24,
+    "duration": 3.67,
+    "end": 28.91
+  },
+  "card-cv": {
+    "start": 29.25
+  },
+  "hl-cv-raeumlich": {
+    "start": 30.41,
+    "duration": 3.28,
+    "end": 33.69
+  },
+  "hl-cv-latenz": {
+    "start": 35.64,
+    "duration": 2.65,
+    "end": 38.29
+  },
+  "hl-cv-cps": {
+    "start": 39.85,
+    "duration": 3.4,
+    "end": 43.25
+  }
+}

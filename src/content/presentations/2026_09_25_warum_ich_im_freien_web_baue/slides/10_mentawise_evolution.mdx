@@ -1,0 +1,50 @@
+---
+title: "Mentawise: Die Evolution des Wissensgraphen"
+subtitle: "Von SVG auf der Buchmesse über HTML5 Canvas {cue:hl-sub-mentawise}zur persönlichen Begleiter-App mit Sharing-Funktion{/cue}"
+number: "10"
+slideLayout: "split"
+voiceover: >
+  Parallel zur universitären Forschung entwickelte sich der Mentawise-Wissensgraph über viele Jahre schrittweise weiter.
+  {cue:sub} Entstanden aus echter ingenieurwissenschaftlicher Leidenschaft: {cue:hl-sub-mentawise}Eine faszinierende technische Evolution und ein persönlicher Begleiter{/cue}.
+  {cue:vis-mentawise} Technologisch vollzog das Projekt {cue:hl-mentawise-evolution}drei entscheidende Entwicklungsschritte{/cue}: Generation 1 für le-tex auf der Buchmesse war {cue:hl-mentawise-gen1}mit SVG noch spürbar performanzlimitiert{/cue}. Der Durchbruch gelang in Generation 2 mit HTML5 Canvas für {cue:hl-mentawise-gen2}Infineon-Messestände in München, Barcelona und Las Vegas{/cue}, bevor Generation 3 das Werkzeug als Web-App mit {cue:hl-mentawise-gen3}Sharing-Funktionen für Brainstorming und Wissensmanagement{/cue} öffnete.
+  {cue:card-mentawise} Das algorithmische Herzstück: {cue:hl-mentawise-webapp}Optimale Flächenaufteilung und dynamische Ausschnitt-Navigation{/cue}! Statt unübersichtlicher kräftebasierter Netze zeigt der Algorithmus {cue:hl-mentawise-performance}stets fokussierte Teilgraphen bei der Exploration{/cue}, und Mentawise wurde {cue:hl-mentawise-demokratisierung}bis heute zu meinem unentbehrlichen Denkwerkzeug in Beruf und Lehre{/cue}.
+notes: |
+  - Zeit: 8:45 - 9:45 Min.
+  - Mentawise Gen 1 (SVG, le-tex Buchmesse), Gen 2 (HTML5 Canvas, Infineon CES/MWC/München), Gen 3 (Web-App mit Sharing am Ende der Promotion).
+  - Algorithmus: Keine Kräfte, sondern optimale Flächenaufteilung und fokussierte Ausschnitt-Navigation.
+  - Bedeutung: Ein maßgeschneidertes Denkwerkzeug und treuer Begleiter in Industrie und Lehre.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="10"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-mentawise" title="Die 3 Technologie-Generationen" accent="indigo">
+    <CalloutBox type="statement" title="Iterativer Durchbruch über Jahre">
+      Entwicklung des interaktiven Graph-Layouts: {cue:hl-mentawise-evolution}Iterativer Durchbruch über drei Generationen{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Gen 1: le-tex & SVG (2009/10)", desc: "Erster Praxiseinsatz auf der Frankfurter Buchmesse, {cue:hl-mentawise-gen1}jedoch durch SVG-Performance limitiert{/cue}." },
+      { icon: "code", title: "Gen 2: Infineon & Canvas (2012/13)", desc: "Performance-Durchbruch mit HTML5 Canvas für {cue:hl-mentawise-gen2}Infineon-Messestände in München, Barcelona und Las Vegas{/cue}." },
+      { icon: "sparkles", title: "Gen 3: Web-App mit Sharing (2015/16)", desc: "Ausbau zur Webanwendung mit Sharing für {cue:hl-mentawise-gen3}Brainstorming und Wissensorganisation{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-mentawise" title="Erkenntnis: Der persönliche Begleiter" accent="blue">
+    <CalloutBox type="statement" title="Fokussierte Graph-Navigation statt Überladung">
+      <p>{cue:hl-mentawise-webapp}Optimale Flächenaufteilung und gezielte Ausschnitt-Navigation{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Keine Kräfte, sondern Fokus", desc: "Der Algorithmus verteilt Knoten optimal auf dem Viewport und {cue:hl-mentawise-performance}zeigt navigierbare Teilgraphen statt unübersichtlicher Netze{/cue}." },
+      { icon: "check", title: "Persönlicher Mehrwert", desc: "Ein maßgeschneidertes Denkwerkzeug und {cue:hl-mentawise-demokratisierung}bis heute mein treuer Begleiter durch Industrie und Professur{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

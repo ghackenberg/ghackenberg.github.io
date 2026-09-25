@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 6.7
+  },
+  "hl-sub-dialog": {
+    "start": 10.3,
+    "duration": 4.04,
+    "end": 14.34
+  },
+  "vis-dialog": {
+    "start": 14.68
+  },
+  "hl-dialog-vision": {
+    "start": 16.4,
+    "duration": 3.77,
+    "end": 20.17
+  },
+  "card-dialog": {
+    "start": 20.55
+  },
+  "hl-dialog-teilen": {
+    "start": 22.1,
+    "duration": 2.22,
+    "end": 24.32
+  },
+  "hl-dialog-wels": {
+    "start": 26.04,
+    "duration": 1.36,
+    "end": 27.4
+  },
+  "hl-dialog-github": {
+    "start": 28.76,
+    "duration": 0.9,
+    "end": 29.66
+  },
+  "hl-dialog-social": {
+    "start": 31.69,
+    "duration": 1.82,
+    "end": 33.51
+  }
+}

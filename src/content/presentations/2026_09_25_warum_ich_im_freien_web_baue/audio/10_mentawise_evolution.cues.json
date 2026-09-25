@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 6.31
+  },
+  "hl-sub-mentawise": {
+    "start": 9.76,
+    "duration": 3.69,
+    "end": 13.45
+  },
+  "vis-mentawise": {
+    "start": 13.79
+  },
+  "hl-mentawise-evolution": {
+    "start": 15.47,
+    "duration": 1.66,
+    "end": 17.13
+  },
+  "hl-mentawise-gen1": {
+    "start": 19.96,
+    "duration": 2.54,
+    "end": 22.5
+  },
+  "hl-mentawise-gen2": {
+    "start": 26.16,
+    "duration": 3.24,
+    "end": 29.4
+  },
+  "hl-mentawise-gen3": {
+    "start": 32.41,
+    "duration": 2.51,
+    "end": 34.92
+  },
+  "card-mentawise": {
+    "start": 35.8
+  },
+  "hl-mentawise-webapp": {
+    "start": 37.66,
+    "duration": 3.58,
+    "end": 41.24
+  },
+  "hl-mentawise-performance": {
+    "start": 44.8,
+    "duration": 2.46,
+    "end": 47.26
+  },
+  "hl-mentawise-demokratisierung": {
+    "start": 48.56,
+    "duration": 3.39,
+    "end": 51.95
+  }
+}

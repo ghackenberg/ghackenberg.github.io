@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 7.17
+  },
+  "hl-sub-princeton": {
+    "start": 10.24,
+    "duration": 3.18,
+    "end": 13.42
+  },
+  "vis-princeton": {
+    "start": 13.76
+  },
+  "hl-princeton-services": {
+    "start": 15.4,
+    "duration": 2.4,
+    "end": 17.8
+  },
+  "hl-princeton-j2ee": {
+    "start": 22.6,
+    "duration": 2.38,
+    "end": 24.98
+  },
+  "hl-princeton-xml": {
+    "start": 25.48,
+    "duration": 2.2,
+    "end": 27.68
+  },
+  "hl-princeton-vldb": {
+    "start": 29.75,
+    "duration": 2.29,
+    "end": 32.04
+  },
+  "card-princeton": {
+    "start": 32.42
+  },
+  "hl-princeton-enterprise": {
+    "start": 34.24,
+    "duration": 3.95,
+    "end": 38.19
+  },
+  "hl-princeton-schnittstellen": {
+    "start": 41.39,
+    "duration": 2.45,
+    "end": 43.84
+  },
+  "hl-princeton-global": {
+    "start": 45.94,
+    "duration": 1.82,
+    "end": 47.76
+  }
+}

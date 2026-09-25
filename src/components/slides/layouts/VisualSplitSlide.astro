@@ -1,0 +1,77 @@
+---
+import SlideBase from '../primitives/SlideBase.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  subtitleCue?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  ratio?: '50/50' | '45/55' | '55/45' | '40/60' | '60/40';
+  reverse?: boolean;
+  presentationTitle?: string;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  subtitleCue,
+  slideNumber,
+  totalSlides,
+  ratio = '50/50',
+  reverse = false,
+  presentationTitle,
+  class: className = ""
+} = Astro.props;
+
+const gridCols = 'grid-cols-12';
+
+const visualSpan = {
+  '50/50': 'col-span-6',
+  '45/55': 'col-span-5',
+  '55/45': 'col-span-7',
+  '40/60': 'col-span-5',
+  '60/40': 'col-span-7'
+}[ratio];
+
+const contentSpan = {
+  '50/50': 'col-span-6',
+  '45/55': 'col-span-7',
+  '55/45': 'col-span-5',
+  '40/60': 'col-span-7',
+  '60/40': 'col-span-5'
+}[ratio];
+---
+
+<SlideBase
+  title={title}
+  subtitle={subtitle}
+  subtitleCue={subtitleCue}
+  slideNumber={slideNumber}
+  totalSlides={totalSlides}
+  presentationTitle={presentationTitle}
+  class={className}
+>
+  <div class={`grid ${gridCols} gap-8 h-full w-full items-stretch min-h-0`}>
+    {!reverse ? (
+      <>
+        <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${visualSpan}`}>
+          <slot name="visual" />
+        </div>
+        <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${contentSpan}`}>
+          <slot name="content" />
+        </div>
+      </>
+    ) : (
+      <>
+        <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${contentSpan}`}>
+          <slot name="content" />
+        </div>
+        <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${visualSpan}`}>
+          <slot name="visual" />
+        </div>
+      </>
+    )}
+  </div>
+</SlideBase>

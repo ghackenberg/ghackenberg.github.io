@@ -1,0 +1,112 @@
+---
+title: "Das Content-Ökosystem"
+subtitle: "Vier tragende Säulen: {cue:hl-sub-oekosystem}Multimodaler Wissenstransfer über Posts, Papers, Talks und Kurse{/cue}"
+number: "19"
+slideLayout: "diagram"
+voiceover: >
+  Wissen entfaltet seine größte Kraft, wenn es über verschiedene Wahrnehmungskanäle flexibel zugänglich wird.
+  {cue:sub} Auf dieser Plattform greifen vier tragende Säulen nahtlos ineinander, um {cue:hl-sub-oekosystem}multimodalen Wissenstransfer ohne Hürden{/cue} zu ermöglichen.
+  {cue:vis-graph} Die vier Kernbereiche ergänzen sich perfekt: {cue:hl-eco-posts}Blog-Beiträge mit praxiserprobten Deep Dives{/cue}, {cue:hl-eco-papers}begutachtete Publikationen aus der Spitzenforschung{/cue}, {cue:hl-eco-presentations}interaktive Slide-Keynotes mit synchroner Sprachausgabe{/cue} und {cue:hl-eco-courses}vollständige Vorlesungsreihen als offene Kursmaterialien{/cue}.
+  {cue:deck-insights} So entstehen {cue:hl-eco-synthese}vier tragende Säulen für jedes Zeitbudget{/cue} und maximale Wissensvermittlung.
+notes: |
+  - Zeit: 17:45 - 18:45 Min.
+  - Die 4 tragenden Säulen der Webplattform: Posts (Blog), Publications (Forschung), Presentations (Slide-as-Code Keynotes) und Courses (Hochschullehre).
+  - Volle Offenheit und multimodale Zugänglichkeit ohne Barrieren.
+---
+import DiagramSlide from '../../../../components/slides/layouts/DiagramSlide.astro';
+import Highlight from '../../../../components/slides/primitives/Highlight.astro';
+
+<DiagramSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="19"
+  totalSlides="21"
+>
+  {/* Knowledge Graph Stage */}
+  <div
+    slot="diagram"
+    id="vis-graph"
+    data-cue="vis-graph"
+    class="w-full h-full rounded-3xl bg-slate-900/90 light:bg-slate-100/95 border border-slate-800 light:border-slate-300 p-8 flex items-center justify-around shadow-2xl light:shadow-xl relative"
+  >
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-emerald-500/10 light:from-blue-500/5 light:via-purple-500/5 light:to-emerald-500/5 pointer-events-none rounded-3xl"></div>
+
+    {/* Node 1: Posts */}
+    <div
+      data-accent="amber"
+      class="flex-1 max-w-[340px] flex flex-col items-center text-center p-7 rounded-3xl bg-slate-950/80 light:bg-white border-2 border-amber-500/40 light:border-amber-400 shadow-xl light:shadow-lg transition-transform duration-300"
+    >
+      <div class="w-20 h-20 rounded-2xl bg-amber-500/20 light:bg-amber-100 border-2 border-amber-500/40 light:border-amber-300 flex items-center justify-center font-mono font-black text-amber-400 light:text-amber-800 text-2xl mb-4 shrink-0 shadow-sm">
+        POSTS
+      </div>
+      <div class="font-extrabold text-slate-100 light:text-slate-900 text-2xl lg:text-3xl mb-2 whitespace-nowrap">Blog-Artikel</div>
+      <div class="text-xl text-slate-300 light:text-slate-700 leading-relaxed">
+        <Highlight cue="hl-eco-posts">Praxiserprobte Schritt-für-Schritt-Deep-Dives</Highlight>
+      </div>
+    </div>
+
+    {/* Connector */}
+    <div class="text-3xl text-slate-400 light:text-slate-600 font-mono font-black shrink-0 px-2 select-none">⇄</div>
+
+    {/* Node 2: Publications */}
+    <div
+      data-accent="blue"
+      class="flex-1 max-w-[340px] flex flex-col items-center text-center p-7 rounded-3xl bg-slate-950/80 light:bg-white border-2 border-blue-500/40 light:border-blue-400 shadow-xl light:shadow-lg transition-transform duration-300"
+    >
+      <div class="w-20 h-20 rounded-2xl bg-blue-500/20 light:bg-blue-100 border-2 border-blue-500/40 light:border-blue-300 flex items-center justify-center font-mono font-black text-blue-400 light:text-blue-800 text-2xl mb-4 shrink-0 shadow-sm">
+        PAPERS
+      </div>
+      <div class="font-extrabold text-slate-100 light:text-slate-900 text-2xl lg:text-3xl mb-2 whitespace-nowrap">Publikationen</div>
+      <div class="text-xl text-slate-300 light:text-slate-700 leading-relaxed">
+        <Highlight cue="hl-eco-papers">Begutachtete Forschung und Fachbeiträge</Highlight>
+      </div>
+    </div>
+
+    {/* Connector */}
+    <div class="text-3xl text-slate-400 light:text-slate-600 font-mono font-black shrink-0 px-2 select-none">⇄</div>
+
+    {/* Node 3: Presentations */}
+    <div
+      data-accent="purple"
+      class="flex-1 max-w-[340px] flex flex-col items-center text-center p-7 rounded-3xl bg-slate-950/80 light:bg-white border-2 border-purple-500/40 light:border-purple-400 shadow-xl light:shadow-lg transition-transform duration-300"
+    >
+      <div class="w-20 h-20 rounded-2xl bg-purple-500/20 light:bg-purple-100 border-2 border-purple-500/40 light:border-purple-300 flex items-center justify-center font-mono font-black text-purple-400 light:text-purple-800 text-2xl mb-4 shrink-0 shadow-sm">
+        KEYNOTES
+      </div>
+      <div class="font-extrabold text-slate-100 light:text-slate-900 text-2xl lg:text-3xl mb-2 whitespace-nowrap">Präsentationen</div>
+      <div class="text-xl text-slate-300 light:text-slate-700 leading-relaxed">
+        <Highlight cue="hl-eco-presentations">Slide-as-Code mit synchroner Sprachausgabe</Highlight>
+      </div>
+    </div>
+
+    {/* Connector */}
+    <div class="text-3xl text-slate-400 light:text-slate-600 font-mono font-black shrink-0 px-2 select-none">⇄</div>
+
+    {/* Node 4: Courses */}
+    <div
+      data-accent="emerald"
+      class="flex-1 max-w-[340px] flex flex-col items-center text-center p-7 rounded-3xl bg-slate-950/80 light:bg-white border-2 border-emerald-500/40 light:border-emerald-400 shadow-xl light:shadow-lg transition-transform duration-300"
+    >
+      <div class="w-20 h-20 rounded-2xl bg-emerald-500/20 light:bg-emerald-100 border-2 border-emerald-500/40 light:border-emerald-300 flex items-center justify-center font-mono font-black text-emerald-400 light:text-emerald-800 text-2xl mb-4 shrink-0 shadow-sm">
+        COURSES
+      </div>
+      <div class="font-extrabold text-slate-100 light:text-slate-900 text-2xl lg:text-3xl mb-2 whitespace-nowrap">Hochschulkurse</div>
+      <div class="text-xl text-slate-300 light:text-slate-700 leading-relaxed">
+        <Highlight cue="hl-eco-courses">Vollständige Vorlesungsreihen und Skripte</Highlight>
+      </div>
+    </div>
+  </div>
+
+  {/* Insights Deck */}
+  <div
+    slot="insights"
+    id="deck-insights"
+    data-cue="deck-insights"
+    class="p-6 rounded-3xl bg-slate-900/90 light:bg-white border border-slate-800 light:border-slate-300 text-center shadow-xl light:shadow-md"
+  >
+    <p class="text-2xl text-slate-200 light:text-slate-800 font-medium">
+      Das Ergebnis: <Highlight cue="hl-eco-synthese">Vier tragende Content-Säulen für offenen Wissenstransfer</Highlight> und maximale Vermittlung.
+    </p>
+  </div>
+</DiagramSlide>

@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 6.29
+  },
+  "hl-sub-caddrive": {
+    "start": 9.72,
+    "duration": 3.66,
+    "end": 13.38
+  },
+  "vis-caddrive-tech": {
+    "start": 14.41
+  },
+  "hl-caddrive-cloud": {
+    "start": 15.91,
+    "duration": 1.86,
+    "end": 17.77
+  },
+  "hl-caddrive-git": {
+    "start": 19.39,
+    "duration": 1.68,
+    "end": 21.07
+  },
+  "hl-caddrive-diff": {
+    "start": 22.6,
+    "duration": 2.44,
+    "end": 25.04
+  },
+  "hl-caddrive-agent": {
+    "start": 26.15,
+    "duration": 1.61,
+    "end": 27.76
+  },
+  "card-caddrive-transfer": {
+    "start": 28.15
+  },
+  "hl-caddrive-paradigmen": {
+    "start": 30.09,
+    "duration": 3.45,
+    "end": 33.54
+  },
+  "hl-caddrive-silos": {
+    "start": 34.21,
+    "duration": 1.83,
+    "end": 36.04
+  },
+  "hl-caddrive-barrieren": {
+    "start": 38.19,
+    "duration": 2.46,
+    "end": 40.65
+  }
+}

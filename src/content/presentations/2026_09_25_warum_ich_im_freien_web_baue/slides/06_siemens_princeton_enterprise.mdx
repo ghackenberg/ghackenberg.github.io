@@ -1,0 +1,49 @@
+---
+title: "Siemens Corporate Research: Princeton"
+subtitle: "Klinische Studien in der Krebsforschung: {cue:hl-sub-princeton}Nutzerkonfigurierbare Datenerfassung mit XML-Backend (VLDB 2007){/cue}"
+number: "06"
+slideLayout: "split"
+voiceover: >
+  Die Verbindung aus Internettechnologien und XML-Datenbanken führte mich 2006 in die internationale Spitzenforschung.
+  {cue:sub} Bei Siemens Corporate Research in Princeton entwickelten wir eine {cue:hl-sub-princeton}Informationsplattform für klinische Studien in der Krebsforschung{/cue}.
+  {cue:vis-princeton} Im US-Headquarter bauten wir ein {cue:hl-princeton-services}flexibles Datenerfassungs- und Auswertungssystem{/cue}: Statt auf starre Schemata setzten wir mit J2EE und JSP auf {cue:hl-princeton-j2ee}klinische Studiendaten ohne starres Tabellenschema{/cue}, mit {cue:hl-princeton-xml}frei nutzerkonfigurierbaren Datenstrukturen{/cue} im XML-Backend, publiziert auf der {cue:hl-princeton-vldb}renommierten VLDB-Konferenz in Wien{/cue}.
+  {cue:card-princeton} Die fundamentale Erkenntnis: {cue:hl-princeton-enterprise}Echte Enterprise-Systeme erfordern hochgradig anpassbare Datenmodelle{/cue}! Durch flexible XML-Strukturen konnten Mediziner {cue:hl-princeton-schnittstellen}individuelle Studienprotokolle frei konfigurieren{/cue}, während die Zusammenarbeit im US-Team {cue:hl-princeton-global}über Disziplinen und Zeitzonen hinweg{/cue} meinen Blick für globale Skalierung schärfte.
+notes: |
+  - Zeit: 4:45 - 5:45 Min.
+  - Internationale Forschungsstation: Siemens Corporate Research, Princeton, NJ (2006–2007).
+  - Krebsforschung: Flexibles Erfassungs- und Auswertungssystem für klinische Studien mit nutzerkonfigurierbaren Datenstrukturen (VLDB 2007).
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="06"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-princeton" title="Enterprise Research (Princeton, NJ)" accent="cyan">
+    <CalloutBox type="statement" title="Informationsplattform für klinische Studien">
+      Plattform für Krebsforschung: {cue:hl-princeton-services}Flexibles Datenerfassungs- und Auswertungssystem{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "J2EE/JSP & XML-Backend", desc: "Enterprise-Web-Anwendung zur Verwaltung {cue:hl-princeton-j2ee}klinischer Studiendaten ohne starres Schema{/cue}." },
+      { icon: "code", title: "Nutzerkonfigurierbare Strukturen", desc: "Flexible Erfassung hochkomplexer medizinischer Daten durch {cue:hl-princeton-xml}freie, nutzerdefinierte Datenstrukturen{/cue}." },
+      { icon: "check", title: "VLDB 2007 Publikation", desc: "Vorstellung des datenbankbasierten Ansatzes auf der {cue:hl-princeton-vldb}Very Large Data Bases Konferenz in Wien{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-princeton" title="Erkenntnis: Enterprise-Interoperabilität" accent="blue">
+    <CalloutBox type="statement" title="Flexibilität statt starrer Schemata">
+      <p>{cue:hl-princeton-enterprise}Echte Enterprise-Systeme erfordern dynamische Datenmodelle{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "XML als Enabler", desc: "Schemalose Datenstrukturen ermöglichten Forschern {cue:hl-princeton-schnittstellen}individuelle medizinische Studienprotokolle{/cue}." },
+      { icon: "check", title: "Internationale Forschungskultur", desc: "Wissenschaftliche Kollaboration in New Jersey {cue:hl-princeton-global}über Disziplinen und Zeitzonen hinweg{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 7.14
+  },
+  "hl-sub-reply-iot": {
+    "start": 10.72,
+    "duration": 3.37,
+    "end": 14.09
+  },
+  "vis-reply-stack": {
+    "start": 14.43
+  },
+  "hl-reply-fleet": {
+    "start": 15.8,
+    "duration": 2,
+    "end": 17.8
+  },
+  "hl-reply-cloud": {
+    "start": 19.39,
+    "duration": 2.02,
+    "end": 21.41
+  },
+  "hl-reply-telematik": {
+    "start": 24.82,
+    "duration": 2.62,
+    "end": 27.44
+  },
+  "hl-reply-dashboards": {
+    "start": 28.55,
+    "duration": 1.85,
+    "end": 30.4
+  },
+  "card-reply-check": {
+    "start": 31.41
+  },
+  "hl-reply-realitaet": {
+    "start": 32.95,
+    "duration": 4.01,
+    "end": 36.96
+  },
+  "hl-reply-ausfall": {
+    "start": 39.85,
+    "duration": 2.11,
+    "end": 41.96
+  },
+  "hl-reply-delivery": {
+    "start": 43.05,
+    "duration": 2.58,
+    "end": 45.63
+  }
+}

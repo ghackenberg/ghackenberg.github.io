@@ -1,0 +1,50 @@
+---
+title: "Aachen & Mentawise: Frankfurter Buchmesse"
+subtitle: "Zwei Welten im Master: {cue:hl-sub-buchmesse}Datenbank-Lehrstuhl und Mentawise-Auftrag via Blog & YouTube{/cue}"
+number: "07"
+slideLayout: "split"
+voiceover: >
+  Im Masterstudium an der RWTH Aachen liefen zwei spannende Stränge parallel nebeneinander.
+  {cue:sub} Neben dem Datenbank-Lehrstuhl führte mich das Web direkt zur Buchmesse: {cue:hl-sub-buchmesse}Der erste Mentawise-Auftrag entstand durch Blog und YouTube{/cue}.
+  {cue:vis-aachen} Die beiden Projekte waren komplett unabhängig: {cue:hl-aachen-praxis}Am Lehrstuhl betreute ich DB2-Datenbanken und baute Webcrawler{/cue}, und entwickelte {cue:hl-aachen-crawler}hochperformante Java-Crawler-Systeme{/cue}. Parallel führten meine Blogbeiträge und YouTube-Videos dazu, dass le-tex publishing mich für eine {cue:hl-aachen-letex}Messevisualisierung auf der Frankfurter Buchmesse beauftragte{/cue}. Zeitgleich launchte ich hackenberg.tech mit {cue:hl-aachen-svn}Subversion-WebDAV und Commit-Hooks{/cue}.
+  {cue:card-aachen} Diese doppelte Erfahrung prägte mein Berufsleben nachhaltig: {cue:hl-aachen-visualisierung}Wer Wissen offen im Web teilt, zieht eigenständig Praxisprojekte an{/cue}! Auf der Buchmesse navigierten Fachbesucher durch {cue:hl-aachen-messe}den ersten interaktiven Graph-Layout-Ausschnitt{/cue}, und ich erkannte den Wert, Fachwissen {cue:hl-aachen-domain}dauerhaft auf der eigenen Web-Domain zu publizieren{/cue}.
+notes: |
+  - Zeit: 5:45 - 6:45 Min.
+  - RWTH Aachen: Masterstudium, Lehrstuhl für Datenbanken & Informationssysteme (IBM DB2, Java Web Crawler).
+  - Mentawise Gen 1: Auftrag von le-tex publishing services durch YouTube/Blog-Aktivitäten für Frankfurter Buchmesse.
+  - Februar 2009: Start der Domain hackenberg.tech mit Subversion-WebDAV & Hooks.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="07"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-aachen" title="RWTH Aachen & Mentawise Gen 1" accent="indigo">
+    <CalloutBox type="statement" title="Universitäre Arbeit & Industrieauftrag">
+      Zwei parallele Stränge: {cue:hl-aachen-praxis}Unabhängige Lehrstuhlarbeit und externer Auftrag{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "IBM DB2 & Web Crawler", desc: "Am Lehrstuhl für Datenbanken Betreuung der DB2-Instanz und {cue:hl-aachen-crawler}Entwicklung robuster Java-Webcrawler{/cue}." },
+      { icon: "code", title: "Auftrag via Blog & YouTube", desc: "Durch offenes Blogging wurde le-tex aufmerksam: Auftrag für {cue:hl-aachen-letex}Messevisualisierung auf der Frankfurter Buchmesse{/cue}." },
+      { icon: "check", title: "hackenberg.tech Launch (2009)", desc: "Start der eigenen Plattform mit {cue:hl-aachen-svn}Subversion-WebDAV und automatisierten Commit-Hooks{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-aachen" title="Erkenntnis: Sichtbarkeit schafft Chancen" accent="blue">
+    <CalloutBox type="statement" title="Die Kraft offener Wissensvermittlung">
+      <p>{cue:hl-aachen-visualisierung}Wer Wissen im Web teilt, zieht spannende Praxisprojekte an{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Mentawise Gen 1 auf der Messe", desc: "Reale Messebesucher in Frankfurt erkundeten komplexe Verlagsdaten {cue:hl-aachen-messe}im ersten interaktiven Graph-Layout{/cue}." },
+      { icon: "check", title: "Eigene Web-Präsenz", desc: "Die Bestätigung, Erkenntnisse und Algorithmen {cue:hl-aachen-domain}kontinuierlich auf der eigenen Plattform zu teilen{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

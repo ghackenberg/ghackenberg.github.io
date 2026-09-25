@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 5.99
+  },
+  "hl-sub-oekosystem": {
+    "start": 9.91,
+    "duration": 2.16,
+    "end": 12.07
+  },
+  "vis-graph": {
+    "start": 13.2
+  },
+  "hl-eco-posts": {
+    "start": 15.68,
+    "duration": 2.26,
+    "end": 17.94
+  },
+  "hl-eco-papers": {
+    "start": 18.23,
+    "duration": 2.42,
+    "end": 20.65
+  },
+  "hl-eco-presentations": {
+    "start": 20.95,
+    "duration": 2.95,
+    "end": 23.9
+  },
+  "hl-eco-courses": {
+    "start": 24.05,
+    "duration": 2.94,
+    "end": 26.99
+  },
+  "deck-insights": {
+    "start": 27.32
+  },
+  "hl-eco-synthese": {
+    "start": 28.02,
+    "duration": 2.41,
+    "end": 30.43
+  }
+}

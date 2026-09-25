@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 5.5
+  },
+  "hl-sub-buchmesse": {
+    "start": 9.4,
+    "duration": 3.14,
+    "end": 12.54
+  },
+  "vis-aachen": {
+    "start": 12.88
+  },
+  "hl-aachen-praxis": {
+    "start": 15.38,
+    "duration": 4.23,
+    "end": 19.61
+  },
+  "hl-aachen-crawler": {
+    "start": 20.5,
+    "duration": 1.91,
+    "end": 22.41
+  },
+  "hl-aachen-letex": {
+    "start": 27.88,
+    "duration": 3.11,
+    "end": 30.99
+  },
+  "hl-aachen-svn": {
+    "start": 34.01,
+    "duration": 1.55,
+    "end": 35.56
+  },
+  "card-aachen": {
+    "start": 36.61
+  },
+  "hl-aachen-visualisierung": {
+    "start": 39.94,
+    "duration": 3.61,
+    "end": 43.55
+  },
+  "hl-aachen-messe": {
+    "start": 49.24,
+    "duration": 0.15,
+    "end": 49.39
+  },
+  "hl-aachen-domain": {
+    "start": 50.44,
+    "duration": 2.8,
+    "end": 53.24
+  }
+}

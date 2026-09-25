@@ -1,0 +1,49 @@
+---
+title: "Informatik-Transfer & Projekt CADdrive"
+subtitle: "Software-Paradigmen für den Maschinenbau: {cue:hl-sub-caddrive}Kollaboratives 3D-CAD-Versioning im Browser{/cue}"
+number: "16"
+slideLayout: "split"
+voiceover: >
+  Eine der wirkungsvollsten Aufgaben angewandter Informatik ist der methodische Transfer in andere Ingenieursbereiche.
+  {cue:sub} Ein herausragendes Beispiel hierfür ist das Projekt CADdrive: {cue:hl-sub-caddrive}Kollaboratives 3D-CAD-Versioning direkt im Web-Browser{/cue}.
+  {cue:vis-caddrive-tech} Auf der Plattform realisieren wir {cue:hl-caddrive-cloud}Kollaboration ohne Datei-Lockouts{/cue}: Konstrukteure arbeiten mit {cue:hl-caddrive-git}modernen Branch- und Merge-Strategien{/cue}, analysieren Baugruppen im {cue:hl-caddrive-diff}WebGL-Canvas ohne lokale CAD-Lizenz{/cue} und nutzen Synergien mit {cue:hl-caddrive-agent}agentbrick für KI-Bausteine{/cue}.
+  {cue:card-caddrive-transfer} Die übergreifende Lektion: {cue:hl-caddrive-paradigmen}Informatik-Konzepte transformieren klassische Industriebereiche{/cue}. Durch {cue:hl-caddrive-silos}einheitliche Versionierungsstandards{/cue} fallen Disziplinsilos und wir befähigen {cue:hl-caddrive-barrieren}weltweite Entwickler- und Engineering-Teams{/cue}.
+notes: |
+  - Zeit: 14:45 - 15:45 Min.
+  - Transfer-Leuchtturm: Projekt CADdrive (caddrive.com).
+  - Paradigmenwechsel: Git-Konzepte (Branch, Merge, Diff) für 3D-Konstruktionsdaten im Browser.
+---
+import VisualSplitSlide from '../../../../components/slides/layouts/VisualSplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<VisualSplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="16"
+  totalSlides="21"
+  ratio="50/50"
+>
+  <BentoCard slot="visual" cue="vis-caddrive-tech" title="Projekt CADdrive (caddrive.com)" accent="blue">
+    <CalloutBox type="statement" title="Git-Workflows für 3D-Konstruktionsdaten">
+      Moderne Cloud-Architektur im Browser: {cue:hl-caddrive-cloud}Kollaboration ohne Datei-Lockouts{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "code", title: "Branching & Merging für CAD", desc: "Paralleles Arbeiten mehrerer Konstrukteure an Baugruppen mit {cue:hl-caddrive-git}modernen Branch- und Merge-Strategien{/cue}." },
+      { icon: "code", title: "Browser-Rendering & Visual Diff", desc: "Dreidimensionale Änderungsverfolgung direkt im {cue:hl-caddrive-diff}WebGL-Canvas ohne lokale CAD-Lizenz{/cue}." },
+      { icon: "check", title: "Open-Source-Ökosystem", desc: "Synergien mit Projekten wie opencascade-tools, LDraw-Parsern und {cue:hl-caddrive-agent}agentbrick für KI-Bausteine{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="content" cue="card-caddrive-transfer" title="Erkenntnis: Informatik als Hebel" accent="cyan">
+    <CalloutBox type="statement" title="Methodentransfer über Disziplingrenzen">
+      <p>{cue:hl-caddrive-paradigmen}Informatik-Konzepte transformieren klassische Industriebereiche{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "check", title: "Schluss mit Silos", desc: "Mechanik, Elektronik und Software wachsen durch {cue:hl-caddrive-silos}einheitliche Versionierungsstandards{/cue} zusammen." },
+      { icon: "check", title: "Web als Trägerplattform", desc: "Zero-Install-Werkzeuge senken Einstiegshürden für {cue:hl-caddrive-barrieren}weltweite Entwickler- und Engineering-Teams{/cue}." }
+    ]} />
+  </BentoCard>
+</VisualSplitSlide>

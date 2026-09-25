@@ -1,0 +1,64 @@
+{
+  "sub": {
+    "start": 7.89
+  },
+  "hl-sub-fazit": {
+    "start": 10.16,
+    "duration": 3.26,
+    "end": 13.42
+  },
+  "card-handwerk": {
+    "start": 13.76
+  },
+  "hl-fazit-verstaendnis": {
+    "start": 16.32,
+    "duration": 2.78,
+    "end": 19.1
+  },
+  "hl-fazit-maschinenraum": {
+    "start": 20.9,
+    "duration": 1.65,
+    "end": 22.55
+  },
+  "hl-fazit-robustheit": {
+    "start": 23.86,
+    "duration": 2.13,
+    "end": 25.99
+  },
+  "card-transfer": {
+    "start": 26.36
+  },
+  "hl-fazit-methoden": {
+    "start": 29.11,
+    "duration": 3.05,
+    "end": 32.16
+  },
+  "hl-fazit-git": {
+    "start": 34.17,
+    "duration": 2.33,
+    "end": 36.5
+  },
+  "hl-fazit-web": {
+    "start": 37.65,
+    "duration": 2.74,
+    "end": 40.39
+  },
+  "card-leadership": {
+    "start": 40.73
+  },
+  "hl-fazit-vertrauen": {
+    "start": 43.4,
+    "duration": 3.02,
+    "end": 46.42
+  },
+  "hl-fazit-kultur": {
+    "start": 47.48,
+    "duration": 2.57,
+    "end": 50.05
+  },
+  "hl-fazit-partnerschaft": {
+    "start": 50.34,
+    "duration": 1.68,
+    "end": 52.02
+  }
+}
