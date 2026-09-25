@@ -29,6 +29,7 @@
     "export:slides": "node scripts/export-slides-pdf.js",
     "export:slides-thumbs": "node scripts/generate-slide-thumbnails.js",
     "validate:slides": "node scripts/validate-slides.js",
+    "validate:slides:syntax": "node scripts/validate-slides.js --syntax-only",
     "astro": "astro"
   },
   "dependencies": {
