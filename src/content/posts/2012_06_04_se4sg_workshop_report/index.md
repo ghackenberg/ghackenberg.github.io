@@ -14,3 +14,5 @@ After the presentations of the research and position papers we were thinking abo
 I am very optimistic things are going to pick up speed quickly and emerge into an interesting and vivid branch of computer science.
 
 ![Photo illustration from SE4SG Workshop Report](./photo.jpg "SE4SG Workshop Report - Photo illustration")
+
+*Historical Archive (2009–2017):* [← Previous: Leaving to ICSE tomorrow!](/posts/2012_05_31_leaving_to_icse_tomorrow/) | [Next: My SE4SG Presentation →](/posts/2012_06_05_se4sg_paper_presentation/)

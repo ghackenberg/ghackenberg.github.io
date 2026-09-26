@@ -32,3 +32,5 @@ Note that these are all digital drawings! Isn't that amazing?!
 
 For the future I hope to create many more of these visualizations to share my ideas on informatics, computer science, and software development.
 Maybe this naive and visual way of explanation is both interesting and entertaining even for a non-technical audience - very much as the photographies of outer space in the domain of physics/astronomy.
+
+*Historical Archive (2009–2017):* [← Previous: Linear vs. Cubic Interpolation](/posts/2011_02_22_linear_vs_cubic_interpolation/) | [Next: IEEE VR 2011 in Singapore →](/posts/2011_03_24_ieee_vr_2011_singapore/)

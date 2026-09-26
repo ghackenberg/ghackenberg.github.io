@@ -44,3 +44,5 @@ In the coming weeks I'll try to collect feedback to explain the workings of the 
 **If you like, you could for example post your answers to the above questions (preference, pros/cons) to the comment box below.
 And while you're at it, tell your friends and colleagues!
 The foundation of any good evaluation is the amount of feedback!**
+
+*Historical Archive (2009–2017):* [← Previous: Visualizing Software Systems](/posts/2011_06_08_visualizing_software_systems/) | [Next: The Information Visualization Problem →](/posts/2011_06_10_information_visualization_problem/)

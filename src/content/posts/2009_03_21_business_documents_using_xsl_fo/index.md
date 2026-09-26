@@ -241,4 +241,4 @@ By isolating corporate letterhead definitions in `Letter.xsl` and document-speci
 
 While Apache FOP provides an effective automated pipeline for document generation, integrating complex vector graphics can occasionally pose challenges. For highly mathematical or typesetting-heavy requirements, generating LaTeX source from XML is a powerful alternative, while XSL-FO remains an excellent solution for standard corporate business workflows.
 
-
+*Historical Archive (2009–2017):* [← Previous: XML-RPC based Spam Filtering.](/posts/2009_03_20_xml_rpc_based_spam_filtering/) | [Next: Augmented Reality Framework Screenshot. →](/posts/2009_03_24_augmented_reality_framework_screenshots/)

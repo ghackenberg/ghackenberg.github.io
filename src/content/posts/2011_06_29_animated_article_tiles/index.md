@@ -21,3 +21,5 @@ Again this is just another try at making blogs more fun and easy to navigate.
 What I like about this attempt is the animation of contents giving a more dynamic and lifely impression of the contents.
 I think a disadvantage is the amount of information provided at a single sight.
 This makes it difficult to grasp an overview and might make people feel lost at first.
+
+*Historical Archive (2009–2017):* [← Previous: Blog Calendar Interface](/posts/2011_06_28_blog_calendar_interface/) | [Next: Blog Cover Interface →](/posts/2011_06_30_blog_cover_interface/)

@@ -119,4 +119,4 @@ An object-oriented design might be more suited, to even support multiple graphs 
 I hope you like the idea for this toolkit.
 Give me some feedback!
 
-
+*Historical Archive (2009–2017):* [← Previous: HyperKit - A lightweight CMS written in PHP.](/posts/2009_05_30_hyperkit_leightweight_cms_php/) | [Next: Algorithm Debugging using OpenGL. →](/posts/2009_07_21_opengl_debugging_grid_3d/)

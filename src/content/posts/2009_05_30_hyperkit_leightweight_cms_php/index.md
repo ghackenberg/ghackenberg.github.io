@@ -46,3 +46,5 @@ In a later article, I will explain the technical aspects in greater detail.
 For now, you can have a look at the offical project page under [http://www.hyperkit-software.com](http://www.hyperkit-software.com).
 I hope to get feedback for the system.
 Maybe it can grow into a mature toolkit for web developers in the near future!
+
+*Historical Archive (2009–2017):* [← Previous: Diverse Logo Ideas.](/posts/2009_04_06_diverse_logo_ideas/) | [Next: JavaScript Graph Layout using SVG. →](/posts/2009_07_11_javascript_graph_layout_using_svg/)

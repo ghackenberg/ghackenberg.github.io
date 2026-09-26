@@ -28,3 +28,5 @@ The update functions finally copy the layout algorithm values to the DOM SVG nod
 
 Try it out yourself: `http://www.georg-hackenberg.de/interface/graph.html`.
 If you would like to provide such interface for your own website, access the code via [http://svn.hyperkit-software.com/personalblog/](http://svn.hyperkit-software.com/personalblog/).
+
+*Historical Archive (2009–2017):* [← Previous: Revised PHP/XML Blog Implementation](/posts/2012_01_04_revised_php_xml_blog_implementation/) | [Next: Effective Task Management with Whiteboard and Stickers →](/posts/2012_01_11_whiteboard_task_management/)

@@ -30,3 +30,5 @@ Also you can stay up-to-date with bug fixes, new features, and latest versions i
 I plan to extend the features of the source code portal on demand.
 Certainly, one of the next steps will be to include feed support for distributing news into the network.
 Also a discussion module should be available, probably similar to the one on my blog (which is easy to integrate).
+
+*Historical Archive (2009–2017):* [← Previous: Research Group Seminar Winter 2011](/posts/2011_04_21_research_group_seminar_winter_2011/) | [Next: From Sketch to Prototype →](/posts/2011_06_06_from_sketch_to_prototype/)

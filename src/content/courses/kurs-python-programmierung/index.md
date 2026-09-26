@@ -32,3 +32,9 @@ Dieses Modul führt Sie Schritt für Schritt in die Welt der Programmierung ein.
 3. **Kontrollfluss & Funktionen**: Fallunterscheidungen, Schleifen und das Schreiben wiederverwendbarer Code-Blöcke.
 4. **Fehlerbehandlung**: Umgang mit Exceptions und Eingabekommentaren.
 5. **Skripte & Module**: Aufteilen von Code in mehrere Dateien, Importieren von Standard-Bibliotheken (z. B. math, random, os).
+
+## Verwandte Module im Studienplan
+
+- [Datenanalyse mit Python](/courses/kurs-datenanalyse/)
+- [Software Engineering](/courses/kurs-software-engineering/)
+- [English Course: Python Programming](/courses/course-python-programming/)

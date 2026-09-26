@@ -66,3 +66,5 @@ Finally, the folder **interface** contains the views for the different blog inte
 
 These files are currently all that is required for running a simple PHP/XML blog.
 If you are interested you can access the entire sources via the public SVN repository: [http://svn.hyperkit-software.com/personalblog/](http://svn.hyperkit-software.com/personalblog/).
+
+*Historical Archive (2009–2017):* [← Previous: Promotional Smart Grid Videos](/posts/2011_08_12_promotional_smart_grid_videos/) | [Next: JavaScript/SVG Tag Graph Interface →](/posts/2012_01_05_javascript_svg_tag_graph/)

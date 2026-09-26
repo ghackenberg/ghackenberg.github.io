@@ -1,13 +1,13 @@
 ---
-title: "WebGL Network Visualization & Graph Engines"
+title: "WebGL Network Visualization: Vis.js, Sigma & Canvas Compared"
 pubDate: "2026-05-27"
 lang: "en"
-description: "Explore interactive network graph visualizations in Astro: How we unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware styling."
+description: "How to render large-scale network graphs in the browser: Performance comparison of WebGL, Three.js, Canvas, Vis.js, and Sigma.js with live interactive demos."
 tags: ["astro", "computer-graphics", "cytoscape", "d3", "data-visualization", "javascript", "threejs", "visjs", "webgl"]
 icon:
   src: "./icon.png"
-  title: "Cover illustration: WebGL Network Visualization & Graph Engines"
-  description: "Explore interactive network graph visualizations in Astro: How we unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware styling."
+  title: "Cover illustration: WebGL Network Visualization: Vis.js, Sigma & Canvas Compared"
+  description: "How to render large-scale network graphs in the browser: Performance comparison of WebGL, Three.js, Canvas, Vis.js, and Sigma.js with live interactive demos."
 ---
 To help visitors explore the relationships between topics, blog posts, and academic publications, this website features interactive network graph visualizations. Recently, we gave this visualization system a major architectural and aesthetic overhaul. 
 
@@ -38,7 +38,7 @@ export default {
 }
 ```
 
-The Astro template [[slug].astro](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/pages/visualizations/%5Bslug%5D.astro) dynamically imports the selected engine at runtime using code splitting:
+The Astro template [`[slug].astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/visualizations/%5Bslug%5D.astro) dynamically imports the selected engine at runtime using code splitting:
 
 ```javascript
 const engineModule = await import(`../../content/visualizations/${type}/engine.js`);
@@ -49,6 +49,8 @@ activeInstance = await engine.init(container, payload, currentLayout, isLight);
 This drastically reduces the initial page bundle size, loading dependencies like Three.js or Vis.js only when the user selects that specific engine.
 
 ## 2. Which WebGL and Canvas Engines Power Interactive Graph Visualizations?
+
+Interactive network graph visualizations in modern web applications rely on a choice between WebGL shader pipelines and HTML5 2D canvas rendering. While WebGL (Sigma.js, Three.js) excels at high node throughput exceeding 50,000 entities, Canvas engines (Vis.js, Cytoscape.js) offer superior tactile drag-and-drop physics and compound clustering for smaller networks.
 
 Alongside our existing Cytoscape, D3, and Sigma engines, we introduced two new visualization engines:
 
@@ -61,7 +63,7 @@ Alongside our existing Cytoscape, D3, and Sigma engines, we introduced two new v
 | **D3.js** | SVG Vector DOM | 50–500 | D3-Force Velocity Verlet | Vector typography & crisp publication graphics |
 
 ### 3D Force Graph (WebGL & Three.js)
-The 3D Force Graph engine ([3d-force/engine.js](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/content/visualizations/3d-force/engine.js)) renders the network as a floating three-dimensional sphere. 
+The 3D Force Graph engine ([`3d-force/engine.js`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/visualizations/3d-force/engine.js)) renders the network as a floating three-dimensional sphere. 
 
 ![3D Force Graph Preview](./3d-force.png "3d Force")
 

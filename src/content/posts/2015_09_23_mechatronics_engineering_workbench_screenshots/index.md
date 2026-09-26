@@ -32,3 +32,5 @@ In the given case the simulation-based test can be finished successfully and the
 
 In the coming weeks I plan to prepare a YouTube video explaining the tool and the underlying engineering method in greater detail.
 So stay tuned if you are interested in the topic!
+
+*Historical Archive (2009–2017):* [← Previous: Hyperkit Software&#8482; goes online!](/posts/2015_07_27_hyperkit_software_goes_online/) | [Next: Integrated transportation and power systems modeling →](/posts/2015_10_02_integrated_transportation_and_power_system_modeling/)

@@ -32,3 +32,8 @@ We focus on building multi-device client applications (targeting iOS, Android, W
 2. **REST API Design with ASP.NET Core**: Controller routing, dependency injection, middleware pipelines, and OpenAPI/Swagger documentation.
 3. **Data Access & Storage**: Connecting Entity Framework Core, designing database schemas, and applying repository patterns.
 4. **Integration & Security**: HTTP requests in C#, handling JSON serialization, token authentication, and API security.
+
+## Related Curriculum Modules
+
+- [Software Engineering](/courses/kurs-software-engineering/)
+- [TypeScript & Firebase](/courses/kurs-typescript-firebase/)

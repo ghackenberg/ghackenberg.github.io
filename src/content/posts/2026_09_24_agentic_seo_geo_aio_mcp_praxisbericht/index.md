@@ -12,7 +12,7 @@ icon:
 
 Suchmaschinenoptimierung im Zeitalter generativer KI-Systeme erfordert einen radikalen Strategiewechsel: Während klassische SEO-Tools historische Rankings und isolierte Backlink-Profile analysieren, verlangen **Generative Engine Optimization (GEO)** und **AI Overviews (AIO)** deterministische Faktenextraktion, dichte Antwortparagrafen und ganzheitliche Telemetriedaten.
 
-In einem vorangegangenen Architekturbeitrag haben wir die technische Konzeption unseres **Unified Analytics MCP Servers** vorgestellt. In diesem Praxisbericht dokumentieren wir die empirischen Erfahrungen aus dem Live-Einsatz: Wie steuert ein autonomer Programmieragent über das Model Context Protocol (MCP) Google Search Console (GSC) und Plausible Analytics an, identifiziert verborgene Traffic-Chancen und restrukturiert Quelltexte vollautomatisch vor dem Git-Commit?
+In einem vorangegangenen Architekturbeitrag haben wir die technische Konzeption unseres [Unified Analytics MCP Servers](/posts/2026_09_23_unified_analytics_mcp_server_seo_geo_aio/) vorgestellt. Im Zusammenspiel mit unserem [GEO-Reifegradmodell für Industrieunternehmen](/posts/2026_09_13_geo_reifegradmodell_industrie_unternehmen/) und den Erkenntnissen zum [B2B ROI-Paradoxon bei Zero-Click-Zitationen](/posts/2026_09_14_roi_paradoxon_b2b_zero_click_citations/) dokumentieren wir in diesem Praxisbericht die empirischen Erfahrungen aus dem Live-Einsatz: Wie steuert ein autonomer Programmieragent über das Model Context Protocol (MCP) Google Search Console (GSC) und Plausible Analytics an, identifiziert verborgene Traffic-Chancen und restrukturiert Quelltexte vollautomatisch vor dem Git-Commit?
 
 ## Wie funktioniert der geschlossene Regelkreis aus Agent und MCP-Server?
 
@@ -120,4 +120,4 @@ In unserem Testlauf steigerte die automatisierte Überarbeitung den AIO-Score al
 
 Die Kopplung spezialisierter MCP-Server mit modernen Coding-Agenten markiert das Ende isolierter SEO-Silos. Indem Performancedaten, Indexierungsprüfungen und redaktionelle Richtlinien direkt im Entwickler-Workflow verankert werden, entsteht eine sich selbst optimierende Web-Architektur.
 
-Für technische Publikationen bedeutet dies: Maximale Lesbarkeit für menschliche Leser durch klare Informationsarchitektur – und gleichzeitig optimale Maschinenlesbarkeit für die KI-Suchmaschinen der nächsten Generation.
+Für technische Publikationen bedeutet dies: Maximale Lesbarkeit für menschliche Leser durch klare Informationsarchitektur – und gleichzeitig optimale Maschinenlesbarkeit für die KI-Suchmaschinen der nächsten Generation. Diesen Ansatz setzen wir auch in unseren interaktiven Präsentationen mit unserer [Slide-as-Code & Voiceover Engine](/posts/2026_09_26_presentation_engine_slide_as_code_voiceover/) sowie räumlichen Avataren wie dem [3D Comic Head mit WebGL POM](/posts/2026_09_25_3d_comic_head_webgl_pom_depth_anything/) konsequent fort.

@@ -21,3 +21,5 @@ The idea was actually inspired by two concepts: The article tiles and the standa
 In the future it might be interesting to extend the interface with a flow-style animation when switching between articles.
 Also a widget showing the current position in the timeline could facilitate navigation through the articles.
 However, to scale to large numbers of articles only an excerpt from the timeline might be interesting.
+
+*Historical Archive (2009–2017):* [← Previous: Animated Article Tiles](/posts/2011_06_29_animated_article_tiles/) | [Next: Fraunhofer Prize Award 2011 →](/posts/2011_07_04_fraunhofer_prize_award_2011/)

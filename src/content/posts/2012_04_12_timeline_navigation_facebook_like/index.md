@@ -26,3 +26,5 @@ Again, the article links are enriched with community likes to point out interest
 
 I hope you like the new features.
 If so, you can tell me via Facebook! `;-)`
+
+*Historical Archive (2009–2017):* [← Previous: Paper accepted for ICSE'2012 workshop on SE4SG!](/posts/2012_04_05_icse_2012_se4sg_workshop_paper/) | [Next: Smart grid seminar started today! →](/posts/2012_04_16_smart_grid_seminar/)

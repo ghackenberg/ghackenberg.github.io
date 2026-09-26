@@ -33,3 +33,8 @@ Dieser Kurs richtet sich an Studierende, die solide Grundlagen in der objektorie
 3. **Datenstrukturen**: Listen, Sets, Maps und das Java Collections Framework.
 4. **Fehlerbehandlung & Input/Output**: Exceptions (try-catch), Dateiverarbeitung und Streams.
 5. **Softwaretests**: Schreiben von Unit Tests mit JUnit zur automatisierten Absicherung der Codequalität.
+
+## Verwandte Module im Studienplan
+
+- [Software Engineering](/courses/kurs-software-engineering/)
+- [Python-Programmierung](/courses/kurs-python-programmierung/)

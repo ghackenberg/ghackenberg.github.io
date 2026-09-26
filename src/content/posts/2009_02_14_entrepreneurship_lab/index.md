@@ -25,3 +25,5 @@ Finally, this is how a contact page looks like:
 ![Contact illustration from Entrepreneurship Lab Screenshots.](./contact.png "Entrepreneurship Lab Screenshots - Contact illustration")
 
 I hope, you got a nice impression.
+
+*Historical Archive (2009–2017):* [← Previous: Java Runtime UML.](/posts/2009_02_12_java_runtime_uml/) | [Next: Lightweight Blog Implementation. →](/posts/2009_02_17_lightweight_blog_implementation/)

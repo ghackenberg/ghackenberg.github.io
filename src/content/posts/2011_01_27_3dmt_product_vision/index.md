@@ -29,3 +29,5 @@ But I truely believe that future work spaces in many professions will have simil
 
 At last it is left to say that if you like the idea and you are interested in contributing do not hesitate to contact me!
 Brilliant tools are always a product of social interaction in many ways!
+
+*Historical Archive (2009–2017):* [← Previous: Improved Website Usability!](/posts/2011_01_19_website_usability_redesign/) | [Next: 3D Cubic Interpolation Video →](/posts/2011_02_02_cubic_interpolation_demo/)

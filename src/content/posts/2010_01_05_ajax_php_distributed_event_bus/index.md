@@ -232,4 +232,4 @@ while (!flock($lock, LOCK_UN)) {
 I hope you enjoyed the demonstration of this sweet little piece of technology.
 If you have further questions or want to play with the code, just drop me a line.
 
-
+*Historical Archive (2009–2017):* [← Previous: XML Template Engine using PHP.](/posts/2010_01_04_php_xml_template_engine/) | [Next: Master Thesis Video. →](/posts/2010_06_27_master_thesis_video/)

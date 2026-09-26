@@ -24,3 +24,5 @@ Read the paper to understand the difference `;)`.
 I hope you enjoyed the demonstration.
 Stay tuned for new results in the coming months!
 E.g. we are building a 3D web browser prototype for evaluating gestural interaction.
+
+*Historical Archive (2009–2017):* [← Previous: Algorithm Debugging using OpenGL.](/posts/2009_07_21_opengl_debugging_grid_3d/) | [Next: XML Template Engine using PHP. →](/posts/2010_01_04_php_xml_template_engine/)

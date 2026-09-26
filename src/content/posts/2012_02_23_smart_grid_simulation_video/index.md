@@ -41,3 +41,5 @@ The transformation is straightforward: Rows in the spreadsheet are array indices
 
 Right now we are working on extending the simulation model and developing better visualizations on top.
 Ultimalte goal is a true large-scale simulation model for developing and testing smart control algorithms.
+
+*Historical Archive (2009–2017):* [← Previous: Managing/Publishing Your Resume with PHP and XML](/posts/2012_02_14_online_xml_php_resume/) | [Next: 3D Multi-Touch Master Thesis →](/posts/2012_03_15_3d_multi_touch_master_thesis/)

@@ -313,3 +313,5 @@ Mit dieser Architektur generieren wir in Sekunden druckreife Hero-Grafiken, Soci
 * **Astro Content Layer:** [`src/content.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content.config.ts) – Formale Zod-Schemadefinitionen für Charaktere, Objekte und Umgebungen.
 * **Research Paper:** *Zhang et al. (2023): „Adding Conditional Control to Text-to-Image Diffusion Models (ControlNet)“*, IEEE/CVF ICCV 2023.
 * **Research Paper:** *Ye et al. (2023): „IP-Adapter: Text-Compatible Image Prompt Adapter for Text-to-Image Diffusion Models“*, arXiv:2308.06721.
+* **Parallax Visualisierung:** [Dynamische Parallax Content Gallery Engine in Astro](/posts/2026_09_15_dynamic_parallax_content_gallery_engine/) – Wie wir generierte Bildwelten mit flüssigen Parallax-Effekten im DOM inszenieren.
+* **3D WebGL Avatar:** [3D Comic Head mit WebGL POM & Depth Anything](/posts/2026_09_25_3d_comic_head_webgl_pom_depth_anything/) – Räumliche Parallax-Occlusion-Porträts aus 2D-Illustrationen.

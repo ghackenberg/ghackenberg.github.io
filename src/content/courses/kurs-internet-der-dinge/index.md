@@ -32,3 +32,8 @@ Das IoT revolutioniert die industrielle Produktion und unseren Alltag. Sie lerne
 2. **Firmware-Entwicklung**: Schreiben von ressourceneffizientem Steuerungscode in C# (.NET nanoFramework / IoT APIs).
 3. **Kommunikationsprotokolle**: MQTT (Publish/Subscribe-Architektur), JSON-Payloads und HTTP-Schnittstellen.
 4. **IoT-Plattformen am Beispiel von ThingsBoard**: Geräteregistrierung, Rule-Engine-Konfiguration, Alarmierung und Dashboard-Erstellung.
+
+## Verwandte Module im Studienplan
+
+- [Digital Factory](/courses/course-digital-factory/)
+- [Systems Engineering](/courses/kurs-systems-engineering/)

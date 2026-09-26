@@ -19,3 +19,5 @@ We hope these two public website will make it easier for you to get the informat
 We believe it is just the beginning of this branch of technology and there is great potential for solutions and products on a quickly emerging market.
 So better jump on the train!
 `;-)`
+
+*Historical Archive (2009–2017):* [← Previous: A Mental Picture of Science.](/posts/2011_07_25_mental_picture_science/) | [Next: Promotional Smart Grid Videos →](/posts/2011_08_12_promotional_smart_grid_videos/)

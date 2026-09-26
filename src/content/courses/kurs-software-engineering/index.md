@@ -59,3 +59,12 @@ Grundlegende Programmierkenntnisse in einer modernen objektorientierten Sprache 
 
 ### Sind die Lehrmaterialien und Code-Beispiele öffentlich zugänglich?
 Ja, alle zugehörigen Vorlesungsunterlagen, Folien und lauffähigen C#-Code-Beispiele stehen im verlinkten Open-Source GitHub Repository zur freien Verfügung und können für das Selbststudium genutzt werden.
+
+### Welche weiterführende Literatur zur kognitiven Ergonomie wird empfohlen?
+Für das Zusammenspiel von Software-Architekturen, mentalen Modellen und Usability-Design empfehlen wir den begleitenden Leitartikel [Kognitive Ergonomie & UX: Psychologie moderner IT-Systeme](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/).
+
+## Verwandte Module im Studienplan
+
+- [Java-Programmierung](/courses/kurs-java-programmierung/)
+- [Systems Engineering](/courses/kurs-systems-engineering/)
+- [TypeScript & Firebase](/courses/kurs-typescript-firebase/)

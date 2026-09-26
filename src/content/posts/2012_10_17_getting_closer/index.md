@@ -25,3 +25,5 @@ After sun power is gone the storage level drops to feed the refrigerators with e
 
 In the next steps we plan to extend the model with other types of energy components.
 Further, we are working on scaling the problem to village, city and country sizes.
+
+*Historical Archive (2009–2017):* [← Previous: Meet EnergyCity - A Virtual Testbed for Smartness](/posts/2012_08_30_meet_energycity/) | [Next: Collective Learning - A New Approach →](/posts/2012_11_23_collective_learning/)

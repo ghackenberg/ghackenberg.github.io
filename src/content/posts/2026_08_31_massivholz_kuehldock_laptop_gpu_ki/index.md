@@ -95,7 +95,10 @@ Gutes Arbeitsplatzdesign der Zukunft besteht nicht nur aus Software und Bildschi
 
 Der minimalistische Leichtbau-Holzständer beweist, dass thermische Ingenieurskunst und nachhaltiges Produktdesign keine Gegensätze sind: Er schützt teure Workstation-Hardware vor thermischem Verschleiß, sichert maximale Rechenleistung für anspruchsvolle KI- und CAD-Aufgaben und bereichert den Schreibtisch als ästhetisches Statement gegen die Wegwerfkultur aus Plastik.
 
-Vertiefende Einblicke in moderne Arbeitsplatz- und Hardware-Systeme finden Sie in den folgenden Beiträgen:
+Vertiefende Einblicke in moderne Arbeitsplatz- und Hardware-Systeme sowie computergestützte Simulation finden Sie in den folgenden Beiträgen und Lehrveranstaltungen:
 - [KI-basierte ergonomische Arbeitsumgebungen: Sensorik, Aktorik und adaptive Möbel](/posts/2026_08_10_ki_basierte_ergonomische_arbeitsumgebungen/)
+- [GPU Wassersimulation & Partikel-Dynamik in WebGL](/posts/2026_05_25_gpu_water_simulation_delta_dynamics/)
+- [Hochschulkurs: Systems Engineering & Modellgetriebene Entwicklung](/courses/kurs-systems-engineering/)
+- [Hochschulkurs: Computer Simulation & Dynamische Systeme](/courses/kurs-computer-simulation/)
 - [Standardisierter Open-Source Agentic AI Tech Stack für lokale Entwicklung](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/)
 - [Consulting & Systemarchitektur für Künstliche Intelligenz](/services/ai/)

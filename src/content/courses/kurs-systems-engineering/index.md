@@ -34,3 +34,9 @@ Wir fokussieren uns in diesem Kurs auf die modellbasierte Systementwicklung (Mod
 3. **Simulink-Modellierung**: Blockdiagramme, kontinuierliche und diskrete Simulation, Solver-Einstellungen.
 4. **Regelungstechnik**: PID-Regler Entwurf, Feedback-Schleifen und Stabilitätsbewertungen.
 5. **Systemanalyse**: Frequenzkennlinien (Bode-Diagramme) und Sprungantworten auswerten.
+
+## Verwandte Module im Studienplan
+
+- [Software Engineering](/courses/kurs-software-engineering/)
+- [Computer Simulation](/courses/kurs-computer-simulation/)
+- [Digital Factory](/courses/course-digital-factory/)

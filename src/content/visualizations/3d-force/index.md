@@ -22,6 +22,6 @@ The **3D Force Graph** visualization projects the website's interconnected netwo
 - **3D Vector Physics Simulation**: Rather than constraining forces to planar vectors, the physics solver evaluates spring tension and charge repulsion across all three Cartesian axes ($x, y, z$).
 - **Orbital Camera & Directional Particles**: Full orbit controller integration enables smooth fly-through navigation, highlighted by animated particles indicating semantic link directionality.
 
-For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
+For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [WebGL Network Visualization: Vis.js, Sigma & Canvas Compared](/posts/2026_05_27_interactive_graph_visualizations_update/).
 
 

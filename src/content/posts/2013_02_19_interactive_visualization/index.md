@@ -26,3 +26,5 @@ The App basically adds a single Android Activity class including a WebView compo
 
 In the future we plan to extend the application with a number of visualization components.
 The goal is to enable people understanding the complex behavior of smart energy systems.
+
+*Historical Archive (2009–2017):* [← Previous: Guided Behavior Space Exploration](/posts/2013_01_16_guided_exploration/) | [Next: Reviewing the last year of smart grid research →](/posts/2013_03_11_web_content_graph/)

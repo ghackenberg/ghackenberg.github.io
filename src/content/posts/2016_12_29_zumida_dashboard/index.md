@@ -30,3 +30,5 @@ Furthermore, the search matches are highlighted inside the topic names.
 I hope you like the new zumida dashboard!
 If you like, just try it out at [www.zumida.com](https://www.zumida.com/).
 I'd be grateful for any type of feedback.
+
+*Historical Archive (2009–2017):* [← Previous: The new zumida user interface revealed!](/posts/2016_09_28_zumida_user_interface/) | [Next: A new zumida video is out on YouTube! →](/posts/2017_03_05_zumida_video/)

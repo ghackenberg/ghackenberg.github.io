@@ -14,3 +14,5 @@ The visualization shows the traces explored, while some traces are omitted due t
 ![Rendering illustration from 3D Trace Visualization](./rendering.png "3D Trace Visualization - Rendering illustration")
 
 Currently we are working on improving the visualization to get a better picture of the axes and their meaning as well as the behavior exhibited within the individual traces.
+
+*Historical Archive (2009–2017):* [← Previous: Reviewing the last year of smart grid research](/posts/2013_03_11_web_content_graph/) | [Next: Teaser: Smart Traffic Control →](/posts/2013_12_18_smart_traffic_control/)

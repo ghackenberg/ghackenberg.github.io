@@ -45,3 +45,5 @@ As typical for many other modeling techniques, the controller behavior is modele
 Currently, we are working on a video demonstrating the tool and its features.
 We are also thinking about releasing the prototypical tooling under some appropriate license.
 If you are interested, let me know!!
+
+*Historical Archive (2009–2017):* [← Previous: Integrated transportation and power systems modeling](/posts/2015_10_02_integrated_transportation_and_power_system_modeling/) | [Next: MaCon YouTube Video →](/posts/2015_12_02_macon_youtube_video/)

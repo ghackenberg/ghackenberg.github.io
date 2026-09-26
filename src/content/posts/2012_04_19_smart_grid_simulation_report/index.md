@@ -21,3 +21,5 @@ Smartness refers to the ability to keep the electric power system in balance whi
 The current system configuration serves as a virtual testbed for evaluating smart control approaches.
 
 If you are interested in knowing more about the software and the approach behind just contact me via this page or via email!
+
+*Historical Archive (2009–2017):* [← Previous: Smart grid seminar started today!](/posts/2012_04_16_smart_grid_seminar/) | [Next: Software logo sketches with graphics tablet/pen. →](/posts/2012_04_24_software_logo_tablet_pen_sketches/)

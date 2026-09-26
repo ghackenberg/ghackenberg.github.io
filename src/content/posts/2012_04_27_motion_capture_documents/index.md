@@ -41,3 +41,5 @@ The prototype was based on a custom C++ plugin framework.
 
 In another article I might show you how the custom C++ plugin framework was implemented.
 It was actually a very interesting experience for me, as plugin framework design turns out to be a challenging task.
+
+*Historical Archive (2009–2017):* [← Previous: Software logo sketches with graphics tablet/pen.](/posts/2012_04_24_software_logo_tablet_pen_sketches/) | [Next: Leaving to ICSE tomorrow! →](/posts/2012_05_31_leaving_to_icse_tomorrow/)

@@ -41,3 +41,5 @@ The final group is compiled from **JavaScript** projects.
 Sketching these logos has been a matter of minutes with a Tablet PC and MyPaint.
 Of course, in most projects the sketches won't be used as the final versions of the logo.
 But they serve as immediate drivers towards the final version.
+
+*Historical Archive (2009–2017):* [← Previous: Second report on smart grid simualtion.](/posts/2012_04_19_smart_grid_simulation_report/) | [Next: 3D Motion Capture Documents from my PhD Studies at EPFL. →](/posts/2012_04_27_motion_capture_documents/)

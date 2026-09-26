@@ -16,3 +16,5 @@ The selected control strategy cools down the refrigerators when solar energy is 
 At night time the temperatures are rising to an upper limit.
 
 ![Diagram illustration from Using Solar Energy to Power Refrigerators](./diagram.png "Using Solar Energy to Power Refrigerators - Diagram illustration")
+
+*Historical Archive (2009–2017):* [← Previous: Follow-Up on Denis' MSE Article](/posts/2012_07_03_mse_follow_up/) | [Next: How to Scale Refrigerator Powering Strategies →](/posts/2012_07_16_behavior_space_exploration/)

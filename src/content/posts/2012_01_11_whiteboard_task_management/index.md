@@ -22,3 +22,5 @@ Simplicity means reduced overhead to organize your tasks.
 Flexibility means being prepared for most situations.
 Both factors lead to an effective technique.
 In particular, this holds for my current work environment and probably for many others as well.
+
+*Historical Archive (2009–2017):* [← Previous: JavaScript/SVG Tag Graph Interface](/posts/2012_01_05_javascript_svg_tag_graph/) | [Next: Managing Our Team Roadmap with MediaWiki →](/posts/2012_01_17_mediawiki_team_roadmap/)

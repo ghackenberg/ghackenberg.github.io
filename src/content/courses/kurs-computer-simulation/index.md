@@ -31,3 +31,9 @@ Die Simulation ist eine Schlüsseltechnologie in der modernen Produktentwicklung
 2. **Objektorientierte Modellierung**: Strukturierung von Simulationsumgebungen mit Klassen und Zustandsautomaten.
 3. **Praktische Umsetzung in C#**: Aufbau eines eigenen eventgesteuerten Simulators (Discrete Event Simulator).
 4. **Verifikation & Validierung**: Sicherstellen der Modellkorrektheit, Fehlerquellen erkennen und Messergebnisse statistisch absichern.
+
+## Verwandte Module im Studienplan
+
+- [Systems Engineering](/courses/kurs-systems-engineering/)
+- [Datenanalyse](/courses/kurs-datenanalyse/)
+- [Digital Factory](/courses/course-digital-factory/)

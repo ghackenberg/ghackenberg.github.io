@@ -41,3 +41,5 @@ For the illustration this means that the meta nodes are translated into areas an
 
 Obviously, this is just a single and small example for the visualization problem and there are my more aspects to it than indicated here.
 Nevertheless, I hope you gained a basic understanding for the complexity of the issue, but also the need for proper models, tools and techniques to create efficient visualizations.
+
+*Historical Archive (2009–2017):* [← Previous: Comparing Interface Design Options](/posts/2011_06_09_comparing_design_options/) | [Next: The Evolution of a Functional Prototype →](/posts/2011_06_11_functional_prototype_evolution/)

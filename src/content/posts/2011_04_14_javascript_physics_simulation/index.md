@@ -43,3 +43,5 @@ If I find the time I will also make sure to compile a package of the prototype f
 So far it is just a bunch of files lying around on the hard disk.
 In particular there are also dependencies on proprietary JavaScript libraries which have to be resolved properly.
 Nevertheless I hope this is something of interest for you.
+
+*Historical Archive (2009–2017):* [← Previous: Stick Figure Drawing Exercise](/posts/2011_03_27_stick_figure_drawing_exercise/) | [Next: Research Group Seminar Winter 2011 →](/posts/2011_04_21_research_group_seminar_winter_2011/)

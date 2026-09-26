@@ -25,3 +25,5 @@ Interaction takes place by clicking the pages and dragging them into the center 
 
 Personally, this was a very interesting and exciting project for me and I am happy to share this information with you.
 If you have questions or would like to know more about my experiences with developing such kind of technology do not hesitate to contact me.
+
+*Historical Archive (2009–2017):* [← Previous: Describing the Structure of Information](/posts/2011_06_21_information_structure_notation/) | [Next: Blog Timeline Widget →](/posts/2011_06_27_blog_timeline_widget/)

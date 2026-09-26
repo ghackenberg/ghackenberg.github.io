@@ -38,3 +38,5 @@ To quickly understand the concept just have a look at the following screenshot.
 I hope you liked the idea of having your resume back'ed by an XML data storage.
 At least, having the data available now I will see where I can go in terms of visualization and interaction.
 Maybe something nice and useful comes out!
+
+*Historical Archive (2009–2017):* [← Previous: Software Campus - A new academic excellence program.](/posts/2012_02_13_software_campus_fellowship/) | [Next: First Results on Smart Grid Simulation as YouTube Video →](/posts/2012_02_23_smart_grid_simulation_video/)

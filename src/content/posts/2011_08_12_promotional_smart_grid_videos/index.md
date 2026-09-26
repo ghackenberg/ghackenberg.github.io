@@ -28,3 +28,5 @@ I think, the video gives a good introduction to the topic despite being very com
 
 I hope these two videos provide a good motivation for working in the area of smart grids and energy systems.
 Doing research in this area myself now for about one month my excitement and couriousity for the topic is always increasing, as are the [questionmarks](/posts/2011_07_25_mental_picture_science/) in my head `;-)`.
+
+*Historical Archive (2009–2017):* [← Previous: Official 3D Multi-Touch Websites](/posts/2011_07_29_official_3dmt_websites/) | [Next: Revised PHP/XML Blog Implementation →](/posts/2012_01_04_revised_php_xml_blog_implementation/)

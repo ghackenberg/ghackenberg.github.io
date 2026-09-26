@@ -14,3 +14,5 @@ This is always welcome.
 You find the respective contact information on our profile pages of this website.
 
 <iframe title="Video player" src="//www.slideshare.net/slideshow/embed_code/13208812" frameborder="0" allowfullscreen="yes"></iframe>
+
+*Historical Archive (2009–2017):* [← Previous: SE4SG Workshop Report](/posts/2012_06_04_se4sg_workshop_report/) | [Next: Visualizing our Smart Grid Simulation →](/posts/2012_06_11_visualizing_grid_simulation/)

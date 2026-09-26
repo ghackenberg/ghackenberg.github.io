@@ -103,9 +103,11 @@ Das vollständige Visionsdokument liegt aktuell als **Version 0.1 (Initialer Dis
   </a>
 </div>
 
-Weiterführende Informationen zu meinen akademischen Aktivitäten und Beratungsangeboten:
+Weiterführende Informationen zu meinen akademischen Aktivitäten, regionalen Konzepten und Beratungsangeboten:
 - [Akademische Vorlesungen & Lehre an der FH Oberösterreich](/courses/)
-- [Scientific Advisory & Forschungskooperationen](/services/scientific-advisory/)
+- [Smarte Tiefenbewässerung & ökologische Bodeninfrastruktur](/posts/2026_08_30_smarte_tiefenbewaesserung_bodenstruktur/)
+- [Mindful IT & Calm Computing: Architekturprinzipien](/posts/2026_09_02_mindful_it_calm_computing_software_architektur/)
 - [Hardware & smarte Arbeitsplatzsysteme: Massivholz-Kühldock](/posts/2026_08_31_massivholz_kuehldock_laptop_gpu_ki/)
+- [Scientific Advisory & Forschungskooperationen](/services/scientific-advisory/)
 
 Ich freue mich über Ihr Feedback, Ihre Anregungen und interessante Kooperationsgespräche!

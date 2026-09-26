@@ -14,3 +14,5 @@ In particular, articles are now devided into (1) global information about the IT
 
 I hope you like the changes and feel that the website has improved in terms of readability and browsability.
 Also, suggestions are always welcome, after all this blog is also just a prototype and playground for trying and elaborating on ideas.
+
+*Historical Archive (2009–2017):* [← Previous: Master Thesis Video.](/posts/2010_06_27_master_thesis_video/) | [Next: 3D Multi-Touch Product Vision →](/posts/2011_01_27_3dmt_product_vision/)

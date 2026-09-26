@@ -25,3 +25,5 @@ The red lines represent the local temperatures, while the dashed blue line depic
 Beyond the presented we have been working on larger problems including up to 100 individuals.
 The approach seems to be feasible for exploring goal-oriented behavior in various situations.
 We hope to make a valuable contribution for introducing machine learning techniques into classical software engineering.
+
+*Historical Archive (2009–2017):* [← Previous: Collective Learning - A New Approach](/posts/2012_11_23_collective_learning/) | [Next: Guided Behavior Space Exploration →](/posts/2013_01_16_guided_exploration/)

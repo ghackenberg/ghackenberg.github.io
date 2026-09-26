@@ -16,3 +16,5 @@ In contrast, the energy storage loads during high solar power times and unloads 
 
 Interestingly, unloading the storage helps to delay powerhouse usage a little therefore decreasing fossil energy usage.
 In following studies we investigate the usage of energy storage further!
+
+*Historical Archive (2009–2017):* [← Previous: Optimizing Powerhouse Control](/posts/2012_08_17_optimizing_powerhouse_control/) | [Next: Meet EnergyCity - A Virtual Testbed for Smartness →](/posts/2012_08_30_meet_energycity/)

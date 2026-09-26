@@ -15,3 +15,5 @@ Download the document here:
 I hope you like the two-column layout.
 The intention was to get everything interesting packed onto one page.
 Give me feedback, if you like!
+
+*Historical Archive (2009–2017):* [← Previous: Personal Website launched!](/posts/2009_02_11_personal_website_launched/) | [Next: Java Runtime UML. →](/posts/2009_02_12_java_runtime_uml/)

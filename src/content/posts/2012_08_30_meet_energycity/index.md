@@ -17,3 +17,5 @@ The visualization uses WebGL and SceneJS for 3D rendering and Google Charts for 
 In the future we plan to extend our tool chain and develop a more realistic model of **EnergyCity**.
 The testbed also will be used in a practical course at university to teach students about the smart grid, model-driven engineering and distributed control.
 As soon as we have a stable version ready we plan to release the models and tools for others.
+
+*Historical Archive (2009–2017):* [← Previous: Using Energy Storage](/posts/2012_08_20_using_energy_storage/) | [Next: Getting Closer to Actual Balance →](/posts/2012_10_17_getting_closer/)
