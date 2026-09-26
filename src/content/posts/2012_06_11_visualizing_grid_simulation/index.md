@@ -17,3 +17,5 @@ Start cooling as soon as temperature rises above a certain threshold.
 Enjoy the demonstration and leave comments if you like!
 
 <iframe title="Video player" src="//www.youtube.com/embed/rY7ZRqeVVUo?feature=player_detailpage" frameborder="0" allowfullscreen="yes"></iframe>
+
+*Historical Archive (2009–2017):* [← Previous: My SE4SG Presentation](/posts/2012_06_05_se4sg_paper_presentation/) | [Next: Smart Grid Research Initiative →](/posts/2012_06_19_smart_grid_research_initiative/)

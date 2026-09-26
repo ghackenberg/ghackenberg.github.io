@@ -36,3 +36,5 @@ Finally, the findings are summarized and future work is listed.
 
 If you have feedback or questions please do not hestitate to contact me!
 Use the comment feature below to give other people the chance to engage into the discussion.
+
+*Historical Archive (2009–2017):* [← Previous: First Results on Smart Grid Simulation as YouTube Video](/posts/2012_02_23_smart_grid_simulation_video/) | [Next: Paper accepted for ICSE'2012 workshop on SE4SG! →](/posts/2012_04_05_icse_2012_se4sg_workshop_paper/)

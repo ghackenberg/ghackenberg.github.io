@@ -29,3 +29,5 @@ The time required approximately doubles due to double the number of state variab
 
 The key behind the results is guided behavior space exploration, i.e. the model is enriched with little extra information that can be used by the algorithm to generate better results.
 Now we are working on a technical demonstration of the presented technique.
+
+*Historical Archive (2009–2017):* [← Previous: Machine Learning: Model and Trace](/posts/2012_12_20_machine_learning_experiment/) | [Next: Model Visualization for Windows and Android →](/posts/2013_02_19_interactive_visualization/)

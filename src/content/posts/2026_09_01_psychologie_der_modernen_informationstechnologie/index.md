@@ -1,13 +1,13 @@
 ---
-title: "Psychologie der modernen Informationstechnologie"
+title: "Kognitive Ergonomie & UX: Psychologie moderner IT-Systeme"
 pubDate: "2026-09-01"
 lang: "de"
-description: "Interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Dopamin-Schleifen und Aufmerksamkeitsökonomie moderne Software-Architekturen prägen."
+description: "Warum überfordern moderne Software-Architekturen die menschliche Kognition? Tiefenanalyse zu kognitiver Ergonomie, Recommender-Systemen und UX-Design."
 tags: ["psychology", "cyberpsychology", "cognitive-science", "artificial-intelligence", "software-architecture", "human-computer-interaction", "social-media"]
 icon:
   src: "./icon.jpg"
-  title: "Titelgrafik: Psychologie der modernen Informationstechnologie: Stand der Wissenschaft und Stand der Technik"
-  description: "Eine interdisziplinäre Bestandsaufnahme: Wie Kognitionswissenschaft, Aufmerksamkeitsökonomie, Cyberpsychologie, Software-Architekturen und kommerzielle KI-Ökosysteme ineinandergreifen."
+  title: "Titelgrafik: Kognitive Ergonomie & UX: Psychologie moderner IT-Systeme"
+  description: "Warum überfordern moderne Software-Architekturen die menschliche Kognition? Tiefenanalyse zu kognitiver Ergonomie, Recommender-Systemen und UX-Design."
 ---
 
 Die Informationstechnologie hat einen fundamentalen Paradigmenwechsel vollzogen: Während die frühe Informatik primär darauf abzielte, Rechenleistung bereitzustellen und funktionale Geschäftsprozesse abzubilden, greifen moderne Softwaresysteme tief in die neurobiologischen, kognitiven und sozialpsychologischen Grundstrukturen des Menschen ein. 

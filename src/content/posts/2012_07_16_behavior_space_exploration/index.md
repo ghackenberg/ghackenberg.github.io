@@ -14,3 +14,5 @@ The animation can be loaded and viewed with any conventional browser.
 To create a YouTube video from it, I used a screen cast program.
 
 <iframe title="Video player" src="//www.youtube.com/embed/C_laZzvVJV8?feature=player_detailpage" frameborder="0" allowfullscreen="yes"></iframe>
+
+*Historical Archive (2009–2017):* [← Previous: Using Solar Energy to Power Refrigerators](/posts/2012_07_13_refrigerator_optimization_results/) | [Next: Visualization Studio for Systems Engineers →](/posts/2012_08_03_visualization_studio/)

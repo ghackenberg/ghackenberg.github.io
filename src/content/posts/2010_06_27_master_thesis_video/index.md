@@ -21,3 +21,5 @@ Now enough talking! Here is the video, enjoy:
 I hope you liked the demonstration.
 If your interest is awakened feel free to contact me and ask any questions (even stupid ones `;)`).
 In an upcoming series of blog posts I might also explain the technical details of the system, if there is the demand for that.
+
+*Historical Archive (2009–2017):* [← Previous: Ajax/PHP Distributed Event Bus.](/posts/2010_01_05_ajax_php_distributed_event_bus/) | [Next: Improved Website Usability! →](/posts/2011_01_19_website_usability_redesign/)

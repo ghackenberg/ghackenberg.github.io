@@ -28,3 +28,5 @@ We hope that we have attracted your interest on our JavaScript graph library wit
 If you are seeking for intuitive and fun graph exploration techniques then we might be the right partner for you.
 Contact us any time via e-mail under [georg@hyperkit-software.com](/posts/2016_03_07_hyperkit_graph_library/mailto:georg@hyperkit-software.com).
 Cheers!
+
+*Historical Archive (2009–2017):* [← Previous: Sigma.js vs. Cytoscape.js: JavaScript Graph Libraries Compared](/posts/2015_12_21_javascript_graph_libraries_cytoscape_sigma_d3/) | [Next: A tool for analyzing data from welding experiments →](/posts/2016_09_19_experiment_data_analysis/)

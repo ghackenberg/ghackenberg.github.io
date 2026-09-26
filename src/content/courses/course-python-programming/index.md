@@ -32,3 +32,8 @@ We focus on practical programming. You will transition from basic syntax to util
 3. **Data Wrangling with Pandas**: Loading datasets, filtering columns, cleaning data, and aggregating statistics.
 4. **Plotting & Visuals**: Creating robust graphs and charts with Matplotlib and Seaborn.
 5. **Engineering Applications**: Simulation models, differential equations solver, and scripting command-line tools.
+
+## Related Curriculum Modules
+
+- [German Course: Python-Programmierung](/courses/kurs-python-programmierung/)
+- [Datenanalyse mit Python](/courses/kurs-datenanalyse/)

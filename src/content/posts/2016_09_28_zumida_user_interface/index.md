@@ -26,3 +26,5 @@ I hope you like both the graphical style of the user interface and the behavior 
 If you are keen to provide feedback, do not hestitate to contact me via email (i.e. [mail@georg-hackenberg.de](/posts/2016_09_28_zumida_user_interface/mailto:mail@georg-hackenberg.de)) or any other communication channel.
 zumida still is in development and I am open to suggestions regarding its functionality and appearance.
 If you like, you also can become a test user and registering at [https://www.zumida.com/](https://www.zumida.com/).
+
+*Historical Archive (2009–2017):* [← Previous: A tool for analyzing data from welding experiments](/posts/2016_09_19_experiment_data_analysis/) | [Next: Explaining the new zumida dashboard →](/posts/2016_12_29_zumida_dashboard/)

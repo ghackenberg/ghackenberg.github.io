@@ -25,3 +25,5 @@ This digital drawing toolset greatly facilitates the creative process:
 
 I hope you like to follow my experiences with creative tools and processes.
 It's great fun and I can only recommend it to anybody who is looking for ways to see the world with different eyes.
+
+*Historical Archive (2009–2017):* [← Previous: IEEE VR 2011 in Singapore](/posts/2011_03_24_ieee_vr_2011_singapore/) | [Next: JavaScript Physics Simulation →](/posts/2011_04_14_javascript_physics_simulation/)

@@ -29,3 +29,5 @@ In other cases these mental pictures might not be as obvious (e.g. the informati
 My concluding argument is that I believe more figurative visualizations of information are in many cases superior to content-unspecific visual notations.
 However, in this article this only applies to information blocks and not to associations between these blocks.
 Questions that arise from these considerations are (1) the value of figurative illustration, (2) the extend of figurative illustration, and (3) the tool support for effective creation.
+
+*Historical Archive (2009–2017):* [← Previous: From Layout to Animation](/posts/2011_06_16_from_layout_to_animation/) | [Next: Interactive Animated Sitemap →](/posts/2011_06_22_interactive_animated_sitemap/)

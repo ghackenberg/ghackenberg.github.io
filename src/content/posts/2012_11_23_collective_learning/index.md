@@ -17,3 +17,5 @@ The vertical axis finally shows the number of steps after which the individuals 
 
 These are just first results.
 Stay tuned for more detailed explanations and practical applications!
+
+*Historical Archive (2009–2017):* [← Previous: Getting Closer to Actual Balance](/posts/2012_10_17_getting_closer/) | [Next: Machine Learning: Model and Trace →](/posts/2012_12_20_machine_learning_experiment/)

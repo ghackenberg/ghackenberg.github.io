@@ -16,3 +16,5 @@ As next steps we planned to extract straight lines from the image for detecting 
 
 This term I participated in the lecture *Computer Vision* held by *Prof. Bastian Leibe*.
 So my knowledge about this area has increased since quite a bit.
+
+*Historical Archive (2009–2017):* [← Previous: Business Documents using XSL-FO.](/posts/2009_03_21_business_documents_using_xsl_fo/) | [Next: JavaScript 3D Engine Screenshots. →](/posts/2009_03_24_js_3d_engine_screenshots/)

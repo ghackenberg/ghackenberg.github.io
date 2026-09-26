@@ -24,3 +24,5 @@ This is due to the fact that the model defines optimal efficiency for this value
 ![Sum illustration from Optimizing Powerhouse Control](./sum.png "Optimizing Powerhouse Control - Sum illustration")
 
 In one of the next steps we will try to integrate this model with an energy storage to reduce usage of fossil energy sources.
+
+*Historical Archive (2009–2017):* [← Previous: Sample System Model (Graph Output)](/posts/2012_08_14_sample_system_model/) | [Next: Using Energy Storage →](/posts/2012_08_20_using_energy_storage/)

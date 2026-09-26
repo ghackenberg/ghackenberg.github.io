@@ -97,3 +97,5 @@ The visualizations provided in this article have a concrete practical background
 Further, the computer vision domain lends itself to a fairly natural and intuitive class of visualizations constructed from the original image contents.
 This class might not be available in every domain, in particular the more abstract and theoretical ones.
 However, I believe there is almost always an added value in drawing a picture about something, especially when you don't have a clear picture about it in your head.
+
+*Historical Archive (2009–2017):* [← Previous: Fraunhofer Prize Award 2011](/posts/2011_07_04_fraunhofer_prize_award_2011/) | [Next: Artistic Exercises →](/posts/2011_07_21_artistic_exercises/)

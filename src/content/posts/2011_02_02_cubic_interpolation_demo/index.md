@@ -26,3 +26,5 @@ The details of this procedure a well explained in the corresponding Wikipedia en
 What you should probably take from this article are two things:
 (1) a visual understanding of cubic interpolation and (2) a feeling for when this method is applicable.
 Also, if questions are open please do not hesitate to ask, and I will try to make my best to eliminate all certainties `;)`.
+
+*Historical Archive (2009–2017):* [← Previous: 3D Multi-Touch Product Vision](/posts/2011_01_27_3dmt_product_vision/) | [Next: Linear vs. Cubic Interpolation →](/posts/2011_02_22_linear_vs_cubic_interpolation/)

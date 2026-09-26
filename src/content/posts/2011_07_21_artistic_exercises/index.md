@@ -28,3 +28,5 @@ In a way similar to the previous drawing this picture formed in a process around
 In sum I came to the conclusion that arts is defined by a process around a topic with the goal to express ones mental pictures in context with associated emotions.
 Alright, probably arts cannot be defined in such a short sentence with such simple concepts, but still I feel it gives me a better interpretation of the domain as well as a sense of methodology and value.
 In particular I have the impression that artistic approaches can help express the content of abstract domains such as computer science (which hopefully provides the link to the topic of my blog `;-)`).
+
+*Historical Archive (2009–2017):* [← Previous: 3D Multi-Touch with Computer Vision](/posts/2011_07_14_3dmt_computer_vision/) | [Next: View onto the Energy System →](/posts/2011_07_22_energy_system_views/)

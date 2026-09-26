@@ -25,3 +25,5 @@ Overall, SE4SG is a first step towards broadening the discussion about interfaci
 I hope this article gave you an insight into current developments in my area of research.
 Stay tuned along the road towards a better energy future!
 It's a topic that matters for everybody.
+
+*Historical Archive (2009–2017):* [← Previous: 3D Multi-Touch Master Thesis](/posts/2012_03_15_3d_multi_touch_master_thesis/) | [Next: Introducing Timeline Navigation and Facebook Like →](/posts/2012_04_12_timeline_navigation_facebook_like/)

@@ -36,3 +36,5 @@ Also the mentioned open source tools are really sufficient, to implement most of
 The only drawback I experienced was stability of *Inkscape*, but that was some time ago and should be fixed now.
 
 I hope you liked the impressions. Give me some feedback if you like. Have a nice day!
+
+*Historical Archive (2009–2017):* [← Previous: JavaScript 3D Engine Screenshots.](/posts/2009_03_24_js_3d_engine_screenshots/) | [Next: HyperKit - A lightweight CMS written in PHP. →](/posts/2009_05_30_hyperkit_leightweight_cms_php/)

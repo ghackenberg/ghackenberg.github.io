@@ -59,3 +59,5 @@ I hope, you like the idea and see potential for applying the framework in your a
 I would also be happy to get feedback on how to improve or extend the system.
 
 Have a great day!
+
+*Historical Archive (2009–2017):* [← Previous: JavaScript Graph Layout using SVG.](/posts/2009_07_11_javascript_graph_layout_using_svg/) | [Next: Master Thesis Screenshots! →](/posts/2009_11_17_master_thesis_screenshots/)

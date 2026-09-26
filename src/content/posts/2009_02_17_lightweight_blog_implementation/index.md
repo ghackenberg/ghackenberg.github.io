@@ -88,3 +88,5 @@ When reloading the page, the user will already get the new version with the upda
 Well, that's how my Blog works.
 I hope you liked the introduction into **lightweight blogging** ;).
 It would be great to get some comments about it.
+
+*Historical Archive (2009–2017):* [← Previous: Entrepreneurship Lab Screenshots.](/posts/2009_02_14_entrepreneurship_lab/) | [Next: eLearning Course Project Sketches. →](/posts/2009_02_22_elearning_course_project/)

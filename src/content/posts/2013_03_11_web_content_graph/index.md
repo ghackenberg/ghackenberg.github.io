@@ -32,3 +32,5 @@ As a side note: In the future we intend to integate a live content graph view in
 From the graph visualizations it becomes what topics are covered with respective content at the moment and what areas we need to work on.
 A goal could be to span the smart grid topic space and fill the gaps in between.
 From this procedure we expect to get a clear map of our domain projected onto our interests.
+
+*Historical Archive (2009–2017):* [← Previous: Model Visualization for Windows and Android](/posts/2013_02_19_interactive_visualization/) | [Next: 3D Trace Visualization →](/posts/2013_06_16_3d_trace_visualization/)

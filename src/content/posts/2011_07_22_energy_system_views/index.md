@@ -31,3 +31,5 @@ But finally, the political vision is to de-centralize the generation of energy e
 In sum I believe the energy domain offers an exciting playground for contributing to a technological revolution with planned and anticipated sustainable impact.
 I will try to keep you posted about the process and the progress of this national and international ambition.
 I think we all can be excited about an energetic but energy-neutral future society and life foundation.
+
+*Historical Archive (2009–2017):* [← Previous: Artistic Exercises](/posts/2011_07_21_artistic_exercises/) | [Next: A Mental Picture of Science. →](/posts/2011_07_25_mental_picture_science/)

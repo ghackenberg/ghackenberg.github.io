@@ -20,3 +20,5 @@ We hope you like the way we transform the idea of mind mapping with the zumida s
 Mind mapping has never been more connected and more social than with zumida.
 Our mission is to transform mind mapping into a daily, social, and fun tool for everybody on the planet!
 Why? Because we love mind mapping. We use mind mapping ourselves. And we believe zumida is going to be great!
+
+*Historical Archive (2009–2017):* [← Previous: Explaining the new zumida dashboard](/posts/2016_12_29_zumida_dashboard/) | [Next: Website Relaunch mit Astro & TypeScript →](/posts/2026_05_23_website_relaunch_astro_typescript/)

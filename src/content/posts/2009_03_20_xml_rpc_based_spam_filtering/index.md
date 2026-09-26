@@ -69,3 +69,5 @@ Now it's just a matter of filtering out this value, e.g. using regular expressio
 I hope you enjoyed seeing how easy it is to integrated useful services into your website.
 It would be nice to get some feedback.
 Maybe you found similar solutions or used other hacks.
+
+*Historical Archive (2009–2017):* [← Previous: Personal Study Management.](/posts/2009_02_22_personal_study_management/) | [Next: Business Documents using XSL-FO. →](/posts/2009_03_21_business_documents_using_xsl_fo/)

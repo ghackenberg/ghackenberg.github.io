@@ -22,3 +22,5 @@ To give you the chance to follow the topic and the discussion also outside the s
 <iframe title="Video player" src="//www.slideshare.net/slideshow/embed_code/7683308" frameborder="0" ></iframe>
 
 Feel free to comment about the presentation. `;-)`
+
+*Historical Archive (2009–2017):* [← Previous: JavaScript Physics Simulation](/posts/2011_04_14_javascript_physics_simulation/) | [Next: Personal Source Code Portal →](/posts/2011_04_29_personal_source_code_portal/)

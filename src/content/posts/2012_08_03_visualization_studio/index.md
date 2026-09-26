@@ -19,3 +19,5 @@ However, it will be a challenge to define an intuitive graphical user interface 
 If you are interested to contribute feel free to contact us!
 The prototype is basically just a dump of an idea that I had in mind for some time now.
 But I guess there is potential for this kind of tool on the market.
+
+*Historical Archive (2009–2017):* [← Previous: How to Scale Refrigerator Powering Strategies](/posts/2012_07_16_behavior_space_exploration/) | [Next: True Emergent Refrigerator Behavior →](/posts/2012_08_10_emergent_refrigerator_behavior/)

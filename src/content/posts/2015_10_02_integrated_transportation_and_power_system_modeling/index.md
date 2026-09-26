@@ -13,3 +13,5 @@ The challenge in this work was to find an appropriate model capturing both the t
 ![Model illustration from Integrated transportation and power systems modeling](./model.png "Integrated transportation and power systems modeling - Model illustration")
 
 We use this model to study the effect of the transportation system onto the power system and vice versa. For example, we try to answer the question what happens in case high solar radiation can be observed or low stationary battery states of charges are available. Therefore, the model includes a global cost function combining operational cost of both the transportation system and the power system. Then we use advanced dynamic programming techniques to solve the optimal control problem approximately. Soon we will provide first analysis results for those studies!
+
+*Historical Archive (2009–2017):* [← Previous: First mechatronics engineering workbench screenshots!](/posts/2015_09_23_mechatronics_engineering_workbench_screenshots/) | [Next: Manufacturing systems case study completed! →](/posts/2015_11_19_case_study_complete/)

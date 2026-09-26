@@ -32,3 +32,8 @@ Dieser Kurs führt Sie in die moderne Full-Stack Webentwicklung ein. Als Program
 3. **Firebase Authentication**: Benutzerregistrierung, Login-Statusverwaltung und Sicherheitsregeln (Rules).
 4. **Cloud Firestore Datenbank**: Dokumentenbasierte NoSQL-Strukturen, Echtzeit-Listener und CRUD-Operationen.
 5. **Firebase Hosting & Deployment**: Build-Prozesse, Konfiguration von Weiterleitungen und Veröffentlichung der App.
+
+## Verwandte Module im Studienplan
+
+- [Software Engineering](/courses/kurs-software-engineering/)
+- [MAUI & ASP.NET](/courses/course-maui-aspnet/)

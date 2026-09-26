@@ -102,4 +102,9 @@ Eine zukunftssichere Außenraumgestaltung verbindet **Bauingenieurwesen, Pflanze
 
 Die kontinuierliche Überwachung via Bodenfeuchtesensoren und Durchflussmessern garantiert maximale Ressourceneffizienz bei minimalem Wasserverbrauch – ein entscheidender Schritt hin zu klimaresistenten Smart Homes.
 
+Weiterführende Beiträge zu computergestützter Hydrologie, IoT-Sensorik und nachhaltiger Infrastruktur:
+- [GPU Wassersimulation & Partikel-Dynamik in WebGL](/posts/2026_05_25_gpu_water_simulation_delta_dynamics/)
+- [Hochschulkurs: Internet der Dinge (IoT) & Sensornetze](/courses/kurs-internet-der-dinge/)
+- [FH OÖ Campus Almtal Vision: Technologie & Naturraum](/posts/2026_08_09_fh_ooe_campus_almtal_vision/)
+
 *Planen Sie ein eigenes Bewässerungsprojekt oder haben Sie Fragen zur Dimensionierung von Baumsubstraten und Magnetventilzonen? Ich freue mich auf Ihre Anregungen und den fachlichen Austausch!*

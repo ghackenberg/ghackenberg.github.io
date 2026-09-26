@@ -31,3 +31,8 @@ Dieser Kurs bietet eine Brücke zwischen der klassischen strukturierten Datenspe
 2. **Daten abfragen mit SQL**: SELECT-Statements, JOINs, Aggregationen (GROUP BY) und Unterabfragen.
 3. **Analytische Datenbanksysteme**: Einführung in OLAP-Cubes, Stern- und Schneeflockenschemata im Data Warehouse.
 4. **Praktische Datenanalyse**: Datenaufbereitung, Umgang mit fehlenden Werten und Erstellung aussagekräftiger Dashboards.
+
+## Verwandte Module im Studienplan
+
+- [Python-Programmierung](/courses/kurs-python-programmierung/)
+- [Computer Simulation](/courses/kurs-computer-simulation/)

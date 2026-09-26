@@ -192,7 +192,9 @@ By combining discrete cellular automata logic with GPGPU techniques, **Delta Dyn
 This hybrid approach demonstrates that modern browsers are fully capable of hosting complex, real-time physical simulations, bringing premium desktop-grade simulation mechanics directly to web applications. 
 
 Explore related high-performance graphics and simulation materials across our platform:
-- [Content Visualizations & Graph Engines](/visualizations/)
+- [WebGL Network Visualization: Vis.js, Sigma & Canvas Compared](/posts/2026_05_27_interactive_graph_visualizations_update/)
+- [Smarte Tiefenbewässerung & Bodenstruktur in Agrar-Ökosystemen](/posts/2026_08_30_smarte_tiefenbewaesserung_bodenstruktur/)
+- [Massivholz-Kühldock: Thermik & Multidomänen-Modellierung](/posts/2026_08_31_massivholz_kuehldock_laptop_gpu_ki/)
 - [University Course: Computer Simulation Course Materials](/courses/kurs-computer-simulation/)
-- [WebGL Network Visualization & Graph Engines Architecture](/posts/2026_05_27_interactive_graph_visualizations_update/)
+- [Content Visualizations & Graph Engines](/visualizations/)
 

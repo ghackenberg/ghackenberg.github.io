@@ -15,3 +15,5 @@ The number of colored edges indicates the driving speed on a particular route se
 
 Currently we are working on improving the visualization and scaling the model to more traffic participants (ideally in the hundreds or thousands).
 Further we work on aligning the traffic model with established approaches to ensure the overall validity.
+
+*Historical Archive (2009–2017):* [← Previous: 3D Trace Visualization](/posts/2013_06_16_3d_trace_visualization/) | [Next: The new website goes online! →](/posts/2014_09_24_website_online/)

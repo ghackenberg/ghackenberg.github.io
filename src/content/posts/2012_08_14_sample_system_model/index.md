@@ -20,3 +20,5 @@ Now try to make sense out of the following mess:
 If you have questions do not hesitate to ask me!
 This is just early outcome from our simulation/exploration framework.
 We are working to make it better...
+
+*Historical Archive (2009–2017):* [← Previous: True Emergent Refrigerator Behavior](/posts/2012_08_10_emergent_refrigerator_behavior/) | [Next: Optimizing Powerhouse Control →](/posts/2012_08_17_optimizing_powerhouse_control/)

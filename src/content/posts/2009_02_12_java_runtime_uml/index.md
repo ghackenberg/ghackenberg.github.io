@@ -14,3 +14,5 @@ Here's a little sample from my work:
 
 The diagram shows a sample Java programm using four different classes.
 The class methods are connected via edges indicating call dependencies.
+
+*Historical Archive (2009–2017):* [← Previous: German Resume.](/posts/2009_02_12_german_resume/) | [Next: Entrepreneurship Lab Screenshots. →](/posts/2009_02_14_entrepreneurship_lab/)

@@ -37,7 +37,7 @@ Das folgende Architekturmodell veranschaulicht die vier Schichten des Gesamtsyst
 1. **Schicht 1: Consuming Surfaces & Developer Interfaces**
    * **Mastra Studio (`mastra dev`):** Eine integrierte Entwickler-Workbench, die lokal auf Port `4111` startet. Sie bietet einen interaktiven visuellen Graph-Editor, Playground-Chats und detailliertes Tracing.
    * **Auto-generated REST & OpenAPI:** Jeder in Mastra registrierte Agent und Workflow wird automatisch als standardkonformer HTTP-Endpunkt exponiert – inklusive interaktiver Swagger-Dokumentation.
-   * **MCP-Hosts:** Externe Entwickler-Tools (wie Cursor IDE, Windsurf oder Claude Desktop) können Mastra-Werkzeuge direkt über das Model Context Protocol ansprechen.
+   * **MCP-Hosts:** Externe Entwickler-Tools (wie Cursor IDE, Windsurf oder Claude Desktop) können Mastra-Werkzeuge direkt über das Model Context Protocol ansprechen – ein Architekturmuster, das wir in unserem [Unified Analytics MCP Server](/posts/2026_09_23_unified_analytics_mcp_server_seo_geo_aio/) und dem zugehörigen [Praxisbericht zur agentenbasierten Optimierung](/posts/2026_09_24_agentic_seo_geo_aio_mcp_praxisbericht/) im Detail analysiert haben.
 
 2. **Schicht 2: Mastra Core Runtime Engine**
    * Das Herzstück des Frameworks. Hier residiert die zentrale Steuerklasse `Mastra`, die Agenten (`Agent`), deterministische Graphen (`Workflow`), typsichere Werkzeuge (`createTool`) und das MCP-Gateway (`MCPServer`, `MCPClient`) koordiniert.

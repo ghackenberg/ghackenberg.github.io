@@ -30,3 +30,5 @@ For example, the last entry in the following screenshot references an encrypted 
 
 Once a week we meet to update the common roadmap.
 So far this strategy has proven worthwhile.
+
+*Historical Archive (2009–2017):* [← Previous: Effective Task Management with Whiteboard and Stickers](/posts/2012_01_11_whiteboard_task_management/) | [Next: Software Campus - A new academic excellence program. →](/posts/2012_02_13_software_campus_fellowship/)

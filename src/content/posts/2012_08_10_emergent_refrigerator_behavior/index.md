@@ -20,3 +20,5 @@ This increase is due to the percentage of the exponential search space that we c
 Nevertheless the costs behave well considering that the results are calculated extremely fast!
 
 ![Diagram illustration from True Emergent Refrigerator Behavior](./diagram.png "True Emergent Refrigerator Behavior - Diagram illustration")
+
+*Historical Archive (2009–2017):* [← Previous: Visualization Studio for Systems Engineers](/posts/2012_08_03_visualization_studio/) | [Next: Sample System Model (Graph Output) →](/posts/2012_08_14_sample_system_model/)

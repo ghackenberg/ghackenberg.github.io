@@ -49,14 +49,102 @@ const breadcrumbSchema = {
   <Navbar />
 
   <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
-    <div class="mb-12">
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+    <div class="mb-10">
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
         Blog <span class="heading-gradient-blue">Posts</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Insights, development logs, sketches, and tutorials covering ultimate usability design, graphics engine development, software systems, and mechatronics workbench engineering.
       </p>
     </div>
+
+    <!-- Curated Curation Section: Editor's Pick & Thematic Pillar Routes -->
+    <section class="mb-12" aria-label="Curated Topics and Highlights">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <!-- Editor's Pick (Hidden Champion) -->
+        <a 
+          href="/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/" 
+          class="lg:col-span-6 glass-card p-6 md:p-8 rounded-3xl border border-brand-blue/30 bg-gradient-to-br from-brand-blue/10 via-element-bg to-brand-purple/10 hover:border-brand-blue/60 transition-all duration-300 group flex flex-col justify-between"
+        >
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-brand-blue/20 text-brand-blue border border-brand-blue/30">
+                ⭐ Editor's Pick
+              </span>
+              <span class="text-xs text-gray-400 font-medium flex items-center gap-1">
+                ⏱️ 13 Min. Lesezeit
+              </span>
+            </div>
+            <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 group-hover:text-brand-blue transition-colors mb-3 leading-snug">
+              Kognitive Ergonomie & UX: Psychologie moderner IT-Systeme
+            </h2>
+            <p class="text-gray-400 text-sm leading-relaxed mb-4">
+              Warum überfordern moderne Software-Architekturen die menschliche Kognition? Eine fundierte Tiefenanalyse zu kognitiver Ergonomie, Recommender-Pipelines und persuasivem UX-Design.
+            </p>
+          </div>
+          <div class="flex items-center text-xs font-semibold text-brand-blue group-hover:underline pt-2">
+            <span>Leitartikel lesen &rarr;</span>
+          </div>
+        </a>
+
+        <!-- 3 Pillar Routes -->
+        <div class="lg:col-span-6 grid grid-cols-1 gap-4">
+          <a 
+            href="/posts/2026_09_24_agentic_seo_geo_aio_mcp_praxisbericht/" 
+            class="glass-card p-4 md:p-5 rounded-2xl border border-element-border hover:border-brand-blue/40 transition-all duration-200 group flex items-start gap-4"
+          >
+            <div class="w-10 h-10 rounded-xl bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center shrink-0 text-lg">
+              🤖
+            </div>
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-brand-blue mb-0.5">Route: Agentic AI & GEO</div>
+              <h3 class="text-sm md:text-base font-bold text-gray-100 group-hover:text-brand-blue transition-colors leading-snug">
+                Praxisbericht: Agentic SEO, GEO & AIO mit eigenem MCP Server
+              </h3>
+              <p class="text-gray-400 text-xs mt-1 line-clamp-1">
+                Autonome Agenten-Optimierungsschleife mit Google Search Console & Plausible.
+              </p>
+            </div>
+          </a>
+
+          <a 
+            href="/posts/2026_05_27_interactive_graph_visualizations_update/" 
+            class="glass-card p-4 md:p-5 rounded-2xl border border-element-border hover:border-brand-green/40 transition-all duration-200 group flex items-start gap-4"
+          >
+            <div class="w-10 h-10 rounded-xl bg-brand-green/10 border border-brand-green/20 flex items-center justify-center shrink-0 text-lg">
+              🌐
+            </div>
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-brand-green mb-0.5">Route: WebGL & Graph Engines</div>
+              <h3 class="text-sm md:text-base font-bold text-gray-100 group-hover:text-brand-green transition-colors leading-snug">
+                WebGL Network Visualization: Vis.js, Sigma & Canvas im Vergleich
+              </h3>
+              <p class="text-gray-400 text-xs mt-1 line-clamp-1">
+                High-Performance Netzwerk-Graphen im Browser mit Live-Interaktions-Demos.
+              </p>
+            </div>
+          </a>
+
+          <a 
+            href="/posts/2026_08_31_massivholz_kuehldock_laptop_gpu_ki/" 
+            class="glass-card p-4 md:p-5 rounded-2xl border border-element-border hover:border-brand-yellow/40 transition-all duration-200 group flex items-start gap-4"
+          >
+            <div class="w-10 h-10 rounded-xl bg-brand-yellow/10 border border-brand-yellow/20 flex items-center justify-center shrink-0 text-lg">
+              ⚙️
+            </div>
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-brand-yellow mb-0.5">Route: Simulation & Systems</div>
+              <h3 class="text-sm md:text-base font-bold text-gray-100 group-hover:text-brand-yellow transition-colors leading-snug">
+                Massivholz-Kühldock: Thermik & Multidomänen-Modellierung
+              </h3>
+              <p class="text-gray-400 text-xs mt-1 line-clamp-1">
+                Leises GPU-Kühldock für KI-Workloads und thermische Systemsimulation.
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Filter Sidebar (Column 1) -->

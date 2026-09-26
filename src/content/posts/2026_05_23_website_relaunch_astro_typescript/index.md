@@ -77,4 +77,6 @@ Relaunching on GitHub Pages with Astro and TypeScript has been an incredibly sat
 
 Thanks to **Google Antigravity** and the impressive speed and comprehension of **Gemini 3.5 Flash (High)**, the migration of all legacy content was a flawless success.
 
-Stay tuned for more updates as I continue to share insights on software engineering, data visualization, and web technologies!
+Stay tuned for more updates as I continue to share insights on software engineering, data visualization, and web technologies! Als erstes Feature nach dem Relaunch folgten unsere [Unread Indicators & Navbar Badges](/posts/2026_05_24_unread_indicators_navbar_badges/).
+
+*Archiv-Verbindung:* Dieser Relaunch knüpft nahtlos an unsere [historischen Entwicklungsberichte seit 2009](/posts/2009_02_11_personal_website_launched/) sowie den letzten Meilenstein [Zumida Video](/posts/2017_03_05_zumida_video/) an.

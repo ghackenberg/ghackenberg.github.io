@@ -28,3 +28,5 @@ The talk was about the 3D multi-touch prototype that I developed during my Maste
 <iframe title="Video player" src="//www.slideshare.net/slideshow/embed_code/key/qb78ufqbGxVrmh" frameborder="0" ></iframe>
 
 A last word: if you ever get the chance to visit Singapore, take it, it's a great place!
+
+*Historical Archive (2009–2017):* [← Previous: Pen Sketches with MyPaint](/posts/2011_03_10_pen_mypaint_sketches/) | [Next: Stick Figure Drawing Exercise →](/posts/2011_03_27_stick_figure_drawing_exercise/)

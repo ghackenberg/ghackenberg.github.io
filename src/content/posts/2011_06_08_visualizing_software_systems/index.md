@@ -31,3 +31,5 @@ Again this gives a completely different understanding of software systems as opp
 
 I hope this post gave you an idea of the huge variety of illustrations that can be created for software systems, what information they carry (hardware components, process components, stakeholders, etc), and what principles guide the layout of this information (spacial, sequential, network, etc).
 A clear understanding of the visualization problem and practical solutions will help making the IT world more accessible to the individuals of our society, resulting in a better interface between IT solution customers and providers.
+
+*Historical Archive (2009–2017):* [← Previous: From Sketch to Prototype](/posts/2011_06_06_from_sketch_to_prototype/) | [Next: Comparing Interface Design Options →](/posts/2011_06_09_comparing_design_options/)

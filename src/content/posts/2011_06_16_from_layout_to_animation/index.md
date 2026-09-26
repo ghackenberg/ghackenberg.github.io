@@ -35,3 +35,5 @@ However, only one of the screens is displayed at a time and transition between t
 Consequently, less navigation-related content is displayed on the screen when reading e.g. a blog article.
 
 In future posts I'll try to understand the usability aspects of either approach and push the interface forward to an ultimately fun, effective, and efficient experience that is beyond traditional web interfaces.
+
+*Historical Archive (2009–2017):* [← Previous: The Evolution of a Functional Prototype](/posts/2011_06_11_functional_prototype_evolution/) | [Next: Describing the Structure of Information →](/posts/2011_06_21_information_structure_notation/)

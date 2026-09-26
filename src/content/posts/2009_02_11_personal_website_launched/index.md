@@ -24,3 +24,5 @@ Currently, I am writing all pages by hand.
 For the RSS feeds I want to write an automation script, though.
 
 Anyway, enough for today. Take care out there in the world-wild space.
+
+*Historical Archive (2009–2017):* [Blog Overview](/posts/) | [Next: German Resume. →](/posts/2009_02_12_german_resume/)

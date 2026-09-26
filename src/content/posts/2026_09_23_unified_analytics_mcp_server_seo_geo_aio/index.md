@@ -47,7 +47,7 @@ Die größte Herausforderung beim Zusammenführen heterogener Datenquellen liegt
 
 ## 3. Die acht MCP-Werkzeuge im praktischen Überblick
 
-Unser Server stellt dem KI-Agenten eine modulare Suite aus acht fokussierten Werkzeugen zur Verfügung, die sowohl analytische Telemetrie-Aufgaben als auch statische Inhalts-, Graph- und Git-Prüfungen abdecken. Das folgende UML-Klassendiagramm spezifiziert die primäre Schnittstelle (`UnifiedAnalyticsMcpServer`) mit ihren Methodensignaturen und Eingabeparametern:
+Unser Server stellt dem KI-Agenten eine modulare Suite aus acht fokussierten Werkzeugen zur Verfügung, die sowohl analytische Telemetrie-Aufgaben als auch statische Inhalts-, Graph- und Git-Prüfungen abdecken. Das folgende UML-Klassendiagramm (gerendert über unsere [statische Build-Time Mermaid-Pipeline in Astro](/posts/2026_09_22_build_time_static_mermaid_in_astro/)) spezifiziert die primäre Schnittstelle (`UnifiedAnalyticsMcpServer`) mit ihren Methodensignaturen und Eingabeparametern:
 
 ```mermaid
 ---
@@ -433,3 +433,5 @@ export function calculateStrikingDistance(queries: SearchConsoleRow[]) {
 Mit dem Unified Analytics MCP Server schließt sich der Kreis, den wir vor Wochen mit den theoretischen Fundamenten der KI-Sichtbarkeit begonnen haben. Technische Autoren und Software-Architekten müssen Content-Optimierung nicht mehr im Blindflug oder anhand veralteter Ranking-Tabellen betreiben.
 
 Indem wir Google Search Console und Plausible über das Model Context Protocol direkt in die Entwicklungsumgebung integrieren, wird die Optimierung für generative Suchmaschinen (GEO), Antwortmaschinen (AEO) und traditionelle Crawler (SEO) zu einem messbaren, automatisierten und reproduzierbaren Standardprozess.
+
+Wie sich dieser geschlossene Regelkreis im praktischen Live-Betrieb bei realen Code-Änderungen und Search-Console-Audits bewährt, dokumentieren wir im nachfolgenden [Praxisbericht mit unserem Agentic SEO/GEO/AIO MCP Server](/posts/2026_09_24_agentic_seo_geo_aio_mcp_praxisbericht/).

@@ -54,3 +54,5 @@ Therefore most of the implementation is copy and paste (as I have not thought of
 
 Let me know what you think if the article!
 I am also interested in feedback on the prototype itself, as it might be the coming interface for my website.
+
+*Historical Archive (2009–2017):* [← Previous: The Information Visualization Problem](/posts/2011_06_10_information_visualization_problem/) | [Next: From Layout to Animation →](/posts/2011_06_16_from_layout_to_animation/)

@@ -1,6 +1,6 @@
 ---
 title: "Sigma.js: ForceAtlas2 Network Graph"
-description: "Interactive WebGL network graph visualization using Sigma.js and multi-threaded ForceAtlas2 physics in web workers by Dr. Georg Hackenberg."
+description: "Interactive WebGL network graph visualization using Sigma.js and ForceAtlas2 physics in web workers. Smooth 60 FPS rendering for large-scale knowledge domains."
 screenshot:
   src: "./sigma.png"
   title: "Sigma ForceAtlas2 Graph Layout"
@@ -50,7 +50,7 @@ Sigma.js is the optimal architectural choice under specific network requirements
 - **Complementary Tooling**: Use D3 for fine-grained SVG typography or Vis.js for tactile 2D canvas springs under 1,000 nodes.
 
 ### Where can I find more background on this implementation?
-A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization: Vis.js, Sigma & Canvas Compared](/posts/2026_05_27_interactive_graph_visualizations_update/). For an introductory framework benchmark, read [Sigma.js vs. Cytoscape.js: JavaScript Graph Libraries Compared](/posts/2015_12_21_javascript_graph_libraries_cytoscape_sigma_d3/).
 
 
 

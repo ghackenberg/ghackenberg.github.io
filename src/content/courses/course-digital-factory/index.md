@@ -33,3 +33,8 @@ In modern manufacturing, building physical prototypes to test layouts is expensi
 2. **JaamSim Essentials**: Hands-on navigation, layout positioning, object configuration, and route setups.
 3. **Advanced Flow Control**: Custom scripting, assembly/disassembly processing, and routing expressions.
 4. **Data Analysis & Optimization**: Interpreting output logs, calculating confidence intervals, and identifying bottlenecks.
+
+## Related Curriculum Modules
+
+- [Internet der Dinge](/courses/kurs-internet-der-dinge/)
+- [Systems Engineering](/courses/kurs-systems-engineering/)

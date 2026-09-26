@@ -26,3 +26,5 @@ During the course the student can take tests to assess his performance:
 
 I hope you liked the scetches.
 They were developed with *GIMP* and *Wacom Bamboo*.
+
+*Historical Archive (2009–2017):* [← Previous: Lightweight Blog Implementation.](/posts/2009_02_17_lightweight_blog_implementation/) | [Next: Personal Study Management. →](/posts/2009_02_22_personal_study_management/)

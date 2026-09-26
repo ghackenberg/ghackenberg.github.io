@@ -13,3 +13,5 @@ The web design is a custom development of our group.
 We tried to make navigation simple and give short taglines that convey our ideas and philosophies.
 
 [![Screenshot illustration from Smart Grid Research Initiative](./screenshot.png "Smart Grid Research Initiative - Screenshot illustration")](http://smartgrid.in.tum.de/)
+
+*Historical Archive (2009–2017):* [← Previous: Visualizing our Smart Grid Simulation](/posts/2012_06_11_visualizing_grid_simulation/) | [Next: Follow-Up on Denis' MSE Article →](/posts/2012_07_03_mse_follow_up/)

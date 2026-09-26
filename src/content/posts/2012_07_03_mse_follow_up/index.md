@@ -13,3 +13,5 @@ In particular, due to the interdisciplinary nature of the colloquium our scienti
 From there preliminary results and an outlook are given.
 
 ![Poster illustration from Follow-Up on Denis' MSE Article](./poster.png "Follow-Up on Denis' MSE Article - Poster illustration")
+
+*Historical Archive (2009–2017):* [← Previous: Smart Grid Research Initiative](/posts/2012_06_19_smart_grid_research_initiative/) | [Next: Using Solar Energy to Power Refrigerators →](/posts/2012_07_13_refrigerator_optimization_results/)

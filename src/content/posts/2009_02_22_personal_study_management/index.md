@@ -58,3 +58,5 @@ This was basically my technique for managing studies with a small tool chain whi
 I hope you liked the presentation.
 Give me some feedback!
 Maybe there are some nice ways to improve this idea!
+
+*Historical Archive (2009–2017):* [← Previous: eLearning Course Project Sketches.](/posts/2009_02_22_elearning_course_project/) | [Next: XML-RPC based Spam Filtering. →](/posts/2009_03_20_xml_rpc_based_spam_filtering/)

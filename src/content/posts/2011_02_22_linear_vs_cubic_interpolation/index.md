@@ -22,3 +22,5 @@ Therefore you might think of the choice as a trade-off between quality and perfo
 
 Still, with these articles I hope to encourage a discourse about information and computer science among a broader audience.
 Also, comments are always welcome!
+
+*Historical Archive (2009–2017):* [← Previous: 3D Cubic Interpolation Video](/posts/2011_02_02_cubic_interpolation_demo/) | [Next: Pen Sketches with MyPaint →](/posts/2011_03_10_pen_mypaint_sketches/)

@@ -18,3 +18,5 @@ Here are sample screenshots from Firefox and Opera browsers (note that other bro
 
 In this example real-time rotation was realized.
 Maybe, in a more comprehensive article I will present the techniques and some performance evaluations.
+
+*Historical Archive (2009–2017):* [← Previous: Augmented Reality Framework Screenshot.](/posts/2009_03_24_augmented_reality_framework_screenshots/) | [Next: Diverse Logo Ideas. →](/posts/2009_04_06_diverse_logo_ideas/)

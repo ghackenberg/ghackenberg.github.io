@@ -11,3 +11,5 @@ icon:
 The following screenshot shows the new style of the website. I tried to inspire myself by recent web designs, which try to work with larger text and overall stronger focus on image material. I hope you like it and I am interested very much in feedback!
 
 ![Screenshot illustration from The new website goes online!](./screenshot.png "The new website goes online! - Screenshot illustration")
+
+*Historical Archive (2009–2017):* [← Previous: Teaser: Smart Traffic Control](/posts/2013_12_18_smart_traffic_control/) | [Next: Publication slides online now! →](/posts/2014_11_18_slides_online/)

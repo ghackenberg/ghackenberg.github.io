@@ -48,3 +48,5 @@ In the future I hope to find similar stories to tell, as it is also an interesti
 [![Process illustration from From Sketch to Prototype](./process.png "From Sketch to Prototype - Process illustration")](./process.png)
 
 All the best.
+
+*Historical Archive (2009–2017):* [← Previous: Personal Source Code Portal](/posts/2011_04_29_personal_source_code_portal/) | [Next: Visualizing Software Systems →](/posts/2011_06_08_visualizing_software_systems/)

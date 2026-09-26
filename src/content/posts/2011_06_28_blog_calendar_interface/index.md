@@ -21,3 +21,5 @@ This effect is illustrated in the screenshot to the right.
 Again the interface is only work in progress to provide innovative navigation controls for information on the internet (in my particular case blog posts).
 Mainly it is intended to document the progress, showcase ideas, and maybe find some people that are interested in sharing ideas.
 I believe there is great potential for a new class of interactive web information systems that are fun to browse, easy to use, and give a good impression of the contents, products, and services underneath.
+
+*Historical Archive (2009–2017):* [← Previous: Blog Timeline Widget](/posts/2011_06_27_blog_timeline_widget/) | [Next: Animated Article Tiles →](/posts/2011_06_29_animated_article_tiles/)

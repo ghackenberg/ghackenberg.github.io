@@ -49,3 +49,5 @@ This is a nice advantage over related approaches where different languages are u
 I hope, you liked the demonstration.
 If you need the code for testing the system please let me know.
 I am willing to email you if you ask nicely `:)`.
+
+*Historical Archive (2009–2017):* [← Previous: Master Thesis Screenshots!](/posts/2009_11_17_master_thesis_screenshots/) | [Next: Ajax/PHP Distributed Event Bus. →](/posts/2010_01_05_ajax_php_distributed_event_bus/)

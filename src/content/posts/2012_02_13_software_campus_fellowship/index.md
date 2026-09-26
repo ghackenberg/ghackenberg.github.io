@@ -34,3 +34,5 @@ I hope this article got you interested in the excellence program.
 From what I have experienced so far I can tell it is a great chance for all participants including the PhD students and the companies.
 Soon the application for the next round will be open.
 Have a look at the official website and be prepared to apply!
+
+*Historical Archive (2009–2017):* [← Previous: Managing Our Team Roadmap with MediaWiki](/posts/2012_01_17_mediawiki_team_roadmap/) | [Next: Managing/Publishing Your Resume with PHP and XML →](/posts/2012_02_14_online_xml_php_resume/)

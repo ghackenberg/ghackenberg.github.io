@@ -24,3 +24,5 @@ Please note that the YouTube video shows a previous version of the widget with l
 The widget is probably not perfect yet, but I think you get a good idea what future visualization and navigation concepts might look like.
 The platform for developing and running these applications is already available with all major modern web browsers.
 It is now on us to use these capabilities the best way we can.
+
+*Historical Archive (2009–2017):* [← Previous: Interactive Animated Sitemap](/posts/2011_06_22_interactive_animated_sitemap/) | [Next: Blog Calendar Interface →](/posts/2011_06_28_blog_calendar_interface/)
