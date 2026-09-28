@@ -332,91 +332,116 @@ const { currentPath } = Astro.props;
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-6 space-y-6 max-w-7xl mx-auto w-full">
-      <!-- 1. KPI Overview Cards -->
-      <section class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 font-mono">
-        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-          <div class="text-[11px] text-zinc-400">Visitors</div>
-          <div id="full-visitors" class="text-xl font-bold text-white mt-1">--</div>
-        </div>
-        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-          <div class="text-[11px] text-zinc-400">Views</div>
-          <div id="full-views" class="text-xl font-bold text-white mt-1">--</div>
-        </div>
-        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-          <div class="text-[11px] text-zinc-400">Bounce</div>
-          <div id="full-bounce" class="text-xl font-bold text-amber-400 mt-1">--</div>
-        </div>
-        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-          <div class="text-[11px] text-zinc-400">Duration</div>
-          <div id="full-duration" class="text-xl font-bold text-white mt-1">--</div>
-        </div>
-        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-          <div class="text-[11px] text-zinc-400">GSC Clicks</div>
-          <div id="full-gsc-clicks" class="text-xl font-bold text-emerald-400 mt-1">--</div>
-        </div>
-        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-          <div class="text-[11px] text-zinc-400">GSC Impr</div>
-          <div id="full-gsc-impr" class="text-xl font-bold text-zinc-300 mt-1">--</div>
-        </div>
-        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-          <div class="text-[11px] text-zinc-400">GSC CTR</div>
-          <div id="full-gsc-ctr" class="text-xl font-bold text-white mt-1">--</div>
-        </div>
-        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
-          <div class="text-[11px] text-zinc-400">GSC Rank</div>
-          <div id="full-gsc-rank" class="text-xl font-bold text-amber-300 mt-1">--</div>
-        </div>
-      </section>
-
-      <!-- 2. Scroll Funnel & Section Retention Breakdown -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Scroll Retention Funnel -->
-        <section class="lg:col-span-6 p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4">
+    <main class="flex-1 overflow-y-auto w-full">
+      <div class="max-w-7xl mx-auto p-6 space-y-8 w-full">
+        <!-- 1. Plausible Analytics Section -->
+        <section class="space-y-4">
           <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-            <div>
-              <h3 class="text-sm font-bold text-white">Scroll Funnel & Reader Retention</h3>
-              <p class="text-xs text-zinc-400 mt-0.5">Aggregated visitor reach across page depth milestones</p>
-            </div>
-            <div class="flex items-center gap-3 font-mono text-xs">
-              <span class="text-zinc-400">Median: <strong id="full-funnel-median" class="text-white">--</strong></span>
-              <span class="text-zinc-600">|</span>
-              <span class="text-zinc-400">Read-through: <strong id="full-funnel-readthrough" class="text-emerald-400">--</strong></span>
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-xs">P</span>
+              <div>
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  Plausible Analytics
+                  <span class="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800/60">Privacy-First Traffic</span>
+                </h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Aggregated page visitors, views, bounce rate, and visit duration</p>
+              </div>
             </div>
           </div>
-          <div id="full-funnel-bars" class="space-y-3 font-mono text-xs">
-            <span class="text-zinc-500 italic">Loading scroll funnel milestones...</span>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
+            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+              <div class="text-xs text-zinc-400 flex items-center justify-between">
+                <span>Unique Visitors</span>
+                <span>👤</span>
+              </div>
+              <div id="full-visitors" class="text-2xl font-bold text-white mt-2">--</div>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+              <div class="text-xs text-zinc-400 flex items-center justify-between">
+                <span>Total Views</span>
+                <span>📄</span>
+              </div>
+              <div id="full-views" class="text-2xl font-bold text-white mt-2">--</div>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+              <div class="text-xs text-zinc-400 flex items-center justify-between">
+                <span>Bounce Rate</span>
+                <span>↩️</span>
+              </div>
+              <div id="full-bounce" class="text-2xl font-bold text-amber-400 mt-2">--</div>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+              <div class="text-xs text-zinc-400 flex items-center justify-between">
+                <span>Visit Duration</span>
+                <span>⏱️</span>
+              </div>
+              <div id="full-duration" class="text-2xl font-bold text-white mt-2">--</div>
+            </div>
           </div>
         </section>
 
-        <!-- Section Dwell Breakdown -->
-        <section class="lg:col-span-6 p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4">
+        <!-- 2. Google Search Console Section -->
+        <section class="space-y-4">
           <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-            <div>
-              <h3 class="text-sm font-bold text-white">Page Sections & Dwell Times</h3>
-              <p class="text-xs text-zinc-400 mt-0.5">Visits with ≥ 2.0s focused dwell visibility</p>
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs">G</span>
+              <div>
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  Google Search Console
+                  <span class="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800/60">Organic Search</span>
+                </h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Organic search visibility, clicks, impressions, and SERP ranking performance</p>
+              </div>
             </div>
-            <span id="full-sections-count" class="text-xs font-mono text-zinc-400">0 sections</span>
           </div>
-          <div id="full-sections-table" class="space-y-2 font-mono text-xs max-h-80 overflow-y-auto pr-1">
-            <span class="text-zinc-500 italic">No section dwell events recorded.</span>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
+            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+              <div class="text-xs text-zinc-400 flex items-center justify-between">
+                <span>Search Clicks</span>
+                <span>🎯</span>
+              </div>
+              <div id="full-gsc-clicks" class="text-2xl font-bold text-emerald-400 mt-2">--</div>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+              <div class="text-xs text-zinc-400 flex items-center justify-between">
+                <span>Impressions</span>
+                <span>👁️</span>
+              </div>
+              <div id="full-gsc-impr" class="text-2xl font-bold text-zinc-200 mt-2">--</div>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+              <div class="text-xs text-zinc-400 flex items-center justify-between">
+                <span>Average CTR</span>
+                <span>📈</span>
+              </div>
+              <div id="full-gsc-ctr" class="text-2xl font-bold text-white mt-2">--</div>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
+              <div class="text-xs text-zinc-400 flex items-center justify-between">
+                <span>Average Rank</span>
+                <span>🏆</span>
+              </div>
+              <div id="full-gsc-rank" class="text-2xl font-bold text-amber-300 mt-2">--</div>
+            </div>
+          </div>
+
+          <!-- Google Search Queries Table -->
+          <div class="p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h4 class="text-sm font-bold text-white">Top Search Queries</h4>
+                <p class="text-xs text-zinc-400 mt-0.5">Search queries bringing organic traffic to this specific URL</p>
+              </div>
+              <span id="full-queries-count" class="text-xs font-mono text-zinc-400 px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700/60">0 queries</span>
+            </div>
+            <div id="full-queries-table" class="space-y-2 font-mono text-xs max-h-96 overflow-y-auto pr-1">
+              <span class="text-zinc-500 italic">Loading search queries...</span>
+            </div>
           </div>
         </section>
       </div>
-
-      <!-- 3. Google Search Queries Table -->
-      <section class="p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4">
-        <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-          <div>
-            <h3 class="text-sm font-bold text-white">Google Search Queries</h3>
-            <p class="text-xs text-zinc-400 mt-0.5">Top search terms bringing organic search clicks to this page</p>
-          </div>
-          <span id="full-queries-count" class="text-xs font-mono text-zinc-400">0 queries</span>
-        </div>
-        <div id="full-queries-table" class="space-y-2 font-mono text-xs max-h-80 overflow-y-auto pr-1">
-          <span class="text-zinc-500 italic">Loading search queries...</span>
-        </div>
-      </section>
     </main>
   </div>
 </div>
@@ -1338,37 +1363,7 @@ const { currentPath } = Astro.props;
       set('full-gsc-impr', '...');
       set('full-gsc-ctr', '...');
       set('full-gsc-rank', '...');
-      set('full-funnel-median', '...');
-      set('full-funnel-readthrough', '...');
-      set('full-sections-count', '...');
       set('full-queries-count', '...');
-
-      // Replace cockpit tables with animated loading skeletons
-      const funnelBarsEl = document.getElementById('full-funnel-bars');
-      if (funnelBarsEl) {
-        funnelBarsEl.innerHTML = `
-          <div class="flex items-center gap-2 text-zinc-500 italic py-4 animate-pulse">
-            <svg class="w-4 h-4 animate-spin text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <span>Loading scroll retention funnel...</span>
-          </div>
-        `;
-      }
-
-      const sectionsTableEl = document.getElementById('full-sections-table');
-      if (sectionsTableEl) {
-        sectionsTableEl.innerHTML = `
-          <div class="flex items-center gap-2 text-zinc-500 italic py-4 animate-pulse">
-            <svg class="w-4 h-4 animate-spin text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <span>Loading section dwell times...</span>
-          </div>
-        `;
-      }
 
       const queriesTableEl = document.getElementById('full-queries-table');
       if (queriesTableEl) {
@@ -1483,7 +1478,7 @@ const { currentPath } = Astro.props;
     }
 
     private renderFullView(data: DevOverlayData): void {
-      const { plausible, gsc, sections } = data;
+      const { plausible, gsc } = data;
       const set = (id: string, val: string) => {
         const el = document.getElementById(id);
         if (el) el.textContent = val;
@@ -1499,60 +1494,6 @@ const { currentPath } = Astro.props;
       set('full-gsc-ctr', `${((gsc.ctr ?? 0) * 100).toFixed(1)}%`);
       set('full-gsc-rank', gsc.position ? `#${gsc.position.toFixed(1)}` : '--');
 
-      const funnel = plausible.scrollFunnel;
-      set('full-funnel-median', funnel?.medianScrollDepth != null ? `${funnel.medianScrollDepth}%` : '--');
-      set('full-funnel-readthrough', funnel?.readThroughRate != null ? `${funnel.readThroughRate}%` : '--');
-
-      // Funnel bars in cockpit
-      const funnelBarsEl = document.getElementById('full-funnel-bars');
-      if (funnelBarsEl) {
-        if (!funnel || !funnel.milestones || funnel.milestones.length === 0) {
-          funnelBarsEl.innerHTML = '<span class="text-zinc-500 italic">No scroll depth events recorded for this path.</span>';
-        } else {
-          funnelBarsEl.innerHTML = funnel.milestones
-            .map((m) => {
-              const pct = Number(m.percentageOfVisitors.toFixed(1));
-              return `
-                <div class="p-2 rounded-xl bg-zinc-800/60 border border-zinc-700/70 space-y-1">
-                  <div class="flex items-center justify-between text-xs">
-                    <span class="font-bold text-white">Scroll ≥ ${m.depth}%</span>
-                    <span class="text-zinc-300">${m.visitors} visitors (${pct}%)</span>
-                  </div>
-                  <div class="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
-                    <div class="h-full rounded-full bg-emerald-400" style="width: ${Math.min(100, pct)}%"></div>
-                  </div>
-                </div>
-              `;
-            })
-            .join('');
-        }
-      }
-
-      // Sections Table in cockpit
-      const sectionsTableEl = document.getElementById('full-sections-table');
-      const sectionsCountEl = document.getElementById('full-sections-count');
-      const sectionEntries = Object.entries(sections || {});
-      if (sectionsCountEl) sectionsCountEl.textContent = `${sectionEntries.length} sections`;
-      if (sectionsTableEl) {
-        if (sectionEntries.length === 0) {
-          sectionsTableEl.innerHTML = '<span class="text-zinc-500 italic">No section dwell events recorded.</span>';
-        } else {
-          const total = plausible.visitors || 1;
-          sectionsTableEl.innerHTML = sectionEntries
-            .sort((a, b) => (b[1].visitors || 0) - (a[1].visitors || 0))
-            .map(([secId, s]) => {
-              const retPct = ((s.visitors / total) * 100).toFixed(1);
-              return `
-                <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
-                  <span class="font-semibold text-white">#${secId}</span>
-                  <span class="text-zinc-300">${s.visitors} dwellers (${retPct}%)</span>
-                </div>
-              `;
-            })
-            .join('');
-        }
-      }
-
       // Search Queries Table in cockpit
       const queriesTableEl = document.getElementById('full-queries-table');
       const queriesCountEl = document.getElementById('full-queries-count');
@@ -1565,9 +1506,13 @@ const { currentPath } = Astro.props;
           queriesTableEl.innerHTML = queries
             .map(
               (q) => `
-              <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
-                <span class="text-zinc-200 font-medium truncate">${q.query}</span>
-                <span class="text-emerald-400 font-semibold">${q.clicks} clicks</span>
+              <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-800/40 border border-zinc-700/50 hover:bg-zinc-800/70 transition-colors">
+                <span class="text-zinc-200 font-medium truncate max-w-[60%]">${q.query}</span>
+                <div class="flex items-center gap-3 shrink-0">
+                  <span class="text-emerald-400 font-semibold" title="Clicks">${q.clicks} clicks</span>
+                  <span class="text-zinc-400" title="Impressions">${q.impressions} impr</span>
+                  <span class="text-amber-300 font-bold px-1.5 py-0.5 rounded bg-amber-950/40 border border-amber-500/30 text-[11px]" title="Average Rank">#${q.position.toFixed(1)}</span>
+                </div>
               </div>
             `
             )
