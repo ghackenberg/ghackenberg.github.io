@@ -414,20 +414,9 @@ export async function getPlausiblePageScrollAndGoals(
     }
   }
 
-  // Fetch properties for File Download and Outbound Link: Click
-  for (const g of goals) {
-    if (g.goal === 'File Download' || g.goal === 'Outbound Link: Click') {
-      const propFilter = `event:goal==${g.goal};event:page==${normPath}`;
-      const urlBreakdown = await fetchBreakdown('event:props:url', period, propFilter, 'visitors', 10);
-      if (urlBreakdown.length > 0) {
-        g.details = urlBreakdown.map((u: any) => ({
-          property: 'url',
-          value: u.url || '(unknown)',
-          visitors: u.visitors || 0,
-        }));
-      }
-    }
-  }
+  // Fetch properties for goals (File Download, Section Viewed, Slide Viewed, High Intent, Filter, etc.)
+  const pageFilter = `event:page==${normPath}`;
+  await Promise.all(goals.map((g) => enrichGoalWithDetails(g, period, pageFilter)));
 
   return {
     scrollFunnel: {
@@ -437,6 +426,49 @@ export async function getPlausiblePageScrollAndGoals(
     },
     goals,
   };
+}
+
+const GOAL_DETAIL_PROPERTIES: Record<string, { propKey: string; fieldName: string }> = {
+  'File Download': { propKey: 'event:props:url', fieldName: 'url' },
+  'Outbound Link: Click': { propKey: 'event:props:url', fieldName: 'url' },
+  'Section Viewed': { propKey: 'event:props:section_id', fieldName: 'section_id' },
+  'Slide Viewed': { propKey: 'event:props:slide_number', fieldName: 'slide_number' },
+  'High Intent: Copy Email': { propKey: 'event:props:location', fieldName: 'location' },
+  'High Intent: Copy BibTeX': { propKey: 'event:props:title', fieldName: 'title' },
+  'High Intent: Share Presentation': { propKey: 'event:props:slide_number', fieldName: 'slide_number' },
+  'Filter Content': { propKey: 'event:props:value', fieldName: 'value' },
+  'Notifications Action': { propKey: 'event:props:action', fieldName: 'action' },
+  'Privacy Action': { propKey: 'event:props:action', fieldName: 'action' },
+  'Modal Opened': { propKey: 'event:props:modal', fieldName: 'modal' },
+  'Modal Closed': { propKey: 'event:props:modal', fieldName: 'modal' },
+  'Breakpoint Changed': { propKey: 'event:props:to', fieldName: 'to' },
+  'Orientation Changed': { propKey: 'event:props:to', fieldName: 'to' },
+};
+
+async function enrichGoalWithDetails(
+  conversion: PlausibleGoalConversion,
+  period: string,
+  pageFilter?: string
+): Promise<void> {
+  const mapping = GOAL_DETAIL_PROPERTIES[conversion.goal];
+  if (!mapping) return;
+
+  const filter = pageFilter
+    ? `event:goal==${conversion.goal};${pageFilter}`
+    : `event:goal==${conversion.goal}`;
+
+  try {
+    const breakdown = await fetchBreakdown(mapping.propKey, period, filter, 'visitors', 10);
+    if (breakdown.length > 0) {
+      conversion.details = breakdown.map((item: any) => ({
+        property: mapping.fieldName,
+        value: String(item[mapping.fieldName] ?? item.value ?? '(unknown)'),
+        visitors: item.visitors || 0,
+      }));
+    }
+  } catch {
+    // Non-fatal if property has not been collected yet
+  }
 }
 
 /**
@@ -450,10 +482,12 @@ export async function getPlausibleTechBreakdown(
   const normPath = urlOrPath ? normalizePath(urlOrPath) : undefined;
   const filter = normPath ? `event:page==${normPath}` : undefined;
 
-  const [rawDevices, rawOs, rawBrowsers] = await Promise.all([
+  const [rawDevices, rawOs, rawBrowsers, rawScreenBuckets, rawOrientations] = await Promise.all([
     fetchBreakdown('visit:device', period, filter, 'visitors,bounce_rate,visit_duration', 10),
     fetchBreakdown('visit:os', period, filter, 'visitors,bounce_rate,visit_duration', 10),
     fetchBreakdown('visit:browser', period, filter, 'visitors,bounce_rate,visit_duration', 10),
+    fetchBreakdown('event:props:screen_bucket', period, filter, 'visitors', 10).catch(() => []),
+    fetchBreakdown('event:props:screen_orientation', period, filter, 'visitors', 5).catch(() => []),
   ]);
 
   const mapToMetric = (items: any[], keyName: string): TechDimensionMetric[] => {
@@ -474,6 +508,8 @@ export async function getPlausibleTechBreakdown(
     devices: mapToMetric(rawDevices, 'device'),
     operatingSystems: mapToMetric(rawOs, 'os'),
     browsers: mapToMetric(rawBrowsers, 'browser'),
+    screenBuckets: rawScreenBuckets.length > 0 ? mapToMetric(rawScreenBuckets, 'screen_bucket') : undefined,
+    orientations: rawOrientations.length > 0 ? mapToMetric(rawOrientations, 'screen_orientation') : undefined,
   };
 }
 
@@ -542,20 +578,10 @@ export async function getPlausibleSiteGoals(
       goal: goalName,
       visitors,
     };
-
-    if (goalName === 'File Download' || goalName === 'Outbound Link: Click') {
-      const urlBreakdown = await fetchBreakdown('event:props:url', period, `event:goal==${goalName}`, 'visitors', 10);
-      if (urlBreakdown.length > 0) {
-        conversion.details = urlBreakdown.map((u: any) => ({
-          property: 'url',
-          value: u.url || '(unknown)',
-          visitors: u.visitors || 0,
-        }));
-      }
-    }
-
     result.push(conversion);
   }
+
+  await Promise.all(result.map((conversion) => enrichGoalWithDetails(conversion, period)));
 
   return result;
 }

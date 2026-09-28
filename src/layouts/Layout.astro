@@ -283,6 +283,22 @@ if (pubDate) {
     </script>
     <script is:inline async data-domain="hackenberg.tech" src="https://analytics.mentawise.com/js/script.file-downloads.outbound-links.pageview-props.tagged-events.js"></script>
     <script is:inline>
+      function getScreenBucket(w) {
+        if (w < 640) return 'xs (<640px)';
+        if (w < 768) return 'sm (640-767px)';
+        if (w < 1024) return 'md (768-1023px)';
+        if (w < 1280) return 'lg (1024-1279px)';
+        if (w < 1536) return 'xl (1280-1535px)';
+        return '2xl (>=1536px)';
+      }
+
+      function getScreenOrientation() {
+        return window.innerWidth >= window.innerHeight ? 'landscape' : 'portrait';
+      }
+
+      var currentBucket = getScreenBucket(window.innerWidth);
+      var currentOrientation = getScreenOrientation();
+
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
       plausible.init({
         domain: 'hackenberg.tech',
@@ -291,7 +307,9 @@ if (pubDate) {
         formSubmissions: true,
         customProperties: {
           theme_setting: document.documentElement.getAttribute('data-theme-setting') || 'system',
-          theme_resolved: document.documentElement.classList.contains('light') ? 'light' : 'dark'
+          theme_resolved: document.documentElement.classList.contains('light') ? 'light' : 'dark',
+          screen_bucket: currentBucket,
+          screen_orientation: currentOrientation
         }
       });
 
@@ -305,11 +323,67 @@ if (pubDate) {
           } });
         }
       });
+
+      // Synchronize screen size and track breakpoint/orientation changes (Option A & B)
+      var resizeTimeout = null;
+      function handleResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+          var newBucket = getScreenBucket(window.innerWidth);
+          var newOrientation = getScreenOrientation();
+          var bucketChanged = newBucket !== currentBucket;
+          var orientationChanged = newOrientation !== currentOrientation;
+
+          if (bucketChanged || orientationChanged) {
+            var prevBucket = currentBucket;
+            var prevOrientation = currentOrientation;
+
+            currentBucket = newBucket;
+            currentOrientation = newOrientation;
+
+            // Option A: Update in-memory customProperties for all subsequent interactions
+            if (window.plausible && window.plausible.o && window.plausible.o.customProperties) {
+              window.plausible.o.customProperties.screen_bucket = newBucket;
+              window.plausible.o.customProperties.screen_orientation = newOrientation;
+            }
+
+            // Option B: Fire dedicated event only on actual bucket/orientation transitions
+            if (window.plausible) {
+              if (bucketChanged) {
+                plausible('Breakpoint Changed', {
+                  props: {
+                    from: prevBucket,
+                    to: newBucket,
+                    screen_orientation: newOrientation
+                  }
+                });
+              }
+              if (orientationChanged) {
+                plausible('Orientation Changed', {
+                  props: {
+                    from: prevOrientation,
+                    to: newOrientation,
+                    screen_bucket: newBucket
+                  }
+                });
+              }
+            }
+          }
+        }, 250);
+      }
+
+      window.addEventListener('resize', handleResize, { passive: true });
+      window.addEventListener('orientationchange', handleResize, { passive: true });
     </script>
 
     <!-- Notification & Badge Tracking -->
     <script>
       import "../scripts/notifications.ts";
+    </script>
+
+    <!-- Telemetry & Semantic Tracking -->
+    <script>
+      import "../scripts/telemetry.ts";
     </script>    <!-- KaTeX Math Styles -->
     {hasMath && <KaTeXStyles />}
     <script is:inline>

@@ -101,6 +101,14 @@
   const container = document.getElementById('whats-new-modal-container');
   const closeBtn = document.getElementById('whats-new-close-btn');
 
+  function trackModalEvent(name: string, props?: Record<string, any>) {
+    try {
+      if (typeof window.plausible === 'function') {
+        window.plausible(name, props ? { props } : undefined);
+      }
+    } catch (e) {}
+  }
+
   function openModal() {
     if (typeof window.closePrivacyModal === 'function') {
       window.closePrivacyModal();
@@ -111,6 +119,7 @@
       container.classList.remove('scale-95');
       container.classList.add('scale-100');
       document.body.style.overflow = 'hidden';
+      trackModalEvent('Modal Opened', { modal: 'whats-new' });
     }
   }
 
@@ -121,6 +130,7 @@
       container.classList.remove('scale-100');
       container.classList.add('scale-95');
       document.body.style.overflow = '';
+      trackModalEvent('Modal Closed', { modal: 'whats-new' });
     }
   }
 
@@ -147,7 +157,12 @@
     if (backdrop) {
       backdrop.addEventListener('click', function(e) {
         const target = e.target as HTMLElement;
-        if (target && (target.closest('a') || target.closest('[data-open-privacy-modal]'))) {
+        if (target && target.closest('a')) {
+          const anchor = target.closest('a') as HTMLAnchorElement;
+          trackModalEvent('Notifications Action', { action: 'click-feed-item', url: anchor.pathname || anchor.href });
+          closeModal();
+        } else if (target && target.closest('[data-open-privacy-modal]')) {
+          trackModalEvent('Notifications Action', { action: 'open-privacy-from-updates' });
           closeModal();
         }
       });
@@ -159,6 +174,7 @@
       if (target && (target.closest('#whats-new-btn-desktop') || target.closest('#whats-new-btn-mobile') || target.closest('[data-open-whats-new-modal]'))) {
         e.preventDefault();
         e.stopPropagation();
+        trackModalEvent('Notifications Action', { action: 'open-updates-bell' });
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
           mobileMenu.classList.add('hidden');

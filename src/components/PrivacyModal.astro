@@ -197,6 +197,14 @@
       }
     }
 
+    function trackPrivacyEvent(name, props) {
+      try {
+        if (typeof window.plausible === 'function') {
+          window.plausible(name, props ? { props } : undefined);
+        }
+      } catch (e) {}
+    }
+
     function openModal() {
       if (typeof window.closeWhatsNewModal === 'function') {
         window.closeWhatsNewModal();
@@ -208,6 +216,7 @@
         container.classList.remove('scale-95');
         container.classList.add('scale-100');
         document.body.style.overflow = 'hidden';
+        trackPrivacyEvent('Modal Opened', { modal: 'privacy' });
       }
     }
 
@@ -218,6 +227,7 @@
         container.classList.remove('scale-100');
         container.classList.add('scale-95');
         document.body.style.overflow = '';
+        trackPrivacyEvent('Modal Closed', { modal: 'privacy' });
       }
     }
 
@@ -255,6 +265,7 @@
     if (toggleReadStatus) {
       toggleReadStatus.addEventListener('change', function() {
         const shouldEnable = toggleReadStatus.checked;
+        trackPrivacyEvent('Privacy Action', { action: 'toggle-reading-status', enabled: shouldEnable });
         if (shouldEnable) {
           const freshState = {
             enabled: true,
@@ -279,6 +290,7 @@
     if (clearReadingDataBtn) {
       clearReadingDataBtn.addEventListener('click', function() {
         if (confirm('Do you really want to clear your locally stored preferences and history?')) {
+          trackPrivacyEvent('Privacy Action', { action: 'clear-reading-data' });
           const enabled = isNotificationsEnabled();
           if (enabled) {
             const emptyState = {
@@ -304,6 +316,7 @@
     if (toggleAnalyticsBtn) {
       toggleAnalyticsBtn.addEventListener('click', function() {
         const currentlyOptedOut = isAnalyticsOptedOut();
+        trackPrivacyEvent('Privacy Action', { action: 'toggle-analytics-optout', opted_out: !currentlyOptedOut });
         if (currentlyOptedOut) {
           localStorage.removeItem(PLAUSIBLE_IGNORE_KEY);
         } else {
