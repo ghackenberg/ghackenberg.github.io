@@ -526,14 +526,43 @@ const currentPath = Astro.url.pathname;
       setTimeout(reportScroll, 300);
       setTimeout(reportScroll, 800);
 
-      // 2. Listen for scroll commands from parent Studio Shell
+      // 2. Listen for scroll commands and period/data sync from parent Studio Shell
       window.addEventListener('message', (e) => {
-        if (e.data && e.data.type === 'dev-studio-scroll-to') {
+        if (!e.data || typeof e.data !== 'object') return;
+
+        if (e.data.type === 'dev-studio-scroll-to') {
           const top = typeof e.data.top === 'number' ? e.data.top : 0;
           window.scrollTo({
             top,
             behavior: e.data.smooth ? 'smooth' : 'instant',
           });
+        } else if (e.data.type === 'dev-studio-set-period') {
+          const period = e.data.period;
+          if (period && period !== this.currentPeriod) {
+            this.setPeriod(period);
+          }
+        } else if (e.data.type === 'dev-studio-sync-data') {
+          if (e.data.period && e.data.period !== this.currentPeriod) {
+            this.currentPeriod = e.data.period;
+            localStorage.setItem(PERIOD_KEY, e.data.period);
+            this.updatePeriodButtonsUI();
+          }
+          if (e.data.data) {
+            this.currentData = e.data.data;
+            try {
+              sessionStorage.setItem(`gh_dev_last_${window.location.pathname}_${this.currentPeriod}`, JSON.stringify(e.data.data));
+            } catch {}
+            this.renderBadges(e.data.data);
+            this.renderHud(e.data.data);
+            this.renderFullView(e.data.data);
+          }
+        }
+      });
+
+      // 3. Storage event listener for period changes across windows/tabs
+      window.addEventListener('storage', (e) => {
+        if (e.key === PERIOD_KEY && e.newValue && e.newValue !== this.currentPeriod) {
+          this.setPeriod(e.newValue);
         }
       });
 
