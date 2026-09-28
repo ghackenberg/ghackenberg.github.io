@@ -9,6 +9,7 @@ heroImage:
   title: "Research domain: User Experience"
   description: "Focus area in User Experience: Visualizations & UI Designs."
 order: 4
+pubDate: 2026-09-14
 ---
 
 User Experience (UX) is the bridge where complex engineering meets human cognition. Even the most sophisticated algorithms and distributed architectures are ineffective if users cannot understand them, navigate them intuitively, and extract value from them without cognitive fatigue. What excites me most is designing interfaces that make complex, multidimensional data structures—such as large-scale knowledge graphs, 3D CAD files, and simulation parameters—effortless and delightful for visual thinkers to explore.

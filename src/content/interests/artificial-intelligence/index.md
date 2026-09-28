@@ -9,6 +9,7 @@ heroImage:
   title: "Research domain: Artificial Intelligence"
   description: "Focus area in Artificial Intelligence: Generative AI & Agent Systems."
 order: 3
+pubDate: 2026-09-14
 ---
 
 Artificial Intelligence represents one of the most exhilarating frontiers in computer science. What excites me most is the profound shift from rigid, deterministic rule-based algorithms to semantic, adaptive neural architectures capable of synthesizing knowledge, generating rich multimodal media, and reasoning autonomously to solve complex open-ended problems.

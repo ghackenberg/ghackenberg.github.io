@@ -178,7 +178,7 @@ if (pubDate) {
               if (rawManifest) {
                 const manifest = JSON.parse(rawManifest);
                 if (manifest) {
-                  const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations'];
+                  const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests'];
                   let hasUnread = false;
                   for (let i = 0; i < SECTIONS.length; i++) {
                     const section = SECTIONS[i];
@@ -495,99 +495,103 @@ if (pubDate) {
       (function() {
         const STORAGE_KEY = 'gh_site_notifications_v1';
         const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
-        const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations'];
+        const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests'];
         
         function normalizePath(path) {
           let n = path.replace(/\/$/, '');
           return n.startsWith('/') ? n : '/' + n;
         }
         
-        let isOptedIn = false;
-        let state = null;
-        try {
-          const stored = localStorage.getItem(STORAGE_KEY);
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            if (parsed && parsed.enabled === true) {
-              isOptedIn = true;
-              state = parsed;
-            } else {
-              // Automatic cleanup of unconsented legacy data!
-              localStorage.removeItem(STORAGE_KEY);
-              localStorage.removeItem(MANIFEST_CACHE_KEY);
-            }
-          }
-        } catch(e) {}
-
-        // If user has not explicitly opted in, ensure all badges and dots remain hidden and exit immediately!
-        if (!isOptedIn || !state) {
-          document.querySelectorAll('.unread-dot').forEach(dot => dot.classList.add('hidden'));
-          document.querySelectorAll('.nav-badge').forEach(badge => badge.classList.add('hidden'));
-          document.documentElement.classList.remove('has-unread-notifications');
-          document.getElementById('whats-new-btn-desktop')?.classList.remove('whats-new-luminous');
-          document.getElementById('whats-new-btn-mobile')?.classList.remove('whats-new-luminous');
-          return;
-        }
-        
-        // 1. Update unread dots synchronously
-        const unreadDots = document.querySelectorAll('.unread-dot');
-        unreadDots.forEach(dot => {
-          const rawUrl = dot.getAttribute('data-item-url');
-          if (rawUrl) {
-            const itemUrl = normalizePath(rawUrl);
-            const isVisited = !!(state.visitedItems && state.visitedItems[itemUrl]);
-            if (!isVisited) {
-              dot.classList.remove('hidden');
-            } else {
-              dot.classList.add('hidden');
-            }
-          }
-        });
-        
-        // 2. Update navbar badges synchronously using cached manifest
-        let manifest = null;
-        try {
-          const cached = localStorage.getItem(MANIFEST_CACHE_KEY);
-          if (cached) manifest = JSON.parse(cached);
-        } catch(e) {}
-        
-        if (manifest) {
-          let totalUnreadCount = 0;
-          SECTIONS.forEach(section => {
-            const items = manifest[section] || [];
-            const lastVisit = (state.lastVisitedSections && state.lastVisitedSections[section] !== undefined)
-              ? state.lastVisitedSections[section]
-              : 0;
-            
-            const newItemsCount = items.filter(item => {
-              const itemUrl = normalizePath(item.url);
-              const isNew = lastVisit === 0 ? true : item.date > lastVisit;
-              const isUnvisited = !(state.visitedItems && state.visitedItems[itemUrl]);
-              return isNew && isUnvisited;
-            }).length;
-            
-            totalUnreadCount += newItemsCount;
-
-            const badges = document.querySelectorAll('.nav-badge[data-section="' + section + '"]');
-            badges.forEach(badge => {
-              if (newItemsCount > 0) {
-                badge.classList.remove('hidden');
+        function updateBadges() {
+          let isOptedIn = false;
+          let state = null;
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+              const parsed = JSON.parse(stored);
+              if (parsed && parsed.enabled === true) {
+                isOptedIn = true;
+                state = parsed;
               } else {
-                badge.classList.add('hidden');
+                localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(MANIFEST_CACHE_KEY);
               }
-            });
-          });
+            }
+          } catch(e) {}
 
-          if (totalUnreadCount > 0) {
-            document.documentElement.classList.add('has-unread-notifications');
-            document.getElementById('whats-new-btn-desktop')?.classList.add('whats-new-luminous');
-            document.getElementById('whats-new-btn-mobile')?.classList.add('whats-new-luminous');
-          } else {
+          if (!isOptedIn || !state) {
+            document.querySelectorAll('.unread-dot').forEach(dot => dot.classList.add('hidden'));
+            document.querySelectorAll('.nav-badge').forEach(badge => badge.classList.add('hidden'));
             document.documentElement.classList.remove('has-unread-notifications');
             document.getElementById('whats-new-btn-desktop')?.classList.remove('whats-new-luminous');
             document.getElementById('whats-new-btn-mobile')?.classList.remove('whats-new-luminous');
+            return;
+          }
+          
+          // 1. Update unread dots synchronously
+          const unreadDots = document.querySelectorAll('.unread-dot');
+          unreadDots.forEach(dot => {
+            const rawUrl = dot.getAttribute('data-item-url');
+            if (rawUrl) {
+              const itemUrl = normalizePath(rawUrl);
+              const isVisited = !!(state.visitedItems && state.visitedItems[itemUrl]);
+              if (!isVisited) {
+                dot.classList.remove('hidden');
+              } else {
+                dot.classList.add('hidden');
+              }
+            }
+          });
+          
+          // 2. Update navbar badges synchronously using cached manifest
+          let manifest = null;
+          try {
+            const cached = localStorage.getItem(MANIFEST_CACHE_KEY);
+            if (cached) manifest = JSON.parse(cached);
+          } catch(e) {}
+          
+          if (manifest) {
+            let totalUnreadCount = 0;
+            SECTIONS.forEach(section => {
+              const items = manifest[section] || [];
+              const lastVisit = (state.lastVisitedSections && state.lastVisitedSections[section] !== undefined)
+                ? state.lastVisitedSections[section]
+                : 0;
+              
+              const newItemsCount = items.filter(item => {
+                const itemUrl = normalizePath(item.url);
+                const isNew = lastVisit === 0 ? true : item.date > lastVisit;
+                const isUnvisited = !(state.visitedItems && state.visitedItems[itemUrl]);
+                return isNew && isUnvisited;
+              }).length;
+              
+              totalUnreadCount += newItemsCount;
+
+              const badges = document.querySelectorAll('.nav-badge[data-section="' + section + '"]');
+              badges.forEach(badge => {
+                if (newItemsCount > 0) {
+                  badge.classList.remove('hidden');
+                } else {
+                  badge.classList.add('hidden');
+                }
+              });
+            });
+
+            if (totalUnreadCount > 0) {
+              document.documentElement.classList.add('has-unread-notifications');
+              document.getElementById('whats-new-btn-desktop')?.classList.add('whats-new-luminous');
+              document.getElementById('whats-new-btn-mobile')?.classList.add('whats-new-luminous');
+            } else {
+              document.documentElement.classList.remove('has-unread-notifications');
+              document.getElementById('whats-new-btn-desktop')?.classList.remove('whats-new-luminous');
+              document.getElementById('whats-new-btn-mobile')?.classList.remove('whats-new-luminous');
+            }
           }
         }
+
+        updateBadges();
+        window.addEventListener('gh-notifications-toggle', updateBadges);
+        document.addEventListener('astro:page-load', updateBadges);
       })();
     </script>
   </body>

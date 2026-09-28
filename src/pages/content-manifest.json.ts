@@ -73,6 +73,7 @@ export async function GET() {
   const visualizations = await getCollection("visualizations");
   const services = await getCollection("services");
   const modules = await getCollection("modules");
+  const interests = await getCollection("interests");
   const tags = await getCollection("tags");
 
   const [
@@ -81,7 +82,8 @@ export async function GET() {
     resolvedCourses,
     resolvedProjects,
     resolvedVisualizations,
-    resolvedServices
+    resolvedServices,
+    resolvedInterests
   ] = await Promise.all([
     Promise.all(posts.map(async p => ({
       id: p.id,
@@ -151,7 +153,18 @@ export async function GET() {
         description: m.data.description,
         date: parseItemDate(m.id, m.data.pubDate)
       }))
-    ])
+    ]),
+    Promise.all(interests.map(async i => ({
+      id: i.id,
+      url: `/interests/${i.id}/`,
+      title: i.data.title,
+      tagline: i.data.tagline,
+      description: i.data.description || '',
+      image: await resolveImage(i.data.heroImage),
+      color: i.data.color,
+      order: i.data.order,
+      date: parseItemDate(i.id, i.data.pubDate) || Date.UTC(2026, 8, 14)
+    })))
   ]);
 
   const manifest = {
@@ -183,7 +196,8 @@ export async function GET() {
       date: parseItemDate(p.id, p.data.pubDate)
     })),
     visualizations: resolvedVisualizations,
-    services: resolvedServices
+    services: resolvedServices,
+    interests: resolvedInterests
   };
 
   return new Response(JSON.stringify(manifest, null, 2), {

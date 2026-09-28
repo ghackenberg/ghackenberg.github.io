@@ -1092,6 +1092,11 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   loading="lazy"
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
+                <span 
+                  class="unread-dot hidden badge-new badge-new-green badge-corner-tr" 
+                  data-item-url={`/interests/${interest.slug}/`}
+                  title="Unread interest"
+                >UNREAD</span>
               </div>
 
               <!-- Content Body -->
