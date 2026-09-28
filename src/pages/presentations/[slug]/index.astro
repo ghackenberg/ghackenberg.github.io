@@ -248,7 +248,7 @@ const previewImg = presentation.data.previewImage || presentation.data.icon;
         }))}
       >
         {renderedSlides.map((slide, idx) => (
-          <section data-slide-id={slide.id} data-slide-index={idx}>
+          <section id={`slide-${slide.id.replace(/\.[^/.]+$/, '').replace(/_/g, '-')}`} data-slide-id={slide.id} data-slide-index={idx}>
             <slide.Content />
           </section>
         ))}

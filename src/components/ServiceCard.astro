@@ -39,7 +39,7 @@ const optimizedImage = previewImg ? await getImage({
 }) : null;
 ---
 
-<div class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-brand-purple/40 transition-all duration-300">
+<article class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-brand-purple/40 transition-all duration-300" data-card-id={id} data-collection="services">
   <!-- Card Clickable Overlay Link -->
   <a 
     href={`/services/${id}/`} 
@@ -152,4 +152,4 @@ const optimizedImage = previewImg ? await getImage({
       </div>
     </div>
   </div>
-</div>
+</article>

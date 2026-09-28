@@ -25,7 +25,7 @@ const {
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 ---
 
-<div class="glass-card p-6 rounded-2xl border border-element-border group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-purple/30 h-full w-full">
+<article class="glass-card preview-card p-6 rounded-2xl border border-element-border group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-purple/30 h-full w-full" data-card-id={id} data-collection="publications">
   <!-- Absolute overlay link for card clickability -->
   <a href={`/publications/${id}/`} class="absolute inset-0 z-10" aria-label={title}></a>
 
@@ -137,4 +137,4 @@ const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag
       </div>
     </div>
   </div>
-</div>
+</article>

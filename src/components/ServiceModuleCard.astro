@@ -1,0 +1,99 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  serviceId: string;
+  module: CollectionEntry<'modules'>;
+}
+
+const { serviceId, module } = Astro.props;
+const moduleSlug = module.id.split('/').pop() || module.id;
+const cardId = module.id;
+const href = `/services/${serviceId}/${moduleSlug}/`;
+
+const colorClasses = {
+  text: 'text-brand-purple light:text-purple-700',
+  hoverText: 'group-hover:text-brand-purple light:group-hover:text-purple-600',
+  cardBtnBg: 'bg-brand-purple/12 group-hover:bg-brand-purple/25 border border-brand-purple/20 group-hover:border-brand-purple/45 text-purple-300 light:text-brand-purple',
+  dot: 'badge-new badge-new-purple'
+};
+---
+
+<article 
+  class="glass-card preview-card border border-element-border relative flex flex-col h-full hover:border-element-border-medium transition-all duration-300 group cursor-pointer"
+  data-card-id={cardId}
+  data-collection="service-modules"
+>
+  <!-- Absolute overlay link for card clickability and CTR telemetry delegation -->
+  <a href={href} class="absolute inset-0 z-10" aria-label={module.data.title}></a>
+
+  <!-- Preview Image Column (Top) -->
+  <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
+    {module.data.previewImage && (
+      <Image 
+        src={module.data.previewImage.src} 
+        alt={module.data.previewImage.description}
+        title={module.data.previewImage.title}
+        width={640}
+        height={360}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+    )}
+    <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+
+    <!-- Unread badge -->
+    <span 
+      class={`unread-dot hidden ${colorClasses.dot} badge-corner-tr`}
+      data-item-url={href}
+      title="Unread module"
+    >UNREAD</span>
+  </div>
+  
+  <!-- Info Body (Below) -->
+  <div class="preview-card-body flex flex-col flex-grow justify-between relative z-10 text-left">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <h3 class={`text-base sm:text-lg font-bold uppercase tracking-wider leading-snug mt-0 flex items-center gap-2 text-gray-100 light:text-slate-900 ${colorClasses.hoverText} transition-colors`}>
+          <span>{module.data.title}</span>
+        </h3>
+      </div>
+      <p class={`${colorClasses.text} font-bold text-[10px] uppercase tracking-wider leading-none`}>
+        {module.data.tagline}
+      </p>
+      <p class="text-gray-400 text-xs sm:text-sm leading-relaxed font-normal">
+        {module.data.description}
+      </p>
+
+      <div class="flex flex-wrap gap-1.5 pt-1">
+        {module.data.duration && (
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
+            ⏱️ {module.data.duration}
+          </span>
+        )}
+        {module.data.format && (
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
+            ⚡ {module.data.format}
+          </span>
+        )}
+        {module.data.delivery && (
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
+            📍 {module.data.delivery}
+          </span>
+        )}
+      </div>
+    </div>
+
+    <!-- Read more button — full width, pinned to bottom -->
+    <div class="mt-auto pt-6 w-full">
+      <span 
+        class={`flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${colorClasses.cardBtnBg}`}
+      >
+        <span>Read More</span>
+        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+        </svg>
+      </span>
+    </div>
+  </div>
+</article>

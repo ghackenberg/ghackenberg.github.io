@@ -116,7 +116,7 @@ const breadcrumbSchema = {
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No publications found.</p>
         ) : (
           years.map(year => (
-            <section class="publication-year-section space-y-4">
+            <section id={`year-${year}`} class="publication-year-section space-y-4">
               <h2 class="text-2xl font-extrabold text-gray-100 border-b border-element-border pb-2 tracking-tight">
                 {year}
               </h2>

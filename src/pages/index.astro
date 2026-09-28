@@ -1843,6 +1843,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   
                   <button 
                     id="copy-email-btn"
+                    data-track-event="High Intent: Copy Email"
+                    data-track-location="home-contact"
                     class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
                   >
                     <svg id="copy-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1861,7 +1863,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     </section>
 
     <!-- Tech Stack Showcase Section -->
-    <section class="py-12 border-t border-white/5 relative z-20">
+    <section id="tech-stack" class="py-12 border-t border-white/5 relative z-20">
       <div class="glass-panel rounded-3xl p-6 md:p-10 border border-white/5 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 bg-gradient-to-r from-white/[0.01] via-brand-blue/[0.02] to-brand-purple/[0.02]">
         <!-- Left Content -->
         <div class="flex-grow max-w-2xl text-center lg:text-left">

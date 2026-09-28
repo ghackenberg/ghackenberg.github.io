@@ -84,7 +84,25 @@ For complete slide archetype definitions and props, consult [`src/content/presen
   - *Retention & Opportunity Discovery*: Discover striking-distance keywords with `find_seo_opportunities`, identify retention bottlenecks with `find_retention_bottlenecks`, and analyze technical audience segments with `get_audience_breakdown`.
   - *AIO Readiness Audits*: Audit collections with `scan_aio_readiness` and evaluate GEO/AIO extractability on drafted markdown with `evaluate_aio_extractability`.
 - **Telemetry & Custom Event Tracking**:
-  - *Semantic Event Tracking*: When creating or refactoring interactive components (audio players, slide presentations, interactive calculators, downloadable assets), always integrate Plausible Custom Events with descriptive properties (e.g. download URLs, slide progress, audio completion) to feed back into the analytics engine.
+  - *Declarative Click Tracking Contract (`data-track-*`)*:
+    - **Never** write ad-hoc imperative JavaScript click listeners purely for tracking buttons, modals, or links.
+    - **Always** use the declarative HTML attribute schema:
+      - `data-track-event="<Event Name>"` (e.g. `data-track-event="High Intent: Copy Email"`, `data-track-event="Modal Opened"`, `data-track-event="Filter Content"`).
+      - `data-track-<prop-name>="<value>"`: Automatically parsed into event props (e.g. `data-track-location="home-contact"` $\rightarrow$ `{ location: "home-contact" }`, `data-track-modal="privacy"` $\rightarrow$ `{ modal: "privacy" }`).
+      - `data-track-props='{"key": "value"}'`: Optional JSON payload for complex or structured data.
+  - *Semantic Section & Heading Contract*:
+    - Every `<section>` on landing pages and pages with structured blocks MUST declare a human-readable `id` (e.g. `<section id="research">`).
+    - In long-form reading contexts (`article`, `.post-body`, `main`), content headings (`h2`, `h3`, `h4`) with IDs are automatically tracked alongside sections.
+    - `telemetry.ts` observes these elements with a 2.0s dwell threshold at $\ge 50\%$ viewport visibility to emit `Section Viewed` (`{ id }`) without intrusive per-asset tracking or string redundancy.
+  - *Preview Card Discovery & CTR Contract*:
+    - Feed and catalog cards MUST use `<article class="... preview-card ...">` with `data-card-id="<slug>"` and `data-collection="<collection>"`.
+    - Dwell time of 1.5s at $\ge 50\%$ viewport visibility emits `Card Viewed` (`{ id, collection }`).
+    - User clicks on preview cards trigger delegated `Card Clicked` events (`{ id, collection }`) for automated CTR analytics.
+  - *Semantic ID Integrity Gate*:
+    - Build output is strictly verified via `npm run validate:semantic-ids`:
+      1. Zero duplicate DOM IDs per HTML page.
+      2. 100% of `<section>` elements must possess a non-empty `id` attribute.
+  - *Component-Internal State Controllers*: Deeply interactive state machines (like `SlideDeck.astro` or `AudioSyncController.ts`) co-locate their event emissions (`Slide Viewed`, `Presentation Completed`, `Audio Played`) within their lifecycle hooks.
 - **Generative Engine Optimization (GEO/AEO)**:
   - *Answer-First Pattern*: Concise definition paragraph (40–55 words) immediately below key `##` headings.
   - *Question-Framed Headings*: Formulate 1–2 headings per article as explicit natural-language queries ("Was ist...", "Wie funktioniert...").

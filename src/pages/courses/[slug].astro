@@ -152,7 +152,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
         
         <!-- Learning Goals -->
         {course.data.learningGoals && course.data.learningGoals.length > 0 && (
-          <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
+          <section id="learning-goals" class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
             <!-- Accent indicator top border -->
             <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
 
@@ -172,7 +172,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
         )}
 
         <!-- Syllabus / Markdown content -->
-        <section class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 syllabus-content">
+        <section id="syllabus" class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 syllabus-content">
           <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2">
             <span>📖</span>
             <span>Course Syllabus & Details</span>

@@ -30,6 +30,7 @@
     "export:slides-thumbs": "node scripts/generate-slide-thumbnails.js",
     "validate:slides": "node scripts/validate-slides.js",
     "validate:slides:syntax": "node scripts/validate-slides.js --syntax-only",
+    "validate:semantic-ids": "node scripts/validate-semantic-ids.js",
     "astro": "astro"
   },
   "dependencies": {
