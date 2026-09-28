@@ -9,6 +9,7 @@ Dieses Verzeichnis dient der Konservierung und Spezifikation von Ideen für kün
 | **TOOL-001** | Slide-Engine MCP | Presentations | Hoch | `proposed` | [001-slide-engine-mcp.md](./001-slide-engine-mcp.md) |
 | **TOOL-002** | Visual Asset Graph MCP | Images / Content | Hoch | `proposed` | [002-visual-asset-graph-mcp.md](./002-visual-asset-graph-mcp.md) |
 | **TOOL-003** | Content Interview Gatekeeper | Content Creation | Mittel | `proposed` | [003-content-interview-gate.md](./003-content-interview-gate.md) |
+| **TOOL-004** | Content Manifest & Notification Linter | Data Integrity / CI | Hoch | `proposed` | [004-content-manifest-linter.md](./004-content-manifest-linter.md) |
 
 ---
 

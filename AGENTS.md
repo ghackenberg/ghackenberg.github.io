@@ -99,3 +99,13 @@ For complete slide archetype definitions and props, consult [`src/content/presen
 - **Rule $\rightarrow$ Tool Promotion & Backlog Management**:
   - Repetitive, algorithmic, or token-heavy processes must not stay as verbose prompt rules; they should be promoted into automated tools or MCP servers.
   - New tool proposals are specified as numbered RFCs in [`.agents/backlog/`](.agents/backlog/) (e.g. `001-slide-engine-mcp.md`) and tracked in [`.agents/backlog/README.md`](.agents/backlog/README.md).
+
+## 8. UI Interaction & Motion Ergonomics
+- **Touch Gesture Ergonomics (Axis-Locking & Disambiguation)**:
+  - *No Scroll-Trapping*: Horizontally swipeable or draggable components (e.g. carousels, marquees, code viewports) must never capture or trap native vertical page scrolling on touch devices.
+  - *8px Direction-Locking Contract*: Evaluate touch delta vectors immediately upon movement. If $|\Delta Y| > |\Delta X|$ at the 8px threshold, immediately yield gesture control to native page scrolling and lock the component's horizontal drag. If $|\Delta X| > |\Delta Y|$, lock the component horizontally and prevent native vertical scrolling.
+  - *Drag vs. Click Disambiguation*: When an interactive component contains clickable links or cards, suppress the click event in the capture phase if the pointer displacement exceeds 12px during the gesture.
+- **Perceptual Stability & Static Spatial Scaffolding**:
+  - *Static Layout Integrity*: Interactive visual states (focus, hover, parallax tiers, active rows) must never resize or dynamically morph the bounding boxes or heights of neighboring content rows (prevents layout jitter, Cumulative Layout Shifts, and disorientation).
+  - *Separation of Interaction and Visuals*: Ergonomic touch issues must always be resolved via interaction/gesture logic (axis-locking, thresholds), never through ad-hoc visual restructuring, row-zooming, or blurring/dimming neighboring elements.
+
