@@ -49,12 +49,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
         });
       }
 
+      function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+        return Promise.race([
+          promise,
+          new Promise<T>((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms)),
+        ]);
+      }
+
       const [plausibleRes, gscRes, sectionsRes, cardsRes, pagesRes] = await Promise.allSettled([
-        getPlausiblePageMetrics(targetPath, period, true),
-        getGscPagePerformance(targetPath, period),
-        getSectionDwellBreakdown(targetPath, period),
-        getCardCtrBreakdown(targetPath, period),
-        getPlausibleTopPages(period, 500),
+        withTimeout(getPlausiblePageMetrics(targetPath, period, true), 5000),
+        withTimeout(getGscPagePerformance(targetPath, period), 5000),
+        withTimeout(getSectionDwellBreakdown(targetPath, period), 5000),
+        withTimeout(getCardCtrBreakdown(targetPath, period), 5000),
+        withTimeout(getPlausibleTopPages(period, 500), 5000),
       ]);
 
       const plausible = plausibleRes.status === 'fulfilled' ? plausibleRes.value : {
