@@ -9,6 +9,7 @@ heroImage:
   title: "Research domain: Software Engineering"
   description: "Focus area in Software Engineering: Architectures & Web Platforms."
 order: 1
+pubDate: 2026-09-14
 ---
 
 Software engineering is fundamentally the art and science of taming complexity. What excites me most about this discipline is the ability to construct intricate, reliable systems from pure thought—translating abstract human requirements into robust, high-performance architectures that scale effortlessly and operate deterministically.

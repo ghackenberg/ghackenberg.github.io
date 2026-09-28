@@ -22,6 +22,7 @@ interface ContentManifest {
   services: ManifestItem[];
   publications: ManifestItem[];
   visualizations: ManifestItem[];
+  interests?: ManifestItem[];
 }
 
 interface FeedItem {
@@ -37,7 +38,7 @@ interface FeedItem {
 
 const STORAGE_KEY = 'gh_site_notifications_v1';
 const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
-const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations'];
+const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests'];
 
 const SECTION_CONFIG: Record<string, { label: string; badgeClass: string; icon: string; actionText: string }> = {
   posts: { 
@@ -81,6 +82,12 @@ const SECTION_CONFIG: Record<string, { label: string; badgeClass: string; icon: 
     badgeClass: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-700 border border-emerald-500/25',
     icon: '📈',
     actionText: 'Open Tool'
+  },
+  interests: { 
+    label: 'Interest', 
+    badgeClass: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-700 border border-emerald-500/25',
+    icon: '💡',
+    actionText: 'Explore Interest'
   }
 };
 
@@ -90,6 +97,12 @@ function getStorageState(): NotificationState | null {
     if (data) {
       const parsed = JSON.parse(data);
       if (parsed && parsed.enabled === true) {
+        if (!parsed.lastVisitedSections || typeof parsed.lastVisitedSections !== 'object') {
+          parsed.lastVisitedSections = {};
+        }
+        if (!parsed.visitedItems || typeof parsed.visitedItems !== 'object') {
+          parsed.visitedItems = {};
+        }
         return parsed;
       }
       // If data exists but was not explicitly opted in, clean up legacy unconsented data!
@@ -180,7 +193,7 @@ function hideAllIndicators() {
 function getUnreadBadgeClass(section: string): string {
   if (section === 'courses') return 'badge-new-yellow';
   if (section === 'services' || section === 'publications') return 'badge-new-purple';
-  if (section === 'visualizations') return 'badge-new-green';
+  if (section === 'visualizations' || section === 'interests') return 'badge-new-green';
   return 'badge-new-blue';
 }
 
@@ -337,6 +350,14 @@ function setupMarkAllAsRead(manifest: ContentManifest) {
     });
 
     saveStorageState(state);
+
+    // Hide all unread dots and badges immediately on the current page
+    document.querySelectorAll('.unread-dot').forEach(dot => dot.classList.add('hidden'));
+    document.querySelectorAll('.nav-badge').forEach(badge => badge.classList.add('hidden'));
+
+    // Dispatch event so ImageGalleryMarquee and all other listeners update immediately
+    window.dispatchEvent(new CustomEvent('gh-notifications-toggle', { detail: { enabled: true, markedAllRead: true } }));
+
     initNotifications();
   });
 }

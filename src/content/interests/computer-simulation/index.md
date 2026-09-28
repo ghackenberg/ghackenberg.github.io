@@ -9,6 +9,7 @@ heroImage:
   title: "Research domain: Computer Simulation"
   description: "Focus area in Computer Simulation: Systems & Layout Modeling."
 order: 2
+pubDate: 2026-09-14
 ---
 
 Computer simulation is nothing short of a computational time machine. It grants us the extraordinary ability to construct virtual laboratories, observe emergent non-linear dynamics, and rigorously evaluate millions of design scenarios—long before committing physical capital, building factory lines, or deploying mission-critical infrastructure.

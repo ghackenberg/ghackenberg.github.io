@@ -24,7 +24,7 @@ const initialRow3 = catalog.slice(27, 45);
 function getBadgeColor(href: string): string {
   if (href.startsWith('/courses/')) return 'badge-new-yellow';
   if (href.startsWith('/services/')) return 'badge-new-purple';
-  if (href.startsWith('/visualizations/')) return 'badge-new-green';
+  if (href.startsWith('/visualizations/') || href.startsWith('/interests/')) return 'badge-new-green';
   return 'badge-new-blue';
 }
 ---
@@ -349,7 +349,7 @@ function getBadgeColor(href: string): string {
   function getBadgeColor(href: string): string {
     if (href.startsWith('/courses/')) return 'badge-new-yellow';
     if (href.startsWith('/services/')) return 'badge-new-purple';
-    if (href.startsWith('/visualizations/')) return 'badge-new-green';
+    if (href.startsWith('/visualizations/') || href.startsWith('/interests/')) return 'badge-new-green';
     return 'badge-new-blue';
   }
 
@@ -744,10 +744,14 @@ function getBadgeColor(href: string): string {
       { signal, passive: false }
     );
 
-    // 3. Pointer & Touch Dragging with Momentum Glide
+    // 3. Pointer & Touch Dragging with Momentum Glide & Directional Axis-Locking
+    type AxisLock = 'undecided' | 'horizontal' | 'vertical';
     let isPointerDown = false;
+    let axisLock: AxisLock = 'undecided';
+    const AXIS_LOCK_THRESHOLD = 8; // Pixels of intentional movement before locking axis
     let startX = 0;
     let startY = 0;
+    let pointerStartTime = 0;
     let lastPointerX = 0;
     let lastPointerTime = 0;
     let pointerVelocity = 0;
@@ -755,6 +759,23 @@ function getBadgeColor(href: string): string {
     let activeDragTrack: TrackState | null = null;
     let dragPointerId: number | null = null;
     let hasDragged = false;
+    let dragDistance = 0;
+    let suppressClickUntil = 0;
+
+    // Bulletproof click prevention after drag: capture phase intercepts click before any <a> tag
+    viewport.addEventListener(
+      'click',
+      (e: MouseEvent) => {
+        if (performance.now() < suppressClickUntil || hasDragged || dragDistance > 12) {
+          e.preventDefault();
+          e.stopPropagation();
+          dragDistance = 0;
+          hasDragged = false;
+          suppressClickUntil = 0;
+        }
+      },
+      { capture: true, signal }
+    );
 
     viewport.addEventListener(
       'pointerdown',
@@ -763,11 +784,16 @@ function getBadgeColor(href: string): string {
         lastPointerType = e.pointerType;
         if (e.pointerType === 'mouse') {
           isMouseOver = true;
+          axisLock = 'horizontal';
+        } else {
+          axisLock = 'undecided';
         }
         isPointerDown = true;
         hasDragged = false;
+        dragDistance = 0;
         startX = e.clientX;
         startY = e.clientY;
+        pointerStartTime = performance.now();
         lastPointerX = e.clientX;
         lastPointerTime = performance.now();
         pointerVelocity = 0;
@@ -784,23 +810,41 @@ function getBadgeColor(href: string): string {
       (e: PointerEvent) => {
         if (!isPointerDown || e.pointerId !== dragPointerId || !activeDragTrack) return;
 
+        // If locked to vertical page scrolling, ignore all horizontal drag processing
+        if (axisLock === 'vertical') return;
+
         const totalDx = Math.abs(e.clientX - startX);
         const totalDy = Math.abs(e.clientY - startY);
+        dragDistance = Math.hypot(e.clientX - startX, e.clientY - startY);
 
-        if (!hasDragged) {
-          if (totalDx > 6 && totalDx > totalDy) {
-            hasDragged = true;
-            viewport.classList.add('is-dragging');
-          } else if (totalDy > 10) {
-            // Allow natural vertical page scroll
+        if (axisLock === 'undecided') {
+          if (totalDx < AXIS_LOCK_THRESHOLD && totalDy < AXIS_LOCK_THRESHOLD) {
+            // Deadzone: gesture intent not yet determined
+            return;
+          }
+          if (totalDy >= totalDx) {
+            // Dominant vertical gesture -> Lock to native page scroll!
+            axisLock = 'vertical';
             isPointerDown = false;
             dragPointerId = null;
             activeDragTrack = null;
             return;
+          } else {
+            // Dominant horizontal gesture -> Lock exclusively to gallery scrub!
+            axisLock = 'horizontal';
+            hasDragged = true;
+            viewport.classList.add('is-dragging');
+            try {
+              viewport.setPointerCapture(e.pointerId);
+            } catch (_) {}
           }
         }
 
-        if (hasDragged) {
+        if (axisLock === 'horizontal') {
+          if (dragDistance > 12) {
+            hasDragged = true;
+            viewport.classList.add('is-dragging');
+          }
           const dx = e.clientX - lastPointerX;
           const now = performance.now();
           const dt = Math.max((now - lastPointerTime) / 1000, 0.001);
@@ -816,27 +860,28 @@ function getBadgeColor(href: string): string {
     );
 
     const onPointerEnd = (e: PointerEvent) => {
-      if (e.pointerId !== dragPointerId) return;
+      if (e.pointerId !== dragPointerId && dragPointerId !== null) return;
+
+      try {
+        if (viewport.hasPointerCapture(e.pointerId)) {
+          viewport.releasePointerCapture(e.pointerId);
+        }
+      } catch (_) {}
+
       isPointerDown = false;
       dragPointerId = null;
       viewport.classList.remove('is-dragging');
+      const wasHorizontal = axisLock === 'horizontal';
+      axisLock = 'undecided';
 
-      if (hasDragged) {
-        if (Math.abs(pointerVelocity) > 60) {
+      const dragDuration = performance.now() - pointerStartTime;
+      const isTap = dragDistance <= 12 && dragDuration < 300;
+
+      if (!isTap && (hasDragged || dragDistance > 12)) {
+        suppressClickUntil = performance.now() + 300;
+        if (wasHorizontal && Math.abs(pointerVelocity) > 60) {
           momentumVelocity = Math.max(-2000, Math.min(2000, pointerVelocity));
         }
-        hasDragged = false;
-
-        // Suppress unintentional click after drag
-        const captureClick = (clickEvent: MouseEvent) => {
-          clickEvent.preventDefault();
-          clickEvent.stopPropagation();
-          window.removeEventListener('click', captureClick, true);
-        };
-        window.addEventListener('click', captureClick, true);
-        window.setTimeout(() => {
-          window.removeEventListener('click', captureClick, true);
-        }, 100);
       }
 
       if (e.pointerType === 'mouse' && !isMouseOver && Math.abs(momentumVelocity) <= 5) {
