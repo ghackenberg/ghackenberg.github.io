@@ -250,14 +250,6 @@ const { currentPath } = Astro.props;
               class="relative overflow-hidden rounded-[26px] bg-slate-950 shadow-inner"
               style="width: 393px; height: 852px;"
             >
-              <!-- Phone Dynamic Island Notch -->
-              <div
-                id="dev-device-notch"
-                class="absolute top-2.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-50 pointer-events-none flex items-center justify-center border border-zinc-800/80 shadow-md"
-              >
-                <div class="w-2.5 h-2.5 rounded-full bg-zinc-900 ml-6"></div>
-              </div>
-
               <iframe
                 id="dev-iframe-device"
                 src="about:blank"
@@ -304,7 +296,7 @@ const { currentPath } = Astro.props;
         <!-- Median Scroll Depth Marker (Exact Depth Position) -->
         <div
           id="dev-minimap-median-marker"
-          class="hidden absolute left-0 right-0 z-20 pointer-events-none flex items-center justify-end pr-0.5"
+          class="hidden absolute left-0 right-0 z-35 pointer-events-none flex items-center justify-end pr-0.5"
           style="top: 0%; transform: translateY(-50%); transition: top 450ms cubic-bezier(0.25, 1, 0.5, 1), opacity 300ms ease;"
         >
           <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
@@ -776,7 +768,6 @@ const { currentPath } = Astro.props;
       const dimensionControls = document.getElementById('dev-dimension-controls');
       const bezel = document.getElementById('dev-device-bezel');
       const screen = document.getElementById('dev-device-screen');
-      const notch = document.getElementById('dev-device-notch');
 
       if (dev === 'full') {
         fullStage?.classList.remove('hidden');
@@ -796,9 +787,6 @@ const { currentPath } = Astro.props;
         dimensionControls?.classList.remove('opacity-40', 'pointer-events-none');
 
         // Device-specific aesthetic adjustments
-        if (notch) {
-          notch.style.display = dev === 'iphone' ? 'flex' : 'none';
-        }
         if (bezel && screen) {
           if (dev === 'iphone') {
             bezel.style.borderRadius = '38px';
