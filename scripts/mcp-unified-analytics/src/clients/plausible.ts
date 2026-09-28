@@ -10,20 +10,33 @@ import type {
   TechDimensionMetric,
   GeoDimensionMetric,
   UtmCampaignMetric,
+  SectionDwellMetric,
+  CardCtrMetric,
 } from '../types.js';
 
+export function resolvePlausibleParams(period: string = 'last_28_days'): { period: string; date?: string } {
+  if (period === 'last_7_days' || period === '7d') return { period: '7d' };
+  if (period === 'last_14_days' || period === '14d') return { period: 'custom', date: getRangeDateString(14) };
+  if (period === 'last_28_days' || period === '28d' || period === '30d') return { period: '30d' };
+  if (period === 'last_90_days' || period === '90d') return { period: 'custom', date: getRangeDateString(90) };
+  return { period: '30d' };
+}
+
+function getRangeDateString(days: number): string {
+  const end = new Date();
+  const start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
+  const formatDate = (d: Date) => d.toISOString().split('T')[0];
+  return `${formatDate(start)},${formatDate(end)}`;
+}
+
 export function mapPeriodToPlausible(period: string = 'last_28_days'): string {
-  if (period === 'last_7_days') return '7d';
-  if (period === 'last_14_days') return 'custom'; // or 30d
-  if (period === 'last_28_days') return '30d';
-  if (period === 'last_90_days') return '6mo';
-  return '30d';
+  return resolvePlausibleParams(period).period;
 }
 
 /**
  * Low-level breakdown query helper.
  */
-async function fetchBreakdown(
+export async function fetchBreakdown(
   property: string,
   period: string,
   filter?: string,
@@ -33,10 +46,13 @@ async function fetchBreakdown(
   const config = getConfig();
   if (!config.plausible.apiKey) return [];
 
-  const plausiblePeriod = mapPeriodToPlausible(period);
+  const { period: plausiblePeriod, date: plausibleDate } = resolvePlausibleParams(period);
   const url = new URL(`${config.plausible.host}/api/v1/stats/breakdown`);
   url.searchParams.set('site_id', config.plausible.siteId);
   url.searchParams.set('period', plausiblePeriod);
+  if (plausibleDate) {
+    url.searchParams.set('date', plausibleDate);
+  }
   url.searchParams.set('property', property);
   url.searchParams.set('metrics', metrics);
   url.searchParams.set('limit', String(limit));
@@ -85,12 +101,15 @@ export async function getPlausiblePageMetrics(
   }
 
   const canonicalPath = normalizePath(urlOrPath);
-  const plausiblePeriod = mapPeriodToPlausible(period);
+  const { period: plausiblePeriod, date: plausibleDate } = resolvePlausibleParams(period);
 
   const fetchAggregate = async (filterPath: string) => {
     const url = new URL(`${config.plausible.host}/api/v1/stats/aggregate`);
     url.searchParams.set('site_id', config.plausible.siteId);
     url.searchParams.set('period', plausiblePeriod);
+    if (plausibleDate) {
+      url.searchParams.set('date', plausibleDate);
+    }
     url.searchParams.set('metrics', 'visitors,pageviews,bounce_rate,visit_duration');
     url.searchParams.set('filters', `event:page==${filterPath}`);
 
@@ -189,10 +208,13 @@ export async function getPlausibleTopPages(
     return pageMap;
   }
 
-  const plausiblePeriod = mapPeriodToPlausible(period);
+  const { period: plausiblePeriod, date: plausibleDate } = resolvePlausibleParams(period);
   const url = new URL(`${config.plausible.host}/api/v1/stats/breakdown`);
   url.searchParams.set('site_id', config.plausible.siteId);
   url.searchParams.set('period', plausiblePeriod);
+  if (plausibleDate) {
+    url.searchParams.set('date', plausibleDate);
+  }
   url.searchParams.set('property', 'event:page');
   url.searchParams.set('metrics', 'visitors,pageviews,bounce_rate,visit_duration');
   url.searchParams.set('limit', String(limit));
@@ -582,6 +604,108 @@ export async function getPlausibleSiteGoals(
   }
 
   await Promise.all(result.map((conversion) => enrichGoalWithDetails(conversion, period)));
+
+  return result;
+}
+
+/**
+ * Fetches section/heading dwell breakdown for a page.
+ */
+export async function getSectionDwellBreakdown(
+  urlOrPath: string,
+  period: string = 'last_28_days',
+  limit: number = 100
+): Promise<Record<string, SectionDwellMetric>> {
+  const normPath = normalizePath(urlOrPath);
+  const filter = `event:name==Section Viewed;event:page==${normPath}`;
+  let raw = await fetchBreakdown('event:props:id', period, filter, 'visitors,events', limit);
+
+  // If no results and path has trailing slash, try alternative slash
+  if (raw.length === 0 && normPath !== '/') {
+    const altPath = normPath.endsWith('/') ? normPath.slice(0, -1) : `${normPath}/`;
+    raw = await fetchBreakdown('event:props:id', period, `event:name==Section Viewed;event:page==${altPath}`, 'visitors,events', limit);
+  }
+
+  // Fallback: check legacy custom event "Section Viewed" with property "section_id"
+  if (raw.length === 0) {
+    let legacyRaw = await fetchBreakdown('event:props:section_id', period, `event:name==Section Viewed;event:page==${normPath}`, 'visitors', limit);
+    if (legacyRaw.length === 0 && normPath !== '/') {
+      const altPath = normPath.endsWith('/') ? normPath.slice(0, -1) : `${normPath}/`;
+      legacyRaw = await fetchBreakdown('event:props:section_id', period, `event:name==Section Viewed;event:page==${altPath}`, 'visitors', limit);
+    }
+    for (const item of legacyRaw) {
+      const id = String(item.section_id ?? item.id ?? item.value ?? '');
+      if (id) {
+        raw.push({ id, visitors: item.visitors || 0, events: item.events || item.visitors || 0 });
+      }
+    }
+  }
+
+  const result: Record<string, SectionDwellMetric> = {};
+  for (const item of raw) {
+    const id = String(item.id ?? item['event:props:id'] ?? item.value ?? '');
+    if (!id || id === '(not set)' || id === '(unknown)') continue;
+    result[id] = {
+      id,
+      visitors: item.visitors || 0,
+      events: item.events || item.visitors || 0,
+    };
+  }
+  return result;
+}
+
+/**
+ * Fetches preview card impressions, clicks, and CTR breakdown for a page.
+ */
+export async function getCardCtrBreakdown(
+  urlOrPath: string,
+  period: string = 'last_28_days',
+  limit: number = 100
+): Promise<Record<string, CardCtrMetric>> {
+  const normPath = normalizePath(urlOrPath);
+
+  const fetchWithAlt = async (eventName: string) => {
+    let raw = await fetchBreakdown('event:props:id', period, `event:name==${eventName};event:page==${normPath}`, 'visitors,events', limit);
+    if (raw.length === 0 && normPath !== '/') {
+      const altPath = normPath.endsWith('/') ? normPath.slice(0, -1) : `${normPath}/`;
+      raw = await fetchBreakdown('event:props:id', period, `event:name==${eventName};event:page==${altPath}`, 'visitors,events', limit);
+    }
+    return raw;
+  };
+
+  const [viewsRaw, clicksRaw] = await Promise.all([
+    fetchWithAlt('Card Viewed'),
+    fetchWithAlt('Card Clicked'),
+  ]);
+
+  const map = new Map<string, { views: number; clicks: number }>();
+
+  for (const item of viewsRaw) {
+    const id = String(item.id ?? item['event:props:id'] ?? item.value ?? '');
+    if (!id || id === '(not set)' || id === '(unknown)') continue;
+    const entry = map.get(id) || { views: 0, clicks: 0 };
+    entry.views = item.visitors || item.events || 0;
+    map.set(id, entry);
+  }
+
+  for (const item of clicksRaw) {
+    const id = String(item.id ?? item['event:props:id'] ?? item.value ?? '');
+    if (!id || id === '(not set)' || id === '(unknown)') continue;
+    const entry = map.get(id) || { views: 0, clicks: 0 };
+    entry.clicks = item.visitors || item.events || 0;
+    map.set(id, entry);
+  }
+
+  const result: Record<string, CardCtrMetric> = {};
+  for (const [id, data] of map.entries()) {
+    const ctr = data.views > 0 ? Number(((data.clicks / data.views) * 100).toFixed(1)) : 0;
+    result[id] = {
+      id,
+      views: data.views,
+      clicks: data.clicks,
+      ctr,
+    };
+  }
 
   return result;
 }
