@@ -5,6 +5,40 @@ export interface GscMetricSummary {
   position: number;
 }
 
+export interface SectionDwellMetric {
+  id: string;
+  visitors: number;
+  events?: number;
+}
+
+export interface CardCtrMetric {
+  id: string;
+  views: number;
+  clicks: number;
+  ctr: number;
+}
+
+export interface DevOverlayPageData {
+  path: string;
+  period: string;
+  plausible: {
+    visitors: number;
+    pageviews: number;
+    bounceRate: number | null;
+    visitDuration: number | null;
+  };
+  gsc: {
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    position: number;
+    queries: GscQueryMetric[];
+  };
+  sections: Record<string, SectionDwellMetric>;
+  cards: Record<string, CardCtrMetric>;
+  pages?: Record<string, { visitors: number; pageviews: number; bounceRate?: number | null; visitDuration?: number | null }>;
+}
+
 export interface GscQueryMetric extends GscMetricSummary {
   query: string;
 }

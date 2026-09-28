@@ -22,6 +22,7 @@ import Background from "../components/Background.astro";
 import JsonLd from "../components/JsonLd.astro";
 import PrivacyModal from "../components/PrivacyModal.astro";
 import WhatsNewModal from "../components/WhatsNewModal.astro";
+import AnalyticsDevOverlay from "../components/dev/AnalyticsDevOverlay.astro";
 
 type JsonLdValue = string | number | boolean | null | undefined | { [key: string]: JsonLdValue } | JsonLdValue[];
 
@@ -115,6 +116,20 @@ if (pubDate) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    {import.meta.env.DEV && (
+      <style is:inline id="dev-analytics-critical-style">
+        :root {
+          --dev-hud-offset: 44px;
+        }
+        body {
+          padding-top: 44px !important;
+        }
+        body div.sticky.top-0 {
+          top: 44px !important;
+        }
+      </style>
+    )}
 
     <script is:inline>
       // Add no-transitions class to prevent theme transition animation on load
@@ -668,5 +683,6 @@ if (pubDate) {
         document.addEventListener('astro:page-load', updateBadges);
       })();
     </script>
+    {import.meta.env.DEV && <AnalyticsDevOverlay />}
   </body>
 </html>

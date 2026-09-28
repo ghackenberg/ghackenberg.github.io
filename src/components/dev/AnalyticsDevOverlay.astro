@@ -1,0 +1,1193 @@
+---
+// Dev-only Analytics Overlay Component
+// Zero footprint in production builds
+const currentPath = Astro.url.pathname;
+---
+
+<div id="dev-analytics-container" class="dev-analytics-root select-none font-sans text-xs">
+  <!-- Strict Single-Row HUD Bar (Full Window Width, Zero-Shadow, Neutral Gray) -->
+  <aside
+    id="dev-analytics-hud"
+    class="fixed top-0 left-0 right-0 z-[9999] h-11 bg-zinc-900/98 text-zinc-200 border-b border-zinc-700/80 px-4 shadow-none backdrop-blur-md transition-none"
+    aria-label="Dev Analytics HUD"
+  >
+    <div class="h-full w-full flex items-center justify-between gap-4 flex-nowrap overflow-hidden">
+      <!-- Left: Identity & Timeframe Selector -->
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="h-7 flex items-center justify-center font-semibold text-zinc-100 font-mono text-xs gap-1.5 px-1">
+          <span>📊</span>
+          <div class="w-4 h-4 flex items-center justify-center shrink-0" title="Analytics Sync Status">
+            <!-- Animated Loading Spinner -->
+            <svg id="dev-hud-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-400 hidden" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <!-- Check Symbol (visible when loaded) -->
+            <svg id="dev-hud-check" class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Timeframe Selector -->
+        <div class="h-7 flex items-center rounded-lg bg-zinc-800/80 border border-zinc-700/80 p-0.5" role="group" aria-label="Timeframe">
+          <button type="button" data-period="7d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100">7d</button>
+          <button type="button" data-period="28d" class="dev-period-btn active-period h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-700 text-white font-medium shadow-sm">28d</button>
+          <button type="button" data-period="90d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100">90d</button>
+        </div>
+      </div>
+
+      <!-- Center: Key Performance Metrics with Smooth Right Fade-out Mask -->
+      <div
+        class="h-7 flex-1 min-w-0 overflow-hidden flex items-center gap-2 text-xs font-mono transition-opacity duration-200"
+        id="dev-analytics-metrics"
+        style="-webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%); mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);"
+      >
+        <!-- Core Essential Plausible (Always visible) -->
+        <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
+          <span title="Unique Page Visitors" class="flex items-center gap-1">
+            <span class="text-zinc-400">Visitors:</span>
+            <strong id="hud-visitors" class="text-white">--</strong>
+          </span>
+          <span class="hidden md:inline text-zinc-600">|</span>
+          <span title="Total Pageviews" class="hidden md:flex items-center gap-1">
+            <span class="text-zinc-400">Views:</span>
+            <strong id="hud-pageviews" class="text-white">--</strong>
+          </span>
+          <span class="hidden md:inline text-zinc-600">|</span>
+          <span title="Bounce Rate" class="hidden md:flex items-center gap-1">
+            <span class="text-zinc-400">Bounce:</span>
+            <strong id="hud-bounce" class="text-amber-400">--</strong>
+          </span>
+          <span class="hidden lg:inline text-zinc-600">|</span>
+          <span title="Average Visit Duration" class="hidden lg:flex items-center gap-1">
+            <span class="text-zinc-400">Dur:</span>
+            <strong id="hud-duration" class="text-white">--</strong>
+          </span>
+        </div>
+
+        <!-- Scroll Retention Pill (Informational only, not clickable) -->
+        <div
+          class="h-7 hidden lg:flex items-center gap-1.5 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none"
+        >
+          <span class="text-zinc-300 font-semibold">Scroll:</span>
+          <span title="Median Reader Scroll Depth" class="flex items-center gap-1">
+            <span class="text-zinc-400">Med:</span>
+            <strong id="hud-scroll-median" class="text-white">--</strong>
+          </span>
+          <span class="text-zinc-600">|</span>
+          <span title="Read-Through Rate (100% Depth)" class="flex items-center gap-1">
+            <span class="text-zinc-400">Read:</span>
+            <strong id="hud-scroll-readthrough" class="text-emerald-400">--</strong>
+          </span>
+        </div>
+
+        <!-- Core Google Stats -->
+        <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
+          <span class="text-zinc-300 font-semibold">Google:</span>
+          <span title="Google Search Clicks" class="flex items-center gap-1">
+            <span class="text-zinc-400">Clicks:</span>
+            <strong id="hud-gsc-clicks" class="text-emerald-400">--</strong>
+          </span>
+          <span class="hidden md:inline text-zinc-600">|</span>
+          <span title="Search Impressions" class="hidden md:flex items-center gap-1">
+            <span class="text-zinc-400">Impr:</span>
+            <strong id="hud-gsc-impr" class="text-white">--</strong>
+          </span>
+          <span class="hidden lg:inline text-zinc-600">|</span>
+          <span title="Search Click-Through Rate" class="hidden lg:flex items-center gap-1">
+            <span class="text-zinc-400">CTR:</span>
+            <strong id="hud-gsc-ctr" class="text-white">--</strong>
+          </span>
+          <span class="hidden xl:inline text-zinc-600">|</span>
+          <span title="Average Search Ranking Position" class="hidden xl:flex items-center gap-1">
+            <span class="text-zinc-400">Rank:</span>
+            <strong id="hud-gsc-rank" class="text-amber-300">--</strong>
+          </span>
+        </div>
+      </div>
+
+      <!-- Right: Action Controls, Toggles & Expand Button -->
+      <div class="flex items-center gap-1.5 shrink-0">
+
+        <!-- External Dashboard Quick Link (lg+) -->
+        <a
+          id="dev-plausible-link"
+          href="https://plausible.io/hackenberg.tech"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="h-7 w-7 hidden lg:flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white border border-zinc-700 transition-colors"
+          title="Open in Plausible Dashboard"
+          aria-label="Open in Plausible"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+          </svg>
+        </a>
+
+        <!-- Refresh Button -->
+        <button
+          id="dev-analytics-refresh"
+          type="button"
+          class="h-7 w-7 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 transition-colors cursor-pointer"
+          title="Force refresh live data (clears cache)"
+          aria-label="Refresh Data"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </button>
+
+        <!-- Expand to Full-Window Cockpit Button -->
+        <button
+          id="dev-expand-btn"
+          type="button"
+          class="h-7 w-7 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-600 font-mono text-xs transition-colors cursor-pointer shadow-sm leading-none"
+          title="Expand to Full-Window Analytics Cockpit"
+          aria-label="Expand Cockpit"
+        >
+          <span>⛶</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+
+  <!-- Integrated Full-Window Analytics Cockpit Overlay (No separate modals) -->
+  <div
+    id="dev-analytics-fullview"
+    role="dialog"
+    class="fixed inset-0 z-[10001] bg-zinc-950/98 backdrop-blur-2xl text-zinc-100 hidden flex flex-col overflow-hidden font-sans select-text"
+    aria-label="Dev Analytics Cockpit"
+  >
+    <!-- Fullview Header Bar -->
+    <header class="h-14 shrink-0 border-b border-zinc-800 bg-zinc-900/95 px-6 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 font-bold text-white text-sm font-mono">
+          <span>📊 Dev Analytics Cockpit</span>
+          <div class="w-4 h-4 flex items-center justify-center shrink-0">
+            <svg id="dev-fullview-spinner" class="w-4 h-4 animate-spin text-emerald-400 hidden" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <svg id="dev-fullview-check" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+          </div>
+          <span id="dev-fullview-cache-badge" class="px-2 py-0.5 rounded text-[11px] bg-zinc-800 text-zinc-400 border border-zinc-700">LIVE</span>
+        </div>
+
+        <!-- Path pill -->
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-800/80 border border-zinc-700 font-mono text-xs text-zinc-200">
+          <span class="text-zinc-400">📍</span>
+          <span id="dev-fullview-path" class="font-semibold">{currentPath}</span>
+        </div>
+
+        <!-- Timeframe selector -->
+        <div class="flex items-center rounded-lg bg-zinc-800/80 border border-zinc-700 p-0.5 font-mono" role="group">
+          <button type="button" data-period="7d" class="dev-full-period-btn px-2.5 py-1 rounded text-xs transition-colors text-zinc-400 hover:text-white">7d</button>
+          <button type="button" data-period="28d" class="dev-full-period-btn active-period px-2.5 py-1 rounded text-xs transition-colors bg-zinc-700 text-white font-medium">28d</button>
+          <button type="button" data-period="90d" class="dev-full-period-btn px-2.5 py-1 rounded text-xs transition-colors text-zinc-400 hover:text-white">90d</button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          id="dev-fullview-refresh"
+          type="button"
+          class="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 transition-colors cursor-pointer"
+          title="Force refresh live data"
+          aria-label="Refresh"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </button>
+
+        <a
+          id="dev-fullview-plausible"
+          href="https://plausible.io/hackenberg.tech"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 text-xs font-mono transition-colors"
+        >
+          <span>Plausible Dashboard ↗</span>
+        </a>
+
+        <!-- Collapse back into Top Bar Button -->
+        <button
+          id="dev-collapse-btn"
+          type="button"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-600 text-xs font-mono transition-colors cursor-pointer shadow-sm"
+          title="Collapse back to top analytics bar (Esc)"
+          aria-label="Collapse to bar"
+        >
+          <span>🗗</span>
+          <span class="font-semibold">Collapse</span>
+          <kbd class="ml-1 px-1.5 py-0.2 rounded bg-zinc-700 text-[10px] text-zinc-400 border border-zinc-600">Esc</kbd>
+        </button>
+      </div>
+    </header>
+
+    <!-- Fullview Content Scroll Body -->
+    <main class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 w-full max-w-[1600px] mx-auto">
+      <!-- 1. KPI Cards Grid -->
+      <section id="fullview-kpis">
+        <h2 class="text-xs font-mono text-zinc-400 uppercase tracking-wider mb-3">Key Performance Indicators</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 font-mono">
+          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
+            <div class="text-[11px] text-zinc-400">Visitors</div>
+            <div id="full-visitors" class="text-xl font-bold text-white mt-1">--</div>
+            <div class="text-[10px] text-zinc-500 mt-0.5">Plausible</div>
+          </div>
+          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
+            <div class="text-[11px] text-zinc-400">Pageviews</div>
+            <div id="full-views" class="text-xl font-bold text-white mt-1">--</div>
+            <div class="text-[10px] text-zinc-500 mt-0.5">Plausible</div>
+          </div>
+          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
+            <div class="text-[11px] text-zinc-400">Bounce Rate</div>
+            <div id="full-bounce" class="text-xl font-bold text-amber-400 mt-1">--</div>
+            <div class="text-[10px] text-zinc-500 mt-0.5">Single-page</div>
+          </div>
+          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
+            <div class="text-[11px] text-zinc-400">Visit Duration</div>
+            <div id="full-duration" class="text-xl font-bold text-white mt-1">--</div>
+            <div class="text-[10px] text-zinc-500 mt-0.5">Average</div>
+          </div>
+          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
+            <div class="text-[11px] text-zinc-400">Search Clicks</div>
+            <div id="full-gsc-clicks" class="text-xl font-bold text-emerald-400 mt-1">--</div>
+            <div class="text-[10px] text-zinc-500 mt-0.5">Google Organic</div>
+          </div>
+          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
+            <div class="text-[11px] text-zinc-400">Impressions</div>
+            <div id="full-gsc-impr" class="text-xl font-bold text-white mt-1">--</div>
+            <div class="text-[10px] text-zinc-500 mt-0.5">SERP Views</div>
+          </div>
+          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
+            <div class="text-[11px] text-zinc-400">Search CTR</div>
+            <div id="full-gsc-ctr" class="text-xl font-bold text-white mt-1">--</div>
+            <div class="text-[10px] text-zinc-500 mt-0.5">Click-through</div>
+          </div>
+          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
+            <div class="text-[11px] text-zinc-400">Avg Ranking</div>
+            <div id="full-gsc-rank" class="text-xl font-bold text-amber-300 mt-1">--</div>
+            <div class="text-[10px] text-zinc-500 mt-0.5">SERP Position</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Two-Column Detailed Analytics Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Column: Engagement & Retention Funnel -->
+        <div class="space-y-6">
+          <!-- Scroll Funnel Card -->
+          <section id="fullview-scroll" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white">Reader Scroll Depth Retention</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Drop-off progression across vertical reading milestones</p>
+              </div>
+              <div class="flex items-center gap-3 font-mono text-xs">
+                <div class="px-2.5 py-1 rounded bg-zinc-800 border border-zinc-700">
+                  <span class="text-zinc-400">Median:</span>
+                  <strong id="full-funnel-median" class="text-white ml-1">--</strong>
+                </div>
+                <div class="px-2.5 py-1 rounded bg-zinc-800 border border-zinc-700">
+                  <span class="text-zinc-400">Read-Through (≥90%):</span>
+                  <strong id="full-funnel-readthrough" class="text-emerald-400 ml-1">--</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Milestone Progress Bars -->
+            <div id="full-funnel-bars" class="space-y-2.5 font-mono text-xs">
+              <span class="text-zinc-500 italic">No scroll depth events recorded for this path in selected period.</span>
+            </div>
+          </section>
+
+          <!-- Section Dwell Breakdown Card -->
+          <section id="fullview-sections" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white">Page Sections & Dwell Times</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Unique readers who dwelled &ge; 2s on tracked sections</p>
+              </div>
+              <span id="full-sections-count" class="text-xs font-mono text-zinc-400">0 sections</span>
+            </div>
+
+            <div id="full-sections-table" class="space-y-1.5 font-mono text-xs max-h-80 overflow-y-auto pr-1">
+              <span class="text-zinc-500 italic">No section dwell events recorded for this path.</span>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Column: Search Queries & Audience Tech -->
+        <div class="space-y-6">
+          <!-- Top Search Queries Card -->
+          <section id="fullview-queries" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white">Google Search Queries</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Top organic search terms driving impressions and clicks</p>
+              </div>
+              <span id="full-queries-count" class="text-xs font-mono text-zinc-400">0 queries</span>
+            </div>
+
+            <div id="full-queries-table" class="space-y-1.5 font-mono text-xs max-h-80 overflow-y-auto pr-1">
+              <span class="text-zinc-500 italic">No search queries recorded for this page in selected period.</span>
+            </div>
+          </section>
+
+          <!-- Audience & Technologies Card -->
+          <section id="fullview-tech" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white">Audience Environment</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Client devices, browsers and operating systems</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 font-mono text-xs">
+              <div>
+                <div class="text-[11px] text-zinc-400 uppercase tracking-wide mb-2 font-semibold">Devices</div>
+                <div id="full-devices-list" class="space-y-1 text-zinc-300">
+                  <span class="text-zinc-500 italic">No device data</span>
+                </div>
+              </div>
+              <div>
+                <div class="text-[11px] text-zinc-400 uppercase tracking-wide mb-2 font-semibold">Operating Systems</div>
+                <div id="full-os-list" class="space-y-1 text-zinc-300">
+                  <span class="text-zinc-500 italic">No OS data</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Geographic Distribution Card -->
+          <section id="fullview-geo" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white">Geographic Distribution</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Top countries by unique visitor volume</p>
+              </div>
+            </div>
+            <div id="full-countries-list" class="flex flex-wrap gap-2 font-mono text-xs">
+              <span class="text-zinc-500 italic">No geographic data</span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  interface SearchQuery {
+    query: string;
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    position: number;
+  }
+
+  interface ScrollMilestone {
+    depth: number;
+    visitors: number;
+    percentageOfVisitors: number;
+    dropOffRateFromPrevious?: number;
+  }
+
+  interface ScrollRetentionData {
+    milestones: ScrollMilestone[];
+    readThroughRate: number | null;
+    medianScrollDepth: number | null;
+  }
+
+  interface TechItem {
+    name: string;
+    visitors: number;
+    percentage: number;
+  }
+
+  interface CountryItem {
+    country: string;
+    visitors: number;
+    percentage: number;
+  }
+
+  interface DevOverlayData {
+    path: string;
+    period: string;
+    plausible: {
+      visitors: number;
+      pageviews: number;
+      bounceRate: number | null;
+      visitDuration: number | null;
+      scrollFunnel?: ScrollRetentionData;
+      tech?: {
+        devices?: TechItem[];
+        operatingSystems?: TechItem[];
+        browsers?: TechItem[];
+      };
+      countries?: CountryItem[];
+    };
+    gsc: {
+      clicks: number;
+      impressions: number;
+      ctr: number;
+      position: number;
+      queries: SearchQuery[];
+    };
+    sections: Record<string, { id: string; visitors: number; events?: number }>;
+    cards: Record<string, { id: string; views: number; clicks: number; ctr: number }>;
+    pages?: Record<string, { visitors: number; pageviews: number; bounceRate?: number | null; visitDuration?: number | null }>;
+  }
+
+  const PERIOD_KEY = 'gh_dev_analytics_period';
+
+  class DevAnalyticsManager {
+    private currentPeriod: string = '28d';
+    private currentLoadedPath: string = '';
+    private currentData: DevOverlayData | null = null;
+    private createdBadges: HTMLElement[] = [];
+    private isFullViewOpen: boolean = false;
+
+    constructor() {
+      this.currentPeriod = localStorage.getItem(PERIOD_KEY) || '28d';
+    }
+
+    public init(): void {
+      this.setupGlobalListeners();
+      this.setupDomListeners();
+      this.updatePeriodButtonsUI();
+      this.restoreCachedSessionMetrics();
+      this.fetchData();
+    }
+
+    public onPageLoad(): void {
+      this.setupDomListeners();
+      this.updatePeriodButtonsUI();
+      this.restoreCachedSessionMetrics();
+      this.fetchData(false);
+    }
+
+    private setupGlobalListeners(): void {
+      // Escape key closes fullview
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (this.isFullViewOpen) {
+            this.closeFullView();
+          }
+        }
+        if (e.altKey && (e.key === 'e' || e.key === 'E')) {
+          e.preventDefault();
+          this.toggleFullView();
+        }
+      });
+
+      window.addEventListener('popstate', () => this.checkPathChange());
+      this.interceptHistory();
+    }
+
+    private interceptHistory(): void {
+      const origPush = history.pushState;
+      const origReplace = history.replaceState;
+
+      history.pushState = (...args: Parameters<typeof origPush>) => {
+        origPush.apply(history, args);
+        this.checkPathChange();
+      };
+
+      history.replaceState = (...args: Parameters<typeof origReplace>) => {
+        origReplace.apply(history, args);
+        this.checkPathChange();
+      };
+    }
+
+    private checkPathChange(): void {
+      if (window.location.pathname !== this.currentLoadedPath) {
+        this.restoreCachedSessionMetrics();
+        this.fetchData();
+      }
+    }
+
+    private setupDomListeners(): void {
+      // Refresh buttons
+      const refreshBtn = document.getElementById('dev-analytics-refresh');
+      if (refreshBtn && !refreshBtn.hasAttribute('data-bound')) {
+        refreshBtn.setAttribute('data-bound', 'true');
+        refreshBtn.addEventListener('click', () => {
+          this.fetchData(true);
+        });
+      }
+
+      const fullRefreshBtn = document.getElementById('dev-fullview-refresh');
+      if (fullRefreshBtn && !fullRefreshBtn.hasAttribute('data-bound')) {
+        fullRefreshBtn.setAttribute('data-bound', 'true');
+        fullRefreshBtn.addEventListener('click', () => {
+          this.fetchData(true);
+        });
+      }
+
+      // Expand / Collapse buttons
+      const expandBtn = document.getElementById('dev-expand-btn');
+      if (expandBtn && !expandBtn.hasAttribute('data-bound')) {
+        expandBtn.setAttribute('data-bound', 'true');
+        expandBtn.addEventListener('click', () => {
+          this.openFullView();
+        });
+      }
+
+      const collapseBtn = document.getElementById('dev-collapse-btn');
+      if (collapseBtn && !collapseBtn.hasAttribute('data-bound')) {
+        collapseBtn.setAttribute('data-bound', 'true');
+        collapseBtn.addEventListener('click', () => {
+          this.closeFullView();
+        });
+      }
+
+      // Timeframe buttons (HUD)
+      const periodButtons = document.querySelectorAll<HTMLButtonElement>('.dev-period-btn');
+      periodButtons.forEach((btn) => {
+        if (!btn.hasAttribute('data-bound')) {
+          btn.setAttribute('data-bound', 'true');
+          btn.addEventListener('click', () => {
+            const period = btn.getAttribute('data-period');
+            if (period && period !== this.currentPeriod) {
+              this.setPeriod(period);
+            }
+          });
+        }
+      });
+
+      // Timeframe buttons (Full View)
+      const fullPeriodButtons = document.querySelectorAll<HTMLButtonElement>('.dev-full-period-btn');
+      fullPeriodButtons.forEach((btn) => {
+        if (!btn.hasAttribute('data-bound')) {
+          btn.setAttribute('data-bound', 'true');
+          btn.addEventListener('click', () => {
+            const period = btn.getAttribute('data-period');
+            if (period && period !== this.currentPeriod) {
+              this.setPeriod(period);
+            }
+          });
+        }
+      });
+    }
+
+    private setPeriod(period: string): void {
+      this.currentPeriod = period;
+      localStorage.setItem(PERIOD_KEY, period);
+      this.updatePeriodButtonsUI();
+      this.restoreCachedSessionMetrics();
+      this.fetchData(true);
+    }
+
+    public openFullView(focusSectionId?: string): void {
+      this.isFullViewOpen = true;
+      const fullview = document.getElementById('dev-analytics-fullview');
+      fullview?.classList.remove('hidden');
+
+      if (this.currentData) {
+        this.renderFullView(this.currentData);
+      }
+
+      if (focusSectionId) {
+        requestAnimationFrame(() => {
+          const el = document.getElementById(focusSectionId);
+          el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
+
+    public closeFullView(): void {
+      this.isFullViewOpen = false;
+      const fullview = document.getElementById('dev-analytics-fullview');
+      fullview?.classList.add('hidden');
+    }
+
+    public toggleFullView(): void {
+      if (this.isFullViewOpen) {
+        this.closeFullView();
+      } else {
+        this.openFullView();
+      }
+    }
+
+    private updatePeriodButtonsUI(): void {
+      const allPeriodButtons = document.querySelectorAll<HTMLButtonElement>('.dev-period-btn, .dev-full-period-btn');
+      allPeriodButtons.forEach((btn) => {
+        const period = btn.getAttribute('data-period');
+        if (period === this.currentPeriod) {
+          btn.classList.add('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
+          btn.classList.remove('text-zinc-400');
+        } else {
+          btn.classList.remove('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
+          btn.classList.add('text-zinc-400');
+        }
+      });
+    }
+
+
+    private restoreCachedSessionMetrics(): void {
+      const currentPath = window.location.pathname;
+      const cached = sessionStorage.getItem(`gh_dev_last_${currentPath}_${this.currentPeriod}`);
+      if (cached) {
+        try {
+          const data: DevOverlayData = JSON.parse(cached);
+          this.currentData = data;
+          this.renderHud(data);
+          this.renderFullView(data);
+          this.renderBadges(data);
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    private setLoadingState(isLoading: boolean, isCached: boolean = false): void {
+      const hudSpinner = document.getElementById('dev-hud-spinner');
+      const hudCheck = document.getElementById('dev-hud-check');
+      const fullSpinner = document.getElementById('dev-fullview-spinner');
+      const fullCheck = document.getElementById('dev-fullview-check');
+      const cacheBadge = document.getElementById('dev-analytics-cache-badge');
+      const fullBadge = document.getElementById('dev-fullview-cache-badge');
+      const metricsContainer = document.getElementById('dev-analytics-metrics');
+
+      if (isLoading) {
+        hudSpinner?.classList.remove('hidden');
+        hudCheck?.classList.add('hidden');
+        fullSpinner?.classList.remove('hidden');
+        fullCheck?.classList.add('hidden');
+        metricsContainer?.classList.add('opacity-60');
+
+        if (cacheBadge) {
+          cacheBadge.textContent = 'FETCHING...';
+          cacheBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-zinc-800 text-amber-300 border border-zinc-700';
+        }
+        if (fullBadge) {
+          fullBadge.textContent = 'FETCHING...';
+          fullBadge.className = 'px-2 py-0.5 rounded text-[11px] bg-zinc-800 text-amber-300 border border-zinc-700';
+        }
+      } else {
+        hudSpinner?.classList.add('hidden');
+        hudCheck?.classList.remove('hidden');
+        fullSpinner?.classList.add('hidden');
+        fullCheck?.classList.remove('hidden');
+        metricsContainer?.classList.remove('opacity-60');
+
+        const badgeText = isCached ? 'CACHED' : 'LIVE';
+        const badgeClass = isCached
+          ? 'px-1.5 py-0.2 rounded text-[10px] bg-zinc-800 text-zinc-400 border border-zinc-700'
+          : 'px-1.5 py-0.2 rounded text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800';
+        const fullBadgeClass = isCached
+          ? 'px-2 py-0.5 rounded text-[11px] bg-zinc-800 text-zinc-400 border border-zinc-700'
+          : 'px-2 py-0.5 rounded text-[11px] bg-emerald-950 text-emerald-400 border border-emerald-800';
+
+        if (cacheBadge) {
+          cacheBadge.textContent = badgeText;
+          cacheBadge.className = badgeClass;
+        }
+        if (fullBadge) {
+          fullBadge.textContent = badgeText;
+          fullBadge.className = fullBadgeClass;
+        }
+      }
+    }
+
+    private async fetchData(forceRefresh: boolean = false): Promise<void> {
+      const hud = document.getElementById('dev-analytics-hud');
+      if (!hud) return;
+
+      const currentPath = window.location.pathname;
+      this.currentLoadedPath = currentPath;
+
+      // Update current path indicators
+      const pathEl = document.getElementById('dev-analytics-current-path');
+      if (pathEl) pathEl.textContent = currentPath;
+      const fullPathEl = document.getElementById('dev-fullview-path');
+      if (fullPathEl) fullPathEl.textContent = currentPath;
+
+      // Update Plausible direct links
+      const plausibleLink = document.getElementById('dev-plausible-link') as HTMLAnchorElement | null;
+      if (plausibleLink) {
+        plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(currentPath)}`;
+      }
+      const fullPlausibleLink = document.getElementById('dev-fullview-plausible') as HTMLAnchorElement | null;
+      if (fullPlausibleLink) {
+        fullPlausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(currentPath)}`;
+      }
+
+      this.setLoadingState(true);
+
+      try {
+        let url = `/api/dev-analytics.json?path=${encodeURIComponent(currentPath)}&period=${this.currentPeriod}`;
+        if (forceRefresh) {
+          url += `&_t=${Date.now()}`;
+        }
+
+        const headers: Record<string, string> = {
+          'x-analytics-path': currentPath,
+          'x-analytics-period': this.currentPeriod,
+        };
+
+        const res = await fetch(url, { cache: 'no-store', headers });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const isCacheHit = res.headers.get('X-Analytics-Cache') === 'HIT';
+        const data: DevOverlayData = await res.json();
+        this.currentData = data;
+
+        // Cache in sessionStorage to eliminate navigation flicker
+        try {
+          sessionStorage.setItem(`gh_dev_last_${currentPath}_${this.currentPeriod}`, JSON.stringify(data));
+        } catch {
+          // ignore storage quota
+        }
+
+        this.setLoadingState(false, isCacheHit);
+        this.renderHud(data);
+        this.renderFullView(data);
+        this.renderBadges(data);
+      } catch (err) {
+        console.error('[dev-analytics] Failed to load metrics:', err);
+        this.setLoadingState(false);
+        const cacheBadge = document.getElementById('dev-analytics-cache-badge');
+        if (cacheBadge) {
+          cacheBadge.textContent = 'ERROR';
+          cacheBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-rose-950 text-rose-400 border border-rose-800';
+        }
+      }
+    }
+
+    private formatDuration(seconds: number | null): string {
+      if (seconds === null || seconds === undefined) return '--';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}m ${secs}s`;
+    }
+
+    private renderHud(data: DevOverlayData): void {
+      const { plausible, gsc } = data;
+
+      // Update HUD elements
+      const visitorsEl = document.getElementById('hud-visitors');
+      const viewsEl = document.getElementById('hud-pageviews');
+      const bounceEl = document.getElementById('hud-bounce');
+      const durationEl = document.getElementById('hud-duration');
+
+      if (visitorsEl) visitorsEl.textContent = String(plausible.visitors ?? 0);
+      if (viewsEl) viewsEl.textContent = String(plausible.pageviews ?? 0);
+      if (bounceEl) bounceEl.textContent = plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--';
+      if (durationEl) durationEl.textContent = this.formatDuration(plausible.visitDuration);
+
+      // Scroll retention stats in HUD
+      const medianEl = document.getElementById('hud-scroll-median');
+      const readthroughEl = document.getElementById('hud-scroll-readthrough');
+      if (medianEl) {
+        medianEl.textContent = plausible.scrollFunnel?.medianScrollDepth != null ? `${plausible.scrollFunnel.medianScrollDepth}%` : '--';
+      }
+      if (readthroughEl) {
+        readthroughEl.textContent = plausible.scrollFunnel?.readThroughRate != null ? `${plausible.scrollFunnel.readThroughRate}%` : '--';
+      }
+
+      const gscClicksEl = document.getElementById('hud-gsc-clicks');
+      const gscImprEl = document.getElementById('hud-gsc-impr');
+      const gscCtrEl = document.getElementById('hud-gsc-ctr');
+      const gscRankEl = document.getElementById('hud-gsc-rank');
+
+      if (gscClicksEl) gscClicksEl.textContent = String(gsc.clicks ?? 0);
+      if (gscImprEl) gscImprEl.textContent = String(gsc.impressions ?? 0);
+      if (gscCtrEl) gscCtrEl.textContent = `${((gsc.ctr ?? 0) * 100).toFixed(1)}%`;
+      if (gscRankEl) gscRankEl.textContent = gsc.position ? `#${gsc.position.toFixed(1)}` : '--';
+
+      // Update Queries button count
+      const queriesCountEl = document.getElementById('dev-queries-count');
+      const queries = gsc.queries || [];
+      if (queriesCountEl) {
+        queriesCountEl.textContent = `Queries (${queries.length}) ↗`;
+      }
+    }
+
+    private renderFullView(data: DevOverlayData): void {
+      const { plausible, gsc, sections } = data;
+
+      // 1. KPI Cards
+      const setVal = (id: string, val: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      setVal('full-visitors', String(plausible.visitors ?? 0));
+      setVal('full-views', String(plausible.pageviews ?? 0));
+      setVal('full-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
+      setVal('full-duration', this.formatDuration(plausible.visitDuration));
+      setVal('full-gsc-clicks', String(gsc.clicks ?? 0));
+      setVal('full-gsc-impr', String(gsc.impressions ?? 0));
+      setVal('full-gsc-ctr', `${((gsc.ctr ?? 0) * 100).toFixed(1)}%`);
+      setVal('full-gsc-rank', gsc.position ? `#${gsc.position.toFixed(1)}` : '--');
+
+      // 2. Scroll Funnel
+      const funnel = plausible.scrollFunnel;
+      setVal('full-funnel-median', funnel?.medianScrollDepth != null ? `${funnel.medianScrollDepth}%` : '--');
+      setVal('full-funnel-readthrough', funnel?.readThroughRate != null ? `${funnel.readThroughRate}%` : '--');
+
+      const funnelBarsEl = document.getElementById('full-funnel-bars');
+      if (funnelBarsEl) {
+        if (!funnel || !funnel.milestones || funnel.milestones.length === 0) {
+          funnelBarsEl.innerHTML = '<span class="text-zinc-500 italic">No scroll depth events recorded for this path in period.</span>';
+        } else {
+          funnelBarsEl.innerHTML = funnel.milestones
+            .map((m) => {
+              const pct = Number(m.percentageOfVisitors.toFixed(1));
+              const dropOff = m.dropOffRateFromPrevious;
+
+              let barColor = 'bg-emerald-500';
+              if (m.depth >= 70) barColor = 'bg-emerald-400';
+              else if (m.depth >= 40) barColor = 'bg-sky-400';
+              else barColor = 'bg-zinc-400';
+
+              return `
+                <div class="p-2.5 rounded-xl bg-zinc-800/60 border border-zinc-700/70 space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-white text-xs">Scroll Milestone ≥ ${m.depth}%</span>
+                    <div class="flex items-center gap-2">
+                      <span class="text-zinc-200 font-semibold">${m.visitors} visitors</span>
+                      <span class="text-zinc-400">(${pct}%)</span>
+                      ${
+                        dropOff !== undefined && dropOff > 0
+                          ? `<span class="text-[10px] text-rose-400 font-semibold">🔻 -${dropOff}%</span>`
+                          : ''
+                      }
+                    </div>
+                  </div>
+                  <div class="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
+                    <div class="h-full rounded-full ${barColor} transition-all duration-300" style="width: ${Math.min(100, pct)}%"></div>
+                  </div>
+                </div>
+              `;
+            })
+            .join('');
+        }
+      }
+
+      // 3. Section Dwell Breakdown
+      const sectionsTableEl = document.getElementById('full-sections-table');
+      const sectionsCountEl = document.getElementById('full-sections-count');
+      const sectionEntries = Object.entries(sections || {});
+
+      if (sectionsCountEl) {
+        sectionsCountEl.textContent = `${sectionEntries.length} sections tracked`;
+      }
+
+      if (sectionsTableEl) {
+        if (sectionEntries.length === 0) {
+          sectionsTableEl.innerHTML = '<span class="text-zinc-500 italic">No section dwell events recorded for this path.</span>';
+        } else {
+          const totalVisitors = plausible.visitors || 1;
+          sectionsTableEl.innerHTML = sectionEntries
+            .sort((a, b) => (b[1].visitors || 0) - (a[1].visitors || 0))
+            .map(([secId, s]) => {
+              const retPct = ((s.visitors / totalVisitors) * 100).toFixed(1);
+              return `
+                <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
+                  <span class="font-semibold text-white truncate max-w-xs">#${secId}</span>
+                  <div class="flex items-center gap-3">
+                    <span class="text-zinc-300">${s.visitors} dwellers (${retPct}%)</span>
+                    <span class="text-zinc-500 text-[10px]">${s.events || s.visitors} events</span>
+                  </div>
+                </div>
+              `;
+            })
+            .join('');
+        }
+      }
+
+      // 4. Google Search Queries Table
+      const queriesTableEl = document.getElementById('full-queries-table');
+      const queriesCountEl = document.getElementById('full-queries-count');
+      const queries = gsc.queries || [];
+
+      if (queriesCountEl) {
+        queriesCountEl.textContent = `${queries.length} queries`;
+      }
+
+      if (queriesTableEl) {
+        if (queries.length === 0) {
+          queriesTableEl.innerHTML = '<span class="text-zinc-500 italic">No search queries recorded for this page in selected period.</span>';
+        } else {
+          queriesTableEl.innerHTML = queries
+            .map(
+              (q) => `
+              <div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
+                <span class="text-zinc-200 font-medium truncate" title="${q.query}">${q.query}</span>
+                <div class="flex items-center gap-2.5 shrink-0 text-xs">
+                  <span class="text-emerald-400 font-semibold">${q.clicks} clicks</span>
+                  <span class="text-zinc-500">|</span>
+                  <span class="text-zinc-300">${q.impressions} impr</span>
+                  <span class="text-zinc-500">|</span>
+                  <span class="text-amber-300">#${q.position.toFixed(1)}</span>
+                </div>
+              </div>
+            `
+            )
+            .join('');
+        }
+      }
+
+      // 5. Audience Technologies
+      const devicesListEl = document.getElementById('full-devices-list');
+      const osListEl = document.getElementById('full-os-list');
+      const devices = plausible.tech?.devices || [];
+      const os = plausible.tech?.operatingSystems || [];
+
+      if (devicesListEl) {
+        devicesListEl.innerHTML = devices.length > 0
+          ? devices.map(d => `<div class="flex justify-between py-0.5"><span>${d.name}</span><strong class="text-white">${d.percentage}% (${d.visitors})</strong></div>`).join('')
+          : '<span class="text-zinc-500 italic">No device data</span>';
+      }
+
+      if (osListEl) {
+        osListEl.innerHTML = os.length > 0
+          ? os.map(o => `<div class="flex justify-between py-0.5"><span>${o.name}</span><strong class="text-white">${o.percentage}% (${o.visitors})</strong></div>`).join('')
+          : '<span class="text-zinc-500 italic">No OS data</span>';
+      }
+
+      // 6. Geographic Distribution
+      const countriesListEl = document.getElementById('full-countries-list');
+      const countries = plausible.countries || [];
+
+      if (countriesListEl) {
+        countriesListEl.innerHTML = countries.length > 0
+          ? countries.map(c => `
+              <div class="px-2.5 py-1 rounded bg-zinc-800 border border-zinc-700 flex items-center gap-1.5">
+                <span class="font-bold text-white">${c.country}</span>
+                <span class="text-zinc-400">${c.percentage}% (${c.visitors})</span>
+              </div>
+            `).join('')
+          : '<span class="text-zinc-500 italic">No geographic data</span>';
+      }
+    }
+
+    private removeBadges(): void {
+      this.createdBadges.forEach((b) => b.remove());
+      this.createdBadges = [];
+    }
+
+    private renderBadges(data: DevOverlayData): void {
+      this.removeBadges();
+
+      const totalPageVisitors = data.plausible.visitors || 0;
+      const sectionData = data.sections || {};
+      const cardData = data.cards || {};
+
+      // 1. Process Headings (h2, h3, h4 with id)
+      const headingElements = Array.from(
+        document.querySelectorAll<HTMLElement>(':is(h2, h3, h4)[id]')
+      ).filter((el) => {
+        return (
+          !el.closest('.preview-card') &&
+          !el.closest('#presentation-player') &&
+          !el.closest('#dev-analytics-container') &&
+          !el.closest('dialog') &&
+          !el.closest('[role="dialog"]') &&
+          !el.closest('.modal') &&
+          !el.closest('#whats-new-modal-container') &&
+          !el.closest('#privacy-policy-modal-container')
+        );
+      });
+
+      let previousSectionVisitors: number | null = null;
+
+      headingElements.forEach((el, index) => {
+        const id = el.id;
+        if (!id) return;
+
+        const dwell = sectionData[id];
+        const visitors = dwell?.visitors ?? 0;
+        const events = dwell?.events ?? visitors;
+        const retentionRate = totalPageVisitors > 0 ? Number(((visitors / totalPageVisitors) * 100).toFixed(1)) : 0;
+
+        let dropOffFromPrevious: number | null = null;
+        if (index > 0 && previousSectionVisitors !== null && previousSectionVisitors > 0) {
+          dropOffFromPrevious = Number(
+            (((previousSectionVisitors - visitors) / previousSectionVisitors) * 100).toFixed(1)
+          );
+        }
+        previousSectionVisitors = visitors;
+
+        let indicatorColor = 'text-zinc-400';
+        if (visitors > 0) {
+          if (retentionRate >= 60) indicatorColor = 'text-emerald-400';
+          else if (retentionRate >= 30) indicatorColor = 'text-sky-400';
+          else indicatorColor = 'text-amber-400';
+        }
+
+        const dropOffText =
+          index > 0 && dropOffFromPrevious !== null
+            ? ` <span class="text-zinc-600">|</span> <span class="${dropOffFromPrevious > 30 ? 'text-rose-400 font-semibold' : 'text-zinc-400'}">${dropOffFromPrevious > 0 ? '🔻-' : '🔼+'}${Math.abs(dropOffFromPrevious)}%</span>`
+            : '';
+
+        const badge = document.createElement('span');
+        badge.className = `dev-analytics-badge dev-heading-badge inline-flex items-center gap-1.5 ml-2.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-700/80 bg-zinc-900/95 text-zinc-200 shadow-md backdrop-blur align-middle my-auto leading-none`;
+        badge.title = `Heading #${id} retention: ${retentionRate}% (${visitors}/${totalPageVisitors} dwellers, ${events} dwell events)`;
+
+        const labelText = dwell && visitors > 0
+          ? `👁️ <span class="${indicatorColor} font-semibold">${visitors}</span><span class="text-zinc-500">/${totalPageVisitors}</span> <span class="text-zinc-400">(${retentionRate}%)</span>${dropOffText}`
+          : `👁️ <span class="text-zinc-500">0/${totalPageVisitors}</span> <span class="text-zinc-500">(0%)</span>`;
+        badge.innerHTML = labelText;
+
+        el.appendChild(badge);
+        this.createdBadges.push(badge);
+      });
+
+      // 2. Process Sections (section with id)
+      const sectionElements = Array.from(
+        document.querySelectorAll<HTMLElement>('section[id]')
+      ).filter((el) => {
+        return (
+          !el.closest('.preview-card') &&
+          !el.querySelector(':scope > .preview-card, :scope > article.preview-card') &&
+          !el.classList.contains('service-card') &&
+          !el.closest('#presentation-player') &&
+          !el.closest('#dev-analytics-container') &&
+          !el.closest('dialog') &&
+          !el.closest('[role="dialog"]') &&
+          !el.closest('.modal')
+        );
+      });
+
+      sectionElements.forEach((secEl) => {
+        const id = secEl.id;
+        if (!id) return;
+
+        const dwell = sectionData[id];
+        const visitors = dwell?.visitors ?? 0;
+        const events = dwell?.events ?? visitors;
+        const retentionRate = totalPageVisitors > 0 ? Number(((visitors / totalPageVisitors) * 100).toFixed(1)) : 0;
+
+        let indicatorColor = 'text-zinc-400';
+        if (visitors > 0) {
+          if (retentionRate >= 60) indicatorColor = 'text-emerald-400';
+          else if (retentionRate >= 30) indicatorColor = 'text-sky-400';
+          else indicatorColor = 'text-amber-400';
+        }
+
+        const badge = document.createElement('div');
+        badge.className = `dev-analytics-badge dev-section-badge absolute top-3 right-3 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-700/80 bg-zinc-900/95 text-zinc-200 shadow-md backdrop-blur leading-none`;
+        badge.title = `Section #${id} retention: ${visitors}/${totalPageVisitors} dwellers (${retentionRate}%), ${events} dwell events`;
+
+        const labelText = dwell && visitors > 0
+          ? `📍 <span class="text-zinc-300 font-semibold">#${id}</span> <span class="text-zinc-600">|</span> 👁️ <span class="${indicatorColor} font-semibold">${visitors}</span><span class="text-zinc-500">/${totalPageVisitors}</span> <span class="text-zinc-400">(${retentionRate}%)</span>`
+          : `📍 <span class="text-zinc-300 font-semibold">#${id}</span> <span class="text-zinc-600">|</span> 👁️ <span class="text-zinc-500">0/${totalPageVisitors}</span> <span class="text-zinc-500">(0%)</span>`;
+        badge.innerHTML = labelText;
+
+        // When a section spans full-width (w-full) but has an inner max-w-* content container with a header child,
+        // attach the badge to the inner header container so it horizontally aligns with the rest of the page grid.
+        const targetContainer = secEl.classList.contains('w-full')
+          ? (secEl.querySelector<HTMLElement>(':scope > .max-w-6xl > div, :scope > div > .max-w-6xl > div') || secEl)
+          : secEl;
+
+        targetContainer.classList.add('relative');
+        targetContainer.appendChild(badge);
+        this.createdBadges.push(badge);
+      });
+
+      // 3. Process Preview Cards
+      const cardElements = document.querySelectorAll<HTMLElement>('.preview-card[data-card-id]');
+      const allPages = data.pages || {};
+
+      cardElements.forEach((cardEl) => {
+        const cardId = cardEl.getAttribute('data-card-id');
+        const collection = cardEl.getAttribute('data-collection') || 'content';
+        if (!cardId) return;
+
+        const metrics = cardData[cardId] || { id: cardId, views: 0, clicks: 0, ctr: 0 };
+
+        // Resolve target content path and look up metrics
+        const targetPath = this.resolveCardTargetPath(cardEl, cardId, collection);
+        let targetPage: { visitors: number; pageviews: number } | null = null;
+        if (targetPath) {
+          const norm = targetPath.toLowerCase();
+          const clean = norm.replace(/\/$/, '');
+          const withSlash = clean + '/';
+          targetPage =
+            allPages[withSlash] ||
+            allPages[clean] ||
+            allPages[withSlash.replace(/_/g, '-')] ||
+            allPages[clean.replace(/_/g, '-')] ||
+            allPages[withSlash.replace(/-/g, '_')] ||
+            allPages[clean.replace(/-/g, '_')] ||
+            null;
+        }
+
+        const targetVisitors = targetPage?.visitors ?? 0;
+        const targetViews = targetPage?.pageviews ?? 0;
+
+        let ctrColor = 'text-zinc-400';
+        if (metrics.views > 0) {
+          if (metrics.ctr >= 5) ctrColor = 'text-emerald-400 font-bold';
+          else if (metrics.ctr >= 2) ctrColor = 'text-sky-400 font-semibold';
+          else ctrColor = 'text-amber-400';
+        }
+
+        const badge = document.createElement('div');
+        badge.className = `dev-analytics-badge dev-card-badge absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight border border-zinc-700/80 bg-zinc-900/95 text-zinc-200 shadow-md backdrop-blur pointer-events-auto cursor-default select-none leading-none`;
+        badge.title = `Card CTR: ${metrics.ctr}% (${metrics.clicks} clicks / ${metrics.views} impressions) | Target: ${targetVisitors} visitors (${targetViews} views)`;
+
+        const labelText = `🎯 <span class="${ctrColor}">${metrics.ctr}%</span> <span class="text-zinc-400">(${metrics.clicks}c/${metrics.views}i)</span> <span class="text-zinc-600">|</span> <span class="text-sky-300 font-semibold">👥 ${targetVisitors}</span> <span class="text-zinc-400">(${targetViews}v)</span>`;
+        badge.innerHTML = labelText;
+
+        const style = window.getComputedStyle(cardEl);
+        if (style.position === 'static') {
+          cardEl.classList.add('relative');
+        }
+
+        cardEl.appendChild(badge);
+        this.createdBadges.push(badge);
+      });
+    }
+
+    private resolveCardTargetPath(cardEl: HTMLElement, cardId: string, collection: string): string | null {
+      // 1. Search for internal anchor link inside card (excluding tag chips)
+      const anchors = Array.from(cardEl.querySelectorAll<HTMLAnchorElement>('a[href]'));
+      for (const a of anchors) {
+        if (a.closest('.tag-chip') || a.hasAttribute('data-tag')) continue;
+        const href = a.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.includes('/tags/')) continue;
+        try {
+          if (href.startsWith('http://') || href.startsWith('https://')) {
+            const parsed = new URL(href);
+            if (parsed.hostname === window.location.hostname || parsed.hostname.endsWith('hackenberg.tech')) {
+              const cleanPath = parsed.pathname.toLowerCase();
+              return cleanPath.endsWith('/') ? cleanPath : `${cleanPath}/`;
+            }
+            continue;
+          }
+          const cleanPath = href.split('?')[0].split('#')[0].toLowerCase();
+          return cleanPath.endsWith('/') ? cleanPath : `${cleanPath}/`;
+        } catch {
+          // ignore malformed URLs
+        }
+      }
+
+      // 2. Candidate fallbacks based on collection and cardId
+      if (collection && cardId) {
+        return `/${collection.toLowerCase()}/${cardId.toLowerCase()}/`;
+      }
+
+      return null;
+    }
+  }
+
+  // Initialize singleton on client
+  const manager = new DevAnalyticsManager();
+  manager.init();
+  document.addEventListener('astro:page-load', () => {
+    manager.onPageLoad();
+  });
+</script>

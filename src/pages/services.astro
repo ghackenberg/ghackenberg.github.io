@@ -156,7 +156,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
             {optimizedServices.map((service) => {
               const tagsJoined = (service.data.tags || []).join(" ").toLowerCase();
               return (
-                <section 
+                <div 
                   id={service.id} 
                   class="service-card scroll-mt-24 relative group h-full"
                   data-title={service.data.title.toLowerCase()}
@@ -285,7 +285,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                     </div>
 
                   </article>
-                </section>
+                </div>
               );
             })}
           </div>

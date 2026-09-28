@@ -63,10 +63,10 @@ export function resolveDateRange(period: string = 'last_28_days'): { startDate: 
   const end = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 days ago
   let days = 28;
 
-  if (period === 'last_7_days') days = 7;
-  else if (period === 'last_14_days') days = 14;
-  else if (period === 'last_28_days') days = 28;
-  else if (period === 'last_90_days') days = 90;
+  if (period === 'last_7_days' || period === '7d') days = 7;
+  else if (period === 'last_14_days' || period === '14d') days = 14;
+  else if (period === 'last_28_days' || period === '28d' || period === '30d') days = 28;
+  else if (period === 'last_90_days' || period === '90d') days = 90;
   else if (period.includes('_to_')) {
     const [startPart, endPart] = period.split('_to_');
     return { startDate: startPart, endDate: endPart };
