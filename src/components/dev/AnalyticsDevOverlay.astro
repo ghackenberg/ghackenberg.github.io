@@ -1,9 +1,15 @@
 ---
 // Dev-only Analytics Overlay Component
 // Zero footprint in production builds
+interface Props {
+  isInsideFrame?: boolean;
+}
+
+const { isInsideFrame = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
+{!isInsideFrame && (
 <div id="dev-analytics-container" class="dev-analytics-root select-none font-sans text-xs">
   <!-- Strict Single-Row HUD Bar (Full Window Width, Zero-Shadow, Neutral Gray) -->
   <aside
@@ -382,6 +388,7 @@ const currentPath = Astro.url.pathname;
     </main>
   </div>
 </div>
+)}
 
 <script>
   interface SearchQuery {
@@ -461,6 +468,7 @@ const currentPath = Astro.url.pathname;
     public init(): void {
       this.setupGlobalListeners();
       this.setupDomListeners();
+      this.setupIframeSync();
       this.updatePeriodButtonsUI();
       this.restoreCachedSessionMetrics();
       this.fetchData();
@@ -468,9 +476,70 @@ const currentPath = Astro.url.pathname;
 
     public onPageLoad(): void {
       this.setupDomListeners();
+      this.setupIframeSync();
       this.updatePeriodButtonsUI();
       this.restoreCachedSessionMetrics();
       this.fetchData(false);
+    }
+
+    private setupIframeSync(): void {
+      if (typeof window === 'undefined' || window.self === window.top) return;
+
+      // 1. Report scroll position to parent Studio Shell
+      let scrollTicking = false;
+      const reportScroll = () => {
+        if (!scrollTicking) {
+          requestAnimationFrame(() => {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+            const scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, 1000);
+            const clientHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+
+            window.parent.postMessage({
+              type: 'dev-studio-scroll',
+              scrollTop,
+              scrollHeight,
+              clientHeight,
+            }, '*');
+            scrollTicking = false;
+          });
+          scrollTicking = true;
+        }
+      };
+
+      window.addEventListener('scroll', reportScroll, { passive: true });
+      document.addEventListener('scroll', reportScroll, { passive: true });
+      window.addEventListener('resize', reportScroll, { passive: true });
+      setTimeout(reportScroll, 100);
+      setTimeout(reportScroll, 300);
+      setTimeout(reportScroll, 800);
+
+      // 2. Listen for scroll commands from parent Studio Shell
+      window.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'dev-studio-scroll-to') {
+          const top = typeof e.data.top === 'number' ? e.data.top : 0;
+          window.scrollTo({
+            top,
+            behavior: e.data.smooth ? 'smooth' : 'instant',
+          });
+        }
+      });
+
+      // 3. Inform parent Studio Shell on internal link navigation
+      document.addEventListener('click', (e) => {
+        const a = (e.target as HTMLElement)?.closest('a');
+        if (!a || !a.href) return;
+        if (a.target === '_blank' || a.href.startsWith('mailto:') || a.href.startsWith('tel:') || a.href.startsWith('#')) return;
+
+        try {
+          const url = new URL(a.href);
+          if (url.origin === window.location.origin) {
+            window.parent.postMessage({
+              type: 'dev-studio-nav',
+              pathname: url.pathname,
+            }, '*');
+          }
+        } catch {}
+      });
     }
 
     private setupGlobalListeners(): void {
@@ -492,6 +561,9 @@ const currentPath = Astro.url.pathname;
     }
 
     private interceptHistory(): void {
+      if (typeof window !== 'undefined' && window.self !== window.top) {
+        return;
+      }
       const origPush = history.pushState;
       const origReplace = history.replaceState;
 
@@ -698,9 +770,6 @@ const currentPath = Astro.url.pathname;
     }
 
     private async fetchData(forceRefresh: boolean = false): Promise<void> {
-      const hud = document.getElementById('dev-analytics-hud');
-      if (!hud) return;
-
       const currentPath = window.location.pathname;
       this.currentLoadedPath = currentPath;
 
@@ -1184,10 +1253,20 @@ const currentPath = Astro.url.pathname;
     }
   }
 
-  // Initialize singleton on client
-  const manager = new DevAnalyticsManager();
-  manager.init();
-  document.addEventListener('astro:page-load', () => {
-    manager.onPageLoad();
-  });
+  // Initialize singleton on client only inside iframe
+  if (typeof window !== 'undefined') {
+    if (window.self === window.top) {
+      document.getElementById('dev-analytics-container')?.remove();
+    } else {
+      // Inside iframe: clean up duplicate HUD and fullview modals (handled by outer DevStudioShell)
+      document.getElementById('dev-analytics-hud')?.remove();
+      document.getElementById('dev-analytics-fullview')?.remove();
+
+      const manager = new DevAnalyticsManager();
+      manager.init();
+      document.addEventListener('astro:page-load', () => {
+        manager.onPageLoad();
+      });
+    }
+  }
 </script>

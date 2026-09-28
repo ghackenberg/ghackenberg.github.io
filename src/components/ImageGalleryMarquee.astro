@@ -463,7 +463,7 @@ function getBadgeColor(href: string): string {
     const viewport = document.getElementById('gallery-marquee-viewport');
     const catalogDataEl = document.getElementById('gallery-catalog-data');
 
-    if (!viewport || !catalogDataEl) return;
+    if (!viewport || !catalogDataEl || viewport.offsetParent === null) return;
 
     let catalog: GalleryItem[] = [];
     try {
@@ -510,8 +510,9 @@ function getBadgeColor(href: string): string {
         cardWidthWithGap: initialCardWidth + gap,
       });
 
-      // Ensure track buffer covers ultra-wide displays
-      while (el.children.length > 0 && el.scrollWidth < window.innerWidth + 1200) {
+      // Ensure track buffer covers ultra-wide displays (strictly guarded against display:none / zero scrollWidth)
+      let maxClones = 40;
+      while (el.children.length > 0 && el.scrollWidth > 0 && el.scrollWidth < window.innerWidth + 1200 && maxClones-- > 0) {
         const nextItem = pickNextItem(catalog, inUseIds, inMemorySeenLedger);
         inUseIds.add(nextItem.id);
         const template = el.firstElementChild as HTMLElement;

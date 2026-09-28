@@ -23,6 +23,9 @@ import JsonLd from "../components/JsonLd.astro";
 import PrivacyModal from "../components/PrivacyModal.astro";
 import WhatsNewModal from "../components/WhatsNewModal.astro";
 import AnalyticsDevOverlay from "../components/dev/AnalyticsDevOverlay.astro";
+import DevStudioShell from "../components/dev/DevStudioShell.astro";
+
+const isDev = import.meta.env.DEV;
 
 type JsonLdValue = string | number | boolean | null | undefined | { [key: string]: JsonLdValue } | JsonLdValue[];
 
@@ -117,19 +120,6 @@ if (pubDate) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    {import.meta.env.DEV && (
-      <style is:inline id="dev-analytics-critical-style">
-        :root {
-          --dev-hud-offset: 44px;
-        }
-        body {
-          padding-top: 44px !important;
-        }
-        body div.sticky.top-0 {
-          top: 44px !important;
-        }
-      </style>
-    )}
 
     <script is:inline>
       // Add no-transitions class to prevent theme transition animation on load
@@ -448,15 +438,62 @@ if (pubDate) {
         setTimeout(enableTransitions, 1500);
       })();
     </script>
+    {isDev && (
+      <>
+        <script is:inline>
+          if (window.self !== window.top) {
+            document.documentElement.classList.add('in-dev-frame');
+          } else {
+            document.documentElement.classList.add('in-dev-studio');
+          }
+        </script>
+        <style is:inline>
+          /* When in Studio (top-level host window) */
+          html.in-dev-studio,
+          html.in-dev-studio body {
+            overflow: hidden !important;
+            height: 100vh !important;
+            padding-top: 0 !important;
+          }
+          html.in-dev-studio body > #site-root,
+          html.in-dev-studio body > #parallax-canvas,
+          html.in-dev-studio body > #whats-new-modal-container,
+          html.in-dev-studio body > #privacy-policy-modal-container,
+          html.in-dev-studio body > #dev-analytics-container {
+            display: none !important;
+          }
+
+          /* When inside the dev iframe */
+          html.in-dev-frame body {
+            padding-top: 0 !important;
+          }
+          html.in-dev-frame #dev-studio-root {
+            display: none !important;
+          }
+          html.in-dev-frame #dev-analytics-hud {
+            display: none !important;
+          }
+          /* Custom scrollbar elimination inside iframe while keeping native scroll */
+          html.in-dev-frame, html.in-dev-frame body {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+          }
+          html.in-dev-frame::-webkit-scrollbar, html.in-dev-frame body::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+          }
+        </style>
+      </>
+    )}
   </head>
 
   <body class="text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">
-    
     <!-- Parallax vector background with astronomical moon phases and day/night transitions -->
     <Background />
 
     <!-- Main site wrapper -->
-    <div class="relative z-10 flex flex-col min-h-screen">
+    <div id="site-root" class="relative z-10 flex flex-col min-h-screen">
       <slot />
 
       <!-- Footer -->
@@ -683,6 +720,11 @@ if (pubDate) {
         document.addEventListener('astro:page-load', updateBadges);
       })();
     </script>
-    {import.meta.env.DEV && <AnalyticsDevOverlay />}
+    {isDev && (
+      <>
+        <DevStudioShell currentPath={Astro.url.pathname} />
+        <AnalyticsDevOverlay />
+      </>
+    )}
   </body>
 </html>

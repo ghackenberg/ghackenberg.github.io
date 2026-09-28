@@ -1,0 +1,1065 @@
+---
+// DevStudioShell.astro
+// Dev-only Studio Shell with Breakpoint Switcher, Dimensions Control,
+// Auto-Fit Stage, and Interactive Scroll-Minimap. Zero production footprint.
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+---
+
+<div id="dev-studio-root" class="fixed inset-0 z-[99999] flex flex-col bg-zinc-950 text-zinc-200 font-sans select-none overflow-hidden">
+  <!-- Top Analytics Bar & Studio Toolbar (100vw, h-11) -->
+  <header
+    id="dev-analytics-hud"
+    class="relative z-50 h-11 bg-zinc-900/98 text-zinc-200 border-b border-zinc-700/80 px-3 shadow-none backdrop-blur-md flex items-center justify-between gap-3 shrink-0 text-xs"
+  >
+    <!-- Left: Identity & Timeframe & Device Presets -->
+    <div class="flex items-center gap-2 shrink-0">
+      <!-- Logo & Sync Status -->
+      <div class="h-7 flex items-center justify-center font-semibold text-zinc-100 font-mono text-xs gap-1 px-1">
+        <span>📊</span>
+        <div class="w-4 h-4 flex items-center justify-center shrink-0" title="Analytics Sync Status">
+          <svg id="dev-hud-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-400 hidden" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+          <svg id="dev-hud-check" class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Timeframe Selector -->
+      <div class="h-7 flex items-center rounded-lg bg-zinc-800/80 border border-zinc-700/80 p-0.5" role="group" aria-label="Timeframe">
+        <button type="button" data-period="7d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100">7d</button>
+        <button type="button" data-period="28d" class="dev-period-btn active-period h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-700 text-white font-medium shadow-sm">28d</button>
+        <button type="button" data-period="90d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100">90d</button>
+      </div>
+
+      <div class="h-4 w-px bg-zinc-700/70 mx-0.5 shrink-0"></div>
+
+      <!-- Device Mode Selector -->
+      <div class="h-7 flex items-center rounded-lg bg-zinc-800/80 border border-zinc-700/80 p-0.5" role="group" aria-label="Device Mode">
+        <button
+          type="button"
+          data-device="full"
+          class="dev-device-btn h-full px-2.5 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-700 text-white font-medium shadow-sm"
+          title="Full Window (100% Width)"
+        >
+          <span>🖥️</span> <span>Full</span>
+        </button>
+        <button
+          type="button"
+          data-device="iphone"
+          data-w="393"
+          data-h="852"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
+          title="Smartphone (iPhone 15: 393 × 852)"
+        >
+          <span>📲</span> <span class="hidden sm:inline">393</span>
+        </button>
+        <button
+          type="button"
+          data-device="ipad"
+          data-w="820"
+          data-h="1180"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
+          title="Tablet (iPad Air: 820 × 1180)"
+        >
+          <span>📱</span> <span class="hidden sm:inline">820</span>
+        </button>
+        <button
+          type="button"
+          data-device="macbook"
+          data-w="1280"
+          data-h="800"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
+          title="Laptop (MacBook: 1280 × 800)"
+        >
+          <span>💻</span> <span class="hidden sm:inline">1280</span>
+        </button>
+      </div>
+
+      <!-- Dimension Inputs (W x H) -->
+      <div id="dev-dimension-controls" class="hidden sm:flex items-center gap-1 h-7 px-1.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 text-[11px] font-mono">
+        <span class="text-zinc-500">W:</span>
+        <input
+          id="dev-input-width"
+          type="number"
+          min="280"
+          max="3840"
+          value="393"
+          class="w-12 bg-transparent text-zinc-200 text-center focus:outline-none focus:bg-zinc-700 rounded py-0.5"
+          title="Custom Width (px)"
+        />
+        <span class="text-zinc-500">×</span>
+        <span class="text-zinc-500">H:</span>
+        <input
+          id="dev-input-height"
+          type="number"
+          min="280"
+          max="2400"
+          value="852"
+          class="w-12 bg-transparent text-zinc-200 text-center focus:outline-none focus:bg-zinc-700 rounded py-0.5"
+          title="Custom Height (px)"
+        />
+        <!-- Rotate Orientation Button -->
+        <button
+          id="dev-btn-rotate"
+          type="button"
+          class="w-5 h-5 flex items-center justify-center rounded hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 transition-colors ml-0.5"
+          title="Rotate Orientation (Portrait ↔ Landscape)"
+        >
+          🔄
+        </button>
+        <!-- Fit to Screen / Zoom Toggle -->
+        <button
+          id="dev-btn-fit"
+          type="button"
+          class="px-1.5 py-0.5 rounded text-[10px] bg-zinc-700/60 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors ml-1 font-semibold"
+          title="Toggle Auto-Fit to Screen / 100% Zoom"
+        >
+          Fit 100%
+        </button>
+      </div>
+    </div>
+
+    <!-- Center: Key Performance Metrics with Smooth Right Fade-out Mask -->
+    <div
+      class="h-7 flex-1 min-w-0 overflow-hidden flex items-center gap-2 text-xs font-mono transition-opacity duration-200"
+      id="dev-analytics-metrics"
+      style="-webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%); mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);"
+    >
+      <!-- Core Essential Plausible -->
+      <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
+        <span title="Unique Page Visitors" class="flex items-center gap-1">
+          <span class="text-zinc-400">Visitors:</span>
+          <strong id="hud-visitors" class="text-white">--</strong>
+        </span>
+        <span class="hidden md:inline text-zinc-600">|</span>
+        <span title="Total Pageviews" class="hidden md:flex items-center gap-1">
+          <span class="text-zinc-400">Views:</span>
+          <strong id="hud-pageviews" class="text-white">--</strong>
+        </span>
+        <span class="hidden md:inline text-zinc-600">|</span>
+        <span title="Bounce Rate" class="hidden md:flex items-center gap-1">
+          <span class="text-zinc-400">Bounce:</span>
+          <strong id="hud-bounce" class="text-amber-400">--</strong>
+        </span>
+        <span class="hidden lg:inline text-zinc-600">|</span>
+        <span title="Average Visit Duration" class="hidden lg:flex items-center gap-1">
+          <span class="text-zinc-400">Dur:</span>
+          <strong id="hud-duration" class="text-white">--</strong>
+        </span>
+      </div>
+
+      <!-- Scroll Retention Metric in HUD -->
+      <div class="h-7 hidden lg:flex items-center gap-1.5 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
+        <span class="text-zinc-300 font-semibold">Scroll:</span>
+        <span title="Median Reader Scroll Depth" class="flex items-center gap-1">
+          <span class="text-zinc-400">Med:</span>
+          <strong id="hud-scroll-median" class="text-white">--</strong>
+        </span>
+        <span class="text-zinc-600">|</span>
+        <span title="Read-Through Rate (≥90% Depth)" class="flex items-center gap-1">
+          <span class="text-zinc-400">Read:</span>
+          <strong id="hud-scroll-readthrough" class="text-emerald-400">--</strong>
+        </span>
+      </div>
+
+      <!-- Core Google Search Stats -->
+      <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
+        <span class="text-zinc-300 font-semibold">Google:</span>
+        <span title="Google Search Clicks" class="flex items-center gap-1">
+          <span class="text-zinc-400">Clicks:</span>
+          <strong id="hud-gsc-clicks" class="text-emerald-400">--</strong>
+        </span>
+        <span class="text-zinc-600">|</span>
+        <span title="Google Search Impressions" class="flex items-center gap-1">
+          <span class="text-zinc-400">Impr:</span>
+          <strong id="hud-gsc-impr" class="text-zinc-300">--</strong>
+        </span>
+        <span class="hidden xl:inline text-zinc-600">|</span>
+        <span title="Average Search Ranking Position" class="hidden xl:flex items-center gap-1">
+          <span class="text-zinc-400">Rank:</span>
+          <strong id="hud-gsc-rank" class="text-amber-300">--</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Right Controls: Queries, Refresh, Expand Cockpit -->
+    <div class="flex items-center gap-1.5 shrink-0 pl-1">
+      <button
+        id="dev-queries-btn"
+        type="button"
+        class="h-7 px-2.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-300 hover:text-white border border-zinc-700/80 font-mono text-[11px] leading-none transition-colors flex items-center gap-1"
+        title="View Google Search Queries in Cockpit"
+      >
+        <span id="dev-queries-count">Queries (0) ↗</span>
+      </button>
+
+      <button
+        id="dev-analytics-refresh"
+        type="button"
+        class="h-7 w-7 rounded-lg bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-400 hover:text-white border border-zinc-700/80 flex items-center justify-center transition-colors text-xs leading-none"
+        title="Force Refresh Live Metrics (Bypass Cache)"
+      >
+        ↻
+      </button>
+
+      <button
+        id="dev-expand-btn"
+        type="button"
+        class="h-7 w-7 rounded-lg bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-400 hover:text-white border border-zinc-700/80 flex items-center justify-center transition-colors text-xs leading-none font-bold"
+        title="Open Full Analytics Cockpit"
+      >
+        ⤢
+      </button>
+    </div>
+  </header>
+
+  <!-- Studio Stage & Workspace (below Top Bar) -->
+  <main id="dev-studio-stage" class="relative flex-1 w-full h-[calc(100vh-2.75rem)] overflow-hidden bg-zinc-950 flex items-center justify-center">
+    <!-- FULL WINDOW MODE CONTAINER -->
+    <div id="dev-stage-full" class="w-full h-full flex flex-row">
+      <!-- Iframe Content Viewport -->
+      <div class="flex-1 h-full relative overflow-hidden bg-black">
+        <iframe
+          id="dev-iframe-full"
+          src="about:blank"
+          data-src={currentPath}
+          class="w-full h-full border-none block"
+          title="Website Preview"
+        ></iframe>
+      </div>
+
+      <!-- Docked Right Scroll-Minimap (Full Mode) -->
+      <aside
+        id="dev-minimap-full"
+        class="w-14 h-full shrink-0 border-l border-zinc-800 bg-zinc-900/95 flex flex-col relative z-40 select-none"
+        aria-label="Scroll Retention Minimap"
+      >
+        <!-- Minimap Header -->
+        <div class="h-8 border-b border-zinc-800/80 px-1.5 flex items-center justify-between text-[10px] font-mono text-zinc-400 shrink-0">
+          <span class="font-bold text-zinc-300">SCROLL</span>
+          <span id="dev-minimap-full-pct" class="text-emerald-400 font-semibold">0%</span>
+        </div>
+
+        <!-- Minimap Track Container -->
+        <div id="dev-minimap-full-track" class="flex-1 relative mx-1.5 my-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/70 overflow-hidden cursor-pointer">
+          <!-- Retention Gradient Fill Layer -->
+          <div id="dev-minimap-full-funnel" class="absolute inset-0 opacity-40 pointer-events-none" style="background: linear-gradient(to bottom, rgba(16, 185, 129, 0.4) 0%, rgba(56, 189, 248, 0.3) 40%, rgba(245, 158, 11, 0.25) 75%, rgba(244, 63, 94, 0.2) 100%);"></div>
+
+          <!-- Milestone Lines & Labels Overlay -->
+          <div id="dev-minimap-full-milestones" class="absolute inset-0 pointer-events-none text-[9px] font-mono text-zinc-400"></div>
+
+          <!-- Draggable Viewport Thumb -->
+          <div
+            id="dev-minimap-full-thumb"
+            class="absolute left-0.5 right-0.5 rounded-md bg-zinc-300/20 border border-zinc-400/50 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing hover:bg-zinc-300/30 transition-colors flex items-center justify-center text-[9px] font-mono text-zinc-200 select-none"
+            style="top: 0px; height: 36px;"
+          >
+            <span class="opacity-75 font-semibold">≡</span>
+          </div>
+        </div>
+
+        <!-- Minimap Footer: Median Marker Info -->
+        <div id="dev-minimap-full-footer" class="h-7 border-t border-zinc-800/80 px-1 flex items-center justify-center text-[10px] font-mono text-zinc-400 shrink-0">
+          <span id="dev-minimap-full-median" title="Median Visitor Reach">⭐ Med: --</span>
+        </div>
+      </aside>
+    </div>
+
+    <!-- DEVICE SIMULATION MODE CONTAINER (Centered Phone / Tablet Frame) -->
+    <div id="dev-stage-device" class="hidden relative flex items-center justify-center p-4">
+      <!-- Outer Scaled Bounding Box -->
+      <div id="dev-device-outer-box" class="relative flex items-center justify-center transition-all duration-150">
+        <!-- Physical Device Bezel -->
+        <div
+          id="dev-device-bezel"
+          class="relative rounded-[38px] p-3 bg-zinc-800 border-2 border-zinc-700/90 shadow-2xl shadow-black/90 flex gap-2.5 items-stretch"
+        >
+          <!-- Phone Speaker Notch / Dynamic Island Deco -->
+          <div class="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-4 bg-zinc-900 rounded-full z-50 pointer-events-none flex items-center justify-center">
+            <div class="w-2.5 h-2.5 rounded-full bg-zinc-800 ml-6"></div>
+          </div>
+
+          <!-- Iframe Device Screen -->
+          <div
+            id="dev-device-screen"
+            class="relative overflow-hidden rounded-[26px] bg-slate-950 shadow-inner"
+            style="width: 393px; height: 852px;"
+          >
+            <iframe
+              id="dev-iframe-device"
+              src="about:blank"
+              class="w-full h-full border-none block"
+              title="Device Viewport"
+            ></iframe>
+          </div>
+
+          <!-- Device-Docked Scroll-Minimap -->
+          <aside
+            id="dev-minimap-device"
+            class="w-11 h-full rounded-2xl border border-zinc-700/80 bg-zinc-900/95 flex flex-col relative z-40 select-none shrink-0"
+            aria-label="Device Scroll Minimap"
+          >
+            <div class="h-7 px-1 flex items-center justify-center text-[9px] font-mono text-emerald-400 font-bold border-b border-zinc-800/80 shrink-0">
+              <span id="dev-minimap-device-pct">0%</span>
+            </div>
+
+            <div id="dev-minimap-device-track" class="flex-1 relative mx-1 my-1.5 rounded-xl bg-zinc-950/80 border border-zinc-800/70 overflow-hidden cursor-pointer">
+              <!-- Funnel Color Bar -->
+              <div id="dev-minimap-device-funnel" class="absolute inset-0 opacity-40 pointer-events-none" style="background: linear-gradient(to bottom, rgba(16, 185, 129, 0.4) 0%, rgba(56, 189, 248, 0.3) 40%, rgba(245, 158, 11, 0.25) 75%, rgba(244, 63, 94, 0.2) 100%);"></div>
+
+              <!-- Milestones Overlay -->
+              <div id="dev-minimap-device-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-400"></div>
+
+              <!-- Viewport Thumb -->
+              <div
+                id="dev-minimap-device-thumb"
+                class="absolute left-0.5 right-0.5 rounded-lg bg-zinc-300/20 border border-zinc-400/50 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing hover:bg-zinc-300/30 transition-colors flex items-center justify-center text-[8px] font-mono text-zinc-200 select-none"
+                style="top: 0px; height: 32px;"
+              >
+                <span>≡</span>
+              </div>
+            </div>
+
+            <div class="h-6 border-t border-zinc-800/80 px-0.5 flex items-center justify-center text-[9px] font-mono text-zinc-400 shrink-0">
+              <span id="dev-minimap-device-median">⭐--</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Fullview Cockpit Modal (Overlay on demand) -->
+  <div
+    id="dev-analytics-fullview"
+    class="hidden fixed inset-0 z-[100000] bg-zinc-950/90 backdrop-blur-xl flex flex-col font-sans select-text overflow-hidden animate-in fade-in duration-150"
+  >
+    <header class="h-14 border-b border-zinc-800 bg-zinc-900/90 px-6 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-4">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>📊</span> Analytics Cockpit
+        </h2>
+        <span id="dev-fullview-path" class="px-2.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 font-mono text-xs border border-zinc-700">/</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a id="dev-fullview-plausible" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 font-mono border border-zinc-700 flex items-center gap-1.5">
+          <span>Open Plausible</span> ↗
+        </a>
+        <button id="dev-collapse-btn" type="button" class="w-8 h-8 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-sm font-bold">
+          ✕
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-6 space-y-6 max-w-7xl mx-auto w-full">
+      <!-- 1. KPI Overview Cards -->
+      <section class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 font-mono">
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div class="text-[11px] text-zinc-400">Visitors</div>
+          <div id="full-visitors" class="text-xl font-bold text-white mt-1">--</div>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div class="text-[11px] text-zinc-400">Views</div>
+          <div id="full-views" class="text-xl font-bold text-white mt-1">--</div>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div class="text-[11px] text-zinc-400">Bounce</div>
+          <div id="full-bounce" class="text-xl font-bold text-amber-400 mt-1">--</div>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div class="text-[11px] text-zinc-400">Duration</div>
+          <div id="full-duration" class="text-xl font-bold text-white mt-1">--</div>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div class="text-[11px] text-zinc-400">GSC Clicks</div>
+          <div id="full-gsc-clicks" class="text-xl font-bold text-emerald-400 mt-1">--</div>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div class="text-[11px] text-zinc-400">GSC Impr</div>
+          <div id="full-gsc-impr" class="text-xl font-bold text-zinc-300 mt-1">--</div>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div class="text-[11px] text-zinc-400">GSC CTR</div>
+          <div id="full-gsc-ctr" class="text-xl font-bold text-white mt-1">--</div>
+        </div>
+        <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div class="text-[11px] text-zinc-400">GSC Rank</div>
+          <div id="full-gsc-rank" class="text-xl font-bold text-amber-300 mt-1">--</div>
+        </div>
+      </section>
+
+      <!-- 2. Scroll Funnel & Section Retention Breakdown -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Scroll Retention Funnel -->
+        <section class="lg:col-span-6 p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-white">Scroll Funnel & Reader Retention</h3>
+              <p class="text-xs text-zinc-400 mt-0.5">Aggregated visitor reach across page depth milestones</p>
+            </div>
+            <div class="flex items-center gap-3 font-mono text-xs">
+              <span class="text-zinc-400">Median: <strong id="full-funnel-median" class="text-white">--</strong></span>
+              <span class="text-zinc-600">|</span>
+              <span class="text-zinc-400">Read-through: <strong id="full-funnel-readthrough" class="text-emerald-400">--</strong></span>
+            </div>
+          </div>
+          <div id="full-funnel-bars" class="space-y-3 font-mono text-xs">
+            <span class="text-zinc-500 italic">Loading scroll funnel milestones...</span>
+          </div>
+        </section>
+
+        <!-- Section Dwell Breakdown -->
+        <section class="lg:col-span-6 p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-white">Page Sections & Dwell Times</h3>
+              <p class="text-xs text-zinc-400 mt-0.5">Visits with ≥ 2.0s focused dwell visibility</p>
+            </div>
+            <span id="full-sections-count" class="text-xs font-mono text-zinc-400">0 sections</span>
+          </div>
+          <div id="full-sections-table" class="space-y-2 font-mono text-xs max-h-80 overflow-y-auto pr-1">
+            <span class="text-zinc-500 italic">No section dwell events recorded.</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- 3. Google Search Queries Table -->
+      <section class="p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <div>
+            <h3 class="text-sm font-bold text-white">Google Search Queries</h3>
+            <p class="text-xs text-zinc-400 mt-0.5">Top search terms bringing organic search clicks to this page</p>
+          </div>
+          <span id="full-queries-count" class="text-xs font-mono text-zinc-400">0 queries</span>
+        </div>
+        <div id="full-queries-table" class="space-y-2 font-mono text-xs max-h-80 overflow-y-auto pr-1">
+          <span class="text-zinc-500 italic">Loading search queries...</span>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+  // Client-side DevStudio Controller
+  interface ScrollMilestone {
+    depth: number;
+    visitors: number;
+    percentageOfVisitors: number;
+    dropOffRateFromPrevious?: number;
+  }
+
+  interface DevOverlayData {
+    path: string;
+    period: string;
+    plausible: {
+      visitors: number;
+      pageviews: number;
+      bounceRate: number | null;
+      visitDuration: number | null;
+      scrollFunnel?: {
+        milestones: ScrollMilestone[];
+        readThroughRate: number | null;
+        medianScrollDepth: number | null;
+      };
+    };
+    gsc: {
+      clicks: number;
+      impressions: number;
+      ctr: number;
+      position: number;
+      queries: Array<{ query: string; clicks: number; impressions: number; position: number }>;
+    };
+    sections: Record<string, { id: string; visitors: number; events?: number }>;
+  }
+
+  type DevicePreset = 'full' | 'iphone' | 'ipad' | 'macbook';
+
+  class DevStudioManager {
+    private currentPeriod: string = '28d';
+    private currentPath: string = window.location.pathname;
+    private currentData: DevOverlayData | null = null;
+    private activeDevice: DevicePreset = 'full';
+    private deviceWidth: number = 393;
+    private deviceHeight: number = 852;
+    private isAutoFit: boolean = true;
+    private isDraggingThumb: boolean = false;
+    private dragStartY: number = 0;
+    private dragStartScrollTop: number = 0;
+
+    // Track scroll state from iframe
+    private lastScrollTop: number = 0;
+    private lastScrollHeight: number = 1000;
+    private lastClientHeight: number = 800;
+
+    constructor() {
+      this.currentPeriod = localStorage.getItem('gh_dev_analytics_period') || '28d';
+      const savedDevice = localStorage.getItem('gh_dev_studio_device') as DevicePreset;
+      if (savedDevice) this.activeDevice = savedDevice;
+    }
+
+    public init(): void {
+      this.setupDomListeners();
+      this.setupPostMessageBus();
+      this.setupDeviceControls();
+      this.updatePeriodButtonsUI();
+
+      // Ensure full iframe src on top-level initialization
+      const fullIframe = document.getElementById('dev-iframe-full') as HTMLIFrameElement | null;
+      if (fullIframe && (!fullIframe.src || fullIframe.src === 'about:blank' || fullIframe.src.endsWith('about:blank'))) {
+        fullIframe.src = fullIframe.getAttribute('data-src') || this.currentPath;
+      }
+
+      this.applyDeviceMode(this.activeDevice);
+      this.fetchData();
+
+      // Recalculate layout on window resize
+      window.addEventListener('resize', () => {
+        this.updateAutoFitScale();
+      });
+    }
+
+    private setupDomListeners(): void {
+      // Period buttons
+      document.querySelectorAll<HTMLButtonElement>('.dev-period-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const p = btn.getAttribute('data-period');
+          if (p && p !== this.currentPeriod) {
+            this.currentPeriod = p;
+            localStorage.setItem('gh_dev_analytics_period', p);
+            this.updatePeriodButtonsUI();
+            this.fetchData(true);
+          }
+        });
+      });
+
+      // Refresh button
+      document.getElementById('dev-analytics-refresh')?.addEventListener('click', () => {
+        this.fetchData(true);
+      });
+
+      // Cockpit expand / collapse
+      const openFullView = () => {
+        document.getElementById('dev-analytics-fullview')?.classList.remove('hidden');
+        if (this.currentData) this.renderFullView(this.currentData);
+      };
+      document.getElementById('dev-expand-btn')?.addEventListener('click', openFullView);
+      document.getElementById('dev-queries-btn')?.addEventListener('click', openFullView);
+      document.getElementById('dev-collapse-btn')?.addEventListener('click', () => {
+        document.getElementById('dev-analytics-fullview')?.classList.add('hidden');
+      });
+
+      // Escape key closes modal
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.getElementById('dev-analytics-fullview')?.classList.add('hidden');
+        }
+      });
+
+      // Handle popstate on outer window
+      window.addEventListener('popstate', () => {
+        const newPath = window.location.pathname;
+        if (newPath !== this.currentPath) {
+          this.currentPath = newPath;
+          this.loadPathInActiveIframe(newPath);
+          this.fetchData();
+        }
+      });
+    }
+
+    private setupDeviceControls(): void {
+      // Preset buttons
+      document.querySelectorAll<HTMLButtonElement>('.dev-device-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const dev = btn.getAttribute('data-device') as DevicePreset;
+          const w = btn.getAttribute('data-w');
+          const h = btn.getAttribute('data-h');
+          if (w && h) {
+            this.deviceWidth = parseInt(w, 10);
+            this.deviceHeight = parseInt(h, 10);
+            const wInput = document.getElementById('dev-input-width') as HTMLInputElement | null;
+            const hInput = document.getElementById('dev-input-height') as HTMLInputElement | null;
+            if (wInput) wInput.value = String(this.deviceWidth);
+            if (hInput) hInput.value = String(this.deviceHeight);
+          }
+          if (dev) {
+            this.applyDeviceMode(dev);
+          }
+        });
+      });
+
+      // Custom Inputs
+      const wInput = document.getElementById('dev-input-width') as HTMLInputElement | null;
+      const hInput = document.getElementById('dev-input-height') as HTMLInputElement | null;
+      wInput?.addEventListener('change', () => {
+        const val = parseInt(wInput.value, 10);
+        if (val >= 280 && val <= 3840) {
+          this.deviceWidth = val;
+          this.updateDeviceDimensions();
+        }
+      });
+      hInput?.addEventListener('change', () => {
+        const val = parseInt(hInput.value, 10);
+        if (val >= 280 && val <= 2400) {
+          this.deviceHeight = val;
+          this.updateDeviceDimensions();
+        }
+      });
+
+      // Rotate Button
+      document.getElementById('dev-btn-rotate')?.addEventListener('click', () => {
+        const temp = this.deviceWidth;
+        this.deviceWidth = this.deviceHeight;
+        this.deviceHeight = temp;
+        if (wInput) wInput.value = String(this.deviceWidth);
+        if (hInput) hInput.value = String(this.deviceHeight);
+        this.updateDeviceDimensions();
+      });
+
+      // Fit / Zoom Toggle
+      document.getElementById('dev-btn-fit')?.addEventListener('click', () => {
+        this.isAutoFit = !this.isAutoFit;
+        this.updateAutoFitScale();
+      });
+    }
+
+    private applyDeviceMode(dev: DevicePreset): void {
+      this.activeDevice = dev;
+      localStorage.setItem('gh_dev_studio_device', dev);
+
+      // Update button styling
+      document.querySelectorAll<HTMLButtonElement>('.dev-device-btn').forEach((btn) => {
+        if (btn.getAttribute('data-device') === dev) {
+          btn.classList.add('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
+          btn.classList.remove('text-zinc-400');
+        } else {
+          btn.classList.remove('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
+          btn.classList.add('text-zinc-400');
+        }
+      });
+
+      const fullStage = document.getElementById('dev-stage-full');
+      const deviceStage = document.getElementById('dev-stage-device');
+      const dimensionControls = document.getElementById('dev-dimension-controls');
+
+      if (dev === 'full') {
+        fullStage?.classList.remove('hidden');
+        deviceStage?.classList.add('hidden');
+        dimensionControls?.classList.add('opacity-40', 'pointer-events-none');
+        this.setupMinimapInteraction('full');
+      } else {
+        fullStage?.classList.add('hidden');
+        deviceStage?.classList.remove('hidden');
+        dimensionControls?.classList.remove('opacity-40', 'pointer-events-none');
+        this.updateDeviceDimensions();
+        this.setupMinimapInteraction('device');
+
+        // Sync iframe src if needed
+        const devIframe = document.getElementById('dev-iframe-device') as HTMLIFrameElement | null;
+        if (devIframe && (!devIframe.src || devIframe.src === 'about:blank' || !devIframe.src.includes(this.currentPath))) {
+          devIframe.src = this.currentPath;
+        }
+      }
+    }
+
+    private updateDeviceDimensions(): void {
+      const screen = document.getElementById('dev-device-screen');
+      if (screen) {
+        screen.style.width = `${this.deviceWidth}px`;
+        screen.style.height = `${this.deviceHeight}px`;
+      }
+      this.updateAutoFitScale();
+    }
+
+    private updateAutoFitScale(): void {
+      if (this.activeDevice === 'full') return;
+
+      const stage = document.getElementById('dev-studio-stage');
+      const outerBox = document.getElementById('dev-device-outer-box');
+      const bezel = document.getElementById('dev-device-bezel');
+      const fitBtn = document.getElementById('dev-btn-fit');
+      if (!stage || !outerBox || !bezel) return;
+
+      // Bezel adds padding: 24px width + 44px minimap + 20px gap + 32px margins
+      const totalDeviceW = this.deviceWidth + 44 + 48;
+      const totalDeviceH = this.deviceHeight + 36;
+
+      const availW = stage.clientWidth - 48;
+      const availH = stage.clientHeight - 48;
+
+      let scale = 1;
+      if (this.isAutoFit) {
+        const scaleW = availW / totalDeviceW;
+        const scaleH = availH / totalDeviceH;
+        scale = Math.min(1, scaleW, scaleH);
+      }
+
+      bezel.style.transform = `scale(${scale})`;
+      bezel.style.transformOrigin = 'center center';
+
+      outerBox.style.width = `${totalDeviceW * scale}px`;
+      outerBox.style.height = `${totalDeviceH * scale}px`;
+
+      if (fitBtn) {
+        fitBtn.textContent = this.isAutoFit ? `Fit (${Math.round(scale * 100)}%)` : '100%';
+      }
+    }
+
+    private setupPostMessageBus(): void {
+      window.addEventListener('message', (e) => {
+        if (!e.data || typeof e.data !== 'object') return;
+
+        // 1. Scroll sync from iframe
+        if (e.data.type === 'dev-studio-scroll') {
+          this.lastScrollTop = e.data.scrollTop || 0;
+          this.lastScrollHeight = e.data.scrollHeight || 1000;
+          this.lastClientHeight = e.data.clientHeight || 800;
+          this.renderMinimapThumb();
+        }
+
+        // 2. Navigation sync from iframe
+        if (e.data.type === 'dev-studio-nav') {
+          const path = e.data.pathname;
+          if (path && path !== this.currentPath && path !== window.location.pathname) {
+            this.currentPath = path;
+            window.history.replaceState(null, '', path);
+            this.fetchData();
+          }
+        }
+      });
+    }
+
+    private getActiveIframe(): HTMLIFrameElement | null {
+      if (this.activeDevice === 'full') {
+        return document.getElementById('dev-iframe-full') as HTMLIFrameElement | null;
+      }
+      return document.getElementById('dev-iframe-device') as HTMLIFrameElement | null;
+    }
+
+    private loadPathInActiveIframe(path: string): void {
+      const iframe = this.getActiveIframe();
+      if (iframe) {
+        iframe.src = path;
+      }
+    }
+
+    private sendScrollToIframe(top: number): void {
+      const iframe = this.getActiveIframe();
+      iframe?.contentWindow?.postMessage({ type: 'dev-studio-scroll-to', top }, '*');
+    }
+
+    private setupMinimapInteraction(mode: 'full' | 'device'): void {
+      const trackId = mode === 'full' ? 'dev-minimap-full-track' : 'dev-minimap-device-track';
+      const thumbId = mode === 'full' ? 'dev-minimap-full-thumb' : 'dev-minimap-device-thumb';
+
+      const track = document.getElementById(trackId);
+      const thumb = document.getElementById(thumbId);
+      if (!track || !thumb || track.hasAttribute('data-interactive')) return;
+      track.setAttribute('data-interactive', 'true');
+
+      // Click on track to jump
+      track.addEventListener('pointerdown', (e) => {
+        if (e.target === thumb || thumb.contains(e.target as Node)) {
+          // Start dragging thumb
+          this.isDraggingThumb = true;
+          this.dragStartY = e.clientY;
+          this.dragStartScrollTop = this.lastScrollTop;
+          thumb.setPointerCapture(e.pointerId);
+          e.stopPropagation();
+          return;
+        }
+
+        const rect = track.getBoundingClientRect();
+        const clickY = e.clientY - rect.top;
+        const pct = Math.max(0, Math.min(1, clickY / rect.height));
+        const maxScroll = Math.max(0, this.lastScrollHeight - this.lastClientHeight);
+        const targetScroll = pct * maxScroll;
+        this.sendScrollToIframe(targetScroll);
+      });
+
+      thumb.addEventListener('pointermove', (e) => {
+        if (!this.isDraggingThumb) return;
+        const rect = track.getBoundingClientRect();
+        const deltaY = e.clientY - this.dragStartY;
+        const maxScroll = Math.max(0, this.lastScrollHeight - this.lastClientHeight);
+        const trackUsableH = Math.max(1, rect.height - thumb.offsetHeight);
+        const scrollDelta = (deltaY / trackUsableH) * maxScroll;
+
+        const newScrollTop = Math.max(0, Math.min(maxScroll, this.dragStartScrollTop + scrollDelta));
+        this.sendScrollToIframe(newScrollTop);
+      });
+
+      const stopDrag = (e: PointerEvent) => {
+        if (this.isDraggingThumb) {
+          this.isDraggingThumb = false;
+          try {
+            thumb.releasePointerCapture(e.pointerId);
+          } catch {}
+        }
+      };
+
+      thumb.addEventListener('pointerup', stopDrag);
+      thumb.addEventListener('pointercancel', stopDrag);
+
+      // Direct mouse wheel support on minimap track
+      track.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const maxScroll = Math.max(0, this.lastScrollHeight - this.lastClientHeight);
+        const targetScroll = Math.max(0, Math.min(maxScroll, this.lastScrollTop + e.deltaY));
+        this.sendScrollToIframe(targetScroll);
+      }, { passive: false });
+    }
+
+    private renderMinimapThumb(): void {
+      if (this.isDraggingThumb) return;
+      const mode = this.activeDevice === 'full' ? 'full' : 'device';
+      const track = document.getElementById(`dev-minimap-${mode}-track`);
+      const thumb = document.getElementById(`dev-minimap-${mode}-thumb`);
+      const pctLabel = document.getElementById(`dev-minimap-${mode}-pct`);
+      if (!track || !thumb) return;
+
+      const trackH = track.clientHeight;
+      const maxScroll = Math.max(1, this.lastScrollHeight - this.lastClientHeight);
+      const scrollPct = Math.max(0, Math.min(1, this.lastScrollTop / maxScroll));
+
+      // Calculate thumb height proportional to viewport
+      const thumbH = Math.max(28, Math.min(trackH, (this.lastClientHeight / this.lastScrollHeight) * trackH));
+      const usableTrackH = Math.max(0, trackH - thumbH);
+      const thumbTop = scrollPct * usableTrackH;
+
+      thumb.style.height = `${Math.round(thumbH)}px`;
+      thumb.style.top = `${Math.round(thumbTop)}px`;
+
+      if (pctLabel) {
+        pctLabel.textContent = `${Math.round(scrollPct * 100)}%`;
+      }
+    }
+
+    private renderMinimapMilestones(data: DevOverlayData): void {
+      const milestones = data.plausible?.scrollFunnel?.milestones || [];
+      const median = data.plausible?.scrollFunnel?.medianScrollDepth;
+
+      ['full', 'device'].forEach((mode) => {
+        const milestonesEl = document.getElementById(`dev-minimap-${mode}-milestones`);
+        const funnelEl = document.getElementById(`dev-minimap-${mode}-funnel`);
+        const medianEl = document.getElementById(`dev-minimap-${mode}-median`);
+
+        if (medianEl) {
+          medianEl.textContent = median != null ? `⭐ Med: ${median}%` : '⭐ Med: --';
+        }
+
+        if (milestonesEl && milestones.length > 0) {
+          milestonesEl.innerHTML = milestones
+            .map((m) => {
+              const topPct = m.depth;
+              let dotColor = 'bg-emerald-400';
+              if (m.depth >= 70) dotColor = 'bg-emerald-400';
+              else if (m.depth >= 40) dotColor = 'bg-sky-400';
+              else dotColor = 'bg-zinc-400';
+
+              return `
+                <div class="absolute w-full flex items-center justify-between px-1" style="top: ${topPct}%;">
+                  <div class="h-px ${dotColor} w-3"></div>
+                  <span class="text-[8px] text-zinc-400 leading-none">${Math.round(m.percentageOfVisitors)}%</span>
+                </div>
+              `;
+            })
+            .join('');
+        }
+
+        if (funnelEl) {
+          // Render vertical gradient from green to amber
+          funnelEl.style.background = 'linear-gradient(to bottom, rgba(16, 185, 129, 0.4) 0%, rgba(56, 189, 248, 0.3) 40%, rgba(245, 158, 11, 0.25) 75%, rgba(244, 63, 94, 0.2) 100%)';
+        }
+      });
+    }
+
+    private updatePeriodButtonsUI(): void {
+      document.querySelectorAll<HTMLButtonElement>('.dev-period-btn').forEach((btn) => {
+        const p = btn.getAttribute('data-period');
+        if (p === this.currentPeriod) {
+          btn.classList.add('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
+          btn.classList.remove('text-zinc-400');
+        } else {
+          btn.classList.remove('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
+          btn.classList.add('text-zinc-400');
+        }
+      });
+    }
+
+    private async fetchData(force: boolean = false): Promise<void> {
+      const spinner = document.getElementById('dev-hud-spinner');
+      const check = document.getElementById('dev-hud-check');
+      spinner?.classList.remove('hidden');
+      check?.classList.add('hidden');
+
+      try {
+        let url = `/api/dev-analytics.json?path=${encodeURIComponent(this.currentPath)}&period=${this.currentPeriod}`;
+        if (force) url += `&_t=${Date.now()}`;
+
+        const res = await fetch(url, {
+          headers: {
+            'x-analytics-path': this.currentPath,
+            'x-analytics-period': this.currentPeriod,
+          },
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data: DevOverlayData = await res.json();
+        this.currentData = data;
+
+        this.renderHud(data);
+        this.renderFullView(data);
+        this.renderMinimapMilestones(data);
+
+        spinner?.classList.add('hidden');
+        check?.classList.remove('hidden');
+      } catch (err) {
+        console.error('[dev-studio] Failed to fetch metrics:', err);
+        spinner?.classList.add('hidden');
+      }
+    }
+
+    private renderHud(data: DevOverlayData): void {
+      const { plausible, gsc } = data;
+      const set = (id: string, val: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      set('hud-visitors', String(plausible.visitors ?? 0));
+      set('hud-pageviews', String(plausible.pageviews ?? 0));
+      set('hud-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
+      set('hud-duration', this.formatDuration(plausible.visitDuration));
+
+      const funnel = plausible.scrollFunnel;
+      set('hud-scroll-median', funnel?.medianScrollDepth != null ? `${funnel.medianScrollDepth}%` : '--');
+      set('hud-scroll-readthrough', funnel?.readThroughRate != null ? `${funnel.readThroughRate}%` : '--');
+
+      set('hud-gsc-clicks', String(gsc.clicks ?? 0));
+      set('hud-gsc-impr', String(gsc.impressions ?? 0));
+      set('hud-gsc-rank', gsc.position ? `#${gsc.position.toFixed(1)}` : '--');
+
+      const queries = gsc.queries || [];
+      set('dev-queries-count', `Queries (${queries.length}) ↗`);
+    }
+
+    private renderFullView(data: DevOverlayData): void {
+      const { plausible, gsc, sections } = data;
+      const set = (id: string, val: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      set('dev-fullview-path', this.currentPath);
+      set('full-visitors', String(plausible.visitors ?? 0));
+      set('full-views', String(plausible.pageviews ?? 0));
+      set('full-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
+      set('full-duration', this.formatDuration(plausible.visitDuration));
+      set('full-gsc-clicks', String(gsc.clicks ?? 0));
+      set('full-gsc-impr', String(gsc.impressions ?? 0));
+      set('full-gsc-ctr', `${((gsc.ctr ?? 0) * 100).toFixed(1)}%`);
+      set('full-gsc-rank', gsc.position ? `#${gsc.position.toFixed(1)}` : '--');
+
+      const funnel = plausible.scrollFunnel;
+      set('full-funnel-median', funnel?.medianScrollDepth != null ? `${funnel.medianScrollDepth}%` : '--');
+      set('full-funnel-readthrough', funnel?.readThroughRate != null ? `${funnel.readThroughRate}%` : '--');
+
+      // Funnel bars in cockpit
+      const funnelBarsEl = document.getElementById('full-funnel-bars');
+      if (funnelBarsEl) {
+        if (!funnel || !funnel.milestones || funnel.milestones.length === 0) {
+          funnelBarsEl.innerHTML = '<span class="text-zinc-500 italic">No scroll depth events recorded for this path.</span>';
+        } else {
+          funnelBarsEl.innerHTML = funnel.milestones
+            .map((m) => {
+              const pct = Number(m.percentageOfVisitors.toFixed(1));
+              return `
+                <div class="p-2 rounded-xl bg-zinc-800/60 border border-zinc-700/70 space-y-1">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-white">Scroll ≥ ${m.depth}%</span>
+                    <span class="text-zinc-300">${m.visitors} visitors (${pct}%)</span>
+                  </div>
+                  <div class="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+                    <div class="h-full rounded-full bg-emerald-400" style="width: ${Math.min(100, pct)}%"></div>
+                  </div>
+                </div>
+              `;
+            })
+            .join('');
+        }
+      }
+
+      // Sections Table in cockpit
+      const sectionsTableEl = document.getElementById('full-sections-table');
+      const sectionsCountEl = document.getElementById('full-sections-count');
+      const sectionEntries = Object.entries(sections || {});
+      if (sectionsCountEl) sectionsCountEl.textContent = `${sectionEntries.length} sections`;
+      if (sectionsTableEl) {
+        if (sectionEntries.length === 0) {
+          sectionsTableEl.innerHTML = '<span class="text-zinc-500 italic">No section dwell events recorded.</span>';
+        } else {
+          const total = plausible.visitors || 1;
+          sectionsTableEl.innerHTML = sectionEntries
+            .sort((a, b) => (b[1].visitors || 0) - (a[1].visitors || 0))
+            .map(([secId, s]) => {
+              const retPct = ((s.visitors / total) * 100).toFixed(1);
+              return `
+                <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
+                  <span class="font-semibold text-white">#${secId}</span>
+                  <span class="text-zinc-300">${s.visitors} dwellers (${retPct}%)</span>
+                </div>
+              `;
+            })
+            .join('');
+        }
+      }
+
+      // Search Queries Table in cockpit
+      const queriesTableEl = document.getElementById('full-queries-table');
+      const queriesCountEl = document.getElementById('full-queries-count');
+      const queries = gsc.queries || [];
+      if (queriesCountEl) queriesCountEl.textContent = `${queries.length} queries`;
+      if (queriesTableEl) {
+        if (queries.length === 0) {
+          queriesTableEl.innerHTML = '<span class="text-zinc-500 italic">No search queries recorded.</span>';
+        } else {
+          queriesTableEl.innerHTML = queries
+            .map(
+              (q) => `
+              <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
+                <span class="text-zinc-200 font-medium truncate">${q.query}</span>
+                <span class="text-emerald-400 font-semibold">${q.clicks} clicks</span>
+              </div>
+            `
+            )
+            .join('');
+        }
+      }
+    }
+
+    private formatDuration(seconds: number | null): string {
+      if (seconds === null || seconds === undefined) return '--';
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m}m ${s}s`;
+    }
+  }
+
+  // Initialize Studio Manager ONLY on top-level window (never inside iframe)
+  if (typeof window !== 'undefined') {
+    if (window.self !== window.top) {
+      document.getElementById('dev-studio-root')?.remove();
+    } else {
+      const studio = new DevStudioManager();
+      studio.init();
+    }
+  }
+</script>
