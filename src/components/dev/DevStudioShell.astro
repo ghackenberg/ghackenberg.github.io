@@ -56,9 +56,9 @@ const { currentPath } = Astro.props;
           data-w="393"
           data-h="852"
           class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
-          title="Smartphone (iPhone 15: 393 × 852)"
+          title="Smartphone (iPhone: 393 × 852)"
         >
-          <span>📲</span> <span class="hidden sm:inline">393</span>
+          <span>📲</span> <span class="hidden sm:inline">Phone</span>
         </button>
         <button
           type="button"
@@ -66,9 +66,9 @@ const { currentPath } = Astro.props;
           data-w="820"
           data-h="1180"
           class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
-          title="Tablet (iPad Air: 820 × 1180)"
+          title="Tablet (iPad: 820 × 1180)"
         >
-          <span>📱</span> <span class="hidden sm:inline">820</span>
+          <span>📱</span> <span class="hidden sm:inline">Tablet</span>
         </button>
         <button
           type="button"
@@ -78,52 +78,19 @@ const { currentPath } = Astro.props;
           class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
           title="Laptop (MacBook: 1280 × 800)"
         >
-          <span>💻</span> <span class="hidden sm:inline">1280</span>
+          <span>💻</span> <span class="hidden sm:inline">Laptop</span>
         </button>
       </div>
 
-      <!-- Dimension Inputs (W x H) -->
-      <div id="dev-dimension-controls" class="hidden sm:flex items-center gap-1 h-7 px-1.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 text-[11px] font-mono">
-        <span class="text-zinc-500">W:</span>
-        <input
-          id="dev-input-width"
-          type="number"
-          min="280"
-          max="3840"
-          value="393"
-          class="w-12 bg-transparent text-zinc-200 text-center focus:outline-none focus:bg-zinc-700 rounded py-0.5"
-          title="Custom Width (px)"
-        />
-        <span class="text-zinc-500">×</span>
-        <span class="text-zinc-500">H:</span>
-        <input
-          id="dev-input-height"
-          type="number"
-          min="280"
-          max="2400"
-          value="852"
-          class="w-12 bg-transparent text-zinc-200 text-center focus:outline-none focus:bg-zinc-700 rounded py-0.5"
-          title="Custom Height (px)"
-        />
-        <!-- Rotate Orientation Button -->
-        <button
-          id="dev-btn-rotate"
-          type="button"
-          class="w-5 h-5 flex items-center justify-center rounded hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 transition-colors ml-0.5"
-          title="Rotate Orientation (Portrait ↔ Landscape)"
-        >
-          🔄
-        </button>
-        <!-- Fit to Screen / Zoom Toggle -->
-        <button
-          id="dev-btn-fit"
-          type="button"
-          class="px-1.5 py-0.5 rounded text-[10px] bg-zinc-700/60 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors ml-1 font-semibold"
-          title="Toggle Auto-Fit to Screen / 100% Zoom"
-        >
-          Fit 100%
-        </button>
-      </div>
+      <!-- Rotate Orientation Button (shown for non-full modes) -->
+      <button
+        id="dev-btn-rotate"
+        type="button"
+        class="hidden h-7 w-7 rounded-lg bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-400 hover:text-white border border-zinc-700/80 flex items-center justify-center transition-colors text-xs leading-none"
+        title="Rotate Orientation (Portrait ↔ Landscape)"
+      >
+        🔄
+      </button>
     </div>
 
     <!-- Center: Key Performance Metrics with Smooth Right Fade-out Mask -->
@@ -166,6 +133,11 @@ const { currentPath } = Astro.props;
         <span title="Google Search Impressions" class="flex items-center gap-1">
           <span class="text-zinc-400">Impr:</span>
           <strong id="hud-gsc-impr" class="text-zinc-300">--</strong>
+        </span>
+        <span class="text-zinc-600">|</span>
+        <span title="Click-Through Rate" class="flex items-center gap-1">
+          <span class="text-zinc-400">CTR:</span>
+          <strong id="hud-gsc-ctr" class="text-white">--</strong>
         </span>
         <span class="hidden xl:inline text-zinc-600">|</span>
         <span title="Average Search Ranking Position" class="hidden xl:flex items-center gap-1">
@@ -496,7 +468,6 @@ const { currentPath } = Astro.props;
     private activeDevice: DevicePreset = 'full';
     private deviceWidth: number = 393;
     private deviceHeight: number = 852;
-    private isAutoFit: boolean = true;
     private isDraggingThumb: boolean = false;
     private fetchCounter: number = 0;
 
@@ -516,7 +487,19 @@ const { currentPath } = Astro.props;
     constructor() {
       this.currentPeriod = localStorage.getItem('gh_dev_analytics_period') || '28d';
       const savedDevice = localStorage.getItem('gh_dev_studio_device') as DevicePreset;
-      if (savedDevice) this.activeDevice = savedDevice;
+      if (savedDevice) {
+        this.activeDevice = savedDevice;
+        if (savedDevice === 'iphone') {
+          this.deviceWidth = 393;
+          this.deviceHeight = 852;
+        } else if (savedDevice === 'ipad') {
+          this.deviceWidth = 820;
+          this.deviceHeight = 1180;
+        } else if (savedDevice === 'macbook') {
+          this.deviceWidth = 1280;
+          this.deviceHeight = 800;
+        }
+      }
     }
 
     private getCacheKey(path: string, period: string): string {
@@ -727,10 +710,6 @@ const { currentPath } = Astro.props;
           if (w && h) {
             this.deviceWidth = parseInt(w, 10);
             this.deviceHeight = parseInt(h, 10);
-            const wInput = document.getElementById('dev-input-width') as HTMLInputElement | null;
-            const hInput = document.getElementById('dev-input-height') as HTMLInputElement | null;
-            if (wInput) wInput.value = String(this.deviceWidth);
-            if (hInput) hInput.value = String(this.deviceHeight);
           }
           if (dev) {
             this.applyDeviceMode(dev);
@@ -738,38 +717,12 @@ const { currentPath } = Astro.props;
         });
       });
 
-      // Custom Inputs
-      const wInput = document.getElementById('dev-input-width') as HTMLInputElement | null;
-      const hInput = document.getElementById('dev-input-height') as HTMLInputElement | null;
-      wInput?.addEventListener('change', () => {
-        const val = parseInt(wInput.value, 10);
-        if (val >= 280 && val <= 3840) {
-          this.deviceWidth = val;
-          this.updateDeviceDimensions();
-        }
-      });
-      hInput?.addEventListener('change', () => {
-        const val = parseInt(hInput.value, 10);
-        if (val >= 280 && val <= 2400) {
-          this.deviceHeight = val;
-          this.updateDeviceDimensions();
-        }
-      });
-
-      // Rotate Button
+      // Rotate Button (Portrait ↔ Landscape)
       document.getElementById('dev-btn-rotate')?.addEventListener('click', () => {
         const temp = this.deviceWidth;
         this.deviceWidth = this.deviceHeight;
         this.deviceHeight = temp;
-        if (wInput) wInput.value = String(this.deviceWidth);
-        if (hInput) hInput.value = String(this.deviceHeight);
         this.updateDeviceDimensions();
-      });
-
-      // Fit / Zoom Toggle
-      document.getElementById('dev-btn-fit')?.addEventListener('click', () => {
-        this.isAutoFit = !this.isAutoFit;
-        this.updateAutoFitScale();
       });
     }
 
@@ -790,14 +743,14 @@ const { currentPath } = Astro.props;
 
       const fullStage = document.getElementById('dev-stage-full');
       const deviceStage = document.getElementById('dev-stage-device');
-      const dimensionControls = document.getElementById('dev-dimension-controls');
+      const rotateBtn = document.getElementById('dev-btn-rotate');
       const bezel = document.getElementById('dev-device-bezel');
       const screen = document.getElementById('dev-device-screen');
 
       if (dev === 'full') {
         fullStage?.classList.remove('hidden');
         deviceStage?.classList.add('hidden');
-        dimensionControls?.classList.add('opacity-40', 'pointer-events-none');
+        rotateBtn?.classList.add('hidden');
 
         // Sync full iframe src if needed
         const fullIframe = document.getElementById('dev-iframe-full') as HTMLIFrameElement | null;
@@ -809,7 +762,7 @@ const { currentPath } = Astro.props;
       } else {
         fullStage?.classList.add('hidden');
         deviceStage?.classList.remove('hidden');
-        dimensionControls?.classList.remove('opacity-40', 'pointer-events-none');
+        rotateBtn?.classList.remove('hidden');
 
         // Device-specific aesthetic adjustments
         if (bezel && screen) {
@@ -853,7 +806,6 @@ const { currentPath } = Astro.props;
       const stage = document.getElementById('dev-studio-stage');
       const outerBox = document.getElementById('dev-device-outer-box');
       const bezel = document.getElementById('dev-device-bezel');
-      const fitBtn = document.getElementById('dev-btn-fit');
       if (!stage || !outerBox || !bezel) return;
 
       // Bezel adds padding: 24px + 4px border = 28px
@@ -864,22 +816,15 @@ const { currentPath } = Astro.props;
       const availW = Math.max(280, stage.clientWidth - 48 - 48);
       const availH = Math.max(280, stage.clientHeight - 48);
 
-      let scale = 1;
-      if (this.isAutoFit) {
-        const scaleW = availW / totalDeviceW;
-        const scaleH = availH / totalDeviceH;
-        scale = Math.min(1, scaleW, scaleH);
-      }
+      const scaleW = availW / totalDeviceW;
+      const scaleH = availH / totalDeviceH;
+      const scale = Math.min(1, scaleW, scaleH);
 
       bezel.style.transform = `scale(${scale})`;
       bezel.style.transformOrigin = 'center center';
 
       outerBox.style.width = `${totalDeviceW * scale}px`;
       outerBox.style.height = `${totalDeviceH * scale}px`;
-
-      if (fitBtn) {
-        fitBtn.textContent = this.isAutoFit ? `Fit (${Math.round(scale * 100)}%)` : '100%';
-      }
     }
 
     private setupPostMessageBus(): void {
@@ -1332,6 +1277,7 @@ const { currentPath } = Astro.props;
       set('hud-duration', '...');
       set('hud-gsc-clicks', '...');
       set('hud-gsc-impr', '...');
+      set('hud-gsc-ctr', '...');
       set('hud-gsc-rank', '...');
 
       // Fade out minimap funnel & median marker smoothly, show minimap track loader
@@ -1474,6 +1420,7 @@ const { currentPath } = Astro.props;
 
       set('hud-gsc-clicks', String(gsc.clicks ?? 0));
       set('hud-gsc-impr', String(gsc.impressions ?? 0));
+      set('hud-gsc-ctr', `${((gsc.ctr ?? 0) * 100).toFixed(1)}%`);
       set('hud-gsc-rank', gsc.position ? `#${gsc.position.toFixed(1)}` : '--');
     }
 
