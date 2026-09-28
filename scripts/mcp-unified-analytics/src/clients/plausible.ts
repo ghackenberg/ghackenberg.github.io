@@ -428,11 +428,24 @@ export async function getPlausiblePageScrollAndGoals(
   const p90 = milestones.find((m) => m.depth === 90);
   const readThroughRate = p90 && pageVisitors > 0 ? Number(((p90.visitors / pageVisitors) * 100).toFixed(1)) : null;
 
-  // Median scroll depth: deepest milestone reached by >= 50% of page visitors
+  // Median scroll depth: depth where reach crosses 50% of visitors (with linear interpolation)
   let medianScrollDepth: number | null = null;
-  for (const m of milestones) {
-    if (pageVisitors > 0 && m.visitors / pageVisitors >= 0.5) {
-      medianScrollDepth = m.depth;
+  if (milestones.length > 0 && pageVisitors > 0) {
+    let prev = { depth: 0, percentage: 100 };
+    for (const m of milestones) {
+      const pct = m.percentageOfVisitors;
+      if (pct <= 50) {
+        // Crossed 50% between prev and m
+        const range = prev.percentage - pct;
+        const factor = range > 0 ? (prev.percentage - 50) / range : 0;
+        medianScrollDepth = Math.round(prev.depth + factor * (m.depth - prev.depth));
+        break;
+      }
+      prev = { depth: m.depth, percentage: pct };
+    }
+    // If even the deepest milestone has >= 50% reach
+    if (medianScrollDepth === null && prev.percentage >= 50) {
+      medianScrollDepth = prev.depth;
     }
   }
 
