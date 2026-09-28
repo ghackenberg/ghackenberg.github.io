@@ -1,6 +1,6 @@
-# TOOL-004: Content Manifest & Notification Integrity Linter
+# SYSTEM-004: Content Manifest & Notification Integrity Linter
 
-- **ID:** `TOOL-004`
+- **ID:** `SYSTEM-004`
 - **Domäne:** `data-integrity` / `ci-cd`
 - **Status:** `proposed`
 - **Priorität / Hebel:** `HOCH`

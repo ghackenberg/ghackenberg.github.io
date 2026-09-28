@@ -1,6 +1,16 @@
 import { getConfig } from '../config.js';
 import { normalizePath } from '../services/normalizer.js';
-import type { PlausiblePageMetrics } from '../types.js';
+import type {
+  PlausiblePageMetrics,
+  ScrollRetentionData,
+  ScrollFunnelMilestone,
+  PlausibleGoalConversion,
+  GoalConversionDetail,
+  TechBreakdown,
+  TechDimensionMetric,
+  GeoDimensionMetric,
+  UtmCampaignMetric,
+} from '../types.js';
 
 export function mapPeriodToPlausible(period: string = 'last_28_days'): string {
   if (period === 'last_7_days') return '7d';
@@ -11,11 +21,57 @@ export function mapPeriodToPlausible(period: string = 'last_28_days'): string {
 }
 
 /**
+ * Low-level breakdown query helper.
+ */
+async function fetchBreakdown(
+  property: string,
+  period: string,
+  filter?: string,
+  metrics: string = 'visitors,bounce_rate,visit_duration',
+  limit: number = 30
+): Promise<any[]> {
+  const config = getConfig();
+  if (!config.plausible.apiKey) return [];
+
+  const plausiblePeriod = mapPeriodToPlausible(period);
+  const url = new URL(`${config.plausible.host}/api/v1/stats/breakdown`);
+  url.searchParams.set('site_id', config.plausible.siteId);
+  url.searchParams.set('period', plausiblePeriod);
+  url.searchParams.set('property', property);
+  url.searchParams.set('metrics', metrics);
+  url.searchParams.set('limit', String(limit));
+  if (filter) {
+    url.searchParams.set('filters', filter);
+  }
+
+  try {
+    const res = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${config.plausible.apiKey}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.warn(`Plausible breakdown error for ${property}: ${errText}`);
+      return [];
+    }
+
+    const data = await res.json();
+    return data.results || [];
+  } catch (err: any) {
+    console.warn(`Failed to contact Plausible breakdown API (${property}): ${err.message}`);
+    return [];
+  }
+}
+
+/**
  * Fetches Plausible engagement metrics for a specific URL path.
  */
 export async function getPlausiblePageMetrics(
   urlOrPath: string,
-  period: string = 'last_28_days'
+  period: string = 'last_28_days',
+  includeDeepMetrics: boolean = true
 ): Promise<PlausiblePageMetrics> {
   const config = getConfig();
 
@@ -76,11 +132,37 @@ export async function getPlausiblePageMetrics(
       };
     }
 
-    return {
+    const baseMetrics = {
       visitors: results.visitors?.value ?? 0,
       pageviews: results.pageviews?.value ?? 0,
       bounceRate: results.bounce_rate?.value != null ? Number(results.bounce_rate.value.toFixed(1)) : null,
       visitDuration: results.visit_duration?.value != null ? Math.round(results.visit_duration.value) : null,
+    };
+
+    if (!includeDeepMetrics || baseMetrics.visitors === 0) {
+      return baseMetrics;
+    }
+
+    // Fetch deep metrics concurrently
+    const [scrollAndGoals, tech, countries] = await Promise.all([
+      getPlausiblePageScrollAndGoals(canonicalPath, period, baseMetrics.visitors).catch(() => ({
+        scrollFunnel: { milestones: [], readThroughRate: null, medianScrollDepth: null },
+        goals: [],
+      })),
+      getPlausibleTechBreakdown(canonicalPath, period, baseMetrics.visitors).catch(() => ({
+        devices: [],
+        operatingSystems: [],
+        browsers: [],
+      })),
+      getPlausibleGeoBreakdown(canonicalPath, period, baseMetrics.visitors, 10).catch(() => []),
+    ]);
+
+    return {
+      ...baseMetrics,
+      scrollFunnel: scrollAndGoals.scrollFunnel,
+      goals: scrollAndGoals.goals,
+      tech,
+      countries,
     };
   } catch (err: any) {
     console.warn(`Failed to contact Plausible API: ${err.message}`);
@@ -259,3 +341,222 @@ export async function getPlausibleTrafficSources(
     return [];
   }
 }
+
+/**
+ * Fetches and aggregates scroll retention funnel and goal conversions for a page.
+ */
+export async function getPlausiblePageScrollAndGoals(
+  urlOrPath: string,
+  period: string = 'last_28_days',
+  pageVisitors: number = 0
+): Promise<{ scrollFunnel: ScrollRetentionData; goals: PlausibleGoalConversion[] }> {
+  const normPath = normalizePath(urlOrPath);
+  const filter = `event:page==${normPath}`;
+  let rawGoals = await fetchBreakdown('event:goal', period, filter, 'visitors', 50);
+
+  // If no goals found and path has trailing slash, try alternative slash
+  if (rawGoals.length === 0 && normPath !== '/') {
+    const altPath = normPath.endsWith('/') ? normPath.slice(0, -1) : `${normPath}/`;
+    rawGoals = await fetchBreakdown('event:goal', period, `event:page==${altPath}`, 'visitors', 50);
+  }
+
+  const milestones: ScrollFunnelMilestone[] = [];
+  const goals: PlausibleGoalConversion[] = [];
+
+  for (const item of rawGoals) {
+    const goalName: string = item.goal || '';
+    const visitors: number = item.visitors || 0;
+
+    const scrollMatch = goalName.match(/^Overall Scroll Depth >= (\d+)%$/);
+    if (scrollMatch) {
+      const depth = parseInt(scrollMatch[1], 10);
+      milestones.push({
+        depth,
+        visitors,
+        percentageOfVisitors: pageVisitors > 0 ? Number(((visitors / pageVisitors) * 100).toFixed(1)) : 0,
+      });
+    } else {
+      goals.push({
+        goal: goalName,
+        visitors,
+        conversionRate: pageVisitors > 0 ? Number(((visitors / pageVisitors) * 100).toFixed(1)) : null,
+      });
+    }
+  }
+
+  // Sort scroll milestones 10 -> 90
+  milestones.sort((a, b) => a.depth - b.depth);
+
+  // Compute drop-off from previous milestone
+  for (let i = 0; i < milestones.length; i++) {
+    if (i === 0) {
+      if (pageVisitors > 0) {
+        milestones[i].dropOffRateFromPrevious = Number((((pageVisitors - milestones[i].visitors) / pageVisitors) * 100).toFixed(1));
+      }
+    } else {
+      const prev = milestones[i - 1].visitors;
+      if (prev > 0) {
+        milestones[i].dropOffRateFromPrevious = Number((((prev - milestones[i].visitors) / prev) * 100).toFixed(1));
+      } else {
+        milestones[i].dropOffRateFromPrevious = 0;
+      }
+    }
+  }
+
+  const p90 = milestones.find((m) => m.depth === 90);
+  const readThroughRate = p90 && pageVisitors > 0 ? Number(((p90.visitors / pageVisitors) * 100).toFixed(1)) : null;
+
+  // Median scroll depth: deepest milestone reached by >= 50% of page visitors
+  let medianScrollDepth: number | null = null;
+  for (const m of milestones) {
+    if (pageVisitors > 0 && m.visitors / pageVisitors >= 0.5) {
+      medianScrollDepth = m.depth;
+    }
+  }
+
+  // Fetch properties for File Download and Outbound Link: Click
+  for (const g of goals) {
+    if (g.goal === 'File Download' || g.goal === 'Outbound Link: Click') {
+      const propFilter = `event:goal==${g.goal};event:page==${normPath}`;
+      const urlBreakdown = await fetchBreakdown('event:props:url', period, propFilter, 'visitors', 10);
+      if (urlBreakdown.length > 0) {
+        g.details = urlBreakdown.map((u: any) => ({
+          property: 'url',
+          value: u.url || '(unknown)',
+          visitors: u.visitors || 0,
+        }));
+      }
+    }
+  }
+
+  return {
+    scrollFunnel: {
+      milestones,
+      readThroughRate,
+      medianScrollDepth,
+    },
+    goals,
+  };
+}
+
+/**
+ * Fetches breakdown of devices, operating systems, and browsers for a page or domain.
+ */
+export async function getPlausibleTechBreakdown(
+  urlOrPath?: string,
+  period: string = 'last_28_days',
+  totalVisitors?: number
+): Promise<TechBreakdown> {
+  const normPath = urlOrPath ? normalizePath(urlOrPath) : undefined;
+  const filter = normPath ? `event:page==${normPath}` : undefined;
+
+  const [rawDevices, rawOs, rawBrowsers] = await Promise.all([
+    fetchBreakdown('visit:device', period, filter, 'visitors,bounce_rate,visit_duration', 10),
+    fetchBreakdown('visit:os', period, filter, 'visitors,bounce_rate,visit_duration', 10),
+    fetchBreakdown('visit:browser', period, filter, 'visitors,bounce_rate,visit_duration', 10),
+  ]);
+
+  const mapToMetric = (items: any[], keyName: string): TechDimensionMetric[] => {
+    const sumVisitors = totalVisitors || items.reduce((acc, curr) => acc + (curr.visitors || 0), 0) || 1;
+    return items.map((item) => {
+      const visitors = item.visitors || 0;
+      return {
+        name: item[keyName] || '(not set)',
+        visitors,
+        percentage: Number(((visitors / sumVisitors) * 100).toFixed(1)),
+        bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
+        visitDuration: item.visit_duration != null ? Math.round(item.visit_duration) : null,
+      };
+    });
+  };
+
+  return {
+    devices: mapToMetric(rawDevices, 'device'),
+    operatingSystems: mapToMetric(rawOs, 'os'),
+    browsers: mapToMetric(rawBrowsers, 'browser'),
+  };
+}
+
+/**
+ * Fetches breakdown of countries for a page or domain.
+ */
+export async function getPlausibleGeoBreakdown(
+  urlOrPath?: string,
+  period: string = 'last_28_days',
+  totalVisitors?: number,
+  limit: number = 20
+): Promise<GeoDimensionMetric[]> {
+  const normPath = urlOrPath ? normalizePath(urlOrPath) : undefined;
+  const filter = normPath ? `event:page==${normPath}` : undefined;
+
+  const rawCountries = await fetchBreakdown('visit:country', period, filter, 'visitors,bounce_rate,visit_duration', limit);
+  const sumVisitors = totalVisitors || rawCountries.reduce((acc, curr) => acc + (curr.visitors || 0), 0) || 1;
+
+  return rawCountries.map((item: any) => ({
+    country: item.country || '(unknown)',
+    visitors: item.visitors || 0,
+    percentage: Number((((item.visitors || 0) / sumVisitors) * 100).toFixed(1)),
+    bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
+    visitDuration: item.visit_duration != null ? Math.round(item.visit_duration) : null,
+  }));
+}
+
+/**
+ * Fetches breakdown of UTM campaign tracking parameters.
+ */
+export async function getPlausibleUtmBreakdown(
+  period: string = 'last_28_days',
+  urlOrPath?: string,
+  limit: number = 20
+): Promise<UtmCampaignMetric[]> {
+  const normPath = urlOrPath ? normalizePath(urlOrPath) : undefined;
+  const filter = normPath ? `event:page==${normPath}` : undefined;
+
+  const rawCampaigns = await fetchBreakdown('visit:utm_campaign', period, filter, 'visitors,bounce_rate,visit_duration', limit);
+
+  return rawCampaigns.map((item: any) => ({
+    campaign: item.utm_campaign || '(not set)',
+    visitors: item.visitors || 0,
+    bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
+    visitDuration: item.visit_duration != null ? Math.round(item.visit_duration) : null,
+  }));
+}
+
+/**
+ * Fetches domain-wide goal conversions and top download / outbound link targets.
+ */
+export async function getPlausibleSiteGoals(
+  period: string = 'last_28_days'
+): Promise<PlausibleGoalConversion[]> {
+  const rawGoals = await fetchBreakdown('event:goal', period, undefined, 'visitors', 30);
+  const result: PlausibleGoalConversion[] = [];
+
+  for (const item of rawGoals) {
+    const goalName = item.goal || '';
+    const visitors = item.visitors || 0;
+
+    // Skip individual scroll percentage lines in top-level goal overview
+    if (goalName.startsWith('Overall Scroll Depth >=')) continue;
+
+    const conversion: PlausibleGoalConversion = {
+      goal: goalName,
+      visitors,
+    };
+
+    if (goalName === 'File Download' || goalName === 'Outbound Link: Click') {
+      const urlBreakdown = await fetchBreakdown('event:props:url', period, `event:goal==${goalName}`, 'visitors', 10);
+      if (urlBreakdown.length > 0) {
+        conversion.details = urlBreakdown.map((u: any) => ({
+          property: 'url',
+          value: u.url || '(unknown)',
+          visitors: u.visitors || 0,
+        }));
+      }
+    }
+
+    result.push(conversion);
+  }
+
+  return result;
+}
+

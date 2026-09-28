@@ -1,6 +1,6 @@
-# TOOL-001: Slide-Engine MCP (Deterministisches Slide-Scaffolding & Cue-Linting)
+# SYSTEM-001: Slide-Engine MCP (Deterministisches Slide-Scaffolding & Cue-Linting)
 
-- **ID:** `TOOL-001`
+- **ID:** `SYSTEM-001`
 - **Domäne:** `presentations` / `slide-as-code`
 - **Status:** `proposed`
 - **Priorität / Hebel:** `HOCH`

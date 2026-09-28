@@ -78,11 +78,13 @@ For complete slide archetype definitions and props, consult [`src/content/presen
 
 ---
 
-## 6. Content Optimization Guidelines (SEO, GEO & AIO)
+## 6. Content Optimization & Analytics Guidelines (SEO, GEO & AIO)
 - **Mandatory MCP Server (`unified-analytics`)**:
-  - Run pre-optimization audits (`get_page_audit`) before modifying existing articles to protect top search queries.
-  - Discover striking-distance keywords with `find_seo_opportunities` and audit collections with `scan_aio_readiness`.
-  - Evaluate GEO/AIO extractability on drafted markdown with `evaluate_aio_extractability`.
+  - *Pre-Optimization Audits*: Run `get_page_audit` before modifying existing articles to protect top search queries AND inspect reader retention (`scrollFunnel`), median scroll reach, and device/browser anomaly warnings.
+  - *Retention & Opportunity Discovery*: Discover striking-distance keywords with `find_seo_opportunities`, identify retention bottlenecks with `find_retention_bottlenecks`, and analyze technical audience segments with `get_audience_breakdown`.
+  - *AIO Readiness Audits*: Audit collections with `scan_aio_readiness` and evaluate GEO/AIO extractability on drafted markdown with `evaluate_aio_extractability`.
+- **Telemetry & Custom Event Tracking**:
+  - *Semantic Event Tracking*: When creating or refactoring interactive components (audio players, slide presentations, interactive calculators, downloadable assets), always integrate Plausible Custom Events with descriptive properties (e.g. download URLs, slide progress, audio completion) to feed back into the analytics engine.
 - **Generative Engine Optimization (GEO/AEO)**:
   - *Answer-First Pattern*: Concise definition paragraph (40–55 words) immediately below key `##` headings.
   - *Question-Framed Headings*: Formulate 1–2 headings per article as explicit natural-language queries ("Was ist...", "Wie funktioniert...").
@@ -98,7 +100,7 @@ For complete slide archetype definitions and props, consult [`src/content/presen
     3. *Direct Codification*: Propose concrete guideline updates or tool creations.
 - **Rule $\rightarrow$ Tool Promotion & Backlog Management**:
   - Repetitive, algorithmic, or token-heavy processes must not stay as verbose prompt rules; they should be promoted into automated tools or MCP servers.
-  - New tool proposals are specified as numbered RFCs in [`.agents/backlog/`](.agents/backlog/) (e.g. `001-slide-engine-mcp.md`) and tracked in [`.agents/backlog/README.md`](.agents/backlog/README.md).
+  - New tool and system proposals are specified as numbered RFCs in [`backlog/system/`](backlog/system/) (e.g. `001-slide-engine-mcp.md`), content ideas in [`backlog/content/`](backlog/content/), and tracked in [`backlog/README.md`](backlog/README.md).
 
 ## 8. UI Interaction & Motion Ergonomics
 - **Touch Gesture Ergonomics (Axis-Locking & Disambiguation)**:

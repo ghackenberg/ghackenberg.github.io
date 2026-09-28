@@ -17,18 +17,20 @@ import {
   getTrafficSourcesReport,
   getTopQueriesReport,
   findRetentionBottlenecks,
+  getAudienceBreakdownReport,
+  getConversionsReport,
 } from './services/site-overview.js';
 
 const server = new McpServer({
   name: 'unified-analytics',
-  version: '1.0.0',
+  version: '1.1.0',
 });
 
 
 // Tool 1: get_page_audit
 server.tool(
   'get_page_audit',
-  'Retrieve consolidated SEO and engagement metrics (GSC clicks, impressions, CTR, average ranking position, top queries + Plausible visitors, pageviews, bounce rate, visit duration) for a relative path or full URL.',
+  'Retrieve consolidated SEO and engagement metrics (GSC clicks, impressions, CTR, average ranking position, top queries + Plausible visitors, pageviews, bounce rate, visit duration, scroll retention funnel, goal conversions with download/outbound URLs, and device/browser/OS breakdown with anomaly detection) for a relative path or full URL.',
   {
     path: z
       .string()
@@ -510,6 +512,82 @@ server.tool(
           {
             type: 'text',
             text: `Error finding retention bottlenecks: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 13: get_audience_breakdown
+server.tool(
+  'get_audience_breakdown',
+  'Retrieve technical and demographic audience metrics (devices: Desktop/Mobile/Tablet, operating systems: Windows/iOS/Linux/Android/Mac, browsers: Chrome/Safari/Edge/Firefox, countries, and UTM campaign parameters) for the entire domain or a specific URL path.',
+  {
+    path: z
+      .string()
+      .optional()
+      .describe('Optional relative URL path (e.g. "/posts/my-post/") to filter audience metrics for a single page'),
+    period: z
+      .enum(['last_7_days', 'last_14_days', 'last_28_days', 'last_90_days'])
+      .optional()
+      .default('last_28_days')
+      .describe('Time window for metrics aggregation'),
+  },
+  async ({ path, period }) => {
+    try {
+      const report = await getAudienceBreakdownReport(period, path);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(report, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error retrieving audience breakdown: ${err.message}`,
+          },
+        ],
+      };
+    }
+  }
+);
+
+// Tool 14: get_conversions_report
+server.tool(
+  'get_conversions_report',
+  'Retrieve site-wide goal conversions and specific interaction targets (e.g. downloaded file URLs, clicked outbound links, and theme toggle actions).',
+  {
+    period: z
+      .enum(['last_7_days', 'last_14_days', 'last_28_days', 'last_90_days'])
+      .optional()
+      .default('last_28_days')
+      .describe('Time window for metrics aggregation'),
+  },
+  async ({ period }) => {
+    try {
+      const report = await getConversionsReport(period);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(report, null, 2),
+          },
+        ],
+      };
+    } catch (err: any) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error retrieving conversions report: ${err.message}`,
           },
         ],
       };

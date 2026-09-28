@@ -6,12 +6,15 @@ A lightweight, local Model Context Protocol (MCP) server that seamlessly unifies
 
 - **Deterministic Joins:** Resolves trailing slash, URL scheme, and domain differences to merge search performance and on-site engagement per URL path deterministically.
 - **Token Efficiency:** Pre-aggregates metrics locally before serving structured JSON to the LLM agent, preserving context window budget.
-- **12 Specialized Tools:**
-  - `get_site_overview`: Domain-wide consolidated search performance (GSC) and visitor engagement (Plausible).
+- **Deep Behavioral & Tech Telemetry:** Evaluates 10%-90% scroll retention funnels, goal conversions with exact URLs (file downloads, outbound links), and device/browser/OS distributions with automated compatibility anomaly detection.
+- **14 Specialized Tools:**
+  - `get_site_overview`: Domain-wide consolidated search performance (GSC) and visitor engagement (Plausible) including goals summary and tech distributions.
   - `get_traffic_sources`: Breakdown of traffic channels and referrers with visitor counts, bounce rate, and visit duration.
   - `get_top_search_queries`: Domain-wide search query rankings, impressions, clicks, and CTR from GSC.
   - `find_retention_bottlenecks`: Identification of dead-end pages with high bounce rates or low durations.
-  - `get_page_audit`: Consolidated GSC + Plausible metrics for any path.
+  - `get_page_audit`: Consolidated GSC + Plausible metrics for any path with full scroll retention funnel, goal conversions with details, and tech breakdown.
+  - `get_audience_breakdown`: Deep technical breakdown (devices, OS, browsers, countries, UTM campaigns) for any page or the entire site.
+  - `get_conversions_report`: Domain-wide goal conversions and specific interaction targets (e.g. downloaded file URLs, outbound links).
   - `find_seo_opportunities`: Heuristic scanner identifying striking distance rankings, high-bounce top performers, underperforming SERP snippets, and hidden champions.
   - `inspect_url_index_status`: Live GSC URL Inspection API wrapper for indexing state, canonical checks, and crawl timestamps.
   - `evaluate_aio_extractability`: Source content auditor for LLM citability, question-oriented headings, direct answers, tables, and Schema.org metadata.

@@ -14,11 +14,72 @@ export interface GscPagePerformance extends GscMetricSummary {
   queries?: GscQueryMetric[];
 }
 
+export interface ScrollFunnelMilestone {
+  depth: number; // e.g. 10, 20, 30 ... 90
+  visitors: number;
+  percentageOfVisitors: number; // % relative to page visitors
+  dropOffRateFromPrevious?: number; // % dropped from preceding milestone
+}
+
+export interface ScrollRetentionData {
+  milestones: ScrollFunnelMilestone[];
+  readThroughRate: number | null; // % reaching >= 90%
+  medianScrollDepth: number | null; // deepest milestone with >= 50% visitors
+}
+
+export interface GoalConversionDetail {
+  property: string;
+  value: string;
+  visitors: number;
+}
+
+export interface PlausibleGoalConversion {
+  goal: string;
+  visitors: number;
+  conversionRate?: number | null; // % relative to page visitors
+  details?: GoalConversionDetail[];
+}
+
+export interface TechDimensionMetric {
+  name: string; // e.g. "Desktop", "Mobile", "Chrome", "Windows"
+  visitors: number;
+  percentage: number;
+  bounceRate: number | null;
+  visitDuration: number | null;
+}
+
+export interface TechBreakdown {
+  devices: TechDimensionMetric[];
+  operatingSystems: TechDimensionMetric[];
+  browsers: TechDimensionMetric[];
+}
+
+export interface GeoDimensionMetric {
+  country: string; // e.g. "AT", "DE", "US"
+  visitors: number;
+  percentage: number;
+  bounceRate: number | null;
+  visitDuration: number | null;
+}
+
+export interface UtmCampaignMetric {
+  campaign: string;
+  source?: string;
+  medium?: string;
+  visitors: number;
+  bounceRate: number | null;
+  visitDuration: number | null;
+}
+
 export interface PlausiblePageMetrics {
   visitors: number;
   pageviews: number;
   bounceRate: number | null; // percentage (0-100)
   visitDuration: number | null; // seconds
+  scrollFunnel?: ScrollRetentionData;
+  goals?: PlausibleGoalConversion[];
+  tech?: TechBreakdown;
+  countries?: GeoDimensionMetric[];
 }
 
 export interface UnifiedPageAudit {
@@ -32,6 +93,11 @@ export interface UnifiedPageAudit {
   assessment: {
     status: 'healthy' | 'needs_attention' | 'underperforming' | 'no_data';
     notes: string[];
+    anomalies?: {
+      browserIssues?: string[];
+      deviceDiscrepancies?: string[];
+      scrollFatigue?: string[];
+    };
   };
 }
 
@@ -199,6 +265,9 @@ export interface SiteOverviewSummary {
     averageBounceRate: number | null;
     averageVisitDuration: number | null;
   };
+  goalsSummary?: PlausibleGoalConversion[];
+  techDistribution?: TechBreakdown;
+  topCountries?: GeoDimensionMetric[];
   assessment: {
     summary: string;
     trafficHealth: 'thriving' | 'growing' | 'early_stage' | 'low_traffic';
