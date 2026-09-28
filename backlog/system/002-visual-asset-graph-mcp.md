@@ -1,6 +1,6 @@
-# TOOL-002: Visual Asset Graph MCP (Scene-Anchor & Room-DNA Resolver)
+# SYSTEM-002: Visual Asset Graph MCP (Scene-Anchor & Room-DNA Resolver)
 
-- **ID:** `TOOL-002`
+- **ID:** `SYSTEM-002`
 - **Domäne:** `images` / `visual-asset-engine`
 - **Status:** `proposed`
 - **Priorität / Hebel:** `HOCH`

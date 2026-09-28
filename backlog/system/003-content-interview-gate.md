@@ -1,6 +1,6 @@
-# TOOL-003: Content Interview Gatekeeper (Interaktiver Fragebogen-Generator)
+# SYSTEM-003: Content Interview Gatekeeper (Interaktiver Fragebogen-Generator)
 
-- **ID:** `TOOL-003`
+- **ID:** `SYSTEM-003`
 - **Domäne:** `content-creation` / `workflow`
 - **Status:** `proposed`
 - **Priorität / Hebel:** `MITTEL`

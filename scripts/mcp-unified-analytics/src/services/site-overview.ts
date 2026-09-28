@@ -3,18 +3,26 @@ import {
   getPlausibleSiteOverview,
   getPlausibleTrafficSources,
   getPlausibleTopPages,
+  getPlausibleSiteGoals,
+  getPlausibleTechBreakdown,
+  getPlausibleGeoBreakdown,
+  getPlausibleUtmBreakdown,
 } from '../clients/plausible.js';
 import type {
   SiteOverviewSummary,
   TrafficSourceMetric,
   TopQueriesReport,
   RetentionBottleneck,
+  TechBreakdown,
+  GeoDimensionMetric,
+  UtmCampaignMetric,
+  PlausibleGoalConversion,
 } from '../types.js';
 
 export async function getSiteOverview(
   period: string = 'last_28_days'
 ): Promise<SiteOverviewSummary> {
-  const [gscMetrics, plausibleMetrics] = await Promise.all([
+  const [gscMetrics, plausibleMetrics, goalsSummary, techDistribution, topCountries] = await Promise.all([
     getGscSiteOverview(period).catch((err) => {
       console.warn(`GSC site overview query failed: ${err.message}`);
       return { clicks: 0, impressions: 0, ctr: 0, position: 0 };
@@ -23,6 +31,9 @@ export async function getSiteOverview(
       console.warn(`Plausible site overview query failed: ${err.message}`);
       return { visitors: 0, pageviews: 0, bounceRate: null, visitDuration: null };
     }),
+    getPlausibleSiteGoals(period).catch(() => []),
+    getPlausibleTechBreakdown(undefined, period).catch(() => ({ devices: [], operatingSystems: [], browsers: [] })),
+    getPlausibleGeoBreakdown(undefined, period, undefined, 10).catch(() => []),
   ]);
 
   const keyRecommendations: string[] = [];
@@ -75,6 +86,9 @@ export async function getSiteOverview(
       averageBounceRate: plausibleMetrics.bounceRate,
       averageVisitDuration: plausibleMetrics.visitDuration,
     },
+    goalsSummary,
+    techDistribution,
+    topCountries,
     assessment: {
       summary,
       trafficHealth,
@@ -165,3 +179,42 @@ export async function findRetentionBottlenecks(
     bottlenecks,
   };
 }
+
+export async function getAudienceBreakdownReport(
+  period: string = 'last_28_days',
+  urlOrPath?: string
+): Promise<{
+  period: string;
+  path?: string;
+  tech: TechBreakdown;
+  countries: GeoDimensionMetric[];
+  campaigns: UtmCampaignMetric[];
+}> {
+  const [tech, countries, campaigns] = await Promise.all([
+    getPlausibleTechBreakdown(urlOrPath, period),
+    getPlausibleGeoBreakdown(urlOrPath, period, undefined, 20),
+    getPlausibleUtmBreakdown(period, urlOrPath, 20),
+  ]);
+
+  return {
+    period,
+    path: urlOrPath,
+    tech,
+    countries,
+    campaigns,
+  };
+}
+
+export async function getConversionsReport(
+  period: string = 'last_28_days'
+): Promise<{
+  period: string;
+  goals: PlausibleGoalConversion[];
+}> {
+  const goals = await getPlausibleSiteGoals(period);
+  return {
+    period,
+    goals,
+  };
+}
+
