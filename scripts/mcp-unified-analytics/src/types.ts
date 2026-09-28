@@ -52,6 +52,8 @@ export interface TechBreakdown {
   devices: TechDimensionMetric[];
   operatingSystems: TechDimensionMetric[];
   browsers: TechDimensionMetric[];
+  screenBuckets?: TechDimensionMetric[];
+  orientations?: TechDimensionMetric[];
 }
 
 export interface GeoDimensionMetric {

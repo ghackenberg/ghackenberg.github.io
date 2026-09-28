@@ -1,3 +1,5 @@
+import { trackEvent } from './telemetry';
+
 export interface DropdownFilterConfig {
   selectSelector: string;
   dataAttribute: string;
@@ -116,6 +118,7 @@ export class ClientListFilter {
             const val = (e.target as HTMLSelectElement).value;
             this.dropdownValues.set(dropdown.dataAttribute, val);
             this.currentPage = 1;
+            trackEvent('Filter Content', { type: 'dropdown', key: dropdown.dataAttribute, value: val, path: window.location.pathname });
             this.updateFilters();
           });
         }
@@ -146,6 +149,7 @@ export class ClientListFilter {
 
           btn.addEventListener('click', () => {
             const currentVal = this.buttonValues.get(btnConfig.dataAttribute);
+            let newVal = defVal;
             if (currentVal === btnVal) {
               // Deselect
               buttons.forEach(b => b.classList.remove(activeCls));
@@ -154,9 +158,11 @@ export class ClientListFilter {
               // Select
               buttons.forEach(b => b.classList.remove(activeCls));
               btn.classList.add(activeCls);
+              newVal = btnVal;
               this.buttonValues.set(btnConfig.dataAttribute, btnVal);
             }
             this.currentPage = 1;
+            trackEvent('Filter Content', { type: 'button', key: btnConfig.dataAttribute, value: newVal, path: window.location.pathname });
             this.updateFilters(true);
           });
         });
@@ -166,6 +172,7 @@ export class ClientListFilter {
     // 4. Initialize Reset Button
     if (this.resetButtonElement) {
       this.resetButtonElement.addEventListener('click', () => {
+        trackEvent('Filter Content', { type: 'reset', path: window.location.pathname });
         this.resetAllFilters();
       });
     }

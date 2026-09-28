@@ -27,7 +27,7 @@ const { presentationId, talkId, slides, class: className = "", pdfUrl, pdfDarkUr
 const currentDeckId = presentationId || talkId || "presentation";
 ---
 
-<div class={`slide-deck-wrapper relative w-full lg:aspect-[16/9.6] lg:max-h-[88vh] bg-slate-950 light:bg-slate-100 border border-slate-800 light:border-slate-300 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col ${className}`}>
+<div data-deck-id={currentDeckId} class={`slide-deck-wrapper relative w-full lg:aspect-[16/9.6] lg:max-h-[88vh] bg-slate-950 light:bg-slate-100 border border-slate-800 light:border-slate-300 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col ${className}`}>
   <!-- Slide Stage Viewport with Drawer / Sidebar Layer -->
   <div class="relative flex-1 w-full min-h-0 flex overflow-hidden">
     <!-- Slide List Backdrop (Tablet only md to < lg: dims & blurs slide stage) -->
@@ -269,6 +269,21 @@ const currentDeckId = presentationId || talkId || "presentation";
         </svg>
       </button>
 
+      <!-- Share Slide & Cue Link -->
+      <button
+        id="btn-share-slide"
+        class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer relative"
+        title="Share slide & cue link (Copy to clipboard)"
+        aria-label="Share slide link"
+      >
+        <svg id="icon-share-link" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+        </svg>
+        <svg id="icon-share-copied" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400 light:text-emerald-600 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+        </svg>
+      </button>
+
       <!-- Download PDF Handout with Theme Matching & Selector -->
       {(pdfDarkUrl || pdfLightUrl || pdfUrl) && (
         <div class="relative flex items-center" id="pdf-download-container">
@@ -442,6 +457,8 @@ const currentDeckId = presentationId || talkId || "presentation";
   // Read metadata
   const metaEl = document.getElementById('slides-meta');
   const slidesData: SlideData[] = metaEl ? JSON.parse(metaEl.textContent || '[]') : [];
+  const deckWrapper = document.querySelector('.slide-deck-wrapper');
+  const currentDeckId = deckWrapper?.getAttribute('data-deck-id') || 'presentation';
 
   // Initialize Reveal.js
   const deck = new Reveal(document.getElementById('reveal-root') as HTMLElement, {
@@ -837,6 +854,28 @@ const currentDeckId = presentationId || talkId || "presentation";
       });
     };
 
+    function updateUrlState(slideIndex: number, cueId: string | null) {
+      try {
+        const url = new URL(window.location.href);
+        const slideNum = slideIndex + 1;
+        if (slideNum > 1 || cueId) {
+          url.searchParams.set('slide', String(slideNum));
+        } else {
+          url.searchParams.delete('slide');
+          url.searchParams.delete('s');
+        }
+
+        if (cueId) {
+          url.searchParams.set('cue', cueId);
+        } else {
+          url.searchParams.delete('cue');
+          url.searchParams.delete('c');
+        }
+
+        window.history.replaceState(null, '', url.toString());
+      } catch (e) {}
+    }
+
     // Instantiate Audio Controller
     const audioSync = new AudioSyncController(slidesData, {
       onSlideChange: (index) => {
@@ -846,6 +885,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         if (slideIndexLabel) slideIndexLabel.textContent = String(index + 1);
         updateActiveSlideInList(index);
         updateReferencesButton(index);
+        updateUrlState(index, audioSync.getActiveCue());
         if (progressBar) progressBar.style.width = '0%';
         if (timeCurrent) timeCurrent.textContent = '0:00';
         if (timeTotal) timeTotal.textContent = '0:00';
@@ -865,6 +905,9 @@ const currentDeckId = presentationId || talkId || "presentation";
       onCuesLoaded: (cues, totalSec) => {
         renderCueMarkers(cues, totalSec);
       },
+      onCueChange: (cueId) => {
+        updateUrlState(deck.getIndices().h, cueId);
+      },
       onPlayStateChange: (isPlaying) => {
         if (iconPlay && iconPause) {
           if (isPlaying) {
@@ -873,6 +916,15 @@ const currentDeckId = presentationId || talkId || "presentation";
             if (labelPlayPause) labelPlayPause.textContent = 'Pause';
             btnPlayPause?.setAttribute('title', 'Pause audio (Space)');
             btnPlayPause?.setAttribute('aria-label', 'Pause audio presentation');
+
+            if (typeof window.plausible === 'function') {
+              window.plausible('Audio Played', {
+                props: {
+                  presentation: currentDeckId,
+                  slide_number: deck.getIndices().h + 1
+                }
+              });
+            }
           } else {
             iconPlay.classList.remove('hidden');
             iconPause.classList.add('hidden');
@@ -891,6 +943,28 @@ const currentDeckId = presentationId || talkId || "presentation";
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
       updateActiveSlideInList(idx);
       updateReferencesButton(idx);
+      updateUrlState(idx, audioSync.getActiveCue());
+
+      // Track in Plausible Telemetry
+      if (typeof window.plausible === 'function') {
+        window.plausible('Slide Viewed', {
+          props: {
+            presentation: currentDeckId,
+            slide_number: idx + 1,
+            total_slides: slidesData.length,
+            title: slidesData[idx]?.title || `Slide ${idx + 1}`
+          }
+        });
+        if (idx === slidesData.length - 1) {
+          window.plausible('Presentation Completed', {
+            props: {
+              presentation: currentDeckId,
+              total_slides: slidesData.length
+            }
+          });
+        }
+      }
+
       if (audioSync.getCurrentSlideIndex() !== idx) {
         const isPlaying = audioSync.getIsPlaying();
         audioSync.setSlideIndex(idx, {
@@ -1297,8 +1371,87 @@ const currentDeckId = presentationId || talkId || "presentation";
       });
     }
 
-    // Initialize initial slide cues (Titelfolie in full mode)
-    audioSync.setSlideIndex(0, { entryMode: 'full' });
+    // Parse URL params for initial deep link (e.g. ?slide=3&cue=card-1 or ?s=3&c=card-1)
+    const urlParams = new URLSearchParams(window.location.search);
+    const slideParam = urlParams.get('slide') || urlParams.get('s');
+    const cueParam = urlParams.get('cue') || urlParams.get('c');
+    let initSlideIdx = 0;
+    if (slideParam) {
+      const parsed = parseInt(slideParam, 10) - 1;
+      if (!isNaN(parsed) && parsed >= 0 && parsed < slidesData.length) {
+        initSlideIdx = parsed;
+      }
+    }
+
+    if (initSlideIdx !== 0) {
+      deck.slide(initSlideIdx);
+      if (cueParam) {
+        audioSync.setSlideIndex(initSlideIdx, { targetCue: cueParam, shouldPlay: false });
+      } else {
+        audioSync.setSlideIndex(initSlideIdx, { entryMode: 'full', shouldPlay: false });
+      }
+    } else {
+      if (cueParam) {
+        audioSync.setSlideIndex(0, { targetCue: cueParam, shouldPlay: false });
+      } else {
+        audioSync.setSlideIndex(0, { entryMode: 'full', shouldPlay: false });
+      }
+    }
+
+    // Popstate navigation support (browser back/forward button)
+    window.addEventListener('popstate', () => {
+      const params = new URLSearchParams(window.location.search);
+      const sParam = params.get('slide') || params.get('s');
+      const cParam = params.get('cue') || params.get('c');
+      if (sParam) {
+        const sIdx = parseInt(sParam, 10) - 1;
+        if (!isNaN(sIdx) && sIdx >= 0 && sIdx < slidesData.length) {
+          if (deck.getIndices().h !== sIdx) {
+            deck.slide(sIdx);
+          }
+          if (cParam) {
+            audioSync.setSlideIndex(sIdx, { targetCue: cParam, shouldPlay: false });
+          } else {
+            audioSync.setSlideIndex(sIdx, { entryMode: 'full', shouldPlay: false });
+          }
+        }
+      } else {
+        if (deck.getIndices().h !== 0) {
+          deck.slide(0);
+          audioSync.setSlideIndex(0, { entryMode: 'full', shouldPlay: false });
+        }
+      }
+    });
+
+    // Share Slide & Cue Link button
+    const btnShareSlide = document.getElementById('btn-share-slide');
+    const iconShareLink = document.getElementById('icon-share-link');
+    const iconShareCopied = document.getElementById('icon-share-copied');
+
+    btnShareSlide?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        if (iconShareLink && iconShareCopied) {
+          iconShareLink.classList.add('hidden');
+          iconShareCopied.classList.remove('hidden');
+          setTimeout(() => {
+            iconShareLink.classList.remove('hidden');
+            iconShareCopied.classList.add('hidden');
+          }, 2000);
+        }
+        if (typeof window.plausible === 'function') {
+          window.plausible('High Intent: Share Presentation', {
+            props: {
+              presentation: currentDeckId,
+              slide_number: deck.getIndices().h + 1,
+              cue: audioSync.getActiveCue() || 'none'
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Failed to copy share link', err);
+      }
+    });
 
     // Dismiss loading indicator & reveal deck smoothly
     if (revealRoot) revealRoot.classList.add('deck-ready');

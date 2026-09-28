@@ -18,6 +18,7 @@ export type SlideEntryMode = 'full' | 'start' | 'last-cue';
 export interface SetSlideOptions {
   shouldPlay?: boolean;
   entryMode?: SlideEntryMode;
+  targetCue?: string;
 }
 
 export interface SlideReference {
@@ -76,10 +77,12 @@ export class AudioSyncController {
   private exitedCues: Set<string> = new Set();
   private manualTime: number = 0;
   private rafId: number | null = null;
+  private lastActiveCueId: string | null = null;
   private onSlideChangeCallback?: (index: number) => void;
   private onProgressCallback?: (currentSec: number, totalSec: number) => void;
   private onPlayStateChangeCallback?: (isPlaying: boolean) => void;
   private onCuesLoadedCallback?: (cues: CueItem[], totalSec: number) => void;
+  private onCueChangeCallback?: (cueId: string | null) => void;
 
   constructor(
     slides: SlideData[],
@@ -88,6 +91,7 @@ export class AudioSyncController {
       onProgress?: (currentSec: number, totalSec: number) => void;
       onPlayStateChange?: (isPlaying: boolean) => void;
       onCuesLoaded?: (cues: CueItem[], totalSec: number) => void;
+      onCueChange?: (cueId: string | null) => void;
     }
   ) {
     this.slides = slides;
@@ -95,6 +99,7 @@ export class AudioSyncController {
     this.onProgressCallback = options?.onProgress;
     this.onPlayStateChangeCallback = options?.onPlayStateChange;
     this.onCuesLoadedCallback = options?.onCuesLoaded;
+    this.onCueChangeCallback = options?.onCueChange;
   }
 
   public getCurrentSlideIndex(): number {
@@ -155,7 +160,17 @@ export class AudioSyncController {
     const slideEl = document.querySelector(`.reveal .slides section[data-slide-index="${index}"]`);
     const baseFrame = slideEl?.querySelector('.slide-base-frame');
 
-    if (entryMode === 'full') {
+    if (opts.targetCue) {
+      const cues = this.getCurrentSlideCues();
+      const target = cues.find(c => c.cueId === opts.targetCue);
+      if (target) {
+        this.manualTime = target.start;
+        this.syncCuesToTime(target.start);
+      } else {
+        this.manualTime = 0;
+        this.resetAllCues();
+      }
+    } else if (entryMode === 'full') {
       this.manualTime = 99999;
       if (baseFrame) {
         baseFrame.classList.add('no-intro-transition');
@@ -196,7 +211,7 @@ export class AudioSyncController {
     this.updateSlideIntroState();
 
     if (slide?.audioUrl) {
-      this.loadSlideAudio(slide, shouldPlay, entryMode);
+      this.loadSlideAudio(slide, shouldPlay, entryMode, opts.targetCue);
       this.preloadNextSlideAudio(index + 1);
     }
 
@@ -282,9 +297,10 @@ export class AudioSyncController {
       });
     }
     this.updateSlideIntroState();
+    this.notifyCueChange();
   }
 
-  private loadSlideAudio(slide: SlideData, autoPlay: boolean, entryMode: SlideEntryMode = 'full') {
+  private loadSlideAudio(slide: SlideData, autoPlay: boolean, entryMode: SlideEntryMode = 'full', targetCue?: string) {
     if (!slide.audioUrl) {
       this.isPlaying = false;
       this.notifyPlayState(false);
@@ -311,7 +327,20 @@ export class AudioSyncController {
         const total = howlInstance.duration();
         const totalSec = (typeof total === 'number' && Number.isFinite(total) && total > 0) ? total : 0;
         
-        if (entryMode === 'full') {
+        if (targetCue) {
+          const cues = this.getCurrentSlideCues();
+          const target = cues.find(c => c.cueId === targetCue);
+          const targetTime = target ? target.start : 0;
+          this.manualTime = targetTime;
+          howlInstance.seek(targetTime);
+          this.syncCuesToTime(targetTime);
+          if (this.onProgressCallback) {
+            this.onProgressCallback(targetTime, totalSec);
+          }
+          if (this.onCuesLoadedCallback) {
+            this.onCuesLoadedCallback(cues, totalSec);
+          }
+        } else if (entryMode === 'full') {
           this.manualTime = totalSec;
           howlInstance.seek(totalSec);
           if (this.onProgressCallback) {
@@ -548,6 +577,38 @@ export class AudioSyncController {
     }
   }
 
+  public getActiveCue(): string | null {
+    const cues = this.getCurrentSlideCues();
+    if (cues.length === 0) return null;
+    const currentSec = this.getCurrentTime();
+    let activeCueId: string | null = null;
+    for (const cue of cues) {
+      if (currentSec >= cue.start) {
+        if (cue.end === undefined || currentSec < cue.end) {
+          activeCueId = cue.cueId;
+        }
+      }
+    }
+    if (!activeCueId) {
+      for (const cue of cues) {
+        if (currentSec >= cue.start) {
+          activeCueId = cue.cueId;
+        }
+      }
+    }
+    return activeCueId;
+  }
+
+  private notifyCueChange() {
+    const activeCue = this.getActiveCue();
+    if (activeCue !== this.lastActiveCueId) {
+      this.lastActiveCueId = activeCue;
+      if (this.onCueChangeCallback) {
+        this.onCueChangeCallback(activeCue);
+      }
+    }
+  }
+
   public prevCue() {
     const cues = this.getCurrentSlideCues();
 
@@ -731,6 +792,7 @@ export class AudioSyncController {
     }
 
     this.updateHighlightSpotlight(currentSec);
+    this.notifyCueChange();
   }
 
   private syncCuesToTime(currentSec: number) {
@@ -756,6 +818,7 @@ export class AudioSyncController {
     this.updateStructuralSpotlight(currentSec);
     this.updateHighlightSpotlight(currentSec);
     this.updateSlideIntroState();
+    this.notifyCueChange();
   }
 
   private updateStructuralSpotlight(currentSec: number) {
@@ -884,6 +947,7 @@ export class AudioSyncController {
       });
     }
     this.updateSlideIntroState();
+    this.notifyCueChange();
   }
 
   private triggerAnimation(cueId: string, timing: { start: number; duration: number; end?: number }) {
