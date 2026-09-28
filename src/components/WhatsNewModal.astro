@@ -40,6 +40,8 @@
         <button
           id="whats-new-mark-read-btn"
           type="button"
+          data-track-event="Notifications Action"
+          data-track-action="mark-all-read"
           class="hidden h-8 sm:h-9 w-8 sm:w-auto px-0 sm:px-3.5 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-300 light:text-slate-600 hover:text-brand-blue light:hover:text-blue-600 items-center justify-center gap-1.5 text-xs font-medium transition-all duration-200 cursor-pointer active:scale-95 shrink-0 shadow-sm"
           title="Mark all items as read"
         >
@@ -51,6 +53,8 @@
 
         <button 
           id="whats-new-close-btn"
+          data-track-event="Modal Closed"
+          data-track-modal="whats-new"
           class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-element-border-high text-gray-400 hover:text-gray-100 light:hover:text-slate-900 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
           aria-label="Close Content Updates"
         >
@@ -101,7 +105,7 @@
   const container = document.getElementById('whats-new-modal-container');
   const closeBtn = document.getElementById('whats-new-close-btn');
 
-  function trackModalEvent(name: string, props?: Record<string, any>) {
+  function trackModalEvent(name: string, props?: Record<string, string | number | boolean>) {
     try {
       if (typeof window.plausible === 'function') {
         window.plausible(name, props ? { props } : undefined);

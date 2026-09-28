@@ -58,7 +58,7 @@ const articleClass = featured
 const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 light:bg-slate-100 flex items-center justify-center relative z-10";
 ---
 
-<article class={articleClass}>
+<article class={articleClass} data-card-id={id} data-collection="presentations">
   {featured && (
     <>
       <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-blue z-20"></div>

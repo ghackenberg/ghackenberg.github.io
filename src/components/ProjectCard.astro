@@ -90,10 +90,14 @@ const badgeColorClass = {
   purple: 'badge-new-purple',
   green: 'badge-new-green'
 }[accentColor];
+
+const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
 ---
 
-<div 
+<article 
   class={`glass-card preview-card h-full border flex flex-col group relative cursor-pointer ${colorClasses.border}`}
+  data-card-id={cardId}
+  data-collection="projects"
 >
   <!-- Absolute overlay link for card clickability -->
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
@@ -233,4 +237,4 @@ const badgeColorClass = {
       </div>
     </div>
   </div>
-</div>
+</article>

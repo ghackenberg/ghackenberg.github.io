@@ -49,9 +49,11 @@ const optimizedScreenshotLight = screenshotLightImg ? await getImage({
   width: 480,
   quality: 80
 }) : null;
+
+const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
 ---
 
-<div class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-brand-yellow/30">
+<article class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-brand-yellow/30" data-card-id={cardId} data-collection="courses">
   <!-- Absolute overlay link for card clickability -->
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
 
@@ -187,4 +189,4 @@ const optimizedScreenshotLight = screenshotLightImg ? await getImage({
       </div>
     </div>
   </div>
-</div>
+</article>

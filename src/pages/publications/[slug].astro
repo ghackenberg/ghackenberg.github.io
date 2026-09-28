@@ -182,7 +182,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
       
       <!-- Abstract -->
       {pub.data.abstract && (
-        <section class="glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
+        <section id="abstract" class="glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
           <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-purple"></div>
           
           <h2 class="text-2xl font-bold text-gray-100 mb-6 tracking-tight">
@@ -196,7 +196,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 
       <!-- Embedded Slides -->
       {slidesUrl && (
-        <section class="glass-card p-6 md:p-8 rounded-3xl border border-element-border">
+        <section id="presentation-slides" class="glass-card p-6 md:p-8 rounded-3xl border border-element-border">
           <h2 class="text-2xl font-bold text-gray-100 mb-6 tracking-tight">
             Presentation Slides
           </h2>
@@ -218,7 +218,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 
       <!-- BibTeX Citation -->
       {pub.data.bibtex && (
-        <section class="glass-card p-6 md:p-8 rounded-3xl border border-element-border relative">
+        <section id="bibtex-citation" class="glass-card p-6 md:p-8 rounded-3xl border border-element-border relative">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-gray-100 tracking-tight">
               BibTeX Citation
@@ -226,6 +226,8 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
             
             <button 
               id="copy-bibtex-btn"
+              data-track-event="High Intent: Copy BibTeX"
+              data-track-id={pub.id}
               class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 flex items-center space-x-2"
             >
               <svg id="copy-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

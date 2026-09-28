@@ -2,8 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import RelatedContent from "../../components/RelatedContent.astro";
+import ServiceModuleCard from "../../components/ServiceModuleCard.astro";
 import { getCollection, render } from "astro:content";
-import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   const services = await getCollection("services");
@@ -139,7 +139,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
       </header>
 
       <!-- Service Text -->
-      <section class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
+      <section id="service-overview" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
         <Content />
       </section>
     </div>
@@ -148,7 +148,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
     <hr class="border-element-border my-16" />
 
     <!-- Service Modules Section (Wide: max-w-6xl) -->
-    <section class="space-y-6">
+    <section id="service-modules" class="space-y-6">
       <h2 class="text-2xl font-extrabold tracking-tight flex items-center space-x-2">
         <span>📦</span>
         <span>Available Service Modules</span>
@@ -159,85 +159,10 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {serviceModules.map((module) => {
-              const moduleSlug = module.id.split('/').pop();
-              return (
-                <a 
-                  href={`/services/${service.id}/${moduleSlug}/`}
-                  class="glass-card preview-card border border-element-border relative flex flex-col h-full hover:border-element-border-medium transition-all duration-300 group cursor-pointer block no-underline"
-                >
-                  {/* Preview Image Column (Top) */}
-                  <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
-                    {module.data.previewImage && (
-                      <Image 
-                        src={module.data.previewImage.src} 
-                        alt={module.data.previewImage.description}
-                        title={module.data.previewImage.title}
-                        width={640}
-                        height={360}
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    )}
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
-
-                    <!-- Unread badge -->
-                    <span 
-                      class={`unread-dot hidden ${colorClasses.dot} badge-corner-tr`}
-                      data-item-url={`/services/${service.id}/${moduleSlug}/`}
-                      title="Unread module"
-                    >UNREAD</span>
-                  </div>
-                  
-                  <!-- Info Body (Below) -->
-                  <div class="preview-card-body flex flex-col flex-grow justify-between relative z-10 text-left">
-                    <div class="space-y-3">
-                      <div class="flex items-center gap-2">
-                        <h3 class={`text-base sm:text-lg font-bold uppercase tracking-wider leading-snug mt-0 flex items-center gap-2 text-gray-100 light:text-slate-900 ${colorClasses.hoverText} transition-colors`}>
-                          <span>{module.data.title}</span>
-                        </h3>
-                      </div>
-                      <p class={`${colorClasses.text} font-bold text-[10px] uppercase tracking-wider leading-none`}>
-                        {module.data.tagline}
-                      </p>
-                      <p class="text-gray-400 text-xs sm:text-sm leading-relaxed font-normal">
-                        {module.data.description}
-                      </p>
-
-                      <div class="flex flex-wrap gap-1.5 pt-1">
-                        {module.data.duration && (
-                          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
-                            ⏱️ {module.data.duration}
-                          </span>
-                        )}
-                        {module.data.format && (
-                          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
-                            ⚡ {module.data.format}
-                          </span>
-                        )}
-                        {module.data.delivery && (
-                          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
-                            📍 {module.data.delivery}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <!-- Read more button — full width, pinned to bottom -->
-                    <div class="mt-auto pt-6 w-full">
-                      <span 
-                        class={`flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg text-xs font-bold relative z-20 transition-all duration-200 ${colorClasses.cardBtnBg}`}
-                      >
-                        <span>Read More</span>
-                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
+        {serviceModules.map((module) => (
+          <ServiceModuleCard serviceId={service.id} module={module} />
+        ))}
+      </div>
         </section>
 
 

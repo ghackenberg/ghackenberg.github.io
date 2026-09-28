@@ -164,12 +164,12 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     <!-- Main Content -->
     <div class="space-y-16">
         <!-- Module Text Content -->
-        <section class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
+        <section id="module-overview" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
           <Content />
         </section>
 
         <!-- Service Scope & Key Capabilities Section -->
-        <section class="space-y-4">
+        <section id="service-scope" class="space-y-4">
           <h2 class="text-xl font-extrabold tracking-tight flex items-center space-x-2">
             <span>🎯</span>
             <span>Service Scope & Key Capabilities</span>
@@ -192,7 +192,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
         </section>
 
         <!-- Engagement Requirements & Deliverables Dashboard -->
-        <section class="space-y-6">
+        <section id="specifications" class="space-y-6">
           <div class="space-y-2">
             <h2 class="text-xl font-extrabold tracking-tight flex items-center space-x-2">
               <span>📦</span>
@@ -273,6 +273,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
         <!-- Project Plan & Execution Phases Section -->
         {module.data.methodologyPhases && (
           <section 
+            id="methodology-phases"
             class="glass-card p-8 md:p-10 rounded-3xl border border-element-border space-y-8 light:bg-slate-50/20 light:border-slate-200"
             style={`
               --glow-border: ${colorClasses.glowBorder};

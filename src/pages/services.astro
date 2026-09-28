@@ -164,7 +164,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                   data-desc={service.data.description.toLowerCase()}
                   data-tags={tagsJoined}
                 >
-                  <div class="glass-card preview-card border border-element-border relative flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300">
+                  <article class="glass-card preview-card border border-element-border relative flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300" data-card-id={service.id} data-collection="services">
                     <!-- Card Clickable Overlay Link -->
                     <a 
                       href={`/services/${service.id}/`} 
@@ -284,7 +284,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                       </div>
                     </div>
 
-                  </div>
+                  </article>
                 </section>
               );
             })}
@@ -328,6 +328,8 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                 </div>
                 <button 
                   id="services-copy-email-btn"
+                  data-track-event="High Intent: Copy Email"
+                  data-track-location="services-contact"
                   class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
                 >
                   <span id="services-copy-btn-text">Copy Email</span>
