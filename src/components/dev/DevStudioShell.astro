@@ -570,12 +570,18 @@ const { currentPath } = Astro.props;
         const stops = this.computeGradientStops(cached);
         this.currentFunnelPoints = points;
         this.currentGradientStops = stops;
-        const d = this.buildPathString(points);
-        document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', d);
-        document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', d);
         const svg = document.getElementById('dev-minimap-funnel-svg');
-        if (svg) svg.style.opacity = '1';
-        this.applyGradientStops(stops);
+        if (points) {
+          const d = this.buildPathString(points);
+          document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', d);
+          document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', d);
+          if (svg) svg.style.opacity = '1';
+          this.applyGradientStops(stops);
+        } else {
+          document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', '');
+          document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', '');
+          if (svg) svg.style.opacity = '0';
+        }
         this.updateMedianMarker(cached.plausible?.scrollFunnel?.medianScrollDepth);
         this.updateMilestones(cached);
         this.fetchData(false, true);
@@ -607,7 +613,17 @@ const { currentPath } = Astro.props;
               this.renderFullView(cached);
               const targetPoints = this.sampleFunnelPoints(cached);
               const targetStops = this.computeGradientStops(cached);
-              this.morphFunnelTo(targetPoints, targetStops);
+              const svg = document.getElementById('dev-minimap-funnel-svg');
+              if (targetPoints) {
+                if (svg) svg.style.opacity = '1';
+                this.morphFunnelTo(targetPoints, targetStops);
+              } else {
+                if (svg) svg.style.opacity = '0';
+                document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', '');
+                document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', '');
+                this.currentFunnelPoints = null;
+                this.currentGradientStops = null;
+              }
               this.updateMedianMarker(cached.plausible?.scrollFunnel?.medianScrollDepth);
               this.updateMilestones(cached);
               this.fetchData(false, true);
@@ -671,15 +687,23 @@ const { currentPath } = Astro.props;
         this.renderHud(cached);
         this.renderFullView(cached);
 
-        // Hide track loader and ensure SVG is visible
+        // Hide track loader
         const svg = document.getElementById('dev-minimap-funnel-svg');
         const loader = document.getElementById('dev-minimap-loader');
-        if (svg) svg.style.opacity = '1';
         if (loader) loader.classList.add('hidden');
 
         const targetPoints = this.sampleFunnelPoints(cached);
         const targetStops = this.computeGradientStops(cached);
-        this.morphFunnelTo(targetPoints, targetStops);
+        if (targetPoints) {
+          if (svg) svg.style.opacity = '1';
+          this.morphFunnelTo(targetPoints, targetStops);
+        } else {
+          if (svg) svg.style.opacity = '0';
+          document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', '');
+          document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', '');
+          this.currentFunnelPoints = null;
+          this.currentGradientStops = null;
+        }
         this.updateMedianMarker(cached.plausible?.scrollFunnel?.medianScrollDepth);
         this.updateMilestones(cached);
 
@@ -1050,7 +1074,7 @@ const { currentPath } = Astro.props;
     private getFunnelReach(data: DevOverlayData, depth: number): number {
       const milestones = data.plausible?.scrollFunnel?.milestones || [];
       if (depth === 0) return 100;
-      if (!milestones.length) return Math.max(4, 100 - depth * 0.75);
+      if (!milestones.length) return 0;
 
       const exact = milestones.find((m) => m.depth === depth);
       if (exact) return Math.max(4, exact.percentageOfVisitors);
@@ -1069,7 +1093,10 @@ const { currentPath } = Astro.props;
       return Math.max(4, prev.percentageOfVisitors);
     }
 
-    private sampleFunnelPoints(data: DevOverlayData): Array<{ x: number; y: number }> {
+    private sampleFunnelPoints(data: DevOverlayData): Array<{ x: number; y: number }> | null {
+      const milestones = data.plausible?.scrollFunnel?.milestones || [];
+      if (!milestones.length) return null;
+
       const depths = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
       const rightSide: Array<{ x: number; y: number }> = [];
       const leftSide: Array<{ x: number; y: number }> = [];
@@ -1420,24 +1447,32 @@ const { currentPath } = Astro.props;
         this.renderHud(data);
         this.renderFullView(data);
 
-        // Hide track loader and ensure SVG is visible
+        // Hide track loader
         const loader = document.getElementById('dev-minimap-loader');
         const svg = document.getElementById('dev-minimap-funnel-svg');
         if (loader) loader.classList.add('hidden');
-        if (svg) svg.style.opacity = '1';
 
         const targetPoints = this.sampleFunnelPoints(data);
         const targetStops = this.computeGradientStops(data);
 
-        if (isBackgroundRevalidate && this.currentFunnelPoints && this.currentGradientStops) {
-          this.morphFunnelTo(targetPoints, targetStops);
+        if (targetPoints) {
+          if (svg) svg.style.opacity = '1';
+          if (isBackgroundRevalidate && this.currentFunnelPoints && this.currentGradientStops) {
+            this.morphFunnelTo(targetPoints, targetStops);
+          } else {
+            this.currentFunnelPoints = targetPoints;
+            this.currentGradientStops = targetStops;
+            const d = this.buildPathString(targetPoints);
+            document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', d);
+            document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', d);
+            this.applyGradientStops(targetStops);
+          }
         } else {
-          this.currentFunnelPoints = targetPoints;
-          this.currentGradientStops = targetStops;
-          const d = this.buildPathString(targetPoints);
-          document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', d);
-          document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', d);
-          this.applyGradientStops(targetStops);
+          if (svg) svg.style.opacity = '0';
+          document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', '');
+          document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', '');
+          this.currentFunnelPoints = null;
+          this.currentGradientStops = null;
         }
 
         this.updateMedianMarker(data.plausible?.scrollFunnel?.medianScrollDepth);
