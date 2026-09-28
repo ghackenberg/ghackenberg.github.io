@@ -590,12 +590,14 @@ const { currentPath } = Astro.props;
             this.currentPeriod = p;
             localStorage.setItem('gh_dev_analytics_period', p);
             this.updatePeriodButtonsUI();
+            this.broadcastPeriodToIframes(p);
 
             const cached = this.getCachedData(this.currentPath, p);
             if (cached) {
               this.currentData = cached;
               this.renderHud(cached);
               this.renderFullView(cached);
+              this.broadcastDataToIframes(cached, p);
               const targetPoints = this.sampleFunnelPoints(cached);
               const targetStops = this.computeGradientStops(cached);
               const svg = document.getElementById('dev-minimap-funnel-svg');
@@ -670,6 +672,7 @@ const { currentPath } = Astro.props;
         this.currentData = cached;
         this.renderHud(cached);
         this.renderFullView(cached);
+        this.broadcastDataToIframes(cached, this.currentPeriod);
 
         // Hide track loader
         const svg = document.getElementById('dev-minimap-funnel-svg');
@@ -864,6 +867,10 @@ const { currentPath } = Astro.props;
           } catch {
             // cross-origin safety
           }
+          this.broadcastPeriodToIframes(this.currentPeriod);
+          if (this.currentData) {
+            this.broadcastDataToIframes(this.currentData, this.currentPeriod);
+          }
           this.sendScrollToIframe(this.lastScrollTop);
           this.renderMinimapThumb();
         });
@@ -887,6 +894,29 @@ const { currentPath } = Astro.props;
     private sendScrollToIframe(top: number): void {
       const iframe = this.getActiveIframe();
       iframe?.contentWindow?.postMessage({ type: 'dev-studio-scroll-to', top }, '*');
+    }
+
+    private broadcastPeriodToIframes(period: string): void {
+      document.querySelectorAll<HTMLIFrameElement>('iframe').forEach((iframe) => {
+        try {
+          iframe.contentWindow?.postMessage({
+            type: 'dev-studio-set-period',
+            period,
+          }, '*');
+        } catch {}
+      });
+    }
+
+    private broadcastDataToIframes(data: DevOverlayData, period: string): void {
+      document.querySelectorAll<HTMLIFrameElement>('iframe').forEach((iframe) => {
+        try {
+          iframe.contentWindow?.postMessage({
+            type: 'dev-studio-sync-data',
+            data,
+            period,
+          }, '*');
+        } catch {}
+      });
     }
 
     private setupMinimapInteraction(): void {
@@ -1360,6 +1390,7 @@ const { currentPath } = Astro.props;
 
         this.renderHud(data);
         this.renderFullView(data);
+        this.broadcastDataToIframes(data, this.currentPeriod);
 
         // Hide track loader
         const loader = document.getElementById('dev-minimap-loader');
