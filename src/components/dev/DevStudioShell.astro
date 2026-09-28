@@ -155,20 +155,6 @@ const { currentPath } = Astro.props;
         </span>
       </div>
 
-      <!-- Scroll Retention Metric in HUD -->
-      <div class="h-7 hidden lg:flex items-center gap-1.5 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
-        <span class="text-zinc-300 font-semibold">Scroll:</span>
-        <span title="Median Reader Scroll Depth" class="flex items-center gap-1">
-          <span class="text-zinc-400">Med:</span>
-          <strong id="hud-scroll-median" class="text-white">--</strong>
-        </span>
-        <span class="text-zinc-600">|</span>
-        <span title="Read-Through Rate (≥90% Depth)" class="flex items-center gap-1">
-          <span class="text-zinc-400">Read:</span>
-          <strong id="hud-scroll-readthrough" class="text-emerald-400">--</strong>
-        </span>
-      </div>
-
       <!-- Core Google Search Stats -->
       <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
         <span class="text-zinc-300 font-semibold">Google:</span>
@@ -189,17 +175,8 @@ const { currentPath } = Astro.props;
       </div>
     </div>
 
-    <!-- Right Controls: Queries, Refresh, Expand Cockpit -->
+    <!-- Right Controls: Refresh, Expand Cockpit -->
     <div class="flex items-center gap-1.5 shrink-0 pl-1">
-      <button
-        id="dev-queries-btn"
-        type="button"
-        class="h-7 px-2.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-300 hover:text-white border border-zinc-700/80 font-mono text-[11px] leading-none transition-colors flex items-center gap-1"
-        title="View Google Search Queries in Cockpit"
-      >
-        <span id="dev-queries-count">Queries (0) ↗</span>
-      </button>
-
       <button
         id="dev-analytics-refresh"
         type="button"
@@ -647,7 +624,6 @@ const { currentPath } = Astro.props;
         if (this.currentData) this.renderFullView(this.currentData);
       };
       document.getElementById('dev-expand-btn')?.addEventListener('click', openFullView);
-      document.getElementById('dev-queries-btn')?.addEventListener('click', openFullView);
       document.getElementById('dev-collapse-btn')?.addEventListener('click', () => {
         document.getElementById('dev-analytics-fullview')?.classList.add('hidden');
       });
@@ -1329,12 +1305,9 @@ const { currentPath } = Astro.props;
       set('hud-pageviews', '...');
       set('hud-bounce', '...');
       set('hud-duration', '...');
-      set('hud-scroll-median', '...');
-      set('hud-scroll-readthrough', '...');
       set('hud-gsc-clicks', '...');
       set('hud-gsc-impr', '...');
       set('hud-gsc-rank', '...');
-      set('dev-queries-count', 'Queries (...) ↗');
 
       // Fade out minimap funnel & median marker smoothly, show minimap track loader
       const svg = document.getElementById('dev-minimap-funnel-svg');
@@ -1504,16 +1477,9 @@ const { currentPath } = Astro.props;
       set('hud-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
       set('hud-duration', this.formatDuration(plausible.visitDuration));
 
-      const funnel = plausible.scrollFunnel;
-      set('hud-scroll-median', funnel?.medianScrollDepth != null ? `${funnel.medianScrollDepth}%` : '--');
-      set('hud-scroll-readthrough', funnel?.readThroughRate != null ? `${funnel.readThroughRate}%` : '--');
-
       set('hud-gsc-clicks', String(gsc.clicks ?? 0));
       set('hud-gsc-impr', String(gsc.impressions ?? 0));
       set('hud-gsc-rank', gsc.position ? `#${gsc.position.toFixed(1)}` : '--');
-
-      const queries = gsc.queries || [];
-      set('dev-queries-count', `Queries (${queries.length}) ↗`);
     }
 
     private renderFullView(data: DevOverlayData): void {
