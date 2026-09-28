@@ -466,6 +466,12 @@ const currentPath = Astro.url.pathname;
     }
 
     public init(): void {
+      if (typeof window !== 'undefined' && window.self !== window.top) {
+        window.parent.postMessage({
+          type: 'dev-studio-nav',
+          pathname: window.location.pathname,
+        }, '*');
+      }
       this.setupGlobalListeners();
       this.setupDomListeners();
       this.setupIframeSync();
@@ -475,6 +481,13 @@ const currentPath = Astro.url.pathname;
     }
 
     public onPageLoad(): void {
+      if (typeof window !== 'undefined' && window.self !== window.top) {
+        window.parent.postMessage({
+          type: 'dev-studio-nav',
+          pathname: window.location.pathname,
+        }, '*');
+      }
+      this.removeBadges();
       this.setupDomListeners();
       this.setupIframeSync();
       this.updatePeriodButtonsUI();

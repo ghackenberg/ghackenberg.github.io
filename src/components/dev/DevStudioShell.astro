@@ -238,36 +238,56 @@ const { currentPath } = Astro.props;
       <!-- Docked Right Scroll-Minimap (Full Mode) -->
       <aside
         id="dev-minimap-full"
-        class="w-14 h-full shrink-0 border-l border-zinc-800 bg-zinc-900/95 flex flex-col relative z-40 select-none"
+        class="w-12 h-full shrink-0 border-l border-zinc-800/90 bg-zinc-950 flex flex-col relative z-40 select-none overflow-hidden"
         aria-label="Scroll Retention Minimap"
       >
-        <!-- Minimap Header -->
-        <div class="h-8 border-b border-zinc-800/80 px-1.5 flex items-center justify-between text-[10px] font-mono text-zinc-400 shrink-0">
-          <span class="font-bold text-zinc-300">SCROLL</span>
-          <span id="dev-minimap-full-pct" class="text-emerald-400 font-semibold">0%</span>
-        </div>
+        <!-- Minimap Track Container (Full Height) -->
+        <div id="dev-minimap-full-track" class="flex-1 relative w-full h-full cursor-pointer overflow-hidden">
+          <!-- Dynamic SVG Funnel Silhouette -->
+          <svg
+            id="dev-minimap-full-funnel-svg"
+            class="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <linearGradient id="dev-funnel-grad-full" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.4" />
+                <stop offset="35%" stop-color="#06b6d4" stop-opacity="0.3" />
+                <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.2" />
+              </linearGradient>
+            </defs>
+            <path id="dev-minimap-full-funnel-path" d="" fill="url(#dev-funnel-grad-full)" />
+            <path id="dev-minimap-full-funnel-stroke" d="" fill="none" stroke="rgba(52, 211, 153, 0.45)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+          </svg>
 
-        <!-- Minimap Track Container -->
-        <div id="dev-minimap-full-track" class="flex-1 relative mx-1.5 my-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/70 overflow-hidden cursor-pointer">
-          <!-- Retention Gradient Fill Layer -->
-          <div id="dev-minimap-full-funnel" class="absolute inset-0 opacity-40 pointer-events-none" style="background: linear-gradient(to bottom, rgba(16, 185, 129, 0.4) 0%, rgba(56, 189, 248, 0.3) 40%, rgba(245, 158, 11, 0.25) 75%, rgba(244, 63, 94, 0.2) 100%);"></div>
+          <!-- Milestone Lines & Reach Labels Overlay -->
+          <div id="dev-minimap-full-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-400"></div>
 
-          <!-- Milestone Lines & Labels Overlay -->
-          <div id="dev-minimap-full-milestones" class="absolute inset-0 pointer-events-none text-[9px] font-mono text-zinc-400"></div>
+          <!-- Median Scroll Depth Marker (Exact Depth Position) -->
+          <div
+            id="dev-minimap-full-median-marker"
+            class="hidden absolute left-0 right-0 z-20 pointer-events-none flex items-center justify-end pr-0.5"
+            style="top: 0%; transform: translateY(-50%);"
+          >
+            <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
+            <span
+              id="dev-minimap-full-median-badge"
+              class="relative z-10 px-1 py-0.5 rounded text-[8px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
+            >
+              ⭐ Med
+            </span>
+          </div>
 
           <!-- Draggable Viewport Thumb -->
           <div
             id="dev-minimap-full-thumb"
-            class="absolute left-0.5 right-0.5 rounded-md bg-zinc-300/20 border border-zinc-400/50 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing hover:bg-zinc-300/30 transition-colors flex items-center justify-center text-[9px] font-mono text-zinc-200 select-none"
-            style="top: 0px; height: 36px;"
+            class="absolute left-1 right-1 rounded-md bg-zinc-200/20 hover:bg-zinc-200/30 active:bg-zinc-200/35 border border-zinc-300/40 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
+            style="top: 0px; height: 48px;"
           >
-            <span class="opacity-75 font-semibold">≡</span>
+            <div class="w-3.5 h-1 rounded-full bg-zinc-300/60 pointer-events-none"></div>
           </div>
-        </div>
-
-        <!-- Minimap Footer: Median Marker Info -->
-        <div id="dev-minimap-full-footer" class="h-7 border-t border-zinc-800/80 px-1 flex items-center justify-center text-[10px] font-mono text-zinc-400 shrink-0">
-          <span id="dev-minimap-full-median" title="Median Visitor Reach">⭐ Med: --</span>
         </div>
       </aside>
     </div>
@@ -303,32 +323,55 @@ const { currentPath } = Astro.props;
           <!-- Device-Docked Scroll-Minimap -->
           <aside
             id="dev-minimap-device"
-            class="w-11 h-full rounded-2xl border border-zinc-700/80 bg-zinc-900/95 flex flex-col relative z-40 select-none shrink-0"
+            class="w-9 h-full rounded-2xl border border-zinc-700/80 bg-zinc-950 flex flex-col relative z-40 select-none overflow-hidden shrink-0"
             aria-label="Device Scroll Minimap"
           >
-            <div class="h-7 px-1 flex items-center justify-center text-[9px] font-mono text-emerald-400 font-bold border-b border-zinc-800/80 shrink-0">
-              <span id="dev-minimap-device-pct">0%</span>
-            </div>
-
-            <div id="dev-minimap-device-track" class="flex-1 relative mx-1 my-1.5 rounded-xl bg-zinc-950/80 border border-zinc-800/70 overflow-hidden cursor-pointer">
-              <!-- Funnel Color Bar -->
-              <div id="dev-minimap-device-funnel" class="absolute inset-0 opacity-40 pointer-events-none" style="background: linear-gradient(to bottom, rgba(16, 185, 129, 0.4) 0%, rgba(56, 189, 248, 0.3) 40%, rgba(245, 158, 11, 0.25) 75%, rgba(244, 63, 94, 0.2) 100%);"></div>
+            <div id="dev-minimap-device-track" class="flex-1 relative w-full h-full cursor-pointer overflow-hidden rounded-2xl">
+              <!-- Dynamic SVG Funnel Silhouette -->
+              <svg
+                id="dev-minimap-device-funnel-svg"
+                class="absolute inset-0 w-full h-full pointer-events-none"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient id="dev-funnel-grad-device" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.4" />
+                    <stop offset="35%" stop-color="#06b6d4" stop-opacity="0.3" />
+                    <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.25" />
+                    <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.2" />
+                  </linearGradient>
+                </defs>
+                <path id="dev-minimap-device-funnel-path" d="" fill="url(#dev-funnel-grad-device)" />
+                <path id="dev-minimap-device-funnel-stroke" d="" fill="none" stroke="rgba(52, 211, 153, 0.45)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
 
               <!-- Milestones Overlay -->
-              <div id="dev-minimap-device-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-400"></div>
+              <div id="dev-minimap-device-milestones" class="absolute inset-0 pointer-events-none text-[7px] font-mono text-zinc-400"></div>
+
+              <!-- Median Marker -->
+              <div
+                id="dev-minimap-device-median-marker"
+                class="hidden absolute left-0 right-0 z-20 pointer-events-none flex items-center justify-end pr-0.5"
+                style="top: 0%; transform: translateY(-50%);"
+              >
+                <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
+                <span
+                  id="dev-minimap-device-median-badge"
+                  class="relative z-10 px-0.5 py-0.5 rounded text-[7px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
+                >
+                  ⭐ Med
+                </span>
+              </div>
 
               <!-- Viewport Thumb -->
               <div
                 id="dev-minimap-device-thumb"
-                class="absolute left-0.5 right-0.5 rounded-lg bg-zinc-300/20 border border-zinc-400/50 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing hover:bg-zinc-300/30 transition-colors flex items-center justify-center text-[8px] font-mono text-zinc-200 select-none"
-                style="top: 0px; height: 32px;"
+                class="absolute left-0.5 right-0.5 rounded-lg bg-zinc-200/20 hover:bg-zinc-200/30 active:bg-zinc-200/35 border border-zinc-300/40 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
+                style="top: 0px; height: 40px;"
               >
-                <span>≡</span>
+                <div class="w-2.5 h-1 rounded-full bg-zinc-300/60 pointer-events-none"></div>
               </div>
-            </div>
-
-            <div class="h-6 border-t border-zinc-800/80 px-0.5 flex items-center justify-center text-[9px] font-mono text-zinc-400 shrink-0">
-              <span id="dev-minimap-device-median">⭐--</span>
             </div>
           </aside>
         </div>
@@ -491,8 +534,7 @@ const { currentPath } = Astro.props;
     private deviceHeight: number = 852;
     private isAutoFit: boolean = true;
     private isDraggingThumb: boolean = false;
-    private dragStartY: number = 0;
-    private dragStartScrollTop: number = 0;
+    private fetchCounter: number = 0;
 
     // Track scroll state from iframe
     private lastScrollTop: number = 0;
@@ -508,6 +550,7 @@ const { currentPath } = Astro.props;
     public init(): void {
       this.setupDomListeners();
       this.setupPostMessageBus();
+      this.setupIframeLoadListeners();
       this.setupDeviceControls();
       this.updatePeriodButtonsUI();
 
@@ -518,6 +561,7 @@ const { currentPath } = Astro.props;
       }
 
       this.applyDeviceMode(this.activeDevice);
+      this.resetToLoadingState();
       this.fetchData();
 
       // Recalculate layout on window resize
@@ -535,6 +579,7 @@ const { currentPath } = Astro.props;
             this.currentPeriod = p;
             localStorage.setItem('gh_dev_analytics_period', p);
             this.updatePeriodButtonsUI();
+            this.resetToLoadingState();
             this.fetchData(true);
           }
         });
@@ -542,6 +587,7 @@ const { currentPath } = Astro.props;
 
       // Refresh button
       document.getElementById('dev-analytics-refresh')?.addEventListener('click', () => {
+        this.resetToLoadingState();
         this.fetchData(true);
       });
 
@@ -567,11 +613,22 @@ const { currentPath } = Astro.props;
       window.addEventListener('popstate', () => {
         const newPath = window.location.pathname;
         if (newPath !== this.currentPath) {
-          this.currentPath = newPath;
-          this.loadPathInActiveIframe(newPath);
-          this.fetchData();
+          this.handleNavigation(newPath, true);
         }
       });
+    }
+
+    private handleNavigation(newPath: string, reloadIframe: boolean = false): void {
+      if (newPath === this.currentPath && this.currentData) return;
+      this.currentPath = newPath;
+      if (window.location.pathname !== newPath) {
+        window.history.replaceState(null, '', newPath);
+      }
+      if (reloadIframe) {
+        this.loadPathInActiveIframe(newPath);
+      }
+      this.resetToLoadingState();
+      this.fetchData();
     }
 
     private setupDeviceControls(): void {
@@ -727,12 +784,29 @@ const { currentPath } = Astro.props;
         // 2. Navigation sync from iframe
         if (e.data.type === 'dev-studio-nav') {
           const path = e.data.pathname;
-          if (path && path !== this.currentPath && path !== window.location.pathname) {
-            this.currentPath = path;
-            window.history.replaceState(null, '', path);
-            this.fetchData();
+          if (path && path !== this.currentPath) {
+            this.handleNavigation(path, false);
           }
         }
+      });
+    }
+
+    private setupIframeLoadListeners(): void {
+      const fullIframe = document.getElementById('dev-iframe-full') as HTMLIFrameElement | null;
+      const deviceIframe = document.getElementById('dev-iframe-device') as HTMLIFrameElement | null;
+
+      [fullIframe, deviceIframe].forEach((ifr) => {
+        if (!ifr) return;
+        ifr.addEventListener('load', () => {
+          try {
+            const loc = ifr.contentWindow?.location;
+            if (loc && loc.pathname && loc.pathname !== 'blank' && loc.pathname !== this.currentPath) {
+              this.handleNavigation(loc.pathname, false);
+            }
+          } catch {
+            // cross-origin safety
+          }
+        });
       });
     }
 
@@ -764,54 +838,83 @@ const { currentPath } = Astro.props;
       if (!track || !thumb || track.hasAttribute('data-interactive')) return;
       track.setAttribute('data-interactive', 'true');
 
-      // Click on track to jump
-      track.addEventListener('pointerdown', (e) => {
-        if (e.target === thumb || thumb.contains(e.target as Node)) {
-          // Start dragging thumb
-          this.isDraggingThumb = true;
-          this.dragStartY = e.clientY;
-          this.dragStartScrollTop = this.lastScrollTop;
-          thumb.setPointerCapture(e.pointerId);
-          e.stopPropagation();
-          return;
+      let isDragging = false;
+      let startClientY = 0;
+      let startThumbTop = 0;
+
+      const getUsableTrackH = () => Math.max(1, track.clientHeight - thumb.offsetHeight);
+      const getMaxScroll = () => Math.max(0, this.lastScrollHeight - this.lastClientHeight);
+
+      // Pointer Down on Track or Thumb
+      track.addEventListener('pointerdown', (e: PointerEvent) => {
+        if (e.button !== 0) return;
+
+        const isThumb = e.target === thumb || thumb.contains(e.target as Node);
+        const rect = track.getBoundingClientRect();
+        const usableTrackH = getUsableTrackH();
+        const maxScroll = getMaxScroll();
+
+        isDragging = true;
+        this.isDraggingThumb = true;
+
+        // Disable pointer events on all iframes during drag to avoid losing mouse capture
+        document.querySelectorAll('iframe').forEach((ifr) => {
+          ifr.style.pointerEvents = 'none';
+        });
+
+        if (isThumb) {
+          startClientY = e.clientY;
+          startThumbTop = parseFloat(thumb.style.top || '0') || 0;
+        } else {
+          // Click on track: jump thumb center to click position
+          const clickY = e.clientY - rect.top;
+          const targetThumbTop = Math.max(0, Math.min(usableTrackH, clickY - thumb.offsetHeight / 2));
+          thumb.style.top = `${Math.round(targetThumbTop)}px`;
+
+          const scrollPct = usableTrackH > 0 ? targetThumbTop / usableTrackH : 0;
+          this.sendScrollToIframe(scrollPct * maxScroll);
+
+          startClientY = e.clientY;
+          startThumbTop = targetThumbTop;
         }
 
-        const rect = track.getBoundingClientRect();
-        const clickY = e.clientY - rect.top;
-        const pct = Math.max(0, Math.min(1, clickY / rect.height));
-        const maxScroll = Math.max(0, this.lastScrollHeight - this.lastClientHeight);
-        const targetScroll = pct * maxScroll;
-        this.sendScrollToIframe(targetScroll);
+        e.preventDefault();
       });
 
-      thumb.addEventListener('pointermove', (e) => {
-        if (!this.isDraggingThumb) return;
-        const rect = track.getBoundingClientRect();
-        const deltaY = e.clientY - this.dragStartY;
-        const maxScroll = Math.max(0, this.lastScrollHeight - this.lastClientHeight);
-        const trackUsableH = Math.max(1, rect.height - thumb.offsetHeight);
-        const scrollDelta = (deltaY / trackUsableH) * maxScroll;
+      // Window Pointer Move (Continuous tracking anywhere on screen)
+      window.addEventListener('pointermove', (e: PointerEvent) => {
+        if (!isDragging) return;
 
-        const newScrollTop = Math.max(0, Math.min(maxScroll, this.dragStartScrollTop + scrollDelta));
-        this.sendScrollToIframe(newScrollTop);
+        const usableTrackH = getUsableTrackH();
+        const maxScroll = getMaxScroll();
+        const deltaY = e.clientY - startClientY;
+
+        const targetThumbTop = Math.max(0, Math.min(usableTrackH, startThumbTop + deltaY));
+        thumb.style.top = `${Math.round(targetThumbTop)}px`;
+
+        const scrollPct = usableTrackH > 0 ? targetThumbTop / usableTrackH : 0;
+        this.sendScrollToIframe(scrollPct * maxScroll);
       });
 
-      const stopDrag = (e: PointerEvent) => {
-        if (this.isDraggingThumb) {
-          this.isDraggingThumb = false;
-          try {
-            thumb.releasePointerCapture(e.pointerId);
-          } catch {}
-        }
+      // Window Pointer Up (Release anywhere)
+      const onPointerUp = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        this.isDraggingThumb = false;
+
+        // Restore pointer events on all iframes
+        document.querySelectorAll('iframe').forEach((ifr) => {
+          ifr.style.pointerEvents = 'auto';
+        });
       };
 
-      thumb.addEventListener('pointerup', stopDrag);
-      thumb.addEventListener('pointercancel', stopDrag);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
 
       // Direct mouse wheel support on minimap track
-      track.addEventListener('wheel', (e) => {
+      track.addEventListener('wheel', (e: WheelEvent) => {
         e.preventDefault();
-        const maxScroll = Math.max(0, this.lastScrollHeight - this.lastClientHeight);
+        const maxScroll = getMaxScroll();
         const targetScroll = Math.max(0, Math.min(maxScroll, this.lastScrollTop + e.deltaY));
         this.sendScrollToIframe(targetScroll);
       }, { passive: false });
@@ -822,24 +925,19 @@ const { currentPath } = Astro.props;
       const mode = this.activeDevice === 'full' ? 'full' : 'device';
       const track = document.getElementById(`dev-minimap-${mode}-track`);
       const thumb = document.getElementById(`dev-minimap-${mode}-thumb`);
-      const pctLabel = document.getElementById(`dev-minimap-${mode}-pct`);
       if (!track || !thumb) return;
 
       const trackH = track.clientHeight;
       const maxScroll = Math.max(1, this.lastScrollHeight - this.lastClientHeight);
       const scrollPct = Math.max(0, Math.min(1, this.lastScrollTop / maxScroll));
 
-      // Calculate thumb height proportional to viewport
-      const thumbH = Math.max(28, Math.min(trackH, (this.lastClientHeight / this.lastScrollHeight) * trackH));
+      // Calculate thumb height proportional to viewport (minimum 36px)
+      const thumbH = Math.max(36, Math.min(trackH, (this.lastClientHeight / this.lastScrollHeight) * trackH));
       const usableTrackH = Math.max(0, trackH - thumbH);
       const thumbTop = scrollPct * usableTrackH;
 
       thumb.style.height = `${Math.round(thumbH)}px`;
       thumb.style.top = `${Math.round(thumbTop)}px`;
-
-      if (pctLabel) {
-        pctLabel.textContent = `${Math.round(scrollPct * 100)}%`;
-      }
     }
 
     private renderMinimapMilestones(data: DevOverlayData): void {
@@ -848,35 +946,80 @@ const { currentPath } = Astro.props;
 
       ['full', 'device'].forEach((mode) => {
         const milestonesEl = document.getElementById(`dev-minimap-${mode}-milestones`);
-        const funnelEl = document.getElementById(`dev-minimap-${mode}-funnel`);
-        const medianEl = document.getElementById(`dev-minimap-${mode}-median`);
+        const funnelPath = document.getElementById(`dev-minimap-${mode}-funnel-path`);
+        const funnelStroke = document.getElementById(`dev-minimap-${mode}-funnel-stroke`);
+        const medianMarker = document.getElementById(`dev-minimap-${mode}-median-marker`);
+        const medianBadge = document.getElementById(`dev-minimap-${mode}-median-badge`);
 
-        if (medianEl) {
-          medianEl.textContent = median != null ? `⭐ Med: ${median}%` : '⭐ Med: --';
+        // 1. Render Median Marker directly on the track at its depth percentage
+        if (medianMarker) {
+          if (median != null && median >= 0 && median <= 100) {
+            medianMarker.classList.remove('hidden');
+            medianMarker.style.top = `${median}%`;
+            if (medianBadge) {
+              medianBadge.textContent = '⭐ Med';
+              medianBadge.title = `Median Reader Reach: ${median}% depth`;
+            }
+          } else {
+            medianMarker.classList.add('hidden');
+          }
         }
 
+        // 2. Render SVG Funnel Silhouette (Symmetrical funnel tapering down the center)
+        const points: Array<{ depth: number; pct: number }> = [{ depth: 0, pct: 100 }];
+
+        if (milestones.length > 0) {
+          milestones.forEach((m) => {
+            points.push({ depth: m.depth, pct: Math.max(4, m.percentageOfVisitors) });
+          });
+          const last = points[points.length - 1];
+          if (last.depth < 100) {
+            points.push({ depth: 100, pct: last.pct });
+          }
+        } else {
+          // Fallback subtle tapering guide
+          points.push({ depth: 30, pct: 75 }, { depth: 60, pct: 45 }, { depth: 100, pct: 25 });
+        }
+
+        const rightSide: string[] = [];
+        const leftSide: string[] = [];
+
+        points.forEach((p, idx) => {
+          const half = p.pct / 2;
+          const xR = (50 + half).toFixed(1);
+          const xL = (50 - half).toFixed(1);
+          const y = p.depth.toFixed(1);
+
+          if (idx === 0) {
+            rightSide.push(`M ${xR},${y}`);
+            leftSide.unshift(`L ${xL},${y}`);
+          } else {
+            rightSide.push(`L ${xR},${y}`);
+            leftSide.unshift(`L ${xL},${y}`);
+          }
+        });
+
+        const fullPathData = `${rightSide.join(' ')} ${leftSide.join(' ')} Z`;
+        if (funnelPath) {
+          funnelPath.setAttribute('d', fullPathData);
+        }
+        if (funnelStroke) {
+          funnelStroke.setAttribute('d', fullPathData);
+        }
+
+        // 3. Render Subtle Milestone Tick Lines (clean tick dashes without number text)
         if (milestonesEl && milestones.length > 0) {
           milestonesEl.innerHTML = milestones
+            .filter((m) => m.depth % 25 === 0)
             .map((m) => {
-              const topPct = m.depth;
-              let dotColor = 'bg-emerald-400';
-              if (m.depth >= 70) dotColor = 'bg-emerald-400';
-              else if (m.depth >= 40) dotColor = 'bg-sky-400';
-              else dotColor = 'bg-zinc-400';
-
               return `
-                <div class="absolute w-full flex items-center justify-between px-1" style="top: ${topPct}%;">
-                  <div class="h-px ${dotColor} w-3"></div>
-                  <span class="text-[8px] text-zinc-400 leading-none">${Math.round(m.percentageOfVisitors)}%</span>
+                <div class="absolute w-full flex items-center justify-between px-1 pointer-events-none" style="top: ${m.depth}%;" title="Reach at ${m.depth}% depth: ${Math.round(m.percentageOfVisitors)}%">
+                  <div class="h-px bg-zinc-700/50 w-1.5"></div>
+                  <div class="h-px bg-zinc-700/50 w-1.5"></div>
                 </div>
               `;
             })
             .join('');
-        }
-
-        if (funnelEl) {
-          // Render vertical gradient from green to amber
-          funnelEl.style.background = 'linear-gradient(to bottom, rgba(16, 185, 129, 0.4) 0%, rgba(56, 189, 248, 0.3) 40%, rgba(245, 158, 11, 0.25) 75%, rgba(244, 63, 94, 0.2) 100%)';
         }
       });
     }
@@ -894,36 +1037,158 @@ const { currentPath } = Astro.props;
       });
     }
 
+    private resetToLoadingState(): void {
+      this.currentData = null;
+
+      // Reset scroll tracking and reposition thumb to top
+      this.lastScrollTop = 0;
+      this.renderMinimapThumb();
+
+      // Show HUD spinner, hide checkmark, dim metrics
+      const spinner = document.getElementById('dev-hud-spinner');
+      const check = document.getElementById('dev-hud-check');
+      spinner?.classList.remove('hidden');
+      check?.classList.add('hidden');
+
+      const metricsContainer = document.getElementById('dev-analytics-metrics');
+      metricsContainer?.classList.add('opacity-40');
+
+      const set = (id: string, val: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      // Reset HUD metrics to loading placeholders
+      set('hud-visitors', '...');
+      set('hud-pageviews', '...');
+      set('hud-bounce', '...');
+      set('hud-duration', '...');
+      set('hud-scroll-median', '...');
+      set('hud-scroll-readthrough', '...');
+      set('hud-gsc-clicks', '...');
+      set('hud-gsc-impr', '...');
+      set('hud-gsc-rank', '...');
+      set('dev-queries-count', 'Queries (...) ↗');
+
+      // Clear Minimap visualisations strictly
+      ['full', 'device'].forEach((mode) => {
+        const funnelPath = document.getElementById(`dev-minimap-${mode}-funnel-path`);
+        const funnelStroke = document.getElementById(`dev-minimap-${mode}-funnel-stroke`);
+        const medianMarker = document.getElementById(`dev-minimap-${mode}-median-marker`);
+        const milestonesEl = document.getElementById(`dev-minimap-${mode}-milestones`);
+
+        if (funnelPath) funnelPath.setAttribute('d', '');
+        if (funnelStroke) funnelStroke.setAttribute('d', '');
+        if (medianMarker) medianMarker.classList.add('hidden');
+        if (milestonesEl) milestonesEl.innerHTML = '';
+      });
+
+      // Reset Cockpit modal
+      set('dev-fullview-path', this.currentPath);
+      const plausibleLink = document.getElementById('dev-fullview-plausible') as HTMLAnchorElement | null;
+      if (plausibleLink) {
+        plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
+      }
+
+      set('full-visitors', '...');
+      set('full-views', '...');
+      set('full-bounce', '...');
+      set('full-duration', '...');
+      set('full-gsc-clicks', '...');
+      set('full-gsc-impr', '...');
+      set('full-gsc-ctr', '...');
+      set('full-gsc-rank', '...');
+      set('full-funnel-median', '...');
+      set('full-funnel-readthrough', '...');
+      set('full-sections-count', '...');
+      set('full-queries-count', '...');
+
+      // Replace cockpit tables with animated loading skeletons
+      const funnelBarsEl = document.getElementById('full-funnel-bars');
+      if (funnelBarsEl) {
+        funnelBarsEl.innerHTML = `
+          <div class="flex items-center gap-2 text-zinc-500 italic py-4 animate-pulse">
+            <svg class="w-4 h-4 animate-spin text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <span>Loading scroll retention funnel...</span>
+          </div>
+        `;
+      }
+
+      const sectionsTableEl = document.getElementById('full-sections-table');
+      if (sectionsTableEl) {
+        sectionsTableEl.innerHTML = `
+          <div class="flex items-center gap-2 text-zinc-500 italic py-4 animate-pulse">
+            <svg class="w-4 h-4 animate-spin text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <span>Loading section dwell times...</span>
+          </div>
+        `;
+      }
+
+      const queriesTableEl = document.getElementById('full-queries-table');
+      if (queriesTableEl) {
+        queriesTableEl.innerHTML = `
+          <div class="flex items-center gap-2 text-zinc-500 italic py-4 animate-pulse">
+            <svg class="w-4 h-4 animate-spin text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <span>Loading Google search queries...</span>
+          </div>
+        `;
+      }
+    }
+
     private async fetchData(force: boolean = false): Promise<void> {
+      const fetchId = ++this.fetchCounter;
+      const targetPath = this.currentPath;
+
       const spinner = document.getElementById('dev-hud-spinner');
       const check = document.getElementById('dev-hud-check');
       spinner?.classList.remove('hidden');
       check?.classList.add('hidden');
 
       try {
-        let url = `/api/dev-analytics.json?path=${encodeURIComponent(this.currentPath)}&period=${this.currentPeriod}`;
+        let url = `/api/dev-analytics.json?path=${encodeURIComponent(targetPath)}&period=${this.currentPeriod}`;
         if (force) url += `&_t=${Date.now()}`;
 
         const res = await fetch(url, {
           headers: {
-            'x-analytics-path': this.currentPath,
+            'x-analytics-path': targetPath,
             'x-analytics-period': this.currentPeriod,
           },
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data: DevOverlayData = await res.json();
+
+        // Stale response guard
+        if (fetchId !== this.fetchCounter || targetPath !== this.currentPath) {
+          return;
+        }
+
         this.currentData = data;
 
         this.renderHud(data);
         this.renderFullView(data);
         this.renderMinimapMilestones(data);
 
+        const metricsContainer = document.getElementById('dev-analytics-metrics');
+        metricsContainer?.classList.remove('opacity-40');
+
         spinner?.classList.add('hidden');
         check?.classList.remove('hidden');
       } catch (err) {
+        if (fetchId !== this.fetchCounter) return;
         console.error('[dev-studio] Failed to fetch metrics:', err);
         spinner?.classList.add('hidden');
+        const metricsContainer = document.getElementById('dev-analytics-metrics');
+        metricsContainer?.classList.remove('opacity-40');
       }
     }
 
