@@ -280,19 +280,24 @@ const { currentPath } = Astro.props;
             </span>
           </div>
 
-          <!-- Minimap Track Loading Indicator -->
+          <!-- Minimap Track Loading Indicator (Circular spinner like HUD bar) -->
           <div
             id="dev-minimap-full-loader"
-            class="hidden absolute inset-0 pointer-events-none flex flex-col items-center justify-center transition-opacity duration-300"
+            class="hidden absolute inset-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 z-20"
           >
-            <div class="w-1 h-24 rounded-full bg-gradient-to-b from-transparent via-emerald-400/60 to-transparent animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.7)]"></div>
+            <div class="w-7 h-7 rounded-full bg-zinc-900/95 border border-zinc-700/80 shadow-lg shadow-black/80 flex items-center justify-center backdrop-blur-sm">
+              <svg class="w-4 h-4 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+            </div>
           </div>
 
           <!-- Draggable Viewport Thumb -->
           <div
             id="dev-minimap-full-thumb"
             class="absolute left-1 right-1 rounded-md bg-zinc-200/20 hover:bg-zinc-200/30 active:bg-zinc-200/35 border border-zinc-300/40 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
-            style="top: 0px; height: 48px;"
+            style="top: 4px; height: 48px;"
           >
             <div class="w-3.5 h-1 rounded-full bg-zinc-300/60 pointer-events-none"></div>
           </div>
@@ -372,19 +377,24 @@ const { currentPath } = Astro.props;
                 </span>
               </div>
 
-              <!-- Minimap Device Track Loading Indicator -->
+              <!-- Minimap Device Track Loading Indicator (Circular spinner like HUD bar) -->
               <div
                 id="dev-minimap-device-loader"
-                class="hidden absolute inset-0 pointer-events-none flex flex-col items-center justify-center transition-opacity duration-300"
+                class="hidden absolute inset-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 z-20"
               >
-                <div class="w-0.5 h-16 rounded-full bg-gradient-to-b from-transparent via-emerald-400/60 to-transparent animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.7)]"></div>
+                <div class="w-6 h-6 rounded-full bg-zinc-900/95 border border-zinc-700/80 shadow-lg shadow-black/80 flex items-center justify-center backdrop-blur-sm">
+                  <svg class="w-3.5 h-3.5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  </svg>
+                </div>
               </div>
 
               <!-- Viewport Thumb -->
               <div
                 id="dev-minimap-device-thumb"
                 class="absolute left-0.5 right-0.5 rounded-lg bg-zinc-200/20 hover:bg-zinc-200/30 active:bg-zinc-200/35 border border-zinc-300/40 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
-                style="top: 0px; height: 40px;"
+                style="top: 2px; height: 40px;"
               >
                 <div class="w-2.5 h-1 rounded-full bg-zinc-300/60 pointer-events-none"></div>
               </div>
@@ -539,6 +549,14 @@ const { currentPath } = Astro.props;
     sections: Record<string, { id: string; visitors: number; events?: number }>;
   }
 
+  interface GradientStop {
+    offset: number;
+    r: number;
+    g: number;
+    b: number;
+    opacity: number;
+  }
+
   type DevicePreset = 'full' | 'iphone' | 'ipad' | 'macbook';
 
   class DevStudioManager {
@@ -557,6 +575,7 @@ const { currentPath } = Astro.props;
 
     // Funnel geometry & morph animation state
     private currentFunnelPoints: Array<{ x: number; y: number }> | null = null;
+    private currentGradientStops: GradientStop[] | null = null;
     private morphAnimationId: number | null = null;
 
     // Track scroll state from iframe
@@ -619,7 +638,9 @@ const { currentPath } = Astro.props;
         this.renderHud(cached);
         this.renderFullView(cached);
         const points = this.sampleFunnelPoints(cached);
+        const stops = this.computeGradientStops(cached);
         this.currentFunnelPoints = points;
+        this.currentGradientStops = stops;
         const d = this.buildPathString(points);
         ['full', 'device'].forEach((mode) => {
           document.getElementById(`dev-minimap-${mode}-funnel-path`)?.setAttribute('d', d);
@@ -627,6 +648,7 @@ const { currentPath } = Astro.props;
           const svg = document.getElementById(`dev-minimap-${mode}-funnel-svg`);
           if (svg) svg.style.opacity = '1';
         });
+        this.applyGradientStops(stops);
         this.updateMedianMarker(cached.plausible?.scrollFunnel?.medianScrollDepth);
         this.updateMilestones(cached);
         this.fetchData(false, true);
@@ -657,7 +679,8 @@ const { currentPath } = Astro.props;
               this.renderHud(cached);
               this.renderFullView(cached);
               const targetPoints = this.sampleFunnelPoints(cached);
-              this.morphFunnelTo(targetPoints);
+              const targetStops = this.computeGradientStops(cached);
+              this.morphFunnelTo(targetPoints, targetStops);
               this.updateMedianMarker(cached.plausible?.scrollFunnel?.medianScrollDepth);
               this.updateMilestones(cached);
               this.fetchData(false, true);
@@ -730,7 +753,8 @@ const { currentPath } = Astro.props;
         });
 
         const targetPoints = this.sampleFunnelPoints(cached);
-        this.morphFunnelTo(targetPoints);
+        const targetStops = this.computeGradientStops(cached);
+        this.morphFunnelTo(targetPoints, targetStops);
         this.updateMedianMarker(cached.plausible?.scrollFunnel?.medianScrollDepth);
         this.updateMilestones(cached);
 
@@ -941,6 +965,10 @@ const { currentPath } = Astro.props;
       iframe?.contentWindow?.postMessage({ type: 'dev-studio-scroll-to', top }, '*');
     }
 
+    private getTrackPadding(mode: 'full' | 'device'): number {
+      return mode === 'full' ? 4 : 2;
+    }
+
     private setupMinimapInteraction(mode: 'full' | 'device'): void {
       const trackId = mode === 'full' ? 'dev-minimap-full-track' : 'dev-minimap-device-track';
       const thumbId = mode === 'full' ? 'dev-minimap-full-thumb' : 'dev-minimap-device-thumb';
@@ -954,7 +982,8 @@ const { currentPath } = Astro.props;
       let startClientY = 0;
       let startThumbTop = 0;
 
-      const getUsableTrackH = () => Math.max(1, track.clientHeight - thumb.offsetHeight);
+      const pad = this.getTrackPadding(mode);
+      const getUsableTrackH = () => Math.max(1, track.clientHeight - 2 * pad - thumb.offsetHeight);
       const getMaxScroll = () => Math.max(0, this.lastScrollHeight - this.lastClientHeight);
 
       // Pointer Down on Track or Thumb
@@ -977,14 +1006,14 @@ const { currentPath } = Astro.props;
 
         if (isThumb) {
           startClientY = e.clientY;
-          startThumbTop = parseFloat(thumb.style.top || '0') || 0;
+          startThumbTop = parseFloat(thumb.style.top || `${pad}`) || pad;
         } else {
           // Click on track: jump thumb center to click position
           const clickY = e.clientY - rect.top;
-          const targetThumbTop = Math.max(0, Math.min(usableTrackH, clickY - thumb.offsetHeight / 2));
+          const targetThumbTop = Math.max(pad, Math.min(pad + usableTrackH, clickY - thumb.offsetHeight / 2));
           thumb.style.top = `${Math.round(targetThumbTop)}px`;
 
-          const scrollPct = usableTrackH > 0 ? targetThumbTop / usableTrackH : 0;
+          const scrollPct = usableTrackH > 0 ? (targetThumbTop - pad) / usableTrackH : 0;
           this.sendScrollToIframe(scrollPct * maxScroll);
 
           startClientY = e.clientY;
@@ -1002,10 +1031,10 @@ const { currentPath } = Astro.props;
         const maxScroll = getMaxScroll();
         const deltaY = e.clientY - startClientY;
 
-        const targetThumbTop = Math.max(0, Math.min(usableTrackH, startThumbTop + deltaY));
+        const targetThumbTop = Math.max(pad, Math.min(pad + usableTrackH, startThumbTop + deltaY));
         thumb.style.top = `${Math.round(targetThumbTop)}px`;
 
-        const scrollPct = usableTrackH > 0 ? targetThumbTop / usableTrackH : 0;
+        const scrollPct = usableTrackH > 0 ? (targetThumbTop - pad) / usableTrackH : 0;
         this.sendScrollToIframe(scrollPct * maxScroll);
       });
 
@@ -1040,14 +1069,16 @@ const { currentPath } = Astro.props;
       const thumb = document.getElementById(`dev-minimap-${mode}-thumb`);
       if (!track || !thumb) return;
 
+      const pad = this.getTrackPadding(mode);
       const trackH = track.clientHeight;
       const maxScroll = Math.max(1, this.lastScrollHeight - this.lastClientHeight);
       const scrollPct = Math.max(0, Math.min(1, this.lastScrollTop / maxScroll));
 
       // Calculate thumb height proportional to viewport (minimum 36px)
-      const thumbH = Math.max(36, Math.min(trackH, (this.lastClientHeight / this.lastScrollHeight) * trackH));
-      const usableTrackH = Math.max(0, trackH - thumbH);
-      const thumbTop = scrollPct * usableTrackH;
+      const availH = Math.max(36, trackH - 2 * pad);
+      const thumbH = Math.max(36, Math.min(availH, (this.lastClientHeight / this.lastScrollHeight) * availH));
+      const usableTrackH = Math.max(0, trackH - 2 * pad - thumbH);
+      const thumbTop = pad + scrollPct * usableTrackH;
 
       thumb.style.height = `${Math.round(thumbH)}px`;
       thumb.style.top = `${Math.round(thumbTop)}px`;
@@ -1071,35 +1102,35 @@ const { currentPath } = Astro.props;
       }, 450);
     }
 
-    private sampleFunnelPoints(data: DevOverlayData): Array<{ x: number; y: number }> {
+    private getFunnelReach(data: DevOverlayData, depth: number): number {
       const milestones = data.plausible?.scrollFunnel?.milestones || [];
-      const getReach = (depth: number): number => {
-        if (depth === 0) return 100;
-        if (!milestones.length) return Math.max(4, 100 - depth * 0.75);
+      if (depth === 0) return 100;
+      if (!milestones.length) return Math.max(4, 100 - depth * 0.75);
 
-        const exact = milestones.find((m) => m.depth === depth);
-        if (exact) return Math.max(4, exact.percentageOfVisitors);
+      const exact = milestones.find((m) => m.depth === depth);
+      if (exact) return Math.max(4, exact.percentageOfVisitors);
 
-        const sorted = [...milestones].sort((a, b) => a.depth - b.depth);
-        let prev = { depth: 0, percentageOfVisitors: 100 };
-        for (const m of sorted) {
-          if (m.depth > depth) {
-            const range = m.depth - prev.depth;
-            const factor = range > 0 ? (depth - prev.depth) / range : 0;
-            const val = prev.percentageOfVisitors + (m.percentageOfVisitors - prev.percentageOfVisitors) * factor;
-            return Math.max(4, val);
-          }
-          prev = m;
+      const sorted = [...milestones].sort((a, b) => a.depth - b.depth);
+      let prev = { depth: 0, percentageOfVisitors: 100 };
+      for (const m of sorted) {
+        if (m.depth > depth) {
+          const range = m.depth - prev.depth;
+          const factor = range > 0 ? (depth - prev.depth) / range : 0;
+          const val = prev.percentageOfVisitors + (m.percentageOfVisitors - prev.percentageOfVisitors) * factor;
+          return Math.max(4, val);
         }
-        return Math.max(4, prev.percentageOfVisitors);
-      };
+        prev = m;
+      }
+      return Math.max(4, prev.percentageOfVisitors);
+    }
 
+    private sampleFunnelPoints(data: DevOverlayData): Array<{ x: number; y: number }> {
       const depths = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
       const rightSide: Array<{ x: number; y: number }> = [];
       const leftSide: Array<{ x: number; y: number }> = [];
 
       depths.forEach((d) => {
-        const reach = getReach(d);
+        const reach = this.getFunnelReach(data, d);
         const half = reach / 2;
         rightSide.push({ x: 50 + half, y: d });
         leftSide.unshift({ x: 50 - half, y: d });
@@ -1118,20 +1149,27 @@ const { currentPath } = Astro.props;
       return d;
     }
 
-    private morphFunnelTo(targetPoints: Array<{ x: number; y: number }>): void {
+    private morphFunnelTo(
+      targetPoints: Array<{ x: number; y: number }>,
+      targetStops: GradientStop[]
+    ): void {
       if (this.morphAnimationId !== null) {
         cancelAnimationFrame(this.morphAnimationId);
         this.morphAnimationId = null;
       }
 
       const startPoints = this.currentFunnelPoints;
-      if (!startPoints || startPoints.length !== targetPoints.length) {
+      const startStops = this.currentGradientStops;
+
+      if (!startPoints || startPoints.length !== targetPoints.length || !startStops || startStops.length !== targetStops.length) {
         this.currentFunnelPoints = targetPoints;
+        this.currentGradientStops = targetStops;
         const d = this.buildPathString(targetPoints);
         ['full', 'device'].forEach((mode) => {
           document.getElementById(`dev-minimap-${mode}-funnel-path`)?.setAttribute('d', d);
           document.getElementById(`dev-minimap-${mode}-funnel-stroke`)?.setAttribute('d', d);
         });
+        this.applyGradientStops(targetStops);
         return;
       }
 
@@ -1143,26 +1181,107 @@ const { currentPath } = Astro.props;
         const progress = Math.min(1, elapsed / duration);
         const ease = 1 - Math.pow(1 - progress, 3); // cubic ease-out
 
-        const interpolated = startPoints.map((p, i) => ({
+        // 1. Interpolate polygon points
+        const interpolatedPoints = startPoints.map((p, i) => ({
           x: p.x + (targetPoints[i].x - p.x) * ease,
           y: p.y + (targetPoints[i].y - p.y) * ease,
         }));
 
-        const d = this.buildPathString(interpolated);
+        const d = this.buildPathString(interpolatedPoints);
         ['full', 'device'].forEach((mode) => {
           document.getElementById(`dev-minimap-${mode}-funnel-path`)?.setAttribute('d', d);
           document.getElementById(`dev-minimap-${mode}-funnel-stroke`)?.setAttribute('d', d);
         });
 
+        // 2. Interpolate gradient stops
+        const interpolatedStops = startStops.map((s, i) => {
+          const t = targetStops[i];
+          return {
+            offset: s.offset + (t.offset - s.offset) * ease,
+            r: Math.round(s.r + (t.r - s.r) * ease),
+            g: Math.round(s.g + (t.g - s.g) * ease),
+            b: Math.round(s.b + (t.b - s.b) * ease),
+            opacity: s.opacity + (t.opacity - s.opacity) * ease,
+          };
+        });
+
+        this.applyGradientStops(interpolatedStops);
+        this.currentFunnelPoints = interpolatedPoints;
+        this.currentGradientStops = interpolatedStops;
+
         if (progress < 1) {
           this.morphAnimationId = requestAnimationFrame(frame);
         } else {
           this.currentFunnelPoints = targetPoints;
+          this.currentGradientStops = targetStops;
           this.morphAnimationId = null;
         }
       };
 
       this.morphAnimationId = requestAnimationFrame(frame);
+    }
+
+    private getFunnelColor(reach: number): { r: number; g: number; b: number; opacity: number } {
+      const clamped = Math.max(0, Math.min(100, reach));
+
+      // Color anchors matching brand palette:
+      // 100%: Emerald #10b981 (16, 185, 129)
+      //  75%: Cyan    #06b6d4 (6, 182, 212)
+      //  50%: Amber   #f59e0b (245, 158, 11)
+      //  25%: Orange  #f97316 (249, 115, 22)
+      //   0%: Rose    #f43f5e (244, 63, 94)
+
+      let r: number, g: number, b: number;
+      if (clamped >= 75) {
+        const factor = (clamped - 75) / 25;
+        r = Math.round(6 + (16 - 6) * factor);
+        g = Math.round(182 + (185 - 182) * factor);
+        b = Math.round(212 + (129 - 212) * factor);
+      } else if (clamped >= 50) {
+        const factor = (clamped - 50) / 25;
+        r = Math.round(245 + (6 - 245) * factor);
+        g = Math.round(158 + (182 - 158) * factor);
+        b = Math.round(11 + (212 - 11) * factor);
+      } else if (clamped >= 25) {
+        const factor = (clamped - 25) / 25;
+        r = Math.round(249 + (245 - 249) * factor);
+        g = Math.round(115 + (158 - 115) * factor);
+        b = Math.round(22 + (11 - 22) * factor);
+      } else {
+        const factor = clamped / 25;
+        r = Math.round(244 + (249 - 244) * factor);
+        g = Math.round(63 + (115 - 63) * factor);
+        b = Math.round(94 + (22 - 94) * factor);
+      }
+
+      const opacity = parseFloat((0.22 + 0.23 * (clamped / 100)).toFixed(2));
+      return { r, g, b, opacity };
+    }
+
+    private computeGradientStops(data: DevOverlayData): GradientStop[] {
+      const depths = [0, 25, 50, 75, 100];
+      return depths.map((d) => {
+        const reach = this.getFunnelReach(data, d);
+        const color = this.getFunnelColor(reach);
+        return {
+          offset: d,
+          ...color,
+        };
+      });
+    }
+
+    private applyGradientStops(stops: GradientStop[]): void {
+      const html = stops
+        .map(
+          (s) =>
+            `<stop offset="${s.offset.toFixed(1)}%" stop-color="rgb(${s.r},${s.g},${s.b})" stop-opacity="${s.opacity.toFixed(2)}" />`
+        )
+        .join('');
+
+      ['full', 'device'].forEach((mode) => {
+        const grad = document.getElementById(`dev-funnel-grad-${mode}`);
+        if (grad) grad.innerHTML = html;
+      });
     }
 
     private updateMedianMarker(median: number | null | undefined): void {
@@ -1269,6 +1388,7 @@ const { currentPath } = Astro.props;
       });
 
       this.currentFunnelPoints = null;
+      this.currentGradientStops = null;
 
       // Reset Cockpit modal
       set('dev-fullview-path', this.currentPath);
@@ -1376,15 +1496,19 @@ const { currentPath } = Astro.props;
         });
 
         const targetPoints = this.sampleFunnelPoints(data);
-        if (isBackgroundRevalidate && this.currentFunnelPoints) {
-          this.morphFunnelTo(targetPoints);
+        const targetStops = this.computeGradientStops(data);
+
+        if (isBackgroundRevalidate && this.currentFunnelPoints && this.currentGradientStops) {
+          this.morphFunnelTo(targetPoints, targetStops);
         } else {
           this.currentFunnelPoints = targetPoints;
+          this.currentGradientStops = targetStops;
           const d = this.buildPathString(targetPoints);
           ['full', 'device'].forEach((mode) => {
             document.getElementById(`dev-minimap-${mode}-funnel-path`)?.setAttribute('d', d);
             document.getElementById(`dev-minimap-${mode}-funnel-stroke`)?.setAttribute('d', d);
           });
+          this.applyGradientStops(targetStops);
         }
 
         this.updateMedianMarker(data.plausible?.scrollFunnel?.medianScrollDepth);
