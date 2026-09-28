@@ -1,5 +1,20 @@
 import { defineMiddleware } from 'astro:middleware';
-import type { DevOverlayPageData } from '../scripts/mcp-unified-analytics/src/types.js';
+import type {
+  DevOverlayPageData,
+  PlausiblePageMetrics,
+  GscPagePerformance,
+  SectionDwellMetric,
+  CardCtrMetric,
+} from '../scripts/mcp-unified-analytics/src/types.js';
+
+interface AnalyticsApi {
+  getPlausiblePageMetrics: (path: string, period: string, includeRetention?: boolean) => Promise<PlausiblePageMetrics>;
+  getPlausibleTopPages: (period: string, limit?: number) => Promise<Map<string, PlausiblePageMetrics>>;
+  getGscPagePerformance: (path: string, period: string) => Promise<GscPagePerformance>;
+  getSectionDwellBreakdown: (path: string, period: string) => Promise<Record<string, SectionDwellMetric>>;
+  getCardCtrBreakdown: (path: string, period: string) => Promise<Record<string, CardCtrMetric>>;
+  normalizePath: (path: string) => string;
+}
 
 interface CacheEntry {
   timestamp: number;
@@ -23,6 +38,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const force = context.url.searchParams.get('_t');
 
     try {
+      // Dynamic import of the analytics API (only available and executed in local DEV mode)
+      const apiModulePath = '../scripts/mcp-unified-analytics/dist/api.js';
+      const api = (await import(/* @vite-ignore */ apiModulePath)) as AnalyticsApi;
       const {
         getPlausiblePageMetrics,
         getPlausibleTopPages,
@@ -30,7 +48,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
         getSectionDwellBreakdown,
         getCardCtrBreakdown,
         normalizePath,
-      } = await import('../scripts/mcp-unified-analytics/dist/api.js');
+      } = api;
 
       const targetPath = normalizePath(path);
       const cacheKey = `${targetPath}:${period}`;
