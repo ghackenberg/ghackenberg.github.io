@@ -221,11 +221,11 @@ const { currentPath } = Astro.props;
   </header>
 
   <!-- Studio Stage & Workspace (below Top Bar) -->
-  <main id="dev-studio-stage" class="relative flex-1 w-full h-[calc(100vh-2.75rem)] overflow-hidden bg-zinc-950 flex items-center justify-center">
-    <!-- FULL WINDOW MODE CONTAINER -->
-    <div id="dev-stage-full" class="w-full h-full flex flex-row">
-      <!-- Iframe Content Viewport -->
-      <div class="flex-1 h-full relative overflow-hidden bg-black">
+  <main id="dev-studio-stage" class="relative flex-1 w-full h-[calc(100vh-2.75rem)] overflow-hidden bg-zinc-950 flex flex-row">
+    <!-- Viewport Area (Full Window or Scaled Device Frame) -->
+    <div class="flex-1 h-full relative overflow-hidden flex items-center justify-center">
+      <!-- FULL WINDOW MODE CONTAINER -->
+      <div id="dev-stage-full" class="w-full h-full relative overflow-hidden bg-black">
         <iframe
           id="dev-iframe-full"
           src="about:blank"
@@ -235,174 +235,110 @@ const { currentPath } = Astro.props;
         ></iframe>
       </div>
 
-      <!-- Docked Right Scroll-Minimap (Full Mode) -->
-      <aside
-        id="dev-minimap-full"
-        class="w-12 h-full shrink-0 border-l border-zinc-800/90 bg-zinc-950 flex flex-col relative z-40 select-none overflow-hidden"
-        aria-label="Scroll Retention Minimap"
-      >
-        <!-- Minimap Track Container (Full Height) -->
-        <div id="dev-minimap-full-track" class="flex-1 relative w-full h-full cursor-pointer overflow-hidden">
-          <!-- Dynamic SVG Funnel Silhouette -->
-          <svg
-            id="dev-minimap-full-funnel-svg"
-            class="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
-            <defs>
-              <linearGradient id="dev-funnel-grad-full" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#10b981" stop-opacity="0.4" />
-                <stop offset="35%" stop-color="#06b6d4" stop-opacity="0.3" />
-                <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.25" />
-                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.2" />
-              </linearGradient>
-            </defs>
-            <path id="dev-minimap-full-funnel-path" d="" fill="url(#dev-funnel-grad-full)" />
-            <path id="dev-minimap-full-funnel-stroke" d="" fill="none" stroke="rgba(52, 211, 153, 0.45)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
-          </svg>
-
-          <!-- Milestone Lines & Reach Labels Overlay -->
-          <div id="dev-minimap-full-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-400 transition-opacity duration-300"></div>
-
-          <!-- Median Scroll Depth Marker (Exact Depth Position) -->
+      <!-- DEVICE SIMULATION MODE CONTAINER (Centered Phone / Tablet / Laptop Frame) -->
+      <div id="dev-stage-device" class="hidden w-full h-full relative flex items-center justify-center p-4 overflow-hidden">
+        <!-- Outer Scaled Bounding Box -->
+        <div id="dev-device-outer-box" class="relative flex items-center justify-center transition-all duration-150">
+          <!-- Physical Device Bezel -->
           <div
-            id="dev-minimap-full-median-marker"
-            class="hidden absolute left-0 right-0 z-20 pointer-events-none flex items-center justify-end pr-0.5"
-            style="top: 0%; transform: translateY(-50%); transition: top 450ms cubic-bezier(0.25, 1, 0.5, 1), opacity 300ms ease;"
+            id="dev-device-bezel"
+            class="relative rounded-[38px] p-3 bg-zinc-800 border-2 border-zinc-700/90 shadow-2xl shadow-black/90 flex items-center justify-center transition-all duration-150"
           >
-            <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
-            <span
-              id="dev-minimap-full-median-badge"
-              class="relative z-10 px-1 py-0.5 rounded text-[8px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
+            <!-- Iframe Device Screen -->
+            <div
+              id="dev-device-screen"
+              class="relative overflow-hidden rounded-[26px] bg-slate-950 shadow-inner"
+              style="width: 393px; height: 852px;"
             >
-              ⭐ Med
-            </span>
-          </div>
+              <!-- Phone Dynamic Island Notch -->
+              <div
+                id="dev-device-notch"
+                class="absolute top-2.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-50 pointer-events-none flex items-center justify-center border border-zinc-800/80 shadow-md"
+              >
+                <div class="w-2.5 h-2.5 rounded-full bg-zinc-900 ml-6"></div>
+              </div>
 
-          <!-- Minimap Track Loading Indicator (Circular spinner like HUD bar) -->
-          <div
-            id="dev-minimap-full-loader"
-            class="hidden absolute inset-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 z-20"
-          >
-            <div class="w-7 h-7 rounded-full bg-zinc-900/95 border border-zinc-700/80 shadow-lg shadow-black/80 flex items-center justify-center backdrop-blur-sm">
-              <svg class="w-4 h-4 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-              </svg>
+              <iframe
+                id="dev-iframe-device"
+                src="about:blank"
+                class="w-full h-full border-none block"
+                title="Device Viewport"
+              ></iframe>
             </div>
           </div>
-
-          <!-- Draggable Viewport Thumb -->
-          <div
-            id="dev-minimap-full-thumb"
-            class="absolute left-1 right-1 rounded-md bg-zinc-200/20 hover:bg-zinc-200/30 active:bg-zinc-200/35 border border-zinc-300/40 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
-            style="top: 4px; height: 48px;"
-          >
-            <div class="w-3.5 h-1 rounded-full bg-zinc-300/60 pointer-events-none"></div>
-          </div>
-        </div>
-      </aside>
-    </div>
-
-    <!-- DEVICE SIMULATION MODE CONTAINER (Centered Phone / Tablet Frame) -->
-    <div id="dev-stage-device" class="hidden relative flex items-center justify-center p-4">
-      <!-- Outer Scaled Bounding Box -->
-      <div id="dev-device-outer-box" class="relative flex items-center justify-center transition-all duration-150">
-        <!-- Physical Device Bezel -->
-        <div
-          id="dev-device-bezel"
-          class="relative rounded-[38px] p-3 bg-zinc-800 border-2 border-zinc-700/90 shadow-2xl shadow-black/90 flex gap-2.5 items-stretch"
-        >
-          <!-- Phone Speaker Notch / Dynamic Island Deco -->
-          <div class="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-4 bg-zinc-900 rounded-full z-50 pointer-events-none flex items-center justify-center">
-            <div class="w-2.5 h-2.5 rounded-full bg-zinc-800 ml-6"></div>
-          </div>
-
-          <!-- Iframe Device Screen -->
-          <div
-            id="dev-device-screen"
-            class="relative overflow-hidden rounded-[26px] bg-slate-950 shadow-inner"
-            style="width: 393px; height: 852px;"
-          >
-            <iframe
-              id="dev-iframe-device"
-              src="about:blank"
-              class="w-full h-full border-none block"
-              title="Device Viewport"
-            ></iframe>
-          </div>
-
-          <!-- Device-Docked Scroll-Minimap -->
-          <aside
-            id="dev-minimap-device"
-            class="w-9 h-full rounded-2xl border border-zinc-700/80 bg-zinc-950 flex flex-col relative z-40 select-none overflow-hidden shrink-0"
-            aria-label="Device Scroll Minimap"
-          >
-            <div id="dev-minimap-device-track" class="flex-1 relative w-full h-full cursor-pointer overflow-hidden rounded-2xl">
-              <!-- Dynamic SVG Funnel Silhouette -->
-              <svg
-                id="dev-minimap-device-funnel-svg"
-                class="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-              >
-                <defs>
-                  <linearGradient id="dev-funnel-grad-device" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.4" />
-                    <stop offset="35%" stop-color="#06b6d4" stop-opacity="0.3" />
-                    <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.25" />
-                    <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.2" />
-                  </linearGradient>
-                </defs>
-                <path id="dev-minimap-device-funnel-path" d="" fill="url(#dev-funnel-grad-device)" />
-                <path id="dev-minimap-device-funnel-stroke" d="" fill="none" stroke="rgba(52, 211, 153, 0.45)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
-              </svg>
-
-              <!-- Milestones Overlay -->
-              <div id="dev-minimap-device-milestones" class="absolute inset-0 pointer-events-none text-[7px] font-mono text-zinc-400 transition-opacity duration-300"></div>
-
-              <!-- Median Marker -->
-              <div
-                id="dev-minimap-device-median-marker"
-                class="hidden absolute left-0 right-0 z-20 pointer-events-none flex items-center justify-end pr-0.5"
-                style="top: 0%; transform: translateY(-50%); transition: top 450ms cubic-bezier(0.25, 1, 0.5, 1), opacity 300ms ease;"
-              >
-                <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
-                <span
-                  id="dev-minimap-device-median-badge"
-                  class="relative z-10 px-0.5 py-0.5 rounded text-[7px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
-                >
-                  ⭐ Med
-                </span>
-              </div>
-
-              <!-- Minimap Device Track Loading Indicator (Circular spinner like HUD bar) -->
-              <div
-                id="dev-minimap-device-loader"
-                class="hidden absolute inset-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 z-20"
-              >
-                <div class="w-6 h-6 rounded-full bg-zinc-900/95 border border-zinc-700/80 shadow-lg shadow-black/80 flex items-center justify-center backdrop-blur-sm">
-                  <svg class="w-3.5 h-3.5 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                  </svg>
-                </div>
-              </div>
-
-              <!-- Viewport Thumb -->
-              <div
-                id="dev-minimap-device-thumb"
-                class="absolute left-0.5 right-0.5 rounded-lg bg-zinc-200/20 hover:bg-zinc-200/30 active:bg-zinc-200/35 border border-zinc-300/40 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
-                style="top: 2px; height: 40px;"
-              >
-                <div class="w-2.5 h-1 rounded-full bg-zinc-300/60 pointer-events-none"></div>
-              </div>
-            </div>
-          </aside>
         </div>
       </div>
     </div>
+
+    <!-- DOCKED RIGHT SCROLL-MINIMAP (Persistent across ALL view modes!) -->
+    <aside
+      id="dev-minimap"
+      class="w-12 h-full shrink-0 border-l border-zinc-800/90 bg-zinc-950 flex flex-col relative z-40 select-none overflow-hidden"
+      aria-label="Scroll Retention Minimap"
+    >
+      <!-- Minimap Track Container (Full Window Height) -->
+      <div id="dev-minimap-track" class="flex-1 relative w-full h-full cursor-pointer overflow-hidden">
+        <!-- Dynamic SVG Funnel Silhouette -->
+        <svg
+          id="dev-minimap-funnel-svg"
+          class="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="dev-funnel-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.45" />
+              <stop offset="25%" stop-color="#06b6d4" stop-opacity="0.38" />
+              <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.32" />
+              <stop offset="75%" stop-color="#f97316" stop-opacity="0.26" />
+              <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.22" />
+            </linearGradient>
+          </defs>
+          <path id="dev-minimap-funnel-path" d="" fill="url(#dev-funnel-grad)" />
+          <path id="dev-minimap-funnel-stroke" d="" fill="none" stroke="rgba(52, 211, 153, 0.45)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+        </svg>
+
+        <!-- Milestone Lines & Reach Labels Overlay -->
+        <div id="dev-minimap-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-400 transition-opacity duration-300"></div>
+
+        <!-- Median Scroll Depth Marker (Exact Depth Position) -->
+        <div
+          id="dev-minimap-median-marker"
+          class="hidden absolute left-0 right-0 z-20 pointer-events-none flex items-center justify-end pr-0.5"
+          style="top: 0%; transform: translateY(-50%); transition: top 450ms cubic-bezier(0.25, 1, 0.5, 1), opacity 300ms ease;"
+        >
+          <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
+          <span
+            id="dev-minimap-median-badge"
+            class="relative z-10 px-1 py-0.5 rounded text-[8px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
+          >
+            ⭐ Med
+          </span>
+        </div>
+
+        <!-- Minimap Track Loading Indicator (Circular spinner like HUD bar) -->
+        <div
+          id="dev-minimap-loader"
+          class="hidden absolute inset-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 z-20"
+        >
+          <div class="w-7 h-7 rounded-full bg-zinc-900/95 border border-zinc-700/80 shadow-lg shadow-black/80 flex items-center justify-center backdrop-blur-sm">
+            <svg class="w-4 h-4 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Draggable Viewport Thumb -->
+        <div
+          id="dev-minimap-thumb"
+          class="absolute left-1 right-1 rounded-md bg-zinc-200/20 hover:bg-zinc-200/30 active:bg-zinc-200/35 border border-zinc-300/40 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
+          style="top: 4px; height: 48px;"
+        >
+          <div class="w-3.5 h-1 rounded-full bg-zinc-300/60 pointer-events-none"></div>
+        </div>
+      </div>
+    </aside>
   </main>
 
   <!-- Fullview Cockpit Modal (Overlay on demand) -->
@@ -621,6 +557,7 @@ const { currentPath } = Astro.props;
       this.setupPostMessageBus();
       this.setupIframeLoadListeners();
       this.setupDeviceControls();
+      this.setupMinimapInteraction();
       this.updatePeriodButtonsUI();
 
       // Ensure full iframe src on top-level initialization
@@ -642,12 +579,10 @@ const { currentPath } = Astro.props;
         this.currentFunnelPoints = points;
         this.currentGradientStops = stops;
         const d = this.buildPathString(points);
-        ['full', 'device'].forEach((mode) => {
-          document.getElementById(`dev-minimap-${mode}-funnel-path`)?.setAttribute('d', d);
-          document.getElementById(`dev-minimap-${mode}-funnel-stroke`)?.setAttribute('d', d);
-          const svg = document.getElementById(`dev-minimap-${mode}-funnel-svg`);
-          if (svg) svg.style.opacity = '1';
-        });
+        document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', d);
+        document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', d);
+        const svg = document.getElementById('dev-minimap-funnel-svg');
+        if (svg) svg.style.opacity = '1';
         this.applyGradientStops(stops);
         this.updateMedianMarker(cached.plausible?.scrollFunnel?.medianScrollDepth);
         this.updateMilestones(cached);
@@ -744,13 +679,11 @@ const { currentPath } = Astro.props;
         this.renderHud(cached);
         this.renderFullView(cached);
 
-        // Hide track loaders and ensure SVG is visible
-        ['full', 'device'].forEach((mode) => {
-          const svg = document.getElementById(`dev-minimap-${mode}-funnel-svg`);
-          const loader = document.getElementById(`dev-minimap-${mode}-loader`);
-          if (svg) svg.style.opacity = '1';
-          if (loader) loader.classList.add('hidden');
-        });
+        // Hide track loader and ensure SVG is visible
+        const svg = document.getElementById('dev-minimap-funnel-svg');
+        const loader = document.getElementById('dev-minimap-loader');
+        if (svg) svg.style.opacity = '1';
+        if (loader) loader.classList.add('hidden');
 
         const targetPoints = this.sampleFunnelPoints(cached);
         const targetStops = this.computeGradientStops(cached);
@@ -841,24 +774,53 @@ const { currentPath } = Astro.props;
       const fullStage = document.getElementById('dev-stage-full');
       const deviceStage = document.getElementById('dev-stage-device');
       const dimensionControls = document.getElementById('dev-dimension-controls');
+      const bezel = document.getElementById('dev-device-bezel');
+      const screen = document.getElementById('dev-device-screen');
+      const notch = document.getElementById('dev-device-notch');
 
       if (dev === 'full') {
         fullStage?.classList.remove('hidden');
         deviceStage?.classList.add('hidden');
         dimensionControls?.classList.add('opacity-40', 'pointer-events-none');
-        this.setupMinimapInteraction('full');
+
+        // Sync full iframe src if needed
+        const fullIframe = document.getElementById('dev-iframe-full') as HTMLIFrameElement | null;
+        if (fullIframe && (!fullIframe.src || fullIframe.src === 'about:blank' || !fullIframe.src.includes(this.currentPath))) {
+          fullIframe.src = this.currentPath;
+        }
+        this.sendScrollToIframe(this.lastScrollTop);
+        this.renderMinimapThumb();
       } else {
         fullStage?.classList.add('hidden');
         deviceStage?.classList.remove('hidden');
         dimensionControls?.classList.remove('opacity-40', 'pointer-events-none');
+
+        // Device-specific aesthetic adjustments
+        if (notch) {
+          notch.style.display = dev === 'iphone' ? 'flex' : 'none';
+        }
+        if (bezel && screen) {
+          if (dev === 'iphone') {
+            bezel.style.borderRadius = '38px';
+            screen.style.borderRadius = '26px';
+          } else if (dev === 'ipad') {
+            bezel.style.borderRadius = '24px';
+            screen.style.borderRadius = '16px';
+          } else {
+            bezel.style.borderRadius = '14px';
+            screen.style.borderRadius = '8px';
+          }
+        }
+
         this.updateDeviceDimensions();
-        this.setupMinimapInteraction('device');
 
         // Sync iframe src if needed
         const devIframe = document.getElementById('dev-iframe-device') as HTMLIFrameElement | null;
         if (devIframe && (!devIframe.src || devIframe.src === 'about:blank' || !devIframe.src.includes(this.currentPath))) {
           devIframe.src = this.currentPath;
         }
+        this.sendScrollToIframe(this.lastScrollTop);
+        this.renderMinimapThumb();
       }
     }
 
@@ -869,6 +831,7 @@ const { currentPath } = Astro.props;
         screen.style.height = `${this.deviceHeight}px`;
       }
       this.updateAutoFitScale();
+      this.renderMinimapThumb();
     }
 
     private updateAutoFitScale(): void {
@@ -880,12 +843,13 @@ const { currentPath } = Astro.props;
       const fitBtn = document.getElementById('dev-btn-fit');
       if (!stage || !outerBox || !bezel) return;
 
-      // Bezel adds padding: 24px width + 44px minimap + 20px gap + 32px margins
-      const totalDeviceW = this.deviceWidth + 44 + 48;
-      const totalDeviceH = this.deviceHeight + 36;
+      // Bezel adds padding: 24px + 4px border = 28px
+      const totalDeviceW = this.deviceWidth + 28;
+      const totalDeviceH = this.deviceHeight + 28;
 
-      const availW = stage.clientWidth - 48;
-      const availH = stage.clientHeight - 48;
+      // Stage width minus right-docked minimap (48px) and stage padding/margin (48px)
+      const availW = Math.max(280, stage.clientWidth - 48 - 48);
+      const availH = Math.max(280, stage.clientHeight - 48);
 
       let scale = 1;
       if (this.isAutoFit) {
@@ -942,6 +906,8 @@ const { currentPath } = Astro.props;
           } catch {
             // cross-origin safety
           }
+          this.sendScrollToIframe(this.lastScrollTop);
+          this.renderMinimapThumb();
         });
       });
     }
@@ -965,16 +931,9 @@ const { currentPath } = Astro.props;
       iframe?.contentWindow?.postMessage({ type: 'dev-studio-scroll-to', top }, '*');
     }
 
-    private getTrackPadding(mode: 'full' | 'device'): number {
-      return mode === 'full' ? 4 : 2;
-    }
-
-    private setupMinimapInteraction(mode: 'full' | 'device'): void {
-      const trackId = mode === 'full' ? 'dev-minimap-full-track' : 'dev-minimap-device-track';
-      const thumbId = mode === 'full' ? 'dev-minimap-full-thumb' : 'dev-minimap-device-thumb';
-
-      const track = document.getElementById(trackId);
-      const thumb = document.getElementById(thumbId);
+    private setupMinimapInteraction(): void {
+      const track = document.getElementById('dev-minimap-track');
+      const thumb = document.getElementById('dev-minimap-thumb');
       if (!track || !thumb || track.hasAttribute('data-interactive')) return;
       track.setAttribute('data-interactive', 'true');
 
@@ -982,7 +941,7 @@ const { currentPath } = Astro.props;
       let startClientY = 0;
       let startThumbTop = 0;
 
-      const pad = this.getTrackPadding(mode);
+      const pad = 4;
       const getUsableTrackH = () => Math.max(1, track.clientHeight - 2 * pad - thumb.offsetHeight);
       const getMaxScroll = () => Math.max(0, this.lastScrollHeight - this.lastClientHeight);
 
@@ -1064,13 +1023,15 @@ const { currentPath } = Astro.props;
 
     private renderMinimapThumb(): void {
       if (this.isDraggingThumb) return;
-      const mode = this.activeDevice === 'full' ? 'full' : 'device';
-      const track = document.getElementById(`dev-minimap-${mode}-track`);
-      const thumb = document.getElementById(`dev-minimap-${mode}-thumb`);
+
+      const track = document.getElementById('dev-minimap-track');
+      const thumb = document.getElementById('dev-minimap-thumb');
       if (!track || !thumb) return;
 
-      const pad = this.getTrackPadding(mode);
       const trackH = track.clientHeight;
+      if (trackH <= 0) return;
+
+      const pad = 4;
       const maxScroll = Math.max(1, this.lastScrollHeight - this.lastClientHeight);
       const scrollPct = Math.max(0, Math.min(1, this.lastScrollTop / maxScroll));
 
@@ -1086,18 +1047,14 @@ const { currentPath } = Astro.props;
 
     private animateThumbOnNavigation(): void {
       this.lastScrollTop = 0;
-      ['full', 'device'].forEach((mode) => {
-        const thumb = document.getElementById(`dev-minimap-${mode}-thumb`);
-        if (!thumb) return;
+      const thumb = document.getElementById('dev-minimap-thumb');
+      if (thumb) {
         thumb.style.transition = 'top 400ms cubic-bezier(0.25, 1, 0.5, 1), height 400ms cubic-bezier(0.25, 1, 0.5, 1)';
-      });
+      }
       this.renderMinimapThumb();
       setTimeout(() => {
-        if (!this.isDraggingThumb) {
-          ['full', 'device'].forEach((mode) => {
-            const thumb = document.getElementById(`dev-minimap-${mode}-thumb`);
-            if (thumb) thumb.style.transition = '';
-          });
+        if (!this.isDraggingThumb && thumb) {
+          thumb.style.transition = '';
         }
       }, 450);
     }
@@ -1165,10 +1122,8 @@ const { currentPath } = Astro.props;
         this.currentFunnelPoints = targetPoints;
         this.currentGradientStops = targetStops;
         const d = this.buildPathString(targetPoints);
-        ['full', 'device'].forEach((mode) => {
-          document.getElementById(`dev-minimap-${mode}-funnel-path`)?.setAttribute('d', d);
-          document.getElementById(`dev-minimap-${mode}-funnel-stroke`)?.setAttribute('d', d);
-        });
+        document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', d);
+        document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', d);
         this.applyGradientStops(targetStops);
         return;
       }
@@ -1188,10 +1143,8 @@ const { currentPath } = Astro.props;
         }));
 
         const d = this.buildPathString(interpolatedPoints);
-        ['full', 'device'].forEach((mode) => {
-          document.getElementById(`dev-minimap-${mode}-funnel-path`)?.setAttribute('d', d);
-          document.getElementById(`dev-minimap-${mode}-funnel-stroke`)?.setAttribute('d', d);
-        });
+        document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', d);
+        document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', d);
 
         // 2. Interpolate gradient stops
         const interpolatedStops = startStops.map((s, i) => {
@@ -1278,58 +1231,52 @@ const { currentPath } = Astro.props;
         )
         .join('');
 
-      ['full', 'device'].forEach((mode) => {
-        const grad = document.getElementById(`dev-funnel-grad-${mode}`);
-        if (grad) grad.innerHTML = html;
-      });
+      const grad = document.getElementById('dev-funnel-grad');
+      if (grad) grad.innerHTML = html;
     }
 
     private updateMedianMarker(median: number | null | undefined): void {
-      ['full', 'device'].forEach((mode) => {
-        const medianMarker = document.getElementById(`dev-minimap-${mode}-median-marker`);
-        const medianBadge = document.getElementById(`dev-minimap-${mode}-median-badge`);
-        if (!medianMarker) return;
+      const medianMarker = document.getElementById('dev-minimap-median-marker');
+      const medianBadge = document.getElementById('dev-minimap-median-badge');
+      if (!medianMarker) return;
 
-        if (median != null && median >= 0 && median <= 100) {
-          medianMarker.classList.remove('hidden');
-          medianMarker.style.opacity = '1';
-          medianMarker.style.top = `${median}%`;
-          if (medianBadge) {
-            medianBadge.textContent = '⭐ Med';
-            medianBadge.title = `Median Reader Reach: ${median}% depth`;
-          }
-        } else {
-          medianMarker.style.opacity = '0';
-          setTimeout(() => {
-            if (medianMarker.style.opacity === '0') {
-              medianMarker.classList.add('hidden');
-            }
-          }, 300);
+      if (median != null && median >= 0 && median <= 100) {
+        medianMarker.classList.remove('hidden');
+        medianMarker.style.opacity = '1';
+        medianMarker.style.top = `${median}%`;
+        if (medianBadge) {
+          medianBadge.textContent = '⭐ Med';
+          medianBadge.title = `Median Reader Reach: ${median}% depth`;
         }
-      });
+      } else {
+        medianMarker.style.opacity = '0';
+        setTimeout(() => {
+          if (medianMarker.style.opacity === '0') {
+            medianMarker.classList.add('hidden');
+          }
+        }, 300);
+      }
     }
 
     private updateMilestones(data: DevOverlayData): void {
       const milestones = data.plausible?.scrollFunnel?.milestones || [];
-      ['full', 'device'].forEach((mode) => {
-        const milestonesEl = document.getElementById(`dev-minimap-${mode}-milestones`);
-        if (!milestonesEl) return;
+      const milestonesEl = document.getElementById('dev-minimap-milestones');
+      if (!milestonesEl) return;
 
-        if (milestones.length > 0) {
-          milestonesEl.innerHTML = milestones
-            .filter((m) => m.depth % 25 === 0)
-            .map((m) => `
-              <div class="absolute w-full flex items-center justify-between px-1 pointer-events-none" style="top: ${m.depth}%;" title="Reach at ${m.depth}% depth: ${Math.round(m.percentageOfVisitors)}%">
-                <div class="h-px bg-zinc-700/50 w-1.5"></div>
-                <div class="h-px bg-zinc-700/50 w-1.5"></div>
-              </div>
-            `)
-            .join('');
-          milestonesEl.style.opacity = '1';
-        } else {
-          milestonesEl.innerHTML = '';
-        }
-      });
+      if (milestones.length > 0) {
+        milestonesEl.innerHTML = milestones
+          .filter((m) => m.depth % 25 === 0)
+          .map((m) => `
+            <div class="absolute w-full flex items-center justify-between px-1 pointer-events-none" style="top: ${m.depth}%;" title="Reach at ${m.depth}% depth: ${Math.round(m.percentageOfVisitors)}%">
+              <div class="h-px bg-zinc-700/50 w-1.5"></div>
+              <div class="h-px bg-zinc-700/50 w-1.5"></div>
+            </div>
+          `)
+          .join('');
+        milestonesEl.style.opacity = '1';
+      } else {
+        milestonesEl.innerHTML = '';
+      }
     }
 
     private updatePeriodButtonsUI(): void {
@@ -1375,17 +1322,15 @@ const { currentPath } = Astro.props;
       set('dev-queries-count', 'Queries (...) ↗');
 
       // Fade out minimap funnel & median marker smoothly, show minimap track loader
-      ['full', 'device'].forEach((mode) => {
-        const svg = document.getElementById(`dev-minimap-${mode}-funnel-svg`);
-        const medianMarker = document.getElementById(`dev-minimap-${mode}-median-marker`);
-        const milestonesEl = document.getElementById(`dev-minimap-${mode}-milestones`);
-        const loader = document.getElementById(`dev-minimap-${mode}-loader`);
+      const svg = document.getElementById('dev-minimap-funnel-svg');
+      const medianMarker = document.getElementById('dev-minimap-median-marker');
+      const milestonesEl = document.getElementById('dev-minimap-milestones');
+      const loader = document.getElementById('dev-minimap-loader');
 
-        if (svg) svg.style.opacity = '0';
-        if (medianMarker) medianMarker.style.opacity = '0';
-        if (milestonesEl) milestonesEl.style.opacity = '0';
-        if (loader) loader.classList.remove('hidden');
-      });
+      if (svg) svg.style.opacity = '0';
+      if (medianMarker) medianMarker.style.opacity = '0';
+      if (milestonesEl) milestonesEl.style.opacity = '0';
+      if (loader) loader.classList.remove('hidden');
 
       this.currentFunnelPoints = null;
       this.currentGradientStops = null;
@@ -1488,12 +1433,10 @@ const { currentPath } = Astro.props;
         this.renderFullView(data);
 
         // Hide track loader and ensure SVG is visible
-        ['full', 'device'].forEach((mode) => {
-          const loader = document.getElementById(`dev-minimap-${mode}-loader`);
-          const svg = document.getElementById(`dev-minimap-${mode}-funnel-svg`);
-          if (loader) loader.classList.add('hidden');
-          if (svg) svg.style.opacity = '1';
-        });
+        const loader = document.getElementById('dev-minimap-loader');
+        const svg = document.getElementById('dev-minimap-funnel-svg');
+        if (loader) loader.classList.add('hidden');
+        if (svg) svg.style.opacity = '1';
 
         const targetPoints = this.sampleFunnelPoints(data);
         const targetStops = this.computeGradientStops(data);
@@ -1504,10 +1447,8 @@ const { currentPath } = Astro.props;
           this.currentFunnelPoints = targetPoints;
           this.currentGradientStops = targetStops;
           const d = this.buildPathString(targetPoints);
-          ['full', 'device'].forEach((mode) => {
-            document.getElementById(`dev-minimap-${mode}-funnel-path`)?.setAttribute('d', d);
-            document.getElementById(`dev-minimap-${mode}-funnel-stroke`)?.setAttribute('d', d);
-          });
+          document.getElementById('dev-minimap-funnel-path')?.setAttribute('d', d);
+          document.getElementById('dev-minimap-funnel-stroke')?.setAttribute('d', d);
           this.applyGradientStops(targetStops);
         }
 
