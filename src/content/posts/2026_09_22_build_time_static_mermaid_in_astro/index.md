@@ -24,8 +24,6 @@ Doch wer Mermaid in moderne Content-Plattformen wie [Astro](https://astro.build/
 
 In diesem Beitrag analysieren wir, warum herkömmliche clientseitige Rendering-Ansätze modernen Web-Vitals schaden, wie wir auf dieser Website eine **Zero-Client-JS Build-Time-Pipeline** implementiert haben und warum maschinenlesbare Vektordiagramme für traditionelle Suchmaschinen (SEO) sowie generative KI-Suchmaschinen (GEO / AIO) einen dramatischen Vorteil darstellen.
 
-![Dr. Georg Hackenberg am höhenverstellbaren Massivholz-Schreibtisch vor dem Ultrawide-Monitor mit Blick auf die Almtaler Berglandschaft](./hero.jpg "Dr. Georg Hackenberg im Almtal Home Office")
-
 ## 1. Das Dilemma des clientseitigen Diagramm-Renderings
 
 Der gängigste Integrationspfad in Content-Management-Systemen und Frameworks besteht darin, den Markdown-Codeblock unangetastet an den Browser auszuliefern und dort mittels `mermaid.initialize()` zu parsen. Was auf den ersten Blick bequem erscheint, erkauft man sich in der Praxis mit gravierenden Nachteilen:

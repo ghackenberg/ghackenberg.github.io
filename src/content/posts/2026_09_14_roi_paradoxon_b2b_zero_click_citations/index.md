@@ -19,8 +19,6 @@ Wer diese Metriken heute im Vorstand präsentiert, erlebt ein beunruhigendes Ph�
 
 Für Geschäftsführer und Vertriebsleiter entsteht daraus das **B2B ROI-Paradoxon**: **Der gemessene organische Web-Traffic sinkt, während das Unternehmen in der realen industriellen Beschaffungswelt dennoch massive Marktanteile gewinnen kann – vorausgesetzt, es dominiert die Zitations-Ökonomie.**
 
-![Dr. Georg Hackenberg präsentiert die Auswirkungen von Zero-Click-Zitaten und synthetischer B2B-Recherche vor Führungskräften](./hero.jpg "Das B2B ROI Paradoxon im Enterprise Boardroom")
-
 ## 1. Die Illusion traditioneller Web-Metriken im Maschinenbau
 
 Warum sind Google Analytics und PageViews für technische Investitionsgüter heute weitgehend blind?

@@ -19,8 +19,6 @@ In Vorbereitung auf einen Expertenvortrag zu den Themen SEO, GEO, AEO und AIO, z
 
 Im B2B-Sektor geht es nicht um Millionen flüchtiger Konsumentenklicks, sondern um hochkomplexe Beschaffungsentscheidungen mit Auftragswerten im fünf- bis siebenstelligen Bereich. Genau hier vollzieht sich derzeit ein stiller, aber radikaler Paradigmenwechsel: **Industrielle Einkäufer, Entwicklungsingenieure und Werksleiter suchen heute nicht mehr über generische Suchbegriffe auf Google, sondern nutzen generative KI-Systeme und automatisierte Agenten für die Marktsondierung.**
 
-![Dr. Georg Hackenberg analysiert semantische Wissensgraphen für generative Industrie-Suchmaschinen in einer modernen Fertigungsumgebung](./hero.jpg "B2B Industrial GEO in der Fertigung")
-
 ## 1. Die industrielle Schieflage: Die Illusion des klassischen B2B-Marketings
 
 In den Marketingabteilungen des Maschinen- und Anlagenbaus dominieren seit zwei Jahrzehnten zwei fundamentale Denkmuster: Lead-Generierung über geschützte Dokumente (*Gated Content*) und werbliche Prosa. Beide Ansätze erweisen sich im Zeitalter generativer Engines als verheerend.

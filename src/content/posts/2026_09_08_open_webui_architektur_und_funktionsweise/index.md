@@ -17,8 +17,6 @@ Genau diese Lücke schließt **Open WebUI** als **Schicht 6 (Human-in-the-Loop I
 
 Dieser Beitrag liefert eine umfassende softwaretechnische Analyse von Open WebUI: Wir untersuchen die Entkopplung von SvelteKit-Frontend und FastAPI-Backend, den architektonischen Wandel von Legacy-Pipelines zu nativen In-Process Functions, die Mechanik der hybriden RAG-Engine mit Cross-Encoder-Reranking, Enterprise-Governance via [Keycloak](/tags/keycloak/) sowie die typischen Anwendergruppen und Praxisdomänen.
 
-![Open WebUI: Mensch-Maschine-Schnittstelle und kollaborative Kontrollzentrale für das souveräne KI-Ökosystem](./hero.jpg "Open WebUI")
-
 Bevor wir die internen Kommunikationspfade und Filter-Zyklen im Detail zerlegen, visualisiert das folgende Architekturmodell das Gesamtsystem:
 
 ![Umfassende Systemarchitektur von Open WebUI mit SvelteKit-Präsentationsschicht, FastAPI-Core, Funktions- und Tool-Engine, hybridem RAG und IAM-Integration](./open_webui_system_architecture.svg "Open WebUI mit SvelteKit-Präsentationsschicht, FastAPI-Core, Funktions- und Tool-Engine, hybridem RAG und IAM-Integration - Umfassende Systemarchitektur")

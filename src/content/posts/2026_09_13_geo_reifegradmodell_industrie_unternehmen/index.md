@@ -15,8 +15,6 @@ Wenn Führungskräfte, Werksleiter und IT-Verantwortliche im Maschinen- und Anla
 
 Um diesen Transformationsprozess messbar und auditierbar zu machen, habe ich ein **vierstufiges GEO-Reifegradmodell für Industrieunternehmen** entwickelt. Es soll als pragmatischer Leitfaden dienen, um den aktuellen Status quo der eigenen Web-Architektur zu bestimmen und den Weg zur zukunftsfähigen KI-Sichtbarkeit schrittweise zu planen.
 
-![Das GEO-Reifegradmodell im industriellen Kontrollraum](./hero.jpg "Das fünfstufige GEO-Reifegradmodell für Industrieunternehmen")
-
 ## Was zeichnet das vierstufige GEO-Reifegradmodell für Industrieunternehmen aus?
 
 Das GEO-Reifegradmodell für Industrieunternehmen klassifiziert Webpräsenzen in vier aufeinander aufbauende Entwicklungsstufen: von klassischer SEO-Crawlability (Level 1) über semantische Knowledge-Graph-Verankerung (Level 2) und RAG-optimierte Markdown-Ingestion via `llms.txt` (Level 3) bis zur vollautonomen Interaktion mit KI-Einkaufsagenten über standardisierte Manifeste und AAS-Schnittstellen (Level 4).

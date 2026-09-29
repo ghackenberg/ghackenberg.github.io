@@ -24,8 +24,6 @@ Während Sprachmodelle (LLMs) dank Zod-Schemas, formalen Grammatiken und Functio
 
 Dieser Beitrag dokumentiert die ingenieurwissenschaftlichen Grundlagen unseres **Visual Systems Engineering**: Wie wir die Mechanismen von Diffusionsmodellen analysiert haben, warum herkömmliche Bildkonditionierungen in die sogenannte **2D-Layout-Locking-Falle** tappen, und wie ein relationaler Asset-Graph in Kombination mit **Room DNA**, diskreten **Fokus-Varianten** und strikten **Agenten-Protokollen ([`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md))** eine vollständig deterministische, markenkonforme Bildgenerierungsmaschine ermöglicht.
 
-![Visual Systems Engineering: Deterministische Bildgenerierung im Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern](./hero.jpg "Visual Systems Engineering")
-
 ## 1. Das Konsistenz-Dilemma generativer Diffusionsmodelle
 
 Um zu verstehen, warum Bildgeneratoren bei komplexen Kompositionen scheitern, muss man ihre mathematische Funktionsweise betrachten. Moderne Diffusionsmodelle (wie Stable Diffusion, Flux oder Imagen) arbeiten nicht mit einem impliziten räumlichen 3D-Weltmodell, sondern approximieren Wahrscheinlichkeitsverteilungen in einem komprimierten latenten Bildraum $\mathcal{Z}$.

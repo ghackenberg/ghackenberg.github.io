@@ -15,8 +15,6 @@ Damit eine persönliche, wissenschaftliche oder unternehmerische Website im mode
 
 In diesem Artikel erklären wir die vier Begriffe kurz und zeigen anschließend Schritt für Schritt, wie wir diesen Ansatz auf dieser Website ([hackenberg.tech](https://hackenberg.tech), entwickelt auf Basis des modernen Web-Frameworks Astro) strategisch und technisch umgesetzt haben.
 
-![SEO, GEO, AEO & AIO Optimierungsmodell](./diagram.jpg "SEO, GEO, AEO & AIO")
-
 ## 1. Was unterscheidet SEO, GEO, AEO und AIO? Die vier Dimensionen im Vergleich
 
 Während traditionelles SEO auf Crawler-Indizes und Klicks abzielt, optimieren GEO, AEO und AIO auf generative Synthesen, direkte Antwort-Snippets und maschinenlesbare Agenten-APIs. Wer heute im Web nachhaltig sichtbar bleiben will, muss menschliche User Experience mit maschinenlesbaren Ingestion-Schnittstellen (`llms.txt`, JSON-LD, Tabellensynthese) verbinden.

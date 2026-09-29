@@ -16,8 +16,6 @@ Ob beim Ausführen lokaler Large Language Models (LLMs) via Ollama, beim Rendern
 
 Um dieses Problem mit einer Symbiose aus minimalistischer Konstruktion, Thermodynamik und zeitlosem Naturdesign zu lösen, stelle ich in diesem Beitrag ein neuartiges Hardware-Konzept vor: **Den CNC-gefertigten Leichtbau-Holzständer mit offenen Seitenwangen und horizontalen Belüftungsschlitzen**.
 
-![Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops - Hero Übersicht](./hero.jpg "Minimalistischer Holz-Laptopständer für GPU- und KI-Laptops")
-
 ## 1. Die Problemstellung: Hitzestau und Thermal Throttling am Schreibtisch
 
 Moderne Laptop-Kühlsysteme vollbringen mechatronische Höchstleistungen. Kompakte Vapor Chambers und hochdrehende Radiallüfter (oft 4.500 bis über 6.000 U/min) transportieren bis zu 150 bis 175 Watt thermische Verlustleistung (TDP – *Thermal Design Power*) aus CPU und dedizierter GPU ab. 

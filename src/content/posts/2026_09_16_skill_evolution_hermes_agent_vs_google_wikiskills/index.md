@@ -19,8 +19,6 @@ Genau an dieser Schnittstelle prallen derzeit zwei wegweisende, aber grundversch
 
 Dieser Beitrag stellt beide Paradigmen in einen direkten softwaretechnischen Vergleich: Wo liegen die Stärken und Schwächen? Wie gehen beide Systeme mit Fehlern um? Und wie sieht eine praxistaugliche Enterprise-Synthese aus?
 
-![Skill Evolution im Vergleich: Dr. Georg Hackenberg analysiert die modulare Runtime-Kuratierung des Hermes Agent und das kristalline Wissensarchiv von Google WikiSkills](./hero.jpg "Vergleichsarchitektur: Hermes Agent vs. Google WikiSkills")
-
 ## 1. Das Kernproblem: Warum statische Skills nicht ausreichen
 
 Um den Entwurfsraum beider Frameworks zu verstehen, müssen wir uns vor Augen führen, warum klassische Methoden der Modell- und Prompt-Adaption für prozedurale Fähigkeiten versagen.

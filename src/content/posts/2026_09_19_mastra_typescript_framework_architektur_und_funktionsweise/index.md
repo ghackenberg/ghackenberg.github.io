@@ -20,8 +20,6 @@ Bislang war die Entwicklung von Agenten weitgehend von Python dominiert (LangCha
 
 Mit dem quelloffenen Framework **Mastra** ([github.com/mastra-ai/mastra](https://github.com/mastra-ai/mastra)) existiert nun ein von Grund auf für TypeScript entwickeltes, ganzheitliches „Backend-Betriebssystem“ für KI-Agenten und ausfallsichere Workflows.
 
-![Mastra TypeScript Framework: Dr. Georg Hackenberg analysiert die Architektur aus autonomen Agenten, deterministischen Workflows und MCP-Gateway](./hero.jpg "Mastra TypeScript Framework Architektur-Schaltbild")
-
 Dieser Artikel analysiert Mastra aus der Perspektive erfahrener Software-Entwickler: Wie ist das Framework aufgebaut? Wie harmonieren autonome ReAct-Schleifen und deterministische State Machines? Wie funktioniert die native MCP-Integration? Und wie sieht der produktive Code in der Praxis aus?
 
 ## 1. Systemarchitektur: Das Backend-Betriebssystem für KI-Anwendungen
