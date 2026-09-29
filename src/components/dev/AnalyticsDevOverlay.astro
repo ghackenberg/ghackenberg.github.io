@@ -11,35 +11,35 @@ const currentPath = Astro.url.pathname;
 
 {!isInsideFrame && (
 <div id="dev-analytics-container" class="dev-analytics-root select-none font-sans text-xs">
-  <!-- Strict Single-Row HUD Bar (Full Window Width, Zero-Shadow, Neutral Gray) -->
+  <!-- Strict Single-Row HUD Bar (Full Window Width, 50% Medium Gray) -->
   <aside
     id="dev-analytics-hud"
-    class="fixed top-0 left-0 right-0 z-[9999] h-11 bg-zinc-900/98 text-zinc-200 border-b border-zinc-700/80 px-4 shadow-none backdrop-blur-md transition-none"
+    class="fixed top-0 left-0 right-0 z-[9999] h-11 bg-zinc-500 text-white border-b border-zinc-400 px-4 shadow-md backdrop-blur-md transition-none"
     aria-label="Dev Analytics HUD"
   >
     <div class="h-full w-full flex items-center justify-between gap-4 flex-nowrap overflow-hidden">
       <!-- Left: Identity & Timeframe Selector -->
       <div class="flex items-center gap-2 shrink-0">
-        <div class="h-7 flex items-center justify-center font-semibold text-zinc-100 font-mono text-xs gap-1.5 px-1">
+        <div class="h-7 flex items-center justify-center font-semibold text-white font-mono text-xs gap-1.5 px-1">
           <span>📊</span>
           <div class="w-4 h-4 flex items-center justify-center shrink-0" title="Analytics Sync Status">
             <!-- Animated Loading Spinner -->
-            <svg id="dev-hud-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-400 hidden" fill="none" viewBox="0 0 24 24">
+            <svg id="dev-hud-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-300 hidden" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
             </svg>
             <!-- Check Symbol (visible when loaded) -->
-            <svg id="dev-hud-check" class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <svg id="dev-hud-check" class="w-3.5 h-3.5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
             </svg>
           </div>
         </div>
 
         <!-- Timeframe Selector -->
-        <div class="h-7 flex items-center rounded-lg bg-zinc-800/80 border border-zinc-700/80 p-0.5" role="group" aria-label="Timeframe">
-          <button type="button" data-period="7d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100">7d</button>
-          <button type="button" data-period="28d" class="dev-period-btn active-period h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-700 text-white font-medium shadow-sm">28d</button>
-          <button type="button" data-period="90d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100">90d</button>
+        <div class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5" role="group" aria-label="Timeframe">
+          <button type="button" data-period="7d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white">7d</button>
+          <button type="button" data-period="28d" class="dev-period-btn active-period h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300">28d</button>
+          <button type="button" data-period="90d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white">90d</button>
         </div>
       </div>
 
@@ -50,65 +50,65 @@ const currentPath = Astro.url.pathname;
         style="-webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%); mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);"
       >
         <!-- Core Essential Plausible (Always visible) -->
-        <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
+        <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-600/90 border border-zinc-400/80 shrink-0 leading-none">
           <span title="Unique Page Visitors" class="flex items-center gap-1">
-            <span class="text-zinc-400">Visitors:</span>
-            <strong id="hud-visitors" class="text-white">--</strong>
+            <span class="text-zinc-200">Visitors:</span>
+            <strong id="hud-visitors" class="text-white font-bold">--</strong>
           </span>
-          <span class="hidden md:inline text-zinc-600">|</span>
+          <span class="hidden md:inline text-zinc-400">|</span>
           <span title="Total Pageviews" class="hidden md:flex items-center gap-1">
-            <span class="text-zinc-400">Views:</span>
-            <strong id="hud-pageviews" class="text-white">--</strong>
+            <span class="text-zinc-200">Views:</span>
+            <strong id="hud-pageviews" class="text-white font-bold">--</strong>
           </span>
-          <span class="hidden md:inline text-zinc-600">|</span>
+          <span class="hidden md:inline text-zinc-400">|</span>
           <span title="Bounce Rate" class="hidden md:flex items-center gap-1">
-            <span class="text-zinc-400">Bounce:</span>
-            <strong id="hud-bounce" class="text-amber-400">--</strong>
+            <span class="text-zinc-200">Bounce:</span>
+            <strong id="hud-bounce" class="text-amber-200 font-bold">--</strong>
           </span>
-          <span class="hidden lg:inline text-zinc-600">|</span>
+          <span class="hidden lg:inline text-zinc-400">|</span>
           <span title="Average Visit Duration" class="hidden lg:flex items-center gap-1">
-            <span class="text-zinc-400">Dur:</span>
-            <strong id="hud-duration" class="text-white">--</strong>
+            <span class="text-zinc-200">Dur:</span>
+            <strong id="hud-duration" class="text-white font-bold">--</strong>
           </span>
         </div>
 
         <!-- Scroll Retention Pill (Informational only, not clickable) -->
         <div
-          class="h-7 hidden lg:flex items-center gap-1.5 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none"
+          class="h-7 hidden lg:flex items-center gap-1.5 px-2.5 rounded-lg bg-zinc-600/90 border border-zinc-400/80 shrink-0 leading-none"
         >
-          <span class="text-zinc-300 font-semibold">Scroll:</span>
+          <span class="text-white font-semibold">Scroll:</span>
           <span title="Median Reader Scroll Depth" class="flex items-center gap-1">
-            <span class="text-zinc-400">Med:</span>
-            <strong id="hud-scroll-median" class="text-white">--</strong>
+            <span class="text-zinc-200">Med:</span>
+            <strong id="hud-scroll-median" class="text-white font-bold">--</strong>
           </span>
-          <span class="text-zinc-600">|</span>
+          <span class="text-zinc-400">|</span>
           <span title="Read-Through Rate (100% Depth)" class="flex items-center gap-1">
-            <span class="text-zinc-400">Read:</span>
-            <strong id="hud-scroll-readthrough" class="text-emerald-400">--</strong>
+            <span class="text-zinc-200">Read:</span>
+            <strong id="hud-scroll-readthrough" class="text-emerald-300 font-bold">--</strong>
           </span>
         </div>
 
         <!-- Core Google Stats -->
-        <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
-          <span class="text-zinc-300 font-semibold">Google:</span>
+        <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-600/90 border border-zinc-400/80 shrink-0 leading-none">
+          <span class="text-white font-semibold">Google:</span>
           <span title="Google Search Clicks" class="flex items-center gap-1">
-            <span class="text-zinc-400">Clicks:</span>
-            <strong id="hud-gsc-clicks" class="text-emerald-400">--</strong>
+            <span class="text-zinc-200">Clicks:</span>
+            <strong id="hud-gsc-clicks" class="text-emerald-300 font-bold">--</strong>
           </span>
-          <span class="hidden md:inline text-zinc-600">|</span>
+          <span class="hidden md:inline text-zinc-400">|</span>
           <span title="Search Impressions" class="hidden md:flex items-center gap-1">
-            <span class="text-zinc-400">Impr:</span>
-            <strong id="hud-gsc-impr" class="text-white">--</strong>
+            <span class="text-zinc-200">Impr:</span>
+            <strong id="hud-gsc-impr" class="text-zinc-100 font-bold">--</strong>
           </span>
-          <span class="hidden lg:inline text-zinc-600">|</span>
+          <span class="hidden lg:inline text-zinc-400">|</span>
           <span title="Search Click-Through Rate" class="hidden lg:flex items-center gap-1">
-            <span class="text-zinc-400">CTR:</span>
-            <strong id="hud-gsc-ctr" class="text-white">--</strong>
+            <span class="text-zinc-200">CTR:</span>
+            <strong id="hud-gsc-ctr" class="text-sky-200 font-bold">--</strong>
           </span>
-          <span class="hidden xl:inline text-zinc-600">|</span>
+          <span class="hidden xl:inline text-zinc-400">|</span>
           <span title="Average Search Ranking Position" class="hidden xl:flex items-center gap-1">
-            <span class="text-zinc-400">Rank:</span>
-            <strong id="hud-gsc-rank" class="text-amber-300">--</strong>
+            <span class="text-zinc-200">Rank:</span>
+            <strong id="hud-gsc-rank" class="text-amber-200 font-bold">--</strong>
           </span>
         </div>
       </div>
@@ -122,7 +122,7 @@ const currentPath = Astro.url.pathname;
           href="https://plausible.io/hackenberg.tech"
           target="_blank"
           rel="noopener noreferrer"
-          class="h-7 w-7 hidden lg:flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white border border-zinc-700 transition-colors"
+          class="h-7 w-7 hidden lg:flex items-center justify-center rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs transition-colors"
           title="Open in Plausible Dashboard"
           aria-label="Open in Plausible"
         >
@@ -135,7 +135,7 @@ const currentPath = Astro.url.pathname;
         <button
           id="dev-analytics-refresh"
           type="button"
-          class="h-7 w-7 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 transition-colors cursor-pointer"
+          class="h-7 w-7 flex items-center justify-center rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs transition-colors cursor-pointer"
           title="Force refresh live data (clears cache)"
           aria-label="Refresh Data"
         >
@@ -148,7 +148,7 @@ const currentPath = Astro.url.pathname;
         <button
           id="dev-expand-btn"
           type="button"
-          class="h-7 w-7 flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-600 font-mono text-xs transition-colors cursor-pointer shadow-sm leading-none"
+          class="h-7 w-7 flex items-center justify-center rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 font-mono text-xs transition-colors cursor-pointer shadow-xs leading-none font-bold"
           title="Expand to Full-Window Analytics Cockpit"
           aria-label="Expand Cockpit"
         >
@@ -163,37 +163,37 @@ const currentPath = Astro.url.pathname;
   <div
     id="dev-analytics-fullview"
     role="dialog"
-    class="fixed inset-0 z-[10001] bg-zinc-950/98 backdrop-blur-2xl text-zinc-100 hidden flex flex-col overflow-hidden font-sans select-text"
+    class="fixed inset-0 z-[10001] bg-zinc-500/98 backdrop-blur-2xl text-white hidden flex flex-col overflow-hidden font-sans select-text"
     aria-label="Dev Analytics Cockpit"
   >
     <!-- Fullview Header Bar -->
-    <header class="h-14 shrink-0 border-b border-zinc-800 bg-zinc-900/95 px-6 flex items-center justify-between gap-4">
+    <header class="h-14 shrink-0 border-b border-zinc-400 bg-zinc-600/90 px-6 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="flex items-center gap-2 font-bold text-white text-sm font-mono">
           <span>📊 Dev Analytics Cockpit</span>
           <div class="w-4 h-4 flex items-center justify-center shrink-0">
-            <svg id="dev-fullview-spinner" class="w-4 h-4 animate-spin text-emerald-400 hidden" fill="none" viewBox="0 0 24 24">
+            <svg id="dev-fullview-spinner" class="w-4 h-4 animate-spin text-emerald-300 hidden" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
             </svg>
-            <svg id="dev-fullview-check" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <svg id="dev-fullview-check" class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
             </svg>
           </div>
-          <span id="dev-fullview-cache-badge" class="px-2 py-0.5 rounded text-[11px] bg-zinc-800 text-zinc-400 border border-zinc-700">LIVE</span>
+          <span id="dev-fullview-cache-badge" class="px-2 py-0.5 rounded text-[11px] bg-zinc-700 text-zinc-200 border border-zinc-500">LIVE</span>
         </div>
 
         <!-- Path pill -->
-        <div class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-800/80 border border-zinc-700 font-mono text-xs text-zinc-200">
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-700 border border-zinc-500 font-mono text-xs text-zinc-100">
           <span class="text-zinc-400">📍</span>
           <span id="dev-fullview-path" class="font-semibold">{currentPath}</span>
         </div>
 
         <!-- Timeframe selector -->
-        <div class="flex items-center rounded-lg bg-zinc-800/80 border border-zinc-700 p-0.5 font-mono" role="group">
-          <button type="button" data-period="7d" class="dev-full-period-btn px-2.5 py-1 rounded text-xs transition-colors text-zinc-400 hover:text-white">7d</button>
-          <button type="button" data-period="28d" class="dev-full-period-btn active-period px-2.5 py-1 rounded text-xs transition-colors bg-zinc-700 text-white font-medium">28d</button>
-          <button type="button" data-period="90d" class="dev-full-period-btn px-2.5 py-1 rounded text-xs transition-colors text-zinc-400 hover:text-white">90d</button>
+        <div class="flex items-center rounded-lg bg-zinc-700 border border-zinc-500 p-0.5 font-mono" role="group">
+          <button type="button" data-period="7d" class="dev-full-period-btn px-2.5 py-1 rounded text-xs transition-colors text-zinc-200 hover:text-white">7d</button>
+          <button type="button" data-period="28d" class="dev-full-period-btn active-period px-2.5 py-1 rounded text-xs transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300">28d</button>
+          <button type="button" data-period="90d" class="dev-full-period-btn px-2.5 py-1 rounded text-xs transition-colors text-zinc-200 hover:text-white">90d</button>
         </div>
       </div>
 
@@ -201,7 +201,7 @@ const currentPath = Astro.url.pathname;
         <button
           id="dev-fullview-refresh"
           type="button"
-          class="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 transition-colors cursor-pointer"
+          class="p-2 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs transition-colors cursor-pointer"
           title="Force refresh live data"
           aria-label="Refresh"
         >
@@ -215,7 +215,7 @@ const currentPath = Astro.url.pathname;
           href="https://plausible.io/hackenberg.tech"
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700 text-xs font-mono transition-colors"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs text-xs font-mono transition-colors"
         >
           <span>Plausible Dashboard ↗</span>
         </a>
@@ -224,13 +224,13 @@ const currentPath = Astro.url.pathname;
         <button
           id="dev-collapse-btn"
           type="button"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-600 text-xs font-mono transition-colors cursor-pointer shadow-sm"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs text-xs font-mono transition-colors cursor-pointer"
           title="Collapse back to top analytics bar (Esc)"
           aria-label="Collapse to bar"
         >
           <span>🗗</span>
           <span class="font-semibold">Collapse</span>
-          <kbd class="ml-1 px-1.5 py-0.2 rounded bg-zinc-700 text-[10px] text-zinc-400 border border-zinc-600">Esc</kbd>
+          <kbd class="ml-1 px-1.5 py-0.2 rounded bg-zinc-700 text-[10px] text-zinc-300 border border-zinc-500">Esc</kbd>
         </button>
       </div>
     </header>
@@ -239,47 +239,47 @@ const currentPath = Astro.url.pathname;
     <main class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 w-full max-w-[1600px] mx-auto">
       <!-- 1. KPI Cards Grid -->
       <section id="fullview-kpis">
-        <h2 class="text-xs font-mono text-zinc-400 uppercase tracking-wider mb-3">Key Performance Indicators</h2>
+        <h2 class="text-xs font-mono text-zinc-200 uppercase tracking-wider mb-3 font-semibold">Key Performance Indicators</h2>
         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 font-mono">
-          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
-            <div class="text-[11px] text-zinc-400">Visitors</div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Visitors</div>
             <div id="full-visitors" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-500 mt-0.5">Plausible</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">Plausible</div>
           </div>
-          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
-            <div class="text-[11px] text-zinc-400">Pageviews</div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Pageviews</div>
             <div id="full-views" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-500 mt-0.5">Plausible</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">Plausible</div>
           </div>
-          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
-            <div class="text-[11px] text-zinc-400">Bounce Rate</div>
-            <div id="full-bounce" class="text-xl font-bold text-amber-400 mt-1">--</div>
-            <div class="text-[10px] text-zinc-500 mt-0.5">Single-page</div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Bounce Rate</div>
+            <div id="full-bounce" class="text-xl font-bold text-amber-200 mt-1">--</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">Single-page</div>
           </div>
-          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
-            <div class="text-[11px] text-zinc-400">Visit Duration</div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Visit Duration</div>
             <div id="full-duration" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-500 mt-0.5">Average</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">Average</div>
           </div>
-          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
-            <div class="text-[11px] text-zinc-400">Search Clicks</div>
-            <div id="full-gsc-clicks" class="text-xl font-bold text-emerald-400 mt-1">--</div>
-            <div class="text-[10px] text-zinc-500 mt-0.5">Google Organic</div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Search Clicks</div>
+            <div id="full-gsc-clicks" class="text-xl font-bold text-emerald-300 mt-1">--</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">Google Organic</div>
           </div>
-          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
-            <div class="text-[11px] text-zinc-400">Impressions</div>
-            <div id="full-gsc-impr" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-500 mt-0.5">SERP Views</div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Impressions</div>
+            <div id="full-gsc-impr" class="text-xl font-bold text-zinc-100 mt-1">--</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">SERP Views</div>
           </div>
-          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
-            <div class="text-[11px] text-zinc-400">Search CTR</div>
-            <div id="full-gsc-ctr" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-500 mt-0.5">Click-through</div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Search CTR</div>
+            <div id="full-gsc-ctr" class="text-xl font-bold text-sky-200 mt-1">--</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">Click-through</div>
           </div>
-          <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl">
-            <div class="text-[11px] text-zinc-400">Avg Ranking</div>
-            <div id="full-gsc-rank" class="text-xl font-bold text-amber-300 mt-1">--</div>
-            <div class="text-[10px] text-zinc-500 mt-0.5">SERP Position</div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Avg Ranking</div>
+            <div id="full-gsc-rank" class="text-xl font-bold text-amber-200 mt-1">--</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">SERP Position</div>
           </div>
         </div>
       </section>
@@ -289,42 +289,42 @@ const currentPath = Astro.url.pathname;
         <!-- Left Column: Engagement & Retention Funnel -->
         <div class="space-y-6">
           <!-- Scroll Funnel Card -->
-          <section id="fullview-scroll" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <section id="fullview-scroll" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
+            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
               <div>
                 <h3 class="text-sm font-bold text-white">Reader Scroll Depth Retention</h3>
-                <p class="text-xs text-zinc-400 mt-0.5">Drop-off progression across vertical reading milestones</p>
+                <p class="text-xs text-zinc-200 mt-0.5">Drop-off progression across vertical reading milestones</p>
               </div>
               <div class="flex items-center gap-3 font-mono text-xs">
-                <div class="px-2.5 py-1 rounded bg-zinc-800 border border-zinc-700">
-                  <span class="text-zinc-400">Median:</span>
+                <div class="px-2.5 py-1 rounded bg-zinc-700 border border-zinc-500">
+                  <span class="text-zinc-300">Median:</span>
                   <strong id="full-funnel-median" class="text-white ml-1">--</strong>
                 </div>
-                <div class="px-2.5 py-1 rounded bg-zinc-800 border border-zinc-700">
-                  <span class="text-zinc-400">Read-Through (≥90%):</span>
-                  <strong id="full-funnel-readthrough" class="text-emerald-400 ml-1">--</strong>
+                <div class="px-2.5 py-1 rounded bg-zinc-700 border border-zinc-500">
+                  <span class="text-zinc-300">Read-Through (≥90%):</span>
+                  <strong id="full-funnel-readthrough" class="text-emerald-300 ml-1">--</strong>
                 </div>
               </div>
             </div>
 
             <!-- Milestone Progress Bars -->
             <div id="full-funnel-bars" class="space-y-2.5 font-mono text-xs">
-              <span class="text-zinc-500 italic">No scroll depth events recorded for this path in selected period.</span>
+              <span class="text-zinc-300 italic">No scroll depth events recorded for this path in selected period.</span>
             </div>
           </section>
 
           <!-- Section Dwell Breakdown Card -->
-          <section id="fullview-sections" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <section id="fullview-sections" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
+            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
               <div>
                 <h3 class="text-sm font-bold text-white">Page Sections & Dwell Times</h3>
-                <p class="text-xs text-zinc-400 mt-0.5">Unique readers who dwelled &ge; 2s on tracked sections</p>
+                <p class="text-xs text-zinc-200 mt-0.5">Unique readers who dwelled &ge; 2s on tracked sections</p>
               </div>
-              <span id="full-sections-count" class="text-xs font-mono text-zinc-400">0 sections</span>
+              <span id="full-sections-count" class="text-xs font-mono text-zinc-200 px-2 py-0.5 rounded bg-zinc-700 border border-zinc-500">0 sections</span>
             </div>
 
             <div id="full-sections-table" class="space-y-1.5 font-mono text-xs max-h-80 overflow-y-auto pr-1">
-              <span class="text-zinc-500 italic">No section dwell events recorded for this path.</span>
+              <span class="text-zinc-300 italic">No section dwell events recorded for this path.</span>
             </div>
           </section>
         </div>
@@ -332,55 +332,55 @@ const currentPath = Astro.url.pathname;
         <!-- Right Column: Search Queries & Audience Tech -->
         <div class="space-y-6">
           <!-- Top Search Queries Card -->
-          <section id="fullview-queries" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <section id="fullview-queries" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
+            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
               <div>
                 <h3 class="text-sm font-bold text-white">Google Search Queries</h3>
-                <p class="text-xs text-zinc-400 mt-0.5">Top organic search terms driving impressions and clicks</p>
+                <p class="text-xs text-zinc-200 mt-0.5">Top organic search terms driving impressions and clicks</p>
               </div>
-              <span id="full-queries-count" class="text-xs font-mono text-zinc-400">0 queries</span>
+              <span id="full-queries-count" class="text-xs font-mono text-zinc-200 px-2 py-0.5 rounded bg-zinc-700 border border-zinc-500">0 queries</span>
             </div>
 
             <div id="full-queries-table" class="space-y-1.5 font-mono text-xs max-h-80 overflow-y-auto pr-1">
-              <span class="text-zinc-500 italic">No search queries recorded for this page in selected period.</span>
+              <span class="text-zinc-300 italic">No search queries recorded for this page in selected period.</span>
             </div>
           </section>
 
           <!-- Audience & Technologies Card -->
-          <section id="fullview-tech" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <section id="fullview-tech" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
+            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
               <div>
                 <h3 class="text-sm font-bold text-white">Audience Environment</h3>
-                <p class="text-xs text-zinc-400 mt-0.5">Client devices, browsers and operating systems</p>
+                <p class="text-xs text-zinc-200 mt-0.5">Client devices, browsers and operating systems</p>
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4 font-mono text-xs">
               <div>
-                <div class="text-[11px] text-zinc-400 uppercase tracking-wide mb-2 font-semibold">Devices</div>
-                <div id="full-devices-list" class="space-y-1 text-zinc-300">
-                  <span class="text-zinc-500 italic">No device data</span>
+                <div class="text-[11px] text-zinc-200 uppercase tracking-wide mb-2 font-semibold">Devices</div>
+                <div id="full-devices-list" class="space-y-1 text-zinc-100">
+                  <span class="text-zinc-300 italic">No device data</span>
                 </div>
               </div>
               <div>
-                <div class="text-[11px] text-zinc-400 uppercase tracking-wide mb-2 font-semibold">Operating Systems</div>
-                <div id="full-os-list" class="space-y-1 text-zinc-300">
-                  <span class="text-zinc-500 italic">No OS data</span>
+                <div class="text-[11px] text-zinc-200 uppercase tracking-wide mb-2 font-semibold">Operating Systems</div>
+                <div id="full-os-list" class="space-y-1 text-zinc-100">
+                  <span class="text-zinc-300 italic">No OS data</span>
                 </div>
               </div>
             </div>
           </section>
 
           <!-- Geographic Distribution Card -->
-          <section id="fullview-geo" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <section id="fullview-geo" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
+            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
               <div>
                 <h3 class="text-sm font-bold text-white">Geographic Distribution</h3>
-                <p class="text-xs text-zinc-400 mt-0.5">Top countries by unique visitor volume</p>
+                <p class="text-xs text-zinc-200 mt-0.5">Top countries by unique visitor volume</p>
               </div>
             </div>
             <div id="full-countries-list" class="flex flex-wrap gap-2 font-mono text-xs">
-              <span class="text-zinc-500 italic">No geographic data</span>
+              <span class="text-zinc-300 italic">No geographic data</span>
             </div>
           </section>
         </div>
@@ -735,11 +735,11 @@ const currentPath = Astro.url.pathname;
       allPeriodButtons.forEach((btn) => {
         const period = btn.getAttribute('data-period');
         if (period === this.currentPeriod) {
-          btn.classList.add('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
-          btn.classList.remove('text-zinc-400');
+          btn.classList.add('bg-zinc-200', 'text-zinc-900', 'font-bold', 'shadow-xs', 'border', 'border-zinc-300');
+          btn.classList.remove('text-zinc-200');
         } else {
-          btn.classList.remove('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
-          btn.classList.add('text-zinc-400');
+          btn.classList.remove('bg-zinc-200', 'text-zinc-900', 'font-bold', 'shadow-xs', 'border', 'border-zinc-300');
+          btn.classList.add('text-zinc-200');
         }
       });
     }
@@ -779,11 +779,11 @@ const currentPath = Astro.url.pathname;
 
         if (cacheBadge) {
           cacheBadge.textContent = 'FETCHING...';
-          cacheBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-zinc-800 text-amber-300 border border-zinc-700';
+          cacheBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-amber-50 text-amber-700 border border-amber-200';
         }
         if (fullBadge) {
           fullBadge.textContent = 'FETCHING...';
-          fullBadge.className = 'px-2 py-0.5 rounded text-[11px] bg-zinc-800 text-amber-300 border border-zinc-700';
+          fullBadge.className = 'px-2 py-0.5 rounded text-[11px] bg-amber-50 text-amber-700 border border-amber-200';
         }
       } else {
         hudSpinner?.classList.add('hidden');
@@ -794,11 +794,11 @@ const currentPath = Astro.url.pathname;
 
         const badgeText = isCached ? 'CACHED' : 'LIVE';
         const badgeClass = isCached
-          ? 'px-1.5 py-0.2 rounded text-[10px] bg-zinc-800 text-zinc-400 border border-zinc-700'
-          : 'px-1.5 py-0.2 rounded text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800';
+          ? 'px-1.5 py-0.2 rounded text-[10px] bg-zinc-700 text-zinc-200 border border-zinc-500'
+          : 'px-1.5 py-0.2 rounded text-[10px] bg-zinc-700 text-emerald-300 border border-emerald-500/60 font-semibold';
         const fullBadgeClass = isCached
-          ? 'px-2 py-0.5 rounded text-[11px] bg-zinc-800 text-zinc-400 border border-zinc-700'
-          : 'px-2 py-0.5 rounded text-[11px] bg-emerald-950 text-emerald-400 border border-emerald-800';
+          ? 'px-2 py-0.5 rounded text-[11px] bg-zinc-700 text-zinc-200 border border-zinc-500'
+          : 'px-2 py-0.5 rounded text-[11px] bg-zinc-700 text-emerald-300 border border-emerald-500/60 font-semibold';
 
         if (cacheBadge) {
           cacheBadge.textContent = badgeText;
@@ -870,7 +870,7 @@ const currentPath = Astro.url.pathname;
         const cacheBadge = document.getElementById('dev-analytics-cache-badge');
         if (cacheBadge) {
           cacheBadge.textContent = 'ERROR';
-          cacheBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-rose-950 text-rose-400 border border-rose-800';
+          cacheBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-rose-50 text-rose-700 border border-rose-200';
         }
       }
     }
@@ -950,33 +950,34 @@ const currentPath = Astro.url.pathname;
       const funnelBarsEl = document.getElementById('full-funnel-bars');
       if (funnelBarsEl) {
         if (!funnel || !funnel.milestones || funnel.milestones.length === 0) {
-          funnelBarsEl.innerHTML = '<span class="text-zinc-500 italic">No scroll depth events recorded for this path in period.</span>';
+          funnelBarsEl.innerHTML = '<span class="text-zinc-300 italic">No scroll depth events recorded for this path in period.</span>';
         } else {
           funnelBarsEl.innerHTML = funnel.milestones
             .map((m) => {
               const pct = Number(m.percentageOfVisitors.toFixed(1));
               const dropOff = m.dropOffRateFromPrevious;
 
-              let barColor = 'bg-emerald-500';
-              if (m.depth >= 70) barColor = 'bg-emerald-400';
-              else if (m.depth >= 40) barColor = 'bg-sky-400';
-              else barColor = 'bg-zinc-400';
+              let barColor = 'bg-emerald-400';
+              if (pct >= 60) barColor = 'bg-emerald-400';
+              else if (pct >= 35) barColor = 'bg-sky-400';
+              else if (pct >= 15) barColor = 'bg-amber-400';
+              else barColor = 'bg-rose-400';
 
               return `
-                <div class="p-2.5 rounded-xl bg-zinc-800/60 border border-zinc-700/70 space-y-1.5">
+                <div class="p-2.5 rounded-xl bg-zinc-700/80 border border-zinc-500/80 space-y-1.5">
                   <div class="flex items-center justify-between">
                     <span class="font-bold text-white text-xs">Scroll Milestone ≥ ${m.depth}%</span>
                     <div class="flex items-center gap-2">
-                      <span class="text-zinc-200 font-semibold">${m.visitors} visitors</span>
-                      <span class="text-zinc-400">(${pct}%)</span>
+                      <span class="text-white font-semibold">${m.visitors} visitors</span>
+                      <span class="text-zinc-300">(${pct}%)</span>
                       ${
                         dropOff !== undefined && dropOff > 0
-                          ? `<span class="text-[10px] text-rose-400 font-semibold">🔻 -${dropOff}%</span>`
+                          ? `<span class="text-[10px] text-rose-300 font-semibold">🔻 -${dropOff}%</span>`
                           : ''
                       }
                     </div>
                   </div>
-                  <div class="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
+                  <div class="w-full h-2 rounded-full bg-zinc-800/90 border border-zinc-600/50 overflow-hidden">
                     <div class="h-full rounded-full ${barColor} transition-all duration-300" style="width: ${Math.min(100, pct)}%"></div>
                   </div>
                 </div>
@@ -997,7 +998,7 @@ const currentPath = Astro.url.pathname;
 
       if (sectionsTableEl) {
         if (sectionEntries.length === 0) {
-          sectionsTableEl.innerHTML = '<span class="text-zinc-500 italic">No section dwell events recorded for this path.</span>';
+          sectionsTableEl.innerHTML = '<span class="text-zinc-300 italic">No section dwell events recorded for this path.</span>';
         } else {
           const totalVisitors = plausible.visitors || 1;
           sectionsTableEl.innerHTML = sectionEntries
@@ -1005,11 +1006,11 @@ const currentPath = Astro.url.pathname;
             .map(([secId, s]) => {
               const retPct = ((s.visitors / totalVisitors) * 100).toFixed(1);
               return `
-                <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
+                <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-700/80 border border-zinc-500/80">
                   <span class="font-semibold text-white truncate max-w-xs">#${secId}</span>
                   <div class="flex items-center gap-3">
-                    <span class="text-zinc-300">${s.visitors} dwellers (${retPct}%)</span>
-                    <span class="text-zinc-500 text-[10px]">${s.events || s.visitors} events</span>
+                    <span class="text-zinc-200">${s.visitors} dwellers (${retPct}%)</span>
+                    <span class="text-zinc-400 text-[10px]">${s.events || s.visitors} events</span>
                   </div>
                 </div>
               `;
@@ -1029,19 +1030,19 @@ const currentPath = Astro.url.pathname;
 
       if (queriesTableEl) {
         if (queries.length === 0) {
-          queriesTableEl.innerHTML = '<span class="text-zinc-500 italic">No search queries recorded for this page in selected period.</span>';
+          queriesTableEl.innerHTML = '<span class="text-zinc-300 italic">No search queries recorded for this page in selected period.</span>';
         } else {
           queriesTableEl.innerHTML = queries
             .map(
               (q) => `
-              <div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
-                <span class="text-zinc-200 font-medium truncate" title="${q.query}">${q.query}</span>
+              <div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-zinc-700/80 border border-zinc-500/80">
+                <span class="text-zinc-100 font-medium truncate" title="${q.query}">${q.query}</span>
                 <div class="flex items-center gap-2.5 shrink-0 text-xs">
-                  <span class="text-emerald-400 font-semibold">${q.clicks} clicks</span>
-                  <span class="text-zinc-500">|</span>
-                  <span class="text-zinc-300">${q.impressions} impr</span>
-                  <span class="text-zinc-500">|</span>
-                  <span class="text-amber-300">#${q.position.toFixed(1)}</span>
+                  <span class="text-emerald-300 font-semibold">${q.clicks} clicks</span>
+                  <span class="text-zinc-400">|</span>
+                  <span class="text-zinc-200">${q.impressions} impr</span>
+                  <span class="text-zinc-400">|</span>
+                  <span class="text-amber-200 font-semibold">#${q.position.toFixed(1)}</span>
                 </div>
               </div>
             `
@@ -1059,13 +1060,13 @@ const currentPath = Astro.url.pathname;
       if (devicesListEl) {
         devicesListEl.innerHTML = devices.length > 0
           ? devices.map(d => `<div class="flex justify-between py-0.5"><span>${d.name}</span><strong class="text-white">${d.percentage}% (${d.visitors})</strong></div>`).join('')
-          : '<span class="text-zinc-500 italic">No device data</span>';
+          : '<span class="text-zinc-300 italic">No device data</span>';
       }
 
       if (osListEl) {
         osListEl.innerHTML = os.length > 0
           ? os.map(o => `<div class="flex justify-between py-0.5"><span>${o.name}</span><strong class="text-white">${o.percentage}% (${o.visitors})</strong></div>`).join('')
-          : '<span class="text-zinc-500 italic">No OS data</span>';
+          : '<span class="text-zinc-300 italic">No OS data</span>';
       }
 
       // 6. Geographic Distribution
@@ -1075,12 +1076,12 @@ const currentPath = Astro.url.pathname;
       if (countriesListEl) {
         countriesListEl.innerHTML = countries.length > 0
           ? countries.map(c => `
-              <div class="px-2.5 py-1 rounded bg-zinc-800 border border-zinc-700 flex items-center gap-1.5">
+              <div class="px-2.5 py-1 rounded bg-zinc-700 border border-zinc-500 flex items-center gap-1.5">
                 <span class="font-bold text-white">${c.country}</span>
-                <span class="text-zinc-400">${c.percentage}% (${c.visitors})</span>
+                <span class="text-zinc-200">${c.percentage}% (${c.visitors})</span>
               </div>
             `).join('')
-          : '<span class="text-zinc-500 italic">No geographic data</span>';
+          : '<span class="text-zinc-300 italic">No geographic data</span>';
       }
     }
 
@@ -1131,25 +1132,25 @@ const currentPath = Astro.url.pathname;
         }
         previousSectionVisitors = visitors;
 
-        let indicatorColor = 'text-zinc-400';
+        let indicatorColor = 'text-zinc-300';
         if (visitors > 0) {
-          if (retentionRate >= 60) indicatorColor = 'text-emerald-400';
-          else if (retentionRate >= 30) indicatorColor = 'text-sky-400';
-          else indicatorColor = 'text-amber-400';
+          if (retentionRate >= 60) indicatorColor = 'text-emerald-300 font-bold';
+          else if (retentionRate >= 30) indicatorColor = 'text-sky-200 font-bold';
+          else indicatorColor = 'text-amber-200 font-bold';
         }
 
         const dropOffText =
           index > 0 && dropOffFromPrevious !== null
-            ? ` <span class="text-zinc-600">|</span> <span class="${dropOffFromPrevious > 30 ? 'text-rose-400 font-semibold' : 'text-zinc-400'}">${dropOffFromPrevious > 0 ? '🔻-' : '🔼+'}${Math.abs(dropOffFromPrevious)}%</span>`
+            ? ` <span class="text-zinc-400">|</span> <span class="${dropOffFromPrevious > 30 ? 'text-rose-300 font-bold' : 'text-zinc-300'}">${dropOffFromPrevious > 0 ? '🔻-' : '🔼+'}${Math.abs(dropOffFromPrevious)}%</span>`
             : '';
 
         const badge = document.createElement('span');
-        badge.className = `dev-analytics-badge dev-heading-badge inline-flex items-center gap-1.5 ml-2.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-700/80 bg-zinc-900/95 text-zinc-200 shadow-md backdrop-blur align-middle my-auto leading-none`;
+        badge.className = `dev-analytics-badge dev-heading-badge inline-flex items-center gap-1.5 ml-2.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm align-middle my-auto leading-none ring-1 ring-black/20`;
         badge.title = `Heading #${id} retention: ${retentionRate}% (${visitors}/${totalPageVisitors} dwellers, ${events} dwell events)`;
 
         const labelText = dwell && visitors > 0
-          ? `👁️ <span class="${indicatorColor} font-semibold">${visitors}</span><span class="text-zinc-500">/${totalPageVisitors}</span> <span class="text-zinc-400">(${retentionRate}%)</span>${dropOffText}`
-          : `👁️ <span class="text-zinc-500">0/${totalPageVisitors}</span> <span class="text-zinc-500">(0%)</span>`;
+          ? `👁️ <span class="${indicatorColor}">${visitors}</span><span class="text-zinc-300">/${totalPageVisitors}</span> <span class="text-zinc-200">(${retentionRate}%)</span>${dropOffText}`
+          : `👁️ <span class="text-zinc-300">0/${totalPageVisitors}</span> <span class="text-zinc-300">(0%)</span>`;
         badge.innerHTML = labelText;
 
         el.appendChild(badge);
@@ -1181,20 +1182,20 @@ const currentPath = Astro.url.pathname;
         const events = dwell?.events ?? visitors;
         const retentionRate = totalPageVisitors > 0 ? Number(((visitors / totalPageVisitors) * 100).toFixed(1)) : 0;
 
-        let indicatorColor = 'text-zinc-400';
+        let indicatorColor = 'text-zinc-300';
         if (visitors > 0) {
-          if (retentionRate >= 60) indicatorColor = 'text-emerald-400';
-          else if (retentionRate >= 30) indicatorColor = 'text-sky-400';
-          else indicatorColor = 'text-amber-400';
+          if (retentionRate >= 60) indicatorColor = 'text-emerald-300 font-bold';
+          else if (retentionRate >= 30) indicatorColor = 'text-sky-200 font-bold';
+          else indicatorColor = 'text-amber-200 font-bold';
         }
 
         const badge = document.createElement('div');
-        badge.className = `dev-analytics-badge dev-section-badge absolute top-3 right-3 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-700/80 bg-zinc-900/95 text-zinc-200 shadow-md backdrop-blur leading-none`;
+        badge.className = `dev-analytics-badge dev-section-badge absolute top-3 right-3 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm leading-none ring-1 ring-black/20`;
         badge.title = `Section #${id} retention: ${visitors}/${totalPageVisitors} dwellers (${retentionRate}%), ${events} dwell events`;
 
         const labelText = dwell && visitors > 0
-          ? `📍 <span class="text-zinc-300 font-semibold">#${id}</span> <span class="text-zinc-600">|</span> 👁️ <span class="${indicatorColor} font-semibold">${visitors}</span><span class="text-zinc-500">/${totalPageVisitors}</span> <span class="text-zinc-400">(${retentionRate}%)</span>`
-          : `📍 <span class="text-zinc-300 font-semibold">#${id}</span> <span class="text-zinc-600">|</span> 👁️ <span class="text-zinc-500">0/${totalPageVisitors}</span> <span class="text-zinc-500">(0%)</span>`;
+          ? `📍 <span class="text-white font-bold">#${id}</span> <span class="text-zinc-400">|</span> 👁️ <span class="${indicatorColor}">${visitors}</span><span class="text-zinc-300">/${totalPageVisitors}</span> <span class="text-zinc-200">(${retentionRate}%)</span>`
+          : `📍 <span class="text-white font-bold">#${id}</span> <span class="text-zinc-400">|</span> 👁️ <span class="text-zinc-300">0/${totalPageVisitors}</span> <span class="text-zinc-300">(0%)</span>`;
         badge.innerHTML = labelText;
 
         // When a section spans full-width (w-full) but has an inner max-w-* content container with a header child,
@@ -1239,18 +1240,18 @@ const currentPath = Astro.url.pathname;
         const targetVisitors = targetPage?.visitors ?? 0;
         const targetViews = targetPage?.pageviews ?? 0;
 
-        let ctrColor = 'text-zinc-400';
+        let ctrColor = 'text-zinc-300';
         if (metrics.views > 0) {
-          if (metrics.ctr >= 5) ctrColor = 'text-emerald-400 font-bold';
-          else if (metrics.ctr >= 2) ctrColor = 'text-sky-400 font-semibold';
-          else ctrColor = 'text-amber-400';
+          if (metrics.ctr >= 5) ctrColor = 'text-emerald-300 font-bold';
+          else if (metrics.ctr >= 2) ctrColor = 'text-sky-200 font-bold';
+          else ctrColor = 'text-amber-200 font-bold';
         }
 
         const badge = document.createElement('div');
-        badge.className = `dev-analytics-badge dev-card-badge absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight border border-zinc-700/80 bg-zinc-900/95 text-zinc-200 shadow-md backdrop-blur pointer-events-auto cursor-default select-none leading-none`;
+        badge.className = `dev-analytics-badge dev-card-badge absolute top-3 right-3 z-30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm pointer-events-auto cursor-default select-none leading-none ring-1 ring-black/20`;
         badge.title = `Card CTR: ${metrics.ctr}% (${metrics.clicks} clicks / ${metrics.views} impressions) | Target: ${targetVisitors} visitors (${targetViews} views)`;
 
-        const labelText = `🎯 <span class="${ctrColor}">${metrics.ctr}%</span> <span class="text-zinc-400">(${metrics.clicks}c/${metrics.views}i)</span> <span class="text-zinc-600">|</span> <span class="text-sky-300 font-semibold">👥 ${targetVisitors}</span> <span class="text-zinc-400">(${targetViews}v)</span>`;
+        const labelText = `🎯 <span class="${ctrColor}">${metrics.ctr}%</span> <span class="text-zinc-200">(${metrics.clicks}c/${metrics.views}i)</span> <span class="text-zinc-400">|</span> <span class="text-sky-200 font-bold">👥 ${targetVisitors}</span> <span class="text-zinc-200">(${targetViews}v)</span>`;
         badge.innerHTML = labelText;
 
         const style = window.getComputedStyle(cardEl);

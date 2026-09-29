@@ -9,43 +9,43 @@ interface Props {
 const { currentPath } = Astro.props;
 ---
 
-<div id="dev-studio-root" class="fixed inset-0 z-[99999] flex flex-col bg-zinc-950 text-zinc-200 font-sans select-none overflow-hidden">
+<div id="dev-studio-root" class="fixed inset-0 z-[99999] flex flex-col bg-zinc-500 text-white font-sans select-none overflow-hidden">
   <!-- Top Analytics Bar & Studio Toolbar (100vw, h-11) -->
   <header
     id="dev-analytics-hud"
-    class="relative z-50 h-11 bg-zinc-900/98 text-zinc-200 border-b border-zinc-700/80 px-3 shadow-none backdrop-blur-md flex items-center justify-between gap-3 shrink-0 text-xs"
+    class="relative z-50 h-11 bg-zinc-500 text-white border-b border-zinc-400 px-3 shadow-md backdrop-blur-md flex items-center justify-between gap-3 shrink-0 text-xs"
   >
     <!-- Left: Identity & Timeframe & Device Presets -->
     <div class="flex items-center gap-2 shrink-0">
       <!-- Logo & Sync Status -->
-      <div class="h-7 flex items-center justify-center font-semibold text-zinc-100 font-mono text-xs gap-1 px-1">
+      <div class="h-7 flex items-center justify-center font-semibold text-white font-mono text-xs gap-1 px-1">
         <span>📊</span>
         <div class="w-4 h-4 flex items-center justify-center shrink-0" title="Analytics Sync Status">
-          <svg id="dev-hud-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-400 hidden" fill="none" viewBox="0 0 24 24">
+          <svg id="dev-hud-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-300 hidden" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
           </svg>
-          <svg id="dev-hud-check" class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <svg id="dev-hud-check" class="w-3.5 h-3.5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
           </svg>
         </div>
       </div>
 
       <!-- Timeframe Selector -->
-      <div class="h-7 flex items-center rounded-lg bg-zinc-800/80 border border-zinc-700/80 p-0.5" role="group" aria-label="Timeframe">
-        <button type="button" data-period="7d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100">7d</button>
-        <button type="button" data-period="28d" class="dev-period-btn active-period h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-700 text-white font-medium shadow-sm">28d</button>
-        <button type="button" data-period="90d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100">90d</button>
+      <div class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5" role="group" aria-label="Timeframe">
+        <button type="button" data-period="7d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white">7d</button>
+        <button type="button" data-period="28d" class="dev-period-btn active-period h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300">28d</button>
+        <button type="button" data-period="90d" class="dev-period-btn h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white">90d</button>
       </div>
 
-      <div class="h-4 w-px bg-zinc-700/70 mx-0.5 shrink-0"></div>
+      <div class="h-4 w-px bg-zinc-400 mx-0.5 shrink-0"></div>
 
       <!-- Device Mode Selector -->
-      <div class="h-7 flex items-center rounded-lg bg-zinc-800/80 border border-zinc-700/80 p-0.5" role="group" aria-label="Device Mode">
+      <div class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5" role="group" aria-label="Device Mode">
         <button
           type="button"
           data-device="full"
-          class="dev-device-btn h-full px-2.5 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-700 text-white font-medium shadow-sm"
+          class="dev-device-btn h-full px-2.5 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300"
           title="Full Window (100% Width)"
         >
           <span>🖥️</span> <span>Full</span>
@@ -55,7 +55,7 @@ const { currentPath } = Astro.props;
           data-device="iphone"
           data-w="393"
           data-h="852"
-          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white"
           title="Smartphone (iPhone: 393 × 852)"
         >
           <span>📲</span> <span class="hidden sm:inline">Phone</span>
@@ -65,7 +65,7 @@ const { currentPath } = Astro.props;
           data-device="ipad"
           data-w="820"
           data-h="1180"
-          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white"
           title="Tablet (iPad: 820 × 1180)"
         >
           <span>📱</span> <span class="hidden sm:inline">Tablet</span>
@@ -75,7 +75,7 @@ const { currentPath } = Astro.props;
           data-device="macbook"
           data-w="1280"
           data-h="800"
-          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-400 hover:text-zinc-100"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white"
           title="Laptop (MacBook: 1280 × 800)"
         >
           <span>💻</span> <span class="hidden sm:inline">Laptop</span>
@@ -86,7 +86,7 @@ const { currentPath } = Astro.props;
       <button
         id="dev-btn-rotate"
         type="button"
-        class="hidden h-7 w-7 rounded-lg bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-400 hover:text-white border border-zinc-700/80 flex items-center justify-center transition-colors text-xs leading-none"
+        class="hidden h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none"
         title="Rotate Orientation (Portrait ↔ Landscape)"
       >
         🔄
@@ -100,49 +100,49 @@ const { currentPath } = Astro.props;
       style="-webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%); mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);"
     >
       <!-- Core Essential Plausible -->
-      <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
+      <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-600/90 border border-zinc-400/80 shrink-0 leading-none">
         <span title="Unique Page Visitors" class="flex items-center gap-1">
-          <span class="text-zinc-400">Visitors:</span>
-          <strong id="hud-visitors" class="text-white">--</strong>
+          <span class="text-zinc-200">Visitors:</span>
+          <strong id="hud-visitors" class="text-white font-bold">--</strong>
         </span>
-        <span class="hidden md:inline text-zinc-600">|</span>
+        <span class="hidden md:inline text-zinc-400">|</span>
         <span title="Total Pageviews" class="hidden md:flex items-center gap-1">
-          <span class="text-zinc-400">Views:</span>
-          <strong id="hud-pageviews" class="text-white">--</strong>
+          <span class="text-zinc-200">Views:</span>
+          <strong id="hud-pageviews" class="text-white font-bold">--</strong>
         </span>
-        <span class="hidden md:inline text-zinc-600">|</span>
+        <span class="hidden md:inline text-zinc-400">|</span>
         <span title="Bounce Rate" class="hidden md:flex items-center gap-1">
-          <span class="text-zinc-400">Bounce:</span>
-          <strong id="hud-bounce" class="text-amber-400">--</strong>
+          <span class="text-zinc-200">Bounce:</span>
+          <strong id="hud-bounce" class="text-amber-200 font-bold">--</strong>
         </span>
-        <span class="hidden lg:inline text-zinc-600">|</span>
+        <span class="hidden lg:inline text-zinc-400">|</span>
         <span title="Average Visit Duration" class="hidden lg:flex items-center gap-1">
-          <span class="text-zinc-400">Dur:</span>
-          <strong id="hud-duration" class="text-white">--</strong>
+          <span class="text-zinc-200">Dur:</span>
+          <strong id="hud-duration" class="text-white font-bold">--</strong>
         </span>
       </div>
 
       <!-- Core Google Search Stats -->
-      <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/80 shrink-0 leading-none">
-        <span class="text-zinc-300 font-semibold">Google:</span>
+      <div class="h-7 flex items-center gap-2 px-2.5 rounded-lg bg-zinc-600/90 border border-zinc-400/80 shrink-0 leading-none">
+        <span class="text-white font-semibold">Google:</span>
         <span title="Google Search Clicks" class="flex items-center gap-1">
-          <span class="text-zinc-400">Clicks:</span>
-          <strong id="hud-gsc-clicks" class="text-emerald-400">--</strong>
+          <span class="text-zinc-200">Clicks:</span>
+          <strong id="hud-gsc-clicks" class="text-emerald-300 font-bold">--</strong>
         </span>
-        <span class="text-zinc-600">|</span>
+        <span class="text-zinc-400">|</span>
         <span title="Google Search Impressions" class="flex items-center gap-1">
-          <span class="text-zinc-400">Impr:</span>
-          <strong id="hud-gsc-impr" class="text-zinc-300">--</strong>
+          <span class="text-zinc-200">Impr:</span>
+          <strong id="hud-gsc-impr" class="text-zinc-100 font-bold">--</strong>
         </span>
-        <span class="text-zinc-600">|</span>
+        <span class="text-zinc-400">|</span>
         <span title="Click-Through Rate" class="flex items-center gap-1">
-          <span class="text-zinc-400">CTR:</span>
-          <strong id="hud-gsc-ctr" class="text-white">--</strong>
+          <span class="text-zinc-200">CTR:</span>
+          <strong id="hud-gsc-ctr" class="text-sky-200 font-bold">--</strong>
         </span>
-        <span class="hidden xl:inline text-zinc-600">|</span>
+        <span class="hidden xl:inline text-zinc-400">|</span>
         <span title="Average Search Ranking Position" class="hidden xl:flex items-center gap-1">
-          <span class="text-zinc-400">Rank:</span>
-          <strong id="hud-gsc-rank" class="text-amber-300">--</strong>
+          <span class="text-zinc-200">Rank:</span>
+          <strong id="hud-gsc-rank" class="text-amber-200 font-bold">--</strong>
         </span>
       </div>
     </div>
@@ -152,7 +152,7 @@ const { currentPath } = Astro.props;
       <button
         id="dev-analytics-refresh"
         type="button"
-        class="h-7 w-7 rounded-lg bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-400 hover:text-white border border-zinc-700/80 flex items-center justify-center transition-colors text-xs leading-none"
+        class="h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none"
         title="Force Refresh Live Metrics (Bypass Cache)"
       >
         ↻
@@ -161,7 +161,7 @@ const { currentPath } = Astro.props;
       <button
         id="dev-expand-btn"
         type="button"
-        class="h-7 w-7 rounded-lg bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-400 hover:text-white border border-zinc-700/80 flex items-center justify-center transition-colors text-xs leading-none font-bold"
+        class="h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none font-bold"
         title="Open Full Analytics Cockpit"
       >
         ⤢
@@ -170,11 +170,11 @@ const { currentPath } = Astro.props;
   </header>
 
   <!-- Studio Stage & Workspace (below Top Bar) -->
-  <main id="dev-studio-stage" class="relative flex-1 w-full h-[calc(100vh-2.75rem)] overflow-hidden bg-zinc-950 flex flex-row">
+  <main id="dev-studio-stage" class="relative flex-1 w-full h-[calc(100vh-2.75rem)] overflow-hidden bg-zinc-500 flex flex-row">
     <!-- Viewport Area (Full Window or Scaled Device Frame) -->
     <div class="flex-1 h-full relative overflow-hidden flex items-center justify-center">
       <!-- FULL WINDOW MODE CONTAINER -->
-      <div id="dev-stage-full" class="w-full h-full relative overflow-hidden bg-black">
+      <div id="dev-stage-full" class="w-full h-full relative overflow-hidden bg-zinc-500">
         <iframe
           id="dev-iframe-full"
           src="about:blank"
@@ -191,12 +191,12 @@ const { currentPath } = Astro.props;
           <!-- Physical Device Bezel -->
           <div
             id="dev-device-bezel"
-            class="relative rounded-[38px] p-3 bg-zinc-800 border-2 border-zinc-700/90 shadow-2xl shadow-black/90 flex items-center justify-center transition-all duration-150"
+            class="relative rounded-[38px] p-3 bg-zinc-800 border-2 border-zinc-600 shadow-2xl shadow-zinc-950/40 flex items-center justify-center transition-all duration-150"
           >
             <!-- Iframe Device Screen -->
             <div
               id="dev-device-screen"
-              class="relative overflow-hidden rounded-[26px] bg-slate-950 shadow-inner"
+              class="relative overflow-hidden rounded-[26px] bg-zinc-700 shadow-inner"
               style="width: 393px; height: 852px;"
             >
               <iframe
@@ -214,10 +214,10 @@ const { currentPath } = Astro.props;
     <!-- DOCKED RIGHT SCROLL-MINIMAP (Persistent across ALL view modes!) -->
     <aside
       id="dev-minimap"
-      class="w-12 h-full shrink-0 border-l border-zinc-800/90 bg-zinc-950 flex flex-col relative z-40 select-none overflow-hidden"
+      class="w-12 h-full shrink-0 border-l border-zinc-400 bg-zinc-500 flex flex-col relative z-40 select-none overflow-hidden"
       aria-label="Scroll Retention Minimap"
     >
-      <!-- Minimap Track Container (Full Window Height) -->
+      <!-- Minimap Track Container (Full Window Height, Edge-to-Edge, No Rounded Corners) -->
       <div id="dev-minimap-track" class="flex-1 relative w-full h-full cursor-pointer overflow-hidden">
         <!-- Dynamic SVG Funnel Silhouette -->
         <svg
@@ -228,30 +228,30 @@ const { currentPath } = Astro.props;
         >
           <defs>
             <linearGradient id="dev-funnel-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#10b981" stop-opacity="0.45" />
-              <stop offset="25%" stop-color="#06b6d4" stop-opacity="0.38" />
-              <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.32" />
-              <stop offset="75%" stop-color="#f97316" stop-opacity="0.26" />
-              <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.22" />
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.85" />
+              <stop offset="25%" stop-color="#06b6d4" stop-opacity="0.80" />
+              <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.75" />
+              <stop offset="75%" stop-color="#f97316" stop-opacity="0.70" />
+              <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.65" />
             </linearGradient>
           </defs>
           <path id="dev-minimap-funnel-path" d="" fill="url(#dev-funnel-grad)" />
-          <path id="dev-minimap-funnel-stroke" d="" fill="none" stroke="rgba(52, 211, 153, 0.45)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+          <path id="dev-minimap-funnel-stroke" d="" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
         </svg>
 
         <!-- Milestone Lines & Reach Labels Overlay -->
-        <div id="dev-minimap-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-400 transition-opacity duration-300"></div>
+        <div id="dev-minimap-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-300 transition-opacity duration-300"></div>
 
         <!-- Median Scroll Depth Marker (Exact Depth Position) -->
         <div
           id="dev-minimap-median-marker"
-          class="hidden absolute left-0 right-0 z-35 pointer-events-none flex items-center justify-end pr-0.5"
+          class="hidden absolute left-0 right-0 z-35 pointer-events-none flex items-center justify-center"
           style="top: 0%; transform: translateY(-50%); transition: top 450ms cubic-bezier(0.25, 1, 0.5, 1), opacity 300ms ease;"
         >
           <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
           <span
             id="dev-minimap-median-badge"
-            class="relative z-10 px-1 py-0.5 rounded text-[8px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
+            class="relative z-10 px-1.5 py-0.5 rounded text-[8px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
           >
             ⭐ Med
           </span>
@@ -262,21 +262,21 @@ const { currentPath } = Astro.props;
           id="dev-minimap-loader"
           class="hidden absolute inset-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 z-20"
         >
-          <div class="w-7 h-7 rounded-full bg-zinc-900/95 border border-zinc-700/80 shadow-lg shadow-black/80 flex items-center justify-center backdrop-blur-sm">
-            <svg class="w-4 h-4 animate-spin text-emerald-400" fill="none" viewBox="0 0 24 24">
+          <div class="w-7 h-7 bg-zinc-600 border border-zinc-400 shadow-md flex items-center justify-center backdrop-blur-sm">
+            <svg class="w-4 h-4 animate-spin text-emerald-300" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
             </svg>
           </div>
         </div>
 
-        <!-- Draggable Viewport Thumb -->
+        <!-- Draggable Viewport Thumb (Edge-to-Edge, Sharp Corners) -->
         <div
           id="dev-minimap-thumb"
-          class="absolute left-1 right-1 rounded-md bg-zinc-200/20 hover:bg-zinc-200/30 active:bg-zinc-200/35 border border-zinc-300/40 shadow-md backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
-          style="top: 4px; height: 48px;"
+          class="absolute left-0 right-0 bg-white/25 hover:bg-white/35 border-y border-white/70 shadow-sm backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
+          style="top: 0px; height: 48px;"
         >
-          <div class="w-3.5 h-1 rounded-full bg-zinc-300/60 pointer-events-none"></div>
+          <div class="w-4 h-0.5 bg-white/80 pointer-events-none"></div>
         </div>
       </div>
     </aside>
@@ -285,20 +285,20 @@ const { currentPath } = Astro.props;
   <!-- Fullview Cockpit Modal (Overlay on demand) -->
   <div
     id="dev-analytics-fullview"
-    class="hidden fixed inset-0 z-[100000] bg-zinc-950/90 backdrop-blur-xl flex flex-col font-sans select-text overflow-hidden animate-in fade-in duration-150"
+    class="hidden fixed inset-0 z-[100000] bg-zinc-500/95 backdrop-blur-xl text-white flex flex-col font-sans select-text overflow-hidden animate-in fade-in duration-150"
   >
-    <header class="h-14 border-b border-zinc-800 bg-zinc-900/90 px-6 flex items-center justify-between shrink-0">
+    <header class="h-14 border-b border-zinc-400 bg-zinc-600/90 px-6 flex items-center justify-between shrink-0">
       <div class="flex items-center gap-4">
         <h2 class="text-base font-bold text-white flex items-center gap-2">
           <span>📊</span> Analytics Cockpit
         </h2>
-        <span id="dev-fullview-path" class="px-2.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 font-mono text-xs border border-zinc-700">/</span>
+        <span id="dev-fullview-path" class="px-2.5 py-0.5 rounded-md bg-zinc-700 text-zinc-100 font-mono text-xs border border-zinc-500">/</span>
       </div>
       <div class="flex items-center gap-3">
-        <a id="dev-fullview-plausible" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 font-mono border border-zinc-700 flex items-center gap-1.5">
+        <a id="dev-fullview-plausible" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-xs text-zinc-100 hover:text-white font-mono border border-zinc-400/80 shadow-xs flex items-center gap-1.5">
           <span>Open Plausible</span> ↗
         </a>
-        <button id="dev-collapse-btn" type="button" class="w-8 h-8 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-sm font-bold">
+        <button id="dev-collapse-btn" type="button" class="w-8 h-8 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center text-sm font-bold">
           ✕
         </button>
       </div>
@@ -308,43 +308,43 @@ const { currentPath } = Astro.props;
       <div class="max-w-7xl mx-auto p-6 space-y-8 w-full">
         <!-- 1. Plausible Analytics Section -->
         <section class="space-y-4">
-          <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <div class="flex items-center justify-between border-b border-zinc-400 pb-3">
             <div class="flex items-center gap-2.5">
-              <span class="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-xs">P</span>
+              <span class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-500 flex items-center justify-center text-white font-bold text-xs">P</span>
               <div>
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
                   Plausible Analytics
-                  <span class="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800/60">Privacy-First Traffic</span>
+                  <span class="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-200 border border-zinc-500">Privacy-First Traffic</span>
                 </h3>
-                <p class="text-xs text-zinc-400 mt-0.5">Aggregated page visitors, views, bounce rate, and visit duration</p>
+                <p class="text-xs text-zinc-200 mt-0.5">Aggregated page visitors, views, bounce rate, and visit duration</p>
               </div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
-            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
-              <div class="text-xs text-zinc-400 flex items-center justify-between">
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Unique Visitors</span>
                 <span>👤</span>
               </div>
               <div id="full-visitors" class="text-2xl font-bold text-white mt-2">--</div>
             </div>
-            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
-              <div class="text-xs text-zinc-400 flex items-center justify-between">
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Total Views</span>
                 <span>📄</span>
               </div>
               <div id="full-views" class="text-2xl font-bold text-white mt-2">--</div>
             </div>
-            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
-              <div class="text-xs text-zinc-400 flex items-center justify-between">
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Bounce Rate</span>
                 <span>↩️</span>
               </div>
-              <div id="full-bounce" class="text-2xl font-bold text-amber-400 mt-2">--</div>
+              <div id="full-bounce" class="text-2xl font-bold text-amber-200 mt-2">--</div>
             </div>
-            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
-              <div class="text-xs text-zinc-400 flex items-center justify-between">
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Visit Duration</span>
                 <span>⏱️</span>
               </div>
@@ -355,61 +355,61 @@ const { currentPath } = Astro.props;
 
         <!-- 2. Google Search Console Section -->
         <section class="space-y-4">
-          <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <div class="flex items-center justify-between border-b border-zinc-400 pb-3">
             <div class="flex items-center gap-2.5">
-              <span class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs">G</span>
+              <span class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-500 flex items-center justify-center text-white font-bold text-xs">G</span>
               <div>
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
                   Google Search Console
-                  <span class="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800/60">Organic Search</span>
+                  <span class="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-200 border border-zinc-500">Organic Search</span>
                 </h3>
-                <p class="text-xs text-zinc-400 mt-0.5">Organic search visibility, clicks, impressions, and SERP ranking performance</p>
+                <p class="text-xs text-zinc-200 mt-0.5">Organic search visibility, clicks, impressions, and SERP ranking performance</p>
               </div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
-            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
-              <div class="text-xs text-zinc-400 flex items-center justify-between">
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Search Clicks</span>
                 <span>🎯</span>
               </div>
-              <div id="full-gsc-clicks" class="text-2xl font-bold text-emerald-400 mt-2">--</div>
+              <div id="full-gsc-clicks" class="text-2xl font-bold text-emerald-300 mt-2">--</div>
             </div>
-            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
-              <div class="text-xs text-zinc-400 flex items-center justify-between">
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Impressions</span>
                 <span>👁️</span>
               </div>
-              <div id="full-gsc-impr" class="text-2xl font-bold text-zinc-200 mt-2">--</div>
+              <div id="full-gsc-impr" class="text-2xl font-bold text-zinc-100 mt-2">--</div>
             </div>
-            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
-              <div class="text-xs text-zinc-400 flex items-center justify-between">
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Average CTR</span>
                 <span>📈</span>
               </div>
-              <div id="full-gsc-ctr" class="text-2xl font-bold text-white mt-2">--</div>
+              <div id="full-gsc-ctr" class="text-2xl font-bold text-sky-200 mt-2">--</div>
             </div>
-            <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700/80 transition-colors">
-              <div class="text-xs text-zinc-400 flex items-center justify-between">
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Average Rank</span>
                 <span>🏆</span>
               </div>
-              <div id="full-gsc-rank" class="text-2xl font-bold text-amber-300 mt-2">--</div>
+              <div id="full-gsc-rank" class="text-2xl font-bold text-amber-200 mt-2">--</div>
             </div>
           </div>
 
           <!-- Google Search Queries Table -->
-          <div class="p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+          <div class="p-5 rounded-2xl bg-zinc-600/90 border border-zinc-400/80 space-y-4 shadow-xs">
+            <div class="flex items-center justify-between border-b border-zinc-400 pb-3">
               <div>
                 <h4 class="text-sm font-bold text-white">Top Search Queries</h4>
-                <p class="text-xs text-zinc-400 mt-0.5">Search queries bringing organic traffic to this specific URL</p>
+                <p class="text-xs text-zinc-200 mt-0.5">Search queries bringing organic traffic to this specific URL</p>
               </div>
-              <span id="full-queries-count" class="text-xs font-mono text-zinc-400 px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700/60">0 queries</span>
+              <span id="full-queries-count" class="text-xs font-mono text-zinc-200 px-2 py-0.5 rounded bg-zinc-700 border border-zinc-500">0 queries</span>
             </div>
             <div id="full-queries-table" class="space-y-2 font-mono text-xs max-h-96 overflow-y-auto pr-1">
-              <span class="text-zinc-500 italic">Loading search queries...</span>
+              <span class="text-zinc-300 italic">Loading search queries...</span>
             </div>
           </div>
         </section>
@@ -736,11 +736,11 @@ const { currentPath } = Astro.props;
       // Update button styling
       document.querySelectorAll<HTMLButtonElement>('.dev-device-btn').forEach((btn) => {
         if (btn.getAttribute('data-device') === dev) {
-          btn.classList.add('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
-          btn.classList.remove('text-zinc-400');
+          btn.classList.add('bg-zinc-200', 'text-zinc-900', 'font-bold', 'shadow-xs', 'border', 'border-zinc-300');
+          btn.classList.remove('text-zinc-200');
         } else {
-          btn.classList.remove('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
-          btn.classList.add('text-zinc-400');
+          btn.classList.remove('bg-zinc-200', 'text-zinc-900', 'font-bold', 'shadow-xs', 'border', 'border-zinc-300');
+          btn.classList.add('text-zinc-200');
         }
       });
 
@@ -929,8 +929,7 @@ const { currentPath } = Astro.props;
       let startClientY = 0;
       let startThumbTop = 0;
 
-      const pad = 4;
-      const getUsableTrackH = () => Math.max(1, track.clientHeight - 2 * pad - thumb.offsetHeight);
+      const getUsableTrackH = () => Math.max(1, track.clientHeight - thumb.offsetHeight);
       const getMaxScroll = () => Math.max(0, this.lastScrollHeight - this.lastClientHeight);
 
       // Pointer Down on Track or Thumb
@@ -953,14 +952,14 @@ const { currentPath } = Astro.props;
 
         if (isThumb) {
           startClientY = e.clientY;
-          startThumbTop = parseFloat(thumb.style.top || `${pad}`) || pad;
+          startThumbTop = parseFloat(thumb.style.top || '0') || 0;
         } else {
           // Click on track: jump thumb center to click position
           const clickY = e.clientY - rect.top;
-          const targetThumbTop = Math.max(pad, Math.min(pad + usableTrackH, clickY - thumb.offsetHeight / 2));
+          const targetThumbTop = Math.max(0, Math.min(usableTrackH, clickY - thumb.offsetHeight / 2));
           thumb.style.top = `${Math.round(targetThumbTop)}px`;
 
-          const scrollPct = usableTrackH > 0 ? (targetThumbTop - pad) / usableTrackH : 0;
+          const scrollPct = usableTrackH > 0 ? targetThumbTop / usableTrackH : 0;
           this.sendScrollToIframe(scrollPct * maxScroll);
 
           startClientY = e.clientY;
@@ -978,10 +977,10 @@ const { currentPath } = Astro.props;
         const maxScroll = getMaxScroll();
         const deltaY = e.clientY - startClientY;
 
-        const targetThumbTop = Math.max(pad, Math.min(pad + usableTrackH, startThumbTop + deltaY));
+        const targetThumbTop = Math.max(0, Math.min(usableTrackH, startThumbTop + deltaY));
         thumb.style.top = `${Math.round(targetThumbTop)}px`;
 
-        const scrollPct = usableTrackH > 0 ? (targetThumbTop - pad) / usableTrackH : 0;
+        const scrollPct = usableTrackH > 0 ? targetThumbTop / usableTrackH : 0;
         this.sendScrollToIframe(scrollPct * maxScroll);
       });
 
@@ -1019,15 +1018,14 @@ const { currentPath } = Astro.props;
       const trackH = track.clientHeight;
       if (trackH <= 0) return;
 
-      const pad = 4;
       const maxScroll = Math.max(1, this.lastScrollHeight - this.lastClientHeight);
       const scrollPct = Math.max(0, Math.min(1, this.lastScrollTop / maxScroll));
 
       // Calculate thumb height proportional to viewport (minimum 36px)
-      const availH = Math.max(36, trackH - 2 * pad);
+      const availH = Math.max(36, trackH);
       const thumbH = Math.max(36, Math.min(availH, (this.lastClientHeight / this.lastScrollHeight) * availH));
-      const usableTrackH = Math.max(0, trackH - 2 * pad - thumbH);
-      const thumbTop = pad + scrollPct * usableTrackH;
+      const usableTrackH = Math.max(0, trackH - thumbH);
+      const thumbTop = scrollPct * usableTrackH;
 
       thumb.style.height = `${Math.round(thumbH)}px`;
       thumb.style.top = `${Math.round(thumbTop)}px`;
@@ -1198,7 +1196,7 @@ const { currentPath } = Astro.props;
         b = Math.round(94 + (22 - 94) * factor);
       }
 
-      const opacity = parseFloat((0.22 + 0.23 * (clamped / 100)).toFixed(2));
+      const opacity = parseFloat((0.65 + 0.25 * (clamped / 100)).toFixed(2));
       return { r, g, b, opacity };
     }
 
@@ -1259,8 +1257,8 @@ const { currentPath } = Astro.props;
           .filter((m) => m.depth % 25 === 0)
           .map((m) => `
             <div class="absolute w-full flex items-center justify-between px-1 pointer-events-none" style="top: ${m.depth}%;" title="Reach at ${m.depth}% depth: ${Math.round(m.percentageOfVisitors)}%">
-              <div class="h-px bg-zinc-700/50 w-1.5"></div>
-              <div class="h-px bg-zinc-700/50 w-1.5"></div>
+              <div class="h-px bg-zinc-300 w-1.5"></div>
+              <div class="h-px bg-zinc-300 w-1.5"></div>
             </div>
           `)
           .join('');
@@ -1274,11 +1272,11 @@ const { currentPath } = Astro.props;
       document.querySelectorAll<HTMLButtonElement>('.dev-period-btn').forEach((btn) => {
         const p = btn.getAttribute('data-period');
         if (p === this.currentPeriod) {
-          btn.classList.add('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
-          btn.classList.remove('text-zinc-400');
+          btn.classList.add('bg-zinc-200', 'text-zinc-900', 'font-bold', 'shadow-xs', 'border', 'border-zinc-300');
+          btn.classList.remove('text-zinc-200');
         } else {
-          btn.classList.remove('bg-zinc-700', 'text-white', 'font-medium', 'shadow-sm');
-          btn.classList.add('text-zinc-400');
+          btn.classList.remove('bg-zinc-200', 'text-zinc-900', 'font-bold', 'shadow-xs', 'border', 'border-zinc-300');
+          btn.classList.add('text-zinc-200');
         }
       });
     }
@@ -1344,8 +1342,8 @@ const { currentPath } = Astro.props;
       const queriesTableEl = document.getElementById('full-queries-table');
       if (queriesTableEl) {
         queriesTableEl.innerHTML = `
-          <div class="flex items-center gap-2 text-zinc-500 italic py-4 animate-pulse">
-            <svg class="w-4 h-4 animate-spin text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
+          <div class="flex items-center gap-2 text-zinc-400 italic py-4 animate-pulse">
+            <svg class="w-4 h-4 animate-spin text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
             </svg>
@@ -1479,17 +1477,17 @@ const { currentPath } = Astro.props;
       if (queriesCountEl) queriesCountEl.textContent = `${queries.length} queries`;
       if (queriesTableEl) {
         if (queries.length === 0) {
-          queriesTableEl.innerHTML = '<span class="text-zinc-500 italic">No search queries recorded.</span>';
+          queriesTableEl.innerHTML = '<span class="text-zinc-300 italic">No search queries recorded.</span>';
         } else {
           queriesTableEl.innerHTML = queries
             .map(
               (q) => `
-              <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-800/40 border border-zinc-700/50 hover:bg-zinc-800/70 transition-colors">
-                <span class="text-zinc-200 font-medium truncate max-w-[60%]">${q.query}</span>
+              <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-700/80 border border-zinc-500/80 hover:bg-zinc-700 transition-colors">
+                <span class="text-zinc-100 font-medium truncate max-w-[60%]">${q.query}</span>
                 <div class="flex items-center gap-3 shrink-0">
-                  <span class="text-emerald-400 font-semibold" title="Clicks">${q.clicks} clicks</span>
-                  <span class="text-zinc-400" title="Impressions">${q.impressions} impr</span>
-                  <span class="text-amber-300 font-bold px-1.5 py-0.5 rounded bg-amber-950/40 border border-amber-500/30 text-[11px]" title="Average Rank">#${q.position.toFixed(1)}</span>
+                  <span class="text-emerald-300 font-semibold" title="Clicks">${q.clicks} clicks</span>
+                  <span class="text-zinc-300" title="Impressions">${q.impressions} impr</span>
+                  <span class="text-amber-200 font-bold px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-600 text-[11px]" title="Average Rank">#${q.position.toFixed(1)}</span>
                 </div>
               </div>
             `
