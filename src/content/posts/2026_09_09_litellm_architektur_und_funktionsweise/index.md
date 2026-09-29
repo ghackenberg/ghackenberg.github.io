@@ -23,8 +23,6 @@ Werden diese Systeme über direkte Punkt-zu-Punkt-Verbindungen verdrahtet, entst
 
 Genau diese Herausforderung adressiert **LiteLLM** als **Schicht 5 (Gateway & Governance)** unseres Referenzstacks. Als universeller Übersetzer, intelligenter Load-Balancer, Multi-Tier-Cache und Zero-Trust-Governance-Hub bildet LiteLLM das unverzichtbare Bindeglied zwischen Konsumenten und heterogenen Inferenz-Clustern.
 
-![LiteLLM: Zentrales AI Gateway und Proxy-Router für das souveräne Multi-Model Ökosystem](./hero.jpg "LiteLLM")
-
 Bevor wir die internen Transformationsmechanismen und Routing-Algorithmen im Detail zerlegen, visualisiert das folgende Architekturmodell das Gesamtsystem:
 
 ![Umfassende Systemarchitektur von LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen](./litellm_system_architecture.svg "LiteLLM mit Client-Anbindung, FastAPI-Core, Multi-Tier-Caching, Persistenz und heterogenen Inferenz-Ressourcen - Umfassende Systemarchitektur")

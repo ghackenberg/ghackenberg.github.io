@@ -17,8 +17,6 @@ Die Resonanz aus Entwicklungsteams und IT-Architekturen war eindeutig: Das theor
 
 Dieser Beitrag schlägt die Brücke vom Forschungspapier zur lauffähigen Enterprise-Architektur. Wir nutzen das TypeScript-native Framework **Mastra**, um eine vollständige Referenzimplementierung zu entwerfen: mit formaler Typsicherheit via Zod, dynamischer Laufzeit-Führung (*Runtime Soft Guidance*), nativer MCP-Integration für reale Industriesysteme und einem kontinuierlichen Offline-Evolutionszyklus mit persistenter *Rejection Memory*.
 
-![Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen](./hero.jpg "Procedural Graphs mit Mastra")
-
 > [!TIP]
 > **Kompakt-Rekapitulation: Was sind Procedural Graphs & warum Mastra?**
 > * **Das Problem unbeschränkter ReAct-Agenten:** Reine Prompt- und Tool-Loops driften bei mehrstufigen Geschäftsprozessen unweigerlich ab oder übersehen Compliance-Vorgaben. Klassische BPMN-Workflows sind wiederum zu starr für unstrukturierte Daten.

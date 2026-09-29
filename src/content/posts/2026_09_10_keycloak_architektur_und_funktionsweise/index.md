@@ -22,8 +22,6 @@ In vielen heutigen Pilotprojekten und unreflektierten Enterprise-Deployments her
 
 Genau an dieser Nahtstelle greift **Keycloak** als **Schicht 5 (Gateway, Identity & Access Management)** unseres Referenzmodells ein. Als hochgradig performanter, cloud-nativer Open-Source-Identity-Provider (IdP) standardisiert Keycloak moderne Authentifizierungs- und Autorisierungs-Flows (OAuth 2.0, OpenID Connect, SAML 2.0, UMA 2.0). 
 
-![Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im souveränen AI Tech Stack](./hero.jpg "Keycloak")
-
 Bevor wir die internen Protokollabläufe und Token-Transformationsmechanismen im Detail analysieren, visualisiert das folgende Architekturmodell die Einbettung von Keycloak in die Gesamttopologie unseres Stacks:
 
 ![Keycloak Zero-Trust Governance und Schichtenintegration im souveränen AI Tech Stack](./keycloak_stack_integration.svg "Keycloak Zero-Trust Governance und Schichtenintegration")

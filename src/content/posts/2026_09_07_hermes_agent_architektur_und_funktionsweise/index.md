@@ -17,8 +17,6 @@ Bislang dominierten in der Praxis zwei problematische Extreme: Entweder starre, 
 
 Mit dem von **Nous Research** entwickelten **Hermes Agent** liegt nun ein quelloffenes, autarkes „Agenten-Betriebssystem“ vor, das genau diese Lücke schließt. Dieser Beitrag analysiert die Software-Architektur, den Turn-Lifecycle der Kern-Engine, das Zusammenspiel von Bounded Memory und FTS5-Transkriptsuche sowie das Zusammenspiel von standardisierten Skills und Hintergrund-Kuratierung.
 
-![Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills](./hero.jpg "Hermes Agent")
-
 Bevor wir in die feingranularen Ausführungszyklen einsteigen, veranschaulicht das folgende Referenzmodell die sechs Subsysteme der Gesamtlösung:
 
 ![Referenzarchitektur und Subsysteme des Hermes Agent](./hermes_agent_system_architecture.svg "Referenzarchitektur und Subsysteme des Hermes")

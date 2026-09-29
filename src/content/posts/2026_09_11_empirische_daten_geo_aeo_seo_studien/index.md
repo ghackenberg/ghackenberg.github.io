@@ -22,8 +22,6 @@ In der SEO- und Tech-Branche wird jedoch viel behauptet, wenn neue Buzzwords auf
 
 In diesem Artikel ziehen wir Bilanz über den aktuellen wissenschaftlichen und industriellen Erkenntnisstand. Dabei unterscheiden wir strikt zwischen **Peer-Reviewed Publikationen** (akademisch geprüfte Forschung) und **Non-Peer-Reviewed Publikationen** (Industriereporte und Tool-Benchmarks). Abschließend bewerten wir Methodik, Datenqualität und Glaubwürdigkeit beider Quellen.
 
-![GEO & AEO empirische Forschung im Labor](./hero.jpg "GEO & AEO empirische Forschung")
-
 ## 1. Peer-Reviewed Publikationen: Wissenschaftliche Kausalanalysen
 
 Der Goldstandard der Informatik und Information Retrieval (IR) Forschung zeichnet sich durch offengelegte Datensätze, kontrollierte Versuchsaufbauten und den anonymen Begutachtungsprozess (*Peer Review*) aus. In den letzten drei Jahren haben renommierte Konferenzen (wie ACM SIGKDD, EMNLP und ACM SIGIR) wegweisende Arbeiten zu den Wirkmechanismen generativer Suchsysteme hervorgebracht.

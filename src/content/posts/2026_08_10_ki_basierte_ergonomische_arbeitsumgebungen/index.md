@@ -15,8 +15,6 @@ Klassische Ergonomie-Ansätze stoßen hier an ihre Grenzen: Ein höhenverstellba
 
 An unserer **Professur für Industrieinformatik an der FH OÖ Campus Wels** widmen wir uns daher einem zentralen Forschungsthema der Zukunft: Der **Entwicklung KI-basierter ergonomischer Arbeitsumgebungen**, die sich durch multimodale Sensorik, lernende Algorithmen und adaptive Aktorik kontinuierlich und unaufdringlich an den Menschen anpassen.
 
-![KI-basierte ergonomische Arbeitsumgebungen - Systemübersicht](./icon.jpg "KI-gestützte ergonomische Arbeitsumgebung mit Sensorik")
-
 ## 1. Das Kernproblem: Statische Ergonomie trifft auf dynamische Menschen
 
 Sowohl im Corporate Office als auch in der häuslichen Wohnumgebung lassen sich prägnante ergonomische Herausforderungen beobachten:

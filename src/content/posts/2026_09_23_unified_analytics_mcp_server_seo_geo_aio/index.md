@@ -15,8 +15,6 @@ In jenem Reifegradmodell markiert **Level 4** den entscheidenden Schritt: die Tr
 
 In diesem Beitrag überführen wir die Theorie in die betriebliche Praxis. Wir stellen die Architektur unseres eigens entwickelten, quelloffenen **Unified Analytics MCP Servers** vor: wie er Google Search Console und die datenschutzfreundliche Open-Source-Plattform Plausible Analytics deterministisch zusammenführt, Rohdaten vor dem Kontext-Inject token-effizient aggregiert und autonomen Coding-Agenten (wie Antigravity oder Claude Code) acht mächtige Werkzeuge für automatische Inhaltsaudits, Graph-Analysen und Pre-Commit-Prüfungen an die Hand gibt.
 
-![Dr. Georg Hackenberg präsentiert die Architektur des Unified Analytics MCP Servers am Flipchart auf der Holzterrasse in Grünau im Almtal](./hero.jpg "Dr. Georg Hackenberg am Flipchart auf der Almtal-Terrasse")
-
 ## 1. Das Dilemma isolierter Datensilos: Warum SEO und Web-Analytics bisher getrennt waren
 
 Klassische Suchmaschinenoptimierung und Web-Analytics operieren in der Praxis in zwei getrennten Welten, die ohne mühsame manuelle Tabellenkalkulationen nicht miteinander kommunizieren können.

@@ -19,8 +19,6 @@ Anstatt flüchtige Kontextfenster immer wieder mit Versuch-und-Irrtum-Routinen z
 
 Dieser Architektur-Leitfaden definiert die unverzichtbaren Systemkriterien für WikiSkill-Runtimes, unterzieht die fünf maßgeblichen Technologie-Stacks einer softwaretechnischen Eignungsprüfung und gibt konkrete Stack-Empfehlungen für Web-, CLI- und Enterprise-Szenarien.
 
-![Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg analysiert am Besprechungstisch im Campus Office Wels die technologische Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph](./hero.jpg "Architektur-Leitfaden für Google WikiSkill")
-
 > [!TIP]
 > **Kompakt-Rekapitulation: Die 3 Schichten des WikiSkill-Paradigmas**
 > * **1. `raw/` (Ausführungs-Traces):** Unveränderliche, chronologische Aufzeichnungen aller Multi-Turn-Interaktionen, Tool-Aufrufe, Parameter und CLI-Ausgaben des Inferenz-Agenten.

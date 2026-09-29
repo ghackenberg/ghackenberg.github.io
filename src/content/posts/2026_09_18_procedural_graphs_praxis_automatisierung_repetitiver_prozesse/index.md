@@ -21,8 +21,6 @@ Mit dem bahnbrechenden Forschungspapier **„Procedural Graphs: Self-Evolving Ex
 
 Dieser Artikel analysiert das Framework aus Sicht der betrieblichen AI-Transformation: Welches systemische Problem löst der Ansatz? Wie funktionieren Procedural Graphs mathematisch und operativ? Und wie gelingt es damit, repetitive Routineaufgaben wirtschaftlich, fehlertolerant und mitarbeiterorientiert zu automatisieren?
 
-![Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an einer interaktiven Projektionswand, wie Prozesswissen in dynamischen Wissensgraphen verankert wird](./hero.jpg "Procedural Graphs in der Praxis")
-
 ## 1. Das Dilemma der AI-Transformation bei repetitiven Prozessen
 
 Der Kern einer jeden gewinnbringenden AI-Transformation besteht darin, **wiederkehrende, regelbasierte, aber wissensintensive Routinearbeiten zu automatisieren**. Ziel ist es nicht, Mitarbeiter zu ersetzen, sondern sie von fehleranfälliger administrativer „Datenschaufelei“ zwischen E-Mails, PDF-Formularen, ERP-Masken und Tabellen zu befreien.

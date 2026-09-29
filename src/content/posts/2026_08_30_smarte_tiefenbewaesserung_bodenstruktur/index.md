@@ -18,8 +18,6 @@ Konventionelle Bewässerungsmethoden stoßen in solchen Mischzonen schnell an ph
 
 In diesem Beitrag stellen wir ein ganzheitliches mechatronisches und bodenbauliches Gesamtkonzept vor: **Die Kombination aus strukturell tragfähigem, überbaubarem Baumsubstrat, unterirdischer Unterflur-Tropfbewässerung, variablen Tiefenlanzen und einer Edge-integrierten Smart-Home-Regelung.**
 
-![Dr. Georg Hackenberg inspiziert ein automatisiertes Tiefenbewässerungssystem mit kapillaren Bodenfeuchtesensoren im Wurzelbereich](./hero.jpg "Smarte Tiefenbewässerung im Wurzelbereich")
-
 ## 1. Bautechnische Bodenstruktur: Wurzelraum unter befahrbaren Pflasterflächen
 
 Um Verkehrsflächen dauerhaft befahrbar zu halten, ohne das Wurzelwachstum abzuschnüren, ist ein präzise dimensionierter Schichtenaufbau nach den Richtlinien der FLL (Forschungsgesellschaft Landschaftsentwicklung Landschaftsbau e.V.) erforderlich.
