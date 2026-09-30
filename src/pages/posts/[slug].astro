@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar.astro";
 import RelatedContent from "../../components/RelatedContent.astro";
 import GetInTouchCard from "../../components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
+import { generateCitationLabel } from "../../utils/citations.js";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -17,7 +18,15 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
-const tocHeadings = (headings || []).filter((h) => h.depth === 2 || h.depth === 3);
+const rawTocHeadings = (headings || []).filter((h) => h.depth === 2 || h.depth === 3);
+const tocHeadings = [...rawTocHeadings];
+if (post.data.references && post.data.references.length > 0) {
+  const refText = post.data.lang === "en" ? "References" : "Referenzen";
+  const refSlug = post.data.lang === "en" ? "references" : "referenzen";
+  if (!tocHeadings.some((h) => h.slug === refSlug)) {
+    tocHeadings.push({ depth: 2, slug: refSlug, text: refText });
+  }
+}
 
 const ui = {
   back: "Back to Posts",
@@ -204,6 +213,45 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
       <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-blue"></div>
       
       <Content />
+
+      {post.data.references && post.data.references.length > 0 && (
+        <section id={post.data.lang === 'en' ? 'references' : 'referenzen'} class="mt-12 pt-4">
+          <h2>{post.data.lang === 'en' ? 'References' : 'Referenzen'}</h2>
+          <ul class="space-y-3.5 list-none pl-0 text-sm sm:text-base leading-relaxed text-slate-300 light:text-slate-700">
+            {post.data.references.map((ref) => (
+              <li id={`ref-${ref.id}`} class="group flex items-start gap-2.5 scroll-mt-24 p-2 -mx-2 rounded-lg transition-colors hover:bg-white/[0.03] light:hover:bg-slate-100/60 target:bg-brand-blue/10 target:border target:border-brand-blue/30">
+                <span class="font-mono text-brand-blue font-bold shrink-0 select-none px-1.5 py-0 rounded bg-brand-blue/10 border border-brand-blue/20 leading-relaxed">[{generateCitationLabel(ref)}]</span>
+                <div class="leading-relaxed">
+                  <span class="font-medium text-slate-200 light:text-slate-800">{ref.author}</span>
+                  {ref.year ? <span> ({ref.year}). </span> : <span>. </span>}
+                  <cite class="italic font-normal text-slate-100 light:text-slate-900">{ref.title}</cite>.
+                  {ref.type === 'inproceedings' && (
+                    <span> In <em>{ref.booktitle}</em>{ref.pages ? (post.data.lang === 'en' ? `, pp. ${ref.pages}` : `, S. ${ref.pages}`) : ''}{ref.publisher ? ` (${ref.publisher})` : ''}. </span>
+                  )}
+                  {ref.type === 'article' && (
+                    <span> <em>{ref.journal}</em>{ref.volume ? `, ${ref.volume}` : ''}{ref.number ? `(${ref.number})` : ''}{ref.pages ? (post.data.lang === 'en' ? `, pp. ${ref.pages}` : `, S. ${ref.pages}`) : ''}. </span>
+                  )}
+                  {ref.type === 'book' && (
+                    <span>{ref.edition ? ` (${ref.edition}). ` : ' '}{ref.publisher}. </span>
+                  )}
+                  {ref.type === 'online' && (
+                    <span>{ref.siteName ? ` ${ref.siteName}. ` : ' '}</span>
+                  )}
+                  {ref.type === 'misc' && (
+                    <span>{ref.howpublished ? ` ${ref.howpublished}. ` : ' '}{ref.note ? `${ref.note}. ` : ''}</span>
+                  )}
+                  {ref.doi && (
+                    <span>DOI: <a href={ref.doi.startsWith('http') ? ref.doi : `https://doi.org/${ref.doi}`} target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline break-all">{ref.doi}</a>. </span>
+                  )}
+                  {ref.url && (!ref.doi || !ref.url.includes(ref.doi)) && (
+                    <span>{ref.type === 'online' ? (post.data.lang === 'en' ? 'Available online at ' : 'Online verfügbar unter ') : ''}<a href={ref.url} target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline break-all">{ref.url}</a>.</span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
 
     <!-- Contact & Discussion Section -->
@@ -269,6 +317,12 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
   }
   .post-body :global(a:not([class*="bg-"]):hover) {
     color: #60a5fa;
+  }
+  .post-body :global(.citation) {
+    text-decoration: none !important;
+  }
+  .post-body :global(.citation:hover) {
+    text-decoration: none !important;
   }
   .post-body :global(strong) {
     color: var(--color-text-heading);

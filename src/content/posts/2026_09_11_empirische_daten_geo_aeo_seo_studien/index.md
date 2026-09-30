@@ -1,13 +1,55 @@
 ---
-title: "Empirische Daten zu GEO, AEO & SEO: Was Peer-Reviewed Studien und Industrie-Benchmarks zeigen"
-pubDate: "2026-09-11"
-description: "Wissenschaftlich fundierte Synthese empirischer Forschungsergebnisse zu Generative Engine Optimization (GEO) und Answer Engine Optimization (AEO): Peer-Reviewed vs. Non-Peer-Reviewed im kritischen Qualitäts- und Glaubwürdigkeitsvergleich."
-tags: ["aeo", "agentic-ai", "aio", "artificial-intelligence", "benchmarks", "geo", "knowledge-graphs", "rag", "seo", "web-development"]
+title: "Empirische Daten zu GEO, AEO & SEO: Was Peer-Reviewed Studien und
+  Industrie-Benchmarks zeigen"
+pubDate: 2026-09-11
+description: "Wissenschaftlich fundierte Synthese empirischer
+  Forschungsergebnisse zu Generative Engine Optimization (GEO) und Answer Engine
+  Optimization (AEO): Peer-Reviewed vs. Non-Peer-Reviewed im kritischen
+  Qualitäts- und Glaubwürdigkeitsvergleich."
+tags:
+  - aeo
+  - agentic-ai
+  - aio
+  - artificial-intelligence
+  - benchmarks
+  - geo
+  - knowledge-graphs
+  - rag
+  - seo
+  - web-development
 icon:
-  src: "./hero.jpg"
-  title: "GEO & AEO empirische Forschung"
-  description: "GEO & AEO empirische Forschung im Labor"
+  src: ./hero.jpg
+  title: GEO & AEO empirische Forschung
+  description: GEO & AEO empirische Forschung im Labor
+references:
+  - type: inproceedings
+    author: Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K.,
+      & Deshpande, A.
+    title: "GEO: Generative Engine Optimization"
+    url: https://doi.org/10.1145/3637528.3671900
+    year: 2024
+    doi: 10.1145/3637528.3671900
+    booktitle: Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery
+      and Data Mining (KDD '24)
+    id: aggarwal-2024-geo
+  - type: online
+    author: Fishkin, R.
+    title: "2024 Zero-Click Search Study: For every 1,000 Google searches, only 360
+      clicks go to the open web"
+    url: https://sparktoro.com/blog/2024-zero-click-search-study/
+    year: 2024
+    siteName: SparkToro
+    id: fishkin-2024-zero-click
+  - type: article
+    author: Liu, N. F., Zhang, T., & Liang, P.
+    title: Evaluating Verifiability in Generative Search Engines
+    url: https://arxiv.org/abs/2304.09848
+    year: 2023
+    journal: "Findings of the Association for Computational Linguistics: EMNLP 2023"
+    id: liu-2023-evaluating-verifiability
 ---
+
+
 
 In unserem [vorherigen Beitrag vom 11. August 2026](/posts/2026_08_11_seo_geo_aeo_aio_optimierung/) haben wir die theoretischen Grundlagen und die technische Umsetzung für die vier Dimensionen moderner Websichtbarkeit vorgestellt: **SEO**, **GEO**, **AEO** und **AIO**. Wir haben dargelegt, wie sich Websites durch Standards wie `llms.txt`, strukturierte JSON-LD Schemas und „Answer-First“-Architekturen für RAG-Systeme und KI-Agenten rüsten lassen.
 
@@ -27,17 +69,19 @@ In diesem Artikel ziehen wir Bilanz über den aktuellen wissenschaftlichen und i
 Der Goldstandard der Informatik und Information Retrieval (IR) Forschung zeichnet sich durch offengelegte Datensätze, kontrollierte Versuchsaufbauten und den anonymen Begutachtungsprozess (*Peer Review*) aus. In den letzten drei Jahren haben renommierte Konferenzen (wie ACM SIGKDD, EMNLP und ACM SIGIR) wegweisende Arbeiten zu den Wirkmechanismen generativer Suchsysteme hervorgebracht.
 
 ### A. KDD 2024: Die GEO-Pionierstudie (Princeton, Georgia Tech, Allen AI, IIT Delhi)
-Die Arbeit [„GEO: Generative Engine Optimization“ von Aggarwal et al. (KDD 2024)](https://arxiv.org/abs/2311.09735) gilt als die wissenschaftliche Geburtsstunde der systematischen GEO-Forschung. Die Autoren führten mit **GEO-bench** einen kontrollierten Benchmark über **10.000 reale Suchanfragen** aus neun unterschiedlichen Wissensdomänen durch und testeten neun Inhaltsmodifikationsstrategien gegenüber generativen Suchsystemen (u. a. Perplexity, Bing Chat und GPT-basierten RAG-Engines).
+Die Arbeit [„GEO: Generative Engine Optimization“ von Aggarwal et al [@aggarwal-2024-geo]. (KDD 2024)](https://arxiv.org/abs/2311.09735) gilt als die wissenschaftliche Geburtsstunde der systematischen GEO-Forschung. Die Autoren führten mit **GEO-bench** einen kontrollierten Laborbenchmark über **10.000 reale Suchanfragen** aus neun unterschiedlichen Wissensdomänen durch und testeten neun Inhaltsmodifikationsstrategien gegenüber generativen Suchsystemen (u. a. Perplexity, Bing Chat und GPT-basierten RAG-Engines).
 
-Die wichtigsten empirischen Befunde:
-* **Massiver Sichtbarkeitsgewinn durch Quellen und Zitate (+40%)**: Die Integration von wörtlichen Expertenzitaten (*Cite Sources / Expert Quotations*) führte im Schnitt zu einem Sichtbarkeitsanstieg von bis zu 40% in den synthetisierten Antworten.
-* **Statistische & numerische Evidenz (+37%)**: Das Anreichern von Texten mit konkreten quantitativen Daten, Kennzahlen und Messwerten steigerte die Zitationswahrscheinlichkeit um rund 37%.
+Die wichtigsten empirischen Befunde aus diesem Versuchsaufbau:
+* **Massiver Sichtbarkeitsgewinn durch Quellen und Zitate (+40%)**: Die Integration von wörtlichen Expertenzitaten (*Cite Sources / Expert Quotations*) führte im kontrollierten Experiment zu einem Zitationsanstieg von bis zu 40% in den synthetisierten Antworten.
+* **Statistische & numerische Evidenz (+37%)**: Das gezielte Anreichern von Texten mit konkreten quantitativen Daten, Kennzahlen und Messwerten steigerte die Zitationswahrscheinlichkeit um rund 37%.
 * **Autoritative Quellenbelege (+33%)**: Explizite Quellenreferenzen und Verlinkungen auf Primärquellen wurden von RAG-Ranking-Modellen überproportional honoriert.
 * **Keyword-Stuffing ist tot bis schädlich (-10% bis 0%)**: Klassische SEO-Tricks wie das wiederholte Einstreuen von Schlüsselbegriffen erbrachten in generativen Systemen keinerlei Mehrwert und führten in mehreren Modellen sogar zu einer Abstrafung der Inhaltsrelevanz.
 * **Starke Domänenabhängigkeit**: Während technische und naturwissenschaftliche Abfragen extrem stark auf Zahlen und Zitate reagierten, erforderten historische oder philosophische Themen primär eine hohe stilistische Flüssigkeit (*Fluency Optimization*).
 
+*Wichtige methodische Einschränkung:* Diese Prozentwerte stellen **Labor-Ergebnisse in einer kontrollierten Testumgebung** dar. Im produktiven Webverkehr mit personalisierten Nutzersignalen, dynamischen Rerankern und kontinuierlichen Algorithmenanpassungen wirken diese Hebel als richtungsweisende Qualitätsfaktoren, nicht als garantierte starre Steigerungsquoten.
+
 ### B. EMNLP 2023: Das Verifizierbarkeits-Dilemma generativer Engines (Stanford University)
-In [„Evaluating Verifiability in Generative Search Engines“ untersuchten Liu, Zhang und Liang (Stanford University, Findings of EMNLP 2023)](https://aclanthology.org/2023.findings-emnlp.467/) die Zuverlässigkeit von Perplexity AI, Bing Chat, You.com und Neeva. Die Forscher analysierten manuell und automatisiert, ob die von generativen Suchmaschinen generierten Behauptungen tatsächlich durch die beigefügten Quell-Links gestützt wurden.
+In [„Evaluating Verifiability in Generative Search Engines“ untersuchten Liu [@liu-2023-evaluating-verifiability], Zhang und Liang (Stanford University, Findings of EMNLP 2023)](https://aclanthology.org/2023.findings-emnlp.467/) die Zuverlässigkeit von Perplexity AI, Bing Chat, You.com und Neeva. Die Forscher analysierten manuell und automatisiert, ob die von generativen Suchmaschinen generierten Behauptungen tatsächlich durch die beigefügten Quell-Links gestützt wurden.
 
 Das ernüchternde Ergebnis:
 * **Nur 51.5%** der generierten Aussagen waren vollständig durch die verlinkten Quellen belegt.
@@ -55,7 +99,7 @@ Parallel zur akademischen Forschung erheben SEO-Software-Anbieter und Digital-In
 
 | Datenquelle / Report | Untersuchte Stichprobe | Zentrale empirische Kernaussage | Relevanz für Web-Engineering |
 | :--- | :--- | :--- | :--- |
-| **[SparkToro & Similarweb / Datos](https://sparktoro.com/blog/2024-zero-click-search-study/)** (2024–2026) | &gt;1 Milliarde Google-Suchanfragen (USA &amp; EU) | **Zero-Click-Rate steigt auf 68.01%** (2024: 60.45%). Bei Vorhandensein von AI Overviews bricht die CTR der Top-1-Organik um **58%** ein. | Traditioneller Referral-Traffic sinkt; die bloße Markennennung im Fließtext der KI wird zur primären Währung. |
+| **[SparkToro & Similarweb / Datos](https://sparktoro.com/blog/2024-zero-click-search-study/ [@fishkin-2024-zero-click])** (2024–2026) | &gt;1 Milliarde Google-Suchanfragen (USA &amp; EU) | **Zero-Click-Rate steigt auf 68.01%** (2024: 60.45%). Bei Vorhandensein von AI Overviews bricht die CTR der Top-1-Organik um **58%** ein. | Traditioneller Referral-Traffic sinkt; die bloße Markennennung im Fließtext der KI wird zur primären Währung. |
 | **[BrightEdge Generative Parser](https://www.brightedge.com/resources/weekly-ai-search-insights)** (Longitudinal-Studie) | Millionen Keywords über diverse Vertikalen | **54% der AIO-Quellenzitate liegen außerhalb der organischen Top-10**. Extreme Branchenunterschiede (Health &gt;60% AIO-Anteil, B2B Tech ~30%, E-Commerce &lt;15%). | Nischen-Websites mit hoher thematischer Autorität können Platzhirsche in KI-Antworten überholen. |
 | **[Authoritas AIO Research](https://www.authoritas.com/seo-ai-research-whitepapers)** | Tausende transaktionale und informationelle SERPs | **Top-3-Zitationskarten** im sichtbaren AIO-Karussell binden über **80%** des verbleibenden Klickvolumens. | Wenn zitiert, muss der Content in den ersten 1–3 Snippets auftauchen, um Klicks zu generieren. |
 | **[SE Ranking](https://seranking.com) &amp; [Ziptie.dev](https://ziptie.dev)** | 100.000 kommerzielle &amp; informative Suchbegriffe | Enorme zeitliche Volatilität. Hohe Konzentration auf strukturierte Aggregatoren, Wikipedia, Reddit und gut strukturierte Fachpublikationen. | Stabilität von Rankings existiert in AIOs nicht; kontinuierliches Ingestion-Monitoring ist Pflicht. |

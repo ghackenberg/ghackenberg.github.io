@@ -4,6 +4,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import puppeteer from 'puppeteer';
 import { generateSlideThumbnailsForPresentation } from './generate-slide-thumbnails.js';
+import {
+  computeSlideStyleHash,
+  computePresentationDeckHash,
+  loadVisualCache,
+  saveVisualCache
+} from './slide-fingerprint.js';
 
 const PORT = 4322;
 const distDir = path.resolve('dist');
@@ -74,6 +80,8 @@ async function exportAllPresentationsToPdf() {
     process.exit(1);
   }
 
+  const force = process.argv.includes('--force');
+
   const server = createStaticServer();
   await new Promise((resolve) => server.listen(PORT, '127.0.0.1', () => resolve(true)));
   console.log(`[PDF Exporter] Local static server listening on http://127.0.0.1:${PORT}`);
@@ -84,78 +92,95 @@ async function exportAllPresentationsToPdf() {
   });
 
   const presentationFolders = fs.readdirSync(presentationsBase);
+  const styleHash = computeSlideStyleHash();
 
   try {
     for (const presentationFolder of presentationFolders) {
       const presentationPath = path.join(presentationsBase, presentationFolder);
       if (!fs.statSync(presentationPath).isDirectory()) continue;
 
-      // 1. Dark Mode PDF
-      const darkPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=dark`;
-      const darkOutPdfPath = path.join(presentationPath, 'slides-dark.pdf');
-
-      console.log(`[PDF Exporter] Rendering Dark Mode PDF for "${presentationFolder}"...`);
-      const darkPage = await browser.newPage();
-      await darkPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
-
-      const darkResponse = await darkPage.goto(darkPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
-      if (!darkResponse || !darkResponse.ok()) {
-        console.warn(`  ⚠️ Could not load dark print page for ${presentationFolder} (status: ${darkResponse?.status()}). Skipping.`);
-      } else {
-        await darkPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
-        await darkPage.evaluateHandle('document.fonts.ready');
-        await darkPage.pdf({
-          path: darkOutPdfPath,
-          printBackground: true,
-          preferCSSPageSize: true,
-          width: '1920px',
-          height: '1080px',
-          margin: { top: 0, right: 0, bottom: 0, left: 0 }
-        });
-
-        const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
-        if (fs.existsSync(distPresentationPath)) {
-          fs.copyFileSync(darkOutPdfPath, path.join(distPresentationPath, 'slides-dark.pdf'));
-        }
-
-        console.log(`  ✓ Successfully generated Dark Mode PDF: ${darkOutPdfPath}`);
+      const { deckHash } = computePresentationDeckHash(presentationFolder, styleHash);
+      let cache = loadVisualCache(presentationFolder);
+      if (!cache) {
+        cache = { version: 'v1.0', styleHash: '', deckHash: '', slides: {} };
       }
-      await darkPage.close();
 
-      // 2. Light Mode PDF
-      const lightPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=light`;
+      const darkOutPdfPath = path.join(presentationPath, 'slides-dark.pdf');
       const lightOutPdfPath = path.join(presentationPath, 'slides-light.pdf');
 
-      console.log(`[PDF Exporter] Rendering Light Mode PDF for "${presentationFolder}"...`);
-      const lightPage = await browser.newPage();
-      await lightPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
+      const pdfsExist = fs.existsSync(darkOutPdfPath) && fs.existsSync(lightOutPdfPath);
+      const isUpToDate = !force && pdfsExist && cache.deckHash === deckHash;
 
-      const lightResponse = await lightPage.goto(lightPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
-      if (!lightResponse || !lightResponse.ok()) {
-        console.warn(`  ⚠️ Could not load light print page for ${presentationFolder} (status: ${lightResponse?.status()}). Skipping.`);
+      if (isUpToDate) {
+        console.log(`  ✓ PDFs for "${presentationFolder}" are up to date (deck hash hit: ${deckHash.slice(0, 10)}...).`);
       } else {
-        await lightPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
-        await lightPage.evaluateHandle('document.fonts.ready');
-        await lightPage.pdf({
-          path: lightOutPdfPath,
-          printBackground: true,
-          preferCSSPageSize: true,
-          width: '1920px',
-          height: '1080px',
-          margin: { top: 0, right: 0, bottom: 0, left: 0 }
-        });
+        // 1. Dark Mode PDF
+        const darkPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=dark`;
+        console.log(`[PDF Exporter] Rendering Dark Mode PDF for "${presentationFolder}"...`);
+        const darkPage = await browser.newPage();
+        await darkPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
 
-        const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
-        if (fs.existsSync(distPresentationPath)) {
-          fs.copyFileSync(lightOutPdfPath, path.join(distPresentationPath, 'slides-light.pdf'));
+        const darkResponse = await darkPage.goto(darkPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+        if (!darkResponse || !darkResponse.ok()) {
+          console.warn(`  ⚠️ Could not load dark print page for ${presentationFolder} (status: ${darkResponse?.status()}). Skipping.`);
+        } else {
+          await darkPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
+          await darkPage.evaluateHandle('document.fonts.ready');
+          await darkPage.pdf({
+            path: darkOutPdfPath,
+            printBackground: true,
+            preferCSSPageSize: true,
+            width: '1920px',
+            height: '1080px',
+            margin: { top: 0, right: 0, bottom: 0, left: 0 }
+          });
+
+          const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
+          if (fs.existsSync(distPresentationPath)) {
+            fs.copyFileSync(darkOutPdfPath, path.join(distPresentationPath, 'slides-dark.pdf'));
+          }
+
+          console.log(`  ✓ Successfully generated Dark Mode PDF: ${darkOutPdfPath}`);
         }
+        await darkPage.close();
 
-        console.log(`  ✓ Successfully generated Light Mode PDF: ${lightOutPdfPath}`);
+        // 2. Light Mode PDF
+        const lightPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=light`;
+        console.log(`[PDF Exporter] Rendering Light Mode PDF for "${presentationFolder}"...`);
+        const lightPage = await browser.newPage();
+        await lightPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
+
+        const lightResponse = await lightPage.goto(lightPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+        if (!lightResponse || !lightResponse.ok()) {
+          console.warn(`  ⚠️ Could not load light print page for ${presentationFolder} (status: ${lightResponse?.status()}). Skipping.`);
+        } else {
+          await lightPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
+          await lightPage.evaluateHandle('document.fonts.ready');
+          await lightPage.pdf({
+            path: lightOutPdfPath,
+            printBackground: true,
+            preferCSSPageSize: true,
+            width: '1920px',
+            height: '1080px',
+            margin: { top: 0, right: 0, bottom: 0, left: 0 }
+          });
+
+          const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
+          if (fs.existsSync(distPresentationPath)) {
+            fs.copyFileSync(lightOutPdfPath, path.join(distPresentationPath, 'slides-light.pdf'));
+          }
+
+          console.log(`  ✓ Successfully generated Light Mode PDF: ${lightOutPdfPath}`);
+        }
+        await lightPage.close();
+
+        cache.deckHash = deckHash;
+        cache.styleHash = styleHash;
+        saveVisualCache(presentationFolder, cache);
       }
-      await lightPage.close();
 
-      // 3. WebP Slide Thumbnails
-      await generateSlideThumbnailsForPresentation(browser, PORT, presentationFolder);
+      // 3. WebP Slide Thumbnails (increments & checks pixels)
+      await generateSlideThumbnailsForPresentation(browser, PORT, presentationFolder, force);
     }
   } finally {
     await browser.close();

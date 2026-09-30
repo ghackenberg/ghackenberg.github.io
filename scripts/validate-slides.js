@@ -2,7 +2,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { execSync } from 'node:child_process';
+import {
+  computeSlideStyleHash,
+  computePresentationDeckHash,
+  loadVisualCache
+} from './slide-fingerprint.js';
 
 /**
  * Extracts YAML frontmatter fields from markdown/mdx content
@@ -237,6 +241,26 @@ function validateSlides() {
         if (unclosedId.startsWith('hl-') || unclosedId.startsWith('mark-')) {
           console.error(`  ❌ [${slideFile}] Text highlight cue "{cue:${unclosedId}}" was never closed with "{/cue}".`);
           totalErrors++;
+        }
+      }
+
+      // 1c. Validate slide references integrity (mandatory citation tags)
+      if (Array.isArray(parsedFm.references) && parsedFm.references.length > 0) {
+        const citedRefs = [...content.matchAll(/\[@([a-zA-Z0-9_\-]+)\]/g)].map(m => m[1]);
+        for (const ref of parsedFm.references) {
+          if (!ref.id) {
+            console.error(`  ❌ [${slideFile}] Slide reference "${ref.title}" is missing mandatory "id".`);
+            totalErrors++;
+          } else if (!citedRefs.includes(ref.id)) {
+            console.error(`  ❌ [${slideFile}] Reference "${ref.id}" declared in frontmatter but never cited with "[@${ref.id}]" in slide body/props/voiceover.`);
+            totalErrors++;
+          }
+        }
+        for (const key of citedRefs) {
+          if (!parsedFm.references.some(r => r.id === key)) {
+            console.error(`  ❌ [${slideFile}] Citation "[@${key}]" used in slide but not declared in frontmatter references.`);
+            totalErrors++;
+          }
         }
       }
 
@@ -658,7 +682,7 @@ function validateSlides() {
       }
     }
 
-    // 8. PDF Handouts Existence & Git Up-To-Date Check
+    // 8. PDF Handouts & Visual Fingerprint Cache Integrity Gate
     if (!isSyntaxOnly) {
       const pdfDarkPath = path.join(presentationPath, 'slides-dark.pdf');
       const pdfLightPath = path.join(presentationPath, 'slides-light.pdf');
@@ -672,54 +696,29 @@ function validateSlides() {
         totalErrors++;
       }
 
-      // Determine all source paths for this presentation (slides, co-located images, and metadata)
-      const sourcePaths = [slidesDir];
-      const imagesDir = path.join(presentationPath, 'images');
-      if (fs.existsSync(imagesDir)) {
-        sourcePaths.push(imagesDir);
-      }
-      const indexFile = path.join(presentationPath, 'index.md');
-      if (fs.existsSync(indexFile)) {
-        sourcePaths.push(indexFile);
-      }
-      const sourceRelPaths = sourcePaths.map((p) => path.relative(process.cwd(), p).replace(/\\/g, '/'));
-      const sourcePathsGitArg = sourceRelPaths.map((p) => `"${p}"`).join(' ');
+      const styleHash = computeSlideStyleHash();
+      const { deckHash, slideHashes } = computePresentationDeckHash(presentationFolder, styleHash);
+      const visualCache = loadVisualCache(presentationFolder);
 
-      let sourcesTime = NaN;
-
-      try {
-        const pdfDarkRelPath = path.relative(process.cwd(), pdfDarkPath).replace(/\\/g, '/');
-        const pdfLightRelPath = path.relative(process.cwd(), pdfLightPath).replace(/\\/g, '/');
-
-        const sourcesTimeStr = execSync(`git log -1 --format=%ct -- ${sourcePathsGitArg}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-        const pdfDarkTimeStr = execSync(`git log -1 --format=%ct -- "${pdfDarkRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-        const pdfLightTimeStr = execSync(`git log -1 --format=%ct -- "${pdfLightRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-
-        sourcesTime = parseInt(sourcesTimeStr, 10);
-        const pdfDarkTime = parseInt(pdfDarkTimeStr, 10);
-        const pdfLightTime = parseInt(pdfLightTimeStr, 10);
-
-        if (!isNaN(sourcesTime) && !isNaN(pdfDarkTime) && sourcesTime > pdfDarkTime) {
+      if (!visualCache) {
+        console.error(
+          `  ❌ [cache] Missing visual fingerprint cache ".visual-cache.json" for "${presentationFolder}". Run "npm run export:slides".`
+        );
+        totalErrors++;
+      } else {
+        if (visualCache.styleHash !== styleHash) {
           console.error(
-            `  ❌ [pdf] "slides-dark.pdf" is out-of-date: Slides or presentation assets were modified in commit history after the PDF was committed. Run "npm run export:slides".`
-          );
-          totalErrors++;
-        }
-        if (!isNaN(sourcesTime) && !isNaN(pdfLightTime) && sourcesTime > pdfLightTime) {
-          console.error(
-            `  ❌ [pdf] "slides-light.pdf" is out-of-date: Slides or presentation assets were modified in commit history after the PDF was committed. Run "npm run export:slides".`
+            `  ❌ [style] Slide styles or layout components were modified (style hash mismatch). Run "npm run export:slides".`
           );
           totalErrors++;
         }
 
-        // Check for uncommitted working tree changes in slides/, images/, or index.md
-        const dirtySources = execSync(`git status --porcelain -- ${sourcePathsGitArg}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-        if (dirtySources) {
-          console.warn(`  ⚠️ [export] Slides or presentation assets have uncommitted changes in working tree. Run "npm run export:slides" before committing.`);
-          totalWarnings++;
+        if (visualCache.deckHash !== deckHash) {
+          console.error(
+            `  ❌ [pdf] Presentation visual content or assets were modified since PDF export (deck hash mismatch). Run "npm run export:slides".`
+          );
+          totalErrors++;
         }
-      } catch {
-        // Git command failed or not a git repository; skip timestamp check
       }
 
       // 9. Slide WebP Thumbnails Existence & Freshness Check
@@ -728,11 +727,14 @@ function validateSlides() {
         console.error(`  ❌ [thumbnail] Missing "thumbnails/" directory for "${presentationFolder}". Run "npm run export:slides-thumbs".`);
         totalErrors++;
       } else {
-        // Check each active slide has a thumbnail
+        // Check each active slide has a thumbnail and matches fingerprint
         for (const slideId of activeSlideIds) {
           const thumbPath = path.join(thumbnailsDir, `${slideId}.webp`);
           if (!fs.existsSync(thumbPath)) {
             console.error(`  ❌ [thumbnail] Missing thumbnail for slide "${slideId}": "thumbnails/${slideId}.webp". Run "npm run export:slides-thumbs".`);
+            totalErrors++;
+          } else if (visualCache && visualCache.slides[slideId] !== slideHashes[slideId]) {
+            console.error(`  ❌ [thumbnail] Slide "${slideId}" visual content was modified since thumbnail export (fingerprint mismatch). Run "npm run export:slides-thumbs".`);
             totalErrors++;
           }
         }
@@ -747,22 +749,14 @@ function validateSlides() {
           }
         }
 
-        // Check git timestamp freshness
-        try {
-          const thumbsRelPath = path.relative(process.cwd(), thumbnailsDir).replace(/\\/g, '/');
-
-          const thumbsTimeStr = execSync(`git log -1 --format=%ct -- "${thumbsRelPath}"`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
-
-          const thumbsTime = parseInt(thumbsTimeStr, 10);
-
-          if (!isNaN(sourcesTime) && !isNaN(thumbsTime) && sourcesTime > thumbsTime) {
-            console.error(
-              `  ❌ [thumbnail] Slide thumbnails in "${thumbsRelPath}" are out-of-date: Slides or presentation assets were modified in commit history after thumbnails were committed. Run "npm run export:slides-thumbs".`
-            );
-            totalErrors++;
+        // Check for orphan cache entries
+        if (visualCache && visualCache.slides) {
+          for (const cachedId of Object.keys(visualCache.slides)) {
+            if (!activeSlideIds.has(cachedId)) {
+              console.error(`  ❌ [cache-orphan] Orphaned slide entry "${cachedId}" in ".visual-cache.json" has no matching slide in "slides/". Run "npm run export:slides-thumbs".`);
+              totalErrors++;
+            }
           }
-        } catch {
-          // Git command failed; skip
         }
       }
     }

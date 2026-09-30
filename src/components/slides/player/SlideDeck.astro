@@ -446,6 +446,7 @@ const currentDeckId = presentationId || talkId || "presentation";
   import Reveal, { type RevealApi } from 'reveal.js';
   import { AudioSyncController, type SlideData, type CueItem, type SlideReference } from './AudioSyncController';
   import { AutoFitController } from './AutoFitController';
+  import { generateCitationLabel } from '../../../utils/citations.js';
 
   declare global {
     interface Window {
@@ -634,7 +635,8 @@ const currentDeckId = presentationId || talkId || "presentation";
         .replace(/'/g, '&#039;');
     };
 
-    const renderReferenceItem = (ref: SlideReference): string => {
+    const renderReferenceItem = (ref: SlideReference, targetHighlightId?: string | null): string => {
+      const label = generateCitationLabel(ref);
       let pubDetails = '';
       if (ref.type === 'inproceedings' && ref.booktitle) {
         pubDetails = ` In <span class="text-gray-200 light:text-slate-700 font-medium">${escapeHtml(ref.booktitle)}</span>${ref.pages ? `, pp. ${escapeHtml(ref.pages)}` : ''}.`;
@@ -648,6 +650,22 @@ const currentDeckId = presentationId || talkId || "presentation";
         pubDetails = ` <span class="text-gray-200 light:text-slate-700">${escapeHtml(ref.howpublished)}</span>.`;
       }
 
+      let linkText = 'Quelle öffnen';
+      if (ref.url) {
+        try {
+          const host = new URL(ref.url).hostname.replace(/^www\./, '');
+          if (host.includes('doi.org') || host.includes('arxiv.org') || host.includes('acm.org') || host.includes('ieee.org')) {
+            linkText = 'Publikation öffnen';
+          } else if (host.includes('w3.org') || host.includes('iso.org') || host.includes('din.de')) {
+            linkText = 'Spezifikation öffnen';
+          } else if (host.includes('github.com')) {
+            linkText = 'Repository öffnen';
+          } else {
+            linkText = host;
+          }
+        } catch {}
+      }
+
       let badges = '';
       if (ref.url) {
         badges += `
@@ -657,7 +675,7 @@ const currentDeckId = presentationId || talkId || "presentation";
             rel="noopener noreferrer"
             class="inline-flex items-center gap-1 text-[11px] font-semibold text-purple-400 light:text-purple-700 hover:text-purple-300 light:hover:text-purple-900 hover:underline"
           >
-            <span>Open Source</span>
+            <span>${escapeHtml(linkText)}</span>
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 01-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
           </a>`;
       }
@@ -667,15 +685,18 @@ const currentDeckId = presentationId || talkId || "presentation";
             DOI: ${escapeHtml(ref.doi)}
           </span>`;
       }
-      if (ref.type) {
-        badges += `
-          <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 text-gray-400 light:text-slate-700 border border-white/10 light:border-slate-300">
-            ${escapeHtml(ref.type)}
-          </span>`;
-      }
+
+      const isTarget = targetHighlightId && ref.id === targetHighlightId;
+      const highlightClasses = isTarget ? 'ring-2 ring-purple-500/80 bg-purple-500/10' : '';
 
       return `
-        <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2">
+        <div id="modal-ref-${escapeHtml(ref.id || '')}" class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2.5 transition-all ${highlightClasses}">
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center font-mono text-purple-300 light:text-purple-800 font-bold text-xs px-2 py-0.5 rounded bg-purple-500/15 light:bg-purple-100 border border-purple-500/30 light:border-purple-300">
+              [${escapeHtml(label)}]
+            </span>
+            ${ref.type ? `<span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 text-gray-400 light:text-slate-700 border border-white/10 light:border-slate-300">${escapeHtml(ref.type)}</span>` : ''}
+          </div>
           <div class="text-xs sm:text-sm text-gray-300 light:text-slate-600 leading-relaxed pl-2.5 border-l-2 border-purple-500/50 light:border-purple-400">
             <span class="font-bold text-gray-100 light:text-slate-900">${escapeHtml(ref.author)}</span>
             ${ref.year ? `<span class="text-gray-400 light:text-slate-500"> (${escapeHtml(String(ref.year))})</span>` : ''}:
@@ -718,7 +739,7 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
     };
 
-    const populateReferencesModal = (slideIndex: number) => {
+    const populateReferencesModal = (slideIndex: number, targetRefId?: string | null) => {
       const slide = slidesData[slideIndex];
       const refs = slide?.references || [];
 
@@ -738,14 +759,22 @@ const currentDeckId = presentationId || talkId || "presentation";
             </div>
           `;
         } else {
-          referencesModalBody.innerHTML = refs.map((ref: SlideReference) => renderReferenceItem(ref)).join('');
+          referencesModalBody.innerHTML = refs.map((ref: SlideReference) => renderReferenceItem(ref, targetRefId)).join('');
+          if (targetRefId) {
+            const targetEl = document.getElementById(`modal-ref-${targetRefId}`);
+            if (targetEl) {
+              setTimeout(() => {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }, 50);
+            }
+          }
         }
       }
     };
 
-    const openReferencesModal = () => {
+    const openReferencesModal = (targetRefId?: string | null) => {
       const idx = deck.getIndices().h;
-      populateReferencesModal(idx);
+      populateReferencesModal(idx, targetRefId);
 
       isReferencesModalOpen = true;
       if (referencesModalBackdrop && referencesModalContainer) {
@@ -1055,6 +1084,17 @@ const currentDeckId = presentationId || talkId || "presentation";
     referencesModalBackdrop?.addEventListener('click', (e) => {
       if (e.target === referencesModalBackdrop) {
         closeReferencesModal();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement)?.closest('[data-open-reference]');
+      if (btn) {
+        e.preventDefault();
+        e.stopPropagation();
+        audioSync.unlockAudioSession();
+        const refId = btn.getAttribute('data-open-reference');
+        openReferencesModal(refId);
       }
     });
 

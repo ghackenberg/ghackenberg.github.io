@@ -1,4 +1,6 @@
 ---
+import { renderSlideCues } from '../../../utils/slide-cues';
+
 interface Props {
   id?: string;
   cue?: string;
@@ -77,15 +79,11 @@ const accentStyles = {
   {(title || subtitle) && (
     <div class={`${density === 'compact' ? 'mb-3' : 'mb-6'} shrink-0`}>
       {title && (
-        <h3 class={`${density === 'compact' ? 'text-2xl lg:text-3xl' : 'text-3xl lg:text-4xl xl:text-[40px]'} font-black tracking-tight leading-tight ${accentStyles.title}`}>
-          {title}
-        </h3>
+        <h3 class={`${density === 'compact' ? 'text-2xl lg:text-3xl' : 'text-3xl lg:text-4xl xl:text-[40px]'} font-black tracking-tight leading-tight ${accentStyles.title}`} set:html={renderSlideCues(title)} />
       )}
 
       {subtitle && (
-        <p class={`${density === 'compact' ? 'text-lg lg:text-xl' : 'text-xl lg:text-2xl'} text-slate-300 light:text-slate-600 mt-1 font-normal`}>
-          {subtitle}
-        </p>
+        <p class={`${density === 'compact' ? 'text-lg lg:text-xl' : 'text-xl lg:text-2xl'} text-slate-300 light:text-slate-600 mt-1 font-normal`} set:html={renderSlideCues(subtitle)} />
       )}
     </div>
   )}

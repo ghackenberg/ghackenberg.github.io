@@ -1,14 +1,58 @@
 ---
 title: "Mindful IT & Calm Computing: Kognitive IT-Architektur"
-pubDate: "2026-09-02"
-lang: "de"
-description: "Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken."
-tags: ["artificial-intelligence", "calm-technology", "cognitive-ergonomics", "devops", "human-computer-interaction", "humane-tech", "local-first", "mindful-it", "psychology", "software-architecture"]
+pubDate: 2026-09-02
+lang: de
+description: Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten,
+  die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten
+  und intentional stärken.
+tags:
+  - artificial-intelligence
+  - calm-technology
+  - cognitive-ergonomics
+  - devops
+  - human-computer-interaction
+  - humane-tech
+  - local-first
+  - mindful-it
+  - psychology
+  - software-architecture
 icon:
-  src: "./icon.jpg"
-  title: "Titelgrafik: Mindful IT & Calm Computing: Software-Architekturen, Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist"
-  description: "Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten, die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten und intentional stärken."
+  src: ./icon.jpg
+  title: "Titelgrafik: Mindful IT & Calm Computing: Software-Architekturen,
+    Kognitive Ergonomie und Engineering-Paradigmen für den menschlichen Geist"
+  description: Wie wir Softwaresysteme, Datenpipelines und KI-Agenten gestalten,
+    die menschliche Kognition nicht ausbeuten, sondern aktiv schützen, entlasten
+    und intentional stärken.
+references:
+  - type: book
+    author: Calvo, R. A., & Peters, D.
+    title: "Positive Computing: Technology for Wellbeing and Human Potential"
+    url: https://doi.org/10.7551/mitpress/9764.001.0001
+    year: 2014
+    doi: 10.7551/mitpress/9764.001.0001
+    publisher: MIT Press
+    id: calvo-2014-positive-computing
+  - type: inproceedings
+    author: Kleppmann, M., Wiggins, A., van Hardenberg, M., & McGranaghan, M.
+    title: "Local-first software: you own your data, in spite of the cloud"
+    url: https://doi.org/10.1145/3359591.3359737
+    year: 2019
+    doi: 10.1145/3359591.3359737
+    booktitle: Proceedings of the 2019 ACM SIGPLAN International Symposium on New
+      Ideas, Onward! 2019
+    id: kleppmann-2019-localfirst-software
+  - type: book
+    author: Weiser, M., & Brown, J. S.
+    title: The Coming Age of Calm Technology
+    url: https://doi.org/10.1007/978-1-4612-0685-9_6
+    year: 1997
+    doi: 10.1007/978-1-4612-0685-9_6
+    publisher: Springer
+    pages: 75–85
+    id: weiser-1997-coming-calm
 ---
+
+
 
 In unserem vorherigen Beitrag zur [Psychologie der modernen Informationstechnologie](/posts/2026_09_01_psychologie_der_modernen_informationstechnologie/) haben wir die Mechanismen analysiert, mit denen heutige Plattformen, Recommender-Pipelines und persuasive Benutzeroberflächen auf das menschliche Gehirn einwirken: dopaminerge Verstärkungsschleifen, kognitive Fragmentierung, *Attention Residue* und das Phänomen des *Information Overload*.
 
@@ -45,7 +89,7 @@ Software ist dann exzellent konstruiert, wenn sie dem Anwender hilft, sein eigen
 
 Mindful IT stützt sich auf etablierte Erkenntnisse aus Kognitionswissenschaft, Arbeitspsychologie und Human-Computer Interaction (HCI):
 
-### A. Calm Technology & Peripherie-Kognition (Weiser, Brown & Case)
+### A. Calm Technology & Peripherie-Kognition (Weiser [@weiser-1997-coming-calm], Brown & Case)
 
 Bereits 1995 formulierten **Mark Weiser** und **John Seely Brown** (Xerox PARC) das Konzept der *Calm Technology*:
 > *„A calm technology will move easily from the periphery of our attention, to the center, and back.“*
@@ -65,7 +109,7 @@ Mindful IT setzt gezielt auf **Positive Friction (Mindful Friction)**:
 * **Intentionality Prompts:** Vor dem Öffnen einer Informationsquelle wird der Nutzer kurz nach seinem eigentlichen Ziel gefragt, um zielloses Driften (*Doomscrolling*) zu verhindern.
 * **Natürliche Sollbruchstellen:** Paginierung statt Endlos-Scrollen; bewusste visuelle Abschlüsse nach Erledigung aller anstehenden Aufgaben (*Inbox Zero als Ruhezustand*).
 
-### C. Positive Computing & Kognitive Ergonomie (Sweller, Calvo & Peters)
+### C. Positive Computing & Kognitive Ergonomie (Sweller, Calvo [@calvo-2014-positive-computing] & Peters)
 
 Aufbauend auf der *Cognitive Load Theory* von John Sweller unterscheidet **Positive Computing** (Rafael Calvo & Dorian Peters) zwischen Belastung, die geistiges Wachstum fördert, und unnötigem Interface-Ballast:
 * **Extraneous Load minimieren:** Beseitigung von visuellen Störgeräuschen, inkonsistenten Navigationsstrukturen und redundantem Feedback.
@@ -93,10 +137,11 @@ Mindful IT implementiert **asynchrone Digest-Engines** und **epistemische Fenste
 
 Klassische Cloud-Anwendungen leiden unter Netzwerk-Latenzen und zwingen den Anwender in eine permanente Abhängigkeit vom Server. Jede Verzögerung bei Eingaben erzeugt subbewusste Mikrostress-Reaktionen.
 
-Das **Local-First-Paradigma** (vgl. Martin Kleppmann et al.) löst dieses Problem:
+Das **Local-First-Paradigma** (vgl. Martin Kleppmann et al [@kleppmann-2019-localfirst-software]., 2019) löst dieses Problem konzeptionell:
 * **Lokale Datenhoheit:** Die primäre Datenhaltung erfolgt direkt auf dem Endgerät (z. B. via **SQLite in WebAssembly / WASM**, **IndexedDB** oder embedded Key-Value Stores).
 * **Konfliktfreie Replikation:** Die Synchronisation im Hintergrund nutzt **CRDTs (Conflict-free Replicated Data Types)** wie *Yjs* oder *Automerge*.
-* **Null Latenz & Offline-Resilienz:** Schreib- und Lesevorgänge geschehen instantan und lokal. Der Anwender kann völlig ungestört im Flugzeug, im Wald oder bei instabiler Verbindung arbeiten, ohne Fehlermeldungen oder Lade-Spinner.
+* **Null Latenz & Offline-Resilienz:** Schreib- und Lesevorgänge geschehen instantan und lokal. Der Anwender kann völlig ungestört im Flugzeug, im Zug oder bei instabiler Verbindung arbeiten, ohne Fehlermeldungen oder Lade-Spinner.
+* **Architektonische Trade-offs in der Praxis:** Ingenieure müssen die realen Herausforderungen von CRDTs berücksichtigen: Der Metadaten-Overhead für Änderungshistorien erfordert periodische Kompaktierung (*Garbage Collection* von Tombstones), Browser-Storage (IndexedDB) unterliegt restriktiven Quota- und Eviction-Richtlinien des Betriebssystems, und komplexe relationale Schema-Migrationen über heterogene, asynchron verbundene Clients hinweg erfordern sorgfältige Migrations-Layer.
 
 ### 3. Cognitive Load Budgeting in CI/CD-Pipelines
 

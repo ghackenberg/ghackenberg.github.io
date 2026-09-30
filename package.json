@@ -31,6 +31,10 @@
     "validate:slides": "node scripts/validate-slides.js",
     "validate:slides:syntax": "node scripts/validate-slides.js --syntax-only",
     "validate:semantic-ids": "node scripts/validate-semantic-ids.js",
+    "validate:citations:syntax": "node scripts/lint-citations.js --syntax-only",
+    "lint:citations": "node scripts/lint-citations.js",
+    "lint:citations:ci": "node scripts/lint-citations.js --ci",
+    "lint:styles": "node scripts/lint-styles.js",
     "astro": "astro"
   },
   "dependencies": {

@@ -189,3 +189,39 @@ Liegt in `src/content/presentations/tts-lexicon.json`:
 - **Motiv-Safe-Zone:** Das Hauptmotiv füllt ~60–66 % der Bildmitte; Außenbereiche frei für dynamisches `object-cover`.
 - **Hintergrund:** Lebendiger Blau-Violett/Indigo-Nebel mit Sternenstaub (funktioniert in Dark- und Light-Mode).
 - **Keine Personen:** Pipeline-Karten zeigen Werkzeuge, Konzepte oder Symbole – Dr. Georg Hackenberg erscheint hier nicht.
+
+---
+
+## 7. Referenzen & Zitations-Management (`references:` & `[@id]`)
+
+Folien können Primärquellen, Studien, Spezifikationen und Repositories zitieren:
+
+### 1. Frontmatter-Deklaration (`references:`)
+Jede Referenz wird im Frontmatter der jeweiligen Slide `.mdx`-Datei deklariert:
+```yaml
+references:
+  - type: inproceedings
+    author: Aggarwal, P., et al.
+    title: "GEO: Generative Engine Optimization"
+    url: https://arxiv.org/abs/2311.09735
+    year: 2024
+    booktitle: KDD '24
+    id: aggarwal-2024-geo
+```
+- Pflichtfelder: `id` (semantischer Kebab-Case-Key), `type`, `title`, `author`, `year`, `url` (oder `doi`).
+- Optional: `label` (überschreibt die deterministische BibTeX-Alpha-Generierung wie `[Agg24]`).
+
+### 2. In-Text-Referenzierung (`[@id]`)
+- Im Fließtext, in Bullet-Points oder Card-Beschreibungen wird die Referenz via `[@id]` zitiert:
+  ```mdx
+  <BulletList items={[
+    { title: "GEO Ranking-Faktoren", desc: "Empirische Analyse relevanter Optimierungshebel [@aggarwal-2024-geo]." }
+  ]} />
+  ```
+- **Build-Time Transformation:** Das Remark-Plugin `remarkCitations` erzeugt einen interaktiven Button `<button data-open-reference="id" class="citation ...">[Agg24]</button>`.
+- **Interaktives SlideDeck-Verhalten:** Ein Klick auf das Zitations-Badge auf der Folie öffnet unmittelbar das Referenz-Modal des SlideDecks und fokussiert/markiert die entsprechende Karte mit direktem Link zur Publikation (*„Publikation öffnen“*, *„Spezifikation öffnen“*, etc.).
+
+### 3. Bidirektionale Validierung
+- Jede deklarierte Referenz **muss** auf der Folie zitiert werden (`[@id]`).
+- Jeder im Text genutzte `[@id]`-Tag **muss** im Frontmatter existieren.
+- Wird automatisch in Phase 1 durch `npm run validate:slides:syntax` und `npm run validate:citations:syntax` überprüft.

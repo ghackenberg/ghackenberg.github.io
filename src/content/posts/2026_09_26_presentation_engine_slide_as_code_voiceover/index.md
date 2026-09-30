@@ -1,18 +1,52 @@
 ---
 title: "Slide-as-Code: Interaktive Präsentationen mit Astro"
-pubDate: "2026-09-26"
-description: "Wie wir eine maßgeschneiderte Slide-as-Code Presentation Engine mit synchronisiertem Neural-Voiceover, Astro-Integration und KI-Agenten-Workflows bauten."
-lang: "de"
-tags: ["astro", "agentic-ai", "software-architecture", "web-development", "typescript", "content-engineering", "ux-design", "open-source"]
+pubDate: 2026-09-26
+description: Wie wir eine maßgeschneiderte Slide-as-Code Presentation Engine mit
+  synchronisiertem Neural-Voiceover, Astro-Integration und KI-Agenten-Workflows
+  bauten.
+lang: de
+tags:
+  - astro
+  - agentic-ai
+  - software-architecture
+  - web-development
+  - typescript
+  - content-engineering
+  - ux-design
+  - open-source
 icon:
-  src: "./hero.jpg"
-  title: "Dr. Georg Hackenberg präsentiert die Slide-as-Code Presentation Engine"
-  description: "Präsentation der interaktiven Slide-as-Code Engine mit Neural-Voiceover vor der beamergestützten Leinwand am FH OÖ Campus Wels"
+  src: ./hero.jpg
+  title: Dr. Georg Hackenberg präsentiert die Slide-as-Code Presentation Engine
+  description: Präsentation der interaktiven Slide-as-Code Engine mit
+    Neural-Voiceover vor der beamergestützten Leinwand am FH OÖ Campus Wels
+references:
+  - type: online
+    author: Astro Core Team
+    title: "Astro Documentation: Content Collections and Static Site Generation"
+    url: https://docs.astro.build/
+    year: 2024
+    id: team-2024-astro
+  - type: online
+    author: Schema.org
+    title: PresentationDigitalDocument
+    url: https://schema.org/PresentationDigitalDocument
+    year: 2024
+    siteName: Schema.org Type Specification
+    id: schema-org-2024-presentationdigitaldocument
+  - type: misc
+    author: W3C Speech Interface Working Group
+    title: Speech Synthesis Markup Language (SSML) Version 1.1
+    url: https://www.w3.org/TR/speech-synthesis11/
+    year: 2010
+    howpublished: W3C Recommendation
+    id: w3c-2010-ssml
 ---
+
+
 
 Fachvorträge, Keynotes und Vorlesungen gehören zu den wertvollsten Wissensressourcen von Forschern und Software-Architekten. Im modernen Web fristen sie dennoch oft ein Schattendasein: Entweder landen sie als schwerfällige PDF-Downloads in verwaisten Dateiablagen, oder sie werden über ressourcenhungrige, werbeüberladene Fremd-iFrames eingebettet. Beide Wege vernichten die Lesbarkeit für Suchmaschinen, bieten auf mobilen Bildschirmen eine frustrierende Usability und trennen das gesprochene Vortragswort vollständig vom visuellen Folienkontext.
 
-Mit dem Launch unseres neuen Webseiten-Bereichs [Interactive Presentations](/presentations/) haben wir dieses Problem an der Wurzel gelöst. Anstatt auf isolierte Drittanbieter-Tools zu setzen, haben wir eine native **Slide-as-Code Presentation Engine** direkt in unser [Astro & TypeScript-Ökosystem](/posts/2026_05_23_website_relaunch_astro_typescript/) integriert. Die Engine kombiniert modulare MDX-Folienkomponenten, eine virtuelle 1920x1080-Vektorbühne, microsekundengenaue akustische Neural-Voiceover-Synchronisation und granulare Schema.org-Wissensgraphen.
+Mit dem Launch unseres neuen Webseiten-Bereichs [Interactive Presentations](/presentations/) haben wir dieses Problem an der Wurzel gelöst. Anstatt auf isolierte Drittanbieter-Tools zu setzen, haben wir eine native **Slide-as-Code Presentation Engine** direkt in unser [Astro [@team-2024-astro] & TypeScript-Ökosystem](/posts/2026_05_23_website_relaunch_astro_typescript/) integriert. Die Engine kombiniert modulare MDX-Folienkomponenten, eine virtuelle 1920x1080-Vektorbühne, microsekundengenaue akustische Neural-Voiceover-Synchronisation und granulare Schema.org [@schema-org-2024-presentationdigitaldocument]-Wissensgraphen.
 
 In diesem Beitrag analysieren wir die architektonischen Schwächen klassischer Präsentations-Tools, stellen die Funktionsweise unserer Custom Engine vor und dokumentieren, wie autonome KI-Programmieragenten vollwertige Keynotes mit deterministischen Qualitätsgarantien generieren.
 
@@ -20,11 +54,11 @@ In diesem Beitrag analysieren wir die architektonischen Schwächen klassischer P
 > **Interaktive Live-Präsentation:**  
 > Das Gesamtsystem lässt sich im neuen Bereich [Interactive Presentations](/presentations/) erleben. Als erster produktiver Vortrag steht die Keynote [SEO im Zeitalter von KI: Strategien für SEO, GEO, AIO und AEO](/presentations/2026_10_01_seo_im_zeitalter_von_ki/) mit 30 synchronisierten Folien, automatischer Sprachausgabe und vollständigem Folientranskript bereit.
 
-## Warum scheitern klassische Presentation Tools im modernen Web?
+## Warum bestehende Presentation-Frameworks für integriertes SSG & Audio an Grenzen stoßen
 
-Klassische Präsentations-Tools scheitern im Web an der mangelnden Integration in statische Site-Generatoren, fehlender Barrierefreiheit und unzureichender Sichtbarkeit für Suchmaschinen. Externe Cloud-iFrames blockieren Web-Crawler und zerstören die Seiten-Performance, während isolierte Entwickler-Frameworks keine native akustische Wortsynchronisation für synthetisierte Sprachausgaben bieten und getrennte Build-Pipelines erzwingen.
+Klassische Präsentationswerkzeuge und browserbasierte Foliensysteme wurden primär für den Live-Vortrag auf Bühnen konzipiert – nicht als multimediale, barrierefreie und suchmaschinenoptimierte Dokumente im Rahmen eines statischen Site-Generators. Externe Cloud-iFrames isolieren Inhalte vor Suchmaschinen- und KI-Crawlern, während etablierte Entwickler-Frameworks hervorragende Arbeit für interaktives Live-Coding oder Standalone-Decks leisten, jedoch keine native, bild- und wortgenaue Audio-Synchronisation innerhalb von Astros Content Collections mitbringen.
 
-Wer Folien auf einer modernen Website veröffentlichen möchte, steht typischerweise vor der Wahl zwischen zwei unbefriedigenden Produktkategorien:
+Wer Folien auf einer modernen inhaltsgetriebenen Website veröffentlichen möchte, stößt typischerweise auf folgende architektonische Rahmenbedingungen:
 
 ### 1. Cloud-basierte iFrame-Embeds
 
@@ -37,12 +71,12 @@ Plattformen wie [Google Slides](https://www.google.com/slides/about/), [Pitch](h
 
 ### 2. Code-basierte Entwickler-Frameworks
 
-In der Entwickler-Community existieren etablierte Open-Source-Frameworks für Präsentationen aus Markdown-Dateien:
+In der Entwickler-Community existieren hochentwickelte und beliebte Open-Source-Frameworks für Folien aus Markdown-Dateien:
 
-- [Reveal.js](https://revealjs.com/): Der weltweite De-facto-Standard für HTML-Präsentationen. Reveal.js bietet exzellente Folienübergänge und ein ausgereiftes Plugin-System. Es läuft jedoch primär als clientseitige DOM-Anwendung, besitzt kein nativeres Verständnis für statische Astro Content Collections und bringt out-of-the-box weder Text-to-Speech (TTS) noch automatisierte Cue-Trigger mit.
-- [Slidev](https://sli.dev/): Ein modernes, auf Vue 3 und Vite basierendes Markdown-Präsentationstool mit interaktiven Vue-Komponenten und Monaco-Code-Editor. Slidev eignet sich hervorragend für Live-Coding-Vorträge, ist jedoch als eigenständige Single-Page Application (SPA) konzipiert. Die Einbettung in eine existierende Multi-Page Astro-Architektur erfordert redundante Build-Pipelines und erschwert einheitliches Server-Side Rendering (SSR).
-- [Marp](https://marp.app/): Ein minimalistisches Markdown-Ökosystem, das Markdown über maßgeschneiderte CSS-Themes nach HTML und PDF konvertiert. Marp glänzt bei schnellen Notizen, bietet jedoch keine interaktiven Animations-Queues, keine Audio-Steuerung und keine programmierbaren UI-State-Machines.
-- [Spectacle](https://formidable.com/open-source/spectacle/) & [MDX Deck](https://github.com/jxnblk/mdx-deck): React-basierte Foliensysteme, die JSX in Präsentationen ermöglichen. Sie bringen den vollen React-Runtime-Overhead mit und stehen im Widerspruch zur Null-JS-Baseline moderner inhaltszentrierter Websites.
+- [Reveal.js](https://revealjs.com/): Der weltweite De-facto-Standard für HTML-Präsentationen. Reveal.js bietet exzellente Folienübergänge, Speaker-Notes und ein mächtiges Plugin-Ökosystem. Für Standalone-Präsentationen im Browser ist es nach wie vor eine Spitzenlösung. Als clientseitige DOM-Anwendung besitzt es jedoch kein natives Verständnis für Astros statische Content Collections und bietet out-of-the-box keine Pipeline für synchronisierte Sprach-Cues.
+- [Slidev](https://sli.dev/): Ein modernes, auf Vue 3 und Vite basierendes Markdown-Präsentationstool mit interaktiven Vue-Komponenten und Monaco-Code-Editor. Slidev ist herausragend für technische Live-Demos und Entwickler-Workshops geeignet. Da es jedoch als eigenständige Single-Page Application (SPA) konzipiert ist, erfordert die Einbindung in eine bestehende Multi-Page-Astro-Architektur getrennte Build-Pipelines und verhindert eine einheitliche Server-Side-Rendering- und Asset-Strategie.
+- [Marp](https://marp.app/): Ein minimalistisches Markdown-Ökosystem, das Markdown über maßgeschneiderte CSS-Themes nach HTML und PDF konvertiert. Marp glänzt bei schnellen Notizen und Skripten, verzichtet jedoch bewusst auf interaktive Animations-Queues, Audio-Steuerung und programmierbare UI-State-Machines.
+- [Spectacle](https://formidable.com/open-source/spectacle/) & [MDX Deck](https://github.com/jxnblk/mdx-deck): React-basierte Foliensysteme, die JSX in Präsentationen ermöglichen. Sie bringen jedoch einen signifikanten React-Runtime-Overhead mit und laufen dem Bestreben nach minimalem Client-JavaScript zuwider.
 
 Die folgende Vergleichsmatrix fasst die Kernunterschiede unserer Custom Presentation Engine gegenüber den verbreiteten Alternativen zusammen:
 
@@ -75,7 +109,7 @@ Fünf konkrete Anforderungen gaben den Ausschlag für den Eigenbau:
 
 ## Wie ist die Slide-as-Code Architektur aufgebaut?
 
-Die Slide-as-Code Architektur basiert auf atomaren MDX-Folienbündeln, die über eine globale Astro Content Collection geladen und zur Build-Zeit typisiert werden. Eine strikte Trennung zwischen deklarativem Folien-Markup und einem autarken Audio-Synchronisations-Controller garantiert maximale Trennung von Struktur, Inhalt und Abspielogik.
+Die Slide-as-Code Architektur basiert auf atomaren MDX-Folienbündeln, die über eine globale Astro Content Collection geladen und zur Build-Zeit typisiert werden. Eine strikte Trennung zwischen deklarativem Folien-Markup [@w3c-2010-ssml] und einem autarken Audio-Synchronisations-Controller garantiert maximale Trennung von Struktur, Inhalt und Abspielogik.
 
 ```mermaid
 ---
