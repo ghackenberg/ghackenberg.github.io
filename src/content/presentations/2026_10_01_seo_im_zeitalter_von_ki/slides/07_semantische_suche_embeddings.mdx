@@ -7,7 +7,7 @@ voiceover: >
   Das technologische Herzstück von RAG ist die semantische Suche über hochdimensionale Embeddings.
   {cue:sub} Sie markiert den Übergang von reinen Zeichenketten zu Bedeutungen im {cue:hl-sub-embeddings-1001}hochdimensionalen Vektorraum{/cue}.
   {cue:col-embeddings} Texte wie {cue:hl-callout-vektor-beispiel}Energieeffiziente Prozesswärme B2B{/cue} werden in Vektoren übersetzt, sodass verwandte Konzepte {cue:hl-vektor-winkel}nahezu identische Vektor-Winkel{/cue} besitzen. Wer dagegen {cue:hl-keyword-stuffing}reine Keyword-Wiederholungen{/cue} betreibt, verzieht den semantischen Vektor.
-  {cue:col-math} Über die {cue:hl-callout-kosinus-formel}Kosinus-Formel{/cue} fordern RAG-Systeme typischerweise {cue:hl-kosinus-threshold}Werte über null Komma zweiundachtzig{/cue}, um in das Kontextfenster zu gelangen.
+  {cue:col-math} Über die {cue:hl-callout-kosinus-formel}Kosinus-Formel{/cue} ermitteln RAG-Systeme die semantische Nähe und {cue:hl-kosinus-threshold}injizieren die Top-K Passagen mit den höchsten Kosinus-Werten{/cue} in das Kontextfenster.
 notes: |
   - Zeit: 13:30 - 15:30 Min.
   - Zitat von Google: "Strings to Things" (Amit Singhal).
@@ -52,8 +52,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       <p class="text-lg font-mono text-blue-300 light:text-blue-800 font-bold">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
     </CalloutBox>
 
-    <CalloutBox type="statement" title="Retrieval-Schwellenwert (Top-K)">
-      RAG-Systeme rufen nur Chunks ab, deren Kosinus-Ähnlichkeit typischerweise über {cue:hl-kosinus-threshold}0.82{/cue} liegt. Wer darunter liegt, gelangt nie in das Context Window des LLMs.
+    <CalloutBox type="statement" title="Top-K-Retrieval & Relevanz">
+      RAG-Systeme berechnen die Ähnlichkeit aller Chunks und {cue:hl-kosinus-threshold}injizieren die Top-K Passagen mit den höchsten Kosinus-Werten{/cue} in das Context Window des LLMs.
     </CalloutBox>
   </BentoCard>
 </SplitSlide>

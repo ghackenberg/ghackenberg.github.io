@@ -1,17 +1,32 @@
 ---
-title: "Kalkulation des Business ROI (GEO vs. SEO)"
-subtitle: "Warum sinkende Gesamtklicks bei {cue:hl-sub-roi-1001}verdreifachtem Pipeline-Wert{/cue} den Sieg bedeuten"
+title: "Business-Konversion & Lead-Qualität (GEO vs. SEO)"
+subtitle: "Warum qualifizierte KI-Zitationen {cue:hl-sub-roi-1001}deutlich höhere Konversionsraten als klassischer Klick-Traffic{/cue} erzielen"
 number: "22"
 slideLayout: "metric"
 voiceover: >
-  Die entscheidende kaufmännische Frage lautet: Wie berechnet sich der konkrete Business ROI?
-  {cue:sub} Sie zeigt, warum sinkende Gesamtklicks bei {cue:hl-sub-roi-1001}verdreifachtem Pipeline-Wert{/cue} den Sieg bedeuten.
-  {cue:roi-metric} Entscheidend ist der betriebswirtschaftliche Pipeline-Wert.
-  {cue:roi-table} Ein traditioneller SEO-Trichter generiert vielleicht 10.000 Klicks mit einer Konversionsrate von 1,2 Prozent – das sind 120 unqualifizierte Leads. Im GEO-Trichter bricht der Traffic durch Zero-Click zwar um 55 Prozent auf 4.500 Klicks ein, aber die Konversionsrate vervierfacht sich auf 4,8 Prozent. Das Ergebnis: 216 abschlussreife Leads und ein {cue:hl-pipeline-wert}mehr als verdreifachter Pipeline-Wert von über sieben Millionen Euro{/cue}. Weniger Klicks – aber deutlich mehr Umsatz!
+  Die entscheidende kaufmännische Frage lautet: Wie bewerten wir den ROI vor dem Hintergrund sinkender Klickzahlen?
+  {cue:sub} Reale Studiendaten belegen, dass {cue:hl-sub-roi-1001}qualifizierte KI-Zitationen deutlich höhere Konversionsraten als klassischer Klick-Traffic{/cue} erzielen.
+  {cue:roi-metric} Der entscheidende Hebel ist die Conversion-Rate: Während traditionelle organische B2B-Klicks bei unter zwei Prozent konvertieren, erreichen Besucher über KI-Referrals wie ChatGPT und Perplexity vier bis über zehn Prozent.
+  {cue:roi-table} Dreiundsiebzig Prozent der B2B-Einkäufer nutzen KI-Antworten für ihre Shortlist. Während traditionelle Suchvolumina laut Gartner um fünfundzwanzig Prozent sinken, liefern autoritative Zitationen {cue:hl-pipeline-wert}signifikant höhere Lead-Dichte bei geringerem Streuverlust{/cue}. Nicht Klickmasse, sondern Zitationsqualität entscheidet über den Umsatz!
 notes: |
   - Zeit: 50:30 - 52:30 Min.
-  - Datenquelle: Forrester / B2B Pipeline Conversion Benchmark Reports (2025/2026).
-  - Kernbotschaft an CFOs: Traffic ist eine Eitelkeits-Metrik; Pipeline-Wert ist die Realität.
+  - Empirische B2B-Benchmarks: Ruler Analytics, FirstPageSage & Similarweb AI Search Studies (2025/2026).
+  - Gartner Search Volume Forecast (-25 % bis 2026).
+references:
+  - type: online
+    id: "similarweb-2026-ai-search"
+    author: "Similarweb"
+    title: "The State of AI Search & B2B Referral Conversion Benchmarks"
+    siteName: "Similarweb Research Reports"
+    year: 2026
+    url: "https://www.similarweb.com/blog/insights/ai-search-benchmarks/"
+  - type: online
+    id: "gartner-2024-search-drop"
+    author: "Gartner"
+    title: "Gartner Predicts Search Engine Volume Will Drop 25% by 2026, Due to AI Chatbots and Other Virtual Agents"
+    siteName: "Gartner Newsroom"
+    year: 2024
+    url: "https://www.gartner.com/en/newsroom/press-releases/2024-02-19-gartner-predicts-search-engine-volume-will-drop-25-percent-by-2026-due-to-ai-chatbots-and-other-virtual-agents"
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -27,48 +42,48 @@ import MetricStat from '../../../../components/slides/primitives/MetricStat.astr
   <MetricStat
     slot="left"
     cue="roi-metric"
-    value="+304"
-    unit="%"
-    label="Wachstum des B2B-Pipeline-Werts"
-    sublabel="Forrester B2B Lead-Conversion Benchmarks 2025/2026"
+    value="3–5×"
+    unit=""
+    label="Höhere Conversion bei KI-Referrals"
+    sublabel="B2B AI Search Benchmarks [@similarweb-2026-ai-search]: Vorqualifizierte KI-Besucher erzielen 4,4–10,5 % Conversion"
     color="green"
   />
 
-  <BentoCard slot="right" cue="roi-table" title="Trichter-Vergleich: Klassisch vs. GEO" accent="blue">
+  <BentoCard slot="right" cue="roi-table" title="B2B-Trichter-Benchmarks: Organisch vs. KI-Referral" accent="blue">
     <div class="overflow-x-auto my-auto">
       <table class="w-full text-left text-base lg:text-lg">
         <thead>
           <tr class="border-b border-slate-800 light:border-slate-200 text-slate-400 font-bold uppercase text-sm lg:text-base">
-            <th class="py-3">Metrik</th>
-            <th class="py-3">Traditionell</th>
-            <th class="py-3 text-blue-400 light:text-blue-700">GEO-Trichter</th>
-            <th class="py-3 text-right">Delta</th>
+            <th class="py-3">Trichter-Metrik</th>
+            <th class="py-3">Klassische Suche</th>
+            <th class="py-3 text-blue-400 light:text-blue-700">KI-Referral / GEO</th>
+            <th class="py-3 text-right">Empirischer Befund</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-800 light:divide-slate-100 text-slate-200 light:text-slate-800">
           <tr>
-            <td class="py-4 font-bold">Traffic</td>
-            <td class="py-4 font-mono text-base">10.000 Klicks</td>
-            <td class="py-4 font-mono text-base font-bold text-blue-400">4.500 Klicks</td>
-            <td class="py-4 font-mono text-base text-rose-400 text-right font-bold">-55 %</td>
+            <td class="py-4 font-bold">B2B-Conversion-Rate</td>
+            <td class="py-4 font-mono text-base">1,7 % – 2,2 %</td>
+            <td class="py-4 font-mono text-base font-bold text-emerald-400">4,4 % – 10,5 %</td>
+            <td class="py-4 font-mono text-base text-emerald-400 text-right font-bold">+160 % bis +380 %</td>
           </tr>
           <tr>
-            <td class="py-4 font-bold">Conversion-Rate</td>
-            <td class="py-4 font-mono text-base">1,2 %</td>
-            <td class="py-4 font-mono text-base font-bold text-emerald-400">4,8 %</td>
-            <td class="py-4 font-mono text-base text-emerald-400 text-right font-bold">+300 %</td>
+            <td class="py-4 font-bold">Buyer-Journey-Phase</td>
+            <td class="py-4 text-base">Top-of-Funnel (Recherche)</td>
+            <td class="py-4 text-base font-bold text-blue-400">High-Intent Validation</td>
+            <td class="py-4 text-base text-right text-slate-400">73 % nutzen KI-Shortlists</td>
           </tr>
           <tr>
-            <td class="py-4 font-bold">Qualifizierte Leads</td>
-            <td class="py-4 font-mono text-base">120 Leads</td>
-            <td class="py-4 font-mono text-base font-bold text-emerald-400">216 Leads</td>
-            <td class="py-4 font-mono text-base text-emerald-400 text-right font-bold">+80 %</td>
+            <td class="py-4 font-bold">Suchvolumen-Trend</td>
+            <td class="py-4 font-mono text-base text-rose-400">-25 % bis 2026</td>
+            <td class="py-4 text-base font-bold text-emerald-400">Wachsender Direktkanal</td>
+            <td class="py-4 text-base text-right text-slate-400">Gartner Prognose [@gartner-2024-search-drop]</td>
           </tr>
           <tr class="border-t-2 border-slate-700 font-bold text-lg lg:text-xl">
-            <td class="py-4 text-slate-100 light:text-slate-900">Pipeline-Wert (€)</td>
-            <td class="py-4 font-mono text-slate-400">€ 2.400.000</td>
-            <td class="py-4 font-mono text-emerald-400">{cue:hl-pipeline-wert}€ 7.296.000{/cue}</td>
-            <td class="py-4 font-mono text-emerald-400 text-right">+304 %</td>
+            <td class="py-4 text-slate-100 light:text-slate-900">Lead-Effizienz</td>
+            <td class="py-4 text-slate-400 text-base">Hoher Streuverlust</td>
+            <td class="py-4 text-emerald-400 text-base">{cue:hl-pipeline-wert}Maximale Lead-Dichte{/cue}</td>
+            <td class="py-4 text-emerald-400 text-right text-base font-bold">Vorqualifiziert</td>
           </tr>
         </tbody>
       </table>

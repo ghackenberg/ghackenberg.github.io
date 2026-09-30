@@ -6,8 +6,8 @@ slideLayout: "metric"
 voiceover: >
   Kommen wir zu einer der drängendsten Herausforderungen für moderne Webseiten im B2B.
   {cue:sub} Das Zero-Click-Dilemma zeigt, wie Suchmaschinen den {cue:hl-sub-zeroclick-1001}Klick auf Ihre Website überflüssig machen{/cue}.
-  {cue:stat-zeroclick} Über vierundsechzig Prozent aller Suchanfragen weltweit enden heute ohne einen einzigen Klick.
-  {cue:bento-impact} Für Entscheider gilt: Wir optimieren für {cue:hl-callout-zitation-marke}Zitation und unumstößliche Markennennung{/cue}. Während der {cue:hl-zeroclick-traffic}Massen-Traffic um 40 bis 60 Prozent einbricht{/cue}, gewinnen Zitierte Kunden mit {cue:hl-zeroclick-intent}höchster Kauf- und Projektabsicht{/cue}.
+  {cue:stat-zeroclick} Fast sechzig Prozent aller Suchanfragen in der Europäischen Union enden heute ohne einen einzigen Klick.
+  {cue:bento-impact} Für Entscheider gilt: Wir optimieren für {cue:hl-callout-zitation-marke}Zitation und unumstößliche Markennennung{/cue}. Während Gartner einen {cue:hl-zeroclick-traffic}Verlust von 25 Prozent des Suchvolumens bis 2026{/cue} prognostiziert, gewinnen Zitierte Kunden mit {cue:hl-zeroclick-intent}höchster Kauf- und Projektabsicht{/cue}.
 notes: |
   - Zeit: 6:00 - 8:00 Min.
   - Wichtig: Den Industrievertretern die Angst vor Traffic-Verlusten nehmen; Konversionsrate und Lead-Qualität steigen, wenn die Antwortbox autoritativ ist.
@@ -19,6 +19,13 @@ references:
     siteName: "SparkToro & Datos"
     year: 2024
     url: "https://sparktoro.com/blog/2024-zero-click-search-study-for-every-1000-google-searches-only-374-clicks-go-to-the-open-web/"
+  - type: online
+    id: "gartner-2024-search-drop"
+    author: "Gartner"
+    title: "Gartner Predicts Search Engine Volume Will Drop 25% by 2026, Due to AI Chatbots and Other Virtual Agents"
+    siteName: "Gartner Newsroom"
+    year: 2024
+    url: "https://www.gartner.com/en/newsroom/press-releases/2024-02-19-gartner-predicts-search-engine-volume-will-drop-25-percent-by-2026-due-to-ai-chatbots-and-other-virtual-agents"
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -36,10 +43,10 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   <MetricStat
     slot="left"
     cue="stat-zeroclick"
-    value="64"
+    value="59,7"
     unit="%"
-    label="Zero-Click Suchanfragen"
-    sublabel="SparkToro [@fishkin-2024-zero-click] / Similarweb Global Search Study über 1 Mrd. analysierte Sessions"
+    label="Zero-Click-Suchen in der EU"
+    sublabel="SparkToro & Datos 2024 [@fishkin-2024-zero-click]: Nur 374 von 1.000 Suchen führen ins freie Web"
     color="blue"
   />
 
@@ -51,8 +58,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     <BulletList items={[
       {
         icon: "trending-down",
-        title: "Verlust unqualifizierten Traffics",
-        desc: "Oberflächliche Informational-Queries werden direkt beantwortet: Reiner {cue:hl-zeroclick-traffic}Massen-Traffic bricht um 40–60 % ein{/cue}."
+        title: "Rückgang unqualifizierten Volumens",
+        desc: "Gartner [@gartner-2024-search-drop] prognostiziert einen {cue:hl-zeroclick-traffic}Verlust von 25 Prozent des Suchvolumens bis 2026{/cue} durch KI-Chatbots."
       },
       {
         icon: "target",
