@@ -14,6 +14,7 @@ notes: |
   - Mathematische Formel Kosinus-Ähnlichkeit erklären: cos(theta) = (A * B) / (||A|| * ||B||).
 references:
   - type: inproceedings
+    id: "mikolov-2013-word2vec"
     author: "Mikolov, Tomás and Sutskever, Ilya and Chen, Kai and Corrado, Gregory S. and Dean, Jeffrey"
     title: "Distributed Representations of Words and Phrases and their Compositionality"
     booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2013)"
@@ -41,7 +42,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </CalloutBox>
 
     <BulletList items={[
-      { icon: "arrow", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen {cue:hl-vektor-winkel}nahezu identische Vektor-Winkel{/cue}." },
+      { icon: "arrow", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen im Vektorraum [@mikolov-2013-word2vec] {cue:hl-vektor-winkel}nahezu identische Vektor-Winkel{/cue}." },
       { icon: "arrow", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche {cue:hl-keyword-stuffing}Keyword-Wiederholungen{/cue} verzerren den Vektor und senken die semantische Relevanz." }
     ]} />
   </BentoCard>

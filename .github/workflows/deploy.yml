@@ -46,8 +46,14 @@ jobs:
       - name: Validate Presentation Slides
         run: npm run validate:slides
 
+      - name: Validate Citations Parity
+        run: npm run validate:citations:syntax
+
       - name: Build Astro Site
         run: npm run build
+
+      - name: Validate Semantic DOM IDs
+        run: npm run validate:semantic-ids
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3

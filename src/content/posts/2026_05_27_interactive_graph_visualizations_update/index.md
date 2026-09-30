@@ -1,14 +1,61 @@
 ---
-title: "WebGL Network Visualization & Graph Engines"
-pubDate: "2026-05-27"
-lang: "en"
-description: "Explore interactive network graph visualizations in Astro: How we unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware styling."
-tags: ["astro", "computer-graphics", "cytoscape", "d3", "data-visualization", "javascript", "threejs", "visjs", "webgl"]
+title: WebGL Network Visualization & Graph Engines
+pubDate: 2026-05-27
+lang: en
+description: "Explore interactive network graph visualizations in Astro: How we
+  unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware
+  styling."
+tags:
+  - astro
+  - computer-graphics
+  - cytoscape
+  - d3
+  - data-visualization
+  - javascript
+  - threejs
+  - visjs
+  - webgl
 icon:
-  src: "./icon.png"
+  src: ./icon.png
   title: "Cover illustration: WebGL Network Visualization & Graph Engines"
-  description: "Explore interactive network graph visualizations in Astro: How we unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware styling."
+  description: "Explore interactive network graph visualizations in Astro: How we
+    unified WebGL, Three.js, Vis.js, dynamic layout syncing, and theme-aware
+    styling."
+references:
+  - type: article
+    author: Barnes, J., & Hut, P.
+    title: A hierarchical O(N log N) force-calculation algorithm
+    url: https://doi.org/10.1038/324446a0
+    year: 1986
+    doi: 10.1038/324446a0
+    journal: Nature
+    volume: "324"
+    number: "6096"
+    id: barnes-1986-hierarchical-forcecalculation
+  - type: article
+    author: Bostock, M., Ogievetsky, V., & Heer, J.
+    title: "D3: Data-Driven Documents"
+    url: https://doi.org/10.1109/TVCG.2011.185
+    year: 2011
+    doi: 10.1109/TVCG.2011.185
+    journal: IEEE Transactions on Visualization and Computer Graphics
+    volume: "17"
+    number: "12"
+    id: bostock-2011-datadriven-documents
+  - type: article
+    author: Jacomy, M., Venturini, T., Heymann, S., & Bastian, M.
+    title: ForceAtlas2, a continuous graph layout algorithm for handy network
+      visualization designed for the Gephi software
+    url: https://doi.org/10.1371/journal.pone.0098679
+    year: 2014
+    doi: 10.1371/journal.pone.0098679
+    journal: PLoS ONE
+    volume: "9"
+    number: "6"
+    id: jacomy-2014-forceatlas2-continuous
 ---
+
+
 To help visitors explore the relationships between topics, blog posts, and academic publications, this website features interactive network graph visualizations. Recently, we gave this visualization system a major architectural and aesthetic overhaul. 
 
 Instead of a monolithic script, the system now runs on a modular, multi-engine architecture supporting **Cytoscape.js**, **D3.js**, **Sigma.js**, **Vis.js Network**, and an immersive **3D Force Graph** powered by Three.js and WebGL.
@@ -52,13 +99,19 @@ This drastically reduces the initial page bundle size, loading dependencies like
 
 Alongside our existing Cytoscape, D3, and Sigma engines, we introduced two new visualization engines:
 
-| Engine | Rendering Backend | Node Capacity | Primary Physics Model | Best Architectural Use Case |
-| :--- | :--- | :--- | :--- | :--- |
-| **Sigma.js** | WebGL 2.0 Shader Pipeline | 1,000–50,000+ | ForceAtlas2 (Web Worker) | Massive networks requiring high FPS throughput |
-| **Vis.js** | HTML5 2D Canvas | 50–1,000 | Barnes-Hut Spring Damper | Tactile drag-and-drop & interactive exploration |
-| **3D Force** | WebGL & Three.js | 500–5,000 | 3D Force-Directed Sphere | Immersive volumetric spatial visualization |
-| **Cytoscape** | HTML5 2D Canvas | 100–2,000 | Concentric / Compound Tree | Graph-theoretical & hierarchical analysis |
-| **D3.js** | SVG Vector DOM | 50–500 | D3-Force Velocity Verlet | Vector typography & crisp publication graphics |
+| Engine | Rendering Backend | Node Capacity | Primary Physics Model | Computational Complexity | Best Architectural Use Case |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Sigma.js** | WebGL 2.0 Shader Pipeline | 1,000–50,000+ | ForceAtlas2 [@jacomy-2014-forceatlas2-continuous] (Web Worker) | $O(N \log N)$ (Quadtree approximation) | Massive networks requiring high FPS throughput |
+| **Vis.js** | HTML5 2D Canvas | 50–1,000 | Barnes [@barnes-1986-hierarchical-forcecalculation]-Hut Spring Damper | $O(N \log N)$ with opening angle $\theta \approx 0.5$ | Tactile drag-and-drop & interactive exploration |
+| **3D Force** | WebGL & Three.js | 500–5,000 | 3D Force-Directed Sphere | $O(N \log N)$ (Octree spatial partition) | Immersive volumetric spatial visualization |
+| **Cytoscape** | HTML5 2D Canvas | 100–2,000 | Concentric / Compound Tree | $O(V + E)$ to $O(V^2)$ depending on solver | Graph-theoretical & hierarchical analysis |
+| **D3.js** | SVG Vector DOM | 50–500 | D3-Force Velocity Verlet [@bostock-2011-datadriven-documents] | $O(N^2)$ direct or $O(N \log N)$ quadtree | Vector typography & crisp publication graphics |
+
+### Algorithmic Mechanics: Barnes-Hut and Worker Thread Offloading
+
+In graph physics simulation, naive n-body repulsive calculations scale quadratically at $O(N^2)$, exhausting the browser's main-thread budget at merely a few hundred nodes.
+- **Barnes-Hut Spatial Approximation**: Engines like Vis.js and Sigma implement the Barnes-Hut quadtree algorithm ($O(N \log N)$). By clustering distant nodes into center-of-mass pseudo-nodes, force calculations are governed by the opening angle $\theta = s / d$ (where $s$ is the cell width and $d$ the distance from the node to the cluster's center of mass). Setting $\theta \approx 0.5$ strikes an optimal balance between visual cluster fidelity and real-time execution.
+- **Web Worker Threading & Serialization**: Offloading force iterations to a background Web Worker isolates numerical math from the DOM. However, transferring graph states across the worker boundary via standard structured cloning can introduce garbage-collection pauses. High-capacity engines address this by packing node coordinates into flat `Float32Array` buffers and transferring them as zero-copy transferable objects (`postMessage(buffer, [buffer])`).
 
 ### 3D Force Graph (WebGL & Three.js)
 The 3D Force Graph engine ([3d-force/engine.js](https://github.com/ghackenberg/ghackenberg.github.io/blob/3db2d5eb7c2b1c6ba4b2f0e9f472f011b9a6f981/src/content/visualizations/3d-force/engine.js)) renders the network as a floating three-dimensional sphere. 
@@ -190,4 +243,3 @@ Explore each engine live in action on the website:
 - [D3.js: Force-Directed Network Graph](/visualizations/d3/) – Physics-based force layout with delicate vector typography.
 
 Browse the complete collection on the [Content Visualizations Hub](/visualizations/).
-

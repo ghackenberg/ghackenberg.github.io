@@ -1,13 +1,56 @@
 ---
-title: "Architektur und Funktionsweise des Hermes Agent: Body-Brain-Entkopplung, Bounded Context, Progressive Skills und der Curator-Lifecycle"
-pubDate: "2026-09-07"
-description: "Eine softwaretechnische Tiefenanalyse des Hermes Agent von Nous Research: Wie die Trennung von Body und Brain echte Modellagnostik schafft, warum Bounded Memory KV-Caches schützt, wie Progressive Disclosure Token spart und wie der Curator Skill Sprawl verhindert."
-tags: ["agentic-ai", "artificial-intelligence", "enterprise-ai", "hermes-agent", "local-ai", "mem0", "open-source", "prompt-engineering", "software-architecture", "wikiskills"]
+title: "Architektur und Funktionsweise des Hermes Agent: Body-Brain-Entkopplung,
+  Bounded Context, Progressive Skills und der Curator-Lifecycle"
+pubDate: 2026-09-07
+description: "Eine softwaretechnische Tiefenanalyse des Hermes Agent von Nous
+  Research: Wie die Trennung von Body und Brain echte Modellagnostik schafft,
+  warum Bounded Memory KV-Caches schützt, wie Progressive Disclosure Token spart
+  und wie der Curator Skill Sprawl verhindert."
+tags:
+  - agentic-ai
+  - artificial-intelligence
+  - enterprise-ai
+  - hermes-agent
+  - local-ai
+  - mem0
+  - open-source
+  - prompt-engineering
+  - software-architecture
+  - wikiskills
 icon:
-  src: "./hero.jpg"
-  title: "Hermes Agent"
-  description: "Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit Body-Brain-Entkopplung, Bounded Memory und Progressive Skills"
+  src: ./hero.jpg
+  title: Hermes Agent
+  description: "Hermes Agent: Ein sympathischer, modularer KI-Gefährte mit
+    Body-Brain-Entkopplung, Bounded Memory und Progressive Skills"
+references:
+  - type: online
+    author: Nous Research
+    title: "Hermes 3 Technical Report: Open Bi-Directional Function Calling and
+      Advanced Reasoning"
+    url: https://nousresearch.com/hermes3/
+    year: 2024
+    siteName: Technical Report, Nous Research
+    id: research-2024-hermes3
+  - type: online
+    author: Anthropic
+    title: "Prompt Caching with Claude: Reducing Latency and Costs"
+    url: https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
+    year: 2024
+    siteName: Anthropic Engineering Documentation
+    id: anthropic-2024-prompt-caching
+  - type: article
+    author: Robertson, S., & Zaragoza, H.
+    title: "The Probabilistic Relevance Framework: BM25 and Beyond"
+    url: https://doi.org/10.1561/1500000019
+    year: 2009
+    doi: 10.1561/1500000019
+    journal: Foundations and Trends in Information Retrieval
+    volume: "3"
+    number: "4"
+    id: robertson-2009-bm25
 ---
+
+
 
 In unserer Artikelserie zu souveränen, produktionsreifen Unternehmens-KI-Systemen haben wir die architektonischen Leitplanken für moderne Agenten schrittweise vertieft: Ausgehend von unserem [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über die mathematische und empirische Analyse des [sitzungsübergreifenden Langzeitgedächtnisses via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) bis hin zur [persistenten Wissensevolution und Vermeidung von Optimization Amnesia via WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/).
 
@@ -15,7 +58,7 @@ Ein zentrales Postulat unseres Referenzmodells lautet: **Ein Inferenz-Server lie
 
 Bislang dominierten in der Praxis zwei problematische Extreme: Entweder starre, proprietäre Chatbot-Silos und Coding-Copiloten, die fest an eine Cloud-API gekoppelt sind, oder improvisierte Python-Skripte, die bei wachsender Interaktionsdauer unweigerlich an Kontextüberlauf, Speicherfragmentierung und mangelnder Fehlerbehandlung ersticken. Bereits in unseren früheren Experimenten zu [lokalen KI-Agenten und strukturierter Inferenz](/posts/2026_05_31_local_ai_agents_web_llm/) zeigte sich, dass deterministische Entscheidungszyklen ein striktes Zusammenspiel von Validierungsverträgen und Zustandsisolation verlangen.
 
-Mit dem von **Nous Research** entwickelten **Hermes Agent** liegt nun ein quelloffenes, autarkes „Agenten-Betriebssystem“ vor, das genau diese Lücke schließt. Dieser Beitrag analysiert die Software-Architektur, den Turn-Lifecycle der Kern-Engine, das Zusammenspiel von Bounded Memory und FTS5-Transkriptsuche sowie das Zusammenspiel von standardisierten Skills und Hintergrund-Kuratierung.
+Mit dem von **Nous [@research-2024-hermes3] Research** entwickelten **Hermes Agent** liegt nun ein quelloffenes, autarkes „Agenten-Betriebssystem“ vor, das genau diese Lücke schließt. Dieser Beitrag analysiert die Software-Architektur, den Turn-Lifecycle der Kern-Engine, das Zusammenspiel von Bounded Memory und FTS5-Transkriptsuche sowie das Zusammenspiel von standardisierten Skills und Hintergrund-Kuratierung.
 
 Bevor wir in die feingranularen Ausführungszyklen einsteigen, veranschaulicht das folgende Referenzmodell die sechs Subsysteme der Gesamtlösung:
 
@@ -23,9 +66,11 @@ Bevor wir in die feingranularen Ausführungszyklen einsteigen, veranschaulicht d
 
 ## 1. Die fundamentale Entwurfsphilosophie: «Body vs. Brain»
 
-Herkömmliche Agenten-Frameworks verschmelzen das ausführende Programm eng mit den Eigenheiten eines bestimmten Modellanbieters. Ändert der Anbieter seine Funktionsaufruf-Syntax oder dreht an den System-Prompt-Gewichten, bricht die umgebende Logik zusammen. Ebenso fatal ist der umgekehrte Fall: Wird ein Agenten-Skript auf ein neues Modell umgestellt, gehen oft mühevoll akkumulierte Kontexte, Arbeitsroutinen und Verhaltensweisen verloren.
+### Die Entkopplung: Modellgewichte vs. Agenten-Harness
 
-Hermes Agent begegnet diesem architektonischen Dilemma mit einer radikalen Trennung von **«Body» (Körper)** und **«Brain» (Gehirn)**:
+In der AI-Community ist der Name **Hermes** vor allem durch die Modellserien von Nous Research bekannt (wie *Hermes 2 Pro* und *Hermes 3*), die Pionierarbeit bei der standardisierten Funktionsaufruf-Syntax (`<tool_call>`) und strukturiertem Reasoning für Open-Weights-Modelle leisteten. 
+
+Der **Hermes Agent** geht einen Schritt weiter: Er ist nicht das neuronale Netz selbst, sondern das softwaretechnische **Agenten-Harness**, das diese Modelle mit der Außenwelt verbindet. Die Trennung in **«Body» (Körper)** und **«Brain» (Gehirn)** löst ein fundamentales Entwurfsproblem:
 * Der **Body** ist der langlebige, deterministische Laufzeit-Harness. Er verwaltet die Identität, kapselt Bounded Contexts (`MEMORY.md`, `USER.md`), indiziert vergangene Konversationen in SQLite (FTS5), lädt progressive Skills nach Bedarf und wickelt die Multi-Surface-Kommunikation mit über 21 Messaging-Plattformen ab.
 * Das **Brain** ist eine austauschbare, rein funktionale Inferenzressource. Es konsumiert normalisierte Nachrichten und erzeugt Streaming-Deltas oder Tool-Aufrufe – ohne eigenen persistenten Zustand.
 * Die **Protokollbrücke** entkoppelt beide Welten über ein homogenes OpenAI-Dictionary-Format (`role`, `content`, `tool_calls`, `reasoning`).
@@ -49,7 +94,7 @@ Das **Brain** ist eine reine Rechenressource. Hermes Agent abstrahiert Modellanb
 | :--- | :--- | :--- | :--- |
 | **`chat_completions`** | Lokales vLLM, OpenRouter, Nous Portal, OpenAI | `openai.OpenAI` | Standardisiertes Function Calling, Streaming-Deltas, OpenAI Message Schema |
 | **`codex_responses`** | OpenAI Codex / Responses API | `openai.OpenAI` | Native Serialisierung in Responses-API Input Items |
-| **`anthropic_messages`** | Anthropic Claude 3.5 / 3.7 | `anthropic.Anthropic` | Nativer Adapter, Tool-Use-Blöcke & Prompt Caching Breakpoints |
+| **`anthropic_messages`** | Anthropic [@anthropic-2024-prompt-caching] Claude 3.5 / 3.7 | `anthropic.Anthropic` | Nativer Adapter, Tool-Use-Blöcke & Prompt Caching Breakpoints |
 
 Ganz gleich, welches Backend konfiguriert ist: Vor und nach jedem Inferenzschritt normalisiert die Engine alle Nachrichten in ein homogenes, internes Format (`role`, `content`, `tool_calls`, `reasoning`). Der Anwender kann mit einem einfachen Konsolenbefehl (`hermes model`) von einem lokalen 8B-Open-Weights-Modell auf einen 70B-Inferenz-Knoten oder eine Cloud-Inferenz umschalten, **ohne dass der Agent seine Identität, seine gelernten Arbeitsweisen oder seine Erinnerungen verliert**.
 
@@ -148,7 +193,7 @@ Läuft der Speicher über die Kapazitätsgrenze, bricht das System nicht stillsc
 ```
 
 ### Verlustfreie Transkriptsuche mit SQLite FTS5
-Für Wissen, das über die 2.200 Zeichen hinausgeht, verlässt sich Hermes Agent nicht auf fehleranfällige LLM-Zusammenfassungen. Alle Sitzungen werden vollständig in SQLite gespeichert. Über das Tool `session_search` führt der Agent mithilfe der **FTS5-Volltext-Engine** performante BM25-Suchen über Monate zurückliegende Unterhaltungen aus:
+Für Wissen, das über die 2.200 Zeichen hinausgeht, verlässt sich Hermes Agent nicht auf fehleranfällige LLM-Zusammenfassungen. Alle Sitzungen werden vollständig in SQLite gespeichert. Über das Tool `session_search` führt der Agent mithilfe der **FTS5-Volltext-Engine** performante BM25 [@robertson-2009-bm25]-Suchen über Monate zurückliegende Unterhaltungen aus:
 
 $$\text{Score}(D, Q) = \sum_{q \in Q} \text{IDF}(q) \cdot \frac{f(q, D) \cdot (k_1 + 1)}{f(q, D) + k_1 \cdot \left(1 - b + b \cdot \frac{|D|}{\text{avgdl}}\right)}$$
 

@@ -1,14 +1,52 @@
 ---
-title: "Keycloak Architektur & Funktionsweise im AI Tech Stack"
-pubDate: "2026-09-10"
-lang: "de"
-description: "Softwaretechnische Analyse von Keycloak: Cloud-native Quarkus-Laufzeit, Token Exchange (RFC 8693) für KI-Agenten, UMA 2.0 und Zero-Trust-Governance."
-tags: ["keycloak", "agentic-ai", "artificial-intelligence", "enterprise-ai", "litellm", "open-webui", "devops", "software-architecture", "open-source", "vllm", "langgraph"]
+title: Keycloak Architektur & Funktionsweise im AI Tech Stack
+pubDate: 2026-09-10
+lang: de
+description: "Softwaretechnische Analyse von Keycloak: Cloud-native
+  Quarkus-Laufzeit, Token Exchange (RFC 8693) für KI-Agenten, UMA 2.0 und
+  Zero-Trust-Governance."
+tags:
+  - keycloak
+  - agentic-ai
+  - artificial-intelligence
+  - enterprise-ai
+  - litellm
+  - open-webui
+  - devops
+  - software-architecture
+  - open-source
+  - vllm
+  - langgraph
 icon:
-  src: "./hero.jpg"
-  title: "Keycloak"
-  description: "Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im souveränen AI Tech Stack"
+  src: ./hero.jpg
+  title: Keycloak
+  description: "Keycloak: Kryptografischer Schutzschild und zentraler IAM-Hub im
+    souveränen AI Tech Stack"
+references:
+  - type: misc
+    author: Hardt, D.
+    title: The OAuth 2.0 Authorization Framework
+    url: https://www.rfc-editor.org/rfc/rfc6749
+    year: 2012
+    howpublished: IETF RFC 6749
+    id: hardt-2012-oauth2
+  - type: misc
+    author: Jones, M., Nadalin, A., Campbell, B., & Mortimore, C.
+    title: OAuth 2.0 Token Exchange
+    url: https://www.rfc-editor.org/rfc/rfc8693
+    year: 2020
+    howpublished: IETF RFC 8693
+    id: jones-2020-oauth2
+  - type: online
+    author: Sakimura, N., Bradley, J., Jones, M., de Medeiros, B., & Mortimore, C.
+    title: OpenID Connect Core 1.0 incorporating errata set 1
+    url: https://openid.net/specs/openid-connect-core-1_0.html
+    year: 2014
+    siteName: OpenID Foundation
+    id: sakimura-2014-oidc
 ---
+
+
 
 In unserer fortlaufenden Beitragsreihe zur systematischen Konzeption und ingenieurwissenschaftlichen Realisierung souveräner Unternehmens-KI haben wir die funktionalen Kernkomponenten moderner Plattformen schrittweise analysiert: Ausgehend vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) untersuchten wir das mathematisch formalisierte [sitzungsübergreifende Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die [kontinuierliche Wissensevolution via WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/), die [Body-Brain-Entkopplung und Bounded-Memory-Laufzeit des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/), die kollaborative [Human-in-the-Loop Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/) sowie das universelle Modell-Routing, Caching und Inferenz-Gateway via [LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/).
 
@@ -20,7 +58,7 @@ In vielen heutigen Pilotprojekten und unreflektierten Enterprise-Deployments her
 * **Fehlende Mandanten- und Rollenisolation:** Vektordatenbanken ([Qdrant](/tags/neo4j/)), relationale Persistenzschichten ([PostgreSQL](/tags/software-architecture/)) und Graph-Datenbanken ([Neo4j](/tags/knowledge-graphs/)) können Anfragen aus Web-Interfaces oft nicht verlässlich einem verifizierten Endnutzer zuordnen.
 * **Audit- und Compliance-Lücken:** Gesetzliche Vorgaben nach DSGVO und EU AI Act verlangen die lückenlose, kryptografisch nachweisbare Nachvollziehbarkeit jeder automatisierten Entscheidung und jedes Datenbankzugriffs.
 
-Genau an dieser Nahtstelle greift **Keycloak** als **Schicht 5 (Gateway, Identity & Access Management)** unseres Referenzmodells ein. Als hochgradig performanter, cloud-nativer Open-Source-Identity-Provider (IdP) standardisiert Keycloak moderne Authentifizierungs- und Autorisierungs-Flows (OAuth 2.0, OpenID Connect, SAML 2.0, UMA 2.0). 
+Genau an dieser Nahtstelle greift **Keycloak** als **Schicht 5 (Gateway, Identity & Access Management)** unseres Referenzmodells ein. Als hochgradig performanter, cloud-nativer Open-Source-Identity-Provider (IdP) standardisiert Keycloak moderne Authentifizierungs- und Autorisierungs-Flows (OAuth 2.0 [@hardt-2012-oauth2], OpenID Connect [@sakimura-2014-oidc], SAML 2.0, UMA 2.0). 
 
 Bevor wir die internen Protokollabläufe und Token-Transformationsmechanismen im Detail analysieren, visualisiert das folgende Architekturmodell die Einbettung von Keycloak in die Gesamttopologie unseres Stacks:
 
@@ -125,7 +163,7 @@ $$\text{Hermes Service} \xrightarrow{\text{POST /token (client\_id, client\_secr
 ### 3. OAuth 2.0 Token Exchange (RFC 8693) & Agenten-Delegation
 Das gravierendste Sicherheitsproblem agentischer Architekturen ist das **Confused-Deputy-Problem**: Wenn der [Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) im Auftrag von *Georg* ein internes Werkzeug (z. B. eine SQL-Datenbankabfrage via MCP) aufrufen soll, darf er Georgs mächtiges Master-Token nicht unmodifiziert an Drittsysteme weiterleiten. Das Drittsystem könnte Georgs Identität missbrauchen, um andere Services zu kompromittieren.
 
-Die Lösung bildet der in Keycloak produktionsreif integrierte **Standard Token Exchange nach RFC 8693**:
+Die Lösung bildet der in Keycloak produktionsreif integrierte **Standard Token Exchange nach RFC 8693** [@jones-2020-oauth2]:
 
 ![OAuth 2.0 Token Exchange (RFC 8693) Flow im Zusammenspiel zwischen Open WebUI, Hermes Agent und Keycloak](./keycloak_token_exchange_flow.svg "OAuth 2.0 Token Exchange (RFC")
 
@@ -237,6 +275,12 @@ Um unnötigen Cache-Replikations-Traffic zwischen den Knoten zu minimieren, setz
 * Beim ersten Login setzt Keycloak das Cookie `AUTH_SESSION_ID=<session-id>.<node-id>`.
 * Nachfolgende Anfragen desselben Nutzers werden vom Ingress direkt an denjenigen Pod weitergeleitet, der als primärer Owner der Session im Infinispan-Cluster fungiert.
 * Fällt ein Pod aus, übernimmt der definierte Backup-Pod die Session transparent. Der Nutzer bemerkt keinen Sitzungsverlust.
+
+### Herausforderungen im Multi-Datacenter-Betrieb: Infinispan Cross-Site Replication
+Während ein lokaler Keycloak-Cluster im selben Kubernetes-Netzwerk via `KUBE_PING` stabil skaliert, stellt der Betrieb über geografisch getrennte Rechenzentren (Multi-Region / Multi-Site) hohe architektonische Anforderungen:
+* **Latenz der synchronen Replikation**: Synchrone Sitzungsreplikation über WAN-Strecken hinweg erzeugt spürbaren Login-Overhead. Keycloak nutzt daher asynchrone Cross-Site-Replikation in Infinispan.
+* **Split-Brain-Vermeidung**: Bei Netzwerktrennungen zwischen Rechenzentren müssen JGroups-Split-Brain-Resolver und strikte Quorum-Regeln verhindern, dass beide Seiten unabhängig voneinander inkonsistente Session-Zustände mutieren.
+* Für die meisten Unternehmensanwendungen empfiehlt sich daher eine aktive Primärregion mit warmem Standby-Rechenzentrum, gekoppelt an eine replizierte PostgreSQL-Datenbank.
 
 ## 8. Praxiseinsatz im Gesamtsystem: Ein End-to-End Walkthrough
 

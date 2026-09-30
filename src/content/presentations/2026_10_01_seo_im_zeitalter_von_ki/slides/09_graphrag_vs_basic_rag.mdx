@@ -13,6 +13,7 @@ notes: |
   - Kernaussage für Entscheider: Wer nur simple Blogartikel ins Web stellt, wird von GraphRAG fragmentiert; wer strukturierte Themengraphen liefert, dominiert die Community Summaries.
 references:
   - type: article
+    id: "edge-2024-graphrag"
     author: "Edge, Darren and Trinh, Ha and Cheng, Newman and Bradley, Joshua and Chao, Alex and Mody, Apurva and Truitt, Steven and Metropolitansky, Dasha and Ness, Robert Osazuwa and Larson, Jonathan"
     title: "From Local to Global: A Graph RAG Approach to Query-Focused Summarization"
     journal: "arXiv preprint arXiv:2404.16130"
@@ -51,7 +52,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     <BulletList items={[
       { icon: "check", title: "Globale Fragestellungen lösbar", desc: "Liefert vollständige Marktübersichten {cue:hl-graphrag-global}ohne Informationslücken{/cue}." },
       { icon: "check", title: "Community Summaries", desc: "Übergreifende {cue:hl-community-summaries}Cluster-Zusammenfassungen{/cue} werden bevorzugt zitiert." },
-      { icon: "check", title: "+80 % Informationsfülle", desc: "Empirisch belegte {cue:hl-graphrag-qualitaet}Überlegenheit bei Benchmark-Fragen{/cue}." }
+      { icon: "check", title: "+80 % Informationsfülle", desc: "Empirisch belegte {cue:hl-graphrag-qualitaet}Überlegenheit bei Benchmark-Fragen{/cue} [@edge-2024-graphrag]." }
     ]} />
   </BentoCard>
 </SplitSlide>
