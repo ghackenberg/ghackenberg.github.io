@@ -240,6 +240,26 @@ function validateSlides() {
         }
       }
 
+      // 1c. Validate slide references integrity (mandatory citation tags)
+      if (Array.isArray(parsedFm.references) && parsedFm.references.length > 0) {
+        const citedRefs = [...content.matchAll(/\[@([a-zA-Z0-9_\-]+)\]/g)].map(m => m[1]);
+        for (const ref of parsedFm.references) {
+          if (!ref.id) {
+            console.error(`  ❌ [${slideFile}] Slide reference "${ref.title}" is missing mandatory "id".`);
+            totalErrors++;
+          } else if (!citedRefs.includes(ref.id)) {
+            console.error(`  ❌ [${slideFile}] Reference "${ref.id}" declared in frontmatter but never cited with "[@${ref.id}]" in slide body/props/voiceover.`);
+            totalErrors++;
+          }
+        }
+        for (const key of citedRefs) {
+          if (!parsedFm.references.some(r => r.id === key)) {
+            console.error(`  ❌ [${slideFile}] Citation "[@${key}]" used in slide but not declared in frontmatter references.`);
+            totalErrors++;
+          }
+        }
+      }
+
       // 2. Extract slide body cues in order of visual appearance
       /** @type {string[]} */
       const bodyCues = [];

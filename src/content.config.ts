@@ -129,6 +129,61 @@ const youtubeVideos = defineCollection({
   }),
 });
 
+const baseReferenceFields = {
+  id: z.string().min(1),
+  label: z.string().optional(),
+  author: z.string().min(1),
+  title: z.string().min(1),
+  url: z.string().url(),
+  doi: z.string().optional(),
+};
+
+export const referenceSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('inproceedings'),
+    ...baseReferenceFields,
+    booktitle: z.string().min(1),
+    year: z.number().int(),
+    pages: z.string().optional(),
+    publisher: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal('article'),
+    ...baseReferenceFields,
+    journal: z.string().min(1),
+    year: z.number().int(),
+    volume: z.string().optional(),
+    number: z.string().optional(),
+    pages: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal('book'),
+    ...baseReferenceFields,
+    publisher: z.string().min(1),
+    year: z.number().int(),
+    edition: z.string().optional(),
+    isbn: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal('online'),
+    ...baseReferenceFields,
+    year: z.number().int().optional(),
+    siteName: z.string().optional(),
+    urldate: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal('misc'),
+    ...baseReferenceFields,
+    year: z.number().int().optional(),
+    howpublished: z.string().optional(),
+    note: z.string().optional(),
+  }),
+]);
+
+export const slideReferenceSchema = referenceSchema;
+export type Reference = z.infer<typeof referenceSchema>;
+export type SlideReference = Reference;
+
 const posts = defineCollection({
   loader: glob({
     base: './src/content/posts',
@@ -142,6 +197,7 @@ const posts = defineCollection({
     lang: z.enum(['de', 'en']).default('de').optional(),
     tags: z.array(tagReference).default([]),
     icon: coverImageSchema({ image }).optional(),
+    references: z.array(referenceSchema).default([]),
   }),
 });
 
@@ -448,58 +504,7 @@ const presentations = defineCollection({
   }),
 });
 
-const baseReferenceFields = {
-  author: z.string().min(1),
-  title: z.string().min(1),
-  url: z.string().url(),
-};
 
-export const slideReferenceSchema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('inproceedings'),
-    ...baseReferenceFields,
-    booktitle: z.string().min(1),
-    year: z.number().int(),
-    pages: z.string().optional(),
-    publisher: z.string().optional(),
-    doi: z.string().optional(),
-  }),
-  z.object({
-    type: z.literal('article'),
-    ...baseReferenceFields,
-    journal: z.string().min(1),
-    year: z.number().int(),
-    volume: z.string().optional(),
-    number: z.string().optional(),
-    pages: z.string().optional(),
-    doi: z.string().optional(),
-  }),
-  z.object({
-    type: z.literal('book'),
-    ...baseReferenceFields,
-    publisher: z.string().min(1),
-    year: z.number().int(),
-    edition: z.string().optional(),
-    isbn: z.string().optional(),
-    doi: z.string().optional(),
-  }),
-  z.object({
-    type: z.literal('online'),
-    ...baseReferenceFields,
-    year: z.number().int().optional(),
-    siteName: z.string().optional(),
-    urldate: z.string().optional(),
-  }),
-  z.object({
-    type: z.literal('misc'),
-    ...baseReferenceFields,
-    year: z.number().int().optional(),
-    howpublished: z.string().optional(),
-    note: z.string().optional(),
-  }),
-]);
-
-export type SlideReference = z.infer<typeof slideReferenceSchema>;
 
 const slides = defineCollection({
   loader: glob({

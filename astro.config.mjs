@@ -8,6 +8,7 @@ import remarkMath from 'remark-math';
 import remarkValidateImages from './src/plugins/remark-validate-images.js';
 import remarkMermaid from './src/plugins/remark-mermaid.js';
 import remarkSlideCues from './src/plugins/remark-slide-cues.js';
+import remarkCitations from './src/plugins/remark-citations.js';
 import rehypeKatex from 'rehype-katex';
 import rehypeResponsiveTables from './src/plugins/rehype-responsive-tables.js';
 import rehypeCallouts from './src/plugins/rehype-callouts.js';
@@ -16,6 +17,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildSitemapMetadata } from './scripts/sitemap-config.js';
 import { validateAndEnrichImageSitemaps } from './scripts/validate-and-generate-image-sitemap.js';
+import YAML from 'yaml';
+import { generateCitationLabel } from './src/utils/citations.js';
 
 /** @type {Record<string, string>} */
 const mimeTypes = {
@@ -127,15 +130,36 @@ function vitePreSlideCues() {
     enforce: 'pre',
     transform(code, id) {
       if (!id.endsWith('.mdx') && !id.endsWith('.md')) return null;
-      if (!id.includes('talks') && !id.includes('slides')) return null;
+      if (!id.includes('talks') && !id.includes('slides') && !id.includes('presentations')) return null;
 
-      const fmMatch = code.match(/^---\r?\n[\s\S]*?\r?\n---/);
+      const fmMatch = code.match(/^---\r?\n([\s\S]*?)\r?\n---/);
       if (!fmMatch) return null;
 
-      const frontmatter = fmMatch[0];
-      const body = code.slice(frontmatter.length);
+      const frontmatterStr = fmMatch[0];
+      const frontmatterContent = fmMatch[1];
+      const body = code.slice(frontmatterStr.length);
 
-      const transformedBody = body.replace(
+      /** @type {any[]} */
+      let references = [];
+      try {
+        const parsed = YAML.parse(frontmatterContent);
+        if (parsed && Array.isArray(parsed.references)) {
+          references = parsed.references;
+        }
+      } catch {
+        // frontmatter parse fallback
+      }
+
+      // 1. Transform citations: [@refId] into interactive slide citation button badges
+      const CITE_REGEX = /\[@([a-zA-Z0-9_\-]+)\]/g;
+      const bodyWithCitations = body.replace(CITE_REGEX, (_, refId) => {
+        const ref = references.find((r) => r.id === refId) || { id: refId };
+        const label = generateCitationLabel(ref);
+        return `<button type='button' data-open-reference='${refId}' class='slide-citation-badge inline-flex items-center font-mono text-purple-400 light:text-purple-700 hover:text-purple-300 font-bold align-baseline px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 cursor-pointer transition-colors' title='Referenz ansehen: ${label}'>[${label}]</button>`;
+      });
+
+      // 2. Transform slide cues
+      const transformedBody = bodyWithCitations.replace(
         /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\{cue:([a-zA-Z0-9_-]+)(?::([a-zA-Z0-9_-]+))?\}([\s\S]*?)\{\/cue(?::[a-zA-Z0-9_-]+)?\}|\{cue:([a-zA-Z0-9_-]+)(?::([a-zA-Z0-9_-]+))?\})/g,
         (match, stringLiteral, _cueBlock, cueId1, color1, content, cueId2, color2) => {
           if (stringLiteral) {
@@ -154,7 +178,7 @@ function vitePreSlideCues() {
       );
 
       return {
-        code: frontmatter + transformedBody,
+        code: frontmatterStr + transformedBody,
         map: null
       };
     }
@@ -223,7 +247,7 @@ export default defineConfig({
   ],
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid, remarkSlideCues],
+      remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid, remarkSlideCues, remarkCitations],
       rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts],
     }),
   },

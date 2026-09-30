@@ -1,13 +1,59 @@
 ---
-title: "Procedural Graphs in der Praxis: Wie Unternehmen repetitive Prozesse zuverlässig automatisieren – ohne starre Workflows und unberechenbare Agenten"
-pubDate: "2026-09-18"
-description: "Über 80 % agentischer Pilotprojekte scheitern am Übergang in den Produktivbetrieb: Entweder driften ungebundene LLM-Agenten bei repetitiven Vorgängen ab, oder starre RPA-Workflows ersticken die Flexibilität. Eine ingenieurwissenschaftliche Analyse des Google-Frameworks Procedural Graphs (arXiv:2609.09153): Wie Unternehmen Standard Operating Procedures (SOPs) in selbstlernende Wissensgraphen überführen, Qualität sichern, Kosten senken und Mitarbeiter nachhaltig entlasten."
-tags: ["agentic-ai", "artificial-intelligence", "enterprise-ai", "industrial-informatics", "knowledge-graphs", "knowledge-management", "benchmarks", "software-architecture", "task-management", "optimization"]
+title: "Procedural Graphs in der Praxis: Wie Unternehmen repetitive Prozesse
+  zuverlässig automatisieren – ohne starre Workflows und unberechenbare Agenten"
+pubDate: 2026-09-18
+description: "Über 80 % agentischer Pilotprojekte scheitern am Übergang in den
+  Produktivbetrieb: Entweder driften ungebundene LLM-Agenten bei repetitiven
+  Vorgängen ab, oder starre RPA-Workflows ersticken die Flexibilität. Eine
+  ingenieurwissenschaftliche Analyse des Google-Frameworks Procedural Graphs
+  (arXiv:2609.09153): Wie Unternehmen Standard Operating Procedures (SOPs) in
+  selbstlernende Wissensgraphen überführen, Qualität sichern, Kosten senken und
+  Mitarbeiter nachhaltig entlasten."
+tags:
+  - agentic-ai
+  - artificial-intelligence
+  - enterprise-ai
+  - industrial-informatics
+  - knowledge-graphs
+  - knowledge-management
+  - benchmarks
+  - software-architecture
+  - task-management
+  - optimization
 icon:
-  src: "./hero.jpg"
-  title: "Procedural Graphs in der Praxis"
-  description: "Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an einer interaktiven Projektionswand, wie Prozesswissen in dynamischen Wissensgraphen verankert wird"
+  src: ./hero.jpg
+  title: Procedural Graphs in der Praxis
+  description: "Procedural Graphs in der Praxis: Dr. Georg Hackenberg erläutert an
+    einer interaktiven Projektionswand, wie Prozesswissen in dynamischen
+    Wissensgraphen verankert wird"
+references:
+  - type: online
+    author: Kumar, R., et al.
+    title: The Root Causes of Failure for Artificial Intelligence Projects and How
+      They Can Succeed
+    url: https://doi.org/10.7249/RRA2680-1
+    year: 2024
+    doi: 10.7249/RRA2680-1
+    siteName: "RAND Corporation Research Report RR-A2680-1. DOI:
+      [10.7249/RRA2680-1](https://doi.org/10.7249/RRA2680-1)"
+    id: kumar-2024-root-causes
+  - type: article
+    author: Lu, Y., Chen, Y., Wu, S., & Arık, S. Ö.
+    title: "Procedural Graphs: Self-Evolving Execution Structures for LLM Agents"
+    url: https://arxiv.org/abs/2609.09153
+    year: 2026
+    journal: Google Cloud AI Research
+    id: lu-2026-procedural-graphs
+  - type: misc
+    author: OMG
+    title: Business Process Model and Notation (BPMN) Version 2.0
+    url: https://www.omg.org/spec/BPMN/2.0/
+    year: 2011
+    howpublished: Object Management Group
+    id: omg-2011-business-process
 ---
+
+
 
 In unserer Beitragsreihe zur praktischen Umsetzung der AI-Transformation in Unternehmen haben wir die technologischen Fundamente moderner Agentensysteme von Grund auf erschlossen: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das sitzungsübergreifende [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die kollaborative [Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/) und das hochperformante [Routing via LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur [Enterprise Identity Governance via Keycloak](/posts/2026_09_10_keycloak_architektur_und_funktionsweise/). 
 
@@ -15,9 +61,9 @@ Auch bei der Handhabung prozeduraler Fähigkeiten (*Agent Skills*) haben wir die
 
 Doch wenn es um die **konkrete Einführung von KI-Lösungen in Unternehmen unterschiedlichster Branchen** geht – vom klassischen Maschinen- und Anlagenbau über den technischen Großhandel bis hin zu Logistik, Finanzdienstleistung und Verwaltung –, stoßen Geschäftsführer, CIOs und Prozessverantwortliche regelmäßig auf dieselbe ernüchternde Hürde: **Die PoC-Falle.**
 
-Über 80 % der unternehmensinternen Agenten-Pilotprojekte schaffen nicht den Sprung in den produktiven Dauereinsatz. Der Grund liegt selten an mangelnder Modellleistung, sondern an der Natur **repetitiver Geschäftsprozesse**: Diese Vorgänge dulden keine Halluzinationen, keine vergessenen Freigaben und keinen Kontrollverlust.
+Branchenanalysen (unter anderem der RAND Corporation [@kumar-2024-root-causes] sowie aktuellen Gartner-Erhebungen) belegen, dass bis zu **80 % der unternehmensinternen KI- und Agenten-Pilotprojekte** den Sprung aus der experimentellen Sandbox in den produktiven Dauereinsatz nicht schaffen. Der Grund liegt selten an mangelnder Modellleistung, sondern an der Natur **repetitiver Geschäftsprozesse**: Diese Vorgänge dulden keine Halluzinationen, keine vergessenen Freigaben und keinen unkontrollierten Drift.
 
-Mit dem bahnbrechenden Forschungspapier **„Procedural Graphs: Self-Evolving Execution Structures for LLM Agents“** (*Yuxing Lu, Yicheng Chen, Shanchan Wu, Sercan Ö. Arık – Google Cloud AI Research, September 2026, [arXiv:2609.09153](https://arxiv.org/abs/2609.09153)*) liegt nun die architektonische Antwort vor, auf die die Unternehmenspraxis gewartet hat.
+Mit dem bahnbrechenden Forschungspapier **„Procedural Graphs: Self-Evolving Execution Structures for LLM Agents“** (*Yuxing Lu, Yicheng Chen, Shanchan Wu, Sercan Ö. Arık – Google Cloud AI Research, September 2026, [arXiv:2609.09153](https://arxiv.org/abs/2609.09153)* [@lu-2026-procedural-graphs]) liegt nun die architektonische Antwort vor, auf die die Unternehmenspraxis gewartet hat.
 
 Dieser Artikel analysiert das Framework aus Sicht der betrieblichen AI-Transformation: Welches systemische Problem löst der Ansatz? Wie funktionieren Procedural Graphs mathematisch und operativ? Und wie gelingt es damit, repetitive Routineaufgaben wirtschaftlich, fehlertolerant und mitarbeiterorientiert zu automatisieren?
 
@@ -37,8 +83,9 @@ Bislang scheiterte die wirtschaftliche Automatisierung solcher Abläufe an zwei 
 
 ### Extrem 1: Das starre Korsett klassischer RPA- und BPMN-Systeme
 Robotic Process Automation (RPA) und fest verdrahtete Workflows (BPMN / State Machines) sind vollständig deterministisch programmiert. 
-* **Das Problem:** Sobald ein Kunde eine Bestellnummer im E-Mail-Freitext statt im Formularfeld übermittelt, ein PDF ein anderes Layout aufweist oder eine unerwartete Fehlermeldung im ERP-System auftritt, bricht der Workflow abrupt ab.
-* **Die wirtschaftliche Folge:** Unternehmen müssen Heere von externen Integratoren oder IT-Spezialisten beschäftigen, um Skripte permanent anzupassen. Die erhoffte Kosten- und Zeitersparnis wird durch exorbitante Wartungskosten aufgefressen.
+* **Berechtigung und Domänen:** In strikt regulierten, sicherheitskritischen Bereichen (z. B. im Bankenaufsichtsrecht, bei pharmazeutischen Chargenprotokollen oder in der Nukleartechnik) ist dieser 100%ige Determinismus gesetzlich zwingend vorgeschrieben und unverzichtbar.
+* **Das Problem in wissensintensiven Prozessen:** Sobald ein Kunde eine Bestellnummer im E-Mail-Freitext statt im Formularfeld übermittelt, ein PDF ein anderes Layout aufweist oder eine unerwartete Ausnahme im ERP-System auftritt, bricht der starre RPA-Workflow abrupt ab.
+* **Die wirtschaftliche Folge:** Unternehmen müssen Heere von externen Integratoren oder IT-Spezialisten beschäftigen, um Skripte permanent manuell anzupassen. Die erhoffte Zeitersparnis wird durch hohe Wartungsaufwände neutralisiert. Procedural Graphs schließen genau diese Lücke zwischen starrer Regelbefolgung und kognitiver Anpassungsfähigkeit.
 
 ### Extrem 2: Das unberechenbare „Wild West“ naiver ReAct-Agenten
 Auf der anderen Seite versuchten viele Vorreiter, modernste Sprachmodelle in ungebundenen ReAct-Schleifen (*Reasoning + Acting*) auf Unternehmensdaten loszulassen.
@@ -143,7 +190,7 @@ Ein herausragendes empirisches Ergebnis des Papers (Abschnitt 5.3 und 5.4) ist v
 
 ## 5. Wirtschaftliche Relevanz: Was bedeuten die Benchmarks für Unternehmen?
 
-Die im Paper dokumentierten empirischen Ergebnisse über sieben Benchmarks und vier führende Modellfamilien (Claude Sonnet 4.6, Gemini 3.1 Pro, Gemini 3.5 Flash, Grok 4.1 Fast) liefern handfeste Argumente für den Business Case.
+Die im Paper dokumentierten empirischen Ergebnisse über sieben Benchmarks und vier führende Modellfamilien (Claude Sonnet 4.6, Gemini 3.1 Pro, Gemini 3.5 Flash, Grok 4.1 Fast) liefern handfeste Argumente für den Business [@omg-2011-business-process] Case.
 
 Besonders zwei Benchmarks spiegeln reale betriebswirtschaftliche Herausforderungen wider:
 

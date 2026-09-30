@@ -1,17 +1,54 @@
 ---
-title: "Zero-JS Mermaid in Astro: Warum wir Diagramme statisch vorrendern und wie Build-Time-SVGs für SEO, AIO und Core Web Vitals optimieren"
-pubDate: "2026-09-22"
-description: "Technische Schaubilder ohne Client-Overhead: Warum clientseitiges Mermaid das Web verlangsamt, wie unsere Build-Time-Pipeline mit Puppeteer und Astro Remark funktioniert, und wie maschinenlesbare Topologien modernen KI-Suchmaschinen (GEO/AIO) den Weg weisen."
-tags: ["astro", "software-architecture", "web-development", "performance", "seo", "geo", "aio", "data-visualization"]
+title: "Zero-JS Mermaid in Astro: Warum wir Diagramme statisch vorrendern und
+  wie Build-Time-SVGs für SEO, AIO und Core Web Vitals optimieren"
+pubDate: 2026-09-22
+description: "Technische Schaubilder ohne Client-Overhead: Warum clientseitiges
+  Mermaid das Web verlangsamt, wie unsere Build-Time-Pipeline mit Puppeteer und
+  Astro Remark funktioniert, und wie maschinenlesbare Topologien modernen
+  KI-Suchmaschinen (GEO/AIO) den Weg weisen."
+tags:
+  - astro
+  - software-architecture
+  - web-development
+  - performance
+  - seo
+  - geo
+  - aio
+  - data-visualization
 icon:
-  src: "./hero.jpg"
-  title: "Dr. Georg Hackenberg im Almtal Home Office"
-  description: "Dr. Georg Hackenberg am höhenverstellbaren Massivholz-Schreibtisch vor dem Ultrawide-Monitor mit Blick auf die Almtaler Berglandschaft"
+  src: ./hero.jpg
+  title: Dr. Georg Hackenberg im Almtal Home Office
+  description: Dr. Georg Hackenberg am höhenverstellbaren Massivholz-Schreibtisch
+    vor dem Ultrawide-Monitor mit Blick auf die Almtaler Berglandschaft
+references:
+  - type: online
+    author: Sveidqvist, K., et al.
+    title: "Mermaid: Generation of diagrams and flowcharts from text in a similar
+      manner as markdown"
+    url: https://mermaid.js.org/
+    year: 2024
+    id: sveidqvist-2024-mermaid
+  - type: online
+    author: Titus, W., et al.
+    title: "Unified: Pluggable text processing powered by syntax trees (Remark &
+      Rehype)"
+    url: https://unifiedjs.com/
+    year: 2024
+    id: titus-2024-unified
+  - type: misc
+    author: W3C SVG Working Group
+    title: Scalable Vector Graphics (SVG) 2
+    url: https://www.w3.org/TR/SVG2/
+    year: 2018
+    howpublished: W3C Candidate Recommendation
+    id: w3c-2018-svg2
 ---
+
+
 
 In unserer kontinuierlichen Arbeit an modernen Web- und Systemarchitekturen – von [TypeScript-basierten Agentic-Workflows](/posts/2026_09_20_procedural_graphs_in_mastra_technische_umsetzung/) über [visuelle Konsistenzsysteme](/posts/2026_09_21_bildgenerierungsmaschine_reusable_assets_room_dna/) bis hin zur [Performance-Optimierung datenintensiver Portale](/posts/2026_05_23_website_relaunch_astro_typescript/) – spielen **technische Diagramme** eine Schlüsselrolle. Komplexe Software-Topologien, Datenflussmodelle und Sequenzabläufe lassen sich visuell um ein Vielfaches schneller erfassen als durch reine Textwüsten.
 
-Unter Entwicklern und technischen Autoren hat sich hierfür das textbasierte Format **[Mermaid.js](https://mermaid.js.org/)** als weltweiter Quasi-Standard etabliert. Statt Schaubilder mühsam in externen Vektorwerkzeugen zu zeichnen, als binäre PNG-Dateien zu exportieren und bei jeder kleinen Code-Änderung neu hochzuladen, beschreiben wir Diagramme deklarativ direkt in Markdown:
+Unter Entwicklern und technischen Autoren hat sich hierfür das textbasierte Format **[Mermaid.js](https://mermaid.js.org/)** [@sveidqvist-2024-mermaid] als weltweiter Quasi-Standard etabliert. Statt Schaubilder mühsam in externen Vektorwerkzeugen zu zeichnen, als binäre PNG-Dateien zu exportieren und bei jeder kleinen Code-Änderung neu hochzuladen, beschreiben wir Diagramme deklarativ direkt in Markdown:
 
 ````markdown
 ```mermaid
@@ -90,7 +127,7 @@ flowchart TB
 
 ### Der Mehrwert unseres Ansatzes für Suchsysteme:
 
-* **Traditionelles SEO (Googlebot):** Google bevorzugt Seiten ohne lange Rendering-Warteschlangen. Da das Vektordiagramm als pures SVG direkt im ersten HTML-Paket enthalten ist, können Textlabels im Diagramm sofort tokenisiert und indexiert werden – ohne dass ein Headless-Chrome des Suchmaschinenbetreibers erst Client-JavaScript nachladen muss.
+* **Traditionelles SEO (Googlebot):** Google bevorzugt Seiten ohne lange Rendering-Warteschlangen. Da das Vektordiagramm als valides SVG (W3C SVG 2 [@w3c-2018-svg2]) direkt im ersten HTML-Paket enthalten ist, können Textlabels im Diagramm sofort tokenisiert und indexiert werden – ohne dass ein Headless-Chrome des Suchmaschinenbetreibers erst Client-JavaScript nachladen muss.
 * **GEO & AIO (Generative Engine Optimization):** Moderne KI-Suchmaschinen wie Perplexity, SearchGPT oder Claude Crawlers parsen Webseiten häufig rein textbasiert im Fast-Path ohne JavaScript-Ausführung. Indem wir die Original-Mermaid-Quelle strukturiert in einem semantischen `<details>`-Element mitliefern, können Sprachmodelle die exakte Graph-Topologie, Kantenrelationen und Abhängigkeiten fehlerfrei rekonstruieren und in KI-Zusammenfassungen zitieren.
 * **Barrierefreiheit (Accessibility):** Screenreader können `<figure>`, `aria-label` sowie die Vektortexte unmittelbar interpretieren, ohne auf asynchrone DOM-Mutationen warten zu müssen.
 
@@ -133,7 +170,7 @@ sequenceDiagram
 
 ## 4. Konfiguration in Astros Markdown-Pipeline
 
-Seit den neuesten Astro-Versionen werden Markdown-Plugins direkt an die `unified({...})`-Konfiguration übergeben. In unserer [`astro.config.mjs`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.mjs) fügt sich das Plugin wie folgt ein:
+Seit den neuesten Astro-Versionen werden Markdown-Plugins direkt über das Unified-Ökosystem [@titus-2024-unified] übergeben. In unserer [`astro.config.mjs`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.mjs) fügt sich das Plugin wie folgt ein:
 
 ```javascript
 import { defineConfig } from 'astro/config';

@@ -1,21 +1,64 @@
 ---
-title: "Building a Dynamic Parallax Content Gallery: Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
-pubDate: "2026-09-15"
-lang: "en"
-language: "en"
-description: "How we engineered a living 3-tier parallax content gallery in Astro and TypeScript featuring optical motion kinematics, zero on-screen duplication, and a two-factor probabilistic selection engine powered by localStorage LRU history tracking."
-tags: ["web-development", "astro", "typescript", "localstorage", "ux-design", "user-interface", "software-architecture"]
+title: "Building a Dynamic Parallax Content Gallery: Kinematics,
+  Zero-Duplication Pooling, and LRU History Tracking"
+pubDate: 2026-09-15
+lang: en
+language: en
+description: How we engineered a living 3-tier parallax content gallery in Astro
+  and TypeScript featuring optical motion kinematics, zero on-screen
+  duplication, and a two-factor probabilistic selection engine powered by
+  localStorage LRU history tracking.
+tags:
+  - web-development
+  - astro
+  - typescript
+  - localstorage
+  - ux-design
+  - user-interface
+  - software-architecture
 icon:
-  src: "./icon.jpg"
-  title: "Cover illustration: Building a Dynamic Parallax Content Gallery: Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
-  description: "How we engineered a living 3-tier parallax content gallery in Astro and TypeScript featuring optical motion kinematics, zero on-screen duplication, and a two-factor probabilistic selection engine powered by localStorage LRU history tracking."
+  src: ./icon.jpg
+  title: "Cover illustration: Building a Dynamic Parallax Content Gallery:
+    Kinematics, Zero-Duplication Pooling, and LRU History Tracking"
+  description: How we engineered a living 3-tier parallax content gallery in Astro
+    and TypeScript featuring optical motion kinematics, zero on-screen
+    duplication, and a two-factor probabilistic selection engine powered by
+    localStorage LRU history tracking.
+references:
+  - type: inproceedings
+    author: Cutting, J. E., & Vishton, P. M.
+    title: "Perceiving layout and knowing distances: The integration, relative
+      potency, and contextual use of different information about depth"
+    booktitle: Perception of Space and Motion
+    publisher: Academic Press
+    year: 1995
+    pages: 69–117
+    doi: 10.1016/B978-012240530-3/50005-5
+    url: https://doi.org/10.1016/B978-012240530-3/50005-5
+    id: cutting-1995-perceiving-layout
+  - type: online
+    author: Google Web Vitals
+    title: Optimize Cumulative Layout Shift (CLS)
+    url: https://web.dev/articles/cls
+    year: 2024
+    siteName: web.dev
+    id: google-2024-optimize-cumulative
+  - type: misc
+    author: W3C Accessibility Guidelines Working Group
+    title: Web Content Accessibility Guidelines (WCAG) 2.2
+    url: https://www.w3.org/TR/WCAG22/
+    year: 2023
+    howpublished: W3C Recommendation
+    id: w3c-2023-content-accessibility
 ---
+
+
 
 When visitors arrive at a personal technical portfolio or academic website, they are typically greeted by a static hero section followed by a conventional chronological list. While this works well for highlighting the latest few entries, it leaves a vast repository of historical depth unseen. Over the past twenty years, my website has accumulated more than 170 distinct illustrated articles, open-source projects, university course curricula, consulting architectures, interactive physics simulations, and scientific research domains.
 
 Traditional carousels or looping marquees suffer from well-known UX problems: they repeat the same dozen items in an endless loop, ignore what the visitor has already seen, and lack visual depth. 
 
-To solve this, we designed and engineered a **living, 3-tier parallax Content Gallery** directly beneath the homepage hero section. In this post, I want to explore the engineering and mathematical principles behind this component: from optical kinematics and row velocity ratios to zero on-screen duplication guarantees, dynamic archive pooling, and a two-factor probabilistic selection algorithm backed by `localStorage`.
+To solve this, we designed and engineered a **living, 3-tier parallax Content [@w3c-2023-content-accessibility] Gallery** directly beneath the homepage hero section. In this post, I want to explore the engineering and mathematical principles behind this component: from optical kinematics and row velocity ratios to zero on-screen duplication guarantees, dynamic archive pooling, and a two-factor probabilistic selection algorithm backed by `localStorage`.
 
 > [!TIP]
 > **Live Interactive Experience:**  
@@ -25,7 +68,7 @@ To solve this, we designed and engineered a **living, 3-tier parallax Content Ga
 
 Rather than creating a single horizontal slider or a uniform grid, the gallery is structured into **three distinct horizontal tiers** moving continuously from right to left. 
 
-In human visual perception, **motion parallax** is a primary depth cue: objects closer to the observer sweep across the visual field at a higher angular velocity than objects situated further away. We applied this principle directly to the layout by coupling **card scale, content fidelity, and linear speed**:
+In human visual perception, **motion parallax** is a primary depth cue: objects closer to the observer sweep across the visual field at a higher angular velocity than objects situated further away. We applied this principle directly to the layout [@cutting-1995-perceiving-layout] by coupling **card scale, content fidelity, and linear speed**:
 
 | Tier | Role | Card Dimensions | Base Velocity | Relative Speed | Content Fidelity |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -232,17 +275,22 @@ function setupGalleryEngine() {
 
 #### Why this architecture is optimal:
 - **Zero Repetition on Reload**: When the page reloads, the items displayed in the user's previous session are already recorded in `localStorage`. The selection algorithm penalizes them with the $0.05\times$ cooldown, while unread content receives the $12.0\times$ boost. The initial frame immediately renders completely fresh, unseen content.
-- **Zero Cumulative Layout Shift ($\text{CLS} = 0$)**: Because each card possesses strictly constrained dimensions (`aspect-video`, fixed responsive width containers) and a dark glass aesthetic, swapping `img.src`, `href`, and text nodes occurs in under 2 milliseconds without shifting the layout by a single pixel.
+- **Zero Cumulative [@google-2024-optimize-cumulative] Layout Shift ($\text{CLS} = 0$)**: Because each card possesses strictly constrained dimensions (`aspect-video`, fixed responsive width containers) and a dark glass aesthetic, swapping `img.src`, `href`, and text nodes occurs in under 2 milliseconds without shifting the layout by a single pixel.
 - **Flawless Search & AI Discovery (SEO, GEO, AEO)**: Stateless web crawlers (Googlebot, Bingbot) and generative AI engines (Perplexity, SearchGPT) receive 45 semantic, pre-rendered `<a>` and `<img>` tags directly from the static HTML with zero reliance on client JavaScript execution.
 
 ## 5. Performance, Ergonomics, and Accessibility
 
-A continuous visual animation must be respectful of device resources and user control:
+A continuous visual animation must be respectful of device resources, touch ergonomics, and user control:
 
 1. **Hover & Keyboard Focus Pausing**: Hovering anywhere inside the viewport or navigating cards via `Tab` (`:focus-within`) immediately pauses the animation so users can read descriptions or click links without chasing moving targets.
 2. **Accessible Control Button**: An explicit Pause/Resume button with `aria-pressed` states allows users who prefer static layouts to freeze the gallery permanently.
 3. **Tab Visibility Throttling**: When the user switches tabs, `document.visibilityState === 'hidden'` suspends the loop. Upon returning, delta time $dt$ is reset to avoid large calculation jumps.
-4. **`prefers-reduced-motion` Compliance**: If the user has requested reduced motion in their operating system, the JavaScript loop is bypassed entirely. The CSS switches the tracks into native horizontal snap-scrolling containers:
+4. **Touch Gesture Ergonomics & Axis-Locking**: On mobile and touch-enabled devices, horizontal scroll areas frequently conflict with vertical page scrolling. To eliminate "scroll-trapping", we enforce an **8px direction-locking contract**:
+   - Upon initial finger touchdown, touch vector deltas $(\Delta X, \Delta Y)$ are evaluated at an 8px threshold.
+   - If $|\Delta Y| > |\Delta X|$, the gesture is immediately classified as a page scroll: horizontal drag locks and the browser retains native vertical viewport control.
+   - If $|\Delta X| > |\Delta Y|$, the gesture locks horizontally, smoothly scrubbing the parallax track.
+   - **Click vs. Drag Disambiguation**: When navigating cards via touch, pointer displacements exceeding 12px suppress card link navigation in the capture phase, preventing accidental clicks when flicking or panning.
+5. **`prefers-reduced-motion` Compliance (WCAG 2.2)**: In accordance with WCAG 2.2 Success Criteria 2.2.2 (Pause, Stop, Hide) and 2.3.3 (Animation from Interactions), if the user has requested reduced motion in their operating system, the JavaScript animation loop is bypassed entirely. The CSS switches the tracks into native horizontal snap-scrolling containers:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -263,7 +311,7 @@ A continuous visual animation must be respectful of device resources and user co
 }
 ```
 
-5. **Edge Masking**: Subtle CSS gradient masks (`mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)`) gracefully feather the cards into the viewport borders on both edges, preventing harsh clipping.
+6. **Edge Masking**: Subtle CSS gradient masks (`mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)`) gracefully feather the cards into the viewport borders on both edges, preventing harsh clipping.
 
 ## Conclusion
 

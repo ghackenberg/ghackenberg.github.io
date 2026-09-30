@@ -13,6 +13,7 @@ notes: |
   - Den Entwicklern im Raum den Durchbruch erklären: Kein Vendor-Lockin mehr; jeder Entwickler kann eigene MCP-Tools schreiben!
 references:
   - type: online
+    id: "anthropic-2024-mcp"
     author: "Anthropic"
     title: "Model Context Protocol (MCP) Specification"
     siteName: "Model Context Protocol Documentation"
@@ -42,7 +43,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 
   <BentoCard slot="right" cue="col-mcp-tools" title="Unsere konkreten MCP-Werkzeuge" accent="cyan">
     <BulletList items={[
-      { icon: "document", title: "Filesystem MCP Server", desc: "Erlaubt autonomes Lesen von Markdown-Quellen und {cue:hl-mcp-beheben}präzise Code-Edits direkt im Repository{/cue}." },
+      { icon: "document", title: "Filesystem MCP Server", desc: "Erlaubt autonomes Lesen von Markdown-Quellen nach MCP-Spezifikation [@anthropic-2024-mcp] und {cue:hl-mcp-beheben}präzise Code-Edits direkt im Repository{/cue}." },
       { icon: "search", title: "Chrome DevTools MCP", desc: "Ermöglicht {cue:hl-mcp-devtools}automatisierte Headless-Browser-Audits{/cue} für Performance und Barrierefreiheit." },
       { icon: "database", title: "Unified Analytics MCP", desc: "Führt Suchleistungsdaten mit {cue:hl-mcp-analytics}datenschutzkonformen Engagement-Metriken{/cue} zusammen." }
     ]} />

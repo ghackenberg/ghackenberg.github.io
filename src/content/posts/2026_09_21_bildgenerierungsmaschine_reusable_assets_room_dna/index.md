@@ -1,13 +1,53 @@
 ---
 title: "Bildgenerierungsmaschine: Reusable Assets & Room DNA"
-pubDate: "2026-09-21"
-description: "Wie wir mit Relational Libraries, Character Slots und Room DNA konsistente Disney/Pixar-Illustrationen für Fachartikel deterministisch generieren."
-tags: ["generative-ai", "diffusion-models", "software-architecture", "astro", "prompt-engineering", "agentic-ai", "digital-engineering", "design-systems"]
+pubDate: 2026-09-21
+description: Wie wir mit Relational Libraries, Character Slots und Room DNA
+  hochgradig reproduzierbare und visuell konsistente Disney/Pixar-Illustrationen
+  für Fachartikel methodisch lenken.
+tags:
+  - generative-ai
+  - diffusion-models
+  - software-architecture
+  - astro
+  - prompt-engineering
+  - agentic-ai
+  - digital-engineering
+  - design-systems
 icon:
-  src: "./hero.jpg"
-  title: "Visual Systems Engineering"
-  description: "Visual Systems Engineering: Deterministische Bildgenerierung im Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern"
+  src: ./hero.jpg
+  title: Visual Systems Engineering
+  description: "Visual Systems Engineering: Reproduzierbare Bildgenerierung im
+    Disney/Pixar Comic-Stil mit präziser Raum-DNA und relationalen Asset-Ankern"
+references:
+  - type: inproceedings
+    author: Rombach, R., Blattmann, A., Lorenz, D., Esser, P., & Ommer, B.
+    title: High-Resolution Image Synthesis with Latent Diffusion Models
+    url: https://arxiv.org/abs/2112.10752
+    year: 2022
+    doi: 10.1109/CVPR52688.2022.01042
+    booktitle: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+      Recognition (CVPR '22)
+    id: rombach-2022-highresolution-image
+  - type: article
+    author: Ye, H., Zhang, J., Liu, H., Han, X., & Yang, W.
+    title: "IP-Adapter: Text Compatible Image Prompt Adapter for Text-to-Image
+      Diffusion Models"
+    url: https://arxiv.org/abs/2308.06721
+    year: 2023
+    journal: arXiv preprint arXiv:2308
+    id: ye-2023-ipadapter-text
+  - type: inproceedings
+    author: Zhang, L., Rao, A., & Agrawala, M.
+    title: Adding Conditional Control to Text-to-Image Diffusion Models
+    url: https://arxiv.org/abs/2302.05543
+    year: 2023
+    doi: 10.1109/ICCV51070.2023.00355
+    booktitle: Proceedings of the IEEE/CVF International Conference on Computer
+      Vision (ICCV '23)
+    id: zhang-2023-adding-conditional
 ---
+
+
 
 In unserer Beitragsreihe zur praktischen IT- und KI-Transformation haben wir uns ausführlich mit skalierbaren Softwarearchitekturen befasst – von [Mastra und TypeScript-basierten Procedural Graphs](/posts/2026_09_20_procedural_graphs_in_mastra_technische_umsetzung/) über das [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/) bis zur [Performance-Optimierung moderner Astro-Websites](/posts/2026_05_23_website_relaunch_astro_typescript/). 
 
@@ -15,18 +55,18 @@ Diese Website ([hackenberg.tech](https://hackenberg.tech)) dient dabei nicht nur
 
 Doch genau an dieser Schnittstelle stehen technische Teams vor einer völlig neuartigen Hürde: **visuelle Konsistenz**.
 
-Während Sprachmodelle (LLMs) dank Zod-Schemas, formalen Grammatiken und Function Calling inzwischen deterministisch und reproduzierbar strukturierten JSON-Code liefern, gleicht die generative Bildsynthese in den meisten Organisationen nach wie vor einem stochastischen Glücksspiel. Wer versucht, eine zusammenhängende visuelle Markenwelt, illustrative Fallstudien oder didaktische Lehrinhalte über Hunderte Artikel hinweg konsistent zu bebildern, scheitert regelmäßig an fundamentalen Limitationen moderner Diffusionsmodelle:
+Während Sprachmodelle (LLMs) dank Zod-Schemas, formalen Grammatiken und Function Calling inzwischen verlässlich und wiederholbar strukturierten JSON-Code liefern, gleicht die generative Bildsynthese in den meisten Organisationen nach wie vor einem stochastischen Glücksspiel. Wer versucht, eine zusammenhängende visuelle Markenwelt, illustrative Fallstudien oder didaktische Lehrinhalte über Hunderte Artikel hinweg konsistent zu bebildern, scheitert regelmäßig an fundamentalen Limitationen moderner Diffusionsmodelle:
 
 * Gesichter verändern ihre Knochenstruktur und ihr Alter von Bild zu Bild.
 * Signature-Objekte (wie ein bestimmtes Gemälde, ein Firmengadget oder ein Messgerät) halluzinieren unkontrolliert ihre Geometrie, Farben und Positionen.
 * Innenräume driften ab: Was eben noch ein alpines Holz-Arbeitszimmer war, mutiert im nächsten Prompt zu einem sterilen Großraumbüro.
 * Und vor allem: **Der Versuch, eine bestehende Szene aus einem neuen Kamerawinkel zu zeigen, endet verlässlich im visuellen Chaos.**
 
-Dieser Beitrag dokumentiert die ingenieurwissenschaftlichen Grundlagen unseres **Visual Systems Engineering**: Wie wir die Mechanismen von Diffusionsmodellen analysiert haben, warum herkömmliche Bildkonditionierungen in die sogenannte **2D-Layout-Locking-Falle** tappen, und wie ein relationaler Asset-Graph in Kombination mit **Room DNA**, diskreten **Fokus-Varianten** und strikten **Agenten-Protokollen ([`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md))** eine vollständig deterministische, markenkonforme Bildgenerierungsmaschine ermöglicht.
+Dieser Beitrag dokumentiert die ingenieurwissenschaftlichen Grundlagen unseres **Visual Systems Engineering**: Wie wir die Mechanismen von Diffusionsmodellen analysiert haben, warum herkömmliche Bildkonditionierungen in die sogenannte **2D-Layout-Locking-Falle** tappen, und wie ein relationaler Asset-Graph in Kombination mit **Room DNA**, diskreten **Fokus-Varianten** und strikten **Agenten-Protokollen ([`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md))** eine hochgradig reproduzierbare, visuell konsistente und markenkonforme Bildgenerierung ermöglicht.
 
 ## 1. Das Konsistenz-Dilemma generativer Diffusionsmodelle
 
-Um zu verstehen, warum Bildgeneratoren bei komplexen Kompositionen scheitern, muss man ihre mathematische Funktionsweise betrachten. Moderne Diffusionsmodelle (wie Stable Diffusion, Flux oder Imagen) arbeiten nicht mit einem impliziten räumlichen 3D-Weltmodell, sondern approximieren Wahrscheinlichkeitsverteilungen in einem komprimierten latenten Bildraum $\mathcal{Z}$.
+Um zu verstehen, warum Bildgeneratoren bei komplexen Kompositionen scheitern, muss man ihre mathematische Funktionsweise betrachten. Moderne Latent-Diffusion [@zhang-2023-adding-conditional]-Modelle (wie Stable Diffusion, Flux oder Imagen; grundlegend formuliert von *Rombach et al [@rombach-2022-highresolution-image]., CVPR 2022*) arbeiten nicht mit einem impliziten räumlichen 3D-Weltmodell, sondern approximieren Wahrscheinlichkeitsverteilungen in einem komprimierten latenten Bildraum $\mathcal{Z}$.
 
 Während des iterativen Denoising-Prozesses zum Zeitpunkt $t \in [0, T]$ steuern Cross-Attention-Layer, welche Text-Tokens aus dem Prompt-Embedding $\mathbf{c}$ welche latenten Raumregionen $z_t$ beeinflussen:
 
@@ -38,7 +78,7 @@ In der Praxis führt das naive Einspeisen von Freitext-Prompts zu zwei typischen
 1. **Semantic Drift:** Je mehr Details („Mann mit Brille, Eichenschreibtisch, Kiefernholzwand, abstraktes Kunstwerk, Bergpanorama“) in einen unstrukturierten Textabsatz gestopft werden, desto stärker konkurrieren die Tokens in der Aufmerksamkeitsmatrix. Das Modell priorisiert dominante Tokens statistisch und „vergisst“ nachgelagerte Details oder vermischt Attribute (*Attribute Bleeding*).
 2. **Spurious Correlation:** Bestimmte Begriffe triggern stereotype Trainingsdaten. Das Wort „Professor“ erzeugt automatisch weiße Haare und ein Tweed-Sakko; das Wort „Büro“ erzwingt Bürostühle mit Rollen und Aktenordner, selbst wenn ein ergonomisches Stehpult im Holzhaus gefordert war.
 
-Die naheliegende Idee vieler Entwickler – dem Modell einfach ein Referenzfoto des Raums über multimodale Bildkanäle mitzugeben (in agentenbasierten Entwicklungsumgebungen und Diffusions-APIs meist als Parameter `ImagePaths` implementiert, technisch realisiert über Vision-Encoder, ControlNet oder IP-Adapter) – führt jedoch direkt in ein noch viel gravierenderes architektonisches Problem.
+Die naheliegende Idee vieler Entwickler – dem Modell einfach ein Referenzfoto des Raums über multimodale Bildkanäle mitzugeben (in agentenbasierten Entwicklungsumgebungen und Diffusions-APIs meist als Parameter `ImagePaths` implementiert, technisch realisiert über Vision-Encoder, ControlNet oder IP-Adapter [@ye-2023-ipadapter-text] wie von *Ye et al., 2023* beschrieben) – führt jedoch direkt in ein noch viel gravierenderes architektonisches Problem.
 
 ## 2. Die 2D-Layout-Locking-Falle (*Coordinate Freezing*)
 
@@ -52,14 +92,14 @@ Die schmerzhafteste Erkenntnis unserer empirischen Testreihen war die Entdeckung
 
 ### Warum geschieht das?
 
-Multimodale Konditionierungsmodule (wie IP-Adapter oder Vision-Encoder) extrahieren räumliche Feature-Maps aus der Bildreferenz. Wenn ein Weitwinkelbild übergeben wird, kodiert der Vision-Encoder:
+Multimodale Konditionierungsmodule (wie IP-Adapter oder Vision-Encoder, vgl. *Ye et al., 2023*) extrahieren räumliche Feature-Maps und entkoppelte Cross-Attention-Karten aus der Bildreferenz. Wenn ein Weitwinkelbild übergeben wird, kodiert der Vision-Encoder:
 * *Oben links:* Gemälde auf Position $(x_1, y_1)$ mit Bounding-Box $S_1$.
 * *Bildmitte:* Whiteboard auf Position $(x_2, y_2)$ mit Bounding-Box $S_2$.
 * *Unten rechts:* Schreibtischkante auf Position $(x_3, y_3)$.
 
 Fordert der Prompt nun: *„Camera close-up on the desk, looking directly at the monitor“*, entsteht ein mathematischer Zielkonflikt:
 * Der **Text-Prior** verlangt, dass der Monitor 70 % der Bildfläche füllt.
-* Der **Image-Konditionierungs-Prior** erzwingt jedoch mit hoher Wahrscheinlichkeit, dass die Pixelregionen $(x_1, y_1)$ weiterhin das Gemälde und $(x_2, y_2)$ das Whiteboard darstellen müssen.
+* Der **Image-Konditionierungs-Prior** erzwingt jedoch mit hoher Wahrscheinlichkeit über die Attention-Gewichte, dass die Pixelregionen $(x_1, y_1)$ weiterhin das Gemälde und $(x_2, y_2)$ das Whiteboard darstellen müssen.
 
 Das Resultat ist eine visuelle Halluzination: Das Modell zeichnet den Schreibtisch groß in den Vordergrund, inpaintet aber im verbleibenden Raum die Miniatur-Gegenstände des Weitwinkels exakt an ihren alten 2D-Koordinaten erneut. Es entstehen **zwei Monitore, zwei Gemälde oder im Raum schwebende Schreibtische**.
 
@@ -289,7 +329,7 @@ Dies ist keine rein subjektive Design-Entscheidung, sondern ein **ingenieurwisse
 * **Das Fotorealismus-Dilemma (*Uncanny Valley*):** Versucht ein Diffusionsmodell, diese heterogenen Quellen fotorealistisch zu verschmelzen, kollidieren Farbtemperaturen, Rauschmuster, Schärfentiefen und Kameraobjektive. Das Gesicht wirkt wie hineinkopiert, die Beleuchtung bricht, und der Gesamteindruck landet im *Uncanny Valley*.
 * **Stil als grafischer Compiler:** Das Regelwerk der Comic-Illustration fungiert als **visueller Compiler**. Es zwingt das Modell, alle eingehenden Merkmale auf dieselbe grafische Grammatik abzubilden: markante Vektorkonturen, flächige Schatten, harmonisierte Farbwelten und gezielte Akzentlichter in Markenfarben (`#3b82f6`, `#f59e0b`, `#10b981`). Dadurch wirken selbst radikal unterschiedliche Bildkomponenten wie aus einem einzigen Guss gezeichnet.
 
-## 7. Fazit: Von stochastischer Generierung zu deterministischem Visual Engineering
+## 7. Fazit: Von stochastischem Prompt-Glücksspiel zu reproduzierbarem Visual Systems Engineering
 
 Die Transformation generativer Bildmodelle von einem unberechenbaren Spielzeug zu einem industriell nutzbaren Produktionswerkzeug erfordert denselben Paradigmenwechsel, den die Softwareentwicklung vor Jahrzehnten durchlaufen hat: **Modularisierung, saubere Schnittstellen und strikte Entkopplung**.
 
@@ -304,10 +344,8 @@ Die Transformation generativer Bildmodelle von einem unberechenbaren Spielzeug z
 
 Mit dieser Architektur generieren wir in Sekunden druckreife Hero-Grafiken, Social Cards und Prozessdiagramme, die nahtlos in das Markenbild der Website passen – reproduzierbar, skalierbar und vollständig versionskontrolliert in Git.
 
-### Weiterführende Ressourcen & Referenzen
+### Weiterführende Ressourcen
 
 * **Projekt-Leitlinien:** [`IMAGE_STYLE_GUIDELINES.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/IMAGE_STYLE_GUIDELINES.md) – Spezifikation der Farbpalette, Linienstärken und Cel-Shading-Ausschlüsse.
 * **Agenten-Regeln:** [`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md) – Die exakten Protokolle für generative AI-Assistenten.
 * **Astro Content Layer:** [`src/content.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content.config.ts) – Formale Zod-Schemadefinitionen für Charaktere, Objekte und Umgebungen.
-* **Research Paper:** *Zhang et al. (2023): „Adding Conditional Control to Text-to-Image Diffusion Models (ControlNet)“*, IEEE/CVF ICCV 2023.
-* **Research Paper:** *Ye et al. (2023): „IP-Adapter: Text-Compatible Image Prompt Adapter for Text-to-Image Diffusion Models“*, arXiv:2308.06721.

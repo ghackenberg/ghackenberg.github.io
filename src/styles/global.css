@@ -1360,4 +1360,47 @@ blockquote:not(.markdown-alert) p:last-child,
   box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.04);
 }
 
+/* Citation Badge Styling for Academic & Source References */
+.citation {
+  display: inline;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 700;
+  vertical-align: baseline;
+  padding: 0.08em 0.35em;
+  margin: 0 0.15em;
+  border-radius: 0.25rem;
+  background-color: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #60a5fa !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  user-select: none;
+  cursor: pointer;
+  line-height: inherit;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.citation:hover {
+  background-color: rgba(59, 130, 246, 0.22);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #93c5fd !important;
+  text-decoration: none !important;
+}
+
+:root.light .citation,
+.light .citation {
+  background-color: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #2563eb !important;
+}
+
+:root.light .citation:hover,
+.light .citation:hover {
+  background-color: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #1d4ed8 !important;
+}
+
+
 

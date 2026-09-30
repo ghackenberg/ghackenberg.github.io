@@ -1,26 +1,75 @@
 ---
 title: "Vision Campus Almtal 2035: Dezentraler Innovationsraum"
-pubDate: "2026-08-09"
-lang: "de"
-description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im Wandel."
-tags: ["education", "innovation", "regional-development", "sustainability", "almtal"]
+pubDate: 2026-08-09
+lang: de
+description: "Ein strategisches Zukunftskonzept für das Almtal: Dezentrales
+  Bildungs- und Hochtechnologie-Ökosystem der FH OÖ für alpine Regionen im
+  Wandel."
+tags:
+  - education
+  - innovation
+  - regional-development
+  - sustainability
+  - almtal
 icon:
-  src: "./icon.jpg"
-  title: "Titelgrafik: Vision Campus Almtal 2035: Vom Erholungstourismus zum dezentralen Innovationsraum"
-  description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural Sciences & Applications."
+  src: ./icon.jpg
+  title: "Titelgrafik: Vision Campus Almtal 2035: Vom Erholungstourismus zum
+    dezentralen Innovationsraum"
+  description: "Ein strategisches Zukunftskonzept für das Almtal: Wie aus der
+    Krise des klassischen Erholungstourismus ein dezentrales Bildungs- und
+    Hochtechnologie-Ökosystem entstehen kann – die FH OÖ School of Natural
+    Sciences & Applications."
+references:
+  - type: article
+    author: Etzkowitz, H., & Leydesdorff, L.
+    title: 'The dynamics of innovation: from National Systems and "Mode 2" to a
+      Triple Helix of university-industry-government relations'
+    url: https://doi.org/10.1016/S0048-7333(99
+    year: 2000
+    doi: 10.1016/S0048-7333(99)00055-4
+    journal: Research Policy
+    volume: "29"
+    number: "2"
+    id: etzkowitz-2000-dynamics-innovation
+  - type: online
+    author: Europäische Kommission
+    title: Eine langfristige Vision für die ländlichen Gebiete der EU – Für
+      stärkere, vernetzte, widerstandsfähige und florierende ländliche Gebiete
+      bis 2040
+    url: https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:52021DC0345
+    year: 2021
+    siteName: Mitteilung der Kommission COM(2021) 345 final
+    id: kommission-2021-eine-langfristige
+  - type: article
+    author: Porter, M. E.
+    title: "Location, Competition, and Economic Development: Local Clusters in a
+      Global Economy"
+    url: https://doi.org/10.1177/089124240001400105
+    year: 2000
+    doi: 10.1177/089124240001400105
+    journal: Economic Development Quarterly
+    volume: "14"
+    number: "1"
+    id: porter-2000-location-competition
 ---
+
+
 
 Das Almtal (Bezirk Gmunden, Oberösterreich) steht symbolisch für alpine Randregionen im Wandel: Die aktuelle Diskussion rund um die Zukunft und Schneesicherheit des Traditionsskigebiets Kasberg in Grünau im Almtal steht stellvertretend für ein tiefgreifendes regionales Strukturproblem: Der klassische Winter- und Erholungstourismus gerät im Zuge des Klimawandels und sich wandelnder Freizeitgewohnheiten zunehmend unter Druck. Gleichzeitig pendeln viele unserer besten Fachkräfte und jungen Talente täglich in die oberösterreichischen Zentralräume ab. 
 
 Wenn das Almtal wirtschaftlich, demografisch und ökologisch gesund bleiben will, reicht es nicht aus, nur über neue Sommer-Tourismuskonzepte nachzudenken. Wir müssen die **regionale Wertschöpfung grundlegend neu denken**. 
 
-Als Professor für Informatik und Industriesysteme an der Fachhochschule Oberösterreich (Campus Wels) und Bürger der Region präsentiere ich mit dem vorliegenden Diskussionsentwurf (Version 0.1) meine Vision für das Almtal als **dezentrales Reallabor** und akademisches Ökosystem: Die **FH OÖ School of Natural Sciences and Applications** (Campus Almtal 2035).
+> [!NOTE]
+> **Status dieses Papiers: Visionärer Diskussionsimpuls & Konzeptstudie**  
+> Im Einklang mit europäischen Initiativen für florierende ländliche Regionen [@kommission-2021-eine-langfristige] handelt es sich bei dem vorliegenden Papier um eine persönliche wissenschaftliche Initiative und einen regionalpolitischen Diskussionsimpuls von Dr. Georg Hackenberg. Es stellt keinen formell beschlossenen Entwicklungsplan der Fachhochschule Oberösterreich oder des Landes OÖ dar, sondern dient als konzeptionelle Diskussionsgrundlage für Bürger, Leitbetriebe und Hochschulen.
+
+Als Professor für Informatik und Industriesysteme an der Fachhochschule Oberösterreich (Campus Wels) und engagierter Bürger der Region präsentiere ich mit dem vorliegenden Diskussionsentwurf (Version 0.1) eine zukunftsgerichtete Vision für das Almtal als **dezentrales Reallabor** und akademisches Innovations-Ökosystem: Eine konzeptionelle **School of Natural Sciences and Applications** (Campus Almtal 2035).
 
 ## 1. Die Kernvision: Das Almtal als dezentrales "Reallabor"
 
 Das Almtal verfügt über einen unfairen Wettbewerbsvorteil, den kaum eine andere Region in Oberösterreich vorweisen kann: Die unmittelbare Nachbarschaft von intakter alpiner Wildnis, enormen natürlichen Ressourcen (Holz, sauberes Wasser) und echten industriellen Weltmarktführern (*Fronius*, *Wolf System*, *Grüne Erde*, *Mayr-Schulmöbel*, *Danner* etc.).
 
-Die Vision des **Campus Almtal** verwandelt diese Ausgangslage in einen klaren Standortvorteil: Wir veredeln unsere Rohstoffe nicht mehr nur physisch vor Ort, sondern verknüpfen sie direkt mit angewandtem Wissen. Das Almtal wird zur **verlängerten Werkbank der oberösterreichischen Hochschulen** (insbesondere der FH Oberösterreich und der Universität Wien) sowie zum Testfeld für Hochtechnologie in den Bereichen:
+Die Vision des **Campus Almtal** verwandelt diese Ausgangslage in einen klaren Standortvorteil im Sinne regionaler Clusterökonomien [@porter-2000-location-competition]: Wir veredeln unsere Rohstoffe nicht mehr nur physisch vor Ort, sondern verknüpfen sie direkt mit angewandtem Wissen. Das Almtal wird zur **verlängerten Werkbank der oberösterreichischen Hochschulen** (insbesondere der FH Oberösterreich und der Universität Wien) sowie zum Testfeld für Hochtechnologie in den Bereichen:
 - **Nachhaltiges Bauen & Holz-Tech**
 - **Dezentrale Energienetze & Automatisierung**
 - **Naturraum- & Wildtiermanagement**
@@ -47,7 +96,7 @@ Um politische Grabenkämpfe zwischen den Gemeinden zu vermeiden, baut das Konzep
 6. **St. Konrad (Agri-Tech & Ressourcen-Resilienz):**  
    St. Konrad fokussiert sich auf Permakultur, geschlossene Wasserkreisläufe und smarte Lösungen für eine resilientere Landwirtschaft abseits der industriellen Großproduktion.
 
-## 3. Die Campus-Hardware: Räume für Innovation & Begegnung
+## 3. Die Campus-Hardware: Räume für Innovation [@etzkowitz-2000-dynamics-innovation] & Begegnung
 
 Ein dezentrales Ökosystem benötigt keine teuren Neubauten auf der grünen Wiese. Stattdessen aktivieren wir **bestehende Leerstände in den Ortskernen**:
 
@@ -61,15 +110,16 @@ Ein Zukunftsprojekt dieser Größenordnung darf weder an knappen Gemeindebudgets
 
 ![Visualisierung des dreistufigen ROI- und Finanzierungsmodells der Almtal AG zur nachhaltigen Campus-Entwicklung](./financing_structure.jpg "Finanzierungsmodell der Almtal AG und 3-Stufen ROI")
 
-### Der Kapitalbedarf von ca. 20 Mio. € bis 2030 teilt sich wie folgt auf:
+### Exemplarisches Modellszenario: Kapitalbedarf und Finanzierungshebel bis 2030
+*Die folgenden Zahlen stellen eine erste analytische Szenarienrechnung dar, um Größenordnungen und Hebelstrukturen transparent zu diskutieren. Reale Implementierungsschritte setzen formale Abstimmungen mit den Trägergremien, dem Land OÖ sowie Akkreditierungsprüfungen durch die AQ Austria (Agentur für Qualitätssicherung und Akkreditierung Austria) voraus:*
 - **50 % Fördermittel (ca. 10 Mio. €):** Hebelung von Förderungen aus dem Land Oberösterreich (*#upperVISION2030*, *Arbeitsplatz OÖ 2030*), EU-Programmen (*LEADER*, *Horizon Europe*) sowie Bundestöpfen (*FFG – Österreichische Forschungsförderungsgesellschaft*, *Klima- und Energiefonds*).
 - **30 % Almtal AG (ca. 6 Mio. €):** Setzt sich zusammen aus Bürgerbeteiligung (ca. 2 Mio. € von 1.000 Bürgern) und Corporate Investments (ca. 4 Mio. € von 8–10 regionalen Leitbetrieben).
 - **20 % Fremdkapital & Gemeindebeteiligung (ca. 4 Mio. €):** Immobilienbesicherte Bankkredite und moderate Infrastrukturbeiträge der Gemeinden.
 
-### Der Return on Investment auf 3 Ebenen:
-1. **Direkter finanzieller ROI (3–5 % p.a.):** Mieteinnahmen von Hochschulen, Pacht von Start-ups und Erlöse aus Ausgründungen fließen an die Bürger und Betriebe zurück.
-2. **Corporate ROI für Betriebe:** Massive Einsparung bei Rekrutierungskosten (15.000–25.000 € pro Fachkraft) und direkter Zugang zu F&E-Ergebnissen.
-3. **Volkswirtschaftlicher ROI:** Schaffung von langfristig 1.500 bis 2.500 direkten und indirekten Ganzjahres-Arbeitsplätzen und Bildungsplätzen (entspricht ca. 800–1.200 Vollzeitäquivalenten). Bei einer geschätzten Lohnsumme von 50 Mio. € bedeutet das ein **jährliches Kommunalsteuer-Plus von ca. 1,5 Mio. €** für die Gemeinden im Tal.
+### Das 3-Ebenen-Wirkungsmodell (Potenzialanalyse):
+1. **Finanzieller Rückfluss für Träger (Zielkorridor 3–5 % p.a.):** Miet- und Pachteinnahmen aus Reallaboren, Co-Working und Ausgründungen fließen an beteiligte Bürger und Betriebe zurück.
+2. **Corporate ROI für Betriebe:** Drastische Senkung von Rekrutierungskosten für technische Spitzenkräfte durch frühzeitiges Onboarding von Studierenden direkt vor Ort.
+3. **Regionale Wertschöpfung & Demografie:** Bei vollständiger Realisierung im Zielhorizont 2035 eröffnet der dezentrale Campus ein Potenzial für mehrere hundert direkte und indirekte Ganzjahres-Arbeits- und Ausbildungsplätze, stärkt die kommunale Steuerbasis und wirkt der Abwanderung junger Akademiker nachhaltig entgegen.
 
 ## 5. Der Stufenplan: Roadmap 2026–2030
 

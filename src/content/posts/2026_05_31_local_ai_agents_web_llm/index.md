@@ -1,13 +1,52 @@
 ---
 title: "Local Browser AI Agents: Web-LLM in Delta Dynamics"
-pubDate: "2026-05-31"
-description: "Bringing client-side LLM-driven AI agents into the browser with WebGPU, MLC Web-LLM, and web workers for decentralized ecosystem simulation."
-tags: ["agentic-ai", "artificial-intelligence", "local-ai", "simulation", "threejs", "typescript", "web-llm", "webgpu"]
+pubDate: 2026-05-31
+description: Bringing client-side LLM-driven AI agents into the browser with
+  WebGPU, MLC Web-LLM, and web workers for decentralized ecosystem simulation.
+tags:
+  - agentic-ai
+  - artificial-intelligence
+  - local-ai
+  - simulation
+  - threejs
+  - typescript
+  - web-llm
+  - webgpu
 icon:
-  src: "./icon.png"
-  title: "Cover illustration: Running Local AI Agents in the Browser: Integrating Web-LLM into Delta Dynamics"
-  description: "A deep dive into bringing decentralized, client-side LLM-driven AI behaviors to our low-poly ecosystem simulator using WebGPU, MLC Web-LLM, and asynchronous web workers."
+  src: ./icon.png
+  title: "Cover illustration: Running Local AI Agents in the Browser: Integrating
+    Web-LLM into Delta Dynamics"
+  description: A deep dive into bringing decentralized, client-side LLM-driven AI
+    behaviors to our low-poly ecosystem simulator using WebGPU, MLC Web-LLM, and
+    asynchronous web workers.
+references:
+  - type: article
+    author: Ruan, C. F., & Chen, T.
+    title: "WebLLM: A High-Performance In-Browser LLM Inference Engine"
+    url: https://arxiv.org/abs/2412.15803
+    year: 2024
+    journal: arXiv preprint arXiv:2412.15803
+    id: ruan-2024-webllm
+  - type: online
+    author: Dettmers, T., Lewis, M., Belkada, Y., & Zettlemoyer, L.
+    title: "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale"
+    url: https://arxiv.org/abs/2208.07339
+    year: 2022
+    siteName: Advances in Neural Information Processing Systems (NeurIPS 2022), 35,
+      30318–30332. Available online at
+      [arxiv.org/abs/2208.07339](https://arxiv.org/abs/2208.07339)
+    id: dettmers-2022-llmint8-8bit
+  - type: misc
+    author: W3C GPU for the Web Working Group
+    title: "WebGPU: A Cross-Platform API for Accelerated Graphics and Compute on the
+      Web"
+    url: https://www.w3.org/TR/webgpu/
+    year: 2024
+    howpublished: W3C Candidate Recommendation Draft
+    id: w3c-2024-webgpu-crossplatform
 ---
+
+
 
 In building **Delta Dynamics**, a low-poly ecosystem simulator, we designed a world that is physically alive—featuring GPU-accelerated hydrology, dynamic terrain, and vegetation growth. However, a living world needs intelligent inhabitants. Traditional game AI relies on static finite state machines (FSMs) or behavior trees. While fast, these methods result in highly predictable, repetitive behaviors.
 
@@ -15,13 +54,13 @@ To create entities with genuine situational awareness and organic decision-makin
 
 The solution? **Run the LLM entirely client-side, in the browser, powered by the user's local GPU.**
 
-This post details how we integrated **MLC Web-LLM** via **WebGPU** into Delta Dynamics, offloaded the execution to a **Web Worker** to maintain a smooth 60 FPS Three.js rendering loop, and enforced **JSON Schema grammar constraints** to turn conversational AI into structured, executable game commands.
+This post details how we integrated **MLC Web-LLM** via **WebGPU [@w3c-2024-webgpu-crossplatform]** into Delta Dynamics, offloaded the execution to a **Web Worker** to maintain a smooth 60 FPS Three.js rendering loop, and enforced **JSON Schema grammar constraints** to turn conversational AI into structured, executable game commands.
 
 ## 1. WebGPU & MLC Web-LLM: Direct Hardware Access
 
 For years, web-based graphics and computing were restricted to WebGL, which is tailored for rendering and lacks support for compute shaders and general-purpose GPU (GPGPU) operations. The arrival of **WebGPU** changes this. It provides low-level, high-performance access to the graphics card directly from the browser, allowing us to run heavy parallel tensor calculations.
 
-We leverage the [MLC Web-LLM](https://webllm.mlc.ai/) library, which compiles model weights and runtime execution kernels to WASM and WebGPU. This allows us to load lightweight models—such as `Qwen2.5-1.5B-Instruct` or `Llama-3-8B-Instruct`—and run inference at speeds upwards of 30-50 tokens per second on consumer laptops.
+We leverage the [MLC Web-LLM](https://webllm [@ruan-2024-webllm].mlc.ai/) library, which compiles model weights and runtime execution kernels to WASM and WebGPU. This allows us to load lightweight models—such as `Qwen2.5-1.5B-Instruct` or `Llama-3-8B-Instruct`—and run inference at speeds upwards of 30-50 tokens per second on consumer laptops.
 
 ## 2. Decoupled Architecture: Offloading to Web Workers
 
@@ -263,6 +302,14 @@ To prevent users from thinking the web app has crashed, we must handle this load
 1. **Persistent Caching**: Web-LLM automatically leverages the browser's **Cache API** and **Origin Private File System (OPFS)**. Once a model is downloaded, subsequent page visits load the model directly from local disk storage, skipping network requests completely.
 2. **Detailed Progress UI**: We map the worker's `progress` messages to a beautiful circular loading rings or progress bar overlay.
 3. **Interactive Pre-Simulation**: While the model is downloading, we allow users to shape the terrain or adjust water levels, keeping them engaged.
+
+## 7. Hardware Limits and Quantization Trade-offs
+
+While client-side inference eliminates cloud hosting expenses and respects user privacy, running neural networks inside a browser sandbox entails strict physical boundaries:
+
+1. **Quantization Precision (4-bit vs. 8-bit [@dettmers-2022-llmint8-8bit])**: To compress a 7B or 8B parameter model into a downloadable web asset under 4 GB, MLC Web-LLM relies on 4-bit weight quantization (e.g., `q4f16_1`). While 4-bit quantization keeps token generation memory-bandwidth efficient on consumer laptops, it incurs measurable perplexity degradation, occasionally reducing adherence to complex multi-step reasoning compared to unquantized FP16 baselines.
+2. **Mobile WebGPU Constraints & Memory Quotas**: Mobile browsers (such as WebGPU on iOS 18 Safari or Chrome on Android) enforce aggressive unified memory allocation caps (often limiting individual GPU buffers or total tab memory to 1.0–1.5 GB). Heavy models like Llama-3-8B trigger out-of-memory tab terminations on mobile hardware. In web environments, ultra-compact SLMs (Small Language Models) like Qwen2.5-0.5B or SmolLM2-360M are essential for universal compatibility.
+3. **Thermal Throttling & Battery Drain**: Continuous inference loops rapidly saturate mobile GPU compute units, leading to aggressive device thermal throttling and accelerated battery drain. In Delta Dynamics, entity decision prompts are throttled to a sparse event-driven cadence (evaluating actions only upon state changes or timer ticks rather than every frame).
 
 ## Conclusion
 

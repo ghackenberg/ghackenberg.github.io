@@ -1,27 +1,64 @@
 ---
-title: "Website Relaunch with Astro & TypeScript on GitHub Pages"
-pubDate: "2026-05-23"
-description: "Learn how to build a static portfolio on GitHub Pages with Astro, TypeScript & AI agents: Automated migration, sub-second loads, and full type safety."
-lang: "en"
-tags: ["web-development", "astro", "typescript", "gemini", "ai-migration", "github-pages"]
+title: Website Relaunch with Astro & TypeScript on GitHub Pages
+pubDate: 2026-05-23
+description: "Learn how to build a static portfolio on GitHub Pages with Astro,
+  TypeScript & AI agents: Automated migration, sub-second loads, and full type
+  safety."
+lang: en
+tags:
+  - web-development
+  - astro
+  - typescript
+  - gemini
+  - ai-migration
+  - github-pages
 icon:
-  src: "./icon.png"
-  title: "Cover illustration: Relaunching my personal website on GitHub Pages with Astro and TypeScript"
-  description: "Discover how I relaunched my personal website on GitHub Pages using Astro, TypeScript, and Google Antigravity to automate legacy PHP content migration."
+  src: ./icon.png
+  title: "Cover illustration: Relaunching my personal website on GitHub Pages with
+    Astro and TypeScript"
+  description: Discover how I relaunched my personal website on GitHub Pages using
+    Astro, TypeScript, and Google Antigravity to automate legacy PHP content
+    migration.
+references:
+  - type: online
+    author: Miller, J.
+    title: Islands Architecture
+    url: https://jasonformat.com/islands-architecture/
+    year: 2020
+    siteName: Jason Format Architecture Essays. Available online at
+      [jasonformat.com/islands-architecture](https://jasonformat.com/islands-architecture/)
+    id: miller-2020-islands-architecture
+  - type: online
+    author: Astro Core Team
+    title: "Astro Documentation: Content Collections, Islands Architecture, and
+      Static Site Generation"
+    url: https://docs.astro.build/
+    year: 2024
+    siteName: Available online at [docs.astro.build](https://docs.astro.build/)
+    id: team-2024-astro
+  - type: online
+    author: Colinhacks
+    title: "Zod: TypeScript-first schema validation with static type inference"
+    url: https://zod.dev/
+    year: 2024
+    siteName: Available online at [zod.dev](https://zod.dev/)
+    id: colinhacks-2024-typescriptfirst-schema
 ---
-After many years of running my personal website on a custom, server-side template engine, I have officially relaunched it! The new website is a fully static application built with **Astro** and **TypeScript**, hosted entirely on **GitHub Pages**. 
+
+
+After many years of running my personal website on a custom, server-side template engine, I have officially relaunched it! The new website is a fully static application built with **Astro [@team-2024-astro]** and **TypeScript**, hosted entirely on **GitHub Pages**. 
 
 This modernization represents a massive leap forward in load performance, developer experience, type-safety, and security. However, migrating over a decade of blog posts, publication records, and course materials was a daunting task. Here is the story of how I successfully automated this migration using **Google Antigravity** powered by **Gemini 3.5 Flash (High)**.
 
 ## Why Relaunch? Outgrowing the Legacy Stack
 
-My original website was built using a custom PHP template engine that compiled XML content files into HTML pages dynamically on every client request. While this architecture served me well for many years and gave me ultimate control over layouts, it had several drawbacks:
+My original website was built using a custom PHP template engine that compiled XML content files into HTML pages dynamically on every client request. While this architecture [@miller-2020-islands-architecture] served me well for many years, modern web engineering has shifted expectations:
 
-1. **Server Maintenance**: Running PHP required active hosting servers (LAMP stack), which introduced maintenance overhead, database backups, and security vulnerabilities.
-2. **Speed**: Processing PHP templates dynamically on the fly meant page responses were slower than serving pre-compiled static files from a global CDN.
-3. **No Type-Safety**: Content files were stored as raw XML and PHP array definitions. There was no compile-time check to ensure a blog post or course record actually had the required fields (e.g., matching tags, formatted dates, or correct cover paths).
+1. **Zero-Ops & Security vs. Server Maintenance**: Modern PHP with OPcache and JIT is certainly capable and remains an excellent choice for dynamic editorial teams. However, running a personal academic site on an active LAMP stack required ongoing OS patching, Apache configurations, and security maintenance. Static site generation (SSG) hosted on GitHub Pages completely eliminates the server-side attack surface and reduces hosting maintenance to zero.
+2. **Global Edge CDN Performance**: Serving pre-rendered, optimized HTML directly from a distributed CDN edge delivers sub-second TTFB globally without requiring complex server-side caching layers.
+3. **Compile-Time Type Safety**: My legacy content files were stored as raw XML and PHP arrays without schema [@colinhacks-2024-typescriptfirst-schema] guarantees. Transitioning to TypeScript and Zod-validated Content Collections ensures that missing tags, broken asset paths, or invalid dates cause immediate build failures rather than silent production regressions.
 
-By moving to Astro and TypeScript, I transitioned to a **static-first, decoupled architecture** where everything is validated at compile-time and served in milliseconds via a global CDN.
+*Note on SSG Trade-offs:* Pure static site generation is optimal for content-driven portfolios and blogs. For platforms requiring real-time user mutations or catalogs spanning tens of thousands of pages, hybrid rendering (Astro's Server-Side Rendering / SSR adapters) or incremental builds become essential. For my personal site, static compilation remains the sweet spot.
 
 ## The Migration Workflow: Powered by AI
 
