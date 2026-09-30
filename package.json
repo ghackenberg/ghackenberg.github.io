@@ -34,6 +34,7 @@
     "validate:citations:syntax": "node scripts/lint-citations.js --syntax-only",
     "lint:citations": "node scripts/lint-citations.js",
     "lint:citations:ci": "node scripts/lint-citations.js --ci",
+    "lint:styles": "node scripts/lint-styles.js",
     "astro": "astro"
   },
   "dependencies": {
