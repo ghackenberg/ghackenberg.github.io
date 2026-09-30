@@ -1,0 +1,53 @@
+---
+title: "Die Drei-Säulen-Methodik für GEO"
+subtitle: "Das ganzheitliche Framework für {cue:hl-sub-pillars-1001}nachhaltige Sichtbarkeit in KI-Modellen{/cue}"
+number: "19"
+slideLayout: "pipeline"
+voiceover: >
+  Wie setzen wir diese wissenschaftlichen Erkenntnisse in der unternehmerischen Praxis um?
+  {cue:sub} Ich habe dafür die Drei-Säulen-Methodik für {cue:hl-sub-pillars-1001}nachhaltige Sichtbarkeit in KI-Modellen{/cue} entwickelt.
+  {cue:pillar-struct} Säule eins ist die Struktur: Maschinenlesbare {cue:hl-pillar-schema}Schema.org-Auszeichnungen{/cue} und semantisches HTML5.
+  {cue:pillar-content} Säule zwei ist der Inhalt: Hoher {cue:hl-pillar-infogain}Information Gain{/cue}, Primärdaten und das BLUF-Prinzip.
+  {cue:pillar-auth} Säule drei ist die Autorität: Verifizierte {cue:hl-pillar-eeat}E-E-A-T-Signale{/cue}, Peer-Review und verifizierte Experten-Entitäten.
+  Zusammen tragen diese drei Säulen Ihr Share of Model in allen führenden Sprachmodellen.
+notes: |
+  - Zeit: 30:30 - 33:00 Min.
+  - Das Framework als übergeordnete Orientierung für die folgenden Detailfolien 15-18 vorstellen.
+  - Eigene Methodik Dr. Georg Hackenberg (2026).
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="19"
+  totalSlides="48"
+>
+  <Pipeline
+    steps={[
+      {
+        cue: "pillar-struct",
+        num: "01",
+        title: "Säule 1: Struktur",
+        desc: "{cue:hl-pillar-schema}Schema.org @graph Architektur{/cue}, JSON-LD, standardisiertes semantisches HTML5 und eindeutige Entitäten-URIs.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step1_saeule_struktur.jpg"
+      },
+      {
+        cue: "pillar-content",
+        num: "02",
+        title: "Säule 2: Content",
+        desc: "{cue:hl-pillar-infogain}Information Gain Scores{/cue} maximieren, BLUF-Informationsarchitektur, dichte Vergleichstabellen und proprietäre Messdaten.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step2_saeule_content.jpg"
+      },
+      {
+        cue: "pillar-auth",
+        num: "03",
+        title: "Säule 3: Autorität",
+        desc: "{cue:hl-pillar-eeat}E-E-A-T-Signale{/cue}, Co-Citations, Autorenvalidierung via ORCID / Wikidata und institutionelle akademische Verankerung.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step3_saeule_autoritaet.jpg"
+      }
+    ]}
+  />
+</PipelineSlide>
+
