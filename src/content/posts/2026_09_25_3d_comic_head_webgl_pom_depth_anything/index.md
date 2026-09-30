@@ -1,20 +1,59 @@
 ---
-title: "Interaktives 3D-Comic-Gesicht mit WebGL POM und Depth Anything V2"
-pubDate: "2026-09-25"
-description: "Wie wir ein reales Porträtfoto über Gemini, Inpainting und Depth Anything V2 in ein lebendiges WebGL-POM-Gesicht mit adaptiver Mimik-State-Machine verwandelt haben."
-lang: "de"
-tags: ["webgl", "shaders", "generative-ai", "depth-anything", "astro", "typescript", "software-architecture", "computer-graphics", "ux-design"]
+title: Interaktives 3D-Comic-Gesicht mit WebGL POM und Depth Anything V2
+pubDate: 2026-09-25
+description: Wie wir ein reales Porträtfoto über Gemini, Inpainting und Depth
+  Anything V2 in ein lebendiges WebGL-POM-Gesicht mit adaptiver
+  Mimik-State-Machine verwandelt haben.
+lang: de
+tags:
+  - webgl
+  - shaders
+  - generative-ai
+  - depth-anything
+  - astro
+  - typescript
+  - software-architecture
+  - computer-graphics
+  - ux-design
 icon:
-  src: "./hero-georg-whiteboard-pom.jpg"
-  title: "Dr. Georg Hackenberg erklärt WebGL POM am Whiteboard"
-  description: "Dr. Georg Hackenberg präsentiert die 3D-Raymarching-Architektur des Parallax Occlusion Mappings am Whiteboard im Almtal Home Office"
+  src: ./hero-georg-whiteboard-pom.jpg
+  title: Dr. Georg Hackenberg erklärt WebGL POM am Whiteboard
+  description: Dr. Georg Hackenberg präsentiert die 3D-Raymarching-Architektur des
+    Parallax Occlusion Mappings am Whiteboard im Almtal Home Office
+references:
+  - type: online
+    author: Khronos Group
+    title: WebGL 1.0 Specification
+    url: https://www.khronos.org/registry/webgl/specs/1.0/
+    year: 2014
+    siteName: Khronos WebGL Working Group
+    id: group-2014-webgl
+  - type: inproceedings
+    author: Tatarchuk, N.
+    title: Dynamic Parallax Occlusion Mapping with Approximate Soft Shadows
+    url: https://doi.org/10.1145/1111411.1111423
+    year: 2006
+    doi: 10.1145/1111411.1111423
+    booktitle: Proceedings of the 2006 Symposium on Interactive 3D Graphics and
+      Games (I3D '06)
+    id: tatarchuk-2006-parallax-occlusion
+  - type: article
+    author: Yang, L., Kang, B., Huang, Z., Xu, X., Feng, J., & Zhao, H.
+    title: "Depth Anything V2: A More Capable Monocular Depth Estimation Foundation
+      Model"
+    url: https://arxiv.org/abs/2406.09414
+    year: 2024
+    journal: arXiv preprint arXiv:2406
+    id: yang-2024-depth-anything
 ---
+
+
 
 Moderne Web-Erlebnisse leben von lebendiger visueller Tiefe, scheitern in der Praxis jedoch oft an der Schere zwischen visueller Immersion und technischer Effizienz. Wer Gesichtern oder Illustrationen im Browser eine echte räumliche Dreidimensionalität verleihen möchte, greift typischerweise zu vollwertigen 3D-Meshes via [Three.js](https://threejs.org/) oder [Babylon.js](https://doc.babylonjs.com/) – und bezahlt diesen Schritt mit Megabytes an Geometrie-Downloads, komplexen UV-Rigging-Pipelines und spürbarem CPU-Overhead.
 
 Auf dieser Website gehen wir im Hero-Bereich einen radikal leichtgewichtigen Weg: Ein handgezeichnet wirkendes Comic-Porträt wechselt organisch zwischen verschiedenen Gesichtsausdrücken und besitzt dank **Parallax Occlusion Mapping (POM)** eine überzeugende räumliche 3D-Tiefe samt dynamischer Lichtbrechung und Oberflächenkrümmung – bei einem Gesamt-Shader von unter 3 KB und einer Ladezeit von wenigen hundert Millisekunden.
 
-In diesem Beitrag dokumentieren wir den vollständigen Engineering-Workflow: Von der generativen Stilübertragung eines echten Fotos über die semantische Freistellung und Mimik-Synthese bis hin zur monokularen Tiefenschätzung via [Depth Anything V2](https://depth-anything-v2.github.io/) und dem mathematischen Raymarching im WebGL-Fragment-Shader.
+In diesem Beitrag dokumentieren wir den vollständigen Engineering-Workflow: Von der generativen Stilübertragung eines echten Fotos über die semantische Freistellung und Mimik-Synthese bis hin zur monokularen Tiefenschätzung via [Depth [@yang-2024-depth-anything] Anything V2](https://depth-anything-v2.github.io/) und dem mathematischen Raymarching im WebGL-Fragment-Shader.
 
 > [!TIP]
 > **Interaktive Live-Version:**  
@@ -28,17 +67,17 @@ Der Übergang von einem statischen zweidimensionalen Porträt zu einer interakti
 
 Jede dieser vier Stufen löst eine konkrete physikalische oder visuelle Hürde:
 
-1. **Generative Stilsynthese via [Google Gemini](https://deepmind.google/technologies/gemini/) (Nano Banana):** Das reale Passbild wird in eine stilisierte Comic-Darstellung übersetzt. Das Modell bewahrt charakteristische Gesichtszüge, reichert das Bild jedoch mit prägnanten Tuschelinien (Inking), flächigem Cel-Shading und der Farbpalette der Website (`#3b82f6` Primärfarbe, `#030712` Schieferhintergrund) an.
+1. **Generative Stilsynthese via [Google Gemini](https://deepmind.google/technologies/gemini/) (Multimodal Vision / Imagen 3):** Das reale Passbild wird in eine stilisierte Comic-Darstellung übersetzt. Das Modell bewahrt charakteristische Gesichtszüge, reichert das Bild jedoch mit prägnanten Tuschelinien (Inking), flächigem Cel-Shading und der Farbpalette der Website (`#3b82f6` Primärfarbe, `#030712` Schieferhintergrund) an.
 2. **Semantische Freistellung & Mimik-Inpainting via [Pillow](https://python-pillow.org/):** Um störende Schnittkanten bei der späteren 3D-Neigung zu verhindern, wird der Kopf semantisch vom Körper befreit. Aus diesem „Floating Head“ werden anschließend über gezieltes Inpainting fünf Mimik-Zustände auf einer exakt identischen Außenkontur abgeleitet.
 3. **Monokulare Tiefenschätzung via [Depth Anything V2](https://depth-anything-v2.github.io/):** Aus den fünf zweidimensionalen RGB-Bildern rekonstruiert ein Vision-Transformer (ViT) die zugehörigen 2.5D-Höhenfelder. Ein exponentieller Alpha-Roll-off an den Rändern stellt sicher, dass keine senkrechten Tiefenklippen entstehen.
-4. **Hardwarebeschleunigtes Raymarching via [WebGL 1.0](https://www.khronos.org/webgl/):** Im Browser durchwandert der Fragment-Shader das Höhenfeld in 40 Z-Schritten. Eine probilistische Finite State Machine (FSM) steuert organische Übergänge und Textur-Crossfades bei konstant 60 FPS – vollständig ohne externe 3D-Engines.
+4. **Hardwarebeschleunigtes Raymarching via [WebGL 1.0](https://www.khronos [@group-2014-webgl].org/webgl/):** Im Browser durchwandert der Fragment-Shader das Höhenfeld in 40 Z-Schritten. Eine probilistische Finite State Machine (FSM) steuert organische Übergänge und Textur-Crossfades bei konstant 60 FPS – vollständig ohne externe 3D-Engines.
 
 ## Wie gelingt der Schritt vom realen Foto zur konsistenten Comic-Mimik?
 
 Der Übergang vom zweidimensionalen Foto zur animierten Mimik-Palette gliedert sich in drei aufeinander aufbauende Gestaltungs- und Inpainting-Phasen: die generative Stilübertragung, die anatomische Freistellung des Kopfes und die hierarchische Ableitung der einzelnen Gesichtsausdrücke.
 
 ### 1. Stiltransfer vom echten Foto zur Comic-Illustration
-Ausgangspunkt des Porträts war ein herkömmliches fotografisches Passbild ([`original-photo.jpg`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/posts/2026_09_25_3d_comic_head_webgl_pom_depth_anything/original-photo.jpg)). Über Google Gemini (Nano Banana) wurde das Foto in eine stilisierte Comic-Darstellung übersetzt. Das Ziel: Die charakteristische Physiognomie, Bartstruktur und Augenpartie des Autors exakt zu bewahren, das Bild jedoch mit prägnanten Tuschelinien (Inking), flächigem Cel-Shading und den Markenfarben der Website (`#3b82f6` Primärakzente, dunkler Schieferhintergrund) anzureichern:
+Ausgangspunkt des Porträts war ein herkömmliches fotografisches Passbild ([`original-photo.jpg`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content/posts/2026_09_25_3d_comic_head_webgl_pom_depth_anything/original-photo.jpg)). Über Google Gemini (Multimodal Vision / Imagen 3) wurde das Foto in eine stilisierte Comic-Darstellung übersetzt. Das Ziel: Die charakteristische Physiognomie, Bartstruktur und Augenpartie des Autors exakt zu bewahren, das Bild jedoch mit prägnanten Tuschelinien (Inking), flächigem Cel-Shading und den Markenfarben der Website (`#3b82f6` Primärakzente, dunkler Schieferhintergrund) anzureichern:
 
 ![Generativer Stiltransfer vom realen Foto zur Disney/Pixar Comic-Illustration](./photo_to_comic_transformation.svg "Stiltransfer: Foto zu Comic-Porträt")
 
@@ -80,7 +119,7 @@ Um dies zu verhindern, wendet ein Vorverarbeitungsskript einen exponentiellen Al
 
 ## Wie funktioniert Parallax Occlusion Mapping (POM) im Fragment-Shader?
 
-Parallax Occlusion Mapping ist ein Verfahren aus der Computergrafik, das planaren Flächen ohne zusätzliche Polygone plastische geometrische Tiefe verleiht. Anstatt Geometrie im Vertex-Shader zu deformieren, marschiert ein Sichtstrahl im Fragment-Shader schrittweise durch ein 2.5D-Höhenfeld.
+Parallax Occlusion Mapping (POM) ist ein wegweisendes Verfahren der Echtzeit-Computergrafik (erstmals formalisiert und praxistauglich beschrieben von [Natalya Tatarchuk [@tatarchuk-2006-parallax-occlusion], ATI Research / SIGGRAPH 2006: *Practical Parallax Occlusion Mapping with Approximate Soft Shadows*](https://www.cs.upc.edu/~virtual/G/1.%20Seminarios/Advanced%20Material%20Shading/Parallax%20Occlusion%20Mapping/Practical%20Parallax%20Occlusion%20Mapping%20with%20Approximate%20Soft%20Shadows.pdf)), das planaren Flächen ohne zusätzliche Polygone plastische geometrische Tiefe verleiht. Anstatt Geometrie im Vertex-Shader rechenintensiv zu tessellieren oder zu deformieren, marschiert ein Sichtstrahl (*Raymarching*) direkt im Fragment-Shader schrittweise durch ein 2.5D-Höhenfeld.
 
 ![Technische 3D-Illustration des WebGL POM Raymarchings durch Z-Schichten mit Schnittpunkt und Oberflächennormale](./pom-raymarching-illustration.jpg "POM Raymarching: 3D-Schnittpunkt-Suche und Oberflächennormale")
 

@@ -1,21 +1,57 @@
 ---
-title: "Procedural Graphs mit Mastra: Wie Software-Ingenieure selbstlernende Prozessgraphen in TypeScript technisch realisieren"
-pubDate: "2026-09-20"
-description: "Die ingenieurwissenschaftliche Brücke von Google Research zu moderner Enterprise-Software: Wie Entwickler das Paper 'Procedural Graphs' (arXiv:2609.09153) auf Basis des TypeScript-Frameworks Mastra technisch implementieren – inklusive Zod-Schemas für Kantenattribute, Runtime Soft Guidance, MCP-Integration und Offline-Evolution mit Rejection Memory."
-tags: ["mastra", "typescript", "agentic-ai", "software-architecture", "enterprise-ai", "knowledge-graphs", "mcp", "software-engineering"]
+title: "Procedural Graphs mit Mastra: Wie Software-Ingenieure selbstlernende
+  Prozessgraphen in TypeScript technisch realisieren"
+pubDate: 2026-09-20
+description: "Die ingenieurwissenschaftliche Brücke von Google Research zu
+  moderner Enterprise-Software: Wie Entwickler das Paper 'Procedural Graphs'
+  (arXiv:2609.09153) auf Basis des TypeScript-Frameworks Mastra technisch
+  implementieren – inklusive Zod-Schemas für Kantenattribute, Runtime Soft
+  Guidance, MCP-Integration und Offline-Evolution mit Rejection Memory."
+tags:
+  - mastra
+  - typescript
+  - agentic-ai
+  - software-architecture
+  - enterprise-ai
+  - knowledge-graphs
+  - mcp
+  - software-engineering
 icon:
-  src: "./hero.jpg"
-  title: "Procedural Graphs mit Mastra"
-  description: "Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen"
+  src: ./hero.jpg
+  title: Procedural Graphs mit Mastra
+  description: "Procedural Graphs mit Mastra: Dr. Georg Hackenberg verbindet
+    TypeScript-Workflows, Zod-Schemas und MCP mit dynamischen Wissensgraphen"
+references:
+  - type: online
+    author: Anthropic
+    title: Model Context Protocol (MCP) Specification
+    url: https://modelcontextprotocol.io/
+    year: 2024
+    id: anthropic-2024-mcp
+  - type: article
+    author: Lu, Y., Chen, Y., Wu, S., & Arık, S. Ö.
+    title: "Procedural Graphs: Self-Evolving Execution Structures for LLM Agents"
+    url: https://arxiv.org/abs/2609.09153
+    year: 2026
+    journal: Google Cloud AI Research
+    id: lu-2026-procedural-graphs
+  - type: online
+    author: Mastra Core Team
+    title: Mastra Workflows and Suspended Execution
+    url: https://mastra.ai/docs/workflows/overview
+    year: 2024
+    id: team-2024-mastra
 ---
 
-In unserer Beitragsreihe zur praktischen AI-Transformation in Unternehmen haben wir die architektonischen Grundlagen moderner KI-Systeme erschlossen: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das sitzungsübergreifende [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die Wissensevolution via [Google WikiSkills](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) und das [Inferenz-Routing via LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur tiefen [Architektur- und Funktionsanalyse von Mastra](/posts/2026_09_19_mastra_typescript_framework_architektur_und_funktionsweise/). 
+
+
+In unserer Beitragsreihe zur praktischen AI-Transformation in Unternehmen haben wir die architektonischen Grundlagen moderner KI-Systeme erschlossen: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das sitzungsübergreifende [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die Wissensevolution via [Google WikiSkills](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) und das [Inferenz-Routing via LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur tiefen [Architektur- und Funktionsanalyse von Mastra [@team-2024-mastra]](/posts/2026_09_19_mastra_typescript_framework_architektur_und_funktionsweise/). 
 
 Besonderes Aufsehen erregte zuletzt unsere Analyse des Google-Cloud-Research-Papers **„Procedural Graphs: Self-Evolving Execution Structures for LLM Agents“** (*arXiv:2609.09153*): In [Procedural Graphs in der Praxis](/posts/2026_09_18_procedural_graphs_praxis_automatisierung_repetitiver_prozesse/) haben wir dargelegt, warum über 80 % agentischer Pilotprojekte am Übergang in den Produktivbetrieb scheitern – und wie attributierte Wissensgraphen das unberechenbare „Driften“ autonomer ReAct-Agenten bei repetitiven Vorgängen zuverlässig unterbinden.
 
 Die Resonanz aus Entwicklungsteams und IT-Architekturen war eindeutig: Das theoretische Konzept überzeugt – doch **wie implementiert man eine Procedural Graph Engine (PGE) konkret in einer modernen Unternehmenscodebasis?**
 
-Dieser Beitrag schlägt die Brücke vom Forschungspapier zur lauffähigen Enterprise-Architektur. Wir nutzen das TypeScript-native Framework **Mastra**, um eine vollständige Referenzimplementierung zu entwerfen: mit formaler Typsicherheit via Zod, dynamischer Laufzeit-Führung (*Runtime Soft Guidance*), nativer MCP-Integration für reale Industriesysteme und einem kontinuierlichen Offline-Evolutionszyklus mit persistenter *Rejection Memory*.
+Dieser Beitrag schlägt die Brücke vom Forschungspapier zur lauffähigen Enterprise-Architektur: Als **originäre Forschungs- und Entwicklungsleistung von Dr. Georg Hackenberg** transferieren wir die mathematischen Grundideen aus dem Python-Forschungspapier von Google Cloud AI Research in das TypeScript-native Framework **Mastra**, um eine vollständige Referenzimplementierung zu entwerfen: mit formaler Typsicherheit via Zod, dynamischer Laufzeit-Führung (*Runtime Soft Guidance*), nativer MCP-Integration für reale Industriesysteme und einem kontinuierlichen Offline-Evolutionszyklus mit persistenter *Rejection Memory*.
 
 > [!TIP]
 > **Kompakt-Rekapitulation: Was sind Procedural Graphs & warum Mastra?**
@@ -42,7 +78,7 @@ Um dieses Paradigma sauber umzusetzen, gliedern wir die Architektur in vier vone
 
 1. **Schicht 1: Graph Knowledge Layer** – Das formale Datenmodell des Prozessgraphen, typisiert über Zod und gespeichert in relationaler Persistenz (PostgreSQL / LibSQL via Mastra Storage).
 2. **Schicht 2: Runtime Guidance Pipeline** – Ein schlanker Mastra-Workflow, der vor jedem Agentenschritt die aktuelle Knotenposition lokalisiert, die 2-Hop-Nachbarschaft extrahiert und daraus via Prompt-Synthese eine situative Handlungsführung ($g_t$) generiert.
-3. **Schicht 3: Execution & MCP Layer** – Der ausführende Mastra-`Agent` ($\pi$), der das eigentliche Reasoning durchführt, Aktionen über das Model Context Protocol (MCP) an reale ERP-, CRM- und Datenbank-Systeme absetzt und bei Genehmigungspflichten via `suspend()` anhält.
+3. **Schicht 3: Execution & MCP Layer** – Der ausführende Mastra-`Agent` ($\pi$), der das eigentliche Reasoning durchführt, Aktionen über das Model [@anthropic-2024-mcp] Context Protocol (MCP) an reale ERP-, CRM- und Datenbank-Systeme absetzt und bei Genehmigungspflichten via `suspend()` anhält.
 4. **Schicht 4: Offline Self-Evolution Loop** – Ein autonomer Hintergrundprozess, der Ausführungs-Traces analysiert, den Graphen schärft und mithilfe einer *Rejection Memory* sowie `@mastra/evals` Regressionen im laufenden Betrieb verhindert.
 
 
@@ -177,7 +213,7 @@ Die $h$-Hop-Nachbarschaft $\mathcal{N}_h(u_t)$ wird über `graphStore.getNeighbo
 Ein schnelles, kostengünstiges Sprachmodell $\Psi$ (beispielsweise *Google Gemini 3.5 Flash* via Mastra) verdichtet die Kantenattribute (`condition`, `guidance`, `pitfalls`) und den Task-Kontext in eine prägnante, handlungsleitende Instruktion $g_t$.
 
 ### Schritt 4: Ausführung durch den Solver-Agenten (*Solve*)
-Der eigentliche Task Solver Agent ($\pi$) erhält $g_t$ dynamisch in seinen Kontext injiziert und wählt die nächste Aktion $a_t$. Er behält seine volle ReAct-Agilität, wird aber durch die Guidance vor Prozessbrüchen geschützt.
+Der eigentliche Task Solver Agent ($\pi$) erhält $g_t$ dynamisch in seinen Kontext injiziert und wählt die nächste Aktion $a_t$. Er behält seine volle ReAct-Agilität, wird aber durch die Guidance vor Prozessbrüchen [@lu-2026-procedural-graphs] geschützt.
 
 ### Die Implementierung als Mastra-Workflow
 

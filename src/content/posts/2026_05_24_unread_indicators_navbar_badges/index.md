@@ -1,13 +1,49 @@
 ---
-title: "Flicker-Free Unread Indicators in Astro"
-pubDate: "2026-05-24"
-description: "How to build a zero-flicker client-side unread content notification badge in Astro using localStorage and synchronous manifest synchronization."
-tags: ["web-development", "astro", "typescript", "localstorage", "ux-design", "state-management"]
+title: Flicker-Free Unread Indicators in Astro
+pubDate: 2026-05-24
+description: How to build a zero-flicker client-side unread content notification
+  badge in Astro using localStorage and synchronous manifest synchronization.
+tags:
+  - web-development
+  - astro
+  - typescript
+  - localstorage
+  - ux-design
+  - state-management
 icon:
-  src: "./icon.png"
-  title: "Cover illustration: Designing a Flicker-Free Client-Side Unread Content System in Astro"
-  description: "How we implemented a client-side localStorage notification system for unread content, using cached Astro static content manifests and synchronous scripting to eliminate visual flickering."
+  src: ./icon.png
+  title: "Cover illustration: Designing a Flicker-Free Client-Side Unread Content
+    System in Astro"
+  description: How we implemented a client-side localStorage notification system
+    for unread content, using cached Astro static content manifests and
+    synchronous scripting to eliminate visual flickering.
+references:
+  - type: online
+    author: Google Web Vitals
+    title: Optimize Cumulative Layout Shift (CLS)
+    url: https://web.dev/articles/cls
+    year: 2024
+    siteName: Google Chrome Developer Documentation. Available online at
+      [web.dev/cls](https://web.dev/articles/cls)
+    id: google-2024-optimize-cumulative
+  - type: misc
+    author: W3C Web Applications Working Group
+    title: Web Storage (Second Edition)
+    url: https://www.w3.org/TR/webstorage/
+    year: 2016
+    howpublished: W3C Recommendation
+    id: w3c-2016-storage-second
+  - type: online
+    author: Dr. Georg Hackenberg
+    title: WebKit Team (Apple)
+    url: https://webkit.org/tracking-prevention/
+    siteName: "* (2020). *Tracking Prevention Policy and Client-Side Storage Caps*.
+      WebKit Open Source Project. Available online at
+      [webkit.org/tracking-prevention](https://webkit.org/tracking-prevention/)"
+    id: hackenberg-webkit-team
 ---
+
+
 After modernizing my personal website to Astro and TypeScript, I wanted to find a way to make it more engaging for returning visitors. Specifically, I wanted to highlight **newly published content** (such as blog posts, projects, courses, publications, and visualizations) that a user has not seen yet. 
 
 However, since this website is fully static and hosted on **GitHub Pages**, there is no server-side database or user authentication to track read states. Everything has to happen client-side. 
@@ -26,7 +62,7 @@ Here is a mockup of the visual interface:
 
 ## How Do You Prevent Layout Shift When Loading Client-Side State?
 
-To eliminate visual layout flickering (**Cumulative Layout Shift**) on static websites, client state must be painted synchronously before the first paint cycle. By combining pre-compiled build-time content manifests with inline render-blocking `localStorage` lookups and background asynchronous delta synchronization, UI badges appear instantly without flash.
+To eliminate visual layout flickering (**Cumulative [@google-2024-optimize-cumulative] Layout Shift**) on static websites, client state must be painted synchronously before the first paint cycle. By combining pre-compiled build-time content manifests with inline render-blocking `localStorage` lookups and background asynchronous delta synchronization, UI badges appear instantly without flash.
 
 ### The Problem with Traditional Async State Ingestion
 
@@ -38,11 +74,18 @@ To achieve a **flicker-free experience**, we designed a decoupled synchronizatio
 
 ### Architectural Trade-offs: Client Notification Strategies
 
-| Architecture Approach | Initial Paint Flicker (CLS) | Server Overhead | Offline & Privacy Support | Code Complexity |
-| :--- | :--- | :--- | :--- | :--- |
-| **Server-Rendered DB Query** | None (Zero CLS) | High (Requires DB & Auth per request) | Poor (Server dependency) | High (Backend stack needed) |
-| **Async Client-Side Script** | Severe (~150-300ms flash) | Low (Static CDN) | Excellent (Pure browser state) | Very Low |
-| **Decoupled Cached Manifest** | **None (Zero CLS)** | **Zero (Pre-compiled JSON)** | **Excellent (Local Storage)** | **Moderate (Inline paint + worker sync)** |
+| Architecture Approach | Initial Paint Flicker (CLS) | Server Overhead | Offline & Privacy Support | Code Complexity | Storage [@w3c-2016-storage-second] & Sync Constraints |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Server-Rendered DB Query** | None (Zero CLS) | High (Requires DB & Auth per request) | Poor (Server dependency) | High (Backend stack needed) | Cross-device synchronized via user account |
+| **Async Client-Side Script** | Severe (~150-300ms flash) | Low (Static CDN) | Excellent (Pure browser state) | Very Low | Local only, visual layout shift during DOM mutation |
+| **Decoupled Cached Manifest** | **None (Zero CLS)** | **Zero (Pre-compiled JSON)** | **Excellent (Local Storage)** | **Moderate (Inline paint + worker sync)** | **Device-bound; subject to browser storage eviction policies** |
+
+### Trade-offs and Limitations of Client-Side Storage
+
+While `localStorage` eliminates backend complexity and complies natively with GDPR privacy constraints, engineers must consider several structural trade-offs:
+1. **Device and Browser Isolation**: State is strictly sandboxed to the specific browser profile. A post read on desktop Safari remains marked as unread when visiting the website on a mobile device.
+2. **Storage Eviction and ITP Policies**: Modern browser privacy mechanisms—such as Apple WebKit [@hackenberg-webkit-team]'s Intelligent Tracking Prevention (ITP)—cap or purge script-writable client storage after 7 days of user inactivity. In such cases, unread badges gracefully reset to their default unvisited baseline.
+3. **Execution Cost vs. CLS**: While placing an inline script at the end of the `<body>` blocks rendering momentarily to mutate class attributes prior to paint, DOM containers for badges and dots must still define reserved structural bounding boxes (e.g., fixed `min-width`, `min-height`, or CSS grid layout reservations) to ensure that even on first visits with an empty cache, no secondary layout shifts occur.
 
 ## Decoupled Architecture: Build-Time meets Client-Time
 
@@ -143,4 +186,3 @@ This decoupled notification architecture provides several major advantages:
 3. **No Database Dependencies**: Users are tracked anonymously on their own machines using local storage, keeping the application fast, privacy-friendly, and cost-effective.
 
 Implementing this pattern ensures that static sites feel as reactive and feature-rich as complex single-page apps, while retaining all the speed and security benefits of pre-rendered HTML. For further architectural details on our static stack, see our [Astro Relaunch deep dive](/posts/2026_05_23_website_relaunch_astro_typescript/) and explore our topics on [Web Performance](/tags/web-development/).
-

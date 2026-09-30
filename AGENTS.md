@@ -66,9 +66,9 @@ Domain-specific documentation and specifications live co-located with the conten
 ## 5. Presentation & Slide-as-Code Safety Gates
 For complete slide archetype definitions and props, consult [`src/content/presentations/GUIDELINES.md`](src/content/presentations/GUIDELINES.md).
 - **Two-Phase Generation Protocol ("Text-Freeze Principle")**:
-  - **Phase 1 (Lightweight Drafting & Structure)**: Author and refine slide texts, frontmatter, and voiceovers. Validate purely syntactically using `npm run validate:slides:syntax` (runs in <300ms without needing audio or PDF exports). **Do NOT run TTS synthesis or PDF exports during iterative text drafting!**
+  - **Phase 1 (Lightweight Drafting & Structure)**: Author and refine slide texts, frontmatter, references, and voiceovers. Validate purely syntactically using `npm run validate:slides:syntax` and `npm run validate:citations:syntax` (runs in <300ms without needing audio or PDF exports). **Do NOT run TTS synthesis or PDF exports during iterative text drafting!**
   - **Phase 2 (Heavy Build & Release)**: Once the user explicitly freezes the text (*"Text steht"*), run:
-    `npm run audio:presentations` $\rightarrow$ `npm run export:slides-thumbs` $\rightarrow$ `npm run export:slides` $\rightarrow$ `npm run validate:slides`.
+    `npm run audio:presentations` $\rightarrow$ `npm run export:slides-thumbs` $\rightarrow$ `npm run export:slides` $\rightarrow$ `npm run validate:slides` $\rightarrow$ `npm run lint:citations:ci`.
 - **The 5-Point Cue Pre-Flight Checklist (Mandatory before saving any `.mdx` slide)**:
   1. *Highlights on every bullet & callout*: Every `BulletList` item `desc` and every `CalloutBox` MUST contain at least one inline `{cue:hl-...}` marker.
   2. *Monotonic visual DOM progression*: Spoken cues in `voiceover` MUST follow the exact sequence in which elements appear in the slide DOM (from top-to-bottom, left-to-right).
@@ -110,7 +110,29 @@ For complete slide archetype definitions and props, consult [`src/content/presen
 
 ---
 
-## 7. Continuous Improvement, Retrospectives & Tool Promotion
+## 7. Citation Management & Reference Integrity Gate
+Mandatory for **ALL** content collections supporting references (blog posts in `src/content/posts/` and presentation slides in `src/content/presentations/`):
+- **Structured Frontmatter Schema**:
+  - Every external reference MUST be declared in the YAML frontmatter `references:` array.
+  - Required fields: `id` (semantic kebab-case key, e.g. `aggarwal-2024-geo`, `bostock-2011-datadriven-documents`), `type` (`article`, `inproceedings`, `book`, `online`, `misc`), `title`, `author`, `year`, and `url` (or `doi`).
+  - Optional field: `label` (explicitly overrides the auto-generated BibTeX-Alpha key if necessary).
+- **In-Text Semantic Citation Contract**:
+  - Always cite using the semantic key syntax: `[@id]` (e.g. `[@aggarwal-2024-geo]`, `[@bostock-2011-datadriven-documents]`).
+  - **NEVER** hardcode numeric indices (`[1]`) or manual labels (`[Agg24]`) in raw Markdown or MDX text.
+  - Remark plugin `remarkCitations` transforms `[@id]` at build time into deterministic alphanumeric BibTeX-Alpha labels (e.g. `[Agg24]`) and creates interactive reference links (blog posts: anchor jump `#ref-id`; slides: click-to-open reference modal `[data-open-reference="id"]`).
+- **100% Bidirectional Parity Gate**:
+  - Every reference declared in `references:` MUST be cited at least once in the markdown body using `[@id]`.
+  - Every `[@id]` used in content MUST correspond to a declared reference in that document's `references:` frontmatter.
+  - Zero orphan references and zero undefined citation tags.
+- **Reference Section Layout & Hygiene**:
+  - **NO Horizontal Divider**: Never place `---` or border lines immediately before the references heading or list.
+- **Pre-Flight Validation**:
+  - *Phase 1 (Drafting)*: Validate syntax and in-text parity in <200ms using `npm run validate:citations:syntax` (and `npm run validate:slides:syntax` for slides).
+  - *Phase 2 (Release)*: Verify external source links, DOIs, and metadata against remote APIs using `npm run lint:citations` (or `npm run lint:citations:ci`).
+
+---
+
+## 8. Continuous Improvement, Retrospectives & Tool Promotion
 - **Post-Task Reflection Protocol**:
   - After completing any major milestone or release (e.g. merge to `main`, publication of a keynote or article), the agent proactively reflects on:
     1. *Friction & Waste*: Where did iteration loops, validation failures, or token waste occur?
@@ -120,7 +142,7 @@ For complete slide archetype definitions and props, consult [`src/content/presen
   - Repetitive, algorithmic, or token-heavy processes must not stay as verbose prompt rules; they should be promoted into automated tools or MCP servers.
   - New tool and system proposals are specified as numbered RFCs in [`backlog/system/`](backlog/system/) (e.g. `001-slide-engine-mcp.md`), content ideas in [`backlog/content/`](backlog/content/), and tracked in [`backlog/README.md`](backlog/README.md).
 
-## 8. UI Interaction & Motion Ergonomics
+## 9. UI Interaction & Motion Ergonomics
 - **Touch Gesture Ergonomics (Axis-Locking & Disambiguation)**:
   - *No Scroll-Trapping*: Horizontally swipeable or draggable components (e.g. carousels, marquees, code viewports) must never capture or trap native vertical page scrolling on touch devices.
   - *8px Direction-Locking Contract*: Evaluate touch delta vectors immediately upon movement. If $|\Delta Y| > |\Delta X|$ at the 8px threshold, immediately yield gesture control to native page scrolling and lock the component's horizontal drag. If $|\Delta X| > |\Delta Y|$, lock the component horizontally and prevent native vertical scrolling.

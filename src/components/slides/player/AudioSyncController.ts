@@ -22,6 +22,8 @@ export interface SetSlideOptions {
 }
 
 export interface SlideReference {
+  id?: string;
+  label?: string;
   type: string;
   author: string;
   title: string;

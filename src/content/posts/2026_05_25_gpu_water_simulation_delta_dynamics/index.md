@@ -1,14 +1,58 @@
 ---
-title: "GPU Water Flow & Hydrology Shaders in Delta Dynamics"
-pubDate: "2026-05-25"
-lang: "en"
-description: "Real-time shallow water and groundwater simulation shaders on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong texture computation."
-tags: ["computer-graphics", "gpgpu", "hydrology", "shaders", "simulation", "threejs", "webgl"]
+title: GPU Water Flow & Hydrology Shaders in Delta Dynamics
+pubDate: 2026-05-25
+lang: en
+description: Real-time shallow water and groundwater simulation shaders on the
+  GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong texture computation.
+tags:
+  - computer-graphics
+  - gpgpu
+  - hydrology
+  - shaders
+  - simulation
+  - threejs
+  - webgl
 icon:
-  src: "./icon.png"
-  title: "Titelgrafik: GPU-Accelerated Water Flow and Subsurface Hydrology Shaders in Delta Dynamics"
-  description: "How we implemented a high-performance, discrete grid-based shallow water and groundwater simulator on the GPU at 60 FPS using WebGL, Three.js, and FBO ping-pong textures."
+  src: ./icon.png
+  title: "Titelgrafik: GPU-Accelerated Water Flow and Subsurface Hydrology Shaders
+    in Delta Dynamics"
+  description: How we implemented a high-performance, discrete grid-based shallow
+    water and groundwater simulator on the GPU at 60 FPS using WebGL, Three.js,
+    and FBO ping-pong textures.
+references:
+  - type: article
+    author: Courant, R., Friedrichs, K., & Lewy, H.
+    title: Über die partiellen Differenzengleichungen der mathematischen Physik
+    url: https://doi.org/10.1007/BF01448839
+    year: 1928
+    doi: 10.1007/BF01448839
+    journal: Mathematische Annalen
+    volume: "100"
+    number: "1"
+    id: courant-1928-partiellen-differenzengleichungen
+  - type: book
+    author: Darcy, H.
+    title: "Les fontaines publiques de la ville de Dijon: exposition et application
+      des principes à suivre et des formules à employer dans les questions de
+      distribution d'eau"
+    url: https://archive.org/details/bub_gb_42EUAAAAQAAJ
+    year: 1856
+    publisher: Victor Dalmont
+    id: darcy-1856-darcy-law
+  - type: article
+    author: Stelling, G. S., & Duinmeijer, S. P. A.
+    title: A staggered conservative scheme for every-day shallow water flow with
+      curved boundaries
+    url: https://doi.org/10.1002/fld.595
+    year: 2003
+    doi: 10.1002/fld.595
+    journal: International Journal for Numerical Methods in Fluids
+    volume: "43"
+    number: "12"
+    id: stelling-2003-staggered-conservative
 ---
+
+
 In building **Delta Dynamics**, a low-poly ecosystem simulator, we wanted a world that felt hydrodynamically alive. Water shouldn't just be a static visual plane; it should rain down, infiltrate the soil, accumulate in aquifers, flow down mountains, erode terrain, saturate soil, and form dynamic rivers and lakes that direct the growth of vegetation and the behaviors of AI entities.
 
 Simulating this level of cellular hydrology in real time on a $100 \times 100$ grid is computationally heavy. If run on the CPU in JavaScript, updating 10,000 cells every frame alongside 3D rendering, entity AI, and local Web-LLM processing would quickly tank the frame rate.
@@ -19,7 +63,7 @@ This post breaks down the mathematics of our discrete grid hydrology model, the 
 
 ## 1. How Does GPU Hydrology Differ from Traditional Wave Shaders?
 
-**GPU-accelerated cellular hydrology** simulates real, mass-conserving water volume and groundwater exchange on a discrete height grid rather than applying decorative surface vertex displacements (such as Gerstner waves). By evaluating shallow water diffusion and Darcy's subterranean permeability in WebGL fragment shaders, water realistically pools, infiltrates, and erodes terrain at 60 FPS.
+**GPU-accelerated cellular hydrology** simulates real, mass-conserving water volume and groundwater exchange on a discrete height grid rather than applying decorative surface vertex displacements (such as Gerstner waves). By evaluating shallow [@stelling-2003-staggered-conservative] water diffusion and Darcy [@darcy-1856-darcy-law]'s subterranean permeability in WebGL fragment shaders, water realistically pools, infiltrates, and erodes terrain at 60 FPS.
 
 ### The Coupled Surface and Subsurface Physics Model
 
@@ -38,7 +82,7 @@ The shader compares the local surface level with the neighbor's level ($nSL$):
 
 $$sDiff = sL - nSL$$
 
-If $sDiff > 0$, water flows out to the neighbor; if $sDiff < 0$, water flows in. To prevent numerical instability and wild oscillations (where water sloshes back and forth indefinitely), we apply a **safety flux clamp** (analogous to the CFL condition in fluid dynamics). In our fragment shader [simulation.frag.ts](https://github.com/ghackenberg/delta-dynamics/blob/876638e87911a90beb547c9262720479a8cbd70a/src/shaders/water/simulation.frag.ts#L65-L73), the outflow is capped at $30\%$ of the current cell's water depth:
+If $sDiff > 0$, water flows out to the neighbor; if $sDiff < 0$, water flows in. To prevent numerical instability and wild oscillations (where water sloshes back and forth indefinitely), we apply a **safety flux clamp** derived from the Courant [@courant-1928-partiellen-differenzengleichungen]-Friedrichs-Lewy (CFL) stability criterion in fluid dynamics ($\Delta t \le \frac{\Delta x}{c}$, where wave propagation speed $c = \sqrt{g \cdot h}$). On fixed grid cell resolutions ($\Delta x$) with discrete frame steps ($\Delta t$), unconstrained explicit Euler integration causes rapid divergence if outflux exceeds local cell volume. In our fragment shader [simulation.frag.ts](https://github.com/ghackenberg/delta-dynamics/blob/876638e87911a90beb547c9262720479a8cbd70a/src/shaders/water/simulation.frag.ts#L65-L73), outflow is capped at $30\%$ of the current cell's water depth:
 
 ```glsl
 float sDiff = sL - nSL;
@@ -52,6 +96,13 @@ if (sDiff > 0.0001) {
     sDelta += clampedF;
 }
 ```
+
+### Physical Scope and Limitations of the 2D Heightfield Model
+
+While discrete 2D heightfield shallow water simulation offers remarkable computational efficiency on web GPUs, engineers must recognize its inherent physical boundaries:
+1. **Single Height Surface Limitation**: A heightfield $h(x, y)$ can only store one water surface elevation per grid coordinate. It cannot naturally represent true 3D fluid phenomena such as breaking waves, waterfalls with overhangs, caves, or complex turbulent vortex shedding.
+2. **Droplet Splashes and Phase Separation**: Simulating fluid detachment (splashing droplets, mist, foam) requires 3D Eulerian grid solvers (e.g., Lattice Boltzmann or Navier-Stokes FLIP/PIC) or Lagrangian particle approaches (Smoothed Particle Hydrodynamics, SPH), which require significantly higher GPU memory bandwidth and compute shader capabilities.
+3. **Viscosity and Momentum Invariance**: The diffusion model trades momentum advection (velocity fields) for computational stability, meaning inertial effects (like waves sloshing high up opposing canyon walls) are dampened compared to full Navier-Stokes formulations.
 
 ### Subsurface Aquifer Flow (Darcy's Law)
 Beneath the surface, water permeates through porous soil layers (humus, sand, gravel, and rock). The groundwater level ($gL$) represents the hydraulic head inside the soil and is calculated based on the current groundwater volume ($gw$) relative to the aquifer's capacity ($ac$):
@@ -195,4 +246,3 @@ Explore related high-performance graphics and simulation materials across our pl
 - [Content Visualizations & Graph Engines](/visualizations/)
 - [University Course: Computer Simulation Course Materials](/courses/kurs-computer-simulation/)
 - [WebGL Network Visualization & Graph Engines Architecture](/posts/2026_05_27_interactive_graph_visualizations_update/)
-

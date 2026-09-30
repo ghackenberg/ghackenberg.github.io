@@ -1,19 +1,61 @@
 ---
 title: "Architektur-Leitfaden: Die richtige technologische Basis für Google WikiSkill"
-pubDate: "2026-09-17"
-description: "Wie lässt sich das WikiSkill-Paradigma (Inference → Tracing → Wiki Maintenance → Skill Synthesis → Gating) in Software gießen? Ein fundierter Technologie- und Architektur-Vergleich zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph für Web-, CLI- und Enterprise-Ökosysteme."
-tags: ["agentic-ai", "artificial-intelligence", "benchmarks", "enterprise-ai", "hermes-agent", "langgraph", "open-source", "python", "software-architecture", "software-engineering", "typescript", "web-development", "wikiskills"]
+pubDate: 2026-09-17
+description: Wie lässt sich das WikiSkill-Paradigma (Inference → Tracing → Wiki
+  Maintenance → Skill Synthesis → Gating) in Software gießen? Ein fundierter
+  Technologie- und Architektur-Vergleich zwischen Mastra, Pi Agent, PydanticAI,
+  Hermes Agent und LangGraph für Web-, CLI- und Enterprise-Ökosysteme.
+tags:
+  - agentic-ai
+  - artificial-intelligence
+  - benchmarks
+  - enterprise-ai
+  - hermes-agent
+  - langgraph
+  - open-source
+  - python
+  - software-architecture
+  - software-engineering
+  - typescript
+  - web-development
+  - wikiskills
 icon:
-  src: "./hero.jpg"
-  title: "Architektur-Leitfaden für Google WikiSkill"
-  description: "Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg analysiert am Besprechungstisch im Campus Office Wels die technologische Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph"
+  src: ./hero.jpg
+  title: Architektur-Leitfaden für Google WikiSkill
+  description: "Architektur-Leitfaden für Google WikiSkill: Dr. Georg Hackenberg
+    analysiert am Besprechungstisch im Campus Office Wels die technologische
+    Basis zwischen Mastra, Pi Agent, PydanticAI, Hermes Agent und LangGraph"
+references:
+  - type: online
+    author: Colvin, S., et al.
+    title: "PydanticAI: Agent Framework powered by Pydantic"
+    url: https://ai.pydantic.dev/
+    year: 2024
+    siteName: Pydantic Inc
+    id: colvin-2024-pydantic-ai
+  - type: online
+    author: Mastra Core Team
+    title: "Mastra: The TypeScript AI Agent Framework"
+    url: https://mastra.ai/
+    year: 2024
+    id: team-2024-mastra
+  - type: article
+    author: Tang, Y., et al.
+    title: "WikiSkill: Compiling Agent Experience into Persistent Knowledge for
+      Skill Evolution"
+    url: https://arxiv.org/abs/2608.27454
+    year: 2026
+    journal: Google Research & Virginia Tech
+    id: tang-2026-wikiskill
 ---
+
+
 
 In unserer Beitragsreihe zur softwaretechnischen Realisierung souveräner Agentensysteme haben wir die Bausteine moderner KI-Plattformen schrittweise erschlossen: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das sitzungsübergreifende [Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die kollaborative [Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/), das hochperformante Routing via [LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur [Enterprise Identity Governance via Keycloak](/posts/2026_09_10_keycloak_architektur_und_funktionsweise/). Nachdem wir in der theoretischen Fundierung die [persistente Wissensevolution nach Google WikiSkill](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) sowie den [Vergleich zwischen Hermes Agent und WikiSkills](/posts/2026_09_16_skill_evolution_hermes_agent_vs_google_wikiskills/) analysiert haben, stehen Software-Architekten vor der entscheidenden Umsetzungsfrage: **Welche technologische Basis eignet sich am besten, um das WikiSkill-Muster in realen Produktionssystemen verlässlich in Code zu gießen?**
 
 > [!NOTE]
 > **Wichtig für das Systemverständnis:**  
-> Bei *Google WikiSkill* (Tang et al., *Google Research & Virginia Tech, August 2026, [arXiv:2608.27454](https://arxiv.org/abs/2608.27454)*) handelt es sich **nicht um ein fertiges Softwareprodukt, SDK oder einen Cloud-Dienst von Google**, sondern um ein bahnbrechendes **wissenschaftliches Architektur- und Evolutionsmuster**. Da es dafür kein offizielles einsatzbereites Open-Source-Paket gibt, müssen Engineering-Teams das Paradigma auf Basis existierender Agenten-Runtimes und Workflow-Engines selbst implementieren.
+> Bei *Google WikiSkill* (Tang et al [@tang-2026-wikiskill]., *Google Research & Virginia Tech, August 2026, [arXiv:2608.27454](https://arxiv.org/abs/2608.27454)*) handelt es sich **nicht um ein fertiges Softwareprodukt, SDK oder einen Cloud-Dienst von Google**, sondern um ein bahnbrechendes **wissenschaftliches Architektur- und Evolutionsmuster**. Da es dafür kein offizielles einsatzbereites Open-Source-Paket gibt, müssen Engineering-Teams das Paradigma auf Basis existierender Agenten-Runtimes und Workflow-Engines selbst implementieren.
 
 Anstatt flüchtige Kontextfenster immer wieder mit Versuch-und-Irrtum-Routinen zu fluten, bricht WikiSkill mit improvisierten In-Session-Prompts: Ausführungserfahrungen werden asynchron in ein unlöschbares Wissensarchiv kompiliert. Doch Theorie und Praxis klaffen oft auseinander. Wer versucht, dieses 5-Stufen-Muster mit klassischen Chatbot-Frameworks abzubilden, stößt rasch an fundamentale Grenzen.
 
@@ -53,7 +95,7 @@ Die Qualität der Wissensbasis im Wiki hängt direkt von der Vollständigkeit un
 
 Auf Basis dieser Kriterien haben wir fünf prominente technologische Grundlagen untersucht, die heute für den Aufbau agentischer Systeme in Betracht gezogen werden:
 
-![Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes: Mastra vs. Pi Agent vs. PydanticAI vs. Hermes vs. LangGraph](./wikiskill_technologie_matrix.svg "Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes")
+![Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes: Mastra [@team-2024-mastra] vs. Pi Agent vs. PydanticAI [@colvin-2024-pydantic-ai] vs. Hermes vs. LangGraph](./wikiskill_technologie_matrix.svg "Technologie-Vergleich und Stack-Eignung für WikiSkill-Runtimes")
 
 | Technologische Basis | Kern-Charakteristik | Implementierungs-Aufwand für WikiSkill | Eignung für WikiSkill | Typisches Einsatzfeld |
 | :--- | :--- | :--- | :--- | :--- |

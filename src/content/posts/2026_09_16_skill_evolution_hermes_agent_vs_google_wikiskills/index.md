@@ -1,21 +1,63 @@
 ---
-title: "Skill Evolution im Vergleich: Wie Nous Research (Hermes Agent) und Google (WikiSkills) das Gedächtnis autonomer Agenten transformieren"
-pubDate: "2026-09-16"
-description: "Eine softwaretechnische Vergleichsanalyse: Die pragmatische Runtime-Kuratierung des Hermes Agent trifft auf die formale 3-Schichten-Entkopplung von Google WikiSkills. Wie sich Optimization Amnesia, Progressive Disclosure und Continuous Learning in modernen Enterprise-Architekturen vereinen lassen."
-tags: ["agentic-ai", "artificial-intelligence", "benchmarks", "enterprise-ai", "hermes-agent", "local-ai", "mem0", "open-source", "prompt-engineering", "software-architecture", "wikiskills"]
+title: "Skill Evolution im Vergleich: Wie Nous Research (Hermes Agent) und
+  Google (WikiSkills) das Gedächtnis autonomer Agenten transformieren"
+pubDate: 2026-09-16
+description: "Eine softwaretechnische Vergleichsanalyse: Die pragmatische
+  Runtime-Kuratierung des Hermes Agent trifft auf die formale
+  3-Schichten-Entkopplung von Google WikiSkills. Wie sich Optimization Amnesia,
+  Progressive Disclosure und Continuous Learning in modernen
+  Enterprise-Architekturen vereinen lassen."
+tags:
+  - agentic-ai
+  - artificial-intelligence
+  - benchmarks
+  - enterprise-ai
+  - hermes-agent
+  - local-ai
+  - mem0
+  - open-source
+  - prompt-engineering
+  - software-architecture
+  - wikiskills
 icon:
-  src: "./hero.jpg"
+  src: ./hero.jpg
   title: "Vergleichsarchitektur: Hermes Agent vs. Google WikiSkills"
-  description: "Skill Evolution im Vergleich: Dr. Georg Hackenberg analysiert die modulare Runtime-Kuratierung des Hermes Agent und das kristalline Wissensarchiv von Google WikiSkills"
+  description: "Skill Evolution im Vergleich: Dr. Georg Hackenberg analysiert die
+    modulare Runtime-Kuratierung des Hermes Agent und das kristalline
+    Wissensarchiv von Google WikiSkills"
+references:
+  - type: online
+    author: AgentSkills.io Community
+    title: The Open Agent Skills Specification
+    url: https://agentskills.io/
+    year: 2024
+    id: community-2024-open-agent
+  - type: online
+    author: Nous Research
+    title: "Hermes 3 Technical Report: Open Bi-Directional Function Calling and
+      Advanced Reasoning"
+    url: https://nousresearch.com/hermes3/
+    year: 2024
+    id: research-2024-hermes3
+  - type: article
+    author: Tang, Y., et al.
+    title: "WikiSkill: Compiling Agent Experience into Persistent Knowledge for
+      Skill Evolution"
+    url: https://arxiv.org/abs/2608.27454
+    year: 2026
+    journal: Google Research & Virginia Tech
+    id: tang-2026-wikiskill
 ---
+
+
 
 In unserer Beitragsreihe zur Realisierung souveräner Unternehmens-KI haben wir schrittweise die Architektur moderner Agentensysteme beleuchtet: vom [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) über das mathematisch fundierte [sitzungsübergreifende Langzeitgedächtnis via Mem0](/posts/2026_09_04_langzeitgedaechtnis_llm_agenten_mem0/), die kollaborative [Interaktionsschicht via Open WebUI](/posts/2026_09_08_open_webui_architektur_und_funktionsweise/), das hochperformante Routing via [LiteLLM](/posts/2026_09_09_litellm_architektur_und_funktionsweise/) bis zur [Enterprise Identity Governance via Keycloak](/posts/2026_09_10_keycloak_architektur_und_funktionsweise/). Bereits in unseren frühen Experimenten zu [lokalen KI-Agenten und zustandsloser Inferenz](/posts/2026_05_31_local_ai_agents_web_llm/) wurde jedoch eine fundamentale Wahrheit deutlich: **Ein Modell ohne kontinuierliche Wissensevolution verharrt auf dem Stand seines Trainingsdaten-Snapshots.**
 
 Während einfache Chatbots rein deklarative Fakten konsumieren, müssen autonome Industrie- und Entwicklungsagenten komplexe, mehrstufige Handlungsroutinen beherrschen – sogenannte **Agent Skills**. Doch wie lernen Agenten neue Fertigkeiten, wie optimieren sie bestehende Werkzeuge und wie verhindern sie, dass sie bei Fehlern in teure Sackgassen laufen?
 
 Genau an dieser Schnittstelle prallen derzeit zwei wegweisende, aber grundverschiedene Philosophien aufeinander:
-1. **Der pragmatische Runtime-Ansatz:** Die standardmäßig im **Hermes Agent** von **Nous Research** implementierte Skill-Evolution via In-Session-Synthese, `/learn`-Befehl und dem intelligenten Hintergrund-**Curator**, den wir in unserer [Tiefenanalyse des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) vorgestellt haben.
-2. **Der rigorose Wissens-Kompilierungsansatz:** Die von **Google Research & Virginia Tech** publizierte **WikiSkill**-Architektur (*Tang et al., August 2026, [arXiv:2608.27454](https://arxiv.org/abs/2608.27454)*) – ein formales wissenschaftliches Forschungsmuster (kein proprietärer Google-Dienst), dessen mathematische Grundlagen und Anti-Amnesie-Konzepte wir in unserer [Untersuchung zur persistenten Wissensevolution](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) analysiert haben.
+1. **Der pragmatische Runtime-Ansatz:** Die standardmäßig im **Hermes Agent** von **Nous [@research-2024-hermes3] Research** implementierte Skill-Evolution via In-Session-Synthese, `/learn`-Befehl und dem intelligenten Hintergrund-**Curator**, den wir in unserer [Tiefenanalyse des Hermes Agent](/posts/2026_09_07_hermes_agent_architektur_und_funktionsweise/) vorgestellt haben.
+2. **Der rigorose Wissens-Kompilierungsansatz:** Die von **Google Research & Virginia Tech** publizierte **WikiSkill**-Architektur (*Tang et al [@tang-2026-wikiskill]., August 2026, [arXiv:2608.27454](https://arxiv.org/abs/2608.27454)*) – ein formales wissenschaftliches Forschungsmuster (kein proprietärer Google-Dienst), dessen mathematische Grundlagen und Anti-Amnesie-Konzepte wir in unserer [Untersuchung zur persistenten Wissensevolution](/posts/2026_09_06_wikiskill_persistente_wissensevolution_agent_skills/) analysiert haben.
 
 Dieser Beitrag stellt beide Paradigmen in einen direkten softwaretechnischen Vergleich: Wo liegen die Stärken und Schwächen? Wie gehen beide Systeme mit Fehlern um? Und wie sieht eine praxistaugliche Enterprise-Synthese aus?
 
@@ -27,7 +69,7 @@ Traditionell stehen Software-Ingenieuren drei Anpassungsmechanismen zur Verfügu
 
 1. **Parametrisches Feintuning (SFT / RL):** Das permanente Einschreiben von Tool-Aufrufen in die Gewichte des neuronalen Netzes führt regelmäßig zu *Catastrophic Forgetting*, verwässert das allgemeine Reasoning des Modells und ist bei wöchentlich wechselnden Schnittstellen-Verträgen ökonomisch untragbar.
 2. **In-Context Few-Shot Prompting:** Das dynamische Injizieren vergangener Ausführungsspuren (*Traces*) in den System-Prompt führt zu quadratischem Token-Wachstum $\mathcal{O}(T^2 \cdot L)$, bricht den Inferenz-Prefix-Cache (KV-Cache) und leidet unter dem *Lost-in-the-Middle*-Phänomen.
-3. **Dateisystembasierte Agent Skills (`SKILL.md`):** Die Kapselung von Handlungsanweisungen, Parametern, Bash-Routinen und Validierungsregeln in modularen Markdown-Dokumenten nach Standards wie [agentskills.io](https://agentskills.io) hat sich als dominierender Industriestandard durchgesetzt.
+3. **Dateisystembasierte Agent Skills (`SKILL.md`):** Die Kapselung von Handlungsanweisungen, Parametern, Bash-Routinen und Validierungsregeln in modularen Markdown-Dokumenten nach Standards wie [agentskills.io [@community-2024-open-agent]](https://agentskills.io) hat sich als dominierender Industriestandard durchgesetzt.
 
 Doch auch dateibasierte Skills lösen das Evolutionsproblem nicht von selbst:
 
@@ -144,9 +186,9 @@ Hermes Agent beweist mit dem **[agentskills.io](https://agentskills.io)-Standard
 
 ## 5. Die Synthese-Architektur: „WikiCurator“ für souveräne Enterprise-Agenten
 
-Für anspruchsvolle Unternehmensplattformen sollten Architekten die beiden Ansätze nicht als Konkurrenten betrachten, sondern als **zwei Seiten derselben Medaille**.
+Für anspruchsvolle Unternehmensplattformen sollten Architekten die beiden Ansätze nicht als Konkurrenten betrachten, sondern als **zwei komplementäre Seiten derselben Medaille**: das praktische, interaktive Laufzeitwerkzeug (Hermes) und der formale, fehlerpersistente Wissens-Compiler (WikiSkill).
 
-In unserem Referenzmodell des [standardisierten Open-Source Agentic AI Tech Stacks](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) lässt sich aus beiden Konzepten eine überlegene hybride Architektur formen: **Der „WikiCurator“**.
+Als Brückenschlag zwischen beiden Welten schlagen wir in unserer ingenieurwissenschaftlichen Referenzarchitektur für den [standardisierten Open-Source Agentic AI Tech Stack](/posts/2026_09_03_standardisierter_open_source_agentic_ai_tech_stack/) ein integratives Modell vor: **Den „WikiCurator“** (ein originäres Architektur-Konzept von Dr. Georg Hackenberg).
 
 ![Die hybride Referenzarchitektur WikiCurator: Hermes Agent Runtime erweitert um den persistenten WikiSkill-Audit-Layer](./hybrid_skill_evolution_architecture.svg "Die hybride Referenzarchitektur WikiCurator")
 

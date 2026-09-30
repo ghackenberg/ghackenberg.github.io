@@ -1,18 +1,62 @@
 ---
-title: "Smarte Tiefenbewässerung & urbanes Wurzelzonen-Management"
-pubDate: "2026-08-30"
-description: "Symbiose aus überbaubarem Baumsubstrat, Tiefenbewässerung und smarter IoT-Sensorik für gesunde Stadtbäume auf versiegelten Pflasterflächen."
-tags: ["smart-home", "iot", "irrigation", "systems-engineering", "civil-engineering", "sustainability", "industrial-informatics"]
+title: Smarte Tiefenbewässerung & urbanes Wurzelzonen-Management
+pubDate: 2026-08-30
+description: Symbiose aus überbaubarem Baumsubstrat, Tiefenbewässerung und
+  smarter IoT-Sensorik für gesunde Stadtbäume auf versiegelten Pflasterflächen.
+tags:
+  - smart-home
+  - iot
+  - irrigation
+  - systems-engineering
+  - civil-engineering
+  - sustainability
+  - industrial-informatics
 icon:
-  src: "./hero.jpg"
-  title: "Smarte Tiefenbewässerung im Wurzelbereich mit"
-  description: "Smarte Tiefenbewässerung im Wurzelbereich mit Bodenfeuchtesensorik"
+  src: ./hero.jpg
+  title: Smarte Tiefenbewässerung im Wurzelbereich mit
+  description: Smarte Tiefenbewässerung im Wurzelbereich mit Bodenfeuchtesensorik
+references:
+  - type: online
+    author: Allen, R. G., Pereira, L. S., Raes, D., & Smith, M.
+    title: "Crop evapotranspiration: Guidelines for computing crop water requirements"
+    url: https://www.fao.org/4/x0490e/x0490e00.htm
+    year: 1998
+    siteName: FAO Irrigation and Drainage Paper No. 56, Food and Agriculture
+      Organization of the United Nations (FAO), Rome
+    id: allen-1998-crop-evapotranspiration
+  - type: book
+    author: DIN Deutsches Institut für Normung e.V.
+    title: "DIN 18916: Vegetationstechnik im Landschaftsbau – Pflanzen und
+      Pflanzarbeiten"
+    url: https://www.din.de/de/meta/suche/62730!search?query=18916
+    year: 2016
+    publisher: Beuth Verlag
+    id: din-18916
+  - type: misc
+    author: FLL – Forschungsgesellschaft Landschaftsentwicklung Landschaftsbau e.V.
+    title: "Empfehlungen für Baumpflanzungen – Teil 2: Standortvorbereitungen für
+      Neupflanzungen; Pflanzgruben und Wurzelraumerweiterung, Bauweisen und
+      Substrate"
+    url: https://www.fll.de/
+    year: 2015
+    howpublished: FLL-Regelwerk
+    id: ev-2015-empfehlungen-baumpflanzungen
+  - type: book
+    author: Lamm, F. R., Ayars, J. E., & Nakayama, F. S. (Eds.)
+    title: "Microirrigation for Crop Production: Design, Operation, and Management"
+    publisher: Elsevier
+    year: 2007
+    isbn: 978-0-444-50607-8
+    url: https://books.google.com/books?vid=ISBN9780444506078
+    id: lamm-2007-microirrigation-crop
 ---
+
+
 
 Urbane Grünflächen und private Außenanlagen stehen vor einem fundamentalen Zielkonflikt: Einerseits verlangen Einfahrten, Vorplätze und Parkflächen eine **hohe bauliche Tragfähigkeit für PKW- und Lieferverkehr**. Andererseits benötigen Solitärbäume – wie etwa die beliebte Kupfer-Felsenbirne (*Amelanchier lamarckii*) – ein **ausreichendes Wurzelraumvolumen mit intakter Porenstruktur**, kontinuierlicher Sauerstoffversorgung und bedarfsgerechtem Wasserhaushalt.
 
 Konventionelle Bewässerungsmethoden stoßen in solchen Mischzonen schnell an physikalische Grenzen:
-- **Oberflächliche Bewässerung** verdunstet an heißen Sommertagen zu bis zu $60\text{--}80\,\%$ ungenutzt an der Pflaster- oder Rindenmulchoberfläche (Evapotranspiration).
+- **Oberflächliche Bewässerung** verdunstet an heißen Sommertagen zu bis zu $60\text{--}80\,\%$ ungenutzt an der Pflaster- oder Rindenmulchoberfläche (Evapotranspiration [@allen-1998-crop-evapotranspiration], vgl. SDI-Konzepte [@lamm-2007-microirrigation-crop]).
 - **Verdichteter Baugrund** unter Verkehrsflächen erstickt Feinwurzeln und verhindert das Versickern von Niederschlagswasser in tiefere Schichten.
 - **Flachwurzelbildung:** Oberflächliche Wassergaben animieren Bäume dazu, ihre Wurzeln direkt unter die Pflasterdecke zu legen, was langfristig zu schweren Pflasterschäden und verminderter Standfestigkeit führt.
 
@@ -20,7 +64,7 @@ In diesem Beitrag stellen wir ein ganzheitliches mechatronisches und bodenbaulic
 
 ## 1. Bautechnische Bodenstruktur: Wurzelraum unter befahrbaren Pflasterflächen
 
-Um Verkehrsflächen dauerhaft befahrbar zu halten, ohne das Wurzelwachstum abzuschnüren, ist ein präzise dimensionierter Schichtenaufbau nach den Richtlinien der FLL (Forschungsgesellschaft Landschaftsentwicklung Landschaftsbau e.V.) erforderlich.
+Um Verkehrsflächen dauerhaft befahrbar zu halten, ohne das Wurzelwachstum abzuschnüren, ist ein präzise dimensionierter Schichtenaufbau nach den Richtlinien der FLL [@ev-2015-empfehlungen-baumpflanzungen] (Forschungsgesellschaft Landschaftsentwicklung Landschaftsbau e.V.) erforderlich.
 
 ![Querschnittszeichnung des mehrschichtigen Bodenaufbaus mit Tiefenbewässerung und integrierten Messsonden](./bodenaufbau_querschnitt.jpg "Baulicher Bodenaufbau im Querschnitt")
 
@@ -32,8 +76,9 @@ Um Verkehrsflächen dauerhaft befahrbar zu halten, ohne das Wurzelwachstum abzus
    Brechsand-Splitt-Gemisch (Körnung 0/5 oder 1/3 mm) zur kraftschlüssigen Lastübertragung und gleichmäßigen Pflasterverlegung.
 3. **Überbaubares Baumsubstrat Klasse 2 (min. 50–80 cm Mächtigkeit):**  
    Das Herzstück des Wurzelraums unter versiegelten bzw. befahrbaren Flächen. Dieses Substrat besteht aus einem mineralischen Korngerüst (z. B. Lava, Bims, gebrochener Naturstein) mit definiertem Porenvolumen und einer organischen Komponente (Kompost/Oberbodenanteil). Selbst nach mechanischer Verdichtung zur Aufnahme von Verkehrslasten (Verdichtungsgrad $D_{\text{Pr}} \ge 95\text{--}97\,\%$ nach Proctor / Proctordichte) bleibt ein lufterfülltes Porenvolumen von über $15\,\%$ erhalten. Feinwurzeln können ungehindert atmen und in die Tiefe vordringen.
-4. **Vertikale Wurzelsperre (Root Barrier):**  
-   Hochdichte HDPE-Platten (*High-Density Polyethylene*, z. B. $1\text{--}2\,\text{mm}$ stark), die parallel zur Pflasterkante oder entlang von Leitungstrassen eingebracht werden. Sie lenken aggressive Flachwurzeln gezielt nach unten ab und verhindern das Aufhebeln von Pflasterbelägen.
+4. **Vertikale Wurzelsperre (Root Barrier) mit statischem Sicherheitsabstand:**  
+   Hochdichte HDPE-Platten (*High-Density Polyethylene*, z. B. $1\text{--}2\,\text{mm}$ stark), die parallel zur Pflasterkante oder entlang von Leitungstrassen eingebracht werden. Sie lenken aggressive Flachwurzeln gezielt nach unten ab und verhindern das Aufhebeln von Pflasterbelägen.  
+   *Baustatischer Hinweis (gemäß DIN 18916 [@din-18916] und FLL [@ev-2015-empfehlungen-baumpflanzungen]):* Wurzelsperren dürfen niemals zu nah am Stamm gesetzt werden. Ein Mindestabstand von mindestens $1{,}5\text{ bis }2{,}0\,\text{m}$ zum Stammfuß ist zwingend einzuhalten, um ein Umbiegen der Hauptwurzeln zu gefährlichen „Drehwurzeln“ (*Root girdling*) und den Verlust der Windwurfstabilität zu verhindern.
 5. **Unverdichteter natürlicher Baugrund:**  
    Dient als tief liegender Sicker- und Verbindungshorizont für die Tiefenwurzeln des Baumes.
 
@@ -47,6 +92,7 @@ Im Wurzelraum wird ein spezieller Unterflur-Tropfschlauch schnecken- oder ringf�
 - **Druckkompensation (PC):** Integrierte Druckkompensations-Membranen stellen sicher, dass jeder Tropfer über die gesamte Leitungslänge exakt die gleiche Wassermenge (z. B. $1{,}6\text{ bis }2{,}3\,\text{l/h}$) abgibt – unabhängig von Vordruck und Geländeneigung.
 - **Wurzeleinwuchssperre (Copper-Shield / Rootguard):** Chemisch-physikalische Barrieren oder Kupferoxid-Inlays an den Tropfauslässen verhindern, dass Pflanzenwurzeln in die Emitteröffnungen einwachsen und diese verstopfen.
 - **Vakuum- und Rücksaug-Schutz (Anti-Siphon):** Beim Abschalten des Wasserdrucks verhindert eine integrierte Membran das Einsaugen von feinen Bodenpartikeln in den Schlauch.
+- **Wartung & Filtration:** Um Verockerung, Feinversandung und Kalkausfällungen vorzubeugen, ist zwingend ein Scheibenfilter (120–130 Mesh / ca. $130\,\mu\text{m}$) sowie ein Druckminderer ($1{,}5\text{--}2{,}0\,\text{bar}$) vorzuschalten. Am Ende jedes Tropfkreises sorgt ein automatisches oder manuelles Spülventil (Flush Valve) für die periodische Durchspülung abgesetzter Sedimente.
 
 ### B. Nachrüstbare Tiefenbewässerungslanze (Gießlanze)
 
