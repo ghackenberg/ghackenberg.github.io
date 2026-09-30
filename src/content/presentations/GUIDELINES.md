@@ -21,6 +21,7 @@ src/content/presentations/[YYYY_MM_DD_slug]/
 │   ├── 01_titelfolie.mp3
 │   ├── 01_titelfolie.cues.json
 │   └── .cache.json
+├── .visual-cache.json       <-- Deterministischer Fingerprint-Cache (Slides, Style, Deck)
 └── thumbnails/              <-- Generierte WebP-Folien-Thumbnails
 ```
 
@@ -33,6 +34,11 @@ Jede Folie (`.mdx`) ist ein eigenständiges Modul und **muss** definieren:
 - `voiceover`: Natürlicher Sprechtext mit eingebetteten `{cue:id}`- und `{cue:hl-id}...{/cue}`-Tags
 - `notes`: Sprechernotizen und Zeitmarken für die Presenter-Konsole (`S`-Taste)
 - Body: Deklaratives Markup aus den 6 Master-Archetypen und Standard-Primitiven.
+
+### Deterministisches Visual Fingerprinting & 0-Diff Schutz
+- `.visual-cache.json` speichert Composite-Hashes (`styleHash` aus `theme.css` + `slides.css` + Primitiven sowie die visuellen Hashes aller Folien).
+- **Separation of Concerns**: Änderungen an rein narrativen Feldern (`voiceover:`, `notes:`) invalidieren weder Thumbnails noch PDF-Handouts.
+- **0-Diff Pixel Protection**: Vor dem Überschreiben eines WebP-Thumbnails vergleicht Puppeteer via `OffscreenCanvas` die Bildpixel mit dem bestehenden Thumbnail. Bei 0 Pixel Unterschied wird kein Disk-Write ausgelöst (verhindert False-Positive Git-Diffs).
 
 ---
 

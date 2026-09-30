@@ -23,6 +23,11 @@
       A[Client] --> B[Server]
     ```
     ````
+- **Cross-Platform Hashing & Path Normalization**:
+  - Cryptographic hashes computed over source text files (`.astro`, `.css`, `.js`, `.ts`, `.md`, `.mdx`) **MUST** normalize line endings via `.replace(/\r\n/g, '\n')` before hashing (prevents Windows CRLF vs. Linux/Git LF divergence).
+  - Relative file paths included in hash seeds **MUST** be normalized to POSIX format via `.replace(/\\/g, '/')`.
+- **Windows File I/O Resilience**:
+  - File write operations targeting generated cache, metadata, or export files (`.visual-cache.json`, audio caches, PDFs, thumbnails) **MUST** anticipate transient file locks by background indexers or watchers. Implement backoff retry loops (e.g. 5–6 attempts with 200–250ms backoff) rather than unprotected writes.
 
 ---
 
@@ -75,6 +80,14 @@ For complete slide archetype definitions and props, consult [`src/content/presen
   3. *Structural point-cues vs. inline highlight spans*: Structural cues (`card-`, `box-`, `col-`, `step-`, `stat-`) are POINT cues and MUST NEVER have a closing tag (`{/cue}`). Only inline text-highlights (`hl-*`) have closing tags (`{cue:hl-...}...{/cue}`).
   4. *Title Slide Quadruple*: Title slides must include `title-main`, `title-sub`, a highlight `{cue:hl-...}` in subtitle, and `title-speaker` in that exact spoken order.
   5. *Title-Hook Orientation*: Voiceover MUST begin with 12–20 words (~3–5s) introducing the slide before the first `{cue:...}` trigger fires.
+- **Modular Stylesheet Architecture & Slide Isolation Gate**:
+  - `src/styles/` is decoupled into strict domain layers: `theme.css` (Tailwind core, design tokens, `@layer base`), `slides.css` (slide layouts, citation badges, print rules), `posts.css` (blog prose, markdown tables, callouts), and `components.css` (navbar, preview cards, badges, marquee).
+  - `src/pages/presentations/[slug]/print.astro` **MUST ONLY** import `theme.css` and `slides.css`. It is strictly forbidden from importing `global.css`, `posts.css`, or `components.css` (guarantees that post/component style refactoring physically never affects slide rendering).
+  - Enforced via `npm run lint:styles`.
+- **Deterministic Visual Fingerprinting & 0-Diff Pixel Protection**:
+  - Slide thumbnail and PDF handout freshness is tracked deterministically in `src/content/presentations/<id>/.visual-cache.json` using composite SHA-256 hashes (`styleHash` + `slideVisualHash` + `deckHash`).
+  - *Separation of visual and narrative content*: Changes to speaker `voiceover:` or `notes:` **NEVER** invalidate slide thumbnails or PDF handouts.
+  - *Pixel-by-pixel 0-Diff Protection*: Before writing any newly rendered WebP thumbnail to disk, `scripts/generate-slide-thumbnails.js` performs an offscreen pixel comparison via Chrome's native `OffscreenCanvas`. If `diffPixels === 0`, writing is suppressed, completely eliminating false binary git diffs.
 
 ---
 
