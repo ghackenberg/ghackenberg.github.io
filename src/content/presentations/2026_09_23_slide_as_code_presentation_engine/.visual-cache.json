@@ -1,0 +1,17 @@
+{
+  "version": "v1.0",
+  "styleHash": "861b0e6ba38ef9fac3ada5f35917bd401b8b292ea1e0827d8155914f0ba44c2d",
+  "deckHash": "bdc18b4827f720dc1187962233ec3046b80a88ce6dd24c856eb530075309935f",
+  "slides": {
+    "01_titelfolie": "d0ec792541d0771aff6686e45c0717d69d2bd2634c976dda5d4884adf827e069",
+    "02_agenda": "efa6a672f6f1d03fec03194a82566a8444cf16789b3c941325d8295a6d77d7c9",
+    "03_motivation_status_quo": "39eefc1265387fd6ba626e0a252db70bb33fed55815f6d11438d67250bc3f7a6",
+    "04_content_format_matrix": "7e6c858e74e6fd301f3044aa91fb385051fa2485a55f85147cc1a39d5ff4514c",
+    "05_content_strategie_repurposing": "6325ce6a3503b1f6c0cc3011f0838c7ea4ac85edcac3e2bb87a5698e9805ffd8",
+    "06_evaluierte_alternativen": "e39996c2ac37bf7d076f8e287b736cdd15d4a8ffd7cb980467f92d8d4dbd96e8",
+    "07_technische_umsetzung_architektur": "cfb48e376052a6d21bd03208ecdabcc153d8a2754d5bcbc50d000c46c136277e",
+    "08_akustische_synchronisation": "645bdb16d67435ea18f5b50658fc00857a7916ef05072f83ff375b1203ab6a57",
+    "09_agentic_workflows_ci_gates": "c3db59ad3c58cd9ca528115de1f79d3bd3e004e268f51f55745d75020afae618",
+    "10_zusammenfassung_und_ausblick": "8cb24ae50d8f8f524de08a92fd30624c643e60b9d718600bb4c498e4197e6efd"
+  }
+}

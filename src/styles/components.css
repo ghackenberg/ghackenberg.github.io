@@ -1,0 +1,650 @@
+/* ==========================================================================
+   UI Components Stylesheet
+   Domain: Navbar, Preview Cards, Badges, Modals, Gallery, Timeline, Vis.js
+   ========================================================================== */
+
+/* Timeline logo container in light mode */
+@variant light {
+  .timeline-logo-container {
+    background-color: #ffffff !important;
+    border-color: rgba(15, 23, 42, 0.12) !important;
+  }
+}
+
+/* DEPRECATED LEGACY OVERRIDES - DO NOT USE FOR NEW DEVELOPMENT.
+   New development should use semantic token utilities (e.g. bg-element-bg, border-element-border) 
+   instead of overriding absolute white classes in CSS. */
+.border-white\/5 {
+  border-color: rgba(255, 255, 255, 0.05);
+  @variant light {
+    border-color: rgba(15, 23, 42, 0.08);
+  }
+}
+
+.border-white\/10 {
+  border-color: rgba(255, 255, 255, 0.1);
+  @variant light {
+    border-color: rgba(15, 23, 42, 0.12);
+  }
+}
+
+.bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.05);
+  @variant light {
+    background-color: rgba(15, 23, 42, 0.04);
+  }
+}
+
+.hover\:bg-white\/10:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  @variant light {
+    background-color: rgba(15, 23, 42, 0.08);
+  }
+}
+
+.hover\:border-white\/20:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  @variant light {
+    border-color: rgba(15, 23, 42, 0.15);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #030712;
+  transition: background-color 0.5s ease;
+}
+html.light::-webkit-scrollbar-track,
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 5px;
+  transition: background-color 0.5s ease;
+}
+html.light::-webkit-scrollbar-thumb,
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+html.light::-webkit-scrollbar-thumb:hover,
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Custom Scrollbar for tag lists / sidebars */
+.custom-scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.1);
+}
+.custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.2);
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: var(--color-bg-pane);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-medium);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel.navbar-scrolled {
+  background: var(--color-bg-pane);
+  border-color: var(--color-border-medium);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.65) !important;
+  
+  @variant light {
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.12) !important;
+  }
+}
+
+.glass-card {
+  background: var(--color-bg-card);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-subtle);
+  background-clip: padding-box;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transform: translate3d(0, -2px, 0);
+
+  @variant light {
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.1);
+  }
+}
+
+/* Responsive Logo Name & Subtitle Visibility */
+.nav-logo-name {
+  display: none !important;
+}
+.nav-logo-subtitle {
+  display: none !important;
+}
+
+/* 440px+: Show title 'Dr. Georg Hackenberg' alongside monogram and 4 action buttons */
+@media (min-width: 440px) {
+  .nav-logo-name {
+    display: flex !important;
+  }
+}
+
+/* 520px+: Ample space to comfortably display full title AND subtitle without line wrapping */
+@media (min-width: 520px) {
+  .nav-logo-subtitle {
+    display: block !important;
+  }
+}
+
+/* Premium high-contrast styling for status/category badges */
+.bg-brand-blue\/10.text-brand-blue {
+  color: #60a5fa !important; /* Tailwind blue-400 */
+  border-color: rgba(96, 165, 250, 0.3) !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+
+  @variant light {
+    color: #1d4ed8 !important; /* blue-700 */
+    border-color: rgba(59, 130, 246, 0.25) !important;
+    background-color: rgba(59, 130, 246, 0.1) !important;
+  }
+}
+
+.bg-brand-yellow\/10.text-brand-yellow {
+  color: #fbbf24 !important; /* Tailwind amber-400 */
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  background-color: rgba(245, 158, 11, 0.15) !important;
+
+  @variant light {
+    color: #b45309 !important; /* amber-700 */
+    border-color: rgba(245, 158, 11, 0.3) !important;
+    background-color: rgba(245, 158, 11, 0.1) !important;
+  }
+}
+
+.bg-brand-purple\/10.text-brand-purple {
+  color: #c084fc !important; /* Tailwind purple-400 */
+  border-color: rgba(192, 132, 252, 0.3) !important;
+  background-color: rgba(168, 85, 247, 0.15) !important;
+
+  @variant light {
+    color: #7e22ce !important; /* purple-700 */
+    border-color: rgba(168, 85, 247, 0.25) !important;
+    background-color: rgba(168, 85, 247, 0.1) !important;
+  }
+}
+
+.bg-brand-green\/10.text-brand-green {
+  color: #34d399 !important; /* Tailwind emerald-400 */
+  border-color: rgba(52, 211, 153, 0.3) !important;
+  background-color: rgba(16, 185, 129, 0.15) !important;
+
+  @variant light {
+    color: #047857 !important; /* emerald-700 */
+    border-color: rgba(16, 185, 129, 0.25) !important;
+    background-color: rgba(16, 185, 129, 0.1) !important;
+  }
+}
+
+/* Premium Gradient "NEW" Badges */
+.badge-new {
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.625rem; /* 10px */
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  white-space: nowrap;
+  vertical-align: middle;
+  transition: all 0.2s ease-in-out;
+}
+
+.badge-new:not(.hidden) {
+  display: inline-flex;
+}
+
+.badge-new.hidden {
+  display: none !important;
+}
+
+/* Centralized Preview Card Architecture */
+.preview-card {
+  border-radius: 1rem; /* 16px (rounded-2xl) */
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .preview-card {
+    border-radius: 1.5rem; /* 24px (rounded-3xl) */
+  }
+}
+
+.preview-card-body {
+  padding: 1.25rem; /* 20px (p-5) */
+}
+
+@media (min-width: 768px) {
+  .preview-card-body {
+    padding: 1.5rem; /* 24px (p-6) */
+  }
+}
+
+/* Card Corner Ribbon Badges (Top-Right & Top-Left) */
+.badge-corner-tr,
+.badge-corner-tl {
+  position: absolute;
+  top: 0;
+  z-index: 20;
+  height: 1.75rem; /* 28px */
+  padding: 0 0.85rem;
+  font-size: 0.625rem; /* 10px */
+  line-height: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  user-select: none;
+}
+
+.badge-corner-tr {
+  right: 0;
+  border-top-right-radius: 1rem; /* 16px matching preview-card mobile */
+  border-bottom-left-radius: 1rem; /* 16px matching outer radius of preview-card */
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  border-top-width: 0;
+  border-right-width: 0;
+}
+
+.badge-corner-tl {
+  left: 0;
+  border-top-left-radius: 1rem; /* 16px matching preview-card mobile */
+  border-bottom-right-radius: 1rem; /* 16px matching outer radius of preview-card */
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-top-width: 0;
+  border-left-width: 0;
+}
+
+@media (min-width: 768px) {
+  .badge-corner-tr,
+  .badge-corner-tl {
+    height: 2rem; /* 32px */
+    line-height: 2rem;
+    padding: 0 1rem;
+    font-size: 0.6875rem; /* 11px */
+  }
+
+  .badge-corner-tr {
+    border-top-right-radius: 1.5rem; /* 24px matching preview-card desktop */
+    border-bottom-left-radius: 1.5rem; /* 24px matching outer radius of preview-card */
+  }
+
+  .badge-corner-tl {
+    border-top-left-radius: 1.5rem; /* 24px matching preview-card desktop */
+    border-bottom-right-radius: 1.5rem; /* 24px matching outer radius of preview-card */
+  }
+}
+
+/* What's New Feed unread badge radius matches rounded-xl (0.75rem / 12px) preview containers */
+#whats-new-modal-container .badge-corner-tr,
+#whats-new-overlay .badge-corner-tr {
+  border-top-right-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+
+/* Gallery Marquee Corner Ribbon Badges */
+.gallery-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  text-transform: uppercase;
+  user-select: none;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  border-top-width: 0;
+  border-right-width: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+.gallery-badge.hidden {
+  display: none !important;
+}
+
+/* Gallery Row 1: Foreground (Largest Cards, rounded-2xl) */
+.gallery-track-1 .gallery-badge {
+  height: 1.35rem; /* 21.6px */
+  padding: 0 0.6rem;
+  font-size: 0.5625rem; /* 9px */
+  letter-spacing: 0.06em;
+  border-top-right-radius: 1rem; /* 16px matching row 1 card radius */
+  border-bottom-left-radius: 1rem;
+}
+
+/* Gallery Row 2: Midground (Medium Cards, rounded-xl) */
+.gallery-track-2 .gallery-badge {
+  height: 1.15rem; /* 18.4px */
+  padding: 0 0.5rem;
+  font-size: 0.5rem; /* 8px */
+  letter-spacing: 0.05em;
+  border-top-right-radius: 0.75rem; /* 12px matching row 2 card radius */
+  border-bottom-left-radius: 0.75rem;
+}
+
+/* Gallery Row 3: Background (Smallest Cards, rounded-lg) */
+.gallery-track-3 .gallery-badge {
+  height: 0.95rem; /* 15.2px */
+  padding: 0 0.4rem;
+  font-size: 0.4375rem; /* 7px */
+  letter-spacing: 0.04em;
+  border-top-right-radius: 0.5rem; /* 8px matching row 3 card radius */
+  border-bottom-left-radius: 0.5rem;
+}
+
+/* What's New Icon Highlight (Option A: Only the icon inside the circle is highlighted) */
+html.has-unread-notifications #whats-new-btn-desktop svg,
+html.has-unread-notifications #whats-new-btn-mobile svg,
+.whats-new-luminous svg {
+  color: #3b82f6 !important;
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.7));
+  transition: color 0.3s ease, filter 0.3s ease;
+}
+
+html.light.has-unread-notifications #whats-new-btn-desktop svg,
+html.light.has-unread-notifications #whats-new-btn-mobile svg,
+html.light .whats-new-luminous svg {
+  color: #2563eb !important;
+  filter: drop-shadow(0 0 3px rgba(37, 99, 235, 0.45));
+}
+
+/* Navigation Section Unread Notification Dot */
+.nav-badge {
+  width: 0.45rem;
+  height: 0.45rem;
+  min-width: 0.45rem;
+  min-height: 0.45rem;
+  padding: 0 !important;
+  border-radius: 9999px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  flex-shrink: 0;
+  vertical-align: middle;
+  transform: none !important;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.nav-badge:not(.hidden) {
+  display: inline-block !important;
+}
+
+.nav-badge.hidden {
+  display: none !important;
+}
+
+.badge-new-blue {
+  background: linear-gradient(135deg, #2563eb 0%, #0284c7 50%, #06b6d4 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, #1d4ed8 0%, #0369a1 100%);
+    color: #ffffff !important;
+    border: 1px solid rgba(29, 78, 216, 0.3);
+    box-shadow: 0 2px 5px rgba(29, 78, 216, 0.25);
+  }
+}
+
+.badge-new-yellow {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+  color: #020617 !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    color: #ffffff !important;
+    border: 1px solid rgba(180, 83, 9, 0.3);
+    box-shadow: 0 2px 5px rgba(180, 83, 9, 0.25);
+  }
+}
+
+.badge-new-purple {
+  background: linear-gradient(135deg, #9333ea 0%, #a855f7 50%, #ec4899 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
+    color: #ffffff !important;
+    border: 1px solid rgba(126, 34, 206, 0.3);
+    box-shadow: 0 2px 5px rgba(126, 34, 206, 0.25);
+  }
+}
+
+.badge-new-green {
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #14b8a6 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, #047857 0%, #059669 100%);
+    color: #ffffff !important;
+    border: 1px solid rgba(4, 120, 87, 0.3);
+    box-shadow: 0 2px 5px rgba(4, 120, 87, 0.25);
+  }
+}
+
+/* Timeline lifeline dashed SVG lines in light mode */
+.light [data-lifeline-dashed-top] stop[offset="0%"] {
+  stop-color: #ebf2f8 !important;
+}
+.light [data-lifeline-dashed-bottom] stop[offset="100%"] {
+  stop-color: #ebf2f8 !important;
+}
+
+/* Vis.js Custom Premium Tooltip Styling */
+div.vis-tooltip {
+  position: absolute !important;
+  background: rgba(3, 7, 18, 0.9) !important;
+  color: #f8fafc !important;
+  font-family: var(--font-sans) !important;
+  padding: 10px 14px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.7), 0 0 20px rgba(16, 185, 129, 0.18) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  pointer-events: none !important;
+  white-space: normal !important;
+  width: max-content !important;
+  max-width: 280px !important;
+  box-sizing: border-box !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  z-index: 1000 !important;
+  transition: opacity 0.15s ease-out !important;
+}
+
+:root.light div.vis-tooltip, .light div.vis-tooltip {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.12), 0 0 20px rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Ensure Vis.js canvases with disabled drag allow native touch scrolling */
+#home-vis-canvas,
+#home-vis-canvas canvas,
+#home-vis-canvas .vis-network {
+  touch-action: pan-y !important;
+}
+
+/* Unified Tag Chip System (Preview Cards & Detail Pages) */
+.tag-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+  transition: all 0.2s ease-in-out;
+}
+
+:root.light .tag-chip,
+.light .tag-chip {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: #475569;
+}
+
+/* Hover States (when not matching active tag filter) */
+.tag-chip-blue:hover:not(.active-tag-match) {
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.08);
+}
+:root.light .tag-chip-blue:hover:not(.active-tag-match),
+.light .tag-chip-blue:hover:not(.active-tag-match) {
+  background: rgba(59, 130, 246, 0.06);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #1d4ed8;
+}
+
+.tag-chip-yellow:hover:not(.active-tag-match) {
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.08);
+}
+:root.light .tag-chip-yellow:hover:not(.active-tag-match),
+.light .tag-chip-yellow:hover:not(.active-tag-match) {
+  background: rgba(245, 158, 11, 0.06);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #b45309;
+}
+
+.tag-chip-purple:hover:not(.active-tag-match) {
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #d8b4fe;
+  background: rgba(168, 85, 247, 0.08);
+}
+:root.light .tag-chip-purple:hover:not(.active-tag-match),
+.light .tag-chip-purple:hover:not(.active-tag-match) {
+  background: rgba(168, 85, 247, 0.06);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #7e22ce;
+}
+
+.tag-chip-green:hover:not(.active-tag-match) {
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.08);
+}
+:root.light .tag-chip-green:hover:not(.active-tag-match),
+.light .tag-chip-green:hover:not(.active-tag-match) {
+  background: rgba(16, 185, 129, 0.06);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #047857;
+}
+
+/* Active Highlight Matches - Harmonized 1:1 with Sidebar .tag-filter-btn.active */
+.tag-chip-blue.active-tag-match {
+  background: rgba(59, 130, 246, 0.2) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  color: #7dd3fc !important;
+  box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-blue.active-tag-match,
+.light .tag-chip-blue.active-tag-match {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  color: #1d4ed8 !important;
+  box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2) !important;
+}
+
+.tag-chip-yellow.active-tag-match {
+  background: rgba(245, 158, 11, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  color: #fde047 !important;
+  box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-yellow.active-tag-match,
+.light .tag-chip-yellow.active-tag-match {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  color: #b45309 !important;
+  box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2) !important;
+}
+
+.tag-chip-purple.active-tag-match {
+  background: rgba(168, 85, 247, 0.2) !important;
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  color: #d8b4fe !important;
+  box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-purple.active-tag-match,
+.light .tag-chip-purple.active-tag-match {
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(168, 85, 247, 0.4) !important;
+  color: #7e22ce !important;
+  box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2) !important;
+}
+
+.tag-chip-green.active-tag-match {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  color: #6ee7b7 !important;
+  box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.25) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-green.active-tag-match,
+.light .tag-chip-green.active-tag-match {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #047857 !important;
+  box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2) !important;
+}

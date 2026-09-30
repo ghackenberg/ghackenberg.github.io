@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Presentation Slides & Print Handout Stylesheet
+   Domain: Presentation Engine, Slide Deck, Print View, Citation Badges
+   ========================================================================== */
+
+/* Citation Badge Styling for Academic & Source References */
+.citation {
+  display: inline;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 700;
+  vertical-align: baseline;
+  padding: 0.08em 0.35em;
+  margin: 0 0.15em;
+  border-radius: 0.25rem;
+  background-color: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #60a5fa !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  user-select: none;
+  cursor: pointer;
+  line-height: inherit;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.citation:hover {
+  background-color: rgba(59, 130, 246, 0.22);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #93c5fd !important;
+  text-decoration: none !important;
+}
+
+:root.light .citation,
+.light .citation {
+  background-color: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #2563eb !important;
+}
+
+:root.light .citation:hover,
+.light .citation:hover {
+  background-color: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #1d4ed8 !important;
+}
+
+/* Slide Citation Interactive Badges */
+.slide-citation-badge {
+  cursor: pointer;
+  vertical-align: baseline;
+}
+
+/* Print Handout Specific Page Rules */
+@page {
+  size: 1920px 1080px;
+  margin: 0;
+}
+
+body:has(.print-slide-page) {
+  margin: 0;
+  padding: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+html:not(.light) body:has(.print-slide-page) {
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+html.light body:has(.print-slide-page) {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.print-slide-page {
+  width: 1920px !important;
+  height: 1080px !important;
+  max-width: 1920px !important;
+  max-height: 1080px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  page-break-after: always;
+  break-after: page;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+html:not(.light) .print-slide-page {
+  background-color: #020617;
+}
+
+html.light .print-slide-page {
+  background-color: #ffffff;
+}
+
+.print-slide-page .slide-base-frame {
+  width: 1920px !important;
+  height: 1080px !important;
+  max-width: 1920px !important;
+  max-height: 1080px !important;
+}
+
+/* Ensure everything is fully visible in print handout */
+.print-slide-page [data-animate],
+.print-slide-page [data-cue]:not(mark):not(.highlight-marker),
+.print-slide-page .bento-card-root,
+.print-slide-page .step-card,
+.print-slide-page .metric-stat-card,
+.print-slide-page .pipeline-arrow {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.print-slide-page mark,
+.print-slide-page .highlight-marker {
+  background-size: 0% 100% !important;
+  background-image: none !important;
+  background: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+}
+
+.print-slide-page .slide-base-frame.is-intro-state .slide-header-content,
+.print-slide-page .slide-base-frame.is-intro-state .slide-title,
+.print-slide-page .slide-base-frame.is-intro-state .slide-subtitle {
+  transform: none !important;
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+.print-slide-page .slide-base-frame.is-intro-state .slide-main-stage {
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
+.print-slide-page .slide-base-frame.is-intro-state .slide-number-badge,
+.print-slide-page .slide-base-frame.is-intro-state .slide-footer {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Dark mode card contrast overrides matching live player */
+html:not(.light) .bento-card-object .bg-blue-50,
+html:not(.light) .bento-card-object .bg-blue-50\/70,
+html:not(.light) .bento-card-object .bg-blue-50\/60,
+html:not(.light) .bento-card-object .bg-blue-50\/80 {
+  background-color: rgba(30, 58, 138, 0.25) !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+  color: #f1f5f9 !important;
+}
+
+html:not(.light) .bento-card-object .bg-cyan-50,
+html:not(.light) .bento-card-object .bg-cyan-50\/70 {
+  background-color: rgba(22, 78, 99, 0.25) !important;
+  border-color: rgba(6, 182, 212, 0.35) !important;
+  color: #f1f5f9 !important;
+}
