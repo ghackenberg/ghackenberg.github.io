@@ -1,0 +1,59 @@
+---
+title: "Semantische Suche & Embeddings"
+subtitle: "Von Zeichenketten zu Bedeutungen im {cue:hl-sub-embeddings-1001}hochdimensionalen Vektorraum{/cue}"
+number: "08"
+slideLayout: "split"
+voiceover: >
+  Das technologische Herzstück von RAG ist die semantische Suche über hochdimensionale Embeddings.
+  {cue:sub} Sie markiert den Übergang von reinen Zeichenketten zu Bedeutungen im {cue:hl-sub-embeddings-1001}hochdimensionalen Vektorraum{/cue}.
+  {cue:col-embeddings} Texte wie {cue:hl-callout-vektor-beispiel}Energieeffiziente Prozesswärme B2B{/cue} werden in Vektoren übersetzt, sodass verwandte Konzepte {cue:hl-vektor-winkel}nahezu identische Vektor-Winkel{/cue} besitzen. Wer dagegen {cue:hl-keyword-stuffing}reine Keyword-Wiederholungen{/cue} betreibt, verzieht den semantischen Vektor.
+  {cue:col-math} Über die {cue:hl-callout-kosinus-formel}Kosinus-Formel{/cue} ermitteln RAG-Systeme die semantische Nähe und {cue:hl-kosinus-threshold}injizieren die Top-K Passagen mit den höchsten Kosinus-Werten{/cue} in das Kontextfenster.
+notes: |
+  - Zeit: 13:30 - 15:30 Min.
+  - Zitat von Google: "Strings to Things" (Amit Singhal).
+  - Mathematische Formel Kosinus-Ähnlichkeit erklären: cos(theta) = (A * B) / (||A|| * ||B||).
+references:
+  - type: inproceedings
+    id: "mikolov-2013-word2vec"
+    author: "Mikolov, Tomás and Sutskever, Ilya and Chen, Kai and Corrado, Gregory S. and Dean, Jeffrey"
+    title: "Distributed Representations of Words and Phrases and their Compositionality"
+    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2013)"
+    year: 2013
+    pages: "3111–3119"
+    url: "https://proceedings.neurips.cc/paper/2013/hash/9aa42b31882ec039965f3c4923ce901b-Abstract.html"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="08"
+  totalSlides="42"
+>
+  <BentoCard slot="left" cue="col-embeddings" title="Der semantische Vektorraum" accent="cyan">
+    <CalloutBox type="info" title="{cue:hl-callout-vektor-beispiel}Passage B: Energieeffiziente Prozesswärme B2B{/cue}">
+      <p class="text-slate-400 font-mono text-lg">// Passage A: "Industrielle Wärmepumpe"</p>
+      <p class="text-cyan-400 font-mono font-bold text-lg">[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
+      <p class="text-slate-400 font-mono text-lg mt-2">// Passage B: "Energieeffiziente Prozesswärme B2B"</p>
+      <p class="text-blue-400 font-mono font-bold text-lg">[0.0209, -0.0518, 0.0874, 0.0125, -0.0421, ...]</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      { icon: "arrow", title: "Bedeutung statt Buchstabengleichheit", desc: "Synonyme und verwandte Konzepte besitzen im Vektorraum [@mikolov-2013-word2vec] {cue:hl-vektor-winkel}nahezu identische Vektor-Winkel{/cue}." },
+      { icon: "arrow", title: "Keyword-Stuffing wirkungslos", desc: "Künstliche {cue:hl-keyword-stuffing}Keyword-Wiederholungen{/cue} verzerren den Vektor und senken die semantische Relevanz." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit" accent="blue">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-kosinus-formel}cos(θ) = (A · B) / (||A|| ||B||){/cue}">
+      <p class="text-lg font-mono text-blue-300 light:text-blue-800 font-bold">Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
+    </CalloutBox>
+
+    <CalloutBox type="statement" title="Top-K-Retrieval & Relevanz">
+      RAG-Systeme berechnen die Ähnlichkeit aller Chunks und {cue:hl-kosinus-threshold}injizieren die Top-K Passagen mit den höchsten Kosinus-Werten{/cue} in das Context Window des LLMs.
+    </CalloutBox>
+  </BentoCard>
+</SplitSlide>
