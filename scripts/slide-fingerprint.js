@@ -46,16 +46,16 @@ export function computeSlideStyleHash() {
 
   for (const file of keyFiles) {
     if (fs.existsSync(file)) {
-      hash.update(path.relative(process.cwd(), file));
-      hash.update(fs.readFileSync(file));
+      hash.update(path.relative(process.cwd(), file).replace(/\\/g, '/'));
+      hash.update(fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n'));
     }
   }
 
   // Slide layout and primitive components
   const slideComponentFiles = getFilesRecursively(path.resolve('src/components/slides')).sort();
   for (const file of slideComponentFiles) {
-    hash.update(path.relative(process.cwd(), file));
-    hash.update(fs.readFileSync(file));
+    hash.update(path.relative(process.cwd(), file).replace(/\\/g, '/'));
+    hash.update(fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n'));
   }
 
   return hash.digest('hex');
@@ -157,7 +157,7 @@ export function computePresentationDeckHash(presentationFolder, styleHash) {
   if (fs.existsSync(imagesDir)) {
     const imgFiles = getFilesRecursively(imagesDir, ['.png', '.jpg', '.jpeg', '.webp', '.svg']).sort();
     for (const imgFile of imgFiles) {
-      deckHasher.update(path.relative(presDir, imgFile));
+      deckHasher.update(path.relative(presDir, imgFile).replace(/\\/g, '/'));
       deckHasher.update(fs.readFileSync(imgFile));
     }
   }
@@ -165,7 +165,7 @@ export function computePresentationDeckHash(presentationFolder, styleHash) {
   // Hash index.md metadata if present
   const indexFile = path.join(presDir, 'index.md');
   if (fs.existsSync(indexFile)) {
-    deckHasher.update(fs.readFileSync(indexFile));
+    deckHasher.update(fs.readFileSync(indexFile, 'utf8').replace(/\r\n/g, '\n'));
   }
 
   return {
@@ -204,5 +204,16 @@ export function loadVisualCache(presentationFolder) {
  */
 export function saveVisualCache(presentationFolder, cache) {
   const cachePath = path.resolve('src/content/presentations', presentationFolder, '.visual-cache.json');
-  fs.writeFileSync(cachePath, JSON.stringify(cache, null, 2) + '\n', 'utf8');
+  const content = JSON.stringify(cache, null, 2) + '\n';
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    try {
+      fs.writeFileSync(cachePath, content, 'utf8');
+      return;
+    } catch (err) {
+      if (attempt === 6) throw err;
+      const waitMs = 250 * attempt;
+      const start = Date.now();
+      while (Date.now() - start < waitMs) { /* busy wait for synchronous safety */ }
+    }
+  }
 }
