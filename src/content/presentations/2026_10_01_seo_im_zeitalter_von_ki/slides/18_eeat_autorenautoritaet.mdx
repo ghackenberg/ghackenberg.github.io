@@ -1,15 +1,15 @@
 ---
 title: "E-E-A-T & Autorenautorität"
 subtitle: "Warum Sprachmodelle anonyme Artikel abwerten und {cue:hl-sub-eeat-1001}verifizierte Experten bevorzugen{/cue}"
-number: "14"
+number: "18"
 slideLayout: "split"
 voiceover: >
-  Generative KIs haben gelernt: Anonyme Texte im Internet sind oft Falschinformationen oder billiger KI-Spam.
+  Generative KIs haben gelernt: Anonyme Texte im Internet sind oft Falschinformationen oder billiger Spam.
   {cue:sub} Sie zeigen, warum Modelle anonyme Texte abwerten und {cue:hl-sub-eeat-1001}verifizierte Experten bevorzugen{/cue}.
-  {cue:col-eeat-triad} Deshalb evaluieren Modelle sogenannte E-E-A-T-Signale. Wer Quellen und Autoren belegt, erzielt {cue:hl-glaubwuerdigkeit}bis zu vierzig Prozent mehr Sichtbarkeit{/cue} bei KI-Suchanfragen.
-  {cue:col-eeat-checklist} Im B2B-Mittelstand gilt: Schaffen Sie eine {cue:hl-autoren-sichtbar}eigene Profilseite für jeden Fachautor{/cue}, verknüpfen Sie {cue:hl-eeat-sameas}Links auf ORCID und Scholar{/cue}, und dokumentieren Sie {cue:hl-eeat-vita}Industrieprojekte und Normengremien{/cue}.
+  {cue:col-eeat-triad} Deshalb evaluieren Modelle sogenannte E-E-A-T-Signale. Wer Autoren und Quellen sauber ausweist, erzielt {cue:hl-glaubwuerdigkeit}klare Bevorzugung gegenüber generischem KI-Spam{/cue}.
+  {cue:col-eeat-checklist} Im B2B-Mittelstand gilt: Schaffen Sie eine {cue:hl-autoren-sichtbar}eigene Profilseite für jeden Fachautor{/cue}, verknüpfen Sie {cue:hl-eeat-sameas}Links auf ORCID, Scholar und LinkedIn{/cue}, und dokumentieren Sie {cue:hl-eeat-vita}Industrieprojekte und Normengremien{/cue}.
 notes: |
-  - Zeit: 31:00 - 33:30 Min.
+  - Zeit: 38:00 - 40:30 Min.
   - Wichtig für B2B-Mittelstand: Weg von "Geschrieben von Redaktion Team" hin zu echten Ingenieuren mit Foto, Vita und LinkedIn-Profil.
 references:
   - type: online
@@ -19,16 +19,6 @@ references:
     siteName: "Google Search Central Documentation"
     year: 2024
     url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"
-  - type: inproceedings
-    id: "aggarwal-2024-geo"
-    author: "Aggarwal, Pranjal and Murahari, Vishvak and Rajpurohit, Tanmay and Kalyan, Ashwin and Narasimhan, Karthik and Deshpande, Ameet"
-    title: "GEO: Generative Engine Optimization"
-    booktitle: "Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '24)"
-    year: 2024
-    pages: "5–16"
-    publisher: "Association for Computing Machinery"
-    doi: "10.1145/3637528.3671900"
-    url: "https://doi.org/10.1145/3637528.3671900"
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -38,8 +28,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  slideNumber="14"
-  totalSlides="30"
+  slideNumber="18"
+  totalSlides="37"
 >
   <BentoCard slot="left" cue="col-eeat-triad" title="Die Säulen der Autoren-Validierung (E-E-A-T)" accent="blue">
     <div class="grid grid-cols-2 gap-4 text-center">
@@ -66,15 +56,16 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </div>
 
     <CalloutBox type="takeaway" title="Modell-Verhalten & Glaubwürdigkeit">
-      Google E-E-A-T definiert zentrale Vertrauenssignale [@google-2024-helpful-content] – in Sprachmodellen führt die explizite Zitation verifizierter Quellen und Autoren zu {cue:hl-glaubwuerdigkeit}bis zu 40 % mehr Sichtbarkeit{/cue} [@aggarwal-2024-geo].
+      Google E-E-A-T definiert zentrale Vertrauenssignale [@google-2024-helpful-content] – in Sprachmodellen führt die explizite Zitation verifizierter Autoren zu {cue:hl-glaubwuerdigkeit}klarer Bevorzugung gegenüber generischem KI-Spam{/cue}.
     </CalloutBox>
   </BentoCard>
 
   <BentoCard slot="right" cue="col-eeat-checklist" title="B2B Best-Practice Autorenprofil" accent="cyan">
     <BulletList items={[
       { icon: "check", title: "Dedizierte Autoren-URL", desc: "{cue:hl-autoren-sichtbar}Eigene Profilseite für jeden Fachautor{/cue} (z. B. <code class=\"text-cyan-400 light:text-cyan-600 text-base\">/team/dr-schmidt/</code>)." },
-      { icon: "check", title: "sameAs-Verknüpfung", desc: "Direkte {cue:hl-eeat-sameas}Links auf ORCID und Scholar{/cue}, ResearchGate und LinkedIn." },
-      { icon: "check", title: "Transparente Vita", desc: "Relevante {cue:hl-eeat-vita}Industrieprojekte und Normengremien{/cue} nachvollziehbar auflisten." }
+      { icon: "check", title: "sameAs-Verknüpfung", desc: "Direkte {cue:hl-eeat-sameas}Links auf ORCID, Scholar und LinkedIn{/cue} sowie Fachgremien." },
+      { icon: "check", title: "Transparente Vita", desc: "Relevante {cue:hl-eeat-vita}Industrieprojekte und Normengremien{/cue} nachvollziehbar dokumentieren." }
     ]} />
   </BentoCard>
 </SplitSlide>
+
