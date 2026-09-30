@@ -1,7 +1,7 @@
 ---
 title: "Automatisierte Qualitätsaudits (Lighthouse MCP)"
 subtitle: "Warum perfekte 100er-Scores die {cue:hl-sub-lh-1001}Eintrittskarte für KI-Crawler{/cue} sind"
-number: "19"
+number: "24"
 slideLayout: "matrix"
 voiceover: >
   Automatisierte Qualitätsaudits bilden das Fundament unseres Stacks.
@@ -11,7 +11,7 @@ voiceover: >
   {cue:lh-terminal} Durch unseren Lighthouse MCP führt der Entwickler-Agent vor jedem Release einen automatischen Test durch.
   Das Ziel: {cue:hl-100-scores}Perfekte 100 von 100 Punkten in allen Kategorien{/cue} für reibungslose maschinelle Erfassung.
 notes: |
-  - Zeit: 43:30 - 46:00 Min.
+  - Zeit: 54:00 - 56:30 Min.
   - Technische Begründung: Headless Browser der Suchmaschinen schalten bei > 3 Sekunden LCP oft die JavaScript-Ausführung ab ("Soft 404" für KI-Crawler!).
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
@@ -22,8 +22,8 @@ import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astr
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  slideNumber="19"
-  totalSlides="30"
+  slideNumber="24"
+  totalSlides="37"
   ratio="50/50"
 >
   <div slot="left" id="lh-scores" cue="lh-scores" class="grid grid-cols-2 grid-rows-2 gap-5 h-full">
@@ -72,3 +72,4 @@ import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astr
     </CalloutBox>
   </BentoCard>
 </SplitSlide>
+

@@ -1,14 +1,14 @@
 ---
 title: "Code-Deep-Dive: JSON-LD Syntax"
 subtitle: "Syntaktisch valider Schema.org @graph zur {cue:hl-sub-jsonld-1001}vollständigen Verknüpfung von Entitäten{/cue}"
-number: "13"
+number: "17"
 slideLayout: "code"
 voiceover: >
   In unserem Code-Deep-Dive werfen wir einen genauen Blick auf die praktische JSON-LD Syntax.
   {cue:sub} Sie zeigt einen validen Schema.org-Graph zur {cue:hl-sub-jsonld-1001}vollständigen Verknüpfung von Entitäten{/cue}.
   {cue:code-jsonld} In JSON-LD bündelt das Graph-Array Organisation, Autor und Artikel in {cue:hl-jsonld-graph}einem einzigen JSON-LD-Dokument{/cue}. Die Autorenidentität wird mit {cue:hl-jsonld-orcid}globalen akademischen Registern{/cue} verknüpft, sodass {cue:hl-fakten-5ms}GPTBot und Perplexity Fakten fehlerfrei extrahieren{/cue}.
 notes: |
-  - Zeit: 28:00 - 31:00 Min.
+  - Zeit: 35:30 - 38:00 Min.
   - Den Entwicklern im Publikum zeigen: Kein komplexer Aufwand – einmal sauber templaten (z. B. in Astro oder Next.js) und alle Seiten sind automatisch semantisch perfekt!
 references:
   - type: misc
@@ -27,8 +27,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 <CodeSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  slideNumber="13"
-  totalSlides="30"
+  slideNumber="17"
+  totalSlides="37"
 >
   <CodeContainer
     slot="code"
@@ -59,8 +59,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     },
     {
       "@type": "TechArticle",
-      "@id": "https://hackenberg.tech/presentations/ki/#article",
-      "headline": "SEO im Zeitalter von KI",
+      "@id": "https://hackenberg.tech/posts/geo/#article",
+      "headline": "Generative Engine Optimization",
       "author": { "@id": "https://hackenberg.tech/#georg" },
       "publisher": { "@id": "https://hackenberg.tech/#organization" }
     }
@@ -69,23 +69,12 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </pre>
   </CodeContainer>
 
-  <BentoCard slot="explanation" title="Entitäten-Vorteile im Quelltext" accent="blue">
+  <BentoCard slot="notes" title="Architektur-Highlights" accent="cyan">
     <BulletList items={[
-      {
-        icon: "code",
-        title: "@graph Array",
-        desc: "Bündelt Organisation, Autor und Artikel konsistent im W3C-Standard [@gandon-2020-json-ld] in {cue:hl-jsonld-graph}einem einzigen JSON-LD-Dokument{/cue}."
-      },
-      {
-        icon: "shield",
-        title: "ORCID & sameAs",
-        desc: "Verknüpft die Autorenidentität unmissverständlich mit {cue:hl-jsonld-orcid}globalen akademischen Registern{/cue}."
-      },
-      {
-        icon: "zap",
-        title: "Maschinenlesbare Fakten",
-        desc: "{cue:hl-fakten-5ms}GPTBot und Perplexity extrahieren Fakten{/cue} fehlerfrei direkt ohne rechenintensives DOM-Parsing."
-      }
+      { icon: "code", title: "Einheitlicher @graph", desc: "Verbindet Organisation, Autor und Artikel in {cue:hl-jsonld-graph}einem einzigen JSON-LD-Dokument{/cue} [@gandon-2020-json-ld]." },
+      { icon: "shield", title: "Verifizierte Entitäten", desc: "Verknüpft die Autorenidentität über `sameAs` mit {cue:hl-jsonld-orcid}globalen akademischen Registern (ORCID){/cue}." },
+      { icon: "check", title: "Fehlerfreie Ingestion", desc: "Ermöglicht es KI-Crawlern wie GPTBot, {cue:hl-fakten-5ms}Beziehungen und Fakten ohne NLP-Rätselraten zu erfassen{/cue}." }
     ]} />
   </BentoCard>
 </CodeSlide>
+

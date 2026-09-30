@@ -1,0 +1,89 @@
+---
+title: "Empirische Studien & Branchenergebnisse"
+subtitle: "Messbare Zitationsmuster: {cue:hl-sub-cases-1001}Was Authoritas und Bain & Company für Entscheider nachweisen{/cue}"
+number: "34"
+slideLayout: "split"
+voiceover: >
+  Lassen Sie uns diese Mechanismen anhand zweier unabhängiger Marktstudien untermauern.
+  {cue:sub} Sie demonstrieren wissenschaftlich und ökonomisch, warum {cue:hl-sub-cases-1001}präzise semantische Modellierung und Nischenfokus zum Erfolg führen{/cue}.
+  {cue:col-case-a} Die Authoritas-Untersuchung analysierte {cue:hl-callout-case-a}Zitationsmuster in Google AI Overviews{/cue}: Über {cue:hl-case-a-stat}zweiundsechzig Prozent der zitierten Quellen stammen nicht aus den Top-Drei-Suchtreffern{/cue}. Stattdessen dominieren {cue:hl-case-a-lcp}maschinenlesbare Produktdatenblätter und FAQs{/cue}, wodurch spezialisierte Anbieter {cue:hl-case-a-leads}signifikante Zitationsgewinne gegenüber Generalisten{/cue} erzielen.
+  {cue:col-case-b} Die Großanalyse von Bain and Company belegt {cue:hl-callout-case-b}die radikale Verschiebung durch KI-Agenten{/cue}: Achtzig Prozent der Nutzer {cue:hl-bain-zeroclick}nutzen KI-Zusammenfassungen für mindestens vierzig Prozent aller Suchen{/cue}, klassischer Traffic schrumpft {cue:hl-bain-traffic}um fünfzehn bis fünfundzwanzig Prozent{/cue}, und {cue:hl-bain-funnel}Recherche und Shortlist verschmelzen in einer einzigen KI-Interaktion{/cue}.
+notes: |
+  - Zeit: 67:00 - 69:30 Min.
+  - Empirische Großstudien: Authoritas SERP-Analyse & Bain & Company (2025).
+  - Kernaussage für Entscheider: Nicht Markengröße oder Backlink-Volumen entscheidet, sondern strukturierte, belegte Fakten.
+references:
+  - type: online
+    id: "authoritas-2024-aio"
+    author: "Authoritas Research"
+    title: "Google AI Overviews & SGE Research Study: The Anatomy of Generative Citations"
+    siteName: "Authoritas Research Reports"
+    year: 2024
+    url: "https://www.authoritas.com/blog/google-sge-research-study"
+  - type: online
+    id: "bain-2025-ai-middleman"
+    author: "Sommerfeld, Natasha and Dave, Rishi and Webster-Clark, Daniel"
+    title: "Marketing's New Middleman: AI Agents"
+    siteName: "Bain & Company Insights"
+    year: 2025
+    url: "https://www.bain.com/insights/marketings-new-middleman-ai-agents/"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="34"
+  totalSlides="37"
+>
+  <BentoCard slot="left" cue="col-case-a" title="Authoritas SERP-Studie (2024)" accent="blue">
+    <CalloutBox type="statement" title="{cue:hl-callout-case-a}Zitationsmuster in Google AI Overviews{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Analyse von Tausenden generativer SERP-Abfragen [@authoritas-2024-aio].</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "check",
+        title: "Entkopplung von Rang 1",
+        desc: "Über {cue:hl-case-a-stat}62 Prozent der zitierten Quellen stammen nicht aus den Top-3-Suchtreffern{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Dominanz strukturierter Daten",
+        desc: "Modelle bevorzugen {cue:hl-case-a-lcp}maschinenlesbare Produktdatenblätter und FAQs{/cue} gegenüber Fließtext."
+      },
+      {
+        icon: "check",
+        title: "Nischen-Spezialisierung",
+        desc: "Fachspezifische Anbieter erzielen {cue:hl-case-a-leads}signifikante Zitationsgewinne gegenüber Generalisten{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-case-b" title="Bain & Company Marktanalyse (2025)" accent="cyan">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-case-b}The New Middleman & Funnel-Kollaps{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Wie KI-Agenten Marketing und Vertrieb verändern [@bain-2025-ai-middleman].</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "trending-down",
+        title: "80 % Zero-Click Penetration",
+        desc: "Achtzig Prozent der Nutzer {cue:hl-bain-zeroclick}nutzen KI-Zusammenfassungen für mindestens 40 % der Suchen{/cue}."
+      },
+      {
+        icon: "warning",
+        title: "15–25 % Traffic-Rückgang",
+        desc: "Klassischer Website-Traffic sinkt {cue:hl-bain-traffic}um 15 bis 25 Prozent bei Standard-Suchanfragen{/cue}."
+      },
+      {
+        icon: "cpu",
+        title: "Kollaps des Trichters",
+        desc: "Recherche, Vergleich und Shortlist {cue:hl-bain-funnel}verschmelzen in einer einzigen KI-Interaktion{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

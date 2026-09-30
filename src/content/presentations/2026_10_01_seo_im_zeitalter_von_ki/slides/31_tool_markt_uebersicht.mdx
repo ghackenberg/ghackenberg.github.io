@@ -1,16 +1,16 @@
 ---
 title: "Der Tool-Markt: Spezial-GEO vs. Enterprise-Suiten"
 subtitle: "Entscheidungsmatrix zwischen {cue:hl-sub-tools-1001}GEO-Startups und etablierten SEO-Suiten{/cue}"
-number: "23"
+number: "31"
 slideLayout: "split"
 voiceover: >
   Werfen wir nun einen Blick auf den dynamischen Tool-Markt der Optimierung.
   {cue:sub} Er erfordert eine fundierte Entscheidungsmatrix zwischen {cue:hl-sub-tools-1001}GEO-Startups und etablierten SEO-Suiten{/cue}.
-  {cue:col-tools-special} Spezialisierte Pioniere wie {cue:hl-callout-geo-pioniere}Otterly punkt ai oder Limy punkt ai{/cue} fokussieren die {cue:hl-som-metriken}Auswertung von Kaufberatungs-Prompts{/cue} und zeigen, {cue:hl-citation-gap}bei welchen Fragen Konkurrenten zitiert werden{/cue}, verlangen aber oft hohe {cue:hl-saas-kosten}monatliche SaaS-Abogebühren{/cue}.
+  {cue:col-tools-special} Spezialisierte Pioniere wie {cue:hl-callout-geo-pioniere}Otterly punkt ai, AthenaHQ oder Peec AI{/cue} fokussieren die {cue:hl-som-metriken}Auswertung von Kaufberatungs-Prompts{/cue} und zeigen, {cue:hl-citation-gap}bei welchen Fragen Konkurrenten zitiert werden{/cue}, verlangen aber oft hohe {cue:hl-saas-kosten}monatliche SaaS-Abogebühren{/cue}.
   {cue:col-tools-enterprise} Etablierte Suiten wie {cue:hl-callout-enterprise-suiten}Semrush oder Ahrefs{/cue} erkennen, {cue:hl-aio-tracking}welche Suchergebnisse von KI-Boxen dominiert werden{/cue}, tracken {cue:hl-unlinked-graph}Unlinked Brand Mentions und Markenzitate{/cue} und bündeln alles in {cue:hl-allinone-platform}einem etablierten Gesamtsystem{/cue}.
 notes: |
-  - Zeit: 52:30 - 54:30 Min.
-  - G2 Grid for SEO & AI Visibility Software zitieren.
+  - Zeit: 61:00 - 63:00 Min.
+  - Software-Entscheidungsmatrix für das Traunviertel.
   - KMU-Rat: Nicht sofort 1.000 €/Monat für ein Spezial-SaaS ausgeben; zuerst die Hausaufgaben auf der eigenen Website (Schema.org, BLUF, Lighthouse) machen!
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
@@ -21,27 +21,27 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  slideNumber="23"
-  totalSlides="30"
+  slideNumber="31"
+  totalSlides="37"
 >
   <BentoCard slot="left" cue="col-tools-special" title="Spezialisierte GEO-Pioniere" accent="blue">
-    <CalloutBox type="statement" title="{cue:hl-callout-geo-pioniere}Otterly.ai / Limy.ai / AIclicks{/cue}">
-      Spezialisiert auf tägliches Prompt-Tracking über ChatGPT, Perplexity & Gemini.
+    <CalloutBox type="statement" title="{cue:hl-callout-geo-pioniere}Otterly.ai / AthenaHQ / Peec AI{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Spezialisiert auf tägliches Prompt-Tracking über ChatGPT, Perplexity & Gemini.</p>
     </CalloutBox>
 
     <BulletList items={[
       {
-        icon: "check",
+        icon: "target",
         title: "Share of Model Metriken",
         desc: "Tägliche automatisierte {cue:hl-som-metriken}Auswertung von Kaufberatungs-Prompts{/cue} in Modell-Panels."
       },
       {
-        icon: "check",
+        icon: "search",
         title: "Citation Gap Analysis",
         desc: "Deckt exakt auf, {cue:hl-citation-gap}bei welchen Fragen Konkurrenten zitiert werden{/cue}."
       },
       {
-        icon: "cross",
+        icon: "warning",
         title: "Kostenfaktor",
         desc: "Hohe {cue:hl-saas-kosten}monatliche SaaS-Abogebühren{/cue} bei noch fragmentiertem Tool-Markt."
       }
@@ -50,24 +50,24 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 
   <BentoCard slot="right" cue="col-tools-enterprise" title="Etablierte Enterprise-Suiten" accent="cyan">
     <CalloutBox type="statement" title="{cue:hl-callout-enterprise-suiten}Semrush AI Solutions / Ahrefs Brand Graph{/cue}">
-      Verknüpfen klassisches Keyword- und Backlink-Crawling mit generativen SERP-Snapshots.
+      <p class="text-base text-slate-300 light:text-slate-700">Verknüpfen klassisches Keyword- und Backlink-Crawling mit generativen SERP-Snapshots.</p>
     </CalloutBox>
 
     <BulletList items={[
       {
-        icon: "check",
+        icon: "search",
         title: "Google AI Overview Tracking",
         desc: "Erkennt sofort, {cue:hl-aio-tracking}welche Suchergebnisse von KI-Boxen dominiert werden{/cue}."
       },
       {
-        icon: "check",
-        title: "Entitäten-Backlink-Graphen",
-        desc: "Macht {cue:hl-unlinked-graph}Unlinked Brand Mentions und Markenzitate{/cue} im Web sichtbar."
+        icon: "network",
+        title: "Unlinked Brand Mention Graph",
+        desc: "Erfasst und bewertet {cue:hl-unlinked-graph}Unlinked Brand Mentions und Markenzitate{/cue} im Netz."
       },
       {
-        icon: "check",
+        icon: "database",
         title: "All-in-One Plattform",
-        desc: "Integriert technische Audits und Content-Lücken in {cue:hl-allinone-platform}einem etablierten Gesamtsystem{/cue}."
+        desc: "Nahtlose Einbettung in {cue:hl-allinone-platform}einem etablierten Gesamtsystem{/cue} ohne Tool-Bruch."
       }
     ]} />
   </BentoCard>

@@ -1,20 +1,21 @@
 ---
 title: "Agenda & Leitfaden"
-subtitle: "Gliederung des 60-Minuten-Vortrags in {cue:hl-sub-agenda-1001}5 didaktische Blöcke{/cue}"
+subtitle: "Gliederung des 60-Minuten-Vortrags in {cue:hl-sub-agenda-1001}6 didaktische Blöcke{/cue}"
 number: "02"
 slideLayout: "pipeline"
 voiceover: >
-  Unsere heutige Agenda dient als präziser Leitfaden durch die gesamte Thematik.
-  {cue:sub} Sie gliedert den sechzigminütigen Vortrag in {cue:hl-sub-agenda-1001}fünf didaktische Blöcke{/cue}.
+  Unsere heutige Agenda dient als strukturierter Leitfaden durch die gesamte Thematik für Führungskräfte.
+  {cue:sub} Sie gliedert den sechzigminütigen Vortrag in {cue:hl-sub-agenda-1001}sechs didaktische Blöcke{/cue}.
   {cue:step-01} Zunächst beleuchten wir den Paradigmenwechsel vom Web-Index zur {cue:hl-seo-agenda-01}generativen Antwortsynthese moderner Sprachmodelle{/cue}.
-  {cue:step-02} Danach steigen wir in die technologische Basis ein: RAG, Embeddings und Wissensgraphen für {cue:hl-seo-agenda-02}deterministische Faktenextraktion{/cue}.
-  {cue:step-03} Im dritten Block stelle ich Ihnen die konkrete Drei-Säulen-Methodik mit {cue:hl-seo-agenda-03}robusten E-E-A-T Autoritätssignalen{/cue} vor.
-  {cue:step-04} Block vier widmet sich Dev-Agenten und dem {cue:hl-seo-agenda-04}Model Context Protocol im CI-Stack{/cue}.
-  {cue:step-05} Schließlich betrachten wir Praxis, ROI und {cue:hl-seo-agenda-05}messbare Share-of-Model Metriken im B2B-Einsatz{/cue}.
+  {cue:step-02} Danach steigen wir in die technologische Basis ein: RAG, Embeddings, Wissensgraphen sowie {cue:hl-seo-agenda-02}empirische Studienmethodik und Limitationen{/cue}.
+  {cue:step-03} Im dritten Block stelle ich Ihnen die konkrete Drei-Säulen-Methodik mit {cue:hl-seo-agenda-03}Information Gain Content Design im B2B{/cue} vor.
+  {cue:step-04} Block vier führt direkt in mein Web-Labor: Google Antigravity, {cue:hl-seo-agenda-04}MCP Server und automatisierte CI/CD Gatekeeper{/cue}.
+  {cue:step-05} Anschließend betrachten wir B2B Social Media: LinkedIn Thought Leadership und {cue:hl-seo-agenda-05}sameAs-Entitätsgraphen im Hub-and-Spoke-Modell{/cue}.
+  {cue:step-06} Schließlich schließen wir mit Marktdaten von Gartner und Similarweb sowie {cue:hl-seo-agenda-06}dem 90-Tage-Fahrplan zur KI-Sichtbarkeit{/cue} ab.
 notes: |
   - Zeit: 2:00 - 4:00 Min.
   - Hinweis auf Konferenz-Standard (ACM/IEEE Didaktik).
-  - Dem Publikum signalisieren: Erst Verständnis, dann Technik, dann konkrete Hands-On-Praxis.
+  - Dem Publikum signalisieren: Erst Verständnis, dann Technik, dann Labor-Praxis, dann Social Media und Fahrplan.
 ---
 import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
@@ -23,39 +24,46 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
   slideNumber="02"
-  totalSlides="30"
+  totalSlides="37"
 >
   <Pipeline
+    direction="vertical"
     steps={[
       {
         cue: "step-01",
         num: "01",
-        title: "Paradigmenwechsel",
+        title: "Status Quo & Zero-Click",
         desc: "Vom statischen Web-Index zur {cue:hl-seo-agenda-01}generativen Antwortsynthese moderner Sprachmodelle{/cue}."
       },
       {
         cue: "step-02",
         num: "02",
-        title: "Technologische Basis",
-        desc: "RAG, Vektor-Embeddings und Wissensgraphen für {cue:hl-seo-agenda-02}deterministische Faktenextraktion{/cue}."
+        title: "Wie Antwortsysteme arbeiten",
+        desc: "RAG, Embeddings, Wissensgraphen und {cue:hl-seo-agenda-02}empirische Studienmethodik und Limitationen{/cue}."
       },
       {
         cue: "step-03",
         num: "03",
-        title: "3-Säulen-Methodik",
-        desc: "Synthese-Design, Schema.org-Modellierung und {cue:hl-seo-agenda-03}robuste E-E-A-T Autoritätssignale{/cue}."
+        title: "Die 3-Säulen-Methodik",
+        desc: "Schema.org-Modellierung, E-E-A-T und {cue:hl-seo-agenda-03}Information Gain Content Design im B2B{/cue}."
       },
       {
         cue: "step-04",
         num: "04",
-        title: "Dev-Agenten & MCP",
-        desc: "Autonome KI-Coding-Agenten und {cue:hl-seo-agenda-04}Model Context Protocol im CI-Stack{/cue}."
+        title: "Blick ins Web-Labor",
+        desc: "Google Antigravity, AGENTS.md, {cue:hl-seo-agenda-04}MCP Server und automatisierte CI/CD Gatekeeper{/cue}."
       },
       {
         cue: "step-05",
         num: "05",
-        title: "Praxis & ROI",
-        desc: "Closed-Loop Analytics und {cue:hl-seo-agenda-05}messbare Share-of-Model Metriken im B2B-Einsatz{/cue}."
+        title: "B2B Social Media & Vernetzung",
+        desc: "Edelman-LinkedIn Thought Leadership, {cue:hl-seo-agenda-05}sameAs-Entitätsgraphen und Hub-and-Spoke{/cue}."
+      },
+      {
+        cue: "step-06",
+        num: "06",
+        title: "Marktdaten & Fahrplan",
+        desc: "Similarweb, Gartner, Opollo Benchmarks und {cue:hl-seo-agenda-06}der 90-Tage-Fahrplan zur KI-Sichtbarkeit{/cue}."
       }
     ]}
   />

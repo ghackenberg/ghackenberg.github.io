@@ -1,7 +1,7 @@
 ---
 title: "Share of Model (SoM) als neue Leitwährung"
 subtitle: "Vom Share of Voice zum {cue:hl-sub-som-1001}relativen Anteil in generativen Kaufberatungen{/cue}"
-number: "21"
+number: "30"
 slideLayout: "split"
 voiceover: >
   Was ist die entscheidende unternehmerische Leitwährung der generativen Zukunft?
@@ -9,8 +9,8 @@ voiceover: >
   {cue:col-som-formula} Es ist der Share of Model mit der Formel {cue:hl-callout-som-formula}Erwähnungen geteilt durch Gesamttests{/cue}. Wir evaluieren {cue:hl-som-prompt-testing}standardisierte Kaufberatungs-Prompts{/cue}, und selbst jede {cue:hl-unlinked-mentions}Nennung ohne Hyperlink{/cue} festigt Ihre Marktpräsenz.
   {cue:col-som-bench} Der Wettbewerbs-Benchmark zeigt die Wirkung: {cue:hl-som-winner}Mit zweiundvierzig Prozent Share of Model{/cue} dominiert das optimierte Unternehmen die Kaufberatung gegenüber dem Wettbewerb.
 notes: |
-  - Zeit: 48:00 - 50:30 Min.
-  - Eigene Methodik / B2B AI Visibility Index Dr. Georg Hackenberg (2026).
+  - Zeit: 59:00 - 61:00 Min.
+  - Etablierte Branchenmetrik: Share of Model (SoM).
   - Formel: SoM (%) = (Anzahl KI-Nennungen / Gesamte Test-Prompts) * 100.
   - Testpanel: 50–200 standardisierte B2B-Kaufberatungs-Prompts in ChatGPT, Perplexity, Gemini.
 ---
@@ -23,8 +23,8 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
 <SplitSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
-  slideNumber="21"
-  totalSlides="30"
+  slideNumber="30"
+  totalSlides="37"
 >
   <BentoCard slot="left" cue="col-som-formula" title="Definition & Berechnungsformel" accent="blue">
     <CalloutBox type="statement" title="{cue:hl-callout-som-formula}Share of Model (SoM) Formel{/cue}">
@@ -58,19 +58,23 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
           value: 42,
           formattedValue: "42 % SoM",
           cue: "hl-som-winner",
-          highlightColor: "cyan",
-          highlightTarget: "value"
+          highlightColor: "emerald"
         },
         {
-          label: "Wettbewerber A (Konzern)",
+          label: "Marktbegleiter A (Konventionell)",
           value: 24,
-          formattedValue: "24 % SoM",
-          },
+          formattedValue: "24 % SoM"
+        },
         {
-          label: "Wettbewerber B (Traditionell)",
-          value: 11,
-          formattedValue: "11 % SoM",
-          }
+          label: "Marktbegleiter B (Wenig Content)",
+          value: 18,
+          formattedValue: "18 % SoM"
+        },
+        {
+          label: "Nicht erwähnt / Sonstige",
+          value: 16,
+          formattedValue: "16 % SoM"
+        }
       ]}
     />
   </BentoCard>
