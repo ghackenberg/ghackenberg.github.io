@@ -1,0 +1,75 @@
+---
+title: "Das Ökosystem der Antwortsysteme"
+subtitle: "Vergleich führender KI-Sucharchitekturen: {cue:hl-sub-eco-1001}Wie Google, Perplexity, ChatGPT und Claude Quellen auswählen{/cue}"
+number: "14"
+slideLayout: "grid"
+voiceover: >
+  Nicht jedes Antwortsystem funktioniert gleich – für Entscheider ist die Differenzierung der Architekturen erfolgskritisch.
+  {cue:sub} Dieser Vergleich zeigt präzise, {cue:hl-sub-eco-1001}wie Google, Perplexity, ChatGPT und Claude Quellen auswählen{/cue}.
+  {cue:card-google} Google verbindet seinen {cue:hl-eco-google-rank}RankBrain-SERP-Index mit LLM-Synthese{/cue} und bewertet {cue:hl-eco-google-chips}verifizierte E-E-A-T-Signale{/cue} in Zitations-Chips.
+  {cue:card-gemini} Gemini nutzt {cue:hl-eco-gemini-grounding}Echtzeit-Grounding mit multimodaler Verarbeitung{/cue} und analysiert Datenblätter {cue:hl-eco-gemini-docs}ohne statische Token-Grenzen{/cue}.
+  {cue:card-perplexity} Perplexity setzt auf {cue:hl-eco-perplex-sources}primäre Fachdokumentationen, Foren und Datenblätter{/cue} mit {cue:hl-eco-perplex-links}interaktiven Fußnoten und direkter Link-Verknüpfung{/cue}.
+  {cue:card-openai-claude} ChatGPT liefert {cue:hl-eco-chatgpt-context}kontextuelle Empfehlungen im laufenden Dialog{/cue}, während Claude auf {cue:hl-eco-claude-deep}tiefgehende Dokumentenanalysen und Code-Verständnis{/cue} spezialisiert ist.
+notes: |
+  - Zeit: 23:00 - 25:30 Min.
+  - Wichtig: Den Unterschied zwischen "Suchmaschine mit KI-Aufsatz" (Google) und "reinem Antwort-Agenten" (Perplexity, ChatGPT) betonen.
+references:
+  - type: online
+    id: "carr-2026-similarweb"
+    author: "Carr, David F."
+    title: "The 2026 Generative AI Landscape: Fragmentation and Traffic Shifts"
+    siteName: "Similarweb Research Reports"
+    year: 2026
+    url: "https://www.similarweb.com/blog/insights/generative-ai-landscape-2026/"
+  - type: online
+    id: "singhal-2012-knowledge-graph"
+    author: "Singhal, Amit"
+    title: "Introducing the Knowledge Graph: things, not strings"
+    siteName: "Google Official Blog"
+    year: 2012
+    url: "https://www.blog.google/products/search/introducing-knowledge-graph-things-not/"
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="14"
+  totalSlides="42"
+  cols={2}
+>
+  <BentoCard cue="card-google" title="Google Suche & AI Overviews" accent="blue">
+    <CalloutBox type="info" title="Hybrid-Index & Zitations-Chips">
+      <p class="text-slate-300 light:text-slate-700">
+        Google kombiniert klassischen {cue:hl-eco-google-rank}RankBrain-SERP-Index mit LLM-Synthese{/cue} [@singhal-2012-knowledge-graph]. Hohe Gewichtung von PageSpeed, Core Web Vitals und {cue:hl-eco-google-chips}verifizierten E-E-A-T-Signalen{/cue}.
+      </p>
+    </CalloutBox>
+  </BentoCard>
+
+  <BentoCard cue="card-gemini" title="Google Gemini Chats" accent="cyan">
+    <CalloutBox type="statement" title="Multimodales Web-Grounding">
+      <p class="text-cyan-200 light:text-cyan-900">
+        Direkter Zugriff auf den Web-Index über Google Search: {cue:hl-eco-gemini-grounding}Echtzeit-Grounding mit multimodaler Verarbeitung{/cue} von Texten, Tabellen und PDF-Datenblättern {cue:hl-eco-gemini-docs}ohne statische Token-Grenzen{/cue}.
+      </p>
+    </CalloutBox>
+  </BentoCard>
+
+  <BentoCard cue="card-perplexity" title="Perplexity AI" accent="emerald">
+    <CalloutBox type="takeaway" title="Transparente Quellen-Engine">
+      <p class="text-emerald-200 light:text-emerald-900">
+        Live-Websuche mit maximaler Zitationsdichte: Bevorzugt {cue:hl-eco-perplex-sources}primäre Fachdokumentationen, Foren und Datenblätter{/cue}. Listet Belege als {cue:hl-eco-perplex-links}interaktive Fußnoten mit direkter Link-Verknüpfung{/cue}.
+      </p>
+    </CalloutBox>
+  </BentoCard>
+
+  <BentoCard cue="card-openai-claude" title="ChatGPT Search & Claude" accent="purple">
+    <CalloutBox type="statement" title="Konversationelle Synthese">
+      <p class="text-purple-200 light:text-purple-900">
+        ChatGPT nutzt Bing-Index und Publisher-Feeds [@carr-2026-similarweb] für {cue:hl-eco-chatgpt-context}kontextuelle Empfehlungen im Dialog{/cue}, während Claude auf {cue:hl-eco-claude-deep}tiefgehende Dokumentenanalysen und Code-Verständnis{/cue} spezialisiert ist.
+      </p>
+    </CalloutBox>
+  </BentoCard>
+</GridSlide>
+

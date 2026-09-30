@@ -1,0 +1,80 @@
+---
+title: "Code-Deep-Dive: JSON-LD Syntax"
+subtitle: "Syntaktisch valider Schema.org @graph zur {cue:hl-sub-jsonld-1001}vollständigen Verknüpfung von Entitäten{/cue}"
+number: "19"
+slideLayout: "code"
+voiceover: >
+  In unserem Code-Deep-Dive werfen wir einen genauen Blick auf die praktische JSON-LD Syntax.
+  {cue:sub} Sie zeigt einen validen Schema.org-Graph zur {cue:hl-sub-jsonld-1001}vollständigen Verknüpfung von Entitäten{/cue}.
+  {cue:code-jsonld} In JSON-LD bündelt das Graph-Array Organisation, Autor und Artikel in {cue:hl-jsonld-graph}einem einzigen JSON-LD-Dokument{/cue}. Die Autorenidentität wird mit {cue:hl-jsonld-orcid}globalen akademischen Registern{/cue} verknüpft, sodass {cue:hl-fakten-5ms}GPTBot und Perplexity Fakten fehlerfrei extrahieren{/cue}.
+notes: |
+  - Zeit: 35:30 - 38:00 Min.
+  - Den Entwicklern im Publikum zeigen: Kein komplexer Aufwand – einmal sauber templaten (z. B. in Astro oder Next.js) und alle Seiten sind automatisch semantisch perfekt!
+references:
+  - type: misc
+    id: "gandon-2020-json-ld"
+    author: "Gandon, Fabien and Kellogg, Gregg and Lanthaler, Markus and Champin, Pierre-Antoine"
+    title: "JSON-LD 1.1: A JSON-based Serialization for Linked Data"
+    howpublished: "W3C Recommendation"
+    year: 2020
+    url: "https://www.w3.org/TR/json-ld11/"
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="19"
+  totalSlides="42"
+>
+  <CodeContainer
+    slot="code"
+    cue="code-jsonld"
+    filename="schema-graph.jsonld"
+  >
+    <pre class="text-slate-200 font-mono overflow-x-auto my-auto">
+{`{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://hackenberg.tech/#organization",
+      "name": "Dr. Georg Hackenberg Consulting",
+      "url": "https://hackenberg.tech",
+      "sameAs": [
+        "https://www.linkedin.com/in/georghackenberg/",
+        "https://orcid.org/0000-0003-3913-4148"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://hackenberg.tech/#georg",
+      "name": "Dr. Georg Hackenberg",
+      "jobTitle": "Professor für Informatik",
+      "worksFor": { "@id": "https://www.fh-ooe.at/#organization" },
+      "sameAs": "https://orcid.org/0000-0003-3913-4148"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://hackenberg.tech/posts/geo/#article",
+      "headline": "Generative Engine Optimization",
+      "author": { "@id": "https://hackenberg.tech/#georg" },
+      "publisher": { "@id": "https://hackenberg.tech/#organization" }
+    }
+  ]
+}`}
+    </pre>
+  </CodeContainer>
+
+  <BentoCard slot="notes" title="Architektur-Highlights" accent="cyan">
+    <BulletList items={[
+      { icon: "code", title: "Einheitlicher @graph", desc: "Verbindet Organisation, Autor und Artikel in {cue:hl-jsonld-graph}einem einzigen JSON-LD-Dokument{/cue} [@gandon-2020-json-ld]." },
+      { icon: "shield", title: "Verifizierte Entitäten", desc: "Verknüpft die Autorenidentität über `sameAs` mit {cue:hl-jsonld-orcid}globalen akademischen Registern (ORCID){/cue}." },
+      { icon: "check", title: "Fehlerfreie Ingestion", desc: "Ermöglicht es KI-Crawlern wie GPTBot, {cue:hl-fakten-5ms}Beziehungen und Fakten ohne NLP-Rätselraten zu erfassen{/cue}." }
+    ]} />
+  </BentoCard>
+</CodeSlide>
+

@@ -1,0 +1,70 @@
+---
+title: "Der klassische SERP-Index: Crawl, Index & Rank"
+subtitle: "Wie Google 25 Jahre funktionierte: {cue:hl-sub-serp-1001}Vom Web-Crawler über Inverted Index zu RankBrain{/cue}"
+number: "05"
+slideLayout: "story-hero"
+voiceover: >
+  Um den radikalen Wandel durch generative KIs zu verstehen, müssen wir die klassische Websuche betrachten.
+  {cue:sub} Sie funktionierte über ein Vierteljahrhundert nach der Dreiteilung: {cue:hl-sub-serp-1001}Vom Web-Crawler über den Inverted Index bis zu RankBrain{/cue}.
+  {cue:vis-serp-pipeline} Auf der linken Seite sehen Sie die traditionelle Pipeline schematisch dargestellt.
+  {cue:card-serp-arch} Seit der Grundlegung von Brin und Page basiert die Websuche auf {cue:hl-callout-serp-brin}dokumentenbasiertem Inverted-Index-Retrieval{/cue}: Der Googlebot erfasst {cue:hl-serp-crawl}Webseiten über Hyperlink-Netzwerke{/cue}, speichert Begriffe in {cue:hl-serp-index}riesigen invertierten Index-Matrizen{/cue}, und Algorithmen berechnen {cue:hl-serp-rank}die statische Rangfolge der zehn blauen Links{/cue} – exakt dieses Prinzip wird heute von RAG abgelöst.
+notes: |
+  - Zeit: 8:00 - 10:30 Min.
+  - Historische Grundlage: Sergey Brin & Larry Page (1998) und die Evolution bis zu RankBrain (2015).
+  - Wichtig: Den Kontrast zwischen statischer Dokumenten-Rangfolge und dynamischer generativer Antwortsynthese herausarbeiten.
+references:
+  - type: article
+    id: "brin-1998-pagerank"
+    author: "Brin, Sergey and Page, Lawrence"
+    title: "The Anatomy of a Large-Scale Hypertextual Web Search Engine"
+    journal: "Computer Networks and ISDN Systems"
+    volume: "30"
+    number: "1-7"
+    pages: "107–117"
+    year: 1998
+    doi: "10.1016/S0169-7552(98)00110-X"
+    url: "http://infolab.stanford.edu/pub/papers/google.pdf"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import serpImage from '../images/hero_serp_index_pipeline.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="05"
+  totalSlides="42"
+  cue="vis-serp-pipeline"
+  imageCue="vis-serp-pipeline"
+  imageSrc={serpImage}
+  imageAlt="Technische schematische Darstellung der Google Crawl-, Index- und Ranking-Pipeline"
+  imageTitle="Architektur des klassischen SERP-Index von Google"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-serp-arch" title="Die 3 Phasen traditioneller Suchmaschinen" accent="blue">
+    <CalloutBox type="statement" title="{cue:hl-callout-serp-brin}Dokumenten-Retrieval nach Brin & Page (1998){/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Grundstein der klassischen Suchmaschine [@brin-1998-pagerank]: Vom Web-Graph zur SERP.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "search",
+        title: "01. Crawling & Parsing",
+        desc: "Automatisierte Web-Crawler erfassen HTML {cue:hl-serp-crawl}über Hyperlink-Graphen ins Rohdaten-Archiv{/cue}."
+      },
+      {
+        icon: "database",
+        title: "02. Inverted Indexing",
+        desc: "Extrahierte Terme werden in {cue:hl-serp-index}riesigen invertierten Index-Matrizen katalogisiert{/cue}."
+      },
+      {
+        icon: "cpu",
+        title: "03. PageRank & RankBrain",
+        desc: "Linkautorität und Machine Learning berechnen {cue:hl-serp-rank}die statische Rangfolge der zehn blauen Links{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>

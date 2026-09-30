@@ -1,0 +1,62 @@
+---
+title: "Deep-Dive: Schema.org im Detail"
+subtitle: "Die verbindliche Lingua Franca zwischen {cue:hl-sub-schema-1001}Unternehmenswebsite und KI-Webcrawlern{/cue}"
+number: "18"
+slideLayout: "split"
+voiceover: >
+  Steigen wir nun tiefer in die technische Umsetzung unserer Methodik ein.
+  {cue:sub} Schema.org fungiert als verbindliche Lingua Franca zwischen {cue:hl-sub-schema-1001}Unternehmenswebsite und KI-Webcrawlern{/cue}.
+  {cue:col-schema-types} Wir verknüpfen Unternehmen über {cue:hl-schema-org}sameAs zu Wikidata und LinkedIn{/cue}, Experten über {cue:hl-schema-person}ORCID und Patente{/cue}, Produkte über {cue:hl-schema-product}GTIN und ISO-Zertifikate{/cue} sowie Fachinhalte als {cue:hl-schema-article}Frage-Antwort-Paare mit autoritativem Verfasser{/cue}.
+  {cue:col-schema-id} Über {cue:hl-callout-canonical-uris}kanonische Entity-URIs{/cue} werden Entitäten {cue:hl-schema-uri}via URI referenziert{/cue}, sodass Sprachmodelle {cue:hl-schema-fusion}alle Aussagen unter derselben ID fusionieren{/cue}.
+notes: |
+  - Zeit: 33:00 - 35:30 Min.
+  - Den Unterschied erklären: Schema.org ist nicht nur Rich Snippets für Sterne in Google, sondern der Wissensgraph-Parser für LLMs!
+references:
+  - type: article
+    id: "guha-2016-schema-org"
+    author: "Guha, Ramanathan V. and Brickley, Dan and Macbeth, Steve"
+    title: "Schema.org: Evolution of Structured Data on the Web"
+    journal: "Communications of the ACM"
+    year: 2016
+    volume: "59"
+    number: "2"
+    pages: "44–51"
+    doi: "10.1145/2844110"
+    url: "https://doi.org/10.1145/2844110"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="18"
+  totalSlides="42"
+>
+  <BentoCard slot="left" cue="col-schema-types" title="Die 5 B2B-Kern-Entitätstypen" accent="blue">
+    <BulletList items={[
+      { icon: "network", title: "Organization", desc: "Rechtlicher Name, Logo, {cue:hl-schema-org}sameAs zu Wikidata und LinkedIn{/cue}, Standorte." },
+      { icon: "shield", title: "Person", desc: "Geschäftsführung und Lead-Ingenieure mit {cue:hl-schema-person}ORCID und Patenten{/cue}." },
+      { icon: "target", title: "Product", desc: "Industrieprodukte mit {cue:hl-schema-product}GTIN, MPN und ISO-Zertifikaten{/cue}." },
+      { icon: "document", title: "TechArticle & FAQPage", desc: "Direkte {cue:hl-schema-article}Frage-Antwort-Paare mit autoritativem Verfasser{/cue} [@guha-2016-schema-org]." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-schema-id" title="Das @id-Prinzip: Eindeutige URIs" accent="indigo">
+    <CalloutBox type="info" title="{cue:hl-callout-canonical-uris}// Canonical Entity URIs{/cue}">
+      <div class="font-mono text-lg space-y-1">
+        <p class="text-slate-200 light:text-slate-800">https://firma.at/#organization</p>
+        <p class="text-slate-200 light:text-slate-800">https://firma.at/team/dr-mueller/#author</p>
+        <p class="text-slate-200 light:text-slate-800">https://firma.at/produkte/serie-x/#product</p>
+      </div>
+    </CalloutBox>
+
+    <BulletList items={[
+      { icon: "check", title: "Keine redundante Doppel-Definition", desc: "Entitäten werden einmal deklariert und {cue:hl-schema-uri}via URI referenziert{/cue}." },
+      { icon: "check", title: "Global eindeutiger Wissensgraph", desc: "Sprachmodelle {cue:hl-schema-fusion}fusionieren alle Aussagen unter derselben ID{/cue}." }
+    ]} />
+  </BentoCard>
+</SplitSlide>
+
