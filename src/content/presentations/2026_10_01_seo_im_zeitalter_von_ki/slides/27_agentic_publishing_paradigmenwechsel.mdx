@@ -1,0 +1,53 @@
+---
+title: "Vom CMS zu Agentic Web Publishing"
+subtitle: "Ein Blick in mein Web-Labor (hackenberg.tech): {cue:hl-sub-agentic-1001}Google Antigravity als primäres Designer- und Editor-Werkzeug{/cue}"
+number: "27"
+slideLayout: "split"
+voiceover: >
+  Ich möchte Ihnen nun zeigen, wie ich das Thema in meinem eigenen Web-Labor auf hackenberg punkt tech praktisch löse.
+  {cue:sub} Es demonstriert den Übergang vom klassischen CMS zu {cue:hl-sub-agentic-1001}Google Antigravity als primärem Designer- und Editor-Werkzeug{/cue}.
+  {cue:col-cms-monolith} Klassische CMS-Monolithen erzeugen {cue:hl-cms-bloat}überladenen DOM-Code und Sicherheitslücken{/cue}, leiden unter {cue:hl-cms-latency}Server-Latenzen bei dynamischen Datenbankabfragen{/cue} und binden Teams an {cue:hl-cms-agency}teure Agentur-Zyklen für jedes Schema-Update{/cue}.
+  {cue:col-agentic-lab} In meinem Labor steuere ich {cue:hl-agentic-prompt}Google Antigravity per natürlichem Sprach-Prompt{/cue}: Der Agent modifiziert {cue:hl-agentic-git}reines semantisches Astro-HTML, MDX und JSON-LD direkt im Git{/cue}, setzt Fachbeiträge {cue:hl-agentic-speed}in Minuten statt in monatelangen Agentur-Sprints{/cue} um und garantiert {cue:hl-agentic-edge}blitzschnelle Ladezeiten unter 100 Millisekunden auf weltweiten Edge-Servern{/cue}.
+notes: |
+  - Zeit: 43:00 - 45:30 Min.
+  - Tonalität: Kein Mandat für Konzerne ("Ihr müsst TYPO3 wegwerfen"), sondern inspirierender Werkstattbericht eines Hochschullehrers ("Seht, was heute schon geht!").
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="27"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-cms-monolith" title="Klassisches CMS (WordPress / TYPO3)" accent="neutral">
+    <CalloutBox type="warning" title="Schwerfällige Monolithen & Plugin-Ballast">
+      <p class="text-slate-300 light:text-slate-600">
+        Redakteure tippen in WYSIWYG-Editoren; Datenbanken erzeugen {cue:hl-cms-bloat}überladenen DOM-Code und Sicherheitslücken{/cue}.
+      </p>
+    </CalloutBox>
+
+    <BulletList items={[
+      { icon: "cross", title: "Datenbank-Latenz", desc: "Dynamisches Rendern {cue:hl-cms-latency}bremst KI-Crawler durch langsame Server-Response-Times aus{/cue}." },
+      { icon: "cross", title: "Hohe Wartungskosten", desc: "Agenturabhängigkeit für jedes {cue:hl-cms-agency}Schema-Update und Plugin-Sicherheits-Patch{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-agentic-lab" title="Agentic Web Publishing (hackenberg.tech)" accent="emerald">
+    <CalloutBox type="takeaway" title="Erfahrungsbericht aus meinem Web-Labor">
+      <p class="text-emerald-200 light:text-emerald-900">
+        Kein CMS: Ich instruiere {cue:hl-agentic-prompt}Google Antigravity per natürlichem Sprach-Prompt{/cue} als primäres Editor- und Architekturentool.
+      </p>
+    </CalloutBox>
+
+    <BulletList items={[
+      { icon: "check", title: "Git-Native Bearbeitung", desc: "Der Agent schreibt {cue:hl-agentic-git}reines semantisches Astro-HTML, MDX und JSON-LD direkt im Git{/cue}." },
+      { icon: "check", title: "Radikale Prozessgeschwindigkeit", desc: "Artikel, Folien und Schemas {cue:hl-agentic-speed}entstehen in Minuten statt monatelangen Agentur-Sprints{/cue}." },
+      { icon: "check", title: "Globale Edge-Performance", desc: "Statische HTML-Auslieferung {cue:hl-agentic-edge}garantiert blitzschnelle Ladezeiten unter 100 ms für Crawler{/cue}." }
+    ]} />
+  </BentoCard>
+</SplitSlide>
+

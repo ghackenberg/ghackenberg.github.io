@@ -1,0 +1,89 @@
+---
+title: "B2B-Einkaufsverhalten im Zeitalter von GenAI"
+subtitle: "Gartner & Opollo Studien 2026: {cue:hl-sub-buyers-1001}Rep-free Recherche, KI-Shortlists & 14,2% Conversion-Benchmark{/cue}"
+number: "39"
+slideLayout: "split"
+voiceover: >
+  Wie verändert generative KI das konkrete Kauf- und Entscheidungsverhalten im B2B?
+  {cue:sub} Aktuelle Studien von Gartner und Opollo belegen {cue:hl-sub-buyers-1001}eine radikale Verschiebung der Beschaffungsprozesse{/cue}.
+  {cue:col-gartner-buyers} Laut Gartner-Umfrage unter sechshundertfünfundvierzig B2B-Entscheidern {cue:hl-callout-gartner-survey}recherchieren Einkäufer heute anders{/cue}: Fünfundvierzig Prozent {cue:hl-buyer-shortlist}erstellen initiale Lieferanten-Shortlists via Sprachmodelle{/cue}, siebenundsechzig Prozent bevorzugen eine {cue:hl-buyer-repfree}vollständig vertriebsfreie Vorab-Recherche{/cue}, und neunundsechzig Prozent fordern von Vertriebsmitarbeitern {cue:hl-buyer-validate}die gezielte Validierung von KI-Empfehlungen{/cue}.
+  {cue:col-opollo-benchmark} Der Benchmark von Opollo belegt die {cue:hl-callout-opollo-benchmark}enorme Konversionskraft dieses Traffics{/cue}: Mit {cue:hl-opollo-conv}vierzehn Komma zwei Prozent Konversionsrate schlagen KI-Referrals{/cue} Google um den Faktor fünf, weil Interessenten {cue:hl-opollo-intent}bereits durch die KI tief vorqualifiziert wurden{/cue} und {cue:hl-opollo-leads}drastisch höherwertige Vertriebsanfragen generieren{/cue}.
+notes: |
+  - Zeit: 56:30 - 59:00 Min.
+  - Robert Blaisdell & Alan Antin (Gartner 2026) sowie Opollo Benchmark zitieren.
+  - Kernaussage für Industrie-GFs: Wer nicht in der KI-Shortlist auftaucht, wird nicht einmal zum Pitch oder zur Ausschreibung eingeladen!
+references:
+  - type: online
+    id: "gartner-2026-b2b-buyers"
+    author: "Blaisdell, Robert and Antin, Alan"
+    title: "Gartner Survey Finds 69% of B2B Buyers Turn to Sales Reps to Validate AI-Generated Insights"
+    siteName: "Gartner Newsroom"
+    year: 2026
+    url: "https://www.gartner.com/en/newsroom/press-releases/2026-05-20-gartner-survey-finds-69-percent-of-b2b-buyers-turn-to-sales-reps-to-validate-ai-generated-insights"
+  - type: online
+    id: "opollo-2026-ai-search"
+    author: "Opollo Research"
+    title: "2026 AI Search Benchmark Report: B2B Conversion and Intent Analysis"
+    siteName: "Opollo Insights"
+    year: 2026
+    url: "https://opollo.ai/research/2026-ai-search-benchmark-report"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="39"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-gartner-buyers" title="Gartner B2B Buyer Survey (2026)" accent="blue">
+    <CalloutBox type="statement" title="{cue:hl-callout-gartner-survey}Gartner-Studie (645 B2B-Käufer){/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Wandel der B2B-Beschaffung durch generative KI [@gartner-2026-b2b-buyers].</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "45 % erstellen KI-Shortlists",
+        desc: "Knapp die Hälfte aller B2B-Einkäufer {cue:hl-buyer-shortlist}erstellt initiale Lieferanten-Shortlists via Sprachmodelle{/cue}."
+      },
+      {
+        icon: "shield",
+        title: "67 % Rep-Free Vorab-Recherche",
+        desc: "Zwei Drittel bevorzugen in der Evaluierungsphase eine {cue:hl-buyer-repfree}vollständig vertriebsfreie digitale Recherche{/cue}."
+      },
+      {
+        icon: "check",
+        title: "69 % Sales-Validierung",
+        desc: "Menschliche Experten validieren und verhandeln {cue:hl-buyer-validate}die von der KI generierten Empfehlungen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-opollo-benchmark" title="Opollo AI Conversion Benchmark (2026)" accent="cyan">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-opollo-benchmark}Opollo Research (312 B2B-Unternehmen){/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Konversions- und Absichtsdaten von KI-Referrals [@opollo-2026-ai-search].</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "trending-up",
+        title: "14,2 % vs. 2,8 % Conversion",
+        desc: "Traffic aus KI-Antwortsystemen konvertiert mit {cue:hl-opollo-conv}vierzehn Komma zwei Prozent fünfmal stärker{/cue} als Google organisch."
+      },
+      {
+        icon: "sparkles",
+        title: "Vorqualifizierter Kauf-Intent",
+        desc: "Nutzer haben bereits {cue:hl-opollo-intent}präzise Spezifikationen und Vergleiche durch die KI erhalten{/cue}."
+      },
+      {
+        icon: "zap",
+        title: "Klasse statt Masse",
+        desc: "Weniger Gesamtklicks, aber {cue:hl-opollo-leads}drastisch höherwertige Vertriebskontakte und RFPs{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>
