@@ -1,0 +1,91 @@
+---
+title: "Plattform-Bias & Konsens-Validierung"
+subtitle: "Authoritas & BrightEdge: {cue:hl-sub-bias}Warum Perplexity und SearchGPT LinkedIn und Foren als Vertrauensanker nutzen{/cue}"
+number: "53"
+slideLayout: "split"
+voiceover: >
+  Nachdem wir verstanden haben, wie ungelinkte Kookkurrenzen Vektoren aufladen, stellt sich die Frage nach den bevorzugten Quellen.
+  {cue:sub} Studien von Authoritas und BrightEdge enthüllen, {cue:hl-sub-bias}warum Perplexity und SearchGPT LinkedIn und Foren als Vertrauensanker nutzen{/cue}.
+  {cue:col-citation-gap} Die empirische Analyse der Citation Gap zeigt: {cue:hl-bias-gap}Ein traditionelles Google-Ranking auf Platz 1 garantiert keineswegs eine Zitierung im KI-Antwortfenster{/cue}. Generative Antwortsysteme selektieren {cue:hl-bias-density}hochgradig strukturierte, fakten- und datendichte Textbausteine{/cue}, {cue:hl-bias-diversity}streuen Zitate über ein breites Spektrum verifizierter Fachdomänen{/cue}, und fordern {cue:hl-bias-consistency}konsistente Entitätsdaten über mehrere Plattformen als Halluzinations-Schranke{/cue}.
+  {cue:col-social-grounding} Als Gegenmittel zu reiner Werbe-PR nutzen moderne Modelle {cue:hl-bias-consensus}das Social Web als unbestechlichen Filter für sozialen Konsens{/cue}: Auf LinkedIn, Fachforen und Entwicklerplattformen {cue:hl-bias-interaction}werten KI-Crawler echte Interaktionen, Widerspruch und Peer-Validierung aus{/cue}. Bestätigen Fachkollegen eine Methodik, {cue:hl-bias-grounding}steigt die epistemische Verlässlichkeit der Information für das RAG-Grounding{/cue}, weshalb {cue:hl-bias-crawling}Echtzeit-Suchsysteme Social-Web-Quellen systematisch priorisieren{/cue}.
+notes: |
+  - Zeit: 53:00 - 54:30 Min.
+  - Kernaussage: LLMs meiden isolierte Marketing-Websites und suchen nach sozialer Validierung im Web.
+  - Erklärung der "Citation Gap": Warum gutes altes SEO nicht automatisch zu Perplexity-Zitaten führt.
+references:
+  - type: article
+    id: "authoritas-2024-citation-gap"
+    author: "Authoritas"
+    title: "The Generative Search Citation Gap: How AI Engines Select Web Sources"
+    journal: "Authoritas Research"
+    year: 2024
+    url: "https://www.authoritas.com/research/ai-search-citations"
+  - type: article
+    id: "brightedge-2024-ai-overviews-video"
+    author: "BrightEdge Technologies"
+    title: "BrightEdge Generative Parser Research: Citation Dynamics in Generative Engine Optimization"
+    journal: "BrightEdge Research"
+    year: 2024
+    url: "https://www.brightedge.com/research/ai-overviews"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="53"
+  totalSlides="68"
+>
+  <BentoCard slot="left" cue="col-citation-gap" title="The Citation Gap (Authoritas & BrightEdge)" accent="blue">
+    <CalloutBox type="takeaway" title="Warum Platz 1 bei Google nicht mehr reicht">
+      <p class="text-blue-200 light:text-blue-900">
+        Authoritas [@authoritas-2024-citation-gap]: {cue:hl-bias-gap}Bis zu 80 % der von LLMs zitierten Quellen stammen nicht aus den organischen Top-3-Suchergebnissen{/cue}.
+      </p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "database",
+        title: "Facts-per-Token Dichte",
+        desc: "Antwortsysteme selektieren {cue:hl-bias-density}hochgradig strukturierte, fakten- und datendichte Textbausteine statt Fließtext{/cue}."
+      },
+      {
+        icon: "target",
+        title: "Quellen-Diversifikation",
+        desc: "BrightEdge [@brightedge-2024-ai-overviews-video]: Perplexity und Gemini {cue:hl-bias-diversity}streuen Zitate über Fachnetzwerke, Foren und Portale{/cue}."
+      },
+      {
+        icon: "shield",
+        title: "Entitäts-Konsistenz",
+        desc: "Nur wenn Aussagen {cue:hl-bias-consistency}über mehrere unabhängige Plattformen hinweg konsistent sind, greift die Halluzinations-Schranke{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-social-grounding" title="Social Web als Konsens-Filter" accent="cyan">
+    <CalloutBox type="statement" title="{cue:hl-bias-consensus}Menschliche Interaktion als Grounding-Filter{/cue}">
+      <p class="text-slate-300 light:text-slate-700">Reine Marketingtexte erzeugen Misstrauen – Community-Diskurs liefert Validierung.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "network",
+        title: "Peer-Review im Live-Web",
+        desc: "LinkedIn-Kommentare und Fachforen {cue:hl-bias-interaction}liefern Echtzeit-Signale über Fachkonsens und praktische Anwendbarkeit{/cue}."
+      },
+      {
+        icon: "code",
+        title: "Grounding-Wahrscheinlichkeit",
+        desc: "Aussagen mit aktiver Fachdiskussion {cue:hl-bias-grounding}erhalten bei RAG-Retrievals ein signifikant höheres Vertrauens-Gewicht{/cue}."
+      },
+      {
+        icon: "arrow",
+        title: "Echtzeit-Web-Scraping",
+        desc: "Perplexity und SearchGPT {cue:hl-bias-crawling}crawlen soziale Fachdiskussionen sekündlich für tagesaktuelle Verifikationen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

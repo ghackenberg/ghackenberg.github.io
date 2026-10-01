@@ -1,0 +1,60 @@
+---
+title: "Modell 2: Enablement & Coaching"
+subtitle: "Befähigung statt Vorgabe: {cue:hl-sub-enablement}Wie Marketing als interner Enabler Mitarbeiter zu eigenständigen Autoren entwickelt{/cue}"
+number: "49"
+slideLayout: "story-hero"
+voiceover: >
+  Für Unternehmen, die nachhaltig eine offene Expertenkultur etablieren möchten, bietet sich der zweite Ansatz an.
+  {cue:sub} Das Enablement- und Coaching-Modell setzt auf Befähigung statt Vorgabe, {cue:hl-sub-enablement}indem das Marketing als interner Enabler Mitarbeiter zu eigenständigen Autoren entwickelt{/cue}.
+  {cue:vis-enablement} Unsere Konferenzszene zeigt ein interaktives Training, in dem Fachexperten Beitragsstrukturen und Profiloptimierung diskutieren.
+  {cue:card-enablement} Dieses Modell {cue:hl-enablement-culture}schafft echte intrinsische Motivation und einen nachhaltigen internen Kulturwandel{/cue}. Statt starrer Freigabeschleifen {cue:hl-enablement-workshops}vermitteln praxisnahe Workshops Storytelling- und Algorithmen-Kompetenz{/cue}. Ein redaktionelles Sparring {cue:hl-enablement-sparring}gibt Sicherheit beim Formulieren der ersten Fachbeiträge{/cue}, und die unverkennbare persönliche Tonalität der Mitarbeiter {cue:hl-enablement-trust}erzeugt maximale Glaubwürdigkeit und unanfechtbare E-E-A-T-Signale{/cue}.
+notes: |
+  - Zeit: 48:30 - 50:00 Min.
+  - Modell 2: "Empowerment & Coaching" – Für ambitionierte Teams, die echte Thought Leader aufbauen wollen.
+  - Kernaussage: Marketing liefert die Leitplanken und das Handwerkszeug, der Content bleibt zu 100 % authentisch beim Experten.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import enablementImage from '../images/hero_corporate_influencing_enablement.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="49"
+  totalSlides="68"
+  cue="vis-enablement"
+  imageCue="vis-enablement"
+  imageSrc={enablementImage}
+  imageAlt="Enablement-Workshop im Konferenzraum mit interaktivem Whiteboard"
+  imageTitle="Modell 2: Enablement & Coaching (Empowerment & Kultur)"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-enablement" title="Empowerment & Coaching im Detail" accent="purple">
+    <CalloutBox type="takeaway" title="Vom PR-Gatekeeper zum internen Coach">
+      <p class="text-purple-200 light:text-purple-900">
+        Authentizität lässt sich nicht vorschreiben: {cue:hl-enablement-culture}Marketing befähigt Fachexperten durch Methoden, Feedback und Algorithmen-Wissen{/cue}.
+      </p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "code",
+        title: "Kompakte Praxis-Workshops",
+        desc: "Ingenieure lernen {cue:hl-enablement-workshops}Profiloptimierung, Algorithmen-Dynamik und hook-starke Beitragsarchitekturen{/cue}."
+      },
+      {
+        icon: "arrow",
+        title: "Redaktionelles Sparring",
+        desc: "Marketing fungiert als {cue:hl-enablement-sparring}vertrauensvoller Sparringspartner für Headlines, Struktur und Visuals vor dem Posten{/cue}."
+      },
+      {
+        icon: "shield",
+        title: "100 % Echte Stimme",
+        desc: "Keine PR-Floskeln: {cue:hl-enablement-trust}Die unverfälschte Fachsprache der Ingenieure erzeugt maximales Vertrauen im Markt{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>

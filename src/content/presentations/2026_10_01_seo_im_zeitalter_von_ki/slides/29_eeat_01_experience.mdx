@@ -1,0 +1,66 @@
+---
+title: "E-E-A-T: Experience (Praxiserfahrung)"
+subtitle: "Reale Fertigungs- und Felddaten: {cue:hl-sub-eeat-exp-1001}Warum KI-Modelle Primärdaten gegenüber synthetischer Theorie bevorzugen{/cue}"
+number: "29"
+slideLayout: "story-hero"
+voiceover: >
+  Google hat die Qualitätsrichtlinien um das zusätzliche E für Experience erweitert, um authentische menschliche Praxis von synthetischem KI-Content zu trennen.
+  {cue:sub} Sie erleben, {cue:hl-sub-eeat-exp-1001}warum KI-Modelle Primärdaten gegenüber synthetischer Theorie bevorzugen{/cue}.
+  {cue:vis-eeat-exp} Unser Prüfstands-Ingenieur demonstriert das Prinzip: Echte Telemetriedaten aus zehntausend Stunden Dauertest schaffen unkopierbaren Mehrwert.
+  {cue:card-eeat-exp} Echte First-Hand Experience liefert {cue:hl-callout-eeat-exp}zehntausend Stunden Dauertests statt austauschbarer Stock-Grafiken{/cue}: Wir belegen dies durch {cue:hl-eeat-exp-data}unverfälschte Messreihen und Ausfallwahrscheinlichkeiten{/cue}, zeigen {cue:hl-eeat-exp-visuals}reale Baugruppen und Werkzeuge aus der Werkstatt{/cue} und dokumentieren {cue:hl-eeat-exp-cases}konkrete Fehleranalysen und Grenzwert-Erfahrungen aus dem Industriealltag{/cue}.
+notes: |
+  - Zeit: 40:00 - 41:30 Min.
+  - Erstes E (Experience) wurde von Google Ende 2022 eingeführt.
+  - Im B2B-Mittelstand der wichtigste Hebel gegen Massen-KI: Echte Prüfstandsdaten hat ChatGPT nicht im Trainingsset.
+references:
+  - type: online
+    id: "google-2024-helpful-content"
+    author: "Google Search Central"
+    title: "Creating helpful, reliable, people-first content"
+    siteName: "Google Search Central Documentation"
+    year: 2024
+    url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import expImage from '../images/hero_eeat_experience.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="29"
+  totalSlides="68"
+  cue="vis-eeat-exp"
+  imageCue="vis-eeat-exp"
+  imageSrc={expImage}
+  imageAlt="Ingenieur an einem industriellen Prüfstand mit realen Messreihen und Telemetriedaten"
+  imageTitle="Experience: Reale Primärdaten aus Fertigung und Labor"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-eeat-exp" title="First-Hand Experience im Industrie-Einsatz" accent="blue">
+    <CalloutBox type="statement" title="{cue:hl-callout-eeat-exp}10.000h Dauertests statt Stock-Grafiken{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Google Helpful Content Richtlinien [@google-2024-helpful-content]: Reale First-Hand Experience filtert synthetischen KI-Spam zuverlässig aus.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "database",
+        title: "10.000h Dauertest-Messreihen",
+        desc: "Veröffentlichung von {cue:hl-eeat-exp-data}unverfälschten Messreihen und Ausfallwahrscheinlichkeiten{/cue} aus realen Belastungsproben."
+      },
+      {
+        icon: "shield",
+        title: "Werkstatt- und Montagefotos",
+        desc: "Dokumentation von {cue:hl-eeat-exp-visuals}realen Baugruppen und Werkzeugen aus der Werkstatt{/cue} statt austauschbarer Stock-Grafiken."
+      },
+      {
+        icon: "target",
+        title: "Praxis-Fehleranalysen",
+        desc: "Nachweisbarer Erkenntnisgewinn durch {cue:hl-eeat-exp-cases}konkrete Fehleranalysen und Grenzwert-Erfahrungen aus dem Industriealltag{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>

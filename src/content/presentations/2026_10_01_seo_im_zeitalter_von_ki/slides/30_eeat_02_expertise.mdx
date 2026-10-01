@@ -1,0 +1,66 @@
+---
+title: "E-E-A-T: Expertise (Fachkompetenz)"
+subtitle: "Spezialwissen & mathematische Tiefe: {cue:hl-sub-eeat-spec-1001}Wie namentliche Experten, Patente und Berechnungen Zitationen sichern{/cue}"
+number: "30"
+slideLayout: "story-hero"
+voiceover: >
+  Die zweite Säule, Expertise, verlangt formale fachliche Tiefe und nachweisbare intellektuelle Urheberschaft im Unternehmen.
+  {cue:sub} Hier sehen Sie, {cue:hl-sub-eeat-spec-1001}wie namentliche Experten, Patente und Berechnungen Zitationen sichern{/cue}.
+  {cue:vis-eeat-spec} Unsere leitende Berechnungsingenieurin verknüpft Finite-Elemente-Simulationen mit formellen Patentnachweisen am Arbeitsplatz.
+  {cue:card-eeat-spec} Echte Fachkompetenz beweisen Sie durch {cue:hl-callout-eeat-spec}namentliche Fachexperten und formale Berechnungen{/cue}: Weisen Sie {cue:hl-eeat-spec-authors}Autorenprofile mit akademischem Hintergrund{/cue} aus, hinterlegen Sie {cue:hl-eeat-spec-patents}patentierte Verfahren und Berechnungsmodelle{/cue}, und veröffentlichen Sie {cue:hl-eeat-spec-formulas}belastbare Auslegungsformeln für Traglasten und thermische Belastungen{/cue}.
+notes: |
+  - Zeit: 41:30 - 43:00 Min.
+  - Expertise = formale Qualifikation, Fachausbildung, ingenieurwissenschaftliche Tiefe.
+  - Im B2B: Formeln und mathematische Berechnungen werden von KI als harte Fakten eingestuft und bevorzugt zitiert.
+references:
+  - type: online
+    id: "google-2024-helpful-content"
+    author: "Google Search Central"
+    title: "Creating helpful, reliable, people-first content"
+    siteName: "Google Search Central Documentation"
+    year: 2024
+    url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import specImage from '../images/hero_eeat_expertise.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="30"
+  totalSlides="68"
+  cue="vis-eeat-spec"
+  imageCue="vis-eeat-spec"
+  imageSrc={specImage}
+  imageAlt="Leitende Ingenieurin analysiert FEA-Spannungssimulationen und mathematische Patentformeln"
+  imageTitle="Expertise: Nachweisbare Qualifikation und wissenschaftliche Tiefe"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-eeat-spec" title="Wissenschaftliche Tiefe & Urheberschaft" accent="cyan">
+    <CalloutBox type="statement" title="{cue:hl-callout-eeat-spec}Namentliche Fachexperten und formale Berechnungen{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Google Qualitätsstandards [@google-2024-helpful-content]: Nachweisbare Qualifikation und formale Modellierung erzeugen maximale Zitationswahrscheinlichkeit.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "document",
+        title: "Namentliche Lead-Ingenieure",
+        desc: "Detaillierte {cue:hl-eeat-spec-authors}Autorenprofile mit akademischem Hintergrund{/cue} und Fachschwerpunkten."
+      },
+      {
+        icon: "cpu",
+        title: "Patente & FEA-Modelle",
+        desc: "Transparente Dokumentation von {cue:hl-eeat-spec-patents}patentierten Verfahren und Berechnungsmodellen{/cue}."
+      },
+      {
+        icon: "target",
+        title: "Konkrete Berechnungsformeln",
+        desc: "Veröffentlichung von {cue:hl-eeat-spec-formulas}belastbaren Auslegungsformeln für Traglasten und thermische Belastungen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>
