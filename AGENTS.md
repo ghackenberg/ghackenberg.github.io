@@ -65,6 +65,7 @@ Domain-specific documentation and specifications live co-located with the conten
   2. *Focus Variants & Anti-Layout-Locking*: Always select a pre-rendered focus variant (`environments/[id]/[variant].jpg`) as Anchor 2 in `ImagePaths`. **NEVER** pass wide-angle room overviews (`reference.jpg`) into `ImagePaths` (prevents 2D layout-locking).
   3. *Character Slots & Poses*: Respect `characterSlots`, slot priorities, and strictly enforce `allowedPoses` (never generate standing poses in seated desk slots).
   4. *User Review Gate*: **Always present the exact prompt to the user for review** before calling `generate_image`.
+  5. *Pipeline Step Images (16:9 Central Virtual Square Safe-Zone)*: Horizontal pipeline images (`<Pipeline steps={[...]} />`) MUST use `AspectRatio: "16:9"`. The primary motif MUST be strictly confined within a **virtual square in the center** of the canvas (occupying ~50–56% width, matching height), with generous empty background padding across all outer edges. Background MUST be luminous blue-violet / deep indigo galaxy nebula with soft starlight. Never place motif elements in the outer left/right thirds (prevents lateral clipping under dynamic `object-cover` resizing). Consult `IMAGE_STYLE_GUIDELINES.md` (Section 5.F).
 
 ---
 
