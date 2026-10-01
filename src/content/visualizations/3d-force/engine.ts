@@ -1,21 +1,61 @@
 const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
 const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
-export default {
+export interface Force3DNode {
+  id: string;
+  name: string;
+  val: number;
+  color: string;
+  group: number;
+  x?: number;
+  y?: number;
+  z?: number;
+  fx?: number | null;
+  fy?: number | null;
+  fz?: number | null;
+}
+
+export interface Force3DLink {
+  source: string;
+  target: string;
+}
+
+export interface Force3DEngine {
+  layouts: { id: string; label: string }[];
+  ForceGraph3D?: any;
+  nodes: Force3DNode[] | null;
+  links: Force3DLink[] | null;
+  graph: any;
+  resizeObserver: ResizeObserver | null;
+  initialized: boolean;
+  animationFrameId: number | null;
+  init(container: HTMLElement, payload: any, layout: string, isLight: boolean): Promise<Force3DEngine>;
+  updateLayout(layout: string, isLight: boolean): void;
+  animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration?: number): void;
+  destroy(): void;
+}
+
+const engine: Force3DEngine = {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
     { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
+  nodes: null,
+  links: null,
+  graph: null,
+  resizeObserver: null,
+  initialized: false,
+  animationFrameId: null,
 
-  async init(container, payload, layout, isLight) {
-    const { default: ForceGraph3D } = await import('https://esm.sh/3d-force-graph@1.73.0?bundle');
+  async init(container: HTMLElement, payload: any, layout: string, isLight: boolean) {
+    const { default: ForceGraph3D } = await import(/* @vite-ignore */ 'https://esm.sh/3d-force-graph@1.73.0?bundle');
     this.ForceGraph3D = ForceGraph3D;
 
     const colors = isLight ? colorsLight : colorsDark;
     
     // Cache nodes and connections
-    this.nodes = payload['3d-force'].nodes.map(n => ({
+    this.nodes = payload['3d-force'].nodes.map((n: any) => ({
       id: n.id,
       name: n.name,
       val: n.size * 5 + 3,
@@ -23,7 +63,7 @@ export default {
       group: n.group
     }));
 
-    this.links = payload['3d-force'].connections.map(c => ({
+    this.links = payload['3d-force'].connections.map((c: any) => ({
       source: c.sourceId,
       target: c.targetId
     }));
@@ -40,7 +80,7 @@ export default {
       .linkDirectionalParticles(2)
       .linkDirectionalParticleWidth(1.5)
       .linkDirectionalParticleSpeed(0.006)
-      .onNodeClick(node => {
+      .onNodeClick((node: any) => {
         if (
           node.id.startsWith('/posts/') ||
           node.id.startsWith('/publications/') ||
@@ -56,7 +96,7 @@ export default {
     this.graph.d3Force('charge').strength(-120);
 
     this.resizeObserver = new ResizeObserver(entries => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         const { width, height } = entry.contentRect;
         if (this.graph) {
           this.graph.width(width).height(height);
@@ -72,8 +112,8 @@ export default {
     return this;
   },
 
-  updateLayout(layout, isLight) {
-    if (!this.graph) return;
+  updateLayout(layout: string, isLight: boolean) {
+    if (!this.graph || !this.nodes) return;
 
     // Apply color update based on theme
     this.graph.backgroundColor(isLight ? '#f8fafc' : '#090d16');
@@ -91,7 +131,7 @@ export default {
     }
 
     if (layout === 'radial') {
-      const targets = {};
+      const targets: Record<string, { x: number; y: number; z: number }> = {};
       const tags = this.nodes.filter(n => n.group === 0);
       const others = this.nodes.filter(n => n.group !== 0);
 
@@ -118,7 +158,7 @@ export default {
       this.animateTo(targets);
 
     } else if (layout === 'columns') {
-      const targets = {};
+      const targets: Record<string, { x: number; y: number; z: number }> = {};
       const posts = this.nodes.filter(n => n.group === 1);
       const publications = this.nodes.filter(n => n.group === 2);
       const presentations = this.nodes.filter(n => n.group === 3);
@@ -168,21 +208,20 @@ export default {
       });
       
       // Only reheat the simulation if we are already initialized and switching layouts.
-      // 3D-force-graph will automatically run the simulation on mount, so running it
-      // during init throws asynchronous errors as Three-forcegraph tick cycles start.
       if (this.initialized) {
         try {
           this.graph.d3ReheatSimulation();
-        } catch (e) {
+        } catch {
           // Suppress if the internal engine has not loaded yet
         }
       }
     }
   },
 
-  animateTo(targets, duration = 800) {
+  animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration = 800) {
+    if (!this.nodes) return;
     const startTime = performance.now();
-    const startPositions = {};
+    const startPositions: Record<string, { x: number; y: number; z: number }> = {};
     
     this.nodes.forEach(n => {
       startPositions[n.id] = {
@@ -192,7 +231,8 @@ export default {
       };
     });
 
-    const step = (time) => {
+    const step = (time: number) => {
+      if (!this.nodes) return;
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
@@ -217,7 +257,7 @@ export default {
       if (this.graph && this.initialized) {
         try {
           this.graph.d3ReheatSimulation();
-        } catch (e) {
+        } catch {
           // Suppress
         }
       }
@@ -230,7 +270,7 @@ export default {
           if (this.graph && this.initialized) {
             this.graph.d3ReheatSimulation();
           }
-        } catch (e) {
+        } catch {
           // Suppress if the internal engine is not ready
         }
       }
@@ -256,3 +296,5 @@ export default {
     this.links = null;
   }
 };
+
+export default engine;

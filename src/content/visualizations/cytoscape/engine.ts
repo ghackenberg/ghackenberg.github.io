@@ -1,20 +1,32 @@
 const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
 const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
-function getNodeColor(node, isLight) {
+function getNodeColor(node: any, isLight: boolean): string {
   const grp = node.data('group') ?? 0;
   return isLight ? (colorsLight[grp] || colorsLight[0]) : (colorsDark[grp] || colorsDark[0]);
 }
 
-export default {
+export interface CytoscapeEngine {
+  layouts: { id: string; label: string }[];
+  cy: any;
+  currentLayout?: string;
+  isLight?: boolean;
+  resizeObserver?: ResizeObserver | null;
+  init(container: HTMLElement, payload: any, layout: string, isLight: boolean): Promise<CytoscapeEngine>;
+  updateLayout(layout: string, isLight: boolean): void;
+  destroy(): void;
+}
+
+const engine: CytoscapeEngine = {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
     { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
+  cy: null,
 
-  async init(container, payload, layout, isLight) {
-    const { default: cytoscape } = await import('https://cdn.jsdelivr.net/npm/cytoscape@3.31.0/+esm');
+  async init(container: HTMLElement, payload: any, layout: string, isLight: boolean) {
+    const { default: cytoscape } = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/cytoscape@3.31.0/+esm');
     
     this.cy = cytoscape({
       container: container,
@@ -23,7 +35,7 @@ export default {
         {
           selector: 'node',
           style: {
-            'background-color': (node) => getNodeColor(node, isLight),
+            'background-color': (node: any) => getNodeColor(node, isLight),
             'label': 'data(name)',
             'width': 'data(size)',
             'height': 'data(size)',
@@ -61,7 +73,7 @@ export default {
       layout: { name: 'null' }
     });
 
-    this.cy.on('tap', 'node', function(evt) {
+    this.cy.on('tap', 'node', function(evt: any) {
       const node = evt.target;
       const id = node.id();
       if (
@@ -87,7 +99,9 @@ export default {
     this.resizeObserver = new ResizeObserver(() => {
       if (this.cy) {
         this.cy.resize();
-        this.updateLayout(this.currentLayout, this.isLight);
+        if (this.currentLayout !== undefined && this.isLight !== undefined) {
+          this.updateLayout(this.currentLayout, this.isLight);
+        }
       }
     });
     this.resizeObserver.observe(container);
@@ -95,7 +109,7 @@ export default {
     return this;
   },
 
-  updateLayout(layout, isLight) {
+  updateLayout(layout: string, isLight: boolean) {
     if (!this.cy) return;
     this.currentLayout = layout;
     this.isLight = isLight;
@@ -104,13 +118,13 @@ export default {
     this.cy.style().selector('node').style({
       'color': isLight ? '#0f172a' : '#f3f4f6',
       'border-color': isLight ? '#ffffff' : '#030712',
-      'background-color': (node) => getNodeColor(node, isLight)
+      'background-color': (node: any) => getNodeColor(node, isLight)
     }).update();
 
     if (layout === 'radial') {
       this.cy.layout({
         name: 'concentric',
-        concentric: function(node) {
+        concentric: function(node: any) {
           return node.data('group') === 0 ? 2 : 1;
         },
         levelWidth: function() { return 1; },
@@ -122,22 +136,22 @@ export default {
       const height = this.cy.height();
       const nodes = this.cy.nodes();
 
-      const posts = nodes.filter(n => n.data('group') === 1);
-      const publications = nodes.filter(n => n.data('group') === 2);
-      const presentations = nodes.filter(n => n.data('group') === 3);
-      const tags = nodes.filter(n => n.data('group') === 0);
-      const courses = nodes.filter(n => n.data('group') === 4);
-      const projects = nodes.filter(n => n.data('group') === 5);
-      const services = nodes.filter(n => n.data('group') === 6);
+      const posts = nodes.filter((n: any) => n.data('group') === 1);
+      const publications = nodes.filter((n: any) => n.data('group') === 2);
+      const presentations = nodes.filter((n: any) => n.data('group') === 3);
+      const tags = nodes.filter((n: any) => n.data('group') === 0);
+      const courses = nodes.filter((n: any) => n.data('group') === 4);
+      const projects = nodes.filter((n: any) => n.data('group') === 5);
+      const services = nodes.filter((n: any) => n.data('group') === 6);
 
       const categories = [posts, publications, presentations, tags, courses, projects, services];
-      const pos = {};
+      const pos: Record<string, { x: number; y: number }> = {};
       const isMobile = width < 768 || window.innerWidth < 768;
       
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
           const rowY = (catIdx + 1) * (height / (categories.length + 1));
-          catNodes.forEach((n, idx) => {
+          catNodes.forEach((n: any, idx: number) => {
             pos[n.id()] = {
               x: (idx + 1) * (width / (catNodes.length + 1)),
               y: rowY
@@ -147,7 +161,7 @@ export default {
       } else {
         categories.forEach((catNodes, catIdx) => {
           const colX = (catIdx + 1) * (width / (categories.length + 1));
-          catNodes.forEach((n, idx) => {
+          catNodes.forEach((n: any, idx: number) => {
             pos[n.id()] = {
               x: colX,
               y: (idx + 1) * (height / (catNodes.length + 1))
@@ -158,7 +172,7 @@ export default {
 
       this.cy.layout({
         name: 'preset',
-        positions: function(node) {
+        positions: function(node: any) {
           return pos[node.id()] || node.position();
         },
         animate: true,
@@ -195,3 +209,5 @@ export default {
     }
   }
 };
+
+export default engine;

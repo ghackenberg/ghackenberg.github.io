@@ -2183,7 +2183,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       if (!container) return;
 
       try {
-        const engineModule = await import('../content/visualizations/vis-network/engine.js');
+        const engineModule = await import('../content/visualizations/vis-network/engine.ts');
         const engine = engineModule.default as GraphEngine;
 
         const payload = (window as typeof globalThis & { HOME_VIS_PAYLOAD?: GraphPayload }).HOME_VIS_PAYLOAD!;

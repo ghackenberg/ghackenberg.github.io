@@ -273,19 +273,19 @@ const breadcrumbSchema = {
           let engineModule;
           switch (type) {
             case 'cytoscape':
-              engineModule = await import('../../content/visualizations/cytoscape/engine.js');
+              engineModule = await import('../../content/visualizations/cytoscape/engine.ts');
               break;
             case 'd3':
-              engineModule = await import('../../content/visualizations/d3/engine.js');
+              engineModule = await import('../../content/visualizations/d3/engine.ts');
               break;
             case 'sigma':
-              engineModule = await import('../../content/visualizations/sigma/engine.js');
+              engineModule = await import('../../content/visualizations/sigma/engine.ts');
               break;
             case '3d-force':
-              engineModule = await import('../../content/visualizations/3d-force/engine.js');
+              engineModule = await import('../../content/visualizations/3d-force/engine.ts');
               break;
             case 'vis-network':
-              engineModule = await import('../../content/visualizations/vis-network/engine.js');
+              engineModule = await import('../../content/visualizations/vis-network/engine.ts');
               break;
             default:
               throw new Error(`Unknown visualization type: ${type}`);

@@ -1,31 +1,83 @@
 const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
 const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
-export default {
+export interface D3Node {
+  id: string;
+  name: string;
+  size: number;
+  group: number;
+  x?: number;
+  y?: number;
+  fx?: number | null;
+  fy?: number | null;
+  targetX?: number;
+  targetY?: number;
+}
+
+export interface D3Link {
+  source: any;
+  target: any;
+}
+
+export interface D3Engine {
+  layouts: { id: string; label: string }[];
+  d3?: any;
+  width: number;
+  height: number;
+  nodes: D3Node[] | null;
+  links: D3Link[] | null;
+  svg: any;
+  svgGroup: any;
+  zoom: any;
+  simulation: any;
+  linkElements: any;
+  nodeElements: any;
+  currentLayout?: string;
+  isLight?: boolean;
+  fitTimeout?: any;
+  resizeObserver: ResizeObserver | null;
+  init(container: HTMLElement, payload: any, layout: string, isLight: boolean): Promise<D3Engine>;
+  fitToView(duration?: number): void;
+  updateLayout(layout: string, isLight: boolean): void;
+  destroy(): void;
+}
+
+const engine: D3Engine = {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
     { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
+  width: 800,
+  height: 500,
+  nodes: null,
+  links: null,
+  svg: null,
+  svgGroup: null,
+  zoom: null,
+  simulation: null,
+  linkElements: null,
+  nodeElements: null,
+  resizeObserver: null,
 
-  async init(container, payload, layout, isLight) {
-    const d3 = await import('https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm');
+  async init(container: HTMLElement, payload: any, layout: string, isLight: boolean) {
+    const d3 = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm');
     this.d3 = d3;
 
     this.width = container.offsetWidth || 800;
     this.height = container.offsetHeight || 500;
 
-    this.nodes = payload.d3.nodes.map(n => ({ ...n }));
+    this.nodes = payload.d3.nodes.map((n: any) => ({ ...n }));
     // Randomize initial node positions around center
-    this.nodes.forEach(n => {
+    this.nodes!.forEach(n => {
       n.x = this.width / 2 + (Math.random() - 0.5) * (this.width * 0.4);
       n.y = this.height / 2 + (Math.random() - 0.5) * (this.height * 0.4);
     });
 
-    this.links = payload.d3.connections.map(c => ({
+    this.links = payload.d3.connections.map((c: any) => ({
       source: c.sourceId,
       target: c.targetId
-    })).filter(l => this.nodes.some(n => n.id === l.source) && this.nodes.some(n => n.id === l.target));
+    })).filter((l: any) => this.nodes!.some(n => n.id === l.source) && this.nodes!.some(n => n.id === l.target));
 
     this.svg = d3.select(container).append("svg")
       .attr("width", "100%")
@@ -37,7 +89,7 @@ export default {
 
     this.zoom = d3.zoom()
       .scaleExtent([0.1, 8])
-      .on("zoom", (event) => {
+      .on("zoom", (event: any) => {
         this.svgGroup.attr("transform", event.transform);
       });
 
@@ -55,16 +107,16 @@ export default {
       .data(this.nodes)
       .enter().append("g")
       .call(d3.drag()
-        .on("start", (event, d) => {
+        .on("start", (event: any, d: any) => {
           if (!event.active) this.simulation.alphaTarget(0.3).restart();
           d.fx = d.x;
           d.fy = d.y;
         })
-        .on("drag", (event, d) => {
+        .on("drag", (event: any, d: any) => {
           d.fx = event.x;
           d.fy = event.y;
         })
-        .on("end", (event, d) => {
+        .on("end", (event: any, d: any) => {
           if (!event.active) this.simulation.alphaTarget(0);
           d.fx = null;
           d.fy = null;
@@ -73,19 +125,19 @@ export default {
     const colors = isLight ? colorsLight : colorsDark;
     
     this.nodeElements.append("circle")
-      .attr("r", d => d.size * 6 + 4)
-      .style("fill", d => colors[d.group] || colors[0])
+      .attr("r", (d: any) => d.size * 6 + 4)
+      .style("fill", (d: any) => colors[d.group] || colors[0])
       .style("stroke-width", "1.5px");
 
     this.nodeElements.append("text")
-      .attr("dx", d => d.size * 6 + 8)
+      .attr("dx", (d: any) => d.size * 6 + 8)
       .attr("dy", ".35em")
       .style("font-size", "9px")
       .style("font-family", "Outfit, Inter, sans-serif")
       .style("font-weight", "500")
       .style("pointer-events", "none");
 
-    this.nodeElements.on("dblclick", (event, d) => {
+    this.nodeElements.on("dblclick", (_event: any, d: any) => {
       if (
         d.id.startsWith('/posts/') ||
         d.id.startsWith('/publications/') ||
@@ -100,12 +152,12 @@ export default {
 
     this.simulation.on("tick", () => {
       this.linkElements
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+        .attr("x1", (d: any) => d.source.x)
+        .attr("y1", (d: any) => d.source.y)
+        .attr("x2", (d: any) => d.target.x)
+        .attr("y2", (d: any) => d.target.y);
 
-      this.nodeElements.attr("transform", d => `translate(${d.x},${d.y})`);
+      this.nodeElements.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
     });
 
     this.currentLayout = layout;
@@ -121,14 +173,16 @@ export default {
 
     // Bind ResizeObserver to handle SVG resizing dynamically
     this.resizeObserver = new ResizeObserver(entries => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         const { width, height } = entry.contentRect;
         if (width <= 0 || height <= 0) continue;
         this.width = width;
         this.height = height;
         if (this.svg) {
           this.svg.attr("viewBox", `0 0 ${this.width} ${this.height}`);
-          this.updateLayout(this.currentLayout, this.isLight);
+          if (this.currentLayout !== undefined && this.isLight !== undefined) {
+            this.updateLayout(this.currentLayout, this.isLight);
+          }
           clearTimeout(this.fitTimeout);
           this.fitTimeout = setTimeout(() => {
             this.fitToView(300);
@@ -148,10 +202,10 @@ export default {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const n of this.nodes) {
       const r = (n.size || 1) * 6 + 4;
-      const left = n.x - r - 10;
-      const right = n.x + r + 80; // approximate label length
-      const top = n.y - r - 10;
-      const bottom = n.y + r + 10;
+      const left = (n.x || 0) - r - 10;
+      const right = (n.x || 0) + r + 80; // approximate label length
+      const top = (n.y || 0) - r - 10;
+      const bottom = (n.y || 0) + r + 10;
 
       if (left < minX) minX = left;
       if (right > maxX) maxX = right;
@@ -195,8 +249,8 @@ export default {
     }
   },
 
-  updateLayout(layout, isLight) {
-    if (!this.simulation) return;
+  updateLayout(layout: string, isLight: boolean) {
+    if (!this.simulation || !this.nodes) return;
     this.currentLayout = layout;
     this.isLight = isLight;
 
@@ -205,7 +259,7 @@ export default {
     this.nodeElements.selectAll("circle").style("stroke", isLight ? "#ffffff" : "#030712");
     this.nodeElements.selectAll("text").style("fill", isLight ? "#334155" : "#9ca3af");
     const colors = isLight ? colorsLight : colorsDark;
-    this.nodeElements.selectAll("circle").style("fill", d => colors[d.group] || colors[0]);
+    this.nodeElements.selectAll("circle").style("fill", (d: any) => colors[d.group] || colors[0]);
 
     if (layout === 'radial') {
       const cx = this.width / 2;
@@ -232,12 +286,12 @@ export default {
 
       // Apply positional forces
       this.simulation
-        .force("link", this.d3.forceLink(this.links).id(d => d.id).distance(30).strength(0.08))
+        .force("link", this.d3.forceLink(this.links).id((d: any) => d.id).distance(30).strength(0.08))
         .force("charge", this.d3.forceManyBody().strength(-30))
         .force("center", null)
-        .force("x", this.d3.forceX(d => d.targetX).strength(1.2))
-        .force("y", this.d3.forceY(d => d.targetY).strength(1.2))
-        .force("collide", this.d3.forceCollide(d => d.size * 6 + 10).strength(0.8));
+        .force("x", this.d3.forceX((d: any) => d.targetX).strength(1.2))
+        .force("y", this.d3.forceY((d: any) => d.targetY).strength(1.2))
+        .force("collide", this.d3.forceCollide((d: any) => d.size * 6 + 10).strength(0.8));
 
     } else if (layout === 'columns') {
       const posts = this.nodes.filter(n => n.group === 1);
@@ -276,12 +330,12 @@ export default {
 
       // Apply columnar forces
       this.simulation
-        .force("link", this.d3.forceLink(this.links).id(d => d.id).distance(30).strength(0.02))
+        .force("link", this.d3.forceLink(this.links).id((d: any) => d.id).distance(30).strength(0.02))
         .force("charge", this.d3.forceManyBody().strength(-20))
         .force("center", null)
-        .force("x", this.d3.forceX(d => d.targetX).strength(1.5))
-        .force("y", this.d3.forceY(d => d.targetY).strength(1.5))
-        .force("collide", this.d3.forceCollide(d => d.size * 6 + 8).strength(0.8));
+        .force("x", this.d3.forceX((d: any) => d.targetX).strength(1.5))
+        .force("y", this.d3.forceY((d: any) => d.targetY).strength(1.5))
+        .force("collide", this.d3.forceCollide((d: any) => d.size * 6 + 8).strength(0.8));
 
     } else {
       // Force-directed (default)
@@ -290,10 +344,10 @@ export default {
       const charge = -Math.max(100, Math.min(220, minDim * 0.25));
 
       this.simulation
-        .force("link", this.d3.forceLink(this.links).id(d => d.id).distance(linkDist).strength(0.3))
+        .force("link", this.d3.forceLink(this.links).id((d: any) => d.id).distance(linkDist).strength(0.3))
         .force("charge", this.d3.forceManyBody().strength(charge))
         .force("center", this.d3.forceCenter(this.width / 2, this.height / 2))
-        .force("collide", this.d3.forceCollide(d => d.size * 6 + 12).strength(0.8))
+        .force("collide", this.d3.forceCollide((d: any) => d.size * 6 + 12).strength(0.8))
         .force("x", this.d3.forceX(this.width / 2).strength(0.04))
         .force("y", this.d3.forceY(this.height / 2).strength(0.04));
     }
@@ -324,3 +378,5 @@ export default {
     }
   }
 };
+
+export default engine;
