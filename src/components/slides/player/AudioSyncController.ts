@@ -232,8 +232,11 @@ export class AudioSyncController {
     const baseFrame = slideEl.querySelector('.slide-base-frame');
     if (!baseFrame) return;
 
-    // Slide 1 (title slide) is never in intro state because it's already a dedicated hero slide
-    if (this.currentIndex === 0) {
+    const slide = this.slides[this.currentIndex];
+    const isSection = slide?.slideLayout === 'section';
+
+    // Slide 1 (title slide) and section divider slides are never in standard content intro state
+    if (this.currentIndex === 0 || isSection) {
       baseFrame.classList.remove('is-intro-state');
       baseFrame.classList.remove('is-entering');
       return;

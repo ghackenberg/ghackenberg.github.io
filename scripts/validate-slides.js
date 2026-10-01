@@ -524,6 +524,98 @@ function validateSlides() {
         }
       }
 
+      // 2f. Mandatory Cue, Sequential Order & Structure Enforcement for Section Slides:
+      // Section divider slides (slideLayout: "section" or containing <SectionSlide) must have:
+      // 1. subtitle defined in frontmatter with at least one inline highlight marker ({cue:hl-...})
+      // 2. {cue:sub} entrance cue in voiceover before the subtitle highlight marker
+      // 3. Leitfrage element in body (slot="question" or with cue matching card-leitfrage-* / sec-question)
+      //    with at least one inline highlight marker
+      // 4. Bridge element in body (slot="bridge" or with cue matching card-bridge-* / sec-bridge)
+      //    with at least one inline highlight marker
+      // 5. Strictly monotonic sequence in voiceover:
+      //    {cue:sub} -> Subtitle highlight -> Leitfrage cue -> Leitfrage highlight -> Bridge cue -> Bridge highlight
+      // 6. Prohibit inline SVG graphics to enforce clean, focused typography
+      const isSectionSlide = /slideLayout:\s*["']?section["']?/m.test(fm) || /<SectionSlide/m.test(body);
+      if (isSectionSlide) {
+        if (/<svg\b/i.test(body)) {
+          console.error(`  ❌ [${slideFile}] Section slide must not contain inline SVG graphics. Section divider slides rely purely on monumental centered typography.`);
+          totalErrors++;
+        }
+
+        const qTagMatch = body.match(/<[^>]*slot=["']question["'][^>]*>/);
+        const questionCueMatch = qTagMatch ? qTagMatch[0].match(/(?:data-cue|cue)=["']([a-zA-Z0-9_-]+)["']/) : null;
+        const questionCue = questionCueMatch ? questionCueMatch[1] : bodyCues.find(c => c.startsWith('card-leitfrage') || c === 'question' || c === 'sec-question');
+
+        const bTagMatch = body.match(/<[^>]*slot=["']bridge["'][^>]*>/);
+        const bridgeCueMatch = bTagMatch ? bTagMatch[0].match(/(?:data-cue|cue)=["']([a-zA-Z0-9_-]+)["']/) : null;
+        const bridgeCue = bridgeCueMatch ? bridgeCueMatch[1] : bodyCues.find(c => c.startsWith('card-bridge') || c === 'bridge' || c === 'sec-bridge');
+
+        if (!questionCue) {
+          console.error(`  ❌ [${slideFile}] Section slide must contain a Leitfrage element with a cue (e.g. data-cue="card-leitfrage-XX" or slot="question").`);
+          totalErrors++;
+        }
+        if (!bridgeCue) {
+          console.error(`  ❌ [${slideFile}] Section slide must contain a Bridge element with a cue (e.g. data-cue="card-bridge-XX" or slot="bridge").`);
+          totalErrors++;
+        }
+
+        if (questionCue && !voCues.includes(questionCue)) {
+          console.error(`  ❌ [${slideFile}] Section slide Leitfrage cue "{cue:${questionCue}}" must be referenced in voiceover.`);
+          totalErrors++;
+        }
+        if (bridgeCue && !voCues.includes(bridgeCue)) {
+          console.error(`  ❌ [${slideFile}] Section slide Bridge cue "{cue:${bridgeCue}}" must be referenced in voiceover.`);
+          totalErrors++;
+        }
+
+        const subIdx = voCues.indexOf('sub');
+        const qIdx = questionCue ? voCues.indexOf(questionCue) : -1;
+        const bIdx = bridgeCue ? voCues.indexOf(bridgeCue) : -1;
+
+        if (subIdx !== -1 && qIdx !== -1 && subIdx > qIdx) {
+          console.error(`  ❌ [${slideFile}] Subtitle cue "{cue:sub}" must appear before Leitfrage cue "{cue:${questionCue}}" in voiceover.`);
+          totalErrors++;
+        }
+        if (qIdx !== -1 && bIdx !== -1 && qIdx > bIdx) {
+          console.error(`  ❌ [${slideFile}] Leitfrage cue "{cue:${questionCue}}" must appear before Bridge cue "{cue:${bridgeCue}}" in voiceover.`);
+          totalErrors++;
+        }
+
+        const subHlMatch = subtitleText.match(/\{cue:(hl-[a-zA-Z0-9_-]+)/);
+        const subHlCue = subHlMatch ? subHlMatch[1] : null;
+        if (subHlCue && qIdx !== -1) {
+          const sHlIdx = voCues.indexOf(subHlCue);
+          if (sHlIdx !== -1 && sHlIdx > qIdx) {
+            console.error(`  ❌ [${slideFile}] Subtitle highlight "{cue:${subHlCue}}" must appear before Leitfrage cue "{cue:${questionCue}}" in voiceover.`);
+            totalErrors++;
+          }
+        }
+
+        const qSlotMatch = body.match(/<div[^>]*slot=["']question["'][\s\S]*?<\/div>/);
+        if (qSlotMatch) {
+          const qHlMatch = qSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/);
+          if (!qHlMatch) {
+            console.error(`  ❌ [${slideFile}] Section slide Leitfrage must contain an inline highlight marker {cue:hl-...}.`);
+            totalErrors++;
+          } else if (bIdx !== -1) {
+            const qHlIdx = voCues.indexOf(qHlMatch[1]);
+            if (qHlIdx !== -1 && qHlIdx > bIdx) {
+              console.error(`  ❌ [${slideFile}] Leitfrage highlight "{cue:${qHlMatch[1]}}" must appear before Bridge cue "{cue:${bridgeCue}}" in voiceover.`);
+              totalErrors++;
+            }
+          }
+        }
+
+        const bSlotMatch = body.match(/<div[^>]*slot=["']bridge["'][\s\S]*?<\/div>/);
+        if (bSlotMatch) {
+          const bHlMatch = bSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/);
+          if (!bHlMatch) {
+            console.error(`  ❌ [${slideFile}] Section slide Bridge must contain an inline highlight marker {cue:hl-...}.`);
+            totalErrors++;
+          }
+        }
+      }
+
       // 3. Completeness check: all VO cues must be in Body
       for (const cueId of voCues) {
         if (!bodyCues.includes(cueId)) {
