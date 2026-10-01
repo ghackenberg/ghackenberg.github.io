@@ -2,24 +2,22 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { getUnifiedPageAudit } from './services/aggregator.js';
-import { findSeoOpportunities } from './services/opportunities.js';
-import { inspectUrlIndexStatus } from './clients/gsc.js';
 import {
+  getUnifiedPageAudit,
+  findSeoOpportunities,
+  inspectUrlIndexStatus,
   evaluateAioExtractability,
   scanAllContentAio,
   diffAioAgainstGit,
-} from './services/aio-evaluator.js';
-import { auditInternalLinking } from './services/internal-links.js';
-import { auditSerpSnippets } from './services/serp-snippets.js';
-import {
+  auditInternalLinking,
+  auditSerpSnippets,
   getSiteOverview,
   getTrafficSourcesReport,
   getTopQueriesReport,
   findRetentionBottlenecks,
   getAudienceBreakdownReport,
   getConversionsReport,
-} from './services/site-overview.js';
+} from '../shared/analytics/index.js';
 
 const server = new McpServer({
   name: 'unified-analytics',

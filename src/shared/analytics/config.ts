@@ -6,18 +6,27 @@ import dotenv from 'dotenv';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Project root is two levels up from scripts/mcp-unified-analytics
-export const PACKAGE_ROOT = path.resolve(__dirname, '..');
-export const PROJECT_ROOT = path.resolve(PACKAGE_ROOT, '../..');
+function findProjectRoot(startDir: string): string {
+  let curr = startDir;
+  while (curr !== path.dirname(curr)) {
+    if (fs.existsSync(path.join(curr, 'package.json'))) {
+      return curr;
+    }
+    curr = path.dirname(curr);
+  }
+  return process.cwd();
+}
 
-// Try loading .env from package root first, then project root
-const packageEnv = path.join(PACKAGE_ROOT, '.env');
+export const PROJECT_ROOT = findProjectRoot(__dirname);
+
+// Load .env from project root, with fallback to legacy sub-package path
 const projectEnv = path.join(PROJECT_ROOT, '.env');
+const legacyEnv = path.join(PROJECT_ROOT, 'scripts/mcp-unified-analytics/.env');
 
-if (fs.existsSync(packageEnv)) {
-  dotenv.config({ path: packageEnv });
-} else if (fs.existsSync(projectEnv)) {
+if (fs.existsSync(projectEnv)) {
   dotenv.config({ path: projectEnv });
+} else if (fs.existsSync(legacyEnv)) {
+  dotenv.config({ path: legacyEnv });
 } else {
   dotenv.config(); // default fallback
 }
@@ -43,15 +52,14 @@ export function getConfig(): AppConfig {
   
   let keyFile = process.env.GSC_SERVICE_ACCOUNT_KEY_FILE;
   if (keyFile && !path.isAbsolute(keyFile)) {
-    // If relative, check package root first, then project root
-    const inPkg = path.resolve(PACKAGE_ROOT, keyFile);
     const inProj = path.resolve(PROJECT_ROOT, keyFile);
-    if (fs.existsSync(inPkg)) {
-      keyFile = inPkg;
-    } else if (fs.existsSync(inProj)) {
+    const inLegacy = path.resolve(PROJECT_ROOT, 'scripts/mcp-unified-analytics', keyFile);
+    if (fs.existsSync(inProj)) {
       keyFile = inProj;
+    } else if (fs.existsSync(inLegacy)) {
+      keyFile = inLegacy;
     } else {
-      keyFile = inPkg; // default to package root
+      keyFile = inProj;
     }
   }
 

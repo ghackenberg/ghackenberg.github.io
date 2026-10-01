@@ -2,7 +2,7 @@
   "mcpServers": {
     "unified-analytics": {
       "command": "npx",
-      "args": ["mcp-unified-analytics"]
+      "args": ["tsx", "src/mcp/unified-analytics.ts"]
     }
   }
 }
