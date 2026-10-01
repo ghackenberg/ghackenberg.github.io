@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 4.92
+  },
+  "hl-sub-cases-1001": {
+    "start": 8,
+    "duration": 3.65,
+    "end": 11.65
+  },
+  "col-case-a": {
+    "start": 11.99
+  },
+  "hl-callout-case-a": {
+    "start": 14.04,
+    "duration": 2.43,
+    "end": 16.47
+  },
+  "hl-case-a-stat": {
+    "start": 17.07,
+    "duration": 4.02,
+    "end": 21.09
+  },
+  "hl-case-a-lcp": {
+    "start": 22.52,
+    "duration": 2.82,
+    "end": 25.34
+  },
+  "hl-case-a-leads": {
+    "start": 27.14,
+    "duration": 2.72,
+    "end": 29.86
+  },
+  "col-case-b": {
+    "start": 32.96
+  },
+  "hl-callout-case-b": {
+    "start": 32.96,
+    "duration": 2.06,
+    "end": 35.02
+  },
+  "hl-bain-zeroclick": {
+    "start": 36.56,
+    "duration": 3.37,
+    "end": 39.93
+  },
+  "hl-bain-traffic": {
+    "start": 41.33,
+    "duration": 1.66,
+    "end": 42.99
+  },
+  "hl-bain-funnel": {
+    "start": 43.45,
+    "duration": 3.47,
+    "end": 46.92
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 5.83
+  },
+  "hl-sub-demo-1001": {
+    "start": 8.53,
+    "duration": 3.48,
+    "end": 12.01
+  },
+  "col-demo-prompt": {
+    "start": 12.35
+  },
+  "hl-prompt-text": {
+    "start": 15.16,
+    "duration": 3.63,
+    "end": 18.79
+  },
+  "col-demo-pipeline": {
+    "start": 19.13
+  },
+  "hl-demo-step1": {
+    "start": 19.91,
+    "duration": 6.79,
+    "end": 26.7
+  },
+  "hl-demo-step2": {
+    "start": 27.32,
+    "duration": 3.16,
+    "end": 30.48
+  },
+  "hl-demo-step3": {
+    "start": 33.7,
+    "duration": 1.91,
+    "end": 35.61
+  },
+  "hl-demo-step4": {
+    "start": 36.11,
+    "duration": 2.85,
+    "end": 38.96
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 6.34
+  },
+  "hl-sub-multimodal": {
+    "start": 8.11,
+    "duration": 6.6,
+    "end": 14.71
+  },
+  "col-video-stats": {
+    "start": 15.05
+  },
+  "hl-video-share": {
+    "start": 18.36,
+    "duration": 4.87,
+    "end": 23.23
+  },
+  "hl-video-monopoly": {
+    "start": 29.98,
+    "duration": 3.69,
+    "end": 33.67
+  },
+  "hl-video-howto": {
+    "start": 33.98,
+    "duration": 8.63,
+    "end": 42.61
+  },
+  "hl-video-synthesis": {
+    "start": 40.42,
+    "duration": 3.52,
+    "end": 43.94
+  },
+  "col-video-b2b": {
+    "start": 53.54
+  },
+  "hl-video-moat": {
+    "start": 46.31,
+    "duration": 3.27,
+    "end": 49.58
+  },
+  "hl-video-imagefilm": {
+    "start": 52.63,
+    "duration": 2.64,
+    "end": 55.27
+  },
+  "hl-video-explainer": {
+    "start": 65.36,
+    "duration": 3.79,
+    "end": 69.15
+  },
+  "hl-video-ranking": {
+    "start": 68.5,
+    "duration": 0.65,
+    "end": 69.15
+  }
+}

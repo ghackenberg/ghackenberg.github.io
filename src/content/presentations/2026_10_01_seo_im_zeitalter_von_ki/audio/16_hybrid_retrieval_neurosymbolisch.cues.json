@@ -1,0 +1,34 @@
+{
+  "sub": {
+    "start": 7.39
+  },
+  "hl-sub-hybrid-1001": {
+    "start": 9.95,
+    "duration": 3.7,
+    "end": 13.65
+  },
+  "step-hybrid-01": {
+    "start": 13.99
+  },
+  "hl-pipe-step1": {
+    "start": 18.4,
+    "duration": 4.3,
+    "end": 22.7
+  },
+  "step-hybrid-02": {
+    "start": 23.04
+  },
+  "hl-pipe-step2": {
+    "start": 27.55,
+    "duration": 4.3,
+    "end": 31.85
+  },
+  "step-hybrid-03": {
+    "start": 32.19
+  },
+  "hl-pipe-step3": {
+    "start": 36.08,
+    "duration": 4.24,
+    "end": 40.32
+  }
+}

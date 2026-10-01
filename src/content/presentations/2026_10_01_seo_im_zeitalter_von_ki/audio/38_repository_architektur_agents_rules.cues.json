@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 7.05
+  },
+  "hl-sub-rules-1001": {
+    "start": 10.61,
+    "duration": 2.78,
+    "end": 13.39
+  },
+  "col-rules-agents": {
+    "start": 13.72
+  },
+  "hl-rules-contract": {
+    "start": 14.84,
+    "duration": 2.42,
+    "end": 17.26
+  },
+  "hl-rules-assumptions": {
+    "start": 20.41,
+    "duration": 3.07,
+    "end": 23.48
+  },
+  "hl-rules-cues": {
+    "start": 23.99,
+    "duration": 3.56,
+    "end": 27.55
+  },
+  "hl-rules-clean": {
+    "start": 29.64,
+    "duration": 3.01,
+    "end": 32.65
+  },
+  "col-rules-colocation": {
+    "start": 32.99
+  },
+  "hl-rules-colocation": {
+    "start": 34.24,
+    "duration": 4.11,
+    "end": 38.35
+  },
+  "hl-rules-git": {
+    "start": 39.71,
+    "duration": 2.33,
+    "end": 42.04
+  },
+  "hl-rules-static": {
+    "start": 42.64,
+    "duration": 3.16,
+    "end": 45.8
+  },
+  "hl-rules-compile": {
+    "start": 47.04,
+    "duration": 3.5,
+    "end": 50.54
+  }
+}

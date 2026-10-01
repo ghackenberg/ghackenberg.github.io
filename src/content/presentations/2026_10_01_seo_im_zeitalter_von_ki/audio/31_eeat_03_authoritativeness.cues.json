@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.01
+  },
+  "hl-sub-eeat-auth-1001": {
+    "start": 8.15,
+    "duration": 4.68,
+    "end": 12.83
+  },
+  "vis-eeat-auth": {
+    "start": 13.16
+  },
+  "card-eeat-auth": {
+    "start": 19.65
+  },
+  "hl-callout-eeat-auth": {
+    "start": 21.65,
+    "duration": 2.21,
+    "end": 23.86
+  },
+  "hl-eeat-auth-talks": {
+    "start": 24.85,
+    "duration": 2.58,
+    "end": 27.43
+  },
+  "hl-eeat-auth-standards": {
+    "start": 28.48,
+    "duration": 2.95,
+    "end": 31.43
+  },
+  "hl-eeat-auth-citations": {
+    "start": 32.35,
+    "duration": 3.82,
+    "end": 36.17
+  }
+}

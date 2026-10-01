@@ -1,0 +1,34 @@
+{
+  "sub": {
+    "start": 4.79
+  },
+  "hl-sub-pillars-1001": {
+    "start": 6.95,
+    "duration": 2.22,
+    "end": 9.17
+  },
+  "pillar-struct": {
+    "start": 10.13
+  },
+  "hl-pillar-schema": {
+    "start": 12.9,
+    "duration": 0.4,
+    "end": 13.3
+  },
+  "pillar-content": {
+    "start": 17.16
+  },
+  "hl-pillar-infogain": {
+    "start": 33.13,
+    "duration": 0.18,
+    "end": 33.31
+  },
+  "pillar-auth": {
+    "start": 22.86
+  },
+  "hl-pillar-eeat": {
+    "start": 25.73,
+    "duration": 1.13,
+    "end": 26.86
+  }
+}

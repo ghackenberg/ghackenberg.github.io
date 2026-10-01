@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.28
+  },
+  "hl-sub-jsonld-rel": {
+    "start": 8.82,
+    "duration": 2.51,
+    "end": 11.33
+  },
+  "code-jsonld-rel": {
+    "start": 11.71
+  },
+  "card-relationen": {
+    "start": 16.21
+  },
+  "hl-jsonld-ref": {
+    "start": 19.64,
+    "duration": 2.7,
+    "end": 22.34
+  },
+  "hl-jsonld-pointer": {
+    "start": 24.5,
+    "duration": 2.98,
+    "end": 27.48
+  },
+  "hl-jsonld-zero": {
+    "start": 31.29,
+    "duration": 2.66,
+    "end": 33.95
+  },
+  "hl-jsonld-themen": {
+    "start": 35.24,
+    "duration": 2.93,
+    "end": 38.17
+  }
+}

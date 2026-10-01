@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.14
+  },
+  "hl-sub-tandem": {
+    "start": 10.57,
+    "duration": 5,
+    "end": 15.57
+  },
+  "vis-tandem": {
+    "start": 15.91
+  },
+  "card-tandem": {
+    "start": 22.4
+  },
+  "hl-tandem-efficiency": {
+    "start": 23.31,
+    "duration": 4.13,
+    "end": 27.44
+  },
+  "hl-tandem-interview": {
+    "start": 29.76,
+    "duration": 4.41,
+    "end": 34.17
+  },
+  "hl-tandem-cascade": {
+    "start": 35.9,
+    "duration": 3.36,
+    "end": 39.26
+  },
+  "hl-tandem-sovereignty": {
+    "start": 40.86,
+    "duration": 3.8,
+    "end": 44.66
+  }
+}

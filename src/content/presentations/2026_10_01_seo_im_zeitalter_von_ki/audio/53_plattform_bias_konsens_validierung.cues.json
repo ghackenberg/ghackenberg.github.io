@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 7.19
+  },
+  "hl-sub-bias": {
+    "start": 9.89,
+    "duration": 4.32,
+    "end": 14.21
+  },
+  "col-citation-gap": {
+    "start": 14.55
+  },
+  "hl-bias-gap": {
+    "start": 17.45,
+    "duration": 5.69,
+    "end": 23.14
+  },
+  "hl-bias-density": {
+    "start": 25.45,
+    "duration": 3.48,
+    "end": 28.93
+  },
+  "hl-bias-diversity": {
+    "start": 29.3,
+    "duration": 3.12,
+    "end": 32.42
+  },
+  "hl-bias-consistency": {
+    "start": 33.17,
+    "duration": 4.13,
+    "end": 37.3
+  },
+  "col-social-grounding": {
+    "start": 41.33
+  },
+  "hl-bias-consensus": {
+    "start": 40.55,
+    "duration": 3.01,
+    "end": 43.56
+  },
+  "hl-bias-interaction": {
+    "start": 46.48,
+    "duration": 4.19,
+    "end": 50.67
+  },
+  "hl-bias-grounding": {
+    "start": 53.21,
+    "duration": 3.05,
+    "end": 56.26
+  },
+  "hl-bias-crawling": {
+    "start": 57.55,
+    "duration": 3.41,
+    "end": 60.96
+  }
+}

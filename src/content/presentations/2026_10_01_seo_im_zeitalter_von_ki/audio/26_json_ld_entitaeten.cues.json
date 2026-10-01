@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.74
+  },
+  "hl-sub-jsonld-1001": {
+    "start": 10.88,
+    "duration": 2.4,
+    "end": 13.28
+  },
+  "code-jsonld-ent": {
+    "start": 14.22
+  },
+  "card-entitaeten": {
+    "start": 20.43
+  },
+  "hl-jsonld-uri": {
+    "start": 21.56,
+    "duration": 2.79,
+    "end": 24.35
+  },
+  "hl-jsonld-graph": {
+    "start": 27.63,
+    "duration": 2.26,
+    "end": 29.89
+  },
+  "hl-jsonld-orcid": {
+    "start": 33.58,
+    "duration": 2.05,
+    "end": 35.63
+  },
+  "hl-fakten-inst": {
+    "start": 36.7,
+    "duration": 2.91,
+    "end": 39.61
+  }
+}

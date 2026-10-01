@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 4.74
+  },
+  "hl-sub-socialtools-1001": {
+    "start": 6.84,
+    "duration": 3.69,
+    "end": 10.53
+  },
+  "col-social-arch": {
+    "start": 10.86
+  },
+  "hl-callout-social-sync": {
+    "start": 12.21,
+    "duration": 2.38,
+    "end": 14.59
+  },
+  "hl-social-hub": {
+    "start": 15.89,
+    "duration": 1.86,
+    "end": 17.75
+  },
+  "hl-social-sameas": {
+    "start": 18.96,
+    "duration": 1.92,
+    "end": 20.88
+  },
+  "hl-social-recycling": {
+    "start": 22.31,
+    "duration": 2.79,
+    "end": 25.1
+  },
+  "col-social-stack": {
+    "start": 25.44
+  },
+  "hl-callout-social-tools": {
+    "start": 26.99,
+    "duration": 1.1,
+    "end": 28.09
+  },
+  "hl-social-scheduling": {
+    "start": 31.07,
+    "duration": 2.42,
+    "end": 33.49
+  },
+  "hl-social-shield": {
+    "start": 34.79,
+    "duration": 2.61,
+    "end": 37.4
+  },
+  "hl-social-taplio": {
+    "start": 39.55,
+    "duration": 2.8,
+    "end": 42.35
+  }
+}

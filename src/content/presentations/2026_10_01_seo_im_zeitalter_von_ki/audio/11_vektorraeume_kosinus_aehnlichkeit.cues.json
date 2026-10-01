@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.1
+  },
+  "hl-sub-cosine-1001": {
+    "start": 7.15,
+    "duration": 3.25,
+    "end": 10.4
+  },
+  "vis-vector-cosine": {
+    "start": 10.74
+  },
+  "card-vector-math": {
+    "start": 15.69
+  },
+  "hl-callout-cosine-math": {
+    "start": 18.59,
+    "duration": 1.83,
+    "end": 20.42
+  },
+  "hl-cos-dimensions": {
+    "start": 21.66,
+    "duration": 2.2,
+    "end": 23.86
+  },
+  "hl-cos-synonym": {
+    "start": 26.59,
+    "duration": 2.9,
+    "end": 29.49
+  },
+  "hl-cos-topk": {
+    "start": 30.88,
+    "duration": 3.08,
+    "end": 33.96
+  }
+}

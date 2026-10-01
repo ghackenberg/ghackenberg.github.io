@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.36
+  },
+  "hl-sub-eeat-trust-1001": {
+    "start": 8.89,
+    "duration": 4.57,
+    "end": 13.46
+  },
+  "vis-eeat-trust": {
+    "start": 13.8
+  },
+  "card-eeat-trust": {
+    "start": 20.34
+  },
+  "hl-callout-eeat-trust": {
+    "start": 22.27,
+    "duration": 2.32,
+    "end": 24.59
+  },
+  "hl-eeat-trust-certs": {
+    "start": 25.45,
+    "duration": 3.25,
+    "end": 28.7
+  },
+  "hl-eeat-trust-tolerances": {
+    "start": 29.46,
+    "duration": 3.7,
+    "end": 33.16
+  },
+  "hl-eeat-trust-corrections": {
+    "start": 34.24,
+    "duration": 2.65,
+    "end": 36.89
+  }
+}

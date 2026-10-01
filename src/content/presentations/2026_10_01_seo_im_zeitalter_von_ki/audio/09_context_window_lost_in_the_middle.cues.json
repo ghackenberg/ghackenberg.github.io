@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.75
+  },
+  "hl-sub-lost-middle": {
+    "start": 9.59,
+    "duration": 3.88,
+    "end": 13.47
+  },
+  "vis-lost-middle": {
+    "start": 13.81
+  },
+  "card-lost-middle-facts": {
+    "start": 19.4
+  },
+  "hl-callout-lost-middle": {
+    "start": 22.29,
+    "duration": 2.67,
+    "end": 24.96
+  },
+  "hl-lost-middle-primacy": {
+    "start": 25.61,
+    "duration": 3.77,
+    "end": 29.38
+  },
+  "hl-lost-middle-recency": {
+    "start": 29.69,
+    "duration": 2.05,
+    "end": 31.74
+  },
+  "hl-lost-middle-valley": {
+    "start": 33.45,
+    "duration": 2.51,
+    "end": 35.96
+  }
+}

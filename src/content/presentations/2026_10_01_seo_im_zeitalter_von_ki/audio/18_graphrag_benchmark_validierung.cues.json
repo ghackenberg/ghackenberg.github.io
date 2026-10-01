@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 7.22
+  },
+  "hl-sub-benchmarks-1001": {
+    "start": 10.01,
+    "duration": 4.19,
+    "end": 14.2
+  },
+  "col-graphrag-benchmarks": {
+    "start": 14.54
+  },
+  "hl-callout-winrate-stats": {
+    "start": 17.57,
+    "duration": 4.57,
+    "end": 22.14
+  },
+  "hl-bench-comprehensive": {
+    "start": 23.68,
+    "duration": 3.37,
+    "end": 27.05
+  },
+  "hl-bench-diversity": {
+    "start": 27.63,
+    "duration": 4.64,
+    "end": 32.27
+  },
+  "hl-bench-empowerment": {
+    "start": 32.89,
+    "duration": 3.42,
+    "end": 36.31
+  },
+  "col-graphrag-b2b": {
+    "start": 36.65
+  },
+  "hl-callout-b2b-rfp": {
+    "start": 39.81,
+    "duration": 4.89,
+    "end": 44.7
+  },
+  "hl-b2b-system-compare": {
+    "start": 46.42,
+    "duration": 3.73,
+    "end": 50.15
+  },
+  "hl-b2b-rfp-chains": {
+    "start": 50.7,
+    "duration": 5.16,
+    "end": 55.86
+  },
+  "hl-b2b-cost-bridge": {
+    "start": 56.21,
+    "duration": 4.5,
+    "end": 60.71
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.09
+  },
+  "hl-sub-grounding": {
+    "start": 8.97,
+    "duration": 3.63,
+    "end": 12.6
+  },
+  "vis-grounding-shield": {
+    "start": 12.94
+  },
+  "card-grounding-anchors": {
+    "start": 17.85
+  },
+  "hl-callout-grounding-faithfulness": {
+    "start": 21.75,
+    "duration": 2.51,
+    "end": 24.26
+  },
+  "hl-grounding-kg": {
+    "start": 24.81,
+    "duration": 3.02,
+    "end": 27.83
+  },
+  "hl-grounding-citations": {
+    "start": 28.15,
+    "duration": 3.35,
+    "end": 31.5
+  },
+  "hl-grounding-deflection": {
+    "start": 31.94,
+    "duration": 3.23,
+    "end": 35.17
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "sub": {
+    "start": 4.69
+  },
+  "hl-sub-traffic-1001": {
+    "start": 6.29,
+    "duration": 3.8,
+    "end": 10.09
+  },
+  "col-traffic-share": {
+    "start": 10.43
+  },
+  "hl-callout-similarweb-report": {
+    "start": 11.95,
+    "duration": 1,
+    "end": 12.95
+  },
+  "hl-traffic-chatgpt": {
+    "start": 14.53,
+    "duration": 1.65,
+    "end": 16.18
+  },
+  "hl-traffic-gemini": {
+    "start": 17.95,
+    "duration": 3.57,
+    "end": 21.52
+  },
+  "hl-traffic-claude": {
+    "start": 21.66,
+    "duration": 1.94,
+    "end": 23.6
+  },
+  "hl-traffic-perplexity": {
+    "start": 25.11,
+    "duration": 2.54,
+    "end": 27.65
+  },
+  "col-traffic-impl": {
+    "start": 28.4
+  },
+  "hl-callout-monopoly-end": {
+    "start": 30.46,
+    "duration": 2.13,
+    "end": 32.59
+  },
+  "hl-impl-multi": {
+    "start": 33.81,
+    "duration": 3.95,
+    "end": 37.76
+  },
+  "hl-impl-claude": {
+    "start": 38.94,
+    "duration": 1.74,
+    "end": 40.68
+  },
+  "hl-impl-omni": {
+    "start": 42.36,
+    "duration": 2.6,
+    "end": 44.96
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.63
+  },
+  "hl-sub-bluf-1001": {
+    "start": 8.84,
+    "duration": 3.06,
+    "end": 11.9
+  },
+  "vis-bluf-pyramid": {
+    "start": 12.24
+  },
+  "card-bluf-structure": {
+    "start": 17.8
+  },
+  "hl-callout-bluf-window": {
+    "start": 20.46,
+    "duration": 1.51,
+    "end": 21.97
+  },
+  "hl-bluf-answer": {
+    "start": 23.3,
+    "duration": 2.22,
+    "end": 25.52
+  },
+  "hl-bluf-table": {
+    "start": 27.2,
+    "duration": 1.55,
+    "end": 28.75
+  },
+  "hl-bluf-context": {
+    "start": 30.16,
+    "duration": 3.14,
+    "end": 33.3
+  }
+}

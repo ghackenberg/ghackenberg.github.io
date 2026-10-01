@@ -1,0 +1,61 @@
+{
+  "sub": {
+    "start": 6.9
+  },
+  "hl-sub-advocacy": {
+    "start": 9.75,
+    "duration": 4.14,
+    "end": 13.89
+  },
+  "col-advocacy-data": {
+    "start": 14.22
+  },
+  "hl-advocacy-growth": {
+    "start": 17.44,
+    "duration": 5.84,
+    "end": 23.28
+  },
+  "hl-advocacy-deals": {
+    "start": 25.91,
+    "duration": 2.95,
+    "end": 28.86
+  },
+  "hl-advocacy-experts": {
+    "start": 30.69,
+    "duration": 4.31,
+    "end": 35
+  },
+  "hl-advocacy-halo": {
+    "start": 36.23,
+    "duration": 2.75,
+    "end": 38.98
+  },
+  "col-advocacy-models": {
+    "start": 39.31
+  },
+  "hl-advocacy-framework": {
+    "start": 41.91,
+    "duration": 2.59,
+    "end": 44.5
+  },
+  "hl-model-curation": {
+    "start": 45.04,
+    "duration": 3.35,
+    "end": 48.39
+  },
+  "hl-model-enablement": {
+    "start": 48.59,
+    "duration": 2.66,
+    "end": 51.25
+  },
+  "hl-model-tandem": {
+    "start": 51.59,
+    "duration": 3.22,
+    "end": 54.81
+  },
+  "hl-model-library": {
+    "start": 55.05,
+    "duration": 2.74,
+    "end": 57.79
+  }
+}

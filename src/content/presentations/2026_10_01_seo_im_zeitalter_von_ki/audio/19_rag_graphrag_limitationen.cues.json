@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 6.17
+  },
+  "hl-sub-limits-1001": {
+    "start": 9.24,
+    "duration": 2.46,
+    "end": 11.7
+  },
+  "col-graph-limits": {
+    "start": 12.04
+  },
+  "hl-callout-graphrag-cost": {
+    "start": 13.38,
+    "duration": 2.03,
+    "end": 15.41
+  },
+  "hl-limits-token": {
+    "start": 16.18,
+    "duration": 3.01,
+    "end": 19.19
+  },
+  "hl-limits-latency": {
+    "start": 20.09,
+    "duration": 2.4,
+    "end": 22.49
+  },
+  "hl-limits-density": {
+    "start": 22.98,
+    "duration": 2.67,
+    "end": 25.65
+  },
+  "col-basic-limits": {
+    "start": 25.99
+  },
+  "hl-callout-basictop": {
+    "start": 27.8,
+    "duration": 2.95,
+    "end": 30.75
+  },
+  "hl-limits-singlehop": {
+    "start": 31.99,
+    "duration": 2.49,
+    "end": 34.48
+  },
+  "hl-limits-cost": {
+    "start": 35.01,
+    "duration": 2.76,
+    "end": 37.77
+  },
+  "hl-limits-hallu": {
+    "start": 38.33,
+    "duration": 2.11,
+    "end": 40.44
+  }
+}

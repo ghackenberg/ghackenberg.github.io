@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 5.95
+  },
+  "hl-sub-serp-1001": {
+    "start": 9.1,
+    "duration": 3.37,
+    "end": 12.47
+  },
+  "vis-serp-pipeline": {
+    "start": 12.81
+  },
+  "card-serp-arch": {
+    "start": 17.25
+  },
+  "hl-callout-serp-brin": {
+    "start": 20.18,
+    "duration": 2.24,
+    "end": 22.42
+  },
+  "hl-serp-crawl": {
+    "start": 24.13,
+    "duration": 1.64,
+    "end": 25.77
+  },
+  "hl-serp-index": {
+    "start": 27,
+    "duration": 1.82,
+    "end": 28.82
+  },
+  "hl-serp-rank": {
+    "start": 30.23,
+    "duration": 2.12,
+    "end": 32.35
+  }
+}

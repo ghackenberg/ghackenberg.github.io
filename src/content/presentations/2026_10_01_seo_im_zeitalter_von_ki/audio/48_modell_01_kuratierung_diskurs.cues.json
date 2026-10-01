@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 5.66
+  },
+  "hl-sub-curation": {
+    "start": 8.86,
+    "duration": 4.9,
+    "end": 13.76
+  },
+  "vis-curation": {
+    "start": 14.1
+  },
+  "card-curation": {
+    "start": 20.35
+  },
+  "hl-curation-barrier": {
+    "start": 21.31,
+    "duration": 3.89,
+    "end": 25.2
+  },
+  "hl-curation-essays": {
+    "start": 26.63,
+    "duration": 2.45,
+    "end": 29.08
+  },
+  "hl-curation-dialogue": {
+    "start": 35.99,
+    "duration": 3.21,
+    "end": 39.2
+  },
+  "hl-curation-signals": {
+    "start": 40.79,
+    "duration": 3.57,
+    "end": 44.36
+  }
+}

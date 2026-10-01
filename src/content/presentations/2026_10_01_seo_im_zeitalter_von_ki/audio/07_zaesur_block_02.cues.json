@@ -1,0 +1,29 @@
+{
+  "sub": {
+    "start": 6.51
+  },
+  "hl-sec2-sub": {
+    "start": 10,
+    "duration": 1.64,
+    "end": 11.64
+  },
+  "card-divider-02": {
+    "start": 11.97
+  },
+  "card-leitfrage-02": {
+    "start": 14.8
+  },
+  "hl-sec2-vektoren": {
+    "start": 14.8,
+    "duration": 3.58,
+    "end": 18.38
+  },
+  "card-bridge-02": {
+    "start": 18.71
+  },
+  "hl-sec2-rag": {
+    "start": 21.63,
+    "duration": 2.66,
+    "end": 24.29
+  }
+}

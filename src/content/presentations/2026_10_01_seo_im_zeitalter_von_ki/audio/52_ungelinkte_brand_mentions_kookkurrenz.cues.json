@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.91
+  },
+  "hl-sub-unlinked-brands": {
+    "start": 10.74,
+    "duration": 3.83,
+    "end": 14.57
+  },
+  "vis-unlinked-brands": {
+    "start": 14.91
+  },
+  "card-unlinked-brand-weights": {
+    "start": 19.98
+  },
+  "hl-callout-implied-patent": {
+    "start": 23.84,
+    "duration": 3.2,
+    "end": 27.04
+  },
+  "hl-brand-embedding": {
+    "start": 27.35,
+    "duration": 4.16,
+    "end": 31.51
+  },
+  "hl-sentiment-context": {
+    "start": 31.8,
+    "duration": 3.69,
+    "end": 35.49
+  },
+  "hl-model-weight": {
+    "start": 35.99,
+    "duration": 3.8,
+    "end": 39.79
+  }
+}

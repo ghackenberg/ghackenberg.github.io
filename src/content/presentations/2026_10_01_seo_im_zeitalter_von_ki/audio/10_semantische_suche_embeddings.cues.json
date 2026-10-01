@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 5.63
+  },
+  "hl-sub-embeddings-1001": {
+    "start": 9.09,
+    "duration": 1.65,
+    "end": 10.74
+  },
+  "col-embeddings": {
+    "start": 11.07
+  },
+  "hl-callout-vektor-beispiel": {
+    "start": 11.76,
+    "duration": 2.23,
+    "end": 13.99
+  },
+  "hl-vektor-winkel": {
+    "start": 16.81,
+    "duration": 1.68,
+    "end": 18.49
+  },
+  "hl-keyword-stuffing": {
+    "start": 20.2,
+    "duration": 1.37,
+    "end": 21.57
+  },
+  "col-math": {
+    "start": 24.5
+  },
+  "hl-callout-kosinus-formel": {
+    "start": 24.85,
+    "duration": 0.8,
+    "end": 25.65
+  },
+  "hl-kosinus-threshold": {
+    "start": 28.26,
+    "duration": 3.08,
+    "end": 31.34
+  }
+}

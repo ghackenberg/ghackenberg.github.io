@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 6.69
+  },
+  "hl-sub-videostruct": {
+    "start": 10.97,
+    "duration": 3.74,
+    "end": 14.71
+  },
+  "col-video-mechanics": {
+    "start": 15.05
+  },
+  "hl-video-nlp": {
+    "start": 18.66,
+    "duration": 3.79,
+    "end": 22.45
+  },
+  "hl-video-chapters": {
+    "start": 23.96,
+    "duration": 3.81,
+    "end": 27.77
+  },
+  "hl-video-deeplink": {
+    "start": 28.07,
+    "duration": 3.64,
+    "end": 31.71
+  },
+  "hl-video-relief": {
+    "start": 33.5,
+    "duration": 3.41,
+    "end": 36.91
+  },
+  "col-video-schema": {
+    "start": 37.25
+  },
+  "hl-video-code": {
+    "start": 39.46,
+    "duration": 2.65,
+    "end": 42.11
+  },
+  "hl-video-schemaorg": {
+    "start": 43.33,
+    "duration": 4.11,
+    "end": 47.44
+  },
+  "hl-video-transcript": {
+    "start": 48.26,
+    "duration": 3.32,
+    "end": 51.58
+  },
+  "hl-video-youtube": {
+    "start": 52.73,
+    "duration": 3.81,
+    "end": 56.54
+  }
+}

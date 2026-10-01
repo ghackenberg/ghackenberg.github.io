@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 8.36
+  },
+  "hl-sub-graphrag-1001": {
+    "start": 10.59,
+    "duration": 4.33,
+    "end": 14.92
+  },
+  "vis-graphrag-clusters": {
+    "start": 15.26
+  },
+  "card-graphrag-mechanics": {
+    "start": 21.16
+  },
+  "hl-callout-graphrag-global": {
+    "start": 23.82,
+    "duration": 3.59,
+    "end": 27.41
+  },
+  "hl-graphrag-clustering": {
+    "start": 29.07,
+    "duration": 3.49,
+    "end": 32.56
+  },
+  "hl-graphrag-summaries": {
+    "start": 33.75,
+    "duration": 3.41,
+    "end": 37.16
+  },
+  "hl-graphrag-mapreduce": {
+    "start": 37.73,
+    "duration": 4.73,
+    "end": 42.46
+  }
+}

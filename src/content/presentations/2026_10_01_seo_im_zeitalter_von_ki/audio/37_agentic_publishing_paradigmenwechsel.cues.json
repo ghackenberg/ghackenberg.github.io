@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 6.09
+  },
+  "hl-sub-agentic-1001": {
+    "start": 8.93,
+    "duration": 3.72,
+    "end": 12.65
+  },
+  "col-cms-monolith": {
+    "start": 12.99
+  },
+  "hl-cms-bloat": {
+    "start": 15,
+    "duration": 2.38,
+    "end": 17.38
+  },
+  "hl-cms-latency": {
+    "start": 18.26,
+    "duration": 2.48,
+    "end": 20.74
+  },
+  "hl-cms-agency": {
+    "start": 21.6,
+    "duration": 1.84,
+    "end": 23.44
+  },
+  "col-agentic-lab": {
+    "start": 24.31
+  },
+  "hl-agentic-prompt": {
+    "start": 25.57,
+    "duration": 2.31,
+    "end": 27.88
+  },
+  "hl-agentic-git": {
+    "start": 29.36,
+    "duration": 4.22,
+    "end": 33.58
+  },
+  "hl-agentic-speed": {
+    "start": 35.64,
+    "duration": 1.54,
+    "end": 37.18
+  },
+  "hl-agentic-edge": {
+    "start": 38.13,
+    "duration": 3.51,
+    "end": 41.64
+  }
+}

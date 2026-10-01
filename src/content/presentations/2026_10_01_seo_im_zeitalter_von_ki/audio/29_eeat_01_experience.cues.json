@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 8.63
+  },
+  "hl-sub-eeat-exp-1001": {
+    "start": 9.59,
+    "duration": 4.16,
+    "end": 13.75
+  },
+  "vis-eeat-exp": {
+    "start": 14.09
+  },
+  "card-eeat-exp": {
+    "start": 22.01
+  },
+  "hl-callout-eeat-exp": {
+    "start": 23.99,
+    "duration": 3.21,
+    "end": 27.2
+  },
+  "hl-eeat-exp-data": {
+    "start": 28.85,
+    "duration": 2.5,
+    "end": 31.35
+  },
+  "hl-eeat-exp-visuals": {
+    "start": 31.95,
+    "duration": 2.21,
+    "end": 34.16
+  },
+  "hl-eeat-exp-cases": {
+    "start": 34.91,
+    "duration": 3.64,
+    "end": 38.55
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 6.3
+  },
+  "hl-sub-social-1001": {
+    "start": 8.74,
+    "duration": 3.82,
+    "end": 12.56
+  },
+  "col-social-study": {
+    "start": 12.9
+  },
+  "hl-social-trust": {
+    "start": 15.91,
+    "duration": 3.54,
+    "end": 19.45
+  },
+  "hl-social-demand": {
+    "start": 21.61,
+    "duration": 2.53,
+    "end": 24.14
+  },
+  "hl-social-credibility": {
+    "start": 26.01,
+    "duration": 2.75,
+    "end": 28.76
+  },
+  "hl-social-preference": {
+    "start": 30.56,
+    "duration": 2.73,
+    "end": 33.29
+  },
+  "col-social-ai": {
+    "start": 33.63
+  },
+  "hl-social-signals": {
+    "start": 37.6,
+    "duration": 2.69,
+    "end": 40.29
+  },
+  "hl-social-entity": {
+    "start": 42.1,
+    "duration": 2.69,
+    "end": 44.79
+  },
+  "hl-social-sales": {
+    "start": 45.71,
+    "duration": 2.23,
+    "end": 47.94
+  },
+  "hl-social-csuite": {
+    "start": 49.94,
+    "duration": 2.8,
+    "end": 52.74
+  }
+}

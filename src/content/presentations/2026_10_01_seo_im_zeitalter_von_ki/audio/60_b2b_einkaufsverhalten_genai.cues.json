@@ -1,0 +1,56 @@
+{
+  "sub": {
+    "start": 5.19
+  },
+  "hl-sub-buyers-1001": {
+    "start": 7.83,
+    "duration": 2.43,
+    "end": 10.26
+  },
+  "col-gartner-buyers": {
+    "start": 10.6
+  },
+  "hl-callout-gartner-survey": {
+    "start": 14.13,
+    "duration": 1.77,
+    "end": 15.9
+  },
+  "hl-buyer-shortlist": {
+    "start": 17.31,
+    "duration": 3.05,
+    "end": 20.36
+  },
+  "hl-buyer-repfree": {
+    "start": 22.55,
+    "duration": 1.95,
+    "end": 24.5
+  },
+  "hl-buyer-validate": {
+    "start": 27.44,
+    "duration": 2.37,
+    "end": 29.81
+  },
+  "col-opollo-benchmark": {
+    "start": 30.15
+  },
+  "hl-callout-opollo-benchmark": {
+    "start": 31.8,
+    "duration": 1.95,
+    "end": 33.75
+  },
+  "hl-opollo-conv": {
+    "start": 34.31,
+    "duration": 3.33,
+    "end": 37.64
+  },
+  "hl-opollo-intent": {
+    "start": 39.98,
+    "duration": 2.27,
+    "end": 42.25
+  },
+  "hl-opollo-leads": {
+    "start": 42.42,
+    "duration": 2.38,
+    "end": 44.8
+  }
+}

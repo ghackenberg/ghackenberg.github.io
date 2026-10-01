@@ -1,0 +1,62 @@
+{
+  "sub": {
+    "start": 6.75
+  },
+  "hl-sub-eco-1001": {
+    "start": 8.57,
+    "duration": 4.17,
+    "end": 12.74
+  },
+  "card-google": {
+    "start": 13.07
+  },
+  "hl-eco-google-rank": {
+    "start": 14.05,
+    "duration": 2.61,
+    "end": 16.66
+  },
+  "hl-eco-google-chips": {
+    "start": 17.24,
+    "duration": 1.96,
+    "end": 19.2
+  },
+  "card-gemini": {
+    "start": 20.73
+  },
+  "hl-eco-gemini-grounding": {
+    "start": 21.54,
+    "duration": 2.56,
+    "end": 24.1
+  },
+  "hl-eco-gemini-docs": {
+    "start": 25.61,
+    "duration": 1.59,
+    "end": 27.2
+  },
+  "card-perplexity": {
+    "start": 27.54
+  },
+  "hl-eco-perplex-sources": {
+    "start": 28.8,
+    "duration": 3.11,
+    "end": 31.91
+  },
+  "hl-eco-perplex-links": {
+    "start": 32.09,
+    "duration": 2.66,
+    "end": 34.75
+  },
+  "card-openai-claude": {
+    "start": 35.09
+  },
+  "hl-eco-chatgpt-context": {
+    "start": 36.34,
+    "duration": 2.3,
+    "end": 38.64
+  },
+  "hl-eco-claude-deep": {
+    "start": 39.73,
+    "duration": 2.56,
+    "end": 42.29
+  }
+}

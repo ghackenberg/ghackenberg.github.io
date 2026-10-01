@@ -1,0 +1,29 @@
+{
+  "sub": {
+    "start": 4.78
+  },
+  "hl-sec5-sub": {
+    "start": 8.36,
+    "duration": 1.35,
+    "end": 9.71
+  },
+  "card-divider-05": {
+    "start": 10.05
+  },
+  "card-leitfrage-05": {
+    "start": 12.86
+  },
+  "hl-sec5-leitfrage": {
+    "start": 12.86,
+    "duration": 4.82,
+    "end": 17.68
+  },
+  "card-bridge-05": {
+    "start": 18.01
+  },
+  "hl-sec5-hub": {
+    "start": 20.59,
+    "duration": 2.6,
+    "end": 23.19
+  }
+}

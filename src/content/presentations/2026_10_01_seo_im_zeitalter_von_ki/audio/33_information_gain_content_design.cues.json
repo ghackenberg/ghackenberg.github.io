@@ -1,0 +1,51 @@
+{
+  "sub": {
+    "start": 4.75
+  },
+  "hl-sub-infogain-1001": {
+    "start": 8.6,
+    "duration": 1.96,
+    "end": 10.56
+  },
+  "col-bad-content": {
+    "start": 10.9
+  },
+  "hl-langatmig": {
+    "start": 11.38,
+    "duration": 1.26,
+    "end": 12.64
+  },
+  "hl-keine-information": {
+    "start": 13.79,
+    "duration": 1.41,
+    "end": 15.2
+  },
+  "hl-versteckte-daten": {
+    "start": 16.2,
+    "duration": 1.33,
+    "end": 17.53
+  },
+  "hl-fuellsaetze": {
+    "start": 18.5,
+    "duration": 2.35,
+    "end": 20.85
+  },
+  "col-bluf-content": {
+    "start": 21.19
+  },
+  "hl-direktantwort-bluf": {
+    "start": 23.3,
+    "duration": 1.69,
+    "end": 24.99
+  },
+  "hl-zitationsblock": {
+    "start": 25.56,
+    "duration": 2.69,
+    "end": 28.25
+  },
+  "hl-information-gain": {
+    "start": 29.11,
+    "duration": 2.95,
+    "end": 32.06
+  }
+}
