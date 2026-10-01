@@ -1,5 +1,5 @@
 ---
-title: "Block 05 · B2B Social Media & Vernetzung"
+title: "B2B Social Media & Vernetzung"
 subtitle: "Autorenautorität im {cue:hl-sec5-sub}vernetzten Wissensgraphen{/cue}"
 number: "41"
 slideLayout: "section"
@@ -14,24 +14,20 @@ notes: |
   - Vorbereitung auf Edelman-LinkedIn-Daten und das Social-Web-Ökosystem.
 ---
 import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
-import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 
 <SectionSlide
+  chapter="Block 05 / 06 · B2B-Vernetzung"
+  icon="orbit"
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
   slideNumber="41"
   totalSlides="56"
 >
-  <BentoCard cue="card-leitfrage-05" accent="blue" title="Leitfrage für Führungskräfte">
-    <CalloutBox type="statement">
-      „Warum ist LinkedIn für KI-Antwortsysteme das {cue:hl-sec5-leitfrage}wichtigste externe Verifikationsnetzwerk{/cue}?“
-    </CalloutBox>
-  </BentoCard>
+  <div slot="question" data-cue="card-leitfrage-05" class="text-4xl lg:text-5xl font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+    „Warum ist LinkedIn für KI-Antwortsysteme das {cue:hl-sec5-leitfrage}wichtigste externe Verifikationsnetzwerk{/cue}?“
+  </div>
 
-  <BentoCard cue="card-bridge-05" accent="neutral" title="Vernetzungs-Fokus">
-    <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 leading-relaxed">
-      Thought Leadership als Entitätsanker: Wie {cue:hl-sec5-hub}sameAs-Verknüpfungen im Hub-and-Spoke-Modell{/cue} Marken und Köpfe autorisieren.
-    </p>
-  </BentoCard>
+  <div slot="bridge" data-cue="card-bridge-05" class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+    Thought Leadership als Entitätsanker: Wie {cue:hl-sec5-hub}sameAs-Verknüpfungen im Hub-and-Spoke-Modell{/cue} Marken und Köpfe autorisieren.
+  </div>
 </SectionSlide>

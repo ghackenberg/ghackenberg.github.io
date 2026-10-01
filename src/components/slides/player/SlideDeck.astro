@@ -7,6 +7,7 @@ export type { SlideReference };
 interface SlideMeta {
   id: string;
   title: string;
+  slideLayout?: string;
   audioUrl?: string;
   cues?: SlideCueMap;
   notes?: string;
@@ -70,30 +71,72 @@ const currentDeckId = presentationId || talkId || "presentation";
 
         <!-- Slide Items List (Scrollable) -->
         <div class="flex-1 overflow-y-auto p-3 space-y-1.5 custom-scrollbar min-h-0" id="slide-list-items">
-          {slides.map((slide, idx) => (
-            <button
-              type="button"
-              data-slide-index={idx}
-              data-active={idx === 0 ? "true" : undefined}
-              title={slide.title || `Slide ${idx + 1}`}
-              class={`slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 ${
-                idx === 0
-                  ? 'bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold'
-                  : 'bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700'
-              }`}
-            >
-              <span class={`font-mono text-xs px-2 py-0.5 rounded-md font-bold shrink-0 ${
-                idx === 0
-                  ? 'bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800'
-                  : 'bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600'
-              }`}>
-                {String(idx + 1).padStart(2, '0')}
-              </span>
-              <span class="text-xs sm:text-sm truncate min-w-0 flex-1 leading-snug" title={slide.title || `Slide ${idx + 1}`}>
-                {slide.title || `Slide ${idx + 1}`}
-              </span>
-            </button>
-          ))}
+          {slides.map((slide, idx) => {
+            const isTitle = slide.slideLayout === 'title';
+            const isSection = slide.slideLayout === 'section';
+            return (
+              <>
+                {isSection && idx > 0 && (
+                  <div class="pt-3 pb-1 px-1 flex items-center gap-2">
+                    <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent via-slate-700/80 light:via-slate-300 to-transparent"></div>
+                    <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-blue-400 light:text-blue-600">
+                      Zäsur
+                    </span>
+                    <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent via-slate-700/80 light:via-slate-300 to-transparent"></div>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  data-slide-index={idx}
+                  data-slide-layout={slide.slideLayout || 'custom'}
+                  data-active={idx === 0 ? "true" : undefined}
+                  title={slide.title || `Slide ${idx + 1}`}
+                  class={`slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 ${
+                    idx === 0
+                      ? isTitle
+                        ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 light:bg-amber-50 light:border-amber-300 light:text-amber-800 font-semibold shadow-sm'
+                        : isSection
+                        ? 'bg-indigo-600/20 border-cyan-400/50 text-cyan-300 light:bg-indigo-50 light:border-indigo-300 light:text-indigo-800 font-bold shadow-sm'
+                        : 'bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold'
+                      : isTitle
+                      ? 'bg-amber-500/5 border-amber-500/20 hover:bg-amber-500/10 text-amber-300/90 light:text-amber-800 font-medium'
+                      : isSection
+                      ? 'bg-indigo-950/30 border-indigo-500/30 hover:bg-indigo-900/40 text-indigo-300 light:bg-indigo-50/60 light:border-indigo-200 light:text-indigo-800 font-bold'
+                      : 'bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700'
+                  }`}
+                >
+                  <span class={`font-mono text-xs px-2 py-0.5 rounded-md font-bold shrink-0 ${
+                    idx === 0
+                      ? isTitle
+                        ? 'bg-amber-500/25 text-amber-200 light:bg-amber-200 light:text-amber-900'
+                        : isSection
+                        ? 'bg-cyan-500/25 text-cyan-200 light:bg-indigo-200 light:text-indigo-900'
+                        : 'bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800'
+                      : isTitle
+                      ? 'bg-amber-500/15 text-amber-300 light:bg-amber-100 light:text-amber-800'
+                      : isSection
+                      ? 'bg-indigo-500/20 text-indigo-300 light:bg-indigo-100 light:text-indigo-800'
+                      : 'bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600'
+                  }`}>
+                    {isTitle ? 'INTRO' : isSection ? 'BLOCK' : String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <span class="text-xs sm:text-sm truncate min-w-0 flex-1 leading-snug" title={slide.title || `Slide ${idx + 1}`}>
+                    {slide.title || `Slide ${idx + 1}`}
+                  </span>
+                  {isTitle && (
+                    <svg class="w-3.5 h-3.5 text-amber-400 shrink-0 opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  )}
+                  {isSection && (
+                    <svg class="w-3.5 h-3.5 text-cyan-400 light:text-indigo-600 shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                    </svg>
+                  )}
+                </button>
+              </>
+            );
+          })}
         </div>
       </div>
     </aside>
@@ -811,18 +854,34 @@ const currentDeckId = presentationId || talkId || "presentation";
       let activeItemEl: HTMLElement | null = null;
       slideListItems.forEach((item, idx) => {
         const numBadge = item.querySelector('span:first-child');
+        const layout = item.getAttribute('data-slide-layout');
+        const isTitle = layout === 'title';
+        const isSection = layout === 'section';
+
         if (idx === currentIndex) {
           item.setAttribute('data-active', 'true');
-          item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold';
-          if (numBadge) {
-            numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800 font-bold shrink-0';
+          if (isTitle) {
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-amber-500/20 border-amber-500/50 text-amber-300 light:bg-amber-50 light:border-amber-300 light:text-amber-800 font-bold shadow-sm';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-amber-500/30 text-amber-200 light:bg-amber-200 light:text-amber-900 font-bold shrink-0';
+          } else if (isSection) {
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-indigo-600/25 border-cyan-400/60 text-cyan-300 light:bg-indigo-50 light:border-indigo-300 light:text-indigo-800 font-bold shadow-sm';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-cyan-500/30 text-cyan-200 light:bg-indigo-200 light:text-indigo-900 font-bold shrink-0';
+          } else {
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800 font-bold shrink-0';
           }
           activeItemEl = item;
         } else {
           item.removeAttribute('data-active');
-          item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700';
-          if (numBadge) {
-            numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600 font-bold shrink-0';
+          if (isTitle) {
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-amber-500/5 border-amber-500/20 hover:bg-amber-500/10 text-amber-300/90 light:text-amber-800 font-medium';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 light:bg-amber-100 light:text-amber-800 font-bold shrink-0';
+          } else if (isSection) {
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-indigo-950/30 border-indigo-500/30 hover:bg-indigo-900/40 text-indigo-300 light:bg-indigo-50/60 light:border-indigo-200 light:text-indigo-800 font-bold';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 light:bg-indigo-100 light:text-indigo-800 font-bold shrink-0';
+          } else {
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600 font-bold shrink-0';
           }
         }
       });
