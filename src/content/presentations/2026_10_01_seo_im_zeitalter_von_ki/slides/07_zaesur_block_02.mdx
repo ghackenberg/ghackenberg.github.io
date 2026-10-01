@@ -1,0 +1,37 @@
+---
+title: "Block 02 · Wie Antwortsysteme arbeiten"
+subtitle: "Vom statischen Web-Index zur {cue:hl-sec2-sub}generativen Antwortsynthese{/cue}"
+number: "07"
+slideLayout: "section"
+voiceover: >
+  Nachdem wir den Status Quo und die Zero-Click-Realität analysiert haben, schlagen wir nun die Brücke zur Technologie.
+  {cue:sub} In Block zwei beleuchten wir den Wandel vom statischen Web-Index zur {cue:hl-sec2-sub}generativen Antwortsynthese{/cue}.
+  {cue:card-leitfrage-02} Im Zentrum steht eine fundamentale Frage: {cue:hl-sec2-vektoren}Warum scheitern klassische SEO-Tricks an semantischen Vektorräumen?{/cue}
+  {cue:card-bridge-02} Die Antwort liegt im neurosymbolischen Zusammenspiel von {cue:hl-sec2-rag}Retrieval Augmented Generation und Wissensgraphen{/cue}.
+notes: |
+  - Zeit: 8:00 - 8:30 Min.
+  - Zäsurfolie: Kognitiver Reset nach dem Status-Quo-Schock.
+  - Den Blick vom Screen aufnehmen, Ruhe reinbringen: Jetzt erklären wir, wie die Technik unter der Haube wirklich funktioniert.
+---
+import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<SectionSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="07"
+  totalSlides="56"
+>
+  <BentoCard cue="card-leitfrage-02" accent="blue" title="Leitfrage für Führungskräfte">
+    <CalloutBox type="statement">
+      „Warum scheitern klassische SEO-Tricks an {cue:hl-sec2-vektoren}semantischen Vektorräumen{/cue}?“
+    </CalloutBox>
+  </BentoCard>
+
+  <BentoCard cue="card-bridge-02" accent="neutral" title="Technologischer Fokus">
+    <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 leading-relaxed">
+      Vom Keyword-Matching zur Wissens-Synthese: Das Zusammenspiel aus {cue:hl-sec2-rag}Retrieval Augmented Generation (RAG) und Wissensgraphen{/cue}.
+    </p>
+  </BentoCard>
+</SectionSlide>

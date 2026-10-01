@@ -1,0 +1,37 @@
+---
+title: "Block 05 · B2B Social Media & Vernetzung"
+subtitle: "Autorenautorität im {cue:hl-sec5-sub}vernetzten Wissensgraphen{/cue}"
+number: "41"
+slideLayout: "section"
+voiceover: >
+  Unsere Website ist nun technisch optimiert und liefert maschinenlesbare Signale.
+  {cue:sub} Block fünf erweitert diese Perspektive auf Autorenautorität im {cue:hl-sec5-sub}vernetzten Wissensgraphen{/cue}.
+  {cue:card-leitfrage-05} Dabei untersuchen wir eine zentrale Dynamik: {cue:hl-sec5-leitfrage}Warum ist LinkedIn für KI-Antwortsysteme das wichtigste externe Verifikationsnetzwerk?{/cue}
+  {cue:card-bridge-05} Wir zeigen, wie persönliche Autorenprofile über {cue:hl-sec5-hub}sameAs-Entitätsgraphen im Hub-and-Spoke-Modell{/cue} maschinenlesbare Autorität verankern.
+notes: |
+  - Zeit: 44:00 - 44:30 Min.
+  - Zäsurfolie: Übergang vom reinen Code/Tech zur B2B-Reputation und Thought Leadership.
+  - Vorbereitung auf Edelman-LinkedIn-Daten und das Social-Web-Ökosystem.
+---
+import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<SectionSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="41"
+  totalSlides="56"
+>
+  <BentoCard cue="card-leitfrage-05" accent="blue" title="Leitfrage für Führungskräfte">
+    <CalloutBox type="statement">
+      „Warum ist LinkedIn für KI-Antwortsysteme das {cue:hl-sec5-leitfrage}wichtigste externe Verifikationsnetzwerk{/cue}?“
+    </CalloutBox>
+  </BentoCard>
+
+  <BentoCard cue="card-bridge-05" accent="neutral" title="Vernetzungs-Fokus">
+    <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 leading-relaxed">
+      Thought Leadership als Entitätsanker: Wie {cue:hl-sec5-hub}sameAs-Verknüpfungen im Hub-and-Spoke-Modell{/cue} Marken und Köpfe autorisieren.
+    </p>
+  </BentoCard>
+</SectionSlide>

@@ -1,0 +1,37 @@
+---
+title: "Block 04 · Blick ins Web-Labor"
+subtitle: "Architektur, Tooling und {cue:hl-sec4-sub}automatisierte Qualitätskontrolle{/cue}"
+number: "32"
+slideLayout: "section"
+voiceover: >
+  Nachdem wir die drei Säulen methodisch definiert haben, vollziehen wir nun den Praxistransfer.
+  {cue:sub} In Block vier werfen wir einen Blick in mein persönliches Web-Labor mit {cue:hl-sec4-sub}automatisierter Qualitätskontrolle{/cue}.
+  {cue:card-leitfrage-04} Hier stellt sich sofort die Gretchenfrage für Führungskräfte: {cue:hl-sec4-leitfrage}Braucht der industrielle Mittelstand dafür eigentlich ein 20-köpfiges Entwicklerteam?{/cue}
+  {cue:card-bridge-04} Unsere Forschung zeigt: Nein. Mit {cue:hl-sec4-agents}Agentic Workflows, offenen MCP-Servern und strengen CI/CD-Gates{/cue} stemmt das ein kleines Team.
+notes: |
+  - Zeit: 36:00 - 36:30 Min.
+  - Zäsurfolie: Machbarkeits-Barriere im Publikum abbauen.
+  - Vor dem Live-Demo-Stack signalisieren: Was Sie jetzt sehen, ist schlank, robust und ohne Vendor-Lock-in baubar.
+---
+import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<SectionSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="32"
+  totalSlides="56"
+>
+  <BentoCard cue="card-leitfrage-04" accent="blue" title="Leitfrage für Führungskräfte">
+    <CalloutBox type="statement">
+      „Die Gretchenfrage: Braucht der Mittelstand dafür ein {cue:hl-sec4-leitfrage}20-köpfiges Entwicklerteam{/cue}?“
+    </CalloutBox>
+  </BentoCard>
+
+  <BentoCard cue="card-bridge-04" accent="neutral" title="Praxis- und Tooling-Fokus">
+    <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 leading-relaxed">
+      Die Antwort aus unserer Forschung: {cue:hl-sec4-agents}Agentic Workflows, das Model Context Protocol (MCP) und automatisierte CI/CD-Gates{/cue} genügen.
+    </p>
+  </BentoCard>
+</SectionSlide>

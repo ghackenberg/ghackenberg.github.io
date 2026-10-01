@@ -1,0 +1,97 @@
+---
+title: "Marktverschiebung: Das fragmentierte KI-Ökosystem"
+subtitle: "Traffic-Verteilung 2026: {cue:hl-sub-traffic-1001}9,5 Milliarden monatliche Besuche auf generativen Plattformen{/cue}"
+number: "46"
+slideLayout: "split"
+voiceover: >
+  Wie verteilt sich der Traffic heute tatsächlich über die verschiedenen KI-Plattformen?
+  {cue:sub} Aktuelle Marktdaten zeigen {cue:hl-sub-traffic-1001}neun Komma fünf Milliarden monatliche Besuche auf generativen Plattformen{/cue}.
+  {cue:col-traffic-share} Angeführt wird die Verteilung von {cue:hl-callout-similarweb-report}Similarweb-Zahlen{/cue}: OpenAI dominiert mit {cue:hl-traffic-chatgpt}dreiundfünfzig Prozent Marktanteil{/cue}, gefolgt von Google Gemini mit {cue:hl-traffic-gemini}siebenundzwanzig Prozent{/cue}. Anthropic Claude erreicht zehn Prozent bei {cue:hl-traffic-claude}dreihundertneunzehn Prozent Jahreswachstum{/cue}, während Perplexity auf {cue:hl-traffic-perplexity}über eins Komma zwei Milliarden monatliche Suchanfragen{/cue} kommt.
+  {cue:col-traffic-impl} Die strategische Konsequenz für B2B ist {cue:hl-callout-monopoly-end}das Ende des Google-Monopols bei Kaufrecherchen{/cue}: Einkäufer {cue:hl-impl-multi}starten ihre Spezifikationssuche zunehmend in ChatGPT und Perplexity{/cue}, Ingenieure nutzen {cue:hl-impl-claude}Claude für komplexe Systemanalysen{/cue}, und wer nur Google optimiert, {cue:hl-impl-omni}verliert den Kontakt zu knapp der Hälfte der KI-Entscheider{/cue}.
+notes: |
+  - Zeit: 54:00 - 56:30 Min.
+  - David F. Carr (Similarweb 2026) zitieren.
+  - Kernaussage für Industrie-Entscheider: Die Customer Journey beginnt nicht mehr zwingend mit Google; Kaufrecherchen finden verteilt über Big 4 statt.
+references:
+  - type: online
+    id: "carr-2026-similarweb"
+    author: "Carr, David F."
+    title: "The 2026 Generative AI Landscape: Fragmentation and Traffic Shifts"
+    siteName: "Similarweb Research Reports"
+    year: 2026
+    url: "https://www.similarweb.com/blog/insights/ai-market-share-2026/"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="46"
+  totalSlides="56"
+>
+  <BentoCard slot="left" cue="col-traffic-share" title="Marktanteile generativer Plattformen (2026)" accent="blue">
+    <CalloutBox type="statement" title="{cue:hl-callout-similarweb-report}Similarweb Research Report (2026){/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Globale Traffic-Analyse von 9,5 Mrd. Besuchen pro Monat [@carr-2026-similarweb].</p>
+    </CalloutBox>
+
+    <BarChart
+      unit="%"
+      max={100}
+      items={[
+        {
+          label: "OpenAI (ChatGPT)",
+          value: 53,
+          formattedValue: "53 %",
+          cue: "hl-traffic-chatgpt",
+          highlightColor: "emerald"
+        },
+        {
+          label: "Google (Gemini App)",
+          value: 27,
+          formattedValue: "27 %",
+          cue: "hl-traffic-gemini"
+        },
+        {
+          label: "Anthropic (Claude, +319% YoY)",
+          value: 10,
+          formattedValue: "10 %",
+          cue: "hl-traffic-claude"
+        },
+        {
+          label: "Perplexity AI (>1,2 Mrd./Monat)",
+          value: 8,
+          formattedValue: "8 %",
+          cue: "hl-traffic-perplexity"
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-traffic-impl" title="B2B-Implikationen für die Industrie" accent="cyan">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-monopoly-end}Ende des reinen Google-Monopols{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">B2B-Entscheider konsultieren mehrere Modelle parallel zur Lieferantenauswahl.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Multi-Platform-Discovery",
+        desc: "Technische Einkäufer {cue:hl-impl-multi}starten ihre Spezifikationssuche zunehmend in ChatGPT und Perplexity{/cue}."
+      },
+      {
+        icon: "cpu",
+        title: "Claude als Engineering-Liebling",
+        desc: "Anthropic Claude etabliert sich rasant {cue:hl-impl-claude}für komplexe Code- und Systemanalysen{/cue} im technischen Umfeld."
+      },
+      {
+        icon: "warning",
+        title: "Gefahr des Monokanal-Fokus",
+        desc: "Wer nur für Google optimiert, {cue:hl-impl-omni}verliert den Kontakt zu knapp der Hälfte der KI-Entscheider{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>
