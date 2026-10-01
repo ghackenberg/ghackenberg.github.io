@@ -1,13 +1,15 @@
-// @ts-check
+export interface CitationRef {
+  id?: string;
+  label?: string;
+  author?: string;
+  year?: number | string;
+}
 
 /**
  * Generates an alphanumeric citation label (e.g., Agg24, Cor09, ISO24)
  * following classic BibTeX-alpha style.
- * 
- * @param {{ id?: string, label?: string, author?: string, year?: number|string }} ref
- * @returns {string}
  */
-export function generateCitationLabel(ref) {
+export function generateCitationLabel(ref: CitationRef): string {
   if (ref.label && ref.label.trim()) {
     return ref.label.trim();
   }
@@ -44,8 +46,7 @@ export function generateCitationLabel(ref) {
   }
 
   // Extract surname from "Surname, First" or "First Surname"
-  /** @param {string} str */
-  const getSurname = (str) => {
+  const getSurname = (str: string): string => {
     if (str.includes(',')) {
       return str.split(',')[0].trim();
     }

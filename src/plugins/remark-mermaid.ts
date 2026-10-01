@@ -1,13 +1,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import puppeteer from 'puppeteer';
+import puppeteer, { type Browser, type Page } from 'puppeteer';
+import type { Root, Code, Html } from 'mdast';
+import type { VFile } from 'vfile';
+import type { Node, Parent } from 'unist';
 
-/**
- * Global renderer instance singleton to share across files during build.
- * @type {{ browser: import('puppeteer').Browser | null, page: import('puppeteer').Page | null, isInitializing: Promise<void> | null }}
- */
-const renderer = {
+interface RendererState {
+  browser: Browser | null;
+  page: Page | null;
+  isInitializing: Promise<void> | null;
+}
+
+const renderer: RendererState = {
   browser: null,
   page: null,
   isInitializing: null,
@@ -15,9 +20,6 @@ const renderer = {
 
 const CACHE_DIR = path.resolve(process.cwd(), '.cache/mermaid');
 
-/**
- * Dark theme configuration matching the website's dark slate brand palette.
- */
 const darkThemeConfig = {
   startOnLoad: false,
   htmlLabels: false,
@@ -78,9 +80,6 @@ const darkThemeConfig = {
   },
 };
 
-/**
- * Light theme configuration matching the website's clean light brand palette.
- */
 const lightThemeConfig = {
   startOnLoad: false,
   htmlLabels: false,
@@ -141,10 +140,7 @@ const lightThemeConfig = {
   },
 };
 
-/**
- * Initializes the Puppeteer headless browser and loads Mermaid library.
- */
-async function initRenderer() {
+async function initRenderer(): Promise<void> {
   if (renderer.page) return;
   if (renderer.isInitializing) return renderer.isInitializing;
 
@@ -190,12 +186,7 @@ async function initRenderer() {
   return renderer.isInitializing;
 }
 
-/**
- * Escapes HTML characters for safe code embedding.
- * @param {string} str
- * @returns {string}
- */
-function escapeHtml(str) {
+function escapeHtml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -204,14 +195,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-/**
- * Renders a single theme (dark or light) via Puppeteer.
- * @param {string} code
- * @param {'dark' | 'light'} mode
- * @param {any} config
- * @returns {Promise<string>}
- */
-async function renderSingleTheme(code, mode, config) {
+async function renderSingleTheme(code: string, mode: 'dark' | 'light', config: any): Promise<string> {
   const hash = crypto.createHash('sha256')
     .update(code)
     .update(JSON.stringify(config))
@@ -241,7 +225,7 @@ async function renderSingleTheme(code, mode, config) {
       // @ts-ignore
       const { svg } = await window.mermaid.render(id, diagramCode);
       return { svg, error: null };
-    } catch (err) {
+    } catch (err: any) {
       return { svg: null, error: err?.message || String(err) };
     }
   }, code, diagramId);
@@ -259,21 +243,12 @@ async function renderSingleTheme(code, mode, config) {
   return svg;
 }
 
-/**
- * Parses title and caption from Mermaid frontmatter directives:
- * ---
- * title: ...
- * caption: ...
- * ---
- * @param {string} code
- * @returns {{ title: string | null, caption: string | null }}
- */
-function parseMermaidMetadata(code) {
+function parseMermaidMetadata(code: string): { title: string | null; caption: string | null } {
   const match = code.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return { title: null, caption: null };
   const header = match[1];
-  let title = null;
-  let caption = null;
+  let title: string | null = null;
+  let caption: string | null = null;
   for (const line of header.split('\n')) {
     const trimmed = line.trim();
     if (trimmed.startsWith('title:')) {
@@ -285,12 +260,7 @@ function parseMermaidMetadata(code) {
   return { title, caption };
 }
 
-/**
- * Render both dark and light versions of a Mermaid diagram, and export canonical SVG.
- * @param {string} code
- * @returns {Promise<{ darkSvg: string, lightSvg: string, hash: string }>}
- */
-async function renderMermaidDiagrams(code) {
+async function renderMermaidDiagrams(code: string): Promise<{ darkSvg: string; lightSvg: string; hash: string }> {
   if (!fs.existsSync(CACHE_DIR)) {
     fs.mkdirSync(CACHE_DIR, { recursive: true });
   }
@@ -304,7 +274,6 @@ async function renderMermaidDiagrams(code) {
   const darkSvg = await renderSingleTheme(code, 'dark', darkThemeConfig);
   const lightSvg = await renderSingleTheme(code, 'light', lightThemeConfig);
 
-  // Export canonical SVG asset for Google Images and schema indexing
   const publicDir = path.resolve(process.cwd(), 'public/diagrams');
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
@@ -322,27 +291,25 @@ async function renderMermaidDiagrams(code) {
   return { darkSvg, lightSvg, hash: diagramHash };
 }
 
-/**
- * Remark plugin to transform ```mermaid code blocks into pre-rendered static dual-theme SVGs.
- * Strictly enforces separate title and caption in YAML header.
- */
-export default function remarkMermaid() {
-  /**
-   * @param {any} tree
-   * @param {any} file
-   */
-  return async function transformer(tree, file) {
-    const filePath = file?.path || file?.history?.[0] || 'Unknown Markdown File';
-    const nodesToProcess = [];
+interface MermaidNodeToProcess {
+  node: Code;
+  parent: Parent;
+  index: number;
+}
 
-    // Helper to traverse AST and find mermaid code blocks
-    function visitNodes(node, parent, index) {
-      if (node.type === 'code' && node.lang === 'mermaid') {
-        nodesToProcess.push({ node, parent, index });
+export default function remarkMermaid() {
+  return async function transformer(tree: Root, file: VFile) {
+    const filePath = file?.path || file?.history?.[0] || 'Unknown Markdown File';
+    const nodesToProcess: MermaidNodeToProcess[] = [];
+
+    function visitNodes(node: Node, parent: Parent | null, index: number | null) {
+      if (node.type === 'code' && (node as Code).lang === 'mermaid' && parent !== null && index !== null) {
+        nodesToProcess.push({ node: node as Code, parent, index });
       }
-      if (Array.isArray(node.children)) {
-        for (let i = 0; i < node.children.length; i++) {
-          visitNodes(node.children[i], node, i);
+      if ('children' in node && Array.isArray((node as Parent).children)) {
+        const p = node as Parent;
+        for (let i = 0; i < p.children.length; i++) {
+          visitNodes(p.children[i], p, i);
         }
       }
     }
@@ -358,9 +325,8 @@ export default function remarkMermaid() {
       const code = node.value.trim();
       const line = node.position?.start?.line ?? '?';
 
-      // 1. Strict Metadata Validation (Zero Fallback)
       const { title, caption } = parseMermaidMetadata(code);
-      const issues = [];
+      const issues: string[] = [];
       if (!title || title.trim().length < 3) {
         issues.push("Missing 'title' in frontmatter: title: \"Concise Diagram Title\" (min 3 chars)");
       }
@@ -400,32 +366,32 @@ export default function remarkMermaid() {
         throw new Error(errorMsg);
       }
 
-      // 2. Render SVGs & Export
       const { darkSvg, lightSvg, hash } = await renderMermaidDiagrams(code);
 
-      // 3. Replace code node with semantic figure hosting Schema.org ImageObject, dual SVGs, and source
       const html = `
-<figure class="mermaid-diagram my-8 flex flex-col items-center w-full overflow-x-auto" role="figure" aria-label="${escapeHtml(title)}" itemscope itemtype="https://schema.org/ImageObject" data-diagram-title="${escapeHtml(title)}" data-diagram-caption="${escapeHtml(caption)}">
+<figure class="mermaid-diagram my-8 flex flex-col items-center w-full overflow-x-auto" role="figure" aria-label="${escapeHtml(title!)}" itemscope itemtype="https://schema.org/ImageObject" data-diagram-title="${escapeHtml(title!)}" data-diagram-caption="${escapeHtml(caption!)}">
   <meta itemprop="contentUrl" content="/diagrams/${hash}.svg" />
-  <meta itemprop="name" content="${escapeHtml(title)}" />
-  <meta itemprop="description" content="${escapeHtml(caption)}" />
+  <meta itemprop="name" content="${escapeHtml(title!)}" />
+  <meta itemprop="description" content="${escapeHtml(caption!)}" />
   <div class="mermaid-svg mermaid-dark justify-center w-full max-w-full">
     ${darkSvg}
   </div>
   <div class="mermaid-svg mermaid-light justify-center w-full max-w-full">
     ${lightSvg}
   </div>
-  <figcaption class="sr-only">${escapeHtml(caption)}</figcaption>
+  <figcaption class="sr-only">${escapeHtml(caption!)}</figcaption>
   <details class="mermaid-source mt-3 text-xs text-slate-400 w-full text-center group">
     <summary class="cursor-pointer hover:text-slate-200 transition-colors select-none py-1 inline-block">View Diagram Source</summary>
     <pre class="bg-slate-900/80 p-3 mt-1 rounded text-left overflow-x-auto border border-slate-800 text-slate-300 font-mono text-xs"><code>${escapeHtml(code)}</code></pre>
   </details>
 </figure>`.trim();
 
-      parent.children[index] = {
+      const htmlNode: Html = {
         type: 'html',
         value: html,
       };
+
+      parent.children[index] = htmlNode as any;
     }
   };
 }
