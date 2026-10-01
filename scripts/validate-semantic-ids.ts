@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import * as cheerio from 'cheerio';
 
-function getHtmlFiles(dir) {
-  let files = [];
+function getHtmlFiles(dir: string): string[] {
+  let files: string[] = [];
   if (!fs.existsSync(dir)) return files;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name);
@@ -36,7 +36,7 @@ for (const file of htmlFiles) {
   const relPath = path.relative(distDir, file).replace(/\\/g, '/');
 
   // 1. Duplicate IDs
-  const seenIds = new Map();
+  const seenIds = new Map<string, string>();
   $('[id]').each((_, el) => {
     totalCheckedIds++;
     const rawId = $(el).attr('id');
@@ -44,11 +44,12 @@ for (const file of htmlFiles) {
     const id = rawId.trim();
     if (!id) return;
 
+    const tagName = (el as any).tagName || 'unknown';
     if (seenIds.has(id)) {
-      console.error(`[validate-semantic-ids] ❌ Duplicate ID "${id}" in ${relPath} (<${el.tagName}> conflicts with earlier <${seenIds.get(id)}>)`);
+      console.error(`[validate-semantic-ids] ❌ Duplicate ID "${id}" in ${relPath} (<${tagName}> conflicts with earlier <${seenIds.get(id)}>)`);
       errorsCount++;
     } else {
-      seenIds.set(id, el.tagName);
+      seenIds.set(id, tagName);
     }
   });
 

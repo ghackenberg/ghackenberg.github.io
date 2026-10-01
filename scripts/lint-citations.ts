@@ -1,4 +1,3 @@
-// @ts-nocheck
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
@@ -7,36 +6,36 @@ import * as cheerio from 'cheerio';
 const CACHE_DIR = path.resolve('.cache');
 const CACHE_FILE = path.join(CACHE_DIR, 'citations-cache.json');
 
-/**
- * @typedef {Object} CitationRef
- * @property {string} sourceFile
- * @property {string} category
- * @property {string} type
- * @property {string} author
- * @property {string} title
- * @property {string} url
- * @property {number} [year]
- * @property {string} [doi]
- * @property {string} [booktitle]
- * @property {string} [journal]
- * @property {string} [publisher]
- * @property {string} [siteName]
- * @property {string} [howpublished]
- */
+export interface CitationRef {
+  id?: string;
+  label?: string;
+  sourceFile: string;
+  category: string;
+  type: string;
+  author: string;
+  title: string;
+  url: string;
+  year?: number;
+  doi?: string;
+  booktitle?: string;
+  journal?: string;
+  publisher?: string;
+  siteName?: string;
+  howpublished?: string;
+}
 
-/**
- * @typedef {Object} RemoteCitation
- * @property {number} status
- * @property {string} [remoteTitle]
- * @property {string[]} [remoteAuthors]
- * @property {number} [remoteYear]
- * @property {string} [remoteVenue]
- * @property {string} [remoteSourceType]
- * @property {string} [error]
- */
+export interface RemoteCitation {
+  status: number;
+  remoteTitle?: string;
+  remoteAuthors?: string[];
+  remoteYear?: number;
+  remoteVenue?: string;
+  remoteSourceType?: string;
+  error?: string;
+}
 
 // Load or initialize cache
-function loadCache() {
+function loadCache(): Record<string, RemoteCitation> {
   if (!fs.existsSync(CACHE_DIR)) {
     fs.mkdirSync(CACHE_DIR, { recursive: true });
   }
@@ -50,7 +49,7 @@ function loadCache() {
   return {};
 }
 
-function saveCache(cache) {
+function saveCache(cache: Record<string, RemoteCitation>): void {
   try {
     fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2), 'utf-8');
   } catch (err) {
@@ -60,11 +59,8 @@ function saveCache(cache) {
 
 /**
  * Extracts DOI from doi string or URL
- * @param {string} [doi]
- * @param {string} [url]
- * @returns {string|null}
  */
-function extractDoi(doi, url) {
+function extractDoi(doi?: string, url?: string): string | null {
   if (doi && doi.includes('10.')) {
     const match = doi.match(/10\.\d{4,9}\/[-._;()/:A-Za-z0-9]+/);
     if (match) return match[0];
@@ -78,10 +74,8 @@ function extractDoi(doi, url) {
 
 /**
  * Extracts arXiv ID from URL
- * @param {string} url
- * @returns {string|null}
  */
-function extractArxivId(url) {
+function extractArxivId(url?: string): string | null {
   if (!url) return null;
   const match = url.match(/arxiv\.org\/(?:abs|pdf)\/(\d{4}\.\d{4,5}(?:v\d+)?)/i);
   return match ? match[1] : null;
@@ -89,9 +83,8 @@ function extractArxivId(url) {
 
 /**
  * Normalize string for comparison
- * @param {string} str
  */
-function normalizeText(str) {
+function normalizeText(str: string): string {
   return (str || '')
     .toLowerCase()
     .replace(/[^\p{L}\p{N}\s]/gu, ' ')
@@ -101,11 +94,8 @@ function normalizeText(str) {
 
 /**
  * Calculate token overlap similarity between two strings (0.0 to 1.0)
- * @param {string} strA
- * @param {string} strB
- * @returns {number}
  */
-function calculateTokenOverlap(strA, strB) {
+function calculateTokenOverlap(strA: string, strB: string): number {
   const wordsA = new Set(normalizeText(strA).split(' ').filter(w => w.length > 2));
   const wordsB = new Set(normalizeText(strB).split(' ').filter(w => w.length > 2));
   if (wordsA.size === 0 || wordsB.size === 0) return 0;
@@ -120,10 +110,8 @@ function calculateTokenOverlap(strA, strB) {
 
 /**
  * Fetches citation metadata from Crossref API
- * @param {string} doi
- * @returns {Promise<RemoteCitation>}
  */
-async function fetchCrossref(doi) {
+async function fetchCrossref(doi: string): Promise<RemoteCitation> {
   const url = `https://api.crossref.org/works/${encodeURIComponent(doi)}`;
   try {
     const res = await fetch(url, {
@@ -135,11 +123,11 @@ async function fetchCrossref(doi) {
     if (!res.ok) {
       return { status: res.status, error: `Crossref returned HTTP ${res.status}` };
     }
-    const data = await res.json();
+    const data: any = await res.json();
     const item = data.message;
     const remoteTitle = item.title && item.title.length > 0 ? item.title[0] : '';
-    const remoteAuthors = (item.author || []).map((a) => `${a.given ? a.given + ' ' : ''}${a.family || ''}`.trim());
-    let remoteYear;
+    const remoteAuthors = (item.author || []).map((a: any) => `${a.given ? a.given + ' ' : ''}${a.family || ''}`.trim());
+    let remoteYear: number | undefined;
     if (item.published && item.published['date-parts'] && item.published['date-parts'][0]) {
       remoteYear = item.published['date-parts'][0][0];
     } else if (item.created && item.created['date-parts'] && item.created['date-parts'][0]) {
@@ -154,17 +142,15 @@ async function fetchCrossref(doi) {
       remoteYear,
       remoteVenue
     };
-  } catch (err) {
+  } catch (err: any) {
     return { status: 0, error: err.message };
   }
 }
 
 /**
  * Fetches citation metadata from arXiv API or HTML
- * @param {string} arxivId
- * @returns {Promise<RemoteCitation>}
  */
-async function fetchArxiv(arxivId) {
+async function fetchArxiv(arxivId: string): Promise<RemoteCitation> {
   const url = `https://export.arxiv.org/api/query?id_list=${encodeURIComponent(arxivId)}`;
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
@@ -178,7 +164,7 @@ async function fetchArxiv(arxivId) {
       return { status: 404, error: 'arXiv ID not found in export feed' };
     }
     const remoteTitle = entry.find('title').text().replace(/\s+/g, ' ').trim();
-    const remoteAuthors = [];
+    const remoteAuthors: string[] = [];
     entry.find('author > name').each((_, el) => {
       remoteAuthors.push($(el).text().trim());
     });
@@ -192,17 +178,15 @@ async function fetchArxiv(arxivId) {
       remoteYear,
       remoteVenue: 'arXiv preprint'
     };
-  } catch (err) {
+  } catch (err: any) {
     return { status: 0, error: err.message };
   }
 }
 
 /**
  * Fetches metadata from arbitrary web page (HTML meta tags)
- * @param {string} url
- * @returns {Promise<RemoteCitation>}
  */
-async function fetchWebPage(url) {
+async function fetchWebPage(url: string): Promise<RemoteCitation> {
   try {
     let res = await fetch(url, {
       headers: {
@@ -241,7 +225,7 @@ async function fetchWebPage(url) {
     const html = await res.text();
     const $ = cheerio.load(html);
 
-    let remoteTitle = 
+    const remoteTitle = 
       $('meta[name="citation_title"]').attr('content') ||
       $('meta[property="og:title"]').attr('content') ||
       $('meta[name="twitter:title"]').attr('content') ||
@@ -256,7 +240,7 @@ async function fetchWebPage(url) {
       };
     }
 
-    const remoteAuthors = [];
+    const remoteAuthors: string[] = [];
     $('meta[name="citation_author"]').each((_, el) => {
       const a = $(el).attr('content');
       if (a) remoteAuthors.push(a.trim());
@@ -273,7 +257,7 @@ async function fetchWebPage(url) {
       $('meta[property="og:site_name"]').attr('content') ||
       '';
 
-    let remoteYear;
+    let remoteYear: number | undefined;
     const dateStr = 
       $('meta[name="citation_publication_date"]').attr('content') ||
       $('meta[name="citation_date"]').attr('content') ||
@@ -291,18 +275,15 @@ async function fetchWebPage(url) {
       remoteYear,
       remoteVenue
     };
-  } catch (err) {
+  } catch (err: any) {
     return { status: 0, error: err.message };
   }
 }
 
 /**
  * Resolves citation details against remote source
- * @param {CitationRef} ref
- * @param {Record<string, RemoteCitation>} cache
- * @returns {Promise<RemoteCitation>}
  */
-async function resolveCitation(ref, cache) {
+async function resolveCitation(ref: CitationRef, cache: Record<string, RemoteCitation>): Promise<RemoteCitation> {
   const cacheKey = ref.doi || ref.url;
   if (cache[cacheKey] && cache[cacheKey].status >= 200 && cache[cacheKey].status < 400) {
     return cache[cacheKey];
@@ -333,16 +314,13 @@ async function resolveCitation(ref, cache) {
 
 /**
  * Extract references from markdown frontmatter and validate in-text citation parity
- * @param {string} filePath
- * @param {string} category
- * @returns {{ refs: CitationRef[], errors: string[] }}
  */
-function extractReferencesFromFile(filePath, category) {
+function extractReferencesFromFile(filePath: string, category: string): { refs: CitationRef[]; errors: string[] } {
   const content = fs.readFileSync(filePath, 'utf-8');
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---([\s\S]*)$/);
   if (!match) return { refs: [], errors: [] };
 
-  const errors = [];
+  const errors: string[] = [];
   const relPath = path.relative(process.cwd(), filePath).replace(/\\/g, '/');
   const citedKeys = [...content.matchAll(/\[@([a-zA-Z0-9_\-]+)\]/g)].map(m => m[1]);
 
@@ -350,7 +328,7 @@ function extractReferencesFromFile(filePath, category) {
     const parsed = YAML.parse(match[1]);
     if (!parsed || !Array.isArray(parsed.references)) return { refs: [], errors: [] };
 
-    const refs = parsed.references.map((r) => ({
+    const refs: CitationRef[] = parsed.references.map((r: any) => ({
       id: r.id,
       label: r.label,
       sourceFile: relPath,
@@ -384,7 +362,7 @@ function extractReferencesFromFile(filePath, category) {
     }
 
     return { refs, errors };
-  } catch (err) {
+  } catch (err: any) {
     console.error(`YAML parse error in ${filePath}:`, err.message);
     return { refs: [], errors: [`[${relPath}] YAML parse error: ${err.message}`] };
   }
@@ -393,23 +371,23 @@ function extractReferencesFromFile(filePath, category) {
 /**
  * Main linter execution
  */
-async function run() {
+async function run(): Promise<void> {
   console.log('='.repeat(80));
   console.log('🔍 CITATION LINTER: Systematic Reference Verification & In-Text Parity Audit');
   console.log('='.repeat(80));
 
   const cache = loadCache();
-  /** @type {CitationRef[]} */
-  const allRefs = [];
-  const allCitationErrors = [];
+  const allRefs: CitationRef[] = [];
+  const allCitationErrors: string[] = [];
 
   // 1. Collect Presentation Slide References
   const presBase = path.resolve('src/content/presentations');
   if (fs.existsSync(presBase)) {
     const entries = fs.readdirSync(presBase, { withFileTypes: true, recursive: true });
     for (const e of entries) {
-      if (e.isFile() && e.name.endsWith('.mdx') && e.parentPath?.includes('slides')) {
-        const fullPath = path.join(e.parentPath, e.name);
+      const parentDir = (e as any).parentPath || presBase;
+      if (e.isFile() && e.name.endsWith('.mdx') && parentDir.includes('slides')) {
+        const fullPath = path.join(parentDir, e.name);
         const { refs, errors } = extractReferencesFromFile(fullPath, 'Presentation Slide');
         allRefs.push(...refs);
         allCitationErrors.push(...errors);
@@ -422,8 +400,9 @@ async function run() {
   if (fs.existsSync(postsBase)) {
     const entries = fs.readdirSync(postsBase, { withFileTypes: true, recursive: true });
     for (const e of entries) {
+      const parentDir = (e as any).parentPath ?? postsBase;
       if (e.isFile() && (e.name === 'index.md' || e.name === 'index.mdx')) {
-        const fullPath = path.join(e.parentPath ?? postsBase, e.name);
+        const fullPath = path.join(parentDir, e.name);
         const { refs, errors } = extractReferencesFromFile(fullPath, 'Blog Post');
         allRefs.push(...refs);
         allCitationErrors.push(...errors);

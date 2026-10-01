@@ -1,7 +1,7 @@
-import http from 'http';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -10,10 +10,9 @@ const templatesDir = path.resolve(__dirname, 'templates');
 
 // Simple static server to serve local HTML/assets to Puppeteer
 const server = http.createServer((req, res) => {
-  // Resolve paths safely
-  const urlPath = req.url.split('?')[0];
+  const urlPath = req.url ? req.url.split('?')[0] : '';
   let filePath = path.join(publicDir, urlPath);
-  if (filePath === publicDir || fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+  if (filePath === publicDir || (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory())) {
     filePath = path.join(filePath, 'index.html');
   }
 
@@ -32,9 +31,9 @@ const server = http.createServer((req, res) => {
       filePath = fallbackPath;
     }
   }
-  
+
   const ext = path.extname(filePath).toLowerCase();
-  const mimeTypes = {
+  const mimeTypes: Record<string, string> = {
     '.html': 'text/html',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
@@ -43,7 +42,7 @@ const server = http.createServer((req, res) => {
     '.css': 'text/css',
     '.js': 'application/javascript',
   };
-  
+
   fs.readFile(filePath, (err, content) => {
     if (err) {
       res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -58,77 +57,68 @@ const server = http.createServer((req, res) => {
 const PORT = 9876;
 server.listen(PORT, async () => {
   console.log(`[Asset Generator] Temporary web server listening on http://localhost:${PORT}`);
-  
+
   try {
     const browser = await puppeteer.launch({
       headless: 'shell',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
-    
-    // Helper function to capture a snapshot with custom sizes and transparency
-    async function capture(url, width, height, destPath) {
+
+    async function capture(url: string, width: number, height: number, destPath: string) {
       const page = await browser.newPage();
-      
-      // Set viewport to the exact size requested
-      await page.setViewport({ 
-        width, 
-        height, 
-        deviceScaleFactor: 1 
+
+      await page.setViewport({
+        width,
+        height,
+        deviceScaleFactor: 1,
       });
-      
-      // Force background transparency on body
+
       await page.evaluateOnNewDocument(() => {
         const style = document.createElement('style');
-        style.type = 'text/css';
         style.innerHTML = 'html, body { background: transparent !important; }';
         document.head.appendChild(style);
       });
-      
-      // Navigate to the target template url
+
       await page.goto(url, { waitUntil: 'networkidle0' });
-      
-      // Wait for fonts to be ready so titles render with correct typography
       await page.evaluateHandle(() => document.fonts.ready);
-      
-      // Take transparent screenshot (omitBackground: true makes PNG transparent where applicable)
-      await page.screenshot({ 
-        path: destPath, 
-        omitBackground: true 
+
+      await page.screenshot({
+        path: destPath,
+        omitBackground: true,
       });
-      
+
       await page.close();
       console.log(`[✔] Generated: ${path.basename(destPath)} (${width}x${height})`);
     }
 
     const baseUrl = `http://localhost:${PORT}`;
 
-    // Ensure the output directory for OG images exists
     const ogDir = path.join(publicDir, 'images');
     if (!fs.existsSync(ogDir)) {
       fs.mkdirSync(ogDir, { recursive: true });
     }
-    
+
     console.log('[Asset Generator] Starting screenshots compilation...');
 
     // 1. Generate Favicons (Transparent)
     await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 16, 16, path.join(publicDir, 'favicon-16x16.png'));
     await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 32, 32, path.join(publicDir, 'favicon-32x32.png'));
-    
-    // 2. Generate Apple Touch Icon & PWA App Icons (Solid Theme Background + Safe Zone Padding)
+
+    // 2. Generate Apple Touch Icon & PWA App Icons
     await capture(`${baseUrl}/icon-generator.html?mode=app`, 180, 180, path.join(publicDir, 'apple-touch-icon.png'));
     await capture(`${baseUrl}/icon-generator.html?mode=app`, 192, 192, path.join(publicDir, 'icon-192x192.png'));
     await capture(`${baseUrl}/icon-generator.html?mode=app`, 512, 512, path.join(publicDir, 'icon-512x512.png'));
-    
-    // 3. Generate Maskable Icon (Solid Theme Background + Maskable Safe Zone)
+
+    // 3. Generate Maskable Icon
     await capture(`${baseUrl}/icon-generator.html?mode=maskable`, 512, 512, path.join(publicDir, 'icon-512x512-maskable.png'));
-    
-    // 3. Generate Social Sharing Banner (1200x630)
+
+    // 4. Generate Social Sharing Banner (1200x630)
     const srcImagesDir = path.resolve(__dirname, '../src/assets/images');
     if (!fs.existsSync(srcImagesDir)) {
       fs.mkdirSync(srcImagesDir, { recursive: true });
     }
     await capture(`${baseUrl}/og-template.html`, 1200, 630, path.join(srcImagesDir, 'og-share-preview.png'));
-    
+
     await browser.close();
     console.log('[Asset Generator] All assets compiled successfully!');
   } catch (err) {

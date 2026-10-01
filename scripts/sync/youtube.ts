@@ -1,9 +1,19 @@
 import fs from 'fs';
 import path from 'path';
 import { google } from "googleapis";
-import { mergeFrontmatter, findExistingImage, downloadImage } from "./utils.js";
+import { mergeFrontmatter, downloadImage } from "./utils.js";
 
-export async function syncYouTube() {
+interface YouTubeVideoItem {
+  title: string;
+  id: string;
+  publishedAt: string;
+  thumbnail: string;
+  description: string;
+  views: number;
+  likes: number;
+}
+
+export async function syncYouTube(): Promise<void> {
   const channelHandle = "@georghackenberg";
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) {
@@ -27,7 +37,7 @@ export async function syncYouTube() {
   }
   const item = channelRes.data.items[0];
 
-  const rawSubs = parseInt(item.statistics?.subscriberCount || "0");
+  const rawSubs = parseInt(item.statistics?.subscriberCount || "0", 10);
   const stats = {
     subscribers: rawSubs >= 1000 ? `${(rawSubs / 1000).toFixed(1)}k+` : rawSubs.toString()
   };
@@ -38,11 +48,11 @@ export async function syncYouTube() {
   }
 
   // Fetch playlist items (all uploads)
-  let playlistItems = [];
-  let nextPageToken = undefined;
+  const playlistItems: any[] = [];
+  let nextPageToken: string | undefined = undefined;
 
   do {
-    const playlistRes = await youtube.playlistItems.list({
+    const playlistRes: any = await youtube.playlistItems.list({
       part: ["snippet"],
       playlistId: uploadsPlaylistId,
       maxResults: 50,
@@ -55,12 +65,12 @@ export async function syncYouTube() {
     nextPageToken = playlistRes.data.nextPageToken;
   } while (nextPageToken);
 
-  let videos = [];
+  let videos: YouTubeVideoItem[] = [];
   if (playlistItems.length > 0) {
     const videoIds = playlistItems.map(v => v.snippet?.resourceId?.videoId).filter(Boolean);
 
     // Fetch video metrics in chunks of 50
-    const statsMap = {};
+    const statsMap: Record<string, { views: number; likes: number }> = {};
     for (let i = 0; i < videoIds.length; i += 50) {
       const chunk = videoIds.slice(i, i + 50);
       try {
@@ -80,7 +90,7 @@ export async function syncYouTube() {
             }
           }
         }
-      } catch (e) {
+      } catch {
         console.warn(`! Failed to fetch video stats for chunk starting at ${i}, falling back to 0.`);
       }
     }
@@ -129,7 +139,7 @@ export async function syncYouTube() {
       // Create new video entry
       fs.mkdirSync(videoDir, { recursive: true });
 
-      let localExt = null;
+      let localExt: string | null = null;
       if (video.thumbnail) {
         localExt = await downloadImage(video.thumbnail, videoDir);
       }

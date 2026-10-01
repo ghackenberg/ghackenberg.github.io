@@ -1,4 +1,3 @@
-// @ts-check
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -7,15 +6,11 @@ const ENGINE_VERSION = 'v1.0';
 
 /**
  * Recursively retrieves all files in a directory matching extensions
- * @param {string} dir
- * @param {string[]} extensions
- * @returns {string[]}
  */
-function getFilesRecursively(dir, extensions = ['.astro', '.js', '.ts', '.css']) {
+function getFilesRecursively(dir: string, extensions = ['.astro', '.js', '.ts', '.css']): string[] {
   if (!fs.existsSync(dir)) return [];
   const entries = fs.readdirSync(dir, { withFileTypes: true });
-  /** @type {string[]} */
-  const files = [];
+  const files: string[] = [];
 
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
@@ -31,9 +26,8 @@ function getFilesRecursively(dir, extensions = ['.astro', '.js', '.ts', '.css'])
 
 /**
  * Computes composite SHA-256 hash of all slide-relevant styling and layout templates
- * @returns {string}
  */
-export function computeSlideStyleHash() {
+export function computeSlideStyleHash(): string {
   const hash = crypto.createHash('sha256');
   hash.update(`ENGINE:${ENGINE_VERSION}:`);
 
@@ -41,7 +35,7 @@ export function computeSlideStyleHash() {
     path.resolve('src/styles/theme.css'),
     path.resolve('src/styles/slides.css'),
     path.resolve('src/pages/presentations/[slug]/print.astro'),
-    path.resolve('src/utils/slide-cues.js'),
+    path.resolve('src/utils/slide-cues.ts'),
   ];
 
   for (const file of keyFiles) {
@@ -54,7 +48,7 @@ export function computeSlideStyleHash() {
   // Slide layout and primitive components (excluding interactive player runtime)
   const slideComponentFiles = [
     ...getFilesRecursively(path.resolve('src/components/slides/layouts')),
-    ...getFilesRecursively(path.resolve('src/components/slides/primitives'))
+    ...getFilesRecursively(path.resolve('src/components/slides/primitives')),
   ].sort();
   for (const file of slideComponentFiles) {
     hash.update(path.relative(process.cwd(), file).replace(/\\/g, '/'));
@@ -66,17 +60,15 @@ export function computeSlideStyleHash() {
 
 /**
  * Extracts visual frontmatter and body from slide MDX content, excluding voiceover/notes
- * @param {string} content
- * @returns {string}
  */
-export function extractSlideVisualContent(content) {
+export function extractSlideVisualContent(content: string): string {
   const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   let visualFrontmatter = '';
   let bodyContent = content;
 
   if (frontmatterMatch) {
     const yamlLines = frontmatterMatch[1].split(/\r?\n/);
-    const filteredYaml = [];
+    const filteredYaml: string[] = [];
     let skippingNarrative = false;
 
     for (const line of yamlLines) {
@@ -108,11 +100,8 @@ export function extractSlideVisualContent(content) {
 
 /**
  * Computes composite visual hash for a single slide file
- * @param {string} slideFilePath
- * @param {string} styleHash
- * @returns {string}
  */
-export function computeSlideVisualHash(slideFilePath, styleHash) {
+export function computeSlideVisualHash(slideFilePath: string, styleHash: string): string {
   if (!fs.existsSync(slideFilePath)) return '';
   const content = fs.readFileSync(slideFilePath, 'utf8');
   const visualContent = extractSlideVisualContent(content);
@@ -127,15 +116,14 @@ export function computeSlideVisualHash(slideFilePath, styleHash) {
 
 /**
  * Computes composite deck hash for PDF export and overall deck validation
- * @param {string} presentationFolder Name of presentation directory in src/content/presentations
- * @param {string} styleHash
- * @returns {{ deckHash: string, slideHashes: Record<string, string> }}
  */
-export function computePresentationDeckHash(presentationFolder, styleHash) {
+export function computePresentationDeckHash(
+  presentationFolder: string,
+  styleHash: string
+): { deckHash: string; slideHashes: Record<string, string> } {
   const presDir = path.resolve('src/content/presentations', presentationFolder);
   const slidesDir = path.join(presDir, 'slides');
-  /** @type {Record<string, string>} */
-  const slideHashes = {};
+  const slideHashes: Record<string, string> = {};
 
   const deckHasher = crypto.createHash('sha256');
   deckHasher.update(styleHash);
@@ -143,7 +131,7 @@ export function computePresentationDeckHash(presentationFolder, styleHash) {
 
   if (fs.existsSync(slidesDir)) {
     const slideFiles = fs.readdirSync(slidesDir)
-      .filter(f => f.endsWith('.mdx') || f.endsWith('.md'))
+      .filter((f) => f.endsWith('.mdx') || f.endsWith('.md'))
       .sort();
 
     for (const slideFile of slideFiles) {
@@ -173,24 +161,21 @@ export function computePresentationDeckHash(presentationFolder, styleHash) {
 
   return {
     deckHash: deckHasher.digest('hex'),
-    slideHashes
+    slideHashes,
   };
 }
 
-/**
- * @typedef {Object} VisualCache
- * @property {string} version
- * @property {string} styleHash
- * @property {string} deckHash
- * @property {Record<string, string>} slides
- */
+export interface VisualCache {
+  version: string;
+  styleHash: string;
+  deckHash: string;
+  slides: Record<string, string>;
+}
 
 /**
  * Loads the visual cache for a presentation
- * @param {string} presentationFolder
- * @returns {VisualCache | null}
  */
-export function loadVisualCache(presentationFolder) {
+export function loadVisualCache(presentationFolder: string): VisualCache | null {
   const cachePath = path.resolve('src/content/presentations', presentationFolder, '.visual-cache.json');
   if (!fs.existsSync(cachePath)) return null;
   try {
@@ -202,10 +187,8 @@ export function loadVisualCache(presentationFolder) {
 
 /**
  * Saves the visual cache for a presentation
- * @param {string} presentationFolder
- * @param {VisualCache} cache
  */
-export function saveVisualCache(presentationFolder, cache) {
+export function saveVisualCache(presentationFolder: string, cache: VisualCache): void {
   const cachePath = path.resolve('src/content/presentations', presentationFolder, '.visual-cache.json');
   const content = JSON.stringify(cache, null, 2) + '\n';
   for (let attempt = 1; attempt <= 6; attempt++) {

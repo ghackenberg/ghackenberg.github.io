@@ -1,4 +1,3 @@
-// @ts-check
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -8,7 +7,8 @@ import {
   computeSlideStyleHash,
   computePresentationDeckHash,
   loadVisualCache,
-  saveVisualCache
+  saveVisualCache,
+  type VisualCache,
 } from './slide-fingerprint.js';
 
 const PORT = 4322;
@@ -17,9 +17,8 @@ const distDir = path.resolve('dist');
 /**
  * Serves dist folder statically for Puppeteer printing
  */
-function createStaticServer() {
-  /** @type {Record<string, string>} */
-  const mimeTypes = {
+function createStaticServer(): http.Server {
+  const mimeTypes: Record<string, string> = {
     '.html': 'text/html',
     '.css': 'text/css',
     '.js': 'application/javascript',
@@ -28,13 +27,12 @@ function createStaticServer() {
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
     '.webp': 'image/webp',
-    '.woff2': 'font/woff2'
+    '.woff2': 'font/woff2',
   };
 
   return http.createServer((req, res) => {
     const urlPath = (req.url || '/').split('?')[0];
 
-    // Serve presentation assets directly from src/content/presentations if available
     const presMatch = urlPath.match(/^\/presentations\/(.+)$/);
     if (presMatch) {
       const srcPath = path.resolve('src/content/presentations', presMatch[1]);
@@ -68,7 +66,7 @@ function createStaticServer() {
   });
 }
 
-async function exportAllPresentationsToPdf() {
+async function exportAllPresentationsToPdf(): Promise<void> {
   const presentationsBase = path.resolve('src/content/presentations');
   if (!fs.existsSync(presentationsBase)) {
     console.log('[PDF Exporter] No presentations found.');
@@ -88,7 +86,7 @@ async function exportAllPresentationsToPdf() {
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
   const presentationFolders = fs.readdirSync(presentationsBase);
@@ -100,7 +98,7 @@ async function exportAllPresentationsToPdf() {
       if (!fs.statSync(presentationPath).isDirectory()) continue;
 
       const { deckHash } = computePresentationDeckHash(presentationFolder, styleHash);
-      let cache = loadVisualCache(presentationFolder);
+      let cache: VisualCache | null = loadVisualCache(presentationFolder);
       if (!cache) {
         cache = { version: 'v1.0', styleHash: '', deckHash: '', slides: {} };
       }
@@ -132,7 +130,7 @@ async function exportAllPresentationsToPdf() {
             preferCSSPageSize: true,
             width: '1920px',
             height: '1080px',
-            margin: { top: 0, right: 0, bottom: 0, left: 0 }
+            margin: { top: 0, right: 0, bottom: 0, left: 0 },
           });
 
           const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
@@ -162,7 +160,7 @@ async function exportAllPresentationsToPdf() {
             preferCSSPageSize: true,
             width: '1920px',
             height: '1080px',
-            margin: { top: 0, right: 0, bottom: 0, left: 0 }
+            margin: { top: 0, right: 0, bottom: 0, left: 0 },
           });
 
           const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
