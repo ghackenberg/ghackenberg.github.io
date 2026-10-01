@@ -1,5 +1,5 @@
 ---
-title: "Block 03 · Die Drei-Säulen-Methodik"
+title: "Die Drei-Säulen-Methodik"
 subtitle: "Vom theoretischen Verständnis zur {cue:hl-sec3-sub}maschinenlesbaren Autorität{/cue}"
 number: "23"
 slideLayout: "section"
@@ -14,24 +14,20 @@ notes: |
   - Jetzt wird es greifbar: Wie baut ein B2B-Unternehmen diesen Schutzwall auf?
 ---
 import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
-import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 
 <SectionSlide
+  chapter="Block 03 / 06 · Praxis-Methodik"
+  icon="pillars"
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
   slideNumber="23"
   totalSlides="56"
 >
-  <BentoCard cue="card-leitfrage-03" accent="blue" title="Leitfrage für Führungskräfte">
-    <CalloutBox type="statement">
-      „Wie machen wir eigene Industrie-Expertise für Maschinen {cue:hl-sec3-leitfrage}unübersehbar und zitierfähig{/cue}?“
-    </CalloutBox>
-  </BentoCard>
+  <div slot="question" data-cue="card-leitfrage-03" class="text-4xl lg:text-5xl font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+    „Wie machen wir eigene Industrie-Expertise für Maschinen {cue:hl-sec3-leitfrage}unübersehbar und zitierfähig{/cue}?“
+  </div>
 
-  <BentoCard cue="card-bridge-03" accent="neutral" title="Methodischer Fokus">
-    <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 leading-relaxed">
-      Vom Verstehen zur praktischen Exzellenz: Das Zusammenspiel aus {cue:hl-sec3-saeulen}Schema.org-Entitäten, E-E-A-T und Information Gain Content Design{/cue}.
-    </p>
-  </BentoCard>
+  <div slot="bridge" data-cue="card-bridge-03" class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+    Vom Verstehen zur praktischen Exzellenz: Das Zusammenspiel aus {cue:hl-sec3-saeulen}Schema.org-Entitäten, E-E-A-T und Information Gain Content Design{/cue}.
+  </div>
 </SectionSlide>

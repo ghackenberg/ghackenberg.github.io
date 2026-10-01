@@ -1,5 +1,5 @@
 ---
-title: "Block 02 · Wie Antwortsysteme arbeiten"
+title: "Wie Antwortsysteme arbeiten"
 subtitle: "Vom statischen Web-Index zur {cue:hl-sec2-sub}generativen Antwortsynthese{/cue}"
 number: "07"
 slideLayout: "section"
@@ -14,24 +14,20 @@ notes: |
   - Den Blick vom Screen aufnehmen, Ruhe reinbringen: Jetzt erklären wir, wie die Technik unter der Haube wirklich funktioniert.
 ---
 import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
-import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 
 <SectionSlide
+  chapter="Block 02 / 06 · Technologische Basis"
+  icon="network"
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
   slideNumber="07"
   totalSlides="56"
 >
-  <BentoCard cue="card-leitfrage-02" accent="blue" title="Leitfrage für Führungskräfte">
-    <CalloutBox type="statement">
-      „Warum scheitern klassische SEO-Tricks an {cue:hl-sec2-vektoren}semantischen Vektorräumen{/cue}?“
-    </CalloutBox>
-  </BentoCard>
+  <div slot="question" data-cue="card-leitfrage-02" class="text-4xl lg:text-5xl font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+    „Warum scheitern klassische SEO-Tricks an {cue:hl-sec2-vektoren}semantischen Vektorräumen{/cue}?“
+  </div>
 
-  <BentoCard cue="card-bridge-02" accent="neutral" title="Technologischer Fokus">
-    <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 leading-relaxed">
-      Vom Keyword-Matching zur Wissens-Synthese: Das Zusammenspiel aus {cue:hl-sec2-rag}Retrieval Augmented Generation (RAG) und Wissensgraphen{/cue}.
-    </p>
-  </BentoCard>
+  <div slot="bridge" data-cue="card-bridge-02" class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+    Vom Keyword-Matching zur Wissens-Synthese: Das Zusammenspiel aus {cue:hl-sec2-rag}Retrieval Augmented Generation (RAG) und Wissensgraphen{/cue}.
+  </div>
 </SectionSlide>

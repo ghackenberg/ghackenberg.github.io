@@ -1,5 +1,5 @@
 ---
-title: "Block 06 · Marktdaten, ROI & 90-Tage-Fahrplan"
+title: "Marktdaten, ROI & 90-Tage-Fahrplan"
 subtitle: "Vom Business Case zur {cue:hl-sec6-sub}operativen Umsetzung{/cue}"
 number: "45"
 slideLayout: "section"
@@ -14,24 +14,20 @@ notes: |
   - Dem Traunviertler Publikum klarmachen: Wer jetzt startet, sichert sich den First-Mover-Vorteil.
 ---
 import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
-import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 
 <SectionSlide
+  chapter="Block 06 / 06 · Marktdaten & Umsetzung"
+  icon="compass"
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
   slideNumber="45"
   totalSlides="56"
 >
-  <BentoCard cue="card-leitfrage-06" accent="blue" title="Leitfrage für Führungskräfte">
-    <CalloutBox type="statement">
-      „Rechnet sich das – und {cue:hl-sec6-leitfrage}was bedeutet die Transformation konkret für Ihr Budget{/cue}?“
-    </CalloutBox>
-  </BentoCard>
+  <div slot="question" data-cue="card-leitfrage-06" class="text-4xl lg:text-5xl font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+    „Rechnet sich das – und {cue:hl-sec6-leitfrage}was bedeutet die Transformation konkret für Ihr Budget{/cue}?“
+  </div>
 
-  <BentoCard cue="card-bridge-06" accent="neutral" title="Business- und Umsetzungs-Fokus">
-    <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 leading-relaxed">
-      Von Markttrends zur Umsetzung: {cue:hl-sec6-closedloop}Enterprise-Architektur, Closed-Loop-Marketing und der 90-Tage-Fahrplan{/cue} für den Mittelstand.
-    </p>
-  </BentoCard>
+  <div slot="bridge" data-cue="card-bridge-06" class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+    Von Markttrends zur Umsetzung: {cue:hl-sec6-closedloop}Enterprise-Architektur, Closed-Loop-Marketing und der 90-Tage-Fahrplan{/cue} für den Mittelstand.
+  </div>
 </SectionSlide>
