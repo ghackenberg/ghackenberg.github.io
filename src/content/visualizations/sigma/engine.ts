@@ -1,26 +1,48 @@
 const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
 const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
-function getNodeColor(group, isLight) {
+function getNodeColor(group: number, isLight: boolean): string {
   return isLight ? (colorsLight[group] || colorsLight[0]) : (colorsDark[group] || colorsDark[0]);
 }
 
-export default {
+export interface SigmaEngine {
+  layouts: { id: string; label: string }[];
+  Sigma?: any;
+  Graph?: any;
+  forceAtlas2?: any;
+  graph: any;
+  sigma: any;
+  payload?: any;
+  currentLayout?: string;
+  isLight?: boolean;
+  resizeObserver: ResizeObserver | null;
+  animationFrameId: number | null;
+  init(container: HTMLElement, payload: any, layout: string, isLight: boolean): Promise<SigmaEngine>;
+  updateLayout(layout: string, isLight: boolean): void;
+  animateTo(targets: Record<string, { x: number; y: number }>, duration?: number): void;
+  destroy(): void;
+}
+
+const engine: SigmaEngine = {
   layouts: [
     { id: 'force', label: 'Force Directed (Organic)' },
     { id: 'radial', label: 'Concentric Rings (Tags → Items)' },
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
+  graph: null,
+  sigma: null,
+  resizeObserver: null,
+  animationFrameId: null,
 
-  async init(container, payload, layout, isLight) {
+  async init(container: HTMLElement, payload: any, layout: string, isLight: boolean) {
     const [
       { Sigma },
       { Graph },
       { default: forceAtlas2 }
     ] = await Promise.all([
-      import('https://cdn.jsdelivr.net/npm/sigma@2.4.0/+esm'),
-      import('https://cdn.jsdelivr.net/npm/graphology@0.25.4/+esm'),
-      import('https://cdn.jsdelivr.net/npm/graphology-layout-forceatlas2@0.10.1/+esm')
+      import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/sigma@2.4.0/+esm'),
+      import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/graphology@0.25.4/+esm'),
+      import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/graphology-layout-forceatlas2@0.10.1/+esm')
     ]);
 
     this.Sigma = Sigma;
@@ -32,7 +54,7 @@ export default {
     const nodes = payload.sigma.nodes;
     const edges = payload.sigma.edges;
 
-    nodes.forEach(n => {
+    nodes.forEach((n: any) => {
       this.graph.addNode(n.id, {
         label: n.label,
         x: n.x || Math.random(),
@@ -44,7 +66,7 @@ export default {
     });
 
     const edgeColor = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-    edges.forEach(e => {
+    edges.forEach((e: any) => {
       this.graph.addEdge(e.source, e.target, {
         size: 1,
         color: edgeColor
@@ -59,7 +81,7 @@ export default {
       labelSize: 10
     });
 
-    this.sigma.on('clickNode', ({ node }) => {
+    this.sigma.on('clickNode', ({ node }: { node: string }) => {
       if (
         node.startsWith('/posts/') ||
         node.startsWith('/publications/') ||
@@ -95,7 +117,7 @@ export default {
     return this;
   },
 
-  updateLayout(layout, isLight) {
+  updateLayout(layout: string, isLight: boolean) {
     if (!this.graph || !this.sigma) return;
     this.currentLayout = layout;
     this.isLight = isLight;
@@ -104,11 +126,11 @@ export default {
     const edgeColor = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
     const labelColor = isLight ? '#0f172a' : '#f3f4f6';
 
-    this.graph.forEachEdge(edge => {
+    this.graph.forEachEdge((edge: any) => {
       this.graph.setEdgeAttribute(edge, 'color', edgeColor);
     });
 
-    this.graph.forEachNode(node => {
+    this.graph.forEachNode((node: any) => {
       const grp = this.graph.getNodeAttribute(node, 'group') ?? 0;
       this.graph.setNodeAttribute(node, 'color', getNodeColor(grp, isLight));
     });
@@ -116,14 +138,14 @@ export default {
     this.sigma.setSetting('labelColor', { color: labelColor });
     this.sigma.setSetting('defaultEdgeColor', edgeColor);
 
-    const targets = {};
+    const targets: Record<string, { x: number; y: number }> = {};
 
     if (layout === 'radial') {
       const nodes = this.graph.nodes();
-      const tags = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 0);
-      const others = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') !== 0);
+      const tags = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 0);
+      const others = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') !== 0);
 
-      tags.forEach((n, idx) => {
+      tags.forEach((n: any, idx: number) => {
         const theta = (2 * Math.PI * idx) / tags.length;
         targets[n] = {
           x: 5 * Math.cos(theta),
@@ -131,7 +153,7 @@ export default {
         };
       });
 
-      others.forEach((n, idx) => {
+      others.forEach((n: any, idx: number) => {
         const theta = (2 * Math.PI * idx) / others.length;
         targets[n] = {
           x: 12 * Math.cos(theta),
@@ -143,13 +165,13 @@ export default {
 
     } else if (layout === 'columns') {
       const nodes = this.graph.nodes();
-      const posts = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 1);
-      const publications = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 2);
-      const presentations = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 3);
-      const tags = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 0);
-      const courses = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 4);
-      const projects = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 5);
-      const services = nodes.filter(n => this.graph.getNodeAttribute(n, 'group') === 6);
+      const posts = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 1);
+      const publications = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 2);
+      const presentations = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 3);
+      const tags = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 0);
+      const courses = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 4);
+      const projects = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 5);
+      const services = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 6);
 
       const categories = [posts, publications, presentations, tags, courses, projects, services];
       const isMobile = window.innerWidth < 768;
@@ -157,7 +179,7 @@ export default {
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
           const rowY = (catIdx - 3) * 4;
-          catNodes.forEach((n, idx) => {
+          catNodes.forEach((n: any, idx: number) => {
             targets[n] = {
               x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0,
               y: rowY
@@ -167,7 +189,7 @@ export default {
       } else {
         categories.forEach((catNodes, catIdx) => {
           const colX = (catIdx - 3) * 5;
-          catNodes.forEach((n, idx) => {
+          catNodes.forEach((n: any, idx: number) => {
             targets[n] = {
               x: colX,
               y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0
@@ -180,10 +202,8 @@ export default {
 
     } else {
       // default: force directed
-      // Run ForceAtlas2 synchronously on a temporary setup or on the graph
-      // To get starting points, we save them, run it, then interpolate.
-      const startingPos = {};
-      this.graph.forEachNode(node => {
+      const startingPos: Record<string, { x: number; y: number }> = {};
+      this.graph.forEachNode((node: any) => {
         startingPos[node] = {
           x: this.graph.getNodeAttribute(node, 'x'),
           y: this.graph.getNodeAttribute(node, 'y')
@@ -199,7 +219,7 @@ export default {
       });
 
       // Read resulting targets and reset graph to starting positions
-      this.graph.forEachNode(node => {
+      this.graph.forEachNode((node: any) => {
         targets[node] = {
           x: this.graph.getNodeAttribute(node, 'x'),
           y: this.graph.getNodeAttribute(node, 'y')
@@ -212,20 +232,20 @@ export default {
     }
   },
 
-  animateTo(targets, duration = 600) {
+  animateTo(targets: Record<string, { x: number; y: number }>, duration = 600) {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
     const startTime = performance.now();
-    const startPositions = {};
-    this.graph.forEachNode(node => {
+    const startPositions: Record<string, { x: number; y: number }> = {};
+    this.graph.forEachNode((node: any) => {
       startPositions[node] = {
         x: this.graph.getNodeAttribute(node, 'x'),
         y: this.graph.getNodeAttribute(node, 'y')
       };
     });
 
-    const step = (time) => {
+    const step = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
@@ -234,7 +254,7 @@ export default {
         ? 4 * progress * progress * progress 
         : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
-      this.graph.forEachNode(node => {
+      this.graph.forEachNode((node: any) => {
         const start = startPositions[node];
         const target = targets[node];
         if (start && target) {
@@ -277,3 +297,5 @@ export default {
     this.graph = null;
   }
 };
+
+export default engine;
