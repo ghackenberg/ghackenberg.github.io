@@ -1,0 +1,67 @@
+---
+title: "GraphRAG: Hierarchische Community Summaries"
+subtitle: "Globale Wissenssynthese nach Microsoft Research: {cue:hl-sub-graphrag-1001}Wie Community Detection und Leiden-Clustering naive Vektoren deklassieren{/cue}"
+number: "16"
+slideLayout: "story-hero"
+voiceover: >
+  Bei komplexen strategischen Fragestellungen stoßen herkömmliche RAG-Systeme an eine unüberwindbare Wand: das globale Sensemaking-Problem.
+  {cue:sub} Microsoft Research löst diesen Engpass durch {cue:hl-sub-graphrag-1001}GraphRAG und hierarchische Community Summaries auf Basis von Leiden-Clustering{/cue}.
+  {cue:vis-graphrag-clusters} Unsere Architektur-Visualisierung zeigt die Aufteilung des Unternehmensgraphen in farbige Themencluster.
+  {cue:card-graphrag-mechanics} Während naive Vektoren nur Punktfakten finden, {cue:hl-callout-graphrag-global}beantwortet GraphRAG globale Fragen über den gesamten Datenbestand{/cue}: Der Wissensgraph wird {cue:hl-graphrag-clustering}durch den Leiden-Algorithmus hierarchisch in dichte Wissensgemeinschaften zerlegt{/cue}, für jedes Cluster {cue:hl-graphrag-summaries}generiert ein LLM vorab eine vollständige semantische Zusammenfassung{/cue}, und {cue:hl-graphrag-mapreduce}bei der Anfrage liest das System nur diese Community Summaries statt zehntausender Text-Chunks{/cue} – das ist echte Skalierung!
+notes: |
+  - Zeit: 28:00 - 30:30 Min.
+  - Darren Edge et al. (Microsoft Research 2024) zitieren.
+  - Kernaussage für Entscheider: Wer nur isolierte Blogposts ins Web stellt, wird fragmentiert; wer strukturierte Themengraphen liefert, dominiert die Community Summaries.
+references:
+  - type: article
+    id: "edge-2024-graphrag"
+    author: "Edge, Darren and Trinh, Ha and Cheng, Newman and Bradley, Joshua and Chao, Alex and Mody, Apurva and Truitt, Steven and Metropolitansky, Dasha and Ness, Robert Osazuwa and Larson, Jonathan"
+    title: "From Local to Global: A Graph RAG Approach to Query-Focused Summarization"
+    journal: "arXiv preprint arXiv:2404.16130"
+    year: 2024
+    doi: "10.48550/arXiv.2404.16130"
+    url: "https://arxiv.org/abs/2404.16130"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import graphragImage from '../images/hero_graphrag_community_summaries.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="16"
+  totalSlides="51"
+  cue="vis-graphrag-clusters"
+  imageCue="vis-graphrag-clusters"
+  imageSrc={graphragImage}
+  imageAlt="Architekturdiagramm zu Microsoft GraphRAG: Hierarchisches Clustering nach Leiden und Community Summaries"
+  imageTitle="Microsoft GraphRAG: Hierarchische Community Detection & Summaries"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-graphrag-mechanics" title="Architektur der Community Summaries" accent="purple">
+    <CalloutBox type="statement" title="{cue:hl-callout-graphrag-global}Local vs. Global Search im Enterprise{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Microsoft Research [@edge-2024-graphrag]: Vektoren finden Detailfakten, scheitern aber an globalen Leitfragen.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "network",
+        title: "Hierarchisches Leiden-Clustering",
+        desc: "Wissensgraphen werden durch Algorithmen {cue:hl-graphrag-clustering}durch den Leiden-Algorithmus hierarchisch in dichte Wissensgemeinschaften zerlegt{/cue}."
+      },
+      {
+        icon: "sparkles",
+        title: "Vorberechnete Summaries",
+        desc: "Auf jeder Cluster-Ebene {cue:hl-graphrag-summaries}generiert ein LLM vorab eine vollständige semantische Zusammenfassung{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Globale Map-Reduce-Synthese",
+        desc: "Bei übergreifenden B2B-Anfragen {cue:hl-graphrag-mapreduce}liest das System nur diese Community Summaries statt zehntausender Text-Chunks{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>
