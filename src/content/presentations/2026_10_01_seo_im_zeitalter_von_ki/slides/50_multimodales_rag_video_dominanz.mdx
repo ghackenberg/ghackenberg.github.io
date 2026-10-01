@@ -1,0 +1,84 @@
+---
+title: "Multimodales RAG & Video-Dominanz"
+subtitle: "BrightEdge-Analyse: {cue:hl-sub-multimodal}Warum YouTube mit 29,5 % die mit Abstand meistzitierte Quelle in AI Overviews ist{/cue}"
+number: "50"
+slideLayout: "split"
+voiceover: >
+  Neben reinem Text erschließen moderne Antwortsysteme mit rasanter Geschwindigkeit multimodale Medienkanäle.
+  {cue:sub} Die BrightEdge-Analyse belegt, {cue:hl-sub-multimodal}warum YouTube mit 29,5 Prozent die mit großem Abstand meistzitierte Einzelquelle in Google AI Overviews ist{/cue}.
+  {cue:col-video-stats} Die empirischen Daten der BGP-Technologie zeigen: {cue:hl-video-share}YouTube erzielt einen Zitatanteil von knapp 30 Prozent in generativen Google-Antworten{/cue}. Das ist signifikant mehr als Wikipedia oder spezialisierte Enzyklopädien. Plattformübergreifend wird YouTube {cue:hl-video-monopoly}200-mal häufiger zitiert als alle alternativen Videonetzwerke zusammen{/cue}, {cue:hl-video-howto}bei technischen How-to- und Erkläranfragen stiegen die Videozitierungen um über 35 Prozent{/cue}, und multimodale Modelle {cue:hl-video-synthesis}synthetisieren gesprochene Erklärungen direkt im Text der KI-Antwort{/cue}.
+  {cue:col-video-b2b} Für den B2B-Mittelstand eröffnet sich hier {cue:hl-video-moat}ein gewaltiger, bisher nahezu unbesetzter Wettbewerbsvorteil{/cue}: Während 95 Prozent aller Industrieunternehmen {cue:hl-video-imagefilm}YouTube lediglich für austauschbare Imagefilme nutzen{/cue}, verlangen multimodale KIs didaktische Problemlöser. Wer stattdessen {cue:hl-video-explainer}technische Visual Explainers zu Algorithmen, Simulationen und Prüfständen publiziert{/cue}, sichert sich die generative Antwortbox {cue:hl-video-ranking}mit maximalem Information Gain und minimalem Wettbewerb{/cue}.
+notes: |
+  - Zeit: 54:30 - 56:00 Min.
+  - Empirische Daten: BrightEdge (2024) BGP Research.
+  - Kernaussage für B2B: Schluss mit Imagefilmen – YouTube muss als technisches Nachschlagewerk und Video-Dokumentation verstanden werden.
+references:
+  - type: article
+    id: "brightedge-2024-ai-overviews-video"
+    author: "BrightEdge Technologies"
+    title: "BrightEdge Generative Parser Research: Citation Dynamics in Generative Engine Optimization"
+    journal: "BrightEdge Research"
+    year: 2024
+    url: "https://www.brightedge.com/research/ai-overviews"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="50"
+  totalSlides="64"
+>
+  <BentoCard slot="left" cue="col-video-stats" title="YouTube als KI-Quelle #1 (BrightEdge)" accent="blue">
+    <CalloutBox type="takeaway" title="29,5 % aller Google AI Overviews zitieren YouTube">
+      <p class="text-blue-200 light:text-blue-900">
+        BrightEdge Research [@brightedge-2024-ai-overviews-video]: {cue:hl-video-share}YouTube ist die mit weitem Abstand meistzitierte Einzeldomain im generativen Suchraum{/cue}.
+      </p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "200x Plattform-Monopol",
+        desc: "In KI-Antworten wird YouTube {cue:hl-video-monopoly}200-mal häufiger referenziert als Vimeo, TikTok oder LinkedIn-Video zusammen{/cue}."
+      },
+      {
+        icon: "arrow",
+        title: "+35,6 % bei How-to-Queries",
+        desc: "Besonders starkes Wachstum: {cue:hl-video-howto}Generative Engines ziehen Videoinhalte bevorzugt für Problemlösungen heran{/cue}."
+      },
+      {
+        icon: "shield",
+        title: "Multimodale Synthese",
+        desc: "Gemini und GPT-4o fassen {cue:hl-video-synthesis}gesprochene Erklärungen direkt im Text der KI-Antwort zusammen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-video-b2b" title="Der unbesetzte B2B-Burggraben" accent="cyan">
+    <CalloutBox type="statement" title="{cue:hl-video-moat}Vom Imagefilm zum didaktischen Visual Explainer{/cue}">
+      <p class="text-slate-300 light:text-slate-700">95 % des Mittelstands lassen YouTube brachliegen – Ihre Chance auf KI-Monopole.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "database",
+        title: "Fehlinvestition Imagefilm",
+        desc: "Marketing-Werbefilme {cue:hl-video-imagefilm}bieten null Information Gain und werden von KI-Systemen komplett ignoriert{/cue}."
+      },
+      {
+        icon: "code",
+        title: "Didaktische Visual Explainers",
+        desc: "Erklärungen von {cue:hl-video-explainer}CAD-Modellen, Prüfstandsabläufen und Software-Workflows liefern unersetzliche Fakten{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Wettbewerbsfreie Zone",
+        desc: "Weil kaum ein Mitbewerber technische Erklärvideos baut, {cue:hl-video-ranking}besetzen frühe Akteure die Video-Citations dauerhaft{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>
