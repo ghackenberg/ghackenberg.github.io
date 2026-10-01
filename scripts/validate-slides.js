@@ -267,7 +267,7 @@ function validateSlides() {
       // 2. Extract slide body cues in order of visual appearance
       /** @type {string[]} */
       const bodyCues = [];
-      const bodyCueRegex = /(?:(?:cue|data-cue)\s*[:=]\s*["']([a-zA-Z0-9_-]+)["']|id\s*[:=]\s*["']((?:col|box|card|step|stat|hl|mark)-[a-zA-Z0-9_-]+)["']|\{cue:([a-zA-Z0-9_-]+)\})/g;
+      const bodyCueRegex = /(?:(?:[a-zA-Z0-9_-]*cue|data-cue)\s*[:=]\s*["']([a-zA-Z0-9_-]+)["']|id\s*[:=]\s*["']((?:col|box|card|step|stat|hl|mark)-[a-zA-Z0-9_-]+)["']|\{cue:([a-zA-Z0-9_-]+)\})/gi;
       
       const subtitleFmMatch = fm.match(/^subtitle:\s*["']?([^\r\n]+)/m);
       const subtitleText = subtitleFmMatch ? subtitleFmMatch[1] : '';
@@ -418,13 +418,18 @@ function validateSlides() {
         const speakerCue = speakerCueMatch ? speakerCueMatch[1] : 'title-speaker';
 
         // Ensure default title cues are in bodyCues in their physical display order
-        if (!bodyCues.includes(titleCue)) bodyCues.unshift(titleCue);
-        const subIdx = bodyCues.indexOf(subtitleCue);
-        if (subIdx === -1) {
-          const tIdx = bodyCues.indexOf(titleCue);
-          bodyCues.splice(tIdx + 1, 0, subtitleCue);
-        }
-        if (!bodyCues.includes(speakerCue)) bodyCues.push(speakerCue);
+        const curTitleIdx = bodyCues.indexOf(titleCue);
+        if (curTitleIdx !== -1) bodyCues.splice(curTitleIdx, 1);
+        bodyCues.unshift(titleCue);
+
+        const curSubIdx = bodyCues.indexOf(subtitleCue);
+        if (curSubIdx !== -1) bodyCues.splice(curSubIdx, 1);
+        const bodyTitleIdx = bodyCues.indexOf(titleCue);
+        bodyCues.splice(bodyTitleIdx + 1, 0, subtitleCue);
+
+        const curSpkIdx = bodyCues.indexOf(speakerCue);
+        if (curSpkIdx !== -1) bodyCues.splice(curSpkIdx, 1);
+        bodyCues.push(speakerCue);
 
         if (!voCues.includes(titleCue)) {
           console.error(`  ❌ [${slideFile}] Title slide must contain a cue for the main title ("{cue:${titleCue}}") in voiceover.`);
@@ -542,14 +547,23 @@ function validateSlides() {
           totalErrors++;
         }
 
+        const divMatch = body.match(/dividerCue=["']([a-zA-Z0-9_-]+)["']/);
+        const dividerCue = divMatch ? divMatch[1] : bodyCues.find(c => c.startsWith('card-divider') || c.startsWith('divider'));
+
         const qTagMatch = body.match(/<[^>]*slot=["']question["'][^>]*>/);
+        const qPropMatch = body.match(/questionCue=["']([a-zA-Z0-9_-]+)["']/);
         const questionCueMatch = qTagMatch ? qTagMatch[0].match(/(?:data-cue|cue)=["']([a-zA-Z0-9_-]+)["']/) : null;
-        const questionCue = questionCueMatch ? questionCueMatch[1] : bodyCues.find(c => c.startsWith('card-leitfrage') || c === 'question' || c === 'sec-question');
+        const questionCue = qPropMatch ? qPropMatch[1] : (questionCueMatch ? questionCueMatch[1] : bodyCues.find(c => c.startsWith('card-leitfrage') || c === 'question' || c === 'sec-question'));
 
         const bTagMatch = body.match(/<[^>]*slot=["']bridge["'][^>]*>/);
+        const bPropMatch = body.match(/bridgeCue=["']([a-zA-Z0-9_-]+)["']/);
         const bridgeCueMatch = bTagMatch ? bTagMatch[0].match(/(?:data-cue|cue)=["']([a-zA-Z0-9_-]+)["']/) : null;
-        const bridgeCue = bridgeCueMatch ? bridgeCueMatch[1] : bodyCues.find(c => c.startsWith('card-bridge') || c === 'bridge' || c === 'sec-bridge');
+        const bridgeCue = bPropMatch ? bPropMatch[1] : (bridgeCueMatch ? bridgeCueMatch[1] : bodyCues.find(c => c.startsWith('card-bridge') || c === 'bridge' || c === 'sec-bridge'));
 
+        if (!dividerCue) {
+          console.error(`  ❌ [${slideFile}] Section slide must declare a divider cue (e.g. dividerCue="card-divider-XX").`);
+          totalErrors++;
+        }
         if (!questionCue) {
           console.error(`  ❌ [${slideFile}] Section slide must contain a Leitfrage element with a cue (e.g. data-cue="card-leitfrage-XX" or slot="question").`);
           totalErrors++;
@@ -559,6 +573,10 @@ function validateSlides() {
           totalErrors++;
         }
 
+        if (dividerCue && !voCues.includes(dividerCue)) {
+          console.error(`  ❌ [${slideFile}] Section slide divider cue "{cue:${dividerCue}}" must be referenced in voiceover.`);
+          totalErrors++;
+        }
         if (questionCue && !voCues.includes(questionCue)) {
           console.error(`  ❌ [${slideFile}] Section slide Leitfrage cue "{cue:${questionCue}}" must be referenced in voiceover.`);
           totalErrors++;
@@ -568,12 +586,52 @@ function validateSlides() {
           totalErrors++;
         }
 
-        const subIdx = voCues.indexOf('sub');
+        const secSubCueMatch = body.match(/subtitleCue=["']([^"']+)["']/);
+        const subCue = secSubCueMatch ? secSubCueMatch[1] : 'sub';
+        const subIdx = voCues.indexOf(subCue);
+        const divIdx = dividerCue ? voCues.indexOf(dividerCue) : -1;
         const qIdx = questionCue ? voCues.indexOf(questionCue) : -1;
         const bIdx = bridgeCue ? voCues.indexOf(bridgeCue) : -1;
 
-        if (subIdx !== -1 && qIdx !== -1 && subIdx > qIdx) {
-          console.error(`  ❌ [${slideFile}] Subtitle cue "{cue:sub}" must appear before Leitfrage cue "{cue:${questionCue}}" in voiceover.`);
+        const subHlMatch = subtitleText.match(/\{cue:(hl-[a-zA-Z0-9_-]+)/);
+        const subHlCue = subHlMatch ? subHlMatch[1] : null;
+        const sHlIdx = subHlCue ? voCues.indexOf(subHlCue) : -1;
+
+        const qSlotMatch = body.match(/<div[^>]*slot=["']question["'][\s\S]*?<\/div>/);
+        const qHlMatch = qSlotMatch ? qSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/) : null;
+        const qHlCue = qHlMatch ? qHlMatch[1] : null;
+
+        const bSlotMatch = body.match(/<div[^>]*slot=["']bridge["'][\s\S]*?<\/div>/);
+        const bHlMatch = bSlotMatch ? bSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/) : null;
+        const bHlCue = bHlMatch ? bHlMatch[1] : null;
+
+        // Normalize bodyCues for section slides to match physical DOM cascade:
+        // sub -> subHl -> dividerCue -> questionCue -> qHl -> bridgeCue -> bHl
+        const orderedSectionCues = [];
+        if (subCue) orderedSectionCues.push(subCue);
+        if (subHlCue) orderedSectionCues.push(subHlCue);
+        if (dividerCue) orderedSectionCues.push(dividerCue);
+        if (questionCue) orderedSectionCues.push(questionCue);
+        if (qHlCue) orderedSectionCues.push(qHlCue);
+        if (bridgeCue) orderedSectionCues.push(bridgeCue);
+        if (bHlCue) orderedSectionCues.push(bHlCue);
+
+        for (const c of orderedSectionCues) {
+          const idx = bodyCues.indexOf(c);
+          if (idx !== -1) bodyCues.splice(idx, 1);
+        }
+        bodyCues.unshift(...orderedSectionCues);
+
+        if (subIdx !== -1 && sHlIdx !== -1 && subIdx > sHlIdx) {
+          console.error(`  ❌ [${slideFile}] Subtitle cue "{cue:sub}" must appear before subtitle highlight "{cue:${subHlCue}}" in voiceover.`);
+          totalErrors++;
+        }
+        if (sHlIdx !== -1 && divIdx !== -1 && sHlIdx > divIdx) {
+          console.error(`  ❌ [${slideFile}] Subtitle highlight "{cue:${subHlCue}}" must appear before divider cue "{cue:${dividerCue}}" in voiceover.`);
+          totalErrors++;
+        }
+        if (divIdx !== -1 && qIdx !== -1 && divIdx > qIdx) {
+          console.error(`  ❌ [${slideFile}] Divider cue "{cue:${dividerCue}}" must appear before Leitfrage cue "{cue:${questionCue}}" in voiceover.`);
           totalErrors++;
         }
         if (qIdx !== -1 && bIdx !== -1 && qIdx > bIdx) {
@@ -581,37 +639,33 @@ function validateSlides() {
           totalErrors++;
         }
 
-        const subHlMatch = subtitleText.match(/\{cue:(hl-[a-zA-Z0-9_-]+)/);
-        const subHlCue = subHlMatch ? subHlMatch[1] : null;
-        if (subHlCue && qIdx !== -1) {
-          const sHlIdx = voCues.indexOf(subHlCue);
-          if (sHlIdx !== -1 && sHlIdx > qIdx) {
-            console.error(`  ❌ [${slideFile}] Subtitle highlight "{cue:${subHlCue}}" must appear before Leitfrage cue "{cue:${questionCue}}" in voiceover.`);
-            totalErrors++;
-          }
-        }
-
-        const qSlotMatch = body.match(/<div[^>]*slot=["']question["'][\s\S]*?<\/div>/);
         if (qSlotMatch) {
-          const qHlMatch = qSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/);
           if (!qHlMatch) {
             console.error(`  ❌ [${slideFile}] Section slide Leitfrage must contain an inline highlight marker {cue:hl-...}.`);
             totalErrors++;
-          } else if (bIdx !== -1) {
+          } else {
             const qHlIdx = voCues.indexOf(qHlMatch[1]);
-            if (qHlIdx !== -1 && qHlIdx > bIdx) {
+            if (qIdx !== -1 && qHlIdx !== -1 && qIdx > qHlIdx) {
+              console.error(`  ❌ [${slideFile}] Leitfrage cue "{cue:${questionCue}}" must appear before Leitfrage highlight "{cue:${qHlMatch[1]}}" in voiceover.`);
+              totalErrors++;
+            }
+            if (bIdx !== -1 && qHlIdx !== -1 && qHlIdx > bIdx) {
               console.error(`  ❌ [${slideFile}] Leitfrage highlight "{cue:${qHlMatch[1]}}" must appear before Bridge cue "{cue:${bridgeCue}}" in voiceover.`);
               totalErrors++;
             }
           }
         }
 
-        const bSlotMatch = body.match(/<div[^>]*slot=["']bridge["'][\s\S]*?<\/div>/);
         if (bSlotMatch) {
-          const bHlMatch = bSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/);
           if (!bHlMatch) {
             console.error(`  ❌ [${slideFile}] Section slide Bridge must contain an inline highlight marker {cue:hl-...}.`);
             totalErrors++;
+          } else {
+            const bHlIdx = voCues.indexOf(bHlMatch[1]);
+            if (bIdx !== -1 && bHlIdx !== -1 && bIdx > bHlIdx) {
+              console.error(`  ❌ [${slideFile}] Bridge cue "{cue:${bridgeCue}}" must appear before Bridge highlight "{cue:${bHlMatch[1]}}" in voiceover.`);
+              totalErrors++;
+            }
           }
         }
       }

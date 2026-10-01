@@ -7,6 +7,9 @@ interface Props {
   title: string;
   subtitle?: string;
   subtitleCue?: string;
+  dividerCue?: string;
+  questionCue?: string;
+  bridgeCue?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
   showFooter?: boolean;
@@ -19,6 +22,9 @@ const {
   title,
   subtitle,
   subtitleCue = "sub",
+  dividerCue = `card-divider-${String(Astro.props.slideNumber || '01').padStart(2, '0')}`,
+  questionCue = `card-leitfrage-${String(Astro.props.slideNumber || '01').padStart(2, '0')}`,
+  bridgeCue = `card-bridge-${String(Astro.props.slideNumber || '01').padStart(2, '0')}`,
   slideNumber,
   totalSlides = 56,
   showFooter = true,
@@ -47,42 +53,71 @@ const {
       )}
     </div>
 
-    <!-- Center Stage: Pure Typographic Grandeur & Focused Sequential Reveal -->
-    <div class="relative z-10 flex-1 flex flex-col justify-center items-center max-w-5xl mx-auto w-full py-2 my-auto">
-      <!-- Chapter Badge (Automatic Entrance) -->
-      <div class="section-title-reveal inline-flex items-center gap-3.5 px-6 py-2.5 rounded-full bg-slate-900/80 light:bg-slate-100/90 border border-slate-700/80 light:border-slate-300 shadow-xl backdrop-blur-md mb-6">
-        <span class="w-3 h-3 rounded-full bg-cyan-400 light:bg-blue-600 shadow-[0_0_12px_rgba(34,211,238,0.85)] animate-pulse"></span>
-        <span class="text-lg lg:text-xl font-mono font-bold tracking-widest uppercase text-cyan-300 light:text-blue-700">
-          {chapter}
-        </span>
+    <!-- Center Stage: Dynamic Progressive Unfolding Container -->
+    <div class="relative z-10 flex-1 flex flex-col justify-center items-center max-w-5xl mx-auto w-full my-auto transition-all duration-700">
+      <!-- 1. Anchor: Chapter Badge & Monumental Title (Always Visible & Initial Center) -->
+      <div class="section-hero-header flex flex-col items-center justify-center text-center w-full">
+        <!-- Chapter Badge -->
+        <div class="section-title-reveal inline-flex items-center gap-3.5 px-6 py-2.5 rounded-full bg-slate-900/80 light:bg-slate-100/90 border border-slate-700/80 light:border-slate-300 shadow-xl backdrop-blur-md mb-6">
+          <span class="w-3 h-3 rounded-full bg-cyan-400 light:bg-blue-600 shadow-[0_0_12px_rgba(34,211,238,0.85)] animate-pulse"></span>
+          <span class="text-lg lg:text-xl font-mono font-bold tracking-widest uppercase text-cyan-300 light:text-blue-700">
+            {chapter}
+          </span>
+        </div>
+
+        <!-- Monumental Chapter Title -->
+        <h1 class="section-title-reveal text-6xl lg:text-7xl xl:text-[84px] font-black tracking-tight text-white light:text-slate-950 leading-[1.06] text-balance">
+          {title}
+        </h1>
       </div>
 
-      <!-- Monumental Chapter Title (Automatic Entrance) -->
-      <h1 class="section-title-reveal text-6xl lg:text-7xl xl:text-[84px] font-black tracking-tight text-white light:text-slate-950 leading-[1.06] text-balance mb-6">
-        {title}
-      </h1>
-
-      <!-- Subtitle with CUE highlight (Sequential Entrance on {cue:sub}) -->
+      <!-- 2. Subtitle: Collapsible Reveal Item (Revealed on {cue:sub}) -->
       {subtitle && (
-        <p
+        <div
           data-cue={subtitleCue}
           data-dim="false"
-          class="slide-subtitle text-2xl lg:text-3xl xl:text-4xl text-slate-300 light:text-slate-600 font-medium tracking-wide max-w-4xl leading-relaxed text-center mb-8"
-          set:html={renderSlideCues(subtitle)}
-        />
+          class="title-reveal-item grid transition-all duration-700 ease-out w-full"
+        >
+          <div class="overflow-hidden py-1">
+            <p
+              class="slide-subtitle text-2xl lg:text-3xl xl:text-4xl text-slate-300 light:text-slate-600 font-medium tracking-wide max-w-4xl mx-auto leading-relaxed text-center mt-6"
+              set:html={renderSlideCues(subtitle)}
+            />
+          </div>
+        </div>
       )}
 
-      <!-- Subtle Glowing Gradient Line -->
-      <div class="w-36 h-1 bg-gradient-to-r from-transparent via-cyan-400 light:via-blue-600 to-transparent mb-8 opacity-75 rounded-full"></div>
-
-      <!-- The Provocative Leitfrage (Slot 1, Sequential Entrance on Leitfrage Cue) -->
-      <div class="w-full max-w-4xl mx-auto mb-6">
-        <slot name="question" />
+      <!-- 3. Divider: Collapsible Reveal Item (Revealed on {cue:card-divider-XX}) -->
+      <div
+        data-cue={dividerCue}
+        data-dim="false"
+        class="title-reveal-item grid transition-all duration-700 ease-out w-full"
+      >
+        <div class="overflow-hidden flex justify-center py-6">
+          <div class="w-36 h-1.5 bg-gradient-to-r from-transparent via-cyan-400 light:via-blue-600 to-transparent rounded-full shadow-[0_0_14px_rgba(34,211,238,0.7)]"></div>
+        </div>
       </div>
 
-      <!-- The Strategic Bridge (Slot 2, Sequential Entrance on Bridge Cue) -->
-      <div class="w-full max-w-3xl mx-auto">
-        <slot name="bridge" />
+      <!-- 4. Leitfrage (Question): Collapsible Reveal Item (Revealed on {cue:card-leitfrage-XX}) -->
+      <div
+        data-cue={questionCue}
+        data-dim="false"
+        class="title-reveal-item grid transition-all duration-700 ease-out w-full max-w-4xl mx-auto"
+      >
+        <div class="overflow-hidden py-2">
+          <slot name="question" />
+        </div>
+      </div>
+
+      <!-- 5. Bridge (Brücke): Collapsible Reveal Item (Revealed on {cue:card-bridge-XX}) -->
+      <div
+        data-cue={bridgeCue}
+        data-dim="false"
+        class="title-reveal-item grid transition-all duration-700 ease-out w-full max-w-3xl mx-auto"
+      >
+        <div class="overflow-hidden py-2 mt-4">
+          <slot name="bridge" />
+        </div>
       </div>
     </div>
 
