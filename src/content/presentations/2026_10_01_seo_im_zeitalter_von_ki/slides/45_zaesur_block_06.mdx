@@ -6,7 +6,8 @@ slideLayout: "section"
 voiceover: >
   Wir haben die Algorithmen, die Methodik und die technische Implementierung durchdrungen.
   {cue:sub} Im sechsten und letzten Block schließen wir den Kreis vom Business Case zur {cue:hl-sec6-sub}operativen Umsetzung{/cue}.
-  {cue:card-leitfrage-06} Für Geschäftsführer und Finanzverantwortliche steht die Kernfrage im Raum: {cue:hl-sec6-leitfrage}Rechnet sich das Ganze – und was bedeutet das ab morgen früh für Ihr Budget?{/cue}
+  {cue:card-divider-06} Für Geschäftsführer und Finanzverantwortliche steht die Kernfrage im Raum:
+  {cue:card-leitfrage-06} {cue:hl-sec6-leitfrage}Rechnet sich das Ganze – und was bedeutet das ab morgen früh für Ihr Budget?{/cue}
   {cue:card-bridge-06} Wir untermauern den Business Case mit Gartner-Daten und überführen ihn in eine {cue:hl-sec6-closedloop}Closed-Loop-Architektur und einen klaren 90-Tage-Fahrplan{/cue}.
 notes: |
   - Zeit: 48:00 - 48:30 Min.
@@ -19,14 +20,17 @@ import SectionSlide from '../../../../components/slides/layouts/SectionSlide.ast
   chapter="Block 06 / 06 · Marktdaten & Umsetzung"
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
+  dividerCue="card-divider-06"
+  questionCue="card-leitfrage-06"
+  bridgeCue="card-bridge-06"
   slideNumber="45"
   totalSlides="56"
 >
-  <div slot="question" data-cue="card-leitfrage-06" class="text-3xl lg:text-4xl xl:text-[42px] font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+  <div slot="question" class="text-3xl lg:text-4xl xl:text-[42px] font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
     „Rechnet sich das – und {cue:hl-sec6-leitfrage}was bedeutet die Transformation konkret für Ihr Budget{/cue}?“
   </div>
 
-  <div slot="bridge" data-cue="card-bridge-06" class="text-xl lg:text-2xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+  <div slot="bridge" class="text-xl lg:text-2xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
     Von Markttrends zur Umsetzung: {cue:hl-sec6-closedloop}Enterprise-Architektur, Closed-Loop-Marketing und der 90-Tage-Fahrplan{/cue} für den Mittelstand.
   </div>
 </SectionSlide>
