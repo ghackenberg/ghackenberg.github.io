@@ -1,0 +1,96 @@
+---
+title: "Grenzen von Vektoren: Das Multi-Hop-Dilemma"
+subtitle: "Warum semantische Ähnlichkeit nicht ausreicht: {cue:hl-sub-multihop-1001}Fragmentierte Chunks und fehlende Kausalitätslogik im B2B{/cue}"
+number: "11"
+slideLayout: "split"
+voiceover: >
+  Obwohl Vektoren Bedeutungen meisterhaft abbilden, stoßen reine Vektor-RAG-Systeme in der B2B-Praxis an fundamentale logische Grenzen.
+  {cue:sub} Das Kernproblem liegt im {cue:hl-sub-multihop-1001}Multi-Hop-Dilemma und der Kausalitätsblindheit statistischer Vektoren{/cue}.
+  {cue:col-vector-limits} Ein rein Vektor-basiertes Top-K-Retrieval {cue:hl-callout-vector-limits}zerlegt Fachdokumente in isolierte Textfragmente{/cue}: Weil Vektoren keine Prädikate kennen, {cue:hl-vector-causality}liegen Kooperation und gerichtliche Klage im Vektorraum oft gefährlich nah beieinander{/cue}, während {cue:hl-vector-fragments}wichtige Provenienz- und Kontextstrukturen verloren gehen{/cue}, da nach Gary Marcus {cue:hl-vector-stochastic}rein statistische Wahrscheinlichkeiten keine logische Widerspruchsfreiheit garantieren{/cue}.
+  {cue:col-multihop-b2b} Besonders akut wird dies bei komplexen B2B-Anfragen: {cue:hl-callout-multihop-example}Wenn ein Kunde nach IEC-zertifizierten Komponenten eines Zulieferers fragt{/cue}, erfordert die Antwort {cue:hl-multihop-chain}eine relationale Schlussfolgerungskette über mehrere Dokumente hinweg{/cue}. Reine Vektorsuche {cue:hl-multihop-failure}kann diese Kanten nicht prüfen und rät ins Blaue hinein{/cue}. Nach Pan et al. ist klar: {cue:hl-multihop-solution}Wir brauchen symbolische Wissensgraphen als verlässliches Fundament{/cue}!
+notes: |
+  - Zeit: 18:30 - 21:00 Min.
+  - Gary Marcus (2020) & Shirui Pan et al. (IEEE TKDE 2024) zitieren.
+  - Kernaussage für Industrie-Entscheider: Vektoren sind wie ein Wörterbuch für Synonyme; Wissensgraphen sind das logische Beziehungsgeflecht der Fabrik.
+references:
+  - type: article
+    id: "marcus-2020-neurosymbolic"
+    author: "Marcus, Gary"
+    title: "The Next Decades in AI: Four Steps Towards Robust Artificial Intelligence"
+    journal: "arXiv preprint arXiv:2002.06177"
+    year: 2020
+    doi: "10.48550/arXiv.2002.06177"
+    url: "https://arxiv.org/abs/2002.06177"
+  - type: article
+    id: "pan-2024-unifying-llm-kg"
+    author: "Pan, Shirui and Luo, Linhao and Wang, Yewei and Chen, Chen and Wang, Jiapu and Wu, Xindong"
+    title: "Unifying Large Language Models and Knowledge Graphs: A Roadmap"
+    journal: "IEEE Transactions on Knowledge and Data Engineering"
+    volume: "36"
+    number: "7"
+    pages: "3581-3599"
+    year: 2024
+    doi: "10.1109/TKDE.2024.3352100"
+    url: "https://doi.org/10.1109/TKDE.2024.3352100"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="11"
+  totalSlides="50"
+  ratio="50/50"
+>
+  <BentoCard slot="left" cue="col-vector-limits" title="Die Schwachstelle von Vektor-RAG" accent="neutral">
+    <CalloutBox type="warning" title="{cue:hl-callout-vector-limits}Reines Top-K-Retrieval erzeugt isolierte Chunks{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-600">Dokumente werden zerschnitten; Vektornähe unterscheidet weder Prädikate noch Verneinungen.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "trending-down",
+        title: "Kausalitäts- und Kontext-Blindheit",
+        desc: "Vektoren verwechseln thematische Nähe mit Logik: {cue:hl-vector-causality}Kooperation und gerichtliche Klage liegen im Vektorraum oft gefährlich nah beieinander{/cue}."
+      },
+      {
+        icon: "cross",
+        title: "Isolierte Textfragmente",
+        desc: "Naives 500-Token-Chunking bewirkt, dass {cue:hl-vector-fragments}wichtige Provenienz- und Kontextstrukturen verloren gehen{/cue}."
+      },
+      {
+        icon: "alert",
+        title: "Statistische Unschärfe",
+        desc: "Marcus [@marcus-2020-neurosymbolic] belegt, dass {cue:hl-vector-stochastic}rein statistische Wahrscheinlichkeiten keine logische Widerspruchsfreiheit garantieren{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-multihop-b2b" title="Das Multi-Hop-Problem im B2B" accent="amber">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-multihop-example}Wenn ein Kunde nach IEC-zertifizierten Komponenten eines Zulieferers fragt{/cue}">
+      <p class="text-blue-200 light:text-blue-900 font-mono text-sm leading-relaxed">[Anfrage] → [Zulieferer X] --(liefert)--> [Komponente Y] --(Norm)--> [IEC 62109]</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "arrow",
+        title: "Relationale Schlussfolgerungskette",
+        desc: "B2B-Fragen erfordern Ketten: {cue:hl-multihop-chain}eine relationale Schlussfolgerungskette über mehrere Dokumente hinweg{/cue}."
+      },
+      {
+        icon: "cross",
+        title: "Vektorsuche scheitert an Kanten",
+        desc: "Weil Vektoren keine Kanten kennen: {cue:hl-multihop-failure}kann diese Kanten nicht prüfen und rät ins Blaue hinein{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Die Notwendigkeit von Graphen",
+        desc: "Pan et al. [@pan-2024-unifying-llm-kg] zeigen: {cue:hl-multihop-solution}Wir brauchen symbolische Wissensgraphen als verlässliches Fundament{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

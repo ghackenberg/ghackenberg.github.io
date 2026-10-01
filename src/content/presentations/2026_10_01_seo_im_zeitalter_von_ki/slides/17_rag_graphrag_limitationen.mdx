@@ -1,0 +1,68 @@
+---
+title: "Limitationen von RAG & GraphRAG"
+subtitle: "Methodische Grenzen: Warum mehr Kontext {cue:hl-sub-limits-1001}Rechenkosten und Latenz explodieren lässt{/cue}"
+number: "17"
+slideLayout: "split"
+voiceover: >
+  In der Praxis ist GraphRAG jedoch keineswegs eine universelle Wunderwaffe für jedes B2B-Szenario.
+  {cue:sub} Wissenschaftliche Analysen zeigen, warum mehr Kontext {cue:hl-sub-limits-1001}Rechenkosten und Latenz explodieren lässt{/cue}.
+  {cue:col-graph-limits} GraphRAG erfordert {cue:hl-callout-graphrag-cost}umfangreiche Vorab-LLM-Aufrufe{/cue}: Der {cue:hl-limits-token}vielfach höhere Rechenaufwand als bei reinen Vektor-Embeddings{/cue} erzeugt spürbare {cue:hl-limits-latency}Antwortverzögerungen im Vergleich zu Vektor-Top-K{/cue} und verlangt {cue:hl-limits-density}dichte, semantisch vernetzte Fachdokumentation{/cue}.
+  {cue:col-basic-limits} Basic RAG bleibt überlegen, weil {cue:hl-callout-basictop}Standard-Vektorsuche bei punktuellen Fakten schneller und präziser{/cue} agiert: Sie {cue:hl-limits-singlehop}beantwortet isolierte Faktenfragen ohne Overhead{/cue}, senkt {cue:hl-limits-cost}Rechenkosten pro Suchanfrage um bis zu neunzig Prozent{/cue} und schützt vor {cue:hl-limits-hallu}Halluzinationen durch Modell-Zwischenschritte{/cue}.
+notes: |
+  - Zeit: 20:30 - 23:00 Min.
+  - Wichtig: Den IT-Leitern im Raum ehrlich sagen: Wer nur Produktdatenblätter hat, braucht kein teures GraphRAG; Basic RAG mit Vektoren reicht für 80 % der B2B-Suchen vollkommen aus.
+references:
+  - type: article
+    id: "edge-2024-graphrag"
+    author: "Edge, Darren and Trinh, Ha and Cheng, Newman and Bradley, Joshua and Chao, Alex and Mody, Apurva and Truitt, Steven and Metropolitansky, Dasha and Ness, Robert Osazuwa and Larson, Jonathan"
+    title: "From Local to Global: A Graph RAG Approach to Query-Focused Summarization"
+    journal: "arXiv preprint arXiv:2404.16130"
+    year: 2024
+    doi: "10.48550/arXiv.2404.16130"
+    url: "https://arxiv.org/abs/2404.16130"
+  - type: inproceedings
+    id: "lewis-2020-rag"
+    author: "Lewis, Patrick and Perez, Ethan and Piktus, Aleksandra and Petroni, Fabio and Karpukhin, Vladimir and Goyal, Naman and Küttler, Heinrich and Lewis, Mike and Yih, Wen-tau and Rocktäschel, Tim and Riedel, Sebastian and Kiela, Douwe"
+    title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"
+    booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2020)"
+    year: 2020
+    pages: "9459–9474"
+    publisher: "Curran Associates, Inc."
+    url: "https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="17"
+  totalSlides="50"
+>
+  <BentoCard slot="left" cue="col-graph-limits" title="GraphRAG-Flaschenhälse (Microsoft Research)" accent="neutral">
+    <CalloutBox type="warning" title="Massive Vorab-Indexierungskosten">
+      <p class="text-slate-300 light:text-slate-600">Graph-Extraktion erfordert {cue:hl-callout-graphrag-cost}umfangreiche Vorab-LLM-Aufrufe{/cue} zur Entitätserkennung.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      { icon: "cross", title: "Hoher Token-Aufwand", desc: "Laut Edge et al. [@edge-2024-graphrag] entsteht ein {cue:hl-limits-token}vielfach höherer Rechenaufwand als bei reinen Vektor-Embeddings{/cue}." },
+      { icon: "cross", title: "Inferenzlatenz", desc: "Hierarchische Community-Traversierung erzeugt spürbare {cue:hl-limits-latency}Antwortverzögerungen im Vergleich zu Vektor-Top-K{/cue}." },
+      { icon: "cross", title: "Wissensdichte erforderlich", desc: "Entfaltet Stärken nur bei {cue:hl-limits-density}dichter, semantisch vernetzter Fachdokumentation{/cue}." }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-basic-limits" title="Wann Basic RAG überlegen bleibt" accent="blue">
+    <CalloutBox type="takeaway" title="Single-Hop & Punktuelle Faktenabfragen">
+      <p class="text-blue-200 light:text-blue-900">Punktuelle Abfragen nach Spezifikationen {cue:hl-callout-basictop}sind mit Standard-Vektorsuche schneller und präziser{/cue}.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      { icon: "check", title: "Präzise Fakten-Lookups", desc: "Klassisches RAG [@lewis-2020-rag] {cue:hl-limits-singlehop}beantwortet isolierte Faktenfragen ohne Overhead{/cue}." },
+      { icon: "check", title: "Geringe Betriebskosten", desc: "Senkt die {cue:hl-limits-cost}Rechenkosten pro Suchanfrage um bis zu neunzig Prozent{/cue} gegenüber Graphen." },
+      { icon: "check", title: "Keine Über-Synthese", desc: "Direkte Textpassagen schützen vor {cue:hl-limits-hallu}Halluzinationen durch Modell-Zwischenschritte{/cue}." }
+    ]} />
+  </BentoCard>
+</SplitSlide>
+

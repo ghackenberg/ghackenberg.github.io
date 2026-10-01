@@ -1,0 +1,73 @@
+---
+title: "Hybrid Retrieval: Die neuro-symbolische Pipeline"
+subtitle: "Das Beste aus zwei Welten: {cue:hl-sub-hybrid-1001}Wie Sprachgefühl und Faktenlogik in modernen Antwortsystemen verschmelzen{/cue}"
+number: "15"
+slideLayout: "pipeline"
+voiceover: >
+  Weder rein stochastische Vektoren noch starre Wissensgraphen können die Herausforderungen moderner KI-Antwortsysteme alleine bewältigen.
+  {cue:sub} Die technologische Lösung führender Systeme heißt {cue:hl-sub-hybrid-1001}Hybrid Retrieval: Die neuro-symbolische Fusion beider Welten{/cue}.
+  {cue:step-hybrid-01} Im ersten Schritt nutzt das System Dense Vector Retrieval für das Sprachverständnis, sodass {cue:hl-pipe-step1}Synonyme und Suchabsichten flexibel erfasst und Textkandidaten gefiltert werden{/cue}.
+  {cue:step-hybrid-02} Im zweiten Schritt erfolgt Graph Traversal zur deterministischen Faktenprüfung, wodurch {cue:hl-pipe-step2}Entitäten und Kanten im Wissensgraphen validiert und Halluzinationen gefiltert werden{/cue}.
+  {cue:step-hybrid-03} Schließlich führt die generative Synthese beide Datenströme zusammen: {cue:hl-pipe-step3}Geprüfte Faktenknoten und Primärquellen verschmelzen zur fehlerfreien B2B-Antwort{/cue} – das Fundament für Microsofts GraphRAG!
+notes: |
+  - Zeit: 25:30 - 28:00 Min.
+  - DeepMind RETRO (Borgeaud et al. 2022) & Microsoft GraphRAG (Edge et al. 2024) zitieren.
+  - Den B2B-Managern vermitteln: Hybrid Search ist der De-facto-Standard von Perplexity und Google AI Overviews.
+references:
+  - type: inproceedings
+    id: "borgeaud-2022-retro"
+    author: "Borgeaud, Sebastian and Mensch, Arthur and Hoffmann, Jordan and Cai, Trevor and Rutherford, Eliza and Millican, Katie and van den Driessche, George and Lespiau, Jean-Baptiste and Damoc, Bogdan and Clark, Aidan and de Las Casas, Diego and Guy, Aurelia and Menick, Jacob and Ring, Roman and Hennigan, Tom and Huang, Saffron and Maggiore, Loren and Kaiser, Chris and Ringwald, Altha and Song, Francis and Ballard, Lucile and Zhang, Yana and Bileschi, Stan and Elsen, Erich and van den Oord, Aaron and Vinyals, Oriol and Rae, Jack and Simonyan, Karen and Sifre, Laurent"
+    title: "Improving Language Models by Retrieving from Trillions of Tokens"
+    booktitle: "Proceedings of the 39th International Conference on Machine Learning (ICML 2022)"
+    series: "PMLR"
+    volume: "162"
+    pages: "2206-2237"
+    year: 2022
+    url: "https://proceedings.mlr.press/v162/borgeaud22a.html"
+  - type: article
+    id: "edge-2024-graphrag"
+    author: "Edge, Darren and Trinh, Ha and Cheng, Newman and Bradley, Joshua and Chao, Alex and Mody, Apurva and Truitt, Steven and Metropolitansky, Dasha and Ness, Robert Osazuwa and Larson, Jonathan"
+    title: "From Local to Global: A Graph RAG Approach to Query-Focused Summarization"
+    journal: "arXiv preprint arXiv:2404.16130"
+    year: 2024
+    doi: "10.48550/arXiv.2404.16130"
+    url: "https://arxiv.org/abs/2404.16130"
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="15"
+  totalSlides="50"
+  direction="horizontal"
+>
+  <Pipeline
+    direction="horizontal"
+    steps={[
+      {
+        cue: "step-hybrid-01",
+        num: "01",
+        accent: "cyan",
+        title: "Dense Vector Retrieval (Sprachverständnis)",
+        desc: "Embedding [@borgeaud-2022-retro] der Suchanfrage: {cue:hl-pipe-step1}Synonyme und Suchabsichten flexibel erfassen und Textkandidaten filtern{/cue}."
+      },
+      {
+        cue: "step-hybrid-02",
+        num: "02",
+        accent: "emerald",
+        title: "Graph Traversal (Faktenprüfung)",
+        desc: "Deterministische Validierung im Graphen: {cue:hl-pipe-step2}Entitäten und Kanten im Wissensgraphen validieren und Halluzinationen filtern{/cue}."
+      },
+      {
+        cue: "step-hybrid-03",
+        num: "03",
+        accent: "blue",
+        title: "Generative Synthese beider Ströme",
+        desc: "GraphRAG-Fusion [@edge-2024-graphrag]: {cue:hl-pipe-step3}Geprüfte Faktenknoten und Primärquellen verschmelzen zur fehlerfreien B2B-Antwort{/cue}."
+      }
+    ]}
+  />
+</PipelineSlide>
