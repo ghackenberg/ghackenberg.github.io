@@ -1,0 +1,37 @@
+---
+title: "Block 03 · Die Drei-Säulen-Methodik"
+subtitle: "Vom theoretischen Verständnis zur {cue:hl-sec3-sub}maschinenlesbaren Autorität{/cue}"
+number: "23"
+slideLayout: "section"
+voiceover: >
+  Wir haben gesehen, wie Antwortsysteme arbeiten und wo ihre Grenzen liegen.
+  {cue:sub} In Block drei übersetzen wir dieses technologische Verständnis in eine {cue:hl-sec3-sub}maschinenlesbare Autorität{/cue}.
+  {cue:card-leitfrage-03} Im Zentrum steht die entscheidende Frage für Industrieunternehmen: {cue:hl-sec3-leitfrage}Wie machen wir eigene Expertise für Maschinen unübersehbar und zitierfähig?{/cue}
+  {cue:card-bridge-03} Die Antwort basiert auf dem Fundament aus {cue:hl-sec3-saeulen}strukturierten Daten, E-E-A-T-Autorität und echtem Information Gain{/cue}.
+notes: |
+  - Zeit: 25:00 - 25:30 Min.
+  - Zäsurfolie: Wendepunkt von der Theorie/KDD-Analyse zur konkreten Handlungsanleitung.
+  - Jetzt wird es greifbar: Wie baut ein B2B-Unternehmen diesen Schutzwall auf?
+---
+import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<SectionSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="23"
+  totalSlides="56"
+>
+  <BentoCard cue="card-leitfrage-03" accent="blue" title="Leitfrage für Führungskräfte">
+    <CalloutBox type="statement">
+      „Wie machen wir eigene Industrie-Expertise für Maschinen {cue:hl-sec3-leitfrage}unübersehbar und zitierfähig{/cue}?“
+    </CalloutBox>
+  </BentoCard>
+
+  <BentoCard cue="card-bridge-03" accent="neutral" title="Methodischer Fokus">
+    <p class="text-2xl lg:text-3xl text-slate-300 light:text-slate-700 leading-relaxed">
+      Vom Verstehen zur praktischen Exzellenz: Das Zusammenspiel aus {cue:hl-sec3-saeulen}Schema.org-Entitäten, E-E-A-T und Information Gain Content Design{/cue}.
+    </p>
+  </BentoCard>
+</SectionSlide>

@@ -1,0 +1,42 @@
+---
+import SlideBase from '../primitives/SlideBase.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  subtitleCue?: string;
+  slideNumber?: string | number;
+  totalSlides?: string | number;
+  showFooter?: boolean;
+  presentationTitle?: string;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  subtitleCue = "sub",
+  slideNumber,
+  totalSlides = 56,
+  showFooter = true,
+  presentationTitle,
+  class: className = ""
+} = Astro.props;
+---
+
+<SlideBase
+  title={title}
+  subtitle={subtitle}
+  subtitleCue={subtitleCue}
+  slideNumber={slideNumber}
+  totalSlides={totalSlides}
+  showFooter={showFooter}
+  presentationTitle={presentationTitle}
+  class={className}
+>
+  <div class="h-full w-full flex flex-col justify-center items-center px-4 pb-2">
+    <div class="w-full max-w-5xl flex flex-col gap-6 items-stretch">
+      <slot />
+    </div>
+  </div>
+</SlideBase>

@@ -1,0 +1,81 @@
+---
+title: "JSON-LD: Entitäts-Fundament"
+subtitle: "Disambiguierung von Marke und Urheber über {cue:hl-sub-jsonld-1001}eindeutige URI-Identifier im @graph{/cue}"
+number: "26"
+slideLayout: "code"
+voiceover: >
+  In unserem ersten Code-Deep-Dive betrachten wir das Fundament jedes semantischen Webs: Die saubere Deklaration von Entitäten.
+  {cue:sub} Sie ermöglicht die Disambiguierung von Marke und Urheber über {cue:hl-sub-jsonld-1001}eindeutige URI-Identifier im Graph-Array{/cue}.
+  {cue:code-jsonld-ent} Das JSON-LD-Dokument deklariert zunächst die Organisation und die handelnde Person mit stabilen IDs.
+  {cue:card-entitaeten} Im Zentrum steht die {cue:hl-jsonld-uri}globale Verankerung in verifizierten Registern{/cue}. Über stabile URIs erhält jedes Unternehmen einen {cue:hl-jsonld-graph}eindeutigen Identifier im Semantic Web{/cue}. Mittels sameAs verknüpfen wir die Autorenidentität direkt mit {cue:hl-jsonld-orcid}ORCID, Wikidata und LinkedIn{/cue}, während worksFor {cue:hl-fakten-inst}die institutionelle Zugehörigkeit felsenfest verankert{/cue}.
+notes: |
+  - Zeit: 35:00 - 36:30 Min.
+  - Schritt 1 von 2: Die semantische Basis legen (wer publiziert und wer ist der Urheber?).
+  - Erklären: Warum @id und sameAs das Fundament gegen Halluzinationen bilden.
+references:
+  - type: misc
+    id: "gandon-2020-json-ld"
+    author: "Gandon, Fabien and Kellogg, Gregg and Lanthaler, Markus and Champin, Pierre-Antoine"
+    title: "JSON-LD 1.1: A JSON-based Serialization for Linked Data"
+    howpublished: "W3C Recommendation"
+    year: 2020
+    url: "https://www.w3.org/TR/json-ld11/"
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="26"
+  totalSlides="56"
+>
+  <CodeContainer
+    slot="code"
+    cue="code-jsonld-ent"
+    filename="schema-entities.jsonld"
+  >
+    <pre class="text-slate-200 font-mono overflow-x-auto my-auto text-base">
+{`{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://hackenberg.tech/#organization",
+      "name": "Dr. Georg Hackenberg Consulting",
+      "url": "https://hackenberg.tech",
+      "sameAs": [
+        "https://www.linkedin.com/in/georghackenberg/",
+        "https://orcid.org/0000-0003-3913-4148"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://hackenberg.tech/#georg",
+      "name": "Dr. Georg Hackenberg",
+      "jobTitle": "Professor für Informatik",
+      "worksFor": { 
+        "@id": "https://www.fh-ooe.at/#organization" 
+      },
+      "sameAs": "https://orcid.org/0000-0003-3913-4148"
+    }
+  ]
+}`}
+    </pre>
+  </CodeContainer>
+
+  <BentoCard slot="explanation" cue="card-entitaeten" title="Entitäten & Autorität" accent="cyan">
+    <CalloutBox type="statement" title="Eindeutige Entitätsverankerung">
+      <p>Disambiguierung von Marke und Urheber über {cue:hl-jsonld-uri}globale Linked-Data-Register{/cue}.</p>
+    </CalloutBox>
+    <BulletList items={[
+      { icon: "shield", title: "Globale URIs (@id)", desc: "Vergibt für Marke und Person {cue:hl-jsonld-graph}eindeutige, webweit referenzierbare Identifier{/cue} [@gandon-2020-json-ld]." },
+      { icon: "globe", title: "sameAs-Verknüpfung", desc: "Verbindet lokale Entitäten direkt mit {cue:hl-jsonld-orcid}ORCID, Wikidata und LinkedIn-Profilen{/cue}." },
+      { icon: "check", title: "Institutionelle Provenienz", desc: "Verknüpft Personen über worksFor {cue:hl-fakten-inst}unmissverständlich mit der Primärorganisation{/cue}." }
+    ]} />
+  </BentoCard>
+</CodeSlide>
