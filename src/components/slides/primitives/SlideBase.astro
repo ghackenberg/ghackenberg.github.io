@@ -10,6 +10,7 @@ interface Props {
   showFooter?: boolean;
   presentationTitle?: string;
   class?: string;
+  isSection?: boolean;
 }
 
 const {
@@ -20,11 +21,12 @@ const {
   totalSlides = 30,
   showFooter = true,
   presentationTitle = "hackenberg.tech",
-  class: className = ""
+  class: className = "",
+  isSection = false
 } = Astro.props;
 
 const num = typeof slideNumber === 'string' ? parseInt(slideNumber, 10) : (slideNumber || 1);
-const isNotFirstSlide = num > 1;
+const isNotFirstSlide = num > 1 && !isSection;
 ---
 
 <div
