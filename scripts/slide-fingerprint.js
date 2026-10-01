@@ -51,8 +51,11 @@ export function computeSlideStyleHash() {
     }
   }
 
-  // Slide layout and primitive components
-  const slideComponentFiles = getFilesRecursively(path.resolve('src/components/slides')).sort();
+  // Slide layout and primitive components (excluding interactive player runtime)
+  const slideComponentFiles = [
+    ...getFilesRecursively(path.resolve('src/components/slides/layouts')),
+    ...getFilesRecursively(path.resolve('src/components/slides/primitives'))
+  ].sort();
   for (const file of slideComponentFiles) {
     hash.update(path.relative(process.cwd(), file).replace(/\\/g, '/'));
     hash.update(fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n'));
