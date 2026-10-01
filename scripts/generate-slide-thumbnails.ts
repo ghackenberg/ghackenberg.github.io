@@ -1,13 +1,13 @@
-// @ts-check
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
-import puppeteer from 'puppeteer';
+import puppeteer, { type Browser, type Page } from 'puppeteer';
 import {
   computeSlideStyleHash,
   computePresentationDeckHash,
   loadVisualCache,
-  saveVisualCache
+  saveVisualCache,
+  type VisualCache,
 } from './slide-fingerprint.js';
 
 const PORT = 4323;
@@ -16,9 +16,8 @@ const distDir = path.resolve('dist');
 /**
  * Serves dist folder statically for Puppeteer
  */
-function createStaticServer() {
-  /** @type {Record<string, string>} */
-  const mimeTypes = {
+function createStaticServer(): http.Server {
+  const mimeTypes: Record<string, string> = {
     '.html': 'text/html',
     '.css': 'text/css',
     '.js': 'application/javascript',
@@ -27,7 +26,7 @@ function createStaticServer() {
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
     '.webp': 'image/webp',
-    '.woff2': 'font/woff2'
+    '.woff2': 'font/woff2',
   };
 
   return http.createServer((req, res) => {
@@ -69,100 +68,99 @@ function createStaticServer() {
 
 /**
  * Safely writes a file buffer to disk, retrying on transient Windows file lock errors
- * @param {string} filePath
- * @param {Buffer | Uint8Array} buffer
- * @param {number} [maxRetries=5]
  */
-async function safeWriteFile(filePath, buffer, maxRetries = 5) {
+async function safeWriteFile(filePath: string, buffer: Buffer | Uint8Array, maxRetries = 5): Promise<void> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       fs.writeFileSync(filePath, buffer);
       return;
     } catch (err) {
       if (attempt === maxRetries) throw err;
-      await new Promise(r => setTimeout(r, 200 * attempt));
+      await new Promise((r) => setTimeout(r, 200 * attempt));
     }
   }
 }
 
 /**
  * Compares two image buffers pixel-by-pixel using Chrome's native OffscreenCanvas via Puppeteer
- * @param {import('puppeteer').Page} page
- * @param {Buffer | Uint8Array} existingBuffer
- * @param {Buffer | Uint8Array} newBuffer
- * @param {number} [pixelThreshold=5]
- * @returns {Promise<{ diffPixels: number, totalPixels: number, diffPercent: number }>}
  */
-export async function compareImageBuffers(page, existingBuffer, newBuffer, pixelThreshold = 5) {
+export async function compareImageBuffers(
+  page: Page,
+  existingBuffer: Buffer | Uint8Array,
+  newBuffer: Buffer | Uint8Array,
+  pixelThreshold = 5
+): Promise<{ diffPixels: number; totalPixels: number; diffPercent: number }> {
   const existingBase64 = Buffer.from(existingBuffer).toString('base64');
   const newBase64 = Buffer.from(newBuffer).toString('base64');
 
-  return await page.evaluate(async (b64A, b64B, threshold) => {
-    /**
-     * @param {string} b64
-     * @returns {Blob}
-     */
-    function b64ToBlob(b64) {
-      const bin = atob(b64);
-      const arr = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-      return new Blob([arr], { type: 'image/webp' });
-    }
-
-    const [bmpA, bmpB] = await Promise.all([
-      createImageBitmap(b64ToBlob(b64A)),
-      createImageBitmap(b64ToBlob(b64B))
-    ]);
-
-    if (bmpA.width !== bmpB.width || bmpA.height !== bmpB.height) {
-      return { diffPixels: bmpA.width * bmpA.height, totalPixels: bmpA.width * bmpA.height, diffPercent: 100 };
-    }
-
-    const width = bmpA.width;
-    const height = bmpA.height;
-    const canvasA = new OffscreenCanvas(width, height);
-    const ctxA = canvasA.getContext('2d', { willReadFrequently: true });
-    const canvasB = new OffscreenCanvas(width, height);
-    const ctxB = canvasB.getContext('2d', { willReadFrequently: true });
-
-    if (!ctxA || !ctxB) {
-      return { diffPixels: width * height, totalPixels: width * height, diffPercent: 100 };
-    }
-
-    ctxA.drawImage(bmpA, 0, 0);
-    const dataA = ctxA.getImageData(0, 0, width, height).data;
-
-    ctxB.drawImage(bmpB, 0, 0);
-    const dataB = ctxB.getImageData(0, 0, width, height).data;
-
-    let diffPixels = 0;
-    const totalPixels = width * height;
-    for (let i = 0; i < dataA.length; i += 4) {
-      const dr = Math.abs(dataA[i] - dataB[i]);
-      const dg = Math.abs(dataA[i + 1] - dataB[i + 1]);
-      const db = Math.abs(dataA[i + 2] - dataB[i + 2]);
-      const da = Math.abs(dataA[i + 3] - dataB[i + 3]);
-      if (dr > threshold || dg > threshold || db > threshold || da > threshold) {
-        diffPixels++;
+  return await page.evaluate(
+    async (b64A: string, b64B: string, threshold: number) => {
+      function b64ToBlob(b64: string): Blob {
+        const bin = atob(b64);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return new Blob([arr], { type: 'image/webp' });
       }
-    }
 
-    return {
-      diffPixels,
-      totalPixels,
-      diffPercent: (diffPixels / totalPixels) * 100
-    };
-  }, existingBase64, newBase64, pixelThreshold);
+      const [bmpA, bmpB] = await Promise.all([
+        createImageBitmap(b64ToBlob(b64A)),
+        createImageBitmap(b64ToBlob(b64B)),
+      ]);
+
+      if (bmpA.width !== bmpB.width || bmpA.height !== bmpB.height) {
+        return { diffPixels: bmpA.width * bmpA.height, totalPixels: bmpA.width * bmpA.height, diffPercent: 100 };
+      }
+
+      const width = bmpA.width;
+      const height = bmpA.height;
+      const canvasA = new OffscreenCanvas(width, height);
+      const ctxA = canvasA.getContext('2d', { willReadFrequently: true });
+      const canvasB = new OffscreenCanvas(width, height);
+      const ctxB = canvasB.getContext('2d', { willReadFrequently: true });
+
+      if (!ctxA || !ctxB) {
+        return { diffPixels: width * height, totalPixels: width * height, diffPercent: 100 };
+      }
+
+      ctxA.drawImage(bmpA, 0, 0);
+      const dataA = ctxA.getImageData(0, 0, width, height).data;
+
+      ctxB.drawImage(bmpB, 0, 0);
+      const dataB = ctxB.getImageData(0, 0, width, height).data;
+
+      let diffPixels = 0;
+      const totalPixels = width * height;
+      for (let i = 0; i < dataA.length; i += 4) {
+        const dr = Math.abs(dataA[i] - dataB[i]);
+        const dg = Math.abs(dataA[i + 1] - dataB[i + 1]);
+        const db = Math.abs(dataA[i + 2] - dataB[i + 2]);
+        const da = Math.abs(dataA[i + 3] - dataB[i + 3]);
+        if (dr > threshold || dg > threshold || db > threshold || da > threshold) {
+          diffPixels++;
+        }
+      }
+
+      return {
+        diffPixels,
+        totalPixels,
+        diffPercent: (diffPixels / totalPixels) * 100,
+      };
+    },
+    existingBase64,
+    newBase64,
+    pixelThreshold
+  );
 }
 
 /**
  * Generates slide thumbnails for a given presentation
- * @param {import('puppeteer').Browser} browser
- * @param {number} port
- * @param {string} presentationFolder
- * @param {boolean} [force=false]
  */
-export async function generateSlideThumbnailsForPresentation(browser, port, presentationFolder, force = false) {
+export async function generateSlideThumbnailsForPresentation(
+  browser: Browser,
+  port: number,
+  presentationFolder: string,
+  force = false
+): Promise<void> {
   const presentationsBase = path.resolve('src/content/presentations');
   const presentationPath = path.join(presentationsBase, presentationFolder);
   const thumbnailsDir = path.join(presentationPath, 'thumbnails');
@@ -170,13 +168,13 @@ export async function generateSlideThumbnailsForPresentation(browser, port, pres
 
   const styleHash = computeSlideStyleHash();
   const { deckHash, slideHashes } = computePresentationDeckHash(presentationFolder, styleHash);
-  let cache = loadVisualCache(presentationFolder);
+  let cache: VisualCache | null = loadVisualCache(presentationFolder);
   if (!cache) {
     cache = { version: 'v1.0', styleHash: '', deckHash: '', slides: {} };
   }
 
   const slideIds = Object.keys(slideHashes);
-  const slidesNeedingUpdate = new Set();
+  const slidesNeedingUpdate = new Set<string>();
 
   for (const slideId of slideIds) {
     const thumbPath = path.join(thumbnailsDir, `${slideId}.webp`);
@@ -187,7 +185,6 @@ export async function generateSlideThumbnailsForPresentation(browser, port, pres
 
   if (slidesNeedingUpdate.size === 0) {
     console.log(`  ✓ All ${slideIds.length} thumbnails for "${presentationFolder}" are up to date (fingerprint cache hit).`);
-    // Ensure deck hash is synchronized
     if (cache.deckHash !== deckHash) {
       cache.deckHash = deckHash;
       cache.styleHash = styleHash;
@@ -222,17 +219,16 @@ export async function generateSlideThumbnailsForPresentation(browser, port, pres
     let preservedCount = 0;
 
     for (const el of slideElements) {
-      const slideId = await el.evaluate(node => node.getAttribute('data-slide-id'));
+      const slideId = await el.evaluate((node) => node.getAttribute('data-slide-id'));
       if (!slideId) continue;
       if (!slidesNeedingUpdate.has(slideId)) continue;
 
       const outPath = path.join(thumbnailsDir, `${slideId}.webp`);
       const newBuffer = await el.screenshot({
         type: 'webp',
-        quality: 82
+        quality: 82,
       });
 
-      // Pixel-by-pixel check against existing disk file
       let shouldWrite = true;
       if (fs.existsSync(outPath) && !force) {
         try {
@@ -288,7 +284,7 @@ async function main() {
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
   const presentationFolders = fs.readdirSync(presentationsBase);
@@ -305,7 +301,7 @@ async function main() {
   }
 }
 
-if (process.argv[1] && process.argv[1].endsWith('generate-slide-thumbnails.js')) {
+if (process.argv[1] && /generate-slide-thumbnails\.(js|ts)$/.test(process.argv[1])) {
   main().catch((err) => {
     console.error('[Thumbnail Generator] Error:', err);
     process.exit(1);

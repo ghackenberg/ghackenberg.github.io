@@ -7,12 +7,12 @@ const PRINT_ASTRO_PATH = path.join(ROOT_DIR, 'src', 'pages', 'presentations', '[
 
 let errorCount = 0;
 
-function error(msg) {
+function error(msg: string) {
   console.error(`❌ [lint:styles] ${msg}`);
   errorCount++;
 }
 
-function success(msg) {
+function success(msg: string) {
   console.log(`✅ [lint:styles] ${msg}`);
 }
 
@@ -34,8 +34,8 @@ if (fs.existsSync(globalCssPath)) {
   const codeWithoutComments = content.replace(/\/\*[\s\S]*?\*\//g, '').trim();
   const nonImportLines = codeWithoutComments
     .split('\n')
-    .map(line => line.trim())
-    .filter(line => line && !line.startsWith('@import'));
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('@import'));
 
   if (nonImportLines.length > 0) {
     error(`src/styles/global.css must only contain @import statements for modular stylesheets. Found unexpected lines:\n  ${nonImportLines.slice(0, 3).join('\n  ')}`);
@@ -65,8 +65,13 @@ if (fs.existsSync(PRINT_ASTRO_PATH)) {
   }
 }
 
+interface DomainRule {
+  file: string;
+  forbidden: Array<{ pattern: RegExp; name: string }>;
+}
+
 // 4. Domain Boundary Rules
-const domainRules = [
+const domainRules: DomainRule[] = [
   {
     file: 'theme.css',
     forbidden: [

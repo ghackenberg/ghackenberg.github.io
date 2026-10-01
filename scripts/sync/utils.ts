@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Load environment variables from local .env files
-export function loadEnv() {
+export function loadEnv(): void {
   for (const envFile of ['.env', '.env.local', '.env.development']) {
     const envPath = path.resolve(process.cwd(), envFile);
     if (fs.existsSync(envPath)) {
@@ -24,7 +24,7 @@ export function loadEnv() {
 }
 
 // Clear a directory and make sure it exists
-export function clearAndCreateDir(dirPath) {
+export function clearAndCreateDir(dirPath: string): void {
   if (fs.existsSync(dirPath)) {
     fs.rmSync(dirPath, { recursive: true, force: true });
   }
@@ -32,7 +32,7 @@ export function clearAndCreateDir(dirPath) {
 }
 
 // Search destDir for a file named "image.<ext>"
-export function findExistingImage(destDir) {
+export function findExistingImage(destDir: string): string | null {
   if (!fs.existsSync(destDir)) return null;
   const files = fs.readdirSync(destDir);
   const found = files.find(f => f.startsWith("image."));
@@ -43,7 +43,7 @@ export function findExistingImage(destDir) {
 }
 
 // Download image to destDir as image.<ext>
-export async function downloadImage(url, destDir) {
+export async function downloadImage(url: string, destDir: string): Promise<string | null> {
   try {
     if (!fs.existsSync(destDir)) {
       fs.mkdirSync(destDir, { recursive: true });
@@ -76,14 +76,14 @@ export async function downloadImage(url, destDir) {
     const buffer = Buffer.from(arrayBuffer);
     fs.writeFileSync(path.join(destDir, `image${ext}`), buffer);
     return ext;
-  } catch (err) {
+  } catch (err: any) {
     console.warn(`⚠️ Error downloading image ${url}: ${err.message || err}`);
     return null;
   }
 }
 
 // Helper: Slugify text
-export function slugify(text) {
+export function slugify(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
@@ -91,14 +91,20 @@ export function slugify(text) {
     .replace(/^_+|_+$/g, '');
 }
 
+export interface MarkdownParseResult {
+  frontmatter: Record<string, any>;
+  body: string;
+  hasFrontmatter: boolean;
+}
+
 // Helper: Parse frontmatter and body
-export function parseMarkdown(filePath) {
+export function parseMarkdown(filePath: string): MarkdownParseResult {
   const content = fs.readFileSync(filePath, 'utf8');
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!match) return { frontmatter: {}, body: content, hasFrontmatter: false };
   const fmText = match[1];
   const body = match[2];
-  const frontmatter = {};
+  const frontmatter: Record<string, any> = {};
   for (const line of fmText.split('\n')) {
     const idx = line.indexOf(':');
     if (idx !== -1) {
@@ -109,7 +115,7 @@ export function parseMarkdown(filePath) {
         val = val.slice(1, -1);
       }
 
-      let parsedVal = val;
+      let parsedVal: any = val;
       if (val === 'null') {
         parsedVal = null;
       } else if (val === 'true') {
@@ -132,8 +138,8 @@ export function parseMarkdown(filePath) {
 }
 
 // Helper: Stringify frontmatter and body
-export function stringifyMarkdown(frontmatter, body) {
-  const fmLines = [];
+export function stringifyMarkdown(frontmatter: Record<string, any>, body: string): string {
+  const fmLines: string[] = [];
   for (const [key, val] of Object.entries(frontmatter)) {
     if (val === null || val === undefined) {
       fmLines.push(`${key}: null`);
@@ -148,7 +154,7 @@ export function stringifyMarkdown(frontmatter, body) {
 }
 
 // Helper: Merge new metrics/fields into frontmatter of an existing file
-export function mergeFrontmatter(filePath, newFields) {
+export function mergeFrontmatter(filePath: string, newFields: Record<string, any>): boolean {
   if (!fs.existsSync(filePath)) return false;
   const { frontmatter, body } = parseMarkdown(filePath);
   const mergedFrontmatter = { ...frontmatter, ...newFields };
@@ -158,7 +164,7 @@ export function mergeFrontmatter(filePath, newFields) {
 }
 
 // Helper: Scan collection directory and find index.md file matching target platform ID
-export function findFileByPlatformId(collectionDir, platformId) {
+export function findFileByPlatformId(collectionDir: string, platformId: string): string | null {
   if (!fs.existsSync(collectionDir)) return null;
   const folders = fs.readdirSync(collectionDir).filter(f => fs.statSync(path.join(collectionDir, f)).isDirectory());
   for (const folder of folders) {

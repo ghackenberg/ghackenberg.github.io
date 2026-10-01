@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { mergeFrontmatter, findExistingImage, downloadImage } from "./utils.js";
+import { mergeFrontmatter, downloadImage } from "./utils.js";
 
-export async function syncLinkedIn() {
+export async function syncLinkedIn(): Promise<void> {
   console.log("Syncing LinkedIn posts...");
 
   const profilePath = path.resolve(process.cwd(), "src/content/feeds/linkedin/profile.json");
@@ -13,7 +13,7 @@ export async function syncLinkedIn() {
   const profileContent = fs.readFileSync(profilePath, 'utf8');
   const profileData = JSON.parse(profileContent);
 
-  const postIds = profileData.postIds || [];
+  const postIds: string[] = profileData.postIds || [];
   if (postIds.length === 0) {
     console.log("No postIds configured in LinkedIn profile. Skipping posts sync.");
     return;
@@ -25,7 +25,7 @@ export async function syncLinkedIn() {
   }
 
   // Determine which posts to sync (newest 3 or any that do not exist on disk)
-  const idsToSync = [];
+  const idsToSync: string[] = [];
 
   for (let i = 0; i < postIds.length; i++) {
     const id = postIds[i];
@@ -37,7 +37,7 @@ export async function syncLinkedIn() {
 
   console.log(`Syncing ${idsToSync.length} LinkedIn posts (out of ${postIds.length} total)...`);
 
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   for (let idx = 0; idx < idsToSync.length; idx++) {
     const id = idsToSync[idx];
@@ -66,8 +66,8 @@ export async function syncLinkedIn() {
 
       const html = await res.text();
       const regex = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-      let match;
-      let postData = null;
+      let match: RegExpExecArray | null;
+      let postData: any = null;
 
       while ((match = regex.exec(html)) !== null) {
         try {
@@ -76,7 +76,7 @@ export async function syncLinkedIn() {
             postData = json;
             break;
           }
-        } catch (err) {
+        } catch {
           // ignore parsing errors
         }
       }
@@ -106,7 +106,7 @@ export async function syncLinkedIn() {
       if (postData.datePublished) {
         try {
           pubDateStr = new Date(postData.datePublished).toISOString();
-        } catch (e) {
+        } catch {
           console.warn(`! Failed to parse datePublished: ${postData.datePublished}`);
         }
       }
@@ -137,7 +137,7 @@ export async function syncLinkedIn() {
           imageUrl = postData.thumbnailUrl;
         }
 
-        let localExt = null;
+        let localExt: string | null = null;
         if (imageUrl) {
           localExt = await downloadImage(imageUrl, itemDir);
         }
@@ -156,7 +156,7 @@ ${bodyText}
         fs.writeFileSync(filePath, mdContent, "utf8");
         console.log(`✓ Generated new post in ${path.relative(process.cwd(), filePath)}`);
       }
-    } catch (e) {
+    } catch (e: any) {
       if (fileExists) {
         console.warn(`⚠️ Failed to update LinkedIn post ${id}, retaining existing file. Error: ${e.message || e}`);
       } else {

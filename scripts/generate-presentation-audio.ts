@@ -1,4 +1,3 @@
-// @ts-check
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -6,15 +5,12 @@ import { UniversalCommunicate } from 'edge-tts-universal';
 
 /**
  * Extracts YAML frontmatter fields from markdown/mdx content
- * @param {string} content
- * @returns {Record<string, string>}
  */
-function parseFrontmatter(content) {
+function parseFrontmatter(content: string): Record<string, string> {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
   const yamlText = match[1];
-  /** @type {Record<string, string>} */
-  const result = {};
+  const result: Record<string, string> = {};
 
   const lines = yamlText.split('\n');
   let currentKey = '';
@@ -53,11 +49,15 @@ function parseFrontmatter(content) {
   return result;
 }
 
+interface TtsLexicon {
+  acronyms: Record<string, string>;
+  phonetics: Record<string, string>;
+}
+
 /**
  * Loads the central TTS pronunciation and acronym lexicon
- * @returns {{ acronyms: Record<string, string>; phonetics: Record<string, string> }}
  */
-function loadTtsLexicon() {
+function loadTtsLexicon(): TtsLexicon {
   const lexiconPath = path.resolve('src/content/presentations/tts-lexicon.json');
   if (fs.existsSync(lexiconPath)) {
     try {
@@ -71,18 +71,14 @@ function loadTtsLexicon() {
 
 /**
  * Transforms clean text into pronunciation-optimized text for TTS synthesis.
- * Applies acronym expansions (e.g. RAG -> R-A-G) and phonetic transcriptions (e.g. Snapshot -> Snäpschott).
- * @param {string} text
- * @param {{ acronyms?: Record<string, string>; phonetics?: Record<string, string> }} lexicon
- * @returns {string}
  */
-function applyLexicon(text, lexicon) {
+function applyLexicon(text: string, lexicon: Partial<TtsLexicon>): string {
   if (!text) return '';
   let result = text;
 
   const allMappings = {
     ...(lexicon.phonetics || {}),
-    ...(lexicon.acronyms || {})
+    ...(lexicon.acronyms || {}),
   };
 
   const sortedKeys = Object.keys(allMappings).sort((a, b) => b.length - a.length);
@@ -97,33 +93,17 @@ function applyLexicon(text, lexicon) {
   return result;
 }
 
-/**
- * Extracts cues (both point cues and span cues) from text and cleans text for speech synthesis
- * @param {string} rawVoiceover
- * @returns {{
- *   cleanText: string;
- *   cues: Array<{ id: string; startWordIndex: number; endWordIndex?: number }>;
- * }}
- */
-/**
- * Normalizes a word for robust acoustic anchor matching.
- * Converts to lowercase and removes all punctuation and symbols.
- * @param {string | undefined} w
- * @returns {string}
- */
-function normalizeWord(w) {
+function normalizeWord(w?: string): string {
   return (w || '').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 }
 
-/**
- * Searches wordBoundaries for the best matching boundary corresponding to targetWord,
- * searching in a window around seedIndex.
- * @param {string | undefined} targetWord
- * @param {number} seedIndex
- * @param {Array<{ offsetSec: number; durationSec: number; text: string }>} wordBoundaries
- * @returns {number}
- */
-function findAnchorWordBoundary(targetWord, seedIndex, wordBoundaries) {
+interface WordBoundary {
+  offsetSec: number;
+  durationSec: number;
+  text: string;
+}
+
+function findAnchorWordBoundary(targetWord: string | undefined, seedIndex: number, wordBoundaries: WordBoundary[]): number {
   if (!targetWord || wordBoundaries.length === 0) {
     return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
   }
@@ -155,7 +135,7 @@ function findAnchorWordBoundary(targetWord, seedIndex, wordBoundaries) {
     return bestIdx;
   }
 
-  // 2. Prefix or substring match for compound/hyphenated tokens (e.g. "Schema" in "Schema.org")
+  // 2. Prefix or substring match for compound/hyphenated tokens
   for (let i = minIdx; i < maxIdx; i++) {
     const boundaryNorm = normalizeWord(wordBoundaries[i].text);
     if (boundaryNorm && (targetNorm.startsWith(boundaryNorm) || boundaryNorm.startsWith(targetNorm))) {
@@ -175,27 +155,26 @@ function findAnchorWordBoundary(targetWord, seedIndex, wordBoundaries) {
   return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
 }
 
-/**
- * Extracts {cue:id} tags from voiceover text, computing clean speech text,
- * anchor target words, and seed word indexes.
- *
- * @param {string} rawVoiceover
- * @returns {{
- *   cleanText: string;
- *   cues: Array<{ id: string; startWordIndex: number; endWordIndex?: number; wordAfter?: string; wordBefore?: string }>;
- * }}
- */
-function extractCuesAndCleanText(rawVoiceover) {
+interface CueExtraction {
+  id: string;
+  startWordIndex: number;
+  endWordIndex?: number;
+  wordAfter?: string;
+  wordBefore?: string;
+}
+
+function extractCuesAndCleanText(rawVoiceover: string): {
+  cleanText: string;
+  cues: CueExtraction[];
+} {
   const tagRegex = /\{cue:([a-zA-Z0-9_-]+)\}|\{\/cue\}/g;
   let cleanText = '';
-  /** @type {Array<{ id: string; startWordIndex: number; endWordIndex?: number; wordAfter?: string; wordBefore?: string }>} */
-  const cues = [];
-  /** @type {Array<{ id: string; startWordIndex: number; endWordIndex?: number; wordAfter?: string; wordBefore?: string }>} */
-  const openSpans = [];
+  const cues: CueExtraction[] = [];
+  const openSpans: CueExtraction[] = [];
 
   let lastIndex = 0;
   let currentWordCount = 0;
-  let match;
+  let match: RegExpExecArray | null;
 
   while ((match = tagRegex.exec(rawVoiceover)) !== null) {
     const textBefore = rawVoiceover.slice(lastIndex, match.index);
@@ -210,10 +189,10 @@ function extractCuesAndCleanText(rawVoiceover) {
       const id = match[1];
       const textAfter = rawVoiceover.slice(lastIndex).replace(/\{cue:[^}]+\}|\{\/cue\}/g, '').trim();
       const firstWord = textAfter.split(/\s+/)[0]?.replace(/^[^\p{L}\p{N}]+/gu, '').replace(/[^\p{L}\p{N}]+$/gu, '') || '';
-      const cueObj = { 
-        id, 
+      const cueObj: CueExtraction = {
+        id,
         startWordIndex: currentWordCount,
-        wordAfter: firstWord
+        wordAfter: firstWord,
       };
       cues.push(cueObj);
       openSpans.push(cueObj);
@@ -237,12 +216,7 @@ function extractCuesAndCleanText(rawVoiceover) {
   return { cleanText, cues };
 }
 
-/**
- * Safely writes a JSON file, retrying on transient Windows file lock errors (EBUSY / UNKNOWN).
- * @param {string} filePath
- * @param {any} data
- */
-function safeWriteJson(filePath, data) {
+function safeWriteJson(filePath: string, data: any): void {
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
       fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
@@ -255,12 +229,7 @@ function safeWriteJson(filePath, data) {
   }
 }
 
-/**
- * Safely writes a buffer to file, retrying on transient Windows file lock errors (EBUSY / UNKNOWN).
- * @param {string} filePath
- * @param {Buffer} buffer
- */
-function safeWriteBuffer(filePath, buffer) {
+function safeWriteBuffer(filePath: string, buffer: Buffer): void {
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
       fs.writeFileSync(filePath, buffer);
@@ -273,10 +242,7 @@ function safeWriteBuffer(filePath, buffer) {
   }
 }
 
-/**
- * Generates audio and word-level cues for all presentations
- */
-async function generateAllPresentationAudio() {
+async function generateAllPresentationAudio(): Promise<void> {
   const presentationsBase = path.resolve('src/content/presentations');
   if (!fs.existsSync(presentationsBase)) {
     console.log('[Audio Generator] No presentations directory found at src/content/presentations');
@@ -296,8 +262,7 @@ async function generateAllPresentationAudio() {
     fs.mkdirSync(audioDir, { recursive: true });
 
     const cacheFile = path.join(audioDir, '.cache.json');
-    /** @type {Record<string, string>} */
-    let cache = {};
+    let cache: Record<string, string> = {};
     if (fs.existsSync(cacheFile)) {
       try {
         cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
@@ -339,37 +304,31 @@ async function generateAllPresentationAudio() {
       const { cleanText, cues } = extractCuesAndCleanText(voiceover);
       const spokenText = applyLexicon(cleanText, lexicon);
 
-      // Hash spokenText and voiceover: audio and cues are re-synthesized if spoken output or cue markers changed
       const normalizedVo = voiceover.replace(/\r\n/g, '\n').trim();
       const hash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}:${normalizedVo}`).digest('hex');
       const mp3Path = path.join(audioDir, `${slideId}.mp3`);
       const cuesPath = path.join(audioDir, `${slideId}.cues.json`);
 
       if (!forceFlag && cache[slideId] === hash && fs.existsSync(mp3Path) && fs.existsSync(cuesPath)) {
-        // Cached, no need to synthesize again
         continue;
       }
 
       console.log(`  ▶ Synthesizing audio for: ${slideId} (voice: ${selectedVoice})...`);
 
       try {
-        // Use German multilingual neural voice by default (handles English tech terms cleanly)
         const communicate = new UniversalCommunicate(spokenText, {
           voice: selectedVoice,
           rate: '+0%',
-          pitch: '+0Hz'
+          pitch: '+0Hz',
         });
 
-        /** @type {Buffer[]} */
-        const audioChunks = [];
-        /** @type {Array<{ offsetSec: number; durationSec: number; text: string }>} */
-        const wordBoundaries = [];
+        const audioChunks: Buffer[] = [];
+        const wordBoundaries: WordBoundary[] = [];
 
         for await (const chunk of communicate.stream()) {
           if (chunk.type === 'audio' && chunk.data) {
             audioChunks.push(Buffer.from(chunk.data));
           } else if (chunk.type === 'WordBoundary') {
-            // chunk.offset is in 100ns units -> / 10,000,000 for seconds
             const sec = (chunk.offset || 0) / 10000000;
             const dur = (chunk.duration || 0) / 10000000;
             wordBoundaries.push({ offsetSec: sec, durationSec: dur, text: chunk.text || '' });
@@ -381,13 +340,10 @@ async function generateAllPresentationAudio() {
           continue;
         }
 
-        // Save MP3
         const finalAudioBuffer = Buffer.concat(audioChunks);
         safeWriteBuffer(mp3Path, finalAudioBuffer);
 
-        // Compute Cues Map with acoustic anchor word matching
-        /** @type {Record<string, { start: number; duration?: number; end?: number }>} */
-        const cuesMap = {};
+        const cuesMap: Record<string, { start: number; duration?: number; end?: number }> = {};
         for (const cue of cues) {
           if (wordBoundaries.length === 0) {
             cuesMap[cue.id] = { start: 0, duration: 0.5 };
@@ -410,18 +366,17 @@ async function generateAllPresentationAudio() {
             cuesMap[cue.id] = {
               start: startSec,
               duration: durationSec,
-              end: endSec
+              end: endSec,
             };
           } else {
             cuesMap[cue.id] = {
-              start: startSec
+              start: startSec,
             };
           }
         }
 
         safeWriteJson(cuesPath, cuesMap);
 
-        // Update cache
         cache[slideId] = hash;
         safeWriteJson(cacheFile, cache);
 
@@ -431,7 +386,6 @@ async function generateAllPresentationAudio() {
       }
     }
 
-    // Prune orphaned audio files and dead cache entries for slides that no longer exist
     if (!targetSlide) {
       const activeSlideIds = new Set(slideFiles.map((f) => f.replace(/\.(md|mdx)$/, '')));
       const audioFiles = fs.readdirSync(audioDir);

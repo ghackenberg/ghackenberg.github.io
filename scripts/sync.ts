@@ -4,7 +4,7 @@ import { syncGitHub } from "./sync/github.js";
 import { syncYouTube } from "./sync/youtube.js";
 import { syncLinkedIn } from "./sync/linkedin.js";
 
-async function main() {
+async function main(): Promise<void> {
   loadEnv();
   console.log("Starting feed sync process...");
 
@@ -22,7 +22,7 @@ async function main() {
   if (runAll || runGitHub) {
     try {
       await syncGitHub();
-    } catch (error) {
+    } catch (error: any) {
       console.error("❌ GitHub sync failed:", error.message || error);
       hasErrors = true;
     }
@@ -31,7 +31,7 @@ async function main() {
   if (runAll || runYouTube) {
     try {
       await syncYouTube();
-    } catch (error) {
+    } catch (error: any) {
       console.error("❌ YouTube sync failed:", error.message || error);
       hasErrors = true;
     }
@@ -40,7 +40,7 @@ async function main() {
   if (runAll || runLinkedIn) {
     try {
       await syncLinkedIn();
-    } catch (error) {
+    } catch (error: any) {
       console.error("❌ LinkedIn sync failed:", error.message || error);
       hasErrors = true;
     }
@@ -53,7 +53,7 @@ async function main() {
     try {
       console.log("Synchronizing Astro content collections...");
       execSync("npx astro sync", { stdio: "inherit" });
-    } catch (syncError) {
+    } catch (syncError: any) {
       console.warn("⚠️ Warning: Failed to run 'npx astro sync' automatically:", syncError.message || syncError);
     }
     console.log("\n✅ Feed sync completed successfully!");

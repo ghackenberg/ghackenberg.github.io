@@ -3,7 +3,18 @@ import path from 'path';
 import { Octokit } from "@octokit/core";
 import { findExistingImage, downloadImage } from "./utils.js";
 
-export async function syncGitHub() {
+interface GitHubRepoItem {
+  name: string;
+  description: string;
+  url: string;
+  stargazers_count: number;
+  language: string;
+  social_preview: string;
+  createdAt: string;
+  pushedAt: string;
+}
+
+export async function syncGitHub(): Promise<void> {
   const username = "ghackenberg";
   const token = process.env.GITHUB_TOKEN;
   console.log("Syncing GitHub profile and repositories...");
@@ -18,7 +29,7 @@ export async function syncGitHub() {
     throw new Error(`Profile fetch responded with status ${profileRes.status}`);
   }
   const profile = {
-    followers: profileRes.data.followers
+    followers: (profileRes.data as any).followers
   };
 
   // Fetch Repositories
@@ -26,12 +37,12 @@ export async function syncGitHub() {
     throw new Error("GITHUB_TOKEN environment variable is required for GitHub GraphQL sync");
   }
 
-  let repos = [];
+  const repos: GitHubRepoItem[] = [];
   let hasNextPage = true;
-  let cursor = null;
+  let cursor: string | null = null;
 
   while (hasNextPage) {
-    const reposRes = await octokit.graphql(
+    const reposRes: any = await octokit.graphql(
       `query ($username: String!, $cursor: String) {
         user(login: $username) {
           repositories(first: 100, after: $cursor, orderBy: {field: PUSHED_AT, direction: DESC}, privacy: PUBLIC) {
@@ -92,7 +103,7 @@ export async function syncGitHub() {
 
   fs.writeFileSync(path.join(profileDir, "profile.json"), JSON.stringify(profile, null, 2), "utf8");
 
-  const activeRepoDirs = new Set();
+  const activeRepoDirs = new Set<string>();
   for (const repo of repos) {
     const safeName = repo.name.replace(/[^a-zA-Z0-9_-]/g, "_");
     activeRepoDirs.add(safeName);
@@ -104,7 +115,7 @@ export async function syncGitHub() {
 
     let localExt = findExistingImage(repoDir);
     if (!localExt && repo.social_preview && !repo.social_preview.includes("avatars.githubusercontent.com")) {
-      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
       const waitMs = Math.floor(1000 + Math.random() * 1500);
       console.log(`Downloading new social preview image for ${repo.name}, waiting ${waitMs}ms first...`);
       await delay(waitMs);

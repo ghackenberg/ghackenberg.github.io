@@ -1,8 +1,9 @@
-import { spawn, execSync } from 'child_process';
+import { spawn, execSync, type ChildProcess } from 'child_process';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+// @ts-ignore - lighthouse types may not be installed
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
 
@@ -14,7 +15,26 @@ const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const port = 45678;
 const baseUrl = `http://localhost:${port}`;
 
-const urlsToAudit = [
+interface AuditTarget {
+  path: string;
+  name: string;
+}
+
+interface AuditScores {
+  performance: number;
+  accessibility: number;
+  bestPractices: number;
+  seo: number;
+}
+
+interface AuditResult {
+  name: string;
+  path: string;
+  theme: 'dark' | 'light';
+  scores: AuditScores;
+}
+
+const urlsToAudit: AuditTarget[] = [
   // Overview Pages
   { path: '/', name: 'homepage' },
   { path: '/services/', name: 'services' },
@@ -34,11 +54,11 @@ const urlsToAudit = [
   { path: '/visualizations/sigma/', name: 'visualization_detail' }
 ];
 
-function wait(ms) {
+function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function isServerReady(url) {
+async function isServerReady(url: string): Promise<boolean> {
   return new Promise((resolve) => {
     http.get(url, (res) => {
       resolve(res.statusCode === 200);
@@ -48,7 +68,7 @@ async function isServerReady(url) {
   });
 }
 
-async function waitForServer(url, timeoutMs = 20000) {
+async function waitForServer(url: string, timeoutMs: number = 20000): Promise<boolean> {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
     const ready = await isServerReady(url);
@@ -58,7 +78,19 @@ async function waitForServer(url, timeoutMs = 20000) {
   return false;
 }
 
-async function run() {
+function formatScoreCell(score?: number | null): string {
+  if (score === undefined || score === null) return 'N/A';
+  const scoreStr = String(score).padEnd(3);
+  if (score >= 90) {
+    return `\x1b[32m${scoreStr}\x1b[0m`; // Green
+  } else if (score >= 50) {
+    return `\x1b[33m${scoreStr}\x1b[0m`; // Yellow
+  } else {
+    return `\x1b[31m${scoreStr}\x1b[0m`; // Red
+  }
+}
+
+async function run(): Promise<void> {
   // 1. Build the site
   console.log('Building website for production...');
   try {
@@ -70,14 +102,14 @@ async function run() {
 
   // 2. Start the preview server
   console.log(`Starting preview server on port ${port}...`);
-  const previewProcess = spawn(npmCmd, ['run', 'preview', '--', '--port', port.toString()], {
+  const previewProcess: ChildProcess = spawn(npmCmd, ['run', 'preview', '--', '--port', port.toString()], {
     cwd: projectRoot,
     stdio: 'pipe',
     shell: true
   });
 
   // Log preview server output if debug is needed
-  previewProcess.stderr.on('data', (data) => {
+  previewProcess.stderr?.on('data', (data) => {
     console.error(`Preview Server Error: ${data}`);
   });
 
@@ -106,7 +138,7 @@ async function run() {
 
   // 3. Launch headless Chrome
   console.log('Launching headless Chrome...');
-  let chrome;
+  let chrome: chromeLauncher.LaunchedChrome | undefined;
   try {
     chrome = await chromeLauncher.launch({
       chromeFlags: ['--headless', '--no-sandbox', '--disable-gpu']
@@ -123,14 +155,14 @@ async function run() {
     fs.mkdirSync(reportsDir);
   }
 
-  const resultsSummary = [];
+  const resultsSummary: AuditResult[] = [];
   let thresholdFailed = false;
   const minRequiredScore = process.env.LH_MIN_SCORE ? parseInt(process.env.LH_MIN_SCORE, 10) : 90;
   const minA11yScore = process.env.LH_MIN_A11Y_SCORE ? parseInt(process.env.LH_MIN_A11Y_SCORE, 10) : 98;
 
   try {
     for (const page of urlsToAudit) {
-      for (const theme of ['dark', 'light']) {
+      for (const theme of ['dark', 'light'] as const) {
         const suffix = theme === 'light' ? '?theme=light' : '?theme=dark';
         const url = `${baseUrl}${page.path}${suffix}`;
         console.log(`Auditing (${theme} mode): ${url}...`);
@@ -141,7 +173,7 @@ async function run() {
           port: chrome.port,
         };
 
-        const runnerResult = await lighthouse(url, options);
+        const runnerResult: any = await lighthouse(url, options);
 
         const htmlReport = runnerResult.report[0];
         const jsonReport = runnerResult.report[1];
@@ -151,7 +183,7 @@ async function run() {
         fs.writeFileSync(path.join(reportsDir, `${page.name}_${theme}.html`), htmlReport);
         fs.writeFileSync(path.join(reportsDir, `${page.name}_${theme}.json`), jsonReport);
 
-        const scores = {
+        const scores: AuditScores = {
           performance: Math.round((lhr.categories.performance?.score || 0) * 100),
           accessibility: Math.round((lhr.categories.accessibility?.score || 0) * 100),
           bestPractices: Math.round((lhr.categories['best-practices']?.score || 0) * 100),
@@ -183,7 +215,7 @@ async function run() {
       if (chrome) {
         await chrome.kill();
       }
-    } catch (err) {
+    } catch (err: any) {
       console.warn('Warning: Failed to cleanly close Chrome or delete temporary directory:', err.message);
     }
     cleanup();
@@ -195,7 +227,7 @@ async function run() {
   console.log('========================================================================');
   
   // Group results by page path/name
-  const groupedResults = {};
+  const groupedResults: Record<string, { path: string; dark: AuditScores | null; light: AuditScores | null }> = {};
   for (const r of resultsSummary) {
     if (!groupedResults[r.name]) {
       groupedResults[r.name] = { path: r.path, dark: null, light: null };
@@ -223,18 +255,6 @@ async function run() {
   }
 
   process.exit(0);
-}
-
-function formatScoreCell(score) {
-  if (score === undefined || score === null) return 'N/A';
-  const scoreStr = String(score).padEnd(3);
-  if (score >= 90) {
-    return `\x1b[32m${scoreStr}\x1b[0m`; // Green
-  } else if (score >= 50) {
-    return `\x1b[33m${scoreStr}\x1b[0m`; // Yellow
-  } else {
-    return `\x1b[31m${scoreStr}\x1b[0m`; // Red
-  }
 }
 
 run();
