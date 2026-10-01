@@ -1,17 +1,21 @@
 ---
-title: "Live-Demo: Ein Prompt bis zum Deployment"
-subtitle: "Vom Sprachbefehl in Google Antigravity bis zum {cue:hl-sub-demo-1001}automatisierten Git-Release auf Main{/cue}"
+title: "Live-Demo: Agentisches Audit & Dev-Studio"
+subtitle: "Vom Prompt in Google Antigravity zum {cue:hl-sub-demo-1001}Audit-Bericht und visuellen Analytics-Overlays im Browser{/cue}"
 number: "40"
 slideLayout: "split"
 voiceover: >
-  Erleben wir diesen agentischen Workflow nun direkt in einer Live-Demonstration vor Ihren Augen.
-  {cue:sub} Sie zeigt den Weg vom Sprachbefehl in Google Antigravity bis zum {cue:hl-sub-demo-1001}automatisierten Git-Release auf Main{/cue}.
-  {cue:col-demo-prompt} Ich kopiere dazu diesen konkreten Demo-Prompt: {cue:hl-prompt-text}Optimiere den Artikel für KI-Sichtbarkeit mit Schema-Metadaten und Lighthouse-Audit{/cue}.
-  {cue:col-demo-pipeline} Auf dem Bildschirm sehen Sie nun die vier Phasen: Der Agent {cue:hl-demo-step1}scannt den Text und ruft get_page_audit per MCP auf{/cue}, generiert {cue:hl-demo-step2}syntaktisch valides JSON-LD nach dem BLUF-Prinzip{/cue}, verifiziert {cue:hl-demo-step3}hundert Punkte im Headless Lighthouse Audit{/cue} und schließt mit {cue:hl-demo-step4}automatischem Git Commit und Push auf den Main-Branch{/cue} ab.
+  Erleben wir diesen agentischen Workflow nun direkt in einer fokussierten Live-Demonstration vor Ihren Augen.
+  {cue:sub} Sie zeigt den Weg vom Prompt in Google Antigravity zum {cue:hl-sub-demo-1001}Audit-Bericht und visuellen Analytics-Overlays im Browser{/cue}.
+  {cue:col-demo-prompt} Ich kopiere dazu diesen konkreten Demo-Prompt: {cue:hl-prompt-text}Führe ein SEO- und AIO-Audit für unseren Fachartikel durch{/cue}.
+  {cue:col-demo-pipeline} Antigravity {cue:hl-demo-step1}ruft über den Unified Analytics MCP get_page_audit und evaluate_aio_extractability auf{/cue} und liefert uns {cue:hl-demo-step2}einen priorisierten Audit-Bericht mit Scroll-Funnel und AIO-Score{/cue}. Statt nun Code zu schreiben, wechseln wir in die {cue:hl-demo-step3}Dev-Studio-Shell im lokalen Browser{/cue}, um die {cue:hl-demo-step4}visuellen Overlays für Scroll-Tiefe und Leser-Retention{/cue} live zu inspizieren.
 notes: |
   - Zeit: 50:30 - 54:00 Min.
-  - Interaktiver Moment: Prompt live aus der Folie kopieren, in Google Antigravity einfügen und abschicken.
-  - Das Publikum kann in Echtzeit beobachten, wie Antigravity Tools aufruft, Dateien editiert und den PR testet!
+  - Ablauf der Live-Demo:
+    1. Prompt live aus der linken Box kopieren und in Antigravity einfügen.
+    2. Antigravity führt get_page_audit und evaluate_aio_extractability aus und liefert den priorisierten Audit-Bericht.
+    3. Bericht kurz präsentieren: Stärken (hohe Verweildauer, Tabellen) und Prioritäten (JSON-LD-Verfeinerung).
+    4. Per Alt+Tab in den Dev-Browser (npm run dev) wechseln: Dev-Studio-Shell und Analytics-Overlays (Scroll-Funnel, Meilensteine, HUD) zeigen.
+    5. Zurück zur Präsentation springen.
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -27,8 +31,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 >
   <BentoCard slot="left" cue="col-demo-prompt" title="Live-Demo Prompt (Kopierbar)" accent="blue">
     <CalloutBox type="quote" title="Prompt für Google Antigravity">
-      <p class="font-mono text-base lg:text-lg text-blue-200 light:text-blue-900 select-all leading-relaxed">
-        {cue:hl-prompt-text}„Optimiere den Artikel /posts/geo für KI-Sichtbarkeit: Ergänze Schema.org TechArticle Metadaten nach dem BLUF-Prinzip, führe ein lokales Lighthouse-Audit durch und committe die Änderungen mit validierten CI-Prüfungen auf main.“{/cue}
+      <p class="font-mono text-sm lg:text-base text-blue-200 light:text-blue-900 select-all leading-relaxed">
+        {cue:hl-prompt-text}„Führe ein SEO- und AIO-Audit für /posts/2026_08_11_seo_geo_aeo_aio_optimierung/ durch: Analysiere Verweildauer und Scroll-Funnel per get_page_audit, evaluiere AIO-Zitierbarkeit und BLUF-Muster per evaluate_aio_extractability und erstelle einen kompakten Bericht mit priorisierten Maßnahmen.“{/cue}
       </p>
     </CalloutBox>
     <p class="text-sm text-slate-400 light:text-slate-600 mt-2 italic">
@@ -36,13 +40,12 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </p>
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-demo-pipeline" title="Vollautonome Agenten-Pipeline" accent="cyan">
+  <BentoCard slot="right" cue="col-demo-pipeline" title="Workflow der Live-Demonstration" accent="cyan">
     <BulletList items={[
-      { icon: "search", title: "01. Perzeption & Analyse", desc: "Agent {cue:hl-demo-step1}scannt den Text und ruft get_page_audit per MCP auf{/cue}." },
-      { icon: "code", title: "02. Reasoning & Refactoring", desc: "LLM erzeugt {cue:hl-demo-step2}syntaktisch valides JSON-LD nach dem BLUF-Prinzip{/cue}." },
-      { icon: "shield", title: "03. Pre-Flight Verification", desc: "Agent verifiziert {cue:hl-demo-step3}hundert Punkte im Headless Lighthouse Audit{/cue}." },
-      { icon: "zap", title: "04. Release & Deployment", desc: "Automatischer {cue:hl-demo-step4}Git Commit und Push auf den Main-Branch{/cue} zur Edge-Verteilung." }
+      { icon: "search", title: "01. Unified Analytics MCP", desc: "Agent {cue:hl-demo-step1}ruft über den Unified Analytics MCP get_page_audit und evaluate_aio_extractability auf{/cue}." },
+      { icon: "target", title: "02. Priorisierter Audit-Bericht", desc: "Antigravity liefert {cue:hl-demo-step2}einen priorisierten Audit-Bericht mit Scroll-Funnel und AIO-Score{/cue}." },
+      { icon: "code", title: "03. Dev-Studio-Shell", desc: "Wechsel in die {cue:hl-demo-step3}Dev-Studio-Shell im lokalen Browser{/cue} zur visuellen Seitenanalyse." },
+      { icon: "sparkles", title: "04. Analytics-Overlays", desc: "Live-Inspektion der {cue:hl-demo-step4}visuellen Overlays für Scroll-Tiefe und Leser-Retention{/cue}." }
     ]} />
   </BentoCard>
 </SplitSlide>
-
