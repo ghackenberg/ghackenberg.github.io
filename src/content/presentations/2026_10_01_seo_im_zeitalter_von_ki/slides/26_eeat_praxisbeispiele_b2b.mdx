@@ -1,0 +1,113 @@
+---
+title: "E-E-A-T in der B2B-Praxis: 4 Industriemuster"
+subtitle: "Greifbare Umsetzung für Industrie und Fertigung: {cue:hl-sub-eeatp-1001}Wie Unternehmen Erfahrung und Vertrauen maschinenlesbar belegen{/cue}"
+number: "26"
+slideLayout: "grid"
+voiceover: >
+  Wie sieht E-E-A-T nun ganz konkret in einem Industrieunternehmen im Traunviertel aus?
+  {cue:sub} Diese vier praxiserprobten Muster zeigen, {cue:hl-sub-eeatp-1001}wie Sie Erfahrung und Vertrauen maschinenlesbar belegen{/cue}.
+  {cue:card-eeat-exp} Für Experience liefert das Helpful Content System {cue:hl-callout-eeat-exp}den Nachweis echter Praxiserfahrung{/cue}: Sie dokumentieren {cue:hl-eeat-exp-tests}zehntausend Betriebsstunden aus realen Dauertests{/cue} und zeigen {cue:hl-eeat-exp-photos}echte Fotos aus der Montagehalle statt Stock-Grafiken{/cue}.
+  {cue:card-eeat-spec} Expertise beweisen Sie durch {cue:hl-callout-eeat-spec}nachweisbare Autorenqualifikation im Betrieb{/cue}: Nennen Sie {cue:hl-eeat-spec-authors}namentliche Lead-Ingenieure mit akademischem Grad{/cue} und {cue:hl-eeat-spec-patents}eingetragene Patente direkt im Autorenprofil{/cue}.
+  {cue:card-eeat-auth} Ihre Autorität untermauern Sie durch {cue:hl-callout-eeat-auth}branchenweite Anerkennung und Fachverbände{/cue}: Referenzieren Sie {cue:hl-eeat-auth-orgs}Zitate von VDMA und Fachgesellschaften{/cue} sowie {cue:hl-eeat-auth-talks}Vorträge auf Fachtagungen wie dem Industrieforum Traunviertel{/cue}.
+  {cue:card-eeat-trust} Vertrauenswürdigkeit schließlich schaffen Sie durch {cue:hl-callout-eeat-trust}maximale Transparenz und Datenintegrität{/cue}: Hinterlegen Sie {cue:hl-eeat-trust-iso}öffentlich einsehbare ISO-Zertifikate{/cue} und nennen Sie {cue:hl-eeat-trust-tolerances}präzise Toleranzangaben ohne Werbefloskeln{/cue}.
+notes: |
+  - Zeit: 42:00 - 45:00 Min.
+  - Das ist die "Aha-Folie" für Marketingleiter: E-E-A-T ist keine SEO-Magie, sondern die Digitalisierung bestehender Industriekompetenzen.
+  - Google Search Central (2024) Helpful Content Guidelines zitieren.
+references:
+  - type: online
+    id: "google-2024-helpful-content"
+    author: "Google Search Central"
+    title: "Creating helpful, reliable, people-first content"
+    siteName: "Google Search Central Documentation"
+    year: 2024
+    url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="26"
+  totalSlides="50"
+  cols={2}
+>
+  <BentoCard cue="card-eeat-exp" title="1. Experience (Echte Praxiserfahrung)" accent="blue">
+    <CalloutBox type="info" title="{cue:hl-callout-eeat-exp}Nachweis echter Praxiserfahrung{/cue}">
+      <p class="text-slate-300 light:text-slate-700">Google Helpful Content [@google-2024-helpful-content]: Reale Daten aus Fertigung und Einsatz.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "check",
+        title: "10.000h Dauertest-Messreihen",
+        desc: "Konkrete Protokolle über {cue:hl-eeat-exp-tests}zehntausend Betriebsstunden aus realen Dauertests{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Echtes Bildmaterial",
+        desc: "Veröffentlichung von {cue:hl-eeat-exp-photos}echten Fotos aus der Montagehalle statt Stock-Grafiken{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="card-eeat-spec" title="2. Expertise (Fachkompetenz)" accent="cyan">
+    <CalloutBox type="statement" title="{cue:hl-callout-eeat-spec}Nachweisbare Autorenqualifikation{/cue}">
+      <p class="text-cyan-200 light:text-cyan-900">Fachaufsätze mit namentlichen Experten und akademischen Profilen.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "check",
+        title: "Namentliche Lead-Ingenieure",
+        desc: "Autorenangaben mit {cue:hl-eeat-spec-authors}namentlichen Lead-Ingenieuren mit akademischem Grad{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Patente & Publikationen",
+        desc: "Verlinkung von {cue:hl-eeat-spec-patents}eingetragenen Patenten direkt im Autorenprofil{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="card-eeat-auth" title="3. Authoritativeness (Autorität)" accent="purple">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-eeat-auth}Branchenweite Anerkennung{/cue}">
+      <p class="text-purple-200 light:text-purple-900">Signale durch externe Verbände, Fachtagungen und Hochschulen.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "network",
+        title: "Verbands-Zitate",
+        desc: "Externe Bestätigung durch {cue:hl-eeat-auth-orgs}Zitate von VDMA und Fachgesellschaften{/cue}."
+      },
+      {
+        icon: "target",
+        title: "Fachtagungs-Vorträge",
+        desc: "Dokumentation von {cue:hl-eeat-auth-talks}Vorträgen auf Fachtagungen wie dem Industrieforum Traunviertel{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="card-eeat-trust" title="4. Trustworthiness (Vertrauenswürdigkeit)" accent="emerald">
+    <CalloutBox type="statement" title="{cue:hl-callout-eeat-trust}Maximale Transparenz{/cue}">
+      <p class="text-emerald-200 light:text-emerald-900">Offengelegte Qualitätszertifikate und genaue Toleranzmaße.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "shield",
+        title: "ISO-Zertifikatsnachweise",
+        desc: "Verlinkung von {cue:hl-eeat-trust-iso}öffentlich einsehbaren ISO-Zertifikaten{/cue} (ISO 9001 / 27001)."
+      },
+      {
+        icon: "check",
+        title: "Exakte Toleranzgrenzen",
+        desc: "Offenlegung von {cue:hl-eeat-trust-tolerances}präzisen Toleranzangaben ohne Werbefloskeln{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</GridSlide>
