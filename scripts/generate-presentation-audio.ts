@@ -216,7 +216,7 @@ function extractCuesAndCleanText(rawVoiceover: string): {
   return { cleanText, cues };
 }
 
-function safeWriteJson(filePath: string, data: any): void {
+function safeWriteJson<T>(filePath: string, data: T): void {
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
       fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');

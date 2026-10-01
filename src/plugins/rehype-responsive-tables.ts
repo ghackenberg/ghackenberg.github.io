@@ -1,4 +1,7 @@
-import type { Root, Element, ElementContent } from 'hast';
+import type { Root, Element, ElementContent, RootContent } from 'hast';
+
+type HastNode = Root | RootContent | ElementContent;
+type HastParent = Root | Element;
 
 /**
  * Rehype plugin to wrap all <table> elements in a responsive scroll container.
@@ -6,18 +9,17 @@ import type { Root, Element, ElementContent } from 'hast';
  */
 export default function rehypeResponsiveTables() {
   return function (tree: Root) {
-    function visit(node: any, index?: number, parent?: any) {
+    function visit(node: HastNode, index?: number, parent?: HastParent) {
       if (!node || typeof node !== 'object') return;
 
       if (node.type === 'element' && node.tagName === 'table' && parent && typeof index === 'number') {
         // Prevent double wrapping
-        const parentClass = parent.properties?.className;
-        const hasClass = Array.isArray(parentClass)
-          ? parentClass.includes('responsive-table-wrapper')
-          : typeof parentClass === 'string' && parentClass.includes('responsive-table-wrapper');
-
-        if (parent.type === 'element' && hasClass) {
-          return;
+        if (parent.type === 'element') {
+          const parentClass = parent.properties?.className;
+          const classStr = Array.isArray(parentClass) ? parentClass.join(' ') : String(parentClass || '');
+          if (classStr.includes('responsive-table-wrapper')) {
+            return;
+          }
         }
 
         const wrapperNode: Element = {
@@ -33,9 +35,9 @@ export default function rehypeResponsiveTables() {
         return;
       }
 
-      if (Array.isArray(node.children)) {
+      if ('children' in node && Array.isArray(node.children)) {
         for (let i = 0; i < node.children.length; i++) {
-          visit(node.children[i], i, node);
+          visit(node.children[i], i, node as HastParent);
         }
       }
     }

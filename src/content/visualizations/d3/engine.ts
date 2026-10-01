@@ -1,42 +1,46 @@
+import * as d3 from 'd3';
+
 const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
 const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
-export interface D3Node {
+export interface D3Node extends d3.SimulationNodeDatum {
   id: string;
   name: string;
   size: number;
   group: number;
-  x?: number;
-  y?: number;
-  fx?: number | null;
-  fy?: number | null;
   targetX?: number;
   targetY?: number;
 }
 
-export interface D3Link {
-  source: any;
-  target: any;
+export interface D3Link extends d3.SimulationLinkDatum<D3Node> {
+  source: string | D3Node;
+  target: string | D3Node;
+}
+
+export interface D3Payload {
+  d3: {
+    nodes: { id: string; name: string; size: number; group: number }[];
+    connections: { sourceId: string; targetId: string }[];
+  };
 }
 
 export interface D3Engine {
   layouts: { id: string; label: string }[];
-  d3?: any;
   width: number;
   height: number;
   nodes: D3Node[] | null;
   links: D3Link[] | null;
-  svg: any;
-  svgGroup: any;
-  zoom: any;
-  simulation: any;
-  linkElements: any;
-  nodeElements: any;
+  svg: d3.Selection<SVGSVGElement, D3Node, null, undefined> | null;
+  svgGroup: d3.Selection<SVGGElement, D3Node, null, undefined> | null;
+  zoom: d3.ZoomBehavior<SVGSVGElement, D3Node> | null;
+  simulation: d3.Simulation<D3Node, D3Link> | null;
+  linkElements: d3.Selection<SVGLineElement, D3Link, SVGGElement, D3Node> | null;
+  nodeElements: d3.Selection<SVGGElement, D3Node, SVGGElement, D3Node> | null;
   currentLayout?: string;
   isLight?: boolean;
-  fitTimeout?: any;
+  fitTimeout?: ReturnType<typeof setTimeout>;
   resizeObserver: ResizeObserver | null;
-  init(container: HTMLElement, payload: any, layout: string, isLight: boolean): Promise<D3Engine>;
+  init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean): Promise<D3Engine>;
   fitToView(duration?: number): void;
   updateLayout(layout: string, isLight: boolean): void;
   destroy(): void;
@@ -60,84 +64,83 @@ const engine: D3Engine = {
   nodeElements: null,
   resizeObserver: null,
 
-  async init(container: HTMLElement, payload: any, layout: string, isLight: boolean) {
-    const d3 = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm');
-    this.d3 = d3;
-
+  async init(container: HTMLElement, payload: D3Payload, layout: string, isLight: boolean) {
     this.width = container.offsetWidth || 800;
     this.height = container.offsetHeight || 500;
 
-    this.nodes = payload.d3.nodes.map((n: any) => ({ ...n }));
+    this.nodes = payload.d3.nodes.map((n) => ({ ...n }));
     // Randomize initial node positions around center
-    this.nodes!.forEach(n => {
+    this.nodes.forEach(n => {
       n.x = this.width / 2 + (Math.random() - 0.5) * (this.width * 0.4);
       n.y = this.height / 2 + (Math.random() - 0.5) * (this.height * 0.4);
     });
 
-    this.links = payload.d3.connections.map((c: any) => ({
+    this.links = payload.d3.connections.map((c) => ({
       source: c.sourceId,
       target: c.targetId
-    })).filter((l: any) => this.nodes!.some(n => n.id === l.source) && this.nodes!.some(n => n.id === l.target));
+    })).filter((l) => this.nodes!.some(n => n.id === l.source) && this.nodes!.some(n => n.id === l.target));
 
-    this.svg = d3.select(container).append("svg")
+    this.svg = d3.select<HTMLElement, D3Node>(container).append<SVGSVGElement>("svg")
       .attr("width", "100%")
       .attr("height", "100%")
       .attr("viewBox", `0 0 ${this.width} ${this.height}`)
       .style("display", "block");
 
-    this.svgGroup = this.svg.append("g");
+    this.svgGroup = this.svg.append<SVGGElement>("g");
 
-    this.zoom = d3.zoom()
+    this.zoom = d3.zoom<SVGSVGElement, D3Node>()
       .scaleExtent([0.1, 8])
-      .on("zoom", (event: any) => {
-        this.svgGroup.attr("transform", event.transform);
+      .on("zoom", (event) => {
+        this.svgGroup?.attr("transform", event.transform.toString());
       });
 
     this.svg.call(this.zoom);
 
     // Create D3 simulation
-    this.simulation = d3.forceSimulation(this.nodes);
+    this.simulation = d3.forceSimulation<D3Node>(this.nodes);
 
-    this.linkElements = this.svgGroup.selectAll(".link")
+    this.linkElements = this.svgGroup.selectAll<SVGLineElement, D3Link>(".link")
       .data(this.links)
       .enter().append("line")
       .style("stroke-width", "1px");
 
-    this.nodeElements = this.svgGroup.selectAll(".node")
+    const dragBehavior = d3.drag<SVGGElement, D3Node>()
+      .on("start", (event, d) => {
+        if (!event.active) this.simulation?.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      })
+      .on("drag", (event, d) => {
+        d.fx = event.x;
+        d.fy = event.y;
+      })
+      .on("end", (event, d) => {
+        if (!event.active) this.simulation?.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      });
+
+    this.nodeElements = this.svgGroup.selectAll<SVGGElement, D3Node>(".node")
       .data(this.nodes)
       .enter().append("g")
-      .call(d3.drag()
-        .on("start", (event: any, d: any) => {
-          if (!event.active) this.simulation.alphaTarget(0.3).restart();
-          d.fx = d.x;
-          d.fy = d.y;
-        })
-        .on("drag", (event: any, d: any) => {
-          d.fx = event.x;
-          d.fy = event.y;
-        })
-        .on("end", (event: any, d: any) => {
-          if (!event.active) this.simulation.alphaTarget(0);
-          d.fx = null;
-          d.fy = null;
-        }));
+      .call(dragBehavior);
 
     const colors = isLight ? colorsLight : colorsDark;
     
     this.nodeElements.append("circle")
-      .attr("r", (d: any) => d.size * 6 + 4)
-      .style("fill", (d: any) => colors[d.group] || colors[0])
+      .attr("r", d => d.size * 6 + 4)
+      .style("fill", d => colors[d.group] || colors[0])
       .style("stroke-width", "1.5px");
 
     this.nodeElements.append("text")
-      .attr("dx", (d: any) => d.size * 6 + 8)
+      .attr("dx", d => d.size * 6 + 8)
       .attr("dy", ".35em")
       .style("font-size", "9px")
       .style("font-family", "Outfit, Inter, sans-serif")
       .style("font-weight", "500")
       .style("pointer-events", "none");
 
-    this.nodeElements.on("dblclick", (_event: any, d: any) => {
+    this.nodeElements.on("dblclick", (_event, d) => {
       if (
         d.id.startsWith('/posts/') ||
         d.id.startsWith('/publications/') ||
@@ -152,12 +155,12 @@ const engine: D3Engine = {
 
     this.simulation.on("tick", () => {
       this.linkElements
-        .attr("x1", (d: any) => d.source.x)
-        .attr("y1", (d: any) => d.source.y)
-        .attr("x2", (d: any) => d.target.x)
-        .attr("y2", (d: any) => d.target.y);
+        ?.attr("x1", d => (d.source as D3Node).x ?? 0)
+        ?.attr("y1", d => (d.source as D3Node).y ?? 0)
+        ?.attr("x2", d => (d.target as D3Node).x ?? 0)
+        ?.attr("y2", d => (d.target as D3Node).y ?? 0);
 
-      this.nodeElements.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
+      this.nodeElements?.attr("transform", d => `translate(${d.x ?? 0},${d.y ?? 0})`);
     });
 
     this.currentLayout = layout;
@@ -183,7 +186,7 @@ const engine: D3Engine = {
           if (this.currentLayout !== undefined && this.isLight !== undefined) {
             this.updateLayout(this.currentLayout, this.isLight);
           }
-          clearTimeout(this.fitTimeout);
+          if (this.fitTimeout) clearTimeout(this.fitTimeout);
           this.fitTimeout = setTimeout(() => {
             this.fitToView(300);
           }, 300);
@@ -238,7 +241,7 @@ const engine: D3Engine = {
     const translateX = targetCenterX - scale * midX;
     const translateY = targetCenterY - scale * midY;
 
-    const transform = this.d3.zoomIdentity
+    const transform = d3.zoomIdentity
       .translate(translateX, translateY)
       .scale(scale);
 
@@ -250,7 +253,7 @@ const engine: D3Engine = {
   },
 
   updateLayout(layout: string, isLight: boolean) {
-    if (!this.simulation || !this.nodes) return;
+    if (!this.simulation || !this.nodes || !this.linkElements || !this.nodeElements) return;
     this.currentLayout = layout;
     this.isLight = isLight;
 
@@ -259,7 +262,7 @@ const engine: D3Engine = {
     this.nodeElements.selectAll("circle").style("stroke", isLight ? "#ffffff" : "#030712");
     this.nodeElements.selectAll("text").style("fill", isLight ? "#334155" : "#9ca3af");
     const colors = isLight ? colorsLight : colorsDark;
-    this.nodeElements.selectAll("circle").style("fill", (d: any) => colors[d.group] || colors[0]);
+    this.nodeElements.selectAll<SVGCircleElement, D3Node>("circle").style("fill", d => colors[d.group] || colors[0]);
 
     if (layout === 'radial') {
       const cx = this.width / 2;
@@ -286,12 +289,12 @@ const engine: D3Engine = {
 
       // Apply positional forces
       this.simulation
-        .force("link", this.d3.forceLink(this.links).id((d: any) => d.id).distance(30).strength(0.08))
-        .force("charge", this.d3.forceManyBody().strength(-30))
+        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.08))
+        .force("charge", d3.forceManyBody().strength(-30))
         .force("center", null)
-        .force("x", this.d3.forceX((d: any) => d.targetX).strength(1.2))
-        .force("y", this.d3.forceY((d: any) => d.targetY).strength(1.2))
-        .force("collide", this.d3.forceCollide((d: any) => d.size * 6 + 10).strength(0.8));
+        .force("x", d3.forceX<D3Node>(d => d.targetX ?? cx).strength(1.2))
+        .force("y", d3.forceY<D3Node>(d => d.targetY ?? cy).strength(1.2))
+        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 10).strength(0.8));
 
     } else if (layout === 'columns') {
       const posts = this.nodes.filter(n => n.group === 1);
@@ -330,12 +333,12 @@ const engine: D3Engine = {
 
       // Apply columnar forces
       this.simulation
-        .force("link", this.d3.forceLink(this.links).id((d: any) => d.id).distance(30).strength(0.02))
-        .force("charge", this.d3.forceManyBody().strength(-20))
+        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(30).strength(0.02))
+        .force("charge", d3.forceManyBody().strength(-20))
         .force("center", null)
-        .force("x", this.d3.forceX((d: any) => d.targetX).strength(1.5))
-        .force("y", this.d3.forceY((d: any) => d.targetY).strength(1.5))
-        .force("collide", this.d3.forceCollide((d: any) => d.size * 6 + 8).strength(0.8));
+        .force("x", d3.forceX<D3Node>(d => d.targetX ?? 0).strength(1.5))
+        .force("y", d3.forceY<D3Node>(d => d.targetY ?? 0).strength(1.5))
+        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 8).strength(0.8));
 
     } else {
       // Force-directed (default)
@@ -344,26 +347,26 @@ const engine: D3Engine = {
       const charge = -Math.max(100, Math.min(220, minDim * 0.25));
 
       this.simulation
-        .force("link", this.d3.forceLink(this.links).id((d: any) => d.id).distance(linkDist).strength(0.3))
-        .force("charge", this.d3.forceManyBody().strength(charge))
-        .force("center", this.d3.forceCenter(this.width / 2, this.height / 2))
-        .force("collide", this.d3.forceCollide((d: any) => d.size * 6 + 12).strength(0.8))
-        .force("x", this.d3.forceX(this.width / 2).strength(0.04))
-        .force("y", this.d3.forceY(this.height / 2).strength(0.04));
+        .force("link", d3.forceLink<D3Node, D3Link>(this.links || []).id(d => d.id).distance(linkDist).strength(0.3))
+        .force("charge", d3.forceManyBody().strength(charge))
+        .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+        .force("collide", d3.forceCollide<D3Node>(d => d.size * 6 + 12).strength(0.8))
+        .force("x", d3.forceX(this.width / 2).strength(0.04))
+        .force("y", d3.forceY(this.height / 2).strength(0.04));
     }
 
     // Trigger transition
     this.simulation.alpha(0.3).restart();
 
     // Smoothly auto-fit once simulation transitions
-    clearTimeout(this.fitTimeout);
+    if (this.fitTimeout) clearTimeout(this.fitTimeout);
     this.fitTimeout = setTimeout(() => {
       this.fitToView(600);
     }, 350);
   },
 
   destroy() {
-    clearTimeout(this.fitTimeout);
+    if (this.fitTimeout) clearTimeout(this.fitTimeout);
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;

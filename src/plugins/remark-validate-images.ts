@@ -1,6 +1,11 @@
 import type { Root, Image } from 'mdast';
 import type { VFile } from 'vfile';
-import type { Node } from 'unist';
+import type { Node, Parent } from 'unist';
+
+interface ImageDataWithHProperties {
+  hProperties?: Record<string, string>;
+  [key: string]: string | number | boolean | Record<string, string> | undefined;
+}
 
 /**
  * Remark plugin for strict early validation of Markdown image references.
@@ -62,14 +67,14 @@ export default function remarkValidateImages() {
         }
 
         // Ensure title attribute is propagated to HTML <img> properties
-        const data = (imgNode.data = imgNode.data || {});
-        const hProps = ((data as any).hProperties = (data as any).hProperties || {});
+        const data = (imgNode.data = imgNode.data || {}) as ImageDataWithHProperties;
+        const hProps = (data.hProperties = data.hProperties || {});
         hProps.title = title;
         hProps.alt = alt;
       }
 
-      if ('children' in node && Array.isArray((node as any).children)) {
-        for (const child of (node as any).children) {
+      if ('children' in node && Array.isArray((node as Parent).children)) {
+        for (const child of (node as Parent).children) {
           visit(child);
         }
       }

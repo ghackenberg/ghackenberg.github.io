@@ -76,8 +76,9 @@ export async function downloadImage(url: string, destDir: string): Promise<strin
     const buffer = Buffer.from(arrayBuffer);
     fs.writeFileSync(path.join(destDir, `image${ext}`), buffer);
     return ext;
-  } catch (err: any) {
-    console.warn(`⚠️ Error downloading image ${url}: ${err.message || err}`);
+  } catch (err) {
+    const msg = (err as Error).message || err;
+    console.warn(`⚠️ Error downloading image ${url}: ${msg}`);
     return null;
   }
 }
@@ -91,8 +92,10 @@ export function slugify(text: string): string {
     .replace(/^_+|_+$/g, '');
 }
 
+export type FrontmatterValue = string | number | boolean | null;
+
 export interface MarkdownParseResult {
-  frontmatter: Record<string, any>;
+  frontmatter: Record<string, FrontmatterValue>;
   body: string;
   hasFrontmatter: boolean;
 }
@@ -104,7 +107,7 @@ export function parseMarkdown(filePath: string): MarkdownParseResult {
   if (!match) return { frontmatter: {}, body: content, hasFrontmatter: false };
   const fmText = match[1];
   const body = match[2];
-  const frontmatter: Record<string, any> = {};
+  const frontmatter: Record<string, FrontmatterValue> = {};
   for (const line of fmText.split('\n')) {
     const idx = line.indexOf(':');
     if (idx !== -1) {
@@ -115,7 +118,7 @@ export function parseMarkdown(filePath: string): MarkdownParseResult {
         val = val.slice(1, -1);
       }
 
-      let parsedVal: any = val;
+      let parsedVal: FrontmatterValue = val;
       if (val === 'null') {
         parsedVal = null;
       } else if (val === 'true') {
@@ -138,7 +141,7 @@ export function parseMarkdown(filePath: string): MarkdownParseResult {
 }
 
 // Helper: Stringify frontmatter and body
-export function stringifyMarkdown(frontmatter: Record<string, any>, body: string): string {
+export function stringifyMarkdown(frontmatter: Record<string, FrontmatterValue>, body: string): string {
   const fmLines: string[] = [];
   for (const [key, val] of Object.entries(frontmatter)) {
     if (val === null || val === undefined) {
@@ -154,7 +157,7 @@ export function stringifyMarkdown(frontmatter: Record<string, any>, body: string
 }
 
 // Helper: Merge new metrics/fields into frontmatter of an existing file
-export function mergeFrontmatter(filePath: string, newFields: Record<string, any>): boolean {
+export function mergeFrontmatter(filePath: string, newFields: Record<string, FrontmatterValue>): boolean {
   if (!fs.existsSync(filePath)) return false;
   const { frontmatter, body } = parseMarkdown(filePath);
   const mergedFrontmatter = { ...frontmatter, ...newFields };

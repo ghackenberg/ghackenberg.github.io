@@ -3,6 +3,15 @@ import type { VFile } from 'vfile';
 import type { Node, Parent } from 'unist';
 import { generateCitationLabel, type CitationRef } from '../utils/citations.js';
 
+interface AstroFrontmatterFile {
+  astro?: {
+    frontmatter?: {
+      references?: CitationRef[];
+      [key: string]: string | number | boolean | CitationRef[] | undefined;
+    };
+  };
+}
+
 /**
  * Remark plugin to transform [@id] in Markdown AST into clickable citation links.
  * In blog posts: <a href="#ref-id" class="citation ...">[Label]</a>
@@ -11,7 +20,7 @@ import { generateCitationLabel, type CitationRef } from '../utils/citations.js';
 export default function remarkCitations() {
   return function transformer(tree: Root, file: VFile) {
     const CITE_REGEX = /\[@([a-zA-Z0-9_\-]+)\]/g;
-    const frontmatter = (file?.data as any)?.astro?.frontmatter || {};
+    const frontmatter = (file?.data as AstroFrontmatterFile | undefined)?.astro?.frontmatter || {};
     const references: CitationRef[] = Array.isArray(frontmatter.references) ? frontmatter.references : [];
     const filePath = file?.history?.[0] || '';
     const isSlide = filePath.includes('presentations') || filePath.endsWith('.mdx');

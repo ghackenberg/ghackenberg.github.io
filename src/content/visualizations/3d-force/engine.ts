@@ -1,3 +1,5 @@
+import ForceGraph3D from '3d-force-graph';
+
 const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
 const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
@@ -22,14 +24,13 @@ export interface Force3DLink {
 
 export interface Force3DEngine {
   layouts: { id: string; label: string }[];
-  ForceGraph3D?: any;
   nodes: Force3DNode[] | null;
   links: Force3DLink[] | null;
-  graph: any;
+  graph: ReturnType<typeof ForceGraph3D> | null;
   resizeObserver: ResizeObserver | null;
   initialized: boolean;
   animationFrameId: number | null;
-  init(container: HTMLElement, payload: any, layout: string, isLight: boolean): Promise<Force3DEngine>;
+  init(container: HTMLElement, payload: { '3d-force': { nodes: { id: string; name: string; size: number; group: number }[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean): Promise<Force3DEngine>;
   updateLayout(layout: string, isLight: boolean): void;
   animateTo(targets: Record<string, { x: number; y: number; z: number }>, duration?: number): void;
   destroy(): void;
@@ -48,14 +49,11 @@ const engine: Force3DEngine = {
   initialized: false,
   animationFrameId: null,
 
-  async init(container: HTMLElement, payload: any, layout: string, isLight: boolean) {
-    const { default: ForceGraph3D } = await import(/* @vite-ignore */ 'https://esm.sh/3d-force-graph@1.73.0?bundle');
-    this.ForceGraph3D = ForceGraph3D;
-
+  async init(container: HTMLElement, payload: { '3d-force': { nodes: { id: string; name: string; size: number; group: number }[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean) {
     const colors = isLight ? colorsLight : colorsDark;
     
     // Cache nodes and connections
-    this.nodes = payload['3d-force'].nodes.map((n: any) => ({
+    this.nodes = payload['3d-force'].nodes.map((n) => ({
       id: n.id,
       name: n.name,
       val: n.size * 5 + 3,
@@ -63,7 +61,7 @@ const engine: Force3DEngine = {
       group: n.group
     }));
 
-    this.links = payload['3d-force'].connections.map((c: any) => ({
+    this.links = payload['3d-force'].connections.map((c) => ({
       source: c.sourceId,
       target: c.targetId
     }));
@@ -80,7 +78,7 @@ const engine: Force3DEngine = {
       .linkDirectionalParticles(2)
       .linkDirectionalParticleWidth(1.5)
       .linkDirectionalParticleSpeed(0.006)
-      .onNodeClick((node: any) => {
+      .onNodeClick((node: { id: string }) => {
         if (
           node.id.startsWith('/posts/') ||
           node.id.startsWith('/publications/') ||

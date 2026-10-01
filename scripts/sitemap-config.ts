@@ -71,11 +71,11 @@ function getLatestGitDate(relativePath: string, gitMap: Map<string, Date>): Date
 /**
  * Parses frontmatter YAML block without heavy dependencies.
  */
-function parseSimpleFrontmatter(content: string): Record<string, any> {
+function parseSimpleFrontmatter(content: string): Record<string, string | string[]> {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
   const yaml = match[1];
-  const result: Record<string, any> = {};
+  const result: Record<string, string | string[]> = {};
 
   const lines = yaml.split('\n');
   let currentKey = '';
@@ -88,7 +88,10 @@ function parseSimpleFrontmatter(content: string): Record<string, any> {
     if (line.startsWith('  - ') || line.startsWith('- ')) {
       if (inArray && currentKey) {
         const itemVal = line.replace(/^[\s]*- /, '').trim().replace(/^["']|["']$/g, '');
-        result[currentKey].push(itemVal);
+        const arr = result[currentKey];
+        if (Array.isArray(arr)) {
+          arr.push(itemVal);
+        }
       }
       continue;
     }
@@ -123,7 +126,8 @@ function parseSimpleFrontmatter(content: string): Record<string, any> {
 /**
  * Extracts a Date from frontmatter or folder name or git log.
  */
-function resolveItemDate(id: string, pubDateStr: string | undefined, gitDate: Date | null, fileMtime: Date | null): Date {
+function resolveItemDate(id: string, pubDateInput: string | string[] | undefined, gitDate: Date | null, fileMtime: Date | null): Date {
+  const pubDateStr = Array.isArray(pubDateInput) ? pubDateInput[0] : pubDateInput;
   let pubDate: Date | null = null;
 
   if (pubDateStr) {

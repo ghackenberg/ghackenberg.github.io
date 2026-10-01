@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { google } from "googleapis";
+import { google, type youtube_v3 } from "googleapis";
 import { mergeFrontmatter, downloadImage } from "./utils.js";
 
 interface YouTubeVideoItem {
@@ -48,11 +48,11 @@ export async function syncYouTube(): Promise<void> {
   }
 
   // Fetch playlist items (all uploads)
-  const playlistItems: any[] = [];
+  const playlistItems: youtube_v3.Schema$PlaylistItem[] = [];
   let nextPageToken: string | undefined = undefined;
 
   do {
-    const playlistRes: any = await youtube.playlistItems.list({
+    const playlistRes: { data: youtube_v3.Schema$PlaylistItemListResponse } = await youtube.playlistItems.list({
       part: ["snippet"],
       playlistId: uploadsPlaylistId,
       maxResults: 50,
@@ -62,7 +62,7 @@ export async function syncYouTube(): Promise<void> {
     if (playlistRes.data.items && playlistRes.data.items.length > 0) {
       playlistItems.push(...playlistRes.data.items);
     }
-    nextPageToken = playlistRes.data.nextPageToken;
+    nextPageToken = playlistRes.data.nextPageToken || undefined;
   } while (nextPageToken);
 
   let videos: YouTubeVideoItem[] = [];
@@ -76,7 +76,7 @@ export async function syncYouTube(): Promise<void> {
       try {
         const videoDetailsRes = await youtube.videos.list({
           part: ["statistics"],
-          id: chunk
+          id: chunk as string[]
         });
         if (videoDetailsRes.data.items) {
           for (const videoDetail of videoDetailsRes.data.items) {

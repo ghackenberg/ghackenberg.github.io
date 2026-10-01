@@ -1,20 +1,56 @@
+import { Network, type Options, type Node as VisNode, type Edge as VisEdge } from 'vis-network';
+import { DataSet } from 'vis-data';
+
+export interface VisPayloadNode {
+  id: string;
+  name: string;
+  size: number;
+  group: number;
+  image?: string;
+  tags?: string[];
+  date?: string;
+  typeLabel?: string;
+  description?: string;
+}
+
+export interface VisPayloadConnection {
+  sourceId: string;
+  targetId: string;
+}
+
+export interface VisNetworkPayload {
+  'vis-network': {
+    nodes: VisPayloadNode[];
+    connections: VisPayloadConnection[];
+  };
+}
+
+export interface VisCustomNode extends VisNode {
+  rawGroup?: number;
+}
+
+export interface VisNetworkExtraOptions extends Options {
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+}
+
 export interface VisNetworkEngine {
   layouts: { id: string; label: string }[];
-  vis?: any;
-  nodes?: any[];
-  connections?: any[];
-  visNodes?: any;
-  visEdges?: any;
-  options?: any;
-  network?: any;
+  nodes?: VisPayloadNode[];
+  connections?: VisPayloadConnection[];
+  visNodes?: DataSet<VisCustomNode> | null;
+  visEdges?: DataSet<VisEdge> | null;
+  options?: Options;
+  network?: Network | null;
   isDragging?: boolean;
-  dragStabilizeTimeout?: any;
+  dragStabilizeTimeout?: ReturnType<typeof setTimeout> | null;
   currentLayout?: string;
   isLight?: boolean;
   resizeObserver?: ResizeObserver | null;
   intersectionObserver?: IntersectionObserver | null;
   animationFrameId?: number | null;
-  init(container: HTMLElement, payload: any, layout: string, isLight: boolean, extraOptions?: Record<string, any>): Promise<VisNetworkEngine>;
+  init(container: HTMLElement, payload: VisNetworkPayload, layout: string, isLight: boolean, extraOptions?: VisNetworkExtraOptions): Promise<VisNetworkEngine>;
   updateLayout(layout: string, isLight: boolean): void;
   pause(): void;
   resume(): void;
@@ -29,10 +65,7 @@ const engine: VisNetworkEngine = {
     { id: 'columns', label: 'Structured Columns (Category)' }
   ],
 
-  async init(container: HTMLElement, payload: any, layout: string, isLight: boolean, extraOptions: Record<string, any> = {}) {
-    const vis = await import(/* @vite-ignore */ 'https://unpkg.com/vis-network@9.1.9/standalone/esm/index.js');
-    this.vis = vis;
-
+  async init(container: HTMLElement, payload: VisNetworkPayload, layout: string, isLight: boolean, extraOptions: VisNetworkExtraOptions = {}) {
     this.nodes = payload['vis-network'].nodes;
     this.connections = payload['vis-network'].connections;
 
@@ -94,7 +127,7 @@ const engine: VisNetworkEngine = {
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
     // property and explicitly defining color object on each node.
-    this.visNodes = new vis.DataSet(this.nodes!.map((n: any) => {
+    this.visNodes = new DataSet<VisCustomNode>((this.nodes || []).map((n) => {
       const card = document.createElement('div');
       card.style.fontFamily = 'Outfit, Inter, sans-serif';
       card.style.width = '250px';
@@ -157,7 +190,7 @@ const engine: VisNetworkEngine = {
         rawGroup: n.group,
         color: colors[n.group],
         chosen: {
-          node: (values: any, _id: any, selected: boolean, hovering: boolean) => {
+          node: (values: { color?: string; borderColor?: string; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
             if (hovering || selected) {
               if (values.hoverBackground) values.color = values.hoverBackground;
               if (values.hoverBorder) values.borderColor = values.hoverBorder;
@@ -177,7 +210,8 @@ const engine: VisNetworkEngine = {
       };
     }));
 
-    this.visEdges = new vis.DataSet(this.connections!.map((c: any) => ({
+    this.visEdges = new DataSet<VisEdge>((this.connections || []).map((c, idx) => ({
+      id: `${c.sourceId}-${c.targetId}-${idx}`,
       from: c.sourceId,
       to: c.targetId,
       color: {
@@ -187,10 +221,11 @@ const engine: VisNetworkEngine = {
     })));
 
     const data = {
-      nodes: this.visNodes,
-      edges: this.visEdges
+      nodes: this.visNodes || undefined,
+      edges: this.visEdges || undefined
     };
 
+    const extraInteraction = extraOptions.interaction || {};
     const interactionOptions = Object.assign({
       hover: true,
       hoverConnectedEdges: false,
@@ -198,17 +233,17 @@ const engine: VisNetworkEngine = {
       zoomView: true,
       dragView: true,
       dragNodes: true
-    }, extraOptions && extraOptions.interaction ? extraOptions.interaction : {});
+    }, extraInteraction);
 
-    const utmSource = (extraOptions && extraOptions.utmSource) || 'vis_network';
-    const utmMedium = (extraOptions && extraOptions.utmMedium) || 'interactive_graph';
-    const utmCampaign = (extraOptions && extraOptions.utmCampaign) || 'knowledge_network';
+    const utmSource = String(extraOptions.utmSource || 'vis_network');
+    const utmMedium = String(extraOptions.utmMedium || 'interactive_graph');
+    const utmCampaign = String(extraOptions.utmCampaign || 'knowledge_network');
 
     this.options = {
       nodes: {
         shape: 'dot',
         chosen: {
-          node: (values: any, _id: any, selected: boolean, hovering: boolean) => {
+          node: (values: { color?: string; borderColor?: string; hoverBackground?: string; hoverBorder?: string }, _id: string | number, selected: boolean, hovering: boolean) => {
             if (hovering || selected) {
               if (values.hoverBackground) values.color = values.hoverBackground;
               if (values.hoverBorder) values.borderColor = values.hoverBorder;
@@ -232,6 +267,7 @@ const engine: VisNetworkEngine = {
       edges: {
         width: 1,
         smooth: {
+          enabled: true,
           type: 'continuous',
           forceDirection: 'none',
           roundness: 0.5
@@ -255,7 +291,7 @@ const engine: VisNetworkEngine = {
       interaction: interactionOptions
     };
 
-    this.network = new vis.Network(container, data, this.options);
+    this.network = new Network(container, data, this.options);
 
     if (interactionOptions.dragView === false) {
       container.style.touchAction = 'pan-y';
@@ -281,8 +317,10 @@ const engine: VisNetworkEngine = {
           resolve();
         }
       };
-      this.network.once("stabilizationIterationsDone", finish);
-      this.network.once("stabilized", finish);
+      if (this.network) {
+        this.network.once("stabilizationIterationsDone", finish);
+        this.network.once("stabilized", finish);
+      }
       setTimeout(finish, 1500);
     });
 
@@ -296,7 +334,7 @@ const engine: VisNetworkEngine = {
           clearTimeout(this.dragStabilizeTimeout);
           this.dragStabilizeTimeout = null;
         }
-        this.network.setOptions({ physics: { enabled: true } });
+        this.network?.setOptions({ physics: { enabled: true } });
       });
 
       this.network.on("dragEnd", () => {
@@ -313,7 +351,7 @@ const engine: VisNetworkEngine = {
           }
         };
 
-        this.network.once("stabilized", stopAfterDrag);
+        this.network?.once("stabilized", stopAfterDrag);
 
         if (this.dragStabilizeTimeout) {
           clearTimeout(this.dragStabilizeTimeout);
@@ -323,7 +361,7 @@ const engine: VisNetworkEngine = {
       });
     }
 
-    this.network.on("click", (params: any) => {
+    this.network.on("click", (params: { nodes: string[] }) => {
       if (params.nodes.length > 0) {
         const targetPath = params.nodes[0];
         if (
@@ -391,7 +429,7 @@ const engine: VisNetworkEngine = {
   },
 
   updateLayout(layout: string, isLight: boolean) {
-    if (!this.network) return;
+    if (!this.network || !this.visNodes || !this.visEdges) return;
     const layoutChanged = this.currentLayout !== layout;
     this.currentLayout = layout;
     this.isLight = isLight;
@@ -436,22 +474,22 @@ const engine: VisNetworkEngine = {
     ];
 
     // Batch node styling updates (colors & fonts)
-    const nodeUpdates: any[] = [];
-    this.visNodes.forEach((node: any) => {
+    const nodeUpdates: (VisNode & { rawGroup?: number })[] = [];
+    this.visNodes?.forEach((node: VisCustomNode) => {
       nodeUpdates.push({
         id: node.id,
-        color: colors[node.rawGroup] || colors[0],
+        color: colors[node.rawGroup ?? 0] || colors[0],
         font: {
           color: isLight ? '#0f172a' : '#f8fafc',
           strokeColor: isLight ? '#ffffff' : '#0f172a'
         }
       });
     });
-    this.visNodes.update(nodeUpdates);
+    this.visNodes?.update(nodeUpdates);
 
     // Batch edge updates
-    const edgeUpdates: any[] = [];
-    this.visEdges.forEach((edge: any) => {
+    const edgeUpdates: VisEdge[] = [];
+    this.visEdges?.forEach((edge: VisEdge) => {
       edgeUpdates.push({
         id: edge.id,
         color: {
@@ -460,7 +498,7 @@ const engine: VisNetworkEngine = {
         }
       });
     });
-    this.visEdges.update(edgeUpdates);
+    this.visEdges?.update(edgeUpdates);
 
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
@@ -469,8 +507,8 @@ const engine: VisNetworkEngine = {
 
     if (layout === 'radial') {
       const targets: Record<string, { x: number; y: number }> = {};
-      const tags = this.nodes!.filter(n => n.group === 0);
-      const others = this.nodes!.filter(n => n.group !== 0);
+      const tags = (this.nodes || []).filter(n => n.group === 0);
+      const others = (this.nodes || []).filter(n => n.group !== 0);
 
       tags.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / tags.length;
@@ -492,13 +530,13 @@ const engine: VisNetworkEngine = {
 
     } else if (layout === 'columns') {
       const targets: Record<string, { x: number; y: number }> = {};
-      const tags = this.nodes!.filter(n => n.group === 0);
-      const posts = this.nodes!.filter(n => n.group === 1);
-      const publications = this.nodes!.filter(n => n.group === 2);
-      const presentations = this.nodes!.filter(n => n.group === 3);
-      const courses = this.nodes!.filter(n => n.group === 4);
-      const projects = this.nodes!.filter(n => n.group === 5);
-      const services = this.nodes!.filter(n => n.group === 6);
+      const tags = (this.nodes || []).filter(n => n.group === 0);
+      const posts = (this.nodes || []).filter(n => n.group === 1);
+      const publications = (this.nodes || []).filter(n => n.group === 2);
+      const presentations = (this.nodes || []).filter(n => n.group === 3);
+      const courses = (this.nodes || []).filter(n => n.group === 4);
+      const projects = (this.nodes || []).filter(n => n.group === 5);
+      const services = (this.nodes || []).filter(n => n.group === 6);
 
       const isMobile = window.innerWidth < 768;
       const heightFactor = 45;
@@ -654,6 +692,7 @@ const engine: VisNetworkEngine = {
   },
 
   animateTo(targets: Record<string, { x: number; y: number }>, duration = 600) {
+    if (!this.network || !this.visNodes) return;
     this.network.setOptions({ physics: { enabled: false } });
 
     const startTime = performance.now();
@@ -667,8 +706,8 @@ const engine: VisNetworkEngine = {
         ? 4 * progress * progress * progress 
         : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
-      const updates: any[] = [];
-      this.nodes!.forEach(n => {
+      const updates: (VisNode & { rawGroup?: number })[] = [];
+      (this.nodes || []).forEach(n => {
         const start = startPositions[n.id] || { x: 0, y: 0 };
         const target = targets[n.id];
         if (target) {
@@ -680,7 +719,7 @@ const engine: VisNetworkEngine = {
         }
       });
 
-      this.visNodes.update(updates);
+      this.visNodes?.update(updates);
 
       if (progress < 1) {
         this.animationFrameId = requestAnimationFrame(step);

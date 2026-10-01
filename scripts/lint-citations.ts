@@ -108,6 +108,22 @@ function calculateTokenOverlap(strA: string, strB: string): number {
   return union > 0 ? intersection / union : 0;
 }
 
+interface CrossrefAuthor {
+  given?: string;
+  family?: string;
+}
+
+interface CrossrefResponse {
+  message?: {
+    title?: string[];
+    author?: CrossrefAuthor[];
+    published?: { 'date-parts'?: number[][] };
+    created?: { 'date-parts'?: number[][] };
+    'container-title'?: string[];
+    publisher?: string;
+  };
+}
+
 /**
  * Fetches citation metadata from Crossref API
  */
@@ -123,10 +139,10 @@ async function fetchCrossref(doi: string): Promise<RemoteCitation> {
     if (!res.ok) {
       return { status: res.status, error: `Crossref returned HTTP ${res.status}` };
     }
-    const data: any = await res.json();
-    const item = data.message;
+    const data = (await res.json()) as CrossrefResponse;
+    const item = data.message || {};
     const remoteTitle = item.title && item.title.length > 0 ? item.title[0] : '';
-    const remoteAuthors = (item.author || []).map((a: any) => `${a.given ? a.given + ' ' : ''}${a.family || ''}`.trim());
+    const remoteAuthors = (item.author || []).map((a: CrossrefAuthor) => `${a.given ? a.given + ' ' : ''}${a.family || ''}`.trim());
     let remoteYear: number | undefined;
     if (item.published && item.published['date-parts'] && item.published['date-parts'][0]) {
       remoteYear = item.published['date-parts'][0][0];
@@ -142,8 +158,8 @@ async function fetchCrossref(doi: string): Promise<RemoteCitation> {
       remoteYear,
       remoteVenue
     };
-  } catch (err: any) {
-    return { status: 0, error: err.message };
+  } catch (err) {
+    return { status: 0, error: (err as Error).message };
   }
 }
 
@@ -178,8 +194,8 @@ async function fetchArxiv(arxivId: string): Promise<RemoteCitation> {
       remoteYear,
       remoteVenue: 'arXiv preprint'
     };
-  } catch (err: any) {
-    return { status: 0, error: err.message };
+  } catch (err) {
+    return { status: 0, error: (err as Error).message };
   }
 }
 
@@ -275,8 +291,8 @@ async function fetchWebPage(url: string): Promise<RemoteCitation> {
       remoteYear,
       remoteVenue
     };
-  } catch (err: any) {
-    return { status: 0, error: err.message };
+  } catch (err) {
+    return { status: 0, error: (err as Error).message };
   }
 }
 
@@ -328,7 +344,7 @@ function extractReferencesFromFile(filePath: string, category: string): { refs: 
     const parsed = YAML.parse(match[1]);
     if (!parsed || !Array.isArray(parsed.references)) return { refs: [], errors: [] };
 
-    const refs: CitationRef[] = parsed.references.map((r: any) => ({
+    const refs: CitationRef[] = parsed.references.map((r: CitationRef) => ({
       id: r.id,
       label: r.label,
       sourceFile: relPath,
@@ -362,9 +378,10 @@ function extractReferencesFromFile(filePath: string, category: string): { refs: 
     }
 
     return { refs, errors };
-  } catch (err: any) {
-    console.error(`YAML parse error in ${filePath}:`, err.message);
-    return { refs: [], errors: [`[${relPath}] YAML parse error: ${err.message}`] };
+  } catch (err) {
+    const msg = (err as Error).message;
+    console.error(`YAML parse error in ${filePath}:`, msg);
+    return { refs: [], errors: [`[${relPath}] YAML parse error: ${msg}`] };
   }
 }
 
@@ -385,7 +402,7 @@ async function run(): Promise<void> {
   if (fs.existsSync(presBase)) {
     const entries = fs.readdirSync(presBase, { withFileTypes: true, recursive: true });
     for (const e of entries) {
-      const parentDir = (e as any).parentPath || presBase;
+      const parentDir = 'parentPath' in e && typeof e.parentPath === 'string' ? e.parentPath : presBase;
       if (e.isFile() && e.name.endsWith('.mdx') && parentDir.includes('slides')) {
         const fullPath = path.join(parentDir, e.name);
         const { refs, errors } = extractReferencesFromFile(fullPath, 'Presentation Slide');
@@ -400,7 +417,7 @@ async function run(): Promise<void> {
   if (fs.existsSync(postsBase)) {
     const entries = fs.readdirSync(postsBase, { withFileTypes: true, recursive: true });
     for (const e of entries) {
-      const parentDir = (e as any).parentPath ?? postsBase;
+      const parentDir = 'parentPath' in e && typeof e.parentPath === 'string' ? e.parentPath : postsBase;
       if (e.isFile() && (e.name === 'index.md' || e.name === 'index.mdx')) {
         const fullPath = path.join(parentDir, e.name);
         const { refs, errors } = extractReferencesFromFile(fullPath, 'Blog Post');

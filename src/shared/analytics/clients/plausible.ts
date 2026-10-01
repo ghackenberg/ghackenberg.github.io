@@ -5,7 +5,6 @@ import type {
   ScrollRetentionData,
   ScrollFunnelMilestone,
   PlausibleGoalConversion,
-  GoalConversionDetail,
   TechBreakdown,
   TechDimensionMetric,
   GeoDimensionMetric,
@@ -33,6 +32,29 @@ export function mapPeriodToPlausible(period: string = 'last_28_days'): string {
   return resolvePlausibleParams(period).period;
 }
 
+export interface PlausibleBreakdownRow {
+  goal?: string;
+  source?: string;
+  country?: string;
+  utm_campaign?: string;
+  device?: string;
+  os?: string;
+  browser?: string;
+  screen_bucket?: string;
+  screen_orientation?: string;
+  value?: string;
+  property?: string;
+  page?: string;
+  id?: string;
+  section_id?: string;
+  'event:props:id'?: string;
+  visitors?: number;
+  events?: number;
+  bounce_rate?: number | null;
+  visit_duration?: number | null;
+  [key: string]: string | number | null | undefined;
+}
+
 /**
  * Low-level breakdown query helper.
  */
@@ -42,7 +64,7 @@ export async function fetchBreakdown(
   filter?: string,
   metrics: string = 'visitors,bounce_rate,visit_duration',
   limit: number = 30
-): Promise<any[]> {
+): Promise<PlausibleBreakdownRow[]> {
   const config = getConfig();
   if (!config.plausible.apiKey) return [];
 
@@ -75,8 +97,8 @@ export async function fetchBreakdown(
 
     const data = await res.json();
     return data.results || [];
-  } catch (err: any) {
-    console.warn(`Failed to contact Plausible breakdown API (${property}): ${err.message}`);
+  } catch (err) {
+    console.warn(`Failed to contact Plausible breakdown API (${property}): ${(err as Error).message}`);
     return [];
   }
 }
@@ -183,8 +205,8 @@ export async function getPlausiblePageMetrics(
       tech,
       countries,
     };
-  } catch (err: any) {
-    console.warn(`Failed to contact Plausible API: ${err.message}`);
+  } catch (err) {
+    console.warn(`Failed to contact Plausible API: ${(err as Error).message}`);
     return {
       visitors: 0,
       pageviews: 0,
@@ -250,8 +272,8 @@ export async function getPlausibleTopPages(
     }
 
     return pageMap;
-  } catch (err: any) {
-    console.warn(`Failed to contact Plausible breakdown API: ${err.message}`);
+  } catch (err) {
+    console.warn(`Failed to contact Plausible breakdown API: ${(err as Error).message}`);
     return pageMap;
   }
 }
@@ -306,8 +328,8 @@ export async function getPlausibleSiteOverview(
       bounceRate: results.bounce_rate?.value != null ? Number(results.bounce_rate.value.toFixed(1)) : null,
       visitDuration: results.visit_duration?.value != null ? Math.round(results.visit_duration.value) : null,
     };
-  } catch (err: any) {
-    console.warn(`Failed to contact Plausible aggregate API: ${err.message}`);
+  } catch (err) {
+    console.warn(`Failed to contact Plausible aggregate API: ${(err as Error).message}`);
     return {
       visitors: 0,
       pageviews: 0,
@@ -352,14 +374,14 @@ export async function getPlausibleTrafficSources(
     }
 
     const data = await res.json();
-    return (data.results || []).map((item: any) => ({
+    return (data.results || []).map((item: PlausibleBreakdownRow) => ({
       source: item.source || 'Direct / None',
       visitors: item.visitors || 0,
       bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
       visitDuration: item.visit_duration != null ? Math.round(item.visit_duration) : null,
     }));
-  } catch (err: any) {
-    console.warn(`Failed to contact Plausible breakdown API: ${err.message}`);
+  } catch (err) {
+    console.warn(`Failed to contact Plausible breakdown API: ${(err as Error).message}`);
     return [];
   }
 }
@@ -495,7 +517,7 @@ async function enrichGoalWithDetails(
   try {
     const breakdown = await fetchBreakdown(mapping.propKey, period, filter, 'visitors', 10);
     if (breakdown.length > 0) {
-      conversion.details = breakdown.map((item: any) => ({
+      conversion.details = breakdown.map((item: PlausibleBreakdownRow) => ({
         property: mapping.fieldName,
         value: String(item[mapping.fieldName] ?? item.value ?? '(unknown)'),
         visitors: item.visitors || 0,
@@ -525,12 +547,12 @@ export async function getPlausibleTechBreakdown(
     fetchBreakdown('event:props:screen_orientation', period, filter, 'visitors', 5).catch(() => []),
   ]);
 
-  const mapToMetric = (items: any[], keyName: string): TechDimensionMetric[] => {
+  const mapToMetric = (items: PlausibleBreakdownRow[], keyName: string): TechDimensionMetric[] => {
     const sumVisitors = totalVisitors || items.reduce((acc, curr) => acc + (curr.visitors || 0), 0) || 1;
     return items.map((item) => {
       const visitors = item.visitors || 0;
       return {
-        name: item[keyName] || '(not set)',
+        name: String(item[keyName] || '(not set)'),
         visitors,
         percentage: Number(((visitors / sumVisitors) * 100).toFixed(1)),
         bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,
@@ -563,7 +585,7 @@ export async function getPlausibleGeoBreakdown(
   const rawCountries = await fetchBreakdown('visit:country', period, filter, 'visitors,bounce_rate,visit_duration', limit);
   const sumVisitors = totalVisitors || rawCountries.reduce((acc, curr) => acc + (curr.visitors || 0), 0) || 1;
 
-  return rawCountries.map((item: any) => ({
+  return rawCountries.map((item: PlausibleBreakdownRow) => ({
     country: item.country || '(unknown)',
     visitors: item.visitors || 0,
     percentage: Number((((item.visitors || 0) / sumVisitors) * 100).toFixed(1)),
@@ -585,7 +607,7 @@ export async function getPlausibleUtmBreakdown(
 
   const rawCampaigns = await fetchBreakdown('visit:utm_campaign', period, filter, 'visitors,bounce_rate,visit_duration', limit);
 
-  return rawCampaigns.map((item: any) => ({
+  return rawCampaigns.map((item: PlausibleBreakdownRow) => ({
     campaign: item.utm_campaign || '(not set)',
     visitors: item.visitors || 0,
     bounceRate: item.bounce_rate != null ? Number(item.bounce_rate.toFixed(1)) : null,

@@ -85,7 +85,6 @@ export async function getUnifiedPageAudit(
     // Tech Breakdown & Anomaly Detection
     const browserIssues: string[] = [];
     const deviceDiscrepancies: string[] = [];
-    const scrollFatigue: string[] = [];
 
     if (plausibleMetrics.tech) {
       const { devices, browsers } = plausibleMetrics.tech;

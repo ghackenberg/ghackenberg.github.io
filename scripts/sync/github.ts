@@ -14,6 +14,29 @@ interface GitHubRepoItem {
   pushedAt: string;
 }
 
+interface GraphQLRepoNode {
+  name: string;
+  description: string | null;
+  url: string;
+  stargazerCount: number;
+  primaryLanguage: { name: string } | null;
+  openGraphImageUrl: string | null;
+  createdAt: string;
+  pushedAt: string;
+}
+
+interface GraphQLUserReposResponse {
+  user: {
+    repositories: {
+      pageInfo: {
+        hasNextPage: boolean;
+        endCursor: string | null;
+      };
+      nodes: GraphQLRepoNode[];
+    };
+  } | null;
+}
+
 export async function syncGitHub(): Promise<void> {
   const username = "ghackenberg";
   const token = process.env.GITHUB_TOKEN;
@@ -29,7 +52,7 @@ export async function syncGitHub(): Promise<void> {
     throw new Error(`Profile fetch responded with status ${profileRes.status}`);
   }
   const profile = {
-    followers: (profileRes.data as any).followers
+    followers: profileRes.data.followers
   };
 
   // Fetch Repositories
@@ -42,7 +65,7 @@ export async function syncGitHub(): Promise<void> {
   let cursor: string | null = null;
 
   while (hasNextPage) {
-    const reposRes: any = await octokit.graphql(
+    const reposRes: GraphQLUserReposResponse = await octokit.graphql(
       `query ($username: String!, $cursor: String) {
         user(login: $username) {
           repositories(first: 100, after: $cursor, orderBy: {field: PUSHED_AT, direction: DESC}, privacy: PUBLIC) {
