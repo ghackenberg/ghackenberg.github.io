@@ -1,5 +1,7 @@
-import type { Root, Element, Text } from 'hast';
+import type { Root, Element, Text, RootContent, ElementContent } from 'hast';
 import type { VFile } from 'vfile';
+
+type HastNode = Root | RootContent | ElementContent;
 
 interface AlertConfig {
   labelDe: string;
@@ -171,8 +173,19 @@ function processBlockquote(node: Element, language: 'de' | 'en') {
   node.children.unshift(titleNode);
 }
 
+interface AstroFrontmatterData {
+  astro?: {
+    frontmatter?: {
+      language?: string;
+      lang?: string;
+      title?: string;
+      description?: string;
+    };
+  };
+}
+
 function detectLanguage(file?: VFile, tree?: Root): 'de' | 'en' {
-  const fm = (file?.data as any)?.astro?.frontmatter;
+  const fm = (file?.data as AstroFrontmatterData | undefined)?.astro?.frontmatter;
   if (fm?.language) {
     return fm.language.toLowerCase() === 'en' ? 'en' : 'de';
   }
@@ -181,12 +194,12 @@ function detectLanguage(file?: VFile, tree?: Root): 'de' | 'en' {
   }
 
   let sampleText = `${fm?.title || ''} ${fm?.description || ''} `;
-  function walk(n: any) {
+  function walk(n: HastNode) {
     if (!n || sampleText.length >= 800) return;
-    if (n.type === 'text' && typeof n.value === 'string') {
+    if (n.type === 'text') {
       sampleText += ' ' + n.value;
     }
-    if (Array.isArray(n.children)) {
+    if ('children' in n && Array.isArray(n.children)) {
       for (let i = 0; i < n.children.length; i++) {
         walk(n.children[i]);
       }
@@ -208,14 +221,14 @@ export default function rehypeCallouts() {
   return function (tree: Root, file?: VFile) {
     const language = detectLanguage(file, tree);
 
-    function visit(node: any) {
+    function visit(node: HastNode) {
       if (!node || typeof node !== 'object') return;
 
       if (node.type === 'element' && node.tagName === 'blockquote') {
-        processBlockquote(node as Element, language);
+        processBlockquote(node, language);
       }
 
-      if (Array.isArray(node.children)) {
+      if ('children' in node && Array.isArray(node.children)) {
         for (let i = 0; i < node.children.length; i++) {
           visit(node.children[i]);
         }

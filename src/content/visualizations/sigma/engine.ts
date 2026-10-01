@@ -1,3 +1,7 @@
+import { Sigma } from 'sigma';
+import Graph from 'graphology';
+import forceAtlas2 from 'graphology-layout-forceatlas2';
+
 const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
 const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
 
@@ -5,19 +9,40 @@ function getNodeColor(group: number, isLight: boolean): string {
   return isLight ? (colorsLight[group] || colorsLight[0]) : (colorsDark[group] || colorsDark[0]);
 }
 
+export interface SigmaNodeData {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  size: number;
+  group: number;
+  color: string;
+}
+
+export interface SigmaEdgeData {
+  id: string;
+  source: string;
+  target: string;
+  color?: string;
+}
+
+export interface SigmaPayload {
+  sigma: {
+    nodes: SigmaNodeData[];
+    edges: SigmaEdgeData[];
+  };
+}
+
 export interface SigmaEngine {
   layouts: { id: string; label: string }[];
-  Sigma?: any;
-  Graph?: any;
-  forceAtlas2?: any;
-  graph: any;
-  sigma: any;
-  payload?: any;
+  graph: Graph | null;
+  sigma: Sigma | null;
+  payload?: SigmaPayload;
   currentLayout?: string;
   isLight?: boolean;
   resizeObserver: ResizeObserver | null;
   animationFrameId: number | null;
-  init(container: HTMLElement, payload: any, layout: string, isLight: boolean): Promise<SigmaEngine>;
+  init(container: HTMLElement, payload: SigmaPayload, layout: string, isLight: boolean): Promise<SigmaEngine>;
   updateLayout(layout: string, isLight: boolean): void;
   animateTo(targets: Record<string, { x: number; y: number }>, duration?: number): void;
   destroy(): void;
@@ -34,28 +59,14 @@ const engine: SigmaEngine = {
   resizeObserver: null,
   animationFrameId: null,
 
-  async init(container: HTMLElement, payload: any, layout: string, isLight: boolean) {
-    const [
-      { Sigma },
-      { Graph },
-      { default: forceAtlas2 }
-    ] = await Promise.all([
-      import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/sigma@2.4.0/+esm'),
-      import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/graphology@0.25.4/+esm'),
-      import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/graphology-layout-forceatlas2@0.10.1/+esm')
-    ]);
-
-    this.Sigma = Sigma;
-    this.Graph = Graph;
-    this.forceAtlas2 = forceAtlas2;
-
+  async init(container: HTMLElement, payload: SigmaPayload, layout: string, isLight: boolean) {
     this.graph = new Graph();
     this.payload = payload;
     const nodes = payload.sigma.nodes;
     const edges = payload.sigma.edges;
 
-    nodes.forEach((n: any) => {
-      this.graph.addNode(n.id, {
+    nodes.forEach(n => {
+      this.graph?.addNode(n.id, {
         label: n.label,
         x: n.x || Math.random(),
         y: n.y || Math.random(),
@@ -66,8 +77,8 @@ const engine: SigmaEngine = {
     });
 
     const edgeColor = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-    edges.forEach((e: any) => {
-      this.graph.addEdge(e.source, e.target, {
+    edges.forEach(e => {
+      this.graph?.addEdge(e.source, e.target, {
         size: 1,
         color: edgeColor
       });
@@ -126,13 +137,13 @@ const engine: SigmaEngine = {
     const edgeColor = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
     const labelColor = isLight ? '#0f172a' : '#f3f4f6';
 
-    this.graph.forEachEdge((edge: any) => {
-      this.graph.setEdgeAttribute(edge, 'color', edgeColor);
+    this.graph.forEachEdge(edge => {
+      this.graph?.setEdgeAttribute(edge, 'color', edgeColor);
     });
 
-    this.graph.forEachNode((node: any) => {
-      const grp = this.graph.getNodeAttribute(node, 'group') ?? 0;
-      this.graph.setNodeAttribute(node, 'color', getNodeColor(grp, isLight));
+    this.graph.forEachNode(node => {
+      const grp = (this.graph?.getNodeAttribute(node, 'group') as number | undefined) ?? 0;
+      this.graph?.setNodeAttribute(node, 'color', getNodeColor(grp, isLight));
     });
 
     this.sigma.setSetting('labelColor', { color: labelColor });
@@ -142,10 +153,10 @@ const engine: SigmaEngine = {
 
     if (layout === 'radial') {
       const nodes = this.graph.nodes();
-      const tags = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 0);
-      const others = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') !== 0);
+      const tags = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 0);
+      const others = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') !== 0);
 
-      tags.forEach((n: any, idx: number) => {
+      tags.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / tags.length;
         targets[n] = {
           x: 5 * Math.cos(theta),
@@ -153,7 +164,7 @@ const engine: SigmaEngine = {
         };
       });
 
-      others.forEach((n: any, idx: number) => {
+      others.forEach((n, idx) => {
         const theta = (2 * Math.PI * idx) / others.length;
         targets[n] = {
           x: 12 * Math.cos(theta),
@@ -165,13 +176,13 @@ const engine: SigmaEngine = {
 
     } else if (layout === 'columns') {
       const nodes = this.graph.nodes();
-      const posts = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 1);
-      const publications = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 2);
-      const presentations = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 3);
-      const tags = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 0);
-      const courses = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 4);
-      const projects = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 5);
-      const services = nodes.filter((n: any) => this.graph.getNodeAttribute(n, 'group') === 6);
+      const posts = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 1);
+      const publications = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 2);
+      const presentations = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 3);
+      const tags = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 0);
+      const courses = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 4);
+      const projects = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 5);
+      const services = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 6);
 
       const categories = [posts, publications, presentations, tags, courses, projects, services];
       const isMobile = window.innerWidth < 768;
@@ -179,7 +190,7 @@ const engine: SigmaEngine = {
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
           const rowY = (catIdx - 3) * 4;
-          catNodes.forEach((n: any, idx: number) => {
+          catNodes.forEach((n, idx) => {
             targets[n] = {
               x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0,
               y: rowY
@@ -189,7 +200,7 @@ const engine: SigmaEngine = {
       } else {
         categories.forEach((catNodes, catIdx) => {
           const colX = (catIdx - 3) * 5;
-          catNodes.forEach((n: any, idx: number) => {
+          catNodes.forEach((n, idx) => {
             targets[n] = {
               x: colX,
               y: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0
@@ -203,15 +214,15 @@ const engine: SigmaEngine = {
     } else {
       // default: force directed
       const startingPos: Record<string, { x: number; y: number }> = {};
-      this.graph.forEachNode((node: any) => {
+      this.graph.forEachNode(node => {
         startingPos[node] = {
-          x: this.graph.getNodeAttribute(node, 'x'),
-          y: this.graph.getNodeAttribute(node, 'y')
+          x: this.graph?.getNodeAttribute(node, 'x') as number,
+          y: this.graph?.getNodeAttribute(node, 'y') as number
         };
       });
 
       // Run ForceAtlas2 (which will change coordinates in graph)
-      this.forceAtlas2.assign(this.graph, {
+      forceAtlas2.assign(this.graph, {
         iterations: 100,
         settings: {
           gravity: 0.8
@@ -219,13 +230,13 @@ const engine: SigmaEngine = {
       });
 
       // Read resulting targets and reset graph to starting positions
-      this.graph.forEachNode((node: any) => {
+      this.graph.forEachNode(node => {
         targets[node] = {
-          x: this.graph.getNodeAttribute(node, 'x'),
-          y: this.graph.getNodeAttribute(node, 'y')
+          x: this.graph?.getNodeAttribute(node, 'x') as number,
+          y: this.graph?.getNodeAttribute(node, 'y') as number
         };
-        this.graph.setNodeAttribute(node, 'x', startingPos[node].x);
-        this.graph.setNodeAttribute(node, 'y', startingPos[node].y);
+        this.graph?.setNodeAttribute(node, 'x', startingPos[node].x);
+        this.graph?.setNodeAttribute(node, 'y', startingPos[node].y);
       });
 
       this.animateTo(targets);
@@ -238,10 +249,10 @@ const engine: SigmaEngine = {
     }
     const startTime = performance.now();
     const startPositions: Record<string, { x: number; y: number }> = {};
-    this.graph.forEachNode((node: any) => {
+    this.graph?.forEachNode(node => {
       startPositions[node] = {
-        x: this.graph.getNodeAttribute(node, 'x'),
-        y: this.graph.getNodeAttribute(node, 'y')
+        x: this.graph?.getNodeAttribute(node, 'x') as number,
+        y: this.graph?.getNodeAttribute(node, 'y') as number
       };
     });
 
@@ -254,14 +265,14 @@ const engine: SigmaEngine = {
         ? 4 * progress * progress * progress 
         : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
-      this.graph.forEachNode((node: any) => {
+      this.graph?.forEachNode(node => {
         const start = startPositions[node];
         const target = targets[node];
         if (start && target) {
           const currentX = start.x + (target.x - start.x) * ease;
           const currentY = start.y + (target.y - start.y) * ease;
-          this.graph.setNodeAttribute(node, 'x', currentX);
-          this.graph.setNodeAttribute(node, 'y', currentY);
+          this.graph?.setNodeAttribute(node, 'x', currentX);
+          this.graph?.setNodeAttribute(node, 'y', currentY);
         }
       });
 

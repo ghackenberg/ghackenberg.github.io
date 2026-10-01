@@ -2147,30 +2147,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
     resume?(): void;
   }
 
-  interface GraphPayload {
-    'vis-network': {
-      nodes: Array<Record<string, string | number | boolean | string[]>>;
-      connections: Array<{ sourceId: string; targetId: string }>;
-    };
-  }
-
-  interface GraphEngineOptions {
-    interaction?: {
-      zoomView?: boolean;
-      hover?: boolean;
-      dragView?: boolean;
-      dragNodes?: boolean;
-      tooltipDelay?: number;
-    };
-    utmSource?: string;
-    utmMedium?: string;
-    utmCampaign?: string;
-  }
-
-  interface GraphEngine {
-    layouts: { id: string; label: string }[];
-    init(container: HTMLElement, payload: GraphPayload, layout: string, isLight: boolean, extraOptions?: GraphEngineOptions): Promise<GraphInstance>;
-  }
 
   window.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('home-vis-canvas');
@@ -2184,9 +2160,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
       try {
         const engineModule = await import('../content/visualizations/vis-network/engine.ts');
-        const engine = engineModule.default as GraphEngine;
+        const engine = engineModule.default;
 
-        const payload = (window as typeof globalThis & { HOME_VIS_PAYLOAD?: GraphPayload }).HOME_VIS_PAYLOAD!;
+        const payload = (window as typeof globalThis & { HOME_VIS_PAYLOAD?: Parameters<typeof engine.init>[1] }).HOME_VIS_PAYLOAD!;
         const defaultLayout = engine.layouts[0].id;
         const isLight = document.documentElement.classList.contains('light');
 

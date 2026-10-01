@@ -22,8 +22,8 @@ async function main(): Promise<void> {
   if (runAll || runGitHub) {
     try {
       await syncGitHub();
-    } catch (error: any) {
-      console.error("❌ GitHub sync failed:", error.message || error);
+    } catch (error) {
+      console.error("❌ GitHub sync failed:", (error as Error).message || error);
       hasErrors = true;
     }
   }
@@ -31,8 +31,8 @@ async function main(): Promise<void> {
   if (runAll || runYouTube) {
     try {
       await syncYouTube();
-    } catch (error: any) {
-      console.error("❌ YouTube sync failed:", error.message || error);
+    } catch (error) {
+      console.error("❌ YouTube sync failed:", (error as Error).message || error);
       hasErrors = true;
     }
   }
@@ -40,8 +40,8 @@ async function main(): Promise<void> {
   if (runAll || runLinkedIn) {
     try {
       await syncLinkedIn();
-    } catch (error: any) {
-      console.error("❌ LinkedIn sync failed:", error.message || error);
+    } catch (error) {
+      console.error("❌ LinkedIn sync failed:", (error as Error).message || error);
       hasErrors = true;
     }
   }
@@ -53,8 +53,8 @@ async function main(): Promise<void> {
     try {
       console.log("Synchronizing Astro content collections...");
       execSync("npx astro sync", { stdio: "inherit" });
-    } catch (syncError: any) {
-      console.warn("⚠️ Warning: Failed to run 'npx astro sync' automatically:", syncError.message || syncError);
+    } catch (syncError) {
+      console.warn("⚠️ Warning: Failed to run 'npx astro sync' automatically:", (syncError as Error).message || syncError);
     }
     console.log("\n✅ Feed sync completed successfully!");
     process.exit(0);

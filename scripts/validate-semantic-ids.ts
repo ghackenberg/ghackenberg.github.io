@@ -44,7 +44,7 @@ for (const file of htmlFiles) {
     const id = rawId.trim();
     if (!id) return;
 
-    const tagName = (el as any).tagName || 'unknown';
+    const tagName = $(el).prop('tagName')?.toLowerCase() || 'unknown';
     if (seenIds.has(id)) {
       console.error(`[validate-semantic-ids] ❌ Duplicate ID "${id}" in ${relPath} (<${tagName}> conflicts with earlier <${seenIds.get(id)}>)`);
       errorsCount++;

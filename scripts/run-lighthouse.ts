@@ -27,6 +27,22 @@ interface AuditScores {
   seo: number;
 }
 
+interface LighthouseCategory {
+  score?: number | null;
+}
+
+interface LighthouseResult {
+  report: string[];
+  lhr: {
+    categories: {
+      performance?: LighthouseCategory;
+      accessibility?: LighthouseCategory;
+      'best-practices'?: LighthouseCategory;
+      seo?: LighthouseCategory;
+    };
+  };
+}
+
 interface AuditResult {
   name: string;
   path: string;
@@ -168,12 +184,12 @@ async function run(): Promise<void> {
         console.log(`Auditing (${theme} mode): ${url}...`);
 
         const options = {
-          logLevel: 'info',
-          output: ['html', 'json'],
+          logLevel: 'info' as const,
+          output: ['html', 'json'] as Array<'html' | 'json'>,
           port: chrome.port,
         };
 
-        const runnerResult: any = await lighthouse(url, options);
+        const runnerResult = (await lighthouse(url, options)) as LighthouseResult;
 
         const htmlReport = runnerResult.report[0];
         const jsonReport = runnerResult.report[1];
@@ -213,10 +229,10 @@ async function run(): Promise<void> {
     console.log('Closing Chrome...');
     try {
       if (chrome) {
-        await chrome.kill();
+        chrome.kill();
       }
-    } catch (err: any) {
-      console.warn('Warning: Failed to cleanly close Chrome or delete temporary directory:', err.message);
+    } catch (err) {
+      console.warn('Warning: Failed to cleanly close Chrome or delete temporary directory:', (err as Error).message);
     }
     cleanup();
   }

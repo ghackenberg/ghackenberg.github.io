@@ -4,9 +4,12 @@ import eslintPluginAstro from 'eslint-plugin-astro';
 import eslintComments from 'eslint-plugin-eslint-comments';
 
 export default tseslint.config(
-  // Global ignores
   {
-    ignores: ['dist/**', '.astro/**', 'node_modules/**', 'scratch/**', 'scripts/**'],
+    ignores: [
+      'dist/**',
+      '.astro/**',
+      'node_modules/**',
+    ],
   },
   // Recommended Astro configuration
   ...eslintPluginAstro.configs.recommended,

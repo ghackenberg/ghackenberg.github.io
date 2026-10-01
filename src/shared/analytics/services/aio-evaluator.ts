@@ -431,8 +431,8 @@ export function diffAioAgainstGit(target: string, baseRef: string = 'HEAD'): Aio
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
     });
-  } catch (err: any) {
-    throw new Error(`Failed to load ${relPath} at git revision '${baseRef}': ${err.message}`);
+  } catch (err) {
+    throw new Error(`Failed to load ${relPath} at git revision '${baseRef}': ${(err as Error).message}`);
   }
 
   const before = evaluateContentString(baseContent, `${target} (${baseRef})`, filePath);

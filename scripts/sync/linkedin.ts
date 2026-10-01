@@ -2,6 +2,21 @@ import fs from 'fs';
 import path from 'path';
 import { mergeFrontmatter, downloadImage } from "./utils.js";
 
+interface LinkedInLdJson {
+  '@type'?: string;
+  headline?: string;
+  articleBody?: string;
+  description?: string;
+  thumbnailUrl?: string;
+  text?: string;
+  datePublished?: string;
+  image?: { url?: string } | string | Array<{ url?: string } | string>;
+  interactionStatistic?: Array<{
+    interactionType?: { '@type'?: string } | string;
+    userInteractionCount?: number;
+  }>;
+}
+
 export async function syncLinkedIn(): Promise<void> {
   console.log("Syncing LinkedIn posts...");
 
@@ -67,7 +82,7 @@ export async function syncLinkedIn(): Promise<void> {
       const html = await res.text();
       const regex = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
       let match: RegExpExecArray | null;
-      let postData: any = null;
+      let postData: LinkedInLdJson | null = null;
 
       while ((match = regex.exec(html)) !== null) {
         try {
@@ -92,9 +107,10 @@ export async function syncLinkedIn(): Promise<void> {
         const stats = Array.isArray(postData.interactionStatistic) ? postData.interactionStatistic : [postData.interactionStatistic];
         for (const stat of stats) {
           if (stat.interactionType) {
-            if (stat.interactionType.includes("LikeAction")) {
+            const typeStr = typeof stat.interactionType === 'string' ? stat.interactionType : (stat.interactionType['@type'] || '');
+            if (typeStr.includes("LikeAction")) {
               likes = stat.userInteractionCount || 0;
-            } else if (stat.interactionType.includes("CommentAction")) {
+            } else if (typeStr.includes("CommentAction")) {
               comments = stat.userInteractionCount || 0;
             }
           }
@@ -128,7 +144,7 @@ export async function syncLinkedIn(): Promise<void> {
           if (Array.isArray(postData.image) && postData.image.length > 0) {
             const imgObj = postData.image[0];
             imageUrl = typeof imgObj === "string" ? imgObj : (imgObj.url || "");
-          } else if (typeof postData.image === "object") {
+          } else if (typeof postData.image === "object" && !Array.isArray(postData.image)) {
             imageUrl = postData.image.url || "";
           } else if (typeof postData.image === "string") {
             imageUrl = postData.image;
@@ -156,11 +172,12 @@ ${bodyText}
         fs.writeFileSync(filePath, mdContent, "utf8");
         console.log(`✓ Generated new post in ${path.relative(process.cwd(), filePath)}`);
       }
-    } catch (e: any) {
+    } catch (e) {
+      const msg = (e as Error).message || String(e);
       if (fileExists) {
-        console.warn(`⚠️ Failed to update LinkedIn post ${id}, retaining existing file. Error: ${e.message || e}`);
+        console.warn(`⚠️ Failed to update LinkedIn post ${id}, retaining existing file. Error: ${msg}`);
       } else {
-        console.error(`❌ Failed to sync new LinkedIn post ${id}:`, e.message || e);
+        console.error(`❌ Failed to sync new LinkedIn post ${id}:`, msg);
         throw e;
       }
     }

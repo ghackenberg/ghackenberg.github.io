@@ -195,7 +195,17 @@ function escapeHtml(str: string): string {
     .replace(/'/g, '&#039;');
 }
 
-async function renderSingleTheme(code: string, mode: 'dark' | 'light', config: any): Promise<string> {
+interface MermaidThemeConfig {
+  startOnLoad?: boolean;
+  htmlLabels?: boolean;
+  theme?: string;
+  themeVariables?: Record<string, string | boolean | number>;
+  flowchart?: Record<string, string | boolean | number>;
+  sequence?: Record<string, string | boolean | number>;
+  [key: string]: string | number | boolean | Record<string, string | boolean | number> | undefined;
+}
+
+async function renderSingleTheme(code: string, mode: 'dark' | 'light', config: MermaidThemeConfig): Promise<string> {
   const hash = crypto.createHash('sha256')
     .update(code)
     .update(JSON.stringify(config))
@@ -225,8 +235,8 @@ async function renderSingleTheme(code: string, mode: 'dark' | 'light', config: a
       // @ts-ignore
       const { svg } = await window.mermaid.render(id, diagramCode);
       return { svg, error: null };
-    } catch (err: any) {
-      return { svg: null, error: err?.message || String(err) };
+    } catch (err) {
+      return { svg: null, error: (err as Error)?.message || String(err) };
     }
   }, code, diagramId);
 
@@ -391,7 +401,7 @@ export default function remarkMermaid() {
         value: html,
       };
 
-      parent.children[index] = htmlNode as any;
+      parent.children[index] = htmlNode;
     }
   };
 }

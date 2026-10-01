@@ -50,13 +50,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error conducting page audit: ${err.message}`,
+            text: `Error conducting page audit: ${(err as Error).message}`,
           },
         ],
       };
@@ -110,13 +110,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error finding SEO opportunities: ${err.message}`,
+            text: `Error finding SEO opportunities: ${(err as Error).message}`,
           },
         ],
       };
@@ -144,13 +144,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error inspecting URL: ${err.message}`,
+            text: `Error inspecting URL: ${(err as Error).message}`,
           },
         ],
       };
@@ -178,13 +178,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error evaluating AIO extractability: ${err.message}`,
+            text: `Error evaluating AIO extractability: ${(err as Error).message}`,
           },
         ],
       };
@@ -224,13 +224,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error scanning AIO readiness: ${err.message}`,
+            text: `Error scanning AIO readiness: ${(err as Error).message}`,
           },
         ],
       };
@@ -264,13 +264,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error auditing internal links: ${err.message}`,
+            text: `Error auditing internal links: ${(err as Error).message}`,
           },
         ],
       };
@@ -305,13 +305,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error auditing SERP snippets: ${err.message}`,
+            text: `Error auditing SERP snippets: ${(err as Error).message}`,
           },
         ],
       };
@@ -344,13 +344,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error computing AIO diff: ${err.message}`,
+            text: `Error computing AIO diff: ${(err as Error).message}`,
           },
         ],
       };
@@ -380,13 +380,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error fetching site overview: ${err.message}`,
+            text: `Error fetching site overview: ${(err as Error).message}`,
           },
         ],
       };
@@ -421,13 +421,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error fetching traffic sources: ${err.message}`,
+            text: `Error fetching traffic sources: ${(err as Error).message}`,
           },
         ],
       };
@@ -462,13 +462,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error fetching top queries: ${err.message}`,
+            text: `Error fetching top queries: ${(err as Error).message}`,
           },
         ],
       };
@@ -503,13 +503,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error finding retention bottlenecks: ${err.message}`,
+            text: `Error finding retention bottlenecks: ${(err as Error).message}`,
           },
         ],
       };
@@ -543,13 +543,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error retrieving audience breakdown: ${err.message}`,
+            text: `Error retrieving audience breakdown: ${(err as Error).message}`,
           },
         ],
       };
@@ -579,13 +579,13 @@ server.tool(
           },
         ],
       };
-    } catch (err: any) {
+    } catch (err) {
       return {
         isError: true,
         content: [
           {
             type: 'text',
-            text: `Error retrieving conversions report: ${err.message}`,
+            text: `Error retrieving conversions report: ${(err as Error).message}`,
           },
         ],
       };

@@ -25,8 +25,8 @@ function getAuthClient(): InstanceType<typeof google.auth.GoogleAuth> {
         scopes,
       });
       return cachedAuthClient;
-    } catch (e: any) {
-      throw new Error(`Failed to parse GSC_SERVICE_ACCOUNT_JSON: ${e.message}`);
+    } catch (e) {
+      throw new Error(`Failed to parse GSC_SERVICE_ACCOUNT_JSON: ${(e as Error).message}`);
     }
   }
 
