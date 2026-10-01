@@ -13,6 +13,9 @@
   "engines": {
     "node": ">=22.12.0"
   },
+  "bin": {
+    "mcp-unified-analytics": "./src/mcp/unified-analytics.ts"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "npm run generate-assets && astro build",
@@ -20,10 +23,10 @@
     "typecheck": "astro check",
     "lint": "eslint .",
     "sync": "node scripts/sync.js",
-    "generate-carousel": "node scripts/generate-carousel.js",
     "generate-assets": "node scripts/generate-assets.js",
     "lighthouse": "node scripts/run-lighthouse.js",
-    "setup:mcp": "npm --prefix scripts/mcp-unified-analytics install && npm --prefix scripts/mcp-unified-analytics run build && npm --prefix scripts/mcp-unified-analytics link",
+    "mcp:analytics": "node src/mcp/unified-analytics.ts",
+    "setup:mcp": "npm link",
     "audio:presentations": "node scripts/generate-presentation-audio.js",
     "audio:talks": "node scripts/generate-presentation-audio.js",
     "export:slides": "node scripts/export-slides-pdf.js",
@@ -46,9 +49,11 @@
     "@fontsource/caveat": "^5.3.0",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "@octokit/core": "^7.0.6",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^7.3.2",
+    "dotenv": "^18.0.5",
     "edge-tts-universal": "^1.4.0",
     "googleapis": "^172.0.0",
     "howler": "^2.2.4",
@@ -57,7 +62,8 @@
     "remark-math": "^6.0.0",
     "reveal.js": "^6.0.2",
     "tailwindcss": "^4.3.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -71,6 +77,7 @@
     "mermaid": "^12.0.0",
     "puppeteer": "^25.0.4",
     "quickjs-wasi": "^2.2.0",
+    "tsx": "^4.23.15",
     "typescript-eslint": "^8.61.1"
   },
   "browserslist": [
