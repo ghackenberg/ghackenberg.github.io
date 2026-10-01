@@ -1,0 +1,86 @@
+---
+title: "Empirische Validierung: Die 83% Win-Rate"
+subtitle: "Wissenschaftliche Benchmarks nach Edge et al. (2024): {cue:hl-sub-benchmarks-1001}Signifikante Überlegenheit bei Vollständigkeit und Perspektivenvielfalt{/cue}"
+number: "17"
+slideLayout: "split"
+voiceover: >
+  Die architektonische Eleganz von GraphRAG spiegelt sich auch in harten wissenschaftlichen Messungen und Benchmark-Vergleichen wider.
+  {cue:sub} Die empirische Studie von Microsoft Research belegt {cue:hl-sub-benchmarks-1001}eine signifikante Überlegenheit bei Vollständigkeit und Perspektivenvielfalt{/cue}.
+  {cue:col-graphrag-benchmarks} In standardisierten Blindtests gegen traditionelles Vector-RAG {cue:hl-callout-winrate-stats}erzielte GraphRAG eine überragende Win-Rate von zweiundsiebzig bis dreiundachtzig Prozent{/cue}: Bei der Vollständigkeit {cue:hl-bench-comprehensive}deckt GraphRAG alle relevanten Aspekte ohne Datenlücken ab{/cue}, während {cue:hl-bench-diversity}die Perspektivenvielfalt mit über achtzig Prozent Win-Rate den Tunnelblick naiver Vektoren bricht{/cue}, sodass {cue:hl-bench-empowerment}Antworten von Fachprüfern als deutlich fundierter bewertet werden{/cue}.
+  {cue:col-graphrag-b2b} Für den B2B-Mittelstand ist das wettbewerbsentscheidend: {cue:hl-callout-b2b-rfp}B2B-Käufer stellen keine Stichwortfragen, sondern verlangen ganzheitliche Systemvergleiche{/cue}. Durch Community Summaries {cue:hl-b2b-system-compare}liefert die KI komplette Technologieübersichten ohne Informationslücken{/cue}, wodurch {cue:hl-b2b-rfp-chains}komplexe Ausschreibungen und Lieferkettenfragen verlässlich gelöst werden{/cue}. Doch wie wir gleich sehen werden: {cue:hl-b2b-cost-bridge}Dieser Qualitätsgewinn erfordert im Gegenzug erhebliche Rechen- und Tokenbudgets{/cue}!
+notes: |
+  - Zeit: 30:30 - 33:00 Min.
+  - Edge et al. (2024, Microsoft Research) zitieren.
+  - Head-to-Head-Metriken: Comprehensiveness (72-83%), Diversity (78-82%).
+  - Direkte Hinführung zu Folie 18 (Kosten & Limitationen).
+references:
+  - type: article
+    id: "edge-2024-graphrag"
+    author: "Edge, Darren and Trinh, Ha and Cheng, Newman and Bradley, Joshua and Chao, Alex and Mody, Apurva and Truitt, Steven and Metropolitansky, Dasha and Ness, Robert Osazuwa and Larson, Jonathan"
+    title: "From Local to Global: A Graph RAG Approach to Query-Focused Summarization"
+    journal: "arXiv preprint arXiv:2404.16130"
+    year: 2024
+    doi: "10.48550/arXiv.2404.16130"
+    url: "https://arxiv.org/abs/2404.16130"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="17"
+  totalSlides="51"
+  ratio="50/50"
+>
+  <BentoCard slot="left" cue="col-graphrag-benchmarks" title="Wissenschaftliche Benchmark-Ergebnisse" accent="blue">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-winrate-stats}72–83 % Win-Rate gegen Vector-only RAG{/cue}">
+      <p class="text-blue-200 light:text-blue-900 font-bold text-lg">Edge et al. [@edge-2024-graphrag] (Microsoft Research / arXiv:2404.16130)</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Comprehensiveness (Vollständigkeit)",
+        desc: "Mit bis zu 83 % Win-Rate: {cue:hl-bench-comprehensive}deckt GraphRAG alle relevanten Aspekte ohne Datenlücken ab{/cue}."
+      },
+      {
+        icon: "sparkles",
+        title: "Diversity (Perspektivenvielfalt)",
+        desc: "Mit 78–82 % Win-Rate: {cue:hl-bench-diversity}die Perspektivenvielfalt mit über achtzig Prozent Win-Rate den Tunnelblick naiver Vektoren bricht{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Expertise & Relevanz",
+        desc: "Fachgutachter bestätigen, dass {cue:hl-bench-empowerment}Antworten von Fachprüfern als deutlich fundierter bewertet werden{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-graphrag-b2b" title="Strategischer Mehrwert im B2B" accent="emerald">
+    <CalloutBox type="statement" title="{cue:hl-callout-b2b-rfp}Systemfragen statt Stichwortsuche im Einkauf{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Ingenieure und B2B-Käufer fragen nach Systemvergleichen, Normen und Audit-Konformität.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "shield",
+        title: "Ganzheitliche Systemvergleiche",
+        desc: "Kaufentscheider fordern Marktübersichten: {cue:hl-b2b-system-compare}liefert die KI komplette Technologieübersichten ohne Informationslücken{/cue}."
+      },
+      {
+        icon: "database",
+        title: "Strukturierte Ausschreibungen (RFPs)",
+        desc: "Komplexe Zertifizierungsfragen: {cue:hl-b2b-rfp-chains}komplexe Ausschreibungen und Lieferkettenfragen verlässlich gelöst werden{/cue}."
+      },
+      {
+        icon: "arrow",
+        title: "Brücke zu Kosten & Limitationen",
+        desc: "Vorbereitung auf Folie 18: {cue:hl-b2b-cost-bridge}Dieser Qualitätsgewinn erfordert im Gegenzug erhebliche Rechen- und Tokenbudgets{/cue}!"
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

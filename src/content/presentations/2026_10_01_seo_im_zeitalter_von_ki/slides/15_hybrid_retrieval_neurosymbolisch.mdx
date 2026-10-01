@@ -41,7 +41,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
   subtitle={frontmatter.subtitle}
   subtitleCue="sub"
   slideNumber="15"
-  totalSlides="50"
+  totalSlides="51"
   direction="horizontal"
 >
   <Pipeline
@@ -52,21 +52,24 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         num: "01",
         accent: "cyan",
         title: "Dense Vector Retrieval (Sprachverständnis)",
-        desc: "Embedding [@borgeaud-2022-retro] der Suchanfrage: {cue:hl-pipe-step1}Synonyme und Suchabsichten flexibel erfassen und Textkandidaten filtern{/cue}."
+        desc: "Embedding [@borgeaud-2022-retro] der Suchanfrage: {cue:hl-pipe-step1}Synonyme und Suchabsichten flexibel erfassen und Textkandidaten filtern{/cue}.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step_dense_vector_retrieval.jpg"
       },
       {
         cue: "step-hybrid-02",
         num: "02",
         accent: "emerald",
         title: "Graph Traversal (Faktenprüfung)",
-        desc: "Deterministische Validierung im Graphen: {cue:hl-pipe-step2}Entitäten und Kanten im Wissensgraphen validieren und Halluzinationen filtern{/cue}."
+        desc: "Deterministische Validierung im Graphen: {cue:hl-pipe-step2}Entitäten und Kanten im Wissensgraphen validieren und Halluzinationen filtern{/cue}.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step_graph_traversal_filtering.jpg"
       },
       {
         cue: "step-hybrid-03",
         num: "03",
         accent: "blue",
         title: "Generative Synthese beider Ströme",
-        desc: "GraphRAG-Fusion [@edge-2024-graphrag]: {cue:hl-pipe-step3}Geprüfte Faktenknoten und Primärquellen verschmelzen zur fehlerfreien B2B-Antwort{/cue}."
+        desc: "GraphRAG-Fusion [@edge-2024-graphrag]: {cue:hl-pipe-step3}Geprüfte Faktenknoten und Primärquellen verschmelzen zur fehlerfreien B2B-Antwort{/cue}.",
+        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step_generative_synthesis_fusion.jpg"
       }
     ]}
   />
