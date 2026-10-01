@@ -1,16 +1,10 @@
-// @ts-check
 import fs from 'node:fs';
 import path from 'node:path';
 import * as cheerio from 'cheerio';
 
 const SITE_ORIGIN = 'https://hackenberg.tech';
 
-/**
- * Escapes XML special characters.
- * @param {string} str
- * @returns {string}
- */
-function escapeXml(str) {
+function escapeXml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -19,13 +13,7 @@ function escapeXml(str) {
     .replace(/'/g, '&apos;');
 }
 
-/**
- * Normalizes an image path to an absolute URL with site origin.
- * @param {string} src
- * @param {string} pageUrlPath
- * @returns {string}
- */
-function toAbsoluteImageUrl(src, pageUrlPath) {
+function toAbsoluteImageUrl(src: string, pageUrlPath: string): string {
   if (!src) return '';
   if (src.startsWith('http://') || src.startsWith('https://')) {
     return src;
@@ -37,11 +25,25 @@ function toAbsoluteImageUrl(src, pageUrlPath) {
   return new URL(src, `${SITE_ORIGIN}${cleanBase}`).href;
 }
 
+interface ImageViolation {
+  pageUrl: string;
+  htmlFile: string;
+  src: string;
+  problems: string[];
+  snippet: string;
+}
+
+interface PageImage {
+  url: string;
+  title: string;
+  caption: string;
+}
+
 /**
  * Scans all generated HTML files in dist/, validates every image against zero-fallback criteria,
  * and enriches all sitemap-*.xml files with standard-compliant <image:image> blocks.
  */
-export async function validateAndEnrichImageSitemaps() {
+export async function validateAndEnrichImageSitemaps(): Promise<void> {
   const distDir = path.resolve(process.cwd(), 'dist');
   if (!fs.existsSync(distDir)) {
     console.warn('[image-enforcer] dist/ directory does not exist, skipping validation.');
@@ -49,10 +51,8 @@ export async function validateAndEnrichImageSitemaps() {
   }
 
   // 1. Gather all HTML files
-  /** @type {string[]} */
-  const htmlFiles = [];
-  /** @param {string} dir */
-  function walkHtml(dir) {
+  const htmlFiles: string[] = [];
+  function walkHtml(dir: string) {
     for (const item of fs.readdirSync(dir)) {
       const fullPath = path.join(dir, item);
       const stat = fs.statSync(fullPath);
@@ -65,10 +65,8 @@ export async function validateAndEnrichImageSitemaps() {
   }
   walkHtml(distDir);
 
-  /** @type {Array<{ pageUrl: string, htmlFile: string, src: string, problems: string[], snippet: string }>} */
-  const errors = [];
-  /** @type {Map<string, Array<{ url: string, title: string, caption: string }>>} */
-  const pageImagesMap = new Map();
+  const errors: ImageViolation[] = [];
+  const pageImagesMap = new Map<string, PageImage[]>();
   let totalImagesScanned = 0;
 
   // 2. Scan and validate each HTML file
@@ -82,9 +80,8 @@ export async function validateAndEnrichImageSitemaps() {
 
     const html = fs.readFileSync(htmlFile, 'utf8');
     const $ = cheerio.load(html);
-    /** @type {Array<{ url: string, title: string, caption: string }>} */
-    const imagesForPage = [];
-    const seenImageUrls = new Set();
+    const imagesForPage: PageImage[] = [];
+    const seenImageUrls = new Set<string>();
 
     // A. Validate <img> tags
     $('img').each((_, el) => {
@@ -102,7 +99,7 @@ export async function validateAndEnrichImageSitemaps() {
       }
 
       // Strict Zero-Fallback Validation
-      const missingProps = [];
+      const missingProps: string[] = [];
       if (!alt || alt.length < 3) {
         missingProps.push('Missing or too short alt attribute (caption/description, min 3 chars)');
       }
@@ -143,7 +140,7 @@ export async function validateAndEnrichImageSitemaps() {
       const diagramCaption = ($fig.attr('data-diagram-caption') || $fig.find('meta[itemprop="description"]').attr('content') || '').trim();
       const diagramContentUrl = ($fig.find('meta[itemprop="contentUrl"]').attr('content') || '').trim();
 
-      const missingProps = [];
+      const missingProps: string[] = [];
       if (!diagramTitle || diagramTitle.length < 3) {
         missingProps.push('Missing or too short diagram title (min 3 chars)');
       }
@@ -204,7 +201,7 @@ export async function validateAndEnrichImageSitemaps() {
       const caption = ($img.attr('aria-label') || $img.attr('alt') || '').trim();
 
       // Strict Zero-Fallback Validation
-      const missingProps = [];
+      const missingProps: string[] = [];
       if (!src) {
         missingProps.push('Missing href or xlink:href attribute on svg image element');
       }
@@ -242,7 +239,6 @@ export async function validateAndEnrichImageSitemaps() {
 
     if (imagesForPage.length > 0) {
       pageImagesMap.set(canonicalPageUrl, imagesForPage);
-      // Also register without trailing slash just in case
       if (canonicalPageUrl.endsWith('/')) {
         pageImagesMap.set(canonicalPageUrl.slice(0, -1), imagesForPage);
       }
@@ -286,7 +282,6 @@ export async function validateAndEnrichImageSitemaps() {
     let xml = fs.readFileSync(sitemapPath, 'utf8');
     let modified = false;
 
-    // Regex to match each <url>...</url> block
     xml = xml.replace(/<url>([\s\S]*?)<\/url>/g, (match, inner) => {
       const locMatch = inner.match(/<loc>(.*?)<\/loc>/);
       if (!locMatch) return match;
@@ -294,15 +289,14 @@ export async function validateAndEnrichImageSitemaps() {
       const images = pageImagesMap.get(pageLoc);
       if (!images || images.length === 0) return match;
 
-      // Don't re-add if already present
       if (inner.includes('<image:image>')) return match;
 
       const imageXmlBlocks = images.map(img => `
   <image:image>
-    <image:loc>${escapeXml(img.url)}<\/image:loc>
-    <image:title>${escapeXml(img.title)}<\/image:title>
-    <image:caption>${escapeXml(img.caption)}<\/image:caption>
-  <\/image:image>`.trim()).join('\n    ');
+    <image:loc>${escapeXml(img.url)}</image:loc>
+    <image:title>${escapeXml(img.title)}</image:title>
+    <image:caption>${escapeXml(img.caption)}</image:caption>
+  </image:image>`.trim()).join('\n    ');
 
       totalImagesEnriched += images.length;
       modified = true;

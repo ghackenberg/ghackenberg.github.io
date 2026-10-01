@@ -1,33 +1,32 @@
-﻿/**
+import type { Root, Element, ElementContent } from 'hast';
+
+/**
  * Rehype plugin to wrap all <table> elements in a responsive scroll container.
  * This guarantees smooth horizontal scrolling on mobile viewports without breaking page layouts.
  */
 export default function rehypeResponsiveTables() {
-  /**
-   * @param {any} tree
-   */
-  return function (tree) {
-    /**
-     * @param {any} node
-     * @param {number} [index]
-     * @param {any} [parent]
-     */
-    function visit(node, index, parent) {
+  return function (tree: Root) {
+    function visit(node: any, index?: number, parent?: any) {
       if (!node || typeof node !== 'object') return;
 
       if (node.type === 'element' && node.tagName === 'table' && parent && typeof index === 'number') {
         // Prevent double wrapping
-        if (parent.type === 'element' && parent.properties?.className?.includes('responsive-table-wrapper')) {
+        const parentClass = parent.properties?.className;
+        const hasClass = Array.isArray(parentClass)
+          ? parentClass.includes('responsive-table-wrapper')
+          : typeof parentClass === 'string' && parentClass.includes('responsive-table-wrapper');
+
+        if (parent.type === 'element' && hasClass) {
           return;
         }
 
-        const wrapperNode = {
+        const wrapperNode: Element = {
           type: 'element',
           tagName: 'div',
           properties: {
             className: ['responsive-table-wrapper'],
           },
-          children: [node],
+          children: [node as ElementContent],
         };
 
         parent.children[index] = wrapperNode;

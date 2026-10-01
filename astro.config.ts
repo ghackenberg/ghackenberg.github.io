@@ -1,9 +1,11 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
+import type { AstroIntegration } from 'astro';
+import type { Plugin as VitePlugin } from 'vite';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { unified } from '@astrojs/markdown-remark';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
-import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
+import sitemap, { type ChangeFreqEnum } from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import remarkValidateImages from './src/plugins/remark-validate-images.js';
 import remarkMermaid from './src/plugins/remark-mermaid.js';
@@ -18,10 +20,9 @@ import { fileURLToPath } from 'node:url';
 import { buildSitemapMetadata } from './scripts/sitemap-config.js';
 import { validateAndEnrichImageSitemaps } from './scripts/validate-and-generate-image-sitemap.js';
 import YAML from 'yaml';
-import { generateCitationLabel } from './src/utils/citations.js';
+import { generateCitationLabel, type CitationRef } from './src/utils/citations.js';
 
-/** @type {Record<string, string>} */
-const mimeTypes = {
+const mimeTypes: Record<string, string> = {
   '.pdf': 'application/pdf',
   '.zip': 'application/zip',
   '.graphml': 'application/xml',
@@ -34,25 +35,19 @@ const mimeTypes = {
   '.webp': 'image/webp',
   '.mp4': 'video/mp4',
   '.js': 'application/javascript',
-  '.css': 'text/css'
+  '.css': 'text/css',
 };
 
-/** @returns {import('astro').AstroIntegration} */
-function copyContentAssets() {
+function copyContentAssets(): AstroIntegration {
   return {
     name: 'copy-content-assets',
     hooks: {
       'astro:server:setup': ({ server }) => {
         server.middlewares.use(
-          /**
-           * @param {import('http').IncomingMessage} req
-           * @param {import('http').ServerResponse} res
-           * @param {() => void} next
-           */
-          (req, res, next) => {
+          (req: IncomingMessage, res: ServerResponse, next: () => void) => {
             const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services|presentations|talks)\/(.+)$/);
             if (match) {
-              const [_, collection, rest] = match;
+              const [, collection, rest] = match;
               const cleanRest = rest.split('?')[0];
               const filePath = path.resolve('src/content', collection, cleanRest);
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
@@ -67,7 +62,6 @@ function copyContentAssets() {
           }
         );
       },
-      /** @param {{ dir: URL }} options */
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
         const collections = ['posts', 'publications', 'visualizations', 'courses', 'services', 'projects', 'interests', 'presentations'];
@@ -75,11 +69,7 @@ function copyContentAssets() {
           const srcDir = path.resolve('src/content', col);
           if (!fs.existsSync(srcDir)) continue;
 
-          /**
-           * @param {string} currentSrc
-           * @param {string} relativePath
-           */
-          const copyFiles = (currentSrc, relativePath = '') => {
+          const copyFiles = (currentSrc: string, relativePath = '') => {
             const files = fs.readdirSync(currentSrc);
             for (const file of files) {
               const fullSrcPath = path.join(currentSrc, file);
@@ -104,31 +94,29 @@ function copyContentAssets() {
           };
           copyFiles(srcDir);
         }
-      }
-    }
+      },
+    },
   };
 }
 
-/** @returns {import('astro').AstroIntegration} */
-function imageSitemapEnforcer() {
+function imageSitemapEnforcer(): AstroIntegration {
   return {
     name: 'image-sitemap-enforcer',
     hooks: {
       'astro:build:done': async () => {
         await validateAndEnrichImageSitemaps();
-      }
-    }
+      },
+    },
   };
 }
 
 const { getMetadataForPath } = buildSitemapMetadata();
 
-/** @returns {import('vite').Plugin} */
-function vitePreSlideCues() {
+function vitePreSlideCues(): VitePlugin {
   return {
     name: 'vite-pre-slide-cues',
     enforce: 'pre',
-    transform(code, id) {
+    transform(code: string, id: string) {
       if (!id.endsWith('.mdx') && !id.endsWith('.md')) return null;
       if (!id.includes('talks') && !id.includes('slides') && !id.includes('presentations')) return null;
 
@@ -139,8 +127,7 @@ function vitePreSlideCues() {
       const frontmatterContent = fmMatch[1];
       const body = code.slice(frontmatterStr.length);
 
-      /** @type {any[]} */
-      let references = [];
+      let references: CitationRef[] = [];
       try {
         const parsed = YAML.parse(frontmatterContent);
         if (parsed && Array.isArray(parsed.references)) {
@@ -179,9 +166,9 @@ function vitePreSlideCues() {
 
       return {
         code: frontmatterStr + transformedBody,
-        map: null
+        map: null,
       };
-    }
+    },
   };
 }
 
@@ -202,8 +189,8 @@ export default defineConfig({
           return {
             ...item,
             lastmod: meta.lastmod ? meta.lastmod.toISOString() : item.lastmod,
-            changefreq: /** @type {ChangeFreqEnum} */ (meta.changefreq),
-            priority: meta.priority
+            changefreq: meta.changefreq as ChangeFreqEnum,
+            priority: meta.priority,
           };
         } catch {
           return item;
@@ -238,12 +225,12 @@ export default defineConfig({
         presentations: (item) => {
           const pathname = new URL(item.url).pathname;
           return pathname.startsWith('/presentations/') || pathname === '/presentations' ? item : undefined;
-        }
-      }
+        },
+      },
     }),
     mdx(),
     copyContentAssets(),
-    imageSitemapEnforcer()
+    imageSitemapEnforcer(),
   ],
   markdown: {
     processor: unified({
@@ -258,5 +245,3 @@ export default defineConfig({
     },
   },
 });
-
-

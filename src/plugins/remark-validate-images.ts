@@ -1,3 +1,7 @@
+import type { Root, Image } from 'mdast';
+import type { VFile } from 'vfile';
+import type { Node } from 'unist';
+
 /**
  * Remark plugin for strict early validation of Markdown image references.
  * Enforces that every markdown image reference has:
@@ -5,24 +9,20 @@
  *  2. An explicit, non-empty title attribute in quotes: ![alt](url "title")
  *  3. Distinct title and description (zero-fallback, no duplicates)
  */
-
 export default function remarkValidateImages() {
-  /**
-   * @param {any} tree
-   * @param {any} file
-   */
-  return function transformer(tree, file) {
+  return function transformer(tree: Root, file: VFile) {
     const filePath = file?.path || file?.history?.[0] || 'Unknown Markdown File';
 
-    function visit(node) {
+    function visit(node: Node) {
       if (node.type === 'image') {
-        const alt = typeof node.alt === 'string' ? node.alt.trim() : '';
-        const title = typeof node.title === 'string' ? node.title.trim() : '';
-        const url = node.url || '';
-        const line = node.position?.start?.line ?? '?';
-        const col = node.position?.start?.column ?? '?';
+        const imgNode = node as Image;
+        const alt = typeof imgNode.alt === 'string' ? imgNode.alt.trim() : '';
+        const title = typeof imgNode.title === 'string' ? imgNode.title.trim() : '';
+        const url = imgNode.url || '';
+        const line = imgNode.position?.start?.line ?? '?';
+        const col = imgNode.position?.start?.column ?? '?';
 
-        const issues = [];
+        const issues: string[] = [];
         if (!alt || alt.length < 3) {
           issues.push('Missing or too short description/caption in brackets: ![description](...) (min 3 chars)');
         }
@@ -62,14 +62,14 @@ export default function remarkValidateImages() {
         }
 
         // Ensure title attribute is propagated to HTML <img> properties
-        node.data = node.data || {};
-        node.data.hProperties = node.data.hProperties || {};
-        node.data.hProperties.title = title;
-        node.data.hProperties.alt = alt;
+        const data = (imgNode.data = imgNode.data || {});
+        const hProps = ((data as any).hProperties = (data as any).hProperties || {});
+        hProps.title = title;
+        hProps.alt = alt;
       }
 
-      if (Array.isArray(node.children)) {
-        for (const child of node.children) {
+      if ('children' in node && Array.isArray((node as any).children)) {
+        for (const child of (node as any).children) {
           visit(child);
         }
       }

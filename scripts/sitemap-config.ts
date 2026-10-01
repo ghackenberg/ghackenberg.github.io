@@ -1,22 +1,20 @@
-// @ts-check
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 
 /**
  * Builds a map of normalized relative file paths to their latest Git commit Date.
- * @returns {Map<string, Date>}
  */
-function getGitCommitDateMap() {
-  const fileDateMap = new Map();
+function getGitCommitDateMap(): Map<string, Date> {
+  const fileDateMap = new Map<string, Date>();
   try {
     const gitLog = execSync('git log --name-status --format="commit %cI"', {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
-      maxBuffer: 50 * 1024 * 1024
+      maxBuffer: 50 * 1024 * 1024,
     });
 
-    let currentCommitDate = null;
+    let currentCommitDate: Date | null = null;
     const lines = gitLog.split('\n');
 
     for (const line of lines) {
@@ -49,18 +47,15 @@ function getGitCommitDateMap() {
 
 /**
  * Get latest Git commit date for a file or directory.
- * @param {string} relativePath
- * @param {Map<string, Date>} gitMap
- * @returns {Date | null}
  */
-function getLatestGitDate(relativePath, gitMap) {
+function getLatestGitDate(relativePath: string, gitMap: Map<string, Date>): Date | null {
   const normalized = relativePath.replace(/\\/g, '/').replace(/^\.\//, '');
   if (gitMap.has(normalized)) {
     return gitMap.get(normalized) || null;
   }
 
   // Directory match: find latest commit among all files in directory
-  let latest = null;
+  let latest: Date | null = null;
   const prefix = normalized.endsWith('/') ? normalized : `${normalized}/`;
   for (const [filePath, date] of gitMap.entries()) {
     if (filePath.startsWith(prefix)) {
@@ -75,15 +70,12 @@ function getLatestGitDate(relativePath, gitMap) {
 
 /**
  * Parses frontmatter YAML block without heavy dependencies.
- * @param {string} content
- * @returns {Record<string, any>}
  */
-function parseSimpleFrontmatter(content) {
+function parseSimpleFrontmatter(content: string): Record<string, any> {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
   const yaml = match[1];
-  /** @type {Record<string, any>} */
-  const result = {};
+  const result: Record<string, any> = {};
 
   const lines = yaml.split('\n');
   let currentKey = '';
@@ -130,14 +122,9 @@ function parseSimpleFrontmatter(content) {
 
 /**
  * Extracts a Date from frontmatter or folder name or git log.
- * @param {string} id
- * @param {string | undefined} pubDateStr
- * @param {Date | null} gitDate
- * @param {Date | null} fileMtime
- * @returns {Date}
  */
-function resolveItemDate(id, pubDateStr, gitDate, fileMtime) {
-  let pubDate = null;
+function resolveItemDate(id: string, pubDateStr: string | undefined, gitDate: Date | null, fileMtime: Date | null): Date {
+  let pubDate: Date | null = null;
 
   if (pubDateStr) {
     // Try folder timestamp prefix if pubDate is fuzzy string
@@ -168,8 +155,7 @@ function resolveItemDate(id, pubDateStr, gitDate, fileMtime) {
 
   const validTimestamps = [pubDate, gitDate, fileMtime]
     .map((d) => (d instanceof Date && !isNaN(d.getTime()) ? d.getTime() : null))
-    .filter((t) => t !== null);
-
+    .filter((t): t is number => t !== null);
 
   if (validTimestamps.length === 0) {
     return new Date();
@@ -177,47 +163,37 @@ function resolveItemDate(id, pubDateStr, gitDate, fileMtime) {
 
   // Return the latest known timestamp for the content
   return new Date(Math.max(...validTimestamps));
+}
 
+export interface PageMetadata {
+  lastmod: Date;
+  changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+  priority: number;
 }
 
 /**
- * @typedef {{
- *   lastmod: Date;
- *   changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
- *   priority: number;
- * }} PageMetadata
- */
-
-/**
  * Scans content and builds comprehensive metadata table for all site pages.
- * @returns {{
- *   metaMap: Map<string, PageMetadata>;
- *   getMetadataForPath: (pathname: string) => PageMetadata;
- * }}
  */
-export function buildSitemapMetadata() {
+export function buildSitemapMetadata(): {
+  metaMap: Map<string, PageMetadata>;
+  getMetadataForPath: (pathname: string) => PageMetadata;
+} {
   const gitMap = getGitCommitDateMap();
-  /** @type {Map<string, PageMetadata>} */
-  const metaMap = new Map();
+  const metaMap = new Map<string, PageMetadata>();
 
-  /** @type {Date[]} */
-  const allDates = [];
-  /** @type {Record<string, Date[]>} */
-  const sectionDates = {
+  const allDates: Date[] = [];
+  const sectionDates: Record<string, Date[]> = {
     posts: [],
     courses: [],
     publications: [],
     projects: [],
     services: [],
     visualizations: [],
-    presentations: []
+    presentations: [],
   };
-  /** @type {Map<string, Date[]>} */
-  const postTagDates = new Map();
-  /** @type {Map<string, Date[]>} */
-  const publicationTagDates = new Map();
-  /** @type {Map<string, Date[]>} */
-  const presentationTagDates = new Map();
+  const postTagDates = new Map<string, Date[]>();
+  const publicationTagDates = new Map<string, Date[]>();
+  const presentationTagDates = new Map<string, Date[]>();
 
   const contentBase = path.resolve('src/content');
 
@@ -245,7 +221,7 @@ export function buildSitemapMetadata() {
       metaMap.set(`/posts/${folder}/`, {
         lastmod: date,
         changefreq: 'monthly',
-        priority: 0.7
+        priority: 0.7,
       });
 
       // Tags
@@ -280,7 +256,7 @@ export function buildSitemapMetadata() {
       metaMap.set(`/courses/${folder}/`, {
         lastmod: date,
         changefreq: 'monthly',
-        priority: 0.7
+        priority: 0.7,
       });
     }
   }
@@ -307,7 +283,7 @@ export function buildSitemapMetadata() {
       metaMap.set(`/publications/${folder}/`, {
         lastmod: date,
         changefreq: 'monthly',
-        priority: 0.7
+        priority: 0.7,
       });
 
       const tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
@@ -341,7 +317,7 @@ export function buildSitemapMetadata() {
       metaMap.set(`/projects/${folder}/`, {
         lastmod: date,
         changefreq: 'monthly',
-        priority: 0.7
+        priority: 0.7,
       });
     }
   }
@@ -368,7 +344,7 @@ export function buildSitemapMetadata() {
       metaMap.set(`/visualizations/${folder}/`, {
         lastmod: date,
         changefreq: 'monthly',
-        priority: 0.7
+        priority: 0.7,
       });
     }
   }
@@ -394,7 +370,7 @@ export function buildSitemapMetadata() {
         metaMap.set(`/services/${folder}/`, {
           lastmod: date,
           changefreq: 'monthly',
-          priority: 0.7
+          priority: 0.7,
         });
       }
 
@@ -420,7 +396,7 @@ export function buildSitemapMetadata() {
           metaMap.set(`/services/${folder}/${modFolder}/`, {
             lastmod: date,
             changefreq: 'monthly',
-            priority: 0.7
+            priority: 0.7,
           });
         }
       }
@@ -453,7 +429,7 @@ export function buildSitemapMetadata() {
       metaMap.set(`/presentations/${folder}/`, {
         lastmod: date,
         changefreq: 'monthly',
-        priority: 0.8
+        priority: 0.8,
       });
 
       // Tags
@@ -472,7 +448,7 @@ export function buildSitemapMetadata() {
   metaMap.set('/impressum/', {
     lastmod: impressumDate,
     changefreq: 'yearly',
-    priority: 0.3
+    priority: 0.3,
   });
 
   const datenschutzPath = path.resolve('src/pages/datenschutz.astro');
@@ -480,7 +456,7 @@ export function buildSitemapMetadata() {
   metaMap.set('/datenschutz/', {
     lastmod: datenschutzDate,
     changefreq: 'yearly',
-    priority: 0.3
+    priority: 0.3,
   });
 
   // Global maximum date across all content
@@ -492,16 +468,10 @@ export function buildSitemapMetadata() {
   metaMap.set('/', {
     lastmod: homeDate,
     changefreq: 'weekly',
-    priority: 1.0
+    priority: 1.0,
   });
 
-
-  // Calculate section maximums for Hub pages
-  /**
-   * @param {Date[]} dates
-   * @returns {Date}
-   */
-  const getMaxDate = (dates) => (dates.length > 0 ? new Date(Math.max(...dates.map((d) => d.getTime()))) : maxSiteDate);
+  const getMaxDate = (dates: Date[]): Date => (dates.length > 0 ? new Date(Math.max(...dates.map((d) => d.getTime()))) : maxSiteDate);
 
   const postsMaxDate = getMaxDate(sectionDates.posts);
   const coursesMaxDate = getMaxDate(sectionDates.courses);
@@ -519,18 +489,13 @@ export function buildSitemapMetadata() {
   metaMap.set('/visualizations/', { lastmod: visualizationsMaxDate, changefreq: 'weekly', priority: 0.8 });
   metaMap.set('/presentations/', { lastmod: presentationsMaxDate, changefreq: 'weekly', priority: 0.8 });
 
-  /**
-   * Helper to match any pathname to its best metadata entry
-   * @param {string} rawPathname
-   * @returns {PageMetadata}
-   */
-  function getMetadataForPath(rawPathname) {
+  function getMetadataForPath(rawPathname: string): PageMetadata {
     let pathname = rawPathname;
     if (!pathname.startsWith('/')) pathname = `/${pathname}`;
     if (!pathname.endsWith('/')) pathname = `${pathname}/`;
 
     if (metaMap.has(pathname)) {
-      return /** @type {PageMetadata} */ (metaMap.get(pathname));
+      return metaMap.get(pathname)!;
     }
 
     // Match tag pages: /tags/<tag>/
@@ -540,7 +505,7 @@ export function buildSitemapMetadata() {
       const tagDates = [
         ...(postTagDates.get(tag) || []),
         ...(publicationTagDates.get(tag) || []),
-        ...(presentationTagDates.get(tag) || [])
+        ...(presentationTagDates.get(tag) || []),
       ];
       const tagDate = getMaxDate(tagDates);
       return { lastmod: tagDate, changefreq: 'monthly', priority: 0.6 };
@@ -558,12 +523,12 @@ export function buildSitemapMetadata() {
     return {
       lastmod: maxSiteDate,
       changefreq: 'monthly',
-      priority: 0.5
+      priority: 0.5,
     };
   }
 
   return {
     metaMap,
-    getMetadataForPath
+    getMetadataForPath,
   };
 }
