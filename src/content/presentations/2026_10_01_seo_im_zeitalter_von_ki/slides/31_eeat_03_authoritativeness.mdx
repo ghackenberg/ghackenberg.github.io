@@ -1,0 +1,66 @@
+---
+title: "E-E-A-T: Authoritativeness (Autorität)"
+subtitle: "Branchenreputation & Peer-Anerkennung: {cue:hl-sub-eeat-auth-1001}Wie Gremienarbeit, Keynotes und Fachzitate das Marken-Kookkurrenz-Netzwerk stärken{/cue}"
+number: "31"
+slideLayout: "story-hero"
+voiceover: >
+  Autorität entsteht nicht durch Eigenlob auf der Firmenwebsite, sondern durch die Resonanz und Bestätigung der externen Fachwelt.
+  {cue:sub} Wir untersuchen, {cue:hl-sub-eeat-auth-1001}wie Gremienarbeit, Keynotes und Fachzitate das Marken-Kookkurrenz-Netzwerk stärken{/cue}.
+  {cue:vis-eeat-auth} Auf der Konferenzbühne präsentiert der Fachreferent validierte Industriestandards vor einem engagierten Fachpublikum.
+  {cue:card-eeat-auth} Echte Branchenautorität speist sich aus {cue:hl-callout-eeat-auth}der Anerkennung durch Gremien und Branchennetzwerke{/cue}: Belegen Sie {cue:hl-eeat-auth-talks}Keynote-Vorträge auf Industrie- und Hochschulkongressen{/cue}, dokumentieren Sie {cue:hl-eeat-auth-standards}aktive Gremienarbeit in VDI- und Normungsausschüssen{/cue}, und fördern Sie {cue:hl-eeat-auth-citations}unabhängige Fachmedien-Zitate und universitäre Forschungskooperationen{/cue}.
+notes: |
+  - Zeit: 43:00 - 44:30 Min.
+  - Authoritativeness = Externe Bestätigung.
+  - Verknüpfung zu Block 5 (Brand Mentions, Co-Occurrence): KI lernt Autorität aus dem gemeinsamen Auftreten von Unternehmens- und Expertentiteln in Fachpublikationen.
+references:
+  - type: online
+    id: "google-2024-helpful-content"
+    author: "Google Search Central"
+    title: "Creating helpful, reliable, people-first content"
+    siteName: "Google Search Central Documentation"
+    year: 2024
+    url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import authImage from '../images/hero_eeat_authoritativeness.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="31"
+  totalSlides="68"
+  cue="vis-eeat-auth"
+  imageCue="vis-eeat-auth"
+  imageSrc={authImage}
+  imageAlt="Professor hält Keynote auf internationaler Fachkonferenz vor Branchenpublikum"
+  imageTitle="Authoritativeness: Branchenweite Resonanz und Verbands-Reputation"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-eeat-auth" title="Externe Validierung & Fachöffentlichkeit" accent="amber">
+    <CalloutBox type="statement" title="{cue:hl-callout-eeat-auth}Anerkennung durch Gremien und Branchennetzwerke{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Google Quality Rater Guidelines [@google-2024-helpful-content]: Autorität wird von Suchmaschinen über Co-Zitationen und externe Fachgremien validiert.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "globe",
+        title: "Keynotes & Fachtagungen",
+        desc: "Dokumentation von {cue:hl-eeat-auth-talks}Keynote-Vorträgen auf Industrie- und Hochschulkongressen{/cue}."
+      },
+      {
+        icon: "network",
+        title: "Gremienarbeit & Richtlinien",
+        desc: "Nachweisbarer Einsatz durch {cue:hl-eeat-auth-standards}aktive Gremienarbeit in VDI- und Normungsausschüssen{/cue}."
+      },
+      {
+        icon: "target",
+        title: "Fachmedien-Zitate & Ko-Zitationen",
+        desc: "Erwähnungen durch {cue:hl-eeat-auth-citations}unabhängige Fachmedien-Zitate und universitäre Forschungskooperationen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>

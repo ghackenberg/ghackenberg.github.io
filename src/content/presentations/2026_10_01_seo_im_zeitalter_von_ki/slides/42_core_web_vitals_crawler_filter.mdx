@@ -1,0 +1,66 @@
+---
+title: "Core Web Vitals: Der KI-Crawler-Filter"
+subtitle: "LCP, INP & CLS: {cue:hl-sub-vitals-1001}Warum Millisekunden über die Aufnahme in den RAG-Index entscheiden{/cue}"
+number: "42"
+slideLayout: "story-hero"
+voiceover: >
+  Ein oft übersehener Engpass ist die technische Auslieferungsgeschwindigkeit Ihrer Webseiten.
+  {cue:sub} Die Core Web Vitals fungieren heute {cue:hl-sub-vitals-1001}als harter Filter für moderne KI-Crawler{/cue}.
+  {cue:vis-vitals-dash} Auf unserem Instrumenten-Dashboard sehen Sie die drei maßgeblichen Performance-Indikatoren.
+  {cue:card-vitals-metrics} Bots von OpenAI und Perplexity brechen bei Timeouts ab und verlangen {cue:hl-callout-vitals-timeouts}schnellste Antwortzeiten ohne Ladeverzögerung{/cue}: Ein {cue:hl-vitals-lcp}LCP unter zweieinhalb Sekunden sichert sofortige Extraktion{/cue}, ein {cue:hl-vitals-inp}INP unter zweihundert Millisekunden verhindert Script-Blockaden{/cue}, und ein {cue:hl-vitals-cls}CLS unter null Komma eins garantiert visuelle Stabilität{/cue} – technische Hygiene als Pflichtprogramm!
+notes: |
+  - Zeit: 56:00 - 58:30 Min.
+  - Philipp Walton et al. (Google Web Vitals 2024) zitieren.
+  - Kernaussage für IT-Leiter: Wenn die Website 4 Sekunden zum Laden braucht, bricht der KI-Crawler ab und greift zur Konkurrenz.
+references:
+  - type: online
+    id: "walton-2024-web-vitals"
+    author: "Walton, Philip and Far, Addy and Boulos, Houssein"
+    title: "Web Vitals: Essential metrics for a healthy site"
+    siteName: "web.dev by Google"
+    year: 2024
+    url: "https://web.dev/articles/vitals"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import vitalsImage from '../images/hero_core_web_vitals_dashboard.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="42"
+  totalSlides="68"
+  cue="vis-vitals-dash"
+  imageCue="vis-vitals-dash"
+  imageSrc={vitalsImage}
+  imageAlt="Performance-Dashboard zur Visualisierung der Core Web Vitals LCP, INP und CLS für KI-Crawler"
+  imageTitle="Core Web Vitals als technischer Filter für LLM-Web-Crawler"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-vitals-metrics" title="Harte Grenzwerte für KI-Crawler" accent="emerald">
+    <CalloutBox type="statement" title="{cue:hl-callout-vitals-timeouts}Aggressive HTTP-Timeouts von KI-Crawlern{/cue}">
+      <p class="text-base text-slate-300 light:text-slate-700">Google Web Vitals [@walton-2024-web-vitals]: Crawler von GPTBot und Perplexity brechen nach 2–3s ab.</p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "zap",
+        title: "LCP ≤ 2,5 s (Largest Contentful Paint)",
+        desc: "Ein {cue:hl-vitals-lcp}LCP unter zweieinhalb Sekunden sichert sofortige Extraktion{/cue} des Hauptinhalts."
+      },
+      {
+        icon: "cpu",
+        title: "INP ≤ 200 ms (Interaction to Next Paint)",
+        desc: "Ein {cue:hl-vitals-inp}INP unter zweihundert Millisekunden verhindert Script-Blockaden{/cue} bei Interaktionen."
+      },
+      {
+        icon: "shield",
+        title: "CLS ≤ 0,1 (Cumulative Layout Shift)",
+        desc: "Ein {cue:hl-vitals-cls}CLS unter null Komma eins garantiert visuelle Stabilität{/cue} ohne Layout-Ruckler."
+      }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>

@@ -1,0 +1,96 @@
+---
+title: "BLUF in der Praxis: A/B-Vergleich im B2B"
+subtitle: "Marketing-Fluff vs. Information Gain: {cue:hl-sub-bluf-comp-1001}Wie strukturierte Antworten RAG-Chunker überzeugen und Zitationen sichern{/cue}"
+number: "35"
+slideLayout: "split"
+voiceover: >
+  Um den dramatischen Unterschied greifbar zu machen, vergleichen wir denselben Industrieartikel in zwei Schreibweisen.
+  {cue:sub} Sie sehen im Direktvergleich, {cue:hl-sub-bluf-comp-1001}wie strukturierte Antworten RAG-Chunker überzeugen und Zitationen sichern{/cue}.
+  {cue:col-bluf-bad} Auf der linken Seite steht der klassische Marketing-Fluff mit {cue:hl-bluf-bad-callout}fünfundvierzig Wörtern ohne Kennzahlen{/cue}: Hier dominieren {cue:hl-bluf-bad-fluff}austauschbare Worthülsen über zukunftssichere Lösungen{/cue}, deren {cue:hl-bluf-bad-entropy}hohe Entropie im Rauschen des Embedding-Raums untergeht{/cue}.
+  {cue:col-bluf-good} Rechts zeigt die BLUF-Architektur mit {cue:hl-bluf-good-callout}der direkten Antwort im ersten Satz und Tabelle{/cue} den Gegenentwurf: Das LLM findet {cue:hl-bluf-good-exact}exakte Kennzahlen innerhalb der ersten fünfundzwanzig Token{/cue}, und die {cue:hl-bluf-good-table}tabellarische Spezifikation wird eins zu eins in KI-Antworten übernommen{/cue}.
+notes: |
+  - Zeit: 52:00 - 54:00 Min.
+  - Das ist das konkreteste Aha-Erlebnis für Texter: Warum Phrasen wie "In der heutigen dynamischen Welt..." sofort abgestraft werden.
+  - Google Information Gain Patent US 11,720,613 B2 zitieren.
+references:
+  - type: misc
+    id: "google-2023-information-gain"
+    author: "Google LLC"
+    title: "Contextual estimation of link information gain"
+    howpublished: "US Patent US 11,720,613 B2"
+    year: 2023
+    url: "https://patents.google.com/patent/US11720613B2/en"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="35"
+  totalSlides="68"
+>
+  <BentoCard slot="left" cue="col-bluf-bad" title="Vorher: Werblicher Floskeltext" accent="neutral">
+    <CalloutBox type="alert" title="{cue:hl-bluf-bad-callout}45 Wörter ohne eine einzige Kennzahl{/cue}">
+      <p class="text-sm text-slate-300 light:text-slate-700">RAG-Chunker brechen das Parsing bei generischen Phrasen vorzeitig ab [@google-2023-information-gain].</p>
+    </CalloutBox>
+
+    <div class="p-4 rounded-xl bg-slate-900/60 light:bg-slate-100 border border-slate-700 light:border-slate-300 text-sm text-slate-300 light:text-slate-700 italic leading-relaxed my-2">
+      „In der heutigen dynamischen Welt des modernen Maschinenbaus stehen Konstrukteure vor nie dagewesenen Herausforderungen. Als führender Partner entwickeln wir stets maßgeschneiderte, zukunftssichere Antriebslösungen höchster Güteklasse...“
+    </div>
+
+    <BulletList items={[
+      {
+        icon: "warning",
+        title: "Null Information Gain",
+        desc: "Ausschließlich {cue:hl-bluf-bad-fluff}austauschbare Worthülsen über zukunftssichere Lösungen{/cue} ohne Faktengehalt."
+      },
+      {
+        icon: "cross",
+        title: "Hohe semantische Entropie",
+        desc: "Synthetische Phrasen, deren {cue:hl-bluf-bad-entropy}hohe Entropie im Rauschen des Embedding-Raums untergeht{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-bluf-good" title="Nachher: BLUF-Direktantwort & Tabelle" accent="blue">
+    <CalloutBox type="statement" title="{cue:hl-bluf-good-callout}Antwort im 1. Satz + strukturierte Tabelle{/cue}">
+      <p class="text-sm text-slate-300 light:text-slate-700">Maximale Information-Gain-Dichte garantiert die direkte Übernahme in LLM-Synthesen.</p>
+    </CalloutBox>
+
+    <div class="p-4 rounded-xl bg-blue-950/20 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 text-sm my-2">
+      <p class="font-medium text-slate-200 light:text-slate-800 leading-snug">
+        „Das Planetengetriebe PG-40 überträgt ein Nenndrehmoment von 120 Nm bei einem Verdrehspiel von unter 3 Winkelminuten und einem Wirkungsgrad von 97 Prozent.“
+      </p>
+      <table class="w-full text-xs text-left mt-3 border-collapse">
+        <thead>
+          <tr class="border-b border-blue-500/30 light:border-blue-300 text-slate-400 light:text-slate-600">
+            <th class="py-1">Parameter</th>
+            <th class="py-1">Wert</th>
+            <th class="py-1">Norm / Bedingung</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-blue-500/20 light:divide-blue-100 text-slate-300 light:text-slate-700">
+          <tr><td class="py-1">Nenndrehmoment</td><td class="py-1 font-bold text-blue-400 light:text-blue-600">120 Nm</td><td class="py-1 text-slate-400 light:text-slate-500">Dauerbetrieb (S1)</td></tr>
+          <tr><td class="py-1">Verdrehspiel</td><td class="py-1 font-bold text-blue-400 light:text-blue-600">&lt; 3 arcmin</td><td class="py-1 text-slate-400 light:text-slate-500">Standardausführung</td></tr>
+          <tr><td class="py-1">Wirkungsgrad</td><td class="py-1 font-bold text-blue-400 light:text-blue-600">97 %</td><td class="py-1 text-slate-400 light:text-slate-500">Volllast bei 3000 min⁻¹</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Sofortiger Information Gain",
+        desc: "Antwort liefert {cue:hl-bluf-good-exact}exakte Kennzahlen innerhalb der ersten fünfundzwanzig Token{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Strukturierte Extraktion",
+        desc: "Die {cue:hl-bluf-good-table}tabellarische Spezifikation wird eins zu eins in KI-Antworten übernommen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

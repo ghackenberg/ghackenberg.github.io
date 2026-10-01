@@ -173,3 +173,10 @@ Before generating any new illustration:
     Edge-to-edge full bleed artwork in a 16:9 horizontal format, completely borderless, stretching seamlessly across the entire canvas without any frame, without border line, without box outline, and without margins. Floating freely in the center third of the frame, surrounded by generous empty background space on all sides: [1 dominant iconic hero object + max 1-2 clean directed interaction elements]. Clean, friendly yet sober and strictly technical engineering aesthetic, crisp dark ink linework, bold cel shading, minimal and iconic composition. No cartoon faces, no cute eyes, no childish doodles, no micro-dashboards, no tiny unreadable text, no box outline, no border, no elements touching canvas edges. All visual motif elements float freely in the central area without any containing box, square frame, or boundary lines. The entire canvas is filled with a seamless, luminous vibrant blue-violet and deep indigo galaxy nebula with soft ambient starlight. 16:9 aspect ratio.
     ```
 
+### G. Presentation Story Hero Slide Images (`StoryHeroSlide`)
+*   **Subject**: Deep narrative storytelling scenes, industrial laboratories, engineering workstations, keynote stages, and collaborative B2B architecture environments.
+*   **Style & Aesthetic**: Stylized Disney/Pixar vector comic-book illustration, crisp dark ink linework, bold cel shading, dark slate background (`#030712`) with vibrant brand color lighting accents (`#3b82f6` Blue, `#f59e0b` Amber, `#a855f7` Purple, `#10b981` Green).
+*   **Container Behavior**: Displayed in `StoryHeroSlide.astro` within a 7-column `story-visual-card` (`rounded-3xl`, `object-cover object-center`).
+*   **Format & Aspect Ratio**: **4:3 aspect ratio (`AspectRatio: "4:3"`)**, saved as `.jpg` in `src/content/presentations/[presentation_id]/images/` and imported as static image metadata into `.mdx` slides.
+
+

@@ -1,0 +1,60 @@
+---
+title: "Modell 1: Kuratierung & Diskurs"
+subtitle: "Niedrigschwellige Fachautorität: {cue:hl-sub-curation}Relevante Branchenstudien und Normen mit 2–3 Sätzen Praxiseinordnung veredeln{/cue}"
+number: "48"
+slideLayout: "story-hero"
+voiceover: >
+  Betrachten wir das erste und am einfachsten umsetzbare Organisationsmodell für Fachexperten.
+  {cue:sub} Das Kuratierungsmodell ermöglicht Fachautorität, indem {cue:hl-sub-curation}relevante Branchenstudien und Normen mit zwei bis drei Sätzen Praxiseinordnung veredelt werden{/cue}.
+  {cue:vis-curation} Unsere Visualisierung zeigt den Ingenieur an seinem Bildschirm bei der prägnanten Kommentierung eines Industriestandards.
+  {cue:card-curation} Dieses Vorgehen {cue:hl-curation-barrier}senkt die zeitliche Einstiegshürde auf nur zehn bis fünfzehn Minuten pro Woche{/cue}. Fachexperten müssen {cue:hl-curation-essays}keine langen Fachaufsätze von Grund auf selbst schreiben{/cue}, sondern teilen Primärquellen wie Normen oder KDD-Paper mit ihrer persönlichen Perspektive. Durch gezieltes Verknüpfen {cue:hl-curation-dialogue}entsteht echter Fachdiskurs mit Branchenkollegen in den Kommentaren{/cue}, was Sprachmodellen wiederum {cue:hl-curation-signals}wertvolle semantische Interaktionssignale für Entitätsvertrauen liefert{/cue}.
+notes: |
+  - Zeit: 47:00 - 48:30 Min.
+  - Modell 1: "Curation & Insight" – Der ideale Einstieg für skeptische oder überlastete Ingenieure.
+  - Kernaussage: 15 Minuten pro Woche reichen aus, um Thought Leadership aufzubauen, wenn man vorhandenes Primärwissen kuratiert.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import curationImage from '../images/hero_corporate_influencing_curation.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="48"
+  totalSlides="68"
+  cue="vis-curation"
+  imageCue="vis-curation"
+  imageSrc={curationImage}
+  imageAlt="Ingenieur an digitaler Workstation beim Kommentieren einer technischen Norm"
+  imageTitle="Modell 1: Kuratierung & Diskurs (Curation & Insight)"
+  ratio="55/45"
+>
+  <BentoCard slot="narrative" cue="card-curation" title="Curation & Insight im Detail" accent="blue">
+    <CalloutBox type="takeaway" title="Minimaler Zeiteinsatz – maximale Glaubwürdigkeit">
+      <p class="text-blue-200 light:text-blue-900">
+        Keine leeren Marketing-Worthülsen: {cue:hl-curation-barrier}Das Kuratieren und Schärfen von Primärdaten senkt die Zeithürde auf 15 Minuten pro Woche{/cue}.
+      </p>
+    </CalloutBox>
+
+    <BulletList items={[
+      {
+        icon: "database",
+        title: "Primärdaten als Hebel",
+        desc: "Fachexperten müssen {cue:hl-curation-essays}keine langen Essays schreiben, sondern teilen Normen, Whitepaper oder Studien{/cue}."
+      },
+      {
+        icon: "target",
+        title: "Praxis-Filter (So what?)",
+        desc: "Der unschätzbare Mehrwert liegt in {cue:hl-curation-dialogue}2–3 Sätzen Praxiseinordnung: Was bedeutet das konkret für Anlagenbetreiber?{/cue}"
+      },
+      {
+        icon: "network",
+        title: "Grounding-Signale für KIs",
+        desc: "Fachkommentare und Zitate liefern {cue:hl-curation-signals}hochwertige semantische Kookkurrenzen für Perplexity und LLMs{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</StoryHeroSlide>
