@@ -536,6 +536,15 @@ const currentDeckId = presentationId || talkId || "presentation";
     const revealRoot = document.getElementById('reveal-root');
     const deckLoader = document.getElementById('deck-loader');
 
+    // Unhide any already-loaded slide images immediately to prevent false skeleton flashes
+    revealRoot?.querySelectorAll<HTMLImageElement>('img').forEach(img => {
+      if (img.complete && img.naturalWidth > 0) {
+        img.classList.remove('opacity-0');
+        const s = img.parentElement?.querySelector('.step-image-skeleton, .story-image-skeleton');
+        if (s) s.remove();
+      }
+    });
+
     // AutoFit Controller
     const autoFit = new AutoFitController();
     autoFit.fitAll(revealRoot);
