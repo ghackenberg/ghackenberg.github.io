@@ -25,7 +25,7 @@ import interestSimulationImg from "../content/interests/computer-simulation/prev
 import interestAiImg from "../content/interests/artificial-intelligence/preview.jpg";
 import interestUxImg from "../content/interests/user-experience/preview.jpg";
 import { getCollection } from "astro:content";
-import { calculateTagCounts, buildGraphPayload } from "../scripts/graph-payload";
+import { calculateTagCounts, buildGraphPayload } from "../../shared/graph-payload";
 
 const optimizedProfile = await getImage({
   src: profileImage,

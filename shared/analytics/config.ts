@@ -21,7 +21,7 @@ export const PROJECT_ROOT = findProjectRoot(__dirname);
 
 // Load .env from project root, with fallback to legacy sub-package path
 const projectEnv = path.join(PROJECT_ROOT, '.env');
-const legacyEnv = path.join(PROJECT_ROOT, 'scripts/mcp-unified-analytics/.env');
+const legacyEnv = path.join(PROJECT_ROOT, 'mcp/unified-analytics/.env');
 
 if (fs.existsSync(projectEnv)) {
   dotenv.config({ path: projectEnv });
@@ -53,7 +53,7 @@ export function getConfig(): AppConfig {
   let keyFile = process.env.GSC_SERVICE_ACCOUNT_KEY_FILE;
   if (keyFile && !path.isAbsolute(keyFile)) {
     const inProj = path.resolve(PROJECT_ROOT, keyFile);
-    const inLegacy = path.resolve(PROJECT_ROOT, 'scripts/mcp-unified-analytics', keyFile);
+    const inLegacy = path.resolve(PROJECT_ROOT, 'mcp/unified-analytics', keyFile);
     if (fs.existsSync(inProj)) {
       keyFile = inProj;
     } else if (fs.existsSync(inLegacy)) {

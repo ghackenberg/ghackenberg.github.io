@@ -14,7 +14,7 @@
     "node": ">=22.12.0"
   },
   "bin": {
-    "mcp-unified-analytics": "./src/mcp/unified-analytics.ts"
+    "mcp-unified-analytics": "./mcp/unified-analytics/index.ts"
   },
   "scripts": {
     "dev": "astro dev",
@@ -25,7 +25,7 @@
     "sync": "tsx scripts/sync.ts",
     "generate-assets": "tsx scripts/generate-assets.ts",
     "lighthouse": "tsx scripts/run-lighthouse.ts",
-    "mcp:analytics": "tsx src/mcp/unified-analytics.ts",
+    "mcp:analytics": "tsx mcp/unified-analytics/index.ts",
     "setup:mcp": "npm link",
     "audio:presentations": "tsx scripts/generate-presentation-audio.ts",
     "audio:talks": "tsx scripts/generate-presentation-audio.ts",

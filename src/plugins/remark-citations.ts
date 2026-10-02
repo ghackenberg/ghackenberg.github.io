@@ -1,7 +1,7 @@
 import type { Root, Text, Html } from 'mdast';
 import type { VFile } from 'vfile';
 import type { Node, Parent } from 'unist';
-import { generateCitationLabel, type CitationRef } from '../utils/citations.js';
+import { generateCitationLabel, type CitationRef } from '../../shared/citations.js';
 
 interface AstroFrontmatterFile {
   astro?: {

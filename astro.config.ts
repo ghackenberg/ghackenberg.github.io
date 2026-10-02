@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { buildSitemapMetadata } from './scripts/sitemap-config.js';
 import { validateAndEnrichImageSitemaps } from './scripts/validate-and-generate-image-sitemap.js';
 import YAML from 'yaml';
-import { generateCitationLabel, type CitationRef } from './src/utils/citations.js';
+import { generateCitationLabel, type CitationRef } from './shared/citations.js';
 
 const mimeTypes: Record<string, string> = {
   '.pdf': 'application/pdf',
