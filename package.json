@@ -24,7 +24,7 @@
     "lint": "eslint . --max-warnings=0",
     "sync": "tsx src/scripts/sync.ts",
     "generate-assets": "tsx src/scripts/generate-assets.ts",
-    "lighthouse": "tsx src/scripts/run-lighthouse.ts",
+    "lighthouse": "node --experimental-strip-types src/scripts/run-lighthouse.ts",
     "mcp:analytics": "tsx src/tools/unified-analytics.ts",
     "setup:mcp": "npm link",
     "audio:presentations": "tsx src/scripts/generate-presentation-audio.ts",
