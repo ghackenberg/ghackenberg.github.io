@@ -29,7 +29,7 @@
 - **Windows File I/O Resilience**:
   - File write operations targeting generated cache, metadata, or export files (`.visual-cache.json`, audio caches, PDFs, thumbnails) **MUST** anticipate transient file locks by background indexers or watchers. Implement backoff retry loops (e.g. 5–6 attempts with 200–250ms backoff) rather than unprotected writes.
 - **Path Aliases & Cohesion Boundary Contract**:
-  - **Always** use configured path aliases (`@shared/*`, `@components/*`, `@layouts/*`, `@assets/*`, `@styles/*`, `@content/*`, `@plugins/*`) when importing across directory boundaries.
+  - **Always** use configured path aliases (`@shared/*`, `@components/*`, `@layouts/*`, `@assets/*`, `@styles/*`, `@content/*`, `@plugins/*`, `@modules/*`) when importing across directory boundaries.
   - **NEVER** use relative parent directory traversals (`../components`, `../../shared`, `../../../layouts`, `../../plugins`, etc.). Strictly enforced by ESLint `no-restricted-imports` with zero tolerance (`--max-warnings=0`).
   - **Co-located Sibling Imports**: Relative sibling imports (`./...`) within the same directory are permitted and encouraged for tightly-coupled private helpers, types, and sub-controllers to maintain cohesion and encapsulation.
 - **Scripts & CLI Architecture Contract**:

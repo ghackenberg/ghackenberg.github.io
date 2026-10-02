@@ -68,9 +68,9 @@ export default defineConfig([
         {
           patterns: [
             {
-              regex: '^(\\.\\.\\/)+(components|layouts|assets|styles|shared|content|plugins)(\\/.*)?$',
+              regex: '^(\\.\\.\\/)+(components|layouts|assets|styles|shared|content|plugins|modules)(\\/.*)?$',
               message:
-                'Use path aliases (@components, @layouts, @assets, @styles, @shared, @content, @plugins) instead of relative parent imports (../). Co-located sibling imports (./) are permitted.',
+                'Use path aliases (@components, @layouts, @assets, @styles, @shared, @content, @plugins, @modules) instead of relative parent imports (../). Co-located sibling imports (./) are permitted.',
             },
           ],
         },
