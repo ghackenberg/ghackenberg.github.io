@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import RelatedContent from "../../components/RelatedContent.astro";
 import GetInTouchCard from "../../components/GetInTouchCard.astro";
-import { getCollection, getEntry, render } from "astro:content";
+import { getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
 
 export async function getStaticPaths() {
@@ -464,7 +464,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
   </div>
 </Layout>
 
-<script define:vars={{ optimizedScreenshots }}>
+<script is:inline define:vars={{ optimizedScreenshots }}>
   document.addEventListener("DOMContentLoaded", () => {
     let currentIndex = 0;
     const modal = document.getElementById("lightbox-modal");

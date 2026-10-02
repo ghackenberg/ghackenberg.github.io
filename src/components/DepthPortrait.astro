@@ -106,11 +106,6 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
     transitions?: FacialTransition[];
   }
 
-  interface LoadedTexturePair {
-    imageTex: WebGLTexture;
-    depthTex: WebGLTexture;
-  }
-
   function initDepthPortraits() {
     const containers = document.querySelectorAll<HTMLElement>('.depth-portrait-container:not([data-initialized="true"])');
 

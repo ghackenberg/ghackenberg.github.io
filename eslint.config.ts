@@ -1,9 +1,10 @@
+import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import tsParser from '@typescript-eslint/parser';
 import eslintPluginAstro from 'eslint-plugin-astro';
 import eslintComments from 'eslint-plugin-eslint-comments';
 
-export default tseslint.config(
+export default defineConfig([
   {
     ignores: [
       'dist/**',
@@ -105,4 +106,4 @@ export default tseslint.config(
       ],
     },
   }
-);
+]);

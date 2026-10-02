@@ -13,12 +13,11 @@ import {
  * @param {string} content
  * @returns {Record<string, string>}
  */
-function parseFrontmatter(content) {
+function parseFrontmatter(content: string): Record<string, string> {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
   const yamlText = match[1];
-  /** @type {Record<string, string>} */
-  const result = {};
+  const result: Record<string, string> = {};
 
   const lines = yamlText.split('\n');
   let currentKey = '';
@@ -64,11 +63,14 @@ function parseFrontmatter(content) {
  * @param {{ acronyms?: Record<string, string>; phonetics?: Record<string, string> }} lexicon
  * @returns {string}
  */
-function applyLexicon(text, lexicon) {
+function applyLexicon(
+  text: string,
+  lexicon: { acronyms?: Record<string, string>; phonetics?: Record<string, string> }
+): string {
   if (!text) return '';
   let result = text;
 
-  const allMappings = {
+  const allMappings: Record<string, string> = {
     ...(lexicon.phonetics || {}),
     ...(lexicon.acronyms || {})
   };
@@ -87,10 +89,8 @@ function applyLexicon(text, lexicon) {
 
 /**
  * Strips cue tags to obtain clean text
- * @param {string} voiceover
- * @returns {string}
  */
-function extractCleanText(voiceover) {
+function extractCleanText(voiceover: string): string {
   return (voiceover || '').replace(/\{cue:[^}]+\}|\{\/cue\}/g, '').replace(/\s+/g, ' ').trim();
 }
 
@@ -117,8 +117,7 @@ function validateSlides() {
   const presentationFolders = fs.readdirSync(presentationsBase);
 
   const lexiconPath = path.resolve('src/content/presentations/tts-lexicon.json');
-  /** @type {{ acronyms: Record<string, string>; phonetics: Record<string, string> }} */
-  let lexicon = { acronyms: {}, phonetics: {} };
+  let lexicon: { acronyms: Record<string, string>; phonetics: Record<string, string> } = { acronyms: {}, phonetics: {} };
   if (fs.existsSync(lexiconPath)) {
     try {
       lexicon = JSON.parse(fs.readFileSync(lexiconPath, 'utf8'));
@@ -135,8 +134,7 @@ function validateSlides() {
 
     const audioDir = path.join(presentationPath, 'audio');
     const cacheFile = path.join(audioDir, '.cache.json');
-    /** @type {Record<string, string>} */
-    let audioCache = {};
+    let audioCache: Record<string, string> = {};
     if (fs.existsSync(cacheFile)) {
       try {
         audioCache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
@@ -151,8 +149,7 @@ function validateSlides() {
 
     console.log(`\n[Slide Validator] Checking presentation: "${presentationFolder}" (${slideFiles.length} slides)`);
 
-    /** @type {Set<string>} */
-    const activeSlideIds = new Set();
+    const activeSlideIds = new Set<string>();
 
     for (const slideFile of slideFiles) {
       totalSlides++;
@@ -204,8 +201,7 @@ function validateSlides() {
       }
 
       // 1. Extract voiceover cues in sequence
-      /** @type {string[]} */
-      const voCues = [];
+      const voCues: string[] = [];
       const voCueRegex = /\{cue:([a-zA-Z0-9_-]+)\}/g;
       let voMatchItem;
       while ((voMatchItem = voCueRegex.exec(voiceoverText)) !== null) {
@@ -214,8 +210,7 @@ function validateSlides() {
 
       // 1b. Check cue syntax rules: only inline text-highlights (hl-* / mark-*) may have closing tags!
       const cueTagRegex = /\{cue:([a-zA-Z0-9_-]+)\}|\{\/cue(?::([a-zA-Z0-9_-]+))?\}/g;
-      /** @type {string[]} */
-      const openCueStack = [];
+      const openCueStack: string[] = [];
       let tagMatch;
       while ((tagMatch = cueTagRegex.exec(voiceoverText)) !== null) {
         if (tagMatch[0].startsWith('{cue:')) {
@@ -265,8 +260,7 @@ function validateSlides() {
       }
 
       // 2. Extract slide body cues in order of visual appearance
-      /** @type {string[]} */
-      const bodyCues = [];
+      const bodyCues: string[] = [];
       const bodyCueRegex = /(?:(?:[a-zA-Z0-9_-]*cue|data-cue)\s*[:=]\s*["']([a-zA-Z0-9_-]+)["']|id\s*[:=]\s*["']((?:col|box|card|step|stat|hl|mark)-[a-zA-Z0-9_-]+)["']|\{cue:([a-zA-Z0-9_-]+)\})/gi;
       
       const subtitleFmMatch = fm.match(/^subtitle:\s*["']?([^\r\n]+)/m);
