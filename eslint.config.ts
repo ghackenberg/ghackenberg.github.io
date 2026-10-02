@@ -58,7 +58,26 @@ export default defineConfig([
       ],
     },
   },
-  // 4. Architectural Boundaries: restrict cross-domain imports
+  // 4. Path Alias Enforcement: disallow relative parent traversals into alias domains
+  {
+    files: ['**/*.ts', '**/*.astro'],
+    ignores: ['src/components/slides/layouts/**', 'src/components/slides/primitives/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^(\\.\\.\\/)+(components|layouts|assets|styles|shared|content)(\\/.*)?$',
+              message:
+                'Use path aliases (@components, @layouts, @assets, @styles, @shared, @content) instead of relative parent imports (../). Co-located sibling imports (./) are permitted.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // 5. Architectural Boundaries: restrict cross-domain imports
   {
     files: ['shared/*.ts', 'shared/**/*.ts'],
     rules: {
