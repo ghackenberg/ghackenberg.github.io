@@ -10,6 +10,7 @@ export default defineConfig([
       'dist/**',
       '.astro/**',
       'node_modules/**',
+      'scratch/**',
     ],
   },
   // Recommended Astro configuration

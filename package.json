@@ -21,7 +21,7 @@
     "build": "npm run typecheck && npm run generate-assets && astro build",
     "preview": "astro preview",
     "typecheck": "astro check --minimumFailingSeverity hint",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
     "sync": "tsx scripts/sync.ts",
     "generate-assets": "tsx scripts/generate-assets.ts",
     "lighthouse": "tsx scripts/run-lighthouse.ts",
