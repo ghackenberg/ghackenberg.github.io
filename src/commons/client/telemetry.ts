@@ -1,26 +1,25 @@
+import { init as initPlausible, track as trackPlausible } from '@plausible-analytics/tracker';
+
 /**
  * Telemetry and Semantic Analytics Utility
- * Provides lightweight, privacy-friendly event tracking via Plausible.
+ * Provides lightweight, privacy-friendly event tracking via official Plausible client tracker.
  */
 
 declare global {
+  interface Navigator {
+    globalPrivacyControl?: boolean;
+  }
   interface Window {
     plausible?: (eventName: string, options?: { props?: Record<string, string | number | boolean>; callback?: () => void }) => void;
   }
 }
 
 /**
- * Safely dispatches a custom event to Plausible.
+ * Computes screen orientation (landscape or portrait).
  */
-export function trackEvent(eventName: string, props?: Record<string, string | number | boolean>): void {
-  try {
-    if (typeof window !== 'undefined' && typeof window.plausible === 'function') {
-      window.plausible(eventName, props ? { props } : undefined);
-    }
-  } catch (err) {
-    // Fail silently in development or if adblocker interferes
-    console.debug(`[Telemetry] Failed to track event "${eventName}":`, err);
-  }
+export function getScreenOrientation(): string {
+  if (typeof window === 'undefined') return 'landscape';
+  return window.innerWidth >= window.innerHeight ? 'landscape' : 'portrait';
 }
 
 /**
@@ -33,6 +32,114 @@ export function getScreenBucket(width: number): string {
   if (width < 1280) return 'lg (1024-1279px)';
   if (width < 1536) return 'xl (1280-1535px)';
   return '2xl (>=1536px)';
+}
+
+/**
+ * Safely dispatches a custom event to Plausible.
+ */
+export function trackEvent(eventName: string, props?: Record<string, string | number | boolean>): void {
+  try {
+    const formattedProps: Record<string, string> | undefined = props
+      ? Object.fromEntries(Object.entries(props).map(([k, v]) => [k, String(v)]))
+      : undefined;
+
+    trackPlausible(eventName, formattedProps ? { props: formattedProps } : {});
+  } catch (err) {
+    // Fail silently in development or if adblocker interferes
+    console.debug(`[Telemetry] Failed to track event "${eventName}":`, err);
+  }
+}
+
+let isAnalyticsInitialized = false;
+
+/**
+ * Initializes Plausible Analytics tracker and responsive viewport/theme listeners.
+ */
+export function initAnalytics(): void {
+  if (typeof window === 'undefined' || isAnalyticsInitialized) return;
+  isAnalyticsInitialized = true;
+
+  // Respect Global Privacy Control (GPC) and Do-Not-Track (DNT)
+  try {
+    if (
+      navigator.globalPrivacyControl === true ||
+      navigator.doNotTrack === '1' ||
+      (window as Window & { doNotTrack?: string }).doNotTrack === '1'
+    ) {
+      localStorage.setItem('plausible_ignore', 'true');
+    }
+  } catch {
+    // Ignore localStorage access restrictions
+  }
+
+  try {
+    initPlausible({
+      domain: 'hackenberg.tech',
+      endpoint: 'https://analytics.mentawise.com/api/event',
+      outboundLinks: true,
+      fileDownloads: true,
+      formSubmissions: true,
+      bindToWindow: true,
+      customProperties: () => ({
+        theme_setting: document.documentElement.getAttribute('data-theme-setting') || 'system',
+        theme_resolved: document.documentElement.classList.contains('light') ? 'light' : 'dark',
+        screen_bucket: getScreenBucket(window.innerWidth),
+        screen_orientation: getScreenOrientation(),
+      }),
+    });
+  } catch (err) {
+    console.debug('[Telemetry] Failed to initialize Plausible tracker:', err);
+  }
+
+  // Track theme toggle event when it changes dynamically
+  window.addEventListener('theme-changed', ((e: CustomEvent<{ themeSetting?: string; resolvedTheme?: string; trigger?: string }>) => {
+    trackEvent('theme-changed', {
+      theme_setting: e.detail?.themeSetting || 'system',
+      theme_resolved: e.detail?.resolvedTheme || 'dark',
+      theme_trigger: e.detail?.trigger || 'unknown',
+    });
+  }) as EventListener);
+
+  // Synchronize screen size and track breakpoint/orientation transitions
+  let currentBucket = getScreenBucket(window.innerWidth);
+  let currentOrientation = getScreenOrientation();
+  let resizeTimeout: number | undefined;
+
+  function handleResize() {
+    window.clearTimeout(resizeTimeout);
+    resizeTimeout = window.setTimeout(() => {
+      const newBucket = getScreenBucket(window.innerWidth);
+      const newOrientation = getScreenOrientation();
+      const bucketChanged = newBucket !== currentBucket;
+      const orientationChanged = newOrientation !== currentOrientation;
+
+      if (bucketChanged || orientationChanged) {
+        const prevBucket = currentBucket;
+        const prevOrientation = currentOrientation;
+
+        currentBucket = newBucket;
+        currentOrientation = newOrientation;
+
+        if (bucketChanged) {
+          trackEvent('Breakpoint Changed', {
+            from: prevBucket,
+            to: newBucket,
+            screen_orientation: newOrientation,
+          });
+        }
+        if (orientationChanged) {
+          trackEvent('Orientation Changed', {
+            from: prevOrientation,
+            to: newOrientation,
+            screen_bucket: newBucket,
+          });
+        }
+      }
+    }, 250);
+  }
+
+  window.addEventListener('resize', handleResize, { passive: true });
+  window.addEventListener('orientationchange', handleResize, { passive: true });
 }
 
 /**
@@ -294,21 +401,24 @@ export function initCopyTracking(): void {
 }
 
 /**
- * Auto-initialize when the DOM is ready
+ * Auto-initialize when the script loads
  */
 if (typeof window !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initSectionTracking();
-      initCardTracking();
-      initDeclarativeClickTracking();
-      initCopyTracking();
-    });
-  } else {
+  initAnalytics();
+
+  function onReady(fn: () => void) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  onReady(() => {
     initSectionTracking();
     initCardTracking();
     initDeclarativeClickTracking();
     initCopyTracking();
-  }
+  });
 }
 
