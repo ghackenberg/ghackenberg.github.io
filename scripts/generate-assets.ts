@@ -68,11 +68,11 @@ function safeWriteIfChanged(destPath: string, buffer: Buffer): boolean {
 }
 
 async function main(): Promise<void> {
-  const ogHtmlPath = path.join(distDir, 'internal/og/index.html');
-  const iconHtmlPath = path.join(distDir, 'internal/icon/index.html');
+  const ogHtmlPath = path.join(distDir, '_internal/og/index.html');
+  const iconHtmlPath = path.join(distDir, '_internal/icon/index.html');
 
   if (!fs.existsSync(ogHtmlPath) || !fs.existsSync(iconHtmlPath)) {
-    console.log('[Asset Generator] dist/internal pages not found, running build first...');
+    console.log('[Asset Generator] dist/_internal pages not found, running build first...');
     execSync('npx astro build', { stdio: 'inherit' });
   }
 
@@ -119,37 +119,37 @@ async function main(): Promise<void> {
     console.log('[Asset Generator] Starting screenshots compilation from Astro pages...');
 
     // 1. Generate Favicons (Transparent)
-    await capture('/internal/icon/?mode=transparent', 16, 16, [
+    await capture('/_internal/icon/?mode=transparent', 16, 16, [
       path.join(publicDir, 'favicon-16x16.png'),
       path.join(distDir, 'favicon-16x16.png'),
     ]);
-    await capture('/internal/icon/?mode=transparent', 32, 32, [
+    await capture('/_internal/icon/?mode=transparent', 32, 32, [
       path.join(publicDir, 'favicon-32x32.png'),
       path.join(distDir, 'favicon-32x32.png'),
     ]);
 
     // 2. Generate Apple Touch Icon & PWA App Icons
-    await capture('/internal/icon/?mode=app', 180, 180, [
+    await capture('/_internal/icon/?mode=app', 180, 180, [
       path.join(publicDir, 'apple-touch-icon.png'),
       path.join(distDir, 'apple-touch-icon.png'),
     ]);
-    await capture('/internal/icon/?mode=app', 192, 192, [
+    await capture('/_internal/icon/?mode=app', 192, 192, [
       path.join(publicDir, 'icon-192x192.png'),
       path.join(distDir, 'icon-192x192.png'),
     ]);
-    await capture('/internal/icon/?mode=app', 512, 512, [
+    await capture('/_internal/icon/?mode=app', 512, 512, [
       path.join(publicDir, 'icon-512x512.png'),
       path.join(distDir, 'icon-512x512.png'),
     ]);
 
     // 3. Generate Maskable Icon
-    await capture('/internal/icon/?mode=maskable', 512, 512, [
+    await capture('/_internal/icon/?mode=maskable', 512, 512, [
       path.join(publicDir, 'icon-512x512-maskable.png'),
       path.join(distDir, 'icon-512x512-maskable.png'),
     ]);
 
     // 4. Generate Social Sharing Banner (1200x630)
-    await capture('/internal/og/', 1200, 630, [
+    await capture('/_internal/og/', 1200, 630, [
       path.join(srcImagesDir, 'og-share-preview.png'),
       path.join(distDir, 'images/og-share-preview.png'),
     ]);
@@ -159,6 +159,13 @@ async function main(): Promise<void> {
   } finally {
     server.close();
     console.log('[Asset Generator] Static server stopped.');
+
+    // Clean up dist/_internal/ from public build output so it is never deployed
+    const distInternalDir = path.join(distDir, '_internal');
+    if (fs.existsSync(distInternalDir)) {
+      fs.rmSync(distInternalDir, { recursive: true, force: true });
+      console.log('[Asset Generator] Cleaned up dist/_internal/ from public build output.');
+    }
   }
 }
 

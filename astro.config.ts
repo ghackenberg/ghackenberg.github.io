@@ -99,6 +99,24 @@ function copyContentAssets(): AstroIntegration {
   };
 }
 
+function internalAssetRoutes(): AstroIntegration {
+  return {
+    name: 'internal-asset-routes',
+    hooks: {
+      'astro:config:setup': ({ injectRoute }) => {
+        injectRoute({
+          pattern: '/_internal/og/',
+          entrypoint: './src/pages/_internal/og.astro',
+        });
+        injectRoute({
+          pattern: '/_internal/icon/',
+          entrypoint: './src/pages/_internal/icon.astro',
+        });
+      },
+    },
+  };
+}
+
 function imageSitemapEnforcer(): AstroIntegration {
   return {
     name: 'image-sitemap-enforcer',
@@ -181,7 +199,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/print/') && !page.includes('/internal/'),
+      filter: (page) => !page.includes('/print/') && !page.includes('/_internal/'),
       serialize(item) {
         try {
           const urlObj = new URL(item.url);
@@ -230,6 +248,7 @@ export default defineConfig({
     }),
     mdx(),
     copyContentAssets(),
+    internalAssetRoutes(),
     imageSitemapEnforcer(),
   ],
   markdown: {
