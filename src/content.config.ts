@@ -134,7 +134,7 @@ const baseReferenceFields = {
   label: z.string().optional(),
   author: z.string().min(1),
   title: z.string().min(1),
-  url: z.string().url(),
+  url: z.url(),
   doi: z.string().optional(),
 };
 
@@ -262,7 +262,7 @@ const projects = defineCollection({
     title: z.string(),
     tagline: z.string(),
     description: z.string(),
-    href: z.string().url(),
+    href: z.url(),
     tags: z.array(tagReference).default([]),
     accentColor: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
     order: z.number().default(0),

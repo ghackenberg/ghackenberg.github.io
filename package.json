@@ -18,9 +18,9 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run generate-assets && astro build",
+    "build": "npm run typecheck && npm run generate-assets && astro build",
     "preview": "astro preview",
-    "typecheck": "astro check",
+    "typecheck": "astro check --minimumFailingSeverity hint",
     "lint": "eslint .",
     "sync": "tsx scripts/sync.ts",
     "generate-assets": "tsx scripts/generate-assets.ts",

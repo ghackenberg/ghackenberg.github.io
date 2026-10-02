@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import RelatedContent from "../../components/RelatedContent.astro";
 import GetInTouchCard from "../../components/GetInTouchCard.astro";
-import { getCollection, render } from "astro:content";
+import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
   const pubs = await getCollection("publications");
@@ -14,7 +14,6 @@ export async function getStaticPaths() {
 }
 
 const { pub } = Astro.props;
-const { Content } = await render(pub);
 
 // Format slides URL
 let slidesUrl = pub.data.slides;
@@ -203,12 +202,8 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
           <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-element-border-medium bg-black">
             <iframe 
               src={slidesUrl} 
-              frameborder="0" 
-              marginwidth="0" 
-              marginheight="0" 
-              scrolling="no" 
-              allowfullscreen="yes" 
-              class="absolute top-0 left-0 w-full h-full"
+              allowfullscreen 
+              class="absolute top-0 left-0 w-full h-full border-0"
             >
               Loading presentation...
             </iframe>
