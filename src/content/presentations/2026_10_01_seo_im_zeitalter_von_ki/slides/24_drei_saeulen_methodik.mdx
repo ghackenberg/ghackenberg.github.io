@@ -17,6 +17,9 @@ notes: |
 ---
 import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+import step1 from '../images/step1_saeule_struktur.jpg';
+import step2 from '../images/step2_saeule_content.jpg';
+import step3 from '../images/step3_saeule_autoritaet.jpg';
 
 <PipelineSlide
   title={frontmatter.title}
@@ -31,21 +34,21 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         num: "01",
         title: "Säule 1: Struktur",
         desc: "{cue:hl-pillar-schema}Schema.org @graph Architektur{/cue}, JSON-LD, standardisiertes semantisches HTML5 und eindeutige Entitäten-URIs.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step1_saeule_struktur.jpg"
+        image: step1
       },
       {
         cue: "pillar-content",
         num: "02",
         title: "Säule 2: Content",
         desc: "{cue:hl-pillar-infogain}Information Gain Scores{/cue} maximieren, BLUF-Informationsarchitektur, dichte Vergleichstabellen und proprietäre Messdaten.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step2_saeule_content.jpg"
+        image: step2
       },
       {
         cue: "pillar-auth",
         num: "03",
         title: "Säule 3: Autorität",
         desc: "{cue:hl-pillar-eeat}E-E-A-T-Signale{/cue}, Co-Citations, Autorenvalidierung via ORCID / Wikidata und institutionelle akademische Verankerung.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step3_saeule_autoritaet.jpg"
+        image: step3
       }
     ]}
   />

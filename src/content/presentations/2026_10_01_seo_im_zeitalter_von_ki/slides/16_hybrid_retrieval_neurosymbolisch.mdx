@@ -35,6 +35,9 @@ references:
 ---
 import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+import stepDense from '../images/step_dense_vector_retrieval.jpg';
+import stepGraph from '../images/step_graph_traversal_filtering.jpg';
+import stepFusion from '../images/step_generative_synthesis_fusion.jpg';
 
 <PipelineSlide
   title={frontmatter.title}
@@ -53,7 +56,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "cyan",
         title: "Dense Vector Retrieval (Sprachverständnis)",
         desc: "Embedding [@borgeaud-2022-retro] der Suchanfrage: {cue:hl-pipe-step1}Synonyme und Suchabsichten flexibel erfassen und Textkandidaten filtern{/cue}.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step_dense_vector_retrieval.jpg"
+        image: stepDense
       },
       {
         cue: "step-hybrid-02",
@@ -61,7 +64,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "emerald",
         title: "Graph Traversal (Faktenprüfung)",
         desc: "Deterministische Validierung im Graphen: {cue:hl-pipe-step2}Entitäten und Kanten im Wissensgraphen validieren und Halluzinationen filtern{/cue}.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step_graph_traversal_filtering.jpg"
+        image: stepGraph
       },
       {
         cue: "step-hybrid-03",
@@ -69,7 +72,7 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         accent: "blue",
         title: "Generative Synthese beider Ströme",
         desc: "GraphRAG-Fusion [@edge-2024-graphrag]: {cue:hl-pipe-step3}Geprüfte Faktenknoten und Primärquellen verschmelzen zur fehlerfreien B2B-Antwort{/cue}.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step_generative_synthesis_fusion.jpg"
+        image: stepFusion
       }
     ]}
   />
