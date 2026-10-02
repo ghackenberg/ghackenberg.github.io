@@ -17,7 +17,7 @@ import {
   findRetentionBottlenecks,
   getAudienceBreakdownReport,
   getConversionsReport,
-} from '@shared';
+} from '@shared/analytics/index.js';
 
 const server = new McpServer({
   name: 'unified-analytics',
