@@ -1,8 +1,8 @@
 import { execSync } from 'child_process';
-import { loadEnv } from "./sync/utils.js";
-import { syncGitHub } from "./sync/github.js";
-import { syncYouTube } from "./sync/youtube.js";
-import { syncLinkedIn } from "./sync/linkedin.js";
+import { loadEnv } from "@shared/sync/utils.js";
+import { syncGitHub } from "@shared/sync/github.js";
+import { syncYouTube } from "@shared/sync/youtube.js";
+import { syncLinkedIn } from "@shared/sync/linkedin.js";
 
 async function main(): Promise<void> {
   loadEnv();
