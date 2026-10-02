@@ -9,9 +9,6 @@ declare global {
   interface Navigator {
     globalPrivacyControl?: boolean;
   }
-  interface Window {
-    plausible?: (eventName: string, options?: { props?: Record<string, string | number | boolean>; callback?: () => void }) => void;
-  }
 }
 
 /**

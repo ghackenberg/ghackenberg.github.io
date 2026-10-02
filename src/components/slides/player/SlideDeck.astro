@@ -489,6 +489,7 @@ const currentDeckId = presentationId || talkId || "presentation";
   import { AudioSyncController, type SlideData, type CueItem, type SlideReference } from './AudioSyncController';
   import { AutoFitController } from './AutoFitController';
   import { generateCitationLabel } from '@commons/shared/citations.js';
+  import { trackEvent } from '@commons/client/telemetry';
 
   declare global {
     interface Window {
@@ -1011,14 +1012,10 @@ const currentDeckId = presentationId || talkId || "presentation";
             btnPlayPause?.setAttribute('title', 'Pause audio (Space)');
             btnPlayPause?.setAttribute('aria-label', 'Pause audio presentation');
 
-            if (typeof window.plausible === 'function') {
-              window.plausible('Audio Played', {
-                props: {
-                  presentation: currentDeckId,
-                  slide_number: deck.getIndices().h + 1
-                }
-              });
-            }
+            trackEvent('Audio Played', {
+              presentation: currentDeckId,
+              slide_number: deck.getIndices().h + 1
+            });
           } else {
             iconPlay.classList.remove('hidden');
             iconPause.classList.add('hidden');
@@ -1040,23 +1037,17 @@ const currentDeckId = presentationId || talkId || "presentation";
       updateUrlState(idx, audioSync.getActiveCue());
 
       // Track in Plausible Telemetry
-      if (typeof window.plausible === 'function') {
-        window.plausible('Slide Viewed', {
-          props: {
-            presentation: currentDeckId,
-            slide_number: idx + 1,
-            total_slides: slidesData.length,
-            title: slidesData[idx]?.title || `Slide ${idx + 1}`
-          }
+      trackEvent('Slide Viewed', {
+        presentation: currentDeckId,
+        slide_number: idx + 1,
+        total_slides: slidesData.length,
+        title: slidesData[idx]?.title || `Slide ${idx + 1}`
+      });
+      if (idx === slidesData.length - 1) {
+        trackEvent('Presentation Completed', {
+          presentation: currentDeckId,
+          total_slides: slidesData.length
         });
-        if (idx === slidesData.length - 1) {
-          window.plausible('Presentation Completed', {
-            props: {
-              presentation: currentDeckId,
-              total_slides: slidesData.length
-            }
-          });
-        }
       }
 
       if (audioSync.getCurrentSlideIndex() !== idx) {
@@ -1544,15 +1535,11 @@ const currentDeckId = presentationId || talkId || "presentation";
             iconShareCopied.classList.add('hidden');
           }, 2000);
         }
-        if (typeof window.plausible === 'function') {
-          window.plausible('High Intent: Share Presentation', {
-            props: {
-              presentation: currentDeckId,
-              slide_number: deck.getIndices().h + 1,
-              cue: audioSync.getActiveCue() || 'none'
-            }
-          });
-        }
+        trackEvent('High Intent: Share Presentation', {
+          presentation: currentDeckId,
+          slide_number: deck.getIndices().h + 1,
+          cue: audioSync.getActiveCue() || 'none'
+        });
       } catch (err) {
         console.warn('Failed to copy share link', err);
       }
