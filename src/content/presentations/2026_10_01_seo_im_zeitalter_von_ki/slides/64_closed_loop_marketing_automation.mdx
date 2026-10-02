@@ -18,6 +18,10 @@ notes: |
 ---
 import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
 import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+import step1 from '../images/step1_closedloop_alert.jpg';
+import step2 from '../images/step2_closedloop_agent.jpg';
+import step3 from '../images/step3_closedloop_expert.jpg';
+import step4 from '../images/step4_closedloop_crm.jpg';
 
 <PipelineSlide
   title={frontmatter.title}
@@ -32,28 +36,28 @@ import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
         num: "01",
         title: "Monitoring Alert",
         desc: "Tool registriert {cue:hl-loop-zitation}Zitationsverlust{/cue} bei Schlüssel-Prompt in ChatGPT oder Perplexity.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step1_closedloop_alert.jpg"
+        image: step1
       },
       {
         cue: "loop-step-2",
         num: "02",
         title: "Agenten-Refactoring",
         desc: "KI-Agent analysiert Quellcode, ergänzt Spezifikationen und schärft den {cue:hl-loop-bluf}BLUF-Antwortblock{/cue}.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step2_closedloop_agent.jpg"
+        image: step2
       },
       {
         cue: "loop-step-3",
         num: "03",
         title: "Experten-Freigabe",
         desc: "Fachexperte prüft den Git-Pull-Request via {cue:hl-loop-hitl}Human-in-the-Loop{/cue} Sicherheit.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step3_closedloop_expert.jpg"
+        image: step3
       },
       {
         cue: "loop-step-4",
         num: "04",
         title: "CRM Lead Attribution",
         desc: "Neuer Lead trifft im {cue:hl-loop-crm}CRM mit Zitations-Referrer{/cue} ein und schließt den Regelkreis.",
-        image: "/presentations/2026_10_01_seo_im_zeitalter_von_ki/images/step4_closedloop_crm.jpg"
+        image: step4
       }
     ]}
   />

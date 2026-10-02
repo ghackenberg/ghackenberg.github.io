@@ -200,6 +200,16 @@ function validateSlides() {
         totalErrors++;
       }
 
+      // 0b. Disallow raw string image paths in slides (enforce ESM ImageMetadata imports)
+      const rawImagePropRegex = /\b(image|imageSrc)\s*[:=]\s*["']([^"']+)["']/g;
+      let rawImageMatch;
+      while ((rawImageMatch = rawImagePropRegex.exec(content)) !== null) {
+        console.error(
+          `  ❌ [${slideFile}] Raw string image path detected for "${rawImageMatch[1]}": "${rawImageMatch[2]}". Raw strings are strictly prohibited. Always import images via ESM ("import myImage from '../images/...'") to enforce Astro build-time optimization.`
+        );
+        totalErrors++;
+      }
+
       // 1. Extract voiceover cues in sequence
       const voCues: string[] = [];
       const voCueRegex = /\{cue:([a-zA-Z0-9_-]+)\}/g;
