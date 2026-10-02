@@ -30,7 +30,7 @@ const optimizedScreenshot = screenshotImg ? await getImage({
   quality: 85
 }) : null;
 
-import { buildGraphPayload } from "@shared";
+import { buildGraphPayload } from "@shared/graph-payload.js";
 
 const posts = await getCollection("posts");
 const publications = await getCollection("publications");
