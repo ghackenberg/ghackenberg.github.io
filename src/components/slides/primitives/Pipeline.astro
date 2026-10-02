@@ -8,7 +8,7 @@ interface Step {
   num: string;
   title: string;
   desc?: string;
-  image?: ImageMetadata | string;
+  image?: ImageMetadata;
   imageAlt?: string;
   imageTitle?: string;
   graphic?: string;
@@ -161,32 +161,19 @@ function getStepAccent(step: Step, idx: number): string {
                     <span class="text-[10px] uppercase font-bold tracking-wider opacity-60">Loading illustration...</span>
                   </div>
 
-                  {typeof step.image === 'string' ? (
-                    <img
-                      src={step.image}
-                      alt={step.imageAlt || step.desc || `Detailed illustration for step ${step.num}: ${step.title}`}
-                      title={step.imageTitle || step.title}
-                      class="w-full h-full object-cover transition-opacity duration-300 opacity-0 relative z-10"
-                      loading="lazy"
-                      decoding="async"
-                      onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
-                      onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Image unavailable'; }"
-                    />
-                  ) : (
-                    <Image
-                      src={step.image}
-                      alt={step.imageAlt || step.desc || `Detailed illustration for step ${step.num}: ${step.title}`}
-                      title={step.imageTitle || step.title}
-                      width={640}
-                      height={360}
-                      format="webp"
-                      class="w-full h-full object-cover transition-opacity duration-300 opacity-0 relative z-10"
-                      loading="lazy"
-                      decoding="async"
-                      onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
-                      onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Image unavailable'; }"
-                    />
-                  )}
+                  <Image
+                    src={step.image}
+                    alt={step.imageAlt || step.desc || `Detailed illustration for step ${step.num}: ${step.title}`}
+                    title={step.imageTitle || step.title}
+                    width={640}
+                    height={360}
+                    format="webp"
+                    class="w-full h-full object-cover transition-opacity duration-300 opacity-0 relative z-10"
+                    loading="lazy"
+                    decoding="async"
+                    onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
+                    onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Image unavailable'; }"
+                  />
                 </div>
               ) : (
                 <div class="w-full h-full flex items-center justify-center relative p-4">

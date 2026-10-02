@@ -188,13 +188,17 @@ Liegt in `src/content/presentations/tts-lexicon.json`:
 
 ---
 
-## 6. Pipeline-Step Illustrationen (`Pipeline.astro`)
+## 6. Pipeline-Step Illustrationen (`Pipeline.astro`) & Folien-Bilder
 
 - **Stil:** Pixar/Disney Comic-Illustration, Cel Shading, schwarze Vektor-Outlines.
 - **Format:** 1:1 quadratisch (`AspectRatio: "1:1"`), randlos (Full-Bleed).
 - **Motiv-Safe-Zone:** Das Hauptmotiv füllt ~60–66 % der Bildmitte; Außenbereiche frei für dynamisches `object-cover`.
 - **Hintergrund:** Lebendiger Blau-Violett/Indigo-Nebel mit Sternenstaub (funktioniert in Dark- und Light-Mode).
 - **Keine Personen:** Pipeline-Karten zeigen Werkzeuge, Konzepte oder Symbole – Dr. Georg Hackenberg erscheint hier nicht.
+- **Strikte ESM-Imports & ImageMetadata (Verbindlich):**
+  - Bilder für Folienkomponenten (`Pipeline`, `StoryHeroSlide`, etc.) **MÜSSEN IMMER** via ESM importiert (`import stepImg from '../images/step1.jpg'`) und als `ImageMetadata` übergeben werden.
+  - **Rohe URL-Strings (`"/presentations/..."`) sind im Typensystem strikt verboten!**
+  - Dies stellt sicher, dass Astros nativer Bild-Service (`astro:assets`) beim Build automatisch WebP/AVIF-Derivate erzeugt, responsive Dimensionen herunterskaliert (z. B. auf 640×360) und Content-Hashes für perfektes Browser-Caching generiert. Original-Dateien im `images/`-Ordner verbleiben unberührt als hochaufgelöste Master.
 
 ---
 
