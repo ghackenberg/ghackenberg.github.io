@@ -15,7 +15,7 @@ npm run dev
 
 ### Agentic SEO & Analytics Tooling (MCP)
 
-This repository includes a bespoke Model Context Protocol (MCP) server at `mcp/unified-analytics.ts` that consolidates Google Search Console (GSC) and Plausible Analytics. It is registered in `.agents/mcp_config.json` for AI coding agents.
+This repository includes a bespoke Model Context Protocol (MCP) server at `src/tools/unified-analytics.ts` that consolidates Google Search Console (GSC) and Plausible Analytics. It is registered in `.agents/mcp_config.json` for AI coding agents.
 
 To set up and link the MCP server on any new device or checkout:
 

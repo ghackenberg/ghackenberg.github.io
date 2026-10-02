@@ -61,16 +61,15 @@ export default defineConfig([
   // 4. Path Alias Enforcement: disallow relative parent traversals into alias domains
   {
     files: ['**/*.ts', '**/*.astro'],
-    ignores: ['src/components/slides/layouts/**', 'src/components/slides/primitives/**'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              regex: '^(\\.\\.\\/)+(components|layouts|assets|styles|shared|content|plugins|modules)(\\/.*)?$',
+              regex: '^(\\.\\.\\/)+(components|layouts|assets|styles|content|plugins|commons|scripts|tools)(\\/.*)?$',
               message:
-                'Use path aliases (@components, @layouts, @assets, @styles, @shared, @content, @plugins, @modules) instead of relative parent imports (../). Co-located sibling imports (./) are permitted.',
+                'Use path aliases (@components, @layouts, @assets, @styles, @content, @plugins, @commons, @tools) instead of relative parent imports (../). Co-located sibling imports (./) are permitted.',
             },
           ],
         },
@@ -79,15 +78,17 @@ export default defineConfig([
   },
   // 5. Architectural Boundaries: restrict cross-domain imports
   {
+    // The web application and build plugins must not import from CLI scripts or MCP tools
     files: ['src/**/*.ts', 'src/**/*.astro', 'astro.config.ts'],
+    ignores: ['src/scripts/**', 'src/tools/**'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              group: ['*scripts*'],
-              message: 'src/ and astro.config.ts must not import from scripts/. Scripts are standalone CLI tools.',
+              group: ['*scripts*', '*tools*'],
+              message: 'Web application code must not import from scripts/ or tools/. Scripts and tools are standalone CLI entrypoints.',
             },
           ],
         },
@@ -95,15 +96,16 @@ export default defineConfig([
     },
   },
   {
-    files: ['shared/*.ts', 'shared/**/*.ts'],
+    // Client-side commons must never import server-side commons or server-only Astro modules
+    files: ['src/commons/client/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              group: ['*src*', '*mcp*', '*scripts*'],
-              message: 'shared/ is the foundational domain and must not import from src/, mcp/, or scripts/.',
+              group: ['*server*', 'astro:content', 'node:*', 'fs', 'path', 'crypto'],
+              message: 'src/commons/client must not import server modules or Node built-ins.',
             },
           ],
         },
@@ -111,15 +113,16 @@ export default defineConfig([
     },
   },
   {
-    files: ['mcp/*.ts', 'mcp/**/*.ts'],
+    // Universal/shared commons must remain pure and not depend on client or server specific modules
+    files: ['src/commons/shared/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              group: ['*src*', '*scripts*'],
-              message: 'mcp/ must not import from src/ or scripts/. Import shared utilities from shared/ instead.',
+              group: ['*client*', '*server*'],
+              message: 'src/commons/shared must remain isomorphic and not import from client/ or server/.',
             },
           ],
         },
@@ -127,15 +130,33 @@ export default defineConfig([
     },
   },
   {
-    files: ['scripts/*.ts', 'scripts/**/*.ts'],
+    // Standalone tools (MCP) must not import web pages, components, or CLI scripts
+    files: ['src/tools/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              group: ['*src*', '*mcp*'],
-              message: 'scripts/ must not import from src/ or mcp/. Import shared utilities from shared/ instead.',
+              group: ['*pages*', '*components*', '*layouts*', '*scripts*'],
+              message: 'src/tools/ must not import from pages, components, layouts, or scripts. Import shared utilities from @commons instead.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // CLI scripts must not import web pages or layouts
+    files: ['src/scripts/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['*pages*', '*layouts*', '*tools*'],
+              message: 'src/scripts/ must not import from pages, layouts, or tools.',
             },
           ],
         },

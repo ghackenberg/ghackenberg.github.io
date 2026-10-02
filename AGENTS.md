@@ -29,13 +29,13 @@
 - **Windows File I/O Resilience**:
   - File write operations targeting generated cache, metadata, or export files (`.visual-cache.json`, audio caches, PDFs, thumbnails) **MUST** anticipate transient file locks by background indexers or watchers. Implement backoff retry loops (e.g. 5–6 attempts with 200–250ms backoff) rather than unprotected writes.
 - **Path Aliases & Cohesion Boundary Contract**:
-  - **Always** use configured path aliases (`@shared/*`, `@components/*`, `@layouts/*`, `@assets/*`, `@styles/*`, `@content/*`, `@plugins/*`, `@modules/*`) when importing across directory boundaries.
-  - **NEVER** use relative parent directory traversals (`../components`, `../../shared`, `../../../layouts`, `../../plugins`, etc.). Strictly enforced by ESLint `no-restricted-imports` with zero tolerance (`--max-warnings=0`).
+  - **Always** use configured path aliases (`@commons/*`, `@components/*`, `@layouts/*`, `@assets/*`, `@styles/*`, `@content/*`, `@plugins/*`, `@tools/*`) when importing across directory boundaries.
+  - **NEVER** use relative parent directory traversals (`../components`, `../../commons`, `../../../layouts`, `../../plugins`, etc.). Strictly enforced by ESLint `no-restricted-imports` with zero tolerance (`--max-warnings=0`).
   - **Co-located Sibling Imports**: Relative sibling imports (`./...`) within the same directory are permitted and encouraged for tightly-coupled private helpers, types, and sub-controllers to maintain cohesion and encapsulation.
 - **Scripts & CLI Architecture Contract**:
-  - `scripts/` is exclusively reserved for standalone executable CLI entrypoints. **EVERY** `.ts` file anywhere within `scripts/` **MUST** have at least one corresponding script command in `package.json`.
-  - Internal helper modules, libraries, and asset templates for scripts **MUST** live in `shared/` (e.g. `shared/slide-fingerprint.ts`, `shared/sync/`, `shared/templates/`) and be imported via `@shared/*`.
-  - **NEVER** import from `scripts/` inside `src/` or `astro.config.ts`. Build-time integrations and plugins belong in `src/plugins/` under `@plugins/*`.
+  - `src/scripts/` is exclusively reserved for standalone executable CLI entrypoints. **EVERY** `.ts` file anywhere within `src/scripts/` **MUST** have at least one corresponding script command in `package.json`.
+  - Internal helper modules, libraries, and asset templates for scripts **MUST** live in `src/commons/` (e.g. `src/commons/server/slide-fingerprint.ts`, `src/commons/server/sync/`) and be imported via `@commons/*`.
+  - **NEVER** import from `src/scripts/` or `src/tools/` inside web application code (`src/pages/`, `src/components/`, `src/layouts/`) or `astro.config.ts`.
   - Strictly enforced by `npm run validate:scripts` in CI and ESLint architectural boundaries.
 
 ---
