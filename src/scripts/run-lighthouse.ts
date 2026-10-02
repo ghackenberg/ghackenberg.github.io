@@ -3,6 +3,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import zlib from 'node:zlib';
 // @ts-ignore - lighthouse types are resolved at runtime
 import lighthouse, { desktopConfig } from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
@@ -109,6 +110,16 @@ const urlsToAudit: AuditTarget[] = [
   { path: '/presentations/2026_09_23_slide_as_code_presentation_engine/', name: 'presentation_detail' },
 ];
 
+const compressibleTypes = new Set([
+  'text/html',
+  'text/css',
+  'application/javascript',
+  'application/json',
+  'application/xml',
+  'image/svg+xml',
+  'text/plain',
+]);
+
 function createStaticServer(): http.Server {
   return http.createServer((req, res) => {
     const urlPath = (req.url || '/').split('?')[0];
@@ -127,7 +138,24 @@ function createStaticServer(): http.Server {
         res.end('Not Found');
         return;
       }
-      res.writeHead(200, { 'Content-Type': contentType });
+
+      const acceptEncoding = (req.headers['accept-encoding'] as string) || '';
+      if (compressibleTypes.has(contentType) && acceptEncoding.includes('gzip')) {
+        const compressed = zlib.gzipSync(data);
+        res.writeHead(200, {
+          'Content-Type': contentType,
+          'Content-Encoding': 'gzip',
+          'Vary': 'Accept-Encoding',
+          'Content-Length': compressed.length,
+        });
+        res.end(compressed);
+        return;
+      }
+
+      res.writeHead(200, {
+        'Content-Type': contentType,
+        'Content-Length': data.length,
+      });
       res.end(data);
     });
   });
