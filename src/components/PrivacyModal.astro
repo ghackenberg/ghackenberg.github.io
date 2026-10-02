@@ -128,7 +128,17 @@
   </div>
 </div>
 
-<script is:inline>
+<script>
+  import { trackEvent } from '@commons/client/telemetry';
+
+  declare global {
+    interface Window {
+      openPrivacyModal?: () => void;
+      closePrivacyModal?: () => void;
+      closeWhatsNewModal?: () => void;
+    }
+  }
+
   (function() {
     const NOTIF_STORAGE_KEY = 'gh_site_notifications_v1';
     const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
@@ -138,7 +148,7 @@
     const backdrop = document.getElementById('privacy-modal-backdrop');
     const container = document.getElementById('privacy-modal-container');
     const closeBtn = document.getElementById('privacy-modal-close-btn');
-    const toggleReadStatus = document.getElementById('toggle-read-status');
+    const toggleReadStatus = document.getElementById('toggle-read-status') as HTMLInputElement | null;
     const readingStatusText = document.getElementById('reading-status-text');
     const clearReadingDataBtn = document.getElementById('clear-reading-data-btn');
     const toggleAnalyticsBtn = document.getElementById('toggle-analytics-optout-btn');
@@ -199,12 +209,8 @@
       }
     }
 
-    function trackPrivacyEvent(name, props) {
-      try {
-        if (typeof window.plausible === 'function') {
-          window.plausible(name, props ? { props } : undefined);
-        }
-      } catch (e) {}
+    function trackPrivacyEvent(name: string, props?: Record<string, string | number | boolean>) {
+      trackEvent(name, props);
     }
 
     function openModal() {
@@ -249,8 +255,8 @@
     // Close when clicking any link inside the modal
     if (backdrop) {
       backdrop.addEventListener('click', function(e) {
-        const target = e.target;
-        if (target && target.closest && target.closest('a')) {
+        const target = e.target as HTMLElement | null;
+        if (target?.closest('a')) {
           closeModal();
         }
       });
@@ -330,7 +336,7 @@
 
     // Wire up any elements with data-open-privacy-modal
     document.addEventListener('click', function(e) {
-      const target = e.target.closest('[data-open-privacy-modal]');
+      const target = (e.target as HTMLElement | null)?.closest('[data-open-privacy-modal]');
       if (target) {
         e.preventDefault();
         openModal();

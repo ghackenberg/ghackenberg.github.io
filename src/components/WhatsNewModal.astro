@@ -91,6 +91,8 @@
 </div>
 
 <script>
+  import { trackEvent } from '@commons/client/telemetry';
+
   declare global {
   interface Window {
     openWhatsNewModal?: () => void;
@@ -106,11 +108,7 @@
   const closeBtn = document.getElementById('whats-new-close-btn');
 
   function trackModalEvent(name: string, props?: Record<string, string | number | boolean>) {
-    try {
-      if (typeof window.plausible === 'function') {
-        window.plausible(name, props ? { props } : undefined);
-      }
-    } catch (e) {}
+    trackEvent(name, props);
   }
 
   function openModal() {
