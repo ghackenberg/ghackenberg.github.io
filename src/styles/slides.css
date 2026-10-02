@@ -160,3 +160,15 @@ html:not(.light) .bento-card-object .bg-cyan-50\/70 {
   border-color: rgba(6, 182, 212, 0.35) !important;
   color: #f1f5f9 !important;
 }
+
+/* Presentation Engine Optimization: Skip layout & render cost of inactive slides */
+.reveal .slides > section:not(.present) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1920px 1080px;
+}
+
+.print-slide-page,
+.print-slide-page section {
+  content-visibility: visible !important;
+}
+

@@ -208,6 +208,10 @@ if (isBuild) {
 export default defineConfig({
   site: 'https://hackenberg.tech',
   trailingSlash: 'always',
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   image: {
     dangerouslyProcessSVG: true,
   },

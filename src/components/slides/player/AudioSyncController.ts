@@ -1,4 +1,18 @@
-import { Howl, Howler } from 'howler';
+import type { Howl as HowlType, Howler as HowlerType } from 'howler';
+
+let howlerModule: { Howl: typeof HowlType; Howler: typeof HowlerType } | null = null;
+let howlerPromise: Promise<{ Howl: typeof HowlType; Howler: typeof HowlerType }> | null = null;
+
+async function getHowler(): Promise<{ Howl: typeof HowlType; Howler: typeof HowlerType }> {
+  if (howlerModule) return howlerModule;
+  if (!howlerPromise) {
+    howlerPromise = import('howler').then((mod) => {
+      howlerModule = { Howl: mod.Howl, Howler: mod.Howler };
+      return howlerModule;
+    });
+  }
+  return howlerPromise;
+}
 
 export type CueTiming = number | { start: number; duration?: number; end?: number };
 
@@ -72,8 +86,8 @@ export class AudioSyncController {
   private slides: SlideData[] = [];
   private currentIndex: number = 0;
   private currentEntryMode: SlideEntryMode = 'full';
-  private currentHowl: Howl | null = null;
-  private nextHowl: Howl | null = null;
+  private currentHowl: HowlType | null = null;
+  private nextHowl: HowlType | null = null;
   private isPlaying: boolean = false;
   private playbackRate: number = 1.0;
   private triggeredCues: Set<string> = new Set();
@@ -138,7 +152,7 @@ export class AudioSyncController {
     this.stopTickLoop();
 
     // Forcefully stop all audio globally in Howler to avoid rogue parallel tracks
-    Howler.stop();
+    howlerModule?.Howler.stop();
 
     if (this.currentHowl) {
       this.currentHowl.off();
@@ -216,9 +230,9 @@ export class AudioSyncController {
     }
     this.updateSlideIntroState();
 
-    if (slide?.audioUrl) {
-      this.loadSlideAudio(slide, shouldPlay, entryMode, opts.targetCue);
-      this.preloadNextSlideAudio(index + 1);
+    if (slide?.audioUrl && shouldPlay) {
+      void this.loadSlideAudio(slide, shouldPlay, entryMode, opts.targetCue);
+      void this.preloadNextSlideAudio(index + 1);
     }
 
     this.queuePrefetchSlideImages(index);
@@ -311,7 +325,7 @@ export class AudioSyncController {
     this.notifyCueChange();
   }
 
-  private loadSlideAudio(slide: SlideData, autoPlay: boolean, entryMode: SlideEntryMode = 'full', targetCue?: string) {
+  private async loadSlideAudio(slide: SlideData, autoPlay: boolean, entryMode: SlideEntryMode = 'full', targetCue?: string) {
     if (!slide.audioUrl) {
       this.isPlaying = false;
       this.notifyPlayState(false);
@@ -322,6 +336,9 @@ export class AudioSyncController {
     this.notifyPlayState(autoPlay);
 
     const thisSlideIndex = this.currentIndex;
+    const { Howl } = await getHowler();
+    if (this.currentIndex !== thisSlideIndex) return;
+
     const howlInstance = new Howl({
       src: [slide.audioUrl],
       html5: false, // Use Web Audio API for exact duration & timing without streaming bugs
@@ -434,7 +451,7 @@ export class AudioSyncController {
     }
   }
 
-  private preloadNextSlideAudio(nextIndex: number) {
+  private async preloadNextSlideAudio(nextIndex: number) {
     if (nextIndex >= this.slides.length) return;
     const nextSlide = this.slides[nextIndex];
     if (!nextSlide?.audioUrl) return;
@@ -445,6 +462,9 @@ export class AudioSyncController {
       this.nextHowl.unload();
       this.nextHowl = null;
     }
+
+    const { Howl } = await getHowler();
+    if (this.currentIndex + 1 !== nextIndex) return;
 
     this.nextHowl = new Howl({
       src: [nextSlide.audioUrl],
@@ -554,8 +574,8 @@ export class AudioSyncController {
 
     // 2. Resume suspended WebAudio AudioContext
     try {
-      if (Howler.ctx && Howler.ctx.state === 'suspended') {
-        Howler.ctx.resume().catch(() => {});
+      if (howlerModule?.Howler.ctx && howlerModule.Howler.ctx.state === 'suspended') {
+        howlerModule.Howler.ctx.resume().catch(() => {});
       }
     } catch {
       // Ignore
@@ -601,7 +621,7 @@ export class AudioSyncController {
     if (this.currentHowl && this.currentHowl.playing()) {
       this.currentHowl.pause();
     } else {
-      Howler.stop();
+      howlerModule?.Howler.stop();
       this.isPlaying = false;
       this.notifyPlayState(false);
       this.stopTickLoop();
@@ -1129,7 +1149,7 @@ export class AudioSyncController {
       window.clearTimeout(this.tier3IdleTimer);
       this.tier3IdleTimer = null;
     }
-    Howler.stop();
+    howlerModule?.Howler.stop();
     if (this.currentHowl) {
       this.currentHowl.off();
       this.currentHowl.stop();
