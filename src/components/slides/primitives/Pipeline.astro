@@ -1,5 +1,6 @@
 ---
 import { renderSlideCues } from '@commons/shared/slide-cues';
+import { Image } from 'astro:assets';
 
 interface Step {
   id?: string;
@@ -7,7 +8,7 @@ interface Step {
   num: string;
   title: string;
   desc?: string;
-  image?: string;
+  image?: ImageMetadata | string;
   imageAlt?: string;
   imageTitle?: string;
   graphic?: string;
@@ -147,12 +148,46 @@ function getStepAccent(step: Step, idx: number): string {
               {step.graphic ? (
                 <div class="w-full h-full flex items-center justify-center" set:html={step.graphic} />
               ) : step.image ? (
-                <img
-                  src={step.image}
-                  alt={step.imageAlt || step.desc || `Detaillierte Illustration zu Schritt ${step.num}: ${step.title}`}
-                  title={step.imageTitle || step.title}
-                  class="w-full h-full object-cover"
-                />
+                <div class="relative w-full h-full flex items-center justify-center bg-slate-900/60 light:bg-slate-200/60 overflow-hidden">
+                  <!-- Skeleton Shimmer Placeholder -->
+                  <div
+                    class="step-image-skeleton absolute inset-0 flex flex-col items-center justify-center gap-2 text-slate-400 light:text-slate-500 bg-slate-800/60 light:bg-slate-200/60 animate-pulse pointer-events-none z-0"
+                    aria-hidden="true"
+                  >
+                    <svg class="w-6 h-6 stroke-current opacity-40 animate-spin" viewBox="0 0 24 24" fill="none">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                    <span class="text-[10px] uppercase font-bold tracking-wider opacity-60">Loading illustration...</span>
+                  </div>
+
+                  {typeof step.image === 'string' ? (
+                    <img
+                      src={step.image}
+                      alt={step.imageAlt || step.desc || `Detailed illustration for step ${step.num}: ${step.title}`}
+                      title={step.imageTitle || step.title}
+                      class="w-full h-full object-cover transition-opacity duration-300 opacity-0 relative z-10"
+                      loading="lazy"
+                      decoding="async"
+                      onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
+                      onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Image unavailable'; }"
+                    />
+                  ) : (
+                    <Image
+                      src={step.image}
+                      alt={step.imageAlt || step.desc || `Detailed illustration for step ${step.num}: ${step.title}`}
+                      title={step.imageTitle || step.title}
+                      width={640}
+                      height={360}
+                      format="webp"
+                      class="w-full h-full object-cover transition-opacity duration-300 opacity-0 relative z-10"
+                      loading="lazy"
+                      decoding="async"
+                      onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
+                      onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Image unavailable'; }"
+                    />
+                  )}
+                </div>
               ) : (
                 <div class="w-full h-full flex items-center justify-center relative p-4">
                   <!-- Subtle inner dashed border for placeholder aesthetic -->

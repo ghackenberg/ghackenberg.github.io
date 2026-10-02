@@ -81,6 +81,9 @@ export class AudioSyncController {
   private manualTime: number = 0;
   private rafId: number | null = null;
   private lastActiveCueId: string | null = null;
+  private prefetchedImageUrls: Set<string> = new Set();
+  private tier2PrefetchTimer: number | null = null;
+  private tier3IdleTimer: number | null = null;
   private onSlideChangeCallback?: (index: number) => void;
   private onProgressCallback?: (currentSec: number, totalSec: number) => void;
   private onPlayStateChangeCallback?: (isPlaying: boolean) => void;
@@ -217,6 +220,8 @@ export class AudioSyncController {
       this.loadSlideAudio(slide, shouldPlay, entryMode, opts.targetCue);
       this.preloadNextSlideAudio(index + 1);
     }
+
+    this.queuePrefetchSlideImages(index);
 
     if (this.onSlideChangeCallback) {
       this.onSlideChangeCallback(index);
@@ -446,6 +451,86 @@ export class AudioSyncController {
       html5: false,
       preload: true
     });
+  }
+
+  /**
+   * Prefetches all <img> resources inside a slide's DOM element into browser memory.
+   */
+  public prefetchSlideImages(slideIndex: number): void {
+    if (typeof document === 'undefined' || slideIndex < 0 || slideIndex >= this.slides.length) return;
+    const slideEl = document.querySelector(`.reveal .slides section[data-slide-index="${slideIndex}"]`);
+    if (!slideEl) return;
+
+    const imgs = slideEl.querySelectorAll<HTMLImageElement>('img[src], img[data-src]');
+    imgs.forEach((img) => {
+      const url = img.currentSrc || img.src || img.getAttribute('data-src');
+      if (url && !this.prefetchedImageUrls.has(url)) {
+        this.prefetchedImageUrls.add(url);
+        const preloader = new Image();
+        preloader.decoding = 'async';
+        preloader.src = url;
+        preloader.onload = () => {
+          img.classList.remove('opacity-0');
+          const skeleton = img.parentElement?.querySelector('.step-image-skeleton, .story-image-skeleton');
+          if (skeleton) skeleton.remove();
+        };
+      }
+    });
+  }
+
+  /**
+   * Directional Priority Queue for slide assets:
+   * Tier 1 (Immediate): Slide N+1
+   * Tier 2 (Buffer after 300ms): Slide N+2 and Slide N-1
+   * Tier 3 (Progressive idle horizon): Slide N+3 through N+6 via requestIdleCallback
+   */
+  public queuePrefetchSlideImages(currentIndex: number): void {
+    if (typeof window === 'undefined') return;
+
+    // Clear any pending Tier 2 & Tier 3 timers from previous slide transitions
+    if (this.tier2PrefetchTimer !== null) {
+      window.clearTimeout(this.tier2PrefetchTimer);
+      this.tier2PrefetchTimer = null;
+    }
+    if (this.tier3IdleTimer !== null) {
+      window.clearTimeout(this.tier3IdleTimer);
+      this.tier3IdleTimer = null;
+    }
+
+    // Tier 1: Immediately prefetch next slide (N+1)
+    this.prefetchSlideImages(currentIndex + 1);
+
+    // Tier 2: Buffer after 300ms (N+2 and N-1)
+    this.tier2PrefetchTimer = window.setTimeout(() => {
+      this.tier2PrefetchTimer = null;
+      this.prefetchSlideImages(currentIndex + 2);
+      if (currentIndex > 0) {
+        this.prefetchSlideImages(currentIndex - 1);
+      }
+    }, 300);
+
+    // Tier 3: Progressive idle horizon (N+3 to N+6)
+    const runIdlePrefetch = () => {
+      let offset = 3;
+      const step = () => {
+        const target = currentIndex + offset;
+        if (target < this.slides.length && offset <= 6) {
+          this.prefetchSlideImages(target);
+          offset += 1;
+          this.tier3IdleTimer = window.setTimeout(step, 1500);
+        } else {
+          this.tier3IdleTimer = null;
+        }
+      };
+      this.tier3IdleTimer = window.setTimeout(step, 1500);
+    };
+
+    const winWithIdle = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+    if (typeof winWithIdle.requestIdleCallback === 'function') {
+      winWithIdle.requestIdleCallback(runIdlePrefetch, { timeout: 4000 });
+    } else {
+      this.tier3IdleTimer = window.setTimeout(runIdlePrefetch, 2000);
+    }
   }
 
   /**
@@ -1036,6 +1121,14 @@ export class AudioSyncController {
 
   public destroy() {
     this.stopTickLoop();
+    if (this.tier2PrefetchTimer !== null) {
+      window.clearTimeout(this.tier2PrefetchTimer);
+      this.tier2PrefetchTimer = null;
+    }
+    if (this.tier3IdleTimer !== null) {
+      window.clearTimeout(this.tier3IdleTimer);
+      this.tier3IdleTimer = null;
+    }
     Howler.stop();
     if (this.currentHowl) {
       this.currentHowl.off();
