@@ -35,14 +35,14 @@
 .light .citation {
   background-color: rgba(59, 130, 246, 0.08);
   border-color: rgba(59, 130, 246, 0.25);
-  color: #2563eb !important;
+  color: #1d4ed8 !important;
 }
 
 :root.light .citation:hover,
 .light .citation:hover {
   background-color: rgba(59, 130, 246, 0.18);
   border-color: rgba(59, 130, 246, 0.5);
-  color: #1d4ed8 !important;
+  color: #1e40af !important;
 }
 
 /* Slide Citation Interactive Badges */

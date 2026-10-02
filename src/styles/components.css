@@ -529,6 +529,10 @@ div.vis-tooltip {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #9ca3af;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease-in-out;
 }
 
@@ -561,7 +565,7 @@ div.vis-tooltip {
 .light .tag-chip-yellow:hover:not(.active-tag-match) {
   background: rgba(245, 158, 11, 0.06);
   border-color: rgba(245, 158, 11, 0.3);
-  color: #b45309;
+  color: #92400e;
 }
 
 .tag-chip-purple:hover:not(.active-tag-match) {
@@ -573,7 +577,7 @@ div.vis-tooltip {
 .light .tag-chip-purple:hover:not(.active-tag-match) {
   background: rgba(168, 85, 247, 0.06);
   border-color: rgba(168, 85, 247, 0.3);
-  color: #7e22ce;
+  color: #6b21a8;
 }
 
 .tag-chip-green:hover:not(.active-tag-match) {
@@ -585,7 +589,7 @@ div.vis-tooltip {
 .light .tag-chip-green:hover:not(.active-tag-match) {
   background: rgba(16, 185, 129, 0.06);
   border-color: rgba(16, 185, 129, 0.3);
-  color: #047857;
+  color: #065f46;
 }
 
 /* Active Highlight Matches - Harmonized 1:1 with Sidebar .tag-filter-btn.active */
@@ -615,7 +619,7 @@ div.vis-tooltip {
 .light .tag-chip-yellow.active-tag-match {
   background: rgba(245, 158, 11, 0.15) !important;
   border-color: rgba(245, 158, 11, 0.4) !important;
-  color: #b45309 !important;
+  color: #92400e !important;
   box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2) !important;
 }
 
@@ -630,7 +634,7 @@ div.vis-tooltip {
 .light .tag-chip-purple.active-tag-match {
   background: rgba(168, 85, 247, 0.15) !important;
   border-color: rgba(168, 85, 247, 0.4) !important;
-  color: #7e22ce !important;
+  color: #6b21a8 !important;
   box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2) !important;
 }
 
@@ -645,6 +649,6 @@ div.vis-tooltip {
 .light .tag-chip-green.active-tag-match {
   background: rgba(16, 185, 129, 0.15) !important;
   border-color: rgba(16, 185, 129, 0.4) !important;
-  color: #047857 !important;
+  color: #065f46 !important;
   box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2) !important;
 }

@@ -50,6 +50,7 @@ const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag
           </linearGradient>
         </defs>
         <image 
+          role="img"
           href={icon} 
           x="0" 
           y="0" 
@@ -109,12 +110,12 @@ const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag
 
     <!-- Tags & Action Button Area -->
     <div class="flex-grow flex flex-col mt-3">
-      <div class="flex flex-wrap gap-1.5 self-start relative z-20">
+      <div class="flex flex-wrap gap-2 self-start relative z-20">
         {tags.map(tag => (
           <a 
             href={`/tags/${tag}/`}
             data-tag={tag}
-            class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+            class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
               isTagActive(tag) ? 'active-tag-match' : ''
             }`}
           >
@@ -127,7 +128,8 @@ const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag
       <div class="mt-auto pt-6 w-full relative z-20">
         <a 
           href={`/publications/${id}/`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
+          aria-label={`Read More: ${title}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700 text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -259,7 +259,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         id="btn-speed"
         class="px-2 sm:px-2.5 md:px-3 h-8 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 text-[11px] sm:text-xs font-mono font-bold transition-colors cursor-pointer"
         title="Playback speed"
-        aria-label="Change playback speed"
+        aria-label="1.0x playback speed"
       >
         1.0x
       </button>
@@ -282,7 +282,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         type="button"
         class="h-8 sm:h-9 px-2 sm:px-2.5 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center gap-1.5 transition-all cursor-pointer opacity-40 cursor-not-allowed"
         title="References for this slide (R)"
-        aria-label="Toggle references for this slide"
+        aria-label="0 references for this slide"
         aria-disabled="true"
       >
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-400 light:text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -352,7 +352,7 @@ const currentDeckId = presentationId || talkId || "presentation";
               <button
                 id="btn-toggle-pdf-menu"
                 type="button"
-                class="w-4 h-8 sm:h-9 rounded-r-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-400 light:text-slate-500 border-l border-slate-700/60 light:border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                class="w-6 h-8 sm:h-9 rounded-r-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-400 light:text-slate-500 border-l border-slate-700/60 light:border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
                 title="Select PDF format (Light / Dark)"
                 aria-label="Select PDF format"
               >
@@ -415,6 +415,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     aria-modal="true"
     aria-labelledby="references-modal-title"
     aria-hidden="true"
+    inert
   >
     <div 
       id="references-modal-container"
@@ -767,11 +768,13 @@ const currentDeckId = presentationId || talkId || "presentation";
           btnReferences.classList.add('opacity-40', 'cursor-not-allowed');
           btnReferences.classList.remove('hover:bg-slate-700', 'light:hover:bg-slate-200');
           btnReferences.setAttribute('title', 'No references for this slide');
+          btnReferences.setAttribute('aria-label', '0 references for this slide');
           btnReferences.setAttribute('aria-disabled', 'true');
         } else {
           btnReferences.classList.remove('opacity-40', 'cursor-not-allowed');
           btnReferences.classList.add('hover:bg-slate-700', 'light:hover:bg-slate-200');
           btnReferences.setAttribute('title', `References for this slide (${count}) (R)`);
+          btnReferences.setAttribute('aria-label', `${count} references for this slide`);
           btnReferences.removeAttribute('aria-disabled');
         }
       }
@@ -826,6 +829,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         referencesModalContainer.classList.remove('scale-95');
         referencesModalContainer.classList.add('scale-100');
         referencesModalBackdrop.setAttribute('aria-hidden', 'false');
+        referencesModalBackdrop.removeAttribute('inert');
       }
       btnReferences?.classList.add('bg-purple-600/20', 'border-purple-500/50');
     };
@@ -838,6 +842,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         referencesModalContainer.classList.remove('scale-100');
         referencesModalContainer.classList.add('scale-95');
         referencesModalBackdrop.setAttribute('aria-hidden', 'true');
+        referencesModalBackdrop.setAttribute('inert', '');
       }
       btnReferences?.classList.remove('bg-purple-600/20', 'border-purple-500/50');
     };
@@ -916,14 +921,17 @@ const currentDeckId = presentationId || talkId || "presentation";
 
       cues.forEach((cue) => {
         const pct = Math.max(0, Math.min(100, (cue.start / totalSec) * 100));
-        const marker = document.createElement('button');
-        marker.type = 'button';
-        marker.className = 'cue-timeline-marker absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-3.5 sm:w-2.5 sm:h-4 rounded-full bg-slate-400 light:bg-slate-500 border border-slate-900 light:border-white transition-all duration-150 pointer-events-auto hover:scale-135 hover:bg-cyan-400 light:hover:bg-cyan-500 cursor-pointer z-10 shadow-sm';
+        const marker = document.createElement('div');
+        marker.className = 'cue-timeline-marker group absolute top-1/2 -translate-y-1/2 -translate-x-1/2 min-w-[24px] min-h-[24px] w-6 h-6 flex items-center justify-center p-0 bg-transparent border-0 pointer-events-auto cursor-pointer z-10';
         marker.style.left = `${pct}%`;
         marker.setAttribute('data-cue-id', cue.cueId);
         marker.setAttribute('data-cue-start', String(cue.start));
         marker.title = `${formatTime(cue.start)} · ${cue.cueId}`;
-        marker.setAttribute('aria-label', `Springe zu ${cue.cueId} (${formatTime(cue.start)})`);
+        marker.setAttribute('aria-hidden', 'true');
+
+        const dot = document.createElement('span');
+        dot.className = 'cue-dot w-2 h-3.5 sm:w-2.5 sm:h-4 rounded-full bg-slate-400 light:bg-slate-500 border border-slate-900 light:border-white transition-all duration-150 group-hover:scale-125 group-hover:bg-cyan-400 light:group-hover:bg-cyan-500 shadow-sm pointer-events-none';
+        marker.appendChild(dot);
 
         marker.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -936,15 +944,16 @@ const currentDeckId = presentationId || talkId || "presentation";
 
     const updateCueMarkersState = (currentSec: number) => {
       if (!cueMarkersContainer) return;
-      const markers = cueMarkersContainer.querySelectorAll<HTMLButtonElement>('.cue-timeline-marker');
+      const markers = cueMarkersContainer.querySelectorAll<HTMLElement>('.cue-timeline-marker');
       markers.forEach((m) => {
+        const dot = m.querySelector('.cue-dot') as HTMLElement || m;
         const start = parseFloat(m.getAttribute('data-cue-start') || '0');
         if (currentSec >= start) {
-          m.classList.add('bg-blue-400', 'light:bg-blue-600', 'ring-2', 'ring-blue-400/50');
-          m.classList.remove('bg-slate-400', 'light:bg-slate-500');
+          dot.classList.add('bg-blue-400', 'light:bg-blue-600', 'ring-2', 'ring-blue-400/50');
+          dot.classList.remove('bg-slate-400', 'light:bg-slate-500');
         } else {
-          m.classList.remove('bg-blue-400', 'light:bg-blue-600', 'ring-2', 'ring-blue-400/50');
-          m.classList.add('bg-slate-400', 'light:bg-slate-500');
+          dot.classList.remove('bg-blue-400', 'light:bg-blue-600', 'ring-2', 'ring-blue-400/50');
+          dot.classList.add('bg-slate-400', 'light:bg-slate-500');
         }
       });
     };
@@ -1251,7 +1260,10 @@ const currentDeckId = presentationId || talkId || "presentation";
       rateIdx = (rateIdx + 1) % rates.length;
       const r = rates[rateIdx];
       audioSync.setRate(r);
-      if (btnSpeed) btnSpeed.textContent = `${r.toFixed(2)}x`;
+      if (btnSpeed) {
+        btnSpeed.textContent = `${r.toFixed(2)}x`;
+        btnSpeed.setAttribute('aria-label', `${r.toFixed(2)}x playback speed`);
+      }
     });
 
     interface WebkitDocument extends Document {

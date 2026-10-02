@@ -70,6 +70,7 @@ const optimizedImage = previewImg ? await getImage({
           </linearGradient>
         </defs>
         <image 
+          role="img"
           href={optimizedImage.src} 
           x="0" 
           y="0" 
@@ -124,12 +125,12 @@ const optimizedImage = previewImg ? await getImage({
 
     <div class="flex-grow flex flex-col mt-4">
       {tags && tags.length > 0 && (
-        <div class="flex flex-wrap gap-1.5 self-start relative z-20">
+        <div class="flex flex-wrap gap-2 self-start relative z-20">
           {tags.map((t) => (
             <a
               href={`/tags/${t}/`}
               data-tag={t}
-              class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              class={`tag-chip tag-chip-purple inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
                 isTagActive(t) ? 'active-tag-match' : ''
               }`}
             >
@@ -142,7 +143,8 @@ const optimizedImage = previewImg ? await getImage({
       <div class="mt-auto pt-6 w-full relative z-20">
         <a
           href={`/services/${id}/`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
+          aria-label={`${ctaText}: ${title}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700 text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>{ctaText}</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

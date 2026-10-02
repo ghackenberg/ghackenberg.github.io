@@ -78,7 +78,7 @@ const accentColor = project.data.accentColor || 'blue';
 // Dynamically assign styling tokens matching the Strategic Focus Areas
 const colorClasses = {
   blue: {
-    text: 'text-brand-blue',
+    text: 'text-brand-blue light:text-blue-700',
     border: 'border-brand-blue/20',
     bg: 'bg-brand-blue/10',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-slate-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
@@ -86,7 +86,7 @@ const colorClasses = {
     glow: 'from-brand-blue to-indigo-500 light:to-indigo-600'
   },
   yellow: {
-    text: 'text-brand-yellow',
+    text: 'text-brand-yellow light:text-amber-900',
     border: 'border-brand-yellow/20',
     bg: 'bg-brand-yellow/10',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white',
@@ -94,7 +94,7 @@ const colorClasses = {
     glow: 'from-brand-yellow to-orange-500 light:to-orange-600'
   },
   purple: {
-    text: 'text-brand-purple',
+    text: 'text-brand-purple light:text-purple-700',
     border: 'border-brand-purple/20',
     bg: 'bg-brand-purple/10',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
@@ -102,7 +102,7 @@ const colorClasses = {
     glow: 'from-brand-purple to-pink-500 light:to-pink-600'
   },
   green: {
-    text: 'text-brand-green',
+    text: 'text-brand-green light:text-emerald-800',
     border: 'border-brand-green/20',
     bg: 'bg-brand-green/10',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-slate-950 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white',
@@ -288,7 +288,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 
           <div class="mb-6 space-y-4">
             <div>
-              <p class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest mb-1.5">Project Type</p>
+              <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-1.5">Project Type</p>
               <div class="flex flex-wrap gap-1.5">
                 {project.data.tags.map(tag => (
                   <a 

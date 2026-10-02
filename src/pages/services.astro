@@ -199,6 +199,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                             </linearGradient>
                           </defs>
                           <image 
+                            role="img"
                             href={service.optimizedImageSrc || img.src} 
                             x="0" 
                             y="0" 
@@ -256,12 +257,12 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                         </p>
 
                         {service.data.tags && service.data.tags.length > 0 && (
-                          <div class="flex flex-wrap gap-1.5 pt-1 relative z-20">
+                          <div class="flex flex-wrap gap-2 pt-1 relative z-20">
                             {service.data.tags.map((tag) => (
                               <a
                                 href={`/tags/${tag}/`}
                                 data-tag={tag}
-                                class="tag-chip tag-chip-purple inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
+                                class="tag-chip tag-chip-purple inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
                               >
                                 #{tag}
                               </a>
@@ -274,7 +275,8 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                       <div class="pt-6 mt-auto w-full relative z-20">
                         <a
                           href={`/services/${service.id}/`}
-                          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-brand-purple text-xs font-bold relative z-20 transition-all duration-200"
+                          aria-label={`Read More: ${service.data.title}`}
+                          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700 text-xs font-bold relative z-20 transition-all duration-200"
                         >
                           <span>Read More</span>
                           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -323,7 +325,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
               </div>
               <div class="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Send an email request to</p>
+                  <p class="text-gray-400 light:text-slate-600 text-xs font-semibold uppercase tracking-wider">Send an email request to</p>
                   <p id="services-email-text" class="text-gray-100 font-mono font-medium mt-0.5 select-all text-sm sm:text-base">georg.hackenberg@fh-wels.at</p>
                 </div>
                 <button 
