@@ -1,7 +1,7 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/Navbar.astro";
-import ProjectCard from "../../components/ProjectCard.astro";
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/Navbar.astro";
+import ProjectCard from "@components/ProjectCard.astro";
 import { getCollection } from "astro:content";
 
 const projects = await getCollection("projects");
@@ -142,7 +142,7 @@ const breadcrumbSchema = {
 </Layout>
 
 <script>
-  import { ClientListFilter } from "../../components/filter";
+  import { ClientListFilter } from "@components/filter";
 
   function initFilter() {
     new ClientListFilter({

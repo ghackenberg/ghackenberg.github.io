@@ -5,7 +5,7 @@
 
 import { getCollection, getEntry } from "astro:content";
 import { Image } from "astro:assets";
-import { formatCount } from "../../shared/format";
+import { formatCount } from "@shared";
 
 // Fetch profile metrics from collection
 const profileEntry = await getEntry("linkedin-profile", "profile");

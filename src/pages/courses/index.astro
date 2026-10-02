@@ -1,9 +1,9 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/Navbar.astro";
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/Navbar.astro";
 import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
-import CourseCard from "../../components/CourseCard.astro";
+import CourseCard from "@components/CourseCard.astro";
 
 const courses = await getCollection("courses");
 
@@ -258,7 +258,7 @@ const breadcrumbSchema = {
 </style>
 
 <script>
-  import { ClientListFilter } from "../../components/filter";
+  import { ClientListFilter } from "@components/filter";
 
   function initFilter() {
     new ClientListFilter({

@@ -1,31 +1,31 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/Navbar.astro";
-import ProjectCard from "../components/ProjectCard.astro";
-import PostCard from "../components/PostCard.astro";
-import Timeline from "../components/Timeline.astro";
-import GitHubWidget from "../components/GitHubWidget.astro";
-import LinkedInWidget from "../components/LinkedInWidget.astro";
-import YouTubeWidget from "../components/YouTubeWidget.astro";
-import ImageGalleryMarquee, { type GalleryItem } from "../components/ImageGalleryMarquee.astro";
-import DepthPortrait from "../components/DepthPortrait.astro";
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/Navbar.astro";
+import ProjectCard from "@components/ProjectCard.astro";
+import PostCard from "@components/PostCard.astro";
+import Timeline from "@components/Timeline.astro";
+import GitHubWidget from "@components/GitHubWidget.astro";
+import LinkedInWidget from "@components/LinkedInWidget.astro";
+import YouTubeWidget from "@components/YouTubeWidget.astro";
+import ImageGalleryMarquee, { type GalleryItem } from "@components/ImageGalleryMarquee.astro";
+import DepthPortrait from "@components/DepthPortrait.astro";
 import { getImage } from "astro:assets";
-import profileImage from "../assets/images/comic-profile-head.png";
-import profileDepthImage from "../assets/images/comic-profile-head-depth.png";
-import profileWinkImage from "../assets/images/comic-profile-head-wink.png";
-import profileWinkDepthImage from "../assets/images/comic-profile-head-wink-depth.png";
-import profileBlinkImage from "../assets/images/comic-profile-head-blink.png";
-import profileBlinkDepthImage from "../assets/images/comic-profile-head-blink-depth.png";
-import profileClosedMouthImage from "../assets/images/comic-profile-head-closed-mouth.png";
-import profileClosedMouthDepthImage from "../assets/images/comic-profile-head-closed-mouth-depth.png";
-import profileClosedMouthBlinkImage from "../assets/images/comic-profile-head-closed-mouth-blink.png";
-import profileClosedMouthBlinkDepthImage from "../assets/images/comic-profile-head-closed-mouth-blink-depth.png";
+import profileImage from "@assets/images/comic-profile-head.png";
+import profileDepthImage from "@assets/images/comic-profile-head-depth.png";
+import profileWinkImage from "@assets/images/comic-profile-head-wink.png";
+import profileWinkDepthImage from "@assets/images/comic-profile-head-wink-depth.png";
+import profileBlinkImage from "@assets/images/comic-profile-head-blink.png";
+import profileBlinkDepthImage from "@assets/images/comic-profile-head-blink-depth.png";
+import profileClosedMouthImage from "@assets/images/comic-profile-head-closed-mouth.png";
+import profileClosedMouthDepthImage from "@assets/images/comic-profile-head-closed-mouth-depth.png";
+import profileClosedMouthBlinkImage from "@assets/images/comic-profile-head-closed-mouth-blink.png";
+import profileClosedMouthBlinkDepthImage from "@assets/images/comic-profile-head-closed-mouth-blink-depth.png";
 import interestSoftwareImg from "../content/interests/software-engineering/preview.jpg";
 import interestSimulationImg from "../content/interests/computer-simulation/preview.jpg";
 import interestAiImg from "../content/interests/artificial-intelligence/preview.jpg";
 import interestUxImg from "../content/interests/user-experience/preview.jpg";
 import { getCollection } from "astro:content";
-import { calculateTagCounts, buildGraphPayload } from "../../shared/graph-payload";
+import { calculateTagCounts, buildGraphPayload } from "@shared";
 
 const optimizedProfile = await getImage({
   src: profileImage,
