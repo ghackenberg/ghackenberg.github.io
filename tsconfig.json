@@ -2,14 +2,14 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "paths": {
-      "@shared/*": ["./shared/*"],
+      "@commons/*": ["./src/commons/*"],
       "@components/*": ["./src/components/*"],
       "@layouts/*": ["./src/layouts/*"],
       "@assets/*": ["./src/assets/*"],
       "@styles/*": ["./src/styles/*"],
       "@content/*": ["./src/content/*"],
       "@plugins/*": ["./src/plugins/*"],
-      "@modules/*": ["./src/modules/*"]
+      "@tools/*": ["./src/tools/*"]
     }
   },
   "include": [".astro/types.d.ts", "**/*"],
