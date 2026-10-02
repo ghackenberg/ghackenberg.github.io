@@ -2,8 +2,28 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 /**
- * Validates that every top-level TypeScript file in scripts/ is referenced
- * in package.json under "scripts", and that every scripts/ target exists.
+ * Recursively retrieves all .ts files in a directory
+ */
+function getAllTsFiles(dir: string): string[] {
+  if (!fs.existsSync(dir)) return [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const files: string[] = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...getAllTsFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.ts')) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
+/**
+ * Validates that EVERY TypeScript file in the scripts/ directory (including any subdirectories)
+ * is registered as a CLI command in package.json under "scripts", and that every scripts/ target exists.
  */
 function validateScripts(): void {
   const rootDir = process.cwd();
@@ -17,29 +37,26 @@ function validateScripts(): void {
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
   const scripts: Record<string, string> = pkg.scripts || {};
 
-  // 1. Get all top-level .ts files in scripts/ (excluding subdirectories like lib/, sync/, templates/)
-  const scriptFiles = fs
-    .readdirSync(scriptsDir, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.ts'))
-    .map((entry) => entry.name);
-
+  // 1. Get all .ts files in scripts/ recursively
+  const allScriptFiles = getAllTsFiles(scriptsDir);
   const scriptValues = Object.values(scripts);
 
   const errors: string[] = [];
 
-  // Check 1: Every scripts/*.ts must be referenced in at least one package.json script
-  for (const file of scriptFiles) {
+  // Check 1: Every script in scripts/ must be referenced in at least one package.json script
+  for (const file of allScriptFiles) {
+    const relPath = path.relative(rootDir, file).replace(/\\/g, '/');
     const isReferenced = scriptValues.some((cmd) => {
       const normalizedCmd = cmd.replace(/\\/g, '/');
-      return normalizedCmd.includes(`scripts/${file}`);
+      return normalizedCmd.includes(relPath);
     });
 
     if (!isReferenced) {
-      errors.push(`Orphan script found: "scripts/${file}" has no corresponding entry in package.json "scripts".`);
+      errors.push(`Orphan script found: "${relPath}" has no corresponding entry in package.json "scripts". Helper libraries belong in shared/.`);
     }
   }
 
-  // Check 2: Every reference to scripts/ in package.json must exist
+  // Check 2: Every reference to scripts/ in package.json must exist on disk
   const SCRIPT_PATH_REGEX = /scripts\/([a-zA-Z0-9_\-\.\/]+\.ts)\b/g;
   for (const [name, cmd] of Object.entries(scripts)) {
     const normalizedCmd = cmd.replace(/\\/g, '/');
@@ -61,7 +78,7 @@ function validateScripts(): void {
     process.exit(1);
   }
 
-  console.log(`✅ All ${scriptFiles.length} scripts in scripts/ are registered in package.json, and all targets exist.`);
+  console.log(`✅ All ${allScriptFiles.length} scripts in scripts/ are registered in package.json, and all targets exist.`);
 }
 
 validateScripts();

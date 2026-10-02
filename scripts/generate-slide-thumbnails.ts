@@ -8,7 +8,7 @@ import {
   loadVisualCache,
   saveVisualCache,
   type VisualCache,
-} from './lib/slide-fingerprint.js';
+} from '@shared/slide-fingerprint.js';
 
 const PORT = 4323;
 const distDir = path.resolve('dist');

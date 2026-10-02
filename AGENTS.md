@@ -33,8 +33,8 @@
   - **NEVER** use relative parent directory traversals (`../components`, `../../shared`, `../../../layouts`, `../../plugins`, etc.). Strictly enforced by ESLint `no-restricted-imports` with zero tolerance (`--max-warnings=0`).
   - **Co-located Sibling Imports**: Relative sibling imports (`./...`) within the same directory are permitted and encouraged for tightly-coupled private helpers, types, and sub-controllers to maintain cohesion and encapsulation.
 - **Scripts & CLI Architecture Contract**:
-  - All top-level `.ts` files in `scripts/` (`scripts/*.ts`) are standalone executable CLI entrypoints and **MUST** have at least one corresponding script command in `package.json`.
-  - Internal helper modules and libraries for scripts **MUST** live in subdirectories (e.g. `scripts/lib/`, `scripts/sync/`, `scripts/templates/`).
+  - `scripts/` is exclusively reserved for standalone executable CLI entrypoints. **EVERY** `.ts` file anywhere within `scripts/` **MUST** have at least one corresponding script command in `package.json`.
+  - Internal helper modules, libraries, and asset templates for scripts **MUST** live in `shared/` (e.g. `shared/slide-fingerprint.ts`, `shared/sync/`, `shared/templates/`) and be imported via `@shared/*`.
   - **NEVER** import from `scripts/` inside `src/` or `astro.config.ts`. Build-time integrations and plugins belong in `src/plugins/` under `@plugins/*`.
   - Strictly enforced by `npm run validate:scripts` in CI and ESLint architectural boundaries.
 

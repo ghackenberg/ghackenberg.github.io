@@ -6,7 +6,7 @@ import {
   computeSlideStyleHash,
   computePresentationDeckHash,
   loadVisualCache
-} from './lib/slide-fingerprint.js';
+} from '@shared/slide-fingerprint.js';
 
 /**
  * Extracts YAML frontmatter fields from markdown/mdx content
