@@ -26,6 +26,9 @@ export interface Props {
   vignette?: boolean;
   idleAnimation?: boolean;
   loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
+  width?: number;
+  height?: number;
 }
 
 const {
@@ -40,7 +43,10 @@ const {
   trackMouse = false,
   vignette = true,
   idleAnimation = true,
-  loading = "eager"
+  loading = "eager",
+  fetchpriority = "high",
+  width = 480,
+  height = 480
 } = Astro.props;
 
 // Compile facial expressions list. If expressions array is empty, fall back to imageSrc/depthSrc.
@@ -79,7 +85,11 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
     src={initialImageSrc}
     alt={alt}
     title={title}
+    width={width}
+    height={height}
     loading={loading}
+    fetchpriority={fetchpriority}
+    decoding="async"
     class="depth-fallback-img w-full h-full object-contain pointer-events-none transition-opacity duration-700 select-none"
     style={vignette ? "mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%);" : ""}
   />

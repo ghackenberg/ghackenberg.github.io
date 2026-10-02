@@ -393,7 +393,7 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
                       {group.companyPeriodStr}
                     </span>
                     {group.location && (
-                      <span class="text-gray-500 font-medium flex items-center">
+                      <span class="text-gray-400 light:text-slate-600 font-medium flex items-center">
                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -420,8 +420,8 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
                       <h4 class="text-base font-bold text-gray-50 mb-1 group-hover/role:text-transparent group-hover/role:bg-clip-text group-hover/role:bg-gradient-to-r group-hover/role:from-gray-50 group-hover/role:to-gray-300 transition-all">
                         {role.title}
                       </h4>
-                      <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs text-gray-500 font-semibold mb-3">
-                        <span class="text-gray-400">{role.displayPeriod}</span>
+                      <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs text-gray-400 light:text-slate-600 font-semibold mb-3">
+                        <span class="text-gray-300 light:text-slate-700">{role.displayPeriod}</span>
                         {role.employmentType && (
                           <>
                             <span>&bull;</span>

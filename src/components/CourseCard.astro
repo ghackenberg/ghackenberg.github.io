@@ -80,6 +80,7 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
           </linearGradient>
         </defs>
         <image 
+          role="img"
           href={optimizedScreenshot ? optimizedScreenshot.src : (screenshotImg ? screenshotImg.src : '')} 
           x="0" 
           y="0" 
@@ -92,6 +93,7 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
         />
         {optimizedScreenshotLight && (
           <image 
+            role="img"
             href={optimizedScreenshotLight.src} 
             x="0" 
             y="0" 
@@ -160,12 +162,12 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
     <!-- Tags & Action Button Area -->
     <div class="flex-grow flex flex-col mt-3">
       {tags && tags.length > 0 && (
-        <div class="flex flex-wrap gap-1.5 relative z-20 self-start">
+        <div class="flex flex-wrap gap-2 relative z-20 self-start">
           {tags.map((tag) => (
             <a
               href={`/tags/${tag}/`}
               data-tag={tag}
-              class={`tag-chip tag-chip-yellow inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              class={`tag-chip tag-chip-yellow inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
                 isTagActive(tag) ? 'active-tag-match' : ''
               }`}
             >
@@ -179,7 +181,8 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
       <div class="mt-auto pt-6 w-full">
         <a 
           href={href} 
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-700 text-xs font-bold relative z-20 transition-all duration-200"
+          aria-label={`Read More: ${title}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-900 text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

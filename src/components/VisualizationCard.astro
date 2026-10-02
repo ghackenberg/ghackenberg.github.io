@@ -65,6 +65,7 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
           </linearGradient>
         </defs>
         <image 
+          role="img"
           href={optimizedScreenshot ? optimizedScreenshot.src : (screenshotImg ? screenshotImg.src : '')} 
           x="0" 
           y="0" 
@@ -116,12 +117,12 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
     <!-- Tags & Action Footer -->
     <div class="flex-grow flex flex-col mt-3">
       {tags && tags.length > 0 && (
-        <div class="flex flex-wrap gap-1.5 self-start relative z-20">
+        <div class="flex flex-wrap gap-2 self-start relative z-20">
           {tags.map((t) => (
             <a
               href={`/tags/${t}/`}
               data-tag={t}
-              class={`tag-chip tag-chip-green inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              class={`tag-chip tag-chip-green inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
                 isTagActive(t) ? 'active-tag-match' : ''
               }`}
             >
@@ -134,7 +135,8 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
       <div class="mt-auto pt-6 w-full relative z-20">
         <a 
           href={`${href}?utm_source=visualizations_hub&utm_medium=vis_card&utm_campaign=visualizations`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-brand-green/12 hover:bg-brand-green/25 border border-brand-green/20 hover:border-brand-green/45 text-emerald-300 light:text-brand-green text-xs font-bold relative z-20 transition-all duration-200"
+          aria-label={`Launch visualization: ${title}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-brand-green/12 hover:bg-brand-green/25 border border-brand-green/20 hover:border-brand-green/45 text-emerald-300 light:text-emerald-800 text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Launch Visualization</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

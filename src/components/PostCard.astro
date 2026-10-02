@@ -103,7 +103,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
           ★ Featured
         </span>
       )}
-      <time class="text-xs font-semibold text-brand-blue/80">
+      <time class="text-xs font-semibold text-blue-400 light:text-blue-700">
         {pubDate.toLocaleDateString("en-US", {
           year: "numeric",
           month: "short",
@@ -121,19 +121,19 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
 
     <!-- Description -->
     {description && (
-      <p class="text-gray-400 light:text-slate-500 text-sm mb-3 leading-relaxed font-normal">
+      <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal">
         {description}
       </p>
     )}
 
     <!-- Tags & Action Button Area -->
     <div class="flex-grow flex flex-col mt-3">
-      <div class="flex flex-wrap gap-1.5 self-start">
+      <div class="flex flex-wrap gap-2 self-start">
         {tags.map(tag => (
           <a 
             href={`/tags/${tag}/`}
             data-tag={tag}
-            class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+            class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
               isTagActive(tag) ? 'active-tag-match' : ''
             }`}
           >
@@ -146,7 +146,8 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
       <div class="mt-auto pt-6 w-full">
         <a 
           href={`/posts/${id}/`} 
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-brand-blue text-xs font-bold relative z-20 transition-all duration-200"
+          aria-label={`Read More: ${title}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-blue-700 text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
