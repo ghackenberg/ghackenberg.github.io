@@ -249,7 +249,15 @@ const breadcrumbSchema = {
     const type = window.GRAPH_TYPE;
     const payload = window.GRAPH_PAYLOAD;
 
-    window.addEventListener('DOMContentLoaded', () => {
+    function onReady(fn: () => void) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fn);
+      } else {
+        fn();
+      }
+    }
+
+    onReady(() => {
       const container = document.getElementById('canvas');
       const loading = document.getElementById('canvas-loading');
       const selector = document.getElementById('layout-selector') as HTMLSelectElement | null;

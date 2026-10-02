@@ -2148,7 +2148,15 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
   }
 
 
-  window.addEventListener('DOMContentLoaded', () => {
+  function onReady(fn: () => void) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  onReady(() => {
     const container = document.getElementById('home-vis-canvas');
     const loading = document.getElementById('home-vis-loading');
     if (!container) return;

@@ -89,7 +89,8 @@ const engine: SigmaEngine = {
       defaultEdgeColor: edgeColor,
       labelColor: { color: isLight ? '#0f172a' : '#f3f4f6' },
       labelFont: 'Outfit, Inter, sans-serif',
-      labelSize: 10
+      labelSize: 10,
+      allowInvalidContainer: true
     });
 
     this.sigma.on('clickNode', ({ node }: { node: string }) => {
