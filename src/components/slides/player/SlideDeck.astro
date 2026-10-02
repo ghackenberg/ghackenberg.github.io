@@ -30,7 +30,7 @@ const currentDeckId = presentationId || talkId || "presentation";
 
 <div data-deck-id={currentDeckId} class={`slide-deck-wrapper relative w-full lg:aspect-[16/9.6] lg:max-h-[88vh] bg-slate-950 light:bg-slate-100 border border-slate-800 light:border-slate-300 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl flex flex-col ${className}`}>
   <!-- Slide Stage Viewport with Drawer / Sidebar Layer -->
-  <div class="relative flex-1 w-full min-h-0 flex overflow-hidden">
+  <div class="relative flex-1 w-full min-h-0 flex overflow-hidden aspect-video lg:aspect-auto">
     <!-- Slide List Backdrop (Tablet only md to < lg: dims & blurs slide stage) -->
     <div
       id="slide-list-backdrop"
@@ -141,7 +141,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     </aside>
 
     <!-- Slide Canvas Viewport (Crisp, unblurred, auto-scaling) -->
-    <div class="relative flex-1 w-full min-w-0 overflow-hidden bg-slate-950 light:bg-slate-100 flex items-center justify-center aspect-video lg:aspect-auto">
+    <div class="relative flex-1 w-full h-full min-w-0 overflow-hidden bg-slate-950 light:bg-slate-100 flex items-center justify-center">
       <!-- Loading Indicator / Shield (Active until Reveal & AutoFit finish) -->
       <div 
         id="deck-loader" 
