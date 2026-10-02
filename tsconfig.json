@@ -8,7 +8,8 @@
       "@layouts/*": ["./src/layouts/*"],
       "@assets/*": ["./src/assets/*"],
       "@styles/*": ["./src/styles/*"],
-      "@content/*": ["./src/content/*"]
+      "@content/*": ["./src/content/*"],
+      "@plugins/*": ["./src/plugins/*"]
     }
   },
   "include": [".astro/types.d.ts", "**/*"],

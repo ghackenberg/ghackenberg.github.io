@@ -7,20 +7,20 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import sitemap, { type ChangeFreqEnum } from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
-import remarkValidateImages from './src/plugins/remark-validate-images.js';
-import remarkMermaid from './src/plugins/remark-mermaid.js';
-import remarkSlideCues from './src/plugins/remark-slide-cues.js';
-import remarkCitations from './src/plugins/remark-citations.js';
+import remarkValidateImages from '@plugins/remark-validate-images.js';
+import remarkMermaid from '@plugins/remark-mermaid.js';
+import remarkSlideCues from '@plugins/remark-slide-cues.js';
+import remarkCitations from '@plugins/remark-citations.js';
 import rehypeKatex from 'rehype-katex';
-import rehypeResponsiveTables from './src/plugins/rehype-responsive-tables.js';
-import rehypeCallouts from './src/plugins/rehype-callouts.js';
+import rehypeResponsiveTables from '@plugins/rehype-responsive-tables.js';
+import rehypeCallouts from '@plugins/rehype-callouts.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildSitemapMetadata } from './scripts/sitemap-config.js';
-import { validateAndEnrichImageSitemaps } from './scripts/validate-and-generate-image-sitemap.js';
+import { buildSitemapMetadata } from '@plugins/sitemap-config.js';
+import { validateAndEnrichImageSitemaps } from '@plugins/image-sitemap.js';
 import YAML from 'yaml';
-import { generateCitationLabel, type CitationRef } from './shared/citations.js';
+import { generateCitationLabel, type CitationRef } from '@shared/citations.js';
 
 const mimeTypes: Record<string, string> = {
   '.pdf': 'application/pdf',

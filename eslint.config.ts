@@ -68,9 +68,9 @@ export default defineConfig([
         {
           patterns: [
             {
-              regex: '^(\\.\\.\\/)+(components|layouts|assets|styles|shared|content)(\\/.*)?$',
+              regex: '^(\\.\\.\\/)+(components|layouts|assets|styles|shared|content|plugins)(\\/.*)?$',
               message:
-                'Use path aliases (@components, @layouts, @assets, @styles, @shared, @content) instead of relative parent imports (../). Co-located sibling imports (./) are permitted.',
+                'Use path aliases (@components, @layouts, @assets, @styles, @shared, @content, @plugins) instead of relative parent imports (../). Co-located sibling imports (./) are permitted.',
             },
           ],
         },
@@ -78,6 +78,22 @@ export default defineConfig([
     },
   },
   // 5. Architectural Boundaries: restrict cross-domain imports
+  {
+    files: ['src/**/*.ts', 'src/**/*.astro', 'astro.config.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['*scripts*'],
+              message: 'src/ and astro.config.ts must not import from scripts/. Scripts are standalone CLI tools.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   {
     files: ['shared/*.ts', 'shared/**/*.ts'],
     rules: {
