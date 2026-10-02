@@ -55,5 +55,54 @@ export default tseslint.config(
         }
       ],
     },
+  },
+  // 4. Architectural Boundaries: restrict cross-domain imports
+  {
+    files: ['shared/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['*src*', '*mcp*', '*scripts*'],
+              message: 'shared/ is the foundational domain and must not import from src/, mcp/, or scripts/.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['mcp/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['*src*', '*scripts*'],
+              message: 'mcp/ must not import from src/ or scripts/. Import shared utilities from shared/ instead.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['scripts/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['*src*', '*mcp*'],
+              message: 'scripts/ must not import from src/ or mcp/. Import shared utilities from shared/ instead.',
+            },
+          ],
+        },
+      ],
+    },
   }
 );

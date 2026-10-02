@@ -42,7 +42,7 @@ function getAuthClient(): InstanceType<typeof google.auth.GoogleAuth> {
   }
 
   throw new Error(
-    'Google Search Console credentials not configured. Please set GSC_SERVICE_ACCOUNT_KEY_FILE or GSC_SERVICE_ACCOUNT_JSON in scripts/mcp-unified-analytics/.env'
+    'Google Search Console credentials not configured. Please set GSC_SERVICE_ACCOUNT_KEY_FILE or GSC_SERVICE_ACCOUNT_JSON in .env or mcp/unified-analytics/.env'
   );
 }
 

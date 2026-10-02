@@ -24,6 +24,8 @@ import PrivacyModal from "../components/PrivacyModal.astro";
 import WhatsNewModal from "../components/WhatsNewModal.astro";
 import AnalyticsDevOverlay from "../components/dev/AnalyticsDevOverlay.astro";
 import DevStudioShell from "../components/dev/DevStudioShell.astro";
+import Notifications from "../components/Notifications.astro";
+import Telemetry from "../components/Telemetry.astro";
 
 const isDev = import.meta.env.DEV;
 
@@ -382,14 +384,12 @@ if (pubDate) {
     </script>
 
     <!-- Notification & Badge Tracking -->
-    <script>
-      import "../scripts/notifications.ts";
-    </script>
+    <Notifications />
 
     <!-- Telemetry & Semantic Tracking -->
-    <script>
-      import "../scripts/telemetry.ts";
-    </script>    <!-- KaTeX Math Styles -->
+    <Telemetry />
+
+    <!-- KaTeX Math Styles -->
     {hasMath && <KaTeXStyles />}
     <script is:inline>
       // Remove no-transitions once the page is loaded, stylesheets are applied, and laid out

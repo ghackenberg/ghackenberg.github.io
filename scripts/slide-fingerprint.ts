@@ -35,7 +35,7 @@ export function computeSlideStyleHash(): string {
     path.resolve('src/styles/theme.css'),
     path.resolve('src/styles/slides.css'),
     path.resolve('src/pages/presentations/[slug]/print.astro'),
-    path.resolve('src/utils/slide-cues.ts'),
+    path.resolve('shared/slide-cues.ts'),
   ];
 
   for (const file of keyFiles) {
