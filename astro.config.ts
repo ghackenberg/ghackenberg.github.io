@@ -286,6 +286,7 @@ export default defineConfig({
         '3d-force-graph',
         'vis-network',
         'vis-data',
+        '@plausible-analytics/tracker',
       ],
     },
     build: {

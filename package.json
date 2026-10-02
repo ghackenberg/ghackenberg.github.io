@@ -53,6 +53,7 @@
     "@fontsource/outfit": "^5.2.8",
     "@modelcontextprotocol/sdk": "^1.31.0",
     "@octokit/core": "^7.0.6",
+    "@plausible-analytics/tracker": "^0.4.6",
     "@tailwindcss/vite": "^4.3.0",
     "3d-force-graph": "^1.80.1",
     "astro": "^7.3.2",
