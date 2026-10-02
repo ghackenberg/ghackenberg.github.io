@@ -1,8 +1,8 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/Navbar.astro";
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/Navbar.astro";
 import { getCollection } from "astro:content";
-import VisualizationCard from "../../components/VisualizationCard.astro";
+import VisualizationCard from "@components/VisualizationCard.astro";
 
 const visualizations = await getCollection("visualizations");
 const firstVisScreenshot = visualizations.find(v => v.data.screenshot)?.data.screenshot;

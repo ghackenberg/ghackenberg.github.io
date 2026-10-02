@@ -4,7 +4,10 @@
     "paths": {
       "@shared/*": ["./shared/*"],
       "@shared": ["./shared/index.ts"],
-      "@components/*": ["./src/components/*"]
+      "@components/*": ["./src/components/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@styles/*": ["./src/styles/*"]
     }
   },
   "include": [".astro/types.d.ts", "**/*"],

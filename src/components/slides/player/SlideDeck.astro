@@ -488,7 +488,7 @@ const currentDeckId = presentationId || talkId || "presentation";
   import Reveal, { type RevealApi } from 'reveal.js';
   import { AudioSyncController, type SlideData, type CueItem, type SlideReference } from './AudioSyncController';
   import { AutoFitController } from './AutoFitController';
-  import { generateCitationLabel } from '../../../../shared/citations.js';
+  import { generateCitationLabel } from '@shared';
 
   declare global {
     interface Window {

@@ -1,8 +1,8 @@
 ---
 import { getCollection, render } from "astro:content";
 import path from "node:path";
-import "../../../styles/theme.css";
-import "../../../styles/slides.css";
+import "@styles/theme.css";
+import "@styles/slides.css";
 import "@fontsource/inter/300.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
@@ -168,7 +168,7 @@ const renderedSlides = await Promise.all(
     ))}
 
     <script>
-      import { AutoFitController } from "../../../components/slides/player/AutoFitController";
+      import { AutoFitController } from "@components/slides/player/AutoFitController";
 
       // 1. Remove intro states from all slides
       document.querySelectorAll('.is-intro-state').forEach((el) => {

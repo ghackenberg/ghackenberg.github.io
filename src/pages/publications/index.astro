@@ -1,8 +1,8 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/Navbar.astro";
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/Navbar.astro";
 import { getCollection } from "astro:content";
-import PublicationCard from "../../components/PublicationCard.astro";
+import PublicationCard from "@components/PublicationCard.astro";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) => b.id.localeCompare(a.id)
@@ -157,7 +157,7 @@ const breadcrumbSchema = {
 </Layout>
 
 <script>
-  import { ClientListFilter } from "../../components/filter";
+  import { ClientListFilter } from "@components/filter";
 
   function initFilter() {
     new ClientListFilter({
