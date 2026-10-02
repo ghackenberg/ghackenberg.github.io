@@ -44,16 +44,22 @@
     opacity: 0.55;
   }
   
+</style>
+
+<style is:global>
   /* Twinkling CSS animation */
-  :global(@keyframes twinkle) {
+  @keyframes twinkle {
     0%, 100% { opacity: 0.25; transform: scale(0.85); }
     50% { opacity: 0.85; transform: scale(1.15); }
   }
 
-  :global(@keyframes twinkle-hero) {
+  @keyframes twinkle-hero {
     0%, 100% { opacity: 0.3; transform: scale(0.7) rotate(0deg); }
     50% { opacity: 0.9; transform: scale(1.25) rotate(45deg); }
   }
+</style>
+
+<style>
 
   /* Shooting Stars */
   .shooting-stars-container {

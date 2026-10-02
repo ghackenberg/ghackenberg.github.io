@@ -7,7 +7,7 @@ import {
   getCardCtrBreakdown,
   normalizePath,
   type DevOverlayPageData,
-} from '@shared';
+} from '@shared/analytics/index.js';
 
 interface CacheEntry {
   timestamp: number;

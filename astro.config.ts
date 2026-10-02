@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import type { AstroIntegration } from 'astro';
 import type { Plugin as VitePlugin } from 'vite';
+import { createLogger } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { unified } from '@astrojs/markdown-remark';
 import tailwindcss from '@tailwindcss/vite';
@@ -190,6 +191,19 @@ function vitePreSlideCues(): VitePlugin {
   };
 }
 
+const isBuild = process.argv.includes('build');
+const viteLogger = createLogger();
+if (isBuild) {
+  const originalWarn = viteLogger.warn.bind(viteLogger);
+  viteLogger.warn = (msg, options) => {
+    originalWarn(msg, options);
+    throw new Error(`[build:warning-guard] Build terminated due to Vite warning: ${msg}`);
+  };
+  viteLogger.warnOnce = (msg, options) => {
+    viteLogger.warn(msg, options);
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://hackenberg.tech',
@@ -258,9 +272,20 @@ export default defineConfig({
     }),
   },
   vite: {
+    customLogger: viteLogger,
     plugins: [tailwindcss(), vitePreSlideCues()],
     optimizeDeps: {
       include: ['reveal.js', 'howler'],
+    },
+    build: {
+      chunkSizeWarningLimit: 2000,
+      rollupOptions: {
+        onwarn(warning) {
+          throw new Error(
+            `[build:warning-guard] Build terminated due to Rollup warning: ${warning.message || warning}`
+          );
+        },
+      },
     },
   },
 });
