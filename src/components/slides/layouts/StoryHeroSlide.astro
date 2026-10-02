@@ -10,7 +10,7 @@ interface Props {
   slideNumber?: string | number;
   totalSlides?: string | number;
   presentationTitle?: string;
-  imageSrc?: ImageMetadata | string;
+  imageSrc?: ImageMetadata;
   imageAlt?: string;
   imageTitle?: string;
   imageCue?: string;
@@ -73,29 +73,16 @@ const narrativeSpan = ratio === '60/40' ? 'col-span-5' : ratio === '55/45' ? 'co
                   <span class="text-xs uppercase font-bold tracking-wider opacity-60">Loading visual...</span>
                 </div>
 
-                {typeof imageSrc === 'string' ? (
-                  <img
-                    src={imageSrc}
-                    alt={imageAlt}
-                    title={imageTitle}
-                    class="w-full h-full object-cover object-center select-none transition-opacity duration-300 opacity-0 relative z-10"
-                    loading="lazy"
-                    decoding="async"
-                    onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
-                    onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Visual unavailable'; }"
-                  />
-                ) : (
-                  <Image
-                    src={imageSrc}
-                    alt={imageAlt}
-                    title={imageTitle}
-                    class="w-full h-full object-cover object-center select-none transition-opacity duration-300 opacity-0 relative z-10"
-                    loading="lazy"
-                    decoding="async"
-                    onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
-                    onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Visual unavailable'; }"
-                  />
-                )}
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  title={imageTitle}
+                  class="w-full h-full object-cover object-center select-none transition-opacity duration-300 opacity-0 relative z-10"
+                  loading="lazy"
+                  decoding="async"
+                  onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
+                  onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Visual unavailable'; }"
+                />
               </div>
             ) : (
               <slot name="visual" />
@@ -139,29 +126,16 @@ const narrativeSpan = ratio === '60/40' ? 'col-span-5' : ratio === '55/45' ? 'co
                   <span class="text-xs uppercase font-bold tracking-wider opacity-60">Loading visual...</span>
                 </div>
 
-                {typeof imageSrc === 'string' ? (
-                  <img
-                    src={imageSrc}
-                    alt={imageAlt}
-                    title={imageTitle}
-                    class="w-full h-full object-cover object-center select-none transition-opacity duration-300 opacity-0 relative z-10"
-                    loading="lazy"
-                    decoding="async"
-                    onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
-                    onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Visual unavailable'; }"
-                  />
-                ) : (
-                  <Image
-                    src={imageSrc}
-                    alt={imageAlt}
-                    title={imageTitle}
-                    class="w-full h-full object-cover object-center select-none transition-opacity duration-300 opacity-0 relative z-10"
-                    loading="lazy"
-                    decoding="async"
-                    onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
-                    onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Visual unavailable'; }"
-                  />
-                )}
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  title={imageTitle}
+                  class="w-full h-full object-cover object-center select-none transition-opacity duration-300 opacity-0 relative z-10"
+                  loading="lazy"
+                  decoding="async"
+                  onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
+                  onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Visual unavailable'; }"
+                />
               </div>
             ) : (
               <slot name="visual" />
