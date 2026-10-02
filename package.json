@@ -18,7 +18,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run typecheck && npm run generate-assets && astro build",
+    "build": "npm run typecheck && astro build && npm run generate-assets",
     "preview": "astro preview",
     "typecheck": "astro check --minimumFailingSeverity hint",
     "lint": "eslint . --max-warnings=0",
