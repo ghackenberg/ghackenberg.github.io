@@ -31,13 +31,105 @@ export function getScreenBucket(width: number): string {
   return '2xl (>=1536px)';
 }
 
+export interface TelemetryEventMap {
+  'Section Viewed': {
+    id: string;
+  };
+  'Card Viewed': {
+    id: string;
+    collection?: string;
+  };
+  'Card Clicked': {
+    id: string;
+    collection?: string;
+  };
+  'Filter Content': {
+    type: 'dropdown' | 'button' | 'reset';
+    key?: string;
+    value?: string;
+    path?: string;
+  };
+  'Notifications Action': {
+    action: 'mark-all-read' | 'dismiss-all' | string;
+  };
+  'Privacy Action': {
+    action: string;
+    opted_out?: boolean;
+    enabled?: boolean;
+    [key: string]: string | number | boolean | undefined;
+  };
+  'Modal Opened': {
+    modal: 'whats-new' | 'privacy' | string;
+  };
+  'Modal Closed': {
+    modal: 'whats-new' | 'privacy' | string;
+  };
+  'theme-changed': {
+    theme_setting: string;
+    theme_resolved: string;
+    theme_trigger: string;
+  };
+  'Breakpoint Changed': {
+    from: string;
+    to: string;
+    screen_orientation?: string;
+  };
+  'Orientation Changed': {
+    from: string;
+    to: string;
+    screen_bucket?: string;
+  };
+  'Audio Played': {
+    presentation: string;
+    slide_number: number;
+  };
+  'Slide Viewed': {
+    presentation: string;
+    slide_number: number;
+    total_slides?: number;
+    title?: string;
+  };
+  'Presentation Completed': {
+    presentation: string;
+    total_slides?: number;
+  };
+  'High Intent: Share Presentation': {
+    presentation: string;
+    slide_number: number;
+    cue?: string;
+  };
+  'High Intent: Copy Email': {
+    location?: string;
+  };
+  'High Intent: Copy BibTeX': {
+    id: string;
+  };
+}
+
+export type KnownTelemetryEvent = keyof TelemetryEventMap;
+
 /**
- * Safely dispatches a custom event to Plausible.
+ * Safely dispatches a typed custom event to Plausible.
  */
-export function trackEvent(eventName: string, props?: Record<string, string | number | boolean>): void {
+export function trackEvent<E extends KnownTelemetryEvent>(
+  eventName: E,
+  props?: TelemetryEventMap[E]
+): void;
+export function trackEvent(
+  eventName: string,
+  props?: Record<string, string | number | boolean | undefined>
+): void;
+export function trackEvent(
+  eventName: string,
+  props?: Record<string, string | number | boolean | undefined>
+): void {
   try {
     const formattedProps: Record<string, string> | undefined = props
-      ? Object.fromEntries(Object.entries(props).map(([k, v]) => [k, String(v)]))
+      ? Object.fromEntries(
+          Object.entries(props)
+            .filter(([, v]) => v !== undefined && v !== null)
+            .map(([k, v]) => [k, String(v)])
+        )
       : undefined;
 
     trackPlausible(eventName, formattedProps ? { props: formattedProps } : {});
