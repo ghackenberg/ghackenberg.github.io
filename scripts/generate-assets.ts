@@ -1,62 +1,90 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 import puppeteer from 'puppeteer';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicDir = path.resolve(__dirname, '../public');
-const templatesDir = path.resolve(__dirname, '../shared/templates');
+const rootDir = process.cwd();
+const distDir = path.resolve(rootDir, 'dist');
+const publicDir = path.resolve(rootDir, 'public');
+const srcImagesDir = path.resolve(rootDir, 'src/assets/images');
 
-// Simple static server to serve local HTML/assets to Puppeteer
-const server = http.createServer((req, res) => {
-  const urlPath = req.url ? req.url.split('?')[0] : '';
-  let filePath = path.join(publicDir, urlPath);
-  if (filePath === publicDir || (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory())) {
-    filePath = path.join(filePath, 'index.html');
-  }
+const mimeTypes: Record<string, string> = {
+  '.html': 'text/html',
+  '.css': 'text/css',
+  '.js': 'application/javascript',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff',
+};
 
-  // Fallback to shared/templates if file is an internal generator template
-  if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
-    const templatePath = path.join(templatesDir, path.basename(urlPath));
-    if (fs.existsSync(templatePath) && fs.statSync(templatePath).isFile()) {
-      filePath = templatePath;
+/**
+ * Serves dist folder statically for Puppeteer
+ */
+function createStaticServer(): http.Server {
+  return http.createServer((req, res) => {
+    const urlPath = (req.url || '/').split('?')[0];
+    let filePath = path.join(distDir, urlPath);
+
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+      filePath = path.join(filePath, 'index.html');
     }
-  }
 
-  // Fallback to src/assets/images if file is not found in public directory
-  if ((!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) && urlPath.startsWith('/images/')) {
-    const fallbackPath = path.join(__dirname, '../src/assets/images', path.basename(urlPath));
-    if (fs.existsSync(fallbackPath) && fs.statSync(fallbackPath).isFile()) {
-      filePath = fallbackPath;
-    }
-  }
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = mimeTypes[ext] || 'application/octet-stream';
 
-  const ext = path.extname(filePath).toLowerCase();
-  const mimeTypes: Record<string, string> = {
-    '.html': 'text/html',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.svg': 'image/svg+xml',
-    '.css': 'text/css',
-    '.js': 'application/javascript',
-  };
-
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Not Found');
-    } else {
-      res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
-      res.end(content);
-    }
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    });
   });
-});
+}
 
-const PORT = 9876;
-server.listen(PORT, async () => {
-  console.log(`[Asset Generator] Temporary web server listening on http://localhost:${PORT}`);
+/**
+ * Safely writes a file buffer to disk, avoiding git churn if identical
+ */
+function safeWriteIfChanged(destPath: string, buffer: Buffer): boolean {
+  if (fs.existsSync(destPath)) {
+    const existing = fs.readFileSync(destPath);
+    if (existing.equals(buffer)) {
+      return false; // Identical, skip write
+    }
+  }
+  const dir = path.dirname(destPath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  fs.writeFileSync(destPath, buffer);
+  return true;
+}
+
+async function main(): Promise<void> {
+  const ogHtmlPath = path.join(distDir, 'internal/og/index.html');
+  const iconHtmlPath = path.join(distDir, 'internal/icon/index.html');
+
+  if (!fs.existsSync(ogHtmlPath) || !fs.existsSync(iconHtmlPath)) {
+    console.log('[Asset Generator] dist/internal pages not found, running build first...');
+    execSync('npx astro build', { stdio: 'inherit' });
+  }
+
+  const PORT = 9876;
+  const server = createStaticServer();
+
+  await new Promise<void>((resolve) => {
+    server.listen(PORT, () => {
+      console.log(`[Asset Generator] Serving dist/ on http://localhost:${PORT}`);
+      resolve();
+    });
+  });
 
   try {
     const browser = await puppeteer.launch({
@@ -64,14 +92,9 @@ server.listen(PORT, async () => {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
-    async function capture(url: string, width: number, height: number, destPath: string) {
+    async function capture(urlPath: string, width: number, height: number, destPaths: string[]): Promise<void> {
       const page = await browser.newPage();
-
-      await page.setViewport({
-        width,
-        height,
-        deviceScaleFactor: 1,
-      });
+      await page.setViewport({ width, height, deviceScaleFactor: 1 });
 
       await page.evaluateOnNewDocument(() => {
         const style = document.createElement('style');
@@ -79,52 +102,67 @@ server.listen(PORT, async () => {
         document.head.appendChild(style);
       });
 
-      await page.goto(url, { waitUntil: 'networkidle0' });
+      const fullUrl = `http://localhost:${PORT}${urlPath}`;
+      await page.goto(fullUrl, { waitUntil: 'networkidle0' });
       await page.evaluateHandle(() => document.fonts.ready);
 
-      await page.screenshot({
-        path: destPath,
-        omitBackground: true,
-      });
-
+      const buffer = (await page.screenshot({ omitBackground: true })) as Buffer;
       await page.close();
-      console.log(`[✔] Generated: ${path.basename(destPath)} (${width}x${height})`);
+
+      for (const destPath of destPaths) {
+        const changed = safeWriteIfChanged(destPath, buffer);
+        const status = changed ? '✔ Generated' : '⚡ Unchanged';
+        console.log(`[${status}] ${path.basename(destPath)} (${width}x${height})`);
+      }
     }
 
-    const baseUrl = `http://localhost:${PORT}`;
-
-    const ogDir = path.join(publicDir, 'images');
-    if (!fs.existsSync(ogDir)) {
-      fs.mkdirSync(ogDir, { recursive: true });
-    }
-
-    console.log('[Asset Generator] Starting screenshots compilation...');
+    console.log('[Asset Generator] Starting screenshots compilation from Astro pages...');
 
     // 1. Generate Favicons (Transparent)
-    await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 16, 16, path.join(publicDir, 'favicon-16x16.png'));
-    await capture(`${baseUrl}/icon-generator.html?mode=transparent`, 32, 32, path.join(publicDir, 'favicon-32x32.png'));
+    await capture('/internal/icon/?mode=transparent', 16, 16, [
+      path.join(publicDir, 'favicon-16x16.png'),
+      path.join(distDir, 'favicon-16x16.png'),
+    ]);
+    await capture('/internal/icon/?mode=transparent', 32, 32, [
+      path.join(publicDir, 'favicon-32x32.png'),
+      path.join(distDir, 'favicon-32x32.png'),
+    ]);
 
     // 2. Generate Apple Touch Icon & PWA App Icons
-    await capture(`${baseUrl}/icon-generator.html?mode=app`, 180, 180, path.join(publicDir, 'apple-touch-icon.png'));
-    await capture(`${baseUrl}/icon-generator.html?mode=app`, 192, 192, path.join(publicDir, 'icon-192x192.png'));
-    await capture(`${baseUrl}/icon-generator.html?mode=app`, 512, 512, path.join(publicDir, 'icon-512x512.png'));
+    await capture('/internal/icon/?mode=app', 180, 180, [
+      path.join(publicDir, 'apple-touch-icon.png'),
+      path.join(distDir, 'apple-touch-icon.png'),
+    ]);
+    await capture('/internal/icon/?mode=app', 192, 192, [
+      path.join(publicDir, 'icon-192x192.png'),
+      path.join(distDir, 'icon-192x192.png'),
+    ]);
+    await capture('/internal/icon/?mode=app', 512, 512, [
+      path.join(publicDir, 'icon-512x512.png'),
+      path.join(distDir, 'icon-512x512.png'),
+    ]);
 
     // 3. Generate Maskable Icon
-    await capture(`${baseUrl}/icon-generator.html?mode=maskable`, 512, 512, path.join(publicDir, 'icon-512x512-maskable.png'));
+    await capture('/internal/icon/?mode=maskable', 512, 512, [
+      path.join(publicDir, 'icon-512x512-maskable.png'),
+      path.join(distDir, 'icon-512x512-maskable.png'),
+    ]);
 
     // 4. Generate Social Sharing Banner (1200x630)
-    const srcImagesDir = path.resolve(__dirname, '../src/assets/images');
-    if (!fs.existsSync(srcImagesDir)) {
-      fs.mkdirSync(srcImagesDir, { recursive: true });
-    }
-    await capture(`${baseUrl}/og-template.html`, 1200, 630, path.join(srcImagesDir, 'og-share-preview.png'));
+    await capture('/internal/og/', 1200, 630, [
+      path.join(srcImagesDir, 'og-share-preview.png'),
+      path.join(distDir, 'images/og-share-preview.png'),
+    ]);
 
     await browser.close();
-    console.log('[Asset Generator] All assets compiled successfully!');
-  } catch (err) {
-    console.error('[Asset Generator] Error during generation:', err);
+    console.log('[Asset Generator] All assets compiled successfully from Astro pages!');
   } finally {
     server.close();
-    console.log('[Asset Generator] Temporary server stopped.');
+    console.log('[Asset Generator] Static server stopped.');
   }
+}
+
+main().catch((err) => {
+  console.error('[Asset Generator] Error during generation:', err);
+  process.exit(1);
 });
