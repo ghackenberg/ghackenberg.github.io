@@ -275,7 +275,18 @@ export default defineConfig({
     customLogger: viteLogger,
     plugins: [tailwindcss(), vitePreSlideCues()],
     optimizeDeps: {
-      include: ['reveal.js', 'howler'],
+      include: [
+        'reveal.js',
+        'howler',
+        'cytoscape',
+        'd3',
+        'sigma',
+        'graphology',
+        'graphology-layout-forceatlas2',
+        '3d-force-graph',
+        'vis-network',
+        'vis-data',
+      ],
     },
     build: {
       chunkSizeWarningLimit: 2000,
