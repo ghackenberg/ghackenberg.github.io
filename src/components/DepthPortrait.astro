@@ -452,20 +452,41 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       const exprMap = new Map<string, FacialExpressionConfig>();
       expressions.forEach(e => exprMap.set(e.id, e));
 
-      const loadPromises = expressions.map(async expr => {
+      async function loadExpressionTextures(expr: FacialExpressionConfig): Promise<LoadedTexturePair> {
         const [imageRes, depthRes] = await Promise.all([
           loadTexture(glCtx, expr.imageSrc),
           loadTexture(glCtx, expr.depthSrc)
         ]);
-        textureCache.set(expr.id, {
+        const pair: LoadedTexturePair = {
           imageTex: imageRes.texture,
           depthTex: depthRes.texture,
           width: depthRes.width,
           height: depthRes.height
-        });
-      });
+        };
+        textureCache.set(expr.id, pair);
+        return pair;
+      }
 
-      Promise.all(loadPromises).then(() => {
+      // Load primary expression immediately for instant interactive render
+      loadExpressionTextures(expressions[0]).then(() => {
+        // Preload remaining expressions in background when browser is idle
+        const secondary = expressions.slice(1);
+        if (secondary.length > 0) {
+          const loadSecondary = () => {
+            secondary.forEach(expr => {
+              loadExpressionTextures(expr).catch(err => {
+                console.warn('Secondary texture load failed:', err);
+              });
+            });
+          };
+          const winWithIdle = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+          if (typeof winWithIdle.requestIdleCallback === 'function') {
+            winWithIdle.requestIdleCallback(loadSecondary, { timeout: 3000 });
+          } else {
+            setTimeout(loadSecondary, 1500);
+          }
+        }
+
         // Enable alpha blending
         glCtx.enable(glCtx.BLEND);
         glCtx.blendFunc(glCtx.SRC_ALPHA, glCtx.ONE_MINUS_SRC_ALPHA);
@@ -522,7 +543,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
           let candidates: { expr: FacialExpressionConfig; baseWeight: number }[] = [];
 
           if (curr.transitions && curr.transitions.length > 0) {
-            const valid = curr.transitions.filter(t => exprMap.has(t.targetId) && t.targetId !== curr.id);
+            const valid = curr.transitions.filter(t => exprMap.has(t.targetId) && t.targetId !== curr.id && textureCache.has(t.targetId));
             if (valid.length > 0) {
               candidates = valid.map(t => ({
                 expr: exprMap.get(t.targetId)!,
@@ -533,8 +554,12 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
 
           if (candidates.length === 0) {
             candidates = expressions
-              .filter(e => e.id !== curr.id)
+              .filter(e => e.id !== curr.id && textureCache.has(e.id))
               .map(e => ({ expr: e, baseWeight: 50 }));
+          }
+
+          if (candidates.length === 0) {
+            return curr;
           }
 
           // Calculate counts and max counts for relative frequency weighting

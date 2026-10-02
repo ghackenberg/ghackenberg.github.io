@@ -421,9 +421,9 @@ const postGalleryItems: GalleryItem[] = await Promise.all(
       const opt = await getImage({
         src: p.data.icon!.src || p.data.icon!,
         format: "webp",
-        width: 640,
-        height: 360,
-        quality: 85
+        width: 480,
+        height: 270,
+        quality: 80
       });
       return {
         id: `post:${p.id}`,
@@ -445,9 +445,9 @@ const projectGalleryItems: GalleryItem[] = await Promise.all(
       const opt = await getImage({
         src: p.data.screenshot!.src || p.data.screenshot!,
         format: "webp",
-        width: 640,
-        height: 360,
-        quality: 85
+        width: 480,
+        height: 270,
+        quality: 80
       });
       return {
         id: `project:${p.id}`,
@@ -469,9 +469,9 @@ const courseGalleryItems: GalleryItem[] = await Promise.all(
       const opt = await getImage({
         src: c.data.screenshot!.src || c.data.screenshot!,
         format: "webp",
-        width: 640,
-        height: 360,
-        quality: 85
+        width: 480,
+        height: 270,
+        quality: 80
       });
       return {
         id: `course:${c.id}`,
@@ -494,9 +494,9 @@ const serviceGalleryItems: GalleryItem[] = await Promise.all(
       const opt = await getImage({
         src: s.data.previewImage!.src || s.data.previewImage!,
         format: "webp",
-        width: 640,
-        height: 360,
-        quality: 85
+        width: 480,
+        height: 270,
+        quality: 80
       });
       return {
         id: `service:${s.id}`,
@@ -518,9 +518,9 @@ const moduleGalleryItems: GalleryItem[] = await Promise.all(
       const opt = await getImage({
         src: m.data.previewImage!.src || m.data.previewImage!,
         format: "webp",
-        width: 640,
-        height: 360,
-        quality: 85
+        width: 480,
+        height: 270,
+        quality: 80
       });
       const [serviceSlug, moduleSlug] = m.id.split('/');
       return {
@@ -543,9 +543,9 @@ const visualizationGalleryItems: GalleryItem[] = await Promise.all(
       const opt = await getImage({
         src: v.data.screenshot!.src || v.data.screenshot!,
         format: "webp",
-        width: 640,
-        height: 360,
-        quality: 85
+        width: 480,
+        height: 270,
+        quality: 80
       });
       return {
         id: `viz:${v.id}`,
