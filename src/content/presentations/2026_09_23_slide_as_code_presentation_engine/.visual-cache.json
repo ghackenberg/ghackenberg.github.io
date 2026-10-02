@@ -1,17 +1,17 @@
 {
   "version": "v1.0",
-  "styleHash": "9551bf81a42cbecb4bcf51cd1e44863d337b664b29ff39be7e8d075d00bf3897",
-  "deckHash": "d684a914f07fa85288dc57c1b93126489461d973c30401a30347eb6cd006f7cf",
+  "styleHash": "96f1749c7f0e2800cc3c60c81052d97305aaf2602f69ed8503c6582c71a9d810",
+  "deckHash": "a7b53320e20a2a6fc84f4e34e6b831b0daf47f29e1726520dc868c96b627bcb7",
   "slides": {
-    "01_titelfolie": "7d43de154c980ca11aef19b6809c590cb3c1840c53bfece3f501b7c4a132f70b",
-    "02_agenda": "46191b776a1152264e9e9387a589f8675cd0a0af309217aa6a7091c355f33a97",
-    "03_motivation_status_quo": "cfb66208059b6830e6965df40975f8f3cc925b48ce4b82e53cb3f1d96d6fb35a",
-    "04_content_format_matrix": "c8ed04560d670014f0ff48f6cc5f513f6b874313d034ea51ddac486224ffb4cb",
-    "05_content_strategie_repurposing": "a5e706f4be6f47e1c9a28e9c653f9642d5c6a6bee78cd067f784dfa47a25f570",
-    "06_evaluierte_alternativen": "e8ed435b172760a8e001979f1b8ecebe2cc1b4e8e87199911b18a193f20ce2d3",
-    "07_technische_umsetzung_architektur": "bd7e3fdb329cad5711223168594c2a83c52266ff74923dcaea62b884ccd814d3",
-    "08_akustische_synchronisation": "3cf6c93532752547ce25631a23ff9f867b13b8c4d3f572254cf0d17b54eb95b0",
-    "09_agentic_workflows_ci_gates": "8e2bc33a58c96aa39e8ca3258d96b8b4aa8115bbb33ce940a39ca2c9e5342cd7",
-    "10_zusammenfassung_und_ausblick": "42b64b630a10dcb2cf5fdd1438c170ac517b0414267a11ac507672777bca441a"
+    "01_titelfolie": "be1f100487f394b9a80a4b3ed05825b3c589181926aac7105b2a7f118c30f098",
+    "02_agenda": "93eb285b54330ccd4d3410be1b9f5bb674ac8690a66129fdb48da0b7450a79ea",
+    "03_motivation_status_quo": "b0acddab7c82861d36c9676c86b07031ee21e7ef1d475b4ced509c25844e970e",
+    "04_content_format_matrix": "d72694986d634dfaab6e3f7de2e36be8a1e1e9e13f2df305fa39bd557b148be4",
+    "05_content_strategie_repurposing": "cbefe49b4d2ad7560d6478c2feb0c2ea5886d19dd0378dbb300f3e16ae6462f7",
+    "06_evaluierte_alternativen": "b7fc3eeb2e88403277393997c3b2f55e7720ac51f70d007044538fdbf7c5d613",
+    "07_technische_umsetzung_architektur": "fca1d1ee3e60672f3b83cefc84edc53e4c8972c145d1abf09d34525794593f40",
+    "08_akustische_synchronisation": "a2652d7b2153f8ff74686c1ed214a33ae5ccfe3ddee1156414fd487d8b8bf197",
+    "09_agentic_workflows_ci_gates": "93a2a1afbf82d74022b95ddf40c8491bfe58962ccaae1ece4aa7a0eedd4ff4be",
+    "10_zusammenfassung_und_ausblick": "61e882ec6646f606cf56150a81ad859949d55a7f6756fc293d85b1ae4409e2a3"
   }
 }
