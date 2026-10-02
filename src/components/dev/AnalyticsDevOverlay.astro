@@ -1265,8 +1265,11 @@ const currentPath = Astro.url.pathname;
     }
 
     private resolveCardTargetPath(cardEl: HTMLElement, cardId: string, collection: string): string | null {
-      // 1. Search for internal anchor link inside card (excluding tag chips)
+      // 1. Search for internal anchor link inside card (or card element itself)
       const anchors = Array.from(cardEl.querySelectorAll<HTMLAnchorElement>('a[href]'));
+      if (cardEl instanceof HTMLAnchorElement && cardEl.hasAttribute('href')) {
+        anchors.unshift(cardEl);
+      }
       for (const a of anchors) {
         if (a.closest('.tag-chip') || a.hasAttribute('data-tag')) continue;
         const href = a.getAttribute('href');

@@ -1078,10 +1078,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         {professionalInterests.map(interest => {
           const mapping = colorMappings[interest.color];
           return (
-            <a 
-              href={`/interests/${interest.slug}/`}
-              class={`glass-card rounded-2xl border ${mapping.border} group flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer block no-underline`}
+            <article 
+              class={`glass-card preview-card relative rounded-2xl border ${mapping.border} group flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer`}
+              data-card-id={interest.slug}
+              data-collection="interests"
             >
+              <!-- Absolute overlay link for card clickability -->
+              <a href={`/interests/${interest.slug}/`} class="absolute inset-0 z-10" aria-label={`Explore ${interest.title}`}></a>
+
               <!-- Artwork Header -->
               <div class="relative w-full aspect-video overflow-hidden bg-slate-950">
                 <img 
@@ -1100,7 +1104,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
               </div>
 
               <!-- Content Body -->
-              <div class="p-6 flex flex-col flex-grow">
+              <div class="preview-card-body p-6 flex flex-col flex-grow">
                 <h3 class={`text-lg font-bold text-gray-100 mb-1 group-hover:text-brand-${interest.color} transition-colors`}>
                   {interest.title}
                 </h3>
@@ -1121,7 +1125,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   </div>
                 </div>
               </div>
-            </a>
+            </article>
           );
         })}
       </div>
