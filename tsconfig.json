@@ -3,7 +3,6 @@
   "compilerOptions": {
     "paths": {
       "@shared/*": ["./shared/*"],
-      "@shared": ["./shared/index.ts"],
       "@components/*": ["./src/components/*"],
       "@layouts/*": ["./src/layouts/*"],
       "@assets/*": ["./src/assets/*"],
