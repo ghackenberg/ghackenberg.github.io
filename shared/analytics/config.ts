@@ -19,14 +19,10 @@ function findProjectRoot(startDir: string): string {
 
 export const PROJECT_ROOT = findProjectRoot(__dirname);
 
-// Load .env from project root, with fallback to legacy sub-package path
+// Load .env from project root
 const projectEnv = path.join(PROJECT_ROOT, '.env');
-const legacyEnv = path.join(PROJECT_ROOT, 'mcp/unified-analytics/.env');
-
 if (fs.existsSync(projectEnv)) {
   dotenv.config({ path: projectEnv });
-} else if (fs.existsSync(legacyEnv)) {
-  dotenv.config({ path: legacyEnv });
 } else {
   dotenv.config(); // default fallback
 }
@@ -52,15 +48,7 @@ export function getConfig(): AppConfig {
   
   let keyFile = process.env.GSC_SERVICE_ACCOUNT_KEY_FILE;
   if (keyFile && !path.isAbsolute(keyFile)) {
-    const inProj = path.resolve(PROJECT_ROOT, keyFile);
-    const inLegacy = path.resolve(PROJECT_ROOT, 'mcp/unified-analytics', keyFile);
-    if (fs.existsSync(inProj)) {
-      keyFile = inProj;
-    } else if (fs.existsSync(inLegacy)) {
-      keyFile = inLegacy;
-    } else {
-      keyFile = inProj;
-    }
+    keyFile = path.resolve(PROJECT_ROOT, keyFile);
   }
 
   const credentialsJson = process.env.GSC_SERVICE_ACCOUNT_JSON;
