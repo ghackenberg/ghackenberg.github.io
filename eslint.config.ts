@@ -60,7 +60,7 @@ export default defineConfig([
   },
   // 4. Architectural Boundaries: restrict cross-domain imports
   {
-    files: ['shared/**/*.ts'],
+    files: ['shared/*.ts', 'shared/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -76,7 +76,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['mcp/**/*.ts'],
+    files: ['mcp/*.ts', 'mcp/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -92,7 +92,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['scripts/**/*.ts'],
+    files: ['scripts/*.ts', 'scripts/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
