@@ -1,0 +1,104 @@
+---
+title: "Das B2B Buying Center"
+subtitle: "Warum Einzelklicks an {cue:hl-sub-gartner}6 bis 10 Entscheidern im Buying-Center{/cue} zerschellen"
+number: "31"
+slideLayout: "grid"
+voiceover: >
+  Ein folgenschwerer Denkfehler im B2B-Marketing ist die Gleichsetzung eines einzelnen Klicks mit einem qualifizierten Unternehmenskunden.
+  {cue:sub} Die Gartner-Forschung belegt, warum Einzelklicks an {cue:hl-sub-gartner}6 bis 10 Entscheidern im Buying-Center{/cue} zerschellen.
+  {cue:box-cfo} Der Financial Buyer verlangt: {cue:hl-gartner-gremium}Strikte ROI-Nachweise und minimale finanzielle Risiken vor jeder Freigabe{/cue}.
+  {cue:box-cio} Die IT- und Sicherheitsverantwortlichen prüfen: {cue:hl-gartner-quellen}Schnittstellen, DSGVO-Compliance und nahtlose Architektur-Integration{/cue}.
+  {cue:box-user} Die operativen Fachanwender fordern: {cue:hl-gartner-singleclick}Hohe Benutzerfreundlichkeit und sofortige Workflow-Entlastung im Arbeitsalltag{/cue}.
+  {cue:box-sponsor} Der Executive Sponsor entscheidet nach: {cue:hl-gartner-abm}Langfristiger strategischer Differenzierung und Marktrelevanz für das Gesamtunternehmen{/cue}.
+notes: |
+  - Zeit: 54:00 - 56:00 Min.
+  - Primärquelle: Gartner B2B Buying Journey Research.
+  - Wichtig: Nicht ein Mensch kauft B2B-Software oder Industrieanlagen, sondern ein Gremium.
+references:
+  - type: online
+    id: "gartner-2023-b2b-buying"
+    author: "Gartner"
+    title: "New B2B Buying Journey & Its Implications for Sales and Marketing"
+    siteName: "Gartner Research"
+    year: 2023
+    url: "https://www.gartner.com/en/sales/insights/b2b-buying-journey"
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="31"
+  totalSlides="42"
+  cols={2}
+>
+  <BentoCard
+    cue="box-cfo"
+    title="1. Financial Buyer (CFO)"
+    accent="amber"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "target",
+          title: "Kosten & Investitionsrisiko",
+          desc: "Zahlengetriebene Bewertung: {cue:hl-gartner-gremium}Strikte ROI-Nachweise und minimale finanzielle Risiken vor jeder Freigabe{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-cio"
+    title="2. Technical Buyer (IT / Tech)"
+    accent="blue"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "shield",
+          title: "Architektur & Sicherheit",
+          desc: "Recherche technischer Details [@gartner-2023-b2b-buying]: {cue:hl-gartner-quellen}Schnittstellen, DSGVO-Compliance und nahtlose Architektur-Integration{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-user"
+    title="3. End User (Fachbereich)"
+    accent="cyan"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "zap",
+          title: "Usability & Workflow",
+          desc: "Akzeptanz im Team: {cue:hl-gartner-singleclick}Hohe Benutzerfreundlichkeit und sofortige Workflow-Entlastung im Arbeitsalltag{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-sponsor"
+    title="4. Executive Sponsor (C-Level)"
+    accent="purple"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "sparkles",
+          title: "Strategische Relevanz",
+          desc: "Visionäre Ausrichtung: {cue:hl-gartner-abm}Langfristiger strategischer Differenzierung und Marktrelevanz für das Gesamtunternehmen{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</GridSlide>

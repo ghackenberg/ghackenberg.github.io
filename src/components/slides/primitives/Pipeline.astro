@@ -85,7 +85,7 @@ function getStepAccent(step: Step, idx: number): string {
   <div
     id={elementId}
     data-cue={cue}
-    class={`pipeline-container-vertical w-full h-full flex flex-col justify-between gap-4 min-h-0 ${className}`}
+    class={`pipeline-container-vertical w-full h-full flex flex-col justify-between gap-3.5 lg:gap-4 min-h-0 ${className}`}
   >
     {steps.map((step, idx) => {
       const accent = getStepAccent(step, idx);
@@ -95,6 +95,7 @@ function getStepAccent(step: Step, idx: number): string {
           id={stepId}
           data-cue={step.cue}
           data-accent={accent}
+          data-autofit
           class="step-row flex-1 rounded-2xl border border-slate-700/80 bg-slate-900/95 light:border-slate-300 light:bg-white shadow-lg flex items-stretch transition-all duration-300 relative overflow-hidden min-h-0"
         >
           <!-- Integrated Left Glass Block -->
@@ -103,7 +104,7 @@ function getStepAccent(step: Step, idx: number): string {
           </div>
 
           <!-- Center: Title & description -->
-          <div class="flex-1 flex flex-col justify-center min-w-0 py-4 px-6 lg:px-8 gap-1">
+          <div class="step-text-container flex-1 flex flex-col justify-center min-w-0 py-3 px-6 lg:px-8 gap-1">
             <h4 class="text-2xl lg:text-[28px] font-black text-slate-100 light:text-slate-900 tracking-tight leading-snug" set:html={renderSlideCues(step.title)} />
             {step.desc && (
               <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed font-normal" set:html={renderSlideCues(step.desc)} />
@@ -129,6 +130,7 @@ function getStepAccent(step: Step, idx: number): string {
             id={stepId}
             data-cue={step.cue}
             data-accent={accent}
+            data-autofit
             style="--content-scale: 1;"
             class="step-card flex-1 h-full rounded-3xl border border-slate-700/80 bg-slate-900/95 light:border-slate-300 light:bg-white shadow-2xl flex flex-col justify-between relative transition-all duration-300 min-h-0 min-w-0 overflow-hidden"
           >
@@ -329,6 +331,32 @@ function getStepAccent(step: Step, idx: number): string {
 </script>
 
 <style>
+  /* Step Row dynamic auto-fit typography */
+  .step-row {
+    --scale: var(--content-scale, 1);
+  }
+  .step-row[data-autofit] h4 {
+    font-size: calc(28px * var(--content-scale, 1)) !important;
+    line-height: 1.25 !important;
+  }
+  .step-row[data-autofit] p {
+    font-size: calc(24px * var(--content-scale, 1)) !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Step Card dynamic auto-fit typography */
+  .step-card {
+    --scale: var(--content-scale, 1);
+  }
+  .step-card[data-autofit] h4 {
+    font-size: calc(28px * var(--content-scale, 1)) !important;
+    line-height: 1.25 !important;
+  }
+  .step-card[data-autofit] p {
+    font-size: calc(24px * var(--content-scale, 1)) !important;
+    line-height: 1.35 !important;
+  }
+
   /* Pipeline Connector Arrows Animation: coupled to following step card */
   .pipeline-arrow {
     transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),

@@ -1,0 +1,72 @@
+---
+title: "Mentale Verfügbarkeit im B2B"
+subtitle: "Warum die Marke gewinnt, die {cue:hl-sub-sharp}schon vor Beginn der Suche im Gedächtnis verankert ist{/cue}"
+number: "30"
+slideLayout: "story-hero"
+voiceover: >
+  Die verhaltenswissenschaftliche Forschung von Professor Byron Sharp liefert das missing link zwischen Werbung und Kaufverhalten.
+  {cue:sub} Mentale Verfügbarkeit entscheidet darüber, welche Marke {cue:hl-sub-sharp}schon vor Beginn der Suche im Gedächtnis verankert ist{/cue}.
+  {cue:vis-memory} Das kognitive Gedächtnisnetzwerk zeigt, wie neuronale Pfade durch konsistente Markensignale aktiviert werden.
+  {cue:card-sharp} Das Prinzip der Mental Availability belegt: {cue:hl-sharp-mental}B2B-Käufer erstellen ihre Shortlist mental lange vor dem ersten Google-Suchschlitz{/cue}. Gewinner ist nicht der beste Bieter, sondern {cue:hl-sharp-remember}diejenige Marke, die bei akutem Bedarf als vertraute Lösung erinnert wird{/cue}. Hier kommen Category Entry Points ins Spiel: {cue:hl-sharp-cep}Werbung muss spezifische Auslöser-Situationen wie Maschinenausfall oder Skalierung besetzen{/cue}. Durch konsistente Distinctive Assets im Feed {cue:hl-sharp-assets}baut bezahlte Werbung kognitive Verknüpfungen für künftige Bedarfsfälle auf{/cue}.
+notes: |
+  - Zeit: 52:00 - 54:00 Min.
+  - Primärquelle: Prof. Byron Sharp (Oxford University Press 2010).
+  - Wichtig: Category Entry Points (CEPs) als neuronale Trigger im B2B-Kaufprozess.
+references:
+  - type: book
+    id: "sharp-2010-how-brands-grow"
+    author: "Sharp, Byron"
+    title: "How Brands Grow: What Marketers Don't Know"
+    publisher: "Oxford University Press"
+    year: 2010
+    url: "https://global.oup.com/academic/product/how-brands-grow-9780195573565"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import memoryImage from '../images/hero_mentale_verfuegbarkeit_memory.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="30"
+  totalSlides="42"
+  cue="vis-memory"
+  imageCue="vis-memory"
+  imageSrc={memoryImage}
+  imageAlt="Technische Illustration eines neuronalen Assoziationsnetzwerks mit Category Entry Points und Distinctive Assets"
+  imageTitle="Mentale Verfügbarkeit & Category Entry Points nach Byron Sharp"
+  ratio="55/45"
+>
+  <BentoCard
+    slot="narrative"
+    cue="card-sharp"
+    title="Mentale Verfügbarkeit [@sharp-2010-how-brands-grow]"
+    accent="purple"
+  >
+    <CalloutBox type="statement" title="Kognitive Verankerung">
+      <p>Das Shortlist-Phänomen: {cue:hl-sharp-mental}B2B-Käufer erstellen ihre Shortlist mental lange vor dem ersten Google-Suchschlitz{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "target",
+          title: "Gedächtnis-Verankerung",
+          desc: "Im Moment des Bedarfs entscheidet Vertrautheit: {cue:hl-sharp-remember}diejenige Marke, die bei akutem Bedarf als vertraute Lösung erinnert wird{/cue}, gewinnt in 80 %+ der Fälle."
+        },
+        {
+          icon: "zap",
+          title: "Category Entry Points (CEPs)",
+          desc: "Effektive Kampagnen zielen auf Trigger: {cue:hl-sharp-cep}Werbung muss spezifische Auslöser-Situationen wie Maschinenausfall oder Skalierung besetzen{/cue}."
+        },
+        {
+          icon: "shield",
+          title: "Distinctive Brand Assets",
+          desc: "Durch visuelle und begriffliche Konstanz {cue:hl-sharp-assets}baut bezahlte Werbung kognitive Verknüpfungen für künftige Bedarfsfälle auf{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</StoryHeroSlide>

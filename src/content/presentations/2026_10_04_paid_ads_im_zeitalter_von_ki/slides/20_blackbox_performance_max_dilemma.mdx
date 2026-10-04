@@ -1,0 +1,95 @@
+---
+title: "Das Performance-Max-Dilemma"
+subtitle: "Der Tausch von strategischer Kontrolle gegen {cue:hl-sub-pmax}algorithmische Black-Box-Distribution{/cue}"
+number: "20"
+slideLayout: "grid"
+voiceover: >
+  Mit Googles Performance Max Kampagnen erreicht die algorithmische Automatisierung ihren vorläufigen Höhepunkt.
+  {cue:sub} Das Performance-Max-Dilemma markiert den {cue:hl-sub-pmax}Tausch von strategischer Kontrolle gegen algorithmische Black-Box-Distribution{/cue}.
+  {cue:box-omni} Erstens die Plattform-Chance: {cue:hl-pmax-automatisierung}Vollautomatisierte Asset-Kombination und kanalübergreifende Ausspielung{/cue} über alle Google-Netzwerke hinweg.
+  {cue:box-predictive} Zweitens Predictive Bidding: {cue:hl-pmax-skalierung}Neuronale Netze optimieren auf maximale Konversionen innerhalb des Zielbudgets{/cue}.
+  {cue:box-blackbox} Drittens das Transparenz-Vakuum: {cue:hl-pmax-intransparenz}Vollständige Intransparenz über tatsächliche Suchbegriffe und Platzierungen{/cue}.
+  {cue:box-kannibalisierung} Viertens die Fehlallokation: {cue:hl-pmax-kannibalisierung}Budgetverbrennung durch Klick-Spam auf Casual-Apps und Kannibalisierung von Eigenmarken{/cue}.
+notes: |
+  - Zeit: 35:00 - 37:00 Min.
+  - Diskussion: Wann PMax im B2B funktioniert (nur mit First-Party-Data und CRM-Offline-Conversions) und wann es scheitert.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="20"
+  totalSlides="42"
+  cols={2}
+>
+  <BentoCard
+    cue="box-omni"
+    title="Omnichannel-Orchestrierung"
+    accent="blue"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "zap",
+          title: "Kanalübergreifend",
+          desc: "Kampagnen bespielen das gesamte Ökosystem: {cue:hl-pmax-automatisierung}Vollautomatisierte Asset-Kombination und kanalübergreifende Ausspielung{/cue} ohne manuelle Silos."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-predictive"
+    title="Predictive AI Bidding"
+    accent="cyan"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "trending-up",
+          title: "Algorithmische Skalierung",
+          desc: "Neuronale Netze finden ungesehene Konversionspfade: {cue:hl-pmax-skalierung}Neuronale Netze optimieren auf maximale Konversionen innerhalb des Zielbudgets{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-blackbox"
+    title="Intransparente Blackbox"
+    accent="amber"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "cross",
+          title: "Fehlende Einsicht",
+          desc: "Werbetreibende erhalten kaum Rohdaten: {cue:hl-pmax-intransparenz}Vollständige Intransparenz über tatsächliche Suchbegriffe und Platzierungen{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-kannibalisierung"
+    title="Budget-Kannibalisierung"
+    accent="neutral"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "alert",
+          title: "Gefahr von Klick-Müll",
+          desc: "Ohne strikte Brand-Exclusions neigt PMax zu {cue:hl-pmax-kannibalisierung}Budgetverbrennung durch Klick-Spam auf Casual-Apps und Kannibalisierung von Eigenmarken{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</GridSlide>

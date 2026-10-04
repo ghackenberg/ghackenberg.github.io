@@ -1,0 +1,69 @@
+---
+title: "Agenda & Modulübersicht"
+subtitle: "Gliederung des Fachvortrags in {cue:hl-sub-agenda}6 geschlossene Fachmodule{/cue}"
+number: "02"
+slideLayout: "pipeline"
+voiceover: >
+  Unsere heutige Agenda führt uns systematisch von der makroökonomischen Evidenz bis zum konkreten Unternehmens-Playbook.
+  {cue:sub} Sie gliedert diesen Vortrag in {cue:hl-sub-agenda}sechs didaktische Fachmodule{/cue}.
+  {cue:step-01} Zunächst analysieren wir den Makro-Shift der Websuche und die empirische {cue:hl-agenda-01}Realität sinkender Klickraten und Zero-Click-Suchen{/cue}.
+  {cue:step-02} Anschließend betrachten wir die Kognitionspsychologie: Blickverhalten, Banner Blindness und {cue:hl-agenda-02}die Reaktanz professioneller B2B-Käufer{/cue}.
+  {cue:step-03} Block drei widmet sich der Spieltheorie: Generalized Second Price Auktionen, Qualitätsfaktoren und {cue:hl-agenda-03}Bayesianische Banditen im Smart Bidding{/cue}.
+  {cue:step-04} Danach untersuchen wir generative Antwortsysteme und die neuen {cue:hl-agenda-04}Monetarisierungsmodelle von Google, Perplexity und OpenAI{/cue}.
+  {cue:step-05} Im fünften Block beleuchten wir B2B Social Media: Das 95-zu-5-Gesetz, Thought Leader Ads und {cue:hl-agenda-05}die Attributionsfalle Dark Social{/cue}.
+  {cue:step-06} Schließlich schließen wir mit der Full-Funnel-Orchestrierung, Budgetierungsmatrizen und {cue:hl-agenda-06}einem konkreten 90-Tage-Implementierungsplan{/cue}.
+notes: |
+  - Zeit: 2:00 - 4:00 Min.
+  - Didaktik: Dem Publikum signalisieren, dass wir Theorie und Spieltheorie mit praktischer B2B-Führungskompetenz verbinden.
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="02"
+  totalSlides="42"
+>
+  <Pipeline
+    direction="vertical"
+    steps={[
+      {
+        cue: "step-01",
+        num: "01",
+        title: "Makro-Ökonomie & Zero-Click",
+        desc: "Empirische Klickverteilung, 1%-Paradoxon und die {cue:hl-agenda-01}Realität sinkender Klickraten und Zero-Click-Suchen{/cue}."
+      },
+      {
+        cue: "step-02",
+        num: "02",
+        title: "Kognitionspsychologie & Wahrnehmung",
+        desc: "Selective Attention, Information Foraging, Pinball-Pattern und {cue:hl-agenda-02}die Reaktanz professioneller B2B-Käufer{/cue}."
+      },
+      {
+        cue: "step-03",
+        num: "03",
+        title: "Auktionsmechanik & Bidding-Algorithmen",
+        desc: "Spieltheorie von GSP-Auktionen, Ad Rank, Vektor-Matching und {cue:hl-agenda-03}Bayesianische Banditen im Smart Bidding{/cue}."
+      },
+      {
+        cue: "step-04",
+        num: "04",
+        title: "KI-Antwortmaschinen & Neue Werbeformate",
+        desc: "Generative Synthese, PMax in AI Overviews, Sponsored Agents und {cue:hl-agenda-04}Monetarisierungsmodelle von Google, Perplexity und OpenAI{/cue}."
+      },
+      {
+        cue: "step-05",
+        num: "05",
+        title: "B2B Social Media & Mentale Verfügbarkeit",
+        desc: "95:5-Gesetz nach John Dawes, Thought Leader Ads und {cue:hl-agenda-05}die Attributionsfalle Dark Social{/cue}."
+      },
+      {
+        cue: "step-06",
+        num: "06",
+        title: "Full-Funnel-Architektur & B2B-Playbook",
+        desc: "Die 3-Säulen-Integration, Binet-Field-Budgetmatrix und {cue:hl-agenda-06}ein konkreter 90-Tage-Implementierungsplan{/cue}."
+      }
+    ]}
+  />
+</PipelineSlide>

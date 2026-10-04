@@ -1,0 +1,36 @@
+---
+title: "Nutzerpsychologie & Blickverhalten"
+subtitle: "Warum das Gehirn Werbung filtert und wie {cue:hl-sec2-sub}selektive Aufmerksamkeit wirkt{/cue}"
+number: "07"
+slideLayout: "section"
+voiceover: >
+  Nachdem wir die makroökonomische Klick-Realität etabliert haben, wenden wir uns der menschlichen Wahrnehmung zu.
+  {cue:sub} In Block zwei analysieren wir, warum das menschliche Gehirn Werbung filtert und wie {cue:hl-sec2-sub}selektive Aufmerksamkeit wirkt{/cue}.
+  {cue:card-divider-02} Dahinter steht eine psychologische Kernfrage:
+  {cue:card-leitfrage-02} {cue:hl-sec2-kognition}Warum meiden Nutzer bezahlte Links, selbst wenn der Inhalt hochgradig relevant ist?{/cue}
+  {cue:card-bridge-02} Die Antwort liefert die Kognitionsforschung: {cue:hl-sec2-foraging}Information Foraging, Eye-Tracking-Muster und der unbewusste Dodge-Effekt{/cue}.
+notes: |
+  - Zeit: 12:00 - 12:30 Min.
+  - Zäsurfolie: Übergang von Marktdaten zu kognitionspsychologischen Wirkprinzipien.
+  - Den Raum öffnen für Diskussionen über menschliche Wahrnehmungsfilter.
+---
+import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
+
+<SectionSlide
+  chapter="Block 02 / 06 · Kognitionspsychologie"
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  dividerCue="card-divider-02"
+  questionCue="card-leitfrage-02"
+  bridgeCue="card-bridge-02"
+  slideNumber="07"
+  totalSlides="42"
+>
+  <div slot="question" class="text-3xl lg:text-4xl xl:text-[42px] font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+    „Warum meiden Nutzer bezahlte Links, selbst wenn {cue:hl-sec2-kognition}der Inhalt hochgradig relevant ist{/cue}?“
+  </div>
+
+  <div slot="bridge" class="text-xl lg:text-2xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+    Vom visuellen Suchmuster zur kognitiven Last: Die Mechanismen von {cue:hl-sec2-foraging}Information Foraging, Eye-Tracking und selektiver Aufmerksamkeit{/cue}.
+  </div>
+</SectionSlide>

@@ -1,0 +1,67 @@
+---
+title: "Perplexity AI: 'Answer Purity'"
+subtitle: "Der Spagat zwischen gesponserten Folgefragen und {cue:hl-sub-purity}dem Schutz akademischer Neutralität{/cue}"
+number: "24"
+slideLayout: "split"
+voiceover: >
+  Einen gänzlich anderen Weg als Google wählte der KI-Suchpionier Perplexity in seiner Monetarisierungsstrategie.
+  {cue:sub} Perplexity balanciert zwischen gesponserten Folgefragen und {cue:hl-sub-purity}dem Schutz akademischer Neutralität{/cue}.
+  {cue:col-experiment} Das Werbe-Experiment mit Markenpartnern: {cue:hl-perpl-followup}Perplexity führte Sponsored Follow-up Questions als anklickbare Folgefragen ein{/cue}. Gleichzeitig etablierte das Startup ein {cue:hl-perpl-revshare}Revenue-Sharing-Modell mit Fachverlagen für zitierte Quellen{/cue}.
+  {cue:col-rueckzug} Die strategische Korrektur im Jahr 2026: {cue:hl-perpl-purity}Perplexity zog sich von aggressiven Werbeformaten zurück, um die Answer Purity zu sichern{/cue}. Der Schutz des Vertrauens als objektive Recherchemaschine {cue:hl-perpl-usp}gilt als wichtigster USP gegen Googles werbeüberladene Trefferlisten{/cue}.
+notes: |
+  - Zeit: 41:30 - 43:30 Min.
+  - Entwicklung: Experimente mit gesponserten Prompts $\rightarrow$ Rückzug zugunsten von Pro-Subskriptionen und Enterprise-Lizenzen.
+  - Lehre: Vertrauen in KI-Synthesen ist fragil; Werbung zerstört schnell die wahrgenommene Objektivität.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="24"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-experiment"
+    title="Das Sponsoring-Experiment"
+    accent="blue"
+  >
+    <CalloutBox type="statement" title="Monetarisierungs-Ansatz">
+      <p>Kontextuelles Sponsoring: {cue:hl-perpl-followup}Perplexity führte Sponsored Follow-up Questions als anklickbare Folgefragen ein{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "globe",
+          title: "Publisher Revenue Sharing",
+          desc: "Um Verlage nicht zu enteignen, schuf Perplexity ein {cue:hl-perpl-revshare}Revenue-Sharing-Modell mit Fachverlagen für zitierte Quellen{/cue} zur Erlösbeteiligung."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-rueckzug"
+    title="Der 'Answer Purity'-Kurs"
+    accent="neutral"
+  >
+    <CalloutBox type="statement" title="Strategischer USP">
+      <p>Answer Purity Doktrin: {cue:hl-perpl-purity}Perplexity zog sich von aggressiven Werbeformaten zurück, um die Answer Purity zu sichern{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "check",
+          title: "Differenzierung gegen Google",
+          desc: "Die strikte Trennung von Antwort und Monetarisierung {cue:hl-perpl-usp}gilt als wichtigster USP gegen Googles werbeüberladene Trefferlisten{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

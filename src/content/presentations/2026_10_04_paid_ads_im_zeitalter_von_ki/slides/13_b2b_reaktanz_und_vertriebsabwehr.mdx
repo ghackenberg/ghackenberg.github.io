@@ -1,0 +1,96 @@
+---
+title: "B2B-Reaktanz & Vertriebsabwehr"
+subtitle: "Psychologische Schutzmechanismen professioneller Einkäufer {cue:hl-sub-reaktanz}gegen plumpe Lead-Fallen{/cue}"
+number: "13"
+slideLayout: "grid"
+voiceover: >
+  Professionelle Entscheidungsträger im B2B agieren unter völlig anderen kognitiven Rahmenbedingungen als Endkonsumenten.
+  {cue:sub} Sie entwickeln ausgefeilte Schutzmechanismen {cue:hl-sub-reaktanz}gegen plumpe Lead-Fallen{/cue}.
+  {cue:box-sdr} Erstens die Angst vor Kaltakquise: {cue:hl-reaktanz-sdr}Jeder Formularausfüllung folgt die Furcht vor penetranten Vertriebsanrufen{/cue}.
+  {cue:box-fake} Zweitens die Gegenwehr: {cue:hl-reaktanz-fake}Über vierzig Prozent aller technischen Entscheider nutzen Fake-Daten oder Wegwerf-E-Mails{/cue}.
+  {cue:box-reaktanz} Drittens psychologische Reaktanz: {cue:hl-reaktanz-autonomie}Gated Content wird als unzulässiger Entzug der Entscheidungsautonomie empfunden{/cue}.
+  {cue:box-souveraen} Viertens der Lösungsansatz: {cue:hl-reaktanz-ungated}Barrierefreie Fachinhalte ohne Paywall bauen das nötige Vertrauen im Buying Center auf{/cue}.
+notes: |
+  - Zeit: 22:30 - 24:30 Min.
+  - Theorie: Psychologische Reaktanz (Jack Brehm).
+  - Wichtig: B2B-Käufer wollen kaufen, aber sie hassen es, plump „verkauft“ zu werden.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="13"
+  totalSlides="42"
+  cols={2}
+>
+  <BentoCard
+    cue="box-sdr"
+    title="Vertriebsbelagerung & SDR-Furcht"
+    accent="amber"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "alert",
+          title: "Aggressive Kaltakquise",
+          desc: "B2B-Entscheider wissen aus Erfahrung: {cue:hl-reaktanz-sdr}Jeder Formularausfüllung folgt die Furcht vor penetranten Vertriebsanrufen{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-fake"
+    title="Systematische Datenabwehr"
+    accent="neutral"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "cross",
+          title: "Verzerrung im CRM",
+          desc: "Um Content dennoch einzusehen: {cue:hl-reaktanz-fake}Über vierzig Prozent aller technischen Entscheider nutzen Fake-Daten oder Wegwerf-E-Mails{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-reaktanz"
+    title="Psychologische Reaktanz"
+    accent="purple"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "shield",
+          title: "Verteidigung der Autonomie",
+          desc: "Nach Jack Brehm gilt: {cue:hl-reaktanz-autonomie}Gated Content wird als unzulässiger Entzug der Entscheidungsautonomie empfunden{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    cue="box-souveraen"
+    title="Souveräner Ungated Content"
+    accent="emerald"
+    density="compact"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "check",
+          title: "Wahre Wertschöpfung",
+          desc: "Erfolgreiche B2B-Marken setzen auf {cue:hl-reaktanz-ungated}Barrierefreie Fachinhalte ohne Paywall bauen das nötige Vertrauen im Buying Center auf{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</GridSlide>

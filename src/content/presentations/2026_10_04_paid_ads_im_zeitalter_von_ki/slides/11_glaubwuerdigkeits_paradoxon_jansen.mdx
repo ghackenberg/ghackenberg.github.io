@@ -1,0 +1,100 @@
+---
+title: "Das Glaubwürdigkeits-Paradoxon"
+subtitle: "Vorurteil gegen bezahlte Links versus {cue:hl-sub-jansen}objektiv identische inhaltliche Relevanz{/cue}"
+number: "11"
+slideLayout: "split"
+voiceover: >
+  Eine der faszinierendsten Pionierstudien der Pennsylvania State University deckt eine tiefe Kluft zwischen Vorurteil und Realität auf.
+  {cue:sub} Das Glaubwürdigkeits-Paradoxon von Jansen und Resnick vergleicht Vorurteile mit {cue:hl-sub-jansen}objektiv identischer inhaltlicher Relevanz{/cue}.
+  {cue:chart-jansen} Im empirischen Blindtest zeigt sich die verblüffende Wahrheit: {cue:hl-jansen-bias}Mit Label brechen die Klick- und Relevanzwerte bezahlter Treffer auf vierunddreißig Prozent ein{/cue}.
+  {cue:card-blind} Die Ursachenanalyse belegt jedoch: {cue:hl-jansen-blind}Ohne Werbekennzeichnung bewerten Nutzer Ads und organische Links als exakt gleichwertig{/cue}. Nicht der Inhalt scheitert, sondern {cue:hl-jansen-label}das psychologische Werbe-Etikett löst den kognitiven Abwehrmechanismus aus{/cue}. B2B-Einkäufer meiden gesponserte Links {cue:hl-jansen-verkaufsdruck}vor allem aus Furcht vor unmittelbarem Verkaufsdruck{/cue}.
+notes: |
+  - Zeit: 18:30 - 20:30 Min.
+  - Primärquelle: Jansen & Resnick (JASIST 2006).
+  - Wichtigste Erkenntnis: Die Barriere liegt in der Kennzeichnung („Gesponsert“), nicht in der schlechten Qualität der Landingpage.
+references:
+  - type: article
+    id: "jansen-2006-sponsored-search"
+    author: "Jansen, Bernard J. and Resnick, Mimi"
+    title: "An examination of searcher's perceptions of nonsponsored and sponsored links during ecommerce Web searching"
+    journal: "Journal of the American Society for Information Science and Technology"
+    volume: "57"
+    number: "14"
+    pages: "1949--1961"
+    year: 2006
+    doi: "10.1002/asi.20425"
+    url: "https://doi.org/10.1002/asi.20425"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="11"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="chart-jansen"
+    title="Relevanzbewertung im Experiment [@jansen-2006-sponsored-search]"
+    accent="blue"
+  >
+    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+      Wahrgenommene Relevanz nach Jansen & Resnick: {cue:hl-jansen-bias}Mit Label brechen die Klick- und Relevanzwerte bezahlter Treffer auf vierunddreißig Prozent ein{/cue}:
+    </p>
+    <BarChart
+      unit="%"
+      max={100}
+      items={[
+        {
+          label: "Organische Treffer (mit Label)",
+          value: 82,
+          formattedValue: "82% Relevanz",
+          accent: "blue"
+        },
+        {
+          label: "Paid Ads (Doppelblind ohne Label)",
+          value: 81,
+          formattedValue: "81% Relevanz",
+          accent: "emerald"
+        },
+        {
+          label: "Paid Ads (mit 'Gesponsert'-Label)",
+          value: 34,
+          formattedValue: "34% Relevanz",
+          accent: "rose"
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="card-blind"
+    title="Die verblindete Realität"
+    accent="cyan"
+  >
+    <CalloutBox type="statement" title="Der 'Label-Effekt'">
+      <p>Entscheidende Laborerkenntnis: {cue:hl-jansen-blind}Ohne Werbekennzeichnung bewerten Nutzer Ads und organische Links als exakt gleichwertig{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "alert",
+          title: "Das psychologische Etikett",
+          desc: "Nicht der Inhalt scheitert, sondern {cue:hl-jansen-label}das psychologische Werbe-Etikett löst den kognitiven Abwehrmechanismus aus{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Bedeutung für B2B-Käufer",
+          desc: "Professionelle B2B-Einkäufer meiden gesponserte Links {cue:hl-jansen-verkaufsdruck}vor allem aus Furcht vor unmittelbarem Verkaufsdruck{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

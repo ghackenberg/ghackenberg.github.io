@@ -1,0 +1,101 @@
+---
+title: "Die Klick-Hierarchie: Paid vs. Organisch"
+subtitle: "Empirische Verteilung der Klickraten auf der {cue:hl-sub-ctr}klassischen und modernen SERP{/cue}"
+number: "04"
+slideLayout: "split"
+voiceover: >
+  Betrachten wir als Nächstes die fundamentale Asymmetrie zwischen organischen Suchergebnissen und bezahlten Anzeigen.
+  {cue:sub} Die empirische Auswertung zeigt die Klickraten auf der {cue:hl-sub-ctr}klassischen und modernen SERP{/cue}.
+  {cue:chart-ctr} Untersuchen wir die {cue:hl-ctr-kurve}Ranking-Position auf der Suchergebnisseite{/cue}: Während organische Treffer auf {cue:hl-ctr-pos1}Position eins knapp vierzig Prozent aller Klicks{/cue} auf sich vereinen, erreicht eine Top-Textanzeige im Durchschnitt lediglich rund zwei Prozent.
+  {cue:card-takeaways-04} Für das B2B-Marketing bedeutet das: {cue:hl-ctr-asymmetrie}Organische Sichtbarkeit erzielt ein Vielfaches an Klickvolumen{/cue}. Suchanzeigen eignen sich primär als {cue:hl-ctr-chirurgisch}chirurgisches Werkzeug für transaktionale Kaufabsichten{/cue} und den gezielten {cue:hl-ctr-markenschutz}Schutz des eigenen Markennamens{/cue}.
+notes: |
+  - Zeit: 6:00 - 8:00 Min.
+  - Daten: First Page Sage 2024 CTR Meta-Studie.
+  - Kernaussage: Paid Ads können SEO mengenmäßig niemals ersetzen, aber sie besetzen die exklusivste Sichtbarkeitszone für sofortige Kaufentscheidungen.
+references:
+  - type: online
+    id: "firstpagesage-2024-ctr"
+    author: "First Page Sage"
+    title: "Google Click-Through Rates (CTRs) by Ranking Position in 2026"
+    siteName: "First Page Sage Research"
+    year: 2026
+    url: "https://firstpagesage.com/reports/google-click-through-rates-ctrs-by-ranking-position/"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="04"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="chart-ctr"
+    title="Durchschnittliche CTR nach Position [@firstpagesage-2024-ctr]"
+    accent="blue"
+  >
+    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+      Vergleich der relativen Klickverteilung nach {cue:hl-ctr-kurve}Ranking-Position auf der Suchergebnisseite{/cue}:
+    </p>
+    <BarChart
+      unit="%"
+      max={45}
+      items={[
+        {
+          label: "1. Organischer Treffer",
+          value: 39.8,
+          cue: "hl-ctr-pos1",
+          highlightColor: "blue",
+          color: "blue"
+        },
+        {
+          label: "2. Organischer Treffer",
+          value: 18.7,
+          color: "cyan"
+        },
+        {
+          label: "3. Organischer Treffer",
+          value: 10.2,
+          color: "teal"
+        },
+        {
+          label: "Top Paid Search Ad (Pos. 1)",
+          value: 2.1,
+          color: "amber"
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="card-takeaways-04"
+    title="Strategische Einordnung für B2B"
+    accent="neutral"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "trending-up",
+          title: "Das Volumen-Gefälle",
+          desc: "Selbst bei maximaler Gebotsbereitschaft gilt: {cue:hl-ctr-asymmetrie}Organische Sichtbarkeit erzielt ein Vielfaches an Klickvolumen{/cue} gegenüber reinen Textanzeigen."
+        },
+        {
+          icon: "target",
+          title: "Fokus auf High-Intent",
+          desc: "Suchanzeigen sind kein Massenmedium, sondern ein {cue:hl-ctr-chirurgisch}chirurgisches Werkzeug für transaktionale Kaufabsichten{/cue} mit unmittelbarer Abschlussreife."
+        },
+        {
+          icon: "check",
+          title: "Defensive Brand-Absicherung",
+          desc: "Unverzichtbar ist Paid Search vor allem für den {cue:hl-ctr-markenschutz}Schutz des eigenen Markennamens{/cue} gegen Abwerbekampagnen aggressiver Mitbewerber."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

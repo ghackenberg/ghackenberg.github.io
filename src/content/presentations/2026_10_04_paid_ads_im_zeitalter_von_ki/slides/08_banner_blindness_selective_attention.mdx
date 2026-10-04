@@ -1,0 +1,67 @@
+---
+title: "Banner Blindness & Selektive Aufmerksamkeit"
+subtitle: "Wie das Gehirn visuelle Werbereize {cue:hl-sub-blindness}automatisiert und unbewusst ausblendet{/cue}"
+number: "08"
+slideLayout: "story-hero"
+voiceover: >
+  Die kognitive Psychologie liefert eine fundamentale Erklärung dafür, warum viele Nutzer Anzeigen gar nicht erst registrieren.
+  {cue:sub} Banner Blindness beschreibt, wie das Gehirn visuelle Werbereize {cue:hl-sub-blindness}automatisiert und unbewusst ausblendet{/cue}.
+  {cue:vis-eyetracking} Das Eye-Tracking-Labor zeigt das Phänomen: Blickpfade springen aktiv über Werbeblöcke hinweg.
+  {cue:card-blindness} Die Eye-Tracking-Befunde der Nielsen Norman Group belegen: {cue:hl-blind-dodge}Blickverläufe springen aktiv über Textanzeigen hinweg{/cue}, selbst wenn diese die Lösung enthalten. Ursache ist die kognitive Aufmerksamkeitsökonomie: {cue:hl-blind-last}Nutzer optimieren ihre mentale Kapazität und filtern Störreize{/cue} konsequent heraus. Gesteuert von gelernten Heuristiken meidet das Auge {cue:hl-blind-heuristik}visuelle Muster und typische Anzeigenpositionen{/cue} instinktiv.
+notes: |
+  - Zeit: 12:30 - 14:30 Min.
+  - Primärquelle: Kara Pernice (Nielsen Norman Group, 2018).
+  - Kernbotschaft: Nutzer ignorieren Ads nicht aus Bosheit, sondern zur Reduzierung kognitiver Last.
+references:
+  - type: online
+    id: "pernice-2018-banner-blindness"
+    author: "Pernice, Kara"
+    title: "Banner Blindness Revisited: Users Dodge Ads on Mobile and Desktop"
+    siteName: "Nielsen Norman Group"
+    year: 2018
+    url: "https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import eyetrackingImage from '../images/hero_banner_blindness_eyetracking.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="08"
+  totalSlides="42"
+  cue="vis-eyetracking"
+  imageCue="vis-eyetracking"
+  imageSrc={eyetrackingImage}
+  imageAlt="Labor-Visualisierung von Eye-Tracking-Blickpfaden und Heatmaps auf einer Suchergebnisseite"
+  imageTitle="Eye-Tracking-Blickpfade: Der unbewusste Dodge-Effekt bei Werbeanzeigen"
+  ratio="55/45"
+>
+  <BentoCard
+    slot="narrative"
+    cue="card-blindness"
+    title="Kognition & Eye-Tracking [@pernice-2018-banner-blindness]"
+    accent="blue"
+  >
+    <CalloutBox type="alert" title="Der unbewusste Dodge-Effekt">
+      <p>Laborbefund der NN/g: {cue:hl-blind-dodge}Blickverläufe springen aktiv über Textanzeigen hinweg{/cue}, selbst wenn diese die relevante Antwort enthalten.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "cpu",
+          title: "Minimierung kognitiver Last",
+          desc: "Bei zielgerichteter Suche gilt: {cue:hl-blind-last}Nutzer optimieren ihre mentale Kapazität und filtern Störreize{/cue} konsequent heraus."
+        },
+        {
+          icon: "target",
+          title: "Gelernte Vermeidungsschemata",
+          desc: "Durch jahrelange Konditionierung meidet das Auge {cue:hl-blind-heuristik}visuelle Muster und typische Anzeigenpositionen{/cue} instinktiv."
+        }
+      ]}
+    />
+  </BentoCard>
+</StoryHeroSlide>

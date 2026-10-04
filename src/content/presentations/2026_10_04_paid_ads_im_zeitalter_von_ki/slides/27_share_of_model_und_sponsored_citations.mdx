@@ -1,0 +1,64 @@
+---
+title: "Share of Model & Sponsored Citations"
+subtitle: "Werden Zitationen im generierten Fließtext {cue:hl-sub-som}die wirkungsvollsten Ads der Zukunft?{/cue}"
+number: "27"
+slideLayout: "story-hero"
+voiceover: >
+  Die wichtigste strategische Verschiebung für Marketingleiter betrifft die Metrik, nach der Sichtbarkeit künftig gemessen wird.
+  {cue:sub} Share of Model analysiert, ob Zitationen im generierten Fließtext {cue:hl-sub-som}die wirkungsvollsten Ads der Zukunft werden{/cue}.
+  {cue:vis-som} Die Wissensgraph-Matrix visualisiert das Zusammenspiel aus neuronaler Modellsynthese und verifizierten Zitations-Footnotes.
+  {cue:card-som} Die neue Leitwährung heißt Share of Model: {cue:hl-som-metrik}Sie misst den prozentualen Anteil, in dem ein Unternehmen von LLMs als Standardlösung empfohlen wird{/cue}. Statt Klicks auf Banner zu zählen, {cue:hl-som-autoritaet}entscheidet die semantische Präsenz im synthetisierten Text über den Markterfolg{/cue}. Hier setzen gesponserte Zitationen an: {cue:hl-som-hybrid}Plattformen experimentieren mit bezahlten Quellenverweisen direkt in den Fußnoten der KI-Antwort{/cue}. Für B2B-Unternehmen entsteht ein hybrider Wettbewerb: {cue:hl-som-geo}Organische Wissensgraph-Autorität muss mit bezahlter Sichtbarkeit synchronisiert werden{/cue}.
+notes: |
+  - Zeit: 47:30 - 49:30 Min.
+  - Begriff: Share of Model (SoM) als Nachfolger von Share of Voice (SoV).
+  - Wichtig: Eine Zitation in einer KI-Antwort genießt 10x mehr Vertrauen als ein markiertes Werbebanner am Rand.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import somImage from '../images/hero_share_of_model_citations.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="27"
+  totalSlides="42"
+  cue="vis-som"
+  imageCue="vis-som"
+  imageSrc={somImage}
+  imageAlt="Technische Architektur-Illustration eines LLM-Wissensgraphen mit synthetisierten Footnote-Zitations-Knoten"
+  imageTitle="Share of Model & Wissensgraphen: Generative Synthese und gesponserte Zitationen"
+  ratio="55/45"
+>
+  <BentoCard
+    slot="narrative"
+    cue="card-som"
+    title="Die neue Metrik: Share of Model"
+    accent="teal"
+  >
+    <CalloutBox type="statement" title="Die generative Leitwährung">
+      <p>Share of Model (SoM): {cue:hl-som-metrik}Sie misst den prozentualen Anteil, in dem ein Unternehmen von LLMs als Standardlösung empfohlen wird{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "target",
+          title: "Empfehlung statt Display",
+          desc: "Weil Nutzer dem Modell vertrauen, {cue:hl-som-autoritaet}entscheidet die semantische Präsenz im synthetisierten Text über den Markterfolg{/cue} bereits vor dem Website-Besuch."
+        },
+        {
+          icon: "sparkles",
+          title: "Sponsored Citations",
+          desc: "Das Werbeformat der Zukunft: {cue:hl-som-hybrid}Plattformen experimentieren mit bezahlten Quellenverweisen direkt in den Fußnoten der KI-Antwort{/cue}."
+        },
+        {
+          icon: "check",
+          title: "Wissensgraph-Synchronisation",
+          desc: "Wer im Modell gewinnen will, muss handeln: {cue:hl-som-geo}Organische Wissensgraph-Autorität muss mit bezahlter Sichtbarkeit synchronisiert werden{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</StoryHeroSlide>

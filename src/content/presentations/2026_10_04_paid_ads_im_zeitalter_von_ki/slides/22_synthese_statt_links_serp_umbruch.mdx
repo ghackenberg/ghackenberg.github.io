@@ -1,0 +1,60 @@
+---
+title: "Synthese statt Links: Der SERP-Umbruch"
+subtitle: "Vom verlinkten Web zur {cue:hl-sub-synthese}vollständigen Antwort-Synthese im Chat-Interface{/cue}"
+number: "22"
+slideLayout: "diagram"
+voiceover: >
+  Die Websuche erlebt ihren tiefgreifendsten Paradigmenwechsel seit der Erfindung des PageRank-Algorithmus.
+  {cue:sub} Die Reise führt vom verlinkten Web zur {cue:hl-sub-synthese}vollständigen Antwort-Synthese im Chat-Interface{/cue}.
+  {cue:row-architektur} Auf der Architekturebene: {cue:hl-syn-links}Suchmaschinen organisierten das Web und leiteten Nutzer über blaue Links auf externe Unternehmensseiten{/cue}.
+  {cue:row-nutzer} Im Nutzerverhalten ersetzt die Direktsynthese den Klick: {cue:hl-syn-rag}Große Sprachmodelle aggregieren Fakten und formulieren fertige Antworten direkt auf der Plattform{/cue}.
+  {cue:row-werbung} Für Werbetreibende bricht die Abrechnungsbasis weg: {cue:hl-syn-clickloss}Wenn der Besuch externer Seiten entfällt, verliert das klassische Klickmodell seine Geschäftsgrundlage{/cue}.
+notes: |
+  - Zeit: 37:30 - 39:30 Min.
+  - Fundament: RAG (Retrieval-Augmented Generation) als neuer Vermittler.
+  - Problem: Wer bezahlt für Content, wenn LLMs den Traffic absaugen?
+---
+import DiagramSlide from '../../../../components/slides/layouts/DiagramSlide.astro';
+import ComparisonTable from '../../../../components/slides/primitives/ComparisonTable.astro';
+
+<DiagramSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="22"
+  totalSlides="42"
+>
+  <div slot="diagram" class="w-full h-full flex flex-col justify-center">
+    <ComparisonTable
+      columns={["Dimension", "Klassische SERP", "Generative KI-Antwort", "Ökonomische Folge"]}
+      rows={[
+        {
+          cue: "row-architektur",
+          title: "Architektur",
+          subtitle: "PageRank vs. RAG",
+          targetSystem: "10 blaue Links & Banner",
+          mechanism: "Linkvermittlung: {cue:hl-syn-links}leiteten Nutzer über blaue Links auf externe Unternehmensseiten{/cue}",
+          goal: "Hoher ausgehender Referral-Traffic",
+          accent: "neutral"
+        },
+        {
+          cue: "row-nutzer",
+          title: "Interaktion",
+          subtitle: "Klick vs. Dialog",
+          targetSystem: "Navigationales Weiterklicken",
+          mechanism: "Direktsynthese: {cue:hl-syn-rag}Große Sprachmodelle aggregieren Fakten und formulieren fertige Antworten{/cue}",
+          goal: "Zero-Click Dominanz im Chat",
+          accent: "blue"
+        },
+        {
+          cue: "row-werbung",
+          title: "Monetarisierung",
+          subtitle: "CPC vs. Zitation",
+          targetSystem: "Diskrete Text- & Shopping-Ads",
+          mechanism: "Abrechnungskollaps: {cue:hl-syn-clickloss}verliert das klassische Klickmodell seine Geschäftsgrundlage{/cue}",
+          goal: "Wandel zu Sponsored Citations",
+          accent: "amber"
+        }
+      ]}
+    />
+  </div>
+</DiagramSlide>

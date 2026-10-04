@@ -1,0 +1,70 @@
+---
+title: "Google AI Overviews: Ad-Injektion"
+subtitle: "Vollautomatisierte Einbindung von Shopping- und Search-Ads {cue:hl-sub-aioads}in synthetische Antwortblöcke{/cue}"
+number: "23"
+slideLayout: "split"
+voiceover: >
+  Google reagiert auf den drohenden Klick-Verlust mit der nahtlosen Verschmelzung von generativer KI und Werbeauktion.
+  {cue:sub} In AI Overviews erfolgt die Einbindung von Shopping- und Search-Ads {cue:hl-sub-aioads}direkt in synthetische Antwortblöcke{/cue}.
+  {cue:col-platzierung} Die Platzierungslogik im Interface: {cue:hl-aio-hybrid}Anzeigen erscheinen oberhalb, unterhalb oder mitten im Fließtext der KI-Antwort{/cue}. Sobald Googles Algorithmen kommerziellen Intent erkennen, werden {cue:hl-aio-pmax}bestehende Performance-Max- und Search-Assets ohne zusätzliches Opt-in dynamisch injiziert{/cue}.
+  {cue:col-strategie} Für Werbetreibende hat dies weitreichende Konsequenzen: {cue:hl-aio-verdrangung}Organische Top-Links rutschen noch weiter unter den sichtbaren Seitenumbruch{/cue}. Wer nicht in Performance Max oder Broad-Match-Inventaren präsent ist, {cue:hl-aio-unsichtbar}wird im ersten generativen Sichtbarkeitsfenster unsichtbar{/cue}.
+notes: |
+  - Zeit: 39:30 - 41:30 Min.
+  - Fakten: Rollout seit Herbst 2024 / 2025; automatische Teilnahme über PMax und Search.
+  - Kritik: Strikte Vermischung von Information und werblicher Produktplatzierung.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="23"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-platzierung"
+    title="Technische Injektion in AIO"
+    accent="blue"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "sparkles",
+          title: "In-Answer & Post-Answer Ads",
+          desc: "Google bricht die Trennung von Antwort und Werbung auf: {cue:hl-aio-hybrid}Anzeigen erscheinen oberhalb, unterhalb oder mitten im Fließtext der KI-Antwort{/cue}."
+        },
+        {
+          icon: "zap",
+          title: "Automatisches PMax-Matching",
+          desc: "Es gibt kein separates KI-Anzeigenformat; {cue:hl-aio-pmax}bestehende Performance-Max- und Search-Assets ohne zusätzliches Opt-in dynamisch injiziert{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-strategie"
+    title="Auswirkungen auf B2B-Kampagnen"
+    accent="amber"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "trending-down",
+          title: "Vollständige 'Above-the-Fold'-Dominanz",
+          desc: "Durch die Kombination von AIO und In-Answer-Ads gilt: {cue:hl-aio-verdrangung}Organische Top-Links rutschen noch weiter unter den sichtbaren Seitenumbruch{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Zwang zur automatisierten Ausspielung",
+          desc: "Wer starre Keyword-Silos verteidigt, {cue:hl-aio-unsichtbar}wird im ersten generativen Sichtbarkeitsfenster unsichtbar{/cue} und verliert den Initialkontakt."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

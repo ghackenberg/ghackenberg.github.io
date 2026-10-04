@@ -1,0 +1,83 @@
+---
+title: "Semantische Vektor-Auktionen"
+subtitle: "Wie Broad Match durch {cue:hl-sub-embeddings}Transformer-Embeddings und Kosinus-Ähnlichkeit{/cue} gesteuert wird"
+number: "18"
+slideLayout: "code"
+voiceover: >
+  Parallel zum Bidding hat sich das Matching von Suchbegriffen grundlegend von wörtlichen Zeichenketten zu dichten Vektorräumen verschoben.
+  {cue:sub} Modernes Broad Match arbeitet mit {cue:hl-sub-embeddings}Transformer-Embeddings und Kosinus-Ähnlichkeit{/cue}.
+  {cue:code-vector} Der Python-Snippet zeigt die Berechnung der Kosinus-Ähnlichkeit zwischen Suchanfrage und Anzeigentext.
+  {cue:card-vector} Auf Basis dieser Vektordistanz fällt die Zulassungsentscheidung: {cue:hl-embed-match}Die Auktionszulassung erfolgt auch ohne ein einziges übereinstimmendes Keyword{/cue}. Technisch bedeutet das: {cue:hl-embed-raum}Suchanfrage und Anzeigentext werden in hochdimensionale Vektoren projiziert{/cue}. Für hochspezialisierte B2B-Nischen birgt das Gefahren: {cue:hl-embed-fehlaus}Semantische Verallgemeinerungen führen zu kostspieligen Fehlausspielungen{/cue}, wodurch ohne strikte Negative-Keywords {cue:hl-embed-budgetdrain}hohe Klickbudgets in irrelevante Konsumentenanfragen abfließen{/cue}.
+notes: |
+  - Zeit: 31:00 - 33:00 Min.
+  - Technik: BERT/MUM-basierte Embedding-Projektion bei Google Ads.
+  - Praxisbezug: B2B-Industrie (z. B. "Industriepumpen" vs. "Gartenpumpen") – semantische Grenzen sind für den ROI überlebenswichtig.
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="18"
+  totalSlides="42"
+>
+  <CodeContainer
+    slot="code"
+    cue="code-vector"
+    filename="semantic_auction_matching.py"
+  >
+    <pre class="text-slate-200 font-mono overflow-x-auto my-auto text-base">
+{`# Semantic Vector Matching in Real-Time Auctions
+# Projektion von Query und Ad in dichte Embedding-Räume
+
+import numpy as np
+
+def cosine_similarity(
+    query_emb: np.ndarray, 
+    ad_emb: np.ndarray
+) -> float:
+    """Berechnet semantische Relevanz im Vektorraum."""
+    dot = np.dot(query_emb, ad_emb)
+    norm = np.linalg.norm(query_emb) * np.linalg.norm(ad_emb)
+    return float(dot / (norm + 1e-9))
+
+# Auktions-Trigger bei Kosinus-Ähnlichkeit >= Schwellenwert:
+# sim("Industrie-Vakuumpumpe", "Laborpumpen-Hersteller") = 0.88`}
+    </pre>
+  </CodeContainer>
+
+  <BentoCard
+    slot="explanation"
+    cue="card-vector"
+    title="Neuronales Vektor-Matching"
+    accent="blue"
+  >
+    <CalloutBox type="statement" title="Kosinus-Ähnlichkeit als Trigger">
+      <p>Schwellenwert-Matching: {cue:hl-embed-match}Die Auktionszulassung erfolgt auch ohne ein einziges übereinstimmendes Keyword{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "network",
+          title: "Dichte Embedding-Räume",
+          desc: "Statt statischem Zeichenketten-Abgleich gilt: {cue:hl-embed-raum}Suchanfrage und Anzeigentext werden in hochdimensionale Vektoren projiziert{/cue}."
+        },
+        {
+          icon: "alert",
+          title: "Das Streuverlust-Risiko",
+          desc: "Sprachmodelle generalisieren oft zu breit: {cue:hl-embed-fehlaus}Semantische Verallgemeinerungen führen zu kostspieligen Fehlausspielungen{/cue}."
+        },
+        {
+          icon: "cross",
+          title: "B2B-Budgetvernichtung",
+          desc: "Fehlen Ausschluss-Vektoren, {cue:hl-embed-budgetdrain}fließen hohe Klickbudgets in irrelevante Konsumentenanfragen ab{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</CodeSlide>
