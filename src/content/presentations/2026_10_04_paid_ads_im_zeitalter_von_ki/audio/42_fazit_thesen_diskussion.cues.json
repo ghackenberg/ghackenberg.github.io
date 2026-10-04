@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 5.91
+  },
+  "hl-sub-thesen": {
+    "start": 7.59,
+    "duration": 2.99,
+    "end": 10.58
+  },
+  "box-thesis-1": {
+    "start": 10.91
+  },
+  "hl-fazit-mental": {
+    "start": 12.1,
+    "duration": 5.88,
+    "end": 17.98
+  },
+  "box-thesis-2": {
+    "start": 18.31
+  },
+  "hl-fazit-zitation": {
+    "start": 19.39,
+    "duration": 5.07,
+    "end": 24.46
+  },
+  "box-thesis-3": {
+    "start": 24.8
+  },
+  "hl-fazit-pruefung": {
+    "start": 25.96,
+    "duration": 5.63,
+    "end": 31.59
+  },
+  "box-thesis-4": {
+    "start": 31.93
+  },
+  "hl-fazit-qa": {
+    "start": 36.24,
+    "duration": 2.82,
+    "end": 39.06
+  }
+}

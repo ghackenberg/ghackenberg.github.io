@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.99
+  },
+  "hl-sub-scent": {
+    "start": 10.69,
+    "duration": 2.3,
+    "end": 12.99
+  },
+  "col-theorie": {
+    "start": 13.32
+  },
+  "hl-scent-ertrag": {
+    "start": 16.14,
+    "duration": 3.68,
+    "end": 19.82
+  },
+  "hl-scent-kosten": {
+    "start": 22.99,
+    "duration": 3.21,
+    "end": 26.2
+  },
+  "col-ads": {
+    "start": 26.54
+  },
+  "hl-scent-bias": {
+    "start": 29.09,
+    "duration": 3.18,
+    "end": 32.27
+  },
+  "hl-scent-lowgain": {
+    "start": 35.56,
+    "duration": 3.27,
+    "end": 38.83
+  }
+}

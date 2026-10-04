@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.65
+  },
+  "hl-sub-selective": {
+    "start": 10.64,
+    "duration": 1.51,
+    "end": 12.15
+  },
+  "col-lohnend": {
+    "start": 12.49
+  },
+  "hl-selekt-branddefense": {
+    "start": 14.68,
+    "duration": 4.18,
+    "end": 18.86
+  },
+  "hl-selekt-closing": {
+    "start": 21.46,
+    "duration": 3.67,
+    "end": 25.13
+  },
+  "col-stoppen": {
+    "start": 25.46
+  },
+  "hl-selekt-genericstop": {
+    "start": 27.79,
+    "duration": 4.84,
+    "end": 32.63
+  },
+  "hl-selekt-organicover": {
+    "start": 35.52,
+    "duration": 3.88,
+    "end": 39.4
+  }
+}

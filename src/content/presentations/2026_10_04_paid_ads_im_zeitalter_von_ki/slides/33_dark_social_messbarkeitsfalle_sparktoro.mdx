@@ -1,0 +1,67 @@
+---
+title: "Die Messbarkeitsfalle: Dark Social"
+subtitle: "Warum Web-Analytics {cue:hl-sub-darksocial}100 Prozent privater Weiterleitungen als Direct-Traffic fehlinterpretiert{/cue}"
+number: "33"
+slideLayout: "metric"
+voiceover: >
+  Hinter scheinbar eindeutigen Analytics-Dashboards verbirgt sich eine der gravierendsten Fehlmessungen des modernen Marketings.
+  {cue:sub} Die bahnbrechende SparkToro-Studie belegt, warum Analytics {cue:hl-sub-darksocial}100 Prozent privater Weiterleitungen als Direct-Traffic fehlinterpretiert{/cue}.
+  {cue:stat-darksocial} Im Labortest von 11 Netzwerken wurden alle Klicks aus Slack, Teams, WhatsApp und E-Mail zu 100 Prozent fälschlich als Direct verbucht.
+  {cue:card-takeaways-33} Diese Messlücke verzerrt B2B-Budgets fatal: {cue:hl-dark-attribution}Last-Click-Attribution schreibt den Erfolg irrtümlich der letzten Google-Suchanzeige zu{/cue}. In Wahrheit reifte die Kaufentscheidung {cue:hl-dark-gen}monatelang in privaten Dark-Social-Kanälen und Fachnetzwerken{/cue}, bevor der Name gegoogelt wurde.
+notes: |
+  - Zeit: 58:00 - 60:00 Min.
+  - Primärquelle: Rand Fishkin & Steve Lamar (SparkToro & Really Good Data, 2023).
+  - Wichtig: Den Unterschied zwischen "Wo Nachfrage erzeugt wird" und "Wo Nachfrage abgefangen wird" verdeutlichen.
+references:
+  - type: online
+    id: "sparktoro-2023-dark-social"
+    author: "Fishkin, Rand and Lamar, Steve"
+    title: "New Research: Dark Social Falsely Attributes Significant Percentages of Web Traffic as 'Direct'"
+    siteName: "SparkToro & Really Good Data"
+    year: 2023
+    url: "https://sparktoro.com/blog/new-research-dark-social-falsely-attributes-significant-percentages-of-web-traffic-as-direct/"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="33"
+  totalSlides="42"
+  ratio="40/60"
+>
+  <MetricStat
+    slot="left"
+    cue="stat-darksocial"
+    value="100"
+    unit="%"
+    label="Fehl-Attribution in Dark Social"
+    sublabel="SparkToro & Really Good Data [@sparktoro-2023-dark-social]: Slack, Teams & WhatsApp landen im 'Direct Traffic'"
+    color="amber"
+  />
+
+  <BentoCard
+    slot="right"
+    cue="card-takeaways-33"
+    title="Das Attributions-Paradoxon im B2B"
+    accent="blue"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "alert",
+          title: "Die Software-Attributions-Illusion",
+          desc: "Weil UTM-Parameter und Cookies in privaten Apps abbrechen: {cue:hl-dark-attribution}Last-Click-Attribution schreibt den Erfolg irrtümlich der letzten Google-Suchanzeige zu{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Entstehung vs. Ernte von Nachfrage",
+          desc: "Reine Klick-Dashboards belohnen nur den Erntehelfer, während {cue:hl-dark-gen}monatelang in privaten Dark-Social-Kanälen und Fachnetzwerken{/cue} der eigentliche Bedarf gesät wurde."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

@@ -1,0 +1,84 @@
+---
+title: "Smart Bidding & Bayesianische Banditen"
+subtitle: "Vom statischen Keyword-Gebot zu {cue:hl-sub-bandits}kontextuellen Multi-Armed Bandits in Echtzeit{/cue}"
+number: "17"
+slideLayout: "code"
+voiceover: >
+  Manuelle CPC-Gebote gehören im modernen Suchmaschinenmarketing der Vergangenheit an und wurden durch probabilistische Modelle ersetzt.
+  {cue:sub} Smart Bidding nutzt heute {cue:hl-sub-bandits}kontextuelle Multi-Armed Bandits in Echtzeit{/cue}.
+  {cue:code-bandit} Der Python-Code illustriert die probabilistische Gebotsfindung via Thompson Sampling.
+  {cue:card-bandit} Im Kern berechnet das Modell für jeden Nutzerkontakt {cue:hl-bandit-pconv}die probabilistische Abschlusswahrscheinlichkeit pConv in Millisekunden{/cue}. Gleichzeitig balanciert der Bandit zwei Pole: {cue:hl-bandit-explore}Exploration testet kontinuierlich neue Suchanfragen auf unerwartete Kaufabsichten{/cue}, während {cue:hl-bandit-exploit}historische Konversionsmuster für profitable Gebotsentscheidungen{/cue} maximal ausgeschöpft werden. Vor jedem Gebot analysiert das neuronale Netz hunderte Faktoren wie {cue:hl-bandit-signale}Gerätetyp, Standort, semantischen Kontext und historische Session-Pfade{/cue}.
+notes: |
+  - Zeit: 29:00 - 31:00 Min.
+  - Theorie: Contextual Multi-Armed Bandit (MAB), Bayesian Inference, Thompson Sampling.
+  - Kernaussage: Marketer steuern keine Klickpreise mehr, sondern trainieren die Zielfunktion des Algorithmus (tCPA / tROAS).
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="17"
+  totalSlides="42"
+>
+  <CodeContainer
+    slot="code"
+    cue="code-bandit"
+    filename="thompson_sampling_bidder.py"
+  >
+    <pre class="text-slate-200 font-mono overflow-x-auto my-auto text-base">
+{`# Multi-Armed Bandit Bidding (Thompson Sampling)
+# Probabilistische Gebotsfindung im Smart Bidding
+
+import numpy as np
+
+def calculate_dynamic_bid(
+    alpha_conv: int, 
+    beta_nonconv: int, 
+    target_cpa: float
+) -> float:
+    """Zieht Konversions-Wahrscheinlichkeit aus Beta-Posterior."""
+    p_conv = np.random.beta(alpha_conv, beta_nonconv)
+    
+    # Dynamisches Echtzeit-Gebot:
+    # bid = target_cpa * p(conversion|context)
+    optimal_bid = target_cpa * p_conv
+    return round(optimal_bid, 2)`}
+    </pre>
+  </CodeContainer>
+
+  <BentoCard
+    slot="explanation"
+    cue="card-bandit"
+    title="Bayesianische Echtzeit-Steuerung"
+    accent="blue"
+  >
+    <CalloutBox type="statement" title="Probabilistische Konversions-Vorhersage">
+      <p>Kanalübergreifend berechnet: {cue:hl-bandit-pconv}die probabilistische Abschlusswahrscheinlichkeit pConv in Millisekunden{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "search",
+          title: "Exploration neuer Anfragen",
+          desc: "Systematisches Ausprobieren: {cue:hl-bandit-explore}Exploration testet kontinuierlich neue Suchanfragen auf unerwartete Kaufabsichten{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Exploitation bewährter Pfade",
+          desc: "Margenmaximierung: {cue:hl-bandit-exploit}historische Konversionsmuster für profitable Gebotsentscheidungen{/cue} maximal abschöpfen."
+        },
+        {
+          icon: "cpu",
+          title: "Signal-Fusion im Millisekundentakt",
+          desc: "Kontextbewertung vor Auktionsabgabe: {cue:hl-bandit-signale}Gerätetyp, Standort, semantischer Kontext und historische Session-Pfade{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</CodeSlide>

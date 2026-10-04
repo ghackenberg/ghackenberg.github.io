@@ -1,0 +1,82 @@
+---
+title: "Information Foraging Theory"
+subtitle: "Der proximale 'Information Scent' und {cue:hl-sub-scent}die Kosten-Nutzen-Optimierung der Nutzersuche{/cue}"
+number: "09"
+slideLayout: "split"
+voiceover: >
+  Die Nobelpreis-verdächtige Information Foraging Theory von Peter Pirolli und Stuart Card modelliert menschliches Suchverhalten wie biologische Futtersuche.
+  {cue:sub} Sie beschreibt den proximalen Informationsduft und {cue:hl-sub-scent}die Kosten-Nutzen-Optimierung der Nutzersuche{/cue}.
+  {cue:col-theorie} Nach dem Optimal-Foraging-Theorem gilt: {cue:hl-scent-ertrag}Nutzer maximieren Informationsgewinn pro investierter Zeiteinheit{/cue}. Sie folgen proximalen Hinweisen und meiden Pfade mit {cue:hl-scent-kosten}hohen kognitiven Interaktionskosten und unklarem Nutzen{/cue}.
+  {cue:col-ads} Auf bezahlte Werbeanzeigen angewendet: {cue:hl-scent-bias}Werbetexte strömen einen verdächtigen Eigennutz-Geruch aus{/cue}. Professionelle B2B-Rechercheure stufen Ads als {cue:hl-scent-lowgain}Information Patches mit geringem echtem Information Gain{/cue} ein.
+notes: |
+  - Zeit: 14:30 - 16:30 Min.
+  - Primärquelle: Pirolli & Card (Psychological Review 1999).
+  - Wichtig: Parallele zur Biologie betonen – Klicks sind wertvolle Energie, die nicht an Lockvögel verschwendet werden.
+references:
+  - type: article
+    id: "pirolli-1999-information-foraging"
+    author: "Pirolli, Peter and Card, Stuart"
+    title: "Information foraging"
+    journal: "Psychological Review"
+    volume: "106"
+    number: "4"
+    pages: "643--675"
+    year: 1999
+    doi: "10.1037/0033-295X.106.4.643"
+    url: "https://doi.org/10.1037/0033-295X.106.4.643"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="09"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-theorie"
+    title="Kernmodell: Optimal Foraging [@pirolli-1999-information-foraging]"
+    accent="blue"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "target",
+          title: "Maximierung der Informationsrate",
+          desc: "Analog zu tierischen Räubern gilt: {cue:hl-scent-ertrag}Nutzer maximieren Informationsgewinn pro investierter Zeiteinheit{/cue}."
+        },
+        {
+          icon: "trending-down",
+          title: "Kalkulation von Interaktionskosten",
+          desc: "Jeder Klick bindet mentale Energie, weshalb Nutzer Pfade mit {cue:hl-scent-kosten}hohen kognitiven Interaktionskosten und unklarem Nutzen{/cue} meiden."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-ads"
+    title="Das Duft-Dilemma bezahlter Anzeigen"
+    accent="amber"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "alert",
+          title: "Der 'Verkaufs-Geruch'",
+          desc: "Promotete Snippets wirken werblich vorselektiert; {cue:hl-scent-bias}Werbetexte strömen einen verdächtigen Eigennutz-Geruch aus{/cue}."
+        },
+        {
+          icon: "cross",
+          title: "Niedrige Information-Gain-Erwartung",
+          desc: "B2B-Entscheider klassifizieren kommerzielle Landingpages als {cue:hl-scent-lowgain}Information Patches mit geringem echtem Information Gain{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

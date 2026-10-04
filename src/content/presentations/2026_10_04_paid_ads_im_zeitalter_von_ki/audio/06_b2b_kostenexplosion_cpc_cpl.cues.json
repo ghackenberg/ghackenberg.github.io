@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.9
+  },
+  "hl-sub-cpc": {
+    "start": 9.24,
+    "duration": 2.33,
+    "end": 11.57
+  },
+  "chart-cpc": {
+    "start": 11.91
+  },
+  "hl-cpc-spitze": {
+    "start": 13.71,
+    "duration": 2.08,
+    "end": 15.79
+  },
+  "card-takeaways-06": {
+    "start": 17.54
+  },
+  "hl-b2b-cpl": {
+    "start": 21.73,
+    "duration": 2.97,
+    "end": 24.7
+  },
+  "hl-b2b-inflation": {
+    "start": 26.24,
+    "duration": 3.99,
+    "end": 30.23
+  },
+  "hl-b2b-roi": {
+    "start": 32.31,
+    "duration": 2.46,
+    "end": 34.77
+  }
+}

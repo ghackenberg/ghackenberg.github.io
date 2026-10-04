@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 6.19
+  },
+  "hl-sub-pmax": {
+    "start": 8.3,
+    "duration": 3.96,
+    "end": 12.26
+  },
+  "box-omni": {
+    "start": 12.6
+  },
+  "hl-pmax-automatisierung": {
+    "start": 14.36,
+    "duration": 4,
+    "end": 18.36
+  },
+  "box-predictive": {
+    "start": 20.38
+  },
+  "hl-pmax-skalierung": {
+    "start": 22.19,
+    "duration": 4.47,
+    "end": 26.66
+  },
+  "box-blackbox": {
+    "start": 27
+  },
+  "hl-pmax-intransparenz": {
+    "start": 29.19,
+    "duration": 4.22,
+    "end": 33.41
+  },
+  "box-kannibalisierung": {
+    "start": 33.75
+  },
+  "hl-pmax-kannibalisierung": {
+    "start": 35.67,
+    "duration": 4.53,
+    "end": 40.2
+  }
+}

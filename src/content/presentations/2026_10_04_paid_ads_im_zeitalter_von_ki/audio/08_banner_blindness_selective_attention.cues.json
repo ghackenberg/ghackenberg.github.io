@@ -1,0 +1,31 @@
+{
+  "sub": {
+    "start": 7.08
+  },
+  "hl-sub-blindness": {
+    "start": 10.45,
+    "duration": 2.41,
+    "end": 12.86
+  },
+  "vis-eyetracking": {
+    "start": 13.2
+  },
+  "card-blindness": {
+    "start": 19.06
+  },
+  "hl-blind-dodge": {
+    "start": 22.15,
+    "duration": 2.73,
+    "end": 24.88
+  },
+  "hl-blind-last": {
+    "start": 30.69,
+    "duration": 3.38,
+    "end": 34.07
+  },
+  "hl-blind-heuristik": {
+    "start": 38.29,
+    "duration": 2.6,
+    "end": 40.89
+  }
+}

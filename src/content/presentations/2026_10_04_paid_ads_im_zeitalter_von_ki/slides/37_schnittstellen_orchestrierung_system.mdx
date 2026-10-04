@@ -1,0 +1,69 @@
+---
+title: "Schnittstellen-Orchestrierung"
+subtitle: "Der dynamische Signalfluss von {cue:hl-sub-signal}Social-Impulsen über KI-Zitationen bis zur Brand-Suche{/cue}"
+number: "37"
+slideLayout: "split"
+voiceover: >
+  Die eigentliche Magie entsteht nicht innerhalb der einzelnen Kanäle, sondern an den Schnittstellen ihres Zusammenspiels.
+  {cue:sub} Der dynamische Signalfluss führt von {cue:hl-sub-signal}Social-Impulsen über KI-Zitationen bis zur Brand-Suche{/cue}.
+  {cue:col-signalfluss} Die Chronologie des modernen B2B-Käufers: {cue:hl-schnitt-impuls}Ein LinkedIn-Fachbeitrag weckt das Problembewusstsein im Buying-Center{/cue}. Bei der Marktrecherche fragt der Einkäufer ChatGPT oder Perplexity, wo {cue:hl-schnitt-kizitat}die Marke durch saubere GEO-Optimierung als autoritative Empfehlung zitiert wird{/cue}.
+  {cue:col-synergie} Die ökonomische Hebelwirkung im Ziel: {cue:hl-schnitt-brandsearch}Der finale Abschluss erfolgt über eine gezielte Brand-Suche auf Google{/cue}. Weil der Nutzer die Marke bereits kennt, steigen die Klick- und Konversionsraten drastisch, während {cue:hl-schnitt-cpcabfall}der Qualitätsfaktor steigt und die effektiven Klickkosten sinken{/cue}.
+notes: |
+  - Zeit: 64:30 - 66:30 Min.
+  - Fokus: Feedback-Loops und Synergien zwischen den 3 Säulen.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="37"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-signalfluss"
+    title="Der moderne Signal-Pfad"
+    accent="blue"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "linkedin",
+          title: "1. Impuls & Problembewusstsein",
+          desc: "Im Social Feed entsteht der Reiz: {cue:hl-schnitt-impuls}Ein LinkedIn-Fachbeitrag weckt das Problembewusstsein im Buying-Center{/cue} ohne Verkaufsdruck."
+        },
+        {
+          icon: "sparkles",
+          title: "2. Synthese & Validierung im Chat",
+          desc: "Bei der Recherche in LLMs: {cue:hl-schnitt-kizitat}die Marke durch saubere GEO-Optimierung als autoritative Empfehlung zitiert wird{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-synergie"
+    title="Ökonomische Feedback-Loops"
+    accent="teal"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "search",
+          title: "3. Konversion über Brand-Suche",
+          desc: "Vorinformierte Käufer konvertieren: {cue:hl-schnitt-brandsearch}Der finale Abschluss erfolgt über eine gezielte Brand-Suche auf Google{/cue} mit höchster Intent-Stärke."
+        },
+        {
+          icon: "trending-up",
+          title: "Senkung der Grenzkosten",
+          desc: "Durch die Vorprägung gilt: {cue:hl-schnitt-cpcabfall}der Qualitätsfaktor steigt und die effektiven Klickkosten sinken{/cue} über das gesamte Werbebudget."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

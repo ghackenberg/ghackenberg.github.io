@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.42
+  },
+  "hl-sub-purity": {
+    "start": 9.69,
+    "duration": 1.97,
+    "end": 11.66
+  },
+  "col-experiment": {
+    "start": 12
+  },
+  "hl-perpl-followup": {
+    "start": 14.46,
+    "duration": 4.43,
+    "end": 18.89
+  },
+  "hl-perpl-revshare": {
+    "start": 21.36,
+    "duration": 3.18,
+    "end": 24.54
+  },
+  "col-rueckzug": {
+    "start": 24.88
+  },
+  "hl-perpl-purity": {
+    "start": 28.32,
+    "duration": 4.83,
+    "end": 33.15
+  },
+  "hl-perpl-usp": {
+    "start": 36.51,
+    "duration": 3.73,
+    "end": 40.24
+  }
+}

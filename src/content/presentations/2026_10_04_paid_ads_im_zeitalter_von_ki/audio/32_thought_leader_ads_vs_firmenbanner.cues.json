@@ -1,0 +1,31 @@
+{
+  "sub": {
+    "start": 6.75
+  },
+  "hl-sub-thought": {
+    "start": 10.35,
+    "duration": 2.6,
+    "end": 12.95
+  },
+  "stat-thought": {
+    "start": 13.29
+  },
+  "card-format": {
+    "start": 20.55
+  },
+  "hl-thought-persoenlich": {
+    "start": 24.18,
+    "duration": 4.51,
+    "end": 28.69
+  },
+  "hl-thought-preise": {
+    "start": 30.01,
+    "duration": 3.5,
+    "end": 33.51
+  },
+  "hl-thought-kpi": {
+    "start": 34.44,
+    "duration": 4.17,
+    "end": 38.61
+  }
+}

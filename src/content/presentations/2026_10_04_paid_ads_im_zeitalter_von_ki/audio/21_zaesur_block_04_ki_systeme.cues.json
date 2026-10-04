@@ -1,0 +1,29 @@
+{
+  "sub": {
+    "start": 5.71
+  },
+  "hl-sec4-sub": {
+    "start": 9.15,
+    "duration": 2.59,
+    "end": 11.74
+  },
+  "card-divider-04": {
+    "start": 12.07
+  },
+  "card-leitfrage-04": {
+    "start": 15.46
+  },
+  "hl-sec4-synthese": {
+    "start": 15.46,
+    "duration": 5.05,
+    "end": 20.51
+  },
+  "card-bridge-04": {
+    "start": 20.85
+  },
+  "hl-sec4-monetarisierung": {
+    "start": 23.05,
+    "duration": 4.89,
+    "end": 27.94
+  }
+}

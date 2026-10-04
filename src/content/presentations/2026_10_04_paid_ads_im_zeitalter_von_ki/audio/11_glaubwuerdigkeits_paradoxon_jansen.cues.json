@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.42
+  },
+  "hl-sub-jansen": {
+    "start": 11.6,
+    "duration": 2.49,
+    "end": 14.09
+  },
+  "chart-jansen": {
+    "start": 14.43
+  },
+  "hl-jansen-bias": {
+    "start": 17.75,
+    "duration": 4.68,
+    "end": 22.43
+  },
+  "card-blind": {
+    "start": 22.76
+  },
+  "hl-jansen-blind": {
+    "start": 24.9,
+    "duration": 4.78,
+    "end": 29.68
+  },
+  "hl-jansen-label": {
+    "start": 31.94,
+    "duration": 4.12,
+    "end": 36.06
+  },
+  "hl-jansen-verkaufsdruck": {
+    "start": 39.69,
+    "duration": 1.66,
+    "end": 41.35
+  }
+}

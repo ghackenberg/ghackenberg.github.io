@@ -1,0 +1,67 @@
+---
+title: "Winner’s Curse & Bid Shading"
+subtitle: "Warum unvorsichtige B2B-Bieter {cue:hl-sub-curse}systematisch für Leads überbezahlen{/cue}"
+number: "19"
+slideLayout: "split"
+voiceover: >
+  Ein klassisches Phänomen der Auktionsökonomie bedroht die Rentabilität von B2B-Kampagnen in automatisierten Gebotsmärkten.
+  {cue:sub} Der Winner's Curse erklärt, warum unvorsichtige B2B-Bieter {cue:hl-sub-curse}systematisch für Leads überbezahlen{/cue}.
+  {cue:col-curse} Das Fluch-des-Gewinners-Phänomen besagt: {cue:hl-curse-overpay}Der Auktionsgewinner hat den tatsächlichen ökonomischen Wert des Klicks meist am stärksten überschätzt{/cue}. Bei unvollständiger Information führt aggressives Bieten {cue:hl-curse-marge}zu negativem Grenz-ROI trotz scheinbar erfolgreichem Klick-Einkauf{/cue}.
+  {cue:col-shading} Die Gegenstrategie heißt Bid Shading: {cue:hl-shading-algo}Intelligente Gebotsabschattung senkt das Gebot gezielt unter die theoretische Zahlungsbereitschaft{/cue}. Ziel ist es, Klicks {cue:hl-shading-optimum}im ökonomischen Grenzoptimum statt zum maximalen Prestigepunkt einzukaufen{/cue}.
+notes: |
+  - Zeit: 33:00 - 35:00 Min.
+  - Ökonomische Theorie: Winner's Curse (Capen, Clapp & Campbell; Richard Thaler).
+  - B2B-Takeaway: Nicht jeder gewonnene Klick ist ein profitabler Klick.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="19"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-curse"
+    title="Der Winner’s Curse im B2B"
+    accent="amber"
+  >
+    <CalloutBox type="alert" title="Ökonomische Fehlallokation">
+      <p>Systematische Überschätzung: {cue:hl-curse-overpay}Der Auktionsgewinner hat den tatsächlichen ökonomischen Wert des Klicks meist am stärksten überschätzt{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "trending-down",
+          title: "Verlustgeschäfte trotz Spitzenposition",
+          desc: "Weil Abschlusszyklen im B2B Monate dauern, führt blindes Überbieten {cue:hl-curse-marge}zu negativem Grenz-ROI trotz scheinbar erfolgreichem Klick-Einkauf{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-shading"
+    title="Algorithmisches Bid Shading"
+    accent="blue"
+  >
+    <CalloutBox type="statement" title="Mathematische Schutzlogik">
+      <p>Algorithmisches Shading: {cue:hl-shading-algo}Intelligente Gebotsabschattung senkt das Gebot gezielt unter die theoretische Zahlungsbereitschaft{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "target",
+          title: "Fokus auf Grenzdeckungsbeitrag",
+          desc: "Erfolgreiche Kampagnen kaufen {cue:hl-shading-optimum}im ökonomischen Grenzoptimum statt zum maximalen Prestigepunkt einzukaufen{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

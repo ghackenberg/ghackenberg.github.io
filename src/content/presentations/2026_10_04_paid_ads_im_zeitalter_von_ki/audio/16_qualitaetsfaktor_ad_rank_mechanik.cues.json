@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 5.92
+  },
+  "hl-sub-adquality": {
+    "start": 7.85,
+    "duration": 2.78,
+    "end": 10.63
+  },
+  "chart-qs": {
+    "start": 10.96
+  },
+  "hl-qs-baseline": {
+    "start": 14.22,
+    "duration": 1.96,
+    "end": 16.18
+  },
+  "card-formel": {
+    "start": 17.95
+  },
+  "hl-adrank-formel": {
+    "start": 19.8,
+    "duration": 4.26,
+    "end": 24.06
+  },
+  "hl-adrank-cpc": {
+    "start": 26.64,
+    "duration": 4,
+    "end": 30.64
+  },
+  "hl-adrank-rabatt": {
+    "start": 32.14,
+    "duration": 2.2,
+    "end": 34.34
+  },
+  "hl-adrank-strafe": {
+    "start": 35.6,
+    "duration": 2.95,
+    "end": 38.55
+  }
+}

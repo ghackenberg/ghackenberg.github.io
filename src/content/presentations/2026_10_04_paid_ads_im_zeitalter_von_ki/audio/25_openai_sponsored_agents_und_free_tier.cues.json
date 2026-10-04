@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.7
+  },
+  "hl-sub-openai": {
+    "start": 9.71,
+    "duration": 2.99,
+    "end": 12.7
+  },
+  "col-segmentierung": {
+    "start": 13.04
+  },
+  "hl-oai-freetier": {
+    "start": 15.14,
+    "duration": 4.99,
+    "end": 20.13
+  },
+  "hl-oai-adfree": {
+    "start": 24.36,
+    "duration": 2.25,
+    "end": 26.61
+  },
+  "col-formate": {
+    "start": 26.95
+  },
+  "hl-oai-sponsoredagent": {
+    "start": 29.46,
+    "duration": 5.18,
+    "end": 34.64
+  },
+  "hl-oai-unabhaengig": {
+    "start": 37.59,
+    "duration": 3.99,
+    "end": 41.58
+  }
+}

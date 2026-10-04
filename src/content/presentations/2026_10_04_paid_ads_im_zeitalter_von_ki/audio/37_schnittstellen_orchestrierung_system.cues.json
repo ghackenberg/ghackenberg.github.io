@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.53
+  },
+  "hl-sub-signal": {
+    "start": 8.39,
+    "duration": 3.41,
+    "end": 11.8
+  },
+  "col-signalfluss": {
+    "start": 12.14
+  },
+  "hl-schnitt-impuls": {
+    "start": 14.93,
+    "duration": 3.17,
+    "end": 18.1
+  },
+  "hl-schnitt-kizitat": {
+    "start": 23.41,
+    "duration": 4.24,
+    "end": 27.65
+  },
+  "col-synergie": {
+    "start": 27.99
+  },
+  "hl-schnitt-brandsearch": {
+    "start": 30.63,
+    "duration": 3.56,
+    "end": 34.19
+  },
+  "hl-schnitt-cpcabfall": {
+    "start": 39.52,
+    "duration": 3.28,
+    "end": 42.8
+  }
+}

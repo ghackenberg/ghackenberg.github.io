@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.4
+  },
+  "hl-sub-sharp": {
+    "start": 9.56,
+    "duration": 2.6,
+    "end": 12.16
+  },
+  "vis-memory": {
+    "start": 12.5
+  },
+  "card-sharp": {
+    "start": 19.04
+  },
+  "hl-sharp-mental": {
+    "start": 21.59,
+    "duration": 4.29,
+    "end": 25.88
+  },
+  "hl-sharp-remember": {
+    "start": 28.57,
+    "duration": 4.02,
+    "end": 32.59
+  },
+  "hl-sharp-cep": {
+    "start": 35.73,
+    "duration": 4.79,
+    "end": 40.52
+  },
+  "hl-sharp-assets": {
+    "start": 43.13,
+    "duration": 4.05,
+    "end": 47.18
+  }
+}

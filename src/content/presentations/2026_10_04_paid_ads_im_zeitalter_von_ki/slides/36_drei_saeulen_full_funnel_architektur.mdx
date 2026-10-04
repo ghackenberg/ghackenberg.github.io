@@ -1,0 +1,62 @@
+---
+title: "Die 3-Säulen-Architektur"
+subtitle: "Ganzheitliche Orchestrierung von {cue:hl-sub-funnel3}Demand Creation, Consideration und Demand Capture{/cue}"
+number: "36"
+slideLayout: "pipeline"
+voiceover: >
+  Erfolgreiche B2B-Marken betreiben kein isoliertes Kampagnen-Stückwerk mehr, sondern ein synchronisiertes Dreiklang-System.
+  {cue:sub} Die 3-Säulen-Architektur orchestriert {cue:hl-sub-funnel3}Demand Creation, Consideration und Demand Capture{/cue}.
+  {cue:step-arch-01} Säule eins: Demand Creation: {cue:hl-funnel-social}Paid Social und Thought Leader Ads erreichen die 95 Prozent Out-of-Market-Käufer{/cue} und verankern Category Entry Points.
+  {cue:step-arch-02} Säule zwei: Consideration & Synthese: {cue:hl-funnel-ai}GEO-Optimierung und gesponserte Zitationen sichern den Platz im generierten KI-Antwortset{/cue} von ChatGPT und Perplexity.
+  {cue:step-arch-03} Säule drei: Demand Capture & Defense: {cue:hl-funnel-search}Chirurgische Search Ads fangen wechselbereite Käufer ab und schützen den eigenen Markennamen{/cue} vor aggressivem Konkurrenz-Bidding.
+notes: |
+  - Zeit: 62:30 - 64:30 Min.
+  - Das zentrale Kernmodell des Vortrags.
+  - Verdeutlichen: Keine der drei Säulen kann alleine überleben – Social erzeugt, KI filtert, Search erntet.
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+import step1Image from '../images/step1_demand_creation_social.jpg';
+import step2Image from '../images/step2_consideration_ai_geo.jpg';
+import step3Image from '../images/step3_demand_capture_search.jpg';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="36"
+  totalSlides="42"
+>
+  <Pipeline
+    direction="horizontal"
+    steps={[
+      {
+        cue: "step-arch-01",
+        num: "01",
+        title: "Demand Creation (Social)",
+        desc: "Aufbau mentaler Verfügbarkeit: {cue:hl-funnel-social}Paid Social und Thought Leader Ads erreichen die 95 Prozent Out-of-Market-Käufer{/cue} im B2B-Feed.",
+        image: step1Image,
+        imageAlt: "Technisches Übertragungs-Prisma für Social Demand Creation",
+        accent: "blue"
+      },
+      {
+        cue: "step-arch-02",
+        num: "02",
+        title: "Consideration (AI / GEO)",
+        desc: "Validierung im Zero-Click-Raum: {cue:hl-funnel-ai}GEO-Optimierung und gesponserte Zitationen sichern den Platz im generierten KI-Antwortset{/cue}.",
+        image: step2Image,
+        imageAlt: "Geometrischer KI-Kern mit Zitations-Knoten",
+        accent: "teal"
+      },
+      {
+        cue: "step-arch-03",
+        num: "03",
+        title: "Demand Capture (Search)",
+        desc: "Konversion & Markenschutz: {cue:hl-funnel-search}Chirurgische Search Ads fangen wechselbereite Käufer ab und schützen den eigenen Markennamen{/cue}.",
+        image: step3Image,
+        imageAlt: "Hexagonales Brand Defense Schutzschild",
+        accent: "amber"
+      }
+    ]}
+  />
+</PipelineSlide>

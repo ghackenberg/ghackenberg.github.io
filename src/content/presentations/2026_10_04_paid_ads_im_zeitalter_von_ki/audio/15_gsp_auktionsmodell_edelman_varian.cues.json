@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.84
+  },
+  "hl-sub-gsp": {
+    "start": 10.19,
+    "duration": 4.42,
+    "end": 14.61
+  },
+  "code-gsp": {
+    "start": 14.95
+  },
+  "card-gsp": {
+    "start": 19.34
+  },
+  "hl-gsp-keindominant": {
+    "start": 22.38,
+    "duration": 5.05,
+    "end": 27.43
+  },
+  "hl-gsp-preis": {
+    "start": 29.11,
+    "duration": 5.1,
+    "end": 34.21
+  },
+  "hl-gsp-shading": {
+    "start": 35.34,
+    "duration": 3,
+    "end": 38.34
+  },
+  "hl-gsp-neidfrei": {
+    "start": 39.9,
+    "duration": 3.24,
+    "end": 43.14
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.79
+  },
+  "hl-sub-embeddings": {
+    "start": 8.56,
+    "duration": 2.88,
+    "end": 11.44
+  },
+  "code-vector": {
+    "start": 11.78
+  },
+  "card-vector": {
+    "start": 17.81
+  },
+  "hl-embed-match": {
+    "start": 19.84,
+    "duration": 5.67,
+    "end": 25.51
+  },
+  "hl-embed-raum": {
+    "start": 27.38,
+    "duration": 4.5,
+    "end": 31.88
+  },
+  "hl-embed-fehlaus": {
+    "start": 35.46,
+    "duration": 3.45,
+    "end": 38.91
+  },
+  "hl-embed-budgetdrain": {
+    "start": 41.31,
+    "duration": 3.3,
+    "end": 44.61
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.3
+  },
+  "hl-sub-fatigue": {
+    "start": 10.09,
+    "duration": 3.69,
+    "end": 13.78
+  },
+  "col-mechanik": {
+    "start": 14.56
+  },
+  "hl-fatigue-habituation": {
+    "start": 17.99,
+    "duration": 3.69,
+    "end": 21.68
+  },
+  "hl-fatigue-cpa": {
+    "start": 25.4,
+    "duration": 3.34,
+    "end": 28.74
+  },
+  "col-dissonanz": {
+    "start": 29.07
+  },
+  "hl-dissonanz-bruch": {
+    "start": 31.96,
+    "duration": 3.62,
+    "end": 35.58
+  },
+  "hl-dissonanz-avers": {
+    "start": 39.81,
+    "duration": 2.93,
+    "end": 42.74
+  }
+}

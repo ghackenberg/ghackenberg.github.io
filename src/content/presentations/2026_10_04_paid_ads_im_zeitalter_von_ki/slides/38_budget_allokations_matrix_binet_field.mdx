@@ -1,0 +1,102 @@
+---
+title: "B2B-Budgetallokation: Binet & Field"
+subtitle: "Die optimale Balance zwischen {cue:hl-sub-binet}langfristigem Brand Building und kurzfristiger Sales Activation{/cue}"
+number: "38"
+slideLayout: "split"
+voiceover: >
+  Wie verteilen erfolgreiche B2B-Unternehmen ihr Mediabudget zwischen Brand Building und Performance-Aktivierung?
+  {cue:sub} Die empirischen Arbeiten von Les Binet und Peter Field zeigen {cue:hl-sub-binet}die optimale Balance zwischen Brand Building und Sales Activation{/cue}.
+  {cue:chart-binet} Das IPA-Gesetz von Binet und Field belegt: {cue:hl-binet-5050}Im B2B liegt das langfristige Wachstumsoptimum bei rund 50 Prozent Brand und 50 Prozent Activation{/cue}.
+  {cue:card-matrix} Die moderne Allokationsmatrix beweist, dass {cue:hl-binet-growth}langfristiges Brand-Building kurzfristige Klicks schlägt{/cue}. Konkret fließen {cue:hl-binet-social}40 bis 50 Prozent des Budgets in Paid Social und Thought Leadership{/cue}, während {cue:hl-binet-perf}30 bis 40 Prozent chirurgische Search Ads und Brand Defense{/cue} sichern. Wer hingegen nur Klicks bucht, {cue:hl-binet-plateau}erleidet nach wenigen Quartalen ein Wachstumsplateau bei drastisch steigenden CAC{/cue}.
+notes: |
+  - Zeit: 66:30 - 68:30 Min.
+  - Primärquelle: Les Binet & Peter Field (IPA 2013); LinkedIn B2B Institute Adaption.
+  - Kernaussage: Wer 90 % ins Bieten auf Google Ads steckt, schneidet sich selbst von zukünftigem Wachstum ab.
+references:
+  - type: book
+    id: "binet-field-2013-long-short"
+    author: "Binet, Les and Field, Peter"
+    title: "The Long and the Short of It: Balancing Short and Long-Term Marketing Strategies"
+    publisher: "Institute of Practitioners in Advertising (IPA)"
+    year: 2013
+    url: "https://ipa.co.uk/knowledge/publications-reports/the-long-and-the-short-of-it-balancing-short-and-long-term-marketing-strategies/"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="38"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="chart-binet"
+    title="Budgetallokation [@binet-field-2013-long-short]"
+    accent="blue"
+  >
+    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+      IPA-Wirkungsanalyse: {cue:hl-binet-5050}Optimale 50:50-Budgetverteilung im B2B-Wachstum{/cue}:
+    </p>
+    <BarChart
+      unit="%"
+      max={100}
+      items={[
+        {
+          label: "Brand Building (Binet/Field)",
+          value: 50,
+          formattedValue: "50% Optimum",
+          accent: "blue"
+        },
+        {
+          label: "Sales Activation (Binet/Field)",
+          value: 50,
+          formattedValue: "50% Optimum",
+          accent: "cyan"
+        },
+        {
+          label: "Typischer Status Quo (Performance-Falle)",
+          value: 85,
+          formattedValue: "85% Klickjagd",
+          accent: "amber"
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="card-matrix"
+    title="Allokations-Matrix 2026+"
+    accent="cyan"
+  >
+    <CalloutBox type="statement" title="Nachhaltige Wachstumshebel">
+      <p>Strategische Budget-Splits: {cue:hl-binet-growth}Langfristiges Brand-Building schlägt kurzfristige Klicks{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "linkedin",
+          title: "Demand Creation (40–50 %)",
+          desc: "Investition in mentale Verfügbarkeit: {cue:hl-binet-social}40 bis 50 Prozent des Budgets fließen in Paid Social und Thought Leadership{/cue}."
+        },
+        {
+          icon: "search",
+          title: "Demand Capture & Defense (30–40 %)",
+          desc: "Ernte im High-Intent-Segment: {cue:hl-binet-perf}30 bis 40 Prozent sichern chirurgische Search Ads und Brand Defense{/cue} gegen Abwerber."
+        },
+        {
+          icon: "trending-down",
+          title: "Vermeidung des Wachstumsplateaus",
+          desc: "Reine Klick-Optimierung {cue:hl-binet-plateau}erleidet nach wenigen Quartalen ein Wachstumsplateau bei drastisch steigenden CAC{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

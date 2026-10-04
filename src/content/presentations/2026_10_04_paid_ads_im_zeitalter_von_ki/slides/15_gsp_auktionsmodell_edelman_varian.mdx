@@ -1,0 +1,103 @@
+---
+title: "Generalized Second Price (GSP)"
+subtitle: "Die spieltheoretischen Grundlagen der {cue:hl-sub-gsp}Suchauktion nach Edelman und Varian{/cue}"
+number: "15"
+slideLayout: "code"
+voiceover: >
+  Die ökonomische Grundlage digitaler Werbeimperien basiert auf einem raffinierten Mechanismusdesign namens Generalized Second Price Auction.
+  {cue:sub} Die spieltheoretischen Grundlagen stammen aus den {cue:hl-sub-gsp}bahnbrechenden Arbeiten von Edelman, Ostrovsky, Schwarz und Hal Varian{/cue}.
+  {cue:code-gsp} Der Code verdeutlicht die mathematische Bietregel im GSP-Gleichgewicht.
+  {cue:card-gsp} Die spieltheoretische Gleichgewichtsanalyse zeigt: {cue:hl-gsp-keindominant}Im GSP ist wahrheitsgemäßes Bieten der eigenen Zahlungsbereitschaft keine dominante Strategie{/cue}. Stattdessen gilt: {cue:hl-gsp-preis}Der Gewinner zahlt nicht sein eigenes Gebot, sondern das Gebot des Nächstplatzierten plus einen Cent{/cue}. Dieses Design {cue:hl-gsp-shading}reduziert aggressives Unterbieten im laufenden Auktionsbetrieb{/cue}, während rationale Bieter auf {cue:hl-gsp-neidfrei}lokal neidfreie Gleichgewichte zwischen Position und Klickpreis{/cue} optimieren.
+notes: |
+  - Zeit: 25:00 - 27:00 Min.
+  - Primärquellen: Edelman, Ostrovsky & Schwarz (AER 2007); Hal Varian (IJIO 2007).
+  - Wichtig: Erklären, warum der Zweitpreis-Mechanismus für Google Milliarden generiert, indem er Bietern die Angst vor Gebotsfehlern nimmt.
+references:
+  - type: article
+    id: "edelman-2007-gsp"
+    author: "Edelman, Benjamin and Ostrovsky, Michael and Schwarz, Michael"
+    title: "Internet Advertising and the Generalized Second-Price Auction: Selling Billions of Dollars Worth of Keywords"
+    journal: "American Economic Review"
+    volume: "97"
+    number: "1"
+    pages: "242--259"
+    year: 2007
+    doi: "10.1257/aer.97.1.242"
+    url: "https://doi.org/10.1257/aer.97.1.242"
+  - type: article
+    id: "varian-2007-position-auctions"
+    author: "Varian, Hal R."
+    title: "Position auctions"
+    journal: "International Journal of Industrial Organization"
+    volume: "25"
+    number: "6"
+    pages: "1163--1178"
+    year: 2007
+    doi: "10.1016/j.ijindorg.2007.05.006"
+    url: "https://doi.org/10.1016/j.ijindorg.2007.05.006"
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  subtitleCue="sub"
+  slideNumber="15"
+  totalSlides="42"
+>
+  <CodeContainer
+    slot="code"
+    cue="code-gsp"
+    filename="gsp_auction_engine.py"
+  >
+    <pre class="text-slate-200 font-mono overflow-x-auto my-auto text-base">
+{`# GSP Pricing Rule (Edelman et al. 2007 / Varian 2007)
+# Bieter auf Position i zahlt das Mindestgebot zur Wahrung von Rang i
+
+def calculate_gsp_cpc(
+    ad_rank_next: float, 
+    quality_score_current: float
+) -> float:
+    """Berechnet tatsächlichen Klickpreis (P_i) im GSP-Gleichgewicht."""
+    min_bid = (ad_rank_next / quality_score_current) + 0.01
+    return round(min_bid, 2)
+
+# Symmetric Nash Equilibrium (SNE / lokal neidfrei):
+# Nutzen(Position i) >= Nutzen(Position j) für alle j`}
+    </pre>
+  </CodeContainer>
+
+  <BentoCard
+    slot="explanation"
+    cue="card-gsp"
+    title="Spieltheorie [@edelman-2007-gsp]"
+    accent="blue"
+  >
+    <CalloutBox type="statement" title="Keine dominante Strategie">
+      <p>Anders als im VCG-Design: {cue:hl-gsp-keindominant}Im GSP ist wahrheitsgemäßes Bieten der Zahlungsbereitschaft keine dominante Strategie{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "cpu",
+          title: "Das Zweitpreis-Prinzip",
+          desc: "Bei Ranking nach Geboten gilt: {cue:hl-gsp-preis}Der Gewinner zahlt nicht sein eigenes Gebot, sondern das Gebot des Nächstplatzierten plus einen Cent{/cue}."
+        },
+        {
+          icon: "shield",
+          title: "Markt-Stabilisierung",
+          desc: "Der Auktionsmechanismus {cue:hl-gsp-shading}reduziert aggressives Unterbieten im laufenden Auktionsbetrieb{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Neidfreies Gleichgewicht [@varian-2007-position-auctions]",
+          desc: "Bieter balancieren Gebote in {cue:hl-gsp-neidfrei}lokal neidfreien Gleichgewichten zwischen Position und Klickpreis{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</CodeSlide>

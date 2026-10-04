@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.76
+  },
+  "hl-sub-som": {
+    "start": 10.76,
+    "duration": 2.24,
+    "end": 13
+  },
+  "vis-som": {
+    "start": 13.34
+  },
+  "card-som": {
+    "start": 20.52
+  },
+  "hl-som-metrik": {
+    "start": 23.01,
+    "duration": 5.3,
+    "end": 28.31
+  },
+  "hl-som-autoritaet": {
+    "start": 30.7,
+    "duration": 3.94,
+    "end": 34.64
+  },
+  "hl-som-hybrid": {
+    "start": 37.54,
+    "duration": 5.1,
+    "end": 42.64
+  },
+  "hl-som-geo": {
+    "start": 46.35,
+    "duration": 4.3,
+    "end": 50.65
+  }
+}

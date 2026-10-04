@@ -1,0 +1,72 @@
+---
+title: "Das 1-Prozent-Paradoxon"
+subtitle: "Warum nur 14 von 1.000 Google-Suchen {cue:hl-sub-onepercent}auf bezahlte Textanzeigen entfallen{/cue}"
+number: "05"
+slideLayout: "metric"
+voiceover: >
+  Hinter den Milliardengewinnen der Suchkonzerne verbirgt sich eine überraschende verhaltensökonomische Kennzahl für die gesamte Websuche.
+  {cue:sub} Das 1-Prozent-Paradoxon belegt, warum nur 14 von 1.000 Google-Suchen {cue:hl-sub-onepercent}auf bezahlte Textanzeigen entfallen{/cue}.
+  {cue:stat-onepercent} Über alle Suchanfragen hinweg fließen in der EU gerade einmal 1,4 Prozent aller Klicks in bezahlte Werbeanzeigen.
+  {cue:card-explanation} Zwei strukturelle Faktoren erklären dieses Missverhältnis: {cue:hl-onepercent-intent}Google blendet Ads primär bei kommerzieller Kaufabsicht ein{/cue}, die nur einen Bruchteil aller Suchen ausmacht. Wenn Ads jedoch erscheinen, erzielen sie {cue:hl-onepercent-ctr}Klickraten zwischen 5 und 10 Prozent{/cue}, während das {cue:hl-onepercent-volumen}Gesamtvolumen von 374 organischen Klicks dominiert wird{/cue}.
+notes: |
+  - Zeit: 8:00 - 10:00 Min.
+  - Daten: SparkToro / Datos (2024).
+  - Wichtig: Differenzieren zwischen „Anteil aller Suchen“ (1,4 %) und „CTR bei Vorhandensein von Ads“ (5–10 %).
+references:
+  - type: online
+    id: "fishkin-2024-zero-click"
+    author: "Fishkin, Rand"
+    title: "2024 Zero-Click Search Study: For every 1,000 Google searches, only 374 clicks go to the Open Web"
+    siteName: "SparkToro & Datos"
+    year: 2024
+    url: "https://sparktoro.com/blog/2024-zero-click-search-study-for-every-1000-google-searches-only-374-clicks-go-to-the-open-web/"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="05"
+  totalSlides="42"
+  ratio="40/60"
+>
+  <MetricStat
+    slot="left"
+    cue="stat-onepercent"
+    value="1,4"
+    unit="%"
+    label="Anteil aller Klicks auf Paid Ads"
+    sublabel="SparkToro & Datos 2024 [@fishkin-2024-zero-click]: Nur ~14 von 1.000 Suchen führen auf bezahlte Anzeigen"
+    color="amber"
+  />
+
+  <BentoCard
+    slot="right"
+    cue="card-explanation"
+    title="Analyse der Klick-Dynamik"
+    accent="blue"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "search",
+          title: "Selektive Anzeigenausspielung",
+          desc: "Informationsorientierte Recherchen bleiben weitgehend werbefrei; {cue:hl-onepercent-intent}Google blendet Ads primär bei kommerzieller Kaufabsicht ein{/cue}."
+        },
+        {
+          icon: "target",
+          title: "CTR im kommerziellen Korridor",
+          desc: "Werden Anzeigen ausgespielt, erzielen sie in B2B-Transaktionsfeldern {cue:hl-onepercent-ctr}Klickraten zwischen 5 und 10 Prozent{/cue} im relevanten Segment."
+        },
+        {
+          icon: "globe",
+          title: "Das Übergewicht des offenen Webs",
+          desc: "Mit 374 Klicks pro 1.000 Suchen bleibt das offene Web der Hauptempfänger, während das {cue:hl-onepercent-volumen}Gesamtvolumen von 374 organischen Klicks dominiert wird{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

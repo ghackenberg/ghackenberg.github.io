@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 6.61
+  },
+  "hl-sub-reaktanz": {
+    "start": 9.01,
+    "duration": 0.95,
+    "end": 9.96
+  },
+  "box-sdr": {
+    "start": 11.06
+  },
+  "hl-reaktanz-sdr": {
+    "start": 13.34,
+    "duration": 3.7,
+    "end": 17.04
+  },
+  "box-fake": {
+    "start": 17.38
+  },
+  "hl-reaktanz-fake": {
+    "start": 18.95,
+    "duration": 3.9,
+    "end": 22.85
+  },
+  "box-reaktanz": {
+    "start": 24.05
+  },
+  "hl-reaktanz-autonomie": {
+    "start": 26.14,
+    "duration": 4.11,
+    "end": 30.25
+  },
+  "box-souveraen": {
+    "start": 30.59
+  },
+  "hl-reaktanz-ungated": {
+    "start": 32.46,
+    "duration": 4.63,
+    "end": 37.09
+  }
+}

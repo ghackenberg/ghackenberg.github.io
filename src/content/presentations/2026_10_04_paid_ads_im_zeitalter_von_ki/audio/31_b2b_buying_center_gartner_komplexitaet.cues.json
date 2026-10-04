@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 7.3
+  },
+  "hl-sub-gartner": {
+    "start": 10.01,
+    "duration": 1.83,
+    "end": 11.84
+  },
+  "box-cfo": {
+    "start": 13.38
+  },
+  "hl-gartner-gremium": {
+    "start": 15.16,
+    "duration": 4.33,
+    "end": 19.49
+  },
+  "box-cio": {
+    "start": 19.82
+  },
+  "hl-gartner-quellen": {
+    "start": 22.81,
+    "duration": 4.36,
+    "end": 27.17
+  },
+  "box-user": {
+    "start": 27.51
+  },
+  "hl-gartner-singleclick": {
+    "start": 29.95,
+    "duration": 4.16,
+    "end": 34.11
+  },
+  "box-sponsor": {
+    "start": 34.45
+  },
+  "hl-gartner-abm": {
+    "start": 36.81,
+    "duration": 4.26,
+    "end": 41.07
+  }
+}

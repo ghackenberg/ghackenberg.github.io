@@ -1,0 +1,60 @@
+---
+title: "Hybride Attribution: Ausweg aus der Falle"
+subtitle: "Die Kombination aus {cue:hl-sub-hybridattr}qualitativer Selbstauskunft und Marketing Mix Modeling{/cue}"
+number: "34"
+slideLayout: "diagram"
+voiceover: >
+  Um der Verzerrung klassischer Klick-Attribution zu entkommen, setzen führende B2B-Organisationen auf ein zweistufiges Messmodell.
+  {cue:sub} Die hybride Attribution kombiniert {cue:hl-sub-hybridattr}qualitative Selbstauskunft und Marketing Mix Modeling{/cue}.
+  {cue:row-lasttouch} Klassisches Last-Touch scheitert: Klick-Tracker überbewerten die letzte transaktionale Google-Suche völlig.
+  {cue:row-selfreport} Säule eins: Self-Reported Attribution: {cue:hl-attr-selfreport}Ein offenes Pflichtfeld im Kontaktformular fragt Kunden direkt nach dem ursprünglichen Entdeckungsimpuls{/cue}.
+  {cue:row-mmm} Säule zwei: Marketing Mix Modeling: {cue:hl-attr-mmm}Ökonometrische Regressionsanalysen korrelieren Gesamtausgaben für Brand Media mit dem organischen Pipeline-Wachstum{/cue}. Dadurch wird der {cue:hl-attr-wertschoepfung}wahre inkrementelle Wert von Social Ads und PR mathematisch valide belegt{/cue}.
+notes: |
+  - Zeit: 60:00 - 62:00 Min.
+  - Methode: Self-Reported Attribution (Chris Walker / Refine Labs) + ökonometrisches MMM (Meta Robyn / Google LightweightMMM).
+  - Wichtig: Aufhören, jeden Klick krampfhaft durch Cookie-Links verfolgen zu wollen.
+---
+import DiagramSlide from '../../../../components/slides/layouts/DiagramSlide.astro';
+import ComparisonTable from '../../../../components/slides/primitives/ComparisonTable.astro';
+
+<DiagramSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="34"
+  totalSlides="42"
+>
+  <div slot="diagram" class="w-full h-full flex flex-col justify-center">
+    <ComparisonTable
+      columns={["Methode", "Datenquelle", "Erfassungshorizont", "Strategische Stärke"]}
+      rows={[
+        {
+          cue: "row-lasttouch",
+          title: "Software Last-Touch",
+          subtitle: "Google Analytics & CRM",
+          targetSystem: "UTM-Parameter & Cookies",
+          mechanism: "Erfasst nur den allerletzten Klick vor dem Formularabsenden",
+          goal: "Verzerrte Klick-Optimierung",
+          accent: "neutral"
+        },
+        {
+          cue: "row-selfreport",
+          title: "Self-Reported",
+          subtitle: "Qualitatives Freitextfeld",
+          targetSystem: "Echte Kundenaussagen",
+          mechanism: "Offene Frage: {cue:hl-attr-selfreport}Ein offenes Pflichtfeld im Kontaktformular fragt Kunden direkt nach dem ursprünglichen Entdeckungsimpuls{/cue}",
+          goal: "Enthüllt Dark Social & Podcasts",
+          accent: "blue"
+        },
+        {
+          cue: "row-mmm",
+          title: "Marketing Mix Modeling",
+          subtitle: "Ökonometrische Regression",
+          targetSystem: "Aggregierte Spend-Daten",
+          mechanism: "Zeitreihenanalyse: {cue:hl-attr-mmm}Ökonometrische Regressionsanalysen korrelieren Gesamtausgaben für Brand Media mit dem organischen Pipeline-Wachstum{/cue}",
+          goal: "{cue:hl-attr-wertschoepfung}Inkrementeller ROI für den CFO{/cue}",
+          accent: "amber"
+        }
+      ]}
+    />
+  </div>
+</DiagramSlide>

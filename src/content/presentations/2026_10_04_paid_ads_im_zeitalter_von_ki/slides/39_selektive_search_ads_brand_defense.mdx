@@ -1,0 +1,69 @@
+---
+title: "Selektive Search Ads & Brand Defense"
+subtitle: "Wann sich Google Ads im B2B wirklich lohnen und {cue:hl-sub-selective}wo Budgets verschwendet werden{/cue}"
+number: "39"
+slideLayout: "split"
+voiceover: >
+  Suchanzeigen sind im B2B keineswegs tot, aber ihr Einsatzfeld muss radikal diszipliniert und geschärft werden.
+  {cue:sub} Selektive Search Ads definieren exakt, wann sich Anzeigen lohnen und {cue:hl-sub-selective}wo Budgets verschwendet werden{/cue}.
+  {cue:col-lohnend} Das hochprofitable Einsatzfeld: {cue:hl-selekt-branddefense}Brand Defense schützt die eigene Marke vor Abwerbekampagnen aggressiver Mitbewerber{/cue}. Ergänzt durch chirurgische High-Intent-Begriffe {cue:hl-selekt-closing}fängt Paid Search wechselwillige Käufer im Moment der Abschlussreife ab{/cue}.
+  {cue:col-stoppen} Die sofort zu stoppenden Geldverbrenner: {cue:hl-selekt-genericstop}Breite generische Branchenbegriffe ohne qualifizierende Spezifikation verbrennen Unsummen{/cue}. Reine Informationsrecherchen ohne Kaufabsicht {cue:hl-selekt-organicover}gehören vollständig in die organische SEO- und GEO-Beantwortung{/cue}.
+notes: |
+  - Zeit: 68:30 - 70:30 Min.
+  - Praxis-Regel: Biete auf deine Marke, wenn Konkurrenten darauf bieten; biete auf Longtail-Kaufbegriffe; stoppe generische Einwort-Keywords.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="39"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-lohnend"
+    title="Wann sich Search Ads lohnen"
+    accent="teal"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "shield",
+          title: "Brand Defense (Eigenschutz)",
+          desc: "Unverzichtbar zur Sicherung bestehender Nachfrage: {cue:hl-selekt-branddefense}Brand Defense schützt die eigene Marke vor Abwerbekampagnen aggressiver Mitbewerber{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Transaktionaler Longtail",
+          desc: "Bei konkreten Anbieterwechsel-Suchmustern: {cue:hl-selekt-closing}fängt Paid Search wechselwillige Käufer im Moment der Abschlussreife ab{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-stoppen"
+    title="Was sofort gestoppt werden muss"
+    accent="amber"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "cross",
+          title: "Generische Branchenbegriffe",
+          desc: "Vermeidung astronomischer Streuverluste: {cue:hl-selekt-genericstop}Breite generische Branchenbegriffe ohne qualifizierende Spezifikation verbrennen Unsummen{/cue}."
+        },
+        {
+          icon: "globe",
+          title: "Reine Informationsfragen",
+          desc: "Suchanfragen nach Definitionen und Tutorials {cue:hl-selekt-organicover}gehören vollständig in die organische SEO- und GEO-Beantwortung{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

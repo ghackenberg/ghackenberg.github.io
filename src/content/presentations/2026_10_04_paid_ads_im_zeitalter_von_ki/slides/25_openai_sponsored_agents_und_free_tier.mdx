@@ -1,0 +1,70 @@
+---
+title: "OpenAI: Sponsored Agents & Free Tier"
+subtitle: "Die zweistufige Monetarisierung zwischen {cue:hl-sub-openai}werbefreien Abos und interaktiven Marken-Agenten{/cue}"
+number: "25"
+slideLayout: "split"
+voiceover: >
+  Der Marktführer OpenAI verfolgt eine klare Segmentierungsstrategie, um gewaltige Inferenzkosten mit Nutzervertrauen zu vereinbaren.
+  {cue:sub} Die Monetarisierung trennt strikt zwischen {cue:hl-sub-openai}werbefreien Abos und interaktiven Marken-Agenten{/cue}.
+  {cue:col-segmentierung} Das zweistufige Zugangsmodell: {cue:hl-oai-freetier}Werbetests finden ausschließlich in der Free- und Einstiegsversion von ChatGPT statt{/cue}. Alle zahlenden Abonnenten in Plus-, Team- und Enterprise-Plänen {cue:hl-oai-adfree}bleiben garantiert und dauerhaft werbefrei{/cue}.
+  {cue:col-formate} Die neuen Werbeformate von OpenAI: {cue:hl-oai-sponsoredagent}Sponsored Agents ermöglichen interaktive, markenspezifische Dialoge auf freiwilliger Basis{/cue}. Anzeigen erscheinen strikt unterhalb der Antwort und {cue:hl-oai-unabhaengig}dürfen den generierten Antworttext der KI unter keinen Umständen beeinflussen{/cue}.
+notes: |
+  - Zeit: 43:30 - 45:30 Min.
+  - Fakten: Werbetests seit Anfang 2026; strikte Trennung von Antwortgenerierung und Ad-Ausspielung.
+  - Wichtig: B2B-Entscheider nutzen meist Bezahl-Accounts, sind also im ChatGPT-Umfeld über Free-Ads nicht erreichbar!
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="25"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-segmentierung"
+    title="Zweistufige Nutzer-Segmentierung"
+    accent="blue"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "zap",
+          title: "Monetarisierung des Free Tiers",
+          desc: "Um Inferenzkosten gegenzufinanzieren: {cue:hl-oai-freetier}Werbetests finden ausschließlich in der Free- und Einstiegsversion von ChatGPT statt{/cue}."
+        },
+        {
+          icon: "shield",
+          title: "Werbefreiheit für Bezahlpläne",
+          desc: "Geschäftskunden und Power-User sind geschützt: {cue:hl-oai-adfree}bleiben garantiert und dauerhaft werbefrei{/cue} in Plus-, Pro- und Enterprise-Tiers."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-formate"
+    title="Die Formate der nächsten Generation"
+    accent="teal"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "sparkles",
+          title: "Sponsored Agents",
+          desc: "Statt statischer Textlinks: {cue:hl-oai-sponsoredagent}Sponsored Agents ermöglichen interaktive, markenspezifische Dialoge auf freiwilliger Basis{/cue} mit Unternehmens-Bots."
+        },
+        {
+          icon: "check",
+          title: "Antwort-Unabhängigkeit",
+          desc: "OpenAI garantiert ethische Trennung: Werbegelder {cue:hl-oai-unabhaengig}dürfen den generierten Antworttext der KI unter keinen Umständen beeinflussen{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

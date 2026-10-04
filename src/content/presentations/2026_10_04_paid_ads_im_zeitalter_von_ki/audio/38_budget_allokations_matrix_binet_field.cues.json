@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 6.17
+  },
+  "hl-sub-binet": {
+    "start": 9.21,
+    "duration": 3.31,
+    "end": 12.52
+  },
+  "chart-binet": {
+    "start": 12.86
+  },
+  "hl-binet-5050": {
+    "start": 15.78,
+    "duration": 5.81,
+    "end": 21.59
+  },
+  "card-matrix": {
+    "start": 21.93
+  },
+  "hl-binet-growth": {
+    "start": 24.71,
+    "duration": 3.27,
+    "end": 27.98
+  },
+  "hl-binet-social": {
+    "start": 29.11,
+    "duration": 3.6,
+    "end": 32.71
+  },
+  "hl-binet-perf": {
+    "start": 33.3,
+    "duration": 3.26,
+    "end": 36.56
+  },
+  "hl-binet-plateau": {
+    "start": 39.14,
+    "duration": 4.37,
+    "end": 43.51
+  }
+}

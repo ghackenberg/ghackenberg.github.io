@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.91
+  },
+  "hl-sub-advoice": {
+    "start": 10.39,
+    "duration": 1.87,
+    "end": 12.26
+  },
+  "col-advoice": {
+    "start": 12.6
+  },
+  "hl-copilot-voice": {
+    "start": 15.28,
+    "duration": 5.23,
+    "end": 20.51
+  },
+  "hl-copilot-dialog": {
+    "start": 22.84,
+    "duration": 3.2,
+    "end": 26.04
+  },
+  "col-netzwerk": {
+    "start": 26.38
+  },
+  "hl-copilot-b2breach": {
+    "start": 28.51,
+    "duration": 4.68,
+    "end": 33.19
+  },
+  "hl-copilot-aimax": {
+    "start": 35.55,
+    "duration": 3.94,
+    "end": 39.49
+  }
+}

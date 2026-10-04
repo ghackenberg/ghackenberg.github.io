@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.26
+  },
+  "hl-sub-curse": {
+    "start": 11.01,
+    "duration": 1.98,
+    "end": 12.99
+  },
+  "col-curse": {
+    "start": 13.32
+  },
+  "hl-curse-overpay": {
+    "start": 15.81,
+    "duration": 4.98,
+    "end": 20.79
+  },
+  "hl-curse-marge": {
+    "start": 24.06,
+    "duration": 3.99,
+    "end": 28.05
+  },
+  "col-shading": {
+    "start": 28.39
+  },
+  "hl-shading-algo": {
+    "start": 30.75,
+    "duration": 4.88,
+    "end": 35.63
+  },
+  "hl-shading-optimum": {
+    "start": 37.29,
+    "duration": 4.26,
+    "end": 41.55
+  }
+}

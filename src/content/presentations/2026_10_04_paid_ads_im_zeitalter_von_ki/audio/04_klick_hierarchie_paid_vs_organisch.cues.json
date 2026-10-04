@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 6.45
+  },
+  "hl-sub-ctr": {
+    "start": 9.22,
+    "duration": 1.68,
+    "end": 10.9
+  },
+  "chart-ctr": {
+    "start": 11.24
+  },
+  "hl-ctr-kurve": {
+    "start": 12.01,
+    "duration": 2.12,
+    "end": 14.13
+  },
+  "hl-ctr-pos1": {
+    "start": 15.89,
+    "duration": 2.43,
+    "end": 18.32
+  },
+  "card-takeaways-04": {
+    "start": 23.2
+  },
+  "hl-ctr-asymmetrie": {
+    "start": 25.66,
+    "duration": 3.41,
+    "end": 29.07
+  },
+  "hl-ctr-chirurgisch": {
+    "start": 31.41,
+    "duration": 2.88,
+    "end": 34.29
+  },
+  "hl-ctr-markenschutz": {
+    "start": 35,
+    "duration": 1.71,
+    "end": 36.71
+  }
+}

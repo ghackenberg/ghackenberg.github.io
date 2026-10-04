@@ -1,0 +1,99 @@
+---
+title: "Der Qualitätsfaktor: Ad-Rank-Mechanik"
+subtitle: "Wie Relevanz als {cue:hl-sub-adquality}exponentieller Preismultiplikator im Ad Rank wirkt{/cue}"
+number: "16"
+slideLayout: "split"
+voiceover: >
+  Reine Zahlungsbereitschaft genügt bei modernen Suchmaschinen nicht, um die Spitzenposition zu erobern.
+  {cue:sub} Der Qualitätsfaktor fungiert als {cue:hl-sub-adquality}exponentieller Preismultiplikator im Ad Rank{/cue}.
+  {cue:chart-qs} Das linke Diagramm zeigt den relativen Klickpreis im Vergleich zur {cue:hl-qs-baseline}neutralen Baseline mit Score sieben{/cue}.
+  {cue:card-formel} Die Ad-Rank-Formel bestimmt die Auktionsreihenfolge: {cue:hl-adrank-formel}Der Rang errechnet sich aus dem Maximalgebot multipliziert mit dem Qualitätsfaktor{/cue}. Um den Rang zu halten, muss der Klickpreis {cue:hl-adrank-cpc}den Ad Rank des Nächstplatzierten dividiert durch die eigene Qualität übersteigen{/cue}. Hohe Relevanz bringt {cue:hl-adrank-rabatt}einen effektiven Rabatt von fünfzig Prozent{/cue}, während Irrelevanz {cue:hl-adrank-strafe}zu einer massiven Strafsteuer von über hundert Prozent führt{/cue}.
+notes: |
+  - Zeit: 27:00 - 29:00 Min.
+  - Formel: Actual CPC = (Ad Rank nächster / eigener Quality Score) + $0.01.
+  - Didaktik: Zeigen, dass Google Nutzererfahrung über reines Geld stellt, um das eigene Plattform-Ökosystem zu schützen.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="16"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="chart-qs"
+    title="Effektiver CPC nach Qualitätsfaktor"
+    accent="blue"
+  >
+    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+      Relativer Klickpreis im Vergleich zur {cue:hl-qs-baseline}neutralen Baseline mit Score sieben{/cue}:
+    </p>
+    <BarChart
+      unit="%"
+      max={250}
+      items={[
+        {
+          label: "Quality Score 10 (Exzellent)",
+          value: 50,
+          formattedValue: "-50% Rabatt",
+          accent: "emerald"
+        },
+        {
+          label: "Quality Score 7 (Baseline)",
+          value: 100,
+          formattedValue: "100% Basis",
+          accent: "blue"
+        },
+        {
+          label: "Quality Score 5 (Mittelmäßig)",
+          value: 140,
+          formattedValue: "+40% Aufschlag",
+          accent: "amber"
+        },
+        {
+          label: "Quality Score 3 (Schlecht)",
+          value: 233,
+          formattedValue: "+133% Strafe",
+          accent: "rose"
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="card-formel"
+    title="Die Auktionsmathematik"
+    accent="cyan"
+  >
+    <CalloutBox type="statement" title="Ad Rank = Gebot × Qualitätsfaktor">
+      <p>Auktionsgewinn durch Relevanz: {cue:hl-adrank-formel}Der Rang errechnet sich aus dem Maximalgebot multipliziert mit dem Qualitätsfaktor{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "cpu",
+          title: "Preisfindung für den tatsächlichen CPC",
+          desc: "Zur Wahrung des Rangs gilt: {cue:hl-adrank-cpc}den Ad Rank des Nächstplatzierten dividiert durch die eigene Qualität übersteigen{/cue}."
+        },
+        {
+          icon: "check",
+          title: "Der Relevanz-Rabatt",
+          desc: "Hohe Landingpage-Qualität: {cue:hl-adrank-rabatt}Ein hoher Qualitätsfaktor halbiert die effektiven Klickkosten bei gleicher Position{/cue}."
+        },
+        {
+          icon: "alert",
+          title: "Die Strafsteuer für Irrelevanz",
+          desc: "Vernachlässigte Relevanz: {cue:hl-adrank-strafe}zu einer massiven algorithmischen Strafsteuer von über hundert Prozent führt{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

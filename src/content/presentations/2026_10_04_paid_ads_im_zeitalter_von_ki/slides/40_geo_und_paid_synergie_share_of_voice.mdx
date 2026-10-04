@@ -1,0 +1,69 @@
+---
+title: "Synergie von GEO & Paid Media"
+subtitle: "Wie organische Entitätsautorität {cue:hl-sub-geopaid}die Konversionsrate bezahlter Kampagnen hebelt{/cue}"
+number: "40"
+slideLayout: "split"
+voiceover: >
+  Entgegen weitverbreiteter Annahmen stehen Generative Engine Optimization und Paid Ads nicht in Konkurrenz, sondern verstärken sich gegenseitig.
+  {cue:sub} Die Synergie beider Disziplinen zeigt, wie organische Entitätsautorität {cue:hl-sub-geopaid}die Konversionsrate bezahlter Kampagnen hebelt{/cue}.
+  {cue:col-entitaet} Das neurosymbolische Fundament: {cue:hl-geopaid-graph}Strukturierte Daten nach Schema.org und Wikidata-Verknüpfungen etablieren die Marke als verifizierte Entität{/cue}. Wenn Sprachmodelle diese Autorität erkennen, {cue:hl-geopaid-zitation}wird das Unternehmen in generativen Antworten organisch als Benchmark zitiert{/cue}.
+  {cue:col-hebel} Der Multiplikator für bezahlte Kampagnen: {cue:hl-geopaid-cvr}Trifft ein Entscheider nach einer KI-Zitation auf eine Search- oder Social-Ad, verdoppelt sich die Abschlussrate{/cue}. Bezahlte Anzeigen müssen nicht mehr Vertrauen bei Null aufbauen, sondern {cue:hl-geopaid-abschluss}aktivieren bereits vorgeprägtes institutionelles Vertrauen{/cue}.
+notes: |
+  - Zeit: 70:30 - 72:30 Min.
+  - Begriff: Entitäts-Autorität als gemeinsamer Nenner von GEO und Performance Marketing.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="40"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-entitaet"
+    title="Organische Entitäts-Autorität (GEO)"
+    accent="blue"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "network",
+          title: "Strukturierte Wissensgraphen",
+          desc: "Basis maschineller Glaubwürdigkeit: {cue:hl-geopaid-graph}Strukturierte Daten nach Schema.org und Wikidata-Verknüpfungen etablieren die Marke als verifizierte Entität{/cue}."
+        },
+        {
+          icon: "sparkles",
+          title: "Organische KI-Zitation",
+          desc: "Bei unvoreingenommenen Marktvergleichen {cue:hl-geopaid-zitation}wird das Unternehmen in generativen Antworten organisch als Benchmark zitiert{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-hebel"
+    title="Der Paid-Media-Hebel"
+    accent="teal"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "trending-up",
+          title: "Verdoppelte Konversionsraten",
+          desc: "Durch die Vorab-Validierung gilt: {cue:hl-geopaid-cvr}Trifft ein Entscheider nach einer KI-Zitation auf eine Search- oder Social-Ad, verdoppelt sich die Abschlussrate{/cue}."
+        },
+        {
+          icon: "check",
+          title: "Abschluss statt Überredung",
+          desc: "Such- und Social-Ads müssen keine Vorurteile abbauen, sondern {cue:hl-geopaid-abschluss}aktivieren bereits vorgeprägtes institutionelles Vertrauen{/cue} zur direkten Anfrage."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

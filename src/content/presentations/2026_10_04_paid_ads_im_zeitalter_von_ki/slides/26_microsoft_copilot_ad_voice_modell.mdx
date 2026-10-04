@@ -1,0 +1,69 @@
+---
+title: "Microsoft Copilot: Das 'Ad Voice'-Modell"
+subtitle: "Kontextuelle Integration in Chat-Dialoge über {cue:hl-sub-advoice}das Microsoft Advertising Network{/cue}"
+number: "26"
+slideLayout: "split"
+voiceover: >
+  Microsoft nutzt seine bestehende Stärke im B2B-Enterprise-Bereich und verknüpft Copilot direkt mit seinem Werbenetzwerk.
+  {cue:sub} Das 'Ad Voice'-Modell integriert Anzeigen kontextuell über {cue:hl-sub-advoice}das Microsoft Advertising Network{/cue}.
+  {cue:col-advoice} Die dialogische Einbindung durch 'Ad Voice': {cue:hl-copilot-voice}Copilot formuliert einen begleitenden Satz, der den semantischen Bezug der Anzeige zum Chat erklärt{/cue}. Statt als Fremdkörper zu wirken, {cue:hl-copilot-dialog}bettet sich die Empfehlung natürlich in die laufende Konversation ein{/cue}.
+  {cue:col-netzwerk} Die Stärke für B2B-Unternehmen: {cue:hl-copilot-b2breach}Über Windows 11, Edge und Office erreicht Copilot Millionen Arbeitsplätze am Desktop{/cue}. Mittels AI Max for Search werden {cue:hl-copilot-aimax}bestehende Bing-Kampagnen vollautomatisch auf Copilot-Chatflächen erweitert{/cue}.
+notes: |
+  - Zeit: 45:30 - 47:30 Min.
+  - Besonderheit: Ad Voice als Brückentext; B2B-Desktop-Dominanz über Windows und Edge.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="26"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-advoice"
+    title="Das 'Ad Voice'-Konzept"
+    accent="blue"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "sparkles",
+          title: "Semantische Moderation",
+          desc: "Microsoft nutzt kontextuelle Überleitung: {cue:hl-copilot-voice}Copilot formuliert einen begleitenden Satz, der den semantischen Bezug der Anzeige zum Chat erklärt{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Konversationelle Harmonie",
+          desc: "Durch die dialogische Einbettung {cue:hl-copilot-dialog}bettet sich die Empfehlung natürlich in die laufende Konversation ein{/cue} und mildert Banner-Blindness."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-netzwerk"
+    title="Die B2B-Desktop-Präsenz"
+    accent="teal"
+  >
+    <BulletList
+      items={[
+        {
+          icon: "globe",
+          title: "Enterprise-Verankerung",
+          desc: "Ein gigantischer Vorteil für B2B: {cue:hl-copilot-b2breach}Über Windows 11, Edge und Office erreicht Copilot Millionen Arbeitsplätze am Desktop{/cue} während der Arbeitszeit."
+        },
+        {
+          icon: "zap",
+          title: "AI Max for Search",
+          desc: "Werbetreibende müssen keine neuen Formate buchen; {cue:hl-copilot-aimax}bestehende Bing-Kampagnen vollautomatisch auf Copilot-Chatflächen erweitert{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

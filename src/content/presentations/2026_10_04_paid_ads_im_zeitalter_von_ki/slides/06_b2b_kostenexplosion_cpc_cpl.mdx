@@ -1,0 +1,102 @@
+---
+title: "B2B-Kostenexplosion: CPC & CPL"
+subtitle: "Steigende Gebotspreise und {cue:hl-sub-cpc}Margendruck durch algorithmische Konkurrenz{/cue}"
+number: "06"
+slideLayout: "metric"
+voiceover: >
+  Während das Klickvolumen stagniert, explodieren im B2B-Bereich gleichzeitig die Klickpreise und Akquisitionskosten.
+  {cue:sub} Die aktuellen Branchen-Benchmarks belegen den {cue:hl-sub-cpc}Margendruck durch algorithmische Konkurrenz{/cue}.
+  {cue:chart-cpc} Im Branchenvergleich explodieren die {cue:hl-cpc-spitze}Kosten pro Klick im B2B-Tech-Sektor{/cue} auf bis zu über neun Dollar.
+  {cue:card-takeaways-06} Für Marketing-Verantwortliche verschärft sich die Lage: Die Kosten klettern auf {cue:hl-b2b-cpl}über 66 Dollar pro qualifizierter Anfrage{/cue}. Gleichzeitig gilt: {cue:hl-b2b-inflation}Automatisierte Gebotsstrategien treiben die CPCs in Auktionsspiralen{/cue}, weshalb ungerichteter Klick-Einkauf {cue:hl-b2b-roi}ohne spitze Zielgruppenfilter unrentabel wird{/cue}.
+notes: |
+  - Zeit: 10:00 - 12:00 Min.
+  - Daten: WordStream by LocaliQ 2025/2026 Search Benchmarks.
+  - Takeaway: Reine Klick-Optimierung verbrennt Budgets, wenn Lead-Qualität und Closing-Rates nicht mithalten.
+references:
+  - type: online
+    id: "wordstream-2025-benchmarks"
+    author: "WordStream"
+    title: "Google Ads Benchmarks for YOUR Industry"
+    siteName: "WordStream by LocaliQ"
+    year: 2025
+    url: "https://www.wordstream.com/blog/ws/2023/05/15/google-ads-benchmarks"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="06"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="chart-cpc"
+    title="CPC-Branchenbenchmarks [@wordstream-2025-benchmarks]"
+    accent="amber"
+  >
+    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+      Durchschnittliche {cue:hl-cpc-spitze}Kosten pro Klick im B2B-Tech-Sektor{/cue} nach Branche:
+    </p>
+    <BarChart
+      unit="$"
+      max={12}
+      items={[
+        {
+          label: "Legal Services",
+          value: 9.21,
+          formattedValue: "$9.21",
+          accent: "rose"
+        },
+        {
+          label: "Technology & Software",
+          value: 6.45,
+          formattedValue: "$6.45",
+          accent: "amber"
+        },
+        {
+          label: "B2B Services (Ø)",
+          value: 5.42,
+          formattedValue: "$5.42",
+          accent: "blue"
+        },
+        {
+          label: "Google Ads Gesamt-Ø",
+          value: 2.69,
+          formattedValue: "$2.69",
+          accent: "neutral"
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="card-takeaways-06"
+    title="Die ökonomische Realität im B2B"
+    accent="cyan"
+  >
+    <CalloutBox type="warning" title="Lead-Kosten im Höhenflug">
+      <p>Auktionsdruck: {cue:hl-b2b-cpl}über 66 Dollar pro qualifizierter Anfrage{/cue} im B2B-Mittelwert bei steigender Volatilität.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "trending-up",
+          title: "Auktionsgetriebene Preisspirale",
+          desc: "Smart Bidding Algorithmen maximieren den Konkurrenzkampf; {cue:hl-b2b-inflation}Automatisierte Gebotsstrategien treiben die CPCs in Auktionsspiralen{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Zwang zur Kanal-Differenzierung",
+          desc: "Breit angelegte Kampagnen scheitern am Budget, weshalb ungerichteter Klick-Einkauf {cue:hl-b2b-roi}ohne spitze Zielgruppenfilter unrentabel wird{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

@@ -1,0 +1,48 @@
+---
+title: "Der 90-Tage-Implementierungsplan"
+subtitle: "Schrittweise Transformation vom {cue:hl-sub-plan90}Klick-Silo zum synchronisierten B2B-Werbesystem{/cue}"
+number: "41"
+slideLayout: "pipeline"
+voiceover: >
+  Für die operative Umsetzung im Unternehmen bedarf es eines klaren, pragmatischen Fahrplans ohne riskante Big-Bang-Brüche.
+  {cue:sub} Dieser 90-Tage-Plan führt strukturiert vom {cue:hl-sub-plan90}Klick-Silo zum synchronisierten B2B-Werbesystem{/cue}.
+  {cue:step-plan-01} Phase eins, Tag 1 bis 30: Audit und Entmüllung: {cue:hl-plan-stop}Generische Geldverbrenner-Keywords werden gestoppt, Brand Defense etabliert und Self-Reported Attribution im Formular aktiviert{/cue}.
+  {cue:step-plan-02} Phase zwei, Tag 31 bis 60: Demand Engine & Thought Leadership: {cue:hl-plan-launch}Launch von LinkedIn Thought Leader Ads für reale Fachexperten und Rollout strukturierter Daten nach Schema.org{/cue}.
+  {cue:step-plan-03} Phase drei, Tag 61 bis 90: Closed Loop & Skalierung: {cue:hl-plan-scale}Synchronisation von AI Max / Copilot-Formaten, Budget-Rebalancing auf 50:50 und Einführung von Marketing Mix Modeling{/cue}.
+notes: |
+  - Zeit: 72:30 - 74:30 Min.
+  - Management-Takeaway: Klare Meilensteine für Marketingleiter und Agentursteuerung.
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="41"
+  totalSlides="42"
+>
+  <Pipeline
+    direction="vertical"
+    steps={[
+      {
+        cue: "step-plan-01",
+        num: "01",
+        title: "Tage 1–30: Audit, Entmüllung & Attribution",
+        desc: "Kostenbremse und Datenwahrheit: {cue:hl-plan-stop}Generische Geldverbrenner-Keywords werden gestoppt, Brand Defense etabliert und Self-Reported Attribution im Formular aktiviert{/cue}."
+      },
+      {
+        cue: "step-plan-02",
+        num: "02",
+        title: "Tage 31–60: Demand Creation & GEO-Rollout",
+        desc: "Aufbau von Glaubwürdigkeit und Autorität: {cue:hl-plan-launch}Launch von LinkedIn Thought Leader Ads für reale Fachexperten und Rollout strukturierter Daten nach Schema.org{/cue}."
+      },
+      {
+        cue: "step-plan-03",
+        num: "03",
+        title: "Tage 61–90: Full-Funnel Closed Loop",
+        desc: "Orchestrierung und ökonometrische Steuerung: {cue:hl-plan-scale}Synchronisation von AI Max / Copilot-Formaten, Budget-Rebalancing auf 50:50 und Einführung von Marketing Mix Modeling{/cue}."
+      }
+    ]}
+  />
+</PipelineSlide>

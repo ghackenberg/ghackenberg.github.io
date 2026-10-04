@@ -1,0 +1,71 @@
+---
+title: "Thought Leader Ads vs. Firmenbanner"
+subtitle: "Warum persönliche Expertenstimmen {cue:hl-sub-thought}anonyme Unternehmenslogos um Welten schlagen{/cue}"
+number: "32"
+slideLayout: "metric"
+voiceover: >
+  In den Social-Media-Feeds von LinkedIn und Meta entscheidet das Format des Absenders über Erfolg oder Misserfolg.
+  {cue:sub} Die empirischen Daten belegen, warum persönliche Expertenstimmen {cue:hl-sub-thought}anonyme Unternehmenslogos um Welten schlagen{/cue}.
+  {cue:stat-thought} Ganze dreiundsiebzig Prozent aller B2B-Entscheider stufen Fachbeiträge konkreter Experten als verlässlicher ein als Produktwerbung.
+  {cue:card-format} Die Hebelwirkung von Thought Leader Ads basiert auf dem Prinzip: {cue:hl-thought-persoenlich}Unternehmen sponsern die Posts realer Gründer und Ingenieure statt anonymer Firmenprofile{/cue}. Authentisches Wissen {cue:hl-thought-preise}rechtfertigt Premium-Preise und öffnet Türen zu C-Level-Kaufgremien{/cue}, während Posts {cue:hl-thought-kpi}nahezu verdoppelte Verweildauern und signifikant höhere organische Weiterleitungsraten{/cue} erzielen.
+notes: |
+  - Zeit: 56:00 - 58:00 Min.
+  - Primärquelle: Edelman & LinkedIn B2B Thought Leadership Impact Report (2024).
+  - Praxisbezug: People buy from people – im B2B schlägt das Gesicht immer das Firmenlogo.
+references:
+  - type: online
+    id: "edelman-linkedin-2024-thought-leadership"
+    author: "Edelman and LinkedIn"
+    title: "2024 B2B Thought Leadership Impact Report"
+    siteName: "Edelman & LinkedIn Research"
+    year: 2024
+    url: "https://www.edelman.com/expertise/Business-Marketing/2024-b2b-thought-leadership-report"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="32"
+  totalSlides="42"
+  ratio="40/60"
+>
+  <MetricStat
+    slot="left"
+    cue="stat-thought"
+    value="73"
+    unit="%"
+    label="B2B-Entscheider-Vertrauen"
+    sublabel="Edelman & LinkedIn Report [@edelman-linkedin-2024-thought-leadership]: Höheres Vertrauen in Fachexperten als in klassische Unternehmenswerbung"
+    color="blue"
+  />
+
+  <BentoCard
+    slot="right"
+    cue="card-format"
+    title="Der Paradigmenwechsel des Ad-Formats"
+    accent="cyan"
+  >
+    <CalloutBox type="statement" title="Menschen folgen Menschen">
+      <p>Strategischer Wechsel vom Logo zum Gesicht: {cue:hl-thought-persoenlich}Unternehmen sponsern die Posts realer Gründer und Ingenieure statt anonymer Firmenprofile{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "target",
+          title: "Preissetzungsmacht & Einfluss",
+          desc: "Qualitatives Thought Leadership {cue:hl-thought-preise}rechtfertigt Premium-Preise und öffnet Türen zu C-Level-Kaufgremien{/cue}."
+        },
+        {
+          icon: "trending-up",
+          title: "Signifikante Performance-Vorteile",
+          desc: "Gegenüber statischen Displaybannern erzielen Personenbeiträge {cue:hl-thought-kpi}nahezu verdoppelte Verweildauern und signifikant höhere organische Weiterleitungsraten{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>

@@ -1,0 +1,34 @@
+{
+  "sub": {
+    "start": 6.81
+  },
+  "hl-sub-plan90": {
+    "start": 9.21,
+    "duration": 2.92,
+    "end": 12.13
+  },
+  "step-plan-01": {
+    "start": 12.46
+  },
+  "hl-plan-stop": {
+    "start": 16.19,
+    "duration": 6.74,
+    "end": 22.93
+  },
+  "step-plan-02": {
+    "start": 23.26
+  },
+  "hl-plan-launch": {
+    "start": 28.02,
+    "duration": 5.42,
+    "end": 33.44
+  },
+  "step-plan-03": {
+    "start": 33.77
+  },
+  "hl-plan-scale": {
+    "start": 37.96,
+    "duration": 7.28,
+    "end": 45.24
+  }
+}

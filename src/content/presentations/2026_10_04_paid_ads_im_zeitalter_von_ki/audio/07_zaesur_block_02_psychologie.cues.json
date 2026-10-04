@@ -1,0 +1,29 @@
+{
+  "sub": {
+    "start": 6.2
+  },
+  "hl-sec2-sub": {
+    "start": 10.6,
+    "duration": 1.78,
+    "end": 12.38
+  },
+  "card-divider-02": {
+    "start": 12.71
+  },
+  "card-leitfrage-02": {
+    "start": 15.41
+  },
+  "hl-sec2-kognition": {
+    "start": 15.41,
+    "duration": 4.3,
+    "end": 19.71
+  },
+  "card-bridge-02": {
+    "start": 20.05
+  },
+  "hl-sec2-foraging": {
+    "start": 22.5,
+    "duration": 4.29,
+    "end": 26.79
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "sub": {
+    "start": 5.71
+  },
+  "hl-sec3-sub": {
+    "start": 9.84,
+    "duration": 1.65,
+    "end": 11.49
+  },
+  "card-divider-03": {
+    "start": 11.82
+  },
+  "card-leitfrage-03": {
+    "start": 14.19
+  },
+  "hl-sec3-auktion": {
+    "start": 14.19,
+    "duration": 5.44,
+    "end": 19.63
+  },
+  "card-bridge-03": {
+    "start": 19.96
+  },
+  "hl-sec3-varian": {
+    "start": 21.8,
+    "duration": 3.9,
+    "end": 25.7
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "sub": {
+    "start": 7.03
+  },
+  "hl-sub-pinball": {
+    "start": 11.01,
+    "duration": 2.2,
+    "end": 13.21
+  },
+  "row-fpattern": {
+    "start": 13.55
+  },
+  "hl-scan-linear": {
+    "start": 15.86,
+    "duration": 3.42,
+    "end": 19.28
+  },
+  "row-triangle": {
+    "start": 19.61
+  },
+  "hl-scan-top": {
+    "start": 22.26,
+    "duration": 2.79,
+    "end": 25.05
+  },
+  "row-pinball": {
+    "start": 25.39
+  },
+  "hl-scan-flippern": {
+    "start": 27.36,
+    "duration": 4.15,
+    "end": 31.51
+  },
+  "hl-scan-monopol": {
+    "start": 33.6,
+    "duration": 4.03,
+    "end": 37.63
+  }
+}

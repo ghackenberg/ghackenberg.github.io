@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.41
+  },
+  "hl-sub-aioads": {
+    "start": 10.32,
+    "duration": 1.84,
+    "end": 12.16
+  },
+  "col-platzierung": {
+    "start": 12.5
+  },
+  "hl-aio-hybrid": {
+    "start": 14.69,
+    "duration": 4.46,
+    "end": 19.15
+  },
+  "hl-aio-pmax": {
+    "start": 22.69,
+    "duration": 5.76,
+    "end": 28.45
+  },
+  "col-strategie": {
+    "start": 28.79
+  },
+  "hl-aio-verdrangung": {
+    "start": 32.08,
+    "duration": 3.68,
+    "end": 35.76
+  },
+  "hl-aio-unsichtbar": {
+    "start": 40.1,
+    "duration": 2.99,
+    "end": 43.09
+  }
+}

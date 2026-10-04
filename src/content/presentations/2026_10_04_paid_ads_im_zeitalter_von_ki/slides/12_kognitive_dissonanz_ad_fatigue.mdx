@@ -1,0 +1,66 @@
+---
+title: "Kognitive Dissonanz & Ad Fatigue"
+subtitle: "Der Abnutzungseffekt digitaler Werbemittel {cue:hl-sub-fatigue}durch Reizüberflutung im B2B-Feed{/cue}"
+number: "12"
+slideLayout: "split"
+voiceover: >
+  Während Suchanzeigen bedarfsgetrieben auf eine konkrete Anfrage reagieren, kämpfen Social Ads mit der Reizüberflutung im Feed.
+  {cue:sub} Ad Fatigue und kognitive Dissonanz beschreiben den {cue:hl-sub-fatigue}Abnutzungseffekt digitaler Werbemittel durch Reizüberflutung im B2B-Feed{/cue}.
+  {cue:col-mechanik} Die sensorische Adaption folgt psychologischen Gesetzen: {cue:hl-fatigue-habituation}Wiederholte Reize werden vom Gehirn als redundantes Rauschen eingestuft{/cue}. Bei steigender Frequenz sinkt die Interaktionsrate, während {cue:hl-fatigue-cpa}die Akquisitionskosten für denselben Lead exponentiell steigen{/cue}.
+  {cue:col-dissonanz} Gleichzeitig entsteht kognitive Dissonanz: {cue:hl-dissonanz-bruch}Aufdringliche Werbeappelle unterbrechen den professionellen Lesefluss{/cue}. Aggressives Retargeting führt im B2B nicht zu Kaufbereitschaft, sondern {cue:hl-dissonanz-avers}erzeugt unterbewusste Markenabneigung und Reaktanz{/cue}.
+notes: |
+  - Zeit: 20:30 - 22:30 Min.
+  - Psychologischer Fokus: Habituation (sensorische Gewöhnung) und psychologische Reaktanz bei Push-Werbung.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="12"
+  totalSlides="42"
+  ratio="50/50"
+>
+  <BentoCard
+    slot="left"
+    cue="col-mechanik"
+    title="Sensorische Habituation (Wear-out)"
+    accent="neutral"
+  >
+    <CalloutBox type="statement" title="Sensorische Gewöhnung">
+      <p>Das Rausch-Filter-Modell: {cue:hl-fatigue-habituation}Wiederholte Reize werden vom Gehirn als redundantes Rauschen eingestuft{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "trending-down",
+          title: "Die Frequenz-Kosten-Schere",
+          desc: "Steigt die Ausspielungsfrequenz über den Sättigungspunkt, brechen Klickraten ein, während {cue:hl-fatigue-cpa}die Akquisitionskosten für denselben Lead exponentiell steigen{/cue}."
+        }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard
+    slot="right"
+    cue="col-dissonanz"
+    title="Kognitive Dissonanz im B2B"
+    accent="amber"
+  >
+    <CalloutBox type="alert" title="Kontextstörung & Reaktanz">
+      <p>Aufdringlichkeit im Feed: {cue:hl-dissonanz-bruch}Aufdringliche Werbeappelle unterbrechen den professionellen Lesefluss{/cue}.</p>
+    </CalloutBox>
+    <BulletList
+      items={[
+        {
+          icon: "cross",
+          title: "Negative Markenassoziation",
+          desc: "Dauerhaftes Stalking via Cookie-Retargeting überzeugt niemanden, sondern {cue:hl-dissonanz-avers}erzeugt unterbewusste Markenabneigung und Reaktanz{/cue} bei Entscheidern."
+        }
+      ]}
+    />
+  </BentoCard>
+</SplitSlide>
