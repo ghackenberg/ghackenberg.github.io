@@ -10,8 +10,27 @@ voiceover: >
   {cue:card-formel} Die Ad-Rank-Formel bestimmt die Auktionsreihenfolge: {cue:hl-adrank-formel}Der Rang errechnet sich aus dem Maximalgebot multipliziert mit dem Qualitätsfaktor{/cue}. Um den Rang zu halten, muss der Klickpreis {cue:hl-adrank-cpc}den Ad Rank des Nächstplatzierten dividiert durch die eigene Qualität übersteigen{/cue}. Hohe Relevanz bringt {cue:hl-adrank-rabatt}einen effektiven Rabatt von fünfzig Prozent{/cue}, während Irrelevanz {cue:hl-adrank-strafe}zu einer massiven Strafsteuer von über hundert Prozent führt{/cue}.
 notes: |
   - Zeit: 27:00 - 29:00 Min.
-  - Formel: Actual CPC = (Ad Rank nächster / eigener Quality Score) + $0.01.
-  - Didaktik: Zeigen, dass Google Nutzererfahrung über reines Geld stellt, um das eigene Plattform-Ökosystem zu schützen.
+  - Formel: Actual CPC = (Ad Rank nächster / eigener Quality Score) + $0.01 (Hal Varian 2007).
+  - Rabatt/Strafe: Empirische Analyse von Larry Kim / WordStream (2015).
+references:
+  - type: online
+    id: "kim-2015-quality-score"
+    author: "Kim, Larry"
+    title: "Hacking AdWords: How Quality Score Really Affects Cost Per Click"
+    siteName: "WordStream"
+    year: 2015
+    url: "https://www.wordstream.com/blog/ws/2015/06/08/quality-score-cost-per-click"
+  - type: article
+    id: "varian-2007-position-auctions"
+    author: "Varian, Hal R."
+    title: "Position auctions"
+    journal: "International Journal of Industrial Organization"
+    volume: "25"
+    number: "6"
+    pages: "1163--1178"
+    year: 2007
+    doi: "10.1016/j.ijindorg.2007.05.006"
+    url: "https://doi.org/10.1016/j.ijindorg.2007.05.006"
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -29,7 +48,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   <BentoCard
     slot="left"
     cue="chart-qs"
-    title="Effektiver CPC nach Qualitätsfaktor"
+    title="Effektiver CPC nach Qualitätsfaktor [@kim-2015-quality-score]"
     accent="blue"
   >
     <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
@@ -70,7 +89,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   <BentoCard
     slot="right"
     cue="card-formel"
-    title="Die Auktionsmathematik"
+    title="Auktionsmathematik [@varian-2007-position-auctions]"
     accent="cyan"
   >
     <CalloutBox type="statement" title="Ad Rank = Gebot × Qualitätsfaktor">

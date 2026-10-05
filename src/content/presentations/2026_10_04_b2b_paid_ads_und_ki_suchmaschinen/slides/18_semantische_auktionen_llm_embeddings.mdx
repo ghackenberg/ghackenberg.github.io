@@ -10,8 +10,18 @@ voiceover: >
   {cue:card-vector} Auf Basis dieser Vektordistanz fällt die Zulassungsentscheidung: {cue:hl-embed-match}Die Auktionszulassung erfolgt auch ohne ein einziges übereinstimmendes Keyword{/cue}. Technisch bedeutet das: {cue:hl-embed-raum}Suchanfrage und Anzeigentext werden in hochdimensionale Vektoren projiziert{/cue}. Für hochspezialisierte B2B-Nischen birgt das Gefahren: {cue:hl-embed-fehlaus}Semantische Verallgemeinerungen führen zu kostspieligen Fehlausspielungen{/cue}, wodurch ohne strikte Negative-Keywords {cue:hl-embed-budgetdrain}hohe Klickbudgets in irrelevante Konsumentenanfragen abfließen{/cue}.
 notes: |
   - Zeit: 31:00 - 33:00 Min.
-  - Technik: BERT/MUM-basierte Embedding-Projektion bei Google Ads.
+  - Technik: BERT/MUM-basierte Embedding-Projektion bei Google Ads (Cer et al. 2018).
   - Praxisbezug: B2B-Industrie (z. B. "Industriepumpen" vs. "Gartenpumpen") – semantische Grenzen sind für den ROI überlebenswichtig.
+references:
+  - type: inproceedings
+    id: "cer-2018-universal-sentence-encoder"
+    author: "Cer, Daniel and Yang, Yinfei and Kong, Sheng-yi and Hua, Nan and Limtiaco, Nicole and St. John, Rhomni and Constant, Noah and Guajardo-Cespedes, Mario and Yuan, Steve and Tar, Chris and Strope, Brian and Kurzweil, Ray"
+    title: "Universal Sentence Encoder"
+    booktitle: "Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing (EMNLP): System Demonstrations"
+    pages: "169--174"
+    year: 2018
+    doi: "10.18653/v1/D18-2029"
+    url: "https://doi.org/10.18653/v1/D18-2029"
 ---
 import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
@@ -54,7 +64,7 @@ def cosine_similarity(
   <BentoCard
     slot="explanation"
     cue="card-vector"
-    title="Neuronales Vektor-Matching"
+    title="Neuronales Vektor-Matching [@cer-2018-universal-sentence-encoder]"
     accent="blue"
   >
     <CalloutBox type="statement" title="Kosinus-Ähnlichkeit als Trigger">

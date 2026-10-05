@@ -10,7 +10,16 @@ voiceover: >
   {cue:col-hebel} Der Multiplikator für bezahlte Kampagnen: {cue:hl-geopaid-cvr}Trifft ein Entscheider nach einer KI-Zitation auf eine Search- oder Social-Ad, verdoppelt sich die Abschlussrate{/cue}. Bezahlte Anzeigen müssen nicht mehr Vertrauen bei Null aufbauen, sondern {cue:hl-geopaid-abschluss}aktivieren bereits vorgeprägtes institutionelles Vertrauen{/cue}.
 notes: |
   - Zeit: 70:30 - 72:30 Min.
-  - Begriff: Entitäts-Autorität als gemeinsamer Nenner von GEO und Performance Marketing.
+  - Begriff: Entitäts-Autorität als gemeinsamer Nenner von GEO (Aggarwal et al. 2024) und Performance Marketing.
+references:
+  - type: inproceedings
+    id: "aggarwal-2024-geo"
+    author: "Aggarwal, Pranjal and Vishwakarma, Vishwajeet and Kulkarni, Mayank and Murthy, Rudra and Deshmukh, Vivek"
+    title: "GEO: Generative Engine Optimization"
+    booktitle: "Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)"
+    pages: "1--15"
+    year: 2024
+    url: "https://arxiv.org/abs/2311.09735"
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -26,7 +35,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   <BentoCard
     slot="left"
     cue="col-entitaet"
-    title="Organische Entitäts-Autorität (GEO)"
+    title="Organische Entitäts-Autorität (GEO) [@aggarwal-2024-geo]"
     accent="blue"
   >
     <BulletList
