@@ -1,0 +1,89 @@
+---
+title: "Die Stellschrauben des Samplings"
+subtitle: "Wie Temperature, Top-p und Top-k {cue:hl-sub-09}die stochastische Varianz steuern{/cue}"
+number: "09"
+slideLayout: "grid"
+voiceover: >
+  Neben dem eigentlichen Text des Prompts bestimmen drei zentrale Hyperparameter die Auswahl des nächsten Tokens.
+  {cue:sub} Sie steuern maßgeblich {cue:hl-sub-09}die stochastische Varianz der Modellausgabe{/cue}.
+  {cue:box-temp} Die Temperature skaliert die Logits vor der Softmax-Funktion: Ein Wert nahe null {cue:hl-temp-zero}erzwingt nahezu deterministisches Greedy-Decoding{/cue}, während {cue:hl-temp-b2b}für Enterprise-Pipelines null Komma null der Pflichtstandard{/cue} ist.
+  {cue:box-topp} Top-p oder Nucleus-Sampling schneidet die Verteilung dynamisch ab: Es werden {cue:hl-topp-nucleus}nur die wahrscheinlichsten Tokens bis zur kumulierten Schwelle p{/cue} betrachtet, was {cue:hl-topp-entropie}den Wortschatz flexibel an die Modell-Sicherheit anpasst{/cue}.
+  {cue:box-topk} Top-k begrenzt die Auswahl strikt auf {cue:hl-topk-pool}einen festen Pool der k wahrscheinlichsten Folgekandidaten{/cue} und dient {cue:hl-topk-safety}als harte Sicherheitsbarriere gegen absurde Ausreißer{/cue}.
+notes: |
+  - Zeit: 16:00 - 18:00 Min.
+  - Wichtig: Für Unternehmensanwendungen (Klassifikation, Extraktion, Code) Temperature immer auf 0.0 oder 0.2 setzen.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="09"
+  totalSlides="48"
+  cols={3}
+>
+  <BentoCard cue="box-temp" title="Temperature (T)" accent="blue">
+    <div class="p-3 rounded-xl bg-blue-950/30 light:bg-blue-50/80 border border-blue-800/40 light:border-blue-200 text-center font-mono text-base text-blue-300 light:text-blue-900 font-bold mb-2">
+      Logit-Skalierung: $z_i / T$
+    </div>
+    <BulletList items={[
+      {
+        icon: "cpu",
+        title: "Stauchung der Verteilung",
+        desc: "Ein Wert von 0.0 {cue:hl-temp-zero}erzwingt nahezu deterministisches Greedy-Decoding{/cue} für reproduzierbare Ausgaben."
+      },
+      {
+        icon: "target",
+        title: "Enterprise-Faustregel",
+        desc: "Gilt für strukturierte Daten: {cue:hl-temp-b2b}für Enterprise-Pipelines ist null Komma null der Pflichtstandard{/cue}."
+      }
+    ]} />
+    <div class="p-2.5 rounded-xl bg-blue-500/10 light:bg-blue-100/70 border border-blue-500/30 light:border-blue-300 text-center font-mono text-sm uppercase tracking-wider text-blue-300 light:text-blue-900 font-extrabold mt-3">
+      B2B-Standard: T = 0.0
+    </div>
+  </BentoCard>
+
+  <BentoCard cue="box-topp" title="Top-p (Nucleus)" accent="cyan">
+    <div class="p-3 rounded-xl bg-cyan-950/30 light:bg-cyan-50/80 border border-cyan-800/40 light:border-cyan-200 text-center font-mono text-base text-cyan-300 light:text-cyan-900 font-bold mb-2">
+      Kumulierte Masse: $\sum P \ge p$
+    </div>
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Dynamischer Cut-off",
+        desc: "Berücksichtigt {cue:hl-topp-nucleus}nur die wahrscheinlichsten Tokens bis zur kumulierten Schwelle p{/cue}."
+      },
+      {
+        icon: "zap",
+        title: "Entropie-Adaption",
+        desc: "Der Nucleus {cue:hl-topp-entropie}passt den Wortschatz flexibel an die Modell-Sicherheit an{/cue}."
+      }
+    ]} />
+    <div class="p-2.5 rounded-xl bg-cyan-500/10 light:bg-cyan-100/70 border border-cyan-500/30 light:border-cyan-300 text-center font-mono text-sm uppercase tracking-wider text-cyan-300 light:text-cyan-900 font-extrabold mt-3">
+      B2B-Standard: p = 0.95
+    </div>
+  </BentoCard>
+
+  <BentoCard cue="box-topk" title="Top-k Sampling" accent="indigo">
+    <div class="p-3 rounded-xl bg-indigo-950/30 light:bg-indigo-50/80 border border-indigo-800/40 light:border-indigo-200 text-center font-mono text-base text-indigo-300 light:text-indigo-900 font-bold mb-2">
+      Fester Schwellenwert: $|V^{(k)}| = k$
+    </div>
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Kandidaten-Deckelung",
+        desc: "Begrenzt die Ziehung strikt auf {cue:hl-topk-pool}einen festen Pool der k wahrscheinlichsten Folgekandidaten{/cue}."
+      },
+      {
+        icon: "shield",
+        title: "Safety-Filter",
+        desc: "Dient in Modellen {cue:hl-topk-safety}als harte Sicherheitsbarriere gegen absurde Ausreißer{/cue}."
+      }
+    ]} />
+    <div class="p-2.5 rounded-xl bg-indigo-500/10 light:bg-indigo-100/70 border border-indigo-500/30 light:border-indigo-300 text-center font-mono text-sm uppercase tracking-wider text-indigo-300 light:text-indigo-900 font-extrabold mt-3">
+      B2B-Standard: k = 40
+    </div>
+  </BentoCard>
+</GridSlide>

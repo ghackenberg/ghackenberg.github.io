@@ -1,5 +1,6 @@
 ---
 import SlideBase from '../primitives/SlideBase.astro';
+import { Image } from 'astro:assets';
 
 interface Props {
   title?: string;
@@ -7,7 +8,14 @@ interface Props {
   subtitleCue?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
+  presentationTitle?: string;
   direction?: 'horizontal' | 'vertical';
+  imageSrc?: ImageMetadata;
+  imageAlt?: string;
+  imageTitle?: string;
+  imageCue?: string;
+  ratio?: '55/45' | '60/40' | '50/50';
+  reverse?: boolean;
   class?: string;
 }
 
@@ -17,9 +25,19 @@ const {
   subtitleCue,
   slideNumber,
   totalSlides,
+  presentationTitle,
   direction = 'horizontal',
+  imageSrc,
+  imageAlt = "Comic Illustration zur Pipeline-Architektur",
+  imageTitle = "Visuelle Szene zur Pipeline-Architektur",
+  imageCue = "vis-pipeline",
+  ratio = '55/45',
+  reverse = false,
   class: className = ""
 } = Astro.props;
+
+const visualSpan = ratio === '60/40' ? 'col-span-7' : ratio === '55/45' ? 'col-span-7' : 'col-span-6';
+const narrativeSpan = ratio === '60/40' ? 'col-span-5' : ratio === '55/45' ? 'col-span-5' : 'col-span-6';
 ---
 
 <SlideBase
@@ -28,9 +46,109 @@ const {
   subtitleCue={subtitleCue}
   slideNumber={slideNumber}
   totalSlides={totalSlides}
+  presentationTitle={presentationTitle}
   class={className}
 >
-  <div data-direction={direction} class={`h-full w-full min-h-0 min-w-0 flex flex-col items-stretch ${className}`}>
-    <slot />
-  </div>
+  {imageSrc ? (
+    <div class="grid grid-cols-12 gap-8 h-full w-full items-stretch min-h-0">
+      {!reverse ? (
+        <>
+          <!-- Story Visual Stage (Left) -->
+          <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${visualSpan}`}>
+            <div
+              id={imageCue}
+              data-cue={imageCue}
+              class="pipeline-visual-card relative w-full h-full rounded-3xl overflow-hidden border border-slate-800 light:border-slate-200/90 bg-slate-900 light:bg-slate-100 shadow-2xl light:shadow-xl flex flex-col justify-center items-center"
+            >
+              <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
+                <!-- Skeleton Shimmer Placeholder -->
+                <div
+                  class="pipeline-image-skeleton absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-400 light:text-slate-500 bg-slate-800/60 light:bg-slate-200/60 animate-pulse pointer-events-none z-0"
+                  aria-hidden="true"
+                >
+                  <svg class="w-8 h-8 stroke-current opacity-40 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  </svg>
+                  <span class="text-xs uppercase font-bold tracking-wider opacity-60">Loading visual...</span>
+                </div>
+
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  title={imageTitle}
+                  class="w-full h-full object-cover object-center select-none transition-opacity duration-300 opacity-0 relative z-10"
+                  loading="lazy"
+                  decoding="async"
+                  onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
+                  onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Visual unavailable'; }"
+                />
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent light:from-slate-950/20 pointer-events-none z-20"></div>
+            </div>
+          </div>
+
+          <!-- Pipeline Column (Right) -->
+          <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${narrativeSpan}`}>
+            <slot />
+          </div>
+        </>
+      ) : (
+        <>
+          <!-- Pipeline Column (Left) -->
+          <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${narrativeSpan}`}>
+            <slot />
+          </div>
+
+          <!-- Story Visual Stage (Right) -->
+          <div class={`h-full flex flex-col justify-stretch items-stretch min-h-0 ${visualSpan}`}>
+            <div
+              id={imageCue}
+              data-cue={imageCue}
+              class="pipeline-visual-card relative w-full h-full rounded-3xl overflow-hidden border border-slate-800 light:border-slate-200/90 bg-slate-900 light:bg-slate-100 shadow-2xl light:shadow-xl flex flex-col justify-center items-center"
+            >
+              <div class="relative w-full h-full flex items-center justify-center overflow-hidden">
+                <!-- Skeleton Shimmer Placeholder -->
+                <div
+                  class="pipeline-image-skeleton absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-400 light:text-slate-500 bg-slate-800/60 light:bg-slate-200/60 animate-pulse pointer-events-none z-0"
+                  aria-hidden="true"
+                >
+                  <svg class="w-8 h-8 stroke-current opacity-40 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  </svg>
+                  <span class="text-xs uppercase font-bold tracking-wider opacity-60">Loading visual...</span>
+                </div>
+
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt}
+                  title={imageTitle}
+                  class="w-full h-full object-cover object-center select-none transition-opacity duration-300 opacity-0 relative z-10"
+                  loading="lazy"
+                  decoding="async"
+                  onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
+                  onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Visual unavailable'; }"
+                />
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent light:from-slate-950/20 pointer-events-none z-20"></div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  ) : (
+    <div data-direction={direction} class={`h-full w-full min-h-0 min-w-0 flex flex-col items-stretch ${className}`}>
+      <slot />
+    </div>
+  )}
 </SlideBase>
+
+<style>
+  .pipeline-visual-card {
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  :global(.light) .pipeline-visual-card {
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+title: "Negative Constraints & Fallback-Design"
+subtitle: "Die Lizenz zum Nichtwissen: {cue:hl-sub-40}Wie explizite Abbruchklauseln Halluzinationen eliminieren{/cue}"
+number: "40"
+slideLayout: "split"
+voiceover: >
+  Die wirksamste Methode gegen Halluzinationen im B2B-Alltag ist paradoxerweise die explizite Erlaubnis, keine Antwort zu wissen.
+  {cue:sub} Sie erteilt dem System {cue:hl-sub-40}die Lizenz zum Nichtwissen durch Abbruchklauseln{/cue}.
+  {cue:col-fallback} Durch eine deterministische Fallback-Klausel verbieten wir das Erraten. Fehlt eine Angabe, {cue:hl-fallback-ausgabe}erzwingen wir die exakte Ausgabe von NICHT_GEFUNDEN{/cue}, was dem Modell {cue:hl-abbau-antwortdruck}den Druck zur Zwangskonfabulation nimmt{/cue}.
+  {cue:col-constraints} Flankiert wird dies durch strikte negative Randbedingungen: {cue:hl-verbot-extrapolation}Verbot jeglicher freier Extrapolation{/cue} und die {cue:hl-isolations-schranke}strikte Beschränkung auf mitgelieferte Datenquellen{/cue}.
+notes: |
+  - Zeit: 78:00 - 80:00 Min.
+  - Leitspruch: Ein 'Nicht gefunden' ist im Unternehmen tausendmal wertvoller als eine plausibel erfundene Zahl.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="40"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-fallback" title="Die Deterministische Notbremse" accent="blue">
+    <CalloutBox type="statement" title="Expliziter Fallback-Befehl">
+      „Falls die Information nicht im Kontext steht: {cue:hl-fallback-ausgabe}Antworte exakt mit 'NICHT_GEFUNDEN'{/cue}.“
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "shield",
+        title: "Befreiung vom Antwortzwang",
+        desc: "LLMs versuchen standardmäßig 'hilfreich' zu sein; der Fallback {cue:hl-abbau-antwortdruck}nimmt den Druck zur Zwangskonfabulation{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-constraints" title="Strikte Negative Randbedingungen" accent="amber">
+    <BulletList items={[
+      {
+        icon: "warning",
+        title: "Extrapolations-Verbot",
+        desc: "Striktes {cue:hl-verbot-extrapolation}Verbot jeglicher freier Extrapolation{/cue} bei unvollständigen Kennzahlen."
+      },
+      {
+        icon: "check",
+        title: "Quellen-Isolation",
+        desc: "Das Modell errichtet eine {cue:hl-isolations-schranke}strikte Beschränkung auf mitgelieferte Datenquellen{/cue} und ignoriert diffuses Halbwissen."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

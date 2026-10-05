@@ -1,0 +1,64 @@
+---
+title: "Der Nivellierungseffekt"
+subtitle: "Stanford/MIT-Studie: {cue:hl-sub-14}Der größte Hebel liegt bei weniger erfahrenen Mitarbeitern{/cue}"
+number: "14"
+slideLayout: "split"
+voiceover: >
+  Eine weitere richtungsweisende Studie von Erik Brynjolfsson und Kolleginnen untersuchte über 5.000 Kundendienst-Mitarbeiter.
+  {cue:sub} Sie zeigt, dass {cue:hl-sub-14}der größte Hebel bei weniger erfahrenen Mitarbeitern{/cue} liegt.
+  {cue:chart-nivellierung} Bei {cue:hl-skill-low}Einsteigern stieg die Produktivität um 34 Prozent{/cue}, bei {cue:hl-skill-mid}durchschnittlichen Kräften um 14 Prozent{/cue}, während {cue:hl-skill-high}Top-Senioren kaum profitierten{/cue}.
+  {cue:col-konsequenz} Generative KI wirkt als starker Equalizer: Prompts {cue:hl-wissenstransfer}übertragen Best Practices sofort auf Neueinsteiger{/cue}, wodurch sich {cue:hl-onboarding-zeit}die Einarbeitungszeit neuer Fachkräfte drastisch verkürzt{/cue}. Gleichzeitig sichern {cue:hl-standard-templates}unternehmensweit einheitliche Prompt-Vorlagen{/cue} die Qualität.
+notes: |
+  - Zeit: 26:00 - 28:00 Min.
+  - Primärquelle: Brynjolfsson, Li & Raymond (2023), NBER Working Paper No. 31161.
+  - Kernaussage für HR & Management: KI schließt die Fähigkeitslücke im Unternehmen.
+references:
+  - type: article
+    id: "brynjolfsson-2023-generative-ai"
+    author: "Brynjolfsson, E., Li, D., & Raymond, L. R."
+    title: "Generative AI at Work"
+    journal: "National Bureau of Economic Research (NBER) Working Paper No. 31161"
+    year: 2023
+    url: "https://www.nber.org/papers/w31161"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="14"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="chart-nivellierung" title="Produktivitätsgewinn nach Skill-Level [@brynjolfsson-2023-generative-ai]" accent="blue">
+    <BarChart
+      unit="%"
+      items={[
+        { label: "Einsteiger / Geringer Skill", value: 34, accent: "emerald", cue: "hl-skill-low" },
+        { label: "Durchschnittliche Erfahrung", value: 14, accent: "cyan", cue: "hl-skill-mid" },
+        { label: "Senior-Experten", value: 2, accent: "neutral", cue: "hl-skill-high" }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-konsequenz" title="Der 'Equalizer'-Effekt im Unternehmen" accent="cyan">
+    <CalloutBox type="statement" title="Wissenstransfer">
+      Prompts kodifizieren Expertenwissen und {cue:hl-wissenstransfer}übertragen Best Practices sofort auf Neueinsteiger{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "trending-up",
+        title: "Kompression der Lernkurve",
+        desc: "Die Anlernzeit sinkt signifikant, da Modelle {cue:hl-onboarding-zeit}die Einarbeitungszeit neuer Fachkräfte drastisch verkürzen{/cue}."
+      },
+      {
+        icon: "shield",
+        title: "Standardisierung des Outputs",
+        desc: "Heterogene Arbeitsqualitäten werden durch {cue:hl-standard-templates}unternehmensweit einheitliche Prompt-Vorlagen{/cue} angeglichen."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

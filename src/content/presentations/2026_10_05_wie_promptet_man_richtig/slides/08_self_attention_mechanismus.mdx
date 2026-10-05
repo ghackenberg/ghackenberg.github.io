@@ -1,0 +1,68 @@
+---
+title: "Der Self-Attention-Mechanismus"
+subtitle: "Wie der Transformer {cue:hl-sub-08}Relevanzbeziehungen zwischen Tokens{/cue} dynamisch berechnet"
+number: "08"
+slideLayout: "split"
+voiceover: >
+  Der eigentliche Durchbruch moderner Sprachmodelle ist die Self-Attention-Architektur aus der Transformer-Forschung.
+  {cue:sub} Sie berechnet dynamisch {cue:hl-sub-08}Relevanzbeziehungen zwischen Tokens{/cue}.
+  {cue:col-attention-formel} Das Modell vergleicht jedes Token mit jedem anderen. Die {cue:hl-attention-matrix}Suchanfragen, Schlüssel und Werte{/cue} werden gewichtet, wobei jedes Wort auf {cue:hl-all-to-all}alle vorhergehenden Kontext-Tokens blickt{/cue}.
+  {cue:col-attention-praxis} Beim Prompting gilt: Klare Schlüsselbegriffe {cue:hl-fokus-verstaerkung}verstärken die Attention-Weights signifikant{/cue}, während Fülltext dazu führt, dass {cue:hl-attention-verwaschen}essenzielle Randbedingungen an Gewicht verlieren{/cue}. Parallele Köpfe erfassen {cue:hl-multi-aspekte}Syntax, Rollen und Sachzusammenhänge{/cue} simultan.
+notes: |
+  - Zeit: 14:00 - 16:00 Min.
+  - Primärquelle: Vaswani et al. (2017), "Attention Is All You Need".
+  - Analogie: Wie ein dynamisches Kreuzkorrelationsnetzwerk.
+references:
+  - type: inproceedings
+    id: "vaswani-2017-attention"
+    author: "Vaswani, A., et al."
+    title: "Attention Is All You Need"
+    booktitle: "NeurIPS 2017"
+    year: 2017
+    url: "https://arxiv.org/abs/1706.03762"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="08"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-attention-formel" title="Mathematischer Kern [@vaswani-2017-attention]" accent="blue">
+    <CalloutBox type="statement" title="Scaled Dot-Product Attention">
+      $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+      Jedes Token projiziert {cue:hl-attention-matrix}Suchanfragen, Schlüssel und Werte{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "network",
+        title: "All-to-All Vernetzung",
+        desc: "Vernetzung über die Sequenz, indem jedes Wort auf {cue:hl-all-to-all}alle vorhergehenden Kontext-Tokens blickt{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-attention-praxis" title="Bedeutung für die Prompt-Struktur" accent="cyan">
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Aufmerksamkeitslenkung",
+        desc: "Klare Trennzeichen und Schlüsselbegriffe {cue:hl-fokus-verstaerkung}verstärken die Attention-Weights signifikant{/cue}."
+      },
+      {
+        icon: "alert",
+        title: "Verwässerungsgefahr",
+        desc: "Überflüssiger Fülltext führt dazu, dass {cue:hl-attention-verwaschen}essenzielle Randbedingungen an Gewicht verlieren{/cue}."
+      },
+      {
+        icon: "cpu",
+        title: "Multi-Head Attention",
+        desc: "Parallele Köpfe erfassen gleichzeitig {cue:hl-multi-aspekte}Syntax, Rollen und Sachzusammenhänge{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

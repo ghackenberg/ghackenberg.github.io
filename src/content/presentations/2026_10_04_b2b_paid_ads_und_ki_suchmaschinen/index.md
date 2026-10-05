@@ -2,7 +2,7 @@
 title: "B2B Paid Ads & KI-Suchmaschinen"
 subtitle: "Zwischen Auktionsalgorithmen, Werbeblindheit und Full-Funnel-Strategie"
 pubDate: "2026-10-04"
-event: "Online Deep Dive"
+event: "Tech Briefing"
 location: "Online"
 audience: "Geschäftsführer, CMOs, Marketingleiter und Vertriebsstrategen aus Industrie und B2B"
 lang: "de"

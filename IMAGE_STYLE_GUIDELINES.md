@@ -179,4 +179,26 @@ Before generating any new illustration:
 *   **Container Behavior**: Displayed in `StoryHeroSlide.astro` within a 7-column `story-visual-card` (`rounded-3xl`, `object-cover object-center`).
 *   **Format & Aspect Ratio**: **4:3 aspect ratio (`AspectRatio: "4:3"`)**, saved as `.jpg` in `src/content/presentations/[presentation_id]/images/` and imported as static image metadata into `.mdx` slides.
 
+### H. Presentation Deck Preview Images (`preview.jpg` - Keynote Beamer Focus)
+*   **Subject**: Keynote presentation preview card (`src/content/presentations/[presentation_id]/preview.jpg`) used on catalog feeds, social previews, and overview pages.
+*   **Environment & Condition Anchors (`ImagePaths`)**:
+    *   Anchor 1: `src/content/characters/georg/portrait.png`
+    *   Anchor 2: `src/content/environments/design-thinking-lab-wels/beamer-screen-focus.jpg`
+*   **The Illuminated White Screen Contract (Exception to Dark Background Rule)**:
+    *   The motorized projection screen canvas **MUST ALWAYS BE LUMINOUS BRIGHT PURE WHITE (`#ffffff`)**, brightly illuminated by overhead track spotlights.
+    *   The dark slate palette (`#030712`) is strictly confined to the surrounding studio room walls, ceiling fixtures, and the presenter's tailored dark navy/slate suit jacket.
+    *   **STRICTLY FORBIDDEN**: Dark slate or black slide backgrounds on the beamer screen. Slides must have high contrast on a glowing white projection canvas.
+*   **Presenter Framing Contract (Waist-Up Anchor)**:
+    *   Dr. Georg Hackenberg is positioned in the left foreground (occupying the left third of the canvas).
+    *   Framing is strictly a **waist-up medium presenter shot (torso cropped cleanly at the bottom canvas edge)**.
+    *   He is turned three-quarters toward the audience, smiling warmly, holding a presentation clicker, and gesturing toward the screen with his other hand.
+    *   **STRICTLY FORBIDDEN**: Full-body character shots, visible shoes/feet, or floor gaps below the character.
+*   **Zero-Typo Text Minimization Contract**:
+    *   **Title Heading**: Exactly 1 prominent, large title in clean dark typography on the white screen.
+    *   **Iconic Visual Diagram**: Central schematic consists of clean, bold visual symbols, connected flow arrows, and color-coded nodes.
+    *   **Minimal Labels**: At most 2–3 short, 1-word or 2-word bold category labels (e.g. `Demand Creation`, `AI Search`, `Demand Capture`).
+    *   **STRICTLY FORBIDDEN**: Explanatory paragraphs, multi-line card text, sub-bullet sentences, or complex formulas (eliminates generative spelling errors and gibberish).
+*   **Format & Aspect Ratio**: **16:9 horizontal aspect ratio (`AspectRatio: "16:9"`)**, saved as `preview.jpg` in `src/content/presentations/[presentation_id]/preview.jpg`.
+
+
 

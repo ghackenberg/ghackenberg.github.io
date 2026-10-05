@@ -70,7 +70,7 @@ variants:
       midground: "Massive blank white motorized projection beamer screen filling the frame with a soft even glow"
       background: "Light grey studio wall framed by potted monstera plant and modern black track lighting above"
     image: "./beamer-screen-focus.jpg"
-    promptSnippet: "Close, direct eye-level perspective inside the Design Thinking Lab on the 3rd floor at FH OÖ Campus Wels, tightly focused on the presentation wall. The large, clean, blank white motorized projection beamer screen dominates and fills the vast majority of the frame, brightly illuminated with a soft, even glow, providing an expansive canvas for slides. The surrounding wall is pleasant light grey, with potted monstera leaves on the left, modern ceiling spotlights above, and a neat wooden sideboard below."
+    promptSnippet: "Close, direct eye-level perspective inside the Design Thinking Lab on the 3rd floor at FH OÖ Campus Wels, tightly focused on the presentation wall. The massive motorized projection beamer screen dominates and fills the vast majority of the frame. The projection canvas is luminous, bright pure white (#ffffff), brightly illuminated by overhead track spotlights, providing an expansive high-contrast canvas for slides. The surrounding walls are dark slate (#030712) with potted monstera leaves on the left, modern ceiling spotlights above, and a neat wooden sideboard below."
     characterSlots:
       - id: "stage-keynote-presenter"
         role: "Lead Presenter / Keynote Speaker"
@@ -84,7 +84,7 @@ variants:
         prohibitedPoses:
           - "seated"
         defaultAction: "Holding remote clicker or gesturing towards projection screen, body turned three-quarters toward audience, beamer screen completely unobstructed"
-        cutline: "Standing medium shot or full figure with feet clearly on stage floor"
+        cutline: "Waist-up medium presenter shot, cropped cleanly at the bottom canvas edge (strictly NO full-body shot, NO visible feet, NO floor gap below character)"
       - id: "stage-co-presenter"
         role: "Co-Presenter / Panel Moderator"
         priority: 2

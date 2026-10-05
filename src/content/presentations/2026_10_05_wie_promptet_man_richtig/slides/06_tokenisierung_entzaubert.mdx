@@ -1,0 +1,67 @@
+---
+title: "Tokenisierung entzaubert"
+subtitle: "Warum Sprachmodelle {cue:hl-sub-06}weder Buchstaben noch Zahlen nativ verstehen{/cue}"
+number: "06"
+slideLayout: "grid"
+voiceover: >
+  Ein häufiger Grund für unerwartete Fehler beim Prompting liegt in der vorgelagerten Textzerlegung.
+  {cue:sub} Modelle verstehen {cue:hl-sub-06}weder Buchstaben noch Zahlen nativ{/cue}.
+  {cue:box-bpe} Sie verarbeiten keine Wörter, sondern Tokens über Subwort-Algorithmen, sodass Fachbegriffe in {cue:hl-bpe-mechanik}mehrere isolierte Silben und Fragmente zerlegt{/cue} werden.
+  {cue:box-zahlen} Zahlen werden mathematisch unglücklich {cue:hl-zahlen-split}in ungleichmäßige Zifferngruppen zerschnitten{/cue}, was elementare Rechenfehler erklärt.
+  {cue:box-leerzeichen} Scheinbar unsichtbare Leerzeichen {cue:hl-leerzeichen-shift}erzeugen zwei völlig unterschiedliche Token-IDs{/cue} im Vokabular.
+  {cue:box-sprache} Für nicht-englische Sprachen wie Deutsch steigen die {cue:hl-token-overhead}Tokens um bis zu 50 Prozent bei gleicher Wortzahl{/cue}.
+notes: |
+  - Zeit: 10:00 - 12:00 Min.
+  - Ziel: Erklären, warum LLMs bei Buchstaben-Zählen ("Wie viele 'r' sind in Erdbeere?") und bei Fließkommazahlen stolpern.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="06"
+  totalSlides="48"
+  cols={2}
+>
+  <BentoCard cue="box-bpe" title="Subwort-Zerlegung (BPE)" accent="blue">
+    <BulletList items={[
+      {
+        icon: "cpu",
+        title: "Byte-Pair Encoding",
+        desc: "Häufige Wörter sind 1 Token; Fachbegriffe werden in {cue:hl-bpe-mechanik}mehrere isolierte Silben und Fragmente zerlegt{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-zahlen" title="Das Zahlen-Dilemma" accent="amber">
+    <BulletList items={[
+      {
+        icon: "code",
+        title: "Fragmentierte Ziffern",
+        desc: "Zahlen wie '3.14159' oder '98421' werden oft {cue:hl-zahlen-split}in ungleichmäßige Zifferngruppen zerschnitten{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-leerzeichen" title="Sensitivität auf Leerzeichen" accent="cyan">
+    <BulletList items={[
+      {
+        icon: "keyboard",
+        title: "Präfix-Leerzeichen",
+        desc: "' Apfel' und 'Apfel' sind {cue:hl-leerzeichen-shift}zwei völlig unterschiedliche Token-IDs{/cue} im Vokabular."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-sprache" title="Multilingualer Overhead" accent="indigo">
+    <BulletList items={[
+      {
+        icon: "globe",
+        title: "Deutsch vs. Englisch",
+        desc: "Deutsche zusammengesetzte Wörter erfordern {cue:hl-token-overhead}Tokens um bis zu 50 Prozent bei gleicher Wortzahl{/cue} mehr."
+      }
+    ]} />
+  </BentoCard>
+</GridSlide>

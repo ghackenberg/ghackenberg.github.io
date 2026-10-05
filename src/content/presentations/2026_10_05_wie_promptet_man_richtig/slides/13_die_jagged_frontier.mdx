@@ -1,0 +1,66 @@
+---
+title: "Die Jagged Technological Frontier"
+subtitle: "Warum KI an scheinbar komplexen Aufgaben brilliert, {cue:hl-sub-13}aber an trivialen Details scheitert{/cue}"
+number: "13"
+slideLayout: "story-hero"
+voiceover: >
+  Das faszinierendste Konzept der Harvard-Forscher ist die sogenannte Jagged Technological Frontier, die gezackte Technologiegrenze.
+  {cue:sub} Sie erklärt, warum KI an komplexen Aufgaben brilliert, {cue:hl-sub-13}aber an trivialen Details scheitert{/cue}.
+  {cue:vis-jagged} In der Illustration sehen wir das Paradoxon: Links meistert das Modell komplexe Kristallpuzzles, rechts scheitert es an primitiven Rechnungen.
+  {cue:col-content} Prompts fungieren als Tastwerkzeug zur {cue:hl-frontier-kartierung}präzisen Kartierung von Modellgrenzen{/cue}. Die Grenze verläuft kontraintuitiv: {cue:hl-frontier-innen}Kreative Strategiekonzepte gelingen spielend leicht{/cue}, während {cue:hl-frontier-aussen}versteckte quantitative Ausnahmebedingungen{/cue} trivial scheitern. Ohne Leitplanken droht, dass Teams in {cue:hl-ki-schlaf}intellektuellen Kontrollverlust verfallen{/cue}.
+notes: |
+  - Zeit: 24:00 - 26:00 Min.
+  - Primärquelle: Dell'Acqua et al. (2023)
+  - Kernmetapher: Die Zackengrenze ist für den Menschen kontraintuitiv.
+references:
+  - type: article
+    id: "dellacqua-2023-jagged-frontier"
+    author: "Dell'Acqua, F., et al."
+    title: "Navigating the Jagged Technological Frontier: Field Experimental Evidence of the Effects of AI on Knowledge Worker Productivity and Quality"
+    journal: "Harvard Business School Working Paper 24-013"
+    year: 2023
+    url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4573321"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_jagged_frontier.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="13"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageTitle="Die Jagged Technological Frontier nach Dell'Acqua et al."
+  imageAlt="Comic-Illustration zur gezackten Grenze: KI löst komplexe Kristallpuzzles, scheitert jedoch an trivialer Arithmetik"
+  imageCue="vis-jagged"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-content" title="Grenzkartierung [@dellacqua-2023-jagged-frontier]" accent="cyan">
+      <CalloutBox type="statement" title="Centaur & Cyborg">
+        Prompts fungieren als Tastwerkzeug zur {cue:hl-frontier-kartierung}präzisen Kartierung von Modellgrenzen{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "check",
+          title: "Innerhalb der Frontier",
+          desc: "Heterogene Textsynthese und {cue:hl-frontier-innen}kreative Strategiekonzepte gelingen spielend leicht{/cue}."
+        },
+        {
+          icon: "cross",
+          title: "Außerhalb der Frontier",
+          desc: "Kausallogik und {cue:hl-frontier-aussen}versteckte quantitative Ausnahmebedingungen{/cue} scheitern überraschend."
+        },
+        {
+          icon: "alert",
+          title: "Falling Asleep at the Wheel",
+          desc: "Zu hohe Plausibilität führt zu {cue:hl-ki-schlaf}intellektuellem Kontrollverlust der Anwender{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

@@ -2,7 +2,7 @@
 title: "Interactive Presentations: Die Slide-as-Code Engine"
 subtitle: "Motivation, Content-Strategie und Architektur web-nativer Keynotes mit Neural-Voiceover"
 pubDate: "2026-09-23"
-event: "Online Tech Briefing & Architecture Showcase"
+event: "Tech Briefing"
 location: "Online"
 audience: "Software-Architekten, Web-Entwickler, Dozierende und Technologie-Entscheider"
 lang: "de"

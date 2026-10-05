@@ -1,0 +1,57 @@
+---
+title: "Next-Token-Prediction & Autoregression"
+subtitle: "Der mathematische Kernprozess: {cue:hl-sub-05}Bedingte Wahrscheinlichkeiten im Textfluss{/cue}"
+number: "05"
+slideLayout: "split"
+voiceover: >
+  Betrachten wir den elementaren mathematischen Rechenschritt, der jedem Large Language Model zugrunde liegt.
+  {cue:sub} Es handelt sich um ein System für {cue:hl-sub-05}bedingte Wahrscheinlichkeiten im Textfluss{/cue}.
+  {cue:col-formel} Das Modell maximiert fortlaufend {cue:hl-token-formel}die Plausibilität des Folge-Tokens{/cue} auf Basis aller vorangegangenen Eingaben.
+  {cue:col-erklaerung} Diese Autoregression bedeutet zweierlei: Das System erzeugt {cue:hl-keine-fakten}statistisch plausible Textmuster{/cue} statt verifizierter Datenbankfakten. Jedes Zeichen im Prompt beeinflusst {cue:hl-bedingte-verteilung}die Wahrscheinlichkeitsverteilung der nächsten Tokens{/cue}, und ein falsches Token {cue:hl-fehlerkette}konditioniert alle nachfolgenden Schritte negativ{/cue}.
+notes: |
+  - Zeit: 8:00 - 10:00 Min.
+  - Ziel: Technischen Teilnehmern erklären: Autoregression P(w_t | w_<t).
+  - Folgerung: Prompting ist das Setzen von Randbedingungen für diese Wahrscheinlichkeitsfunktion.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="05"
+  totalSlides="48"
+  ratio="40/60"
+>
+  <BentoCard slot="left" cue="col-formel" title="Der stochastische Kern" accent="blue">
+    <CalloutBox type="statement" title="Bedingte Wahrscheinlichkeit">
+      $$P(w_t \mid w_1, w_2, \dots, w_{t-1})$$
+      Das Modell maximiert fortlaufend {cue:hl-token-formel}die Plausibilität des Folge-Tokens{/cue}.
+    </CalloutBox>
+    <div class="mt-4 p-4 rounded-2xl bg-blue-950/30 light:bg-blue-50/80 border border-blue-800/40 light:border-blue-200 text-center">
+      <span class="font-mono text-cyan-300 light:text-blue-900 text-xl font-bold">Autoregressiver Loop: Token für Token</span>
+    </div>
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-erklaerung" title="Konsequenzen für das Prompting" accent="cyan">
+    <BulletList items={[
+      {
+        icon: "cpu",
+        title: "Keine Wissensdatenbank im SQL-Sinn",
+        desc: "Ein Modell schlägt keine Fakten nach; es erzeugt {cue:hl-keine-fakten}statistisch plausible Textmuster{/cue}."
+      },
+      {
+        icon: "network",
+        title: "Kontext als Wahrscheinlichkeitsfilter",
+        desc: "Jedes Zeichen im Prompt verändert {cue:hl-bedingte-verteilung}die Wahrscheinlichkeitsverteilung der nächsten Tokens{/cue}."
+      },
+      {
+        icon: "warning",
+        title: "Fehlerfortpflanzung",
+        desc: "Wird ein fehlerhaftes Token generiert, {cue:hl-fehlerkette}konditioniert es alle nachfolgenden Schritte negativ{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

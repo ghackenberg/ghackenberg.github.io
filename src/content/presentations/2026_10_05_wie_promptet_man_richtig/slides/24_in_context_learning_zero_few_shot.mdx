@@ -1,0 +1,70 @@
+---
+title: "In-Context Learning: Zero- vs. Few-Shot"
+subtitle: "Der Urknall des modernen Promptings: {cue:hl-sub-24}Lernen durch exemplarische Demonstration im Prompt{/cue}"
+number: "24"
+slideLayout: "split"
+voiceover: >
+  Mit der wegweisenden Veröffentlichung von Brown und Kollegen im Jahr 2020 wurde das Konzept des In-Context Learnings begründet.
+  {cue:sub} Es beschreibt {cue:hl-sub-24}Lernen durch exemplarische Demonstration im Prompt{/cue} ohne Gradienten-Update.
+  {cue:col-zeroshot} Beim Zero-Shot Prompting formuliert man Anweisungen direkt: {cue:hl-vortraining-assoziation}Das Modell verlässt sich rein auf Vortrainings-Assoziationen{/cue}. Der Output variiert stark und leidet unter {cue:hl-zeroshot-formatunsicherheit}spezifischen unternehmensinternen Formatvorgaben{/cue}, eignet sich aber für {cue:hl-offene-generierung}offene Textgenerierung ohne starre Schnittstellen{/cue}.
+  {cue:col-fewshot} Beim Few-Shot Prompting demonstrieren wir Beispiele. Das Modell erkennt {cue:hl-fewshot-muster}syntaktische und logische Muster sofort{/cue} und sichert {cue:hl-fewshot-praezision}signifikant höhere Vorhersagegenauigkeit{/cue}, und zwar komplett {cue:hl-in-memory-tuning}ohne aufwendiges Fine-Tuning oder Gewichts-Updates{/cue}.
+notes: |
+  - Zeit: 46:00 - 48:00 Min.
+  - Primärquelle: Brown et al. (2020), NeurIPS 2020.
+  - Wichtig: In-Context Learning ändert keine Modellgewichte, sondern setzt den Prompt-Zustand.
+references:
+  - type: inproceedings
+    id: "brown-2020-few-shot"
+    author: "Brown, T., et al."
+    title: "Language Models are Few-Shot Learners"
+    booktitle: "NeurIPS 2020"
+    year: 2020
+    url: "https://arxiv.org/abs/2005.14165"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="24"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-zeroshot" title="Zero-Shot Prompting" accent="neutral">
+    <CalloutBox type="statement" title="Direkte Instruktion">
+      Aufgabenstellung ohne Beispiele: {cue:hl-vortraining-assoziation}Das Modell verlässt sich rein auf Vortrainings-Assoziationen{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "warning",
+        title: "Hohe Formatvarianz",
+        desc: "Der Output variiert von Call zu Call und leidet unter {cue:hl-zeroshot-formatunsicherheit}spezifischen unternehmensinternen Formatvorgaben{/cue}."
+      },
+      {
+        icon: "cpu",
+        title: "Einsatzbereich",
+        desc: "Ideal für breites Brainstorming und {cue:hl-offene-generierung}offene Textgenerierung ohne starre Schnittstellen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-fewshot" title="Few-Shot In-Context [@brown-2020-few-shot]" accent="blue">
+    <CalloutBox type="statement" title="Muster-Konditionierung">
+      2–5 Input/Output-Paare fixieren {cue:hl-fewshot-muster}syntaktische und logische Muster sofort{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "check",
+        title: "Dramatischer Präzisionsgewinn",
+        desc: "Demonstrationen lenken die Wahrscheinlichkeit auf {cue:hl-fewshot-praezision}signifikant höhere Vorhersagegenauigkeit{/cue}."
+      },
+      {
+        icon: "target",
+        title: "Kein Modelltraining nötig",
+        desc: "Funktioniert komplett in-memory {cue:hl-in-memory-tuning}ohne aufwendiges Fine-Tuning oder Gewichts-Updates{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

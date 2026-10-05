@@ -172,3 +172,16 @@ html:not(.light) .bento-card-object .bg-cyan-50\/70 {
   content-visibility: visible !important;
 }
 
+/* KaTeX Formula Display within Slides */
+.katex-display {
+  margin: 0.5em 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.katex .hide-tail {
+  width: 100% !important;
+  position: absolute !important;
+  overflow: hidden !important;
+}
+

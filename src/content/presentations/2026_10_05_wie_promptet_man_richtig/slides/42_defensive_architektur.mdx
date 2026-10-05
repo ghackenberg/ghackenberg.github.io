@@ -1,0 +1,63 @@
+---
+title: "Defensive Prompt-Architektur"
+subtitle: "Vierstufige Härtung: {cue:hl-sub-42}Die Sandwich-Defense und strikte Zero-Trust-Kapselung{/cue}"
+number: "42"
+slideLayout: "pipeline"
+voiceover: >
+  Wie wehren wir Injection-Angriffe in der industriellen Praxis zuverlässig ab? Wir etablieren eine vierstufige Schutz-Pipeline.
+  {cue:sub} Sie realisiert {cue:hl-sub-42}die Sandwich-Defense und strikte Zero-Trust-Kapselung{/cue}.
+  {cue:vis-hero} Die mehrschichtige Sicherheitsarchitektur schirmt das Modell wie eine hermetische Schleuse ab.
+  {cue:step-def-01} Zuerst entfernt die Input Sanitization {cue:hl-sanitization-zeichen}verdächtige Steuerzeichen und unsichtbare Unicodes{/cue}.
+  {cue:step-def-02} Anschließend wird der Input in {cue:hl-untrusted-tag}strikt isolierende XML-Container als ungesicherte Daten{/cue} gepackt.
+  {cue:step-def-03} Die Sandwich-Defense wiederholt {cue:hl-sandwich-regeln}alle Sicherheitsregeln unmittelbar vor der Generierung{/cue}.
+  {cue:step-def-04} Ein Guardrail-Filter {cue:hl-guardrail-check}überprüft den finalen Output auf Datenlecks und Richtlinien{/cue}.
+notes: |
+  - Zeit: 82:00 - 84:00 Min.
+  - Ziel: Konkretes Härtungs-Rezept für Entwickler und Architekten.
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+import heroImage from '../images/hero_defensive_pipeline.jpg';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="42"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageCue="vis-hero"
+  imageAlt="Vierstufige defensive Prompt-Architektur: Input Sanitization, XML Isolation, Sandwich Defense und Output Guardrail"
+  imageTitle="Defensive Prompt-Architektur: Vierstufige Härtung"
+  ratio="55/45"
+>
+  <Pipeline steps={[
+    {
+      cue: "step-def-01",
+      num: "01",
+      title: "Input Sanitization",
+      desc: "Vorab-Filterung eliminiert {cue:hl-sanitization-zeichen}verdächtige Steuerzeichen und unsichtbare Unicodes{/cue}.",
+      accent: "blue"
+    },
+    {
+      cue: "step-def-02",
+      num: "02",
+      title: "XML Isolation",
+      desc: "Kapselung des Inputs in {cue:hl-untrusted-tag}strikt isolierende XML-Container als ungesicherte Daten{/cue}.",
+      accent: "cyan"
+    },
+    {
+      cue: "step-def-03",
+      num: "03",
+      title: "Sandwich Defense",
+      desc: "Verankerung {cue:hl-sandwich-regeln}aller Sicherheitsregeln unmittelbar vor der Generierung{/cue}.",
+      accent: "indigo"
+    },
+    {
+      cue: "step-def-04",
+      num: "04",
+      title: "Output Guardrail",
+      desc: "Ein sekundärer Check {cue:hl-guardrail-check}überprüft den finalen Output auf Datenlecks und Richtlinien{/cue}.",
+      accent: "emerald"
+    }
+  ]} />
+</PipelineSlide>

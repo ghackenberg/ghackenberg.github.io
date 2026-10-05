@@ -1,0 +1,66 @@
+---
+title: "In-Context Grounding vs. RAG"
+subtitle: "Die Architekturentscheidung: {cue:hl-sub-36}Wann reines Prompting genügt und wann RAG zwingend ist{/cue}"
+number: "36"
+slideLayout: "story-hero"
+voiceover: >
+  Eine der häufigsten Architektenfragen lautet: Brauchen wir für unseren Anwendungsfall eine Vektordatenbank oder genügt Prompting?
+  {cue:sub} Wir klären, {cue:hl-sub-36}wann reines Prompting genügt und wann RAG zwingend ist{/cue}.
+  {cue:vis-caching-rag} Die Illustration stellt beide Architekturen gegenüber: Links der blitzschnelle RAM-Tresor mit gecachten Dokumenten, rechts der mehrstufige Retrieval-Trichter.
+  {cue:col-rag} Die Kernentscheidung trennt kompakte Dossiers von {cue:hl-dynamische-daten}Millionen Dokumenten und dynamischen Beständen{/cue}. Reines In-Context Grounding reicht aus, wenn Daten {cue:hl-dossier-grenze}direkt in den Prompt übergeben{/cue} werden – ganz {cue:hl-keine-indexierung}ohne fehleranfällige semantische Chunk-Suche{/cue}. RAG nach Lewis et al. liefert dagegen {cue:hl-skalierbare-basis}eine skalierbare Wissensbasis im Großunternehmen{/cue}, bei der Chunks {cue:hl-acl-kontrolle}nach Mitarbeiter-Rollen und Mandanten gefiltert{/cue} werden.
+notes: |
+  - Zeit: 70:00 - 72:00 Min.
+  - Primärquelle: Lewis et al. (2020), NeurIPS 2020.
+  - Faustregel: Erst prüfen, ob Context Caching reicht, bevor komplexe Vektor-Pipelines gebaut werden.
+references:
+  - type: inproceedings
+    id: "lewis-2020-rag"
+    author: "Lewis, P., et al."
+    title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"
+    booktitle: "NeurIPS 2020"
+    year: 2020
+    url: "https://arxiv.org/abs/2005.11401"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_caching_vs_rag.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="36"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageTitle="In-Context Grounding (Caching) vs. Retrieval-Augmented Generation (RAG)"
+  imageAlt="Comic-Illustration: Links ein massiver leuchtender RAM-Datentresor, rechts ein mehrstufiger Vektorsuche-Trichter"
+  imageCue="vis-caching-rag"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-rag" title="Architektur-Entscheidung [@lewis-2020-rag]" accent="blue">
+      <CalloutBox type="statement" title="Wann Caching vs. RAG?">
+        Reines Caching bei Dossiers vs. RAG bei {cue:hl-dynamische-daten}Millionen Dokumenten und dynamischen Beständen{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "zap",
+          title: "In-Context Grounding",
+          desc: "Quelltext wird {cue:hl-dossier-grenze}direkt in den Prompt übergeben{/cue} – ideal für Prüfberichte ganz {cue:hl-keine-indexierung}ohne fehleranfällige semantische Chunk-Suche{/cue}."
+        },
+        {
+          icon: "database",
+          title: "Skalierbare Wissenskorpora",
+          desc: "Verbindet strukturierte Vektorsuche mit dem Modell für {cue:hl-skalierbare-basis}eine skalierbare Wissensbasis im Großunternehmen{/cue}."
+        },
+        {
+          icon: "shield",
+          title: "Berechtigungs-Filterung (ACL)",
+          desc: "Dokument-Chunks werden vorab {cue:hl-acl-kontrolle}nach Mitarbeiter-Rollen und Mandanten gefiltert{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

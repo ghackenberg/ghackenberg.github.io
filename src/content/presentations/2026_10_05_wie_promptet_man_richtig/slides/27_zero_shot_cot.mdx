@@ -1,0 +1,67 @@
+---
+title: "Zero-Shot CoT: 'Schritt für Schritt'"
+subtitle: "Kojima et al. 2022: {cue:hl-sub-27}Wie vier Worte Benchmark-Sprünge von 17 auf 78 Prozent auslösten{/cue}"
+number: "27"
+slideLayout: "code"
+voiceover: >
+  Dass man für Chain-of-Thought nicht einmal aufwendige Beispiele vorformulieren muss, bewiesen Takeshi Kojima und sein Team an der Universität Tokio.
+  {cue:sub} Sie zeigten, {cue:hl-sub-27}wie vier Worte Benchmark-Sprünge von 17 auf 78 Prozent auslösten{/cue}.
+  {cue:col-code} Indem man an das Ende der Benutzerfrage schlicht {cue:hl-step-trigger}Let's think step by step{/cue} anhängt, schaltet das Modell von unüberlegter Assoziation in den Dekompositionsmodus.
+  {cue:col-explanation} Auf dem MultiArith-Benchmark gelang ein {cue:hl-multiarith-sprung}Genauigkeitssprung von 17,7 % auf 78,7 %{/cue}. Für Produktionssysteme nutzen wir {cue:hl-zwei-phasen-extraktion}einen Zwei-Phasen-Ansatz aus Reasoning-Schritt und Parsing-Schritt{/cue}, um {cue:hl-latente-muster}logische Zwischenzustände im latenten Raum zu aktivieren{/cue}.
+notes: |
+  - Zeit: 52:00 - 54:00 Min.
+  - Primärquelle: Kojima et al. (2022), NeurIPS 2022.
+  - MultiArith: 17.7% → 78.7%; GSM8K: 10.4% → 40.7%.
+references:
+  - type: inproceedings
+    id: "kojima-2022-large-language-models-zero-shot-reasoners"
+    author: "Kojima, T., et al."
+    title: "Large Language Models are Zero-Shot Reasoners"
+    booktitle: "NeurIPS 2022"
+    year: 2022
+    url: "https://arxiv.org/abs/2205.11916"
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="27"
+  totalSlides="48"
+>
+  <div slot="code" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-code" title="Der Magische Trigger [@kojima-2022-large-language-models-zero-shot-reasoners]" accent="cyan">
+      <div class="p-6 rounded-2xl bg-slate-950 light:bg-slate-100 font-mono text-base lg:text-lg leading-relaxed border border-slate-800 light:border-slate-300 text-slate-200 light:text-slate-900 shadow-inner">
+        <span class="text-slate-500 light:text-slate-500">// Phase 1: Reasoning Trigger</span><br/>
+        <span class="text-blue-400 light:text-blue-700 font-bold">User:</span> "Eine Fabrik produziert 120 Teile/h... [Frage]"<br/><br/>
+        <span class="text-amber-300 light:text-amber-800 font-bold">{cue:hl-step-trigger}"Let's think step by step:"{/cue}</span><br/><br/>
+        <span class="text-emerald-400 light:text-emerald-700 font-bold">Model:</span> "1. Zunächst berechnen wir...<br/>
+        2. Daraus folgt für Maschine B...<br/>
+        3. Die Gesamtsumme beträgt daher..."
+      </div>
+    </BentoCard>
+  </div>
+
+  <div slot="explanation" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-explanation" title="Empirischer Durchbruch" accent="blue">
+      <CalloutBox type="statement" title="MultiArith Benchmark">
+        {cue:hl-multiarith-sprung}Genauigkeitssprung von 17,7 % auf 78,7 %{/cue} ohne ein einziges Beispiel!
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "target",
+          title: "Zwei-Stufen-Architektur",
+          desc: "Phase 1 generiert den Rechenweg; Phase 2 nutzt {cue:hl-zwei-phasen-extraktion}einen Zwei-Phasen-Ansatz aus Reasoning-Schritt und Parsing-Schritt{/cue}."
+        },
+        {
+          icon: "cpu",
+          title: "Aktivierung latenter Logik",
+          desc: "Der Trigger zwingt das Modell, {cue:hl-latente-muster}logische Zwischenzustände im latenten Raum zu aktivieren{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</CodeSlide>

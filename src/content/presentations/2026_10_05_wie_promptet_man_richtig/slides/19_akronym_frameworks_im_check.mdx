@@ -1,0 +1,69 @@
+---
+title: "Akronym-Modelle im Härtetest"
+subtitle: "Von CLEAR über CREATE bis RTCE: {cue:hl-sub-19}Nützliche Krücken mit harten industriellen Grenzen{/cue}"
+number: "19"
+slideLayout: "grid"
+voiceover: >
+  In Webinaren und Online-Kursen wimmelt es von eingängigen Akronymen zur Prompt-Erstellung.
+  {cue:sub} Sie sind {cue:hl-sub-19}nützliche Krücken mit harten industriellen Grenzen{/cue}.
+  {cue:table-frameworks} Im direkten Vergleich zeigen sich die Unterschiede:
+  {cue:row-clear} Das CLEAR-Modell schärft zwar die Kürze, {cue:hl-clear-vage}bleibt jedoch ohne formale Spezifikation vage{/cue}.
+  {cue:row-create} CREATE fordert immerhin Beispiele ein, {cue:hl-create-mix}vermischt aber Persona und Datenformate unsauber{/cue}.
+  {cue:row-rtce} RTCE strukturiert die Basis logisch, {cue:hl-rtce-grenze}bietet jedoch weder Schema-Validierung noch Fallback-Pfade{/cue}.
+  {cue:row-schema} Der industrielle Standard ist Schema-First: {cue:hl-schema-first}Typisierte Schnittstellen mit garantierter Struktur{/cue}.
+notes: |
+  - Zeit: 36:00 - 38:00 Min.
+  - Ziel: Akronym-Modelle nicht verteufeln, sondern ihren didaktischen Zweck vs. Enterprise-Notwendigkeit einordnen.
+---
+import SlideBase from '../../../../components/slides/primitives/SlideBase.astro';
+import ComparisonTable from '../../../../components/slides/primitives/ComparisonTable.astro';
+
+<SlideBase
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="19"
+  totalSlides="48"
+>
+  <ComparisonTable
+    cue="table-frameworks"
+    columns={["Framework", "Typischer Aufbau", "Didaktischer Nutzen", "Industrielle Limitation"]}
+    rows={[
+      {
+        cue: "row-clear",
+        accent: "neutral",
+        title: "C-L-E-A-R",
+        subtitle: "Concise, Logical, Explicit...",
+        targetSystem: "Kürze & Verständlichkeit",
+        mechanism: "Sensibilisiert für Unwichtiges",
+        goal: "Keine formalen Schemas; {cue:hl-clear-vage}bleibt ohne formale Spezifikation vage{/cue}."
+      },
+      {
+        cue: "row-create",
+        accent: "indigo",
+        title: "C-R-E-A-T-E",
+        subtitle: "Character, Request, Examples...",
+        targetSystem: "In-Context-Lernen",
+        mechanism: "Fördert Nutzung von Beispielen",
+        goal: "Fokus auf Rollen; {cue:hl-create-mix}vermischt aber Persona und Datenformate unsauber{/cue}."
+      },
+      {
+        cue: "row-rtce",
+        accent: "cyan",
+        title: "R-T-C-E",
+        subtitle: "Role, Task, Context, Expectation",
+        targetSystem: "Strukturierte Eingabe",
+        mechanism: "Guter logischer Rahmen",
+        goal: "Fehlende Typisierung; {cue:hl-rtce-grenze}bietet jedoch weder Schema-Validierung noch Fallback-Pfade{/cue}."
+      },
+      {
+        cue: "row-schema",
+        accent: "emerald",
+        title: "Schema-First",
+        subtitle: "XML, JSON-Schema, Pydantic",
+        targetSystem: "Software-Pipelines",
+        mechanism: "100% deterministische Syntax",
+        goal: "Der Enterprise-Standard: {cue:hl-schema-first}Typisierte Schnittstellen mit garantierter Struktur{/cue}."
+      }
+    ]}
+  />
+</SlideBase>

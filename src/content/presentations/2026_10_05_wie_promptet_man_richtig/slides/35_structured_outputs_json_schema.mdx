@@ -1,0 +1,68 @@
+---
+title: "Structured Outputs & JSON-Schema"
+subtitle: "Constrained Decoding: {cue:hl-sub-35}100 Prozent syntaktische Garantie für nachgelagerte Software-Systeme{/cue}"
+number: "35"
+slideLayout: "code"
+voiceover: >
+  Das größte historische Hindernis für Enterprise-KI waren unzuverlässig formatierte Antworten.
+  {cue:sub} Structured Outputs bieten {cue:hl-sub-35}100 Prozent syntaktische Garantie für nachgelagerte Software{/cue}.
+  {cue:col-code} Mit modernem Structured Output übergeben Entwickler ein {cue:hl-json-schema}striktes JSON-Schema mit Pflichtfeldern und Typen{/cue}. Das Modell wird gezwungen, exakt dieses Datenformat zu befüllen.
+  {cue:col-explanation} Unter der Haube wirkt {cue:hl-constrained-decoding}Constrained Decoding auf Token-Ebene{/cue}: Unpassende Tokens werden maskiert, sodass {cue:hl-null-syntax-fehler}Syntaxfehler mathematisch unmöglich gemacht werden{/cue}. Antworten fließen direkt {cue:hl-direkte-db}ohne manuelle Bereinigung in SQL-Datenbanken und ERP-Tabellen{/cue}.
+notes: |
+  - Zeit: 68:00 - 70:00 Min.
+  - Primärquelle: OpenAI (2024), Structured Outputs API.
+  - Wichtig: Nicht nur JSON Mode, sondern echte Schema-Validierung via Kontextfreie Grammatik (CFG).
+references:
+  - type: online
+    id: "openai-2024-structured-outputs"
+    author: "OpenAI"
+    title: "Introducing Structured Outputs in the API"
+    year: 2024
+    url: "https://openai.com/index/introducing-structured-outputs-in-the-api/"
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="35"
+  totalSlides="48"
+>
+  <div slot="code" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-code" title="JSON-Schema Spezifikation [@openai-2024-structured-outputs]" accent="emerald">
+      <div class="p-6 rounded-2xl bg-slate-950 light:bg-slate-100 font-mono text-base lg:text-lg leading-relaxed border border-slate-800 light:border-slate-300 text-slate-200 light:text-slate-900 shadow-inner">
+        <span class="text-slate-500 light:text-slate-500">// Pydantic / JSON-Schema</span><br/>
+        <span class="text-blue-400 light:text-blue-700 font-bold">class</span> <span class="text-cyan-300 light:text-cyan-800 font-bold">MachineAudit</span>(BaseModel):<br/>
+        &nbsp;&nbsp;machine_id: <span class="text-amber-300 light:text-amber-800 font-bold">str</span><br/>
+        &nbsp;&nbsp;status: <span class="text-amber-300 light:text-amber-800 font-bold">Literal["OK", "WARN", "FAIL"]</span><br/>
+        &nbsp;&nbsp;temperature_c: <span class="text-amber-300 light:text-amber-800 font-bold">float</span><br/>
+        &nbsp;&nbsp;action_required: <span class="text-amber-300 light:text-amber-800 font-bold">bool</span><br/><br/>
+        <span class="text-slate-500 light:text-slate-500">// API Parameter:</span><br/>
+        {cue:hl-json-schema}response_format = &#123;"type": "json_schema", "strict": true&#125;{/cue}
+      </div>
+    </BentoCard>
+  </div>
+
+  <div slot="explanation" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-explanation" title="Constrained Decoding" accent="blue">
+      <CalloutBox type="statement" title="Grammatik-Maskierung">
+        {cue:hl-constrained-decoding}Tokens, die das Schema verletzen, erhalten Wahrscheinlichkeit null{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "check",
+          title: "Zero Parsing-Errors",
+          desc: "Schluss mit fehlerhaften Kommas: {cue:hl-null-syntax-fehler}Syntaxfehler werden mathematisch unmöglich gemacht{/cue}."
+        },
+        {
+          icon: "database",
+          title: "Direkte DB-Pipeline",
+          desc: "Antworten fließen direkt und {cue:hl-direkte-db}ohne manuelle Bereinigung in SQL-Datenbanken und ERP-Tabellen{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</CodeSlide>

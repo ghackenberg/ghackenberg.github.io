@@ -1,0 +1,66 @@
+---
+title: "Chain-of-Thought (CoT) Reasoning"
+subtitle: "NeurIPS 2022: {cue:hl-sub-26}Wie Zwischenrechenschritte die logische Tiefe revolutionieren{/cue}"
+number: "26"
+slideLayout: "story-hero"
+voiceover: >
+  Die wichtigste methodische Entdeckung im modernen Prompt Engineering stammt von Jason Wei und dem Google-Research-Team.
+  {cue:sub} Sie zeigt, {cue:hl-sub-26}wie Zwischenrechenschritte die logische Tiefe revolutionieren{/cue}.
+  {cue:vis-cot} In der Illustration sehen wir das Prinzip: Vom anfänglichen Gedankenchaos führt ein beleuchteter Zwischenschritt-Pfad zum verifizierten Ergebnis.
+  {cue:col-mechanik} Jedes geschriebene Zwischenwort ist {cue:hl-token-rechenzeit}physische Rechenzeit im Transformer-Forward-Pass{/cue}. Das Modell schreibt {cue:hl-cot-denkpfad}Schritt 1, Schritt 2 und Zwischenergebnisse{/cue} ins Arbeitsgedächtnis, nutzt sie als {cue:hl-aufmerksamkeits-speicher}nachfolgende Self-Attention-Berechnungen{/cue} und zerlegt Probleme in {cue:hl-atomare-schritte}eine Serie kleiner, lösbarer Einzelschritte{/cue}.
+notes: |
+  - Zeit: 50:00 - 52:00 Min.
+  - Primärquelle: Wei et al. (2022), NeurIPS 2022.
+  - Wichtig: LLMs rechnen während des Schreibens. Kein Text = keine Denkzeit!
+references:
+  - type: inproceedings
+    id: "wei-2022-chain-of-thought"
+    author: "Wei, J., et al."
+    title: "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models"
+    booktitle: "NeurIPS 2022"
+    year: 2022
+    url: "https://arxiv.org/abs/2201.11903"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_chain_of_thought.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="26"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageTitle="Chain-of-Thought Reasoning nach Wei et al."
+  imageAlt="Comic-Illustration: Ein KI-Kern projiziert sequentielle Denkschritte auf schwebende Glaspaneele zur logischen Problemlösung"
+  imageCue="vis-cot"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-mechanik" title="Warum CoT funktioniert [@wei-2022-chain-of-thought]" accent="cyan">
+      <CalloutBox type="statement" title="Tokens als Rechenkapazität">
+        Jedes geschriebene Zwischenwort ist {cue:hl-token-rechenzeit}physische Rechenzeit im Transformer-Forward-Pass{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "cpu",
+          title: "Working Memory im Kontext",
+          desc: "Das Modell schreibt {cue:hl-cot-denkpfad}Schritt 1, Schritt 2 und Zwischenergebnisse{/cue} direkt in sein Kontextfenster."
+        },
+        {
+          icon: "sparkles",
+          title: "Aufmerksamkeits-Speicher",
+          desc: "Zwischenwörter dienen als Anker für {cue:hl-aufmerksamkeits-speicher}nachfolgende Self-Attention-Berechnungen{/cue}."
+        },
+        {
+          icon: "target",
+          title: "Dekomposition komplexer Logik",
+          desc: "Schwierige Aufgaben werden in {cue:hl-atomare-schritte}eine Serie kleiner, lösbarer Einzelschritte zerlegt{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

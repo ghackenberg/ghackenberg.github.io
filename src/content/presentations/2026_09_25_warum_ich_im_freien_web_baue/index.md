@@ -2,7 +2,7 @@
 title: "Vom Web-Pionier zum Informatik-Professor"
 subtitle: "25 Jahre im Code zwischen Wissenschaft, Industrie & Leadership"
 pubDate: "2026-09-25"
-event: "Online Keynote & Tech-Biografie"
+event: "Personal Intro"
 location: "Online"
 audience: "Studierende, Entwickler, R&D-Partner und Technologie-Entscheider aus der Industrie"
 lang: "de"

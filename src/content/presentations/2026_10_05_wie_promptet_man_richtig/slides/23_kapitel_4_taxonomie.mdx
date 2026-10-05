@@ -1,0 +1,35 @@
+---
+title: "Systematische Prompting-Taxonomie"
+subtitle: "Von In-Context Demonstration zu {cue:hl-sub-23}rekursiven Denk- und Werkzeugpfaden{/cue}"
+number: "23"
+slideLayout: "section"
+voiceover: >
+  Wir eröffnen das vierte und methodisch reichhaltigste Kapitel unserer Präsentation: Die wissenschaftlich validierte Taxonomie.
+  {cue:sub} Sie reicht von In-Context Demonstrationen bis zu {cue:hl-sub-23}rekursiven Denk- und Werkzeugpfaden{/cue}.
+  {cue:card-divider-23}
+  {cue:card-leitfrage-23} Unsere Leitfrage lautet: {cue:hl-leitfrage-23}Welche formalen Prompting-Techniken heben nachweisbar die logische Reasoning-Tiefe?{/cue}
+  {cue:card-bridge-23} Wir analysieren Few-Shot Learning, Chain-of-Thought, Self-Consistency und ReAct {cue:hl-bridge-23}anhand empirischer Primärliteratur{/cue}.
+notes: |
+  - Zeit: 44:00 - 46:00 Min.
+  - Ziel: Akademischer Kern des Vortrags; alle Methoden sauber mit Papern untermauern.
+---
+import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
+
+<SectionSlide
+  chapter="KAPITEL 04 / 07 · REASONING-TAXONOMIE"
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  dividerCue="card-divider-23"
+  questionCue="card-leitfrage-23"
+  bridgeCue="card-bridge-23"
+  slideNumber="23"
+  totalSlides="48"
+>
+  <div slot="question" class="text-3xl lg:text-4xl xl:text-[42px] font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+    „Welche formalen Prompting-Techniken heben nachweisbar {cue:hl-leitfrage-23}die logische Reasoning-Tiefe{/cue}?“
+  </div>
+
+  <div slot="bridge" class="text-xl lg:text-2xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+    Wissenschaftliche Methoden von Few-Shot Learning über Chain-of-Thought bis ReAct {cue:hl-bridge-23}anhand empirischer Primärliteratur{/cue}.
+  </div>
+</SectionSlide>

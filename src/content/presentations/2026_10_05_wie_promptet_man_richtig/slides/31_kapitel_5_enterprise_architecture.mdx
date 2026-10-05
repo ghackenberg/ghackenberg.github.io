@@ -1,0 +1,35 @@
+---
+title: "Enterprise Prompt Architecture"
+subtitle: "Produktionsstandards: {cue:hl-sub-31}Von Freitext-Skripten zu robuster Software-Infrastruktur{/cue}"
+number: "31"
+slideLayout: "section"
+voiceover: >
+  Damit erreichen wir das Herzstück für Ingenieure und Software-Architekten: Den Bau produktionsreifer Enterprise-Prompts.
+  {cue:sub} Wir vollziehen den Schritt {cue:hl-sub-31}von Freitext-Skripten zu robuster Software-Infrastruktur{/cue}.
+  {cue:card-divider-31}
+  {cue:card-leitfrage-31} Unsere Leitfrage: {cue:hl-leitfrage-31}Wie konstruieren wir Prompts, die zu 100 Prozent deterministisch in ERP- und CRM-Systeme integrierbar sind?{/cue}
+  {cue:card-bridge-31} Wir analysieren das 5-Säulen-Modell, XML-Kapselung, Closed-Source-Features wie Context Caching {cue:hl-bridge-31}und garantierte Structured Outputs via JSON-Schema{/cue}.
+notes: |
+  - Zeit: 60:00 - 62:00 Min.
+  - Ziel: Technischer Standard für industrielle Softwareentwicklung.
+---
+import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
+
+<SectionSlide
+  chapter="KAPITEL 05 / 07 · ENTERPRISE ARCHITECTURE"
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  dividerCue="card-divider-31"
+  questionCue="card-leitfrage-31"
+  bridgeCue="card-bridge-31"
+  slideNumber="31"
+  totalSlides="48"
+>
+  <div slot="question" class="text-3xl lg:text-4xl xl:text-[42px] font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+    „Wie konstruieren wir Prompts, die {cue:hl-leitfrage-31}zu 100 Prozent deterministisch in ERP- und CRM-Systeme integrierbar sind{/cue}?“
+  </div>
+
+  <div slot="bridge" class="text-xl lg:text-2xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+    Das 5-Säulen-Modell, XML-Kapselung, Context Caching {cue:hl-bridge-31}und garantierte Structured Outputs via JSON-Schema{/cue}.
+  </div>
+</SectionSlide>

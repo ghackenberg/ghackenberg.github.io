@@ -1,0 +1,67 @@
+---
+title: "Das Spektrum der Halluzinationen"
+subtitle: "Epistemische Grenzen: {cue:hl-sub-39}Warum Modelle bei Lügen genauso überzeugend klingen wie bei Fakten{/cue}"
+number: "39"
+slideLayout: "grid"
+voiceover: >
+  Halluzinationen sind kein gelegentlicher Software-Bug, sondern eine inhärente Eigenschaft probabilistischer Textgeneratoren.
+  {cue:sub} Das Problem: {cue:hl-sub-39}Modelle klingen bei Lügen genauso überzeugend wie bei Fakten{/cue}.
+  {cue:box-fabrication} Die erste Kategorie ist reine Fakten-Fabrikation: Das Modell erfindet {cue:hl-pseudofakten}nicht-existente Normen, URLs oder Bauteilnummern{/cue} aus dem statistischen Rauschen.
+  {cue:box-faithfulness} Die zweite Form ist der Faithfulness-Bruch: Das Modell {cue:hl-treue-bruch}widerspricht explizit mitgeliefertem Dokumentenkontext{/cue}.
+  {cue:box-sycophancy} Bei der Sykophantie {cue:hl-falsche-bestaetigung}bestätigt die KI falsche Vorannahmen des Nutzers{/cue} servil.
+  {cue:box-konfidenz} Fatal im Unternehmen ist die Konfidenz-Illusion: LLMs besitzen {cue:hl-keine-echte-metakognition}kein internes Bewusstsein über eigenes Nichtwissen{/cue}.
+notes: |
+  - Zeit: 76:00 - 78:00 Min.
+  - Ziel: Verständnis der epistemischen Natur von Sprachmodellen schärfen.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="39"
+  totalSlides="48"
+  cols={2}
+>
+  <BentoCard cue="box-fabrication" title="1. Fakten-Fabrikation" accent="amber">
+    <BulletList items={[
+      {
+        icon: "warning",
+        title: "Plausible Fiktionen",
+        desc: "Synthese plausibler, aber {cue:hl-pseudofakten}völlig erfundener Normen, URLs oder Bauteilnummern{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-faithfulness" title="2. Faithfulness-Verletzung" accent="rose">
+    <BulletList items={[
+      {
+        icon: "cross",
+        title: "Kontext-Widerspruch",
+        desc: "Das Modell ignoriert oder {cue:hl-treue-bruch}widerspricht explizit mitgeliefertem Dokumentenkontext{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-sycophancy" title="3. Sykophantie & Bestätigung" accent="neutral">
+    <BulletList items={[
+      {
+        icon: "alert",
+        title: "Konfliktscheue",
+        desc: "Aus Höflichkeits-Alignment {cue:hl-falsche-bestaetigung}bestätigt die KI falsche Vorannahmen des Nutzers{/cue} ungefiltert."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-konfidenz" title="4. Konfidenz-Illusion" accent="indigo">
+    <BulletList items={[
+      {
+        icon: "cpu",
+        title: "Fehlende Kalibrierung",
+        desc: "Generative Architekturen besitzen {cue:hl-keine-echte-metakognition}kein internes Bewusstsein über eigenes Nichtwissen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</GridSlide>

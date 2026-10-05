@@ -1,0 +1,52 @@
+---
+title: "Test-Driven Prompt Evals"
+subtitle: "Schluss mit Bauchgefühl: {cue:hl-sub-44}Kuratierte Test-Datensätze und Regressionstests im CI/CD-Zyklus{/cue}"
+number: "44"
+slideLayout: "story-hero"
+voiceover: >
+  In der traditionellen Softwareentwicklung würde niemand Code ohne Unit-Tests in Produktion deployen. Beim Prompting tun Unternehmen genau das.
+  {cue:sub} Test-Driven Evals etablieren {cue:hl-sub-44}kuratierte Test-Datensätze und automatisierte Regressionstests{/cue}.
+  {cue:vis-evals} Die Illustration zeigt die automatisierte Prüfstraße: Prompts durchlaufen wie Code standardisierte Testzyklen.
+  {cue:col-evals} Die Basis bildet ein Golden Dataset mit {cue:hl-golden-dataset}fünfzig bis zweihundert Referenzfällen{/cue} inklusive Randfällen, damit {cue:hl-regressions-stopp}Optimierungen andere Fälle nicht unbemerkt zerstören{/cue}. Die Auswertung kombiniert {cue:hl-deterministische-checks}deterministische Assertions auf Format und Regex{/cue} mit {cue:hl-llm-as-judge}LLM-as-a-Judge-Verfahren für semantische Bewertungskriterien{/cue}.
+notes: |
+  - Zeit: 86:00 - 88:00 Min.
+  - Ziel: Parallele zur Softwaretechnik ziehen: Test-Driven Development (TDD) für Prompts.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_prompt_evals.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="44"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageTitle="Automatisierte Test-Driven Prompt Evaluation Pipeline"
+  imageAlt="Comic-Illustration: Ein High-Tech-Testlabor im CI/CD-Zyklus mit automatisierten Qualitäts-Dashboards"
+  imageCue="vis-evals"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-evals" title="Systematisches Test-Harnisch" accent="blue">
+      <CalloutBox type="statement" title="Golden Dataset & Regressionen">
+        Prompts werden wie Code {cue:hl-golden-dataset}anhand von fünfzig bis zweihundert Referenzfällen{/cue} gemessen, um {cue:hl-regressions-stopp}ungewollte Regressionen sofort zu stoppen{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "check",
+          title: "1. Deterministische Assertions",
+          desc: "Automatisierte Code-Prüfung auf {cue:hl-deterministische-checks}JSON-Validität, Feld-Vollständigkeit und Regex-Muster{/cue}."
+        },
+        {
+          icon: "cpu",
+          title: "2. LLM-as-a-Judge",
+          desc: "Ein starkes Schiedsrichter-Modell bewertet {cue:hl-llm-as-judge}Semantik, Relevanz und Markentonfall nach festen Rubriken{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

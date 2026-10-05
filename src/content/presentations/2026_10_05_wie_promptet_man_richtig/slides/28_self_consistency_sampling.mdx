@@ -1,0 +1,64 @@
+---
+title: "Self-Consistency Sampling"
+subtitle: "Wang et al. 2022: {cue:hl-sub-28}Mehrheitsentscheid über parallele stochastische Denkpfade{/cue}"
+number: "28"
+slideLayout: "split"
+voiceover: >
+  Was tun, wenn ein einzelner Chain-of-Thought-Pfad fehleranfällig bleibt? Xuezhi Wang und Kollegen fanden die Antwort in Self-Consistency.
+  {cue:sub} Sie etablieren einen {cue:hl-sub-28}Mehrheitsentscheid über parallele stochastische Denkpfade{/cue}.
+  {cue:chart-consistency} Auf dem GSM8K-Benchmark steigert Self-Consistency die Genauigkeit: {cue:hl-cot-single}Ein einzelner Pfad erzielt 57 Prozent{/cue}, {cue:hl-sample-5}fünf Pfade erreichen 68 Prozent{/cue} und {cue:hl-sample-40}vierzig Pfade klettern auf über 74 Prozent{/cue}.
+  {cue:col-konzept} Das stochastische Ensemble nutzt den Effekt: Der {cue:hl-konsens-entscheid}Mehrheitsentscheid filtert zufällige Rechenfehler heraus{/cue}. Bei erhöhter Temperature entstehen {cue:hl-diverse-pfade}völlig unterschiedliche Lösungswege zum selben Problem{/cue}, und die Aggregation ermittelt {cue:hl-robuster-konsens}ein hochgradig robustes Konsens-Ergebnis{/cue}.
+notes: |
+  - Zeit: 54:00 - 56:00 Min.
+  - Primärquelle: Wang et al. (2022), ICLR 2023.
+  - Wichtig: Tausch von Rechenkosten gegen maximale Zuverlässigkeit bei geschäftskritischen Fragen.
+references:
+  - type: inproceedings
+    id: "wang-2022-self-consistency"
+    author: "Wang, X., et al."
+    title: "Self-Consistency Improves Chain of Thought Reasoning in Language Models"
+    booktitle: "ICLR 2023"
+    year: 2023
+    url: "https://arxiv.org/abs/2203.11171"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="28"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="chart-consistency" title="GSM8K Benchmark [@wang-2022-self-consistency]" accent="blue">
+    <BarChart
+      unit="%"
+      items={[
+        { label: "Standard CoT (k=1)", value: 57, accent: "neutral", cue: "hl-cot-single" },
+        { label: "Self-Consistency (k=5)", value: 68, accent: "cyan", cue: "hl-sample-5" },
+        { label: "Self-Consistency (k=40)", value: 74, accent: "emerald", cue: "hl-sample-40" }
+      ]}
+    />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-konzept" title="Funktionsweise im Enterprise-Stack" accent="cyan">
+    <CalloutBox type="statement" title="Stochastisches Ensemble">
+      Der {cue:hl-konsens-entscheid}Mehrheitsentscheid filtert zufällige Rechenfehler heraus{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "cpu",
+        title: "Sampling mit Varianz (T ≈ 0.7)",
+        desc: "Durch gezielte stochastische Streuung generiert das Modell {cue:hl-diverse-pfade}völlig unterschiedliche Lösungswege zum selben Problem{/cue}."
+      },
+      {
+        icon: "target",
+        title: "Marginalisierung des Pfads",
+        desc: "Nicht der Argumentationspfad zählt, sondern {cue:hl-robuster-konsens}ein hochgradig robustes Konsens-Ergebnis{/cue} der Schnittmenge."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

@@ -1,0 +1,70 @@
+---
+title: "Programmatische Optimierung: DSPy"
+subtitle: "Khattab et al. 2023: {cue:hl-sub-45}Warum wir Prompts in Zukunft kompilieren statt manuell zu tippen{/cue}"
+number: "45"
+slideLayout: "split"
+voiceover: >
+  Der nächste evolutionäre Schritt im Prompt Engineering stammt aus den Stanford Labs: DSPy von Omar Khattab und Team.
+  {cue:sub} Es begründet ein Paradigma: {cue:hl-sub-45}Prompts kompilieren statt manuell zu tippen{/cue}.
+  {cue:col-handarbeit} Manuelles Prompting ist fragil: Viele Teams klagen, {cue:hl-fragiles-tuning}mit dem nächsten Modell-Update funktionierte nichts mehr{/cue}. Bei Updates {cue:hl-modell-bruch}brechen mühsam ertestete Formulierungen zusammen{/cue}, und Entwickler verlieren Zeit mit {cue:hl-wording-feinschliff}endlosem sprachlichem Feinschliff statt Systemarchitektur{/cue}.
+  {cue:col-compiler} DSPy wählt den Compiler-Ansatz: Prompts werden {cue:hl-dspy-compiler}automatisch gegen eine Verlustfunktion kompiliert und optimiert{/cue}. Typisierte Signaturen ermöglichen eine {cue:hl-saubere-trennung}saubere Trennung völlig losgelöst von Prompt-Strings{/cue}, während Teleprompter für {cue:hl-maximale-zielmetrik}maximale Zielmetriken auf Ihren Daten{/cue} sorgen.
+notes: |
+  - Zeit: 88:00 - 90:00 Min.
+  - Primärquelle: Khattab et al. (2023), Stanford University.
+  - Ausblick: Der Übergang von 'Prompting' zu 'Software 2.0 / Compiler'.
+references:
+  - type: article
+    id: "khattab-2023-dspy"
+    author: "Khattab, O., et al."
+    title: "DSPy: Compiling Declarative Language Model Calls into Self-Refining Pipelines"
+    journal: "arXiv preprint arXiv:2310.03714"
+    year: 2023
+    url: "https://arxiv.org/abs/2310.03714"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="45"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-handarbeit" title="Das Fragilitäts-Dilemma" accent="neutral">
+    <CalloutBox type="quote">
+      „Wir haben wochenlang gefeilt – {cue:hl-fragiles-tuning}mit dem nächsten Modell-Update funktionierte nichts mehr{/cue}.“
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "warning",
+        title: "Model-Drift",
+        desc: "Jedes neue Modell-Checkpoint erfordert Anpassungen: {cue:hl-modell-bruch}Mühsam ertestete Formulierungen brechen oft zusammen{/cue}."
+      },
+      {
+        icon: "trending-down",
+        title: "Hohe Wartungskosten",
+        desc: "Ingenieure verbringen Arbeitszeit mit {cue:hl-wording-feinschliff}endlosem sprachlichem Feinschliff statt Systemarchitektur{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-compiler" title="Das DSPy-Kompilier-Paradigma [@khattab-2023-dspy]" accent="blue">
+    <CalloutBox type="statement" title="Deklarative Programmierung">
+      Prompts werden {cue:hl-dspy-compiler}automatisch gegen eine Verlustfunktion kompiliert und optimiert{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "code",
+        title: "Typisierte Signaturen",
+        desc: "Definition rein über I/O (z. B. `context, query -> answer`), {cue:hl-saubere-trennung}völlig losgelöst von konkreten Prompt-Strings{/cue}."
+      },
+      {
+        icon: "zap",
+        title: "Automatisches Few-Shot Tuning",
+        desc: "Der Compiler wählt selbstständig die besten Demonstrationen für {cue:hl-maximale-zielmetrik}maximale Zielmetriken auf Ihren Daten{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>
