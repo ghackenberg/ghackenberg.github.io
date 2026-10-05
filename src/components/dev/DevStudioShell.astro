@@ -106,6 +106,11 @@ const { currentPath } = Astro.props;
           <strong id="hud-visitors" class="text-white font-bold">--</strong>
         </span>
         <span class="hidden md:inline text-zinc-400">|</span>
+        <span title="Direct Entry Visitors (Landing Page Sessions)" class="hidden md:flex items-center gap-1">
+          <span class="text-zinc-200">Entries:</span>
+          <strong id="hud-entries" class="text-white font-bold">--</strong>
+        </span>
+        <span class="hidden md:inline text-zinc-400">|</span>
         <span title="Total Pageviews" class="hidden md:flex items-center gap-1">
           <span class="text-zinc-200">Views:</span>
           <strong id="hud-pageviews" class="text-white font-bold">--</strong>
@@ -321,13 +326,20 @@ const { currentPath } = Astro.props;
             </div>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 font-mono">
             <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
               <div class="text-xs text-zinc-200 flex items-center justify-between">
                 <span>Unique Visitors</span>
                 <span>👤</span>
               </div>
               <div id="full-visitors" class="text-2xl font-bold text-white mt-2">--</div>
+            </div>
+            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
+              <div class="text-xs text-zinc-200 flex items-center justify-between">
+                <span>Direct Entries</span>
+                <span>🚪</span>
+              </div>
+              <div id="full-entries" class="text-2xl font-bold text-white mt-2">--</div>
             </div>
             <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
               <div class="text-xs text-zinc-200 flex items-center justify-between">
@@ -432,6 +444,7 @@ const { currentPath } = Astro.props;
     period: string;
     plausible: {
       visitors: number;
+      entries?: number;
       pageviews: number;
       bounceRate: number | null;
       visitDuration: number | null;
@@ -1300,6 +1313,7 @@ const { currentPath } = Astro.props;
 
       // Reset HUD metrics to loading placeholders
       set('hud-visitors', '...');
+      set('hud-entries', '...');
       set('hud-pageviews', '...');
       set('hud-bounce', '...');
       set('hud-duration', '...');
@@ -1307,6 +1321,11 @@ const { currentPath } = Astro.props;
       set('hud-gsc-impr', '...');
       set('hud-gsc-ctr', '...');
       set('hud-gsc-rank', '...');
+      set('full-visitors', '...');
+      set('full-entries', '...');
+      set('full-views', '...');
+      set('full-bounce', '...');
+      set('full-duration', '...');
 
       // Fade out minimap funnel & median marker smoothly, show minimap track loader
       const svg = document.getElementById('dev-minimap-funnel-svg');
@@ -1443,6 +1462,7 @@ const { currentPath } = Astro.props;
       };
 
       set('hud-visitors', String(plausible.visitors ?? 0));
+      set('hud-entries', String(plausible.entries ?? 0));
       set('hud-pageviews', String(plausible.pageviews ?? 0));
       set('hud-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
       set('hud-duration', this.formatDuration(plausible.visitDuration));
@@ -1462,6 +1482,7 @@ const { currentPath } = Astro.props;
 
       set('dev-fullview-path', this.currentPath);
       set('full-visitors', String(plausible.visitors ?? 0));
+      set('full-entries', String(plausible.entries ?? 0));
       set('full-views', String(plausible.pageviews ?? 0));
       set('full-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
       set('full-duration', this.formatDuration(plausible.visitDuration));
