@@ -84,7 +84,7 @@ For complete slide archetype definitions and props, consult [`src/content/presen
 - **Two-Phase Generation Protocol ("Text-Freeze Principle")**:
   - **Phase 1 (Lightweight Drafting & Structure)**: Author and refine slide texts, frontmatter, references, and voiceovers. Validate purely syntactically using `npm run validate:slides:syntax` and `npm run validate:citations:syntax` (runs in <300ms without needing audio or PDF exports). **Do NOT run TTS synthesis or PDF exports during iterative text drafting!**
   - **Phase 2 (Heavy Build & Release)**: Once the user explicitly freezes the text (*"Text steht"*), run:
-    `npm run audio:presentations` $\rightarrow$ `npm run export:slides-thumbs` $\rightarrow$ `npm run export:slides` $\rightarrow$ `npm run validate:slides` $\rightarrow$ `npm run lint:citations:ci`.
+    `npm run audio:presentations` $\rightarrow$ `npm run export:slides-thumbs` $\rightarrow$ `npm run export:slides` $\rightarrow$ `npm run verify`.
 - **The 5-Point Cue Pre-Flight Checklist (Mandatory before saving any `.mdx` slide)**:
   1. *Highlights on every bullet & callout*: Every `BulletList` item `desc` and every `CalloutBox` MUST contain at least one inline `{cue:hl-...}` marker.
   2. *Monotonic visual DOM progression*: Spoken cues in `voiceover` MUST follow the exact sequence in which elements appear in the slide DOM (from top-to-bottom, left-to-right).
@@ -123,7 +123,7 @@ For complete slide archetype definitions and props, consult [`src/content/presen
     - Dwell time of 1.5s at $\ge 50\%$ viewport visibility emits `Card Viewed` (`{ id, collection }`).
     - User clicks on preview cards trigger delegated `Card Clicked` events (`{ id, collection }`) for automated CTR analytics.
   - *Semantic ID Integrity Gate*:
-    - Build output is strictly verified via `npm run validate:semantic-ids`:
+    - Build output is strictly verified via `npm run validate:semantic-ids` (automatically executed via npm `postbuild` hook after every `npm run build`):
       1. Zero duplicate DOM IDs per HTML page.
       2. 100% of `<section>` elements must possess a non-empty `id` attribute.
   - *Component-Internal State Controllers*: Deeply interactive state machines (like `SlideDeck.astro` or `AudioSyncController.ts`) co-locate their event emissions (`Slide Viewed`, `Presentation Completed`, `Audio Played`) within their lifecycle hooks.
@@ -156,7 +156,7 @@ Mandatory for **ALL** content collections supporting references (blog posts in `
   - `npm run lint:citations` automatically fetches remote target pages, parses `<h1>`, meta tags, and body text, and calculates title keyword coverage and author presence. Low content overlap or shallow root URLs trigger linter warnings.
 - **Pre-Flight Validation**:
   - *Phase 1 (Drafting)*: Validate syntax and in-text parity in <200ms using `npm run validate:citations:syntax` (and `npm run validate:slides:syntax` for slides).
-  - *Phase 2 (Release)*: Verify external source links, DOIs, and metadata against remote APIs using `npm run lint:citations` (or `npm run lint:citations:ci`).
+  - *Phase 2 (Release)*: Run `npm run verify` (aggregates `npm run validate` and `npm run build` with automated `postbuild` semantic ID audit). For remote reference validation against arXiv/Crossref, run `npm run lint:citations:ci`.
 
 ---
 

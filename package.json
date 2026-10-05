@@ -19,6 +19,10 @@
   "scripts": {
     "dev": "astro dev",
     "build": "npm run typecheck && astro build && npm run generate-assets",
+    "postbuild": "npm run validate:semantic-ids",
+    "validate": "npm run lint && npm run typecheck && npm run validate:scripts && npm run validate:slides && npm run validate:citations:syntax && npm run lint:styles && npm run validate:architecture",
+    "verify": "npm run validate && npm run build",
+    "test": "npm run verify",
     "preview": "astro preview",
     "typecheck": "astro check --minimumFailingSeverity hint",
     "lint": "eslint . --max-warnings=0",
