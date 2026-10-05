@@ -150,6 +150,10 @@ Mandatory for **ALL** content collections supporting references (blog posts in `
   - Zero orphan references and zero undefined citation tags.
 - **Reference Section Layout & Hygiene**:
   - **NO Horizontal Divider**: Never place `---` or border lines immediately before the references heading or list.
+- **Deep-Link & Anti-Shallow URL Contract**:
+  - References for specific publications, studies, articles, and reports MUST provide deep URLs to the specific document (never bare domain roots like `openai.com/` or `refinelabs.com/`). Bare domain roots are only permitted when the domain itself is the primary official specification or tool being cited (e.g. `modelcontextprotocol.io/` or `zod.dev/`).
+- **Remote Content & Keyword Integrity Gate**:
+  - `npm run lint:citations` automatically fetches remote target pages, parses `<h1>`, meta tags, and body text, and calculates title keyword coverage and author presence. Low content overlap or shallow root URLs trigger linter warnings.
 - **Pre-Flight Validation**:
   - *Phase 1 (Drafting)*: Validate syntax and in-text parity in <200ms using `npm run validate:citations:syntax` (and `npm run validate:slides:syntax` for slides).
   - *Phase 2 (Release)*: Verify external source links, DOIs, and metadata against remote APIs using `npm run lint:citations` (or `npm run lint:citations:ci`).
