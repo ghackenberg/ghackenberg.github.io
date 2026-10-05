@@ -13,7 +13,7 @@ export function renderSlideCues(text: string | undefined | null): string {
   let result = text.replace(
     /\{cue:([a-zA-Z0-9_-]+)\}([\s\S]*?)\{\/cue(?::[a-zA-Z0-9_-]+)?\}/g,
     (_, cueId, content) => {
-      return `<mark id="${cueId}" data-cue="${cueId}" class="highlight-marker font-semibold rounded-[0.38em]">${content}</mark>`;
+      return `<mark data-cue="${cueId}" class="highlight-marker font-semibold rounded-[0.38em]">${content}</mark>`;
     }
   );
 
@@ -21,7 +21,7 @@ export function renderSlideCues(text: string | undefined | null): string {
   result = result.replace(
     /\{cue:([a-zA-Z0-9_-]+)\}/g,
     (_, cueId) => {
-      return `<span id="${cueId}" data-cue="${cueId}" class="cue-target"></span>`;
+      return `<span data-cue="${cueId}" class="cue-target"></span>`;
     }
   );
 

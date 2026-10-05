@@ -32,7 +32,7 @@ const {
   class: className = ""
 } = Astro.props;
 
-const elementId = explicitId || cue;
+const elementId = explicitId;
 
 // Presentation-wide standard sequential accent cycle
 const ACCENT_CYCLE = ['blue', 'cyan', 'indigo', 'emerald', 'amber', 'purple'] as const;
@@ -89,7 +89,7 @@ function getStepAccent(step: Step, idx: number): string {
   >
     {steps.map((step, idx) => {
       const accent = getStepAccent(step, idx);
-      const stepId = step.id || step.cue;
+      const stepId = step.id;
       return (
         <div
           id={stepId}
@@ -141,7 +141,7 @@ function getStepAccent(step: Step, idx: number): string {
   >
     {steps.map((step, idx) => {
       const accent = getStepAccent(step, idx);
-      const stepId = step.id || step.cue;
+      const stepId = step.id;
       return (
         <>
           <!-- Step Card -->

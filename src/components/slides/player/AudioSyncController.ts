@@ -830,13 +830,11 @@ export class AudioSyncController {
         const nextMark = unassignedMarks.shift();
         if (nextMark) {
           nextMark.setAttribute('data-cue', cueId);
-          if (!nextMark.id) nextMark.id = cueId;
         }
       } else if (cueId.startsWith('box-') || cueId.startsWith('card-') || cueId.startsWith('step-') || cueId.startsWith('col-')) {
         const nextBox = unassignedBoxes.shift();
         if (nextBox) {
           nextBox.setAttribute('data-cue', cueId);
-          if (!nextBox.id) nextBox.id = cueId;
         }
       }
     }
@@ -845,10 +843,12 @@ export class AudioSyncController {
   private getCueElement(cueId: string): HTMLElement | null {
     const slideEl = document.querySelector<HTMLElement>(`.reveal .slides section[data-slide-index="${this.currentIndex}"]`);
     if (slideEl) {
-      const scoped = slideEl.querySelector<HTMLElement>(`#${cueId}, [data-cue="${cueId}"]`);
+      const scoped = slideEl.querySelector<HTMLElement>(`[data-cue="${cueId}"], #${cueId}`);
       if (scoped) return scoped;
     }
-    return document.getElementById(cueId) || document.querySelector<HTMLElement>(`[data-cue="${cueId}"]`);
+    return document.querySelector<HTMLElement>(`.reveal .slides section.present [data-cue="${cueId}"]`) ||
+           document.querySelector<HTMLElement>(`[data-cue="${cueId}"]`) ||
+           document.getElementById(cueId);
   }
 
   private startTickLoop() {

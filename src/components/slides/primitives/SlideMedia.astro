@@ -17,7 +17,7 @@ const {
   class: className = ""
 } = Astro.props;
 
-const elementId = explicitId || cue;
+const elementId = explicitId;
 const hasCustomHeight = /(?:^|\s)h-/.test(className);
 ---
 

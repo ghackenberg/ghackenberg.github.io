@@ -28,7 +28,7 @@ const {
   class: className = ""
 } = Astro.props;
 
-const elementId = explicitId || cue;
+const elementId = explicitId;
 
 const accentBars = {
   neutral: 'bg-slate-500',
@@ -53,6 +53,7 @@ const accentTitles = {
 
 <div
   id={elementId}
+  data-cue={cue}
   data-autofit
   class={`comparison-table-container w-full h-full flex flex-col justify-between rounded-3xl border border-slate-700/80 bg-slate-900/95 light:border-slate-300 light:bg-white shadow-2xl p-6 lg:p-8 min-h-0 overflow-hidden ${className}`}
 >
@@ -68,7 +69,7 @@ const accentTitles = {
   <div class="table-rows-container flex-1 flex flex-col justify-between divide-y divide-slate-800/80 light:divide-slate-200 min-h-0">
     {rows.map((row, idx) => {
       const accent = row.accent || 'neutral';
-      const rowId = row.id || row.cue;
+      const rowId = row.id;
       return (
         <div
           id={rowId}
