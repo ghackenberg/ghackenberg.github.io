@@ -95,6 +95,8 @@ type JsonLdNode = Record<string, JsonLdValue>;
 // Schema.org Dynamic Dual Architecture: Event + PresentationDigitalDocument or Pure Digital Document
 const schemaGraph: JsonLdNode[] = [];
 
+const isOnlineEvent = !presentation.data.location || presentation.data.location.toLowerCase().includes("online");
+
 if (presentation.data.event) {
   schemaGraph.push({
     "@type": "Event",
@@ -102,9 +104,14 @@ if (presentation.data.event) {
     "name": presentation.data.event,
     "description": presentation.data.description,
     "startDate": presentation.data.pubDate.toISOString(),
-    "eventAttendanceMode": presentation.data.location ? "https://schema.org/OfflineEventAttendanceMode" : "https://schema.org/OnlineEventAttendanceMode",
+    "eventAttendanceMode": isOnlineEvent ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
     "eventStatus": "https://schema.org/EventScheduled",
-    ...(presentation.data.location ? {
+    ...(isOnlineEvent ? {
+      "location": {
+        "@type": "VirtualLocation",
+        "url": `https://hackenberg.tech/presentations/${presentation.id}/`
+      }
+    } : {
       "location": {
         "@type": "Place",
         "name": presentation.data.location,
@@ -114,7 +121,7 @@ if (presentation.data.event) {
           "addressCountry": "AT"
         }
       }
-    } : {}),
+    }),
     "performer": {
       "@type": "Person",
       "@id": "https://hackenberg.tech/#georg",
