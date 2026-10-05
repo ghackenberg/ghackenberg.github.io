@@ -32,7 +32,7 @@ const {
   class: className = ""
 } = Astro.props;
 
-const elementId = explicitId || cue;
+const elementId = explicitId;
 
 // Presentation-wide standard sequential accent cycle
 const ACCENT_CYCLE = ['blue', 'cyan', 'indigo', 'emerald', 'amber', 'purple'] as const;
@@ -131,7 +131,7 @@ function computeSsrBarRounding(value: number) {
         <div class="flex justify-between items-baseline text-lg lg:text-xl font-bold">
           <div class="flex items-center gap-2 min-w-0 pr-4">
             {isLabelHighlight ? (
-              <mark id={cueId} data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
+              <mark data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
                 {item.label}
               </mark>
             ) : (
@@ -144,7 +144,7 @@ function computeSsrBarRounding(value: number) {
 
           <div class={`font-mono text-xl lg:text-2xl font-black shrink-0 ${colorStyle.text}`}>
             {isValueHighlight ? (
-              <mark id={cueId} data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
+              <mark data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
                 {formattedVal}
               </mark>
             ) : (
