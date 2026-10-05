@@ -1,17 +1,18 @@
 ---
-title: "Der Makro-Shift: Die Zero-Click-Realität"
-subtitle: "Wenn Suchmaschinen den Klick {cue:hl-sub-zeroclick}durch direkte Antworten überflüssig machen{/cue}"
+title: "Der Budget-Schock: Die Klick-Falle"
+subtitle: "Warum Klickpreise explodieren, während {cue:hl-sub-budgetschock}die organische Reichweite schrumpft{/cue}"
 number: "03"
-slideLayout: "metric"
+slideLayout: "split"
 voiceover: >
-  Beginnen wir unsere Analyse mit den harten empirischen Fakten der globalen Websuche im Jahr 2026.
-  {cue:sub} Das Zero-Click-Phänomen zeigt, wie Suchmaschinen den Klick {cue:hl-sub-zeroclick}durch direkte Antworten überflüssig machen{/cue}.
-  {cue:stat-zeroclick} Fast sechzig Prozent aller Google-Suchanfragen in der Europäischen Union enden heute vollständig ohne einen Klick ins Web.
-  {cue:card-takeaways-03} Für B2B-Marketingentscheider bedeutet dies eine Zäsur: {cue:hl-zeroclick-monopol}Suchmaschinen wandeln sich von Link-Vermittlern zu geschlossenen Antwort-Ökosystemen{/cue}. Während Gartner einen {cue:hl-zeroclick-gartner}Rückgang des traditionellen Suchvolumens um 25 Prozent{/cue} prognostiziert, verlagert sich der {cue:hl-zeroclick-wert}Wert auf direkte Markensichtbarkeit und mentale Verankerung{/cue}.
+  Knüpfen wir direkt an die lebhafte Abschlussdiskussion unserer Keynote im AGRU Tech Center in Bad Hall an.
+  {cue:sub} Wir untersuchen den Budget-Schock: Warum Klickpreise explodieren, während {cue:hl-sub-budgetschock}die organische Reichweite schrumpft{/cue}.
+  {cue:card-badhall-context} Aus dem Publikum kam damals die verständliche Frage: {cue:hl-badhall-frage}Wenn organische Klicks durch Zero-Click schrumpfen: Kaufen wir den Traffic einfach über Google und LinkedIn Ads zurück?{/cue}
+  {cue:card-budgetschock-reality} Die wirtschaftliche Realität erteilt diesem Reflex eine klare Absage. Bezahlte Anzeigen fangen {cue:hl-budgetschock-anteil}nur 1,4 Prozent des weltweiten Klickvolumens{/cue} ab. Wer versucht, organischen Traffic durch bezahlte Klicks zu ersetzen, treibt {cue:hl-budgetschock-cpc}B2B-Klickpreise auf bis zu über 9 Dollar pro Klick{/cue} und {cue:hl-budgetschock-marge}verbrennt das Marketingbudget bei ruinösen Akquisitionskosten{/cue}.
 notes: |
   - Zeit: 4:00 - 6:00 Min.
-  - Datenbasis: SparkToro & Datos (Semrush-Panel) 2024; Gartner Prognose.
-  - Wichtig: Den Mythos widerlegen, dass jede Suchanfrage einen Website-Besucher erzeugt.
+  - Setting: Direkte Anknüpfung an die Keynote im AGRU Tech Center Bad Hall.
+  - Datenbasis: SparkToro & Datos (2024); WordStream by LocaliQ (2025).
+  - Kernaussage: Paid Ads können SEO mengenmäßig niemals ersetzen – wer Klicks nachkaufen will, gerät in eine ruinöse Preisspirale.
 references:
   - type: online
     id: "fishkin-2024-zero-click"
@@ -21,16 +22,16 @@ references:
     year: 2024
     url: "https://sparktoro.com/blog/2024-zero-click-search-study-for-every-1000-google-searches-only-374-clicks-go-to-the-open-web/"
   - type: online
-    id: "gartner-2024-search-drop"
-    author: "Gartner"
-    title: "Gartner Predicts Search Engine Volume Will Drop 25% by 2026, Due to AI Chatbots and Other Virtual Agents"
-    siteName: "Gartner Newsroom"
-    year: 2024
-    url: "https://www.gartner.com/en/newsroom/press-releases/2024-02-19-gartner-predicts-search-engine-volume-will-drop-25-percent-by-2026-due-to-ai-chatbots-and-other-virtual-agents"
+    id: "wordstream-2025-benchmarks"
+    author: "WordStream"
+    title: "Google Ads Benchmarks for YOUR Industry"
+    siteName: "WordStream by LocaliQ"
+    year: 2025
+    url: "https://www.wordstream.com/blog/ws/2023/05/15/google-ads-benchmarks"
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 
 <SplitSlide
@@ -38,40 +39,56 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   subtitle={frontmatter.subtitle}
   slideNumber="03"
   totalSlides="42"
-  ratio="40/60"
+  ratio="50/50"
 >
-  <MetricStat
+  <BentoCard
     slot="left"
-    cue="stat-zeroclick"
-    value="59,7"
-    unit="%"
-    label="Zero-Click-Suchen in der EU"
-    sublabel="SparkToro & Datos 2024 [@fishkin-2024-zero-click]: 597 von 1.000 Suchen verlassen Google nicht"
-    color="blue"
-  />
+    cue="card-badhall-context"
+    title="Ausgangspunkt: AGRU Tech Center"
+    accent="blue"
+  >
+    <div class="mb-4">
+      <a
+        href="/presentations/2026_10_01_seo_im_zeitalter_von_ki/"
+        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-300 hover:bg-blue-500/30 text-base font-semibold transition-colors"
+      >
+        <span>Keynote: SEO im Zeitalter von KI</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+      </a>
+    </div>
+
+    <CalloutBox type="info" title="Die Teilnehmerfrage">
+      <p class="text-xl lg:text-2xl leading-relaxed">
+        {cue:hl-badhall-frage}„Wenn organische Klicks durch Zero-Click schrumpfen: Kaufen wir den Traffic einfach über Google und LinkedIn Ads zurück?“{/cue}
+      </p>
+    </CalloutBox>
+    <p class="text-base lg:text-lg text-slate-300 light:text-slate-600 mt-4 leading-relaxed">
+      In Bad Hall haben wir gezeigt, wie KI-Overviews und RAG-Systeme den Klickfluss ins Web kappen [@fishkin-2024-zero-click]. Die spontane Management-Reaktion lautet oft: Budget in Paid Ads umschichten.
+    </p>
+  </BentoCard>
 
   <BentoCard
     slot="right"
-    cue="card-takeaways-03"
-    title="Empirische Konsequenzen für B2B"
-    accent="blue"
+    cue="card-budgetschock-reality"
+    title="Die Realität: Warum Nachkaufen scheitert"
+    accent="amber"
   >
     <BulletList
       items={[
         {
-          icon: "cross",
-          title: "Das Ende des garantierten Link-Traffics",
-          desc: "Klassische Informationsbedürfnisse werden auf der SERP befriedigt; {cue:hl-zeroclick-monopol}Suchmaschinen wandeln sich von Link-Vermittlern zu geschlossenen Antwort-Ökosystemen{/cue}."
-        },
-        {
           icon: "trending-down",
-          title: "Gartner-Prognose für das Suchvolumen",
-          desc: "Durch generative KI-Bots prognostiziert Gartner einen {cue:hl-zeroclick-gartner}Rückgang des traditionellen Suchvolumens um 25 Prozent{/cue} bis 2026 [@gartner-2024-search-drop]."
+          title: "Das Asymmetrie-Dilemma",
+          desc: "Organische Suche generiert Milliarden Klicks; bezahlte Anzeigen fangen {cue:hl-budgetschock-anteil}nur 1,4 Prozent des weltweiten Klickvolumens{/cue} ab."
         },
         {
-          icon: "check",
-          title: "Paradigmenwechsel der Erfolgsmessung",
-          desc: "Wenn Klicks versiegen, verlagert sich der {cue:hl-zeroclick-wert}Wert auf direkte Markensichtbarkeit und mentale Verankerung{/cue} bereits vor dem Klick."
+          icon: "trending-up",
+          title: "Die Auktionspreis-Spirale",
+          desc: "Weil alle gleichzeitig in denselben engen Kanal drängen, {cue:hl-budgetschock-cpc}explodieren B2B-Klickpreise auf bis zu über 9 Dollar pro Klick{/cue} [@wordstream-2025-benchmarks]."
+        },
+        {
+          icon: "cross",
+          title: "Die Margen-Falle",
+          desc: "Wer versucht, schrumpfende organische Reichweite 1:1 durch Klick-Einkauf zu kompensieren, {cue:hl-budgetschock-marge}verbrennt das Marketingbudget bei ruinösen Akquisitionskosten{/cue}."
         }
       ]}
     />
