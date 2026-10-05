@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.25
+  },
+  "hl-sub-13": {
+    "start": 10.82,
+    "duration": 1.82,
+    "end": 12.64
+  },
+  "vis-jagged": {
+    "start": 12.97
+  },
+  "col-content": {
+    "start": 21.1
+  },
+  "hl-frontier-kartierung": {
+    "start": 23.23,
+    "duration": 2.11,
+    "end": 25.34
+  },
+  "hl-frontier-innen": {
+    "start": 28.09,
+    "duration": 2.6,
+    "end": 30.69
+  },
+  "hl-frontier-aussen": {
+    "start": 31.23,
+    "duration": 2.21,
+    "end": 33.44
+  },
+  "hl-ki-schlaf": {
+    "start": 37.19,
+    "duration": 2.06,
+    "end": 39.25
+  }
+}

@@ -1,0 +1,58 @@
+---
+title: "B2B-Praxis: Ticket-Triage & Support"
+subtitle: "Automatisierte Klassifikation: {cue:hl-sub-16}Präzises Routing und strukturierte Vorqualifizierung{/cue}"
+number: "16"
+slideLayout: "split"
+voiceover: >
+  Die zweite tragende Säule im B2B-Einsatz ist die automatisierte Klassifikation eingehender Kundenanfragen und Support-Tickets.
+  {cue:sub} Hier geht es um {cue:hl-sub-16}präzises Routing und strukturierte Vorqualifizierung{/cue} im Kundenservice.
+  {cue:col-triage} Der Prompt extrahiert eine Taxonomie: {cue:hl-intent-erkennung}Erkennung des primären Kundenanliegens{/cue}, ein {cue:hl-dringlichkeit-score}numerischer Dringlichkeits-Score{/cue} und die Weiterleitung zum {cue:hl-team-dispatch}passenden First- oder Second-Level-Team{/cue}.
+  {cue:col-guardrails} Um Haftungsrisiken abzuwenden, benötigt der Prompt eiserne Leitplanken: {cue:hl-keine-haftung}Verbot eigenmächtiger Kulanz- oder Preiszusagen{/cue} und die {cue:hl-eskalations-pfad}sofortige Weiterleitung an menschliche Experten bei Frustration{/cue}.
+notes: |
+  - Zeit: 30:00 - 32:00 Min.
+  - Ziel: Reales Szenario im Mittelstand (ServiceDesk, Reklamationen, technischer After-Sales).
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="16"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-triage" title="Triage-Mechanik" accent="blue">
+    <CalloutBox type="statement" title="Deterministische Taxonomie">
+      Jedes Ticket wird in ein {cue:hl-intent-erkennung}eindeutiges Kategorien-Set klassifiziert{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Dringlichkeits-Bewertung",
+        desc: "Berechnung eines {cue:hl-dringlichkeit-score}objektiven Dringlichkeits-Scores von 1 bis 5{/cue} anhand von Signalwörtern."
+      },
+      {
+        icon: "arrow",
+        title: "Automatisches Routing",
+        desc: "Direkte Zuteilung zum {cue:hl-team-dispatch}passenden First- oder Second-Level-Team{/cue} ohne Medienbruch."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-guardrails" title="Sicherheits-Leitplanken" accent="cyan">
+    <BulletList items={[
+      {
+        icon: "shield",
+        title: "Verbindlichkeits-Schranke",
+        desc: "Striktes {cue:hl-keine-haftung}Verbot eigenmächtiger Kulanz- oder Preiszusagen{/cue} im automatisierten Dialog."
+      },
+      {
+        icon: "alert",
+        title: "Human-in-the-Loop Eskalation",
+        desc: "Bei negativem Sentiment erfolgt die {cue:hl-eskalations-pfad}sofortige Übergabe an menschliche Servicemitarbeiter{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

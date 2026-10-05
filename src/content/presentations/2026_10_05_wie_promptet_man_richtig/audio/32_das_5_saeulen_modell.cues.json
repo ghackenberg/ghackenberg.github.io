@@ -1,0 +1,50 @@
+{
+  "sub": {
+    "start": 5.4
+  },
+  "hl-sub-32": {
+    "start": 7.44,
+    "duration": 2.4,
+    "end": 9.84
+  },
+  "step-pillar-01": {
+    "start": 10.18
+  },
+  "hl-rolle-saeule": {
+    "start": 11.41,
+    "duration": 1.65,
+    "end": 13.06
+  },
+  "step-pillar-02": {
+    "start": 15.28
+  },
+  "hl-task-saeule": {
+    "start": 16.66,
+    "duration": 2.75,
+    "end": 19.41
+  },
+  "step-pillar-03": {
+    "start": 19.75
+  },
+  "hl-kontext-saeule": {
+    "start": 20.95,
+    "duration": 3.18,
+    "end": 24.13
+  },
+  "step-pillar-04": {
+    "start": 24.46
+  },
+  "hl-format-saeule": {
+    "start": 25.76,
+    "duration": 2.4,
+    "end": 28.16
+  },
+  "step-pillar-05": {
+    "start": 28.5
+  },
+  "hl-constraints-saeule": {
+    "start": 29.81,
+    "duration": 3.43,
+    "end": 33.24
+  }
+}

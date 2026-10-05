@@ -1,0 +1,64 @@
+---
+title: "Das 5-Säulen-Modell industrieller Prompts"
+subtitle: "Der Konstruktionsplan für {cue:hl-sub-32}stochastisch kontrollierte Produktions-Prompts{/cue}"
+number: "32"
+slideLayout: "pipeline"
+voiceover: >
+  Für die Entwicklung professioneller Prompts im Unternehmens-Stack etablieren wir das 5-Säulen-Modell.
+  {cue:sub} Es bildet den Konstruktionsplan für {cue:hl-sub-32}stochastisch kontrollierte Produktions-Prompts{/cue}.
+  {cue:step-pillar-01} Säule eins definiert {cue:hl-rolle-saeule}Rolle und Zielgruppen-Horizont{/cue} ohne pseudowissenschaftlichen Ballast.
+  {cue:step-pillar-02} Säule zwei formuliert {cue:hl-task-saeule}eine glasklare, operative Aufgabenstellung{/cue}.
+  {cue:step-pillar-03} Säule drei liefert {cue:hl-kontext-saeule}den nicht-parametrischen Kontext als primäre Faktenquelle{/cue}.
+  {cue:step-pillar-04} Säule vier erzwingt {cue:hl-format-saeule}strikte Formate und strukturierte Schemas{/cue}.
+  {cue:step-pillar-05} Säule fünf definiert {cue:hl-constraints-saeule}negative Constraints und deterministische Abbruchkriterien{/cue}.
+notes: |
+  - Zeit: 62:00 - 64:00 Min.
+  - Ziel: Einheitliche Nomenklatur für alle Entwickler und Fachanwender im Unternehmen.
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="32"
+  totalSlides="48"
+>
+  <Pipeline steps={[
+    {
+      cue: "step-pillar-01",
+      num: "01",
+      title: "Rolle & Persona",
+      desc: "Präziser Domänenfokus und {cue:hl-rolle-saeule}Rolle und Zielgruppen-Horizont{/cue} festlegen.",
+      accent: "blue"
+    },
+    {
+      cue: "step-pillar-02",
+      num: "02",
+      title: "Task & Scope",
+      desc: "Glasklare Verben definieren {cue:hl-task-saeule}eine glasklare, operative Aufgabenstellung{/cue}.",
+      accent: "cyan"
+    },
+    {
+      cue: "step-pillar-03",
+      num: "03",
+      title: "Kontext & Fakten",
+      desc: "Dokumente und Daten als {cue:hl-kontext-saeule}den nicht-parametrischen Kontext als primäre Faktenquelle{/cue} bereitstellen.",
+      accent: "indigo"
+    },
+    {
+      cue: "step-pillar-04",
+      num: "04",
+      title: "Format-Schema",
+      desc: "JSON, Tabellen oder Markdown für {cue:hl-format-saeule}strikte Formate und strukturierte Schemas{/cue}.",
+      accent: "emerald"
+    },
+    {
+      cue: "step-pillar-05",
+      num: "05",
+      title: "Constraints",
+      desc: "Verbote, Grenzen und {cue:hl-constraints-saeule}negative Constraints und deterministische Abbruchkriterien{/cue}.",
+      accent: "amber"
+    }
+  ]} />
+</PipelineSlide>

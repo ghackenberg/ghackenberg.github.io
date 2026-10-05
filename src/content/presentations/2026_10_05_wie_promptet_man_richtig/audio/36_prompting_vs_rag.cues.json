@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 7.01
+  },
+  "hl-sub-36": {
+    "start": 7.97,
+    "duration": 2.82,
+    "end": 10.79
+  },
+  "vis-caching-rag": {
+    "start": 11.13
+  },
+  "col-rag": {
+    "start": 20.18
+  },
+  "hl-dynamische-daten": {
+    "start": 22.63,
+    "duration": 2.51,
+    "end": 25.14
+  },
+  "hl-dossier-grenze": {
+    "start": 28.45,
+    "duration": 1.25,
+    "end": 29.7
+  },
+  "hl-keine-indexierung": {
+    "start": 30.84,
+    "duration": 2.21,
+    "end": 33.05
+  },
+  "hl-skalierbare-basis": {
+    "start": 35.46,
+    "duration": 2.46,
+    "end": 37.92
+  },
+  "hl-acl-kontrolle": {
+    "start": 38.76,
+    "duration": 2.14,
+    "end": 40.9
+  }
+}

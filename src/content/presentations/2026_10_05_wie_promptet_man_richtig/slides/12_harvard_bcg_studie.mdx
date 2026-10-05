@@ -1,0 +1,69 @@
+---
+title: "Die Harvard/BCG-Feldstudie"
+subtitle: "758 Consultants im kontrollierten Experiment: {cue:hl-sub-12}Produktivitätssprung innerhalb der Modellgrenze{/cue}"
+number: "12"
+slideLayout: "metric"
+voiceover: >
+  Die bislang einflussreichste Feldstudie zur Wissensarbeit wurde von Harvard, MIT, Wharton und der Boston Consulting Group durchgeführt.
+  {cue:sub} Sie belegt einen dramatischen {cue:hl-sub-12}Produktivitätssprung innerhalb der Modellgrenze{/cue}.
+  {cue:stat-speed} Die Berater schlossen Aufgaben im Schnitt 25 Prozent schneller ab.
+  {cue:stat-quality} Die bewertete inhaltliche Qualität der Arbeitsergebnisse stieg um über 40 Prozent.
+  {cue:stat-tasks} Insgesamt wurden 12 Prozent mehr komplexe Aufgaben erfolgreich bewältigt.
+  {cue:card-takeaway} Doch die Autoren warnen: Wer Prompts blind vertraut, {cue:hl-blindes-vertrauen}stürzt außerhalb der Fähigkeiten-Grenze um 19 Prozentpunkte ab{/cue}.
+notes: |
+  - Zeit: 22:00 - 24:00 Min.
+  - Primärquelle: Dell'Acqua et al. (2023), Harvard Business School Working Paper 24-013.
+  - Wichtig: 758 echte Top-Consultants der BCG wurden randomisiert in Kontroll- und KI-Gruppen getestet.
+references:
+  - type: article
+    id: "dellacqua-2023-jagged-frontier"
+    author: "Dell'Acqua, F., et al."
+    title: "Navigating the Jagged Technological Frontier: Field Experimental Evidence of the Effects of AI on Knowledge Worker Productivity and Quality"
+    journal: "Harvard Business School Working Paper 24-013"
+    year: 2023
+    url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4573321"
+---
+import MetricSlide from '../../../../components/slides/layouts/MetricSlide.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+
+<MetricSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="12"
+  totalSlides="48"
+>
+  <div slot="metrics" class="contents">
+    <MetricStat
+      cue="stat-speed"
+      value="25"
+      unit="%"
+      label="Schnellere Bearbeitung"
+      sublabel="Zeitreduktion bei Consulting-Aufgaben [@dellacqua-2023-jagged-frontier]"
+      color="blue"
+    />
+    <MetricStat
+      cue="stat-quality"
+      value="40"
+      unit="%"
+      label="Höhere Qualität"
+      sublabel="Signifikanter Anstieg der Ausarbeitungsnote"
+      color="cyan"
+    />
+    <MetricStat
+      cue="stat-tasks"
+      value="12"
+      unit="%"
+      label="Mehr Aufgaben gelöst"
+      sublabel="Erhöhte Gesamtproduktivität pro Zeiteinheit"
+      color="emerald"
+    />
+  </div>
+
+  <BentoCard cue="card-takeaway" title="Das zweischneidige Schwert [@dellacqua-2023-jagged-frontier]" accent="amber">
+    <CalloutBox type="quote">
+      „Liegt eine Aufgabe außerhalb der technologischen Grenze, {cue:hl-blindes-vertrauen}sinkt die menschliche Genauigkeit mit KI um 19 Prozentpunkte{/cue} unter das Niveau ohne KI.“
+    </CalloutBox>
+  </BentoCard>
+</MetricSlide>

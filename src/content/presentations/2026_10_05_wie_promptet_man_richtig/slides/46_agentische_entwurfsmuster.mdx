@@ -1,0 +1,67 @@
+---
+title: "Agentische Entwurfsmuster"
+subtitle: "Vier Kernmuster für komplexe Workflows: {cue:hl-sub-46}Vom Monolithen zu modularen Multi-Prompt-Systemen{/cue}"
+number: "46"
+slideLayout: "grid"
+voiceover: >
+  Versuchen Sie niemals, einen hochkomplexen Geschäftsprozess in einen einzigen gigantischen Monster-Prompt zu quetschen.
+  {cue:sub} Modulare Agenten-Entwurfsmuster bieten {cue:hl-sub-46}robuste Multi-Prompt-Architekturen{/cue}.
+  {cue:box-routing} Routing leitet eingehende Anfragen {cue:hl-routing-weiche}über eine Klassifikations-Weiche an spezialisierte Prompts{/cue}.
+  {cue:box-chaining} Chaining zerlegt Aufgaben sequenziell: {cue:hl-chaining-pipeline}Jeder Schritt wird vor der Weitergabe deterministisch validiert{/cue}.
+  {cue:box-parallel} Parallelisierung teilt Dokumente {cue:hl-parallele-analyse}in simultan verarbeitete Teilabschnitte{/cue} auf.
+  {cue:box-evaluator} Der Evaluator-Optimizer-Loop lässt {cue:hl-critic-feedback}ein Critic-Modell den Entwurf so lange iterieren, bis Qualitätskriterien erfüllt sind{/cue}.
+notes: |
+  - Zeit: 90:00 - 92:00 Min.
+  - Anthropic Best Practice: Building Effective Agents (2024).
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="46"
+  totalSlides="48"
+  cols={2}
+>
+  <BentoCard cue="box-routing" title="1. Routing (Verzweigung)" accent="blue">
+    <BulletList items={[
+      {
+        icon: "network",
+        title: "Spezialisierte Handler",
+        desc: "Ein schlanker Router leitet Anfragen {cue:hl-routing-weiche}über eine Klassifikations-Weiche an spezialisierte Prompts{/cue} weiter."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-chaining" title="2. Prompt Chaining" accent="cyan">
+    <BulletList items={[
+      {
+        icon: "arrow",
+        title: "Sequenzielle Pipelines",
+        desc: "Aufgaben werden in Stufen zerlegt: {cue:hl-chaining-pipeline}Jeder Schritt wird vor der Weitergabe deterministisch validiert{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-parallel" title="3. Parallelisierung" accent="indigo">
+    <BulletList items={[
+      {
+        icon: "cpu",
+        title: "Divide & Conquer",
+        desc: "Große Datenmengen werden {cue:hl-parallele-analyse}in simultan verarbeitete Teilabschnitte{/cue} aufgeteilt und synthetisiert."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-evaluator" title="4. Evaluator-Optimizer" accent="emerald">
+    <BulletList items={[
+      {
+        icon: "shield",
+        title: "Generator-Critic Schleife",
+        desc: "Ein Modell generiert, während {cue:hl-critic-feedback}ein Critic-Modell den Entwurf iteriert, bis Qualitätskriterien erfüllt sind{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</GridSlide>

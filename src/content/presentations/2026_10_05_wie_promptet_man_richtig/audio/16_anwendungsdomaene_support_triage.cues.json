@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 7.66
+  },
+  "hl-sub-16": {
+    "start": 8.41,
+    "duration": 2.93,
+    "end": 11.34
+  },
+  "col-triage": {
+    "start": 12.71
+  },
+  "hl-intent-erkennung": {
+    "start": 15.13,
+    "duration": 1.83,
+    "end": 16.96
+  },
+  "hl-dringlichkeit-score": {
+    "start": 17.4,
+    "duration": 1.11,
+    "end": 18.51
+  },
+  "hl-team-dispatch": {
+    "start": 19.93,
+    "duration": 1.72,
+    "end": 21.65
+  },
+  "col-guardrails": {
+    "start": 23.18
+  },
+  "hl-keine-haftung": {
+    "start": 27.41,
+    "duration": 2.7,
+    "end": 30.11
+  },
+  "hl-eskalations-pfad": {
+    "start": 30.36,
+    "duration": 3.2,
+    "end": 33.56
+  }
+}

@@ -17,6 +17,7 @@ import "@fontsource/outfit/800.css";
 import "@fontsource/caveat/400.css";
 import "@fontsource/caveat/600.css";
 import "@fontsource/caveat/700.css";
+import KaTeXStyles from "@components/KaTeXStyles.astro";
 
 export async function getStaticPaths() {
   const presentations = await getCollection("presentations");
@@ -53,6 +54,7 @@ const renderedSlides = await Promise.all(
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>{presentation.data.title} - Handout Druckansicht</title>
+    <KaTeXStyles />
     <script is:inline>
       const params = new URLSearchParams(window.location.search);
       const theme = params.get('theme') || 'dark';
@@ -183,10 +185,9 @@ const renderedSlides = await Promise.all(
         iterations: 5,
       });
 
-      const cards = document.querySelectorAll<HTMLElement>(
-        '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]'
-      );
-      cards.forEach((card) => autoFit.fitCard(card));
+      document.querySelectorAll<HTMLElement>('.print-slide-page').forEach((page) => {
+        autoFit.fitSlide(page);
+      });
 
       // 3. Mark document ready for Puppeteer PDF export
       document.documentElement.setAttribute('data-print-ready', 'true');

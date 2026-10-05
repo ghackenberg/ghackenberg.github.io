@@ -1,0 +1,46 @@
+{
+  "sub": {
+    "start": 7.03
+  },
+  "hl-sub-45": {
+    "start": 8.88,
+    "duration": 2.32,
+    "end": 11.2
+  },
+  "col-handarbeit": {
+    "start": 11.54
+  },
+  "hl-fragiles-tuning": {
+    "start": 14.93,
+    "duration": 2.46,
+    "end": 17.39
+  },
+  "hl-modell-bruch": {
+    "start": 18.51,
+    "duration": 2.48,
+    "end": 20.99
+  },
+  "hl-wording-feinschliff": {
+    "start": 22.76,
+    "duration": 2.93,
+    "end": 25.69
+  },
+  "col-compiler": {
+    "start": 26.02
+  },
+  "hl-dspy-compiler": {
+    "start": 29.57,
+    "duration": 3.26,
+    "end": 32.83
+  },
+  "hl-saubere-trennung": {
+    "start": 35.19,
+    "duration": 2.05,
+    "end": 37.24
+  },
+  "hl-maximale-zielmetrik": {
+    "start": 39.33,
+    "duration": 2.03,
+    "end": 41.36
+  }
+}

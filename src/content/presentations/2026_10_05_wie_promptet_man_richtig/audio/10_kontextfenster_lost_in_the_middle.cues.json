@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 6.15
+  },
+  "hl-sub-10": {
+    "start": 8.11,
+    "duration": 2.32,
+    "end": 10.43
+  },
+  "col-paper": {
+    "start": 10.76
+  },
+  "hl-lost-middle": {
+    "start": 13.74,
+    "duration": 1.64,
+    "end": 15.38
+  },
+  "hl-abfall-mitte": {
+    "start": 17.82,
+    "duration": 2.56,
+    "end": 20.38
+  },
+  "col-architektur": {
+    "start": 21.25
+  },
+  "hl-primacy-recency": {
+    "start": 24.63,
+    "duration": 2.48,
+    "end": 27.11
+  },
+  "hl-klammer-struktur": {
+    "start": 29.25,
+    "duration": 2.22,
+    "end": 31.47
+  },
+  "hl-kontext-rauschen": {
+    "start": 31.93,
+    "duration": 2.52,
+    "end": 34.45
+  }
+}

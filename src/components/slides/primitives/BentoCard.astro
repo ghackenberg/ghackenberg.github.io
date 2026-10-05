@@ -111,6 +111,11 @@ const currentAccentStyle = (accent && accent in accentStyles)
 <style>
   .bento-card-root {
     --scale: var(--content-scale, 1);
+    padding: calc(2rem * var(--content-scale, 1)) !important;
+  }
+  .bento-card-root h3 {
+    font-size: calc(2.35rem * var(--content-scale, 1)) !important;
+    line-height: 1.25 !important;
   }
   .bento-hyphens {
     hyphens: auto;

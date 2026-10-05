@@ -1,0 +1,56 @@
+---
+title: "Höflichkeit, Drohungen & Voodoo"
+subtitle: "Warum Trinkgeld-Versprechen und emotionale Appelle {cue:hl-sub-21}statistisch wirkungsloser Ballast{/cue} sind"
+number: "21"
+slideLayout: "split"
+voiceover: >
+  Im Netz kursieren skurrile Praktiken wie Trinkgeld-Versprechungen oder existentielle Drohungen an Sprachmodelle.
+  {cue:sub} Doch empirisch erweisen sich solche Zusätze als {cue:hl-sub-21}statistisch wirkungsloser Ballast{/cue}.
+  {cue:col-voodoo} Versprechen wie {cue:hl-trinkgeld-zitat}Ich gebe dir 100 $ Trinkgeld{/cue} oder {cue:hl-drohungen-stress}fiktive Notlagen oder Strafandrohungen{/cue} verbessern die Logik nicht. Sie verbrauchen wertvolle Tokens und erzeugen {cue:hl-emotionale-verzerrung}unerwünschte Verteilungs-Verzerrungen{/cue}.
+  {cue:col-ingenieur} Ein industrielles KI-System reagiert {cue:hl-keine-psychologie}nicht auf Emotion oder soziale Normen{/cue}. Was die Ausgabequalität nachweislich determiniert, sind {cue:hl-strukturelle-praezision}strukturelle Randbedingungen, Typisierungen und Few-Shot-Beispiele{/cue}.
+notes: |
+  - Zeit: 40:00 - 42:00 Min.
+  - Ziel: Entzauberung von Memes und Hype-Tipps.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="21"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-voodoo" title="Die Meme-Kultur im Check" accent="neutral">
+    <CalloutBox type="quote">
+      „{cue:hl-trinkgeld-zitat}Ich gebe dir 100 $ Trinkgeld{/cue} für eine perfekte Antwort, mein Job hängt davon ab!“
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "cross",
+        title: "Statistisches Nullsummenspiel",
+        desc: "Empirische Benchmarks zeigen: Trinkgelder und {cue:hl-drohungen-stress}fiktive Notlagen oder Strafandrohungen{/cue} bringen keinen signifikanten Genauigkeitsgewinn."
+      },
+      {
+        icon: "alert",
+        title: "Kontext-Rauschen",
+        desc: "Emotionale Floskeln erzeugen {cue:hl-emotionale-verzerrung}unerwünschte Verteilungs-Verzerrungen{/cue} im Aufmerksamkeitsfokus."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-ingenieur" title="Was Modelle wirklich steuert" accent="blue">
+    <CalloutBox type="statement" title="Ingenieur-Prinzip">
+      Stochastische Prozessoren reagieren auf Syntax und Semantik, {cue:hl-keine-psychologie}nicht auf Emotion oder soziale Normen{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "check",
+        title: "Strukturelle Spezifikation",
+        desc: "Eindeutige Datenfelder und {cue:hl-strukturelle-praezision}strukturelle Randbedingungen, Typisierungen und Few-Shot-Beispiele{/cue} sichern den Output."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

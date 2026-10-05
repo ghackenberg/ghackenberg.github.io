@@ -1,0 +1,35 @@
+---
+title: "Das stochastische Fundament"
+subtitle: "Wie Sprachmodelle Tokens berechnen und warum {cue:hl-sub-04}statistische Wahrscheinlichkeit keine Fakten kennt{/cue}"
+number: "04"
+slideLayout: "section"
+voiceover: >
+  Damit schlagen wir das erste große Kapitel unserer analytischen Reise auf.
+  {cue:sub} Wir untersuchen das stochastische Fundament und warum {cue:hl-sub-04}statistische Wahrscheinlichkeit keine Fakten kennt{/cue}.
+  {cue:card-divider-04} 
+  {cue:card-leitfrage-04} Die zentrale Leitfrage lautet: Was geschieht mathematisch {cue:hl-leitfrage-04}zwischen der Eingabeaufforderung und dem ersten generierten Wort{/cue}?
+  {cue:card-bridge-04} Um Prompts zielgerichtet zu steuern, spannen wir den Bogen von {cue:hl-bridge-04}Next-Token-Prediction über Vektor-Embeddings{/cue} bis zu Sampling-Parametern.
+notes: |
+  - Zeit: 6:00 - 8:00 Min.
+  - Ziel: Physikalische & mathematische Erdung vermitteln.
+---
+import SectionSlide from '../../../../components/slides/layouts/SectionSlide.astro';
+
+<SectionSlide
+  chapter="KAPITEL 01 / 07 · THEORIE & GRUNDLAGEN"
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  dividerCue="card-divider-04"
+  questionCue="card-leitfrage-04"
+  bridgeCue="card-bridge-04"
+  slideNumber="04"
+  totalSlides="48"
+>
+  <div slot="question" class="text-3xl lg:text-4xl xl:text-[42px] font-black text-blue-200 light:text-blue-900 leading-snug tracking-tight text-center">
+    „Was geschieht mathematisch {cue:hl-leitfrage-04}zwischen der Eingabeaufforderung und dem ersten generierten Wort{/cue}?“
+  </div>
+
+  <div slot="bridge" class="text-xl lg:text-2xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
+    Von {cue:hl-bridge-04}Next-Token-Prediction über Vektor-Embeddings{/cue} bis zu Kontextgrenzen und Sampling-Parametern.
+  </div>
+</SectionSlide>

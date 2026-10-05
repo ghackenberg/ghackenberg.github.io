@@ -1,0 +1,58 @@
+---
+title: "B2B-Praxis: Compliance & Vertragsanalyse"
+subtitle: "Regulatorische Audits: {cue:hl-sub-37}Rechtssichere Klauselprüfung und lückenlose Traceability{/cue}"
+number: "37"
+slideLayout: "split"
+voiceover: >
+  Unser drittes Anwendungsbeispiel adressiert Rechts- und Qualitätsabteilungen: Die automatisierte Compliance- und Vertragsprüfung.
+  {cue:sub} Sie verlangt {cue:hl-sub-37}rechtssichere Klauselprüfung und lückenlose Traceability{/cue}.
+  {cue:col-audit} Im Klausel-Audit erfolgt ein {cue:hl-gap-analyse}Abgleich von Drittverträgen mit Standard-AGB{/cue}. Risikoklauseln wie {cue:hl-haftungs-deckel}unbegrenzte Haftung oder verletzte Kündigungsfristen{/cue} werden ebenso geprüft wie {cue:hl-dsgvo-pflichten}DSGVO-Auftragsverarbeitung und Geheimhaltungsfristen{/cue}.
+  {cue:col-evidence} Für Auditoren genügt kein Fließtext: Der Prompt muss {cue:hl-paragraphen-nachweis}jede Beanstandung mit exakter Paragraphen-Nummer und Zitat{/cue} untermauern, verknüpft mit einem {cue:hl-ampel-status}eindeutigen Rot-Gelb-Grün-Konformitätsstatus{/cue}.
+notes: |
+  - Zeit: 72:00 - 74:00 Min.
+  - Ziel: Demonstration in stark regulierten Domänen (ISO 9001, DSGVO, B2B-Lieferverträge).
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="37"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-audit" title="Automatisierter Klausel-Check" accent="blue">
+    <CalloutBox type="statement" title="Regelbasierte Gap-Analyse">
+      {cue:hl-gap-analyse}Abgleich von Drittverträgen mit Standard-AGB{/cue} und internen Klauselrichtlinien.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "warning",
+        title: "Risiko-Früherkennung",
+        desc: "Sofortige Warnung bei {cue:hl-haftungs-deckel}unbegrenzter Haftung oder verletzten Kündigungsfristen{/cue}."
+      },
+      {
+        icon: "shield",
+        title: "Compliance-Regeln",
+        desc: "Prüfung auf gesetzliche Pflichtklauseln wie {cue:hl-dsgvo-pflichten}DSGVO-Auftragsverarbeitung und Geheimhaltungsfristen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-evidence" title="Auditierbare Evidenz-Struktur" accent="cyan">
+    <BulletList items={[
+      {
+        icon: "document",
+        title: "Lückenlose Zitation",
+        desc: "Jedes gefundene Risiko wird mit {cue:hl-paragraphen-nachweis}exakter Paragraphen-Nummer und wörtlichem Zitat{/cue} belegt."
+      },
+      {
+        icon: "target",
+        title: "Konformitäts-Ampel",
+        desc: "Klassifikation in einen {cue:hl-ampel-status}eindeutigen Rot-Gelb-Grün-Konformitätsstatus{/cue} für juristische Freigaben."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

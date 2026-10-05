@@ -1,0 +1,65 @@
+---
+title: "XML-Kapselung & Delimiter"
+subtitle: "Der Industriestandard für {cue:hl-sub-33}semantische Trennschärfe und Parsing-Stabilität{/cue}"
+number: "33"
+slideLayout: "code"
+voiceover: >
+  Ein massives Problem von Freitext-Prompts ist die Verschmelzung von Anweisungen und Benutzerdaten.
+  {cue:sub} XML-Kapselung etabliert {cue:hl-sub-33}semantische Trennschärfe und Parsing-Stabilität{/cue}.
+  {cue:col-code} Indem wir Systemregeln in {cue:hl-xml-tags}semantische XML-Tags wie instructions, context und data{/cue} einbetten, weiß das Modell exakt, wo Anweisungen enden und Nutzdaten beginnen.
+  {cue:col-explanation} Diese Praxis garantiert {cue:hl-verhinderung-bleed}eine unmissverständliche Trennung von Logik und Daten{/cue}, bietet {cue:hl-abwehr-injection}effektiven Basisschutz gegen Prompt-Injections{/cue} und ermöglicht es, Antworten {cue:hl-regex-parsing}per Regex oder Parser fehlerfrei im Backend zu extrahieren{/cue}.
+notes: |
+  - Zeit: 64:00 - 66:00 Min.
+  - Anthropic Best Practice: XML-Tags werden von Claude, GPT-4o und Gemini gleichermaßen exzellent geparst.
+---
+import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<CodeSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="33"
+  totalSlides="48"
+>
+  <div slot="code" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-code" title="XML-Kapselung in der Praxis" accent="cyan">
+      <div class="p-6 rounded-2xl bg-slate-950 light:bg-slate-100 font-mono text-base lg:text-lg leading-relaxed border border-slate-800 light:border-slate-300 text-slate-200 light:text-slate-900 shadow-inner">
+        <span class="text-slate-500 light:text-slate-500">&lt;system_instructions&gt;</span><br/>
+        &nbsp;&nbsp;Du bist ein Analyse-Assistent für Fertigungsprotokolle.<br/>
+        &nbsp;&nbsp;<span class="text-amber-300 light:text-amber-800 font-bold">{cue:hl-xml-tags}&lt;rules&gt;{/cue}</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Antworte ausschließlich auf Basis von &lt;context&gt;.<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;- Wenn ein Wert fehlt, antworte mit NULL.<br/>
+        &nbsp;&nbsp;&lt;/rules&gt;<br/>
+        <span class="text-slate-500 light:text-slate-500">&lt;/system_instructions&gt;</span><br/><br/>
+        <span class="text-blue-400 light:text-blue-700 font-bold">&lt;context&gt;</span><br/>
+        &nbsp;&nbsp;[Technisches Prüfprotokoll Charge #4829...]<br/>
+        <span class="text-blue-400 light:text-blue-700 font-bold">&lt;/context&gt;</span><br/><br/>
+        <span class="text-emerald-400 light:text-emerald-700 font-bold">&lt;user_query&gt;</span><br/>
+        &nbsp;&nbsp;Welche Grenztemperatur wurde in Charge #4829 überschritten?<br/>
+        <span class="text-emerald-400 light:text-emerald-700 font-bold">&lt;/user_query&gt;</span>
+      </div>
+    </BentoCard>
+  </div>
+
+  <div slot="explanation" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-explanation" title="Architektonischer Mehrwert" accent="blue">
+      <CalloutBox type="statement" title="Strikte Grenzziehung">
+        XML-Tags erzeugen {cue:hl-verhinderung-bleed}eine unmissverständliche Trennung von Logik und Daten{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "shield",
+          title: "Schutz gegen Daten-Verwechslung",
+          desc: "Das Modell verwechselt Dateninhalte nicht mit neuen Befehlen und bietet {cue:hl-abwehr-injection}effektiven Basisschutz gegen Prompt-Injections{/cue}."
+        },
+        {
+          icon: "code",
+          title: "Programmatische Parsbarkeit",
+          desc: "Antworten können in &lt;result&gt;-Tags isoliert und {cue:hl-regex-parsing}per Regex oder Parser fehlerfrei im Backend extrahiert werden{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</CodeSlide>

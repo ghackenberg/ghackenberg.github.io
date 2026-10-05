@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.56
+  },
+  "hl-sub-26": {
+    "start": 7.47,
+    "duration": 3.21,
+    "end": 10.68
+  },
+  "vis-cot": {
+    "start": 11.01
+  },
+  "col-mechanik": {
+    "start": 18.88
+  },
+  "hl-token-rechenzeit": {
+    "start": 20.54,
+    "duration": 1.87,
+    "end": 22.41
+  },
+  "hl-cot-denkpfad": {
+    "start": 25.1,
+    "duration": 2.34,
+    "end": 27.44
+  },
+  "hl-aufmerksamkeits-speicher": {
+    "start": 29.41,
+    "duration": 1.94,
+    "end": 31.35
+  },
+  "hl-atomare-schritte": {
+    "start": 32.44,
+    "duration": 2.49,
+    "end": 34.93
+  }
+}

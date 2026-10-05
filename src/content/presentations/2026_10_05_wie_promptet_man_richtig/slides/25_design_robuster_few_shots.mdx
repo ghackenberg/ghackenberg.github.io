@@ -1,0 +1,67 @@
+---
+title: "Design robuster Few-Shot Demonstrationen"
+subtitle: "Vier Gesetze für verlässliche Beispiele: {cue:hl-sub-25}Vermeidung von Biases und Reihenfolge-Effekten{/cue}"
+number: "25"
+slideLayout: "grid"
+voiceover: >
+  Few-Shot Demonstrationen sind extrem mächtig, bergen aber subtile statistische Fallstricke.
+  {cue:sub} Vier Gesetze sichern die {cue:hl-sub-25}Vermeidung von Biases und Reihenfolge-Effekten{/cue}.
+  {cue:box-balance} Erstens ist Klassenbalance essenziell: Zeigen Sie 4 positive und 1 negatives Beispiel, {cue:hl-klassen-bias}verzerrt das Modell Vorhersagen zugunsten der Mehrheit{/cue}.
+  {cue:box-ordnung} Zweitens tritt Recency-Bias auf: Modelle wiederholen oft {cue:hl-recency-bias}überproportional häufig das Label des allerletzten Beispiels{/cue}.
+  {cue:box-edge} Drittens müssen Sie Randfälle demonstrieren, damit {cue:hl-ausnahme-behandlung}seltene Ausnahmen und Grenzwerte robust verarbeitet{/cue} werden.
+  {cue:box-symmetrie} Viertens erfordert Few-Shot strikte Syntax-Symmetrie: {cue:hl-format-spiegelung}Jedes Beispiel muss die Zielstruktur exakt spiegeln{/cue}.
+notes: |
+  - Zeit: 48:00 - 50:00 Min.
+  - Ziel: Ingenieuren zeigen, dass Few-Shot kein lockeres Aufschreiben ist, sondern Datenhygiene.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="25"
+  totalSlides="48"
+  cols={2}
+>
+  <BentoCard cue="box-balance" title="1. Klassen-Balance" accent="blue">
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Gleichverteilung der Klassen",
+        desc: "Ungleiche Demonstrationen führen dazu, dass {cue:hl-klassen-bias}das Modell Vorhersagen zugunsten der Mehrheit verzerrt{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-ordnung" title="2. Reihenfolge-Effekte" accent="amber">
+    <BulletList items={[
+      {
+        icon: "warning",
+        title: "Recency-Bias",
+        desc: "Statistisch neigen LLMs dazu, {cue:hl-recency-bias}überproportional häufig das Label des allerletzten Beispiels{/cue} zu wählen."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-edge" title="3. Randfall-Abdeckung" accent="cyan">
+    <BulletList items={[
+      {
+        icon: "shield",
+        title: "Edge Cases einbetten",
+        desc: "Triviale Beispiele genügen nicht; {cue:hl-ausnahme-behandlung}seltene Ausnahmen und Grenzwerte robust verarbeitet{/cue} müssen demonstriert werden."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-symmetrie" title="4. Format-Symmetrie" accent="emerald">
+    <BulletList items={[
+      {
+        icon: "code",
+        title: "Identische Delimiter",
+        desc: "Trennzeichen, Einrückungen und Tags: {cue:hl-format-spiegelung}Jedes Beispiel muss die Zielstruktur exakt spiegeln{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</GridSlide>

@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 5.97
+  },
+  "hl-sub-25": {
+    "start": 7.25,
+    "duration": 2.74,
+    "end": 9.99
+  },
+  "box-balance": {
+    "start": 10.32
+  },
+  "hl-klassen-bias": {
+    "start": 16.04,
+    "duration": 2.71,
+    "end": 18.75
+  },
+  "box-ordnung": {
+    "start": 19.09
+  },
+  "hl-recency-bias": {
+    "start": 22.93,
+    "duration": 3.11,
+    "end": 26.04
+  },
+  "box-edge": {
+    "start": 26.38
+  },
+  "hl-ausnahme-behandlung": {
+    "start": 28.99,
+    "duration": 2.74,
+    "end": 31.73
+  },
+  "box-symmetrie": {
+    "start": 32.51
+  },
+  "hl-format-spiegelung": {
+    "start": 36.46,
+    "duration": 2.58,
+    "end": 39.04
+  }
+}

@@ -1,0 +1,67 @@
+---
+title: "Die Kontroll-Illusion"
+subtitle: "Warum menschliche Intuition bei stochastischen Systemen {cue:hl-sub-22}systematisch in die Irre führt{/cue}"
+number: "22"
+slideLayout: "grid"
+voiceover: >
+  Wir schließen das Mythos-Kapitel mit einer fundamentalen Erkenntnis über menschliche Wahrnehmung ab.
+  {cue:sub} Menschliche Intuition führt bei stochastischen Systemen {cue:hl-sub-22}systematisch in die Irre{/cue}.
+  {cue:box-nichtlinear} Erstens agieren Sprachmodelle hochgradig nichtlinear: Eine minimale Umformulierung kann {cue:hl-nichtlinear-sprung}unvorhersehbare qualitative Sprünge auslösen{/cue}.
+  {cue:box-optima} Zweitens verleitet manuelles Testen zu lokalen Scheinerfolgen; was bei drei Beispielen klappt, {cue:hl-lokale-falle}bricht bei hundert realen Kundenfällen ein{/cue}.
+  {cue:box-annahmen} Drittens setzen wir menschlichen gesunden Menschenverstand voraus, während Modelle {cue:hl-kein-commonsense}weder implizites Alltagswissen noch Kontext besitzen{/cue}.
+  {cue:box-evals} Die Konsequenz: Wir ersetzen Bauchgefühl durch {cue:hl-testgetriebene-evals}testgetriebene Validierung und automatisierte Evals{/cue}.
+notes: |
+  - Zeit: 42:00 - 44:00 Min.
+  - Ziel: Brücke zur wissenschaftlichen Taxonomie und Enterprise-Methodik schlagen.
+---
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<GridSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="22"
+  totalSlides="48"
+  cols={2}
+>
+  <BentoCard cue="box-nichtlinear" title="Nicht-Lineare Dynamik" accent="amber">
+    <BulletList items={[
+      {
+        icon: "warning",
+        title: "Schmetterlingseffekt",
+        desc: "Ein einziges Synonym kann {cue:hl-nichtlinear-sprung}unvorhersehbare qualitative Sprünge auslösen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-optima" title="Die Stichproben-Falle" accent="neutral">
+    <BulletList items={[
+      {
+        icon: "cross",
+        title: "Lokale Scheinerfolge",
+        desc: "Was bei drei manuellen Tests funktioniert, {cue:hl-lokale-falle}bricht bei hundert realen Kundenfällen ein{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-annahmen" title="Implizite Annahmen" accent="indigo">
+    <BulletList items={[
+      {
+        icon: "cpu",
+        title: "Fehlender Commonsense",
+        desc: "Modelle besitzen {cue:hl-kein-commonsense}weder implizites Alltagswissen noch Kontext{/cue} ohne explizite Spezifikation."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard cue="box-evals" title="Die Ingenieurs-Lösung" accent="emerald">
+    <BulletList items={[
+      {
+        icon: "check",
+        title: "Metrik-basierte Entwicklung",
+        desc: "Bauchgefühl weicht durch {cue:hl-testgetriebene-evals}testgetriebene Validierung und automatisierte Evals{/cue} ab."
+      }
+    ]} />
+  </BentoCard>
+</GridSlide>

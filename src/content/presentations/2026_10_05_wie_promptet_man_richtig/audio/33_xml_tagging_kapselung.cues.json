@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 5.59
+  },
+  "hl-sub-33": {
+    "start": 7.35,
+    "duration": 2.71,
+    "end": 10.06
+  },
+  "col-code": {
+    "start": 10.4
+  },
+  "hl-xml-tags": {
+    "start": 11.79,
+    "duration": 3.39,
+    "end": 15.18
+  },
+  "col-explanation": {
+    "start": 20.1
+  },
+  "hl-verhinderung-bleed": {
+    "start": 21.38,
+    "duration": 2.42,
+    "end": 23.8
+  },
+  "hl-abwehr-injection": {
+    "start": 24.43,
+    "duration": 1.68,
+    "end": 26.11
+  },
+  "hl-regex-parsing": {
+    "start": 28.31,
+    "duration": 3.09,
+    "end": 31.4
+  }
+}

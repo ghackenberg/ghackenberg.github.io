@@ -1,0 +1,27 @@
+{
+  "sub": {
+    "start": 7.42
+  },
+  "hl-sub-12": {
+    "start": 8.86,
+    "duration": 2.71,
+    "end": 11.57
+  },
+  "stat-speed": {
+    "start": 11.91
+  },
+  "stat-quality": {
+    "start": 16.15
+  },
+  "stat-tasks": {
+    "start": 21.31
+  },
+  "card-takeaway": {
+    "start": 25.98
+  },
+  "hl-blindes-vertrauen": {
+    "start": 29.11,
+    "duration": 3.46,
+    "end": 32.57
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 7.41
+  },
+  "hl-sub-39": {
+    "start": 8.51,
+    "duration": 3.15,
+    "end": 11.66
+  },
+  "box-fabrication": {
+    "start": 12
+  },
+  "hl-pseudofakten": {
+    "start": 16.14,
+    "duration": 3.11,
+    "end": 19.25
+  },
+  "box-faithfulness": {
+    "start": 20.98
+  },
+  "hl-treue-bruch": {
+    "start": 24.04,
+    "duration": 3.14,
+    "end": 27.18
+  },
+  "box-sycophancy": {
+    "start": 27.51
+  },
+  "hl-falsche-bestaetigung": {
+    "start": 28.57,
+    "duration": 2.68,
+    "end": 31.25
+  },
+  "box-konfidenz": {
+    "start": 32.1
+  },
+  "hl-keine-echte-metakognition": {
+    "start": 36.08,
+    "duration": 2.55,
+    "end": 38.63
+  }
+}

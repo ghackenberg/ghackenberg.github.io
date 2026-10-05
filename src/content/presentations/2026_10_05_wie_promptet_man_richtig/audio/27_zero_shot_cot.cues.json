@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 8.11
+  },
+  "hl-sub-27": {
+    "start": 9.07,
+    "duration": 4.28,
+    "end": 13.35
+  },
+  "col-code": {
+    "start": 13.69
+  },
+  "hl-step-trigger": {
+    "start": 15.86,
+    "duration": 1.53,
+    "end": 17.39
+  },
+  "col-explanation": {
+    "start": 22.5
+  },
+  "hl-multiarith-sprung": {
+    "start": 24.85,
+    "duration": 4.44,
+    "end": 29.29
+  },
+  "hl-zwei-phasen-extraktion": {
+    "start": 30.86,
+    "duration": 2.98,
+    "end": 33.84
+  },
+  "hl-latente-muster": {
+    "start": 34.33,
+    "duration": 2.84,
+    "end": 37.17
+  }
+}

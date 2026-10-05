@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 5.9
+  },
+  "hl-sub-05": {
+    "start": 7.63,
+    "duration": 2.26,
+    "end": 9.89
+  },
+  "col-formel": {
+    "start": 10.22
+  },
+  "hl-token-formel": {
+    "start": 12.05,
+    "duration": 1.87,
+    "end": 13.92
+  },
+  "col-erklaerung": {
+    "start": 16.6
+  },
+  "hl-keine-fakten": {
+    "start": 20.41,
+    "duration": 1.85,
+    "end": 22.26
+  },
+  "hl-bedingte-verteilung": {
+    "start": 26.45,
+    "duration": 2.12,
+    "end": 28.57
+  },
+  "hl-fehlerkette": {
+    "start": 30,
+    "duration": 2.5,
+    "end": 32.5
+  }
+}

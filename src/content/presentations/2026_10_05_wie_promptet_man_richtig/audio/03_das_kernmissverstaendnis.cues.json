@@ -1,0 +1,46 @@
+{
+  "sub": {
+    "start": 6.74
+  },
+  "hl-sub-03": {
+    "start": 7.78,
+    "duration": 1.39,
+    "end": 9.17
+  },
+  "vis-story-03": {
+    "start": 12.16
+  },
+  "col-problem": {
+    "start": 19.11
+  },
+  "hl-voodoo-tricks": {
+    "start": 20.14,
+    "duration": 1.37,
+    "end": 21.51
+  },
+  "hl-schnittstelle": {
+    "start": 22.11,
+    "duration": 3.12,
+    "end": 25.23
+  },
+  "hl-anthropomorph": {
+    "start": 26.95,
+    "duration": 1.71,
+    "end": 28.66
+  },
+  "hl-unberechenbar": {
+    "start": 29.34,
+    "duration": 2.75,
+    "end": 32.09
+  },
+  "hl-raumbegrenzung": {
+    "start": 34.51,
+    "duration": 1.7,
+    "end": 36.21
+  },
+  "hl-deterministisch": {
+    "start": 36.38,
+    "duration": 2.72,
+    "end": 39.1
+  }
+}

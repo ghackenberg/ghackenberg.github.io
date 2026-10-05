@@ -1,0 +1,29 @@
+{
+  "sub": {
+    "start": 7.16
+  },
+  "hl-sub-23": {
+    "start": 9.74,
+    "duration": 2.32,
+    "end": 12.06
+  },
+  "card-divider-23": {
+    "start": 12.4
+  },
+  "card-leitfrage-23": {
+    "start": 12.4
+  },
+  "hl-leitfrage-23": {
+    "start": 14.15,
+    "duration": 4.16,
+    "end": 18.31
+  },
+  "card-bridge-23": {
+    "start": 18.65
+  },
+  "hl-bridge-23": {
+    "start": 23.32,
+    "duration": 1.68,
+    "end": 25
+  }
+}

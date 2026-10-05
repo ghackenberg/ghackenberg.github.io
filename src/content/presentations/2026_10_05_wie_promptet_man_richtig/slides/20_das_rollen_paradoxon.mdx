@@ -1,0 +1,62 @@
+---
+title: "Das Rollen-Paradoxon"
+subtitle: "Warum 'Handle als Experte' {cue:hl-sub-20}den Tonfall verändert, aber keine Faktenkompetenz erzeugt{/cue}"
+number: "20"
+slideLayout: "story-hero"
+voiceover: >
+  Ein universell empfohlener Ratschlag lautet: Gib dem Modell immer eine hochspezifische Persona wie Chefarzt oder Senior Consultant.
+  {cue:sub} Doch empirische Studien zeigen: Dies {cue:hl-sub-20}verändert primär den Tonfall, erzeugt aber keine Faktenkompetenz{/cue}.
+  {cue:vis-role} Wie in der Illustration fällt die Theatermaske ab und enthüllt die nackte stochastische Berechnungsmatrix.
+  {cue:col-mythen} Typische Rollenprompts fordern: {cue:hl-persona-zitat}Du bist ein weltführender Experte{/cue}. Doch die Persona {cue:hl-schalte-wissen-frei}schaltet kein neues Faktenwissen frei{/cue}, sondern lediglich {cue:hl-akademischer-jargon}eine höhere Dichte an Fachausdrücken{/cue}. Gefährlicher Nebeneffekt ist {cue:hl-sykophantie-gefahr}Sykophantie und Scheingenauigkeit{/cue}. Setzen Sie Personas {cue:hl-stilistische-passung}gezielt zur Adressierung von Empfängern ein{/cue}.
+notes: |
+  - Zeit: 38:00 - 40:00 Min.
+  - Befund: Studien zu Persona-Prompting zeigen minimale Reasoning-Sprünge, aber hohe Anfälligkeit für Sycophancy.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_role_paradox.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="20"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageTitle="Das Rollen-Paradoxon im Prompt Engineering"
+  imageAlt="Comic-Illustration: Eine Theatermaske mit Doktorhut fällt ab und enthüllt die elektronische Wahrscheinlichkeitsmatrix"
+  imageCue="vis-role"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-mythen" title="Die Persona-Illusion" accent="purple">
+      <CalloutBox type="quote">
+        „{cue:hl-persona-zitat}Du bist ein weltführender Senior-Ingenieur mit 30 Jahren Erfahrung{/cue} im Anlagenbau...“
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "cross",
+          title: "Kein magischer Wissenszugriff",
+          desc: "Die Persona {cue:hl-schalte-wissen-frei}schaltet kein neues Faktenwissen im Vektorraum frei{/cue}."
+        },
+        {
+          icon: "cpu",
+          title: "Rein stilistische Verschiebung",
+          desc: "Verändert wird lediglich das Vokabular: {cue:hl-akademischer-jargon}Höhere Dichte an Fachausdrücken und steifere Tonalität{/cue}."
+        },
+        {
+          icon: "alert",
+          title: "Gefahr der Sykophantie",
+          desc: "Rollen-Prompts neigen zu Bestätigungsfehlern: {cue:hl-sykophantie-gefahr}Modelle schmeicheln Annahmen des Nutzers{/cue}."
+        },
+        {
+          icon: "check",
+          title: "Richtiger Einsatzzweck",
+          desc: "Setzen Sie Personas {cue:hl-stilistische-passung}gezielt zur Adressierung von Empfängern ein{/cue} (Vorstand vs. Monteur)."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

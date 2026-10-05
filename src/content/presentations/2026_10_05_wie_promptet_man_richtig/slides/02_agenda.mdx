@@ -1,0 +1,72 @@
+---
+title: "Der Fahrplan zum systematischen Prompting"
+subtitle: "Vom stochastischen Zufallstreffer zur {cue:hl-sub-02}deterministischen Produktions-Schnittstelle{/cue}"
+number: "02"
+slideLayout: "pipeline"
+voiceover: >
+  Bevor wir in die Details einsteigen, verschaffen wir uns einen Überblick über die didaktische Route unseres Deep Dives.
+  {cue:sub} Wir transformieren die Arbeitsweise vom Zufallstreffer zur {cue:hl-sub-02}deterministischen Produktions-Schnittstelle{/cue}.
+  {cue:step-agenda-01} Zunächst erarbeiten wir das stochastische Fundament und {cue:hl-agenda-01}wie Sprachmodelle Tokens erzeugen{/cue}.
+  {cue:step-agenda-02} Anschließend betrachten wir die empirische Evidenz und die {cue:hl-agenda-02}Harvard-Studie zur Jagged Frontier{/cue}.
+  {cue:step-agenda-03} Im dritten Block dekonstruieren wir populäre Mythen und {cue:hl-agenda-03}prüfen Akronym-Frameworks{/cue}.
+  {cue:step-agenda-04} Danach folgt die systematische Taxonomie von {cue:hl-agenda-04}Few-Shot-Learning bis zu ReAct{/cue}.
+  {cue:step-agenda-05} Block fünf widmet sich der Enterprise-Architektur mit {cue:hl-agenda-05}XML-Tags und JSON-Schemas{/cue}.
+  {cue:step-agenda-06} Abschließend sichern wir Systeme gegen Injections ab und etablieren {cue:hl-agenda-06}automatisierte Prompt-Evals{/cue}.
+notes: |
+  - Zeit: 2:00 - 4:00 Min.
+  - Ziel: Struktur vermitteln; die logische Progression von den Grundlagen bis zur industriellen Umsetzung darlegen.
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="02"
+  totalSlides="48"
+>
+  <Pipeline steps={[
+    {
+      cue: "step-agenda-01",
+      num: "01",
+      title: "Stochastisches Fundament",
+      desc: "Autoregression, Vektorräume und {cue:hl-agenda-01}wie Sprachmodelle Tokens erzeugen{/cue}.",
+      accent: "blue"
+    },
+    {
+      cue: "step-agenda-02",
+      num: "02",
+      title: "Empirische Evidenz",
+      desc: "Wissensarbeit im Härtetest: Die {cue:hl-agenda-02}Harvard-Studie zur Jagged Frontier{/cue}.",
+      accent: "cyan"
+    },
+    {
+      cue: "step-agenda-03",
+      num: "03",
+      title: "Mythen & Akronyme",
+      desc: "Warum Intuition trügt: Wir {cue:hl-agenda-03}prüfen Akronym-Frameworks{/cue} kritisch.",
+      accent: "indigo"
+    },
+    {
+      cue: "step-agenda-04",
+      num: "04",
+      title: "Reasoning-Taxonomie",
+      desc: "Wissenschaftliche Methoden von {cue:hl-agenda-04}Few-Shot-Learning bis zu ReAct{/cue}.",
+      accent: "emerald"
+    },
+    {
+      cue: "step-agenda-05",
+      num: "05",
+      title: "Enterprise Architecture",
+      desc: "Industrielle Standards mit {cue:hl-agenda-05}XML-Tags und JSON-Schemas{/cue}.",
+      accent: "amber"
+    },
+    {
+      cue: "step-agenda-06",
+      num: "06",
+      title: "Sicherheit & Evals",
+      desc: "Defensive Schutzschilde und {cue:hl-agenda-06}automatisierte Prompt-Evals{/cue}.",
+      accent: "purple"
+    }
+  ]} />
+</PipelineSlide>

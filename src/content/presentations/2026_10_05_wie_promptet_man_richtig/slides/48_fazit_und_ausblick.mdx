@@ -1,0 +1,56 @@
+---
+title: "Fazit, Diskussion & nächste Schritte"
+subtitle: "Vom Experiment zur unternehmensweiten Skalierung: {cue:hl-sub-48}Die Zukunft gehört getesteten, typisierten Pipelines{/cue}"
+number: "48"
+slideLayout: "split"
+voiceover: >
+  Wir schließen unseren Deep Dive mit einem Blick auf die strategische Transformation Ihrer Organisation ab.
+  {cue:sub} Denn fest steht: {cue:hl-sub-48}Die Zukunft gehört getesteten, typisierten Pipelines{/cue}.
+  {cue:col-fazit} Prompt Engineering ist keine flüchtige Modeerscheinung, sondern {cue:hl-neue-ingenieurdisziplin}die neue Ingenieursdisziplin an stochastischen Schnittstellen{/cue}. Unternehmen, die Prompts typisieren und testen, {cue:hl-wettbewerbsvorsprung}bauen einen uneinholbaren Vorsprung an Verlässlichkeit auf{/cue}.
+  {cue:col-kontakt} {cue:hl-dank-fragerunde}Vielen Dank für Ihre Aufmerksamkeit – die Fragerunde ist eröffnet{/cue}! Besuchen Sie mich gerne {cue:hl-forschung-web}auf hackenberg.tech für weiterführende Materialien{/cue} und vernetzen Sie sich als {cue:hl-fh-wels}Professor für Informatik & Industriesysteme Campus Wels{/cue}.
+notes: |
+  - Zeit: 94:00 - 96:00 Min.
+  - Abschluss, Fragerunde eröffnen und Kontaktangaben bereitstellen.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="48"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-fazit" title="Zentrale Erkenntnis" accent="blue">
+    <CalloutBox type="statement" title="Ingenieurs-Reife">
+      Prompting verwandelt sich von experimenteller Kunst in {cue:hl-neue-ingenieurdisziplin}die neue Ingenieursdisziplin an stochastischen Schnittstellen{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Wettbewerbsvorteil durch Robustheit",
+        desc: "Nicht wer die 'kreativsten' Prompts tippt gewinnt, sondern wer {cue:hl-wettbewerbsvorsprung}einen uneinholbaren Vorsprung an Verlässlichkeit aufbaut{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-kontakt" title="Diskussion & Austausch" accent="cyan">
+    <CalloutBox type="quote">
+      „{cue:hl-dank-fragerunde}Vielen Dank für Ihre Aufmerksamkeit – die Fragerunde ist eröffnet{/cue}.“
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "globe",
+        title: "Website & Slide-Engine",
+        desc: "Forschungsberichte, Folien und Code-Beispiele {cue:hl-forschung-web}auf hackenberg.tech für weiterführende Materialien{/cue}."
+      },
+      {
+        icon: "linkedin",
+        title: "Vernetzung & Forschung",
+        desc: "Dr. Georg Hackenberg · FH Oberösterreich · {cue:hl-fh-wels}Professor für Informatik & Industriesysteme Campus Wels{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

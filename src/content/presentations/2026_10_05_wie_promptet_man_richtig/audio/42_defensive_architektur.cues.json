@@ -1,0 +1,45 @@
+{
+  "sub": {
+    "start": 7.83
+  },
+  "hl-sub-42": {
+    "start": 8.7,
+    "duration": 3.18,
+    "end": 11.88
+  },
+  "vis-hero": {
+    "start": 12.21
+  },
+  "step-def-01": {
+    "start": 17.39
+  },
+  "hl-sanitization-zeichen": {
+    "start": 19.8,
+    "duration": 3.06,
+    "end": 22.86
+  },
+  "step-def-02": {
+    "start": 23.2
+  },
+  "hl-untrusted-tag": {
+    "start": 24.65,
+    "duration": 3.38,
+    "end": 28.03
+  },
+  "step-def-03": {
+    "start": 28.9
+  },
+  "hl-sandwich-regeln": {
+    "start": 30.88,
+    "duration": 2.72,
+    "end": 33.6
+  },
+  "step-def-04": {
+    "start": 33.94
+  },
+  "hl-guardrail-check": {
+    "start": 35.44,
+    "duration": 3.29,
+    "end": 38.73
+  }
+}

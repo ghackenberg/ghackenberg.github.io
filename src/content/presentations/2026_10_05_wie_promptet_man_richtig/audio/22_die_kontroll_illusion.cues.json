@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 5.42
+  },
+  "hl-sub-22": {
+    "start": 8.51,
+    "duration": 1.46,
+    "end": 9.97
+  },
+  "box-nichtlinear": {
+    "start": 10.31
+  },
+  "hl-nichtlinear-sprung": {
+    "start": 15.5,
+    "duration": 2.59,
+    "end": 18.09
+  },
+  "box-optima": {
+    "start": 18.43
+  },
+  "hl-lokale-falle": {
+    "start": 23.66,
+    "duration": 2.06,
+    "end": 25.72
+  },
+  "box-annahmen": {
+    "start": 26.06
+  },
+  "hl-kein-commonsense": {
+    "start": 30.07,
+    "duration": 2.93,
+    "end": 33
+  },
+  "box-evals": {
+    "start": 33.34
+  },
+  "hl-testgetriebene-evals": {
+    "start": 36.13,
+    "duration": 3.21,
+    "end": 39.34
+  }
+}

@@ -28,7 +28,7 @@ const {
   steps,
   id: explicitId,
   cue,
-  direction = steps.length >= 5 ? 'vertical' : 'horizontal',
+  direction = steps.length >= 4 ? 'vertical' : 'horizontal',
   class: className = ""
 } = Astro.props;
 
@@ -104,12 +104,31 @@ function getStepAccent(step: Step, idx: number): string {
           </div>
 
           <!-- Center: Title & description -->
-          <div class="step-text-container flex-1 flex flex-col justify-center min-w-0 py-3 px-6 lg:px-8 gap-1">
+          <div class="step-text-container flex-1 flex flex-col justify-center min-w-0 py-3 px-6 lg:px-8 gap-1.5">
             <h4 class="text-2xl lg:text-[28px] font-black text-slate-100 light:text-slate-900 tracking-tight leading-snug" set:html={renderSlideCues(step.title)} />
             {step.desc && (
               <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed font-normal" set:html={renderSlideCues(step.desc)} />
             )}
           </div>
+
+          <!-- Right: Image / Graphic Thumbnail (if provided) -->
+          {step.graphic ? (
+            <div class="step-image-container shrink-0 h-full aspect-video border-l border-slate-700/80 light:border-slate-200/80 bg-slate-800/40 light:bg-slate-100/70 relative overflow-hidden flex items-center justify-center" set:html={step.graphic} />
+          ) : step.image ? (
+            <div class="step-image-container shrink-0 h-full aspect-video border-l border-slate-700/80 light:border-slate-200/80 bg-slate-800/40 light:bg-slate-100/70 relative overflow-hidden flex items-center justify-center">
+              <Image
+                src={step.image}
+                alt={step.imageAlt || step.desc || `Illustration für Schritt ${step.num}: ${step.title}`}
+                title={step.imageTitle || step.title}
+                width={480}
+                height={270}
+                format="webp"
+                class="w-full h-full object-cover select-none"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          ) : null}
         </div>
       );
     })}
@@ -244,8 +263,8 @@ function getStepAccent(step: Step, idx: number): string {
         const textContainers = cards.map(c => c.querySelector<HTMLElement>('.step-text-container'));
         const barContainers = cards.map(c => c.querySelector<HTMLElement>('.step-bar-container'));
 
-        // 1. Ensure full typography scale and temporarily reset graphic heights to measure natural text requirements
-        cards.forEach(c => c.style.setProperty('--content-scale', '1', 'important'));
+        // 1. Reset scale temporarily without important to measure natural text requirements
+        cards.forEach(c => c.style.setProperty('--content-scale', '1'));
         graphicAreas.forEach(ga => {
           if (ga) {
             ga.style.height = '0px';
@@ -283,8 +302,10 @@ function getStepAccent(step: Step, idx: number): string {
           }
         });
 
-        // The graphic area receives the remaining available space (clamped to a reasonable minimum)
-        const targetHeight = Math.max(60, Math.floor(minRemainingForGraphic));
+        // The graphic area receives the remaining space, capped to natural 16:9 aspect ratio
+        const cardWidth = firstCard.clientWidth || 380;
+        const natural169Height = Math.round(cardWidth * (9 / 16));
+        const targetHeight = Math.max(60, Math.min(natural169Height, Math.floor(minRemainingForGraphic)));
 
         // 3. Apply exact identical targetHeight to all graphic areas in this pipeline
         graphicAreas.forEach(ga => {
@@ -336,12 +357,12 @@ function getStepAccent(step: Step, idx: number): string {
     --scale: var(--content-scale, 1);
   }
   .step-row[data-autofit] h4 {
-    font-size: calc(28px * var(--content-scale, 1)) !important;
+    font-size: calc(30px * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
   }
   .step-row[data-autofit] p {
-    font-size: calc(24px * var(--content-scale, 1)) !important;
-    line-height: 1.35 !important;
+    font-size: calc(26px * var(--content-scale, 1)) !important;
+    line-height: 1.4 !important;
   }
 
   /* Step Card dynamic auto-fit typography */
@@ -349,12 +370,12 @@ function getStepAccent(step: Step, idx: number): string {
     --scale: var(--content-scale, 1);
   }
   .step-card[data-autofit] h4 {
-    font-size: calc(28px * var(--content-scale, 1)) !important;
+    font-size: calc(30px * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
   }
   .step-card[data-autofit] p {
-    font-size: calc(24px * var(--content-scale, 1)) !important;
-    line-height: 1.35 !important;
+    font-size: calc(25px * var(--content-scale, 1)) !important;
+    line-height: 1.4 !important;
   }
 
   /* Pipeline Connector Arrows Animation: coupled to following step card */

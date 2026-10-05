@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.78
+  },
+  "hl-sub-41": {
+    "start": 9.09,
+    "duration": 3.02,
+    "end": 12.11
+  },
+  "vis-injection": {
+    "start": 12.45
+  },
+  "col-mechanik": {
+    "start": 20.24
+  },
+  "hl-code-daten-dualismus": {
+    "start": 20.94,
+    "duration": 2.77,
+    "end": 23.71
+  },
+  "hl-indirekte-injection": {
+    "start": 24.57,
+    "duration": 2.63,
+    "end": 27.2
+  },
+  "hl-daten-exfiltration": {
+    "start": 29.2,
+    "duration": 3.25,
+    "end": 32.45
+  },
+  "hl-zero-trust-daten": {
+    "start": 34.1,
+    "duration": 2.67,
+    "end": 36.77
+  }
+}

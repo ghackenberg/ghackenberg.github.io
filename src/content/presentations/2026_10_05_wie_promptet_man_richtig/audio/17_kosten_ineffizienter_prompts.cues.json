@@ -1,0 +1,39 @@
+{
+  "sub": {
+    "start": 5.24
+  },
+  "hl-sub-17": {
+    "start": 6.79,
+    "duration": 3.35,
+    "end": 10.14
+  },
+  "col-metric": {
+    "start": 10.47
+  },
+  "stat-overhead": {
+    "start": 10.47
+  },
+  "hl-token-faktor": {
+    "start": 14.72,
+    "duration": 2.72,
+    "end": 17.44
+  },
+  "col-treiber": {
+    "start": 18.95
+  },
+  "hl-loop-zeit": {
+    "start": 22.26,
+    "duration": 2.24,
+    "end": 24.5
+  },
+  "hl-unnoetige-tokens": {
+    "start": 24.74,
+    "duration": 3.12,
+    "end": 27.86
+  },
+  "hl-manuelle-pruefung": {
+    "start": 30.24,
+    "duration": 2.65,
+    "end": 32.89
+  }
+}

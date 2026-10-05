@@ -1,0 +1,61 @@
+---
+title: "Die Kosten ineffizienter Prompts"
+subtitle: "Warum schlechtes Prompting {cue:hl-sub-17}enorme Latenzen, Token-Kosten und Nacharbeit verursacht{/cue}"
+number: "17"
+slideLayout: "split"
+voiceover: >
+  Viele Unternehmen unterschätzen die wirtschaftlichen Folgekosten unstrukturierter Eingaben.
+  {cue:sub} Schlechtes Prompting verursacht {cue:hl-sub-17}enorme Latenzen, Token-Kosten und manuelle Nacharbeit{/cue}.
+  {cue:col-metric} {cue:stat-overhead} Wenn Mitarbeiter durch Ausprobieren vier bis fünf Versuche pro Anfrage benötigen, {cue:hl-token-faktor}verfünffachen sich API-Kosten und Antwortzeiten{/cue} bei jedem Arbeitsschritt.
+  {cue:col-treiber} Drei primäre Kostentreiber belasten die Organisation: {cue:hl-loop-zeit}Mitarbeiter verlieren wertvolle Produktivstunden{/cue}, {cue:hl-unnoetige-tokens}tausende ungenutzte Tokens pro API-Call abgerechnet werden{/cue}, und ohne deterministische Formate entsteht ein {cue:hl-manuelle-pruefung}enormer manueller Kontroll- und Korrekturaufwand{/cue}.
+notes: |
+  - Zeit: 32:00 - 34:00 Min.
+  - Ziel: Wirtschaftliche Dimension für IT-Leitung und CFO verdeutlichen.
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="17"
+  totalSlides="48"
+  ratio="40/60"
+>
+  <BentoCard slot="left" cue="col-metric" title="Der Ineffizienz-Faktor" accent="amber">
+    <MetricStat
+      cue="stat-overhead"
+      value="5"
+      unit="x"
+      label="Kosten-Multiplikator"
+      sublabel="Typischer Overhead durch Trial-and-Error im Arbeitsalltag"
+      color="amber"
+    />
+    <div class="mt-4 p-4 rounded-2xl bg-amber-950/30 light:bg-amber-50/80 border border-amber-800/40 light:border-amber-200 text-center text-xl text-amber-200 light:text-amber-950 font-medium">
+      Durch Re-Prompts {cue:hl-token-faktor}verfünffachen sich API-Kosten und Antwortzeiten{/cue}.
+    </div>
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-treiber" title="Die drei verborgenen Kostentreiber" accent="neutral">
+    <BulletList items={[
+      {
+        icon: "trending-down",
+        title: "Re-Generation Loops",
+        desc: "Endloses Neuformulieren bindet Arbeitszeit: {cue:hl-loop-zeit}Mitarbeiter verlieren wertvolle Produktivstunden{/cue}."
+      },
+      {
+        icon: "cpu",
+        title: "Kontext-Aufblähung",
+        desc: "Ungefilterte Dokumentenanhänge führen dazu, dass {cue:hl-unnoetige-tokens}tausende ungenutzte Tokens pro API-Call abgerechnet werden{/cue}."
+      },
+      {
+        icon: "alert",
+        title: "Fehlende Formatgarantie",
+        desc: "Freitext-Ausgaben erzwingen einen {cue:hl-manuelle-pruefung}enormen manuellen Kontroll- und Korrekturaufwand{/cue} vor der Weiterverarbeitung."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

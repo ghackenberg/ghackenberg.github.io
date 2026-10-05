@@ -1,0 +1,45 @@
+{
+  "sub": {
+    "start": 5.21
+  },
+  "hl-sub-19": {
+    "start": 5.71,
+    "duration": 2.75,
+    "end": 8.46
+  },
+  "table-frameworks": {
+    "start": 8.8
+  },
+  "row-clear": {
+    "start": 11.56
+  },
+  "hl-clear-vage": {
+    "start": 13.65,
+    "duration": 2.65,
+    "end": 16.3
+  },
+  "row-create": {
+    "start": 16.64
+  },
+  "hl-create-mix": {
+    "start": 18.85,
+    "duration": 2.81,
+    "end": 21.66
+  },
+  "row-rtce": {
+    "start": 22
+  },
+  "hl-rtce-grenze": {
+    "start": 24.79,
+    "duration": 2.89,
+    "end": 27.68
+  },
+  "row-schema": {
+    "start": 28.01
+  },
+  "hl-schema-first": {
+    "start": 30.75,
+    "duration": 2.59,
+    "end": 33.34
+  }
+}

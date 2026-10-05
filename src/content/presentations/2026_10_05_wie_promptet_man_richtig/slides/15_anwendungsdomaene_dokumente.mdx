@@ -1,0 +1,57 @@
+---
+title: "B2B-Praxis: Dokumentenanalyse"
+subtitle: "Management Summaries & Kennzahlen-Extraktion: {cue:hl-sub-15}Vom Fließtext zur verlässlichen Entscheidungsgrundlage{/cue}"
+number: "15"
+slideLayout: "story-hero"
+voiceover: >
+  Betrachten wir den ersten zentralen B2B-Anwendungsfall: Die Analyse umfangreicher Geschäfts- und Projektberichte.
+  {cue:sub} Es geht um die {cue:hl-sub-15}Extraktion von verlässlichen Entscheidungsgrundlagen{/cue} aus Fließtexten.
+  {cue:vis-doc} Das Bild illustriert das Ziel: Aus unstrukturierten Dokumentbergen entstehen verifizierte, strukturierte Datenkarten.
+  {cue:col-workflow} Wir erzwingen {cue:hl-bluf-prinzip}das BLUF-Prinzip mit der Kernaussage vorab{/cue}. Kennzahlen werden in {cue:hl-kennzahlen-tabelle}standardisierte Tabellen{/cue} isoliert, um {cue:hl-fussnoten-risiko}übersehene Einschränkungen und Fußnoten-Risiken{/cue} abzufangen. Das Modell muss jeden Datenpunkt mit {cue:hl-quellen-abgleich}wörtlichen Zitaten und Seitenzahlen belegen{/cue}.
+notes: |
+  - Zeit: 28:00 - 30:00 Min.
+  - Ziel: Praxisbeispiel für nicht-technische Fachanwender (Controlling, Management, Projektleitung).
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_document_analysis.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="15"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageTitle="Automatisierte Enterprise Dokumentenanalyse und Kennzahlenextraktion"
+  imageAlt="Comic-Illustration: Ein dicker Stapel Verträge wird durch ein digitales Scan-Portal in strukturierte Kennzahlenkarten transformiert"
+  imageCue="vis-doc"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-workflow" title="Strukturierter Extraktions-Workflow" accent="blue">
+      <CalloutBox type="statement" title="Bottom Line Up Front (BLUF)">
+        Die wichtigste Erkenntnis steht ganz oben: {cue:hl-bluf-prinzip}Sofortige Management-Entscheidungsfähigkeit{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "document",
+          title: "Tabellarische Extraktion",
+          desc: "Finanzkennzahlen, Deadlines und Risiken in {cue:hl-kennzahlen-tabelle}eine strikte tabellarische Matrix überführen{/cue}."
+        },
+        {
+          icon: "warning",
+          title: "Die Fußnoten-Falle",
+          desc: "Kritische Vorbehalte im Kleingedruckten bergen {cue:hl-fussnoten-risiko}hohe Risiken für fatale Fehlinterpretationen{/cue}."
+        },
+        {
+          icon: "check",
+          title: "Exakter Quellennachweis",
+          desc: "Das Modell muss jede Aussage durch {cue:hl-quellen-abgleich}wörtliche Zitate und Seitenzahlen belegen{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

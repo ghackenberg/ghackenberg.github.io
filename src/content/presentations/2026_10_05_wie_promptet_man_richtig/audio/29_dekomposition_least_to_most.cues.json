@@ -1,0 +1,45 @@
+{
+  "sub": {
+    "start": 7.26
+  },
+  "hl-sub-29": {
+    "start": 8.14,
+    "duration": 3.04,
+    "end": 11.18
+  },
+  "vis-hero": {
+    "start": 11.51
+  },
+  "step-ltm-01": {
+    "start": 17.91
+  },
+  "hl-subfragen-zerlegung": {
+    "start": 20.9,
+    "duration": 2.44,
+    "end": 23.34
+  },
+  "step-ltm-02": {
+    "start": 23.68
+  },
+  "hl-einfachstes-teilproblem": {
+    "start": 24.75,
+    "duration": 2.06,
+    "end": 26.81
+  },
+  "step-ltm-03": {
+    "start": 27.95
+  },
+  "hl-rekursiver-input": {
+    "start": 29.07,
+    "duration": 2.75,
+    "end": 31.82
+  },
+  "step-ltm-04": {
+    "start": 32.16
+  },
+  "hl-synthese-final": {
+    "start": 33.11,
+    "duration": 2.95,
+    "end": 36.06
+  }
+}

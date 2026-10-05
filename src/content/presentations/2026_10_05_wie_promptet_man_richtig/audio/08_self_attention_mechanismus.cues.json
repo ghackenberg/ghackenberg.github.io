@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 6.22
+  },
+  "hl-sub-08": {
+    "start": 7.58,
+    "duration": 2.01,
+    "end": 9.59
+  },
+  "col-attention-formel": {
+    "start": 9.93
+  },
+  "hl-attention-matrix": {
+    "start": 13.47,
+    "duration": 1.93,
+    "end": 15.4
+  },
+  "hl-all-to-all": {
+    "start": 17.55,
+    "duration": 2.08,
+    "end": 19.63
+  },
+  "col-attention-praxis": {
+    "start": 19.96
+  },
+  "hl-fokus-verstaerkung": {
+    "start": 22.4,
+    "duration": 2.3,
+    "end": 24.7
+  },
+  "hl-attention-verwaschen": {
+    "start": 26.76,
+    "duration": 2.22,
+    "end": 28.98
+  },
+  "hl-multi-aspekte": {
+    "start": 30.76,
+    "duration": 2.28,
+    "end": 33.04
+  }
+}

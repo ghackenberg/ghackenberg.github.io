@@ -1,0 +1,72 @@
+---
+title: "Dekomposition: Least-to-Most"
+subtitle: "Zhou et al. 2022: {cue:hl-sub-29}Rekursive Problemzerlegung für hochkomplexe Multi-Step-Aufgaben{/cue}"
+number: "29"
+slideLayout: "pipeline"
+voiceover: >
+  Für Probleme, die über gewöhnliche Ketten hinausgehen, entwickelten Denny Zhou und Kollegen das Least-to-Most-Prompting.
+  {cue:sub} Es basiert auf {cue:hl-sub-29}rekursiver Problemzerlegung für Multi-Step-Aufgaben{/cue}.
+  {cue:vis-hero} Wie in der Architektur zu sehen, wird ein monolithischer Problemkubus systematisch von unten nach oben aufgelöst.
+  {cue:step-ltm-01} In Phase eins zerlegt das Modell die Gesamtaufgabe in {cue:hl-subfragen-zerlegung}eine geordnete Liste elementarer Sub-Probleme{/cue}.
+  {cue:step-ltm-02} Anschließend löst es {cue:hl-einfachstes-teilproblem}das einfachste Teilproblem isoliert{/cue} ohne Ballast.
+  {cue:step-ltm-03} Die Teillösung wird {cue:hl-rekursiver-input}als fester Input in die nächste Subfrage übergeben{/cue}.
+  {cue:step-ltm-04} Zuletzt erfolgt {cue:hl-synthese-final}die Synthese aller Zwischenergebnisse zur Gesamtlösung{/cue}.
+notes: |
+  - Zeit: 56:00 - 58:00 Min.
+  - Primärquelle: Zhou et al. (2022), ICLR 2023.
+  - Vorteil: Verhindert kognitive Überlastung des Attention-Fensters.
+references:
+  - type: inproceedings
+    id: "zhou-2022-least-to-most"
+    author: "Zhou, D., et al."
+    title: "Least-to-Most Prompting Enables Complex Reasoning in Large Language Models"
+    booktitle: "ICLR 2023"
+    year: 2022
+    url: "https://arxiv.org/abs/2205.10625"
+---
+import PipelineSlide from '../../../../components/slides/layouts/PipelineSlide.astro';
+import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
+import heroImage from '../images/hero_least_to_most.jpg';
+
+<PipelineSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="29"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageCue="vis-hero"
+  imageAlt="Visualisierung der Least-to-Most Problemzerlegung: Rekursiver Aufbau aus einfachen Sub-Modulen"
+  imageTitle="Least-to-Most Problemzerlegung (Zhou et al. 2022)"
+  ratio="55/45"
+>
+  <Pipeline steps={[
+    {
+      cue: "step-ltm-01",
+      num: "01",
+      title: "Dekomposition",
+      desc: "Zerlegung des Ziels in {cue:hl-subfragen-zerlegung}eine geordnete Liste elementarer Sub-Probleme{/cue} [@zhou-2022-least-to-most].",
+      accent: "blue"
+    },
+    {
+      cue: "step-ltm-02",
+      num: "02",
+      title: "Basis-Lösung",
+      desc: "Das Modell löst {cue:hl-einfachstes-teilproblem}das einfachste Teilproblem isoliert{/cue} und präzise.",
+      accent: "cyan"
+    },
+    {
+      cue: "step-ltm-03",
+      num: "03",
+      title: "Rekursive Übergabe",
+      desc: "Die gefundene Teillösung wird {cue:hl-rekursiver-input}als fester Input in die nächste Subfrage übergeben{/cue}.",
+      accent: "indigo"
+    },
+    {
+      cue: "step-ltm-04",
+      num: "04",
+      title: "Gesamtsynthese",
+      desc: "Finale {cue:hl-synthese-final}Synthese aller Zwischenergebnisse zur Gesamtlösung{/cue}.",
+      accent: "emerald"
+    }
+  ]} />
+</PipelineSlide>

@@ -1,0 +1,66 @@
+---
+title: "Direct & Indirect Prompt Injection"
+subtitle: "Greshake et al. 2023: {cue:hl-sub-41}Wenn externe Dokumente zum unbemerkten Steuercode werden{/cue}"
+number: "41"
+slideLayout: "story-hero"
+voiceover: >
+  Sicherheit im LLM-Zeitalter scheitert oft daran, dass Text gleichzeitig Programmcode und Nutzdaten darstellt.
+  {cue:sub} Kai Greshake und Kollegen wiesen nach, {cue:hl-sub-41}wie externe Dokumente zum unbemerkten Steuercode werden{/cue}.
+  {cue:vis-injection} Die Illustration verdeutlicht das trojanische Datenpaket: Versteckte Schadinstruktionen in Fremddaten greifen nach sensiblen Firmenwerten.
+  {cue:col-mechanik} Weil Modelle {cue:hl-code-daten-dualismus}instruktiven Code nicht nativ von passiven Daten trennen{/cue}, ermöglicht die {cue:hl-indirekte-injection}indirekte Prompt Injection über externe Datenquellen{/cue} verheerende Angriffe. Es droht {cue:hl-daten-exfiltration}die Exfiltration an externe Webhooks via Bildlinks{/cue}. Wir fordern daher eine {cue:hl-zero-trust-daten}Zero-Trust-Behandlung aller externen Dokumente{/cue}.
+notes: |
+  - Zeit: 80:00 - 82:00 Min.
+  - Primärquelle: Greshake et al. (2023), ACM AISec '23.
+  - Wichtig: B2B-Risiko! Wenn LLMs Mails oder Rechnungen automatisch verarbeiten.
+references:
+  - type: inproceedings
+    id: "greshake-2023-indirect-prompt-injection"
+    author: "Greshake, K., et al."
+    title: "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
+    booktitle: "ACM Workshop on Artificial Intelligence and Security (AISec '23)"
+    year: 2023
+    url: "https://arxiv.org/abs/2302.12173"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_prompt_injection.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="41"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageTitle="Sicherheitsrisiko durch Prompt Injection Angriffe"
+  imageAlt="Comic-Illustration: Ein manipuliertes Datenpaket mit Schadcode trifft auf die Sicherheitskuppel eines KI-Rechenzentrums"
+  imageCue="vis-injection"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-mechanik" title="Angriffsvektoren & B2B-Risiko [@greshake-2023-indirect-prompt-injection]" accent="rose">
+      <CalloutBox type="statement" title="Befehl vs. Daten Trennung fehlt">
+        LLMs können {cue:hl-code-daten-dualismus}instruktiven Code nicht nativ von passiven Daten trennen{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "alert",
+          title: "Indirekte Injection",
+          desc: "PDFs und Mails schleusen Steuerbefehle ein: {cue:hl-indirekte-injection}externe Datenquellen manipulieren das Modell unbemerkt{/cue}."
+        },
+        {
+          icon: "warning",
+          title: "Daten-Exfiltration",
+          desc: "Angreifer stehlen vertrauliche Unternehmensdaten durch {cue:hl-daten-exfiltration}die Exfiltration an externe Webhooks via Bildlinks{/cue}."
+        },
+        {
+          icon: "shield",
+          title: "Zero-Trust im Kontext",
+          desc: "Externe Dokumente erfordern eine {cue:hl-zero-trust-daten}Zero-Trust-Behandlung aller externen Dokumente{/cue} mit strikter Isolation."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

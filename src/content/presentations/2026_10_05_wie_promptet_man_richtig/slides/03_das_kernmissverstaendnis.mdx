@@ -1,0 +1,52 @@
+---
+title: "Das fundamentale Kernmissverständnis"
+subtitle: "Warum Prompting kein {cue:hl-sub-03}magisches Orakel-Voodoo{/cue} ist, sondern Spezifikation an stochastischen Schnittstellen"
+number: "03"
+slideLayout: "story-hero"
+voiceover: >
+  Starten wir mit der zentralen Fehlannahme, die in unzähligen Unternehmen zu Frustration und Fehlinvestitionen führt.
+  {cue:sub} Prompting ist kein {cue:hl-sub-03}magisches Orakel-Voodoo{/cue}, sondern eine präzise Ingenieursdisziplin.
+  {cue:vis-story-03} In der visuellen Gegenüberstellung sehen wir: Links das Orakel-Denken, rechts die kontrollierte industrielle Schnittstelle.
+  {cue:col-problem} Prompting ist kein {cue:hl-voodoo-tricks}magisches Orakel-Voodoo{/cue}, sondern {cue:hl-schnittstelle}formale Spezifikation an einer stochastischen Schnittstelle{/cue}. Wer glaubt, das Modell {cue:hl-anthropomorph}verstehe Intentionen wie ein Mensch{/cue}, erntet {cue:hl-unberechenbar}instabile, unberechenbare Einzelergebnisse{/cue}. Die ingenieurmäßige Methode setzt auf {cue:hl-raumbegrenzung}strikte Randbedingungen und Schemas{/cue} für {cue:hl-deterministisch}testbare, deterministische Software-Prozesse{/cue}.
+notes: |
+  - Zeit: 4:00 - 6:00 Min.
+  - Kernbotschaft: Mentales Modell korrigieren. LLMs sind keine Menschen, keine Datenbanken, sondern Wahrscheinlichkeitsverteilungen.
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_stochastic_interface.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="03"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageAlt="Orakel-Voodoo vs. Stochastische Schnittstelle"
+  imageTitle="Orakel vs. Ingenieurmäßige Spezifikation"
+  imageCue="vis-story-03"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-problem" title="Spezifikation statt Orakel-Magie" accent="blue">
+      <CalloutBox type="statement" title="Ingenieurs-Perspektive">
+        Prompting ist kein {cue:hl-voodoo-tricks}magisches Orakel-Voodoo{/cue}, sondern {cue:hl-schnittstelle}formale Spezifikation an einer stochastischen Schnittstelle{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "cross",
+          title: "Das Orakel-Missverständnis",
+          desc: "Falsche Annahme: Das Modell {cue:hl-anthropomorph}versteht Intentionen wie ein Mensch{/cue} – führt zu {cue:hl-unberechenbar}instabilen, unberechenbaren Einzelergebnissen{/cue}."
+        },
+        {
+          icon: "check",
+          title: "Mathematische Raumkontrolle",
+          desc: "Einschränkung des Lösungsraums durch {cue:hl-raumbegrenzung}strikte Randbedingungen und Schemas{/cue} für {cue:hl-deterministisch}testbare, deterministische Software-Prozesse{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

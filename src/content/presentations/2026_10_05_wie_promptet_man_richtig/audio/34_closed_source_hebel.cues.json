@@ -1,0 +1,46 @@
+{
+  "sub": {
+    "start": 5.95
+  },
+  "hl-sub-34": {
+    "start": 7.21,
+    "duration": 3.17,
+    "end": 10.38
+  },
+  "col-system": {
+    "start": 10.71
+  },
+  "hl-system-prioritaet": {
+    "start": 12.3,
+    "duration": 2.29,
+    "end": 14.59
+  },
+  "hl-system-persistenz": {
+    "start": 16.35,
+    "duration": 1.55,
+    "end": 17.9
+  },
+  "hl-turn-konsistenz": {
+    "start": 19.52,
+    "duration": 1.74,
+    "end": 21.26
+  },
+  "col-caching": {
+    "start": 21.6
+  },
+  "hl-cache-rabatt": {
+    "start": 22.65,
+    "duration": 3.2,
+    "end": 25.85
+  },
+  "hl-latenz-reduktion": {
+    "start": 27.45,
+    "duration": 3.1,
+    "end": 30.55
+  },
+  "hl-billige-abfragen": {
+    "start": 31.19,
+    "duration": 2.19,
+    "end": 33.38
+  }
+}

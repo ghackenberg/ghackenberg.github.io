@@ -1,0 +1,46 @@
+{
+  "sub": {
+    "start": 7.5
+  },
+  "hl-sub-24": {
+    "start": 8.19,
+    "duration": 2.78,
+    "end": 10.97
+  },
+  "col-zeroshot": {
+    "start": 12.72
+  },
+  "hl-vortraining-assoziation": {
+    "start": 16.48,
+    "duration": 3.03,
+    "end": 19.51
+  },
+  "hl-zeroshot-formatunsicherheit": {
+    "start": 22.05,
+    "duration": 2.43,
+    "end": 24.48
+  },
+  "hl-offene-generierung": {
+    "start": 25.75,
+    "duration": 2.5,
+    "end": 28.25
+  },
+  "col-fewshot": {
+    "start": 28.63
+  },
+  "hl-fewshot-muster": {
+    "start": 33.09,
+    "duration": 2,
+    "end": 35.09
+  },
+  "hl-fewshot-praezision": {
+    "start": 35.52,
+    "duration": 2.04,
+    "end": 37.56
+  },
+  "hl-in-memory-tuning": {
+    "start": 38.7,
+    "duration": 2.91,
+    "end": 41.61
+  }
+}

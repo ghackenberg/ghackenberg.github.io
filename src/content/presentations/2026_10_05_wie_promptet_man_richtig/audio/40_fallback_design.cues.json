@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.7
+  },
+  "hl-sub-40": {
+    "start": 8.95,
+    "duration": 2.58,
+    "end": 11.53
+  },
+  "col-fallback": {
+    "start": 11.86
+  },
+  "hl-fallback-ausgabe": {
+    "start": 17.44,
+    "duration": 3.09,
+    "end": 20.53
+  },
+  "hl-abbau-antwortdruck": {
+    "start": 21.48,
+    "duration": 2.09,
+    "end": 23.57
+  },
+  "col-constraints": {
+    "start": 23.91
+  },
+  "hl-verbot-extrapolation": {
+    "start": 27.07,
+    "duration": 2.24,
+    "end": 29.31
+  },
+  "hl-isolations-schranke": {
+    "start": 29.59,
+    "duration": 2.46,
+    "end": 32.05
+  }
+}

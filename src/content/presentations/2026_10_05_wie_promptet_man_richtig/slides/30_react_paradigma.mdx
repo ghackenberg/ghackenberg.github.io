@@ -1,0 +1,66 @@
+---
+title: "ReAct: Reasoning & Acting"
+subtitle: "Yao et al. 2022: {cue:hl-sub-30}Die Synergie aus internem Nachdenken und externen Werkzeugaufrufen{/cue}"
+number: "30"
+slideLayout: "story-hero"
+voiceover: >
+  Reines Nachdenken stößt an Grenzen, wenn aktuelle Fakten oder externe Berechnungen fehlen. Shunyu Yao und Kollegen entwickelten dafür das ReAct-Paradigma.
+  {cue:sub} Es verbindet {cue:hl-sub-30}internes Nachdenken mit externen Werkzeugaufrufen{/cue}.
+  {cue:vis-react} In der Illustration sehen wir den dreistufigen Kreislauf: Nachdenken, API-Werkzeug auslösen und Umgebungsergebnisse zurücklesen.
+  {cue:col-impact} Das Modell agiert als logischer Controller, der {cue:hl-werkzeug-grounding}seine Argumentation auf Live-Schnittstellen erdet{/cue}. Statt starr zu raten, kann es {cue:hl-react-action}gezielte API- und Tool-Calls absetzen{/cue}, {cue:hl-react-observation}externe Daten in den Prompt zurücklesen{/cue} und Live-Informationen {cue:hl-live-daten-integration}zur Laufzeit on-demand integrieren{/cue}. Bei Fehlern greift der {cue:hl-selbstkorrektur-loop}dynamische Selbstkorrektur-Loop{/cue}.
+notes: |
+  - Zeit: 58:00 - 60:00 Min.
+  - Primärquelle: Yao et al. (2022), ICLR 2023.
+  - Brückenschlag: Fundament aller modernen Agentensysteme und MCP-Server.
+references:
+  - type: inproceedings
+    id: "yao-2022-react"
+    author: "Yao, S., et al."
+    title: "ReAct: Synergizing Reasoning and Acting in Language Models"
+    booktitle: "ICLR 2023"
+    year: 2022
+    url: "https://arxiv.org/abs/2210.03629"
+---
+import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import heroImage from '../images/hero_react_loop.jpg';
+
+<StoryHeroSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="30"
+  totalSlides="48"
+  imageSrc={heroImage}
+  imageTitle="Das ReAct-Agenten-Paradigma nach Yao et al."
+  imageAlt="Comic-Illustration: Ein intelligenter Roboter-Agent steuert einen zirkulären Kreislauf aus Nachdenken, API-Tool-Call und Sensor-Beobachtung"
+  imageCue="vis-react"
+  ratio="50/50"
+>
+  <div slot="narrative" class="h-full flex flex-col justify-stretch">
+    <BentoCard cue="col-impact" title="Der ReAct-Zyklus [@yao-2022-react]" accent="cyan">
+      <CalloutBox type="statement" title="Interaktives Grounding">
+        Das Modell agiert als logischer Controller, der {cue:hl-werkzeug-grounding}seine Argumentation auf Live-Schnittstellen erdet{/cue}.
+      </CalloutBox>
+      <BulletList items={[
+        {
+          icon: "cpu",
+          title: "Thought → Action → Observation",
+          desc: "Überlegungen anstellen, {cue:hl-react-action}gezielte API- oder Tool-Calls absetzen{/cue} und {cue:hl-react-observation}externe Messdaten in den Prompt zurücklesen{/cue}."
+        },
+        {
+          icon: "network",
+          title: "Überwindung parametrischer Grenzen",
+          desc: "Aktuelle ERP-, CRM- oder Sensordaten werden {cue:hl-live-daten-integration}zur Laufzeit on-demand abgerufen{/cue}."
+        },
+        {
+          icon: "check",
+          title: "Dynamische Selbstkorrektur",
+          desc: "Schlägt eine Aktion fehl, erkennt das Modell den Fehlercode und {cue:hl-selbstkorrektur-loop}formuliert selbstständig alternative Aufrufe{/cue}."
+        }
+      ]} />
+    </BentoCard>
+  </div>
+</StoryHeroSlide>
+

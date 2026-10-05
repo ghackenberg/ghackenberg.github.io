@@ -1,0 +1,42 @@
+{
+  "sub": {
+    "start": 6.49
+  },
+  "hl-sub-46": {
+    "start": 8.82,
+    "duration": 2.11,
+    "end": 10.93
+  },
+  "box-routing": {
+    "start": 11.26
+  },
+  "hl-routing-weiche": {
+    "start": 13.36,
+    "duration": 3.28,
+    "end": 16.64
+  },
+  "box-chaining": {
+    "start": 16.98
+  },
+  "hl-chaining-pipeline": {
+    "start": 19.55,
+    "duration": 3.11,
+    "end": 22.66
+  },
+  "box-parallel": {
+    "start": 23
+  },
+  "hl-parallele-analyse": {
+    "start": 24.98,
+    "duration": 2.16,
+    "end": 27.14
+  },
+  "box-evaluator": {
+    "start": 27.91
+  },
+  "hl-critic-feedback": {
+    "start": 30.16,
+    "duration": 4.49,
+    "end": 34.65
+  }
+}

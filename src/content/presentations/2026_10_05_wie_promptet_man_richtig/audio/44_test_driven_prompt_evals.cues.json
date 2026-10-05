@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 7.44
+  },
+  "hl-sub-44": {
+    "start": 9.01,
+    "duration": 3.59,
+    "end": 12.6
+  },
+  "vis-evals": {
+    "start": 12.94
+  },
+  "col-evals": {
+    "start": 19.35
+  },
+  "hl-golden-dataset": {
+    "start": 21.39,
+    "duration": 1.91,
+    "end": 23.3
+  },
+  "hl-regressions-stopp": {
+    "start": 25.02,
+    "duration": 2.66,
+    "end": 27.68
+  },
+  "hl-deterministische-checks": {
+    "start": 29.4,
+    "duration": 2.66,
+    "end": 32.06
+  },
+  "hl-llm-as-judge": {
+    "start": 32.31,
+    "duration": 3.34,
+    "end": 35.65
+  }
+}

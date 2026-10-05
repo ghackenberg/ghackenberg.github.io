@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 5.99
+  },
+  "hl-sub-07": {
+    "start": 6.79,
+    "duration": 2.66,
+    "end": 9.45
+  },
+  "col-visual": {
+    "start": 9.79
+  },
+  "hl-vektor-koordinaten": {
+    "start": 12,
+    "duration": 2.05,
+    "end": 14.05
+  },
+  "col-content": {
+    "start": 15.78
+  },
+  "hl-semantischer-schub": {
+    "start": 16.73,
+    "duration": 2.94,
+    "end": 19.67
+  },
+  "hl-kontext-drift": {
+    "start": 21.66,
+    "duration": 1.13,
+    "end": 22.79
+  },
+  "hl-terminologie": {
+    "start": 25.01,
+    "duration": 2.01,
+    "end": 27.02
+  }
+}

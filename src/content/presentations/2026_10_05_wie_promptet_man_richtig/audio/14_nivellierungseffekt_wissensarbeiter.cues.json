@@ -1,0 +1,46 @@
+{
+  "sub": {
+    "start": 7.05
+  },
+  "hl-sub-14": {
+    "start": 8.07,
+    "duration": 2.67,
+    "end": 10.74
+  },
+  "chart-nivellierung": {
+    "start": 11.46
+  },
+  "hl-skill-low": {
+    "start": 11.74,
+    "duration": 4.06,
+    "end": 15.8
+  },
+  "hl-skill-mid": {
+    "start": 15.21,
+    "duration": 5.34,
+    "end": 20.55
+  },
+  "hl-skill-high": {
+    "start": 17.8,
+    "duration": 1.76,
+    "end": 19.56
+  },
+  "col-konsequenz": {
+    "start": 19.9
+  },
+  "hl-wissenstransfer": {
+    "start": 23.23,
+    "duration": 2.67,
+    "end": 25.9
+  },
+  "hl-onboarding-zeit": {
+    "start": 33.44,
+    "duration": 0.1,
+    "end": 33.54
+  },
+  "hl-standard-templates": {
+    "start": 31.05,
+    "duration": 2.39,
+    "end": 33.44
+  }
+}

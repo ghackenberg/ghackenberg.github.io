@@ -1,0 +1,65 @@
+---
+title: "Kontextfenster & Lost-in-the-Middle"
+subtitle: "Warum riesige Kontextfenster {cue:hl-sub-10}keine Garantie für fehlerfreies Retrieval{/cue} sind"
+number: "10"
+slideLayout: "split"
+voiceover: >
+  Moderne Sprachmodelle werben mit enormen Kontextfenstern von Hunderttausenden oder gar Millionen Tokens.
+  {cue:sub} Doch riesige Kontextfenster sind {cue:hl-sub-10}keine Garantie für fehlerfreies Retrieval{/cue}.
+  {cue:col-paper} Die Studie von Liu et al. belegt: Information wird {cue:hl-lost-middle}am Anfang oder Ende des Kontexts{/cue} am besten erfasst, während Daten in der Mitte eine {cue:hl-abfall-mitte}signifikante Verschlechterung der Extraktionsgenauigkeit{/cue} erleiden.
+  {cue:col-architektur} Für Enterprise-Prompts gilt: Systemregeln nach oben und {cue:hl-primacy-recency}konkrete Aufgabenstellung unmittelbar ans Ende{/cue}. Rohdaten gehören in die Mitte, {cue:hl-klammer-struktur}eingerahmt von strikten Regeln oben und unten{/cue}, um {cue:hl-kontext-rauschen}Aufmerksamkeitszerstreuung und Halluzinationen{/cue} abzuwenden.
+notes: |
+  - Zeit: 18:00 - 20:00 Min.
+  - Primärquelle: Liu et al. (2024), "Lost in the Middle" (TACL).
+  - Praxistipp: Wichtige Instruktionen niemals mitten in 50 Seiten Text vergraben.
+references:
+  - type: article
+    id: "liu-2024-lost-in-the-middle"
+    author: "Liu, N. F., et al."
+    title: "Lost in the Middle: How Language Models Use Long Contexts"
+    journal: "Transactions of the Association for Computational Linguistics (TACL)"
+    year: 2024
+    url: "https://arxiv.org/abs/2307.03172"
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="10"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-paper" title="Empirischer Befund [@liu-2024-lost-in-the-middle]" accent="blue">
+    <CalloutBox type="quote">
+      „Leistung ist am höchsten, wenn relevante Information {cue:hl-lost-middle}am Anfang oder Ende des Kontexts{/cue} steht – in der Mitte bricht sie dramatisch ein.“
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "trending-down",
+        title: "U-Kurven-Effekt",
+        desc: "Dokumente in der Mitte langer Prompts erleiden eine {cue:hl-abfall-mitte}signifikante Verschlechterung der Extraktionsgenauigkeit{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-architektur" title="Architektonische Konsequenzen" accent="cyan">
+    <CalloutBox type="statement" title="Primacy & Recency">
+      System-Instruktionen nach oben, {cue:hl-primacy-recency}konkrete Aufgabenstellung unmittelbar ans Ende{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "target",
+        title: "Kopf-Ende-Platzierung",
+        desc: "Rohdaten (Dokumente, Tabellen) in die Mitte packen, {cue:hl-klammer-struktur}eingerahmt von strikten Regeln oben und unten{/cue}."
+      },
+      {
+        icon: "check",
+        title: "Vermeidung von Kontextmüll",
+        desc: "Jedes irrelevante Token im Kontext erhöht das Risiko für {cue:hl-kontext-rauschen}Aufmerksamkeitszerstreuung und Halluzinationen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>

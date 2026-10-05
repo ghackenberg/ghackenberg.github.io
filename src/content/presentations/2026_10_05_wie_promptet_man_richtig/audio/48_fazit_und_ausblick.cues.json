@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 5.72
+  },
+  "hl-sub-48": {
+    "start": 7.05,
+    "duration": 3.23,
+    "end": 10.28
+  },
+  "col-fazit": {
+    "start": 10.61
+  },
+  "hl-neue-ingenieurdisziplin": {
+    "start": 14.03,
+    "duration": 3.04,
+    "end": 17.07
+  },
+  "hl-wettbewerbsvorsprung": {
+    "start": 20.16,
+    "duration": 3.19,
+    "end": 23.35
+  },
+  "col-kontakt": {
+    "start": 23.73
+  },
+  "hl-dank-fragerunde": {
+    "start": 23.73,
+    "duration": 3.84,
+    "end": 27.57
+  },
+  "hl-forschung-web": {
+    "start": 28.88,
+    "duration": 3.12,
+    "end": 32
+  },
+  "hl-fh-wels": {
+    "start": 33.05,
+    "duration": 3.08,
+    "end": 36.13
+  }
+}

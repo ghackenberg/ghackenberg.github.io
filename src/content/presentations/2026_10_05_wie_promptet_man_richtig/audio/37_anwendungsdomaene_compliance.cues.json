@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 7.69
+  },
+  "hl-sub-37": {
+    "start": 8.31,
+    "duration": 3.38,
+    "end": 11.69
+  },
+  "col-audit": {
+    "start": 12.03
+  },
+  "hl-gap-analyse": {
+    "start": 13.71,
+    "duration": 2.73,
+    "end": 16.44
+  },
+  "hl-haftungs-deckel": {
+    "start": 18.02,
+    "duration": 2.71,
+    "end": 20.73
+  },
+  "hl-dsgvo-pflichten": {
+    "start": 21.96,
+    "duration": 3.1,
+    "end": 25.06
+  },
+  "col-evidence": {
+    "start": 25.4
+  },
+  "hl-paragraphen-nachweis": {
+    "start": 28.6,
+    "duration": 2.84,
+    "end": 31.44
+  },
+  "hl-ampel-status": {
+    "start": 33.17,
+    "duration": 2.54,
+    "end": 35.71
+  }
+}

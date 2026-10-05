@@ -1,0 +1,41 @@
+{
+  "sub": {
+    "start": 6.3
+  },
+  "hl-sub-21": {
+    "start": 9.03,
+    "duration": 1.81,
+    "end": 10.84
+  },
+  "col-voodoo": {
+    "start": 11.18
+  },
+  "hl-trinkgeld-zitat": {
+    "start": 12.04,
+    "duration": 1.55,
+    "end": 13.59
+  },
+  "hl-drohungen-stress": {
+    "start": 13.81,
+    "duration": 2.26,
+    "end": 16.07
+  },
+  "hl-emotionale-verzerrung": {
+    "start": 20.24,
+    "duration": 1.85,
+    "end": 22.09
+  },
+  "col-ingenieur": {
+    "start": 22.43
+  },
+  "hl-keine-psychologie": {
+    "start": 24.77,
+    "duration": 2.22,
+    "end": 26.99
+  },
+  "hl-strukturelle-praezision": {
+    "start": 30.6,
+    "duration": 2.78,
+    "end": 33.38
+  }
+}

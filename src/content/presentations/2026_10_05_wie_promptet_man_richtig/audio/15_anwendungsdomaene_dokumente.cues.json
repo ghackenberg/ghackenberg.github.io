@@ -1,0 +1,36 @@
+{
+  "sub": {
+    "start": 6.95
+  },
+  "hl-sub-15": {
+    "start": 7.66,
+    "duration": 2.64,
+    "end": 10.3
+  },
+  "vis-doc": {
+    "start": 11.7
+  },
+  "col-workflow": {
+    "start": 18.71
+  },
+  "hl-bluf-prinzip": {
+    "start": 19.49,
+    "duration": 2.52,
+    "end": 22.01
+  },
+  "hl-kennzahlen-tabelle": {
+    "start": 23.38,
+    "duration": 1.18,
+    "end": 24.56
+  },
+  "hl-fussnoten-risiko": {
+    "start": 25.52,
+    "duration": 2.42,
+    "end": 27.94
+  },
+  "hl-quellen-abgleich": {
+    "start": 30.93,
+    "duration": 2.39,
+    "end": 33.32
+  }
+}

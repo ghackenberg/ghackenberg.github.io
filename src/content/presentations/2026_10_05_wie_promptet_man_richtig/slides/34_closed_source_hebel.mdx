@@ -1,0 +1,61 @@
+---
+title: "Closed-Source-Hebel: Caching & System"
+subtitle: "Wie moderne API-Features {cue:hl-sub-34}Latenzen und Kosten um bis zu 90 Prozent senken{/cue}"
+number: "34"
+slideLayout: "split"
+voiceover: >
+  Professionelles Prompt Engineering beschränkt sich nicht auf Text, sondern nutzt moderne Plattform-Schnittstellen.
+  {cue:sub} Sie ermöglichen es, {cue:hl-sub-34}Latenzen und Kosten um bis zu 90 Prozent zu senken{/cue}.
+  {cue:col-system} Die Trennung von Rollen sichert {cue:hl-system-prioritaet}höhere Priorität in der Modell-Attention{/cue}. Nutzer-Prompts können Regeln {cue:hl-system-persistenz}deutlich schwerer kompromittieren{/cue}, und Vorgaben bleiben über {cue:hl-turn-konsistenz}viele Chat-Runden hinweg wirksam{/cue}.
+  {cue:col-caching} Durch Prompt Caching {cue:hl-cache-rabatt}sparen Provider bis zu 90 Prozent der Input-Kosten{/cue}. Bereits gecachte Tokens {cue:hl-latenz-reduktion}beschleunigen Time-to-First-Token massiv{/cue} und ermöglichen {cue:hl-billige-abfragen}extrem kostengünstige Folgeabfragen{/cue}.
+notes: |
+  - Zeit: 66:00 - 68:00 Min.
+  - Ziel: Technische Plattform-Optimierung (OpenAI, Anthropic, Google Cloud Vertex).
+---
+import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+
+<SplitSlide
+  title={frontmatter.title}
+  subtitle={frontmatter.subtitle}
+  slideNumber="34"
+  totalSlides="48"
+>
+  <BentoCard slot="left" cue="col-system" title="Native System Messages" accent="blue">
+    <CalloutBox type="statement" title="Architektonische Priorität">
+      System-Instruktionen besitzen {cue:hl-system-prioritaet}höhere Priorität in der Modell-Attention{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "shield",
+        title: "Resistenz gegen Überschreiben",
+        desc: "Benutzer-Prompts können Systemregeln {cue:hl-system-persistenz}deutlich schwerer kompromittieren oder überschreiben{/cue}."
+      },
+      {
+        icon: "cpu",
+        title: "Multi-Turn Stabilität",
+        desc: "Die Rahmenbedingungen bleiben über {cue:hl-turn-konsistenz}viele Chat-Runden hinweg unverändert wirksam{/cue}."
+      }
+    ]} />
+  </BentoCard>
+
+  <BentoCard slot="right" cue="col-caching" title="Prompt Caching Hebel" accent="cyan">
+    <CalloutBox type="statement" title="Wirtschaftlicher Durchbruch">
+      Wiederholte Kontext-Präfixe {cue:hl-cache-rabatt}sparen bis zu 90 Prozent der Input-Kosten{/cue}.
+    </CalloutBox>
+    <BulletList items={[
+      {
+        icon: "zap",
+        title: "Dramatische Latenzsenkung",
+        desc: "Bereits berechnete Key-Value-Caches {cue:hl-latenz-reduktion}beschleunigen Time-to-First-Token massiv{/cue}."
+      },
+      {
+        icon: "document",
+        title: "Große Kontext-Bibliotheken",
+        desc: "Unternehmens-Handbücher verbleiben im Cache für {cue:hl-billige-abfragen}extrem kostengünstige Folgeabfragen{/cue}."
+      }
+    ]} />
+  </BentoCard>
+</SplitSlide>
