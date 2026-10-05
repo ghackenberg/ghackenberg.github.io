@@ -23,6 +23,7 @@ export interface DevOverlayPageData {
   period: string;
   plausible: {
     visitors: number;
+    entries?: number;
     pageviews: number;
     bounceRate: number | null;
     visitDuration: number | null;
@@ -109,6 +110,7 @@ export interface UtmCampaignMetric {
 
 export interface PlausiblePageMetrics {
   visitors: number;
+  entries?: number;
   pageviews: number;
   bounceRate: number | null; // percentage (0-100)
   visitDuration: number | null; // seconds

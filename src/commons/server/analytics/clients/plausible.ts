@@ -116,6 +116,7 @@ export async function getPlausiblePageMetrics(
   if (!config.plausible.apiKey) {
     return {
       visitors: 0,
+      entries: 0,
       pageviews: 0,
       bounceRate: null,
       visitDuration: null,
@@ -151,22 +152,56 @@ export async function getPlausiblePageMetrics(
     return data.results || {};
   };
 
+  const fetchEntries = async (filterPath: string) => {
+    const url = new URL(`${config.plausible.host}/api/v1/stats/aggregate`);
+    url.searchParams.set('site_id', config.plausible.siteId);
+    url.searchParams.set('period', plausiblePeriod);
+    if (plausibleDate) {
+      url.searchParams.set('date', plausibleDate);
+    }
+    url.searchParams.set('metrics', 'visitors');
+    url.searchParams.set('filters', `visit:entry_page==${filterPath}`);
+
+    try {
+      const res = await fetch(url.toString(), {
+        headers: {
+          Authorization: `Bearer ${config.plausible.apiKey}`,
+        },
+      });
+
+      if (!res.ok) return 0;
+      const data = await res.json();
+      return data.results?.visitors?.value ?? 0;
+    } catch {
+      return 0;
+    }
+  };
+
   try {
-    let results = await fetchAggregate(canonicalPath);
+    let [results, entries] = await Promise.all([
+      fetchAggregate(canonicalPath),
+      fetchEntries(canonicalPath),
+    ]);
+
     // If no pageviews on canonicalPath and path has trailing slash, try without slash (or vice versa)
     if ((!results || results.pageviews?.value === 0) && canonicalPath !== '/') {
       const alternativePath = canonicalPath.endsWith('/') 
         ? canonicalPath.slice(0, -1) 
         : `${canonicalPath}/`;
-      const altResults = await fetchAggregate(alternativePath);
+      const [altResults, altEntries] = await Promise.all([
+        fetchAggregate(alternativePath),
+        fetchEntries(alternativePath),
+      ]);
       if (altResults && (altResults.pageviews?.value ?? 0) > 0) {
         results = altResults;
+        entries = altEntries;
       }
     }
 
     if (!results) {
       return {
         visitors: 0,
+        entries: 0,
         pageviews: 0,
         bounceRate: null,
         visitDuration: null,
@@ -175,6 +210,7 @@ export async function getPlausiblePageMetrics(
 
     const baseMetrics = {
       visitors: results.visitors?.value ?? 0,
+      entries: entries ?? 0,
       pageviews: results.pageviews?.value ?? 0,
       bounceRate: results.bounce_rate?.value != null ? Number(results.bounce_rate.value.toFixed(1)) : null,
       visitDuration: results.visit_duration?.value != null ? Math.round(results.visit_duration.value) : null,
@@ -209,6 +245,7 @@ export async function getPlausiblePageMetrics(
     console.warn(`Failed to contact Plausible API: ${(err as Error).message}`);
     return {
       visitors: 0,
+      entries: 0,
       pageviews: 0,
       bounceRate: null,
       visitDuration: null,

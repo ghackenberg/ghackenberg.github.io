@@ -66,6 +66,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
       const plausible = plausibleRes.status === 'fulfilled' ? plausibleRes.value : {
         visitors: 0,
+        entries: 0,
         pageviews: 0,
         bounceRate: null,
         visitDuration: null,

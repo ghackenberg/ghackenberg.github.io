@@ -56,6 +56,11 @@ const currentPath = Astro.url.pathname;
             <strong id="hud-visitors" class="text-white font-bold">--</strong>
           </span>
           <span class="hidden md:inline text-zinc-400">|</span>
+          <span title="Direct Entry Visitors (Landing Page Sessions)" class="hidden md:flex items-center gap-1">
+            <span class="text-zinc-200">Entries:</span>
+            <strong id="hud-entries" class="text-white font-bold">--</strong>
+          </span>
+          <span class="hidden md:inline text-zinc-400">|</span>
           <span title="Total Pageviews" class="hidden md:flex items-center gap-1">
             <span class="text-zinc-200">Views:</span>
             <strong id="hud-pageviews" class="text-white font-bold">--</strong>
@@ -240,11 +245,16 @@ const currentPath = Astro.url.pathname;
       <!-- 1. KPI Cards Grid -->
       <section id="fullview-kpis">
         <h2 class="text-xs font-mono text-zinc-200 uppercase tracking-wider mb-3 font-semibold">Key Performance Indicators</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 font-mono">
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-3 font-mono">
           <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
             <div class="text-[11px] text-zinc-200">Visitors</div>
             <div id="full-visitors" class="text-xl font-bold text-white mt-1">--</div>
             <div class="text-[10px] text-zinc-300 mt-0.5">Plausible</div>
+          </div>
+          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
+            <div class="text-[11px] text-zinc-200">Direct Entries</div>
+            <div id="full-entries" class="text-xl font-bold text-white mt-1">--</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">Landing visits</div>
           </div>
           <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
             <div class="text-[11px] text-zinc-200">Pageviews</div>
@@ -429,6 +439,7 @@ const currentPath = Astro.url.pathname;
     period: string;
     plausible: {
       visitors: number;
+      entries?: number;
       pageviews: number;
       bounceRate: number | null;
       visitDuration: number | null;
@@ -887,11 +898,13 @@ const currentPath = Astro.url.pathname;
 
       // Update HUD elements
       const visitorsEl = document.getElementById('hud-visitors');
+      const entriesEl = document.getElementById('hud-entries');
       const viewsEl = document.getElementById('hud-pageviews');
       const bounceEl = document.getElementById('hud-bounce');
       const durationEl = document.getElementById('hud-duration');
 
       if (visitorsEl) visitorsEl.textContent = String(plausible.visitors ?? 0);
+      if (entriesEl) entriesEl.textContent = String(plausible.entries ?? 0);
       if (viewsEl) viewsEl.textContent = String(plausible.pageviews ?? 0);
       if (bounceEl) bounceEl.textContent = plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--';
       if (durationEl) durationEl.textContent = this.formatDuration(plausible.visitDuration);
@@ -934,6 +947,7 @@ const currentPath = Astro.url.pathname;
       };
 
       setVal('full-visitors', String(plausible.visitors ?? 0));
+      setVal('full-entries', String(plausible.entries ?? 0));
       setVal('full-views', String(plausible.pageviews ?? 0));
       setVal('full-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
       setVal('full-duration', this.formatDuration(plausible.visitDuration));
