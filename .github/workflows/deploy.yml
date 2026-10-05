@@ -37,26 +37,11 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Linter
-        run: npm run lint
+      - name: Validate Code Quality & Integrity
+        run: npm run validate
 
-      - name: Run Type Check
-        run: npm run typecheck
-
-      - name: Validate Scripts Contract
-        run: npm run validate:scripts
-
-      - name: Validate Presentation Slides
-        run: npm run validate:slides
-
-      - name: Validate Citations Parity
-        run: npm run validate:citations:syntax
-
-      - name: Build Astro Site
+      - name: Build Astro Site & Validate Semantic Artifacts
         run: npm run build
-
-      - name: Validate Semantic DOM IDs
-        run: npm run validate:semantic-ids
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
