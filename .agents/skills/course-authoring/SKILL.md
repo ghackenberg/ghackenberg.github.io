@@ -33,7 +33,14 @@ Every course resides in its own directory under `src/content/courses/<course-id>
   pubDate: 2026-10-01
   ```
 
-## 2. Pedagogical Architecture & Language Rules
+## 2. Pedagogical Architecture & The Golden Slice Checkpoint
+Follow the Universal Content Lifecycle in `AGENTS.md` (SOTA Reconnaissance $\rightarrow$ Alignment Gate $\rightarrow$ Golden Slice $\rightarrow$ Controlled Backtracking).
+- **The Golden Slice Checkpoint (No Big-Bang Drafting)**:
+  Before authoring all lecture modules, author and present only the pilot slice:
+  1. Complete course frontmatter with Bloom-taxonomized `learningGoals`.
+  2. The course overview and didactic target framing.
+  3. Module 1 syllabus with Leitfragen, reading list, and practical lab assignment.
+  Confirm with the instructor before expanding remaining modules.
 - **Instruction Language**: FH OÖ Wels courses use German as the primary instructional language (`language: "de"`). Maintain crisp academic and professional terminology.
 - **Zero Language Mixing**: Do not mix German prose with English headings or navigation elements on the same page.
 - **Actionable Learning Goals**: Formulate learning goals using Bloom's Revised Taxonomy (Erinnern $\rightarrow$ Verstehen $\rightarrow$ Anwenden $\rightarrow$ Analysieren $\rightarrow$ Evaluieren $\rightarrow$ Erschaffen). Begin with active verbs.

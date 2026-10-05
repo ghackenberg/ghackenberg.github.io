@@ -17,10 +17,14 @@
   - Internal helper modules and libraries MUST live in `src/commons/` and be imported via `@commons/*`.
   - **NEVER** import from `src/scripts/` or `src/tools/` inside web application code (`src/pages/`, `src/components/`, `src/layouts/`).
 
-## 2. Universal Content Authoring & Anti-Hallucination Gate
+## 2. Universal Content Authoring & Grounding Lifecycle
+Mandatory across ALL content formats (posts, presentations, courses, services, case studies):
+1. **SOTA Reconnaissance & Anti-Dogma Scan**: Before outlining, conduct an objective primary literature scan (following `source-research`) to uncover empirical trade-offs and counter-positions. Never adopt dogmatic stances or secondary hype.
+2. **Interactive Alignment Gate (`/grill-me`)**: Present evidence-based positioning options and targeted interview questions to establish the author's core thesis, quantitative metrics, industry examples, and terminology preferences.
+3. **Incremental Golden Slice (No Big-Bang Drafting)**: Draft only the format's defined pilot slice (e.g. Answer-First definition + Section 1 for posts; Title + Agenda + first archetype slide for decks) for review to align on voice, depth, and layout before expanding.
+4. **Progressive Asset Layering**: Build in strict dependency layers: (1) Semantics & Text $\rightarrow$ (2) Structural Schematics $\rightarrow$ (3) Diffusion Imagery (`image-generation`) $\rightarrow$ (4) Audio/PDF Build Exports. Never generate heavy visual/audio assets before text freeze.
+5. **Controlled Backtracking & Blast-Radius Audit**: If mid-flight discoveries require shifting earlier premises, re-synchronize title, answer-first block, prior slices, and citation parity (`citation-management`) before proceeding.
 - **Zero Assumptions**: Never invent personal opinions, technical stances, career milestones, evaluations of commercial tools, or organizational judgments without explicit user alignment.
-- **Factual Grounding & Anti-Distortion**: All technical claims, metrics, and benchmarks must be grounded in verified primary sources (following `source-research`). Never distort, exaggerate, or speculatively interpret third-party findings.
-- **Interview-First (`/grill-me`)**: Before drafting or restructuring content (posts, presentations, courses, services), present 4–8 targeted interview questions to establish core thesis, quantitative metrics, industry partners, and terminology preferences. Drafting begins only after the user confirms the outline.
 
 ## 3. Modular Skill Ecosystem (.agents/skills/)
 Operational domain logic, layout archetypes, schemas, and workflows are decoupled into on-demand skills under `.agents/skills/`. Before performing specialized tasks, inspect the corresponding `SKILL.md`:

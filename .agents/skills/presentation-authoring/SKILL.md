@@ -17,9 +17,16 @@ Every presentation lives in its own directory under `src/content/presentations/<
 - `.visual-cache.json`: Deterministic SHA-256 visual fingerprints (`styleHash` + `slideVisualHash` + `deckHash`).
 - `slides-dark.pdf` / `slides-light.pdf`: Generated export handouts.
 
-## 2. Two-Phase Generation Protocol ("Text-Freeze Principle")
+## 2. Two-Phase Generation Protocol & The Golden Slice Checkpoint
+Follow the Universal Content Lifecycle in `AGENTS.md` (SOTA Reconnaissance $\rightarrow$ Alignment Gate $\rightarrow$ Golden Slice $\rightarrow$ Controlled Backtracking).
+- **The Golden Slice Checkpoint (No Big-Bang Drafting)**:
+  Before generating all deck slides, author and present only the pilot increment:
+  1. `01_titelfolie.mdx` (Title, subtitle, speaker).
+  2. `02_agenda.mdx` (Agenda roadmap).
+  3. `03_problem.mdx` (First core archetype content slide, e.g. `<SplitSlide />` or `<StoryHeroSlide />`, with full voiceover and cues).
+  Validate syntactically with `npm run validate:slides:syntax` and confirm with the user before drafting remaining slides.
 - **Phase 1 (Lightweight Drafting & Structure)**:
-  1. Author slide MDX content, speaker notes, and voiceovers.
+  1. Author slide MDX content, speaker notes, and voiceovers incrementally.
   2. Validate purely syntactically in <300ms using:
      ```powershell
      npm run validate:slides:syntax ; npm run validate:citations:syntax

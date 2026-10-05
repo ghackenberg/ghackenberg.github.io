@@ -33,11 +33,15 @@ Every post lives in its own directory under `src/content/posts/<slug>/`:
       url: "https://arxiv.org/abs/1706.03762"
   ```
 
-## 2. Content Authoring Gate & Interview Protocol
-Before writing any article body:
-1. **Interview-First Gate (`/grill-me`)**: Establish core thesis, real-world benchmarks, quantitative metrics, and partner or tool references.
-2. **Zero Assumptions**: Never invent personal opinions, technical stances, or organizational evaluations without explicit user alignment.
-3. **Outline Confirmation**: Only begin drafting after the user confirms the proposed section outline.
+## 2. Content Lifecycle & The Golden Slice Checkpoint
+Follow the Universal Content Lifecycle in `AGENTS.md` (SOTA Reconnaissance $\rightarrow$ Alignment Gate $\rightarrow$ Golden Slice $\rightarrow$ Controlled Backtracking).
+- **The Golden Slice Checkpoint (No Big-Bang Drafting)**:
+  Before writing the full post, draft and present only the pilot slice for author alignment:
+  1. The top **Answer-First definition block** (40–55 words).
+  2. The **Structured trade-off table** comparing alternatives.
+  3. The **First complete technical section** (`## ...`) demonstrating tone, depth, code snippets, and in-text citation style.
+- Only proceed with drafting subsequent sections after the author confirms the Golden Slice.
+- If later research or user feedback shifts the thesis, execute a controlled backtrack with blast-radius audit to re-align the Golden Slice and references (see `source-research`).
 
 ## 3. Generative Engine Optimization (GEO & AIO)
 Structure posts according to the site's generative engine standards (see `site-optimization`):
