@@ -19,12 +19,13 @@
 
 ## 2. Universal Content Authoring & Anti-Hallucination Gate
 - **Zero Assumptions**: Never invent personal opinions, technical stances, career milestones, evaluations of commercial tools, or organizational judgments without explicit user alignment.
+- **Factual Grounding & Anti-Distortion**: All technical claims, metrics, and benchmarks must be grounded in verified primary sources (following `source-research`). Never distort, exaggerate, or speculatively interpret third-party findings.
 - **Interview-First (`/grill-me`)**: Before drafting or restructuring content (posts, presentations, courses, services), present 4–8 targeted interview questions to establish core thesis, quantitative metrics, industry partners, and terminology preferences. Drafting begins only after the user confirms the outline.
 
 ## 3. Modular Skill Ecosystem (.agents/skills/)
 Operational domain logic, layout archetypes, schemas, and workflows are decoupled into on-demand skills under `.agents/skills/`. Before performing specialized tasks, inspect the corresponding `SKILL.md`:
 - **Content Creation**: `post-authoring`, `presentation-authoring`, `course-authoring`, `project-authoring`, `service-authoring`, `publication-authoring`, `visualization-authoring`.
-- **Cross-Cutting Standards**: `citation-management`, `image-generation`, `tag-management`, `legal-compliance`.
+- **Cross-Cutting Standards**: `source-research`, `citation-management`, `image-generation`, `tag-management`, `legal-compliance`.
 - **Site & Platform Engineering**: `site-curation`, `site-optimization`, `site-analytics`, `build-engineering`, `tool-engineering`.
 - **Continuous Meta-Governance**: `backlog-management`, `skill-engineering`.
 
