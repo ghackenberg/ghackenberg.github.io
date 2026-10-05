@@ -64,7 +64,13 @@ previewImage:
   description: "Diagramm einer standardisierten MCP-Architektur"
 ```
 
-## 2. Executive Tone & Commercial Rigor
+## 2. Executive Tone & The Golden Slice Checkpoint
+Follow the Universal Content Lifecycle in `AGENTS.md` (SOTA Reconnaissance $\rightarrow$ Alignment Gate $\rightarrow$ Golden Slice $\rightarrow$ Controlled Backtracking).
+- **The Golden Slice Checkpoint (No Big-Bang Drafting)**:
+  Before authoring all service packages, author and present only the pilot slice:
+  1. Parent service frontmatter and executive value proposition.
+  2. The first complete pilot module with `highlights`, `inputs`, `outputs`, and `methodologyPhases`.
+  Align with the user before detailing remaining modular offerings.
 - **Target Audience**: CTOs, VP Engineering, Tech Leads, and R&D Managers.
 - **Tone**: Pragmatic, authoritative, engineering-first, with zero corporate buzzword fluff.
 - **Clear Tangibles**: Every module must explicitly declare what the client provides (`inputs`) and the concrete technical deliverable received (`outputs`).
