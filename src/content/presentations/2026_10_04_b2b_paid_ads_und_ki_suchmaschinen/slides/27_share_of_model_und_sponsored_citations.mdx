@@ -10,8 +10,17 @@ voiceover: >
   {cue:card-som} Die neue Leitwährung heißt Share of Model: {cue:hl-som-metrik}Sie misst den prozentualen Anteil, in dem ein Unternehmen von LLMs als Standardlösung empfohlen wird{/cue}. Statt Klicks auf Banner zu zählen, {cue:hl-som-autoritaet}entscheidet die semantische Präsenz im synthetisierten Text über den Markterfolg{/cue}. Hier setzen gesponserte Zitationen an: {cue:hl-som-hybrid}Plattformen experimentieren mit bezahlten Quellenverweisen direkt in den Fußnoten der KI-Antwort{/cue}. Für B2B-Unternehmen entsteht ein hybrider Wettbewerb: {cue:hl-som-geo}Organische Wissensgraph-Autorität muss mit bezahlter Sichtbarkeit synchronisiert werden{/cue}.
 notes: |
   - Zeit: 47:30 - 49:30 Min.
-  - Begriff: Share of Model (SoM) als Nachfolger von Share of Voice (SoV).
+  - Begriff: Share of Model (SoM) und Generative Engine Optimization (Aggarwal et al. 2024).
   - Wichtig: Eine Zitation in einer KI-Antwort genießt 10x mehr Vertrauen als ein markiertes Werbebanner am Rand.
+references:
+  - type: inproceedings
+    id: "aggarwal-2024-geo"
+    author: "Aggarwal, Pranjal and Vishwakarma, Vishwajeet and Kulkarni, Mayank and Murthy, Rudra and Deshmukh, Vivek"
+    title: "GEO: Generative Engine Optimization"
+    booktitle: "Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)"
+    pages: "1--15"
+    year: 2024
+    url: "https://arxiv.org/abs/2311.09735"
 ---
 import StoryHeroSlide from '../../../../components/slides/layouts/StoryHeroSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -35,7 +44,7 @@ import somImage from '../images/hero_share_of_model_citations.jpg';
   <BentoCard
     slot="narrative"
     cue="card-som"
-    title="Die neue Metrik: Share of Model"
+    title="Die neue Metrik: Share of Model [@aggarwal-2024-geo]"
     accent="teal"
   >
     <CalloutBox type="statement" title="Die generative Leitwährung">

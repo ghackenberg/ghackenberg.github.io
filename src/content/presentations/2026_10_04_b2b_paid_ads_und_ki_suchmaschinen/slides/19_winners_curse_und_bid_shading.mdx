@@ -10,8 +10,31 @@ voiceover: >
   {cue:col-shading} Die Gegenstrategie heißt Bid Shading: {cue:hl-shading-algo}Intelligente Gebotsabschattung senkt das Gebot gezielt unter die theoretische Zahlungsbereitschaft{/cue}. Ziel ist es, Klicks {cue:hl-shading-optimum}im ökonomischen Grenzoptimum statt zum maximalen Prestigepunkt einzukaufen{/cue}.
 notes: |
   - Zeit: 33:00 - 35:00 Min.
-  - Ökonomische Theorie: Winner's Curse (Capen, Clapp & Campbell; Richard Thaler).
+  - Ökonomische Theorie: Winner's Curse (Capen, Clapp & Campbell 1971; Richard Thaler 1988).
   - B2B-Takeaway: Nicht jeder gewonnene Klick ist ein profitabler Klick.
+references:
+  - type: article
+    id: "capen-1971-competitive-bidding"
+    author: "Capen, Edward C. and Clapp, Robert V. and Campbell, William M."
+    title: "Competitive Bidding in High-Risk Situations"
+    journal: "Journal of Petroleum Technology"
+    volume: "23"
+    number: "06"
+    pages: "641--653"
+    year: 1971
+    doi: "10.2118/2993-PA"
+    url: "https://doi.org/10.2118/2993-PA"
+  - type: article
+    id: "thaler-1988-winners-curse"
+    author: "Thaler, Richard H."
+    title: "Anomalies: The Winner's Curse"
+    journal: "Journal of Economic Perspectives"
+    volume: "2"
+    number: "1"
+    pages: "191--201"
+    year: 1988
+    doi: "10.1257/jep.2.1.191"
+    url: "https://doi.org/10.1257/jep.2.1.191"
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -28,10 +51,10 @@ import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astr
   <BentoCard
     slot="left"
     cue="col-curse"
-    title="Der Winner’s Curse im B2B"
+    title="Der Winner’s Curse im B2B [@capen-1971-competitive-bidding]"
     accent="amber"
   >
-    <CalloutBox type="alert" title="Ökonomische Fehlallokation">
+    <CalloutBox type="alert" title="Ökonomische Fehlallokation [@thaler-1988-winners-curse]">
       <p>Systematische Überschätzung: {cue:hl-curse-overpay}Der Auktionsgewinner hat den tatsächlichen ökonomischen Wert des Klicks meist am stärksten überschätzt{/cue}.</p>
     </CalloutBox>
     <BulletList

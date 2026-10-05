@@ -12,8 +12,23 @@ voiceover: >
   {cue:box-souveraen} Viertens der Lösungsansatz: {cue:hl-reaktanz-ungated}Barrierefreie Fachinhalte ohne Paywall bauen das nötige Vertrauen im Buying Center auf{/cue}.
 notes: |
   - Zeit: 22:30 - 24:30 Min.
-  - Theorie: Psychologische Reaktanz (Jack Brehm).
+  - Theorie: Psychologische Reaktanz (Jack Brehm, 1966) und Lead-Form-Studien (Janrain / Blue Research).
   - Wichtig: B2B-Käufer wollen kaufen, aber sie hassen es, plump „verkauft“ zu werden.
+references:
+  - type: book
+    id: "brehm-1966-psychological-reactance"
+    author: "Brehm, Jack W."
+    title: "A Theory of Psychological Reactance"
+    publisher: "Academic Press"
+    year: 1966
+    url: "https://doi.org/10.1037/10633-000"
+  - type: online
+    id: "janrain-2012-online-forms"
+    author: "Janrain & Blue Research"
+    title: "Consumer Perceptions of Online Registration and Social Login"
+    siteName: "Janrain Research Report"
+    year: 2012
+    url: "https://www.janrain.com/"
 ---
 import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -54,7 +69,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
         {
           icon: "cross",
           title: "Verzerrung im CRM",
-          desc: "Um Content dennoch einzusehen: {cue:hl-reaktanz-fake}Über vierzig Prozent aller technischen Entscheider nutzen Fake-Daten oder Wegwerf-E-Mails{/cue}."
+          desc: "Um Content dennoch einzusehen [@janrain-2012-online-forms]: {cue:hl-reaktanz-fake}Über vierzig Prozent aller technischen Entscheider nutzen Fake-Daten oder Wegwerf-E-Mails{/cue}."
         }
       ]}
     />
@@ -62,7 +77,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 
   <BentoCard
     cue="box-reaktanz"
-    title="Psychologische Reaktanz"
+    title="Psychologische Reaktanz [@brehm-1966-psychological-reactance]"
     accent="purple"
     density="compact"
   >

@@ -11,8 +11,16 @@ voiceover: >
   {cue:row-mmm} Säule zwei: Marketing Mix Modeling: {cue:hl-attr-mmm}Ökonometrische Regressionsanalysen korrelieren Gesamtausgaben für Brand Media mit dem organischen Pipeline-Wachstum{/cue}. Dadurch wird der {cue:hl-attr-wertschoepfung}wahre inkrementelle Wert von Social Ads und PR mathematisch valide belegt{/cue}.
 notes: |
   - Zeit: 60:00 - 62:00 Min.
-  - Methode: Self-Reported Attribution (Chris Walker / Refine Labs) + ökonometrisches MMM (Meta Robyn / Google LightweightMMM).
+  - Methode: Self-Reported Attribution (Chris Walker / Refine Labs 2021) + ökonometrisches MMM (Meta Robyn / Google LightweightMMM).
   - Wichtig: Aufhören, jeden Klick krampfhaft durch Cookie-Links verfolgen zu wollen.
+references:
+  - type: online
+    id: "walker-2021-self-reported-attribution"
+    author: "Walker, Chris"
+    title: "The State of B2B Marketing Attribution & The Power of Self-Reported Data"
+    siteName: "Refine Labs Research"
+    year: 2021
+    url: "https://refinelabs.com/blog/self-reported-attribution"
 ---
 import DiagramSlide from '../../../../components/slides/layouts/DiagramSlide.astro';
 import ComparisonTable from '../../../../components/slides/primitives/ComparisonTable.astro';
@@ -39,7 +47,7 @@ import ComparisonTable from '../../../../components/slides/primitives/Comparison
         {
           cue: "row-selfreport",
           title: "Self-Reported",
-          subtitle: "Qualitatives Freitextfeld",
+          subtitle: "Qualitative Selbstauskunft [@walker-2021-self-reported-attribution]",
           targetSystem: "Echte Kundenaussagen",
           mechanism: "Offene Frage: {cue:hl-attr-selfreport}Ein offenes Pflichtfeld im Kontaktformular fragt Kunden direkt nach dem ursprünglichen Entdeckungsimpuls{/cue}",
           goal: "Enthüllt Dark Social & Podcasts",

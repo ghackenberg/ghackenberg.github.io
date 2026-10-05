@@ -10,7 +10,26 @@ voiceover: >
   {cue:col-dissonanz} Gleichzeitig entsteht kognitive Dissonanz: {cue:hl-dissonanz-bruch}Aufdringliche Werbeappelle unterbrechen den professionellen Lesefluss{/cue}. Aggressives Retargeting führt im B2B nicht zu Kaufbereitschaft, sondern {cue:hl-dissonanz-avers}erzeugt unterbewusste Markenabneigung und Reaktanz{/cue}.
 notes: |
   - Zeit: 20:30 - 22:30 Min.
-  - Psychologischer Fokus: Habituation (sensorische Gewöhnung) und psychologische Reaktanz bei Push-Werbung.
+  - Psychologischer Fokus: Habituation (sensorische Gewöhnung nach Pechmann & Stewart) und kognitive Dissonanz (Leon Festinger).
+references:
+  - type: article
+    id: "pechmann-1988-ad-wearout"
+    author: "Pechmann, Cornelia and Stewart, David W."
+    title: "Advertising Repetition: A Critical Review of Wearin and Wearout"
+    journal: "Current Issues and Research in Advertising"
+    volume: "11"
+    number: "1-2"
+    pages: "285--329"
+    year: 1988
+    doi: "10.1080/01633392.1988.10504936"
+    url: "https://doi.org/10.1080/01633392.1988.10504936"
+  - type: book
+    id: "festinger-1957-cognitive-dissonance"
+    author: "Festinger, Leon"
+    title: "A Theory of Cognitive Dissonance"
+    publisher: "Stanford University Press"
+    year: 1957
+    url: "https://www.sup.org/books/title/?id=3850"
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -27,7 +46,7 @@ import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astr
   <BentoCard
     slot="left"
     cue="col-mechanik"
-    title="Sensorische Habituation (Wear-out)"
+    title="Sensorische Habituation (Wear-out) [@pechmann-1988-ad-wearout]"
     accent="neutral"
   >
     <CalloutBox type="statement" title="Sensorische Gewöhnung">
@@ -47,7 +66,7 @@ import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astr
   <BentoCard
     slot="right"
     cue="col-dissonanz"
-    title="Kognitive Dissonanz im B2B"
+    title="Kognitive Dissonanz im B2B [@festinger-1957-cognitive-dissonance]"
     accent="amber"
   >
     <CalloutBox type="alert" title="Kontextstörung & Reaktanz">
