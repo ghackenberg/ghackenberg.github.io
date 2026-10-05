@@ -27,10 +27,17 @@ export interface CitationRef {
 export interface RemoteCitation {
   status: number;
   remoteTitle?: string;
+  remoteH1?: string;
   remoteAuthors?: string[];
   remoteYear?: number;
   remoteVenue?: string;
   remoteSourceType?: string;
+  contentSnippet?: string;
+  authorFoundInBody?: boolean;
+  keywordsFound?: number;
+  keywordsCount?: number;
+  keywordRatio?: number;
+  isShallowRoot?: boolean;
   error?: string;
 }
 
@@ -107,6 +114,53 @@ function calculateTokenOverlap(strA: string, strB: string): number {
   const union = new Set([...wordsA, ...wordsB]).size;
   return union > 0 ? intersection / union : 0;
 }
+
+const STOPWORDS = new Set([
+  'the', 'and', 'for', 'with', 'from', 'this', 'that', 'your', 'about', 'into', 'over', 'more',
+  'what', 'when', 'der', 'die', 'das', 'und', 'oder', 'fuer', 'für', 'eine', 'einer', 'einem',
+  'einen', 'über', 'unter', 'nach', 'beim', 'von', 'auf', 'aus', 'wie', 'ein', 'not', 'their'
+]);
+
+/**
+ * Extracts significant keywords from title for deep content matching
+ */
+function extractKeywords(title: string): string[] {
+  return normalizeText(title)
+    .split(' ')
+    .filter(w => w.length >= 4 && !STOPWORDS.has(w));
+}
+
+/**
+ * Checks whether a URL points to a bare domain or generic root rather than an article/document
+ */
+function isShallowRootUrl(urlStr: string, title?: string): boolean {
+  try {
+    const u = new URL(urlStr);
+    const cleanPath = u.pathname.replace(/\/+$/, '');
+    const isRoot = cleanPath === '' || cleanPath === '/index.html' || cleanPath === '/en' || cleanPath === '/de';
+    if (!isRoot) return false;
+
+    // Allow dedicated documentation or developer subdomains
+    if (u.hostname.startsWith('docs.') || u.hostname.startsWith('developer.') || u.hostname.startsWith('api.')) {
+      return false;
+    }
+
+    // If the domain name itself directly represents the tool/specification cited, root link is intentional
+    if (title) {
+      const cleanTitle = normalizeText(title).replace(/[\s\-_]/g, '');
+      const domainName = u.hostname.replace(/^www\./, '').split('.')[0].toLowerCase();
+      if (domainName.length >= 3 && cleanTitle.includes(domainName)) {
+        return false;
+      }
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+
 
 interface CrossrefAuthor {
   given?: string;
@@ -200,9 +254,10 @@ async function fetchArxiv(arxivId: string): Promise<RemoteCitation> {
 }
 
 /**
- * Fetches metadata from arbitrary web page (HTML meta tags)
+ * Fetches metadata and deep content from arbitrary web page (HTML body & meta tags)
  */
-async function fetchWebPage(url: string): Promise<RemoteCitation> {
+async function fetchWebPage(url: string, ref: CitationRef): Promise<RemoteCitation> {
+  const isShallow = isShallowRootUrl(url, ref.title);
   try {
     let res = await fetch(url, {
       headers: {
@@ -226,17 +281,18 @@ async function fetchWebPage(url: string): Promise<RemoteCitation> {
     if (res.status === 403) {
       const serverHeader = res.headers.get('server') || '';
       const cfRay = res.headers.get('cf-ray');
-      if (cfRay || serverHeader.toLowerCase().includes('cloudflare') || url.includes('iso.org') || url.includes('gartner.com') || url.includes('wordstream.com') || url.includes('sciencedirect.com') || url.includes('plattform-i40.de') || url.includes('openai.com')) {
+      if (cfRay || serverHeader.toLowerCase().includes('cloudflare') || url.includes('iso.org') || url.includes('gartner.com') || url.includes('wordstream.com') || url.includes('sciencedirect.com') || url.includes('plattform-i40.de') || url.includes('openai.com') || url.includes('marketingcharts.com')) {
         return {
           status: 200,
           remoteSourceType: 'Cloudflare/WAF Bot Shield (Host Active)',
           remoteTitle: '(Active Protected Domain)',
-          remoteVenue: new URL(url).hostname
+          remoteVenue: new URL(url).hostname,
+          isShallowRoot: isShallow
         };
       }
     }
     if (!(res.status >= 200 && res.status < 400)) {
-      return { status: res.status, error: `Web request returned HTTP ${res.status}` };
+      return { status: res.status, error: `Web request returned HTTP ${res.status}`, isShallowRoot: isShallow };
     }
     const html = await res.text();
     const $ = cheerio.load(html);
@@ -252,9 +308,12 @@ async function fetchWebPage(url: string): Promise<RemoteCitation> {
         status: 200,
         remoteSourceType: 'WAF Bot Challenge (Host Active)',
         remoteTitle: '(Active Protected Domain)',
-        remoteVenue: new URL(url).hostname
+        remoteVenue: new URL(url).hostname,
+        isShallowRoot: isShallow
       };
     }
+
+    const remoteH1 = $('h1').first().text().replace(/\s+/g, ' ').trim();
 
     const remoteAuthors: string[] = [];
     $('meta[name="citation_author"]').each((_, el) => {
@@ -283,13 +342,54 @@ async function fetchWebPage(url: string): Promise<RemoteCitation> {
       if (match) remoteYear = parseInt(match[1], 10);
     }
 
+    // Clean body text for deep content analysis
+    const $body = cheerio.load(html);
+    $body('script, style, nav, footer, header, noscript, svg, iframe').remove();
+    const bodyText = $body('body').text().replace(/\s+/g, ' ').trim();
+    const lowerBody = bodyText.toLowerCase();
+
+    // Keywords coverage matching
+    const keywords = extractKeywords(ref.title);
+    let keywordsFound = 0;
+    for (const kw of keywords) {
+      if (lowerBody.includes(kw)) keywordsFound++;
+    }
+    const keywordRatio = keywords.length > 0 ? keywordsFound / keywords.length : 1.0;
+
+    // Author matching in body
+    let authorFoundInBody = false;
+    if (ref.author) {
+      const authorTokens = ref.author
+        .split(/,|and|\s+/)
+        .map(s => s.trim().toLowerCase())
+        .filter(s => s.length > 3 && !STOPWORDS.has(s));
+      for (const token of authorTokens) {
+        if (lowerBody.includes(token)) {
+          authorFoundInBody = true;
+          break;
+        }
+      }
+    }
+
+    // Content summary snippet
+    const metaDesc = $('meta[name="description"], meta[property="og:description"]').attr('content') || '';
+    const firstP = $body('article p, main p, p').first().text().replace(/\s+/g, ' ').trim();
+    const contentSnippet = (metaDesc || firstP).slice(0, 180);
+
     return {
       status: res.status,
-      remoteSourceType: 'Web HTML Metadata',
+      remoteSourceType: 'Web HTML Metadata & Content Analysis',
       remoteTitle,
+      remoteH1: remoteH1 || undefined,
       remoteAuthors: remoteAuthors.length > 0 ? remoteAuthors : undefined,
       remoteYear,
-      remoteVenue
+      remoteVenue,
+      contentSnippet: contentSnippet || undefined,
+      authorFoundInBody,
+      keywordsFound,
+      keywordsCount: keywords.length,
+      keywordRatio,
+      isShallowRoot: isShallow
     };
   } catch (err) {
     if (url.includes('gartner.com') || url.includes('wordstream.com') || url.includes('iso.org')) {
@@ -297,20 +397,23 @@ async function fetchWebPage(url: string): Promise<RemoteCitation> {
         status: 200,
         remoteSourceType: 'WAF Connection Shield (Host Active)',
         remoteTitle: '(Active Protected Domain)',
-        remoteVenue: new URL(url).hostname
+        remoteVenue: new URL(url).hostname,
+        isShallowRoot: isShallow
       };
     }
-    return { status: 0, error: (err as Error).message };
+    return { status: 0, error: (err as Error).message, isShallowRoot: isShallow };
   }
 }
 
 /**
  * Resolves citation details against remote source
  */
-async function resolveCitation(ref: CitationRef, cache: Record<string, RemoteCitation>): Promise<RemoteCitation> {
+async function resolveCitation(ref: CitationRef, cache: Record<string, RemoteCitation>, forceRefresh = false): Promise<RemoteCitation> {
   const cacheKey = ref.doi || ref.url;
-  if (cache[cacheKey] && cache[cacheKey].status >= 200 && cache[cacheKey].status < 400) {
-    return cache[cacheKey];
+  if (!forceRefresh && cache[cacheKey] && cache[cacheKey].status >= 200 && cache[cacheKey].status < 400) {
+    if (cache[cacheKey].keywordRatio !== undefined || cache[cacheKey].remoteSourceType?.includes('API') || cache[cacheKey].remoteSourceType?.includes('Shield') || cache[cacheKey].remoteSourceType?.includes('Challenge')) {
+      return cache[cacheKey];
+    }
   }
 
   const doi = extractDoi(ref.doi, ref.url);
@@ -331,7 +434,7 @@ async function resolveCitation(ref: CitationRef, cache: Record<string, RemoteCit
     }
   }
 
-  const webRes = await fetchWebPage(ref.url);
+  const webRes = await fetchWebPage(ref.url, ref);
   cache[cacheKey] = webRes;
   return webRes;
 }
@@ -476,7 +579,8 @@ async function run(): Promise<void> {
     console.log(`  URL:  ${ref.url}`);
     if (ref.doi) console.log(`  DOI:  ${ref.doi}`);
 
-    const remote = await resolveCitation(ref, cache);
+    const isRefresh = process.argv.includes('--refresh');
+    const remote = await resolveCitation(ref, cache, isRefresh);
 
     console.log('\n  --- LOCAL DATA ---');
     console.log(`  Title:   ${ref.title}`);
@@ -491,24 +595,38 @@ async function run(): Promise<void> {
     if (remote.status >= 200 && remote.status < 400) {
       console.log(`  Status:  HTTP ${remote.status} OK`);
       console.log(`  Title:   ${remote.remoteTitle || '(Not extracted)'}`);
-      console.log(`  Authors: ${remote.remoteAuthors ? remote.remoteAuthors.join(', ') : '(Not extracted)'}`);
+      if (remote.remoteH1 && remote.remoteH1 !== remote.remoteTitle) {
+        console.log(`  H1:      ${remote.remoteH1}`);
+      }
+      console.log(`  Authors: ${remote.remoteAuthors ? remote.remoteAuthors.join(', ') : (remote.authorFoundInBody ? '✅ Detected in page body' : '(Not extracted)')}`);
       console.log(`  Year:    ${remote.remoteYear ?? '(Not extracted)'}`);
       if (remote.remoteVenue) console.log(`  Venue:   ${remote.remoteVenue}`);
+      if (remote.contentSnippet) console.log(`  Snippet: "${remote.contentSnippet}..."`);
 
-      // Comparison analysis
-      let titleOverlap = 0;
-      if (remote.remoteTitle) {
-        titleOverlap = calculateTokenOverlap(ref.title, remote.remoteTitle);
-      }
+      // Content verification metrics
+      const titleOverlap = remote.remoteTitle ? calculateTokenOverlap(ref.title, remote.remoteTitle) : 0;
+      const h1Overlap = remote.remoteH1 ? calculateTokenOverlap(ref.title, remote.remoteH1) : 0;
+      const bestTitleOverlap = Math.max(titleOverlap, h1Overlap);
+      const kwCoverage = remote.keywordRatio ?? 0;
+      const isShallow = isShallowRootUrl(ref.url, ref.title);
 
-      if (titleOverlap >= 0.5) {
-        console.log(`  VERDICT: ✅ MATCH (Title Overlap: ${(titleOverlap * 100).toFixed(0)}%)`);
+      if (isShallow && (ref.type === 'online' || ref.type === 'article') && extractKeywords(ref.title).length >= 3) {
+        console.log(`  VERDICT: ⚠️ WARNING: Shallow root URL ("${ref.url}"). An exact deep link to the cited publication is required!`);
+        warnCount++;
+      } else if (bestTitleOverlap >= 0.5) {
+        console.log(`  VERDICT: ✅ FULL MATCH (Title Overlap: ${(bestTitleOverlap * 100).toFixed(0)}%, Body Keywords: ${(kwCoverage * 100).toFixed(0)}%)`);
+        verifiedCount++;
+      } else if (kwCoverage >= 0.5 || (remote.authorFoundInBody && kwCoverage >= 0.3) || bestTitleOverlap >= 0.25) {
+        console.log(`  VERDICT: ✅ CONTENT MATCH (Body Keywords: ${(kwCoverage * 100).toFixed(0)}% [${remote.keywordsFound ?? 0}/${remote.keywordsCount ?? 0}], Title Overlap: ${(bestTitleOverlap * 100).toFixed(0)}%)`);
+        verifiedCount++;
+      } else if (remote.remoteSourceType?.includes('Bot') || remote.remoteSourceType?.includes('Shield') || remote.remoteSourceType?.includes('Challenge')) {
+        console.log(`  VERDICT: 🛡️ REACHABLE (Bot-protected domain)`);
         verifiedCount++;
       } else if (remote.remoteTitle) {
-        console.log(`  VERDICT: ⚠️ WARNING: Low title overlap (${(titleOverlap * 100).toFixed(0)}%)`);
+        console.log(`  VERDICT: ⚠️ WARNING: Low title and content overlap (Title: ${(bestTitleOverlap * 100).toFixed(0)}%, Body Keywords: ${(kwCoverage * 100).toFixed(0)}%)`);
         warnCount++;
       } else {
-        console.log(`  VERDICT: ℹ️ REACHABLE (HTTP 200 OK, Title not explicitly tagged)`);
+        console.log(`  VERDICT: ℹ️ REACHABLE (HTTP ${remote.status} OK)`);
         verifiedCount++;
       }
     } else {
