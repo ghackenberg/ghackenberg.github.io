@@ -2,8 +2,8 @@
 title: "Interactive Presentations: Die Slide-as-Code Engine"
 subtitle: "Motivation, Content-Strategie und Architektur web-nativer Keynotes mit Neural-Voiceover"
 pubDate: "2026-09-23"
-event: "Tech Briefing & Architecture Showcase"
-location: "Campus Wels, FH Oberösterreich"
+event: "Online Tech Briefing & Architecture Showcase"
+location: "Online"
 audience: "Software-Architekten, Web-Entwickler, Dozierende und Technologie-Entscheider"
 lang: "de"
 description: "Strategischer Leitfaden und Architektur-Briefing zur Slide-as-Code Presentation Engine: Motivation für den neuen Webseitenbereich, Einbettung in das wissenschaftliche Content-Ökosystem, evaluierte Alternativen und technische Realisierung mit Astro SSG und Edge TTS."
@@ -11,7 +11,7 @@ tags: ["astro", "agentic-ai", "software-architecture", "web-development", "types
 previewImage:
   src: "./preview.jpg"
   title: "Dr. Georg Hackenberg präsentiert die Slide-as-Code Presentation Engine"
-  description: "Architektur-Präsentation der interaktiven Slide-as-Code Engine mit Neural-Voiceover vor der beamergestützten Leinwand am FH OÖ Campus Wels"
+  description: "Architektur-Präsentation der interaktiven Slide-as-Code Engine mit Neural-Voiceover"
 ---
 
 ## Über diesen Vortrag
