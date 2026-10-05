@@ -1,31 +1,36 @@
 {
   "sub": {
-    "start": 6.39
+    "start": 5.86
   },
-  "hl-sub-zeroclick": {
-    "start": 9.6,
-    "duration": 2.16,
-    "end": 11.76
+  "hl-sub-budgetschock": {
+    "start": 10.03,
+    "duration": 1.67,
+    "end": 11.7
   },
-  "stat-zeroclick": {
-    "start": 12.1
+  "card-badhall-context": {
+    "start": 12.04
   },
-  "card-takeaways-03": {
-    "start": 18.6
+  "hl-badhall-frage": {
+    "start": 14.97,
+    "duration": 5.99,
+    "end": 20.96
   },
-  "hl-zeroclick-monopol": {
-    "start": 22.46,
-    "duration": 4.05,
-    "end": 26.51
+  "card-budgetschock-reality": {
+    "start": 21.34
   },
-  "hl-zeroclick-gartner": {
-    "start": 27.86,
-    "duration": 5.17,
-    "end": 33.03
+  "hl-budgetschock-anteil": {
+    "start": 27.05,
+    "duration": 2.83,
+    "end": 29.88
   },
-  "hl-zeroclick-wert": {
-    "start": 32.76,
-    "duration": 3.1,
-    "end": 35.86
+  "hl-budgetschock-cpc": {
+    "start": 34.23,
+    "duration": 2.61,
+    "end": 36.84
+  },
+  "hl-budgetschock-marge": {
+    "start": 36.98,
+    "duration": 3.26,
+    "end": 40.24
   }
 }

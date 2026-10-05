@@ -1,11 +1,11 @@
 {
   "version": "v1.0",
   "styleHash": "9ba5ac9794c021ac488324201d38505762c99f91bffc2186d758b769bfe0ed5c",
-  "deckHash": "9eccad9e6b31b200638b8d33206e010b0dd938219556baf8f3b58f833d197160",
+  "deckHash": "4028f3605ce3a1a62b527d3c1fb29bb6b0e86bc986b6a28030dfa3d9208b33ac",
   "slides": {
-    "01_titelfolie": "a05d29b0b8ada21b8193bc5ea74934940b928c8e38a09f020c3c9666bfdec9bc",
-    "02_agenda": "72ec218b3d27cf5d6340e3ef742f135be7e0cb2869d2b996aa5cf6d555e91081",
-    "03_makro_shift_zero_click": "76d5279663180040c383d00e6c2a392e6cf033d93494ccac4434cda5ecc7a182",
+    "01_titelfolie": "2c3af4775d70948da1343f0c2a08d9f1853668a5f8223aa08eba5aef8b6e2f63",
+    "02_agenda": "382f8a5e7cd8a36830e92a07bd9bd3263b2c7e0393bb37b9b6b9bacfce818eff",
+    "03_makro_shift_zero_click": "867db44655b743d9cefe5d6b95f63853a739ccb7f9f6b2ba410ebb8a563f8580",
     "04_klick_hierarchie_paid_vs_organisch": "c3b7adc735c8016e5ebd6b1dcf76ee9f7adf01ac34dc0661b09d6271e23ed0e3",
     "05_das_ein_prozent_paradoxon": "79b933c5f6a3c10e1916af8e63d00173a6d02d1557fdbc48d427b719575d9f30",
     "06_b2b_kostenexplosion_cpc_cpl": "402579c003e08fe87a14f304b6fba7829d3c757df3a61e2a320c14df65cdb8e7",

@@ -1,26 +1,28 @@
 ---
-title: "Paid Ads im Zeitalter von KI: Auktionsmechanik, Nutzerpsychologie und B2B-Full-Funnel"
-subtitle: "Zwischen Klick-Realität, Werbeblindheit, GSP-Auktionen und generativen Antwortsystemen"
+title: "B2B Paid Ads & KI-Suchmaschinen"
+subtitle: "Zwischen Auktionsalgorithmen, Werbeblindheit und Full-Funnel-Strategie"
 pubDate: "2026-10-04"
-event: "B2B Marketing & AI Leadership Summit"
-location: "Linz, Oberösterreich"
+event: "Online Deep Dive · Bad Hall Follow-up"
+location: "Online (Follow-up zum AGRU Tech Center, Bad Hall)"
 audience: "Geschäftsführer, CMOs, Marketingleiter und Vertriebsstrategen aus Industrie und B2B"
 lang: "de"
-description: "Wissenschaftlicher Fachvortrag zur Transformation von Paid Search und Social Ads im Zeitalter von generativen KI-Antwortmaschinen, Auktionsspieltheorie, Kognitionspsychologie und B2B-Full-Funnel-Orchestrierung."
+description: "Online Deep Dive zu den Teilnehmerfragen aus dem AGRU Tech Center Bad Hall: Auktionsalgorithmen, Werbeblindheit, generative Werbeformate in KI-Suchmaschinen und B2B-Full-Funnel-Orchestrierung."
 tags: ["seo", "geo", "aio", "aeo", "social-media", "enterprise-ai", "benchmarks", "psychology", "cognitive-science"]
 previewImage:
   src: "./preview.jpg"
-  title: "Dr. Georg Hackenberg präsentiert 'Paid Ads im Zeitalter von KI'"
-  description: "Fachvortrag über Auktionsspieltheorie, Werbeblindheit, KI-Antwortsysteme und B2B-Social-Orchestrierung"
+  title: "Dr. Georg Hackenberg präsentiert 'B2B Paid Ads & KI-Suchmaschinen'"
+  description: "Online Deep Dive über Auktionsalgorithmen, Werbeblindheit, KI-Antwortsysteme und B2B-Full-Funnel-Strategie"
 ---
 
 ## Über diesen Fachvortrag
 
-Der umfassende Fachvortrag vor Marketingentscheidern und Geschäftsführern aus Industrie und B2B analysiert den fundamentalen Wandel bezahlter digitaler Werbung an der Schnittstelle von Kognitionspsychologie, ökonomischer Auktionsspieltheorie, generativen KI-Antwortsystemen und B2B-Social-Media.
+Dieser Online Deep Dive entstand als direkte Fortführung der Keynote [*SEO im Zeitalter von KI*](/presentations/2026_10_01_seo_im_zeitalter_von_ki/) im AGRU Tech Center in Bad Hall. Er beantwortet die drängendste Anschlussfrage der dortigen Industrie- und Marketingentscheider: *Können B2B-Unternehmen wegbrechende organische Klicks einfach durch bezahlte Google- und LinkedIn-Ads kompensieren – oder geraten sie damit in eine ruinöse Kostenfalle?*
+
+Der Vortrag analysiert den fundamentalen Wandel bezahlter digitaler Werbung an der Schnittstelle von Kognitionspsychologie, algorithmischer Auktionsspieltheorie, generativen KI-Antwortmaschinen und B2B-Social-Media.
 
 ### Die 6 thematischen Schwerpunkte:
 
-1. **Die Makro-Ökonomie der Websuche & Zero-Click:** Warum 59,7 % der Websuchen in der EU ohne Klick enden, weshalb nur 1 % aller Suchen auf bezahlte Textanzeigen entfallen und wie B2B-Klickpreise durch algorithmische Verdrängung steigen.
+1. **Die Klickpreis-Falle & das Budget-Dilemma:** Warum Klicks „nachkaufen“ eine trügerische Illusion ist, weshalb nur 1,4 % aller Suchen auf Ads entfallen und warum B2B-Klickpreise durch algorithmische Verdrängung explodieren.
 2. **Kognitionspsychologie, Blickverhalten & Reaktanz:** Die kognitiven Ursachen der Werbeblindheit (Selective Attention), Information Foraging Theory (Pirolli & Card), das Pinball-Blickmuster moderner SERPs sowie das Jansen-Resnick-Paradoxon zwischen Vorurteil und Relevanz.
 3. **Auktionsmechanik & Bidding-Algorithmen:** Die mathematische Spieltheorie hinter Generalized Second Price (GSP) Auktionen (Edelman, Ostrovsky, Schwarz & Hal Varian), der Qualitätsfaktor als Preismultiplikator, Bayesianische Multi-Armed Bandits im Smart Bidding und das Winner's-Curse-Risiko im B2B.
 4. **KI-Antwortmaschinen & Neue Werbeformate:** Wie generative Antwortsysteme (Google AI Overviews, Perplexity, ChatGPT Search, Microsoft Copilot) das klassische Linkvermittlungsmodell durchbrechen und welche Monetarisierungsstrategien (PMax-Injektion, Sponsored Follow-ups, Sponsored Agents) existieren.
