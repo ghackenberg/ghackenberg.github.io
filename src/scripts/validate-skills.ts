@@ -61,8 +61,8 @@ const ANTI_LEAKAGE_RULES: Array<{
   {
     name: 'Brand Color Hex Codes',
     pattern: /#(?:030712|3b82f6|f59e0b|a855f7|10b981)/i,
-    allowedSkills: ['image-generation'],
-    description: 'Hardcoded brand palette hex colors belong exclusively to "image-generation".',
+    allowedSkills: ['image-generation', 'svg-graphics'],
+    description: 'Hardcoded brand palette hex colors belong exclusively to "image-generation" and "svg-graphics".',
   },
   {
     name: 'Telemetry Dwell & Event Specs',
