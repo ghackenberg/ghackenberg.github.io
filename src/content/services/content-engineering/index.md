@@ -46,11 +46,13 @@ techFoundations:
   - "Sharp & WebP"
 ---
 
-## Modern Content Architecture for High-Performance Publishing
+## Practice Overview
 
 Modern digital communication demands speed, brand consistency, and operational resilience across diverse channels. Legacy content management systems and manual publishing bottlenecks drain engineering resources, invite database vulnerabilities, and dilute brand equity.
 
 My Content Engineering consulting practice establishes structured, automated publishing architectures founded on modern web standards, reusable design tokens, and Git-driven workflows across five composable modules:
+
+## Composable Modules
 
 1. **Content Modeling**: Designing formal Zod content schemas, typed collections, topic taxonomies, and entity-relationship models that eliminate unstructured text blobs.
 2. **Channel Architecture**: Architecting omnichannel "Create Once, Publish Everywhere" (COPE) syndication models connecting canonical web articles to LinkedIn carousels, documentation guides, and video walkthroughs.

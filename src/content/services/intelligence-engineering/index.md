@@ -47,11 +47,13 @@ techFoundations:
   - "Nous Hermes"
 ---
 
-## Scientific Rigor Meets Sovereign AI Systems Engineering
+## Practice Overview
 
 As a Full Professor for Industrial Informatics and Software Engineering with an active track record in building mission-critical platforms, I provide independent, scientifically grounded consulting on enterprise artificial intelligence architectures and autonomous agent systems.
 
 Navigating the modern AI landscape requires moving beyond commercial API wrappers toward dependable, sovereign, and value-generating systems. My Intelligence Engineering consulting practice bridges executive strategy, systems architecture, and operational software engineering across five composable modules:
+
+## Composable Modules
 
 1. **Model Serving**: Designing and deploying on-premise and sovereign cloud inference clusters with vLLM, TensorRT-LLM, LiteLLM Proxy API gateways, and Keycloak SSO/RBAC.
 2. **Knowledge Retrieval**: Architecting hallucination-resistant retrieval systems combining dense vector search (Qdrant), property knowledge graphs (Neo4j GraphRAG), and continuous agent memory (Mem0).
