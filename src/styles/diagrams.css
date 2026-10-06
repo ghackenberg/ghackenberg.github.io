@@ -1,0 +1,36 @@
+/**
+ * Mermaid Diagram Styling & Dual Theme Switch
+ * Governs font consistency, responsive sizing, and light/dark theme switching for declarative diagrams.
+ */
+
+.mermaid-svg.mermaid-light {
+  display: none !important;
+}
+.mermaid-svg.mermaid-dark {
+  display: flex !important;
+}
+:root.light .mermaid-svg.mermaid-light,
+.light .mermaid-svg.mermaid-light {
+  display: flex !important;
+}
+:root.light .mermaid-svg.mermaid-dark,
+.light .mermaid-svg.mermaid-dark {
+  display: none !important;
+}
+
+/* Ensure font family consistency for all SVG text elements */
+.mermaid-svg text {
+  font-family: "Inter", system-ui, -apple-system, sans-serif !important;
+}
+
+/* Reset article paragraph styles inside Mermaid diagrams to avoid inflating label boxes */
+.prose .mermaid-svg p,
+.post-body .mermaid-svg p,
+.mermaid-svg p,
+[class*="prose"] .mermaid-svg p {
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  line-height: 1.5 !important;
+  font-size: 13px !important;
+  padding: 0 !important;
+}

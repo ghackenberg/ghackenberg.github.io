@@ -41,7 +41,13 @@ export function computeSlideStyleHash(): string {
   for (const file of keyFiles) {
     if (fs.existsSync(file)) {
       hash.update(path.relative(process.cwd(), file).replace(/\\/g, '/'));
-      hash.update(fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n'));
+      let fileContent = fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
+      if (file.endsWith('theme.css')) {
+        fileContent = fileContent
+          .replace(/@import\s+["'][^"']*graphics\.css["'];?\n?/g, '')
+          .replace(/@import\s+["'][^"']*diagrams\.css["'];?\n?/g, '');
+      }
+      hash.update(fileContent);
     }
   }
 

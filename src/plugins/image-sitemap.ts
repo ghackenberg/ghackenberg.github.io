@@ -132,8 +132,8 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       }
     });
 
-    // B. Validate Mermaid <figure class="mermaid-diagram">
-    $('figure.mermaid-diagram').each((_, el) => {
+    // B. Validate Diagrams <figure class="mermaid-diagram, figure.svg-diagram">
+    $('figure.mermaid-diagram, figure.svg-diagram').each((_, el) => {
       totalImagesScanned++;
       const $fig = $(el);
       const diagramTitle = ($fig.attr('data-diagram-title') || $fig.find('meta[itemprop="name"]').attr('content') || '').trim();
@@ -176,8 +176,8 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
     // C. Validate SVG <image> tags
     $('svg image').each((_, el) => {
       const $img = $(el);
-      // Skip if inside a Mermaid figure (already handled in Step B)
-      if ($img.closest('figure.mermaid-diagram').length > 0) {
+      // Skip if inside a Mermaid or SVG figure (already handled in Step B)
+      if ($img.closest('figure.mermaid-diagram, figure.svg-diagram').length > 0) {
         return;
       }
 
