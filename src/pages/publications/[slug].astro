@@ -182,14 +182,12 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
     </header>
 
     <!-- Content Sections -->
-    <div class="glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden mb-16">
+    <div class="glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden mb-16 prose-custom">
       <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-purple"></div>
       
       {pub.data.abstract && (
-        <section id="abstract" class={slidesUrl || pub.data.bibtex ? "mb-10 pb-10 border-b border-element-border" : ""}>
-          <h2 class="text-2xl font-bold text-gray-100 mb-4 tracking-tight">
-            Abstract
-          </h2>
+        <section id="abstract" class="mb-10 md:mb-12">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Abstract</h2>
           <p class="text-gray-300 text-base md:text-lg leading-relaxed font-normal">
             {pub.data.abstract}
           </p>
@@ -197,10 +195,8 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
       )}
 
       {slidesUrl && (
-        <section id="presentation-slides" class={pub.data.bibtex ? "mb-10 pb-10 border-b border-element-border" : ""}>
-          <h2 class="text-2xl font-bold text-gray-100 mb-4 tracking-tight">
-            Presentation Slides
-          </h2>
+        <section id="presentation-slides" class="mb-10 md:mb-12">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Presentation Slides</h2>
           <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-element-border-medium bg-black">
             <iframe 
               src={slidesUrl} 
@@ -215,10 +211,8 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 
       {pub.data.bibtex && (
         <section id="bibtex-citation">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-2xl font-bold text-gray-100 tracking-tight">
-              BibTeX Citation
-            </h2>
+          <div class="flex items-center justify-between border-b border-element-border pb-2 mb-4">
+            <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b-0 pb-0 mb-0">BibTeX Citation</h2>
             <button 
               id="copy-bibtex-btn"
               data-track-event="High Intent: Copy BibTeX"
