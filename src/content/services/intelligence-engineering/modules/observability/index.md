@@ -1,61 +1,55 @@
 ---
 title: "System Observability"
 serviceId: "intelligence-engineering"
-description: "Engineering ergonomic front-end steering interfaces with dynamic Generative UI widgets, explicit human-in-the-loop approval gates, distributed tracing, token accounting, and automated regression guardrails."
+description: "Implementing telemetry instrumentation, OpenTelemetry distributed tracing, token accounting, and interactive user steering interfaces for AI systems."
 ctaText: "Inquire about System Observability"
 highlights:
-  - "Interactive Generative UI components rendered dynamically inline for actionable proposals"
-  - "Explicit human-in-the-loop steering controls, granular step editing, and confirmation gates"
-  - "Real-time distributed telemetry: token throughput, cost tracking, and latency deconstruction"
-  - "Continuous evaluation harnesses, regression benchmarks, and automated hallucination guardrails"
-methodologyDescription: "Our System Observability engineering delivers complete operational transparency:"
+  - "Interactive front-end steering interfaces with structured Generative UI components"
+  - "Human-in-the-loop confirmation gates, step editing, and runtime cancellation"
+  - "Distributed tracing with OpenTelemetry: latency deconstruction and error logging"
+  - "Token accounting, cost tracking, and automated evaluation benchmark suites"
+methodologyDescription: "The system observability process instruments AI applications for operational monitoring:"
 methodologyPhases:
-  - title: "Steering & Ergonomic UX Mapping"
-    description: "Designing human-in-the-loop approval points, cancellation mechanics, and Generative UI widgets."
-  - title: "Generative UI Front-End Integration"
-    description: "Building responsive web components that stream agent thought processes and render structured interactive proposals."
-  - title: "Distributed Telemetry & APM Instrumentation"
-    description: "Instrumenting OpenTelemetry tracing, measuring TTFT, tool latency breakdown, and token burn tracking."
-  - title: "Evaluation Benchmarks & Guardrails"
-    description: "Establishing automated evaluation test suites with version-controlled ground-truth datasets and safety filters."
+  - title: "Instrumentation Planning"
+    description: "Identifying key telemetry spans, metrics, error boundaries, and user intervention points."
+  - title: "UI Integration"
+    description: "Developing interactive front-end components for step reviews, approval modals, and stream displays."
+  - title: "Telemetry Configuration"
+    description: "Configuring OpenTelemetry collectors, distributed tracing spans, and metric exporters."
+  - title: "Evaluation Setup"
+    description: "Building automated testing suites with ground-truth datasets to evaluate output accuracy."
 order: 5
 pubDate: 2026-09-11
 previewImage:
   src: "./preview.jpg"
   title: "System Observability im Campus Office Wels"
   description: "Dr. Georg Hackenberg analysiert OpenTelemetry-Traces und Token-Verbrauchskurven an seinem Arbeitsplatz am FH OÖ Campus Wels"
-
-
 inputs:
-  - "Target front-end web portal or corporate application codebase"
-  - "Operational SLAs: acceptable latency, throughput targets, and token cost budgets"
-  - "User approval requirements, risk thresholds, and compliance guardrails"
-  - "Sample user journeys, escalation paths, and evaluation ground-truth datasets"
+  - "Front-end application architecture and UI component framework"
+  - "Operational latency targets, throughput requirements, and token budgets"
+  - "User interaction requirements, approval flows, and safety policies"
+  - "Evaluation datasets, ground-truth examples, and quality criteria"
 outputs:
-  - "Generative UI & Human-in-the-Loop Interaction Playbook"
-  - "Production-Ready Front-End Component Suite (Generative UI widgets, stream controls)"
-  - "Centralized Real-Time Telemetry Dashboard (latency, token spend, error rates)"
-  - "Continuous Automated Evaluation Harness & Quality Benchmark Suite"
-  - "Hallucination Guardrail & Safety Filter Configuration"
+  - "Telemetry architecture specification and tracing schema"
+  - "Front-end steering and approval component implementations"
+  - "OpenTelemetry instrumentation configuration for backend services"
+  - "Token and latency metric dashboards and alerting configurations"
+  - "Automated evaluation test suite with regression benchmark fixtures"
 duration: "2 - 5 Weeks"
 format: "Engineering Sprints"
 delivery: "Collaborative"
 ---
 
-## Operational Control, Transparency & Deep Telemetry
+## Technical Context
 
-Deploying autonomous intelligence in mission-critical environments demands rigorous observability and intuitive human oversight. Organizations cannot rely on black-box systems without real-time insights into token costs, latency bottlenecks, and output quality.
+Language model applications introduce non-deterministic latencies, variable token consumption, and probabilistic failure modes. Operating these systems without granular telemetry leads to untracked costs, unmonitored degradation, and lack of visibility into tool failures.
 
-My System Observability practice couples deep telemetry instrumentation with ergonomic human-in-the-loop steering interfaces.
+System observability provides real-time instrumentation across model inference, tool execution, and user interaction. Combining distributed tracing with structured user steering interfaces ensures operational transparency.
 
-### Ergonomic Human-in-the-Loop & Generative UI
-Trust is built on transparency:
-- **Generative UI Widgets**: Rich, interactive UI components rendered dynamically inline to present structured proposals, diffs, and controls.
-- **Explicit Steering Gates**: Clean confirmation modals, granular editability of intermediate agent steps, and instantaneous cancellation.
-- **Reasoning Traces**: Collapsible, informative activity logs that show users what tools the agent executed and why.
+### User Interfaces
 
-### Distributed Telemetry & Automated Quality Guardrails
-We instrument complete operational transparency:
-- **Latency Breakdown**: Deconstructing time-to-first-token (TTFT), tool execution duration, and end-to-end task completion times.
-- **Token Accounting**: Real-time attribution of prompt, completion, and cache tokens across users and workflows.
-- **Continuous Evaluation**: Automated testing harnesses evaluating accuracy, schema compliance, and hallucination rates against ground-truth datasets.
+Rather than displaying raw chat streams, front-end interfaces can render structured Generative UI components. This allows users to inspect proposed actions, edit intermediate parameters, and explicitly approve or reject tool execution before backend mutation occurs.
+
+### Distributed Telemetry
+
+OpenTelemetry instrumentation records detailed trace spans for model requests, database queries, and tool invocations. Metrics track time-to-first-token (TTFT), completion token counts, and error rates, providing operators with actionable performance data across the deployment.

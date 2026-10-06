@@ -1,57 +1,55 @@
 ---
 title: "Agentic Orchestration"
 serviceId: "intelligence-engineering"
-description: "Architecting multi-agent collaboration networks as stateful, cyclic graphs using LangGraph, featuring dynamic supervisor-worker delegation, consensus arbitration, and persistent pause/resume states."
+description: "Architecting multi-agent collaboration workflows as stateful, cyclic graphs with LangGraph, including conditional routing, persistent checkpoints, and human intervention gates."
 ctaText: "Inquire about Agentic Orchestration"
 highlights:
-  - "Stateful cyclic graph workflows engineered in LangGraph (loops, critique, refinement)"
-  - "Supervisor-worker and peer-to-peer multi-agent coordination architectures"
-  - "Fault-tolerant checkpointing allowing long-running operations to pause for human approval"
-  - "Dynamic task delegation, schema validation handoffs, and arbitration protocols"
-methodologyDescription: "Our Agentic Orchestration engineering models complex business logic as resilient graphs:"
+  - "Stateful cyclic graph architectures built with LangGraph for iterative processing"
+  - "Supervisor-worker and peer-to-peer multi-agent coordination topologies"
+  - "State persistence and checkpointing for pausing, reviewing, and resuming workflows"
+  - "Explicit execution boundaries, token budgeting, and recursion limits"
+methodologyDescription: "The agentic orchestration process formalizes multi-step reasoning workflows:"
 methodologyPhases:
-  - title: "Workflow Graph Decomposition"
-    description: "Analyzing business processes, defining state schemas, decision branching, and cyclic review loops."
-  - title: "LangGraph State Machine Architecture"
-    description: "Constructing stateful graphs with typed state channels, node execution logic, and conditional edges."
-  - title: "Multi-Agent Coordination & Delegation"
-    description: "Implementing specialized subagents, supervisor arbitration, and structured handoff protocols."
-  - title: "Checkpointing & Fault Tolerance"
-    description: "Configuring persistent state stores (PostgreSQL / SQLite) for seamless pause/resume and time-travel debugging."
+  - title: "Workflow Decomposition"
+    description: "Mapping business processes into discrete state transitions, decision nodes, and cycle criteria."
+  - title: "Graph Architecture"
+    description: "Implementing LangGraph state machines with typed channels and conditional edge routers."
+  - title: "Agent Coordination"
+    description: "Configuring specialized worker agents, supervisor nodes, and structured state handoffs."
+  - title: "Persistence Integration"
+    description: "Setting up database checkpointing (PostgreSQL or SQLite) for workflow state persistence."
 order: 4
 previewImage:
   src: "./preview.png"
   title: "Präsentation: Agentic Orchestration mit LangGraph"
   description: "Dr. Georg Hackenberg präsentiert die zyklische Multi-Agenten-Architektur mit Supervisor Router und Human-in-the-Loop-Checkpoints"
 pubDate: 2026-09-11
-
 inputs:
-  - "Target multi-step business logic, decision trees, and escalation criteria"
-  - "Specialized roles and domain responsibilities for distinct subagents"
-  - "Human approval gates, review criteria, and rollback requirements"
-  - "Persistence storage environment for state checkpointing"
+  - "Process workflows, decision rules, and validation criteria"
+  - "Role definitions and task scopes for specialized subagents"
+  - "Human approval gates, review checkpoints, and timeout requirements"
+  - "Target database backend for persistent state storage"
 outputs:
-  - "Multi-Agent Cyclic Graph Architecture Specification"
-  - "Production-Ready LangGraph State Machine Codebase"
-  - "Configured State Persistence & Checkpoint Storage Layer"
-  - "Arbitration & Conflict Resolution Protocol Suite"
-  - "Interactive Graph Visualizer & State Debugger Integration"
+  - "Multi-agent workflow graph specification and statechart documentation"
+  - "LangGraph state machine codebase with typed channels and routers"
+  - "Persistent checkpointing configuration and migration scripts"
+  - "Workflow test suite covering cycle termination and edge routing"
+  - "Developer documentation and operational monitoring guide"
 duration: "3 - 6 Weeks"
 format: "Engineering Sprints"
 delivery: "Remote / On-site"
 ---
 
-## Beyond Linear Prompt Chains: Stateful Multi-Agent Graphs
+## Technical Context
 
-Complex enterprise workflows cannot be solved by single-turn prompts or rigid linear chains. Real-world tasks require agents to evaluate partial results, loop back to correct mistakes, delegate specialized tasks, and pause for human oversight.
+Linear prompt chains execute steps sequentially without the ability to inspect intermediate outputs or retry failed sub-tasks. Complex tasks, such as code generation, document synthesis, or multi-step analysis, frequently require iterative revision and conditional branching.
 
-My Agentic Orchestration consulting models autonomous workflows as stateful, cyclic graphs engineered with **LangGraph**.
+Cyclic multi-agent graphs model workflows as formal state machines. Instead of relying on a single prompt loop, tasks are partitioned across specialized nodes that transition through explicitly defined states.
 
-### Cyclic Execution & Self-Correction
-Unlike brittle DAG pipelines, LangGraph allows agents to loop, critique, and refine work iteratively before finalizing outputs. This enables deep reasoning and self-healing under unexpected tool failures.
+### Cyclic Graphs
 
-### Multi-Agent Coordination Patterns
-We partition complex business challenges across specialized agents (researchers, coders, arbiters, validators). Through structured supervisor-worker or peer-to-peer topologies, each agent operates within a bounded scope, drastically reducing context saturation and hallucination.
+Using graph orchestration frameworks such as LangGraph allows workflows to execute conditional loops. A worker node produces an initial artifact, a validation node evaluates it against formal criteria, and the workflow either routes back for refinement or transitions forward upon passing.
 
-### Fault-Tolerant Checkpointing
-Using persistent checkpoint stores, long-running agentic workflows can pause for minutes or days awaiting human sign-off, and resume instantaneously without loss of state.
+### State Checkpointing
+
+Graph execution states are persisted to a database checkpoint store after each node transition. This enables execution to pause at human-in-the-loop gates—allowing operators to inspect, modify, or approve intermediate state before the graph resumes execution.

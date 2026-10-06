@@ -1,13 +1,12 @@
-
 ---
 title: "Intelligence Engineering"
-description: "End-to-end consulting for sovereign enterprise AI systems. From private model serving and hybrid knowledge retrieval to standardized tool protocols and stateful multi-agent orchestration."
+description: "Architecting sovereign on-premise and private cloud AI systems, covering private model serving, hybrid knowledge retrieval, Model Context Protocol (MCP) tooling, and stateful multi-agent orchestration."
 order: 1
 ctaText: "Inquire about Intelligence Engineering"
 previewImage:
   src: "./preview.png"
   title: "Präsentation: Intelligence Engineering Architektur"
-  description: "Dr. Georg Hackenberg erläutert die Komponenten souveräner KI-Infrastrukturen mit Model Serving, Agenten-Orchestrierung und GraphRAG"
+  description: "Dr. Georg Hackenberg erläutert die Komponenten privater KI-Infrastrukturen mit Model Serving, Agenten-Orchestrierung und GraphRAG"
 pubDate: 2026-09-11
 tags:
   - "artificial-intelligence"
@@ -22,14 +21,14 @@ targetAudience:
   - "Chief Information Officers & Heads of IT Infrastructure"
   - "Principal AI Architects & Lead Systems Engineers"
 guidingPrinciples:
-  - title: "100% Data Sovereignty"
-    description: "Strict IP protection through air-gapped or private cloud model serving with zero external data leakage."
-  - title: "Scientific Rigor"
-    description: "Deterministic knowledge grounding using hybrid GraphRAG and formal verification against hallucinations."
+  - title: "Data Sovereignty"
+    description: "Execution of open-weight models on dedicated enterprise infrastructure without external data egress."
+  - title: "Deterministic Grounding"
+    description: "Hybrid retrieval combining dense vector similarity with property graph traversal to minimize hallucinations."
   - title: "Protocol Standardization"
-    description: "Decoupled tool and data integration through the open Model Context Protocol standard."
-  - title: "Stateful Deterministic Orchestration"
-    description: "Inspectable, cyclic multi-agent decision systems with strict token budgeting and checkpointing."
+    description: "Standardized integration of external data sources and execution tools via the Model Context Protocol."
+  - title: "Stateful Control"
+    description: "Multi-agent coordination using explicit state machines, persistent checkpointing, and execution bounds."
 strategicPillars:
   - "Sovereign Inference & Model Serving Clusters"
   - "Hybrid GraphRAG & Continuous Memory Systems"
@@ -47,16 +46,16 @@ techFoundations:
   - "Nous Hermes"
 ---
 
-## Practice Overview
+## Technical Overview
 
-As a Full Professor for Industrial Informatics and Software Engineering with an active track record in building mission-critical platforms, I provide independent, scientifically grounded consulting on enterprise artificial intelligence architectures and autonomous agent systems.
+Intelligence engineering encompasses the architectural design, deployment, and operationalization of local and private artificial intelligence systems in enterprise environments. Rather than relying on black-box commercial APIs, this discipline focuses on verifiable, self-hosted machine learning components and deterministic software architectures.
 
-Navigating the modern AI landscape requires moving beyond commercial API wrappers toward dependable, sovereign, and value-generating systems. My Intelligence Engineering consulting practice bridges executive strategy, systems architecture, and operational software engineering across five composable modules:
+Core architectural priorities include data sovereignty, predictable inference latency, and robust integration with existing software systems. The discipline structures AI workflows into five core engineering modules:
 
 ## Composable Modules
 
-1. **Model Serving**: Designing and deploying on-premise and sovereign cloud inference clusters with vLLM, TensorRT-LLM, LiteLLM Proxy API gateways, and Keycloak SSO/RBAC.
-2. **Knowledge Retrieval**: Architecting hallucination-resistant retrieval systems combining dense vector search (Qdrant), property knowledge graphs (Neo4j GraphRAG), and continuous agent memory (Mem0).
-3. **Tool Integration**: Connecting autonomous agent runtimes (Nous Hermes) to enterprise databases, ERPs, and APIs through standardized Model Context Protocol (MCP) servers and deterministic schema validation.
-4. **Agentic Orchestration**: Engineering stateful, cyclic multi-agent decision logic with LangGraph, featuring dynamic supervisor-worker delegation, consensus arbitration, and fault-tolerant checkpointing.
-5. **System Observability**: Building ergonomic human-in-the-loop steering interfaces with Generative UI widgets alongside real-time distributed tracing, token budgeting, and automated regression evaluation harnesses.
+1. **Model Serving**: Deployment and configuration of private inference runtimes (vLLM, TensorRT-LLM) and API routing gateways with authentication and rate limiting.
+2. **Knowledge Retrieval**: Hybrid retrieval pipelines pairing vector search (Qdrant) with property knowledge graphs (Neo4j) and structured session memory.
+3. **Tool Integration**: Connecting language models to databases, enterprise APIs, and local runtimes using the Model Context Protocol (MCP) and schema validation.
+4. **Agentic Orchestration**: Multi-agent coordination graphs with explicit state management (LangGraph), conditional routing, and human-in-the-loop checkpoints.
+5. **System Observability**: Distributed tracing, latency and token metrics, continuous evaluation benchmarks, and interactive UI steering interfaces.
