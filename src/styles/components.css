@@ -652,3 +652,19 @@ div.vis-tooltip {
   color: #065f46 !important;
   box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2) !important;
 }
+
+/* ==========================================================================
+   Fluid Container Layout Classes
+   ========================================================================== */
+.container-fluid-gutter {
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.container-fluid-padding {
+  padding-block: clamp(2rem, 4vw, 3.5rem);
+}
+
+.container-fluid-padding-compact {
+  padding-block: clamp(1.25rem, 2.5vw, 2rem);
+}
+

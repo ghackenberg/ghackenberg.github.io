@@ -19,6 +19,7 @@ import KaTeXStyles from "@components/KaTeXStyles.astro";
 import { getImage } from "astro:assets";
 import defaultOgImage from "@assets/branding/og-share-preview.png";
 import Background from "@components/Background.astro";
+import Container from "@components/Container.astro";
 import JsonLd from "@components/JsonLd.astro";
 import PrivacyModal from "@components/PrivacyModal.astro";
 import WhatsNewModal from "@components/WhatsNewModal.astro";
@@ -398,7 +399,7 @@ if (pubDate) {
 
       <!-- Footer -->
       <footer class="w-full glass-panel border-t !border-x-0 !border-b-0 border-white/5 py-12 md:py-16 text-sm text-gray-400 mt-auto relative z-10">
-        <div class="max-w-6xl mx-auto px-4 md:px-8">
+        <Container as="div" size="wide" padding="none">
           <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pb-10 border-b border-white/5">
             
             <!-- Brand Column -->
@@ -506,7 +507,7 @@ if (pubDate) {
               <a href="#" class="text-gray-400 light:text-slate-600 hover:text-blue-400 light:hover:text-blue-700 transition-colors">Back to top ↑</a>
             </div>
           </div>
-        </div>
+        </Container>
       </footer>
     </div>
 

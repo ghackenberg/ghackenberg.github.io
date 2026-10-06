@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection } from "astro:content";
@@ -130,7 +131,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 >
   <Navbar />
 
-  <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <Container size="reading">
     <!-- Back Button -->
     <a 
       href="/publications/" 
@@ -248,7 +249,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         primaryButtonText="Open Email Client"
       />
     </div>
-  </main>
+  </Container>
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 

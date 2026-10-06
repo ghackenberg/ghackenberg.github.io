@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import SlideDeck from "@components/slides/player/SlideDeck.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import GetInTouchCard from "@components/GetInTouchCard.astro";
@@ -190,7 +191,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
 >
   <Navbar />
 
-  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <Container size="wide">
     <!-- Back button -->
     <a 
       href="/presentations/" 
@@ -489,7 +490,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
       accentColor="blue"
       primaryButtonText="Open Email Client"
     />
-  </main>
+  </Container>
 
   <script>
     // Jump-to-Slide Interactivity & Smooth Scrolling

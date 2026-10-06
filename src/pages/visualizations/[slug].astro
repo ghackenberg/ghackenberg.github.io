@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
@@ -87,7 +88,7 @@ const breadcrumbSchema = {
 >
   <Navbar />
 
-  <main class="flex-grow max-w-4xl mx-auto px-4 md:px-8 pt-12 pb-20 md:pt-16 md:pb-24 w-full relative z-10 flex flex-col min-h-[calc(100vh-80px)]">
+  <Container size="reading" class="flex flex-col min-h-[calc(100vh-80px)]">
     <!-- Back Button -->
     <a 
       href="/visualizations/" 
@@ -190,7 +191,7 @@ const breadcrumbSchema = {
       accentColor="green"
       primaryButtonText="Open Email Client"
     />
-  </main>
+  </Container>
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 

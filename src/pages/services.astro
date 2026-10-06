@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
 import FilterSidebar from "@components/FilterSidebar.astro";
@@ -89,7 +90,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
 >
   <Navbar />
 
-  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <Container size="wide">
     <!-- Header -->
     <div class="mb-16">
 
@@ -319,7 +320,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
       </div>
     </section>
 
-  </main>
+  </Container>
 </Layout>
 
 <style>

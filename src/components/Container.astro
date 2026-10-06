@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends HTMLAttributes<"div"> {
+  as?: "main" | "section" | "div" | "article";
+  size?: "wide" | "medium" | "reading" | "full";
+  padding?: "standard" | "compact" | "none";
+  class?: string;
+}
+
+const {
+  as: Tag = "main",
+  size = "wide",
+  padding = "standard",
+  class: className = "",
+  ...restProps
+} = Astro.props;
+
+const SIZE_MAP: Record<"wide" | "medium" | "reading" | "full", string> = {
+  wide: "max-w-6xl",
+  medium: "max-w-5xl",
+  reading: "max-w-4xl",
+  full: "max-w-full"
+};
+
+const PADDING_MAP: Record<"standard" | "compact" | "none", string> = {
+  standard: "container-fluid-padding",
+  compact: "container-fluid-padding-compact",
+  none: ""
+};
+
+const combinedClasses = [
+  "w-full mx-auto relative z-10 container-fluid-gutter",
+  Tag === "main" ? "flex-grow" : "",
+  SIZE_MAP[size],
+  PADDING_MAP[padding],
+  className
+].filter(Boolean).join(" ");
+---
+
+<Tag class={combinedClasses} {...restProps}>
+  <slot />
+</Tag>

@@ -1,4 +1,6 @@
 ---
+import Container from "@components/Container.astro";
+
 const { pathname } = Astro.url;
 const normalizedPathname = pathname.replace(/\/$/, "") || "/";
 
@@ -24,7 +26,7 @@ const navItems = [
 
 <div class="sticky top-0 left-0 right-0 z-50 w-full">
   <header class="transition-all duration-300 w-full glass-panel border-b border-white/5 py-4 backdrop-blur-md relative">
-  <div class="max-w-6xl mx-auto px-4 md:px-8 relative flex items-center justify-between">
+  <Container as="div" size="wide" padding="none" class="relative flex items-center justify-between">
     
     <!-- Logo / Brand -->
     <a href="/" class="flex items-center space-x-3 group shrink-0">
@@ -183,7 +185,7 @@ const navItems = [
         </svg>
       </button>
     </div>
-  </div>
+  </Container>
 
   </header>
 

@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import PostCard from "@components/PostCard.astro";
 import FilterSidebar from "@components/FilterSidebar.astro";
@@ -49,7 +50,7 @@ const breadcrumbSchema = {
 >
   <Navbar />
 
-  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <Container size="wide">
     <div class="mb-12">
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
         Blog <span class="heading-gradient-blue">Posts</span>
@@ -134,7 +135,7 @@ const breadcrumbSchema = {
         </nav>
       </div>
     </div>
-  </main>
+  </Container>
 </Layout>
 
 <script>
