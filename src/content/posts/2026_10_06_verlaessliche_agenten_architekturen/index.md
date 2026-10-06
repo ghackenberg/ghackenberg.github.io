@@ -66,6 +66,8 @@ references:
 
 Verlässliche Agenten-Architekturen im Enterprise-Einsatz verbinden probabilistische Sprachmodelle mit deterministischen Kontrollstrukturen, um unvorhersehbare Endlosschleifen, Prompt-Drift und Fehlerausbreitung in produktiven Systemen systematisch zu unterbinden. Statt rein autonomer ReAct-Zyklen erzwingen Statecharts, prozedurale Graphen und Safety Envelopes verifizierbare Zustandsübergänge, feste Token- und Latenzgrenzen sowie lückenlose Audit-Trails für geschäftskritische Workflows.
 
+Die folgende Gegenüberstellung verdeutlicht, wie sich autonome ReAct-Schleifen von formalen Zustandsautomaten und prozeduralen Graphen in Kernmetriken der Zuverlässigkeit unterscheiden:
+
 | Dimension | Autonome ReAct-Loops | Hierarchische Statecharts | Prozedurale Graphen (DAGs) |
 | :--- | :--- | :--- | :--- |
 | **Autonomie vs. Auditierbarkeit** | Maximale dynamische Autonomie; Black-Box-Entscheidungen erschweren Nachvollziehbarkeit und Compliance-Audits. | Balanciert; formale Zustandsräume ermöglichen deterministische Pfad-Rekonstruktion und Prüfbarkeit. | Geringe Autonomie; vollständig deterministische Kontrollflüsse mit lückenlosem, statischem Audit-Trail. |
