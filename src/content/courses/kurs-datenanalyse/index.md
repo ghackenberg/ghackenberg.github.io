@@ -10,9 +10,9 @@ terms:
   - "Summer Term 2025"
 language: "de"
 screenshot:
-  src: "./preview.png"
-  title: "Dr. Georg Hackenberg im Datenanalyse-Labor"
-  description: "Dr. Georg Hackenberg präsentiert SQL-Abfragen, relationale Datenbankschemata und multidimensionale OLAP-Cubes im Computer-Hörsaal"
+  src: "./preview.jpg"
+  title: "Datenanalyse und SQL: Relationale Schemata & Analyse-Pipeline"
+  description: "Orthogonale Schautafel einer Datenpipeline mit relationalen Datenbankschemata, SQL-Aggregations- und Filtertrichter sowie analytischen Metrik- und Trendkarten"
 tags:
   - "data-integration"
   - "python"

@@ -10,9 +10,9 @@ terms:
   - "Summer Term 2025"
 language: "de"
 screenshot:
-  src: "./preview.png"
-  title: "Software Engineering & Agile Methoden"
-  description: "Dr. Georg Hackenberg präsentiert UML-Klassendiagramme, Design Patterns, ein agiles Kanban-Board und CI/CD-Pipelines an einem digitalen Whiteboard"
+  src: "./preview.jpg"
+  title: "Software Engineering: Anforderungsanalyse & UML-Modellierung"
+  description: "Orthogonale Schautafel des Software-Designs mit Anforderungsspezifikation, UML-Klassendiagramm und UML-Sequenzdiagramm"
 tags:
   - "software-engineering"
   - "software-architecture"

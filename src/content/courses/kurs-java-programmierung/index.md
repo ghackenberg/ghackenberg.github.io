@@ -11,9 +11,9 @@ terms:
   - "Winter Term 2025/26"
 language: "de"
 screenshot:
-  src: "./preview.png"
-  title: "Dr. Georg Hackenberg im Java-Hörsaal"
-  description: "Dr. Georg Hackenberg erläutert objektorientierte Vererbungshierarchien und das Java Collection Framework vor Studierenden im Computer-Labor"
+  src: "./preview.jpg"
+  title: "Java-Programmierung: Eclipse IDE & Sprachelemente"
+  description: "Orthogonale Schautafel der Java-Entwicklung in der Eclipse IDE mit Package Explorer, Java-Kaffeebecher-Symbol, Syntax-Editor und Konsole"
 tags:
   - "java"
   - "software-engineering"

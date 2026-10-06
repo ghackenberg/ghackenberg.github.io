@@ -10,9 +10,9 @@ terms:
   - "Winter Term 2025/26"
 language: "de"
 screenshot:
-  src: "./preview.png"
-  title: "Dr. Georg Hackenberg im Simulationsseminar"
-  description: "Dr. Georg Hackenberg demonstriert kontinuierliche Zustandsraumtrajektorien, Monte-Carlo-Histogramme und Stromnetzmodelle auf einem holografischen Zylinderdisplay"
+  src: "./preview.jpg"
+  title: "Computer-Simulation: Taxonomie der Simulationsmodelle"
+  description: "Hierarchischer Taxonomie-Baum von Simulationsmodellen: Statisch vs. dynamisch, kontinuierlich vs. diskret sowie Fixed-Step vs. Next-Event Time Advance mit thematischen Icons"
 tags:
   - "simulation"
   - "manufacturing-systems"

@@ -10,9 +10,9 @@ terms:
   - "Summer Term 2025"
 language: "de"
 screenshot:
-  src: "./preview.png"
-  title: "Dr. Georg Hackenberg im IoT-Hardware-Labor"
-  description: "Dr. Georg Hackenberg demonstriert C#-Firmware, Live-MQTT-Telemetriedaten und ThingsBoard-Dashboards im Elektronik- und Sensoriklabor"
+  src: "./preview.jpg"
+  title: "Internet der Dinge: Sensorik & Cloud-Telemetrie"
+  description: "Orthogonale Schautafel eines Mikrocontroller-Boards mit Sensorik, Status-LEDs und gerichteten MQTT-Telemetriedatenströmen zu einem Cloud-Broker"
 tags:
   - "iot"
   - "smart-home"
