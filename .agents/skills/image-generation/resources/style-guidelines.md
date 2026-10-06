@@ -2,8 +2,6 @@
 
 This document serves as the single source of truth for generating or editing image materials across the website. All images (previews, diagrams, and media) must strictly align with these guidelines to preserve visual consistency.
 
----
-
 ## 1. Global Color Palette & Theme Colors
 
 All generated images must use a color scheme based on the website's custom dark theme (`#030712` background) combined with the four brand colors:
@@ -16,8 +14,6 @@ All generated images must use a color scheme based on the website's custom dark 
 | **Personal** | Brand Green | `#10b981` | Personal, sport, recreation, sponsorships |
 | **Background** | Slate Black | `#030712` | Dark background panels and cards |
 
----
-
 ## 2. Core Visual Aesthetic: Comic Illustration Style
 
 All non-screenshot images must follow a **stylized Disney/Pixar comic-book vector illustration** aesthetic:
@@ -28,8 +24,6 @@ All non-screenshot images must follow a **stylized Disney/Pixar comic-book vecto
 *   **No Picture-in-Picture**: Avoid nesting smaller image mockups or screenshots inside a larger frame. Keep the canvas as a single unified scene.
 *   **Aesthetic Details**: Incorporate comic-style details such as subtle halftone dot patterns, hand-drawn vector arrows, or comic speech/info bubbles where appropriate.
 *   **Background Integration**: Always design with a dark background matching `#030712` or slate gray. Avoid solid white backgrounds so the images blend seamlessly into the site's premium dark mode.
-
----
 
 ## 3. Canonical Protagonist & Character Representation
 
@@ -46,10 +40,6 @@ Whenever an image features a person (e.g. author, researcher, professor, develop
         *   When illustrating whiteboard concept discussions, the camera framing must prioritize the whiteboard surface so that technical diagrams, flowcharts, and notes are prominently displayed and clearly legible.
         *   Georg should be positioned to one side (e.g., the left or right third of the frame), marker in hand, turning warmly toward the viewer, never obscuring or blocking the central diagram on the whiteboard.
     *   **Inclusion Rule**: Include Georg in comic scenes whenever it makes narrative sense (the author presenting a project, building an architecture, running an experiment, or teaching a concept).
-
----
-
----
 
 ## 4. Generative AI Engineering Principles & Best Practices
 
@@ -78,8 +68,6 @@ To guarantee consistent results across different diffusion models and eliminate 
   - Anchor 1: Protagonist portrait (`characters/georg/portrait.png`).
   - Anchor 2: Matching pre-rendered environment focus variant (`environments/[id]/[variant].jpg`).
   - Anchor 3 (optional): Clean isolated planar object (`objects/[id]/reference.jpg`).
-
----
 
 ## 5. Central Visual Asset Library & Relational Graph
 
@@ -118,10 +106,7 @@ Before generating any new illustration:
    - Pass the primary character (`portrait.png`) and the selected focus variant (`[variant].jpg`) to `ImagePaths` (plus optional secondary character or isolated object).
    - Always present the prompt and reference image list to the user before calling `generate_image`.
 
-
----
-
-## 5. Modular Guidelines by Image Category
+## 6. Modular Guidelines by Image Category
 
 ### A. Services Overview & Detail Previews
 *   **Subject**: High-tech workspaces, glowing code editors, digital mockups, or conceptual tech drawings.
@@ -135,23 +120,17 @@ Before generating any new illustration:
 *   **Aesthetic**: Bold cel-shading, prominent ink borders, halftone dot shading, and custom colored accent glows matching the parent service. No nested images or margins.
 *   **Format**: 16:9 ratio, flat PNG.
 
-### C. Methodology & Technical Diagrams
-*   **Subject**: Flowcharts, step-by-step processes, or system architectures.
-*   **Style**: Highly polished technical SVG diagrams matching the blog post schematics. Solid dark background card `#0b1329` with round corners (`rx="16"`), a thin border stroke (`rgba(255, 255, 255, 0.08)`), and step groups connected by dashed flowlines and color-coded arrow markers.
-*   **Aesthetic**: Crisp typography using `'Outfit', 'Inter', sans-serif`. Focus nodes colored with the respective service theme accent. Detail summary cards placed at the bottom for technical context.
-*   **Format**: Inline vector SVG files (`.svg`) placed in the service collection folder. PNGs are forbidden for this category.
-
-### D. Course Preview Images
+### C. Course Preview Images
 *   **Subject**: Educational topics, specific programming languages, or tools (e.g. Kotlin, WebGL, CAD).
 *   **Style**: Clean vector design with prominent tech logos surrounded by hand-drawn comic elements.
 *   **Format**: 16:9 ratio.
 
-### E. Blog Post Featured Images
+### D. Blog Post Featured Images
 *   **Subject**: Article-specific technical concepts featuring Dr. Georg Hackenberg and relevant library objects/environments.
 *   **Style**: High-quality technical comic-book illustrations with clean ink outlines, vibrant brand accents, and cel shading.
 *   **Format**: 16:9 ratio.
 
-### F. Presentation Pipeline Step Images
+### E. Presentation Pipeline Step Images
 *   **Subject**: Single, iconic conceptual motif representing a progressive stage or technological component in horizontal pipeline slides (`<Pipeline steps={[...]} />`).
 *   **Style & Aesthetic**: Stylized Disney/Pixar comic illustration style, crisp dark ink linework, bold cel shading, with a **friendly yet technical, sober, and precise engineering finish**.
 *   **Tone & Demarcation (Technical Rigor vs. Playful/Childlike)**:
@@ -173,13 +152,13 @@ Before generating any new illustration:
     Edge-to-edge full bleed artwork in a 16:9 horizontal format, completely borderless, stretching seamlessly across the entire canvas without any frame, without border line, without box outline, and without margins. Floating freely in the center third of the frame, surrounded by generous empty background space on all sides: [1 dominant iconic hero object + max 1-2 clean directed interaction elements]. Clean, friendly yet sober and strictly technical engineering aesthetic, crisp dark ink linework, bold cel shading, minimal and iconic composition. No cartoon faces, no cute eyes, no childish doodles, no micro-dashboards, no tiny unreadable text, no box outline, no border, no elements touching canvas edges. All visual motif elements float freely in the central area without any containing box, square frame, or boundary lines. The entire canvas is filled with a seamless, luminous vibrant blue-violet and deep indigo galaxy nebula with soft ambient starlight. 16:9 aspect ratio.
     ```
 
-### G. Presentation Story Hero Slide Images (`StoryHeroSlide`)
+### F. Presentation Story Hero Slide Images (`StoryHeroSlide`)
 *   **Subject**: Deep narrative storytelling scenes, industrial laboratories, engineering workstations, keynote stages, and collaborative B2B architecture environments.
 *   **Style & Aesthetic**: Stylized Disney/Pixar vector comic-book illustration, crisp dark ink linework, bold cel shading, dark slate background (`#030712`) with vibrant brand color lighting accents (`#3b82f6` Blue, `#f59e0b` Amber, `#a855f7` Purple, `#10b981` Green).
 *   **Container Behavior**: Displayed in `StoryHeroSlide.astro` within a 7-column `story-visual-card` (`rounded-3xl`, `object-cover object-center`).
 *   **Format & Aspect Ratio**: **4:3 aspect ratio (`AspectRatio: "4:3"`)**, saved as `.jpg` in `src/content/presentations/[presentation_id]/images/` and imported as static image metadata into `.mdx` slides.
 
-### H. Presentation Deck Preview Images (`preview.jpg` - Keynote Beamer Focus)
+### G. Presentation Deck Preview Images (`preview.jpg` - Keynote Beamer Focus)
 *   **Subject**: Keynote presentation preview card (`src/content/presentations/[presentation_id]/preview.jpg`) used on catalog feeds, social previews, and overview pages.
 *   **Environment & Condition Anchors (`ImagePaths`)**:
     *   Anchor 1: `src/content/characters/georg/portrait.png`
@@ -199,6 +178,3 @@ Before generating any new illustration:
     *   **Minimal Labels**: At most 2–3 short, 1-word or 2-word bold category labels (e.g. `Demand Creation`, `AI Search`, `Demand Capture`).
     *   **STRICTLY FORBIDDEN**: Explanatory paragraphs, multi-line card text, sub-bullet sentences, or complex formulas (eliminates generative spelling errors and gibberish).
 *   **Format & Aspect Ratio**: **16:9 horizontal aspect ratio (`AspectRatio: "16:9"`)**, saved as `preview.jpg` in `src/content/presentations/[presentation_id]/preview.jpg`.
-
-
-

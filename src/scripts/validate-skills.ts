@@ -296,7 +296,7 @@ function validateSkills(): void {
     }
 
     // Rule 8: Physical Path Existence in Repository
-    const pathRegex = /`((?:src\/|public\/|backlog\/|IMAGE_STYLE_GUIDELINES\.md)[a-zA-Z0-9_\-\.\/]+)`/g;
+    const pathRegex = /`((?:src\/|public\/|backlog\/|\.agents\/skills\/)[a-zA-Z0-9_\-\.\/]+)`/g;
     let pathMatch: RegExpExecArray | null;
     while ((pathMatch = pathRegex.exec(body)) !== null) {
       const referencedPath = pathMatch[1];
