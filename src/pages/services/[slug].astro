@@ -124,6 +124,10 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
         <!-- Main Content (Column 1) -->
         <div class="lg:col-span-8">
           <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
+            <h2 class="text-xl font-bold mb-8 tracking-tight flex items-center space-x-2 border-b border-element-border pb-2">
+              <span>💼</span>
+              <span>Service Overview</span>
+            </h2>
             <Content />
           </div>
         </div>
@@ -138,74 +142,34 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
                 <span>⚖️</span>
                 <span>Guiding Principles</span>
               </h3>
-              <div class="space-y-4">
+              <div class="space-y-2.5">
                 {service.data.guidingPrinciples.map((principle) => (
-                  <div class="border-b border-element-border last:border-b-0 pb-4 last:pb-0">
-                    <h4 class="text-xs font-bold text-gray-200 mb-1 flex items-center space-x-1.5">
-                      <span class="text-brand-purple font-bold">•</span>
-                      <span>{principle.title}</span>
-                    </h4>
-                    <p class="text-[11px] text-gray-400 leading-relaxed font-normal">{principle.description}</p>
+                  <div class="flex items-start space-x-2 text-xs text-gray-300 font-normal leading-relaxed">
+                    <span class="text-brand-purple font-bold shrink-0">✓</span>
+                    <span>{principle.title}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          <!-- Target Leadership & Strategic Pillars Card -->
-          <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col relative overflow-hidden">
-            <h3 class="text-lg font-bold mb-4 flex items-center space-x-2 text-gray-100">
-              <span>🎯</span>
-              <span>Target Profiles & Ecosystem</span>
-            </h3>
-
-            {service.data.targetAudience && service.data.targetAudience.length > 0 && (
-              <div class="mb-5">
-                <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-2">
-                  Target Leadership
-                </p>
-                <div class="space-y-2">
-                  {service.data.targetAudience.map((audience) => (
-                    <div class="flex items-start space-x-2 text-xs text-gray-300 font-normal leading-relaxed">
-                      <span class="text-brand-purple font-bold shrink-0 mt-0.5 select-none">→</span>
-                      <span>{audience}</span>
-                    </div>
-                  ))}
-                </div>
+          <!-- Target Leadership Card -->
+          {service.data.targetAudience && service.data.targetAudience.length > 0 && (
+            <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col relative overflow-hidden">
+              <h3 class="text-lg font-bold mb-4 flex items-center space-x-2 text-gray-100">
+                <span>🎯</span>
+                <span>Target Leadership</span>
+              </h3>
+              <div class="space-y-2.5">
+                {service.data.targetAudience.map((audience) => (
+                  <div class="flex items-start space-x-2 text-xs text-gray-300 font-normal leading-relaxed">
+                    <span class="text-brand-purple font-bold shrink-0 mt-0.5 select-none">→</span>
+                    <span>{audience}</span>
+                  </div>
+                ))}
               </div>
-            )}
-
-            {service.data.strategicPillars && service.data.strategicPillars.length > 0 && (
-              <div class="mb-5 pt-4 border-t border-element-border">
-                <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-2">
-                  Strategic Pillars
-                </p>
-                <div class="space-y-1.5">
-                  {service.data.strategicPillars.map((pillar) => (
-                    <div class="flex items-start space-x-2 text-xs text-gray-300 font-normal">
-                      <span class="text-brand-purple font-bold shrink-0">✓</span>
-                      <span>{pillar}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {service.data.techFoundations && service.data.techFoundations.length > 0 && (
-              <div class="pt-4 border-t border-element-border">
-                <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-2.5">
-                  Technology Ecosystem
-                </p>
-                <div class="flex flex-wrap gap-1.5">
-                  {service.data.techFoundations.map((tech) => (
-                    <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-medium bg-element-bg border border-element-border text-gray-300 light:text-slate-700 light:bg-slate-100">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </aside>
       </div>
     </Container>

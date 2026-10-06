@@ -219,103 +219,73 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
       <div class="lg:col-span-8 space-y-12">
         <!-- Detail / Content block -->
         <section id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
-          <h2 class="text-xl font-bold mb-8 tracking-tight flex items-center space-x-2 border-b border-element-border pb-2">
-            <span>🚀</span>
-            <span>Project Architecture & Case Study</span>
-          </h2>
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-6">Project Details</h2>
 
-          <!-- Challenge Block -->
           {project.data.challenge && (
-            <div class="mb-8 p-6 rounded-2xl bg-element-bg border border-element-border">
-              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-2.5 flex items-center space-x-2">
-                <span>🎯</span>
-                <span>The Engineering Challenge</span>
+            <div class="mb-8">
+              <h3 class="text-lg md:text-xl font-bold text-gray-100 tracking-tight mb-3">
+                Core Challenge
               </h3>
-              <p class="text-sm text-gray-300 font-normal leading-relaxed">
+              <p class="text-gray-300 leading-relaxed font-normal">
                 {project.data.challenge}
               </p>
             </div>
           )}
 
-          <!-- Solution Block -->
           {project.data.solution && (
-            <div class="mb-8 p-6 rounded-2xl bg-element-bg border border-element-border">
-              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-2.5 flex items-center space-x-2">
-                <span>💡</span>
-                <span>System Architecture & Solution</span>
+            <div class="mb-8">
+              <h3 class="text-lg md:text-xl font-bold text-gray-100 tracking-tight mb-3">
+                System Architecture
               </h3>
-              <p class="text-sm text-gray-300 font-normal leading-relaxed">
+              <p class="text-gray-300 leading-relaxed font-normal">
                 {project.data.solution}
               </p>
             </div>
           )}
 
-          <!-- Key Capabilities Grid -->
           {project.data.keyCapabilities && project.data.keyCapabilities.length > 0 && (
             <div class="mb-8">
-              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-4 flex items-center space-x-2">
-                <span>⚡</span>
-                <span>Key Capabilities</span>
+              <h3 class="text-lg md:text-xl font-bold text-gray-100 tracking-tight mb-3">
+                Key Capabilities
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {project.data.keyCapabilities.map((cap) => (
-                  <div class="p-5 rounded-2xl bg-element-bg border border-element-border flex flex-col justify-between hover:border-element-border-medium transition-colors">
-                    <div>
-                      <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-base shrink-0 select-none">{cap.icon || '🚀'}</span>
-                        <h4 class="text-sm font-bold text-gray-100">{cap.title}</h4>
-                      </div>
-                      <p class="text-xs text-gray-400 font-normal leading-relaxed">{cap.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <!-- Tech Stack Highlights -->
-          {project.data.techStackHighlights && project.data.techStackHighlights.length > 0 && (
-            <div class="mb-8">
-              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-4 flex items-center space-x-2">
-                <span>🛠️</span>
-                <span>Technology Stack Highlights</span>
-              </h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {project.data.techStackHighlights.map((stack) => (
-                  <div class="p-4 rounded-xl bg-element-bg border border-element-border">
-                    <p class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 mb-2">{stack.category}</p>
-                    <div class="flex flex-wrap gap-1.5">
-                      {stack.technologies.map((tech) => (
-                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-brand-blue/10 border border-brand-blue/20 text-brand-blue font-medium">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <!-- Verifiable Outcomes / Results -->
-          {project.data.outcomes && project.data.outcomes.length > 0 && (
-            <div>
-              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3 flex items-center space-x-2">
-                <span>📈</span>
-                <span>Verifiable Outcomes & Deliverables</span>
-              </h3>
-              <ul class="space-y-2.5">
-                {project.data.outcomes.map((outcome) => (
-                  <li class="flex items-start space-x-2.5 text-xs text-gray-300 font-normal leading-relaxed">
-                    <span class="text-brand-blue font-bold shrink-0 mt-0.5 select-none">✓</span>
-                    <span>{outcome}</span>
+              <ul class="list-disc pl-5 space-y-3 text-gray-300 font-normal leading-relaxed">
+                {project.data.keyCapabilities.map(cap => (
+                  <li>
+                    <strong class="text-gray-100 font-semibold">{cap.title}:</strong> {cap.description}
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          <!-- Optional markdown body fallback if provided -->
+          {project.data.techStackHighlights && project.data.techStackHighlights.length > 0 && (
+            <div class="mb-8">
+              <h3 class="text-lg md:text-xl font-bold text-gray-100 tracking-tight mb-3">
+                Technology Stack
+              </h3>
+              <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
+                {project.data.techStackHighlights.map(stack => (
+                  <li>
+                    <strong class="text-gray-100 font-semibold">{stack.category}:</strong> {stack.technologies.join(', ')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {project.data.outcomes && project.data.outcomes.length > 0 && (
+            <div>
+              <h3 class="text-lg md:text-xl font-bold text-gray-100 tracking-tight mb-3">
+                Verifiable Outcomes
+              </h3>
+              <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
+                {project.data.outcomes.map(outcome => (
+                  <li>{outcome}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {project.body && (
             <div class="mt-8 pt-8 border-t border-element-border">
               <Content />
@@ -326,7 +296,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
         <!-- Screenshots Gallery Section -->
         {optimizedScreenshots && optimizedScreenshots.length > 0 && (
           <section id="project-screenshots" class="space-y-6">
-            <h2 class="text-2xl font-bold tracking-tight flex items-center space-x-2.5 mb-6 border-b border-element-border pb-2"><span>📸</span><span>Screenshots & Interface</span></h2>
+            <h2 class="text-2xl font-bold tracking-tight flex items-center space-x-2.5 mb-6 border-b border-element-border pb-2"><span>📸</span><span>Project Screenshots</span></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               {optimizedScreenshots.map((shot, index) => (
                 <div 
@@ -404,7 +374,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
               <svg class={`w-5 h-5 text-brand-${accentColor} shrink-0`} fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
               </svg>
-              <span>GitHub Repo</span>
+              <span>GitHub Repository</span>
             </h3>
 
             <p class="text-sm font-mono font-bold break-all leading-tight mb-2">
