@@ -151,37 +151,35 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Main Content (Column 1 - Goals & Syllabus) -->
-      <div class="lg:col-span-8 space-y-12">
-        
-        <!-- Learning Goals -->
-        {course.data.learningGoals && course.data.learningGoals.length > 0 && (
-          <section id="learning-goals" class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
-            <!-- Accent indicator top border -->
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
+      <div class="lg:col-span-8">
+        <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
 
-            <h2 class="text-xl font-bold mb-5 tracking-tight flex items-center space-x-2">
-              <span>🎯</span>
-              <span>Learning Goals</span>
+          {course.data.learningGoals && course.data.learningGoals.length > 0 && (
+            <section id="learning-goals" class="mb-10 pb-10 border-b border-white/5">
+              <h2 class="text-xl font-bold mb-5 tracking-tight flex items-center space-x-2">
+                <span>🎯</span>
+                <span>Learning Goals</span>
+              </h2>
+              <ul class="space-y-4">
+                {course.data.learningGoals.map(goal => (
+                  <li class="flex items-start space-x-3 text-sm text-gray-300 font-normal leading-relaxed">
+                    <span class="text-brand-yellow shrink-0 mt-0.5 select-none text-base">✓</span>
+                    <span>{goal}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <section id="syllabus" class="syllabus-content">
+            <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2">
+              <span>📖</span>
+              <span>Course Syllabus & Details</span>
             </h2>
-            <ul class="space-y-4">
-              {course.data.learningGoals.map(goal => (
-                <li class="flex items-start space-x-3 text-sm text-gray-300 font-normal leading-relaxed">
-                  <span class="text-brand-yellow shrink-0 mt-0.5 select-none text-base">✓</span>
-                  <span>{goal}</span>
-                </li>
-              ))}
-            </ul>
+            <Content />
           </section>
-        )}
-
-        <!-- Syllabus / Markdown content -->
-        <section id="syllabus" class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 syllabus-content">
-          <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2">
-            <span>📖</span>
-            <span>Course Syllabus & Details</span>
-          </h2>
-          <Content />
-        </section>
+        </div>
       </div>
 
       <!-- Sidebar Metadata & GitHub Repo (Column 2) -->

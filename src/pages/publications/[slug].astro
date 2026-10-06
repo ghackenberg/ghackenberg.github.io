@@ -182,11 +182,11 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
     </header>
 
     <!-- Content Sections -->
-    <div class="space-y-12 mb-16">
+    <div class="glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden mb-16">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-purple"></div>
       
-      <!-- Abstract -->
       {pub.data.abstract && (
-        <section id="abstract">
+        <section id="abstract" class={slidesUrl || pub.data.bibtex ? "mb-10 pb-10 border-b border-element-border" : ""}>
           <h2 class="text-2xl font-bold text-gray-100 mb-4 tracking-tight">
             Abstract
           </h2>
@@ -196,9 +196,8 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         </section>
       )}
 
-      <!-- Embedded Slides -->
       {slidesUrl && (
-        <section id="presentation-slides">
+        <section id="presentation-slides" class={pub.data.bibtex ? "mb-10 pb-10 border-b border-element-border" : ""}>
           <h2 class="text-2xl font-bold text-gray-100 mb-4 tracking-tight">
             Presentation Slides
           </h2>
@@ -214,14 +213,12 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         </section>
       )}
 
-      <!-- BibTeX Citation -->
       {pub.data.bibtex && (
         <section id="bibtex-citation">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-2xl font-bold text-gray-100 tracking-tight">
               BibTeX Citation
             </h2>
-            
             <button 
               id="copy-bibtex-btn"
               data-track-event="High Intent: Copy BibTeX"
@@ -234,21 +231,20 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
               <span id="copy-btn-text">Copy Citation</span>
             </button>
           </div>
-          
           <pre id="bibtex-content" class="bg-gray-950/80 p-5 rounded-2xl border border-element-border text-gray-300 font-mono text-xs overflow-x-auto leading-relaxed select-all">{pub.data.bibtex}</pre>
         </section>
       )}
-
-      <!-- Contact Section -->
-      <GetInTouchCard
-        sectionHeading="Start a Conversation"
-        sectionDescription="Interested in collaborative research, citations, or discussing empirical findings and methodology? Feel free to reach out directly via email."
-        cardHeading="Research & Academic Inquiry"
-        emailSubject={`Research Inquiry: ${pub.data.title}`}
-        accentColor="purple"
-        primaryButtonText="Open Email Client"
-      />
     </div>
+
+    <!-- Contact Section -->
+    <GetInTouchCard
+      sectionHeading="Start a Conversation"
+      sectionDescription="Interested in collaborative research, citations, or discussing empirical findings and methodology? Feel free to reach out directly via email."
+      cardHeading="Research & Academic Inquiry"
+      emailSubject={`Research Inquiry: ${pub.data.title}`}
+      accentColor="purple"
+      primaryButtonText="Open Email Client"
+    />
     </Container>
   </Section>
 
