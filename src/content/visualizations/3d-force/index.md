@@ -21,16 +21,46 @@ specs:
   bestUseCase: "Volumetric topic landscapes, multi-layer semantic hierarchies & 3D cluster exploration"
 ---
 
-## What Characterizes the 3D Force-Directed Visualization?
+## Engine Overview
 
 The **3D Force Graph** visualization projects the website's interconnected network of projects, academic publications, university courses, and technical articles into three-dimensional space using **Three.js** and **WebGL**. By rotating, zooming, and flying through the volumetric constellation, visitors can explore multi-dimensional topic intersections and structural clusters that cannot be separated in flat 2D projections.
 
-### Technical Architecture & Spatial Physics
+### Architectural Pipeline
 
-- **WebGL & Three.js Acceleration**: Hardware-rendered 3D sphere geometries and dynamic particle streams provide clear depth perception at interactive frame rates.
-- **3D Vector Physics Simulation**: Rather than constraining forces to planar vectors, the physics solver evaluates spring tension and charge repulsion across all three Cartesian axes ($x, y, z$).
-- **Orbital Camera & Directional Particles**: Full orbit controller integration enables smooth fly-through navigation, highlighted by animated particles indicating semantic link directionality.
+- **Hardware Acceleration**: Three.js renders sphere meshes, glow shaders, and line geometry directly through WebGL draw calls, sustaining 60 FPS across complex topologies.
+- **3D Octree Physics**: N-body gravitational repulsion and spring tension evaluate across all three Cartesian axes (x, y, z), utilizing an octree structure for O(N log N) computational efficiency.
+- **Orbital Camera Navigation**: Full spherical orbit controls support 6-degree-of-freedom navigation (orbit rotation, panning, and distance zoom).
+- **Directional Particles**: Animated particle streams traverse link geometry via parametric curve interpolation, illustrating semantic dependency direction.
 
-For deeper architectural details and a comprehensive multi-engine benchmark, read our deep dive on [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
+### Engine Specifications
 
+| Feature | Specification | Architectural Advantage |
+| :--- | :--- | :--- |
+| **Rendering Backend** | WebGL 2.0 & Three.js | Hardware-accelerated 3D meshes and custom fragment shaders |
+| **Spatial Topology** | 3D Volumetric Coordinates | Eliminates 2D planar crowding by distributing nodes across depth (z) |
+| **Physics Solver** | 3D Octree N-Body Simulation | Fast spatial partitioning in O(N log N) time |
+| **Optimal Scale** | 500 to 5,000+ Nodes | High capacity for complex multi-layered domain models |
+| **Camera Control** | Spherical Orbit Controls | Intuitive perspective adjustment and depth-of-field exploration |
 
+## Technical FAQ
+
+### Spatial Occlusion
+
+Projecting relationship networks into three dimensions eliminates planar edge crossings that cause 2D hairballs. Adding a third degree of freedom (z-axis) allows dense semantic clusters to occupy distinct spatial shells. While distant nodes can be visually occluded by foreground clusters, dynamic camera rotation immediately restores visibility from alternate vantage points.
+
+### Particle Streams
+
+Dynamic particle animations visualize connection directionality without cluttering the scene with static arrowheads:
+- **Parametric Traversal**: Particles calculate intermediate coordinates along vector paths using linear interpolation between source and target positions.
+- **Batch Rendering**: Particle positions update within instanced buffer attributes, avoiding individual mesh allocations.
+
+### Engine Comparison
+
+The 3D Force engine provides distinct architectural advantages for exploratory landscapes:
+- **Volumetric Exploration**: Best suited for discovering deep semantic clusters, citation lineages, and cross-discipline links.
+- **Visual Immersion**: Provides an engaging tactile overview of large institutional repositories.
+- **Complementary Tooling**: Use D3 for exact typographic layouts or Cytoscape for formal shortest-path algorithms.
+
+### Reference Documentation
+
+A complete architectural walkthrough and comparative benchmark of all five visualization engines is documented in the technical article [WebGL Network Visualization & Graph Engines](/posts/2026_05_27_interactive_graph_visualizations_update/).
