@@ -7,7 +7,7 @@ import puppeteer from 'puppeteer';
 const rootDir = process.cwd();
 const distDir = path.resolve(rootDir, 'dist');
 const publicDir = path.resolve(rootDir, 'public');
-const srcImagesDir = path.resolve(rootDir, 'src/assets/images');
+const srcBrandingDir = path.resolve(rootDir, 'src/assets/branding');
 
 const mimeTypes: Record<string, string> = {
   '.html': 'text/html',
@@ -150,8 +150,7 @@ async function main(): Promise<void> {
 
     // 4. Generate Social Sharing Banner (1200x630)
     await capture('/_internal/og/', 1200, 630, [
-      path.join(srcImagesDir, 'og-share-preview.png'),
-      path.join(distDir, 'images/og/og-share-preview.png'),
+      path.join(srcBrandingDir, 'og-share-preview.png'),
     ]);
 
     await browser.close();

@@ -324,7 +324,6 @@ function buildImageIndex(): void {
   const scanDirs = [
     path.resolve('src/content'),
     path.resolve('src/assets'),
-    path.resolve('public/images'),
   ];
 
   for (const root of scanDirs) {
@@ -337,7 +336,7 @@ function buildImageIndex(): void {
           walk(fullPath);
         } else if (entry.isFile() && /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(entry.name)) {
           const norm = fullPath.replaceAll(path.sep, '/');
-          let targetDir = 'images/branding';
+          let targetDir = 'branding';
 
           if (norm.includes('src/content/posts/')) {
             const match = norm.match(/src\/content\/posts\/([^/]+)/);
@@ -362,36 +361,34 @@ function buildImageIndex(): void {
             targetDir = match ? `visualizations/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'visualizations';
           } else if (norm.includes('src/content/objects/')) {
             const match = norm.match(/src\/content\/objects\/([^/]+)/);
-            targetDir = match ? `images/objects/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/objects';
+            targetDir = match ? `objects/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'objects';
           } else if (norm.includes('src/content/interests/')) {
             const match = norm.match(/src\/content\/interests\/([^/]+)/);
-            targetDir = match ? `images/interests/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/interests';
+            targetDir = match ? `interests/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'interests';
           } else if (norm.includes('src/content/environments/')) {
             const match = norm.match(/src\/content\/environments\/([^/]+)/);
-            targetDir = match ? `images/environments/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/environments';
+            targetDir = match ? `environments/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'environments';
           } else if (norm.includes('src/content/characters/')) {
             const match = norm.match(/src\/content\/characters\/([^/]+)/);
-            targetDir = match ? `images/characters/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/characters';
+            targetDir = match ? `characters/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'characters';
           } else if (norm.includes('src/content/feeds/')) {
             const match = norm.match(/src\/content\/feeds\/(linkedin|youtube|github)\/(.+)\/[^/]+$/);
             if (match) {
               const platform = match[1];
               const subpath = match[2].replace(/[<>:"/\\|?*]/g, '_');
-              targetDir = `images/feeds/${platform}/${subpath}`;
+              targetDir = `feeds/${platform}/${subpath}`;
             } else {
               const simpleMatch = norm.match(/src\/content\/feeds\/([^/]+)/);
-              targetDir = simpleMatch ? `images/feeds/${simpleMatch[1]}` : 'images/feeds';
+              targetDir = simpleMatch ? `feeds/${simpleMatch[1]}` : 'feeds';
             }
-          } else if (norm.includes('src/assets/images/')) {
-            if (entry.name.includes('comic-profile') || entry.name.includes('avatar')) {
-              targetDir = 'images/avatar';
-            } else if (entry.name.includes('og-share')) {
-              targetDir = 'images/og';
-            } else {
-              targetDir = 'images/branding';
-            }
-          } else if (norm.includes('public/images/')) {
-            targetDir = 'images/technologies';
+          } else if (norm.includes('src/assets/avatar/')) {
+            targetDir = 'avatar';
+          } else if (norm.includes('src/assets/technologies/')) {
+            targetDir = 'technologies';
+          } else if (norm.includes('src/assets/branding/') || norm.includes('og-share')) {
+            targetDir = 'branding';
+          } else if (norm.includes('src/assets/')) {
+            targetDir = 'assets';
           }
 
           try {
@@ -502,39 +499,39 @@ function getSemanticAssetPath(assetInfo: { names?: string[]; originalFileName?: 
     if (searchPath.includes('src/content/objects/') || searchPath.includes('/objects/')) {
       const match = searchPath.match(/(?:src\/content\/)?objects\/([^/]+)/);
       const objSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return objSlug ? `images/objects/${objSlug}/[name]-[hash][extname]` : `images/objects/[name]-[hash][extname]`;
+      return objSlug ? `objects/${objSlug}/[name]-[hash][extname]` : `objects/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/interests/') || searchPath.includes('/interests/')) {
       const match = searchPath.match(/(?:src\/content\/)?interests\/([^/]+)/);
       const intSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return intSlug ? `images/interests/${intSlug}/[name]-[hash][extname]` : `images/interests/[name]-[hash][extname]`;
+      return intSlug ? `interests/${intSlug}/[name]-[hash][extname]` : `interests/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/environments/') || searchPath.includes('/environments/')) {
       const match = searchPath.match(/(?:src\/content\/)?environments\/([^/]+)/);
       const envSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return envSlug ? `images/environments/${envSlug}/[name]-[hash][extname]` : `images/environments/[name]-[hash][extname]`;
+      return envSlug ? `environments/${envSlug}/[name]-[hash][extname]` : `environments/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/characters/') || searchPath.includes('/characters/')) {
       const match = searchPath.match(/(?:src\/content\/)?characters\/([^/]+)/);
       const charSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return charSlug ? `images/characters/${charSlug}/[name]-[hash][extname]` : `images/characters/[name]-[hash][extname]`;
+      return charSlug ? `characters/${charSlug}/[name]-[hash][extname]` : `characters/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/feeds/') || searchPath.includes('/feeds/')) {
       const match = searchPath.match(/(?:src\/content\/)?feeds\/(linkedin|youtube|github)\/(.+)\/[^/]+$/);
       if (match) {
-        return `images/feeds/${match[1]}/${match[2].replace(/[<>:"/\\|?*]/g, '_')}/[name]-[hash][extname]`;
+        return `feeds/${match[1]}/${match[2].replace(/[<>:"/\\|?*]/g, '_')}/[name]-[hash][extname]`;
       }
       const simpleMatch = searchPath.match(/(?:src\/content\/)?feeds\/([^/]+)/);
-      return simpleMatch ? `images/feeds/${simpleMatch[1]}/[name]-[hash][extname]` : `images/feeds/[name]-[hash][extname]`;
+      return simpleMatch ? `feeds/${simpleMatch[1]}/[name]-[hash][extname]` : `feeds/[name]-[hash][extname]`;
     }
-    if (searchPath.includes('src/assets/') || searchPath.includes('assets/images/')) {
-      if (cleanName.includes('comic-profile') || cleanName.includes('avatar')) {
-        return `images/avatar/[name]-[hash][extname]`;
-      }
-      if (cleanName.includes('og-share')) {
-        return `images/og/[name]-[hash][extname]`;
-      }
-      return `images/branding/[name]-[hash][extname]`;
+    if (searchPath.includes('src/assets/avatar/') || searchPath.includes('/avatar/') || cleanName.includes('comic-profile')) {
+      return `avatar/[name]-[hash][extname]`;
+    }
+    if (searchPath.includes('src/assets/technologies/') || searchPath.includes('/technologies/')) {
+      return `technologies/[name]-[hash][extname]`;
+    }
+    if (searchPath.includes('src/assets/branding/') || searchPath.includes('/branding/') || cleanName.includes('og-share')) {
+      return `branding/[name]-[hash][extname]`;
     }
 
     // 3. Fallback to image name mapping if unique
@@ -543,10 +540,7 @@ function getSemanticAssetPath(assetInfo: { names?: string[]; originalFileName?: 
       return `${nameMatches[0].targetDir}/[name]-[hash][extname]`;
     }
 
-    if (searchPath.includes('components/')) {
-      return `images/components/[name]-[hash][extname]`;
-    }
-    return 'images/branding/[name]-[hash][extname]';
+    return 'assets/[name]-[hash][extname]';
   }
 
   return 'assets/[name]-[hash][extname]';

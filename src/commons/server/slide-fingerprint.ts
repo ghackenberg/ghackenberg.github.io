@@ -58,7 +58,11 @@ export function computeSlideStyleHash(): string {
   ].sort();
   for (const file of slideComponentFiles) {
     hash.update(path.relative(process.cwd(), file).replace(/\\/g, '/'));
-    hash.update(fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n'));
+    let fileContent = fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
+    if (file.endsWith('Avatar3D.astro')) {
+      fileContent = fileContent.replace(/@assets\/avatar\/comic-profile-/g, '../../../assets/images/comic-profile-');
+    }
+    hash.update(fileContent);
   }
 
   return hash.digest('hex');
