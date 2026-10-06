@@ -46,6 +46,7 @@
     "lint:citations:ci": "tsx src/scripts/lint-citations.ts --ci",
     "lint:styles": "tsx src/scripts/lint-styles.ts",
     "lint:svgs": "tsx src/scripts/lint-svgs.ts",
+    "migrate:svgs": "tsx src/scripts/migrate-adaptive-svgs.ts",
     "astro": "astro"
   },
   "dependencies": {
