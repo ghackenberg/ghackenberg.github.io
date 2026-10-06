@@ -22,6 +22,11 @@ export interface Force3DLink {
   target: string;
 }
 
+export interface Force3DNavigationControls {
+  noZoom?: boolean;
+  enableZoom?: boolean;
+}
+
 export interface Force3DEngine {
   layouts: { id: string; label: string }[];
   nodes: Force3DNode[] | null;
@@ -92,6 +97,12 @@ const engine: Force3DEngine = {
       });
 
     this.graph.d3Force('charge').strength(-120);
+
+    const controls = (this.graph.controls?.() as Force3DNavigationControls | undefined);
+    if (controls) {
+      controls.noZoom = true;
+      controls.enableZoom = false;
+    }
 
     this.resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {

@@ -31,6 +31,7 @@ const engine: CytoscapeEngine = {
   async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean) {
     this.cy = cytoscape({
       container: container,
+      userZoomingEnabled: false,
       elements: payload.cytoscape.elements,
       style: [
         {
