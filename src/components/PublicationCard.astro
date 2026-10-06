@@ -1,4 +1,6 @@
 ---
+import type { ImageMetadata } from "astro";
+
 interface Props {
   id: string;
   title: string;
@@ -6,7 +8,7 @@ interface Props {
   pubDate: string;
   book?: string;
   tags: string[];
-  icon?: string;
+  icon?: string | ImageMetadata;
   publisherUrl?: string;
   activeTag?: string | string[];
 }
@@ -23,6 +25,7 @@ const {
 } = Astro.props;
 
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
+const iconSrc = typeof icon === 'object' && icon !== null && 'src' in icon ? icon.src : icon;
 ---
 
 <article class="glass-card preview-card p-6 rounded-2xl border border-element-border group flex flex-col md:flex-row gap-6 items-start relative cursor-pointer hover:border-brand-purple/30 h-full w-full" data-card-id={id} data-collection="publications">
@@ -31,7 +34,7 @@ const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag
 
   <!-- Icon -->
   <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shrink-0 border border-element-border-medium bg-gray-900/50 flex items-center justify-center text-white/30 light:text-slate-900/40 group-hover:text-brand-purple/80 group-hover:border-brand-purple/30 transition-all duration-300 relative">
-    {icon ? (
+    {iconSrc ? (
       <svg 
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-300 z-0 pointer-events-none" 
         viewBox="0 0 100 100" 
@@ -51,7 +54,7 @@ const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag
         </defs>
         <image 
           role="img"
-          href={icon} 
+          href={iconSrc} 
           x="0" 
           y="0" 
           width="100" 

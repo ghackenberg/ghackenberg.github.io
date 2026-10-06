@@ -56,6 +56,8 @@ const seoDescription = cleanAbstract.length > 156
 
 const pubUrl = `https://hackenberg.tech/publications/${pub.id}/`;
 
+const iconSrc = typeof pub.data.icon === 'object' && pub.data.icon !== null && 'src' in pub.data.icon ? pub.data.icon.src : pub.data.icon;
+
 const scholarlyArticleSchema = {
   "@context": "https://schema.org",
   "@type": "ScholarlyArticle",
@@ -81,7 +83,7 @@ const scholarlyArticleSchema = {
     "@type": "PublicationEvent",
     "name": pub.data.book
   } : undefined,
-  "image": pub.data.icon ? new URL(pub.data.icon, Astro.site).href : undefined,
+  "image": iconSrc ? new URL(iconSrc, Astro.site).href : undefined,
   "sameAs": pub.data.publisherUrl || undefined,
   "mainEntityOfPage": {
     "@type": "WebPage",

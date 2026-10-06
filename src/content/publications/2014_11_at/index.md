@@ -7,7 +7,7 @@ abstract: "To facilitate engineering and evolution of automation systems, ensuri
 tags: ["manufacturing-systems", "systems-engineering", "systems-design", "systems-verification"]
 bibtex: "@article{\r\n\tauthor = \"Legat, Christoph and Mund, Jakob and Campetelli, Alarico and Hackenberg, Georg and Folmer, Jens and Schütz, Daniel and Broy, Manfred and Vogel-Heuser, Birgit\",\r\n\ttitle = \"Interface Behavior Modeling for Automatic Verification of Industrial Automation Systems' Functional Conformance\",\r\n\tjournal = \"Automatisierungstechnik (at)\",\r\n\tyear = \"2014\",\r\n\tvolume = \"62\",\r\n\tnumber = \"11\",\r\n\tpages = \"815-825\"\r\n}"
 slides: ""
-icon: "/publications/2014_11_at/interfaces_overview.png"
+icon: "./interfaces_overview.png"
 publisherUrl: "https://doi.org/10.1515/auto-2014-1126"
 ---
 

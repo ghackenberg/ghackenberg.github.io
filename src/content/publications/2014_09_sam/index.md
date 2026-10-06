@@ -7,7 +7,7 @@ abstract: "The complexity of automated production systems increases constantly d
 tags: ["manufacturing-systems", "systems-engineering", "systems-design", "systems-verification"]
 bibtex: "@incollection{\r\n\tyear={2014},\r\n\tisbn={978-3-319-11742-3},\r\n\tbooktitle={System Analysis and Modeling: Models and Reusability},\r\n\tvolume={8769},\r\n\tseries={Lecture Notes in Computer Science},\r\n\teditor={Amyot, Daniel and Fonseca i Casas, Pau and Mussbacher, Gunter},\r\n\tdoi={10.1007/978-3-319-11743-0_20},\r\n\ttitle={Formal Technical Process Specification and Verification for Automated Production Systems},\r\n\turl={http://dx.doi.org/10.1007/978-3-319-11743-0_20},\r\n\tpublisher={Springer International Publishing},\r\n\tauthor={Hackenberg, Georg and Campetelli, Alarico and Legat, Christoph and Mund, Jakob and Teufi, Sabine and Vogel-Heuser, Birgit},\r\n\tpages={287-303},\r\n\tlanguage={English}\r\n}"
 slides: "//www.slideshare.net/slideshow/embed_code/41696408"
-icon: "/publications/2014_09_sam/approach.png"
+icon: "./approach.png"
 publisherUrl: "https://doi.org/10.1007/978-3-319-11743-0_20"
 ---
 

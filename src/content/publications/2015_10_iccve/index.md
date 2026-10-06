@@ -7,7 +7,7 @@ abstract: "Undesired impacts on the power system caused by electric vehicles (EV
 tags: ["energy-systems", "simulation", "systems-design", "systems-engineering", "systems-validation", "traffic-control", "transportation-systems"]
 bibtex: "@INPROCEEDINGS{Ascher2015, \r\n\tauthor={D. Ascher and G. Hackenberg}, \r\n\tbooktitle={2015 International Conference on Connected Vehicles and Expo (ICCVE)}, \r\n\ttitle={Integrated transportation and power system modeling}, \r\n\tyear={2015}, \r\n\tpages={379-384}, \r\n\tkeywords={electric vehicles;power grids;EV;V2G applications;electric devices;electric vehicles;integrated multiobjective transportation;integrated transportation;power grids;power system modeling;vehicle-to-grid applications;Charging stations;Power system dynamics;Power system stability;Vehicle dynamics;Vehicles;Feasibility study;electric vehicles;intelligent transportation systems;rapid prototyping;smart grids}, \r\n\tdoi={10.1109/ICCVE.2015.23}, \r\n\tmonth={Oct}\r\n}"
 slides: ""
-icon: "/publications/2015_10_iccve/model.png"
+icon: "./model.png"
 publisherUrl: "https://doi.org/10.1109/ICCVE.2015.23"
 ---
 

@@ -7,7 +7,7 @@ abstract: "During early phases of complex systems engineering typically many str
 tags: ["dynamic-programming", "energy-systems", "simulation", "systems-design", "systems-engineering", "systems-validation"]
 bibtex: "@inproceedings{\r\n\tauthor = {Hackenberg, Georg and Bytschkow, Denis},\r\n\ttitle = {Towards Early Emergent Property Understanding: Merging Behavior Space Exploration and Model-based Software Engineering},\r\n\tbooktitle = {Proceedings of the 2012 Extreme Modeling Workshop},\r\n\tseries = {XM '12},\r\n\tyear = {2012},\r\n\tisbn = {978-1-4503-1804-4},\r\n\tlocation = {Innsbruck, Austria},\r\n\tpages = {39--44},\r\n\tnumpages = {6},\r\n\turl = {http://doi.acm.org/10.1145/2467307.2467315},\r\n\tdoi = {10.1145/2467307.2467315},\r\n\tacmid = {2467315},\r\n\tpublisher = {ACM},\r\n\taddress = {New York, NY, USA}\r\n}"
 slides: "//www.slideshare.net/slideshow/embed_code/21653832"
-icon: "/publications/2012_10_xm/trace.png"
+icon: "./trace.png"
 publisherUrl: "https://doi.org/10.1145/2467307.2467315"
 ---
 

@@ -18,7 +18,7 @@ Finally, the center and the right hand side of the screen show different diagram
 In the upper parts the raw voltage and current measurements are displayed as timeseries charts.
 In the lower parts the voltage and current density functions as well as voltage-current point clouds are displayed.
 
-[![Screenshot illustration from A tool for analyzing data from welding experiments](./screenshot.png "A tool for analyzing data from welding experiments - Screenshot illustration")](./screenshot.png)
+![Screenshot illustration from A tool for analyzing data from welding experiments](./screenshot.png "A tool for analyzing data from welding experiments - Screenshot illustration")
 
 Technically, the tool is implemented in the [Java](http://www.oracle.com/technetwork/java/index.html) programming language using [Apache Maven](https://maven.apache.org/) for build management.
 Furthermore, the user interface is based on [Swing](https://docs.oracle.com/javase/tutorial/uiswing/), [Docking Frames](http://www.docking-frames.org/), and [JFreeChart](http://www.jfree.org/jfreechart/).

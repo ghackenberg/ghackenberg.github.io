@@ -7,7 +7,7 @@ abstract: "Machines and plants continuously increase in complexity due to higher
 tags: ["manufacturing-systems", "mechatronic-systems", "systems-design", "systems-engineering", "systems-verification"]
 bibtex: "@article{\r\n\ttitle = \"A Multi-disciplinary Modeling Technique for Requirements Management in Mechatronic Systems Engineering \",\r\n\tjournal = \"Procedia Technology \",\r\n\tvolume = \"15\",\r\n\tnumber = \"0\",\r\n\tpages = \"5 - 16\",\r\n\tyear = \"2014\",\r\n\tnote = \"2nd International Conference on System-Integrated Intelligence: Challenges for Product and Production Engineering \",\r\n\tissn = \"2212-0173\",\r\n\tdoi = \"http://dx.doi.org/10.1016/j.protcy.2014.09.029\",\r\n\turl = \"http://www.sciencedirect.com/science/article/pii/S2212017314001443\",\r\n\tauthor = \"Georg Hackenberg and Christoph Richter and Michael F. Zäh\"\r\n}"
 slides: "//www.slideshare.net/slideshow/embed_code/41696542"
-icon: "/publications/2014_07_02_sysint/geometry.png"
+icon: "./geometry.png"
 publisherUrl: "https://doi.org/10.1016/j.protcy.2014.09.029"
 ---
 

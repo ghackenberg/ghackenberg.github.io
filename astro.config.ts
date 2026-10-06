@@ -106,6 +106,14 @@ function copyContentAssets(): AstroIntegration {
                 ) {
                   continue;
                 }
+
+                // Stop copying raster images, except presentation thumbnails
+                const isRaster = /\.(png|jpe?g|webp|avif|gif)$/i.test(file);
+                const isPresThumbnail = col === 'presentations' && relativePath.split(/[/\\]/).includes('thumbnails') && file.endsWith('.webp');
+                if (isRaster && !isPresThumbnail) {
+                  continue;
+                }
+
                 const destPath = path.join(outDir, col, relativePath, file);
                 fs.mkdirSync(path.dirname(destPath), { recursive: true });
                 if (file.endsWith('.svg') && graphicsCss) {
@@ -333,25 +341,25 @@ function buildImageIndex(): void {
 
           if (norm.includes('src/content/posts/')) {
             const match = norm.match(/src\/content\/posts\/([^/]+)/);
-            targetDir = match ? `images/posts/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/posts';
+            targetDir = match ? `posts/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'posts';
           } else if (norm.includes('src/content/presentations/')) {
             const match = norm.match(/src\/content\/presentations\/([^/]+)/);
-            targetDir = match ? `images/presentations/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/presentations';
+            targetDir = match ? `presentations/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'presentations';
           } else if (norm.includes('src/content/courses/')) {
             const match = norm.match(/src\/content\/courses\/([^/]+)/);
-            targetDir = match ? `images/courses/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/courses';
+            targetDir = match ? `courses/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'courses';
           } else if (norm.includes('src/content/projects/')) {
             const match = norm.match(/src\/content\/projects\/([^/]+)/);
-            targetDir = match ? `images/projects/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/projects';
+            targetDir = match ? `projects/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'projects';
           } else if (norm.includes('src/content/services/')) {
             const match = norm.match(/src\/content\/services\/([^/]+)/);
-            targetDir = match ? `images/services/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/services';
+            targetDir = match ? `services/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'services';
           } else if (norm.includes('src/content/publications/')) {
             const match = norm.match(/src\/content\/publications\/([^/]+)/);
-            targetDir = match ? `images/publications/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/publications';
+            targetDir = match ? `publications/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'publications';
           } else if (norm.includes('src/content/visualizations/')) {
             const match = norm.match(/src\/content\/visualizations\/([^/]+)/);
-            targetDir = match ? `images/visualizations/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/visualizations';
+            targetDir = match ? `visualizations/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'visualizations';
           } else if (norm.includes('src/content/objects/')) {
             const match = norm.match(/src\/content\/objects\/([^/]+)/);
             targetDir = match ? `images/objects/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'images/objects';
@@ -459,35 +467,37 @@ function getSemanticAssetPath(assetInfo: { names?: string[]; originalFileName?: 
     if (searchPath.includes('src/content/posts/') || searchPath.includes('/posts/')) {
       const match = searchPath.match(/(?:src\/content\/)?posts\/([^/]+)/);
       const postSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return postSlug ? `images/posts/${postSlug}/[name]-[hash][extname]` : `images/posts/[name]-[hash][extname]`;
+      return postSlug ? `posts/${postSlug}/[name]-[hash][extname]` : `posts/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/presentations/') || searchPath.includes('/presentations/')) {
       const match = searchPath.match(/(?:src\/content\/)?presentations\/([^/]+)/);
       const presSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return presSlug ? `images/presentations/${presSlug}/[name]-[hash][extname]` : `images/presentations/[name]-[hash][extname]`;
+      return presSlug ? `presentations/${presSlug}/[name]-[hash][extname]` : `presentations/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/courses/') || searchPath.includes('/courses/')) {
       const match = searchPath.match(/(?:src\/content\/)?courses\/([^/]+)/);
       const courseSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return courseSlug ? `images/courses/${courseSlug}/[name]-[hash][extname]` : `images/courses/[name]-[hash][extname]`;
+      return courseSlug ? `courses/${courseSlug}/[name]-[hash][extname]` : `courses/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/projects/') || searchPath.includes('/projects/')) {
       const match = searchPath.match(/(?:src\/content\/)?projects\/([^/]+)/);
       const projSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return projSlug ? `images/projects/${projSlug}/[name]-[hash][extname]` : `images/projects/[name]-[hash][extname]`;
+      return projSlug ? `projects/${projSlug}/[name]-[hash][extname]` : `projects/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/services/') || searchPath.includes('/services/')) {
       const match = searchPath.match(/(?:src\/content\/)?services\/([^/]+)/);
       const servSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return servSlug ? `images/services/${servSlug}/[name]-[hash][extname]` : `images/services/[name]-[hash][extname]`;
+      return servSlug ? `services/${servSlug}/[name]-[hash][extname]` : `services/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/publications/') || searchPath.includes('/publications/')) {
-      return `images/publications/[name]-[hash][extname]`;
+      const match = searchPath.match(/(?:src\/content\/)?publications\/([^/]+)/);
+      const pubSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
+      return pubSlug ? `publications/${pubSlug}/[name]-[hash][extname]` : `publications/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/visualizations/') || searchPath.includes('/visualizations/')) {
       const match = searchPath.match(/(?:src\/content\/)?visualizations\/([^/]+)/);
       const visSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
-      return visSlug ? `images/visualizations/${visSlug}/[name]-[hash][extname]` : `images/visualizations/[name]-[hash][extname]`;
+      return visSlug ? `visualizations/${visSlug}/[name]-[hash][extname]` : `visualizations/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/content/objects/') || searchPath.includes('/objects/')) {
       const match = searchPath.match(/(?:src\/content\/)?objects\/([^/]+)/);

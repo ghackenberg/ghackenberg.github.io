@@ -9,11 +9,11 @@ icon:
   description: "Over my past years of study, I developed a system for organizing my learning. It helps me staying focused and having an overview over my progress. In this artic..."
 ---
 <div class="flow-root my-6">
-  <a href="/posts/2009_02_22_personal_study_management/plan.png" class="float-right ml-6 mb-4 max-w-[50%] block">
-    <img src="./plan.png" alt="Plan detail from Personal Study Management." title="Personal Study Management - Plan detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Plan detail from Personal Study Management.](./plan.png "Personal Study Management - Plan detail")
+
   The basic idea is, to have a table of the chapters, which have to be studied, their size and the overall percentage of progress after finishing it.
-  In the picture to the right I have posted a schedule which I created for my *eLearning* exam last year.
+  In the picture above I have posted a schedule which I created for my *eLearning* exam last year.
   For this exam I had to study the production process for eLearning material.
   The production process is constituted of four main entities: the *analysis* where we have to find out what should be accomplished by introducing an eLearning system, the *conception* where we create an initial prototype for the system which can be verified by the customer, the *screenplay* which describes the eLearning system in its entire detail, and finally the *production* where the system is implemented for shipping.
   The plan provides me with the information of *how many slides* I have to read for each chapter.
@@ -34,7 +34,7 @@ But *HTML* did the trick for now.
 
 Here is now the *XML* code which was used for specifying the *eLearning* learn plan from above:
 
-[![XML-Quelldatei zur Modellierung von Lernplänen und Kapiteln](./xml.png "XML-Spezifikation für Lernpläne")](./xml.png)
+![XML-Quelldatei zur Modellierung von Lernplänen und Kapiteln](./xml.png "XML-Spezifikation für Lernpläne")
 
 As you can see, I can specify the course and its structure in terms of *chapters* and *sections*.
 For chapters and sections I can provide information about the number of pages.
@@ -46,7 +46,7 @@ The stylesheet I cannot present in full length, as it covers around 150 lines of
 Most of the code is responsible for generating correct percentage number in different cases.
 Here is now a small excerpt:
 
-[![Auszug aus dem XSL-Stylesheet zur HTML-Generierung](./xsl.png "XSL-Stylesheet zur Layout-Transformation")](./xsl.png)
+![Auszug aus dem XSL-Stylesheet zur HTML-Generierung](./xsl.png "XSL-Stylesheet zur Layout-Transformation")
 
 What you should basically take from this code listing is, that an *HTML* document is generated on the fly.
 For generating this document, I have to do mainly percentage calculations.
