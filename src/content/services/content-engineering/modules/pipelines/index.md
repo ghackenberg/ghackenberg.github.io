@@ -1,7 +1,6 @@
 ---
 title: "Publishing Pipelines"
 serviceId: "content-engineering"
-tagline: "Astro/MDX Static Engines, Programmatic Assets & CI/CD"
 description: "Engineering blazing-fast static-site architectures with Astro and MDX, programmatic asset rendering (WebP/AVIF), automated sitemaps, and zero-downtime Git CI/CD delivery."
 ctaText: "Inquire about Publishing Pipelines"
 highlights:

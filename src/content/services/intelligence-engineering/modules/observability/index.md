@@ -1,7 +1,6 @@
 ---
 title: "System Observability"
 serviceId: "intelligence-engineering"
-tagline: "Generative UI Steering, Real-Time Telemetry & Guardrails"
 description: "Engineering ergonomic front-end steering interfaces with dynamic Generative UI widgets, explicit human-in-the-loop approval gates, distributed tracing, token accounting, and automated regression guardrails."
 ctaText: "Inquire about System Observability"
 highlights:

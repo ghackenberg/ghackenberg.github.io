@@ -1,7 +1,6 @@
 ---
 title: "Design Systems"
 serviceId: "content-engineering"
-tagline: "Design Tokens, Component Kits & Social Templates"
 description: "Engineering unified design tokens, component kits, and multi-format social templates (1:1, 16:9, 4:5) for unmistakable brand recognition across web and social media."
 ctaText: "Inquire about Design Systems"
 highlights:

@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
@@ -179,7 +180,8 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 >
   <Navbar />
 
-  <Container size="medium">
+  <Section id="project-content" padding="standard">
+    <Container size="wide" padding="none">
     <!-- Back Button -->
     <a 
       href="/projects/" 
@@ -190,13 +192,26 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     </a>
 
     <!-- Title Header -->
-    <header class="mb-12 pb-10 border-b border-element-border relative">
+    <header class="mb-12 relative">
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
         {project.data.title}
       </h1>
       <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
         {project.data.description}
       </p>
+
+      {project.data.tags && project.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-6">
+          {project.data.tags.map(tag => (
+            <a 
+              href={`/tags/${tag}/`}
+              class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 ${colorClasses.bg} ${colorClasses.border} ${colorClasses.text}`}
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )}
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -284,26 +299,10 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
         <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col relative overflow-hidden">
           <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
           
-          <h3 class="text-lg font-bold mb-4 flex items-center space-x-2">
+          <h3 class="text-lg font-bold mb-6 flex items-center space-x-2">
             <span>ℹ️</span>
             <span>Project Info</span>
           </h3>
-
-          <div class="mb-6 space-y-4">
-            <div>
-              <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-1.5">Project Type</p>
-              <div class="flex flex-wrap gap-1.5">
-                {project.data.tags.map(tag => (
-                  <a 
-                    href={`/tags/${tag}/`}
-                    class={`text-[10px] px-2.5 py-0.5 rounded-full border ${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-medium hover:scale-105 transition-transform`}
-                  >
-                    #{tag}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
 
           <a 
             href={project.data.href}
@@ -391,7 +390,8 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
       accentColor={project.data.accentColor || "blue"}
       primaryButtonText="Open Email Client"
     />
-  </Container>
+    </Container>
+  </Section>
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 

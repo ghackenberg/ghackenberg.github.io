@@ -53,14 +53,14 @@ const colorStyles = {
 ---
 
 <!-- Contact Section (Modeled after the Service Section pattern) -->
-<section id={id} class={`py-16 mt-16 border-t border-element-border scroll-mt-24 ${className}`}>
+<div id={id} class={`mt-12 md:mt-16 ${className}`}>
   <!-- Section Title & Intro Description -->
-  <div class="max-w-3xl mx-auto text-center mb-12">
+  <div class="max-w-2xl mx-auto text-center mb-10">
     <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
       {sectionHeading}
     </h2>
     {sectionDescription && (
-      <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+      <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
         {sectionDescription}
       </p>
     )}
@@ -113,7 +113,7 @@ const colorStyles = {
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <script>
   // Copy email click handler

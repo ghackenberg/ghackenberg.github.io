@@ -35,6 +35,10 @@ export interface TelemetryEventMap {
   'Section Viewed': {
     id: string;
   };
+  'Heading Viewed': {
+    id: string;
+    level?: string;
+  };
   'Card Viewed': {
     id: string;
     collection?: string;
@@ -296,9 +300,17 @@ export function initSectionTracking(): void {
                 dwellTimers.delete(el);
                 observer.unobserve(el);
 
-                trackEvent('Section Viewed', {
-                  id: sectionId
-                });
+                const isHeading = /^H[1-6]$/i.test(el.tagName);
+                if (isHeading) {
+                  trackEvent('Heading Viewed', {
+                    id: sectionId,
+                    level: el.tagName.toLowerCase(),
+                  });
+                } else {
+                  trackEvent('Section Viewed', {
+                    id: sectionId,
+                  });
+                }
               }
             }, 2000);
 

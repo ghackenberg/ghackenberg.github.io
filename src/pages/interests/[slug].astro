@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
 import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 
@@ -131,7 +132,8 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
 >
   <Navbar />
 
-  <Container size="medium">
+  <Section id="interest-content" padding="standard">
+    <Container size="reading" padding="none">
     
     <!-- Top Breadcrumb / Back Link -->
     <div class="mb-8">
@@ -145,7 +147,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     </div>
 
     <!-- Hero Header -->
-    <header class="mb-14 pb-12 border-b border-element-border relative overflow-hidden">
+    <header class="mb-14 relative overflow-hidden">
       <!-- Ambient Background Radial Glow -->
       <div class={`absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-40 ${colorClasses.radialGlow}`}></div>
 
@@ -220,9 +222,12 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
         <Content />
       </div>
     </section>
+    </Container>
+  </Section>
 
-    <!-- Adjacent Interest Navigator -->
-    <section id="other-interests" class="py-10 border-t border-element-border">
+  <!-- Adjacent Interest Navigator -->
+  <Section id="other-interests" border="top" padding="standard">
+    <Container size="reading" padding="none">
       <div class="text-center mb-8">
         <h3 class="text-lg font-bold text-gray-200">
           Explore Other Personal Interests
@@ -272,7 +277,6 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
           </span>
         </a>
       </div>
-    </section>
 
     <!-- Connect & Collaborate Callout -->
     <section id="connect-collaborate" class="mt-12 p-8 sm:p-10 rounded-3xl glass-card border border-element-border text-center relative overflow-hidden">
@@ -299,7 +303,8 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
       </div>
     </section>
 
-  </Container>
+    </Container>
+  </Section>
 </Layout>
 
 <style>

@@ -1,7 +1,6 @@
 ---
 title: "Model Serving"
 serviceId: "intelligence-engineering"
-tagline: "High-Throughput Private Inference, API Gateways & Security"
 description: "Designing and deploying enterprise-grade sovereign AI inference clusters powered by vLLM, unified LiteLLM Proxy routing, spending controls, and Keycloak SSO/RBAC."
 ctaText: "Inquire about Model Serving"
 highlights:

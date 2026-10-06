@@ -1,5 +1,7 @@
 ---
 import { getRelatedContent, type ContentCollectionName } from "@commons/server/related-content";
+import Section from "@components/Section.astro";
+import Container from "@components/Container.astro";
 import PostCard from "./PostCard.astro";
 import PublicationCard from "./PublicationCard.astro";
 import PresentationCard from "./PresentationCard.astro";
@@ -126,9 +128,8 @@ const relatedVisualizations = related.visualizations;
 ---
 
 {totalRelated > 0 && (
-  <aside class={`w-full pb-16 md:pb-24 relative z-10 ${className}`} aria-label="Related Content">
-    <div class="max-w-6xl mx-auto px-4 md:px-8">
-      <div class="pt-12 md:pt-16 border-t border-element-border space-y-16">
+  <Section id="related-content" as="aside" border="top" padding="standard" class={`relative z-10 ${className}`} aria-label="Related Content">
+    <Container size="wide" padding="none" class="space-y-16">
       <div class="max-w-2xl">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4 flex items-center gap-3.5">
           <span>Related <span class="heading-gradient-brand">Content</span></span>
@@ -239,7 +240,6 @@ const relatedVisualizations = related.visualizations;
                 <ServiceCard
                   id={service.id}
                   title={service.data.title}
-                  tagline={service.data.tagline}
                   description={service.data.description}
                   tags={service.data.tags}
                   previewImage={service.data.previewImage}
@@ -263,7 +263,6 @@ const relatedVisualizations = related.visualizations;
         </section>
       );
     })}
-      </div>
-    </div>
-  </aside>
+    </Container>
+  </Section>
 )}

@@ -139,7 +139,6 @@ export async function GET() {
         id: s.id,
         url: `/services/${s.id}/`,
         title: s.data.title,
-        tagline: s.data.tagline,
         description: s.data.description,
         image: await resolveImage(s.data.previewImage),
         tags: s.data.tags || [],
@@ -149,7 +148,6 @@ export async function GET() {
         id: m.id,
         url: `/services/${m.data.serviceId}/${m.id.split('/').pop()}/`,
         title: m.data.title,
-        tagline: m.data.tagline,
         description: m.data.description,
         date: parseItemDate(m.id, m.data.pubDate)
       }))

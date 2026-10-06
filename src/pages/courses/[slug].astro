@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
@@ -113,7 +114,8 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 >
   <Navbar />
 
-  <Container size="medium">
+  <Section id="course-content" padding="standard">
+    <Container size="wide" padding="none">
     <!-- Back Button -->
     <a 
       href="/courses/" 
@@ -124,7 +126,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
     </a>
 
     <!-- Title Header -->
-    <header class="mb-12 pb-10 border-b border-white/5">
+    <header class="mb-12">
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
         {course.data.title}
       </h1>
@@ -285,7 +287,8 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       accentColor="yellow"
       primaryButtonText="Open Email Client"
     />
-  </Container>
+    </Container>
+  </Section>
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 

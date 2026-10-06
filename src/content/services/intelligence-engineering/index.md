@@ -1,7 +1,6 @@
-﻿
+
 ---
 title: "Intelligence Engineering"
-tagline: "Sovereign Agent Architectures, Enterprise Infrastructure & Autonomous Workflows"
 description: "End-to-end consulting for sovereign enterprise AI systems. From private model serving and hybrid knowledge retrieval to standardized tool protocols and stateful multi-agent orchestration."
 order: 1
 ctaText: "Inquire about Intelligence Engineering"
