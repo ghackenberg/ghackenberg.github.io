@@ -35,6 +35,7 @@ const forbiddenFolders = [
   { path: path.join(distDir, 'avatar'), name: 'avatar (must be in dist/assets/avatar)' },
   { path: path.join(distDir, 'branding'), name: 'branding (must be in dist/assets/branding)' },
   { path: path.join(distDir, 'technologies'), name: 'technologies (must be in dist/assets/technologies)' },
+  { path: path.join(distDir, 'diagrams'), name: 'diagrams (Mermaid diagrams must be co-located with content)' },
 ];
 
 for (const folder of forbiddenFolders) {
