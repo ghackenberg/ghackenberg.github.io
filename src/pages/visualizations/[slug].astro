@@ -53,6 +53,43 @@ const payload = await buildGraphPayload({
   getImage
 });
 
+const engineFactsMap: Record<string, { renderer: string; dimensions: string; layouts: string }> = {
+  '3d-force': {
+    renderer: 'WebGL 2.0 & Three.js',
+    dimensions: '3D Volumetric Coordinate Space',
+    layouts: 'Force-Directed, Concentric, Columns'
+  },
+  cytoscape: {
+    renderer: 'HTML5 Canvas (2D)',
+    dimensions: '2D Planar Graph Space',
+    layouts: 'Organic Force, Concentric Rings, Columns'
+  },
+  d3: {
+    renderer: 'Scalable Vector Graphics (SVG)',
+    dimensions: '2D Vector Coordinate System',
+    layouts: 'Velocity Verlet Physics, Radial, Columns'
+  },
+  sigma: {
+    renderer: 'WebGL (Hardware-Accelerated 2D)',
+    dimensions: '2D Planar Graph Space',
+    layouts: 'Worker-Offloaded Force, Radial, Columns'
+  },
+  'vis-network': {
+    renderer: 'HTML5 Canvas (2D)',
+    dimensions: '2D Planar Coordinate System',
+    layouts: 'Barnes-Hut Simulation, Hierarchical, Repulsion'
+  }
+};
+
+const facts = engineFactsMap[vis.id] || {
+  renderer: 'HTML5 Canvas & JavaScript',
+  dimensions: 'Interactive Coordinate System',
+  layouts: 'Dynamic Layout Presets'
+};
+
+const nodeCount = payload.d3?.nodes?.length || (posts.length + publications.length + presentations.length + projects.length + courses.length + services.length + tags.length);
+const edgeCount = payload.d3?.connections?.length || payload['vis-network']?.connections?.length || 0;
+
 const visUrl = `https://hackenberg.tech/visualizations/${vis.id}/`;
 
 const breadcrumbSchema = {
@@ -197,11 +234,75 @@ const breadcrumbSchema = {
     </div>
   </Container>
 
-  <Container size="reading" padding="none" class="mt-12 md:mt-16">
-    <!-- Structured Content & Technical Context Section -->
-    <article class="glass-card p-8 md:p-10 rounded-3xl border border-element-border visualization-details mb-12">
-      <Content />
-    </article>
+  <Container size="wide" padding="none" class="mt-12 md:mt-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+      <!-- Main Content (Column 1 - Article / Documentation) -->
+      <div class="lg:col-span-8">
+        <article class="glass-card p-8 md:p-10 rounded-3xl border border-element-border visualization-details prose-custom">
+          <Content />
+        </article>
+      </div>
+
+      <!-- Aside Metadata / Key Facts (Column 2) -->
+      <aside class="lg:col-span-4 space-y-8">
+        <!-- Engine Specs Card -->
+        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-green to-emerald-400"></div>
+
+          <h3 class="text-lg font-bold mb-4 flex items-center space-x-2">
+            <span>📊</span>
+            <span>Engine Specs</span>
+          </h3>
+
+          <div class="space-y-4 mb-6">
+            <div>
+              <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-1">Renderer & Stack</p>
+              <p class="text-sm text-gray-300 font-semibold leading-tight">{facts.renderer}</p>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-1">Space Topology</p>
+              <p class="text-sm text-gray-300 font-semibold leading-tight">{facts.dimensions}</p>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-1">Graph Dimensions</p>
+              <p class="text-sm text-gray-300 font-semibold leading-tight">{nodeCount} Entities · {edgeCount} Connections</p>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-1">Layout Presets</p>
+              <p class="text-sm text-gray-300 font-semibold leading-tight">{facts.layouts}</p>
+            </div>
+          </div>
+
+          <a 
+            href="/posts/2026_05_27_interactive_graph_visualizations_update/"
+            class="w-full py-3 px-4 rounded-xl text-center text-xs font-semibold bg-brand-green/10 border border-brand-green/20 text-brand-green hover:bg-brand-green/20 transition-all flex items-center justify-center space-x-2 cursor-pointer"
+          >
+            <span>Read Architecture Benchmark</span>
+            <span>↗</span>
+          </a>
+        </div>
+
+        <!-- Topics & Technologies Card -->
+        {vis.data.tags && vis.data.tags.length > 0 && (
+          <div class="glass-card p-6 rounded-2xl border border-element-border">
+            <h3 class="text-lg font-bold mb-4 flex items-center space-x-2">
+              <span>🏷️</span>
+              <span>Technologies</span>
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+              {vis.data.tags.map((tag: string) => (
+                <a
+                  href={`/tags/${tag}/`}
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 bg-brand-green/10 border-brand-green/20 text-brand-green hover:bg-brand-green/20"
+                >
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </aside>
+    </div>
 
     <!-- Contact Section -->
     <GetInTouchCard
