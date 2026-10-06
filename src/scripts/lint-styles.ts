@@ -19,7 +19,7 @@ function success(msg: string) {
 console.log('🔍 [lint:styles] Validating modular stylesheet architecture...');
 
 // 1. Check existence of modular stylesheets
-const requiredStyles = ['theme.css', 'slides.css', 'posts.css', 'components.css', 'global.css'];
+const requiredStyles = ['theme.css', 'diagrams.css', 'slides.css', 'posts.css', 'components.css', 'global.css'];
 for (const file of requiredStyles) {
   const filePath = path.join(STYLES_DIR, file);
   if (!fs.existsSync(filePath)) {
@@ -27,7 +27,27 @@ for (const file of requiredStyles) {
   }
 }
 
-// 2. Validate global.css composition
+// 2. Validate theme.css composition and imports
+const themeCssPath = path.join(STYLES_DIR, 'theme.css');
+if (fs.existsSync(themeCssPath)) {
+  const content = fs.readFileSync(themeCssPath, 'utf8');
+  if (!content.includes('./diagrams.css')) {
+    error('src/styles/theme.css is missing import for "./diagrams.css"');
+  } else {
+    success('src/styles/theme.css correctly imports modular diagrams.css.');
+  }
+}
+
+// 3. Validate posts.css does not double-import diagrams.css
+const postsCssPath = path.join(STYLES_DIR, 'posts.css');
+if (fs.existsSync(postsCssPath)) {
+  const content = fs.readFileSync(postsCssPath, 'utf8');
+  if (content.includes('diagrams.css')) {
+    error('src/styles/posts.css should not import diagrams.css directly (centralized in theme.css).');
+  }
+}
+
+// 4. Validate global.css composition
 const globalCssPath = path.join(STYLES_DIR, 'global.css');
 if (fs.existsSync(globalCssPath)) {
   const content = fs.readFileSync(globalCssPath, 'utf8');
@@ -51,7 +71,7 @@ if (fs.existsSync(globalCssPath)) {
   }
 }
 
-// 3. Validate print.astro isolation
+// 5. Validate print.astro isolation
 if (fs.existsSync(PRINT_ASTRO_PATH)) {
   const printContent = fs.readFileSync(PRINT_ASTRO_PATH, 'utf8');
   if (printContent.includes('styles/global.css')) {
@@ -70,7 +90,7 @@ interface DomainRule {
   forbidden: Array<{ pattern: RegExp; name: string }>;
 }
 
-// 4. Domain Boundary Rules
+// 6. Domain Boundary Rules
 const domainRules: DomainRule[] = [
   {
     file: 'theme.css',

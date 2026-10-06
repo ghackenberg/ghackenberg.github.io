@@ -15,6 +15,7 @@ import remarkCitations from '@plugins/remark-citations.js';
 import rehypeKatex from 'rehype-katex';
 import rehypeResponsiveTables from '@plugins/rehype-responsive-tables.js';
 import rehypeCallouts from '@plugins/rehype-callouts.js';
+import rehypeInlineSvg from '@plugins/rehype-inline-svg.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -272,7 +273,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid, remarkSlideCues, remarkCitations],
-      rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts],
+      rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts, rehypeInlineSvg],
     }),
   },
   vite: {

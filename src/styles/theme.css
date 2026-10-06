@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "../../public/styles/graphics.css";
+@import "./diagrams.css";
 
 @custom-variant light (.light &, .light&);
 

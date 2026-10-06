@@ -1,0 +1,137 @@
+/**
+ * Centralized Graphics & Diagram Styling Architecture
+ * Standardized SVG Design Tokens for adaptive dark/light themes.
+ */
+
+:root,
+svg,
+.svg-diagram svg {
+  /* Canvas & Cards */
+  --svg-bg: #0b1329;
+  --svg-card: #0e172e;
+  --svg-card-alt: #161f38;
+  --svg-border: rgba(255, 255, 255, 0.08);
+  --svg-line: rgba(255, 255, 255, 0.06);
+  --svg-pill-bg: rgba(255, 255, 255, 0.08);
+
+  /* Typography */
+  --svg-text-primary: #f8fafc;
+  --svg-text-secondary: #94a3b8;
+  --svg-text-muted: #64748b;
+
+  /* Node Archetypes (Dark Mode Defaults) */
+  /* Blue Archetype (Orchestration, Control Plane, Invariants) */
+  --svg-node-blue-bg: #1e3a8a;
+  --svg-node-blue-border: #3b82f6;
+  --svg-node-blue-text: #ffffff;
+  --svg-node-blue-subtext: #bfdbfe;
+
+  /* Purple Archetype (Probabilistic, ReAct, Autonomy) */
+  --svg-node-purple-bg: #581c87;
+  --svg-node-purple-border: #a855f7;
+  --svg-node-purple-text: #ffffff;
+  --svg-node-purple-subtext: #e9d5ff;
+
+  /* Amber Archetype (Fail-Safe, Human-in-the-Loop, Warnings) */
+  --svg-node-amber-bg: #78350f;
+  --svg-node-amber-border: #f59e0b;
+  --svg-node-amber-text: #ffffff;
+  --svg-node-amber-subtext: #fef08a;
+
+  /* Green Archetype (Verified, Safe Output, Success) */
+  --svg-node-green-bg: #064e3b;
+  --svg-node-green-border: #10b981;
+  --svg-node-green-text: #ffffff;
+  --svg-node-green-subtext: #a7f3d0;
+}
+
+/* Light Mode Overrides for in-app toggle (.light) */
+:root.light .svg-diagram svg,
+html.light .svg-diagram svg,
+.light .svg-diagram svg,
+:root.light svg,
+html.light svg,
+.light svg {
+  /* Canvas & Cards */
+  --svg-bg: #ffffff;
+  --svg-card: #f8fafc;
+  --svg-card-alt: #f1f5f9;
+  --svg-border: rgba(15, 23, 42, 0.12);
+  --svg-line: rgba(15, 23, 42, 0.08);
+  --svg-pill-bg: #e2e8f0;
+
+  /* Typography */
+  --svg-text-primary: #0f172a;
+  --svg-text-secondary: #475569;
+  --svg-text-muted: #64748b;
+
+  /* Node Archetypes (Light Mode) */
+  /* Blue Archetype */
+  --svg-node-blue-bg: #eff6ff;
+  --svg-node-blue-border: #2563eb;
+  --svg-node-blue-text: #1e40af;
+  --svg-node-blue-subtext: #1d4ed8;
+
+  /* Purple Archetype */
+  --svg-node-purple-bg: #faf5ff;
+  --svg-node-purple-border: #9333ea;
+  --svg-node-purple-text: #6b21a8;
+  --svg-node-purple-subtext: #7e22ce;
+
+  /* Amber Archetype */
+  --svg-node-amber-bg: #fffbeb;
+  --svg-node-amber-border: #d97706;
+  --svg-node-amber-text: #92400e;
+  --svg-node-amber-subtext: #b45309;
+
+  /* Green Archetype */
+  --svg-node-green-bg: #f0fdf4;
+  --svg-node-green-border: #16a34a;
+  --svg-node-green-text: #166534;
+  --svg-node-green-subtext: #15803d;
+}
+
+/* Standalone Light Mode Media Query (Google Image Search / Direct URL inspection) */
+@media (prefers-color-scheme: light) {
+  :root,
+  svg,
+  .svg-diagram svg {
+    /* Canvas & Cards */
+    --svg-bg: #ffffff;
+    --svg-card: #f8fafc;
+    --svg-card-alt: #f1f5f9;
+    --svg-border: rgba(15, 23, 42, 0.12);
+    --svg-line: rgba(15, 23, 42, 0.08);
+    --svg-pill-bg: #e2e8f0;
+
+    /* Typography */
+    --svg-text-primary: #0f172a;
+    --svg-text-secondary: #475569;
+    --svg-text-muted: #64748b;
+
+    /* Node Archetypes (Light Mode) */
+    /* Blue Archetype */
+    --svg-node-blue-bg: #eff6ff;
+    --svg-node-blue-border: #2563eb;
+    --svg-node-blue-text: #1e40af;
+    --svg-node-blue-subtext: #1d4ed8;
+
+    /* Purple Archetype */
+    --svg-node-purple-bg: #faf5ff;
+    --svg-node-purple-border: #9333ea;
+    --svg-node-purple-text: #6b21a8;
+    --svg-node-purple-subtext: #7e22ce;
+
+    /* Amber Archetype */
+    --svg-node-amber-bg: #fffbeb;
+    --svg-node-amber-border: #d97706;
+    --svg-node-amber-text: #92400e;
+    --svg-node-amber-subtext: #b45309;
+
+    /* Green Archetype */
+    --svg-node-green-bg: #f0fdf4;
+    --svg-node-green-border: #16a34a;
+    --svg-node-green-text: #166534;
+    --svg-node-green-subtext: #15803d;
+  }
+}
