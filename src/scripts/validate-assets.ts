@@ -35,6 +35,12 @@ if (fs.existsSync(astroAssetFolder)) {
   process.exit(1);
 }
 
+const imagesFolder = path.join(distDir, 'images');
+if (fs.existsSync(imagesFolder)) {
+  console.error(`[validate-assets] ❌ Assertion 1 Failed: Forbidden unsemantic folder "images" found at: ${imagesFolder}`);
+  process.exit(1);
+}
+
 const htmlFiles = getHtmlFiles(distDir);
 if (htmlFiles.length === 0) {
   console.error('[validate-assets] ❌ Error: dist directory contains no HTML files. Run "npm run build" first.');
@@ -201,8 +207,6 @@ function isWhitelistedRasterImage(relPath: string): boolean {
     'icon-192x192.png',
     'icon-512x512.png',
     'icon-512x512-maskable.png',
-    'og-share-preview.png',
-    'images/og/og-share-preview.png',
   ]);
   if (rootWhitelist.has(normalized)) {
     return true;
