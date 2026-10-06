@@ -18,18 +18,73 @@ tags:
   - "java"
   - "software-engineering"
   - "teaching"
+overview: "Java gehört weltweit zu den verlässlichsten und meistgenutzten Programmiersprachen für robuste Unternehmenssoftware und Backend-Services. Dieser Einführungskurs führt systematisch von den Grundlagen der imperativen Programmierung über fortgeschrittene objektorientierte Konzepte bis hin zu generischen Collections und automatisierter Qualitätssicherung mit JUnit."
+targetAudience: "Bachelor-Studierende der Fachrichtung Informatik und verwandter technischer Studiengänge sowie Berufseinsteiger in die Softwareentwicklung."
+prerequisites:
+  - "Grundlegendes logisches Denkvermögen und Computer-Grundkenntnisse"
+  - "Verständnis elementarer mathematischer Funktionen und Variablen"
+  - "Keine vorherige Programmiererfahrung zwingend erforderlich"
+competencies:
+  - title: "Imperative Programmierung & Syntax"
+    description: "Sicherer Umgang mit Java-Typen, Kontrollstrukturen, Methoden und Speichermodellen."
+    icon: "☕"
+  - title: "Objektorientierte Modellierung"
+    description: "Implementierung von Vererbung, Kapselung, Polymorphie und abstrakten Schnittstellen."
+    icon: "🧩"
+  - title: "Collections & Datenstrukturen"
+    description: "Effizienter Einsatz generischer Listen, Sets und HashMaps für dynamische Datenmengen."
+    icon: "📚"
+  - title: "Testautomatisierung mit JUnit"
+    description: "Schreiben isolierter automatisierter Komponententests und strukturierte Fehlerbehandlung."
+    icon: "🧪"
+syllabus:
+  - moduleNumber: "01"
+    title: "Java-Plattform & Sprachgrundlagen"
+    description: "JVM, Bytecode, Compiler, primitive Datentypen, Operatoren und Kontrollstrukturen."
+    topics:
+      - "JDK, JRE und die Rolle der Java Virtual Machine"
+      - "Primitive Typen, Referenztypen und Typkonvertierung"
+      - "Schleifen (for, while), Verzweigungen (if-else, switch)"
+    tools:
+      - "Java 21"
+      - "IntelliJ IDEA"
+  - moduleNumber: "02"
+    title: "Klassen, Objekte & Kapselung"
+    description: "Klassenbaupläne, Attribute, Methoden, Konstruktoren und Zugriffsmodifikatoren."
+    topics:
+      - "Instanziierung, Heap- und Stack-Speicher"
+      - "Sichtbarkeiten (private, package, protected, public)"
+      - "Getter, Setter und Invariantenabsicherung"
+    tools:
+      - "Java"
+  - moduleNumber: "03"
+    title: "Vererbung, Interfaces & Polymorphie"
+    description: "Hierarchische Beziehungen, Subtyping, dynamische Bindung und Schnittstellendesign."
+    topics:
+      - "Abstrakte Klassen vs. Interfaces"
+      - "Methodenüberschreibung (@Override) und Super-Aufrufe"
+      - "Laufzeitpolymorphie und Pattern Matching"
+    tools:
+      - "Java"
+      - "UML"
+  - moduleNumber: "04"
+    title: "Generics & das Java Collections Framework"
+    description: "Typsichere Datenstrukturen: List, Set, Map und deren Implementierungen."
+    topics:
+      - "ArrayList vs. LinkedList"
+      - "HashSet, TreeSet und equals/hashCode-Vertrag"
+      - "HashMap, TreeMap und Key-Value-Muster"
+    tools:
+      - "Java Collections"
+  - moduleNumber: "05"
+    title: "Exception Handling, I/O & JUnit Testing"
+    description: "Robuste Fehlerbehandlung mit Exceptions, Dateizugriff und Testautomatisierung."
+    topics:
+      - "Checked vs. Unchecked Exceptions (try-catch-finally)"
+      - "Streams, Scanner und Dateipfade (java.nio)"
+      - "Test-Driven Development und Assertions mit JUnit 5"
+    tools:
+      - "JUnit 5"
+      - "Maven"
 ---
 
-Herzlich willkommen zum Kurs **Java-Programmierung**! Java gehört weltweit zu den wichtigsten und stabilsten Programmiersprachen für Unternehmenssoftware und mobile Systeme.
-
-## Kursübersicht
-
-Dieser Kurs richtet sich an Studierende, die solide Grundlagen in der objektorientierten Softwareentwicklung erwerben wollen. Wir betrachten sowohl theoretische Konzepte der strukturierten Programmierung als auch die praktische Umsetzung moderner Programmierparadigmen in Java.
-
-## Inhaltliche Schwerpunkte
-
-1. **Einführung & Syntax**: Datentypen, Kontrollstrukturen (Schleifen, Bedingungen), Arrays.
-2. **Objektorientierung in der Tiefe**: Klassen, Objekte, Konstruktoren, Kapselung, Vererbung und Interfaces.
-3. **Datenstrukturen**: Listen, Sets, Maps und das Java Collections Framework.
-4. **Fehlerbehandlung & Input/Output**: Exceptions (try-catch), Dateiverarbeitung und Streams.
-5. **Softwaretests**: Schreiben von Unit Tests mit JUnit zur automatisierten Absicherung der Codequalität.

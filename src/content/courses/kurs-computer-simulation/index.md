@@ -17,17 +17,75 @@ tags:
   - "simulation"
   - "manufacturing-systems"
   - "teaching"
+overview: "Rechnergestützte Simulation ist eine Kernkompetenz zur Analyse, Validierung und Optimierung komplexer technischer Systeme. Der Kurs vermittelt die mathematischen Grundlagen, algorithmischen Paradigmen und die objektorientierte Programmierung diskreter und kontinuierlicher Simulatoren in C#."
+targetAudience: "Bachelor- und Master-Studierende der Fachrichtung Informatik, Mechatronik und Automatisierungstechnik sowie Simulationsingenieure."
+prerequisites:
+  - "Solide Kenntnisse in objektorientierter Programmierung (vorzugsweise C# oder Java)"
+  - "Grundlagen der Wahrscheinlichkeitsrechnung und Statistik"
+  - "Verständnis elementarer Datenstrukturen (Queues, Prioritätswarteschlangen, Graphen)"
+competencies:
+  - title: "Taxonomie & Paradigmen"
+    description: "Klassifikation statischer vs. dynamischer und kontinuierlicher vs. diskreter Simulationssysteme."
+    icon: "🗺️"
+  - title: "Simulations-Engine Entwicklung"
+    description: "Eigenständige Implementierung eines Next-Event Time Advance Simulators in C#."
+    icon: "⚙️"
+  - title: "Zufall & Stochastik"
+    description: "Pseudozufallsgeneratoren, Inversionsmethode und Modellierung stochastischer Prozesse."
+    icon: "🎲"
+  - title: "Verifikation & Validierung"
+    description: "Statistische Absicherung von Simulationsergebnissen, Konfidenzintervalle und Sensitivitätsanalyse."
+    icon: "📊"
+syllabus:
+  - moduleNumber: "01"
+    title: "Grundlagen & Taxonomie der Simulation"
+    description: "Einführung in Systembegriff, Modelle, Zeitfortschrittsmechanismen und Modellklassifikation."
+    topics:
+      - "Systemgrenzen, Zustandsgrößen und Modellabstraktion"
+      - "Fixed-Step vs. Next-Event Time Advance"
+      - "Klassifikationsmatrix: Deterministisch vs. Stochastisch"
+    tools:
+      - "UML"
+      - "Markdown"
+  - moduleNumber: "02"
+    title: "Stochastische Modellierung & Zufallsvariablen"
+    description: "Erzeugung von Pseudozufallszahlen, statistische Verteilungen und Anpassungstests."
+    topics:
+      - "Linear Congruential Generators (LCG)"
+      - "Inversionsmethode & Transformationsverfahren"
+      - "Chi-Quadrat- und Kolmogorov-Smirnov-Anpassungstests"
+    tools:
+      - "C#"
+      - "LINQPad"
+  - moduleNumber: "03"
+    title: "Architektur einer Discrete-Event-Engine"
+    description: "Objektorientierter Entwurf einer ereignisdiskreten Simulations-Engine in modernem C#."
+    topics:
+      - "Event-Kalender & Prioritätswarteschlangen"
+      - "Entities, Ressourcen und Warteschlangenstrategien"
+      - "Zustandsbeobachtung und Telemetrieerfassung"
+    tools:
+      - "C# / .NET"
+      - "Visual Studio"
+  - moduleNumber: "04"
+    title: "Kontinuierliche & Hybride Systeme"
+    description: "Numerische Integration gewöhnlicher Differentialgleichungen und hybride Zustandsübergänge."
+    topics:
+      - "Explizites Euler-Verfahren & Runge-Kutta (RK4)"
+      - "Schrittweitensteuerung & numerische Stabilität"
+      - "Hybride Trigger und Schwellwert-Ereignisse"
+    tools:
+      - "C#"
+      - "MathNet.Numerics"
+  - moduleNumber: "05"
+    title: "Verifikation, Validierung & Experimentalanalyse"
+    description: "Statistische Auswertung von Simulationsläufen, Einschwingphasen und Hypothesentests."
+    topics:
+      - "Einschwingphase (Warm-up Period Detection)"
+      - "Batch-Means-Verfahren & Replikationsanalyse"
+      - "Modellvalidierung gegenüber Realsystemdaten"
+    tools:
+      - "Python"
+      - "Jupyter Notebook"
 ---
 
-Herzlich willkommen zum Kurs **Computer-Simulation**! Dieser Kurs bietet eine fundierte Einführung in die Modellierung und rechnergestützte Simulation dynamischer Systeme.
-
-## Kursübersicht
-
-Die Simulation ist eine Schlüsseltechnologie in der modernen Produktentwicklung und Prozessoptimierung. In diesem Kurs lernen Sie, reale Systeme (wie z. B. Produktionslinien, Logistikketten oder physikalische Systeme) in formale mathematische Modelle zu überführen und diese informationstechnisch abzubilden.
-
-## Inhaltliche Schwerpunkte
-
-1. **Einführung in die Simulationstheorie**: Diskrete vs. kontinuierliche Simulation, Zufallszahlen und Wahrscheinlichkeitsverteilungen.
-2. **Objektorientierte Modellierung**: Strukturierung von Simulationsumgebungen mit Klassen und Zustandsautomaten.
-3. **Praktische Umsetzung in C#**: Aufbau eines eigenen eventgesteuerten Simulators (Discrete Event Simulator).
-4. **Verifikation & Validierung**: Sicherstellen der Modellkorrektheit, Fehlerquellen erkennen und Messergebnisse statistisch absichern.

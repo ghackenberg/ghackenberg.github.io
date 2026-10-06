@@ -219,22 +219,106 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
       <div class="lg:col-span-8 space-y-12">
         <!-- Detail / Content block -->
         <section id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
-          <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2 border-b border-element-border pb-2"><span>🚀</span><span>Project Details & Focus</span></h2>
-          
-          <!-- Render markdown body if there is one; otherwise show tagline description -->
-          {project.body ? (
-            <Content />
-          ) : (
-            <div class="space-y-4">
-              <p>
-                {project.data.title} is a dedicated solution designed with the core principles of reliability, usability, and modern architecture. It addresses critical needs in {project.data.tags.slice(0, 3).join(", ").toLowerCase()} systems.
+          <h2 class="text-xl font-bold mb-8 tracking-tight flex items-center space-x-2 border-b border-element-border pb-2">
+            <span>🚀</span>
+            <span>Project Architecture & Case Study</span>
+          </h2>
+
+          <!-- Challenge Block -->
+          {project.data.challenge && (
+            <div class="mb-8 p-6 rounded-2xl bg-element-bg border border-element-border">
+              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-2.5 flex items-center space-x-2">
+                <span>🎯</span>
+                <span>The Engineering Challenge</span>
+              </h3>
+              <p class="text-sm text-gray-300 font-normal leading-relaxed">
+                {project.data.challenge}
               </p>
-              <h3 class="font-bold mt-6 mb-2">Key Areas of Focus:</h3>
-              <ul class="list-disc pl-5 space-y-2 text-gray-400">
-                {project.data.tags.map(tag => (
-                  <li><strong>{tag}</strong>: Implementation of standards, optimized performance, and interdisciplinary support.</li>
+            </div>
+          )}
+
+          <!-- Solution Block -->
+          {project.data.solution && (
+            <div class="mb-8 p-6 rounded-2xl bg-element-bg border border-element-border">
+              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-2.5 flex items-center space-x-2">
+                <span>💡</span>
+                <span>System Architecture & Solution</span>
+              </h3>
+              <p class="text-sm text-gray-300 font-normal leading-relaxed">
+                {project.data.solution}
+              </p>
+            </div>
+          )}
+
+          <!-- Key Capabilities Grid -->
+          {project.data.keyCapabilities && project.data.keyCapabilities.length > 0 && (
+            <div class="mb-8">
+              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-4 flex items-center space-x-2">
+                <span>⚡</span>
+                <span>Key Capabilities</span>
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {project.data.keyCapabilities.map((cap) => (
+                  <div class="p-5 rounded-2xl bg-element-bg border border-element-border flex flex-col justify-between hover:border-element-border-medium transition-colors">
+                    <div>
+                      <div class="flex items-center space-x-2 mb-2">
+                        <span class="text-base shrink-0 select-none">{cap.icon || '🚀'}</span>
+                        <h4 class="text-sm font-bold text-gray-100">{cap.title}</h4>
+                      </div>
+                      <p class="text-xs text-gray-400 font-normal leading-relaxed">{cap.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- Tech Stack Highlights -->
+          {project.data.techStackHighlights && project.data.techStackHighlights.length > 0 && (
+            <div class="mb-8">
+              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-4 flex items-center space-x-2">
+                <span>🛠️</span>
+                <span>Technology Stack Highlights</span>
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {project.data.techStackHighlights.map((stack) => (
+                  <div class="p-4 rounded-xl bg-element-bg border border-element-border">
+                    <p class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 mb-2">{stack.category}</p>
+                    <div class="flex flex-wrap gap-1.5">
+                      {stack.technologies.map((tech) => (
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-brand-blue/10 border border-brand-blue/20 text-brand-blue font-medium">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- Verifiable Outcomes / Results -->
+          {project.data.outcomes && project.data.outcomes.length > 0 && (
+            <div>
+              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-blue mb-3 flex items-center space-x-2">
+                <span>📈</span>
+                <span>Verifiable Outcomes & Deliverables</span>
+              </h3>
+              <ul class="space-y-2.5">
+                {project.data.outcomes.map((outcome) => (
+                  <li class="flex items-start space-x-2.5 text-xs text-gray-300 font-normal leading-relaxed">
+                    <span class="text-brand-blue font-bold shrink-0 mt-0.5 select-none">✓</span>
+                    <span>{outcome}</span>
+                  </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          <!-- Optional markdown body fallback if provided -->
+          {project.body && (
+            <div class="mt-8 pt-8 border-t border-element-border">
+              <Content />
             </div>
           )}
         </section>
