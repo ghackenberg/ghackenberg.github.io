@@ -1,6 +1,6 @@
 ---
 name: image-generation
-description: Design, prompt, condition, and generate brand-consistent comic illustrations, pipeline motifs, and presentation visuals following IMAGE_STYLE_GUIDELINES.md.
+description: Design, prompt, condition, and generate brand-consistent comic illustrations, pipeline motifs, and presentation visuals following brand guidelines.
 ---
 
 # Image Generation (Diffusion Prompts & Visual Brand DNA)
@@ -8,7 +8,7 @@ description: Design, prompt, condition, and generate brand-consistent comic illu
 This skill governs the prompt engineering, reference conditioning, and generation of illustrations across the website using `generate_image`.
 
 ## 1. Single Source of Truth & Brand Aesthetic
-Strictly consult [`IMAGE_STYLE_GUIDELINES.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/IMAGE_STYLE_GUIDELINES.md):
+Strictly consult [`.agents/skills/image-generation/resources/style-guidelines.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/style-guidelines.md):
 - **Core Aesthetic**: Stylized Disney/Pixar comic illustration style, crisp dark ink outlines, bold cel shading, no realistic photographic textures.
 - **Color Palette**: Dark slate background (`#030712`) combined with the 4 brand colors:
   - `#3b82f6` (Brand Blue): Software engineering, TypeScript, Astro.

@@ -314,7 +314,7 @@ Whenever asked to generate or modify an image (preview, hero, social card, or di
 4. User Review Gate:
    - Before calling generate_image, always present the exact prompt to the user for review.
 5. Style Aesthetic:
-   - Strictly adhere to IMAGE_STYLE_GUIDELINES.md: Disney/Pixar comic illustration style,
+   - Strictly adhere to .agents/skills/image-generation/resources/style-guidelines.md: Disney/Pixar comic illustration style,
      crisp dark ink line art, bold cel shading, dark slate canvas (#030712), and website brand colors.
 ```
 
@@ -322,7 +322,7 @@ Durch das verbindliche **User Review Gate** (Regel 4) bleibt der Mensch im Regel
 
 ### Warum Disney/Pixar Comic-Stil? (Stil als visueller Normalisierer)
 
-Ein oft übersehener, aber entscheidender architektonischer Aspekt ist die Wahl des Bildstils: Warum erzwingen die Richtlinien ([`IMAGE_STYLE_GUIDELINES.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/IMAGE_STYLE_GUIDELINES.md)) einen **Disney/Pixar-inspirierten Comic-Illustrationsstil** mit dunklen Tusche-Outlines, Cel-Shading und einer Dark-Slate-Leinwand (`#030712`) anstelle von reinem Fotorealismus?
+Ein oft übersehener, aber entscheidender architektonischer Aspekt ist die Wahl des Bildstils: Warum erzwingen die Richtlinien ([`.agents/skills/image-generation/resources/style-guidelines.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/style-guidelines.md)) einen **Disney/Pixar-inspirierten Comic-Illustrationsstil** mit dunklen Tusche-Outlines, Cel-Shading und einer Dark-Slate-Leinwand (`#030712`) anstelle von reinem Fotorealismus?
 
 Dies ist keine rein subjektive Design-Entscheidung, sondern ein **ingenieurwissenschaftlicher Normalisierungsschritt**:
 * **Heterogene Input-Quellen:** In einer realen Organisation stammen Bildanker aus völlig unterschiedlichen Welten – ein Studio-Portrait der Person, ein Smartphone-Schnappschuss eines Labortisches, ein abfotografiertes Ölgemälde und ein digitaler UI-Screenshot.
@@ -346,6 +346,6 @@ Mit dieser Architektur generieren wir in Sekunden druckreife Hero-Grafiken, Soci
 
 ### Weiterführende Ressourcen
 
-* **Projekt-Leitlinien:** [`IMAGE_STYLE_GUIDELINES.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/IMAGE_STYLE_GUIDELINES.md) – Spezifikation der Farbpalette, Linienstärken und Cel-Shading-Ausschlüsse.
+* **Projekt-Leitlinien:** [`.agents/skills/image-generation/resources/style-guidelines.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/style-guidelines.md) – Spezifikation der Farbpalette, Linienstärken und Cel-Shading-Ausschlüsse.
 * **Agenten-Regeln:** [`AGENTS.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/AGENTS.md) – Die exakten Protokolle für generative AI-Assistenten.
 * **Astro Content Layer:** [`src/content.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/content.config.ts) – Formale Zod-Schemadefinitionen für Charaktere, Objekte und Umgebungen.

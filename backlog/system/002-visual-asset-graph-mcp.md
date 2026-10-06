@@ -65,4 +65,4 @@ Prüft einen entworfenen Prompt vor der Vorlage an den User:
 ## 4. Erwarteter Nutzen
 - Schließt Halluzinationen bei Bildreferenzen und Raumelementen aus.
 - Reduziert die Vorbereitungszeit und Dateisuch-Tool-Calls um **80 %**.
-- Garantiert strikte Einhaltung von `IMAGE_STYLE_GUIDELINES.md`.
+- Garantiert strikte Einhaltung von `.agents/skills/image-generation/resources/style-guidelines.md`.
