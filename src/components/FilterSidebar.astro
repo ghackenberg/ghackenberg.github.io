@@ -1,0 +1,264 @@
+---
+interface Props {
+  title?: string;
+  searchId: string;
+  searchPlaceholder?: string;
+  tags?: string[];
+  tagLabel?: string;
+  accentColor?: "blue" | "yellow" | "purple" | "green";
+}
+
+const {
+  title = "Filter Catalog",
+  searchId,
+  searchPlaceholder = "Search...",
+  tags = [],
+  tagLabel = "Filter by Tag",
+  accentColor = "blue",
+} = Astro.props;
+
+const searchFocusClasses = {
+  blue: "focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50",
+  yellow: "focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50",
+  purple: "focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50",
+  green: "focus:border-brand-green/50 focus:ring-1 focus:ring-brand-green/50",
+}[accentColor];
+
+const summaryHoverBorder = {
+  blue: "hover:border-brand-blue/30",
+  yellow: "hover:border-brand-yellow/30",
+  purple: "hover:border-brand-purple/30",
+  green: "hover:border-brand-green/30",
+}[accentColor];
+---
+
+<aside class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24" data-accent={accentColor}>
+  <div class="glass-card p-4 sm:p-6 rounded-2xl border border-element-border flex flex-col lg:max-h-[calc(100vh-8rem)]">
+    <!-- Header -->
+    <div class="mb-3 lg:mb-4 shrink-0">
+      <h2 class="text-base lg:text-lg font-bold flex items-center space-x-2">
+        <span>⚙️</span>
+        <span>{title}</span>
+      </h2>
+    </div>
+
+    <!-- Text Search -->
+    <div class="mb-3 lg:mb-4 shrink-0">
+      <label for={searchId} class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-1.5 lg:mb-2">Search</label>
+      <div class="relative">
+        <input 
+          type="text" 
+          id={searchId} 
+          placeholder={searchPlaceholder} 
+          class={`w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-200 ${searchFocusClasses}`}
+        />
+        <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
+      </div>
+    </div>
+
+    <!-- Custom Filters Slot (e.g. instruction language in courses) -->
+    <slot />
+
+    <!-- Tag Cloud -->
+    {tags && tags.length > 0 && (
+      <>
+        <!-- Technologies / Tags list (Mobile Collapsible) -->
+        <details class="lg:hidden group mb-2 tag-filter-details">
+          <summary class={`flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium ${summaryHoverBorder} text-xs font-semibold text-gray-300 hover:text-gray-100 cursor-pointer select-none transition-all duration-200 list-none`}>
+            <span class="flex items-center gap-2">
+              <span>🏷️</span>
+              <span>Browse {tags.length} Tags</span>
+            </span>
+            <span class="toggle-arrow text-gray-400 transition-transform duration-200 text-xs">▾</span>
+          </summary>
+          <div class="pt-3 pb-1">
+            <div class="flex flex-wrap gap-1.5 max-h-[220px] overflow-y-auto pr-1 custom-scrollbar-thin content-start">
+              {tags.map((tag) => (
+                <button 
+                  type="button" 
+                  class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                  data-tag={tag}
+                >
+                  #{tag}
+                </button>
+              ))}
+            </div>
+          </div>
+        </details>
+
+        <!-- Technologies / Tags list (Desktop Permanent) -->
+        <div class="hidden lg:flex flex-1 min-h-0 flex-col">
+          <div class="flex items-center justify-between mb-2 shrink-0">
+            <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block">{tagLabel}</span>
+            <span class="text-[10px] text-gray-500 font-medium">{tags.length} topics</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 lg:max-h-none flex-1 min-h-0 overflow-y-auto pr-1 custom-scrollbar-thin content-start" id="tag-filter-buttons">
+            {tags.map((tag) => (
+              <button 
+                type="button" 
+                class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+                data-tag={tag}
+              >
+                #{tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+</aside>
+
+<style>
+  .tag-filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
+  }
+
+  /* Tag details toggle styling */
+  details.tag-filter-details summary {
+    list-style: none;
+  }
+  details.tag-filter-details summary::-webkit-details-marker {
+    display: none;
+  }
+  details.tag-filter-details summary .toggle-arrow {
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
+  }
+  details.tag-filter-details[open] summary .toggle-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* Accent: Blue */
+  [data-accent="blue"] .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.08);
+  }
+  [data-accent="blue"] .tag-filter-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #7dd3fc;
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
+  }
+  [data-accent="blue"] details.tag-filter-details[open] summary {
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  /* Accent: Yellow */
+  [data-accent="yellow"] .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.08);
+  }
+  [data-accent="yellow"] .tag-filter-btn.active {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.5);
+    color: #fde047;
+    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25);
+  }
+  [data-accent="yellow"] details.tag-filter-details[open] summary {
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  /* Accent: Purple */
+  [data-accent="purple"] .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #c084fc;
+    background: rgba(168, 85, 247, 0.08);
+  }
+  [data-accent="purple"] .tag-filter-btn.active {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.5);
+    color: #d8b4fe;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25);
+  }
+  [data-accent="purple"] details.tag-filter-details[open] summary {
+    border-color: rgba(168, 85, 247, 0.3);
+  }
+
+  /* Accent: Green */
+  [data-accent="green"] .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #6ee7b7;
+    background: rgba(16, 185, 129, 0.08);
+  }
+  [data-accent="green"] .tag-filter-btn.active {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #a7f3d0;
+    box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.25);
+  }
+  [data-accent="green"] details.tag-filter-details[open] summary {
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  /* Light mode overrides */
+  :global(.light) .tag-filter-btn {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569;
+  }
+
+  :global(.light) [data-accent="blue"] .tag-filter-btn:hover:not(.active) {
+    background: rgba(59, 130, 246, 0.06);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #1d4ed8;
+  }
+  :global(.light) [data-accent="blue"] .tag-filter-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #1d4ed8;
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2);
+  }
+  :global(.light) [data-accent="blue"] details.tag-filter-details[open] summary {
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+
+  :global(.light) [data-accent="yellow"] .tag-filter-btn:hover:not(.active) {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #d97706;
+  }
+  :global(.light) [data-accent="yellow"] .tag-filter-btn.active {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #b45309;
+    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2);
+  }
+  :global(.light) [data-accent="yellow"] details.tag-filter-details[open] summary {
+    border-color: rgba(245, 158, 11, 0.4);
+  }
+
+  :global(.light) [data-accent="purple"] .tag-filter-btn:hover:not(.active) {
+    background: rgba(168, 85, 247, 0.06);
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #7e22ce;
+  }
+  :global(.light) [data-accent="purple"] .tag-filter-btn.active {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.4);
+    color: #7e22ce;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2);
+  }
+  :global(.light) [data-accent="purple"] details.tag-filter-details[open] summary {
+    border-color: rgba(168, 85, 247, 0.4);
+  }
+
+  :global(.light) [data-accent="green"] .tag-filter-btn:hover:not(.active) {
+    background: rgba(16, 185, 129, 0.06);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #047857;
+  }
+  :global(.light) [data-accent="green"] .tag-filter-btn.active {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #047857;
+    box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2);
+  }
+  :global(.light) [data-accent="green"] details.tag-filter-details[open] summary {
+    border-color: rgba(16, 185, 129, 0.4);
+  }
+</style>

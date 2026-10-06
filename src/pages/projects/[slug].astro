@@ -122,7 +122,7 @@ const projectUrl = `https://hackenberg.tech/projects/${project.id}/`;
 
 const softwareAppSchema = {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
+  "@type": ["SoftwareApplication", "SoftwareSourceCode"],
   "@id": `${projectUrl}#software`,
   "name": project.data.title,
   "headline": project.data.tagline,
@@ -132,6 +132,8 @@ const softwareAppSchema = {
   "sameAs": project.data.href,
   "applicationCategory": "Software",
   "operatingSystem": "Cross-platform",
+  "runtimePlatform": "Cross-platform",
+  "programmingLanguage": tech,
   "author": {
     "@type": "Person",
     "name": "Dr. Georg Hackenberg",

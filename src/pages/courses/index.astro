@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
 import CourseCard from "@components/CourseCard.astro";
+import FilterSidebar from "@components/FilterSidebar.astro";
 
 const courses = await getCollection("courses");
 
@@ -71,70 +72,34 @@ const breadcrumbSchema = {
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Filters Sidebar (Column 1) -->
-      <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
-        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col lg:max-h-[calc(100vh-8rem)]">
-          <div class="mb-4 shrink-0">
-            <h2 class="text-lg font-bold flex items-center space-x-2">
-              <span>⚙️</span>
-              <span>Filter Catalog</span>
-            </h2>
-          </div>
-
-          <!-- Text Search -->
-          <div class="mb-4 shrink-0">
-            <label for="course-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
-            <div class="relative">
-              <input 
-                type="text" 
-                id="course-search" 
-                placeholder="Search courses..." 
-                class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs placeholder-gray-500 focus:outline-none focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50 transition-all duration-200"
-              />
-              <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
-            </div>
-          </div>
-
-          <!-- Instruction Language -->
-          <div class="mb-4 shrink-0">
-            <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Instruction Language</span>
-            <div class="flex flex-wrap gap-2">
-              <button 
-                id="lang-btn-de" 
-                class="lang-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
-                data-lang="de"
-              >
-                Deutsch (DE)
-              </button>
-              <button 
-                id="lang-btn-en" 
-                class="lang-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
-                data-lang="en"
-              >
-                English (EN)
-              </button>
-            </div>
-          </div>
-
-          <!-- Technologies / Tags list -->
-          <div class="flex-1 min-h-0 flex flex-col">
-            <div class="flex items-center justify-between mb-2 shrink-0">
-              <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block">Filter by Tag</span>
-              <span class="text-[10px] text-gray-500 font-medium">{allTags.length} topics</span>
-            </div>
-            <div class="flex flex-wrap gap-1.5 max-h-[240px] lg:max-h-none flex-1 min-h-0 overflow-y-auto pr-1 custom-scrollbar-thin content-start" id="tag-filter-buttons">
-              {allTags.map(tag => (
-                <button 
-                  type="button" 
-                  class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
-                  data-tag={tag}
-                >
-                  #{tag}
-                </button>
-              ))}
-            </div>
+      <FilterSidebar
+        title="Filter Catalog"
+        searchId="course-search"
+        searchPlaceholder="Search courses..."
+        tags={allTags}
+        accentColor="yellow"
+      >
+        <!-- Instruction Language -->
+        <div class="mb-4 shrink-0">
+          <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Instruction Language</span>
+          <div class="flex flex-wrap gap-2">
+            <button 
+              id="lang-btn-de" 
+              class="lang-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+              data-lang="de"
+            >
+              Deutsch (DE)
+            </button>
+            <button 
+              id="lang-btn-en" 
+              class="lang-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
+              data-lang="en"
+            >
+              English (EN)
+            </button>
           </div>
         </div>
-      </div>
+      </FilterSidebar>
 
       <!-- Courses Grid (Column 2) -->
       <div class="lg:col-span-9 order-2 lg:order-1">
@@ -214,46 +179,6 @@ const breadcrumbSchema = {
     background: rgba(245, 158, 11, 0.06);
     border-color: rgba(245, 158, 11, 0.3);
     color: #d97706; /* amber-600 */
-  }
-
-  /* Tag filter buttons */
-  .tag-filter-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #9ca3af;
-  }
-
-  .tag-filter-btn:hover:not(.active) {
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #fbbf24;
-    background: rgba(245, 158, 11, 0.08);
-  }
-
-  .tag-filter-btn.active {
-    background: rgba(245, 158, 11, 0.2);
-    border-color: rgba(245, 158, 11, 0.5);
-    color: #fde047;
-    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25);
-  }
-
-  /* Light mode overrides */
-  :global(.light) .tag-filter-btn {
-    background: rgba(15, 23, 42, 0.04);
-    border-color: rgba(15, 23, 42, 0.08);
-    color: #475569;
-  }
-
-  :global(.light) .tag-filter-btn:hover:not(.active) {
-    background: rgba(245, 158, 11, 0.06);
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #d97706;
-  }
-
-  :global(.light) .tag-filter-btn.active {
-    background: rgba(245, 158, 11, 0.15);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #b45309;
-    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2);
   }
 </style>
 

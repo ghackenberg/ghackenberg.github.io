@@ -156,8 +156,14 @@ export class ClientListFilter {
               this.buttonValues.set(btnConfig.dataAttribute, defVal);
             } else {
               // Select
-              buttons.forEach(b => b.classList.remove(activeCls));
-              btn.classList.add(activeCls);
+              buttons.forEach(b => {
+                const bVal = (b.getAttribute('data-lang') || b.getAttribute('data-value') || b.getAttribute('data-tag') || defVal).toLowerCase();
+                if (bVal === btnVal) {
+                  b.classList.add(activeCls);
+                } else {
+                  b.classList.remove(activeCls);
+                }
+              });
               newVal = btnVal;
               this.buttonValues.set(btnConfig.dataAttribute, btnVal);
             }
