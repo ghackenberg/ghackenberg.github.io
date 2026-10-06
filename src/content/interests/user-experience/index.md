@@ -6,8 +6,8 @@ color: "green"
 icon: "🌐"
 heroImage:
   src: "./preview.jpg"
-  title: "Research domain: User Experience"
-  description: "Focus area in User Experience: Visualizations & UI Designs."
+  title: "Forschungsschwerpunkt: User Experience"
+  description: "Multimodales Interface mit Sprachwellenformen, Audio-Frequenzanzeigen, Schiebereglern und haptischen Resonanzringen"
 order: 4
 pubDate: 2026-09-14
 ---

@@ -6,8 +6,8 @@ color: "purple"
 icon: "🎯"
 heroImage:
   src: "./preview.jpg"
-  title: "Research domain: Artificial Intelligence"
-  description: "Focus area in Artificial Intelligence: Generative AI & Agent Systems."
+  title: "Forschungsschwerpunkt: Artificial Intelligence"
+  description: "Neuronales Netzwerk auf einem KI-Prozessor-Chip mit externen Eingangsdaten-Streams und prädiktivem Ausgangssignal"
 order: 3
 pubDate: 2026-09-14
 ---

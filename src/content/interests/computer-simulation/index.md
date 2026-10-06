@@ -6,8 +6,8 @@ color: "yellow"
 icon: "🎓"
 heroImage:
   src: "./preview.jpg"
-  title: "Research domain: Computer Simulation"
-  description: "Focus area in Computer Simulation: Systems & Layout Modeling."
+  title: "Forschungsschwerpunkt: Computer Simulation"
+  description: "Diskrete Ereignissimulation eines automatisierten Smart-Factory-Materialflusses mit Prüfgates und Robotik-Sortierstationen"
 order: 2
 pubDate: 2026-09-14
 ---
