@@ -281,6 +281,18 @@ const projects = defineCollection({
     screenshotLight: coverImageSchema({ image }).optional(),
     screenshots: z.array(coverImageSchema({ image })).default([]),
     pubDate: z.coerce.date().optional(),
+    challenge: z.string().optional(),
+    solution: z.string().optional(),
+    keyCapabilities: z.array(z.object({
+      title: z.string(),
+      description: z.string(),
+      icon: z.string().default('🚀'),
+    })).default([]),
+    techStackHighlights: z.array(z.object({
+      category: z.string(),
+      technologies: z.array(z.string()),
+    })).default([]),
+    outcomes: z.array(z.string()).default([]),
   }),
 });
 
@@ -300,6 +312,21 @@ const courses = defineCollection({
     screenshot: coverImageSchema({ image }).optional(),
     tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
+    overview: z.string().optional(),
+    targetAudience: z.string().optional(),
+    prerequisites: z.array(z.string()).default([]),
+    competencies: z.array(z.object({
+      title: z.string(),
+      description: z.string(),
+      icon: z.string().default('🎯'),
+    })).default([]),
+    syllabus: z.array(z.object({
+      moduleNumber: z.string(),
+      title: z.string(),
+      description: z.string(),
+      topics: z.array(z.string()).default([]),
+      tools: z.array(z.string()).default([]),
+    })).default([]),
   }),
 });
 
@@ -318,13 +345,18 @@ const services = defineCollection({
     pubDate: z.coerce.date().optional(),
     previewImage: coverImageSchema({ image }).optional(),
     targetAudience: z.array(z.string()).default([]),
+    guidingPrinciples: z.array(z.object({
+      title: z.string(),
+      description: z.string(),
+    })).default([]),
+    strategicPillars: z.array(z.string()).default([]),
+    techFoundations: z.array(z.string()).default([]),
     engagementFormats: z.array(z.object({
       title: z.string(),
       duration: z.string(),
       description: z.string(),
-    })).default([]),
-    keyOutcomes: z.array(z.string()).default([]),
-    techFoundations: z.array(z.string()).default([]),
+    })).optional(),
+    keyOutcomes: z.array(z.string()).optional(),
   })
 });
 

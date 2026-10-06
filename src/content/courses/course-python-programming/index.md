@@ -17,18 +17,72 @@ tags:
   - "python"
   - "software-engineering"
   - "teaching"
+overview: "Python has become the lingua franca of engineering automation, data science, and system simulation. This course guides engineering students from core syntax through vectorized scientific computing, automated dataset analysis, and publication-ready engineering visualization."
+targetAudience: "Engineering and technology students (Mechanical, Electrical, Mechatronics, Process) and technical professionals seeking rapid automation skills."
+prerequisites:
+  - "Basic computer literacy and file management"
+  - "Fundamental mathematics (algebra, functions, vectors)"
+  - "No prior programming experience strictly required"
+competencies:
+  - title: "Algorithmic Scripting"
+    description: "Write clean, modular Python scripts using functions, control structures, and file I/O."
+    icon: "🐍"
+  - title: "Vectorized Numerical Computing"
+    description: "Perform matrix algebra, signal processing, and array transformations with NumPy."
+    icon: "🔢"
+  - title: "Data Wrangling & Analysis"
+    description: "Clean, filter, and statistically aggregate complex engineering datasets using Pandas."
+    icon: "📊"
+  - title: "Engineering Visualization"
+    description: "Generate publication-grade diagrams, time-series graphs, and heatmaps with Matplotlib."
+    icon: "📈"
+syllabus:
+  - moduleNumber: "01"
+    title: "Python Fundamentals & Structured Scripting"
+    description: "Data types, memory models, conditional branches, iteration, functions, and exception handling."
+    topics:
+      - "Variables, Strings, Lists, and Dictionaries"
+      - "Control Flow, List Comprehensions & Loops"
+      - "Modular Functions & Local/Global Scope"
+    tools:
+      - "Python 3"
+      - "VS Code"
+  - moduleNumber: "02"
+    title: "File I/O & Data Parsing"
+    description: "Reading and writing files, serializing JSON/CSV formats, and working with directory trees."
+    topics:
+      - "Context Managers & File Handles"
+      - "CSV, JSON & YAML Parsing"
+      - "Pathlib & OS Automation"
+    tools:
+      - "Python Standard Library"
+  - moduleNumber: "03"
+    title: "Scientific Computing with NumPy"
+    description: "N-dimensional arrays, vectorized arithmetic, broadcasting rules, and linear algebra routines."
+    topics:
+      - "Ndarray Creation, Slicing & Strides"
+      - "Vectorized Operations vs. Python Loops"
+      - "Matrix Multiplication & Eigenvalue Solvers"
+    tools:
+      - "NumPy"
+  - moduleNumber: "04"
+    title: "Tabular Data Manipulation with Pandas"
+    description: "DataFrames, time-series indexing, missing value interpolation, and grouping pipelines."
+    topics:
+      - "Series & DataFrames Architecture"
+      - "Filtering, GroupBy & Aggregations"
+      - "Time Series Resampling & Cleaning"
+    tools:
+      - "Pandas"
+  - moduleNumber: "05"
+    title: "Scientific Visualization & Plotting"
+    description: "Creating figures, multi-panel subplots, customized styles, and exporting vector graphics."
+    topics:
+      - "Matplotlib Object-Oriented API"
+      - "Statistical Visuals with Seaborn"
+      - "Vector SVG / PDF Publication Exports"
+    tools:
+      - "Matplotlib"
+      - "Seaborn"
 ---
 
-Welcome to the **Python for Engineers** course! Python has become the lingua franca of engineering automation, data science, and system simulation. This course gets you writing code quickly.
-
-## Course Overview
-
-We focus on practical programming. You will transition from basic syntax to utilizing Python's powerful package ecosystem to solve engineering problems, run automated loops, analyze data sets, and build clean dashboards.
-
-## Syllabus Highlights
-
-1. **Python Programming Essentials**: Variables, lists, loops, conditions, functions, and modules.
-2. **Scientific Computing with NumPy**: Multi-dimensional arrays, vectorized operations, and linear algebra.
-3. **Data Wrangling with Pandas**: Loading datasets, filtering columns, cleaning data, and aggregating statistics.
-4. **Plotting & Visuals**: Creating robust graphs and charts with Matplotlib and Seaborn.
-5. **Engineering Applications**: Simulation models, differential equations solver, and scripting command-line tools.

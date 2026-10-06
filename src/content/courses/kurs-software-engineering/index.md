@@ -18,44 +18,78 @@ tags:
   - "software-architecture"
   - "systems-implementation"
   - "teaching"
+overview: "Softwareentwicklung im industriellen Maßstab erfordert weit mehr als Programmierkenntnisse: Sie verlangt systematische Anforderungsanalyse, robuste Architekturmuster, agile Prozesse und kompromisslose Testautomatisierung. Der Kurs vermittelt die ingenieurmäßigen Methoden zur Konstruktion wartbarer, langlebiger Softwaresysteme in C#."
+targetAudience: "Bachelor- und Master-Studierende der Fachrichtung Informatik sowie Berufspraktiker und Softwareentwickler, die systematische Architektur- und Testkompetenz vertiefen möchten."
+prerequisites:
+  - "Gute Programmierkenntnisse in einer modernen objektorientierten Sprache (vorzugsweise C# oder Java)"
+  - "Grundverständnis relationaler Datenbanken und Datenstrukturen"
+  - "Erste Erfahrungen mit der Versionsverwaltung Git"
+competencies:
+  - title: "Agile Prozessmodelle"
+    description: "Praktische Steuerung von Entwicklungsprojekten mit Scrum, Kanban und User Story Mapping."
+    icon: "🏃"
+  - title: "Architektur & Design Patterns"
+    description: "Systementwurf mit UML-Diagrammen, GoF-Mustern, SOLID-Prinzipien und Clean Architecture."
+    icon: "🏛️"
+  - title: "Test-Driven Development (TDD)"
+    description: "Automatisierte Qualitätssicherung mit NUnit, Mocking-Frameworks und systematischem Refactoring."
+    icon: "🧪"
+  - title: "Continuous Integration & DevOps"
+    description: "Automatisierte Build- und Test-Pipelines mit GitHub Actions und statischer Code-Analyse."
+    icon: "🚀"
+syllabus:
+  - moduleNumber: "01"
+    title: "Agiles Vorgehen & Anforderungsanalyse"
+    description: "Scrum-Framework, Sprint-Planung, User Story Mapping, Definition of Done und Retrospektiven."
+    topics:
+      - "Agiles Manifest & Scrum-Zeremonien"
+      - "User Stories & Akzeptanzkriterien"
+      - "Aufwandsschätzung mit Planning Poker"
+    tools:
+      - "GitHub Projects"
+      - "Jira"
+      - "Markdown"
+  - moduleNumber: "02"
+    title: "Systemarchitektur & UML-Modellierung"
+    description: "Modellgetriebener Architekturentwurf, Komponentenzerlegung und standardisierte Diagramme."
+    topics:
+      - "Use-Case- und Aktivitätsdiagramme"
+      - "UML-Klassendiagramme & Paketarchitekturen"
+      - "Sequenzdiagramme zur Interaktionsanalyse"
+    tools:
+      - "Mermaid.js"
+      - "PlantUML"
+  - moduleNumber: "03"
+    title: "Clean Architecture & Design Patterns"
+    description: "SOLID-Prinzipien, Kopplung und Kohäsion sowie Implementierung klassischer GoF-Entwurfsmuster."
+    topics:
+      - "SOLID-Prinzipien in der Praxis"
+      - "Erzeugungsmuster (Factory, Singleton)"
+      - "Struktur- und Verhaltensmuster (Adapter, Observer, Strategy)"
+    tools:
+      - "C#"
+      - "Visual Studio"
+  - moduleNumber: "04"
+    title: "Testautomatisierung & TDD"
+    description: "Unit-Tests, Test-Driven Development (Red-Green-Refactor) und Isolierung externer Abhängigkeiten."
+    topics:
+      - "Test-First-Entwicklungszyklus"
+      - "Mocking von Schnittstellen mit Moq"
+      - "Code-Coverage-Analyse und Testmetriken"
+    tools:
+      - "NUnit"
+      - "Moq"
+      - "FluentAssertions"
+  - moduleNumber: "05"
+    title: "Build-Automatisierung & CI/CD-Pipelines"
+    description: "Verteilte Versionskontrolle mit Git-Workflows und automatisierten GitHub Actions Pipelines."
+    topics:
+      - "Feature-Branching & Trunk-Based Development"
+      - "Automatisierte GitHub Actions Workflows"
+      - "Statische Codeanalyse und Linterschranken"
+    tools:
+      - "Git"
+      - "GitHub Actions"
+      - "SonarQube"
 ---
 
-Herzlich willkommen zum Kurs **Software Engineering**! Softwareentwicklung ist weit mehr als nur Code zu schreiben – es ist ein strukturierter Ingenieursprozess zur Lösung komplexer Probleme.
-
-## Kursübersicht: Software Engineering an der FH Oberösterreich
-
-Der Hochschulkurs **Software Engineering** von Dr. Georg Hackenberg vermittelt die methodischen und technischen Grundlagen zur industriellen Softwareentwicklung. Studierende lernen systematisch, wie komplexe Softwaresysteme von der Anforderungsanalyse über die modellgetriebene Architektur bis hin zu automatisierter Qualitätssicherung in C# und CI/CD-Pipelines engineered werden.
-
-## Was lernen Sie im Kurs Software Engineering?
-
-Die Lehrveranstaltung verbindet agile Vorgehensmodelle mit soliden ingenieurmäßigen Softwarearchitekturen. Anhand durchgängiger praktischer Programmierprojekte erarbeiten Sie wartbare, skalierbare und testbare Systeme:
-
-1. **Softwareprozessmodelle**: Phasenorientiertes Vorgehen, Scrum-Framework, Sprint-Planung, User Stories und Kanban.
-2. **Objektorientierter Entwurf (OOD)**: Modellierung mit UML-Klassendiagrammen, Sequenzdiagrammen und Use-Case-Spezifikationen.
-3. **Entwurfsmuster (Design Patterns)**: Praxisnahe Umsetzung von Gang-of-Four-Mustern wie Singleton, Factory, Observer, Adapter und MVC.
-4. **Clean Code & Refactoring**: Wartbarkeitstechniken, SOLID-Prinzipien, Erkennung und Beseitigung technischer Schulden.
-5. **Automatisiertes Testen**: Test-Driven Development (TDD), Unit Tests und Mocking mit NUnit in modernem C#/.NET.
-6. **Versionsverwaltung & CI/CD**: Verteilte Entwicklung mit Git (Feature Branching, Code Reviews) und automatisierte GitHub Actions Builds.
-
-## Curriculum & Modulübersicht
-
-Die folgende Tabelle gibt einen Überblick über die Kernmodule, behandelte Methoden und die eingesetzten Entwicklungswerkzeuge:
-
-| Modul | Themen & Methoden | Werkzeuge & Technologien |
-| :--- | :--- | :--- |
-| **1. Agiles Vorgehen** | Scrum, Sprint Backlog, User Story Mapping, Retrospektiven | Jira, GitHub Projects, Markdown |
-| **2. Systemarchitektur** | Domain-Driven Design (DDD), Komponentenarchitektur, UML | Draw.io, Mermaid.js, PlantUML |
-| **3. Objektorientierung** | Clean Architecture, SOLID-Prinzipien, Design Patterns | C#, Visual Studio, Rider |
-| **4. Testautomatisierung** | Unit Tests, TDD-Zyklus (Red-Green-Refactor), Mocking | NUnit, Moq, FluentAssertions |
-| **5. Build & Deployment** | Continuous Integration, Static Code Analysis, Linter | Git, GitHub Actions, SonarQube |
-
-## Häufig gestellte Fragen (FAQ)
-
-### An wen richtet sich dieser Kurs?
-Der Kurs richtet sich primär an Bachelor-Studierende der Fachrichtung Informatik und verwandter technischer Studiengänge an der FH Oberösterreich sowie an Softwareentwickler, die ihre Grundlagen in systematischer Architektur und Testautomatisierung vertiefen möchten.
-
-### Welche Vorkenntnisse sind erforderlich?
-Grundlegende Programmierkenntnisse in einer modernen objektorientierten Sprache (wie C#, Java, C++ oder TypeScript) sowie Verständnis grundlegender Kontrollstrukturen und Datenstrukturen werden vorausgesetzt.
-
-### Sind die Lehrmaterialien und Code-Beispiele öffentlich zugänglich?
-Ja, alle zugehörigen Vorlesungsunterlagen, Folien und lauffähigen C#-Code-Beispiele stehen im verlinkten Open-Source GitHub Repository zur freien Verfügung und können für das Selbststudium genutzt werden.

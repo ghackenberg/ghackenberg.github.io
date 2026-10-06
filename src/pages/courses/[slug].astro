@@ -155,10 +155,58 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
         <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden prose-custom">
           <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
 
-          {course.data.learningGoals && course.data.learningGoals.length > 0 && (
-            <section id="learning-goals" class="mb-10 md:mb-12">
-              <h2 class="text-xl font-bold mb-5 tracking-tight flex items-center space-x-2 border-b border-white/5 pb-2"><span>🎯</span><span>Learning Goals</span></h2>
-              <ul class="space-y-4">
+          <p class="text-gray-300 text-sm md:text-base leading-relaxed font-normal mb-8">{course.data.overview || course.data.description}</p>
+
+          {(course.data.targetAudience || (course.data.prerequisites && course.data.prerequisites.length > 0)) && (
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 p-5 rounded-2xl bg-element-bg border border-white/5">
+              {course.data.targetAudience && (
+                <div>
+                  <p class="text-[10px] text-brand-yellow font-extrabold uppercase tracking-widest mb-1.5">Target Audience</p>
+                  <p class="text-xs text-gray-300 leading-relaxed font-medium">{course.data.targetAudience}</p>
+                </div>
+              )}
+              {course.data.prerequisites && course.data.prerequisites.length > 0 && (
+                <div>
+                  <p class="text-[10px] text-brand-yellow font-extrabold uppercase tracking-widest mb-1.5">Prerequisites</p>
+                  <div class="flex flex-wrap gap-1.5">
+                    {course.data.prerequisites.map(p => (
+                      <span class="px-2 py-0.5 rounded text-[11px] bg-white/5 border border-white/10 text-gray-300 font-normal">
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {(course.data.competencies && course.data.competencies.length > 0) ? (
+            <section id="learning-goals" class="mb-12">
+              <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2 border-b border-white/5 pb-2">
+                <span>🎯</span>
+                <span>Learning Goals & Core Competencies</span>
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {course.data.competencies.map(comp => (
+                  <div class="p-5 rounded-2xl bg-element-bg border border-white/5 flex flex-col justify-between hover:border-white/10 transition-colors">
+                    <div>
+                      <div class="flex items-center space-x-2 mb-2">
+                        <span class="text-base shrink-0 select-none">{comp.icon || '🎯'}</span>
+                        <h3 class="text-sm font-bold text-gray-100">{comp.title}</h3>
+                      </div>
+                      <p class="text-xs text-gray-400 font-normal leading-relaxed">{comp.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : course.data.learningGoals && course.data.learningGoals.length > 0 && (
+            <section id="learning-goals" class="mb-12">
+              <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2 border-b border-white/5 pb-2">
+                <span>🎯</span>
+                <span>Learning Goals</span>
+              </h2>
+              <ul class="space-y-3">
                 {course.data.learningGoals.map(goal => (
                   <li class="flex items-start space-x-3 text-sm text-gray-300 font-normal leading-relaxed">
                     <span class="text-brand-yellow shrink-0 mt-0.5 select-none text-base">✓</span>
@@ -170,8 +218,53 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
           )}
 
           <section id="syllabus" class="syllabus-content">
-            <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2 border-b border-white/5 pb-2"><span>📖</span><span>Course Syllabus & Details</span></h2>
-            <Content />
+            <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2 border-b border-white/5 pb-2">
+              <span>📖</span>
+              <span>Course Syllabus & Modules</span>
+            </h2>
+
+            {course.data.syllabus && course.data.syllabus.length > 0 ? (
+              <div class="space-y-6">
+                {course.data.syllabus.map((mod) => (
+                  <div class="p-6 rounded-2xl bg-element-bg border border-white/5 hover:border-white/10 transition-colors">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                      <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-brand-yellow/10 border border-brand-yellow/20 text-brand-yellow">
+                          Module {mod.moduleNumber}
+                        </span>
+                        <h3 class="text-base font-bold text-gray-100 tracking-tight">{mod.title}</h3>
+                      </div>
+                    </div>
+                    <p class="text-xs md:text-sm text-gray-300 font-normal leading-relaxed mb-4">
+                      {mod.description}
+                    </p>
+                    {mod.topics && mod.topics.length > 0 && (
+                      <div class="flex flex-wrap gap-1.5 mb-3">
+                        {mod.topics.map(topic => (
+                          <span class="px-2 py-0.5 rounded-md text-[11px] bg-white/5 border border-white/10 text-gray-400 font-normal">
+                            • {topic}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {mod.tools && mod.tools.length > 0 && (
+                      <div class="flex items-center space-x-2 pt-2 border-t border-white/5">
+                        <span class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">Tools:</span>
+                        <div class="flex flex-wrap gap-1.5">
+                          {mod.tools.map(tool => (
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-brand-yellow/5 border border-brand-yellow/15 text-brand-yellow/90 font-medium">
+                              {tool}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <Content />
+            )}
           </section>
         </div>
       </div>
