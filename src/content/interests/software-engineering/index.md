@@ -6,8 +6,8 @@ color: "blue"
 icon: "💻"
 heroImage:
   src: "./preview.jpg"
-  title: "Research domain: Software Engineering"
-  description: "Focus area in Software Engineering: Architectures & Web Platforms."
+  title: "Forschungsschwerpunkt: Software Engineering"
+  description: "Iterativer und inkrementeller Entwicklungszyklus mit Plan-Code-Test-Deploy-Schleife und wachsendem Architektur-Stack"
 order: 1
 pubDate: 2026-09-14
 ---

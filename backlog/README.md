@@ -15,6 +15,7 @@ Initiativen, die das Zusammenspiel aus Frontend-Features auf `hackenberg.tech` u
 | **SYSTEM-003** | Content Interview Gatekeeper | Content Creation | Mittel | `proposed` | [003-content-interview-gate.md](./system/003-content-interview-gate.md) |
 | **SYSTEM-004** | Content Manifest & Notification Linter | Data Integrity / CI | Hoch | `proposed` | [004-content-manifest-linter.md](./system/004-content-manifest-linter.md) |
 | **SYSTEM-005** | Semantisches Section-Visibility-Tracking | Analytics / UX | Hoch | `planned` | [005-semantic-section-tracking.md](./system/005-semantic-section-tracking.md) |
+| **SYSTEM-006** | Content Preview Image Rollout | Visual Design | Mittel | `planned` | [006-content-preview-image-rollout.md](./system/006-content-preview-image-rollout.md) |
 
 ---
 
