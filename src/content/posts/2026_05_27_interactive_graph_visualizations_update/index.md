@@ -51,9 +51,9 @@ references:
     id: jacomy-2014-forceatlas2-continuous
 ---
 
-Interactive directed graph visualization in JavaScript balances graphical performance against layout complexity. Use WebGL and Three.js for high-density, volumetric 3D network rendering exceeding 10,000 nodes where GPU parallelization prevents browser freezing. Conversely, choose Cytoscape.js or Vis.js for 2D semantic layouts, compound clustering, and DOM-driven node interactions below 2,000 nodes.
+Interactive directed graph visualization in JavaScript balances graphical performance against layout complexity. High-density, volumetric 3D network rendering exceeding 10,000 nodes relies on WebGL and Three.js where GPU parallelization prevents browser thread freezing. Conversely, 2D semantic layouts, compound clustering, and rich DOM-driven node interactions below 2,000 nodes are best served by specialized graph engines like Cytoscape.js or Vis.js.
 
-To help visitors explore the relationships between topics, blog posts, and [academic publications](/publications/), this website features interactive network graph visualizations. Recently, we gave this visualization system a major architectural and aesthetic overhaul. 
+On this website, interactive network graphs allow visitors to explore the multidimensional relationships between content topics, engineering blog posts, and [academic publications](/publications/). To turn these architectural principles into a fast, responsive user experience, we recently overhauled this visualization system from the ground up.
 
 Instead of a monolithic script, the system now runs on a modular, multi-engine architecture supporting **Cytoscape.js**, **D3.js**, **Sigma.js**, **Vis.js Network**, and an immersive **3D Force Graph** powered by Three.js and WebGL.
 

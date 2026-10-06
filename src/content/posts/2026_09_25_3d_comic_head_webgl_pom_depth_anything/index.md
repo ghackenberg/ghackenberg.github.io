@@ -47,7 +47,7 @@ references:
     id: yang-2024-depth-anything
 ---
 
-2.5D WebGL Parallax Occlusion Mapping (POM) mit Depth Anything V2 bildet eine mesh-freie, extrem leichtgewichtige Alternative zu rechenintensiven 3D-Polygon-Meshes im Browser. Durch hardwarebeschleunigtes Raymarching entlang monokular geschätzter Tiefenkarten erzeugt ein kompakter Fragment-Shader plastische räumliche Tiefe, dynamische Beleuchtung und natürliche Blickwinkel-Parallaxe bei minimalen Ladezeiten, ohne aufwändige 3D-Geometrie-Pipelines oder externe Framework-Laufzeitbibliotheken zu benötigen.
+Das Zusammenspiel aus 2.5D WebGL Parallax Occlusion Mapping (POM) und Depth Anything V2 bietet eine mesh-freie, extrem leichtgewichtige Alternative zu rechenintensiven 3D-Polygon-Meshes im Browser. Durch hardwarebeschleunigtes Raymarching entlang monokular geschätzter Tiefenkarten erzeugt ein kompakter Fragment-Shader plastische räumliche Tiefe, dynamische Beleuchtung und natürliche Blickwinkel-Parallaxe – bei minimalen Ladezeiten und völlig ohne externe Framework-Laufzeiten oder aufwändige Geometrie-Pipelines.
 
 Moderne Web-Erlebnisse leben von lebendiger visueller Tiefe, scheitern in der Praxis jedoch oft an der Schere zwischen visueller Immersion und technischer Effizienz. Wer Gesichtern oder Illustrationen im Browser eine echte räumliche Dreidimensionalität verleihen möchte, greift typischerweise zu vollwertigen 3D-Meshes via [Three.js](https://threejs.org/) oder [Babylon.js](https://doc.babylonjs.com/) – und bezahlt diesen Schritt mit Megabytes an Geometrie-Downloads, komplexen UV-Rigging-Pipelines und spürbarem CPU-Overhead.
 
