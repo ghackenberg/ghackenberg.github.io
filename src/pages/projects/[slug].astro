@@ -219,10 +219,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
       <div class="lg:col-span-8 space-y-12">
         <!-- Detail / Content block -->
         <section id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
-          <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2">
-            <span>🚀</span>
-            <span>Project Details & Focus</span>
-          </h2>
+          <h2 class="text-xl font-bold mb-6 tracking-tight flex items-center space-x-2 border-b border-element-border pb-2"><span>🚀</span><span>Project Details & Focus</span></h2>
           
           <!-- Render markdown body if there is one; otherwise show tagline description -->
           {project.body ? (
@@ -245,10 +242,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
         <!-- Screenshots Gallery Section -->
         {optimizedScreenshots && optimizedScreenshots.length > 0 && (
           <section id="project-screenshots" class="space-y-6">
-            <h2 class="text-2xl font-bold tracking-tight flex items-center space-x-2.5">
-              <span>📸</span>
-              <span>Screenshots & Interface</span>
-            </h2>
+            <h2 class="text-2xl font-bold tracking-tight flex items-center space-x-2.5 mb-6 border-b border-element-border pb-2"><span>📸</span><span>Screenshots & Interface</span></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               {optimizedScreenshots.map((shot, index) => (
                 <div 
