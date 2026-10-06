@@ -2,9 +2,9 @@
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
 import SlideDeck from "@components/slides/player/SlideDeck.astro";
 import RelatedContent from "@components/RelatedContent.astro";
-import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
@@ -191,73 +191,78 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
 >
   <Navbar />
 
-  <Container size="wide">
-    <!-- Back button -->
-    <a 
-      href="/presentations/" 
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
-    >
-      <span>&larr;</span>
-      <span>{ui.back}</span>
-    </a>
+  <Section id="presentation-content" padding="standard">
+    <!-- Header in Reading Width -->
+    <Container size="reading" padding="none">
+      <!-- Back button -->
+      <a 
+        href="/presentations/" 
+        class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
+      >
+        <span>&larr;</span>
+        <span>{ui.back}</span>
+      </a>
 
-    <!-- Header Section -->
-    <header class="mb-10 pb-8 border-b border-element-border">
-      <div class="max-w-4xl">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <time datetime={presentation.data.pubDate.toISOString()} class="text-sm font-semibold text-brand-blue/80">
-            {presentation.data.pubDate.toLocaleDateString(presentation.data.lang === "de" ? "de-AT" : "en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric"
-            })}
-          </time>
-          {presentation.data.event && (
-            <>
-              <span class="text-gray-500">•</span>
-              <span class="text-sm font-semibold text-brand-blue/80">{presentation.data.event}</span>
-            </>
+      <!-- Header Section -->
+      <header class="mb-10 sm:mb-12 relative">
+        <div class="max-w-4xl">
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <time datetime={presentation.data.pubDate.toISOString()} class="text-sm font-semibold text-brand-blue/80">
+              {presentation.data.pubDate.toLocaleDateString(presentation.data.lang === "de" ? "de-AT" : "en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+              })}
+            </time>
+            {presentation.data.event && (
+              <>
+                <span class="text-gray-500">•</span>
+                <span class="text-sm font-semibold text-brand-blue/80">{presentation.data.event}</span>
+              </>
+            )}
+            {presentation.data.location && (
+              <>
+                <span class="text-gray-500">•</span>
+                <span class="text-sm text-gray-400">📍 {presentation.data.location}</span>
+              </>
+            )}
+            {!presentation.data.event && !presentation.data.location && (
+              <>
+                <span class="text-gray-500">•</span>
+                <span class="text-xs font-medium text-slate-400">🎙️ Interactive Presentation</span>
+              </>
+            )}
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
+            {presentation.data.title}
+          </h1>
+          {presentation.data.subtitle && (
+            <p class="text-base sm:text-lg text-gray-300 font-normal leading-relaxed mb-6">
+              {presentation.data.subtitle}
+            </p>
           )}
-          {presentation.data.location && (
-            <>
-              <span class="text-gray-500">•</span>
-              <span class="text-sm text-gray-400">📍 {presentation.data.location}</span>
-            </>
-          )}
-          {!presentation.data.event && !presentation.data.location && (
-            <>
-              <span class="text-gray-500">•</span>
-              <span class="text-xs font-medium text-slate-400">🎙️ Interactive Presentation</span>
-            </>
+
+          {presentation.data.tags && presentation.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2 mt-6">
+              {presentation.data.tags.map((tag) => (
+                <a 
+                  href={`/tags/${tag}/`}
+                  class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
+                >
+                  #{tag}
+                </a>
+              ))}
+            </div>
           )}
         </div>
+      </header>
+    </Container>
 
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
-          {presentation.data.title}
-        </h1>
-        {presentation.data.subtitle && (
-          <p class="text-base sm:text-lg text-gray-300 font-normal leading-relaxed mb-6">
-            {presentation.data.subtitle}
-          </p>
-        )}
-
-        {presentation.data.tags && presentation.data.tags.length > 0 && (
-          <div class="flex flex-wrap gap-2 mt-6">
-            {presentation.data.tags.map((tag) => (
-              <a 
-                href={`/tags/${tag}/`}
-                class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
-              >
-                #{tag}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-    </header>
-
-    <!-- Interactive Slide & Audio Deck -->
-    <section id="presentation-player" class="mb-14 w-full scroll-mt-24">
+    <!-- Player & Transcripts in Wide Width -->
+    <Container size="wide" padding="none">
+      <!-- Interactive Slide & Audio Deck -->
+      <section id="presentation-player" class="mb-14 w-full scroll-mt-24">
       <SlideDeck
         presentationId={presentation.id}
         pdfUrl={pdfDownloadUrl}
@@ -480,17 +485,8 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
         ))}
       </div>
     </section>
-
-    <!-- Contact & Collaboration Section (English) -->
-    <GetInTouchCard
-      sectionHeading="Start a Conversation"
-      sectionDescription="Interested in booking this keynote, discussing the slide deck, or exploring academic and industrial collaboration? Feel free to reach out directly via email."
-      cardHeading="Keynote & Topic Inquiry"
-      emailSubject={`Inquiry: ${presentation.data.title}`}
-      accentColor="blue"
-      primaryButtonText="Open Email Client"
-    />
   </Container>
+</Section>
 
   <script>
     // Jump-to-Slide Interactivity & Smooth Scrolling

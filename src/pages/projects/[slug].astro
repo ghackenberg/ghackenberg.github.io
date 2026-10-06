@@ -4,7 +4,6 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
-import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
 
@@ -45,35 +44,15 @@ const optimizedScreenshots = await Promise.all(
 );
 
 let repo = null;
-let repoNameId = "";
 const repoName = project.data.repoName;
 if (repoName) {
   const repos = await getCollection("github-repos");
   const repoEntry = repos.find(r => r.id.toLowerCase() === repoName.toLowerCase());
   if (repoEntry) {
     repo = repoEntry.data;
-    repoNameId = repoEntry.id;
   }
 }
 
-// Language colors for GitHub stats
-const languageColors: Record<string, string> = {
-  TypeScript: "bg-blue-400",
-  JavaScript: "bg-yellow-400",
-  HTML: "bg-orange-500",
-  CSS: "bg-purple-400",
-  Astro: "bg-rose-500",
-  Python: "bg-blue-500",
-  Vue: "bg-emerald-500",
-  React: "bg-sky-400",
-  C: "bg-gray-400",
-  "C++": "bg-pink-500",
-  Java: "bg-red-400",
-  "C#": "bg-violet-500",
-  TeX: "bg-emerald-600",
-  Mermaid: "bg-teal-400",
-  "Jupyter Notebook": "bg-amber-600"
-};
 
 const accentColor = project.data.accentColor || 'blue';
 
@@ -115,10 +94,6 @@ const colorClasses = {
 
 const tech = repo?.language ?? "Web";
 const starCount = repo?.stars ?? 0;
-const lastUpdated = repo?.pushDate;
-const formattedDate = lastUpdated 
-  ? new Date(lastUpdated).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
-  : "";
 
 const projectUrl = `https://hackenberg.tech/projects/${project.id}/`;
 
@@ -181,7 +156,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
   <Navbar />
 
   <Section id="project-content" padding="standard">
-    <Container size="wide" padding="none">
+    <Container size="reading" padding="none">
     <!-- Back Button -->
     <a 
       href="/projects/" 
@@ -212,222 +187,167 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
           ))}
         </div>
       )}
-    </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Main Content (Column 1 - Project details & Markdown text) -->
-      <div class="lg:col-span-8 space-y-12">
-        <!-- Detail / Content block -->
-        <section id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
-          {project.data.challenge && (
-            <div class="mb-8">
-              <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Core Challenge</h2>
-              <p class="text-gray-300 leading-relaxed font-normal">
-                {project.data.challenge}
-              </p>
-            </div>
-          )}
+      <div class="flex flex-wrap items-center gap-3 mt-6">
+        <a 
+          href={project.data.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer ${colorClasses.btnBg}`}
+        >
+          <span>Visit Website</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+          </svg>
+        </a>
 
-          {project.data.solution && (
-            <div class="mb-8">
-              <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">System Architecture</h2>
-              <p class="text-gray-300 leading-relaxed font-normal">
-                {project.data.solution}
-              </p>
-            </div>
-          )}
-
-          {project.data.keyCapabilities && project.data.keyCapabilities.length > 0 && (
-            <div class="mb-8">
-              <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Key Capabilities</h2>
-              <ul class="list-disc pl-5 space-y-3 text-gray-300 font-normal leading-relaxed">
-                {project.data.keyCapabilities.map(cap => (
-                  <li>
-                    <strong class="text-gray-100 font-semibold">{cap.title}:</strong> {cap.description}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {project.data.techStackHighlights && project.data.techStackHighlights.length > 0 && (
-            <div class="mb-8">
-              <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Technology Stack</h2>
-              <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
-                {project.data.techStackHighlights.map(stack => (
-                  <li>
-                    <strong class="text-gray-100 font-semibold">{stack.category}:</strong> {stack.technologies.join(', ')}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {project.data.outcomes && project.data.outcomes.length > 0 && (
-            <div>
-              <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Verifiable Outcomes</h2>
-              <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
-                {project.data.outcomes.map(outcome => (
-                  <li>{outcome}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {project.body && (
-            <div class="mt-8 pt-8 border-t border-element-border">
-              <Content />
-            </div>
-          )}
-        </section>
-
-        <!-- Screenshots Gallery Section -->
-        {optimizedScreenshots && optimizedScreenshots.length > 0 && (
-          <section id="project-screenshots" class="space-y-6">
-            <h2 class="text-2xl font-bold tracking-tight flex items-center space-x-2.5 mb-6 border-b border-element-border pb-2"><span>📸</span><span>Project Screenshots</span></h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {optimizedScreenshots.map((shot, index) => (
-                <div 
-                  class={`glass-card rounded-2xl border border-element-border overflow-hidden group cursor-pointer relative transition-all duration-300 hover:scale-[1.02] hover:border-brand-${accentColor}/30 hover:shadow-lg hover:shadow-brand-${accentColor}/5 flex flex-col`}
-                  data-screenshot-index={index}
-                >
-                  <!-- Image Area -->
-                  <div class="aspect-video w-full overflow-hidden relative bg-black/40">
-                    <img 
-                      src={shot.src} 
-                      alt={shot.description ? `${shot.title}: ${shot.description}` : `Screenshot von ${project.data.title} - ${shot.title}`}
-                      title={shot.title}
-                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <!-- Hover Zoom Indicator -->
-                    <div class="absolute inset-0 bg-black/50 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-                      <div class="p-3 rounded-full bg-white/10 border border-white/20 text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.604 10.604zM10.5 7.5v6m3-3h-6"></path>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Title & Description Area -->
-                  <div class="p-5 border-t border-element-border flex-grow flex flex-col justify-between">
-                    <div>
-                      <h3 class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans">
-                        {shot.title}
-                      </h3>
-                      {shot.description && (
-                        <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed font-sans">
-                          {shot.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-      </div>
-
-      <!-- Sidebar Metadata & GitHub Repo (Column 2) -->
-      <aside class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
-        <!-- Project Actions & Info Card -->
-        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col relative overflow-hidden">
-          <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
-          
-          <h3 class="text-lg font-bold mb-6 flex items-center space-x-2">
-            <span>ℹ️</span>
-            <span>Project Info</span>
-          </h3>
-
+        {repo && (
           <a 
-            href={project.data.href}
+            href={repo.url}
             target="_blank"
             rel="noopener noreferrer"
-            class={`w-full py-3.5 px-4 rounded-xl text-center text-sm transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-2 cursor-pointer ${colorClasses.btnBg}`}
+            class="px-4 py-2.5 rounded-xl text-xs font-bold bg-element-bg border border-element-border hover:border-element-border-medium text-gray-200 transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer"
           >
-            <span>Visit Website</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+            <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
             </svg>
+            <span>GitHub Repository</span>
+            {starCount > 0 && <span class="text-gray-400 font-normal">⭐ {starCount}</span>}
           </a>
-        </div>
-
-        <!-- Linked GitHub Repository Card (if available) -->
-        {repo ? (
-          <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col group overflow-hidden relative">
-            <div class={`absolute top-0 left-0 right-0 h-1 bg-brand-${accentColor} opacity-60`}></div>
-            
-            <h3 class="text-lg font-bold mb-4 flex items-center space-x-2">
-              <svg class={`w-5 h-5 text-brand-${accentColor} shrink-0`} fill="currentColor" viewBox="0 0 24 24">
-                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-              </svg>
-              <span>GitHub Repository</span>
-            </h3>
-
-            <p class="text-sm font-mono font-bold break-all leading-tight mb-2">
-              {repoNameId}
-            </p>
-            
-            <p class="text-gray-400 text-xs leading-normal mb-4 line-clamp-3">
-              {repo.description}
-            </p>
-
-            <div class="space-y-2.5 border-t border-element-border pt-3.5 mb-4 text-xs text-gray-400">
-              <div class="flex items-center justify-between">
-                <span>Language:</span>
-                <div class="flex items-center space-x-1.5">
-                  <span class={`w-2.5 h-2.5 rounded-full ${languageColors[tech] || 'bg-gray-400'}`}></span>
-                  <span class="font-semibold">{tech}</span>
-                </div>
-              </div>
-              {starCount > 0 && (
-                <div class="flex items-center justify-between">
-                  <span>Stars:</span>
-                  <span class="font-semibold">⭐ {starCount}</span>
-                </div>
-              )}
-              {formattedDate && (
-                <div class="flex items-center justify-between">
-                  <span>Last Active:</span>
-                  <span class="font-medium">{formattedDate}</span>
-                </div>
-              )}
-            </div>
-
-            <div class="border-t border-element-border pt-4 mt-auto">
-              <a 
-                href={repo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={`inline-flex items-center text-sm font-bold transition-colors group/link cursor-pointer ${colorClasses.text} ${colorClasses.hoverText}`}
-              >
-                <span>Explore Repository</span>
-                <svg class="w-4 h-4 ml-1.5 transform group-hover/link:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
-                </svg>
-              </a>
-            </div>
-          </div>
-        ) : (
-          <div class="glass-card p-6 rounded-2xl border border-element-border text-center text-xs text-gray-500 py-8">
-            ⚠️ Synced repository info not available.
-          </div>
         )}
-      </aside>
-    </div>
+      </div>
+    </header>
 
-    <!-- Contact Section -->
-    <GetInTouchCard
-      sectionHeading="Start a Conversation"
-      sectionDescription="Have questions about the architecture, want to contribute, or discuss commercial adoption and licensing? Feel free to reach out directly via email."
-      cardHeading="Project Inquiry & Collaboration"
-      emailSubject={`Project Inquiry: ${project.data.title}`}
-      accentColor={project.data.accentColor || "blue"}
-      primaryButtonText="Open Email Client"
-    />
+    <!-- Detail / Content block -->
+    <section id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
+      {project.data.challenge && (
+        <div class="mb-8">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Core Challenge</h2>
+          <p class="text-gray-300 leading-relaxed font-normal">
+            {project.data.challenge}
+          </p>
+        </div>
+      )}
+
+      {project.data.solution && (
+        <div class="mb-8">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">System Architecture</h2>
+          <p class="text-gray-300 leading-relaxed font-normal">
+            {project.data.solution}
+          </p>
+        </div>
+      )}
+
+      {project.data.keyCapabilities && project.data.keyCapabilities.length > 0 && (
+        <div class="mb-8">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+            <span>⚡</span><span>Key Capabilities</span>
+          </h2>
+          <ul class="space-y-2">
+            {project.data.keyCapabilities.map(cap => (
+              <li>
+                <strong class="text-gray-100 font-semibold">{cap.title}:</strong> {cap.description}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {project.data.techStackHighlights && project.data.techStackHighlights.length > 0 && (
+        <div class="mb-8">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+            <span>🛠️</span><span>Technology Stack</span>
+          </h2>
+          <ul class="space-y-2">
+            {project.data.techStackHighlights.map(stack => (
+              <li>
+                <strong class="text-gray-100 font-semibold">{stack.category}:</strong> {stack.technologies.join(', ')}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {project.data.outcomes && project.data.outcomes.length > 0 && (
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+            <span>📈</span><span>Verifiable Outcomes</span>
+          </h2>
+          <ul class="space-y-2">
+            {project.data.outcomes.map(outcome => (
+              <li>
+                <span>{outcome}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {project.body && (
+        <div class="mt-8 pt-8 border-t border-element-border">
+          <Content />
+        </div>
+      )}
+    </section>
     </Container>
   </Section>
+
+  <!-- Screenshots Gallery Section -->
+  {optimizedScreenshots && optimizedScreenshots.length > 0 && (
+    <Section id="project-screenshots" border="top" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="mb-8 md:mb-12">
+          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+            Project <span class={`heading-gradient-${accentColor}`}>Screenshots</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+            Interface walkthroughs, system diagrams, and visual demonstrations from {project.data.title}.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {optimizedScreenshots.map((shot, index) => (
+            <div 
+              class={`glass-card rounded-2xl border border-element-border overflow-hidden group cursor-pointer relative transition-all duration-300 hover:scale-[1.02] hover:border-brand-${accentColor}/30 hover:shadow-lg hover:shadow-brand-${accentColor}/5 flex flex-col`}
+              data-screenshot-index={index}
+            >
+              <!-- Image Area -->
+              <div class="aspect-video w-full overflow-hidden relative bg-black/40">
+                <img 
+                  src={shot.src} 
+                  alt={shot.description ? `${shot.title}: ${shot.description}` : `Screenshot von ${project.data.title} - ${shot.title}`}
+                  title={shot.title}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <!-- Hover Zoom Indicator -->
+                <div class="absolute inset-0 bg-black/50 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                  <div class="p-3 rounded-full bg-white/10 border border-white/20 text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.604 10.604zM10.5 7.5v6m3-3h-6"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <!-- Title & Description Area -->
+              <div class="p-5 border-t border-element-border flex-grow flex flex-col justify-between">
+                <div>
+                  <h3 class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans">
+                    {shot.title}
+                  </h3>
+                  {shot.description && (
+                    <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed font-sans">
+                      {shot.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 
@@ -622,32 +542,12 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     transition: color 0.5s ease;
   }
   .project-content :global(p) {
-    font-size: 0.875rem;
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.7;
     color: var(--color-text-main);
     margin-bottom: 1.5rem;
     transition: color 0.5s ease;
   }
-  .project-content :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: var(--color-text-main);
-    transition: color 0.5s ease;
-  }
-  .project-content :global(li) {
-    margin-bottom: 0.6rem;
-    font-size: 0.875rem;
-    line-height: 1.55;
-  }
-  .project-content :global(ol) {
-    list-style-type: decimal;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: var(--color-text-main);
-    transition: color 0.5s ease;
-  }
-
   /* Lightbox styling */
   #lightbox-modal {
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);

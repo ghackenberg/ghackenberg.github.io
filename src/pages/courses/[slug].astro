@@ -4,7 +4,6 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
-import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -22,33 +21,7 @@ const { Content } = await render(course);
 const repos = await getCollection("github-repos");
 const repoEntry = repos.find(r => r.id.toLowerCase() === course.data.repoName.toLowerCase());
 const repo = repoEntry?.data;
-const repoNameId = repoEntry ? repoEntry.id : course.data.repoName;
-
-// Language colors for GitHub repository stats
-const languageColors: Record<string, string> = {
-  TypeScript: "bg-blue-400",
-  JavaScript: "bg-yellow-400",
-  HTML: "bg-orange-500",
-  CSS: "bg-purple-400",
-  Astro: "bg-rose-500",
-  Python: "bg-blue-500",
-  Vue: "bg-emerald-500",
-  React: "bg-sky-400",
-  C: "bg-gray-400",
-  "C++": "bg-pink-500",
-  Java: "bg-red-400",
-  "C#": "bg-violet-500",
-  TeX: "bg-emerald-600",
-  Mermaid: "bg-teal-400",
-  "Jupyter Notebook": "bg-amber-600"
-};
-
-const tech = repo?.language ?? "Web";
-const starCount = repo?.stars ?? 0;
-const lastUpdated = repo?.pushDate;
-const formattedDate = lastUpdated 
-  ? new Date(lastUpdated).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
-  : "";
+const starCount = (repo as { stargazers_count?: number } | undefined)?.stargazers_count || repo?.stars || 0;
 
 const courseUrl = `https://hackenberg.tech/courses/${course.id}/`;
 
@@ -115,7 +88,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
   <Navbar />
 
   <Section id="course-content" padding="standard">
-    <Container size="wide" padding="none">
+    <Container size="reading" padding="none">
     <!-- Back Button -->
     <a 
       href="/courses/" 
@@ -126,12 +99,12 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
     </a>
 
     <!-- Title Header -->
-    <header class="mb-12">
+    <header class="mb-12 relative">
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
         {course.data.title}
       </h1>
       {course.data.description && (
-        <p class="text-gray-400 text-base max-w-3xl leading-relaxed font-normal">
+        <p class="text-gray-300 text-base max-w-3xl leading-relaxed font-normal">
           {course.data.description}
         </p>
       )}
@@ -147,196 +120,117 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
           ))}
         </div>
       )}
+
+      <div class="flex flex-wrap items-center gap-3 mt-6">
+        {course.data.language && (
+          <span class="px-4 py-2.5 rounded-xl text-xs font-bold bg-element-bg border border-element-border text-gray-200 flex items-center space-x-2">
+            <span>🌐</span>
+            <span>{course.data.language === 'de' ? 'German' : 'English'}</span>
+          </span>
+        )}
+
+        {repo && (
+          <a 
+            href={repo.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2.5 rounded-xl text-xs font-bold bg-element-bg border border-element-border hover:border-element-border-medium text-gray-200 transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer"
+          >
+            <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+            </svg>
+            <span>GitHub Repository</span>
+            {starCount > 0 && <span class="text-gray-400 font-normal">⭐ {starCount}</span>}
+          </a>
+        )}
+      </div>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Main Content (Column 1 - Goals & Syllabus) -->
-      <div class="lg:col-span-8">
-        <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden prose-custom">
-          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
+    <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden prose-custom">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
 
-          <p class="text-base text-gray-300 leading-relaxed font-normal mb-8">{course.data.overview || course.data.description}</p>
+      <p class="text-base text-gray-300 leading-relaxed font-normal mb-8">{course.data.overview || course.data.description}</p>
 
-          {course.data.targetAudience && (
-            <div class="mb-8">
-              <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
-                Target Audience
-              </h2>
-              <p class="text-gray-300 leading-relaxed font-normal">
-                {course.data.targetAudience}
-              </p>
-            </div>
-          )}
-
-          {course.data.prerequisites && course.data.prerequisites.length > 0 && (
-            <div class="mb-8">
-              <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
-                Course Prerequisites
-              </h2>
-              <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
-                {course.data.prerequisites.map(prereq => (
-                  <li>{prereq}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <div class="mb-8">
-            <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
-              Learning Goals
-            </h2>
-            {course.data.competencies && course.data.competencies.length > 0 ? (
-              <ul class="list-disc pl-5 space-y-3 text-gray-300 font-normal leading-relaxed">
-                {course.data.competencies.map(comp => (
-                  <li>
-                    <strong class="text-gray-100 font-semibold">{comp.title}:</strong> {comp.description}
-                  </li>
-                ))}
-              </ul>
-            ) : course.data.learningGoals && course.data.learningGoals.length > 0 && (
-              <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
-                {course.data.learningGoals.map(goal => (
-                  <li>{goal}</li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <div class="syllabus-content">
-            <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-6">
-              Course Syllabus
-            </h2>
-            {course.data.syllabus && course.data.syllabus.length > 0 ? (
-              <div class="space-y-6">
-                {course.data.syllabus.map(mod => (
-                  <div class="space-y-2">
-                    <h3 class="text-lg font-bold text-gray-100 tracking-tight flex items-center space-x-2">
-                      <span class="select-none">📦</span>
-                      <span>Module {mod.moduleNumber}: {mod.title}</span>
-                    </h3>
-                    <p class="text-gray-300 leading-relaxed font-normal">
-                      {mod.description}
-                    </p>
-                    {mod.topics && mod.topics.length > 0 && (
-                      <ul class="list-disc pl-5 space-y-1 text-sm text-gray-400 font-normal">
-                        {mod.topics.map(topic => (
-                          <li>{topic}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <Content />
-            )}
-          </div>
+      {course.data.targetAudience && (
+        <div class="mb-8">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-white/5 pb-2 mb-4">
+            <span>👤</span><span>Target Audience</span>
+          </h2>
+          <p class="text-gray-300 leading-relaxed font-normal">
+            {course.data.targetAudience}
+          </p>
         </div>
+      )}
+
+      {course.data.prerequisites && course.data.prerequisites.length > 0 && (
+        <div class="mb-8">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-white/5 pb-2 mb-4">
+            <span>🔑</span><span>Course Prerequisites</span>
+          </h2>
+          <ul class="space-y-2">
+            {course.data.prerequisites.map(prereq => (
+              <li>
+                <span>{prereq}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div class="mb-8">
+        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-white/5 pb-2 mb-4">
+          <span>🎯</span><span>Learning Goals</span>
+        </h2>
+        {course.data.competencies && course.data.competencies.length > 0 ? (
+          <ul class="space-y-2">
+            {course.data.competencies.map(comp => (
+              <li>
+                <strong class="text-gray-100 font-semibold">{comp.title}:</strong> {comp.description}
+              </li>
+            ))}
+          </ul>
+        ) : course.data.learningGoals && course.data.learningGoals.length > 0 && (
+          <ul class="space-y-2">
+            {course.data.learningGoals.map(goal => (
+              <li>
+                <span>{goal}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <!-- Sidebar Metadata & GitHub Repo (Column 2) -->
-      <aside class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
-        <!-- Course Info Card -->
-        <div class="glass-card p-6 rounded-2xl border border-white/5">
-          <h3 class="text-lg font-bold mb-4 flex items-center space-x-2">
-            <span>ℹ️</span>
-            <span>Course Info</span>
-          </h3>
-          <div class="mb-2">
-            <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-1.5">Institution</p>
-            <p class="text-sm text-gray-300 font-semibold leading-tight">FH Upper Austria</p>
-            <p class="text-xs text-gray-400 font-normal mt-0.5">Campus Wels</p>
-          </div>
-          {course.data.tags && course.data.tags.length > 0 && (
-            <div class="mt-4 pt-4 border-t border-white/5">
-              <p class="text-[10px] text-gray-500 light:text-slate-600 font-extrabold uppercase tracking-widest mb-2">Topics & Tags</p>
-              <div class="flex flex-wrap gap-1.5">
-                {course.data.tags.map((tag) => (
-                  <a
-                    href={`/tags/${tag}/`}
-                    class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border transition-all duration-200 hover:scale-105 bg-brand-yellow/10 border-brand-yellow/20 text-brand-yellow light:text-amber-900 hover:bg-brand-yellow/20"
-                  >
-                    #{tag}
-                  </a>
-                ))}
+      <div class="syllabus-content">
+        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-white/5 pb-2 mb-4">
+          <span>📖</span><span>Course Syllabus</span>
+        </h2>
+        {course.data.syllabus && course.data.syllabus.length > 0 ? (
+          <div class="space-y-6">
+            {course.data.syllabus.map(mod => (
+              <div class="space-y-2">
+                <h3 class="text-lg font-bold text-gray-100 tracking-tight">
+                  Module {mod.moduleNumber}: {mod.title}
+                </h3>
+                <p class="text-gray-300 leading-relaxed font-normal text-base">
+                  {mod.description}
+                </p>
+                {mod.topics && mod.topics.length > 0 && (
+                  <ul class="space-y-2">
+                    {mod.topics.map(topic => (
+                      <li>
+                        <span>{topic}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            </div>
-          )}
-        </div>
-
-        <!-- Linked GitHub Repository Card -->
-        {repo ? (
-          <div class="glass-card p-6 rounded-2xl border border-white/5 flex flex-col group overflow-hidden relative">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-brand-yellow opacity-60"></div>
-            
-            <h3 class="text-lg font-bold mb-4 flex items-center space-x-2">
-              <svg class="w-5 h-5 text-brand-yellow shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-              </svg>
-              <span>GitHub Repository</span>
-            </h3>
-
-            <p class="text-sm font-mono font-bold break-all leading-tight mb-2">
-              {repoNameId}
-            </p>
-            
-            <p class="text-gray-400 text-xs leading-normal mb-4 line-clamp-3">
-              {repo.description}
-            </p>
-
-            <div class="space-y-2.5 border-t border-white/5 pt-3.5 mb-4 text-xs text-gray-400">
-              <div class="flex items-center justify-between">
-                <span>Language:</span>
-                <div class="flex items-center space-x-1.5">
-                  <span class={`w-2.5 h-2.5 rounded-full ${languageColors[tech] || 'bg-gray-400'}`}></span>
-                  <span class="font-semibold">{tech}</span>
-                </div>
-              </div>
-              {starCount > 0 && (
-                <div class="flex items-center justify-between">
-                  <span>Stars:</span>
-                  <span class="font-semibold">⭐ {starCount}</span>
-                </div>
-              )}
-              {formattedDate && (
-                <div class="flex items-center justify-between">
-                  <span>Last Active:</span>
-                  <span class="font-medium">{formattedDate}</span>
-                </div>
-              )}
-            </div>
-
-            <div class="border-t border-white/5 pt-4 mt-auto">
-              <a 
-                href={repo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center text-sm font-bold text-brand-yellow hover:text-brand-yellow/80 transition-colors group/link cursor-pointer"
-              >
-                <span>Explore Materials</span>
-                <svg class="w-4 h-4 ml-1.5 transform group-hover/link:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
-                </svg>
-              </a>
-            </div>
+            ))}
           </div>
         ) : (
-          <div class="glass-card p-6 rounded-2xl border border-white/5 text-center text-xs text-gray-500 py-8">
-            ⚠️ Synced repository info not available.
-          </div>
+          <Content />
         )}
-      </aside>
+      </div>
     </div>
-
-    <!-- Contact Section -->
-    <GetInTouchCard
-      sectionHeading="Start a Conversation"
-      sectionDescription="Interested in guest lectures, student thesis topics, or academic course materials? Feel free to reach out directly via email."
-      cardHeading="Course & Academic Inquiry"
-      emailSubject={`Course Inquiry: ${course.data.title}`}
-      accentColor="yellow"
-      primaryButtonText="Open Email Client"
-    />
     </Container>
   </Section>
 
@@ -351,7 +245,6 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 <style>
   /* Syllabus rich markdown formatting inside CSS styles */
   .syllabus-content :global(h2) {
-    font-size: 1.25rem;
     font-weight: 850;
     color: var(--color-text-heading);
     margin-top: 2.25rem;
@@ -365,7 +258,6 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
     margin-top: 0;
   }
   .syllabus-content :global(h3) {
-    font-size: 1.1rem;
     font-weight: 750;
     color: var(--color-text-heading);
     margin-top: 1.75rem;
@@ -373,29 +265,10 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
     transition: color 0.5s ease;
   }
   .syllabus-content :global(p) {
-    font-size: 0.875rem;
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.7;
     color: var(--color-text-main);
     margin-bottom: 1.5rem;
-    transition: color 0.5s ease;
-  }
-  .syllabus-content :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: var(--color-text-main);
-    transition: color 0.5s ease;
-  }
-  .syllabus-content :global(li) {
-    margin-bottom: 0.6rem;
-    font-size: 0.875rem;
-    line-height: 1.55;
-  }
-  .syllabus-content :global(ol) {
-    list-style-type: decimal;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: var(--color-text-main);
     transition: color 0.5s ease;
   }
   .syllabus-content :global(table) {

@@ -4,7 +4,6 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
-import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
@@ -229,16 +228,6 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         </section>
       )}
     </div>
-
-    <!-- Contact Section -->
-    <GetInTouchCard
-      sectionHeading="Start a Conversation"
-      sectionDescription="Interested in collaborative research, citations, or discussing empirical findings and methodology? Feel free to reach out directly via email."
-      cardHeading="Research & Academic Inquiry"
-      emailSubject={`Research Inquiry: ${pub.data.title}`}
-      accentColor="purple"
-      primaryButtonText="Open Email Client"
-    />
     </Container>
   </Section>
 
