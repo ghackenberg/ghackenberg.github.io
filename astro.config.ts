@@ -24,6 +24,7 @@ import { buildSitemapMetadata } from '@plugins/sitemap-config.js';
 import { validateAndEnrichImageSitemaps } from '@plugins/image-sitemap.js';
 import YAML from 'yaml';
 import { generateCitationLabel, type CitationRef } from '@commons/shared/citations.js';
+import { getFileContentHash } from '@commons/server/content-hash.js';
 
 const mimeTypes: Record<string, string> = {
   '.pdf': 'application/pdf',
@@ -36,6 +37,7 @@ const mimeTypes: Record<string, string> = {
   '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
   '.webp': 'image/webp',
+  '.mp3': 'audio/mpeg',
   '.mp4': 'video/mp4',
   '.js': 'application/javascript',
   '.css': 'text/css',
@@ -56,6 +58,34 @@ function copyContentAssets(): AstroIntegration {
                 return;
               }
             }
+
+            const cleanUrl = (req.url || '').split('?')[0].split('#')[0];
+
+            // Dev server middleware for hashed presentation assets (thumbnails & audio)
+            const presHashedMatch = cleanUrl.match(/^\/presentations\/([^/]+)\/(thumbnails|audio)\/(.+)-([a-f0-9]{8})\.(webp|mp3)$/);
+            if (presHashedMatch) {
+              const [, presId, type, slideBase, , ext] = presHashedMatch;
+              const filePath = path.resolve('src/content/presentations', presId, type, `${slideBase}.${ext}`);
+              if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                const contentType = mimeTypes[`.${ext}`] || 'application/octet-stream';
+                res.writeHead(200, { 'Content-Type': contentType });
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
+
+            // Dev server middleware for hashed presentation preview image
+            const presPreviewMatch = cleanUrl.match(/^\/presentations\/([^/]+)\/preview-([a-f0-9]{8})\.jpg$/);
+            if (presPreviewMatch) {
+              const [, presId] = presPreviewMatch;
+              const filePath = path.resolve('src/content/presentations', presId, 'preview.jpg');
+              if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
+
             const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services|presentations|talks)\/(.+)$/);
             if (match) {
               const [, collection, rest] = match;
@@ -89,6 +119,99 @@ function copyContentAssets(): AstroIntegration {
           const srcDir = path.resolve('src/content', col);
           if (!fs.existsSync(srcDir)) continue;
 
+          if (col === 'presentations') {
+            const presDirs = fs.readdirSync(srcDir, { withFileTypes: true });
+            for (const presDir of presDirs) {
+              if (!presDir.isDirectory()) continue;
+              const id = presDir.name;
+              const currentPresDir = path.join(srcDir, id);
+
+              // 1. Thumbnails: Copy each thumbnails/${slideId}.webp as thumbnails/${slideId}-${hash}.webp
+              const thumbsDir = path.join(currentPresDir, 'thumbnails');
+              if (fs.existsSync(thumbsDir)) {
+                for (const thumbFile of fs.readdirSync(thumbsDir)) {
+                  if (thumbFile.endsWith('.webp')) {
+                    const fullThumbPath = path.join(thumbsDir, thumbFile);
+                    const hash = getFileContentHash(fullThumbPath);
+                    const slideId = path.basename(thumbFile, '.webp');
+                    const destPath = path.join(outDir, 'presentations', id, 'thumbnails', `${slideId}-${hash}.webp`);
+                    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+                    fs.copyFileSync(fullThumbPath, destPath);
+                  }
+                }
+              }
+
+              // 2. Audio: Copy each audio/${slideId}.mp3 as audio/${slideId}-${hash}.mp3
+              const audioDir = path.join(currentPresDir, 'audio');
+              if (fs.existsSync(audioDir)) {
+                for (const audioFile of fs.readdirSync(audioDir)) {
+                  if (audioFile.endsWith('.mp3')) {
+                    const fullAudioPath = path.join(audioDir, audioFile);
+                    const hash = getFileContentHash(fullAudioPath);
+                    const slideId = path.basename(audioFile, '.mp3');
+                    const destPath = path.join(outDir, 'presentations', id, 'audio', `${slideId}-${hash}.mp3`);
+                    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+                    fs.copyFileSync(fullAudioPath, destPath);
+                  }
+                }
+              }
+
+              // 3. Preview: If preview.jpg exists, copy as preview-${hash}.jpg
+              const previewPath = path.join(currentPresDir, 'preview.jpg');
+              if (fs.existsSync(previewPath)) {
+                const hash = getFileContentHash(previewPath);
+                const destPath = path.join(outDir, 'presentations', id, `preview-${hash}.jpg`);
+                fs.mkdirSync(path.dirname(destPath), { recursive: true });
+                fs.copyFileSync(previewPath, destPath);
+              }
+
+              // 4. PDFs, SVGs, and other non-raster/non-audio canonical files
+              const copyOtherPresFiles = (current: string, rel = '') => {
+                for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+                  const fullPath = path.join(current, entry.name);
+                  const entryRel = path.join(rel, entry.name);
+                  if (entry.isDirectory()) {
+                    if (entry.name === 'thumbnails' || entry.name === 'audio') {
+                      continue;
+                    }
+                    copyOtherPresFiles(fullPath, entryRel);
+                  } else if (entry.isFile()) {
+                    if (
+                      entry.name.endsWith('.md') ||
+                      entry.name.endsWith('.mdx') ||
+                      entry.name.endsWith('.json') ||
+                      entry.name.endsWith('.yml') ||
+                      entry.name.endsWith('.yaml') ||
+                      entry.name === 'preview.jpg'
+                    ) {
+                      continue;
+                    }
+
+                    // Do not copy raw unhashed thumbnails, raw audio, or raw raster images!
+                    if (/\.(png|jpe?g|webp|avif|gif|mp3)$/i.test(entry.name)) {
+                      continue;
+                    }
+
+                    const destPath = path.join(outDir, 'presentations', id, entryRel);
+                    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+                    if (entry.name.endsWith('.svg') && graphicsCss) {
+                      let svgContent = fs.readFileSync(fullPath, 'utf8');
+                      const importRegex = /@import\s+(?:url\(['"]?\/styles\/graphics\.css['"]?\)|['"]\/styles\/graphics\.css['"])\s*;?/;
+                      if (importRegex.test(svgContent)) {
+                        svgContent = svgContent.replace(importRegex, () => graphicsCss);
+                      }
+                      fs.writeFileSync(destPath, svgContent, 'utf8');
+                    } else {
+                      fs.copyFileSync(fullPath, destPath);
+                    }
+                  }
+                }
+              };
+              copyOtherPresFiles(currentPresDir);
+            }
+            continue;
+          }
+
           const copyFiles = (currentSrc: string, relativePath = '') => {
             const files = fs.readdirSync(currentSrc);
             for (const file of files) {
@@ -107,10 +230,9 @@ function copyContentAssets(): AstroIntegration {
                   continue;
                 }
 
-                // Stop copying raster images, except presentation thumbnails
+                // Stop copying raster images
                 const isRaster = /\.(png|jpe?g|webp|avif|gif)$/i.test(file);
-                const isPresThumbnail = col === 'presentations' && relativePath.split(/[/\\]/).includes('thumbnails') && file.endsWith('.webp');
-                if (isRaster && !isPresThumbnail) {
+                if (isRaster) {
                   continue;
                 }
 
@@ -336,7 +458,7 @@ function buildImageIndex(): void {
           walk(fullPath);
         } else if (entry.isFile() && /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(entry.name)) {
           const norm = fullPath.replaceAll(path.sep, '/');
-          let targetDir = 'branding';
+          let targetDir = 'assets';
 
           if (norm.includes('src/content/posts/')) {
             const match = norm.match(/src\/content\/posts\/([^/]+)/);
@@ -382,13 +504,14 @@ function buildImageIndex(): void {
               targetDir = simpleMatch ? `feeds/${simpleMatch[1]}` : 'feeds';
             }
           } else if (norm.includes('src/assets/avatar/')) {
-            targetDir = 'avatar';
+            targetDir = 'assets/avatar';
           } else if (norm.includes('src/assets/technologies/')) {
-            targetDir = 'technologies';
+            targetDir = 'assets/technologies';
           } else if (norm.includes('src/assets/branding/') || norm.includes('og-share')) {
-            targetDir = 'branding';
+            targetDir = 'assets/branding';
           } else if (norm.includes('src/assets/')) {
-            targetDir = 'assets';
+            const match = norm.match(/src\/assets\/([^/]+)/);
+            targetDir = match ? `assets/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'assets';
           }
 
           try {
@@ -525,13 +648,18 @@ function getSemanticAssetPath(assetInfo: { names?: string[]; originalFileName?: 
       return simpleMatch ? `feeds/${simpleMatch[1]}/[name]-[hash][extname]` : `feeds/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/assets/avatar/') || searchPath.includes('/avatar/') || cleanName.includes('comic-profile')) {
-      return `avatar/[name]-[hash][extname]`;
+      return `assets/avatar/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/assets/technologies/') || searchPath.includes('/technologies/')) {
-      return `technologies/[name]-[hash][extname]`;
+      return `assets/technologies/[name]-[hash][extname]`;
     }
     if (searchPath.includes('src/assets/branding/') || searchPath.includes('/branding/') || cleanName.includes('og-share')) {
-      return `branding/[name]-[hash][extname]`;
+      return `assets/branding/[name]-[hash][extname]`;
+    }
+    if (searchPath.includes('src/assets/') || orig.includes('src/assets/')) {
+      const match = (searchPath.includes('src/assets/') ? searchPath : orig).match(/src\/assets\/([^/]+)/);
+      const sub = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
+      return sub ? `assets/${sub}/[name]-[hash][extname]` : `assets/[name]-[hash][extname]`;
     }
 
     // 3. Fallback to image name mapping if unique

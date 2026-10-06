@@ -1,6 +1,7 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import puppeteer, { type Browser, type Page } from 'puppeteer';
 import {
   computeSlideStyleHash,
@@ -246,7 +247,8 @@ export async function generateSlideThumbnailsForPresentation(
       if (shouldWrite) {
         await safeWriteFile(outPath, newBuffer);
         if (fs.existsSync(distThumbDir)) {
-          await safeWriteFile(path.join(distThumbDir, `${slideId}.webp`), newBuffer);
+          const hash = crypto.createHash('md5').update(newBuffer).digest('hex').slice(0, 8);
+          await safeWriteFile(path.join(distThumbDir, `${slideId}-${hash}.webp`), newBuffer);
         }
         writtenCount++;
       }

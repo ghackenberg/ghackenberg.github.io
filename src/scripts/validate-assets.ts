@@ -29,16 +29,19 @@ if (!fs.existsSync(distDir)) {
 // -------------------------------------------------------------
 // Assertion 1: Folder Absence Check
 // -------------------------------------------------------------
-const astroAssetFolder = path.join(distDir, '_astro');
-if (fs.existsSync(astroAssetFolder)) {
-  console.error(`[validate-assets] ❌ Assertion 1 Failed: Forbidden default build directory "_astro" found at: ${astroAssetFolder}`);
-  process.exit(1);
-}
+const forbiddenFolders = [
+  { path: path.join(distDir, '_astro'), name: '_astro' },
+  { path: path.join(distDir, 'images'), name: 'images' },
+  { path: path.join(distDir, 'avatar'), name: 'avatar (must be in dist/assets/avatar)' },
+  { path: path.join(distDir, 'branding'), name: 'branding (must be in dist/assets/branding)' },
+  { path: path.join(distDir, 'technologies'), name: 'technologies (must be in dist/assets/technologies)' },
+];
 
-const imagesFolder = path.join(distDir, 'images');
-if (fs.existsSync(imagesFolder)) {
-  console.error(`[validate-assets] ❌ Assertion 1 Failed: Forbidden unsemantic folder "images" found at: ${imagesFolder}`);
-  process.exit(1);
+for (const folder of forbiddenFolders) {
+  if (fs.existsSync(folder.path)) {
+    console.error(`[validate-assets] ❌ Assertion 1 Failed: Forbidden top-level directory "${folder.name}" found at: ${folder.path}`);
+    process.exit(1);
+  }
 }
 
 const htmlFiles = getHtmlFiles(distDir);
@@ -179,7 +182,7 @@ for (const file of htmlFiles) {
 }
 
 // -------------------------------------------------------------
-// Assertion 4: Strict Content Hashing for Raster Images
+// Assertion 4: Strict Content Hashing for Raster Images & Audio
 // -------------------------------------------------------------
 function getRasterImageFiles(dir: string): string[] {
   let files: string[] = [];
@@ -189,6 +192,20 @@ function getRasterImageFiles(dir: string): string[] {
     if (entry.isDirectory()) {
       files = files.concat(getRasterImageFiles(fullPath));
     } else if (entry.isFile() && /\.(png|jpe?g|webp|avif|gif)$/i.test(entry.name)) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+function getAudioFiles(dir: string): string[] {
+  let files: string[] = [];
+  if (!fs.existsSync(dir)) return files;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files = files.concat(getAudioFiles(fullPath));
+    } else if (entry.isFile() && /\.mp3$/i.test(entry.name)) {
       files.push(fullPath);
     }
   }
@@ -207,23 +224,13 @@ function isWhitelistedRasterImage(relPath: string): boolean {
     'icon-192x192.png',
     'icon-512x512.png',
     'icon-512x512-maskable.png',
+    'og-share-preview.png',
   ]);
-  if (rootWhitelist.has(normalized)) {
-    return true;
-  }
-
-  // Presentations pre-rendered thumbnails and preview
-  if (/^presentations\/[^/]+\/thumbnails\/[^/]+\.webp$/.test(normalized)) {
-    return true;
-  }
-  if (/^presentations\/[^/]+\/preview\.jpg$/.test(normalized)) {
-    return true;
-  }
-
-  return false;
+  return rootWhitelist.has(normalized);
 }
 
 const HASHED_IMAGE_REGEX = /-[a-zA-Z0-9_-]{6,}\.(png|jpe?g|webp|avif|gif)$/i;
+const HASHED_AUDIO_REGEX = /-[a-zA-Z0-9_-]{6,}\.mp3$/i;
 
 const rasterImages = getRasterImageFiles(distDir);
 let hashedRasterImagesCount = 0;
@@ -248,14 +255,33 @@ for (const imgFile of rasterImages) {
   }
 }
 
+const audioFiles = getAudioFiles(distDir);
+let hashedAudioCount = 0;
+let unhashedAudioCount = 0;
+
+for (const audioFile of audioFiles) {
+  const relPath = path.relative(distDir, audioFile).replace(/\\/g, '/');
+  if (!HASHED_AUDIO_REGEX.test(relPath)) {
+    console.error(
+      `[validate-assets] ❌ Assertion 4 Failed: Unhashed audio file found at: ${relPath}`
+    );
+    errorsCount++;
+    unhashedAudioCount++;
+  } else {
+    hashedAudioCount++;
+  }
+}
+
 console.log(`\n[validate-assets] Scan summary:`);
 console.log(`  - Scanned HTML files:            ${htmlFiles.length}`);
 console.log(`  - Checked attributes:            ${totalCheckedAttributes}`);
 console.log(`  - Checked asset references:      ${totalAssetRefsChecked}`);
 console.log(`  - Scanned raster images:         ${rasterImages.length} (${hashedRasterImagesCount} hashed, ${whitelistedRasterImagesCount} whitelisted)`);
+console.log(`  - Scanned audio files:           ${audioFiles.length} (${hashedAudioCount} hashed)`);
 console.log(`  - Zero _astro references:        CONFIRMED (0 forbidden references)`);
-console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount - unhashedAudioCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
 console.log(`  - Strict image hashing:          ${unhashedImagesCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+console.log(`  - Strict audio hashing:          ${unhashedAudioCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
 
 if (errorsCount > 0) {
   console.error(`\n[validate-assets] 💥 Validation failed with ${errorsCount} asset integrity error(s).`);
