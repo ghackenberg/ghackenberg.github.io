@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "npm run typecheck && astro build && npm run generate-assets",
-    "postbuild": "npm run validate:semantic-ids",
+    "postbuild": "npm run validate:semantic-ids && npm run validate:assets",
     "validate": "npm run lint && npm run typecheck && npm run validate:scripts && npm run validate:skills && npm run validate:slides && npm run validate:citations:syntax && npm run lint:styles && npm run lint:svgs && npm run validate:architecture",
     "verify": "npm run validate && npm run build",
     "test": "npm run verify",
@@ -39,6 +39,7 @@
     "validate:slides:syntax": "tsx src/scripts/validate-slides.ts --syntax-only",
     "validate:skills": "tsx src/scripts/validate-skills.ts",
     "validate:semantic-ids": "tsx src/scripts/validate-semantic-ids.ts",
+    "validate:assets": "tsx src/scripts/validate-assets.ts",
     "validate:citations:syntax": "tsx src/scripts/lint-citations.ts --syntax-only",
     "validate:scripts": "tsx src/scripts/validate-scripts.ts",
     "validate:architecture": "tsx src/scripts/validate-architecture.ts",

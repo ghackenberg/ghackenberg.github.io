@@ -32,7 +32,7 @@ Use system sans-serif fonts consistent with site typography:
 - **Text Alignment**: Use `text-anchor="middle"` for centered node labels, `dominant-baseline="central"` or `dominant-baseline="middle"` for vertical centering.
 
 ## 4. Brand Color Tokens & Node Archetypes
-All colors and visual archetypes are centralized in `public/styles/graphics.css`. Every SVG imports these tokens to guarantee seamless dark/light theme switching:
+All colors and visual archetypes are centralized in `src/styles/graphics.css`. Every SVG imports these tokens to guarantee seamless dark/light theme switching:
 - **Blue Archetype (`--svg-node-blue-*`)**: Orchestration, control planes, invariant monitoring, computation.
 - **Purple Archetype (`--svg-node-purple-*`)**: Probabilistic execution, autonomous ReAct loops, planning.
 - **Amber Archetype (`--svg-node-amber-*`)**: Fail-safe subsystems, human verification gates, alerts, fallback paths.

@@ -19,7 +19,7 @@ function success(msg: string) {
 console.log('🔍 [lint:styles] Validating modular stylesheet architecture...');
 
 // 1. Check existence of modular stylesheets
-const requiredStyles = ['theme.css', 'diagrams.css', 'slides.css', 'posts.css', 'components.css', 'global.css'];
+const requiredStyles = ['theme.css', 'diagrams.css', 'slides.css', 'posts.css', 'components.css', 'global.css', 'graphics.css'];
 for (const file of requiredStyles) {
   const filePath = path.join(STYLES_DIR, file);
   if (!fs.existsSync(filePath)) {
@@ -35,6 +35,11 @@ if (fs.existsSync(themeCssPath)) {
     error('src/styles/theme.css is missing import for "./diagrams.css"');
   } else {
     success('src/styles/theme.css correctly imports modular diagrams.css.');
+  }
+  if (!content.includes('./graphics.css')) {
+    error('src/styles/theme.css is missing import for "./graphics.css"');
+  } else {
+    success('src/styles/theme.css correctly imports modular graphics.css.');
   }
 }
 
