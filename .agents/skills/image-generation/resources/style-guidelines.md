@@ -1,180 +1,38 @@
-# Image Style & Brand Guidelines
+# Image Style & Brand Guidelines (Level 3 Resource Index)
 
-This document serves as the single source of truth for generating or editing image materials across the website. All images (previews, diagrams, and media) must strictly align with these guidelines to preserve visual consistency.
+This document serves as the central index and entrypoint for generating visual assets across the website. The image generation system enforces a cohesive, brand-aligned visual language using diffusion conditioning protocols and structured content archetypes.
 
-## 1. Global Color Palette & Theme Colors
+## 1. Design Philosophy & Visual Aesthetic
 
-All generated images must use a color scheme based on the website's custom dark theme (`#030712` background) combined with the four brand colors:
+All illustrations across the platform follow a **stylized Disney/Pixar comic-book vector illustration** aesthetic:
+* **Dark Slate Canvas**: All imagery is built on the dark theme foundation (`#030712`), blending seamlessly into the site's design system.
+* **Linework & Shading**: Crisp dark ink outlines, bold cel shading, and clean gradients without photorealistic textures or soft 3D renders.
+* **Clean Framing**: Borderless full-bleed compositions with zero perimeter frames, white photo margins, or nested picture-in-picture boxes.
 
-| Color Role | Color Name | Hex Code | Purpose / Context |
+## 2. Core Architectural Resources
+
+For deep specifications, consult the dedicated Level 3 modular reference documents:
+
+* [**Visual Brand DNA & Identity Core**](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/brand-dna.md): Global color palette (`#3b82f6`, `#f59e0b`, `#a855f7`, `#10b981`), comic vector styling, and canonical protagonist identity (Dr. Georg Hackenberg facial identity and attire contexts).
+* [**Diffusion Conditioning & Asset Engineering**](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/diffusion-conditioning.md): Mathematical diffusion principles, Room DNA, avoiding the 2D layout-locking trap, cinematographic zonation (FG/MG/BG), object isolation (0% occlusion), focus variant conditioning slots, and the relational asset graph.
+
+## 3. Visual Content Archetypes
+
+Every generated asset adheres to one of seven specialized visual archetypes:
+
+| Content Type | Visual Archetype | Avatar Rule | Detailed Guide |
 | :--- | :--- | :--- | :--- |
-| **Deep Work** | Brand Blue | `#3b82f6` | Software engineering, development, Astro, TS |
-| **Meetings** | Brand Yellow | `#f59e0b` | External partnerships, academic affairs, FH Wels |
-| **Strategy** | Brand Purple | `#a855f7` | Strategy, briefings, advisory services |
-| **Personal** | Brand Green | `#10b981` | Personal, sport, recreation, sponsorships |
-| **Background** | Slate Black | `#030712` | Dark background panels and cards |
+| **Posts** | In-the-Lab / Engineering Scene | **Yes** (Hands-on Engineer) | [archetypes/posts.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/posts.md) |
+| **Presentations** | Keynote Beamer Stage / Pipeline / Hero | **Yes / No** (Context-specific) | [archetypes/presentations.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/presentations.md) |
+| **Courses** | Academic Lecture & Lab Blackboard | **Strictly No Avatar** (Didactic) | [archetypes/courses.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/courses.md) |
+| **Projects** | Isometric Tech Workbench Showcase | **Strictly No Avatar** (Product) | [archetypes/projects.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/projects.md) |
+| **Services** | Executive Architecture Strategy Board | **Yes** (Executive Advisor) | [archetypes/services.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/services.md) |
+| **Service Modules** | Iconic Cyber-Physical Module Artifact | **Strictly No Avatar** (Emblem) | [archetypes/service-modules.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/service-modules.md) |
+| **Interests** | Conceptual Macro-Cosmos / Domain Realm | **Strictly No Avatar** (Macro Realm) | [archetypes/interests.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/interests.md) |
 
-## 2. Core Visual Aesthetic: Comic Illustration Style
+## 4. Generation & Review Protocol
 
-All non-screenshot images must follow a **stylized Disney/Pixar comic-book vector illustration** aesthetic:
-
-*   **Crisp Outlines**: Use distinct, dark (slate or black) borders and outlines for figures, cards, and diagrams to emulate a cartoon/comic layout.
-*   **Cel Shading & Gradients**: Use flat fills, bold cel-shading, or clean gradients. Avoid realistic lighting, photographic textures, or soft-blurred 3D renders.
-*   **No Border Frames**: Previews and diagrams must not contain mock frames, photo-like white margins, or borders around the image canvas.
-*   **No Picture-in-Picture**: Avoid nesting smaller image mockups or screenshots inside a larger frame. Keep the canvas as a single unified scene.
-*   **Aesthetic Details**: Incorporate comic-style details such as subtle halftone dot patterns, hand-drawn vector arrows, or comic speech/info bubbles where appropriate.
-*   **Background Integration**: Always design with a dark background matching `#030712` or slate gray. Avoid solid white backgrounds so the images blend seamlessly into the site's premium dark mode.
-
-## 3. Canonical Protagonist & Character Representation
-
-Whenever an image features a person (e.g. author, researcher, professor, developer, or presenter), **never use a generic or random character**. 
-
-*   **Dr. Georg Hackenberg (Site Owner / Author)**:
-    *   **Facial Identity**: Based on `src/content/characters/georg/portrait.png`. Early 40s, neatly groomed styled dark brown hair with silver highlights at temples, neatly trimmed full beard and mustache, warm genuine smile showing white teeth, expressive intelligent hazel/brown eyes. No eyeglasses unless specified for a specific technical variant.
-    *   **Attire Contexts**:
-        *   *Academic / Consulting / Enterprise*: Tailored dark suit jacket over a checked or collared shirt.
-        *   *Home Office / Video Call / Everyday*: Friendly, approachable casual knit sweater or casual collared shirt in welcoming tones (e.g., petrol blue, royal blue, or heather grey). Avoid dark/black hoodies in home office scenes.
-        *   *Hands-on Tech / Lab / Dev*: Dark navy or slate tech pullover, dark t-shirt, or workshop layer.
-        *   *Outdoor / Smart Systems*: Sporty tech outdoor jacket.
-    *   **Whiteboard & Presentation Staging**:
-        *   When illustrating whiteboard concept discussions, the camera framing must prioritize the whiteboard surface so that technical diagrams, flowcharts, and notes are prominently displayed and clearly legible.
-        *   Georg should be positioned to one side (e.g., the left or right third of the frame), marker in hand, turning warmly toward the viewer, never obscuring or blocking the central diagram on the whiteboard.
-    *   **Inclusion Rule**: Include Georg in comic scenes whenever it makes narrative sense (the author presenting a project, building an architecture, running an experiment, or teaching a concept).
-
-## 4. Generative AI Engineering Principles & Best Practices
-
-To guarantee consistent results across different diffusion models and eliminate common generative artifacts, adhere strictly to these three core principles:
-
-### A. Decoupled Viewpoints & Room DNA (Raum-DNA)
-* **The 2D Layout-Locking Trap**: Passing a wide-angle room photo into `ImagePaths` causes the vision encoder (CLIP/SigLIP) to enforce the original 2D composition and spatial layout. If a novel camera angle (e.g. 3/4 workstation close-up) is requested while passing a wide room reference, the model will **not** rotate the 3D camera; instead, it leaves the room layout unchanged and inpaints floating or duplicate objects into the center of the frame.
-* **The Room-DNA Solution**: To capture an environment from different camera viewpoints, do **not** pass a full-room reference image to `ImagePaths`. Instead, rely on the environment's **Room DNA** in the prompt (architecture, materials, lighting, permanent spatial anchors, window view).
-* **Cinematographic Zonation (Foreground / Midground / Background)**: Structure prompts strictly in three depth layers. Diffusion models prioritize tokens at the start of prompts:
-  1. *Foreground*: Nearest desk edge, signature mugs, keyboard, input devices.
-  2. *Midground*: Primary focal target (angled monitor with front screen visible, ergonomic office chair, presenter).
-  3. *Background*: Architectural walls, wall-mounted whiteboards, artwork, windows, external panorama.
-
-### B. Canonical Object Isolation & Asset Hygiene
-* **0% Occlusion Rule (No Foreground Contamination)**: When capturing reference assets for `src/content/objects/`, the target object must never be partially covered or obstructed by other items (e.g. a computer monitor in front of a wall painting). Occlusions cause **Attribute Bleeding** / **Semantic Leakage**, causing the model to blend unwanted features (like glowing IDE code) into the object.
-* **Planar & Orthographic (No Perspective Baking)**: Reference objects must be captured or rendered as planar 2D flat-lays or orthographic frontal views. Perspective foreshortening or trapezoidal warping in the reference image will be baked into the object's embedding, causing double-distortion when placed in new scenes.
-* **Style Purity**: All objects and characters must strictly adhere to the Disney/Pixar comic illustration style (crisp dark ink linework, cel shading, no photorealistic museum backgrounds, no drop-shadow margins).
-
-### C. Environment Focus Variants & `ImagePaths` Conditioning
-* **Never pass wide-angle room overview photos (`reference.jpg`) to `ImagePaths`** when requesting a close-up or novel perspective. This triggers the 2D layout-locking trap and causes inpainting of floating artifacts.
-* **Mandatory Focus Variant Anchoring**: When generating a scene located in an existing environment, agents must:
-  1. Inspect existing environments and their defined `variants` in `src/content/environments/`.
-  2. Select the matching pre-rendered focus variant (e.g. `workplace-focus.jpg` or `beamer-screen-focus.jpg`).
-  3. Pass the pre-rendered focus variant as the environment anchor in `ImagePaths` (e.g. alongside `portrait.png`).
-* **Conditioning Slots (`ImagePaths`, up to 3 images)**:
-  - Anchor 1: Protagonist portrait (`characters/georg/portrait.png`).
-  - Anchor 2: Matching pre-rendered environment focus variant (`environments/[id]/[variant].jpg`).
-  - Anchor 3 (optional): Clean isolated planar object (`objects/[id]/reference.jpg`).
-
-## 5. Central Visual Asset Library & Relational Graph
-
-All characters, key objects, and spatial environments are managed as first-class Astro content collections with typed cross-references:
-
-1. **Characters** (`src/content/characters/[id]/`):
-   - Contains `index.md` with canonical prompt description, facial/body attributes, role, and structured `variants`.
-   - Linked to `environments` (primary workspaces) and `objects` (signature personal gear/items).
-   - Reference images: `portrait.png`, plus variant poses/outfits.
-2. **Objects** (`src/content/objects/[id]/`):
-   - Key recurring physical and digital artifacts.
-   - Contains `index.md` with category, canonical prompt, `geometry` metadata (form, materials, colors), and isolated planar reference image.
-   - Linked to `environments` (where the object resides) and `characters` (who uses/owns it).
-3. **Environments** (`src/content/environments/[id]/`):
-   - Key recurring spatial locations.
-   - Contains `index.md` with:
-     - `dna`: Immutable architectural foundation (architecture, wall/ceiling/floor materials, lighting, brand palette, window panorama).
-     - `variants`: Structured camera viewpoints with `shotType`, `cameraAngle`, `focalTarget`, `depthLayers`, and ready-to-use `promptSnippet`.
-   - Linked to `characters` (occupants) and `objects` (contained key objects).
-
-### Mandatory Generation Protocol
-Before generating any new illustration:
-1. **Environment & Focus Variant Selection (Mandatory)**:
-   - Check `src/content/environments/` for available locations and their existing `variants`.
-   - **Select** the most fitting focus variant for the camera framing and setting.
-   - **Check Character Capacity (`maxCharacters`)**: Note the variant's capacity (e.g. `workplace-focus` max 1; `visitor-table-focus` max 2; `full-lab` max 6). Never place more characters in a shot than the variant permits.
-   - **Check Object Visibility (`visibleObjects`)**: Check which signature objects are listed under `visibleObjects` for this variant (e.g. `almtal-abstract-painting`). Only include objects in the prompt that are physically in the variant's view.
-   - **Propose new variant**: If the environment fits but the specific camera angle, focal target, or character capacity is missing, generate and register a new focus variant for that environment first.
-   - **Propose new environment**: If a novel real-world setting is required, propose and register the environment with an initial set of focus variants and 1–3 signature objects first.
-2. **Character & Object Discovery & Suitability Check**:
-   - Check `src/content/characters/` for available characters and their associations with the environment.
-   - If the scene requires additional human figures (e.g., student, client, collaborator) and no suitable character exists in the library, **propose and create the new character first** (portrait, attributes, role).
-   - Check `src/content/objects/` for referenced `visibleObjects`. Ensure all referenced items are 100% planar, isolated, and occlusion-free.
-3. **Prompt Composition**:
-   - Combine character identity, the environment's `dna`, the variant's `depthLayers`, and any `visibleObjects`.
-   - Pass the primary character (`portrait.png`) and the selected focus variant (`[variant].jpg`) to `ImagePaths` (plus optional secondary character or isolated object).
-   - Always present the prompt and reference image list to the user before calling `generate_image`.
-
-## 6. Modular Guidelines by Image Category
-
-### A. Services Overview & Detail Previews
-*   **Subject**: High-tech workspaces, glowing code editors, digital mockups, or conceptual tech drawings.
-*   **Style**: Stylized comic-book vector illustration of the subject. Crisp ink outlines.
-*   **Aesthetic**: Vibrant accent glows matching the service color (e.g., Yellow for Corporate Training, Blue for R&D Prototyping). Must be a single visual composition with no nested image-in-image components or white margins.
-*   **Format**: 16:9 ratio, flat PNG.
-
-### B. Service Module Previews
-*   **Subject**: A single, focused visual metaphor representing the specific module's core utility (e.g., a glowing server rack for hosting, a fountain pen for copywriting, a camera lens for tutorials).
-*   **Style**: Centered flat vector comic icon or emblem on a dark slate background (`#0b1329` or `#030712`).
-*   **Aesthetic**: Bold cel-shading, prominent ink borders, halftone dot shading, and custom colored accent glows matching the parent service. No nested images or margins.
-*   **Format**: 16:9 ratio, flat PNG.
-
-### C. Course Preview Images
-*   **Subject**: Educational topics, specific programming languages, or tools (e.g. Kotlin, WebGL, CAD).
-*   **Style**: Clean vector design with prominent tech logos surrounded by hand-drawn comic elements.
-*   **Format**: 16:9 ratio.
-
-### D. Blog Post Featured Images
-*   **Subject**: Article-specific technical concepts featuring Dr. Georg Hackenberg and relevant library objects/environments.
-*   **Style**: High-quality technical comic-book illustrations with clean ink outlines, vibrant brand accents, and cel shading.
-*   **Format**: 16:9 ratio.
-
-### E. Presentation Pipeline Step Images
-*   **Subject**: Single, iconic conceptual motif representing a progressive stage or technological component in horizontal pipeline slides (`<Pipeline steps={[...]} />`).
-*   **Style & Aesthetic**: Stylized Disney/Pixar comic illustration style, crisp dark ink linework, bold cel shading, with a **friendly yet technical, sober, and precise engineering finish**.
-*   **Tone & Demarcation (Technical Rigor vs. Playful/Childlike)**:
-    *   Convey professional engineering precision, architectural elegance, and scientific authority.
-    *   **STRICTLY FORBIDDEN**: Childish doodles, cute cartoon eyes or faces on inanimate objects, playful toy aesthetics, or emotional/cartoonish expressions.
-*   **Visual Complexity Sweet Spot (The "1 Hero + 1–2 Interaction" Rule)**:
-    *   On a slide with 3–4 pipeline cards, each image is only ~350–450px wide. Audience comprehension must occur in 1.5–2 seconds without cognitive friction.
-    *   **Exactly 1 dominant, bold iconic hero object** in the center (e.g. a glowing enterprise data vault, an optical analysis prism, a cryptographic verification shield, an edge CDN satellite node).
-    *   **Maximum 1–2 directed interaction cues** (e.g. a single incoming laser beam, one vector arrow, an illuminated circuit trace, or a verified document sheet).
-    *   **STRICTLY FORBIDDEN**: Micro-dashboards, multi-window UI panels, unreadable miniature charts/waveforms, tiny fake text lines, or dense cluttered multi-box layouts.
-*   **Edge-to-Edge Full Bleed**: Absolutely borderless, running seamlessly to all four edges of the canvas with zero perimeter frames, zero border lines, and zero margins.
-*   **Central Virtual Square Safe-Zone (Anti-Clipping Rule)**: The entire primary motif must be strictly centered and confined within a **virtual square in the center of the 16:9 canvas** (occupying ~50–56% of the canvas width, matching the canvas height), leaving generous empty background padding on the left, right, top, and bottom. This prevents clipping when `Pipeline.astro` dynamically crops or resizes the container via `object-cover`. Never place essential visual elements, text, or cards in the outer left/right thirds! All visual motif elements float freely in the central area without any containing box, square frame, or boundary lines.
-*   **Background Palette**: Luminous, vibrant blue-violet and deep indigo galaxy nebula with soft ambient starlight. Blends seamlessly into both dark and light presentation modes. Avoid pitch-black slate backgrounds for pipeline step cards.
-*   **Characters**: No human characters (Georg does not appear in pipeline step cards).
-*   **Agenda Slide Exception**: Agenda slides (Slide 02) require **NO images**.
-*   **Format & Ratio**: **16:9 horizontal aspect ratio (`AspectRatio: "16:9"`)**, saved as `.jpg` in `src/content/presentations/[presentation_id]/images/` and referenced via `/presentations/[presentation_id]/images/[filename].jpg`.
-*   **Canonical Prompt Template**:
-    ```text
-    Edge-to-edge full bleed artwork in a 16:9 horizontal format, completely borderless, stretching seamlessly across the entire canvas without any frame, without border line, without box outline, and without margins. Floating freely in the center third of the frame, surrounded by generous empty background space on all sides: [1 dominant iconic hero object + max 1-2 clean directed interaction elements]. Clean, friendly yet sober and strictly technical engineering aesthetic, crisp dark ink linework, bold cel shading, minimal and iconic composition. No cartoon faces, no cute eyes, no childish doodles, no micro-dashboards, no tiny unreadable text, no box outline, no border, no elements touching canvas edges. All visual motif elements float freely in the central area without any containing box, square frame, or boundary lines. The entire canvas is filled with a seamless, luminous vibrant blue-violet and deep indigo galaxy nebula with soft ambient starlight. 16:9 aspect ratio.
-    ```
-
-### F. Presentation Story Hero Slide Images (`StoryHeroSlide`)
-*   **Subject**: Deep narrative storytelling scenes, industrial laboratories, engineering workstations, keynote stages, and collaborative B2B architecture environments.
-*   **Style & Aesthetic**: Stylized Disney/Pixar vector comic-book illustration, crisp dark ink linework, bold cel shading, dark slate background (`#030712`) with vibrant brand color lighting accents (`#3b82f6` Blue, `#f59e0b` Amber, `#a855f7` Purple, `#10b981` Green).
-*   **Container Behavior**: Displayed in `StoryHeroSlide.astro` within a 7-column `story-visual-card` (`rounded-3xl`, `object-cover object-center`).
-*   **Format & Aspect Ratio**: **4:3 aspect ratio (`AspectRatio: "4:3"`)**, saved as `.jpg` in `src/content/presentations/[presentation_id]/images/` and imported as static image metadata into `.mdx` slides.
-
-### G. Presentation Deck Preview Images (`preview.jpg` - Keynote Beamer Focus)
-*   **Subject**: Keynote presentation preview card (`src/content/presentations/[presentation_id]/preview.jpg`) used on catalog feeds, social previews, and overview pages.
-*   **Environment & Condition Anchors (`ImagePaths`)**:
-    *   Anchor 1: `src/content/characters/georg/portrait.png`
-    *   Anchor 2: `src/content/environments/design-thinking-lab-wels/beamer-screen-focus.jpg`
-*   **The Illuminated White Screen Contract (Exception to Dark Background Rule)**:
-    *   The motorized projection screen canvas **MUST ALWAYS BE LUMINOUS BRIGHT PURE WHITE (`#ffffff`)**, brightly illuminated by overhead track spotlights.
-    *   The dark slate palette (`#030712`) is strictly confined to the surrounding studio room walls, ceiling fixtures, and the presenter's tailored dark navy/slate suit jacket.
-    *   **STRICTLY FORBIDDEN**: Dark slate or black slide backgrounds on the beamer screen. Slides must have high contrast on a glowing white projection canvas.
-*   **Presenter Framing Contract (Waist-Up Anchor)**:
-    *   Dr. Georg Hackenberg is positioned in the left foreground (occupying the left third of the canvas).
-    *   Framing is strictly a **waist-up medium presenter shot (torso cropped cleanly at the bottom canvas edge)**.
-    *   He is turned three-quarters toward the audience, smiling warmly, holding a presentation clicker, and gesturing toward the screen with his other hand.
-    *   **STRICTLY FORBIDDEN**: Full-body character shots, visible shoes/feet, or floor gaps below the character.
-*   **Zero-Typo Text Minimization Contract**:
-    *   **Title Heading**: Exactly 1 prominent, large title in clean dark typography on the white screen.
-    *   **Iconic Visual Diagram**: Central schematic consists of clean, bold visual symbols, connected flow arrows, and color-coded nodes.
-    *   **Minimal Labels**: At most 2–3 short, 1-word or 2-word bold category labels (e.g. `Demand Creation`, `AI Search`, `Demand Capture`).
-    *   **STRICTLY FORBIDDEN**: Explanatory paragraphs, multi-line card text, sub-bullet sentences, or complex formulas (eliminates generative spelling errors and gibberish).
-*   **Format & Aspect Ratio**: **16:9 horizontal aspect ratio (`AspectRatio: "16:9"`)**, saved as `preview.jpg` in `src/content/presentations/[presentation_id]/preview.jpg`.
+Before calling `generate_image`, always:
+1. Select the relevant archetype and consult its prompt template.
+2. Check `src/content/environments/` and `src/content/characters/` for conditioning anchors (`ImagePaths`).
+3. Present the prompt, aspect ratio, and reference images to the user for explicit approval.
