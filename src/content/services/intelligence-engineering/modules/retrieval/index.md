@@ -1,57 +1,55 @@
 ---
 title: "Knowledge Retrieval"
 serviceId: "intelligence-engineering"
-description: "Engineering hallucination-resistant retrieval architectures combining dense semantic search (Qdrant), property knowledge graphs (Neo4j GraphRAG), and continuous agent memory (Mem0)."
+description: "Engineering retrieval architectures combining dense vector search (Qdrant), property knowledge graphs (Neo4j GraphRAG), and persistent agent memory (Mem0)."
 ctaText: "Inquire about Knowledge Retrieval"
 highlights:
-  - "Hybrid GraphRAG combining relational enterprise knowledge with dense semantic vector search"
-  - "Sub-millisecond vector indexing, payload filtering, and dense embeddings powered by Qdrant"
-  - "Contextual property knowledge graphs modeled and queried via Neo4j"
-  - "Persistent, personalized agent memory and dynamic context injection implemented via Mem0"
-methodologyDescription: "Our Knowledge Retrieval consulting grounds models in enterprise truth:"
+  - "Hybrid retrieval combining dense vector similarity with structured property graph queries"
+  - "Vector database configuration, index tuning, and payload filtering with Qdrant"
+  - "Domain entity and relationship modeling using Neo4j for multi-hop graph traversal"
+  - "Persistent session memory and state management for multi-turn agent interactions"
+methodologyDescription: "The retrieval engineering process implements grounded context pipelines:"
 methodologyPhases:
-  - title: "Data Source & Ontology Audit"
-    description: "Cataloging internal databases, document repositories, schemas, and defining domain entity ontologies."
-  - title: "Vector & Graph Pipeline Design"
-    description: "Configuring Qdrant vector collections and engineering Neo4j property knowledge graph ingestion pipelines."
-  - title: "Hybrid Retrieval & Memory Integration"
-    description: "Implementing dual-path retrieval algorithms and configuring Mem0 for cross-session agent recall."
-  - title: "Evaluation & Grounding Benchmarking"
-    description: "Testing retrieval precision, recall metrics, and verifying hallucination mitigation against ground-truth queries."
+  - title: "Data Ingestion"
+    description: "Analyzing source documents, schemas, and extracting structured entities and textual chunks."
+  - title: "Pipeline Engineering"
+    description: "Configuring embedding pipelines, vector collections in Qdrant, and graph nodes in Neo4j."
+  - title: "Retrieval Fusion"
+    description: "Implementing hybrid query fusion logic combining vector similarity scoring with graph traversal."
+  - title: "Evaluation Benchmarking"
+    description: "Measuring retrieval precision, recall, and context relevance against test query suites."
 order: 2
 previewImage:
   src: "./preview.png"
   title: "Knowledge Retrieval & GraphRAG am Campus Wels"
   description: "Dr. Georg Hackenberg demonstriert hybride Vektorsuche und Neo4j-Wissensgraphen an der Workstation im Campus Office Wels"
 pubDate: 2026-09-11
-
 inputs:
-  - "Internal document repositories, PDFs, Markdown documentation, and unstructured data"
-  - "Relational databases, ERP schemas, CRM records, and product catalogs"
-  - "Corporate domain ontologies, terminology glossaries, and entity relationships"
-  - "User interaction histories, personalization requirements, and session boundaries"
+  - "Internal document repositories (technical manuals, Markdown files, PDFs, source code)"
+  - "Structured databases, relational tables, and domain catalogs"
+  - "Domain terminology glossaries and relationship specifications"
+  - "User interaction requirements and session persistence specifications"
 outputs:
-  - "Enterprise Knowledge & Retrieval Architecture Blueprint"
-  - "Configured Qdrant Vector Database Cluster with optimized HNSW indexing"
-  - "Turnkey Neo4j Property Knowledge Graph Schema & Ingestion Pipelines"
-  - "Integrated Mem0 Agent Memory Store with continuous recall hooks"
-  - "Hybrid Retrieval Benchmarking Suite & Ground-Truth Test Harness"
+  - "Retrieval architecture design and data flow specification"
+  - "Qdrant vector collection configurations with tuned HNSW index parameters"
+  - "Neo4j property graph schema and automated ingestion scripts"
+  - "Hybrid retrieval query fusion module and scoring implementation"
+  - "Retrieval evaluation benchmark suite and ground-truth test datasets"
 duration: "3 - 5 Weeks"
 format: "Engineering Sprints"
 delivery: "Remote / On-site"
 ---
 
-## Grounding Intelligence in Enterprise Reality
+## Technical Context
 
-Autonomous intelligence requires rich, verifiable enterprise context. Simple keyword search and naive vector similarity frequently hallucinate or fail to understand interconnected business entities.
+Standard retrieval-augmented generation (RAG) typically relies on basic vector similarity search across chunked text. While effective for semantic similarity, pure vector search struggles with multi-hop reasoning, explicit hierarchical relationships, and exact attribute filtering.
 
-My Knowledge Retrieval practice delivers hybrid retrieval-augmented generation (RAG) that pairs dense semantic embeddings with the structural rigor of property knowledge graphs.
+Hybrid retrieval combines dense vector embeddings with structured property knowledge graphs (GraphRAG). This allows systems to combine semantic topic matching with deterministic graph traversals across entities, dependencies, and domain rules.
 
-### Dense Vector Search with Qdrant
-Using **Qdrant**, we achieve sub-millisecond similarity search across millions of documents. We configure advanced payload filtering, quantization, and hybrid sparse-dense embeddings to ensure high retrieval precision.
+### Vector Search
 
-### Relational Context with Neo4j Knowledge Graphs
-Business knowledge is inherently relational. By modeling enterprise data in **Neo4j**, agents can traverse multi-hop relationships between products, departments, contracts, and regulations—unlocking true GraphRAG reasoning.
+A dedicated vector database (Qdrant) indexes document embeddings using Hierarchical Navigable Small World (HNSW) graphs. Payload filtering allows queries to constrain vector searches by metadata attributes such as timestamps, access control tags, or document categories before ranking.
 
-### Continuous Agent Memory with Mem0
-Agents must retain context across conversations. With **Mem0**, we equip agents with long-term memory that adapts to user preferences and preserves organizational continuity.
+### Graph Traversal
+
+Structured relationships are stored in a property graph (Neo4j). When a query involves interconnected entities—such as software components, organizational units, or regulatory requirements—graph queries retrieve relational context that vector proximity alone cannot capture.

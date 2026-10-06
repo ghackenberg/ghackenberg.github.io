@@ -1,23 +1,23 @@
 ---
 title: "Design Systems"
 serviceId: "content-engineering"
-description: "Engineering unified design tokens, component kits, and multi-format social templates (1:1, 16:9, 4:5) for unmistakable brand recognition across web and social media."
+description: "Designing tokenized design systems, component libraries, and multi-format vector templates (1:1, 16:9, 4:5) for technical documentation and publishing."
 ctaText: "Inquire about Design Systems"
 highlights:
-  - "Design system architecture specifically engineered for social media and technical publishing"
-  - "Modular template libraries for technical infographics, carousels, thumbnails, and quote cards"
-  - "Design tokens (color ramps, typography scales, contrast ratios) unified across web and social"
-  - "Establishing a cohesive, memorable visual brand language that elevates brand recognition"
-methodologyDescription: "Our Design Systems engineering creates cohesive, high-impact visual standards:"
+  - "Design token architecture defining color palettes, typography scales, and spacing systems"
+  - "Component templates for technical diagrams, architecture schematics, and presentation slides"
+  - "Consistent design tokens shared across web layouts and exportable visual media"
+  - "Standardized vector graphics workflows supporting light and dark theme modes"
+methodologyDescription: "The design systems process establishes structured visual standards:"
 methodologyPhases:
-  - title: "Visual Audit & Token Definition"
-    description: "Evaluating current visual collateral, codifying color ramps, typographic scales, dark/light surface tokens, and contrast ratios."
-  - title: "Multi-Format Template Construction"
-    description: "Building reusable component templates in Figma and code-based SVG engines for 1:1, 16:9, and 4:5 aspect ratios."
-  - title: "Technical Diagram Standards"
-    description: "Standardizing vector schematics, flowcharts, node styling, and color-coded relationship arrows."
-  - title: "Quality Governance & Handoff"
-    description: "Delivering visual guidelines, contrast validation checklists, and practical training for content creators."
+  - title: "Visual Inventory"
+    description: "Auditing existing graphical assets, typographic hierarchies, and color usage across publication channels."
+  - title: "Token Definition"
+    description: "Formalizing color scales, typography scales, surface tokens, and contrast ratios conforming to WCAG standards."
+  - title: "Template Engineering"
+    description: "Constructing reusable layout templates in vector engines and web components for standard aspect ratios."
+  - title: "Schematic Standards"
+    description: "Standardizing vector schematics, flowchart notation, and component symbology."
 order: 3
 pubDate: 2026-09-11
 previewImage:
@@ -25,29 +25,31 @@ previewImage:
   title: "Präsentation: Design Systems"
   description: "Dr. Georg Hackenberg präsentiert Design-Tokens, Farbpaletten, Typografieskalen und modulare UI-Komponenten auf einer Leinwand"
 inputs:
-  - "Existing logo files, brand marks, and current social media post archives"
-  - "Target social platforms (LinkedIn, YouTube, X, GitHub) and aspect ratio requirements"
-  - "Brand personality attributes, aesthetic benchmarks, and tone guidelines"
-  - "Preferred design environments (Figma, SVG generators, web code)"
+  - "Existing vector logos, typography specifications, and brand guidelines"
+  - "Target publication platforms and required aspect ratios (1:1, 16:9, 4:5)"
+  - "Technical visualization requirements (flowcharts, architecture diagrams, benchmark charts)"
+  - "Target implementation tooling (Tailwind CSS, SVG generators, Figma)"
 outputs:
-  - "Comprehensive Social Media & Publishing Design System Specification"
-  - "Turnkey Multi-Platform Template Library (Figma & SVG templates for 1:1, 16:9, 4:5)"
-  - "Unified Visual Brand Manual (Color tokens, typographic hierarchy, graphic motifs)"
-  - "Exportable Asset Kit (Vector icons, badges, frame overlays, watermarks)"
-  - "Social Media Visual QA Checklist & Brand Compliance Standard"
+  - "Design system token specification (CSS custom properties, JSON tokens)"
+  - "Multi-format vector template library for standard aspect ratios"
+  - "Technical diagram and architectural schematic styling guide"
+  - "Reusable component assets (icons, badges, frame wrappers)"
+  - "Contrast and accessibility compliance validation report"
 duration: "3 - 5 Weeks"
 format: "Design Sprints"
 delivery: "Collaborative"
 ---
 
-## Building an Unmistakable Visual Identity
+## Technical Context
 
-In modern digital feeds, visual impressions form in fractions of a second. Organizations producing inconsistent, ad-hoc graphics dilute brand equity and fail to capture executive attention. High-impact content demands a systematic visual language that makes your insights instantly recognizable.
+Technical publications require clear graphical representations of system architectures, data flows, and software abstractions. Ad-hoc visual creation leads to mismatched color palettes, inconsistent typography, and unreadable diagrams on small screens.
 
-My Design Systems practice engineers comprehensive visual token architectures specifically tailored for technical and professional content.
+Engineering a tokenized design system treats visual assets with the same modularity as software components. Global design tokens ensure visual consistency across both web interfaces and generated media.
 
-### Purpose-Built for Multi-Format Distribution
-Unlike static PDF brand guides, our design systems are engineered directly for real-world content production:
-- **Aspect Ratio Mastery**: Reusable component grids optimized for square (1:1), vertical feed (4:5), and widescreen video (16:9) formats.
-- **Technical Visualization**: Standardized styling for architectural diagrams, code snippets, benchmark charts, and executive quote cards.
-- **Educational Carousels**: Multi-slide narrative templates designed for smooth swipe progression and high dwell time on platforms like LinkedIn.
+### Token Architecture
+
+Color ramps, font families, line heights, and elevation levels are declared as design tokens. This enables automated synchronization between web styling (Tailwind CSS / CSS variables) and standalone vector graphics.
+
+### Multi-Format Layouts
+
+Templates are structured for standard publication ratios: square (1:1) for social feeds, widescreen (16:9) for video and slide presentations, and portrait (4:5) for mobile reading, ensuring visual hierarchy is preserved across viewport sizes.

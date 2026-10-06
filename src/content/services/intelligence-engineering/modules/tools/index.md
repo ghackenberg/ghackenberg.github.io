@@ -1,54 +1,55 @@
 ---
 title: "Tool Integration"
 serviceId: "intelligence-engineering"
-description: "Connecting autonomous agent runtimes (Nous Hermes) to enterprise databases, ERPs, and cloud APIs through standardized Model Context Protocol (MCP) servers and deterministic schema validation."
+description: "Integrating language models with internal databases, APIs, and services using the Model Context Protocol (MCP) and deterministic schema validation."
 ctaText: "Inquire about Tool Integration"
 highlights:
-  - "Universal Model Context Protocol (MCP) server engineering for internal tools and databases"
-  - "Autonomous function calling and deterministic multi-turn loops powered by Nous Hermes"
-  - "Declarative capability specifications standardized on the Google WikiSkills / Agent Skills format"
-  - "Deterministic runtime schema validation and structured error recovery via Zod / Pydantic"
-methodologyDescription: "Our Tool Integration engineering embeds autonomous intelligence into your systems:"
+  - "Model Context Protocol (MCP) server development for database queries and API actions"
+  - "Tool-calling execution loops with structured schema validation via Zod and Pydantic"
+  - "Declarative tool capability specifications organized into modular skill directories"
+  - "Error handling, execution sandboxing, and parameter constraint verification"
+methodologyDescription: "The tool integration process builds standardized execution interfaces:"
 methodologyPhases:
-  - title: "API & Action Surface Audit"
-    description: "Cataloging enterprise endpoints, databases, permissions, and security access boundaries."
-  - title: "MCP Server Engineering"
-    description: "Developing robust Model Context Protocol (MCP) servers with strict JSON Schema contracts and validation."
-  - title: "Hermes Runtime & Tool Binding"
-    description: "Integrating the Hermes model runtime with declarative WikiSkills registries and tool dispatch loops."
-  - title: "Contract Testing & Sandboxing"
-    description: "Validating deterministic execution, error boundaries, rate limits, and rollback mechanisms under edge cases."
+  - title: "Interface Audit"
+    description: "Cataloging internal APIs, database query patterns, and required security permissions."
+  - title: "Protocol Implementation"
+    description: "Developing MCP servers exposing tools, resources, and prompts via standardized JSON-RPC."
+  - title: "Schema Validation"
+    description: "Defining input and output schemas with strict validation rules and type constraints."
+  - title: "Integration Testing"
+    description: "Validating tool calling under boundary conditions, malformed parameters, and network errors."
 order: 3
 previewImage:
   src: "./preview.png"
   title: "Model Context Protocol (MCP) Integration"
   description: "Dr. Georg Hackenberg konfiguriert MCP-Tool-Schemas und API-Konnektoren am Curved Monitor im Almtal Arbeitszimmer"
 pubDate: 2026-09-11
-
 inputs:
-  - "Target enterprise APIs (REST, GraphQL, gRPC), database connections, and service accounts"
-  - "Catalog of required agent actions, permissions, validation rules, and business logic constraints"
-  - "Enterprise identity provider specifications (OAuth2, OIDC, mTLS)"
-  - "Target backend environments (Node.js, Python, Go, Docker)"
+  - "API specifications (OpenAPI/REST, GraphQL, gRPC) and database connection parameters"
+  - "Catalog of required actions, input parameters, and validation constraints"
+  - "Security access rules, service accounts, and credential management standards"
+  - "Target runtime environments (Node.js, TypeScript, Python)"
 outputs:
-  - "Enterprise Tool Protocol & MCP Architecture Blueprint"
-  - "Production-Ready Model Context Protocol (MCP) Server Suite"
-  - "Declarative Google WikiSkills Tool Registry Codebase"
-  - "Configured Nous Hermes Tool-Calling Execution Pipeline"
-  - "Automated Contract Testing Suite & Synthetic Action Fixtures"
+  - "Tool protocol specification and system architecture document"
+  - "Production-ready Model Context Protocol (MCP) server implementations"
+  - "Declarative tool registry with input/output JSON schemas"
+  - "Automated unit and integration test suites for tool execution"
+  - "Configuration documentation and deployment manifests"
 duration: "3 - 5 Weeks"
 format: "Engineering Sprints"
 delivery: "Remote / On-site"
 ---
 
-## Unifying Open Tool Protocols with Enterprise Systems
+## Technical Context
 
-Autonomous AI agents cannot operate as isolated chatbots. To deliver tangible enterprise value, models must safely read and write to internal systems—querying SQL databases, triggering ERP workflows, and dispatching API calls through open, standardized protocols.
+To interact with software environments, language models must read data from databases and invoke operations via APIs. Custom, ad-hoc prompt-based tool calling often produces fragile integration code that breaks when prompts or model versions change.
 
-My Tool Integration practice establishes deterministic, vendor-independent capability layers founded on the **Model Context Protocol (MCP)** and declarative tool contracts.
+Standardizing tool interfaces on the Model Context Protocol (MCP) decouples model logic from backend services. Tools are exposed as self-describing endpoints with explicit JSON schemas, parameter types, and validation rules.
 
-### The Model Context Protocol (MCP) Standard
-By adopting the open Model Context Protocol (MCP), we eliminate fragile prompt-specific glue code. We construct modular MCP servers that expose your enterprise data and business actions through standardized, self-describing interfaces that any frontier agent can execute.
+### Protocol Standard
 
-### The Hermes Agent Ecosystem & Declarative Skills
-We leverage the **Nous Hermes** agent runtime for deterministic schema adherence and structured function calling, organizing capabilities into declarative, modular **Google WikiSkills** complete with explicit input contracts, validation constraints, and execution examples.
+The Model Context Protocol establishes an open client-server architecture over JSON-RPC. MCP servers expose available tools, static resources, and prompt templates, allowing client applications and agent runtimes to discover and invoke tools deterministically.
+
+### Schema Validation
+
+Tool input parameters are validated against formal schemas (using Zod in TypeScript or Pydantic in Python) before execution. If parameter types or boundary values fail validation, the system returns structured error messages to the model, enabling automated correction without unhandled runtime exceptions.

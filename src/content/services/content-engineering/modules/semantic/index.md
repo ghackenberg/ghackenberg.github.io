@@ -1,23 +1,23 @@
 ---
 title: "Semantic Optimization"
 serviceId: "content-engineering"
-description: "Engineering structured Schema.org JSON-LD microdata, automated LLM context manifests (content-manifest.json), XML sitemaps, and knowledge graph discoverability for modern search engines and AI agents."
+description: "Implementing Schema.org JSON-LD microdata, automated LLM context manifests (content-manifest.json), XML sitemaps, and machine-readable metadata structures."
 ctaText: "Inquire about Semantic Optimization"
 highlights:
-  - "Deep Schema.org JSON-LD structured data integration (Articles, Services, Breadcrumbs, Persons)"
-  - "Automated plain-text LLM context manifest generators for AI search indexing"
+  - "Schema.org JSON-LD structured data implementation (Article, TechArticle, Person, Course, Service)"
+  - "Automated plain-text and JSON context manifests for generative search and AI crawlers"
   - "Multi-sitemap architectures with priority tagging and automated RSS discovery feeds"
-  - "Semantic entity linking establishing high topical authority in knowledge graphs"
-methodologyDescription: "Our Semantic Optimization engineering makes your knowledge machine-readable:"
+  - "Semantic entity linking aligning web content with structured knowledge graph ontologies"
+methodologyDescription: "The semantic optimization process structures content for machine interpretability:"
 methodologyPhases:
-  - title: "Entity Mapping & Schema Architecture"
-    description: "Mapping organizational entities, services, authors, and publications to canonical Schema.org vocabularies."
-  - title: "JSON-LD & Microdata Implementation"
-    description: "Injecting type-safe structured JSON-LD into page templates, breadcrumbs, and service catalogs."
-  - title: "LLM Manifest & Feed Automation"
-    description: "Building automated plain-text context manifests (content-manifest.json), RSS feeds, and chunked XML sitemaps."
-  - title: "Semantic Validation & Search Verification"
-    description: "Testing microdata against Google Rich Results validators and indexing readiness for modern AI agents."
+  - title: "Entity Modeling"
+    description: "Mapping website content, publications, services, and author credentials to Schema.org types."
+  - title: "JSON-LD Integration"
+    description: "Implementing type-safe structured data generators in Astro page and layout templates."
+  - title: "Manifest Automation"
+    description: "Creating automated build-time generators for content-manifest.json, llms.txt, and sitemaps."
+  - title: "Validation Auditing"
+    description: "Testing structured data against schema validators and verifying crawlability for search engines."
 order: 5
 pubDate: 2026-09-11
 previewImage:
@@ -26,27 +26,29 @@ previewImage:
   description: "Dr. Georg Hackenberg überprüft semantische Wissensgraphen, llms.txt und OpenGraph-Vorschauen am Bildschirm im Almtal Home Office"
 inputs:
   - "Existing web templates, layout components, and metadata fields"
-  - "Corporate entity details, author profiles, academic credentials, and service hierarchies"
-  - "Target search engines, AI search platforms (Perplexity, SearchGPT, Gemini), and web crawlers"
+  - "Organizational profile data, academic credentials, publication metadata, and taxonomy terms"
+  - "Target search platforms, crawler specifications, and machine-readability requirements"
 outputs:
-  - "Comprehensive Semantic Architecture & Schema.org Specification"
-  - "Type-Safe JSON-LD Component Library for Astro layouts"
-  - "Automated LLM Context Manifest Generator Script"
-  - "Automated Multi-Sitemap & RSS Distribution Pipeline"
-  - "Google Rich Results & Semantic Validator Compliance Report"
+  - "Schema.org structured data architecture specification"
+  - "Type-safe JSON-LD generation utilities and layout components"
+  - "Automated content-manifest.json and llms.txt build generators"
+  - "XML sitemap generation scripts with section segmentation"
+  - "Structured data verification and validation test report"
 duration: "2 - 4 Weeks"
 format: "Engineering Sprints"
 delivery: "Remote / Hybrid"
 ---
 
-## Machine Readability for the Age of AI Search
+## Technical Context
 
-Traditional SEO centered on keyword stuffing is obsolete. In modern digital discovery, both traditional search engines (Google) and AI answer engines (Perplexity, SearchGPT, Gemini) rely on structured data, knowledge graphs, and semantic entity clarity to understand and cite your work.
+Search engines and AI-based retrieval systems increasingly rely on explicit structured data rather than raw text parsing to understand web resources. Without machine-readable semantic schemas, content extraction depends on heuristics that can misinterpret authors, dates, software licenses, or relationships.
 
-My Semantic Optimization consulting engineers deep machine-readability directly into your digital publishing platform.
+Semantic optimization embeds standardized Schema.org JSON-LD structures into HTML documents and compiles dedicated machine manifests. This provides search crawlers and language model agents with unambiguous domain entities.
 
-### Rich Schema.org JSON-LD Microdata
-We integrate comprehensive JSON-LD schemas across your platform—explicitly defining Services, Articles, Persons, Courses, and Breadcrumbs. This eliminates ambiguity and establishes strong topical authority in search engine knowledge graphs.
+### Structured Data
 
-### LLM Context Manifests & Multi-Sitemaps
-We build automated build-time generators that produce plain-text LLM context manifests (like content-manifest.json) and structured XML sitemaps, ensuring autonomous AI agents can ingest, index, and cite your publications without hallucination.
+Page templates embed typed JSON-LD scripts defining entities such as TechArticle, Course, SoftwareSourceCode, and ProfessionalService. Explicit properties declare authors, publication dates, dependencies, and topic keywords, allowing indexers to parse core attributes without DOM scraping.
+
+### Context Manifests
+
+In addition to standard XML sitemaps, automated build scripts generate plain-text and JSON content manifests (such as content-manifest.json and llms.txt). These manifests index canonical URLs, summaries, and topics, enabling efficient retrieval by automated agents and search crawlers.
