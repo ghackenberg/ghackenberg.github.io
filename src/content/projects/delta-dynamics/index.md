@@ -8,9 +8,9 @@ accentColor: "blue"
 order: 3
 repoName: "delta-dynamics"
 screenshot:
-  src: "./preview.png"
-  title: "Low-Poly Ökosystem und Flusslauf-Simulation"
-  description: "Isometrische Low-Poly-Landschaft mit kaskadierenden Wasserfällen, terrassierten Hochebenen, Nadelwäldern und Wildtieren"
+  src: "./preview.jpg"
+  title: "Delta Dynamics: Ökosystem-Topografie & GPU-Wasserlauf-Simulation"
+  description: "Orthogonale Schautafel eines terrassierten Low-Poly-Geländeschnitts mit dynamischen Wasser-Fließvektoren, Wasserfall und autonomen Agenten-Wegpunkten"
 screenshots:
   - image: "./screenshot1.png"
     title: "Ecosystem Simulation View"

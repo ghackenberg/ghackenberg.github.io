@@ -8,9 +8,9 @@ accentColor: "blue"
 order: 4
 repoName: "spineml"
 screenshot:
-  src: "./preview.png"
-  title: "Fabriklayout- und Materialfluss-Planung"
-  description: "Isometrische Darstellung einer automatisierten Fertigungshalle mit Roboterzellen, Förderbändern und optimierten Materialfluss-Pfaden"
+  src: "./preview.jpg"
+  title: "SpineML: Fabriklayout-Wirbelsäulenmodell & Materialfluss"
+  description: "Orthogonale 2D-Draufsicht des Spine-Layout-Modells mit zentraler Haupttransportachse, rechtwinklig abzweigenden Rippen-Nebenachsen und angedockten Fertigungsmaschinen"
 screenshots:
   - image: "./screenshot1.png"
     title: "Factory Layout Optimization"

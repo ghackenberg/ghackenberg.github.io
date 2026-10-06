@@ -8,9 +8,9 @@ accentColor: "blue"
 order: 1
 repoName: "caddrive"
 screenshot:
-  src: "./preview.png"
-  title: "Kollaboratives CAD-Design am Hologrammtisch"
-  description: "Studierende konstruieren gemeinsam Fahrzeug- und Drohnenmodelle an einem interaktiven holografischen CAD-Arbeitstisch"
+  src: "./preview.jpg"
+  title: "CADdrive: Kollaboratives Web-CAD & Versionsgraph"
+  description: "Orthogonale Schautafel der CADdrive-Web-App mit kollaborativem 3D-CAD-Modell, Bemaßungs- und Kommentar-Annotationen sowie integriertem Versionsgraphen mit Branching und Merging"
 screenshots:
   - image: "./screenshot1.png"
     title: "CADdrive Home Page"
