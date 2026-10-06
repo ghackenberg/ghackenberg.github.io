@@ -30,20 +30,6 @@ interface Props {
 const { module, parentService } = Astro.props;
 const { Content } = await render(module);
 
-const colorClasses = {
-  text: 'text-brand-purple light:text-purple-700',
-  border: 'border-brand-purple/20 light:border-purple-200',
-  bg: 'bg-brand-purple/10 light:bg-purple-50/50',
-  btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
-  glow: 'from-brand-purple to-pink-500 light:to-pink-600',
-  leftBorder: 'border-brand-purple light:border-purple-600',
-  glowBorder: 'rgba(168, 85, 247, 0.3)',
-  glowText: '#c084fc',
-  glowShadow: 'rgba(168, 85, 247, 0.25)',
-  dot: 'bg-brand-purple shadow-[0_0_8px_rgba(168,85,247,0.8)] light:shadow-[0_0_4px_rgba(126,34,206,0.4)]',
-  phaseHover: 'group-hover/phase:text-brand-purple light:group-hover:text-purple-700',
-};
-
 const moduleUrl = `https://hackenberg.tech/services/${parentService.id}/${module.id.split('/').pop()}/`;
 
 const activePreviewImage = module.data.previewImage || parentService.data.previewImage;
@@ -152,169 +138,74 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     </header>
 
     <!-- Main Content -->
-    <div class="space-y-16">
-        <!-- Module Text Content -->
-        <section id="module-overview" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
-          <Content />
-        </section>
+    <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom mb-16">
+      <!-- Module Overview Content -->
+      <section id="module-overview" class="mb-10">
+        <Content />
+      </section>
 
-        <!-- Service Scope & Key Capabilities Section -->
-        <section id="service-scope" class="space-y-4">
-          <h2 class="text-xl font-extrabold tracking-tight flex items-center space-x-2 border-b border-element-border pb-2 mb-4"><span>🎯</span><span>Service Scope & Key Capabilities</span></h2>
-          <p class="text-gray-400 text-sm leading-relaxed font-normal max-w-2xl light:text-slate-600">
-            This module covers the following targeted topics and key expert competencies:
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Module Scope -->
+      {module.data.highlights && module.data.highlights.length > 0 && (
+        <section id="module-scope" class="mb-10">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+            Module Scope
+          </h2>
+          <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
             {module.data.highlights.map(item => (
-              <div class="p-5 rounded-2xl border border-element-border bg-element-bg hover:border-element-border-medium hover:bg-element-bg-hover transition-all duration-300 flex items-start gap-3.5 group light:bg-slate-50/50 light:border-slate-200 light:hover:bg-slate-50 light:hover:border-slate-300">
-                <div class="mt-[7px] shrink-0">
-                  <span class={`flex w-2 h-2 rounded-full ${colorClasses.dot} transition-transform group-hover:scale-125`}></span>
-                </div>
-                <span class="text-xs sm:text-sm font-semibold text-gray-300 light:text-slate-800 leading-relaxed">
-                  {item}
-                </span>
-              </div>
+              <li>{item}</li>
             ))}
-          </div>
+          </ul>
         </section>
+      )}
 
-        <!-- Engagement Requirements & Deliverables Dashboard -->
-        <section id="specifications" class="space-y-6">
-          <div class="space-y-2">
-            <h2 class="text-xl font-extrabold tracking-tight flex items-center space-x-2 border-b border-element-border pb-2 mb-4"><span>📦</span><span>Specifications: Inputs & Deliverables</span></h2>
-            <p class="text-gray-400 text-sm leading-relaxed font-normal max-w-2xl light:text-slate-600">
-              A clear breakdown of the resource inputs required from your side and the concrete deliverables you will receive as the output of this service module:
+      <!-- Required Inputs -->
+      {module.data.inputs && module.data.inputs.length > 0 && (
+        <section id="required-inputs" class="mb-10">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+            Required Inputs
+          </h2>
+          <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
+            {module.data.inputs.map(item => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Guaranteed Deliverables -->
+      {module.data.outputs && module.data.outputs.length > 0 && (
+        <section id="guaranteed-deliverables" class="mb-10">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+            Guaranteed Deliverables
+          </h2>
+          <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
+            {module.data.outputs.map(item => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Delivery Methodology (if present) -->
+      {module.data.methodologyPhases && module.data.methodologyPhases.length > 0 && (
+        <section id="delivery-methodology">
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+            Delivery Methodology
+          </h2>
+          {module.data.methodologyDescription && (
+            <p class="text-gray-300 leading-relaxed font-normal mb-4">
+              {module.data.methodologyDescription}
             </p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Inputs Card - Required Resources */}
-            <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border bg-element-bg relative overflow-hidden flex flex-col justify-between group hover:border-element-border-medium transition-all duration-300 light:bg-slate-50/30 light:border-slate-200 light:hover:border-slate-300">
-              {/* Highlight Left Accent Border */}
-              <div class="absolute top-0 bottom-0 left-0 w-[4px] bg-slate-500 opacity-40 group-hover:opacity-75 transition-opacity"></div>
-              
-              <div class="space-y-6">
-                <div class="flex items-center gap-3">
-                  <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-element-bg border border-element-border-medium text-base light:bg-slate-100 light:border-slate-200">📥</span>
-                  <div>
-                    <h3 class="text-sm font-extrabold uppercase tracking-wider mt-0 mb-0.5">
-                      Required Client Inputs
-                    </h3>
-                    <p class="text-[10px] text-gray-400 light:text-slate-600 font-medium">To be provided to initiate development</p>
-                  </div>
-                </div>
-
-                {module.data.inputs && module.data.inputs.length > 0 ? (
-                  <ul class="space-y-3.5">
-                    {module.data.inputs.map(item => (
-                      <li class="text-xs text-gray-400 light:text-slate-600 flex items-start gap-3 leading-relaxed font-normal">
-                        <span class="w-1.5 h-1.5 rounded-full mt-2 shrink-0 bg-gray-500 light:bg-slate-400"></span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p class="text-xs text-gray-500 italic">No specific inputs required.</p>
-                )}
-              </div>
-            </div>
-
-            {/* Outputs Card - Guaranteed Deliverables */}
-            <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border bg-element-bg relative overflow-hidden flex flex-col justify-between group hover:border-element-border-medium transition-all duration-300 light:bg-slate-50/50 light:border-slate-200 light:hover:border-slate-300 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
-              {/* Glowing Gradient Left Accent Border */}
-              <div class={`absolute top-0 bottom-0 left-0 w-[4px] bg-gradient-to-b ${colorClasses.glow} opacity-60 group-hover:opacity-100 transition-opacity`}></div>
-              
-              <div class="space-y-6">
-                <div class="flex items-center gap-3">
-                  <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-element-bg border border-element-border-medium text-base light:bg-slate-100 light:border-slate-200">📤</span>
-                  <div>
-                    <h3 class="text-sm font-extrabold uppercase tracking-wider mt-0 mb-0.5">
-                      Guaranteed Deliverables
-                    </h3>
-                    <p class="text-[10px] text-gray-400 light:text-slate-600 font-medium">Outcome packages included in the scope</p>
-                  </div>
-                </div>
-
-                {module.data.outputs && module.data.outputs.length > 0 ? (
-                  <ul class="space-y-3.5">
-                    {module.data.outputs.map(item => (
-                      <li class="text-xs text-gray-300 light:text-slate-800 flex items-start gap-3 leading-relaxed font-normal">
-                        <svg class={`w-4 h-4 mt-0.5 shrink-0 ${colorClasses.text}`} fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
-                        </svg>
-                        <span class="font-medium">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p class="text-xs text-gray-500 italic">No direct deliverables.</p>
-                )}
-              </div>
-            </div>
-          </div>
+          )}
+          <ol class="list-decimal pl-5 space-y-3 text-gray-300 font-normal leading-relaxed">
+            {module.data.methodologyPhases.map(phase => (
+              <li>
+                <strong class="text-gray-100 font-semibold">{phase.title}:</strong> {phase.description}
+              </li>
+            ))}
+          </ol>
         </section>
-
-        <!-- Project Plan & Execution Phases Section -->
-        {module.data.methodologyPhases && (
-          <section 
-            id="methodology-phases"
-            class="glass-card p-8 md:p-10 rounded-3xl border border-element-border space-y-8 light:bg-slate-50/20 light:border-slate-200"
-            style={`
-              --glow-border: ${colorClasses.glowBorder};
-              --glow-text: ${colorClasses.glowText};
-              --glow-shadow: ${colorClasses.glowShadow};
-            `}
-          >
-            <div class="space-y-2">
-              <h2 class="text-xl font-extrabold tracking-tight flex items-center space-x-2">
-                <span>📋</span>
-                <span>Project Plan & Execution Phases</span>
-              </h2>
-              {module.data.methodologyDescription && (
-                <p class="text-gray-400 text-sm leading-relaxed font-normal light:text-slate-600">
-                  {module.data.methodologyDescription}
-                </p>
-              )}
-            </div>
-            
-            {/* Vertical Timeline container */}
-            <div class="relative pl-8 sm:pl-10 pt-2">
-              {module.data.methodologyPhases?.map((phase, idx) => {
-                const isFirst = idx === 0;
-                const isLast = idx === (module.data.methodologyPhases?.length || 0) - 1;
-                
-                return (
-                  <div class={`relative z-10 group/phase ${isLast ? '' : 'pb-8'}`}>
-                    {/* Vertical Line Segment */}
-                    <div 
-                      class={`absolute -left-[21px] sm:-left-[25px] w-0.5 bg-gradient-to-b ${colorClasses.glow} opacity-20`}
-                      style={`
-                        top: ${isFirst ? '10px' : '0px'};
-                        bottom: ${isLast ? 'calc(100% - 10px)' : '0px'};
-                      `}
-                    ></div>
-
-                    {/* Circle Node on Timeline */}
-                    <div 
-                      class={`absolute -left-[32px] sm:-left-[36px] top-[-2px] w-6 h-6 rounded-full flex items-center justify-center font-mono font-bold text-[10px] border transition-all duration-300 methodology-step-node`}
-                    >
-                      {String(idx + 1).padStart(2, '0')}
-                    </div>
-
-                    <div class="space-y-1.5 flex-grow">
-                      <h3 class={`text-xs sm:text-sm font-extrabold uppercase tracking-wider leading-tight ${colorClasses.phaseHover} transition-colors mt-0.5`}>
-                        {phase.title}
-                      </h3>
-                      <p class="text-xs text-gray-400 leading-relaxed font-normal group-hover/phase:text-gray-300 transition-colors max-w-3xl light:text-slate-600 light:group-hover/phase:text-slate-800">
-                        {phase.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
+      )}
     </div>
 
     <!-- Contact Section -->
@@ -379,85 +270,12 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     margin-bottom: 1.5rem;
     transition: color 0.5s ease, border-color 0.5s ease;
   }
-  .service-content :global(ul),
-  .service-content :global(ol) {
-    list-style-type: none;
-    padding-left: 0;
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-  .service-content :global(ol) {
-    counter-reset: service-counter;
-  }
-  .service-content :global(li) {
-    margin-bottom: 0;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    background: rgba(255, 255, 255, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    padding: 0.85rem 1rem 0.85rem 2.25rem;
-    border-radius: 12px;
-    position: relative;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-  }
-  :global(.light) .service-content :global(li) {
-    background: rgba(15, 23, 42, 0.02);
-    border-color: rgba(15, 23, 42, 0.06);
-  }
-  .service-content :global(li:hover) {
-    border-color: rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
-  }
-  :global(.light) .service-content :global(li:hover) {
-    background: rgba(15, 23, 42, 0.04);
-    border-color: rgba(15, 23, 42, 0.1);
-  }
-  .service-content :global(li::before) {
-    content: "→";
-    position: absolute;
-    left: 1rem;
-    top: 0.85rem;
-    line-height: 1.6;
-    color: var(--glow-text, #a855f7);
-    font-weight: bold;
-  }
-  .service-content :global(ol > li) {
-    counter-increment: service-counter;
-  }
-  .service-content :global(ol > li::before) {
-    content: counter(service-counter) ".";
-  }
   .service-content :global(li strong) {
     color: var(--color-text-heading);
     transition: color 0.5s ease;
   }
   .service-content :global(> *:last-child) {
     margin-bottom: 0;
-  }
-
-  .methodology-step-node {
-    background-color: #020617;
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #9ca3af;
-  }
-
-  .group\/phase:hover .methodology-step-node {
-    border-color: var(--glow-text) !important;
-    color: var(--glow-text) !important;
-    box-shadow: 0 0 10px -3px var(--glow-shadow);
-  }
-
-  :global(.light) .methodology-step-node {
-    background-color: #ffffff !important;
-    border-color: rgba(15, 23, 42, 0.15) !important;
-    color: #475569;
-  }
-
-  :global(.light) .group\/phase:hover .methodology-step-node {
-    border-color: var(--glow-text) !important;
-    color: var(--glow-text) !important;
   }
 
   .theme-purple {
