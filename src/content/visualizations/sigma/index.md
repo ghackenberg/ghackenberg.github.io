@@ -10,6 +10,15 @@ tags:
   - data-visualization
   - javascript
   - graph-database
+specs:
+  renderingBackend: "WebGL 2.0 Custom Shader Pipeline"
+  spatialTopology: "2D Planar Coordinate Space"
+  nodeCapacity: "50,000+ Nodes (GPU-Accelerated)"
+  physicsSolver: "ForceAtlas2 offloaded to Web Workers"
+  computationalComplexity: "O(N log N) via Barnes-Hut Quadtree"
+  primaryStrength: "Massive throughput, zero main-thread blocking via worker-thread zero-copy buffers"
+  tradeOff: "Shader-level rendering restricts rich DOM markup and complex nested compound clusters"
+  bestUseCase: "Enterprise-scale ontologies, mega knowledge graphs & dense citation networks"
 ---
 
 ## What Characterizes the Sigma.js Visualization?

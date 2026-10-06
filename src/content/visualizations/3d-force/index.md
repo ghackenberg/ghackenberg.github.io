@@ -10,6 +10,15 @@ tags:
   - webgl
   - data-visualization
   - typescript
+specs:
+  renderingBackend: "WebGL 2.0 & Three.js"
+  spatialTopology: "3D Volumetric Cartesian Space"
+  nodeCapacity: "5,000+ Nodes (Spatial Occlusion Limited)"
+  physicsSolver: "3D Octree N-Body Simulation"
+  computationalComplexity: "O(N log N) via Octree"
+  primaryStrength: "Immersive spatial clustering, orbital camera control & directional particle links"
+  tradeOff: "Visual occlusion in dense clusters; higher GPU VRAM consumption"
+  bestUseCase: "Volumetric topic landscapes, multi-layer semantic hierarchies & 3D cluster exploration"
 ---
 
 ## What Characterizes the 3D Force-Directed Visualization?

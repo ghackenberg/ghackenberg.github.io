@@ -233,6 +233,16 @@ const visualizations = defineCollection({
     screenshot: coverImageSchema({ image }).optional(),
     pubDate: z.coerce.date().optional(),
     tags: z.array(tagReference).default([]),
+    specs: z.object({
+      renderingBackend: z.string(),
+      spatialTopology: z.string(),
+      nodeCapacity: z.string(),
+      physicsSolver: z.string(),
+      computationalComplexity: z.string(),
+      primaryStrength: z.string(),
+      tradeOff: z.string(),
+      bestUseCase: z.string(),
+    }),
   }),
 });
 
@@ -307,6 +317,14 @@ const services = defineCollection({
     tags: z.array(tagReference).default([]),
     pubDate: z.coerce.date().optional(),
     previewImage: coverImageSchema({ image }).optional(),
+    targetAudience: z.array(z.string()).default([]),
+    engagementFormats: z.array(z.object({
+      title: z.string(),
+      duration: z.string(),
+      description: z.string(),
+    })).default([]),
+    keyOutcomes: z.array(z.string()).default([]),
+    techFoundations: z.array(z.string()).default([]),
   })
 });
 
