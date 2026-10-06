@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+
+    <!-- Arrow Markers -->
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+  </defs>
+
+  <!-- Main Card Container -->
+  <rect width="800" height="420" rx="16" fill="var(--svg-bg)" stroke="var(--svg-border)" stroke-width="1.5" />
+
+  <!-- Header Section -->
+  <g transform="translate(0, 0)">
+    <text x="400" y="27" fill="var(--svg-text-primary)" font-family="'Outfit', 'Inter', sans-serif" font-size="15" font-weight="700" letter-spacing="1.2" text-anchor="middle">SIMPLEX SAFETY ENVELOPE ARCHITEKTUR</text>
+    <text x="400" y="44" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="400" text-anchor="middle">Deterministische Laufzeit-Schutzarchitektur für autonome Enterprise-Agenten nach Sha (2001)</text>
+    <line x1="30" y1="52" x2="770" y2="52" stroke="var(--svg-line)" stroke-width="1" />
+  </g>
+
+  <!-- LEFT NODE: Task / Event Input -->
+  <g transform="translate(25, 150)">
+    <rect width="120" height="100" rx="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.5" />
+    <rect x="10" y="10" width="100" height="18" rx="4" fill="var(--svg-pill-bg)" />
+    <text x="60" y="23" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="9.5" font-weight="700" letter-spacing="0.8" text-anchor="middle">TRIGGER</text>
+    <text x="60" y="52" fill="var(--svg-text-primary)" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="700" text-anchor="middle">Task / Event</text>
+    <text x="60" y="72" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5" text-anchor="middle">User-Prompt &amp;</text>
+    <text x="60" y="87" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5" text-anchor="middle">System-Events</text>
+  </g>
+
+  <!-- CENTER BOUNDARY: Simplex Safety Envelope -->
+  <g>
+    <!-- Dashed Envelope Boundary Box -->
+    <rect x="165" y="60" width="475" height="345" rx="14" fill="var(--svg-card-alt)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" stroke-dasharray="6,4" />
+
+    <!-- Envelope Badge Label -->
+    <rect x="180" y="50" width="195" height="20" rx="4" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="1" />
+    <text x="277" y="64" fill="var(--svg-node-blue-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700" letter-spacing="1" text-anchor="middle">SIMPLEX SAFETY ENVELOPE</text>
+
+    <!-- 1. TOP PATH: Safety Controller (Blue Archetype) -->
+    <g transform="translate(180, 80)">
+      <rect width="240" height="92" rx="10" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+      <rect x="12" y="10" width="145" height="18" rx="4" fill="var(--svg-pill-bg)" />
+      <text x="84" y="23" fill="var(--svg-node-blue-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="9.5" font-weight="700" letter-spacing="0.8" text-anchor="middle">SAFETY CONTROLLER</text>
+      <text x="14" y="47" fill="var(--svg-node-blue-text)" font-family="'Outfit', 'Inter', sans-serif" font-size="14.5" font-weight="700">Invariant Monitor</text>
+      <text x="14" y="66" fill="var(--svg-node-blue-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5">• Schema &amp; Policy Validation</text>
+      <text x="14" y="82" fill="var(--svg-node-blue-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5">• Token-, Turn- &amp; Latenz-Limits</text>
+    </g>
+
+    <!-- 2. CENTER PATH: ReAct Core (Purple Archetype) -->
+    <g transform="translate(180, 190)">
+      <rect width="240" height="92" rx="10" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.5" />
+      <rect x="12" y="10" width="145" height="18" rx="4" fill="var(--svg-pill-bg)" />
+      <text x="84" y="23" fill="var(--svg-node-purple-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="9.5" font-weight="700" letter-spacing="0.8" text-anchor="middle">PROBABILISTIC CORE</text>
+      <text x="14" y="47" fill="var(--svg-node-purple-text)" font-family="'Outfit', 'Inter', sans-serif" font-size="14.5" font-weight="700">Autonome ReAct-Loop</text>
+      <text x="14" y="66" fill="var(--svg-node-purple-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5">• LLM-Reasoning &amp; Tool Planning</text>
+      <text x="14" y="82" fill="var(--svg-node-purple-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5">• Dynamische Aktionsvorschläge</text>
+    </g>
+
+    <!-- 3. DECISION GATE: Invariant Verification Gate -->
+    <g transform="translate(460, 110)">
+      <rect width="165" height="145" rx="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.5" />
+      <rect x="25" y="10" width="115" height="18" rx="4" fill="var(--svg-pill-bg)" />
+      <text x="82" y="23" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="9.5" font-weight="700" letter-spacing="0.8" text-anchor="middle">DECISION GATE</text>
+      <text x="82.5" y="49" fill="var(--svg-text-primary)" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="700" text-anchor="middle">Invarianten-Check</text>
+      <text x="82.5" y="66" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="11" text-anchor="middle">Prüfung vor Ausführung</text>
+
+      <!-- Gate Outcomes -->
+      <!-- Passed Row (Green) -->
+      <rect x="12" y="78" width="141" height="24" rx="5" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="0.8" />
+      <circle cx="24" cy="90" r="4" fill="var(--svg-node-green-border)" />
+      <text x="34" y="94" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700">Im Limit → Freigabe</text>
+
+      <!-- Violated Row (Amber) -->
+      <rect x="12" y="110" width="141" height="24" rx="5" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="0.8" />
+      <circle cx="24" cy="122" r="4" fill="var(--svg-node-amber-border)" />
+      <text x="34" y="126" fill="var(--svg-node-amber-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="700">Bruch → Fallback</text>
+    </g>
+
+    <!-- 4. BOTTOM FALLBACK: Fail-Safe Handler & HITL (Amber Archetype) -->
+    <g transform="translate(200, 305)">
+      <rect width="410" height="85" rx="10" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.5" />
+      <rect x="12" y="10" width="155" height="18" rx="4" fill="var(--svg-pill-bg)" />
+      <text x="89" y="23" fill="var(--svg-node-amber-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="9.5" font-weight="700" letter-spacing="0.8" text-anchor="middle">FAIL-SAFE SUBSYSTEM</text>
+      <text x="14" y="47" fill="var(--svg-node-amber-text)" font-family="'Outfit', 'Inter', sans-serif" font-size="14.5" font-weight="700">Deterministischer Fallback &amp; Human-in-the-Loop</text>
+      <text x="14" y="65" fill="var(--svg-node-amber-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5">• Transaktionale Kompensation &amp; geordneter Abbruch</text>
+      <text x="14" y="79" fill="var(--svg-node-amber-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5">• Operator-Eskalation bei Invariantenbruch (HITL-Freigabe)</text>
+    </g>
+  </g>
+
+  <!-- RIGHT NODE: Safe System Action (Green Archetype) -->
+  <g transform="translate(660, 110)">
+    <rect width="120" height="190" rx="10" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+    <rect x="12" y="12" width="96" height="18" rx="4" fill="var(--svg-pill-bg)" />
+    <text x="60" y="25" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="700" letter-spacing="0.8" text-anchor="middle">SAFE OUTPUT</text>
+    <text x="60" y="52" fill="var(--svg-node-green-text)" font-family="'Outfit', 'Inter', sans-serif" font-size="14" font-weight="700" text-anchor="middle">Systemwirkung</text>
+    <text x="60" y="76" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5" text-anchor="middle">Geprüfte APIs</text>
+    <text x="60" y="95" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5" text-anchor="middle">DB-Mutationen</text>
+    <text x="60" y="114" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5" text-anchor="middle">ERP / CRM Updates</text>
+    <text x="60" y="133" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11.5" text-anchor="middle">Audit-Trail Log</text>
+
+    <!-- Verified Badge -->
+    <rect x="18" y="152" width="84" height="24" rx="12" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="1" />
+    <text x="60" y="168" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle">✓ VERIFIED</text>
+  </g>
+
+  <!-- CONNECTORS & ARROWS -->
+  <!-- 1. Input -> Safety Controller -->
+  <path d="M 145 185 C 162 185, 160 126, 180 126" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="1.5" marker-end="url(#arr-blue)" />
+
+  <!-- 2. Input -> ReAct Core -->
+  <path d="M 145 215 C 162 215, 160 236, 180 236" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="1.5" marker-end="url(#arr-purple)" />
+
+  <!-- 3. Safety Controller -> Decision Gate -->
+  <path d="M 420 126 C 440 126, 440 142, 460 142" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="1.5" marker-end="url(#arr-blue)" />
+  <text x="440" y="120" fill="var(--svg-node-blue-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="600" text-anchor="middle">Limits</text>
+
+  <!-- 4. ReAct Core -> Decision Gate -->
+  <path d="M 420 236 C 440 236, 440 185, 460 185" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="1.5" marker-end="url(#arr-purple)" />
+  <text x="440" y="222" fill="var(--svg-node-purple-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="600" text-anchor="middle">Aktion</text>
+
+  <!-- 5. Decision Gate (Passed) -> Safe System Action -->
+  <path d="M 625 200 L 660 200" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2" marker-end="url(#arr-green)" />
+  <rect x="629" y="185" width="26" height="13" rx="3" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="0.8" />
+  <text x="642" y="194.5" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="8" font-weight="700" text-anchor="middle">OK</text>
+
+  <!-- 6. Decision Gate (Violated) -> Fail-Safe Handler -->
+  <path d="M 542 255 L 542 305" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arr-amber)" />
+  <rect x="550" y="271" width="76" height="17" rx="3" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="0.8" />
+  <text x="588" y="283" fill="var(--svg-node-amber-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="700" text-anchor="middle">VERLETZUNG</text>
+
+  <!-- 7. Fail-Safe Handler -> Safe System Action (Fallback Path) -->
+  <path d="M 610 347 L 720 347 L 720 300" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-amber)" />
+  <rect x="635" y="333" width="76" height="16" rx="3" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="0.8" />
+  <text x="673" y="344.5" fill="var(--svg-node-amber-subtext)" font-family="'Outfit', 'Inter', sans-serif" font-size="8.5" font-weight="600" text-anchor="middle">Fallback-Pfad</text>
+</svg>
