@@ -90,11 +90,12 @@ const engine: D3Engine = {
 
     this.zoom = d3.zoom<SVGSVGElement, D3Node>()
       .scaleExtent([0.1, 8])
+      .filter((event) => event.type !== 'wheel')
       .on("zoom", (event) => {
         this.svgGroup?.attr("transform", event.transform.toString());
       });
 
-    this.svg.call(this.zoom);
+    this.svg.call(this.zoom).on('wheel.zoom', null);
 
     // Create D3 simulation
     this.simulation = d3.forceSimulation<D3Node>(this.nodes);

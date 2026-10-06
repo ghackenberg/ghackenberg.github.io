@@ -230,7 +230,7 @@ const engine: VisNetworkEngine = {
       hover: true,
       hoverConnectedEdges: false,
       tooltipDelay: 100,
-      zoomView: true,
+      zoomView: false,
       dragView: true,
       dragNodes: true
     }, extraInteraction);
