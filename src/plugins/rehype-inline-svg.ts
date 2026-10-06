@@ -66,6 +66,10 @@ function resolveSvgDiskPath(src: string, mdPath: string): string | null {
     if (fs.existsSync(publicPath) && fs.statSync(publicPath).isFile()) {
       return publicPath;
     }
+    const srcPath = path.resolve(process.cwd(), 'src', src.slice(1));
+    if (fs.existsSync(srcPath) && fs.statSync(srcPath).isFile()) {
+      return srcPath;
+    }
     resolvedPath = path.resolve(process.cwd(), src.slice(1));
   } else {
     resolvedPath = path.resolve(mdDir, src);
@@ -127,6 +131,24 @@ function createFigureElement(imgNode: Element, mdPath: string): Element | null {
       $svg.attr('viewBox', `0 0 ${parseFloat(w)} ${parseFloat(h)}`);
     }
   }
+
+  // Strip @import url('/styles/graphics.css') during HTML inlining (styles already provided by theme.css)
+  const GRAPHICS_IMPORT_REGEX = /@import\s+(?:url\(['"]?\/styles\/graphics\.css['"]?\)|['"]\/styles\/graphics\.css['"])\s*;?/g;
+  $svg.find('style').each((_, el) => {
+    let styleText = $(el).text();
+    if (GRAPHICS_IMPORT_REGEX.test(styleText)) {
+      styleText = styleText.replace(GRAPHICS_IMPORT_REGEX, '').trim();
+      if (!styleText) {
+        const parent = $(el).parent();
+        $(el).remove();
+        if (parent.is('defs') && parent.children().length === 0) {
+          parent.remove();
+        }
+      } else {
+        $(el).text(styleText);
+      }
+    }
+  });
 
   // Scope internal SVG IDs to prevent duplicate ID collisions in HTML documents
   const hash = crypto.createHash('md5').update(resolvedPath).digest('hex').slice(0, 8);

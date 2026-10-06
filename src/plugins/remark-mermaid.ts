@@ -270,7 +270,22 @@ function parseMermaidMetadata(code: string): { title: string | null; caption: st
   return { title, caption };
 }
 
-async function renderMermaidDiagrams(code: string): Promise<{ darkSvg: string; lightSvg: string; hash: string }> {
+function slugifyTitle(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+async function renderMermaidDiagrams(
+  code: string,
+  filePath: string,
+  title: string | null
+): Promise<{ darkSvg: string; lightSvg: string; hash: string; contentUrl: string }> {
   if (!fs.existsSync(CACHE_DIR)) {
     fs.mkdirSync(CACHE_DIR, { recursive: true });
   }
@@ -284,21 +299,35 @@ async function renderMermaidDiagrams(code: string): Promise<{ darkSvg: string; l
   const darkSvg = await renderSingleTheme(code, 'dark', darkThemeConfig);
   const lightSvg = await renderSingleTheme(code, 'light', lightThemeConfig);
 
-  const publicDir = path.resolve(process.cwd(), 'public/diagrams');
-  if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true });
+  const normalizedPath = filePath.replace(/\\/g, '/');
+  let relDir = 'common';
+  const contentMatch = normalizedPath.match(/(?:src\/content\/)?(posts|presentations|courses|services|projects|publications|talks)\/([^/]+)/);
+  if (contentMatch) {
+    const collection = contentMatch[1];
+    const slug = contentMatch[2];
+    relDir = `${collection}/${slug}`;
   }
-  fs.writeFileSync(path.join(publicDir, `${diagramHash}.svg`), lightSvg, 'utf8');
 
-  const distDir = path.resolve(process.cwd(), 'dist/diagrams');
+  const titleSlug = slugifyTitle(title || 'diagram');
+  const shortHash = diagramHash.slice(0, 8);
+  const fileName = `${titleSlug || 'diagram'}-${shortHash}.svg`;
+  const contentUrl = `/${relDir}/${fileName}`;
+
+  const exportDir = path.resolve(process.cwd(), '.cache/mermaid/exports', relDir);
+  if (!fs.existsSync(exportDir)) {
+    fs.mkdirSync(exportDir, { recursive: true });
+  }
+  fs.writeFileSync(path.join(exportDir, fileName), lightSvg, 'utf8');
+
+  const distDir = path.resolve(process.cwd(), 'dist', relDir);
   if (fs.existsSync(path.resolve(process.cwd(), 'dist'))) {
     if (!fs.existsSync(distDir)) {
       fs.mkdirSync(distDir, { recursive: true });
     }
-    fs.writeFileSync(path.join(distDir, `${diagramHash}.svg`), lightSvg, 'utf8');
+    fs.writeFileSync(path.join(distDir, fileName), lightSvg, 'utf8');
   }
 
-  return { darkSvg, lightSvg, hash: diagramHash };
+  return { darkSvg, lightSvg, hash: diagramHash, contentUrl };
 }
 
 interface MermaidNodeToProcess {
@@ -376,11 +405,11 @@ export default function remarkMermaid() {
         throw new Error(errorMsg);
       }
 
-      const { darkSvg, lightSvg, hash } = await renderMermaidDiagrams(code);
+      const { darkSvg, lightSvg, contentUrl } = await renderMermaidDiagrams(code, filePath, title);
 
       const html = `
 <figure class="mermaid-diagram my-8 flex flex-col items-center w-full overflow-x-auto" role="figure" aria-label="${escapeHtml(title!)}" itemscope itemtype="https://schema.org/ImageObject" data-diagram-title="${escapeHtml(title!)}" data-diagram-caption="${escapeHtml(caption!)}">
-  <meta itemprop="contentUrl" content="/diagrams/${hash}.svg" />
+  <meta itemprop="contentUrl" content="${escapeHtml(contentUrl)}" />
   <meta itemprop="name" content="${escapeHtml(title!)}" />
   <meta itemprop="description" content="${escapeHtml(caption!)}" />
   <div class="mermaid-svg mermaid-dark justify-center w-full max-w-full">

@@ -151,7 +151,7 @@ async function main(): Promise<void> {
     // 4. Generate Social Sharing Banner (1200x630)
     await capture('/_internal/og/', 1200, 630, [
       path.join(srcImagesDir, 'og-share-preview.png'),
-      path.join(distDir, 'images/og-share-preview.png'),
+      path.join(distDir, 'images/og/og-share-preview.png'),
     ]);
 
     await browser.close();
