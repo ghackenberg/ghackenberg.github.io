@@ -10,9 +10,9 @@ terms:
   - "Winter Term 2025/26"
 language: "de"
 screenshot:
-  src: "./preview.png"
-  title: "Systems Engineering & Mechatronik-Labor"
-  description: "Dr. Georg Hackenberg erläutert MATLAB-Simulink-Blockschaltbilder und Bode-Diagramme vor einem mechatronischen Motorprüfstand"
+  src: "./preview.jpg"
+  title: "Systems Engineering: Black-Box/White-Box & Test Harness"
+  description: "Orthogonale Schautafel des Systems Engineerings mit Test Suite, Systemgrenze als Black-Box- und White-Box-Modell, Schnittstellen-Ports und Test Harness"
 tags:
   - "systems-engineering"
   - "systems-analysis"

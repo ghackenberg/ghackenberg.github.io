@@ -2,27 +2,39 @@
 
 Course previews showcase university lecture modules, programming curricula, and academic engineering labs.
 
-## Visual Archetype: Academic Lecture & Lab Blackboard
+# Visual Archetype: Courses (`preview.jpg`)
 
-An inspiring higher-education engineering classroom or modern laboratory setting focused on structured knowledge transfer.
+Course previews showcase university lecture modules, programming curricula, and academic engineering labs.
+
+## Visual Archetype: Didactic Functional Model / Technical Schematic (Orthogonal 2D)
+
+A clean, tangible technical schematic and didactic functional model illustrating the core engineering concept, architecture, or computational pipeline of the course.
+
+## 4-Column Layout Ergonomics
+* **Thumbnail Scaling Factor**: Course cards are rendered in multi-column catalog layouts (~280–360px wide per card).
+* **Simplicity Contract**: Exactly **1 dominant, concrete didactic functional pipeline or modular assembly** centered in the 16:9 frame (occupying ~60–70% of canvas height).
+* **Orthographic Frontal Projection**: Strictly planar, direct frontal or top-down alignment with zero perspective tilt for maximum architectural precision and instant thumbnail readability.
+* **Generous Padding**: Ample margin around the central subject to all four canvas edges so the motif "breathes".
+* **Zero Clutter**: Strictly no micro-details, no cluttered backgrounds, no unreadable pseudo-text code blocks, no room walls.
 
 ## Avatar & Entity Rules
-* **Avatar Inclusion**: **STRICTLY NO Georg avatar (Clean Didactic Focus)**.
-* **Human Figures**: Strictly no professors, students, or human figures. The educational blackboard, smartboard, and laboratory environment are the focal hero.
-* **Rationale**: Course cards emphasize syllabus structures, technical models, and learning objectives impartially without personal presenter bias.
-
-## Camera Framing & Setting
-* **Perspective**: Direct eye-level or slightly elevated frontal lecture hall / laboratory perspective.
-* **Focal Target**: Locked onto a massive didactic blackboard or interactive smartboard displaying structured modular curriculum schematics, architectural flowcharts, and clean code syntax.
-* **Foreground**: Clean wooden lecture benches, open notebooks/workbooks, or sleek desktop lab terminals establishing the physical academic engineering context.
+* **Avatar Inclusion**: **STRICTLY NO Georg avatar**.
+* **Human Figures**: Strictly no professors, students, or human figures (including no hands).
+* **Scenery**: Strictly no lecture halls, no classroom benches, no physical desks or room walls.
 
 ## Environment & Palette
-* **Environment**: Modern academic engineering laboratory and lecture theater at FH OÖ Campus Wels (Stelzhamerstraße 23).
-* **Palette**: Dark charcoal/slate blackboard surface (`#0f172a` / `#030712`) contrasted with vibrant chalk-style vector lines in Academic Yellow (`#f59e0b`) and Brand Blue (`#3b82f6`). Soft warm overhead classroom illumination.
+* **Environment**: Clean, uncluttered deep slate-black void (`#030712`).
+* **Palette**: Dark slate foundation with soft ambient radial glow in domain brand colors:
+  * Hardware & IoT: Amber (`#f59e0b`) and Cyan (`#06b6d4`)
+  * Data & SQL: Emerald Green (`#10b981`) and Brand Blue (`#3b82f6`)
+  * Simulation & Factory: Brand Yellow (`#f59e0b`) and Slate/Purple
+  * Software Architecture & Web: Brand Blue (`#3b82f6`) and Mint/Cyan
+  * Mobile & Cloud: Brand Purple (`#a855f7`) and Cyan
+  * Systems Engineering: Brand Blue (`#3b82f6`) and Orange
 * **Format & Aspect Ratio**: `AspectRatio: "16:9"`, saved as `preview.jpg` in `src/content/courses/[course_id]/preview.jpg`.
 
 ## Canonical Prompt Template
 
 ```text
-Direct eye-level perspective inside a contemporary university engineering laboratory and lecture hall at FH OÖ Campus Wels. Centered prominently in the frame is a large didactic blackboard and modern interactive smartboard displaying structured modular curriculum schematics, clear architectural flowcharts, and clean code syntax for [course topic / programming language]. Foreground features tidy wooden lecture benches with an open textbook, notebook, and sleek lab terminal. Academic engineering atmosphere with soft warm classroom lighting, subtle grid lines on the blackboard, vibrant chalk-style vector lines in academic yellow (#f59e0b) and brand blue (#3b82f6) against deep slate-charcoal (#030712). Strictly no people, no human characters, clean didactic educational focus. Modern Disney/Pixar comic-book vector illustration, crisp dark ink contours, clean cel shading, full bleed composition without borders. 16:9 aspect ratio.
+Planar direct frontal orthographic 2D view of [didactic subject: IoT microcontroller telemetry pipeline / relational SQL data funnel / OOP class inheritance hierarchy / client-server API bridge / control loop block diagram], centered with generous padding on all sides. [Left component] on the left flows horizontally through [center processing engine] into [right output/target component] on the right. Deep slate-black background (#030712) with a soft ambient radial glow in [domain colors, e.g. #3b82f6 blue and #10b981 green]. Stylized Disney/Pixar comic-book vector illustration style, crisp dark ink outlines, bold cel shading, clean graphic shapes, ample breathing room between the subject and canvas borders. Strictly no human figures, no hands, no real text, no perspective tilt, no classroom background. 16:9 aspect ratio.
 ```

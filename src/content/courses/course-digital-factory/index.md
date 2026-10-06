@@ -11,9 +11,9 @@ terms:
   - "Winter Term 2025/26"
 language: "en"
 screenshot:
-  src: "./preview.png"
-  title: "Dr. Georg Hackenberg im Digital Factory Smart Lab"
-  description: "Dr. Georg Hackenberg im industriellen Smart Factory Labor mit holografischen Anzeigen für JaamSim-Ablaufsimulationen und Produktionsanalysen"
+  src: "./preview.jpg"
+  title: "Digital Factory: Discrete-Event Manufacturing Cell"
+  description: "Orthogonal schematic of a modular manufacturing cell with input feeder conveyor, automated robotic processing station, and pallet buffer sorting gate"
 tags:
   - "simulation"
   - "factory-layout"

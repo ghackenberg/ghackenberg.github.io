@@ -10,9 +10,9 @@ terms:
   - "Winter Term 2025/26"
 language: "de"
 screenshot:
-  src: "./preview.png"
-  title: "Python-Grundlagen im Hörsaal"
-  description: "Dr. Georg Hackenberg erklärt modulare Python-Funktionen und automatisierte Konsolenausgaben an einem digitalen Großdisplay vor Studierenden"
+  src: "./preview.jpg"
+  title: "Python-Programmierung: Skripting & modulare Datenverarbeitung"
+  description: "Orthogonale Schautafel einer modularen Python-Pipeline mit Datenstruktur-Containern, Funktionsausführungsblock und Terminalausgabe"
 tags:
   - "python"
   - "software-engineering"
