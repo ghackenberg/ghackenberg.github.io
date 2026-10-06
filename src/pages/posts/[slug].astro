@@ -4,7 +4,6 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
-import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
 import { generateCitationLabel } from "@commons/shared/citations.js";
 import fs from "node:fs";
@@ -34,10 +33,6 @@ const ui = {
   back: "Back to Posts",
   keyTakeaways: "Key Takeaways / Executive Summary",
   tocTitle: "Table of Contents",
-  discussionHeading: "Questions, feedback, or discussion?",
-  discussionText: "Want to discuss this topic or have feedback on this article? Feel free to reach out directly or connect on LinkedIn.",
-  contactBtn: "Send message",
-  linkedInBtn: "Connect on LinkedIn",
 };
 
 const seoDescription = post.data.description 
@@ -256,16 +251,6 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
         </section>
       )}
     </div>
-
-    <!-- Contact & Discussion Section -->
-    <GetInTouchCard
-      sectionHeading="Start a Conversation"
-      sectionDescription="Want to discuss this topic or have feedback on this article? Feel free to reach out directly via email."
-      cardHeading="Feedback & Topic Discussion"
-      emailSubject={`Feedback: ${post.data.title}`}
-      accentColor="blue"
-      primaryButtonText="Open Email Client"
-    />
     </Container>
   </Section>
 
@@ -392,24 +377,6 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
   :global(.light) .post-body :global(pre) {
     background: rgba(255, 255, 255, 0.6);
     color: #1e293b;
-  }
-  .post-body :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: var(--color-text-main);
-    transition: color 0.5s ease;
-  }
-  .post-body :global(ol) {
-    list-style-type: decimal;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: var(--color-text-main);
-    transition: color 0.5s ease;
-  }
-  .post-body :global(li) {
-    margin-bottom: 0.5rem;
-    line-height: 1.7;
   }
   /* Markdown Tables Styling */
   .post-body :global(table) {

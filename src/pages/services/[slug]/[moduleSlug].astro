@@ -3,7 +3,6 @@ import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
-import GetInTouchCard from "@components/GetInTouchCard.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 
@@ -147,12 +146,14 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <!-- Module Scope -->
       {module.data.highlights && module.data.highlights.length > 0 && (
         <section id="module-scope" class="mb-10">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
-            Module Scope
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+            <span>⚡</span><span>Module Scope</span>
           </h2>
-          <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
+          <ul class="space-y-2">
             {module.data.highlights.map(item => (
-              <li>{item}</li>
+              <li>
+                <span>{item}</span>
+              </li>
             ))}
           </ul>
         </section>
@@ -161,12 +162,14 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <!-- Required Inputs -->
       {module.data.inputs && module.data.inputs.length > 0 && (
         <section id="required-inputs" class="mb-10">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
-            Required Inputs
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+            <span>📥</span><span>Required Inputs</span>
           </h2>
-          <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
+          <ul class="space-y-2">
             {module.data.inputs.map(item => (
-              <li>{item}</li>
+              <li>
+                <span>{item}</span>
+              </li>
             ))}
           </ul>
         </section>
@@ -175,12 +178,14 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <!-- Technical Deliverables -->
       {module.data.outputs && module.data.outputs.length > 0 && (
         <section id="technical-deliverables" class="mb-10">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
-            Technical Deliverables
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+            <span>📦</span><span>Technical Deliverables</span>
           </h2>
-          <ul class="list-disc pl-5 space-y-2 text-gray-300 font-normal leading-relaxed">
+          <ul class="space-y-2">
             {module.data.outputs.map(item => (
-              <li>{item}</li>
+              <li>
+                <span>{item}</span>
+              </li>
             ))}
           </ul>
         </section>
@@ -189,15 +194,15 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <!-- Delivery Methodology (if present) -->
       {module.data.methodologyPhases && module.data.methodologyPhases.length > 0 && (
         <section id="delivery-methodology">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
-            Delivery Methodology
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+            <span>🔄</span><span>Delivery Methodology</span>
           </h2>
           {module.data.methodologyDescription && (
             <p class="text-gray-300 leading-relaxed font-normal mb-4">
               {module.data.methodologyDescription}
             </p>
           )}
-          <ol class="list-decimal pl-5 space-y-3 text-gray-300 font-normal leading-relaxed">
+          <ol class="space-y-2">
             {module.data.methodologyPhases.map(phase => (
               <li>
                 <strong class="text-gray-100 font-semibold">{phase.title}:</strong> {phase.description}
@@ -207,17 +212,6 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
         </section>
       )}
     </div>
-
-    <!-- Contact Section -->
-    <GetInTouchCard
-      id="contact-services"
-      sectionHeading="Start a Conversation"
-      sectionDescription={`Write directly to request an inquiry about the ${module.data.title} module or custom bundle options.`}
-      cardHeading="Contact & Booking Inquiry"
-      emailSubject={`Services Inquiry: ${parentService.data.title} - ${module.data.title}`}
-      accentColor="purple"
-      primaryButtonText="Open Email Client"
-    />
   </Container>
 </Section>
 
@@ -231,44 +225,12 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
 
 <style>
   /* Markdown content styling for service layouts */
-  .service-content :global(h2) {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: var(--color-text-heading);
-    margin-top: 1.85rem;
-    margin-bottom: 0.85rem;
-    letter-spacing: -0.015em;
-    border-bottom: 1px solid var(--color-border-subtle);
-    padding-bottom: 0.35rem;
-    transition: color 0.5s ease, border-color 0.5s ease;
-  }
-  .service-content :global(h2:first-child) {
-    margin-top: 0;
-  }
-  .service-content :global(h3) {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--color-text-heading);
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    transition: color 0.5s ease;
-  }
   .service-content :global(p) {
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.7;
     color: var(--color-text-main);
     margin-bottom: 1.25rem;
     transition: color 0.5s ease;
-  }
-  .service-content :global(p:first-of-type) {
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.6;
-    color: var(--color-text-heading);
-    border-left: 3px solid var(--glow-text, #a855f7);
-    padding-left: 1rem;
-    margin-bottom: 1.5rem;
-    transition: color 0.5s ease, border-color 0.5s ease;
   }
   .service-content :global(li strong) {
     color: var(--color-text-heading);
@@ -290,18 +252,3 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     --glow-shadow: rgba(109, 40, 217, 0.15);
   }
 </style>
-
-<script>
-  // Add listeners to inquiry triggers to pre-fill email client link subject
-  const triggers = document.querySelectorAll('.inquiry-trigger');
-  const directMailLink = document.getElementById('direct-mail-link') as HTMLAnchorElement | null;
-  
-  triggers.forEach(trigger => {
-    trigger.addEventListener('click', () => {
-      const subject = trigger.getAttribute('data-subject');
-      if (directMailLink && subject) {
-        directMailLink.href = `mailto:georg.hackenberg@fh-wels.at?subject=${encodeURIComponent(subject)}`;
-      }
-    });
-  });
-</script>

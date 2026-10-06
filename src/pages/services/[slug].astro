@@ -87,7 +87,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
 
   <!-- Section 1: Service Overview -->
   <Section id="service-overview" padding="standard">
-    <Container size="wide" padding="none">
+    <Container size="reading" padding="none">
       <!-- Back Button -->
       <a 
         href="/services/" 
@@ -120,53 +120,38 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
         )}
       </header>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mt-8">
-        <!-- Main Content (Column 1) -->
-        <div class="lg:col-span-8">
-          <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
-            <Content />
+      <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
+        <Content />
+
+        {service.data.guidingPrinciples && service.data.guidingPrinciples.length > 0 && (
+          <div class="mt-10">
+            <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+              <span>⚖️</span><span>Guiding Principles</span>
+            </h2>
+            <ul class="space-y-2">
+              {service.data.guidingPrinciples.map(principle => (
+                <li>
+                  <strong class="text-gray-100 font-semibold">{principle.title}:</strong> {principle.description}
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        )}
 
-        <!-- Sidebar (Column 2) -->
-        <aside class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
-          <!-- Guiding Principles Card -->
-          {service.data.guidingPrinciples && service.data.guidingPrinciples.length > 0 && (
-            <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col relative overflow-hidden">
-              <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-purple"></div>
-              <h3 class="text-lg font-bold mb-4 flex items-center space-x-2 text-gray-100">
-                <span>⚖️</span>
-                <span>Guiding Principles</span>
-              </h3>
-              <div class="space-y-2.5">
-                {service.data.guidingPrinciples.map((principle) => (
-                  <div class="flex items-start space-x-2 text-xs text-gray-300 font-normal leading-relaxed">
-                    <span class="text-brand-purple font-bold shrink-0">✓</span>
-                    <span>{principle.title}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <!-- Target Leadership Card -->
-          {service.data.targetAudience && service.data.targetAudience.length > 0 && (
-            <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col relative overflow-hidden">
-              <h3 class="text-lg font-bold mb-4 flex items-center space-x-2 text-gray-100">
-                <span>🎯</span>
-                <span>Target Leadership</span>
-              </h3>
-              <div class="space-y-2.5">
-                {service.data.targetAudience.map((audience) => (
-                  <div class="flex items-start space-x-2 text-xs text-gray-300 font-normal leading-relaxed">
-                    <span class="text-brand-purple font-bold shrink-0 mt-0.5 select-none">→</span>
-                    <span>{audience}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </aside>
+        {service.data.targetAudience && service.data.targetAudience.length > 0 && (
+          <div class="mt-10">
+            <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-element-border pb-2 mb-4">
+              <span>👤</span><span>Target Leadership</span>
+            </h2>
+            <ul class="space-y-2">
+              {service.data.targetAudience.map(audience => (
+                <li>
+                  <span>{audience}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </Container>
   </Section>
@@ -201,94 +186,12 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
 
 <style>
   /* Markdown content styling for service layouts */
-  .service-content :global(h2) {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: var(--color-text-heading);
-    margin-top: 1.85rem;
-    margin-bottom: 0.85rem;
-    letter-spacing: -0.015em;
-    border-bottom: 1px solid var(--color-border-subtle);
-    padding-bottom: 0.35rem;
-    transition: color 0.5s ease, border-color 0.5s ease;
-  }
-  .service-content :global(h2:first-child) {
-    margin-top: 0;
-  }
-  .service-content :global(h3) {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--color-text-heading);
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    transition: color 0.5s ease;
-  }
   .service-content :global(p) {
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.7;
     color: var(--color-text-main);
     margin-bottom: 1.25rem;
     transition: color 0.5s ease;
-  }
-  .service-content :global(p:first-of-type) {
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.6;
-    color: var(--color-text-heading);
-    border-left: 3px solid var(--glow-text, #a855f7);
-    padding-left: 1rem;
-    margin-bottom: 1.5rem;
-    transition: color 0.5s ease, border-color 0.5s ease;
-  }
-  .service-content :global(ul),
-  .service-content :global(ol) {
-    list-style-type: none;
-    padding-left: 0;
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-  .service-content :global(ol) {
-    counter-reset: service-counter;
-  }
-  .service-content :global(li) {
-    margin-bottom: 0;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    background: rgba(255, 255, 255, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    padding: 0.85rem 1rem 0.85rem 2.25rem;
-    border-radius: 12px;
-    position: relative;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-  }
-  :global(.light) .service-content :global(li) {
-    background: rgba(15, 23, 42, 0.02);
-    border-color: rgba(15, 23, 42, 0.06);
-  }
-  .service-content :global(li:hover) {
-    border-color: rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
-  }
-  :global(.light) .service-content :global(li:hover) {
-    background: rgba(15, 23, 42, 0.04);
-    border-color: rgba(15, 23, 42, 0.1);
-  }
-  .service-content :global(li::before) {
-    content: "→";
-    position: absolute;
-    left: 1rem;
-    top: 0.85rem;
-    line-height: 1.6;
-    color: var(--glow-text, #a855f7);
-    font-weight: bold;
-  }
-  .service-content :global(ol > li) {
-    counter-increment: service-counter;
-  }
-  .service-content :global(ol > li::before) {
-    content: counter(service-counter) ".";
   }
   .service-content :global(li strong) {
     color: var(--color-text-heading);
