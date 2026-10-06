@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import ProjectCard from "@components/ProjectCard.astro";
 import PostCard from "@components/PostCard.astro";
 import Timeline from "@components/Timeline.astro";
@@ -901,7 +902,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
   <main class="flex-grow w-full relative z-10">
     
     <!-- Hero Section Container -->
-    <div class="max-w-6xl mx-auto px-4 md:px-8 pt-8 pb-8 md:pt-12 md:pb-14">
+    <Container as="div" size="wide" padding="compact" class="hero-container">
       <!-- Hero Section -->
       <section id="home" class="flex flex-col justify-center pb-0 pt-0 relative">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
@@ -1068,13 +1069,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         
       </div>
     </section>
-  </div>
+  </Container>
 
   <!-- Animated Image Gallery Marquee (Full-Width Edge-to-Edge) -->
   <ImageGalleryMarquee catalog={galleryItems} />
 
   <!-- Core Content Sections Container -->
-  <div class="max-w-6xl mx-auto px-4 md:px-8 pb-12 md:pb-20">
+  <Container as="div" size="wide" padding="standard" class="content-sections-container">
     <!-- Professional Interests Section -->
     <section id="about" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
       <div class="mb-12">
@@ -1926,7 +1927,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         </div>
       </div>
     </section>
-  </div>
+  </Container>
 
   </main>
 

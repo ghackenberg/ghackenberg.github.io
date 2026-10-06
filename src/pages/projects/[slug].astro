@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
@@ -178,7 +179,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 >
   <Navbar />
 
-  <main class="flex-grow max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <Container size="medium">
     <!-- Back Button -->
     <a 
       href="/projects/" 
@@ -390,7 +391,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
       accentColor={project.data.accentColor || "blue"}
       primaryButtonText="Open Email Client"
     />
-  </main>
+  </Container>
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 

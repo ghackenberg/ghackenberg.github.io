@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import PostCard from "@components/PostCard.astro";
 import PublicationCard from "@components/PublicationCard.astro";
 import PresentationCard from "@components/PresentationCard.astro";
@@ -147,7 +148,7 @@ const breadcrumbSchema = {
 >
   <Navbar />
 
-  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <Container size="wide">
     <!-- Back Button -->
     <a 
       href="/tags/" 
@@ -530,7 +531,7 @@ const breadcrumbSchema = {
         </div>
       )}
     </div>
-  </main>
+  </Container>
 </Layout>
 
 <script>

@@ -1,6 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import ServiceModuleCard from "@components/ServiceModuleCard.astro";
 import { getCollection, render } from "astro:content";
@@ -89,7 +90,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
 >
   <Navbar />
 
-  <main class="flex-grow max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 w-full relative z-10">
+  <Container size="wide">
     <!-- Top Content (Narrow: max-w-4xl) -->
     <div class="max-w-4xl mx-auto">
       <!-- Back Button -->
@@ -218,7 +219,7 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
         </div>
       </div>
     </section>
-  </main>
+  </Container>
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 
