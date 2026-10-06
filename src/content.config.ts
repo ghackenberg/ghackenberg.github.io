@@ -207,7 +207,7 @@ const publications = defineCollection({
     pattern: '**/index.{md,mdx}',
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     pubDate: z.string(),
     book: z.string().optional(),
@@ -216,7 +216,7 @@ const publications = defineCollection({
     tags: z.array(tagReference).default([]),
     bibtex: z.string().optional(),
     slides: z.string().optional(),
-    icon: z.string().optional(),
+    icon: image().optional(),
     publisherUrl: z.string().optional(),
   }),
 });

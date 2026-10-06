@@ -7,7 +7,7 @@ abstract: "Intelligent Transportation Systems (ITS) have come a long way targeti
 tags: ["simulation", "systems-design", "systems-engineering", "systems-validation", "traffic-control", "transportation-systems"]
 bibtex: "@INPROCEEDINGS{Ascher2014, \r\n\tauthor={D. Ascher and G. Hackenberg}, \r\n\tbooktitle={2014 International Conference on Connected Vehicles and Expo (ICCVE)}, \r\n\ttitle={Early estimation of multi-objective traffic flow}, \r\n\tyear={2014}, \r\n\tpages={1056-1057}, \r\n\tkeywords={intelligent transportation systems;stochastic programming;ITS;basic traffic scenario;collision avoidance;congestion management;emission reduction;energy-efficiency;intelligent transportation systems;multiobjective traffic flow early estimation;nondeterministic models;stochastic optimization techniques;systems engineering;Biological system modeling;Context modeling;Estimation;Optimization;Software;Vehicles;Feasibility study;intelligent transportation systems}, \r\n\tdoi={10.1109/ICCVE.2014.7297511}, \r\n\tISSN={2378-1289}, \r\n\tmonth={Nov}\r\n}"
 slides: ""
-icon: "/publications/2014_11_iccve/graph.png"
+icon: "./graph.png"
 publisherUrl: "https://doi.org/10.1109/ICCVE.2014.7297511"
 ---
 

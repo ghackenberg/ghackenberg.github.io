@@ -7,7 +7,7 @@ abstract: "A key success factor for building smart control software for today's 
 tags: ["dynamic-programming", "energy-systems", "simulation", "software-systems", "systems-design", "systems-engineering", "systems-validation"]
 bibtex: "@INPROCEEDINGS{ \r\n\tauthor={Hackenberg, G. and Irlbeck, M. and Koutsoumpas, V. and Bytschkow, D.}, \r\n\tbooktitle={Computer Software and Applications Conference Workshops (COMPSACW), 2014 IEEE 38th International}, \r\n\ttitle={A Rapid Prototyping Approach for Smart Energy Systems Based on Partial System Models}, \r\n\tyear={2014}, \r\n\tmonth={July}, \r\n\tpages={596-601},\r\n\tdoi={10.1109/COMPSACW.2014.100},\r\n}"
 slides: "//www.slideshare.net/slideshow/embed_code/41696682"
-icon: "/publications/2014_07_21_compsac/workflow_revised.png"
+icon: "./workflow_revised.png"
 publisherUrl: "https://doi.org/10.1109/COMPSACW.2014.100"
 ---
 

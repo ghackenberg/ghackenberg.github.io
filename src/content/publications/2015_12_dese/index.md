@@ -7,7 +7,7 @@ abstract: "Manufacturing systems continuously increase in complexity due to high
 tags: ["manufacturing-systems", "mechatronic-systems", "systems-design", "systems-engineering", "systems-verification"]
 bibtex: "@INPROCEEDINGS{Richter2015, \r\n\tauthor = {C. Richter and G. Hackenberg and M. F. Zäh and G. Reinhart}, \r\n\tbooktitle = {2015 International Conference on Developments of E-Systems Engineering (DeSE)}, \r\n\ttitle = {Integrated Requirements and Systems Modeling in the Mechatronic Development Process}, \r\n\tyear = {2015}, \r\n\tpages = {324-331}, \r\n\tkeywords = {Analytical models;Mechatronics;Object oriented modeling;Requirements engineering;Software;Unified modeling language}, \r\n\tdoi = {10.1109/DeSE.2015.43}, \r\n\tmonth = {Dec}\r\n}"
 slides: ""
-icon: "/publications/2015_12_dese/meta_model_analysis.jpg"
+icon: "./meta_model_analysis.jpg"
 publisherUrl: "https://doi.org/10.1109/DeSE.2015.43"
 ---
 

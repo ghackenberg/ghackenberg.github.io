@@ -7,7 +7,7 @@ abstract: "Conceptual designs of manufacturing systems contain input from all en
 tags: ["manufacturing-systems", "mechatronic-systems", "systems-design", "systems-engineering", "systems-verification"]
 bibtex: "@article{Hackenberg2016,\r\n\ttitle = \"MaCon: Consistent Cross-Disciplinary Conception of Manufacturing Systems \",\r\n\tjournal = \"IFAC-PapersOnLine \",\r\n\tvolume = \"49\",\r\n\tnumber = \"12\",\r\n\tpages = \"1175 - 1180\",\r\n\tyear = \"2016\",\r\n\tnote = \"8th \\{IFAC\\} Conference on Manufacturing Modelling, Management and Control \\{MIM\\} 2016Troyes, France, 28—30 June 2016 \",\r\n\tissn = \"2405-8963\",\r\n\tdoi = \"http://dx.doi.org/10.1016/j.ifacol.2016.07.665\",\r\n\turl = \"http://www.sciencedirect.com/science/article/pii/S2405896316309417\",\r\n\tauthor = \"Georg Hackenberg and Mario Gleirscher and Thomas Stocker and Christoph Richter and Gunther Reinhart\",\r\n\tkeywords = \"Manufacturing\",\r\n\tkeywords = \"mechatronics\",\r\n\tkeywords = \"engineering\",\r\n\tkeywords = \"modeling\",\r\n\tkeywords = \"simulation\",\r\n\tkeywords = \"testing \"\r\n}"
 slides: "//www.slideshare.net/slideshow/embed_code/key/GwDR2DrRkkul1l"
-icon: "/publications/2016_06_mim/element_transition.png"
+icon: "./element_transition.png"
 publisherUrl: "https://doi.org/10.1016/j.ifacol.2016.07.665"
 ---
 

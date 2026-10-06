@@ -7,7 +7,6 @@ abstract: "Increased complexity of scientific research poses new challenges to s
 tags: ["collaborative-software", "data-integration", "knowledge-management", "user-interface"]
 bibtex: "@proceeding{\r\n\tauthor = {Wang, Fusheng and Thiel, Florian and Furrer, Daniel and Vergara-Niedermayr, Cristobal and Qin, Chen and Hackenberg, Georg and Bourgue, Pierre-Emmanuel and Kaltschmidt, David and Wang, Mo},\r\n\ttitle = {An adaptable XML based approach for scientific data management and integration},\r\n\tjournal = {Proc. SPIE},\r\n\tvolume = {6919},\r\n\tnumber = {},\r\n\tpages = {69190K-69190K-10},\r\n\tyear = {2008},\r\n\tdoi = {10.1117/12.773154},\r\n\tURL = { http://dx.doi.org/10.1117/12.773154},\r\n\teprint = {}\r\n}"
 slides: ""
-icon: "/default-icon.png"
 publisherUrl: "https://doi.org/10.1117/12.773154"
 ---
 

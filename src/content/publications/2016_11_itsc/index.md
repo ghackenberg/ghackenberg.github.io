@@ -7,7 +7,7 @@ abstract: "Increasing penetration of decentralized energy production as well as 
 tags: ["energy-systems", "simulation", "systems-design", "systems-engineering", "systems-validation", "traffic-control", "transportation-systems"]
 bibtex: ""
 slides: ""
-icon: "/publications/2016_11_itsc/power_system.png"
+icon: "./power_system.png"
 publisherUrl: "https://doi.org/10.1109/ITSC.2016.7795529"
 ---
 

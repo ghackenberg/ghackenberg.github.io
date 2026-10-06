@@ -7,7 +7,7 @@ abstract: "We present a novel technique implementing barehanded interaction with
 tags: ["motion-capture", "gesture-recognition", "computer-vision", "user-interface"]
 bibtex: "@INPROCEEDINGS{ \r\n\tauthor={Hackenberg, G. and McCall, R. and Broll, Wolfgang}, \r\n\tbooktitle={Virtual Reality Conference (VR), 2011 IEEE}, \r\n\ttitle={Lightweight palm and finger tracking for real-time 3D gesture control}, \r\n\tyear={2011}, \r\n\tmonth={March}, \r\n\tpages={19-26},\r\n\tdoi={10.1109/VR.2011.5759431}, \r\n\tISSN={1087-8270},\r\n}"
 slides: "//www.slideshare.net/slideshow/embed_code/7377346"
-icon: "/publications/2011_03_ieeevr/image.png"
+icon: "./image.png"
 publisherUrl: "https://doi.org/10.1109/VR.2011.5759431"
 ---
 

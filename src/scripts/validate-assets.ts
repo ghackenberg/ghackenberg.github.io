@@ -172,12 +172,86 @@ for (const file of htmlFiles) {
   });
 }
 
+// -------------------------------------------------------------
+// Assertion 4: Strict Content Hashing for Raster Images
+// -------------------------------------------------------------
+function getRasterImageFiles(dir: string): string[] {
+  let files: string[] = [];
+  if (!fs.existsSync(dir)) return files;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files = files.concat(getRasterImageFiles(fullPath));
+    } else if (entry.isFile() && /\.(png|jpe?g|webp|avif|gif)$/i.test(entry.name)) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+function isWhitelistedRasterImage(relPath: string): boolean {
+  const normalized = relPath.replace(/\\/g, '/');
+
+  // Root / public branding assets
+  const rootWhitelist = new Set([
+    'favicon-16x16.png',
+    'favicon-32x32.png',
+    'apple-touch-icon.png',
+    'default-icon.png',
+    'icon-192x192.png',
+    'icon-512x512.png',
+    'icon-512x512-maskable.png',
+    'og-share-preview.png',
+    'images/og/og-share-preview.png',
+  ]);
+  if (rootWhitelist.has(normalized)) {
+    return true;
+  }
+
+  // Presentations pre-rendered thumbnails and preview
+  if (/^presentations\/[^/]+\/thumbnails\/[^/]+\.webp$/.test(normalized)) {
+    return true;
+  }
+  if (/^presentations\/[^/]+\/preview\.jpg$/.test(normalized)) {
+    return true;
+  }
+
+  return false;
+}
+
+const HASHED_IMAGE_REGEX = /-[a-zA-Z0-9_-]{6,}\.(png|jpe?g|webp|avif|gif)$/i;
+
+const rasterImages = getRasterImageFiles(distDir);
+let hashedRasterImagesCount = 0;
+let whitelistedRasterImagesCount = 0;
+let unhashedImagesCount = 0;
+
+for (const imgFile of rasterImages) {
+  const relPath = path.relative(distDir, imgFile).replace(/\\/g, '/');
+  if (isWhitelistedRasterImage(relPath)) {
+    whitelistedRasterImagesCount++;
+    continue;
+  }
+
+  if (!HASHED_IMAGE_REGEX.test(relPath)) {
+    console.error(
+      `[validate-assets] ❌ Assertion 4 Failed: Unhashed raster image found at: ${relPath}`
+    );
+    errorsCount++;
+    unhashedImagesCount++;
+  } else {
+    hashedRasterImagesCount++;
+  }
+}
+
 console.log(`\n[validate-assets] Scan summary:`);
 console.log(`  - Scanned HTML files:            ${htmlFiles.length}`);
 console.log(`  - Checked attributes:            ${totalCheckedAttributes}`);
 console.log(`  - Checked asset references:      ${totalAssetRefsChecked}`);
+console.log(`  - Scanned raster images:         ${rasterImages.length} (${hashedRasterImagesCount} hashed, ${whitelistedRasterImagesCount} whitelisted)`);
 console.log(`  - Zero _astro references:        CONFIRMED (0 forbidden references)`);
-console.log(`  - 100% asset existence parity:   ${errorsCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+console.log(`  - Strict image hashing:          ${unhashedImagesCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
 
 if (errorsCount > 0) {
   console.error(`\n[validate-assets] 💥 Validation failed with ${errorsCount} asset integrity error(s).`);
@@ -186,3 +260,4 @@ if (errorsCount > 0) {
   console.log(`\n[validate-assets] ✅ Build output passed all asset integrity checks!`);
   process.exit(0);
 }
+

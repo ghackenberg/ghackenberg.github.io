@@ -7,7 +7,6 @@ abstract: "Smart energy systems seem a promising choice for countries worldwide 
 tags: ["energy-systems", "software-architecture", "software-systems", "systems-design", "systems-engineering", "systems-validation"]
 bibtex: "@INPROCEEDINGS{, \r\n\tauthor={Irlbeck, M. and Bytschkow, D. and Hackenberg, G. and Koutsoumpas, V.}, \r\n\tbooktitle={Software Engineering Challenges for the Smart Grid (SE4SG), 2013 2nd International Workshop on}, \r\n\ttitle={Towards a bottom-up development of reference architectures for smart energy systems}, \r\n\tyear={2013}, \r\n\tmonth={May}, \r\n\tpages={9-16}\r\n}"
 slides: ""
-icon: "/default-icon.png"
 publisherUrl: "https://doi.org/10.1109/SE4SG.2013.6596106"
 ---
 

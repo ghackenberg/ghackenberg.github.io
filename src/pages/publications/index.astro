@@ -24,7 +24,8 @@ publications.forEach((pub) => {
 });
 
 const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
-const firstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
+const rawFirstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
+const firstPubIcon = typeof rawFirstPubIcon === 'object' && rawFirstPubIcon !== null && 'src' in rawFirstPubIcon ? rawFirstPubIcon.src : rawFirstPubIcon;
 
 const breadcrumbSchema = {
   "@context": "https://schema.org",

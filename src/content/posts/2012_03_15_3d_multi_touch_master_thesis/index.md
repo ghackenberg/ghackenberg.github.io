@@ -14,23 +14,20 @@ Finally, the findings are summarized and future work is listed.
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8 items-stretch">
   <div class="md:col-span-1 flex justify-center">
-    <a href="/posts/2012_03_15_3d_multi_touch_master_thesis/title.png" title="Title page" class="block w-full h-full">
-      <img src="./title.png" alt="Title detail from 3D Multi-Touch Master Thesis" title="3D Multi-Touch Master Thesis - Title detail" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-    </a>
+
+![Title detail from 3D Multi-Touch Master Thesis](./title.png "3D Multi-Touch Master Thesis - Title detail")
+
   </div>
   <div class="grid grid-cols-2 md:col-span-2 gap-4">
-    <a href="/posts/2012_03_15_3d_multi_touch_master_thesis/minority_report.png" title="Minority report reference" class="block">
-      <img src="./minority_report.png" alt="Minority report detail from 3D Multi-Touch Master Thesis" title="3D Multi-Touch Master Thesis - Minority report detail" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-    </a>
-    <a href="/posts/2012_03_15_3d_multi_touch_master_thesis/geometry.png" title="Geometry model" class="block">
-      <img src="./geometry.png" alt="Geometry detail from 3D Multi-Touch Master Thesis" title="3D Multi-Touch Master Thesis - Geometry detail" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-    </a>
-    <a href="/posts/2012_03_15_3d_multi_touch_master_thesis/learning.png" title="Learning approach" class="block">
-      <img src="./learning.png" alt="Learning detail from 3D Multi-Touch Master Thesis" title="3D Multi-Touch Master Thesis - Learning detail" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-    </a>
-    <a href="/posts/2012_03_15_3d_multi_touch_master_thesis/data_model.png" title="Data model" class="block">
-      <img src="./data_model.png" alt="Data model detail from 3D Multi-Touch Master Thesis" title="3D Multi-Touch Master Thesis - Data model detail" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-    </a>
+
+![Minority report detail from 3D Multi-Touch Master Thesis](./minority_report.png "3D Multi-Touch Master Thesis - Minority report detail")
+
+![Geometry detail from 3D Multi-Touch Master Thesis](./geometry.png "3D Multi-Touch Master Thesis - Geometry detail")
+
+![Learning detail from 3D Multi-Touch Master Thesis](./learning.png "3D Multi-Touch Master Thesis - Learning detail")
+
+![Data model detail from 3D Multi-Touch Master Thesis](./data_model.png "3D Multi-Touch Master Thesis - Data model detail")
+
   </div>
 </div>
 

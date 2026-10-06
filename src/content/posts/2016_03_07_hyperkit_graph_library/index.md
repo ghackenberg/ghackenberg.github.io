@@ -12,17 +12,17 @@ The first three graph visualizations are based on [Wikipedia](https://en.wikiped
 In the graph each node represents a Wikipedia page, while each edge represents a link between two Wikipedia pages.
 Furthermore, we extract for each Wikipedia page respectively graph node an icon representing the page content.
 
-[![Computer illustration from The Hyperkit Software graph library in action](./computer.png "The Hyperkit Software graph library in action - Computer illustration")](./computer.png)
-[![Wikipedia illustration from The Hyperkit Software graph library in action](./wikipedia.png "The Hyperkit Software graph library in action - Wikipedia illustration")](./wikipedia.png)
-[![Ibm illustration from The Hyperkit Software graph library in action](./ibm.png "The Hyperkit Software graph library in action - Ibm illustration")](./ibm.png)
+![Computer illustration from The Hyperkit Software graph library in action](./computer.png "The Hyperkit Software graph library in action - Computer illustration")
+![Wikipedia illustration from The Hyperkit Software graph library in action](./wikipedia.png "The Hyperkit Software graph library in action - Wikipedia illustration")
+![Ibm illustration from The Hyperkit Software graph library in action](./ibm.png "The Hyperkit Software graph library in action - Ibm illustration")
 
 The second three graph visualizations are based on our custom content management system **Infoterm** (see [Hyperkit Software]() for more information).
 The content management system allows one to create graph nodes with associated icon and rich text content.
 Furthermore, graph edges can be added easily between any nodes.
 
-[![Hackenberg illustration from The Hyperkit Software graph library in action](./hackenberg.png "The Hyperkit Software graph library in action - Hackenberg illustration")](./hackenberg.png)
-[![Mueller illustration from The Hyperkit Software graph library in action](./mueller.png "The Hyperkit Software graph library in action - Mueller illustration")](./mueller.png)
-[![Infineon illustration from The Hyperkit Software graph library in action](./infineon.png "The Hyperkit Software graph library in action - Infineon illustration")](./infineon.png)
+![Hackenberg illustration from The Hyperkit Software graph library in action](./hackenberg.png "The Hyperkit Software graph library in action - Hackenberg illustration")
+![Mueller illustration from The Hyperkit Software graph library in action](./mueller.png "The Hyperkit Software graph library in action - Mueller illustration")
+![Infineon illustration from The Hyperkit Software graph library in action](./infineon.png "The Hyperkit Software graph library in action - Infineon illustration")
 
 We hope that we have attracted your interest on our JavaScript graph library with this article.
 If you are seeking for intuitive and fun graph exploration techniques then we might be the right partner for you.

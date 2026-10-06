@@ -7,7 +7,7 @@ abstract: "The complexity of mechatronic systems increases constantly due to mar
 tags: ["manufacturing-systems", "mechatronic-systems", "systems-design", "systems-engineering", "systems-implementation", "systems-verification"]
 bibtex: "@article{Hackenberg2016,\r\n  author  = {Georg Hackenberg and Christoph Richter and Michael Z\\\"ah}, \r\n  title   = {From Conception to Refinement in Mechatronics Systems Engineering},\r\n  journal = {International Journal of Materials, Mechanics and Manufacturing},\r\n  year    = 2016,\r\n  number  = 1,\r\n  pages   = {66-73},\r\n  month   = 2,\r\n  volume  = 4\r\n}"
 slides: "//www.slideshare.net/slideshow/embed_code/key/1Py7CsXjrVMhUS"
-icon: "/publications/2016_02_ijmmm/examples.png"
+icon: "./examples.png"
 publisherUrl: "https://doi.org/10.7763/IJMMM.2016.V4.227"
 ---
 

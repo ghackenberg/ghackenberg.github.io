@@ -11,9 +11,9 @@ icon:
 Some time ago I was working on free hand 3D gesture interfaces similar to Microsoft Kinect. What this work essentially means is collecting digital camera images...
 
 <div class="flow-root my-8">
-  <a href="/posts/2011_07_14_3dmt_computer_vision/regions.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="./regions.png" alt="Regions detail from 3D Multi-Touch with Computer Vision" title="3D Multi-Touch with Computer Vision - Regions detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Regions detail from 3D Multi-Touch with Computer Vision](./regions.png "3D Multi-Touch with Computer Vision - Regions detail")
+
   <p class="text-gray-300 leading-relaxed pt-2">
     This **first** visualization illustrates how the original image contents are segmented into regions of consistent depth.
     This segmentation is used to find those pixels that are interesting for further processing steps thereby limiting the complexity of the input to the algorithm.
@@ -21,9 +21,9 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 </div>
 
 <div class="flow-root my-8">
-  <a href="/posts/2011_07_14_3dmt_computer_vision/distances.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="./distances.png" alt="Distances detail from 3D Multi-Touch with Computer Vision" title="3D Multi-Touch with Computer Vision - Distances detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Distances detail from 3D Multi-Touch with Computer Vision](./distances.png "3D Multi-Touch with Computer Vision - Distances detail")
+
   <p class="text-gray-300 leading-relaxed pt-2">
     This **second** visualization illustrates the process of calculating for each pixel the distance to the closest depth discontinuity.
     The idea of this step is to find candidates for palms as pixels with the largest distance (equal to the white spots in the visualization).
@@ -31,9 +31,9 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 </div>
 
 <div class="flow-root my-8">
-  <a href="/posts/2011_07_14_3dmt_computer_vision/tips.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="./tips.png" alt="Tips detail from 3D Multi-Touch with Computer Vision" title="3D Multi-Touch with Computer Vision - Tips detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Tips detail from 3D Multi-Touch with Computer Vision](./tips.png "3D Multi-Touch with Computer Vision - Tips detail")
+
   <p class="text-gray-300 leading-relaxed pt-2">
     This **third** visualization illustrates the process of finding candidates for finger tips in the image.
     Constructing this process has been one of the main contributions of my work.
@@ -42,9 +42,9 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 </div>
 
 <div class="flow-root my-8">
-  <a href="/posts/2011_07_14_3dmt_computer_vision/pipes.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="./pipes.png" alt="Pipes detail from 3D Multi-Touch with Computer Vision" title="3D Multi-Touch with Computer Vision - Pipes detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Pipes detail from 3D Multi-Touch with Computer Vision](./pipes.png "3D Multi-Touch with Computer Vision - Pipes detail")
+
   <p class="text-gray-300 leading-relaxed pt-2">
     This **fourth** visualization illustrates the process of finding the fingers (or finger pipes as we call it) in the image.
     The process is similar to finding finger tips and I believe the same argument holds for not explaining the details of this visualization.
@@ -52,9 +52,9 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 </div>
 
 <div class="flow-root my-8">
-  <a href="/posts/2011_07_14_3dmt_computer_vision/topologies.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="./topologies.png" alt="Topologies detail from 3D Multi-Touch with Computer Vision" title="3D Multi-Touch with Computer Vision - Topologies detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Topologies detail from 3D Multi-Touch with Computer Vision](./topologies.png "3D Multi-Touch with Computer Vision - Topologies detail")
+
   <p class="text-gray-300 leading-relaxed pt-2">
     This **fifth** visualization illustrates the process of estimating the skeleton of the objects that are visible in the camera image.
     This approximate skeleton provides valuable information when it comes to classifying the actual palm locations by confining the search to topology endpoints.
@@ -62,9 +62,9 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 </div>
 
 <div class="flow-root my-8">
-  <a href="/posts/2011_07_14_3dmt_computer_vision/fingers.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="./fingers.png" alt="Fingers detail from 3D Multi-Touch with Computer Vision" title="3D Multi-Touch with Computer Vision - Fingers detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Fingers detail from 3D Multi-Touch with Computer Vision](./fingers.png "3D Multi-Touch with Computer Vision - Fingers detail")
+
   <p class="text-gray-300 leading-relaxed pt-2">
     This **sixth** visualization illustrates the process of extracting finger-like structures from the image contents.
     Each of the selected finger structures is annotated on top of the depth image using two green circles (for tip and base) connected by a green line.
@@ -72,9 +72,9 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 </div>
 
 <div class="flow-root my-8">
-  <a href="/posts/2011_07_14_3dmt_computer_vision/candidates.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="./candidates.png" alt="Candidates detail from 3D Multi-Touch with Computer Vision" title="3D Multi-Touch with Computer Vision - Candidates detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Candidates detail from 3D Multi-Touch with Computer Vision](./candidates.png "3D Multi-Touch with Computer Vision - Candidates detail")
+
   <p class="text-gray-300 leading-relaxed pt-2">
     This **seventh** visualization illustrates the process of grouping various image features to candidates for the hand recognition and tracking step.
     Each candidate is annotated using the palm circle and finger structure annotations from the previous step, all in random color.
@@ -82,9 +82,9 @@ Some time ago I was working on free hand 3D gesture interfaces similar to Micros
 </div>
 
 <div class="flow-root my-8">
-  <a href="/posts/2011_07_14_3dmt_computer_vision/tracking.png" class="float-left mr-6 mb-4 max-w-[200pt] w-full block">
-    <img src="./tracking.png" alt="Tracking detail from 3D Multi-Touch with Computer Vision" title="3D Multi-Touch with Computer Vision - Tracking detail" loading="lazy" decoding="async" class="w-full rounded-xl border border-white/10 shadow-lg hover:border-white/20 transition-all hover:scale-101" />
-  </a>
+
+![Tracking detail from 3D Multi-Touch with Computer Vision](./tracking.png "3D Multi-Touch with Computer Vision - Tracking detail")
+
   <p class="text-gray-300 leading-relaxed pt-2">
     This **eighth** visualization illustrates the process of tracking hand appearances over time across the image plane.
     The current location of the palm is annotated with a green circle, while the locations in the previous frames are annotated through a green line.

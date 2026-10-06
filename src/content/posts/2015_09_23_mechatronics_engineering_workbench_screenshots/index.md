@@ -17,7 +17,7 @@ The **markers** tab provides information about problems in the mechatronic syste
 The **changes** tab displays a log of modifications that have been made on the model recently.
 Finally, on the right side the **attributes** tab shows all attributes of the currently selected element.
 
-[![Screenshot illustration from First mechatronics engineering workbench screenshots!](./screenshot.png "First mechatronics engineering workbench screenshots! - Screenshot illustration")](./screenshot.png)
+![Screenshot illustration from First mechatronics engineering workbench screenshots!](./screenshot.png "First mechatronics engineering workbench screenshots! - Screenshot illustration")
 
 One core feature of the workbench is the **simulation-based testing** of the mechatronic system model with respect to requirements.
 In the following four screenshots are provided of a single simulation run on the previous model.
@@ -25,10 +25,10 @@ The screenshots show how the mechatronic system is transporting material (gray c
 The requirement states that the transportation process is finished within a predefined amount of time.
 In the given case the simulation-based test can be finished successfully and the requirement is fulfilled.
 
-[![Simulation 0 illustration from First mechatronics engineering workbench screenshots!](./simulation_0.png "First mechatronics engineering workbench screenshots! - Simulation 0 illustration")](./simulation_0.png)
-[![Simulation 1 illustration from First mechatronics engineering workbench screenshots!](./simulation_1.png "First mechatronics engineering workbench screenshots! - Simulation 1 illustration")](./simulation_1.png)
-[![Simulation 2 illustration from First mechatronics engineering workbench screenshots!](./simulation_2.png "First mechatronics engineering workbench screenshots! - Simulation 2 illustration")](./simulation_2.png)
-[![Simulation 3 illustration from First mechatronics engineering workbench screenshots!](./simulation_3.png "First mechatronics engineering workbench screenshots! - Simulation 3 illustration")](./simulation_3.png)
+![Simulation 0 illustration from First mechatronics engineering workbench screenshots!](./simulation_0.png "First mechatronics engineering workbench screenshots! - Simulation 0 illustration")
+![Simulation 1 illustration from First mechatronics engineering workbench screenshots!](./simulation_1.png "First mechatronics engineering workbench screenshots! - Simulation 1 illustration")
+![Simulation 2 illustration from First mechatronics engineering workbench screenshots!](./simulation_2.png "First mechatronics engineering workbench screenshots! - Simulation 2 illustration")
+![Simulation 3 illustration from First mechatronics engineering workbench screenshots!](./simulation_3.png "First mechatronics engineering workbench screenshots! - Simulation 3 illustration")
 
 In the coming weeks I plan to prepare a YouTube video explaining the tool and the underlying engineering method in greater detail.
 So stay tuned if you are interested in the topic!

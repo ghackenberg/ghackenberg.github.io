@@ -7,7 +7,7 @@ abstract: "Aufgrund der juengsten Entwicklungen im Konsumgueterbereich ruecken B
 tags: ["manufacturing-systems", "user-interface", "systems-engineering", "systems-design", "systems-verification", "systems-validation"]
 bibtex: "@article{Richter2015,\r\n\ttitle={Modellbasierte Konzeption von Benutzerschnittstellen im Entwicklungsprozess von mechatronischen Systemen},\r\n\tauthor={Richter, Christoph and Hackenberg, Georg and Stich, Peter and Reinhart, Gunther},\r\n\tjournal={Tag des Systems Engineering: Verteiltes Arbeiten mit ganzheitlicher Kontrolle},\r\n\tpages={81},\r\n\tyear={2015},\r\n\tpublisher={Carl Hanser Verlag GmbH Co KG}\r\n}"
 slides: ""
-icon: "/publications/2015_09_tdse/Operator_Panel.png"
+icon: "./Operator_Panel.png"
 publisherUrl: "https://doi.org/10.3139/9783446447288.009"
 ---
 

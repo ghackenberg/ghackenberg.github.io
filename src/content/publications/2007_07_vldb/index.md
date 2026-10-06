@@ -7,7 +7,6 @@ abstract: "Scientific data are posing new challenges to data management due to t
 tags: ["collaborative-software", "data-integration", "software-systems", "user-interface"]
 bibtex: "@inproceedings{\r\n\tauthor = {Wang, Fusheng and Bourgu{\\'e}, Pierre-Emmanuel and Hackenberg, Georg and Wang, Mo and Kaltschmidt, David and Liu, Peiya},\r\n\ttitle = {SciPort: An Adaptable Scientific Data Integration Platform for Collaborative Scientific Research},\r\n\tbooktitle = {Proceedings of the 33rd International Conference on Very Large Data Bases},\r\n\tseries = {VLDB '07},\r\n\tyear = {2007},\r\n\tisbn = {978-1-59593-649-3},\r\n\tlocation = {Vienna, Austria},\r\n\tpages = {1310--1313},\r\n\tnumpages = {4},\r\n\turl = {http://dl.acm.org/citation.cfm?id=1325851.1326001},\r\n\tacmid = {1326001},\r\n\tpublisher = {VLDB Endowment},\r\n}"
 slides: ""
-icon: "/default-icon.png"
 publisherUrl: "https://dl.acm.org/doi/10.5555/1325851.1326001"
 ---
 

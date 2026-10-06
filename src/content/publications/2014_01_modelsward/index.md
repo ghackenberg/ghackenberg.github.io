@@ -7,7 +7,6 @@ abstract: "A system’s requirements and its architecture are usually developed 
 tags: ["software-systems", "systems-engineering", "systems-analysis", "systems-design", "systems-verification"]
 bibtex: "@inproceedings{\r\n\ttitle={Supporting Concurrent Development of Requirements and Architecture-A Model-based Approach.},\r\n\tauthor={Vogelsang, Andreas and Eder, Sebastian and Hackenberg, Georg and Junker, Maximilian and Teufl, Sabine},\r\n\tbooktitle={MODELSWARD},\r\n\tpages={587--595},\r\n\tyear={2014}\r\n}"
 slides: ""
-icon: "/default-icon.png"
 publisherUrl: "https://doi.org/10.5220/0004709305870595"
 ---
 
