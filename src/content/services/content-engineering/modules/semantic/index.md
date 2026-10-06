@@ -1,7 +1,6 @@
 ---
 title: "Semantic Optimization"
 serviceId: "content-engineering"
-tagline: "Schema.org Microdata, Knowledge Graphs & AI Discovery"
 description: "Engineering structured Schema.org JSON-LD microdata, automated LLM context manifests (content-manifest.json), XML sitemaps, and knowledge graph discoverability for modern search engines and AI agents."
 ctaText: "Inquire about Semantic Optimization"
 highlights:

@@ -1,7 +1,6 @@
-﻿
+
 ---
 title: "Content Engineering"
-tagline: "Structured Content Architectures, Design Tokens & Automated Git Pipelines"
 description: "End-to-end consulting for scalable digital content operations. From formal Zod schemas and omnichannel syndication to multi-format design systems and automated Astro CI/CD pipelines."
 order: 2
 ctaText: "Inquire about Content Engineering"

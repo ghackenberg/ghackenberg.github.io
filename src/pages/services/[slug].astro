@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import ServiceModuleCard from "@components/ServiceModuleCard.astro";
 import { getCollection, render } from "astro:content";
@@ -25,13 +26,7 @@ const serviceModules = allModules
 const colorClasses = {
   text: 'text-brand-purple light:text-purple-700',
   border: 'border-brand-purple/20 light:border-purple-200',
-  bg: 'bg-brand-purple/10 light:bg-purple-50/50',
-  btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
-  cardBtnBg: 'bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700',
-  hoverText: 'group-hover:text-brand-purple light:group-hover:text-purple-600',
-  glow: 'from-brand-purple to-pink-500 light:to-pink-600',
-  leftBorder: 'border-brand-purple light:border-purple-600',
-  dot: 'badge-new badge-new-purple'
+  bg: 'bg-brand-purple/10 light:bg-purple-50/50'
 };
 
 const serviceUrl = `https://hackenberg.tech/services/${service.id}/`;
@@ -41,7 +36,7 @@ const serviceSchema = {
   "@type": "Service",
   "@id": `${serviceUrl}#service`,
   "name": service.data.title,
-  "serviceType": service.data.tagline,
+  "serviceType": service.data.title,
   "description": service.data.description,
   "image": service.data.previewImage ? new URL(service.data.previewImage.src.src, Astro.site).href : undefined,
   "url": serviceUrl,
@@ -90,9 +85,9 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
 >
   <Navbar />
 
-  <Container size="wide">
-    <!-- Top Content (Narrow: max-w-4xl) -->
-    <div class="max-w-4xl mx-auto">
+  <!-- Section 1: Service Overview -->
+  <Section id="service-overview" padding="standard">
+    <Container size="wide" padding="none">
       <!-- Back Button -->
       <a 
         href="/services/" 
@@ -103,13 +98,10 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
       </a>
 
       <!-- Header -->
-      <header class="mb-12 pb-10 border-b border-element-border relative">
+      <header class="mb-12 relative">
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
           {service.data.title}
         </h1>
-        <p class={`${colorClasses.text} font-bold text-xs uppercase tracking-wider mb-2`}>
-          {service.data.tagline}
-        </p>
         <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
           {service.data.description}
         </p>
@@ -126,100 +118,36 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
             ))}
           </div>
         )}
-        
-        <div class="flex flex-wrap gap-4 mt-6">
-          <a
-            href="#contact-services"
-            data-subject={`Inquiry: ${service.data.title}`}
-            class={`px-6 py-3 rounded-xl text-center text-xs font-bold shadow-md transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-1.5 cursor-pointer inquiry-trigger min-h-[44px] ${colorClasses.btnBg}`}
-          >
-            <span>{service.data.ctaText}</span>
-            <span>&rarr;</span>
-          </a>
-        </div>
       </header>
+    </Container>
 
-      <!-- Service Text -->
-      <section id="service-overview" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
+    <!-- Service Overview Content Card -->
+    <Container size="reading" padding="none" class="mt-8">
+      <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
         <Content />
-      </section>
-    </div>
+      </div>
+    </Container>
+  </Section>
 
-    <!-- Horizontal Ruler -->
-    <hr class="border-element-border my-16" />
-
-    <!-- Service Modules Section (Wide: max-w-6xl) -->
-    <section id="service-modules" class="space-y-6">
-      <h2 class="text-2xl font-extrabold tracking-tight flex items-center space-x-2">
-        <span>📦</span>
-        <span>Available Service Modules</span>
-      </h2>
-      
-      <p class="text-gray-400 text-sm leading-relaxed font-normal">
-        Each service module represents a concrete building block that can be booked individually or combined into a comprehensive custom package.
-      </p>
+  <!-- Section 2: Service Modules -->
+  <Section id="service-modules" border="top" padding="standard">
+    <Container size="wide" padding="none">
+      <div class="mb-8 md:mb-12">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+          Service <span class="heading-gradient-purple">Modules</span>
+        </h2>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+          Each service module represents a concrete building block that can be booked individually or combined into a comprehensive custom package.
+        </p>
+      </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {serviceModules.map((module) => (
           <ServiceModuleCard serviceId={service.id} module={module} />
         ))}
       </div>
-        </section>
-
-
-    <!-- Contact & Booking Section -->
-    <section id="contact-services" class="py-16 mt-16 border-t border-element-border scroll-mt-24">
-      <div class="max-w-3xl mx-auto text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
-          Start a Conversation
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base leading-relaxed">
-          Write directly to discuss custom setups, corporate workshops, strategic advisory, or media publishing.
-        </p>
-      </div>
-
-      <div class="max-w-2xl mx-auto">
-        <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
-          <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${colorClasses.glow}`}></div>
-          
-          <h3 class="text-lg font-bold mb-6">Contact & Booking Inquiry</h3>
-          
-          <div class="space-y-6">
-            <div class="flex items-start space-x-4">
-              <div class={`${colorClasses.text} mt-1.5 shrink-0`}>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"></path>
-                </svg>
-              </div>
-              <div class="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <p class="text-gray-400 light:text-slate-600 text-xs font-semibold uppercase tracking-wider">Send an email request to</p>
-                  <p id="services-email-text" class="font-mono font-medium mt-0.5 select-all text-sm sm:text-base">georg.hackenberg@fh-wels.at</p>
-                </div>
-                <button 
-                  id="services-copy-email-btn"
-                  class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
-                >
-                  <span id="services-copy-btn-text">Copy Email</span>
-                </button>
-              </div>
-            </div>
-            
-            <div class="pt-6 border-t border-element-border flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
-              <p>Typically responding within 2 business days.</p>
-              <a 
-                id="direct-mail-link"
-                href={`mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry:%20${encodeURIComponent(service.data.title)}`}
-                class={`px-5 py-2.5 rounded-xl font-bold transition-all duration-300 hover:scale-105 shadow-md ${colorClasses.btnBg}`}
-              >
-                Open Email Client &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </Container>
+    </Container>
+  </Section>
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 
@@ -331,43 +259,3 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
   .theme-purple { --glow-text: #c084fc; }
   :global(.light) .theme-purple { --glow-text: #7e22ce; }
 </style>
-
-<script>
-  // Add listeners to inquiry triggers to pre-fill email client link subject
-  const triggers = document.querySelectorAll('.inquiry-trigger');
-  const directMailLink = document.getElementById('direct-mail-link') as HTMLAnchorElement | null;
-  
-  triggers.forEach(trigger => {
-    trigger.addEventListener('click', () => {
-      const subject = trigger.getAttribute('data-subject');
-      if (directMailLink && subject) {
-        directMailLink.href = `mailto:georg.hackenberg@fh-wels.at?subject=${encodeURIComponent(subject)}`;
-      }
-    });
-  });
-
-  // Copy Email Logic
-  const copyBtn = document.getElementById('services-copy-email-btn');
-  const emailText = document.getElementById('services-email-text');
-  const copyBtnText = document.getElementById('services-copy-btn-text');
-
-  if (copyBtn && emailText && copyBtnText) {
-    copyBtn.addEventListener('click', () => {
-      const email = emailText.textContent?.trim() || 'georg.hackenberg@fh-wels.at';
-      
-      navigator.clipboard.writeText(email).then(() => {
-        copyBtnText.textContent = 'Copied!';
-        copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-        
-        setTimeout(() => {
-          copyBtnText.textContent = 'Copy Email';
-          copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-          copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-        }, 2500);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-      });
-    });
-  }
-</script>

@@ -301,7 +301,6 @@ const services = defineCollection({
   }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    tagline: z.string(),
     description: z.string(),
     order: z.number().default(0),
     ctaText: z.string().default('Inquire Now'),
@@ -322,7 +321,6 @@ const modules = defineCollection({
   schema: ({ image }) => z.object({
     title: z.string(),
     serviceId: z.string(),
-    tagline: z.string(),
     description: z.string(),
     ctaText: z.string().default('Inquire about this Module'),
     highlights: z.array(z.string()).default([]),

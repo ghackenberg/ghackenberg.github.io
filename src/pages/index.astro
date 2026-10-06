@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
 import ProjectCard from "@components/ProjectCard.astro";
 import PostCard from "@components/PostCard.astro";
 import Timeline from "@components/Timeline.astro";
@@ -507,7 +508,6 @@ const serviceGalleryItems: GalleryItem[] = await Promise.all(
         title: s.data.title,
         image: opt.src,
         href: `/services/${s.id}/`,
-        tagline: s.data.tagline,
         pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120,
         imageTitle: s.data.previewImage!.title,
         imageDescription: s.data.previewImage!.description
@@ -532,7 +532,6 @@ const moduleGalleryItems: GalleryItem[] = await Promise.all(
         title: m.data.title,
         image: opt.src,
         href: `/services/${serviceSlug}/${moduleSlug}/`,
-        tagline: m.data.tagline,
         pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120,
         imageTitle: m.data.previewImage!.title,
         imageDescription: m.data.previewImage!.description
@@ -901,11 +900,10 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
   <!-- Main Content -->
   <main class="flex-grow w-full relative z-10">
     
-    <!-- Hero Section Container -->
-    <Container as="div" size="wide" padding="compact" class="hero-container">
-      <!-- Hero Section -->
-      <section id="home" class="flex flex-col justify-center pb-0 pt-0 relative">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
+    <!-- Hero Section -->
+    <Section id="home" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
         
         <!-- Text Content -->
         <div class="lg:col-span-7 flex flex-col justify-center order-2 lg:order-1">
@@ -1068,16 +1066,15 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         </div>
         
       </div>
-    </section>
-  </Container>
+    </Container>
+  </Section>
 
   <!-- Animated Image Gallery Marquee (Full-Width Edge-to-Edge) -->
   <ImageGalleryMarquee catalog={galleryItems} />
 
-  <!-- Core Content Sections Container -->
-  <Container as="div" size="wide" padding="standard" class="content-sections-container">
-    <!-- Professional Interests Section -->
-    <section id="about" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Professional Interests Section -->
+  <Section id="about" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
           Professional <span class="heading-gradient-green">Interests</span>
@@ -1142,10 +1139,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           );
         })}
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- Website Navigation Section -->
-    <section id="site-navigation" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Website Navigation Section -->
+  <Section id="site-navigation" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="mb-10 max-w-2xl">
 
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
@@ -1205,10 +1204,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </a>
         ))}
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- Featured Blog Posts Section -->
-    <section id="latest-posts" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Featured Blog Posts Section -->
+  <Section id="latest-posts" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="mb-8 max-w-2xl">
 
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
@@ -1270,10 +1271,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </svg>
         </a>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- Content Tags Section -->
-    <section id="content-tags" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Content Tags Section -->
+  <Section id="content-tags" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="mb-8 max-w-2xl">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
           Content <span class="heading-gradient-blue">Tags</span>
@@ -1594,10 +1597,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </svg>
         </a>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- Interactive Content Graph Section (Vis.js Visualization) -->
-    <section id="posts-network" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Interactive Content Graph Section (Vis.js Visualization) -->
+  <Section id="posts-network" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="mb-8 max-w-2xl">
 
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
@@ -1666,10 +1671,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </svg>
         </a>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Projects Section -->
+  <Section id="projects" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="mb-12 max-w-2xl">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
           Featured <span class="heading-gradient-blue">Projects</span>
@@ -1708,10 +1715,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </svg>
         </a>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- Media Activities Section -->
-    <section id="activity" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Media Activities Section -->
+  <Section id="activity" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
           Media <span class="heading-gradient-blue">Activities</span>
@@ -1733,10 +1742,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           <YouTubeWidget />
         </div>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Experience Section -->
+  <Section id="experience" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
           Professional <span class="heading-gradient-blue">Experiences</span>
@@ -1747,12 +1758,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
       </div>
 
       <Timeline />
-    </section>
+    </Container>
+  </Section>
 
-
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-12 md:py-16 border-t border-white/5 scroll-mt-20">
+  <!-- Contact Section -->
+  <Section id="contact" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         
         <!-- Copywriting Left -->
@@ -1877,10 +1888,12 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         </div>
 
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <!-- Tech Stack Showcase Section -->
-    <section id="tech-stack" class="py-12 border-t border-white/5 relative z-20">
+  <!-- Tech Stack Showcase Section -->
+  <Section id="tech-stack" border="top" padding="standard">
+    <Container size="wide" padding="none">
       <div class="glass-panel rounded-3xl p-6 md:p-10 border border-white/5 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 bg-gradient-to-r from-white/[0.01] via-brand-blue/[0.02] to-brand-purple/[0.02]">
         <!-- Left Content -->
         <div class="flex-grow max-w-2xl text-center lg:text-left">
@@ -1926,8 +1939,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           </div>
         </div>
       </div>
-    </section>
-  </Container>
+    </Container>
+  </Section>
 
   </main>
 

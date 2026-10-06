@@ -526,6 +526,7 @@ const GOAL_DETAIL_PROPERTIES: Record<string, { propKey: string; fieldName: strin
   'File Download': { propKey: 'event:props:url', fieldName: 'url' },
   'Outbound Link: Click': { propKey: 'event:props:url', fieldName: 'url' },
   'Section Viewed': { propKey: 'event:props:section_id', fieldName: 'section_id' },
+  'Heading Viewed': { propKey: 'event:props:id', fieldName: 'id' },
   'Slide Viewed': { propKey: 'event:props:slide_number', fieldName: 'slide_number' },
   'High Intent: Copy Email': { propKey: 'event:props:location', fieldName: 'location' },
   'High Intent: Copy BibTeX': { propKey: 'event:props:title', fieldName: 'title' },

@@ -5,7 +5,6 @@ import type { ImageMetadata } from "astro";
 interface Props {
   id: string;
   title: string;
-  tagline: string;
   description: string;
   tags?: string[];
   activeTag?: string | string[];
@@ -16,7 +15,6 @@ interface Props {
 const {
   id,
   title,
-  tagline,
   description,
   tags = [],
   activeTag,
@@ -115,9 +113,6 @@ const optimizedImage = previewImg ? await getImage({
           {title}
         </h3>
       </div>
-      <p class="text-xs font-bold uppercase tracking-wider text-brand-purple mb-3">
-        {tagline}
-      </p>
       <p class="text-gray-400 text-sm leading-relaxed font-normal">
         {description}
       </p>

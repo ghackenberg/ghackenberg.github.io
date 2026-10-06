@@ -1,7 +1,6 @@
 ---
 title: "Agentic Orchestration"
 serviceId: "intelligence-engineering"
-tagline: "Cyclic State Graphs, Dynamic Delegation & Checkpoints"
 description: "Architecting multi-agent collaboration networks as stateful, cyclic graphs using LangGraph, featuring dynamic supervisor-worker delegation, consensus arbitration, and persistent pause/resume states."
 ctaText: "Inquire about Agentic Orchestration"
 highlights:

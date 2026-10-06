@@ -1,7 +1,6 @@
 ---
 title: "Knowledge Retrieval"
 serviceId: "intelligence-engineering"
-tagline: "Dense Vector Search, Neo4j Knowledge Graphs & Memory"
 description: "Engineering hallucination-resistant retrieval architectures combining dense semantic search (Qdrant), property knowledge graphs (Neo4j GraphRAG), and continuous agent memory (Mem0)."
 ctaText: "Inquire about Knowledge Retrieval"
 highlights:

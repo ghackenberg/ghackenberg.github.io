@@ -1,7 +1,6 @@
 ---
 title: "Content Modeling"
 serviceId: "content-engineering"
-tagline: "Structured Schemas, Typed Collections & Taxonomies"
 description: "Designing formal Zod content schemas, type-safe content collections, entity-relationship models, and controlled topic taxonomies that eliminate unstructured text blobs."
 ctaText: "Inquire about Content Modeling"
 highlights:

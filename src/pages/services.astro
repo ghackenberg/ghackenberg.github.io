@@ -47,7 +47,7 @@ const servicesJsonLd = sortedServices.map(s => ({
   "@type": "Service",
   "@id": `https://hackenberg.tech/services/#${s.id}`,
   "name": s.data.title,
-  "serviceType": s.data.tagline,
+  "serviceType": s.data.title,
   "description": s.data.description,
   "url": `https://hackenberg.tech/services/${s.id}/`,
   "provider": {
@@ -126,7 +126,6 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                   id={service.id} 
                   class="service-card scroll-mt-24 relative group h-full"
                   data-title={service.data.title.toLowerCase()}
-                  data-tagline={service.data.tagline.toLowerCase()}
                   data-desc={service.data.description.toLowerCase()}
                   data-tags={tagsJoined}
                 >
@@ -212,9 +211,6 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                           <h2 class="text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors group-hover:text-brand-purple light:group-hover:text-purple-600">
                             <span>{service.data.title}</span>
                           </h2>
-                          <p class="text-brand-purple light:text-purple-700 font-bold text-xs uppercase tracking-wider mt-1">
-                            {service.data.tagline}
-                          </p>
                         </div>
 
                         <!-- Description -->
@@ -263,63 +259,6 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
         </p>
       </div>
     </div>
-
-    <!-- Contact & Booking Section -->
-    <section id="contact-services" class="py-16 mt-16 border-t border-element-border scroll-mt-24">
-      <div class="max-w-3xl mx-auto text-center mb-12">
-
-        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-100 mb-4">
-          Start a Conversation
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base leading-relaxed">
-          Select a service above or write directly to discuss educational partnerships, strategic advisory, or prototype developments.
-        </p>
-      </div>
-
-      <div class="max-w-2xl mx-auto">
-        <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
-          <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-purple to-pink-500 light:to-pink-600"></div>
-          
-          <h3 class="text-lg font-bold text-gray-100 mb-6">Contact & Booking Inquiry</h3>
-          
-          <div class="space-y-6">
-            <div class="flex items-start space-x-4">
-              <div class="text-brand-purple mt-1.5 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"></path>
-                </svg>
-              </div>
-              <div class="flex-grow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <p class="text-gray-400 light:text-slate-600 text-xs font-semibold uppercase tracking-wider">Send an email request to</p>
-                  <p id="services-email-text" class="text-gray-100 font-mono font-medium mt-0.5 select-all text-sm sm:text-base">georg.hackenberg@fh-wels.at</p>
-                </div>
-                <button 
-                  id="services-copy-email-btn"
-                  data-track-event="High Intent: Copy Email"
-                  data-track-location="services-contact"
-                  class="px-4 py-2 text-xs font-semibold rounded-lg bg-element-bg hover:bg-element-bg-hover text-gray-300 hover:text-gray-100 border border-element-border-medium hover:border-element-border-hover transition-all duration-200 self-start sm:self-auto flex items-center space-x-2"
-                >
-                  <span id="services-copy-btn-text">Copy Email</span>
-                </button>
-              </div>
-            </div>
-            
-            <div class="pt-6 border-t border-element-border flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-gray-400">
-              <p>Typically responding within 2 business days.</p>
-              <a 
-                id="direct-mail-link"
-                href="mailto:georg.hackenberg@fh-wels.at?subject=Services%20Inquiry"
-                class="px-5 py-2.5 rounded-xl bg-brand-purple hover:bg-brand-purple/90 text-slate-950 font-bold transition-all duration-300 hover:scale-105 shadow-md shadow-brand-purple/20 light:bg-purple-600 light:hover:bg-purple-700 light:text-white"
-              >
-                Open Email Client &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </Container>
 </Layout>
 
@@ -372,7 +311,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
     new ClientListFilter({
       itemSelector: ".service-card",
       searchFieldSelector: "#service-search",
-      searchDataAttributes: ["data-title", "data-tagline", "data-desc", "data-tags"],
+      searchDataAttributes: ["data-title", "data-desc", "data-tags"],
       searchParamKey: "q",
       buttonFilters: [
         {
@@ -391,47 +330,4 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
 
   initFilter();
   document.addEventListener("astro:page-load", initFilter);
-
-  // Add listeners to inquiry triggers to pre-fill email client link subject
-  function initEmailHandlers() {
-    const triggers = document.querySelectorAll('.inquiry-trigger');
-    const directMailLink = document.getElementById('direct-mail-link') as HTMLAnchorElement | null;
-    
-    triggers.forEach(trigger => {
-      trigger.addEventListener('click', () => {
-        const subject = trigger.getAttribute('data-subject');
-        if (directMailLink && subject) {
-          directMailLink.href = `mailto:georg.hackenberg@fh-wels.at?subject=${encodeURIComponent(subject)}`;
-        }
-      });
-    });
-
-    // Copy Email Logic
-    const copyBtn = document.getElementById('services-copy-email-btn');
-    const emailText = document.getElementById('services-email-text');
-    const copyBtnText = document.getElementById('services-copy-btn-text');
-
-    if (copyBtn && emailText && copyBtnText) {
-      copyBtn.addEventListener('click', () => {
-        const email = emailText.textContent?.trim() || 'georg.hackenberg@fh-wels.at';
-        
-        navigator.clipboard.writeText(email).then(() => {
-          copyBtnText.textContent = 'Copied!';
-          copyBtn.classList.remove('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-          copyBtn.classList.add('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-          
-          setTimeout(() => {
-            copyBtnText.textContent = 'Copy Email';
-            copyBtn.classList.remove('bg-brand-green/20', 'text-brand-green', 'border-brand-green/30');
-            copyBtn.classList.add('bg-element-bg', 'text-gray-300', 'border-element-border-medium');
-          }, 2500);
-        }).catch(err => {
-          console.error('Failed to copy: ', err);
-        });
-      });
-    }
-  }
-
-  initEmailHandlers();
-  document.addEventListener("astro:page-load", initEmailHandlers);
 </script>

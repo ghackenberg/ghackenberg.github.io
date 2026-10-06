@@ -668,3 +668,14 @@ div.vis-tooltip {
   padding-block: clamp(1.25rem, 2.5vw, 2rem);
 }
 
+/* Fluid Section Spacing Tokens */
+.section-fluid-padding {
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+.section-fluid-padding-compact {
+  padding-block: clamp(1.5rem, 3vw, 2.5rem);
+}
+.section-fluid-padding-large {
+  padding-block: clamp(3.5rem, 7vw, 6rem);
+}
+

@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
@@ -136,7 +137,8 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
 >
   <Navbar />
 
-  <Container size="reading">
+  <Section id="post-content" padding="standard">
+    <Container size="reading" padding="none">
     <!-- Back button -->
     <a 
       href="/posts/" 
@@ -147,7 +149,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
     </a>
 
     <!-- Post Header -->
-    <header class="mb-10 pb-8 border-b border-element-border">
+    <header class="mb-10">
       <div class="flex items-center space-x-3 mb-4">
         <time class="text-sm font-semibold text-brand-blue/80">
           {post.data.pubDate.toLocaleDateString("en-US", {
@@ -264,7 +266,8 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
       accentColor="blue"
       primaryButtonText="Open Email Client"
     />
-  </Container>
+    </Container>
+  </Section>
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 

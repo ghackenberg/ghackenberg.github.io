@@ -1,7 +1,6 @@
 ---
 title: "Tool Integration"
 serviceId: "intelligence-engineering"
-tagline: "Model Context Protocol (MCP), WikiSkills & Enterprise APIs"
 description: "Connecting autonomous agent runtimes (Nous Hermes) to enterprise databases, ERPs, and cloud APIs through standardized Model Context Protocol (MCP) servers and deterministic schema validation."
 ctaText: "Inquire about Tool Integration"
 highlights:

@@ -1,7 +1,6 @@
 ---
 title: "Channel Architecture"
 serviceId: "content-engineering"
-tagline: "Omnichannel Syndication & Hub-and-Spoke Workflows"
 description: "Architecting 'Create Once, Publish Everywhere' (COPE) syndication pipelines connecting canonical web documentation with LinkedIn carousels, video walkthroughs, and developer hubs."
 ctaText: "Inquire about Channel Architecture"
 highlights:

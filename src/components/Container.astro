@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 
 export interface Props extends HTMLAttributes<"div"> {
   as?: "main" | "section" | "div" | "article";
-  size?: "wide" | "medium" | "reading" | "full";
+  size?: "wide" | "medium" | "reading" | "compact" | "full";
   padding?: "standard" | "compact" | "none";
   class?: string;
 }
@@ -16,10 +16,11 @@ const {
   ...restProps
 } = Astro.props;
 
-const SIZE_MAP: Record<"wide" | "medium" | "reading" | "full", string> = {
+const SIZE_MAP: Record<"wide" | "medium" | "reading" | "compact" | "full", string> = {
   wide: "max-w-6xl",
   medium: "max-w-5xl",
   reading: "max-w-4xl",
+  compact: "max-w-2xl",
   full: "max-w-full"
 };
 
