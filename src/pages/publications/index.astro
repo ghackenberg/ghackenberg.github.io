@@ -3,6 +3,7 @@ import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import { getCollection } from "astro:content";
 import PublicationCard from "@components/PublicationCard.astro";
+import FilterSidebar from "@components/FilterSidebar.astro";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) => b.id.localeCompare(a.id)
@@ -67,49 +68,13 @@ const breadcrumbSchema = {
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Filter Sidebar (Column 1) -->
-      <div class="lg:col-span-3 order-1 lg:order-2 lg:sticky lg:top-24">
-        <div class="glass-card p-6 rounded-2xl border border-element-border flex flex-col lg:max-h-[calc(100vh-8rem)]">
-          <div class="mb-4 shrink-0">
-            <h2 class="text-lg font-bold text-gray-100 flex items-center space-x-2">
-              <span>⚙️</span>
-              <span>Filter Papers</span>
-            </h2>
-          </div>
-
-          <!-- Text Search -->
-          <div class="mb-4 shrink-0">
-            <label for="publication-search" class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Search</label>
-            <div class="relative">
-              <input 
-                type="text" 
-                id="publication-search" 
-                placeholder="Search papers..." 
-                class="w-full bg-element-bg border border-element-border-medium rounded-lg px-3 py-2 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50 transition-all duration-200"
-              />
-              <span class="absolute left-2.5 top-2.5 text-xs text-gray-500">🔍</span>
-            </div>
-          </div>
-
-          <!-- Technologies / Tags list -->
-          <div class="flex-1 min-h-0 flex flex-col">
-            <div class="flex items-center justify-between mb-2 shrink-0">
-              <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block">Filter by Tag</span>
-              <span class="text-[10px] text-gray-500 font-medium">{tags.length} topics</span>
-            </div>
-            <div class="flex flex-wrap gap-1.5 max-h-[260px] lg:max-h-none flex-1 min-h-0 overflow-y-auto pr-1 custom-scrollbar-thin content-start" id="tag-filter-buttons">
-              {tags.map(tag => (
-                <button 
-                  type="button" 
-                  class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
-                  data-tag={tag}
-                >
-                  #{tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <FilterSidebar
+        title="Filter Papers"
+        searchId="publication-search"
+        searchPlaceholder="Search papers..."
+        tags={tags}
+        accentColor="purple"
+      />
 
       <!-- Grouped Publications list (Column 2) -->
       <div class="lg:col-span-9 order-2 lg:order-1 space-y-12 scroll-mt-28" id="publications-list">
@@ -186,43 +151,3 @@ const breadcrumbSchema = {
   document.addEventListener("astro:page-load", initFilter);
 </script>
 
-<style>
-  .tag-filter-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #9ca3af;
-  }
-
-  .tag-filter-btn:hover:not(.active) {
-    border-color: rgba(168, 85, 247, 0.3);
-    color: #c084fc;
-    background: rgba(168, 85, 247, 0.08);
-  }
-
-  .tag-filter-btn.active {
-    background: rgba(168, 85, 247, 0.2);
-    border-color: rgba(168, 85, 247, 0.5);
-    color: #d8b4fe;
-    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25);
-  }
-
-  /* Light mode overrides */
-  :global(.light) .tag-filter-btn {
-    background: rgba(15, 23, 42, 0.04);
-    border-color: rgba(15, 23, 42, 0.08);
-    color: #475569;
-  }
-
-  :global(.light) .tag-filter-btn:hover:not(.active) {
-    background: rgba(168, 85, 247, 0.06);
-    border-color: rgba(168, 85, 247, 0.3);
-    color: #7e22ce;
-  }
-
-  :global(.light) .tag-filter-btn.active {
-    background: rgba(168, 85, 247, 0.15);
-    border-color: rgba(168, 85, 247, 0.4);
-    color: #7e22ce;
-    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2);
-  }
-</style>

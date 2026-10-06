@@ -47,7 +47,7 @@ references:
     id: yang-2024-depth-anything
 ---
 
-
+2.5D WebGL Parallax Occlusion Mapping (POM) mit Depth Anything V2 bildet eine mesh-freie, extrem leichtgewichtige Alternative zu rechenintensiven 3D-Polygon-Meshes im Browser. Durch hardwarebeschleunigtes Raymarching entlang monokular geschätzter Tiefenkarten erzeugt ein kompakter Fragment-Shader plastische räumliche Tiefe, dynamische Beleuchtung und natürliche Blickwinkel-Parallaxe bei minimalen Ladezeiten, ohne aufwändige 3D-Geometrie-Pipelines oder externe Framework-Laufzeitbibliotheken zu benötigen.
 
 Moderne Web-Erlebnisse leben von lebendiger visueller Tiefe, scheitern in der Praxis jedoch oft an der Schere zwischen visueller Immersion und technischer Effizienz. Wer Gesichtern oder Illustrationen im Browser eine echte räumliche Dreidimensionalität verleihen möchte, greift typischerweise zu vollwertigen 3D-Meshes via [Three.js](https://threejs.org/) oder [Babylon.js](https://doc.babylonjs.com/) – und bezahlt diesen Schritt mit Megabytes an Geometrie-Downloads, komplexen UV-Rigging-Pipelines und spürbarem CPU-Overhead.
 
@@ -71,6 +71,14 @@ Jede dieser vier Stufen löst eine konkrete physikalische oder visuelle Hürde:
 2. **Semantische Freistellung & Mimik-Inpainting via [Pillow](https://python-pillow.org/):** Um störende Schnittkanten bei der späteren 3D-Neigung zu verhindern, wird der Kopf semantisch vom Körper befreit. Aus diesem „Floating Head“ werden anschließend über gezieltes Inpainting fünf Mimik-Zustände auf einer exakt identischen Außenkontur abgeleitet.
 3. **Monokulare Tiefenschätzung via [Depth Anything V2](https://depth-anything-v2.github.io/):** Aus den fünf zweidimensionalen RGB-Bildern rekonstruiert ein Vision-Transformer (ViT) die zugehörigen 2.5D-Höhenfelder. Ein exponentieller Alpha-Roll-off an den Rändern stellt sicher, dass keine senkrechten Tiefenklippen entstehen.
 4. **Hardwarebeschleunigtes Raymarching via [WebGL 1.0](https://www.khronos [@group-2014-webgl].org/webgl/):** Im Browser durchwandert der Fragment-Shader das Höhenfeld in 40 Z-Schritten. Eine probilistische Finite State Machine (FSM) steuert organische Übergänge und Textur-Crossfades bei konstant 60 FPS – vollständig ohne externe 3D-Engines.
+
+| Kriterium | Three.js / Babylon 3D Mesh | 2.5D WebGL POM (Depth Anything) |
+| :--- | :--- | :--- |
+| **Geometrie & Datenvolumen** | Zehntausende Polygone (glTF/GLB), mehrere Megabyte Asset-Download. | Zero-Mesh (ein Screen-Aligned Quad), 2D-RGB- und Tiefentextur unter 200 KB. |
+| **Framework- & Bundle-Overhead** | 500 KB bis 2 MB JavaScript-Laufzeitbibliotheken (Three.js/Babylon). | Zero-Dependency; nativer WebGL 1.0 Shader mit unter 3 KB Code. |
+| **Erstellungs- & Rigging-Aufwand** | Komplexe 3D-Modellierung, UV-Unwrapping, Skelett- und Blendshape-Rigging. | Automatisierte monokulare Tiefenschätzung aus 2D-Bildern via Depth Anything V2. |
+| **Rendering-Verfahren** | Rasterisierung von Vertex-Gittern mit Tiefenpuffer und Matrix-Transformationen. | Hardwarebeschleunigtes Raymarching entlang der Sichtstrahlen im Fragment-Shader. |
+| **Einsatzbereich & Blickwinkel** | Beliebige 360-Grad-Kameradrehungen und freie Raum-Navigation. | Leichtgewichtige interaktive 2.5D-Hero-Visuals mit kontrollierter Blickwinkel-Parallaxe. |
 
 ## Wie gelingt der Schritt vom realen Foto zur konsistenten Comic-Mimik?
 
