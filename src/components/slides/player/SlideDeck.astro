@@ -9,6 +9,7 @@ interface SlideMeta {
   title: string;
   slideLayout?: string;
   audioUrl?: string;
+  durationSec?: number;
   cues?: SlideCueMap;
   notes?: string;
   references?: SlideReference[];
@@ -487,7 +488,7 @@ const currentDeckId = presentationId || talkId || "presentation";
 
 <script>
   import Reveal, { type RevealApi } from 'reveal.js';
-  import { AudioSyncController, type SlideData, type CueItem, type SlideReference } from './AudioSyncController';
+  import { AudioSyncController, type SlideData, type CueItem, type SlideReference, parseCuesToItems } from './AudioSyncController';
   import { AutoFitController } from './AutoFitController';
   import { generateCitationLabel } from '@commons/shared/citations.js';
   import { trackEvent } from '@commons/client/telemetry';
@@ -1003,8 +1004,17 @@ const currentDeckId = presentationId || talkId || "presentation";
         updateUrlState(index, audioSync.getActiveCue());
         if (progressBar) progressBar.style.width = '0%';
         if (timeCurrent) timeCurrent.textContent = '0:00';
-        if (timeTotal) timeTotal.textContent = '0:00';
-        renderCueMarkers([], 0);
+
+        const slide = slidesData[index];
+        if (slide?.durationSec && slide.durationSec > 0) {
+          if (timeTotal) timeTotal.textContent = formatTime(slide.durationSec);
+          const cues = parseCuesToItems(slide.cues);
+          renderCueMarkers(cues, slide.durationSec);
+          updateCueMarkersState(0);
+        } else {
+          if (timeTotal) timeTotal.textContent = '0:00';
+          renderCueMarkers([], 0);
+        }
       },
       onProgress: (current, total) => {
         if (timeCurrent) timeCurrent.textContent = formatTime(current);
@@ -1085,6 +1095,14 @@ const currentDeckId = presentationId || talkId || "presentation";
 
     // Initialize references button for initial slide
     updateReferencesButton(deck.getIndices().h || 0);
+
+    // Immediately render cue markers and set timeTotal for initial slide 0 if durationSec is present
+    const initialSlide = slidesData[0];
+    if (initialSlide?.durationSec && initialSlide.durationSec > 0) {
+      if (timeTotal) timeTotal.textContent = formatTime(initialSlide.durationSec);
+      renderCueMarkers(parseCuesToItems(initialSlide.cues), initialSlide.durationSec);
+      updateCueMarkersState(0);
+    }
 
     // Global user interaction gesture to unlock iOS Safari AudioSession as early as possible
     const unlockAudioOnTouch = () => {

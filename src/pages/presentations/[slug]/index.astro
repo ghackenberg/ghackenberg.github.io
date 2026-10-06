@@ -8,6 +8,7 @@ import { getCollection, render } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
 import { getFileContentHash, getHashedFilename } from "@commons/server/content-hash.js";
+import { getMp3Duration } from "@commons/server/audio-metadata.js";
 
 export async function getStaticPaths() {
   const presentations = await getCollection("presentations");
@@ -38,9 +39,11 @@ const renderedSlides = await Promise.all(
     const thumbPath = path.join(presentationDir, "thumbnails", `${slideBase}.webp`);
 
     let audioUrl = undefined;
+    let durationSec = undefined;
     if (fs.existsSync(audioFilePath)) {
       const hash = getFileContentHash(audioFilePath);
       audioUrl = `/presentations/${presentation.id}/audio/${getHashedFilename(`${slideBase}.mp3`, hash)}`;
+      durationSec = getMp3Duration(audioFilePath);
     }
 
     let thumbnailUrl = undefined;
@@ -69,6 +72,7 @@ const renderedSlides = await Promise.all(
       references: slide.data.references || [],
       thumbnailUrl,
       audioUrl,
+      durationSec,
       cues,
       Content
     };
@@ -263,6 +267,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
           title: s.title,
           slideLayout: s.slideLayout,
           audioUrl: s.audioUrl,
+          durationSec: s.durationSec,
           cues: s.cues,
           notes: s.notes,
           references: s.references
