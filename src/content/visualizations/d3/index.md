@@ -10,6 +10,15 @@ tags:
   - data-visualization
   - javascript
   - web-development
+specs:
+  renderingBackend: "Scalable Vector Graphics (SVG Vector DOM)"
+  spatialTopology: "2D Vector Coordinate System"
+  nodeCapacity: "500 Nodes (DOM-Node Bound)"
+  physicsSolver: "d3-force Velocity Verlet with Alpha Decay"
+  computationalComplexity: "O(N²) direct / O(N log N) via Barnes-Hut Quadtree"
+  primaryStrength: "Pixel-perfect SVG styling, arbitrary DOM transforms & crisp publication typography"
+  tradeOff: "Direct DOM node management causes rapid memory and layout overhead beyond 500 nodes"
+  bestUseCase: "Publication-quality infographics, focused subgraphs & didactic vector charts"
 ---
 
 ## What Characterizes the D3.js Visualization?

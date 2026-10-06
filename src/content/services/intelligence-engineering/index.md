@@ -17,6 +17,34 @@ tags:
   - "local-ai"
   - "hermes-agent"
   - "intelligence-engineering"
+targetAudience:
+  - "CTOs & Engineering VPs seeking sovereign AI architectures"
+  - "Enterprise Architecture Teams deploying on-premise LLMs"
+  - "Platform Engineers transitioning from API wrappers to deterministic agents"
+engagementFormats:
+  - title: "Architecture Audit & Feasibility"
+    duration: "1–2 Weeks"
+    description: "Sovereignty assessment, on-prem vs. hybrid inference evaluation, threat modeling, and target infrastructure blueprint."
+  - title: "Production PoC & Implementation"
+    duration: "2–4 Weeks"
+    description: "Hands-on engineering of sovereign inference (vLLM/TensorRT), GraphRAG retrieval pipelines, and standardized MCP tool connectors."
+  - title: "Executive Advisory & Masterclass"
+    duration: "1–2 Days"
+    description: "Deep-dive workshops for tech leads on stateful multi-agent systems, cyclic LangGraph orchestration, and token budgeting."
+keyOutcomes:
+  - "100% Data Sovereignty & Zero Cloud Leakage"
+  - "Deterministic Tool Execution via MCP Protocols"
+  - "Hallucination-Resistant Retrieval with Hybrid GraphRAG"
+  - "Auditable Observability & Distributed Tracing"
+techFoundations:
+  - "vLLM"
+  - "TensorRT-LLM"
+  - "LiteLLM Proxy"
+  - "Qdrant"
+  - "Neo4j GraphRAG"
+  - "Model Context Protocol (MCP)"
+  - "LangGraph"
+  - "Nous Hermes"
 ---
 
 ## Scientific Rigor Meets Sovereign AI Systems Engineering

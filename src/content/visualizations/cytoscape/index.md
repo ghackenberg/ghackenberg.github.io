@@ -10,6 +10,15 @@ tags:
   - data-visualization
   - javascript
   - web-development
+specs:
+  renderingBackend: "HTML5 Canvas (2D Pipeline)"
+  spatialTopology: "2D Planar Graph Space"
+  nodeCapacity: "2,000 Nodes (CPU Canvas Bound)"
+  physicsSolver: "Compound Spring-Embedder (CoSE / CoSE-Bilkent)"
+  computationalComplexity: "O(V + E) to O(V²) depending on solver"
+  primaryStrength: "Client-side graph theory algorithms, shortest paths, centrality metrics & compound nodes"
+  tradeOff: "Single-threaded canvas pipeline bottlenecks on large node sets"
+  bestUseCase: "Formal graph analytics, hierarchical tree views, cluster analysis & domain modeling"
 ---
 
 ## What Characterizes the Cytoscape.js Visualization?

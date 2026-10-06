@@ -10,6 +10,15 @@ tags:
   - data-visualization
   - javascript
   - web-development
+specs:
+  renderingBackend: "HTML5 Canvas (2D Pipeline)"
+  spatialTopology: "2D Planar Coordinate System"
+  nodeCapacity: "1,000 Nodes (Physics Calculation Bound)"
+  physicsSolver: "Barnes-Hut Spring-Damper Simulation (θ ≈ 0.5)"
+  computationalComplexity: "O(N log N) with hierarchical quadtrees"
+  primaryStrength: "Tactile drag-and-drop physics, spring-mass dampening & organic bouncing interactions"
+  tradeOff: "Single-threaded physics loop degrades frame rates when dragging large interconnected graphs"
+  bestUseCase: "Interactive exploratory interfaces, pedagogical demonstrations & small-to-medium networks"
 ---
 
 ## What Characterizes the Vis.js Visualization?

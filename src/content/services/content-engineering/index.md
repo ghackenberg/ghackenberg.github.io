@@ -16,6 +16,34 @@ tags:
   - "web-development"
   - "blog"
   - "open-source"
+targetAudience:
+  - "Digital Leaders & Heads of Developer Relations"
+  - "Software Architects modernizing legacy CMS architectures"
+  - "Engineering Teams seeking automated, Git-driven multi-format publishing"
+engagementFormats:
+  - title: "Content Architecture & Schema Review"
+    duration: "1–2 Weeks"
+    description: "Analysis of existing content silos, formal Zod schema design, taxonomic modeling, and migration roadmap."
+  - title: "Publishing Pipeline Engineering"
+    duration: "2–4 Weeks"
+    description: "End-to-end implementation of Astro static-site generation, automated asset compilation (WebP/AVIF), and zero-downtime CI/CD."
+  - title: "Design System & Template Modernization"
+    duration: "1–2 Weeks"
+    description: "Multi-format component tokenization (1:1, 16:9, 4:5), theme-aware SVG architectures, and Slide-as-Code workflows."
+keyOutcomes:
+  - "Sub-Second Static Page Speeds with Zero Server Overhead"
+  - "100% Type-Safe Content Repositories via Strict Zod Schemas"
+  - "Automated 'Create Once, Publish Everywhere' Syndication"
+  - "Maximum GEO/AIO Visibility via Semantic Schema.org JSON-LD"
+techFoundations:
+  - "Astro SSG"
+  - "TypeScript"
+  - "Zod Schemas"
+  - "Tailwind CSS"
+  - "MDX"
+  - "GitHub Actions CI/CD"
+  - "Schema.org JSON-LD"
+  - "Sharp & WebP"
 ---
 
 ## Modern Content Architecture for High-Performance Publishing
