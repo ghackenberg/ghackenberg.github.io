@@ -39,6 +39,8 @@ Operational domain logic, layout archetypes, schemas, and workflows are decouple
 - **Site & Platform Engineering**: `site-curation`, `site-optimization`, `site-analytics`, `build-engineering`, `tool-engineering`.
 - **Continuous Meta-Governance & Orchestration**: `agent-orchestration`, `backlog-management`, `skill-engineering`.
 
+**Skill Modification & Progressive Disclosure Rule**: Before modifying or adding any skill in `.agents/skills/`, agents **MUST ALWAYS inspect and activate `skill-engineering` first** and enforce the 3-level progressive disclosure architecture (keep `SKILL.md` under 250 lines, modularize large resources into focused Level 3 sub-documents, zero token bloat).
+
 ## 4. Release Verification Gate
 Before proposing to merge any feature branch to `main`, the master verification gate MUST pass with 0 errors:
 ```powershell
