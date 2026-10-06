@@ -7,6 +7,7 @@ import GetInTouchCard from "@components/GetInTouchCard.astro";
 import { getCollection, render } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
+import { getFileContentHash, getHashedFilename } from "@commons/server/content-hash.js";
 
 export async function getStaticPaths() {
   const presentations = await getCollection("presentations");
@@ -38,12 +39,14 @@ const renderedSlides = await Promise.all(
 
     let audioUrl = undefined;
     if (fs.existsSync(audioFilePath)) {
-      audioUrl = `/presentations/${presentation.id}/audio/${slideBase}.mp3`;
+      const hash = getFileContentHash(audioFilePath);
+      audioUrl = `/presentations/${presentation.id}/audio/${getHashedFilename(`${slideBase}.mp3`, hash)}`;
     }
 
     let thumbnailUrl = undefined;
     if (fs.existsSync(thumbPath)) {
-      thumbnailUrl = `/presentations/${presentation.id}/thumbnails/${slideBase}.webp`;
+      const hash = getFileContentHash(thumbPath);
+      thumbnailUrl = `/presentations/${presentation.id}/thumbnails/${getHashedFilename(`${slideBase}.webp`, hash)}`;
     }
 
     let cues: Record<string, number> = {};
@@ -76,6 +79,13 @@ const renderedSlides = await Promise.all(
 const presentationDir = path.resolve("src/content/presentations", presentation.id);
 const pdfDarkPath = path.join(presentationDir, "slides-dark.pdf");
 const pdfLightPath = path.join(presentationDir, "slides-light.pdf");
+const previewPath = path.join(presentationDir, "preview.jpg");
+
+let previewUrl: string | undefined = undefined;
+if (fs.existsSync(previewPath)) {
+  const previewHash = getFileContentHash(previewPath);
+  previewUrl = `/presentations/${presentation.id}/${getHashedFilename('preview.jpg', previewHash)}`;
+}
 
 const pdfDarkUrl = fs.existsSync(pdfDarkPath) 
   ? `/presentations/${presentation.id}/slides-dark.pdf` 
@@ -140,6 +150,7 @@ schemaGraph.push({
   "name": presentation.data.title,
   "headline": presentation.data.subtitle || presentation.data.title,
   "description": presentation.data.description,
+  ...(previewUrl ? { "image": `https://hackenberg.tech${previewUrl}` } : {}),
   "author": {
     "@id": "https://hackenberg.tech/#georg"
   },
@@ -162,7 +173,7 @@ const ui = {
   back: "Back to Presentations",
 };
 
-const previewImg = presentation.data.previewImage || presentation.data.icon;
+const previewImg = previewUrl || presentation.data.previewImage || presentation.data.icon;
 ---
 
 <Layout
