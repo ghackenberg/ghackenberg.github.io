@@ -51,16 +51,12 @@ svg,
   --svg-node-red-subtext: #fecaca;
 }
 
-/* Light Mode Overrides for in-app toggle (.light) */
-:root.light,
+/* Explicit Light Mode Block (In-app toggle overrides OS settings) */
 html.light,
-.light,
-:root.light .svg-diagram svg,
-html.light .svg-diagram svg,
-.light .svg-diagram svg,
-:root.light svg,
 html.light svg,
-.light svg {
+html.light .svg-diagram svg,
+html[data-theme-setting="light"] svg,
+html[data-theme-setting="light"] .svg-diagram svg {
   /* Canvas & Cards */
   --svg-bg: #ffffff;
   --svg-card: #f8fafc;
@@ -106,11 +102,62 @@ html.light svg,
   --svg-node-red-subtext: #b91c1c;
 }
 
-/* Standalone Light Mode Media Query (Google Image Search / Direct URL inspection) */
+/* Explicit Dark Mode Block */
+html.dark,
+html.dark svg,
+html.dark .svg-diagram svg,
+html[data-theme-setting="dark"] svg,
+html[data-theme-setting="dark"] .svg-diagram svg {
+  /* Canvas & Cards */
+  --svg-bg: #0b1329;
+  --svg-card: #0e172e;
+  --svg-card-alt: #161f38;
+  --svg-border: rgba(255, 255, 255, 0.08);
+  --svg-line: rgba(255, 255, 255, 0.06);
+  --svg-pill-bg: rgba(255, 255, 255, 0.08);
+
+  /* Typography */
+  --svg-text-primary: #f8fafc;
+  --svg-text-secondary: #94a3b8;
+  --svg-text-muted: #64748b;
+
+  /* Node Archetypes (Dark Mode) */
+  /* Blue Archetype */
+  --svg-node-blue-bg: #1e3a8a;
+  --svg-node-blue-border: #3b82f6;
+  --svg-node-blue-text: #ffffff;
+  --svg-node-blue-subtext: #bfdbfe;
+
+  /* Purple Archetype */
+  --svg-node-purple-bg: #581c87;
+  --svg-node-purple-border: #a855f7;
+  --svg-node-purple-text: #ffffff;
+  --svg-node-purple-subtext: #e9d5ff;
+
+  /* Amber Archetype */
+  --svg-node-amber-bg: #78350f;
+  --svg-node-amber-border: #f59e0b;
+  --svg-node-amber-text: #ffffff;
+  --svg-node-amber-subtext: #fef08a;
+
+  /* Green Archetype */
+  --svg-node-green-bg: #064e3b;
+  --svg-node-green-border: #10b981;
+  --svg-node-green-text: #ffffff;
+  --svg-node-green-subtext: #a7f3d0;
+
+  /* Red Archetype */
+  --svg-node-red-bg: #450a0a;
+  --svg-node-red-border: #ef4444;
+  --svg-node-red-text: #ffffff;
+  --svg-node-red-subtext: #fecaca;
+}
+
+/* Media query for standalone SVGs / system preference */
 @media (prefers-color-scheme: light) {
-  :root,
-  svg,
-  .svg-diagram svg {
+  :root:not(.dark):not([data-theme-setting="dark"]),
+  :root:not(.dark):not([data-theme-setting="dark"]) svg,
+  :root:not(.dark):not([data-theme-setting="dark"]) .svg-diagram svg {
     /* Canvas & Cards */
     --svg-bg: #ffffff;
     --svg-card: #f8fafc;
@@ -156,4 +203,3 @@ html.light svg,
     --svg-node-red-subtext: #b91c1c;
   }
 }
-

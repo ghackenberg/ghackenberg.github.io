@@ -59,6 +59,7 @@ export interface SlideData {
   title?: string;
   slideLayout?: string;
   audioUrl?: string;
+  durationSec?: number;
   cues?: SlideCueMap;
   notes?: string;
   references?: SlideReference[];
@@ -80,6 +81,21 @@ function getCueTiming(val: CueTiming | undefined): { start: number; duration: nu
     duration: val.duration ?? 0.5,
     end: val.end
   };
+}
+
+export function parseCuesToItems(cues?: SlideCueMap): CueItem[] {
+  if (!cues) return [];
+  return Object.entries(cues)
+    .map(([cueId, val]) => {
+      const timing = getCueTiming(val);
+      return {
+        cueId,
+        start: timing.start,
+        duration: timing.duration,
+        end: timing.end
+      };
+    })
+    .sort((a, b) => a.start - b.start);
 }
 
 export class AudioSyncController {
@@ -241,8 +257,18 @@ export class AudioSyncController {
       this.onSlideChangeCallback(index);
     }
 
-    if (this.onCuesLoadedCallback) {
-      this.onCuesLoadedCallback(this.getCurrentSlideCues(), 0);
+    const totalSec = slide?.durationSec || 0;
+    if (totalSec > 0) {
+      if (this.onCuesLoadedCallback) {
+        this.onCuesLoadedCallback(this.getCurrentSlideCues(), totalSec);
+      }
+      if (this.onProgressCallback) {
+        this.onProgressCallback(this.manualTime, totalSec);
+      }
+    } else {
+      if (this.onCuesLoadedCallback) {
+        this.onCuesLoadedCallback(this.getCurrentSlideCues(), 0);
+      }
     }
   }
 
@@ -650,18 +676,20 @@ export class AudioSyncController {
       }
     } else {
       this.syncCuesToTime(targetSec);
+      const slide = this.slides[this.currentIndex];
+      const totalSec = slide?.durationSec || 0;
+      if (this.onProgressCallback) {
+        this.onProgressCallback(targetSec, totalSec);
+      }
+      if (this.onCueChangeCallback) {
+        this.onCueChangeCallback(this.getActiveCue());
+      }
     }
   }
 
   public getCurrentSlideCues(): CueItem[] {
     const slide = this.slides[this.currentIndex];
-    if (!slide?.cues) return [];
-    return Object.entries(slide.cues)
-      .map(([cueId, val]) => {
-        const timing = getCueTiming(val);
-        return { cueId, ...timing };
-      })
-      .sort((a, b) => a.start - b.start);
+    return parseCuesToItems(slide?.cues);
   }
 
   public getDuration(): number {
