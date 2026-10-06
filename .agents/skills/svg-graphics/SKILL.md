@@ -37,6 +37,7 @@ All colors and visual archetypes are centralized in `public/styles/graphics.css`
 - **Purple Archetype (`--svg-node-purple-*`)**: Probabilistic execution, autonomous ReAct loops, planning.
 - **Amber Archetype (`--svg-node-amber-*`)**: Fail-safe subsystems, human verification gates, alerts, fallback paths.
 - **Green Archetype (`--svg-node-green-*`)**: Verified states, audited outcomes, persistent storage, safe delivery.
+- **Red Archetype (`--svg-node-red-*`)**: Errors, violations, strict alerts, and terminal failure paths.
 
 ## 5. Centralized Theme Contract (`/styles/graphics.css`)
 Inline and standalone SVGs must import the centralized stylesheet. Hardcoded `#...` hex colors on diagram elements are strictly prohibited and enforced by `npm run lint:svgs`:

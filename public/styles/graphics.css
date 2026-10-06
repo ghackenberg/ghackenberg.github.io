@@ -43,9 +43,18 @@ svg,
   --svg-node-green-border: #10b981;
   --svg-node-green-text: #ffffff;
   --svg-node-green-subtext: #a7f3d0;
+
+  /* Red Archetype (Errors, Violations, Strict Alerts) */
+  --svg-node-red-bg: #450a0a;
+  --svg-node-red-border: #ef4444;
+  --svg-node-red-text: #ffffff;
+  --svg-node-red-subtext: #fecaca;
 }
 
 /* Light Mode Overrides for in-app toggle (.light) */
+:root.light,
+html.light,
+.light,
 :root.light .svg-diagram svg,
 html.light .svg-diagram svg,
 .light .svg-diagram svg,
@@ -89,6 +98,12 @@ html.light svg,
   --svg-node-green-border: #16a34a;
   --svg-node-green-text: #166534;
   --svg-node-green-subtext: #15803d;
+
+  /* Red Archetype */
+  --svg-node-red-bg: #fef2f2;
+  --svg-node-red-border: #dc2626;
+  --svg-node-red-text: #991b1b;
+  --svg-node-red-subtext: #b91c1c;
 }
 
 /* Standalone Light Mode Media Query (Google Image Search / Direct URL inspection) */
@@ -133,5 +148,12 @@ html.light svg,
     --svg-node-green-border: #16a34a;
     --svg-node-green-text: #166534;
     --svg-node-green-subtext: #15803d;
+
+    /* Red Archetype */
+    --svg-node-red-bg: #fef2f2;
+    --svg-node-red-border: #dc2626;
+    --svg-node-red-text: #991b1b;
+    --svg-node-red-subtext: #b91c1c;
   }
 }
+

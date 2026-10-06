@@ -23,11 +23,6 @@ const EXCLUDED_DIRS = new Set([
   'objects',
 ]);
 
-// Explicit list of known migrated SVGs or baseline cutoff
-const KNOWN_MIGRATED_SVGS = new Set([
-  'simplex_safety_envelope.svg',
-]);
-
 const GRAPHICAL_TAGS = new Set([
   'rect',
   'circle',
@@ -90,47 +85,9 @@ function getAllContentSvgs(): string[] {
   return svgs;
 }
 
-/**
- * Determines whether an SVG file is in the scope of the centralized graphics architecture
- */
-function isMigratedSvg(filePath: string, content: string): boolean {
-  const fileName = path.basename(filePath);
-  if (KNOWN_MIGRATED_SVGS.has(fileName)) {
-    return true;
-  }
-
-  // Any SVG that explicitly references /styles/graphics.css
-  if (content.includes('/styles/graphics.css')) {
-    return true;
-  }
-
-  // Check if SVG is inside posts collection
-  const postsDir = path.join(CONTENT_DIR, 'posts');
-  const relPostsPath = path.relative(postsDir, filePath).replace(/\\/g, '/');
-  const isPost = !relPostsPath.startsWith('..') && !path.isAbsolute(relPostsPath);
-
-  if (isPost) {
-    // Also match posts created from 2026_10_06 onwards
-    const postFolder = relPostsPath.split('/')[0];
-    if (postFolder && postFolder >= '2026_10_06') {
-      return true;
-    }
-    // Older posts are excluded unless in KNOWN_MIGRATED_SVGS or explicitly referencing graphics.css
-    return false;
-  }
-
-  // All other target content collections (courses, services, projects, presentations, talks, publications)
-  // are subject to centralized graphics standards
-  return true;
-}
-
-function lintSvg(filePath: string): { migrated: boolean; valid: boolean } {
+function lintSvg(filePath: string): boolean {
   const relPath = path.relative(ROOT_DIR, filePath).replace(/\\/g, '/');
   const content = fs.readFileSync(filePath, 'utf8');
-
-  if (!isMigratedSvg(filePath, content)) {
-    return { migrated: false, valid: true };
-  }
 
   const $ = cheerio.load(content, { xml: true });
   let hasGraphicsImport = false;
@@ -187,20 +144,15 @@ function lintSvg(filePath: string): { migrated: boolean; valid: boolean } {
     }
   });
 
-  return { migrated: true, valid: errorCount === 0 };
+  return errorCount === 0;
 }
 
 function run(): void {
   console.log('🔍 [lint:svgs] Scanning SVGs across content collections (posts, courses, services, projects, presentations, talks, publications)...');
   const allSvgs = getAllContentSvgs();
 
-  let migratedCount = 0;
-
   for (const svgFile of allSvgs) {
-    const { migrated } = lintSvg(svgFile);
-    if (migrated) {
-      migratedCount++;
-    }
+    lintSvg(svgFile);
   }
 
   if (errorCount > 0) {
@@ -212,8 +164,8 @@ function run(): void {
     process.exit(1);
   }
 
-  console.log(`✅ [lint:svgs] Validated ${migratedCount} migrated SVG(s) out of ${allSvgs.length} total SVGs across target collections.`);
-  console.log('🎉 [lint:svgs] All migrated SVGs adhere to centralized graphics design tokens (0 errors).');
+  console.log(`✅ [lint:svgs] Validated ${allSvgs.length} SVG(s) across target collections.`);
+  console.log('🎉 [lint:svgs] All SVGs adhere to centralized graphics design tokens (0 errors).');
 }
 
 run();
