@@ -1,22 +1,20 @@
 ---
 title: "SEO im Zeitalter von KI: Strategien für SEO, GEO, AIO und AEO"
-subtitle: "Von Suchmaschinen zu generativen Antwortsystemen – Paradigmenwechsel für den oberösterreichischen Industrie-Mittelstand"
+subtitle: "Von Suchmaschinen zu generativen Antwortsystemen – Paradigmenwechsel für Industrie und B2B-Mittelstand"
 pubDate: "2026-10-01"
-event: "Industrieforum Traunviertel"
-location: "AGRU Tech Center, Bad Hall, Oberösterreich"
 audience: "Geschäftsführer, IT-Leiter und Marketingverantwortliche aus Industrie und B2B"
 lang: "de"
-description: "Strategischer Leitfaden und Fachvortrag zur Transformation von traditioneller Suchmaschinenoptimierung hin zu Generative Engine Optimization (GEO), RAG-Architekturen, Schema.org-Wissensgraphen, B2B Social Media und agentengestütztem Web-Publishing."
+description: "Umfassende Keynote zur Transformation von traditioneller Suchmaschinenoptimierung hin zu Generative Engine Optimization (GEO), RAG-Architekturen, Schema.org-Wissensgraphen, B2B Social Media und agentengestütztem Web-Publishing."
 tags: ["seo", "geo", "aio", "aeo", "rag", "mcp", "knowledge-graphs", "enterprise-ai", "social-media"]
 previewImage:
   src: "./preview.jpg"
-  title: "Dr. Georg Hackenberg präsentiert 'SEO im Zeitalter von KI' im AGRU Tech Center Bad Hall"
-  description: "Fachvortrag über Generative Engine Optimization, Wissensgraphen und KI-Antwortsysteme vor dem oberösterreichischen Industrie-Mittelstand"
+  title: "Dr. Georg Hackenberg präsentiert 'SEO im Zeitalter von KI'"
+  description: "Fachvortrag über Generative Engine Optimization, Wissensgraphen und KI-Antwortsysteme für Industrie und B2B"
 ---
 
 ## Über diesen Vortrag
 
-Der 60-minütige Fachvortrag vor Vertretern des oberösterreichischen Industrie- und B2B-Mittelstands im AGRU Tech Center in Bad Hall behandelt den fundamentalen Paradigmenwechsel der Websuche: Den Übergang von keywordbasierten Linklisten hin zu multimodaler, generativer Antwortsynthese durch Sprachmodelle (Google AI Overviews, ChatGPT Search, Perplexity, Claude).
+Dieser 60-minütige Fachvortrag behandelt den fundamentalen Paradigmenwechsel der Websuche: Den Übergang von keywordbasierten Linklisten hin zu multimodaler, generativer Antwortsynthese durch Sprachmodelle (Google AI Overviews, ChatGPT Search, Perplexity, Claude).
 
 ### Zentrale Schwerpunkte:
 1. **Status Quo & Zero-Click:** Warum über 60 % aller Suchanfragen ohne Website-Klick enden und weshalb der Wert vorqualifizierter Leads dennoch steigt.

@@ -1,16 +1,16 @@
 ---
-title: "Fazit, Diskussion & nächste Schritte"
+title: "Fazit & Synthese"
 subtitle: "Vom Experiment zur unternehmensweiten Skalierung: {cue:hl-sub-48}Die Zukunft gehört getesteten, typisierten Pipelines{/cue}"
 number: "48"
 slideLayout: "split"
 voiceover: >
-  Wir schließen unseren Deep Dive mit einem Blick auf die strategische Transformation Ihrer Organisation ab.
+  Die softwaretechnische Disziplin des Prompt Engineerings markiert den Übergang von explorativer Spielerei zu robuster Enterprise-Software.
   {cue:sub} Denn fest steht: {cue:hl-sub-48}Die Zukunft gehört getesteten, typisierten Pipelines{/cue}.
   {cue:col-fazit} Prompt Engineering ist keine flüchtige Modeerscheinung, sondern {cue:hl-neue-ingenieurdisziplin}die neue Ingenieursdisziplin an stochastischen Schnittstellen{/cue}. Unternehmen, die Prompts typisieren und testen, {cue:hl-wettbewerbsvorsprung}bauen einen uneinholbaren Vorsprung an Verlässlichkeit auf{/cue}.
-  {cue:col-kontakt} {cue:hl-dank-fragerunde}Vielen Dank für Ihre Aufmerksamkeit – die Fragerunde ist eröffnet{/cue}! Besuchen Sie mich gerne {cue:hl-forschung-web}auf hackenberg.tech für weiterführende Materialien{/cue} und vernetzen Sie sich als {cue:hl-fh-wels}Professor für Informatik & Industriesysteme Campus Wels{/cue}.
+  {cue:col-kontakt} {cue:hl-dank-fragerunde}Verifizierte Prompts und typisierte Schemas sichern reproduzierbare KI-Pipelines im Produktivbetrieb{/cue}. Sämtliche Referenzarchitekturen und Code-Beispiele stehen {cue:hl-forschung-web}auf hackenberg.tech für weiterführende Materialien{/cue} zur Verfügung; weitere Forschungsarbeiten leitet Dr. Georg Hackenberg als {cue:hl-fh-wels}Professor für Informatik & Industriesysteme Campus Wels{/cue}.
 notes: |
   - Zeit: 94:00 - 96:00 Min.
-  - Abschluss, Fragerunde eröffnen und Kontaktangaben bereitstellen.
+  - Fazit: Systematische Synthese von Prompt-Engineering-Mustern und Verweis auf typisierte Open-Source-Pipelines.
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
@@ -36,9 +36,9 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-kontakt" title="Diskussion & Austausch" accent="cyan">
-    <CalloutBox type="quote">
-      „{cue:hl-dank-fragerunde}Vielen Dank für Ihre Aufmerksamkeit – die Fragerunde ist eröffnet{/cue}.“
+  <BentoCard slot="right" cue="col-kontakt" title="Ressourcen & Reproduzierbarkeit" accent="cyan">
+    <CalloutBox type="statement" title="Deterministische Referenzarchitekturen">
+      {cue:hl-dank-fragerunde}Verifizierte Prompts und typisierte Schemas sichern reproduzierbare KI-Pipelines im Produktivbetrieb{/cue}.
     </CalloutBox>
     <BulletList items={[
       {

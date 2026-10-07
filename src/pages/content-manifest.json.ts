@@ -101,7 +101,6 @@ export async function GET() {
       subtitle: p.data.subtitle || '',
       description: p.data.description || '',
       image: await resolveImage(p.data.previewImage || p.data.icon),
-      event: p.data.event || '',
       tags: p.data.tags || [],
       date: parseItemDate(p.id, p.data.pubDate)
     }))),

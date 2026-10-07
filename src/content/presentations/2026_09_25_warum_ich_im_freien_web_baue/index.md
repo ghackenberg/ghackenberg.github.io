@@ -2,8 +2,6 @@
 title: "Vom Web-Pionier zum Informatik-Professor"
 subtitle: "25 Jahre im Code zwischen Wissenschaft, Industrie & Leadership"
 pubDate: "2026-09-25"
-event: "Personal Intro"
-location: "Online"
 audience: "Studierende, Entwickler, R&D-Partner und Technologie-Entscheider aus der Industrie"
 lang: "de"
 description: "Persönliche Keynote von Dr. Georg Hackenberg: 25 Jahre im Code zwischen autodidaktischen Web-Ursprüngen, Spitzenforschung, Industrie-IoT-Leadership und offener Hochschullehre."

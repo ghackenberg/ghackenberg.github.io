@@ -2,21 +2,19 @@
 title: "B2B Paid Ads & KI-Suchmaschinen"
 subtitle: "Zwischen Auktionsalgorithmen, Werbeblindheit und Full-Funnel-Strategie"
 pubDate: "2026-10-04"
-event: "Tech Briefing"
-location: "Online"
 audience: "Geschäftsführer, CMOs, Marketingleiter und Vertriebsstrategen aus Industrie und B2B"
 lang: "de"
-description: "Online Deep Dive zu den Teilnehmerfragen aus dem AGRU Tech Center Bad Hall: Auktionsalgorithmen, Werbeblindheit, generative Werbeformate in KI-Suchmaschinen und B2B-Full-Funnel-Orchestrierung."
+description: "Analytischer Deep Dive zur Systemik bezahlter Kanäle: Auktionsalgorithmen, Werbeblindheit, generative Werbeformate in KI-Suchmaschinen und B2B-Full-Funnel-Orchestrierung."
 tags: ["seo", "geo", "aio", "aeo", "social-media", "enterprise-ai", "benchmarks", "psychology", "cognitive-science"]
 previewImage:
   src: "./preview.jpg"
   title: "Dr. Georg Hackenberg präsentiert 'B2B Paid Ads & KI-Suchmaschinen'"
-  description: "Online Deep Dive über Auktionsalgorithmen, Werbeblindheit, KI-Antwortsysteme und B2B-Full-Funnel-Strategie"
+  description: "Architektur und Ökonomie von Paid Ads: Auktionsalgorithmen, Werbeblindheit, KI-Antwortsysteme und B2B-Full-Funnel-Strategie"
 ---
 
 ## Über diesen Fachvortrag
 
-Dieser Online Deep Dive entstand als direkte Fortführung der Keynote [*SEO im Zeitalter von KI*](/presentations/2026_10_01_seo_im_zeitalter_von_ki/) im AGRU Tech Center in Bad Hall. Er beantwortet die drängendste Anschlussfrage der dortigen Industrie- und Marketingentscheider: *Können B2B-Unternehmen wegbrechende organische Klicks einfach durch bezahlte Google- und LinkedIn-Ads kompensieren – oder geraten sie damit in eine ruinöse Kostenfalle?*
+Dieser Fachvortrag schließt direkt an die Keynote [*SEO im Zeitalter von KI*](/presentations/2026_10_01_seo_im_zeitalter_von_ki/) an und adressiert die zentrale ökonomische Fragestellung moderner Go-to-Market-Architekturen: *Können B2B-Unternehmen wegbrechende organische Klicks durch bezahlte Google- und LinkedIn-Ads kompensieren – oder geraten sie damit in eine ruinöse Kostenfalle?*
 
 Der Vortrag analysiert den fundamentalen Wandel bezahlter digitaler Werbung an der Schnittstelle von Kognitionspsychologie, algorithmischer Auktionsspieltheorie, generativen KI-Antwortmaschinen und B2B-Social-Media.
 

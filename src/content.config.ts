@@ -563,8 +563,6 @@ const presentations = defineCollection({
     title: z.string(),
     subtitle: z.string().optional(),
     pubDate: z.coerce.date(),
-    event: z.string().optional(),
-    location: z.string().optional(),
     audience: z.string().optional(),
     lang: z.enum(['de', 'en']).default('de'),
     description: z.string().optional(),
