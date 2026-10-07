@@ -1,0 +1,255 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
+import RelatedContent from "@components/RelatedContent.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const modules = await getCollection("course-modules");
+  const courses = await getCollection("courses");
+
+  return modules.map((module) => {
+    const [courseSlug, moduleSlug] = module.id.split('/');
+    const parentCourse = courses.find((c) => c.id === courseSlug || c.id === module.data.courseId);
+
+    if (!parentCourse) {
+      throw new Error(`Parent course not found for course module: ${module.id}`);
+    }
+
+    return {
+      params: { slug: courseSlug, moduleSlug: moduleSlug },
+      props: { module, parentCourse },
+    };
+  });
+}
+
+interface Props {
+  module: CollectionEntry<"course-modules">;
+  parentCourse: CollectionEntry<"courses">;
+}
+
+const { module, parentCourse } = Astro.props;
+const { Content } = await render(module);
+
+const moduleUrl = `https://hackenberg.tech/courses/${parentCourse.id}/${module.id.split('/').pop()}/`;
+
+const activePreviewImage = module.data.previewImage || parentCourse.data.screenshot;
+
+const moduleCourseSchema = {
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "@id": `${moduleUrl}#module`,
+  "name": module.data.title,
+  "description": module.data.description,
+  "learningResourceType": "Course Module",
+  "isPartOf": {
+    "@type": "Course",
+    "name": parentCourse.data.title,
+    "url": `https://hackenberg.tech/courses/${parentCourse.id}/`
+  },
+  "image": activePreviewImage ? new URL(activePreviewImage.src.src, Astro.site).href : undefined,
+  "url": moduleUrl,
+  "teaches": module.data.topics && module.data.topics.length > 0 ? module.data.topics.join(", ") : undefined,
+  "competencyRequired": module.data.competencies && module.data.competencies.length > 0 ? module.data.competencies.join(", ") : undefined,
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Georg Hackenberg",
+    "url": "https://hackenberg.tech",
+    "sameAs": "https://www.wikidata.org/wiki/Q141537961"
+  },
+  "inLanguage": parentCourse.data.language || "de"
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Courses",
+      "item": "https://hackenberg.tech/courses/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": parentCourse.data.title,
+      "item": `https://hackenberg.tech/courses/${parentCourse.id}/`
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": module.data.title,
+      "item": moduleUrl
+    }
+  ]
+};
+
+const moduleJsonLd = [moduleCourseSchema, breadcrumbSchema];
+---
+
+<Layout 
+  title={`${module.data.title} | ${parentCourse.data.title}`} 
+  description={module.data.description}
+  image={activePreviewImage}
+  tags={parentCourse.data.tags}
+  jsonLd={moduleJsonLd}
+  lang={parentCourse.data.language || 'de'}
+>
+  <Navbar />
+
+  <Section id="course-module-content" padding="standard">
+    <Container size="reading" padding="none">
+      <!-- Back Button -->
+      <a 
+        href={`/courses/${parentCourse.id}/`} 
+        class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-yellow/10 border border-brand-yellow/20 hover:border-brand-yellow/30 text-brand-yellow transition-all mb-8 cursor-pointer"
+      >
+        <span>&larr;</span>
+        <span>Back to {parentCourse.data.title}</span>
+      </a>
+
+      <!-- Header -->
+      <header class="mb-12 relative">
+        {module.data.moduleNumber && (
+          <div class="mb-4">
+            <span class="text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-brand-yellow/10 border border-brand-yellow/20 text-brand-yellow inline-flex items-center gap-1.5">
+              <span>Module {module.data.moduleNumber}</span>
+            </span>
+          </div>
+        )}
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
+          {module.data.title}
+        </h1>
+        <p class="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
+          {module.data.description}
+        </p>
+
+        {/* Quick Specs Grid */}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
+          <div class="px-4 py-2.5 rounded-xl bg-element-bg border border-element-border flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
+            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Course</span>
+            <span class="text-xs font-bold mt-0.5 text-gray-200 light:text-slate-800 truncate" title={parentCourse.data.title}>
+              {parentCourse.data.title}
+            </span>
+          </div>
+          <div class="px-4 py-2.5 rounded-xl bg-element-bg border border-element-border flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
+            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Language</span>
+            <span class="text-xs font-bold mt-0.5 text-gray-200 light:text-slate-800">
+              {parentCourse.data.language === 'de' ? 'German' : 'English'}
+            </span>
+          </div>
+          <div class="px-4 py-2.5 rounded-xl bg-element-bg border border-element-border flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
+            <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Module Sequence</span>
+            <span class="text-xs font-bold mt-0.5 text-gray-200 light:text-slate-800">
+              Unit {module.data.order}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden prose-custom course-content theme-yellow">
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
+
+        <!-- Module Overview Content -->
+        <div class="mb-10">
+          <Content />
+        </div>
+
+        <!-- Module Topics -->
+        {module.data.topics && module.data.topics.length > 0 && (
+          <div id="module-topics" class="mb-10">
+            <h2 id="module-topics-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+              Covered Topics
+            </h2>
+            <ul class="space-y-2">
+              {module.data.topics.map(topic => (
+                <li>
+                  <span>{topic}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Module Tools & Technologies -->
+        {module.data.tools && module.data.tools.length > 0 && (
+          <div id="module-tools" class="mb-10">
+            <h2 id="module-tools-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+              Applied Tools & Technologies
+            </h2>
+            <div class="flex flex-wrap gap-2">
+              {module.data.tools.map(tool => (
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase border border-brand-yellow/20 bg-brand-yellow/10 text-yellow-300 light:text-amber-700">
+                  🛠️ {tool}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Competencies / Learning Goals -->
+        {module.data.competencies && module.data.competencies.length > 0 && (
+          <div id="module-competencies">
+            <h2 id="module-competencies-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+              Target Competencies
+            </h2>
+            <ul class="space-y-2">
+              {module.data.competencies.map(comp => (
+                <li>
+                  <span>{comp}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Standardized Related Content (Edge-to-Edge) -->
+  <RelatedContent 
+    currentCollection="courses" 
+    currentId={parentCourse.id} 
+    tags={parentCourse.data.tags} 
+  />
+</Layout>
+
+<style>
+  /* Markdown content styling for course module layouts */
+  .course-content :global(p) {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-main);
+    margin-bottom: 1.25rem;
+    transition: color 0.5s ease;
+  }
+  .course-content :global(li strong) {
+    color: var(--color-text-heading);
+    transition: color 0.5s ease;
+  }
+  .course-content :global(> *:last-child) {
+    margin-bottom: 0;
+  }
+
+  .theme-yellow {
+    --glow-border: rgba(234, 179, 8, 0.3);
+    --glow-text: #fde047;
+    --glow-shadow: rgba(234, 179, 8, 0.25);
+  }
+
+  :global(.light) .theme-yellow {
+    --glow-border: rgba(202, 138, 4, 0.25);
+    --glow-text: #ca8a04;
+    --glow-shadow: rgba(202, 138, 4, 0.15);
+  }
+</style>

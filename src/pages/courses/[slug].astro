@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import CourseModuleCard from "@components/CourseModuleCard.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -16,6 +17,11 @@ export async function getStaticPaths() {
 
 const { course } = Astro.props;
 const { Content } = await render(course);
+
+const allCourseModules = await getCollection('course-modules');
+const courseModules = allCourseModules
+  .filter((m) => m.data.courseId === course.id)
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
 // Dynamically fetch the referenced repository entry
 const repos = await getCollection("github-repos");
@@ -200,32 +206,26 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
         )}
       </div>
 
-      <div class="syllabus-content">
+      <div class="syllabus-summary">
         <h2 id="course-syllabus" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
           Course Syllabus
         </h2>
-        {course.data.syllabus && course.data.syllabus.length > 0 ? (
-          <div class="space-y-6">
-            {course.data.syllabus.map(mod => (
-              <div class="space-y-2">
-                <h3 id={`module-${mod.moduleNumber}`} class="text-lg font-bold text-gray-100 tracking-tight">
-                  Module {mod.moduleNumber}: {mod.title}
-                </h3>
-                <p class="text-gray-300 leading-relaxed font-normal text-base">
-                  {mod.description}
-                </p>
-                {mod.topics && mod.topics.length > 0 && (
-                  <ul class="space-y-2">
-                    {mod.topics.map(topic => (
-                      <li>
-                        <span>{topic}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+        {courseModules.length > 0 ? (
+          <ol class="space-y-3 text-gray-300 font-normal leading-relaxed list-decimal pl-5">
+            {courseModules.map((mod) => (
+              <li>
+                <strong class="text-gray-100 font-semibold">{mod.data.title}</strong>: {mod.data.description}
+              </li>
             ))}
-          </div>
+          </ol>
+        ) : course.data.syllabus && course.data.syllabus.length > 0 ? (
+          <ol class="space-y-3 text-gray-300 font-normal leading-relaxed list-decimal pl-5">
+            {course.data.syllabus.map((mod) => (
+              <li>
+                <strong class="text-gray-100 font-semibold">{mod.title}</strong>: {mod.description}
+              </li>
+            ))}
+          </ol>
         ) : (
           <Content />
         )}
@@ -233,6 +233,28 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
     </div>
     </Container>
   </Section>
+
+  <!-- Section 2: Course Modules -->
+  {courseModules.length > 0 && (
+    <Section id="course-modules" border="top" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="mb-8 md:mb-12">
+          <h2 id="course-modules-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+            Course <span class="heading-gradient-yellow">Modules</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+            Structured learning units covering theoretical foundations, practical implementations, and industry tooling.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courseModules.map((module) => (
+            <CourseModuleCard courseId={course.id} module={module} />
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
 
   <!-- Standardized Related Content (Edge-to-Edge) -->
   <RelatedContent 
@@ -244,7 +266,8 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 
 <style>
   /* Syllabus rich markdown formatting inside CSS styles */
-  .syllabus-content :global(h2) {
+  .syllabus-content :global(h2),
+  .syllabus-summary :global(h2) {
     font-weight: 850;
     color: var(--color-text-heading);
     margin-top: 2.25rem;
@@ -254,30 +277,35 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
     padding-bottom: 0.5rem;
     transition: color 0.5s ease, border-color 0.5s ease;
   }
-  .syllabus-content :global(h2:first-child) {
+  .syllabus-content :global(h2:first-child),
+  .syllabus-summary :global(h2:first-child) {
     margin-top: 0;
   }
-  .syllabus-content :global(h3) {
+  .syllabus-content :global(h3),
+  .syllabus-summary :global(h3) {
     font-weight: 750;
     color: var(--color-text-heading);
     margin-top: 1.75rem;
     margin-bottom: 0.85rem;
     transition: color 0.5s ease;
   }
-  .syllabus-content :global(p) {
+  .syllabus-content :global(p),
+  .syllabus-summary :global(p) {
     font-size: 1rem;
     line-height: 1.7;
     color: var(--color-text-main);
     margin-bottom: 1.5rem;
     transition: color 0.5s ease;
   }
-  .syllabus-content :global(table) {
+  .syllabus-content :global(table),
+  .syllabus-summary :global(table) {
     width: 100%;
     border-collapse: collapse;
     margin: 1.5rem 0;
     font-size: 0.875rem;
   }
-  .syllabus-content :global(th) {
+  .syllabus-content :global(th),
+  .syllabus-summary :global(th) {
     text-align: left;
     padding: 0.75rem 1rem;
     background: var(--color-element-bg);
@@ -285,12 +313,14 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
     font-weight: 700;
     color: var(--color-text-heading);
   }
-  .syllabus-content :global(td) {
+  .syllabus-content :global(td),
+  .syllabus-summary :global(td) {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--color-border-subtle);
     color: var(--color-text-main);
   }
-  .syllabus-content :global(tr:hover td) {
+  .syllabus-content :global(tr:hover td),
+  .syllabus-summary :global(tr:hover td) {
     background: rgba(255, 255, 255, 0.02);
   }
 </style>
