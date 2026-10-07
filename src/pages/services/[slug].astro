@@ -137,21 +137,6 @@ const serviceJsonLd = [serviceSchema, breadcrumbSchema];
             </ul>
           </div>
         )}
-
-        {service.data.targetAudience && service.data.targetAudience.length > 0 && (
-          <div class="mt-10">
-            <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
-              Target Leadership
-            </h2>
-            <ul class="space-y-2">
-              {service.data.targetAudience.map(audience => (
-                <li>
-                  <span>{audience}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </Container>
   </Section>
