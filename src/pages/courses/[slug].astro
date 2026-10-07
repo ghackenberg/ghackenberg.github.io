@@ -153,8 +153,8 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 
       {course.data.targetAudience && (
         <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-white/5 pb-2 mb-4">
-            <span>👤</span><span>Target Audience</span>
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+            Target Audience
           </h2>
           <p class="text-gray-300 leading-relaxed font-normal">
             {course.data.targetAudience}
@@ -164,8 +164,8 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 
       {course.data.prerequisites && course.data.prerequisites.length > 0 && (
         <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-white/5 pb-2 mb-4">
-            <span>🔑</span><span>Course Prerequisites</span>
+          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+            Course Prerequisites
           </h2>
           <ul class="space-y-2">
             {course.data.prerequisites.map(prereq => (
@@ -178,8 +178,8 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       )}
 
       <div class="mb-8">
-        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-white/5 pb-2 mb-4">
-          <span>🎯</span><span>Learning Goals</span>
+        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+          Learning Goals
         </h2>
         {course.data.competencies && course.data.competencies.length > 0 ? (
           <ul class="space-y-2">
@@ -201,8 +201,8 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       </div>
 
       <div class="syllabus-content">
-        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center space-x-2.5 border-b border-white/5 pb-2 mb-4">
-          <span>📖</span><span>Course Syllabus</span>
+        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+          Course Syllabus
         </h2>
         {course.data.syllabus && course.data.syllabus.length > 0 ? (
           <div class="space-y-6">
