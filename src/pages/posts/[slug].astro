@@ -213,8 +213,8 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
       <Content />
 
       {post.data.references && post.data.references.length > 0 && (
-        <section id={post.data.lang === 'en' ? 'references' : 'referenzen'} class="mt-12 pt-4">
-          <h2>{post.data.lang === 'en' ? 'References' : 'Referenzen'}</h2>
+        <div class="mt-12 pt-4">
+          <h2 id={post.data.lang === 'en' ? 'references' : 'referenzen'}>{post.data.lang === 'en' ? 'References' : 'Referenzen'}</h2>
           <ul class="space-y-3.5 list-none pl-0 text-sm sm:text-base leading-relaxed text-slate-300 light:text-slate-700">
             {post.data.references.map((ref) => (
               <li id={`ref-${ref.id}`} class="group flex items-start gap-2.5 scroll-mt-24 p-2 -mx-2 rounded-lg transition-colors hover:bg-white/[0.03] light:hover:bg-slate-100/60 target:bg-brand-blue/10 target:border target:border-brand-blue/30">
@@ -248,7 +248,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
               </li>
             ))}
           </ul>
-        </section>
+        </div>
       )}
     </div>
     </Container>

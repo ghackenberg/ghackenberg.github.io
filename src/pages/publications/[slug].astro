@@ -185,17 +185,17 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
       <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-purple"></div>
       
       {pub.data.abstract && (
-        <section id="abstract" class="mb-10 md:mb-12">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Publication Abstract</h2>
+        <div id="abstract" class="mb-10 md:mb-12">
+          <h2 id="abstract-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Publication Abstract</h2>
           <p class="text-gray-300 text-base md:text-lg leading-relaxed font-normal">
             {pub.data.abstract}
           </p>
-        </section>
+        </div>
       )}
 
       {slidesUrl && (
-        <section id="presentation-slides" class="mb-10 md:mb-12">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Presentation Slides</h2>
+        <div id="presentation-slides" class="mb-10 md:mb-12">
+          <h2 id="presentation-slides-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Presentation Slides</h2>
           <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-element-border-medium bg-black">
             <iframe 
               src={slidesUrl} 
@@ -205,13 +205,13 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
               Loading presentation...
             </iframe>
           </div>
-        </section>
+        </div>
       )}
 
       {pub.data.bibtex && (
-        <section id="bibtex-citation">
+        <div id="bibtex-citation">
           <div class="flex items-center justify-between border-b border-element-border pb-2 mb-4">
-            <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b-0 pb-0 mb-0">BibTeX Citation</h2>
+            <h2 id="bibtex-citation-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b-0 pb-0 mb-0">BibTeX Citation</h2>
             <button 
               id="copy-bibtex-btn"
               data-track-event="High Intent: Copy BibTeX"
@@ -225,7 +225,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
             </button>
           </div>
           <pre id="bibtex-content" class="bg-gray-950/80 p-5 rounded-2xl border border-element-border text-gray-300 font-mono text-xs overflow-x-auto leading-relaxed select-all">{pub.data.bibtex}</pre>
-        </section>
+        </div>
       )}
     </div>
     </Container>

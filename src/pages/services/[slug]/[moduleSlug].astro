@@ -139,13 +139,13 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     <!-- Main Content -->
     <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom mb-16">
       <!-- Module Overview Content -->
-      <section id="module-overview" class="mb-10">
+      <div id="module-overview" class="mb-10">
         <Content />
-      </section>
+      </div>
 
       <!-- Module Scope -->
       {module.data.highlights && module.data.highlights.length > 0 && (
-        <section id="module-scope" class="mb-10">
+        <div id="module-scope" class="mb-10">
           <h2 id="module-scope-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Module Scope
           </h2>
@@ -156,12 +156,12 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
               </li>
             ))}
           </ul>
-        </section>
+        </div>
       )}
 
       <!-- Required Inputs -->
       {module.data.inputs && module.data.inputs.length > 0 && (
-        <section id="required-inputs" class="mb-10">
+        <div id="required-inputs" class="mb-10">
           <h2 id="required-inputs-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Required Inputs
           </h2>
@@ -172,12 +172,12 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
               </li>
             ))}
           </ul>
-        </section>
+        </div>
       )}
 
       <!-- Technical Deliverables -->
       {module.data.outputs && module.data.outputs.length > 0 && (
-        <section id="technical-deliverables" class="mb-10">
+        <div id="technical-deliverables" class="mb-10">
           <h2 id="technical-deliverables-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Technical Deliverables
           </h2>
@@ -188,12 +188,12 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
               </li>
             ))}
           </ul>
-        </section>
+        </div>
       )}
 
       <!-- Delivery Methodology (if present) -->
       {module.data.methodologyPhases && module.data.methodologyPhases.length > 0 && (
-        <section id="delivery-methodology">
+        <div id="delivery-methodology">
           <h2 id="delivery-methodology-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Delivery Methodology
           </h2>
@@ -209,7 +209,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
               </li>
             ))}
           </ol>
-        </section>
+        </div>
       )}
     </div>
   </Container>

@@ -137,7 +137,7 @@ Um Bedenken auszuräumen und Machbarkeit schrittweise zu beweisen, folgen wir ei
 Das vollständige Visionsdokument liegt aktuell als **Version 0.1 (Initialer Diskussionsentwurf)** vor. Ich lade Vertreter aus Politik, Wirtschaft, Wissenschaft und der Almtaler Bevölkerung herzlich ein, diesen Entwurf mitzugestalten.
 
 <div class="my-8 p-6 glass-card rounded-2xl border border-brand-blue/30 bg-brand-blue/5 text-center">
-  <h3 class="text-xl font-bold mb-2 text-brand-blue">Visionsdokument herunterladen</h3>
+  <h3 id="visionsdokument-herunterladen" class="text-xl font-bold mb-2 text-brand-blue">Visionsdokument herunterladen</h3>
   <p class="text-sm text-gray-300 light:text-gray-600 mb-4">Laden Sie das detaillierte Konzeptpapier als PDF herunter (Version 0.1, Stand Juli 2026):</p>
   <a 
     href="/posts/2026_08_09_fh_ooe_campus_almtal_vision/vision_almtal_2035.pdf" 

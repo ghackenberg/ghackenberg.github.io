@@ -131,7 +131,7 @@ const relatedVisualizations = related.visualizations;
   <Section id="related-content" as="aside" border="top" padding="standard" class={`relative z-10 ${className}`} aria-label="Related Content">
     <Container size="wide" padding="none" class="space-y-16">
       <div class="max-w-2xl">
-        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4 flex items-center gap-3.5">
+        <h2 id="related-content-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4 flex items-center gap-3.5">
           <span>Related <span class="heading-gradient-brand">Content</span></span>
           <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-element-bg border border-element-border-medium text-gray-400">
             {totalRelated}
@@ -148,9 +148,9 @@ const relatedVisualizations = related.visualizations;
         const config = sectionConfig[key];
 
       return (
-        <section class="space-y-6" id={`related-${key}`}>
+        <div class="space-y-6" id={`related-${key}`}>
           <div class="flex items-center justify-between pb-3 border-b border-element-border">
-            <h3 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+            <h3 id={`related-${key}-heading`} class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>{config.icon}</span>
               <span>{config.title}</span>
               <span class={`text-xs font-bold px-2 py-0.5 rounded-full ${config.badgeClass} ml-2`}>
@@ -260,7 +260,7 @@ const relatedVisualizations = related.visualizations;
                 />
               ))}
           </div>
-        </section>
+        </div>
       );
     })}
     </Container>

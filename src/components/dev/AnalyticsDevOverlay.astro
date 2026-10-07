@@ -1171,14 +1171,12 @@ const currentPath = Astro.url.pathname;
         this.createdBadges.push(badge);
       });
 
-      // 2. Process Sections (section with id)
+      // 2. Process Sections (macro sections via [data-page-section][id])
       const sectionElements = Array.from(
-        document.querySelectorAll<HTMLElement>('section[id]')
+        document.querySelectorAll<HTMLElement>('[data-page-section][id]')
       ).filter((el) => {
         return (
           !el.closest('.preview-card') &&
-          !el.querySelector(':scope > .preview-card, :scope > article.preview-card') &&
-          !el.classList.contains('service-card') &&
           !el.closest('#presentation-player') &&
           !el.closest('#dev-analytics-container') &&
           !el.closest('dialog') &&

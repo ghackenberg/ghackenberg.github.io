@@ -247,18 +247,18 @@ export function initSectionTracking(): void {
   const dwellTimers = new Map<Element, number>();
 
   // Select sections to track:
-  // 1. Explicit sections on homepage or landing pages (<section id="..."> or [data-section-id])
+  // 1. Explicit macro sections rendered via <Section id="..."> ([data-page-section][id])
   // 2. Content headings (h2, h3, h4 with IDs inside article or main, excluding preview cards)
   const candidateElements: HTMLElement[] = [];
 
-  const sections = document.querySelectorAll<HTMLElement>('main section[id], article section[id], section[id], [data-section-id]');
+  const sections = document.querySelectorAll<HTMLElement>('[data-page-section][id]');
   sections.forEach((el) => {
     // Exclude slides and elements nested inside the presentation player (handled by dedicated Slide Viewed telemetry)
     if (el.closest('#presentation-player, .slide-deck-container') && el.id !== 'presentation-player') {
       return;
     }
 
-    const id = el.id || el.getAttribute('data-section-id');
+    const id = el.id;
     if (id && !trackedSections.has(id)) {
       candidateElements.push(el);
     }
@@ -269,9 +269,9 @@ export function initSectionTracking(): void {
     'article :is(h2, h3, h4)[id], .post-body :is(h2, h3, h4)[id], .prose-custom :is(h2, h3, h4)[id], .prose :is(h2, h3, h4)[id], main :is(h2, h3, h4)[id]'
   );
   contentHeadings.forEach((el) => {
-    // Exclude headings inside preview-cards (handled by Card Tracking)
+    // Exclude headings inside preview-cards / tag-cards (handled by Card Tracking)
     // and headings inside presentation player / slide deck (handled by SlideDeck)
-    if (el.closest('.preview-card, #presentation-player, .slide-deck-container')) return;
+    if (el.closest('.preview-card, .tag-card, #presentation-player, .slide-deck-container, dialog, [role="dialog"], .modal')) return;
 
     if (el.id && !trackedSections.has(el.id)) {
       candidateElements.push(el);
@@ -284,7 +284,7 @@ export function initSectionTracking(): void {
     (entries) => {
       entries.forEach((entry) => {
         const el = entry.target as HTMLElement;
-        const sectionId = el.id || el.getAttribute('data-section-id') || 'unnamed-section';
+        const sectionId = el.id;
 
         if (trackedSections.has(sectionId)) {
           observer.unobserve(el);
@@ -306,7 +306,7 @@ export function initSectionTracking(): void {
                     id: sectionId,
                     level: el.tagName.toLowerCase(),
                   });
-                } else {
+                } else if (el.hasAttribute('data-page-section')) {
                   trackEvent('Section Viewed', {
                     id: sectionId,
                   });

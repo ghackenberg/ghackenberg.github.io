@@ -36,9 +36,8 @@ const summaryHoverBorder = {
   <div class="glass-card p-4 sm:p-6 rounded-2xl border border-element-border flex flex-col lg:max-h-[calc(100vh-8rem)]">
     <!-- Header -->
     <div class="mb-3 lg:mb-4 shrink-0">
-      <h2 class="text-base lg:text-lg font-bold flex items-center space-x-2">
-        <span>⚙️</span>
-        <span>{title}</span>
+      <h2 id={`${searchId}-heading`} class="text-base lg:text-lg font-bold">
+        {title}
       </h2>
     </div>
 
