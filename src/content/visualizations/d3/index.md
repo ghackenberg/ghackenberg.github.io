@@ -1,6 +1,6 @@
 ---
 title: "D3.js: Force-Directed Network Graph"
-description: "Physics-based force simulation and interactive SVG vector network graph layout using D3.js with velocity Verlet integration by Dr. Georg Hackenberg."
+description: "Inspect interconnected topics and content nodes through a crisp, vector-based force simulation powered by D3.js and velocity Verlet numerical integration."
 screenshot:
   src: "./d3.png"
   title: "D3 Physics-Based Force Graph"

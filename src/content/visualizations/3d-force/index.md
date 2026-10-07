@@ -1,6 +1,6 @@
 ---
 title: "3D Force: Volumetric Network Graph"
-description: "Interactive 3D network graph visualization in volumetric coordinates using WebGL and Three.js with orbital camera controls by Dr. Georg Hackenberg."
+description: "Explore the portfolio's content and semantic connections as an interactive 3D volumetric graph powered by WebGL and Three.js, featuring orbital camera controls and spatial clustering."
 screenshot:
   src: "./3d-force.png"
   title: "3D Network Graph in Spatial Space"

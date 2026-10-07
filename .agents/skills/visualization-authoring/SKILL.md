@@ -13,7 +13,7 @@ Every visualization entry lives under `src/content/visualizations/<slug>/`:
 - Frontmatter schema (`src/content.config.ts`):
   ```yaml
   title: "Three.js: 3D Force-Directed Graph"
-  description: "GPU-accelerated force-directed 3D network visualization leveraging Three.js WebGL rendering by Dr. Georg Hackenberg."
+  description: "GPU-accelerated force-directed 3D network visualization leveraging Three.js WebGL rendering and spatial force simulation."
   screenshot:
     src: "./preview.png"
     title: "3D Force Graph Preview"

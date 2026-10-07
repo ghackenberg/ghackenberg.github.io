@@ -1,6 +1,6 @@
 ---
 title: "Sigma.js: ForceAtlas2 Network Graph"
-description: "Interactive WebGL network graph visualization using Sigma.js and multi-threaded ForceAtlas2 physics in web workers by Dr. Georg Hackenberg."
+description: "Navigate large-scale semantic networks with high-performance WebGL rendering and multi-threaded ForceAtlas2 physics offloaded to background web workers."
 screenshot:
   src: "./sigma.png"
   title: "Sigma ForceAtlas2 Graph Layout"
