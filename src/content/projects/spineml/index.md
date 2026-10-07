@@ -10,7 +10,7 @@ repoName: "spineml"
 screenshot:
   src: "./preview.jpg"
   title: "SpineML: Fabriklayout-Wirbelsäulenmodell & Materialfluss"
-  description: "Orthogonale 2D-Draufsicht des Spine-Layout-Modells mit zentraler Haupttransportachse, rechtwinklig abzweigenden Rippen-Nebenachsen und angedockten Fertigungsmaschinen"
+  description: "Farbenfrohes 3D-Diorama einer smarten Fabrik mit zentraler Spine-Transportachse, farbcodierten Fertigungszellen und autonomen Flurförderzeugen"
 screenshots:
   - image: "./screenshot1.png"
     title: "Factory Layout Optimization"

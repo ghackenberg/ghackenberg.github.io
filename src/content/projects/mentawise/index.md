@@ -8,8 +8,8 @@ accentColor: "blue"
 order: 2
 screenshot:
   src: "./preview.jpg"
-  title: "Mentawise: Radialer Wissensgraph & Nachbarschafts-Navigation"
-  description: "Orthogonale Schautafel der MentaWise-Web-App mit Timeline-Sidebar zur chronologischen Ansicht und Fokus-Graph mit zentriertem aktivem Wissensknoten und konzentrischen Nachbarschaftsebenen"
+  title: "Mentawise: Radialer Fokusgraph mit Timeline- & Detail-Sidebars"
+  description: "3D-App-Oberfläche mit radialem Wissensgraphen, vertikaler Timeline-Sidebar, Detail-Inspektor sowie farbcodierten Clustern mit Autoren-Chips (inkl. Mentawise-KI)"
 screenshots:
   - image: "./screenshot1.png"
     title: "Mentawise Landing Page"
