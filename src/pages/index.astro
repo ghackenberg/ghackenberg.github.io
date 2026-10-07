@@ -508,6 +508,7 @@ const serviceGalleryItems: GalleryItem[] = await Promise.all(
         title: s.data.title,
         image: opt.src,
         href: `/services/${s.id}/`,
+        tagline: s.data.description,
         pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120,
         imageTitle: s.data.previewImage!.title,
         imageDescription: s.data.previewImage!.description
@@ -532,6 +533,7 @@ const moduleGalleryItems: GalleryItem[] = await Promise.all(
         title: m.data.title,
         image: opt.src,
         href: `/services/${serviceSlug}/${moduleSlug}/`,
+        tagline: m.data.description,
         pubDate: Date.now() - 1000 * 60 * 60 * 24 * 120,
         imageTitle: m.data.previewImage!.title,
         imageDescription: m.data.previewImage!.description
