@@ -20,9 +20,9 @@ methodologyPhases:
     description: "Validating tool calling under boundary conditions, malformed parameters, and network errors."
 order: 3
 previewImage:
-  src: "./preview.png"
-  title: "Model Context Protocol (MCP) Integration"
-  description: "Dr. Georg Hackenberg konfiguriert MCP-Tool-Schemas und API-Konnektoren am Curved Monitor im Almtal Arbeitszimmer"
+  src: "./preview.jpg"
+  title: "Architektur: Tool Integration & MCP"
+  description: "Hexagonales 3D-Gateway zur nahtlosen Anbindung modularer Werkzeug- und API-Module über das Model Context Protocol"
 pubDate: 2026-09-11
 inputs:
   - "API specifications (OpenAPI/REST, GraphQL, gRPC) and database connection parameters"

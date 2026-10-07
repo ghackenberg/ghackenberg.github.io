@@ -22,8 +22,8 @@ order: 5
 pubDate: 2026-09-11
 previewImage:
   src: "./preview.jpg"
-  title: "System Observability im Campus Office Wels"
-  description: "Dr. Georg Hackenberg analysiert OpenTelemetry-Traces und Token-Verbrauchskurven an seinem Arbeitsplatz am FH OÖ Campus Wels"
+  title: "Architektur: LLM Observability"
+  description: "Isometrisches 3D-Telemetriemodul zur Echtzeit-Überwachung von Token-Durchsatz, Latenzwellen und Modellmetriken"
 inputs:
   - "Front-end application architecture and UI component framework"
   - "Operational latency targets, throughput requirements, and token budgets"

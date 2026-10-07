@@ -22,8 +22,8 @@ order: 1
 pubDate: 2026-09-11
 previewImage:
   src: "./preview.jpg"
-  title: "Dr. Georg Hackenberg im Professorenbüro Campus Wels"
-  description: "Dr. Georg Hackenberg definiert TypeScript- und Zod-Datenschemata am Bildschirm im Büro am FH OÖ Campus Wels"
+  title: "Architektur: Content Modeling"
+  description: "Isometrische 3D-Architektur strukturierter Datenschemata mit Schema-Validierungsschicht und persistenter Datenbasis"
 inputs:
   - "Existing content archives, Markdown/MDX files, or database exports"
   - "Catalog of content types (articles, case studies, documentation, projects, authors)"

@@ -22,8 +22,8 @@ order: 3
 pubDate: 2026-09-11
 previewImage:
   src: "./preview.jpg"
-  title: "Präsentation: Design Systems"
-  description: "Dr. Georg Hackenberg präsentiert Design-Tokens, Farbpaletten, Typografieskalen und modulare UI-Komponenten auf einer Leinwand"
+  title: "Architektur: Design Systems"
+  description: "Modulare 3D-Architektur einer Design-System-Engine mit Design-Tokens, Farbpaletten, typografischer Skalierung und UI-Komponenten"
 inputs:
   - "Existing vector logos, typography specifications, and brand guidelines"
   - "Target publication platforms and required aspect ratios (1:1, 16:9, 4:5)"
