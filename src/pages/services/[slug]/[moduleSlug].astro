@@ -146,7 +146,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <!-- Module Scope -->
       {module.data.highlights && module.data.highlights.length > 0 && (
         <section id="module-scope" class="mb-10">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+          <h2 id="module-scope-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Module Scope
           </h2>
           <ul class="space-y-2">
@@ -162,7 +162,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <!-- Required Inputs -->
       {module.data.inputs && module.data.inputs.length > 0 && (
         <section id="required-inputs" class="mb-10">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+          <h2 id="required-inputs-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Required Inputs
           </h2>
           <ul class="space-y-2">
@@ -178,7 +178,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <!-- Technical Deliverables -->
       {module.data.outputs && module.data.outputs.length > 0 && (
         <section id="technical-deliverables" class="mb-10">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+          <h2 id="technical-deliverables-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Technical Deliverables
           </h2>
           <ul class="space-y-2">
@@ -194,7 +194,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
       <!-- Delivery Methodology (if present) -->
       {module.data.methodologyPhases && module.data.methodologyPhases.length > 0 && (
         <section id="delivery-methodology">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+          <h2 id="delivery-methodology-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Delivery Methodology
           </h2>
           {module.data.methodologyDescription && (
