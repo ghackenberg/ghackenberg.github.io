@@ -26,7 +26,7 @@ const colorClasses = {
   data-collection="service-modules"
 >
   <!-- Absolute overlay link for card clickability and CTR telemetry delegation -->
-  <a href={href} class="absolute inset-0 z-10" aria-label={module.data.title}></a>
+  <a href={href} class="absolute inset-0 z-20" aria-label={module.data.title}></a>
 
   <!-- Preview Image Column (Top) -->
   <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
@@ -51,7 +51,7 @@ const colorClasses = {
   </div>
   
   <!-- Info Body (Below) -->
-  <div class="preview-card-body flex flex-col flex-grow justify-between relative z-10 text-left">
+  <div class="preview-card-body flex flex-col flex-grow justify-between text-left">
     <div class="space-y-3">
       <div class="flex items-center gap-2">
         <h3 class={`text-base sm:text-lg font-bold uppercase tracking-wider leading-snug mt-0 flex items-center gap-2 text-gray-100 light:text-slate-900 ${colorClasses.hoverText} transition-colors`}>
