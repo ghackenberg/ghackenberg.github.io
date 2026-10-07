@@ -20,9 +20,9 @@ methodologyPhases:
     description: "Measuring retrieval precision, recall, and context relevance against test query suites."
 order: 2
 previewImage:
-  src: "./preview.png"
-  title: "Knowledge Retrieval & GraphRAG am Campus Wels"
-  description: "Dr. Georg Hackenberg demonstriert hybride Vektorsuche und Neo4j-Wissensgraphen an der Workstation im Campus Office Wels"
+  src: "./preview.jpg"
+  title: "Architektur: Hybrid Retrieval & RAG"
+  description: "Duale 3D-Retrieval-Architektur mit dichter Vektoreinbettung, strukturierter Textindizierung und Cross-Encoder-Reranking"
 pubDate: 2026-09-11
 inputs:
   - "Internal document repositories (technical manuals, Markdown files, PDFs, source code)"

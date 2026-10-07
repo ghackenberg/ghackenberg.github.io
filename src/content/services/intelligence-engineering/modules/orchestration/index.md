@@ -20,9 +20,9 @@ methodologyPhases:
     description: "Setting up database checkpointing (PostgreSQL or SQLite) for workflow state persistence."
 order: 4
 previewImage:
-  src: "./preview.png"
-  title: "Präsentation: Agentic Orchestration mit LangGraph"
-  description: "Dr. Georg Hackenberg präsentiert die zyklische Multi-Agenten-Architektur mit Supervisor Router und Human-in-the-Loop-Checkpoints"
+  src: "./preview.jpg"
+  title: "Architektur: Multi-Agent Orchestration"
+  description: "Zentraler 3D-Supervisor-Routing-Hub zur Koordination spezialisierter Agenten-Subsysteme über integrierte Datenbusse"
 pubDate: 2026-09-11
 inputs:
   - "Process workflows, decision rules, and validation criteria"

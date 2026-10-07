@@ -22,8 +22,8 @@ order: 2
 pubDate: 2026-09-11
 previewImage:
   src: "./preview.jpg"
-  title: "Präsentation: Channel Architecture"
-  description: "Dr. Georg Hackenberg erläutert das Hub-and-Spoke-Syndikationsmodell von Astro Core Content zu Web, RSS, LinkedIn und Headless-APIs"
+  title: "Channel Architecture Syndikations-Hub"
+  description: "Zentraler Content-Hub mit fünf synchronisierten Distributionskanälen für Web, RSS, Social und REST-APIs im Comic-Stil."
 inputs:
   - "Current publishing channels, audience metrics, and distribution logs"
   - "Communication objectives and target audience profiles"

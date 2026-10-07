@@ -22,8 +22,8 @@ order: 5
 pubDate: 2026-09-11
 previewImage:
   src: "./preview.jpg"
-  title: "Semantische Web-Optimierung im Almtal Office"
-  description: "Dr. Georg Hackenberg überprüft semantische Wissensgraphen, llms.txt und OpenGraph-Vorschauen am Bildschirm im Almtal Home Office"
+  title: "Architektur: Semantic Optimization"
+  description: "3D-Architektur semantischer Optimierung mit Prismenkern zur Projektion vernetzter Wissensgraphen und Vektoreinbettungen"
 inputs:
   - "Existing web templates, layout components, and metadata fields"
   - "Organizational profile data, academic credentials, publication metadata, and taxonomy terms"

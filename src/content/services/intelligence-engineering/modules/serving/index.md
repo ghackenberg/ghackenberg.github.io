@@ -20,9 +20,9 @@ methodologyPhases:
     description: "Benchmarking latency, time-to-first-token (TTFT), and throughput under simulated concurrent loads."
 order: 1
 previewImage:
-  src: "./preview.png"
-  title: "Model Serving im Almtal Home Office"
-  description: "Dr. Georg Hackenberg überwacht vLLM-Inferenzdurchsatz und LiteLLM-Latenzen auf dem Ultrawide-Display im Almtal Arbeitszimmer"
+  src: "./preview.jpg"
+  title: "Architektur: Model Serving & Inferenz"
+  description: "Hochperformantes 3D-Beschleunigermodul für Inferenz-Serving mit dynamischem Token-Batching und gestreamten Ausgabekanälen"
 pubDate: 2026-09-11
 inputs:
   - "Infrastructure specifications (on-premise servers, private cloud instances, or dedicated hardware)"
