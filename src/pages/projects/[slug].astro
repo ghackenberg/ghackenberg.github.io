@@ -222,7 +222,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     <section id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
       {project.data.challenge && (
         <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Core Challenge</h2>
+          <h2 id="core-challenge" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Core Challenge</h2>
           <p class="text-gray-300 leading-relaxed font-normal">
             {project.data.challenge}
           </p>
@@ -231,7 +231,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 
       {project.data.solution && (
         <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">System Architecture</h2>
+          <h2 id="system-architecture" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">System Architecture</h2>
           <p class="text-gray-300 leading-relaxed font-normal">
             {project.data.solution}
           </p>
@@ -240,7 +240,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 
       {project.data.keyCapabilities && project.data.keyCapabilities.length > 0 && (
         <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+          <h2 id="key-capabilities" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Key Capabilities
           </h2>
           <ul class="space-y-2">
@@ -255,7 +255,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 
       {project.data.techStackHighlights && project.data.techStackHighlights.length > 0 && (
         <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+          <h2 id="technology-stack" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Technology Stack
           </h2>
           <ul class="space-y-2">
@@ -270,7 +270,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 
       {project.data.outcomes && project.data.outcomes.length > 0 && (
         <div>
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
+          <h2 id="verifiable-outcomes" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Verifiable Outcomes
           </h2>
           <ul class="space-y-2">

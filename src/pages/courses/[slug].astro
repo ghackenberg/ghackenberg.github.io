@@ -153,7 +153,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 
       {course.data.targetAudience && (
         <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+          <h2 id="target-audience" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
             Target Audience
           </h2>
           <p class="text-gray-300 leading-relaxed font-normal">
@@ -164,7 +164,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 
       {course.data.prerequisites && course.data.prerequisites.length > 0 && (
         <div class="mb-8">
-          <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+          <h2 id="course-prerequisites" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
             Course Prerequisites
           </h2>
           <ul class="space-y-2">
@@ -178,7 +178,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       )}
 
       <div class="mb-8">
-        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+        <h2 id="learning-goals" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
           Learning Goals
         </h2>
         {course.data.competencies && course.data.competencies.length > 0 ? (
@@ -201,7 +201,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       </div>
 
       <div class="syllabus-content">
-        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+        <h2 id="course-syllabus" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
           Course Syllabus
         </h2>
         {course.data.syllabus && course.data.syllabus.length > 0 ? (
