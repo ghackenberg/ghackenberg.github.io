@@ -138,7 +138,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                     ></a>
 
                     <!-- Preview Image Column (Top) -->
-                    <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
+                    <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
                       {service.data.previewImage && (() => {
                         const img = service.data.previewImage.src;
                         const title = service.data.previewImage.title;
@@ -193,7 +193,6 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                         </svg>
                       );
                       })()}
-                      <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
 
                       <!-- Unread badge -->
                       <span 
