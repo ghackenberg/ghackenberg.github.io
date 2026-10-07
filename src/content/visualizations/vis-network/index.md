@@ -1,6 +1,6 @@
 ---
 title: "Vis.js: Physics-Based Network Graph"
-description: "Interactive 2D network graph visualization using Vis.js with physics simulation and dynamic particle interactions by Dr. Georg Hackenberg."
+description: "Interact with dynamic topic clusters and relational data through tactile drag-and-drop physics and spring-mass damping powered by Vis.js."
 screenshot:
   src: "./vis-network.png"
   title: "Vis.js Interactive Particle Network"

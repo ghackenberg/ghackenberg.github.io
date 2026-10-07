@@ -1,6 +1,6 @@
 ---
 title: "Cytoscape.js: Semantic Network Graph"
-description: "Interactive graph theory analysis and force-directed network layouts in the browser using Cytoscape.js and CoSE physics by Dr. Georg Hackenberg."
+description: "Analyze semantic connections across publications, projects, and topics using Cytoscape.js and Compound Spring-Embedder (CoSE) layout physics directly in the browser."
 screenshot:
   src: "./cytoscape.png"
   title: "Cytoscape Force-Directed Network"
