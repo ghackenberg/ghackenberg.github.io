@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 
 export interface Props extends HTMLAttributes<"section"> {
   as?: "section" | "div" | "aside" | "header" | "footer";
-  id?: string;
+  id: string;
   padding?: "standard" | "compact" | "large" | "none";
   border?: "top" | "bottom" | "both" | "none";
   class?: string;
@@ -33,7 +33,7 @@ const combinedClasses = [
 ].filter(Boolean).join(" ");
 ---
 
-<Tag id={id} class={combinedClasses} {...restProps}>
+<Tag id={id} data-page-section="true" class={combinedClasses} {...restProps}>
   {(border === "top" || border === "both") && (
     <div class="absolute top-0 left-0 right-0 flex justify-center pointer-events-none select-none">
       <div class="w-full max-w-6xl container-fluid-gutter">

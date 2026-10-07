@@ -208,9 +208,9 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     </header>
 
     <!-- Detailed Article / Why This Excites Me -->
-    <section id="essay" class="mb-16 scroll-mt-24">
+    <div id="essay" class="mb-16 scroll-mt-24">
       <div class="mb-8">
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-100">
+        <h2 id="why-this-field-excites-me" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-100">
           Why This Field <span class={colorClasses.gradientText}>Excites Me</span>
         </h2>
         <p class="text-gray-400 text-sm mt-1">
@@ -221,7 +221,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
       <div class={`glass-card p-6 sm:p-10 md:p-12 rounded-3xl border ${colorClasses.border} interest-content theme-${interest.data.color} prose-custom`}>
         <Content />
       </div>
-    </section>
+    </div>
     </Container>
   </Section>
 
@@ -229,7 +229,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
   <Section id="other-interests" border="top" padding="standard">
     <Container size="reading" padding="none">
       <div class="text-center mb-8">
-        <h3 class="text-lg font-bold text-gray-200">
+        <h3 id="other-interests-heading" class="text-lg font-bold text-gray-200">
           Explore Other Personal Interests
         </h3>
       </div>
@@ -279,9 +279,9 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
       </div>
 
     <!-- Connect & Collaborate Callout -->
-    <section id="connect-collaborate" class="mt-12 p-8 sm:p-10 rounded-3xl glass-card border border-element-border text-center relative overflow-hidden">
+    <div id="connect-collaborate" class="mt-12 p-8 sm:p-10 rounded-3xl glass-card border border-element-border text-center relative overflow-hidden">
       <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
-      <h3 class="text-2xl font-extrabold text-gray-100 mb-3">
+      <h3 id="connect-collaborate-heading" class="text-2xl font-extrabold text-gray-100 mb-3">
         Interested in {interest.data.title}?
       </h3>
       <p class="text-gray-400 text-sm max-w-xl mx-auto mb-6 leading-relaxed">
@@ -301,7 +301,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
           Return to Homepage
         </a>
       </div>
-    </section>
+    </div>
 
     </Container>
   </Section>

@@ -219,7 +219,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     </header>
 
     <!-- Detail / Content block -->
-    <section id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
+    <div id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">
       {project.data.challenge && (
         <div class="mb-8">
           <h2 id="core-challenge" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Core Challenge</h2>
@@ -288,7 +288,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
           <Content />
         </div>
       )}
-    </section>
+    </div>
     </Container>
   </Section>
 
@@ -297,7 +297,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     <Section id="project-screenshots" border="top" padding="standard">
       <Container size="wide" padding="none">
         <div class="mb-8 md:mb-12">
-          <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
+          <h2 id="project-screenshots-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
             Project <span class={`heading-gradient-${accentColor}`}>Screenshots</span>
           </h2>
           <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
@@ -332,7 +332,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
               <!-- Title & Description Area -->
               <div class="p-5 border-t border-element-border flex-grow flex flex-col justify-between">
                 <div>
-                  <h3 class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans">
+                  <h3 id={`screenshot-title-${index}`} class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans">
                     {shot.title}
                   </h3>
                   {shot.description && (

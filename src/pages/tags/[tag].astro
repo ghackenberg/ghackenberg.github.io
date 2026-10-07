@@ -172,9 +172,9 @@ const breadcrumbSchema = {
     <div class="space-y-16">
       <!-- 1. Blog Posts -->
       {posts.length > 0 && (
-        <section id="blog-posts" class="scroll-mt-24" data-total-pages={totalPostPages} data-section="posts">
+        <div id="blog-posts" class="scroll-mt-24" data-total-pages={totalPostPages} data-section="posts">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+            <h2 id="blog-posts-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>✍️</span>
               <span>Blog Posts</span>
               <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue border border-brand-blue/30 ml-2">
@@ -260,14 +260,14 @@ const breadcrumbSchema = {
               </div>
             </nav>
           )}
-        </section>
+        </div>
       )}
 
       <!-- 2. Publications -->
       {publications.length > 0 && (
-        <section id="publications" class="scroll-mt-24" data-total-pages={totalPubPages} data-section="pubs">
+        <div id="publications" class="scroll-mt-24" data-total-pages={totalPubPages} data-section="pubs">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+            <h2 id="publications-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>📚</span>
               <span>Reviewed Publications</span>
               <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-purple/20 text-brand-purple border border-brand-purple/30 ml-2">
@@ -355,14 +355,14 @@ const breadcrumbSchema = {
               </div>
             </nav>
           )}
-        </section>
+        </div>
       )}
 
       <!-- 3. Interactive Presentations -->
       {presentations.length > 0 && (
-        <section id="presentations" class="scroll-mt-24">
+        <div id="presentations" class="scroll-mt-24">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+            <h2 id="presentations-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🖥️</span>
               <span>Interactive Presentations</span>
               <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue border border-brand-blue/30 ml-2">
@@ -390,14 +390,14 @@ const breadcrumbSchema = {
               />
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       <!-- 4. University Courses -->
       {courses.length > 0 && (
-        <section id="courses" class="scroll-mt-24">
+        <div id="courses" class="scroll-mt-24">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+            <h2 id="courses-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🎓</span>
               <span>University Courses</span>
               <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-yellow/20 text-brand-yellow border border-brand-yellow/30 ml-2">
@@ -422,14 +422,14 @@ const breadcrumbSchema = {
               />
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       <!-- 5. Software Projects -->
       {projects.length > 0 && (
-        <section id="projects" class="scroll-mt-24">
+        <div id="projects" class="scroll-mt-24">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+            <h2 id="projects-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🚀</span>
               <span>Software Projects</span>
               <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-2">
@@ -456,14 +456,14 @@ const breadcrumbSchema = {
               />
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       <!-- 6. Business Services -->
       {services.length > 0 && (
-        <section id="services" class="scroll-mt-24">
+        <div id="services" class="scroll-mt-24">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+            <h2 id="services-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>💼</span>
               <span>Business Services</span>
               <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-purple/20 text-brand-purple border border-brand-purple/30 ml-2">
@@ -488,14 +488,14 @@ const breadcrumbSchema = {
               />
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       <!-- 7. Content Visualizations -->
       {visualizations && visualizations.length > 0 && (
-        <section id="visualizations" class="scroll-mt-24">
+        <div id="visualizations" class="scroll-mt-24">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+            <h2 id="visualizations-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🌐</span>
               <span>Content Visualizations</span>
               <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-green/20 text-brand-green border border-brand-green/30 ml-2">
@@ -519,7 +519,7 @@ const breadcrumbSchema = {
               />
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       {totalCount === 0 && (
