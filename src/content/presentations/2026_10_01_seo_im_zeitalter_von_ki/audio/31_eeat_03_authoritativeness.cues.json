@@ -11,26 +11,26 @@
     "start": 13.16
   },
   "card-eeat-auth": {
-    "start": 19.65
+    "start": 20.66
   },
   "hl-callout-eeat-auth": {
-    "start": 21.65,
-    "duration": 2.21,
-    "end": 23.86
+    "start": 22.66,
+    "duration": 2.22,
+    "end": 24.88
   },
   "hl-eeat-auth-talks": {
-    "start": 24.85,
+    "start": 25.86,
     "duration": 2.58,
-    "end": 27.43
+    "end": 28.44
   },
   "hl-eeat-auth-standards": {
-    "start": 28.48,
+    "start": 29.49,
     "duration": 2.95,
-    "end": 31.43
+    "end": 32.44
   },
   "hl-eeat-auth-citations": {
-    "start": 32.35,
-    "duration": 3.82,
-    "end": 36.17
+    "start": 33.36,
+    "duration": 3.83,
+    "end": 37.19
   }
 }

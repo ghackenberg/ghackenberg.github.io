@@ -1,41 +1,41 @@
 {
   "sub": {
-    "start": 5.72
+    "start": 7.86
   },
   "hl-sub-48": {
-    "start": 7.05,
-    "duration": 3.23,
-    "end": 10.28
+    "start": 9.19,
+    "duration": 3.22,
+    "end": 12.41
   },
   "col-fazit": {
-    "start": 10.61
+    "start": 12.75
   },
   "hl-neue-ingenieurdisziplin": {
-    "start": 14.03,
-    "duration": 3.04,
-    "end": 17.07
+    "start": 16.16,
+    "duration": 3.05,
+    "end": 19.21
   },
   "hl-wettbewerbsvorsprung": {
-    "start": 20.16,
+    "start": 22.3,
     "duration": 3.19,
-    "end": 23.35
+    "end": 25.49
   },
   "col-kontakt": {
-    "start": 23.73
+    "start": 25.82
   },
   "hl-dank-fragerunde": {
-    "start": 23.73,
-    "duration": 3.84,
-    "end": 27.57
+    "start": 25.82,
+    "duration": 5.84,
+    "end": 31.66
   },
   "hl-forschung-web": {
-    "start": 28.88,
-    "duration": 3.12,
-    "end": 32
+    "start": 34.96,
+    "duration": 2.95,
+    "end": 37.91
   },
   "hl-fh-wels": {
-    "start": 33.05,
-    "duration": 3.08,
-    "end": 36.13
+    "start": 41.74,
+    "duration": 2.89,
+    "end": 44.63
   }
 }

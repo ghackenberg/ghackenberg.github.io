@@ -88,7 +88,6 @@ const breadcrumbSchema = {
                   class="presentation-card-item h-full"
                   data-title={presentation.data.title.toLowerCase()}
                   data-desc={(presentation.data.subtitle || presentation.data.description || "").toLowerCase()}
-                  data-event={(presentation.data.event || "").toLowerCase()}
                   data-tags={tagsJoined}
                 >
                   <PresentationCard
@@ -97,8 +96,6 @@ const breadcrumbSchema = {
                     subtitle={presentation.data.subtitle}
                     description={presentation.data.description}
                     pubDate={presentation.data.pubDate}
-                    event={presentation.data.event}
-                    location={presentation.data.location}
                     icon={presentation.data.previewImage || presentation.data.icon}
                     tags={presentation.data.tags || []}
                   />
@@ -154,7 +151,7 @@ const breadcrumbSchema = {
     new ClientListFilter({
       itemSelector: ".presentation-card-item",
       searchFieldSelector: "#presentation-search",
-      searchDataAttributes: ["data-title", "data-desc", "data-event", "data-tags"],
+      searchDataAttributes: ["data-title", "data-desc", "data-tags"],
       searchParamKey: "q",
       buttonFilters: [
         {

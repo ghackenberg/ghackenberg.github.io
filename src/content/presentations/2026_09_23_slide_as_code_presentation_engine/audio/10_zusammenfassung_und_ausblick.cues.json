@@ -34,23 +34,23 @@
     "start": 26.39
   },
   "hl-summary-keynote": {
-    "start": 31.81,
-    "duration": 1.77,
-    "end": 33.58
+    "start": 30.68,
+    "duration": 1.89,
+    "end": 32.57
   },
   "hl-fazit-keynote": {
-    "start": 34.67,
+    "start": 33.67,
     "duration": 2.6,
-    "end": 37.27
+    "end": 36.27
   },
   "hl-fazit-keys": {
-    "start": 38.41,
+    "start": 37.41,
     "duration": 1.95,
-    "end": 40.36
+    "end": 39.36
   },
   "hl-fazit-pdf": {
-    "start": 42.01,
+    "start": 41.01,
     "duration": 2.13,
-    "end": 44.14
+    "end": 43.14
   }
 }

@@ -1,7 +1,7 @@
 {
   "version": "v1.0",
   "styleHash": "4b470da7419a300c9b309aee35a232349166290674c218368598abf4919551ce",
-  "deckHash": "d40d40aac0905e6b01066977e57d66554ad63d3f06168f496f75957fafa76726",
+  "deckHash": "ff1dc24fd9bb0645309c2bff8211d18bd0efc37f818a1cb4f3f4e98eab91c0ee",
   "slides": {
     "01_titelfolie": "94031dfcb6604dbd0d217343971259ee1a2f9300975f5fa2e6f6957ce6b3cc4e",
     "02_agenda": "7766713dd4efae384d193ce57691d63336b0038945daa4211f3421ce37bc96a5",
@@ -33,7 +33,7 @@
     "28_eeat_autorenautoritaet": "5e10dcf10230cd955a0577de48c5cd417bad8ae399a842478d5d8b3517b0118b",
     "29_eeat_01_experience": "e382d59ea16966815588d5768cc09559026317e1c8c8b0568ce55e6c8c0b7083",
     "30_eeat_02_expertise": "dc02cb16bb5abf75e4e2c8c77c81b878c9db233ce6502f463ad9fe7d961250e3",
-    "31_eeat_03_authoritativeness": "2d8dad368d50b27dbf02de1e984cc839a1b7e7fd14b310720c2ed9bdf59e1b7a",
+    "31_eeat_03_authoritativeness": "b1cd3bca24a5d23c16e0a56056f7d918b1bf1a2d9f19c6927fb0c1adfaad8f16",
     "32_eeat_04_trustworthiness": "0665e84b381f9c55fe3d95bc7204d106625b995e89b88162842b5295c5193618",
     "33_information_gain_content_design": "712bba4bf5e2c76ee32b8b97344f1fe9db12ff12a51f759006811067d32a18d3",
     "34_bluf_content_architektur": "a19ea07ba9206943d4bd1bb03974ed9f6811070922a16d1731a766883c9a718d",
@@ -70,6 +70,6 @@
     "65_empirische_marktergebnisse": "142910002edc92704d57101c53035134040bec58c0f42231cacad2fc01f55171",
     "66_key_takeaways": "ec88a6c9c83f292fa05fddae1ddf0bffcb619e3a798c0e082faf2e24f0b6e1ee",
     "67_90_tage_fahrplan": "92d7cda51e65737771851e7035a38dcda7f5f266a471fb44663f1fd6b3f2e118",
-    "68_qa_kontakt": "249c68c7461420fde7e630fdf8db81f748b7110d3847c2a70ab61115b0fa7fff"
+    "68_qa_kontakt": "c015135937ece0b3a2fbc3b405baad7e98f961f64562437f7980bd8083eaeb40"
   }
 }

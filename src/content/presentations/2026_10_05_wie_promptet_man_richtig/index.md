@@ -2,8 +2,6 @@
 title: "Wie promptet man richtig? Systematisches Prompt Engineering für Unternehmen"
 subtitle: "Von heuristischen Faustregeln zu deterministischen Schnittstellen: Wissenschaftlich fundierte Methoden für verlässliche KI-Systeme"
 pubDate: "2026-10-05"
-event: "Tech Briefing"
-location: "Online"
 audience: "Führungskräfte, Ingenieure, Produktmanager und Fachanwender mit technischer Affinität"
 lang: "de"
 description: "Wissenschaftlich fundierter Deep Dive in systematisches Prompt Engineering für Unternehmen: Stochastische Grundlagen, empirische Studien (Harvard/BCG, Stanford), Reasoning-Taxonomien, XML-Kapselung, Structured Outputs, Evals und defensive Architekturen."

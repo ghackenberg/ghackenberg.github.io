@@ -67,8 +67,6 @@ Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industria
     output += `- URL: https://hackenberg.tech/presentations/${pres.id}/\n`;
     if (pres.data.subtitle) output += `- Subtitle: ${pres.data.subtitle}\n`;
     output += `- Date: ${rawDate}\n`;
-    if (pres.data.event) output += `- Event: ${pres.data.event}\n`;
-    if (pres.data.location) output += `- Location: ${pres.data.location}\n`;
     if (tags) output += `- Tags: ${tags}\n`;
     if (pres.data.description) output += `- Summary: ${pres.data.description}\n`;
     output += `\n${pres.body}\n\n---\n\n`;

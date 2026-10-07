@@ -1,11 +1,11 @@
 {
   "version": "v1.0",
   "styleHash": "4b470da7419a300c9b309aee35a232349166290674c218368598abf4919551ce",
-  "deckHash": "73b8f2563569bf6856c7c0f9a442def3daaf7c1834397a75aa87835019e5de36",
+  "deckHash": "21fa62b2f4a5cd809df88206d63795190d94ddd1d6aa1681959bcafefb86faec",
   "slides": {
     "01_titelfolie": "0c5ff0337eba225026268c174acd22a045185e6d9e8e3744e98d81320f26e426",
     "02_agenda": "32336575c837d903a8881b6a8e79ae29268da0013722b18317c5df9368ed2e2b",
-    "03_makro_shift_zero_click": "5263597e8fa4549dfb64ef7b07e9025aee5af62152d81e0bc05d7aef767d6a76",
+    "03_makro_shift_zero_click": "97262e69c3b8248024742b93eec1748d29e1a85ca05a146e370b6f8aa18c2057",
     "04_klick_hierarchie_paid_vs_organisch": "710e4d93cf5a6f799039d5573297472c3ff3103e3fd178140b1e70c7e8900ac5",
     "05_das_ein_prozent_paradoxon": "be5e7fe8186ffce7307becd372594eaad975409c73f46d2cd1790d77845ef5c2",
     "06_b2b_kostenexplosion_cpc_cpl": "24c439982f295f232e2e51f4c38260d79eb0c3863eb281efe781f903b2cd77dd",
@@ -44,6 +44,6 @@
     "39_selektive_search_ads_brand_defense": "271d2aaddb13f85fc312830dd5c57d470f78c0a4e65f74e72b409deb460bb7b2",
     "40_geo_und_paid_synergie_share_of_voice": "ebcc65599c2529ddbc2d9a66bc270612fed6566dd45548d77646ea25e0bd725d",
     "41_der_90_tage_implementierungsplan": "ad521a96e672a69df79ae93c86cbbc171b4e6db4b865eac30ab7010139fb2db9",
-    "42_fazit_thesen_diskussion": "1612d6847713782fcc56d2159894c805764d844c72852d341a925453a9793832"
+    "42_fazit_thesen_diskussion": "816edc011b99067d56481fd4e31f17e3470127bc63bfbcb7392c8f1ad26ba5e9"
   }
 }

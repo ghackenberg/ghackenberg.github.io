@@ -24,18 +24,18 @@
     "end": 24.32
   },
   "hl-dialog-wels": {
-    "start": 26.04,
-    "duration": 1.36,
-    "end": 27.4
+    "start": 26.02,
+    "duration": 1.39,
+    "end": 27.41
   },
   "hl-dialog-github": {
     "start": 28.76,
-    "duration": 0.9,
-    "end": 29.66
+    "duration": 0.89,
+    "end": 29.65
   },
   "hl-dialog-social": {
-    "start": 31.69,
-    "duration": 1.82,
-    "end": 33.51
+    "start": 31.59,
+    "duration": 1.72,
+    "end": 33.31
   }
 }

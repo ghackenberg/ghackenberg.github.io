@@ -107,67 +107,23 @@ const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\
 type JsonLdValue = string | number | boolean | null | undefined | { [key: string]: JsonLdValue } | JsonLdValue[];
 type JsonLdNode = Record<string, JsonLdValue>;
 
-// Schema.org Dynamic Dual Architecture: Event + PresentationDigitalDocument or Pure Digital Document
-const schemaGraph: JsonLdNode[] = [];
-
-const isOnlineEvent = !presentation.data.location || presentation.data.location.toLowerCase().includes("online");
-
-if (presentation.data.event) {
-  schemaGraph.push({
-    "@type": "Event",
-    "@id": `https://hackenberg.tech/presentations/${presentation.id}/#event`,
-    "name": presentation.data.event,
+// Schema.org: PresentationDigitalDocument
+const schemaGraph: JsonLdNode[] = [
+  {
+    "@type": "PresentationDigitalDocument",
+    "@id": `https://hackenberg.tech/presentations/${presentation.id}/#presentation`,
+    "name": presentation.data.title,
+    "headline": presentation.data.subtitle || presentation.data.title,
     "description": presentation.data.description,
-    "startDate": presentation.data.pubDate.toISOString(),
-    "eventAttendanceMode": isOnlineEvent ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    ...(isOnlineEvent ? {
-      "location": {
-        "@type": "VirtualLocation",
-        "url": `https://hackenberg.tech/presentations/${presentation.id}/`
-      }
-    } : {
-      "location": {
-        "@type": "Place",
-        "name": presentation.data.location,
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Oberösterreich",
-          "addressCountry": "AT"
-        }
-      }
-    }),
-    "performer": {
-      "@type": "Person",
-      "@id": "https://hackenberg.tech/#georg",
-      "name": "Dr. Georg Hackenberg",
-      "jobTitle": "Professor für Informatik und Industriesysteme"
+    ...(previewUrl ? { "image": `https://hackenberg.tech${previewUrl}` } : {}),
+    "author": {
+      "@id": "https://hackenberg.tech/#georg"
     },
-    "workPerformed": {
-      "@id": `https://hackenberg.tech/presentations/${presentation.id}/#presentation`
-    }
-  });
-}
-
-schemaGraph.push({
-  "@type": "PresentationDigitalDocument",
-  "@id": `https://hackenberg.tech/presentations/${presentation.id}/#presentation`,
-  "name": presentation.data.title,
-  "headline": presentation.data.subtitle || presentation.data.title,
-  "description": presentation.data.description,
-  ...(previewUrl ? { "image": `https://hackenberg.tech${previewUrl}` } : {}),
-  "author": {
-    "@id": "https://hackenberg.tech/#georg"
-  },
-  "datePublished": presentation.data.pubDate.toISOString(),
-  "inLanguage": presentation.data.lang,
-  "url": `https://hackenberg.tech/presentations/${presentation.id}/`,
-  ...(presentation.data.event ? {
-    "recordedAt": {
-      "@id": `https://hackenberg.tech/presentations/${presentation.id}/#event`
-    }
-  } : {})
-});
+    "datePublished": presentation.data.pubDate.toISOString(),
+    "inLanguage": presentation.data.lang,
+    "url": `https://hackenberg.tech/presentations/${presentation.id}/`
+  }
+];
 
 const presentationSchema = {
   "@context": "https://schema.org",
@@ -214,24 +170,8 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
                 day: "numeric"
               })}
             </time>
-            {presentation.data.event && (
-              <>
-                <span class="text-gray-500">•</span>
-                <span class="text-sm font-semibold text-brand-blue/80">{presentation.data.event}</span>
-              </>
-            )}
-            {presentation.data.location && (
-              <>
-                <span class="text-gray-500">•</span>
-                <span class="text-sm text-gray-400">📍 {presentation.data.location}</span>
-              </>
-            )}
-            {!presentation.data.event && !presentation.data.location && (
-              <>
-                <span class="text-gray-500">•</span>
-                <span class="text-xs font-medium text-slate-400">🎙️ Interactive Presentation</span>
-              </>
-            )}
+            <span class="text-gray-500">•</span>
+            <span class="text-xs font-medium text-slate-400">🎙️ Interactive Presentation</span>
           </div>
 
           <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">

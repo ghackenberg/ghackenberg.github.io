@@ -1,7 +1,7 @@
 {
   "version": "v1.0",
   "styleHash": "4b470da7419a300c9b309aee35a232349166290674c218368598abf4919551ce",
-  "deckHash": "f921ea226e422c408303f2be88c7a6c4be8f5d676db1c1582731d9f16247f6bc",
+  "deckHash": "54d692c0eca783614540ba2ba84e99e88f62ddc33d7beb0dc8f7a114b3267f06",
   "slides": {
     "01_titelfolie": "b7fffac2c88bcc3ec8b1589c268dad0f699824723345c4fdb10164125bdfc4ca",
     "02_agenda": "93213ecb539d604e67c5da08046f1d8ddb1902f220732c124ed86370939b5271",
@@ -50,6 +50,6 @@
     "45_programmatische_optimierung_dspy": "d056faa369ba8f9041824ad1c788ed7ea5f4e671229520d687acc86d3025bcb0",
     "46_agentische_entwurfsmuster": "e744f896e52dd5c4ac214e671801ec4a438baf21d8fda33dbd31876ea712f204",
     "47_fuenf_goldene_regeln": "495a745862d36d180eaadb59c4883197e12676ee971bb129767846a66325b217",
-    "48_fazit_und_ausblick": "eeae3fcc64dd2cee5b16beaddd951d787f9900867dd85e610c3d069d2ca5c2e4"
+    "48_fazit_und_ausblick": "7bf8012db24353377d489266bb5d75217129f6f9ab2a73645a28b995d9dea1bb"
   }
 }

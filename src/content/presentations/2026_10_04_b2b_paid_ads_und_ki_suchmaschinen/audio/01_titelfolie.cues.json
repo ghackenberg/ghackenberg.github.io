@@ -1,16 +1,16 @@
 {
   "title-main": {
-    "start": 6.54
+    "start": 7.74
   },
   "title-sub": {
-    "start": 9.79
+    "start": 11.07
   },
   "hl-title-fullfunnel": {
-    "start": 14.53,
-    "duration": 1.11,
-    "end": 15.64
+    "start": 15.63,
+    "duration": 0.3,
+    "end": 15.93
   },
   "title-speaker": {
-    "start": 15.97
+    "start": 17.35
   }
 }
