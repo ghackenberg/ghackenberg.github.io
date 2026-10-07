@@ -1202,7 +1202,7 @@ const currentPath = Astro.url.pathname;
         }
 
         const badge = document.createElement('div');
-        badge.className = `dev-analytics-badge dev-section-badge absolute top-3 right-3 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm leading-none ring-1 ring-black/20`;
+        badge.className = `dev-analytics-badge dev-section-badge absolute top-3 right-3 sm:right-4 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm leading-none ring-1 ring-black/20`;
         badge.title = `Section #${id} retention: ${visitors}/${totalPageVisitors} dwellers (${retentionRate}%), ${events} dwell events`;
 
         const labelText = dwell && visitors > 0
@@ -1210,14 +1210,9 @@ const currentPath = Astro.url.pathname;
           : `📍 <span class="text-white font-bold">#${id}</span> <span class="text-zinc-400">|</span> 👁️ <span class="text-zinc-300">0/${totalPageVisitors}</span> <span class="text-zinc-300">(0%)</span>`;
         badge.innerHTML = labelText;
 
-        // When a section spans full-width (w-full) but has an inner max-w-* content container with a header child,
-        // attach the badge to the inner header container so it horizontally aligns with the rest of the page grid.
-        const targetContainer = secEl.classList.contains('w-full')
-          ? (secEl.querySelector<HTMLElement>(':scope > .max-w-6xl > div, :scope > div > .max-w-6xl > div') || secEl)
-          : secEl;
-
-        targetContainer.classList.add('relative');
-        targetContainer.appendChild(badge);
+        // Directly attach the badge to the section element itself for 100% predictable, uniform positioning across all pages.
+        secEl.classList.add('relative');
+        secEl.appendChild(badge);
         this.createdBadges.push(badge);
       });
 
