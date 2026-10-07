@@ -10,7 +10,7 @@ repoName: "caddrive"
 screenshot:
   src: "./preview.jpg"
   title: "CADdrive: Kollaboratives Web-CAD & Versionsgraph"
-  description: "Orthogonale Schautafel der CADdrive-Web-App mit kollaborativem 3D-CAD-Modell, Bemaßungs- und Kommentar-Annotationen sowie integriertem Versionsgraphen mit Branching und Merging"
+  description: "Farbenfrohes 3D-CAD-Baugruppenmodell mit farbcodierten Komponenten, holografischem Drahtgitter-Diff und leuchtendem Multi-Branch-Versionsgraphen"
 screenshots:
   - image: "./screenshot1.png"
     title: "CADdrive Home Page"

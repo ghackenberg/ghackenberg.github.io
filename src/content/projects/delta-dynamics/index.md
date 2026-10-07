@@ -10,7 +10,7 @@ repoName: "delta-dynamics"
 screenshot:
   src: "./preview.jpg"
   title: "Delta Dynamics: Ökosystem-Topografie & GPU-Wasserlauf-Simulation"
-  description: "Orthogonale Schautafel eines terrassierten Low-Poly-Geländeschnitts mit dynamischen Wasser-Fließvektoren, Wasserfall und autonomen Agenten-Wegpunkten"
+  description: "Farbenfrohes 3D-Relief-Diorama eines Flussdeltas mit lebendigen Biomen, GPU-Wasserströmungsbahnen und autonomen Sensorstationen"
 screenshots:
   - image: "./screenshot1.png"
     title: "Ecosystem Simulation View"
