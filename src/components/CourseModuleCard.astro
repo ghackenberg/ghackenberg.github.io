@@ -1,0 +1,100 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  courseId: string;
+  module: CollectionEntry<'course-modules'>;
+}
+
+const { courseId, module } = Astro.props;
+const moduleSlug = module.id.split('/').pop() || module.id;
+const href = `/courses/${courseId}/${moduleSlug}/`;
+---
+
+<article 
+  class="glass-card preview-card border border-element-border relative flex flex-col h-full hover:border-element-border-medium transition-all duration-300 group cursor-pointer" 
+  data-card-id={module.id} 
+  data-collection="course-modules"
+>
+  <!-- Absolute overlay link for card clickability and CTR telemetry delegation -->
+  <a href={href} class="absolute inset-0 z-10" aria-label={module.data.title}></a>
+
+  {module.data.previewImage ? (
+    <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
+      <Image 
+        src={module.data.previewImage.src} 
+        alt={module.data.previewImage.description}
+        title={module.data.previewImage.title}
+        width={640}
+        height={360}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+      <span 
+        class="unread-dot hidden badge-new badge-new-yellow badge-corner-tr"
+        data-item-url={href}
+        title="Unread module"
+      >UNREAD</span>
+    </div>
+  ) : (
+    <div>
+      <div class="h-1.5 w-full bg-gradient-yellow"></div>
+      <div class="p-4 bg-gray-950/20 border-b border-element-border flex items-center justify-between">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-yellow/10 border border-brand-yellow/20 text-brand-yellow">
+          Module {module.data.moduleNumber || module.data.order}
+        </span>
+        <span 
+          class="unread-dot hidden badge-new badge-new-yellow"
+          data-item-url={href}
+          title="Unread module"
+        >UNREAD</span>
+      </div>
+    </div>
+  )}
+
+  <!-- Info Body -->
+  <div class="preview-card-body flex flex-col flex-grow justify-between relative z-10 text-left">
+    <div class="space-y-3">
+      <h3 class="text-base sm:text-lg font-bold uppercase tracking-wider leading-snug text-gray-100 light:text-slate-900 group-hover:text-brand-yellow transition-colors">
+        {module.data.title}
+      </h3>
+      <p class="text-gray-400 text-xs sm:text-sm leading-relaxed font-normal">
+        {module.data.description}
+      </p>
+
+      {((module.data.tools && module.data.tools.length > 0) || (module.data.topics && module.data.topics.length > 0)) && (
+        <div class="space-y-2 pt-1">
+          {module.data.tools && module.data.tools.length > 0 && (
+            <div class="flex flex-wrap gap-1.5">
+              {module.data.tools.map((tool) => (
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
+                  🛠️ {tool}
+                </span>
+              ))}
+            </div>
+          )}
+          {module.data.topics && module.data.topics.length > 0 && (
+            <div class="flex flex-wrap gap-1.5">
+              {module.data.topics.slice(0, 3).map((topic) => (
+                <span class="text-[11px] text-gray-400 bg-white/5 px-2 py-0.5 rounded">
+                  • {topic}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+
+    <!-- Bottom pinned 'View Module' button -->
+    <div class="mt-auto pt-6 w-full">
+      <span class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-200 bg-brand-yellow/12 group-hover:bg-brand-yellow/25 border border-brand-yellow/20 group-hover:border-brand-yellow/45 text-yellow-300 light:text-brand-yellow">
+        <span>View Module</span>
+        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+        </svg>
+      </span>
+    </div>
+  </div>
+</article>

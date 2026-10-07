@@ -299,7 +299,7 @@ const projects = defineCollection({
 const courses = defineCollection({
   loader: glob({
     base: './src/content/courses',
-    pattern: '**/index.{md,mdx}',
+    pattern: '*/index.{md,mdx}',
     generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
   }),
   schema: ({ image }) => z.object({
@@ -328,6 +328,28 @@ const courses = defineCollection({
       tools: z.array(z.string()).default([]),
     })).default([]),
   }),
+});
+
+const courseModules = defineCollection({
+  loader: glob({
+    base: './src/content/courses',
+    pattern: '*/modules/*/index.{md,mdx}',
+    generateId: ({ entry }) => {
+      return entry.replace(/\/index\.(md|mdx)$/, '').replace('/modules/', '/');
+    }
+  }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    courseId: z.string(),
+    moduleNumber: z.string().optional(),
+    description: z.string(),
+    order: z.number().default(0),
+    topics: z.array(z.string()).default([]),
+    tools: z.array(z.string()).default([]),
+    competencies: z.array(z.string()).default([]),
+    previewImage: coverImageSchema({ image }).optional(),
+    pubDate: z.coerce.date().optional(),
+  })
 });
 
 const services = defineCollection({
@@ -585,6 +607,7 @@ export const collections = {
   'experiences': experiences,
   'projects': projects,
   'courses': courses,
+  'course-modules': courseModules,
   'services': services,
   'modules': modules,
   'interests': interests,
