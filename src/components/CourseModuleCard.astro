@@ -21,7 +21,7 @@ const href = `/courses/${courseId}/${moduleSlug}/`;
   <a href={href} class="absolute inset-0 z-20" aria-label={module.data.title}></a>
 
   {module.data.previewImage ? (
-    <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-gray-950/40 border-b border-element-border">
+    <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
       <Image 
         src={module.data.previewImage.src} 
         alt={module.data.previewImage.description}
@@ -30,7 +30,9 @@ const href = `/courses/${courseId}/${moduleSlug}/`;
         height={360}
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       />
-      <div class="absolute inset-0 bg-gradient-to-t from-gray-950/40 via-transparent to-transparent pointer-events-none z-10"></div>
+      <!-- Ambient overlay for depth & contrast in dark and light modes -->
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent block light:hidden pointer-events-none z-10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent hidden light:block pointer-events-none z-10"></div>
       <span 
         class="unread-dot hidden badge-new badge-new-yellow badge-corner-tr"
         data-item-url={href}
