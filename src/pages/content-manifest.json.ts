@@ -118,7 +118,7 @@ export async function GET() {
       id: p.id,
       url: `/projects/${p.id}/`,
       title: p.data.title,
-      tagline: p.data.tagline,
+      trl: p.data.trl,
       description: p.data.description,
       image: await resolveImage(p.data.screenshot),
       href: p.data.href,

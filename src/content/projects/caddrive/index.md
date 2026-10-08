@@ -1,6 +1,6 @@
 ---
 title: "CADdrive"
-tagline: "Product Design Platform"
+trl: 7
 description: "CADdrive is a web-based, collaborative product design platform for schools and universities, lowering the learning curve for CAD and team engineering."
 href: "https://caddrive.org"
 tags: ["cad", "collaborative-software", "education", "open-source", "product-design", "systems-engineering", "web-development"]
@@ -8,16 +8,25 @@ accentColor: "blue"
 order: 1
 repoName: "caddrive"
 screenshot:
-  src: "./preview.jpg"
-  title: "CADdrive: Kollaboratives Web-CAD & Versionsgraph"
-  description: "Farbenfrohes 3D-CAD-Baugruppenmodell mit farbcodierten Komponenten, holografischem Drahtgitter-Diff und leuchtendem Multi-Branch-Versionsgraphen"
+  src: "./versions.png"
+  title: "CADdrive Version History & 3D Assembly Viewer"
+  description: "Interactive in-browser 3D CAD model viewer with chronological version tracking, commit metadata, and asset downloads"
 screenshots:
-  - image: "./screenshot1.png"
-    title: "CADdrive Home Page"
-    description: "Welcome screen of the web-based collaborative CAD platform."
-  - image: "./screenshot2.png"
-    title: "Interactive CAD Overview"
-    description: "Detailed description of school and university collaborative project tools."
+  - src: "./versions.png"
+    title: "Version History & 3D Assembly Viewer"
+    description: "Interactive in-browser 3D CAD model viewer with chronological version tracking, commit metadata, and asset downloads"
+  - src: "./products.png"
+    title: "Product Design Catalog"
+    description: "Workspace overview of public and private engineering projects with real-time version, issue, and member activity counters"
+  - src: "./comments.png"
+    title: "Contextual Issue Discussions & Multi-Physics Simulation"
+    description: "Collaborative issue discussion thread integrating engineering comments, OpenModelica simulation schematics, and interactive 3D assembly models"
+  - src: "./milestone.png"
+    title: "Agile Milestone Tracking & Burndown Analytics"
+    description: "Sprint milestone view showing issue burndown analytics, target versus actual completion curves, and work-package status"
+  - src: "./members.png"
+    title: "Role-Based Access Control & Team Management"
+    description: "Project member administration interface assigning granular roles such as manager and engineer alongside interactive 3D model inspection"
 challenge: "Traditional CAD software is desktop-bound, costly, and lacks modern collaboration mechanisms, making assembly design and multi-user engineering difficult in educational settings."
 solution: "A web-based, collaborative product design platform featuring in-browser 3D modeling, WebGL rendering, and Git-style branching and merging for CAD assemblies."
 keyCapabilities:

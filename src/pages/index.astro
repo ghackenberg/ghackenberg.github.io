@@ -497,7 +497,7 @@ const projectGalleryItems: GalleryItem[] = await Promise.all(
         title: p.data.title,
         image: opt.src,
         href: `/projects/${p.id}/`,
-        tagline: p.data.tagline,
+        tagline: p.data.description,
         pubDate: Date.now() - 1000 * 60 * 60 * 24 * 60,
         imageTitle: p.data.screenshot!.title,
         imageDescription: p.data.screenshot!.description
@@ -1776,7 +1776,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           <div class={index === 2 ? "block sm:hidden lg:block h-full" : "h-full"}>
             <ProjectCard 
               title={project.data.title}
-              tagline={project.data.tagline}
+              trl={project.data.trl}
               description={project.data.description}
               href={`/projects/${project.id}/`}
               tags={project.data.tags}

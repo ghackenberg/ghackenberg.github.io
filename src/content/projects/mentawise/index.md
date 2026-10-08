@@ -1,22 +1,28 @@
 ---
 title: "Mentawise"
-tagline: "Knowledge Graph Engine"
+trl: 8
 description: "Mentawise is an innovative knowledge management solution letting visual thinkers quickly build personal knowledge graphs and share them instantly with others."
 href: "https://mentawise.com"
 tags: ["collaborative-software", "data-visualization", "graph-database", "knowledge-graphs", "knowledge-management", "mind-mapping", "saas"]
 accentColor: "blue"
 order: 2
 screenshot:
-  src: "./preview.jpg"
-  title: "Mentawise: Radialer Fokusgraph mit Timeline- & Detail-Sidebars"
-  description: "3D-App-Oberfläche mit radialem Wissensgraphen, vertikaler Timeline-Sidebar, Detail-Inspektor sowie farbcodierten Clustern mit Autoren-Chips (inkl. Mentawise-KI)"
+  src: "./mentawise-graph.png"
+  title: "Mentawise: Radialer Fokusgraph & Wissensnetzwerk"
+  description: "Interaktive Web-Oberfläche mit radialem Wissensgraphen, zentriertem Fokus-Knoten, konzentrischen Nachbarschaftsebenen und Detail-Inspektor"
 screenshots:
-  - image: "./screenshot1.png"
-    title: "Mentawise Landing Page"
-    description: "Welcome screen of the personal knowledge mapping service."
-  - image: "./screenshot2.png"
-    title: "Interactive Cognitive Mapping"
-    description: "Visual overview of knowledge base node connection tools."
+  - src: "./mentawise-graph.png"
+    title: "Radial Knowledge Graph & Focus Network"
+    description: "Interactive graph view featuring focused node expansion, concentric relationship tiers, and knowledge connectivity."
+  - src: "./mentawise-content.png"
+    title: "Knowledge Node Content Editor"
+    description: "Markdown editor for authoring node details, formatting notes, and navigating contextual references."
+  - src: "./mentawise-export.png"
+    title: "Graph Export & Data Portability"
+    description: "Export options for sharing knowledge graphs, generating visual snapshots, and backing up data."
+  - src: "./mentawise-inbox.png"
+    title: "Capture Inbox & Quick Triage"
+    description: "Rapid thought capture inbox for collecting ideas and triaging incoming notes into the graph."
 challenge: "Standard force-directed graph visualizations often produce tangled hairballs that disorient users instead of helping them navigate and organize knowledge."
 solution: "A personal knowledge graph engine that avoids chaotic forces in favor of structured space partitioning, radial focus navigation, and concentric neighborhood exploration."
 keyCapabilities:
