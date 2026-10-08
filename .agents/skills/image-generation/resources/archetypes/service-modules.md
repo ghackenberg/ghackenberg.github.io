@@ -2,31 +2,24 @@
 
 Service module previews depict modular deliverables, standalone consulting packages, and focused engineering tools.
 
-## Visual Archetype: Iconic Cyber-Physical Module Artifact
+## Visual Archetype: Technical 3D Isometric Hardware Artifact
 
-A standalone, highly focused iconic 3D vector tool, emblem, or modular engine component.
+A high-end, professional B2B technical 3D isometric illustration of precision-engineered industrial software/hardware infrastructure, designed for maximum thumbnail clarity and serious enterprise credibility.
 
 ## Avatar & Entity Rules
-* **Avatar Inclusion**: **STRICTLY NO Georg avatar (Pure Modular Artifact Emblem)**.
+* **Avatar Inclusion**: **STRICTLY NO Georg avatar**.
 * **Human Figures**: Strictly zero human figures.
-* **Rationale**: Service modules represent distinct, reusable capability building blocks. Personal avatars are excluded in favor of symbolic visual clarity.
+* **Text / Diagrams**: Strictly NO text, NO typography, NO words, NO labels, NO flowchart sprawl.
+* **Rationale**: Service modules represent distinct, reusable engineering capability building blocks. Personal avatars and comic elements are excluded in favor of serious, tangible industrial elegance.
 
-## Camera Framing & Safe-Zone
-* **Perspective**: Centered frontal or subtle 3/4 floating perspective of a single iconic modular cyber-physical artifact, tool, emblem, or isometric cube.
-* **Central Floating Safe-Zone**: The artifact floats freely in the center third of the canvas, surrounded by generous dark space on all sides to prevent edge clipping under responsive display.
-* **Composition**: Border-to-border full bleed with zero containing boxes, zero nested frames, and zero outer border lines.
-
-## Environment & Palette
-* **Environment**: Deep slate-black canvas (`#030712` / `#0b1329`) with a soft radial accent glow matching the parent service domain:
-  * Strategy & Advisory: Brand Purple (`#a855f7`)
-  * Corporate Training & Teaching: Brand Yellow (`#f59e0b`)
-  * Software Engineering & Prototyping: Brand Blue (`#3b82f6`)
-  * Personal / Systems: Brand Green (`#10b981`)
-* **Styling**: Bold cel-shading, prominent ink borders, subtle halftone dot shading.
-* **Format & Aspect Ratio**: `AspectRatio: "16:9"`, saved as `preview.jpg` in `src/content/services/[service_id]/modules/[module_id]/preview.jpg`.
+## Composition & Staging
+* **Perspective**: Clean isometric view of a bold, precision-machined dark-slate hardware unit, chassis, or physical compute module floating or grounded on a studio plinth.
+* **Focal Element**: Large, bold geometric shapes (65–75% of frame) optimized for instant readability at small card and social preview scales.
+* **Materials & Lighting**: Matte dark-slate / bead-blasted alloy surfaces, precision seams, subtle LED heatsink fins, optical bus conduits, and soft ambient contact shadows grounding the unit.
+* **Background**: Elegant dark-slate studio background (`#0b1329` / `#0f172a` / `#030712`) with a subtle ambient slate-blue color shimmer. Perfectly calm, zero grid lines, zero blueprint patterns.
 
 ## Canonical Prompt Template
 
 ```text
-Border-to-border full bleed artwork in a 16:9 horizontal format. Centered and floating freely in the middle third of the frame is a single, iconic cyber-physical modular artifact representing [module core capability, e.g. a glowing hexagonal API gateway prism / modular diagnostic micro-cube / precision code-audit lens]. Bold cel-shading, prominent dark ink outlines, subtle halftone dot shading, and a vibrant ambient accent glow in [parent service color: #a855f7 purple / #3b82f6 blue / #f59e0b yellow] illuminating the dark slate-black background (#030712). Strictly no human figures, no text labels, no containing box, no border frames. Clean, technical, iconic vector Disney/Pixar comic aesthetic. 16:9 aspect ratio.
+High-end professional B2B technical 3D isometric illustration of [module capability / domain], designed as a bold and clean social preview image. In the center is a precision-engineered dark-slate [hardware unit / chassis / core device] with [specific technical features, e.g. illuminated cyan cooling heatsink fins, modular plug-in cartridge slots with glowing blue and amber pins]. Minimalist, uncluttered composition with bold, large geometric shapes optimized for instant readability at small card and social thumbnail scale. Strictly NO text, NO typography, NO words, NO labels, NO flowchart sprawl, strictly zero human figures. Elegant dark-slate studio background with a subtle ambient slate-blue color shimmer, soft contact shadows grounding the units. Premium modern enterprise software engineering aesthetic (clean, serious, precise, and concrete). 16:9 aspect ratio.
 ```
