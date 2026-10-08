@@ -78,7 +78,8 @@ export const GRAPH_GROUP_NAMES = [
   'Presentation',
   'Course',
   'Project',
-  'Service'
+  'Service',
+  'Interest'
 ] as const;
 
 export const GRAPH_COLORS = {
@@ -89,7 +90,8 @@ export const GRAPH_COLORS = {
     '#06b6d4', // 3: Presentation (Cyan)
     '#f59e0b', // 4: Course (Yellow)
     '#10b981', // 5: Project (Green)
-    '#a855f7'  // 6: Service (Purple)
+    '#a855f7', // 6: Service (Purple)
+    '#f43f5e'  // 7: Interest (Rose)
   ],
   light: [
     '#0284c7', // 0: Tag (Sky)
@@ -98,7 +100,8 @@ export const GRAPH_COLORS = {
     '#0891b2', // 3: Presentation (Cyan)
     '#d97706', // 4: Course (Yellow)
     '#059669', // 5: Project (Green)
-    '#9333ea'  // 6: Service (Purple)
+    '#9333ea', // 6: Service (Purple)
+    '#e11d48'  // 7: Interest (Rose)
   ]
 };
 
@@ -109,15 +112,29 @@ export interface TagCounts {
   courses: Record<string, number>;
   projects: Record<string, number>;
   services: Record<string, number>;
+  interests: Record<string, number>;
   allTags: string[];
 }
 
-type ImageSource = Parameters<typeof getImage>[0]["src"] | { src?: Parameters<typeof getImage>[0]["src"]; image?: Parameters<typeof getImage>[0]["src"]; title?: string; description?: string };
+type ImageSource =
+  | Parameters<typeof getImage>[0]["src"]
+  | {
+      src?: Parameters<typeof getImage>[0]["src"];
+      image?: Parameters<typeof getImage>[0]["src"];
+      title?: string;
+      description?: string;
+      caption?: string;
+    };
 
 function extractImageSrc(img: ImageSource | undefined): Parameters<typeof getImage>[0]["src"] | undefined {
   if (!img) return undefined;
-  if (typeof img === "object" && img !== null && "src" in img && img.src) {
-    return img.src;
+  if (typeof img === "object" && img !== null) {
+    if ("src" in img && img.src) {
+      return img.src as Parameters<typeof getImage>[0]["src"];
+    }
+    if ("image" in img && img.image) {
+      return img.image as Parameters<typeof getImage>[0]["src"];
+    }
   }
   return img as Parameters<typeof getImage>[0]["src"];
 }
@@ -134,6 +151,7 @@ interface RawEntity {
     screenshot?: ImageSource;
     screenshotLight?: ImageSource;
     previewImage?: ImageSource;
+    heroImage?: ImageSource;
     abstract?: string;
     book?: string;
     event?: string;
@@ -156,6 +174,7 @@ export function calculateTagCounts(options: {
   courses: RawEntity[];
   projects: RawEntity[];
   services: RawEntity[];
+  interests?: RawEntity[];
 }): TagCounts {
   const tagPosts: Record<string, number> = {};
   options.posts.forEach(p => {
@@ -211,13 +230,23 @@ export function calculateTagCounts(options: {
     }
   });
 
+  const tagInterests: Record<string, number> = {};
+  (options.interests || []).forEach(i => {
+    if (i.data.tags) {
+      new Set(i.data.tags).forEach(t => {
+        tagInterests[t] = (tagInterests[t] || 0) + 1;
+      });
+    }
+  });
+
   const allTags = Array.from(new Set([
     ...Object.keys(tagPosts),
     ...Object.keys(tagPubs),
     ...Object.keys(tagPres),
     ...Object.keys(tagCourses),
     ...Object.keys(tagProjects),
-    ...Object.keys(tagServices)
+    ...Object.keys(tagServices),
+    ...Object.keys(tagInterests)
   ]));
 
   return {
@@ -227,6 +256,7 @@ export function calculateTagCounts(options: {
     courses: tagCourses,
     projects: tagProjects,
     services: tagServices,
+    interests: tagInterests,
     allTags
   };
 }
@@ -238,6 +268,7 @@ export async function buildGraphPayload(options: {
   courses: RawEntity[];
   projects: RawEntity[];
   services: RawEntity[];
+  interests?: RawEntity[];
   tags: RawTag[];
   getImage?: typeof getImage;
 }): Promise<EnginePayloads> {
@@ -254,7 +285,8 @@ export async function buildGraphPayload(options: {
       (tagCounts.presentations[tag] || 0) +
       (tagCounts.courses[tag] || 0) +
       (tagCounts.projects[tag] || 0) +
-      (tagCounts.services[tag] || 0);
+      (tagCounts.services[tag] || 0) +
+      (tagCounts.interests[tag] || 0);
 
     const tagEntry = tagMap.get(tag);
     const title = tagEntry?.data.title ?? tag;
@@ -438,6 +470,37 @@ export async function buildGraphPayload(options: {
     });
     if (service.data.tags) {
       service.data.tags.forEach(tag => {
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
+      });
+    }
+  }
+
+  // Group 7: Interests
+  for (const interest of options.interests || []) {
+    const path = `/interests/${interest.id}/`;
+    let imageSrc: string | undefined = undefined;
+    const interestImg = extractImageSrc(interest.data.heroImage);
+    if (interestImg && options.getImage) {
+      try {
+        const opt = await options.getImage({ src: interestImg, format: "webp", width: 240, quality: 75 });
+        imageSrc = opt.src;
+      } catch (e) {
+        console.warn("Failed to optimize interest hero image", e);
+      }
+    }
+    visNodes.push({
+      id: path,
+      name: interest.data.title,
+      size: 1.25,
+      group: 7,
+      typeLabel: "Interest",
+      description: interest.data.description,
+      date: interest.data.pubDate ? new Date(interest.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      image: imageSrc,
+      tags: interest.data.tags ? interest.data.tags.slice(0, 3) : []
+    });
+    if (interest.data.tags) {
+      interest.data.tags.forEach(tag => {
         visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }

@@ -1,6 +1,12 @@
 ---
 title: "Computer Simulation"
 description: "I am fascinated by modeling complex systems, from continuous differential dynamics to discrete-event simulation and parallel GPU computing."
+tags:
+  - "simulation"
+  - "optimization"
+  - "manufacturing-systems"
+  - "factory-layout"
+  - "systems-engineering"
 color: "yellow"
 icon: "🎓"
 heroImage:

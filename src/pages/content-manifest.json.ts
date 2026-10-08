@@ -157,6 +157,7 @@ export async function GET() {
       title: i.data.title,
       description: i.data.description || '',
       image: await resolveImage(i.data.heroImage),
+      tags: i.data.tags || [],
       color: i.data.color,
       order: i.data.order,
       date: parseItemDate(i.id, i.data.pubDate) || Date.UTC(2026, 8, 14)

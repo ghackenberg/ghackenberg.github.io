@@ -1,0 +1,131 @@
+---
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  color: 'blue' | 'yellow' | 'purple' | 'green';
+  icon?: string;
+  heroImage?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  tags?: string[];
+  activeTag?: string | string[];
+}
+
+const {
+  id,
+  title,
+  description,
+  color,
+  heroImage,
+  tags = [],
+  activeTag,
+} = Astro.props;
+
+const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
+
+const isHeroObj = Boolean(heroImage && typeof heroImage === 'object' && 'src' in heroImage && heroImage.src);
+const heroImg = isHeroObj ? (heroImage as { src: ImageMetadata }).src : (heroImage as ImageMetadata | undefined);
+const heroTitle = isHeroObj ? (heroImage as { title: string }).title : title;
+const heroDesc = isHeroObj ? (heroImage as { description: string }).description : (description ? `${title} – ${description}` : `Focus area for ${title}`);
+
+const optimizedImage = heroImg ? await getImage({
+  src: heroImg,
+  format: 'webp',
+  width: 800,
+  quality: 85
+}) : null;
+
+const colorMappings = {
+  blue: {
+    border: 'border-brand-blue/20 hover:border-brand-blue/50',
+    titleHover: 'group-hover:text-brand-blue',
+    buttonGradient: 'bg-gradient-blue text-white',
+  },
+  yellow: {
+    border: 'border-brand-yellow/20 hover:border-brand-yellow/50',
+    titleHover: 'group-hover:text-brand-yellow',
+    buttonGradient: 'bg-gradient-yellow text-slate-950 font-extrabold',
+  },
+  purple: {
+    border: 'border-brand-purple/20 hover:border-brand-purple/50',
+    titleHover: 'group-hover:text-brand-purple',
+    buttonGradient: 'bg-gradient-purple text-white',
+  },
+  green: {
+    border: 'border-brand-green/20 hover:border-brand-green/50',
+    titleHover: 'group-hover:text-brand-green',
+    buttonGradient: 'bg-gradient-green text-white',
+  }
+};
+
+const mapping = colorMappings[color] || colorMappings.blue;
+---
+
+<article 
+  class={`glass-card preview-card relative rounded-2xl border ${mapping.border} group flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer`}
+  data-card-id={id}
+  data-collection="interests"
+>
+  <!-- Absolute overlay link for card clickability -->
+  <a href={`/interests/${id}/`} class="absolute inset-0 z-10 cursor-pointer" aria-label={`Explore ${title}`}></a>
+
+  <!-- Artwork Header -->
+  {optimizedImage && (
+    <div class="relative w-full aspect-video overflow-hidden bg-slate-950">
+      <img 
+        src={optimizedImage.src} 
+        alt={heroDesc}
+        title={heroTitle}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90"></div>
+      <span 
+        class="unread-dot hidden badge-new badge-new-green badge-corner-tr" 
+        data-item-url={`/interests/${id}/`}
+        title="Unread interest"
+      >UNREAD</span>
+    </div>
+  )}
+
+  <!-- Content Body -->
+  <div class="preview-card-body p-6 flex flex-col flex-grow">
+    <h3 class={`text-lg font-bold text-gray-100 mb-3 ${mapping.titleHover} transition-colors`}>
+      {title}
+    </h3>
+
+    {description && (
+      <p class="text-gray-400 text-sm leading-relaxed font-normal mb-4">
+        {description}
+      </p>
+    )}
+
+    {tags && tags.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 mb-6 relative z-20">
+        {tags.map((tag) => (
+          <a
+            href={`/tags/${tag}/`}
+            data-tag={tag}
+            class={`tag-chip tag-chip-${color} inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border hover:scale-105 transition-all ${
+              isTagActive(tag) ? 'active-tag-match' : ''
+            }`}
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- Footer: Explore Field Button -->
+    <div class="pt-2 mt-auto">
+      <div class={`w-full py-2.5 px-4 rounded-xl font-bold text-xs shadow-md transition-all duration-300 group-hover:shadow-lg flex items-center justify-between ${mapping.buttonGradient}`}>
+        <span>Explore Field</span>
+        <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</article>

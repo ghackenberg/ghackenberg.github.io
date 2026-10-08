@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#f43f5e'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea', '#e11d48'];
 
 export interface D3Node extends d3.SimulationNodeDatum {
   id: string;
@@ -148,6 +148,7 @@ const engine: D3Engine = {
         d.id.startsWith('/projects/') ||
         d.id.startsWith('/courses/') ||
         d.id.startsWith('/services/') ||
+        d.id.startsWith('/interests/') ||
         d.id.startsWith('/tags/')
       ) {
         window.location.href = d.id;
@@ -305,8 +306,9 @@ const engine: D3Engine = {
       const courses = this.nodes.filter(n => n.group === 4);
       const projects = this.nodes.filter(n => n.group === 5);
       const services = this.nodes.filter(n => n.group === 6);
+      const interests = this.nodes.filter(n => n.group === 7);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
       const isMobile = this.width < 768 || window.innerWidth < 768;
 
       const padX = Math.max(40, this.width * 0.08);

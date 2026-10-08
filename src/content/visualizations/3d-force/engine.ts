@@ -1,7 +1,7 @@
 import ForceGraph3D from '3d-force-graph';
 
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#f43f5e'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea', '#e11d48'];
 
 export interface Force3DNode {
   id: string;
@@ -90,6 +90,7 @@ const engine: Force3DEngine = {
           node.id.startsWith('/projects/') ||
           node.id.startsWith('/courses/') ||
           node.id.startsWith('/services/') ||
+          node.id.startsWith('/interests/') ||
           node.id.startsWith('/tags/')
         ) {
           window.location.href = node.id;
@@ -175,15 +176,16 @@ const engine: Force3DEngine = {
       const courses = this.nodes.filter(n => n.group === 4);
       const projects = this.nodes.filter(n => n.group === 5);
       const services = this.nodes.filter(n => n.group === 6);
+      const interests = this.nodes.filter(n => n.group === 7);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
       const isMobile = window.innerWidth < 768;
       const heightFactor = 25;
       const widthFactor = 25;
 
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx - 3) * 55;
+          const rowY = (catIdx - (categories.length - 1) / 2) * 55;
           catNodes.forEach((n, idx) => {
             targets[n.id] = {
               x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * widthFactor : 0,
@@ -194,7 +196,7 @@ const engine: Force3DEngine = {
         });
       } else {
         categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx - 3) * 55;
+          const colX = (catIdx - (categories.length - 1) / 2) * 55;
           catNodes.forEach((n, idx) => {
             targets[n.id] = {
               x: colX,

@@ -169,6 +169,7 @@ const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.ord
 
 const services = await getCollection("services");
 services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const interests = await getCollection("interests");
 
 const posts = await getCollection("posts");
 const sortedPosts = posts.slice().sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
@@ -181,13 +182,14 @@ const tagsCollection = await getCollection("tags");
 const tagMap = new Map(tagsCollection.map(t => [t.id, t]));
 
 // Calculate tags and graph payload for the home page Vis.js Network
-const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services });
+const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, interests });
 const tagPosts = tagCounts.posts;
 const tagPubs = tagCounts.publications;
 const tagPresentations = tagCounts.presentations;
 const tagCourses = tagCounts.courses;
 const tagProjects = tagCounts.projects;
 const tagServices = tagCounts.services;
+const tagInterests = tagCounts.interests;
 const allTags = tagCounts.allTags;
 
 interface TagCloudItem {
@@ -201,12 +203,14 @@ interface TagCloudItem {
   coursesCount: number;
   projectsCount: number;
   servicesCount: number;
+  interestsCount: number;
   postsPct: number;
   pubsPct: number;
   presPct: number;
   coursesPct: number;
   projectsPct: number;
   servicesPct: number;
+  interestsPct: number;
   fontSizeClass: string;
   fontWeightClass: string;
 }
@@ -218,7 +222,8 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const coursesCount = tagCourses[tagId] || 0;
   const projectsCount = tagProjects[tagId] || 0;
   const servicesCount = tagServices[tagId] || 0;
-  const totalCount = postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount;
+  const interestsCount = tagInterests[tagId] || 0;
+  const totalCount = postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount + interestsCount;
   
   const postsPct = totalCount > 0 ? Math.round((postsCount / totalCount) * 100) : 0;
   const pubsPct = totalCount > 0 ? Math.round((pubsCount / totalCount) * 100) : 0;
@@ -226,6 +231,7 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const coursesPct = totalCount > 0 ? Math.round((coursesCount / totalCount) * 100) : 0;
   const projectsPct = totalCount > 0 ? Math.round((projectsCount / totalCount) * 100) : 0;
   const servicesPct = totalCount > 0 ? Math.round((servicesCount / totalCount) * 100) : 0;
+  const interestsPct = totalCount > 0 ? Math.round((interestsCount / totalCount) * 100) : 0;
 
   const tagEntry = tagMap.get(tagId);
   const name = tagEntry?.data.title ?? tagId;
@@ -242,12 +248,14 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     coursesCount,
     projectsCount,
     servicesCount,
+    interestsCount,
     postsPct,
     pubsPct,
     presPct,
     coursesPct,
     projectsPct,
     servicesPct,
+    interestsPct,
     fontSizeClass: "text-xs sm:text-sm",
     fontWeightClass: "font-medium",
   };
@@ -288,7 +296,8 @@ const restPresCount = presentations.filter(p => p.data.tags?.some(t => overflowT
 const restCoursesCount = courses.filter(c => c.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restProjectsCount = projects.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restServicesCount = services.filter(s => s.data.tags?.some(t => overflowTagIds.has(t))).length;
-const restTotalContentCount = restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount;
+const restInterestsCount = interests.filter(i => i.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restTotalContentCount = restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount + restInterestsCount;
 
 const restPostsPct = restTotalContentCount > 0 ? Math.round((restPostsCount / restTotalContentCount) * 100) : 0;
 const restPubsPct = restTotalContentCount > 0 ? Math.round((restPubsCount / restTotalContentCount) * 100) : 0;
@@ -296,6 +305,7 @@ const restPresPct = restTotalContentCount > 0 ? Math.round((restPresCount / rest
 const restCoursesPct = restTotalContentCount > 0 ? Math.round((restCoursesCount / restTotalContentCount) * 100) : 0;
 const restProjectsPct = restTotalContentCount > 0 ? Math.round((restProjectsCount / restTotalContentCount) * 100) : 0;
 const restServicesPct = restTotalContentCount > 0 ? Math.round((restServicesCount / restTotalContentCount) * 100) : 0;
+const restInterestsPct = restTotalContentCount > 0 ? Math.round((restInterestsCount / restTotalContentCount) * 100) : 0;
 
 // Dynamic weight sizing for the remaining badge, capped to max tag weight
 const cappedRestWeight = Math.min(restTotalContentCount, maxTagCount);
@@ -320,6 +330,7 @@ const graphPayloads = await buildGraphPayload({
   projects,
   courses,
   services,
+  interests,
   tags: tagsCollection,
   getImage
 });
@@ -380,7 +391,15 @@ const professionalInterests = [
     image: optimizedInterestSoftware.src,
     imageTitle: "Research domain: Software Engineering",
     imageDescription: "Focus area in Software Engineering: Architectures & Web Platforms.",
-    description: "My passion lies in crafting high-performance, type-safe software. From modern web architectures with Astro and TypeScript to scalable industrial platforms, I love building robust systems from the ground up."
+    description: "My passion lies in crafting high-performance, type-safe software. From modern web architectures with Astro and TypeScript to scalable industrial platforms, I love building robust systems from the ground up.",
+    tags: [
+      "software-engineering",
+      "software-architecture",
+      "web-development",
+      "typescript",
+      "systems-engineering",
+      "open-source"
+    ]
   },
   {
     slug: "computer-simulation",
@@ -390,7 +409,14 @@ const professionalInterests = [
     image: optimizedInterestSimulation.src,
     imageTitle: "Research domain: Computer Simulation",
     imageDescription: "Focus area in Computer Simulation: Systems & Layout Modeling.",
-    description: "I am fascinated by modeling complex physical and industrial systems. Combining discrete-event simulation and optimization algorithms, I design smart factory layouts, logistics workflows, and resource models."
+    description: "I am fascinated by modeling complex physical and industrial systems. Combining discrete-event simulation and optimization algorithms, I design smart factory layouts, logistics workflows, and resource models.",
+    tags: [
+      "simulation",
+      "optimization",
+      "manufacturing-systems",
+      "factory-layout",
+      "systems-engineering"
+    ]
   },
   {
     slug: "artificial-intelligence",
@@ -400,7 +426,15 @@ const professionalInterests = [
     image: optimizedInterestAi.src,
     imageTitle: "Research domain: Artificial Intelligence",
     imageDescription: "Focus area in Artificial Intelligence: Generative AI & Agent Systems.",
-    description: "I actively explore local LLMs, agentic AI, and knowledge graphs. I enjoy developing autonomous reasoning engines, semantic search tools, and intelligent agent workflows to unlock new scientific insights."
+    description: "I actively explore local LLMs, agentic AI, and knowledge graphs. I enjoy developing autonomous reasoning engines, semantic search tools, and intelligent agent workflows to unlock new scientific insights.",
+    tags: [
+      "artificial-intelligence",
+      "generative-ai",
+      "agentic-ai",
+      "machine-learning",
+      "enterprise-ai",
+      "mcp"
+    ]
   },
   {
     slug: "user-experience",
@@ -410,7 +444,15 @@ const professionalInterests = [
     image: optimizedInterestUx.src,
     imageTitle: "Research domain: User Experience",
     imageDescription: "Focus area in User Experience: Visualizations & UI Designs.",
-    description: "I believe great software must be intuitive, responsive, and visually engaging. I love creating interactive graph network visualizers, dynamic layouts, and polished interfaces that make complex data effortless to explore."
+    description: "I believe great software must be intuitive, responsive, and visually engaging. I love creating interactive graph network visualizers, dynamic layouts, and polished interfaces that make complex data effortless to explore.",
+    tags: [
+      "user-interface",
+      "ux-design",
+      "data-visualization",
+      "human-computer-interaction",
+      "computer-graphics",
+      "webgl"
+    ]
   }
 ];
 
@@ -1116,9 +1158,23 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                 <h3 class={`text-lg font-bold text-gray-100 mb-3 group-hover:text-brand-${interest.color} transition-colors`}>
                   {interest.title}
                 </h3>
-                <p class="text-gray-400 text-sm leading-relaxed font-normal flex-grow mb-6">
+                <p class="text-gray-400 text-sm leading-relaxed font-normal mb-4">
                   {interest.description}
                 </p>
+
+                {interest.tags && interest.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 mb-6 relative z-20">
+                    {interest.tags.map((tag) => (
+                      <a
+                        href={`/tags/${tag}/`}
+                        data-tag={tag}
+                        class={`tag-chip tag-chip-${interest.color} inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border hover:scale-105 transition-all`}
+                      >
+                        #{tag}
+                      </a>
+                    ))}
+                  </div>
+                )}
 
                 <!-- Footer: Explore Field Button -->
                 <div class="pt-2 mt-auto">
@@ -1334,6 +1390,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   {tag.servicesCount > 0 && (
                     <div style={`width: ${tag.servicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${tag.servicesCount}`} />
                   )}
+                  {tag.interestsCount > 0 && (
+                    <div style={`width: ${tag.interestsPct}%`} class="bg-gradient-to-r from-rose-500 to-pink-500 h-full" title={`Interests: ${tag.interestsCount}`} />
+                  )}
                 </div>
 
                 <!-- Responsive Legend Breakdown (Option 1) -->
@@ -1378,6 +1437,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="w-2 h-2 rounded-full bg-brand-purple"></span>
                       <span>{tag.servicesCount} Service{tag.servicesCount !== 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
+                    </span>
+                  )}
+                  {tag.interestsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                      <span>{tag.interestsCount} Interest{tag.interestsCount !== 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.interestsPct}%)</span>
                     </span>
                   )}
                 </div>
@@ -1433,6 +1499,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   {tag.servicesCount > 0 && (
                     <div style={`width: ${tag.servicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${tag.servicesCount}`} />
                   )}
+                  {tag.interestsCount > 0 && (
+                    <div style={`width: ${tag.interestsPct}%`} class="bg-gradient-to-r from-rose-500 to-pink-500 h-full" title={`Interests: ${tag.interestsCount}`} />
+                  )}
                 </div>
 
                 <!-- Responsive Legend Breakdown (Option 1) -->
@@ -1477,6 +1546,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="w-2 h-2 rounded-full bg-brand-purple"></span>
                       <span>{tag.servicesCount} Service{tag.servicesCount !== 1 ? 's' : ''}</span>
                       <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
+                    </span>
+                  )}
+                  {tag.interestsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                      <span>{tag.interestsCount} Interest{tag.interestsCount !== 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({tag.interestsPct}%)</span>
                     </span>
                   )}
                 </div>
@@ -1526,6 +1602,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                   {restServicesCount > 0 && (
                     <div style={`width: ${restServicesPct}%`} class="bg-gradient-to-r from-purple-400 to-pink-500 h-full" title={`Services: ${restServicesCount}`} />
                   )}
+                  {restInterestsCount > 0 && (
+                    <div style={`width: ${restInterestsPct}%`} class="bg-gradient-to-r from-rose-500 to-pink-500 h-full" title={`Interests: ${restInterestsCount}`} />
+                  )}
                 </div>
 
                 <!-- Responsive Legend Breakdown -->
@@ -1572,6 +1651,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
                       <span class="text-gray-400 text-[10px]">({restServicesPct}%)</span>
                     </span>
                   )}
+                  {restInterestsCount > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                      <span>{restInterestsCount} Interest{restInterestsCount !== 1 ? 's' : ''}</span>
+                      <span class="text-gray-400 text-[10px]">({restInterestsPct}%)</span>
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -1615,6 +1701,10 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-sky-400 border border-white/20 shadow-sm shadow-sky-400/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Tags</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 border border-white/20 shadow-sm shadow-rose-500/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Interests</span>
           </div>
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-brand-blue border border-white/20 shadow-sm shadow-brand-blue/30"></span>

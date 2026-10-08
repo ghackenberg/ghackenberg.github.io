@@ -9,6 +9,7 @@ import CourseCard from "./CourseCard.astro";
 import ProjectCard from "./ProjectCard.astro";
 import ServiceCard from "./ServiceCard.astro";
 import VisualizationCard from "./VisualizationCard.astro";
+import InterestCard from "./InterestCard.astro";
 
 interface Props {
   currentCollection: ContentCollectionName;
@@ -31,6 +32,7 @@ const related = await getRelatedContent({
 });
 
 const totalRelated =
+  related.interests.length +
   related.posts.length +
   related.publications.length +
   related.presentations.length +
@@ -41,6 +43,15 @@ const totalRelated =
 
 // Section configuration helper
 const sectionConfig = {
+  interests: {
+    title: "Professional Interests",
+    icon: "🎯",
+    hubHref: "/#about",
+    hubLabel: "All Interests",
+    badgeClass: "bg-brand-purple/20 text-brand-purple light:text-purple-700 border border-brand-purple/30",
+    hubLinkClass: "text-brand-purple light:text-purple-700",
+    gridClass: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6",
+  },
   posts: {
     title: "Blog Posts",
     icon: "✍️",
@@ -106,8 +117,9 @@ const sectionConfig = {
   },
 };
 
-// Display order strictly follows main navigation: Posts, Publications, Presentations, Courses, Projects, Services, Visualizations
+// Display order: Professional Interests first, followed by main navigation
 const orderedKeys: Array<keyof typeof sectionConfig> = [
+  "interests",
   "posts",
   "publications",
   "presentations",
@@ -118,6 +130,7 @@ const orderedKeys: Array<keyof typeof sectionConfig> = [
 ];
 
 // Typed per-collection references (avoids inline generics in the JSX template)
+const relatedInterests = related.interests;
 const relatedPosts = related.posts;
 const relatedPublications = related.publications;
 const relatedPresentations = related.presentations;
@@ -163,6 +176,20 @@ const relatedVisualizations = related.visualizations;
           </div>
 
           <div class={config.gridClass}>
+            {key === "interests" &&
+              relatedInterests.map((interest) => (
+                <InterestCard
+                  id={interest.id}
+                  title={interest.data.title}
+                  description={interest.data.description}
+                  color={interest.data.color}
+                  icon={interest.data.icon}
+                  heroImage={interest.data.heroImage}
+                  tags={interest.data.tags}
+                  activeTag={tags}
+                />
+              ))}
+
             {key === "posts" &&
               relatedPosts.map((post) => (
                 <PostCard

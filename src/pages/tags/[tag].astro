@@ -9,6 +9,7 @@ import ProjectCard from "@components/ProjectCard.astro";
 import CourseCard from "@components/CourseCard.astro";
 import VisualizationCard from "@components/VisualizationCard.astro";
 import ServiceCard from "@components/ServiceCard.astro";
+import InterestCard from "@components/InterestCard.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -19,6 +20,7 @@ export async function getStaticPaths() {
   const projects = await getCollection("projects");
   const courses = await getCollection("courses");
   const services = await getCollection("services");
+  const interests = await getCollection("interests");
   const visualizations = await getCollection("visualizations");
   const repos = await getCollection("github-repos");
 
@@ -55,6 +57,10 @@ export async function getStaticPaths() {
       .filter((s) => s.data.tags && s.data.tags.includes(tag.id))
       .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
+    const relatedInterests = interests
+      .filter((i) => i.data.tags && i.data.tags.includes(tag.id))
+      .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
     const relatedVis = visualizations
       .filter((v) => v.data.tags && v.data.tags.includes(tag.id));
 
@@ -62,6 +68,7 @@ export async function getStaticPaths() {
       params: { tag: tag.id },
       props: {
         tag,
+        interests: relatedInterests,
         posts: relatedPosts,
         publications: relatedPubs,
         presentations: relatedPres,
@@ -76,6 +83,7 @@ export async function getStaticPaths() {
 
 interface Props {
   tag: CollectionEntry<"tags">;
+  interests: CollectionEntry<"interests">[];
   posts: CollectionEntry<"posts">[];
   publications: CollectionEntry<"publications">[];
   presentations: CollectionEntry<"presentations">[];
@@ -85,8 +93,8 @@ interface Props {
   visualizations: CollectionEntry<"visualizations">[];
 }
 
-const { tag, posts, publications, presentations, courses, projects, services, visualizations } = Astro.props;
-const totalCount = posts.length + publications.length + presentations.length + courses.length + projects.length + services.length + visualizations.length;
+const { tag, interests, posts, publications, presentations, courses, projects, services, visualizations } = Astro.props;
+const totalCount = interests.length + posts.length + publications.length + presentations.length + courses.length + projects.length + services.length + visualizations.length;
 
 // Page sizes divisible by 1, 2, and 3 for responsive grid harmony (1 col mobile, 2 col tablet, 3 col desktop)
 const POSTS_PER_PAGE = 6;
@@ -170,6 +178,39 @@ const breadcrumbSchema = {
 
     <!-- Connected Content Sections -->
     <div class="space-y-16">
+      <!-- 0. Professional Interests -->
+      {interests.length > 0 && (
+        <div id="professional-interests" class="scroll-mt-24">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
+            <h2 id="professional-interests-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>🎯</span>
+              <span>Professional Interests</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 light:text-rose-800 border border-rose-500/30 ml-2">
+                {interests.length}
+              </span>
+            </h2>
+            <a href="/#about" class="text-xs font-semibold text-rose-400 light:text-rose-700 hover:underline">
+              All Interests &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {interests.map((interest) => (
+              <InterestCard
+                id={interest.id}
+                title={interest.data.title}
+                description={interest.data.description}
+                color={interest.data.color}
+                icon={interest.data.icon}
+                heroImage={interest.data.heroImage}
+                tags={interest.data.tags}
+                activeTag={tag.id}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       <!-- 1. Blog Posts -->
       {posts.length > 0 && (
         <div id="blog-posts" class="scroll-mt-24" data-total-pages={totalPostPages} data-section="posts">
