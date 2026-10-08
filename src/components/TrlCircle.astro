@@ -1,0 +1,100 @@
+---
+interface Props {
+  level: number;
+  size?: number | string;
+  accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
+  theme?: 'auto' | 'dark';
+  class?: string;
+}
+
+const {
+  level,
+  size = 15,
+  accentColor = 'blue',
+  theme = 'auto',
+  class: className = '',
+} = Astro.props;
+
+const colorClasses = {
+  blue: 'fill-brand-blue light:fill-blue-500',
+  yellow: 'fill-brand-yellow light:fill-amber-500',
+  purple: 'fill-brand-purple light:fill-purple-500',
+  green: 'fill-brand-green light:fill-emerald-500',
+};
+
+const activeFill = theme === 'dark'
+  ? {
+      blue: 'fill-brand-blue',
+      yellow: 'fill-brand-yellow',
+      purple: 'fill-brand-purple',
+      green: 'fill-brand-green',
+    }[accentColor]
+  : colorClasses[accentColor] || colorClasses.blue;
+
+const inactiveFill = theme === 'dark'
+  ? 'fill-white/15'
+  : 'fill-white/15 light:fill-slate-900/15';
+
+const strokeOuter = theme === 'dark'
+  ? 'stroke-white/30'
+  : 'stroke-white/30 light:stroke-slate-900/25';
+
+// Precomputed SVG paths for smooth partially filled pie sector (level 1 to 8)
+const piePaths: Record<number, string> = {
+  1: "M 10 10 L 10 1.5 A 8.5 8.5 0 0 1 15.46 3.49 Z",
+  2: "M 10 10 L 10 1.5 A 8.5 8.5 0 0 1 18.37 8.52 Z",
+  3: "M 10 10 L 10 1.5 A 8.5 8.5 0 0 1 17.36 14.25 Z",
+  4: "M 10 10 L 10 1.5 A 8.5 8.5 0 0 1 12.91 17.99 Z",
+  5: "M 10 10 L 10 1.5 A 8.5 8.5 0 1 1 7.09 17.99 Z",
+  6: "M 10 10 L 10 1.5 A 8.5 8.5 0 1 1 2.64 14.25 Z",
+  7: "M 10 10 L 10 1.5 A 8.5 8.5 0 1 1 1.63 8.52 Z",
+  8: "M 10 10 L 10 1.5 A 8.5 8.5 0 1 1 4.54 3.49 Z",
+};
+
+const isFull = level >= 9;
+const piePath = piePaths[level] || "";
+---
+
+<svg
+  viewBox="0 0 20 20"
+  width={size}
+  height={size}
+  class={`shrink-0 select-none ${className}`}
+  role="img"
+  aria-label={`Technology Readiness Level: ${level} of 9`}
+>
+  <!-- Background circular track (unfilled portion) -->
+  <circle
+    cx="10"
+    cy="10"
+    r="8.5"
+    class={`transition-colors duration-200 ${inactiveFill}`}
+  />
+
+  <!-- Smooth partially filled pie sector -->
+  {isFull ? (
+    <circle
+      cx="10"
+      cy="10"
+      r="8.5"
+      class={`transition-colors duration-200 ${activeFill}`}
+    />
+  ) : (
+    piePath && (
+      <path
+        d={piePath}
+        class={`transition-colors duration-200 ${activeFill}`}
+      />
+    )
+  )}
+
+  <!-- Clean outer circular border -->
+  <circle
+    cx="10"
+    cy="10"
+    r="8.5"
+    fill="none"
+    class={strokeOuter}
+    stroke-width="0.75"
+  />
+</svg>

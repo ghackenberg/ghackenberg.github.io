@@ -1,10 +1,11 @@
 ---
 import { getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
+import TrlCircle from "@components/TrlCircle.astro";
 
 interface Props {
   title: string;
-  tagline: string;
+  trl: number;
   description: string;
   href: string;
   tags: string[];
@@ -16,7 +17,7 @@ interface Props {
 
 const { 
   title, 
-  tagline, 
+  trl, 
   description, 
   href, 
   tags, 
@@ -31,12 +32,12 @@ const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag
 const isScreenshotObj = Boolean(screenshot && typeof screenshot === 'object' && 'src' in screenshot && screenshot.src);
 const screenshotImg = isScreenshotObj ? (screenshot as { src: ImageMetadata }).src : (screenshot as ImageMetadata | undefined);
 const screenshotTitle = isScreenshotObj ? (screenshot as { title: string }).title : title;
-const screenshotDesc = isScreenshotObj ? (screenshot as { description: string }).description : (tagline ? `${title} – ${tagline}` : `Showcase and project preview for ${title}`);
+const screenshotDesc = isScreenshotObj ? (screenshot as { description: string }).description : (description ? `${title} – ${description}` : `Showcase and project preview for ${title}`);
 
 const isScreenshotLightObj = Boolean(screenshotLight && typeof screenshotLight === 'object' && 'src' in screenshotLight && screenshotLight.src);
 const screenshotLightImg = isScreenshotLightObj ? (screenshotLight as { src: ImageMetadata }).src : (screenshotLight as ImageMetadata | undefined);
 const screenshotLightTitle = isScreenshotLightObj ? (screenshotLight as { title: string }).title : `${title} (Light Mode)`;
-const screenshotLightDesc = isScreenshotLightObj ? (screenshotLight as { description: string }).description : (tagline ? `${title} – ${tagline} (Light Theme)` : `Showcase and project preview for ${title} in light mode`);
+const screenshotLightDesc = isScreenshotLightObj ? (screenshotLight as { description: string }).description : (description ? `${title} – ${description} (Light Theme)` : `Showcase and project preview for ${title} in light mode`);
 
 const optimizedScreenshot = screenshotImg ? await getImage({
   src: screenshotImg,
@@ -180,6 +181,12 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
       </>
     )}
 
+    <!-- Technology readiness level badge -->
+    <span class="badge-corner-tl bg-slate-950/85 text-white border-white/20 shadow-md backdrop-blur-sm inline-flex items-center gap-1.5">
+      <span>TRL {trl}</span>
+      <TrlCircle level={trl} accentColor={accentColor} size={15} theme="dark" />
+    </span>
+
     <!-- Unread badge -->
     <span 
       class={`unread-dot hidden badge-new ${badgeColorClass} badge-corner-tr`} 
@@ -197,9 +204,6 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
           <h3 class={`text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-brand-${accentColor} transition-all duration-300`}>
             {title}
           </h3>
-          <p class={`text-sm font-semibold tracking-wide mt-1 uppercase ${colorClasses.iconColor}`}>
-            {tagline}
-          </p>
         </div>
       </div>
       

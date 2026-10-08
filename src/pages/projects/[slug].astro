@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import TrlCard from "@components/TrlCard.astro";
 import { getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
 
@@ -102,7 +103,7 @@ const softwareAppSchema = {
   "@type": ["SoftwareApplication", "SoftwareSourceCode"],
   "@id": `${projectUrl}#software`,
   "name": project.data.title,
-  "headline": project.data.tagline,
+  "headline": project.data.title,
   "description": project.data.description,
   "image": optimizedMainScreenshot?.src ? new URL(optimizedMainScreenshot.src, Astro.site).href : undefined,
   "url": projectUrl,
@@ -215,8 +216,23 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
             {starCount > 0 && <span class="text-gray-400 font-normal">⭐ {starCount}</span>}
           </a>
         )}
+
+        {project.data.trl && (
+          <a 
+            href="#technology-readiness-level"
+            class="px-4 py-2.5 rounded-xl text-xs font-bold bg-element-bg border border-element-border hover:border-element-border-medium text-gray-200 transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer"
+            title={`Technology Readiness Level ${project.data.trl} (click to view details)`}
+          >
+            <span>🔬</span>
+            <span>TRL {project.data.trl}</span>
+          </a>
+        )}
       </div>
     </header>
+
+    {project.data.trl && (
+      <TrlCard level={project.data.trl} accentColor={accentColor} />
+    )}
 
     <!-- Detail / Content block -->
     <div id="project-details" class="glass-card p-8 md:p-10 rounded-3xl border border-element-border project-content prose-custom">

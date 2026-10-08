@@ -4,10 +4,15 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import ProjectCard from "@components/ProjectCard.astro";
 import FilterSidebar from "@components/FilterSidebar.astro";
+import TrlCircle from "@components/TrlCircle.astro";
 import { getCollection } from "astro:content";
 
 const projects = await getCollection("projects");
-const sortedProjects = projects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const sortedProjects = projects.sort((a, b) => {
+  const trlDiff = b.data.trl - a.data.trl;
+  if (trlDiff !== 0) return trlDiff;
+  return a.data.title.localeCompare(b.data.title);
+});
 
 // Extract unique tags from all projects
 const tagsSet = new Set<string>();
@@ -17,6 +22,7 @@ for (const project of projects) {
   }
 }
 const allTags = Array.from(tagsSet).sort();
+const allTrls = Array.from(new Set(sortedProjects.map(p => p.data.trl))).sort((a, b) => b - a);
 const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data.screenshot;
 
 const breadcrumbSchema = {
@@ -66,7 +72,24 @@ const breadcrumbSchema = {
         searchPlaceholder="Search projects..."
         tags={allTags}
         accentColor="blue"
-      />
+      >
+        <!-- Technology Readiness Level -->
+        <div class="mb-4 shrink-0">
+          <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Technology Readiness Level</span>
+          <div class="flex flex-wrap gap-2">
+            {allTrls.map(level => (
+              <button 
+                id={`trl-btn-${level}`}
+                class="trl-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200 inline-flex items-center gap-1.5"
+                data-trl={level.toString()}
+              >
+                <span>TRL {level}</span>
+                <TrlCircle level={level} accentColor="blue" size={13} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </FilterSidebar>
 
       <!-- Projects Grid (Column 2) -->
       <div class="lg:col-span-9 order-2 lg:order-1">
@@ -80,13 +103,13 @@ const breadcrumbSchema = {
                 <div 
                   class="project-wrapper h-full"
                   data-title={project.data.title.toLowerCase()}
-                  data-tagline={project.data.tagline.toLowerCase()}
+                  data-trl={project.data.trl.toString()}
                   data-desc={project.data.description.toLowerCase()}
                   data-tags={tagsJoined}
                 >
                   <ProjectCard 
                     title={project.data.title}
-                    tagline={project.data.tagline}
+                    trl={project.data.trl}
                     description={project.data.description}
                     href={`/projects/${project.id}/`}
                     tags={project.data.tags}
@@ -107,6 +130,49 @@ const breadcrumbSchema = {
   </Container>
 </Layout>
 
+<style>
+  /* Custom filter active states matching design guidelines */
+  .trl-filter-btn {
+    position: relative;
+    background: rgba(31, 41, 55, 0.4);
+    border-color: rgba(255, 255, 255, 0.05);
+    color: #9ca3af; /* text-gray-400 */
+  }
+
+  .trl-filter-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #60a5fa; /* text-blue-400 */
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
+  }
+
+  .trl-filter-btn:hover:not(.active) {
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.08);
+  }
+
+  /* Light mode overrides */
+  :global(.light) .trl-filter-btn {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569; /* slate-600 */
+  }
+
+  :global(.light) .trl-filter-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #1d4ed8; /* blue-700 */
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2);
+  }
+
+  :global(.light) .trl-filter-btn:hover:not(.active) {
+    background: rgba(59, 130, 246, 0.06);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #1d4ed8; /* blue-700 */
+  }
+</style>
+
 <script>
   import { ClientListFilter } from "@commons/client/filter";
 
@@ -114,9 +180,16 @@ const breadcrumbSchema = {
     new ClientListFilter({
       itemSelector: ".project-wrapper",
       searchFieldSelector: "#project-search",
-      searchDataAttributes: ["data-title", "data-tagline", "data-desc", "data-tags"],
+      searchDataAttributes: ["data-title", "data-desc", "data-tags"],
       searchParamKey: "q",
       buttonFilters: [
+        {
+          buttonSelector: ".trl-filter-btn",
+          dataAttribute: "data-trl",
+          defaultValue: "all",
+          activeClass: "active",
+          paramKey: "trl"
+        },
         {
           buttonSelector: ".tag-filter-btn",
           dataAttribute: "data-tags",

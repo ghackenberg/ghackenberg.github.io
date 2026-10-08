@@ -1,0 +1,76 @@
+---
+title: "Transport IDE"
+trl: 4
+description: "A modern Java- and JavaFX-based Intelligent Transportation Systems (ITS) modeling, discrete-event simulation, and control strategy optimization workbench."
+href: "https://github.com/ghackenberg/Transport-IDE"
+tags:
+  - "dynamic-programming"
+  - "java"
+  - "open-source"
+  - "optimization"
+  - "simulation"
+  - "systems-engineering"
+  - "traffic-control"
+  - "transportation-systems"
+accentColor: "blue"
+order: 5
+repoName: "Transport-IDE"
+screenshot:
+  src: "./simulator.png"
+  title: "Transport IDE: ITS Simulation & Analytics View"
+  description: "Real-time discrete-event simulation with telemetry graphs for intersections, segment traversals, and vehicle battery discharge."
+screenshots:
+  - src: "./simulator.png"
+    title: "ITS-MSE Simulation & Analytics"
+    description: "Real-time dual 2D/3D discrete-event simulation with telemetry graphs for intersections, segment traversals, and vehicle battery discharge."
+  - src: "./editor-deep.png"
+    title: "3D Perspective Network Editor"
+    description: "Spatial infrastructure editor allowing visual parameterization of vehicle dimensions, battery capacities, and elevation profiles."
+  - src: "./editor-flat.png"
+    title: "2D Topological Infrastructure Modeler"
+    description: "Graph-based editor for road segments, intersections, charging stations, and origin-destination demand pairs."
+  - src: "./controller-comparison.png"
+    title: "Empirical Strategy Comparison"
+    description: "Benchmark analytics comparing Random, Greedy, and Smart routing strategies under stochastic passenger trip demands."
+pubDate: 2023-06-06
+challenge: "Designing modern intelligent transportation systems requires evaluating interrelated decisions across physical road topology, charging infrastructure, fleet sizing, and dynamic dispatching strategies amidst complex stochastic demand."
+solution: "A modular, model-based software workbench combining an extensible domain-specific editor, a low-overhead discrete-event simulation engine, and comparative benchmarking algorithms for autonomous vehicle fleets and on-demand mobility."
+keyCapabilities:
+  - title: "Discrete-Event Simulation"
+    description: "Fast evaluation of on-demand transportation fleets by advancing time across domain-relevant milestones rather than continuous micro-steps."
+    icon: "⏱️"
+  - title: "Multi-Modal Network Modeling"
+    description: "Unified graph topology defining road segments, intersections, energy charging stations, and stochastic passenger demand pairs."
+    icon: "🗺️"
+  - title: "Plug-and-Play Control Strategies"
+    description: "Pluggable dispatch and routing algorithms ranging from heuristic greedy solvers to approximate dynamic programming and shortest paths."
+    icon: "🧠"
+  - title: "Dual 2D/3D Visualization"
+    description: "Interactive JavaFX visualizer supporting both planar topological graphs and 3D spatial models with real-time telemetry charts."
+    icon: "🖥️"
+  - title: "Monte-Carlo Experimentation"
+    description: "Multi-threaded batch execution and statistical aggregation to compare fleet performance, waiting times, and charging constraints."
+    icon: "📊"
+techStackHighlights:
+  - category: "Core & Architecture"
+    technologies:
+      - "Java 17+"
+      - "Java Jigsaw Modules"
+      - "Apache Maven"
+      - "Discrete-Event Formalism"
+  - category: "GUI & Visualization"
+    technologies:
+      - "JavaFX"
+      - "Java 3D / FX Canvas"
+      - "Java Swing (Legacy Module)"
+  - category: "Optimization & Control"
+    technologies:
+      - "Approximate Dynamic Programming"
+      - "Dijkstra Shortest Path"
+      - "Monte-Carlo Simulation"
+      - "Multi-Threaded Execution"
+outcomes:
+  - "Presented and published in peer-reviewed proceedings at MODELSWARD 2025, ISDA 2024, and IEEE ITSC."
+  - "Orders-of-magnitude speedup over traditional continuous-time microscopic traffic simulators via discrete-event semantics."
+  - "Fully open-source modular architecture under MIT license on GitHub (github.com/ghackenberg/Transport-IDE)."
+---

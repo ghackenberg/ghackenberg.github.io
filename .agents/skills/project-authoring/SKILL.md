@@ -13,7 +13,7 @@ Every project lives in its own directory under `src/content/projects/<slug>/`:
 - Frontmatter schema (`src/content.config.ts`):
   ```yaml
   title: "Steward Workflow Engine"
-  tagline: "High-Performance Distributed Agent Orchestrator"
+  trl: 7
   description: "Echtzeitfähige Orchestrierung autonomer KI-Agenten mit deterministischer State-Machine und lokaler Telemetrie."
   href: "https://steward.hackenberg.tech"
   repoName: "ghackenberg/steward"

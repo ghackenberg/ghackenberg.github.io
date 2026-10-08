@@ -1,6 +1,6 @@
 ---
 title: "Delta Dynamics"
-tagline: "Ecosystem Simulator"
+trl: 5
 description: "Low-poly ecosystem simulator featuring real-time dynamic terrain, GPU-accelerated water flow, resource management, and local LLM-driven AI behaviors."
 href: "https://dd.hackenberg.tech"
 tags: ["agentic-ai", "artificial-intelligence", "gpgpu", "local-ai", "react", "shaders", "simulation", "threejs", "web-llm", "webgl"]
@@ -8,16 +8,25 @@ accentColor: "blue"
 order: 3
 repoName: "delta-dynamics"
 screenshot:
-  src: "./preview.jpg"
-  title: "Delta Dynamics: Ökosystem-Topografie & GPU-Wasserlauf-Simulation"
-  description: "Farbenfrohes 3D-Relief-Diorama eines Flussdeltas mit lebendigen Biomen, GPU-Wasserströmungsbahnen und autonomen Sensorstationen"
+  src: "./final_sample_terrain_view.png"
+  title: "Delta Dynamics: Low-Poly Ecosystem & Hydrology Simulation"
+  description: "Interactive 3D low-poly terrain featuring procedural elevation tiers, dynamic biome coloring, and GPU shallow-water simulation."
 screenshots:
-  - image: "./screenshot1.png"
-    title: "Ecosystem Simulation View"
-    description: "Low-poly terrain visualization with active resource flows and LLM-driven AI agents."
-  - image: "./screenshot2.png"
-    title: "Terrain Editor UI"
-    description: "Interactive tools to manipulate topography, water flow vectors, and simulation parameters."
+  - src: "./final_sample_terrain_view.png"
+    title: "Low-Poly Ecosystem & Hydrology Simulation"
+    description: "Interactive 3D low-poly terrain featuring procedural elevation tiers, dynamic biome coloring, and GPU shallow-water simulation."
+  - src: "./high_flow_view.png"
+    title: "High-Flow Hydrology Simulation"
+    description: "Real-time shallow-water equations computing high-volume flux propagation and dynamic riverbed carving across the terrain mesh."
+  - src: "./deep_lake_view.png"
+    title: "Deep Lake Basin Accumulation"
+    description: "Equilibrium water level settling and ponding dynamics in low-elevation valley basins solved via GPU fragment shaders."
+  - src: "./sample_terrain_view.png"
+    title: "Procedural Terrain Elevation"
+    description: "Heightfield topography generation and biome contour distribution before steady-state fluid settling."
+  - src: "./initial_view.png"
+    title: "Simulation Viewport & Controls"
+    description: "Initial application launch state showing interactive simulation controls, camera navigation, and rendering viewport."
 challenge: "Real-time ecosystem simulation with fluid mechanics and autonomous entity behavior typically requires native desktop engines or heavy server infrastructure."
 solution: "A lightweight client-side ecosystem simulator in React and Three.js running GPGPU shallow-water equations in custom shaders and local LLM agents in-browser via Web-LLM."
 keyCapabilities:

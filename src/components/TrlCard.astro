@@ -1,0 +1,82 @@
+---
+import { getTrlDefinition } from "@commons/shared/trl";
+
+interface Props {
+  level: number;
+  accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
+}
+
+const { level, accentColor = 'blue' } = Astro.props;
+const def = getTrlDefinition(level);
+
+const colorTokens = {
+  blue: {
+    activeBar: 'bg-brand-blue shadow-[0_0_10px_rgba(59,130,246,0.5)]',
+    activeText: 'text-brand-blue font-bold',
+  },
+  yellow: {
+    activeBar: 'bg-brand-yellow shadow-[0_0_10px_rgba(245,158,11,0.5)]',
+    activeText: 'text-brand-yellow font-bold',
+  },
+  purple: {
+    activeBar: 'bg-brand-purple shadow-[0_0_10px_rgba(168,85,247,0.5)]',
+    activeText: 'text-brand-purple font-bold',
+  },
+  green: {
+    activeBar: 'bg-brand-green shadow-[0_0_10px_rgba(16,185,129,0.5)]',
+    activeText: 'text-brand-green font-bold',
+  },
+};
+
+const activeColor = colorTokens[accentColor] ?? colorTokens.blue;
+
+const segments = Array.from({ length: 9 }, (_, i) => {
+  const step = i + 1;
+  return {
+    step,
+    isActive: step <= level,
+  };
+});
+---
+
+<div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border mb-8 scroll-mt-28">
+  <h2 id="technology-readiness-level" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4 scroll-mt-28">
+    Technology Readiness Level
+  </h2>
+
+  <p class="font-bold text-gray-100 mb-4">
+    {def.title}
+  </p>
+
+  <div 
+    class="grid grid-cols-9 gap-1.5 md:gap-2 mb-4" 
+    role="progressbar" 
+    aria-valuenow={level} 
+    aria-valuemin={1} 
+    aria-valuemax={9} 
+    aria-label={`Technology Readiness Level ${level} of 9: ${def.title}`}
+  >
+    {segments.map((seg) => (
+      <div class="flex flex-col items-center gap-1.5">
+        <div 
+          class={`w-full h-2 rounded-full transition-all duration-300 ${
+            seg.isActive ? activeColor.activeBar : 'bg-white/10 light:bg-slate-200/80'
+          }`}
+        />
+        <span class={`text-xs font-mono font-medium ${
+          seg.isActive ? activeColor.activeText : 'text-gray-500 light:text-slate-400'
+        }`}>
+          {seg.step}
+        </span>
+      </div>
+    ))}
+  </div>
+
+  <p class="text-gray-300 leading-relaxed font-normal mb-4">
+    {def.fullDesc}
+  </p>
+
+  <p class="text-xs text-gray-500 light:text-slate-400 mt-3">
+    Framework alignment: Standardized 9-level TRL (NASA / EU Horizon Europe).
+  </p>
+</div>
