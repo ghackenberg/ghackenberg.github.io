@@ -7,7 +7,8 @@ export type ContentCollectionName =
   | "courses"
   | "projects"
   | "services"
-  | "visualizations";
+  | "visualizations"
+  | "interests";
 
 export interface ScoredItem<T> {
   item: T;

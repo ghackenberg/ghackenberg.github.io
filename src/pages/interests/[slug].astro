@@ -3,25 +3,18 @@ import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
+import RelatedContent from "@components/RelatedContent.astro";
 import { getCollection, render } from "astro:content";
-import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   const interests = await getCollection("interests");
-  const sorted = interests.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-  
-  return sorted.map((interest, index) => {
-    const prevInterest = index > 0 ? sorted[index - 1] : sorted[sorted.length - 1];
-    const nextInterest = index < sorted.length - 1 ? sorted[index + 1] : sorted[0];
-    
-    return {
-      params: { slug: interest.id },
-      props: { interest, prevInterest, nextInterest },
-    };
-  });
+  return interests.map((interest) => ({
+    params: { slug: interest.id },
+    props: { interest },
+  }));
 }
 
-const { interest, prevInterest, nextInterest } = Astro.props;
+const { interest } = Astro.props;
 const { Content } = await render(interest);
 
 const colorClasses = {
@@ -33,7 +26,6 @@ const colorClasses = {
     badge: 'bg-brand-blue/10 text-brand-blue border-brand-blue/30',
     btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white font-extrabold',
     glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
-    radialGlow: 'bg-brand-blue/10',
     gradientText: 'heading-gradient-blue',
     takeawayBullet: 'bg-brand-blue/20 text-brand-blue border-brand-blue/30',
     shadowGlow: 'shadow-[0_0_30px_-5px_rgba(59,130,246,0.2)]'
@@ -46,7 +38,6 @@ const colorClasses = {
     badge: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/30',
     btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-extrabold',
     glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
-    radialGlow: 'bg-brand-yellow/10',
     gradientText: 'heading-gradient-yellow',
     takeawayBullet: 'bg-brand-yellow/20 text-brand-yellow border-brand-yellow/30',
     shadowGlow: 'shadow-[0_0_30px_-5px_rgba(245,158,11,0.2)]'
@@ -59,7 +50,6 @@ const colorClasses = {
     badge: 'bg-brand-purple/10 text-brand-purple border-brand-purple/30',
     btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white font-extrabold',
     glow: 'from-brand-purple to-pink-500 light:to-pink-600',
-    radialGlow: 'bg-brand-purple/10',
     gradientText: 'heading-gradient-purple',
     takeawayBullet: 'bg-brand-purple/20 text-brand-purple border-brand-purple/30',
     shadowGlow: 'shadow-[0_0_30px_-5px_rgba(168,85,247,0.2)]'
@@ -72,12 +62,47 @@ const colorClasses = {
     badge: 'bg-brand-green/10 text-brand-green border-brand-green/30',
     btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white font-extrabold',
     glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
-    radialGlow: 'bg-brand-green/10',
     gradientText: 'heading-gradient-green',
     takeawayBullet: 'bg-brand-green/20 text-brand-green border-brand-green/30',
     shadowGlow: 'shadow-[0_0_30px_-5px_rgba(16,185,129,0.2)]'
   }
 }[interest.data.color];
+
+const interestTags: Record<string, string[]> = {
+  "software-engineering": [
+    "software-engineering",
+    "software-architecture",
+    "web-development",
+    "typescript",
+    "systems-engineering",
+    "open-source"
+  ],
+  "computer-simulation": [
+    "simulation",
+    "optimization",
+    "manufacturing-systems",
+    "factory-layout",
+    "systems-engineering"
+  ],
+  "artificial-intelligence": [
+    "artificial-intelligence",
+    "generative-ai",
+    "agentic-ai",
+    "machine-learning",
+    "enterprise-ai",
+    "mcp"
+  ],
+  "user-experience": [
+    "user-interface",
+    "ux-design",
+    "data-visualization",
+    "human-computer-interaction",
+    "computer-graphics",
+    "webgl"
+  ]
+};
+
+const tags = interestTags[interest.id] || [];
 
 const interestUrl = `https://hackenberg.tech/interests/${interest.id}/`;
 
@@ -85,7 +110,7 @@ const interestSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   "@id": `${interestUrl}#webpage`,
-  "name": `${interest.data.title} - Personal Interests | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP / FH Upper Austria Technology Campus Wels`,
+  "name": `${interest.data.title} - Professional Interests | Dr. Georg Hackenberg, Professor for Industrial Informatics @ UAP / FH Upper Austria Technology Campus Wels`,
   "description": interest.data.description,
   "url": interestUrl,
   "author": {
@@ -109,7 +134,7 @@ const breadcrumbSchema = {
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Personal Interests",
+      "name": "Professional Interests",
       "item": "https://hackenberg.tech/#about"
     },
     {
@@ -142,78 +167,27 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
         class={`inline-flex items-center space-x-2 text-xs font-bold px-4 py-2.5 rounded-xl border transition-all duration-300 hover:scale-105 ${colorClasses.badge}`}
       >
         <span>&larr;</span>
-        <span>Back to Personal Interests</span>
+        <span>Back to Professional Interests</span>
       </a>
     </div>
 
     <!-- Hero Header -->
-    <header class="mb-14 relative overflow-hidden">
-      <!-- Ambient Background Radial Glow -->
-      <div class={`absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-40 ${colorClasses.radialGlow}`}></div>
+    <header class="mb-14">
+      <div class="max-w-3xl">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-100 mb-4 leading-tight">
+          <span class={colorClasses.gradientText}>
+            {interest.data.title}
+          </span>
+        </h1>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-        
-        <!-- Left Content -->
-        <div class="lg:col-span-7 flex flex-col justify-center">
-          
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-100 mb-4 leading-tight">
-            <span class={colorClasses.gradientText}>
-              {interest.data.title}
-            </span>
-          </h1>
-
-          <p class="text-gray-300 text-base sm:text-lg leading-relaxed font-normal mb-6">
-            {interest.data.description}
-          </p>
-
-          <div class="flex flex-wrap items-center gap-3">
-            <a 
-              href="#essay"
-              class={`px-5 py-3 rounded-xl text-xs font-bold shadow-md transition-all duration-300 hover:scale-105 flex items-center space-x-2 ${colorClasses.btnBg}`}
-            >
-              <span>Explore My Perspective</span>
-              <span>&darr;</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Right Artwork Card -->
-        <div class="lg:col-span-5 flex justify-center">
-          <div class={`glass-card p-2 rounded-3xl border ${colorClasses.border} ${colorClasses.shadowGlow} overflow-hidden group w-full max-w-md`}>
-            <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950">
-              <Image 
-                src={interest.data.heroImage.src} 
-                alt={interest.data.heroImage.description}
-                title={interest.data.heroImage.title}
-                width={800}
-                height={450}
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                loading="eager"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none"></div>
-            </div>
-            <div class="p-3 text-center">
-              <span class="text-[11px] text-gray-400 font-medium italic">
-                {interest.data.title}
-              </span>
-            </div>
-          </div>
-        </div>
-
+        <p class="text-gray-300 text-base sm:text-lg leading-relaxed font-normal">
+          {interest.data.description}
+        </p>
       </div>
     </header>
 
-    <!-- Detailed Article / Why This Excites Me -->
-    <div id="essay" class="mb-16 scroll-mt-24">
-      <div class="mb-8">
-        <h2 id="why-this-field-excites-me" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-100">
-          Why This Field <span class={colorClasses.gradientText}>Excites Me</span>
-        </h2>
-        <p class="text-gray-400 text-sm mt-1">
-          Personal motivations, core engineering philosophy, and architectural principles driving my work.
-        </p>
-      </div>
-
+    <!-- Detailed Content Card -->
+    <div class="mb-16">
       <div class={`glass-card p-6 sm:p-10 md:p-12 rounded-3xl border ${colorClasses.border} interest-content theme-${interest.data.color} prose-custom`}>
         <Content />
       </div>
@@ -221,80 +195,12 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     </Container>
   </Section>
 
-  <!-- Adjacent Interest Navigator -->
-  <Section id="other-interests" border="top" padding="standard">
-    <Container size="reading" padding="none">
-      <div class="text-center mb-8">
-        <h3 id="other-interests-heading" class="text-lg font-bold text-gray-200">
-          Explore Other Personal Interests
-        </h3>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <!-- Previous Interest -->
-        <a 
-          href={`/interests/${prevInterest.id}/`}
-          class="glass-card p-6 rounded-2xl border border-element-border hover:border-element-border-medium transition-all duration-300 group flex items-center gap-4 text-left hover:-translate-x-1"
-        >
-          <span class="text-3xl select-none group-hover:scale-110 transition-transform">
-            {prevInterest.data.icon}
-          </span>
-          <div>
-            <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">
-              &larr; Previous Interest
-            </span>
-            <h4 class="text-base font-bold text-gray-100 group-hover:text-white transition-colors">
-              {prevInterest.data.title}
-            </h4>
-          </div>
-        </a>
-
-        <!-- Next Interest -->
-        <a 
-          href={`/interests/${nextInterest.id}/`}
-          class="glass-card p-6 rounded-2xl border border-element-border hover:border-element-border-medium transition-all duration-300 group flex items-center justify-end gap-4 text-right hover:translate-x-1"
-        >
-          <div>
-            <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">
-              Next Interest &rarr;
-            </span>
-            <h4 class="text-base font-bold text-gray-100 group-hover:text-white transition-colors">
-              {nextInterest.data.title}
-            </h4>
-          </div>
-          <span class="text-3xl select-none group-hover:scale-110 transition-transform">
-            {nextInterest.data.icon}
-          </span>
-        </a>
-      </div>
-
-    <!-- Connect & Collaborate Callout -->
-    <div id="connect-collaborate" class="mt-12 p-8 sm:p-10 rounded-3xl glass-card border border-element-border text-center relative overflow-hidden">
-      <div class={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorClasses.glow}`}></div>
-      <h3 id="connect-collaborate-heading" class="text-2xl font-extrabold text-gray-100 mb-3">
-        Interested in {interest.data.title}?
-      </h3>
-      <p class="text-gray-400 text-sm max-w-xl mx-auto mb-6 leading-relaxed">
-        Whether you are working on innovative software architectures, simulation models, AI workflows, or interactive user experiences—let's connect and exchange ideas.
-      </p>
-      <div class="flex flex-wrap items-center justify-center gap-4">
-        <a 
-          href="/#contact" 
-          class={`px-6 py-3.5 rounded-xl text-xs font-bold shadow-lg transition-all duration-300 hover:scale-105 ${colorClasses.btnBg}`}
-        >
-          Get in Touch
-        </a>
-        <a 
-          href="/" 
-          class="px-6 py-3.5 rounded-xl text-xs font-bold border border-white/10 glass-card text-gray-300 hover:text-white transition-all duration-300"
-        >
-          Return to Homepage
-        </a>
-      </div>
-    </div>
-
-    </Container>
-  </Section>
+  <!-- Standardized Related Content (Edge-to-Edge) -->
+  <RelatedContent 
+    currentCollection="interests" 
+    currentId={interest.id} 
+    tags={tags} 
+  />
 </Layout>
 
 <style>
