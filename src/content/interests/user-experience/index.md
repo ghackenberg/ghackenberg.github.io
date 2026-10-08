@@ -1,6 +1,5 @@
 ---
 title: "User Experience"
-tagline: "Visualizations & UI Designs"
 description: "I believe great software must be intuitive, responsive, and tactile—crafting user-centered workflows, polished mockups, and consistent design systems."
 color: "green"
 icon: "🌐"

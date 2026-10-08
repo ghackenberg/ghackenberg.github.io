@@ -1,6 +1,5 @@
 ---
 title: "Software Engineering"
-tagline: "Architectures & Web Platforms"
 description: "My passion lies in crafting high-performance, type-safe software architectures, test-driven pipelines, and continuous delivery systems."
 color: "blue"
 icon: "💻"

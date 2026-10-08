@@ -1,6 +1,5 @@
 ---
 title: "Computer Simulation"
-tagline: "Systems & Layout Modeling"
 description: "I am fascinated by modeling complex systems, from continuous differential dynamics to discrete-event simulation and parallel GPU computing."
 color: "yellow"
 icon: "🎓"

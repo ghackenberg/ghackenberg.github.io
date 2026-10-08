@@ -1,6 +1,5 @@
 ---
 title: "Artificial Intelligence"
-tagline: "Generative AI & Agent Systems"
 description: "I actively explore text embeddings, large language models, multimodal generative synthesis, autonomous reasoning loops, and Model Context Protocol."
 color: "purple"
 icon: "🎯"
