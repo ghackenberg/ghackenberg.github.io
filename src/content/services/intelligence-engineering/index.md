@@ -1,12 +1,12 @@
 ---
 title: "Intelligence Engineering"
 description: "Architecting sovereign on-premise and private cloud AI systems, covering private model serving, hybrid knowledge retrieval, Model Context Protocol (MCP) tooling, and stateful multi-agent orchestration."
-order: 1
+order: 2
 ctaText: "Inquire about Intelligence Engineering"
 previewImage:
-  src: "./preview.png"
-  title: "Präsentation: Intelligence Engineering Architektur"
-  description: "Dr. Georg Hackenberg erläutert die Komponenten privater KI-Infrastrukturen mit Model Serving, Agenten-Orchestrierung und GraphRAG"
+  src: "./preview.jpg"
+  title: "Serviceübersicht: Intelligence Engineering"
+  description: "Dr. Georg Hackenberg erläutert sovereign AI-Architekturen am Besuchertisch im Campus Office Wels"
 pubDate: 2026-09-11
 tags:
   - "artificial-intelligence"

@@ -1,12 +1,12 @@
 ---
 title: "Content Engineering"
 description: "Engineering structured, Git-based content architectures with typed Zod schemas, Astro static-site generation, automated CI/CD validation, and semantic Schema.org syndication."
-order: 2
+order: 3
 ctaText: "Inquire about Content Engineering"
 previewImage:
-  src: "./preview.png"
-  title: "Service architecture: Content Engineering"
-  description: "Strukturierte Content-Architekturen, Design-Tokens und automatisierte Git-Pipelines"
+  src: "./preview.jpg"
+  title: "Serviceübersicht: Content Engineering"
+  description: "Dr. Georg Hackenberg erläutert Multi-Channel-Publishing-Pipelines am Besuchertisch im Campus Office Wels"
 pubDate: 2026-09-11
 tags:
   - "content-engineering"
