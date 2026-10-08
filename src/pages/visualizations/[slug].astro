@@ -39,6 +39,7 @@ const presentations = await getCollection("presentations");
 const projects = await getCollection("projects");
 const courses = await getCollection("courses");
 const services = await getCollection("services");
+const interests = await getCollection("interests");
 const tags = await getCollection("tags");
 
 const payload = await buildGraphPayload({
@@ -48,6 +49,7 @@ const payload = await buildGraphPayload({
   projects,
   courses,
   services,
+  interests,
   tags,
   getImage
 });
@@ -82,7 +84,7 @@ const breadcrumbSchema = {
 
 <Layout 
   title={`${title} | Dr. Georg Hackenberg`} 
-  description={description || `An interactive network diagram mapping the connections between posts, publications, presentations, courses, projects, services, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
+  description={description || `An interactive network diagram mapping the connections between posts, publications, presentations, courses, projects, services, interests, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
   image={screenshot || optimizedScreenshot?.src}
   jsonLd={breadcrumbSchema}
 >
@@ -131,6 +133,10 @@ const breadcrumbSchema = {
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-sky-400 border border-white/20 shadow-sm shadow-sky-400/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Tags</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 border border-white/20 shadow-sm shadow-rose-500/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Interests</span>
           </div>
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-brand-blue border border-white/20 shadow-sm shadow-brand-blue/30"></span>

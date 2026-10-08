@@ -68,41 +68,7 @@ const colorClasses = {
   }
 }[interest.data.color];
 
-const interestTags: Record<string, string[]> = {
-  "software-engineering": [
-    "software-engineering",
-    "software-architecture",
-    "web-development",
-    "typescript",
-    "systems-engineering",
-    "open-source"
-  ],
-  "computer-simulation": [
-    "simulation",
-    "optimization",
-    "manufacturing-systems",
-    "factory-layout",
-    "systems-engineering"
-  ],
-  "artificial-intelligence": [
-    "artificial-intelligence",
-    "generative-ai",
-    "agentic-ai",
-    "machine-learning",
-    "enterprise-ai",
-    "mcp"
-  ],
-  "user-experience": [
-    "user-interface",
-    "ux-design",
-    "data-visualization",
-    "human-computer-interaction",
-    "computer-graphics",
-    "webgl"
-  ]
-};
-
-const tags = interestTags[interest.id] || [];
+const tags = interest.data.tags || [];
 
 const interestUrl = `https://hackenberg.tech/interests/${interest.id}/`;
 
@@ -180,9 +146,23 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
           </span>
         </h1>
 
-        <p class="text-gray-300 text-base sm:text-lg leading-relaxed font-normal">
+        <p class="text-gray-300 text-base sm:text-lg leading-relaxed font-normal mb-6">
           {interest.data.description}
         </p>
+
+        {interest.data.tags && interest.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {interest.data.tags.map((tag) => (
+              <a
+                href={`/tags/${tag}/`}
+                data-tag={tag}
+                class={`tag-chip tag-chip-${interest.data.color} inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border hover:scale-105 transition-all`}
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </header>
 

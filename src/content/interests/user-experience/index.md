@@ -1,6 +1,13 @@
 ---
 title: "User Experience"
 description: "I believe great software must be intuitive, responsive, and tactile—crafting user-centered workflows, polished mockups, and consistent design systems."
+tags:
+  - "user-interface"
+  - "ux-design"
+  - "data-visualization"
+  - "human-computer-interaction"
+  - "computer-graphics"
+  - "webgl"
 color: "green"
 icon: "🌐"
 heroImage:

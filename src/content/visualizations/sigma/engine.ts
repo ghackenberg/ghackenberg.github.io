@@ -2,8 +2,8 @@ import { Sigma } from 'sigma';
 import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#f43f5e'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea', '#e11d48'];
 
 function getNodeColor(group: number, isLight: boolean): string {
   return isLight ? (colorsLight[group] || colorsLight[0]) : (colorsDark[group] || colorsDark[0]);
@@ -102,6 +102,7 @@ const engine: SigmaEngine = {
         node.startsWith('/projects/') ||
         node.startsWith('/courses/') ||
         node.startsWith('/services/') ||
+        node.startsWith('/interests/') ||
         node.startsWith('/tags/')
       ) {
         window.location.href = node;
@@ -186,13 +187,14 @@ const engine: SigmaEngine = {
       const courses = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 4);
       const projects = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 5);
       const services = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 6);
+      const interests = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 7);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
       const isMobile = window.innerWidth < 768;
 
       if (isMobile) {
         categories.forEach((catNodes, catIdx) => {
-          const rowY = (catIdx - 3) * 4;
+          const rowY = (catIdx - (categories.length - 1) / 2) * 4;
           catNodes.forEach((n, idx) => {
             targets[n] = {
               x: catNodes.length > 1 ? (idx - (catNodes.length - 1) / 2) * (20 / (catNodes.length - 1)) : 0,
@@ -202,7 +204,7 @@ const engine: SigmaEngine = {
         });
       } else {
         categories.forEach((catNodes, catIdx) => {
-          const colX = (catIdx - 3) * 5;
+          const colX = (catIdx - (categories.length - 1) / 2) * 5;
           catNodes.forEach((n, idx) => {
             targets[n] = {
               x: colX,

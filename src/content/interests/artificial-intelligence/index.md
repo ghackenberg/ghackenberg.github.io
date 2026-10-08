@@ -1,6 +1,13 @@
 ---
 title: "Artificial Intelligence"
 description: "I actively explore text embeddings, large language models, multimodal generative synthesis, autonomous reasoning loops, and Model Context Protocol."
+tags:
+  - "artificial-intelligence"
+  - "generative-ai"
+  - "agentic-ai"
+  - "machine-learning"
+  - "enterprise-ai"
+  - "mcp"
 color: "purple"
 icon: "🎯"
 heroImage:

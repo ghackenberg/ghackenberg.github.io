@@ -421,6 +421,7 @@ const interests = defineCollection({
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string().optional(),
+    tags: z.array(tagReference),
     color: z.enum(['blue', 'yellow', 'purple', 'green']),
     icon: z.string(),
     heroImage: coverImageSchema({ image }),

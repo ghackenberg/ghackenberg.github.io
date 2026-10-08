@@ -16,6 +16,7 @@ export interface ScoredItem<T> {
 }
 
 export interface RelatedContentResults {
+  interests: CollectionEntry<"interests">[];
   posts: CollectionEntry<"posts">[];
   publications: CollectionEntry<"publications">[];
   presentations: CollectionEntry<"presentations">[];
@@ -29,6 +30,7 @@ export interface GetRelatedContentOptions {
   currentCollection: ContentCollectionName;
   currentId: string;
   tags?: string[];
+  allInterests?: CollectionEntry<"interests">[];
   allPosts?: CollectionEntry<"posts">[];
   allPublications?: CollectionEntry<"publications">[];
   allPresentations?: CollectionEntry<"presentations">[];
@@ -37,6 +39,7 @@ export interface GetRelatedContentOptions {
   allServices?: CollectionEntry<"services">[];
   allVisualizations?: CollectionEntry<"visualizations">[];
   limits?: {
+    interests?: number;
     posts?: number;
     publications?: number;
     presentations?: number;
@@ -62,6 +65,7 @@ export async function getRelatedContent(
     limits = {},
   } = options;
 
+  const maxInterests = limits.interests ?? 4;
   const maxPosts = limits.posts ?? 3;
   const maxPubs = limits.publications ?? 3;
   const maxPres = limits.presentations ?? 2;
@@ -72,6 +76,7 @@ export async function getRelatedContent(
 
   // Load collections concurrently if not passed in
   const [
+    interestsCol,
     postsCol,
     pubsCol,
     presCol,
@@ -80,6 +85,7 @@ export async function getRelatedContent(
     servicesCol,
     visCol,
   ] = await Promise.all([
+    options.allInterests ?? getCollection("interests"),
     options.allPosts ?? getCollection("posts"),
     options.allPublications ?? getCollection("publications"),
     options.allPresentations ?? getCollection("presentations"),
@@ -88,6 +94,22 @@ export async function getRelatedContent(
     options.allServices ?? getCollection("services"),
     options.allVisualizations ?? getCollection("visualizations"),
   ]);
+
+  // 0. Professional Interests
+  const isSelfInterests = currentCollection === "interests";
+  const scoredInterests: ScoredItem<CollectionEntry<"interests">>[] = interestsCol
+    .filter((i) => !(isSelfInterests && i.id === currentId))
+    .map((i) => ({
+      item: i,
+      overlapCount: countTagOverlap(tags, i.data.tags),
+    }))
+    .filter((scored) => scored.overlapCount > 0)
+    .sort(
+      (a, b) =>
+        b.overlapCount - a.overlapCount ||
+        (a.item.data.order ?? 0) - (b.item.data.order ?? 0)
+    );
+  const relatedInterests = scoredInterests.slice(0, maxInterests).map((s) => s.item);
 
   // 1. Posts
   const isSelfPosts = currentCollection === "posts";
@@ -203,6 +225,7 @@ export async function getRelatedContent(
   const relatedVisualizations = scoredVis.slice(0, maxVis).map((s) => s.item);
 
   return {
+    interests: relatedInterests,
     posts: relatedPosts,
     publications: relatedPublications,
     presentations: relatedPresentations,

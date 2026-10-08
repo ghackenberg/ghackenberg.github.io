@@ -1,6 +1,13 @@
 ---
 title: "Software Engineering"
 description: "My passion lies in crafting high-performance, type-safe software architectures, test-driven pipelines, and continuous delivery systems."
+tags:
+  - "software-engineering"
+  - "software-architecture"
+  - "web-development"
+  - "typescript"
+  - "systems-engineering"
+  - "open-source"
 color: "blue"
 icon: "💻"
 heroImage:

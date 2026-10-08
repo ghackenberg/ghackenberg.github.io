@@ -1,7 +1,7 @@
 import cytoscape, { type Core, type NodeSingular } from 'cytoscape';
 
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea'];
+const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#f43f5e'];
+const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea', '#e11d48'];
 
 function getNodeColor(node: NodeSingular, isLight: boolean): string {
   const grp = node.data('group') ?? 0;
@@ -84,6 +84,7 @@ const engine: CytoscapeEngine = {
         id.startsWith('/projects/') ||
         id.startsWith('/courses/') ||
         id.startsWith('/services/') ||
+        id.startsWith('/interests/') ||
         id.startsWith('/tags/')
       ) {
         window.location.href = id;
@@ -145,8 +146,9 @@ const engine: CytoscapeEngine = {
       const courses = nodes.filter((n: NodeSingular) => n.data('group') === 4);
       const projects = nodes.filter((n: NodeSingular) => n.data('group') === 5);
       const services = nodes.filter((n: NodeSingular) => n.data('group') === 6);
+      const interests = nodes.filter((n: NodeSingular) => n.data('group') === 7);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
       const pos: Record<string, { x: number; y: number }> = {};
       const isMobile = width < 768 || window.innerWidth < 768;
       
