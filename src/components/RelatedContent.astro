@@ -107,7 +107,7 @@ const sectionConfig = {
 };
 
 // Display order strictly follows main navigation: Posts, Publications, Presentations, Courses, Projects, Services, Visualizations
-const orderedKeys: ContentCollectionName[] = [
+const orderedKeys: Array<keyof typeof sectionConfig> = [
   "posts",
   "publications",
   "presentations",
