@@ -420,7 +420,6 @@ const interests = defineCollection({
   }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    tagline: z.string(),
     description: z.string().optional(),
     color: z.enum(['blue', 'yellow', 'purple', 'green']),
     icon: z.string(),

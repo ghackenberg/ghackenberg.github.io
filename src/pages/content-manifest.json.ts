@@ -155,7 +155,6 @@ export async function GET() {
       id: i.id,
       url: `/interests/${i.id}/`,
       title: i.data.title,
-      tagline: i.data.tagline,
       description: i.data.description || '',
       image: await resolveImage(i.data.heroImage),
       color: i.data.color,

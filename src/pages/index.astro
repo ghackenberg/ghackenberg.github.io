@@ -377,7 +377,6 @@ const professionalInterests = [
     icon: "💻",
     color: "blue" as const,
     title: "Software Engineering",
-    tagline: "Architectures & Web Platforms",
     image: optimizedInterestSoftware.src,
     imageTitle: "Research domain: Software Engineering",
     imageDescription: "Focus area in Software Engineering: Architectures & Web Platforms.",
@@ -388,7 +387,6 @@ const professionalInterests = [
     icon: "🎓",
     color: "yellow" as const,
     title: "Computer Simulation",
-    tagline: "Systems & Layout Modeling",
     image: optimizedInterestSimulation.src,
     imageTitle: "Research domain: Computer Simulation",
     imageDescription: "Focus area in Computer Simulation: Systems & Layout Modeling.",
@@ -399,7 +397,6 @@ const professionalInterests = [
     icon: "🎯",
     color: "purple" as const,
     title: "Artificial Intelligence",
-    tagline: "Generative AI & Agent Systems",
     image: optimizedInterestAi.src,
     imageTitle: "Research domain: Artificial Intelligence",
     imageDescription: "Focus area in Artificial Intelligence: Generative AI & Agent Systems.",
@@ -410,7 +407,6 @@ const professionalInterests = [
     icon: "🌐",
     color: "green" as const,
     title: "User Experience",
-    tagline: "Visualizations & UI Designs",
     image: optimizedInterestUx.src,
     imageTitle: "Research domain: User Experience",
     imageDescription: "Focus area in User Experience: Visualizations & UI Designs.",
@@ -570,7 +566,7 @@ const interestGalleryItems: GalleryItem[] = professionalInterests.map(interest =
   title: interest.title,
   image: interest.image,
   href: `/interests/${interest.slug}/`,
-  tagline: interest.tagline,
+  tagline: interest.description,
   pubDate: Date.now() - 1000 * 60 * 60 * 24 * 30,
   imageTitle: interest.imageTitle,
   imageDescription: interest.imageDescription
@@ -1117,12 +1113,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
 
               <!-- Content Body -->
               <div class="preview-card-body p-6 flex flex-col flex-grow">
-                <h3 class={`text-lg font-bold text-gray-100 mb-1 group-hover:text-brand-${interest.color} transition-colors`}>
+                <h3 class={`text-lg font-bold text-gray-100 mb-3 group-hover:text-brand-${interest.color} transition-colors`}>
                   {interest.title}
                 </h3>
-                <p class={`text-[10px] font-semibold uppercase tracking-wider mb-3 ${mapping.text}`}>
-                  {interest.tagline}
-                </p>
                 <p class="text-gray-400 text-sm leading-relaxed font-normal flex-grow mb-6">
                   {interest.description}
                 </p>
