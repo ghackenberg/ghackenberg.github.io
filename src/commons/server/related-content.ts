@@ -15,7 +15,18 @@ export interface ScoredItem<T> {
   overlapCount: number;
 }
 
+export type UnifiedRelatedItem =
+  | { collection: "interests"; item: CollectionEntry<"interests">; overlapCount: number }
+  | { collection: "posts"; item: CollectionEntry<"posts">; overlapCount: number }
+  | { collection: "publications"; item: CollectionEntry<"publications">; overlapCount: number }
+  | { collection: "presentations"; item: CollectionEntry<"presentations">; overlapCount: number }
+  | { collection: "courses"; item: CollectionEntry<"courses">; overlapCount: number }
+  | { collection: "projects"; item: CollectionEntry<"projects">; overlapCount: number }
+  | { collection: "services"; item: CollectionEntry<"services">; overlapCount: number }
+  | { collection: "visualizations"; item: CollectionEntry<"visualizations">; overlapCount: number };
+
 export interface RelatedContentResults {
+  ranked: UnifiedRelatedItem[];
   interests: CollectionEntry<"interests">[];
   posts: CollectionEntry<"posts">[];
   publications: CollectionEntry<"publications">[];
@@ -39,6 +50,7 @@ export interface GetRelatedContentOptions {
   allServices?: CollectionEntry<"services">[];
   allVisualizations?: CollectionEntry<"visualizations">[];
   limits?: {
+    total?: number;
     interests?: number;
     posts?: number;
     publications?: number;
@@ -55,6 +67,53 @@ function countTagOverlap(sourceTags: string[], targetTags?: string[]): number {
   return targetTags.filter((tag) => sourceTags.includes(tag)).length;
 }
 
+function getItemRecency(entry: UnifiedRelatedItem): number | null {
+  if (entry.collection === "posts") {
+    return entry.item.data.pubDate.valueOf();
+  }
+  if (entry.collection === "presentations") {
+    const d = entry.item.data.pubDate;
+    return d instanceof Date ? d.valueOf() : new Date(d || "").valueOf();
+  }
+  if (entry.collection === "publications") {
+    const match = entry.item.id.match(/^(\d{4})(?:_(\d{2}))?/);
+    if (match) {
+      const year = parseInt(match[1], 10);
+      const month = match[2] ? parseInt(match[2], 10) - 1 : 0;
+      return new Date(year, month, 1).valueOf();
+    }
+    const d = new Date(entry.item.data.pubDate);
+    if (!isNaN(d.valueOf())) return d.valueOf();
+    return null;
+  }
+  return null;
+}
+
+function compareUnifiedItems(a: UnifiedRelatedItem, b: UnifiedRelatedItem): number {
+  // 1. Tag overlap count descending
+  if (b.overlapCount !== a.overlapCount) {
+    return b.overlapCount - a.overlapCount;
+  }
+
+  // 2. Date / recency for posts, presentations, publications
+  const recA = getItemRecency(a);
+  const recB = getItemRecency(b);
+
+  if (recA !== null && recB !== null) {
+    if (recB !== recA) return recB - recA;
+  }
+
+  // 3. Secondary for ordered collections (interests, projects, services)
+  const orderA = "order" in a.item.data ? ((a.item.data as { order?: number }).order ?? 0) : 0;
+  const orderB = "order" in b.item.data ? ((b.item.data as { order?: number }).order ?? 0) : 0;
+  if (orderA !== orderB) {
+    return orderA - orderB;
+  }
+
+  // 4. Alphabetical title fallback for deterministic stability
+  return a.item.data.title.localeCompare(b.item.data.title);
+}
+
 export async function getRelatedContent(
   options: GetRelatedContentOptions
 ): Promise<RelatedContentResults> {
@@ -64,6 +123,8 @@ export async function getRelatedContent(
     tags = [],
     limits = {},
   } = options;
+
+  const maxTotal = limits.total ?? 6;
 
   const maxInterests = limits.interests ?? 4;
   const maxPosts = limits.posts ?? 3;
@@ -224,7 +285,24 @@ export async function getRelatedContent(
     );
   const relatedVisualizations = scoredVis.slice(0, maxVis).map((s) => s.item);
 
+  // 8. Unified cross-collection ranking
+  const allScored: UnifiedRelatedItem[] = [
+    ...scoredInterests.map((s) => ({ collection: "interests" as const, item: s.item, overlapCount: s.overlapCount })),
+    ...scoredPosts.map((s) => ({ collection: "posts" as const, item: s.item, overlapCount: s.overlapCount })),
+    ...scoredPubs.map((s) => ({ collection: "publications" as const, item: s.item, overlapCount: s.overlapCount })),
+    ...scoredPres.map((s) => ({ collection: "presentations" as const, item: s.item, overlapCount: s.overlapCount })),
+    ...scoredCourses.map((s) => ({ collection: "courses" as const, item: s.item, overlapCount: s.overlapCount })),
+    ...scoredProjects.map((s) => ({ collection: "projects" as const, item: s.item, overlapCount: s.overlapCount })),
+    ...scoredServices.map((s) => ({ collection: "services" as const, item: s.item, overlapCount: s.overlapCount })),
+    ...scoredVis.map((s) => ({ collection: "visualizations" as const, item: s.item, overlapCount: s.overlapCount })),
+  ]
+    .filter((s) => s.overlapCount > 0)
+    .sort(compareUnifiedItems);
+
+  const ranked = allScored.slice(0, maxTotal);
+
   return {
+    ranked,
     interests: relatedInterests,
     posts: relatedPosts,
     publications: relatedPublications,

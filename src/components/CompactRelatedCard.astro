@@ -1,0 +1,387 @@
+---
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { ContentCollectionName } from "@commons/server/related-content";
+
+interface Props {
+  id?: string;
+  href: string;
+  title: string;
+  description?: string;
+  date?: Date | string;
+  collection: ContentCollectionName;
+  color?: 'blue' | 'indigo' | 'cyan' | 'yellow' | 'emerald' | 'purple' | 'rose' | 'teal' | 'green';
+  image?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
+  icon?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
+  fallbackIcon?: string;
+  tags?: string[];
+  activeTag?: string | string[];
+  class?: string;
+}
+
+const {
+  id,
+  href,
+  title,
+  description,
+  date,
+  collection,
+  color,
+  image,
+  icon,
+  fallbackIcon,
+  tags = [],
+  activeTag,
+  class: className = "",
+} = Astro.props;
+
+const defaultColors: Record<ContentCollectionName, 'blue' | 'indigo' | 'cyan' | 'yellow' | 'emerald' | 'purple' | 'rose' | 'teal'> = {
+  interests: "rose",
+  posts: "blue",
+  publications: "indigo",
+  presentations: "cyan",
+  courses: "yellow",
+  projects: "emerald",
+  services: "purple",
+  visualizations: "teal",
+};
+
+const defaultIcons: Record<string, string> = {
+  interests: "🎯",
+  posts: "✍️",
+  publications: "📚",
+  presentations: "🖥️",
+  courses: "🎓",
+  projects: "🚀",
+  services: "💼",
+  visualizations: "🌐",
+};
+
+const TYPE_CONFIG: Record<
+  ContentCollectionName,
+  { label: string; icon: string; badgeStyle: string }
+> = {
+  posts: {
+    label: "Post",
+    icon: "✍️",
+    badgeStyle: "bg-brand-blue/15 text-brand-blue light:text-blue-700 border-brand-blue/30",
+  },
+  courses: {
+    label: "Course",
+    icon: "🎓",
+    badgeStyle: "bg-brand-yellow/15 text-brand-yellow light:text-amber-800 border-brand-yellow/30",
+  },
+  publications: {
+    label: "Publication",
+    icon: "📚",
+    badgeStyle: "bg-indigo-500/15 text-indigo-400 light:text-indigo-700 border-indigo-500/30",
+  },
+  presentations: {
+    label: "Presentation",
+    icon: "🖥️",
+    badgeStyle: "bg-cyan-500/15 text-cyan-400 light:text-cyan-700 border-cyan-500/30",
+  },
+  projects: {
+    label: "Project",
+    icon: "🚀",
+    badgeStyle: "bg-emerald-500/15 text-emerald-400 light:text-emerald-700 border-emerald-500/30",
+  },
+  services: {
+    label: "Service",
+    icon: "💼",
+    badgeStyle: "bg-brand-purple/15 text-brand-purple light:text-purple-700 border-brand-purple/30",
+  },
+  interests: {
+    label: "Interest",
+    icon: "🎯",
+    badgeStyle: "bg-rose-500/15 text-rose-400 light:text-rose-700 border-rose-500/30",
+  },
+  visualizations: {
+    label: "Visualization",
+    icon: "🌐",
+    badgeStyle: "bg-teal-500/15 text-teal-400 light:text-teal-700 border-teal-500/30",
+  },
+};
+
+const typeInfo = TYPE_CONFIG[collection] || {
+  label: collection,
+  icon: fallbackIcon || defaultIcons[collection] || "📄",
+  badgeStyle: "bg-gray-500/15 text-gray-400 light:text-slate-600 border-gray-500/25",
+};
+
+const cardColor = color || defaultColors[collection] || "blue";
+
+const COLOR_THEMES = {
+  blue: {
+    borderHover: "hover:border-brand-blue/50",
+    titleHover: "group-hover:text-brand-blue",
+    arrowHover: "group-hover:text-brand-blue",
+    badgeClass: "badge-new-blue",
+    tagChip: "tag-chip-blue",
+    fallbackBg: "bg-brand-blue/10 text-brand-blue",
+  },
+  indigo: {
+    borderHover: "hover:border-indigo-500/50",
+    titleHover: "group-hover:text-indigo-400 light:group-hover:text-indigo-700",
+    arrowHover: "group-hover:text-indigo-400 light:group-hover:text-indigo-700",
+    badgeClass: "badge-new-purple",
+    tagChip: "tag-chip-purple",
+    fallbackBg: "bg-indigo-500/10 text-indigo-400 light:text-indigo-700",
+  },
+  cyan: {
+    borderHover: "hover:border-cyan-500/50",
+    titleHover: "group-hover:text-cyan-400 light:group-hover:text-cyan-700",
+    arrowHover: "group-hover:text-cyan-400 light:group-hover:text-cyan-700",
+    badgeClass: "badge-new-blue",
+    tagChip: "tag-chip-blue",
+    fallbackBg: "bg-cyan-500/10 text-cyan-400 light:text-cyan-700",
+  },
+  yellow: {
+    borderHover: "hover:border-brand-yellow/50",
+    titleHover: "group-hover:text-brand-yellow",
+    arrowHover: "group-hover:text-brand-yellow",
+    badgeClass: "badge-new-yellow",
+    tagChip: "tag-chip-yellow",
+    fallbackBg: "bg-brand-yellow/10 text-brand-yellow",
+  },
+  emerald: {
+    borderHover: "hover:border-emerald-500/50",
+    titleHover: "group-hover:text-emerald-400 light:group-hover:text-emerald-700",
+    arrowHover: "group-hover:text-emerald-400 light:group-hover:text-emerald-700",
+    badgeClass: "badge-new-green",
+    tagChip: "tag-chip-green",
+    fallbackBg: "bg-emerald-500/10 text-emerald-400 light:text-emerald-700",
+  },
+  purple: {
+    borderHover: "hover:border-brand-purple/50",
+    titleHover: "group-hover:text-brand-purple",
+    arrowHover: "group-hover:text-brand-purple",
+    badgeClass: "badge-new-purple",
+    tagChip: "tag-chip-purple",
+    fallbackBg: "bg-brand-purple/10 text-brand-purple",
+  },
+  rose: {
+    borderHover: "hover:border-rose-500/50",
+    titleHover: "group-hover:text-rose-400 light:group-hover:text-rose-700",
+    arrowHover: "group-hover:text-rose-400 light:group-hover:text-rose-700",
+    badgeClass: "badge-new-purple",
+    tagChip: "tag-chip-purple",
+    fallbackBg: "bg-rose-500/10 text-rose-400 light:text-rose-700",
+  },
+  teal: {
+    borderHover: "hover:border-teal-500/50",
+    titleHover: "group-hover:text-teal-400 light:group-hover:text-teal-700",
+    arrowHover: "group-hover:text-teal-400 light:group-hover:text-teal-700",
+    badgeClass: "badge-new-green",
+    tagChip: "tag-chip-green",
+    fallbackBg: "bg-teal-500/10 text-teal-400 light:text-teal-700",
+  },
+  green: {
+    borderHover: "hover:border-brand-green/50",
+    titleHover: "group-hover:text-brand-green",
+    arrowHover: "group-hover:text-brand-green",
+    badgeClass: "badge-new-green",
+    tagChip: "tag-chip-green",
+    fallbackBg: "bg-brand-green/10 text-brand-green",
+  },
+};
+
+const colorTheme = COLOR_THEMES[cardColor as keyof typeof COLOR_THEMES] || COLOR_THEMES.blue;
+
+// Date formatting helper
+let displayDate: string | undefined = undefined;
+if (date instanceof Date) {
+  displayDate = isNaN(date.getTime())
+    ? undefined
+    : date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+} else if (typeof date === "string" && date.trim().length > 0) {
+  const trimmed = date.trim();
+  const isIsoDate = /^\d{4}-\d{2}-\d{2}/.test(trimmed) && !isNaN(Date.parse(trimmed));
+  if (isIsoDate) {
+    displayDate = new Date(trimmed).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  } else {
+    displayDate = trimmed;
+  }
+}
+
+interface CoverImageObject {
+  src: ImageMetadata;
+  title?: string;
+  description?: string;
+}
+
+// Image resolution & optimization
+const rawImage = image || icon;
+const isCoverObj = Boolean(rawImage && typeof rawImage === 'object' && 'src' in rawImage && (rawImage as CoverImageObject).src);
+const imageSrcObj = isCoverObj ? (rawImage as CoverImageObject).src : (rawImage as ImageMetadata | string | undefined);
+const isImageMetadata = Boolean(imageSrcObj && typeof imageSrcObj === 'object' && 'src' in imageSrcObj);
+const isSvg = isImageMetadata && (imageSrcObj as ImageMetadata).format === 'svg';
+
+let displayImgSrc: string | undefined = undefined;
+
+if (isImageMetadata && !isSvg) {
+  try {
+    const optimized = await getImage({
+      src: imageSrcObj as ImageMetadata,
+      format: 'webp',
+      width: 160,
+      quality: 80,
+    });
+    displayImgSrc = optimized.src;
+  } catch {
+    displayImgSrc = (imageSrcObj as ImageMetadata).src;
+  }
+} else if (typeof imageSrcObj === 'string') {
+  displayImgSrc = imageSrcObj;
+} else if (isImageMetadata) {
+  displayImgSrc = (imageSrcObj as ImageMetadata).src;
+}
+
+// Calculate distinct imgTitle and imgAlt for image sitemap and accessibility compliance
+const imgTitle = (isCoverObj && (rawImage as CoverImageObject).title) ? (rawImage as CoverImageObject).title! : title;
+const rawDesc = (isCoverObj && (rawImage as CoverImageObject).description) ? (rawImage as CoverImageObject).description! : (description ? `${title} – ${description}` : `Preview thumbnail for ${title}`);
+const imgAlt = rawDesc.toLowerCase() === imgTitle.toLowerCase() ? `Preview thumbnail for ${imgTitle}` : rawDesc;
+
+// Tag filtering: strictly show only overlapping tags and count if activeTag is provided
+const isTagActive = (t: string) => {
+  if (!activeTag) return false;
+  return Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t;
+};
+
+const relevantTags = activeTag && (Array.isArray(activeTag) ? activeTag.length > 0 : true)
+  ? tags.filter((t) => isTagActive(t))
+  : tags;
+
+const maxDisplay = 2;
+const displayTags = relevantTags.slice(0, maxDisplay);
+const remainingCount = relevantTags.length - displayTags.length;
+const remainingTags = relevantTags.slice(maxDisplay);
+
+const cardId = id || href.replace(/^\/[^/]+\//, '').replace(/\/$/, '') || title;
+---
+
+<article
+  class={`glass-card preview-card compact-card relative p-3 sm:p-3.5 rounded-xl border border-element-border flex items-center gap-3.5 sm:gap-4 group cursor-pointer ${colorTheme.borderHover} transition-all duration-200 h-full w-full min-h-[126px] sm:min-h-[138px] ${className}`}
+  data-card-id={cardId}
+  data-collection={collection}
+>
+  <!-- Absolute overlay link for whole-card clickability -->
+  <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
+
+  <!-- Left: Thumbnail / icon container -->
+  <div class="w-22 h-22 sm:w-28 sm:h-28 shrink-0 rounded-lg aspect-square overflow-hidden border border-element-border-medium bg-gray-900/60 light:bg-slate-100 flex items-center justify-center relative">
+    {displayImgSrc ? (
+      <img
+        src={displayImgSrc}
+        alt={imgAlt}
+        title={imgTitle}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div class={`w-full h-full flex items-center justify-center text-2xl sm:text-3xl ${colorTheme.fallbackBg}`}>
+        <span role="img" aria-hidden="true">{fallbackIcon || defaultIcons[collection] || "📄"}</span>
+      </div>
+    )}
+
+    <!-- Unread tracking badge -->
+    <span
+      class={`unread-dot hidden badge-new ${colorTheme.badgeClass} badge-corner-tr`}
+      data-item-url={href}
+      title={`Unread ${collection}`}
+    >UNREAD</span>
+  </div>
+
+  <!-- Right: Min-w-0 flex-grow content with unified 4-row layout -->
+  <div class="flex-1 min-w-0 flex flex-col justify-between py-1 h-full gap-1.5 sm:gap-2">
+    <!-- Row 1: Meta Header (Type Badge & Date) -->
+    <div class="flex items-center gap-2 flex-nowrap overflow-hidden text-[11px] sm:text-xs font-medium text-gray-400 light:text-slate-500 h-6">
+      <span class={`type-badge inline-flex items-center px-1.5 h-5 rounded text-[10px] sm:text-[11px] font-semibold border shrink-0 leading-none ${typeInfo.badgeStyle}`}>
+        {typeInfo.label}
+      </span>
+      {displayDate && <span class="truncate min-w-0">{displayDate}</span>}
+    </div>
+
+    <!-- Row 2: Title -->
+    <h4 class={`text-sm sm:text-base font-bold text-gray-100 light:text-slate-900 ${colorTheme.titleHover} transition-colors truncate leading-snug`} title={title}>
+      {title}
+    </h4>
+
+    <!-- Row 3: Description -->
+    <p class="text-xs text-gray-400 light:text-slate-500 truncate leading-normal" title={description}>
+      {description || "No description provided."}
+    </p>
+
+    <!-- Row 4: Tag Chips -->
+    <div class="flex items-center gap-1.5 flex-nowrap overflow-hidden h-6 relative z-20">
+      {displayTags.length > 0 ? (
+        <>
+          {displayTags.map((tag) => (
+            <a
+              href={`/tags/${tag}/`}
+              data-tag={tag}
+              class={`tag-chip ${colorTheme.tagChip} inline-flex items-center px-1.5 sm:px-2 h-5 rounded-full text-[10px] sm:text-[11px] font-semibold border shrink-0 leading-none hover:scale-105 transition-all ${
+                isTagActive(tag) ? 'active-tag-match' : ''
+              }`}
+            >
+              #{tag}
+            </a>
+          ))}
+          {remainingCount > 0 && (
+            <span
+              class="inline-flex items-center px-1.5 h-5 rounded-full text-[10px] font-semibold text-gray-400 light:text-slate-500 bg-element-bg border border-element-border-medium shrink-0 leading-none"
+              title={remainingTags.join(', ')}
+            >
+              +{remainingCount}
+            </span>
+          )}
+        </>
+      ) : (
+        <div class="h-6" aria-hidden="true" />
+      )}
+    </div>
+  </div>
+
+  <!-- Far right: subtle arrow icon visible on sm screens, shifting on hover -->
+  <div class="hidden sm:flex items-center justify-center pl-1 pr-1 shrink-0 text-gray-500 light:text-slate-400 group-hover:text-gray-300 light:group-hover:text-slate-700 transition-colors">
+    <svg class={`w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 ${colorTheme.arrowHover}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+    </svg>
+  </div>
+</article>
+
+<style>
+  .compact-card .badge-corner-tr {
+    height: 1.15rem;
+    line-height: 1.15rem;
+    padding: 0 0.35rem;
+    font-size: 0.5rem;
+    letter-spacing: 0.05em;
+    border-top-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .compact-card .badge-corner-tr {
+      height: 1.25rem;
+      line-height: 1.25rem;
+      padding: 0 0.45rem;
+      font-size: 0.5625rem;
+    }
+  }
+
+  .compact-card .type-badge {
+    min-height: 1.25rem;
+    height: 1.25rem;
+    line-height: 1.25rem;
+  }
+
+  .compact-card .tag-chip {
+    min-height: 1.25rem;
+    height: 1.25rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 1.25rem;
+  }
+</style>
