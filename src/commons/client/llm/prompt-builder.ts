@@ -11,12 +11,13 @@
 import { formatAvatarPrompt } from '@commons/client/context/avatar-context.ts';
 import type { UnifiedAvatarContext } from '@commons/client/context/types.ts';
 import type { ClientSearchResult } from '@commons/client/search/types.ts';
-import type {
-  AddressTone,
-  ChatMessage,
-  GroundedPromptOptions,
-  GroundedPromptResult,
-  SupportedLanguage,
+import {
+  DEFAULT_MODEL_ID,
+  type AddressTone,
+  type ChatMessage,
+  type GroundedPromptOptions,
+  type GroundedPromptResult,
+  type SupportedLanguage,
 } from './types.ts';
 
 /**
@@ -215,12 +216,65 @@ export function formatQwenChat(
 }
 
 /**
+ * Serializes chat messages into the official Google Gemma chat template format.
+ * Format:
+ * <start_of_turn>user\n{system_message}\n\n{user_message}<end_of_turn>\n<start_of_turn>model\n
+ */
+export function formatGemmaChat(
+  messages: ChatMessage[],
+  addGenerationPrompt = true
+): string {
+  let formatted = '';
+  let systemPrefix = '';
+  let startIndex = 0;
+
+  if (messages.length > 0 && messages[0].role === 'system') {
+    systemPrefix = `${messages[0].content.trim()}\n\n`;
+    startIndex = 1;
+  }
+
+  if (startIndex === messages.length && systemPrefix) {
+    formatted += `<start_of_turn>user\n${messages[0].content.trim()}<end_of_turn>\n`;
+  } else {
+    for (let i = startIndex; i < messages.length; i++) {
+      const msg = messages[i];
+      const role = msg.role === 'assistant' ? 'model' : 'user';
+      const content =
+        i === startIndex && systemPrefix && msg.role === 'user'
+          ? `${systemPrefix}${msg.content.trim()}`
+          : msg.content.trim();
+      formatted += `<start_of_turn>${role}\n${content}<end_of_turn>\n`;
+    }
+  }
+
+  if (addGenerationPrompt) {
+    formatted += `<start_of_turn>model\n`;
+  }
+
+  return formatted;
+}
+
+/**
+ * Serializes chat messages using the appropriate template for the target model.
+ */
+export function formatChatForModel(
+  messages: ChatMessage[],
+  modelId: string = DEFAULT_MODEL_ID,
+  addGenerationPrompt = true
+): string {
+  if (modelId.toLowerCase().includes('gemma')) {
+    return formatGemmaChat(messages, addGenerationPrompt);
+  }
+  return formatQwenChat(messages, addGenerationPrompt);
+}
+
+/**
  * Builds the complete grounded avatar prompt bundle from a user query, sensory context, and RAG hits.
  */
 export function buildGroundedAvatarPrompt(
   options: GroundedPromptOptions
 ): GroundedPromptResult {
-  const { userQuery, context, ragResults, chatHistory = [], forceTone, forceLang } = options;
+  const { userQuery, context, ragResults, chatHistory = [], forceTone, forceLang, modelId } = options;
 
   const detectedLang = forceLang ?? detectLanguage(userQuery);
   const detectedTone = forceTone ?? detectAddressTone(userQuery, detectedLang);
@@ -238,7 +292,7 @@ export function buildGroundedAvatarPrompt(
     { role: 'user', content: userQuery.trim() },
   ];
 
-  const fullChatPrompt = formatQwenChat(chatMessages, true);
+  const fullChatPrompt = formatChatForModel(chatMessages, modelId ?? DEFAULT_MODEL_ID, true);
 
   return {
     systemPrompt,

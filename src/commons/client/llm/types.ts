@@ -67,17 +67,31 @@ export const SUPPORTED_MODELS: Record<string, ModelConfig> = {
     vramRequiredBytes: 550_000_000,
     description: 'Ultra-fast, lightweight model ideal for immediate client-side inference on all devices.',
   },
-  'qwen-1.5b': {
-    id: 'onnx-community/Qwen2.5-1.5B-Instruct',
-    name: 'Qwen2.5-1.5B-Instruct (q4)',
-    sizeBytes: 1_050_000_000,
+  'gemma-3-1b': {
+    id: 'onnx-community/gemma-3-1b-it-ONNX-GQA',
+    name: 'Gemma-3-1B-IT (Google GQA, q4)',
+    sizeBytes: 750_000_000,
     dtype: 'q4',
-    contextLength: 32_768,
+    contextLength: 8_192,
     defaultDevice: 'webgpu',
-    vramRequiredBytes: 1_400_000_000,
-    description: 'Higher reasoning depth and nuanced synthesis for powerful WebGPU desktop clients.',
+    vramRequiredBytes: 950_000_000,
+    description: 'Google Gemma 3 1B with Grouped Query Attention, optimized for browser WebGPU.',
   },
 };
+
+/**
+ * Resolves a ModelConfig by key ('qwen-0.5b', 'gemma-3-1b') or canonical Hugging Face ID.
+ */
+export function getModelConfig(modelIdOrKey: string): ModelConfig {
+  if (SUPPORTED_MODELS[modelIdOrKey]) {
+    return SUPPORTED_MODELS[modelIdOrKey];
+  }
+  const found = Object.values(SUPPORTED_MODELS).find((m) => m.id === modelIdOrKey);
+  if (found) {
+    return found;
+  }
+  return SUPPORTED_MODELS['qwen-0.5b'];
+}
 
 /**
  * Default model identifier
@@ -157,6 +171,7 @@ export interface GroundedPromptOptions {
   chatHistory?: ChatMessage[];
   forceTone?: AddressTone;
   forceLang?: SupportedLanguage;
+  modelId?: string;
 }
 
 /**
