@@ -658,6 +658,21 @@ div.vis-tooltip {
   box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2) !important;
 }
 
+/* Free-text Search Highlights */
+mark.search-highlight {
+  background-color: rgba(245, 158, 11, 0.35);
+  color: #fef08a;
+  padding: 0.05em 0.2em;
+  border-radius: 0.25rem;
+  font-weight: 700;
+}
+
+:root.light mark.search-highlight,
+.light mark.search-highlight {
+  background-color: rgba(245, 158, 11, 0.25);
+  color: #92400e;
+}
+
 /* ==========================================================================
    Fluid Container Layout Classes
    ========================================================================== */
@@ -682,5 +697,17 @@ div.vis-tooltip {
 }
 .section-fluid-padding-large {
   padding-block: clamp(3.5rem, 7vw, 6rem);
+}
+
+/* First-Paint Anti-Flicker Filter Gate */
+html.has-filter-query .post-card-item {
+  display: none !important;
+}
+html.has-filter-query .post-card-item.is-matched {
+  display: block !important;
+}
+html.has-filter-query [data-tag-total]:not(.is-synced),
+html.has-filter-query [data-tag-count]:not(.is-synced) {
+  visibility: hidden;
 }
 

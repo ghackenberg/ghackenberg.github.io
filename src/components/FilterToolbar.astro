@@ -1,0 +1,500 @@
+---
+interface Props {
+  searchId: string;
+  searchPlaceholder?: string;
+  tags?: string[];
+  tagLabel?: string;
+  accentColor?: "blue" | "yellow" | "purple" | "green";
+  totalCount?: number;
+  minItemsThreshold?: number;
+  itemTags?: string[][];
+}
+
+const {
+  searchId,
+  searchPlaceholder = "Search...",
+  tags = [],
+  tagLabel = "Filter by Tag",
+  accentColor = "blue",
+  totalCount,
+  minItemsThreshold = 6,
+  itemTags,
+} = Astro.props;
+
+const shouldRender = totalCount === undefined || totalCount >= minItemsThreshold;
+
+const searchFocusClasses = {
+  blue: "focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50",
+  yellow: "focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50",
+  purple: "focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50",
+  green: "focus:border-brand-green/50 focus:ring-1 focus:ring-brand-green/50",
+}[accentColor];
+
+const summaryHoverBorder = {
+  blue: "hover:border-brand-blue/30",
+  yellow: "hover:border-brand-yellow/30",
+  purple: "hover:border-brand-purple/30",
+  green: "hover:border-brand-green/30",
+}[accentColor];
+---
+
+{shouldRender && (
+  <div class="glass-card p-4 sm:p-5 rounded-2xl border border-element-border mb-8" data-accent={accentColor} data-filter-toolbar>
+    <!-- Row 1: Primary Bar -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <!-- Left side: Search input (flex-1 to take up available width) -->
+      <div class="relative flex-1 min-w-[180px]">
+        <label for={searchId} class="sr-only">Search</label>
+        <input 
+          type="text" 
+          id={searchId} 
+          placeholder={searchPlaceholder} 
+          class={`w-full bg-element-bg border border-element-border-medium rounded-xl px-3 py-2 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-200 ${searchFocusClasses}`}
+        />
+        <span class="absolute left-2.5 top-2.5 text-xs text-gray-500 pointer-events-none">🔍</span>
+      </div>
+
+      <!-- Middle: Custom Controls Slot -->
+      {Astro.slots.has('default') && (
+        <div class="flex items-center flex-wrap gap-2">
+          <slot />
+        </div>
+      )}
+
+      <!-- Right side: Tag Toggle Trigger & Reset Button -->
+      <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+        {tags && tags.length > 0 && (
+          <button 
+            type="button" 
+            id={`${searchId}-tag-toggle`}
+            data-tag-toggle-for={`${searchId}-tag-details`}
+            class={`tag-toggle-btn h-[34px] inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium ${summaryHoverBorder} text-xs font-semibold text-gray-300 hover:text-gray-100 cursor-pointer select-none transition-all duration-200`}
+            aria-expanded="false"
+            aria-controls={`${searchId}-tag-details`}
+          >
+            <span class="flex items-center gap-1.5">
+              <span>🏷️</span>
+              <span class="tag-toggle-label">Tags (<span data-tag-total data-tag-count>{tags.length}</span>)</span>
+              <span 
+                id={`${searchId}-active-badge`}
+                class="active-tag-badge tag-badge hidden"
+                style="display: none;"
+              ></span>
+            </span>
+            <span class="toggle-arrow text-gray-400 transition-transform duration-200 text-xs">▾</span>
+          </button>
+        )}
+
+        <!-- Instant Toolbar Pre-sync Script (Synchronous before First Paint) -->
+        <script is:inline define:vars={{ searchId, itemTags }}>
+          (function() {
+            try {
+              var params = new URLSearchParams(window.location.search);
+              var q = params.get('q');
+              if (q) {
+                var input = document.getElementById(searchId);
+                if (input) input.value = q;
+              }
+
+              var rawTags = params.getAll('tag');
+              var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+
+              if (tags.length > 0 && Array.isArray(itemTags)) {
+                var matchingItems = itemTags.filter(function(postTags) {
+                  return tags.every(function(t) { return postTags.indexOf(t) !== -1; });
+                });
+
+                var availableTags = new Set();
+                matchingItems.forEach(function(postTags) {
+                  postTags.forEach(function(t) { if (t) availableTags.add(t); });
+                });
+
+                var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
+                if (countEl) {
+                  countEl.textContent = String(matchingItems.length > 0 ? availableTags.size : 0);
+                  countEl.classList.add('is-synced');
+                }
+              } else {
+                var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
+                if (countEl) {
+                  countEl.classList.add('is-synced');
+                }
+              }
+
+              if (tags.length > 0) {
+                var badge = document.getElementById(searchId + '-active-badge');
+                if (badge) {
+                  badge.textContent = String(tags.length);
+                  badge.classList.remove('hidden');
+                  badge.style.display = 'inline-flex';
+                }
+                var toggleBtn = document.getElementById(searchId + '-tag-toggle');
+                if (toggleBtn) {
+                  toggleBtn.classList.add('has-active-tags');
+                }
+              } else {
+                var badge = document.getElementById(searchId + '-active-badge');
+                if (badge) {
+                  badge.textContent = '';
+                  badge.classList.add('hidden');
+                  badge.style.display = 'none';
+                }
+              }
+
+              if (q || tags.length > 0 || (params.has('page') && params.get('page') !== '1')) {
+                var resetBtn = document.getElementById(searchId + '-reset');
+                if (resetBtn) {
+                  resetBtn.classList.remove('hidden');
+                  resetBtn.style.display = '';
+                }
+              }
+            } catch(e) {}
+          })();
+        </script>
+        <button 
+          type="button" 
+          id={`${searchId}-reset`}
+          class="hidden px-3 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium hover:border-red-500/40 text-xs font-semibold text-gray-400 hover:text-red-400 cursor-pointer select-none transition-all duration-200 inline-flex items-center gap-1.5"
+          title="Reset all filters"
+        >
+          <span>✕</span>
+          <span>Reset</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tag Drawer (Collapsible) -->
+    {tags && tags.length > 0 && (
+      <details class="tag-filter-details w-full group" id={`${searchId}-tag-details`}>
+        <summary class="sr-only">{tagLabel}</summary>
+        <div class="flex flex-wrap gap-1.5 pt-3 border-t border-element-border mt-3" id="tag-filter-buttons">
+          {tags.map((tag) => (
+            <button 
+              type="button" 
+              class="tag-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200 inline-flex items-center gap-1.5"
+              data-tag={tag}
+            >
+              <span>#{tag}</span>
+              <span class="tag-badge text-[10px] font-normal opacity-75 ml-1 px-1.5 py-0.5 rounded bg-white/10"></span>
+            </button>
+          ))}
+        </div>
+      </details>
+    )}
+  </div>
+)}
+
+<style>
+  .tag-filter-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
+  }
+
+  .tag-filter-btn.hidden {
+    display: none !important;
+  }
+
+  .tag-badge {
+    transition: background 0.2s ease, opacity 0.2s ease;
+  }
+
+  .tag-filter-btn.active .tag-badge {
+    opacity: 1;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .tag-toggle-btn {
+    box-sizing: border-box;
+    height: 34px;
+    max-height: 34px;
+  }
+
+  .active-tag-badge {
+    box-sizing: border-box;
+    height: 16px;
+    max-height: 16px;
+    line-height: 1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    color: inherit;
+    flex-shrink: 0;
+  }
+
+  .tag-toggle-btn.has-active-tags .active-tag-badge {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  :global(html:not(.has-active-tag-filter)) .active-tag-badge {
+    display: none !important;
+  }
+
+  :global(html.has-active-tag-filter) .active-tag-badge {
+    display: inline-flex !important;
+  }
+
+  :global(.light) .active-tag-badge {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.light) .tag-toggle-btn.has-active-tags .active-tag-badge {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  details.tag-filter-details summary {
+    list-style: none;
+  }
+  details.tag-filter-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .toggle-arrow {
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
+  }
+  .toggle-arrow.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  /* Anti-flicker gate: eliminate transition pulse and tag count jump on page load */
+  :global(html.has-active-tag-filter) [data-accent="blue"] .tag-toggle-btn {
+    border-color: rgba(59, 130, 246, 0.5) !important;
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: #93c5fd !important;
+    transition: none !important;
+  }
+  :global(html.has-active-tag-filter) [data-accent="yellow"] .tag-toggle-btn {
+    border-color: rgba(245, 158, 11, 0.5) !important;
+    background: rgba(245, 158, 11, 0.15) !important;
+    color: #fbbf24 !important;
+    transition: none !important;
+  }
+  :global(html.has-active-tag-filter) [data-accent="purple"] .tag-toggle-btn {
+    border-color: rgba(168, 85, 247, 0.5) !important;
+    background: rgba(168, 85, 247, 0.15) !important;
+    color: #c084fc !important;
+    transition: none !important;
+  }
+  :global(html.has-active-tag-filter) [data-accent="green"] .tag-toggle-btn {
+    border-color: rgba(16, 185, 129, 0.5) !important;
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #6ee7b7 !important;
+    transition: none !important;
+  }
+  :global(html.has-active-tag-filter) [data-tag-total]:not(.is-synced),
+  :global(html.has-active-tag-filter) [data-tag-count]:not(.is-synced) {
+    visibility: hidden;
+  }
+
+  /* Accent: Blue */
+  [data-accent="blue"] .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.08);
+  }
+  [data-accent="blue"] .tag-filter-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #7dd3fc;
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
+  }
+  [data-accent="blue"] .tag-toggle-btn.has-active-tags,
+  [data-accent="blue"] .tag-toggle-btn.active {
+    border-color: rgba(59, 130, 246, 0.5);
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+  }
+
+  /* Accent: Yellow */
+  [data-accent="yellow"] .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.08);
+  }
+  [data-accent="yellow"] .tag-filter-btn.active {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.5);
+    color: #fde047;
+    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25);
+  }
+  [data-accent="yellow"] .tag-toggle-btn.has-active-tags,
+  [data-accent="yellow"] .tag-toggle-btn.active {
+    border-color: rgba(245, 158, 11, 0.5);
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+  }
+
+  /* Accent: Purple */
+  [data-accent="purple"] .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #c084fc;
+    background: rgba(168, 85, 247, 0.08);
+  }
+  [data-accent="purple"] .tag-filter-btn.active {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.5);
+    color: #d8b4fe;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25);
+  }
+  [data-accent="purple"] .tag-toggle-btn.has-active-tags,
+  [data-accent="purple"] .tag-toggle-btn.active {
+    border-color: rgba(168, 85, 247, 0.5);
+    background: rgba(168, 85, 247, 0.15);
+    color: #c084fc;
+  }
+
+  /* Accent: Green */
+  [data-accent="green"] .tag-filter-btn:hover:not(.active) {
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #6ee7b7;
+    background: rgba(16, 185, 129, 0.08);
+  }
+  [data-accent="green"] .tag-filter-btn.active {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #a7f3d0;
+    box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.25);
+  }
+  [data-accent="green"] .tag-toggle-btn.has-active-tags,
+  [data-accent="green"] .tag-toggle-btn.active {
+    border-color: rgba(16, 185, 129, 0.5);
+    background: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+  }
+
+  /* Light mode overrides */
+  :global(.light) .tag-filter-btn {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+    color: #475569;
+  }
+
+  :global(.light) [data-accent="blue"] .tag-filter-btn:hover:not(.active) {
+    background: rgba(59, 130, 246, 0.06);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #1d4ed8;
+  }
+  :global(.light) [data-accent="blue"] .tag-filter-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #1d4ed8;
+    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2);
+  }
+  :global(.light) [data-accent="blue"] .tag-toggle-btn.has-active-tags,
+  :global(.light) [data-accent="blue"] .tag-toggle-btn.active {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #1d4ed8;
+  }
+
+  :global(.light) [data-accent="yellow"] .tag-filter-btn:hover:not(.active) {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #d97706;
+  }
+  :global(.light) [data-accent="yellow"] .tag-filter-btn.active {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #b45309;
+    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2);
+  }
+  :global(.light) [data-accent="yellow"] .tag-toggle-btn.has-active-tags,
+  :global(.light) [data-accent="yellow"] .tag-toggle-btn.active {
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #b45309;
+  }
+
+  :global(.light) [data-accent="purple"] .tag-filter-btn:hover:not(.active) {
+    background: rgba(168, 85, 247, 0.06);
+    border-color: rgba(168, 85, 247, 0.3);
+    color: #7e22ce;
+  }
+  :global(.light) [data-accent="purple"] .tag-filter-btn.active {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.4);
+    color: #7e22ce;
+    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2);
+  }
+  :global(.light) [data-accent="purple"] .tag-toggle-btn.has-active-tags,
+  :global(.light) [data-accent="purple"] .tag-toggle-btn.active {
+    background: rgba(168, 85, 247, 0.12);
+    border-color: rgba(168, 85, 247, 0.4);
+    color: #7e22ce;
+  }
+
+  :global(.light) [data-accent="green"] .tag-filter-btn:hover:not(.active) {
+    background: rgba(16, 185, 129, 0.06);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #047857;
+  }
+  :global(.light) [data-accent="green"] .tag-filter-btn.active {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #047857;
+    box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2);
+  }
+  :global(.light) [data-accent="green"] .tag-toggle-btn.has-active-tags,
+  :global(.light) [data-accent="green"] .tag-toggle-btn.active {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #047857;
+  }
+</style>
+
+<script>
+  function setupFilterToolbars() {
+    document.querySelectorAll<HTMLElement>('[data-filter-toolbar]').forEach((toolbar) => {
+      if (toolbar.dataset.initialized) return;
+      toolbar.dataset.initialized = 'true';
+
+      const toggleBtn = toolbar.querySelector<HTMLButtonElement>('.tag-toggle-btn');
+      const details = toolbar.querySelector<HTMLDetailsElement>('details.tag-filter-details');
+      if (!toggleBtn || !details) return;
+
+      const arrow = toggleBtn.querySelector('.toggle-arrow');
+
+      const updateState = (isOpen: boolean) => {
+        toggleBtn.setAttribute('aria-expanded', String(isOpen));
+        if (isOpen) {
+          toggleBtn.classList.add('active');
+          if (arrow) arrow.classList.add('rotate-180');
+        } else {
+          toggleBtn.classList.remove('active');
+          if (arrow) arrow.classList.remove('rotate-180');
+        }
+      };
+
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        details.open = !details.open;
+        updateState(details.open);
+      });
+
+      details.addEventListener('toggle', () => {
+        updateState(details.open);
+      });
+
+      const resetBtn = toolbar.querySelector<HTMLButtonElement>('button[id$="-reset"]');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          if (details.open) {
+            details.open = false;
+            updateState(false);
+          }
+        });
+      }
+    });
+  }
+
+  setupFilterToolbars();
+  document.addEventListener('astro:page-load', setupFilterToolbars);
+</script>

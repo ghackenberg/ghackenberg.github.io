@@ -137,6 +137,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
     <!-- Back button -->
     <a 
       href="/posts/" 
+      id="back-to-overview-link"
       class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
     >
       <span>&larr;</span>
@@ -425,3 +426,22 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
     font-family: "Inter", system-ui, -apple-system, sans-serif !important;
   }
 </style>
+
+<script>
+  function setupBackLink() {
+    const backLink = document.getElementById('back-to-overview-link') as HTMLAnchorElement | null;
+    if (backLink) {
+      try {
+        const savedQuery = sessionStorage.getItem('/posts/_filter_query') || sessionStorage.getItem('/posts_filter_query');
+        if (savedQuery) {
+          backLink.href = `/posts/${savedQuery}`;
+        }
+      } catch {
+        // ignore if sessionStorage is unavailable
+      }
+    }
+  }
+
+  setupBackLink();
+  document.addEventListener('astro:page-load', setupBackLink);
+</script>

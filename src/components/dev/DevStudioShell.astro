@@ -553,7 +553,17 @@ const { currentPath } = Astro.props;
       // Ensure full iframe src on top-level initialization
       const fullIframe = document.getElementById('dev-iframe-full') as HTMLIFrameElement | null;
       if (fullIframe && (!fullIframe.src || fullIframe.src === 'about:blank' || fullIframe.src.endsWith('about:blank'))) {
-        fullIframe.src = fullIframe.getAttribute('data-src') || this.currentPath;
+        const initialSearch = window.location.search;
+        const initialHash = window.location.hash;
+        const basePath = fullIframe.getAttribute('data-src') || this.currentPath;
+        const urlObj = new URL(basePath, window.location.origin);
+        if (initialSearch && !urlObj.search) {
+          urlObj.search = initialSearch;
+        }
+        if (initialHash && !urlObj.hash) {
+          urlObj.hash = initialHash;
+        }
+        fullIframe.src = urlObj.pathname + urlObj.search + urlObj.hash;
       }
 
       this.applyDeviceMode(this.activeDevice);
@@ -661,20 +671,66 @@ const { currentPath } = Astro.props;
       // Handle popstate on outer window
       window.addEventListener('popstate', () => {
         const newPath = window.location.pathname;
+        const newFullUrl = window.location.pathname + window.location.search + window.location.hash;
         if (newPath !== this.currentPath) {
-          this.handleNavigation(newPath, true);
+          this.handleNavigation(newFullUrl, true);
+        } else {
+          // Same path, query parameters or hash changed (e.g. back/forward through filter or slide states)
+          const activeIfr = this.getActiveIframe();
+          if (activeIfr?.contentWindow) {
+            try {
+              const innerFull = activeIfr.contentWindow.location.pathname + activeIfr.contentWindow.location.search + activeIfr.contentWindow.location.hash;
+              if (innerFull !== newFullUrl) {
+                activeIfr.contentWindow.history.replaceState(null, '', newFullUrl);
+                activeIfr.contentWindow.dispatchEvent(new PopStateEvent('popstate'));
+                activeIfr.contentWindow.dispatchEvent(new HashChangeEvent('hashchange'));
+              }
+            } catch {
+              activeIfr.contentWindow.postMessage({ type: 'dev-studio-popstate', url: newFullUrl }, '*');
+            }
+          }
+        }
+      });
+
+      // Handle hashchange on outer window
+      window.addEventListener('hashchange', () => {
+        const newFullUrl = window.location.pathname + window.location.search + window.location.hash;
+        const activeIfr = this.getActiveIframe();
+        if (activeIfr?.contentWindow) {
+          try {
+            const innerFull = activeIfr.contentWindow.location.pathname + activeIfr.contentWindow.location.search + activeIfr.contentWindow.location.hash;
+            if (innerFull !== newFullUrl) {
+              activeIfr.contentWindow.history.replaceState(null, '', newFullUrl);
+              activeIfr.contentWindow.dispatchEvent(new HashChangeEvent('hashchange'));
+            }
+          } catch {
+            activeIfr.contentWindow.postMessage({ type: 'dev-studio-popstate', url: newFullUrl }, '*');
+          }
         }
       });
     }
 
-    private handleNavigation(newPath: string, reloadIframe: boolean = false): void {
-      if (newPath === this.currentPath && this.currentData) return;
+    private handleNavigation(newUrlOrPath: string, reloadIframe: boolean = false): void {
+      const parsed = new URL(newUrlOrPath, window.location.origin);
+      const newPath = parsed.pathname;
+      const fullTarget = parsed.pathname + parsed.search + parsed.hash;
+      const isPathChange = newPath !== this.currentPath;
+
+      if (!isPathChange && !reloadIframe && this.currentData) {
+        const currentTop = window.location.pathname + window.location.search + window.location.hash;
+        if (currentTop !== fullTarget) {
+          window.history.replaceState(null, '', fullTarget);
+        }
+        return;
+      }
+
       this.currentPath = newPath;
-      if (window.location.pathname !== newPath) {
-        window.history.replaceState(null, '', newPath);
+      const currentTop = window.location.pathname + window.location.search + window.location.hash;
+      if (currentTop !== fullTarget) {
+        window.history.replaceState(null, '', fullTarget);
       }
       if (reloadIframe) {
-        this.loadPathInActiveIframe(newPath);
+        this.loadPathInActiveIframe(fullTarget);
       }
 
       this.animateThumbOnNavigation();
@@ -770,8 +826,11 @@ const { currentPath } = Astro.props;
 
         // Sync full iframe src if needed
         const fullIframe = document.getElementById('dev-iframe-full') as HTMLIFrameElement | null;
+        const currentSearch = window.location.search || '';
+        const currentHash = window.location.hash || '';
+        const targetSrc = this.currentPath + currentSearch + currentHash;
         if (fullIframe && (!fullIframe.src || fullIframe.src === 'about:blank' || !fullIframe.src.includes(this.currentPath))) {
-          fullIframe.src = this.currentPath;
+          fullIframe.src = targetSrc;
         }
         this.sendScrollToIframe(this.lastScrollTop);
         this.renderMinimapThumb();
@@ -798,8 +857,11 @@ const { currentPath } = Astro.props;
 
         // Sync iframe src if needed
         const devIframe = document.getElementById('dev-iframe-device') as HTMLIFrameElement | null;
+        const currentSearch = window.location.search || '';
+        const currentHash = window.location.hash || '';
+        const targetSrc = this.currentPath + currentSearch + currentHash;
         if (devIframe && (!devIframe.src || devIframe.src === 'about:blank' || !devIframe.src.includes(this.currentPath))) {
-          devIframe.src = this.currentPath;
+          devIframe.src = targetSrc;
         }
         this.sendScrollToIframe(this.lastScrollTop);
         this.renderMinimapThumb();
@@ -862,6 +924,26 @@ const { currentPath } = Astro.props;
             this.handleNavigation(path, false);
           }
         }
+
+        // 3. URL query / filter sync from iframe
+        if (e.data.type === 'dev-studio-url-sync') {
+          const targetUrl = e.data.url;
+          if (targetUrl) {
+            const parsed = new URL(targetUrl, window.location.origin);
+            const fullTarget = parsed.pathname + parsed.search + parsed.hash;
+            const currentTop = window.location.pathname + window.location.search + window.location.hash;
+            if (currentTop !== fullTarget) {
+              if (e.data.push) {
+                window.history.pushState(null, '', fullTarget);
+              } else {
+                window.history.replaceState(null, '', fullTarget);
+              }
+            }
+            if (parsed.pathname !== this.currentPath) {
+              this.handleNavigation(parsed.pathname, false);
+            }
+          }
+        }
       });
     }
 
@@ -874,8 +956,15 @@ const { currentPath } = Astro.props;
         ifr.addEventListener('load', () => {
           try {
             const loc = ifr.contentWindow?.location;
-            if (loc && loc.pathname && loc.pathname !== 'blank' && loc.pathname !== this.currentPath) {
-              this.handleNavigation(loc.pathname, false);
+            if (loc && loc.pathname && loc.pathname !== 'blank' && loc.pathname !== 'about:blank') {
+              const fullUrl = loc.pathname + loc.search + loc.hash;
+              const currentOuter = window.location.pathname + window.location.search + window.location.hash;
+              if (currentOuter !== fullUrl) {
+                window.history.replaceState(null, '', fullUrl);
+              }
+              if (loc.pathname !== this.currentPath) {
+                this.handleNavigation(loc.pathname, false);
+              }
             }
           } catch {
             // cross-origin safety

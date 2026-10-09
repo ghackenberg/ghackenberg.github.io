@@ -14,6 +14,7 @@ export interface ButtonFilterConfig {
   activeClass?: string;
   matchType?: 'exact' | 'includes';
   paramKey?: string;
+  multiple?: boolean;
 }
 
 export interface PaginationConfig {
@@ -39,6 +40,11 @@ export interface FilterConfig {
   scrollToSelector?: string;
 }
 
+interface FilterWindow extends Window {
+  __activeFilterInstance?: ClientListFilter;
+  __popstateRegistered?: boolean;
+}
+
 function getPageNumbers(current: number, total: number): (number | string)[] {
   if (total <= 7) {
     return Array.from({ length: total }, (_, i) => i + 1);
@@ -50,6 +56,77 @@ function getPageNumbers(current: number, total: number): (number | string)[] {
     return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
   }
   return [1, '...', current - 1, current, current + 1, '...', total];
+}
+
+function removeHighlights(root: HTMLElement) {
+  const marks = root.querySelectorAll('mark.search-highlight');
+  marks.forEach(mark => {
+    const parent = mark.parentNode;
+    if (parent) {
+      parent.replaceChild(document.createTextNode(mark.textContent || ''), mark);
+      parent.normalize();
+    }
+  });
+}
+
+function highlightTextNodes(root: HTMLElement, searchWords: string[]) {
+  removeHighlights(root);
+
+  if (searchWords.length === 0) return;
+
+  const escapedWords = searchWords
+    .map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .filter(Boolean);
+
+  if (escapedWords.length === 0) return;
+
+  const regex = new RegExp(`(${escapedWords.join('|')})`, 'gi');
+
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!node.textContent || !node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+      const parentTag = node.parentElement?.tagName.toLowerCase();
+      if (parentTag === 'script' || parentTag === 'style' || parentTag === 'mark') {
+        return NodeFilter.FILTER_REJECT;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const textNodes: Text[] = [];
+  let currentNode = walker.nextNode();
+  while (currentNode) {
+    textNodes.push(currentNode as Text);
+    currentNode = walker.nextNode();
+  }
+
+  for (const textNode of textNodes) {
+    const text = textNode.textContent || '';
+    if (!regex.test(text)) continue;
+    regex.lastIndex = 0;
+
+    const fragment = document.createDocumentFragment();
+    let lastIdx = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIdx) {
+        fragment.appendChild(document.createTextNode(text.substring(lastIdx, match.index)));
+      }
+      const mark = document.createElement('mark');
+      mark.className = 'search-highlight';
+      mark.textContent = match[0];
+      fragment.appendChild(mark);
+
+      lastIdx = regex.lastIndex;
+    }
+
+    if (lastIdx < text.length) {
+      fragment.appendChild(document.createTextNode(text.substring(lastIdx)));
+    }
+
+    textNode.parentNode?.replaceChild(fragment, textNode);
+  }
 }
 
 export class ClientListFilter {
@@ -96,11 +173,14 @@ export class ClientListFilter {
         if (this.searchQuery) {
           searchInput.value = this.searchQuery;
         }
-        searchInput.addEventListener('input', (e) => {
-          this.searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
-          this.currentPage = 1;
-          this.updateFilters();
-        });
+        if (!searchInput.dataset.filterBound) {
+          searchInput.dataset.filterBound = 'true';
+          searchInput.addEventListener('input', (e) => {
+            this.searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
+            this.currentPage = 1;
+            this.updateFilters(false, false);
+          });
+        }
       }
     }
 
@@ -114,13 +194,16 @@ export class ClientListFilter {
           this.dropdownValues.set(dropdown.dataAttribute, initialVal);
           select.value = initialVal;
 
-          select.addEventListener('change', (e) => {
-            const val = (e.target as HTMLSelectElement).value;
-            this.dropdownValues.set(dropdown.dataAttribute, val);
-            this.currentPage = 1;
-            trackEvent('Filter Content', { type: 'dropdown', key: dropdown.dataAttribute, value: val, path: window.location.pathname });
-            this.updateFilters();
-          });
+          if (!select.dataset.filterBound) {
+            select.dataset.filterBound = 'true';
+            select.addEventListener('change', (e) => {
+              const val = (e.target as HTMLSelectElement).value;
+              this.dropdownValues.set(dropdown.dataAttribute, val);
+              this.currentPage = 1;
+              trackEvent('Filter Content', { type: 'dropdown', key: dropdown.dataAttribute, value: val, path: window.location.pathname });
+              this.updateFilters(false, true);
+            });
+          }
         }
       });
     }
@@ -132,55 +215,86 @@ export class ClientListFilter {
         const defVal = btnConfig.defaultValue || 'all';
         const activeCls = btnConfig.activeClass || 'active';
         const paramKey = btnConfig.paramKey || btnConfig.dataAttribute.replace('data-', '');
-        const urlVal = urlParams?.get(paramKey);
+        const rawVals = urlParams ? urlParams.getAll(paramKey) : [];
+        const tokens = rawVals.flatMap(v => v.split(',')).map(s => s.trim().toLowerCase()).filter(s => s && s !== defVal);
 
-        const initialVal = urlVal ? urlVal.toLowerCase() : defVal;
+        const initialVal = tokens.length > 0 ? (btnConfig.multiple ? tokens.join(',') : tokens[0]) : defVal;
         this.buttonValues.set(btnConfig.dataAttribute, initialVal);
+        const initialTokens = new Set(tokens);
 
         buttons.forEach(btn => {
           const rawBtnVal = btn.getAttribute('data-trl') || btn.getAttribute('data-lang') || btn.getAttribute('data-value') || btn.getAttribute('data-tag') || defVal;
           const btnVal = rawBtnVal.toLowerCase();
 
-          if (initialVal !== defVal && btnVal === initialVal) {
+          if (initialVal !== defVal && (btnConfig.multiple ? initialTokens.has(btnVal) : btnVal === initialVal)) {
             btn.classList.add(activeCls);
           } else {
             btn.classList.remove(activeCls);
           }
 
-          btn.addEventListener('click', () => {
-            const currentVal = this.buttonValues.get(btnConfig.dataAttribute);
-            let newVal = defVal;
-            if (currentVal === btnVal) {
-              // Deselect
-              buttons.forEach(b => b.classList.remove(activeCls));
-              this.buttonValues.set(btnConfig.dataAttribute, defVal);
-            } else {
-              // Select
-              buttons.forEach(b => {
-                const bVal = (b.getAttribute('data-trl') || b.getAttribute('data-lang') || b.getAttribute('data-value') || b.getAttribute('data-tag') || defVal).toLowerCase();
-                if (bVal === btnVal) {
-                  b.classList.add(activeCls);
+          if (!btn.dataset.filterBound) {
+            btn.dataset.filterBound = 'true';
+            btn.addEventListener('click', () => {
+              const currentVal = this.buttonValues.get(btnConfig.dataAttribute) || defVal;
+              let newVal = defVal;
+
+              if (btnConfig.multiple) {
+                const currentTokensList = currentVal !== defVal ? currentVal.split(',').map(s => s.trim().toLowerCase()).filter(Boolean) : [];
+                const tokenIndex = currentTokensList.indexOf(btnVal);
+                if (tokenIndex !== -1) {
+                  // Deselect
+                  currentTokensList.splice(tokenIndex, 1);
+                  btn.classList.remove(activeCls);
                 } else {
-                  b.classList.remove(activeCls);
+                  // Select additionally - append to preserve selection order
+                  currentTokensList.push(btnVal);
+                  btn.classList.add(activeCls);
                 }
-              });
-              newVal = btnVal;
-              this.buttonValues.set(btnConfig.dataAttribute, btnVal);
-            }
-            this.currentPage = 1;
-            trackEvent('Filter Content', { type: 'button', key: btnConfig.dataAttribute, value: newVal, path: window.location.pathname });
-            this.updateFilters(true);
-          });
+                newVal = currentTokensList.length > 0 ? currentTokensList.join(',') : defVal;
+              } else {
+                if (currentVal === btnVal) {
+                  // Deselect
+                  buttons.forEach(b => b.classList.remove(activeCls));
+                  newVal = defVal;
+                } else {
+                  // Select
+                  buttons.forEach(b => {
+                    const bVal = (b.getAttribute('data-trl') || b.getAttribute('data-lang') || b.getAttribute('data-value') || b.getAttribute('data-tag') || defVal).toLowerCase();
+                    if (bVal === btnVal) {
+                      b.classList.add(activeCls);
+                    } else {
+                      b.classList.remove(activeCls);
+                    }
+                  });
+                  newVal = btnVal;
+                }
+              }
+
+              this.buttonValues.set(btnConfig.dataAttribute, newVal);
+              this.currentPage = 1;
+              trackEvent('Filter Content', { type: 'button', key: btnConfig.dataAttribute, value: newVal, path: window.location.pathname });
+              this.updateFilters(false, true);
+
+              // Auto-scroll the tag drawer / subview back to top so selected tags are visible
+              const parentContainer = btn.parentElement;
+              if (parentContainer && parentContainer.scrollTop > 0) {
+                parentContainer.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            });
+          }
         });
       });
     }
 
     // 4. Initialize Reset Button
     if (this.resetButtonElement) {
-      this.resetButtonElement.addEventListener('click', () => {
-        trackEvent('Filter Content', { type: 'reset', path: window.location.pathname });
-        this.resetAllFilters();
-      });
+      if (!this.resetButtonElement.dataset.filterBound) {
+        this.resetButtonElement.dataset.filterBound = 'true';
+        this.resetButtonElement.addEventListener('click', () => {
+          trackEvent('Filter Content', { type: 'reset', path: window.location.pathname });
+          this.resetAllFilters();
+        });
+      }
     }
 
     // 5. Initialize Pagination Navigation
@@ -195,39 +309,57 @@ export class ClientListFilter {
       }
 
       if (this.paginationNavElement) {
-        this.paginationNavElement.addEventListener('click', (e) => {
-          const target = (e.target as HTMLElement).closest('button');
-          if (!target || target.disabled) return;
+        if (!this.paginationNavElement.dataset.filterBound) {
+          this.paginationNavElement.dataset.filterBound = 'true';
+          this.paginationNavElement.addEventListener('click', (e) => {
+            const target = (e.target as HTMLElement).closest('button');
+            if (!target || target.disabled) return;
 
-          const action = target.getAttribute('data-action');
-          const goto = target.getAttribute('data-goto');
+            const action = target.getAttribute('data-action');
+            const goto = target.getAttribute('data-goto');
 
-          if (action === 'prev') {
-            this.currentPage = Math.max(1, this.currentPage - 1);
-            this.updateFilters(true);
-          } else if (action === 'next') {
-            this.currentPage = this.currentPage + 1;
-            this.updateFilters(true);
-          } else if (goto) {
-            const p = parseInt(goto, 10);
-            if (!isNaN(p)) {
-              this.currentPage = p;
-              this.updateFilters(true);
+            if (action === 'prev') {
+              this.currentPage = Math.max(1, this.currentPage - 1);
+              this.updateFilters(true, true);
+            } else if (action === 'next') {
+              this.currentPage = this.currentPage + 1;
+              this.updateFilters(true, true);
+            } else if (goto) {
+              const p = parseInt(goto, 10);
+              if (!isNaN(p)) {
+                this.currentPage = p;
+                this.updateFilters(true, true);
+              }
+            }
+          });
+        }
+      }
+    }
+
+    // 6. Handle Popstate (Back/Forward) & Dev Studio Shell sync
+    (window as FilterWindow).__activeFilterInstance = this;
+    if (this.config.urlParamSync !== false) {
+      const win = window as FilterWindow;
+      if (!win.__popstateRegistered) {
+        win.__popstateRegistered = true;
+        window.addEventListener('popstate', () => {
+          if (win.__activeFilterInstance) {
+            win.__activeFilterInstance.syncStateFromUrl();
+          }
+        });
+        window.addEventListener('message', (e) => {
+          if (e.data && (e.data.type === 'dev-studio-popstate' || e.data.type === 'dev-studio-url-sync-echo')) {
+            if (win.__activeFilterInstance) {
+              win.__activeFilterInstance.syncStateFromUrl();
             }
           }
         });
       }
     }
 
-    // 6. Handle Popstate (Back/Forward)
-    if (this.config.urlParamSync !== false) {
-      window.addEventListener('popstate', () => {
-        this.syncStateFromUrl();
-      });
-    }
-
     // Run initial filter check
-    this.updateFilters();
+    this.updateFilters(false, false);
+    document.documentElement.classList.remove('has-filter-query');
   }
 
   public resetAllFilters() {
@@ -252,13 +384,64 @@ export class ClientListFilter {
         const buttons = document.querySelectorAll<HTMLElement>(btnConfig.buttonSelector);
         const defVal = btnConfig.defaultValue || 'all';
         const activeCls = btnConfig.activeClass || 'active';
-        buttons.forEach(b => b.classList.remove(activeCls));
+        buttons.forEach(b => {
+          b.classList.remove(activeCls);
+          b.classList.remove('hidden');
+          b.style.display = '';
+        });
         this.buttonValues.set(btnConfig.dataAttribute, defVal);
       });
     }
 
+    const countEls = document.querySelectorAll<HTMLElement>('[data-tag-count], [data-tag-total]');
+    countEls.forEach(el => {
+      const tagButtons = document.querySelectorAll<HTMLElement>('.tag-filter-btn');
+      if (tagButtons.length > 0) {
+        el.textContent = String(tagButtons.length);
+      }
+    });
+
+    const badges = document.querySelectorAll<HTMLElement>('.active-tag-badge');
+    badges.forEach(badge => {
+      badge.textContent = '';
+      badge.classList.add('hidden');
+      badge.style.display = 'none';
+    });
+    document.documentElement.classList.remove('has-active-tag-filter');
+
+    const activeInfoEls = document.querySelectorAll<HTMLElement>('.active-tag-info');
+    activeInfoEls.forEach(infoEl => {
+      infoEl.classList.add('hidden');
+      infoEl.style.display = 'none';
+    });
+
+    const toggleBtns = document.querySelectorAll<HTMLElement>('.tag-toggle-btn');
+    toggleBtns.forEach(toggleBtn => {
+      toggleBtn.classList.remove('has-active-tags');
+      toggleBtn.classList.remove('active');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      const arrow = toggleBtn.querySelector('.toggle-arrow');
+      if (arrow) arrow.classList.remove('rotate-180');
+    });
+
+    const tagContainers = document.querySelectorAll<HTMLElement>('#tag-filter-buttons, .tag-filter-details div');
+    tagContainers.forEach(c => {
+      if (c.scrollTop > 0) {
+        c.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+
+    // Collapse tag details drawer if open
+    const detailsEls = document.querySelectorAll<HTMLDetailsElement>('details.tag-filter-details');
+    detailsEls.forEach(details => {
+      if (details.open) {
+        details.open = false;
+        details.dispatchEvent(new Event('toggle'));
+      }
+    });
+
     this.currentPage = 1;
-    this.updateFilters(true);
+    this.updateFilters(false, true);
   }
 
   private syncStateFromUrl() {
@@ -290,12 +473,17 @@ export class ClientListFilter {
         const defVal = btnConfig.defaultValue || 'all';
         const activeCls = btnConfig.activeClass || 'active';
         const paramKey = btnConfig.paramKey || btnConfig.dataAttribute.replace('data-', '');
-        const val = (urlParams.get(paramKey) || defVal).toLowerCase();
+        const rawVals = urlParams ? urlParams.getAll(paramKey) : [];
+        const tokens = rawVals.flatMap(v => v.split(',')).map(s => s.trim().toLowerCase()).filter(s => s && s !== defVal);
+        const val = tokens.length > 0 ? (btnConfig.multiple ? tokens.join(',') : tokens[0]) : defVal;
 
         this.buttonValues.set(btnConfig.dataAttribute, val);
+        const selectedTokens = new Set(tokens);
+
         buttons.forEach(btn => {
           const rawBtnVal = btn.getAttribute('data-trl') || btn.getAttribute('data-lang') || btn.getAttribute('data-value') || btn.getAttribute('data-tag') || defVal;
-          if (val !== defVal && rawBtnVal.toLowerCase() === val) {
+          const btnVal = rawBtnVal.toLowerCase();
+          if (val !== defVal && (btnConfig.multiple ? selectedTokens.has(btnVal) : btnVal === val)) {
             btn.classList.add(activeCls);
           } else {
             btn.classList.remove(activeCls);
@@ -311,10 +499,10 @@ export class ClientListFilter {
       this.currentPage = pageInUrl ? parseInt(pageInUrl, 10) || 1 : 1;
     }
 
-    this.updateFilters();
+    this.updateFilters(false, false);
   }
 
-  private updateFilters(shouldScroll: boolean = false) {
+  private updateFilters(shouldScroll: boolean = false, pushToHistory: boolean = false) {
     const matchingItems: HTMLElement[] = [];
 
     this.items.forEach(item => {
@@ -361,18 +549,36 @@ export class ClientListFilter {
 
           if (selectedValue && selectedValue !== defVal) {
             const itemValue = item.getAttribute(btnConfig.dataAttribute)?.toLowerCase() || '';
-            const matchVal = selectedValue.toLowerCase();
 
-            if (btnConfig.matchType === 'includes') {
-              const tokens = itemValue.trim() ? itemValue.trim().split(/[\s,]+/) : [];
-              if (!tokens.includes(matchVal)) {
-                isVisible = false;
-                break;
+            if (btnConfig.multiple) {
+              const selectedTokens = selectedValue.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+              if (btnConfig.matchType === 'includes') {
+                const itemTokens = itemValue.trim() ? itemValue.trim().split(/[\s,]+/) : [];
+                // Logical AND: Item must contain ALL selected tokens
+                const matchesAll = selectedTokens.every(tok => itemTokens.includes(tok));
+                if (!matchesAll) {
+                  isVisible = false;
+                  break;
+                }
+              } else {
+                if (!selectedTokens.includes(itemValue)) {
+                  isVisible = false;
+                  break;
+                }
               }
             } else {
-              if (itemValue !== matchVal) {
-                isVisible = false;
-                break;
+              const matchVal = selectedValue.toLowerCase();
+              if (btnConfig.matchType === 'includes') {
+                const tokens = itemValue.trim() ? itemValue.trim().split(/[\s,]+/) : [];
+                if (!tokens.includes(matchVal)) {
+                  isVisible = false;
+                  break;
+                }
+              } else {
+                if (itemValue !== matchVal) {
+                  isVisible = false;
+                  break;
+                }
               }
             }
           }
@@ -386,12 +592,20 @@ export class ClientListFilter {
 
     const totalMatching = matchingItems.length;
 
+    // Update faceted button filter visibility (e.g. tag drawer pruning based on logical AND)
+    this.updateDynamicButtonVisibility(matchingItems);
+
+    // Free-text search highlights across card titles, descriptions, and tags
+    this.updateSearchHighlights();
+
     // 4. Toggle No Results Message
     if (this.noResultsElement) {
       if (totalMatching === 0) {
         this.noResultsElement.classList.remove('hidden');
+        this.noResultsElement.style.display = '';
       } else {
         this.noResultsElement.classList.add('hidden');
+        this.noResultsElement.style.display = 'none';
       }
     }
 
@@ -402,8 +616,10 @@ export class ClientListFilter {
         const hasMatchingChild = matchingItems.some(item => group.contains(item));
         if (hasMatchingChild) {
           group.classList.remove('hidden');
+          group.style.display = '';
         } else {
           group.classList.add('hidden');
+          group.style.display = 'none';
         }
       });
     }
@@ -424,11 +640,15 @@ export class ClientListFilter {
       const endIndex = startIndex + pageSize;
 
       // Hide all items
-      this.items.forEach(item => item.classList.add('hidden'));
+      this.items.forEach(item => {
+        item.classList.add('hidden');
+        item.style.display = 'none';
+      });
 
       // Show sliced matching items
       for (let i = startIndex; i < endIndex && i < totalMatching; i++) {
         matchingItems[i].classList.remove('hidden');
+        matchingItems[i].style.display = '';
       }
 
       // Update Pagination Navigation Elements
@@ -442,11 +662,17 @@ export class ClientListFilter {
       }
     } else {
       // Direct visibility without pagination
-      this.items.forEach(item => item.classList.add('hidden'));
-      matchingItems.forEach(item => item.classList.remove('hidden'));
+      this.items.forEach(item => {
+        item.classList.add('hidden');
+        item.style.display = 'none';
+      });
+      matchingItems.forEach(item => {
+        item.classList.remove('hidden');
+        item.style.display = '';
+      });
     }
 
-    // Scroll to start of list if triggered by interactive controls (pagination, tag buttons)
+    // Scroll to start of list if triggered by interactive controls (pagination)
     if (shouldScroll) {
       this.scrollToStart();
     }
@@ -477,10 +703,139 @@ export class ClientListFilter {
     // 8. Update Tag Highlights in Preview Cards
     this.updateTagHighlights();
 
-    // 9. Update URL Query Parameters
+    // 9. Update Active Tag Indicator Badge & Chips
+    this.updateActiveTagIndicators();
+
+    // 10. Update URL Query Parameters
     if (this.config.urlParamSync !== false) {
-      this.updateUrlParams();
+      this.updateUrlParams(pushToHistory);
     }
+  }
+
+  private updateDynamicButtonVisibility(matchingItems: HTMLElement[]) {
+    if (!this.config.buttonFilters) return;
+
+    this.config.buttonFilters.forEach(btnConfig => {
+      if (btnConfig.matchType !== 'includes') return;
+
+      const buttons = Array.from(document.querySelectorAll<HTMLElement>(btnConfig.buttonSelector));
+      if (buttons.length === 0) return;
+
+      const container = buttons[0].parentElement;
+
+      const selectedValue = this.buttonValues.get(btnConfig.dataAttribute);
+      const defVal = btnConfig.defaultValue || 'all';
+      const isAnySelected = Boolean(selectedValue && selectedValue !== defVal);
+
+      const selectedTokensList = isAnySelected
+        ? selectedValue!.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+        : [];
+      const selectedTokens = new Set(selectedTokensList);
+      const selectedOrderMap = new Map<string, number>();
+      selectedTokensList.forEach((token, idx) => {
+        selectedOrderMap.set(token, idx);
+      });
+
+      // Pre-calculate frequency of each tag in matchingItems
+      const tagCountsInMatching = new Map<string, number>();
+      matchingItems.forEach(item => {
+        const rawTags = item.getAttribute(btnConfig.dataAttribute) || '';
+        const tokens = rawTags.trim().split(/[\s,]+/);
+        const itemTags = new Set(tokens.map(t => t.trim().toLowerCase()).filter(Boolean));
+        itemTags.forEach(t => {
+          tagCountsInMatching.set(t, (tagCountsInMatching.get(t) || 0) + 1);
+        });
+      });
+
+      let visibleCount = 0;
+
+      buttons.forEach(btn => {
+        const rawVal = (btn.getAttribute('data-tag') || btn.getAttribute('data-value') || '').toLowerCase().trim();
+        const isSelected = selectedTokens.has(rawVal);
+
+        let count = 0;
+        if (isSelected) {
+          // bei bereits gewählten tags ist das die anzahl der contents, die alle diese tags haben
+          count = matchingItems.length;
+        } else {
+          // bei den restlichen tags ist es die anzahl der artikelteilmenge, die zusätzlich dieses weitere tag haben
+          count = tagCountsInMatching.get(rawVal) || 0;
+        }
+
+        btn.dataset.count = String(count);
+
+        let badgeEl = btn.querySelector<HTMLElement>('.tag-badge, .tag-count');
+        if (!badgeEl) {
+          badgeEl = document.createElement('span');
+          badgeEl.className = 'tag-badge text-[10px] font-normal opacity-75 ml-1.5 px-1.5 py-0.5 rounded bg-white/10';
+          btn.appendChild(badgeEl);
+        }
+        badgeEl.textContent = String(count);
+
+        if (count > 0) {
+          btn.classList.remove('hidden');
+          btn.style.display = '';
+          visibleCount++;
+        } else {
+          btn.classList.add('hidden');
+          btn.style.display = 'none';
+        }
+      });
+
+      // Sort buttons: selected first (in exact query parameter order), then highest count first, then alphabetically
+      buttons.sort((a, b) => {
+        const tagA = (a.getAttribute('data-tag') || '').toLowerCase().trim();
+        const tagB = (b.getAttribute('data-tag') || '').toLowerCase().trim();
+        const isASelected = selectedTokens.has(tagA);
+        const isBSelected = selectedTokens.has(tagB);
+
+        // If both are selected, preserve exact query parameter sequence!
+        if (isASelected && isBSelected) {
+          const orderA = selectedOrderMap.get(tagA) ?? 0;
+          const orderB = selectedOrderMap.get(tagB) ?? 0;
+          return orderA - orderB;
+        }
+
+        if (isASelected && !isBSelected) return -1;
+        if (!isASelected && isBSelected) return 1;
+
+        const countA = parseInt(a.dataset.count || '0', 10);
+        const countB = parseInt(b.dataset.count || '0', 10);
+        if (countB !== countA) {
+          return countB - countA;
+        }
+        return tagA.localeCompare(tagB);
+      });
+
+      if (container) {
+        buttons.forEach(btn => container.appendChild(btn));
+      }
+
+      // Update total available tags count in the tag toggle button
+      if (btnConfig.paramKey === 'tag' || btnConfig.dataAttribute === 'data-tags' || btnConfig.dataAttribute === 'data-tag') {
+        const countEls = document.querySelectorAll<HTMLElement>('[data-tag-total], [data-tag-count]');
+        countEls.forEach(el => {
+          el.textContent = String(visibleCount);
+          el.classList.add('is-synced');
+        });
+      }
+    });
+  }
+
+  private updateSearchHighlights() {
+    const query = this.searchQuery.trim();
+    const searchWords = query ? query.split(/\s+/).map(w => w.trim()).filter(w => w.length > 0) : [];
+
+    this.items.forEach(item => {
+      const targetEls = item.querySelectorAll<HTMLElement>('h2, h3, p, .tag-chip, [data-tag]');
+      if (targetEls.length > 0) {
+        targetEls.forEach(el => {
+          highlightTextNodes(el, searchWords);
+        });
+      } else {
+        highlightTextNodes(item, searchWords);
+      }
+    });
   }
 
   private updateTagHighlights() {
@@ -492,21 +847,68 @@ export class ClientListFilter {
       }
     }
     const isTagActive = Boolean(activeTag && activeTag !== 'all');
+    const activeTokens = new Set(isTagActive ? activeTag.split(',').map(s => s.trim().toLowerCase()).filter(Boolean) : []);
 
     // Select all tag chips in content preview cards
     const cardTagChips = document.querySelectorAll<HTMLElement>('.tag-chip, [data-tag]');
     cardTagChips.forEach(chip => {
-      // Exclude sidebar filter buttons so their active class isn't interfered with
-      if (chip.classList.contains('tag-filter-btn') || chip.classList.contains('lang-filter-btn')) return;
+      // Exclude sidebar and toolbar filter buttons so their active class isn't interfered with
+      if (chip.classList.contains('tag-filter-btn') || chip.classList.contains('lang-filter-btn') || chip.classList.contains('tag-toggle-btn')) return;
 
       const rawTag = chip.getAttribute('data-tag') || chip.textContent?.replace(/^#/, '') || '';
       const chipTag = rawTag.toLowerCase().trim();
 
-      if (isTagActive && chipTag === activeTag) {
+      if (isTagActive && activeTokens.has(chipTag)) {
         chip.classList.add('active-tag-match');
       } else {
         chip.classList.remove('active-tag-match');
       }
+    });
+  }
+
+  private updateActiveTagIndicators() {
+    if (!this.config.buttonFilters) return;
+
+    const tagBtnConfig = this.config.buttonFilters.find(
+      b => b.paramKey === 'tag' || b.dataAttribute === 'data-tags' || b.dataAttribute === 'data-tag'
+    );
+    if (!tagBtnConfig) return;
+
+    const currentVal = this.buttonValues.get(tagBtnConfig.dataAttribute) || tagBtnConfig.defaultValue || 'all';
+    const defVal = tagBtnConfig.defaultValue || 'all';
+    const activeTokens = currentVal !== defVal ? currentVal.split(',').map(s => s.trim().toLowerCase()).filter(Boolean) : [];
+
+    const badges = document.querySelectorAll<HTMLElement>('.active-tag-badge');
+    badges.forEach(badge => {
+      if (activeTokens.length > 0) {
+        badge.textContent = String(activeTokens.length);
+        badge.classList.remove('hidden');
+        badge.style.display = 'inline-flex';
+      } else {
+        badge.textContent = '';
+        badge.classList.add('hidden');
+        badge.style.display = 'none';
+      }
+    });
+
+    document.documentElement.classList.toggle('has-active-tag-filter', activeTokens.length > 0);
+
+    const activeInfoEls = document.querySelectorAll<HTMLElement>('.active-tag-info');
+    activeInfoEls.forEach(infoEl => {
+      const countSpan = infoEl.querySelector<HTMLElement>('.active-tag-count');
+      if (activeTokens.length > 0) {
+        if (countSpan) countSpan.textContent = String(activeTokens.length);
+        infoEl.classList.remove('hidden');
+        infoEl.style.display = 'inline';
+      } else {
+        infoEl.classList.add('hidden');
+        infoEl.style.display = 'none';
+      }
+    });
+
+    const toggleBtns = document.querySelectorAll<HTMLElement>('.tag-toggle-btn');
+    toggleBtns.forEach(toggleBtn => {
+      toggleBtn.classList.toggle('has-active-tags', activeTokens.length > 0);
     });
   }
 
@@ -551,7 +953,7 @@ export class ClientListFilter {
     }
   }
 
-  private updateUrlParams() {
+  private updateUrlParams(pushToHistory: boolean = false) {
     const url = new URL(window.location.href);
 
     // Search query
@@ -599,7 +1001,45 @@ export class ClientListFilter {
       }
     }
 
-    window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+    const newUrl = url.pathname + url.search + url.hash;
+    const currentUrl = window.location.pathname + window.location.search + window.location.hash;
+
+    if (newUrl !== currentUrl) {
+      if (pushToHistory) {
+        window.history.pushState({}, '', newUrl);
+      } else {
+        window.history.replaceState({}, '', newUrl);
+      }
+    }
+
+    // Dev Studio Shell synchronization: if wrapped in dev shell iframe, synchronize outer window URL as well
+    if (window.self !== window.top) {
+      try {
+        const topCurrent = (window.top?.location.pathname || '') + (window.top?.location.search || '') + (window.top?.location.hash || '');
+        if (topCurrent !== newUrl) {
+          if (pushToHistory) {
+            window.top?.history.pushState({}, '', newUrl);
+          } else {
+            window.top?.history.replaceState({}, '', newUrl);
+          }
+        }
+      } catch {
+        // Fallback for cross-origin or if direct access is restricted
+        window.parent.postMessage({ type: 'dev-studio-url-sync', url: newUrl, push: pushToHistory }, '*');
+      }
+    }
+
+    try {
+      const normalizedPath = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
+      const storageKey = `${normalizedPath}_filter_query`;
+      if (url.search) {
+        sessionStorage.setItem(storageKey, url.search);
+      } else {
+        sessionStorage.removeItem(storageKey);
+      }
+    } catch {
+      // In case sessionStorage is blocked or unavailable
+    }
   }
 
   private scrollToStart() {
