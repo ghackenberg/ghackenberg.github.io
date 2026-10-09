@@ -258,6 +258,61 @@ async function generate(
       modelId: currentModelId,
     });
   } catch (err) {
+    if (currentDevice === 'webgpu') {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.warn('[LLMWorker] WebGPU generation error, attempting automatic fallback to WASM:', errorMsg);
+      try {
+        postWorkerMessage({
+          type: 'status',
+          status: 'loading',
+          message: 'WebGPU buffer constraint reached, switching to WASM...',
+          device: 'wasm',
+          modelId: currentModelId,
+        });
+
+        const fallbackResult = await loadPipeline(currentModelId, currentDtype, 'wasm');
+        generator = fallbackResult.pipeline;
+        currentDevice = 'wasm';
+
+        accumulatedText = '';
+        tokenCount = 0;
+        stoppingCriteria = new InterruptableStoppingCriteria();
+
+        await generator(prompt, {
+          max_new_tokens: options?.maxNewTokens ?? 512,
+          temperature: options?.temperature ?? 0.25,
+          top_p: options?.topP ?? 0.9,
+          repetition_penalty: options?.repetitionPenalty ?? 1.15,
+          do_sample: options?.doSample ?? true,
+          streamer,
+          stopping_criteria: [stoppingCriteria],
+          return_full_text: false,
+        });
+
+        isGenerating = false;
+
+        postWorkerMessage({
+          type: 'complete',
+          id,
+          fullText: accumulatedText,
+          usage: {
+            completionTokens: tokenCount,
+          },
+        });
+
+        postWorkerMessage({
+          type: 'status',
+          status: 'ready',
+          message: 'Generation completed on WASM.',
+          device: 'wasm',
+          modelId: currentModelId,
+        });
+        return;
+      } catch (fallbackErr) {
+        console.error('[LLMWorker] WASM fallback also failed:', fallbackErr);
+      }
+    }
+
     isGenerating = false;
     const errorMsg = err instanceof Error ? err.message : String(err);
     postWorkerMessage({
