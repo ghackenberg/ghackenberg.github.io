@@ -139,6 +139,17 @@ if (pubDate) {
 
         document.documentElement.setAttribute('data-theme-setting', themeSetting);
 
+        var rawTags = urlParams.getAll('tag');
+        var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
+        var hasQ = Boolean((urlParams.get('q') || '').trim());
+        var page = parseInt(urlParams.get('page') || '1', 10);
+        if (hasTag || hasQ || page > 1) {
+          document.documentElement.classList.add('has-filter-query');
+        }
+        if (hasTag) {
+          document.documentElement.classList.add('has-active-tag-filter');
+        }
+
         function applyTheme(setting, trigger) {
           let activeTheme = setting;
           if (setting === 'system') {
@@ -344,6 +355,83 @@ if (pubDate) {
         <script is:inline>
           if (window.self !== window.top) {
             document.documentElement.classList.add('in-dev-frame');
+
+            // --- Dev Frame URL, Query & Hash Two-Way Synchronization ---
+            (function() {
+              const origPushState = history.pushState.bind(history);
+              const origReplaceState = history.replaceState.bind(history);
+
+              function syncToTop(url, isPush) {
+                if (!url) return;
+                try {
+                  const targetUrl = new URL(url.toString(), window.location.href);
+                  const fullUrl = targetUrl.pathname + targetUrl.search + targetUrl.hash;
+                  const topFull = (window.top?.location.pathname || '') + (window.top?.location.search || '') + (window.top?.location.hash || '');
+                  if (topFull !== fullUrl) {
+                    if (isPush) {
+                      window.top?.history.pushState(null, '', fullUrl);
+                    } else {
+                      window.top?.history.replaceState(null, '', fullUrl);
+                    }
+                  }
+                } catch {
+                  window.parent.postMessage({ type: 'dev-studio-url-sync', url: String(url), push: isPush }, '*');
+                }
+              }
+
+              history.pushState = function(state, unused, url) {
+                origPushState(state, unused, url);
+                syncToTop(url, true);
+              };
+
+              history.replaceState = function(state, unused, url) {
+                origReplaceState(state, unused, url);
+                syncToTop(url, false);
+              };
+
+              // Listen to hash changes in iframe (e.g. anchor clicks, TOC navigation)
+              window.addEventListener('hashchange', function() {
+                const fullUrl = window.location.pathname + window.location.search + window.location.hash;
+                syncToTop(fullUrl, true);
+                scrollToCurrentHash();
+              });
+
+              // Intercept anchor clicks on #hash links to ensure hash and pushState are preserved
+              document.addEventListener('click', function(e) {
+                const anchor = e.target && e.target.closest ? e.target.closest('a') : null;
+                if (!anchor) return;
+                const href = anchor.getAttribute('href');
+                if (href && href.startsWith('#') && href.length > 1) {
+                  const targetId = decodeURIComponent(href.slice(1));
+                  const targetEl = document.getElementById(targetId);
+                  if (targetEl) {
+                    const fullUrl = window.location.pathname + window.location.search + href;
+                    syncToTop(fullUrl, true);
+                  }
+                }
+              }, true);
+
+              // Auto-scroll to target element on initial load or popstate
+              function scrollToCurrentHash() {
+                if (!window.location.hash) return;
+                const targetId = decodeURIComponent(window.location.hash.slice(1));
+                if (!targetId) return;
+                const el = document.getElementById(targetId);
+                if (el) {
+                  setTimeout(function() {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  }, 50);
+                }
+              }
+
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', scrollToCurrentHash);
+              } else {
+                scrollToCurrentHash();
+              }
+              window.addEventListener('load', scrollToCurrentHash);
+              window.addEventListener('popstate', scrollToCurrentHash);
+            })();
           } else {
             document.documentElement.classList.add('in-dev-studio');
           }
@@ -623,7 +711,7 @@ if (pubDate) {
     </script>
     {isDev && (
       <>
-        <DevStudioShell currentPath={Astro.url.pathname} />
+        <DevStudioShell currentPath={Astro.url.pathname + (Astro.url.search || '')} />
         <AnalyticsDevOverlay />
       </>
     )}
