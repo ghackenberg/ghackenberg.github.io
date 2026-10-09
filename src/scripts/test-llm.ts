@@ -58,16 +58,16 @@ async function runLLMTests(): Promise<void> {
   // Scenario 1: Model Configurations & Registry
   // --------------------------------------------------------------------------
   console.log('\n[1/6] Validating Model Registry & Configurations...');
-  assert(!SUPPORTED_MODELS['qwen-0.5b'], 'qwen-0.5b model is not registered (exclusive Gemma 3)');
-  assert(Boolean(SUPPORTED_MODELS['gemma-3-1b']), 'gemma-3-1b model registered');
-  assert(DEFAULT_MODEL_ID === 'onnx-community/gemma-3-1b-it-ONNX-GQA', 'Default model ID is onnx-community/gemma-3-1b-it-ONNX-GQA');
-  assert(SUPPORTED_MODELS['gemma-3-1b'].sizeBytes === 750_000_000, 'Gemma 3 1B size is ~750MB');
-  assert(SUPPORTED_MODELS['gemma-3-1b'].dtype === 'q4', 'gemma-3-1b model is configured for q4 quantization');
-  assert(SUPPORTED_MODELS['gemma-3-1b'].id === 'onnx-community/gemma-3-1b-it-ONNX-GQA', 'gemma-3-1b model ID is accurate');
-  assert(SUPPORTED_MODELS['gemma-3-1b'].contextLength === 8_192, 'gemma-3-1b context length is 8,192');
-  assert(getModelConfig('gemma-3-1b').id === 'onnx-community/gemma-3-1b-it-ONNX-GQA', 'getModelConfig resolves key');
-  assert(getModelConfig('onnx-community/gemma-3-1b-it-ONNX-GQA').name.includes('Gemma-3'), 'getModelConfig resolves HF id');
-  assert(Object.keys(SUPPORTED_MODELS).length === 1, 'Gemma 3 1B is the sole registered model');
+  assert(!SUPPORTED_MODELS['gemma-3-1b'], 'gemma-3-1b model is retired in favor of Qwen 2.5');
+  assert(Boolean(SUPPORTED_MODELS['qwen-1.5b']), 'qwen-1.5b model registered');
+  assert(DEFAULT_MODEL_ID === 'onnx-community/Qwen2.5-1.5B-Instruct', 'Default model ID is onnx-community/Qwen2.5-1.5B-Instruct');
+  assert(SUPPORTED_MODELS['qwen-1.5b'].sizeBytes === 980_000_000, 'Qwen 2.5 1.5B size is ~980MB');
+  assert(SUPPORTED_MODELS['qwen-1.5b'].dtype === 'q4', 'qwen-1.5b model is configured for q4 quantization');
+  assert(SUPPORTED_MODELS['qwen-1.5b'].id === 'onnx-community/Qwen2.5-1.5B-Instruct', 'qwen-1.5b model ID is accurate');
+  assert(SUPPORTED_MODELS['qwen-1.5b'].contextLength === 32_768, 'qwen-1.5b context length is 32,768');
+  assert(getModelConfig('qwen-1.5b').id === 'onnx-community/Qwen2.5-1.5B-Instruct', 'getModelConfig resolves key');
+  assert(getModelConfig('onnx-community/Qwen2.5-1.5B-Instruct').name.includes('Qwen 2.5'), 'getModelConfig resolves HF id');
+  assert(Object.keys(SUPPORTED_MODELS).length === 1, 'Qwen 2.5 1.5B is the sole registered model');
   console.log('   ✅ Model registry and quantizations verified.');
 
   // --------------------------------------------------------------------------

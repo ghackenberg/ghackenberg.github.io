@@ -84,15 +84,15 @@
           </button>
         </div>
 
-        <!-- Choice 2: Full Avatar (~750 MB) -->
+        <!-- Choice 2: Full Avatar (~980 MB) -->
         <div class="p-4 rounded-xl sm:rounded-2xl bg-brand-blue/[0.06] hover:bg-brand-blue/[0.1] light:bg-blue-50/50 light:hover:bg-blue-50/80 border border-brand-blue/30 light:border-blue-200 transition-all duration-200 group flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="space-y-1 min-w-0">
             <div class="flex items-center gap-2">
               <span class="text-base sm:text-lg font-bold text-white light:text-slate-900">Activate Virtual Avatar</span>
-              <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-brand-blue/20 text-brand-blue border border-brand-blue/30 light:bg-blue-100 light:text-blue-800">~750 MB one-time</span>
+              <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-brand-blue/20 text-brand-blue border border-brand-blue/30 light:bg-blue-100 light:text-blue-800">~980 MB one-time</span>
             </div>
             <p class="text-xs text-gray-400 light:text-slate-500 leading-relaxed">
-              Downloads the Google Gemma 3 (1B GQA) language model into your browser cache. Enables interactive chat with Georg's virtual persona, contextual synthesis, and automatic slide navigation.
+              Downloads the Qwen 2.5 (1.5B Instruct) language model into your browser cache. Enables interactive chat with Georg's virtual persona, contextual synthesis, and automatic slide navigation.
             </p>
           </div>
           <button
@@ -117,7 +117,7 @@
             </div>
             <div>
               <h4 id="download-progress-title" class="text-sm font-bold text-white light:text-slate-900">Downloading model weights...</h4>
-              <p id="download-progress-file" class="text-xs text-gray-400 light:text-slate-500 font-mono truncate max-w-[240px] sm:max-w-xs">gemma-3-1b-it-ONNX-GQA</p>
+              <p id="download-progress-file" class="text-xs text-gray-400 light:text-slate-500 font-mono truncate max-w-[240px] sm:max-w-xs">Qwen2.5-1.5B-Instruct</p>
             </div>
           </div>
           <span id="download-percentage" class="text-sm sm:text-base font-extrabold text-brand-blue font-mono">0%</span>
@@ -134,7 +134,7 @@
 
         <!-- Metrics & ETA -->
         <div class="flex items-center justify-between text-xs text-gray-400 light:text-slate-500">
-          <span id="download-bytes-text">0 MB / ~750 MB</span>
+          <span id="download-bytes-text">0 MB / ~980 MB</span>
           <span id="download-eta-text">Calculating...</span>
         </div>
 
@@ -159,7 +159,7 @@
             </svg>
           </div>
           <div class="space-y-1 min-w-0 flex-1">
-            <h4 class="text-sm font-bold text-white light:text-slate-900">Model Download Failed</h4>
+            <h4 id="avatar-download-error-title" class="text-sm font-bold text-white light:text-slate-900">Model Download Failed</h4>
             <p class="text-xs text-gray-300 light:text-slate-600 leading-relaxed">
               Unable to download model weights. This might be due to network connectivity or WebGPU device constraints. You can retry the download or continue with lightweight Instant Search.
             </p>

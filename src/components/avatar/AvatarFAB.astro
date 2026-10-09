@@ -26,7 +26,9 @@ const optimizedThumb = await getImage({
     <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-full overflow-hidden border border-white/10 light:border-slate-200 bg-brand-blue/10 flex items-center justify-center shrink-0">
       <img
         src={optimizedThumb.src}
-        alt="Dr. Georg Hackenberg Avatar"
+        alt=""
+        role="presentation"
+        aria-hidden="true"
         width="56"
         height="56"
         loading="eager"
