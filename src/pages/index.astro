@@ -1102,6 +1102,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
               vignette={false}
               idleAnimation={true}
             />
+
+            <!-- Interactive Badge on Hero DepthPortrait -->
+            <button
+              id="hero-avatar-chat-btn"
+              type="button"
+              class="absolute bottom-1 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#090d16]/85 light:bg-white/95 border border-brand-blue/40 light:border-blue-300 text-white light:text-slate-900 shadow-xl shadow-brand-blue/15 backdrop-blur-md hover:border-brand-blue hover:scale-105 hover:shadow-brand-blue/25 active:scale-95 transition-all duration-300 cursor-pointer text-xs sm:text-sm font-semibold group/btn"
+              aria-label="Chat mit Georgs virtuellem Avatar öffnen"
+            >
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Chat mit Georgs Avatar</span>
+              <svg class="w-3.5 h-3.5 text-brand-blue group-hover/btn:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
           </div>
         </div>
         
@@ -2284,5 +2298,19 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema];
         activeInstance.updateLayout(activeInstance.layouts[0].id, isLight);
       }
     });
+
+    // Hero Avatar Chat Button Trigger
+    const heroAvatarBtn = document.getElementById('hero-avatar-chat-btn');
+    if (heroAvatarBtn) {
+      heroAvatarBtn.addEventListener('click', () => {
+        if (typeof window.isAvatarConsented === 'function' && window.isAvatarConsented()) {
+          window.openAvatarDrawer?.();
+        } else if (typeof window.openAvatarConsentModal === 'function') {
+          window.openAvatarConsentModal('hero');
+        } else {
+          window.openAvatarDrawer?.();
+        }
+      });
+    }
   });
 </script>

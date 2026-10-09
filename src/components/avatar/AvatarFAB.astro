@@ -1,0 +1,178 @@
+---
+// AvatarFAB.astro - Floating Action Button for Sovereign Virtual Avatar
+import { getImage } from "astro:assets";
+import profileImage from "@assets/avatar/comic-profile-head.png";
+
+const optimizedThumb = await getImage({
+  src: profileImage,
+  format: "webp",
+  width: 120,
+  quality: 90
+});
+---
+
+<div id="avatar-fab-container" class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 select-none print:hidden">
+  <button
+    id="avatar-fab-button"
+    type="button"
+    class="relative group flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#090d16]/90 light:bg-white/95 border border-brand-blue/40 light:border-blue-300 shadow-xl shadow-brand-blue/15 light:shadow-slate-400/20 backdrop-blur-md hover:scale-105 hover:border-brand-blue hover:shadow-2xl hover:shadow-brand-blue/30 active:scale-95 transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+    aria-label="Chat mit Georgs virtuellem Avatar öffnen (Strg+K / Cmd+K)"
+    title="Virtueller Avatar (Cmd+K)"
+  >
+    <!-- Glowing Halo Ring on Hover -->
+    <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-brand-blue via-brand-purple to-brand-blue opacity-0 group-hover:opacity-40 blur-sm transition-opacity duration-300 pointer-events-none -z-10"></div>
+
+    <!-- Avatar Image -->
+    <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-full overflow-hidden border border-white/10 light:border-slate-200 bg-brand-blue/10 flex items-center justify-center shrink-0">
+      <img
+        src={optimizedThumb.src}
+        alt="Dr. Georg Hackenberg Avatar"
+        width="56"
+        height="56"
+        loading="eager"
+        decoding="async"
+        class="w-full h-full object-cover pointer-events-none transform group-hover:scale-110 transition-transform duration-300"
+      />
+    </div>
+
+    <!-- Online / Compute Local Indicator Dot -->
+    <span class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#090d16] light:border-white shadow-sm flex items-center justify-center" title="WebGPU / Lokale Inferenz">
+      <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+    </span>
+
+    <!-- Unread Notification Badge -->
+    <span
+      id="avatar-fab-unread-badge"
+      class="hidden absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[20px] h-5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] font-extrabold flex items-center justify-center shadow-lg border border-white/30 light:border-white animate-pulse"
+      aria-label="Ungelesene Neuigkeiten"
+    >
+      0
+    </span>
+
+    <!-- Keyboard Shortcut Pill (Desktop tooltip) -->
+    <span class="hidden md:flex absolute right-full mr-3 top-1/2 -translate-y-1/2 items-center gap-1 px-2.5 py-1 rounded-lg bg-black/80 light:bg-slate-900/90 text-white text-xs font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 shadow-md border border-white/10">
+      <span>Avatar</span>
+      <kbd class="px-1.5 py-0.5 text-[10px] font-mono bg-white/15 rounded border border-white/20">⌘K</kbd>
+    </span>
+  </button>
+</div>
+
+<script>
+  import { trackEvent } from '@commons/client/telemetry';
+
+  declare global {
+    interface Window {
+      openAvatarDrawer?: () => void;
+      openAvatarConsentModal?: (origin?: string) => void;
+      isAvatarConsented?: () => boolean;
+    }
+  }
+
+  (function() {
+    const fabButton = document.getElementById('avatar-fab-button');
+    const badge = document.getElementById('avatar-fab-unread-badge');
+    const CONSENT_STORAGE_KEY = 'gh_avatar_consent_v1';
+    const NOTIF_STORAGE_KEY = 'gh_site_notifications_v1';
+    const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
+    const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests'];
+
+    function isConsented(): boolean {
+      try {
+        const raw = localStorage.getItem(CONSENT_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return parsed && (parsed.consented === true || parsed.mode === 'search');
+        }
+      } catch (e) {
+        // ignore
+      }
+      return false;
+    }
+    window.isAvatarConsented = isConsented;
+
+    function handleFabClick() {
+      trackEvent('Avatar Action', { action: 'fab-clicked' });
+      if (isConsented()) {
+        if (typeof window.openAvatarDrawer === 'function') {
+          window.openAvatarDrawer();
+        }
+      } else {
+        if (typeof window.openAvatarConsentModal === 'function') {
+          window.openAvatarConsentModal('fab');
+        }
+      }
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', handleFabClick);
+    }
+
+    // Global keyboard shortcut: Cmd+K / Ctrl+K
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        // Prevent default browser URL bar search or shortcuts
+        e.preventDefault();
+        handleFabClick();
+      }
+    });
+
+    // Calculate unread badge counter from notifications state
+    function updateFabBadge() {
+      if (!badge) return;
+      try {
+        const rawState = localStorage.getItem(NOTIF_STORAGE_KEY);
+        if (!rawState) {
+          badge.classList.add('hidden');
+          return;
+        }
+        const state = JSON.parse(rawState);
+        if (!state || state.enabled !== true) {
+          badge.classList.add('hidden');
+          return;
+        }
+
+        const rawManifest = localStorage.getItem(MANIFEST_CACHE_KEY);
+        if (!rawManifest) {
+          badge.classList.add('hidden');
+          return;
+        }
+
+        const manifest = JSON.parse(rawManifest);
+        let unreadCount = 0;
+
+        for (const section of SECTIONS) {
+          const items = manifest[section];
+          if (!Array.isArray(items)) continue;
+          const lastVisit = (state.lastVisitedSections && state.lastVisitedSections[section] !== undefined)
+            ? state.lastVisitedSections[section]
+            : 0;
+
+          for (const item of items) {
+            if (!item || !item.url) continue;
+            let itemUrl = item.url.replace(/\/$/, '');
+            if (!itemUrl.startsWith('/')) itemUrl = '/' + itemUrl;
+            const isNew = lastVisit === 0 ? true : (item.date || 0) > lastVisit;
+            const isUnvisited = !(state.visitedItems && state.visitedItems[itemUrl]);
+            if (isNew && isUnvisited) {
+              unreadCount++;
+            }
+          }
+        }
+
+        if (unreadCount > 0) {
+          badge.textContent = unreadCount > 99 ? '99+' : unreadCount.toString();
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
+      } catch (e) {
+        badge.classList.add('hidden');
+      }
+    }
+
+    updateFabBadge();
+    window.addEventListener('gh-notifications-toggle', updateFabBadge);
+    window.addEventListener('storage', updateFabBadge);
+    document.addEventListener('astro:page-load', updateFabBadge);
+  })();
+</script>

@@ -25,6 +25,7 @@ export interface Props {
   trackMouse?: boolean;
   vignette?: boolean;
   idleAnimation?: boolean;
+  syncAvatarState?: boolean;
   loading?: "eager" | "lazy";
   fetchpriority?: "high" | "low" | "auto";
   width?: number;
@@ -43,6 +44,7 @@ const {
   trackMouse = false,
   vignette = true,
   idleAnimation = true,
+  syncAvatarState = false,
   loading = "eager",
   fetchpriority = "high",
   width = 480,
@@ -75,6 +77,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
   data-track-mouse={trackMouse ? "true" : "false"}
   data-vignette={vignette ? "true" : "false"}
   data-idle={idleAnimation ? "true" : "false"}
+  data-sync-avatar-state={syncAvatarState ? "true" : "false"}
   role="img"
   aria-label={alt}
   title={title}
@@ -140,6 +143,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       const hasTrackMouse = container.getAttribute('data-track-mouse') === 'true';
       const hasVignette = container.getAttribute('data-vignette') === 'true';
       const hasIdle = container.getAttribute('data-idle') === 'true';
+      const hasSyncAvatarState = container.getAttribute('data-sync-avatar-state') === 'true';
 
       const canvas = container.querySelector<HTMLCanvasElement>('canvas.depth-canvas');
       const fallbackImg = container.querySelector<HTMLImageElement>('img.depth-fallback-img');
@@ -509,6 +513,21 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
         let transitionStartTime = 0;
         let transitionDuration = 200;
 
+        let activeConversationState: 'IDLE' | 'THINKING' | 'SPEAKING' = 'IDLE';
+        let speakingMouthToggle = false;
+        let speakingTimer = 0;
+
+        if (hasSyncAvatarState) {
+          window.addEventListener('avatar-state-change', ((e: CustomEvent<{ state: 'IDLE' | 'THINKING' | 'SPEAKING' }>) => {
+            if (e.detail?.state) {
+              activeConversationState = e.detail.state;
+              if (activeConversationState === 'SPEAKING') {
+                speakingTimer = performance.now();
+              }
+            }
+          }) as EventListener);
+        }
+
         function getRandomDuration(range?: [number, number]): number {
           const [min, max] = range || [3000, 5000];
           return min + Math.random() * (max - min);
@@ -720,7 +739,34 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
 
           if (expressions.length > 1) {
             if (!isTransitioning) {
-              if (timestamp >= stateTimer) {
+              if (hasSyncAvatarState && activeConversationState === 'SPEAKING') {
+                if (timestamp >= speakingTimer) {
+                  speakingMouthToggle = !speakingMouthToggle;
+                  const targetExprId = speakingMouthToggle ? 'closed_mouth' : 'default';
+                  const targetConfig = exprMap.get(targetExprId);
+                  if (targetConfig && textureCache.has(targetConfig.id) && targetConfig.id !== currentExpr.id) {
+                    nextExpr = targetConfig;
+                    isTransitioning = true;
+                    transitionStartTime = timestamp;
+                    transitionDuration = 140;
+                    const nextPair = textureCache.get(nextExpr.id)!;
+                    bindPair(nextPair, 2, 3);
+                  }
+                  speakingTimer = timestamp + 160 + Math.random() * 80;
+                }
+              } else if (hasSyncAvatarState && activeConversationState === 'THINKING') {
+                if (currentExpr.id !== 'closed_mouth') {
+                  const closed = exprMap.get('closed_mouth');
+                  if (closed && textureCache.has(closed.id)) {
+                    nextExpr = closed;
+                    isTransitioning = true;
+                    transitionStartTime = timestamp;
+                    transitionDuration = 200;
+                    const nextPair = textureCache.get(nextExpr.id)!;
+                    bindPair(nextPair, 2, 3);
+                  }
+                }
+              } else if (timestamp >= stateTimer) {
                 nextExpr = chooseNextExpression(currentExpr, timestamp);
                 if (nextExpr.id !== currentExpr.id) {
                   isTransitioning = true;
