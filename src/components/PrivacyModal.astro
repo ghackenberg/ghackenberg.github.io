@@ -138,6 +138,10 @@
             <span id="privacy-model-cache-status" class="text-gray-200 light:text-slate-800 font-medium font-mono">Checking...</span>
           </div>
           <div class="flex items-center justify-between text-gray-400 light:text-slate-500">
+            <span>Chat History:</span>
+            <span id="privacy-chat-history-status" class="text-gray-200 light:text-slate-800 font-medium font-mono">Checking...</span>
+          </div>
+          <div class="flex items-center justify-between text-gray-400 light:text-slate-500">
             <span>Browser Storage Quota:</span>
             <span id="privacy-storage-quota-status" class="text-gray-200 light:text-slate-800 font-medium font-mono">Checking...</span>
           </div>
@@ -176,6 +180,8 @@
 <script>
   import { trackEvent } from '@commons/client/telemetry';
   import { getModelCacheSize, purgeModelCache, getStorageQuota } from '@commons/client/llm/model-cache';
+  import { getHistoryStore } from '@commons/client/memory/history-store';
+  import { clearSessionMemory } from '@commons/client/memory/session-memory';
 
   declare global {
     interface Window {
@@ -202,6 +208,7 @@
     const toggleAnalyticsBtn = document.getElementById('toggle-analytics-optout-btn');
     const analyticsBadge = document.getElementById('analytics-badge');
     const modelCacheStatus = document.getElementById('privacy-model-cache-status');
+    const chatHistoryStatus = document.getElementById('privacy-chat-history-status');
     const storageQuotaStatus = document.getElementById('privacy-storage-quota-status');
     const clearModelCacheBtn = document.getElementById('privacy-clear-model-cache-btn');
     const clearChatHistoryBtn = document.getElementById('privacy-clear-chat-history-btn');
@@ -237,6 +244,20 @@
           }
         } catch {
           modelCacheStatus.textContent = 'Not available';
+        }
+      }
+
+      if (chatHistoryStatus) {
+        try {
+          const stats = await getHistoryStore().getStorageStats();
+          if (stats.count > 0) {
+            const kb = (stats.sizeBytes / 1024).toFixed(1);
+            chatHistoryStatus.textContent = `${stats.count} ${stats.count === 1 ? 'session' : 'sessions'} (${kb} KB)`;
+          } else {
+            chatHistoryStatus.textContent = '0 sessions (0 KB)';
+          }
+        } catch {
+          chatHistoryStatus.textContent = 'Not available';
         }
       }
 
@@ -435,10 +456,14 @@
 
     // Clear Avatar Chat History
     if (clearChatHistoryBtn) {
-      clearChatHistoryBtn.addEventListener('click', function() {
-        if (confirm('Do you really want to clear the local avatar chat history?')) {
+      clearChatHistoryBtn.addEventListener('click', async function() {
+        if (confirm('Do you really want to clear all local avatar chat history?')) {
           trackPrivacyEvent('Privacy Action', { action: 'clear-avatar-chat' });
+          await getHistoryStore().clearAllSessions();
+          clearSessionMemory();
           localStorage.removeItem(AVATAR_CHAT_KEY);
+          localStorage.removeItem('gh_avatar_chat_v2');
+          await updateAvatarStorageInfo();
           alert('Chat history has been cleared successfully.');
         }
       });

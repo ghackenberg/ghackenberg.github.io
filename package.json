@@ -32,6 +32,7 @@
     "test:search": "tsx src/scripts/test-search.ts",
     "test:context": "tsx src/scripts/test-context.ts",
     "test:llm": "tsx src/scripts/test-llm.ts",
+    "test:memory": "tsx src/scripts/test-memory.ts",
     "lighthouse": "node --experimental-strip-types src/scripts/run-lighthouse.ts",
     "mcp:analytics": "tsx src/tools/unified-analytics.ts",
     "setup:mcp": "npm link",
