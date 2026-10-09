@@ -16,12 +16,6 @@ export async function getStaticPaths() {
 
 const { pub } = Astro.props;
 
-// Format slides URL
-let slidesUrl = pub.data.slides;
-if (slidesUrl && slidesUrl.startsWith("//")) {
-  slidesUrl = "https:" + slidesUrl;
-}
-
 function getPublisherDomain(url: string | undefined): string {
   if (!url) return "";
   try {
@@ -157,27 +151,34 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         <span>{pub.data.pubDate}</span>
       </p>
 
-      <div class="flex flex-wrap gap-2 items-center">
-        {pub.data.tags.map(tag => (
-          <a 
-            href={`/tags/${tag}/`}
-            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-purple/30 transition-all duration-200"
-          >
-            #{tag}
-          </a>
-        ))}
-        {pub.data.publisherUrl && (
+      {pub.data.tags && pub.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-6">
+          {pub.data.tags.map(tag => (
+            <a 
+              href={`/tags/${tag}/`}
+              class="tag-chip tag-chip-purple inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )}
+
+      {pub.data.publisherUrl && (
+        <div class="flex flex-wrap items-center gap-3 mt-6">
           <a 
             href={pub.data.publisherUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="ml-auto px-3 py-1.5 rounded-xl text-xs font-semibold bg-brand-purple/10 border border-brand-purple/20 text-brand-purple hover:bg-brand-purple/20 transition-all duration-200 flex items-center space-x-1"
+            class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700"
           >
             <span>{getPublisherDomain(pub.data.publisherUrl)}</span>
-            <span>↗</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+            </svg>
           </a>
-        )}
-      </div>
+        </div>
+      )}
     </header>
 
     <!-- Content Sections -->
@@ -193,25 +194,10 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
         </div>
       )}
 
-      {slidesUrl && (
-        <div id="presentation-slides" class="mb-10 md:mb-12">
-          <h2 id="presentation-slides-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Presentation Slides</h2>
-          <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-element-border-medium bg-black">
-            <iframe 
-              src={slidesUrl} 
-              allowfullscreen 
-              class="absolute top-0 left-0 w-full h-full border-0"
-            >
-              Loading presentation...
-            </iframe>
-          </div>
-        </div>
-      )}
-
       {pub.data.bibtex && (
         <div id="bibtex-citation">
           <div class="flex items-center justify-between border-b border-element-border pb-2 mb-4">
-            <h2 id="bibtex-citation-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b-0 pb-0 mb-0">BibTeX Citation</h2>
+            <h2 id="bibtex-citation-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 !border-b-0 !pb-0 !mb-0 !mt-0">BibTeX Citation</h2>
             <button 
               id="copy-bibtex-btn"
               data-track-event="High Intent: Copy BibTeX"
