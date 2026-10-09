@@ -27,10 +27,10 @@
         </div>
         <div class="min-w-0">
           <h2 id="avatar-consent-title" class="text-lg sm:text-xl font-bold tracking-tight text-white light:text-slate-900 leading-tight truncate">
-            Virtueller Avatar & <span class="heading-gradient-brand">Lokale KI</span>
+            Virtual <span class="heading-gradient-brand">Avatar</span>
           </h2>
           <p class="text-xs text-gray-400 light:text-slate-500 mt-0.5 leading-tight truncate">
-            Souveräne Datenverarbeitung gemäß DSGVO & § 165 TKG 2021
+            Sovereign on-device intelligence under GDPR & § 165 TKG 2021
           </p>
         </div>
       </div>
@@ -39,7 +39,7 @@
       <button
         id="avatar-consent-close-btn"
         class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
-        aria-label="Einwilligungsdialog schließen"
+        aria-label="Close consent dialog"
       >
         <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -55,24 +55,24 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
-          <span>100% Client-Side Inferenz (Zero Cloud Data Transmission)</span>
+          <span>100% Client-Side Inference (Zero Cloud Data Transmission)</span>
         </div>
         <p>
-          Alle Berechnungen finden <strong>ausschließlich lokal in Ihrem Browser</strong> statt. Es werden zu keinem Zeitpunkt Eingaben, Prompts oder Konversationsdaten an externe Server übertragen (Art. 6 Abs. 1 lit. a DSGVO).
+          All computations take place <strong>strictly locally within your browser</strong>. Inputs, prompts, or conversational data are never transmitted to external servers at any time (Art. 6(1)(a) GDPR).
         </p>
       </div>
 
       <!-- Selection View (Default) -->
       <div id="avatar-consent-choices" class="space-y-3">
-        <!-- Choice 1: Sofortsuche (0 MB) -->
+        <!-- Choice 1: Instant Search (0 MB) -->
         <div class="p-4 rounded-xl sm:rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] light:bg-white light:hover:bg-slate-50 border border-white/10 light:border-slate-200 transition-all duration-200 group flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="space-y-1 min-w-0">
             <div class="flex items-center gap-2">
-              <span class="text-base sm:text-lg font-bold text-white light:text-slate-900">Sofortsuche nutzen</span>
+              <span class="text-base sm:text-lg font-bold text-white light:text-slate-900">Use Instant Search</span>
               <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700">0 MB Download</span>
             </div>
             <p class="text-xs text-gray-400 light:text-slate-500 leading-relaxed">
-              Blitzschnelle Hybrid-Suche (BM25 & Vektor-Index) über alle Publikationen, Blogbeiträge, Folien und Projekte ohne Download von KI-Gewichten.
+              Lightning-fast hybrid search (BM25 & vector index) across all publications, blog posts, slides, and projects without downloading AI model weights.
             </p>
           </div>
           <button
@@ -80,7 +80,7 @@
             type="button"
             class="px-4 py-2 sm:py-2.5 rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-slate-100 text-gray-200 light:text-slate-800 hover:text-white light:hover:text-black hover:border-brand-blue transition-colors text-xs sm:text-sm font-semibold cursor-pointer shrink-0 text-center shadow-sm"
           >
-            Sofortsuche starten
+            Start Instant Search
           </button>
         </div>
 
@@ -88,11 +88,11 @@
         <div class="p-4 rounded-xl sm:rounded-2xl bg-brand-blue/[0.06] hover:bg-brand-blue/[0.1] light:bg-blue-50/50 light:hover:bg-blue-50/80 border border-brand-blue/30 light:border-blue-200 transition-all duration-200 group flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="space-y-1 min-w-0">
             <div class="flex items-center gap-2">
-              <span class="text-base sm:text-lg font-bold text-white light:text-slate-900">Avatar aktivieren</span>
-              <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-brand-blue/20 text-brand-blue border border-brand-blue/30 light:bg-blue-100 light:text-blue-800">~380 MB einmalig</span>
+              <span class="text-base sm:text-lg font-bold text-white light:text-slate-900">Activate Virtual Avatar</span>
+              <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-brand-blue/20 text-brand-blue border border-brand-blue/30 light:bg-blue-100 light:text-blue-800">~380 MB one-time</span>
             </div>
             <p class="text-xs text-gray-400 light:text-slate-500 leading-relaxed">
-              Lädt das kompakte Sprachmodell <em>Qwen2.5-0.5B</em> in Ihren Browser-Cache. Ermöglicht interaktiven Chat mit Georgs virtuellem Persona, Kontext-Synthese und automatische Foliensteuerung.
+              Downloads the compact <em>Qwen2.5-0.5B</em> language model into your browser cache. Enables interactive chat with Georg's virtual persona, contextual synthesis, and automatic slide navigation.
             </p>
           </div>
           <button
@@ -100,7 +100,7 @@
             type="button"
             class="px-4 py-2.5 sm:py-3 rounded-xl bg-gradient-brand text-white font-bold text-xs sm:text-sm shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40 hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0 text-center"
           >
-            Avatar aktivieren
+            Activate Virtual Avatar
           </button>
         </div>
       </div>
@@ -116,7 +116,7 @@
               </svg>
             </div>
             <div>
-              <h4 id="download-progress-title" class="text-sm font-bold text-white light:text-slate-900">Modell wird heruntergeladen...</h4>
+              <h4 id="download-progress-title" class="text-sm font-bold text-white light:text-slate-900">Downloading model weights...</h4>
               <p id="download-progress-file" class="text-xs text-gray-400 light:text-slate-500 font-mono truncate max-w-[240px] sm:max-w-xs">Qwen2.5-0.5B-Instruct-q4.onnx</p>
             </div>
           </div>
@@ -135,7 +135,7 @@
         <!-- Metrics & ETA -->
         <div class="flex items-center justify-between text-xs text-gray-400 light:text-slate-500">
           <span id="download-bytes-text">0 MB / ~380 MB</span>
-          <span id="download-eta-text">Wird berechnet...</span>
+          <span id="download-eta-text">Calculating...</span>
         </div>
 
         <!-- Abort Button -->
@@ -145,7 +145,42 @@
             type="button"
             class="text-xs text-gray-400 hover:text-red-400 transition-colors cursor-pointer px-2 py-1"
           >
-            Download abbrechen
+            Cancel download
+          </button>
+        </div>
+      </div>
+
+      <!-- In-Modal Download Error View (Hidden until error occurs) -->
+      <div id="avatar-download-error-view" class="hidden p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-red-500/10 light:bg-red-50/80 border border-red-500/30 light:border-red-200 space-y-3">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-red-500/20 text-red-400 light:text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+          </div>
+          <div class="space-y-1 min-w-0 flex-1">
+            <h4 class="text-sm font-bold text-white light:text-slate-900">Model Download Failed</h4>
+            <p class="text-xs text-gray-300 light:text-slate-600 leading-relaxed">
+              Unable to download model weights. This might be due to network connectivity or WebGPU device constraints. You can retry the download or continue with lightweight Instant Search.
+            </p>
+            <div id="avatar-download-error-details" class="hidden text-[11px] font-mono p-2 rounded bg-black/30 light:bg-red-100/70 text-red-300 light:text-red-800 break-words mt-1"></div>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-red-500/20 light:border-red-200 flex flex-wrap items-center justify-end gap-2">
+          <button
+            id="avatar-download-error-search-btn"
+            type="button"
+            class="px-3 py-1.5 rounded-lg border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-slate-100 text-gray-200 light:text-slate-700 hover:text-white light:hover:text-black transition-colors text-xs font-semibold cursor-pointer"
+          >
+            Start Instant Search instead
+          </button>
+          <button
+            id="avatar-download-retry-btn"
+            type="button"
+            class="px-3.5 py-1.5 rounded-lg bg-gradient-brand text-white font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          >
+            Retry Download
           </button>
         </div>
       </div>
@@ -153,9 +188,9 @@
 
     <!-- Footer -->
     <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-white/5 light:border-slate-200/80 flex items-center justify-between text-xs text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
-      <span>Cache jederzeit löschbar unter <a href="#" data-open-privacy-modal class="underline hover:text-brand-blue">Datenschutz</a></span>
+      <span>Cache can be cleared anytime in <a href="#" data-open-privacy-modal class="underline hover:text-brand-blue">Privacy Settings</a></span>
       <a href="/datenschutz/" class="underline hover:text-brand-blue transition-colors">
-        Datenschutzerklärung
+        Privacy Policy
       </a>
     </div>
   </div>
@@ -180,6 +215,10 @@
     const closeBtn = document.getElementById('avatar-consent-close-btn');
     const choicesView = document.getElementById('avatar-consent-choices');
     const progressView = document.getElementById('avatar-download-progress-view');
+    const errorView = document.getElementById('avatar-download-error-view');
+    const errorDetails = document.getElementById('avatar-download-error-details');
+    const errorRetryBtn = document.getElementById('avatar-download-retry-btn');
+    const errorSearchBtn = document.getElementById('avatar-download-error-search-btn');
     const choiceSearchBtn = document.getElementById('avatar-choice-search-btn');
     const choiceModelBtn = document.getElementById('avatar-choice-model-btn');
     const progressBar = document.getElementById('download-progress-bar');
@@ -199,6 +238,7 @@
         // Reset view
         if (choicesView) choicesView.classList.remove('hidden');
         if (progressView) progressView.classList.add('hidden');
+        if (errorView) errorView.classList.add('hidden');
         backdrop.classList.remove('opacity-0', 'pointer-events-none');
         backdrop.classList.add('opacity-100');
         container.classList.remove('scale-95');
@@ -262,6 +302,7 @@
         downloadStartTime = performance.now();
 
         if (choicesView) choicesView.classList.add('hidden');
+        if (errorView) errorView.classList.add('hidden');
         if (progressView) progressView.classList.remove('hidden');
 
         const llm = getLLMClient();
@@ -287,21 +328,21 @@
               const etaSec = Math.round(remainingBytes / bytesPerSec);
               if (etaText) {
                 etaText.textContent = etaSec > 60
-                  ? `ca. ${Math.ceil(etaSec / 60)} Min verbleibend`
-                  : `${etaSec}s verbleibend`;
+                  ? `~${Math.ceil(etaSec / 60)} min remaining`
+                  : `${etaSec}s remaining`;
               }
             }
           }
         });
 
         try {
-          await llm.initModel('Qwen/Qwen2.5-0.5B-Instruct');
+          await llm.initModel('onnx-community/Qwen2.5-0.5B-Instruct');
           removeProgressListener();
 
           const consentData = {
             consented: true,
             mode: 'avatar',
-            modelId: 'Qwen/Qwen2.5-0.5B-Instruct',
+            modelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
             timestamp: Date.now()
           };
           localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(consentData));
@@ -314,9 +355,32 @@
         } catch (err) {
           console.error('Model initialization error:', err);
           isDownloading = false;
-          if (choicesView) choicesView.classList.remove('hidden');
           if (progressView) progressView.classList.add('hidden');
-          alert('Download fehlgeschlagen oder abgebrochen. Sie können stattdessen die Sofortsuche nutzen.');
+          if (choicesView) choicesView.classList.add('hidden');
+          if (errorView) {
+            errorView.classList.remove('hidden');
+            if (errorDetails) {
+              const errStr = err instanceof Error ? err.message : String(err);
+              errorDetails.textContent = `Error details: ${errStr}`;
+              errorDetails.classList.remove('hidden');
+            }
+          }
+        }
+      });
+    }
+
+    if (errorRetryBtn) {
+      errorRetryBtn.addEventListener('click', () => {
+        if (choiceModelBtn) {
+          choiceModelBtn.click();
+        }
+      });
+    }
+
+    if (errorSearchBtn) {
+      errorSearchBtn.addEventListener('click', () => {
+        if (choiceSearchBtn) {
+          choiceSearchBtn.click();
         }
       });
     }
@@ -330,6 +394,7 @@
         } catch {}
         if (choicesView) choicesView.classList.remove('hidden');
         if (progressView) progressView.classList.add('hidden');
+        if (errorView) errorView.classList.add('hidden');
       });
     }
   })();

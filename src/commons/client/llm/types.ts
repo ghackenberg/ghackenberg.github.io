@@ -58,7 +58,7 @@ export interface ModelConfig {
  */
 export const SUPPORTED_MODELS: Record<string, ModelConfig> = {
   'qwen-0.5b': {
-    id: 'Qwen/Qwen2.5-0.5B-Instruct',
+    id: 'onnx-community/Qwen2.5-0.5B-Instruct',
     name: 'Qwen2.5-0.5B-Instruct (q4)',
     sizeBytes: 395_000_000,
     dtype: 'q4',
@@ -68,7 +68,7 @@ export const SUPPORTED_MODELS: Record<string, ModelConfig> = {
     description: 'Ultra-fast, lightweight model ideal for immediate client-side inference on all devices.',
   },
   'qwen-1.5b': {
-    id: 'Qwen/Qwen2.5-1.5B-Instruct',
+    id: 'onnx-community/Qwen2.5-1.5B-Instruct',
     name: 'Qwen2.5-1.5B-Instruct (q4)',
     sizeBytes: 1_050_000_000,
     dtype: 'q4',
@@ -82,7 +82,7 @@ export const SUPPORTED_MODELS: Record<string, ModelConfig> = {
 /**
  * Default model identifier
  */
-export const DEFAULT_MODEL_ID = 'Qwen/Qwen2.5-0.5B-Instruct';
+export const DEFAULT_MODEL_ID = 'onnx-community/Qwen2.5-0.5B-Instruct';
 
 /**
  * Fine-grained asset download and cache loading progress

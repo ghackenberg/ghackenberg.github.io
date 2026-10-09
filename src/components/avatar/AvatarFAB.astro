@@ -16,8 +16,8 @@ const optimizedThumb = await getImage({
     id="avatar-fab-button"
     type="button"
     class="relative group flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#090d16]/90 light:bg-white/95 border border-brand-blue/40 light:border-blue-300 shadow-xl shadow-brand-blue/15 light:shadow-slate-400/20 backdrop-blur-md hover:scale-105 hover:border-brand-blue hover:shadow-2xl hover:shadow-brand-blue/30 active:scale-95 transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
-    aria-label="Chat mit Georgs virtuellem Avatar öffnen (Strg+K / Cmd+K)"
-    title="Virtueller Avatar (Cmd+K)"
+    aria-label="Open chat with Georg's virtual avatar (Cmd+K)"
+    title="Virtual Avatar (Cmd+K)"
   >
     <!-- Glowing Halo Ring on Hover -->
     <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-brand-blue via-brand-purple to-brand-blue opacity-0 group-hover:opacity-40 blur-sm transition-opacity duration-300 pointer-events-none -z-10"></div>
@@ -36,7 +36,7 @@ const optimizedThumb = await getImage({
     </div>
 
     <!-- Online / Compute Local Indicator Dot -->
-    <span class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#090d16] light:border-white shadow-sm flex items-center justify-center" title="WebGPU / Lokale Inferenz">
+    <span class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#090d16] light:border-white shadow-sm flex items-center justify-center" title="WebGPU / Local inference">
       <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
     </span>
 
@@ -44,7 +44,7 @@ const optimizedThumb = await getImage({
     <span
       id="avatar-fab-unread-badge"
       class="hidden absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[20px] h-5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] font-extrabold flex items-center justify-center shadow-lg border border-white/30 light:border-white animate-pulse"
-      aria-label="Ungelesene Neuigkeiten"
+      aria-label="Unread updates"
     >
       0
     </span>

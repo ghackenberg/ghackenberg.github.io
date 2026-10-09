@@ -127,7 +127,7 @@ const drawerFaceExpressions = [
     id="avatar-drawer-container"
     class="pointer-events-auto fixed bottom-0 left-0 right-0 sm:left-auto sm:top-0 sm:right-0 sm:bottom-0 w-full sm:w-[420px] max-h-[92dvh] sm:max-h-full h-[92dvh] sm:h-full flex flex-col bg-[#090d16]/95 light:bg-white/95 border-t sm:border-t-0 sm:border-l border-white/10 light:border-slate-200/90 shadow-2xl backdrop-blur-xl transform translate-y-full sm:translate-y-0 sm:translate-x-full transition-transform duration-300 ease-out text-gray-100 light:text-slate-800 rounded-t-3xl sm:rounded-none z-50 overflow-hidden"
     role="region"
-    aria-label="Georgs Virtueller Avatar Chat"
+    aria-label="Dr. Georg Hackenberg Virtual Avatar Chat"
   >
     <!-- Top Accent Bar -->
     <div class="h-1 bg-gradient-brand shrink-0"></div>
@@ -162,7 +162,7 @@ const drawerFaceExpressions = [
           <!-- Live Conversation State Indicator -->
           <div class="flex items-center gap-1.5 mt-0.5 text-xs text-gray-400 light:text-slate-500 font-medium">
             <span id="avatar-state-dot" class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm"></span>
-            <span id="avatar-state-label" class="truncate">WebGPU lokal</span>
+            <span id="avatar-state-label" class="truncate">WebGPU local</span>
           </div>
         </div>
       </div>
@@ -174,10 +174,10 @@ const drawerFaceExpressions = [
           <select
             id="avatar-model-select"
             class="text-[11px] sm:text-xs bg-white/5 light:bg-slate-100 border border-white/10 light:border-slate-300 rounded-lg px-2 py-1 text-gray-200 light:text-slate-700 cursor-pointer focus:outline-none focus:border-brand-blue appearance-none pr-6"
-            title="Modellgröße wählen"
+            title="Select model size"
           >
-            <option value="Qwen/Qwen2.5-0.5B-Instruct">0.5B (Schnell)</option>
-            <option value="Qwen/Qwen2.5-1.5B-Instruct">1.5B (Präzise)</option>
+            <option value="onnx-community/Qwen2.5-0.5B-Instruct">0.5B (Fast)</option>
+            <option value="onnx-community/Qwen2.5-1.5B-Instruct">1.5B (Precise)</option>
           </select>
           <div class="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">▼</div>
         </div>
@@ -187,7 +187,7 @@ const drawerFaceExpressions = [
           id="avatar-drawer-close-btn"
           type="button"
           class="w-8 h-8 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-white light:hover:text-black flex items-center justify-center cursor-pointer transition-colors active:scale-95"
-          aria-label="Avatar schließen"
+          aria-label="Close avatar"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -204,16 +204,16 @@ const drawerFaceExpressions = [
     <!-- Suggested Prompt Chips (Horizontal Carousel) -->
     <div id="avatar-suggested-chips" class="shrink-0 px-3.5 py-2 border-t border-white/5 light:border-slate-200/60 overflow-x-auto no-scrollbar flex items-center gap-2">
       <button type="button" class="avatar-chip shrink-0 px-2.5 py-1 rounded-full bg-white/5 hover:bg-brand-blue/20 light:bg-slate-100 light:hover:bg-blue-50 border border-white/10 light:border-slate-200 text-[11px] text-gray-300 light:text-slate-700 hover:text-white light:hover:text-blue-700 transition-colors cursor-pointer">
-        🔬 Forschungsschwerpunkte
+        🔬 Research Focus
       </button>
       <button type="button" class="avatar-chip shrink-0 px-2.5 py-1 rounded-full bg-white/5 hover:bg-brand-blue/20 light:bg-slate-100 light:hover:bg-blue-50 border border-white/10 light:border-slate-200 text-[11px] text-gray-300 light:text-slate-700 hover:text-white light:hover:text-blue-700 transition-colors cursor-pointer">
-        🎓 Vorlesungen FH Wels
+        🎓 University Courses
       </button>
       <button type="button" class="avatar-chip shrink-0 px-2.5 py-1 rounded-full bg-white/5 hover:bg-brand-blue/20 light:bg-slate-100 light:hover:bg-blue-50 border border-white/10 light:border-slate-200 text-[11px] text-gray-300 light:text-slate-700 hover:text-white light:hover:text-blue-700 transition-colors cursor-pointer">
-        🛠️ CADdrive Architektur
+        🛠️ CADdrive Architecture
       </button>
       <button type="button" class="avatar-chip shrink-0 px-2.5 py-1 rounded-full bg-white/5 hover:bg-brand-blue/20 light:bg-slate-100 light:hover:bg-blue-50 border border-white/10 light:border-slate-200 text-[11px] text-gray-300 light:text-slate-700 hover:text-white light:hover:text-blue-700 transition-colors cursor-pointer">
-        📊 Slide-as-Code Präsentationen
+        📊 Slide-as-Code Engine
       </button>
     </div>
 
@@ -223,7 +223,7 @@ const drawerFaceExpressions = [
         <textarea
           id="avatar-input-text"
           rows="1"
-          placeholder="Frage Georgs Avatar etwas..."
+          placeholder="Ask Georg's avatar anything..."
           class="flex-1 bg-white/5 light:bg-white border border-white/15 light:border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:border-brand-blue light:focus:border-blue-600 resize-none max-h-28 overflow-y-auto leading-relaxed shadow-inner"
         ></textarea>
 
@@ -232,7 +232,7 @@ const drawerFaceExpressions = [
           id="avatar-send-btn"
           type="submit"
           class="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center shrink-0 shadow-md hover:shadow-brand-blue/30 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
-          aria-label="Nachricht senden"
+          aria-label="Send message"
         >
           <!-- Send Icon -->
           <svg id="avatar-icon-send" class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -247,13 +247,13 @@ const drawerFaceExpressions = [
 
       <!-- Bottom Status Bar -->
       <div class="flex items-center justify-between text-[11px] text-gray-500 light:text-slate-400 px-1">
-        <span id="avatar-mode-hint">WebGPU Inferenz • 100% lokal</span>
+        <span id="avatar-mode-hint">WebGPU inference • 100% local</span>
         <button
           id="avatar-clear-history-btn"
           type="button"
           class="hover:text-red-400 transition-colors cursor-pointer"
         >
-          Verlauf leeren
+          Clear chat history
         </button>
       </div>
     </footer>
@@ -330,7 +330,7 @@ const drawerFaceExpressions = [
       // Interactive Slide Jump Buttons: [▶️ Zu Folie X springen] or [▶️ Folie X]
       html = html.replace(/\[▶️\s*(?:Zu Folie|Folie|Slide)\s*(\d+)[^\]]*\]/gi, (_m, slideNum) => {
         const slideIdx = Math.max(0, parseInt(slideNum, 10) - 1);
-        return `<button type="button" class="avatar-slide-jump-pill inline-flex items-center gap-1.5 px-2.5 py-1 my-1 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 light:text-blue-700 border border-blue-500/30 text-[11px] font-semibold cursor-pointer transition-all active:scale-95" data-slide-index="${slideIdx}">▶️ Zu Folie ${slideNum} springen</button>`;
+        return `<button type="button" class="avatar-slide-jump-pill inline-flex items-center gap-1.5 px-2.5 py-1 my-1 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 light:text-blue-700 border border-blue-500/30 text-[11px] font-semibold cursor-pointer transition-all active:scale-95" data-slide-index="${slideIdx}">▶️ Jump to slide ${slideNum}</button>`;
       });
 
       // Source Link Badges: [📝 Post: ...](url) or [📊 Folie ...](url)
@@ -365,13 +365,13 @@ const drawerFaceExpressions = [
       if (!stateDot || !stateLabel) return;
       if (state === 'THINKING') {
         stateDot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-ping';
-        stateLabel.textContent = 'Überlegt...';
+        stateLabel.textContent = 'Thinking...';
       } else if (state === 'SPEAKING') {
         stateDot.className = 'w-2 h-2 rounded-full bg-blue-500 animate-pulse';
-        stateLabel.textContent = 'Antwortet...';
+        stateLabel.textContent = 'Speaking...';
       } else {
         stateDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
-        stateLabel.textContent = 'WebGPU lokal';
+        stateLabel.textContent = 'WebGPU local';
       }
     }
 
@@ -428,16 +428,16 @@ const drawerFaceExpressions = [
         }
       } catch (e) {}
 
-      let greeting = `Hallo! Ich bin der virtuelle Avatar von Dr. Georg Hackenberg. Ich laufe zu **100% lokal in deinem Browser** (WebGPU/BM25).`;
+      let greeting = `Hello! I am the virtual avatar of Dr. Georg Hackenberg. I run **100% locally in your browser** (WebGPU/BM25).`;
 
       if (unreadItems.length > 0) {
-        greeting += `\n\nSchön, dass du wieder da bist! Seit deinem letzten Besuch gibt es **${unreadItems.length} neue Inhalte**:\n`;
+        greeting += `\n\nWelcome back! Since your last visit, there are **${unreadItems.length} new updates**:\n`;
         unreadItems.slice(0, 3).forEach(item => {
           greeting += `- [📝 ${item.title}](${item.url})\n`;
         });
-        greeting += `\nWorüber möchtest du sprechen?`;
+        greeting += `\nWhat would you like to explore?`;
       } else {
-        greeting += `\n\nDu kannst mich zu Forschung, Softwarearchitektur, Lehre an der FH Wels oder aktuellen Projekten befragen.`;
+        greeting += `\n\nFeel free to ask me about research, software architecture, university courses at FH Upper Austria, or current engineering projects.`;
       }
 
       appendMessageUI('assistant', greeting, true);
@@ -529,13 +529,13 @@ const drawerFaceExpressions = [
           // Instant Search Mode: Synthesize direct verified results
           setConversationState('SPEAKING');
           if (searchResults.length > 0) {
-            accumulatedResponse = `Hier sind passende Treffer aus den Inhalten von Georg Hackenberg:\n\n`;
+            accumulatedResponse = `Here are relevant matches from Georg Hackenberg's publications and projects:\n\n`;
             searchResults.forEach((res, i) => {
               accumulatedResponse += `**${i + 1}. [${res.title}](${res.url})** (${res.collection})\n${res.snippet}\n\n`;
             });
-            accumulatedResponse += `\n*Tipp: Aktiviere den vollständigen Avatar (~380 MB) im Datenschutz-Menü für freie KI-Konversationen.*`;
+            accumulatedResponse += `\n*Tip: Activate the full virtual avatar (~380 MB) in Privacy Settings for generative AI conversations.*`;
           } else {
-            accumulatedResponse = `Ich konnte leider keine direkten Treffer zu "${query}" finden. Versuche andere Schlagwörter wie z.B. *Software*, *Simulation*, *Reveal* oder *CADdrive*.`;
+            accumulatedResponse = `I could not find direct matches for "${query}". Try different keywords such as *Software*, *Simulation*, *Reveal*, or *CADdrive*.`;
           }
           assistantBubble.innerHTML = formatMessageMarkdown(accumulatedResponse);
           chatHistory.push({ role: 'assistant', content: accumulatedResponse });
@@ -551,7 +551,7 @@ const drawerFaceExpressions = [
 
           setConversationState('SPEAKING');
           const llm = getLLMClient();
-          const selectedModel = modelSelect?.value || 'Qwen/Qwen2.5-0.5B-Instruct';
+          const selectedModel = modelSelect?.value || 'onnx-community/Qwen2.5-0.5B-Instruct';
           if (llm.getCurrentModelId() !== selectedModel) {
             await llm.initModel(selectedModel);
           }
@@ -569,7 +569,7 @@ const drawerFaceExpressions = [
         }
       } catch (err) {
         console.error('Avatar generation error:', err);
-        accumulatedResponse = `Entschuldigung, bei der lokalen Inferenz ist ein Fehler aufgetreten. Bitte überprüfe deine WebGPU-Unterstützung oder wechsle zur Sofortsuche.`;
+        accumulatedResponse = `Sorry, an error occurred during local inference. Please check your WebGPU support or switch to Instant Search.`;
         assistantBubble.innerHTML = formatMessageMarkdown(accumulatedResponse);
       } finally {
         isGenerating = false;
@@ -628,7 +628,7 @@ const drawerFaceExpressions = [
     // Clear History Button
     if (clearHistoryBtn) {
       clearHistoryBtn.addEventListener('click', () => {
-        if (confirm('Möchtest du den bisherigen Gesprächsverlauf löschen?')) {
+        if (confirm('Do you really want to clear the conversation history?')) {
           localStorage.removeItem(CHAT_STORAGE_KEY);
           chatHistory = [];
           initMessages();
@@ -656,8 +656,8 @@ const drawerFaceExpressions = [
           const c = JSON.parse(rawConsent);
           if (modeHint) {
             modeHint.textContent = c.mode === 'search'
-              ? 'Hybridsuche (BM25) • 0 MB'
-              : 'WebGPU Inferenz • 100% lokal';
+              ? 'Hybrid search (BM25) • 0 MB'
+              : 'WebGPU inference • 100% local';
           }
         }
       } catch {}

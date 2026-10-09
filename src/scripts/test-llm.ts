@@ -58,7 +58,7 @@ async function runLLMTests(): Promise<void> {
   console.log('\n[1/6] Validating Model Registry & Configurations...');
   assert(Boolean(SUPPORTED_MODELS['qwen-0.5b']), 'qwen-0.5b model registered');
   assert(Boolean(SUPPORTED_MODELS['qwen-1.5b']), 'qwen-1.5b model registered');
-  assert(DEFAULT_MODEL_ID === 'Qwen/Qwen2.5-0.5B-Instruct', 'Default model ID is Qwen2.5-0.5B-Instruct');
+  assert(DEFAULT_MODEL_ID === 'onnx-community/Qwen2.5-0.5B-Instruct', 'Default model ID is onnx-community/Qwen2.5-0.5B-Instruct');
   assert(SUPPORTED_MODELS['qwen-0.5b'].sizeBytes < 500_000_000, '0.5B q4 model size estimate is under 500MB');
   assert(SUPPORTED_MODELS['qwen-1.5b'].dtype === 'q4', '1.5B model is configured for q4 quantization');
   console.log('   ✅ Model registry and quantizations verified.');
