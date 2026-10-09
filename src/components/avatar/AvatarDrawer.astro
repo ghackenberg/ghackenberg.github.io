@@ -286,7 +286,7 @@ const drawerFaceExpressions = [
     const clearHistoryBtn = document.getElementById('avatar-clear-history-btn');
     const modeHint = document.getElementById('avatar-mode-hint');
 
-    const CHAT_STORAGE_KEY = 'gh_avatar_chat_v1';
+    const CHAT_STORAGE_KEY = 'gh_avatar_chat_v2';
     const CONSENT_STORAGE_KEY = 'gh_avatar_consent_v1';
     const NOTIF_STORAGE_KEY = 'gh_site_notifications_v1';
     const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
@@ -422,16 +422,31 @@ const drawerFaceExpressions = [
         }
       } catch (e) {}
 
-      let greeting = `Hello! I am the virtual avatar of Dr. Georg Hackenberg. I run **100% locally in your browser** (WebGPU/BM25).`;
+      const isGerman = (typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('de')) || false;
+      let greeting = isGerman
+        ? `Hallo! Ich bin der persönliche virtuelle Avatar von Dr. Georg Hackenberg. Ich laufe **100 % lokal in Ihrem Browser** (WebGPU/BM25).`
+        : `Hello! I am the virtual avatar of Dr. Georg Hackenberg. I run **100% locally in your browser** (WebGPU/BM25).`;
 
       if (unreadItems.length > 0) {
-        greeting += `\n\nWelcome back! Since your last visit, there are **${unreadItems.length} new updates**:\n`;
-        unreadItems.slice(0, 3).forEach(item => {
-          greeting += `- [📝 ${item.title}](${item.url})\n`;
-        });
-        greeting += `\nWhat would you like to explore?`;
+        if (isGerman) {
+          greeting += `\n\nWillkommen zurück! Seit Ihrem letzten Besuch gibt es **${unreadItems.length} neue Aktualisierungen**:\n`;
+          unreadItems.slice(0, 3).forEach(item => {
+            greeting += `- [📝 ${item.title}](${item.url})\n`;
+          });
+          greeting += `\nWas möchten Sie erkunden?`;
+        } else {
+          greeting += `\n\nWelcome back! Since your last visit, there are **${unreadItems.length} new updates**:\n`;
+          unreadItems.slice(0, 3).forEach(item => {
+            greeting += `- [📝 ${item.title}](${item.url})\n`;
+          });
+          greeting += `\nWhat would you like to explore?`;
+        }
       } else {
-        greeting += `\n\nFeel free to ask me about research, software architecture, university courses at FH Upper Austria, or current engineering projects.`;
+        if (isGerman) {
+          greeting += `\n\nStellen Sie mir gerne Fragen zu meiner Forschung, Softwarearchitektur, Lehrveranstaltungen an der FH Oberösterreich oder aktuellen Projekten.`;
+        } else {
+          greeting += `\n\nFeel free to ask me about research, software architecture, university courses at FH Upper Austria, or current engineering projects.`;
+        }
       }
 
       appendMessageUI('assistant', greeting, true);
@@ -493,6 +508,7 @@ const drawerFaceExpressions = [
       inputText.value = '';
       inputText.style.height = 'auto';
 
+      const priorHistory = chatHistory.slice(-4);
       appendMessageUI('user', query, true);
       isGenerating = true;
       if (iconSend) iconSend.classList.add('hidden');
@@ -540,7 +556,7 @@ const drawerFaceExpressions = [
             userQuery: query,
             context: currentContext,
             ragResults: searchResults,
-            chatHistory: chatHistory.slice(-4),
+            chatHistory: priorHistory,
             modelId: selectedModel,
           });
 

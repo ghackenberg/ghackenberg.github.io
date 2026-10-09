@@ -141,13 +141,17 @@ export function buildSystemPersonaPrompt(options: {
   const identityLines = [
     `[VIRTUAL AVATAR IDENTITY: DR. GEORG HACKENBERG]`,
     lang === 'de'
-      ? `Identität: Du bist der persönliche virtuelle Avatar von Dr. Georg Hackenberg auf seiner offiziellen Website (hackenberg.tech).`
-      : `Identity: You are the personal virtual avatar of Dr. Georg Hackenberg on his official website (hackenberg.tech).`,
+      ? `Du bist Dr. Georg Hackenberg, Full Professor für Industrielle Informatik an der FH Oberösterreich (Campus Wels), Senior Softwarearchitekt und Forscher.`
+      : `You are Dr. Georg Hackenberg, Full Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (Campus Wels), Senior Software Architect, and Researcher.`,
     lang === 'de'
-      ? `Dr. Hackenberg ist Full Professor für Industrielle Informatik an der FH Oberösterreich (Campus Wels), Senior Softwarearchitekt und Forscher.`
-      : `Dr. Hackenberg is Full Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (FH Oberösterreich, Campus Wels), Senior Software Architect, and Researcher.`,
-    `- Department: Department for Applied Technologies, Faculty for Engineering and Environmental Sciences.`,
-    `- Expertise: Senior Software Architect, Industrial Software Engineering, Model-Driven Engineering, Autonomous Agentic AI, Deterministic Verification Gates, Digital Twins, and Slide-as-Code.`,
+      ? `Wenn du gefragt wirst, wer du bist, stellst du dich immer als Dr. Georg Hackenberg vor: "Ich bin Dr. Georg Hackenberg, Professor für Industrielle Informatik an der FH Oberösterreich (Campus Wels), Softwarearchitekt und Forscher."`
+      : `When asked who you are, always introduce yourself as Dr. Georg Hackenberg: "I am Dr. Georg Hackenberg, Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (Campus Wels), software architect, and researcher."`,
+    lang === 'de'
+      ? `- Fachbereich: Department für Angewandte Technologien, Fakultät für Technik und Angewandte Naturwissenschaften.`
+      : `- Department: Department for Applied Technologies, Faculty for Engineering and Environmental Sciences.`,
+    lang === 'de'
+      ? `- Schwerpunkte: Industrielle Softwaretechnik, Modellgetriebene Entwicklung, Autonome KI-Agenten, Deterministische Verifikations-Gates, Digitale Zwillinge und Slide-as-Code.`
+      : `- Expertise: Senior Software Architect, Industrial Software Engineering, Model-Driven Engineering, Autonomous Agentic AI, Deterministic Verification Gates, Digital Twins, and Slide-as-Code.`,
     `- Core Website: https://hackenberg.tech`,
   ];
   sections.push(identityLines.join('\n'));
@@ -160,7 +164,8 @@ export function buildSystemPersonaPrompt(options: {
   if (lang === 'de') {
     toneDirectives.push(
       `- Sprache: Antworte stets auf Deutsch.`,
-      `- Wichtige Regel: Antworte stets in der ersten Person ("Ich", "mein Fachbereich", "meine Vorlesungen", "meine Forschungsprojekte"). Behaupte unter keinen Umständen, du seist ein neutrales Google-Sprachmodell ohne Namen.`,
+      `- Wichtige Regel: Antworte stets in der ersten Person ("Ich", "mein Fachbereich", "meine Vorlesungen", "meine Forschungsprojekte").`,
+      `- Direktheit: Beantworte Fragen direkt, sachlich, präzise und akademisch fundiert.`,
       `- Beantworte Fragen zu Blog-Posts, Papern, Vorlesungen und Projekten konkret basierend auf den bereitgestellten Quellen und verlinke sie mit [Titel](url).`
     );
     if (tone === 'du') {
@@ -176,19 +181,22 @@ export function buildSystemPersonaPrompt(options: {
         `- Anrede: Wähle eine professionelle, akademisch fundierte und zugleich nahbare Ansprache (bevorzugt "Sie" bei formalem Kontext, sonst sachlich neutral).`
       );
     }
+    toneDirectives.push(
+      `- Haltung: Anti-dogmatischer, evidenzbasierter, pragmatischer Ingenieur. Betone empirische Trade-offs und reproduzierbare Praktiken.`,
+      `- Fundierung: Stütze Antworten auf die verifizierten Quellen und den Seitenkontext.`,
+      `- Verlinkung: Formatiere Paper, Artikel oder Seiten als Markdown-Links mit kanonischen URLs ([Titel](url)).`
+    );
   } else {
     toneDirectives.push(
       `- Language: Respond in clear, precise English. Maintain Dr. Hackenberg's approachable, authoritative, and scientifically rigorous tone.`,
-      `- Crucial Rule: Always respond in the first person ("I", "my department", "my lectures", "my research projects"). Under no circumstances claim that you are a neutral Google language model without a name.`,
-      `- Answer questions about blog posts, papers, lectures, and projects concretely based on the provided sources and link them with [Title](url).`
+      `- Crucial Rule: Always respond in the first person ("I", "my department", "my lectures", "my research projects").`,
+      `- Directness: Answer questions directly, objectively, precisely, and with scientific rigor.`,
+      `- Answer questions about blog posts, papers, lectures, and projects concretely based on the provided sources and link them with [Title](url).`,
+      `- Epistemic Stance: Anti-dogmatic, evidence-based, pragmatic engineer. Highlight empirical trade-offs, architecture patterns, and reproducible practices.`,
+      `- Grounding & Parity: Ground answers strictly in the verified knowledge base and current page context provided below.`,
+      `- Citations & Deep Links: When referencing papers, articles, presentations, or site sections, ALWAYS format them as markdown links with canonical URLs (e.g. [Title](url)) and academic citation tags (e.g. [@HAC26]).`
     );
   }
-
-  toneDirectives.push(
-    `- Epistemic Stance: Anti-dogmatic, evidence-based, pragmatic engineer. Never use AI hype or unfounded buzzwords. Highlight empirical trade-offs, architecture patterns, and reproducible practices.`,
-    `- Grounding & Parity: Ground answers strictly in the verified knowledge base and current page context provided below.`,
-    `- Citations & Deep Links: When referencing papers, articles, presentations, or site sections, ALWAYS format them as markdown links with canonical URLs (e.g. [Title](url)) and academic citation tags (e.g. [@HAC26]).`
-  );
   sections.push(toneDirectives.join('\n'));
 
   // 3. Live Sensory Page Context
@@ -200,6 +208,13 @@ export function buildSystemPersonaPrompt(options: {
   const ragBlock = formatRagEnvelope(ragResults);
   if (ragBlock) {
     sections.push(ragBlock);
+  }
+
+  // 5. Final Direct Prompt Directive Anchor
+  if (lang === 'de') {
+    sections.push(`[ANWEISUNG]\nAntworte auf Deutsch direkt in der ersten Person ("Ich"):`);
+  } else {
+    sections.push(`[DIRECTIVE]\nAnswer in English directly in the first person ("I"):`);
   }
 
   return sections.join('\n\n');
@@ -232,21 +247,21 @@ export function formatQwenChat(
 /**
  * Serializes chat messages into the official Google Gemma chat template format.
  * Format:
- * <start_of_turn>user\n{system_message}\n\n{user_message}<end_of_turn>\n<start_of_turn>model\n{assistant_message}<end_of_turn>\n
+ * <start_of_turn>user\n{system_message}<end_of_turn>\n<start_of_turn>model\n{greeting}<end_of_turn>\n<start_of_turn>user\n{user_message}<end_of_turn>\n<start_of_turn>model\n
  *
  * Requirements:
  * 1. Gemma chat format strictly requires alternating turns starting with "user".
- * 2. Any leading assistant messages (such as proactive avatar greetings) are stripped
- *    to preserve the strict user-first turn sequence.
- * 3. System instructions, persona, and RAG knowledge are ALWAYS attached to the first user turn.
- * 4. Consecutive messages with identical roles are merged to enforce strict alternation.
+ * 2. System instructions, persona, and RAG knowledge form the initial user turn.
+ * 3. An initial model turn (either the proactive greeting or a language-primed acknowledgment)
+ *    primes Gemma 3 into Dr. Georg Hackenberg's persona before user interaction.
+ * 4. Subsequent conversation turns strictly alternate between user and model.
  */
 export function formatGemmaChat(
   messages: ChatMessage[],
   addGenerationPrompt = true
 ): string {
   let systemContent = '';
-  const nonSystemMessages: ChatMessage[] = [];
+  const conversationMessages: ChatMessage[] = [];
 
   for (const msg of messages) {
     if (msg.role === 'system') {
@@ -255,29 +270,35 @@ export function formatGemmaChat(
         systemContent = systemContent ? `${systemContent}\n\n${trimmed}` : trimmed;
       }
     } else {
-      nonSystemMessages.push(msg);
+      conversationMessages.push(msg);
     }
   }
 
-  // Gemma strictly requires starting with a user turn.
-  // Strip any leading assistant messages (e.g. proactive welcome greeting).
-  while (nonSystemMessages.length > 0 && nonSystemMessages[0].role === 'assistant') {
-    nonSystemMessages.shift();
-  }
+  // Determine language for default greeting if none provided
+  const isGerman = /deutsch|sprache:\s*antworte\s*stets\s*auf\s*deutsch|fh\s*oberösterreich/i.test(systemContent);
+  const defaultGreeting = isGerman
+    ? 'Hallo! Ich bin Dr. Georg Hackenberg, Professor für Industrielle Informatik an der FH Oberösterreich (Campus Wels). Gerne beantworte ich deine Fragen zu meiner Forschung, Lehre und Softwarearchitektur.'
+    : 'Hello! I am Dr. Georg Hackenberg, Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (Campus Wels). I am glad to answer your questions regarding my research, teaching, and software architecture.';
 
-  if (nonSystemMessages.length === 0) {
-    const userText = systemContent || 'Hello';
-    let formatted = `<start_of_turn>user\n${userText}<end_of_turn>\n`;
-    if (addGenerationPrompt) {
-      formatted += `<start_of_turn>model\n`;
+  // Build the turns array
+  const turns: { role: 'user' | 'model'; content: string }[] = [];
+
+  // Turn 0: User turn with system instructions & grounding context
+  if (systemContent) {
+    turns.push({ role: 'user', content: systemContent });
+
+    // Model turn 0: Use assistant greeting from conversation if it starts with one, else defaultGreeting
+    if (conversationMessages.length > 0 && conversationMessages[0].role === 'assistant') {
+      const greetingMsg = conversationMessages.shift()!;
+      turns.push({ role: 'model', content: greetingMsg.content.trim() });
+    } else {
+      turns.push({ role: 'model', content: defaultGreeting });
     }
-    return formatted;
   }
 
-  // Enforce alternating turns: user -> model -> user -> model
-  const turns: ChatMessage[] = [];
-  for (const msg of nonSystemMessages) {
-    const role = msg.role === 'assistant' ? 'assistant' : 'user';
+  // Remaining conversation messages: strictly enforce alternating user -> model -> user -> model
+  for (const msg of conversationMessages) {
+    const role: 'user' | 'model' = msg.role === 'assistant' ? 'model' : 'user';
     const lastTurn = turns[turns.length - 1];
     if (lastTurn && lastTurn.role === role) {
       lastTurn.content += `\n\n${msg.content.trim()}`;
@@ -286,15 +307,14 @@ export function formatGemmaChat(
     }
   }
 
-  // Attach system instructions and RAG knowledge to the first user turn
-  if (systemContent && turns.length > 0 && turns[0].role === 'user') {
-    turns[0].content = `${systemContent}\n\n${turns[0].content}`;
+  // If no turns were constructed at all, provide fallback
+  if (turns.length === 0) {
+    turns.push({ role: 'user', content: 'Hello' });
   }
 
   let formatted = '';
   for (const turn of turns) {
-    const roleTag = turn.role === 'assistant' ? 'model' : 'user';
-    formatted += `<start_of_turn>${roleTag}\n${turn.content.trim()}<end_of_turn>\n`;
+    formatted += `<start_of_turn>${turn.role}\n${turn.content.trim()}<end_of_turn>\n`;
   }
 
   if (addGenerationPrompt) {
