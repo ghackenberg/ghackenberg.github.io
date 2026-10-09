@@ -1,6 +1,6 @@
 ---
 // AvatarConsentModal.astro - DSGVO & § 165 TKG 2021 Compliant Consent Dialog
-// Transparent user choice between lightweight Instant Search (0 MB) and WebGPU Avatar (~380 MB)
+// Transparent user choice between lightweight Instant Search (0 MB) and WebGPU Avatar (~750 MB)
 ---
 
 <div
@@ -84,15 +84,15 @@
           </button>
         </div>
 
-        <!-- Choice 2: Full Avatar (~380 MB) -->
+        <!-- Choice 2: Full Avatar (~750 MB) -->
         <div class="p-4 rounded-xl sm:rounded-2xl bg-brand-blue/[0.06] hover:bg-brand-blue/[0.1] light:bg-blue-50/50 light:hover:bg-blue-50/80 border border-brand-blue/30 light:border-blue-200 transition-all duration-200 group flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="space-y-1 min-w-0">
             <div class="flex items-center gap-2">
               <span class="text-base sm:text-lg font-bold text-white light:text-slate-900">Activate Virtual Avatar</span>
-              <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-brand-blue/20 text-brand-blue border border-brand-blue/30 light:bg-blue-100 light:text-blue-800">~380 MB one-time</span>
+              <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-brand-blue/20 text-brand-blue border border-brand-blue/30 light:bg-blue-100 light:text-blue-800">~750 MB one-time</span>
             </div>
             <p class="text-xs text-gray-400 light:text-slate-500 leading-relaxed">
-              Downloads the compact <em>Qwen2.5-0.5B</em> language model into your browser cache. Enables interactive chat with Georg's virtual persona, contextual synthesis, and automatic slide navigation.
+              Downloads the Google Gemma 3 (1B GQA) language model into your browser cache. Enables interactive chat with Georg's virtual persona, contextual synthesis, and automatic slide navigation.
             </p>
           </div>
           <button
@@ -117,7 +117,7 @@
             </div>
             <div>
               <h4 id="download-progress-title" class="text-sm font-bold text-white light:text-slate-900">Downloading model weights...</h4>
-              <p id="download-progress-file" class="text-xs text-gray-400 light:text-slate-500 font-mono truncate max-w-[240px] sm:max-w-xs">Qwen2.5-0.5B-Instruct-q4.onnx</p>
+              <p id="download-progress-file" class="text-xs text-gray-400 light:text-slate-500 font-mono truncate max-w-[240px] sm:max-w-xs">gemma-3-1b-it-ONNX-GQA</p>
             </div>
           </div>
           <span id="download-percentage" class="text-sm sm:text-base font-extrabold text-brand-blue font-mono">0%</span>
@@ -134,7 +134,7 @@
 
         <!-- Metrics & ETA -->
         <div class="flex items-center justify-between text-xs text-gray-400 light:text-slate-500">
-          <span id="download-bytes-text">0 MB / ~380 MB</span>
+          <span id="download-bytes-text">0 MB / ~750 MB</span>
           <span id="download-eta-text">Calculating...</span>
         </div>
 
@@ -199,7 +199,7 @@
 <script>
   import { getLLMClient } from '@commons/client/llm/llm-client';
   import { trackEvent } from '@commons/client/telemetry';
-  import type { DownloadProgress } from '@commons/client/llm/types';
+  import { DEFAULT_MODEL_ID, type DownloadProgress } from '@commons/client/llm/types';
 
   declare global {
     interface Window {
@@ -336,13 +336,13 @@
         });
 
         try {
-          await llm.initModel('onnx-community/Qwen2.5-0.5B-Instruct');
+          await llm.initModel(DEFAULT_MODEL_ID);
           removeProgressListener();
 
           const consentData = {
             consented: true,
             mode: 'avatar',
-            modelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
+            modelId: DEFAULT_MODEL_ID,
             timestamp: Date.now()
           };
           localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(consentData));

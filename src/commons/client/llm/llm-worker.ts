@@ -223,9 +223,9 @@ async function generate(
 
   try {
     const maxNewTokens = options?.maxNewTokens ?? 512;
-    const temperature = options?.temperature ?? 0.7;
+    const temperature = options?.temperature ?? 0.25;
     const topP = options?.topP ?? 0.9;
-    const repetitionPenalty = options?.repetitionPenalty ?? 1.1;
+    const repetitionPenalty = options?.repetitionPenalty ?? 1.15;
     const doSample = options?.doSample ?? true;
 
     await generator(prompt, {

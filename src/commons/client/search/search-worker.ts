@@ -121,6 +121,7 @@ async function performSearch(query: string, options?: SearchOptions): Promise<Cl
       heading: chunk.heading,
       url: chunk.url,
       snippet: createSnippet(chunk.text, queryTokens),
+      content: chunk.text,
       tags: chunk.metadata.tags,
       lang: chunk.metadata.lang,
       date: chunk.metadata.date,

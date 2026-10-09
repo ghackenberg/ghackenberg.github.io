@@ -86,6 +86,7 @@ export interface ClientSearchResult {
   heading?: string;
   url: string;
   snippet: string;
+  content?: string;
   tags?: string[];
   lang?: string;
   date?: string;
