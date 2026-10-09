@@ -7,6 +7,7 @@ interface Props {
   accentColor?: "blue" | "yellow" | "purple" | "green";
   totalCount?: number;
   minItemsThreshold?: number;
+  pageSize?: number;
   itemTags?: string[][];
 }
 
@@ -17,11 +18,13 @@ const {
   tagLabel = "Filter by Tag",
   accentColor = "blue",
   totalCount,
-  minItemsThreshold = 6,
+  minItemsThreshold,
+  pageSize = 12,
   itemTags,
 } = Astro.props;
 
-const shouldRender = totalCount === undefined || totalCount >= minItemsThreshold;
+const threshold = minItemsThreshold ?? ((pageSize ?? 12) + 1);
+const shouldRender = totalCount === undefined || totalCount >= threshold;
 
 const searchFocusClasses = {
   blue: "focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50",

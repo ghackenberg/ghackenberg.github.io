@@ -5,7 +5,7 @@ import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
 import CourseCard from "@components/CourseCard.astro";
-import FilterSidebar from "@components/FilterSidebar.astro";
+import FilterToolbar from "@components/FilterToolbar.astro";
 
 const courses = await getCollection("courses");
 
@@ -17,6 +17,7 @@ for (const course of courses) {
   }
 }
 const allTags = Array.from(tagsSet).sort();
+const itemTags = courses.map(c => (c.data.tags || []).map(t => t.toLowerCase()));
 
 // Find the first course's screenshot to preload for LCP
 const firstCourse = courses[0];
@@ -62,7 +63,6 @@ const breadcrumbSchema = {
   <Container size="wide">
     <!-- Header -->
     <div class="mb-12">
-
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
         University <span class="heading-gradient-yellow">Courses</span>
       </h1>
@@ -71,115 +71,193 @@ const breadcrumbSchema = {
       </p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Filters Sidebar (Column 1) -->
-      <FilterSidebar
-        title="Filter Catalog"
-        searchId="course-search"
-        searchPlaceholder="Search courses..."
-        tags={allTags}
-        accentColor="yellow"
-      >
-        <!-- Instruction Language -->
-        <div class="mb-4 shrink-0">
-          <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block mb-2">Instruction Language</span>
-          <div class="flex flex-wrap gap-2">
-            <button 
-              id="lang-btn-de" 
-              class="lang-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
-              data-lang="de"
-            >
-              Deutsch (DE)
-            </button>
-            <button 
-              id="lang-btn-en" 
-              class="lang-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-200"
-              data-lang="en"
-            >
-              English (EN)
-            </button>
-          </div>
-        </div>
-      </FilterSidebar>
-
-      <!-- Courses Grid (Column 2) -->
-      <div class="lg:col-span-9 order-2 lg:order-1">
-        {courses.length === 0 ? (
-          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No courses defined.</p>
-        ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="courses-grid">
-            {courses.map(course => {
-              const goalsJoined = (course.data.learningGoals || []).join(" ").toLowerCase();
-
-              return (
-                <div 
-                  class="course-card h-full"
-                  data-title={course.data.title.toLowerCase()}
-                  data-desc={(course.data.description || "").toLowerCase()}
-                  data-goals={goalsJoined}
-                  data-tags={(course.data.tags || []).join(" ").toLowerCase()}
-                  data-lang={course.data.language}
-                >
-                  <CourseCard
-                    title={course.data.title}
-                    description={course.data.description}
-                    href={`/courses/${course.id}/`}
-                    language={course.data.language}
-                    screenshot={course.data.screenshot}
-                    tags={course.data.tags}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
-        <p id="no-courses-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
-          No courses match your selected filter criteria.
-        </p>
+    <!-- Filter Toolbar -->
+    <FilterToolbar
+      searchId="course-search"
+      searchPlaceholder="Search courses..."
+      tags={allTags}
+      accentColor="yellow"
+      itemTags={itemTags}
+      totalCount={courses.length}
+      pageSize={12}
+    >
+      <div class="flex items-center gap-1.5 bg-element-bg border border-element-border-medium rounded-xl p-1 h-[34px] box-border">
+        <button 
+          id="lang-btn-de" 
+          class="lang-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-200"
+          data-lang="de"
+        >
+          Deutsch
+        </button>
+        <button 
+          id="lang-btn-en" 
+          class="lang-filter-btn px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-200"
+          data-lang="en"
+        >
+          English
+        </button>
       </div>
-    </div>
+    </FilterToolbar>
+
+    <!-- Pre-filter state gate: activate has-filter-query if URL params exist -->
+    <script is:inline>
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var rawTags = params.getAll('tag');
+        var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
+        var hasQ = Boolean((params.get('q') || '').trim());
+        var hasLang = Boolean((params.get('lang') || '').trim());
+        if (hasTag || hasQ || hasLang) {
+          document.documentElement.classList.add('has-filter-query');
+        }
+      })();
+    </script>
+
+    <!-- Courses Grid (3-2-1) -->
+    {courses.length === 0 ? (
+      <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No courses defined.</p>
+    ) : (
+      <>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="courses-grid">
+          {courses.map(course => {
+            const goalsJoined = (course.data.learningGoals || []).join(" ").toLowerCase();
+
+            return (
+              <div 
+                class="course-card h-full"
+                data-title={course.data.title.toLowerCase()}
+                data-desc={(course.data.description || "").toLowerCase()}
+                data-goals={goalsJoined}
+                data-tags={(course.data.tags || []).join(" ").toLowerCase()}
+                data-lang={course.data.language}
+              >
+                <CourseCard
+                  title={course.data.title}
+                  description={course.data.description}
+                  href={`/courses/${course.id}/`}
+                  language={course.data.language}
+                  screenshot={course.data.screenshot}
+                  tags={course.data.tags}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
+        <script is:inline>
+          (function() {
+            try {
+              var params = new URLSearchParams(window.location.search);
+              var rawTags = params.getAll('tag');
+              var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+              var q = (params.get('q') || '').trim().toLowerCase();
+              var lang = (params.get('lang') || '').trim().toLowerCase();
+
+              var hasTag = tags.length > 0;
+              var hasQ = Boolean(q);
+              var hasLang = Boolean(lang);
+
+              if (hasLang) {
+                var langBtn = document.getElementById('lang-btn-' + lang);
+                if (langBtn) langBtn.classList.add('active');
+              }
+
+              if (!hasTag && !hasQ && !hasLang) return;
+
+              var items = document.querySelectorAll('.course-card');
+              var matching = [];
+
+              items.forEach(function(item) {
+                var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                var title = item.getAttribute('data-title') || '';
+                var desc = item.getAttribute('data-desc') || '';
+                var goals = item.getAttribute('data-goals') || '';
+                var tagsStr = item.getAttribute('data-tags') || '';
+                var itemLang = (item.getAttribute('data-lang') || '').toLowerCase();
+
+                var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
+                var matchesQ = !hasQ || (title.indexOf(q) !== -1 || desc.indexOf(q) !== -1 || goals.indexOf(q) !== -1 || tagsStr.indexOf(q) !== -1);
+                var matchesLang = !hasLang || (itemLang === lang);
+
+                if (matchesTag && matchesQ && matchesLang) {
+                  matching.push(item);
+                  item.classList.add('is-matched');
+                  item.classList.remove('hidden');
+                  item.style.display = '';
+                } else {
+                  item.classList.remove('is-matched');
+                  item.classList.add('hidden');
+                  item.style.display = 'none';
+                }
+              });
+
+              var noResults = document.getElementById('no-courses-message');
+              if (noResults) {
+                if (matching.length === 0) {
+                  noResults.classList.remove('hidden');
+                  noResults.style.display = '';
+                } else {
+                  noResults.classList.add('hidden');
+                  noResults.style.display = 'none';
+                }
+              }
+
+              var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
+              if (countEl && (hasTag || hasQ || hasLang)) {
+                var availTags = new Set();
+                matching.forEach(function(item) {
+                  var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                  itags.forEach(function(t) { if (t) availTags.add(t); });
+                });
+                countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
+                countEl.classList.add('is-synced');
+              }
+            } catch(e) {}
+          })();
+        </script>
+      </>
+    )}
+
+    <p id="no-courses-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+      No courses match your selected filter criteria.
+    </p>
   </Container>
 </Layout>
 
 <style>
   /* Custom filter active states matching design guidelines */
   .lang-filter-btn {
-    position: relative;
-    background: rgba(31, 41, 55, 0.4);
-    border-color: rgba(255, 255, 255, 0.05);
-    color: #9ca3af; /* text-gray-400 */
+    background: transparent;
+    color: #9ca3af;
   }
 
   .lang-filter-btn.active {
-    background: rgba(245, 158, 11, 0.1);
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #f59e0b; /* brand-yellow */
-    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25);
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    box-shadow: 0 0 10px -2px rgba(245, 158, 11, 0.3);
   }
 
   .lang-filter-btn:hover:not(.active) {
-    border-color: rgba(245, 158, 11, 0.2);
     color: #fbbf24;
+    background: rgba(245, 158, 11, 0.08);
   }
 
   /* Light mode overrides */
   :global(.light) .lang-filter-btn {
-    background: rgba(15, 23, 42, 0.04);
-    border-color: rgba(15, 23, 42, 0.08);
-    color: #475569; /* slate-600 */
+    background: transparent;
+    color: #64748b;
   }
 
   :global(.light) .lang-filter-btn.active {
     background: rgba(245, 158, 11, 0.15);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #b45309; /* amber-700 */
-    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2);
+    color: #b45309;
+    box-shadow: 0 0 10px -2px rgba(245, 158, 11, 0.2);
   }
 
   :global(.light) .lang-filter-btn:hover:not(.active) {
     background: rgba(245, 158, 11, 0.06);
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #d97706; /* amber-600 */
+    color: #d97706;
   }
 </style>
 
@@ -192,6 +270,7 @@ const breadcrumbSchema = {
       searchFieldSelector: "#course-search",
       searchDataAttributes: ["data-title", "data-desc", "data-goals", "data-tags"],
       searchParamKey: "q",
+      resetButtonSelector: "#course-search-reset",
       buttonFilters: [
         {
           buttonSelector: ".lang-filter-btn",
@@ -206,7 +285,8 @@ const breadcrumbSchema = {
           defaultValue: "all",
           activeClass: "active",
           matchType: "includes",
-          paramKey: "tag"
+          paramKey: "tag",
+          multiple: true
         }
       ],
       scrollToSelector: "#courses-grid",

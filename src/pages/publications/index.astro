@@ -4,7 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import PublicationCard from "@components/PublicationCard.astro";
-import FilterSidebar from "@components/FilterSidebar.astro";
+import FilterToolbar from "@components/FilterToolbar.astro";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) => b.id.localeCompare(a.id)
@@ -14,6 +14,7 @@ const publications = (await getCollection("publications")).sort(
 const tags = Array.from(
   new Set(publications.flatMap((pub) => pub.data.tags || []))
 ).sort();
+const itemTags = publications.map(p => (p.data.tags || []).map(t => t.toLowerCase()));
 
 // Group by year
 const groupedByYear: Record<string, typeof publications> = {};
@@ -67,22 +68,37 @@ const breadcrumbSchema = {
       </p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Filter Sidebar (Column 1) -->
-      <FilterSidebar
-        title="Filter Papers"
-        searchId="publication-search"
-        searchPlaceholder="Search papers..."
-        tags={tags}
-        accentColor="purple"
-      />
+    <!-- Filter Toolbar -->
+    <FilterToolbar
+      searchId="publication-search"
+      searchPlaceholder="Search papers..."
+      tags={tags}
+      accentColor="purple"
+      itemTags={itemTags}
+      totalCount={publications.length}
+      pageSize={12}
+    />
 
-      <!-- Grouped Publications list (Column 2) -->
-      <div class="lg:col-span-9 order-2 lg:order-1 space-y-12" id="publications-list">
-        {years.length === 0 ? (
-          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No publications found.</p>
-        ) : (
-          years.map(year => (
+    <!-- Pre-filter state gate: activate has-filter-query if URL params exist -->
+    <script is:inline>
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var rawTags = params.getAll('tag');
+        var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
+        var hasQ = Boolean((params.get('q') || '').trim());
+        if (hasTag || hasQ) {
+          document.documentElement.classList.add('has-filter-query');
+        }
+      })();
+    </script>
+
+    <!-- Grouped Publications list -->
+    <div class="space-y-12" id="publications-list">
+      {years.length === 0 ? (
+        <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No publications found.</p>
+      ) : (
+        <>
+          {years.map(year => (
             <div id={`year-${year}`} class="publication-year-section space-y-4">
               <h2 id={`year-${year}-heading`} class="text-2xl font-extrabold text-gray-100 border-b border-element-border pb-2 tracking-tight">
                 {year}
@@ -113,12 +129,91 @@ const breadcrumbSchema = {
                 })}
               </div>
             </div>
-          ))
-        )}
-        <p id="no-publications-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
-          No publications match your selected filter criteria.
-        </p>
-      </div>
+          ))}
+
+          <!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
+          <script is:inline>
+            (function() {
+              try {
+                var params = new URLSearchParams(window.location.search);
+                var rawTags = params.getAll('tag');
+                var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+                var q = (params.get('q') || '').trim().toLowerCase();
+
+                var hasTag = tags.length > 0;
+                var hasQ = Boolean(q);
+
+                if (!hasTag && !hasQ) return;
+
+                var items = document.querySelectorAll('.publication-card-item');
+                var matching = [];
+
+                items.forEach(function(item) {
+                  var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                  var title = item.getAttribute('data-title') || '';
+                  var author = item.getAttribute('data-author') || '';
+                  var book = item.getAttribute('data-book') || '';
+                  var tagsStr = item.getAttribute('data-tags') || '';
+
+                  var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
+                  var matchesQ = !hasQ || (title.indexOf(q) !== -1 || author.indexOf(q) !== -1 || book.indexOf(q) !== -1 || tagsStr.indexOf(q) !== -1);
+
+                  if (matchesTag && matchesQ) {
+                    matching.push(item);
+                    item.classList.add('is-matched');
+                    item.classList.remove('hidden');
+                    item.style.display = '';
+                  } else {
+                    item.classList.remove('is-matched');
+                    item.classList.add('hidden');
+                    item.style.display = 'none';
+                  }
+                });
+
+                var sections = document.querySelectorAll('.publication-year-section');
+                sections.forEach(function(sec) {
+                  var secItems = sec.querySelectorAll('.publication-card-item');
+                  var anyVisible = Array.prototype.some.call(secItems, function(item) {
+                    return !item.classList.contains('hidden');
+                  });
+                  if (anyVisible) {
+                    sec.classList.remove('hidden');
+                    sec.style.display = '';
+                  } else {
+                    sec.classList.add('hidden');
+                    sec.style.display = 'none';
+                  }
+                });
+
+                var noResults = document.getElementById('no-publications-message');
+                if (noResults) {
+                  if (matching.length === 0) {
+                    noResults.classList.remove('hidden');
+                    noResults.style.display = '';
+                  } else {
+                    noResults.classList.add('hidden');
+                    noResults.style.display = 'none';
+                  }
+                }
+
+                var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
+                if (countEl && (hasTag || hasQ)) {
+                  var availTags = new Set();
+                  matching.forEach(function(item) {
+                    var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                    itags.forEach(function(t) { if (t) availTags.add(t); });
+                  });
+                  countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
+                  countEl.classList.add('is-synced');
+                }
+              } catch(e) {}
+            })();
+          </script>
+        </>
+      )}
+      <p id="no-publications-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+        No publications match your selected filter criteria.
+      </p>
     </div>
   </Container>
 </Layout>
@@ -132,6 +227,7 @@ const breadcrumbSchema = {
       searchFieldSelector: "#publication-search",
       searchDataAttributes: ["data-title", "data-author", "data-book", "data-tags"],
       searchParamKey: "q",
+      resetButtonSelector: "#publication-search-reset",
       buttonFilters: [
         {
           buttonSelector: ".tag-filter-btn",
@@ -139,7 +235,8 @@ const breadcrumbSchema = {
           defaultValue: "all",
           activeClass: "active",
           matchType: "includes",
-          paramKey: "tag"
+          paramKey: "tag",
+          multiple: true
         }
       ],
       groupSelector: ".publication-year-section",
@@ -151,4 +248,3 @@ const breadcrumbSchema = {
   initFilter();
   document.addEventListener("astro:page-load", initFilter);
 </script>
-

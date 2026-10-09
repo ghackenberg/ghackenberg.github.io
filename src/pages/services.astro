@@ -4,7 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
-import FilterSidebar from "@components/FilterSidebar.astro";
+import FilterToolbar from "@components/FilterToolbar.astro";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
@@ -17,6 +17,7 @@ for (const service of services) {
   }
 }
 const allTags = Array.from(tagsSet).sort();
+const itemTags = sortedServices.map(s => (s.data.tags || []).map(t => t.toLowerCase()));
 
 const optimizedServices = await Promise.all(
   sortedServices.map(async (service) => {
@@ -39,8 +40,6 @@ const optimizedServices = await Promise.all(
     };
   })
 );
-
-
 
 const servicesJsonLd = sortedServices.map(s => ({
   "@context": "https://schema.org",
@@ -93,7 +92,6 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
   <Container size="wide">
     <!-- Header -->
     <div class="mb-16">
-
       <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
         Business <span class="heading-gradient-purple">Services</span>
       </h1>
@@ -102,162 +100,238 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
       </p>
     </div>
 
+    <!-- Filter Toolbar -->
+    <FilterToolbar
+      searchId="service-search"
+      searchPlaceholder="Search services..."
+      tags={allTags}
+      accentColor="purple"
+      itemTags={itemTags}
+      totalCount={sortedServices.length}
+      pageSize={12}
+    />
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Filters Sidebar (Column 1) -->
-      <FilterSidebar
-        title="Filter Services"
-        searchId="service-search"
-        searchPlaceholder="Search services..."
-        tags={allTags}
-        accentColor="purple"
-      />
+    <!-- Pre-filter state gate: activate has-filter-query if URL params exist -->
+    <script is:inline>
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var rawTags = params.getAll('tag');
+        var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
+        var hasQ = Boolean((params.get('q') || '').trim());
+        if (hasTag || hasQ) {
+          document.documentElement.classList.add('has-filter-query');
+        }
+      })();
+    </script>
 
-      <!-- Services Grid (Column 2) -->
-      <div class="lg:col-span-9 order-2 lg:order-1">
-        {optimizedServices.length === 0 ? (
-          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No services defined.</p>
-        ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="services-grid">
-            {optimizedServices.map((service) => {
-              const tagsJoined = (service.data.tags || []).join(" ").toLowerCase();
-              return (
-                <div 
-                  id={service.id} 
-                  class="service-card relative group h-full"
-                  data-title={service.data.title.toLowerCase()}
-                  data-desc={service.data.description.toLowerCase()}
-                  data-tags={tagsJoined}
-                >
-                  <article class="glass-card preview-card border border-element-border relative flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300" data-card-id={service.id} data-collection="services">
-                    <!-- Card Clickable Overlay Link -->
-                    <a 
-                      href={`/services/${service.id}/`} 
-                      class="absolute inset-0 z-10 cursor-pointer" 
-                      aria-label={`View details for ${service.data.title}`}
-                    ></a>
+    <!-- Services Grid (3-2-1) -->
+    {optimizedServices.length === 0 ? (
+      <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No services defined.</p>
+    ) : (
+      <>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="services-grid">
+          {optimizedServices.map((service) => {
+            const tagsJoined = (service.data.tags || []).join(" ").toLowerCase();
+            return (
+              <div 
+                id={service.id} 
+                class="service-card relative group h-full"
+                data-title={service.data.title.toLowerCase()}
+                data-desc={service.data.description.toLowerCase()}
+                data-tags={tagsJoined}
+              >
+                <article class="glass-card preview-card border border-element-border relative flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300" data-card-id={service.id} data-collection="services">
+                  <!-- Card Clickable Overlay Link -->
+                  <a 
+                    href={`/services/${service.id}/`} 
+                    class="absolute inset-0 z-10 cursor-pointer" 
+                    aria-label={`View details for ${service.data.title}`}
+                  ></a>
 
-                    <!-- Preview Image Column (Top) -->
-                    <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
-                      {service.data.previewImage && (() => {
-                        const img = service.data.previewImage.src;
-                        const title = service.data.previewImage.title;
-                        const desc = service.data.previewImage.description;
-                        return (
-                        <svg 
-                          class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
-                          viewBox={`0 0 ${img.width} ${img.height}`} 
+                  <!-- Preview Image Column (Top) -->
+                  <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
+                    {service.data.previewImage && (() => {
+                      const img = service.data.previewImage.src;
+                      const title = service.data.previewImage.title;
+                      const desc = service.data.previewImage.description;
+                      return (
+                      <svg 
+                        class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 
+                        viewBox={`0 0 ${img.width} ${img.height}`} 
+                        preserveAspectRatio="xMidYMid slice" 
+                        role="img" 
+                        aria-label={desc}
+                      >
+                        <defs>
+                          <linearGradient id={`grad-service-dark-${service.id}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+                            <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
+                            <stop offset="100%" stop-color="#000000" stop-opacity="0.75" />
+                          </linearGradient>
+                          <linearGradient id={`grad-service-light-${service.id}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+                            <stop offset="50%" stop-color="#000000" stop-opacity="0.10" />
+                            <stop offset="100%" stop-color="#000000" stop-opacity="0.40" />
+                          </linearGradient>
+                        </defs>
+                        <image 
+                          role="img"
+                          href={service.optimizedImageSrc || img.src} 
+                          x="0" 
+                          y="0" 
+                          width={img.width} 
+                          height={img.height} 
                           preserveAspectRatio="xMidYMid slice" 
-                          role="img" 
+                          {...{ title }}
                           aria-label={desc}
-                        >
-                          <defs>
-                            <linearGradient id={`grad-service-dark-${service.id}`} x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-                              <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
-                              <stop offset="100%" stop-color="#000000" stop-opacity="0.75" />
-                            </linearGradient>
-                            <linearGradient id={`grad-service-light-${service.id}`} x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-                              <stop offset="50%" stop-color="#000000" stop-opacity="0.10" />
-                              <stop offset="100%" stop-color="#000000" stop-opacity="0.40" />
-                            </linearGradient>
-                          </defs>
-                          <image 
-                            role="img"
-                            href={service.optimizedImageSrc || img.src} 
-                            x="0" 
-                            y="0" 
-                            width={img.width} 
-                            height={img.height} 
-                            preserveAspectRatio="xMidYMid slice" 
-                            {...{ title }}
-                            aria-label={desc}
-                          />
-                          <rect 
-                            x="0" 
-                            y="0" 
-                            width={img.width} 
-                            height={img.height + 0.5} 
-                            class="block light:hidden"
-                            fill={`url(#grad-service-dark-${service.id})`} 
-                          />
-                          <rect 
-                            x="0" 
-                            y="0" 
-                            width={img.width} 
-                            height={img.height + 0.5} 
-                            class="hidden light:block"
-                            fill={`url(#grad-service-light-${service.id})`} 
-                          />
-                        </svg>
-                      );
-                      })()}
+                        />
+                        <rect 
+                          x="0" 
+                          y="0" 
+                          width={img.width} 
+                          height={img.height + 0.5} 
+                          class="block light:hidden"
+                          fill={`url(#grad-service-dark-${service.id})`} 
+                        />
+                        <rect 
+                          x="0" 
+                          y="0" 
+                          width={img.width} 
+                          height={img.height + 0.5} 
+                          class="hidden light:block"
+                          fill={`url(#grad-service-light-${service.id})`} 
+                        />
+                      </svg>
+                    );
+                    })()}
 
-                      <!-- Unread badge -->
-                      <span 
-                        class="unread-dot hidden badge-new badge-new-purple badge-corner-tr"
-                        data-item-url={`/services/${service.id}/`}
-                        title="Unread service"
-                      >UNREAD</span>
-                    </div>
+                    <!-- Unread badge -->
+                    <span 
+                      class="unread-dot hidden badge-new badge-new-purple badge-corner-tr"
+                      data-item-url={`/services/${service.id}/`}
+                      title="Unread service"
+                    >UNREAD</span>
+                  </div>
 
-                    <!-- Info Body (Below) -->
-                    <div class="preview-card-body flex flex-col flex-grow justify-between">
-                      <div class="space-y-3">
-                        <!-- Header -->
-                        <div>
-                          <h2 class="text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors group-hover:text-brand-purple light:group-hover:text-purple-600">
-                            <span>{service.data.title}</span>
-                          </h2>
+                  <!-- Info Body (Below) -->
+                  <div class="preview-card-body flex flex-col flex-grow justify-between">
+                    <div class="space-y-3">
+                      <!-- Header -->
+                      <div>
+                        <h2 class="text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors group-hover:text-brand-purple light:group-hover:text-purple-600">
+                          <span>{service.data.title}</span>
+                        </h2>
+                      </div>
+
+                      <!-- Description -->
+                      <p class="text-gray-300 light:text-slate-600 text-sm md:text-base leading-relaxed font-normal">
+                        {service.data.description}
+                      </p>
+
+                      {service.data.tags && service.data.tags.length > 0 && (
+                        <div class="flex flex-wrap gap-2 pt-1 relative z-20">
+                          {service.data.tags.map((tag) => (
+                            <a
+                              href={`/tags/${tag}/`}
+                              data-tag={tag}
+                              class="tag-chip tag-chip-purple inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
+                            >
+                              #{tag}
+                            </a>
+                          ))}
                         </div>
-
-                        <!-- Description -->
-                        <p class="text-gray-300 light:text-slate-600 text-sm md:text-base leading-relaxed font-normal">
-                          {service.data.description}
-                        </p>
-
-                        {service.data.tags && service.data.tags.length > 0 && (
-                          <div class="flex flex-wrap gap-2 pt-1 relative z-20">
-                            {service.data.tags.map((tag) => (
-                              <a
-                                href={`/tags/${tag}/`}
-                                data-tag={tag}
-                                class="tag-chip tag-chip-purple inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
-                              >
-                                #{tag}
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      <!-- Footer CTA Button -->
-                      <div class="pt-6 mt-auto w-full relative z-20">
-                        <a
-                          href={`/services/${service.id}/`}
-                          aria-label={`Read More: ${service.data.title}`}
-                          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700 text-xs font-bold relative z-20 transition-all duration-200"
-                        >
-                          <span>Read More</span>
-                          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                          </svg>
-                        </a>
-                      </div>
+                      )}
                     </div>
 
-                  </article>
-                </div>
-              );
-            })}
-          </div>
-        )}
-        <p id="no-services-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
-          No services match your selected filter criteria.
-        </p>
-      </div>
-    </div>
+                    <!-- Footer CTA Button -->
+                    <div class="pt-6 mt-auto w-full relative z-20">
+                      <a
+                        href={`/services/${service.id}/`}
+                        aria-label={`Read More: ${service.data.title}`}
+                        class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700 text-xs font-bold relative z-20 transition-all duration-200"
+                      >
+                        <span>Read More</span>
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+
+                </article>
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
+        <script is:inline>
+          (function() {
+            try {
+              var params = new URLSearchParams(window.location.search);
+              var rawTags = params.getAll('tag');
+              var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+              var q = (params.get('q') || '').trim().toLowerCase();
+
+              var hasTag = tags.length > 0;
+              var hasQ = Boolean(q);
+
+              if (!hasTag && !hasQ) return;
+
+              var items = document.querySelectorAll('.service-card');
+              var matching = [];
+
+              items.forEach(function(item) {
+                var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                var title = item.getAttribute('data-title') || '';
+                var desc = item.getAttribute('data-desc') || '';
+                var tagsStr = item.getAttribute('data-tags') || '';
+
+                var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
+                var matchesQ = !hasQ || (title.indexOf(q) !== -1 || desc.indexOf(q) !== -1 || tagsStr.indexOf(q) !== -1);
+
+                if (matchesTag && matchesQ) {
+                  matching.push(item);
+                  item.classList.add('is-matched');
+                  item.classList.remove('hidden');
+                  item.style.display = '';
+                } else {
+                  item.classList.remove('is-matched');
+                  item.classList.add('hidden');
+                  item.style.display = 'none';
+                }
+              });
+
+              var noResults = document.getElementById('no-services-message');
+              if (noResults) {
+                if (matching.length === 0) {
+                  noResults.classList.remove('hidden');
+                  noResults.style.display = '';
+                } else {
+                  noResults.classList.add('hidden');
+                  noResults.style.display = 'none';
+                }
+              }
+
+              var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
+              if (countEl && (hasTag || hasQ)) {
+                var availTags = new Set();
+                matching.forEach(function(item) {
+                  var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                  itags.forEach(function(t) { if (t) availTags.add(t); });
+                });
+                countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
+                countEl.classList.add('is-synced');
+              }
+            } catch(e) {}
+          })();
+        </script>
+      </>
+    )}
+
+    <p id="no-services-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+      No services match your selected filter criteria.
+    </p>
   </Container>
 </Layout>
 
@@ -312,6 +386,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
       searchFieldSelector: "#service-search",
       searchDataAttributes: ["data-title", "data-desc", "data-tags"],
       searchParamKey: "q",
+      resetButtonSelector: "#service-search-reset",
       buttonFilters: [
         {
           buttonSelector: ".tag-filter-btn",
@@ -319,7 +394,8 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
           defaultValue: "all",
           activeClass: "active",
           matchType: "includes",
-          paramKey: "tag"
+          paramKey: "tag",
+          multiple: true
         }
       ],
       scrollToSelector: "#services-grid",

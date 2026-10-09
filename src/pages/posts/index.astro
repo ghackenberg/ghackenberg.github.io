@@ -67,6 +67,7 @@ const breadcrumbSchema = {
       tags={allTags}
       accentColor="blue"
       totalCount={posts.length}
+      pageSize={12}
       itemTags={posts.map(p => (p.data.tags || []).map(t => t.toLowerCase()))}
     />
 
