@@ -517,7 +517,7 @@ const drawerFaceExpressions = [
 
         // 1. Sensory Context & Hybrid Search (RAG)
         const currentContext = avatarContextProvider.getContext();
-        const searchResults = await getSearchClient().search(query, { topK: 3 });
+        const searchResults = await getSearchClient().search(query, { topK: 2 });
 
         if (isSearchOnly) {
           // Instant Search Mode: Synthesize direct verified results
@@ -540,7 +540,7 @@ const drawerFaceExpressions = [
             userQuery: query,
             context: currentContext,
             ragResults: searchResults,
-            chatHistory: chatHistory.slice(-6),
+            chatHistory: chatHistory.slice(-4),
             modelId: selectedModel,
           });
 

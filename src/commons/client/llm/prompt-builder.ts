@@ -99,11 +99,18 @@ export function formatRagEnvelope(results?: ClientSearchResult[]): string {
     `Below are top verified passages from the knowledge base of hackenberg.tech. Ground your response on these sources and deep-link to them:`,
   ];
 
-  results.forEach((res, idx) => {
+  // Budget to top 2 chunks and max 350-400 tokens (~1,400 chars) per chunk to respect WebGPU buffer limits
+  const budgetedResults = results.slice(0, 2);
+
+  budgetedResults.forEach((res, idx) => {
     const num = idx + 1;
     const headingSuffix = res.heading ? ` > ${res.heading}` : '';
+    let rawContent = res.content || res.snippet || '';
+    if (rawContent.length > 1400) {
+      rawContent = rawContent.slice(0, 1400).trim() + '...';
+    }
     lines.push(
-      `\n[SOURCE #${num}]: [${res.title}${headingSuffix}](${res.url}) (${res.collection})\nContent:\n"""\n${res.content || res.snippet}\n"""`
+      `\n[SOURCE #${num}]: [${res.title}${headingSuffix}](${res.url}) (${res.collection})\nContent:\n"""\n${rawContent}\n"""`
     );
 
     if (res.citations && res.citations.length > 0) {
@@ -329,9 +336,17 @@ export function buildGroundedAvatarPrompt(
     ragResults,
   });
 
+  // Budget chat history to the most recent 4 messages, truncating long assistant turns
+  const budgetedHistory: ChatMessage[] = chatHistory.slice(-4).map((msg) => {
+    if (msg.role === 'assistant' && msg.content.length > 400) {
+      return { role: 'assistant', content: msg.content.slice(0, 400).trim() + '...' };
+    }
+    return msg;
+  });
+
   const chatMessages: ChatMessage[] = [
     { role: 'system', content: systemPrompt },
-    ...chatHistory,
+    ...budgetedHistory,
     { role: 'user', content: userQuery.trim() },
   ];
 
