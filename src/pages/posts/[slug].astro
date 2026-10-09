@@ -217,7 +217,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
           <h2 id={post.data.lang === 'en' ? 'references' : 'referenzen'}>{post.data.lang === 'en' ? 'References' : 'Referenzen'}</h2>
           <ul class="space-y-3.5 list-none pl-0 text-sm sm:text-base leading-relaxed text-slate-300 light:text-slate-700">
             {post.data.references.map((ref) => (
-              <li id={`ref-${ref.id}`} class="group flex items-start gap-2.5 scroll-mt-24 p-2 -mx-2 rounded-lg transition-colors hover:bg-white/[0.03] light:hover:bg-slate-100/60 target:bg-brand-blue/10 target:border target:border-brand-blue/30">
+              <li id={`ref-${ref.id}`} class="group flex items-start gap-2.5 p-2 -mx-2 rounded-lg transition-colors hover:bg-white/[0.03] light:hover:bg-slate-100/60 target:bg-brand-blue/10 target:border target:border-brand-blue/30">
                 <span class="font-mono text-brand-blue light:text-blue-700 font-bold shrink-0 select-none px-1.5 py-0 rounded bg-brand-blue/10 border border-brand-blue/20 leading-relaxed">[{generateCitationLabel(ref)}]</span>
                 <div class="leading-relaxed">
                   <span class="font-medium text-slate-200 light:text-slate-800">{ref.author}</span>

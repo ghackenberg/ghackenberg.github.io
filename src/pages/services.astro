@@ -118,13 +118,13 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
         {optimizedServices.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No services defined.</p>
         ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 scroll-mt-28" id="services-grid">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="services-grid">
             {optimizedServices.map((service) => {
               const tagsJoined = (service.data.tags || []).join(" ").toLowerCase();
               return (
                 <div 
                   id={service.id} 
-                  class="service-card scroll-mt-24 relative group h-full"
+                  class="service-card relative group h-full"
                   data-title={service.data.title.toLowerCase()}
                   data-desc={service.data.description.toLowerCase()}
                   data-tags={tagsJoined}

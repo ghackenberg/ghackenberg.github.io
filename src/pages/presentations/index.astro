@@ -78,7 +78,7 @@ const breadcrumbSchema = {
         {presentations.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No presentations found.</p>
         ) : (
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 scroll-mt-28" id="presentations-grid">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="presentations-grid">
             {presentations.map((presentation) => {
               const tagsJoined = (presentation.data.tags || [])
                 .join(" ")

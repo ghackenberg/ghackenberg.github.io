@@ -75,7 +75,7 @@ const breadcrumbSchema = {
         {posts.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No blog posts found.</p>
         ) : (
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 scroll-mt-28" id="posts-grid">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="posts-grid">
             {posts.map((post) => {
               const tagsJoined = (post.data.tags || []).join(" ").toLowerCase();
               return (

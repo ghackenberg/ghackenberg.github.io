@@ -96,7 +96,7 @@ const breadcrumbSchema = {
         {sortedProjects.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No projects defined.</p>
         ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 scroll-mt-28" id="projects-grid">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-grid">
             {sortedProjects.map(project => {
               const tagsJoined = (project.data.tags || []).join(" ").toLowerCase();
               return (
