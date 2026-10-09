@@ -167,20 +167,15 @@ const drawerFaceExpressions = [
         </div>
       </div>
 
-      <!-- Controls: Model Selector & Close Button -->
+      <!-- Controls: Model Badge & Close Button -->
       <div class="flex items-center gap-2 shrink-0">
-        <!-- Model Selector -->
-        <div class="relative">
-          <select
-            id="avatar-model-select"
-            class="text-[11px] sm:text-xs bg-white/5 light:bg-slate-100 border border-white/10 light:border-slate-300 rounded-lg px-2 py-1 text-gray-200 light:text-slate-700 cursor-pointer focus:outline-none focus:border-brand-blue appearance-none pr-6"
-            title="Select model size"
-          >
-            <option value="onnx-community/Qwen2.5-0.5B-Instruct">Qwen 0.5B (Fast)</option>
-            <option value="onnx-community/gemma-3-1b-it-ONNX-GQA">Gemma 3 1B (Google)</option>
-          </select>
-          <div class="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">▼</div>
-        </div>
+        <!-- Model Badge -->
+        <span
+          class="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold bg-brand-blue/15 text-brand-blue border border-brand-blue/30 light:bg-blue-50 light:text-blue-700 light:border-blue-200"
+          title="Google Gemma 3 1B on-device model"
+        >
+          Gemma 3 1B (Google)
+        </span>
 
         <!-- Close Button -->
         <button
@@ -266,7 +261,7 @@ const drawerFaceExpressions = [
   import { avatarContextProvider } from '@commons/client/context/avatar-context';
   import { getSearchClient } from '@commons/client/search/search-client';
   import { trackEvent } from '@commons/client/telemetry';
-  import type { ChatMessage } from '@commons/client/llm/types';
+  import { DEFAULT_MODEL_ID, type ChatMessage } from '@commons/client/llm/types';
 
   declare global {
     interface Window {
@@ -288,7 +283,6 @@ const drawerFaceExpressions = [
     const iconStop = document.getElementById('avatar-icon-stop');
     const stateDot = document.getElementById('avatar-state-dot');
     const stateLabel = document.getElementById('avatar-state-label');
-    const modelSelect = document.getElementById('avatar-model-select') as HTMLSelectElement | null;
     const clearHistoryBtn = document.getElementById('avatar-clear-history-btn');
     const modeHint = document.getElementById('avatar-mode-hint');
 
@@ -533,7 +527,7 @@ const drawerFaceExpressions = [
             searchResults.forEach((res, i) => {
               accumulatedResponse += `**${i + 1}. [${res.title}](${res.url})** (${res.collection})\n${res.snippet}\n\n`;
             });
-            accumulatedResponse += `\n*Tip: Activate the full virtual avatar (~380 MB) in Privacy Settings for generative AI conversations.*`;
+            accumulatedResponse += `\n*Tip: Activate the full virtual avatar (~750 MB) in Privacy Settings for generative AI conversations.*`;
           } else {
             accumulatedResponse = `I could not find direct matches for "${query}". Try different keywords such as *Software*, *Simulation*, *Reveal*, or *CADdrive*.`;
           }
@@ -541,7 +535,7 @@ const drawerFaceExpressions = [
           chatHistory.push({ role: 'assistant', content: accumulatedResponse });
           localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory.slice(-20)));
         } else {
-          const selectedModel = modelSelect?.value || 'onnx-community/Qwen2.5-0.5B-Instruct';
+          const selectedModel = DEFAULT_MODEL_ID;
           const promptBundle = buildGroundedAvatarPrompt({
             userQuery: query,
             context: currentContext,

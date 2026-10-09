@@ -58,14 +58,16 @@ async function runLLMTests(): Promise<void> {
   // Scenario 1: Model Configurations & Registry
   // --------------------------------------------------------------------------
   console.log('\n[1/6] Validating Model Registry & Configurations...');
-  assert(Boolean(SUPPORTED_MODELS['qwen-0.5b']), 'qwen-0.5b model registered');
+  assert(!SUPPORTED_MODELS['qwen-0.5b'], 'qwen-0.5b model is not registered (exclusive Gemma 3)');
   assert(Boolean(SUPPORTED_MODELS['gemma-3-1b']), 'gemma-3-1b model registered');
-  assert(DEFAULT_MODEL_ID === 'onnx-community/Qwen2.5-0.5B-Instruct', 'Default model ID is onnx-community/Qwen2.5-0.5B-Instruct');
-  assert(SUPPORTED_MODELS['qwen-0.5b'].sizeBytes < 500_000_000, '0.5B q4 model size estimate is under 500MB');
+  assert(DEFAULT_MODEL_ID === 'onnx-community/gemma-3-1b-it-ONNX-GQA', 'Default model ID is onnx-community/gemma-3-1b-it-ONNX-GQA');
+  assert(SUPPORTED_MODELS['gemma-3-1b'].sizeBytes === 750_000_000, 'Gemma 3 1B size is ~750MB');
   assert(SUPPORTED_MODELS['gemma-3-1b'].dtype === 'q4', 'gemma-3-1b model is configured for q4 quantization');
   assert(SUPPORTED_MODELS['gemma-3-1b'].id === 'onnx-community/gemma-3-1b-it-ONNX-GQA', 'gemma-3-1b model ID is accurate');
+  assert(SUPPORTED_MODELS['gemma-3-1b'].contextLength === 8_192, 'gemma-3-1b context length is 8,192');
   assert(getModelConfig('gemma-3-1b').id === 'onnx-community/gemma-3-1b-it-ONNX-GQA', 'getModelConfig resolves key');
   assert(getModelConfig('onnx-community/gemma-3-1b-it-ONNX-GQA').name.includes('Gemma-3'), 'getModelConfig resolves HF id');
+  assert(Object.keys(SUPPORTED_MODELS).length === 1, 'Gemma 3 1B is the sole registered model');
   console.log('   ✅ Model registry and quantizations verified.');
 
   // --------------------------------------------------------------------------
@@ -127,16 +129,19 @@ async function runLLMTests(): Promise<void> {
 
   const duPrompt = buildSystemPersonaPrompt({ tone: 'du', lang: 'de' });
   assert(duPrompt.includes('Dr. Georg Hackenberg'), 'Includes persona identity');
-  assert(duPrompt.includes('FH-Professor for Industrial Informatics'), 'Includes academic title');
+  assert(duPrompt.includes('Full Professor für Industrielle Informatik'), 'Includes academic title');
   assert(duPrompt.includes('Campus Wels'), 'Includes FH campus');
   assert(duPrompt.includes('Sprich den Fragenden per "Du" an'), 'Includes Du mirroring directive');
   assert(duPrompt.includes('https://hackenberg.tech'), 'Includes site URL');
+  assert(duPrompt.includes('Wichtige Regel: Antworte stets in der ersten Person'), 'Includes German first-person directive');
+  assert(duPrompt.includes('Beantworte Fragen zu Blog-Posts, Papern, Vorlesungen und Projekten konkret'), 'Includes grounded source linking rule');
 
   const siePrompt = buildSystemPersonaPrompt({ tone: 'sie', lang: 'de' });
   assert(siePrompt.includes('Sprich den Fragenden per "Sie" an'), 'Includes Sie mirroring directive');
 
   const enPrompt = buildSystemPersonaPrompt({ tone: 'neutral', lang: 'en' });
   assert(enPrompt.includes('Respond in clear, precise English'), 'Includes English directive');
+  assert(enPrompt.includes('Crucial Rule: Always respond in the first person'), 'Includes English first-person directive');
   assert(enPrompt.includes('Anti-dogmatic, evidence-based'), 'Includes anti-dogmatic epistemic stance');
 
   console.log('   ✅ Persona directives enforce tone mirroring and academic rigor.');
@@ -178,6 +183,7 @@ async function runLLMTests(): Promise<void> {
       heading: 'Control Plane vs Data Plane',
       url: 'https://hackenberg.tech/posts/agentic-software-engineering/#control-plane',
       snippet: 'The orchestrator maintains the top-level plan and gates, while subagents execute tasks.',
+      content: 'The orchestrator maintains the top-level plan and gates, while subagents execute tasks. Full unclipped chunk text passing complete architecture semantics.',
       tags: ['Agentic AI', 'Architecture'],
       lang: 'en',
       score: 0.95,
@@ -194,8 +200,8 @@ async function runLLMTests(): Promise<void> {
 
   const ragEnvelope = formatRagEnvelope(mockRagResults);
   assert(ragEnvelope.includes('[RETRIEVED KNOWLEDGE (RAG GROUNDING)]'), 'Includes RAG envelope header');
-  assert(ragEnvelope.includes('Source #1: [Agentic Software Engineering > Control Plane vs Data Plane]'), 'Includes deep-link markdown title');
-  assert(ragEnvelope.includes('https://hackenberg.tech/posts/agentic-software-engineering/#control-plane'), 'Includes deep link anchor URL');
+  assert(ragEnvelope.includes('[SOURCE #1]: [Agentic Software Engineering > Control Plane vs Data Plane](https://hackenberg.tech/posts/agentic-software-engineering/#control-plane) (posts)'), 'Includes deep-link markdown title');
+  assert(ragEnvelope.includes('Content:\n"""\nThe orchestrator maintains the top-level plan and gates, while subagents execute tasks. Full unclipped chunk text passing complete architecture semantics.\n"""'), 'Includes full unclipped content wrapped in triple quotes');
   assert(ragEnvelope.includes('[@HAC26]'), 'Includes semantic academic citation');
 
   const groundedResult = buildGroundedAvatarPrompt({
@@ -241,6 +247,17 @@ async function runLLMTests(): Promise<void> {
   assert(gemmaSerialized.includes('<start_of_turn>model\nSlide-as-Code treats presentations as software engineering artifacts.<end_of_turn>\n'), 'Model turn formatted for Gemma');
   assert(gemmaSerialized.includes('<start_of_turn>user\nCan you show me an example?<end_of_turn>\n'), 'User turn 2 formatted for Gemma');
   assert(gemmaSerialized.endsWith('<start_of_turn>model\n'), 'Ends with Gemma generation prompt');
+
+  // Verify Gemma chat template with proactive assistant greeting bug fix
+  const messagesWithGreeting: ChatMessage[] = [
+    { role: 'system', content: 'You are Dr. Georg Hackenberg.' },
+    { role: 'assistant', content: 'Hello! I am the virtual avatar of Dr. Georg Hackenberg.' },
+    { role: 'user', content: 'What is Slide-as-Code?' },
+  ];
+  const gemmaWithGreeting = formatGemmaChat(messagesWithGreeting, true);
+  assert(gemmaWithGreeting.startsWith('<start_of_turn>user\nYou are Dr. Georg Hackenberg.\n\nWhat is Slide-as-Code?<end_of_turn>\n'), 'System prefix attached to user turn despite initial assistant greeting');
+  assert(gemmaWithGreeting.endsWith('<start_of_turn>model\n'), 'Ends with Gemma generation prompt');
+  assert(!gemmaWithGreeting.includes('<start_of_turn>model\nHello! I am the virtual avatar'), 'Leading assistant greeting is stripped to ensure first turn is user');
 
   console.log('   ✅ Qwen and Gemma chat templates follow exact model specifications.');
 

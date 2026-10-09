@@ -2,7 +2,7 @@
  * Types and interfaces for the WebGPU In-Browser LLM Runtime.
  *
  * Supports Transformers.js-based causal text generation with WebGPU acceleration,
- * WASM fallback, fine-grained model caching, streaming generation, and Qwen2.5 chat templates.
+ * WASM fallback, fine-grained model caching, streaming generation, and Google Gemma 3 chat templates.
  */
 
 import type { UnifiedAvatarContext } from '@commons/client/context/types.ts';
@@ -57,16 +57,6 @@ export interface ModelConfig {
  * Canonical model registry for the avatar runtime
  */
 export const SUPPORTED_MODELS: Record<string, ModelConfig> = {
-  'qwen-0.5b': {
-    id: 'onnx-community/Qwen2.5-0.5B-Instruct',
-    name: 'Qwen2.5-0.5B-Instruct (q4)',
-    sizeBytes: 395_000_000,
-    dtype: 'q4',
-    contextLength: 32_768,
-    defaultDevice: 'webgpu',
-    vramRequiredBytes: 550_000_000,
-    description: 'Ultra-fast, lightweight model ideal for immediate client-side inference on all devices.',
-  },
   'gemma-3-1b': {
     id: 'onnx-community/gemma-3-1b-it-ONNX-GQA',
     name: 'Gemma-3-1B-IT (Google GQA, q4)',
@@ -80,7 +70,7 @@ export const SUPPORTED_MODELS: Record<string, ModelConfig> = {
 };
 
 /**
- * Resolves a ModelConfig by key ('qwen-0.5b', 'gemma-3-1b') or canonical Hugging Face ID.
+ * Resolves a ModelConfig by key ('gemma-3-1b') or canonical Hugging Face ID.
  */
 export function getModelConfig(modelIdOrKey: string): ModelConfig {
   if (SUPPORTED_MODELS[modelIdOrKey]) {
@@ -90,13 +80,13 @@ export function getModelConfig(modelIdOrKey: string): ModelConfig {
   if (found) {
     return found;
   }
-  return SUPPORTED_MODELS['qwen-0.5b'];
+  return SUPPORTED_MODELS['gemma-3-1b'];
 }
 
 /**
  * Default model identifier
  */
-export const DEFAULT_MODEL_ID = 'onnx-community/Qwen2.5-0.5B-Instruct';
+export const DEFAULT_MODEL_ID = 'onnx-community/gemma-3-1b-it-ONNX-GQA';
 
 /**
  * Fine-grained asset download and cache loading progress
