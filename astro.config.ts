@@ -752,6 +752,7 @@ export default defineConfig({
     customLogger: viteLogger,
     plugins: [tailwindcss(), vitePreSlideCues()],
     optimizeDeps: {
+      exclude: ['@huggingface/transformers'],
       include: [
         'reveal.js',
         'howler',

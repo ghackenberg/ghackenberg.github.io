@@ -142,8 +142,7 @@ export class LLMClient {
     }
 
     if (!this.worker) {
-      const workerUrl = new URL('./llm-worker.ts', import.meta.url);
-      this.worker = new Worker(workerUrl, { type: 'module' });
+      this.worker = new Worker(new URL('./llm-worker.ts', import.meta.url), { type: 'module' });
 
       this.worker.onmessage = (event: MessageEvent<WorkerOutMessage>) => {
         this.handleWorkerMessage(event.data);
@@ -153,6 +152,11 @@ export class LLMClient {
         const errorText = err.message || 'LLM Worker runtime error';
         console.error('[LLMClient] Worker error:', errorText);
         this.setStatus('error', errorText);
+
+        try {
+          this.worker?.terminate();
+        } catch {}
+        this.worker = null;
 
         if (this.pendingInit) {
           this.pendingInit.reject(new Error(errorText));
