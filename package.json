@@ -29,6 +29,7 @@
     "sync": "tsx src/scripts/sync.ts",
     "generate-assets": "tsx src/scripts/generate-assets.ts",
     "build:search": "tsx src/scripts/build-search-index.ts",
+    "test:search": "tsx src/scripts/test-search.ts",
     "lighthouse": "node --experimental-strip-types src/scripts/run-lighthouse.ts",
     "mcp:analytics": "tsx src/tools/unified-analytics.ts",
     "setup:mcp": "npm link",
