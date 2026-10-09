@@ -127,7 +127,7 @@
             </span>
           </div>
           <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
-            For the local language model (<code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-white/5 light:bg-slate-200/60 px-1.5 py-0.5 rounded">Google Gemma 3 (1B GQA)</code>), compressed model weights are cached in your browser <code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-white/5 light:bg-slate-200/60 px-1.5 py-0.5 rounded">Cache API</code>. Chat conversations remain strictly in your local browser storage.
+            For the local language model (<code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-white/5 light:bg-slate-200/60 px-1.5 py-0.5 rounded">Qwen 2.5 (1.5B Instruct)</code>), compressed model weights are cached in your browser <code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-white/5 light:bg-slate-200/60 px-1.5 py-0.5 rounded">Cache API</code>. Chat conversations remain strictly in your local browser storage.
           </p>
         </div>
 
@@ -154,7 +154,7 @@
             type="button"
             class="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 light:text-red-700 light:bg-red-50 light:border-red-200 light:hover:bg-red-100 transition-colors text-xs sm:text-sm font-medium cursor-pointer"
           >
-            Clear model cache (~750 MB)
+            Clear model cache (~980 MB)
           </button>
           <button
             id="privacy-clear-chat-history-btn"
@@ -238,7 +238,7 @@
           const sizeBytes = await getModelCacheSize();
           if (sizeBytes > 0) {
             const mb = (sizeBytes / (1024 * 1024)).toFixed(1);
-            modelCacheStatus.textContent = `${mb} MB used (Gemma 3)`;
+            modelCacheStatus.textContent = `${mb} MB used (Qwen 2.5)`;
           } else {
             modelCacheStatus.textContent = 'No model cached (0 MB)';
           }
@@ -444,7 +444,7 @@
     // Clear Avatar Model Cache
     if (clearModelCacheBtn) {
       clearModelCacheBtn.addEventListener('click', async function() {
-        if (confirm('Do you really want to clear the model cache (~750 MB) from your browser?')) {
+        if (confirm('Do you really want to clear the model cache (~980 MB) from your browser?')) {
           trackPrivacyEvent('Privacy Action', { action: 'clear-model-cache' });
           await purgeModelCache();
           localStorage.removeItem(AVATAR_CONSENT_KEY);
@@ -463,6 +463,7 @@
           clearSessionMemory();
           localStorage.removeItem(AVATAR_CHAT_KEY);
           localStorage.removeItem('gh_avatar_chat_v2');
+          localStorage.removeItem('gh_avatar_chat_v3');
           await updateAvatarStorageInfo();
           alert('Chat history has been cleared successfully.');
         }

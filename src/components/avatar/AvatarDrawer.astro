@@ -126,8 +126,9 @@ const drawerFaceExpressions = [
   <div
     id="avatar-drawer-container"
     class="pointer-events-auto fixed bottom-0 left-0 right-0 sm:left-auto sm:top-0 sm:right-0 sm:bottom-0 w-full sm:w-[420px] max-h-[92dvh] sm:max-h-full h-[92dvh] sm:h-full flex flex-col bg-[#090d16]/95 light:bg-white/95 border-t sm:border-t-0 sm:border-l border-white/10 light:border-slate-200/90 shadow-2xl backdrop-blur-xl transform translate-y-full sm:translate-y-0 sm:translate-x-full transition-transform duration-300 ease-out text-gray-100 light:text-slate-800 rounded-t-3xl sm:rounded-none z-50 overflow-hidden"
-    role="region"
-    aria-label="Dr. Georg Hackenberg Virtual Avatar Chat"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="avatar-drawer-heading"
   >
     <!-- Top Accent Bar -->
     <div class="h-1 bg-gradient-brand shrink-0"></div>
@@ -155,7 +156,7 @@ const drawerFaceExpressions = [
 
         <div class="min-w-0">
           <div class="flex items-center gap-1.5">
-            <h3 class="text-sm sm:text-base font-bold text-white light:text-slate-900 leading-tight truncate">
+            <h3 id="avatar-drawer-heading" class="text-sm sm:text-base font-bold text-white light:text-slate-900 leading-tight truncate">
               Dr. Georg Hackenberg
             </h3>
           </div>
@@ -231,7 +232,7 @@ const drawerFaceExpressions = [
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
           </button>
-          <h4 class="text-sm sm:text-base font-bold text-white light:text-slate-900">
+          <h4 id="avatar-history-title" class="text-sm sm:text-base font-bold text-white light:text-slate-900">
             Conversation History
           </h4>
         </div>
@@ -364,7 +365,7 @@ const drawerFaceExpressions = [
     const clearHistoryBtn = document.getElementById('avatar-clear-history-btn');
     const modeHint = document.getElementById('avatar-mode-hint');
 
-    const CHAT_STORAGE_KEY = 'gh_avatar_chat_v2';
+    const CHAT_STORAGE_KEY = 'gh_avatar_chat_v3';
     const CONSENT_STORAGE_KEY = 'gh_avatar_consent_v1';
     const NOTIF_STORAGE_KEY = 'gh_site_notifications_v1';
     const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';

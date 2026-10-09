@@ -34,13 +34,13 @@ export const CANONICAL_SITE_BLUEPRINT: SiteBlueprint = {
       id: 'courses',
       name: 'University Courses',
       path: '/courses/',
-      description: 'Higher education course syllabi, lecture slides, and laboratory exercises for industrial informatics.',
+      description: 'University courses at FH Upper Austria Campus Wels: Software Engineering, Systems Engineering, Digital Factory, Computer-Simulation, Internet of Things (IoT), Data Analysis, Python, Java, TypeScript/Firebase, MAUI/ASP.NET.',
     },
     {
       id: 'projects',
       name: 'Software Projects & Blueprints',
       path: '/projects/',
-      description: 'Open-source software, industrial CAD/CAM tools, robotics, and cyber-physical implementations.',
+      description: 'Key software projects: CADdrive (CAD/CAM geometry engine), Slide-as-Code (synchronized presentation framework), robotics, and cyber-physical systems.',
     },
     {
       id: 'services',
