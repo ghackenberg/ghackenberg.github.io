@@ -167,21 +167,41 @@ const drawerFaceExpressions = [
         </div>
       </div>
 
-      <!-- Controls: Model Badge & Close Button -->
-      <div class="flex items-center gap-2 shrink-0">
-        <!-- Model Badge -->
-        <span
-          class="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold bg-brand-blue/15 text-brand-blue border border-brand-blue/30 light:bg-blue-50 light:text-blue-700 light:border-blue-200"
-          title="Google Gemma 3 1B on-device model"
+      <!-- Controls: New Session, History & Close Button -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <!-- New Session Button -->
+        <button
+          id="avatar-new-session-btn"
+          type="button"
+          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium border border-white/10 light:border-slate-300 bg-white/5 light:bg-slate-100 hover:bg-brand-blue/20 light:hover:bg-blue-50 hover:text-white light:hover:text-blue-700 text-gray-300 light:text-slate-700 transition-colors cursor-pointer active:scale-95"
+          title="Start new conversation"
+          aria-label="Start new conversation"
         >
-          Gemma 3 1B (Google)
-        </span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          <span class="hidden xs:inline">New</span>
+        </button>
+
+        <!-- History Toggle Button -->
+        <button
+          id="avatar-history-toggle-btn"
+          type="button"
+          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium border border-white/10 light:border-slate-300 bg-white/5 light:bg-slate-100 hover:bg-brand-blue/20 light:hover:bg-blue-50 hover:text-white light:hover:text-blue-700 text-gray-300 light:text-slate-700 transition-colors cursor-pointer active:scale-95"
+          title="Conversation history"
+          aria-label="Conversation history"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="hidden xs:inline">History</span>
+        </button>
 
         <!-- Close Button -->
         <button
           id="avatar-drawer-close-btn"
           type="button"
-          class="w-8 h-8 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-white light:hover:text-black flex items-center justify-center cursor-pointer transition-colors active:scale-95"
+          class="w-8 h-8 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-white light:hover:text-black flex items-center justify-center cursor-pointer transition-colors active:scale-95 ml-0.5"
           aria-label="Close avatar"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -190,6 +210,45 @@ const drawerFaceExpressions = [
         </button>
       </div>
     </header>
+
+    <!-- History Overlay Panel (Slide-Over inside Drawer) -->
+    <div
+      id="avatar-history-panel"
+      class="absolute inset-0 z-40 flex flex-col bg-[#090d16] light:bg-white transition-all duration-300 translate-x-full pointer-events-none opacity-0"
+      role="region"
+      aria-label="Conversation history"
+    >
+      <!-- History Header -->
+      <div class="shrink-0 p-3.5 sm:p-4 border-b border-white/10 light:border-slate-200/80 flex items-center justify-between gap-3 bg-white/[0.02] light:bg-slate-50/50">
+        <div class="flex items-center gap-2">
+          <button
+            id="avatar-history-back-btn"
+            type="button"
+            class="w-8 h-8 rounded-lg border border-white/10 light:border-slate-200 hover:bg-white/10 light:hover:bg-slate-100 flex items-center justify-center text-gray-400 hover:text-white light:hover:text-slate-900 transition-colors cursor-pointer"
+            aria-label="Back to chat"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          <h4 class="text-sm sm:text-base font-bold text-white light:text-slate-900">
+            Conversation History
+          </h4>
+        </div>
+        <button
+          id="avatar-history-clear-all-btn"
+          type="button"
+          class="text-xs text-red-400 hover:text-red-300 light:text-red-600 light:hover:text-red-700 transition-colors cursor-pointer px-2 py-1 rounded"
+        >
+          Clear All
+        </button>
+      </div>
+
+      <!-- History List -->
+      <div id="avatar-history-list" class="flex-1 overflow-y-auto overscroll-contain p-3.5 space-y-2 text-xs sm:text-sm">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
 
     <!-- Message History Stream (Scrollable) -->
     <div id="avatar-messages-container" class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-3.5 text-xs sm:text-sm">
@@ -261,7 +320,20 @@ const drawerFaceExpressions = [
   import { avatarContextProvider } from '@commons/client/context/avatar-context';
   import { getSearchClient } from '@commons/client/search/search-client';
   import { trackEvent } from '@commons/client/telemetry';
-  import { DEFAULT_MODEL_ID, type ChatMessage } from '@commons/client/llm/types';
+  import { DEFAULT_MODEL_ID, type ChatMessage as LLMChatMessage } from '@commons/client/llm/types';
+  import { getHistoryStore } from '@commons/client/memory/history-store';
+  import {
+    getActiveSessionId,
+    setActiveSessionId,
+    isDrawerOpen,
+    setDrawerOpen,
+    getInputDraft,
+    setInputDraft,
+    clearInputDraft,
+    clearSessionMemory,
+    generateSessionId,
+  } from '@commons/client/memory/session-memory';
+  import type { ConversationSession, ChatMessage } from '@commons/client/memory/types';
 
   declare global {
     interface Window {
@@ -275,6 +347,12 @@ const drawerFaceExpressions = [
     const backdrop = document.getElementById('avatar-drawer-backdrop');
     const container = document.getElementById('avatar-drawer-container');
     const closeBtn = document.getElementById('avatar-drawer-close-btn');
+    const newSessionBtn = document.getElementById('avatar-new-session-btn');
+    const historyToggleBtn = document.getElementById('avatar-history-toggle-btn');
+    const historyPanel = document.getElementById('avatar-history-panel');
+    const historyBackBtn = document.getElementById('avatar-history-back-btn');
+    const historyClearAllBtn = document.getElementById('avatar-history-clear-all-btn');
+    const historyList = document.getElementById('avatar-history-list');
     const messagesList = document.getElementById('avatar-messages-container');
     const chatForm = document.getElementById('avatar-chat-form') as HTMLFormElement | null;
     const inputText = document.getElementById('avatar-input-text') as HTMLTextAreaElement | null;
@@ -292,8 +370,20 @@ const drawerFaceExpressions = [
     const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
 
     let isOpen = false;
+    let isHistoryOpen = false;
     let isGenerating = false;
-    let chatHistory: ChatMessage[] = [];
+    let currentSession: ConversationSession | null = null;
+
+    function formatSessionDate(timestamp: number): string {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+
+      if (diffHours < 24 && date.getDate() === now.getDate()) {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+      return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    }
 
     // Format Markdown snippets and source/slide buttons
     function formatMessageMarkdown(raw: string): string {
@@ -370,30 +460,77 @@ const drawerFaceExpressions = [
     }
 
     // Load or initialize conversation
-    function initMessages() {
+    async function initMessages(forceNew = false): Promise<void> {
       if (!messagesList) return;
       messagesList.innerHTML = '';
 
-      // Check stored history
-      try {
-        const raw = localStorage.getItem(CHAT_STORAGE_KEY);
-        if (raw) {
-          chatHistory = JSON.parse(raw);
-          if (Array.isArray(chatHistory) && chatHistory.length > 0) {
-            chatHistory.forEach(msg => {
-              if (msg.role === 'user' || msg.role === 'assistant') {
-                appendMessageUI(msg.role, msg.content, false);
+      const historyStore = getHistoryStore();
+
+      if (!forceNew) {
+        const activeId = getActiveSessionId();
+        if (activeId) {
+          const session = await historyStore.getSession(activeId);
+          if (session) {
+            currentSession = session;
+            if (currentSession.messages && currentSession.messages.length > 0) {
+              for (const msg of currentSession.messages) {
+                appendMessageBubble(msg.role === 'model' ? 'assistant' : 'user', msg.content);
               }
-            });
-            scrollToBottom();
-            return;
+              scrollToBottom();
+              return;
+            }
           }
         }
-      } catch (e) {
-        chatHistory = [];
+
+        // Migrate legacy localStorage if exists
+        try {
+          const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+          if (raw) {
+            const legacyMsgs = JSON.parse(raw);
+            if (Array.isArray(legacyMsgs) && legacyMsgs.length > 0) {
+              const firstUser = legacyMsgs.find((m: { role: string }) => m.role === 'user');
+              const title = firstUser?.content
+                ? (firstUser.content.length > 40 ? firstUser.content.slice(0, 37).trim() + '...' : firstUser.content)
+                : 'Previous Conversation';
+              const newSessionId = generateSessionId();
+              const convertedMessages: ChatMessage[] = legacyMsgs.map((m: { role: string; content?: string }, idx: number) => ({
+                id: `mig_${Date.now()}_${idx}`,
+                role: m.role === 'user' ? 'user' : 'model',
+                content: m.content || '',
+                timestamp: Date.now() + idx,
+              }));
+              currentSession = {
+                id: newSessionId,
+                title,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                messages: convertedMessages,
+              };
+              setActiveSessionId(newSessionId);
+              await historyStore.saveSession(currentSession);
+              localStorage.removeItem(CHAT_STORAGE_KEY);
+
+              for (const msg of currentSession.messages) {
+                appendMessageBubble(msg.role === 'model' ? 'assistant' : 'user', msg.content);
+              }
+              scrollToBottom();
+              return;
+            }
+          }
+        } catch {}
       }
 
-      // Proactive greeting with 'What's new' inspection
+      // Initialize fresh new session
+      const newSessionId = generateSessionId();
+      currentSession = {
+        id: newSessionId,
+        title: 'New Conversation',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        messages: [],
+      };
+      setActiveSessionId(newSessionId);
+
       renderProactiveGreeting();
     }
 
@@ -424,8 +561,8 @@ const drawerFaceExpressions = [
 
       const isGerman = (typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('de')) || false;
       let greeting = isGerman
-        ? `Hallo! Ich bin der persönliche virtuelle Avatar von Dr. Georg Hackenberg. Ich laufe **100 % lokal in Ihrem Browser** (WebGPU/BM25).`
-        : `Hello! I am the virtual avatar of Dr. Georg Hackenberg. I run **100% locally in your browser** (WebGPU/BM25).`;
+        ? `Hallo! Ich bin Dr. Georg Hackenberg. Ich beantworte Ihre Fragen als lokaler KI-Assistent **100 % in Ihrem Browser** (WebGPU/BM25).`
+        : `Hello! I am Dr. Georg Hackenberg. I answer your questions as a local AI assistant **100% in your browser** (WebGPU/BM25).`;
 
       if (unreadItems.length > 0) {
         if (isGerman) {
@@ -449,10 +586,10 @@ const drawerFaceExpressions = [
         }
       }
 
-      appendMessageUI('assistant', greeting, true);
+      appendMessageBubble('assistant', greeting);
     }
 
-    function appendMessageUI(role: 'user' | 'assistant', content: string, save = true): HTMLElement {
+    function appendMessageBubble(role: 'user' | 'assistant', content: string): HTMLElement {
       if (!messagesList) return document.createElement('div');
 
       const msgDiv = document.createElement('div');
@@ -468,13 +605,6 @@ const drawerFaceExpressions = [
       bubble.innerHTML = formatMessageMarkdown(content);
       msgDiv.appendChild(bubble);
       messagesList.appendChild(msgDiv);
-
-      if (save && (role === 'user' || role === 'assistant')) {
-        chatHistory.push({ role, content });
-        try {
-          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory.slice(-20)));
-        } catch {}
-      }
 
       scrollToBottom();
       return bubble;
@@ -499,6 +629,132 @@ const drawerFaceExpressions = [
       }
     });
 
+    // History Panel Management
+    function openHistoryPanel() {
+      isHistoryOpen = true;
+      if (historyPanel) {
+        historyPanel.classList.remove('translate-x-full', 'pointer-events-none', 'opacity-0');
+        historyPanel.classList.add('translate-x-0', 'pointer-events-auto', 'opacity-100');
+      }
+      void renderHistoryList();
+    }
+
+    function closeHistoryPanel() {
+      isHistoryOpen = false;
+      if (historyPanel) {
+        historyPanel.classList.remove('translate-x-0', 'pointer-events-auto', 'opacity-100');
+        historyPanel.classList.add('translate-x-full', 'pointer-events-none', 'opacity-0');
+      }
+    }
+
+    function toggleHistoryPanel() {
+      if (isHistoryOpen) {
+        closeHistoryPanel();
+      } else {
+        openHistoryPanel();
+      }
+    }
+
+    async function renderHistoryList() {
+      if (!historyList) return;
+      historyList.innerHTML = '<div class="p-4 text-center text-gray-400">Loading history...</div>';
+
+      const store = getHistoryStore();
+      const sessions = await store.listSessions();
+
+      if (sessions.length === 0) {
+        historyList.innerHTML = `
+          <div class="p-6 text-center text-gray-400 light:text-slate-500">
+            <p class="font-medium">No previous conversations.</p>
+            <p class="text-xs mt-1 text-gray-500 light:text-slate-400">Your past conversations will appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      historyList.innerHTML = '';
+      const currentActiveId = getActiveSessionId();
+
+      for (const session of sessions) {
+        const item = document.createElement('div');
+        const isCurrent = session.id === currentActiveId;
+        item.className = `group p-3 rounded-xl border transition-all flex items-center justify-between gap-2.5 cursor-pointer ${
+          isCurrent
+            ? 'bg-brand-blue/15 border-brand-blue/40 text-white light:bg-blue-50 light:border-blue-300 light:text-blue-900'
+            : 'bg-white/[0.03] hover:bg-white/[0.08] light:bg-slate-50/80 light:hover:bg-slate-100 border-white/5 light:border-slate-200 text-gray-200 light:text-slate-800'
+        }`;
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'min-w-0 flex-1';
+
+        const titleRow = document.createElement('div');
+        titleRow.className = 'flex items-center gap-1.5';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'font-semibold text-xs sm:text-sm truncate';
+        titleEl.textContent = session.title || 'Untitled Conversation';
+        titleRow.appendChild(titleEl);
+
+        if (isCurrent) {
+          const activeTag = document.createElement('span');
+          activeTag.className = 'shrink-0 text-[10px] px-1.5 py-0.2 rounded bg-brand-blue/30 text-blue-200 light:bg-blue-200 light:text-blue-800 font-semibold';
+          activeTag.textContent = 'Active';
+          titleRow.appendChild(activeTag);
+        }
+
+        const metaRow = document.createElement('div');
+        metaRow.className = 'text-[11px] text-gray-400 light:text-slate-500 mt-0.5 flex items-center gap-2';
+        const msgCount = session.messages ? session.messages.length : 0;
+        metaRow.innerHTML = `<span>${formatSessionDate(session.updatedAt || session.createdAt)}</span> • <span>${msgCount} ${msgCount === 1 ? 'message' : 'messages'}</span>`;
+
+        infoDiv.appendChild(titleRow);
+        infoDiv.appendChild(metaRow);
+
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'w-7 h-7 rounded-lg text-gray-400 hover:text-red-400 light:hover:text-red-600 hover:bg-white/10 light:hover:bg-red-50 flex items-center justify-center shrink-0 transition-colors opacity-70 group-hover:opacity-100';
+        deleteBtn.setAttribute('aria-label', `Delete conversation ${session.title}`);
+        deleteBtn.innerHTML = `
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+          </svg>
+        `;
+
+        deleteBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          await store.deleteSession(session.id);
+          if (session.id === getActiveSessionId()) {
+            await initMessages(true);
+          }
+          await renderHistoryList();
+        });
+
+        infoDiv.addEventListener('click', async () => {
+          setActiveSessionId(session.id);
+          closeHistoryPanel();
+          await initMessages(false);
+        });
+
+        item.appendChild(infoDiv);
+        item.appendChild(deleteBtn);
+        historyList.appendChild(item);
+      }
+    }
+
+    async function clearAllConversations(): Promise<void> {
+      if (confirm('Do you really want to clear all conversation history?')) {
+        const store = getHistoryStore();
+        await store.clearAllSessions();
+        clearSessionMemory();
+        localStorage.removeItem(CHAT_STORAGE_KEY);
+        localStorage.removeItem('gh_avatar_chat_v1');
+        await initMessages(true);
+        closeHistoryPanel();
+        trackEvent('Avatar Action', { action: 'clear-all-history' });
+      }
+    }
+
     // Handle User Input Submission
     async function handleUserSubmit() {
       if (!inputText || isGenerating) return;
@@ -507,9 +763,44 @@ const drawerFaceExpressions = [
 
       inputText.value = '';
       inputText.style.height = 'auto';
+      clearInputDraft();
 
-      const priorHistory = chatHistory.slice(-4);
-      appendMessageUI('user', query, true);
+      if (!currentSession) {
+        currentSession = {
+          id: generateSessionId(),
+          title: 'New Conversation',
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+          messages: [],
+        };
+        setActiveSessionId(currentSession.id);
+      }
+
+      // Auto title: Use the first user question (truncated to 40 chars)
+      const userCount = currentSession.messages.filter(m => m.role === 'user').length;
+      if (userCount === 0 || currentSession.title === 'New Conversation') {
+        currentSession.title = query.length > 40 ? query.slice(0, 37).trim() + '...' : query;
+      }
+
+      const priorHistory: LLMChatMessage[] = currentSession.messages
+        .slice(-4)
+        .map(m => ({
+          role: m.role === 'model' ? 'assistant' : 'user',
+          content: m.content,
+        }));
+
+      appendMessageBubble('user', query);
+
+      const userMsg: ChatMessage = {
+        id: `msg_${Date.now()}_u`,
+        role: 'user',
+        content: query,
+        timestamp: Date.now(),
+      };
+      currentSession.messages.push(userMsg);
+      currentSession.updatedAt = Date.now();
+      await getHistoryStore().saveSession(currentSession);
+
       isGenerating = true;
       if (iconSend) iconSend.classList.add('hidden');
       if (iconStop) iconStop.classList.remove('hidden');
@@ -517,7 +808,7 @@ const drawerFaceExpressions = [
       setConversationState('THINKING');
 
       // Create assistant bubble placeholder
-      const assistantBubble = appendMessageUI('assistant', '', false);
+      const assistantBubble = appendMessageBubble('assistant', '');
       let accumulatedResponse = '';
 
       try {
@@ -548,8 +839,16 @@ const drawerFaceExpressions = [
             accumulatedResponse = `I could not find direct matches for "${query}". Try different keywords such as *Software*, *Simulation*, *Reveal*, or *CADdrive*.`;
           }
           assistantBubble.innerHTML = formatMessageMarkdown(accumulatedResponse);
-          chatHistory.push({ role: 'assistant', content: accumulatedResponse });
-          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory.slice(-20)));
+
+          const modelMsg: ChatMessage = {
+            id: `msg_${Date.now()}_m`,
+            role: 'model',
+            content: accumulatedResponse,
+            timestamp: Date.now(),
+          };
+          currentSession.messages.push(modelMsg);
+          currentSession.updatedAt = Date.now();
+          await getHistoryStore().saveSession(currentSession);
         } else {
           const selectedModel = DEFAULT_MODEL_ID;
           const promptBundle = buildGroundedAvatarPrompt({
@@ -574,8 +873,15 @@ const drawerFaceExpressions = [
             }
           });
 
-          chatHistory.push({ role: 'assistant', content: accumulatedResponse });
-          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory.slice(-20)));
+          const modelMsg: ChatMessage = {
+            id: `msg_${Date.now()}_m`,
+            role: 'model',
+            content: accumulatedResponse,
+            timestamp: Date.now(),
+          };
+          currentSession.messages.push(modelMsg);
+          currentSession.updatedAt = Date.now();
+          await getHistoryStore().saveSession(currentSession);
         }
       } catch (err) {
         console.error('Avatar generation error:', err);
@@ -592,7 +898,7 @@ const drawerFaceExpressions = [
     if (chatForm) {
       chatForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        handleUserSubmit();
+        void handleUserSubmit();
       });
     }
 
@@ -600,13 +906,14 @@ const drawerFaceExpressions = [
       inputText.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
-          handleUserSubmit();
+          void handleUserSubmit();
         }
       });
 
       inputText.addEventListener('input', () => {
         inputText.style.height = 'auto';
         inputText.style.height = Math.min(inputText.scrollHeight, 120) + 'px';
+        setInputDraft(inputText.value);
       });
     }
 
@@ -630,26 +937,59 @@ const drawerFaceExpressions = [
         const text = chip.textContent?.trim().replace(/^[^\w\s]+\s*/, '') || '';
         if (text && inputText) {
           inputText.value = text;
-          handleUserSubmit();
+          void handleUserSubmit();
         }
       });
     });
 
-    // Clear History Button
+    // New Session Button
+    if (newSessionBtn) {
+      newSessionBtn.addEventListener('click', async () => {
+        if (isGenerating) {
+          getLLMClient().abort();
+          isGenerating = false;
+          setConversationState('IDLE');
+          if (iconSend) iconSend.classList.remove('hidden');
+          if (iconStop) iconStop.classList.add('hidden');
+        }
+        closeHistoryPanel();
+        clearInputDraft();
+        if (inputText) {
+          inputText.value = '';
+          inputText.style.height = 'auto';
+        }
+        await initMessages(true);
+        trackEvent('Avatar Action', { action: 'new-session' });
+      });
+    }
+
+    // History Toggle & Back Buttons
+    if (historyToggleBtn) {
+      historyToggleBtn.addEventListener('click', toggleHistoryPanel);
+    }
+
+    if (historyBackBtn) {
+      historyBackBtn.addEventListener('click', closeHistoryPanel);
+    }
+
+    // Clear History Buttons
     if (clearHistoryBtn) {
       clearHistoryBtn.addEventListener('click', () => {
-        if (confirm('Do you really want to clear the conversation history?')) {
-          localStorage.removeItem(CHAT_STORAGE_KEY);
-          chatHistory = [];
-          initMessages();
-        }
+        void clearAllConversations();
+      });
+    }
+
+    if (historyClearAllBtn) {
+      historyClearAllBtn.addEventListener('click', () => {
+        void clearAllConversations();
       });
     }
 
     // Open/Close Mechanics
     function openDrawer() {
       isOpen = true;
-      initMessages();
+      setDrawerOpen(true);
+      void initMessages(false);
       avatarContextProvider.initialize();
 
       if (backdrop && container) {
@@ -672,12 +1012,23 @@ const drawerFaceExpressions = [
         }
       } catch {}
 
+      // Restore input draft
+      if (inputText) {
+        const draft = getInputDraft();
+        if (draft) {
+          inputText.value = draft;
+          inputText.style.height = Math.min(inputText.scrollHeight, 120) + 'px';
+        }
+      }
+
       setTimeout(() => inputText?.focus(), 300);
       trackEvent('Drawer Opened', { drawer: 'avatar' });
     }
 
     function closeDrawer() {
       isOpen = false;
+      setDrawerOpen(false);
+      closeHistoryPanel();
       if (backdrop && container) {
         backdrop.classList.remove('opacity-100');
         backdrop.classList.add('pointer-events-none');
@@ -701,9 +1052,18 @@ const drawerFaceExpressions = [
 
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && isOpen) {
-        closeDrawer();
+        if (isHistoryOpen) {
+          closeHistoryPanel();
+        } else {
+          closeDrawer();
+        }
       }
     });
+
+    // Restore drawer state if user navigated from another page with drawer open
+    if (isDrawerOpen()) {
+      openDrawer();
+    }
   })();
 </script>
 
@@ -720,6 +1080,14 @@ const drawerFaceExpressions = [
     border-color: rgba(15, 23, 42, 0.08) !important;
   }
   html.light #avatar-drawer-container footer {
+    background-color: #f8fafc !important;
+    border-color: rgba(15, 23, 42, 0.08) !important;
+  }
+  html.light #avatar-history-panel {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+  }
+  html.light #avatar-history-panel > div:first-child {
     background-color: #f8fafc !important;
     border-color: rgba(15, 23, 42, 0.08) !important;
   }
