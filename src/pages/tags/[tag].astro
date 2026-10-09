@@ -180,7 +180,7 @@ const breadcrumbSchema = {
     <div class="space-y-16">
       <!-- 0. Professional Interests -->
       {interests.length > 0 && (
-        <div id="professional-interests" class="scroll-mt-24">
+        <div id="professional-interests">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="professional-interests-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🎯</span>
@@ -213,7 +213,7 @@ const breadcrumbSchema = {
 
       <!-- 1. Blog Posts -->
       {posts.length > 0 && (
-        <div id="blog-posts" class="scroll-mt-24" data-total-pages={totalPostPages} data-section="posts">
+        <div id="blog-posts" data-total-pages={totalPostPages} data-section="posts">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="blog-posts-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>✍️</span>
@@ -306,7 +306,7 @@ const breadcrumbSchema = {
 
       <!-- 2. Publications -->
       {publications.length > 0 && (
-        <div id="publications" class="scroll-mt-24" data-total-pages={totalPubPages} data-section="pubs">
+        <div id="publications" data-total-pages={totalPubPages} data-section="pubs">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="publications-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>📚</span>
@@ -401,7 +401,7 @@ const breadcrumbSchema = {
 
       <!-- 3. Interactive Presentations -->
       {presentations.length > 0 && (
-        <div id="presentations" class="scroll-mt-24">
+        <div id="presentations">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="presentations-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🖥️</span>
@@ -434,7 +434,7 @@ const breadcrumbSchema = {
 
       <!-- 4. University Courses -->
       {courses.length > 0 && (
-        <div id="courses" class="scroll-mt-24">
+        <div id="courses">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="courses-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🎓</span>
@@ -466,7 +466,7 @@ const breadcrumbSchema = {
 
       <!-- 5. Software Projects -->
       {projects.length > 0 && (
-        <div id="projects" class="scroll-mt-24">
+        <div id="projects">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="projects-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🚀</span>
@@ -500,7 +500,7 @@ const breadcrumbSchema = {
 
       <!-- 6. Business Services -->
       {services.length > 0 && (
-        <div id="services" class="scroll-mt-24">
+        <div id="services">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="services-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>💼</span>
@@ -532,7 +532,7 @@ const breadcrumbSchema = {
 
       <!-- 7. Content Visualizations -->
       {visualizations && visualizations.length > 0 && (
-        <div id="visualizations" class="scroll-mt-24">
+        <div id="visualizations">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="visualizations-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
               <span>🌐</span>

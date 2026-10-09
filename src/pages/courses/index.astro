@@ -107,7 +107,7 @@ const breadcrumbSchema = {
         {courses.length === 0 ? (
           <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No courses defined.</p>
         ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 scroll-mt-28" id="courses-grid">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="courses-grid">
             {courses.map(course => {
               const goalsJoined = (course.data.learningGoals || []).join(" ").toLowerCase();
 

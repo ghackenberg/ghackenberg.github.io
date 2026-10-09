@@ -99,6 +99,11 @@ html.light .custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgba(15, 23, 42, 0.2);
 }
 
+/* Sticky navbar anchor scroll offset: ensures all deep links (#hash) clear the top navbar */
+html {
+  scroll-padding-top: 5.5rem;
+}
+
 /* Glassmorphism utility */
 .glass-panel {
   background: var(--color-bg-pane);

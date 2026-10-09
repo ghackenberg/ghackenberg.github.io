@@ -27,7 +27,6 @@ const PADDING_MAP: Record<"standard" | "compact" | "large" | "none", string> = {
 
 const combinedClasses = [
   "w-full relative",
-  id ? "scroll-mt-20" : "",
   PADDING_MAP[padding],
   className
 ].filter(Boolean).join(" ");
