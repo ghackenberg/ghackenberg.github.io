@@ -243,21 +243,24 @@ async function runLLMTests(): Promise<void> {
   assert(qwenSerialized.endsWith('<|im_start|>assistant\n'), 'Ends with Qwen generation prompt');
 
   const gemmaSerialized = formatGemmaChat(messages, true);
-  assert(gemmaSerialized.startsWith('<start_of_turn>user\nYou are Dr. Georg Hackenberg.\n\nWhat is Slide-as-Code?<end_of_turn>\n'), 'System + user turn combined for Gemma');
-  assert(gemmaSerialized.includes('<start_of_turn>model\nSlide-as-Code treats presentations as software engineering artifacts.<end_of_turn>\n'), 'Model turn formatted for Gemma');
+  assert(gemmaSerialized.startsWith('<start_of_turn>user\nYou are Dr. Georg Hackenberg.<end_of_turn>\n'), 'System turn formatted as initial user turn for Gemma');
+  assert(gemmaSerialized.includes('<start_of_turn>model\nHello! I am Dr. Georg Hackenberg'), 'Default primed model greeting included for Gemma');
+  assert(gemmaSerialized.includes('<start_of_turn>user\nWhat is Slide-as-Code?<end_of_turn>\n'), 'User turn 1 formatted for Gemma');
+  assert(gemmaSerialized.includes('<start_of_turn>model\nSlide-as-Code treats presentations as software engineering artifacts.<end_of_turn>\n'), 'Model turn 1 formatted for Gemma');
   assert(gemmaSerialized.includes('<start_of_turn>user\nCan you show me an example?<end_of_turn>\n'), 'User turn 2 formatted for Gemma');
   assert(gemmaSerialized.endsWith('<start_of_turn>model\n'), 'Ends with Gemma generation prompt');
 
-  // Verify Gemma chat template with proactive assistant greeting bug fix
+  // Verify Gemma chat template with proactive assistant greeting
   const messagesWithGreeting: ChatMessage[] = [
     { role: 'system', content: 'You are Dr. Georg Hackenberg.' },
     { role: 'assistant', content: 'Hello! I am the virtual avatar of Dr. Georg Hackenberg.' },
     { role: 'user', content: 'What is Slide-as-Code?' },
   ];
   const gemmaWithGreeting = formatGemmaChat(messagesWithGreeting, true);
-  assert(gemmaWithGreeting.startsWith('<start_of_turn>user\nYou are Dr. Georg Hackenberg.\n\nWhat is Slide-as-Code?<end_of_turn>\n'), 'System prefix attached to user turn despite initial assistant greeting');
+  assert(gemmaWithGreeting.startsWith('<start_of_turn>user\nYou are Dr. Georg Hackenberg.<end_of_turn>\n'), 'System prompt in user turn 0');
+  assert(gemmaWithGreeting.includes('<start_of_turn>model\nHello! I am the virtual avatar of Dr. Georg Hackenberg.<end_of_turn>\n'), 'Initial assistant greeting formatted as model turn 0');
+  assert(gemmaWithGreeting.includes('<start_of_turn>user\nWhat is Slide-as-Code?<end_of_turn>\n'), 'User question formatted as user turn 1');
   assert(gemmaWithGreeting.endsWith('<start_of_turn>model\n'), 'Ends with Gemma generation prompt');
-  assert(!gemmaWithGreeting.includes('<start_of_turn>model\nHello! I am the virtual avatar'), 'Leading assistant greeting is stripped to ensure first turn is user');
 
   console.log('   ✅ Qwen and Gemma chat templates follow exact model specifications.');
 
