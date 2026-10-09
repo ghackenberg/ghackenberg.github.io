@@ -23,6 +23,9 @@ import Container from "@components/Container.astro";
 import JsonLd from "@components/JsonLd.astro";
 import PrivacyModal from "@components/PrivacyModal.astro";
 import WhatsNewModal from "@components/WhatsNewModal.astro";
+import AvatarFAB from "@components/avatar/AvatarFAB.astro";
+import AvatarDrawer from "@components/avatar/AvatarDrawer.astro";
+import AvatarConsentModal from "@components/avatar/AvatarConsentModal.astro";
 import AnalyticsDevOverlay from "@components/dev/AnalyticsDevOverlay.astro";
 import DevStudioShell from "@components/dev/DevStudioShell.astro";
 import Notifications from "@components/Notifications.astro";
@@ -516,6 +519,11 @@ if (pubDate) {
 
     <!-- What's New Discovery Modal -->
     <WhatsNewModal />
+
+    <!-- Sovereign Virtual Avatar Components -->
+    <AvatarFAB />
+    <AvatarDrawer />
+    <AvatarConsentModal />
 
     <!-- Synchronous initialization of notifications to prevent badge/dot flickering -->
     <script is:inline>

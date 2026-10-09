@@ -1,0 +1,336 @@
+---
+// AvatarConsentModal.astro - DSGVO & § 165 TKG 2021 Compliant Consent Dialog
+// Transparent user choice between lightweight Instant Search (0 MB) and WebGPU Avatar (~380 MB)
+---
+
+<div
+  id="avatar-consent-backdrop"
+  class="fixed inset-0 z-[120] bg-black/80 light:bg-slate-900/30 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="avatar-consent-title"
+>
+  <div
+    id="avatar-consent-container"
+    class="glass-panel w-full max-w-lg sm:max-w-xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(94dvh,760px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
+  >
+    <!-- Top Accent Bar -->
+    <div class="h-1.5 bg-gradient-brand shrink-0"></div>
+
+    <!-- Header -->
+    <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-white/5 light:border-slate-200/80 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-blue/15 border border-brand-blue/30 text-brand-blue flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <h2 id="avatar-consent-title" class="text-lg sm:text-xl font-bold tracking-tight text-white light:text-slate-900 leading-tight truncate">
+            Virtueller Avatar & <span class="heading-gradient-brand">Lokale KI</span>
+          </h2>
+          <p class="text-xs text-gray-400 light:text-slate-500 mt-0.5 leading-tight truncate">
+            Souveräne Datenverarbeitung gemäß DSGVO & § 165 TKG 2021
+          </p>
+        </div>
+      </div>
+
+      <!-- Close Button -->
+      <button
+        id="avatar-consent-close-btn"
+        class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-gray-100 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
+        aria-label="Einwilligungsdialog schließen"
+      >
+        <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-4">
+      <!-- Legal Notice Card -->
+      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 text-xs sm:text-sm text-gray-300 light:text-slate-600 leading-relaxed space-y-2">
+        <div class="flex items-center gap-2 text-emerald-400 light:text-emerald-700 font-semibold text-xs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          <span>100% Client-Side Inferenz (Zero Cloud Data Transmission)</span>
+        </div>
+        <p>
+          Alle Berechnungen finden <strong>ausschließlich lokal in Ihrem Browser</strong> statt. Es werden zu keinem Zeitpunkt Eingaben, Prompts oder Konversationsdaten an externe Server übertragen (Art. 6 Abs. 1 lit. a DSGVO).
+        </p>
+      </div>
+
+      <!-- Selection View (Default) -->
+      <div id="avatar-consent-choices" class="space-y-3">
+        <!-- Choice 1: Sofortsuche (0 MB) -->
+        <div class="p-4 rounded-xl sm:rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] light:bg-white light:hover:bg-slate-50 border border-white/10 light:border-slate-200 transition-all duration-200 group flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-base sm:text-lg font-bold text-white light:text-slate-900">Sofortsuche nutzen</span>
+              <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700">0 MB Download</span>
+            </div>
+            <p class="text-xs text-gray-400 light:text-slate-500 leading-relaxed">
+              Blitzschnelle Hybrid-Suche (BM25 & Vektor-Index) über alle Publikationen, Blogbeiträge, Folien und Projekte ohne Download von KI-Gewichten.
+            </p>
+          </div>
+          <button
+            id="avatar-choice-search-btn"
+            type="button"
+            class="px-4 py-2 sm:py-2.5 rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-slate-100 text-gray-200 light:text-slate-800 hover:text-white light:hover:text-black hover:border-brand-blue transition-colors text-xs sm:text-sm font-semibold cursor-pointer shrink-0 text-center shadow-sm"
+          >
+            Sofortsuche starten
+          </button>
+        </div>
+
+        <!-- Choice 2: Full Avatar (~380 MB) -->
+        <div class="p-4 rounded-xl sm:rounded-2xl bg-brand-blue/[0.06] hover:bg-brand-blue/[0.1] light:bg-blue-50/50 light:hover:bg-blue-50/80 border border-brand-blue/30 light:border-blue-200 transition-all duration-200 group flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="text-base sm:text-lg font-bold text-white light:text-slate-900">Avatar aktivieren</span>
+              <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-brand-blue/20 text-brand-blue border border-brand-blue/30 light:bg-blue-100 light:text-blue-800">~380 MB einmalig</span>
+            </div>
+            <p class="text-xs text-gray-400 light:text-slate-500 leading-relaxed">
+              Lädt das kompakte Sprachmodell <em>Qwen2.5-0.5B</em> in Ihren Browser-Cache. Ermöglicht interaktiven Chat mit Georgs virtuellem Persona, Kontext-Synthese und automatische Foliensteuerung.
+            </p>
+          </div>
+          <button
+            id="avatar-choice-model-btn"
+            type="button"
+            class="px-4 py-2.5 sm:py-3 rounded-xl bg-gradient-brand text-white font-bold text-xs sm:text-sm shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40 hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0 text-center"
+          >
+            Avatar aktivieren
+          </button>
+        </div>
+      </div>
+
+      <!-- Real-time Download Progress View (Hidden until download starts) -->
+      <div id="avatar-download-progress-view" class="hidden p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white/[0.04] light:bg-slate-50 border border-brand-blue/30 space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-brand-blue/20 border border-brand-blue/30 text-brand-blue flex items-center justify-center animate-spin">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </div>
+            <div>
+              <h4 id="download-progress-title" class="text-sm font-bold text-white light:text-slate-900">Modell wird heruntergeladen...</h4>
+              <p id="download-progress-file" class="text-xs text-gray-400 light:text-slate-500 font-mono truncate max-w-[240px] sm:max-w-xs">Qwen2.5-0.5B-Instruct-q4.onnx</p>
+            </div>
+          </div>
+          <span id="download-percentage" class="text-sm sm:text-base font-extrabold text-brand-blue font-mono">0%</span>
+        </div>
+
+        <!-- Progress Track -->
+        <div class="w-full bg-white/10 light:bg-slate-200 h-2.5 rounded-full overflow-hidden relative">
+          <div
+            id="download-progress-bar"
+            class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 transition-all duration-150 rounded-full"
+            style="width: 0%;"
+          ></div>
+        </div>
+
+        <!-- Metrics & ETA -->
+        <div class="flex items-center justify-between text-xs text-gray-400 light:text-slate-500">
+          <span id="download-bytes-text">0 MB / ~380 MB</span>
+          <span id="download-eta-text">Wird berechnet...</span>
+        </div>
+
+        <!-- Abort Button -->
+        <div class="pt-2 border-t border-white/5 light:border-slate-200 flex justify-end">
+          <button
+            id="download-abort-btn"
+            type="button"
+            class="text-xs text-gray-400 hover:text-red-400 transition-colors cursor-pointer px-2 py-1"
+          >
+            Download abbrechen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-white/5 light:border-slate-200/80 flex items-center justify-between text-xs text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
+      <span>Cache jederzeit löschbar unter <a href="#" data-open-privacy-modal class="underline hover:text-brand-blue">Datenschutz</a></span>
+      <a href="/datenschutz/" class="underline hover:text-brand-blue transition-colors">
+        Datenschutzerklärung
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getLLMClient } from '@commons/client/llm/llm-client';
+  import { trackEvent } from '@commons/client/telemetry';
+  import type { DownloadProgress } from '@commons/client/llm/types';
+
+  declare global {
+    interface Window {
+      openAvatarConsentModal?: (origin?: string) => void;
+      closeAvatarConsentModal?: () => void;
+      openAvatarDrawer?: () => void;
+    }
+  }
+
+  (function() {
+    const backdrop = document.getElementById('avatar-consent-backdrop');
+    const container = document.getElementById('avatar-consent-container');
+    const closeBtn = document.getElementById('avatar-consent-close-btn');
+    const choicesView = document.getElementById('avatar-consent-choices');
+    const progressView = document.getElementById('avatar-download-progress-view');
+    const choiceSearchBtn = document.getElementById('avatar-choice-search-btn');
+    const choiceModelBtn = document.getElementById('avatar-choice-model-btn');
+    const progressBar = document.getElementById('download-progress-bar');
+    const percentageText = document.getElementById('download-percentage');
+    const bytesText = document.getElementById('download-bytes-text');
+    const etaText = document.getElementById('download-eta-text');
+    const fileText = document.getElementById('download-progress-file');
+    const abortBtn = document.getElementById('download-abort-btn');
+
+    const CONSENT_STORAGE_KEY = 'gh_avatar_consent_v1';
+    let isDownloading = false;
+    let downloadStartTime = 0;
+
+    function openModal(origin?: string) {
+      trackEvent('Modal Opened', { modal: 'avatar-consent', origin: origin || 'direct' });
+      if (backdrop && container) {
+        // Reset view
+        if (choicesView) choicesView.classList.remove('hidden');
+        if (progressView) progressView.classList.add('hidden');
+        backdrop.classList.remove('opacity-0', 'pointer-events-none');
+        backdrop.classList.add('opacity-100');
+        container.classList.remove('scale-95');
+        container.classList.add('scale-100');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal() {
+      if (backdrop && container) {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
+        container.classList.remove('scale-100');
+        container.classList.add('scale-95');
+        document.body.style.overflow = '';
+        trackEvent('Modal Closed', { modal: 'avatar-consent' });
+      }
+    }
+
+    window.openAvatarConsentModal = openModal;
+    window.closeAvatarConsentModal = closeModal;
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    if (backdrop) {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop && !isDownloading) {
+          closeModal();
+        }
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && backdrop && !backdrop.classList.contains('pointer-events-none') && !isDownloading) {
+        closeModal();
+      }
+    });
+
+    // Option 1: Search Only
+    if (choiceSearchBtn) {
+      choiceSearchBtn.addEventListener('click', () => {
+        trackEvent('Avatar Action', { action: 'consent-search-only' });
+        const consentData = {
+          consented: true,
+          mode: 'search',
+          timestamp: Date.now()
+        };
+        localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(consentData));
+        closeModal();
+        if (typeof window.openAvatarDrawer === 'function') {
+          window.openAvatarDrawer();
+        }
+      });
+    }
+
+    // Option 2: Full Avatar Download
+    if (choiceModelBtn) {
+      choiceModelBtn.addEventListener('click', async () => {
+        trackEvent('Avatar Action', { action: 'consent-avatar-download' });
+        isDownloading = true;
+        downloadStartTime = performance.now();
+
+        if (choicesView) choicesView.classList.add('hidden');
+        if (progressView) progressView.classList.remove('hidden');
+
+        const llm = getLLMClient();
+
+        const removeProgressListener = llm.onProgress((p: DownloadProgress) => {
+          const progressPercent = Math.min(Math.round(p.progress || 0), 100);
+          if (progressBar) progressBar.style.width = `${progressPercent}%`;
+          if (percentageText) percentageText.textContent = `${progressPercent}%`;
+
+          if (p.file && fileText) {
+            fileText.textContent = p.file;
+          }
+
+          if (p.loaded && p.total && bytesText) {
+            const loadedMb = (p.loaded / (1024 * 1024)).toFixed(1);
+            const totalMb = (p.total / (1024 * 1024)).toFixed(1);
+            bytesText.textContent = `${loadedMb} MB / ${totalMb} MB`;
+
+            const elapsedSec = (performance.now() - downloadStartTime) / 1000;
+            if (elapsedSec > 1 && p.loaded > 0) {
+              const bytesPerSec = p.loaded / elapsedSec;
+              const remainingBytes = Math.max(0, p.total - p.loaded);
+              const etaSec = Math.round(remainingBytes / bytesPerSec);
+              if (etaText) {
+                etaText.textContent = etaSec > 60
+                  ? `ca. ${Math.ceil(etaSec / 60)} Min verbleibend`
+                  : `${etaSec}s verbleibend`;
+              }
+            }
+          }
+        });
+
+        try {
+          await llm.initModel('Qwen/Qwen2.5-0.5B-Instruct');
+          removeProgressListener();
+
+          const consentData = {
+            consented: true,
+            mode: 'avatar',
+            modelId: 'Qwen/Qwen2.5-0.5B-Instruct',
+            timestamp: Date.now()
+          };
+          localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(consentData));
+          isDownloading = false;
+
+          closeModal();
+          if (typeof window.openAvatarDrawer === 'function') {
+            window.openAvatarDrawer();
+          }
+        } catch (err) {
+          console.error('Model initialization error:', err);
+          isDownloading = false;
+          if (choicesView) choicesView.classList.remove('hidden');
+          if (progressView) progressView.classList.add('hidden');
+          alert('Download fehlgeschlagen oder abgebrochen. Sie können stattdessen die Sofortsuche nutzen.');
+        }
+      });
+    }
+
+    if (abortBtn) {
+      abortBtn.addEventListener('click', () => {
+        isDownloading = false;
+        try {
+          getLLMClient().abort();
+          getLLMClient().terminate();
+        } catch {}
+        if (choicesView) choicesView.classList.remove('hidden');
+        if (progressView) progressView.classList.add('hidden');
+      });
+    }
+  })();
+</script>

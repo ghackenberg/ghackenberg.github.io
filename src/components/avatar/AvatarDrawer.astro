@@ -1,0 +1,725 @@
+---
+// AvatarDrawer.astro - Slide-Over / Bottom-Sheet Virtual Avatar Interface
+import DepthPortrait from "@components/DepthPortrait.astro";
+import { getImage } from "astro:assets";
+import profileImage from "@assets/avatar/comic-profile-head.png";
+import profileDepthImage from "@assets/avatar/comic-profile-head-depth.png";
+import profileWinkImage from "@assets/avatar/comic-profile-head-wink.png";
+import profileWinkDepthImage from "@assets/avatar/comic-profile-head-wink-depth.png";
+import profileBlinkImage from "@assets/avatar/comic-profile-head-blink.png";
+import profileBlinkDepthImage from "@assets/avatar/comic-profile-head-blink-depth.png";
+import profileClosedMouthImage from "@assets/avatar/comic-profile-head-closed-mouth.png";
+import profileClosedMouthDepthImage from "@assets/avatar/comic-profile-head-closed-mouth-depth.png";
+
+const optimizedProfile = await getImage({
+  src: profileImage,
+  format: "webp",
+  width: 240,
+  quality: 90
+});
+
+const optimizedDepth = await getImage({
+  src: profileDepthImage,
+  format: "png",
+  width: 240
+});
+
+const optimizedWink = await getImage({
+  src: profileWinkImage,
+  format: "webp",
+  width: 240,
+  quality: 90
+});
+
+const optimizedWinkDepth = await getImage({
+  src: profileWinkDepthImage,
+  format: "png",
+  width: 240
+});
+
+const optimizedBlink = await getImage({
+  src: profileBlinkImage,
+  format: "webp",
+  width: 240,
+  quality: 90
+});
+
+const optimizedBlinkDepth = await getImage({
+  src: profileBlinkDepthImage,
+  format: "png",
+  width: 240
+});
+
+const optimizedClosedMouth = await getImage({
+  src: profileClosedMouthImage,
+  format: "webp",
+  width: 240,
+  quality: 90
+});
+
+const optimizedClosedMouthDepth = await getImage({
+  src: profileClosedMouthDepthImage,
+  format: "png",
+  width: 240
+});
+
+const drawerFaceExpressions = [
+  {
+    id: "default",
+    imageSrc: optimizedProfile.src,
+    depthSrc: optimizedDepth.src,
+    durationRange: [3000, 6000] as [number, number],
+    transitionDuration: 180,
+    transitions: [
+      { targetId: "wink", weight: 25 },
+      { targetId: "blink", weight: 35 },
+      { targetId: "closed_mouth", weight: 40 }
+    ]
+  },
+  {
+    id: "wink",
+    imageSrc: optimizedWink.src,
+    depthSrc: optimizedWinkDepth.src,
+    durationRange: [250, 380] as [number, number],
+    transitionDuration: 120,
+    transitions: [
+      { targetId: "default", weight: 65 },
+      { targetId: "closed_mouth", weight: 35 }
+    ]
+  },
+  {
+    id: "blink",
+    imageSrc: optimizedBlink.src,
+    depthSrc: optimizedBlinkDepth.src,
+    durationRange: [180, 280] as [number, number],
+    transitionDuration: 100,
+    transitions: [
+      { targetId: "default", weight: 70 },
+      { targetId: "closed_mouth", weight: 30 }
+    ]
+  },
+  {
+    id: "closed_mouth",
+    imageSrc: optimizedClosedMouth.src,
+    depthSrc: optimizedClosedMouthDepth.src,
+    durationRange: [2500, 5000] as [number, number],
+    transitionDuration: 200,
+    transitions: [
+      { targetId: "default", weight: 50 },
+      { targetId: "blink", weight: 25 },
+      { targetId: "wink", weight: 25 }
+    ]
+  }
+];
+---
+
+<!-- Slide-Over Drawer Container -->
+<div id="avatar-drawer-root" class="fixed inset-0 z-50 pointer-events-none select-none print:hidden">
+  <!-- Backdrop (Mobile & Desktop) -->
+  <div
+    id="avatar-drawer-backdrop"
+    class="fixed inset-0 bg-black/60 light:bg-slate-900/30 backdrop-blur-sm opacity-0 transition-opacity duration-300 pointer-events-none"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Slide-Over Glassmorphism Panel (Desktop 420px, Mobile Bottom Sheet) -->
+  <div
+    id="avatar-drawer-container"
+    class="pointer-events-auto fixed bottom-0 left-0 right-0 sm:left-auto sm:top-0 sm:right-0 sm:bottom-0 w-full sm:w-[420px] max-h-[92dvh] sm:max-h-full h-[92dvh] sm:h-full flex flex-col bg-[#090d16]/95 light:bg-white/95 border-t sm:border-t-0 sm:border-l border-white/10 light:border-slate-200/90 shadow-2xl backdrop-blur-xl transform translate-y-full sm:translate-y-0 sm:translate-x-full transition-transform duration-300 ease-out text-gray-100 light:text-slate-800 rounded-t-3xl sm:rounded-none z-50 overflow-hidden"
+    role="region"
+    aria-label="Georgs Virtueller Avatar Chat"
+  >
+    <!-- Top Accent Bar -->
+    <div class="h-1 bg-gradient-brand shrink-0"></div>
+
+    <!-- Header with DepthPortrait & Controls -->
+    <header class="shrink-0 p-3.5 sm:p-4 border-b border-white/10 light:border-slate-200/80 flex items-center justify-between gap-3 bg-white/[0.02] light:bg-slate-50/50">
+      <div class="flex items-center gap-3 min-w-0">
+        <!-- 3D Interactive DepthPortrait in Header -->
+        <div class="relative w-12 h-12 sm:w-13 sm:h-13 rounded-full overflow-hidden border border-brand-blue/40 shadow-sm shrink-0 bg-brand-blue/10">
+          <DepthPortrait
+            expressions={drawerFaceExpressions}
+            imageSrc={optimizedProfile.src}
+            depthSrc={optimizedDepth.src}
+            alt="Dr. Georg Hackenberg Avatar"
+            title="Dr. Georg Hackenberg"
+            class="w-full h-full"
+            intensity={0.07}
+            maxTilt={6}
+            trackMouse={true}
+            idleAnimation={true}
+            syncAvatarState={true}
+            vignette={false}
+          />
+        </div>
+
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <h3 class="text-sm sm:text-base font-bold text-white light:text-slate-900 leading-tight truncate">
+              Dr. Georg Hackenberg
+            </h3>
+          </div>
+          <!-- Live Conversation State Indicator -->
+          <div class="flex items-center gap-1.5 mt-0.5 text-xs text-gray-400 light:text-slate-500 font-medium">
+            <span id="avatar-state-dot" class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm"></span>
+            <span id="avatar-state-label" class="truncate">WebGPU lokal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls: Model Selector & Close Button -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Model Selector -->
+        <div class="relative">
+          <select
+            id="avatar-model-select"
+            class="text-[11px] sm:text-xs bg-white/5 light:bg-slate-100 border border-white/10 light:border-slate-300 rounded-lg px-2 py-1 text-gray-200 light:text-slate-700 cursor-pointer focus:outline-none focus:border-brand-blue appearance-none pr-6"
+            title="Modellgröße wählen"
+          >
+            <option value="Qwen/Qwen2.5-0.5B-Instruct">0.5B (Schnell)</option>
+            <option value="Qwen/Qwen2.5-1.5B-Instruct">1.5B (Präzise)</option>
+          </select>
+          <div class="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">▼</div>
+        </div>
+
+        <!-- Close Button -->
+        <button
+          id="avatar-drawer-close-btn"
+          type="button"
+          class="w-8 h-8 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-white light:hover:text-black flex items-center justify-center cursor-pointer transition-colors active:scale-95"
+          aria-label="Avatar schließen"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Message History Stream (Scrollable) -->
+    <div id="avatar-messages-container" class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-3.5 text-xs sm:text-sm">
+      <!-- Dynamic Messages rendered here -->
+    </div>
+
+    <!-- Suggested Prompt Chips (Horizontal Carousel) -->
+    <div id="avatar-suggested-chips" class="shrink-0 px-3.5 py-2 border-t border-white/5 light:border-slate-200/60 overflow-x-auto no-scrollbar flex items-center gap-2">
+      <button type="button" class="avatar-chip shrink-0 px-2.5 py-1 rounded-full bg-white/5 hover:bg-brand-blue/20 light:bg-slate-100 light:hover:bg-blue-50 border border-white/10 light:border-slate-200 text-[11px] text-gray-300 light:text-slate-700 hover:text-white light:hover:text-blue-700 transition-colors cursor-pointer">
+        🔬 Forschungsschwerpunkte
+      </button>
+      <button type="button" class="avatar-chip shrink-0 px-2.5 py-1 rounded-full bg-white/5 hover:bg-brand-blue/20 light:bg-slate-100 light:hover:bg-blue-50 border border-white/10 light:border-slate-200 text-[11px] text-gray-300 light:text-slate-700 hover:text-white light:hover:text-blue-700 transition-colors cursor-pointer">
+        🎓 Vorlesungen FH Wels
+      </button>
+      <button type="button" class="avatar-chip shrink-0 px-2.5 py-1 rounded-full bg-white/5 hover:bg-brand-blue/20 light:bg-slate-100 light:hover:bg-blue-50 border border-white/10 light:border-slate-200 text-[11px] text-gray-300 light:text-slate-700 hover:text-white light:hover:text-blue-700 transition-colors cursor-pointer">
+        🛠️ CADdrive Architektur
+      </button>
+      <button type="button" class="avatar-chip shrink-0 px-2.5 py-1 rounded-full bg-white/5 hover:bg-brand-blue/20 light:bg-slate-100 light:hover:bg-blue-50 border border-white/10 light:border-slate-200 text-[11px] text-gray-300 light:text-slate-700 hover:text-white light:hover:text-blue-700 transition-colors cursor-pointer">
+        📊 Slide-as-Code Präsentationen
+      </button>
+    </div>
+
+    <!-- Input Footer -->
+    <footer class="shrink-0 p-3 sm:p-4 border-t border-white/10 light:border-slate-200/80 bg-white/[0.02] light:bg-slate-50/50 space-y-2">
+      <form id="avatar-chat-form" class="relative flex items-end gap-2">
+        <textarea
+          id="avatar-input-text"
+          rows="1"
+          placeholder="Frage Georgs Avatar etwas..."
+          class="flex-1 bg-white/5 light:bg-white border border-white/15 light:border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white light:text-slate-900 placeholder:text-gray-500 light:placeholder:text-slate-400 focus:outline-none focus:border-brand-blue light:focus:border-blue-600 resize-none max-h-28 overflow-y-auto leading-relaxed shadow-inner"
+        ></textarea>
+
+        <!-- Send / Stop Button -->
+        <button
+          id="avatar-send-btn"
+          type="submit"
+          class="w-10 h-10 rounded-xl bg-gradient-brand text-white flex items-center justify-center shrink-0 shadow-md hover:shadow-brand-blue/30 hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+          aria-label="Nachricht senden"
+        >
+          <!-- Send Icon -->
+          <svg id="avatar-icon-send" class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+          </svg>
+          <!-- Stop Icon -->
+          <svg id="avatar-icon-stop" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24">
+            <rect x="6" y="6" width="12" height="12" rx="2" />
+          </svg>
+        </button>
+      </form>
+
+      <!-- Bottom Status Bar -->
+      <div class="flex items-center justify-between text-[11px] text-gray-500 light:text-slate-400 px-1">
+        <span id="avatar-mode-hint">WebGPU Inferenz • 100% lokal</span>
+        <button
+          id="avatar-clear-history-btn"
+          type="button"
+          class="hover:text-red-400 transition-colors cursor-pointer"
+        >
+          Verlauf leeren
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script>
+  import { getLLMClient } from '@commons/client/llm/llm-client';
+  import { buildGroundedAvatarPrompt } from '@commons/client/llm/prompt-builder';
+  import { avatarContextProvider } from '@commons/client/context/avatar-context';
+  import { getSearchClient } from '@commons/client/search/search-client';
+  import { trackEvent } from '@commons/client/telemetry';
+  import type { ChatMessage } from '@commons/client/llm/types';
+
+  declare global {
+    interface Window {
+      openAvatarDrawer?: () => void;
+      closeAvatarDrawer?: () => void;
+      toggleAvatarDrawer?: () => void;
+    }
+  }
+
+  (function() {
+    const backdrop = document.getElementById('avatar-drawer-backdrop');
+    const container = document.getElementById('avatar-drawer-container');
+    const closeBtn = document.getElementById('avatar-drawer-close-btn');
+    const messagesList = document.getElementById('avatar-messages-container');
+    const chatForm = document.getElementById('avatar-chat-form') as HTMLFormElement | null;
+    const inputText = document.getElementById('avatar-input-text') as HTMLTextAreaElement | null;
+    const sendBtn = document.getElementById('avatar-send-btn') as HTMLButtonElement | null;
+    const iconSend = document.getElementById('avatar-icon-send');
+    const iconStop = document.getElementById('avatar-icon-stop');
+    const stateDot = document.getElementById('avatar-state-dot');
+    const stateLabel = document.getElementById('avatar-state-label');
+    const modelSelect = document.getElementById('avatar-model-select') as HTMLSelectElement | null;
+    const clearHistoryBtn = document.getElementById('avatar-clear-history-btn');
+    const modeHint = document.getElementById('avatar-mode-hint');
+
+    const CHAT_STORAGE_KEY = 'gh_avatar_chat_v1';
+    const CONSENT_STORAGE_KEY = 'gh_avatar_consent_v1';
+    const NOTIF_STORAGE_KEY = 'gh_site_notifications_v1';
+    const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
+
+    let isOpen = false;
+    let isGenerating = false;
+    let chatHistory: ChatMessage[] = [];
+
+    // Format Markdown snippets and source/slide buttons
+    function formatMessageMarkdown(raw: string): string {
+      let html = raw
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // Code blocks
+      html = html.replace(/```([a-z0-9]*)\n([\s\S]*?)```/g, (_m, _lang, code) => {
+        return `<pre class="my-2 p-2.5 rounded-lg bg-black/40 light:bg-slate-900 text-gray-200 font-mono text-[11px] overflow-x-auto border border-white/10"><code>${code.trim()}</code></pre>`;
+      });
+
+      // Inline code
+      html = html.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-white/10 light:bg-slate-200/80 font-mono text-[11px] text-brand-blue light:text-blue-700">$1</code>');
+
+      // Bold & Italic
+      html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-white light:text-slate-900">$1</strong>');
+      html = html.replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
+
+      // Headings
+      html = html.replace(/^### (.*$)/gim, '<h4 class="font-bold text-xs sm:text-sm text-white light:text-slate-900 mt-2 mb-1">$1</h4>');
+      html = html.replace(/^## (.*$)/gim, '<h3 class="font-bold text-sm sm:text-base text-white light:text-slate-900 mt-2.5 mb-1">$1</h3>');
+
+      // Bullet lists
+      html = html.replace(/^\s*-\s+(.*$)/gim, '<li class="ml-4 list-disc">$1</li>');
+
+      // Interactive Slide Jump Buttons: [▶️ Zu Folie X springen] or [▶️ Folie X]
+      html = html.replace(/\[▶️\s*(?:Zu Folie|Folie|Slide)\s*(\d+)[^\]]*\]/gi, (_m, slideNum) => {
+        const slideIdx = Math.max(0, parseInt(slideNum, 10) - 1);
+        return `<button type="button" class="avatar-slide-jump-pill inline-flex items-center gap-1.5 px-2.5 py-1 my-1 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 light:text-blue-700 border border-blue-500/30 text-[11px] font-semibold cursor-pointer transition-all active:scale-95" data-slide-index="${slideIdx}">▶️ Zu Folie ${slideNum} springen</button>`;
+      });
+
+      // Source Link Badges: [📝 Post: ...](url) or [📊 Folie ...](url)
+      html = html.replace(/\[(📝|Post|post):\s*([^\]]+)\](?:\(([^)]+)\))?/gi, (_m, _prefix, title, url) => {
+        const href = url || '#';
+        return `<a href="${href}" class="inline-flex items-center gap-1 px-2 py-0.5 my-0.5 rounded-full bg-blue-500/15 text-blue-400 light:text-blue-700 border border-blue-500/25 hover:bg-blue-500/25 transition-colors text-[11px] font-medium" target="_blank" rel="noopener noreferrer">📝 ${title}</a>`;
+      });
+
+      html = html.replace(/\[(📊|Präsentation|Folie):\s*([^\]]+)\](?:\(([^)]+)\))?/gi, (_m, _prefix, title, url) => {
+        const href = url || '#';
+        return `<a href="${href}" class="inline-flex items-center gap-1 px-2 py-0.5 my-0.5 rounded-full bg-indigo-500/15 text-indigo-400 light:text-indigo-700 border border-indigo-500/25 hover:bg-indigo-500/25 transition-colors text-[11px] font-medium" target="_blank" rel="noopener noreferrer">📊 ${title}</a>`;
+      });
+
+      html = html.replace(/\[(📄|Publikation|Paper):\s*([^\]]+)\](?:\(([^)]+)\))?/gi, (_m, _prefix, title, url) => {
+        const href = url || '#';
+        return `<a href="${href}" class="inline-flex items-center gap-1 px-2 py-0.5 my-0.5 rounded-full bg-purple-500/15 text-purple-400 light:text-purple-700 border border-purple-500/25 hover:bg-purple-500/25 transition-colors text-[11px] font-medium" target="_blank" rel="noopener noreferrer">📄 ${title}</a>`;
+      });
+
+      // Regular links [text](url)
+      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-brand-blue light:text-blue-600 underline hover:opacity-80 transition-opacity" target="_blank" rel="noopener noreferrer">$1</a>');
+
+      // Line breaks
+      html = html.replace(/\n\n/g, '<br/><br/>').replace(/\n/g, '<br/>');
+
+      return html;
+    }
+
+    // Set conversation status (IDLE, THINKING, SPEAKING)
+    function setConversationState(state: 'IDLE' | 'THINKING' | 'SPEAKING') {
+      window.dispatchEvent(new CustomEvent('avatar-state-change', { detail: { state } }));
+
+      if (!stateDot || !stateLabel) return;
+      if (state === 'THINKING') {
+        stateDot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-ping';
+        stateLabel.textContent = 'Überlegt...';
+      } else if (state === 'SPEAKING') {
+        stateDot.className = 'w-2 h-2 rounded-full bg-blue-500 animate-pulse';
+        stateLabel.textContent = 'Antwortet...';
+      } else {
+        stateDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+        stateLabel.textContent = 'WebGPU lokal';
+      }
+    }
+
+    // Load or initialize conversation
+    function initMessages() {
+      if (!messagesList) return;
+      messagesList.innerHTML = '';
+
+      // Check stored history
+      try {
+        const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+        if (raw) {
+          chatHistory = JSON.parse(raw);
+          if (Array.isArray(chatHistory) && chatHistory.length > 0) {
+            chatHistory.forEach(msg => {
+              if (msg.role === 'user' || msg.role === 'assistant') {
+                appendMessageUI(msg.role, msg.content, false);
+              }
+            });
+            scrollToBottom();
+            return;
+          }
+        }
+      } catch (e) {
+        chatHistory = [];
+      }
+
+      // Proactive greeting with 'What's new' inspection
+      renderProactiveGreeting();
+    }
+
+    function renderProactiveGreeting() {
+      let unreadItems: { title: string; section: string; url: string }[] = [];
+      try {
+        const rawNotif = localStorage.getItem(NOTIF_STORAGE_KEY);
+        const rawManifest = localStorage.getItem(MANIFEST_CACHE_KEY);
+        if (rawNotif && rawManifest) {
+          const state = JSON.parse(rawNotif);
+          const manifest = JSON.parse(rawManifest);
+          if (state && state.enabled === true && manifest) {
+            const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications'];
+            for (const sec of SECTIONS) {
+              const list = manifest[sec] || [];
+              const lastVisit = state.lastVisitedSections?.[sec] || 0;
+              for (const it of list) {
+                let u = it.url?.replace(/\/$/, '') || '';
+                if (!u.startsWith('/')) u = '/' + u;
+                if ((it.date > lastVisit) && !state.visitedItems?.[u]) {
+                  unreadItems.push({ title: it.title || sec, section: sec, url: u });
+                }
+              }
+            }
+          }
+        }
+      } catch (e) {}
+
+      let greeting = `Hallo! Ich bin der virtuelle Avatar von Dr. Georg Hackenberg. Ich laufe zu **100% lokal in deinem Browser** (WebGPU/BM25).`;
+
+      if (unreadItems.length > 0) {
+        greeting += `\n\nSchön, dass du wieder da bist! Seit deinem letzten Besuch gibt es **${unreadItems.length} neue Inhalte**:\n`;
+        unreadItems.slice(0, 3).forEach(item => {
+          greeting += `- [📝 ${item.title}](${item.url})\n`;
+        });
+        greeting += `\nWorüber möchtest du sprechen?`;
+      } else {
+        greeting += `\n\nDu kannst mich zu Forschung, Softwarearchitektur, Lehre an der FH Wels oder aktuellen Projekten befragen.`;
+      }
+
+      appendMessageUI('assistant', greeting, true);
+    }
+
+    function appendMessageUI(role: 'user' | 'assistant', content: string, save = true): HTMLElement {
+      if (!messagesList) return document.createElement('div');
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = role === 'user'
+        ? 'flex justify-end'
+        : 'flex justify-start';
+
+      const bubble = document.createElement('div');
+      bubble.className = role === 'user'
+        ? 'max-w-[85%] rounded-2xl rounded-br-sm bg-gradient-brand text-white px-3.5 py-2.5 shadow-md leading-relaxed'
+        : 'max-w-[90%] rounded-2xl rounded-bl-sm bg-white/[0.05] light:bg-slate-100 border border-white/10 light:border-slate-200 px-3.5 py-2.5 leading-relaxed text-gray-200 light:text-slate-800 shadow-sm';
+
+      bubble.innerHTML = formatMessageMarkdown(content);
+      msgDiv.appendChild(bubble);
+      messagesList.appendChild(msgDiv);
+
+      if (save && (role === 'user' || role === 'assistant')) {
+        chatHistory.push({ role, content });
+        try {
+          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory.slice(-20)));
+        } catch {}
+      }
+
+      scrollToBottom();
+      return bubble;
+    }
+
+    function scrollToBottom() {
+      if (messagesList) {
+        messagesList.scrollTop = messagesList.scrollHeight;
+      }
+    }
+
+    // Interactive Slide Jump Pill Click Handler
+    document.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement | null)?.closest('.avatar-slide-jump-pill');
+      if (target) {
+        const slideIdxStr = target.getAttribute('data-slide-index');
+        if (slideIdxStr !== null) {
+          const idx = parseInt(slideIdxStr, 10);
+          avatarContextProvider.jumpToSlide(idx, false);
+          trackEvent('Avatar Action', { action: 'jump-to-slide', slideIndex: idx });
+        }
+      }
+    });
+
+    // Handle User Input Submission
+    async function handleUserSubmit() {
+      if (!inputText || isGenerating) return;
+      const query = inputText.value.trim();
+      if (!query) return;
+
+      inputText.value = '';
+      inputText.style.height = 'auto';
+
+      appendMessageUI('user', query, true);
+      isGenerating = true;
+      if (iconSend) iconSend.classList.add('hidden');
+      if (iconStop) iconStop.classList.remove('hidden');
+
+      setConversationState('THINKING');
+
+      // Create assistant bubble placeholder
+      const assistantBubble = appendMessageUI('assistant', '', false);
+      let accumulatedResponse = '';
+
+      try {
+        // Check Consent Mode
+        let isSearchOnly = false;
+        try {
+          const rawConsent = localStorage.getItem(CONSENT_STORAGE_KEY);
+          if (rawConsent) {
+            const consentObj = JSON.parse(rawConsent);
+            if (consentObj.mode === 'search') isSearchOnly = true;
+          }
+        } catch {}
+
+        // 1. Sensory Context & Hybrid Search (RAG)
+        const currentContext = avatarContextProvider.getContext();
+        const searchResults = await getSearchClient().search(query, { topK: 3 });
+
+        if (isSearchOnly) {
+          // Instant Search Mode: Synthesize direct verified results
+          setConversationState('SPEAKING');
+          if (searchResults.length > 0) {
+            accumulatedResponse = `Hier sind passende Treffer aus den Inhalten von Georg Hackenberg:\n\n`;
+            searchResults.forEach((res, i) => {
+              accumulatedResponse += `**${i + 1}. [${res.title}](${res.url})** (${res.collection})\n${res.snippet}\n\n`;
+            });
+            accumulatedResponse += `\n*Tipp: Aktiviere den vollständigen Avatar (~380 MB) im Datenschutz-Menü für freie KI-Konversationen.*`;
+          } else {
+            accumulatedResponse = `Ich konnte leider keine direkten Treffer zu "${query}" finden. Versuche andere Schlagwörter wie z.B. *Software*, *Simulation*, *Reveal* oder *CADdrive*.`;
+          }
+          assistantBubble.innerHTML = formatMessageMarkdown(accumulatedResponse);
+          chatHistory.push({ role: 'assistant', content: accumulatedResponse });
+          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory.slice(-20)));
+        } else {
+          // 2. Full In-Browser LLM Generation
+          const promptBundle = buildGroundedAvatarPrompt({
+            userQuery: query,
+            context: currentContext,
+            ragResults: searchResults,
+            chatHistory: chatHistory.slice(-6)
+          });
+
+          setConversationState('SPEAKING');
+          const llm = getLLMClient();
+          const selectedModel = modelSelect?.value || 'Qwen/Qwen2.5-0.5B-Instruct';
+          if (llm.getCurrentModelId() !== selectedModel) {
+            await llm.initModel(selectedModel);
+          }
+
+          accumulatedResponse = await llm.streamGenerate(promptBundle.fullChatPrompt, {
+            onToken: (_token, fullText) => {
+              accumulatedResponse = fullText;
+              assistantBubble.innerHTML = formatMessageMarkdown(fullText);
+              scrollToBottom();
+            }
+          });
+
+          chatHistory.push({ role: 'assistant', content: accumulatedResponse });
+          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory.slice(-20)));
+        }
+      } catch (err) {
+        console.error('Avatar generation error:', err);
+        accumulatedResponse = `Entschuldigung, bei der lokalen Inferenz ist ein Fehler aufgetreten. Bitte überprüfe deine WebGPU-Unterstützung oder wechsle zur Sofortsuche.`;
+        assistantBubble.innerHTML = formatMessageMarkdown(accumulatedResponse);
+      } finally {
+        isGenerating = false;
+        setConversationState('IDLE');
+        if (iconSend) iconSend.classList.remove('hidden');
+        if (iconStop) iconStop.classList.add('hidden');
+      }
+    }
+
+    if (chatForm) {
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleUserSubmit();
+      });
+    }
+
+    if (inputText) {
+      inputText.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleUserSubmit();
+        }
+      });
+
+      inputText.addEventListener('input', () => {
+        inputText.style.height = 'auto';
+        inputText.style.height = Math.min(inputText.scrollHeight, 120) + 'px';
+      });
+    }
+
+    // Stop button
+    if (sendBtn) {
+      sendBtn.addEventListener('click', (e) => {
+        if (isGenerating) {
+          e.preventDefault();
+          getLLMClient().abort();
+          isGenerating = false;
+          setConversationState('IDLE');
+          if (iconSend) iconSend.classList.remove('hidden');
+          if (iconStop) iconStop.classList.add('hidden');
+        }
+      });
+    }
+
+    // Suggested Chips
+    document.querySelectorAll('.avatar-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const text = chip.textContent?.trim().replace(/^[^\w\s]+\s*/, '') || '';
+        if (text && inputText) {
+          inputText.value = text;
+          handleUserSubmit();
+        }
+      });
+    });
+
+    // Clear History Button
+    if (clearHistoryBtn) {
+      clearHistoryBtn.addEventListener('click', () => {
+        if (confirm('Möchtest du den bisherigen Gesprächsverlauf löschen?')) {
+          localStorage.removeItem(CHAT_STORAGE_KEY);
+          chatHistory = [];
+          initMessages();
+        }
+      });
+    }
+
+    // Open/Close Mechanics
+    function openDrawer() {
+      isOpen = true;
+      initMessages();
+      avatarContextProvider.initialize();
+
+      if (backdrop && container) {
+        backdrop.classList.remove('pointer-events-none');
+        backdrop.classList.add('opacity-100');
+        container.classList.remove('translate-y-full', 'sm:translate-x-full');
+        container.classList.add('translate-y-0', 'sm:translate-x-0');
+      }
+
+      // Check mode
+      try {
+        const rawConsent = localStorage.getItem(CONSENT_STORAGE_KEY);
+        if (rawConsent) {
+          const c = JSON.parse(rawConsent);
+          if (modeHint) {
+            modeHint.textContent = c.mode === 'search'
+              ? 'Hybridsuche (BM25) • 0 MB'
+              : 'WebGPU Inferenz • 100% lokal';
+          }
+        }
+      } catch {}
+
+      setTimeout(() => inputText?.focus(), 300);
+      trackEvent('Drawer Opened', { drawer: 'avatar' });
+    }
+
+    function closeDrawer() {
+      isOpen = false;
+      if (backdrop && container) {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('pointer-events-none');
+        container.classList.add('translate-y-full', 'sm:translate-x-full');
+        container.classList.remove('translate-y-0', 'sm:translate-x-0');
+      }
+      trackEvent('Drawer Closed', { drawer: 'avatar' });
+    }
+
+    function toggleDrawer() {
+      if (isOpen) closeDrawer();
+      else openDrawer();
+    }
+
+    window.openAvatarDrawer = openDrawer;
+    window.closeAvatarDrawer = closeDrawer;
+    window.toggleAvatarDrawer = toggleDrawer;
+
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeDrawer();
+      }
+    });
+  })();
+</script>
+
+<style is:global>
+  /* Light mode crystal-bright appearance matching navbar */
+  html.light #avatar-drawer-container {
+    background-color: #ffffff !important;
+    border-color: rgba(15, 23, 42, 0.12) !important;
+    color: #1e293b !important;
+    box-shadow: -10px 0 35px -5px rgba(15, 23, 42, 0.12) !important;
+  }
+  html.light #avatar-drawer-container header {
+    background-color: #f8fafc !important;
+    border-color: rgba(15, 23, 42, 0.08) !important;
+  }
+  html.light #avatar-drawer-container footer {
+    background-color: #f8fafc !important;
+    border-color: rgba(15, 23, 42, 0.08) !important;
+  }
+  html.light #avatar-drawer-container .avatar-chip {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #334155 !important;
+  }
+  html.light #avatar-drawer-container .avatar-chip:hover {
+    background-color: #e0f2fe !important;
+    color: #0284c7 !important;
+  }
+</style>
