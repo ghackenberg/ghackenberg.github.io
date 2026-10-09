@@ -3,7 +3,7 @@ import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import PresentationCard from "@components/PresentationCard.astro";
-import FilterSidebar from "@components/FilterSidebar.astro";
+import FilterToolbar from "@components/FilterToolbar.astro";
 import { getCollection } from "astro:content";
 
 const allPresentations = await getCollection("presentations");
@@ -21,6 +21,7 @@ for (const presentation of presentations) {
   }
 }
 const allTags = Array.from(tagsSet).sort();
+const itemTags = presentations.map(p => (p.data.tags || []).map(t => t.toLowerCase()));
 
 const pagePreviewImage = presentations.find(t => t.data.previewImage || t.data.icon)?.data.previewImage || presentations.find(t => t.data.previewImage || t.data.icon)?.data.icon;
 
@@ -63,84 +64,176 @@ const breadcrumbSchema = {
       </p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Filter Sidebar (Column 1) -->
-      <FilterSidebar
-        title="Filter Presentations"
-        searchId="presentation-search"
-        searchPlaceholder="Search presentations..."
-        tags={allTags}
-        accentColor="blue"
-      />
+    <!-- Filter Toolbar -->
+    <FilterToolbar
+      searchId="presentation-search"
+      searchPlaceholder="Search presentations..."
+      tags={allTags}
+      accentColor="blue"
+      itemTags={itemTags}
+      totalCount={presentations.length}
+      pageSize={12}
+    />
 
-      <!-- Presentations Grid (Column 2) -->
-      <div class="lg:col-span-9 order-2 lg:order-1">
-        {presentations.length === 0 ? (
-          <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No presentations found.</p>
-        ) : (
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="presentations-grid">
-            {presentations.map((presentation) => {
-              const tagsJoined = (presentation.data.tags || [])
-                .join(" ")
-                .toLowerCase();
-              return (
-                <div 
-                  class="presentation-card-item h-full"
-                  data-title={presentation.data.title.toLowerCase()}
-                  data-desc={(presentation.data.subtitle || presentation.data.description || "").toLowerCase()}
-                  data-tags={tagsJoined}
-                >
-                  <PresentationCard
-                    id={presentation.id}
-                    title={presentation.data.title}
-                    subtitle={presentation.data.subtitle}
-                    description={presentation.data.description}
-                    pubDate={presentation.data.pubDate}
-                    icon={presentation.data.previewImage || presentation.data.icon}
-                    tags={presentation.data.tags || []}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
+    <!-- Pre-filter state gate: activate has-filter-query if URL params exist -->
+    <script is:inline>
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var rawTags = params.getAll('tag');
+        var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
+        var hasQ = Boolean((params.get('q') || '').trim());
+        var page = parseInt(params.get('page') || '1', 10);
+        if (hasTag || hasQ || page > 1) {
+          document.documentElement.classList.add('has-filter-query');
+        }
+      })();
+    </script>
 
-        <p id="no-presentations-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
-          No presentations match your selected filter criteria.
-        </p>
+    <!-- Presentations Grid (3-2-1) -->
+    {presentations.length === 0 ? (
+      <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No presentations found.</p>
+    ) : (
+      <>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="presentations-grid">
+          {presentations.map((presentation, idx) => {
+            const tagsJoined = (presentation.data.tags || [])
+              .join(" ")
+              .toLowerCase();
+            const isInitialHidden = idx >= 12;
+            return (
+              <div 
+                class={`presentation-card-item h-full ${isInitialHidden ? "hidden" : ""}`}
+                style={isInitialHidden ? "display: none;" : ""}
+                data-title={presentation.data.title.toLowerCase()}
+                data-desc={(presentation.data.subtitle || presentation.data.description || "").toLowerCase()}
+                data-tags={tagsJoined}
+              >
+                <PresentationCard
+                  id={presentation.id}
+                  title={presentation.data.title}
+                  subtitle={presentation.data.subtitle}
+                  description={presentation.data.description}
+                  pubDate={presentation.data.pubDate}
+                  icon={presentation.data.previewImage || presentation.data.icon}
+                  tags={presentation.data.tags || []}
+                />
+              </div>
+            );
+          })}
+        </div>
 
-        <!-- Pagination Controls -->
-        <nav id="presentations-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Presentations Pagination">
-          <div class="flex-1 w-full sm:w-auto text-left">
-            <button 
-              type="button" 
-              data-action="prev" 
-              disabled 
-              class="prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200"
-            >
-              <span class="mr-1.5">&larr;</span>
-              <span>Previous</span>
-            </button>
-          </div>
+        <!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
+        <script is:inline>
+          (function() {
+            try {
+              var params = new URLSearchParams(window.location.search);
+              var rawTags = params.getAll('tag');
+              var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+              var q = (params.get('q') || '').trim().toLowerCase();
+              var page = parseInt(params.get('page') || '1', 10);
+              if (isNaN(page) || page < 1) page = 1;
 
-          <div class="pagination-pages flex items-center justify-center gap-1.5 flex-wrap">
-            <!-- Dynamic page buttons injected by ClientListFilter -->
-          </div>
+              var hasTag = tags.length > 0;
+              var hasQ = Boolean(q);
+              var isNonDefaultPage = page > 1;
 
-          <div class="flex-1 w-full sm:w-auto text-right">
-            <button 
-              type="button" 
-              data-action="next" 
-              disabled 
-              class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200"
-            >
-              <span>Next</span>
-              <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
-            </button>
-          </div>
-        </nav>
+              if (!hasTag && !hasQ && !isNonDefaultPage) return;
+
+              var items = document.querySelectorAll('.presentation-card-item');
+              var matching = [];
+
+              items.forEach(function(item) {
+                var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                var title = item.getAttribute('data-title') || '';
+                var desc = item.getAttribute('data-desc') || '';
+                var tagsStr = item.getAttribute('data-tags') || '';
+
+                var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
+                var matchesQ = !hasQ || (title.indexOf(q) !== -1 || desc.indexOf(q) !== -1 || tagsStr.indexOf(q) !== -1);
+
+                if (matchesTag && matchesQ) {
+                  matching.push(item);
+                } else {
+                  item.classList.remove('is-matched');
+                  item.classList.add('hidden');
+                  item.style.display = 'none';
+                }
+              });
+
+              var pageSize = 12;
+              var start = (page - 1) * pageSize;
+              var end = start + pageSize;
+
+              for (var i = 0; i < matching.length; i++) {
+                if (i >= start && i < end) {
+                  matching[i].classList.add('is-matched');
+                  matching[i].classList.remove('hidden');
+                  matching[i].style.display = '';
+                } else {
+                  matching[i].classList.remove('is-matched');
+                  matching[i].classList.add('hidden');
+                  matching[i].style.display = 'none';
+                }
+              }
+
+              var noResults = document.getElementById('no-presentations-message');
+              if (noResults) {
+                if (matching.length === 0) {
+                  noResults.classList.remove('hidden');
+                  noResults.style.display = '';
+                } else {
+                  noResults.classList.add('hidden');
+                  noResults.style.display = 'none';
+                }
+              }
+
+              var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
+              if (countEl && (hasTag || hasQ)) {
+                var availTags = new Set();
+                matching.forEach(function(item) {
+                  var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                  itags.forEach(function(t) { if (t) availTags.add(t); });
+                });
+                countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
+                countEl.classList.add('is-synced');
+              }
+            } catch(e) {}
+          })();
+        </script>
+      </>
+    )}
+
+    <p id="no-presentations-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+      No presentations match your selected filter criteria.
+    </p>
+
+    <!-- Pagination Controls -->
+    <nav id="presentations-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Presentations Pagination">
+      <div class="flex-1 w-full sm:w-auto text-left">
+        <button 
+          type="button" 
+          data-action="prev" 
+          disabled 
+          class="prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200"
+        >
+          <span class="mr-1.5">&larr;</span>
+          <span>Previous</span>
+        </button>
       </div>
-    </div>
+
+      <div class="page-numbers-container flex items-center justify-center gap-1.5 order-3 sm:order-2 flex-wrap"></div>
+
+      <div class="flex-1 w-full sm:w-auto text-right order-2 sm:order-3">
+        <button 
+          type="button" 
+          data-action="next" 
+          class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+        >
+          <span>Next</span>
+          <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
+        </button>
+      </div>
+    </nav>
   </Container>
 </Layout>
 
@@ -153,6 +246,7 @@ const breadcrumbSchema = {
       searchFieldSelector: "#presentation-search",
       searchDataAttributes: ["data-title", "data-desc", "data-tags"],
       searchParamKey: "q",
+      resetButtonSelector: "#presentation-search-reset",
       buttonFilters: [
         {
           buttonSelector: ".tag-filter-btn",
@@ -160,11 +254,12 @@ const breadcrumbSchema = {
           defaultValue: "all",
           activeClass: "active",
           matchType: "includes",
-          paramKey: "tag"
+          paramKey: "tag",
+          multiple: true
         }
       ],
       pagination: {
-        pageSize: 10,
+        pageSize: 12,
         navSelector: "#presentations-pagination",
         pageParamKey: "page",
         theme: "blue",
@@ -178,4 +273,3 @@ const breadcrumbSchema = {
   initFilter();
   document.addEventListener("astro:page-load", initFilter);
 </script>
-

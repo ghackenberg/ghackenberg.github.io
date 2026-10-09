@@ -194,7 +194,7 @@ const breadcrumbSchema = {
             </a>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {interests.map((interest) => (
               <InterestCard
                 id={interest.id}
@@ -227,7 +227,7 @@ const breadcrumbSchema = {
             </a>
           </div>
 
-          <div id="posts-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post, index) => {
               const pageNum = Math.floor(index / POSTS_PER_PAGE) + 1;
               return (
@@ -415,7 +415,7 @@ const breadcrumbSchema = {
             </a>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {presentations.map((pres) => (
               <PresentationCard
                 id={pres.id}
@@ -448,7 +448,7 @@ const breadcrumbSchema = {
             </a>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {courses.map((course) => (
               <CourseCard
                 title={course.data.title}
@@ -480,7 +480,7 @@ const breadcrumbSchema = {
             </a>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project) => (
               <ProjectCard
                 title={project.data.title}
@@ -514,7 +514,7 @@ const breadcrumbSchema = {
             </a>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service) => (
               <ServiceCard
                 id={service.id}
@@ -546,7 +546,7 @@ const breadcrumbSchema = {
             </a>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {visualizations.map((vis) => (
               <VisualizationCard
                 title={vis.data.title}
