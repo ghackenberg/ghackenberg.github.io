@@ -16,6 +16,7 @@ import {
   buildSystemPersonaPrompt,
   formatRagEnvelope,
   formatQwenChat,
+  formatGemmaChat,
   buildGroundedAvatarPrompt,
 } from '@commons/client/llm/prompt-builder.ts';
 import {
@@ -32,6 +33,7 @@ import type { ClientSearchResult } from '@commons/client/search/types.ts';
 import {
   SUPPORTED_MODELS,
   DEFAULT_MODEL_ID,
+  getModelConfig,
   type ChatMessage,
 } from '@commons/client/llm/types.ts';
 
@@ -57,10 +59,13 @@ async function runLLMTests(): Promise<void> {
   // --------------------------------------------------------------------------
   console.log('\n[1/6] Validating Model Registry & Configurations...');
   assert(Boolean(SUPPORTED_MODELS['qwen-0.5b']), 'qwen-0.5b model registered');
-  assert(Boolean(SUPPORTED_MODELS['qwen-1.5b']), 'qwen-1.5b model registered');
+  assert(Boolean(SUPPORTED_MODELS['gemma-3-1b']), 'gemma-3-1b model registered');
   assert(DEFAULT_MODEL_ID === 'onnx-community/Qwen2.5-0.5B-Instruct', 'Default model ID is onnx-community/Qwen2.5-0.5B-Instruct');
   assert(SUPPORTED_MODELS['qwen-0.5b'].sizeBytes < 500_000_000, '0.5B q4 model size estimate is under 500MB');
-  assert(SUPPORTED_MODELS['qwen-1.5b'].dtype === 'q4', '1.5B model is configured for q4 quantization');
+  assert(SUPPORTED_MODELS['gemma-3-1b'].dtype === 'q4', 'gemma-3-1b model is configured for q4 quantization');
+  assert(SUPPORTED_MODELS['gemma-3-1b'].id === 'onnx-community/gemma-3-1b-it-ONNX-GQA', 'gemma-3-1b model ID is accurate');
+  assert(getModelConfig('gemma-3-1b').id === 'onnx-community/gemma-3-1b-it-ONNX-GQA', 'getModelConfig resolves key');
+  assert(getModelConfig('onnx-community/gemma-3-1b-it-ONNX-GQA').name.includes('Gemma-3'), 'getModelConfig resolves HF id');
   console.log('   ✅ Model registry and quantizations verified.');
 
   // --------------------------------------------------------------------------
@@ -213,9 +218,9 @@ async function runLLMTests(): Promise<void> {
   console.log('   ✅ Grounded sensory context and RAG citation envelopes successfully synthesized.');
 
   // --------------------------------------------------------------------------
-  // Scenario 5: Qwen2.5 Chat Template Serialization & Multi-Turn History
+  // Scenario 5: Chat Template Serialization (Qwen ChatML & Google Gemma)
   // --------------------------------------------------------------------------
-  console.log('\n[5/6] Validating Qwen2.5 Chat Template Serialization...');
+  console.log('\n[5/6] Validating Chat Template Serialization (Qwen & Gemma)...');
 
   const messages: ChatMessage[] = [
     { role: 'system', content: 'You are Dr. Georg Hackenberg.' },
@@ -224,15 +229,20 @@ async function runLLMTests(): Promise<void> {
     { role: 'user', content: 'Can you show me an example?' },
   ];
 
-  const serialized = formatQwenChat(messages, true);
+  const qwenSerialized = formatQwenChat(messages, true);
+  assert(qwenSerialized.startsWith('<|im_start|>system\nYou are Dr. Georg Hackenberg.<|im_end|>\n'), 'System turn formatted for Qwen');
+  assert(qwenSerialized.includes('<|im_start|>user\nWhat is Slide-as-Code?<|im_end|>\n'), 'User turn 1 formatted for Qwen');
+  assert(qwenSerialized.includes('<|im_start|>assistant\nSlide-as-Code treats presentations as software engineering artifacts.<|im_end|>\n'), 'Assistant turn formatted for Qwen');
+  assert(qwenSerialized.includes('<|im_start|>user\nCan you show me an example?<|im_end|>\n'), 'User turn 2 formatted for Qwen');
+  assert(qwenSerialized.endsWith('<|im_start|>assistant\n'), 'Ends with Qwen generation prompt');
 
-  assert(serialized.startsWith('<|im_start|>system\nYou are Dr. Georg Hackenberg.<|im_end|>\n'), 'System turn formatted');
-  assert(serialized.includes('<|im_start|>user\nWhat is Slide-as-Code?<|im_end|>\n'), 'User turn 1 formatted');
-  assert(serialized.includes('<|im_start|>assistant\nSlide-as-Code treats presentations as software engineering artifacts.<|im_end|>\n'), 'Assistant turn formatted');
-  assert(serialized.includes('<|im_start|>user\nCan you show me an example?<|im_end|>\n'), 'User turn 2 formatted');
-  assert(serialized.endsWith('<|im_start|>assistant\n'), 'Ends with generation prompt');
+  const gemmaSerialized = formatGemmaChat(messages, true);
+  assert(gemmaSerialized.startsWith('<start_of_turn>user\nYou are Dr. Georg Hackenberg.\n\nWhat is Slide-as-Code?<end_of_turn>\n'), 'System + user turn combined for Gemma');
+  assert(gemmaSerialized.includes('<start_of_turn>model\nSlide-as-Code treats presentations as software engineering artifacts.<end_of_turn>\n'), 'Model turn formatted for Gemma');
+  assert(gemmaSerialized.includes('<start_of_turn>user\nCan you show me an example?<end_of_turn>\n'), 'User turn 2 formatted for Gemma');
+  assert(gemmaSerialized.endsWith('<start_of_turn>model\n'), 'Ends with Gemma generation prompt');
 
-  console.log('   ✅ Qwen2.5 chat template follows exact ChatML specification.');
+  console.log('   ✅ Qwen and Gemma chat templates follow exact model specifications.');
 
   // --------------------------------------------------------------------------
   // Scenario 6: Model Cache & Storage Quota Node/SSR Safety

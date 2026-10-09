@@ -176,8 +176,8 @@ const drawerFaceExpressions = [
             class="text-[11px] sm:text-xs bg-white/5 light:bg-slate-100 border border-white/10 light:border-slate-300 rounded-lg px-2 py-1 text-gray-200 light:text-slate-700 cursor-pointer focus:outline-none focus:border-brand-blue appearance-none pr-6"
             title="Select model size"
           >
-            <option value="onnx-community/Qwen2.5-0.5B-Instruct">0.5B (Fast)</option>
-            <option value="onnx-community/Qwen2.5-1.5B-Instruct">1.5B (Precise)</option>
+            <option value="onnx-community/Qwen2.5-0.5B-Instruct">Qwen 0.5B (Fast)</option>
+            <option value="onnx-community/gemma-3-1b-it-ONNX-GQA">Gemma 3 1B (Google)</option>
           </select>
           <div class="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">▼</div>
         </div>
@@ -541,17 +541,17 @@ const drawerFaceExpressions = [
           chatHistory.push({ role: 'assistant', content: accumulatedResponse });
           localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory.slice(-20)));
         } else {
-          // 2. Full In-Browser LLM Generation
+          const selectedModel = modelSelect?.value || 'onnx-community/Qwen2.5-0.5B-Instruct';
           const promptBundle = buildGroundedAvatarPrompt({
             userQuery: query,
             context: currentContext,
             ragResults: searchResults,
-            chatHistory: chatHistory.slice(-6)
+            chatHistory: chatHistory.slice(-6),
+            modelId: selectedModel,
           });
 
           setConversationState('SPEAKING');
           const llm = getLLMClient();
-          const selectedModel = modelSelect?.value || 'onnx-community/Qwen2.5-0.5B-Instruct';
           if (llm.getCurrentModelId() !== selectedModel) {
             await llm.initModel(selectedModel);
           }
