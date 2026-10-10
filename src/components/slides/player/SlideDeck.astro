@@ -225,7 +225,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         <svg id="icon-pause" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 hidden shrink-0" fill="currentColor" viewBox="0 0 24 24">
           <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
         </svg>
-        <span id="label-play-pause" class="hidden sm:inline">Listen to presentation</span>
+        <span id="label-play-pause" class="hidden xl:inline">Listen to presentation</span>
       </button>
 
       <!-- Nächste Sprungmarke / Cue (Intra-Slide) -->
@@ -254,7 +254,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     </div>
 
     <!-- Right: Tools, Speed, Overview, Fullscreen, Counter (order-3 on both) -->
-    <div class="order-3 flex items-center gap-1.5 sm:gap-2 md:gap-3 shrink-0">
+    <div class="order-3 flex flex-wrap sm:flex-nowrap justify-center items-center gap-1.5 sm:gap-2 md:gap-3 max-w-full sm:shrink-0">
       <!-- Speed Toggle -->
       <button
         id="btn-speed"
@@ -1882,7 +1882,9 @@ const currentDeckId = presentationId || talkId || "presentation";
     flex: 1 1 0% !important;
   }
 
-  /* Compact Controls Bar in Pseudo-Fullscreen for Maximum Stage Space */
+  /* Compact Controls Bar in Fullscreen & Pseudo-Fullscreen for Maximum Stage Space */
+  .slide-deck-wrapper:fullscreen .slide-controls-bar,
+  .slide-deck-wrapper:-webkit-full-screen .slide-controls-bar,
   .slide-deck-wrapper.is-pseudo-fullscreen .slide-controls-bar {
     padding-top: 0.375rem !important;
     padding-bottom: 0.375rem !important;
@@ -1893,19 +1895,34 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
 
   @media (orientation: landscape) and (max-height: 500px) {
+    .slide-deck-wrapper:fullscreen .slide-controls-bar,
+    .slide-deck-wrapper:-webkit-full-screen .slide-controls-bar,
     .slide-deck-wrapper.is-pseudo-fullscreen .slide-controls-bar {
       padding-top: 0.25rem !important;
       padding-bottom: 0.25rem !important;
       padding-left: max(0.5rem, env(safe-area-inset-left, 0px)) !important;
       padding-right: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
-      gap-y: 0.125rem !important;
-      gap-x: 0.25rem !important;
+      gap: 0.25rem !important;
+      column-gap: 0.25rem !important;
+      row-gap: 0.125rem !important;
       flex-wrap: nowrap !important;
     }
+
+    .slide-deck-wrapper:fullscreen .slide-controls-bar .order-1,
+    .slide-deck-wrapper:-webkit-full-screen .slide-controls-bar .order-1,
     .slide-deck-wrapper.is-pseudo-fullscreen .slide-controls-bar .order-1 {
       order: 2 !important;
       flex: 1 1 0% !important;
       max-width: none !important;
+    }
+
+    .slide-deck-wrapper:fullscreen #label-play-pause,
+    .slide-deck-wrapper:-webkit-full-screen #label-play-pause,
+    .slide-deck-wrapper.is-pseudo-fullscreen #label-play-pause,
+    .slide-deck-wrapper:fullscreen #btn-overview,
+    .slide-deck-wrapper:-webkit-full-screen #btn-overview,
+    .slide-deck-wrapper.is-pseudo-fullscreen #btn-overview {
+      display: none !important;
     }
   }
 
