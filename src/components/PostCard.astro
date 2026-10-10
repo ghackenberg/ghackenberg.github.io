@@ -1,12 +1,14 @@
 ---
 import { getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
+import { getPostReadingTime } from "@commons/server/reading-time.js";
 
 interface Props {
   id: string;
   title: string;
   description?: string;
   pubDate: Date;
+  readingTime?: string;
   icon?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags: string[];
   activeTag?: string | string[];
@@ -18,11 +20,14 @@ const {
   title, 
   description, 
   pubDate, 
+  readingTime,
   icon, 
   tags, 
   activeTag,
   featured = false
 } = Astro.props;
+
+const displayReadingTime = readingTime ?? getPostReadingTime(id).text;
 
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 
@@ -96,7 +101,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
   <!-- Content -->
   <div class="flex-grow flex flex-col relative z-10 preview-card-body">
 
-    <!-- Meta row: date + badge -->
+    <!-- Meta row: date + badge + reading time -->
     <div class="flex flex-wrap items-center gap-2 mb-1.5">
       {featured && (
         <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-blue text-white shadow-md shadow-brand-blue/30">
@@ -110,6 +115,14 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
           day: "numeric"
         })}
       </time>
+      <span class="text-gray-500 text-xs">•</span>
+      <span class="inline-flex items-center gap-1 text-xs font-medium text-gray-400 light:text-slate-500">
+        <svg class="w-3.5 h-3.5 text-gray-400 light:text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>{displayReadingTime}</span>
+      </span>
     </div>
 
     <!-- Title -->
