@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { getFileContentHash, getHashedFilename } from "@commons/server/content-hash.js";
 import { getMp3Duration } from "@commons/server/audio-metadata.js";
+import { getPresentationDuration } from "@commons/server/reading-time.js";
 
 export async function getStaticPaths() {
   const presentations = await getCollection("presentations");
@@ -20,6 +21,7 @@ export async function getStaticPaths() {
 }
 
 const { presentation } = Astro.props;
+const durationInfo = getPresentationDuration(presentation.id, { lang: presentation.data.lang });
 
 // Load all slides for this presentation, sorted by filename
 const allSlides = await getCollection("slides");
@@ -172,6 +174,14 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
             </time>
             <span class="text-gray-500">•</span>
             <span class="text-xs font-medium text-slate-400">🎙️ Interactive Presentation</span>
+            <span class="text-gray-500">•</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400">
+              <svg class="w-3.5 h-3.5 text-gray-400 light:text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span>{durationInfo.text}</span>
+            </span>
           </div>
 
           <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
