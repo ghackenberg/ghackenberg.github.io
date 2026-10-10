@@ -32,25 +32,12 @@ const postReadingTimeCache = new Map<string, PostReadingTime>();
 const presentationDurationCache = new Map<string, PresentationDuration>();
 
 /**
- * Extracts language from markdown frontmatter if present, fallback to 'de'.
- */
-function extractFrontmatterLang(content: string): 'de' | 'en' {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (match) {
-    const langMatch = match[1].match(/^\s*lang:\s*["']?(en|de)["']?/m);
-    if (langMatch && (langMatch[1] === 'en' || langMatch[1] === 'de')) {
-      return langMatch[1];
-    }
-  }
-  return 'de';
-}
-
-/**
  * Computes reading time for a blog post based on word count, code blocks, and images.
  * Words are counted at 200 WPM, code blocks weighted at 0.5 min each, and images at 0.25 min each.
+ * All reading time labels are consistently formatted in English (e.g., 'X min read').
  */
 export function getPostReadingTime(postId: string, options?: PostReadingTimeOptions): PostReadingTime {
-  const cacheKey = `${postId}:${options?.lang ?? 'auto'}:${options?.wordsPerMinute ?? 200}`;
+  const cacheKey = `${postId}:${options?.wordsPerMinute ?? 200}`;
   const cached = postReadingTimeCache.get(cacheKey);
   if (cached) {
     return cached;
@@ -67,15 +54,13 @@ export function getPostReadingTime(postId: string, options?: PostReadingTimeOpti
     rawContent = fs.readFileSync(mdxPath, 'utf-8');
   }
 
-  const lang = options?.lang ?? (rawContent ? extractFrontmatterLang(rawContent) : 'de');
-
   if (!rawContent) {
     const fallback: PostReadingTime = {
       minutes: 1,
       words: 0,
       codeBlocks: 0,
       images: 0,
-      text: lang === 'en' ? '1 min read' : '1 Min. Lesezeit',
+      text: '1 min read',
     };
     postReadingTimeCache.set(cacheKey, fallback);
     return fallback;
@@ -129,7 +114,7 @@ export function getPostReadingTime(postId: string, options?: PostReadingTimeOpti
   const totalMinutes = wordMinutes + codeMinutes + imageMinutes;
   const minutes = Math.max(1, Math.round(totalMinutes));
 
-  const text = lang === 'en' ? `${minutes} min read` : `${minutes} Min. Lesezeit`;
+  const text = `${minutes} min read`;
 
   const result: PostReadingTime = {
     minutes,
@@ -145,9 +130,10 @@ export function getPostReadingTime(postId: string, options?: PostReadingTimeOpti
 
 /**
  * Computes presentation duration based on MP3 audio files or slide count fallback (45s per slide).
+ * All presentation duration labels are consistently formatted in English (e.g., 'N slides · ~M min').
  */
-export function getPresentationDuration(presentationId: string, options?: PresentationDurationOptions): PresentationDuration {
-  const cacheKey = `${presentationId}:${options?.lang ?? 'auto'}`;
+export function getPresentationDuration(presentationId: string, _options?: PresentationDurationOptions): PresentationDuration {
+  const cacheKey = presentationId;
   const cached = presentationDurationCache.get(cacheKey);
   if (cached) {
     return cached;
@@ -156,20 +142,6 @@ export function getPresentationDuration(presentationId: string, options?: Presen
   const presentationDir = path.resolve(process.cwd(), 'src/content/presentations', presentationId);
   const slidesDir = path.join(presentationDir, 'slides');
   const audioDir = path.join(presentationDir, 'audio');
-
-  // Determine language
-  let lang = options?.lang;
-  if (!lang) {
-    const mdPath = path.join(presentationDir, 'index.md');
-    const mdxPath = path.join(presentationDir, 'index.mdx');
-    let rawContent = '';
-    if (fs.existsSync(mdPath)) {
-      rawContent = fs.readFileSync(mdPath, 'utf-8');
-    } else if (fs.existsSync(mdxPath)) {
-      rawContent = fs.readFileSync(mdxPath, 'utf-8');
-    }
-    lang = rawContent ? extractFrontmatterLang(rawContent) : 'de';
-  }
 
   // Count slides
   let slideCount = 0;
@@ -205,9 +177,7 @@ export function getPresentationDuration(presentationId: string, options?: Presen
   const totalSeconds = hasAudio ? audioDurationSum : slideCount * 45;
   const minutes = Math.max(1, Math.round(totalSeconds / 60));
 
-  const text = lang === 'en'
-    ? `${slideCount} slides · ~${minutes} min`
-    : `${slideCount} Slides · ~${minutes} Min.`;
+  const text = `${slideCount} slides · ~${minutes} min`;
 
   const result: PresentationDuration = {
     minutes,
