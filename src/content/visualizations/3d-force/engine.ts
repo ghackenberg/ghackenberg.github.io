@@ -1,7 +1,6 @@
 import ForceGraph3D from '3d-force-graph';
-
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#f43f5e'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea', '#e11d48'];
+import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { getThemeTokens } from '@commons/shared/domain-themes';
 
 export interface Force3DNode {
   id: string;
@@ -55,7 +54,7 @@ const engine: Force3DEngine = {
   animationFrameId: null,
 
   async init(container: HTMLElement, payload: { '3d-force': { nodes: { id: string; name: string; size: number; group: number }[]; connections: { sourceId: string; targetId: string }[] } }, layout: string, isLight: boolean) {
-    const colors = isLight ? colorsLight : colorsDark;
+    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     
     // Cache nodes and connections
     this.nodes = payload['3d-force'].nodes.map((n) => ({
@@ -71,9 +70,10 @@ const engine: Force3DEngine = {
       target: c.targetId
     }));
 
+    const tokens = getThemeTokens(isLight);
     this.graph = ForceGraph3D()(container)
       .graphData({ nodes: this.nodes, links: this.links })
-      .backgroundColor(isLight ? '#f8fafc' : '#090d16')
+      .backgroundColor(tokens.canvasBg)
       .showNavInfo(false)
       .nodeLabel('name')
       .nodeVal('val')
@@ -126,10 +126,11 @@ const engine: Force3DEngine = {
     if (!this.graph || !this.nodes) return;
 
     // Apply color update based on theme
-    this.graph.backgroundColor(isLight ? '#f8fafc' : '#090d16');
+    const tokens = getThemeTokens(isLight);
+    this.graph.backgroundColor(tokens.canvasBg);
     this.graph.linkColor(isLight ? () => 'rgba(15, 23, 42, 0.15)' : () => 'rgba(255,255,255,0.08)');
 
-    const colors = isLight ? colorsLight : colorsDark;
+    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     this.nodes.forEach(n => {
       n.color = colors[n.group] || colors[0];
     });

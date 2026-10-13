@@ -5,6 +5,7 @@
 
 /* Citation Badge Styling for Academic & Source References */
 .citation {
+  --citation-accent: var(--card-accent, var(--step-accent, var(--color-domain-publications)));
   display: inline;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-weight: 700;
@@ -12,9 +13,9 @@
   padding: 0.08em 0.35em;
   margin: 0 0.15em;
   border-radius: 0.25rem;
-  background-color: rgba(59, 130, 246, 0.12);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  color: #60a5fa !important;
+  background-color: color-mix(in srgb, var(--citation-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--citation-accent) 25%, transparent);
+  color: var(--citation-accent) !important;
   text-decoration: none !important;
   transition: all 0.2s ease;
   user-select: none;
@@ -25,24 +26,34 @@
 }
 
 .citation:hover {
-  background-color: rgba(59, 130, 246, 0.22);
-  border-color: rgba(59, 130, 246, 0.5);
-  color: #93c5fd !important;
+  background-color: color-mix(in srgb, var(--citation-accent) 22%, transparent);
+  border-color: color-mix(in srgb, var(--citation-accent) 50%, transparent);
+  color: color-mix(in srgb, var(--citation-accent) 80%, white) !important;
   text-decoration: none !important;
 }
 
 :root.light .citation,
 .light .citation {
-  background-color: rgba(59, 130, 246, 0.08);
-  border-color: rgba(59, 130, 246, 0.25);
-  color: #1d4ed8 !important;
+  background-color: color-mix(in srgb, var(--citation-accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--citation-accent) 25%, transparent);
+  color: var(--citation-accent) !important;
 }
 
 :root.light .citation:hover,
 .light .citation:hover {
-  background-color: rgba(59, 130, 246, 0.18);
-  border-color: rgba(59, 130, 246, 0.5);
-  color: #1e40af !important;
+  background-color: color-mix(in srgb, var(--citation-accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--citation-accent) 50%, transparent);
+  color: color-mix(in srgb, var(--citation-accent) 85%, black) !important;
+}
+
+.bento-card-root .citation,
+.metric-stat-card .citation {
+  --citation-accent: var(--card-accent, var(--color-domain-publications));
+}
+
+.step-row .citation,
+.step-card .citation {
+  --citation-accent: var(--step-accent, var(--color-domain-publications));
 }
 
 /* Slide Citation Interactive Badges */
@@ -62,16 +73,8 @@ body:has(.print-slide-page) {
   padding: 0;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
-}
-
-html:not(.light) body:has(.print-slide-page) {
-  background-color: #020617;
-  color: #f8fafc;
-}
-
-html.light body:has(.print-slide-page) {
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: var(--color-slide-bg);
+  color: var(--color-slide-text);
 }
 
 .print-slide-page {
@@ -86,14 +89,8 @@ html.light body:has(.print-slide-page) {
   break-after: page;
   box-sizing: border-box;
   overflow: hidden;
-}
-
-html:not(.light) .print-slide-page {
-  background-color: #020617;
-}
-
-html.light .print-slide-page {
-  background-color: #ffffff;
+  background-color: var(--color-slide-bg);
+  color: var(--color-slide-text);
 }
 
 .print-slide-page .slide-base-frame {
@@ -151,14 +148,14 @@ html:not(.light) .bento-card-object .bg-blue-50\/60,
 html:not(.light) .bento-card-object .bg-blue-50\/80 {
   background-color: rgba(30, 58, 138, 0.25) !important;
   border-color: rgba(59, 130, 246, 0.35) !important;
-  color: #f1f5f9 !important;
+  color: var(--color-slide-text) !important;
 }
 
 html:not(.light) .bento-card-object .bg-cyan-50,
 html:not(.light) .bento-card-object .bg-cyan-50\/70 {
   background-color: rgba(22, 78, 99, 0.25) !important;
   border-color: rgba(6, 182, 212, 0.35) !important;
-  color: #f1f5f9 !important;
+  color: var(--color-slide-text) !important;
 }
 
 /* Presentation Engine Optimization: Skip layout & render cost of inactive slides */
@@ -183,5 +180,780 @@ html:not(.light) .bento-card-object .bg-cyan-50\/70 {
   width: 100% !important;
   position: absolute !important;
   overflow: hidden !important;
+}
+
+/* ==========================================================================
+   Deterministic 9-Accent Spectrum CSS Progression
+   Canonical Palette:
+   1: Blue (var(--color-slide-accent-blue))
+   2: Cyan (var(--color-slide-accent-cyan))
+   3: Teal (var(--color-slide-accent-teal))
+   4: Emerald (var(--color-slide-accent-emerald))
+   5: Amber (var(--color-slide-accent-amber))
+   6: Orange (var(--color-slide-accent-orange))
+   7: Rose (var(--color-slide-accent-rose))
+   8: Purple (var(--color-slide-accent-purple))
+   9: Indigo (var(--color-slide-accent-indigo))
+   ========================================================================== */
+
+/* Grid BentoCards Progression */
+.grid > .bento-card-root:nth-child(9n+1),
+.grid > :nth-child(9n+1) > .bento-card-root,
+.grid > :nth-child(9n+1) .bento-card-root {
+  --card-accent: var(--color-slide-accent-blue) !important;
+  --hl-color: var(--color-slide-accent-blue) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-blue) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-blue) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+1) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+1) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+1) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+1) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-blue) !important;
+}
+.grid > .bento-card-root:nth-child(9n+1) h3,
+.grid > :nth-child(9n+1) > .bento-card-root h3,
+.grid > :nth-child(9n+1) .bento-card-root h3 {
+  color: var(--color-slide-accent-blue) !important;
+}
+.grid > .bento-card-root:nth-child(9n+1) mark,
+.grid > .bento-card-root:nth-child(9n+1) .highlight-marker,
+.grid > :nth-child(9n+1) > .bento-card-root mark,
+.grid > :nth-child(9n+1) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+1) .bento-card-root mark,
+.grid > :nth-child(9n+1) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-blue) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-blue) !important;
+}
+.grid > .bento-card-root:nth-child(9n+1) .bullet-badge,
+.grid > :nth-child(9n+1) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+1) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-blue) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+1),
+.grid > :nth-child(9n+1) > .metric-stat-card,
+.grid > :nth-child(9n+1) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+1) {
+  --card-accent: var(--color-slide-accent-blue) !important;
+  --effective-accent: var(--color-slide-accent-blue) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-blue) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+1) .metric-stat-value,
+.grid > :nth-child(9n+1) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+1) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+1) .metric-stat-value {
+  color: var(--color-slide-accent-blue) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+1) mark,
+.grid > .metric-stat-card:nth-child(9n+1) .highlight-marker,
+.grid > :nth-child(9n+1) > .metric-stat-card mark,
+.grid > :nth-child(9n+1) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+1) .metric-stat-card mark,
+.grid > :nth-child(9n+1) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+1) mark,
+.contents > .metric-stat-card:nth-child(9n+1) .highlight-marker {
+  --hl-color: var(--color-slide-accent-blue) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-blue) !important;
+}
+
+.grid > .bento-card-root:nth-child(9n+2),
+.grid > :nth-child(9n+2) > .bento-card-root,
+.grid > :nth-child(9n+2) .bento-card-root {
+  --card-accent: var(--color-slide-accent-cyan) !important;
+  --hl-color: var(--color-slide-accent-cyan) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-cyan) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+2) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+2) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+2) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+2) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-cyan) !important;
+}
+.grid > .bento-card-root:nth-child(9n+2) h3,
+.grid > :nth-child(9n+2) > .bento-card-root h3,
+.grid > :nth-child(9n+2) .bento-card-root h3 {
+  color: var(--color-slide-accent-cyan) !important;
+}
+.grid > .bento-card-root:nth-child(9n+2) mark,
+.grid > .bento-card-root:nth-child(9n+2) .highlight-marker,
+.grid > :nth-child(9n+2) > .bento-card-root mark,
+.grid > :nth-child(9n+2) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+2) .bento-card-root mark,
+.grid > :nth-child(9n+2) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-cyan) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-cyan) !important;
+}
+.grid > .bento-card-root:nth-child(9n+2) .bullet-badge,
+.grid > :nth-child(9n+2) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+2) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-cyan) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+2),
+.grid > :nth-child(9n+2) > .metric-stat-card,
+.grid > :nth-child(9n+2) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+2) {
+  --card-accent: var(--color-slide-accent-cyan) !important;
+  --effective-accent: var(--color-slide-accent-cyan) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+2) .metric-stat-value,
+.grid > :nth-child(9n+2) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+2) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+2) .metric-stat-value {
+  color: var(--color-slide-accent-cyan) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+2) mark,
+.grid > .metric-stat-card:nth-child(9n+2) .highlight-marker,
+.grid > :nth-child(9n+2) > .metric-stat-card mark,
+.grid > :nth-child(9n+2) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+2) .metric-stat-card mark,
+.grid > :nth-child(9n+2) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+2) mark,
+.contents > .metric-stat-card:nth-child(9n+2) .highlight-marker {
+  --hl-color: var(--color-slide-accent-cyan) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-cyan) !important;
+}
+
+.grid > .bento-card-root:nth-child(9n+3),
+.grid > :nth-child(9n+3) > .bento-card-root,
+.grid > :nth-child(9n+3) .bento-card-root {
+  --card-accent: var(--color-slide-accent-teal) !important;
+  --hl-color: var(--color-slide-accent-teal) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-teal) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-teal) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+3) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+3) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+3) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+3) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-teal) !important;
+}
+.grid > .bento-card-root:nth-child(9n+3) h3,
+.grid > :nth-child(9n+3) > .bento-card-root h3,
+.grid > :nth-child(9n+3) .bento-card-root h3 {
+  color: var(--color-slide-accent-teal) !important;
+}
+.grid > .bento-card-root:nth-child(9n+3) mark,
+.grid > .bento-card-root:nth-child(9n+3) .highlight-marker,
+.grid > :nth-child(9n+3) > .bento-card-root mark,
+.grid > :nth-child(9n+3) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+3) .bento-card-root mark,
+.grid > :nth-child(9n+3) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-teal) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-teal) !important;
+}
+.grid > .bento-card-root:nth-child(9n+3) .bullet-badge,
+.grid > :nth-child(9n+3) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+3) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-teal) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+3),
+.grid > :nth-child(9n+3) > .metric-stat-card,
+.grid > :nth-child(9n+3) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+3) {
+  --card-accent: var(--color-slide-accent-teal) !important;
+  --effective-accent: var(--color-slide-accent-teal) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-teal) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+3) .metric-stat-value,
+.grid > :nth-child(9n+3) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+3) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+3) .metric-stat-value {
+  color: var(--color-slide-accent-teal) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+3) mark,
+.grid > .metric-stat-card:nth-child(9n+3) .highlight-marker,
+.grid > :nth-child(9n+3) > .metric-stat-card mark,
+.grid > :nth-child(9n+3) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+3) .metric-stat-card mark,
+.grid > :nth-child(9n+3) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+3) mark,
+.contents > .metric-stat-card:nth-child(9n+3) .highlight-marker {
+  --hl-color: var(--color-slide-accent-teal) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-teal) !important;
+}
+
+.grid > .bento-card-root:nth-child(9n+4),
+.grid > :nth-child(9n+4) > .bento-card-root,
+.grid > :nth-child(9n+4) .bento-card-root {
+  --card-accent: var(--color-slide-accent-emerald) !important;
+  --hl-color: var(--color-slide-accent-emerald) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-emerald) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+4) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+4) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+4) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+4) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-emerald) !important;
+}
+.grid > .bento-card-root:nth-child(9n+4) h3,
+.grid > :nth-child(9n+4) > .bento-card-root h3,
+.grid > :nth-child(9n+4) .bento-card-root h3 {
+  color: var(--color-slide-accent-emerald) !important;
+}
+.grid > .bento-card-root:nth-child(9n+4) mark,
+.grid > .bento-card-root:nth-child(9n+4) .highlight-marker,
+.grid > :nth-child(9n+4) > .bento-card-root mark,
+.grid > :nth-child(9n+4) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+4) .bento-card-root mark,
+.grid > :nth-child(9n+4) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-emerald) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-emerald) !important;
+}
+.grid > .bento-card-root:nth-child(9n+4) .bullet-badge,
+.grid > :nth-child(9n+4) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+4) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-emerald) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+4),
+.grid > :nth-child(9n+4) > .metric-stat-card,
+.grid > :nth-child(9n+4) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+4) {
+  --card-accent: var(--color-slide-accent-emerald) !important;
+  --effective-accent: var(--color-slide-accent-emerald) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+4) .metric-stat-value,
+.grid > :nth-child(9n+4) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+4) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+4) .metric-stat-value {
+  color: var(--color-slide-accent-emerald) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+4) mark,
+.grid > .metric-stat-card:nth-child(9n+4) .highlight-marker,
+.grid > :nth-child(9n+4) > .metric-stat-card mark,
+.grid > :nth-child(9n+4) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+4) .metric-stat-card mark,
+.grid > :nth-child(9n+4) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+4) mark,
+.contents > .metric-stat-card:nth-child(9n+4) .highlight-marker {
+  --hl-color: var(--color-slide-accent-emerald) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-emerald) !important;
+}
+
+.grid > .bento-card-root:nth-child(9n+5),
+.grid > :nth-child(9n+5) > .bento-card-root,
+.grid > :nth-child(9n+5) .bento-card-root {
+  --card-accent: var(--color-slide-accent-amber) !important;
+  --hl-color: var(--color-slide-accent-amber) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-amber) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-amber) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+5) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+5) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+5) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+5) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-amber) !important;
+}
+.grid > .bento-card-root:nth-child(9n+5) h3,
+.grid > :nth-child(9n+5) > .bento-card-root h3,
+.grid > :nth-child(9n+5) .bento-card-root h3 {
+  color: var(--color-slide-accent-amber) !important;
+}
+.grid > .bento-card-root:nth-child(9n+5) mark,
+.grid > .bento-card-root:nth-child(9n+5) .highlight-marker,
+.grid > :nth-child(9n+5) > .bento-card-root mark,
+.grid > :nth-child(9n+5) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+5) .bento-card-root mark,
+.grid > :nth-child(9n+5) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-amber) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-amber) !important;
+}
+.grid > .bento-card-root:nth-child(9n+5) .bullet-badge,
+.grid > :nth-child(9n+5) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+5) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-amber) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+5),
+.grid > :nth-child(9n+5) > .metric-stat-card,
+.grid > :nth-child(9n+5) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+5) {
+  --card-accent: var(--color-slide-accent-amber) !important;
+  --effective-accent: var(--color-slide-accent-amber) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-amber) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+5) .metric-stat-value,
+.grid > :nth-child(9n+5) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+5) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+5) .metric-stat-value {
+  color: var(--color-slide-accent-amber) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+5) mark,
+.grid > .metric-stat-card:nth-child(9n+5) .highlight-marker,
+.grid > :nth-child(9n+5) > .metric-stat-card mark,
+.grid > :nth-child(9n+5) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+5) .metric-stat-card mark,
+.grid > :nth-child(9n+5) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+5) mark,
+.contents > .metric-stat-card:nth-child(9n+5) .highlight-marker {
+  --hl-color: var(--color-slide-accent-amber) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-amber) !important;
+}
+
+.grid > .bento-card-root:nth-child(9n+6),
+.grid > :nth-child(9n+6) > .bento-card-root,
+.grid > :nth-child(9n+6) .bento-card-root {
+  --card-accent: var(--color-slide-accent-orange) !important;
+  --hl-color: var(--color-slide-accent-orange) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-orange) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-orange) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+6) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+6) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+6) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+6) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-orange) !important;
+}
+.grid > .bento-card-root:nth-child(9n+6) h3,
+.grid > :nth-child(9n+6) > .bento-card-root h3,
+.grid > :nth-child(9n+6) .bento-card-root h3 {
+  color: var(--color-slide-accent-orange) !important;
+}
+.grid > .bento-card-root:nth-child(9n+6) mark,
+.grid > .bento-card-root:nth-child(9n+6) .highlight-marker,
+.grid > :nth-child(9n+6) > .bento-card-root mark,
+.grid > :nth-child(9n+6) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+6) .bento-card-root mark,
+.grid > :nth-child(9n+6) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-orange) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-orange) !important;
+}
+.grid > .bento-card-root:nth-child(9n+6) .bullet-badge,
+.grid > :nth-child(9n+6) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+6) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-orange) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+6),
+.grid > :nth-child(9n+6) > .metric-stat-card,
+.grid > :nth-child(9n+6) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+6) {
+  --card-accent: var(--color-slide-accent-orange) !important;
+  --effective-accent: var(--color-slide-accent-orange) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-orange) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+6) .metric-stat-value,
+.grid > :nth-child(9n+6) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+6) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+6) .metric-stat-value {
+  color: var(--color-slide-accent-orange) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+6) mark,
+.grid > .metric-stat-card:nth-child(9n+6) .highlight-marker,
+.grid > :nth-child(9n+6) > .metric-stat-card mark,
+.grid > :nth-child(9n+6) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+6) .metric-stat-card mark,
+.grid > :nth-child(9n+6) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+6) mark,
+.contents > .metric-stat-card:nth-child(9n+6) .highlight-marker {
+  --hl-color: var(--color-slide-accent-orange) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-orange) !important;
+}
+
+.grid > .bento-card-root:nth-child(9n+7),
+.grid > :nth-child(9n+7) > .bento-card-root,
+.grid > :nth-child(9n+7) .bento-card-root {
+  --card-accent: var(--color-slide-accent-rose) !important;
+  --hl-color: var(--color-slide-accent-rose) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-rose) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-rose) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+7) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+7) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+7) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+7) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-rose) !important;
+}
+.grid > .bento-card-root:nth-child(9n+7) h3,
+.grid > :nth-child(9n+7) > .bento-card-root h3,
+.grid > :nth-child(9n+7) .bento-card-root h3 {
+  color: var(--color-slide-accent-rose) !important;
+}
+.grid > .bento-card-root:nth-child(9n+7) mark,
+.grid > .bento-card-root:nth-child(9n+7) .highlight-marker,
+.grid > :nth-child(9n+7) > .bento-card-root mark,
+.grid > :nth-child(9n+7) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+7) .bento-card-root mark,
+.grid > :nth-child(9n+7) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-rose) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-rose) !important;
+}
+.grid > .bento-card-root:nth-child(9n+7) .bullet-badge,
+.grid > :nth-child(9n+7) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+7) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-rose) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+7),
+.grid > :nth-child(9n+7) > .metric-stat-card,
+.grid > :nth-child(9n+7) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+7) {
+  --card-accent: var(--color-slide-accent-rose) !important;
+  --effective-accent: var(--color-slide-accent-rose) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-rose) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+7) .metric-stat-value,
+.grid > :nth-child(9n+7) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+7) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+7) .metric-stat-value {
+  color: var(--color-slide-accent-rose) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+7) mark,
+.grid > .metric-stat-card:nth-child(9n+7) .highlight-marker,
+.grid > :nth-child(9n+7) > .metric-stat-card mark,
+.grid > :nth-child(9n+7) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+7) .metric-stat-card mark,
+.grid > :nth-child(9n+7) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+7) mark,
+.contents > .metric-stat-card:nth-child(9n+7) .highlight-marker {
+  --hl-color: var(--color-slide-accent-rose) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-rose) !important;
+}
+
+.grid > .bento-card-root:nth-child(9n+8),
+.grid > :nth-child(9n+8) > .bento-card-root,
+.grid > :nth-child(9n+8) .bento-card-root {
+  --card-accent: var(--color-slide-accent-purple) !important;
+  --hl-color: var(--color-slide-accent-purple) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-purple) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-purple) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+8) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+8) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+8) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+8) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-purple) !important;
+}
+.grid > .bento-card-root:nth-child(9n+8) h3,
+.grid > :nth-child(9n+8) > .bento-card-root h3,
+.grid > :nth-child(9n+8) .bento-card-root h3 {
+  color: var(--color-slide-accent-purple) !important;
+}
+.grid > .bento-card-root:nth-child(9n+8) mark,
+.grid > .bento-card-root:nth-child(9n+8) .highlight-marker,
+.grid > :nth-child(9n+8) > .bento-card-root mark,
+.grid > :nth-child(9n+8) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+8) .bento-card-root mark,
+.grid > :nth-child(9n+8) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-purple) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-purple) !important;
+}
+.grid > .bento-card-root:nth-child(9n+8) .bullet-badge,
+.grid > :nth-child(9n+8) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+8) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-purple) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+8),
+.grid > :nth-child(9n+8) > .metric-stat-card,
+.grid > :nth-child(9n+8) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+8) {
+  --card-accent: var(--color-slide-accent-purple) !important;
+  --effective-accent: var(--color-slide-accent-purple) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-purple) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+8) .metric-stat-value,
+.grid > :nth-child(9n+8) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+8) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+8) .metric-stat-value {
+  color: var(--color-slide-accent-purple) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+8) mark,
+.grid > .metric-stat-card:nth-child(9n+8) .highlight-marker,
+.grid > :nth-child(9n+8) > .metric-stat-card mark,
+.grid > :nth-child(9n+8) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+8) .metric-stat-card mark,
+.grid > :nth-child(9n+8) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+8) mark,
+.contents > .metric-stat-card:nth-child(9n+8) .highlight-marker {
+  --hl-color: var(--color-slide-accent-purple) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-purple) !important;
+}
+
+.grid > .bento-card-root:nth-child(9n+9),
+.grid > :nth-child(9n+9) > .bento-card-root,
+.grid > :nth-child(9n+9) .bento-card-root {
+  --card-accent: var(--color-slide-accent-indigo) !important;
+  --hl-color: var(--color-slide-accent-indigo) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-indigo) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 30%, transparent) !important;
+}
+.grid > .bento-card-root:nth-child(9n+9) .bento-top-bar,
+.grid > .bento-card-root:nth-child(9n+9) > .absolute.top-0.h-2,
+.grid > :nth-child(9n+9) > .bento-card-root .bento-top-bar,
+.grid > :nth-child(9n+9) .bento-card-root .bento-top-bar {
+  background-color: var(--color-slide-accent-indigo) !important;
+}
+.grid > .bento-card-root:nth-child(9n+9) h3,
+.grid > :nth-child(9n+9) > .bento-card-root h3,
+.grid > :nth-child(9n+9) .bento-card-root h3 {
+  color: var(--color-slide-accent-indigo) !important;
+}
+.grid > .bento-card-root:nth-child(9n+9) mark,
+.grid > .bento-card-root:nth-child(9n+9) .highlight-marker,
+.grid > :nth-child(9n+9) > .bento-card-root mark,
+.grid > :nth-child(9n+9) > .bento-card-root .highlight-marker,
+.grid > :nth-child(9n+9) .bento-card-root mark,
+.grid > :nth-child(9n+9) .bento-card-root .highlight-marker {
+  --hl-color: var(--color-slide-accent-indigo) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-indigo) !important;
+}
+.grid > .bento-card-root:nth-child(9n+9) .bullet-badge,
+.grid > :nth-child(9n+9) > .bento-card-root .bullet-badge,
+.grid > :nth-child(9n+9) .bento-card-root .bullet-badge {
+  background-color: var(--color-slide-accent-indigo) !important;
+  color: white !important;
+}
+.grid > .metric-stat-card:nth-child(9n+9),
+.grid > :nth-child(9n+9) > .metric-stat-card,
+.grid > :nth-child(9n+9) .metric-stat-card,
+.contents > .metric-stat-card:nth-child(9n+9) {
+  --card-accent: var(--color-slide-accent-indigo) !important;
+  --effective-accent: var(--color-slide-accent-indigo) !important;
+  border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 30%, var(--color-slide-card-border)) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+9) .metric-stat-value,
+.grid > :nth-child(9n+9) > .metric-stat-card .metric-stat-value,
+.grid > :nth-child(9n+9) .metric-stat-card .metric-stat-value,
+.contents > .metric-stat-card:nth-child(9n+9) .metric-stat-value {
+  color: var(--color-slide-accent-indigo) !important;
+}
+.grid > .metric-stat-card:nth-child(9n+9) mark,
+.grid > .metric-stat-card:nth-child(9n+9) .highlight-marker,
+.grid > :nth-child(9n+9) > .metric-stat-card mark,
+.grid > :nth-child(9n+9) > .metric-stat-card .highlight-marker,
+.grid > :nth-child(9n+9) .metric-stat-card mark,
+.grid > :nth-child(9n+9) .metric-stat-card .highlight-marker,
+.contents > .metric-stat-card:nth-child(9n+9) mark,
+.contents > .metric-stat-card:nth-child(9n+9) .highlight-marker {
+  --hl-color: var(--color-slide-accent-indigo) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-indigo) !important;
+}
+
+/* Pipeline Steps Progression */
+.pipeline-container-vertical > .step-row:nth-child(9n+1),
+.pipeline-container > .step-card:nth-of-type(9n+1),
+.pipeline-container > .step-card:nth-child(1 of .step-card) {
+  --step-accent: var(--color-slide-accent-blue) !important;
+  --hl-color: var(--color-slide-accent-blue) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-blue) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+1) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+1) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+1) mark,
+.pipeline-container > .step-card:nth-of-type(9n+1) .highlight-marker,
+.pipeline-container > .step-card:nth-child(1 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(1 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-blue) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-blue) !important;
+}
+
+.pipeline-container-vertical > .step-row:nth-child(9n+2),
+.pipeline-container > .step-card:nth-of-type(9n+2),
+.pipeline-container > .step-card:nth-child(2 of .step-card) {
+  --step-accent: var(--color-slide-accent-cyan) !important;
+  --hl-color: var(--color-slide-accent-cyan) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-cyan) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+2) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+2) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+2) mark,
+.pipeline-container > .step-card:nth-of-type(9n+2) .highlight-marker,
+.pipeline-container > .step-card:nth-child(2 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(2 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-cyan) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-cyan) !important;
+}
+
+.pipeline-container-vertical > .step-row:nth-child(9n+3),
+.pipeline-container > .step-card:nth-of-type(9n+3),
+.pipeline-container > .step-card:nth-child(3 of .step-card) {
+  --step-accent: var(--color-slide-accent-teal) !important;
+  --hl-color: var(--color-slide-accent-teal) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-teal) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+3) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+3) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+3) mark,
+.pipeline-container > .step-card:nth-of-type(9n+3) .highlight-marker,
+.pipeline-container > .step-card:nth-child(3 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(3 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-teal) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-teal) !important;
+}
+
+.pipeline-container-vertical > .step-row:nth-child(9n+4),
+.pipeline-container > .step-card:nth-of-type(9n+4),
+.pipeline-container > .step-card:nth-child(4 of .step-card) {
+  --step-accent: var(--color-slide-accent-emerald) !important;
+  --hl-color: var(--color-slide-accent-emerald) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-emerald) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+4) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+4) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+4) mark,
+.pipeline-container > .step-card:nth-of-type(9n+4) .highlight-marker,
+.pipeline-container > .step-card:nth-child(4 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(4 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-emerald) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-emerald) !important;
+}
+
+.pipeline-container-vertical > .step-row:nth-child(9n+5),
+.pipeline-container > .step-card:nth-of-type(9n+5),
+.pipeline-container > .step-card:nth-child(5 of .step-card) {
+  --step-accent: var(--color-slide-accent-amber) !important;
+  --hl-color: var(--color-slide-accent-amber) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-amber) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+5) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+5) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+5) mark,
+.pipeline-container > .step-card:nth-of-type(9n+5) .highlight-marker,
+.pipeline-container > .step-card:nth-child(5 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(5 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-amber) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-amber) !important;
+}
+
+.pipeline-container-vertical > .step-row:nth-child(9n+6),
+.pipeline-container > .step-card:nth-of-type(9n+6),
+.pipeline-container > .step-card:nth-child(6 of .step-card) {
+  --step-accent: var(--color-slide-accent-orange) !important;
+  --hl-color: var(--color-slide-accent-orange) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-orange) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+6) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+6) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+6) mark,
+.pipeline-container > .step-card:nth-of-type(9n+6) .highlight-marker,
+.pipeline-container > .step-card:nth-child(6 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(6 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-orange) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-orange) !important;
+}
+
+.pipeline-container-vertical > .step-row:nth-child(9n+7),
+.pipeline-container > .step-card:nth-of-type(9n+7),
+.pipeline-container > .step-card:nth-child(7 of .step-card) {
+  --step-accent: var(--color-slide-accent-rose) !important;
+  --hl-color: var(--color-slide-accent-rose) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-rose) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+7) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+7) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+7) mark,
+.pipeline-container > .step-card:nth-of-type(9n+7) .highlight-marker,
+.pipeline-container > .step-card:nth-child(7 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(7 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-rose) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-rose) !important;
+}
+
+.pipeline-container-vertical > .step-row:nth-child(9n+8),
+.pipeline-container > .step-card:nth-of-type(9n+8),
+.pipeline-container > .step-card:nth-child(8 of .step-card) {
+  --step-accent: var(--color-slide-accent-purple) !important;
+  --hl-color: var(--color-slide-accent-purple) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-purple) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+8) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+8) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+8) mark,
+.pipeline-container > .step-card:nth-of-type(9n+8) .highlight-marker,
+.pipeline-container > .step-card:nth-child(8 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(8 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-purple) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-purple) !important;
+}
+
+.pipeline-container-vertical > .step-row:nth-child(9n+9),
+.pipeline-container > .step-card:nth-of-type(9n+9),
+.pipeline-container > .step-card:nth-child(9 of .step-card) {
+  --step-accent: var(--color-slide-accent-indigo) !important;
+  --hl-color: var(--color-slide-accent-indigo) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-indigo) !important;
+}
+.pipeline-container-vertical > .step-row:nth-child(9n+9) mark,
+.pipeline-container-vertical > .step-row:nth-child(9n+9) .highlight-marker,
+.pipeline-container > .step-card:nth-of-type(9n+9) mark,
+.pipeline-container > .step-card:nth-of-type(9n+9) .highlight-marker,
+.pipeline-container > .step-card:nth-child(9 of .step-card) mark,
+.pipeline-container > .step-card:nth-child(9 of .step-card) .highlight-marker {
+  --hl-color: var(--color-slide-accent-indigo) !important;
+  --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white) !important;
+  --hl-text-light: var(--color-slide-accent-indigo) !important;
+}
+
+.pipeline-container-vertical > .step-row .step-num-badge {
+  background-color: color-mix(in srgb, var(--step-accent) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--step-accent) 35%, transparent) !important;
+  color: var(--step-accent) !important;
+}
+
+.pipeline-container > .step-card .step-num-badge {
+  background-color: var(--step-accent) !important;
+  color: white !important;
+}
+
+.pipeline-container > .step-card .step-placeholder-icon {
+  background-color: color-mix(in srgb, var(--step-accent) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--step-accent) 35%, transparent) !important;
+  color: var(--step-accent) !important;
+}
+
+.pipeline-container > .step-card .step-progress-bar {
+  background-color: var(--step-accent) !important;
 }
 

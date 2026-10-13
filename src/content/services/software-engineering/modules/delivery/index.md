@@ -37,7 +37,7 @@ outputs:
   - "GitOps deployment manifests (ArgoCD/Flux) for multi-environment promotion (Dev, Staging, Prod)"
   - "Zero-downtime rollout configurations (blue-green / canary) with automated rollback scripts"
 duration: "2 - 4 Weeks"
-format: "DevOps Sprints & Release Engineering Workshops"
+format: "Delivery Sprints"
 delivery: "Remote / On-site"
 ---
 

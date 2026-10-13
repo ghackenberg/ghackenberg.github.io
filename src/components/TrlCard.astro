@@ -3,13 +3,22 @@ import { getTrlDefinition } from "@commons/shared/trl";
 
 interface Props {
   level: number;
-  accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
+  accentColor?: 'blue' | 'yellow' | 'purple' | 'green' | 'emerald';
+  domain?: string;
 }
 
-const { level, accentColor = 'blue' } = Astro.props;
+const { level, accentColor, domain = 'projects' } = Astro.props;
 const def = getTrlDefinition(level);
 
-const colorTokens = {
+const colorTokens: Record<string, { activeBar: string; activeText: string }> = {
+  projects: {
+    activeBar: 'bg-domain-projects shadow-[0_0_10px_rgba(16,185,129,0.5)]',
+    activeText: 'text-domain-projects font-bold',
+  },
+  emerald: {
+    activeBar: 'bg-domain-projects shadow-[0_0_10px_rgba(16,185,129,0.5)]',
+    activeText: 'text-domain-projects font-bold',
+  },
   blue: {
     activeBar: 'bg-brand-blue shadow-[0_0_10px_rgba(59,130,246,0.5)]',
     activeText: 'text-brand-blue font-bold',
@@ -28,7 +37,7 @@ const colorTokens = {
   },
 };
 
-const activeColor = colorTokens[accentColor] ?? colorTokens.blue;
+const activeColor = (accentColor ? colorTokens[accentColor] : null) ?? (domain ? colorTokens[domain] : null) ?? colorTokens.projects;
 
 const segments = Array.from({ length: 9 }, (_, i) => {
   const step = i + 1;

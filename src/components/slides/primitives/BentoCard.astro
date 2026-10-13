@@ -6,7 +6,6 @@ interface Props {
   cue?: string;
   title?: string;
   subtitle?: string;
-  accent?: 'blue' | 'emerald' | 'green' | 'teal' | 'amber' | 'purple' | 'cyan' | 'indigo' | 'neutral';
   density?: 'default' | 'compact';
   animate?: string;
   class?: string;
@@ -17,93 +16,38 @@ const {
   cue,
   title,
   subtitle,
-  accent = 'blue',
   density = 'default',
   animate = 'fade-up',
   class: className = ""
 } = Astro.props;
 
 const elementId = explicitId;
-
-// Accent border and glow mappings
-const accentStyles = {
-  blue: {
-    border: 'border-blue-500/30 light:border-blue-300',
-    bar: 'bg-blue-500',
-    title: 'text-blue-300 light:text-blue-900'
-  },
-  emerald: {
-    border: 'border-emerald-500/30 light:border-emerald-300',
-    bar: 'bg-emerald-500',
-    title: 'text-emerald-300 light:text-emerald-900'
-  },
-  green: {
-    border: 'border-emerald-500/30 light:border-emerald-300',
-    bar: 'bg-emerald-500',
-    title: 'text-emerald-300 light:text-emerald-900'
-  },
-  amber: {
-    border: 'border-amber-500/30 light:border-amber-300',
-    bar: 'bg-amber-500',
-    title: 'text-amber-300 light:text-amber-900'
-  },
-  purple: {
-    border: 'border-purple-500/30 light:border-purple-300',
-    bar: 'bg-purple-500',
-    title: 'text-purple-300 light:text-purple-900'
-  },
-  cyan: {
-    border: 'border-cyan-500/30 light:border-cyan-300',
-    bar: 'bg-cyan-500',
-    title: 'text-cyan-300 light:text-cyan-900'
-  },
-  teal: {
-    border: 'border-cyan-500/30 light:border-cyan-300',
-    bar: 'bg-cyan-500',
-    title: 'text-cyan-300 light:text-cyan-900'
-  },
-  indigo: {
-    border: 'border-indigo-500/30 light:border-indigo-300',
-    bar: 'bg-indigo-500',
-    title: 'text-indigo-300 light:text-indigo-900'
-  },
-  neutral: {
-    border: 'border-slate-800 light:border-slate-200',
-    bar: 'bg-slate-500',
-    title: 'text-slate-200 light:text-slate-800'
-  }
-};
-
-const currentAccentStyle = (accent && accent in accentStyles)
-  ? accentStyles[accent as keyof typeof accentStyles]
-  : accentStyles.blue;
 ---
 
 <div
   id={elementId}
   data-cue={cue}
   data-animate={animate}
-  data-accent={accent}
-  class={`bento-card-root relative ${density === 'compact' ? 'p-6' : 'p-8'} rounded-3xl bg-slate-900/95 light:bg-white/95 backdrop-blur-md border shadow-2xl flex flex-col justify-start overflow-hidden transition-all duration-300 w-full h-full flex-1 ${currentAccentStyle.border} ${className}`}
+  class={`bento-card-root relative ${density === 'compact' ? 'p-6' : 'p-8'} rounded-3xl bg-[var(--color-slide-card-bg)] backdrop-blur-md border shadow-2xl flex flex-col justify-start overflow-hidden transition-all duration-300 w-full h-full flex-1 ${className}`}
 >
   <!-- Accent Top Glow Line -->
-  <div class={`absolute top-0 left-0 right-0 h-2 ${currentAccentStyle.bar}`}></div>
+  <div class="bento-top-bar absolute top-0 left-0 right-0 h-2"></div>
 
   <!-- Header -->
   {(title || subtitle) && (
     <div class={`${density === 'compact' ? 'mb-3' : 'mb-6'} shrink-0`}>
       {title && (
-        <h3 class={`${density === 'compact' ? 'text-2xl lg:text-3xl' : 'text-3xl lg:text-4xl xl:text-[40px]'} font-black tracking-tight leading-tight ${currentAccentStyle.title}`} set:html={renderSlideCues(title)} />
+        <h3 class={`${density === 'compact' ? 'text-2xl lg:text-3xl' : 'text-3xl lg:text-4xl xl:text-[40px]'} font-black tracking-tight leading-tight`} set:html={renderSlideCues(title)} />
       )}
 
       {subtitle && (
-        <p class={`${density === 'compact' ? 'text-lg lg:text-xl' : 'text-xl lg:text-2xl'} text-slate-300 light:text-slate-600 mt-1 font-normal`} set:html={renderSlideCues(subtitle)} />
+        <p class={`${density === 'compact' ? 'text-lg lg:text-xl' : 'text-xl lg:text-2xl'} text-[var(--color-slide-text-subtle)] mt-1 font-normal`} set:html={renderSlideCues(subtitle)} />
       )}
     </div>
   )}
 
   <!-- Body Content -->
-  <div class={`flex-1 min-h-0 text-slate-200 light:text-slate-800 ${density === 'compact' ? 'text-lg lg:text-xl gap-4 pb-1' : 'text-xl lg:text-2xl gap-6 pb-2'} leading-relaxed flex flex-col justify-between bento-hyphens`}>
+  <div class={`flex-1 min-h-0 text-[var(--color-slide-text)] ${density === 'compact' ? 'text-lg lg:text-xl gap-4 pb-1' : 'text-xl lg:text-2xl gap-6 pb-2'} leading-relaxed flex flex-col justify-between bento-hyphens`}>
     <slot />
   </div>
 </div>
@@ -111,11 +55,43 @@ const currentAccentStyle = (accent && accent in accentStyles)
 <style>
   .bento-card-root {
     --scale: var(--content-scale, 1);
+    --resolved-card-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
+    --hl-color: var(--resolved-card-accent);
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
+    border-color: color-mix(in srgb, var(--resolved-card-accent) 30%, transparent);
     padding: calc(2rem * var(--content-scale, 1)) !important;
   }
+  .bento-card-root .bento-top-bar {
+    background-color: var(--resolved-card-accent);
+  }
   .bento-card-root h3 {
+    color: var(--resolved-card-accent);
     font-size: calc(2.35rem * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
+  }
+  .bento-card-root :global(mark),
+  .bento-card-root :global(.highlight-marker) {
+    --hl-color: var(--resolved-card-accent) !important;
+    --hl-text-dark: color-mix(in srgb, var(--resolved-card-accent) 35%, white) !important;
+    --hl-text-light: var(--resolved-card-accent) !important;
+  }
+  .bento-card-root :global(.bullet-badge) {
+    background-color: var(--resolved-card-accent) !important;
+    color: white !important;
+  }
+  .bento-card-root :global(.callout-box) {
+    background-color: color-mix(in srgb, var(--resolved-card-accent) 12%, transparent) !important;
+    border-color: color-mix(in srgb, var(--resolved-card-accent) 35%, transparent) !important;
+    color: color-mix(in srgb, var(--resolved-card-accent) 35%, white) !important;
+  }
+  .bento-card-root :global(.callout-box h4) {
+    color: var(--resolved-card-accent) !important;
+  }
+  :global(.light) .bento-card-root :global(.callout-box) {
+    background-color: color-mix(in srgb, var(--resolved-card-accent) 6%, white) !important;
+    border-color: color-mix(in srgb, var(--resolved-card-accent) 25%, transparent) !important;
+    color: var(--resolved-card-accent) !important;
   }
   .bento-hyphens {
     hyphens: auto;

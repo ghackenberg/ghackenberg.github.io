@@ -1,5 +1,6 @@
 ---
 import SlideBase from '../primitives/SlideBase.astro';
+import { resolveAccentName, getCycleAccent, type SlideAccent } from '@commons/shared/accent-system';
 
 interface Props {
   title?: string;
@@ -7,6 +8,8 @@ interface Props {
   subtitleCue?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
+  accent?: SlideAccent;
+  startAccent?: SlideAccent;
   class?: string;
 }
 
@@ -16,8 +19,13 @@ const {
   subtitleCue,
   slideNumber,
   totalSlides,
+  accent,
+  startAccent,
   class: className = ""
 } = Astro.props;
+
+const activeAccentName = resolveAccentName(startAccent || accent || 'blue');
+const bottomAccent = getCycleAccent(activeAccentName, 3);
 ---
 
 <SlideBase
@@ -26,6 +34,8 @@ const {
   subtitleCue={subtitleCue}
   slideNumber={slideNumber}
   totalSlides={totalSlides}
+  accent={accent}
+  startAccent={startAccent}
   class={className}
 >
   <div class="h-full w-full flex flex-col justify-between gap-8 min-h-0">
@@ -33,7 +43,7 @@ const {
       <slot name="metrics" />
     </div>
     {Astro.slots.has('default') && (
-      <div class="shrink-0">
+      <div class="shrink-0" style={`--card-accent: var(--color-slide-accent-${bottomAccent.name});`}>
         <slot />
       </div>
     )}

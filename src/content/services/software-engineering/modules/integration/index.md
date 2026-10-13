@@ -37,7 +37,7 @@ outputs:
   - "Consumer-driven contract test suites guaranteeing bi-directional schema parity"
   - "API gateway configuration including rate-limiting, CORS, and mTLS security profiles"
 duration: "2 - 4 Weeks"
-format: "Integration Sprints & Architecture Sprints"
+format: "Integration Sprints"
 delivery: "Remote / On-site"
 ---
 

@@ -58,6 +58,12 @@ const {
   lang = "en"
 } = Astro.props;
 
+// Determine active domain from the first URL path segment
+const pathname = Astro.url.pathname;
+const firstSegment = pathname.split('/').filter(Boolean)[0] || '';
+const VALID_DOMAINS = ['posts', 'courses', 'publications', 'presentations', 'projects', 'services', 'visualizations', 'interests', 'tags'];
+const activeDomain = VALID_DOMAINS.includes(firstSegment) ? firstSegment : undefined;
+
 // Build canonical URL
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
@@ -114,6 +120,78 @@ if (pubDate) {
   } catch (e) {
     console.error("Failed to parse pubDate for SEO metadata", e);
   }
+}
+
+// Resolve JSON-LD array and auto-compute Schema.org BreadcrumbList for non-root routes if not provided
+const resolvedJsonLd: Array<Record<string, JsonLdValue>> = [];
+if (jsonLd) {
+  if (Array.isArray(jsonLd)) {
+    resolvedJsonLd.push(...jsonLd);
+  } else {
+    resolvedJsonLd.push(jsonLd);
+  }
+}
+
+const hasBreadcrumbList = resolvedJsonLd.some(
+  (item) => item && (item["@type"] === "BreadcrumbList" || (Array.isArray(item["@type"]) && item["@type"].includes("BreadcrumbList")))
+);
+
+const pathnameSegments = Astro.url.pathname.replace(/^\/|\/$/g, "").split("/").filter(Boolean);
+
+if (!hasBreadcrumbList && pathnameSegments.length > 0) {
+  const SEGMENT_NAMES: Record<string, string> = {
+    posts: "Posts",
+    publications: "Publications",
+    presentations: "Presentations",
+    courses: "Courses",
+    projects: "Projects",
+    services: "Services",
+    visualizations: "Visualizations",
+    interests: "Interests",
+    tags: "Tags",
+    impressum: "Impressum",
+    datenschutz: "Datenschutz"
+  };
+
+  const breadcrumbElements: Array<Record<string, JsonLdValue>> = [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": new URL("/", Astro.site || "https://hackenberg.tech").href.replace(/\/$/, "")
+    }
+  ];
+
+  let accumulatedPath = "";
+  pathnameSegments.forEach((seg, idx) => {
+    accumulatedPath += `/${seg}`;
+    const isLeaf = idx === pathnameSegments.length - 1;
+    const segmentUrl = new URL(accumulatedPath + "/", Astro.site || "https://hackenberg.tech").href;
+
+    if (isLeaf) {
+      const cleanTitle = title ? title.split(" | ")[0].trim() : seg;
+      breadcrumbElements.push({
+        "@type": "ListItem",
+        "position": idx + 2,
+        "name": cleanTitle || seg,
+        "item": canonicalURL.href
+      });
+    } else {
+      const segName = SEGMENT_NAMES[seg] || decodeURIComponent(seg).replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      breadcrumbElements.push({
+        "@type": "ListItem",
+        "position": idx + 2,
+        "name": segName,
+        "item": segmentUrl
+      });
+    }
+  });
+
+  resolvedJsonLd.push({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbElements
+  });
 }
 ---
 
@@ -247,7 +325,7 @@ if (pubDate) {
     <link rel="author" href="https://hackenberg.tech/llms.txt" />
     
     <!-- Theme & Mobile Colors -->
-    <meta name="theme-color" content="#030712" />
+    <meta name="theme-color" content="var(--color-bg-main)" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     
@@ -265,7 +343,7 @@ if (pubDate) {
     <link rel="canonical" href={canonicalURL} />
 
     <!-- JSON-LD Structured Data (SEO / GEO / AIO) -->
-    {jsonLd && <JsonLd schema={jsonLd} />}
+    {resolvedJsonLd.length > 0 && <JsonLd schema={resolvedJsonLd} />}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
@@ -477,7 +555,7 @@ if (pubDate) {
     )}
   </head>
 
-  <body class="text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">
+  <body data-domain={activeDomain} class="text-gray-100 selection:bg-brand-blue selection:text-white min-h-screen flex flex-col relative antialiased">
     <!-- Parallax vector background with astronomical moon phases and day/night transitions -->
     <Background />
 
@@ -486,9 +564,9 @@ if (pubDate) {
       <slot />
 
       <!-- Footer -->
-      <footer class="w-full glass-panel border-t !border-x-0 !border-b-0 border-white/5 py-12 md:py-16 text-sm text-gray-400 mt-auto relative z-10">
+      <footer class="w-full glass-panel border-t !border-x-0 !border-b-0 border-element-border py-12 md:py-16 text-sm text-gray-400 mt-auto relative z-10">
         <Container as="div" size="wide" padding="none">
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pb-10 border-b border-white/5">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pb-10 border-b border-element-border">
             
             <!-- Brand Column -->
             <div class="md:col-span-5 flex flex-col space-y-4">
@@ -554,7 +632,7 @@ if (pubDate) {
                 </p>
                 <a 
                   href="mailto:georg.hackenberg@fh-wels.at" 
-                  class="text-xs text-brand-blue light:text-blue-700 hover:text-brand-blue/90 light:hover:text-blue-800 hover:underline select-all font-mono inline-block mt-2"
+                  class="text-xs text-brand-blue hover:text-brand-blue/80 hover:underline select-all font-mono inline-block mt-2"
                 >
                   georg.hackenberg@fh-wels.at
                 </a>
@@ -577,22 +655,19 @@ if (pubDate) {
           </div>
           
           <!-- Footer Bottom -->
-          <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 light:text-slate-600 gap-4">
+          <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-text-subtle gap-4">
             <div class="flex flex-col items-center sm:items-start gap-1">
               <p>&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
-              <p class="text-[10px] text-gray-400 light:text-slate-600 mt-0.5">
-                Built with 
-                <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 light:hover:text-blue-700 underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Astro</a>, 
-                <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 light:hover:text-blue-700 underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Tailwind CSS</a> & 
-                <span class="font-semibold heading-gradient-brand">Antigravity</span>
+              <p class="text-[10px] text-text-subtle mt-0.5">
+                Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Astro</a>, <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Tailwind CSS</a> &amp; <a href="https://antigravity.google" target="_blank" rel="noopener noreferrer" class="font-semibold heading-gradient-brand hover:opacity-80 transition-opacity">Antigravity</a>
               </p>
             </div>
             <div class="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2">
-              <a href="/impressum/" class="text-gray-400 light:text-slate-600 hover:text-blue-400 light:hover:text-blue-700 transition-colors">Impressum</a>
-              <a href="/datenschutz/" class="text-gray-400 light:text-slate-600 hover:text-blue-400 light:hover:text-blue-700 transition-colors">Datenschutz</a>
-              <a href="/llms.txt" target="_blank" rel="noopener noreferrer" class="text-gray-400 light:text-slate-600 hover:text-blue-400 light:hover:text-blue-700 font-mono text-[11px] transition-colors" aria-label="LLMs.txt" title="Machine-readable summary for AI and LLMs">llms.txt</a>
-              <a href="/llms-full.txt" target="_blank" rel="noopener noreferrer" class="text-gray-400 light:text-slate-600 hover:text-blue-400 light:hover:text-blue-700 font-mono text-[11px] transition-colors" aria-label="LLMs-full.txt" title="Full raw text corpus for AI and LLMs">llms-full.txt</a>
-              <a href="#" class="text-gray-400 light:text-slate-600 hover:text-blue-400 light:hover:text-blue-700 transition-colors">Back to top ↑</a>
+              <a href="/impressum/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Impressum</a>
+              <a href="/datenschutz/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Datenschutz</a>
+              <a href="/llms.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue/80 font-mono text-[11px] transition-colors" aria-label="LLMs.txt" title="Machine-readable summary for AI and LLMs">llms.txt</a>
+              <a href="/llms-full.txt" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue/80 font-mono text-[11px] transition-colors" aria-label="LLMs-full.txt" title="Full raw text corpus for AI and LLMs">llms-full.txt</a>
+              <a href="#" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Back to top ↑</a>
             </div>
           </div>
         </Container>
@@ -604,6 +679,9 @@ if (pubDate) {
 
     <!-- What's New Discovery Modal -->
     <WhatsNewModal />
+
+    <!-- Page Modals (e.g. SlideReferencesModal) -->
+    <slot name="modals" />
 
     <!-- Synchronous initialization of notifications to prevent badge/dot flickering -->
     <script is:inline>

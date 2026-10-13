@@ -5,6 +5,8 @@ import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import TrlCard from "@components/TrlCard.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import TagChip from "@components/TagChip.astro";
 import { getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
 
@@ -54,44 +56,6 @@ if (repoName) {
   }
 }
 
-
-const accentColor = project.data.accentColor || 'blue';
-
-// Dynamically assign styling tokens matching the Strategic Focus Areas
-const colorClasses = {
-  blue: {
-    text: 'text-brand-blue light:text-blue-700',
-    border: 'border-brand-blue/20',
-    bg: 'bg-brand-blue/10',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-slate-950 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white',
-    hoverText: 'hover:text-brand-blue',
-    glow: 'from-brand-blue to-indigo-500 light:to-indigo-600'
-  },
-  yellow: {
-    text: 'text-brand-yellow light:text-amber-900',
-    border: 'border-brand-yellow/20',
-    bg: 'bg-brand-yellow/10',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white',
-    hoverText: 'hover:text-brand-yellow',
-    glow: 'from-brand-yellow to-orange-500 light:to-orange-600'
-  },
-  purple: {
-    text: 'text-brand-purple light:text-purple-700',
-    border: 'border-brand-purple/20',
-    bg: 'bg-brand-purple/10',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-slate-950 font-bold light:bg-purple-600 light:hover:bg-purple-700 light:text-white',
-    hoverText: 'hover:text-brand-purple',
-    glow: 'from-brand-purple to-pink-500 light:to-pink-600'
-  },
-  green: {
-    text: 'text-brand-green light:text-emerald-800',
-    border: 'border-brand-green/20',
-    bg: 'bg-brand-green/10',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-slate-950 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white',
-    hoverText: 'hover:text-brand-green',
-    glow: 'from-brand-green to-cyan-500 light:to-cyan-600'
-  }
-}[accentColor];
 
 const tech = repo?.language ?? "Web";
 const starCount = repo?.stars ?? 0;
@@ -158,14 +122,15 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
 
   <Section id="project-content" padding="standard">
     <Container size="reading" padding="none">
-    <!-- Back Button -->
-    <a 
-      href="/projects/" 
-      class={`inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-${accentColor}/10 border border-brand-${accentColor}/20 hover:border-brand-${accentColor}/30 text-brand-${accentColor} transition-all mb-8 cursor-pointer`}
-    >
-      <span>&larr;</span>
-      <span>Back to Projects</span>
-    </a>
+    <!-- Breadcrumbs Navigation -->
+    <Breadcrumbs 
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Projects", href: "/projects/" },
+        { label: project.data.title }
+      ]}
+      domain="projects"
+    />
 
     <!-- Title Header -->
     <header class="mb-12 relative">
@@ -179,12 +144,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
       {project.data.tags && project.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-2 mt-6">
           {project.data.tags.map(tag => (
-            <a 
-              href={`/tags/${tag}/`}
-              class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 ${colorClasses.bg} ${colorClasses.border} ${colorClasses.text}`}
-            >
-              #{tag}
-            </a>
+            <TagChip tag={tag} />
           ))}
         </div>
       )}
@@ -194,7 +154,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
           href={project.data.href}
           target="_blank"
           rel="noopener noreferrer"
-          class={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer ${colorClasses.btnBg}`}
+          class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer bg-domain-projects hover:bg-domain-projects/90 text-white shadow-md shadow-domain-projects/20 hover:shadow-domain-projects/35"
         >
           <span>Visit Website</span>
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -231,7 +191,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     </header>
 
     {project.data.trl && (
-      <TrlCard level={project.data.trl} accentColor={accentColor} />
+      <TrlCard level={project.data.trl} domain="projects" />
     )}
 
     <!-- Detail / Content block -->
@@ -313,8 +273,8 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     <Section id="project-screenshots" border="top" padding="standard">
       <Container size="wide" padding="none">
         <div class="mb-8 md:mb-12">
-          <h2 id="project-screenshots-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-            Project <span class={`heading-gradient-${accentColor}`}>Screenshots</span>
+          <h2 id="project-screenshots-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            Project <span class="text-domain-projects">Screenshots</span>
           </h2>
           <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
             Interface walkthroughs, system diagrams, and visual demonstrations from {project.data.title}.
@@ -324,7 +284,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {optimizedScreenshots.map((shot, index) => (
             <div 
-              class={`glass-card rounded-2xl border border-element-border overflow-hidden group cursor-pointer relative transition-all duration-300 hover:scale-[1.02] hover:border-brand-${accentColor}/30 hover:shadow-lg hover:shadow-brand-${accentColor}/5 flex flex-col`}
+              class="glass-card rounded-2xl border border-element-border overflow-hidden group cursor-pointer relative transition-all duration-300 hover:scale-[1.02] hover:border-domain-projects/40 hover:shadow-lg hover:shadow-domain-projects/10 flex flex-col"
               data-screenshot-index={index}
             >
               <!-- Image Area -->
@@ -386,7 +346,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
       </div>
       <button 
         id="lightbox-close" 
-        class="p-2.5 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+        class="p-2.5 rounded-full bg-element-bg border border-element-border-medium text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
         aria-label="Close lightbox"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -412,7 +372,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     <!-- Prev Button -->
     <button 
       id="lightbox-prev" 
-      class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/60 hover:bg-black/80 md:bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+      class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/60 hover:bg-black/80 md:bg-element-bg border border-element-border-medium text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
       aria-label="Previous image"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -423,7 +383,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
     <!-- Next Button -->
     <button 
       id="lightbox-next" 
-      class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/60 hover:bg-black/80 md:bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+      class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/60 hover:bg-black/80 md:bg-element-bg border border-element-border-medium text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
       aria-label="Next image"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -589,20 +549,20 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
   /* Lightbox text and element readability in all modes */
   #lightbox-modal h4,
   #lightbox-modal #lightbox-title {
-    color: #ffffff !important;
+    color: var(--color-text-heading) !important;
   }
   #lightbox-modal p,
   #lightbox-modal #lightbox-desc {
-    color: #9ca3af !important;
+    color: var(--color-text-subtle) !important;
   }
   #lightbox-modal #lightbox-counter {
-    color: #9ca3af !important;
+    color: var(--color-text-subtle) !important;
   }
   #lightbox-modal button {
-    color: #9ca3af !important;
+    color: var(--color-text-subtle) !important;
   }
   #lightbox-modal button:hover {
-    color: #ffffff !important;
+    color: var(--color-text-heading) !important;
   }
   #lightbox-modal svg {
     color: inherit !important;

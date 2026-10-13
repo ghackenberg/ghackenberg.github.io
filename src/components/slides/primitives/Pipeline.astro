@@ -1,6 +1,7 @@
 ---
 import { renderSlideCues } from '@commons/shared/slide-cues';
 import { Image } from 'astro:assets';
+import { getCycleAccent, type SlideAccent } from '@commons/shared/accent-system';
 
 interface Step {
   id?: string;
@@ -13,7 +14,6 @@ interface Step {
   imageTitle?: string;
   graphic?: string;
   placeholderLabel?: string;
-  accent?: 'blue' | 'cyan' | 'teal' | 'indigo' | 'green' | 'emerald' | 'amber' | 'purple' | 'neutral';
 }
 
 interface Props {
@@ -21,6 +21,8 @@ interface Props {
   id?: string;
   cue?: string;
   direction?: 'horizontal' | 'vertical';
+  startAccent?: SlideAccent;
+  accent?: SlideAccent;
   class?: string;
 }
 
@@ -29,55 +31,65 @@ const {
   id: explicitId,
   cue,
   direction = steps.length >= 4 ? 'vertical' : 'horizontal',
+  startAccent,
+  accent: baseAccent,
   class: className = ""
 } = Astro.props;
 
 const elementId = explicitId;
 
-// Presentation-wide standard sequential accent cycle
-const ACCENT_CYCLE = ['blue', 'cyan', 'indigo', 'emerald', 'amber', 'purple'] as const;
-
 const accentPills: Record<string, string> = {
-  blue: 'bg-blue-600 text-white',
-  cyan: 'bg-cyan-600 text-white',
-  teal: 'bg-cyan-600 text-white',
-  indigo: 'bg-indigo-600 text-white',
-  green: 'bg-emerald-600 text-white',
-  emerald: 'bg-emerald-600 text-white',
-  amber: 'bg-amber-600 text-white',
-  purple: 'bg-purple-600 text-white',
-  neutral: 'bg-slate-700 text-white'
+  rose: 'bg-[var(--color-slide-accent-rose)] text-white',
+  red: 'bg-[var(--color-slide-accent-rose)] text-white',
+  purple: 'bg-[var(--color-slide-accent-purple)] text-white',
+  violet: 'bg-[var(--color-slide-accent-purple)] text-white',
+  indigo: 'bg-[var(--color-slide-accent-indigo)] text-white',
+  blue: 'bg-[var(--color-slide-accent-blue)] text-white',
+  cyan: 'bg-[var(--color-slide-accent-cyan)] text-white',
+  teal: 'bg-[var(--color-slide-accent-teal)] text-white',
+  emerald: 'bg-[var(--color-slide-accent-emerald)] text-white',
+  green: 'bg-[var(--color-slide-accent-emerald)] text-white',
+  amber: 'bg-[var(--color-slide-accent-amber)] text-white',
+  yellow: 'bg-[var(--color-slide-accent-amber)] text-white',
+  orange: 'bg-[var(--color-slide-accent-orange)] text-white'
 };
 
 const accentBars: Record<string, string> = {
-  blue: 'bg-blue-500',
-  cyan: 'bg-cyan-400',
-  teal: 'bg-cyan-400',
-  indigo: 'bg-indigo-500',
-  green: 'bg-emerald-500',
-  emerald: 'bg-emerald-500',
-  amber: 'bg-amber-500',
-  purple: 'bg-purple-500',
-  neutral: 'bg-slate-500'
+  rose: 'bg-[var(--color-slide-accent-rose)]',
+  red: 'bg-[var(--color-slide-accent-rose)]',
+  purple: 'bg-[var(--color-slide-accent-purple)]',
+  violet: 'bg-[var(--color-slide-accent-purple)]',
+  indigo: 'bg-[var(--color-slide-accent-indigo)]',
+  blue: 'bg-[var(--color-slide-accent-blue)]',
+  cyan: 'bg-[var(--color-slide-accent-cyan)]',
+  teal: 'bg-[var(--color-slide-accent-teal)]',
+  emerald: 'bg-[var(--color-slide-accent-emerald)]',
+  green: 'bg-[var(--color-slide-accent-emerald)]',
+  amber: 'bg-[var(--color-slide-accent-amber)]',
+  yellow: 'bg-[var(--color-slide-accent-amber)]',
+  orange: 'bg-[var(--color-slide-accent-orange)]'
 };
 
 const accentGlass: Record<string, string> = {
-  blue: 'bg-blue-500/15 border-blue-500/35 text-blue-400 light:bg-blue-50 light:border-blue-200 light:text-blue-700',
-  cyan: 'bg-cyan-500/15 border-cyan-500/35 text-cyan-400 light:bg-cyan-50 light:border-cyan-200 light:text-cyan-700',
-  teal: 'bg-cyan-500/15 border-cyan-500/35 text-cyan-400 light:bg-cyan-50 light:border-cyan-200 light:text-cyan-700',
-  indigo: 'bg-indigo-500/15 border-indigo-500/35 text-indigo-400 light:bg-indigo-50 light:border-indigo-200 light:text-indigo-700',
-  green: 'bg-emerald-500/15 border-emerald-500/35 text-emerald-400 light:bg-emerald-50 light:border-emerald-200 light:text-emerald-700',
-  emerald: 'bg-emerald-500/15 border-emerald-500/35 text-emerald-400 light:bg-emerald-50 light:border-emerald-200 light:text-emerald-700',
-  amber: 'bg-amber-500/15 border-amber-500/35 text-amber-400 light:bg-amber-50 light:border-amber-200 light:text-amber-700',
-  purple: 'bg-purple-500/15 border-purple-500/35 text-purple-400 light:bg-purple-50 light:border-purple-200 light:text-purple-700',
-  neutral: 'bg-slate-500/15 border-slate-500/35 text-slate-300 light:bg-slate-50 light:border-slate-200 light:text-slate-700'
+  rose: 'bg-[var(--color-slide-accent-rose)]/15 border-[var(--color-slide-accent-rose)]/35 text-[var(--color-slide-accent-rose)]',
+  red: 'bg-[var(--color-slide-accent-rose)]/15 border-[var(--color-slide-accent-rose)]/35 text-[var(--color-slide-accent-rose)]',
+  purple: 'bg-[var(--color-slide-accent-purple)]/15 border-[var(--color-slide-accent-purple)]/35 text-[var(--color-slide-accent-purple)]',
+  violet: 'bg-[var(--color-slide-accent-purple)]/15 border-[var(--color-slide-accent-purple)]/35 text-[var(--color-slide-accent-purple)]',
+  indigo: 'bg-[var(--color-slide-accent-indigo)]/15 border-[var(--color-slide-accent-indigo)]/35 text-[var(--color-slide-accent-indigo)]',
+  blue: 'bg-[var(--color-slide-accent-blue)]/15 border-[var(--color-slide-accent-blue)]/35 text-[var(--color-slide-accent-blue)]',
+  cyan: 'bg-[var(--color-slide-accent-cyan)]/15 border-[var(--color-slide-accent-cyan)]/35 text-[var(--color-slide-accent-cyan)]',
+  teal: 'bg-[var(--color-slide-accent-teal)]/15 border-[var(--color-slide-accent-teal)]/35 text-[var(--color-slide-accent-teal)]',
+  emerald: 'bg-[var(--color-slide-accent-emerald)]/15 border-[var(--color-slide-accent-emerald)]/35 text-[var(--color-slide-accent-emerald)]',
+  green: 'bg-[var(--color-slide-accent-emerald)]/15 border-[var(--color-slide-accent-emerald)]/35 text-[var(--color-slide-accent-emerald)]',
+  amber: 'bg-[var(--color-slide-accent-amber)]/15 border-[var(--color-slide-accent-amber)]/35 text-[var(--color-slide-accent-amber)]',
+  yellow: 'bg-[var(--color-slide-accent-amber)]/15 border-[var(--color-slide-accent-amber)]/35 text-[var(--color-slide-accent-amber)]',
+  orange: 'bg-[var(--color-slide-accent-orange)]/15 border-[var(--color-slide-accent-orange)]/35 text-[var(--color-slide-accent-orange)]'
 };
 
-function getStepAccent(step: Step, idx: number): string {
-  if (step.accent) {
-    return step.accent;
-  }
-  return ACCENT_CYCLE[idx % ACCENT_CYCLE.length];
+const effectiveStartAccent = startAccent || baseAccent;
+
+function getStepAccent(idx: number): string {
+  return getCycleAccent(effectiveStartAccent, idx).name;
 }
 ---
 
@@ -88,7 +100,7 @@ function getStepAccent(step: Step, idx: number): string {
     class={`pipeline-container-vertical w-full h-full flex flex-col justify-between gap-3.5 lg:gap-4 min-h-0 ${className}`}
   >
     {steps.map((step, idx) => {
-      const accent = getStepAccent(step, idx);
+      const accent = getStepAccent(idx);
       const stepId = step.id;
       return (
         <div
@@ -96,18 +108,19 @@ function getStepAccent(step: Step, idx: number): string {
           data-cue={step.cue}
           data-accent={accent}
           data-autofit
-          class="step-row flex-1 rounded-2xl border border-slate-700/80 bg-slate-900/95 light:border-slate-300 light:bg-white shadow-lg flex items-stretch transition-all duration-300 relative overflow-hidden min-h-0"
+          style={`--step-accent: var(--color-slide-accent-${accent}); --hl-color: var(--color-slide-accent-${accent}); --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-${accent}) 35%, white); --hl-text-light: var(--color-slide-accent-${accent});`}
+          class="step-row flex-1 rounded-2xl border border-[var(--color-slide-card-border)] bg-[var(--color-slide-card-bg)] shadow-lg flex items-stretch transition-all duration-300 relative overflow-hidden min-h-0"
         >
           <!-- Integrated Left Glass Block -->
-          <div class={`w-20 lg:w-24 shrink-0 flex items-center justify-center font-black text-2xl lg:text-[26px] font-sans border-r ${accentGlass[accent]}`}>
+          <div class={`step-num-badge w-20 lg:w-24 shrink-0 flex items-center justify-center font-black text-2xl lg:text-[26px] font-sans border-r ${accentGlass[accent]}`}>
             {step.num}
           </div>
 
           <!-- Center: Title & description -->
           <div class="step-text-container flex-1 flex flex-col justify-center min-w-0 py-3 px-6 lg:px-8 gap-1.5">
-            <h4 class="text-2xl lg:text-[28px] font-black text-slate-100 light:text-slate-900 tracking-tight leading-snug" set:html={renderSlideCues(step.title)} />
+            <h4 class="text-2xl lg:text-[28px] font-black text-[var(--color-slide-text)] tracking-tight leading-snug" set:html={renderSlideCues(step.title)} />
             {step.desc && (
-              <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed font-normal" set:html={renderSlideCues(step.desc)} />
+              <p class="text-[var(--color-slide-text-subtle)] text-xl lg:text-2xl leading-relaxed font-normal" set:html={renderSlideCues(step.desc)} />
             )}
           </div>
 
@@ -140,7 +153,7 @@ function getStepAccent(step: Step, idx: number): string {
     class={`pipeline-container w-full h-full flex items-stretch justify-between gap-4 min-h-0 ${className}`}
   >
     {steps.map((step, idx) => {
-      const accent = getStepAccent(step, idx);
+      const accent = getStepAccent(idx);
       const stepId = step.id;
       return (
         <>
@@ -150,17 +163,17 @@ function getStepAccent(step: Step, idx: number): string {
             data-cue={step.cue}
             data-accent={accent}
             data-autofit
-            style="--content-scale: 1;"
-            class="step-card flex-1 h-full rounded-3xl border border-slate-700/80 bg-slate-900/95 light:border-slate-300 light:bg-white shadow-2xl flex flex-col justify-between relative transition-all duration-300 min-h-0 min-w-0 overflow-hidden"
+            style={`--content-scale: 1; --step-accent: var(--color-slide-accent-${accent}); --hl-color: var(--color-slide-accent-${accent}); --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-${accent}) 35%, white); --hl-text-light: var(--color-slide-accent-${accent});`}
+            class="step-card flex-1 h-full rounded-3xl border border-[var(--color-slide-card-border)] bg-[var(--color-slide-card-bg)] shadow-2xl flex flex-col justify-between relative transition-all duration-300 min-h-0 min-w-0 overflow-hidden"
           >
             <!-- Edge-to-Edge Graphic Area at the Top -->
             <div
-              class="step-graphic-area w-full relative shrink-0 overflow-hidden border-b border-slate-700/80 light:border-slate-200/80 bg-slate-800/40 light:bg-slate-100/70 flex items-center justify-center select-none transition-all duration-300"
-              style="height: 180px; min-height: 80px;"
+              class="step-graphic-area w-full relative shrink-0 overflow-hidden border-b border-[var(--color-slide-card-border)] bg-slate-800/40 light:bg-slate-100/70 flex items-center justify-center select-none transition-all duration-300"
+              style="height: 280px; min-height: 80px;"
             >
               <!-- Step Number Badge Overlaid on Top-Left -->
               <div class="step-num-container absolute top-4 left-4 z-10">
-                <span class={`w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg ring-2 ring-slate-900/40 light:ring-white/80 ${accentPills[accent]}`}>
+                <span class={`step-num-badge w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg ring-2 ring-slate-900/40 light:ring-white/80 ${accentPills[accent]}`}>
                   {step.num}
                 </span>
               </div>
@@ -199,14 +212,14 @@ function getStepAccent(step: Step, idx: number): string {
               ) : (
                 <div class="w-full h-full flex items-center justify-center relative p-4">
                   <!-- Subtle inner dashed border for placeholder aesthetic -->
-                  <div class="absolute inset-3.5 rounded-2xl border-2 border-dashed border-slate-700/50 light:border-slate-300/70 pointer-events-none"></div>
+                  <div class="absolute inset-3.5 rounded-2xl border-2 border-dashed border-[var(--color-slide-card-border)] pointer-events-none"></div>
                   <div class="flex flex-col items-center justify-center gap-2 text-center relative z-0">
-                    <div class={`w-12 h-12 rounded-xl flex items-center justify-center ${accentGlass[accent]} shadow-inner`}>
+                    <div class={`step-placeholder-icon w-12 h-12 rounded-xl flex items-center justify-center ${accentGlass[accent]} shadow-inner`}>
                       <svg class="w-6 h-6 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <span class="text-xs font-mono uppercase tracking-widest text-slate-400 light:text-slate-500 font-bold">
+                    <span class="text-xs font-mono uppercase tracking-widest text-[var(--color-slide-text-subtle)] font-bold">
                       {step.placeholderLabel || "Visualisierung"}
                     </span>
                   </div>
@@ -215,27 +228,27 @@ function getStepAccent(step: Step, idx: number): string {
             </div>
 
             <!-- Content Area below Graphic: Title, description, and bottom bar -->
-            <div class="step-content-area flex-1 p-6 lg:p-7 pt-5 flex flex-col justify-between min-h-0 min-w-0">
-              <!-- Title & description (Priority content) -->
-              <div class="step-text-container flex-1 flex flex-col justify-start gap-3 min-w-0">
-                <h4 class="text-2xl lg:text-3xl font-black text-slate-100 light:text-slate-900 tracking-tight leading-snug" set:html={renderSlideCues(step.title)} />
+            <div class="step-content-area flex-1 flex flex-col justify-between min-h-0 min-w-0" style="padding: 28px 28px 24px 28px;">
+              <!-- Title & description (Priority content, top-aligned) -->
+              <div class="step-text-container flex-1 flex flex-col justify-start gap-3.5 lg:gap-4 min-w-0">
+                <h4 class="text-2xl lg:text-3xl font-black text-[var(--color-slide-text)] tracking-tight leading-snug" set:html={renderSlideCues(step.title)} />
                 {step.desc && (
-                  <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed text-pretty font-normal" set:html={renderSlideCues(step.desc)} />
+                  <p class="text-[var(--color-slide-text-subtle)] text-xl lg:text-2xl leading-relaxed text-pretty font-normal" set:html={renderSlideCues(step.desc)} />
                 )}
               </div>
 
               <!-- Bottom decorative progress bar -->
-              <div class="step-bar-container w-full h-2 rounded-full bg-slate-800 light:bg-slate-100 overflow-hidden mt-3 shrink-0">
-                <div class={`h-full rounded-full ${accentBars[accent]}`} style="width: 100%;"></div>
+              <div class="step-bar-container w-full h-2 rounded-full bg-[var(--color-slide-card-border)] overflow-hidden shrink-0">
+                <div class={`step-progress-bar h-full rounded-full ${accentBars[accent]}`} style="width: 100%;"></div>
               </div>
             </div>
           </div>
 
           <!-- Connector arrow to next step -->
           {idx < steps.length - 1 && (
-            <div class="pipeline-arrow flex items-center justify-center px-1 text-slate-500 light:text-slate-400 font-bold text-2xl select-none shrink-0">
+            <span class="pipeline-arrow flex items-center justify-center px-1 text-slate-500 light:text-slate-400 font-bold text-2xl select-none shrink-0">
               →
-            </div>
+            </span>
           )}
         </>
       );
@@ -244,76 +257,23 @@ function getStepAccent(step: Step, idx: number): string {
 )}
 
 <script>
+  import { AutoFitController } from '@components/slides/player/AutoFitController';
+
   let isSyncing = false;
+  const autoFit = new AutoFitController({
+    minScale: 0.80,
+    maxScale: 1.45,
+    minClearance: 16,
+    iterations: 6,
+  });
 
   function syncPipelineGraphics() {
     if (isSyncing) return;
     isSyncing = true;
 
     try {
-      document.querySelectorAll<HTMLElement>('.pipeline-container').forEach(container => {
-        const cards = Array.from(container.querySelectorAll<HTMLElement>('.step-card'));
-        if (cards.length === 0) return;
-
-        const firstCard = cards[0];
-        if (firstCard.clientHeight === 0) return;
-
-        const graphicAreas = cards.map(c => c.querySelector<HTMLElement>('.step-graphic-area'));
-        const contentAreas = cards.map(c => c.querySelector<HTMLElement>('.step-content-area'));
-        const textContainers = cards.map(c => c.querySelector<HTMLElement>('.step-text-container'));
-        const barContainers = cards.map(c => c.querySelector<HTMLElement>('.step-bar-container'));
-
-        // 1. Reset scale temporarily without important to measure natural text requirements
-        cards.forEach(c => c.style.setProperty('--content-scale', '1'));
-        graphicAreas.forEach(ga => {
-          if (ga) {
-            ga.style.height = '0px';
-            ga.style.minHeight = '0px';
-          }
-        });
-
-        // 2. Measure required space for the text area with priority
-        let minRemainingForGraphic = Infinity;
-
-        cards.forEach((card, idx) => {
-          const contentArea = contentAreas[idx];
-          const contentStyle = contentArea ? window.getComputedStyle(contentArea) : null;
-          const padTop = contentStyle ? (parseFloat(contentStyle.paddingTop) || 20) : 20;
-          const padBottom = contentStyle ? (parseFloat(contentStyle.paddingBottom) || 28) : 28;
-
-          const barH = barContainers[idx]?.offsetHeight || 8;
-          const barMarginTop = 12; // mt-3
-          const clearance = 24; // Generous breathing room so text never feels cramped
-
-          // Measure true unconstrained natural height of text at scale 1 in local unscaled coordinates
-          const textEl = textContainers[idx];
-          const h4 = textEl ? textEl.querySelector<HTMLElement>('h4') : null;
-          const p = textEl ? textEl.querySelector<HTMLElement>('p') : null;
-          const h4H = h4 ? h4.offsetHeight : 0;
-          const pH = p ? p.offsetHeight : 0;
-          const textGap = (h4 && p) ? 12 : 0;
-          const textContentH = h4H + pH + textGap;
-
-          const totalTextRequirement = textContentH + padTop + padBottom + barH + barMarginTop + clearance;
-          const remaining = card.clientHeight - totalTextRequirement;
-
-          if (remaining < minRemainingForGraphic) {
-            minRemainingForGraphic = remaining;
-          }
-        });
-
-        // The graphic area receives the remaining space, capped to natural 16:9 aspect ratio
-        const cardWidth = firstCard.clientWidth || 380;
-        const natural169Height = Math.round(cardWidth * (9 / 16));
-        const targetHeight = Math.max(60, Math.min(natural169Height, Math.floor(minRemainingForGraphic)));
-
-        // 3. Apply exact identical targetHeight to all graphic areas in this pipeline
-        graphicAreas.forEach(ga => {
-          if (ga) {
-            ga.style.height = `${targetHeight}px`;
-            ga.style.minHeight = `${targetHeight}px`;
-          }
-        });
+      document.querySelectorAll<HTMLElement>('.pipeline-container, .pipeline-container-vertical').forEach(container => {
+        autoFit.fitPipeline(container);
       });
     } finally {
       isSyncing = false;
@@ -324,7 +284,7 @@ function getStepAccent(step: Step, idx: number): string {
     syncPipelineGraphics();
 
     if ('ResizeObserver' in window) {
-      document.querySelectorAll<HTMLElement>('.pipeline-container').forEach(container => {
+      document.querySelectorAll<HTMLElement>('.pipeline-container, .pipeline-container-vertical').forEach(container => {
         if (container.dataset.pipelineRoAttached) return;
         container.dataset.pipelineRoAttached = 'true';
 

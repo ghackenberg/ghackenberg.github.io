@@ -1,0 +1,120 @@
+---
+// Slide References Modal Component
+// Centered modal dialog, fully accessible, light- & dark-mode polished, matching PrivacyModal architecture
+---
+
+<div 
+  id="references-modal-backdrop" 
+  class="fixed inset-0 z-[110] bg-black/75 light:bg-slate-900/25 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="references-modal-title"
+  aria-hidden="true"
+  inert
+>
+  <div 
+    id="references-modal-container"
+    class="glass-panel w-full max-w-lg sm:max-w-xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(92dvh,760px)] bg-pane border-element-border-medium text-gray-100 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
+  >
+    <!-- Header (Sticky/Shrink-0) -->
+    <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-element-border light:border-slate-200/80 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-domain-publications/15 border border-domain-publications/30 text-domain-publications flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <div class="min-w-0 flex flex-col justify-center">
+          <div class="flex items-center gap-2">
+            <h2 id="references-modal-title" class="text-lg sm:text-xl font-bold tracking-tight text-white light:text-slate-900 leading-tight truncate">
+              Slide <span class="text-domain-publications">References</span>
+            </h2>
+            <span id="references-modal-slide-badge" class="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-domain-publications/15 text-domain-publications border border-domain-publications/30 shrink-0">
+              Slide 01
+            </span>
+          </div>
+          <p id="references-modal-subtitle" class="text-xs text-gray-400 light:text-slate-500 mt-0.5 leading-tight truncate">
+            Academic citations & source materials
+          </p>
+        </div>
+      </div>
+
+      <!-- Close Button -->
+      <button 
+        id="btn-close-references-modal"
+        type="button"
+        class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-element-border-high text-gray-400 hover:text-gray-100 light:hover:text-slate-900 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
+        aria-label="Close references modal"
+        title="Close (ESC / R)"
+      >
+        <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scrollable Content Body -->
+    <div id="references-modal-body" class="modal-body flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 space-y-3 sm:space-y-4 custom-scrollbar min-h-0">
+      <!-- Dynamically populated per slide -->
+    </div>
+
+    <!-- Footer (Sticky/Shrink-0) -->
+    <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-element-border light:border-slate-200/80 flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-500 bg-element-bg/30 light:bg-slate-50/50">
+      <span class="hidden sm:inline">Shortcut: <kbd class="px-1.5 py-0.5 rounded bg-element-bg light:bg-slate-200 font-mono text-[10px] text-gray-300 light:text-slate-700 border border-element-border-medium light:border-slate-300">R</kbd> or <kbd class="px-1.5 py-0.5 rounded bg-element-bg light:bg-slate-200 font-mono text-[10px] text-gray-300 light:text-slate-700 border border-element-border-medium light:border-slate-300">ESC</kbd></span>
+      <button
+        id="btn-jump-to-transcript-from-modal"
+        type="button"
+        class="inline-flex items-center gap-1.5 text-domain-publications hover:underline font-semibold transition-colors cursor-pointer ml-auto"
+      >
+        <span>View in full transcript</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Safe-area insets and iOS momentum touch scrolling for references modal */
+  #references-modal-backdrop {
+    padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
+    padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
+  }
+
+  #references-modal-body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .slide-deck-wrapper #references-modal-backdrop {
+    z-index: 1000 !important;
+  }
+
+  /* References Modal Light Mode Appearance matching PrivacyModal & WhatsNewModal */
+  html.light #references-modal-backdrop {
+    background-color: rgba(15, 23, 42, 0.25) !important;
+  }
+  html.light #references-modal-container {
+    background-color: rgb(255, 255, 255) !important;
+    border-color: rgba(15, 23, 42, 0.12) !important;
+    color: rgb(30, 41, 59) !important;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
+  }
+  html.light #references-modal-container .modal-header,
+  html.light #references-modal-container #references-modal-body {
+    background-color: rgb(255, 255, 255) !important;
+  }
+  html.light #references-modal-container .modal-header {
+    border-color: rgba(15, 23, 42, 0.08) !important;
+  }
+  html.light #references-modal-container .modal-header h2 {
+    color: rgb(15, 23, 42) !important;
+  }
+  html.light #references-modal-container .modal-header p {
+    color: rgb(100, 116, 139) !important;
+  }
+  html.light #references-modal-container .modal-footer {
+    background-color: rgb(248, 250, 252) !important;
+    border-color: rgba(15, 23, 42, 0.08) !important;
+  }
+</style>

@@ -4,6 +4,8 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import TagChip from "@components/TagChip.astro";
 import { getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
 
@@ -93,13 +95,15 @@ const breadcrumbSchema = {
   <Section id="visualization-content" padding="standard">
     <!-- Header in Reading Width -->
     <Container size="reading" padding="none">
-      <a 
-        href="/visualizations/" 
-        class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-green/10 border border-brand-green/20 hover:border-brand-green/30 text-brand-green transition-all mb-8 cursor-pointer self-start"
-      >
-        <span>&larr;</span>
-        <span>Back to Visualizations</span>
-      </a>
+      <!-- Breadcrumbs Navigation -->
+      <Breadcrumbs 
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Visualizations", href: "/visualizations/" },
+          { label: title }
+        ]}
+        domain="visualizations"
+      />
 
       <header class="mb-12 relative">
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
@@ -113,12 +117,7 @@ const breadcrumbSchema = {
         {vis.data.tags && vis.data.tags.length > 0 && (
           <div class="flex flex-wrap gap-2 mt-6">
             {vis.data.tags.map((tag: string) => (
-              <a
-                href={`/tags/${tag}/`}
-                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 bg-brand-green/10 border-brand-green/20 text-brand-green hover:bg-brand-green/20 hover:border-brand-green/30"
-              >
-                #{tag}
-              </a>
+              <TagChip tag={tag} />
             ))}
           </div>
         )}
@@ -129,45 +128,49 @@ const breadcrumbSchema = {
     <Container size="wide" padding="none">
       <div class="flex-grow w-full relative min-h-[500px] h-[70vh] md:h-[calc(100vh-320px)] rounded-3xl border border-element-border glass-card hover:transform-none overflow-hidden shadow-2xl mb-12">
         <!-- Floating Glassmorphic Legend (Positioned top-left, responsive on mobile & desktop) -->
-        <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-white/10 light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
+        <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 max-w-[calc(100%-1.5rem)] flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 rounded-2xl bg-gray-950/60 light:bg-white/80 backdrop-blur-md border border-element-border-medium light:border-slate-200/80 shadow-md text-xs pointer-events-none select-none">
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-sky-400 border border-white/20 shadow-sm shadow-sky-400/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-tags border border-white/20 shadow-sm shadow-domain-tags/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Tags</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 border border-white/20 shadow-sm shadow-rose-500/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-interests border border-white/20 shadow-sm shadow-domain-interests/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Interests</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-blue border border-white/20 shadow-sm shadow-brand-blue/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-posts border border-white/20 shadow-sm shadow-domain-posts/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Posts</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 border border-white/20 shadow-sm shadow-indigo-500/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-publications border border-white/20 shadow-sm shadow-domain-publications/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Publications</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyan-500 border border-white/20 shadow-sm shadow-cyan-500/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-presentations border border-white/20 shadow-sm shadow-domain-presentations/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Presentations</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-yellow border border-white/20 shadow-sm shadow-brand-yellow/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-courses border border-white/20 shadow-sm shadow-domain-courses/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Courses</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-green border border-white/20 shadow-sm shadow-brand-green/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-projects border border-white/20 shadow-sm shadow-domain-projects/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Projects</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-purple border border-white/20 shadow-sm shadow-brand-purple/30"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-services border border-white/20 shadow-sm shadow-domain-services/30"></span>
             <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Services</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-domain-visualizations border border-white/20 shadow-sm shadow-domain-visualizations/30"></span>
+            <span class="text-gray-200 light:text-slate-700 font-semibold text-[11px] sm:text-xs">Visualizations</span>
           </div>
         </div>
 
         <!-- Floating Controls: Layout Dropdown Selector -->
         <div 
           id="layout-control-container"
-          class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20 flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-gray-950/70 light:bg-white/90 backdrop-blur-md border border-white/10 light:border-slate-200 shadow-md text-xs"
+          class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20 flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-gray-950/70 light:bg-white/90 backdrop-blur-md border border-element-border-medium light:border-slate-200 shadow-md text-xs"
         >
           <label for="layout-selector" class="flex items-center space-x-1.5 text-gray-400 light:text-slate-500 font-medium select-none">
             <svg class="w-3.5 h-3.5 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -227,6 +230,8 @@ const breadcrumbSchema = {
 
   <!-- Inject Graph Boot Scripts -->
   <script>
+    import { getThemeTokens } from '@commons/shared/domain-themes';
+
     interface VisNetworkNode {
       id: string;
       name: string;
@@ -334,13 +339,14 @@ const breadcrumbSchema = {
           // Populate the layout dropdown
           if (selector) {
             const isLightMode = document.documentElement.classList.contains('light');
+            const tokens = getThemeTokens(isLightMode);
             selector.innerHTML = '';
             engine.layouts.forEach((l: { id: string; label: string }) => {
               const option = document.createElement('option');
               option.value = l.id;
               option.textContent = l.label;
-              option.style.backgroundColor = isLightMode ? '#ffffff' : '#030712';
-              option.style.color = isLightMode ? '#0f172a' : '#ffffff';
+              option.style.backgroundColor = tokens.background;
+              option.style.color = tokens.textHeading;
               selector.appendChild(option);
             });
             selector.value = currentLayout;
@@ -387,10 +393,11 @@ const breadcrumbSchema = {
       // Handle theme change dynamically without reloading canvas
       window.addEventListener('theme-changed', () => {
         const isLight = document.documentElement.classList.contains('light');
+        const tokens = getThemeTokens(isLight);
         if (selector) {
           Array.from(selector.options).forEach((option) => {
-            option.style.backgroundColor = isLight ? '#ffffff' : '#030712';
-            option.style.color = isLight ? '#0f172a' : '#ffffff';
+            option.style.backgroundColor = tokens.background;
+            option.style.color = tokens.textHeading;
           });
         }
         if (activeInstance) {
@@ -411,12 +418,12 @@ const breadcrumbSchema = {
 
   /* Style layout selector options */
   #layout-selector option {
-    background: #030712;
-    color: #f3f4f6;
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
   }
   :global(.light) #layout-selector option {
-    background: #ffffff;
-    color: #0f172a;
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
   }
 
   /* Typography for semantic visualization details */
@@ -434,12 +441,12 @@ const breadcrumbSchema = {
     margin-bottom: 1.25rem;
   }
   .visualization-details :global(a) {
-    color: #3b82f6;
+    color: var(--color-domain-visualizations);
     text-decoration: underline;
     text-underline-offset: 3px;
   }
   .visualization-details :global(a:hover) {
-    color: #60a5fa;
+    color: var(--color-domain-visualizations);
   }
   .visualization-details :global(table) {
     width: 100%;

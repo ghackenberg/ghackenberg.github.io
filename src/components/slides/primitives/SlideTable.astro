@@ -1,0 +1,99 @@
+---
+import { renderSlideCues } from '@commons/shared/slide-cues';
+
+export interface SlideTableRowObject {
+  cue?: string;
+  values: string[];
+  highlightIndex?: number;
+}
+
+export type SlideTableRow = SlideTableRowObject | string[];
+
+interface Props {
+  headers: string[];
+  rows: SlideTableRow[];
+  caption?: string;
+  cue?: string;
+  id?: string;
+  class?: string;
+}
+
+const {
+  headers,
+  rows = [],
+  caption,
+  cue,
+  id,
+  class: className = ""
+} = Astro.props;
+
+const normalizedRows: SlideTableRowObject[] = rows.map((row) => {
+  if (Array.isArray(row)) {
+    return { values: row, cue: undefined, highlightIndex: undefined };
+  }
+  return row;
+});
+---
+
+<div
+  id={id}
+  data-cue={cue}
+  class={`slide-table-container w-full overflow-hidden flex flex-col justify-start ${className}`}
+>
+  {caption && (
+    <div
+      class="slide-table-caption text-sm lg:text-base font-mono uppercase tracking-wider text-[var(--color-slide-text-subtle)] mb-2 shrink-0"
+      set:html={renderSlideCues(caption)}
+    />
+  )}
+  <div class="slide-table-wrapper w-full overflow-x-auto rounded-2xl border border-[var(--card-accent)]/30 bg-[var(--color-slide-card-bg)] shadow-md">
+    <table class="slide-table w-full border-collapse text-left">
+      <thead>
+        <tr class="border-b border-[var(--card-accent)]/30 font-mono text-sm lg:text-base uppercase tracking-wider text-[var(--card-accent)]">
+          {headers.map((header) => (
+            <th class="slide-table-th px-4 py-3 font-bold" set:html={renderSlideCues(header)} />
+          ))}
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-[var(--card-accent)]/20 text-base lg:text-lg text-[var(--color-slide-text)]">
+        {normalizedRows.map((row) => (
+          <tr data-cue={row.cue} class="slide-table-tr transition-colors duration-200 hover:bg-[var(--card-accent)]/5">
+            {row.values.map((val, cellIdx) => {
+              const isHighlighted = row.highlightIndex !== undefined && row.highlightIndex === cellIdx;
+              return (
+                <td
+                  class={`slide-table-td px-4 py-3 leading-relaxed ${isHighlighted ? 'font-bold text-[var(--card-accent)] bg-[var(--card-accent)]/10' : ''}`}
+                  set:html={renderSlideCues(val)}
+                />
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .slide-table-container {
+    --effective-table-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
+    --card-accent: var(--effective-table-accent);
+  }
+  .slide-table-caption {
+    font-size: calc(0.875rem * var(--content-scale, 1)) !important;
+    margin-bottom: calc(0.5rem * var(--content-scale, 1)) !important;
+  }
+  .slide-table-th {
+    padding: calc(0.75rem * var(--content-scale, 1)) calc(1rem * var(--content-scale, 1)) !important;
+    font-size: calc(1rem * var(--content-scale, 1)) !important;
+    line-height: 1.25 !important;
+  }
+  .slide-table-td {
+    padding: calc(0.75rem * var(--content-scale, 1)) calc(1rem * var(--content-scale, 1)) !important;
+    font-size: calc(1.125rem * var(--content-scale, 1)) !important;
+    line-height: 1.4 !important;
+  }
+  :global(.light) .slide-table-container .slide-table-wrapper {
+    background-color: color-mix(in srgb, var(--card-accent) 4%, white) !important;
+  }
+</style>

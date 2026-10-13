@@ -1,16 +1,18 @@
 ---
+import { getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
+import { formatDate } from "@commons/shared/format";
 
 interface Props {
   id: string;
   title: string;
   author: string;
-  pubDate: string;
+  pubDate: Date | string;
   book?: string;
   tags?: string[];
-  icon?: string | ImageMetadata;
   publisherUrl?: string;
   activeTag?: string | string[];
+  icon?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
 }
 
 const { 
@@ -20,94 +22,122 @@ const {
   pubDate, 
   book, 
   tags = [], 
-  icon, 
-  activeTag
+  activeTag,
+  icon
 } = Astro.props;
 
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
-const iconSrc = typeof icon === 'object' && icon !== null && 'src' in icon ? icon.src : icon;
+
+type CoverImageObject = { src: ImageMetadata; title?: string; description?: string };
+
+const isCoverObj = Boolean(
+  icon &&
+  typeof icon === 'object' &&
+  'src' in icon &&
+  typeof (icon as { src: ImageMetadata | string }).src === 'object'
+);
+const coverObj = isCoverObj ? (icon as CoverImageObject) : null;
+const iconImg = coverObj
+  ? coverObj.src
+  : (icon as ImageMetadata | string | undefined);
+const iconTitle = coverObj?.title || title;
+const iconDesc = coverObj?.description || `Publication preview: ${title}`;
+
+const isSvg = Boolean(iconImg && typeof iconImg === 'object' && 'format' in iconImg && iconImg.format === 'svg');
+
+const optimizedIcon = iconImg && typeof iconImg === 'object' && !isSvg ? await getImage({
+  src: iconImg as ImageMetadata,
+  format: 'webp',
+  width: 800,
+  quality: 80
+}) : null;
 ---
 
 <article 
-  class="glass-card preview-card p-4 rounded-2xl border border-element-border group flex flex-col md:flex-row items-stretch gap-4 md:gap-5 relative cursor-pointer hover:border-brand-purple/30 h-auto w-full" 
+  class="glass-card preview-card border border-element-border flex flex-col items-stretch group relative cursor-pointer hover:border-domain-publications/40 transition-all duration-300 h-full w-full overflow-hidden" 
   data-card-id={id} 
   data-collection="publications"
 >
-  <!-- Absolute overlay link for card clickability -->
-  <a href={`/publications/${id}/`} class="absolute inset-0 z-10" aria-label={title}></a>
-
-  <!-- Unread corner ribbon badge -->
-  <span 
-    class="unread-dot hidden badge-new badge-new-purple badge-corner-tr" 
-    data-item-url={`/publications/${id}/`}
-    title="Unread publication"
-  >UNREAD</span>
-
-  <!-- Preview image container (Desktop only: fixed width, variable height stretching with text) -->
-  <div class="hidden md:flex shrink-0 w-44 lg:w-48 self-stretch rounded-xl overflow-hidden border border-element-border-medium bg-gray-900/50 items-center justify-center relative">
-    {iconSrc ? (
-      <img 
-        src={iconSrc} 
-        alt={`Publication preview: ${title}`} 
-        title={title}
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-        loading="lazy" 
-        decoding="async" 
-      />
+  <!-- Image panel -->
+  <div class="w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 light:bg-slate-100 flex items-center justify-center relative z-10">
+    <a href={`/publications/${id}/`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
+    {iconImg ? (
+      <div class="relative w-full h-full min-h-[160px] overflow-hidden flex items-center justify-center">
+        <img
+          src={optimizedIcon ? optimizedIcon.src : (typeof iconImg === 'string' ? iconImg : (iconImg?.src || ''))}
+          alt={iconDesc}
+          title={iconTitle}
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent block light:hidden pointer-events-none z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent hidden light:block pointer-events-none z-10"></div>
+      </div>
     ) : (
-      <div class="w-full h-full bg-gradient-to-br from-brand-purple/20 via-brand-purple/10 to-indigo-950/40 light:to-purple-100/40 flex items-center justify-center text-brand-purple/50 light:text-brand-purple/70">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+      <div class="absolute inset-0 bg-gradient-to-br from-domain-publications/20 via-element-bg to-bg-main flex items-center justify-center">
+        <svg class="w-12 h-12 text-domain-publications/30 light:text-domain-publications/50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
         </svg>
       </div>
     )}
+    <span class="unread-dot hidden badge-new badge-new-publications badge-corner-tr" data-item-url={`/publications/${id}/`} title="Unread publication">UNREAD</span>
   </div>
 
-  <!-- Content / Information rows -->
-  <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-    <!-- Text metadata cluster -->
-    <div class="pub-card-meta flex flex-col gap-2 md:gap-2.5 min-w-0">
-      <!-- Row 1: Title -->
-      <div class="flex items-center min-w-0">
-        <h3 class="text-base sm:text-lg font-bold text-gray-100 group-hover:text-brand-purple transition-colors whitespace-normal pr-14 leading-snug min-w-0 w-full" title={title}>
-          {title}
-        </h3>
-      </div>
-
-      <!-- Row 2: Authors -->
-      <p class="text-gray-300 text-xs sm:text-sm font-normal whitespace-normal min-w-0 leading-normal">
-        <span set:html={author} />
-      </p>
-
-      <!-- Row 3: Book/Venue + Date -->
-      <p class="text-gray-400 text-xs font-normal italic whitespace-normal min-w-0 leading-normal">
-        {book ? `${book}, ${pubDate}` : pubDate}
-      </p>
+  <!-- Content / Information Body -->
+  <div class="flex-grow flex flex-col relative z-10 preview-card-body">
+    <!-- Date row -->
+    <div class="mb-1">
+      <time class="text-xs font-semibold text-domain-publications">
+        {formatDate(pubDate, 'short')}
+      </time>
     </div>
 
-    <!-- Action cluster: Tags and Read More button -->
-    <div class="pub-card-actions flex flex-col gap-3 md:gap-3.5 mt-auto pt-3 md:pt-3.5 w-full relative z-20">
-      <!-- Row 4: Tags -->
-      <div class="pub-tags-container flex flex-wrap items-center gap-1.5 min-w-0 w-full relative z-20">
-        {tags && tags.map(tag => (
-          <a 
-            href={`/tags/${tag}/`}
-            data-tag={tag}
-            class={`tag-chip tag-chip-purple inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border shrink-0 hover:scale-105 transition-all ${
-              isTagActive(tag) ? 'active-tag-match' : ''
-            }`}
-          >
-            #{tag}
-          </a>
-        ))}
+    <!-- Book / Venue row -->
+    {book && (
+      <div class="mb-2.5">
+        <span class="text-xs font-medium text-gray-400 light:text-slate-500 italic line-clamp-2 leading-relaxed" title={book}>
+          {book}
+        </span>
       </div>
+    )}
 
-      <!-- Row 5: Read More Button -->
-      <div class="w-full relative z-20">
+    <!-- Title -->
+    <h2 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-publications light:group-hover:text-domain-publications transition-colors leading-snug">
+      <a href={`/publications/${id}/`} class="after:absolute after:inset-0 after:z-10">
+        {title}
+      </a>
+    </h2>
+
+    <!-- Authors -->
+    <p class="text-gray-300 light:text-slate-600 text-xs sm:text-sm font-normal mb-3 leading-relaxed">
+      <span set:html={author} />
+    </p>
+
+    <!-- Tags & Action Button Area -->
+    <div class="flex-grow flex flex-col mt-auto pt-2">
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 self-start">
+          {tags.map(tag => (
+            <a 
+              href={`/tags/${tag}/`}
+              data-tag={tag}
+              class={`tag-chip tag-chip-indigo inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 transition-all ${
+                isTagActive(tag) ? 'active-tag-match' : ''
+              }`}
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )}
+
+      <!-- Read more button — full width, pinned to bottom -->
+      <div class="mt-auto pt-5 w-full">
         <a 
           href={`/publications/${id}/`} 
           aria-label={`Read More: ${title}`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700 text-xs font-bold relative z-20 transition-all duration-200"
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-publications/12 hover:bg-domain-publications/25 border border-domain-publications/20 hover:border-domain-publications/45 text-domain-publications text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

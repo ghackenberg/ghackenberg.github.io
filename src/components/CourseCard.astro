@@ -53,7 +53,7 @@ const optimizedScreenshotLight = screenshotLightImg ? await getImage({
 const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
 ---
 
-<article class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-brand-yellow/30" data-card-id={cardId} data-collection="courses">
+<article class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-domain-courses/40" data-card-id={cardId} data-collection="courses">
   <!-- Absolute overlay link for card clickability -->
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
 
@@ -69,14 +69,14 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
       >
         <defs>
           <linearGradient id={`grad-course-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-            <stop offset="60%" stop-color="#000000" stop-opacity="0.25" />
-            <stop offset="100%" stop-color="#000000" stop-opacity="0.85" />
+            <stop offset="0%" stop-color="black" stop-opacity="0" />
+            <stop offset="60%" stop-color="black" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="black" stop-opacity="0.85" />
           </linearGradient>
           <linearGradient id={`grad-course-light-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-            <stop offset="60%" stop-color="#000000" stop-opacity="0.15" />
-            <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
+            <stop offset="0%" stop-color="black" stop-opacity="0" />
+            <stop offset="60%" stop-color="black" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="black" stop-opacity="0.45" />
           </linearGradient>
         </defs>
         <image 
@@ -125,7 +125,7 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
     ) : (
       <>
         <!-- Premium gradient placeholder for missing preview -->
-        <div class="absolute inset-0 bg-gradient-to-br from-brand-yellow/20 via-brand-purple/5 to-blue-950/40 light:to-slate-100/40 group-hover:scale-105 transition-transform duration-500 z-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-domain-courses/20 via-brand-purple/5 to-bg-main/40 light:to-slate-100/40 group-hover:scale-105 transition-transform duration-500 z-0"></div>
         <div class="text-4xl select-none relative z-10 filter opacity-60 group-hover:scale-110 transition-transform duration-500">
           🎓
         </div>
@@ -148,7 +148,7 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
   <!-- Details -->
   <div class="preview-card-body flex flex-col flex-grow border-t border-element-border">
     <div>
-      <h2 class="text-lg font-bold text-gray-100 mb-2 group-hover:text-brand-yellow transition-colors leading-tight">
+      <h2 class="text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-courses transition-colors leading-tight">
         {title}
       </h2>
 
@@ -167,7 +167,7 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
             <a
               href={`/tags/${tag}/`}
               data-tag={tag}
-              class={`tag-chip tag-chip-yellow inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              class={`tag-chip tag-chip-cyan inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
                 isTagActive(tag) ? 'active-tag-match' : ''
               }`}
             >
@@ -182,7 +182,7 @@ const cardId = href.replace(/^\/courses\//, '').replace(/\/$/, '') || title;
         <a 
           href={href} 
           aria-label={`Read More: ${title}`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-900 text-xs font-bold relative z-20 transition-all duration-200"
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-courses/12 hover:bg-domain-courses/25 border border-domain-courses/20 hover:border-domain-courses/45 text-domain-courses text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

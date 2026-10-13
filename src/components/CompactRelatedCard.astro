@@ -2,6 +2,7 @@
 import { getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import type { ContentCollectionName } from "@commons/server/related-content";
+import { formatDate } from "@commons/shared/format";
 
 interface Props {
   id?: string;
@@ -10,7 +11,7 @@ interface Props {
   description?: string;
   date?: Date | string;
   collection: ContentCollectionName;
-  color?: 'blue' | 'indigo' | 'cyan' | 'yellow' | 'emerald' | 'purple' | 'rose' | 'teal' | 'green';
+  color?: string;
   image?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
   icon?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
   fallbackIcon?: string;
@@ -26,7 +27,6 @@ const {
   description,
   date,
   collection,
-  color,
   image,
   icon,
   fallbackIcon,
@@ -34,17 +34,6 @@ const {
   activeTag,
   class: className = "",
 } = Astro.props;
-
-const defaultColors: Record<ContentCollectionName, 'blue' | 'indigo' | 'cyan' | 'yellow' | 'emerald' | 'purple' | 'rose' | 'teal'> = {
-  interests: "rose",
-  posts: "blue",
-  publications: "indigo",
-  presentations: "cyan",
-  courses: "yellow",
-  projects: "emerald",
-  services: "purple",
-  visualizations: "teal",
-};
 
 const defaultIcons: Record<string, string> = {
   interests: "🎯",
@@ -64,141 +53,141 @@ const TYPE_CONFIG: Record<
   posts: {
     label: "Post",
     icon: "✍️",
-    badgeStyle: "bg-brand-blue/15 text-brand-blue light:text-blue-700 border-brand-blue/30",
+    badgeStyle: "bg-domain-posts/15 text-domain-posts border-domain-posts/30",
   },
   courses: {
     label: "Course",
     icon: "🎓",
-    badgeStyle: "bg-brand-yellow/15 text-brand-yellow light:text-amber-800 border-brand-yellow/30",
+    badgeStyle: "bg-domain-courses/15 text-domain-courses border-domain-courses/30",
   },
   publications: {
     label: "Publication",
     icon: "📚",
-    badgeStyle: "bg-indigo-500/15 text-indigo-400 light:text-indigo-700 border-indigo-500/30",
+    badgeStyle: "bg-domain-publications/15 text-domain-publications border-domain-publications/30",
   },
   presentations: {
     label: "Presentation",
     icon: "🖥️",
-    badgeStyle: "bg-cyan-500/15 text-cyan-400 light:text-cyan-700 border-cyan-500/30",
+    badgeStyle: "bg-domain-presentations/15 text-domain-presentations border-domain-presentations/30",
   },
   projects: {
     label: "Project",
     icon: "🚀",
-    badgeStyle: "bg-emerald-500/15 text-emerald-400 light:text-emerald-700 border-emerald-500/30",
+    badgeStyle: "bg-domain-projects/15 text-domain-projects border-domain-projects/30",
   },
   services: {
     label: "Service",
     icon: "💼",
-    badgeStyle: "bg-brand-purple/15 text-brand-purple light:text-purple-700 border-brand-purple/30",
+    badgeStyle: "bg-domain-services/15 text-domain-services border-domain-services/30",
   },
   interests: {
     label: "Interest",
     icon: "🎯",
-    badgeStyle: "bg-rose-500/15 text-rose-400 light:text-rose-700 border-rose-500/30",
+    badgeStyle: "bg-domain-interests/15 text-domain-interests border-domain-interests/30",
   },
   visualizations: {
     label: "Visualization",
     icon: "🌐",
-    badgeStyle: "bg-teal-500/15 text-teal-400 light:text-teal-700 border-teal-500/30",
+    badgeStyle: "bg-domain-visualizations/15 text-domain-visualizations border-domain-visualizations/30",
   },
 };
 
 const typeInfo = TYPE_CONFIG[collection] || {
   label: collection,
   icon: fallbackIcon || defaultIcons[collection] || "📄",
-  badgeStyle: "bg-gray-500/15 text-gray-400 light:text-slate-600 border-gray-500/25",
+  badgeStyle: "bg-domain-posts/15 text-domain-posts border-domain-posts/30",
 };
 
-const cardColor = color || defaultColors[collection] || "blue";
-
-const COLOR_THEMES = {
-  blue: {
-    borderHover: "hover:border-brand-blue/50",
-    titleHover: "group-hover:text-brand-blue",
-    arrowHover: "group-hover:text-brand-blue",
+const DOMAIN_THEMES: Record<
+  ContentCollectionName,
+  {
+    borderHover: string;
+    titleHover: string;
+    arrowHover: string;
+    badgeClass: string;
+    tagChip: string;
+    fallbackBg: string;
+  }
+> = {
+  posts: {
+    borderHover: "hover:border-domain-posts/50",
+    titleHover: "group-hover:text-domain-posts",
+    arrowHover: "group-hover:text-domain-posts",
+    badgeClass: "badge-new-violet",
+    tagChip: "tag-chip-violet",
+    fallbackBg: "bg-domain-posts/10 text-domain-posts",
+  },
+  publications: {
+    borderHover: "hover:border-domain-publications/50",
+    titleHover: "group-hover:text-domain-publications",
+    arrowHover: "group-hover:text-domain-publications",
+    badgeClass: "badge-new-indigo",
+    tagChip: "tag-chip-indigo",
+    fallbackBg: "bg-domain-publications/10 text-domain-publications",
+  },
+  presentations: {
+    borderHover: "hover:border-domain-presentations/50",
+    titleHover: "group-hover:text-domain-presentations",
+    arrowHover: "group-hover:text-domain-presentations",
     badgeClass: "badge-new-blue",
     tagChip: "tag-chip-blue",
-    fallbackBg: "bg-brand-blue/10 text-brand-blue",
+    fallbackBg: "bg-domain-presentations/10 text-domain-presentations",
   },
-  indigo: {
-    borderHover: "hover:border-indigo-500/50",
-    titleHover: "group-hover:text-indigo-400 light:group-hover:text-indigo-700",
-    arrowHover: "group-hover:text-indigo-400 light:group-hover:text-indigo-700",
-    badgeClass: "badge-new-purple",
-    tagChip: "tag-chip-purple",
-    fallbackBg: "bg-indigo-500/10 text-indigo-400 light:text-indigo-700",
+  courses: {
+    borderHover: "hover:border-domain-courses/50",
+    titleHover: "group-hover:text-domain-courses",
+    arrowHover: "group-hover:text-domain-courses",
+    badgeClass: "badge-new-cyan",
+    tagChip: "tag-chip-cyan",
+    fallbackBg: "bg-domain-courses/10 text-domain-courses",
   },
-  cyan: {
-    borderHover: "hover:border-cyan-500/50",
-    titleHover: "group-hover:text-cyan-400 light:group-hover:text-cyan-700",
-    arrowHover: "group-hover:text-cyan-400 light:group-hover:text-cyan-700",
-    badgeClass: "badge-new-blue",
-    tagChip: "tag-chip-blue",
-    fallbackBg: "bg-cyan-500/10 text-cyan-400 light:text-cyan-700",
+  projects: {
+    borderHover: "hover:border-domain-projects/50",
+    titleHover: "group-hover:text-domain-projects",
+    arrowHover: "group-hover:text-domain-projects",
+    badgeClass: "badge-new-teal",
+    tagChip: "tag-chip-teal",
+    fallbackBg: "bg-domain-projects/10 text-domain-projects",
   },
-  yellow: {
-    borderHover: "hover:border-brand-yellow/50",
-    titleHover: "group-hover:text-brand-yellow",
-    arrowHover: "group-hover:text-brand-yellow",
+  services: {
+    borderHover: "hover:border-domain-services/50",
+    titleHover: "group-hover:text-domain-services",
+    arrowHover: "group-hover:text-domain-services",
+    badgeClass: "badge-new-emerald",
+    tagChip: "tag-chip-emerald",
+    fallbackBg: "bg-domain-services/10 text-domain-services",
+  },
+  interests: {
+    borderHover: "hover:border-domain-interests/50",
+    titleHover: "group-hover:text-domain-interests",
+    arrowHover: "group-hover:text-domain-interests",
+    badgeClass: "badge-new-rose",
+    tagChip: "tag-chip-rose",
+    fallbackBg: "bg-domain-interests/10 text-domain-interests",
+  },
+  visualizations: {
+    borderHover: "hover:border-domain-visualizations/50",
+    titleHover: "group-hover:text-domain-visualizations",
+    arrowHover: "group-hover:text-domain-visualizations",
     badgeClass: "badge-new-yellow",
     tagChip: "tag-chip-yellow",
-    fallbackBg: "bg-brand-yellow/10 text-brand-yellow",
-  },
-  emerald: {
-    borderHover: "hover:border-emerald-500/50",
-    titleHover: "group-hover:text-emerald-400 light:group-hover:text-emerald-700",
-    arrowHover: "group-hover:text-emerald-400 light:group-hover:text-emerald-700",
-    badgeClass: "badge-new-green",
-    tagChip: "tag-chip-green",
-    fallbackBg: "bg-emerald-500/10 text-emerald-400 light:text-emerald-700",
-  },
-  purple: {
-    borderHover: "hover:border-brand-purple/50",
-    titleHover: "group-hover:text-brand-purple",
-    arrowHover: "group-hover:text-brand-purple",
-    badgeClass: "badge-new-purple",
-    tagChip: "tag-chip-purple",
-    fallbackBg: "bg-brand-purple/10 text-brand-purple",
-  },
-  rose: {
-    borderHover: "hover:border-rose-500/50",
-    titleHover: "group-hover:text-rose-400 light:group-hover:text-rose-700",
-    arrowHover: "group-hover:text-rose-400 light:group-hover:text-rose-700",
-    badgeClass: "badge-new-purple",
-    tagChip: "tag-chip-purple",
-    fallbackBg: "bg-rose-500/10 text-rose-400 light:text-rose-700",
-  },
-  teal: {
-    borderHover: "hover:border-teal-500/50",
-    titleHover: "group-hover:text-teal-400 light:group-hover:text-teal-700",
-    arrowHover: "group-hover:text-teal-400 light:group-hover:text-teal-700",
-    badgeClass: "badge-new-green",
-    tagChip: "tag-chip-green",
-    fallbackBg: "bg-teal-500/10 text-teal-400 light:text-teal-700",
-  },
-  green: {
-    borderHover: "hover:border-brand-green/50",
-    titleHover: "group-hover:text-brand-green",
-    arrowHover: "group-hover:text-brand-green",
-    badgeClass: "badge-new-green",
-    tagChip: "tag-chip-green",
-    fallbackBg: "bg-brand-green/10 text-brand-green",
+    fallbackBg: "bg-domain-visualizations/10 text-domain-visualizations",
   },
 };
 
-const colorTheme = COLOR_THEMES[cardColor as keyof typeof COLOR_THEMES] || COLOR_THEMES.blue;
+const colorTheme = DOMAIN_THEMES[collection] || DOMAIN_THEMES.posts;
 
 // Date formatting helper
 let displayDate: string | undefined = undefined;
 if (date instanceof Date) {
   displayDate = isNaN(date.getTime())
     ? undefined
-    : date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    : formatDate(date, 'short');
 } else if (typeof date === "string" && date.trim().length > 0) {
   const trimmed = date.trim();
   const isIsoDate = /^\d{4}-\d{2}-\d{2}/.test(trimmed) && !isNaN(Date.parse(trimmed));
   if (isIsoDate) {
-    displayDate = new Date(trimmed).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    displayDate = formatDate(trimmed, 'short');
   } else {
     displayDate = trimmed;
   }

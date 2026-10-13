@@ -5,6 +5,7 @@ import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
 import FilterToolbar from "@components/FilterToolbar.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
@@ -90,10 +91,12 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
   <Navbar />
 
   <Container size="wide">
+    <Breadcrumbs domain="services" />
+
     <!-- Header -->
     <div class="mb-16">
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
-        Business <span class="heading-gradient-purple">Services</span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6">
+        Engineering <span class="text-domain-services">Services</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Professional consulting and engineering services bridging sovereign artificial intelligence architectures, software systems, and digital publishing.
@@ -105,7 +108,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
       searchId="service-search"
       searchPlaceholder="Search services..."
       tags={allTags}
-      accentColor="purple"
+      domain="services"
       itemTags={itemTags}
       totalCount={sortedServices.length}
       pageSize={12}
@@ -140,7 +143,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                 data-desc={service.data.description.toLowerCase()}
                 data-tags={tagsJoined}
               >
-                <article class="glass-card preview-card border border-element-border relative flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-element-border-medium transition-all duration-300" data-card-id={service.id} data-collection="services">
+                <article class="glass-card preview-card border border-element-border relative flex flex-col h-full items-stretch p-0 cursor-pointer hover:border-domain-services/40 transition-all duration-300" data-card-id={service.id} data-collection="services">
                   <!-- Card Clickable Overlay Link -->
                   <a 
                     href={`/services/${service.id}/`} 
@@ -164,14 +167,14 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                       >
                         <defs>
                           <linearGradient id={`grad-service-dark-${service.id}`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-                            <stop offset="50%" stop-color="#000000" stop-opacity="0.15" />
-                            <stop offset="100%" stop-color="#000000" stop-opacity="0.75" />
+                            <stop offset="0%" stop-color="black" stop-opacity="0" />
+                            <stop offset="50%" stop-color="black" stop-opacity="0.15" />
+                            <stop offset="100%" stop-color="black" stop-opacity="0.75" />
                           </linearGradient>
                           <linearGradient id={`grad-service-light-${service.id}`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-                            <stop offset="50%" stop-color="#000000" stop-opacity="0.10" />
-                            <stop offset="100%" stop-color="#000000" stop-opacity="0.40" />
+                            <stop offset="0%" stop-color="black" stop-opacity="0" />
+                            <stop offset="50%" stop-color="black" stop-opacity="0.10" />
+                            <stop offset="100%" stop-color="black" stop-opacity="0.40" />
                           </linearGradient>
                         </defs>
                         <image 
@@ -207,7 +210,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
 
                     <!-- Unread badge -->
                     <span 
-                      class="unread-dot hidden badge-new badge-new-purple badge-corner-tr"
+                      class="unread-dot hidden badge-new badge-new-emerald badge-corner-tr"
                       data-item-url={`/services/${service.id}/`}
                       title="Unread service"
                     >UNREAD</span>
@@ -218,7 +221,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                     <div class="space-y-3">
                       <!-- Header -->
                       <div>
-                        <h2 class="text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors group-hover:text-brand-purple light:group-hover:text-purple-600">
+                        <h2 class="text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors group-hover:text-domain-services">
                           <span>{service.data.title}</span>
                         </h2>
                       </div>
@@ -234,7 +237,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                             <a
                               href={`/tags/${tag}/`}
                               data-tag={tag}
-                              class="tag-chip tag-chip-purple inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
+                              class="tag-chip tag-chip-emerald inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
                             >
                               #{tag}
                             </a>
@@ -248,7 +251,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
                       <a
                         href={`/services/${service.id}/`}
                         aria-label={`Read More: ${service.data.title}`}
-                        class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700 text-xs font-bold relative z-20 transition-all duration-200"
+                        class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-domain-services/12 hover:bg-domain-services/25 border border-domain-services/20 hover:border-domain-services/45 text-domain-services text-xs font-bold relative z-20 transition-all duration-200"
                       >
                         <span>Read More</span>
                         <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -351,21 +354,21 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
   .service-content :global(h4) {
     font-size: 1.05rem;
     font-weight: 700;
-    color: white;
+    color: var(--color-text-heading);
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
   }
   .service-content :global(p) {
     font-size: 0.875rem;
     line-height: 1.7;
-    color: #9ca3af; /* text-gray-400 */
+    color: var(--color-text-subtle);
     margin-bottom: 1.25rem;
   }
   .service-content :global(ul) {
     list-style-type: disc;
     padding-left: 1.5rem;
     margin-bottom: 1.25rem;
-    color: #9ca3af;
+    color: var(--color-text-subtle);
   }
   .service-content :global(li) {
     margin-bottom: 0.5rem;
@@ -373,7 +376,7 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
     line-height: 1.6;
   }
   .service-content :global(li strong) {
-    color: white;
+    color: var(--color-text-heading);
   }
 </style>
 

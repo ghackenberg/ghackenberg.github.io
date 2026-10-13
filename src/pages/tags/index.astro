@@ -2,39 +2,44 @@
 import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import FilterToolbar from "@components/FilterToolbar.astro";
 import { getCollection } from "astro:content";
 
 const tags = await getCollection("tags");
+const interests = await getCollection("interests");
 const posts = await getCollection("posts");
 const publications = await getCollection("publications");
 const presentations = await getCollection("presentations");
-const projects = await getCollection("projects");
 const courses = await getCollection("courses");
+const projects = await getCollection("projects");
 const services = await getCollection("services");
-const interests = await getCollection("interests");
+const visualizations = await getCollection("visualizations");
 
 // Compute counts for each tag
 const tagStats = tags.map((tag) => {
+  const interestCount = interests.filter((i) => i.data.tags && i.data.tags.includes(tag.id)).length;
   const postCount = posts.filter((p) => p.data.tags.includes(tag.id)).length;
   const pubCount = publications.filter((p) => p.data.tags.includes(tag.id)).length;
   const presCount = presentations.filter((pres) => pres.data.tags && pres.data.tags.includes(tag.id)).length;
   const courseCount = courses.filter((c) => c.data.tags && c.data.tags.includes(tag.id)).length;
   const projCount = projects.filter((p) => p.data.tags && p.data.tags.includes(tag.id)).length;
   const serviceCount = services.filter((s) => s.data.tags && s.data.tags.includes(tag.id)).length;
-  const interestCount = interests.filter((i) => i.data.tags && i.data.tags.includes(tag.id)).length;
-  const total = postCount + pubCount + presCount + courseCount + projCount + serviceCount + interestCount;
+  const visCount = visualizations.filter((v) => v.data.tags && v.data.tags.includes(tag.id)).length;
+  const total = interestCount + postCount + pubCount + presCount + courseCount + projCount + serviceCount + visCount;
 
   return {
     id: tag.id,
     title: tag.data.title,
     description: tag.data.description,
+    interestCount,
     postCount,
     pubCount,
     presCount,
     courseCount,
     projCount,
     serviceCount,
-    interestCount,
+    visCount,
     total,
   };
 });
@@ -70,55 +75,47 @@ const breadcrumbSchema = {
   <Navbar />
 
   <Container size="wide">
+    <Breadcrumbs domain="tags" />
+
     <!-- Header -->
     <div class="mb-12">
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-        Topic <span class="heading-gradient-blue">Tags</span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6">
+        Topic <span class="text-domain-tags">Tags</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         A structured taxonomy of technologies, architectural concepts, and engineering topics spanning all articles, publications, projects, and courses.
       </p>
     </div>
 
-    <!-- Search / Filter Bar -->
-    <div class="glass-card rounded-2xl p-4 sm:p-6 border border-element-border mb-10">
-      <div class="relative w-full max-w-md">
-        <label for="tag-filter" class="sr-only">Search tags</label>
-        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </div>
-        <input
-          type="text"
-          id="tag-filter"
-          placeholder="Filter by keyword (e.g. AI, Systems, Web)..."
-          class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors"
-        />
-      </div>
-      <p id="tag-count-label" class="text-xs text-gray-500 mt-3 font-medium">
+    <!-- Filter Toolbar -->
+    <FilterToolbar
+      searchId="tag-filter"
+      searchPlaceholder="Filter by keyword (e.g. AI, Systems, Web)..."
+      domain="tags"
+      totalCount={sortedTags.length}
+    >
+      <span id="tag-count-label" class="text-xs text-gray-400 font-medium whitespace-nowrap">
         Showing all {sortedTags.length} topics
-      </p>
-    </div>
+      </span>
+    </FilterToolbar>
 
     <!-- Tags Grid -->
     <div id="tags-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {sortedTags.map((tag) => (
         <a
           href={`/tags/${tag.id}/`}
-          class="tag-card glass-card p-5 sm:p-6 rounded-2xl border border-element-border hover:border-brand-blue/40 transition-all duration-300 group flex flex-col justify-between hover:scale-[1.01] hover:shadow-lg hover:shadow-brand-blue/5"
+          class="tag-card glass-card p-5 sm:p-6 rounded-2xl border border-element-border hover:border-domain-tags/40 transition-all duration-300 group flex flex-col justify-between hover:scale-[1.01] hover:shadow-lg hover:shadow-domain-tags/5"
           data-title={tag.title.toLowerCase()}
           data-id={tag.id.toLowerCase()}
           data-desc={tag.description.toLowerCase()}
         >
           <div>
             <div class="flex items-center justify-between gap-2 mb-3">
-              <h2 id={`tag-${tag.id}`} class="text-base font-bold text-gray-100 group-hover:text-brand-blue transition-colors flex items-center gap-1">
+              <h2 id={`tag-${tag.id}`} class="text-base font-bold text-gray-100 group-hover:text-domain-tags transition-colors flex items-center gap-1">
                 <span class="text-gray-500 font-normal">#</span>
                 <span>{tag.title}</span>
               </h2>
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 group-hover:border-brand-blue/30 group-hover:text-brand-blue transition-colors shrink-0">
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-element-bg border border-element-border-medium text-gray-400 group-hover:border-domain-tags/30 group-hover:text-domain-tags transition-colors shrink-0">
                 {tag.total}
               </span>
             </div>
@@ -128,47 +125,53 @@ const breadcrumbSchema = {
             </p>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-white/5 text-[11px] text-gray-500 mt-auto">
+          <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-element-border text-[11px] text-gray-500 mt-auto">
+            {tag.interestCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-domain-interests">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-interests"></span>
+                <span>{tag.interestCount} Interest{tag.interestCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
             {tag.postCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-sky-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-blue"></span>
+              <span class="inline-flex items-center gap-1 text-domain-posts">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-posts"></span>
                 <span>{tag.postCount} Post{tag.postCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.pubCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-indigo-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+              <span class="inline-flex items-center gap-1 text-domain-publications">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-publications"></span>
                 <span>{tag.pubCount} Publication{tag.pubCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.presCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-cyan-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+              <span class="inline-flex items-center gap-1 text-domain-presentations">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-presentations"></span>
                 <span>{tag.presCount} Presentation{tag.presCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.courseCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-amber-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow"></span>
+              <span class="inline-flex items-center gap-1 text-domain-courses">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-courses"></span>
                 <span>{tag.courseCount} Course{tag.courseCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.projCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-emerald-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span class="inline-flex items-center gap-1 text-domain-projects">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-projects"></span>
                 <span>{tag.projCount} Project{tag.projCount !== 1 ? 's' : ''}</span>
               </span>
             )}
             {tag.serviceCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-purple-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-purple"></span>
+              <span class="inline-flex items-center gap-1 text-domain-services">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-services"></span>
                 <span>{tag.serviceCount} Service{tag.serviceCount !== 1 ? 's' : ''}</span>
               </span>
             )}
-            {tag.interestCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-rose-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                <span>{tag.interestCount} Interest{tag.interestCount !== 1 ? 's' : ''}</span>
+            {tag.visCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-domain-visualizations">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-visualizations"></span>
+                <span>{tag.visCount} Visualization{tag.visCount !== 1 ? 's' : ''}</span>
               </span>
             )}
           </div>
@@ -183,14 +186,17 @@ const breadcrumbSchema = {
 </Layout>
 
 <script>
-  const input = document.getElementById('tag-filter') as HTMLInputElement | null;
-  const cards = document.querySelectorAll<HTMLElement>('.tag-card');
-  const countLabel = document.getElementById('tag-count-label');
-  const noResults = document.getElementById('no-results');
+  function setupTagFilter() {
+    const input = document.getElementById('tag-filter') as HTMLInputElement | null;
+    const cards = document.querySelectorAll<HTMLElement>('.tag-card');
+    const countLabel = document.getElementById('tag-count-label');
+    const noResults = document.getElementById('no-results');
+    const resetBtn = document.getElementById('tag-filter-reset') as HTMLButtonElement | null;
 
-  if (input) {
-    input.addEventListener('input', () => {
-      const q = input.value.trim().toLowerCase();
+    if (!input) return;
+
+    function applyFilter() {
+      const q = input?.value.trim().toLowerCase() || '';
       let visible = 0;
 
       cards.forEach((card) => {
@@ -214,6 +220,34 @@ const breadcrumbSchema = {
       if (noResults) {
         noResults.classList.toggle('hidden', visible > 0);
       }
-    });
+
+      if (resetBtn) {
+        if (q) {
+          resetBtn.classList.remove('hidden');
+          resetBtn.style.display = 'inline-flex';
+        } else {
+          resetBtn.classList.add('hidden');
+          resetBtn.style.display = 'none';
+        }
+      }
+    }
+
+    input.addEventListener('input', applyFilter);
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        input.value = '';
+        applyFilter();
+        input.focus();
+      });
+    }
+
+    // Initial run in case query parameter or cached input exists
+    if (input.value) {
+      applyFilter();
+    }
   }
+
+  setupTagFilter();
+  document.addEventListener('astro:page-load', setupTagFilter);
 </script>

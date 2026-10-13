@@ -10,6 +10,7 @@ import CourseCard from "@components/CourseCard.astro";
 import VisualizationCard from "@components/VisualizationCard.astro";
 import ServiceCard from "@components/ServiceCard.astro";
 import InterestCard from "@components/InterestCard.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -157,14 +158,15 @@ const breadcrumbSchema = {
   <Navbar />
 
   <Container size="wide">
-    <!-- Back Button -->
-    <a 
-      href="/tags/" 
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue hover:bg-brand-blue/20 transition-all mb-8 cursor-pointer"
-    >
-      <span>&larr;</span>
-      <span>Back to Tags</span>
-    </a>
+    <!-- Breadcrumbs Navigation -->
+    <Breadcrumbs 
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Tags", href: "/tags/" },
+        { label: `#${tag.data.title}` }
+      ]}
+      domain="tags"
+    />
 
     <!-- Header -->
     <header class="mb-12">
@@ -183,15 +185,11 @@ const breadcrumbSchema = {
         <div id="professional-interests">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="professional-interests-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>🎯</span>
-              <span>Professional Interests</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 light:text-rose-800 border border-rose-500/30 ml-2">
+              <span>Professional <span class="text-domain-interests">Interests</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-interests/20 text-domain-interests border border-domain-interests/30 ml-2">
                 {interests.length}
               </span>
             </h2>
-            <a href="/#about" class="text-xs font-semibold text-rose-400 light:text-rose-700 hover:underline">
-              All Interests &rarr;
-            </a>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -216,15 +214,11 @@ const breadcrumbSchema = {
         <div id="blog-posts" data-total-pages={totalPostPages} data-section="posts">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="blog-posts-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>✍️</span>
-              <span>Blog Posts</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue border border-brand-blue/30 ml-2">
+              <span>Blog <span class="text-domain-posts">Posts</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-posts/20 text-domain-posts border border-domain-posts/30 ml-2">
                 {posts.length}
               </span>
             </h2>
-            <a href="/posts/" class="text-xs font-semibold text-brand-blue light:text-blue-700 hover:underline">
-              All Posts &rarr;
-            </a>
           </div>
 
           <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -247,7 +241,7 @@ const breadcrumbSchema = {
           </div>
 
           {totalPostPages > 1 && (
-            <nav id="posts-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Blog Posts Pagination">
+            <nav id="posts-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-element-border mt-10" aria-label="Blog Posts Pagination">
               {/* Previous Button */}
               <div class="flex-1 w-full sm:w-auto text-left">
                 <button 
@@ -270,7 +264,7 @@ const breadcrumbSchema = {
                   const isCurrent = num === 1;
                   return isCurrent ? (
                     <span 
-                      class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-blue shadow-lg shadow-brand-blue/20 cursor-default select-none min-w-[38px] text-center"
+                      class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-domain-posts shadow-lg shadow-domain-posts/20 cursor-default select-none min-w-[38px] text-center"
                       aria-current="page"
                       data-page-btn={num}
                     >
@@ -280,7 +274,7 @@ const breadcrumbSchema = {
                     <button 
                       type="button"
                       data-goto={num}
-                      class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer"
+                      class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-domain-posts/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer"
                     >
                       {num}
                     </button>
@@ -293,7 +287,7 @@ const breadcrumbSchema = {
                 <button 
                   type="button"
                   data-action="next"
-                  class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+                  class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-domain-posts/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
                 >
                   <span>Next</span>
                   <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
@@ -309,22 +303,18 @@ const breadcrumbSchema = {
         <div id="publications" data-total-pages={totalPubPages} data-section="pubs">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="publications-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>📚</span>
-              <span>Reviewed Publications</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-purple/20 text-brand-purple border border-brand-purple/30 ml-2">
+              <span>Reviewed <span class="text-domain-publications">Publications</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-publications/20 text-domain-publications border border-domain-publications/30 ml-2">
                 {publications.length}
               </span>
             </h2>
-            <a href="/publications/" class="text-xs font-semibold text-brand-purple light:text-purple-700 hover:underline">
-              All Publications &rarr;
-            </a>
           </div>
 
-          <div id="pubs-list" class="space-y-6">
+          <div id="pubs-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {publications.map((pub, index) => {
               const pageNum = Math.floor(index / PUBS_PER_PAGE) + 1;
               return (
-                <div class={`pub-page-item ${pageNum > 1 ? 'hidden' : ''}`} data-page={pageNum}>
+                <div class={`pub-page-item h-full flex flex-col ${pageNum > 1 ? 'hidden' : ''}`} data-page={pageNum}>
                   <PublicationCard
                     id={pub.id}
                     title={pub.data.title}
@@ -332,9 +322,9 @@ const breadcrumbSchema = {
                     pubDate={pub.data.pubDate}
                     book={pub.data.book}
                     tags={pub.data.tags}
-                    icon={pub.data.icon}
                     publisherUrl={pub.data.publisherUrl}
                     activeTag={tag.id}
+                    icon={pub.data.icon}
                   />
                 </div>
               );
@@ -342,7 +332,7 @@ const breadcrumbSchema = {
           </div>
 
           {totalPubPages > 1 && (
-            <nav id="pubs-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Reviewed Publications Pagination">
+            <nav id="pubs-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-element-border mt-10" aria-label="Reviewed Publications Pagination">
               {/* Previous Button */}
               <div class="flex-1 w-full sm:w-auto text-left">
                 <button 
@@ -365,7 +355,7 @@ const breadcrumbSchema = {
                   const isCurrent = num === 1;
                   return isCurrent ? (
                     <span 
-                      class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-purple shadow-lg shadow-brand-purple/20 cursor-default select-none min-w-[38px] text-center"
+                      class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-domain-publications shadow-lg shadow-domain-publications/20 cursor-default select-none min-w-[38px] text-center"
                       aria-current="page"
                       data-page-btn={num}
                     >
@@ -375,7 +365,7 @@ const breadcrumbSchema = {
                     <button 
                       type="button"
                       data-goto={num}
-                      class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-purple/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer"
+                      class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-domain-publications/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer"
                     >
                       {num}
                     </button>
@@ -388,7 +378,7 @@ const breadcrumbSchema = {
                 <button 
                   type="button"
                   data-action="next"
-                  class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-purple/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+                  class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-domain-publications/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
                 >
                   <span>Next</span>
                   <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
@@ -404,15 +394,11 @@ const breadcrumbSchema = {
         <div id="presentations">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="presentations-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>🖥️</span>
-              <span>Interactive Presentations</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-blue/20 text-brand-blue border border-brand-blue/30 ml-2">
+              <span>Interactive <span class="text-domain-presentations">Presentations</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-presentations/20 text-domain-presentations border border-domain-presentations/30 ml-2">
                 {presentations.length}
               </span>
             </h2>
-            <a href="/presentations/" class="text-xs font-semibold text-brand-blue light:text-blue-700 hover:underline">
-              All Presentations &rarr;
-            </a>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -437,15 +423,11 @@ const breadcrumbSchema = {
         <div id="courses">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="courses-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>🎓</span>
-              <span>University Courses</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-yellow/20 text-brand-yellow border border-brand-yellow/30 ml-2">
+              <span>University <span class="text-domain-courses">Courses</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-courses/20 text-domain-courses border border-domain-courses/30 ml-2">
                 {courses.length}
               </span>
             </h2>
-            <a href="/courses/" class="text-xs font-semibold text-brand-yellow light:text-amber-800 hover:underline">
-              All Courses &rarr;
-            </a>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -469,15 +451,11 @@ const breadcrumbSchema = {
         <div id="projects">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="projects-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>🚀</span>
-              <span>Software Projects</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-2">
+              <span>Software <span class="text-domain-projects">Projects</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-projects/20 text-domain-projects border border-domain-projects/30 ml-2">
                 {projects.length}
               </span>
             </h2>
-            <a href="/projects/" class="text-xs font-semibold text-emerald-400 light:text-emerald-800 hover:underline">
-              All Projects &rarr;
-            </a>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -503,15 +481,11 @@ const breadcrumbSchema = {
         <div id="services">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="services-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>💼</span>
-              <span>Business Services</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-purple/20 text-brand-purple border border-brand-purple/30 ml-2">
+              <span>Business <span class="text-domain-services">Services</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-services/20 text-domain-services border border-domain-services/30 ml-2">
                 {services.length}
               </span>
             </h2>
-            <a href="/services/" class="text-xs font-semibold text-brand-purple light:text-purple-700 hover:underline">
-              All Services &rarr;
-            </a>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -535,15 +509,11 @@ const breadcrumbSchema = {
         <div id="visualizations">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
             <h2 id="visualizations-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>🌐</span>
-              <span>Content Visualizations</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-green/20 text-brand-green border border-brand-green/30 ml-2">
+              <span>Content <span class="text-domain-visualizations">Visualizations</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-visualizations/20 text-domain-visualizations border border-domain-visualizations/30 ml-2">
                 {visualizations.length}
               </span>
             </h2>
-            <a href="/visualizations/" class="text-xs font-semibold text-brand-green light:text-emerald-800 hover:underline">
-              All Visualizations &rarr;
-            </a>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -592,7 +562,7 @@ const breadcrumbSchema = {
     paginationId: string;
     paramKey: string;
     totalPages: number;
-    theme: 'blue' | 'purple';
+    domain: 'posts' | 'publications';
   }
 
   function setupSectionPagination({
@@ -601,7 +571,7 @@ const breadcrumbSchema = {
     paginationId,
     paramKey,
     totalPages,
-    theme
+    domain
   }: PaginationOptions) {
     if (totalPages <= 1) return;
 
@@ -626,7 +596,7 @@ const breadcrumbSchema = {
           prevBtn.className = "prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200";
         } else {
           prevBtn.disabled = false;
-          prevBtn.className = `prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
+          prevBtn.className = `prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-domain-${domain}/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
         }
       }
 
@@ -636,7 +606,7 @@ const breadcrumbSchema = {
           nextBtn.className = "next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200";
         } else {
           nextBtn.disabled = false;
-          nextBtn.className = `next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
+          nextBtn.className = `next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-domain-${domain}/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
         }
       }
 
@@ -647,9 +617,9 @@ const breadcrumbSchema = {
             return '<span class="px-3 py-2 text-gray-500 text-sm font-medium">...</span>';
           }
           if (num === page) {
-            return `<span class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-${theme} shadow-lg shadow-brand-${theme}/20 cursor-default select-none min-w-[38px] text-center" aria-current="page" data-page-btn="${num}">${num}</span>`;
+            return `<span class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-domain-${domain} shadow-lg shadow-domain-${domain}/20 cursor-default select-none min-w-[38px] text-center" aria-current="page" data-page-btn="${num}">${num}</span>`;
           }
-          return `<button type="button" data-goto="${num}" class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer">${num}</button>`;
+          return `<button type="button" data-goto="${num}" class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-domain-${domain}/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer">${num}</button>`;
         }).join('');
       }
     }
@@ -733,7 +703,7 @@ const breadcrumbSchema = {
         paginationId: 'posts-pagination',
         paramKey: 'posts_page',
         totalPages,
-        theme: 'blue'
+        domain: 'posts'
       });
     }
 
@@ -746,7 +716,7 @@ const breadcrumbSchema = {
         paginationId: 'pubs-pagination',
         paramKey: 'pubs_page',
         totalPages,
-        theme: 'purple'
+        domain: 'publications'
       });
     }
   }

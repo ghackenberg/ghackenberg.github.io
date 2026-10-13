@@ -1,0 +1,164 @@
+---
+import { renderSlideCues } from '@commons/shared/slide-cues';
+import Avatar3D from './Avatar3D.astro';
+import SlideIcon, { type SlideIconName } from './SlideIcon.astro';
+
+export interface SpeakerProfileLink {
+  label: string;
+  value: string;
+  href?: string;
+}
+
+interface Props {
+  name: string;
+  title: string;
+  institution: string;
+  links?: SpeakerProfileLink[];
+  cue?: string;
+  avatarSrc?: string;
+  avatarAlt?: string;
+  id?: string;
+  class?: string;
+}
+
+const {
+  name,
+  title,
+  institution,
+  links = [],
+  cue,
+  avatarSrc,
+  avatarAlt,
+  id,
+  class: className = ""
+} = Astro.props;
+
+function resolveLinkIcon(label: string, value: string, href?: string): SlideIconName | 'mail' | undefined {
+  const combined = `${label} ${value} ${href || ''}`.toLowerCase();
+  if (combined.includes('linkedin')) return 'linkedin';
+  if (combined.includes('github')) return 'github';
+  if (combined.includes('web') || combined.includes('http') || combined.includes('site') || combined.includes('url') || combined.includes('homepage')) return 'globe';
+  if (combined.includes('mail') || combined.includes('@')) return 'mail';
+  return undefined;
+}
+---
+
+<div
+  id={id}
+  data-cue={cue}
+  class={`speaker-profile-card flex flex-col md:flex-row items-center gap-6 lg:gap-8 p-6 lg:p-8 rounded-3xl border bg-[var(--color-slide-card-bg)] shadow-2xl transition-all duration-300 w-full ${className}`}
+>
+  <!-- Left Column: Avatar -->
+  <div class="speaker-avatar-wrapper shrink-0 w-36 h-36 lg:w-44 lg:h-44 rounded-2xl overflow-hidden border border-[var(--card-accent)]/30 bg-[var(--card-accent)]/10 flex items-center justify-center relative shadow-md">
+    {avatarSrc ? (
+      <img
+        src={avatarSrc}
+        alt={avatarAlt || name}
+        class="w-full h-full object-cover"
+        loading="eager"
+      />
+    ) : (
+      <Avatar3D
+        alt={avatarAlt || name}
+        title={name}
+        class="w-full h-full object-cover"
+      />
+    )}
+  </div>
+
+  <!-- Right Column: Speaker Details & Links -->
+  <div class="speaker-info-col flex-1 min-w-0 flex flex-col justify-center">
+    <h3
+      class="speaker-name text-3xl lg:text-4xl font-black tracking-tight leading-tight text-[var(--card-accent)]"
+      set:html={renderSlideCues(name)}
+    />
+    <p
+      class="speaker-title text-xl lg:text-2xl font-semibold tracking-tight text-[var(--color-slide-text)] mt-1"
+      set:html={renderSlideCues(title)}
+    />
+    <p
+      class="speaker-institution text-base lg:text-lg text-[var(--color-slide-text-subtle)] mt-0.5"
+      set:html={renderSlideCues(institution)}
+    />
+
+    {links && links.length > 0 && (
+      <div class="speaker-links-container flex flex-wrap gap-2.5 mt-4 pt-4 border-t border-[var(--card-accent)]/20">
+        {links.map((link) => {
+          const Tag = link.href ? 'a' : 'div';
+          const linkProps = link.href
+            ? { href: link.href, target: '_blank', rel: 'noopener noreferrer' }
+            : {};
+          const iconType = resolveLinkIcon(link.label, link.value, link.href);
+
+          return (
+            <Tag
+              {...linkProps}
+              class="speaker-link-item inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--card-accent)]/20 bg-[var(--card-accent)]/5 text-sm lg:text-base font-medium text-[var(--color-slide-text)] transition-all duration-200 hover:border-[var(--card-accent)]/50 hover:bg-[var(--card-accent)]/15 group no-underline"
+            >
+              {iconType === 'mail' ? (
+                <svg
+                  class="w-4 h-4 text-[var(--card-accent)] shrink-0 transition-transform group-hover:scale-110"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+              ) : iconType ? (
+                <SlideIcon
+                  name={iconType}
+                  class="w-4 h-4 text-[var(--card-accent)] shrink-0 transition-transform group-hover:scale-110"
+                  size={16}
+                />
+              ) : null}
+              <span class="text-xs uppercase font-mono tracking-wider text-[var(--card-accent)] font-semibold shrink-0" set:html={renderSlideCues(link.label + ':')} />
+              <span class="truncate max-w-[200px] lg:max-w-[280px]" set:html={renderSlideCues(link.value)} />
+            </Tag>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .speaker-profile-card {
+    --effective-speaker-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
+    --card-accent: var(--effective-speaker-accent);
+    border-color: color-mix(in srgb, var(--card-accent) 30%, var(--color-slide-card-border));
+    padding: calc(1.75rem * var(--content-scale, 1)) calc(2rem * var(--content-scale, 1)) !important;
+    gap: calc(1.5rem * var(--content-scale, 1)) !important;
+  }
+  .speaker-avatar-wrapper {
+    width: calc(10.5rem * var(--content-scale, 1)) !important;
+    height: calc(10.5rem * var(--content-scale, 1)) !important;
+  }
+  .speaker-name {
+    font-size: calc(2.25rem * var(--content-scale, 1)) !important;
+    line-height: 1.2 !important;
+  }
+  .speaker-title {
+    font-size: calc(1.35rem * var(--content-scale, 1)) !important;
+    line-height: 1.3 !important;
+  }
+  .speaker-institution {
+    font-size: calc(1.1rem * var(--content-scale, 1)) !important;
+    line-height: 1.35 !important;
+  }
+  .speaker-link-item {
+    font-size: calc(0.95rem * var(--content-scale, 1)) !important;
+    padding: calc(0.35rem * var(--content-scale, 1)) calc(0.75rem * var(--content-scale, 1)) !important;
+  }
+  :global(.light) .speaker-profile-card {
+    background-color: color-mix(in srgb, var(--card-accent) 4%, white) !important;
+    border-color: color-mix(in srgb, var(--card-accent) 25%, rgba(15, 23, 42, 0.12)) !important;
+  }
+  :global(.light) .speaker-avatar-wrapper {
+    background-color: color-mix(in srgb, var(--card-accent) 8%, white) !important;
+  }
+</style>

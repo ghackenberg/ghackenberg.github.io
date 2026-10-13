@@ -30,24 +30,24 @@ const mailtoHref = `mailto:${emailAddress}?subject=${encodeURIComponent(emailSub
 
 const colorStyles = {
   blue: {
-    text: "text-brand-blue light:text-blue-700",
-    glow: "from-brand-blue to-indigo-500 light:to-indigo-600",
-    btnPrimary: "bg-brand-blue hover:bg-brand-blue/90 text-slate-950 shadow-brand-blue/20 font-bold light:bg-blue-600 light:hover:bg-blue-700 light:text-white",
+    text: "text-brand-blue",
+    glow: "from-brand-blue to-brand-blue/40",
+    btnPrimary: "bg-brand-blue hover:bg-brand-blue/90 text-slate-950 light:text-white shadow-brand-blue/20 font-bold",
   },
   yellow: {
-    text: "text-brand-yellow light:text-amber-800",
-    glow: "from-brand-yellow to-orange-500 light:to-orange-600",
-    btnPrimary: "bg-brand-yellow hover:bg-brand-yellow/90 text-slate-950 shadow-brand-yellow/20 font-bold light:bg-amber-800 light:hover:bg-amber-900 light:text-white",
+    text: "text-brand-yellow",
+    glow: "from-brand-yellow to-brand-yellow/40",
+    btnPrimary: "bg-brand-yellow hover:bg-brand-yellow/90 text-slate-950 light:text-white shadow-brand-yellow/20 font-bold",
   },
   purple: {
-    text: "text-brand-purple light:text-purple-700",
-    glow: "from-brand-purple to-pink-500 light:to-pink-600",
-    btnPrimary: "bg-brand-purple hover:bg-brand-purple/90 text-slate-950 font-bold shadow-brand-purple/20 light:bg-purple-600 light:hover:bg-purple-700 light:text-white",
+    text: "text-brand-purple",
+    glow: "from-brand-purple to-brand-purple/40",
+    btnPrimary: "bg-brand-purple hover:bg-brand-purple/90 text-slate-950 light:text-white font-bold shadow-brand-purple/20",
   },
   green: {
-    text: "text-brand-green light:text-emerald-700",
-    glow: "from-brand-green to-cyan-500 light:to-cyan-600",
-    btnPrimary: "bg-brand-green hover:bg-brand-green/90 text-slate-950 shadow-brand-green/20 font-bold light:bg-emerald-800 light:hover:bg-emerald-900 light:text-white",
+    text: "text-brand-green",
+    glow: "from-brand-green to-brand-green/40",
+    btnPrimary: "bg-brand-green hover:bg-brand-green/90 text-slate-950 light:text-white shadow-brand-green/20 font-bold",
   }
 }[accentColor];
 ---
@@ -69,9 +69,6 @@ const colorStyles = {
   <!-- Inner Glass Card -->
   <div class="max-w-2xl mx-auto">
     <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden">
-      <!-- Glow Accent Line -->
-      <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${colorStyles.glow}`}></div>
-
       <h3 class="text-lg font-bold mb-6">{cardHeading}</h3>
 
       <div class="space-y-6">

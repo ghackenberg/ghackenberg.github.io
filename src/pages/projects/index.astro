@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import ProjectCard from "@components/ProjectCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TrlCircle from "@components/TrlCircle.astro";
 import { getCollection } from "astro:content";
 
@@ -55,10 +56,12 @@ const breadcrumbSchema = {
   <Navbar />
 
   <Container size="wide">
+    <Breadcrumbs domain="projects" />
+
     <!-- Header -->
     <div class="mb-12">
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-        Software <span class="heading-gradient-blue">Projects</span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6">
+        Software <span class="text-domain-projects">Projects</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Active platforms, frameworks, and tools designed to optimize product design, engineering, knowledge graphs, and real-time physical simulation.
@@ -70,7 +73,7 @@ const breadcrumbSchema = {
       searchId="project-search"
       searchPlaceholder="Search projects..."
       tags={allTags}
-      accentColor="blue"
+      domain="projects"
       itemTags={itemTags}
       totalCount={sortedProjects.length}
       pageSize={12}
@@ -83,7 +86,7 @@ const breadcrumbSchema = {
             data-trl={level.toString()}
           >
             <span>TRL {level}</span>
-            <TrlCircle level={level} accentColor="blue" size={13} />
+            <TrlCircle level={level} domain="projects" size={13} />
           </button>
         ))}
       </div>
@@ -220,40 +223,40 @@ const breadcrumbSchema = {
     position: relative;
     background: rgba(31, 41, 55, 0.4);
     border-color: rgba(255, 255, 255, 0.05);
-    color: #9ca3af; /* text-gray-400 */
+    color: var(--color-text-subtle);
   }
 
   .trl-filter-btn.active {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #60a5fa; /* text-blue-400 */
-    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
+    background: rgba(20, 184, 166, 0.15);
+    border-color: rgba(20, 184, 166, 0.4);
+    color: var(--color-domain-projects);
+    box-shadow: 0 0 15px -3px rgba(20, 184, 166, 0.25);
   }
 
   .trl-filter-btn:hover:not(.active) {
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #93c5fd;
-    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(20, 184, 166, 0.3);
+    color: var(--color-domain-projects);
+    background: rgba(20, 184, 166, 0.08);
   }
 
   /* Light mode overrides */
   :global(.light) .trl-filter-btn {
     background: rgba(15, 23, 42, 0.04);
     border-color: rgba(15, 23, 42, 0.08);
-    color: #475569; /* slate-600 */
+    color: var(--color-text-subtle);
   }
 
   :global(.light) .trl-filter-btn.active {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #1d4ed8; /* blue-700 */
-    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2);
+    background: rgba(13, 148, 136, 0.15);
+    border-color: rgba(13, 148, 136, 0.4);
+    color: var(--color-domain-projects);
+    box-shadow: 0 0 15px -3px rgba(13, 148, 136, 0.2);
   }
 
   :global(.light) .trl-filter-btn:hover:not(.active) {
-    background: rgba(59, 130, 246, 0.06);
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #1d4ed8; /* blue-700 */
+    background: rgba(13, 148, 136, 0.06);
+    border-color: rgba(13, 148, 136, 0.3);
+    color: var(--color-domain-projects);
   }
 </style>
 

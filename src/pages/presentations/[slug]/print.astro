@@ -108,7 +108,11 @@ const renderedSlides = await Promise.all(
         max-width: 1920px !important;
         max-height: 1080px !important;
       }
-      /* Ensure everything is fully visible in print handout */
+      /* Ensure everything is fully visible in print handout and disable transitions */
+      .print-slide-page,
+      .print-slide-page * {
+        transition: none !important;
+      }
       .print-slide-page [data-animate],
       .print-slide-page [data-cue]:not(mark):not(.highlight-marker),
       .print-slide-page .bento-card-root,
@@ -180,9 +184,9 @@ const renderedSlides = await Promise.all(
       // 2. Run AutoFitController across all cards to match live player typography scale
       const autoFit = new AutoFitController({
         minScale: 0.65,
-        maxScale: 1.0,
+        maxScale: 1.45,
         minClearance: 16,
-        iterations: 5,
+        iterations: 6,
       });
 
       document.querySelectorAll<HTMLElement>('.print-slide-page').forEach((page) => {

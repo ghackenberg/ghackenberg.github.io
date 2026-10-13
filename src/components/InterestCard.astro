@@ -6,7 +6,7 @@ interface Props {
   id: string;
   title: string;
   description?: string;
-  color: 'blue' | 'yellow' | 'purple' | 'green';
+  color?: 'blue' | 'yellow' | 'purple' | 'green' | string;
   icon?: string;
   heroImage?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags?: string[];
@@ -17,7 +17,6 @@ const {
   id,
   title,
   description,
-  color,
   heroImage,
   tags = [],
   activeTag,
@@ -36,35 +35,10 @@ const optimizedImage = heroImg ? await getImage({
   width: 800,
   quality: 85
 }) : null;
-
-const colorMappings = {
-  blue: {
-    border: 'border-brand-blue/20 hover:border-brand-blue/50',
-    titleHover: 'group-hover:text-brand-blue',
-    buttonGradient: 'bg-gradient-blue text-white',
-  },
-  yellow: {
-    border: 'border-brand-yellow/20 hover:border-brand-yellow/50',
-    titleHover: 'group-hover:text-brand-yellow',
-    buttonGradient: 'bg-gradient-yellow text-slate-950 font-extrabold',
-  },
-  purple: {
-    border: 'border-brand-purple/20 hover:border-brand-purple/50',
-    titleHover: 'group-hover:text-brand-purple',
-    buttonGradient: 'bg-gradient-purple text-white',
-  },
-  green: {
-    border: 'border-brand-green/20 hover:border-brand-green/50',
-    titleHover: 'group-hover:text-brand-green',
-    buttonGradient: 'bg-gradient-green text-white',
-  }
-};
-
-const mapping = colorMappings[color] || colorMappings.blue;
 ---
 
 <article 
-  class={`glass-card preview-card relative rounded-2xl border ${mapping.border} group flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer`}
+  class="glass-card preview-card relative rounded-2xl border border-domain-interests/20 hover:border-domain-interests/50 group flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
   data-card-id={id}
   data-collection="interests"
 >
@@ -83,7 +57,7 @@ const mapping = colorMappings[color] || colorMappings.blue;
       />
       <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90"></div>
       <span 
-        class="unread-dot hidden badge-new badge-new-green badge-corner-tr" 
+        class="unread-dot hidden badge-new badge-new-interests badge-corner-tr" 
         data-item-url={`/interests/${id}/`}
         title="Unread interest"
       >UNREAD</span>
@@ -92,7 +66,7 @@ const mapping = colorMappings[color] || colorMappings.blue;
 
   <!-- Content Body -->
   <div class="preview-card-body p-6 flex flex-col flex-grow">
-    <h3 class={`text-lg font-bold text-gray-100 mb-3 ${mapping.titleHover} transition-colors`}>
+    <h3 class="text-lg font-bold text-gray-100 mb-3 group-hover:text-domain-interests transition-colors">
       {title}
     </h3>
 
@@ -108,7 +82,7 @@ const mapping = colorMappings[color] || colorMappings.blue;
           <a
             href={`/tags/${tag}/`}
             data-tag={tag}
-            class={`tag-chip tag-chip-${color} inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border hover:scale-105 transition-all ${
+            class={`tag-chip tag-chip-rose inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
               isTagActive(tag) ? 'active-tag-match' : ''
             }`}
           >
@@ -118,11 +92,11 @@ const mapping = colorMappings[color] || colorMappings.blue;
       </div>
     )}
 
-    <!-- Footer: Explore Field Button -->
+    <!-- Footer: Read More Button -->
     <div class="pt-2 mt-auto">
-      <div class={`w-full py-2.5 px-4 rounded-xl font-bold text-xs shadow-md transition-all duration-300 group-hover:shadow-lg flex items-center justify-between ${mapping.buttonGradient}`}>
-        <span>Explore Field</span>
-        <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <div class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-interests/12 hover:bg-domain-interests/25 border border-domain-interests/20 hover:border-domain-interests/45 text-domain-interests text-xs font-bold relative z-20 transition-all duration-200">
+        <span>Read More</span>
+        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
         </svg>
       </div>

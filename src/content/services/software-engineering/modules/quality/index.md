@@ -37,7 +37,7 @@ outputs:
   - "Automated PR quality gating pipeline with coverage, flake detection, and static analysis"
   - "Test double library (in-memory fakes and test fixtures) adhering to Clean Architecture"
 duration: "2 - 4 Weeks"
-format: "Test Engineering Sprints & TDD Pairing Workshops"
+format: "Quality Sprints"
 delivery: "Remote / On-site"
 ---
 

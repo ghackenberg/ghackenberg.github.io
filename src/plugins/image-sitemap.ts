@@ -25,6 +25,77 @@ function toAbsoluteImageUrl(src: string, pageUrlPath: string): string {
   return new URL(src, `${SITE_ORIGIN}${cleanBase}`).href;
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function extractSemanticSlug(src: string, title?: string): string {
+  let base = '';
+  if (src && !src.startsWith('data:')) {
+    const rawFilename = path.basename(src.split('?')[0].split('#')[0]);
+    const noExt = rawFilename.replace(/\.[a-zA-Z0-9]+$/, '');
+    // Strip Astro / Vite hash suffixes:
+    // system_architecture.BNv8c83L_Z18dULf.webp -> system_architecture
+    // hero-georg-whiteboard-pom.Cfp0wmTc_Z3FF1s.webp -> hero-georg-whiteboard-pom
+    // preview-a1b2c3d4.jpg -> preview
+    const noHash = noExt
+      .replace(/\.[a-zA-Z0-9_-]{6,}(?:_[a-zA-Z0-9_-]+)?$/i, '')
+      .replace(/-[a-zA-Z0-9_-]{6,}$/i, '');
+
+    const candidate = slugify(noHash);
+    const isPureHash = /^[a-f0-9]{16,}$/i.test(candidate);
+    const isGeneric = ['image', 'img', 'preview', 'thumb', 'thumbnail', 'diagram', 'icon', 'asset'].includes(candidate);
+
+    if (candidate && !isPureHash && !isGeneric) {
+      base = candidate;
+    }
+  }
+
+  if (!base && title) {
+    base = slugify(title);
+  }
+
+  return base || 'image';
+}
+
+class PageSlugRegistry {
+  private seen = new Set<string>();
+
+  getUniqueSlug(baseSlug: string): string {
+    if (!this.seen.has(baseSlug)) {
+      this.seen.add(baseSlug);
+      return baseSlug;
+    }
+    let suffix = 1;
+    while (this.seen.has(`${baseSlug}-${suffix}`)) {
+      suffix++;
+    }
+    const unique = `${baseSlug}-${suffix}`;
+    this.seen.add(unique);
+    return unique;
+  }
+}
+
+function getMimeType(urlOrPath: string): string {
+  const clean = urlOrPath.split('?')[0].split('#')[0].toLowerCase();
+  if (clean.endsWith('.webp')) return 'image/webp';
+  if (clean.endsWith('.png')) return 'image/png';
+  if (clean.endsWith('.jpg') || clean.endsWith('.jpeg')) return 'image/jpeg';
+  if (clean.endsWith('.svg')) return 'image/svg+xml';
+  if (clean.endsWith('.gif')) return 'image/gif';
+  if (clean.endsWith('.avif')) return 'image/avif';
+  return 'image/jpeg';
+}
+
 interface ImageViolation {
   pageUrl: string;
   htmlFile: string;
@@ -35,12 +106,38 @@ interface ImageViolation {
 
 interface PageImage {
   url: string;
+  src: string;
   title: string;
   caption: string;
 }
 
+interface PageData {
+  htmlFile: string;
+  canonicalPageUrl: string;
+  images: PageImage[];
+}
+
+type JsonLdValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | { [key: string]: JsonLdValue }
+  | JsonLdValue[];
+
+interface SchemaEntity {
+  '@context'?: string;
+  '@type'?: string | string[];
+  '@id'?: string;
+  primaryImageOfPage?: { '@id': string };
+  image?: Array<{ '@id': string }> | string | Array<string>;
+  [key: string]: JsonLdValue;
+}
+
 /**
  * Scans all generated HTML files in dist/, validates every image against zero-fallback criteria,
+ * enriches Schema.org ImageObject structured data in every page's JSON-LD script,
  * and enriches all sitemap-*.xml files with standard-compliant <image:image> blocks.
  */
 export async function validateAndEnrichImageSitemaps(): Promise<void> {
@@ -67,6 +164,7 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
 
   const errors: ImageViolation[] = [];
   const pageImagesMap = new Map<string, PageImage[]>();
+  const pageDataList: PageData[] = [];
   let totalImagesScanned = 0;
 
   // 2. Scan and validate each HTML file
@@ -126,6 +224,7 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
         seenImageUrls.add(absUrl);
         imagesForPage.push({
           url: absUrl,
+          src,
           title,
           caption: alt,
         });
@@ -167,6 +266,7 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
         seenImageUrls.add(absUrl);
         imagesForPage.push({
           url: absUrl,
+          src: diagramContentUrl,
           title: diagramTitle,
           caption: diagramCaption,
         });
@@ -231,6 +331,7 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
         seenImageUrls.add(absUrl);
         imagesForPage.push({
           url: absUrl,
+          src,
           title,
           caption,
         });
@@ -242,6 +343,11 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       if (canonicalPageUrl.endsWith('/')) {
         pageImagesMap.set(canonicalPageUrl.slice(0, -1), imagesForPage);
       }
+      pageDataList.push({
+        htmlFile,
+        canonicalPageUrl,
+        images: imagesForPage,
+      });
     }
   }
 
@@ -272,7 +378,106 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
 
   console.log(`[image-enforcer] Passed! All ${totalImagesScanned} image instances have valid, distinct title and caption.`);
 
-  // 4. Enrich existing sitemap-*.xml files with <image:image> blocks
+  // 4. Enrich JSON-LD Structured Data in every generated HTML file
+  let totalHtmlEnriched = 0;
+  let totalImageObjectsCreated = 0;
+
+  for (const pageData of pageDataList) {
+    const { htmlFile, canonicalPageUrl, images } = pageData;
+    const slugRegistry = new PageSlugRegistry();
+
+    // Construct standard-compliant Schema.org ImageObject for each extracted image
+    const imageObjects = images.map((img) => {
+      const baseSlug = extractSemanticSlug(img.src, img.title);
+      const uniqueSlug = slugRegistry.getUniqueSlug(baseSlug);
+      const entityId = `${canonicalPageUrl}#image-${uniqueSlug}`;
+      const mimeType = getMimeType(img.url);
+
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'ImageObject',
+        '@id': entityId,
+        url: entityId,
+        contentUrl: img.url,
+        name: img.title,
+        caption: img.caption,
+        description: img.caption,
+        encodingFormat: mimeType,
+        author: { '@id': 'https://hackenberg.tech/#person' },
+        creator: { '@id': 'https://hackenberg.tech/#person' },
+        copyrightHolder: { '@id': 'https://hackenberg.tech/#person' },
+        isPartOf: { '@id': canonicalPageUrl },
+      };
+    });
+
+    let html = fs.readFileSync(htmlFile, 'utf8');
+    const $ = cheerio.load(html);
+    const $script = $('script[type="application/ld+json"]').first();
+
+    let jsonLdData: SchemaEntity[] = [];
+    if ($script.length > 0) {
+      const rawText = $script.text().trim();
+      if (rawText) {
+        try {
+          const parsed = JSON.parse(rawText);
+          jsonLdData = Array.isArray(parsed) ? parsed : [parsed];
+        } catch (err) {
+          console.warn(`[image-enforcer] Failed to parse JSON-LD in ${htmlFile}:`, err);
+          jsonLdData = [];
+        }
+      }
+    }
+
+    // Link primary image and image collection if page contains Article, BlogPosting, TechArticle, or Course
+    const primaryImage = imageObjects[0];
+    const imageRefs = imageObjects.map((io) => ({ '@id': io['@id'] }));
+    const targetArticleTypes = new Set(['Article', 'BlogPosting', 'TechArticle', 'Course']);
+
+    for (const node of jsonLdData) {
+      if (!node || typeof node !== 'object') continue;
+      const nodeType = node['@type'];
+      const matches = Array.isArray(nodeType)
+        ? nodeType.some((t: string) => targetArticleTypes.has(t))
+        : typeof nodeType === 'string' && targetArticleTypes.has(nodeType);
+      if (matches) {
+        node.primaryImageOfPage = { '@id': primaryImage['@id'] };
+        node.image = imageRefs;
+      }
+    }
+
+    // Filter out existing ImageObjects for this page's namespace to ensure idempotent runs
+    const filteredNodes = jsonLdData.filter((node: SchemaEntity) => {
+      if (!node || typeof node !== 'object') return true;
+      if (node['@type'] === 'ImageObject') {
+        const id = typeof node['@id'] === 'string' ? node['@id'] : '';
+        if (id.startsWith(`${canonicalPageUrl}#image-`)) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    // Append ImageObject nodes to JSON-LD array
+    const enrichedJsonLd = [...filteredNodes, ...imageObjects];
+    const jsonString = JSON.stringify(enrichedJsonLd, null, 2);
+
+    const scriptRegex = /<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/i;
+    if (scriptRegex.test(html)) {
+      html = html.replace(scriptRegex, `<script type="application/ld+json">\n${jsonString}\n    </script>`);
+    } else if (html.includes('</head>')) {
+      html = html.replace('</head>', `    <script type="application/ld+json">\n${jsonString}\n    </script>\n  </head>`);
+    } else {
+      html += `\n<script type="application/ld+json">\n${jsonString}\n</script>\n`;
+    }
+
+    fs.writeFileSync(htmlFile, html, 'utf8');
+    totalHtmlEnriched++;
+    totalImageObjectsCreated += imageObjects.length;
+  }
+
+  console.log(`[image-enforcer] Successfully enriched ${totalHtmlEnriched} HTML files with ${totalImageObjectsCreated} ImageObject JSON-LD entities.`);
+
+  // 5. Enrich existing sitemap-*.xml files with <image:image> blocks
   const sitemapFiles = fs.readdirSync(distDir)
     .filter(f => f.startsWith('sitemap-') && f.endsWith('.xml') && f !== 'sitemap-index.xml')
     .map(f => path.join(distDir, f));

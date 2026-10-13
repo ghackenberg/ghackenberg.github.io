@@ -105,7 +105,7 @@ const urlsToAudit: AuditTarget[] = [
   { path: '/courses/course-python-programming/', name: 'course_detail' },
   { path: '/posts/2026_05_23_website_relaunch_astro_typescript/', name: 'blog_post' },
   { path: '/projects/delta-dynamics/', name: 'project_detail' },
-  { path: '/publications/2025_01_modelsward/', name: 'publication_detail' },
+  { path: '/publications/2025_02_26_modelsward/', name: 'publication_detail' },
   { path: '/visualizations/sigma/', name: 'visualization_detail' },
   { path: '/presentations/2026_09_23_slide_as_code_presentation_engine/', name: 'presentation_detail' },
 ];

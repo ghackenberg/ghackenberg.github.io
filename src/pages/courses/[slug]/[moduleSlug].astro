@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -108,14 +109,16 @@ const moduleJsonLd = [moduleCourseSchema, breadcrumbSchema];
 
   <Section id="course-module-content" padding="standard">
     <Container size="reading" padding="none">
-      <!-- Back Button -->
-      <a 
-        href={`/courses/${parentCourse.id}/`} 
-        class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-yellow/10 border border-brand-yellow/20 hover:border-brand-yellow/30 text-brand-yellow transition-all mb-8 cursor-pointer"
-      >
-        <span>&larr;</span>
-        <span>Back to {parentCourse.data.title}</span>
-      </a>
+      <!-- Breadcrumbs Navigation -->
+      <Breadcrumbs 
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Courses", href: "/courses/" },
+          { label: parentCourse.data.title, href: `/courses/${parentCourse.id}/` },
+          { label: module.data.title }
+        ]}
+        domain="courses"
+      />
 
       <!-- Header -->
       <header class="mb-12 relative">
@@ -150,9 +153,7 @@ const moduleJsonLd = [moduleCourseSchema, breadcrumbSchema];
       </header>
 
       <!-- Main Content -->
-      <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden prose-custom course-content theme-yellow">
-        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
-
+      <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden prose-custom course-content">
         <!-- Module Overview Content -->
         <div class="mb-10">
           <Content />
@@ -162,7 +163,7 @@ const moduleJsonLd = [moduleCourseSchema, breadcrumbSchema];
         {module.data.topics && module.data.topics.length > 0 && (
           <div id="module-topics" class="mb-10">
             <h2 id="module-topics-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
-              Covered Topics
+              Covered <span class="text-domain-courses">Topics</span>
             </h2>
             <ul class="space-y-2">
               {module.data.topics.map(topic => (
@@ -178,11 +179,11 @@ const moduleJsonLd = [moduleCourseSchema, breadcrumbSchema];
         {module.data.tools && module.data.tools.length > 0 && (
           <div id="module-tools" class="mb-10">
             <h2 id="module-tools-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
-              Applied Tools & Technologies
+              Applied <span class="text-domain-courses">Tools & Technologies</span>
             </h2>
             <div class="flex flex-wrap gap-2">
               {module.data.tools.map(tool => (
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase border border-brand-yellow/20 bg-brand-yellow/10 text-yellow-300 light:text-amber-700">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase border border-domain-courses/20 bg-domain-courses/10 text-domain-courses">
                   🛠️ {tool}
                 </span>
               ))}
@@ -194,7 +195,7 @@ const moduleJsonLd = [moduleCourseSchema, breadcrumbSchema];
         {module.data.competencies && module.data.competencies.length > 0 && (
           <div id="module-competencies">
             <h2 id="module-competencies-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
-              Target Competencies
+              Target <span class="text-domain-courses">Competencies</span>
             </h2>
             <ul class="space-y-2">
               {module.data.competencies.map(comp => (
@@ -232,17 +233,5 @@ const moduleJsonLd = [moduleCourseSchema, breadcrumbSchema];
   }
   .course-content :global(> *:last-child) {
     margin-bottom: 0;
-  }
-
-  .theme-yellow {
-    --glow-border: rgba(234, 179, 8, 0.3);
-    --glow-text: #fde047;
-    --glow-shadow: rgba(234, 179, 8, 0.25);
-  }
-
-  :global(.light) .theme-yellow {
-    --glow-border: rgba(202, 138, 4, 0.25);
-    --glow-text: #ca8a04;
-    --glow-shadow: rgba(202, 138, 4, 0.15);
   }
 </style>

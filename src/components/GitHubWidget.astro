@@ -61,44 +61,41 @@ try {
 
 // Language colors mapping
 const languageColors: Record<string, string> = {
-  TypeScript: "bg-blue-400",
-  JavaScript: "bg-yellow-400",
-  HTML: "bg-orange-500",
-  CSS: "bg-purple-400",
-  Astro: "bg-rose-500",
-  Python: "bg-blue-500",
-  Vue: "bg-emerald-500",
-  React: "bg-sky-400",
+  TypeScript: "bg-brand-blue",
+  JavaScript: "bg-brand-yellow",
+  HTML: "bg-brand-yellow",
+  CSS: "bg-brand-purple",
+  Astro: "bg-brand-purple",
+  Python: "bg-brand-blue",
+  Vue: "bg-brand-green",
+  React: "bg-brand-blue",
   C: "bg-gray-400",
-  "C++": "bg-pink-500",
-  Java: "bg-red-400"
+  "C++": "bg-brand-purple",
+  Java: "bg-callout-caution"
 };
 ---
 
 {buildError ? (
   /* GitHub Error Card */
-  <div class="glass-card p-4 sm:p-6 rounded-3xl border border-red-500/20 h-full flex flex-col justify-between relative overflow-hidden group">
-    <!-- Accent line for error state -->
-    <div class="absolute top-0 left-0 right-0 h-1 bg-red-500/80"></div>
-    
+  <div class="glass-card p-4 sm:p-6 rounded-3xl border border-callout-caution/20 h-full flex flex-col justify-between relative overflow-hidden group">
     <div>
       <!-- Widget Header -->
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
-          <div class="p-2 rounded-xl bg-red-500/10 border border-red-500/20">
-            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div class="p-2 rounded-xl bg-callout-caution/10 border border-callout-caution/20">
+            <svg class="w-5 h-5 text-callout-caution" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
             </svg>
           </div>
           <h3 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100">GitHub</h3>
         </div>
-        <span class="text-[10px] text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20 font-semibold uppercase">
+        <span class="text-[10px] text-callout-caution bg-callout-caution/10 px-2 py-0.5 rounded-full border border-callout-caution/20 font-semibold uppercase">
           Failed
         </span>
       </div>
 
       <div class="flex flex-col items-center justify-center text-center py-10">
-        <div class="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 text-lg mb-4">
+        <div class="w-12 h-12 rounded-full bg-callout-caution/10 border border-callout-caution/20 flex items-center justify-center text-callout-caution text-lg mb-4">
           ⚠️
         </div>
         <h4 class="text-sm font-bold text-gray-100 mb-2">Build-Time Error</h4>
@@ -125,33 +122,30 @@ const languageColors: Record<string, string> = {
   </div>
 ) : syncRequired ? (
   /* GitHub Sync Required Card */
-  <div class="glass-card p-4 sm:p-6 rounded-3xl border border-yellow-500/20 h-full flex flex-col justify-between relative overflow-hidden group">
-    <!-- Accent line for sync required state -->
-    <div class="absolute top-0 left-0 right-0 h-1 bg-yellow-500/80"></div>
-    
+  <div class="glass-card p-4 sm:p-6 rounded-3xl border border-callout-warning/20 h-full flex flex-col justify-between relative overflow-hidden group">
     <div>
       <!-- Widget Header -->
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
-          <div class="p-2 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
-            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div class="p-2 rounded-xl bg-callout-warning/10 border border-callout-warning/20">
+            <svg class="w-5 h-5 text-callout-warning" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
             </svg>
           </div>
           <h3 class="text-xl md:text-2xl font-bold tracking-tight text-gray-100">GitHub</h3>
         </div>
-        <span class="text-[10px] text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20 font-semibold uppercase">
+        <span class="text-[10px] text-callout-warning bg-callout-warning/10 px-2 py-0.5 rounded-full border border-callout-warning/20 font-semibold uppercase">
           Sync Required
         </span>
       </div>
 
       <div class="flex flex-col items-center justify-center text-center py-10">
-        <div class="w-12 h-12 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-500 text-lg mb-4">
+        <div class="w-12 h-12 rounded-full bg-callout-warning/10 border border-callout-warning/20 flex items-center justify-center text-callout-warning text-lg mb-4">
           ⚙️
         </div>
         <h4 class="text-sm font-bold text-gray-100 mb-2">No Local Data Found</h4>
         <p class="text-xs text-gray-400 leading-relaxed max-w-[220px]">
-          Please run <code class="bg-element-bg-hover px-1.5 py-0.5 rounded text-yellow-400 font-mono text-[11px]">npm run sync</code> locally to populate the GitHub feed.
+          Please run <code class="bg-element-bg-hover px-1.5 py-0.5 rounded text-callout-warning font-mono text-[11px]">npm run sync</code> locally to populate the GitHub feed.
         </p>
       </div>
     </div>
@@ -174,9 +168,6 @@ const languageColors: Record<string, string> = {
 ) : profile && (
   /* GitHub Active Content Card */
   <div class="glass-card p-5 sm:p-6 md:p-8 rounded-3xl border border-element-border h-full relative overflow-hidden group">
-    <!-- Brand accent header color block -->
-    <div class="absolute top-0 left-0 right-0 h-1.5 bg-brand-blue opacity-50 group-hover:opacity-100 transition-opacity"></div>
-
     <!-- Widget Card Header with Integrated Stats -->
     <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-element-border/60">
       <div class="flex items-center space-x-3">
@@ -215,11 +206,11 @@ const languageColors: Record<string, string> = {
                   height={270}
                   class="absolute inset-0 w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-300 z-0 pointer-events-none" 
                 />
-                <div class="absolute inset-0 bg-gradient-to-br from-[#111827] to-[#0b1329]/20 light:from-[#111827]/60 light:to-[#0b1329]/10 z-10 pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-bg-main to-brand-blue/20 light:from-bg-main/60 light:to-brand-blue/10 z-10 pointer-events-none"></div>
               </>
             ) : (
               <>
-                <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-blue-950/70 light:from-slate-200 light:to-slate-300/70 z-10"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-bg-main/70 light:from-slate-200 light:to-slate-300/70 z-10"></div>
                 <svg class="w-10 h-10 text-brand-blue/60 group-hover/item:text-brand-blue/90 group-hover/item:scale-110 transition-all duration-300 z-20" fill="currentColor" viewBox="0 0 24 24">
                   <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
                 </svg>

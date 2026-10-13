@@ -21,7 +21,8 @@ export interface PaginationConfig {
   pageSize: number;
   navSelector: string;
   pageParamKey?: string;
-  theme?: 'blue' | 'purple' | 'yellow' | 'green';
+  theme?: 'blue' | 'purple' | 'yellow' | 'green' | 'indigo';
+  domain?: string;
   scrollToSelector?: string;
 }
 
@@ -912,8 +913,16 @@ export class ClientListFilter {
     });
   }
 
-  private renderPaginationControls(totalPages: number, theme: 'blue' | 'purple' | 'yellow' | 'green') {
+  private renderPaginationControls(totalPages: number, theme: 'blue' | 'purple' | 'yellow' | 'green' | 'indigo') {
     if (!this.paginationNavElement) return;
+
+    const domain = this.config.pagination?.domain;
+    const activeClass = domain 
+      ? `bg-domain-${domain} shadow-lg shadow-domain-${domain}/20` 
+      : `bg-gradient-${theme} shadow-lg shadow-brand-${theme}/20`;
+    const hoverBorderClass = domain 
+      ? `hover:border-domain-${domain}/30` 
+      : `hover:border-brand-${theme}/30`;
 
     const prevBtn = this.paginationNavElement.querySelector<HTMLButtonElement>('[data-action="prev"]');
     const nextBtn = this.paginationNavElement.querySelector<HTMLButtonElement>('[data-action="next"]');
@@ -925,7 +934,7 @@ export class ClientListFilter {
         prevBtn.className = "prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200";
       } else {
         prevBtn.disabled = false;
-        prevBtn.className = `prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
+        prevBtn.className = `prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
       }
     }
 
@@ -935,7 +944,7 @@ export class ClientListFilter {
         nextBtn.className = "next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200";
       } else {
         nextBtn.disabled = false;
-        nextBtn.className = `next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
+        nextBtn.className = `next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer`;
       }
     }
 
@@ -946,9 +955,9 @@ export class ClientListFilter {
           return '<span class="px-3 py-2 text-gray-500 text-sm font-medium">...</span>';
         }
         if (num === this.currentPage) {
-          return `<span class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-${theme} shadow-lg shadow-brand-${theme}/20 cursor-default select-none min-w-[38px] text-center" aria-current="page" data-page-btn="${num}">${num}</span>`;
+          return `<span class="px-3.5 py-2 rounded-xl text-sm font-bold text-white ${activeClass} cursor-default select-none min-w-[38px] text-center" aria-current="page" data-page-btn="${num}">${num}</span>`;
         }
-        return `<button type="button" data-goto="${num}" class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-${theme}/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer">${num}</button>`;
+        return `<button type="button" data-goto="${num}" class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 ${hoverBorderClass} hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer">${num}</button>`;
       }).join('');
     }
   }

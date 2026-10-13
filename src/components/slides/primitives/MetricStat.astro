@@ -6,7 +6,6 @@ interface Props {
   unit?: string;
   label: string;
   sublabel?: string;
-  color?: 'blue' | 'teal' | 'green' | 'red' | 'amber';
   size?: 'hero' | 'compact';
   cue?: string;
   id?: string;
@@ -22,7 +21,6 @@ const {
   unit,
   label,
   sublabel,
-  color = 'blue',
   size = 'hero',
   cue,
   id: explicitId,
@@ -30,24 +28,15 @@ const {
 } = Astro.props;
 
 const elementId = explicitId;
-
-const colorClasses = {
-  blue: 'text-blue-500 light:text-blue-600',
-  teal: 'text-cyan-400 light:text-cyan-600',
-  green: 'text-emerald-400 light:text-emerald-600',
-  red: 'text-rose-500 light:text-rose-600',
-  amber: 'text-amber-400 light:text-amber-600'
-};
 ---
 
 <div
   id={elementId}
   data-cue={cue}
-  data-accent={color === 'teal' ? 'cyan' : color === 'green' ? 'emerald' : color === 'red' ? 'rose' : color}
-  class={`metric-stat-card ${size === 'compact' ? 'p-6 lg:p-7' : 'p-8 lg:p-10'} rounded-3xl border border-slate-700/80 bg-slate-900/95 light:border-slate-300 light:bg-white shadow-2xl flex flex-col justify-between h-full flex-1 transition-all duration-300 min-h-0 ${className}`}
+  class={`metric-stat-card ${size === 'compact' ? 'p-6 lg:p-7' : 'p-8 lg:p-10'} rounded-3xl border bg-[var(--color-slide-card-bg)] shadow-2xl flex flex-col justify-between h-full flex-1 transition-all duration-300 min-h-0 ${className}`}
 >
   <div class="flex items-center justify-between mb-2 shrink-0">
-    <span class="text-sm lg:text-base uppercase font-mono font-bold tracking-wider text-slate-400 light:text-slate-500">
+    <span class="text-sm lg:text-base uppercase font-mono font-bold tracking-wider text-[var(--color-slide-text-subtle)]">
       Key Metric
     </span>
   </div>
@@ -55,22 +44,41 @@ const colorClasses = {
   <!-- Big Number Display -->
   <div class="my-auto py-2 flex-1 flex flex-col justify-center">
     <div class="flex items-baseline gap-2">
-      <span class={`${size === 'compact' ? 'text-6xl lg:text-7xl xl:text-8xl' : 'text-8xl lg:text-9xl xl:text-[140px]'} font-black tracking-tight ${colorClasses[color]}`}>
+      <span class={`metric-stat-value ${size === 'compact' ? 'text-6xl lg:text-7xl xl:text-8xl' : 'text-8xl lg:text-9xl xl:text-[140px]'} font-black tracking-tight`}>
         {value}
       </span>
       {unit && (
-        <span class={`${size === 'compact' ? 'text-4xl lg:text-5xl' : 'text-5xl lg:text-6xl'} font-bold text-slate-400 light:text-slate-500`}>
+        <span class={`${size === 'compact' ? 'text-4xl lg:text-5xl' : 'text-5xl lg:text-6xl'} font-bold text-[var(--color-slide-text-subtle)]`}>
           {unit}
         </span>
       )}
     </div>
 
-    <h4 class={`${size === 'compact' ? 'text-2xl lg:text-3xl mt-2' : 'text-3xl lg:text-4xl mt-4'} font-extrabold text-slate-100 light:text-slate-900 tracking-tight leading-snug`}>
+    <h4 class={`${size === 'compact' ? 'text-2xl lg:text-3xl mt-2' : 'text-3xl lg:text-4xl mt-4'} font-extrabold text-[var(--color-slide-text)] tracking-tight leading-snug`}>
       {label}
     </h4>
   </div>
 
   {sublabel && (
-    <p class={`text-slate-300 light:text-slate-600 ${size === 'compact' ? 'text-base lg:text-lg pt-3 mt-2' : 'text-xl lg:text-2xl pt-5 mt-4'} border-t border-slate-800/80 light:border-slate-200 leading-relaxed shrink-0`} set:html={renderSlideCues(sublabel)} />
+    <p class={`text-[var(--color-slide-text-subtle)] ${size === 'compact' ? 'text-base lg:text-lg pt-3 mt-2' : 'text-xl lg:text-2xl pt-5 mt-4'} border-t border-[var(--color-slide-card-border)] leading-relaxed shrink-0`} set:html={renderSlideCues(sublabel)} />
   )}
 </div>
+
+<style>
+  .metric-stat-card {
+    --effective-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
+    --hl-color: var(--effective-accent);
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
+    border-color: color-mix(in srgb, var(--effective-accent) 30%, var(--color-slide-card-border));
+  }
+  .metric-stat-card .metric-stat-value {
+    color: var(--effective-accent);
+  }
+  .metric-stat-card :global(mark),
+  .metric-stat-card :global(.highlight-marker) {
+    --hl-color: var(--effective-accent) !important;
+    --hl-text-dark: color-mix(in srgb, var(--effective-accent) 35%, white) !important;
+    --hl-text-light: var(--effective-accent) !important;
+  }
+</style>

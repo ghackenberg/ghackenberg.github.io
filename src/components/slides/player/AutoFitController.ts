@@ -8,7 +8,7 @@
 
 export interface AutoFitOptions {
   minScale?: number;      // Default 0.70 (readable presentation text/code)
-  maxScale?: number;      // Default 1.15 (upscaling for spacious presentation layouts)
+  maxScale?: number;      // Default 1.45 (upscaling for spacious presentation layouts)
   minClearance?: number;  // Minimum unscaled clearance to bottom border (default: 8px)
   iterations?: number;    // Binary search steps (default: 5)
 }
@@ -19,7 +19,7 @@ export class AutoFitController {
   constructor(options?: AutoFitOptions) {
     this.options = {
       minScale: options?.minScale ?? 0.70,
-      maxScale: options?.maxScale ?? 1.15,
+      maxScale: options?.maxScale ?? 1.45,
       minClearance: options?.minClearance ?? 8,
       iterations: options?.iterations ?? 5,
     };
@@ -69,6 +69,40 @@ export class AutoFitController {
       return false;
     }
 
+    // For horizontal pipeline step cards with a bottom progress bar
+    const barContainer = card.querySelector<HTMLElement>('.step-bar-container');
+    if (barContainer && textContainer) {
+      const measuredContentEl = textContainer.lastElementChild || textContainer;
+      const contentRect = measuredContentEl.getBoundingClientRect();
+      const barRect = barContainer.getBoundingClientRect();
+
+      // Check gap between text bottom and bar top (minimum 14px clearance)
+      const unscaledBarGap = (barRect.top - contentRect.bottom) / revealScale;
+      if (unscaledBarGap < 14) {
+        return false;
+      }
+
+      // Check gap between bar bottom and card bottom (minimum 14px clearance)
+      const unscaledBottomGap = (cardRect.bottom - barRect.bottom) / revealScale;
+      if (unscaledBottomGap < 14) {
+        return false;
+      }
+
+      // Check gap between text top and graphic area bottom (minimum 14px clearance)
+      const graphicArea = card.querySelector<HTMLElement>('.step-graphic-area');
+      if (graphicArea) {
+        const firstTextEl = textContainer.firstElementChild || textContainer;
+        const topRect = firstTextEl.getBoundingClientRect();
+        const graphicRect = graphicArea.getBoundingClientRect();
+        const unscaledTopGap = (topRect.top - graphicRect.bottom) / revealScale;
+        if (unscaledTopGap < 14) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
     const measuredContentEl = textContainer
       ? (textContainer.lastElementChild || textContainer)
       : (scrollableChild?.lastElementChild || lastChild);
@@ -114,10 +148,21 @@ export class AutoFitController {
   }
 
   public fitPipeline(pipeline: HTMLElement): void {
-    const steps = Array.from(pipeline.querySelectorAll<HTMLElement>('.step-row, .step-card'));
+    const isVertical = pipeline.classList.contains('pipeline-container-vertical') ||
+                       pipeline.querySelector('.step-row') !== null;
+
+    if (isVertical) {
+      this.fitVerticalPipeline(pipeline);
+    } else {
+      this.fitHorizontalPipeline(pipeline);
+    }
+  }
+
+  private fitVerticalPipeline(pipeline: HTMLElement): void {
+    const steps = Array.from(pipeline.querySelectorAll<HTMLElement>('.step-row'));
     if (steps.length === 0) return;
 
-    // Helper to check if ALL steps in this pipeline fit cleanly at the given scale
+    // Helper to check if ALL step rows fit cleanly at the given scale
     const checkAllFit = (scale: number): boolean => {
       for (const step of steps) {
         step.style.setProperty('--content-scale', scale.toFixed(3), 'important');
@@ -132,10 +177,10 @@ export class AutoFitController {
 
     // 1. Try maxScale
     if (checkAllFit(this.options.maxScale)) {
-      return; // All steps fit even at maximum scale!
+      return; // All step rows fit comfortably even at maximum scale!
     }
 
-    // 2. Binary search for maximal uniform scale where all steps fit
+    // 2. Binary search for maximal uniform scale where all step rows fit
     let low = this.options.minScale;
     let high = this.options.maxScale;
     let best = this.options.minScale;
@@ -152,6 +197,105 @@ export class AutoFitController {
 
     for (const step of steps) {
       step.style.setProperty('--content-scale', best.toFixed(3), 'important');
+    }
+  }
+
+  private fitHorizontalPipeline(pipeline: HTMLElement): void {
+    const cards = Array.from(pipeline.querySelectorAll<HTMLElement>('.step-card'));
+    if (cards.length === 0) return;
+
+    const firstCard = cards[0];
+    const cardH = firstCard.clientHeight;
+    if (cardH <= 0) return;
+
+    const graphicAreas = cards.map(c => c.querySelector<HTMLElement>('.step-graphic-area'));
+    const textContainers = cards.map(c => c.querySelector<HTMLElement>('.step-text-container'));
+    const barContainers = cards.map(c => c.querySelector<HTMLElement>('.step-bar-container'));
+
+    const cardWidth = firstCard.clientWidth || 380;
+    const base169Height = Math.round(cardWidth * (9 / 16));
+    const minImgHeight = Math.min(base169Height, 280);
+    const maxImgHeight = Math.min(Math.floor(cardH * 0.60), 435);
+
+    // Precise geometric spacing parameters:
+    // P = 28px: uniform inset (left, right, top below graphic, and bottom to colored bar for longest text)
+    // P_bottom = 24px: clearance from colored bar to card bottom
+    // H_bar = 8px
+    const P = 28;
+    const P_bottom = 24;
+    const H_bar = barContainers[0]?.offsetHeight || 8;
+    const chrome = P + P + H_bar + P_bottom; // 28 + 28 + 8 + 24 = 88px
+
+    // Helper: measure longest text height across all cards at a given scale
+    const getLongestTextHeight = (scale: number): number => {
+      for (const card of cards) {
+        card.style.setProperty('--content-scale', scale.toFixed(3), 'important');
+      }
+      let maxH = 0;
+      for (let idx = 0; idx < cards.length; idx++) {
+        const textEl = textContainers[idx];
+        const h4 = textEl ? textEl.querySelector<HTMLElement>('h4') : null;
+        const p = textEl ? textEl.querySelector<HTMLElement>('p') : null;
+        const h4H = h4 ? h4.offsetHeight : 0;
+        const pH = p ? p.offsetHeight : 0;
+        const textGap = (h4 && p) ? 14 : 0;
+        const textH = h4H + pH + textGap;
+        if (textH > maxH) maxH = textH;
+      }
+      return maxH;
+    };
+
+    // Coupled image height formula:
+    // H_img = H_card - (P + H_longestText(S) + P + H_bar + P_bottom)
+    const computeImgHeightForScale = (scale: number): { imgH: number; textH: number } => {
+      const textH = getLongestTextHeight(scale);
+      const imgH = cardH - (chrome + textH);
+      return { imgH, textH };
+    };
+
+    const targetMaxScale = Math.min(this.options.maxScale, 1.45);
+    const targetMinScale = Math.min(0.80, this.options.minScale);
+
+    // 1. Try maximum scale (1.45)
+    let bestScale = targetMaxScale;
+    let { imgH: targetImgH } = computeImgHeightForScale(targetMaxScale);
+
+    if (targetImgH >= minImgHeight) {
+      // At maxScale, image height meets or exceeds 16:9 base!
+      targetImgH = Math.min(maxImgHeight, targetImgH);
+      bestScale = targetMaxScale;
+    } else {
+      // Long text: search for the maximal scale in [targetMinScale, targetMaxScale]
+      // where image height stays at least 16:9 base (minImgHeight)
+      let low = targetMinScale;
+      let high = targetMaxScale;
+
+      for (let i = 0; i < this.options.iterations; i++) {
+        const mid = (low + high) / 2;
+        const { imgH } = computeImgHeightForScale(mid);
+        if (imgH >= minImgHeight) {
+          bestScale = mid;
+          low = mid;
+        } else {
+          high = mid;
+        }
+      }
+
+      const res = computeImgHeightForScale(bestScale);
+      targetImgH = Math.max(80, Math.min(maxImgHeight, res.imgH));
+    }
+
+    // Apply uniform targetImgH to all graphic areas in this pipeline
+    graphicAreas.forEach(ga => {
+      if (ga) {
+        ga.style.height = `${targetImgH}px`;
+        ga.style.minHeight = `${targetImgH}px`;
+      }
+    });
+
+    // Apply uniform bestScale to all cards in this pipeline
+    for (const card of cards) {
+      card.style.setProperty('--content-scale', bestScale.toFixed(3), 'important');
     }
   }
 

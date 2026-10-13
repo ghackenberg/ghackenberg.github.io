@@ -4,9 +4,12 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import TagChip from "@components/TagChip.astro";
 import { getCollection, render } from "astro:content";
 import { generateCitationLabel } from "@commons/shared/citations.js";
 import { getPostReadingTime } from "@commons/server/reading-time.js";
+import { formatDate } from "@commons/shared/format";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -136,25 +139,21 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
 
   <Section id="post-content" padding="standard">
     <Container size="reading" padding="none">
-    <!-- Back button -->
-    <a 
-      href="/posts/" 
-      id="back-to-overview-link"
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
-    >
-      <span>&larr;</span>
-      <span>{ui.back}</span>
-    </a>
+    <!-- Breadcrumbs Navigation -->
+    <Breadcrumbs 
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Posts", href: "/posts/" },
+        { label: post.data.title }
+      ]}
+      domain="posts"
+    />
 
     <!-- Post Header -->
     <header class="mb-10">
       <div class="flex flex-wrap items-center gap-3 mb-4">
-        <time class="text-sm font-semibold text-brand-blue/80">
-          {post.data.pubDate.toLocaleDateString(post.data.lang === "de" ? "de-AT" : "en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-          })}
+        <time class="text-sm font-semibold text-domain-posts">
+          {formatDate(post.data.pubDate, 'long', post.data.lang === "de" ? "de-AT" : "en-US")}
         </time>
         <span class="text-gray-500">•</span>
         <span class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-400 light:text-slate-500">
@@ -170,21 +169,18 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
         {post.data.title}
       </h1>
 
-      <div class="flex flex-wrap gap-2">
-        {post.data.tags.map(tag => (
-          <a 
-            href={`/tags/${tag}/`}
-            class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
-          >
-            #{tag}
-          </a>
-        ))}
-      </div>
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2">
+          {post.data.tags.map(tag => (
+            <TagChip tag={tag} />
+          ))}
+        </div>
+      )}
     </header>
 
     {post.data.description && (
-      <aside class="mb-10 p-6 rounded-2xl bg-brand-blue/5 light:bg-blue-50/80 border border-brand-blue/20 light:border-brand-blue/30 text-gray-200 light:text-slate-900 shadow-sm" aria-label={ui.keyTakeaways}>
-        <div class="text-xs font-bold text-brand-blue light:text-brand-blue uppercase tracking-wider mb-2 flex items-center gap-2">
+      <aside class="mb-10 p-6 rounded-2xl bg-domain-posts/5 border border-domain-posts/20 text-gray-200 light:text-slate-900 shadow-sm" aria-label={ui.keyTakeaways}>
+        <div class="text-xs font-bold text-domain-posts uppercase tracking-wider mb-2 flex items-center gap-2">
           <span class="text-base">⚡</span>
           <span>{ui.keyTakeaways}</span>
         </div>
@@ -197,7 +193,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
     <!-- Table of Contents for deep content exploration -->
     {tocHeadings.length >= 3 && (
       <nav class="mb-10 p-6 rounded-2xl glass-card border border-element-border/80 shadow-sm" aria-label={ui.tocTitle}>
-        <div class="text-xs font-bold text-brand-blue uppercase tracking-wider mb-3 flex items-center gap-2">
+        <div class="text-xs font-bold text-domain-posts uppercase tracking-wider mb-3 flex items-center gap-2">
           <span class="text-base">📑</span>
           <span>{ui.tocTitle}</span>
         </div>
@@ -206,7 +202,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
             <li class={h.depth === 3 ? "ml-4" : ""}>
               <a 
                 href={`#${h.slug}`} 
-                class="text-gray-300 hover:text-brand-blue transition-colors block py-0.5 leading-snug"
+                class="text-gray-300 hover:text-domain-posts transition-colors block py-0.5 leading-snug"
               >
                 {h.text}
               </a>
@@ -218,9 +214,6 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
 
     <!-- Post Body -->
     <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden prose-custom">
-      <!-- Top accent line -->
-      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-blue"></div>
-      
       <Content />
 
       {post.data.references && post.data.references.length > 0 && (
@@ -228,8 +221,8 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
           <h2 id={post.data.lang === 'en' ? 'references' : 'referenzen'}>{post.data.lang === 'en' ? 'References' : 'Referenzen'}</h2>
           <ul class="space-y-3.5 list-none pl-0 text-sm sm:text-base leading-relaxed text-slate-300 light:text-slate-700">
             {post.data.references.map((ref) => (
-              <li id={`ref-${ref.id}`} class="group flex items-start gap-2.5 p-2 -mx-2 rounded-lg transition-colors hover:bg-white/[0.03] light:hover:bg-slate-100/60 target:bg-brand-blue/10 target:border target:border-brand-blue/30">
-                <span class="font-mono text-brand-blue light:text-blue-700 font-bold shrink-0 select-none px-1.5 py-0 rounded bg-brand-blue/10 border border-brand-blue/20 leading-relaxed">[{generateCitationLabel(ref)}]</span>
+              <li id={`ref-${ref.id}`} class="group flex items-start gap-2.5 p-2 -mx-2 rounded-lg transition-colors hover:bg-white/[0.03] light:hover:bg-slate-100/60 target:bg-domain-posts/10 target:border target:border-domain-posts/30">
+                <span class="font-mono text-domain-posts font-bold shrink-0 select-none px-1.5 py-0 rounded bg-domain-posts/10 border border-domain-posts/20 leading-relaxed">[{generateCitationLabel(ref)}]</span>
                 <div class="leading-relaxed">
                   <span class="font-medium text-slate-200 light:text-slate-800">{ref.author}</span>
                   {ref.year ? <span> ({ref.year}). </span> : <span>. </span>}
@@ -250,10 +243,10 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
                     <span>{ref.howpublished ? ` ${ref.howpublished}. ` : ' '}{ref.note ? `${ref.note}. ` : ''}</span>
                   )}
                   {ref.doi && (
-                    <span>DOI: <a href={ref.doi.startsWith('http') ? ref.doi : `https://doi.org/${ref.doi}`} target="_blank" rel="noopener noreferrer" class="text-brand-blue light:text-blue-700 hover:underline break-all">{ref.doi}</a>. </span>
+                    <span>DOI: <a href={ref.doi.startsWith('http') ? ref.doi : `https://doi.org/${ref.doi}`} target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline break-all">{ref.doi}</a>. </span>
                   )}
                   {ref.url && (!ref.doi || !ref.url.includes(ref.doi)) && (
-                    <span>{ref.type === 'online' ? (post.data.lang === 'en' ? 'Available online at ' : 'Online verfügbar unter ') : ''}<a href={ref.url} target="_blank" rel="noopener noreferrer" class="text-brand-blue light:text-blue-700 hover:underline break-all">{ref.url}</a>.</span>
+                    <span>{ref.type === 'online' ? (post.data.lang === 'en' ? 'Available online at ' : 'Online verfügbar unter ') : ''}<a href={ref.url} target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:underline break-all">{ref.url}</a>.</span>
                   )}
                 </div>
               </li>
@@ -310,27 +303,38 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
   .post-body :global(p:last-child) {
     margin-bottom: 0;
   }
-  .post-body :global(a:not([class*="bg-"])) {
-    color: #3b82f6; /* brand-blue */
+  .post-body :global(a:not(.citation):not(.tag-chip):not([class*="bg-"])) {
+    color: var(--color-current-domain, var(--color-domain-posts));
     text-decoration: underline;
-    transition: color 0.2s;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s;
   }
-  :root.light .post-body :global(a:not([class*="bg-"])),
-  .light .post-body :global(a:not([class*="bg-"])) {
-    color: #1d4ed8;
-  }
-  .post-body :global(a:not([class*="bg-"]):hover) {
-    color: #60a5fa;
-  }
-  :root.light .post-body :global(a:not([class*="bg-"]):hover),
-  .light .post-body :global(a:not([class*="bg-"]):hover) {
-    color: #1e40af;
+  .post-body :global(a:not(.citation):not(.tag-chip):not([class*="bg-"]):hover) {
+    opacity: 0.8;
   }
   .post-body :global(.citation) {
+    color: var(--color-domain-publications) !important;
+    background-color: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
     text-decoration: none !important;
   }
   .post-body :global(.citation:hover) {
+    color: var(--color-domain-publications) !important;
+    background-color: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
     text-decoration: none !important;
+  }
+  :root.light .post-body :global(.citation),
+  .light .post-body :global(.citation) {
+    color: var(--color-domain-publications) !important;
+    background-color: rgba(79, 70, 229, 0.1);
+    border-color: rgba(79, 70, 229, 0.2);
+  }
+  :root.light .post-body :global(.citation:hover),
+  .light .post-body :global(.citation:hover) {
+    color: var(--color-domain-publications) !important;
+    background-color: rgba(79, 70, 229, 0.2);
+    border-color: rgba(79, 70, 229, 0.4);
   }
   .post-body :global(strong) {
     color: var(--color-text-heading);
@@ -383,11 +387,11 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.875rem;
     margin-bottom: 1.5rem;
-    color: #e5e7eb;
+    color: var(--color-text-main);
   }
   :global(.light) .post-body :global(pre) {
     background: rgba(255, 255, 255, 0.6);
-    color: #1e293b;
+    color: var(--color-text-main);
   }
   /* Markdown Tables Styling */
   .post-body :global(table) {
@@ -439,16 +443,16 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
 
 <script>
   function setupBackLink() {
-    const backLink = document.getElementById('back-to-overview-link') as HTMLAnchorElement | null;
-    if (backLink) {
-      try {
-        const savedQuery = sessionStorage.getItem('/posts/_filter_query') || sessionStorage.getItem('/posts_filter_query');
-        if (savedQuery) {
-          backLink.href = `/posts/${savedQuery}`;
-        }
-      } catch {
-        // ignore if sessionStorage is unavailable
+    const backLinks = document.querySelectorAll<HTMLAnchorElement>('a[href="/posts/"]');
+    try {
+      const savedQuery = sessionStorage.getItem('/posts/_filter_query') || sessionStorage.getItem('/posts_filter_query');
+      if (savedQuery) {
+        backLinks.forEach(link => {
+          link.href = `/posts/${savedQuery}`;
+        });
       }
+    } catch {
+      // ignore if sessionStorage is unavailable
     }
   }
 

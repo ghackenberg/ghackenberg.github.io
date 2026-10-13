@@ -4,13 +4,17 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import SlideDeck from "@components/slides/player/SlideDeck.astro";
+import SlideReferencesModal from "@components/slides/player/SlideReferencesModal.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import TagChip from "@components/TagChip.astro";
 import { getCollection, render } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
 import { getFileContentHash, getHashedFilename } from "@commons/server/content-hash.js";
 import { getMp3Duration } from "@commons/server/audio-metadata.js";
 import { getPresentationDuration } from "@commons/server/reading-time.js";
+import { formatDate } from "@commons/shared/format";
 
 export async function getStaticPaths() {
   const presentations = await getCollection("presentations");
@@ -132,10 +136,6 @@ const presentationSchema = {
   "@graph": schemaGraph
 };
 
-const ui = {
-  back: "Back to Presentations",
-};
-
 const previewImg = previewUrl || presentation.data.previewImage || presentation.data.icon;
 ---
 
@@ -152,25 +152,22 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
   <Section id="presentation-content" padding="standard">
     <!-- Header in Reading Width -->
     <Container size="reading" padding="none">
-      <!-- Back button -->
-      <a 
-        href="/presentations/" 
-        class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-blue/10 border border-brand-blue/20 hover:border-brand-blue/30 text-brand-blue transition-all mb-8 cursor-pointer"
-      >
-        <span>&larr;</span>
-        <span>{ui.back}</span>
-      </a>
+      <!-- Breadcrumbs Navigation -->
+      <Breadcrumbs 
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Presentations", href: "/presentations/" },
+          { label: presentation.data.title }
+        ]}
+        domain="presentations" 
+      />
 
       <!-- Header Section -->
       <header class="mb-10 sm:mb-12 relative">
         <div class="max-w-4xl">
           <div class="flex flex-wrap items-center gap-3 mb-4">
-            <time datetime={presentation.data.pubDate.toISOString()} class="text-sm font-semibold text-brand-blue/80">
-              {presentation.data.pubDate.toLocaleDateString(presentation.data.lang === "de" ? "de-AT" : "en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-              })}
+            <time datetime={presentation.data.pubDate.toISOString()} class="text-sm font-semibold text-domain-presentations">
+              {formatDate(presentation.data.pubDate, 'long', presentation.data.lang === "de" ? "de-AT" : "en-US")}
             </time>
             <span class="text-gray-500">•</span>
             <span class="text-xs font-medium text-slate-400">🎙️ Interactive Presentation</span>
@@ -196,12 +193,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
           {presentation.data.tags && presentation.data.tags.length > 0 && (
             <div class="flex flex-wrap gap-2 mt-6">
               {presentation.data.tags.map((tag) => (
-                <a 
-                  href={`/tags/${tag}/`}
-                  class="px-2.5 py-1 rounded-lg text-xs font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-brand-blue/30 transition-all duration-200"
-                >
-                  #{tag}
-                </a>
+                <TagChip tag={tag} />
               ))}
             </div>
           )}
@@ -245,7 +237,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
       <!-- Section Header -->
       <div class="mb-10">
         <h2 id="full-transcript-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
-          Full <span class="heading-gradient-blue">Transcript</span>
+          Full <span class="text-domain-presentations">Transcript</span>
         </h2>
         <p class="text-gray-400 light:text-slate-600 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Explore the spoken presentation script and academic citations in chronological sequence. Click any thumbnail or slide badge to jump directly into the interactive player above.
@@ -272,7 +264,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
             <button
               type="button"
               data-jump-to-slide={idx}
-              class="timeline-step-badge relative z-10 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-blue"
+              class="timeline-step-badge relative z-10 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-domain-presentations"
               title={`Jump to slide ${slide.number} in player`}
             >
               <span class="badge-label text-[9px] sm:text-[10px] uppercase font-bold tracking-wider transition-colors">
@@ -288,7 +280,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
               <!-- Card Header -->
               <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 pb-3 border-b border-element-border/60 light:border-slate-200/60">
                 <div class="min-w-0">
-                  <h3 id={`transcript-heading-${slide.id}`} class="slide-card-title text-base sm:text-lg md:text-xl font-bold text-gray-100 light:text-slate-900 group-hover:text-brand-blue transition-colors">
+                  <h3 id={`transcript-heading-${slide.id}`} class="slide-card-title text-base sm:text-lg md:text-xl font-bold text-gray-100 light:text-slate-900 group-hover:text-domain-presentations transition-colors">
                     {slide.title}
                   </h3>
                   {slide.subtitle && (
@@ -303,7 +295,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
                   <button
                     type="button"
                     data-jump-to-slide={idx}
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-brand-blue/10 hover:bg-brand-blue/20 text-brand-blue border border-brand-blue/20 hover:border-brand-blue/40 transition-all cursor-pointer"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-domain-presentations/10 hover:bg-domain-presentations/20 text-domain-presentations border border-domain-presentations/20 hover:border-domain-presentations/40 transition-all cursor-pointer"
                     title="Play this slide in presentation player"
                   >
                     <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -343,7 +335,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
                     
                     <!-- Hover Overlay -->
                     <div class="absolute inset-0 bg-slate-950/50 opacity-0 group-hover/thumb:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-                      <span class="px-3 py-1.5 rounded-lg bg-brand-blue text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-lg transform translate-y-1 group-hover/thumb:translate-y-0 transition-transform">
+                      <span class="px-3 py-1.5 rounded-lg bg-domain-presentations text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-lg transform translate-y-1 group-hover/thumb:translate-y-0 transition-transform">
                         <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         <span>View in Player</span>
                       </span>
@@ -357,7 +349,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
                   {slide.voiceover && (
                     <div class="transcript-voiceover p-3.5 rounded-xl bg-white/[0.02] light:bg-slate-50/80 border border-element-border light:border-slate-200 space-y-1.5">
                       <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-brand-blue flex items-center gap-1.5">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-domain-presentations flex items-center gap-1.5">
                           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
                           Spoken Presentation Script
                         </span>
@@ -379,14 +371,14 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
 
                   <!-- Structured BibTeX References -->
                   {slide.references && slide.references.length > 0 && (
-                    <div class="transcript-references p-3.5 rounded-xl bg-purple-500/5 light:bg-purple-50/50 border border-purple-500/20 light:border-purple-200 space-y-2.5">
-                      <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-purple-400 light:text-purple-700">
+                    <div class="transcript-references p-3.5 rounded-xl bg-domain-publications/10 border border-domain-publications/20 space-y-2.5">
+                      <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-domain-publications">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                         <span>Academic & Industry References ({slide.references.length})</span>
                       </div>
                       <ul class="space-y-2.5">
                         {slide.references.map((ref) => (
-                          <li class="text-xs text-gray-300 light:text-slate-600 leading-relaxed pl-2.5 border-l-2 border-purple-500/40 light:border-purple-300 flex flex-col gap-1">
+                          <li class="text-xs text-gray-300 light:text-slate-600 leading-relaxed pl-2.5 border-l-2 border-domain-publications/40 flex flex-col gap-1">
                             <div>
                               <span class="font-bold text-gray-100 light:text-slate-900">{ref.author}</span>
                               {ref.year && <span class="text-gray-400 light:text-slate-500"> ({ref.year})</span>}:
@@ -412,17 +404,17 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
                                 href={ref.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="inline-flex items-center gap-1 text-[11px] font-semibold text-purple-400 light:text-purple-700 hover:text-purple-300 light:hover:text-purple-900 hover:underline"
+                                class="inline-flex items-center gap-1 text-[11px] font-semibold text-domain-publications hover:text-domain-publications/80 hover:underline"
                               >
                                 <span>Open Source</span>
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 01-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                               </a>
                               {'doi' in ref && ref.doi && (
-                                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-500/15 light:bg-purple-100 text-purple-300 light:text-purple-800 border border-purple-500/25 light:border-purple-300">
+                                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-domain-publications/15 text-domain-publications border border-domain-publications/25">
                                   DOI: {ref.doi}
                                 </span>
                               )}
-                              <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 text-gray-400 light:text-slate-700 border border-white/10 light:border-slate-300">
+                              <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-element-bg light:bg-slate-200 text-gray-400 light:text-slate-700 border border-element-border-medium light:border-slate-300">
                                 {ref.type}
                               </span>
                             </div>
@@ -501,31 +493,31 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
 
     /* --- DARK MODE (Default) --- */
     .timeline-step-badge {
-      background-color: #0f172a;
+      background-color: var(--color-bg-card);
       border-color: rgba(51, 65, 85, 0.8);
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
     }
     .timeline-step-badge .badge-label {
-      color: #94a3b8;
+      color: var(--color-text-subtle);
       transition: color 0.3s ease;
     }
     .timeline-step-badge .badge-number {
-      color: #ffffff;
+      color: var(--color-text-heading);
       transition: color 0.3s ease;
     }
 
     /* Dark Mode Hover: when hovering over entry or badge */
     .timeline-slide-entry:hover .timeline-step-badge,
     .timeline-step-badge:hover {
-      background-color: #162238 !important;
-      border-color: var(--color-brand-blue) !important;
+      background-color: rgba(59, 130, 246, 0.12) !important;
+      border-color: var(--color-domain-presentations) !important;
       box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.25) !important;
     }
     .timeline-slide-entry:hover .timeline-step-badge .badge-label,
     .timeline-slide-entry:hover .timeline-step-badge .badge-number,
     .timeline-step-badge:hover .badge-label,
     .timeline-step-badge:hover .badge-number {
-      color: var(--color-brand-blue) !important;
+      color: var(--color-domain-presentations) !important;
     }
 
     /* --- LIGHT MODE --- */
@@ -548,18 +540,20 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
     /* Light Mode Hover: synchronized with card hover */
     :global(html.light) .timeline-slide-entry:hover .timeline-step-badge,
     :global(html.light) .timeline-step-badge:hover {
-      background-color: #eff6ff !important;
-      border-color: var(--color-brand-blue) !important;
+      background-color: rgba(59, 130, 246, 0.12) !important;
+      border-color: var(--color-domain-presentations) !important;
       box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2) !important;
     }
     :global(html.light) .timeline-slide-entry:hover .timeline-step-badge .badge-label,
     :global(html.light) .timeline-slide-entry:hover .timeline-step-badge .badge-number,
     :global(html.light) .timeline-step-badge:hover .badge-label,
     :global(html.light) .timeline-step-badge:hover .badge-number {
-      color: var(--color-brand-blue) !important;
+      color: var(--color-domain-presentations) !important;
     }
     :global(html.light) .timeline-slide-entry:hover .slide-card-title {
-      color: var(--color-brand-blue) !important;
+      color: var(--color-domain-presentations) !important;
     }
   </style>
+
+  <SlideReferencesModal slot="modals" />
 </Layout>

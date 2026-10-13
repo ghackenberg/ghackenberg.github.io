@@ -4,6 +4,8 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import TagChip from "@components/TagChip.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -17,56 +19,7 @@ export async function getStaticPaths() {
 const { interest } = Astro.props;
 const { Content } = await render(interest);
 
-const colorClasses = {
-  blue: {
-    text: 'text-brand-blue light:text-blue-700',
-    border: 'border-brand-blue/20 light:border-blue-200',
-    hoverBorder: 'hover:border-brand-blue/40',
-    bg: 'bg-brand-blue/10 light:bg-blue-50/50',
-    badge: 'bg-brand-blue/10 text-brand-blue border-brand-blue/30',
-    btnBg: 'bg-brand-blue hover:bg-brand-blue/90 shadow-brand-blue/20 hover:shadow-brand-blue/30 text-white font-extrabold',
-    glow: 'from-brand-blue to-indigo-500 light:to-indigo-600',
-    gradientText: 'heading-gradient-blue',
-    takeawayBullet: 'bg-brand-blue/20 text-brand-blue border-brand-blue/30',
-    shadowGlow: 'shadow-[0_0_30px_-5px_rgba(59,130,246,0.2)]'
-  },
-  yellow: {
-    text: 'text-brand-yellow light:text-amber-800',
-    border: 'border-brand-yellow/20 light:border-amber-200',
-    hoverBorder: 'hover:border-brand-yellow/40',
-    bg: 'bg-brand-yellow/10 light:bg-amber-50/50',
-    badge: 'bg-brand-yellow/10 text-brand-yellow border-brand-yellow/30',
-    btnBg: 'bg-brand-yellow hover:bg-brand-yellow/90 shadow-brand-yellow/20 hover:shadow-brand-yellow/30 text-slate-950 font-extrabold',
-    glow: 'from-brand-yellow to-orange-500 light:to-orange-600',
-    gradientText: 'heading-gradient-yellow',
-    takeawayBullet: 'bg-brand-yellow/20 text-brand-yellow border-brand-yellow/30',
-    shadowGlow: 'shadow-[0_0_30px_-5px_rgba(245,158,11,0.2)]'
-  },
-  purple: {
-    text: 'text-brand-purple light:text-purple-700',
-    border: 'border-brand-purple/20 light:border-purple-200',
-    hoverBorder: 'hover:border-brand-purple/40',
-    bg: 'bg-brand-purple/10 light:bg-purple-50/50',
-    badge: 'bg-brand-purple/10 text-brand-purple border-brand-purple/30',
-    btnBg: 'bg-brand-purple hover:bg-brand-purple/90 shadow-brand-purple/20 hover:shadow-brand-purple/30 text-white font-extrabold',
-    glow: 'from-brand-purple to-pink-500 light:to-pink-600',
-    gradientText: 'heading-gradient-purple',
-    takeawayBullet: 'bg-brand-purple/20 text-brand-purple border-brand-purple/30',
-    shadowGlow: 'shadow-[0_0_30px_-5px_rgba(168,85,247,0.2)]'
-  },
-  green: {
-    text: 'text-brand-green light:text-emerald-700',
-    border: 'border-brand-green/20 light:border-emerald-200',
-    hoverBorder: 'hover:border-brand-green/40',
-    bg: 'bg-brand-green/10 light:bg-emerald-50/50',
-    badge: 'bg-brand-green/10 text-brand-green border-brand-green/30',
-    btnBg: 'bg-brand-green hover:bg-brand-green/90 shadow-brand-green/20 hover:shadow-brand-green/30 text-white font-extrabold',
-    glow: 'from-brand-green to-cyan-500 light:to-cyan-600',
-    gradientText: 'heading-gradient-green',
-    takeawayBullet: 'bg-brand-green/20 text-brand-green border-brand-green/30',
-    shadowGlow: 'shadow-[0_0_30px_-5px_rgba(16,185,129,0.2)]'
-  }
-}[interest.data.color];
+
 
 const tags = interest.data.tags || [];
 
@@ -126,24 +79,21 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
   <Section id="interest-content" padding="standard">
     <Container size="reading" padding="none">
     
-    <!-- Top Breadcrumb / Back Link -->
-    <div class="mb-8">
-      <a 
-        href="/#about" 
-        class={`inline-flex items-center space-x-2 text-xs font-bold px-4 py-2.5 rounded-xl border transition-all duration-300 hover:scale-105 ${colorClasses.badge}`}
-      >
-        <span>&larr;</span>
-        <span>Back to Professional Interests</span>
-      </a>
-    </div>
+    <!-- Breadcrumbs Navigation -->
+    <Breadcrumbs 
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Professional Interests", href: "/#about" },
+        { label: interest.data.title }
+      ]}
+      domain="interests"
+    />
 
     <!-- Hero Header -->
     <header class="mb-14">
       <div class="max-w-3xl">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-100 mb-4 leading-tight">
-          <span class={colorClasses.gradientText}>
-            {interest.data.title}
-          </span>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4 leading-tight">
+          {interest.data.title}
         </h1>
 
         <p class="text-gray-300 text-base sm:text-lg leading-relaxed font-normal mb-6">
@@ -153,13 +103,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
         {interest.data.tags && interest.data.tags.length > 0 && (
           <div class="flex flex-wrap gap-2">
             {interest.data.tags.map((tag) => (
-              <a
-                href={`/tags/${tag}/`}
-                data-tag={tag}
-                class={`tag-chip tag-chip-${interest.data.color} inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border hover:scale-105 transition-all`}
-              >
-                #{tag}
-              </a>
+              <TagChip tag={tag} />
             ))}
           </div>
         )}
@@ -167,7 +111,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     </header>
 
     <!-- Detailed Content Card -->
-    <div class={`glass-card p-6 sm:p-10 md:p-12 rounded-3xl border ${colorClasses.border} interest-content theme-${interest.data.color} prose-custom`}>
+    <div class="glass-card p-6 sm:p-10 md:p-12 rounded-3xl border border-domain-interests/20 interest-content prose-custom">
       <Content />
     </div>
     </Container>
@@ -217,7 +161,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     font-weight: 500;
     line-height: 1.65;
     color: var(--color-text-heading);
-    border-left: 3px solid var(--glow-text, #3b82f6);
+    border-left: 3px solid var(--glow-text, var(--color-domain-interests));
     padding-left: 1rem;
     margin-bottom: 1.5rem;
     transition: color 0.5s ease, border-color 0.5s ease;
@@ -258,7 +202,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     position: absolute;
     left: 0.85rem;
     top: 0.85rem;
-    color: var(--glow-text, #3b82f6);
+    color: var(--glow-text, var(--color-domain-interests));
     font-weight: bold;
     line-height: 1.75;
   }
@@ -280,7 +224,7 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
     margin-top: 1.75rem;
     margin-bottom: 0.75rem;
-    background-color: #030712;
+    background-color: var(--color-bg-main);
     transition: transform 0.3s ease, border-color 0.3s ease;
   }
   .interest-content :global(img:hover) {
@@ -291,16 +235,13 @@ const pageJsonLd = [interestSchema, breadcrumbSchema];
     margin-top: -0.25rem;
     margin-bottom: 2.25rem;
     font-size: 0.8125rem;
-    color: #9ca3af;
+    color: var(--color-text-subtle);
   }
 
-  .theme-blue { --glow-text: #60a5fa; }
-  .theme-yellow { --glow-text: #fbbf24; }
-  .theme-purple { --glow-text: #c084fc; }
-  .theme-green { --glow-text: #34d399; }
-
-  :global(.light) .theme-blue { --glow-text: #1d4ed8; }
-  :global(.light) .theme-yellow { --glow-text: #b45309; }
-  :global(.light) .theme-purple { --glow-text: #7e22ce; }
-  :global(.light) .theme-green { --glow-text: #047857; }
+  .interest-content {
+    --glow-text: var(--color-domain-interests);
+  }
+  :global(.light) .interest-content {
+    --glow-text: var(--color-domain-interests);
+  }
 </style>

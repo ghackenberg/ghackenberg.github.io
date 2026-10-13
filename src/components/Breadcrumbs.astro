@@ -1,0 +1,203 @@
+---
+import { isContentDomain, type ContentDomain } from "@commons/shared/domain-themes";
+
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items?: BreadcrumbItem[];
+  class?: string;
+  accentColor?: "blue" | "purple" | "yellow" | "green" | "cyan" | "indigo" | "emerald" | "violet";
+  domain?: ContentDomain;
+}
+
+const { 
+  items: propItems, 
+  class: className = "",
+  accentColor = "blue",
+  domain: propDomain
+} = Astro.props;
+
+// Route name mapping helper when computing from URL
+const SEGMENT_NAMES: Record<string, string> = {
+  posts: "Posts",
+  publications: "Publications",
+  presentations: "Presentations",
+  courses: "Courses",
+  projects: "Projects",
+  services: "Services",
+  visualizations: "Visualizations",
+  interests: "Interests",
+  tags: "Tags",
+};
+
+// Auto-infer domain from the first route segment if not explicitly provided
+const pathname = Astro.url.pathname.replace(/^\/|\/$/g, "");
+const firstSegment = pathname ? pathname.split("/")[0] : "";
+const resolvedDomain: ContentDomain | undefined = propDomain ?? (firstSegment && isContentDomain(firstSegment) ? (firstSegment as ContentDomain) : undefined);
+
+let breadcrumbs: BreadcrumbItem[] = [];
+
+if (propItems && propItems.length > 0) {
+  breadcrumbs = propItems;
+} else {
+  // Compute from current URL
+  const segments = pathname ? pathname.split("/").filter(Boolean) : [];
+  
+  breadcrumbs.push({ label: "Home", href: "/" });
+  
+  let currentPath = "";
+  segments.forEach((seg, index) => {
+    currentPath += `/${seg}`;
+    const isLast = index === segments.length - 1;
+    const formattedLabel = SEGMENT_NAMES[seg] || decodeURIComponent(seg).replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    breadcrumbs.push({
+      label: formattedLabel,
+      href: isLast ? undefined : `${currentPath}/`
+    });
+  });
+}
+
+// Canonical domain styling map
+const DOMAIN_STYLES: Record<ContentDomain, { activeText: string; hover: string; badge: string }> = {
+  posts: {
+    activeText: "text-domain-posts",
+    hover: "hover:text-domain-posts",
+    badge: "bg-domain-posts/10 text-domain-posts border-domain-posts/20",
+  },
+  courses: {
+    activeText: "text-domain-courses",
+    hover: "hover:text-domain-courses",
+    badge: "bg-domain-courses/10 text-domain-courses border-domain-courses/20",
+  },
+  publications: {
+    activeText: "text-domain-publications",
+    hover: "hover:text-domain-publications",
+    badge: "bg-domain-publications/10 text-domain-publications border-domain-publications/20",
+  },
+  presentations: {
+    activeText: "text-domain-presentations",
+    hover: "hover:text-domain-presentations",
+    badge: "bg-domain-presentations/10 text-domain-presentations border-domain-presentations/20",
+  },
+  projects: {
+    activeText: "text-domain-projects",
+    hover: "hover:text-domain-projects",
+    badge: "bg-domain-projects/10 text-domain-projects border-domain-projects/20",
+  },
+  services: {
+    activeText: "text-domain-services",
+    hover: "hover:text-domain-services",
+    badge: "bg-domain-services/10 text-domain-services border-domain-services/20",
+  },
+  visualizations: {
+    activeText: "text-domain-visualizations",
+    hover: "hover:text-domain-visualizations",
+    badge: "bg-domain-visualizations/10 text-domain-visualizations border-domain-visualizations/20",
+  },
+  interests: {
+    activeText: "text-domain-interests",
+    hover: "hover:text-domain-interests",
+    badge: "bg-domain-interests/10 text-domain-interests border-domain-interests/20",
+  },
+  tags: {
+    activeText: "text-domain-tags",
+    hover: "hover:text-domain-tags",
+    badge: "bg-domain-tags/10 text-domain-tags border-domain-tags/20",
+  },
+};
+
+// Brand accent highlights for active leaf item and hover states (fallback when no domain is present)
+const ACCENT_STYLES: Record<string, { activeText: string; hover: string }> = {
+  blue: {
+    activeText: "text-brand-blue",
+    hover: "hover:text-brand-blue"
+  },
+  purple: {
+    activeText: "text-brand-purple",
+    hover: "hover:text-brand-purple"
+  },
+  yellow: {
+    activeText: "text-brand-yellow",
+    hover: "hover:text-brand-yellow"
+  },
+  green: {
+    activeText: "text-brand-green",
+    hover: "hover:text-brand-green"
+  },
+  emerald: {
+    activeText: "text-domain-services",
+    hover: "hover:text-domain-services"
+  },
+  cyan: {
+    activeText: "text-domain-courses",
+    hover: "hover:text-domain-courses"
+  },
+  indigo: {
+    activeText: "text-domain-publications",
+    hover: "hover:text-domain-publications"
+  },
+  violet: {
+    activeText: "text-domain-posts",
+    hover: "hover:text-domain-posts"
+  }
+};
+
+const domainStyle = resolvedDomain ? DOMAIN_STYLES[resolvedDomain] : undefined;
+const activeAccent = ACCENT_STYLES[accentColor] || ACCENT_STYLES.blue;
+const activeTextClass = domainStyle ? domainStyle.activeText : activeAccent.activeText;
+const hoverClass = domainStyle ? domainStyle.hover : activeAccent.hover;
+---
+
+<nav aria-label="Breadcrumb" class:list={["w-full mb-6 md:mb-8", className]}>
+  <ol class="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 px-3.5 py-2 rounded-2xl bg-element-bg border border-element-border text-xs text-gray-400 backdrop-blur-md shadow-sm">
+    {breadcrumbs.map((item, index) => {
+      const isLast = index === breadcrumbs.length - 1;
+      return (
+        <li class="inline-flex items-center gap-1.5 sm:gap-2 min-w-0">
+          {index > 0 && (
+            <svg 
+              class="w-3.5 h-3.5 text-gray-500 light:text-slate-400 shrink-0 opacity-70" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              stroke-width="2" 
+              stroke-linecap="round" 
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          )}
+          {isLast ? (
+            <span 
+              class:list={[
+                "font-semibold truncate max-w-[200px] sm:max-w-[320px] md:max-w-[450px]",
+                domainStyle 
+                  ? `px-2 py-0.5 rounded-md border text-xs ${domainStyle.badge}` 
+                  : activeTextClass
+              ]}
+              aria-current="page"
+              title={item.label}
+            >
+              {item.label}
+            </span>
+          ) : (
+            <a 
+              href={item.href || "#"} 
+              class:list={[
+                "text-gray-400 light:text-slate-600 hover:text-gray-200 light:hover:text-slate-900 transition-colors font-medium truncate max-w-[140px] sm:max-w-[220px]",
+                hoverClass
+              ]}
+              title={item.label}
+            >
+              {item.label}
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

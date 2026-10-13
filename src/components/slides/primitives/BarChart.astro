@@ -1,4 +1,6 @@
 ---
+import { getCycleAccent, type SlideAccent } from '@commons/shared/accent-system';
+
 export interface BarChartItem {
   label: string;
   value: number;
@@ -6,7 +8,6 @@ export interface BarChartItem {
   unit?: string;
   sublabel?: string;
   cue?: string;
-  accent?: 'blue' | 'cyan' | 'teal' | 'indigo' | 'emerald' | 'green' | 'amber' | 'purple' | 'rose' | 'neutral';
   highlightCue?: string;
   highlightColor?: 'amber' | 'cyan' | 'emerald' | 'purple' | 'blue';
   highlightTarget?: 'label' | 'value';
@@ -20,6 +21,7 @@ interface Props {
   cue?: string;
   id?: string;
   class?: string;
+  startAccent?: SlideAccent;
 }
 
 const {
@@ -29,25 +31,22 @@ const {
   unit = "",
   cue,
   id: explicitId,
-  class: className = ""
+  class: className = "",
+  startAccent
 } = Astro.props;
 
 const elementId = explicitId;
 
-// Presentation-wide standard sequential accent cycle
-const ACCENT_CYCLE = ['blue', 'cyan', 'indigo', 'emerald', 'amber', 'purple'] as const;
-
 const accentColors: Record<string, { bar: string; text: string }> = {
-  blue: { bar: 'bg-blue-500', text: 'text-blue-400 light:text-blue-600' },
-  cyan: { bar: 'bg-cyan-400', text: 'text-cyan-400 light:text-cyan-600' },
-  teal: { bar: 'bg-cyan-400', text: 'text-cyan-400 light:text-cyan-600' },
-  indigo: { bar: 'bg-indigo-500', text: 'text-indigo-400 light:text-indigo-600' },
-  emerald: { bar: 'bg-emerald-500', text: 'text-emerald-400 light:text-emerald-600' },
-  green: { bar: 'bg-emerald-500', text: 'text-emerald-400 light:text-emerald-600' },
-  amber: { bar: 'bg-amber-400', text: 'text-amber-400 light:text-amber-600' },
-  purple: { bar: 'bg-purple-500', text: 'text-purple-400 light:text-purple-600' },
-  rose: { bar: 'bg-rose-500', text: 'text-rose-400 light:text-rose-600' },
-  neutral: { bar: 'bg-slate-500', text: 'text-slate-400 light:text-slate-600' }
+  rose: { bar: 'bg-[var(--color-slide-accent-rose)]', text: 'text-[var(--color-slide-accent-rose)]' },
+  purple: { bar: 'bg-[var(--color-slide-accent-purple)]', text: 'text-[var(--color-slide-accent-purple)]' },
+  indigo: { bar: 'bg-[var(--color-slide-accent-indigo)]', text: 'text-[var(--color-slide-accent-indigo)]' },
+  blue: { bar: 'bg-[var(--color-slide-accent-blue)]', text: 'text-[var(--color-slide-accent-blue)]' },
+  cyan: { bar: 'bg-[var(--color-slide-accent-cyan)]', text: 'text-[var(--color-slide-accent-cyan)]' },
+  teal: { bar: 'bg-[var(--color-slide-accent-teal)]', text: 'text-[var(--color-slide-accent-teal)]' },
+  emerald: { bar: 'bg-[var(--color-slide-accent-emerald)]', text: 'text-[var(--color-slide-accent-emerald)]' },
+  amber: { bar: 'bg-[var(--color-slide-accent-amber)]', text: 'text-[var(--color-slide-accent-amber)]' },
+  orange: { bar: 'bg-[var(--color-slide-accent-orange)]', text: 'text-[var(--color-slide-accent-orange)]' }
 };
 
 // Initial SSR Calculation for zero-flash layout
@@ -76,9 +75,8 @@ const initialZeroPercent = ((0 - initialMin) / initialRange) * 100;
 const hasInternalZeroLine = initialZeroPercent > 0.5 && initialZeroPercent < 99.5;
 
 function resolveBarAccent(item: BarChartItem, idx: number): string {
-  if (item.accent) return item.accent;
   if (item.value < 0) return 'rose';
-  return ACCENT_CYCLE[idx % ACCENT_CYCLE.length];
+  return getCycleAccent(startAccent as SlideAccent, idx).name;
 }
 
 function computeSsrBarStyle(value: number) {
@@ -108,11 +106,13 @@ function computeSsrBarRounding(value: number) {
 <div
   id={elementId}
   data-cue={cue}
+  data-start-accent={startAccent ? String(startAccent) : undefined}
   data-min={explicitMin !== undefined ? explicitMin : ''}
   data-max={explicitMax !== undefined ? explicitMax : ''}
   class={`bar-chart-container flex-1 flex flex-col justify-around gap-6 text-slate-200 light:text-slate-800 w-full select-none ${className}`}
 >
   {items.map((item, idx) => {
+    const hasCustomAccent = Boolean(item.value < 0);
     const accent = resolveBarAccent(item, idx);
     const colorStyle = accentColors[accent] || accentColors.blue;
     const itemUnit = item.unit || unit;
@@ -125,6 +125,8 @@ function computeSsrBarRounding(value: number) {
       <div
         data-value={item.value}
         data-accent={accent}
+        data-custom-accent={hasCustomAccent ? "true" : undefined}
+        style={`--row-bar-accent: var(--color-slide-accent-${accent});`}
         class="bar-chart-row flex flex-col gap-2 w-full transition-opacity duration-300"
       >
         <!-- Row Header: Label & Formatted Value -->
@@ -142,7 +144,7 @@ function computeSsrBarRounding(value: number) {
             )}
           </div>
 
-          <div class={`font-mono text-xl lg:text-2xl font-black shrink-0 ${colorStyle.text}`}>
+          <div class={`chart-value-text font-mono text-xl lg:text-2xl font-black shrink-0 ${colorStyle.text}`}>
             {isValueHighlight ? (
               <mark data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
                 {formattedVal}
@@ -173,12 +175,35 @@ function computeSsrBarRounding(value: number) {
 </div>
 
 <script>
+  import { getCycleAccent } from '@commons/shared/accent-system';
+
   function initBarCharts() {
     document.querySelectorAll<HTMLElement>('.bar-chart-container').forEach(container => {
       const minAttr = container.dataset.min;
       const maxAttr = container.dataset.max;
       const rows = Array.from(container.querySelectorAll<HTMLElement>('.bar-chart-row'));
       if (rows.length === 0) return;
+
+      const parentCard = container.closest<HTMLElement>('[data-accent]');
+      const effectiveStart = container.dataset.startAccent || parentCard?.dataset.accent;
+
+      if (effectiveStart && rows.length > 1) {
+        let unaccentedIdx = 0;
+        rows.forEach(row => {
+          if (row.dataset.customAccent) return;
+          const cycle = getCycleAccent(effectiveStart, unaccentedIdx);
+          unaccentedIdx++;
+          row.style.setProperty('--row-bar-accent', `var(--color-slide-accent-${cycle.name})`);
+          const bar = row.querySelector<HTMLElement>('.chart-bar-fill');
+          const valueText = row.querySelector<HTMLElement>('.chart-value-text');
+          if (bar) {
+            bar.style.backgroundColor = `var(--color-slide-accent-${cycle.name})`;
+          }
+          if (valueText) {
+            valueText.style.color = `var(--color-slide-accent-${cycle.name})`;
+          }
+        });
+      }
 
       const values = rows.map(r => parseFloat(r.dataset.value || '0'));
       const hasNegative = values.some(v => v < 0);
@@ -260,3 +285,40 @@ function computeSsrBarRounding(value: number) {
   window.addEventListener('slide:changed', initBarCharts);
   window.addEventListener('resize', initBarCharts);
 </script>
+
+<style>
+  .bar-chart-row :global(mark),
+  .bar-chart-row :global(.highlight-marker) {
+    --hl-color: var(--row-bar-accent) !important;
+    --hl-text-dark: color-mix(in srgb, var(--row-bar-accent) 35%, white) !important;
+    --hl-text-light: var(--row-bar-accent) !important;
+  }
+
+  /* Ton-in-ton container cascade for single-item bar charts or default unaccented items inside [data-accent] cards */
+  :global([data-accent="rose"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-rose); }
+  :global([data-accent="rose"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-rose); }
+
+  :global([data-accent="purple"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-purple); }
+  :global([data-accent="purple"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-purple); }
+
+  :global([data-accent="indigo"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-indigo); }
+  :global([data-accent="indigo"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-indigo); }
+
+  :global([data-accent="blue"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-blue); }
+  :global([data-accent="blue"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-blue); }
+
+  :global([data-accent="cyan"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-cyan); }
+  :global([data-accent="cyan"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-cyan); }
+
+  :global([data-accent="teal"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-teal); }
+  :global([data-accent="teal"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-teal); }
+
+  :global([data-accent="emerald"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-emerald); }
+  :global([data-accent="emerald"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-emerald); }
+
+  :global([data-accent="amber"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-amber); }
+  :global([data-accent="amber"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-amber); }
+
+  :global([data-accent="orange"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-bar-fill { background-color: var(--color-slide-accent-orange); }
+  :global([data-accent="orange"]) .bar-chart-container:not([data-start-accent]) .bar-chart-row:not([data-custom-accent]) .chart-value-text { color: var(--color-slide-accent-orange); }
+</style>

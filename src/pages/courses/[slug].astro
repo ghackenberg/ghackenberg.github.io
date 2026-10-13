@@ -5,6 +5,8 @@ import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import CourseModuleCard from "@components/CourseModuleCard.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import TagChip from "@components/TagChip.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -95,14 +97,15 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 
   <Section id="course-content" padding="standard">
     <Container size="reading" padding="none">
-    <!-- Back Button -->
-    <a 
-      href="/courses/" 
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-yellow/10 border border-brand-yellow/20 hover:border-brand-yellow/30 text-brand-yellow transition-all mb-8 cursor-pointer"
-    >
-      <span>&larr;</span>
-      <span>Back to Courses</span>
-    </a>
+    <!-- Breadcrumbs Navigation -->
+    <Breadcrumbs 
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Courses", href: "/courses/" },
+        { label: course.data.title }
+      ]}
+      domain="courses"
+    />
 
     <!-- Title Header -->
     <header class="mb-12 relative">
@@ -117,12 +120,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       {course.data.tags && course.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-2 mt-6">
           {course.data.tags.map((tag) => (
-            <a
-              href={`/tags/${tag}/`}
-              class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105 bg-brand-yellow/10 border-brand-yellow/20 text-brand-yellow hover:bg-brand-yellow/20 hover:border-brand-yellow/30"
-            >
-              #{tag}
-            </a>
+            <TagChip tag={tag} />
           ))}
         </div>
       )}
@@ -152,14 +150,12 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       </div>
     </header>
 
-    <div class="glass-card p-8 md:p-10 rounded-3xl border border-white/5 relative overflow-hidden prose-custom">
-      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-yellow"></div>
-
+    <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border relative overflow-hidden prose-custom">
       <p class="text-base text-gray-300 leading-relaxed font-normal mb-8">{course.data.overview || course.data.description}</p>
 
       {course.data.targetAudience && (
         <div class="mb-8">
-          <h2 id="target-audience" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+          <h2 id="target-audience" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Target Audience
           </h2>
           <p class="text-gray-300 leading-relaxed font-normal">
@@ -170,7 +166,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
 
       {course.data.prerequisites && course.data.prerequisites.length > 0 && (
         <div class="mb-8">
-          <h2 id="course-prerequisites" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+          <h2 id="course-prerequisites" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
             Course Prerequisites
           </h2>
           <ul class="space-y-2">
@@ -184,7 +180,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       )}
 
       <div class="mb-8">
-        <h2 id="learning-goals" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+        <h2 id="learning-goals" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
           Learning Goals
         </h2>
         {course.data.competencies && course.data.competencies.length > 0 ? (
@@ -207,7 +203,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
       </div>
 
       <div class="syllabus-summary">
-        <h2 id="course-syllabus" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-white/5 pb-2 mb-4">
+        <h2 id="course-syllabus" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">
           Course Syllabus
         </h2>
         {courseModules.length > 0 ? (
@@ -239,8 +235,8 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
     <Section id="course-modules" border="top" padding="standard">
       <Container size="wide" padding="none">
         <div class="mb-8 md:mb-12">
-          <h2 id="course-modules-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 mb-4">
-            Course <span class="heading-gradient-yellow">Modules</span>
+          <h2 id="course-modules-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            Course <span class="text-domain-courses">Modules</span>
           </h2>
           <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
             Structured learning units covering theoretical foundations, practical implementations, and industry tooling.

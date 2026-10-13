@@ -1,6 +1,6 @@
 ---
 title: "A discrete event formalism for fast simulation of on-demand transportation systems"
-pubDate: "11 December 2023"
+pubDate: "2023-12-11"
 book: "International Conference on Intelligent Systems Design and Applications, pp. 185-197"
 author: "Dominik Ascher and <strong>Georg Hackenberg</strong>"
 abstract: |-

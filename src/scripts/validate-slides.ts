@@ -601,11 +601,11 @@ function validateSlides() {
         const subHlCue = subHlMatch ? subHlMatch[1] : null;
         const sHlIdx = subHlCue ? voCues.indexOf(subHlCue) : -1;
 
-        const qSlotMatch = body.match(/<div[^>]*slot=["']question["'][\s\S]*?<\/div>/);
+        const qSlotMatch = body.match(/<(?:div|p)[^>]*slot=["']question["'][\s\S]*?<\/(?:div|p)>/);
         const qHlMatch = qSlotMatch ? qSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/) : null;
         const qHlCue = qHlMatch ? qHlMatch[1] : null;
 
-        const bSlotMatch = body.match(/<div[^>]*slot=["']bridge["'][\s\S]*?<\/div>/);
+        const bSlotMatch = body.match(/<(?:div|p)[^>]*slot=["']bridge["'][\s\S]*?<\/(?:div|p)>/);
         const bHlMatch = bSlotMatch ? bSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/) : null;
         const bHlCue = bHlMatch ? bHlMatch[1] : null;
 

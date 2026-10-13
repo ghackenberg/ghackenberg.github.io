@@ -37,7 +37,7 @@ outputs:
   - "Requirements Traceability Matrix (RTM) linking requirements to test cases"
   - "Executable specification prototypes (Given-When-Then acceptance suites)"
 duration: "2 - 4 Weeks"
-format: "Collaborative Sprints & Engineering Workshops"
+format: "Requirements Sprints"
 delivery: "Remote / On-site"
 ---
 

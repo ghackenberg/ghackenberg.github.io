@@ -169,7 +169,7 @@ function escapeHtml(str: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/'/g, '&#39;');
 }
 
 function hideAllIndicators() {
@@ -206,7 +206,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
   // Case 1: Read tracking is disabled -> show no items, show clean prompt to activate tracking
   if (!isTracking) {
     listEl.innerHTML = `
-      <div class="py-16 px-6 text-center glass-card rounded-3xl border border-white/10 light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
+      <div class="py-16 px-6 text-center glass-card rounded-3xl border border-element-border-medium light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
         <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-brand-blue/15 text-brand-blue flex items-center justify-center border border-brand-blue/30 shadow-inner">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -234,7 +234,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
   // Case 2: Tracking enabled, but all items are read -> show no items, show "All caught up"
   if (unreadCount === 0) {
     listEl.innerHTML = `
-      <div class="py-16 px-6 text-center glass-card rounded-3xl border border-white/10 light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
+      <div class="py-16 px-6 text-center glass-card rounded-3xl border border-element-border-medium light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
         <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-emerald-500/15 text-emerald-400 light:text-emerald-600 flex items-center justify-center border border-emerald-500/30 shadow-inner">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -269,7 +269,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
       >
         <div class="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-5">
           <!-- Preview Image: 16:9 on mobile, Compact Square (matching text height) on Desktop -->
-          <div class="w-full aspect-video sm:w-36 sm:h-36 md:w-40 md:h-40 sm:aspect-square rounded-xl overflow-hidden shrink-0 border border-white/10 light:border-slate-200 bg-slate-900/60 light:bg-slate-100 flex items-center justify-center relative shadow-sm">
+          <div class="w-full aspect-video sm:w-36 sm:h-36 md:w-40 md:h-40 sm:aspect-square rounded-xl overflow-hidden shrink-0 border border-element-border-medium light:border-slate-200 bg-slate-900/60 light:bg-slate-100 flex items-center justify-center relative shadow-sm">
             ${item.image ? `
               <img 
                 src="${item.image}" 

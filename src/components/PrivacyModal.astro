@@ -12,13 +12,10 @@
 >
   <div 
     id="privacy-modal-container"
-    class="glass-panel w-full max-w-lg sm:max-w-xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(92dvh,760px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
+    class="glass-panel w-full max-w-lg sm:max-w-xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(92dvh,760px)] bg-pane border-element-border-medium text-gray-100 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
   >
-    <!-- Top Accent Bar -->
-    <div class="h-1 sm:h-1.5 bg-gradient-brand shrink-0"></div>
-
     <!-- Header (Sticky/Shrink-0) -->
-    <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-white/5 flex items-center justify-between gap-3">
+    <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-element-border flex items-center justify-between gap-3">
       <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-blue/15 border border-brand-blue/30 text-brand-blue flex items-center justify-center shrink-0">
           <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -27,7 +24,7 @@
         </div>
         <div class="min-w-0 flex flex-col justify-center">
           <h2 id="privacy-modal-title" class="text-lg sm:text-xl font-bold tracking-tight text-white light:text-slate-900 leading-tight truncate">
-            Privacy <span class="heading-gradient-brand">Settings</span>
+            Privacy Settings
           </h2>
           <p class="text-xs text-gray-400 light:text-slate-500 mt-0.5 leading-tight truncate">
             Full control over your data and local preferences
@@ -53,17 +50,17 @@
     <div class="modal-body flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 space-y-3 sm:space-y-4">
       
       <!-- Section 1: Local Preferences & Reading History (Opt-In) -->
-      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
+      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-element-border light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
         <div class="flex items-start justify-between gap-3">
           <div class="space-y-1 min-w-0">
             <div class="flex flex-wrap items-center gap-2">
               <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900">Local Preferences</h3>
-              <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-blue/15 text-brand-blue border border-brand-blue/30 light:bg-blue-50 light:text-blue-700 light:border-blue-200 shrink-0">
+              <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-blue/15 text-brand-blue border border-brand-blue/30 shrink-0">
                 100% Client-Side
               </span>
             </div>
             <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
-              Highlights new and unread content with subtle indicator dots and ensures varied rotation for the homepage gallery across visits. Stored <strong>strictly locally in your browser (<code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-white/5 light:bg-slate-200/60 px-1.5 py-0.5 rounded">localStorage</code>)</strong>. No data is ever transmitted to a server.
+              Highlights new and unread content with subtle indicator dots and ensures varied rotation for the homepage gallery across visits. Stored <strong>strictly locally in your browser (<code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-element-bg light:bg-slate-200/60 px-1.5 py-0.5 rounded">localStorage</code>)</strong>. No data is ever transmitted to a server.
             </p>
           </div>
 
@@ -76,13 +73,13 @@
         </div>
 
         <!-- Action Row: Status & Clear History -->
-        <div id="reading-data-actions" class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm">
+        <div id="reading-data-actions" class="pt-2 border-t border-element-border light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm">
           <span id="reading-status-summary" class="text-gray-400 light:text-slate-500">
             Status: <span id="reading-status-text" class="text-gray-300 light:text-slate-700 font-medium">Disabled (No local storage)</span>
           </span>
           <button 
             id="clear-reading-data-btn"
-            class="hidden px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 light:text-red-700 light:bg-red-50 light:border-red-200 light:hover:bg-red-100 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto"
+            class="hidden px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-callout-caution/30 bg-callout-caution/10 hover:bg-callout-caution/20 text-callout-caution transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto"
           >
             Clear local history
           </button>
@@ -90,11 +87,11 @@
       </div>
 
       <!-- Section 2: Plausible Web Analytics -->
-      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
+      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-element-border light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
             <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900">Web Analytics</h3>
-            <span id="analytics-badge" class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-200 shrink-0">
+            <span id="analytics-badge" class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-green/15 text-brand-green border border-brand-green/30 shrink-0">
               Active (Cookie-Free)
             </span>
           </div>
@@ -104,7 +101,7 @@
         </div>
 
         <!-- Opt-Out Action Row -->
-        <div class="pt-2 border-t border-white/5 light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm">
+        <div class="pt-2 border-t border-element-border light:border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm">
           <span class="text-gray-400 light:text-slate-500">
             Legal basis: Art. 6(1)(f) GDPR
           </span>
@@ -119,9 +116,9 @@
     </div>
 
     <!-- Footer (Sticky/Shrink-0) -->
-    <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-white/5 light:border-slate-200/80 flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
+    <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-element-border light:border-slate-200/80 flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
       <span>Data protection details</span>
-      <a href="/datenschutz/" class="underline hover:text-brand-blue light:hover:text-blue-600 transition-colors">
+      <a href="/datenschutz/" class="underline hover:text-brand-blue transition-colors">
         Privacy Policy
       </a>
     </div>
@@ -136,6 +133,7 @@
       openPrivacyModal?: () => void;
       closePrivacyModal?: () => void;
       closeWhatsNewModal?: () => void;
+      closeReferencesModal?: () => void;
     }
   }
 
@@ -182,7 +180,7 @@
       if (readingStatusText) {
         readingStatusText.textContent = enabled ? 'Enabled (Stored locally)' : 'Disabled (No local storage)';
         readingStatusText.className = enabled 
-          ? 'text-brand-blue light:text-blue-600 font-medium' 
+          ? 'text-brand-blue font-medium' 
           : 'text-gray-400 light:text-slate-500 font-medium';
       }
       if (clearReadingDataBtn) {
@@ -198,14 +196,14 @@
       if (toggleAnalyticsBtn) {
         toggleAnalyticsBtn.textContent = optedOut ? 'Re-enable analytics' : 'Opt out of analytics';
         toggleAnalyticsBtn.className = optedOut
-          ? 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-300 hover:bg-emerald-500/20 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto'
+          ? 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-brand-green/30 bg-brand-green/10 text-brand-green hover:bg-brand-green/20 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto'
           : 'px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-300 light:text-slate-700 hover:text-gray-100 light:hover:text-slate-900 light:hover:bg-slate-100 transition-colors text-xs sm:text-sm font-medium cursor-pointer self-start sm:self-auto shadow-sm';
       }
       if (analyticsBadge) {
         analyticsBadge.textContent = optedOut ? 'Disabled (Opt-out active)' : 'Active (Cookie-Free)';
         analyticsBadge.className = optedOut
-          ? 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 light:bg-amber-50 light:text-amber-700 light:border-amber-300 shrink-0'
-          : 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 light:bg-emerald-50 light:text-emerald-700 light:border-emerald-200 shrink-0';
+          ? 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-callout-warning/15 text-callout-warning border border-callout-warning/30 shrink-0'
+          : 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-green/15 text-brand-green border border-brand-green/30 shrink-0';
       }
     }
 
@@ -216,6 +214,9 @@
     function openModal() {
       if (typeof window.closeWhatsNewModal === 'function') {
         window.closeWhatsNewModal();
+      }
+      if (typeof window.closeReferencesModal === 'function') {
+        window.closeReferencesModal();
       }
       updateModalUI();
       if (backdrop && container) {
@@ -351,26 +352,26 @@
     background-color: rgba(15, 23, 42, 0.25) !important;
   }
   html.light #privacy-modal-container {
-    background-color: #ffffff !important;
+    background-color: rgb(255, 255, 255) !important;
     border-color: rgba(15, 23, 42, 0.12) !important;
-    color: #1e293b !important;
+    color: rgb(30, 41, 59) !important;
     box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
   }
   html.light #privacy-modal-container .modal-header,
   html.light #privacy-modal-container .modal-body {
-    background-color: #ffffff !important;
+    background-color: rgb(255, 255, 255) !important;
   }
   html.light #privacy-modal-container .modal-header {
     border-color: rgba(15, 23, 42, 0.08) !important;
   }
   html.light #privacy-modal-container .modal-header h2 {
-    color: #0f172a !important;
+    color: rgb(15, 23, 42) !important;
   }
   html.light #privacy-modal-container .modal-header p {
-    color: #64748b !important;
+    color: rgb(100, 116, 139) !important;
   }
   html.light #privacy-modal-container .modal-footer {
-    background-color: #f8fafc !important;
+    background-color: rgb(248, 250, 252) !important;
     border-color: rgba(15, 23, 42, 0.08) !important;
   }
 </style>
