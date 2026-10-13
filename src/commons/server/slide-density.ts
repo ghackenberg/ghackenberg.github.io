@@ -114,7 +114,7 @@ export async function auditSlideDensity(
           } else if (containerType === 'CodeContainer') {
             threshold = 0.45;
           } else if (containerType === 'BentoCard') {
-            threshold = 0.75;
+            threshold = 0.80;
           } else if (containerType === 'Pipeline') {
             // If the step card has a graphic area or image, use 0.40 threshold
             const hasGraphic =
