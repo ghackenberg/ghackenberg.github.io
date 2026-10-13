@@ -184,9 +184,9 @@ const renderedSlides = await Promise.all(
       // 2. Run AutoFitController across all cards to match live player typography scale
       const autoFit = new AutoFitController({
         minScale: 0.65,
-        maxScale: 1.45,
+        maxScale: 2.50,
         minClearance: 16,
-        iterations: 6,
+        iterations: 7,
       });
 
       document.querySelectorAll<HTMLElement>('.print-slide-page').forEach((page) => {
