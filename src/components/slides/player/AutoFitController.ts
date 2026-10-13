@@ -161,6 +161,50 @@ export class AutoFitController {
     card.style.setProperty('--content-scale', best.toFixed(3), 'important');
   }
 
+  public fitCards(cards: HTMLElement[]): void {
+    if (cards.length === 0) return;
+
+    const isCodeCard = cards.some(
+      (c) => c.classList.contains('code-container-root') || !!c.querySelector('pre, .code-scroll-area')
+    );
+    const minScale = isCodeCard ? Math.min(this.options.minScale, 0.45) : this.options.minScale;
+    const iterations = isCodeCard ? Math.max(this.options.iterations, 6) : this.options.iterations;
+
+    const checkAllCardsFit = (scale: number): boolean => {
+      for (const card of cards) {
+        card.style.setProperty('--content-scale', scale.toFixed(3), 'important');
+      }
+      for (const card of cards) {
+        if (!this.checkCardFits(card)) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    if (checkAllCardsFit(this.options.maxScale)) {
+      return;
+    }
+
+    let low = minScale;
+    let high = this.options.maxScale;
+    let best = minScale;
+
+    for (let i = 0; i < iterations; i++) {
+      const mid = (low + high) / 2;
+      if (checkAllCardsFit(mid)) {
+        best = mid;
+        low = mid;
+      } else {
+        high = mid;
+      }
+    }
+
+    for (const card of cards) {
+      card.style.setProperty('--content-scale', best.toFixed(3), 'important');
+    }
+  }
+
   public fitPipeline(pipeline: HTMLElement): void {
     const isVertical = pipeline.classList.contains('pipeline-container-vertical') ||
                        pipeline.querySelector('.step-row') !== null;
@@ -433,8 +477,8 @@ export class AutoFitController {
         const sumWeights = colWeights.reduce((acc, w) => acc + w, 0);
         let ratios = colWeights.map(w => w / (sumWeights || 1));
 
-        const minColumnRatio = Math.min(0.18, 1 / colCount);
-        const maxColumnRatio = Math.max(0.35, 1 / colCount);
+        const minColumnRatio = Math.min(0.12, 1 / colCount);
+        const maxColumnRatio = Math.max(0.48, 1 / colCount);
 
         const projectRatios = (r: number[]): number[] => {
           const curr = [...r];
@@ -595,10 +639,12 @@ export class AutoFitController {
       pipelines.forEach((pipeline) => this.fitPipeline(pipeline));
 
       // 3. Fit remaining individual cards (excluding tables and pipeline steps already handled)
-      const cards = slideEl.querySelectorAll<HTMLElement>(
-        '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]:not(.comparison-table-container):not(.slide-table-container):not(.step-row):not(.step-card)'
+      const cards = Array.from(
+        slideEl.querySelectorAll<HTMLElement>(
+          '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]:not(.comparison-table-container):not(.slide-table-container):not(.step-row):not(.step-card)'
+        )
       );
-      cards.forEach((card) => this.fitCard(card));
+      this.fitCards(cards);
     } finally {
       if (isHidden) {
         slideEl.style.removeProperty('display');
