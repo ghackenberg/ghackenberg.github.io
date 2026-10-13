@@ -19,9 +19,9 @@ export class AutoFitController {
   constructor(options?: AutoFitOptions) {
     this.options = {
       minScale: options?.minScale ?? 0.70,
-      maxScale: options?.maxScale ?? 1.45,
+      maxScale: options?.maxScale ?? 1.65,
       minClearance: options?.minClearance ?? 8,
-      iterations: options?.iterations ?? 5,
+      iterations: options?.iterations ?? 6,
     };
   }
 
@@ -316,6 +316,7 @@ export class AutoFitController {
     // If the table is contained inside a BentoCard, the outer BentoCard's fitCard manages it
     if (table.closest('.bento-card-root')) return;
 
+    const isComparisonTable = table.classList.contains('comparison-table-container');
     const isSlideTable = table.classList.contains('slide-table-container') || !!table.querySelector('.slide-table');
     const rows = Array.from(table.querySelectorAll<HTMLElement>('.table-row-item, .slide-table-tr'));
     if (rows.length === 0) return;
@@ -339,46 +340,237 @@ export class AutoFitController {
     const rowPad = isSlideTable ? 16 : 24;
     const maxCellH = Math.max(36, targetRowH - rowPad);
 
-    // Max upscale for spacious tables (up to 1.30 or maxScale)
-    const maxTableScale = Math.min(this.options.maxScale, 1.30);
+    // Allow generous upscaling up to 1.65 for spacious tables (e.g. 3 rows) to eliminate dead white space
+    const maxTableScale = rows.length <= 3 ? Math.min(this.options.maxScale, 1.65) : Math.min(this.options.maxScale, 1.35);
 
+    // Clear any residual child-level scale overrides to ensure single global cascading scale
+    for (const row of rows) {
+      row.style.removeProperty('--content-scale');
+      const cells = row.querySelectorAll<HTMLElement>('[data-cell], .comp-table-cell, .table-cell, .slide-table-td');
+      for (const cell of cells) {
+        cell.style.removeProperty('--content-scale');
+      }
+    }
+
+    // Inner feasibility check at a given global content scale
     const checkTableFits = (scale: number): boolean => {
       table.style.setProperty('--content-scale', scale.toFixed(3), 'important');
+
+      if (table.scrollHeight > table.clientHeight + 1) return false;
+      if (table.scrollWidth > table.clientWidth + 1) return false;
+
       for (const row of rows) {
-        row.style.setProperty('--content-scale', scale.toFixed(3), 'important');
-        if (targetRowH > 0 && row.scrollHeight > targetRowH + 4) return false;
+        if (row.scrollWidth > row.clientWidth + 1) return false;
+        if (targetRowH > 0 && row.scrollHeight > targetRowH + 6) return false;
         const cells = Array.from(row.querySelectorAll<HTMLElement>('[data-cell], .comp-table-cell, .table-cell, .slide-table-td'));
         for (const cell of cells) {
-          cell.style.setProperty('--content-scale', scale.toFixed(3), 'important');
-          if (maxCellH > 0 && cell.scrollHeight > maxCellH + 1) return false;
-          if (cell.scrollWidth > cell.clientWidth + 1) return false;
+          // Allow subpixel inline badge padding tolerance on wrapped text cells (up to 12px)
+          if (cell.scrollWidth > cell.clientWidth + 12) return false;
+          if (maxCellH > 0 && cell.scrollHeight > maxCellH + 4) return false;
         }
       }
-      if (table.scrollHeight > table.clientHeight + 1) return false;
       return true;
     };
 
-    // 1. Try maxTableScale for upscaling when spacious room is available
-    if (checkTableFits(maxTableScale)) {
-      return; // Naturally fits even at max upscale!
-    }
+    // Inner 1D solver: find maximal scale factor S*(w) given current column widths
+    const solveOptimalScale = (): number => {
+      if (checkTableFits(maxTableScale)) {
+        return maxTableScale;
+      }
+      let low = this.options.minScale;
+      let high = maxTableScale;
+      let best = this.options.minScale;
 
-    // 2. Binary search to find maximal scale where table and cells fit
-    let low = this.options.minScale;
-    let high = maxTableScale;
-    let best = this.options.minScale;
+      const iterations = Math.max(this.options.iterations, 6);
+      for (let i = 0; i < iterations; i++) {
+        const mid = (low + high) / 2;
+        if (checkTableFits(mid)) {
+          best = mid;
+          low = mid;
+        } else {
+          high = mid;
+        }
+      }
+      return best;
+    };
 
-    for (let i = 0; i < this.options.iterations; i++) {
-      const mid = (low + high) / 2;
-      if (checkTableFits(mid)) {
-        best = mid;
-        low = mid; // Can we fit an even larger scale?
-      } else {
-        high = mid; // Still overflowing, shrink further
+    // Stage 1 & Stage 2: Bilevel Optimization (Optimal Column Distribution maximizing S*)
+    if (isComparisonTable) {
+      const headerEl = table.querySelector<HTMLElement>('.table-header-grid');
+      const headerCells = headerEl ? (Array.from(headerEl.children) as HTMLElement[]) : [];
+      const colCount = headerCells.length || (rows[0] ? rows[0].children.length : 0);
+
+      const hasAuthorWidths = table.dataset.authorWidths === 'true' ||
+        (table.style.getPropertyValue('--col-widths') !== '' && table.dataset.autoColWidths !== 'true');
+
+      if (!hasAuthorWidths && colCount > 1) {
+        // Step 1: Initial distribution w^(0) based on content volume & visual weight
+        const colWeights: number[] = [];
+        for (let c = 0; c < colCount; c++) {
+          const cells: HTMLElement[] = [];
+          if (headerCells[c]) cells.push(headerCells[c]);
+          for (const row of rows) {
+            const cell = row.children[c] as HTMLElement | undefined;
+            if (cell) cells.push(cell);
+          }
+
+          let maxLen = 0;
+          let totalLen = 0;
+          for (const cell of cells) {
+            const text = (cell.textContent || '').replace(/\s+/g, ' ').trim();
+            const len = text.length;
+            if (len > maxLen) maxLen = len;
+            totalLen += len;
+          }
+          const avgLen = cells.length > 0 ? totalLen / cells.length : 0;
+          // Col 0 has bold title and accent bar, requiring more visual width per character
+          const colMultiplier = c === 0 ? 1.4 : 1.0;
+          const weight = Math.max(1, (0.5 * avgLen + 0.5 * maxLen) * colMultiplier);
+          colWeights.push(weight);
+        }
+
+        const sumWeights = colWeights.reduce((acc, w) => acc + w, 0);
+        let ratios = colWeights.map(w => w / (sumWeights || 1));
+
+        const minColumnRatio = Math.min(0.18, 1 / colCount);
+        const maxColumnRatio = Math.max(0.35, 1 / colCount);
+
+        const projectRatios = (r: number[]): number[] => {
+          const curr = [...r];
+          for (let iter = 0; iter < 10; iter++) {
+            let clampedSum = 0;
+            let unclampedCount = 0;
+            let unclampedSum = 0;
+
+            for (let c = 0; c < colCount; c++) {
+              if (curr[c] <= minColumnRatio) {
+                curr[c] = minColumnRatio;
+                clampedSum += minColumnRatio;
+              } else if (curr[c] >= maxColumnRatio) {
+                curr[c] = maxColumnRatio;
+                clampedSum += maxColumnRatio;
+              } else {
+                unclampedSum += curr[c];
+                unclampedCount++;
+              }
+            }
+
+            const remainingBudget = 1.0 - clampedSum;
+            if (unclampedCount === 0 || Math.abs(unclampedSum - remainingBudget) < 0.0001) {
+              break;
+            }
+
+            const factor = remainingBudget / unclampedSum;
+            for (let c = 0; c < colCount; c++) {
+              if (curr[c] > minColumnRatio && curr[c] < maxColumnRatio) {
+                curr[c] *= factor;
+              }
+            }
+          }
+          const finalSum = curr.reduce((acc, val) => acc + val, 0);
+          return curr.map(val => val / (finalSum || 1));
+        };
+
+        ratios = projectRatios(ratios);
+
+        const applyColWidths = (r: number[]): void => {
+          table.style.setProperty(
+            '--col-widths',
+            r.map(val => `${(val * 100).toFixed(1)}fr`).join(' '),
+            'important'
+          );
+        };
+
+        // Evaluate baseline scale S*(w^(0))
+        applyColWidths(ratios);
+        let bestScale = solveOptimalScale();
+        let bestRatios = [...ratios];
+
+        // Step 2: Outer Optimization via Bottleneck-driven Coordinate Descent (max 3 rounds)
+        if (bestScale < maxTableScale - 0.02) {
+          for (let outerRound = 0; outerRound < 3; outerRound++) {
+            // Test at a scale slightly above bestScale to identify the limiting bottleneck column
+            const probeScale = Math.min(maxTableScale, bestScale + 0.06);
+            table.style.setProperty('--content-scale', probeScale.toFixed(3), 'important');
+
+            // Calculate stress metric per column: height ratio + horizontal penalty
+            let maxStress = -1;
+            let minStress = Infinity;
+            let bottleneckCol = -1;
+            let slackCol = -1;
+
+            for (let c = 0; c < colCount; c++) {
+              let colMaxH = 0;
+              let hasHorizOverflow = false;
+
+              for (const row of rows) {
+                const cell = row.children[c] as HTMLElement | undefined;
+                if (!cell) continue;
+                if (cell.scrollWidth > cell.clientWidth + 12) {
+                  hasHorizOverflow = true;
+                }
+                if (cell.scrollHeight > colMaxH) {
+                  colMaxH = cell.scrollHeight;
+                }
+              }
+
+              // Stress: cell height relative to target max height + heavy penalty if overflowing
+              const stress = (colMaxH / maxCellH) + (hasHorizOverflow ? 10.0 : 0);
+
+              if (stress > maxStress) {
+                maxStress = stress;
+                bottleneckCol = c;
+              }
+              if (stress < minStress) {
+                minStress = stress;
+                slackCol = c;
+              }
+            }
+
+            // If bottleneck and slack are identical or difference is negligible, equilibrium reached
+            if (bottleneckCol === -1 || slackCol === -1 || bottleneckCol === slackCol || (maxStress - minStress) < 0.12) {
+              break;
+            }
+
+            // Transfer budget delta from slack column to bottleneck column
+            const stepDelta = 0.035;
+            const maxAdd = maxColumnRatio - bestRatios[bottleneckCol];
+            const maxSub = bestRatios[slackCol] - minColumnRatio;
+            const transfer = Math.min(stepDelta, Math.max(0, maxAdd), Math.max(0, maxSub));
+
+            if (transfer < 0.008) {
+              break; // Constraints reached
+            }
+
+            const candidateRatios = [...bestRatios];
+            candidateRatios[bottleneckCol] += transfer;
+            candidateRatios[slackCol] -= transfer;
+            const projectedCandidate = projectRatios(candidateRatios);
+
+            applyColWidths(projectedCandidate);
+            const candidateScale = solveOptimalScale();
+
+            if (candidateScale > bestScale + 0.005) {
+              bestScale = candidateScale;
+              bestRatios = projectedCandidate;
+              if (bestScale >= maxTableScale) break; // Maximum achievable scale reached!
+            } else {
+              break; // No further improvement
+            }
+          }
+        }
+
+        // Apply global optimal column distribution and scale
+        applyColWidths(bestRatios);
+        table.style.setProperty('--content-scale', bestScale.toFixed(3), 'important');
+        table.dataset.autoColWidths = 'true';
+        return;
       }
     }
 
-    checkTableFits(best);
+    // Standard SlideTable or Author-Widths Table: Solve 1D scale directly
+    const finalScale = solveOptimalScale();
+    table.style.setProperty('--content-scale', finalScale.toFixed(3), 'important');
   }
 
   public fitSlide(slideEl: HTMLElement | null): void {
