@@ -15,7 +15,6 @@ notes: |
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 
 <SplitSlide
@@ -31,11 +30,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     value="5"
     unit="x"
     label="Kosten-Multiplikator"
-    sublabel="Typischer Overhead durch Trial-and-Error im Arbeitsalltag"
+    sublabel="Durch Re-Prompts {cue:hl-token-faktor}verfünffachen sich API-Kosten und Antwortzeiten{/cue} bei jedem Arbeitsschritt."
   />
-  <CalloutBox slot="left" type="warning" title="Kosteneskalation">
-    Durch Re-Prompts {cue:hl-token-faktor}verfünffachen sich API-Kosten und Antwortzeiten{/cue}.
-  </CalloutBox>
 
   <BentoCard slot="right" cue="col-treiber" title="Die drei verborgenen Kostentreiber">
     <BulletList items={[

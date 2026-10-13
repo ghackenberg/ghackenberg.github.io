@@ -17,7 +17,6 @@ notes: |
 ---
 import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import SpeakerProfile from '../../../../components/slides/primitives/SpeakerProfile.astro';
 
@@ -41,16 +40,12 @@ import SpeakerProfile from '../../../../components/slides/primitives/SpeakerProf
       title="Professor für Informatik und Industriesysteme"
       institution="FH Oberösterreich · Campus Wels"
       avatarAlt="Dr. Georg Hackenberg - Kontakt und Fachprofil"
+      links={[
+        { label: "Web", value: "{cue:hl-folien-online}hackenberg.tech{/cue}", href: "https://hackenberg.tech" },
+        { label: "LinkedIn", value: "linkedin.com/in/georghackenberg", href: "https://www.linkedin.com/in/georghackenberg" },
+        { label: "GitHub", value: "github.com/ghackenberg", href: "https://github.com/ghackenberg" },
+        { label: "ORCID", value: "0000-0003-3913-4148", href: "https://orcid.org/0000-0003-3913-4148" }
+      ]}
     />
-
-    <CalloutBox type="info" title="{cue:hl-folien-online}Online-Ressourcen & Profile{/cue}">
-      `Web: https://hackenberg.tech`
-
-      `LinkedIn: linkedin.com/in/georghackenberg`
-
-      `GitHub: github.com/ghackenberg`
-
-      `ORCID: 0000-0003-3913-4148`
-    </CalloutBox>
   </BentoCard>
 </SplitSlide>

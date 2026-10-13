@@ -78,6 +78,10 @@ const normalizedRows: SlideTableRowObject[] = rows.map((row) => {
   .slide-table-container {
     --effective-table-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
     --card-accent: var(--effective-table-accent);
+    --scale: var(--content-scale, 1);
+  }
+  .slide-table-tr {
+    --scale: var(--content-scale, 1);
   }
   .slide-table-caption {
     font-size: calc(0.875rem * var(--content-scale, 1)) !important;

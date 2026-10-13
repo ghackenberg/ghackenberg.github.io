@@ -216,14 +216,14 @@ function validateSlides() {
         match.replace(/[^\n\r]/g, ' ')
       );
 
-      const FORBIDDEN_HTML_REGEX = /<(?:\/?)(div|span|table|thead|tbody|tr|th|td|button|input|script|style|a)\b/gi;
+      const FORBIDDEN_HTML_REGEX = /<(?:\/?)(div|span|p|pre|code|table|thead|tbody|tr|th|td|button|input|script|style|a)\b/gi;
       let htmlMatch;
       while ((htmlMatch = FORBIDDEN_HTML_REGEX.exec(contentWithoutCode)) !== null) {
         if (htmlMatch.index >= fmMatch[0].length) {
           const lineNumber = content.slice(0, htmlMatch.index).split('\n').length;
           const tagSnippet = htmlMatch[0].startsWith('</') ? `</${htmlMatch[1]}>` : `<${htmlMatch[1]}>`;
           console.error(
-            `  ❌ [${slideFile}] Raw HTML tag "${tagSnippet}" detected at line ${lineNumber}. Presentation slides must use standardized Astro components (<BentoCard>, <FormulaBox>, etc.), semantic slot paragraphs (<p slot="...">), or pure Markdown.`
+            `  ❌ [${slideFile}] Raw HTML tag "${tagSnippet}" detected at line ${lineNumber}. Presentation slides must use standardized Astro components (<BentoCard>, <FormulaBox>, etc.) or pure Markdown. Raw HTML (such as <p>, <pre>, <code>, <div>, <span>) is strictly prohibited.`
           );
           totalErrors++;
         }
@@ -418,6 +418,134 @@ function validateSlides() {
         const hasHl = /\{cue:hl-[^}]+\}/.test(callout);
         if (!hasHl) {
           console.error(`  ❌ [${slideFile}] CalloutBox "${calloutName}" has no highlight marker. Every CalloutBox must contain at least one inline {cue:hl-...} to ensure the voiceover discusses its content.`);
+          totalErrors++;
+        }
+
+        const backtickMatches = callout.match(/`[^`]+`/g) || [];
+        if (backtickMatches.length >= 2) {
+          console.error(
+            `  ❌ [${slideFile}] Pseudo-code using backticks inside CalloutBox is prohibited. Use <CodeContainer> with real syntax-highlighted code blocks.`
+          );
+          totalErrors++;
+        }
+      }
+
+      // 2c-4. Slide Top-Level Card Architecture & CalloutBox Containment Rule:
+      // Check 1: No <CalloutBox> outside <BentoCard> or <BentoBox>.
+      // Fail with an explicit error explaining that CalloutBox is a card-internal component and must always be nested inside a card.
+      const bodyWithoutCode = body.replace(/`{3,}[a-z]*[\s\S]*?`{3,}/gi, (match) =>
+        match.replace(/[^\n\r]/g, ' ')
+      );
+
+      // Check 1b: BentoCard solely wrapping a single CalloutBox is prohibited
+      const bentoCardRegex = /<BentoCard\b([^>]*)>([\s\S]*?)<\/BentoCard>/g;
+      let bentoMatch;
+      while ((bentoMatch = bentoCardRegex.exec(bodyWithoutCode)) !== null) {
+        const inner = bentoMatch[2];
+        const nonCallout = inner.replace(/<CalloutBox\b[\s\S]*?(?:<\/CalloutBox>|\/>)/g, '').trim();
+        const calloutCount = (inner.match(/<CalloutBox\b/g) || []).length;
+        if (calloutCount === 1 && nonCallout === '') {
+          console.error(
+            `  ❌ [${slideFile}] BentoCard solely wrapping a single CalloutBox is prohibited. Use native primitives (e.g. CodeContainer) or format content directly inside BentoCard.`
+          );
+          totalErrors++;
+        }
+      }
+
+      const cardRanges: Array<{ start: number; end: number }> = [];
+      const cardContainerRegex = /<(BentoCard|BentoBox)\b[\s\S]*?<\/\1>/g;
+      let cardMatch;
+      while ((cardMatch = cardContainerRegex.exec(bodyWithoutCode)) !== null) {
+        cardRanges.push({ start: cardMatch.index, end: cardMatch.index + cardMatch[0].length });
+      }
+
+      const nakedCalloutRegex = /<CalloutBox\b/g;
+      let nakedCalloutMatch;
+      while ((nakedCalloutMatch = nakedCalloutRegex.exec(bodyWithoutCode)) !== null) {
+        const isNested = cardRanges.some(r => nakedCalloutMatch.index >= r.start && nakedCalloutMatch.index < r.end);
+        if (!isNested) {
+          console.error(
+            `  ❌ [${slideFile}] Naked <CalloutBox> detected outside card container. CalloutBox is a card-internal component and must always be nested inside a <BentoCard> or <BentoBox>.`
+          );
+          totalErrors++;
+        }
+      }
+
+      // Check 2: Top-level elements passed to slide slots (slot="left", slot="right", slot="insights", slot="metrics", etc.)
+      // or direct children of SplitSlide, GridSlide, VisualSplitSlide, MetricSlide, DiagramSlide
+      // must strictly be card primitives (<BentoCard, <BentoBox, <MetricStat, <CodeContainer, <Pipeline, <ComparisonTable, <SlideTable, <SpeakerProfile, <EntityGraphVisual).
+      // Disallow content primitives (<CalloutBox, <BulletList, <FormulaBox) as top-level children.
+      const DISALLOWED_TOP_LEVEL_PRIMITIVES = ['CalloutBox', 'BulletList', 'FormulaBox'];
+      const slotPrimitiveRegex = new RegExp(`<(?:${DISALLOWED_TOP_LEVEL_PRIMITIVES.join('|')})\\b[^>]*?\\bslot=["']([^"']+)["']`, 'g');
+      let slotPrimMatch;
+      while ((slotPrimMatch = slotPrimitiveRegex.exec(bodyWithoutCode)) !== null) {
+        const tag = slotPrimMatch[0].match(/<([A-Za-z0-9_-]+)/)![1];
+        console.error(
+          `  ❌ [${slideFile}] Disallowed content primitive <${tag}> passed directly to slide slot="${slotPrimMatch[1]}". Top-level elements passed to slide slots must strictly be card primitives (<BentoCard>, <BentoBox>, <MetricStat>, <CodeContainer>, <Pipeline>, <ComparisonTable>, <SlideTable>, <SpeakerProfile>, <EntityGraphVisual>). Nest <${tag}> inside a card.`
+        );
+        totalErrors++;
+      }
+
+      const SLIDE_LAYOUT_NAMES = ['SplitSlide', 'GridSlide', 'VisualSplitSlide', 'MetricSlide', 'DiagramSlide'];
+      for (const layout of SLIDE_LAYOUT_NAMES) {
+        const layoutRegex = new RegExp(`<${layout}\\b([\\s\\S]*?)>([\\s\\S]*?)<\\/${layout}>`, 'g');
+        let lm;
+        while ((lm = layoutRegex.exec(bodyWithoutCode)) !== null) {
+          const inner = lm[2];
+          let depth = 0;
+          let i = 0;
+          while (i < inner.length) {
+            if (inner[i] === '<' && inner[i + 1] !== '!' && inner[i + 1] !== '/') {
+              const tagMatch = inner.slice(i).match(/^<([A-Za-z0-9_-]+)/);
+              if (tagMatch) {
+                const tagName = tagMatch[1];
+                if (depth === 0 && DISALLOWED_TOP_LEVEL_PRIMITIVES.includes(tagName)) {
+                  console.error(
+                    `  ❌ [${slideFile}] Disallowed top-level content primitive <${tagName}> detected as direct child of <${layout}>. Top-level slide children must strictly be card primitives (<BentoCard>, <BentoBox>, <MetricStat>, <CodeContainer>, <Pipeline>, <ComparisonTable>, <SlideTable>, <SpeakerProfile>, <EntityGraphVisual>). Nest <${tagName}> inside a card.`
+                  );
+                  totalErrors++;
+                }
+                let j = i + tagMatch[0].length;
+                let inQ = null;
+                let selfClosing = false;
+                while (j < inner.length) {
+                  if (inQ) {
+                    if (inner[j] === inQ) inQ = null;
+                  } else {
+                    if (inner[j] === '"' || inner[j] === "'") inQ = inner[j];
+                    else if (inner[j] === '/' && inner[j + 1] === '>') { selfClosing = true; j += 2; break; }
+                    else if (inner[j] === '>') { j += 1; break; }
+                  }
+                  j++;
+                }
+                if (!selfClosing) {
+                  depth++;
+                }
+                i = j;
+                continue;
+              }
+            } else if (inner[i] === '<' && inner[i + 1] === '/') {
+              const closeMatch = inner.slice(i).match(/^<\/([A-Za-z0-9_-]+)>/);
+              if (closeMatch) {
+                depth = Math.max(0, depth - 1);
+                i += closeMatch[0].length;
+                continue;
+              }
+            }
+            i++;
+          }
+        }
+      }
+
+      // Check 2c-5: Prohibit <Pipeline direction="horizontal"> inside <DiagramSlide> when slot="insights" is present
+      const diagramSlideMatches = bodyWithoutCode.match(/<DiagramSlide\b[\s\S]*?<\/DiagramSlide>/g) || [];
+      for (const diag of diagramSlideMatches) {
+        const hasInsights = /slot=["']insights["']/.test(diag);
+        const hasHorizontalPipeline = /<Pipeline\b[^>]*?\bdirection=(?:["']horizontal["']|\{["']horizontal["']\})/s.test(diag);
+        if (hasInsights && hasHorizontalPipeline) {
+          console.error(
+            `  ❌ [${slideFile}] Horizontal <Pipeline> inside <DiagramSlide> with insights deck is prohibited due to 1080p vertical budget constraints. Use <PipelineSlide> or <GridSlide>.`
+          );
           totalErrors++;
         }
       }
@@ -620,12 +748,16 @@ function validateSlides() {
         const subHlCue = subHlMatch ? subHlMatch[1] : null;
         const sHlIdx = subHlCue ? voCues.indexOf(subHlCue) : -1;
 
+        const qPropAttr = body.match(/\bquestion=["']([^"']+)["']/);
         const qSlotMatch = body.match(/<(?:div|p)[^>]*slot=["']question["'][\s\S]*?<\/(?:div|p)>/);
-        const qHlMatch = qSlotMatch ? qSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/) : null;
+        const qContent = qPropAttr ? qPropAttr[1] : (qSlotMatch ? qSlotMatch[0] : '');
+        const qHlMatch = qContent ? qContent.match(/\{cue:(hl-[a-zA-Z0-9_-]+)/) : null;
         const qHlCue = qHlMatch ? qHlMatch[1] : null;
 
+        const bPropAttr = body.match(/\bbridge=["']([^"']+)["']/);
         const bSlotMatch = body.match(/<(?:div|p)[^>]*slot=["']bridge["'][\s\S]*?<\/(?:div|p)>/);
-        const bHlMatch = bSlotMatch ? bSlotMatch[0].match(/\{cue:(hl-[a-zA-Z0-9_-]+)/) : null;
+        const bContent = bPropAttr ? bPropAttr[1] : (bSlotMatch ? bSlotMatch[0] : '');
+        const bHlMatch = bContent ? bContent.match(/\{cue:(hl-[a-zA-Z0-9_-]+)/) : null;
         const bHlCue = bHlMatch ? bHlMatch[1] : null;
 
         // Normalize bodyCues for section slides to match physical DOM cascade:
@@ -662,7 +794,7 @@ function validateSlides() {
           totalErrors++;
         }
 
-        if (qSlotMatch) {
+        if (qSlotMatch || qPropAttr) {
           if (!qHlMatch) {
             console.error(`  ❌ [${slideFile}] Section slide Leitfrage must contain an inline highlight marker {cue:hl-...}.`);
             totalErrors++;
@@ -677,9 +809,12 @@ function validateSlides() {
               totalErrors++;
             }
           }
+        } else {
+          console.error(`  ❌ [${slideFile}] Section slide must contain a Leitfrage element (via question="..." prop or slot="question").`);
+          totalErrors++;
         }
 
-        if (bSlotMatch) {
+        if (bSlotMatch || bPropAttr) {
           if (!bHlMatch) {
             console.error(`  ❌ [${slideFile}] Section slide Bridge must contain an inline highlight marker {cue:hl-...}.`);
             totalErrors++;
@@ -690,6 +825,9 @@ function validateSlides() {
               totalErrors++;
             }
           }
+        } else {
+          console.error(`  ❌ [${slideFile}] Section slide must contain a Bridge element (via bridge="..." prop or slot="bridge").`);
+          totalErrors++;
         }
       }
 

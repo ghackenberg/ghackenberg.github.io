@@ -1,4 +1,6 @@
 ---
+import { renderSlideCues } from '@commons/shared/slide-cues';
+
 interface Props {
   filename?: string;
   cue?: string;
@@ -27,14 +29,12 @@ const elementId = explicitId;
       <span class="w-3.5 h-3.5 rounded-full bg-callout-caution inline-block"></span>
       <span class="w-3.5 h-3.5 rounded-full bg-callout-warning inline-block"></span>
       <span class="w-3.5 h-3.5 rounded-full bg-callout-tip inline-block"></span>
-      <span class="text-sm text-slate-400 ml-4 font-sans font-semibold tracking-wide">
-        {filename}
-      </span>
+      <span class="text-sm text-slate-400 ml-4 font-sans font-semibold tracking-wide" set:html={renderSlideCues(filename)} />
     </div>
   </div>
 
   <!-- Code Content Area -->
-  <div class="code-scroll-area p-6 lg:p-7 flex-1 overflow-hidden font-mono min-h-0 flex flex-col justify-center">
+  <div class="code-scroll-area px-8 py-6 flex-1 overflow-hidden font-mono min-h-0 flex flex-col justify-center">
     <slot />
   </div>
 </div>
@@ -43,13 +43,27 @@ const elementId = explicitId;
   .code-container-root {
     --scale: var(--content-scale, 1);
   }
+  .code-container-root :global(pre.astro-code),
   .code-container-root :global(pre) {
-    font-size: calc(19px * var(--content-scale, 1)) !important;
-    line-height: 1.38 !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
     margin: auto 0 !important;
+    font-size: calc(19px * var(--content-scale, 1)) !important;
+    line-height: 1.45 !important;
+    overflow: hidden !important;
+    scrollbar-width: none !important;
   }
   .code-container-root :global(code) {
     font-size: inherit !important;
     line-height: inherit !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  .code-scroll-area {
+    overflow: hidden !important;
   }
 </style>
