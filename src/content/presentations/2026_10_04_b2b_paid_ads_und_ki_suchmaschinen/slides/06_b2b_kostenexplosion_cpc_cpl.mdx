@@ -38,9 +38,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="left"
     cue="chart-cpc"
     title="CPC-Branchenbenchmarks [@wordstream-2025-benchmarks]"
-    accent="amber"
   >
-    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+    <p>
       Durchschnittliche {cue:hl-cpc-spitze}Kosten pro Klick im B2B-Tech-Sektor{/cue} nach Branche:
     </p>
     <BarChart
@@ -51,26 +50,22 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
           label: "Legal Services",
           value: 9.21,
           formattedValue: "$9.21",
-          accent: "rose"
-        },
+          },
         {
           label: "Technology & Software",
           value: 6.45,
           formattedValue: "$6.45",
-          accent: "amber"
-        },
+          },
         {
           label: "B2B Services (Ø)",
           value: 5.42,
           formattedValue: "$5.42",
-          accent: "blue"
-        },
+          },
         {
           label: "Google Ads Gesamt-Ø",
           value: 2.69,
           formattedValue: "$2.69",
-          accent: "neutral"
-        }
+          }
       ]}
     />
   </BentoCard>
@@ -79,7 +74,6 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="right"
     cue="card-takeaways-06"
     title="Die ökonomische Realität im B2B"
-    accent="cyan"
   >
     <CalloutBox type="warning" title="Lead-Kosten im Höhenflug">
       <p>Auktionsdruck: {cue:hl-b2b-cpl}über 66 Dollar pro qualifizierter Anfrage{/cue} im B2B-Mittelwert bei steigender Volatilität.</p>

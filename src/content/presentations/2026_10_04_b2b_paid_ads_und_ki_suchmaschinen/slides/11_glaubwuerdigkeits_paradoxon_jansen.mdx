@@ -42,9 +42,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="left"
     cue="chart-jansen"
     title="Relevanzbewertung im Experiment [@jansen-2006-sponsored-search]"
-    accent="blue"
   >
-    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+    <p>
       Wahrgenommene Relevanz nach Jansen & Resnick: {cue:hl-jansen-bias}Mit Label brechen die Klick- und Relevanzwerte bezahlter Treffer auf vierunddreißig Prozent ein{/cue}:
     </p>
     <BarChart
@@ -55,20 +54,17 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
           label: "Organische Treffer (mit Label)",
           value: 82,
           formattedValue: "82% Relevanz",
-          accent: "blue"
-        },
+          },
         {
           label: "Paid Ads (Doppelblind ohne Label)",
           value: 81,
           formattedValue: "81% Relevanz",
-          accent: "emerald"
-        },
+          },
         {
           label: "Paid Ads (mit 'Gesponsert'-Label)",
           value: 34,
           formattedValue: "34% Relevanz",
-          accent: "rose"
-        }
+          }
       ]}
     />
   </BentoCard>
@@ -77,7 +73,6 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="right"
     cue="card-blind"
     title="Die verblindete Realität"
-    accent="cyan"
   >
     <CalloutBox type="statement" title="Der 'Label-Effekt'">
       <p>Entscheidende Laborerkenntnis: {cue:hl-jansen-blind}Ohne Werbekennzeichnung bewerten Nutzer Ads und organische Links als exakt gleichwertig{/cue}.</p>

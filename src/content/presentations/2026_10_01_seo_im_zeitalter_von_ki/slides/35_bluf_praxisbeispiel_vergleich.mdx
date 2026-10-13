@@ -25,6 +25,7 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import SlideTable from '../../../../components/slides/primitives/SlideTable.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -32,14 +33,10 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="35"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-bluf-bad" title="Vorher: Werblicher Floskeltext" accent="neutral">
+  <BentoCard slot="left" cue="col-bluf-bad" title="Vorher: Werblicher Floskeltext">
     <CalloutBox type="alert" title="{cue:hl-bluf-bad-callout}45 Wörter ohne eine einzige Kennzahl{/cue}">
-      <p class="text-sm text-slate-300 light:text-slate-700">RAG-Chunker brechen das Parsing bei generischen Phrasen vorzeitig ab [@google-2023-information-gain].</p>
+      *„In der heutigen dynamischen Welt des modernen Maschinenbaus stehen Konstrukteure vor nie dagewesenen Herausforderungen. Als führender Partner entwickeln wir stets maßgeschneiderte, zukunftssichere Antriebslösungen höchster Güteklasse...“* [@google-2023-information-gain]
     </CalloutBox>
-
-    <div class="p-4 rounded-xl bg-slate-900/60 light:bg-slate-100 border border-slate-700 light:border-slate-300 text-sm text-slate-300 light:text-slate-700 italic leading-relaxed my-2">
-      „In der heutigen dynamischen Welt des modernen Maschinenbaus stehen Konstrukteure vor nie dagewesenen Herausforderungen. Als führender Partner entwickeln wir stets maßgeschneiderte, zukunftssichere Antriebslösungen höchster Güteklasse...“
-    </div>
 
     <BulletList items={[
       {
@@ -55,30 +52,19 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-bluf-good" title="Nachher: BLUF-Direktantwort & Tabelle" accent="blue">
+  <BentoCard slot="right" cue="col-bluf-good" title="Nachher: BLUF-Direktantwort & Tabelle">
     <CalloutBox type="statement" title="{cue:hl-bluf-good-callout}Antwort im 1. Satz + strukturierte Tabelle{/cue}">
-      <p class="text-sm text-slate-300 light:text-slate-700">Maximale Information-Gain-Dichte garantiert die direkte Übernahme in LLM-Synthesen.</p>
+      „Das Planetengetriebe PG-40 überträgt ein Nenndrehmoment von 120 Nm bei einem Verdrehspiel von unter 3 Winkelminuten und einem Wirkungsgrad von 97 Prozent.“
     </CalloutBox>
 
-    <div class="p-4 rounded-xl bg-blue-950/20 light:bg-blue-50 border border-blue-500/30 light:border-blue-200 text-sm my-2">
-      <p class="font-medium text-slate-200 light:text-slate-800 leading-snug">
-        „Das Planetengetriebe PG-40 überträgt ein Nenndrehmoment von 120 Nm bei einem Verdrehspiel von unter 3 Winkelminuten und einem Wirkungsgrad von 97 Prozent.“
-      </p>
-      <table class="w-full text-xs text-left mt-3 border-collapse">
-        <thead>
-          <tr class="border-b border-blue-500/30 light:border-blue-300 text-slate-400 light:text-slate-600">
-            <th class="py-1">Parameter</th>
-            <th class="py-1">Wert</th>
-            <th class="py-1">Norm / Bedingung</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-blue-500/20 light:divide-blue-100 text-slate-300 light:text-slate-700">
-          <tr><td class="py-1">Nenndrehmoment</td><td class="py-1 font-bold text-blue-400 light:text-blue-600">120 Nm</td><td class="py-1 text-slate-400 light:text-slate-500">Dauerbetrieb (S1)</td></tr>
-          <tr><td class="py-1">Verdrehspiel</td><td class="py-1 font-bold text-blue-400 light:text-blue-600">&lt; 3 arcmin</td><td class="py-1 text-slate-400 light:text-slate-500">Standardausführung</td></tr>
-          <tr><td class="py-1">Wirkungsgrad</td><td class="py-1 font-bold text-blue-400 light:text-blue-600">97 %</td><td class="py-1 text-slate-400 light:text-slate-500">Volllast bei 3000 min⁻¹</td></tr>
-        </tbody>
-      </table>
-    </div>
+    <SlideTable
+      headers={["Parameter", "Wert", "Norm / Bedingung"]}
+      rows={[
+        ["Nenndrehmoment", "120 Nm", "Dauerbetrieb (S1)"],
+        ["Verdrehspiel", "< 3 arcmin", "Standardausführung"],
+        ["Wirkungsgrad", "97 %", "Volllast bei 3000 min⁻¹"]
+      ]}
+    />
 
     <BulletList items={[
       {

@@ -17,6 +17,7 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -25,17 +26,17 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="48"
   ratio="40/60"
 >
-  <BentoCard slot="left" cue="col-formel" title="Der stochastische Kern" accent="blue">
-    <CalloutBox type="statement" title="Bedingte Wahrscheinlichkeit">
-      $$P(w_t \mid w_1, w_2, \dots, w_{t-1})$$
+  <BentoCard slot="left" cue="col-formel" title="Der stochastische Kern">
+    <FormulaBox
+      formula="P(w_t \mid w_1, \dots, w_{t-1})"
+      label="Konditionale Wahrscheinlichkeit"
+    />
+    <CalloutBox type="statement" title="Autoregressiver Loop: Token für Token">
       Das Modell maximiert fortlaufend {cue:hl-token-formel}die Plausibilität des Folge-Tokens{/cue}.
     </CalloutBox>
-    <div class="mt-4 p-4 rounded-2xl bg-blue-950/30 light:bg-blue-50/80 border border-blue-800/40 light:border-blue-200 text-center">
-      <span class="font-mono text-cyan-300 light:text-blue-900 text-xl font-bold">Autoregressiver Loop: Token für Token</span>
-    </div>
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-erklaerung" title="Konsequenzen für das Prompting" accent="cyan">
+  <BentoCard slot="right" cue="col-erklaerung" title="Konsequenzen für das Prompting">
     <BulletList items={[
       {
         icon: "cpu",

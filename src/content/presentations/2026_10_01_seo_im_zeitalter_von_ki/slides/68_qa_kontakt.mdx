@@ -19,7 +19,7 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
-import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
+import SpeakerProfile from '../../../../components/slides/primitives/SpeakerProfile.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -27,7 +27,7 @@ import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
   slideNumber="68"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-qa-questions" title="Zentrale Leitfragen zur Umsetzung" accent="blue">
+  <BentoCard slot="left" cue="col-qa-questions" title="Zentrale Leitfragen zur Umsetzung">
     <BulletList items={[
       { icon: "trending-down", title: "Klick-Rückgang", desc: "Spüren Sie in Ihrem Unternehmen bereits den {cue:hl-qa-klick}Rückgang von organischem Klick-Traffic{/cue} durch KI-Overviews?" },
       { icon: "cpu", title: "Agenten & Governance", desc: "Welche Governance-Anforderungen bestehen beim {cue:hl-qa-governance}Einsatz lokaler autonomer Entwickler-Agenten{/cue}?" },
@@ -35,26 +35,22 @@ import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-qa-contact" title="Kontakt & Ressourcen" accent="cyan">
-    <CalloutBox type="takeaway" title="{cue:hl-callout-speaker-prof}Dr. rer. nat. Georg Hackenberg{/cue}">
-      <div class="flex items-center gap-6">
-        <div class="relative w-44 h-44 lg:w-48 lg:h-48 shrink-0">
-          <Avatar3D class="w-full h-full" />
-        </div>
-        <div class="flex flex-col justify-center min-w-0">
-          <p class="text-xl text-slate-200 light:text-slate-800 font-semibold mt-1">Professor für Informatik und Industriesysteme</p>
-          <p class="text-lg text-cyan-400 light:text-cyan-700 font-medium mt-0.5">FH Oberösterreich · Campus Wels</p>
-        </div>
-      </div>
-    </CalloutBox>
+  <BentoCard slot="right" cue="col-qa-contact" title="Kontakt & Ressourcen">
+    <SpeakerProfile
+      name="{cue:hl-callout-speaker-prof}Dr. rer. nat. Georg Hackenberg{/cue}"
+      title="Professor für Informatik und Industriesysteme"
+      institution="FH Oberösterreich · Campus Wels"
+      avatarAlt="Dr. Georg Hackenberg - Kontakt und Fachprofil"
+    />
 
     <CalloutBox type="info" title="{cue:hl-folien-online}Online-Ressourcen & Profile{/cue}">
-      <div class="font-mono text-lg space-y-2">
-        <p><strong>Web:</strong> <span class="text-cyan-400">https://hackenberg.tech</span></p>
-        <p><strong>LinkedIn:</strong> <span class="text-blue-400">linkedin.com/in/georghackenberg</span></p>
-        <p><strong>GitHub:</strong> <span class="text-purple-400">github.com/ghackenberg</span></p>
-        <p><strong>ORCID:</strong> <span class="text-emerald-400">0000-0003-3913-4148</span></p>
-      </div>
+      `Web: https://hackenberg.tech`
+
+      `LinkedIn: linkedin.com/in/georghackenberg`
+
+      `GitHub: github.com/ghackenberg`
+
+      `ORCID: 0000-0003-3913-4148`
     </CalloutBox>
   </BentoCard>
 </SplitSlide>

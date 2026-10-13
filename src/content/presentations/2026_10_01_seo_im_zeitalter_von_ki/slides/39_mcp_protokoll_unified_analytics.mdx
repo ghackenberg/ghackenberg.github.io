@@ -24,6 +24,7 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -31,17 +32,15 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="39"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-mcp-arch" title="3-Schichten-Architektur von MCP" accent="blue">
-    <div class="flex flex-col justify-around flex-1 gap-3 my-auto">
-      <CalloutBox type="takeaway" title="{cue:hl-mcp-hosts}Google Antigravity / Claude / Gemini{/cue}" />
-      <div class="text-center text-blue-400 font-mono text-base font-bold select-none">↓ JSON-RPC 2.0 Interface [@anthropic-2024-mcp] ↓</div>
-      <CalloutBox type="statement" title="{cue:hl-mcp-jsonrpc}Standardisierte Tool Discovery{/cue} & Security" />
-      <div class="text-center text-cyan-400 font-mono text-base font-bold select-none">↓ Tool Execution ↓</div>
-      <CalloutBox type="info" title="{cue:hl-mcp-servers}Lighthouse / Filesystem / Git / Search Console{/cue}" />
-    </div>
+  <BentoCard slot="left" cue="col-mcp-arch" title="3-Schichten-Architektur von MCP">
+    <CalloutBox type="takeaway" title="{cue:hl-mcp-hosts}Google Antigravity / Claude / Gemini{/cue}" />
+    <FormulaBox formula="↓ JSON-RPC 2.0 Interface [@anthropic-2024-mcp] ↓" />
+    <CalloutBox type="statement" title="{cue:hl-mcp-jsonrpc}Standardisierte Tool Discovery{/cue} & Security" />
+    <FormulaBox formula="↓ Tool Execution ↓" />
+    <CalloutBox type="info" title="{cue:hl-mcp-servers}Lighthouse / Filesystem / Git / Search Console{/cue}" />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-mcp-tools" title="Unser Unified Analytics MCP Server" accent="cyan">
+  <BentoCard slot="right" cue="col-mcp-tools" title="Unser Unified Analytics MCP Server">
     <BulletList items={[
       { icon: "database", title: "Tool: get_page_audit", desc: "Führt {cue:hl-mcp-audit}GSC-Suchdaten und Plausible-Engagement in einem konsolidierten Audit{/cue} zusammen." },
       { icon: "search", title: "Tool: find_seo_opportunities", desc: "Identifiziert {cue:hl-mcp-opps}Striking-Distance-Keywords auf den Rängen 4 bis 15{/cue} zur gezielten Nachoptimierung." },

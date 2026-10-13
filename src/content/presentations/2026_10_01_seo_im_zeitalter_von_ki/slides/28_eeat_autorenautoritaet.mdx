@@ -24,6 +24,7 @@ import SplitSlide from '../../../../components/slides/layouts/SplitSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -31,38 +32,20 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="28"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-eeat-triad" title="Die Säulen der Autoren-Validierung (E-E-A-T)" accent="blue">
-    <div class="grid grid-cols-2 gap-4 text-center">
-      <div class="p-5 rounded-2xl bg-blue-500/10 light:bg-blue-50 border border-blue-500/20 light:border-blue-200 flex flex-col justify-center">
-        <div class="text-4xl font-black text-blue-400 light:text-blue-700">E</div>
-        <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Experience</div>
-        <p class="text-base text-slate-400 light:text-slate-600 mt-1">Praktische Projekterfahrung</p>
-      </div>
-      <div class="p-5 rounded-2xl bg-cyan-500/10 light:bg-cyan-50 border border-cyan-500/20 light:border-cyan-200 flex flex-col justify-center">
-        <div class="text-4xl font-black text-cyan-400 light:text-cyan-700">E</div>
-        <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Expertise</div>
-        <p class="text-base text-slate-400 light:text-slate-600 mt-1">Patente & Publikationen</p>
-      </div>
-      <div class="p-5 rounded-2xl bg-indigo-500/10 light:bg-indigo-50 border border-indigo-200 flex flex-col justify-center">
-        <div class="text-4xl font-black text-indigo-400 light:text-indigo-700">A</div>
-        <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Authority</div>
-        <p class="text-base text-slate-400 light:text-slate-600 mt-1">Fachzitate & Gremien</p>
-      </div>
-      <div class="p-5 rounded-2xl bg-emerald-500/10 light:bg-emerald-50 border border-emerald-500/20 light:border-emerald-200 flex flex-col justify-center">
-        <div class="text-4xl font-black text-emerald-400 light:text-emerald-700">T</div>
-        <div class="text-lg font-bold text-slate-200 light:text-slate-800 uppercase mt-1">Trust</div>
-        <p class="text-base text-slate-400 light:text-slate-600 mt-1">Verifizierte Profile & Peers</p>
-      </div>
-    </div>
+  <BentoCard slot="left" cue="col-eeat-triad" title="Die Säulen der Autoren-Validierung (E-E-A-T)">
+    <FormulaBox formula="E · Experience" label="Praktische Projekterfahrung" />
+    <FormulaBox formula="E · Expertise" label="Patente & Publikationen" />
+    <FormulaBox formula="A · Authority" label="Fachzitate & Gremien" />
+    <FormulaBox formula="T · Trust" label="Verifizierte Profile & Peers" />
 
     <CalloutBox type="takeaway" title="Modell-Verhalten & Glaubwürdigkeit">
       Google E-E-A-T definiert zentrale Vertrauenssignale [@google-2024-helpful-content] – in Sprachmodellen führt die explizite Zitation verifizierter Autoren zu {cue:hl-glaubwuerdigkeit}klarer Bevorzugung gegenüber generischem KI-Spam{/cue}.
     </CalloutBox>
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-eeat-checklist" title="B2B Best-Practice Autorenprofil" accent="cyan">
+  <BentoCard slot="right" cue="col-eeat-checklist" title="B2B Best-Practice Autorenprofil">
     <BulletList items={[
-      { icon: "check", title: "Dedizierte Autoren-URL", desc: "{cue:hl-autoren-sichtbar}Eigene Profilseite für jeden Fachautor{/cue} (z. B. <code class=\"text-cyan-400 light:text-cyan-600 text-base\">/team/dr-schmidt/</code>)." },
+      { icon: "check", title: "Dedizierte Autoren-URL", desc: "{cue:hl-autoren-sichtbar}Eigene Profilseite für jeden Fachautor{/cue} (z. B. <code>/team/dr-schmidt/</code>)." },
       { icon: "check", title: "sameAs-Verknüpfung", desc: "Direkte {cue:hl-eeat-sameas}Links auf ORCID, Scholar und LinkedIn{/cue} sowie Fachgremien." },
       { icon: "check", title: "Transparente Vita", desc: "Relevante {cue:hl-eeat-vita}Industrieprojekte und Normengremien{/cue} nachvollziehbar dokumentieren." }
     ]} />

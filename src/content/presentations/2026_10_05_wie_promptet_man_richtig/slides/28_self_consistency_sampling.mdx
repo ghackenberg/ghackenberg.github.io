@@ -33,18 +33,18 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="28"
   totalSlides="48"
 >
-  <BentoCard slot="left" cue="chart-consistency" title="GSM8K Benchmark [@wang-2022-self-consistency]" accent="blue">
+  <BentoCard slot="left" cue="chart-consistency" title="GSM8K Benchmark [@wang-2022-self-consistency]">
     <BarChart
       unit="%"
       items={[
-        { label: "Standard CoT (k=1)", value: 57, accent: "neutral", cue: "hl-cot-single" },
-        { label: "Self-Consistency (k=5)", value: 68, accent: "cyan", cue: "hl-sample-5" },
-        { label: "Self-Consistency (k=40)", value: 74, accent: "emerald", cue: "hl-sample-40" }
+        { label: "Standard CoT (k=1)", value: 57, cue: "hl-cot-single" },
+        { label: "Self-Consistency (k=5)", value: 68, cue: "hl-sample-5" },
+        { label: "Self-Consistency (k=40)", value: 74, cue: "hl-sample-40" }
       ]}
     />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-konzept" title="Funktionsweise im Enterprise-Stack" accent="cyan">
+  <BentoCard slot="right" cue="col-konzept" title="Funktionsweise im Enterprise-Stack">
     <CalloutBox type="statement" title="Stochastisches Ensemble">
       Der {cue:hl-konsens-entscheid}Mehrheitsentscheid filtert zufällige Rechenfehler heraus{/cue}.
     </CalloutBox>

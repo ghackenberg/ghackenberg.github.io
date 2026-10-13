@@ -42,10 +42,9 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
     unit="%"
     label="Maximale Zitationssteigerung in LLMs"
     sublabel="Studie [@aggarwal-2024-geo]: ACM SIGKDD 2024 (Princeton, Georgia Tech, Allen AI) über 10.000 Queries"
-    color="green"
   />
 
-  <BentoCard slot="right" cue="kdd-bars" title="Effektivität von Optimierungs-Methoden (KDD Table 1)" accent="blue">
+  <BentoCard slot="right" cue="kdd-bars" title="Effektivität von Optimierungs-Methoden (KDD Table 1)">
     <BarChart
       unit="%"
       items={[
@@ -54,8 +53,7 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
           value: 40.9,
           formattedValue: "+40.9 %",
           cue: "hl-cite-sources",
-          highlightColor: "emerald"
-        },
+          },
         {
           label: "Statistics Addition (Konkrete Messdaten)",
           value: 30.6,
@@ -71,8 +69,7 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
           value: -8.3,
           formattedValue: "-8.3 %",
           cue: "hl-kdd-penalty",
-          highlightColor: "amber"
-        }
+          }
       ]}
     />
   </BentoCard>

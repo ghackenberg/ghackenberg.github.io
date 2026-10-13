@@ -38,8 +38,7 @@ import heroImage from '../images/hero_chain_of_thought.jpg';
   imageCue="vis-cot"
   ratio="50/50"
 >
-  <div slot="narrative" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-mechanik" title="Warum CoT funktioniert [@wei-2022-chain-of-thought]" accent="cyan">
+  <BentoCard slot="narrative" cue="col-mechanik" title="Warum CoT funktioniert [@wei-2022-chain-of-thought]">
       <CalloutBox type="statement" title="Tokens als Rechenkapazität">
         Jedes geschriebene Zwischenwort ist {cue:hl-token-rechenzeit}physische Rechenzeit im Transformer-Forward-Pass{/cue}.
       </CalloutBox>
@@ -61,6 +60,5 @@ import heroImage from '../images/hero_chain_of_thought.jpg';
         }
       ]} />
     </BentoCard>
-  </div>
 </StoryHeroSlide>
 

@@ -33,18 +33,18 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="14"
   totalSlides="48"
 >
-  <BentoCard slot="left" cue="chart-nivellierung" title="Produktivitätsgewinn nach Skill-Level [@brynjolfsson-2023-generative-ai]" accent="blue">
+  <BentoCard slot="left" cue="chart-nivellierung" title="Produktivitätsgewinn nach Skill-Level [@brynjolfsson-2023-generative-ai]">
     <BarChart
       unit="%"
       items={[
-        { label: "Einsteiger / Geringer Skill", value: 34, accent: "emerald", cue: "hl-skill-low" },
-        { label: "Durchschnittliche Erfahrung", value: 14, accent: "cyan", cue: "hl-skill-mid" },
-        { label: "Senior-Experten", value: 2, accent: "neutral", cue: "hl-skill-high" }
+        { label: "Einsteiger / Geringer Skill", value: 34, cue: "hl-skill-low" },
+        { label: "Durchschnittliche Erfahrung", value: 14, cue: "hl-skill-mid" },
+        { label: "Senior-Experten", value: 2, cue: "hl-skill-high" }
       ]}
     />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-konsequenz" title="Der 'Equalizer'-Effekt im Unternehmen" accent="cyan">
+  <BentoCard slot="right" cue="col-konsequenz" title="Der 'Equalizer'-Effekt im Unternehmen">
     <CalloutBox type="statement" title="Wissenstransfer">
       Prompts kodifizieren Expertenwissen und {cue:hl-wissenstransfer}übertragen Best Practices sofort auf Neueinsteiger{/cue}.
     </CalloutBox>

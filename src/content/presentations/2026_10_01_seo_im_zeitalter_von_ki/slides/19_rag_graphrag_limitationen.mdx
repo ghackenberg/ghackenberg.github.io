@@ -41,9 +41,9 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="19"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-graph-limits" title="GraphRAG-Flaschenhälse (Microsoft Research)" accent="neutral">
+  <BentoCard slot="left" cue="col-graph-limits" title="GraphRAG-Flaschenhälse (Microsoft Research)">
     <CalloutBox type="warning" title="Massive Vorab-Indexierungskosten">
-      <p class="text-slate-300 light:text-slate-600">Graph-Extraktion erfordert {cue:hl-callout-graphrag-cost}umfangreiche Vorab-LLM-Aufrufe{/cue} zur Entitätserkennung.</p>
+      <p>Graph-Extraktion erfordert {cue:hl-callout-graphrag-cost}umfangreiche Vorab-LLM-Aufrufe{/cue} zur Entitätserkennung.</p>
     </CalloutBox>
 
     <BulletList items={[
@@ -53,9 +53,9 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-basic-limits" title="Wann Basic RAG überlegen bleibt" accent="blue">
+  <BentoCard slot="right" cue="col-basic-limits" title="Wann Basic RAG überlegen bleibt">
     <CalloutBox type="takeaway" title="Single-Hop & Punktuelle Faktenabfragen">
-      <p class="text-blue-200 light:text-blue-900">Punktuelle Abfragen nach Spezifikationen {cue:hl-callout-basictop}sind mit Standard-Vektorsuche schneller und präziser{/cue}.</p>
+      <p>Punktuelle Abfragen nach Spezifikationen {cue:hl-callout-basictop}sind mit Standard-Vektorsuche schneller und präziser{/cue}.</p>
     </CalloutBox>
 
     <BulletList items={[

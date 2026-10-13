@@ -210,6 +210,25 @@ function validateSlides() {
         totalErrors++;
       }
 
+      // 0c. Zero Raw HTML in Presentation MDX (enforce component/markdown abstraction)
+      // Mask fenced code blocks while preserving newlines for accurate line numbers
+      const contentWithoutCode = content.replace(/`{3,}[a-z]*[\s\S]*?`{3,}/gi, (match) =>
+        match.replace(/[^\n\r]/g, ' ')
+      );
+
+      const FORBIDDEN_HTML_REGEX = /<(?:\/?)(div|span|table|thead|tbody|tr|th|td|button|input|script|style|a)\b/gi;
+      let htmlMatch;
+      while ((htmlMatch = FORBIDDEN_HTML_REGEX.exec(contentWithoutCode)) !== null) {
+        if (htmlMatch.index >= fmMatch[0].length) {
+          const lineNumber = content.slice(0, htmlMatch.index).split('\n').length;
+          const tagSnippet = htmlMatch[0].startsWith('</') ? `</${htmlMatch[1]}>` : `<${htmlMatch[1]}>`;
+          console.error(
+            `  ❌ [${slideFile}] Raw HTML tag "${tagSnippet}" detected at line ${lineNumber}. Presentation slides must use standardized Astro components (<BentoCard>, <FormulaBox>, etc.), semantic slot paragraphs (<p slot="...">), or pure Markdown.`
+          );
+          totalErrors++;
+        }
+      }
+
       // 1. Extract voiceover cues in sequence
       const voCues: string[] = [];
       const voCueRegex = /\{cue:([a-zA-Z0-9_-]+)\}/g;

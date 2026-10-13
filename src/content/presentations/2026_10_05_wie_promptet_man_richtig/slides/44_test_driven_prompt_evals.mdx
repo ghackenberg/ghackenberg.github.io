@@ -29,8 +29,7 @@ import heroImage from '../images/hero_prompt_evals.jpg';
   imageCue="vis-evals"
   ratio="50/50"
 >
-  <div slot="narrative" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-evals" title="Systematisches Test-Harnisch" accent="blue">
+  <BentoCard slot="narrative" cue="col-evals" title="Systematisches Test-Harnisch">
       <CalloutBox type="statement" title="Golden Dataset & Regressionen">
         Prompts werden wie Code {cue:hl-golden-dataset}anhand von fünfzig bis zweihundert Referenzfällen{/cue} gemessen, um {cue:hl-regressions-stopp}ungewollte Regressionen sofort zu stoppen{/cue}.
       </CalloutBox>
@@ -47,6 +46,5 @@ import heroImage from '../images/hero_prompt_evals.jpg';
         }
       ]} />
     </BentoCard>
-  </div>
 </StoryHeroSlide>
 

@@ -23,28 +23,17 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="33"
   totalSlides="48"
 >
-  <div slot="code" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-code" title="XML-Kapselung in der Praxis" accent="cyan">
-      <div class="p-6 rounded-2xl bg-slate-950 light:bg-slate-100 font-mono text-base lg:text-lg leading-relaxed border border-slate-800 light:border-slate-300 text-slate-200 light:text-slate-900 shadow-inner">
-        <span class="text-slate-500 light:text-slate-500">&lt;system_instructions&gt;</span><br/>
-        &nbsp;&nbsp;Du bist ein Analyse-Assistent für Fertigungsprotokolle.<br/>
-        &nbsp;&nbsp;<span class="text-amber-300 light:text-amber-800 font-bold">{cue:hl-xml-tags}&lt;rules&gt;{/cue}</span><br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;- Antworte ausschließlich auf Basis von &lt;context&gt;.<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;- Wenn ein Wert fehlt, antworte mit NULL.<br/>
-        &nbsp;&nbsp;&lt;/rules&gt;<br/>
-        <span class="text-slate-500 light:text-slate-500">&lt;/system_instructions&gt;</span><br/><br/>
-        <span class="text-blue-400 light:text-blue-700 font-bold">&lt;context&gt;</span><br/>
-        &nbsp;&nbsp;[Technisches Prüfprotokoll Charge #4829...]<br/>
-        <span class="text-blue-400 light:text-blue-700 font-bold">&lt;/context&gt;</span><br/><br/>
-        <span class="text-emerald-400 light:text-emerald-700 font-bold">&lt;user_query&gt;</span><br/>
-        &nbsp;&nbsp;Welche Grenztemperatur wurde in Charge #4829 überschritten?<br/>
-        <span class="text-emerald-400 light:text-emerald-700 font-bold">&lt;/user_query&gt;</span>
-      </div>
-    </BentoCard>
-  </div>
+  <BentoCard slot="code" cue="col-code" title="XML-Kapselung in der Praxis">
+      <CalloutBox type="statement" title="{cue:hl-xml-tags}Strikte XML-Kapselung &lt;rules&gt;{/cue}">
+      `<system_instructions>...<rules>...</rules></system_instructions>`
 
-  <div slot="explanation" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-explanation" title="Architektonischer Mehrwert" accent="blue">
+      `<context>[Technisches Prüfprotokoll Charge #4829...]</context>`
+
+      `<user_query>Welche Grenztemperatur wurde überschritten?</user_query>`
+    </CalloutBox>
+    </BentoCard>
+
+  <BentoCard slot="explanation" cue="col-explanation" title="Architektonischer Mehrwert">
       <CalloutBox type="statement" title="Strikte Grenzziehung">
         XML-Tags erzeugen {cue:hl-verhinderung-bleed}eine unmissverständliche Trennung von Logik und Daten{/cue}.
       </CalloutBox>
@@ -61,5 +50,4 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
         }
       ]} />
     </BentoCard>
-  </div>
 </CodeSlide>

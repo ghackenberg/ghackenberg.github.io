@@ -1,4 +1,5 @@
 ---
+import katex from 'katex';
 import { renderSlideCues } from '@commons/shared/slide-cues';
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
   cue?: string;
   id?: string;
   class?: string;
+  math?: boolean;
 }
 
 const {
@@ -14,8 +16,30 @@ const {
   label,
   cue,
   id,
-  class: className = ""
+  class: className = "",
+  math
 } = Astro.props;
+
+// Detect if formula is mathematical or plain text/URL
+const isMath = math !== undefined 
+  ? math 
+  : (formula ? (/[\\_{}^]|\\b(?:cos|sin|tan|sum|log|ln|lim|det)\\b|[ℝℤℚℕℂ]|(\b[A-Za-z]\s*=\s*)|SOM\s*=/i.test(formula)) : false);
+
+let renderedFormula = "";
+if (formula) {
+  if (isMath) {
+    try {
+      renderedFormula = katex.renderToString(formula, {
+        throwOnError: false,
+        displayMode: false
+      });
+    } catch {
+      renderedFormula = renderSlideCues(formula);
+    }
+  } else {
+    renderedFormula = renderSlideCues(formula);
+  }
+}
 ---
 
 <div
@@ -30,7 +54,7 @@ const {
     />
   )}
   <div class="formula-box-content text-xl lg:text-2xl font-bold tracking-tight">
-    {formula && <span set:html={renderSlideCues(formula)} />}
+    {renderedFormula && <span set:html={renderedFormula} />}
     <slot />
   </div>
 </div>
@@ -47,6 +71,9 @@ const {
   .formula-box-content {
     font-size: calc(1.5rem * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
+  }
+  .formula-box-content :global(.katex) {
+    line-height: normal;
   }
   :global(.light) .formula-box {
     background-color: color-mix(in srgb, var(--card-accent) 8%, white) !important;
