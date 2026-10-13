@@ -11,6 +11,8 @@ interface Props {
   dividerCue?: string;
   questionCue?: string;
   bridgeCue?: string;
+  question?: string;
+  bridge?: string;
   slideNumber?: string | number;
   totalSlides?: string | number;
   showFooter?: boolean;
@@ -28,6 +30,8 @@ const {
   dividerCue = `card-divider-${String(Astro.props.slideNumber || '01').padStart(2, '0')}`,
   questionCue = `card-leitfrage-${String(Astro.props.slideNumber || '01').padStart(2, '0')}`,
   bridgeCue = `card-bridge-${String(Astro.props.slideNumber || '01').padStart(2, '0')}`,
+  question,
+  bridge,
   slideNumber,
   totalSlides = 56,
   showFooter = true,
@@ -112,7 +116,7 @@ const {
       >
         <div class="overflow-hidden py-2">
           <div class="section-question-container text-3xl lg:text-4xl xl:text-[42px] font-black text-[var(--slide-accent)] leading-snug tracking-tight text-center">
-            <slot name="question" />
+            {question ? <span set:html={renderSlideCues(question)} /> : <slot name="question" />}
           </div>
         </div>
       </div>
@@ -125,7 +129,7 @@ const {
       >
         <div class="overflow-hidden py-2 mt-4">
           <div class="section-bridge-container text-xl lg:text-2xl text-slate-300 light:text-slate-700 font-normal leading-relaxed text-center">
-            <slot name="bridge" />
+            {bridge ? <span set:html={renderSlideCues(bridge)} /> : <slot name="bridge" />}
           </div>
         </div>
       </div>

@@ -52,8 +52,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     cue="code-bandit"
     filename="thompson_sampling_bidder.py"
   >
-    <pre class="font-mono overflow-x-auto my-auto text-base">
-{`# Multi-Armed Bandit Bidding (Thompson Sampling)
+```python
+# Multi-Armed Bandit Bidding (Thompson Sampling)
 # Probabilistische Gebotsfindung im Smart Bidding
 
 import numpy as np
@@ -69,8 +69,8 @@ def calculate_dynamic_bid(
     # Dynamisches Echtzeit-Gebot:
     # bid = target_cpa * p(conversion|context)
     optimal_bid = target_cpa * p_conv
-    return round(optimal_bid, 2)`}
-    </pre>
+    return round(optimal_bid, 2)
+```
   </CodeContainer>
 
   <BentoCard
@@ -79,7 +79,7 @@ def calculate_dynamic_bid(
     title="Bayesianische Steuerung [@thompson-1933-likelihood]"
   >
     <CalloutBox type="statement" title="Probabilistische Vorhersage [@chapelle-2011-thompson-sampling]">
-      <p>Kanalübergreifend berechnet: {cue:hl-bandit-pconv}die probabilistische Abschlusswahrscheinlichkeit pConv in Millisekunden{/cue}.</p>
+      Kanalübergreifend berechnet: {cue:hl-bandit-pconv}die probabilistische Abschlusswahrscheinlichkeit pConv in Millisekunden{/cue}.
     </CalloutBox>
     <BulletList
       items={[

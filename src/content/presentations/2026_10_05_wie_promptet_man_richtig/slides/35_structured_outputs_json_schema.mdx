@@ -24,6 +24,7 @@ import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
 
 <CodeSlide
   title={frontmatter.title}
@@ -31,21 +32,21 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="35"
   totalSlides="48"
 >
-  <BentoCard slot="code" cue="col-code" title="JSON-Schema Spezifikation [@openai-2024-structured-outputs]">
-      <CalloutBox type="statement" title="{cue:hl-json-schema}JSON Schema: response_format strict=true{/cue}">
-      `class MachineAudit(BaseModel):`
+  <CodeContainer
+    slot="code"
+    cue="col-code"
+    filename="{cue:hl-json-schema}schema.py: response_format strict=true{/cue}"
+  >
+```python
+class MachineAudit(BaseModel):
+    machine_id: str
+    status: Literal["OK", "WARN", "FAIL"]
+    temperature_c: float
+    action_required: bool
+```
+  </CodeContainer>
 
-      `  machine_id: str`
-
-      `  status: Literal["OK", "WARN", "FAIL"]`
-
-      `  temperature_c: float`
-
-      `  action_required: bool`
-    </CalloutBox>
-    </BentoCard>
-
-  <BentoCard slot="explanation" cue="col-explanation" title="Constrained Decoding">
+  <BentoCard slot="explanation" cue="col-explanation" title="Constrained Decoding [@openai-2024-structured-outputs]">
       <CalloutBox type="statement" title="Grammatik-Maskierung">
         {cue:hl-constrained-decoding}Tokens, die das Schema verletzen, erhalten Wahrscheinlichkeit null{/cue}.
       </CalloutBox>

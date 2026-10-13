@@ -35,10 +35,10 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 >
   <BentoCard slot="left" cue="col-embeddings" title="Der semantische Vektorraum">
     <CalloutBox type="info" title="{cue:hl-callout-vektor-beispiel}Passage B: Energieeffiziente Prozesswärme B2B{/cue}">
-      <p>// Passage A: "Industrielle Wärmepumpe"</p>
-      <p>[0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]</p>
-      <p>// Passage B: "Energieeffiziente Prozesswärme B2B"</p>
-      <p>[0.0209, -0.0518, 0.0874, 0.0125, -0.0421, ...]</p>
+      // Passage A: "Industrielle Wärmepumpe"
+      [0.0214, -0.0531, 0.0892, 0.0117, -0.0438, ...]
+      // Passage B: "Energieeffiziente Prozesswärme B2B"
+      [0.0209, -0.0518, 0.0874, 0.0125, -0.0421, ...]
     </CalloutBox>
 
     <BulletList items={[
@@ -49,7 +49,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 
   <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit">
     <CalloutBox type="takeaway" title="{cue:hl-callout-kosinus-formel}cos(θ) = (A · B) / (||A|| ||B||){/cue}">
-      <p>Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)</p>
+      Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)
     </CalloutBox>
 
     <CalloutBox type="statement" title="Top-K-Retrieval & Relevanz">

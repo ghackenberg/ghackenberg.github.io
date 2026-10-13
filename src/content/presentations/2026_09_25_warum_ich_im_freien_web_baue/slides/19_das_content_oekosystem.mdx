@@ -2,7 +2,7 @@
 title: "Das Content-Ökosystem"
 subtitle: "Vier tragende Säulen: {cue:hl-sub-oekosystem}Multimodaler Wissenstransfer über Posts, Papers, Talks und Kurse{/cue}"
 number: "19"
-slideLayout: "diagram"
+slideLayout: "grid"
 voiceover: >
   Wissen entfaltet seine größte Kraft, wenn es über verschiedene Wahrnehmungskanäle flexibel zugänglich wird.
   {cue:sub} Auf dieser Plattform greifen vier tragende Säulen nahtlos ineinander, um {cue:hl-sub-oekosystem}multimodalen Wissenstransfer ohne Hürden{/cue} zu ermöglichen.
@@ -13,30 +13,35 @@ notes: |
   - Die 4 tragenden Säulen der Webplattform: Posts (Blog), Publications (Forschung), Presentations (Slide-as-Code Keynotes) und Courses (Hochschullehre).
   - Volle Offenheit und multimodale Zugänglichkeit ohne Barrieren.
 ---
-import DiagramSlide from '../../../../components/slides/layouts/DiagramSlide.astro';
-import Pipeline from '../../../../components/slides/primitives/Pipeline.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
+import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
+import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 
-<DiagramSlide
+<GridSlide
   title={frontmatter.title}
   subtitle={frontmatter.subtitle}
   subtitleCue="sub"
   slideNumber="19"
   totalSlides="21"
+  cols={4}
+  cue="vis-graph"
 >
-  <Pipeline
-    slot="diagram"
-    cue="vis-graph"
-    direction="horizontal"
-    steps={[
-      { num: "01", title: "Blog-Artikel (Posts)", desc: "{cue:hl-eco-posts}Praxiserprobte Schritt-für-Schritt-Deep-Dives{/cue}" },
-      { num: "02", title: "Publikationen (Papers)", desc: "{cue:hl-eco-papers}Begutachtete Forschung und Fachbeiträge{/cue}" },
-      { num: "03", title: "Präsentationen (Keynotes)", desc: "{cue:hl-eco-presentations}Slide-as-Code mit synchroner Sprachausgabe{/cue}" },
-      { num: "04", title: "Hochschulkurse (Courses)", desc: "{cue:hl-eco-courses}Vollständige Vorlesungsreihen und Skripte{/cue}" }
-    ]}
-  />
+  <BentoCard title="Blog-Artikel (Posts)" subtitle="Praxistransfer">
+    {cue:hl-eco-posts}Praxiserprobte Schritt-für-Schritt-Deep-Dives{/cue} mit Code-Beispielen und Architektur-Mustern für Entwickler und Ingenieure.
+  </BentoCard>
 
-  <CalloutBox slot="insights" type="takeaway">
-    Das Ergebnis: {cue:hl-eco-synthese}Vier tragende Content-Säulen für offenen Wissenstransfer{/cue} und maximale Vermittlung.
-  </CalloutBox>
-</DiagramSlide>
+  <BentoCard title="Publikationen (Papers)" subtitle="Spitzenforschung">
+    {cue:hl-eco-papers}Begutachtete Spitzenforschung{/cue} und Fachbeiträge zu formalen Methoden, modellbasierter Entwicklung und Industriesystemen.
+  </BentoCard>
+
+  <BentoCard title="Präsentationen (Keynotes)" subtitle="Slide-as-Code">
+    {cue:hl-eco-presentations}Slide-as-Code mit synchroner Sprachausgabe{/cue} für dichten, barrierefreien Wissenstransfer auf den Punkt.
+  </BentoCard>
+
+  <BentoCard title="Hochschulkurse (Courses)" subtitle="Hochschullehre">
+    {cue:hl-eco-courses}Vollständige Vorlesungsreihen und Skripte{/cue} für Studierende und Fachkräfte.
+  </BentoCard>
+
+  <BentoCard slot="insights" title="Strategische Synthese" density="compact">
+    Das Ergebnis: {cue:hl-eco-synthese}Vier tragende Content-Säulen für maximalen Wissenstransfer{/cue} und jedes Zeitbudget.
+  </BentoCard>
+</GridSlide>

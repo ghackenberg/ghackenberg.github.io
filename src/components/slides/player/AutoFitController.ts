@@ -41,14 +41,23 @@ export class AutoFitController {
       return false;
     }
 
-    // Check pre / code element scroll overflow if present inside code cards
+    // Check horizontal and vertical overflow for code blocks and pre elements
     const pre = card.querySelector<HTMLElement>('pre');
-    if (pre && scrollableChild && pre.scrollHeight > scrollableChild.clientHeight) {
-      return false;
+    const isCodeCard = card.classList.contains('code-container-root') || !!pre || !!card.querySelector('.code-scroll-area');
+    if (isCodeCard) {
+      if (pre) {
+        if (pre.scrollWidth > pre.clientWidth + 1) return false;
+        if (pre.scrollHeight > pre.clientHeight + 1) return false;
+        if (scrollableChild && pre.scrollHeight > scrollableChild.clientHeight) return false;
+      }
+      if (scrollableChild) {
+        if (scrollableChild.scrollWidth > scrollableChild.clientWidth + 1) return false;
+        if (scrollableChild.scrollHeight > scrollableChild.clientHeight + 1) return false;
+      }
     }
 
-    // Check for row overflow in comparison tables
-    const tableRows = card.querySelectorAll<HTMLElement>('.table-row-item');
+    // Check for row overflow in comparison and slide tables
+    const tableRows = card.querySelectorAll<HTMLElement>('.table-row-item, .slide-table-tr');
     if (tableRows.length > 0) {
       for (const row of tableRows) {
         if (row.scrollHeight > row.clientHeight + 1) return false;
@@ -109,7 +118,7 @@ export class AutoFitController {
 
     const contentRect = measuredContentEl.getBoundingClientRect();
     const unscaledBottomGap = (cardRect.bottom - contentRect.bottom) / revealScale;
-    const isTable = card.classList.contains('comparison-table-container') || tableRows.length > 0;
+    const isTable = card.classList.contains('comparison-table-container') || card.classList.contains('slide-table-container') || tableRows.length > 0;
     const isStep = card.classList.contains('step-row') || card.classList.contains('step-card') || !!textContainer;
     const requiredClearance = isStep ? 14 : isTable ? 10 : this.options.minClearance;
 
@@ -120,6 +129,10 @@ export class AutoFitController {
     const clientH = card.clientHeight;
     if (clientH <= 0) return;
 
+    const isCodeCard = card.classList.contains('code-container-root') || !!card.querySelector('pre, .code-scroll-area');
+    const minScale = isCodeCard ? Math.min(this.options.minScale, 0.45) : this.options.minScale;
+    const iterations = isCodeCard ? Math.max(this.options.iterations, 6) : this.options.iterations;
+
     // 1. Test at maxScale (allows upscaling if plenty of room)
     card.style.setProperty('--content-scale', this.options.maxScale.toFixed(3), 'important');
 
@@ -128,11 +141,11 @@ export class AutoFitController {
     }
 
     // 2. Binary search for maximal scale where it fits
-    let low = this.options.minScale;
+    let low = minScale;
     let high = this.options.maxScale;
-    let best = this.options.minScale;
+    let best = minScale;
 
-    for (let i = 0; i < this.options.iterations; i++) {
+    for (let i = 0; i < iterations; i++) {
       const mid = (low + high) / 2;
       card.style.setProperty('--content-scale', mid.toFixed(3), 'important');
 
@@ -300,57 +313,72 @@ export class AutoFitController {
   }
 
   public fitTable(table: HTMLElement): void {
-    const rows = Array.from(table.querySelectorAll<HTMLElement>('.table-row-item'));
+    // If the table is contained inside a BentoCard, the outer BentoCard's fitCard manages it
+    if (table.closest('.bento-card-root')) return;
+
+    const isSlideTable = table.classList.contains('slide-table-container') || !!table.querySelector('.slide-table');
+    const rows = Array.from(table.querySelectorAll<HTMLElement>('.table-row-item, .slide-table-tr'));
     if (rows.length === 0) return;
 
-    const header = table.querySelector<HTMLElement>('.table-header-grid');
+    const header = table.querySelector<HTMLElement>('.table-header-grid, thead');
     const headerH = header ? header.offsetHeight : 50;
+    const caption = table.querySelector<HTMLElement>('.slide-table-caption');
+    const captionH = caption ? caption.offsetHeight : 0;
 
     const tableStyle = window.getComputedStyle(table);
-    const padTop = parseFloat(tableStyle.paddingTop) || 24;
-    const padBottom = parseFloat(tableStyle.paddingBottom) || 24;
+    const padTop = parseFloat(tableStyle.paddingTop) || (isSlideTable ? 0 : 24);
+    const padBottom = parseFloat(tableStyle.paddingBottom) || (isSlideTable ? 0 : 24);
 
-    const availH = table.clientHeight - headerH - padTop - padBottom;
+    const availH = table.clientHeight - headerH - captionH - padTop - padBottom;
     if (availH <= 0) return;
 
     // Available target height per row
     const targetRowH = availH / rows.length;
 
     // Available height for cell content (subtracting row padding ~24px)
-    const rowPad = 24;
-    const maxCellH = Math.max(40, targetRowH - rowPad);
+    const rowPad = isSlideTable ? 16 : 24;
+    const maxCellH = Math.max(36, targetRowH - rowPad);
 
-    rows.forEach((row) => {
-      const cells = Array.from(row.querySelectorAll<HTMLElement>('[data-cell], .comp-table-cell, .table-cell'));
-      cells.forEach((cell) => {
-        // 1. Reset scale to 1 to test natural fit
-        cell.style.setProperty('--content-scale', '1', 'important');
+    // Max upscale for spacious tables (up to 1.30 or maxScale)
+    const maxTableScale = Math.min(this.options.maxScale, 1.30);
 
-        // Check if cell naturally fits inside row bounds
-        if (cell.scrollHeight <= maxCellH + 1) {
-          return; // Naturally fits comfortably!
+    const checkTableFits = (scale: number): boolean => {
+      table.style.setProperty('--content-scale', scale.toFixed(3), 'important');
+      for (const row of rows) {
+        row.style.setProperty('--content-scale', scale.toFixed(3), 'important');
+        if (targetRowH > 0 && row.scrollHeight > targetRowH + 4) return false;
+        const cells = Array.from(row.querySelectorAll<HTMLElement>('[data-cell], .comp-table-cell, .table-cell, .slide-table-td'));
+        for (const cell of cells) {
+          cell.style.setProperty('--content-scale', scale.toFixed(3), 'important');
+          if (maxCellH > 0 && cell.scrollHeight > maxCellH + 1) return false;
+          if (cell.scrollWidth > cell.clientWidth + 1) return false;
         }
+      }
+      if (table.scrollHeight > table.clientHeight + 1) return false;
+      return true;
+    };
 
-        // 2. Binary search to find maximal scale where cell fits within maxCellH
-        let low = this.options.minScale;
-        let high = this.options.maxScale;
-        let best = this.options.minScale;
+    // 1. Try maxTableScale for upscaling when spacious room is available
+    if (checkTableFits(maxTableScale)) {
+      return; // Naturally fits even at max upscale!
+    }
 
-        for (let i = 0; i < this.options.iterations; i++) {
-          const mid = (low + high) / 2;
-          cell.style.setProperty('--content-scale', mid.toFixed(3), 'important');
+    // 2. Binary search to find maximal scale where table and cells fit
+    let low = this.options.minScale;
+    let high = maxTableScale;
+    let best = this.options.minScale;
 
-          if (cell.scrollHeight <= maxCellH + 1) {
-            best = mid;
-            low = mid; // Can we fit an even larger scale?
-          } else {
-            high = mid; // Still overflowing, shrink further
-          }
-        }
+    for (let i = 0; i < this.options.iterations; i++) {
+      const mid = (low + high) / 2;
+      if (checkTableFits(mid)) {
+        best = mid;
+        low = mid; // Can we fit an even larger scale?
+      } else {
+        high = mid; // Still overflowing, shrink further
+      }
+    }
 
-        cell.style.setProperty('--content-scale', best.toFixed(3), 'important');
-      });
-    });
+    checkTableFits(best);
   }
 
   public fitSlide(slideEl: HTMLElement | null): void {
@@ -363,8 +391,10 @@ export class AutoFitController {
     }
 
     try {
-      // 1. Fit comparison tables at the individual cell level
-      const tables = slideEl.querySelectorAll<HTMLElement>('.comparison-table-container');
+      // 1. Fit comparison and slide tables at the individual cell or table level
+      const tables = slideEl.querySelectorAll<HTMLElement>(
+        '.comparison-table-container, .slide-table-container:not(.bento-card-root .slide-table-container)'
+      );
       tables.forEach((table) => this.fitTable(table));
 
       // 2. Fit pipelines uniformly across all steps
@@ -373,7 +403,7 @@ export class AutoFitController {
 
       // 3. Fit remaining individual cards (excluding tables and pipeline steps already handled)
       const cards = slideEl.querySelectorAll<HTMLElement>(
-        '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]:not(.comparison-table-container):not(.step-row):not(.step-card)'
+        '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]:not(.comparison-table-container):not(.slide-table-container):not(.step-row):not(.step-card)'
       );
       cards.forEach((card) => this.fitCard(card));
     } finally {

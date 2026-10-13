@@ -16,6 +16,7 @@ import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
 
 <CodeSlide
   title={frontmatter.title}
@@ -23,15 +24,23 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="33"
   totalSlides="48"
 >
-  <BentoCard slot="code" cue="col-code" title="XML-Kapselung in der Praxis">
-      <CalloutBox type="statement" title="{cue:hl-xml-tags}Strikte XML-Kapselung &lt;rules&gt;{/cue}">
-      `<system_instructions>...<rules>...</rules></system_instructions>`
-
-      `<context>[Technisches Prüfprotokoll Charge #4829...]</context>`
-
-      `<user_query>Welche Grenztemperatur wurde überschritten?</user_query>`
-    </CalloutBox>
-    </BentoCard>
+  <CodeContainer
+    slot="code"
+    cue="col-code"
+    filename="{cue:hl-xml-tags}prompt_template.xml: &lt;rules&gt; &lt;context&gt; &lt;data&gt;{/cue}"
+  >
+```xml
+<system_instructions>
+  <rules>Antworte präzise auf Basis des Kontexts.</rules>
+</system_instructions>
+<context>
+  [Technisches Prüfprotokoll Charge #4829...]
+</context>
+<user_query>
+  Welche Grenztemperatur wurde überschritten?
+</user_query>
+```
+  </CodeContainer>
 
   <BentoCard slot="explanation" cue="col-explanation" title="Architektonischer Mehrwert">
       <CalloutBox type="statement" title="Strikte Grenzziehung">

@@ -31,7 +31,6 @@ references:
 ---
 import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 
 <GridSlide
   title={frontmatter.title}
@@ -40,36 +39,20 @@ import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astr
   totalSlides="68"
   cols={2}
 >
-  <BentoCard cue="card-google" title="Google Suche & AI Overviews">
-    <CalloutBox type="info" title="Hybrid-Index & Zitations-Chips">
-      <p>
-        Google kombiniert klassischen {cue:hl-eco-google-rank}RankBrain-SERP-Index mit LLM-Synthese{/cue} [@singhal-2012-knowledge-graph]. Hohe Gewichtung von PageSpeed, Core Web Vitals und {cue:hl-eco-google-chips}verifizierten E-E-A-T-Signalen{/cue}.
-      </p>
-    </CalloutBox>
+  <BentoCard cue="card-google" title="Google Suche & AI Overviews" subtitle="Hybrid-Index & Zitations-Chips">
+    Google kombiniert klassischen {cue:hl-eco-google-rank}RankBrain-SERP-Index mit LLM-Synthese{/cue} [@singhal-2012-knowledge-graph]. Hohe Gewichtung von PageSpeed, Core Web Vitals und {cue:hl-eco-google-chips}verifizierten E-E-A-T-Signalen{/cue}.
   </BentoCard>
 
-  <BentoCard cue="card-gemini" title="Google Gemini Chats">
-    <CalloutBox type="statement" title="Multimodales Web-Grounding">
-      <p>
-        Direkter Zugriff auf den Web-Index über Google Search: {cue:hl-eco-gemini-grounding}Echtzeit-Grounding mit multimodaler Verarbeitung{/cue} von Texten, Tabellen und PDF-Datenblättern {cue:hl-eco-gemini-docs}ohne statische Token-Grenzen{/cue}.
-      </p>
-    </CalloutBox>
+  <BentoCard cue="card-gemini" title="Google Gemini Chats" subtitle="Multimodales Web-Grounding">
+    Direkter Zugriff auf den Web-Index über Google Search: {cue:hl-eco-gemini-grounding}Echtzeit-Grounding mit multimodaler Verarbeitung{/cue} von Texten, Tabellen und PDF-Datenblättern {cue:hl-eco-gemini-docs}ohne statische Token-Grenzen{/cue}.
   </BentoCard>
 
-  <BentoCard cue="card-perplexity" title="Perplexity AI">
-    <CalloutBox type="takeaway" title="Transparente Quellen-Engine">
-      <p>
-        Live-Websuche mit maximaler Zitationsdichte: Bevorzugt {cue:hl-eco-perplex-sources}primäre Fachdokumentationen, Foren und Datenblätter{/cue}. Listet Belege als {cue:hl-eco-perplex-links}interaktive Fußnoten mit direkter Link-Verknüpfung{/cue}.
-      </p>
-    </CalloutBox>
+  <BentoCard cue="card-perplexity" title="Perplexity AI" subtitle="Transparente Quellen-Engine">
+    Live-Websuche mit maximaler Zitationsdichte: Bevorzugt {cue:hl-eco-perplex-sources}primäre Fachdokumentationen, Foren und Datenblätter{/cue}. Listet Belege als {cue:hl-eco-perplex-links}interaktive Fußnoten mit direkter Link-Verknüpfung{/cue}.
   </BentoCard>
 
-  <BentoCard cue="card-openai-claude" title="ChatGPT Search & Claude">
-    <CalloutBox type="statement" title="Konversationelle Synthese">
-      <p>
-        ChatGPT nutzt Bing-Index und Publisher-Feeds [@carr-2026-similarweb] für {cue:hl-eco-chatgpt-context}kontextuelle Empfehlungen im Dialog{/cue}, während Claude auf {cue:hl-eco-claude-deep}tiefgehende Dokumentenanalysen und Code-Verständnis{/cue} spezialisiert ist.
-      </p>
-    </CalloutBox>
+  <BentoCard cue="card-openai-claude" title="ChatGPT Search & Claude" subtitle="Konversationelle Synthese">
+    ChatGPT nutzt Bing-Index und Publisher-Feeds [@carr-2026-similarweb] für {cue:hl-eco-chatgpt-context}kontextuelle Empfehlungen im Dialog{/cue}, während Claude auf {cue:hl-eco-claude-deep}tiefgehende Dokumentenanalysen und Code-Verständnis{/cue} spezialisiert ist.
   </BentoCard>
 </GridSlide>
 

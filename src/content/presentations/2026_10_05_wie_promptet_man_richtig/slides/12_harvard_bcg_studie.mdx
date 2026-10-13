@@ -26,7 +26,6 @@ references:
 import MetricSlide from '../../../../components/slides/layouts/MetricSlide.astro';
 import MetricStat from '../../../../components/slides/primitives/MetricStat.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
-import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 
 <MetricSlide
   title={frontmatter.title}
@@ -60,8 +59,6 @@ import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astr
   />
 
   <BentoCard cue="card-takeaway" title="Das zweischneidige Schwert [@dellacqua-2023-jagged-frontier]">
-    <CalloutBox type="quote">
-      „Liegt eine Aufgabe außerhalb der technologischen Grenze, {cue:hl-blindes-vertrauen}sinkt die menschliche Genauigkeit mit KI um 19 Prozentpunkte{/cue} unter das Niveau ohne KI.“
-    </CalloutBox>
+    „Liegt eine Aufgabe außerhalb der technologischen Grenze, {cue:hl-blindes-vertrauen}sinkt die menschliche Genauigkeit mit KI um 19 Prozentpunkte{/cue} unter das Niveau ohne KI.“
   </BentoCard>
 </MetricSlide>

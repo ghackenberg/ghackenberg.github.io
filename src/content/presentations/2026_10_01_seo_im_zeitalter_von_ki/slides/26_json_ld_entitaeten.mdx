@@ -39,8 +39,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     cue="code-jsonld-ent"
     filename="schema-entities.jsonld"
   >
-    <pre class="font-mono overflow-x-auto my-auto text-base">
-{`{
+```json
+{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -64,13 +64,13 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       "sameAs": "https://orcid.org/0000-0003-3913-4148"
     }
   ]
-}`}
-    </pre>
+}
+```
   </CodeContainer>
 
   <BentoCard slot="explanation" cue="card-entitaeten" title="Entitäten & Autorität">
     <CalloutBox type="statement" title="Eindeutige Entitätsverankerung">
-      <p>Disambiguierung von Marke und Urheber über {cue:hl-jsonld-uri}globale Linked-Data-Register{/cue}.</p>
+      Disambiguierung von Marke und Urheber über {cue:hl-jsonld-uri}globale Linked-Data-Register{/cue}.
     </CalloutBox>
     <BulletList items={[
       { icon: "shield", title: "Globale URIs (@id)", desc: "Vergibt für Marke und Person {cue:hl-jsonld-graph}eindeutige, webweit referenzierbare Identifier{/cue} [@gandon-2020-json-ld]." },

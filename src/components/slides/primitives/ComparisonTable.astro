@@ -165,12 +165,12 @@ function resolveRowAccent(idx: number): string {
   }
 
   .comparison-table-container .table-header-grid {
-    font-size: 16px;
+    font-size: calc(1rem * var(--content-scale, 1));
   }
   .comparison-table-container .table-row-item {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    gap: 1.5rem;
+    padding-top: calc(1rem * var(--content-scale, 1));
+    padding-bottom: calc(1rem * var(--content-scale, 1));
+    gap: calc(1.5rem * var(--content-scale, 1));
   }
 
   /* Ton-in-ton container cascade for comparison table inside [data-accent] cards */

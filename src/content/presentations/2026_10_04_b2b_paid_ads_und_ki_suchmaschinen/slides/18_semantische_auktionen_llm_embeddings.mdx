@@ -41,8 +41,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     cue="code-vector"
     filename="semantic_auction_matching.py"
   >
-    <pre class="font-mono overflow-x-auto my-auto text-base">
-{`# Semantic Vector Matching in Real-Time Auctions
+```python
+# Semantic Vector Matching in Real-Time Auctions
 # Projektion von Query und Ad in dichte Embedding-Räume
 
 import numpy as np
@@ -57,8 +57,8 @@ def cosine_similarity(
     return float(dot / (norm + 1e-9))
 
 # Auktions-Trigger bei Kosinus-Ähnlichkeit >= Schwellenwert:
-# sim("Industrie-Vakuumpumpe", "Laborpumpen-Hersteller") = 0.88`}
-    </pre>
+# sim("Industrie-Vakuumpumpe", "Laborpumpen-Hersteller") = 0.88
+```
   </CodeContainer>
 
   <BentoCard
@@ -67,7 +67,7 @@ def cosine_similarity(
     title="Neuronales Vektor-Matching [@cer-2018-universal-sentence-encoder]"
   >
     <CalloutBox type="statement" title="Kosinus-Ähnlichkeit als Trigger">
-      <p>Schwellenwert-Matching: {cue:hl-embed-match}Die Auktionszulassung erfolgt auch ohne ein einziges übereinstimmendes Keyword{/cue}.</p>
+      Schwellenwert-Matching: {cue:hl-embed-match}Die Auktionszulassung erfolgt auch ohne ein einziges übereinstimmendes Keyword{/cue}.
     </CalloutBox>
     <BulletList
       items={[

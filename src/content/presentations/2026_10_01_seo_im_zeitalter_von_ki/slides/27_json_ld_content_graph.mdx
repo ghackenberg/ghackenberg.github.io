@@ -39,8 +39,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     cue="code-jsonld-rel"
     filename="schema-article.jsonld"
   >
-    <pre class="font-mono overflow-x-auto my-auto text-base">
-{`{
+```json
+{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -59,13 +59,13 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       ]
     }
   ]
-}`}
-    </pre>
+}
+```
   </CodeContainer>
 
   <BentoCard slot="explanation" cue="card-relationen" title="Relationale Ingestion">
     <CalloutBox type="statement" title="0-Redundanz im Wissensgraphen">
-      <p>Statt Metadaten zu kopieren, verlinkt der Artikel {cue:hl-jsonld-ref}per URI-Pointer auf bestehende Knoten{/cue}.</p>
+      Statt Metadaten zu kopieren, verlinkt der Artikel {cue:hl-jsonld-ref}per URI-Pointer auf bestehende Knoten{/cue}.
     </CalloutBox>
     <BulletList items={[
       { icon: "code", title: "Relationale Verknüpfung", desc: "Autor und Publisher werden {cue:hl-jsonld-pointer}über `@id`-Referenzen ohne Datenredundanz angebunden{/cue} [@gandon-2020-json-ld]." },

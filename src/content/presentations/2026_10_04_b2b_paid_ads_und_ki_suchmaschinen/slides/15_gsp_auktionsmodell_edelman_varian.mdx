@@ -54,8 +54,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     cue="code-gsp"
     filename="gsp_auction_engine.py"
   >
-    <pre class="font-mono overflow-x-auto my-auto text-base">
-{`# GSP Pricing Rule (Edelman et al. 2007 / Varian 2007)
+```python
+# GSP Pricing Rule (Edelman et al. 2007 / Varian 2007)
 # Bieter auf Position i zahlt das Mindestgebot zur Wahrung von Rang i
 
 def calculate_gsp_cpc(
@@ -67,8 +67,8 @@ def calculate_gsp_cpc(
     return round(min_bid, 2)
 
 # Symmetric Nash Equilibrium (SNE / lokal neidfrei):
-# Nutzen(Position i) >= Nutzen(Position j) für alle j`}
-    </pre>
+# Nutzen(Position i) >= Nutzen(Position j) für alle j
+```
   </CodeContainer>
 
   <BentoCard
@@ -77,7 +77,7 @@ def calculate_gsp_cpc(
     title="Spieltheorie [@edelman-2007-gsp]"
   >
     <CalloutBox type="statement" title="Keine dominante Strategie">
-      <p>Anders als im VCG-Design: {cue:hl-gsp-keindominant}Im GSP ist wahrheitsgemäßes Bieten der Zahlungsbereitschaft keine dominante Strategie{/cue}.</p>
+      Anders als im VCG-Design: {cue:hl-gsp-keindominant}Im GSP ist wahrheitsgemäßes Bieten der Zahlungsbereitschaft keine dominante Strategie{/cue}.
     </CalloutBox>
     <BulletList
       items={[

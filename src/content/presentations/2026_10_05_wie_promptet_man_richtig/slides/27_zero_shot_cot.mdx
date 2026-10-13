@@ -25,6 +25,7 @@ import CodeSlide from '../../../../components/slides/layouts/CodeSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import CodeContainer from '../../../../components/slides/primitives/CodeContainer.astro';
 
 <CodeSlide
   title={frontmatter.title}
@@ -32,15 +33,22 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="27"
   totalSlides="48"
 >
-  <BentoCard slot="code" cue="col-code" title="Der Magische Trigger [@kojima-2022-large-language-models-zero-shot-reasoners]">
-      <CalloutBox type="quote" title="{cue:hl-step-trigger}Let's think step by step:{/cue}">
-      `User: Eine Fabrik produziert 120 Teile/h... [Frage]`
+  <CodeContainer
+    slot="code"
+    cue="col-code"
+    filename="{cue:hl-step-trigger}reasoning_trigger.txt: Let's think step by step{/cue}"
+  >
+```text
+User: Eine Fabrik produziert 120 Teile/h... [Frage]
+Trigger: Let's think step by step
 
-      `Model: 1. Zunächst berechnen wir... 2. Daraus folgt... 3. Summe...`
-    </CalloutBox>
-    </BentoCard>
+Model (Reasoning):
+1. Zunächst berechnen wir den stündlichen Ausstoß...
+2. Daraus folgt die kumulierte Gesamtsumme...
+```
+  </CodeContainer>
 
-  <BentoCard slot="explanation" cue="col-explanation" title="Empirischer Durchbruch">
+  <BentoCard slot="explanation" cue="col-explanation" title="Empirischer Durchbruch [@kojima-2022-large-language-models-zero-shot-reasoners]">
       <CalloutBox type="statement" title="MultiArith Benchmark">
         {cue:hl-multiarith-sprung}Genauigkeitssprung von 17,7 % auf 78,7 %{/cue} ohne ein einziges Beispiel!
       </CalloutBox>
