@@ -188,7 +188,7 @@ const isNotFirstSlide = num > 1 && !isSection;
   .slide-base-frame :global(ul:not([class*="space-y-"])) {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--slide-space-block, 2rem);
   }
 
   .slide-base-frame :global(li) {
@@ -625,6 +625,13 @@ const isNotFirstSlide = num > 1 && !isSection;
     --hl-color: var(--card-accent, var(--step-accent, var(--slide-accent, var(--color-slide-accent-blue))));
     --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
     --hl-text-light: var(--hl-color);
+  }
+
+  :global(.bar-chart-row mark),
+  :global(.bar-chart-row .highlight-marker) {
+    --hl-color: var(--row-bar-accent) !important;
+    --hl-text-dark: color-mix(in srgb, var(--row-bar-accent) 35%, white) !important;
+    --hl-text-light: var(--row-bar-accent) !important;
   }
 
   /* Pre-cue pending state for marker: 0% width (unmarked) */

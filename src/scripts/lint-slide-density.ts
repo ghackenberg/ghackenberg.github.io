@@ -1,0 +1,256 @@
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import puppeteer, { type Browser } from 'puppeteer';
+import {
+  auditSlideDensity,
+  type PresentationDensityReport,
+} from '@commons/server/slide-density.js';
+
+const distDir = path.resolve('dist');
+
+/**
+ * Serves dist folder statically for Puppeteer
+ */
+function createStaticServer(): http.Server {
+  const mimeTypes: Record<string, string> = {
+    '.html': 'text/html',
+    '.css': 'text/css',
+    '.js': 'application/javascript',
+    '.svg': 'image/svg+xml',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.webp': 'image/webp',
+    '.woff2': 'font/woff2',
+  };
+
+  return http.createServer((req, res) => {
+    const urlPath = (req.url || '/').split('?')[0];
+
+    // Serve presentation assets directly from src/content/presentations if available
+    const presMatch = urlPath.match(/^\/presentations\/(.+)$/);
+    if (presMatch) {
+      const srcPath = path.resolve('src/content/presentations', presMatch[1]);
+      if (fs.existsSync(srcPath) && fs.statSync(srcPath).isFile()) {
+        const ext = path.extname(srcPath).toLowerCase();
+        const contentType = mimeTypes[ext] || 'application/octet-stream';
+        res.writeHead(200, { 'Content-Type': contentType });
+        fs.createReadStream(srcPath).pipe(res);
+        return;
+      }
+    }
+
+    let filePath = path.join(distDir, urlPath);
+
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+      filePath = path.join(filePath, 'index.html');
+    }
+
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = mimeTypes[ext] || 'application/octet-stream';
+
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    });
+  });
+}
+
+function startServer(initialPort = 4324): Promise<{ server: http.Server; port: number }> {
+  return new Promise((resolve, reject) => {
+    const server = createStaticServer();
+
+    const tryPort = (portToTry: number) => {
+      const onError = (err: NodeJS.ErrnoException) => {
+        if (err.code === 'EADDRINUSE') {
+          server.removeListener('error', onError);
+          tryPort(portToTry + 1);
+        } else {
+          reject(err);
+        }
+      };
+
+      server.once('error', onError);
+      server.listen(portToTry, '127.0.0.1', () => {
+        server.removeListener('error', onError);
+        resolve({ server, port: portToTry });
+      });
+    };
+
+    tryPort(initialPort);
+  });
+}
+
+interface CliArgs {
+  targetPresentation?: string;
+  threshold?: number;
+  failOnWarning: boolean;
+}
+
+function parseCliArgs(): CliArgs {
+  const args = process.argv.slice(2);
+  let targetPresentation: string | undefined;
+  let threshold: number | undefined;
+  let failOnWarning = false;
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === '--presentation' && i + 1 < args.length) {
+      targetPresentation = args[++i];
+    } else if (arg.startsWith('--presentation=')) {
+      targetPresentation = arg.split('=')[1];
+    } else if (arg === '--threshold' && i + 1 < args.length) {
+      const val = parseFloat(args[++i]);
+      if (!isNaN(val)) threshold = val;
+    } else if (arg.startsWith('--threshold=')) {
+      const val = parseFloat(arg.split('=')[1]);
+      if (!isNaN(val)) threshold = val;
+    } else if (arg === '--fail-on-warning') {
+      failOnWarning = true;
+    }
+  }
+
+  return { targetPresentation, threshold, failOnWarning };
+}
+
+async function run(): Promise<void> {
+  const { targetPresentation, threshold, failOnWarning } = parseCliArgs();
+
+  console.log('\n📊 SLIDE CONTENT DENSITY LINTER: Container Filling Audit');
+  console.log('Auditing presentations in: src/content/presentations\n');
+
+  if (!fs.existsSync(distDir)) {
+    console.error('❌ dist/ directory not found. Please run "npm run build" first.');
+    process.exit(1);
+  }
+
+  const presentationsBase = path.resolve('src/content/presentations');
+  if (!fs.existsSync(presentationsBase)) {
+    console.log('No presentations found in src/content/presentations.');
+    process.exit(0);
+  }
+
+  let decksToAudit: string[] = [];
+  if (targetPresentation) {
+    const targetPath = path.join(presentationsBase, targetPresentation);
+    if (!fs.existsSync(targetPath) || !fs.statSync(targetPath).isDirectory()) {
+      console.error(`❌ Presentation "${targetPresentation}" not found at ${targetPath}`);
+      process.exit(1);
+    }
+    decksToAudit = [targetPresentation];
+  } else {
+    decksToAudit = fs
+      .readdirSync(presentationsBase)
+      .filter((folder) => {
+        const fullPath = path.join(presentationsBase, folder);
+        return fs.statSync(fullPath).isDirectory();
+      })
+      .sort();
+  }
+
+  if (decksToAudit.length === 0) {
+    console.log('No presentations to audit.');
+    process.exit(0);
+  }
+
+  const { server, port } = await startServer(4324);
+
+  let browser: Browser | null = null;
+  let totalSlidesScanned = 0;
+  let totalContainersScanned = 0;
+  let totalWarnings = 0;
+  const reports: PresentationDensityReport[] = [];
+
+  try {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
+    for (const deck of decksToAudit) {
+      console.log(`📦 Presentation: ${deck}`);
+      const printUrl = `http://127.0.0.1:${port}/presentations/${deck}/print/?theme=dark`;
+      const page = await browser.newPage();
+      await page.evaluateOnNewDocument('window.__name = window.__name || function(f) { return f; };');
+      await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 });
+
+      try {
+        const response = await page.goto(printUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+        if (!response || !response.ok()) {
+          console.warn(`   ⚠️ Could not load print page for "${deck}" (status: ${response?.status()}). Skipping.\n`);
+          continue;
+        }
+
+        await page.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
+        await page.evaluateHandle('document.fonts.ready');
+
+        const report = await auditSlideDensity(page, deck, {
+          defaultThreshold: threshold,
+        });
+        reports.push(report);
+        totalSlidesScanned += report.totalSlides;
+        totalContainersScanned += report.totalContainersScanned;
+        totalWarnings += report.warningsCount;
+
+        if (report.warningsCount === 0) {
+          console.log('   ✅ All content containers are well-filled.\n');
+        } else {
+          for (const slide of report.results) {
+            for (const warning of slide.warnings) {
+              const titlePart = warning.containerTitle ? ` ("${warning.containerTitle}")` : '';
+              console.log(
+                `   ⚠️  [WARN] Slide ${slide.slideNumber} (${slide.slideId}): ${warning.containerType}${titlePart} is underfilled: Fill ratio ${Math.round(warning.fillRatio * 100)}% (Used: ${warning.usedHeight}px / Avail: ${warning.availableHeight}px) [Threshold: ${Math.round(warning.threshold * 100)}%]`
+              );
+              if (warning.previewSnippet) {
+                console.log(`         Preview: "${warning.previewSnippet}"`);
+              }
+            }
+          }
+          console.log('');
+        }
+      } catch (err) {
+        console.error(
+          `   ❌ Error auditing presentation "${deck}":`,
+          err instanceof Error ? err.message : err
+        );
+      } finally {
+        await page.close();
+      }
+    }
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  console.log('==================================================');
+  console.log('Audit Summary:');
+  console.log(`  Total presentations scanned: ${decksToAudit.length}`);
+  console.log(`  Total slides scanned: ${totalSlidesScanned}`);
+  console.log(`  Total containers scanned: ${totalContainersScanned}`);
+  console.log(`  Total warnings detected: ${totalWarnings}`);
+  if (totalWarnings === 0) {
+    console.log('✅ All content containers are well-filled.');
+  } else {
+    console.log(`⚠️  ${totalWarnings} container(s) are underfilled across presentations.`);
+  }
+  console.log('==================================================\n');
+
+  if (failOnWarning && totalWarnings > 0) {
+    process.exit(1);
+  } else {
+    process.exit(0);
+  }
+}
+
+run().catch((err: Error) => {
+  console.error('Fatal error during slide density audit:', err);
+  process.exit(1);
+});

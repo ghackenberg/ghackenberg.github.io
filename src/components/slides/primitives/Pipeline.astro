@@ -93,6 +93,8 @@ function getStepAccent(idx: number): string {
 }
 
 const hasAnyGraphic = steps.some(s => !!(s.image || s.graphic));
+
+const formatStepNum = (num: string | number) => String(num).replace(/^0+([1-9])/, '$1');
 ---
 
 {direction === 'vertical' ? (
@@ -115,7 +117,7 @@ const hasAnyGraphic = steps.some(s => !!(s.image || s.graphic));
         >
           <!-- Integrated Left Glass Block -->
           <div class={`step-num-badge w-20 lg:w-24 shrink-0 flex items-center justify-center font-black text-2xl lg:text-[26px] font-sans border-r ${accentGlass[accent]}`}>
-            {step.num}
+            {formatStepNum(step.num)}
           </div>
 
           <!-- Center: Title & description -->
@@ -131,6 +133,18 @@ const hasAnyGraphic = steps.some(s => !!(s.image || s.graphic));
             <div class="step-image-container shrink-0 h-full aspect-video border-l border-slate-700/80 light:border-slate-200/80 bg-slate-800/40 light:bg-slate-100/70 relative overflow-hidden flex items-center justify-center" set:html={step.graphic} />
           ) : step.image ? (
             <div class="step-image-container shrink-0 h-full aspect-video border-l border-slate-700/80 light:border-slate-200/80 bg-slate-800/40 light:bg-slate-100/70 relative overflow-hidden flex items-center justify-center">
+              <!-- Skeleton Shimmer Placeholder -->
+              <div
+                class="step-image-skeleton absolute inset-0 flex flex-col items-center justify-center gap-2 text-slate-400 light:text-slate-500 bg-slate-800/60 light:bg-slate-200/60 animate-pulse pointer-events-none z-0"
+                aria-hidden="true"
+              >
+                <svg class="w-6 h-6 stroke-current opacity-40 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+                <span class="text-[10px] uppercase font-bold tracking-wider opacity-60">Loading illustration...</span>
+              </div>
+
               <Image
                 src={step.image}
                 alt={step.imageAlt || step.desc || `Illustration für Schritt ${step.num}: ${step.title}`}
@@ -138,9 +152,11 @@ const hasAnyGraphic = steps.some(s => !!(s.image || s.graphic));
                 width={480}
                 height={270}
                 format="webp"
-                class="w-full h-full object-cover select-none"
+                class="w-full h-full object-cover select-none transition-opacity duration-300 opacity-0 relative z-10"
                 loading="lazy"
                 decoding="async"
+                onload="this.classList.remove('opacity-0'); this.previousElementSibling?.remove();"
+                onerror="if (this.previousElementSibling) { this.previousElementSibling.textContent = 'Illustration unavailable'; }"
               />
             </div>
           ) : null}
@@ -172,7 +188,7 @@ const hasAnyGraphic = steps.some(s => !!(s.image || s.graphic));
               <div class="step-text-container flex-1 flex flex-col justify-start min-w-0">
                 <div class="flex items-center gap-3 mb-4">
                   <span class={`step-num-badge w-10 h-10 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center font-black text-lg shadow-md ${accentPills[accent]}`}>
-                    {step.num}
+                    {formatStepNum(step.num)}
                   </span>
                   <h4 class="text-xl lg:text-2xl font-bold tracking-tight text-[var(--color-slide-text)]">
                     {step.title}
@@ -205,7 +221,7 @@ const hasAnyGraphic = steps.some(s => !!(s.image || s.graphic));
                 <!-- Step Number Badge Overlaid on Top-Left -->
                 <div class="step-num-container absolute top-4 left-4 z-10">
                   <span class={`step-num-badge w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg ring-2 ring-slate-900/40 light:ring-white/80 ${accentPills[accent]}`}>
-                    {step.num}
+                    {formatStepNum(step.num)}
                   </span>
                 </div>
 

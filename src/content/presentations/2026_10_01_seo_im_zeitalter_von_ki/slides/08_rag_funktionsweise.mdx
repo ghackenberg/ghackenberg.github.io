@@ -41,28 +41,28 @@ import step4 from '../images/step4_synthesis.jpg';
     steps={[
       {
         cue: "step-query",
-        num: "01",
+        num: "1",
         title: "Anfrage-Parsing",
         desc: "Nutzerfrage wird in semantische Absicht (Intent) und {cue:hl-rag-parsing}gesuchte Entitäten{/cue} zerlegt.",
         image: step1
       },
       {
         cue: "step-retrieval",
-        num: "02",
+        num: "2",
         title: "Live-Web-Retrieval",
         desc: "Vektorsuche ruft nach dem RAG-Prinzip [@lewis-2020-rag] die Top-{cue:hl-rag-retrieval}Text-Chunks{/cue} aus dem aktuellen Index ab. Nur hochrelevante Absätze kommen weiter.",
         image: step2
       },
       {
         cue: "step-injection",
-        num: "03",
+        num: "3",
         title: "Kontext-Injektion",
         desc: "Die gefundenen Chunks werden zusammen mit System-Instruktionen in das {cue:hl-rag-injection}Context Window{/cue} des LLMs injiziert.",
         image: step3
       },
       {
         cue: "step-synthesis",
-        num: "04",
+        num: "4",
         title: "LLM-Synthese",
         desc: "Das Modell erzeugt die finale Antwort mit {cue:hl-rag-synthesis}Zitations-Chips{/cue} basierend auf den injizierten Daten.",
         image: step4

@@ -33,19 +33,19 @@ const elementId = explicitId;
 
   <!-- Header -->
   {(title || subtitle) && (
-    <div class="mb-6 shrink-0">
+    <div class="mb-8 shrink-0">
       {title && (
         <h3 class="text-3xl lg:text-4xl xl:text-[40px] font-black tracking-tight leading-tight" set:html={renderSlideCues(title)} />
       )}
 
       {subtitle && (
-        <p class="text-xl lg:text-2xl text-[var(--color-slide-text-subtle)] mt-1 font-normal" set:html={renderSlideCues(subtitle)} />
+        <p class="text-xl lg:text-2xl text-[var(--color-slide-text-subtle)] mt-2 font-normal" set:html={renderSlideCues(subtitle)} />
       )}
     </div>
   )}
 
   <!-- Body Content -->
-  <div class="flex-1 min-h-0 text-[var(--color-slide-text)] text-xl lg:text-2xl gap-6 pb-2 leading-relaxed flex flex-col justify-between bento-hyphens">
+  <div class="flex-1 min-h-0 text-[var(--color-slide-text)] text-xl lg:text-2xl gap-8 leading-relaxed flex flex-col justify-start bento-hyphens">
     <slot />
   </div>
 </div>
@@ -58,7 +58,7 @@ const elementId = explicitId;
     --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
     --hl-text-light: var(--hl-color);
     border-color: color-mix(in srgb, var(--resolved-card-accent) 30%, transparent);
-    padding: 2rem !important;
+    padding: var(--slide-space-card, 2rem) !important;
   }
   .bento-card-root .bento-top-bar {
     background-color: var(--resolved-card-accent);
@@ -99,7 +99,7 @@ const elementId = explicitId;
   .bento-hyphens :global(ul) {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--slide-space-block, 2rem);
     justify-content: space-around;
   }
   .bento-hyphens :global(li) {
@@ -109,5 +109,11 @@ const elementId = explicitId;
   .bento-hyphens :global(p) {
     font-size: calc(1.75rem * var(--content-scale, 1));
     line-height: 1.55;
+    margin-bottom: var(--slide-space-block, 2rem);
+  }
+  .bento-card-root :global(p:last-child),
+  .bento-card-root :global(ul:last-child) {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
 </style>

@@ -957,3 +957,14 @@ html:not(.light) .bento-card-object .bg-cyan-50\/70 {
   background-color: var(--step-accent) !important;
 }
 
+/* BarChart Rows drive their own cue highlight colors matching their bar accent */
+.grid > .bento-card-root .bar-chart-row .highlight-marker,
+.bento-card-root .bar-chart-row mark,
+.bento-card-root .bar-chart-row .highlight-marker,
+.bar-chart-container .bar-chart-row mark,
+.bar-chart-container .bar-chart-row .highlight-marker {
+  --hl-color: var(--row-bar-accent) !important;
+  --hl-text-dark: color-mix(in srgb, var(--row-bar-accent) 35%, white) !important;
+  --hl-text-light: var(--row-bar-accent) !important;
+}
+

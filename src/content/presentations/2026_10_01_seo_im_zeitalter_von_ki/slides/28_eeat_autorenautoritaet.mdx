@@ -25,6 +25,7 @@ import BentoCard from '../../../../components/slides/primitives/BentoCard.astro'
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astro';
+import CardGrid from '../../../../components/slides/primitives/CardGrid.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -33,10 +34,12 @@ import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astr
   totalSlides="68"
 >
   <BentoCard slot="left" cue="col-eeat-triad" title="Die Säulen der Autoren-Validierung (E-E-A-T)">
-    <FormulaBox formula="E · Experience" label="Praktische Projekterfahrung" />
-    <FormulaBox formula="E · Expertise" label="Patente & Publikationen" />
-    <FormulaBox formula="A · Authority" label="Fachzitate & Gremien" />
-    <FormulaBox formula="T · Trust" label="Verifizierte Profile & Peers" />
+    <CardGrid cols={2} gap="tight">
+      <FormulaBox formula="E · Experience" label="Praktische Projekterfahrung" />
+      <FormulaBox formula="E · Expertise" label="Patente & Publikationen" />
+      <FormulaBox formula="A · Authority" label="Fachzitate & Gremien" />
+      <FormulaBox formula="T · Trust" label="Verifizierte Profile & Peers" />
+    </CardGrid>
 
     <CalloutBox type="takeaway" title="Modell-Verhalten & Glaubwürdigkeit">
       Google E-E-A-T definiert zentrale Vertrauenssignale [@google-2024-helpful-content] – in Sprachmodellen führt die explizite Zitation verifizierter Autoren zu {cue:hl-glaubwuerdigkeit}klarer Bevorzugung gegenüber generischem KI-Spam{/cue}.
@@ -49,6 +52,10 @@ import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astr
       { icon: "check", title: "sameAs-Verknüpfung", desc: "Direkte {cue:hl-eeat-sameas}Links auf ORCID, Scholar und LinkedIn{/cue} sowie Fachgremien." },
       { icon: "check", title: "Transparente Vita", desc: "Relevante {cue:hl-eeat-vita}Industrieprojekte und Normengremien{/cue} nachvollziehbar dokumentieren." }
     ]} />
+
+    <CalloutBox type="takeaway" title="B2B-Differenzierung">
+      Echte Autorenprofile schaffen den {cue:hl-eeat-differenzierung}entscheidenden Vertrauensanker gegen anonyme Masseninhalte{/cue} und sichern die Zitierfähigkeit in Modellen.
+    </CalloutBox>
   </BentoCard>
 </SplitSlide>
 

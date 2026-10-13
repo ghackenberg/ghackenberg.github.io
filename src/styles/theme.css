@@ -84,6 +84,12 @@
   --color-slide-accent-amber: var(--color-accent-8);
   --color-slide-accent-orange: var(--color-accent-9);
 
+  /* Presentation Slide Spacing Tokens */
+  --slide-space-tight: 0.5rem;   /* 8px: micro-binding (label to term, title to desc) */
+  --slide-space-element: 1rem;    /* 16px: elements within components (list items, table rows) */
+  --slide-space-block: 2rem;      /* 32px: macro blocks (card header to body, callout to list) */
+  --slide-space-card: 2rem;       /* 32px: card outer padding */
+
   --font-sans: "Outfit", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --breakpoint-nav: 1120px;
 }

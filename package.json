@@ -50,6 +50,7 @@
     "lint:colors": "tsx src/scripts/lint-colors.ts",
     "lint:svgs": "tsx src/scripts/lint-svgs.ts",
     "lint:slide-typography": "tsx src/scripts/lint-slide-typography.ts",
+    "lint:slide-density": "tsx src/scripts/lint-slide-density.ts",
     "migrate:svgs": "tsx src/scripts/migrate-adaptive-svgs.ts",
     "astro": "astro"
   },

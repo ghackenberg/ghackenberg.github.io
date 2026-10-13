@@ -58,7 +58,7 @@ const elementId = explicitId;
   </div>
 
   {sublabel && (
-    <p class="metric-stat-sublabel text-[var(--color-slide-text-subtle)] pt-5 mt-4 border-t border-[var(--color-slide-card-border)] leading-relaxed shrink-0" set:html={renderSlideCues(sublabel)} />
+    <p class="metric-stat-sublabel text-[var(--color-slide-text-subtle)] pt-4 mt-4 border-t border-[var(--color-slide-card-border)] leading-relaxed shrink-0" set:html={renderSlideCues(sublabel)} />
   )}
 </div>
 
@@ -69,7 +69,7 @@ const elementId = explicitId;
     --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
     --hl-text-light: var(--hl-color);
     border-color: color-mix(in srgb, var(--effective-accent) 30%, var(--color-slide-card-border));
-    padding: 2rem !important;
+    padding: var(--slide-space-card, 2rem) !important;
   }
   .metric-stat-card .metric-stat-value {
     color: var(--effective-accent);
@@ -82,7 +82,7 @@ const elementId = explicitId;
   .metric-stat-card .metric-stat-label {
     font-size: calc(2.25rem * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
-    margin-top: 1rem;
+    margin-top: var(--slide-space-element, 1rem);
   }
   .metric-stat-card .metric-stat-sublabel {
     font-size: calc(1.35rem * var(--content-scale, 1)) !important;
