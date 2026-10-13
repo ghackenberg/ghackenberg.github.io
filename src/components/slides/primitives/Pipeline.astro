@@ -294,9 +294,9 @@ const hasAnyGraphic = steps.some(s => !!(s.image || s.graphic));
   let isSyncing = false;
   const autoFit = new AutoFitController({
     minScale: 0.80,
-    maxScale: 1.45,
+    maxScale: 2.50,
     minClearance: 16,
-    iterations: 6,
+    iterations: 7,
   });
 
   function syncPipelineGraphics() {
