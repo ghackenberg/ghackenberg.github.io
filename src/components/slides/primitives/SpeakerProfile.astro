@@ -137,8 +137,8 @@ function resolveLinkIcon(label: string, value: string, href?: string): SlideIcon
     --effective-speaker-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
     --card-accent: var(--effective-speaker-accent);
     border-color: color-mix(in srgb, var(--card-accent) 30%, var(--color-slide-card-border));
-    padding: calc(1.75rem * var(--content-scale, 1)) calc(2rem * var(--content-scale, 1)) !important;
-    gap: calc(1.5rem * var(--content-scale, 1)) !important;
+    padding: 1.75rem 2rem !important;
+    gap: 1.5rem !important;
   }
   .speaker-avatar-wrapper {
     width: calc(10.5rem * var(--content-scale, 1)) !important;
@@ -158,7 +158,7 @@ function resolveLinkIcon(label: string, value: string, href?: string): SlideIcon
   }
   .speaker-link-item {
     font-size: calc(0.95rem * var(--content-scale, 1)) !important;
-    padding: calc(0.35rem * var(--content-scale, 1)) calc(0.75rem * var(--content-scale, 1)) !important;
+    padding: 0.35rem 0.75rem !important;
   }
   :global(.light) .speaker-profile-card {
     background-color: color-mix(in srgb, var(--card-accent) 4%, white) !important;

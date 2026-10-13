@@ -60,7 +60,10 @@ const elementId = explicitId;
     --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
     --hl-text-light: var(--hl-color);
     border-color: color-mix(in srgb, var(--resolved-card-accent) 30%, transparent);
-    padding: calc(2rem * var(--content-scale, 1)) !important;
+    padding: 2rem !important;
+  }
+  .bento-card-root.compact {
+    padding: 1.5rem !important;
   }
   .bento-card-root .bento-top-bar {
     background-color: var(--resolved-card-accent);
