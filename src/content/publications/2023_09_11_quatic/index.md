@@ -1,6 +1,6 @@
 ---
 title: "Quality assurance of digital twins: an experience report in the automotive industry"
-pubDate: "11 September 2023"
+pubDate: "2023-09-11"
 book: "International Conference on the Quality of Information and Communications Technology, pp. 15-29"
 author: "Alican Tüzün and <strong>Georg Hackenberg</strong>"
 abstract: |-

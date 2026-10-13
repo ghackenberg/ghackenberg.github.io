@@ -1,12 +1,12 @@
 import { Sigma } from 'sigma';
 import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#f43f5e'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea', '#e11d48'];
+import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { getThemeTokens } from '@commons/shared/domain-themes';
 
 function getNodeColor(group: number, isLight: boolean): string {
-  return isLight ? (colorsLight[group] || colorsLight[0]) : (colorsDark[group] || colorsDark[0]);
+  const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+  return colors[group] || colors[0];
 }
 
 export interface SigmaNodeData {
@@ -84,10 +84,11 @@ const engine: SigmaEngine = {
       });
     });
 
+    const tokens = getThemeTokens(isLight);
     this.sigma = new Sigma(this.graph, container, {
-      defaultNodeColor: '#3b82f6',
+      defaultNodeColor: tokens.nodeDefault,
       defaultEdgeColor: edgeColor,
-      labelColor: { color: isLight ? '#0f172a' : '#f3f4f6' },
+      labelColor: { color: tokens.textHeading },
       labelFont: 'Outfit, Inter, sans-serif',
       labelSize: 10,
       allowInvalidContainer: true,
@@ -138,8 +139,9 @@ const engine: SigmaEngine = {
     this.isLight = isLight;
 
     // Apply color update to node labels and edges based on theme
+    const tokens = getThemeTokens(isLight);
     const edgeColor = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-    const labelColor = isLight ? '#0f172a' : '#f3f4f6';
+    const labelColor = tokens.textHeading;
 
     this.graph.forEachEdge(edge => {
       this.graph?.setEdgeAttribute(edge, 'color', edgeColor);

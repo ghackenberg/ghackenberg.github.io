@@ -1,6 +1,6 @@
 ---
 title: "A Rapid Prototyping Approach for Smart Energy Systems Based on Partial System Models"
-pubDate: "21-25 July 2014"
+pubDate: "2014-07-21"
 book: "Computer Software and Applications Conference Workshops (COMPSACW), 2014 IEEE 38th International , pp.596-601"
 author: "<strong>Georg Hackenberg</strong>, Maximilian Irlbeck, Vasileios Koutsoumpas and Denis Bytschkow"
 abstract: "A key success factor for building smart control software for today's energy systems is a precise understanding of their behavioral requirements. However, current engineering approaches lack the possibility to validate these requirements in early phases of development. The validation is hampered by the difficulty estimating the impact of requirements on the overall system behavior before a complete system model is built. To overcome this situation, we propose a model-based rapid prototyping approach based on partial system models enabling early validation of behavioral requirements through tool-supported behavior estimation. For evaluating the approach we demonstrate our approach through a case study showing the interaction between customer and software engineer over three iterations. Finally, the approach is discussed with respect to modeling effort and required model resolution."

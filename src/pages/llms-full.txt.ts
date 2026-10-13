@@ -10,9 +10,14 @@ export async function GET() {
   const modules = await getCollection("modules");
   const tags = await getCollection("tags");
 
-  // Sort posts and presentations by date descending
+  // Sort posts, presentations, and publications by date descending
   const sortedPosts = posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
   const sortedPresentations = presentations.sort((a, b) => {
+    const da = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : new Date(a.data.pubDate || '').getTime();
+    const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || '').getTime();
+    return db - da;
+  });
+  const sortedPublications = publications.sort((a, b) => {
     const da = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : new Date(a.data.pubDate || '').getTime();
     const db = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : new Date(b.data.pubDate || '').getTime();
     return db - da;
@@ -49,10 +54,11 @@ Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industria
   }
 
   output += `## 3. Academic Publications & Research Papers\n\n`;
-  for (const pub of publications) {
+  for (const pub of sortedPublications) {
+    const pubDateStr = pub.data.pubDate instanceof Date ? pub.data.pubDate.toISOString().split('T')[0] : String(pub.data.pubDate);
     output += `### ${pub.data.title}\n`;
     output += `- URL: https://hackenberg.tech/publications/${pub.id}/\n`;
-    output += `- Date/Venue: ${pub.data.pubDate}${pub.data.book ? ` (${pub.data.book})` : ''}\n`;
+    output += `- Date/Venue: ${pubDateStr}${pub.data.book ? ` (${pub.data.book})` : ''}\n`;
     output += `- Authors: ${pub.data.author}\n`;
     if (pub.data.abstract) output += `- Abstract: ${pub.data.abstract}\n`;
     if (pub.data.bibtex) output += `\n\`\`\`bibtex\n${pub.data.bibtex}\n\`\`\`\n`;

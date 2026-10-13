@@ -22,7 +22,7 @@ const {
   href, 
   tags, 
   activeTag, 
-  accentColor = 'blue',
+  accentColor: _accentColor = 'green',
   screenshot,
   screenshotLight
 } = Astro.props;
@@ -53,50 +53,11 @@ const optimizedScreenshotLight = screenshotLightImg ? await getImage({
   quality: 80
 }) : null;
 
-// Dynamically assign classes based on color-coding preferences
-const colorClasses = {
-  blue: {
-    border: 'hover:border-brand-blue/40 border-element-border',
-    glow: 'group-hover:bg-brand-blue/10',
-    tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-blue/15 hover:border-brand-blue/30 hover:text-sky-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-blue-50 light:hover:border-brand-blue/30 light:hover:text-brand-blue',
-    btnBg: 'bg-brand-blue/12 hover:bg-brand-blue/25 border border-brand-blue/20 hover:border-brand-blue/45 text-sky-300 light:text-blue-700',
-    iconColor: 'text-brand-blue'
-  },
-  yellow: {
-    border: 'hover:border-brand-yellow/40 border-element-border',
-    glow: 'group-hover:bg-brand-yellow/10',
-    tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-yellow/15 hover:border-brand-yellow/30 hover:text-amber-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-amber-50 light:hover:border-brand-yellow/30 light:hover:text-amber-600',
-    btnBg: 'bg-brand-yellow/12 hover:bg-brand-yellow/25 border border-brand-yellow/20 hover:border-brand-yellow/45 text-amber-300 light:text-amber-900',
-    iconColor: 'text-brand-yellow'
-  },
-  purple: {
-    border: 'hover:border-brand-purple/40 border-element-border',
-    glow: 'group-hover:bg-brand-purple/10',
-    tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-purple/15 hover:border-brand-purple/30 hover:text-purple-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-purple-50 light:hover:border-brand-purple/30 light:hover:text-brand-purple',
-    btnBg: 'bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700',
-    iconColor: 'text-brand-purple'
-  },
-  green: {
-    border: 'hover:border-brand-green/40 border-element-border',
-    glow: 'group-hover:bg-brand-green/10',
-    tagBg: 'bg-white/5 border-white/10 text-gray-400 hover:bg-brand-green/15 hover:border-brand-green/30 hover:text-emerald-300 light:bg-white light:border-slate-200 light:text-slate-500 light:hover:bg-emerald-50 light:hover:border-brand-green/30 light:hover:text-brand-green',
-    btnBg: 'bg-brand-green/12 hover:bg-brand-green/25 border border-brand-green/20 hover:border-brand-green/45 text-emerald-300 light:text-emerald-800',
-    iconColor: 'text-brand-green'
-  }
-}[accentColor];
-
-const badgeColorClass = {
-  blue: 'badge-new-blue',
-  yellow: 'badge-new-yellow',
-  purple: 'badge-new-purple',
-  green: 'badge-new-green'
-}[accentColor];
-
 const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
 ---
 
 <article 
-  class={`glass-card preview-card h-full border flex flex-col group relative cursor-pointer ${colorClasses.border}`}
+  class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-domain-projects/40 transition-all duration-300"
   data-card-id={cardId}
   data-collection="projects"
 >
@@ -104,7 +65,7 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
 
   <!-- Interactive Glow Element -->
-  <div class={`absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${colorClasses.glow}`}></div>
+  <div class="absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none group-hover:bg-domain-projects/10"></div>
   
   <!-- Card Header Banner (Preview or Placeholder) -->
   <div class="aspect-video w-full overflow-hidden bg-gray-950 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
@@ -118,14 +79,14 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
       >
         <defs>
           <linearGradient id={`grad-project-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-            <stop offset="60%" stop-color="#000000" stop-opacity="0.25" />
-            <stop offset="100%" stop-color="#000000" stop-opacity="0.85" />
+            <stop offset="0%" stop-color="black" stop-opacity="0" />
+            <stop offset="60%" stop-color="black" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="black" stop-opacity="0.85" />
           </linearGradient>
           <linearGradient id={`grad-project-light-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-            <stop offset="60%" stop-color="#000000" stop-opacity="0.15" />
-            <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
+            <stop offset="0%" stop-color="black" stop-opacity="0" />
+            <stop offset="60%" stop-color="black" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="black" stop-opacity="0.45" />
           </linearGradient>
         </defs>
         <image 
@@ -174,7 +135,7 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
     ) : (
       <>
         <!-- Premium gradient placeholder for missing preview -->
-        <div class={`absolute inset-0 bg-gradient-to-br from-brand-${accentColor}/20 via-brand-purple/5 to-blue-950/40 light:to-slate-100/40 group-hover:scale-105 transition-transform duration-500 z-0`}></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-domain-projects/20 via-brand-purple/5 to-bg-main/40 light:to-slate-100/40 group-hover:scale-105 transition-transform duration-500 z-0"></div>
         <div class="text-4xl select-none relative z-10 filter opacity-60 group-hover:scale-110 transition-transform duration-500">
           🚀
         </div>
@@ -184,12 +145,12 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
     <!-- Technology readiness level badge -->
     <span class="badge-corner-tl bg-slate-950/85 text-white border-white/20 shadow-md backdrop-blur-sm inline-flex items-center gap-1.5">
       <span>TRL {trl}</span>
-      <TrlCircle level={trl} accentColor={accentColor} size={15} theme="dark" />
+      <TrlCircle level={trl} accentColor="green" size={15} theme="dark" />
     </span>
 
     <!-- Unread badge -->
     <span 
-      class={`unread-dot hidden badge-new ${badgeColorClass} badge-corner-tr`} 
+      class="unread-dot hidden badge-new badge-new-green badge-corner-tr" 
       data-item-url={href}
       title="Unread project"
     >UNREAD</span>
@@ -201,7 +162,7 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
       <!-- Header -->
       <div class="flex items-start justify-between mb-2 w-full">
         <div class="w-full">
-          <h3 class={`text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-brand-${accentColor} transition-all duration-300`}>
+          <h3 class="text-xl md:text-2xl font-bold text-gray-100 tracking-tight group-hover:text-domain-projects transition-all duration-300">
             {title}
           </h3>
         </div>
@@ -220,7 +181,7 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
           <a 
             href={`/tags/${tag}/`}
             data-tag={tag}
-            class={`tag-chip tag-chip-${accentColor} inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+            class={`tag-chip tag-chip-teal inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
               isTagActive(tag) ? 'active-tag-match' : ''
             }`}
           >
@@ -234,7 +195,7 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
         <a 
           href={href}
           aria-label={`Read More: ${title}`}
-          class={`flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg text-xs font-bold relative z-20 transition-all duration-200 ${colorClasses.btnBg}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-projects/12 hover:bg-domain-projects/25 border border-domain-projects/20 hover:border-domain-projects/45 text-domain-projects text-xs font-bold relative z-20 transition-all duration-200"
         >
           <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

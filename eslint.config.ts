@@ -8,6 +8,7 @@ export default defineConfig([
   {
     ignores: [
       'dist/**',
+      '**/dist/**',
       '.astro/**',
       'node_modules/**',
       'scratch/**',

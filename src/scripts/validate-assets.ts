@@ -273,6 +273,181 @@ for (const audioFile of audioFiles) {
   }
 }
 
+type JsonLdValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | { [key: string]: JsonLdValue }
+  | JsonLdValue[];
+
+interface SchemaEntity {
+  '@context'?: string;
+  '@type'?: string | string[];
+  '@id'?: string;
+  primaryImageOfPage?: { '@id': string };
+  image?: Array<{ '@id': string }> | string | Array<string>;
+  contentUrl?: string;
+  name?: string;
+  encodingFormat?: string;
+  [key: string]: JsonLdValue;
+}
+
+// -------------------------------------------------------------
+// Assertion 5: ImageObject JSON-LD Structured Data Parity
+// -------------------------------------------------------------
+let pagesWithImagesChecked = 0;
+let totalImageObjectsVerified = 0;
+let assertion5Errors = 0;
+
+for (const file of htmlFiles) {
+  const content = fs.readFileSync(file, 'utf8');
+  const $ = cheerio.load(content);
+  const relPath = path.relative(distDir, file).replace(/\\/g, '/');
+
+  let pageUrlPath = '/' + relPath.replace(/index\.html$/, '');
+  if (!pageUrlPath.endsWith('/')) {
+    pageUrlPath += '/';
+  }
+  const canonicalPageUrl = `https://hackenberg.tech${pageUrlPath}`;
+
+  const contentImages: string[] = [];
+
+  // A. Check <img> tags
+  $('img').each((_, el) => {
+    const $img = $(el);
+    const ariaHidden = $img.attr('aria-hidden') === 'true';
+    const role = $img.attr('role');
+    if (ariaHidden || role === 'presentation' || role === 'none') {
+      return;
+    }
+    const src = $img.attr('src');
+    if (src) {
+      contentImages.push(src);
+    }
+  });
+
+  // B. Check Diagrams <figure class="mermaid-diagram, figure.svg-diagram">
+  $('figure.mermaid-diagram, figure.svg-diagram').each((_, el) => {
+    const $fig = $(el);
+    const diagramUrl = ($fig.find('meta[itemprop="contentUrl"]').attr('content') || '').trim();
+    if (diagramUrl) {
+      contentImages.push(diagramUrl);
+    }
+  });
+
+  // C. Check SVG <image> tags
+  $('svg image').each((_, el) => {
+    const $img = $(el);
+    if ($img.closest('figure.mermaid-diagram, figure.svg-diagram').length > 0) {
+      return;
+    }
+    const $parentSvg = $img.closest('svg');
+    const ariaHidden = $img.attr('aria-hidden') === 'true' || $parentSvg.attr('aria-hidden') === 'true';
+    const role = $img.attr('role') || $parentSvg.attr('role');
+    if (ariaHidden || role === 'presentation' || role === 'none') {
+      return;
+    }
+    const src = $img.attr('href') || $img.attr('xlink:href') || '';
+    if (src && !src.startsWith('data:')) {
+      contentImages.push(src);
+    }
+  });
+
+  if (contentImages.length === 0) {
+    continue;
+  }
+
+  pagesWithImagesChecked++;
+
+  const $script = $('script[type="application/ld+json"]').first();
+  if ($script.length === 0) {
+    console.error(
+      `[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} contains ${contentImages.length} content image(s) but is missing <script type="application/ld+json">`
+    );
+    errorsCount++;
+    assertion5Errors++;
+    continue;
+  }
+
+  let jsonLdData: SchemaEntity[] = [];
+  try {
+    const rawText = $script.text().trim();
+    const parsed = JSON.parse(rawText);
+    jsonLdData = Array.isArray(parsed) ? parsed : [parsed];
+  } catch (err) {
+    console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} has unparseable JSON-LD:`, err);
+    errorsCount++;
+    assertion5Errors++;
+    continue;
+  }
+
+  const imageObjects = jsonLdData.filter(
+    (item): item is SchemaEntity => Boolean(item && typeof item === 'object' && item['@type'] === 'ImageObject')
+  );
+
+  if (imageObjects.length === 0) {
+    console.error(
+      `[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} contains ${contentImages.length} content image(s) but has 0 ImageObject entries in JSON-LD`
+    );
+    errorsCount++;
+    assertion5Errors++;
+    continue;
+  }
+
+  totalImageObjectsVerified += imageObjects.length;
+
+  // Verify ImageObject fields
+  for (const io of imageObjects) {
+    const id = typeof io['@id'] === 'string' ? io['@id'] : '';
+    if (!id || !id.startsWith(canonicalPageUrl)) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject has invalid @id: "${id}"`);
+      errorsCount++;
+      assertion5Errors++;
+    }
+    if (!io.contentUrl) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject missing contentUrl`);
+      errorsCount++;
+      assertion5Errors++;
+    }
+    if (!io.name) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject missing name`);
+      errorsCount++;
+      assertion5Errors++;
+    }
+    if (!io.encodingFormat) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject missing encodingFormat`);
+      errorsCount++;
+      assertion5Errors++;
+    }
+  }
+
+  // If page contains Article, BlogPosting, TechArticle, or Course, verify primaryImageOfPage and image array
+  const targetTypes = new Set(['Article', 'BlogPosting', 'TechArticle', 'Course']);
+  for (const node of jsonLdData) {
+    if (!node || typeof node !== 'object') continue;
+    const nodeType = node['@type'];
+    const matches = Array.isArray(nodeType)
+      ? nodeType.some((t: string) => targetTypes.has(t))
+      : typeof nodeType === 'string' && targetTypes.has(nodeType);
+
+    if (matches) {
+      const primary = node.primaryImageOfPage;
+      if (!primary || typeof primary['@id'] !== 'string') {
+        console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} contains ${String(nodeType)} but lacks primaryImageOfPage in JSON-LD`);
+        errorsCount++;
+        assertion5Errors++;
+      }
+      if (!Array.isArray(node.image) || node.image.length === 0) {
+        console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} contains ${String(nodeType)} but lacks image array in JSON-LD`);
+        errorsCount++;
+        assertion5Errors++;
+      }
+    }
+  }
+}
+
 console.log(`\n[validate-assets] Scan summary:`);
 console.log(`  - Scanned HTML files:            ${htmlFiles.length}`);
 console.log(`  - Checked attributes:            ${totalCheckedAttributes}`);
@@ -280,9 +455,10 @@ console.log(`  - Checked asset references:      ${totalAssetRefsChecked}`);
 console.log(`  - Scanned raster images:         ${rasterImages.length} (${hashedRasterImagesCount} hashed, ${whitelistedRasterImagesCount} whitelisted)`);
 console.log(`  - Scanned audio files:           ${audioFiles.length} (${hashedAudioCount} hashed)`);
 console.log(`  - Zero _astro references:        CONFIRMED (0 forbidden references)`);
-console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount - unhashedAudioCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount - unhashedAudioCount - assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'}`);
 console.log(`  - Strict image hashing:          ${unhashedImagesCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
 console.log(`  - Strict audio hashing:          ${unhashedAudioCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+console.log(`  - ImageObject JSON-LD parity:    ${assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'} (${totalImageObjectsVerified} ImageObjects across ${pagesWithImagesChecked} pages)`);
 
 if (errorsCount > 0) {
   console.error(`\n[validate-assets] 💥 Validation failed with ${errorsCount} asset integrity error(s).`);
@@ -291,4 +467,5 @@ if (errorsCount > 0) {
   console.log(`\n[validate-assets] ✅ Build output passed all asset integrity checks!`);
   process.exit(0);
 }
+
 

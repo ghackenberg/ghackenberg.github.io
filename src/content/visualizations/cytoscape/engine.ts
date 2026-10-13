@@ -1,11 +1,11 @@
 import cytoscape, { type Core, type NodeSingular } from 'cytoscape';
-
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#f43f5e'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea', '#e11d48'];
+import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { getThemeTokens } from '@commons/shared/domain-themes';
 
 function getNodeColor(node: NodeSingular, isLight: boolean): string {
   const grp = node.data('group') ?? 0;
-  return isLight ? (colorsLight[grp] || colorsLight[0]) : (colorsDark[grp] || colorsDark[0]);
+  const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
+  return colors[grp] || colors[0];
 }
 
 export interface CytoscapeEngine {
@@ -29,6 +29,7 @@ const engine: CytoscapeEngine = {
   resizeObserver: null,
 
   async init(container: HTMLElement, payload: { cytoscape: { elements: cytoscape.ElementsDefinition } }, layout: string, isLight: boolean) {
+    const tokens = getThemeTokens(isLight);
     this.cy = cytoscape({
       container: container,
       userZoomingEnabled: false,
@@ -41,7 +42,7 @@ const engine: CytoscapeEngine = {
             'label': 'data(name)',
             'width': 'data(size)',
             'height': 'data(size)',
-            'color': isLight ? '#0f172a' : '#f3f4f6',
+            'color': tokens.textHeading,
             'font-size': '10px',
             'font-family': 'Outfit, Inter, sans-serif',
             'font-weight': 600,
@@ -49,7 +50,7 @@ const engine: CytoscapeEngine = {
             'text-halign': 'right',
             'text-margin-x': 4,
             'border-width': '2px',
-            'border-color': isLight ? '#ffffff' : '#030712',
+            'border-color': tokens.background,
             'overlay-opacity': 0,
             'transition-property': 'background-color, border-color, width, height',
             'transition-duration': 0.2
@@ -60,7 +61,7 @@ const engine: CytoscapeEngine = {
           style: {
             'width': 1.5,
             'line-color': isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255,255,255,0.06)',
-            'target-arrow-color': isLight ? 'rgba(15, 23, 42, 0.12)' : 'rgba(255,255,255,0.1)',
+            'target-arrow-color': tokens.border,
             'curve-style': 'bezier'
           }
         },
@@ -68,7 +69,7 @@ const engine: CytoscapeEngine = {
           selector: 'node:selected',
           style: {
             'border-width': '3px',
-            'border-color': '#10b981'
+            'border-color': tokens.nodeDefault
           }
         }
       ],
@@ -118,9 +119,10 @@ const engine: CytoscapeEngine = {
     this.isLight = isLight;
 
     // Apply color update to node labels based on theme
+    const tokens = getThemeTokens(isLight);
     this.cy.style().selector('node').style({
-      'color': isLight ? '#0f172a' : '#f3f4f6',
-      'border-color': isLight ? '#ffffff' : '#030712',
+      'color': tokens.textHeading,
+      'border-color': tokens.background,
       'background-color': (node: NodeSingular) => getNodeColor(node, isLight)
     }).update();
 

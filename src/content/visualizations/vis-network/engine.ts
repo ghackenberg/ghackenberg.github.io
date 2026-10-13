@@ -1,5 +1,17 @@
 import { Network, type Options, type Node as VisNode, type Edge as VisEdge } from 'vis-network';
 import { DataSet } from 'vis-data';
+import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { getThemeTokens } from '@commons/shared/domain-themes';
+
+function getVisNodeColors(isLight: boolean) {
+  const palette = GRAPH_COLORS[isLight ? 'light' : 'dark'];
+  return palette.map((color) => ({
+    background: color,
+    border: color,
+    highlight: { background: color, border: color },
+    hover: { background: color, border: color }
+  }));
+}
 
 export interface VisPayloadNode {
   id: string;
@@ -69,68 +81,10 @@ const engine: VisNetworkEngine = {
     this.nodes = payload['vis-network'].nodes;
     this.connections = payload['vis-network'].connections;
 
-    const colors = [
-      { // 0: Tag (Sky)
-        background: isLight ? '#0284c7' : '#0ea5e9', 
-        border: isLight ? '#0369a1' : '#38bdf8', 
-        highlight: { background: isLight ? '#075985' : '#0284c7', border: isLight ? '#0284c7' : '#7dd3fc' },
-        hover: { background: isLight ? '#075985' : '#0284c7', border: isLight ? '#0284c7' : '#7dd3fc' }
-      },
-      { // 1: Post (Blue)
-        background: isLight ? '#2563eb' : '#3b82f6', 
-        border: isLight ? '#1d4ed8' : '#60a5fa', 
-        highlight: { background: isLight ? '#1e40af' : '#1d4ed8', border: isLight ? '#2563eb' : '#93c5fd' },
-        hover: { background: isLight ? '#1e40af' : '#1d4ed8', border: isLight ? '#2563eb' : '#93c5fd' }
-      },
-      { // 2: Publication (Indigo)
-        background: isLight ? '#4f46e5' : '#6366f1', 
-        border: isLight ? '#4338ca' : '#818cf8', 
-        highlight: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' },
-        hover: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' }
-      },
-      { // 3: Presentation (Cyan)
-        background: isLight ? '#0891b2' : '#06b6d4', 
-        border: isLight ? '#0e7490' : '#22d3ee', 
-        highlight: { background: isLight ? '#155e75' : '#0891b2', border: isLight ? '#0891b2' : '#67e8f9' },
-        hover: { background: isLight ? '#155e75' : '#0891b2', border: isLight ? '#0891b2' : '#67e8f9' }
-      },
-      { // 4: Course (Yellow)
-        background: isLight ? '#d97706' : '#f59e0b', 
-        border: isLight ? '#b45309' : '#fbbf24', 
-        highlight: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' },
-        hover: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' }
-      },
-      { // 5: Project (Green)
-        background: isLight ? '#059669' : '#10b981', 
-        border: isLight ? '#047857' : '#34d399', 
-        highlight: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' },
-        hover: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' }
-      },
-      { // 6: Service (Purple)
-        background: isLight ? '#9333ea' : '#a855f7', 
-        border: isLight ? '#7e22ce' : '#c084fc', 
-        highlight: { background: isLight ? '#6b21a8' : '#9333ea', border: isLight ? '#7e22ce' : '#e9d5ff' },
-        hover: { background: isLight ? '#6b21a8' : '#9333ea', border: isLight ? '#7e22ce' : '#e9d5ff' }
-      },
-      { // 7: Interest (Rose)
-        background: isLight ? '#e11d48' : '#f43f5e', 
-        border: isLight ? '#be123c' : '#fb7185', 
-        highlight: { background: isLight ? '#9f1239' : '#e11d48', border: isLight ? '#e11d48' : '#fda4af' },
-        hover: { background: isLight ? '#9f1239' : '#e11d48', border: isLight ? '#e11d48' : '#fda4af' }
-      }
-    ];
-
-    const groupNames = ['Tag', 'Post', 'Publication', 'Presentation', 'Course', 'Project', 'Service', 'Interest'];
-    const groupColors = [
-      isLight ? '#0284c7' : '#38bdf8', // 0: Tag (sky)
-      isLight ? '#2563eb' : '#60a5fa', // 1: Post (blue)
-      isLight ? '#4f46e5' : '#818cf8', // 2: Publication (indigo)
-      isLight ? '#0891b2' : '#22d3ee', // 3: Presentation (cyan)
-      isLight ? '#b45309' : '#fbbf24', // 4: Course (yellow)
-      isLight ? '#059669' : '#34d399', // 5: Project (green)
-      isLight ? '#7e22ce' : '#c084fc', // 6: Service (purple)
-      isLight ? '#be123c' : '#fb7185'  // 7: Interest (rose)
-    ];
+    const colors = getVisNodeColors(isLight);
+    const themeTokens = getThemeTokens(isLight);
+    const groupNames = ['Tag', 'Post', 'Publication', 'Presentation', 'Course', 'Project', 'Service', 'Interest', 'Visualization'];
+    const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
     // property and explicitly defining color object on each node.
@@ -164,22 +118,22 @@ const engine: VisNetworkEngine = {
 
       let dateHtml = '';
       if (n.date) {
-        dateHtml = `<span style="font-size: 10px; color: ${isLight ? '#64748b' : '#94a3b8'}; font-weight: 500; shrink: 0;">${n.date}</span>`;
+        dateHtml = `<span style="font-size: 10px; color: ${themeTokens.textSubtle}; font-weight: 500; shrink: 0;">${n.date}</span>`;
       }
 
       card.innerHTML = `
         <div style="padding: 2px; box-sizing: border-box; width: 100%; white-space: normal;">
           ${imageHtml}
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
-            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: ${groupColors[n.group] || '#3b82f6'}; flex-shrink: 0;">
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: ${groupColors[n.group] || themeTokens.nodeDefault}; flex-shrink: 0;">
               ${n.typeLabel || groupNames[n.group] || 'Item'}
             </span>
             ${dateHtml}
           </div>
-          <div style="font-size: 13px; font-weight: 700; line-height: 1.35; color: ${isLight ? '#0f172a' : '#f8fafc'}; margin-bottom: 6px; white-space: normal; overflow-wrap: break-word; word-break: break-word;">
+          <div style="font-size: 13px; font-weight: 700; line-height: 1.35; color: ${themeTokens.textHeading}; margin-bottom: 6px; white-space: normal; overflow-wrap: break-word; word-break: break-word;">
             ${n.name}
           </div>
-          ${n.description ? `<div style="font-size: 11px; line-height: 1.45; color: ${isLight ? '#475569' : '#cbd5e1'}; white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; overflow-wrap: break-word; word-break: break-word;">${n.description}</div>` : ''}
+          ${n.description ? `<div style="font-size: 11px; line-height: 1.45; color: ${themeTokens.textSubtle}; white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; overflow-wrap: break-word; word-break: break-word;">${n.description}</div>` : ''}
           ${tagsHtml}
         </div>
       `;
@@ -206,13 +160,13 @@ const engine: VisNetworkEngine = {
           label: false
         },
         font: {
-          color: isLight ? '#0f172a' : '#f8fafc',
+          color: themeTokens.textHeading,
           size: isTagNode ? Math.min(19 + Math.round(n.size * 3.6), 32) : 15,
           face: 'Outfit, Inter, sans-serif',
           align: 'center',
           vadjust: isTagNode ? -Math.round(nodeValue * 0.35) : 0,
           strokeWidth: isLight ? 2.5 : 3,
-          strokeColor: isLight ? '#ffffff' : '#0f172a'
+          strokeColor: isLight ? themeTokens.background : themeTokens.textHeading
         }
       };
     }));
@@ -443,48 +397,8 @@ const engine: VisNetworkEngine = {
     this.isLight = isLight;
 
     // Apply color update to node labels and edges based on theme
-    const colors = [
-      { // 0: Tag (Sky)
-        background: isLight ? '#0284c7' : '#0ea5e9', 
-        border: isLight ? '#0369a1' : '#38bdf8', 
-        highlight: { background: isLight ? '#075985' : '#0284c7', border: isLight ? '#0284c7' : '#7dd3fc' } 
-      },
-      { // 1: Post (Blue)
-        background: isLight ? '#2563eb' : '#3b82f6', 
-        border: isLight ? '#1d4ed8' : '#60a5fa', 
-        highlight: { background: isLight ? '#1e40af' : '#1d4ed8', border: isLight ? '#2563eb' : '#93c5fd' } 
-      },
-      { // 2: Publication (Indigo)
-        background: isLight ? '#4f46e5' : '#6366f1', 
-        border: isLight ? '#4338ca' : '#818cf8', 
-        highlight: { background: isLight ? '#3730a3' : '#4f46e5', border: isLight ? '#4f46e5' : '#c7d2fe' } 
-      },
-      { // 3: Presentation (Cyan)
-        background: isLight ? '#0891b2' : '#06b6d4', 
-        border: isLight ? '#0e7490' : '#22d3ee', 
-        highlight: { background: isLight ? '#155e75' : '#0891b2', border: isLight ? '#0891b2' : '#67e8f9' } 
-      },
-      { // 4: Course (Yellow)
-        background: isLight ? '#d97706' : '#f59e0b', 
-        border: isLight ? '#b45309' : '#fbbf24', 
-        highlight: { background: isLight ? '#92400e' : '#d97706', border: isLight ? '#b45309' : '#fde68a' } 
-      },
-      { // 5: Project (Green)
-        background: isLight ? '#059669' : '#10b981', 
-        border: isLight ? '#047857' : '#34d399', 
-        highlight: { background: isLight ? '#065f46' : '#059669', border: isLight ? '#059669' : '#6ee7b7' } 
-      },
-      { // 6: Service (Purple)
-        background: isLight ? '#9333ea' : '#a855f7', 
-        border: isLight ? '#7e22ce' : '#c084fc', 
-        highlight: { background: isLight ? '#6b21a8' : '#9333ea', border: isLight ? '#7e22ce' : '#e9d5ff' } 
-      },
-      { // 7: Interest (Rose)
-        background: isLight ? '#e11d48' : '#f43f5e', 
-        border: isLight ? '#be123c' : '#fb7185', 
-        highlight: { background: isLight ? '#9f1239' : '#e11d48', border: isLight ? '#e11d48' : '#fda4af' } 
-      }
-    ];
+    const colors = getVisNodeColors(isLight);
+    const themeTokens = getThemeTokens(isLight);
 
     // Batch node styling updates (colors & fonts)
     const nodeUpdates: (VisNode & { rawGroup?: number })[] = [];
@@ -493,8 +407,8 @@ const engine: VisNetworkEngine = {
         id: node.id,
         color: colors[node.rawGroup ?? 0] || colors[0],
         font: {
-          color: isLight ? '#0f172a' : '#f8fafc',
-          strokeColor: isLight ? '#ffffff' : '#0f172a'
+          color: themeTokens.textHeading,
+          strokeColor: isLight ? themeTokens.background : themeTokens.textHeading
         }
       });
     });

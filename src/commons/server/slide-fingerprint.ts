@@ -45,7 +45,8 @@ export function computeSlideStyleHash(): string {
       if (file.endsWith('theme.css')) {
         fileContent = fileContent
           .replace(/@import\s+["'][^"']*graphics\.css["'];?\n?/g, '')
-          .replace(/@import\s+["'][^"']*diagrams\.css["'];?\n?/g, '');
+          .replace(/@import\s+["'][^"']*diagrams\.css["'];?\n?/g, '')
+          .replace(/@import\s+["'][^"']*domains\.css["'];?\n?/g, '');
       }
       hash.update(fileContent);
     }

@@ -37,7 +37,7 @@ outputs:
   - "Domain boundary skeleton repositories demonstrating hexagonal layer isolation"
   - "Evolutionary migration roadmap and risk mitigation matrix"
 duration: "2 - 4 Weeks"
-format: "Architecture Sprints & Technical Design Workshops"
+format: "Architecture Sprints"
 delivery: "Remote / On-site"
 ---
 

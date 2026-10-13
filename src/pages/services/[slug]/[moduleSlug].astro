@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -95,14 +96,16 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
 
   <Section id="module-content" padding="standard">
     <Container size="reading" padding="none">
-    <!-- Back Button -->
-    <a 
-      href={`/services/${parentService.id}/`} 
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-purple/10 border border-brand-purple/20 hover:border-brand-purple/30 text-brand-purple transition-all mb-8 cursor-pointer"
-    >
-      <span>&larr;</span>
-      <span>Back to {parentService.data.title}</span>
-    </a>
+    <!-- Breadcrumbs Navigation -->
+    <Breadcrumbs 
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Services", href: "/services/" },
+        { label: parentService.data.title, href: `/services/${parentService.id}/` },
+        { label: module.data.title }
+      ]}
+      domain="services"
+    />
 
     <!-- Header -->
     <header class="mb-12 relative">
@@ -137,7 +140,7 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
     </header>
 
     <!-- Main Content -->
-    <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content theme-purple prose-custom">
+    <div class="glass-card p-8 md:p-10 rounded-3xl border border-element-border service-content prose-custom">
       <!-- Module Overview Content -->
       <div id="module-overview" class="mb-10">
         <Content />
@@ -238,17 +241,5 @@ const moduleJsonLd = [moduleServiceSchema, breadcrumbSchema];
   }
   .service-content :global(> *:last-child) {
     margin-bottom: 0;
-  }
-
-  .theme-purple {
-    --glow-border: rgba(168, 85, 247, 0.3);
-    --glow-text: #c084fc;
-    --glow-shadow: rgba(168, 85, 247, 0.25);
-  }
-
-  :global(.light) .theme-purple {
-    --glow-border: rgba(109, 40, 217, 0.25);
-    --glow-text: #6d28d9;
-    --glow-shadow: rgba(109, 40, 217, 0.15);
   }
 </style>

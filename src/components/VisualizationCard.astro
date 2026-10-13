@@ -38,7 +38,7 @@ const optimizedScreenshot = screenshotImg ? await getImage({
 const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || title;
 ---
 
-<article class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-brand-green/30 transition-all duration-300" data-card-id={cardId} data-collection="visualizations">
+<article class="glass-card preview-card h-full border border-element-border flex flex-col group relative cursor-pointer hover:border-domain-visualizations/40 transition-all duration-300" data-card-id={cardId} data-collection="visualizations">
   <!-- Absolute overlay link for card clickability -->
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
 
@@ -54,14 +54,14 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
       >
         <defs>
           <linearGradient id={`grad-vis-dark-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-            <stop offset="60%" stop-color="#000000" stop-opacity="0.25" />
-            <stop offset="100%" stop-color="#000000" stop-opacity="0.85" />
+            <stop offset="0%" stop-color="black" stop-opacity="0" />
+            <stop offset="60%" stop-color="black" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="black" stop-opacity="0.85" />
           </linearGradient>
           <linearGradient id={`grad-vis-light-${title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#000000" stop-opacity="0" />
-            <stop offset="60%" stop-color="#000000" stop-opacity="0.15" />
-            <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
+            <stop offset="0%" stop-color="black" stop-opacity="0" />
+            <stop offset="60%" stop-color="black" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="black" stop-opacity="0.45" />
           </linearGradient>
         </defs>
         <image 
@@ -105,7 +105,7 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
   <!-- Details -->
   <div class="preview-card-body flex flex-col flex-grow border-t border-element-border">
     <div class="flex-grow flex flex-col">
-      <h2 class="text-xl font-bold text-gray-100 mb-3 group-hover:text-brand-green transition-colors leading-snug">
+      <h2 class="text-xl font-bold text-gray-100 mb-3 group-hover:text-domain-visualizations transition-colors leading-snug">
         {title}
       </h2>
       
@@ -122,7 +122,7 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
             <a
               href={`/tags/${t}/`}
               data-tag={t}
-              class={`tag-chip tag-chip-green inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+              class={`tag-chip tag-chip-yellow inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
                 isTagActive(t) ? 'active-tag-match' : ''
               }`}
             >
@@ -135,10 +135,10 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
       <div class="mt-auto pt-6 w-full relative z-20">
         <a 
           href={`${href}?utm_source=visualizations_hub&utm_medium=vis_card&utm_campaign=visualizations`}
-          aria-label={`Launch visualization: ${title}`}
-          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-brand-green/12 hover:bg-brand-green/25 border border-brand-green/20 hover:border-brand-green/45 text-emerald-300 light:text-emerald-800 text-xs font-bold relative z-20 transition-all duration-200"
+          aria-label={`Read More: ${title}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl bg-domain-visualizations/12 hover:bg-domain-visualizations/25 border border-domain-visualizations/20 hover:border-domain-visualizations/45 text-domain-visualizations text-xs font-bold relative z-20 transition-all duration-200"
         >
-          <span>Launch Visualization</span>
+          <span>Read More</span>
           <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>

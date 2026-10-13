@@ -4,7 +4,10 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import TagChip from "@components/TagChip.astro";
 import { getCollection } from "astro:content";
+import { formatDate } from "@commons/shared/format";
 
 export async function getStaticPaths() {
   const pubs = await getCollection("publications");
@@ -72,7 +75,7 @@ const scholarlyArticleSchema = {
       } : {})
     };
   }),
-  "datePublished": pub.data.pubDate,
+  "datePublished": pub.data.pubDate.toISOString(),
   "description": cleanAbstract || `${pub.data.title} - Academic publication by ${pub.data.author}.`,
   "publication": pub.data.book ? {
     "@type": "PublicationEvent",
@@ -127,14 +130,15 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 
   <Section id="publication-content" padding="standard">
     <Container size="reading" padding="none">
-    <!-- Back Button -->
-    <a 
-      href="/publications/" 
-      class="inline-flex items-center space-x-2 text-xs font-semibold px-4 py-2 rounded-xl bg-brand-purple/10 border border-brand-purple/20 hover:border-brand-purple/30 text-brand-purple transition-all mb-8 cursor-pointer"
-    >
-      <span>&larr;</span>
-      <span>Back to Publications</span>
-    </a>
+    <!-- Breadcrumbs Navigation -->
+    <Breadcrumbs 
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Publications", href: "/publications/" },
+        { label: pub.data.title }
+      ]}
+      domain="publications"
+    />
 
     <!-- Publication Header -->
     <header class="mb-10">
@@ -148,18 +152,13 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 
       <p class="text-gray-400 text-sm mb-6 font-normal italic">
         {pub.data.book && <span>{pub.data.book}, </span>}
-        <span>{pub.data.pubDate}</span>
+        <span>{formatDate(pub.data.pubDate, 'long')}</span>
       </p>
 
       {pub.data.tags && pub.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-2 mt-6">
           {pub.data.tags.map(tag => (
-            <a 
-              href={`/tags/${tag}/`}
-              class="tag-chip tag-chip-purple inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:scale-105"
-            >
-              #{tag}
-            </a>
+            <TagChip tag={tag} />
           ))}
         </div>
       )}
@@ -170,7 +169,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
             href={pub.data.publisherUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer bg-brand-purple/12 hover:bg-brand-purple/25 border border-brand-purple/20 hover:border-brand-purple/45 text-purple-300 light:text-purple-700"
+            class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 hover:scale-105 flex items-center space-x-2 cursor-pointer bg-domain-publications/12 hover:bg-domain-publications/25 border border-domain-publications/20 hover:border-domain-publications/45 text-domain-publications"
           >
             <span>{getPublisherDomain(pub.data.publisherUrl)}</span>
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -183,8 +182,6 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
 
     <!-- Content Sections -->
     <div class="glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden prose-custom">
-      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-purple"></div>
-      
       {pub.data.abstract && (
         <div id="abstract" class="mb-10 md:mb-12">
           <h2 id="abstract-heading" class="text-xl md:text-2xl font-bold tracking-tight text-gray-100 border-b border-element-border pb-2 mb-4">Publication Abstract</h2>

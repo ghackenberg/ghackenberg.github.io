@@ -46,7 +46,7 @@ export default function remarkCitations() {
         if (isSlide) {
           nodes.push({
             type: 'html',
-            value: `<button type="button" data-open-reference="${refId}" class="slide-citation-badge inline-flex items-center font-mono text-purple-400 light:text-purple-700 hover:text-purple-300 font-bold align-baseline px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 cursor-pointer transition-colors" title="Referenz ansehen: ${label}">[${label}]</button>`,
+            value: `<button type="button" data-open-reference="${refId}" class="slide-citation-badge inline-flex items-center font-mono text-domain-publications hover:text-domain-publications font-bold align-baseline px-1.5 py-0.5 rounded bg-domain-publications/10 hover:bg-domain-publications/20 border border-domain-publications/20 cursor-pointer transition-colors" title="Referenz ansehen: ${label}">[${label}]</button>`,
           });
         } else {
           nodes.push({

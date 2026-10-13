@@ -1,0 +1,54 @@
+---
+import { renderSlideCues } from '@commons/shared/slide-cues';
+
+interface Props {
+  formula?: string;
+  label?: string;
+  cue?: string;
+  id?: string;
+  class?: string;
+}
+
+const {
+  formula,
+  label,
+  cue,
+  id,
+  class: className = ""
+} = Astro.props;
+---
+
+<div
+  id={id}
+  data-cue={cue}
+  class={`formula-box px-4 py-3 bg-[var(--card-accent)]/10 border border-[var(--card-accent)]/30 text-[var(--card-accent)] rounded-xl font-mono text-center shadow-xs flex flex-col items-center justify-center gap-1 transition-all duration-300 ${className}`}
+>
+  {label && (
+    <span
+      class="formula-box-label text-xs uppercase tracking-wider text-[var(--color-slide-text-subtle)] font-sans font-medium"
+      set:html={renderSlideCues(label)}
+    />
+  )}
+  <div class="formula-box-content text-xl lg:text-2xl font-bold tracking-tight">
+    {formula && <span set:html={renderSlideCues(formula)} />}
+    <slot />
+  </div>
+</div>
+
+<style>
+  .formula-box {
+    --effective-formula-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
+    --card-accent: var(--effective-formula-accent);
+    padding: calc(0.75rem * var(--content-scale, 1)) calc(1rem * var(--content-scale, 1)) !important;
+  }
+  .formula-box-label {
+    font-size: calc(0.75rem * var(--content-scale, 1)) !important;
+  }
+  .formula-box-content {
+    font-size: calc(1.5rem * var(--content-scale, 1)) !important;
+    line-height: 1.25 !important;
+  }
+  :global(.light) .formula-box {
+    background-color: color-mix(in srgb, var(--card-accent) 8%, white) !important;
+  }
+</style>

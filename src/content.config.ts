@@ -209,7 +209,7 @@ const publications = defineCollection({
   }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    pubDate: z.string(),
+    pubDate: z.coerce.date(),
     book: z.string().optional(),
     author: z.string(),
     abstract: z.string().optional(),

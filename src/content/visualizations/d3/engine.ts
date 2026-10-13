@@ -1,7 +1,6 @@
 import * as d3 from 'd3';
-
-const colorsDark = ['#0ea5e9', '#3b82f6', '#6366f1', '#06b6d4', '#f59e0b', '#10b981', '#a855f7', '#f43f5e'];
-const colorsLight = ['#0284c7', '#2563eb', '#4f46e5', '#0891b2', '#d97706', '#059669', '#9333ea', '#e11d48'];
+import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { getThemeTokens } from '@commons/shared/domain-themes';
 
 export interface D3Node extends d3.SimulationNodeDatum {
   id: string;
@@ -126,7 +125,7 @@ const engine: D3Engine = {
       .enter().append("g")
       .call(dragBehavior);
 
-    const colors = isLight ? colorsLight : colorsDark;
+    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     
     this.nodeElements.append("circle")
       .attr("r", d => d.size * 6 + 4)
@@ -260,10 +259,11 @@ const engine: D3Engine = {
     this.isLight = isLight;
 
     // Apply color update to D3 texts and circles based on theme
+    const tokens = getThemeTokens(isLight);
     this.linkElements.style("stroke", isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255,255,255,0.06)");
-    this.nodeElements.selectAll("circle").style("stroke", isLight ? "#ffffff" : "#030712");
-    this.nodeElements.selectAll("text").style("fill", isLight ? "#334155" : "#9ca3af");
-    const colors = isLight ? colorsLight : colorsDark;
+    this.nodeElements.selectAll("circle").style("stroke", tokens.background);
+    this.nodeElements.selectAll("text").style("fill", tokens.textMain);
+    const colors = isLight ? GRAPH_COLORS.light : GRAPH_COLORS.dark;
     this.nodeElements.selectAll<SVGCircleElement, D3Node>("circle").style("fill", d => colors[d.group] || colors[0]);
 
     if (layout === 'radial') {

@@ -1,0 +1,16 @@
+---
+interface Props {
+  tag: string;
+  class?: string;
+}
+
+const { tag, class: className = "" } = Astro.props;
+---
+
+<a
+  href={`/tags/${tag}/`}
+  data-tag={tag}
+  class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200 hover:scale-105 bg-element-bg border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-element-border-hover hover:bg-element-bg-hover ${className}`.trim()}
+>
+  #{tag}
+</a>

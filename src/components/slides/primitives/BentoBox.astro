@@ -6,7 +6,6 @@ interface Props {
   height: number;
   id?: string;
   title?: string;
-  accent?: 'blue' | 'teal' | 'indigo' | 'green' | 'amber' | 'neutral';
   class?: string;
 }
 
@@ -17,18 +16,8 @@ const {
   height,
   id,
   title,
-  accent = 'neutral',
   class: className = ""
 } = Astro.props;
-
-const borderStyles = {
-  blue: 'border-blue-900/60 bg-blue-950/40 text-blue-100 light:border-blue-200 light:bg-blue-50/70 light:text-blue-950',
-  teal: 'border-cyan-900/60 bg-cyan-950/40 text-cyan-100 light:border-cyan-200 light:bg-cyan-50/70 light:text-cyan-950',
-  indigo: 'border-indigo-900/60 bg-indigo-950/40 text-indigo-100 light:border-indigo-200 light:bg-indigo-50/70 light:text-indigo-950',
-  green: 'border-emerald-900/60 bg-emerald-950/40 text-emerald-100 light:border-emerald-200 light:bg-emerald-50/70 light:text-emerald-950',
-  amber: 'border-amber-900/60 bg-amber-950/40 text-amber-100 light:border-amber-200 light:bg-amber-50/70 light:text-amber-950',
-  neutral: 'border-slate-800/90 bg-slate-900/90 text-slate-100 light:border-slate-200/90 light:bg-white/95 light:text-slate-900'
-};
 ---
 
 <foreignObject
@@ -40,8 +29,7 @@ const borderStyles = {
   class={`bento-card-object overflow-visible ${className}`}
 >
   <div
-    class={`w-full h-full p-8 rounded-2xl border shadow-sm flex flex-col justify-between backdrop-blur-xs transition-all duration-300 ${borderStyles[accent]}`}
-    style="box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);"
+    class="bento-box-inner w-full h-full p-8 rounded-2xl border shadow-sm flex flex-col justify-between backdrop-blur-xs transition-all duration-300"
   >
     {title && (
       <div class="flex items-center justify-between gap-4 mb-4 border-b border-slate-800/70 light:border-slate-100 pb-3">
@@ -56,3 +44,17 @@ const borderStyles = {
     </div>
   </div>
 </foreignObject>
+
+<style>
+  .bento-box-inner {
+    --resolved-box-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
+    --card-accent: var(--resolved-box-accent);
+    --hl-color: var(--resolved-box-accent);
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
+    border-color: color-mix(in srgb, var(--resolved-box-accent) 35%, var(--color-slide-card-border));
+    background-color: color-mix(in srgb, var(--resolved-box-accent) 8%, var(--color-slide-card-bg));
+    color: var(--color-slide-text);
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+  }
+</style>

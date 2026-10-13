@@ -12,13 +12,10 @@
 >
   <div 
     id="whats-new-modal-container"
-    class="glass-panel w-full max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(90dvh,840px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
+    class="glass-panel w-full max-w-2xl lg:max-w-3xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(90dvh,840px)] bg-pane border-element-border-medium text-gray-100 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
   >
-    <!-- Top Accent Bar -->
-    <div class="h-1 sm:h-1.5 bg-gradient-blue shrink-0"></div>
-
     <!-- Header (Sticky/Shrink-0) -->
-    <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-white/5 light:border-slate-200/80 flex items-center justify-between gap-3">
+    <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-element-border light:border-slate-200/80 flex items-center justify-between gap-3">
       <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-blue/15 border border-brand-blue/30 text-brand-blue flex items-center justify-center shrink-0">
           <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -27,7 +24,7 @@
         </div>
         <div class="min-w-0 flex flex-col justify-center">
           <h2 id="whats-new-modal-title" class="text-lg sm:text-xl font-bold tracking-tight text-white light:text-slate-900 leading-tight truncate">
-            Content <span class="heading-gradient-blue">Updates</span>
+            Content Updates
           </h2>
           <p class="text-xs text-gray-400 light:text-slate-500 mt-0.5 leading-tight truncate">
             Recent articles, research papers, presentations, courses, and interactive tools.
@@ -42,7 +39,7 @@
           type="button"
           data-track-event="Notifications Action"
           data-track-action="mark-all-read"
-          class="hidden h-8 sm:h-9 w-8 sm:w-auto px-0 sm:px-3.5 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-300 light:text-slate-600 hover:text-brand-blue light:hover:text-blue-600 items-center justify-center gap-1.5 text-xs font-medium transition-all duration-200 cursor-pointer active:scale-95 shrink-0 shadow-sm"
+          class="hidden h-8 sm:h-9 w-8 sm:w-auto px-0 sm:px-3.5 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-300 light:text-slate-600 hover:text-brand-blue items-center justify-center gap-1.5 text-xs font-medium transition-all duration-200 cursor-pointer active:scale-95 shrink-0 shadow-sm"
           title="Mark all items as read"
         >
           <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-blue shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -71,11 +68,11 @@
     </div>
 
     <!-- Footer (Sticky/Shrink-0) -->
-    <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-white/5 light:border-slate-200/80 flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
+    <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-element-border light:border-slate-200/80 flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
       <button 
         type="button" 
         data-open-privacy-modal 
-        class="flex items-center gap-1.5 hover:text-brand-blue light:hover:text-blue-600 transition-colors cursor-pointer"
+        class="flex items-center gap-1.5 hover:text-brand-blue transition-colors cursor-pointer"
       >
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-blue shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -83,7 +80,7 @@
         <span class="underline">Privacy Settings</span>
       </button>
 
-      <a href="/datenschutz/" class="underline hover:text-brand-blue light:hover:text-blue-600 transition-colors">
+      <a href="/datenschutz/" class="underline hover:text-brand-blue transition-colors">
         Privacy Policy
       </a>
     </div>
@@ -99,6 +96,7 @@
     closeWhatsNewModal?: () => void;
     openPrivacyModal?: () => void;
     closePrivacyModal?: () => void;
+    closeReferencesModal?: () => void;
   }
 }
 
@@ -114,6 +112,9 @@
   function openModal() {
     if (typeof window.closePrivacyModal === 'function') {
       window.closePrivacyModal();
+    }
+    if (typeof window.closeReferencesModal === 'function') {
+      window.closeReferencesModal();
     }
     if (backdrop && container) {
       backdrop.classList.remove('opacity-0', 'pointer-events-none');
@@ -197,26 +198,26 @@
     background-color: rgba(15, 23, 42, 0.25) !important;
   }
   html.light #whats-new-modal-container {
-    background-color: #ffffff !important;
+    background-color: rgb(255, 255, 255) !important;
     border-color: rgba(15, 23, 42, 0.12) !important;
-    color: #1e293b !important;
+    color: rgb(30, 41, 59) !important;
     box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18) !important;
   }
   html.light #whats-new-modal-container .modal-header,
   html.light #whats-new-modal-container #whats-new-list {
-    background-color: #ffffff !important;
+    background-color: rgb(255, 255, 255) !important;
   }
   html.light #whats-new-modal-container .modal-header {
     border-color: rgba(15, 23, 42, 0.08) !important;
   }
   html.light #whats-new-modal-container .modal-header h2 {
-    color: #0f172a !important;
+    color: rgb(15, 23, 42) !important;
   }
   html.light #whats-new-modal-container .modal-header p {
-    color: #64748b !important;
+    color: rgb(100, 116, 139) !important;
   }
   html.light #whats-new-modal-container .modal-footer {
-    background-color: #f8fafc !important;
+    background-color: rgb(248, 250, 252) !important;
     border-color: rgba(15, 23, 42, 0.08) !important;
   }
 

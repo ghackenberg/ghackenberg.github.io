@@ -1,5 +1,6 @@
 ---
 import SlideBase from '../primitives/SlideBase.astro';
+import type { SlideAccent } from '@commons/shared/accent-system';
 
 interface Props {
   title?: string;
@@ -8,6 +9,8 @@ interface Props {
   slideNumber?: string | number;
   totalSlides?: string | number;
   presentationTitle?: string;
+  accent?: SlideAccent;
+  startAccent?: SlideAccent;
   class?: string;
 }
 
@@ -18,6 +21,8 @@ const {
   slideNumber,
   totalSlides,
   presentationTitle,
+  accent,
+  startAccent,
   class: className = ""
 } = Astro.props;
 ---
@@ -29,6 +34,8 @@ const {
   slideNumber={slideNumber}
   totalSlides={totalSlides}
   presentationTitle={presentationTitle}
+  accent={accent}
+  startAccent={startAccent}
   class={className}
 >
   <div class="flex flex-col gap-6 h-full w-full justify-between items-stretch min-h-0">

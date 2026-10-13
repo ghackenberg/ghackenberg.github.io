@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import PresentationCard from "@components/PresentationCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { getCollection } from "astro:content";
 
 const allPresentations = await getCollection("presentations");
@@ -55,9 +56,11 @@ const breadcrumbSchema = {
   <Navbar />
 
   <Container size="wide">
+    <Breadcrumbs domain="presentations" />
+
     <div class="mb-12">
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-        Interactive <span class="heading-gradient-blue">Presentations</span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6">
+        Interactive <span class="text-domain-presentations">Presentations</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Keynotes and technical slide decks featuring synchronized neural voiceovers, interactive vector schematics, and complete speaker transcripts.
@@ -69,7 +72,7 @@ const breadcrumbSchema = {
       searchId="presentation-search"
       searchPlaceholder="Search presentations..."
       tags={allTags}
-      accentColor="blue"
+      domain="presentations"
       itemTags={itemTags}
       totalCount={presentations.length}
       pageSize={12}
@@ -208,7 +211,7 @@ const breadcrumbSchema = {
     </p>
 
     <!-- Pagination Controls -->
-    <nav id="presentations-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Presentations Pagination">
+    <nav id="presentations-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-element-border mt-10" aria-label="Presentations Pagination">
       <div class="flex-1 w-full sm:w-auto text-left">
         <button 
           type="button" 
@@ -227,7 +230,7 @@ const breadcrumbSchema = {
         <button 
           type="button" 
           data-action="next" 
-          class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+          class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-domain-presentations/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
         >
           <span>Next</span>
           <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
@@ -262,7 +265,7 @@ const breadcrumbSchema = {
         pageSize: 12,
         navSelector: "#presentations-pagination",
         pageParamKey: "page",
-        theme: "blue",
+        domain: "presentations",
         scrollToSelector: "#presentations-grid"
       },
       scrollToSelector: "#presentations-grid",

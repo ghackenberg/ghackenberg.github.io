@@ -5,6 +5,7 @@ import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import PublicationCard from "@components/PublicationCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) => b.id.localeCompare(a.id)
@@ -16,17 +17,22 @@ const tags = Array.from(
 ).sort();
 const itemTags = publications.map(p => (p.data.tags || []).map(t => t.toLowerCase()));
 
-// Group by year
-const groupedByYear: Record<string, typeof publications> = {};
-publications.forEach((pub) => {
-  const year = pub.id.substring(0, 4);
-  if (!groupedByYear[year]) {
-    groupedByYear[year] = [];
-  }
-  groupedByYear[year].push(pub);
-});
+const PUBS_PER_PAGE = 12;
+const totalPages = Math.ceil(publications.length / PUBS_PER_PAGE);
 
-const years = Object.keys(groupedByYear).sort((a, b) => b.localeCompare(a));
+function getPageNumbers(current: number, total: number): (number | string)[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  if (current <= 4) {
+    return [1, 2, 3, 4, 5, '...', total];
+  }
+  if (current >= total - 3) {
+    return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+  }
+  return [1, '...', current - 1, current, current + 1, '...', total];
+}
+
 const rawFirstPubIcon = publications.find((pub) => pub.data.icon)?.data.icon;
 const firstPubIcon = typeof rawFirstPubIcon === 'object' && rawFirstPubIcon !== null && 'src' in rawFirstPubIcon ? rawFirstPubIcon.src : rawFirstPubIcon;
 
@@ -59,9 +65,11 @@ const breadcrumbSchema = {
   <Navbar />
 
   <Container size="wide">
+    <Breadcrumbs domain="publications" />
+
     <div class="mb-12">
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 mb-6">
-        Reviewed <span class="heading-gradient-purple">Publications</span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6">
+        Reviewed <span class="text-domain-publications">Publications</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Peer-reviewed papers, journal articles, and conference presentations focusing on gesture control, software engineering, and smart energy systems.
@@ -73,10 +81,10 @@ const breadcrumbSchema = {
       searchId="publication-search"
       searchPlaceholder="Search papers..."
       tags={tags}
-      accentColor="purple"
+      domain="publications"
       itemTags={itemTags}
       totalCount={publications.length}
-      pageSize={12}
+      pageSize={PUBS_PER_PAGE}
     />
 
     <!-- Pre-filter state gate: activate has-filter-query if URL params exist -->
@@ -86,135 +94,187 @@ const breadcrumbSchema = {
         var rawTags = params.getAll('tag');
         var hasTag = rawTags.some(function(t) { return t.trim().length > 0; });
         var hasQ = Boolean((params.get('q') || '').trim());
-        if (hasTag || hasQ) {
+        var page = parseInt(params.get('page') || '1', 10);
+        if (hasTag || hasQ || page > 1) {
           document.documentElement.classList.add('has-filter-query');
         }
       })();
     </script>
 
-    <!-- Grouped Publications list -->
-    <div class="space-y-12" id="publications-list">
-      {years.length === 0 ? (
-        <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No publications found.</p>
-      ) : (
-        <>
-          {years.map(year => (
-            <div id={`year-${year}`} class="publication-year-section space-y-4">
-              <h2 id={`year-${year}-heading`} class="text-2xl font-extrabold text-gray-100 border-b border-element-border pb-2 tracking-tight">
-                {year}
-              </h2>
-              <div class="space-y-4">
-                {groupedByYear[year].map(pub => {
-                  const tagsJoined = (pub.data.tags || []).join(" ").toLowerCase();
-                  return (
-                    <div 
-                      class="publication-card-item"
-                      data-title={pub.data.title.toLowerCase()}
-                      data-author={pub.data.author.toLowerCase()}
-                      data-book={(pub.data.book || "").toLowerCase()}
-                      data-tags={tagsJoined}
-                    >
-                      <PublicationCard
-                        id={pub.id}
-                        title={pub.data.title}
-                        author={pub.data.author}
-                        pubDate={pub.data.pubDate}
-                        book={pub.data.book}
-                        tags={pub.data.tags}
-                        icon={pub.data.icon}
-                        publisherUrl={pub.data.publisherUrl}
-                      />
-                    </div>
-                  );
-                })}
+    <!-- Publications Grid (3-2-1) -->
+    {publications.length === 0 ? (
+      <p class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl">No publications found.</p>
+    ) : (
+      <>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="publications-grid">
+          {publications.map((pub, idx) => {
+            const tagsJoined = (pub.data.tags || []).join(" ").toLowerCase();
+            const isInitialHidden = idx >= PUBS_PER_PAGE;
+            return (
+              <div 
+                class={`publication-card-item h-full ${isInitialHidden ? "hidden" : ""}`}
+                style={isInitialHidden ? "display: none;" : ""}
+                data-title={pub.data.title.toLowerCase()}
+                data-author={pub.data.author.toLowerCase()}
+                data-book={(pub.data.book || "").toLowerCase()}
+                data-tags={tagsJoined}
+              >
+                <PublicationCard
+                  id={pub.id}
+                  title={pub.data.title}
+                  author={pub.data.author}
+                  pubDate={pub.data.pubDate}
+                  book={pub.data.book}
+                  tags={pub.data.tags}
+                  publisherUrl={pub.data.publisherUrl}
+                  icon={pub.data.icon}
+                />
               </div>
+            );
+          })}
+        </div>
+
+        <!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
+        <script is:inline>
+          (function() {
+            try {
+              var params = new URLSearchParams(window.location.search);
+              var rawTags = params.getAll('tag');
+              var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+              var q = (params.get('q') || '').trim().toLowerCase();
+              var page = parseInt(params.get('page') || '1', 10);
+              if (isNaN(page) || page < 1) page = 1;
+
+              var hasTag = tags.length > 0;
+              var hasQ = Boolean(q);
+              var isNonDefaultPage = page > 1;
+
+              if (!hasTag && !hasQ && !isNonDefaultPage) return;
+
+              var items = document.querySelectorAll('.publication-card-item');
+              var matching = [];
+
+              items.forEach(function(item) {
+                var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                var title = item.getAttribute('data-title') || '';
+                var author = item.getAttribute('data-author') || '';
+                var book = item.getAttribute('data-book') || '';
+                var tagsStr = item.getAttribute('data-tags') || '';
+
+                var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
+                var matchesQ = !hasQ || (title.indexOf(q) !== -1 || author.indexOf(q) !== -1 || book.indexOf(q) !== -1 || tagsStr.indexOf(q) !== -1);
+
+                if (matchesTag && matchesQ) {
+                  matching.push(item);
+                } else {
+                  item.classList.remove('is-matched');
+                  item.classList.add('hidden');
+                  item.style.display = 'none';
+                }
+              });
+
+              var pageSize = 12;
+              var start = (page - 1) * pageSize;
+              var end = start + pageSize;
+
+              matching.forEach(function(item, idx) {
+                if (idx >= start && idx < end) {
+                  item.classList.add('is-matched');
+                  item.classList.remove('hidden');
+                  item.style.display = '';
+                } else {
+                  item.classList.remove('is-matched');
+                  item.classList.add('hidden');
+                  item.style.display = 'none';
+                }
+              });
+
+              var noResults = document.getElementById('no-publications-message');
+              if (noResults) {
+                if (matching.length === 0) {
+                  noResults.classList.remove('hidden');
+                  noResults.style.display = '';
+                } else {
+                  noResults.classList.add('hidden');
+                  noResults.style.display = 'none';
+                }
+              }
+
+              var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
+              if (countEl && (hasTag || hasQ)) {
+                var availTags = new Set();
+                matching.forEach(function(item) {
+                  var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
+                  itags.forEach(function(t) { if (t) availTags.add(t); });
+                });
+                countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
+                countEl.classList.add('is-synced');
+              }
+            } catch(e) {}
+          })();
+        </script>
+
+        <!-- Pagination Controls -->
+        {totalPages > 1 && (
+          <nav id="publications-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-12 border-t border-element-border mt-12" aria-label="Pagination">
+            <!-- Previous Button -->
+            <div class="flex-1 w-full sm:w-auto text-left">
+              <button 
+                type="button" 
+                data-action="prev" 
+                disabled 
+                class="prev-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border text-gray-600 text-sm font-semibold cursor-not-allowed opacity-40 w-full sm:w-auto transition-all duration-200"
+              >
+                <span class="mr-1.5">&larr;</span>
+                <span>Previous</span>
+              </button>
             </div>
-          ))}
 
-          <!-- Instant Pre-filter Script (Eliminates FOUC/Flicker before First Paint) -->
-          <script is:inline>
-            (function() {
-              try {
-                var params = new URLSearchParams(window.location.search);
-                var rawTags = params.getAll('tag');
-                var tags = rawTags.flatMap(function(v) { return v.split(','); }).map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
-                var q = (params.get('q') || '').trim().toLowerCase();
-
-                var hasTag = tags.length > 0;
-                var hasQ = Boolean(q);
-
-                if (!hasTag && !hasQ) return;
-
-                var items = document.querySelectorAll('.publication-card-item');
-                var matching = [];
-
-                items.forEach(function(item) {
-                  var itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
-                  var title = item.getAttribute('data-title') || '';
-                  var author = item.getAttribute('data-author') || '';
-                  var book = item.getAttribute('data-book') || '';
-                  var tagsStr = item.getAttribute('data-tags') || '';
-
-                  var matchesTag = !hasTag || tags.every(function(t) { return itemTags.indexOf(t) !== -1; });
-                  var matchesQ = !hasQ || (title.indexOf(q) !== -1 || author.indexOf(q) !== -1 || book.indexOf(q) !== -1 || tagsStr.indexOf(q) !== -1);
-
-                  if (matchesTag && matchesQ) {
-                    matching.push(item);
-                    item.classList.add('is-matched');
-                    item.classList.remove('hidden');
-                    item.style.display = '';
-                  } else {
-                    item.classList.remove('is-matched');
-                    item.classList.add('hidden');
-                    item.style.display = 'none';
-                  }
-                });
-
-                var sections = document.querySelectorAll('.publication-year-section');
-                sections.forEach(function(sec) {
-                  var secItems = sec.querySelectorAll('.publication-card-item');
-                  var anyVisible = Array.prototype.some.call(secItems, function(item) {
-                    return !item.classList.contains('hidden');
-                  });
-                  if (anyVisible) {
-                    sec.classList.remove('hidden');
-                    sec.style.display = '';
-                  } else {
-                    sec.classList.add('hidden');
-                    sec.style.display = 'none';
-                  }
-                });
-
-                var noResults = document.getElementById('no-publications-message');
-                if (noResults) {
-                  if (matching.length === 0) {
-                    noResults.classList.remove('hidden');
-                    noResults.style.display = '';
-                  } else {
-                    noResults.classList.add('hidden');
-                    noResults.style.display = 'none';
-                  }
+            <!-- Page Numbers -->
+            <div class="page-numbers-container flex items-center justify-center gap-1.5 order-3 sm:order-2 flex-wrap">
+              {getPageNumbers(1, totalPages).map((num) => {
+                if (typeof num === 'string') {
+                  return <span class="px-3 py-2 text-gray-500 text-sm font-medium">...</span>;
                 }
+                const isCurrent = num === 1;
+                return isCurrent ? (
+                  <span 
+                    class="px-3.5 py-2 rounded-xl text-sm font-bold text-white bg-domain-publications shadow-lg shadow-domain-publications/20 cursor-default select-none min-w-[38px] text-center" 
+                    aria-current="page"
+                    data-page-btn={num}
+                  >
+                    {num}
+                  </span>
+                ) : (
+                  <button 
+                    type="button" 
+                    data-goto={num} 
+                    class="px-3.5 py-2 rounded-xl text-sm font-medium bg-element-bg border border-element-border-medium text-gray-400 hover:text-gray-100 hover:border-domain-publications/30 hover:bg-element-bg-hover transition-all duration-200 min-w-[38px] text-center cursor-pointer"
+                  >
+                    {num}
+                  </button>
+                );
+              })}
+            </div>
 
-                var countEl = document.querySelector('[data-tag-total], [data-tag-count]');
-                if (countEl && (hasTag || hasQ)) {
-                  var availTags = new Set();
-                  matching.forEach(function(item) {
-                    var itags = (item.getAttribute('data-tags') || '').toLowerCase().split(/[\s,]+/);
-                    itags.forEach(function(t) { if (t) availTags.add(t); });
-                  });
-                  countEl.textContent = String(matching.length > 0 ? availTags.size : 0);
-                  countEl.classList.add('is-synced');
-                }
-              } catch(e) {}
-            })();
-          </script>
-        </>
-      )}
-      <p id="no-publications-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
-        No publications match your selected filter criteria.
-      </p>
-    </div>
+            <!-- Next Button -->
+            <div class="flex-1 w-full sm:w-auto text-right order-2 sm:order-3">
+              <button 
+                type="button" 
+                data-action="next" 
+                class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-domain-publications/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+              >
+                <span>Next</span>
+                <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
+              </button>
+            </div>
+          </nav>
+        )}
+      </>
+    )}
+    <p id="no-publications-message" class="text-gray-500 font-medium py-12 text-center glass-card rounded-2xl hidden">
+      No publications match your selected filter criteria.
+    </p>
   </Container>
 </Layout>
 
@@ -239,8 +299,14 @@ const breadcrumbSchema = {
           multiple: true
         }
       ],
-      groupSelector: ".publication-year-section",
-      scrollToSelector: "#publications-list",
+      pagination: {
+        pageSize: 12,
+        navSelector: "#publications-pagination",
+        pageParamKey: "page",
+        domain: "publications",
+        scrollToSelector: "#publications-grid"
+      },
+      scrollToSelector: "#publications-grid",
       noResultsSelector: "#no-publications-message"
     });
   }

@@ -1,10 +1,13 @@
 ---
+import type { ContentDomain } from "@commons/shared/domain-themes";
+
 interface Props {
   searchId: string;
   searchPlaceholder?: string;
   tags?: string[];
   tagLabel?: string;
-  accentColor?: "blue" | "yellow" | "purple" | "green";
+  domain?: ContentDomain;
+  accentColor?: "blue" | "yellow" | "purple" | "green" | "emerald" | "cyan" | "teal" | "violet" | "indigo" | "rose" | "orange";
   totalCount?: number;
   minItemsThreshold?: number;
   pageSize?: number;
@@ -16,33 +19,67 @@ const {
   searchPlaceholder = "Search...",
   tags = [],
   tagLabel = "Filter by Tag",
-  accentColor = "blue",
+  domain,
+  accentColor,
   totalCount,
   minItemsThreshold,
   pageSize = 12,
   itemTags,
 } = Astro.props;
 
+const domainFromAccent: Record<string, ContentDomain> = {
+  violet: "posts",
+  indigo: "publications",
+  blue: "presentations",
+  cyan: "courses",
+  teal: "projects",
+  emerald: "services",
+  yellow: "visualizations",
+  rose: "interests",
+  orange: "tags",
+  // Legacy aliases
+  purple: "services",
+  green: "projects",
+};
+
+const activeDomain: ContentDomain = domain ?? (accentColor ? domainFromAccent[accentColor] : undefined) ?? "posts";
+
 const threshold = minItemsThreshold ?? ((pageSize ?? 12) + 1);
 const shouldRender = totalCount === undefined || totalCount >= threshold;
 
-const searchFocusClasses = {
-  blue: "focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50",
-  yellow: "focus:border-brand-yellow/50 focus:ring-1 focus:ring-brand-yellow/50",
-  purple: "focus:border-brand-purple/50 focus:ring-1 focus:ring-brand-purple/50",
-  green: "focus:border-brand-green/50 focus:ring-1 focus:ring-brand-green/50",
-}[accentColor];
+const searchFocusClasses: Record<ContentDomain, string> = {
+  interests: "focus:border-domain-interests/50 focus:ring-1 focus:ring-domain-interests/50",
+  posts: "focus:border-domain-posts/50 focus:ring-1 focus:ring-domain-posts/50",
+  publications: "focus:border-domain-publications/50 focus:ring-1 focus:ring-domain-publications/50",
+  presentations: "focus:border-domain-presentations/50 focus:ring-1 focus:ring-domain-presentations/50",
+  courses: "focus:border-domain-courses/50 focus:ring-1 focus:ring-domain-courses/50",
+  projects: "focus:border-domain-projects/50 focus:ring-1 focus:ring-domain-projects/50",
+  services: "focus:border-domain-services/50 focus:ring-1 focus:ring-domain-services/50",
+  visualizations: "focus:border-domain-visualizations/50 focus:ring-1 focus:ring-domain-visualizations/50",
+  tags: "focus:border-domain-tags/50 focus:ring-1 focus:ring-domain-tags/50",
+};
 
-const summaryHoverBorder = {
-  blue: "hover:border-brand-blue/30",
-  yellow: "hover:border-brand-yellow/30",
-  purple: "hover:border-brand-purple/30",
-  green: "hover:border-brand-green/30",
-}[accentColor];
+const summaryHoverBorder: Record<ContentDomain, string> = {
+  interests: "hover:border-domain-interests/30",
+  posts: "hover:border-domain-posts/30",
+  publications: "hover:border-domain-publications/30",
+  presentations: "hover:border-domain-presentations/30",
+  courses: "hover:border-domain-courses/30",
+  projects: "hover:border-domain-projects/30",
+  services: "hover:border-domain-services/30",
+  visualizations: "hover:border-domain-visualizations/30",
+  tags: "hover:border-domain-tags/30",
+};
 ---
 
 {shouldRender && (
-  <div class="glass-card p-4 sm:p-5 rounded-2xl border border-element-border mb-8" data-accent={accentColor} data-filter-toolbar>
+  <div 
+    class="glass-card p-4 sm:p-5 rounded-2xl border border-element-border mb-8" 
+    data-domain={activeDomain} 
+    data-accent={activeDomain} 
+    data-filter-toolbar
+    style={`--toolbar-domain: var(--color-domain-${activeDomain});`}
+  >
     <!-- Row 1: Primary Bar -->
     <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
       <!-- Left side: Search input (flex-1 to take up available width) -->
@@ -52,7 +89,7 @@ const summaryHoverBorder = {
           type="text" 
           id={searchId} 
           placeholder={searchPlaceholder} 
-          class={`w-full bg-element-bg border border-element-border-medium rounded-xl px-3 py-2 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-200 ${searchFocusClasses}`}
+          class={`w-full bg-element-bg border border-element-border-medium rounded-xl px-3 py-2 pl-8 text-xs text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-200 ${searchFocusClasses[activeDomain]}`}
         />
         <span class="absolute left-2.5 top-2.5 text-xs text-gray-500 pointer-events-none">🔍</span>
       </div>
@@ -71,7 +108,7 @@ const summaryHoverBorder = {
             type="button" 
             id={`${searchId}-tag-toggle`}
             data-tag-toggle-for={`${searchId}-tag-details`}
-            class={`tag-toggle-btn h-[34px] inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium ${summaryHoverBorder} text-xs font-semibold text-gray-300 hover:text-gray-100 cursor-pointer select-none transition-all duration-200`}
+            class={`tag-toggle-btn h-[34px] inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium ${summaryHoverBorder[activeDomain]} text-xs font-semibold text-gray-300 hover:text-gray-100 cursor-pointer select-none transition-all duration-200`}
             aria-expanded="false"
             aria-controls={`${searchId}-tag-details`}
           >
@@ -157,7 +194,7 @@ const summaryHoverBorder = {
         <button 
           type="button" 
           id={`${searchId}-reset`}
-          class="hidden px-3 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium hover:border-red-500/40 text-xs font-semibold text-gray-400 hover:text-red-400 cursor-pointer select-none transition-all duration-200 inline-flex items-center gap-1.5"
+          class="hidden px-3 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium hover:border-callout-caution/40 text-xs font-semibold text-gray-400 hover:text-callout-caution cursor-pointer select-none transition-all duration-200 inline-flex items-center gap-1.5"
           title="Reset all filters"
         >
           <span>✕</span>
@@ -191,7 +228,7 @@ const summaryHoverBorder = {
   .tag-filter-btn {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
-    color: #9ca3af;
+    color: var(--color-text-subtle);
   }
 
   .tag-filter-btn.hidden {
@@ -268,28 +305,10 @@ const summaryHoverBorder = {
   }
 
   /* Anti-flicker gate: eliminate transition pulse and tag count jump on page load */
-  :global(html.has-active-tag-filter) [data-accent="blue"] .tag-toggle-btn {
-    border-color: rgba(59, 130, 246, 0.5) !important;
-    background: rgba(59, 130, 246, 0.15) !important;
-    color: #93c5fd !important;
-    transition: none !important;
-  }
-  :global(html.has-active-tag-filter) [data-accent="yellow"] .tag-toggle-btn {
-    border-color: rgba(245, 158, 11, 0.5) !important;
-    background: rgba(245, 158, 11, 0.15) !important;
-    color: #fbbf24 !important;
-    transition: none !important;
-  }
-  :global(html.has-active-tag-filter) [data-accent="purple"] .tag-toggle-btn {
-    border-color: rgba(168, 85, 247, 0.5) !important;
-    background: rgba(168, 85, 247, 0.15) !important;
-    color: #c084fc !important;
-    transition: none !important;
-  }
-  :global(html.has-active-tag-filter) [data-accent="green"] .tag-toggle-btn {
-    border-color: rgba(16, 185, 129, 0.5) !important;
-    background: rgba(16, 185, 129, 0.15) !important;
-    color: #6ee7b7 !important;
+  :global(html.has-active-tag-filter) [data-filter-toolbar] .tag-toggle-btn {
+    border-color: color-mix(in srgb, var(--toolbar-domain) 50%, transparent) !important;
+    background: color-mix(in srgb, var(--toolbar-domain) 15%, transparent) !important;
+    color: var(--toolbar-domain) !important;
     transition: none !important;
   }
   :global(html.has-active-tag-filter) [data-tag-total]:not(.is-synced),
@@ -297,159 +316,47 @@ const summaryHoverBorder = {
     visibility: hidden;
   }
 
-  /* Accent: Blue */
-  [data-accent="blue"] .tag-filter-btn:hover:not(.active) {
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #93c5fd;
-    background: rgba(59, 130, 246, 0.08);
+  [data-filter-toolbar] .tag-filter-btn:hover:not(.active) {
+    border-color: color-mix(in srgb, var(--toolbar-domain) 30%, transparent);
+    color: var(--toolbar-domain);
+    background: color-mix(in srgb, var(--toolbar-domain) 8%, transparent);
   }
-  [data-accent="blue"] .tag-filter-btn.active {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.5);
-    color: #7dd3fc;
-    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
+  [data-filter-toolbar] .tag-filter-btn.active {
+    background: color-mix(in srgb, var(--toolbar-domain) 20%, transparent);
+    border-color: color-mix(in srgb, var(--toolbar-domain) 50%, transparent);
+    color: var(--toolbar-domain);
+    box-shadow: 0 0 15px -3px color-mix(in srgb, var(--toolbar-domain) 25%, transparent);
   }
-  [data-accent="blue"] .tag-toggle-btn.has-active-tags,
-  [data-accent="blue"] .tag-toggle-btn.active {
-    border-color: rgba(59, 130, 246, 0.5);
-    background: rgba(59, 130, 246, 0.15);
-    color: #93c5fd;
-  }
-
-  /* Accent: Yellow */
-  [data-accent="yellow"] .tag-filter-btn:hover:not(.active) {
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #fbbf24;
-    background: rgba(245, 158, 11, 0.08);
-  }
-  [data-accent="yellow"] .tag-filter-btn.active {
-    background: rgba(245, 158, 11, 0.2);
-    border-color: rgba(245, 158, 11, 0.5);
-    color: #fde047;
-    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25);
-  }
-  [data-accent="yellow"] .tag-toggle-btn.has-active-tags,
-  [data-accent="yellow"] .tag-toggle-btn.active {
-    border-color: rgba(245, 158, 11, 0.5);
-    background: rgba(245, 158, 11, 0.15);
-    color: #fbbf24;
-  }
-
-  /* Accent: Purple */
-  [data-accent="purple"] .tag-filter-btn:hover:not(.active) {
-    border-color: rgba(168, 85, 247, 0.3);
-    color: #c084fc;
-    background: rgba(168, 85, 247, 0.08);
-  }
-  [data-accent="purple"] .tag-filter-btn.active {
-    background: rgba(168, 85, 247, 0.2);
-    border-color: rgba(168, 85, 247, 0.5);
-    color: #d8b4fe;
-    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25);
-  }
-  [data-accent="purple"] .tag-toggle-btn.has-active-tags,
-  [data-accent="purple"] .tag-toggle-btn.active {
-    border-color: rgba(168, 85, 247, 0.5);
-    background: rgba(168, 85, 247, 0.15);
-    color: #c084fc;
-  }
-
-  /* Accent: Green */
-  [data-accent="green"] .tag-filter-btn:hover:not(.active) {
-    border-color: rgba(16, 185, 129, 0.3);
-    color: #6ee7b7;
-    background: rgba(16, 185, 129, 0.08);
-  }
-  [data-accent="green"] .tag-filter-btn.active {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: rgba(16, 185, 129, 0.5);
-    color: #a7f3d0;
-    box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.25);
-  }
-  [data-accent="green"] .tag-toggle-btn.has-active-tags,
-  [data-accent="green"] .tag-toggle-btn.active {
-    border-color: rgba(16, 185, 129, 0.5);
-    background: rgba(16, 185, 129, 0.15);
-    color: #6ee7b7;
+  [data-filter-toolbar] .tag-toggle-btn.has-active-tags,
+  [data-filter-toolbar] .tag-toggle-btn.active {
+    border-color: color-mix(in srgb, var(--toolbar-domain) 50%, transparent);
+    background: color-mix(in srgb, var(--toolbar-domain) 15%, transparent);
+    color: var(--toolbar-domain);
   }
 
   /* Light mode overrides */
   :global(.light) .tag-filter-btn {
     background: rgba(15, 23, 42, 0.04);
     border-color: rgba(15, 23, 42, 0.08);
-    color: #475569;
+    color: var(--color-text-subtle);
   }
 
-  :global(.light) [data-accent="blue"] .tag-filter-btn:hover:not(.active) {
-    background: rgba(59, 130, 246, 0.06);
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #1d4ed8;
+  :global(.light) [data-filter-toolbar] .tag-filter-btn:hover:not(.active) {
+    background: color-mix(in srgb, var(--toolbar-domain) 6%, transparent);
+    border-color: color-mix(in srgb, var(--toolbar-domain) 30%, transparent);
+    color: var(--toolbar-domain);
   }
-  :global(.light) [data-accent="blue"] .tag-filter-btn.active {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #1d4ed8;
-    box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2);
+  :global(.light) [data-filter-toolbar] .tag-filter-btn.active {
+    background: color-mix(in srgb, var(--toolbar-domain) 15%, transparent);
+    border-color: color-mix(in srgb, var(--toolbar-domain) 40%, transparent);
+    color: var(--toolbar-domain);
+    box-shadow: 0 0 15px -3px color-mix(in srgb, var(--toolbar-domain) 20%, transparent);
   }
-  :global(.light) [data-accent="blue"] .tag-toggle-btn.has-active-tags,
-  :global(.light) [data-accent="blue"] .tag-toggle-btn.active {
-    background: rgba(59, 130, 246, 0.12);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #1d4ed8;
-  }
-
-  :global(.light) [data-accent="yellow"] .tag-filter-btn:hover:not(.active) {
-    background: rgba(245, 158, 11, 0.06);
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #d97706;
-  }
-  :global(.light) [data-accent="yellow"] .tag-filter-btn.active {
-    background: rgba(245, 158, 11, 0.15);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #b45309;
-    box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2);
-  }
-  :global(.light) [data-accent="yellow"] .tag-toggle-btn.has-active-tags,
-  :global(.light) [data-accent="yellow"] .tag-toggle-btn.active {
-    background: rgba(245, 158, 11, 0.12);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: #b45309;
-  }
-
-  :global(.light) [data-accent="purple"] .tag-filter-btn:hover:not(.active) {
-    background: rgba(168, 85, 247, 0.06);
-    border-color: rgba(168, 85, 247, 0.3);
-    color: #7e22ce;
-  }
-  :global(.light) [data-accent="purple"] .tag-filter-btn.active {
-    background: rgba(168, 85, 247, 0.15);
-    border-color: rgba(168, 85, 247, 0.4);
-    color: #7e22ce;
-    box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2);
-  }
-  :global(.light) [data-accent="purple"] .tag-toggle-btn.has-active-tags,
-  :global(.light) [data-accent="purple"] .tag-toggle-btn.active {
-    background: rgba(168, 85, 247, 0.12);
-    border-color: rgba(168, 85, 247, 0.4);
-    color: #7e22ce;
-  }
-
-  :global(.light) [data-accent="green"] .tag-filter-btn:hover:not(.active) {
-    background: rgba(16, 185, 129, 0.06);
-    border-color: rgba(16, 185, 129, 0.3);
-    color: #047857;
-  }
-  :global(.light) [data-accent="green"] .tag-filter-btn.active {
-    background: rgba(16, 185, 129, 0.15);
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #047857;
-    box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2);
-  }
-  :global(.light) [data-accent="green"] .tag-toggle-btn.has-active-tags,
-  :global(.light) [data-accent="green"] .tag-toggle-btn.active {
-    background: rgba(16, 185, 129, 0.12);
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #047857;
+  :global(.light) [data-filter-toolbar] .tag-toggle-btn.has-active-tags,
+  :global(.light) [data-filter-toolbar] .tag-toggle-btn.active {
+    background: color-mix(in srgb, var(--toolbar-domain) 12%, transparent);
+    border-color: color-mix(in srgb, var(--toolbar-domain) 40%, transparent);
+    color: var(--toolbar-domain);
   }
 </style>
 

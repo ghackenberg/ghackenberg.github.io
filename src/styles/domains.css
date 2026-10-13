@@ -1,0 +1,249 @@
+/* Canonical Domain Color Tokens and Utilities */
+
+@theme {
+  --color-domain-interests: var(--color-accent-1);      /* Rose */
+  --color-domain-posts: var(--color-accent-2);          /* Violet */
+  --color-domain-publications: var(--color-accent-3);   /* Indigo */
+  --color-domain-presentations: var(--color-accent-4);  /* Blue */
+  --color-domain-courses: var(--color-accent-5);        /* Cyan */
+  --color-domain-projects: var(--color-accent-6);       /* Teal */
+  --color-domain-services: var(--color-accent-7);       /* Emerald */
+  --color-domain-visualizations: var(--color-accent-8); /* Yellow */
+  --color-domain-tags: var(--color-accent-9);           /* Orange */
+}
+
+:root.light, .light {
+  --color-domain-interests: var(--color-accent-1);
+  --color-domain-posts: var(--color-accent-2);
+  --color-domain-publications: var(--color-accent-3);
+  --color-domain-presentations: var(--color-accent-4);
+  --color-domain-courses: var(--color-accent-5);
+  --color-domain-projects: var(--color-accent-6);
+  --color-domain-services: var(--color-accent-7);
+  --color-domain-visualizations: var(--color-accent-8);
+  --color-domain-tags: var(--color-accent-9);
+}
+
+/* Domain-Specific Heading Gradient Utilities */
+.heading-gradient-domain-interests {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #f43f5e, #8b5cf6);
+}
+
+:root.light .heading-gradient-domain-interests,
+.light .heading-gradient-domain-interests {
+  background-image: linear-gradient(to right, #e11d48, #7c3aed);
+}
+
+.heading-gradient-domain-posts {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #8b5cf6, #6366f1);
+}
+
+:root.light .heading-gradient-domain-posts,
+.light .heading-gradient-domain-posts {
+  background-image: linear-gradient(to right, #7c3aed, #4f46e5);
+}
+
+.heading-gradient-domain-publications {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #6366f1, #3b82f6);
+}
+
+:root.light .heading-gradient-domain-publications,
+.light .heading-gradient-domain-publications {
+  background-image: linear-gradient(to right, #4f46e5, #2563eb);
+}
+
+.heading-gradient-domain-presentations {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #3b82f6, #06b6d4);
+}
+
+:root.light .heading-gradient-domain-presentations,
+.light .heading-gradient-domain-presentations {
+  background-image: linear-gradient(to right, #2563eb, #0891b2);
+}
+
+.heading-gradient-domain-courses {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #06b6d4, #14b8a6);
+}
+
+:root.light .heading-gradient-domain-courses,
+.light .heading-gradient-domain-courses {
+  background-image: linear-gradient(to right, #0891b2, #0d9488);
+}
+
+.heading-gradient-domain-projects {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #14b8a6, #10b981);
+}
+
+:root.light .heading-gradient-domain-projects,
+.light .heading-gradient-domain-projects {
+  background-image: linear-gradient(to right, #0d9488, #059669);
+}
+
+.heading-gradient-domain-services {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #10b981, #eab308);
+}
+
+:root.light .heading-gradient-domain-services,
+.light .heading-gradient-domain-services {
+  background-image: linear-gradient(to right, #059669, #ca8a04);
+}
+
+.heading-gradient-domain-visualizations {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #eab308, #f97316);
+}
+
+:root.light .heading-gradient-domain-visualizations,
+.light .heading-gradient-domain-visualizations {
+  background-image: linear-gradient(to right, #ca8a04, #ea580c);
+}
+
+.heading-gradient-domain-tags {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #f97316, #f43f5e);
+}
+
+:root.light .heading-gradient-domain-tags,
+.light .heading-gradient-domain-tags {
+  background-image: linear-gradient(to right, #ea580c, #e11d48);
+}
+
+/* Domain-Specific Background Gradient Utilities (Buttons, Badges, Accent Stripes) */
+.bg-gradient-domain-interests {
+  background-image: linear-gradient(to right, #f43f5e, #8b5cf6);
+}
+
+:root.light .bg-gradient-domain-interests,
+.light .bg-gradient-domain-interests {
+  background-image: linear-gradient(to right, #e11d48, #7c3aed);
+}
+
+.bg-gradient-domain-posts {
+  background-image: linear-gradient(to right, #8b5cf6, #6366f1);
+}
+
+:root.light .bg-gradient-domain-posts,
+.light .bg-gradient-domain-posts {
+  background-image: linear-gradient(to right, #7c3aed, #4f46e5);
+}
+
+.bg-gradient-domain-publications {
+  background-image: linear-gradient(to right, #6366f1, #3b82f6);
+}
+
+:root.light .bg-gradient-domain-publications,
+.light .bg-gradient-domain-publications {
+  background-image: linear-gradient(to right, #4f46e5, #2563eb);
+}
+
+.bg-gradient-domain-presentations {
+  background-image: linear-gradient(to right, #3b82f6, #06b6d4);
+}
+
+:root.light .bg-gradient-domain-presentations,
+.light .bg-gradient-domain-presentations {
+  background-image: linear-gradient(to right, #2563eb, #0891b2);
+}
+
+.bg-gradient-domain-courses {
+  background-image: linear-gradient(to right, #06b6d4, #14b8a6);
+}
+
+:root.light .bg-gradient-domain-courses,
+.light .bg-gradient-domain-courses {
+  background-image: linear-gradient(to right, #0891b2, #0d9488);
+}
+
+.bg-gradient-domain-projects {
+  background-image: linear-gradient(to right, #14b8a6, #10b981);
+}
+
+:root.light .bg-gradient-domain-projects,
+.light .bg-gradient-domain-projects {
+  background-image: linear-gradient(to right, #0d9488, #059669);
+}
+
+.bg-gradient-domain-services {
+  background-image: linear-gradient(to right, #10b981, #eab308);
+}
+
+:root.light .bg-gradient-domain-services,
+.light .bg-gradient-domain-services {
+  background-image: linear-gradient(to right, #059669, #ca8a04);
+}
+
+.bg-gradient-domain-visualizations {
+  background-image: linear-gradient(to right, #eab308, #f97316);
+}
+
+:root.light .bg-gradient-domain-visualizations,
+.light .bg-gradient-domain-visualizations {
+  background-image: linear-gradient(to right, #ca8a04, #ea580c);
+}
+
+.bg-gradient-domain-tags {
+  background-image: linear-gradient(to right, #f97316, #f43f5e);
+}
+
+:root.light .bg-gradient-domain-tags,
+.light .bg-gradient-domain-tags {
+  background-image: linear-gradient(to right, #ea580c, #e11d48);
+}
+
+/* ==========================================================================
+   Active Domain Scoping for Dynamic Links and Plain Hyperlinks
+   ========================================================================== */
+:root {
+  --color-current-domain: var(--color-domain-posts);
+}
+
+[data-domain="interests"], .domain-scope-interests { --color-current-domain: var(--color-domain-interests); }
+[data-domain="posts"], .domain-scope-posts { --color-current-domain: var(--color-domain-posts); }
+[data-domain="publications"], .domain-scope-publications { --color-current-domain: var(--color-domain-publications); }
+[data-domain="presentations"], .domain-scope-presentations { --color-current-domain: var(--color-domain-presentations); }
+[data-domain="courses"], .domain-scope-courses { --color-current-domain: var(--color-domain-courses); }
+[data-domain="projects"], .domain-scope-projects { --color-current-domain: var(--color-domain-projects); }
+[data-domain="services"], .domain-scope-services { --color-current-domain: var(--color-domain-services); }
+[data-domain="visualizations"], .domain-scope-visualizations { --color-current-domain: var(--color-domain-visualizations); }
+[data-domain="tags"], .domain-scope-tags { --color-current-domain: var(--color-domain-tags); }
+
+/* All prose links and plain hyperlinks in content */
+[data-domain] .prose-custom a:not(.citation):not(.tag-chip):not(.active-tag-match):not(.preview-card-action):not([class*="btn"]):not([class*="button"]),
+[data-domain] .content-body a:not(.citation):not(.tag-chip):not(.active-tag-match):not([class*="badge"]):not([class*="btn"]):not([class*="button"]):not(.after\:absolute),
+[data-domain] main p a:not(.citation):not(.tag-chip):not(.active-tag-match):not([class*="badge"]):not([class*="btn"]):not([class*="button"]):not(.after\:absolute):not([class*="group"]):not(.hover\:text-brand-blue) {
+  color: var(--color-current-domain);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+[data-domain] .prose-custom a:not(.citation):not(.tag-chip):not(.active-tag-match):not(.preview-card-action):not([class*="btn"]):not([class*="button"]):hover,
+[data-domain] .content-body a:not(.citation):not(.tag-chip):not(.active-tag-match):not([class*="badge"]):not([class*="btn"]):not([class*="button"]):not(.after\:absolute):hover,
+[data-domain] main p a:not(.citation):not(.tag-chip):not(.active-tag-match):not([class*="badge"]):not([class*="btn"]):not([class*="button"]):not(.after\:absolute):not([class*="group"]):not(.hover\:text-brand-blue):hover {
+  opacity: 0.8;
+}

@@ -50,7 +50,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         <!-- Drawer Header -->
         <div class="p-4 border-b border-slate-800 light:border-slate-200 flex items-center justify-between shrink-0">
           <div class="flex items-center gap-2.5">
-            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-domain-presentations" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
             <h2 class="font-bold text-xs uppercase tracking-wider text-slate-200 light:text-slate-800">Slide Overview</h2>
@@ -86,32 +86,32 @@ const currentDeckId = presentationId || talkId || "presentation";
                 class={`slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 ${
                   idx === 0
                     ? isTitle
-                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 light:bg-amber-50 light:border-amber-300 light:text-amber-800 font-semibold shadow-sm'
+                      ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_20%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-amber)_50%,transparent)] text-[var(--color-slide-accent-amber)] font-bold shadow-sm'
                       : isSection
-                      ? 'bg-indigo-600/20 border-cyan-400/50 text-cyan-300 light:bg-indigo-50 light:border-indigo-300 light:text-indigo-800 font-bold shadow-sm'
-                      : 'bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold'
+                      ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_20%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-indigo)_50%,transparent)] text-[var(--color-slide-accent-indigo)] font-bold shadow-sm'
+                      : 'bg-domain-presentations/15 border-domain-presentations/40 text-domain-presentations font-semibold'
                     : isTitle
-                    ? 'bg-amber-500/5 border-amber-500/20 hover:bg-amber-500/10 text-amber-300/90 light:text-amber-800 font-medium'
+                    ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_5%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-amber)_20%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_10%,transparent)] text-[var(--color-slide-accent-amber)] font-medium'
                     : isSection
-                    ? 'bg-indigo-950/30 border-indigo-500/30 hover:bg-indigo-900/40 text-indigo-300 light:bg-indigo-50/60 light:border-indigo-200 light:text-indigo-800 font-bold'
+                    ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_15%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-indigo)_30%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_25%,transparent)] text-[var(--color-slide-accent-indigo)] font-bold'
                     : isOutro
-                    ? 'bg-emerald-500/5 border-emerald-500/25 hover:bg-emerald-500/10 text-emerald-300/90 light:text-emerald-800 font-medium'
+                    ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-emerald)_5%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-emerald)_25%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-slide-accent-emerald)_10%,transparent)] text-[var(--color-slide-accent-emerald)] font-medium'
                     : 'bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700'
                 }`}
               >
                 <span class={`font-mono text-xs px-2 py-0.5 rounded-md font-bold shrink-0 ${
                   idx === 0
                     ? isTitle
-                      ? 'bg-amber-500/25 text-amber-200 light:bg-amber-200 light:text-amber-900'
+                      ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_30%,transparent)] text-[var(--color-slide-accent-amber)]'
                       : isSection
-                      ? 'bg-cyan-500/25 text-cyan-200 light:bg-indigo-200 light:text-indigo-900'
-                      : 'bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800'
+                      ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_30%,transparent)] text-[var(--color-slide-accent-indigo)]'
+                      : 'bg-domain-presentations/20 text-domain-presentations'
                     : isTitle
-                    ? 'bg-amber-500/15 text-amber-300 light:bg-amber-100 light:text-amber-800'
+                    ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_15%,transparent)] text-[var(--color-slide-accent-amber)]'
                     : isSection
-                    ? 'bg-indigo-500/20 text-indigo-300 light:bg-indigo-100 light:text-indigo-800'
+                    ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_20%,transparent)] text-[var(--color-slide-accent-indigo)]'
                     : isOutro
-                    ? 'bg-emerald-500/20 text-emerald-300 light:bg-emerald-100 light:text-emerald-800'
+                    ? 'bg-[color-mix(in_srgb,var(--color-slide-accent-emerald)_20%,transparent)] text-[var(--color-slide-accent-emerald)]'
                     : 'bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600'
                 }`}>
                   {isTitle ? 'INTRO' : isSection ? 'BLOCK' : isOutro ? 'OUTRO' : String(idx + 1).padStart(2, '0')}
@@ -120,17 +120,17 @@ const currentDeckId = presentationId || talkId || "presentation";
                   {slide.title || `Slide ${idx + 1}`}
                 </span>
                 {isTitle && (
-                  <svg class="w-3.5 h-3.5 text-amber-400 shrink-0 opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                  <svg class="w-3.5 h-3.5 text-[var(--color-slide-accent-amber)] shrink-0 opacity-80" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 )}
                 {isSection && (
-                  <svg class="w-3.5 h-3.5 text-cyan-400 light:text-indigo-600 shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-3.5 h-3.5 text-[var(--color-slide-accent-indigo)] shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                   </svg>
                 )}
                 {isOutro && (
-                  <svg class="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600 shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-3.5 h-3.5 text-[var(--color-slide-accent-emerald)] shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 )}
@@ -150,11 +150,11 @@ const currentDeckId = presentationId || talkId || "presentation";
       >
         <div class="flex flex-col items-center gap-4">
           <div class="relative flex items-center justify-center">
-            <div class="w-12 h-12 rounded-2xl border border-blue-500/30 bg-blue-500/10 flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <span class="text-base font-black tracking-tight text-blue-400 font-sans">GH</span>
+            <div class="w-12 h-12 rounded-2xl border border-domain-presentations/30 bg-domain-presentations/10 flex items-center justify-center shadow-lg shadow-domain-presentations/20">
+              <span class="text-base font-black tracking-tight text-domain-presentations font-sans">GH</span>
             </div>
             <!-- Concentric circular orbit spinner (symmetrical, non-wobbling) -->
-            <div class="absolute -inset-2 rounded-full border-2 border-blue-500/20 border-t-blue-500 animate-spin"></div>
+            <div class="absolute -inset-2 rounded-full border-2 border-domain-presentations/20 border-t-domain-presentations animate-spin"></div>
           </div>
           <span class="text-xs font-mono font-medium text-slate-400 light:text-slate-500 tracking-wider uppercase">Loading presentation...</span>
         </div>
@@ -178,7 +178,7 @@ const currentDeckId = presentationId || talkId || "presentation";
       <div class="flex-1 relative py-2.5 cursor-pointer group" id="progress-container">
         <!-- Background Track -->
         <div class="h-1.5 sm:h-2 bg-slate-800 light:bg-slate-200 rounded-full overflow-hidden relative">
-          <div id="progress-bar" class="h-full bg-blue-500 rounded-full w-0 transition-all duration-100"></div>
+          <div id="progress-bar" class="h-full bg-domain-presentations rounded-full w-0 transition-all duration-100"></div>
         </div>
         <!-- Cue Markers Container -->
         <div id="cue-markers-container" class="absolute inset-x-0 top-0 bottom-0 pointer-events-none flex items-center"></div>
@@ -215,7 +215,7 @@ const currentDeckId = presentationId || talkId || "presentation";
       <!-- Play / Pause -->
       <button
         id="btn-play-pause"
-        class="h-8 sm:h-9 md:h-10 px-3 sm:px-4 md:px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-1.5 sm:gap-2 transition-all shadow-md cursor-pointer text-xs sm:text-sm"
+        class="h-8 sm:h-9 md:h-10 px-3 sm:px-4 md:px-5 rounded-xl bg-domain-presentations hover:bg-domain-presentations/90 text-white font-bold flex items-center gap-1.5 sm:gap-2 transition-all shadow-md cursor-pointer text-xs sm:text-sm"
         title="Play audio presentation (Space)"
         aria-label="Play or pause audio presentation"
       >
@@ -286,12 +286,12 @@ const currentDeckId = presentationId || talkId || "presentation";
         aria-label="0 references for this slide"
         aria-disabled="true"
       >
-        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-400 light:text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-domain-publications shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
         <span
           id="references-badge"
-          class="font-mono text-[10px] sm:text-xs font-bold px-1.5 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-800 border border-purple-500/30 light:border-purple-200 transition-colors"
+          class="font-mono text-[10px] sm:text-xs font-bold px-1.5 py-0.5 rounded-full bg-domain-publications/15 text-domain-publications border border-domain-publications/30 transition-colors"
         >
           0
         </span>
@@ -322,7 +322,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         <svg id="icon-share-link" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
         </svg>
-        <svg id="icon-share-copied" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400 light:text-emerald-600 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="icon-share-copied" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-callout-tip hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
         </svg>
       </button>
@@ -407,80 +407,6 @@ const currentDeckId = presentationId || talkId || "presentation";
       </div>
     </div>
   </div>
-
-  <!-- References Modal Dialog (Centered Architecture matching PrivacyModal, Fully Accessible & Fullscreen Ready) -->
-  <div 
-    id="references-modal-backdrop" 
-    class="fixed inset-0 z-[110] bg-black/75 light:bg-slate-900/30 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="references-modal-title"
-    aria-hidden="true"
-    inert
-  >
-    <div 
-      id="references-modal-container"
-      class="glass-panel w-full max-w-lg sm:max-w-xl rounded-2xl sm:rounded-3xl border shadow-2xl transition-all duration-300 relative flex flex-col my-auto max-h-[min(92dvh,760px)] bg-[#090d16]/95 border-white/10 text-gray-100 light:!bg-white light:!border-slate-200/90 light:text-slate-800 light:shadow-2xl light:shadow-slate-500/15 transform scale-95 overflow-hidden"
-    >
-      <!-- Top Accent Bar -->
-      <div class="h-1 sm:h-1.5 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 shrink-0"></div>
-
-      <!-- Header (Sticky/Shrink-0) -->
-      <div class="modal-header shrink-0 p-4 sm:p-6 pb-3 sm:pb-4 border-b border-white/5 light:border-slate-200/80 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 light:text-purple-600 flex items-center justify-center shrink-0">
-            <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-          </div>
-          <div class="min-w-0 flex flex-col justify-center">
-            <div class="flex items-center gap-2">
-              <h2 id="references-modal-title" class="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white light:text-slate-900 leading-tight truncate">
-                Slide <span class="text-purple-400 light:text-purple-600">References</span>
-              </h2>
-              <span id="references-modal-slide-badge" class="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-800 border border-purple-500/30 light:border-purple-200 shrink-0">
-                Slide 01
-              </span>
-            </div>
-            <p id="references-modal-subtitle" class="text-xs text-gray-400 light:text-slate-500 mt-0.5 leading-tight truncate">
-              Academic citations & source materials
-            </p>
-          </div>
-        </div>
-
-        <!-- Close Button -->
-        <button 
-          id="btn-close-references-modal"
-          type="button"
-          class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 text-gray-400 hover:text-gray-100 light:text-slate-500 light:hover:text-slate-800 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
-          aria-label="Close references modal"
-          title="Close (ESC / R)"
-        >
-          <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Scrollable Content Body -->
-      <div id="references-modal-body" class="modal-body flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 space-y-3 sm:space-y-3.5 custom-scrollbar min-h-0">
-        <!-- Dynamically populated per slide -->
-      </div>
-
-      <!-- Footer (Sticky/Shrink-0) -->
-      <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-white/5 light:border-slate-200/80 flex items-center justify-between text-xs text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
-        <span class="hidden sm:inline">Shortcut: <kbd class="px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 font-mono text-[10px] text-gray-300 light:text-slate-700 border border-white/10 light:border-slate-300">R</kbd> or <kbd class="px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 font-mono text-[10px] text-gray-300 light:text-slate-700 border border-white/10 light:border-slate-300">ESC</kbd></span>
-        <button
-          id="btn-jump-to-transcript-from-modal"
-          type="button"
-          class="inline-flex items-center gap-1.5 text-purple-400 light:text-purple-600 hover:text-purple-300 light:hover:text-purple-800 hover:underline font-semibold transition-colors cursor-pointer ml-auto"
-        >
-          <span>View in full transcript</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Slides Metadata Carrier -->
@@ -498,6 +424,11 @@ const currentDeckId = presentationId || talkId || "presentation";
       __revealDeck?: RevealApi;
       audioSync?: AudioSyncController;
       autoFit?: AutoFitController;
+      closeReferencesModal?: () => void;
+      openPrivacyModal?: () => void;
+      closePrivacyModal?: () => void;
+      openWhatsNewModal?: () => void;
+      closeWhatsNewModal?: () => void;
     }
   }
 
@@ -574,6 +505,42 @@ const currentDeckId = presentationId || talkId || "presentation";
     const btnJumpToTranscriptFromModal = document.getElementById('btn-jump-to-transcript-from-modal');
 
     let isReferencesModalOpen = false;
+
+    interface WebkitDocument extends Document {
+      webkitFullscreenElement?: Element;
+      webkitExitFullscreen?: () => Promise<void> | void;
+    }
+
+    interface WebkitElement extends HTMLElement {
+      webkitRequestFullscreen?: () => Promise<void> | void;
+    }
+
+    const webkitDoc = document as WebkitDocument;
+
+    const isPseudoFullscreen = () => {
+      const wrapper = document.querySelector('.slide-deck-wrapper');
+      return Boolean(
+        wrapper?.classList.contains('is-pseudo-fullscreen') ||
+        document.documentElement.classList.contains('presentation-pseudo-fullscreen')
+      );
+    };
+
+    const isFullscreenActive = () => Boolean(
+      document.fullscreenElement ||
+      webkitDoc.webkitFullscreenElement ||
+      isPseudoFullscreen()
+    );
+
+    const syncModalPlacement = () => {
+      const modalEl = referencesModalBackdrop || document.getElementById('references-modal-backdrop');
+      if (!modalEl || !deckWrapper) return;
+      const isFs = isFullscreenActive();
+      const targetParent = isFs ? deckWrapper : document.body;
+      if (modalEl.parentElement !== targetParent) {
+        targetParent.appendChild(modalEl);
+      }
+    };
+
     const btnFullscreen = document.getElementById('btn-fullscreen');
     const progressBar = document.getElementById('progress-bar');
     const progressContainer = document.getElementById('progress-container');
@@ -636,7 +603,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         slideListBackdrop.classList.add('opacity-100', 'pointer-events-auto');
       }
 
-      btnOverview?.classList.add('bg-blue-600', 'text-white');
+      btnOverview?.classList.add('bg-domain-presentations', 'text-white');
       btnOverview?.classList.remove('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
 
       if (shouldScroll) {
@@ -665,7 +632,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         slideListBackdrop.classList.add('opacity-0', 'pointer-events-none');
       }
 
-      btnOverview?.classList.remove('bg-blue-600', 'text-white');
+      btnOverview?.classList.remove('bg-domain-presentations', 'text-white');
       btnOverview?.classList.add('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
     };
 
@@ -688,7 +655,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+        .replace(/'/g, '&apos;');
     };
 
     const renderReferenceItem = (ref: SlideReference, targetHighlightId?: string | null): string => {
@@ -729,7 +696,7 @@ const currentDeckId = presentationId || talkId || "presentation";
             href="${escapeHtml(ref.url)}"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-1 text-[11px] font-semibold text-purple-400 light:text-purple-700 hover:text-purple-300 light:hover:text-purple-900 hover:underline"
+            class="inline-flex items-center gap-1 text-[11px] font-semibold text-domain-publications hover:underline"
           >
             <span>${escapeHtml(linkText)}</span>
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 01-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -737,27 +704,27 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
       if (ref.doi) {
         badges += `
-          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-500/15 light:bg-purple-100 text-purple-300 light:text-purple-800 border border-purple-500/25 light:border-purple-300">
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-domain-publications/15 text-domain-publications border border-domain-publications/30">
             DOI: ${escapeHtml(ref.doi)}
           </span>`;
       }
 
       const isTarget = targetHighlightId && ref.id === targetHighlightId;
-      const highlightClasses = isTarget ? 'ring-2 ring-purple-500/80 bg-purple-500/10' : '';
+      const highlightClasses = isTarget ? 'ring-2 ring-domain-publications/80 bg-domain-publications/10' : '';
 
       return `
-        <div id="modal-ref-${escapeHtml(ref.id || '')}" class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-white/5 light:border-slate-200/80 light:shadow-sm space-y-2.5 transition-all ${highlightClasses}">
+        <div id="modal-ref-${escapeHtml(ref.id || '')}" class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-element-bg/60 hover:bg-element-bg border border-element-border shadow-sm space-y-2.5 transition-all ${highlightClasses}">
           <div class="flex items-center justify-between gap-2">
-            <span class="inline-flex items-center font-mono text-purple-300 light:text-purple-800 font-bold text-xs px-2 py-0.5 rounded bg-purple-500/15 light:bg-purple-100 border border-purple-500/30 light:border-purple-300">
+            <span class="inline-flex items-center font-mono text-domain-publications font-bold text-xs px-2.5 py-0.5 rounded-full bg-domain-publications/15 border border-domain-publications/30">
               [${escapeHtml(label)}]
             </span>
-            ${ref.type ? `<span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-white/5 light:bg-slate-200 text-gray-400 light:text-slate-700 border border-white/10 light:border-slate-300">${escapeHtml(ref.type)}</span>` : ''}
+            ${ref.type ? `<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-element-bg light:bg-slate-200 text-text-subtle light:text-slate-700 border border-element-border-medium light:border-slate-300">${escapeHtml(ref.type)}</span>` : ''}
           </div>
-          <div class="text-xs sm:text-sm text-gray-300 light:text-slate-600 leading-relaxed pl-2.5 border-l-2 border-purple-500/50 light:border-purple-400">
-            <span class="font-bold text-gray-100 light:text-slate-900">${escapeHtml(ref.author)}</span>
-            ${ref.year ? `<span class="text-gray-400 light:text-slate-500"> (${escapeHtml(String(ref.year))})</span>` : ''}:
+          <div class="text-xs sm:text-sm text-gray-300 light:text-slate-600 leading-relaxed pl-2.5 border-l-2 border-domain-publications/50">
+            <span class="font-bold text-white light:text-slate-900">${escapeHtml(ref.author)}</span>
+            ${ref.year ? `<span class="text-text-subtle light:text-slate-500"> (${escapeHtml(String(ref.year))})</span>` : ''}:
             <span class="italic text-gray-200 light:text-slate-800"> "${escapeHtml(ref.title)}"</span>.
-            <span class="text-gray-400 light:text-slate-500 block sm:inline">${pubDetails}</span>
+            <span class="text-text-subtle light:text-slate-500 block sm:inline">${pubDetails}</span>
           </div>
           <div class="flex flex-wrap items-center gap-2 pt-1 pl-2.5">
             ${badges}
@@ -811,8 +778,10 @@ const currentDeckId = presentationId || talkId || "presentation";
       if (referencesModalBody) {
         if (refs.length === 0) {
           referencesModalBody.innerHTML = `
-            <div class="p-8 text-center text-slate-400 light:text-slate-500 flex flex-col items-center justify-center gap-2">
-              <svg class="w-8 h-8 opacity-40 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <div class="p-8 text-center text-text-subtle light:text-slate-500 flex flex-col items-center justify-center gap-2.5">
+              <div class="w-10 h-10 rounded-xl bg-domain-publications/15 border border-domain-publications/30 text-domain-publications flex items-center justify-center mb-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              </div>
               <p class="font-medium text-xs sm:text-sm">No specific citations listed for this slide.</p>
             </div>
           `;
@@ -831,10 +800,17 @@ const currentDeckId = presentationId || talkId || "presentation";
     };
 
     const openReferencesModal = (targetRefId?: string | null) => {
+      window.closePrivacyModal?.();
+      window.closeWhatsNewModal?.();
+      syncModalPlacement();
+
       const idx = deck.getIndices().h;
       populateReferencesModal(idx, targetRefId);
 
       isReferencesModalOpen = true;
+      if (!isFullscreenActive()) {
+        document.body.style.overflow = 'hidden';
+      }
       if (referencesModalBackdrop && referencesModalContainer) {
         referencesModalBackdrop.classList.remove('opacity-0', 'pointer-events-none');
         referencesModalBackdrop.classList.add('opacity-100', 'pointer-events-auto');
@@ -843,11 +819,12 @@ const currentDeckId = presentationId || talkId || "presentation";
         referencesModalBackdrop.setAttribute('aria-hidden', 'false');
         referencesModalBackdrop.removeAttribute('inert');
       }
-      btnReferences?.classList.add('bg-purple-600/20', 'border-purple-500/50');
+      btnReferences?.classList.add('bg-domain-publications/20', 'border-domain-publications/50');
     };
 
     const closeReferencesModal = () => {
       isReferencesModalOpen = false;
+      document.body.style.overflow = '';
       if (referencesModalBackdrop && referencesModalContainer) {
         referencesModalBackdrop.classList.remove('opacity-100', 'pointer-events-auto');
         referencesModalBackdrop.classList.add('opacity-0', 'pointer-events-none');
@@ -856,8 +833,10 @@ const currentDeckId = presentationId || talkId || "presentation";
         referencesModalBackdrop.setAttribute('aria-hidden', 'true');
         referencesModalBackdrop.setAttribute('inert', '');
       }
-      btnReferences?.classList.remove('bg-purple-600/20', 'border-purple-500/50');
+      btnReferences?.classList.remove('bg-domain-publications/20', 'border-domain-publications/50');
     };
+
+    window.closeReferencesModal = closeReferencesModal;
 
     const toggleReferencesModal = () => {
       if (isReferencesModalOpen) {
@@ -879,30 +858,30 @@ const currentDeckId = presentationId || talkId || "presentation";
         if (idx === currentIndex) {
           item.setAttribute('data-active', 'true');
           if (isTitle) {
-            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-amber-500/20 border-amber-500/50 text-amber-300 light:bg-amber-50 light:border-amber-300 light:text-amber-800 font-bold shadow-sm';
-            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-amber-500/30 text-amber-200 light:bg-amber-200 light:text-amber-900 font-bold shrink-0';
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_20%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-amber)_50%,transparent)] text-[var(--color-slide-accent-amber)] font-bold shadow-sm';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_30%,transparent)] text-[var(--color-slide-accent-amber)] font-bold shrink-0';
           } else if (isSection) {
-            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-indigo-600/25 border-cyan-400/60 text-cyan-300 light:bg-indigo-50 light:border-indigo-300 light:text-indigo-800 font-bold shadow-sm';
-            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-cyan-500/30 text-cyan-200 light:bg-indigo-200 light:text-indigo-900 font-bold shrink-0';
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_20%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-indigo)_50%,transparent)] text-[var(--color-slide-accent-indigo)] font-bold shadow-sm';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_30%,transparent)] text-[var(--color-slide-accent-indigo)] font-bold shrink-0';
           } else if (isOutro) {
-            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-emerald-500/20 border-emerald-500/50 text-emerald-300 light:bg-emerald-50 light:border-emerald-300 light:text-emerald-800 font-bold shadow-sm';
-            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-emerald-500/30 text-emerald-200 light:bg-emerald-200 light:text-emerald-900 font-bold shrink-0';
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-[color-mix(in_srgb,var(--color-slide-accent-emerald)_20%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-emerald)_50%,transparent)] text-[var(--color-slide-accent-emerald)] font-bold shadow-sm';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-[color-mix(in_srgb,var(--color-slide-accent-emerald)_30%,transparent)] text-[var(--color-slide-accent-emerald)] font-bold shrink-0';
           } else {
-            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-blue-600/15 border-blue-500/40 text-blue-400 light:bg-blue-50 light:border-blue-300 light:text-blue-700 font-semibold';
-            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 light:bg-blue-200 light:text-blue-800 font-bold shrink-0';
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-domain-presentations/15 border-domain-presentations/40 text-domain-presentations font-semibold';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-domain-presentations/20 text-domain-presentations font-bold shrink-0';
           }
           activeItemEl = item;
         } else {
           item.removeAttribute('data-active');
           if (isTitle) {
-            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-amber-500/5 border-amber-500/20 hover:bg-amber-500/10 text-amber-300/90 light:text-amber-800 font-medium';
-            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 light:bg-amber-100 light:text-amber-800 font-bold shrink-0';
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_5%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-amber)_20%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_10%,transparent)] text-[var(--color-slide-accent-amber)] font-medium';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-[color-mix(in_srgb,var(--color-slide-accent-amber)_15%,transparent)] text-[var(--color-slide-accent-amber)] font-bold shrink-0';
           } else if (isSection) {
-            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-indigo-950/30 border-indigo-500/30 hover:bg-indigo-900/40 text-indigo-300 light:bg-indigo-50/60 light:border-indigo-200 light:text-indigo-800 font-bold';
-            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 light:bg-indigo-100 light:text-indigo-800 font-bold shrink-0';
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_15%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-indigo)_30%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_25%,transparent)] text-[var(--color-slide-accent-indigo)] font-bold';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-[color-mix(in_srgb,var(--color-slide-accent-indigo)_20%,transparent)] text-[var(--color-slide-accent-indigo)] font-bold shrink-0';
           } else if (isOutro) {
-            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-emerald-500/5 border-emerald-500/25 hover:bg-emerald-500/10 text-emerald-300/90 light:text-emerald-800 font-medium';
-            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 light:bg-emerald-100 light:text-emerald-800 font-bold shrink-0';
+            item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-[color-mix(in_srgb,var(--color-slide-accent-emerald)_5%,transparent)] border-[color-mix(in_srgb,var(--color-slide-accent-emerald)_25%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-slide-accent-emerald)_10%,transparent)] text-[var(--color-slide-accent-emerald)] font-medium';
+            if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-[color-mix(in_srgb,var(--color-slide-accent-emerald)_20%,transparent)] text-[var(--color-slide-accent-emerald)] font-bold shrink-0';
           } else {
             item.className = 'slide-list-item w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer border min-w-0 bg-transparent border-transparent hover:bg-slate-800/60 light:hover:bg-slate-100 text-slate-300 light:text-slate-700';
             if (numBadge) numBadge.className = 'font-mono text-xs px-2 py-0.5 rounded-md bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600 font-bold shrink-0';
@@ -942,7 +921,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         marker.setAttribute('aria-hidden', 'true');
 
         const dot = document.createElement('span');
-        dot.className = 'cue-dot w-2 h-3.5 sm:w-2.5 sm:h-4 rounded-full bg-slate-400 light:bg-slate-500 border border-slate-900 light:border-white transition-all duration-150 group-hover:scale-125 group-hover:bg-cyan-400 light:group-hover:bg-cyan-500 shadow-sm pointer-events-none';
+        dot.className = 'cue-dot w-2 h-3.5 sm:w-2.5 sm:h-4 rounded-full bg-slate-400 light:bg-slate-500 border border-slate-900 light:border-white transition-all duration-150 group-hover:scale-125 shadow-sm pointer-events-none';
         marker.appendChild(dot);
 
         marker.addEventListener('click', (e) => {
@@ -961,10 +940,10 @@ const currentDeckId = presentationId || talkId || "presentation";
         const dot = m.querySelector('.cue-dot') as HTMLElement || m;
         const start = parseFloat(m.getAttribute('data-cue-start') || '0');
         if (currentSec >= start) {
-          dot.classList.add('bg-blue-400', 'light:bg-blue-600', 'ring-2', 'ring-blue-400/50');
+          dot.classList.add('bg-domain-presentations', 'ring-2', 'ring-domain-presentations/50');
           dot.classList.remove('bg-slate-400', 'light:bg-slate-500');
         } else {
-          dot.classList.remove('bg-blue-400', 'light:bg-blue-600', 'ring-2', 'ring-blue-400/50');
+          dot.classList.remove('bg-domain-presentations', 'ring-2', 'ring-domain-presentations/50');
           dot.classList.add('bg-slate-400', 'light:bg-slate-500');
         }
       });
@@ -1181,6 +1160,17 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
     });
 
+    // Touch isolation: prevent swipes/taps inside references modal from bubbling to Reveal deck or timeline scrubber
+    referencesModalBackdrop?.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+    referencesModalBackdrop?.addEventListener('touchmove', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+    referencesModalBackdrop?.addEventListener('touchend', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+
     document.addEventListener('click', (e) => {
       const btn = (e.target as HTMLElement)?.closest('[data-open-reference]');
       if (btn) {
@@ -1204,14 +1194,16 @@ const currentDeckId = presentationId || talkId || "presentation";
           togglePseudoFullscreen(false);
         }
       }
-      const idx = deck.getIndices().h;
-      const slide = slidesData[idx];
-      if (slide) {
-        const targetEl = document.getElementById(`transcript-${slide.id}`);
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        const idx = deck.getIndices().h;
+        const slide = slidesData[idx];
+        if (slide) {
+          const targetEl = document.getElementById(`transcript-${slide.id}`);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
-      }
+      }, 60);
     });
 
     // Listen for external jump-to-slide events (e.g. from the Transcript Timeline Feed)
@@ -1250,7 +1242,6 @@ const currentDeckId = presentationId || talkId || "presentation";
     }
 
     // Responsive breakpoint listener for mobile <-> tablet <-> desktop transitions
-    const deckWrapper = document.querySelector('.slide-deck-wrapper');
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let prevIsDesktop = window.innerWidth >= 1024;
     window.addEventListener('resize', () => {
@@ -1295,34 +1286,10 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
     });
 
-    interface WebkitDocument extends Document {
-      webkitFullscreenElement?: Element;
-      webkitExitFullscreen?: () => Promise<void> | void;
-    }
-
-    interface WebkitElement extends HTMLElement {
-      webkitRequestFullscreen?: () => Promise<void> | void;
-    }
-
-    const webkitDoc = document as WebkitDocument;
-
     let savedScrollY = 0;
 
-    const isPseudoFullscreen = () => {
-      const wrapper = document.querySelector('.slide-deck-wrapper');
-      return Boolean(
-        wrapper?.classList.contains('is-pseudo-fullscreen') ||
-        document.documentElement.classList.contains('presentation-pseudo-fullscreen')
-      );
-    };
-
-    const isFullscreenActive = () => Boolean(
-      document.fullscreenElement ||
-      webkitDoc.webkitFullscreenElement ||
-      isPseudoFullscreen()
-    );
-
     const updateFullscreenIcons = () => {
+      syncModalPlacement();
       const isFs = isFullscreenActive();
       const iconEnter = document.getElementById('icon-fullscreen-enter');
       const iconExit = document.getElementById('icon-fullscreen-exit');
@@ -1424,7 +1391,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     document.addEventListener('fullscreenchange', updateFullscreenIcons);
     document.addEventListener('webkitfullscreenchange', updateFullscreenIcons);
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isPseudoFullscreen()) {
+      if (e.key === 'Escape' && isPseudoFullscreen() && !isReferencesModalOpen) {
         togglePseudoFullscreen(false);
       }
     });
@@ -1658,58 +1625,28 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
 
   /* Slide Canvas Theme Overrides for Dark Mode */
-  :root:not(.light) .bento-card-object .bg-blue-50,
-  :root:not(.light) .bento-card-object .bg-blue-50\/70,
-  :root:not(.light) .bento-card-object .bg-blue-50\/60,
-  :root:not(.light) .bento-card-object .bg-blue-50\/80 {
-    background-color: rgba(30, 58, 138, 0.25) !important;
-    border-color: rgba(59, 130, 246, 0.35) !important;
-    color: #f1f5f9 !important;
-  }
-
-  :root:not(.light) .bento-card-object .bg-cyan-50,
-  :root:not(.light) .bento-card-object .bg-cyan-50\/70 {
-    background-color: rgba(22, 78, 99, 0.25) !important;
-    border-color: rgba(6, 182, 212, 0.35) !important;
-    color: #f1f5f9 !important;
-  }
-
-  :root:not(.light) .bento-card-object .bg-indigo-50,
-  :root:not(.light) .bento-card-object .bg-indigo-50\/70 {
-    background-color: rgba(49, 46, 129, 0.25) !important;
-    border-color: rgba(99, 102, 241, 0.35) !important;
-    color: #f1f5f9 !important;
-  }
-
-  :root:not(.light) .bento-card-object .bg-emerald-50,
-  :root:not(.light) .bento-card-object .bg-emerald-50\/70 {
-    background-color: rgba(6, 78, 59, 0.25) !important;
-    border-color: rgba(16, 185, 129, 0.35) !important;
-    color: #f1f5f9 !important;
-  }
-
   :root:not(.light) .bento-card-object .bg-slate-50,
   :root:not(.light) .bento-card-object .bg-slate-100 {
     background-color: rgba(30, 41, 59, 0.55) !important;
     border-color: rgba(71, 85, 105, 0.45) !important;
-    color: #f1f5f9 !important;
+    color: var(--color-slide-text) !important;
   }
 
   :root:not(.light) .bento-card-object .bg-white {
     background-color: rgba(15, 23, 42, 0.85) !important;
     border-color: rgba(71, 85, 105, 0.5) !important;
-    color: #f1f5f9 !important;
+    color: var(--color-slide-text) !important;
   }
 
   :root:not(.light) .bento-card-object .text-slate-800,
   :root:not(.light) .bento-card-object .text-slate-900,
   :root:not(.light) .bento-card-object .text-slate-700 {
-    color: #f1f5f9 !important;
+    color: var(--color-slide-text) !important;
   }
 
   :root:not(.light) .bento-card-object .text-slate-600,
   :root:not(.light) .bento-card-object .text-slate-500 {
-    color: #94a3b8 !important;
+    color: var(--color-slide-text-subtle) !important;
   }
 
   :root:not(.light) .bento-card-object .border-slate-100,
@@ -2124,24 +2061,250 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
 
   @property --hl-alpha-1 {
-    syntax: '<number>';
+    syntax: '<percentage>';
     inherits: true;
-    initial-value: 0.38;
+    initial-value: 38%;
   }
   @property --hl-alpha-2 {
-    syntax: '<number>';
+    syntax: '<percentage>';
     inherits: true;
-    initial-value: 0.48;
+    initial-value: 48%;
   }
 
   /* ==========================================================================
-     Highlighter Marker System (CSS Marker Pen Animation)
+     Bullet Badge System (Ton-in-Ton Container-Driven Palette)
+     ========================================================================== */
+
+  .reveal .bullet-badge {
+    background-color: var(--color-gray-800);
+    color: var(--color-slide-text);
+  }
+  .light .reveal .bullet-badge {
+    background-color: var(--color-gray-200);
+    color: var(--color-slide-text);
+  }
+
+  /* Ton-in-Ton Bullet Badges per Container Accent (Canonical 9 Accents + Aliases + Numbers) */
+  .reveal [data-accent="rose"] .bullet-badge,
+  .reveal [data-accent="red"] .bullet-badge,
+  .reveal [data-accent="1"] .bullet-badge {
+    background-color: var(--color-slide-accent-rose);
+    color: white;
+  }
+  .reveal [data-accent="purple"] .bullet-badge,
+  .reveal [data-accent="violet"] .bullet-badge,
+  .reveal [data-accent="2"] .bullet-badge {
+    background-color: var(--color-slide-accent-purple);
+    color: white;
+  }
+  .reveal [data-accent="indigo"] .bullet-badge,
+  .reveal [data-accent="3"] .bullet-badge {
+    background-color: var(--color-slide-accent-indigo);
+    color: white;
+  }
+  .reveal [data-accent="blue"] .bullet-badge,
+  .reveal [data-accent="4"] .bullet-badge {
+    background-color: var(--color-slide-accent-blue);
+    color: white;
+  }
+  .reveal [data-accent="cyan"] .bullet-badge,
+  .reveal [data-accent="5"] .bullet-badge {
+    background-color: var(--color-slide-accent-cyan);
+    color: white;
+  }
+  .reveal [data-accent="teal"] .bullet-badge,
+  .reveal [data-accent="6"] .bullet-badge {
+    background-color: var(--color-slide-accent-teal);
+    color: white;
+  }
+  .reveal [data-accent="emerald"] .bullet-badge,
+  .reveal [data-accent="green"] .bullet-badge,
+  .reveal [data-accent="7"] .bullet-badge {
+    background-color: var(--color-slide-accent-emerald);
+    color: white;
+  }
+  .reveal [data-accent="amber"] .bullet-badge,
+  .reveal [data-accent="yellow"] .bullet-badge,
+  .reveal [data-accent="8"] .bullet-badge {
+    background-color: var(--color-slide-accent-amber);
+    color: white;
+  }
+  .reveal [data-accent="orange"] .bullet-badge,
+  .reveal [data-accent="9"] .bullet-badge {
+    background-color: var(--color-slide-accent-orange);
+    color: white;
+  }
+  .reveal [data-accent="neutral"] .bullet-badge {
+    background-color: var(--color-gray-800);
+    color: var(--color-slide-text);
+  }
+  .light .reveal [data-accent="neutral"] .bullet-badge {
+    background-color: var(--color-gray-200);
+    color: var(--color-slide-text);
+  }
+
+  /* ==========================================================================
+     Callout Box System (Container-Driven Palette)
+     ========================================================================== */
+
+  .reveal .callout-box {
+    background-color: var(--color-slide-card-bg);
+    border-color: var(--color-slide-card-border);
+    color: var(--color-slide-text);
+  }
+  .light .reveal .callout-box {
+    background-color: var(--color-slide-card-bg);
+    border-color: var(--color-slide-card-border);
+    color: var(--color-slide-text);
+  }
+
+  .reveal [data-accent="rose"] .callout-box,
+  .reveal [data-accent="red"] .callout-box,
+  .reveal [data-accent="1"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-rose) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-rose) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
+  }
+  .light .reveal [data-accent="rose"] .callout-box,
+  .light .reveal [data-accent="red"] .callout-box,
+  .light .reveal [data-accent="1"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-rose) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-rose) 25%, transparent);
+    color: var(--color-slide-accent-rose);
+  }
+
+  .reveal [data-accent="purple"] .callout-box,
+  .reveal [data-accent="violet"] .callout-box,
+  .reveal [data-accent="2"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+  }
+  .light .reveal [data-accent="purple"] .callout-box,
+  .light .reveal [data-accent="violet"] .callout-box,
+  .light .reveal [data-accent="2"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 25%, transparent);
+    color: var(--color-slide-accent-purple);
+  }
+
+  .reveal [data-accent="indigo"] .callout-box,
+  .reveal [data-accent="3"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
+  }
+  .light .reveal [data-accent="indigo"] .callout-box,
+  .light .reveal [data-accent="3"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 25%, transparent);
+    color: var(--color-slide-accent-indigo);
+  }
+
+  .reveal [data-accent="blue"] .callout-box,
+  .reveal [data-accent="4"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
+  }
+  .light .reveal [data-accent="blue"] .callout-box,
+  .light .reveal [data-accent="4"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 25%, transparent);
+    color: var(--color-slide-accent-blue);
+  }
+
+  .reveal [data-accent="cyan"] .callout-box,
+  .reveal [data-accent="5"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-cyan) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white);
+  }
+  .light .reveal [data-accent="cyan"] .callout-box,
+  .light .reveal [data-accent="5"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-cyan) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 25%, transparent);
+    color: var(--color-slide-accent-cyan);
+  }
+
+  .reveal [data-accent="teal"] .callout-box,
+  .reveal [data-accent="6"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-teal) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-teal) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white);
+  }
+  .light .reveal [data-accent="teal"] .callout-box,
+  .light .reveal [data-accent="6"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-teal) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-teal) 25%, transparent);
+    color: var(--color-slide-accent-teal);
+  }
+
+  .reveal [data-accent="emerald"] .callout-box,
+  .reveal [data-accent="green"] .callout-box,
+  .reveal [data-accent="7"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-emerald) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white);
+  }
+  .light .reveal [data-accent="emerald"] .callout-box,
+  .light .reveal [data-accent="green"] .callout-box,
+  .light .reveal [data-accent="7"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-emerald) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 25%, transparent);
+    color: var(--color-slide-accent-emerald);
+  }
+
+  .reveal [data-accent="amber"] .callout-box,
+  .reveal [data-accent="yellow"] .callout-box,
+  .reveal [data-accent="8"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-amber) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-amber) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white);
+  }
+  .light .reveal [data-accent="amber"] .callout-box,
+  .light .reveal [data-accent="yellow"] .callout-box,
+  .light .reveal [data-accent="8"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-amber) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-amber) 25%, transparent);
+    color: var(--color-slide-accent-amber);
+  }
+
+  .reveal [data-accent="orange"] .callout-box,
+  .reveal [data-accent="9"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
+  }
+  .light .reveal [data-accent="orange"] .callout-box,
+  .light .reveal [data-accent="9"] .callout-box {
+    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 25%, transparent);
+    color: var(--color-slide-accent-orange);
+  }
+
+  .reveal [data-accent="neutral"] .callout-box {
+    background-color: var(--color-slide-card-bg);
+    border-color: var(--color-slide-card-border);
+    color: var(--color-slide-text);
+  }
+  .light .reveal [data-accent="neutral"] .callout-box {
+    background-color: var(--color-slide-card-bg);
+    border-color: var(--color-slide-card-border);
+    color: var(--color-slide-text);
+  }
+
+  /* ==========================================================================
+     Highlight Marker System (Container-Driven Palette)
      ========================================================================== */
 
   .reveal mark,
   .reveal .highlight-marker {
-    --hl-alpha-1: 0.38;
-    --hl-alpha-2: 0.48;
+    --hl-alpha-1: 38%;
+    --hl-alpha-2: 48%;
+    --hl-color: var(--slide-accent, var(--color-slide-accent-blue));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
     background-color: transparent !important;
     color: inherit;
     padding: 0.14em 0.45em;
@@ -2150,7 +2313,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
     background-repeat: no-repeat;
-    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-2)) 100%);
+    background-image: linear-gradient(120deg, color-mix(in srgb, var(--hl-color) var(--hl-alpha-1), transparent) 0%, color-mix(in srgb, var(--hl-color) var(--hl-alpha-2), transparent) 100%);
     background-size: 100% 100%;
     transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
                 --hl-alpha-1 0.45s ease,
@@ -2162,9 +2325,9 @@ const currentDeckId = presentationId || talkId || "presentation";
 
   .light .reveal mark,
   .light .reveal .highlight-marker {
-    --hl-alpha-1: 0.42;
-    --hl-alpha-2: 0.48;
-    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-2)) 100%);
+    --hl-alpha-1: 42%;
+    --hl-alpha-2: 48%;
+    background-image: linear-gradient(120deg, color-mix(in srgb, var(--hl-color) var(--hl-alpha-1), transparent) 0%, color-mix(in srgb, var(--hl-color) var(--hl-alpha-2), transparent) 100%);
   }
 
   .reveal .slide-subtitle mark,
@@ -2172,278 +2335,152 @@ const currentDeckId = presentationId || talkId || "presentation";
     border-radius: 0.4em !important;
     padding: 0.14em 0.5em !important;
     margin: 0 0.05em !important;
-    --hl-glow-rgb: 6, 182, 212;
-    --hl-glow-rgb-2: 34, 211, 238;
-    --hl-text-dark: #a5f3fc;
-    --hl-text-light: #0e7490;
+    --hl-color: var(--slide-accent, var(--color-slide-accent-blue));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
   }
 
-  /* ==========================================================================
-     Bullet Badge System (Ton-in-Ton Container-Driven Palette)
-     ========================================================================== */
-
-  .reveal .bullet-badge {
-    background-color: #334155; /* slate-700 */
-    color: #f8fafc;
-  }
-  .light .reveal .bullet-badge {
-    background-color: #e2e8f0; /* slate-200 */
-    color: #0f172a;
-  }
-
-  /* Ton-in-Ton Bullet Badges per Container Accent */
-  .reveal [data-accent="blue"] .bullet-badge {
-    background-color: #2563eb; /* blue-600 */
-    color: #ffffff;
-  }
-  .light .reveal [data-accent="blue"] .bullet-badge {
-    background-color: #3b82f6; /* blue-500 */
-    color: #ffffff;
-  }
-  .reveal [data-accent="cyan"] .bullet-badge,
-  .reveal [data-accent="teal"] .bullet-badge {
-    background-color: #0891b2; /* cyan-600 */
-    color: #ffffff;
-  }
-  .light .reveal [data-accent="cyan"] .bullet-badge,
-  .light .reveal [data-accent="teal"] .bullet-badge {
-    background-color: #06b6d4; /* cyan-500 */
-    color: #ffffff;
-  }
-  .reveal [data-accent="emerald"] .bullet-badge,
-  .reveal [data-accent="green"] .bullet-badge {
-    background-color: #059669; /* emerald-600 */
-    color: #ffffff;
-  }
-  .light .reveal [data-accent="emerald"] .bullet-badge,
-  .light .reveal [data-accent="green"] .bullet-badge {
-    background-color: #10b981; /* emerald-500 */
-    color: #ffffff;
-  }
-  .reveal [data-accent="purple"] .bullet-badge {
-    background-color: #9333ea; /* purple-600 */
-    color: #ffffff;
-  }
-  .light .reveal [data-accent="purple"] .bullet-badge {
-    background-color: #a855f7; /* purple-500 */
-    color: #ffffff;
-  }
-  .reveal [data-accent="indigo"] .bullet-badge {
-    background-color: #4f46e5; /* indigo-600 */
-    color: #ffffff;
-  }
-  .light .reveal [data-accent="indigo"] .bullet-badge {
-    background-color: #6366f1; /* indigo-500 */
-    color: #ffffff;
-  }
-  .reveal [data-accent="amber"] .bullet-badge {
-    background-color: #d97706; /* amber-600 */
-    color: #ffffff;
-  }
-  .light .reveal [data-accent="amber"] .bullet-badge {
-    background-color: #f59e0b; /* amber-500 */
-    color: #ffffff;
-  }
-  .reveal [data-accent="neutral"] .bullet-badge {
-    background-color: #334155; /* slate-700 */
-    color: #f8fafc;
-  }
-  .light .reveal [data-accent="neutral"] .bullet-badge {
-    background-color: #e2e8f0; /* slate-200 */
-    color: #0f172a;
-  }
-
-  /* ==========================================================================
-     Callout Box System (Container-Driven Palette)
-     ========================================================================== */
-
-  .reveal .callout-box {
-    background-color: rgba(30, 41, 59, 0.55);
-    border-color: rgba(71, 85, 105, 0.45);
-    color: #f1f5f9;
-  }
-  .light .reveal .callout-box {
-    background-color: #f1f5f9;
-    border-color: #cbd5e1;
-    color: #1e293b;
-  }
-
-  .reveal [data-accent="blue"] .callout-box {
-    background-color: rgba(59, 130, 246, 0.12);
-    border-color: rgba(59, 130, 246, 0.35);
-    color: #bfdbfe;
-  }
-  .light .reveal [data-accent="blue"] .callout-box {
-    background-color: #eff6ff;
-    border-color: #bfdbfe;
-    color: #1e3a8a;
-  }
-
-  .reveal [data-accent="cyan"] .callout-box,
-  .reveal [data-accent="teal"] .callout-box {
-    background-color: rgba(6, 182, 212, 0.12);
-    border-color: rgba(6, 182, 212, 0.35);
-    color: #a5f3fc;
-  }
-  .light .reveal [data-accent="cyan"] .callout-box,
-  .light .reveal [data-accent="teal"] .callout-box {
-    background-color: #ecfeff;
-    border-color: #a5f3fc;
-    color: #155e75;
-  }
-
-  .reveal [data-accent="emerald"] .callout-box,
-  .reveal [data-accent="green"] .callout-box {
-    background-color: rgba(16, 185, 129, 0.12);
-    border-color: rgba(16, 185, 129, 0.35);
-    color: #a7f3d0;
-  }
-  .light .reveal [data-accent="emerald"] .callout-box,
-  .light .reveal [data-accent="green"] .callout-box {
-    background-color: #ecfdf5;
-    border-color: #a7f3d0;
-    color: #065f46;
-  }
-
-  .reveal [data-accent="purple"] .callout-box {
-    background-color: rgba(168, 85, 247, 0.12);
-    border-color: rgba(168, 85, 247, 0.35);
-    color: #e9d5ff;
-  }
-  .light .reveal [data-accent="purple"] .callout-box {
-    background-color: #faf5ff;
-    border-color: #e9d5ff;
-    color: #581c87;
-  }
-
-  .reveal [data-accent="indigo"] .callout-box {
-    background-color: rgba(99, 102, 241, 0.12);
-    border-color: rgba(99, 102, 241, 0.35);
-    color: #c7d2fe;
-  }
-  .light .reveal [data-accent="indigo"] .callout-box {
-    background-color: #eef2ff;
-    border-color: #c7d2fe;
-    color: #3730a3;
-  }
-
-  .reveal [data-accent="amber"] .callout-box {
-    background-color: rgba(245, 158, 11, 0.12);
-    border-color: rgba(245, 158, 11, 0.35);
-    color: #fef08a;
-  }
-  .light .reveal [data-accent="amber"] .callout-box {
-    background-color: #fffbeb;
-    border-color: #fde68a;
-    color: #78350f;
-  }
-
-  .reveal [data-accent="neutral"] .callout-box {
-    background-color: rgba(30, 41, 59, 0.55);
-    border-color: rgba(71, 85, 105, 0.45);
-    color: #f1f5f9;
-  }
-  .light .reveal [data-accent="neutral"] .callout-box {
-    background-color: #f1f5f9;
-    border-color: #cbd5e1;
-    color: #1e293b;
-  }
-
-  /* ==========================================================================
-     Highlight Marker System (Container-Driven Palette)
-     ========================================================================== */
-
-  /* Default Marker Colors (Cyan) */
+  /* Default Marker Colors */
   .reveal mark,
   .reveal .highlight-marker {
-    --hl-glow-rgb: 6, 182, 212;
-    --hl-glow-rgb-2: 34, 211, 238;
-    --hl-text-dark: #a5f3fc;
-    --hl-text-light: #0e7490;
+    --hl-color: var(--slide-accent, var(--color-slide-accent-blue));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
   }
 
-  /* Container-driven Highlight: Blue */
+  /* Container-driven Highlight: 1 (Rose / Red) */
+  .reveal [data-accent="rose"] mark,
+  .reveal [data-accent="rose"] .highlight-marker,
+  .reveal [data-accent="red"] mark,
+  .reveal [data-accent="red"] .highlight-marker,
+  .reveal [data-accent="1"] mark,
+  .reveal [data-accent="1"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-rose);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
+    --hl-text-light: var(--color-slide-accent-rose);
+  }
+
+  /* Container-driven Highlight: 2 (Purple / Violet) */
+  .reveal [data-accent="purple"] mark,
+  .reveal [data-accent="purple"] .highlight-marker,
+  .reveal [data-accent="violet"] mark,
+  .reveal [data-accent="violet"] .highlight-marker,
+  .reveal [data-accent="2"] mark,
+  .reveal [data-accent="2"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-purple);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+    --hl-text-light: var(--color-slide-accent-purple);
+  }
+
+  /* Container-driven Highlight: 3 (Indigo) */
+  .reveal [data-accent="indigo"] mark,
+  .reveal [data-accent="indigo"] .highlight-marker,
+  .reveal [data-accent="3"] mark,
+  .reveal [data-accent="3"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-indigo);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
+    --hl-text-light: var(--color-slide-accent-indigo);
+  }
+
+  /* Container-driven Highlight: 4 (Blue) */
   .reveal [data-accent="blue"] mark,
-  .reveal [data-accent="blue"] .highlight-marker {
-    --hl-glow-rgb: 59, 130, 246;
-    --hl-glow-rgb-2: 96, 165, 250;
-    --hl-text-dark: #bfdbfe;
-    --hl-text-light: #1e40af;
+  .reveal [data-accent="blue"] .highlight-marker,
+  .reveal [data-accent="4"] mark,
+  .reveal [data-accent="4"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-blue);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
+    --hl-text-light: var(--color-slide-accent-blue);
   }
 
-  /* Container-driven Highlight: Cyan / Teal */
+  /* Container-driven Highlight: 5 (Cyan) */
   .reveal [data-accent="cyan"] mark,
   .reveal [data-accent="cyan"] .highlight-marker,
-  .reveal [data-accent="teal"] mark,
-  .reveal [data-accent="teal"] .highlight-marker {
-    --hl-glow-rgb: 6, 182, 212;
-    --hl-glow-rgb-2: 34, 211, 238;
-    --hl-text-dark: #a5f3fc;
-    --hl-text-light: #0e7490;
+  .reveal [data-accent="5"] mark,
+  .reveal [data-accent="5"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-cyan);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white);
+    --hl-text-light: var(--color-slide-accent-cyan);
   }
 
-  /* Container-driven Highlight: Emerald / Green */
+  /* Container-driven Highlight: 6 (Teal) */
+  .reveal [data-accent="teal"] mark,
+  .reveal [data-accent="teal"] .highlight-marker,
+  .reveal [data-accent="6"] mark,
+  .reveal [data-accent="6"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-teal);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white);
+    --hl-text-light: var(--color-slide-accent-teal);
+  }
+
+  /* Container-driven Highlight: 7 (Emerald / Green) */
   .reveal [data-accent="emerald"] mark,
   .reveal [data-accent="emerald"] .highlight-marker,
   .reveal [data-accent="green"] mark,
-  .reveal [data-accent="green"] .highlight-marker {
-    --hl-glow-rgb: 16, 185, 129;
-    --hl-glow-rgb-2: 52, 211, 153;
-    --hl-text-dark: #a7f3d0;
-    --hl-text-light: #065f46;
+  .reveal [data-accent="green"] .highlight-marker,
+  .reveal [data-accent="7"] mark,
+  .reveal [data-accent="7"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-emerald);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white);
+    --hl-text-light: var(--color-slide-accent-emerald);
   }
 
-  /* Container-driven Highlight: Purple */
-  .reveal [data-accent="purple"] mark,
-  .reveal [data-accent="purple"] .highlight-marker {
-    --hl-glow-rgb: 168, 85, 247;
-    --hl-glow-rgb-2: 192, 132, 252;
-    --hl-text-dark: #e9d5ff;
-    --hl-text-light: #581c87;
-  }
-
-  /* Container-driven Highlight: Indigo */
-  .reveal [data-accent="indigo"] mark,
-  .reveal [data-accent="indigo"] .highlight-marker {
-    --hl-glow-rgb: 99, 102, 241;
-    --hl-glow-rgb-2: 129, 140, 248;
-    --hl-text-dark: #c7d2fe;
-    --hl-text-light: #3730a3;
-  }
-
-  /* Container-driven Highlight: Amber */
+  /* Container-driven Highlight: 8 (Amber / Yellow) */
   .reveal [data-accent="amber"] mark,
-  .reveal [data-accent="amber"] .highlight-marker {
-    --hl-glow-rgb: 245, 158, 11;
-    --hl-glow-rgb-2: 251, 191, 36;
-    --hl-text-dark: #fef08a;
-    --hl-text-light: #78350f;
+  .reveal [data-accent="amber"] .highlight-marker,
+  .reveal [data-accent="yellow"] mark,
+  .reveal [data-accent="yellow"] .highlight-marker,
+  .reveal [data-accent="8"] mark,
+  .reveal [data-accent="8"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-amber);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white);
+    --hl-text-light: var(--color-slide-accent-amber);
   }
 
-  /* Container-driven Highlight: Neutral (warm classic amber contrast on slate) */
+  /* Container-driven Highlight: 9 (Orange) */
+  .reveal [data-accent="orange"] mark,
+  .reveal [data-accent="orange"] .highlight-marker,
+  .reveal [data-accent="9"] mark,
+  .reveal [data-accent="9"] .highlight-marker {
+    --hl-color: var(--color-slide-accent-orange);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
+    --hl-text-light: var(--color-slide-accent-orange);
+  }
+
+  /* Container-driven Highlight: Neutral (falls back cleanly to slide accent) */
   .reveal [data-accent="neutral"] mark,
   .reveal [data-accent="neutral"] .highlight-marker {
-    --hl-glow-rgb: 245, 158, 11;
-    --hl-glow-rgb-2: 251, 191, 36;
-    --hl-text-dark: #fef08a;
-    --hl-text-light: #78350f;
+    --hl-color: var(--slide-accent, var(--color-slide-accent-blue));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
+  }
+
+  /* Container-driven Highlight: BentoCards and Pipeline Steps */
+  .reveal .bento-card-root mark,
+  .reveal .bento-card-root .highlight-marker,
+  .reveal .step-row mark,
+  .reveal .step-row .highlight-marker,
+  .reveal .step-card mark,
+  .reveal .step-card .highlight-marker {
+    --hl-color: var(--card-accent, var(--step-accent, var(--slide-accent, var(--color-slide-accent-blue))));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
   }
 
   /* Pre-cue pending state for marker: 0% width (unmarked) */
   .reveal mark[data-cue]:not(.is-active),
   .reveal .highlight-marker[data-cue]:not(.is-active) {
     background-size: 0% 100%;
-    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 6, 182, 212), 0));
+    filter: drop-shadow(0 0 0px transparent);
   }
 
   /* Active Spotlight: Currently spoken highlight (vibrant gradient, glowing text, full brightness) */
   .reveal mark.is-active:not(.is-dimmed),
   .reveal .highlight-marker.is-active:not(.is-dimmed) {
-    --hl-alpha-1: 0.38;
-    --hl-alpha-2: 0.48;
+    --hl-alpha-1: 38%;
+    --hl-alpha-2: 48%;
     background-size: 100% 100% !important;
     color: var(--hl-text-dark) !important;
-    filter: drop-shadow(0 0 10px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.45));
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--hl-color) 45%, transparent));
     transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
                 --hl-alpha-1 0.4s ease,
                 --hl-alpha-2 0.4s ease,
@@ -2453,20 +2490,20 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
   .light .reveal mark.is-active:not(.is-dimmed),
   .light .reveal .highlight-marker.is-active:not(.is-dimmed) {
-    --hl-alpha-1: 0.42;
-    --hl-alpha-2: 0.48;
+    --hl-alpha-1: 42%;
+    --hl-alpha-2: 48%;
     color: var(--hl-text-light) !important;
-    filter: drop-shadow(0 0 8px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.25));
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--hl-color) 25%, transparent));
   }
 
-  /* Settled Spotlight: Previously spoken highlight on this slide (persistent muted marker) */
+  /* Settled Spotlight: Inactive/dimmed highlight markers transition smoothly into background */
   .reveal mark.is-active.is-dimmed,
   .reveal .highlight-marker.is-active.is-dimmed {
-    --hl-alpha-1: 0.13;
-    --hl-alpha-2: 0.17;
+    --hl-alpha-1: 13%;
+    --hl-alpha-2: 17%;
     background-size: 100% 100% !important;
     color: inherit !important;
-    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
+    filter: drop-shadow(0 0 0px transparent) !important;
     opacity: 1 !important;
     transition: --hl-alpha-1 0.85s cubic-bezier(0.16, 1, 0.3, 1),
                 --hl-alpha-2 0.85s cubic-bezier(0.16, 1, 0.3, 1),
@@ -2475,10 +2512,10 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
   .light .reveal mark.is-active.is-dimmed,
   .light .reveal .highlight-marker.is-active.is-dimmed {
-    --hl-alpha-1: 0.16;
-    --hl-alpha-2: 0.20;
+    --hl-alpha-1: 16%;
+    --hl-alpha-2: 20%;
     color: inherit !important;
-    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
+    filter: drop-shadow(0 0 0px transparent) !important;
     opacity: 1 !important;
   }
 
@@ -2516,20 +2553,10 @@ const currentDeckId = presentationId || talkId || "presentation";
 </style>
 
 <style is:global>
-  /* References Modal Light Mode Overrides matching PrivacyModal */
-  html.light #references-modal-backdrop {
-    background-color: rgba(15, 23, 42, 0.45) !important;
-  }
-  html.light #references-modal-container {
-    background-color: #ffffff !important;
-    border-color: #e2e8f0 !important;
-    color: #0f172a !important;
-  }
-  html.light #references-modal-container .modal-header,
-  html.light #references-modal-container .modal-footer {
-    border-color: #e2e8f0 !important;
-  }
-  html.light #references-modal-container .modal-footer {
-    background-color: #f8fafc !important;
+  /* Timeline Cue Dot Hover Glow */
+  .cue-timeline-marker:hover .cue-dot {
+    background-color: var(--color-domain-presentations) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-domain-presentations) 40%, transparent) !important;
+    transform: scale(1.25);
   }
 </style>

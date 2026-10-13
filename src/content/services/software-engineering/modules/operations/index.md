@@ -37,7 +37,7 @@ outputs:
   - "Graceful shutdown and health probe reference implementations for application runtimes"
   - "Operational Runbook and Incident Triage Playbook with automated mitigation scripts"
 duration: "2 - 4 Weeks"
-format: "Site Reliability Engineering (SRE) Sprints & Hands-On Workshops"
+format: "Operations Sprints"
 delivery: "Remote / On-site"
 ---
 

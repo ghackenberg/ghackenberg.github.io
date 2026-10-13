@@ -5,6 +5,7 @@ import Container from "@components/Container.astro";
 import { getCollection } from "astro:content";
 import PostCard from "@components/PostCard.astro";
 import FilterToolbar from "@components/FilterToolbar.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 
 const allPosts = await getCollection("posts");
 const posts = allPosts.sort(
@@ -51,9 +52,11 @@ const breadcrumbSchema = {
   <Navbar />
 
   <Container size="wide">
+    <Breadcrumbs domain="posts" />
+
     <div class="mb-12">
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-        Blog <span class="heading-gradient-blue">Posts</span>
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6">
+        Blog <span class="text-domain-posts">Posts</span>
       </h1>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         Technical articles, development logs, and architectural insights covering usability design, graphics engines, software systems, and engineering.
@@ -65,7 +68,7 @@ const breadcrumbSchema = {
       searchId="post-search"
       searchPlaceholder="Search articles..."
       tags={allTags}
-      accentColor="blue"
+      domain="posts"
       totalCount={posts.length}
       pageSize={12}
       itemTags={posts.map(p => (p.data.tags || []).map(t => t.toLowerCase()))}
@@ -201,7 +204,7 @@ const breadcrumbSchema = {
     </p>
 
     <!-- Pagination Controls -->
-    <nav id="posts-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5 mt-10" aria-label="Blog Posts Pagination">
+    <nav id="posts-pagination" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-element-border mt-10" aria-label="Blog Posts Pagination">
       {/* Previous Button */}
       <div class="flex-1 w-full sm:w-auto text-left">
         <button 
@@ -223,7 +226,7 @@ const breadcrumbSchema = {
         <button 
           type="button" 
           data-action="next" 
-          class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-brand-blue/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
+          class="next-btn inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-element-bg border border-element-border-medium text-gray-300 hover:text-gray-100 hover:border-domain-posts/30 hover:bg-element-bg-hover transition-all duration-200 text-sm font-semibold group w-full sm:w-auto cursor-pointer"
         >
           <span>Next</span>
           <span class="group-hover:translate-x-0.5 transition-transform ml-1.5">&rarr;</span>
@@ -258,7 +261,7 @@ const breadcrumbSchema = {
         pageSize: 12,
         navSelector: "#posts-pagination",
         pageParamKey: "page",
-        theme: "blue",
+        domain: "posts",
         scrollToSelector: "#posts-grid"
       },
       noResultsSelector: "#no-posts-message"

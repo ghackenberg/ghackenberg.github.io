@@ -43,7 +43,7 @@ const breadcrumbSchema = {
         <button 
           type="button" 
           data-open-privacy-modal 
-          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-element-bg light:bg-slate-100 border border-element-border-medium light:border-slate-300 hover:border-brand-purple/40 light:hover:border-purple-400 text-gray-200 light:text-slate-700 hover:text-white light:hover:text-purple-700 text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer shadow-sm"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-element-bg hover:bg-element-bg-hover border border-element-border-medium hover:border-brand-purple/40 text-text-subtle hover:text-text-main text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer shadow-sm"
         >
           <svg class="w-4 h-4 text-brand-purple" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -54,9 +54,7 @@ const breadcrumbSchema = {
     </div>
 
     <!-- Main Content Panel -->
-    <div class="glass-card rounded-3xl border border-white/5 overflow-hidden p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8 relative">
-      <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-purple"></div>
-
+    <div class="glass-card rounded-3xl border border-element-border overflow-hidden p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8 relative">
       <!-- Section 1: Controller -->
       <div>
         <h2 id="verantwortlicher" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple mb-3">1. Verantwortlicher</h2>
@@ -71,7 +69,7 @@ const breadcrumbSchema = {
         </div>
       </div>
 
-      <hr class="border-white/5" />
+      <hr class="border-element-border" />
 
       <!-- Section 2: Web Hosting / Server Logs -->
       <div class="space-y-3">
@@ -91,7 +89,7 @@ const breadcrumbSchema = {
         </p>
       </div>
 
-      <hr class="border-white/5" />
+      <hr class="border-element-border" />
 
       <!-- Section 3: Analytics -->
       <div class="space-y-3">
@@ -105,7 +103,7 @@ const breadcrumbSchema = {
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Die Erfassung erfolgt ausschließlich zur statistischen Auswertung und Optimierung unseres Online-Angebots auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO). Zur bedarfsgerechten Gestaltung und ergonomischen Optimierung (z.&nbsp;B. zur Ermittlung von Lesefluss, Textverständlichkeit und responsiven Layouts) erfassen wir rein anonyme Kontext- und Interaktionsereignisse (wie grobe Bildschirmbreiten-Klassen, Scroll- und Lesefortschritt, Sektionsverweildauer sowie Folienaufrufe in Präsentationen). Ein Browser-Fingerprinting oder eine Zuordnung zu individuellen Personen findet zu keinem Zeitpunkt statt.
         </p>
-        <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
+        <div class="p-4 rounded-2xl bg-white/[0.02] border border-element-border space-y-2">
           <p class="text-xs text-gray-300 font-semibold">Widerspruchsmöglichkeit (Opt-Out gem. Art. 21 DSGVO & CNIL-Richtlinie):</p>
           <p class="text-xs text-gray-400 leading-relaxed">
             Sie können der statistischen Erfassung Ihrer Besuche jederzeit widersprechen. Zudem respektiert unsere Seite automatisch Browser-Signale wie <em>Global Privacy Control (GPC)</em> und <em>Do Not Track (DNT)</em>.
@@ -121,7 +119,7 @@ const breadcrumbSchema = {
         </div>
       </div>
 
-      <hr class="border-white/5" />
+      <hr class="border-element-border" />
 
       <!-- Section 4: Local Storage & Read State / Gallery Ledger -->
       <div class="space-y-3">
@@ -151,7 +149,7 @@ const breadcrumbSchema = {
         </p>
       </div>
 
-      <hr class="border-white/5" />
+      <hr class="border-element-border" />
 
       <!-- Section 5: E-Mail Inquiries -->
       <div class="space-y-3">
@@ -164,7 +162,7 @@ const breadcrumbSchema = {
         </p>
       </div>
 
-      <hr class="border-white/5" />
+      <hr class="border-element-border" />
 
       <!-- Section 6: User Rights -->
       <div class="space-y-3">
@@ -199,7 +197,7 @@ const breadcrumbSchema = {
           Wenn Sie glauben, dass die Verarbeitung Ihrer Daten gegen das Datenschutzrecht verstoßt oder Ihre datenschutzrechtlichen Ansprüche verletzt worden sind, haben Sie das Recht auf Beschwerde bei einer Aufsichtsbehörde. In Österreich ist dies die:
         </p>
         
-        <div class="p-4 bg-white/[0.02] border border-white/5 rounded-2xl text-xs text-gray-300 max-w-full sm:max-w-md space-y-1.5 overflow-hidden">
+        <div class="p-4 bg-white/[0.02] border border-element-border rounded-2xl text-xs text-gray-300 max-w-full sm:max-w-md space-y-1.5 overflow-hidden">
           <p class="font-bold text-sm text-gray-100">Österreichische Datenschutzbehörde</p>
           <p>Barichgasse 40-42, 1030 Wien</p>
           <p class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
@@ -217,7 +215,7 @@ const breadcrumbSchema = {
         </div>
       </div>
 
-      <hr class="border-white/5" />
+      <hr class="border-element-border" />
 
       <!-- Section: Cookies Disclaimer -->
       <div class="space-y-2 text-xs text-gray-500 leading-relaxed">

@@ -25,13 +25,13 @@ const {
     <defs>
       <!-- Soft gradient for subtle highlights -->
       <linearGradient id="primary-glow" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.12" />
-        <stop offset="100%" stop-color="#0891b2" stop-opacity="0.03" />
+        <stop offset="0%" stop-color="var(--color-slide-accent-blue)" stop-opacity="0.12" />
+        <stop offset="100%" stop-color="var(--color-slide-accent-cyan)" stop-opacity="0.03" />
       </linearGradient>
 
       <!-- Drop shadow filter for bento cards -->
       <filter id="card-shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
-        <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.1" />
+        <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="black" flood-opacity="0.1" />
       </filter>
     </defs>
 
@@ -40,7 +40,7 @@ const {
     <rect width="1920" height="1080" fill="url(#primary-glow)" />
 
     <!-- Top Border Accent Line -->
-    <rect x="0" y="0" width="1920" height="6" fill="#2563eb" />
+    <rect x="0" y="0" width="1920" height="6" fill="var(--color-slide-accent-blue)" />
 
     <!-- Header Section -->
     {title && (
@@ -85,7 +85,7 @@ const {
       </text>
 
       <!-- Center: Domain -->
-      <text x="860" y="0" text-anchor="middle" fill="#3b82f6" font-size="15" font-weight="700" font-family="'Outfit', sans-serif">
+      <text x="860" y="0" text-anchor="middle" fill="var(--color-slide-accent-blue)" font-size="15" font-weight="700" font-family="'Outfit', sans-serif">
         https://hackenberg.tech
       </text>
 
@@ -101,45 +101,25 @@ const {
 
 <style is:global>
   .slide-canvas-bg {
-    fill: #090d16;
+    fill: var(--color-slide-bg);
     transition: fill 0.3s ease;
-  }
-  html.light .slide-canvas-bg,
-  .light .slide-canvas-bg {
-    fill: #f8fafc !important;
   }
 
   .slide-title-text {
-    fill: #f8fafc;
+    fill: var(--color-slide-text);
     transition: fill 0.3s ease;
-  }
-  html.light .slide-title-text,
-  .light .slide-title-text {
-    fill: #0f172a !important;
   }
 
   .slide-subtitle-text {
-    fill: #94a3b8;
+    fill: var(--color-slide-text-subtle);
     transition: fill 0.3s ease;
-  }
-  html.light .slide-subtitle-text,
-  .light .slide-subtitle-text {
-    fill: #475569 !important;
   }
 
   .slide-footer-text {
-    fill: #64748b;
-  }
-  html.light .slide-footer-text,
-  .light .slide-footer-text {
-    fill: #64748b !important;
+    fill: var(--color-slide-text-subtle);
   }
 
   .slide-footer-num {
-    fill: #64748b;
-  }
-  html.light .slide-footer-num,
-  .light .slide-footer-num {
-    fill: #94a3b8 !important;
+    fill: var(--color-slide-text-subtle);
   }
 </style>

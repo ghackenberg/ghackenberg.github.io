@@ -14,7 +14,7 @@ const {
   from,
   to,
   label,
-  color = '#2563eb',
+  color = 'var(--color-slide-accent-blue)',
   animated = false,
   id,
   curve = 'straight',
@@ -71,14 +71,14 @@ if (curve === 'curved') {
         width={label.length * 9 + 20}
         height="22"
         rx="6"
-        fill="#ffffff"
-        stroke="#e2e8f0"
+        fill="var(--color-slide-card-bg)"
+        stroke="var(--color-slide-card-border)"
         stroke-width="1.5"
       />
       <text
         y="3"
         text-anchor="middle"
-        fill="#475569"
+        fill="var(--color-slide-text)"
         font-size="12"
         font-weight="600"
         font-family="'Inter', sans-serif"

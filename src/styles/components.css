@@ -6,46 +6,8 @@
 /* Timeline logo container in light mode */
 @variant light {
   .timeline-logo-container {
-    background-color: #ffffff !important;
+    background-color: white !important;
     border-color: rgba(15, 23, 42, 0.12) !important;
-  }
-}
-
-/* DEPRECATED LEGACY OVERRIDES - DO NOT USE FOR NEW DEVELOPMENT.
-   New development should use semantic token utilities (e.g. bg-element-bg, border-element-border) 
-   instead of overriding absolute white classes in CSS. */
-.border-white\/5 {
-  border-color: rgba(255, 255, 255, 0.05);
-  @variant light {
-    border-color: rgba(15, 23, 42, 0.08);
-  }
-}
-
-.border-white\/10 {
-  border-color: rgba(255, 255, 255, 0.1);
-  @variant light {
-    border-color: rgba(15, 23, 42, 0.12);
-  }
-}
-
-.bg-white\/5 {
-  background-color: rgba(255, 255, 255, 0.05);
-  @variant light {
-    background-color: rgba(15, 23, 42, 0.04);
-  }
-}
-
-.hover\:bg-white\/10:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  @variant light {
-    background-color: rgba(15, 23, 42, 0.08);
-  }
-}
-
-.hover\:border-white\/20:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  @variant light {
-    border-color: rgba(15, 23, 42, 0.15);
   }
 }
 
@@ -54,28 +16,28 @@
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #030712;
+  background: var(--color-bg-main);
   transition: background-color 0.5s ease;
 }
 html.light::-webkit-scrollbar-track,
 html.light ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--color-gray-900);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1f2937;
+  background: var(--color-gray-800);
   border-radius: 5px;
   transition: background-color 0.5s ease;
 }
 html.light::-webkit-scrollbar-thumb,
 html.light ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--color-gray-700);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #374151;
+  background: var(--color-gray-700);
 }
 html.light::-webkit-scrollbar-thumb:hover,
 html.light ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--color-gray-600);
 }
 
 /* Custom Scrollbar for tag lists / sidebars */
@@ -170,50 +132,50 @@ html {
 
 /* Premium high-contrast styling for status/category badges */
 .bg-brand-blue\/10.text-brand-blue {
-  color: #60a5fa !important; /* Tailwind blue-400 */
-  border-color: rgba(96, 165, 250, 0.3) !important;
-  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: var(--color-brand-blue) !important;
+  border-color: color-mix(in srgb, var(--color-brand-blue) 30%, transparent) !important;
+  background-color: color-mix(in srgb, var(--color-brand-blue) 15%, transparent) !important;
 
   @variant light {
-    color: #1d4ed8 !important; /* blue-700 */
-    border-color: rgba(59, 130, 246, 0.25) !important;
-    background-color: rgba(59, 130, 246, 0.1) !important;
+    color: var(--color-brand-blue) !important;
+    border-color: color-mix(in srgb, var(--color-brand-blue) 25%, transparent) !important;
+    background-color: color-mix(in srgb, var(--color-brand-blue) 10%, transparent) !important;
   }
 }
 
 .bg-brand-yellow\/10.text-brand-yellow {
-  color: #fbbf24 !important; /* Tailwind amber-400 */
-  border-color: rgba(251, 191, 36, 0.3) !important;
-  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: var(--color-brand-yellow) !important;
+  border-color: color-mix(in srgb, var(--color-brand-yellow) 30%, transparent) !important;
+  background-color: color-mix(in srgb, var(--color-brand-yellow) 15%, transparent) !important;
 
   @variant light {
-    color: #b45309 !important; /* amber-700 */
-    border-color: rgba(245, 158, 11, 0.3) !important;
-    background-color: rgba(245, 158, 11, 0.1) !important;
+    color: var(--color-brand-yellow) !important;
+    border-color: color-mix(in srgb, var(--color-brand-yellow) 30%, transparent) !important;
+    background-color: color-mix(in srgb, var(--color-brand-yellow) 10%, transparent) !important;
   }
 }
 
 .bg-brand-purple\/10.text-brand-purple {
-  color: #c084fc !important; /* Tailwind purple-400 */
-  border-color: rgba(192, 132, 252, 0.3) !important;
-  background-color: rgba(168, 85, 247, 0.15) !important;
+  color: var(--color-brand-purple) !important;
+  border-color: color-mix(in srgb, var(--color-brand-purple) 30%, transparent) !important;
+  background-color: color-mix(in srgb, var(--color-brand-purple) 15%, transparent) !important;
 
   @variant light {
-    color: #7e22ce !important; /* purple-700 */
-    border-color: rgba(168, 85, 247, 0.25) !important;
-    background-color: rgba(168, 85, 247, 0.1) !important;
+    color: var(--color-brand-purple) !important;
+    border-color: color-mix(in srgb, var(--color-brand-purple) 25%, transparent) !important;
+    background-color: color-mix(in srgb, var(--color-brand-purple) 10%, transparent) !important;
   }
 }
 
 .bg-brand-green\/10.text-brand-green {
-  color: #34d399 !important; /* Tailwind emerald-400 */
-  border-color: rgba(52, 211, 153, 0.3) !important;
-  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: var(--color-brand-green) !important;
+  border-color: color-mix(in srgb, var(--color-brand-green) 30%, transparent) !important;
+  background-color: color-mix(in srgb, var(--color-brand-green) 15%, transparent) !important;
 
   @variant light {
-    color: #047857 !important; /* emerald-700 */
-    border-color: rgba(16, 185, 129, 0.25) !important;
-    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: var(--color-brand-green) !important;
+    border-color: color-mix(in srgb, var(--color-brand-green) 25%, transparent) !important;
+    background-color: color-mix(in srgb, var(--color-brand-green) 10%, transparent) !important;
   }
 }
 
@@ -392,16 +354,16 @@ html {
 html.has-unread-notifications #whats-new-btn-desktop svg,
 html.has-unread-notifications #whats-new-btn-mobile svg,
 .whats-new-luminous svg {
-  color: #3b82f6 !important;
-  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.7));
+  color: var(--color-brand-blue) !important;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-brand-blue) 70%, transparent));
   transition: color 0.3s ease, filter 0.3s ease;
 }
 
 html.light.has-unread-notifications #whats-new-btn-desktop svg,
 html.light.has-unread-notifications #whats-new-btn-mobile svg,
 html.light .whats-new-luminous svg {
-  color: #2563eb !important;
-  filter: drop-shadow(0 0 3px rgba(37, 99, 235, 0.45));
+  color: var(--color-brand-blue) !important;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-brand-blue) 45%, transparent));
 }
 
 /* Navigation Section Unread Notification Dot */
@@ -428,80 +390,174 @@ html.light .whats-new-luminous svg {
   display: none !important;
 }
 
-.badge-new-blue {
-  background: linear-gradient(135deg, #2563eb 0%, #0284c7 50%, #06b6d4 100%);
-  color: #ffffff !important;
+.badge-new-blue,
+.badge-new-presentations {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-presentations) 80%, black) 0%, var(--color-domain-presentations) 50%, color-mix(in srgb, var(--color-domain-presentations) 70%, white) 100%);
+  color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-presentations) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
-    background: linear-gradient(135deg, #1d4ed8 0%, #0369a1 100%);
-    color: #ffffff !important;
-    border: 1px solid rgba(29, 78, 216, 0.3);
-    box-shadow: 0 2px 5px rgba(29, 78, 216, 0.25);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-presentations) 80%, black) 0%, var(--color-domain-presentations) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-presentations) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-presentations) 25%, transparent);
   }
 }
 
-.badge-new-yellow {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
-  color: #020617 !important;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+.badge-new-violet,
+.badge-new-posts {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-posts) 80%, black) 0%, var(--color-domain-posts) 50%, color-mix(in srgb, var(--color-domain-posts) 70%, white) 100%);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-posts) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
-    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-    color: #ffffff !important;
-    border: 1px solid rgba(180, 83, 9, 0.3);
-    box-shadow: 0 2px 5px rgba(180, 83, 9, 0.25);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-posts) 80%, black) 0%, var(--color-domain-posts) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-posts) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-posts) 25%, transparent);
+  }
+}
+
+.badge-new-indigo,
+.badge-new-publications {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-publications) 80%, black) 0%, var(--color-domain-publications) 50%, color-mix(in srgb, var(--color-domain-publications) 70%, white) 100%);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-publications) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-publications) 80%, black) 0%, var(--color-domain-publications) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-publications) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-publications) 25%, transparent);
+  }
+}
+
+.badge-new-teal,
+.badge-new-projects {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-projects) 80%, black) 0%, var(--color-domain-projects) 50%, color-mix(in srgb, var(--color-domain-projects) 70%, white) 100%);
+  color: var(--color-gray-950) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-projects) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-projects) 80%, black) 0%, var(--color-domain-projects) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-projects) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-projects) 25%, transparent);
+  }
+}
+
+.badge-new-yellow,
+.badge-new-visualizations {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-visualizations) 80%, black) 0%, var(--color-domain-visualizations) 50%, color-mix(in srgb, var(--color-domain-visualizations) 70%, white) 100%);
+  color: var(--color-gray-950) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-visualizations) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-visualizations) 80%, black) 0%, var(--color-domain-visualizations) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-visualizations) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-visualizations) 25%, transparent);
+  }
+}
+
+.badge-new-orange,
+.badge-new-tags {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 50%, color-mix(in srgb, var(--color-domain-tags) 70%, white) 100%);
+  color: var(--color-gray-950) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-tags) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-tags) 80%, black) 0%, var(--color-domain-tags) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-tags) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-tags) 25%, transparent);
   }
 }
 
 .badge-new-purple {
-  background: linear-gradient(135deg, #9333ea 0%, #a855f7 50%, #ec4899 100%);
-  color: #ffffff !important;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-brand-purple) 80%, black) 0%, var(--color-brand-purple) 50%, color-mix(in srgb, var(--color-brand-purple) 70%, white) 100%);
+  color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-brand-purple) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
-    background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
-    color: #ffffff !important;
-    border: 1px solid rgba(126, 34, 206, 0.3);
-    box-shadow: 0 2px 5px rgba(126, 34, 206, 0.25);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-brand-purple) 80%, black) 0%, var(--color-brand-purple) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-brand-purple) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-brand-purple) 25%, transparent);
   }
 }
 
-.badge-new-green {
-  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #14b8a6 100%);
-  color: #ffffff !important;
+.badge-new-green,
+.badge-new-emerald,
+.badge-new-services {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-services) 80%, black) 0%, var(--color-domain-services) 50%, color-mix(in srgb, var(--color-domain-services) 70%, white) 100%);
+  color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-services) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   @variant light {
-    background: linear-gradient(135deg, #047857 0%, #059669 100%);
-    color: #ffffff !important;
-    border: 1px solid rgba(4, 120, 87, 0.3);
-    box-shadow: 0 2px 5px rgba(4, 120, 87, 0.25);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-services) 80%, black) 0%, var(--color-domain-services) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-services) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-services) 25%, transparent);
+  }
+}
+
+.badge-new-cyan,
+.badge-new-courses {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-courses) 80%, black) 0%, var(--color-domain-courses) 50%, color-mix(in srgb, var(--color-domain-courses) 70%, white) 100%);
+  color: var(--color-gray-950) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-courses) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-courses) 80%, black) 0%, var(--color-domain-courses) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-courses) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-courses) 25%, transparent);
+  }
+}
+
+.badge-new-rose,
+.badge-new-interests {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-interests) 80%, black) 0%, var(--color-domain-interests) 50%, color-mix(in srgb, var(--color-domain-interests) 70%, white) 100%);
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-domain-interests) 40%, transparent), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @variant light {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-domain-interests) 80%, black) 0%, var(--color-domain-interests) 100%);
+    color: white !important;
+    border: 1px solid color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
+    box-shadow: 0 2px 5px color-mix(in srgb, var(--color-domain-interests) 25%, transparent);
   }
 }
 
 /* Timeline lifeline dashed SVG lines in light mode */
 .light [data-lifeline-dashed-top] stop[offset="0%"] {
-  stop-color: #ebf2f8 !important;
+  stop-color: var(--color-bg-main) !important;
 }
 .light [data-lifeline-dashed-bottom] stop[offset="100%"] {
-  stop-color: #ebf2f8 !important;
+  stop-color: var(--color-bg-main) !important;
 }
 
 /* Vis.js Custom Premium Tooltip Styling */
 div.vis-tooltip {
   position: absolute !important;
   background: rgba(3, 7, 18, 0.9) !important;
-  color: #f8fafc !important;
+  color: var(--color-text-heading) !important;
   font-family: var(--font-sans) !important;
   padding: 10px 14px !important;
   border-radius: 16px !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.7), 0 0 20px rgba(16, 185, 129, 0.18) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.7), 0 0 20px color-mix(in srgb, var(--color-domain-services) 18%, transparent) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   pointer-events: none !important;
@@ -517,9 +573,9 @@ div.vis-tooltip {
 
 :root.light div.vis-tooltip, .light div.vis-tooltip {
   background: rgba(255, 255, 255, 0.95) !important;
-  color: #0f172a !important;
+  color: var(--color-text-heading) !important;
   border: 1px solid rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.12), 0 0 20px rgba(16, 185, 129, 0.15) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.12), 0 0 20px color-mix(in srgb, var(--color-domain-services) 15%, transparent) !important;
 }
 
 /* Ensure Vis.js canvases with disabled drag allow native touch scrolling */
@@ -533,7 +589,7 @@ div.vis-tooltip {
 .tag-chip {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #9ca3af;
+  color: var(--color-gray-400);
   min-height: 24px;
   display: inline-flex;
   align-items: center;
@@ -545,123 +601,354 @@ div.vis-tooltip {
 .light .tag-chip {
   background: rgba(15, 23, 42, 0.04);
   border-color: rgba(15, 23, 42, 0.08);
-  color: #475569;
+  color: var(--color-gray-400);
 }
 
 /* Hover States (when not matching active tag filter) */
-.tag-chip-blue:hover:not(.active-tag-match) {
-  border-color: rgba(59, 130, 246, 0.3);
-  color: #93c5fd;
-  background: rgba(59, 130, 246, 0.08);
+/* 1. Interests (Rose) */
+.tag-chip-rose:hover:not(.active-tag-match),
+.tag-chip-interests:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-interests) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-interests) 8%, transparent);
 }
-:root.light .tag-chip-blue:hover:not(.active-tag-match),
-.light .tag-chip-blue:hover:not(.active-tag-match) {
-  background: rgba(59, 130, 246, 0.06);
-  border-color: rgba(59, 130, 246, 0.3);
-  color: #1d4ed8;
-}
-
-.tag-chip-yellow:hover:not(.active-tag-match) {
-  border-color: rgba(245, 158, 11, 0.3);
-  color: #fbbf24;
-  background: rgba(245, 158, 11, 0.08);
-}
-:root.light .tag-chip-yellow:hover:not(.active-tag-match),
-.light .tag-chip-yellow:hover:not(.active-tag-match) {
-  background: rgba(245, 158, 11, 0.06);
-  border-color: rgba(245, 158, 11, 0.3);
-  color: #92400e;
+:root.light .tag-chip-rose:hover:not(.active-tag-match),
+.light .tag-chip-rose:hover:not(.active-tag-match),
+:root.light .tag-chip-interests:hover:not(.active-tag-match),
+.light .tag-chip-interests:hover:not(.active-tag-match) {
+  background: color-mix(in srgb, var(--color-domain-interests) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-interests) 30%, transparent);
+  color: var(--color-domain-interests);
 }
 
+/* 2. Posts (Violet) */
+.tag-chip-violet:hover:not(.active-tag-match),
+.tag-chip-posts:hover:not(.active-tag-match),
 .tag-chip-purple:hover:not(.active-tag-match) {
-  border-color: rgba(168, 85, 247, 0.3);
-  color: #d8b4fe;
-  background: rgba(168, 85, 247, 0.08);
+  border-color: color-mix(in srgb, var(--color-domain-posts) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-posts) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-posts) 8%, transparent);
 }
+:root.light .tag-chip-violet:hover:not(.active-tag-match),
+.light .tag-chip-violet:hover:not(.active-tag-match),
+:root.light .tag-chip-posts:hover:not(.active-tag-match),
+.light .tag-chip-posts:hover:not(.active-tag-match),
 :root.light .tag-chip-purple:hover:not(.active-tag-match),
 .light .tag-chip-purple:hover:not(.active-tag-match) {
-  background: rgba(168, 85, 247, 0.06);
-  border-color: rgba(168, 85, 247, 0.3);
-  color: #6b21a8;
+  background: color-mix(in srgb, var(--color-domain-posts) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-posts) 30%, transparent);
+  color: var(--color-domain-posts);
 }
 
-.tag-chip-green:hover:not(.active-tag-match) {
-  border-color: rgba(16, 185, 129, 0.3);
-  color: #6ee7b7;
-  background: rgba(16, 185, 129, 0.08);
+/* 3. Publications (Indigo) */
+.tag-chip-indigo:hover:not(.active-tag-match),
+.tag-chip-publications:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-publications) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-publications) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-publications) 8%, transparent);
 }
+:root.light .tag-chip-indigo:hover:not(.active-tag-match),
+.light .tag-chip-indigo:hover:not(.active-tag-match),
+:root.light .tag-chip-publications:hover:not(.active-tag-match),
+.light .tag-chip-publications:hover:not(.active-tag-match) {
+  background: color-mix(in srgb, var(--color-domain-publications) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-publications) 30%, transparent);
+  color: var(--color-domain-publications);
+}
+
+/* 4. Presentations (Blue) */
+.tag-chip-blue:hover:not(.active-tag-match),
+.tag-chip-presentations:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-presentations) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-presentations) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-presentations) 8%, transparent);
+}
+:root.light .tag-chip-blue:hover:not(.active-tag-match),
+.light .tag-chip-blue:hover:not(.active-tag-match),
+:root.light .tag-chip-presentations:hover:not(.active-tag-match),
+.light .tag-chip-presentations:hover:not(.active-tag-match) {
+  background: color-mix(in srgb, var(--color-domain-presentations) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-presentations) 30%, transparent);
+  color: var(--color-domain-presentations);
+}
+
+/* 5. Courses (Cyan) */
+.tag-chip-cyan:hover:not(.active-tag-match),
+.tag-chip-courses:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-courses) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-courses) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-courses) 8%, transparent);
+}
+:root.light .tag-chip-cyan:hover:not(.active-tag-match),
+.light .tag-chip-cyan:hover:not(.active-tag-match),
+:root.light .tag-chip-courses:hover:not(.active-tag-match),
+.light .tag-chip-courses:hover:not(.active-tag-match) {
+  background: color-mix(in srgb, var(--color-domain-courses) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-courses) 30%, transparent);
+  color: var(--color-domain-courses);
+}
+
+/* 6. Projects (Teal) */
+.tag-chip-teal:hover:not(.active-tag-match),
+.tag-chip-projects:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-projects) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-projects) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-projects) 8%, transparent);
+}
+:root.light .tag-chip-teal:hover:not(.active-tag-match),
+.light .tag-chip-teal:hover:not(.active-tag-match),
+:root.light .tag-chip-projects:hover:not(.active-tag-match),
+.light .tag-chip-projects:hover:not(.active-tag-match) {
+  background: color-mix(in srgb, var(--color-domain-projects) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-projects) 30%, transparent);
+  color: var(--color-domain-projects);
+}
+
+/* 7. Services (Emerald) */
+.tag-chip-emerald:hover:not(.active-tag-match),
+.tag-chip-services:hover:not(.active-tag-match),
+.tag-chip-green:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-services) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-services) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-services) 8%, transparent);
+}
+:root.light .tag-chip-emerald:hover:not(.active-tag-match),
+.light .tag-chip-emerald:hover:not(.active-tag-match),
+:root.light .tag-chip-services:hover:not(.active-tag-match),
+.light .tag-chip-services:hover:not(.active-tag-match),
 :root.light .tag-chip-green:hover:not(.active-tag-match),
 .light .tag-chip-green:hover:not(.active-tag-match) {
-  background: rgba(16, 185, 129, 0.06);
-  border-color: rgba(16, 185, 129, 0.3);
-  color: #065f46;
+  background: color-mix(in srgb, var(--color-domain-services) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-services) 30%, transparent);
+  color: var(--color-domain-services);
 }
 
-/* Active Highlight Matches - Harmonized 1:1 with Sidebar .tag-filter-btn.active */
-.tag-chip-blue.active-tag-match {
-  background: rgba(59, 130, 246, 0.2) !important;
-  border-color: rgba(59, 130, 246, 0.5) !important;
-  color: #7dd3fc !important;
-  box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25) !important;
+/* 8. Visualizations (Yellow) */
+.tag-chip-yellow:hover:not(.active-tag-match),
+.tag-chip-visualizations:hover:not(.active-tag-match),
+.tag-chip-amber:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-visualizations) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-visualizations) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-visualizations) 8%, transparent);
+}
+:root.light .tag-chip-yellow:hover:not(.active-tag-match),
+.light .tag-chip-yellow:hover:not(.active-tag-match),
+:root.light .tag-chip-visualizations:hover:not(.active-tag-match),
+.light .tag-chip-visualizations:hover:not(.active-tag-match),
+:root.light .tag-chip-amber:hover:not(.active-tag-match),
+.light .tag-chip-amber:hover:not(.active-tag-match) {
+  background: color-mix(in srgb, var(--color-domain-visualizations) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-visualizations) 30%, transparent);
+  color: var(--color-domain-visualizations);
+}
+
+/* 9. Tags (Orange) */
+.tag-chip-orange:hover:not(.active-tag-match),
+.tag-chip-tags:hover:not(.active-tag-match),
+.tag-chip-sky:hover:not(.active-tag-match) {
+  border-color: color-mix(in srgb, var(--color-domain-tags) 30%, transparent);
+  color: color-mix(in srgb, var(--color-domain-tags) 70%, white);
+  background: color-mix(in srgb, var(--color-domain-tags) 8%, transparent);
+}
+:root.light .tag-chip-orange:hover:not(.active-tag-match),
+.light .tag-chip-orange:hover:not(.active-tag-match),
+:root.light .tag-chip-tags:hover:not(.active-tag-match),
+.light .tag-chip-tags:hover:not(.active-tag-match),
+:root.light .tag-chip-sky:hover:not(.active-tag-match),
+.light .tag-chip-sky:hover:not(.active-tag-match) {
+  background: color-mix(in srgb, var(--color-domain-tags) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-tags) 30%, transparent);
+  color: var(--color-domain-tags);
+}
+
+/* Active Highlight Matches - Harmonized 1:1 across 9 Domains */
+/* 1. Interests (Rose) */
+.tag-chip-rose.active-tag-match,
+.tag-chip-interests.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-interests) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-interests) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-interests) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-interests) 25%, transparent) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-rose.active-tag-match,
+.light .tag-chip-rose.active-tag-match,
+:root.light .tag-chip-interests.active-tag-match,
+.light .tag-chip-interests.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-interests) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-interests) 40%, transparent) !important;
+  color: var(--color-domain-interests) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-interests) 20%, transparent) !important;
+}
+
+/* 2. Posts (Violet) */
+.tag-chip-violet.active-tag-match,
+.tag-chip-posts.active-tag-match,
+.tag-chip-purple.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-posts) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-posts) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-posts) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-posts) 25%, transparent) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-violet.active-tag-match,
+.light .tag-chip-violet.active-tag-match,
+:root.light .tag-chip-posts.active-tag-match,
+.light .tag-chip-posts.active-tag-match,
+:root.light .tag-chip-purple.active-tag-match,
+.light .tag-chip-purple.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-posts) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-posts) 40%, transparent) !important;
+  color: var(--color-domain-posts) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-posts) 20%, transparent) !important;
+}
+
+/* 3. Publications (Indigo) */
+.tag-chip-indigo.active-tag-match,
+.tag-chip-publications.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-publications) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-publications) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-publications) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-publications) 25%, transparent) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-indigo.active-tag-match,
+.light .tag-chip-indigo.active-tag-match,
+:root.light .tag-chip-publications.active-tag-match,
+.light .tag-chip-publications.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-publications) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-publications) 40%, transparent) !important;
+  color: var(--color-domain-publications) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-publications) 20%, transparent) !important;
+}
+
+/* 4. Presentations (Blue) */
+.tag-chip-blue.active-tag-match,
+.tag-chip-presentations.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-presentations) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-presentations) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-presentations) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-presentations) 25%, transparent) !important;
   font-weight: 700 !important;
 }
 :root.light .tag-chip-blue.active-tag-match,
-.light .tag-chip-blue.active-tag-match {
-  background: rgba(59, 130, 246, 0.15) !important;
-  border-color: rgba(59, 130, 246, 0.4) !important;
-  color: #1d4ed8 !important;
-  box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.2) !important;
+.light .tag-chip-blue.active-tag-match,
+:root.light .tag-chip-presentations.active-tag-match,
+.light .tag-chip-presentations.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-presentations) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-presentations) 40%, transparent) !important;
+  color: var(--color-domain-presentations) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-presentations) 20%, transparent) !important;
 }
 
-.tag-chip-yellow.active-tag-match {
-  background: rgba(245, 158, 11, 0.2) !important;
-  border-color: rgba(245, 158, 11, 0.5) !important;
-  color: #fde047 !important;
-  box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25) !important;
+/* 5. Courses (Cyan) */
+.tag-chip-cyan.active-tag-match,
+.tag-chip-courses.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-courses) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-courses) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-courses) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-courses) 25%, transparent) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-cyan.active-tag-match,
+.light .tag-chip-cyan.active-tag-match,
+:root.light .tag-chip-courses.active-tag-match,
+.light .tag-chip-courses.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-courses) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-courses) 40%, transparent) !important;
+  color: var(--color-domain-courses) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-courses) 20%, transparent) !important;
+}
+
+/* 6. Projects (Teal) */
+.tag-chip-teal.active-tag-match,
+.tag-chip-projects.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-projects) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-projects) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-projects) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-projects) 25%, transparent) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-teal.active-tag-match,
+.light .tag-chip-teal.active-tag-match,
+:root.light .tag-chip-projects.active-tag-match,
+.light .tag-chip-projects.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-projects) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-projects) 40%, transparent) !important;
+  color: var(--color-domain-projects) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-projects) 20%, transparent) !important;
+}
+
+/* 7. Services (Emerald) */
+.tag-chip-emerald.active-tag-match,
+.tag-chip-services.active-tag-match,
+.tag-chip-green.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-services) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-services) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-services) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-services) 25%, transparent) !important;
+  font-weight: 700 !important;
+}
+:root.light .tag-chip-emerald.active-tag-match,
+.light .tag-chip-emerald.active-tag-match,
+:root.light .tag-chip-services.active-tag-match,
+.light .tag-chip-services.active-tag-match,
+:root.light .tag-chip-green.active-tag-match,
+.light .tag-chip-green.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-services) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-services) 40%, transparent) !important;
+  color: var(--color-domain-services) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-services) 20%, transparent) !important;
+}
+
+/* 8. Visualizations (Yellow) */
+.tag-chip-yellow.active-tag-match,
+.tag-chip-visualizations.active-tag-match,
+.tag-chip-amber.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-visualizations) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-visualizations) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-visualizations) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-visualizations) 25%, transparent) !important;
   font-weight: 700 !important;
 }
 :root.light .tag-chip-yellow.active-tag-match,
-.light .tag-chip-yellow.active-tag-match {
-  background: rgba(245, 158, 11, 0.15) !important;
-  border-color: rgba(245, 158, 11, 0.4) !important;
-  color: #92400e !important;
-  box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.2) !important;
+.light .tag-chip-yellow.active-tag-match,
+:root.light .tag-chip-visualizations.active-tag-match,
+.light .tag-chip-visualizations.active-tag-match,
+:root.light .tag-chip-amber.active-tag-match,
+.light .tag-chip-amber.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-visualizations) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-visualizations) 40%, transparent) !important;
+  color: var(--color-domain-visualizations) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-visualizations) 20%, transparent) !important;
 }
 
-.tag-chip-purple.active-tag-match {
-  background: rgba(168, 85, 247, 0.2) !important;
-  border-color: rgba(168, 85, 247, 0.5) !important;
-  color: #d8b4fe !important;
-  box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.25) !important;
+/* 9. Tags (Orange) */
+.tag-chip-orange.active-tag-match,
+.tag-chip-tags.active-tag-match,
+.tag-chip-sky.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-tags) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-tags) 50%, transparent) !important;
+  color: color-mix(in srgb, var(--color-domain-tags) 70%, white) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-tags) 25%, transparent) !important;
   font-weight: 700 !important;
 }
-:root.light .tag-chip-purple.active-tag-match,
-.light .tag-chip-purple.active-tag-match {
-  background: rgba(168, 85, 247, 0.15) !important;
-  border-color: rgba(168, 85, 247, 0.4) !important;
-  color: #6b21a8 !important;
-  box-shadow: 0 0 15px -3px rgba(168, 85, 247, 0.2) !important;
-}
-
-.tag-chip-green.active-tag-match {
-  background: rgba(16, 185, 129, 0.2) !important;
-  border-color: rgba(16, 185, 129, 0.5) !important;
-  color: #6ee7b7 !important;
-  box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.25) !important;
-  font-weight: 700 !important;
-}
-:root.light .tag-chip-green.active-tag-match,
-.light .tag-chip-green.active-tag-match {
-  background: rgba(16, 185, 129, 0.15) !important;
-  border-color: rgba(16, 185, 129, 0.4) !important;
-  color: #065f46 !important;
-  box-shadow: 0 0 15px -3px rgba(16, 185, 129, 0.2) !important;
+:root.light .tag-chip-orange.active-tag-match,
+.light .tag-chip-orange.active-tag-match,
+:root.light .tag-chip-tags.active-tag-match,
+.light .tag-chip-tags.active-tag-match,
+:root.light .tag-chip-sky.active-tag-match,
+.light .tag-chip-sky.active-tag-match {
+  background: color-mix(in srgb, var(--color-domain-tags) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-domain-tags) 40%, transparent) !important;
+  color: var(--color-domain-tags) !important;
+  box-shadow: 0 0 15px -3px color-mix(in srgb, var(--color-domain-tags) 20%, transparent) !important;
 }
 
 /* Free-text Search Highlights */
 mark.search-highlight {
-  background-color: rgba(245, 158, 11, 0.35);
-  color: #fef08a;
+  background-color: color-mix(in srgb, var(--color-domain-visualizations) 35%, transparent);
+  color: var(--color-domain-visualizations);
   padding: 0.05em 0.2em;
   border-radius: 0.25rem;
   font-weight: 700;
@@ -669,8 +956,8 @@ mark.search-highlight {
 
 :root.light mark.search-highlight,
 .light mark.search-highlight {
-  background-color: rgba(245, 158, 11, 0.25);
-  color: #92400e;
+  background-color: color-mix(in srgb, var(--color-domain-visualizations) 25%, transparent);
+  color: var(--color-domain-visualizations);
 }
 
 /* ==========================================================================
@@ -709,5 +996,47 @@ html.has-filter-query .post-card-item.is-matched {
 html.has-filter-query [data-tag-total]:not(.is-synced),
 html.has-filter-query [data-tag-count]:not(.is-synced) {
   visibility: hidden;
+}
+
+/* Central Citation Link Typography (Domain: Publications) */
+.citation {
+  display: inline;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 700;
+  vertical-align: baseline;
+  padding: 0.08em 0.35em;
+  margin: 0 0.15em;
+  border-radius: 0.25rem;
+  background-color: color-mix(in srgb, var(--color-domain-publications) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-domain-publications) 20%, transparent);
+  color: var(--color-domain-publications) !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  user-select: none;
+  cursor: pointer;
+  line-height: inherit;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.citation:hover {
+  background-color: color-mix(in srgb, var(--color-domain-publications) 20%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-publications) 40%, transparent);
+  color: var(--color-domain-publications) !important;
+  text-decoration: none !important;
+}
+
+:root.light .citation,
+.light .citation {
+  background-color: color-mix(in srgb, var(--color-domain-publications) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-publications) 20%, transparent);
+  color: var(--color-domain-publications) !important;
+}
+
+:root.light .citation:hover,
+.light .citation:hover {
+  background-color: color-mix(in srgb, var(--color-domain-publications) 20%, transparent);
+  border-color: color-mix(in srgb, var(--color-domain-publications) 40%, transparent);
+  color: var(--color-domain-publications) !important;
 }
 

@@ -104,7 +104,48 @@ if (fs.existsSync(componentsDir)) {
   success('src/components/ root contains strictly .astro component files.');
 }
 
-// 5. Summary and exit code
+// 5. Check domain consistency across overview pages
+const OVERVIEW_PAGES: Array<{ file: string; domain: string }> = [
+  { file: 'src/pages/posts/index.astro', domain: 'posts' },
+  { file: 'src/pages/courses/index.astro', domain: 'courses' },
+  { file: 'src/pages/publications/index.astro', domain: 'publications' },
+  { file: 'src/pages/presentations/index.astro', domain: 'presentations' },
+  { file: 'src/pages/projects/index.astro', domain: 'projects' },
+  { file: 'src/pages/services.astro', domain: 'services' },
+  { file: 'src/pages/visualizations/index.astro', domain: 'visualizations' },
+  { file: 'src/pages/tags/index.astro', domain: 'tags' },
+];
+
+let overviewDomainErrors = 0;
+for (const { file, domain } of OVERVIEW_PAGES) {
+  const filePath = path.resolve(ROOT_DIR, file);
+  if (!fs.existsSync(filePath)) {
+    error(`Overview page "${file}" does not exist.`);
+    overviewDomainErrors++;
+    continue;
+  }
+  const content = fs.readFileSync(filePath, 'utf-8');
+  const expectedBreadcrumb = `domain="${domain}"`;
+
+  if (!content.includes(expectedBreadcrumb)) {
+    error(`Overview page "${file}" must include Breadcrumbs with ${expectedBreadcrumb}.`);
+    overviewDomainErrors++;
+  }
+  if (content.includes('heading-gradient-')) {
+    error(`Overview page "${file}" must use clean text headings without heading gradients.`);
+    overviewDomainErrors++;
+  }
+  const expectedTextDomain = `<span class="text-domain-${domain}">`;
+  if (!content.includes(expectedTextDomain)) {
+    error(`Overview page "${file}" must include solid domain highlight ${expectedTextDomain}.`);
+    overviewDomainErrors++;
+  }
+}
+if (overviewDomainErrors === 0) {
+  success('All 8 overview pages strictly adhere to solid domain highlights and Breadcrumbs domain configurations.');
+}
+
+// 6. Summary and exit code
 console.log('');
 if (errorCount > 0) {
   console.error(`💥 [validate:architecture] Validation failed with ${errorCount} error(s).`);

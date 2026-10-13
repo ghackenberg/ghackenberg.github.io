@@ -1,5 +1,6 @@
 ---
 import { renderSlideCues } from '@commons/shared/slide-cues';
+import { resolveAccentName, getCycleAccent, type SlideAccent } from '@commons/shared/accent-system';
 
 interface Props {
   title?: string;
@@ -9,6 +10,8 @@ interface Props {
   totalSlides?: string | number;
   showFooter?: boolean;
   presentationTitle?: string;
+  accent?: SlideAccent;
+  startAccent?: SlideAccent;
   class?: string;
   isSection?: boolean;
 }
@@ -21,9 +24,14 @@ const {
   totalSlides = 30,
   showFooter = true,
   presentationTitle = "hackenberg.tech",
+  accent,
+  startAccent,
   class: className = "",
   isSection = false
 } = Astro.props;
+
+const activeAccentName = resolveAccentName(startAccent || accent || 'blue');
+const nextAccentName = getCycleAccent(activeAccentName, 1).name;
 
 const num = typeof slideNumber === 'string' ? parseInt(slideNumber, 10) : (slideNumber || 1);
 const isNotFirstSlide = num > 1 && !isSection;
@@ -31,13 +39,15 @@ const isNotFirstSlide = num > 1 && !isSection;
 
 <div
   lang="de"
+  data-slide-accent={activeAccentName}
+  style={`--slide-accent: var(--color-slide-accent-${activeAccentName});`}
   class={`slide-base-frame relative w-[1920px] h-[1080px] max-w-full max-h-full bg-slate-950 light:bg-slate-50 text-slate-100 light:text-slate-900 flex flex-col justify-between pt-9 px-12 pb-7 select-none font-sans overflow-hidden box-border ${isNotFirstSlide ? 'is-intro-state' : ''} ${className}`}
 >
   <!-- Ambient Gradient Glow (Large radius, seamless color blending) -->
   <div class="slide-ambient-glow absolute inset-0 pointer-events-none" aria-hidden="true"></div>
 
-  <!-- Top Accent Bar -->
-  <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400"></div>
+  <!-- Top Accent Bar (Harmonic Progression from active accent to next chromatic step) -->
+  <div class={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[var(--color-slide-accent-${activeAccentName})] to-[var(--color-slide-accent-${nextAccentName})]`}></div>
 
   <!-- Slide Header -->
   {title && (
@@ -208,14 +218,14 @@ const isNotFirstSlide = num > 1 && !isSection;
   }
 
   @property --hl-alpha-1 {
-    syntax: '<number>';
+    syntax: '<percentage>';
     inherits: true;
-    initial-value: 0.38;
+    initial-value: 38%;
   }
   @property --hl-alpha-2 {
-    syntax: '<number>';
+    syntax: '<percentage>';
     inherits: true;
-    initial-value: 0.48;
+    initial-value: 48%;
   }
 
   /* ==========================================================================
@@ -223,74 +233,75 @@ const isNotFirstSlide = num > 1 && !isSection;
      ========================================================================== */
 
   :global(.bullet-badge) {
-    background-color: #334155; /* slate-700 */
-    color: #f8fafc;
+    background-color: var(--card-accent, var(--color-gray-800));
+    color: var(--color-slide-text);
   }
   :global(.light .bullet-badge) {
-    background-color: #e2e8f0; /* slate-200 */
-    color: #0f172a;
+    background-color: var(--card-accent, var(--color-gray-200));
+    color: var(--color-slide-text);
+  }
+  :global(.bento-card-root .bullet-badge) {
+    background-color: var(--card-accent, var(--color-gray-800));
+    color: white;
   }
 
-  /* Ton-in-Ton Bullet Badges per Container Accent */
-  :global([data-accent="blue"] .bullet-badge) {
-    background-color: #2563eb; /* blue-600 */
-    color: #ffffff;
+  /* Ton-in-Ton Bullet Badges per Container Accent (Canonical 9 Accents + Aliases + Numbers) */
+  :global([data-accent="rose"] .bullet-badge),
+  :global([data-accent="red"] .bullet-badge),
+  :global([data-accent="1"] .bullet-badge) {
+    background-color: var(--color-slide-accent-rose);
+    color: white;
   }
-  :global(.light [data-accent="blue"] .bullet-badge) {
-    background-color: #3b82f6; /* blue-500 */
-    color: #ffffff;
+  :global([data-accent="purple"] .bullet-badge),
+  :global([data-accent="violet"] .bullet-badge),
+  :global([data-accent="2"] .bullet-badge) {
+    background-color: var(--color-slide-accent-purple);
+    color: white;
+  }
+  :global([data-accent="indigo"] .bullet-badge),
+  :global([data-accent="3"] .bullet-badge) {
+    background-color: var(--color-slide-accent-indigo);
+    color: white;
+  }
+  :global([data-accent="blue"] .bullet-badge),
+  :global([data-accent="4"] .bullet-badge) {
+    background-color: var(--color-slide-accent-blue);
+    color: white;
   }
   :global([data-accent="cyan"] .bullet-badge),
-  :global([data-accent="teal"] .bullet-badge) {
-    background-color: #0891b2; /* cyan-600 */
-    color: #ffffff;
+  :global([data-accent="5"] .bullet-badge) {
+    background-color: var(--color-slide-accent-cyan);
+    color: white;
   }
-  :global(.light [data-accent="cyan"] .bullet-badge),
-  :global(.light [data-accent="teal"] .bullet-badge) {
-    background-color: #06b6d4; /* cyan-500 */
-    color: #ffffff;
+  :global([data-accent="teal"] .bullet-badge),
+  :global([data-accent="6"] .bullet-badge) {
+    background-color: var(--color-slide-accent-teal);
+    color: white;
   }
   :global([data-accent="emerald"] .bullet-badge),
-  :global([data-accent="green"] .bullet-badge) {
-    background-color: #059669; /* emerald-600 */
-    color: #ffffff;
+  :global([data-accent="green"] .bullet-badge),
+  :global([data-accent="7"] .bullet-badge) {
+    background-color: var(--color-slide-accent-emerald);
+    color: white;
   }
-  :global(.light [data-accent="emerald"] .bullet-badge),
-  :global(.light [data-accent="green"] .bullet-badge) {
-    background-color: #10b981; /* emerald-500 */
-    color: #ffffff;
+  :global([data-accent="amber"] .bullet-badge),
+  :global([data-accent="yellow"] .bullet-badge),
+  :global([data-accent="8"] .bullet-badge) {
+    background-color: var(--color-slide-accent-amber);
+    color: white;
   }
-  :global([data-accent="purple"] .bullet-badge) {
-    background-color: #9333ea; /* purple-600 */
-    color: #ffffff;
-  }
-  :global(.light [data-accent="purple"] .bullet-badge) {
-    background-color: #a855f7; /* purple-500 */
-    color: #ffffff;
-  }
-  :global([data-accent="indigo"] .bullet-badge) {
-    background-color: #4f46e5; /* indigo-600 */
-    color: #ffffff;
-  }
-  :global(.light [data-accent="indigo"] .bullet-badge) {
-    background-color: #6366f1; /* indigo-500 */
-    color: #ffffff;
-  }
-  :global([data-accent="amber"] .bullet-badge) {
-    background-color: #d97706; /* amber-600 */
-    color: #ffffff;
-  }
-  :global(.light [data-accent="amber"] .bullet-badge) {
-    background-color: #f59e0b; /* amber-500 */
-    color: #ffffff;
+  :global([data-accent="orange"] .bullet-badge),
+  :global([data-accent="9"] .bullet-badge) {
+    background-color: var(--color-slide-accent-orange);
+    color: white;
   }
   :global([data-accent="neutral"] .bullet-badge) {
-    background-color: #334155; /* slate-700 */
-    color: #f8fafc;
+    background-color: var(--color-gray-800);
+    color: var(--color-slide-text);
   }
   :global(.light [data-accent="neutral"] .bullet-badge) {
-    background-color: #e2e8f0; /* slate-200 */
-    color: #0f172a;
+    background-color: var(--color-gray-200);
+    color: var(--color-slide-text);
   }
 
   /* ==========================================================================
@@ -298,95 +309,150 @@ const isNotFirstSlide = num > 1 && !isSection;
      ========================================================================== */
 
   :global(.callout-box) {
-    background-color: rgba(30, 41, 59, 0.55);
-    border-color: rgba(71, 85, 105, 0.45);
-    color: #f1f5f9;
+    background-color: var(--color-slide-card-bg);
+    border-color: var(--color-slide-card-border);
+    color: var(--color-slide-text);
   }
   :global(.light .callout-box) {
-    background-color: #f1f5f9;
-    border-color: #cbd5e1;
-    color: #1e293b;
+    background-color: var(--color-slide-card-bg);
+    border-color: var(--color-slide-card-border);
+    color: var(--color-slide-text);
   }
 
-  :global([data-accent="blue"] .callout-box) {
-    background-color: rgba(59, 130, 246, 0.12);
-    border-color: rgba(59, 130, 246, 0.35);
-    color: #bfdbfe;
+  :global([data-accent="rose"] .callout-box),
+  :global([data-accent="red"] .callout-box),
+  :global([data-accent="1"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-rose) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-rose) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
   }
-  :global(.light [data-accent="blue"] .callout-box) {
-    background-color: #eff6ff;
-    border-color: #bfdbfe;
-    color: #1e3a8a;
+  :global(.light [data-accent="rose"] .callout-box),
+  :global(.light [data-accent="red"] .callout-box),
+  :global(.light [data-accent="1"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-rose) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-rose) 25%, transparent);
+    color: var(--color-slide-accent-rose);
+  }
+
+  :global([data-accent="purple"] .callout-box),
+  :global([data-accent="violet"] .callout-box),
+  :global([data-accent="2"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+  }
+  :global(.light [data-accent="purple"] .callout-box),
+  :global(.light [data-accent="violet"] .callout-box),
+  :global(.light [data-accent="2"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-purple) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-purple) 25%, transparent);
+    color: var(--color-slide-accent-purple);
+  }
+
+  :global([data-accent="indigo"] .callout-box),
+  :global([data-accent="3"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
+  }
+  :global(.light [data-accent="indigo"] .callout-box),
+  :global(.light [data-accent="3"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-indigo) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-indigo) 25%, transparent);
+    color: var(--color-slide-accent-indigo);
+  }
+
+  :global([data-accent="blue"] .callout-box),
+  :global([data-accent="4"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
+  }
+  :global(.light [data-accent="blue"] .callout-box),
+  :global(.light [data-accent="4"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-blue) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-blue) 25%, transparent);
+    color: var(--color-slide-accent-blue);
   }
 
   :global([data-accent="cyan"] .callout-box),
-  :global([data-accent="teal"] .callout-box) {
-    background-color: rgba(6, 182, 212, 0.12);
-    border-color: rgba(6, 182, 212, 0.35);
-    color: #a5f3fc;
+  :global([data-accent="5"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-cyan) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white);
   }
   :global(.light [data-accent="cyan"] .callout-box),
-  :global(.light [data-accent="teal"] .callout-box) {
-    background-color: #ecfeff;
-    border-color: #a5f3fc;
-    color: #155e75;
+  :global(.light [data-accent="5"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-cyan) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-cyan) 25%, transparent);
+    color: var(--color-slide-accent-cyan);
+  }
+
+  :global([data-accent="teal"] .callout-box),
+  :global([data-accent="6"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-teal) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-teal) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white);
+  }
+  :global(.light [data-accent="teal"] .callout-box),
+  :global(.light [data-accent="6"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-teal) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-teal) 25%, transparent);
+    color: var(--color-slide-accent-teal);
   }
 
   :global([data-accent="emerald"] .callout-box),
-  :global([data-accent="green"] .callout-box) {
-    background-color: rgba(16, 185, 129, 0.12);
-    border-color: rgba(16, 185, 129, 0.35);
-    color: #a7f3d0;
+  :global([data-accent="green"] .callout-box),
+  :global([data-accent="7"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-emerald) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white);
   }
   :global(.light [data-accent="emerald"] .callout-box),
-  :global(.light [data-accent="green"] .callout-box) {
-    background-color: #ecfdf5;
-    border-color: #a7f3d0;
-    color: #065f46;
+  :global(.light [data-accent="green"] .callout-box),
+  :global(.light [data-accent="7"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-emerald) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-emerald) 25%, transparent);
+    color: var(--color-slide-accent-emerald);
   }
 
-  :global([data-accent="purple"] .callout-box) {
-    background-color: rgba(168, 85, 247, 0.12);
-    border-color: rgba(168, 85, 247, 0.35);
-    color: #e9d5ff;
+  :global([data-accent="amber"] .callout-box),
+  :global([data-accent="yellow"] .callout-box),
+  :global([data-accent="8"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-amber) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-amber) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white);
   }
-  :global(.light [data-accent="purple"] .callout-box) {
-    background-color: #faf5ff;
-    border-color: #e9d5ff;
-    color: #581c87;
-  }
-
-  :global([data-accent="indigo"] .callout-box) {
-    background-color: rgba(99, 102, 241, 0.12);
-    border-color: rgba(99, 102, 241, 0.35);
-    color: #c7d2fe;
-  }
-  :global(.light [data-accent="indigo"] .callout-box) {
-    background-color: #eef2ff;
-    border-color: #c7d2fe;
-    color: #3730a3;
+  :global(.light [data-accent="amber"] .callout-box),
+  :global(.light [data-accent="yellow"] .callout-box),
+  :global(.light [data-accent="8"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-amber) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-amber) 25%, transparent);
+    color: var(--color-slide-accent-amber);
   }
 
-  :global([data-accent="amber"] .callout-box) {
-    background-color: rgba(245, 158, 11, 0.12);
-    border-color: rgba(245, 158, 11, 0.35);
-    color: #fef08a;
+  :global([data-accent="orange"] .callout-box),
+  :global([data-accent="9"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, transparent);
+    color: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
   }
-  :global(.light [data-accent="amber"] .callout-box) {
-    background-color: #fffbeb;
-    border-color: #fde68a;
-    color: #78350f;
+  :global(.light [data-accent="orange"] .callout-box),
+  :global(.light [data-accent="9"] .callout-box) {
+    background-color: color-mix(in srgb, var(--color-slide-accent-orange) 6%, white);
+    border-color: color-mix(in srgb, var(--color-slide-accent-orange) 25%, transparent);
+    color: var(--color-slide-accent-orange);
   }
 
   :global([data-accent="neutral"] .callout-box) {
-    background-color: rgba(30, 41, 59, 0.55);
-    border-color: rgba(71, 85, 105, 0.45);
-    color: #f1f5f9;
+    background-color: var(--color-slide-card-bg);
+    border-color: var(--color-slide-card-border);
+    color: var(--color-slide-text);
   }
   :global(.light [data-accent="neutral"] .callout-box) {
-    background-color: #f1f5f9;
-    border-color: #cbd5e1;
-    color: #1e293b;
+    background-color: var(--color-slide-card-bg);
+    border-color: var(--color-slide-card-border);
+    color: var(--color-slide-text);
   }
 
   /* ==========================================================================
@@ -395,8 +461,11 @@ const isNotFirstSlide = num > 1 && !isSection;
 
   :global(mark),
   :global(.highlight-marker) {
-    --hl-alpha-1: 0.38;
-    --hl-alpha-2: 0.48;
+    --hl-alpha-1: 38%;
+    --hl-alpha-2: 48%;
+    --hl-color: var(--color-slide-accent-cyan);
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
     background-color: transparent !important;
     color: inherit;
     padding: 0.14em 0.45em;
@@ -405,7 +474,7 @@ const isNotFirstSlide = num > 1 && !isSection;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
     background-repeat: no-repeat;
-    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-2)) 100%);
+    background-image: linear-gradient(120deg, color-mix(in srgb, var(--hl-color) var(--hl-alpha-1), transparent) 0%, color-mix(in srgb, var(--hl-color) var(--hl-alpha-2), transparent) 100%);
     background-size: 100% 100%;
     transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
                 --hl-alpha-1 0.45s ease,
@@ -417,9 +486,9 @@ const isNotFirstSlide = num > 1 && !isSection;
 
   :global(.light mark),
   :global(.light .highlight-marker) {
-    --hl-alpha-1: 0.42;
-    --hl-alpha-2: 0.48;
-    background-image: linear-gradient(120deg, rgba(var(--hl-glow-rgb-2, var(--hl-glow-rgb, 251, 191, 36)), var(--hl-alpha-1)) 0%, rgba(var(--hl-glow-rgb, 245, 158, 11), var(--hl-alpha-2)) 100%);
+    --hl-alpha-1: 42%;
+    --hl-alpha-2: 48%;
+    background-image: linear-gradient(120deg, color-mix(in srgb, var(--hl-color) var(--hl-alpha-1), transparent) 0%, color-mix(in srgb, var(--hl-color) var(--hl-alpha-2), transparent) 100%);
   }
 
   :global(.slide-subtitle mark),
@@ -427,103 +496,152 @@ const isNotFirstSlide = num > 1 && !isSection;
     border-radius: 0.4em !important;
     padding: 0.14em 0.5em !important;
     margin: 0 0.05em !important;
-    --hl-glow-rgb: 6, 182, 212;
-    --hl-glow-rgb-2: 34, 211, 238;
-    --hl-text-dark: #a5f3fc;
-    --hl-text-light: #0e7490;
+    --hl-color: var(--slide-accent, var(--color-slide-accent-cyan));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
   }
 
-  /* Default Marker Colors (Cyan) */
+  /* Default Marker Colors */
   :global(mark),
   :global(.highlight-marker) {
-    --hl-glow-rgb: 6, 182, 212;
-    --hl-glow-rgb-2: 34, 211, 238;
-    --hl-text-dark: #a5f3fc;
-    --hl-text-light: #0e7490;
+    --hl-color: var(--slide-accent, var(--color-slide-accent-cyan));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
   }
 
-  /* Container-driven Highlight: Blue */
+  /* Container-driven Highlight: 1 (Rose / Red) */
+  :global([data-accent="rose"] mark),
+  :global([data-accent="rose"] .highlight-marker),
+  :global([data-accent="red"] mark),
+  :global([data-accent="red"] .highlight-marker),
+  :global([data-accent="1"] mark),
+  :global([data-accent="1"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-rose);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-rose) 35%, white);
+    --hl-text-light: var(--color-slide-accent-rose);
+  }
+
+  /* Container-driven Highlight: 2 (Purple / Violet) */
+  :global([data-accent="purple"] mark),
+  :global([data-accent="purple"] .highlight-marker),
+  :global([data-accent="violet"] mark),
+  :global([data-accent="violet"] .highlight-marker),
+  :global([data-accent="2"] mark),
+  :global([data-accent="2"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-purple);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-purple) 35%, white);
+    --hl-text-light: var(--color-slide-accent-purple);
+  }
+
+  /* Container-driven Highlight: 3 (Indigo) */
+  :global([data-accent="indigo"] mark),
+  :global([data-accent="indigo"] .highlight-marker),
+  :global([data-accent="3"] mark),
+  :global([data-accent="3"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-indigo);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-indigo) 35%, white);
+    --hl-text-light: var(--color-slide-accent-indigo);
+  }
+
+  /* Container-driven Highlight: 4 (Blue) */
   :global([data-accent="blue"] mark),
-  :global([data-accent="blue"] .highlight-marker) {
-    --hl-glow-rgb: 59, 130, 246;
-    --hl-glow-rgb-2: 96, 165, 250;
-    --hl-text-dark: #bfdbfe;
-    --hl-text-light: #1e40af;
+  :global([data-accent="blue"] .highlight-marker),
+  :global([data-accent="4"] mark),
+  :global([data-accent="4"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-blue);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-blue) 35%, white);
+    --hl-text-light: var(--color-slide-accent-blue);
   }
 
-  /* Container-driven Highlight: Cyan / Teal */
+  /* Container-driven Highlight: 5 (Cyan) */
   :global([data-accent="cyan"] mark),
   :global([data-accent="cyan"] .highlight-marker),
-  :global([data-accent="teal"] mark),
-  :global([data-accent="teal"] .highlight-marker) {
-    --hl-glow-rgb: 6, 182, 212;
-    --hl-glow-rgb-2: 34, 211, 238;
-    --hl-text-dark: #a5f3fc;
-    --hl-text-light: #0e7490;
+  :global([data-accent="5"] mark),
+  :global([data-accent="5"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-cyan);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-cyan) 35%, white);
+    --hl-text-light: var(--color-slide-accent-cyan);
   }
 
-  /* Container-driven Highlight: Emerald / Green */
+  /* Container-driven Highlight: 6 (Teal) */
+  :global([data-accent="teal"] mark),
+  :global([data-accent="teal"] .highlight-marker),
+  :global([data-accent="6"] mark),
+  :global([data-accent="6"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-teal);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-teal) 35%, white);
+    --hl-text-light: var(--color-slide-accent-teal);
+  }
+
+  /* Container-driven Highlight: 7 (Emerald / Green) */
   :global([data-accent="emerald"] mark),
   :global([data-accent="emerald"] .highlight-marker),
   :global([data-accent="green"] mark),
-  :global([data-accent="green"] .highlight-marker) {
-    --hl-glow-rgb: 16, 185, 129;
-    --hl-glow-rgb-2: 52, 211, 153;
-    --hl-text-dark: #a7f3d0;
-    --hl-text-light: #065f46;
+  :global([data-accent="green"] .highlight-marker),
+  :global([data-accent="7"] mark),
+  :global([data-accent="7"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-emerald);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-emerald) 35%, white);
+    --hl-text-light: var(--color-slide-accent-emerald);
   }
 
-  /* Container-driven Highlight: Purple */
-  :global([data-accent="purple"] mark),
-  :global([data-accent="purple"] .highlight-marker) {
-    --hl-glow-rgb: 168, 85, 247;
-    --hl-glow-rgb-2: 192, 132, 252;
-    --hl-text-dark: #e9d5ff;
-    --hl-text-light: #581c87;
-  }
-
-  /* Container-driven Highlight: Indigo */
-  :global([data-accent="indigo"] mark),
-  :global([data-accent="indigo"] .highlight-marker) {
-    --hl-glow-rgb: 99, 102, 241;
-    --hl-glow-rgb-2: 129, 140, 248;
-    --hl-text-dark: #c7d2fe;
-    --hl-text-light: #3730a3;
-  }
-
-  /* Container-driven Highlight: Amber */
+  /* Container-driven Highlight: 8 (Amber / Yellow) */
   :global([data-accent="amber"] mark),
-  :global([data-accent="amber"] .highlight-marker) {
-    --hl-glow-rgb: 245, 158, 11;
-    --hl-glow-rgb-2: 251, 191, 36;
-    --hl-text-dark: #fef08a;
-    --hl-text-light: #78350f;
+  :global([data-accent="amber"] .highlight-marker),
+  :global([data-accent="yellow"] mark),
+  :global([data-accent="yellow"] .highlight-marker),
+  :global([data-accent="8"] mark),
+  :global([data-accent="8"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-amber);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-amber) 35%, white);
+    --hl-text-light: var(--color-slide-accent-amber);
   }
 
-  /* Container-driven Highlight: Neutral (warm classic amber contrast on slate) */
+  /* Container-driven Highlight: 9 (Orange) */
+  :global([data-accent="orange"] mark),
+  :global([data-accent="orange"] .highlight-marker),
+  :global([data-accent="9"] mark),
+  :global([data-accent="9"] .highlight-marker) {
+    --hl-color: var(--color-slide-accent-orange);
+    --hl-text-dark: color-mix(in srgb, var(--color-slide-accent-orange) 35%, white);
+    --hl-text-light: var(--color-slide-accent-orange);
+  }
+
+  /* Container-driven Highlight: Neutral (falls back cleanly to slide accent) */
   :global([data-accent="neutral"] mark),
   :global([data-accent="neutral"] .highlight-marker) {
-    --hl-glow-rgb: 245, 158, 11;
-    --hl-glow-rgb-2: 251, 191, 36;
-    --hl-text-dark: #fef08a;
-    --hl-text-light: #78350f;
+    --hl-color: var(--slide-accent, var(--color-slide-accent-blue));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
+  }
+
+  /* Container-driven Highlight: BentoCards and Pipeline Steps */
+  :global(.bento-card-root mark),
+  :global(.bento-card-root .highlight-marker),
+  :global(.step-row mark),
+  :global(.step-row .highlight-marker),
+  :global(.step-card mark),
+  :global(.step-card .highlight-marker) {
+    --hl-color: var(--card-accent, var(--step-accent, var(--slide-accent, var(--color-slide-accent-blue))));
+    --hl-text-dark: color-mix(in srgb, var(--hl-color) 35%, white);
+    --hl-text-light: var(--hl-color);
   }
 
   /* Pre-cue pending state for marker: 0% width (unmarked) */
   :global(mark[data-cue]:not(.is-active)),
   :global(.highlight-marker[data-cue]:not(.is-active)) {
     background-size: 0% 100%;
-    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 6, 182, 212), 0));
+    filter: drop-shadow(0 0 0px transparent);
   }
 
   /* Active Spotlight: Currently spoken highlight (vibrant gradient, glowing text, full brightness) */
   :global(mark.is-active:not(.is-dimmed)),
   :global(.highlight-marker.is-active:not(.is-dimmed)) {
-    --hl-alpha-1: 0.38;
-    --hl-alpha-2: 0.48;
+    --hl-alpha-1: 38%;
+    --hl-alpha-2: 48%;
     background-size: 100% 100% !important;
     color: var(--hl-text-dark) !important;
-    filter: drop-shadow(0 0 10px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.45));
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--hl-color) 45%, transparent));
     transition: background-size var(--cue-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1),
                 --hl-alpha-1 0.4s ease,
                 --hl-alpha-2 0.4s ease,
@@ -533,20 +651,20 @@ const isNotFirstSlide = num > 1 && !isSection;
   }
   :global(.light mark.is-active:not(.is-dimmed)),
   :global(.light .highlight-marker.is-active:not(.is-dimmed)) {
-    --hl-alpha-1: 0.42;
-    --hl-alpha-2: 0.48;
+    --hl-alpha-1: 42%;
+    --hl-alpha-2: 48%;
     color: var(--hl-text-light) !important;
-    filter: drop-shadow(0 0 8px rgba(var(--hl-glow-rgb, 6, 182, 212), 0.25));
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--hl-color) 25%, transparent));
   }
 
   /* Settled Spotlight: Inactive/dimmed highlight markers transition smoothly into background */
   :global(.highlight-marker.is-active.is-dimmed),
   :global(mark.is-active.is-dimmed) {
-    --hl-alpha-1: 0.13;
-    --hl-alpha-2: 0.17;
+    --hl-alpha-1: 13%;
+    --hl-alpha-2: 17%;
     background-size: 100% 100% !important;
     color: inherit !important;
-    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
+    filter: drop-shadow(0 0 0px transparent) !important;
     opacity: 1 !important;
     transition: --hl-alpha-1 0.85s cubic-bezier(0.16, 1, 0.3, 1),
                 --hl-alpha-2 0.85s cubic-bezier(0.16, 1, 0.3, 1),
@@ -556,10 +674,10 @@ const isNotFirstSlide = num > 1 && !isSection;
 
   :global(.light .highlight-marker.is-active.is-dimmed),
   :global(.light mark.is-active.is-dimmed) {
-    --hl-alpha-1: 0.16;
-    --hl-alpha-2: 0.20;
+    --hl-alpha-1: 16%;
+    --hl-alpha-2: 20%;
     color: inherit !important;
-    filter: drop-shadow(0 0 0px rgba(var(--hl-glow-rgb, 59, 130, 246), 0)) !important;
+    filter: drop-shadow(0 0 0px transparent) !important;
     opacity: 1 !important;
   }
 

@@ -37,7 +37,7 @@ outputs:
   - "Engineering Code Review Standard and pull request grading rubric"
   - "Legacy refactoring playbook with safe strangler-fig pattern migrations"
 duration: "2 - 4 Weeks"
-format: "Pair Programming, Code Refactoring Sprints & Workshops"
+format: "Construction Sprints"
 delivery: "Remote / On-site"
 ---
 

@@ -1,4 +1,6 @@
 import type { getImage } from "astro:assets";
+import { DOMAIN_METADATA } from "./domain-themes";
+import { formatDate } from "./format";
 
 export interface GraphNodePayload {
   id: string;
@@ -79,29 +81,32 @@ export const GRAPH_GROUP_NAMES = [
   'Course',
   'Project',
   'Service',
-  'Interest'
+  'Interest',
+  'Visualization'
 ] as const;
 
 export const GRAPH_COLORS = {
   dark: [
-    '#0ea5e9', // 0: Tag (Sky)
-    '#3b82f6', // 1: Post (Blue)
-    '#6366f1', // 2: Publication (Indigo)
-    '#06b6d4', // 3: Presentation (Cyan)
-    '#f59e0b', // 4: Course (Yellow)
-    '#10b981', // 5: Project (Green)
-    '#a855f7', // 6: Service (Purple)
-    '#f43f5e'  // 7: Interest (Rose)
+    DOMAIN_METADATA.tags.colors.dark,           // 0: Tag
+    DOMAIN_METADATA.posts.colors.dark,          // 1: Post
+    DOMAIN_METADATA.publications.colors.dark,   // 2: Publication
+    DOMAIN_METADATA.presentations.colors.dark,  // 3: Presentation
+    DOMAIN_METADATA.courses.colors.dark,        // 4: Course
+    DOMAIN_METADATA.projects.colors.dark,       // 5: Project
+    DOMAIN_METADATA.services.colors.dark,       // 6: Service
+    DOMAIN_METADATA.interests.colors.dark,      // 7: Interest
+    DOMAIN_METADATA.visualizations.colors.dark  // 8: Visualization
   ],
   light: [
-    '#0284c7', // 0: Tag (Sky)
-    '#2563eb', // 1: Post (Blue)
-    '#4f46e5', // 2: Publication (Indigo)
-    '#0891b2', // 3: Presentation (Cyan)
-    '#d97706', // 4: Course (Yellow)
-    '#059669', // 5: Project (Green)
-    '#9333ea', // 6: Service (Purple)
-    '#e11d48'  // 7: Interest (Rose)
+    DOMAIN_METADATA.tags.colors.light,           // 0: Tag
+    DOMAIN_METADATA.posts.colors.light,          // 1: Post
+    DOMAIN_METADATA.publications.colors.light,   // 2: Publication
+    DOMAIN_METADATA.presentations.colors.light,  // 3: Presentation
+    DOMAIN_METADATA.courses.colors.light,        // 4: Course
+    DOMAIN_METADATA.projects.colors.light,       // 5: Project
+    DOMAIN_METADATA.services.colors.light,       // 6: Service
+    DOMAIN_METADATA.interests.colors.light,      // 7: Interest
+    DOMAIN_METADATA.visualizations.colors.light  // 8: Visualization
   ]
 };
 
@@ -113,6 +118,7 @@ export interface TagCounts {
   projects: Record<string, number>;
   services: Record<string, number>;
   interests: Record<string, number>;
+  visualizations: Record<string, number>;
   allTags: string[];
 }
 
@@ -175,6 +181,7 @@ export function calculateTagCounts(options: {
   projects: RawEntity[];
   services: RawEntity[];
   interests?: RawEntity[];
+  visualizations?: RawEntity[];
 }): TagCounts {
   const tagPosts: Record<string, number> = {};
   options.posts.forEach(p => {
@@ -239,6 +246,15 @@ export function calculateTagCounts(options: {
     }
   });
 
+  const tagVis: Record<string, number> = {};
+  (options.visualizations || []).forEach(v => {
+    if (v.data.tags) {
+      new Set(v.data.tags).forEach(t => {
+        tagVis[t] = (tagVis[t] || 0) + 1;
+      });
+    }
+  });
+
   const allTags = Array.from(new Set([
     ...Object.keys(tagPosts),
     ...Object.keys(tagPubs),
@@ -246,7 +262,8 @@ export function calculateTagCounts(options: {
     ...Object.keys(tagCourses),
     ...Object.keys(tagProjects),
     ...Object.keys(tagServices),
-    ...Object.keys(tagInterests)
+    ...Object.keys(tagInterests),
+    ...Object.keys(tagVis)
   ]));
 
   return {
@@ -257,6 +274,7 @@ export function calculateTagCounts(options: {
     projects: tagProjects,
     services: tagServices,
     interests: tagInterests,
+    visualizations: tagVis,
     allTags
   };
 }
@@ -269,6 +287,7 @@ export async function buildGraphPayload(options: {
   projects: RawEntity[];
   services: RawEntity[];
   interests?: RawEntity[];
+  visualizations?: RawEntity[];
   tags: RawTag[];
   getImage?: typeof getImage;
 }): Promise<EnginePayloads> {
@@ -286,7 +305,8 @@ export async function buildGraphPayload(options: {
       (tagCounts.courses[tag] || 0) +
       (tagCounts.projects[tag] || 0) +
       (tagCounts.services[tag] || 0) +
-      (tagCounts.interests[tag] || 0);
+      (tagCounts.interests[tag] || 0) +
+      (tagCounts.visualizations[tag] || 0);
 
     const tagEntry = tagMap.get(tag);
     const title = tagEntry?.data.title ?? tag;
@@ -320,7 +340,7 @@ export async function buildGraphPayload(options: {
       group: 1,
       typeLabel: "Post",
       description: post.data.description,
-      date: post.data.pubDate ? new Date(post.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      date: post.data.pubDate ? formatDate(post.data.pubDate, 'short') : undefined,
       image: imageSrc,
       tags: post.data.tags ? post.data.tags.slice(0, 3) : []
     });
@@ -341,7 +361,7 @@ export async function buildGraphPayload(options: {
       group: 2,
       typeLabel: "Publication",
       description: pub.data.abstract || pub.data.book,
-      date: typeof pub.data.pubDate === 'string' ? pub.data.pubDate : (pub.data.pubDate ? new Date(pub.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined),
+      date: pub.data.pubDate ? formatDate(pub.data.pubDate, 'short') : undefined,
       tags: pub.data.tags ? pub.data.tags.slice(0, 3) : []
     });
     if (pub.data.tags) {
@@ -371,7 +391,7 @@ export async function buildGraphPayload(options: {
       group: 3,
       typeLabel: "Presentation",
       description: pres.data.subtitle || pres.data.description,
-      date: pres.data.pubDate ? new Date(pres.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      date: pres.data.pubDate ? formatDate(pres.data.pubDate, 'short') : undefined,
       image: imageSrc,
       tags: pres.data.tags ? pres.data.tags.slice(0, 3) : []
     });
@@ -402,7 +422,7 @@ export async function buildGraphPayload(options: {
       group: 4,
       typeLabel: "Course",
       description: course.data.description,
-      date: course.data.pubDate ? new Date(course.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      date: course.data.pubDate ? formatDate(course.data.pubDate, 'short') : undefined,
       image: imageSrc,
       tags: course.data.tags ? course.data.tags.slice(0, 3) : []
     });
@@ -433,7 +453,7 @@ export async function buildGraphPayload(options: {
       group: 5,
       typeLabel: "Project",
       description: project.data.description,
-      date: project.data.pubDate ? new Date(project.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      date: project.data.pubDate ? formatDate(project.data.pubDate, 'short') : undefined,
       image: imageSrc,
       tags: project.data.tags ? project.data.tags.slice(0, 3) : []
     });
@@ -464,7 +484,7 @@ export async function buildGraphPayload(options: {
       group: 6,
       typeLabel: "Service",
       description: service.data.description,
-      date: service.data.pubDate ? new Date(service.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      date: service.data.pubDate ? formatDate(service.data.pubDate, 'short') : undefined,
       image: imageSrc,
       tags: service.data.tags ? service.data.tags.slice(0, 3) : []
     });
@@ -495,7 +515,7 @@ export async function buildGraphPayload(options: {
       group: 7,
       typeLabel: "Interest",
       description: interest.data.description,
-      date: interest.data.pubDate ? new Date(interest.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : undefined,
+      date: interest.data.pubDate ? formatDate(interest.data.pubDate, 'short') : undefined,
       image: imageSrc,
       tags: interest.data.tags ? interest.data.tags.slice(0, 3) : []
     });

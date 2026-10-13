@@ -1,5 +1,6 @@
 ---
 import SlideBase from '../primitives/SlideBase.astro';
+import type { SlideAccent } from '@commons/shared/accent-system';
 
 interface Props {
   title?: string;
@@ -9,6 +10,8 @@ interface Props {
   totalSlides?: string | number;
   ratio?: '50/50' | '40/60' | '60/40' | '35/65' | '65/35';
   presentationTitle?: string;
+  accent?: SlideAccent;
+  startAccent?: SlideAccent;
   class?: string;
 }
 
@@ -20,6 +23,8 @@ const {
   totalSlides,
   ratio = '50/50',
   presentationTitle,
+  accent,
+  startAccent,
   class: className = ""
 } = Astro.props;
 
@@ -55,6 +60,8 @@ const rightSpan = {
   slideNumber={slideNumber}
   totalSlides={totalSlides}
   presentationTitle={presentationTitle}
+  accent={accent}
+  startAccent={startAccent}
   class={className}
 >
   <div class={`grid ${gridCols} gap-8 h-full w-full items-stretch min-h-0`}>

@@ -1,10 +1,10 @@
 ---
 import { renderSlideCues } from '@commons/shared/slide-cues';
+import { resolveAccentName, getCycleAccent, type SlideAccent } from '@commons/shared/accent-system';
 
 export interface TableRow {
   cue?: string;
   id?: string;
-  accent?: 'neutral' | 'blue' | 'cyan' | 'indigo' | 'emerald' | 'amber' | 'purple';
   title: string;
   subtitle?: string;
   targetSystem?: string;
@@ -18,6 +18,7 @@ interface Props {
   columns?: string[];
   rows: TableRow[];
   class?: string;
+  accent?: SlideAccent;
 }
 
 const {
@@ -25,35 +26,49 @@ const {
   cue,
   columns = ["Disziplin", "Zielsystem", "Kernmechanismus", "Nutzerziel & Erfolgsmetrik"],
   rows,
-  class: className = ""
+  class: className = "",
+  accent: tableAccent
 } = Astro.props;
 
 const elementId = explicitId;
+const resolvedTableAccent = tableAccent ? resolveAccentName(tableAccent) : undefined;
 
-const accentBars = {
-  neutral: 'bg-slate-500',
-  blue: 'bg-blue-500',
-  cyan: 'bg-cyan-400',
-  indigo: 'bg-indigo-500',
-  emerald: 'bg-emerald-500',
-  amber: 'bg-amber-500',
-  purple: 'bg-purple-500'
+const accentBars: Record<string, string> = {
+  blue: 'bg-[var(--color-slide-accent-blue)]',
+  cyan: 'bg-[var(--color-slide-accent-cyan)]',
+  indigo: 'bg-[var(--color-slide-accent-indigo)]',
+  emerald: 'bg-[var(--color-slide-accent-emerald)]',
+  amber: 'bg-[var(--color-slide-accent-amber)]',
+  purple: 'bg-[var(--color-slide-accent-purple)]',
+  rose: 'bg-[var(--color-slide-accent-rose)]',
+  teal: 'bg-[var(--color-slide-accent-teal)]',
+  orange: 'bg-[var(--color-slide-accent-orange)]'
 };
 
-const accentTitles = {
-  neutral: 'text-slate-100 light:text-slate-900',
-  blue: 'text-blue-400 light:text-blue-600',
-  cyan: 'text-cyan-400 light:text-cyan-600',
-  indigo: 'text-indigo-400 light:text-indigo-600',
-  emerald: 'text-emerald-400 light:text-emerald-600',
-  amber: 'text-amber-400 light:text-amber-600',
-  purple: 'text-purple-400 light:text-purple-600'
+const accentTitles: Record<string, string> = {
+  blue: 'text-[var(--color-slide-accent-blue)]',
+  cyan: 'text-[var(--color-slide-accent-cyan)]',
+  indigo: 'text-[var(--color-slide-accent-indigo)]',
+  emerald: 'text-[var(--color-slide-accent-emerald)]',
+  amber: 'text-[var(--color-slide-accent-amber)]',
+  purple: 'text-[var(--color-slide-accent-purple)]',
+  rose: 'text-[var(--color-slide-accent-rose)]',
+  teal: 'text-[var(--color-slide-accent-teal)]',
+  orange: 'text-[var(--color-slide-accent-orange)]'
 };
+
+function resolveRowAccent(idx: number): string {
+  if (resolvedTableAccent) {
+    return resolvedTableAccent;
+  }
+  return getCycleAccent(undefined, idx).name;
+}
 ---
 
 <div
   id={elementId}
   data-cue={cue}
+  data-accent={resolvedTableAccent}
   data-autofit
   class={`comparison-table-container w-full h-full flex flex-col justify-between rounded-3xl border border-slate-700/80 bg-slate-900/95 light:border-slate-300 light:bg-white shadow-2xl p-6 lg:p-8 min-h-0 overflow-hidden ${className}`}
 >
@@ -68,7 +83,7 @@ const accentTitles = {
   <!-- Table Rows -->
   <div class="table-rows-container flex-1 flex flex-col justify-between divide-y divide-slate-800/80 light:divide-slate-200 min-h-0">
     {rows.map((row, idx) => {
-      const accent = row.accent || 'neutral';
+      const accent = resolveRowAccent(idx);
       const rowId = row.id;
       return (
         <div
@@ -79,9 +94,9 @@ const accentTitles = {
         >
           <!-- Col 1: Disziplin -->
           <div class="comp-table-cell table-col-discipline col-span-3 flex items-center gap-4 min-w-0" data-cell>
-            <div class={`w-2.5 rounded-full shrink-0 table-accent-bar ${accentBars[accent]}`}></div>
+            <div class={`w-2.5 rounded-full shrink-0 table-accent-bar ${accentBars[accent] || accentBars.blue}`}></div>
             <div class="flex flex-col min-w-0">
-              <h3 class={`table-row-title text-3xl lg:text-4xl font-black tracking-tight leading-none ${accentTitles[accent]}`} set:html={renderSlideCues(row.title)} />
+              <h3 class={`table-row-title text-3xl lg:text-4xl font-black tracking-tight leading-none ${accentTitles[accent] || accentTitles.blue}`} set:html={renderSlideCues(row.title)} />
               {row.subtitle && (
                 <span class="table-row-subtitle text-sm lg:text-base text-slate-400 light:text-slate-500 font-medium leading-tight mt-1 truncate" set:html={renderSlideCues(row.subtitle)} />
               )}
@@ -157,4 +172,32 @@ const accentTitles = {
     padding-bottom: 1rem;
     gap: 1.5rem;
   }
+
+  /* Ton-in-ton container cascade for comparison table inside [data-accent] cards */
+  :global([data-accent="rose"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-rose); }
+  :global([data-accent="rose"]) .table-row-item .table-row-title { color: var(--color-slide-accent-rose); }
+
+  :global([data-accent="purple"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-purple); }
+  :global([data-accent="purple"]) .table-row-item .table-row-title { color: var(--color-slide-accent-purple); }
+
+  :global([data-accent="indigo"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-indigo); }
+  :global([data-accent="indigo"]) .table-row-item .table-row-title { color: var(--color-slide-accent-indigo); }
+
+  :global([data-accent="blue"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-blue); }
+  :global([data-accent="blue"]) .table-row-item .table-row-title { color: var(--color-slide-accent-blue); }
+
+  :global([data-accent="cyan"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-cyan); }
+  :global([data-accent="cyan"]) .table-row-item .table-row-title { color: var(--color-slide-accent-cyan); }
+
+  :global([data-accent="teal"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-teal); }
+  :global([data-accent="teal"]) .table-row-item .table-row-title { color: var(--color-slide-accent-teal); }
+
+  :global([data-accent="emerald"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-emerald); }
+  :global([data-accent="emerald"]) .table-row-item .table-row-title { color: var(--color-slide-accent-emerald); }
+
+  :global([data-accent="amber"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-amber); }
+  :global([data-accent="amber"]) .table-row-item .table-row-title { color: var(--color-slide-accent-amber); }
+
+  :global([data-accent="orange"]) .table-row-item .table-accent-bar { background-color: var(--color-slide-accent-orange); }
+  :global([data-accent="orange"]) .table-row-item .table-row-title { color: var(--color-slide-accent-orange); }
 </style>
