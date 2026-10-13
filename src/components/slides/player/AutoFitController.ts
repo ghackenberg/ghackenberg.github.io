@@ -120,7 +120,8 @@ export class AutoFitController {
     const unscaledBottomGap = (cardRect.bottom - contentRect.bottom) / revealScale;
     const isTable = card.classList.contains('comparison-table-container') || card.classList.contains('slide-table-container') || tableRows.length > 0;
     const isStep = card.classList.contains('step-row') || card.classList.contains('step-card') || !!textContainer;
-    const requiredClearance = isStep ? 14 : isTable ? 10 : this.options.minClearance;
+    const cardPadBottom = parseFloat(window.getComputedStyle(card).paddingBottom) || 0;
+    const requiredClearance = isStep ? 14 : isTable ? 10 : Math.max(this.options.minClearance, cardPadBottom - 2);
 
     return unscaledBottomGap >= requiredClearance;
   }
