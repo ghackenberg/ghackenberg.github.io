@@ -676,6 +676,31 @@ export class AutoFitController {
       if (codeCards.length > 0) {
         this.fitCards(codeCards);
       }
+
+      // Typographic hierarchy audit (dev-mode warning)
+      const slideTitleEl = slideEl.querySelector('.slide-title');
+      if (slideTitleEl) {
+        const titleSize = parseFloat(window.getComputedStyle(slideTitleEl).fontSize) || 0;
+        if (titleSize > 0) {
+          let maxContentSize = 0;
+          const candidateSelector =
+            'h2, h3, h4, h5, h6, p, li, pre, code, .metric-stat-value, .comp-table-cell, .table-row-title, .bento-card-title, .formula-box-content, .step-title';
+          const contentCandidates = slideEl.querySelectorAll<HTMLElement>(candidateSelector);
+          for (const el of contentCandidates) {
+            if (el.closest('.slide-header, .slide-number-badge, .slide-footer')) continue;
+            if (!el.textContent?.trim()) continue;
+            const size = parseFloat(window.getComputedStyle(el).fontSize) || 0;
+            if (size > maxContentSize) {
+              maxContentSize = size;
+            }
+          }
+          if (maxContentSize >= titleSize) {
+            console.warn(
+              `[Slide Typography Warning] Slide "${slideTitleEl.textContent?.trim()}": Content font size (${maxContentSize.toFixed(1)}px) >= Title font size (${titleSize.toFixed(1)}px)`
+            );
+          }
+        }
+      }
     } finally {
       if (isHidden) {
         slideEl.style.removeProperty('display');
