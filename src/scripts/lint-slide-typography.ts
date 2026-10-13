@@ -63,9 +63,16 @@ function createStaticServer(): http.Server {
   });
 }
 
-function parseCliArgs(): { targetPresentation?: string; failOnWarning: boolean } {
+function parseCliArgs(): {
+  targetPresentation?: string;
+  maxRatio: number;
+  minSize: number;
+  failOnWarning: boolean;
+} {
   const args = process.argv.slice(2);
   let targetPresentation: string | undefined;
+  let maxRatio = 0.85;
+  let minSize = 18;
   let failOnWarning = false;
 
   for (let i = 0; i < args.length; i++) {
@@ -74,18 +81,27 @@ function parseCliArgs(): { targetPresentation?: string; failOnWarning: boolean }
       targetPresentation = args[++i];
     } else if (arg.startsWith('--presentation=')) {
       targetPresentation = arg.split('=')[1];
+    } else if (arg === '--max-ratio' && i + 1 < args.length) {
+      maxRatio = parseFloat(args[++i]) || 0.85;
+    } else if (arg.startsWith('--max-ratio=')) {
+      maxRatio = parseFloat(arg.split('=')[1]) || 0.85;
+    } else if (arg === '--min-size' && i + 1 < args.length) {
+      minSize = parseFloat(args[++i]) || 18;
+    } else if (arg.startsWith('--min-size=')) {
+      minSize = parseFloat(arg.split('=')[1]) || 18;
     } else if (arg === '--fail-on-warning') {
       failOnWarning = true;
     }
   }
 
-  return { targetPresentation, failOnWarning };
+  return { targetPresentation, maxRatio, minSize, failOnWarning };
 }
 
 async function run(): Promise<void> {
-  const { targetPresentation, failOnWarning } = parseCliArgs();
+  const { targetPresentation, maxRatio, minSize, failOnWarning } = parseCliArgs();
 
-  console.log('\n🔍 SLIDE TYPOGRAPHY LINTER: Header-to-Content Ratio Audit');
+  console.log('\n🔍 SLIDE TYPOGRAPHY LINTER: Visual Hierarchy & Readability Audit');
+  console.log(`Thresholds: Max Ratio = ${(maxRatio * 100).toFixed(0)}% of Slide Title | Min Primary Font Size = ${minSize}px`);
   console.log('Auditing presentations in: src/content/presentations\n');
 
   if (!fs.existsSync(distDir)) {
@@ -128,6 +144,8 @@ async function run(): Promise<void> {
   let browser: Browser | null = null;
   let totalSlidesScanned = 0;
   let totalWarnings = 0;
+  let totalTooLarge = 0;
+  let totalTooSmall = 0;
   const reports: PresentationTypographyReport[] = [];
 
   try {
@@ -153,21 +171,35 @@ async function run(): Promise<void> {
         await page.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
         await page.evaluateHandle('document.fonts.ready');
 
-        const report = await auditSlideTypography(page, deck);
+        const report = await auditSlideTypography(page, deck, {
+          maxRatioThreshold: maxRatio,
+          minFontSizeThreshold: minSize,
+        });
         reports.push(report);
         totalSlidesScanned += report.totalSlides;
         totalWarnings += report.warningsCount;
+        totalTooLarge += report.tooLargeCount;
+        totalTooSmall += report.tooSmallCount;
 
         if (report.warningsCount === 0) {
           console.log(
-            `   ✅ All ${report.results.length} slides with titles (${report.totalSlides} total) maintain healthy typographic hierarchy (content < title font size).\n`
+            `   ✅ All ${report.results.length} slides with titles (${report.totalSlides} total) maintain healthy typography.\n`
           );
         } else {
           for (const warning of report.results.filter((r) => r.isWarning)) {
-            console.log(
-              `   ⚠️  [WARN] Slide ${warning.slideNumber} (${warning.slideId}): Content text in ${warning.offendingElement} (${warning.maxContentFontSize}px) >= Slide Title (${warning.titleFontSize}px) [Ratio: ${warning.ratio}x]`
-            );
-            console.log(`         Preview: "${warning.previewText}"`);
+            for (const w of warning.warnings) {
+              if (w.type === 'TOO_LARGE') {
+                console.log(
+                  `   ⚠️  [WARN: TOO LARGE] Slide ${warning.slideNumber} (${warning.slideId}): Content text in ${w.element} (${w.fontSize}px) >= ${(maxRatio * 100).toFixed(0)}% of Slide Title (${warning.titleFontSize}px) [Ratio: ${w.ratio}x]`
+                );
+                console.log(`         Preview: "${w.previewText}"`);
+              } else if (w.type === 'TOO_SMALL') {
+                console.log(
+                  `   ⚠️  [WARN: TOO SMALL] Slide ${warning.slideNumber} (${warning.slideId}): Primary text in ${w.element} (${w.fontSize}px) is below readable threshold (${w.threshold}px) after scaling`
+                );
+                console.log(`         Preview: "${w.previewText}"`);
+              }
+            }
           }
           console.log('');
         }
@@ -191,11 +223,11 @@ async function run(): Promise<void> {
   console.log('Audit Summary:');
   console.log(`  Total presentations scanned: ${decksToAudit.length}`);
   console.log(`  Total slides scanned: ${totalSlidesScanned}`);
-  console.log(`  Total warnings detected: ${totalWarnings}`);
+  console.log(`  Total warnings detected: ${totalWarnings} (Too Large: ${totalTooLarge}, Too Small: ${totalTooSmall})`);
   if (totalWarnings === 0) {
-    console.log('✅ All slides maintain healthy typographic hierarchy (content < title font size).');
+    console.log('✅ All slides maintain healthy typographic hierarchy and comfortable reading size.');
   } else {
-    console.log(`⚠️  ${totalWarnings} slide(s) have content font size >= title font size.`);
+    console.log(`⚠️  ${totalWarnings} slide(s) have typographic warnings.`);
   }
   console.log('==================================================\n');
 
