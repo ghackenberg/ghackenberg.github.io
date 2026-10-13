@@ -8,9 +8,9 @@
 
 export interface AutoFitOptions {
   minScale?: number;      // Default 0.70 (readable presentation text/code)
-  maxScale?: number;      // Default 1.45 (upscaling for spacious presentation layouts)
+  maxScale?: number;      // Default 2.50 (uncapped container-driven scaling)
   minClearance?: number;  // Minimum unscaled clearance to bottom border (default: 8px)
-  iterations?: number;    // Binary search steps (default: 5)
+  iterations?: number;    // Binary search steps (default: 7)
 }
 
 export class AutoFitController {
@@ -19,9 +19,9 @@ export class AutoFitController {
   constructor(options?: AutoFitOptions) {
     this.options = {
       minScale: options?.minScale ?? 0.70,
-      maxScale: options?.maxScale ?? 1.65,
+      maxScale: options?.maxScale ?? 2.50,
       minClearance: options?.minClearance ?? 8,
-      iterations: options?.iterations ?? 6,
+      iterations: options?.iterations ?? 7,
     };
   }
 
@@ -46,12 +46,12 @@ export class AutoFitController {
     const isCodeCard = card.classList.contains('code-container-root') || !!pre || !!card.querySelector('.code-scroll-area');
     if (isCodeCard) {
       if (pre) {
-        if (pre.scrollWidth > pre.clientWidth + 1) return false;
+        if (pre.scrollWidth > pre.clientWidth + 2) return false;
         if (pre.scrollHeight > pre.clientHeight + 1) return false;
         if (scrollableChild && pre.scrollHeight > scrollableChild.clientHeight) return false;
       }
       if (scrollableChild) {
-        if (scrollableChild.scrollWidth > scrollableChild.clientWidth + 1) return false;
+        if (scrollableChild.scrollWidth > scrollableChild.clientWidth + 2) return false;
         if (scrollableChild.scrollHeight > scrollableChild.clientHeight + 1) return false;
       }
     }
@@ -132,10 +132,11 @@ export class AutoFitController {
 
     const isCodeCard = card.classList.contains('code-container-root') || !!card.querySelector('pre, .code-scroll-area');
     const minScale = isCodeCard ? Math.min(this.options.minScale, 0.45) : this.options.minScale;
-    const iterations = isCodeCard ? Math.max(this.options.iterations, 6) : this.options.iterations;
+    const maxScale = this.options.maxScale;
+    const iterations = this.options.iterations;
 
     // 1. Test at maxScale (allows upscaling if plenty of room)
-    card.style.setProperty('--content-scale', this.options.maxScale.toFixed(3), 'important');
+    card.style.setProperty('--content-scale', maxScale.toFixed(3), 'important');
 
     if (this.checkCardFits(card)) {
       return; // Naturally fits even at maxScale!
@@ -143,7 +144,7 @@ export class AutoFitController {
 
     // 2. Binary search for maximal scale where it fits
     let low = minScale;
-    let high = this.options.maxScale;
+    let high = maxScale;
     let best = minScale;
 
     for (let i = 0; i < iterations; i++) {
@@ -168,7 +169,8 @@ export class AutoFitController {
       (c) => c.classList.contains('code-container-root') || !!c.querySelector('pre, .code-scroll-area')
     );
     const minScale = isCodeCard ? Math.min(this.options.minScale, 0.45) : this.options.minScale;
-    const iterations = isCodeCard ? Math.max(this.options.iterations, 6) : this.options.iterations;
+    const maxScale = this.options.maxScale;
+    const iterations = this.options.iterations;
 
     const checkAllCardsFit = (scale: number): boolean => {
       for (const card of cards) {
@@ -182,12 +184,12 @@ export class AutoFitController {
       return true;
     };
 
-    if (checkAllCardsFit(this.options.maxScale)) {
+    if (checkAllCardsFit(maxScale)) {
       return;
     }
 
     let low = minScale;
-    let high = this.options.maxScale;
+    let high = maxScale;
     let best = minScale;
 
     for (let i = 0; i < iterations; i++) {
@@ -311,7 +313,7 @@ export class AutoFitController {
       return { imgH, textH };
     };
 
-    const targetMaxScale = Math.min(this.options.maxScale, 1.45);
+    const targetMaxScale = this.options.maxScale;
     const targetMinScale = Math.min(0.80, this.options.minScale);
 
     // 1. Try maximum scale (1.45)
@@ -385,8 +387,8 @@ export class AutoFitController {
     const rowPad = isSlideTable ? 16 : 24;
     const maxCellH = Math.max(36, targetRowH - rowPad);
 
-    // Allow generous upscaling up to 1.65 for spacious tables (e.g. 3 rows) to eliminate dead white space
-    const maxTableScale = rows.length <= 3 ? Math.min(this.options.maxScale, 1.65) : Math.min(this.options.maxScale, 1.35);
+    // Container-driven uncapped scaling for tables
+    const maxTableScale = this.options.maxScale;
 
     // Clear any residual child-level scale overrides to ensure single global cascading scale
     for (const row of rows) {
@@ -462,14 +464,30 @@ export class AutoFitController {
           let maxLen = 0;
           let totalLen = 0;
           for (const cell of cells) {
-            const text = (cell.textContent || '').replace(/\s+/g, ' ').trim();
-            const len = text.length;
-            if (len > maxLen) maxLen = len;
-            totalLen += len;
+            let lineEls = Array.from(
+              cell.querySelectorAll<HTMLElement>('.table-row-title, .table-row-subtitle, p, div, span.block')
+            );
+            if (lineEls.length > 1) {
+              lineEls = lineEls.filter(el => !lineEls.some(other => other !== el && el.contains(other)));
+            }
+
+            let cellMaxLine = 0;
+            if (lineEls.length > 0) {
+              for (const lineEl of lineEls) {
+                const t = (lineEl.textContent || '').replace(/\s+/g, ' ').trim();
+                if (t.length > cellMaxLine) cellMaxLine = t.length;
+              }
+            }
+            if (cellMaxLine === 0) {
+              cellMaxLine = (cell.textContent || '').replace(/\s+/g, ' ').trim().length;
+            }
+
+            if (cellMaxLine > maxLen) maxLen = cellMaxLine;
+            totalLen += cellMaxLine;
           }
           const avgLen = cells.length > 0 ? totalLen / cells.length : 0;
-          // Col 0 has bold title and accent bar, requiring more visual width per character
-          const colMultiplier = c === 0 ? 1.4 : 1.0;
+          // Col 0 has bold title and accent bar, requiring a slight 1.05 padding factor
+          const colMultiplier = c === 0 ? 1.05 : 1.0;
           const weight = Math.max(1, (0.5 * avgLen + 0.5 * maxLen) * colMultiplier);
           colWeights.push(weight);
         }
@@ -639,12 +657,25 @@ export class AutoFitController {
       pipelines.forEach((pipeline) => this.fitPipeline(pipeline));
 
       // 3. Fit remaining individual cards (excluding tables and pipeline steps already handled)
-      const cards = Array.from(
+      const allCards = Array.from(
         slideEl.querySelectorAll<HTMLElement>(
           '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]:not(.comparison-table-container):not(.slide-table-container):not(.step-row):not(.step-card)'
         )
       );
-      this.fitCards(cards);
+      const isCodeElement = (el: HTMLElement) =>
+        el.classList.contains('code-container-root') || !!el.querySelector('pre, .code-scroll-area');
+      const codeCards = allCards.filter(isCodeElement);
+      const textCards = allCards.filter((c) => !isCodeElement(c));
+
+      // Fit narrative/text cards jointly with unified content scale across the slide
+      if (textCards.length > 0) {
+        this.fitCards(textCards);
+      }
+
+      // Fit code snippets jointly with decoupled, unified code scale across the slide
+      if (codeCards.length > 0) {
+        this.fitCards(codeCards);
+      }
     } finally {
       if (isHidden) {
         slideEl.style.removeProperty('display');
