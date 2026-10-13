@@ -1,7 +1,6 @@
 ---
 interface Props {
   cols?: 2 | 3 | 4;
-  gap?: 'tight' | 'element' | 'block';
   id?: string;
   cue?: string;
   class?: string;
@@ -9,7 +8,6 @@ interface Props {
 
 const {
   cols = 2,
-  gap = 'element',
   id,
   cue,
   class: className = ""
@@ -27,7 +25,6 @@ const colClass = colClasses[cols] || 'grid-cols-2';
 <div
   id={id}
   data-cue={cue}
-  data-gap={gap}
   class={`card-grid grid ${colClass} ${className}`}
 >
   <slot />
@@ -36,18 +33,7 @@ const colClass = colClasses[cols] || 'grid-cols-2';
 <style>
   .card-grid {
     width: 100%;
-    gap: var(--slide-space-element, 1rem);
-  }
-
-  .card-grid[data-gap="tight"] {
-    gap: var(--slide-space-tight, 0.5rem);
-  }
-
-  .card-grid[data-gap="element"] {
-    gap: var(--slide-space-element, 1rem);
-  }
-
-  .card-grid[data-gap="block"] {
-    gap: var(--slide-space-block, 2rem);
+    /* Aligned with BulletList spacing between bullet points (independent of --content-scale) */
+    gap: var(--slide-space-element, 1rem) !important;
   }
 </style>
