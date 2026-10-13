@@ -33,25 +33,25 @@ import heroImage from '../images/hero_defensive_pipeline.jpg';
   <Pipeline steps={[
     {
       cue: "step-def-01",
-      num: "01",
+      num: "1",
       title: "Input Sanitization",
       desc: "Vorab-Filterung eliminiert {cue:hl-sanitization-zeichen}verdächtige Steuerzeichen und unsichtbare Unicodes{/cue}.",
       },
     {
       cue: "step-def-02",
-      num: "02",
+      num: "2",
       title: "XML Isolation",
       desc: "Kapselung des Inputs in {cue:hl-untrusted-tag}strikt isolierende XML-Container als ungesicherte Daten{/cue}.",
       },
     {
       cue: "step-def-03",
-      num: "03",
+      num: "3",
       title: "Sandwich Defense",
       desc: "Verankerung {cue:hl-sandwich-regeln}aller Sicherheitsregeln unmittelbar vor der Generierung{/cue}.",
       },
     {
       cue: "step-def-04",
-      num: "04",
+      num: "4",
       title: "Output Guardrail",
       desc: "Ein sekundärer Check {cue:hl-guardrail-check}überprüft den finalen Output auf Datenlecks und Richtlinien{/cue}.",
       }

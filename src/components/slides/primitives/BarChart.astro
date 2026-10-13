@@ -109,7 +109,7 @@ function computeSsrBarRounding(value: number) {
   data-start-accent={startAccent ? String(startAccent) : undefined}
   data-min={explicitMin !== undefined ? explicitMin : ''}
   data-max={explicitMax !== undefined ? explicitMax : ''}
-  class={`bar-chart-container flex-1 flex flex-col justify-around gap-6 text-slate-200 light:text-slate-800 w-full select-none ${className}`}
+  class={`bar-chart-container flex-1 flex flex-col justify-start gap-[var(--slide-space-element,1rem)] text-slate-200 light:text-slate-800 w-full select-none ${className}`}
 >
   {items.map((item, idx) => {
     const hasCustomAccent = Boolean(item.value < 0);
@@ -184,8 +184,17 @@ function computeSsrBarRounding(value: number) {
       const rows = Array.from(container.querySelectorAll<HTMLElement>('.bar-chart-row'));
       if (rows.length === 0) return;
 
-      const parentCard = container.closest<HTMLElement>('[data-accent]');
-      const effectiveStart = container.dataset.startAccent || parentCard?.dataset.accent;
+      const parentCard = container.closest<HTMLElement>('.bento-card-root');
+      const parentAccentEl = container.closest<HTMLElement>('[data-accent]');
+      let effectiveStart = container.dataset.startAccent || parentAccentEl?.dataset.accent;
+      if (!effectiveStart && parentCard) {
+        const style = window.getComputedStyle(parentCard);
+        const resolved = style.getPropertyValue('--resolved-card-accent') || style.getPropertyValue('--card-accent');
+        const match = resolved.match(/--color-slide-accent-([a-z]+)/);
+        if (match) {
+          effectiveStart = match[1];
+        }
+      }
 
       if (effectiveStart && rows.length > 1) {
         let unaccentedIdx = 0;
@@ -287,6 +296,12 @@ function computeSsrBarRounding(value: number) {
 </script>
 
 <style>
+  .bar-chart-container {
+    gap: var(--slide-space-element, 1rem) !important;
+  }
+
+  :global(.bento-card-root) .bar-chart-row :global(mark),
+  :global(.bento-card-root) .bar-chart-row :global(.highlight-marker),
   .bar-chart-row :global(mark),
   .bar-chart-row :global(.highlight-marker) {
     --hl-color: var(--row-bar-accent) !important;

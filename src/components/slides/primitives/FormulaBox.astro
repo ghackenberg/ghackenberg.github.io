@@ -45,7 +45,7 @@ if (formula) {
 <div
   id={id}
   data-cue={cue}
-  class={`formula-box px-4 py-3 bg-[var(--card-accent)]/10 border border-[var(--card-accent)]/30 text-[var(--card-accent)] rounded-xl font-mono text-center shadow-xs flex flex-col items-center justify-center gap-1 transition-all duration-300 ${className}`}
+  class={`formula-box px-4 py-3 bg-[var(--card-accent)]/10 border border-[var(--card-accent)]/30 text-[var(--card-accent)] rounded-xl font-mono text-center shadow-xs flex flex-col items-center justify-center gap-2 transition-all duration-300 ${className}`}
 >
   {label && (
     <span
@@ -63,7 +63,7 @@ if (formula) {
   .formula-box {
     --effective-formula-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
     --card-accent: var(--effective-formula-accent);
-    padding: 0.75rem 1rem !important;
+    padding: var(--slide-space-element, 1rem) 1.25rem !important;
   }
   .formula-box-label {
     font-size: calc(0.75rem * var(--content-scale, 1)) !important;
@@ -71,6 +71,12 @@ if (formula) {
   .formula-box-content {
     font-size: calc(1.5rem * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .formula-box-content :global(p) {
+    margin: 0 !important;
+    padding: 0 !important;
   }
   .formula-box-content :global(.katex) {
     line-height: normal;

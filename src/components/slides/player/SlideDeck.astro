@@ -2466,6 +2466,13 @@ const currentDeckId = presentationId || talkId || "presentation";
     --hl-text-light: var(--hl-color);
   }
 
+  .reveal .bar-chart-row mark,
+  .reveal .bar-chart-row .highlight-marker {
+    --hl-color: var(--row-bar-accent) !important;
+    --hl-text-dark: color-mix(in srgb, var(--row-bar-accent) 35%, white) !important;
+    --hl-text-light: var(--row-bar-accent) !important;
+  }
+
   /* Pre-cue pending state for marker: 0% width (unmarked) */
   .reveal mark[data-cue]:not(.is-active),
   .reveal .highlight-marker[data-cue]:not(.is-active) {

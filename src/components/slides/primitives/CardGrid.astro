@@ -1,0 +1,53 @@
+---
+interface Props {
+  cols?: 2 | 3 | 4;
+  gap?: 'tight' | 'element' | 'block';
+  id?: string;
+  cue?: string;
+  class?: string;
+}
+
+const {
+  cols = 2,
+  gap = 'element',
+  id,
+  cue,
+  class: className = ""
+} = Astro.props;
+
+const colClasses: Record<2 | 3 | 4, string> = {
+  2: 'grid-cols-2',
+  3: 'grid-cols-3',
+  4: 'grid-cols-4'
+};
+
+const colClass = colClasses[cols] || 'grid-cols-2';
+---
+
+<div
+  id={id}
+  data-cue={cue}
+  data-gap={gap}
+  class={`card-grid grid ${colClass} ${className}`}
+>
+  <slot />
+</div>
+
+<style>
+  .card-grid {
+    width: 100%;
+    gap: var(--slide-space-element, 1rem);
+  }
+
+  .card-grid[data-gap="tight"] {
+    gap: var(--slide-space-tight, 0.5rem);
+  }
+
+  .card-grid[data-gap="element"] {
+    gap: var(--slide-space-element, 1rem);
+  }
+
+  .card-grid[data-gap="block"] {
+    gap: var(--slide-space-block, 2rem);
+  }
+</style>
