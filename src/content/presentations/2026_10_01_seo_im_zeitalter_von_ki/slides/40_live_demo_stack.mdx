@@ -29,18 +29,18 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="68"
   ratio="50/50"
 >
-  <BentoCard slot="left" cue="col-demo-prompt" title="Live-Demo Prompt (Kopierbar)" accent="blue">
+  <BentoCard slot="left" cue="col-demo-prompt" title="Live-Demo Prompt (Kopierbar)">
     <CalloutBox type="quote" title="Prompt für Google Antigravity">
-      <p class="font-mono text-sm lg:text-base text-blue-200 light:text-blue-900 select-all leading-relaxed">
+      <p>
         {cue:hl-prompt-text}„Führe ein SEO- und AIO-Audit für /posts/2026_08_11_seo_geo_aeo_aio_optimierung/ durch: Analysiere Verweildauer und Scroll-Funnel per get_page_audit, evaluiere AIO-Zitierbarkeit und BLUF-Muster per evaluate_aio_extractability und erstelle einen kompakten Bericht mit priorisierten Maßnahmen.“{/cue}
       </p>
     </CalloutBox>
-    <p class="text-sm text-slate-400 light:text-slate-600 mt-2 italic">
+    <p>
       Tipp: Text anklicken und direkt in Antigravity einfügen.
     </p>
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-demo-pipeline" title="Workflow der Live-Demonstration" accent="cyan">
+  <BentoCard slot="right" cue="col-demo-pipeline" title="Workflow der Live-Demonstration">
     <BulletList items={[
       { icon: "search", title: "01. Unified Analytics MCP", desc: "Agent {cue:hl-demo-step1}ruft über den Unified Analytics MCP get_page_audit und evaluate_aio_extractability auf{/cue}." },
       { icon: "target", title: "02. Priorisierter Audit-Bericht", desc: "Antigravity liefert {cue:hl-demo-step2}einen priorisierten Audit-Bericht mit Scroll-Funnel und AIO-Score{/cue}." },

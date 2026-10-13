@@ -31,23 +31,21 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="35"
   totalSlides="48"
 >
-  <div slot="code" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-code" title="JSON-Schema Spezifikation [@openai-2024-structured-outputs]" accent="emerald">
-      <div class="p-6 rounded-2xl bg-slate-950 light:bg-slate-100 font-mono text-base lg:text-lg leading-relaxed border border-slate-800 light:border-slate-300 text-slate-200 light:text-slate-900 shadow-inner">
-        <span class="text-slate-500 light:text-slate-500">// Pydantic / JSON-Schema</span><br/>
-        <span class="text-blue-400 light:text-blue-700 font-bold">class</span> <span class="text-cyan-300 light:text-cyan-800 font-bold">MachineAudit</span>(BaseModel):<br/>
-        &nbsp;&nbsp;machine_id: <span class="text-amber-300 light:text-amber-800 font-bold">str</span><br/>
-        &nbsp;&nbsp;status: <span class="text-amber-300 light:text-amber-800 font-bold">Literal["OK", "WARN", "FAIL"]</span><br/>
-        &nbsp;&nbsp;temperature_c: <span class="text-amber-300 light:text-amber-800 font-bold">float</span><br/>
-        &nbsp;&nbsp;action_required: <span class="text-amber-300 light:text-amber-800 font-bold">bool</span><br/><br/>
-        <span class="text-slate-500 light:text-slate-500">// API Parameter:</span><br/>
-        {cue:hl-json-schema}response_format = &#123;"type": "json_schema", "strict": true&#125;{/cue}
-      </div>
-    </BentoCard>
-  </div>
+  <BentoCard slot="code" cue="col-code" title="JSON-Schema Spezifikation [@openai-2024-structured-outputs]">
+      <CalloutBox type="statement" title="{cue:hl-json-schema}JSON Schema: response_format strict=true{/cue}">
+      `class MachineAudit(BaseModel):`
 
-  <div slot="explanation" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-explanation" title="Constrained Decoding" accent="blue">
+      `  machine_id: str`
+
+      `  status: Literal["OK", "WARN", "FAIL"]`
+
+      `  temperature_c: float`
+
+      `  action_required: bool`
+    </CalloutBox>
+    </BentoCard>
+
+  <BentoCard slot="explanation" cue="col-explanation" title="Constrained Decoding">
       <CalloutBox type="statement" title="Grammatik-Maskierung">
         {cue:hl-constrained-decoding}Tokens, die das Schema verletzen, erhalten Wahrscheinlichkeit null{/cue}.
       </CalloutBox>
@@ -64,5 +62,4 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
         }
       ]} />
     </BentoCard>
-  </div>
 </CodeSlide>

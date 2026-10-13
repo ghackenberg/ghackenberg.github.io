@@ -45,24 +45,11 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="left"
     cue="card-badhall-context"
     title="Ausgangspunkt: Zero-Click-Shift"
-    accent="blue"
   >
-    <div class="mb-4">
-      <a
-        href="/presentations/2026_10_01_seo_im_zeitalter_von_ki/"
-        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-300 hover:bg-blue-500/30 text-base font-semibold transition-colors"
-      >
-        <span>Keynote: SEO im Zeitalter von KI</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-      </a>
-    </div>
-
     <CalloutBox type="info" title="Die ökonomische Fragestellung">
-      <p class="text-xl lg:text-2xl leading-relaxed">
-        {cue:hl-badhall-frage}„Wenn organische Klicks durch Zero-Click schrumpfen: Lässt sich der Reichweitenverlust durch bezahlte Ads kompensieren?“{/cue}
-      </p>
+      {cue:hl-badhall-frage}„Wenn organische Klicks durch Zero-Click schrumpfen: Lässt sich der Reichweitenverlust durch bezahlte Ads kompensieren?“{/cue}
     </CalloutBox>
-    <p class="text-base lg:text-lg text-slate-300 light:text-slate-600 mt-4 leading-relaxed">
+    <p>
       Die Analyse in der Keynote zeigt, wie KI-Overviews und RAG-Systeme den Klickfluss ins offene Web kappen [@fishkin-2024-zero-click]. Die naheliegende Management-Hypothese lautet oft: Schrumpfende organische Reichweite lässt sich durch Budgetumschichtung in Paid Ads ausgleichen.
     </p>
   </BentoCard>
@@ -71,7 +58,6 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="right"
     cue="card-budgetschock-reality"
     title="Die Realität: Warum Nachkaufen scheitert"
-    accent="amber"
   >
     <BulletList
       items={[

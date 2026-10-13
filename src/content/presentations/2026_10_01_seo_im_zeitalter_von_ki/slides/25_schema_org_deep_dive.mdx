@@ -35,7 +35,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="25"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-schema-types" title="Die 5 B2B-Kern-Entitätstypen" accent="blue">
+  <BentoCard slot="left" cue="col-schema-types" title="Die 5 B2B-Kern-Entitätstypen">
     <BulletList items={[
       { icon: "network", title: "Organization", desc: "Rechtlicher Name, Logo, {cue:hl-schema-org}sameAs zu Wikidata und LinkedIn{/cue}, Standorte." },
       { icon: "shield", title: "Person", desc: "Geschäftsführung und Lead-Ingenieure mit {cue:hl-schema-person}ORCID und Patenten{/cue}." },
@@ -44,13 +44,13 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-schema-id" title="Das @id-Prinzip: Eindeutige URIs" accent="indigo">
+  <BentoCard slot="right" cue="col-schema-id" title="Das @id-Prinzip: Eindeutige URIs">
     <CalloutBox type="info" title="{cue:hl-callout-canonical-uris}// Canonical Entity URIs{/cue}">
-      <div class="font-mono text-lg space-y-1">
-        <p class="text-slate-200 light:text-slate-800">https://firma.at/#organization</p>
-        <p class="text-slate-200 light:text-slate-800">https://firma.at/team/dr-mueller/#author</p>
-        <p class="text-slate-200 light:text-slate-800">https://firma.at/produkte/serie-x/#product</p>
-      </div>
+      `https://firma.at/#organization`
+
+      `https://firma.at/team/dr-mueller/#author`
+
+      `https://firma.at/produkte/serie-x/#product`
     </CalloutBox>
 
     <BulletList items={[

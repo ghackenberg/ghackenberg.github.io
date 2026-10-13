@@ -31,7 +31,12 @@ const {
   avatarAlt,
   id,
   class: className = ""
-} = Astro.props;
+} = Astro.props as Props;
+
+const cleanName = name.replace(/\{cue:[^}]+\}|\{\/cue\}/g, '');
+const computedAvatarAlt = avatarAlt || `${cleanName} - Interaktives 3D Porträt`;
+const computedImageAlt = avatarAlt || `${cleanName} - Porträt`;
+const computedTitle = cleanName;
 
 function resolveLinkIcon(label: string, value: string, href?: string): SlideIconName | 'mail' | undefined {
   const combined = `${label} ${value} ${href || ''}`.toLowerCase();
@@ -53,14 +58,15 @@ function resolveLinkIcon(label: string, value: string, href?: string): SlideIcon
     {avatarSrc ? (
       <img
         src={avatarSrc}
-        alt={avatarAlt || name}
+        alt={computedImageAlt}
+        title={computedTitle}
         class="w-full h-full object-cover"
         loading="eager"
       />
     ) : (
       <Avatar3D
-        alt={avatarAlt || name}
-        title={name}
+        alt={computedAvatarAlt}
+        title={computedTitle}
         class="w-full h-full object-cover"
       />
     )}

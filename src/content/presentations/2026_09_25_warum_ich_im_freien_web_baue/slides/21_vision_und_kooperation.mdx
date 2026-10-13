@@ -18,6 +18,7 @@ import BentoCard from '../../../../components/slides/primitives/BentoCard.astro'
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
+import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astro';
 
 <VisualSplitSlide
   title={frontmatter.title}
@@ -27,19 +28,15 @@ import Avatar3D from '../../../../components/slides/primitives/Avatar3D.astro';
   totalSlides="21"
   ratio="45/55"
 >
-  <BentoCard slot="visual" cue="vis-dialog" title="Dr. Georg Hackenberg" accent="blue">
+  <BentoCard slot="visual" cue="vis-dialog" title="Dr. Georg Hackenberg">
     <CalloutBox type="statement" title="Zukunftsthemen & Fokus">
       <p>{cue:hl-dialog-vision}AI-Augmented Workflows und Digital Content Creation{/cue}.</p>
     </CalloutBox>
-    <div class="w-full flex-1 flex flex-col items-center justify-center min-h-[300px] overflow-hidden rounded-2xl bg-slate-950/60 light:bg-slate-100 border border-slate-800 light:border-slate-200">
-      <Avatar3D intensity={0.08} maxTilt={6} class="w-64 h-64" />
-    </div>
-    <div class="mt-3 text-center">
-      <span class="font-mono text-xl text-blue-400 light:text-blue-600 font-bold">https://hackenberg.tech</span>
-    </div>
+    <Avatar3D intensity={0.08} maxTilt={6} class="w-64 h-64 mx-auto my-auto" />
+    <FormulaBox formula="https://hackenberg.tech" />
   </BentoCard>
 
-  <BentoCard slot="content" cue="card-dialog" title="Offene Kanäle & Kooperation" accent="amber">
+  <BentoCard slot="content" cue="card-dialog" title="Offene Kanäle & Kooperation">
     <CalloutBox type="statement" title="Gemeinsam Zukunft gestalten">
       <p>{cue:hl-dialog-teilen}Wissen vermehrt sich, indem man es teilt{/cue}.</p>
     </CalloutBox>

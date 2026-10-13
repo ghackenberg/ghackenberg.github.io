@@ -49,9 +49,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="left"
     cue="chart-qs"
     title="Effektiver CPC nach Qualitätsfaktor [@kim-2015-quality-score]"
-    accent="blue"
   >
-    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+    <p>
       Relativer Klickpreis im Vergleich zur {cue:hl-qs-baseline}neutralen Baseline mit Score sieben{/cue}:
     </p>
     <BarChart
@@ -62,26 +61,22 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
           label: "Quality Score 10 (Exzellent)",
           value: 50,
           formattedValue: "-50% Rabatt",
-          accent: "emerald"
-        },
+          },
         {
           label: "Quality Score 7 (Baseline)",
           value: 100,
           formattedValue: "100% Basis",
-          accent: "blue"
-        },
+          },
         {
           label: "Quality Score 5 (Mittelmäßig)",
           value: 140,
           formattedValue: "+40% Aufschlag",
-          accent: "amber"
-        },
+          },
         {
           label: "Quality Score 3 (Schlecht)",
           value: 233,
           formattedValue: "+133% Strafe",
-          accent: "rose"
-        }
+          }
       ]}
     />
   </BentoCard>
@@ -90,7 +85,6 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="right"
     cue="card-formel"
     title="Auktionsmathematik [@varian-2007-position-auctions]"
-    accent="cyan"
   >
     <CalloutBox type="statement" title="Ad Rank = Gebot × Qualitätsfaktor">
       <p>Auktionsgewinn durch Relevanz: {cue:hl-adrank-formel}Der Rang errechnet sich aus dem Maximalgebot multipliziert mit dem Qualitätsfaktor{/cue}.</p>

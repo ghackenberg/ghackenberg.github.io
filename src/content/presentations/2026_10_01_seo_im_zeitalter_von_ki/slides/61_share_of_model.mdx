@@ -19,6 +19,7 @@ import BentoCard from '../../../../components/slides/primitives/BentoCard.astro'
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 import BarChart from '../../../../components/slides/primitives/BarChart.astro';
+import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -26,12 +27,12 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
   slideNumber="61"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-som-formula" title="Definition & Berechnungsformel" accent="blue">
+  <BentoCard slot="left" cue="col-som-formula" title="Definition & Berechnungsformel">
     <CalloutBox type="statement" title="{cue:hl-callout-som-formula}Share of Model (SoM) Formel{/cue}">
-      <div class="text-3xl lg:text-4xl xl:text-5xl font-mono font-black text-blue-300 light:text-blue-950 my-2 text-center">
-        SoM (%) = ( M<sub>erwähnt</sub> / P<sub>gesamt</sub> ) × 100
-      </div>
-      <p class="text-sm lg:text-base text-blue-300 light:text-blue-800 text-center font-medium">M = Antworten mit Marken-Nennung | P = Gesamte Test-Prompts</p>
+      <FormulaBox
+        formula="\text{SOM} = \frac{M}{P}"
+        label="M = Antworten mit Marken-Nennung | P = Gesamte Test-Prompts"
+      />
     </CalloutBox>
 
     <BulletList items={[
@@ -48,7 +49,7 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-som-bench" title="Wettbewerbs-Benchmark (B2B Beispiel)" accent="cyan">
+  <BentoCard slot="right" cue="col-som-bench" title="Wettbewerbs-Benchmark (B2B Beispiel)">
     <BarChart
       unit="% SoM"
       max={100}
@@ -58,8 +59,7 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
           value: 42,
           formattedValue: "42 % SoM",
           cue: "hl-som-winner",
-          highlightColor: "emerald"
-        },
+          },
         {
           label: "Marktbegleiter A (Konventionell)",
           value: 24,

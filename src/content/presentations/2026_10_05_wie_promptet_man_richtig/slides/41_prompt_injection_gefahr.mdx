@@ -38,8 +38,7 @@ import heroImage from '../images/hero_prompt_injection.jpg';
   imageCue="vis-injection"
   ratio="50/50"
 >
-  <div slot="narrative" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-mechanik" title="Angriffsvektoren & B2B-Risiko [@greshake-2023-indirect-prompt-injection]" accent="rose">
+  <BentoCard slot="narrative" cue="col-mechanik" title="Angriffsvektoren & B2B-Risiko [@greshake-2023-indirect-prompt-injection]">
       <CalloutBox type="statement" title="Befehl vs. Daten Trennung fehlt">
         LLMs können {cue:hl-code-daten-dualismus}instruktiven Code nicht nativ von passiven Daten trennen{/cue}.
       </CalloutBox>
@@ -61,6 +60,5 @@ import heroImage from '../images/hero_prompt_injection.jpg';
         }
       ]} />
     </BentoCard>
-  </div>
 </StoryHeroSlide>
 

@@ -32,21 +32,15 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="27"
   totalSlides="48"
 >
-  <div slot="code" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-code" title="Der Magische Trigger [@kojima-2022-large-language-models-zero-shot-reasoners]" accent="cyan">
-      <div class="p-6 rounded-2xl bg-slate-950 light:bg-slate-100 font-mono text-base lg:text-lg leading-relaxed border border-slate-800 light:border-slate-300 text-slate-200 light:text-slate-900 shadow-inner">
-        <span class="text-slate-500 light:text-slate-500">// Phase 1: Reasoning Trigger</span><br/>
-        <span class="text-blue-400 light:text-blue-700 font-bold">User:</span> "Eine Fabrik produziert 120 Teile/h... [Frage]"<br/><br/>
-        <span class="text-amber-300 light:text-amber-800 font-bold">{cue:hl-step-trigger}"Let's think step by step:"{/cue}</span><br/><br/>
-        <span class="text-emerald-400 light:text-emerald-700 font-bold">Model:</span> "1. Zunächst berechnen wir...<br/>
-        2. Daraus folgt für Maschine B...<br/>
-        3. Die Gesamtsumme beträgt daher..."
-      </div>
-    </BentoCard>
-  </div>
+  <BentoCard slot="code" cue="col-code" title="Der Magische Trigger [@kojima-2022-large-language-models-zero-shot-reasoners]">
+      <CalloutBox type="quote" title="{cue:hl-step-trigger}Let's think step by step:{/cue}">
+      `User: Eine Fabrik produziert 120 Teile/h... [Frage]`
 
-  <div slot="explanation" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-explanation" title="Empirischer Durchbruch" accent="blue">
+      `Model: 1. Zunächst berechnen wir... 2. Daraus folgt... 3. Summe...`
+    </CalloutBox>
+    </BentoCard>
+
+  <BentoCard slot="explanation" cue="col-explanation" title="Empirischer Durchbruch">
       <CalloutBox type="statement" title="MultiArith Benchmark">
         {cue:hl-multiarith-sprung}Genauigkeitssprung von 17,7 % auf 78,7 %{/cue} ohne ein einziges Beispiel!
       </CalloutBox>
@@ -63,5 +57,4 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
         }
       ]} />
     </BentoCard>
-  </div>
 </CodeSlide>

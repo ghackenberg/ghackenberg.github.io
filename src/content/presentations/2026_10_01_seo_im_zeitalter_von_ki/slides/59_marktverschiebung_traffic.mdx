@@ -33,9 +33,9 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
   slideNumber="59"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-traffic-share" title="Marktanteile generativer Plattformen (2026)" accent="blue">
+  <BentoCard slot="left" cue="col-traffic-share" title="Marktanteile generativer Plattformen (2026)">
     <CalloutBox type="statement" title="{cue:hl-callout-similarweb-report}Similarweb Research Report (2026){/cue}">
-      <p class="text-base text-slate-300 light:text-slate-700">Globale Traffic-Analyse von 9,5 Mrd. Besuchen pro Monat [@carr-2026-similarweb].</p>
+      <p>Globale Traffic-Analyse von 9,5 Mrd. Besuchen pro Monat [@carr-2026-similarweb].</p>
     </CalloutBox>
 
     <BarChart
@@ -47,8 +47,7 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
           value: 53,
           formattedValue: "53 %",
           cue: "hl-traffic-chatgpt",
-          highlightColor: "emerald"
-        },
+          },
         {
           label: "Google (Gemini App)",
           value: 27,
@@ -71,9 +70,9 @@ import BarChart from '../../../../components/slides/primitives/BarChart.astro';
     />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-traffic-impl" title="B2B-Implikationen für die Industrie" accent="cyan">
+  <BentoCard slot="right" cue="col-traffic-impl" title="B2B-Implikationen für die Industrie">
     <CalloutBox type="takeaway" title="{cue:hl-callout-monopoly-end}Ende des reinen Google-Monopols{/cue}">
-      <p class="text-base text-slate-300 light:text-slate-700">B2B-Entscheider konsultieren mehrere Modelle parallel zur Lieferantenauswahl.</p>
+      <p>B2B-Entscheider konsultieren mehrere Modelle parallel zur Lieferantenauswahl.</p>
     </CalloutBox>
 
     <BulletList items={[

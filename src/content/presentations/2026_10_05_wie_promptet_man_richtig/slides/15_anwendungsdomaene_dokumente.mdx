@@ -29,8 +29,7 @@ import heroImage from '../images/hero_document_analysis.jpg';
   imageCue="vis-doc"
   ratio="50/50"
 >
-  <div slot="narrative" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-workflow" title="Strukturierter Extraktions-Workflow" accent="blue">
+  <BentoCard slot="narrative" cue="col-workflow" title="Strukturierter Extraktions-Workflow">
       <CalloutBox type="statement" title="Bottom Line Up Front (BLUF)">
         Die wichtigste Erkenntnis steht ganz oben: {cue:hl-bluf-prinzip}Sofortige Management-Entscheidungsfähigkeit{/cue}.
       </CalloutBox>
@@ -52,6 +51,5 @@ import heroImage from '../images/hero_document_analysis.jpg';
         }
       ]} />
     </BentoCard>
-  </div>
 </StoryHeroSlide>
 

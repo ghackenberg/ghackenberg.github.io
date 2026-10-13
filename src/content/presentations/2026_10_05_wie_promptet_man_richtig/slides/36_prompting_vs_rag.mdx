@@ -38,8 +38,7 @@ import heroImage from '../images/hero_caching_vs_rag.jpg';
   imageCue="vis-caching-rag"
   ratio="50/50"
 >
-  <div slot="narrative" class="h-full flex flex-col justify-stretch">
-    <BentoCard cue="col-rag" title="Architektur-Entscheidung [@lewis-2020-rag]" accent="blue">
+  <BentoCard slot="narrative" cue="col-rag" title="Architektur-Entscheidung [@lewis-2020-rag]">
       <CalloutBox type="statement" title="Wann Caching vs. RAG?">
         Reines Caching bei Dossiers vs. RAG bei {cue:hl-dynamische-daten}Millionen Dokumenten und dynamischen Beständen{/cue}.
       </CalloutBox>
@@ -61,6 +60,5 @@ import heroImage from '../images/hero_caching_vs_rag.jpg';
         }
       ]} />
     </BentoCard>
-  </div>
 </StoryHeroSlide>
 

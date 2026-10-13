@@ -46,9 +46,9 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="68"
   ratio="50/50"
 >
-  <BentoCard slot="left" cue="col-vector-limits" title="Die Schwachstelle von Vektor-RAG" accent="neutral">
+  <BentoCard slot="left" cue="col-vector-limits" title="Die Schwachstelle von Vektor-RAG">
     <CalloutBox type="warning" title="{cue:hl-callout-vector-limits}Reines Top-K-Retrieval erzeugt isolierte Chunks{/cue}">
-      <p class="text-base text-slate-300 light:text-slate-600">Dokumente werden zerschnitten; Vektornähe unterscheidet weder Prädikate noch Verneinungen.</p>
+      <p>Dokumente werden zerschnitten; Vektornähe unterscheidet weder Prädikate noch Verneinungen.</p>
     </CalloutBox>
 
     <BulletList items={[
@@ -70,9 +70,9 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-multihop-b2b" title="Das Multi-Hop-Problem im B2B" accent="amber">
+  <BentoCard slot="right" cue="col-multihop-b2b" title="Das Multi-Hop-Problem im B2B">
     <CalloutBox type="takeaway" title="{cue:hl-callout-multihop-example}Wenn ein Kunde nach IEC-zertifizierten Komponenten eines Zulieferers fragt{/cue}">
-      <p class="text-blue-200 light:text-blue-900 font-mono text-sm leading-relaxed">[Anfrage] → [Zulieferer X] --(liefert)--> [Komponente Y] --(Norm)--> [IEC 62109]</p>
+      <p>[Anfrage] → [Zulieferer X] --(liefert)--> [Komponente Y] --(Norm)--> [IEC 62109]</p>
     </CalloutBox>
 
     <BulletList items={[

@@ -37,9 +37,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="left"
     cue="chart-ctr"
     title="Durchschnittliche CTR nach Position [@firstpagesage-2024-ctr]"
-    accent="blue"
   >
-    <p class="text-lg text-slate-300 light:text-slate-600 mb-4">
+    <p>
       Vergleich der relativen Klickverteilung nach {cue:hl-ctr-kurve}Ranking-Position auf der Suchergebnisseite{/cue}:
     </p>
     <BarChart
@@ -50,24 +49,19 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
           label: "1. Organischer Treffer",
           value: 39.8,
           cue: "hl-ctr-pos1",
-          highlightColor: "blue",
-          color: "blue"
-        },
+          },
         {
           label: "2. Organischer Treffer",
           value: 18.7,
-          color: "cyan"
-        },
+          },
         {
           label: "3. Organischer Treffer",
           value: 10.2,
-          color: "teal"
-        },
+          },
         {
           label: "Top Paid Search Ad (Pos. 1)",
           value: 2.1,
-          color: "amber"
-        }
+          }
       ]}
     />
   </BentoCard>
@@ -76,7 +70,6 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     slot="right"
     cue="card-takeaways-04"
     title="Strategische Einordnung für B2B"
-    accent="neutral"
   >
     <BulletList
       items={[

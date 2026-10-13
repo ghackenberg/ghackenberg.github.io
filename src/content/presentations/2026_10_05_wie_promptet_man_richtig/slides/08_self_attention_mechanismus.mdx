@@ -32,7 +32,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="08"
   totalSlides="48"
 >
-  <BentoCard slot="left" cue="col-attention-formel" title="Mathematischer Kern [@vaswani-2017-attention]" accent="blue">
+  <BentoCard slot="left" cue="col-attention-formel" title="Mathematischer Kern [@vaswani-2017-attention]">
     <CalloutBox type="statement" title="Scaled Dot-Product Attention">
       $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
       Jedes Token projiziert {cue:hl-attention-matrix}Suchanfragen, Schlüssel und Werte{/cue}.
@@ -46,7 +46,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-attention-praxis" title="Bedeutung für die Prompt-Struktur" accent="cyan">
+  <BentoCard slot="right" cue="col-attention-praxis" title="Bedeutung für die Prompt-Struktur">
     <BulletList items={[
       {
         icon: "target",

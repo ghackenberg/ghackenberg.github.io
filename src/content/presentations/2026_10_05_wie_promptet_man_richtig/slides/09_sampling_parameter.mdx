@@ -15,6 +15,7 @@ notes: |
 ---
 import GridSlide from '../../../../components/slides/layouts/GridSlide.astro';
 import BentoCard from '../../../../components/slides/primitives/BentoCard.astro';
+import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
 
 <GridSlide
@@ -24,10 +25,8 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   totalSlides="48"
   cols={3}
 >
-  <BentoCard cue="box-temp" title="Temperature (T)" accent="blue">
-    <div class="p-3 rounded-xl bg-blue-950/30 light:bg-blue-50/80 border border-blue-800/40 light:border-blue-200 text-center font-mono text-base text-blue-300 light:text-blue-900 font-bold mb-2">
-      Logit-Skalierung: $z_i / T$
-    </div>
+  <BentoCard cue="box-temp" title="Temperature (T)">
+    <FormulaBox formula="z_i / T" label="Logit-Skalierung" />
     <BulletList items={[
       {
         icon: "cpu",
@@ -40,15 +39,11 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
         desc: "Gilt für strukturierte Daten: {cue:hl-temp-b2b}für Enterprise-Pipelines ist null Komma null der Pflichtstandard{/cue}."
       }
     ]} />
-    <div class="p-2.5 rounded-xl bg-blue-500/10 light:bg-blue-100/70 border border-blue-500/30 light:border-blue-300 text-center font-mono text-sm uppercase tracking-wider text-blue-300 light:text-blue-900 font-extrabold mt-3">
-      B2B-Standard: T = 0.0
-    </div>
+    <FormulaBox formula="T = 0.0" label="B2B-Standard" />
   </BentoCard>
 
-  <BentoCard cue="box-topp" title="Top-p (Nucleus)" accent="cyan">
-    <div class="p-3 rounded-xl bg-cyan-950/30 light:bg-cyan-50/80 border border-cyan-800/40 light:border-cyan-200 text-center font-mono text-base text-cyan-300 light:text-cyan-900 font-bold mb-2">
-      Kumulierte Masse: $\sum P \ge p$
-    </div>
+  <BentoCard cue="box-topp" title="Top-p (Nucleus)">
+    <FormulaBox formula="\sum P \ge p" label="Kumulierte Masse" />
     <BulletList items={[
       {
         icon: "target",
@@ -61,15 +56,11 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
         desc: "Der Nucleus {cue:hl-topp-entropie}passt den Wortschatz flexibel an die Modell-Sicherheit an{/cue}."
       }
     ]} />
-    <div class="p-2.5 rounded-xl bg-cyan-500/10 light:bg-cyan-100/70 border border-cyan-500/30 light:border-cyan-300 text-center font-mono text-sm uppercase tracking-wider text-cyan-300 light:text-cyan-900 font-extrabold mt-3">
-      B2B-Standard: p = 0.95
-    </div>
+    <FormulaBox formula="p = 0.95" label="B2B-Standard" />
   </BentoCard>
 
-  <BentoCard cue="box-topk" title="Top-k Sampling" accent="indigo">
-    <div class="p-3 rounded-xl bg-indigo-950/30 light:bg-indigo-50/80 border border-indigo-800/40 light:border-indigo-200 text-center font-mono text-base text-indigo-300 light:text-indigo-900 font-bold mb-2">
-      Fester Schwellenwert: $|V^{(k)}| = k$
-    </div>
+  <BentoCard cue="box-topk" title="Top-k Sampling">
+    <FormulaBox formula="|V^{(k)}| = k" label="Fester Schwellenwert" />
     <BulletList items={[
       {
         icon: "target",
@@ -82,8 +73,6 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
         desc: "Dient in Modellen {cue:hl-topk-safety}als harte Sicherheitsbarriere gegen absurde Ausreißer{/cue}."
       }
     ]} />
-    <div class="p-2.5 rounded-xl bg-indigo-500/10 light:bg-indigo-100/70 border border-indigo-500/30 light:border-indigo-300 text-center font-mono text-sm uppercase tracking-wider text-indigo-300 light:text-indigo-900 font-extrabold mt-3">
-      B2B-Standard: k = 40
-    </div>
+    <FormulaBox formula="k = 40" label="B2B-Standard" />
   </BentoCard>
 </GridSlide>

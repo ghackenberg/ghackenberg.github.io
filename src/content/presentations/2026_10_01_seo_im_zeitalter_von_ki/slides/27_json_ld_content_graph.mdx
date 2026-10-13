@@ -39,7 +39,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     cue="code-jsonld-rel"
     filename="schema-article.jsonld"
   >
-    <pre class="text-slate-200 font-mono overflow-x-auto my-auto text-base">
+    <pre class="font-mono overflow-x-auto my-auto text-base">
 {`{
   "@context": "https://schema.org",
   "@graph": [
@@ -63,7 +63,7 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     </pre>
   </CodeContainer>
 
-  <BentoCard slot="explanation" cue="card-relationen" title="Relationale Ingestion" accent="purple">
+  <BentoCard slot="explanation" cue="card-relationen" title="Relationale Ingestion">
     <CalloutBox type="statement" title="0-Redundanz im Wissensgraphen">
       <p>Statt Metadaten zu kopieren, verlinkt der Artikel {cue:hl-jsonld-ref}per URI-Pointer auf bestehende Knoten{/cue}.</p>
     </CalloutBox>

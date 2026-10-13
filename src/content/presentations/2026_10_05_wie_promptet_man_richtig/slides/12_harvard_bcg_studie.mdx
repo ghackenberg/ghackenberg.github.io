@@ -34,34 +34,32 @@ import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astr
   slideNumber="12"
   totalSlides="48"
 >
-  <div slot="metrics" class="contents">
-    <MetricStat
-      cue="stat-speed"
-      value="25"
-      unit="%"
-      label="Schnellere Bearbeitung"
-      sublabel="Zeitreduktion bei Consulting-Aufgaben [@dellacqua-2023-jagged-frontier]"
-      color="blue"
-    />
-    <MetricStat
-      cue="stat-quality"
-      value="40"
-      unit="%"
-      label="Höhere Qualität"
-      sublabel="Signifikanter Anstieg der Ausarbeitungsnote"
-      color="cyan"
-    />
-    <MetricStat
-      cue="stat-tasks"
-      value="12"
-      unit="%"
-      label="Mehr Aufgaben gelöst"
-      sublabel="Erhöhte Gesamtproduktivität pro Zeiteinheit"
-      color="emerald"
-    />
-  </div>
+  <MetricStat
+    slot="metrics"
+    cue="stat-speed"
+    value="25"
+    unit="%"
+    label="Schnellere Bearbeitung"
+    sublabel="Zeitreduktion bei Consulting-Aufgaben [@dellacqua-2023-jagged-frontier]"
+  />
+  <MetricStat
+    slot="metrics"
+    cue="stat-quality"
+    value="40"
+    unit="%"
+    label="Höhere Qualität"
+    sublabel="Signifikanter Anstieg der Ausarbeitungsnote"
+  />
+  <MetricStat
+    slot="metrics"
+    cue="stat-tasks"
+    value="12"
+    unit="%"
+    label="Mehr Aufgaben gelöst"
+    sublabel="Erhöhte Gesamtproduktivität pro Zeiteinheit"
+  />
 
-  <BentoCard cue="card-takeaway" title="Das zweischneidige Schwert [@dellacqua-2023-jagged-frontier]" accent="amber">
+  <BentoCard cue="card-takeaway" title="Das zweischneidige Schwert [@dellacqua-2023-jagged-frontier]">
     <CalloutBox type="quote">
       „Liegt eine Aufgabe außerhalb der technologischen Grenze, {cue:hl-blindes-vertrauen}sinkt die menschliche Genauigkeit mit KI um 19 Prozentpunkte{/cue} unter das Niveau ohne KI.“
     </CalloutBox>

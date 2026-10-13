@@ -1368,12 +1368,16 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
               <!-- Footer: Read More Button -->
               <div class="pt-2 mt-auto">
-                <div class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-interests/12 hover:bg-domain-interests/25 border border-domain-interests/20 hover:border-domain-interests/45 text-domain-interests text-xs font-bold relative z-20 transition-all duration-200">
+                <a
+                  href={`/interests/${interest.slug}/`}
+                  aria-label={`Read More: ${interest.title}`}
+                  class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-interests/12 hover:bg-domain-interests/25 border border-domain-interests/20 hover:border-domain-interests/45 text-domain-interests text-xs font-bold relative z-20 transition-all duration-200"
+                >
                   <span>Read More</span>
                   <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                   </svg>
-                </div>
+                </a>
               </div>
             </div>
           </article>

@@ -32,9 +32,9 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="55"
   totalSlides="68"
 >
-  <BentoCard slot="left" cue="col-video-mechanics" title="Wie KIs Videos verarbeiten" accent="blue">
+  <BentoCard slot="left" cue="col-video-mechanics" title="Wie KIs Videos verarbeiten">
     <CalloutBox type="statement" title="{cue:hl-video-nlp}Transkripte als primäre Text-Schnittstelle{/cue}">
-      <p class="text-slate-300 light:text-slate-700">Multimodale LLMs operieren auf Token-Ebene: Audio-Transkripte sind das Fundament.</p>
+      <p>Multimodale LLMs operieren auf Token-Ebene: Audio-Transkripte sind das Fundament.</p>
     </CalloutBox>
 
     <BulletList items={[
@@ -56,9 +56,9 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     ]} />
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-video-schema" title="Technischer Implementierungs-Stack" accent="cyan">
+  <BentoCard slot="right" cue="col-video-schema" title="Technischer Implementierungs-Stack">
     <CalloutBox type="takeaway" title="Schema.org Clip-Architektur">
-      <p class="text-cyan-200 light:text-cyan-900">
+      <p>
         Kein Zufall: {cue:hl-video-code}Strukturierte VideoObject-Daten machen Videos für RAG-Pipelines maschinenlesbar.{/cue}
       </p>
     </CalloutBox>
