@@ -6,7 +6,6 @@ interface Props {
   unit?: string;
   label: string;
   sublabel?: string;
-  size?: 'hero' | 'compact';
   cue?: string;
   id?: string;
   x?: number;
@@ -21,7 +20,6 @@ const {
   unit,
   label,
   sublabel,
-  size = 'hero',
   cue,
   id: explicitId,
   class: className = ""
@@ -33,7 +31,7 @@ const elementId = explicitId;
 <div
   id={elementId}
   data-cue={cue}
-  class={`metric-stat-card ${size === 'compact' ? 'compact' : ''} rounded-3xl border bg-[var(--color-slide-card-bg)] shadow-2xl flex flex-col justify-between h-full flex-1 transition-all duration-300 min-h-0 ${className}`}
+  class={`metric-stat-card rounded-3xl border bg-[var(--color-slide-card-bg)] shadow-2xl flex flex-col justify-between h-full flex-1 transition-all duration-300 min-h-0 ${className}`}
 >
   <div class="flex items-center justify-between mb-2 shrink-0">
     <span class="text-sm lg:text-base uppercase font-mono font-bold tracking-wider text-[var(--color-slide-text-subtle)]">
@@ -73,40 +71,21 @@ const elementId = explicitId;
     border-color: color-mix(in srgb, var(--effective-accent) 30%, var(--color-slide-card-border));
     padding: 2rem !important;
   }
-  .metric-stat-card.compact {
-    padding: 1.5rem !important;
-  }
   .metric-stat-card .metric-stat-value {
     color: var(--effective-accent);
     font-size: calc(7rem * var(--content-scale, 1)) !important;
     line-height: 1 !important;
   }
-  .metric-stat-card.compact .metric-stat-value {
-    font-size: calc(5rem * var(--content-scale, 1)) !important;
-    line-height: 1 !important;
-  }
   .metric-stat-card .metric-stat-unit {
     font-size: calc(3.5rem * var(--content-scale, 1)) !important;
-  }
-  .metric-stat-card.compact .metric-stat-unit {
-    font-size: calc(2.75rem * var(--content-scale, 1)) !important;
   }
   .metric-stat-card .metric-stat-label {
     font-size: calc(2.25rem * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
     margin-top: 1rem;
   }
-  .metric-stat-card.compact .metric-stat-label {
-    font-size: calc(1.75rem * var(--content-scale, 1)) !important;
-    line-height: 1.25 !important;
-    margin-top: 0.5rem;
-  }
   .metric-stat-card .metric-stat-sublabel {
     font-size: calc(1.35rem * var(--content-scale, 1)) !important;
-    line-height: 1.5 !important;
-  }
-  .metric-stat-card.compact .metric-stat-sublabel {
-    font-size: calc(1.1rem * var(--content-scale, 1)) !important;
     line-height: 1.5 !important;
   }
   .metric-stat-card :global(mark),
