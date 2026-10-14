@@ -151,12 +151,29 @@ const activeTextClass = domainStyle ? domainStyle.activeText : activeAccent.acti
 const hoverClass = domainStyle ? domainStyle.hover : activeAccent.hover;
 ---
 
-<nav aria-label="Breadcrumb" class:list={["w-full mb-6 md:mb-8", className]}>
-  <ol class="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 px-3.5 py-2 rounded-2xl bg-element-bg border border-element-border text-xs text-gray-400 backdrop-blur-md shadow-sm">
+<nav aria-label="Breadcrumb" class:list={["w-full max-w-full overflow-hidden mb-6 md:mb-8", className]}>
+  <ol class="inline-flex flex-nowrap items-center gap-1.5 sm:gap-2 max-w-full overflow-hidden px-3.5 py-2 rounded-2xl bg-element-bg border border-element-border text-xs text-gray-400 backdrop-blur-md shadow-sm">
     {breadcrumbs.map((item, index) => {
       const isLast = index === breadcrumbs.length - 1;
+      const isRoot = index === 0 && !isLast;
+      const isSectionParent = index === 1 && !isLast;
+
+      const liClass = isLast
+        ? "inline-flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 sm:flex-initial sm:shrink overflow-hidden"
+        : isRoot
+          ? "inline-flex items-center gap-1.5 sm:gap-2 shrink-0"
+          : isSectionParent
+            ? "inline-flex items-center gap-1.5 sm:gap-2 shrink-0 max-w-[38%] sm:max-w-none min-w-0"
+            : "inline-flex items-center gap-1.5 sm:gap-2 min-w-0 shrink overflow-hidden";
+
+      const linkLayoutClass = isRoot
+        ? "shrink-0 whitespace-nowrap"
+        : isSectionParent
+          ? "truncate block min-w-0 sm:max-w-[220px]"
+          : "truncate block min-w-0 max-w-[25vw] sm:max-w-[220px] md:max-w-[280px]";
+
       return (
-        <li class="inline-flex items-center gap-1.5 sm:gap-2 min-w-0">
+        <li class={liClass}>
           {index > 0 && (
             <svg 
               class="w-3.5 h-3.5 text-gray-500 light:text-slate-400 shrink-0 opacity-70" 
@@ -174,7 +191,7 @@ const hoverClass = domainStyle ? domainStyle.hover : activeAccent.hover;
           {isLast ? (
             <span 
               class:list={[
-                "font-semibold truncate max-w-[200px] sm:max-w-[320px] md:max-w-[450px]",
+                "font-semibold block truncate min-w-0 max-w-full sm:max-w-[360px] md:max-w-[520px] lg:max-w-[680px]",
                 domainStyle 
                   ? `px-2 py-0.5 rounded-md border text-xs ${domainStyle.badge}` 
                   : activeTextClass
@@ -188,7 +205,8 @@ const hoverClass = domainStyle ? domainStyle.hover : activeAccent.hover;
             <a 
               href={item.href || "#"} 
               class:list={[
-                "text-gray-400 light:text-slate-600 hover:text-gray-200 light:hover:text-slate-900 transition-colors font-medium truncate max-w-[140px] sm:max-w-[220px]",
+                "text-gray-400 light:text-slate-600 hover:text-gray-200 light:hover:text-slate-900 transition-colors font-medium",
+                linkLayoutClass,
                 hoverClass
               ]}
               title={item.label}
