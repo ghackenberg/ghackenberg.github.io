@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" width="100%" height="auto" role="img" aria-label="Vierstufige 2D Signed Distance Field und Canvas-Batching-Pipeline in ReactiveDotGrid.astro">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+  </defs>
+
+  <!-- Main Canvas Frame -->
+  <rect width="600" height="480" rx="16" fill="var(--svg-bg)" stroke="var(--svg-border)" stroke-width="2" />
+
+  <!-- Header -->
+  <text x="300" y="34" fill="var(--svg-text-primary)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="18" font-weight="700" text-anchor="middle">2D SDF-DISTANZFELD &amp; CANVAS-BATCHING-PIPELINE</text>
+  <line x1="24" y1="48" x2="576" y2="48" stroke="var(--svg-line)" stroke-width="2" />
+
+  <!-- STAGE 1 (BLUE): 2D Lattice & Box-SDF -->
+  <g id="stage-1-box-sdf" transform="translate(24, 62)">
+    <rect width="552" height="84" rx="12" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="2.5" />
+    <text x="20" y="30" fill="var(--svg-node-blue-text)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="17" font-weight="700">1. 2D Gitter &amp; Abgerundete Box-SDF (sdRoundRect)</text>
+    <text x="20" y="54" fill="var(--svg-node-blue-subtext)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="14" font-weight="600">• Gitterpunkte (spacing = 22px) gegen Außenrahmen dOuter &lt; 0 prüfen</text>
+    <text x="20" y="74" fill="var(--svg-node-blue-subtext)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="14" font-weight="600">• Zeilenbänder mit Sicherheitsabstand CLEARANCE (16×14 px, r = 12)</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 300 146 L 300 164" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2.5" marker-end="url(#arr-blue)" />
+
+  <!-- STAGE 2 (PURPLE): Smooth Minimum (smin) -->
+  <g id="stage-2-smin" transform="translate(24, 168)">
+    <rect width="552" height="84" rx="12" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="2.5" />
+    <text x="20" y="30" fill="var(--svg-node-purple-text)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="17" font-weight="700">2. Organische C¹-Verschmelzung (Quilez Polynomial smin)</text>
+    <text x="20" y="54" fill="var(--svg-node-purple-subtext)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="14" font-weight="600">• Treppenstufen glätten: dText = smin(d1, d2, k = 12) | Culling dText &lt;= 0</text>
+    <text x="20" y="74" fill="var(--svg-node-purple-subtext)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="14" font-weight="600">• Konkaves Rahmen-Fillet: distInsideOpen = smin(-dOuter, dText, k = 22)</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 300 252 L 300 270" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2.5" marker-end="url(#arr-purple)" />
+
+  <!-- STAGE 3 (AMBER): Smoothstep Alpha & Spring Physics -->
+  <g id="stage-3-smoothstep" transform="translate(24, 274)">
+    <rect width="552" height="84" rx="12" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="2.5" />
+    <text x="20" y="30" fill="var(--svg-node-amber-text)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="17" font-weight="700">3. Hermite Smoothstep Alpha &amp; Feder-Dämpfer-Physik</text>
+    <text x="20" y="54" fill="var(--svg-node-amber-subtext)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="14" font-weight="600">• 32px Ausblendrampe: alpha = smoothstep(0, 32, dText) × cornerAlpha</text>
+    <text x="20" y="74" fill="var(--svg-node-amber-subtext)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="14" font-weight="600">• Maus-Repulsion (R = 115px) &amp; Hooke-ODE (k = 150, c = 18)</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 300 358 L 300 376" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2.5" marker-end="url(#arr-amber)" />
+
+  <!-- STAGE 4 (GREEN): 10-Bucket Opacity Quantization -->
+  <g id="stage-4-batching" transform="translate(24, 380)">
+    <rect width="552" height="82" rx="12" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="2.5" />
+    <text x="20" y="30" fill="var(--svg-node-green-text)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="17" font-weight="700">4. 10-Bucket Opacity Quantisierung (Canvas 2D Batching)</text>
+    <text x="20" y="54" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="14" font-weight="600">• Sortierung in alphaBin = 0..9 bündelt hunderte Punkte pro Opazitätsstufe</text>
+    <text x="20" y="73" fill="var(--svg-node-green-subtext)" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-size="14" font-weight="600">• Maximal 10 gebündelte ctx.beginPath() / ctx.fill() Draw-Calls pro Frame</text>
+  </g>
+</svg>
