@@ -131,7 +131,7 @@ function computeSsrBarRounding(value: number) {
       >
         <!-- Row Header: Label & Formatted Value -->
         <div class="flex justify-between items-baseline text-lg lg:text-xl font-bold">
-          <div class="flex items-center gap-2 min-w-0 pr-4">
+          <div class="chart-label-text flex items-center gap-2 min-w-0 pr-4">
             {isLabelHighlight ? (
               <mark data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
                 {item.label}
@@ -140,7 +140,7 @@ function computeSsrBarRounding(value: number) {
               <span class="truncate">{item.label}</span>
             )}
             {item.sublabel && (
-              <span class="text-sm text-slate-400 font-normal">({item.sublabel})</span>
+              <span class="chart-sublabel-text text-sm text-slate-400 font-normal">({item.sublabel})</span>
             )}
           </div>
 
@@ -298,6 +298,20 @@ function computeSsrBarRounding(value: number) {
 <style>
   .bar-chart-container {
     gap: var(--slide-space-element, 1rem) !important;
+  }
+  .bar-chart-container .chart-label-text {
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1)) !important;
+    line-height: 1.35 !important;
+  }
+  .bar-chart-container .chart-sublabel-text {
+    font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;
+  }
+  .bar-chart-container .chart-value-text {
+    font-size: calc(var(--slide-font-heading, 1.90rem) * var(--content-scale, 1)) !important;
+    line-height: 1.25 !important;
+  }
+  .bar-chart-container .chart-track-container {
+    height: calc(1.25rem * var(--content-scale, 1)) !important;
   }
 
   :global(.bento-card-root) .bar-chart-row :global(mark),

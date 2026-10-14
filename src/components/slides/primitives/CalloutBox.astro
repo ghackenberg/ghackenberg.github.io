@@ -34,12 +34,12 @@ const {
     background-color: color-mix(in srgb, var(--effective-callout-accent) 12%, transparent) !important;
     border-color: color-mix(in srgb, var(--effective-callout-accent) 35%, transparent) !important;
     color: color-mix(in srgb, var(--effective-callout-accent) 35%, white) !important;
-    padding: var(--slide-space-element, 1rem) 1.5rem !important;
+    padding: var(--slide-space-element, 1rem) var(--slide-space-block, 2rem) !important;
     gap: var(--slide-space-tight, 0.5rem) !important;
   }
   .callout-box h4 {
     color: var(--effective-callout-accent) !important;
-    font-size: calc(1.9rem * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-heading, 1.90rem) * var(--content-scale, 1)) !important;
     line-height: 1.3 !important;
   }
   :global(.light) .callout-box {
@@ -48,7 +48,7 @@ const {
     color: var(--effective-callout-accent) !important;
   }
   .callout-box > div:not(.flex) {
-    font-size: calc(1.75rem * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1)) !important;
     line-height: 1.45 !important;
   }
   .callout-box :global(p) {

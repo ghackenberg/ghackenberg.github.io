@@ -7,10 +7,10 @@
  */
 
 export interface AutoFitOptions {
-  minScale?: number;      // Default 0.70 (readable presentation text/code)
+  minScale?: number;      // Default 0 (uncapped downward scaling)
   maxScale?: number;      // Default 2.50 (uncapped container-driven scaling)
   minClearance?: number;  // Minimum unscaled clearance to bottom border (default: 8px)
-  iterations?: number;    // Binary search steps (default: 7)
+  iterations?: number;    // Binary search steps (default: 8)
 }
 
 export class AutoFitController {
@@ -18,10 +18,10 @@ export class AutoFitController {
 
   constructor(options?: AutoFitOptions) {
     this.options = {
-      minScale: options?.minScale ?? 0.70,
+      minScale: options?.minScale ?? 0,
       maxScale: options?.maxScale ?? 2.50,
       minClearance: options?.minClearance ?? 8,
-      iterations: options?.iterations ?? 7,
+      iterations: options?.iterations ?? 8,
     };
   }
 
@@ -62,6 +62,11 @@ export class AutoFitController {
       for (const row of tableRows) {
         if (row.scrollHeight > row.clientHeight + 1) return false;
       }
+    }
+    const tableWrapper = card.querySelector<HTMLElement>('.slide-table-wrapper');
+    if (tableWrapper) {
+      if (tableWrapper.scrollWidth > tableWrapper.clientWidth + 2) return false;
+      if (tableWrapper.scrollHeight > tableWrapper.clientHeight + 1) return false;
     }
 
     // Check clearance to bottom edge in unscaled canvas coordinates
@@ -118,7 +123,7 @@ export class AutoFitController {
 
     const contentRect = measuredContentEl.getBoundingClientRect();
     const unscaledBottomGap = (cardRect.bottom - contentRect.bottom) / revealScale;
-    const isTable = card.classList.contains('comparison-table-container') || card.classList.contains('slide-table-container') || tableRows.length > 0;
+    const isTable = (card.classList.contains('comparison-table-container') || card.classList.contains('slide-table-container')) && !card.classList.contains('bento-card-root');
     const isStep = card.classList.contains('step-row') || card.classList.contains('step-card') || !!textContainer;
     const cardPadBottom = parseFloat(window.getComputedStyle(card).paddingBottom) || 0;
     const requiredClearance = isStep ? 14 : isTable ? 10 : Math.max(this.options.minClearance, cardPadBottom - 2);
@@ -130,8 +135,7 @@ export class AutoFitController {
     const clientH = card.clientHeight;
     if (clientH <= 0) return;
 
-    const isCodeCard = card.classList.contains('code-container-root') || !!card.querySelector('pre, .code-scroll-area');
-    const minScale = isCodeCard ? Math.min(this.options.minScale, 0.45) : this.options.minScale;
+    const minScale = this.options.minScale;
     const maxScale = this.options.maxScale;
     const iterations = this.options.iterations;
 
@@ -165,10 +169,7 @@ export class AutoFitController {
   public fitCards(cards: HTMLElement[]): void {
     if (cards.length === 0) return;
 
-    const isCodeCard = cards.some(
-      (c) => c.classList.contains('code-container-root') || !!c.querySelector('pre, .code-scroll-area')
-    );
-    const minScale = isCodeCard ? Math.min(this.options.minScale, 0.45) : this.options.minScale;
+    const minScale = this.options.minScale;
     const maxScale = this.options.maxScale;
     const iterations = this.options.iterations;
 
@@ -269,6 +270,12 @@ export class AutoFitController {
     if (cardH <= 0) return;
 
     const graphicAreas = cards.map(c => c.querySelector<HTMLElement>('.step-graphic-area'));
+    const hasGraphicAreas = graphicAreas.some((ga) => ga !== null);
+    if (!hasGraphicAreas) {
+      this.fitCards(cards);
+      return;
+    }
+
     const textContainers = cards.map(c => c.querySelector<HTMLElement>('.step-text-container'));
     const barContainers = cards.map(c => c.querySelector<HTMLElement>('.step-bar-container'));
 
@@ -278,13 +285,13 @@ export class AutoFitController {
     const maxImgHeight = Math.min(Math.floor(cardH * 0.60), 435);
 
     // Precise geometric spacing parameters:
-    // P = 28px: uniform inset (left, right, top below graphic, and bottom to colored bar for longest text)
-    // P_bottom = 24px: clearance from colored bar to card bottom
+    // P = 32px: uniform inset (left, right, top below graphic, and bottom to colored bar for longest text)
+    // P_bottom = 32px: clearance from colored bar to card bottom
     // H_bar = 8px
-    const P = 28;
-    const P_bottom = 24;
+    const P = 32;
+    const P_bottom = 32;
     const H_bar = barContainers[0]?.offsetHeight || 8;
-    const chrome = P + P + H_bar + P_bottom; // 28 + 28 + 8 + 24 = 88px
+    const chrome = P + P + H_bar + P_bottom; // 32 + 32 + 8 + 32 = 104px
 
     // Helper: measure longest text height across all cards at a given scale
     const getLongestTextHeight = (scale: number): number => {
@@ -314,7 +321,7 @@ export class AutoFitController {
     };
 
     const targetMaxScale = this.options.maxScale;
-    const targetMinScale = Math.min(0.80, this.options.minScale);
+    const targetMinScale = this.options.minScale;
 
     // 1. Try maximum scale (1.45)
     let bestScale = targetMaxScale;
@@ -659,22 +666,13 @@ export class AutoFitController {
       // 3. Fit remaining individual cards (excluding tables and pipeline steps already handled)
       const allCards = Array.from(
         slideEl.querySelectorAll<HTMLElement>(
-          '.bento-card-root, .metric-stat-card, .code-container-root, [data-autofit]:not(.comparison-table-container):not(.slide-table-container):not(.step-row):not(.step-card)'
+          '.bento-card-root, .metric-stat-card, .code-container-root, .speaker-profile-card, [data-autofit]:not(.comparison-table-container):not(.slide-table-container):not(.step-row):not(.step-card)'
         )
       );
-      const isCodeElement = (el: HTMLElement) =>
-        el.classList.contains('code-container-root') || !!el.querySelector('pre, .code-scroll-area');
-      const codeCards = allCards.filter(isCodeElement);
-      const textCards = allCards.filter((c) => !isCodeElement(c));
 
-      // Fit narrative/text cards jointly with unified content scale across the slide
-      if (textCards.length > 0) {
-        this.fitCards(textCards);
-      }
-
-      // Fit code snippets jointly with decoupled, unified code scale across the slide
-      if (codeCards.length > 0) {
-        this.fitCards(codeCards);
+      // Fit all cards on the slide jointly with unified content scale across the slide
+      if (allCards.length > 0) {
+        this.fitCards(allCards);
       }
 
       // Typographic hierarchy audit (dev-mode warning)

@@ -39,7 +39,7 @@ const elementId = explicitId;
       )}
 
       {subtitle && (
-        <p class="text-xl lg:text-2xl text-[var(--color-slide-text-subtle)] mt-2 font-normal" set:html={renderSlideCues(subtitle)} />
+        <p class="bento-card-subtitle text-xl lg:text-2xl text-[var(--color-slide-text-subtle)] mt-2 font-normal" set:html={renderSlideCues(subtitle)} />
       )}
     </div>
   )}
@@ -65,8 +65,12 @@ const elementId = explicitId;
   }
   .bento-card-root h3 {
     color: var(--resolved-card-accent);
-    font-size: calc(2.35rem * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-card-title, 2.35rem) * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
+  }
+  .bento-card-root .bento-card-subtitle {
+    font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;
+    line-height: 1.35 !important;
   }
   .bento-card-root :global(mark),
   .bento-card-root :global(.highlight-marker) {
@@ -103,11 +107,11 @@ const elementId = explicitId;
     justify-content: space-around;
   }
   .bento-hyphens :global(li) {
-    font-size: calc(1.75rem * var(--content-scale, 1));
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1));
     line-height: 1.55;
   }
   .bento-hyphens :global(p) {
-    font-size: calc(1.75rem * var(--content-scale, 1));
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1));
     line-height: 1.55;
     margin-bottom: var(--slide-space-block, 2rem);
   }

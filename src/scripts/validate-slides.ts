@@ -114,6 +114,77 @@ function validateSlides() {
   let totalWarnings = 0;
   let totalSlides = 0;
 
+  // Rule 2f: Slide Component Typography & Spacing Scale Governance
+  const slideComponentDirs = [
+    path.resolve('src/components/slides/primitives'),
+    path.resolve('src/components/slides/layouts')
+  ];
+  for (const dir of slideComponentDirs) {
+    if (!fs.existsSync(dir)) continue;
+    const astroFiles = fs.readdirSync(dir).filter((f) => f.endsWith('.astro')).sort();
+    for (const compFile of astroFiles) {
+      const compPath = path.join(dir, compFile);
+      const compContent = fs.readFileSync(compPath, 'utf8');
+      const styleRegex = /<style\b[^>]*>([\s\S]*?)<\/style>/gi;
+      let styleMatch;
+      while ((styleMatch = styleRegex.exec(compContent)) !== null) {
+        const styleBlock = styleMatch[1];
+        const styleStartOffset = styleMatch.index + styleMatch[0].indexOf(styleBlock);
+        // Strip CSS comments while preserving newlines for exact line numbers
+        const cleanStyle = styleBlock.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n\r]/g, ' '));
+        const styleLines = cleanStyle.split('\n');
+        const baseLine = compContent.slice(0, styleStartOffset).split('\n').length;
+
+        for (let lIdx = 0; lIdx < styleLines.length; lIdx++) {
+          const line = styleLines[lIdx];
+          const lineNum = baseLine + lIdx;
+
+          // Check 1 (Typography Scale): font-size declarations
+          const fontMatch = line.match(/\b(font-size\s*:\s*([^;]+));?/i);
+          if (fontMatch) {
+            const fullDecl = fontMatch[1].trim();
+            const val = fontMatch[2].replace(/!important/gi, '').trim();
+            if (val !== 'inherit' && !val.includes('var(--slide-font-')) {
+              console.error(
+                `  ❌ [${compFile}:${lineNum}] Invented font-size in slide component <style> ("${fullDecl}"). Must strictly use canonical --slide-font-* tokens (e.g. calc(var(--slide-font-body) * var(--content-scale, 1))).`
+              );
+              totalErrors++;
+            }
+          }
+
+          // Check 2 (Spacing Scale): padding-*, margin-*, gap declarations
+          const spacingMatch = line.match(/\b((?:padding(?:-(?:top|bottom|left|right))?|margin(?:-(?:top|bottom|left|right))?|gap)\s*:\s*([^;]+));?/i);
+          if (spacingMatch) {
+            const fullDecl = spacingMatch[1].trim();
+            const rawVal = spacingMatch[2].replace(/!important/gi, '').trim();
+
+            // Exclude inline highlight-marker em box-decoration rules in SlideBase.astro
+            if (compFile === 'SlideBase.astro' && /-?\d*\.?\d+em\b/.test(rawVal)) {
+              continue;
+            }
+
+            const normalizedVal = rawVal
+              .replace(/var\(\s*--slide-space-[^)]*\)/g, 'SLIDE_SPACE_TOKEN')
+              .replace(/var\([^)]*\)/g, 'OTHER_VAR')
+              .replace(/calc\([^)]*SLIDE_SPACE_TOKEN[^)]*\)/g, 'SLIDE_SPACE_TOKEN');
+
+            const tokens = normalizedVal.split(/\s+/).filter(Boolean);
+            const isValidSpacing = tokens.length > 0 && tokens.every((t) =>
+              t === 'SLIDE_SPACE_TOKEN' || t === '0' || t === '0px' || t === 'auto' || t === 'inherit'
+            );
+
+            if (!isValidSpacing) {
+              console.error(
+                `  ❌ [${compFile}:${lineNum}] Invented spacing value in slide component <style> ("${fullDecl}"). Must strictly use canonical --slide-space-* tokens (--slide-space-tight, --slide-space-element, --slide-space-block, --slide-space-card) or 0/auto.`
+              );
+              totalErrors++;
+            }
+          }
+        }
+      }
+    }
+  }
+
   const presentationFolders = fs.readdirSync(presentationsBase);
 
   const lexiconPath = path.resolve('src/content/presentations/tts-lexicon.json');
