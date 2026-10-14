@@ -49,11 +49,11 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 
   <BentoCard slot="right" cue="col-math" title="Kosinus-Ähnlichkeit">
     <CalloutBox type="takeaway" title="{cue:hl-callout-kosinus-formel}cos(θ) = (A · B) / (||A|| ||B||){/cue}">
-      Wertebereich: -1.0 (Gegenteil) bis +1.0 (Identische Bedeutung)
+      Wertebereich: -1.0 (Gegenteil) über 0.0 (Orthogonal / Unabhängig) bis +1.0 (Identische semantische Bedeutung im Vektorraum).
     </CalloutBox>
 
     <CalloutBox type="statement" title="Top-K-Retrieval & Relevanz">
-      RAG-Systeme berechnen die Ähnlichkeit aller Chunks und {cue:hl-kosinus-threshold}injizieren die Top-K Passagen mit den höchsten Kosinus-Werten{/cue} in das Context Window des LLMs.
+      RAG-Systeme berechnen die Ähnlichkeit aller Dokument-Chunks zur Suchanfrage und {cue:hl-kosinus-threshold}injizieren die Top-K Passagen mit den höchsten Kosinus-Werten{/cue} direkt in das Context Window des Sprachmodells.
     </CalloutBox>
   </BentoCard>
 </SplitSlide>

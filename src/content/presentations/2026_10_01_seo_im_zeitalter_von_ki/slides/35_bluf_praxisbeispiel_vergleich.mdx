@@ -42,27 +42,27 @@ import SlideTable from '../../../../components/slides/primitives/SlideTable.astr
       {
         icon: "warning",
         title: "Null Information Gain",
-        desc: "Ausschließlich {cue:hl-bluf-bad-fluff}austauschbare Worthülsen über zukunftssichere Lösungen{/cue} ohne Faktengehalt."
+        desc: "Ausschließlich {cue:hl-bluf-bad-fluff}austauschbare Worthülsen über zukunftssichere Lösungen{/cue} ohne überprüfbaren Faktengehalt oder technische Parameter."
       },
       {
         icon: "cross",
         title: "Hohe semantische Entropie",
-        desc: "Synthetische Phrasen, deren {cue:hl-bluf-bad-entropy}hohe Entropie im Rauschen des Embedding-Raums untergeht{/cue}."
+        desc: "Unkonkrete Werbesprache, deren {cue:hl-bluf-bad-entropy}hohe Entropie im Rauschen des Embedding-Raums untergeht{/cue} und beim Retrieval verworfen wird."
       }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-bluf-good" title="Nachher: BLUF-Direktantwort & Tabelle">
     <CalloutBox type="statement" title="{cue:hl-bluf-good-callout}Antwort im 1. Satz + strukturierte Tabelle{/cue}">
-      „Das Planetengetriebe PG-40 überträgt ein Nenndrehmoment von 120 Nm bei einem Verdrehspiel von unter 3 Winkelminuten und einem Wirkungsgrad von 97 Prozent.“
+      „Das Planetengetriebe PG-40 liefert 120 Nm Nenndrehmoment bei &lt; 3 arcmin Verdrehspiel und 97 % Wirkungsgrad.“
     </CalloutBox>
 
     <SlideTable
       headers={["Parameter", "Wert", "Norm / Bedingung"]}
       rows={[
         ["Nenndrehmoment", "120 Nm", "Dauerbetrieb (S1)"],
-        ["Verdrehspiel", "< 3 arcmin", "Standardausführung"],
-        ["Wirkungsgrad", "97 %", "Volllast bei 3000 min⁻¹"]
+        ["Verdrehspiel", "< 3 arcmin", "Standard"],
+        ["Wirkungsgrad", "97 %", "Volllast (3000 min⁻¹)"]
       ]}
     />
 
@@ -70,12 +70,12 @@ import SlideTable from '../../../../components/slides/primitives/SlideTable.astr
       {
         icon: "target",
         title: "Sofortiger Information Gain",
-        desc: "Antwort liefert {cue:hl-bluf-good-exact}exakte Kennzahlen innerhalb der ersten fünfundzwanzig Token{/cue}."
+        desc: "Liefert {cue:hl-bluf-good-exact}exakte Kennzahlen innerhalb der ersten fünfundzwanzig Token{/cue}."
       },
       {
         icon: "check",
         title: "Strukturierte Extraktion",
-        desc: "Die {cue:hl-bluf-good-table}tabellarische Spezifikation wird eins zu eins in KI-Antworten übernommen{/cue}."
+        desc: "{cue:hl-bluf-good-table}Tabellarische Spezifikation wird eins zu eins in KI-Antworten übernommen{/cue}."
       }
     ]} />
   </BentoCard>

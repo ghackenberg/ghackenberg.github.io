@@ -26,6 +26,7 @@ import BentoCard from '../../../../components/slides/primitives/BentoCard.astro'
 import BarChart from '../../../../components/slides/primitives/BarChart.astro';
 import CalloutBox from '../../../../components/slides/primitives/CalloutBox.astro';
 import BulletList from '../../../../components/slides/primitives/BulletList.astro';
+import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astro';
 
 <SplitSlide
   title={frontmatter.title}
@@ -37,27 +38,32 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     <BarChart
       unit="%"
       items={[
-        { label: "Standard CoT (k=1)", value: 57, cue: "hl-cot-single" },
-        { label: "Self-Consistency (k=5)", value: 68, cue: "hl-sample-5" },
-        { label: "Self-Consistency (k=40)", value: 74, cue: "hl-sample-40" }
+        { label: "Standard CoT (k=1)", value: 57, cue: "hl-cot-single", sublabel: "Ein einzelner Pfad; anfällig für frühe Fehltritte" },
+        { label: "Self-Consistency (k=5)", value: 68, cue: "hl-sample-5", sublabel: "Mehrheitsentscheid eliminiert 50 % zufälliger Fehler" },
+        { label: "Self-Consistency (k=40)", value: 74, cue: "hl-sample-40", sublabel: "Asymptotisches Plateau bei steigenden Inferenzkosten" }
       ]}
     />
+    <FormulaBox
+      formula="\arg\max_a \sum_{i=1}^k \mathbb{I}(a_i = a)"
+      label="Majority Voting über k Pfade"
+    />
+    Paralleles Sampling marginalisiert individuelle Ausreißer heraus und maximiert die Zuverlässigkeit.
   </BentoCard>
 
   <BentoCard slot="right" cue="col-konzept" title="Funktionsweise im Enterprise-Stack">
     <CalloutBox type="statement" title="Stochastisches Ensemble">
-      Der {cue:hl-konsens-entscheid}Mehrheitsentscheid filtert zufällige Rechenfehler heraus{/cue}.
+      Der {cue:hl-konsens-entscheid}Mehrheitsentscheid filtert zufällige Rechenfehler heraus{/cue} und stabilisiert komplexe Entscheidungslogiken.
     </CalloutBox>
     <BulletList items={[
       {
         icon: "cpu",
         title: "Sampling mit Varianz (T ≈ 0.7)",
-        desc: "Durch gezielte stochastische Streuung generiert das Modell {cue:hl-diverse-pfade}völlig unterschiedliche Lösungswege zum selben Problem{/cue}."
+        desc: "Durch gezielte stochastische Streuung generiert das Modell {cue:hl-diverse-pfade}völlig unterschiedliche Lösungswege zum selben Problem{/cue}, statt in einer lokalen Sackgasse zu verharren."
       },
       {
         icon: "target",
         title: "Marginalisierung des Pfads",
-        desc: "Nicht der Argumentationspfad zählt, sondern {cue:hl-robuster-konsens}ein hochgradig robustes Konsens-Ergebnis{/cue} der Schnittmenge."
+        desc: "Nicht der einzelne Argumentationspfad zählt, sondern {cue:hl-robuster-konsens}ein hochgradig robustes Konsens-Ergebnis{/cue} über die Schnittmenge unabhängiger Herleitungen."
       }
     ]} />
   </BentoCard>

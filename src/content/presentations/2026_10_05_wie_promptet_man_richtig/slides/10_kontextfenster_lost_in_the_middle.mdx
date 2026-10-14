@@ -40,25 +40,26 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       {
         icon: "trending-down",
         title: "U-Kurven-Effekt",
-        desc: "Dokumente in der Mitte langer Prompts erleiden eine {cue:hl-abfall-mitte}signifikante Verschlechterung der Extraktionsgenauigkeit{/cue}."
+        desc: "Dokumente in der Mitte langer Prompts erleiden eine {cue:hl-abfall-mitte}signifikante Verschlechterung der Extraktionsgenauigkeit{/cue}. Transformer-Aufmerksamkeitsgewichte konzentrieren sich asymmetrisch auf die Randpositionen, wodurch zentrale Schlüsseldaten verloren gehen."
       }
     ]} />
+    Trotz großer Kontextweiten sinkt die Retrieval-Rate im mittleren Drittel drastisch ab: Große Kontextfenster ersetzen keine semantische Vorfilterung.
   </BentoCard>
 
   <BentoCard slot="right" cue="col-architektur" title="Architektonische Konsequenzen">
     <CalloutBox type="statement" title="Primacy & Recency">
-      System-Instruktionen nach oben, {cue:hl-primacy-recency}konkrete Aufgabenstellung unmittelbar ans Ende{/cue}.
+      System-Instruktionen nach oben, {cue:hl-primacy-recency}konkrete Aufgabenstellung unmittelbar ans Ende{/cue} des Prompts platzieren.
     </CalloutBox>
     <BulletList items={[
       {
         icon: "target",
         title: "Kopf-Ende-Platzierung",
-        desc: "Rohdaten (Dokumente, Tabellen) in die Mitte packen, {cue:hl-klammer-struktur}eingerahmt von strikten Regeln oben und unten{/cue}."
+        desc: "Rohdaten (Dokumente, Tabellen) in die Mitte packen, {cue:hl-klammer-struktur}eingerahmt von strikten Regeln oben und unten{/cue}, damit kritische Constraints im Aufmerksamkeitsfokus bleiben."
       },
       {
         icon: "check",
         title: "Vermeidung von Kontextmüll",
-        desc: "Jedes irrelevante Token im Kontext erhöht das Risiko für {cue:hl-kontext-rauschen}Aufmerksamkeitszerstreuung und Halluzinationen{/cue}."
+        desc: "Jedes irrelevante Token im Kontext erhöht das Risiko für {cue:hl-kontext-rauschen}Aufmerksamkeitszerstreuung und Halluzinationen{/cue} – präzises Chunk-Re-Ranking vor der Anfrage ist Pflicht."
       }
     ]} />
   </BentoCard>

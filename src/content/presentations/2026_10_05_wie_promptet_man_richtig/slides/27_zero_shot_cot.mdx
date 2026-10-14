@@ -39,12 +39,17 @@ import CodeContainer from '../../../../components/slides/primitives/CodeContaine
     filename="{cue:hl-step-trigger}reasoning_trigger.txt: Let's think step by step{/cue}"
   >
 ```text
-User: Eine Fabrik produziert 120 Teile/h... [Frage]
-Trigger: Let's think step by step
+User: Eine Fabrik produziert 120 Teile/h.
+Bei 2 Schichten à 8h mit 5% Ausschuss:
+Wie viele fehlerfreie Teile entstehen?
+Trigger: Let's think step by step.
 
 Model (Reasoning):
-1. Zunächst berechnen wir den stündlichen Ausstoß...
-2. Daraus folgt die kumulierte Gesamtsumme...
+1. Gesamte Arbeitszeit: 2 Schichten * 8h = 16h
+2. Brutto-Produktion: 16h * 120 Teile = 1920 Teile
+3. Ausschuss berechnen: 1920 * 0.05 = 96 Teile
+4. Netto-Ertrag: 1920 - 96 = 1824 Teile
+Fazit: Es entstehen exakt 1.824 fehlerfreie Teile.
 ```
   </CodeContainer>
 
