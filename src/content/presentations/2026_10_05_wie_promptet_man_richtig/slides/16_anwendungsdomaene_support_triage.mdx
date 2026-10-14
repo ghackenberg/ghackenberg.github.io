@@ -25,18 +25,18 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 >
   <BentoCard slot="left" cue="col-triage" title="Triage-Mechanik">
     <CalloutBox type="statement" title="Deterministische Taxonomie">
-      Jedes Ticket wird in ein {cue:hl-intent-erkennung}eindeutiges Kategorien-Set klassifiziert{/cue}.
+      Jedes Ticket wird in ein {cue:hl-intent-erkennung}eindeutiges Kategorien-Set klassifiziert{/cue} und strukturiert vorqualifiziert.
     </CalloutBox>
     <BulletList items={[
       {
         icon: "target",
         title: "Dringlichkeits-Bewertung",
-        desc: "Berechnung eines {cue:hl-dringlichkeit-score}objektiven Dringlichkeits-Scores von 1 bis 5{/cue} anhand von Signalwörtern."
+        desc: "Berechnung eines {cue:hl-dringlichkeit-score}objektiven Dringlichkeits-Scores von 1 bis 5{/cue} anhand definierter SLA-Signalwörter und Ausfallkriterien."
       },
       {
         icon: "arrow",
         title: "Automatisches Routing",
-        desc: "Direkte Zuteilung zum {cue:hl-team-dispatch}passenden First- oder Second-Level-Team{/cue} ohne Medienbruch."
+        desc: "Direkte Zuteilung zum {cue:hl-team-dispatch}passenden First- oder Second-Level-Team{/cue} inklusive strukturierter Zusammenfassung ohne Medienbruch."
       }
     ]} />
   </BentoCard>
@@ -46,13 +46,14 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       {
         icon: "shield",
         title: "Verbindlichkeits-Schranke",
-        desc: "Striktes {cue:hl-keine-haftung}Verbot eigenmächtiger Kulanz- oder Preiszusagen{/cue} im automatisierten Dialog."
+        desc: "Striktes {cue:hl-keine-haftung}Verbot eigenmächtiger Kulanz- oder Preiszusagen{/cue} im automatisierten Dialog. Das System darf niemals rechtlich bindende Erklärungen abgeben, sondern formuliert ausschließlich unverbindliche Vorprüfungen."
       },
       {
         icon: "alert",
         title: "Human-in-the-Loop Eskalation",
-        desc: "Bei negativem Sentiment erfolgt die {cue:hl-eskalations-pfad}sofortige Übergabe an menschliche Servicemitarbeiter{/cue}."
+        desc: "Bei eskalierendem Tonfall oder Frustration erfolgt die {cue:hl-eskalations-pfad}sofortige Übergabe an menschliche Servicemitarbeiter{/cue}. Ein deterministischer Sentiment-Filter stoppt den Dialog und benachrichtigt den Support-Lead."
       }
     ]} />
+    Robuste Guardrails verhindern Reputationsschäden und stellen sicher, dass KI als intelligentes Assistenzsystem agiert, während die finale Entscheidungshoheit beim Fachpersonal verbleibt.
   </BentoCard>
 </SplitSlide>

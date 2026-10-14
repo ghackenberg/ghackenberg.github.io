@@ -38,10 +38,19 @@ import CodeContainer from '../../../../components/slides/primitives/CodeContaine
     filename="{cue:hl-json-schema}schema.py: response_format strict=true{/cue}"
   >
 ```python
+from typing import Literal, List
+from pydantic import BaseModel, Field
+
+class Anomaly(BaseModel):
+    sensor_id: str
+    severity: Literal["LOW", "HIGH", "CRIT"]
+    confidence: float
+
 class MachineAudit(BaseModel):
-    machine_id: str
+    machine_id: str = Field(description="Seriennummer")
     status: Literal["OK", "WARN", "FAIL"]
     temperature_c: float
+    anomalies: List[Anomaly]
     action_required: bool
 ```
   </CodeContainer>

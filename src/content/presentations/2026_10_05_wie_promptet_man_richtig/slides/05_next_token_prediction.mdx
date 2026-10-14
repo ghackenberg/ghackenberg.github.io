@@ -34,6 +34,7 @@ import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astr
     <CalloutBox type="statement" title="Autoregressiver Loop: Token für Token">
       Das Modell maximiert fortlaufend {cue:hl-token-formel}die Plausibilität des Folge-Tokens{/cue}.
     </CalloutBox>
+    In jedem Generierungsschritt berechnet das neurale Netzwerk eine Wahrscheinlichkeitsverteilung über das gesamte Vokabular und wählt das nächste Token deterministisch oder stochastisch aus.
   </BentoCard>
 
   <BentoCard slot="right" cue="col-erklaerung" title="Konsequenzen für das Prompting">
@@ -41,18 +42,19 @@ import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astr
       {
         icon: "cpu",
         title: "Keine Wissensdatenbank im SQL-Sinn",
-        desc: "Ein Modell schlägt keine Fakten nach; es erzeugt {cue:hl-keine-fakten}statistisch plausible Textmuster{/cue}."
+        desc: "Ein Modell schlägt keine Fakten in einer relationalen Datenbank nach; es erzeugt {cue:hl-keine-fakten}statistisch plausible Textmuster{/cue} auf Basis gelernten Parameterwissens."
       },
       {
         icon: "network",
         title: "Kontext als Wahrscheinlichkeitsfilter",
-        desc: "Jedes Zeichen im Prompt verändert {cue:hl-bedingte-verteilung}die Wahrscheinlichkeitsverteilung der nächsten Tokens{/cue}."
+        desc: "Jedes Zeichen im Prompt fungiert als mathematischer Operator: Es verändert {cue:hl-bedingte-verteilung}die Wahrscheinlichkeitsverteilung der nächsten Tokens{/cue} und engt den Lösungsraum ein."
       },
       {
         icon: "warning",
         title: "Fehlerfortpflanzung",
-        desc: "Wird ein fehlerhaftes Token generiert, {cue:hl-fehlerkette}konditioniert es alle nachfolgenden Schritte negativ{/cue}."
+        desc: "Wird ein fehlerhaftes Token generiert, {cue:hl-fehlerkette}konditioniert es alle nachfolgenden Schritte negativ{/cue}, da das Modell seine eigene Halluzination als Kontext weiterschreibt."
       }
     ]} />
+    Prompt Engineering ist daher die bewusste mathematische Konditionierung dieses stochastischen Pfades zur Vermeidung von Fehlinterpretationen.
   </BentoCard>
 </SplitSlide>

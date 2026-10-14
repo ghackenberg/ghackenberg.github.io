@@ -70,12 +70,13 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
 
   <BentoCard slot="explanation" cue="card-entitaeten" title="Entitäten & Autorität">
     <CalloutBox type="statement" title="Eindeutige Entitätsverankerung">
-      Disambiguierung von Marke und Urheber über {cue:hl-jsonld-uri}globale Linked-Data-Register{/cue}.
+      Disambiguierung von Marke und Urheber über {cue:hl-jsonld-uri}globale Linked-Data-Register{/cue} als maschinenlesbarer Schutz vor Modell-Halluzinationen.
     </CalloutBox>
     <BulletList items={[
-      { icon: "shield", title: "Globale URIs (@id)", desc: "Vergibt für Marke und Person {cue:hl-jsonld-graph}eindeutige, webweit referenzierbare Identifier{/cue} [@gandon-2020-json-ld]." },
-      { icon: "globe", title: "sameAs-Verknüpfung", desc: "Verbindet lokale Entitäten direkt mit {cue:hl-jsonld-orcid}ORCID, Wikidata und LinkedIn-Profilen{/cue}." },
-      { icon: "check", title: "Institutionelle Provenienz", desc: "Verknüpft Personen über worksFor {cue:hl-fakten-inst}unmissverständlich mit der Primärorganisation{/cue}." }
+      { icon: "shield", title: "Globale URIs (@id)", desc: "Vergibt für Marke und Person {cue:hl-jsonld-graph}eindeutige, webweit referenzierbare Identifier{/cue} [@gandon-2020-json-ld] zur zweifelsfreien Knotenverknüpfung im Knowledge Graph." },
+      { icon: "globe", title: "sameAs-Verknüpfung", desc: "Verbindet lokale Entitäten direkt mit {cue:hl-jsonld-orcid}ORCID, Wikidata und LinkedIn-Profilen{/cue} als extern verifizierbare Vertrauensanker." },
+      { icon: "check", title: "Institutionelle Provenienz", desc: "Verknüpft Personen über worksFor {cue:hl-fakten-inst}unmissverständlich mit der Primärorganisation{/cue} und sichert den fachlichen Autoritätsnachweis." }
     ]} />
+    Dieses maschinenlesbare Entitätsnetz bildet das Rückgrat für verlässliches Grounding in generativen Suchsystemen.
   </BentoCard>
 </CodeSlide>

@@ -37,27 +37,28 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     <BarChart
       unit="%"
       items={[
-        { label: "Einsteiger / Geringer Skill", value: 34, cue: "hl-skill-low" },
-        { label: "Durchschnittliche Erfahrung", value: 14, cue: "hl-skill-mid" },
-        { label: "Senior-Experten", value: 2, cue: "hl-skill-high" }
+        { label: "Einsteiger / Geringer Skill", value: 34, cue: "hl-skill-low", sublabel: "Schnelle Problemlösung und Überbrückung fehlender Praxiserfahrung" },
+        { label: "Durchschnittliche Erfahrung", value: 14, cue: "hl-skill-mid", sublabel: "Solide Effizienzgewinne bei wiederkehrenden Routineaufgaben" },
+        { label: "Senior-Experten", value: 2, cue: "hl-skill-high", sublabel: "Marginale Beschleunigung; implizites Erfahrungswissen übersteigt Modellfähigkeit" }
       ]}
     />
+    Die NBER-Feldstudie demonstriert den empirischen Equalizer-Effekt: Generative KI hebt vor allem das Leistungsniveau leistungsschwächerer Mitarbeiter auf den Median an, während Top-Experten ihre Produktivität primär durch Spezialisierung und Validierung halten.
   </BentoCard>
 
   <BentoCard slot="right" cue="col-konsequenz" title="Der 'Equalizer'-Effekt im Unternehmen">
     <CalloutBox type="statement" title="Wissenstransfer">
-      Prompts kodifizieren Expertenwissen und {cue:hl-wissenstransfer}übertragen Best Practices sofort auf Neueinsteiger{/cue}.
+      Prompts kodifizieren Expertenwissen und {cue:hl-wissenstransfer}übertragen Best Practices sofort auf Neueinsteiger{/cue} im operativen Tagesgeschäft.
     </CalloutBox>
     <BulletList items={[
       {
         icon: "trending-up",
         title: "Kompression der Lernkurve",
-        desc: "Die Anlernzeit sinkt signifikant, da Modelle {cue:hl-onboarding-zeit}die Einarbeitungszeit neuer Fachkräfte drastisch verkürzen{/cue}."
+        desc: "Die Anlernzeit sinkt signifikant, da Modelle {cue:hl-onboarding-zeit}die Einarbeitungszeit neuer Fachkräfte drastisch verkürzen{/cue} und implizites Domänenwissen abrufbar machen."
       },
       {
         icon: "shield",
         title: "Standardisierung des Outputs",
-        desc: "Heterogene Arbeitsqualitäten werden durch {cue:hl-standard-templates}unternehmensweit einheitliche Prompt-Vorlagen{/cue} angeglichen."
+        desc: "Heterogene Arbeitsqualitäten werden durch {cue:hl-standard-templates}unternehmensweit einheitliche Prompt-Vorlagen{/cue} zuverlässig auf ein hohes Qualitätsniveau angeglichen."
       }
     ]} />
   </BentoCard>
