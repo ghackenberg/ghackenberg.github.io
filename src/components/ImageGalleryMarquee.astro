@@ -50,7 +50,7 @@ function getDomainFromHref(href: string): string {
       <h2 id="content-gallery-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
         Content <span class="heading-gradient-brand">Gallery</span>
       </h2>
-      <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+      <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         A multi-tier perspective preview across articles, interactive platforms, academic courses, business services, and scientific models.
       </p>
     </div>
@@ -240,9 +240,10 @@ function getDomainFromHref(href: string): string {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: clamp(24px, 6vw, 80px);
+    width: clamp(20px, 4vw, 48px);
     z-index: 20;
     pointer-events: none;
+    transition: opacity 0.25s ease;
   }
 
   .gallery-viewport::before {

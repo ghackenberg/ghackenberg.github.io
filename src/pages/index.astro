@@ -1082,25 +1082,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             Hi, I am <span class="heading-gradient-brand">Dr. Georg Hackenberg</span>
           </h1>
 
-          <!-- Portrait Cell (dynamically positioned by syncHeroResponsiveLayout) -->
-          <div id="hero-portrait-cell" class="absolute z-10 pointer-events-auto flex items-center">
-            <div id="hero-portrait-wrapper" class="relative z-10 aspect-square group shrink-0">
-              <DepthPortrait
-                expressions={faceExpressions}
-                imageSrc={optimizedProfile.src}
-                depthSrc={optimizedDepth.src}
-                alt="Dr. Georg Hackenberg - Profile Headshot"
-                title="Dr. Georg Hackenberg"
-                class="w-full h-full"
-                intensity={0.08}
-                maxTilt={5}
-                trackMouse={false}
-                vignette={false}
-                idleAnimation={true}
-              />
-            </div>
-          </div>
-
           <!-- Subtitle -->
           <p id="hero-subtitle" class="max-w-2xl relative z-10 text-xl md:text-2xl font-bold text-gray-300 light:text-slate-700 mb-6 leading-normal tracking-wide">
             Professor for Industrial Informatics @ UAP / FH Upper Austria &bull; AI-Augmented Workflows &bull; Digital Content Creation
@@ -1230,9 +1211,385 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               </a>
             </div>
           </div>
+
+          <!-- Portrait Cell (dynamically positioned by syncHeroResponsiveLayout) -->
+          <div id="hero-portrait-cell" class="absolute right-0 z-10 pointer-events-auto opacity-0 transition-opacity duration-500" style="visibility: hidden;">
+            <div id="hero-portrait-wrapper" class="relative z-10 aspect-square group shrink-0">
+              <DepthPortrait
+                expressions={faceExpressions}
+                imageSrc={optimizedProfile.src}
+                depthSrc={optimizedDepth.src}
+                alt="Dr. Georg Hackenberg - Profile Headshot"
+                title="Dr. Georg Hackenberg"
+                class="w-full h-full"
+                intensity={0.08}
+                maxTilt={5}
+                trackMouse={false}
+                vignette={false}
+                idleAnimation={true}
+              />
+            </div>
+          </div>
+          <noscript><style>#hero-portrait-cell { visibility: visible !important; opacity: 1 !important; }</style></noscript>
         </div>
     </Container>
   </Section>
+
+  <!-- Hero Responsive Layout & Zero-Flicker First-Paint Init -->
+  <script is:inline>
+    (function () {
+      function syncHeroResponsiveLayout() {
+        // 1. Adaptive #hero-contact-btn (Get in Touch -> Contact -> Icon Only)
+        const actionsRow = document.getElementById('hero-actions-row');
+        const contactBtn = document.getElementById('hero-contact-btn');
+        const socialGroup = document.getElementById('hero-social-group');
+
+        if (actionsRow && contactBtn && socialGroup) {
+          const textFull = contactBtn.querySelector('.hero-cta-full');
+          const textShort = contactBtn.querySelector('.hero-cta-short');
+          const icon = contactBtn.querySelector('.hero-cta-icon');
+
+          if (textFull && textShort && icon) {
+            const availableWidth = actionsRow.clientWidth;
+            const style = window.getComputedStyle(actionsRow);
+            const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
+            const socialWidth = socialGroup.offsetWidth;
+
+            const fits = function () {
+              return contactBtn.offsetWidth + gap + socialWidth <= availableWidth + 1;
+            };
+
+            // Level 1: Full text ("Get in Touch")
+            textFull.classList.remove('hidden');
+            textShort.classList.add('hidden');
+            icon.classList.add('hidden');
+            contactBtn.classList.remove('w-12', 'px-0', 'px-4');
+            contactBtn.classList.add('px-6');
+
+            if (!fits()) {
+              // Level 2: Short text ("Contact")
+              textFull.classList.add('hidden');
+              textShort.classList.remove('hidden');
+              icon.classList.add('hidden');
+              contactBtn.classList.remove('w-12', 'px-0', 'px-6');
+              contactBtn.classList.add('px-4');
+
+              if (!fits()) {
+                // Level 3: Envelope Icon Only
+                textFull.classList.add('hidden');
+                textShort.classList.add('hidden');
+                icon.classList.remove('hidden');
+                contactBtn.classList.remove('px-6', 'px-4');
+                contactBtn.classList.add('w-12', 'px-0');
+              }
+            }
+          }
+        }
+
+        // 2. Exact 2D Collision-Free Portrait Size & Position Solver
+        const heroGrid = document.getElementById('hero-grid');
+        const h1 = document.getElementById('hero-heading');
+        const portraitCell = document.getElementById('hero-portrait-cell');
+        const portraitWrapper = document.getElementById('hero-portrait-wrapper');
+
+        if (heroGrid && portraitWrapper && portraitCell && h1) {
+          // Ensure h1 styling is 100% pure CSS and invariant
+          h1.style.width = '';
+          h1.style.maxWidth = '';
+
+          const gridRect = heroGrid.getBoundingClientRect();
+          const rawRects = [];
+
+          function collectLineRects(el) {
+            if (!el) return;
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+              if (!node.textContent || !node.textContent.trim()) continue;
+              const r = document.createRange();
+              r.selectNodeContents(node);
+              const clientRects = r.getClientRects();
+              for (let i = 0; i < clientRects.length; i++) {
+                const cr = clientRects[i];
+                if (cr.width < 2 || cr.height < 2) continue;
+                rawRects.push({
+                  top: cr.top - gridRect.top,
+                  bottom: cr.bottom - gridRect.top,
+                  right: cr.right - gridRect.left
+                });
+              }
+            }
+          }
+
+          collectLineRects(h1);
+
+          const subtitleEl = document.getElementById('hero-subtitle');
+          if (subtitleEl) collectLineRects(subtitleEl);
+
+          const bioEl = document.getElementById('hero-bio');
+          if (bioEl) collectLineRects(bioEl);
+
+          const pillsEl = document.getElementById('hero-trust-pills');
+          if (pillsEl) {
+            for (let i = 0; i < pillsEl.children.length; i++) {
+              const child = pillsEl.children[i];
+              if (child instanceof HTMLElement) {
+                const cr = child.getBoundingClientRect();
+                if (cr.width > 2 && cr.height > 2) {
+                  rawRects.push({
+                    top: cr.top - gridRect.top,
+                    bottom: cr.bottom - gridRect.top,
+                    right: cr.right - gridRect.left
+                  });
+                }
+              }
+            }
+          }
+
+          if (actionsRow) {
+            if (contactBtn) {
+              const cr = contactBtn.getBoundingClientRect();
+              if (cr.width > 2 && cr.height > 2) {
+                rawRects.push({
+                  top: cr.top - gridRect.top,
+                  bottom: cr.bottom - gridRect.top,
+                  right: cr.right - gridRect.left
+                });
+              }
+            }
+            if (socialGroup) {
+              for (let i = 0; i < socialGroup.children.length; i++) {
+                const child = socialGroup.children[i];
+                if (child instanceof HTMLElement) {
+                  const cr = child.getBoundingClientRect();
+                  if (cr.width > 2 && cr.height > 2) {
+                    rawRects.push({
+                      top: cr.top - gridRect.top,
+                      bottom: cr.bottom - gridRect.top,
+                      right: cr.right - gridRect.left
+                    });
+                  }
+                }
+              }
+            }
+          }
+
+          rawRects.sort(function (a, b) { return a.top - b.top; });
+
+          const bands = [];
+          for (let i = 0; i < rawRects.length; i++) {
+            const r = rawRects[i];
+            if (bands.length === 0) {
+              bands.push({ top: r.top, bottom: r.bottom, right: r.right });
+              continue;
+            }
+            const last = bands[bands.length - 1];
+            const verticalOverlap = Math.min(last.bottom, r.bottom) - Math.max(last.top, r.top);
+            const minHeight = Math.min(last.bottom - last.top, r.bottom - r.top);
+            const isSameLine = Math.abs(last.top - r.top) < 10 || verticalOverlap > minHeight * 0.35;
+
+            if (isSameLine) {
+              last.top = Math.min(last.top, r.top);
+              last.bottom = Math.max(last.bottom, r.bottom);
+              last.right = Math.max(last.right, r.right);
+            } else {
+              bands.push({ top: r.top, bottom: r.bottom, right: r.right });
+            }
+          }
+
+          // Exact 2D Collision-Free Solver
+          const PORTRAIT_GAP_X = 18;
+          const PORTRAIT_GAP_Y = 6;
+
+          const gridWidth = Math.floor(gridRect.width);
+          const gridHeight = Math.floor(gridRect.height);
+
+          function maxRightInVerticalRange(yTop, yBottom) {
+            let maxR = 0;
+            for (let i = 0; i < bands.length; i++) {
+              const b = bands[i];
+              if (b.bottom > yTop - PORTRAIT_GAP_Y && b.top < yBottom + PORTRAIT_GAP_Y) {
+                if (b.right > maxR) {
+                  maxR = b.right;
+                }
+              }
+            }
+            return maxR;
+          }
+
+          // Candidate 1: 'rechts mittig' (Right-Center)
+          let sizeRightCenter = 0;
+          let reqLeftRightCenter = 0;
+          const maxPossibleRightCenter = Math.min(480, gridHeight);
+          for (let S = maxPossibleRightCenter; S >= 1; S--) {
+            const yTop = (gridHeight - S) * 0.5;
+            const yBottom = (gridHeight + S) * 0.5;
+            const reqLeft = maxRightInVerticalRange(yTop, yBottom) + PORTRAIT_GAP_X;
+            if (reqLeft + S <= gridWidth) {
+              sizeRightCenter = S;
+              reqLeftRightCenter = reqLeft;
+              break;
+            }
+          }
+
+          // Candidate 2: 'oben' (Top)
+          // When displayed at top, the head aligns with H1 and its vertical scale is determined by the H1 height.
+          const h1Height = Math.round(h1.getBoundingClientRect().height);
+          const reqLeftBesideH1 = maxRightInVerticalRange(0, h1Height) + PORTRAIT_GAP_X;
+          const availableWidthBesideH1 = gridWidth - reqLeftBesideH1;
+
+          let sizeTopRight = 0;
+          let reqLeftTop = reqLeftBesideH1;
+
+          // The head is displayed at the top and centered as long as the H1 height dominates the head size.
+          // When the page width dominates the head size rather than the H1 height (availableWidthBesideH1 < h1Height),
+          // hide the head (sizeTopRight = 0).
+          if (availableWidthBesideH1 >= h1Height && h1Height > 0) {
+            sizeTopRight = h1Height;
+          }
+
+          const minPortraitSize = h1Height;
+          // Prefer center if size is equal or within 4px rounding/wrapping jitter
+          const prefersCenter = (sizeRightCenter + 4 >= sizeTopRight);
+          const chosenSize = prefersCenter ? sizeRightCenter : sizeTopRight;
+
+          if (chosenSize < minPortraitSize || minPortraitSize <= 0) {
+            portraitCell.style.display = 'none';
+            portraitCell.style.visibility = 'hidden';
+            portraitCell.style.left = '';
+            portraitCell.style.right = '';
+            portraitCell.style.top = '';
+            portraitCell.style.bottom = '';
+            portraitCell.style.width = '';
+            portraitCell.style.height = '';
+            portraitWrapper.style.width = '';
+            portraitWrapper.style.height = '';
+          } else if (prefersCenter) {
+            const leftPos = Math.round(reqLeftRightCenter + (gridWidth - reqLeftRightCenter - sizeRightCenter) * 0.5);
+            const topPos = Math.round((gridHeight - sizeRightCenter) * 0.5);
+
+            portraitCell.style.display = '';
+            portraitCell.style.left = leftPos + 'px';
+            portraitCell.style.top = topPos + 'px';
+            portraitCell.style.right = 'auto';
+            portraitCell.style.bottom = 'auto';
+            portraitCell.style.width = sizeRightCenter + 'px';
+            portraitCell.style.height = sizeRightCenter + 'px';
+
+            portraitWrapper.style.width = sizeRightCenter + 'px';
+            portraitWrapper.style.height = sizeRightCenter + 'px';
+
+            if (isPortraitRevealed) {
+              portraitCell.style.visibility = 'visible';
+              portraitCell.classList.remove('opacity-0');
+            }
+          } else {
+            const leftPosTop = Math.round(reqLeftTop + (availableWidthBesideH1 - sizeTopRight) * 0.5);
+
+            portraitCell.style.display = '';
+            portraitCell.style.left = leftPosTop + 'px';
+            portraitCell.style.top = '0px';
+            portraitCell.style.right = 'auto';
+            portraitCell.style.bottom = 'auto';
+            portraitCell.style.width = sizeTopRight + 'px';
+            portraitCell.style.height = sizeTopRight + 'px';
+
+            portraitWrapper.style.width = sizeTopRight + 'px';
+            portraitWrapper.style.height = sizeTopRight + 'px';
+
+            if (isPortraitRevealed) {
+              portraitCell.style.visibility = 'visible';
+              portraitCell.classList.remove('opacity-0');
+            }
+          }
+
+          // Update ReactiveDotGrid content contour
+          const dotGridLayer = document.getElementById('hero-dot-grid-layer');
+          const dotGridEl = dotGridLayer ? dotGridLayer.querySelector('.reactive-dot-grid') : null;
+
+          if (dotGridLayer && dotGridEl) {
+            dotGridLayer.style.display = '';
+            const contourData = bands.map(function (b) {
+              return [Math.round(b.top), Math.round(b.bottom), Math.ceil(b.right)];
+            });
+            dotGridEl.dataset.contour = JSON.stringify(contourData);
+            if (typeof window.__initReactiveDotGrids === 'function') {
+              window.__initReactiveDotGrids();
+            }
+            dotGridEl.dispatchEvent(new CustomEvent('dotgrid:layout'));
+          }
+        }
+      }
+
+      let isFontsReady = false;
+      let isPortraitReady = false;
+      let isPortraitRevealed = false;
+
+      function checkAndRevealPortrait() {
+        if (isPortraitRevealed) return;
+        if (isFontsReady && isPortraitReady) {
+          isPortraitRevealed = true;
+          const portraitCell = document.getElementById('hero-portrait-cell');
+          if (portraitCell && portraitCell.style.display !== 'none') {
+            portraitCell.style.visibility = 'visible';
+            portraitCell.classList.remove('opacity-0');
+          }
+        }
+      }
+
+      function onFontsReady() {
+        if (isFontsReady) return;
+        isFontsReady = true;
+        syncHeroResponsiveLayout();
+        const dotGridLayer = document.getElementById('hero-dot-grid-layer');
+        const dotGridEl = dotGridLayer ? dotGridLayer.querySelector('.reactive-dot-grid') : null;
+        if (dotGridEl) {
+          dotGridEl.dispatchEvent(new CustomEvent('dotgrid:intro'));
+        }
+        checkAndRevealPortrait();
+      }
+
+      function onPortraitReady() {
+        if (isPortraitReady) return;
+        isPortraitReady = true;
+        checkAndRevealPortrait();
+      }
+
+      window.addEventListener('portrait:ready', onPortraitReady, { passive: true });
+
+      // Check if portrait container was already marked ready
+      const heroCell = document.getElementById('hero-portrait-cell');
+      const portraitContainer = heroCell ? heroCell.querySelector('.depth-portrait-container') : null;
+      if (portraitContainer && portraitContainer.getAttribute('data-ready') === 'true') {
+        onPortraitReady();
+      }
+
+      // Check font readiness
+      const isOutfitLoaded = document.fonts && typeof document.fonts.check === 'function' && document.fonts.check('800 60px Outfit');
+      if (isOutfitLoaded) {
+        onFontsReady();
+      } else if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(onFontsReady);
+        setTimeout(onFontsReady, 180);
+      } else {
+        onFontsReady();
+      }
+
+      // Fallback safety timeout for portrait in case of network issue
+      setTimeout(function () {
+        if (!isPortraitReady) {
+          onPortraitReady();
+        }
+      }, 1500);
+
+      window.__syncHeroResponsiveLayout = function () {
+        syncHeroResponsiveLayout();
+        if (isFontsReady && isPortraitReady && !isPortraitRevealed) {
+          checkAndRevealPortrait();
+        }
+      };
+    })();
+  </script>
 
   <!-- Animated Image Gallery Marquee (Full-Width Edge-to-Edge) -->
   <ImageGalleryMarquee catalog={galleryItems} />
@@ -2674,18 +3031,15 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 </Layout>
 
 <style>
-  #hero-portrait-wrapper {
-    width: 132px;
-    height: 132px;
-    aspect-ratio: 1 / 1;
+  #hero-portrait-cell {
+    position: absolute;
+    right: 0;
+    z-index: 10;
+    pointer-events: auto;
+    display: flex;
   }
-  @media (min-width: 900px) {
-    #hero-portrait-wrapper {
-      width: 100%;
-      max-width: 480px;
-      height: auto;
-      aspect-ratio: 1 / 1;
-    }
+  #hero-portrait-wrapper {
+    aspect-ratio: 1 / 1;
   }
 
   /* Mobile Horizontal Card Carousel */
@@ -2737,13 +3091,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       overflow-x: clip;
       margin-top: -1.25rem;
       margin-bottom: -2.5rem;
-      margin-inline: -1.5rem;
+      margin-inline: calc(-1 * clamp(1rem, 3vw, 2rem));
     }
     .mobile-card-carousel {
       padding-top: 1.25rem;
       padding-bottom: 2.5rem;
-      padding-inline: 1.5rem;
-      scroll-padding-left: 1.5rem;
+      padding-inline: clamp(1rem, 3vw, 2rem);
+      scroll-padding-left: clamp(1rem, 3vw, 2rem);
       cursor: grab;
       touch-action: pan-y pinch-zoom;
       will-change: transform, scroll-position;
@@ -2786,16 +3140,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     }
     .carousel-stage.at-end::after {
       opacity: 0;
-    }
-  }
-
-  @media (min-width: 640px) and (max-width: 1023.98px) {
-    .carousel-stage {
-      margin-inline: -2rem;
-    }
-    .mobile-card-carousel {
-      padding-inline: 2rem;
-      scroll-padding-left: 2rem;
     }
   }
 
@@ -3403,257 +3747,10 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     });
   }
 
-  function syncHeroResponsiveLayout(): void {
-    // 1. Adaptive #hero-contact-btn (Get in Touch -> Contact -> Icon Only)
-    const actionsRow = document.getElementById('hero-actions-row');
-    const contactBtn = document.getElementById('hero-contact-btn');
-    const socialGroup = document.getElementById('hero-social-group');
-
-    if (actionsRow && contactBtn && socialGroup) {
-      const textFull = contactBtn.querySelector<HTMLElement>('.hero-cta-full');
-      const textShort = contactBtn.querySelector<HTMLElement>('.hero-cta-short');
-      const icon = contactBtn.querySelector<HTMLElement>('.hero-cta-icon');
-
-      if (textFull && textShort && icon) {
-        const availableWidth = actionsRow.clientWidth;
-        const style = window.getComputedStyle(actionsRow);
-        const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
-        const socialWidth = socialGroup.offsetWidth;
-
-        const fits = (): boolean => contactBtn.offsetWidth + gap + socialWidth <= availableWidth + 1;
-
-        // Level 1: Full text ("Get in Touch")
-        textFull.classList.remove('hidden');
-        textShort.classList.add('hidden');
-        icon.classList.add('hidden');
-        contactBtn.classList.remove('w-12', 'px-0', 'px-4');
-        contactBtn.classList.add('px-6');
-
-        if (!fits()) {
-          // Level 2: Short text ("Contact")
-          textFull.classList.add('hidden');
-          textShort.classList.remove('hidden');
-          icon.classList.add('hidden');
-          contactBtn.classList.remove('w-12', 'px-0', 'px-6');
-          contactBtn.classList.add('px-4');
-
-          if (!fits()) {
-            // Level 3: Envelope Icon Only
-            textFull.classList.add('hidden');
-            textShort.classList.add('hidden');
-            icon.classList.remove('hidden');
-            contactBtn.classList.remove('px-6', 'px-4');
-            contactBtn.classList.add('w-12', 'px-0');
-          }
-        }
-      }
-    }
-
-    // 2. Exact 2D Collision-Free Portrait Size & Position Solver
-    const heroGrid = document.getElementById('hero-grid');
-    const h1 = document.getElementById('hero-heading');
-    const portraitCell = document.getElementById('hero-portrait-cell');
-    const portraitWrapper = document.getElementById('hero-portrait-wrapper');
-
-    if (heroGrid && portraitWrapper && portraitCell && h1) {
-      // Ensure h1 styling is 100% pure CSS and invariant
-      h1.style.width = '';
-      h1.style.maxWidth = '';
-
-      const gridRect = heroGrid.getBoundingClientRect();
-      const rawRects: Array<{ top: number; bottom: number; right: number }> = [];
-
-      function collectLineRects(el: HTMLElement): void {
-        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-        let node: Node | null;
-        while ((node = walker.nextNode())) {
-          if (!node.textContent || !node.textContent.trim()) continue;
-          const r = document.createRange();
-          r.selectNodeContents(node);
-          const clientRects = r.getClientRects();
-          for (let i = 0; i < clientRects.length; i++) {
-            const cr = clientRects[i];
-            if (cr.width < 2 || cr.height < 2) continue;
-            rawRects.push({
-              top: cr.top - gridRect.top,
-              bottom: cr.bottom - gridRect.top,
-              right: cr.right - gridRect.left
-            });
-          }
-        }
-      }
-
-      collectLineRects(h1);
-
-      const subtitleEl = document.getElementById('hero-subtitle');
-      if (subtitleEl) collectLineRects(subtitleEl);
-
-      const bioEl = document.getElementById('hero-bio');
-      if (bioEl) collectLineRects(bioEl);
-
-      const pillsEl = document.getElementById('hero-trust-pills');
-      if (pillsEl) {
-        for (let i = 0; i < pillsEl.children.length; i++) {
-          const child = pillsEl.children[i];
-          if (child instanceof HTMLElement) {
-            const cr = child.getBoundingClientRect();
-            if (cr.width > 2 && cr.height > 2) {
-              rawRects.push({
-                top: cr.top - gridRect.top,
-                bottom: cr.bottom - gridRect.top,
-                right: cr.right - gridRect.left
-              });
-            }
-          }
-        }
-      }
-
-      if (actionsRow) {
-        if (contactBtn) {
-          const cr = contactBtn.getBoundingClientRect();
-          if (cr.width > 2 && cr.height > 2) {
-            rawRects.push({
-              top: cr.top - gridRect.top,
-              bottom: cr.bottom - gridRect.top,
-              right: cr.right - gridRect.left
-            });
-          }
-        }
-        if (socialGroup) {
-          for (let i = 0; i < socialGroup.children.length; i++) {
-            const child = socialGroup.children[i];
-            if (child instanceof HTMLElement) {
-              const cr = child.getBoundingClientRect();
-              if (cr.width > 2 && cr.height > 2) {
-                rawRects.push({
-                  top: cr.top - gridRect.top,
-                  bottom: cr.bottom - gridRect.top,
-                  right: cr.right - gridRect.left
-                });
-              }
-            }
-          }
-        }
-      }
-
-      rawRects.sort((a, b) => a.top - b.top);
-
-      const bands: Array<{ top: number; bottom: number; right: number }> = [];
-      for (let i = 0; i < rawRects.length; i++) {
-        const r = rawRects[i];
-        if (bands.length === 0) {
-          bands.push({ top: r.top, bottom: r.bottom, right: r.right });
-          continue;
-        }
-        const last = bands[bands.length - 1];
-        const verticalOverlap = Math.min(last.bottom, r.bottom) - Math.max(last.top, r.top);
-        const minHeight = Math.min(last.bottom - last.top, r.bottom - r.top);
-        const isSameLine = Math.abs(last.top - r.top) < 10 || verticalOverlap > minHeight * 0.35;
-
-        if (isSameLine) {
-          last.top = Math.min(last.top, r.top);
-          last.bottom = Math.max(last.bottom, r.bottom);
-          last.right = Math.max(last.right, r.right);
-        } else {
-          bands.push({ top: r.top, bottom: r.bottom, right: r.right });
-        }
-      }
-
-      // Exact 2D Collision-Free Solver
-      const PORTRAIT_GAP_X = 18;
-      const PORTRAIT_GAP_Y = 14;
-
-      const gridWidth = Math.floor(gridRect.width);
-      const gridHeight = Math.floor(gridRect.height);
-
-      function maxRightInVerticalRange(yTop: number, yBottom: number): number {
-        let maxR = 0;
-        for (let i = 0; i < bands.length; i++) {
-          const b = bands[i];
-          if (b.bottom > yTop - PORTRAIT_GAP_Y && b.top < yBottom + PORTRAIT_GAP_Y) {
-            if (b.right > maxR) {
-              maxR = b.right;
-            }
-          }
-        }
-        return maxR;
-      }
-
-      // Candidate 1: 'rechts mittig' (Right-Center)
-      let sizeRightCenter = 0;
-      let reqLeftRightCenter = 0;
-      const maxPossibleRightCenter = Math.min(480, gridHeight);
-      for (let S = maxPossibleRightCenter; S >= 1; S--) {
-        const reqLeft = maxRightInVerticalRange((gridHeight - S) * 0.5, (gridHeight + S) * 0.5) + PORTRAIT_GAP_X;
-        if (reqLeft + S <= gridWidth) {
-          sizeRightCenter = S;
-          reqLeftRightCenter = reqLeft;
-          break;
-        }
-      }
-
-      // Candidate 2: 'oben rechts' (Top-Right)
-      let sizeTopRight = 0;
-      const maxPossibleTopRight = Math.min(480, gridHeight);
-      for (let S = maxPossibleTopRight; S >= 1; S--) {
-        const reqLeft = maxRightInVerticalRange(0, S) + PORTRAIT_GAP_X;
-        if (reqLeft + S <= gridWidth) {
-          sizeTopRight = S;
-          break;
-        }
-      }
-
-      const h1Height = Math.round(h1.getBoundingClientRect().height);
-      const minPortraitSize = h1Height;
-      const bestSize = Math.max(sizeRightCenter, sizeTopRight);
-
-      if (bestSize < minPortraitSize) {
-        portraitCell.style.display = 'none';
-        portraitCell.style.left = '';
-        portraitCell.style.right = '';
-        portraitCell.style.top = '';
-        portraitCell.style.bottom = '';
-        portraitCell.style.width = '';
-        portraitCell.style.height = '';
-        portraitWrapper.style.width = '';
-        portraitWrapper.style.height = '';
-      } else if (sizeRightCenter >= sizeTopRight) {
-        const leftPos = Math.round(reqLeftRightCenter + (gridWidth - reqLeftRightCenter - sizeRightCenter) * 0.5);
-        const topPos = Math.round((gridHeight - sizeRightCenter) * 0.5);
-
-        portraitCell.style.display = '';
-        portraitCell.style.left = `${leftPos}px`;
-        portraitCell.style.top = `${topPos}px`;
-        portraitCell.style.right = '';
-        portraitCell.style.bottom = '';
-        portraitCell.style.width = `${sizeRightCenter}px`;
-        portraitCell.style.height = `${sizeRightCenter}px`;
-
-        portraitWrapper.style.width = `${sizeRightCenter}px`;
-        portraitWrapper.style.height = `${sizeRightCenter}px`;
-      } else {
-        portraitCell.style.display = '';
-        portraitCell.style.top = '0px';
-        portraitCell.style.right = '0px';
-        portraitCell.style.left = '';
-        portraitCell.style.bottom = '';
-        portraitCell.style.width = `${sizeTopRight}px`;
-        portraitCell.style.height = `${sizeTopRight}px`;
-
-        portraitWrapper.style.width = `${sizeTopRight}px`;
-        portraitWrapper.style.height = `${sizeTopRight}px`;
-      }
-
-      // Update ReactiveDotGrid content contour
-      const dotGridLayer = document.getElementById('hero-dot-grid-layer');
-      const dotGridEl = dotGridLayer?.querySelector<HTMLElement>('.reactive-dot-grid');
-
-      if (dotGridLayer && dotGridEl) {
-        dotGridLayer.style.display = '';
-        const contourData = bands.map((b) => [Math.round(b.top), Math.round(b.bottom), Math.ceil(b.right)]);
-        dotGridEl.dataset.contour = JSON.stringify(contourData);
-        dotGridEl.dispatchEvent(new CustomEvent('dotgrid:layout'));
-      }
+  declare global {
+    interface Window {
+      __syncHeroResponsiveLayout?: () => void;
+      __initReactiveDotGrids?: () => void;
     }
   }
 
@@ -3662,11 +3759,11 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
     let resizeTimer: number | undefined;
     window.addEventListener('resize', () => {
-      syncHeroResponsiveLayout();
+      window.__syncHeroResponsiveLayout?.();
       if (resizeTimer) cancelAnimationFrame(resizeTimer);
       resizeTimer = requestAnimationFrame(() => {
         updateSectionHeaderCtas();
-        syncHeroResponsiveLayout();
+        window.__syncHeroResponsiveLayout?.();
       });
     });
 
@@ -3705,9 +3802,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   function setupPageScripts() {
     initCarousels();
     initSectionHeaderCtas();
-    syncHeroResponsiveLayout();
+    window.__syncHeroResponsiveLayout?.();
     document.fonts?.ready?.then(() => {
-      syncHeroResponsiveLayout();
+      window.__syncHeroResponsiveLayout?.();
     });
   }
 
