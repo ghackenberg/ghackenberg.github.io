@@ -63,13 +63,13 @@ if (formula) {
   .formula-box {
     --effective-formula-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
     --card-accent: var(--effective-formula-accent);
-    padding: var(--slide-space-element, 1rem) 1.25rem !important;
+    padding: var(--slide-space-element, 1rem) !important;
   }
   .formula-box-label {
-    font-size: calc(0.75rem * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;
   }
   .formula-box-content {
-    font-size: calc(1.5rem * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-heading, 1.90rem) * var(--content-scale, 1)) !important;
     line-height: 1.25 !important;
     margin: 0 !important;
     padding: 0 !important;

@@ -137,28 +137,28 @@ function resolveLinkIcon(label: string, value: string, href?: string): SlideIcon
     --effective-speaker-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
     --card-accent: var(--effective-speaker-accent);
     border-color: color-mix(in srgb, var(--card-accent) 30%, var(--color-slide-card-border));
-    padding: 1.75rem 2rem !important;
-    gap: 1.5rem !important;
+    padding: var(--slide-space-card, 2rem) !important;
+    gap: var(--slide-space-block, 2rem) !important;
   }
   .speaker-avatar-wrapper {
     width: calc(10.5rem * var(--content-scale, 1)) !important;
     height: calc(10.5rem * var(--content-scale, 1)) !important;
   }
   .speaker-name {
-    font-size: calc(2.25rem * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-card-title, 2.35rem) * var(--content-scale, 1)) !important;
     line-height: 1.2 !important;
   }
   .speaker-title {
-    font-size: calc(1.35rem * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-heading, 1.90rem) * var(--content-scale, 1)) !important;
     line-height: 1.3 !important;
   }
   .speaker-institution {
-    font-size: calc(1.1rem * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1)) !important;
     line-height: 1.35 !important;
   }
   .speaker-link-item {
-    font-size: calc(0.95rem * var(--content-scale, 1)) !important;
-    padding: 0.35rem 0.75rem !important;
+    font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;
+    padding: var(--slide-space-tight, 0.5rem) var(--slide-space-element, 1rem) !important;
   }
   :global(.light) .speaker-profile-card {
     background-color: color-mix(in srgb, var(--card-accent) 4%, white) !important;

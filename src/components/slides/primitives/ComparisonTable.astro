@@ -143,7 +143,7 @@ function resolveRowAccent(idx: number): string {
   /* Cell-level dynamic auto-fit typography */
   .comp-table-cell {
     --scale: var(--content-scale, 1);
-    font-size: calc(22px * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1)) !important;
     line-height: 1.35 !important;
     overflow-wrap: break-word;
     word-break: normal;
@@ -152,43 +152,43 @@ function resolveRowAccent(idx: number): string {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 1rem !important;
+    gap: var(--slide-space-element, 1rem) !important;
   }
   .comparison-table-container .table-accent-bar {
     flex-shrink: 0 !important;
     height: calc(3.5rem * var(--content-scale, 1));
   }
   .comp-table-cell.table-col-discipline .table-row-title {
-    font-size: calc(24px * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-heading, 1.90rem) * var(--content-scale, 1)) !important;
     font-weight: 900 !important;
     line-height: 1.15 !important;
   }
   .comp-table-cell.table-col-discipline .table-row-subtitle {
-    font-size: calc(15px * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;
   }
   .comp-table-cell.table-col-target {
-    font-size: calc(22px * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1)) !important;
     font-weight: 600 !important;
     line-height: 1.35 !important;
   }
   .comp-table-cell.table-col-mechanism {
-    font-size: calc(21px * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1)) !important;
     font-weight: 400 !important;
     line-height: 1.35 !important;
   }
   .comp-table-cell.table-col-goal {
-    font-size: calc(21px * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1)) !important;
     font-weight: 400 !important;
     line-height: 1.35 !important;
   }
 
   .comparison-table-container .table-header-grid {
-    font-size: calc(16px * var(--content-scale, 1)) !important;
+    font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;
   }
   .comparison-table-container .table-row-item {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    gap: 1.5rem;
+    padding-top: var(--slide-space-element, 1rem);
+    padding-bottom: var(--slide-space-element, 1rem);
+    gap: var(--slide-space-block, 2rem);
   }
 
   /* Ton-in-ton container cascade for comparison table inside [data-accent] cards */
