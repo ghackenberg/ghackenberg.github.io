@@ -595,6 +595,22 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
           return weightedCandidates[weightedCandidates.length - 1].expr;
         }
 
+        // Motion tracking & rendering state
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let currentBlendValue = 0.0;
+
+        function drawScene() {
+          if (canvasEl.width === 0 || canvasEl.height === 0) return;
+          glCtx.clearColor(0, 0, 0, 0);
+          glCtx.clear(glCtx.COLOR_BUFFER_BIT);
+          glCtx.uniform1f(uBlendLoc, currentBlendValue);
+          glCtx.uniform2f(uOffsetLoc, currentX, currentY);
+          glCtx.drawArrays(glCtx.TRIANGLES, 0, 6);
+        }
+
         // Resize handling
         function resize() {
           const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -605,6 +621,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
             canvasEl.width = width;
             canvasEl.height = height;
             glCtx.viewport(0, 0, width, height);
+            drawScene();
           }
         }
 
@@ -624,10 +641,6 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
         }
 
         // Motion tracking variables
-        let targetX = 0;
-        let targetY = 0;
-        let currentX = 0;
-        let currentY = 0;
         let lastMoveTime = hasTrackMouse ? performance.now() : 0;
         let isVisible = true;
         let animId: number | null = null;
@@ -766,12 +779,8 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
             }
           }
 
-          glCtx.clearColor(0, 0, 0, 0);
-          glCtx.clear(glCtx.COLOR_BUFFER_BIT);
-
-          glCtx.uniform1f(uBlendLoc, blendValue);
-          glCtx.uniform2f(uOffsetLoc, currentX, currentY);
-          glCtx.drawArrays(glCtx.TRIANGLES, 0, 6);
+          currentBlendValue = blendValue;
+          drawScene();
 
           animId = requestAnimationFrame(render);
         }
