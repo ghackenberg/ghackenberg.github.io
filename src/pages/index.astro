@@ -3127,6 +3127,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       touch-action: pan-y pinch-zoom;
       will-change: transform, scroll-position;
     }
+    .mobile-card-carousel * {
+      touch-action: pan-y pinch-zoom;
+    }
     .mobile-card-carousel.is-dragging {
       cursor: grabbing !important;
       user-select: none !important;
@@ -3555,10 +3558,15 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         e.preventDefault();
       });
 
-      // Mouse drag-to-swipe gesture on desktop/tablets (< 1024px)
+      // Unified Pointer & Touch drag-to-swipe gesture (< 1024px) with Directional Axis-Locking
+      type AxisLock = 'undecided' | 'horizontal' | 'vertical';
       let isDown = false;
+      let axisLock: AxisLock = 'undecided';
+      const AXIS_LOCK_THRESHOLD = 6;
+      let dragPointerId: number | null = null;
       let hasDragged = false;
       let startX = 0;
+      let startY = 0;
       let startVirtualScroll = 0;
       let currentDx = 0;
       let lastMoveX = 0;
@@ -3573,13 +3581,19 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         }
       }, { capture: true });
 
-      carousel.addEventListener('mousedown', (e: MouseEvent) => {
-        if (e.button !== 0 || window.innerWidth >= 1024) return;
+      carousel.addEventListener('pointerdown', (e: PointerEvent) => {
+        if ((e.pointerType === 'mouse' && e.button !== 0) || window.innerWidth >= 1024) return;
         stopAnimation();
         targetScrollLeft = null;
+        if (carousel.style.transform === '') {
+          virtualScroll = carousel.scrollLeft;
+        }
         isDown = true;
+        dragPointerId = e.pointerId;
         hasDragged = false;
+        axisLock = e.pointerType === 'mouse' ? 'horizontal' : 'undecided';
         startX = e.clientX;
+        startY = e.clientY;
         lastMoveX = e.clientX;
         lastMoveTime = performance.now();
         velocityPxPerSec = 0;
@@ -3587,18 +3601,18 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         currentDx = 0;
       });
 
-      carousel.addEventListener('touchstart', () => {
-        stopAnimation();
-        if (carousel.style.transform !== '') {
-          carousel.style.transform = '';
-          virtualScroll = carousel.scrollLeft;
+      carousel.addEventListener('touchmove', (e: TouchEvent) => {
+        if (isDown && axisLock === 'horizontal' && e.cancelable) {
+          e.preventDefault();
         }
-      }, { passive: true });
+      }, { passive: false });
 
       const endDrag = () => {
         if (!isDown) return;
         const wasDragging = hasDragged;
         isDown = false;
+        dragPointerId = null;
+        axisLock = 'undecided';
         hasDragged = false;
         carousel.classList.remove('is-dragging');
 
@@ -3661,55 +3675,99 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         }
       };
 
-      window.addEventListener('mouseup', endDrag);
-      window.addEventListener('blur', endDrag);
+      const onPointerEnd = (e?: PointerEvent) => {
+        if (e && dragPointerId !== null && e.pointerId !== dragPointerId) return;
+        if (e) {
+          try {
+            if (carousel.hasPointerCapture(e.pointerId)) {
+              carousel.releasePointerCapture(e.pointerId);
+            }
+          } catch {
+            // Ignore capture release errors on detached/cancelled pointers
+          }
+        }
+        endDrag();
+      };
 
-      window.addEventListener('mousemove', (e: MouseEvent) => {
-        if (!isDown) return;
-        // Fail-safe: if primary button is no longer pressed, terminate drag immediately
-        if ((e.buttons & 1) === 0) {
+      window.addEventListener('pointerup', onPointerEnd);
+      window.addEventListener('pointercancel', onPointerEnd);
+      window.addEventListener('blur', () => onPointerEnd());
+
+      window.addEventListener('pointermove', (e: PointerEvent) => {
+        if (!isDown || (dragPointerId !== null && e.pointerId !== dragPointerId)) return;
+        if (axisLock === 'vertical') return;
+
+        // Fail-safe: if mouse primary button is no longer pressed, terminate drag immediately
+        if (e.pointerType === 'mouse' && (e.buttons & 1) === 0) {
           endDrag();
           return;
         }
 
-        const now = performance.now();
-        const dt = Math.max((now - lastMoveTime) / 1000, 0.001);
-        const deltaX = e.clientX - lastMoveX;
-        lastMoveX = e.clientX;
-        lastMoveTime = now;
+        const totalDx = Math.abs(e.clientX - startX);
+        const totalDy = Math.abs(e.clientY - startY);
 
-        // Instantaneous scroll velocity in px/sec: moving mouse left (deltaX < 0) scrolls right (v > 0)
-        const instantV = -deltaX / dt;
-        velocityPxPerSec = velocityPxPerSec === 0 ? instantV : (0.6 * instantV + 0.4 * velocityPxPerSec);
-
-        currentDx = e.clientX - startX;
-        if (!hasDragged && Math.abs(currentDx) > 5) {
-          hasDragged = true;
-          carousel.classList.add('is-dragging');
-          carousel.style.scrollSnapType = 'none';
-          carousel.style.scrollBehavior = 'auto';
+        if (axisLock === 'undecided') {
+          if (totalDx < AXIS_LOCK_THRESHOLD && totalDy < AXIS_LOCK_THRESHOLD) {
+            return;
+          }
+          if (totalDy > totalDx) {
+            axisLock = 'vertical';
+            isDown = false;
+            dragPointerId = null;
+            return;
+          } else {
+            axisLock = 'horizontal';
+            hasDragged = true;
+            carousel.classList.add('is-dragging');
+            carousel.style.scrollSnapType = 'none';
+            carousel.style.scrollBehavior = 'auto';
+            try {
+              carousel.setPointerCapture(e.pointerId);
+            } catch {
+              // Ignore capture errors if pointer is not active
+            }
+          }
         }
 
-        if (hasDragged) {
-          e.preventDefault();
-          const maxScroll = carousel.scrollWidth - carousel.clientWidth;
-          const rawVirtualScroll = startVirtualScroll - currentDx;
+        if (axisLock === 'horizontal') {
+          const now = performance.now();
+          const dt = Math.max((now - lastMoveTime) / 1000, 0.001);
+          const deltaX = e.clientX - lastMoveX;
+          lastMoveX = e.clientX;
+          lastMoveTime = now;
 
-          if (rawVirtualScroll < 0) {
-            const excess = -rawVirtualScroll;
-            const damped = Math.min(110, Math.pow(excess, 0.8) * 1.8);
-            virtualScroll = -damped;
-          } else if (rawVirtualScroll > maxScroll) {
-            const excess = rawVirtualScroll - maxScroll;
-            const damped = Math.min(110, Math.pow(excess, 0.8) * 1.8);
-            virtualScroll = maxScroll + damped;
-          } else {
-            virtualScroll = rawVirtualScroll;
+          // Instantaneous scroll velocity in px/sec: moving pointer left (deltaX < 0) scrolls right (v > 0)
+          const instantV = -deltaX / dt;
+          velocityPxPerSec = velocityPxPerSec === 0 ? instantV : (0.6 * instantV + 0.4 * velocityPxPerSec);
+
+          currentDx = e.clientX - startX;
+          if (!hasDragged && Math.abs(currentDx) > 5) {
+            hasDragged = true;
+            carousel.classList.add('is-dragging');
+            carousel.style.scrollSnapType = 'none';
+            carousel.style.scrollBehavior = 'auto';
           }
 
-          applyVirtualScroll(virtualScroll);
+          if (hasDragged) {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            const rawVirtualScroll = startVirtualScroll - currentDx;
+
+            if (rawVirtualScroll < 0) {
+              const excess = -rawVirtualScroll;
+              const damped = Math.min(110, Math.pow(excess, 0.8) * 1.8);
+              virtualScroll = -damped;
+            } else if (rawVirtualScroll > maxScroll) {
+              const excess = rawVirtualScroll - maxScroll;
+              const damped = Math.min(110, Math.pow(excess, 0.8) * 1.8);
+              virtualScroll = maxScroll + damped;
+            } else {
+              virtualScroll = rawVirtualScroll;
+            }
+
+            applyVirtualScroll(virtualScroll);
+          }
         }
-      });
+      }, { passive: true });
     });
   }
 
