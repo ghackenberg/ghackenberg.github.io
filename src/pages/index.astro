@@ -13,6 +13,7 @@ import VisualizationCard from "@components/VisualizationCard.astro";
 import Timeline from "@components/Timeline.astro";
 import ImageGalleryMarquee, { type GalleryItem } from "@components/ImageGalleryMarquee.astro";
 import DepthPortrait from "@components/DepthPortrait.astro";
+import ReactiveDotGrid from "@components/ReactiveDotGrid.astro";
 import { getImage } from "astro:assets";
 import profileImage from "@assets/avatar/comic-profile-head.png";
 import profileDepthImage from "@assets/avatar/comic-profile-head-depth.png";
@@ -1070,15 +1071,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     <!-- Hero Section -->
     <Section id="home" padding="standard">
       <Container size="wide" padding="none">
-        <div class="grid grid-cols-[minmax(0,1fr)_auto] min-[900px]:grid-cols-[42rem_minmax(0,1fr)] min-[900px]:grid-rows-[auto_auto_auto_auto_1fr] gap-x-4 sm:gap-x-6 min-[900px]:gap-x-8 gap-y-0 items-center w-full">
-          <!-- Row 1 Left: Heading -->
-          <h1 id="hero-heading" class="col-start-1 row-start-1 min-[900px]:col-span-1 self-center text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6 leading-tight min-w-0 max-w-2xl">
+        <div id="hero-grid" class="relative w-full">
+          <!-- Full Hero Background L-Shaped Dot Grid Layer -->
+          <div id="hero-dot-grid-layer" class="absolute inset-0 z-0 pointer-events-none">
+            <ReactiveDotGrid />
+          </div>
+
+          <!-- Heading -->
+          <h1 id="hero-heading" class="relative z-10 text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6 leading-tight min-w-0 max-w-[21rem] md:max-w-2xl">
             Hi, I am <span class="heading-gradient-brand">Dr. Georg Hackenberg</span>
           </h1>
 
-          <!-- Row 1 Right on < 900px / Col 2 Spanning All Rows on >= 900px: Portrait -->
-          <div id="hero-portrait-cell" class="col-start-2 row-start-1 min-[900px]:col-start-2 min-[900px]:col-span-1 min-[900px]:row-start-1 min-[900px]:row-end-6 self-center flex justify-end mb-6 min-[900px]:mb-0 w-full">
-            <div id="hero-portrait-wrapper" class="relative aspect-square group shrink-0">
+          <!-- Portrait Cell (dynamically positioned by syncHeroResponsiveLayout) -->
+          <div id="hero-portrait-cell" class="absolute z-10 pointer-events-auto flex items-center">
+            <div id="hero-portrait-wrapper" class="relative z-10 aspect-square group shrink-0">
               <DepthPortrait
                 expressions={faceExpressions}
                 imageSrc={optimizedProfile.src}
@@ -1095,18 +1101,18 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </div>
           </div>
 
-          <!-- Row 2: Subtitle -->
-          <p class="col-span-2 min-[900px]:col-span-1 max-w-2xl text-xl md:text-2xl font-bold text-gray-300 light:text-slate-700 mb-6 leading-normal tracking-wide">
+          <!-- Subtitle -->
+          <p id="hero-subtitle" class="max-w-2xl relative z-10 text-xl md:text-2xl font-bold text-gray-300 light:text-slate-700 mb-6 leading-normal tracking-wide">
             Professor for Industrial Informatics @ UAP / FH Upper Austria &bull; AI-Augmented Workflows &bull; Digital Content Creation
           </p>
 
-          <!-- Row 3: Bio -->
-          <p class="col-span-2 min-[900px]:col-span-1 max-w-2xl text-gray-400 text-base md:text-lg leading-relaxed mb-6 font-normal">
+          <!-- Bio -->
+          <p id="hero-bio" class="max-w-2xl relative z-10 text-gray-400 text-base md:text-lg leading-relaxed mb-6 font-normal">
             Welcome to my personal website! I explore and practice the frontier of <strong class="font-bold text-gray-200 light:text-slate-900">AI-augmented engineering</strong> and <strong class="font-bold text-gray-200 light:text-slate-900">cross-channel content creation</strong> across Web, LinkedIn, YouTube, and GitHub. As a computer science professor in <strong class="font-bold text-gray-200 light:text-slate-900">Wels 🏙️</strong> originally from <strong class="font-bold text-gray-200 light:text-slate-900">Hohenschwangau 🏰</strong> living in <strong class="font-bold text-gray-200 light:text-slate-900">Grünau 🌄</strong>, I bridge academic systems engineering at <strong class="font-bold text-gray-200 light:text-slate-900">UAP (FH Upper Austria)</strong> with autonomous agent workflows and modern digital production.
           </p>
 
-          <!-- Row 4: Entity Trust Pills -->
-          <div class="col-span-2 min-[900px]:col-span-1 max-w-2xl flex flex-wrap items-center gap-2 sm:gap-2.5 mb-6">
+          <!-- Entity Trust Pills -->
+          <div id="hero-trust-pills" class="max-w-2xl relative z-10 flex flex-wrap items-center gap-2 sm:gap-2.5 mb-6">
             <a 
               href="https://www.fh-ooe.at/" 
               target="_blank" 
@@ -1154,8 +1160,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </a>
           </div>
 
-          <!-- Row 5: Contact & Social Buttons -->
-          <div id="hero-actions-row" class="col-span-2 min-[900px]:col-span-1 max-w-2xl flex flex-nowrap items-center gap-3 sm:gap-4 min-w-0">
+          <!-- Contact & Social Buttons -->
+          <div id="hero-actions-row" class="max-w-2xl relative z-10 flex flex-nowrap items-center gap-3 sm:gap-4 min-w-0">
             <a 
               id="hero-contact-btn"
               href="#contact" 
@@ -3398,83 +3404,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   }
 
   function syncHeroResponsiveLayout(): void {
-    // Part A: Dynamic Portrait Scaling & Adaptive Visibility (< 56px)
-    const h1 = document.getElementById('hero-heading');
-    const portraitCell = document.getElementById('hero-portrait-cell');
-    const portraitWrapper = document.getElementById('hero-portrait-wrapper');
-
-    if (portraitWrapper && portraitCell && h1) {
-      // Ensure portrait cell is visible before measuring
-      portraitCell.style.display = '';
-      h1.classList.remove('col-span-2');
-
-      if (window.innerWidth >= 900) {
-        const cellWidth = Math.min(480, Math.round(portraitCell.getBoundingClientRect().width));
-        if (cellWidth > 0) {
-          portraitWrapper.style.width = `${cellWidth}px`;
-          portraitWrapper.style.height = `${cellWidth}px`;
-        }
-      } else {
-        const lh = parseFloat(window.getComputedStyle(h1).lineHeight) || 44;
-        const maxTwoLineHeight = lh * 2.35;
-        const minPortraitSize = 56;
-
-        // 1. Measure h1 height with minimum portrait size (56px)
-        portraitWrapper.style.width = `${minPortraitSize}px`;
-        portraitWrapper.style.height = `${minPortraitSize}px`;
-        const baseH1Height = Math.round(h1.getBoundingClientRect().height);
-
-        // If even with the minimum 56px portrait h1 wraps to > 2 lines, hide the portrait immediately
-        if (baseH1Height > maxTwoLineHeight) {
-          portraitCell.style.display = 'none';
-          h1.classList.add('col-span-2');
-        } else {
-          // The portrait may NEVER be taller than the rendered h1 element
-          const maxAllowedSize = baseH1Height;
-          portraitWrapper.style.width = `${maxAllowedSize}px`;
-          portraitWrapper.style.height = `${maxAllowedSize}px`;
-
-          if (h1.getBoundingClientRect().height <= maxTwoLineHeight) {
-            // Fits at full h1 height! Clamp strictly to current h1 height
-            const finalH1Height = Math.round(h1.getBoundingClientRect().height);
-            const clampedSize = Math.min(maxAllowedSize, finalH1Height);
-            portraitWrapper.style.width = `${clampedSize}px`;
-            portraitWrapper.style.height = `${clampedSize}px`;
-          } else {
-            // Binary search in [minPortraitSize, maxAllowedSize] for largest size that keeps h1 <= 2 lines
-            let low = minPortraitSize;
-            let high = maxAllowedSize;
-            let bestSize = minPortraitSize;
-
-            while (low <= high) {
-              const mid = Math.floor((low + high) / 2);
-              portraitWrapper.style.width = `${mid}px`;
-              portraitWrapper.style.height = `${mid}px`;
-              if (h1.getBoundingClientRect().height <= maxTwoLineHeight) {
-                bestSize = mid;
-                low = mid + 1;
-              } else {
-                high = mid - 1;
-              }
-            }
-
-            portraitWrapper.style.width = `${bestSize}px`;
-            portraitWrapper.style.height = `${bestSize}px`;
-            const finalH1Height = Math.round(h1.getBoundingClientRect().height);
-            const clampedSize = Math.min(bestSize, finalH1Height);
-            if (clampedSize >= minPortraitSize) {
-              portraitWrapper.style.width = `${clampedSize}px`;
-              portraitWrapper.style.height = `${clampedSize}px`;
-            } else {
-              portraitCell.style.display = 'none';
-              h1.classList.add('col-span-2');
-            }
-          }
-        }
-      }
-    }
-
-    // Part B: Adaptive #hero-contact-btn (Get in Touch -> Contact -> Icon Only)
+    // 1. Adaptive #hero-contact-btn (Get in Touch -> Contact -> Icon Only)
     const actionsRow = document.getElementById('hero-actions-row');
     const contactBtn = document.getElementById('hero-contact-btn');
     const socialGroup = document.getElementById('hero-social-group');
@@ -3516,6 +3446,213 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             contactBtn.classList.add('w-12', 'px-0');
           }
         }
+      }
+    }
+
+    // 2. Exact 2D Collision-Free Portrait Size & Position Solver
+    const heroGrid = document.getElementById('hero-grid');
+    const h1 = document.getElementById('hero-heading');
+    const portraitCell = document.getElementById('hero-portrait-cell');
+    const portraitWrapper = document.getElementById('hero-portrait-wrapper');
+
+    if (heroGrid && portraitWrapper && portraitCell && h1) {
+      // Ensure h1 styling is 100% pure CSS and invariant
+      h1.style.width = '';
+      h1.style.maxWidth = '';
+
+      const gridRect = heroGrid.getBoundingClientRect();
+      const rawRects: Array<{ top: number; bottom: number; right: number }> = [];
+
+      function collectLineRects(el: HTMLElement): void {
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        let node: Node | null;
+        while ((node = walker.nextNode())) {
+          if (!node.textContent || !node.textContent.trim()) continue;
+          const r = document.createRange();
+          r.selectNodeContents(node);
+          const clientRects = r.getClientRects();
+          for (let i = 0; i < clientRects.length; i++) {
+            const cr = clientRects[i];
+            if (cr.width < 2 || cr.height < 2) continue;
+            rawRects.push({
+              top: cr.top - gridRect.top,
+              bottom: cr.bottom - gridRect.top,
+              right: cr.right - gridRect.left
+            });
+          }
+        }
+      }
+
+      collectLineRects(h1);
+
+      const subtitleEl = document.getElementById('hero-subtitle');
+      if (subtitleEl) collectLineRects(subtitleEl);
+
+      const bioEl = document.getElementById('hero-bio');
+      if (bioEl) collectLineRects(bioEl);
+
+      const pillsEl = document.getElementById('hero-trust-pills');
+      if (pillsEl) {
+        for (let i = 0; i < pillsEl.children.length; i++) {
+          const child = pillsEl.children[i];
+          if (child instanceof HTMLElement) {
+            const cr = child.getBoundingClientRect();
+            if (cr.width > 2 && cr.height > 2) {
+              rawRects.push({
+                top: cr.top - gridRect.top,
+                bottom: cr.bottom - gridRect.top,
+                right: cr.right - gridRect.left
+              });
+            }
+          }
+        }
+      }
+
+      if (actionsRow) {
+        if (contactBtn) {
+          const cr = contactBtn.getBoundingClientRect();
+          if (cr.width > 2 && cr.height > 2) {
+            rawRects.push({
+              top: cr.top - gridRect.top,
+              bottom: cr.bottom - gridRect.top,
+              right: cr.right - gridRect.left
+            });
+          }
+        }
+        if (socialGroup) {
+          for (let i = 0; i < socialGroup.children.length; i++) {
+            const child = socialGroup.children[i];
+            if (child instanceof HTMLElement) {
+              const cr = child.getBoundingClientRect();
+              if (cr.width > 2 && cr.height > 2) {
+                rawRects.push({
+                  top: cr.top - gridRect.top,
+                  bottom: cr.bottom - gridRect.top,
+                  right: cr.right - gridRect.left
+                });
+              }
+            }
+          }
+        }
+      }
+
+      rawRects.sort((a, b) => a.top - b.top);
+
+      const bands: Array<{ top: number; bottom: number; right: number }> = [];
+      for (let i = 0; i < rawRects.length; i++) {
+        const r = rawRects[i];
+        if (bands.length === 0) {
+          bands.push({ top: r.top, bottom: r.bottom, right: r.right });
+          continue;
+        }
+        const last = bands[bands.length - 1];
+        const verticalOverlap = Math.min(last.bottom, r.bottom) - Math.max(last.top, r.top);
+        const minHeight = Math.min(last.bottom - last.top, r.bottom - r.top);
+        const isSameLine = Math.abs(last.top - r.top) < 10 || verticalOverlap > minHeight * 0.35;
+
+        if (isSameLine) {
+          last.top = Math.min(last.top, r.top);
+          last.bottom = Math.max(last.bottom, r.bottom);
+          last.right = Math.max(last.right, r.right);
+        } else {
+          bands.push({ top: r.top, bottom: r.bottom, right: r.right });
+        }
+      }
+
+      // Exact 2D Collision-Free Solver
+      const PORTRAIT_GAP_X = 18;
+      const PORTRAIT_GAP_Y = 14;
+
+      const gridWidth = Math.floor(gridRect.width);
+      const gridHeight = Math.floor(gridRect.height);
+
+      function maxRightInVerticalRange(yTop: number, yBottom: number): number {
+        let maxR = 0;
+        for (let i = 0; i < bands.length; i++) {
+          const b = bands[i];
+          if (b.bottom > yTop - PORTRAIT_GAP_Y && b.top < yBottom + PORTRAIT_GAP_Y) {
+            if (b.right > maxR) {
+              maxR = b.right;
+            }
+          }
+        }
+        return maxR;
+      }
+
+      // Candidate 1: 'rechts mittig' (Right-Center)
+      let sizeRightCenter = 0;
+      let reqLeftRightCenter = 0;
+      const maxPossibleRightCenter = Math.min(480, gridHeight);
+      for (let S = maxPossibleRightCenter; S >= 1; S--) {
+        const reqLeft = maxRightInVerticalRange((gridHeight - S) * 0.5, (gridHeight + S) * 0.5) + PORTRAIT_GAP_X;
+        if (reqLeft + S <= gridWidth) {
+          sizeRightCenter = S;
+          reqLeftRightCenter = reqLeft;
+          break;
+        }
+      }
+
+      // Candidate 2: 'oben rechts' (Top-Right)
+      let sizeTopRight = 0;
+      const maxPossibleTopRight = Math.min(480, gridHeight);
+      for (let S = maxPossibleTopRight; S >= 1; S--) {
+        const reqLeft = maxRightInVerticalRange(0, S) + PORTRAIT_GAP_X;
+        if (reqLeft + S <= gridWidth) {
+          sizeTopRight = S;
+          break;
+        }
+      }
+
+      const h1Height = Math.round(h1.getBoundingClientRect().height);
+      const minPortraitSize = h1Height;
+      const bestSize = Math.max(sizeRightCenter, sizeTopRight);
+
+      if (bestSize < minPortraitSize) {
+        portraitCell.style.display = 'none';
+        portraitCell.style.left = '';
+        portraitCell.style.right = '';
+        portraitCell.style.top = '';
+        portraitCell.style.bottom = '';
+        portraitCell.style.width = '';
+        portraitCell.style.height = '';
+        portraitWrapper.style.width = '';
+        portraitWrapper.style.height = '';
+      } else if (sizeRightCenter >= sizeTopRight) {
+        const leftPos = Math.round(reqLeftRightCenter + (gridWidth - reqLeftRightCenter - sizeRightCenter) * 0.5);
+        const topPos = Math.round((gridHeight - sizeRightCenter) * 0.5);
+
+        portraitCell.style.display = '';
+        portraitCell.style.left = `${leftPos}px`;
+        portraitCell.style.top = `${topPos}px`;
+        portraitCell.style.right = '';
+        portraitCell.style.bottom = '';
+        portraitCell.style.width = `${sizeRightCenter}px`;
+        portraitCell.style.height = `${sizeRightCenter}px`;
+
+        portraitWrapper.style.width = `${sizeRightCenter}px`;
+        portraitWrapper.style.height = `${sizeRightCenter}px`;
+      } else {
+        portraitCell.style.display = '';
+        portraitCell.style.top = '0px';
+        portraitCell.style.right = '0px';
+        portraitCell.style.left = '';
+        portraitCell.style.bottom = '';
+        portraitCell.style.width = `${sizeTopRight}px`;
+        portraitCell.style.height = `${sizeTopRight}px`;
+
+        portraitWrapper.style.width = `${sizeTopRight}px`;
+        portraitWrapper.style.height = `${sizeTopRight}px`;
+      }
+
+      // Update ReactiveDotGrid content contour
+      const dotGridLayer = document.getElementById('hero-dot-grid-layer');
+      const dotGridEl = dotGridLayer?.querySelector<HTMLElement>('.reactive-dot-grid');
+
+      if (dotGridLayer && dotGridEl) {
+        dotGridLayer.style.display = '';
+        const contourData = bands.map((b) => [Math.round(b.top), Math.round(b.bottom), Math.ceil(b.right)]);
+        dotGridEl.dataset.contour = JSON.stringify(contourData);
+        dotGridEl.dispatchEvent(new CustomEvent('dotgrid:layout'));
       }
     }
   }

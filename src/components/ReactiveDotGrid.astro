@@ -1,0 +1,499 @@
+---
+export interface Props {
+  class?: string;
+  spacing?: number;
+  baseRadius?: number;
+  activeRadius?: number;
+  influenceRadius?: number;
+  maxDisplacement?: number;
+}
+
+const {
+  class: className = '',
+  spacing = 22,
+  baseRadius = 1.4,
+  activeRadius = 2.8,
+  influenceRadius = 115,
+  maxDisplacement = 7.5
+} = Astro.props;
+---
+
+<div
+  class={`reactive-dot-grid relative w-full h-full overflow-visible select-none ${className}`}
+  data-spacing={spacing}
+  data-base-radius={baseRadius}
+  data-active-radius={activeRadius}
+  data-influence-radius={influenceRadius}
+  data-max-displacement={maxDisplacement}
+  aria-hidden="true"
+>
+  <canvas class="reactive-dot-canvas block w-full h-full pointer-events-none"></canvas>
+</div>
+
+<script>
+  interface Dot {
+    x0: number;
+    y0: number;
+    dx: number;
+    dy: number;
+    vx: number;
+    vy: number;
+    energy: number;
+    alphaFactor: number;
+    alphaBin: number;
+  }
+
+  function initReactiveDotGrids(): void {
+    const containers = document.querySelectorAll<HTMLElement>('.reactive-dot-grid:not([data-init="true"])');
+
+    containers.forEach((container) => {
+      container.dataset.init = 'true';
+
+      const canvas = container.querySelector<HTMLCanvasElement>('.reactive-dot-canvas');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const spacing = parseFloat(container.dataset.spacing || '22') || 22;
+      const baseRadius = parseFloat(container.dataset.baseRadius || '1.4') || 1.4;
+      const activeRadius = parseFloat(container.dataset.activeRadius || '2.8') || 2.8;
+      const influenceRadius = parseFloat(container.dataset.influenceRadius || '115') || 115;
+      const maxDisplacement = parseFloat(container.dataset.maxDisplacement || '7.5') || 7.5;
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let dots: Dot[] = [];
+      let width = 0;
+      let height = 0;
+
+      let isVisible = false;
+      let pointerActive = false;
+      let pointerX = -9999;
+      let pointerY = -9999;
+
+      let animId: number | null = null;
+      let lastTimestamp = performance.now();
+
+      function smoothstep(edge0: number, edge1: number, x: number): number {
+        const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+        return t * t * (3 - 2 * t);
+      }
+
+      function smin(a: number, b: number, k: number): number {
+        const h = Math.max(k - Math.abs(a - b), 0) / k;
+        return Math.min(a, b) - h * h * k * 0.25;
+      }
+
+      function sdRoundRect(px: number, py: number, left: number, top: number, right: number, bottom: number, r: number): number {
+        const w = right - left;
+        const h = bottom - top;
+        if (w <= 0 || h <= 0) return 9999;
+        const effR = Math.min(r, w * 0.45, h * 0.45);
+        const cx = (left + right) * 0.5;
+        const cy = (top + bottom) * 0.5;
+        const bx = Math.max(0, w * 0.5 - effR);
+        const by = Math.max(0, h * 0.5 - effR);
+        const qx = Math.abs(px - cx) - bx;
+        const qy = Math.abs(py - cy) - by;
+        return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - effR;
+      }
+
+      function rebuildLattice(): void {
+        dots = [];
+        if (width <= 0 || height <= 0) return;
+
+        const cols = Math.max(1, Math.floor((width - spacing) / spacing) + 1);
+        const rows = Math.max(1, Math.floor((height - spacing) / spacing) + 1);
+
+        const gridSpanX = (cols - 1) * spacing;
+        const gridSpanY = (rows - 1) * spacing;
+
+        const startX = Math.round((width - gridSpanX) / 2);
+        const startY = Math.round((height - gridSpanY) / 2);
+
+        const outerCornerRadius = Math.min(56, Math.floor(Math.min(width, height) * 0.28));
+        const pad = spacing * 0.35;
+
+        const contourAttr = container.dataset.contour;
+        let contour: Array<[number, number, number]> | null = null;
+        if (contourAttr) {
+          try {
+            const parsed = JSON.parse(contourAttr);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              contour = parsed;
+            }
+          } catch {
+            contour = null;
+          }
+        }
+
+        if (contour) {
+          const CLEARANCE_X = 16;
+          const CLEARANCE_Y = 14;
+
+          for (let r = 0; r < rows; r++) {
+            const y0 = startY + r * spacing;
+            for (let c = 0; c < cols; c++) {
+              const x0 = startX + c * spacing;
+
+              // 1. Outer Hero Boundary with Rounded Corners
+              const dOuter = sdRoundRect(x0, y0, pad, pad, width - pad, height - pad, outerCornerRadius);
+              if (dOuter >= 0) continue;
+
+              // 2. Exact Content Contour Signed Distance (two nearest bands)
+              let d1 = 9999;
+              let d2 = 9999;
+              for (let i = 0; i < contour.length; i++) {
+                const [bTop, bBottom, bRight] = contour[i];
+                const dBand = sdRoundRect(
+                  x0,
+                  y0,
+                  -500,
+                  bTop - CLEARANCE_Y,
+                  bRight + CLEARANCE_X,
+                  bBottom + CLEARANCE_Y,
+                  12
+                );
+                if (dBand < d1) {
+                  d2 = d1;
+                  d1 = dBand;
+                } else if (dBand < d2) {
+                  d2 = dBand;
+                }
+              }
+              const dText = smin(d1, d2, 12);
+
+              // Strict clearance barrier: zero dots behind text
+              if (dText <= 0) continue;
+
+              // Filleted intersection where text clearance boundary meets outer boundary
+              const distInsideOpen = smin(-dOuter, dText, 22);
+              if (distInsideOpen <= 0) continue;
+
+              // Pre-text opacity fade over 32px
+              const textAlpha = smoothstep(0, 32, dText);
+              // Anti-aliased outer rounded corners & filleted corner transitions
+              const cornerAlpha = smoothstep(0, spacing * 1.25, distInsideOpen);
+
+              const alphaFactor = Math.max(0, Math.min(1, textAlpha * cornerAlpha));
+              if (alphaFactor <= 0.04) continue;
+
+              const alphaBin = Math.min(9, Math.floor(alphaFactor * 10));
+
+              dots.push({
+                x0,
+                y0,
+                dx: 0,
+                dy: 0,
+                vx: 0,
+                vy: 0,
+                energy: 0,
+                alphaFactor,
+                alphaBin
+              });
+            }
+          }
+        } else {
+          // Standalone fallback mode (single rounded rectangle)
+          const cx = width * 0.5;
+          const cy = height * 0.5;
+          const effR = Math.min(outerCornerRadius, (width - 2 * pad) * 0.45, (height - 2 * pad) * 0.45);
+          const halfInnerW = (width - 2 * pad) * 0.5 - effR;
+          const halfInnerH = (height - 2 * pad) * 0.5 - effR;
+
+          for (let r = 0; r < rows; r++) {
+            const y0 = startY + r * spacing;
+            for (let c = 0; c < cols; c++) {
+              const x0 = startX + c * spacing;
+              const dOuter = sdRoundRect(x0, y0, pad, pad, width - pad, height - pad, outerCornerRadius);
+              if (dOuter >= 0) continue;
+
+              const qx = Math.abs(x0 - cx) - halfInnerW;
+              const qy = Math.abs(y0 - cy) - halfInnerH;
+              const inOuterCorner = qx > 0 && qy > 0;
+              const outerFadeDist = inOuterCorner ? spacing * 2.2 : spacing * 0.85;
+              const outerAlpha = smoothstep(0, outerFadeDist, -dOuter);
+              if (outerAlpha <= 0.04) continue;
+
+              const alphaBin = Math.min(9, Math.floor(outerAlpha * 10));
+
+              dots.push({
+                x0,
+                y0,
+                dx: 0,
+                dy: 0,
+                vx: 0,
+                vy: 0,
+                energy: 0,
+                alphaFactor: outerAlpha,
+                alphaBin
+              });
+            }
+          }
+        }
+
+        // Sort dots by alphaBin so all dots of the same alpha bucket are contiguous for batching
+        dots.sort((a, b) => a.alphaBin - b.alphaBin);
+      }
+
+      function draw(timestamp: number): void {
+        if (!ctx || width <= 0 || height <= 0) return;
+        ctx.clearRect(0, 0, width, height);
+
+        const isLight = document.documentElement.classList.contains('light');
+        const t = prefersReducedMotion ? 0 : timestamp * 0.001;
+
+        // Draw base non-energized dots in batches grouped by alphaBin
+        let currentBin = -1;
+        for (let i = 0; i < dots.length; i++) {
+          const dot = dots[i];
+          let ambientDx = 0;
+          let ambientDy = 0;
+          let ambientEnergy = 0;
+
+          if (!prefersReducedMotion) {
+            const wave1 = Math.sin(dot.x0 * 0.022 + dot.y0 * 0.016 - t * 1.35);
+            const wave2 = Math.cos(dot.x0 * 0.015 - dot.y0 * 0.024 + t * 0.95);
+            const ambientPulse = Math.max(0, (wave1 * 0.55 + wave2 * 0.45 + 1) * 0.5);
+            ambientEnergy = Math.pow(ambientPulse, 2.6) * 0.42;
+            ambientDx = wave1 * 1.1;
+            ambientDy = wave2 * 1.1;
+          }
+
+          const totalEnergy = Math.min(1, ambientEnergy + dot.energy);
+          if (totalEnergy <= 0.02) {
+            if (dot.alphaBin !== currentBin) {
+              if (currentBin !== -1) {
+                ctx.fill();
+              }
+              currentBin = dot.alphaBin;
+              ctx.beginPath();
+              const binAlpha = (currentBin + 0.5) / 10;
+              const effectiveAlpha = isLight
+                ? (0.24 * binAlpha).toFixed(3)
+                : (0.28 * binAlpha).toFixed(3);
+              ctx.fillStyle = isLight
+                ? `rgba(71, 85, 105, ${effectiveAlpha})`
+                : `rgba(148, 163, 184, ${effectiveAlpha})`;
+            }
+            const x = dot.x0 + ambientDx + dot.dx;
+            const y = dot.y0 + ambientDy + dot.dy;
+            const rFactor = 0.65 + 0.35 * dot.alphaFactor;
+            const r = baseRadius * rFactor;
+            ctx.moveTo(x + r, y);
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+          }
+        }
+        if (currentBin !== -1) {
+          ctx.fill();
+        }
+
+        // Draw energized/pulsing dots with dynamic color, alpha, and radius
+        for (let i = 0; i < dots.length; i++) {
+          const dot = dots[i];
+          let ambientDx = 0;
+          let ambientDy = 0;
+          let ambientEnergy = 0;
+
+          if (!prefersReducedMotion) {
+            const wave1 = Math.sin(dot.x0 * 0.022 + dot.y0 * 0.016 - t * 1.35);
+            const wave2 = Math.cos(dot.x0 * 0.015 - dot.y0 * 0.024 + t * 0.95);
+            const ambientPulse = Math.max(0, (wave1 * 0.55 + wave2 * 0.45 + 1) * 0.5);
+            ambientEnergy = Math.pow(ambientPulse, 2.6) * 0.42;
+            ambientDx = wave1 * 1.1;
+            ambientDy = wave2 * 1.1;
+          }
+
+          const totalEnergy = Math.min(1, ambientEnergy + dot.energy);
+          if (totalEnergy > 0.02) {
+            const x = dot.x0 + ambientDx + dot.dx;
+            const y = dot.y0 + ambientDy + dot.dy;
+            const rFactor = 0.65 + 0.35 * dot.alphaFactor;
+            const r = (baseRadius + (activeRadius - baseRadius) * totalEnergy) * rFactor;
+
+            // Brand blue to brand purple blend
+            const red = isLight
+              ? Math.round(37 + (147 - 37) * totalEnergy)
+              : Math.round(59 + (168 - 59) * totalEnergy);
+            const green = isLight
+              ? Math.round(99 + (51 - 99) * totalEnergy)
+              : Math.round(130 + (85 - 130) * totalEnergy);
+            const blue = isLight
+              ? Math.round(235 + (234 - 235) * totalEnergy)
+              : 247;
+            const baseAlpha = (isLight ? 0.24 : 0.28) * dot.alphaFactor;
+            const addAlpha = (isLight ? 0.66 : 0.62) * dot.alphaFactor;
+            const alpha = (baseAlpha + addAlpha * totalEnergy).toFixed(3);
+
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+            ctx.fill();
+          }
+        }
+      }
+
+      function update(timestamp: number): void {
+        if (!isVisible) {
+          animId = null;
+          return;
+        }
+
+        const dt = Math.min((timestamp - lastTimestamp) / 1000, 0.05);
+        lastTimestamp = timestamp;
+
+        for (let i = 0; i < dots.length; i++) {
+          const dot = dots[i];
+          let targetDx = 0;
+          let targetDy = 0;
+          let targetEnergy = 0;
+
+          if (pointerActive) {
+            const dist = Math.hypot(dot.x0 - pointerX, dot.y0 - pointerY);
+            if (dist < influenceRadius) {
+              const t = 1 - dist / influenceRadius;
+              const weight = t * t;
+              const angle = Math.atan2(dot.y0 - pointerY, dot.x0 - pointerX);
+              const disp = maxDisplacement * weight * Math.sin(t * Math.PI);
+              targetDx = Math.cos(angle) * disp;
+              targetDy = Math.sin(angle) * disp;
+              targetEnergy = weight;
+            }
+          }
+
+          // Spring-damper step (k = 150, c = 18)
+          const ax = -150 * (dot.dx - targetDx) - 18 * dot.vx;
+          const ay = -150 * (dot.dy - targetDy) - 18 * dot.vy;
+
+          dot.vx += ax * dt;
+          dot.vy += ay * dt;
+          dot.dx += dot.vx * dt;
+          dot.dy += dot.vy * dt;
+
+          dot.energy += (targetEnergy - dot.energy) * Math.min(1, dt * 14);
+        }
+
+        draw(timestamp);
+
+        animId = requestAnimationFrame(update);
+      }
+
+      function startAnimation(): void {
+        if (animId === null && isVisible) {
+          lastTimestamp = performance.now();
+          animId = requestAnimationFrame(update);
+        }
+      }
+
+      function resize(): void {
+        if (!canvas || !ctx) return;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        if (w <= 0 || h <= 0) return;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const pixelW = Math.floor(w * dpr);
+        const pixelH = Math.floor(h * dpr);
+
+        if (canvas.width !== pixelW || canvas.height !== pixelH) {
+          canvas.width = pixelW;
+          canvas.height = pixelH;
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.scale(dpr, dpr);
+          width = w;
+          height = h;
+          rebuildLattice();
+          draw(performance.now());
+        }
+      }
+
+      resize();
+
+      if ('ResizeObserver' in window) {
+        const ro = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+              resize();
+            }
+          }
+        });
+        ro.observe(container);
+      }
+      window.addEventListener('resize', resize, { passive: true });
+      container.addEventListener('dotgrid:layout', () => {
+        resize();
+        rebuildLattice();
+        draw(performance.now());
+      });
+
+      // Viewport visibility tracking
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          isVisible = entry.isIntersecting;
+          if (isVisible) {
+            resize();
+            startAnimation();
+          } else if (animId !== null) {
+            cancelAnimationFrame(animId);
+            animId = null;
+          }
+        }
+      }, { threshold: 0.05 });
+      io.observe(container);
+
+      function onPointerMove(clientX: number, clientY: number): void {
+        const rect = container.getBoundingClientRect();
+        const localX = clientX - rect.left;
+        const localY = clientY - rect.top;
+
+        if (
+          localX >= -influenceRadius &&
+          localX <= rect.width + influenceRadius &&
+          localY >= -influenceRadius &&
+          localY <= rect.height + influenceRadius
+        ) {
+          pointerActive = true;
+          pointerX = localX;
+          pointerY = localY;
+          startAnimation();
+        } else if (pointerActive) {
+          pointerActive = false;
+        }
+      }
+
+      window.addEventListener('mousemove', (e) => {
+        onPointerMove(e.clientX, e.clientY);
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+          onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      function onPointerLeave(): void {
+        if (pointerActive) {
+          pointerActive = false;
+        }
+      }
+
+      window.addEventListener('mouseleave', onPointerLeave);
+      window.addEventListener('touchend', onPointerLeave);
+      window.addEventListener('touchcancel', onPointerLeave);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReactiveDotGrids);
+  } else {
+    initReactiveDotGrids();
+  }
+  document.addEventListener('astro:page-load', initReactiveDotGrids);
+</script>
