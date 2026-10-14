@@ -120,6 +120,25 @@ const isNotFirstSlide = num > 1 && !isSection;
     text-wrap: pretty;
   }
 
+  .slide-base-frame :global(.slide-title) {
+    font-size: var(--slide-font-title, 3.875rem) !important;
+    line-height: 1.12 !important;
+  }
+  .slide-base-frame :global(.slide-subtitle) {
+    font-size: var(--slide-font-card-title, 2.35rem) !important;
+    line-height: 1.35 !important;
+  }
+  .slide-base-frame :global(.slide-number-badge),
+  .slide-base-frame :global(.slide-number-badge span) {
+    font-size: var(--slide-font-card-title, 2.35rem) !important;
+    line-height: 1.2 !important;
+  }
+  .slide-base-frame :global(.slide-footer),
+  .slide-base-frame :global(.slide-footer span) {
+    font-size: var(--slide-font-body, 1.75rem) !important;
+    line-height: 1.35 !important;
+  }
+
   .slide-base-frame :global(h1),
   .slide-base-frame :global(h2),
   .slide-base-frame :global(h3),
