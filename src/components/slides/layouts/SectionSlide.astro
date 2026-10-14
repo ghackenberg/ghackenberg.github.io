@@ -141,6 +141,17 @@ const {
 </SlideBase>
 
 <style>
+  .section-question-container,
+  .section-question-container :global(p) {
+    font-size: var(--slide-font-card-title, 2.35rem) !important;
+    line-height: 1.35 !important;
+  }
+  .section-bridge-container,
+  .section-bridge-container :global(p) {
+    font-size: var(--slide-font-body, 1.75rem) !important;
+    line-height: 1.5 !important;
+  }
+
   .section-title-reveal {
     animation: section-title-fade-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
