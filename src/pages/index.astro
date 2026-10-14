@@ -1070,38 +1070,52 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     <!-- Hero Section -->
     <Section id="home" padding="standard">
       <Container size="wide" padding="none">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full">
-        
-        <!-- Text Content -->
-        <div class="lg:col-span-7 flex flex-col justify-center order-2 lg:order-1">
-
-          
-          <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-gray-100 mb-6 leading-tight">
-            Hi, I am <br class="sm:hidden" />
-            <span class="heading-gradient-brand">
-              Dr. Georg Hackenberg
-            </span>
+        <div class="grid grid-cols-[minmax(0,1fr)_auto] min-[900px]:grid-cols-[42rem_minmax(0,1fr)] min-[900px]:grid-rows-[auto_auto_auto_auto_1fr] gap-x-4 sm:gap-x-6 min-[900px]:gap-x-8 gap-y-0 items-center w-full">
+          <!-- Row 1 Left: Heading -->
+          <h1 id="hero-heading" class="col-start-1 row-start-1 min-[900px]:col-span-1 self-center text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6 leading-tight min-w-0 max-w-2xl">
+            Hi, I am <span class="heading-gradient-brand">Dr. Georg Hackenberg</span>
           </h1>
-          
-          <p class="text-xl sm:text-2xl font-bold text-gray-300 mb-6 leading-normal tracking-wide">
+
+          <!-- Row 1 Right on < 900px / Col 2 Spanning All Rows on >= 900px: Portrait -->
+          <div id="hero-portrait-cell" class="col-start-2 row-start-1 min-[900px]:col-start-2 min-[900px]:col-span-1 min-[900px]:row-start-1 min-[900px]:row-end-6 self-center flex justify-end mb-6 min-[900px]:mb-0 w-full">
+            <div id="hero-portrait-wrapper" class="relative aspect-square group shrink-0">
+              <DepthPortrait
+                expressions={faceExpressions}
+                imageSrc={optimizedProfile.src}
+                depthSrc={optimizedDepth.src}
+                alt="Dr. Georg Hackenberg - Profile Headshot"
+                title="Dr. Georg Hackenberg"
+                class="w-full h-full"
+                intensity={0.08}
+                maxTilt={5}
+                trackMouse={false}
+                vignette={false}
+                idleAnimation={true}
+              />
+            </div>
+          </div>
+
+          <!-- Row 2: Subtitle -->
+          <p class="col-span-2 min-[900px]:col-span-1 max-w-2xl text-xl md:text-2xl font-bold text-gray-300 light:text-slate-700 mb-6 leading-normal tracking-wide">
             Professor for Industrial Informatics @ UAP / FH Upper Austria &bull; AI-Augmented Workflows &bull; Digital Content Creation
           </p>
 
-          <p class="text-gray-400 text-base sm:text-lg leading-relaxed mb-6 font-normal">
+          <!-- Row 3: Bio -->
+          <p class="col-span-2 min-[900px]:col-span-1 max-w-2xl text-gray-400 text-base md:text-lg leading-relaxed mb-6 font-normal">
             Welcome to my personal website! I explore and practice the frontier of <strong class="font-bold text-gray-200 light:text-slate-900">AI-augmented engineering</strong> and <strong class="font-bold text-gray-200 light:text-slate-900">cross-channel content creation</strong> across Web, LinkedIn, YouTube, and GitHub. As a computer science professor in <strong class="font-bold text-gray-200 light:text-slate-900">Wels 🏙️</strong> originally from <strong class="font-bold text-gray-200 light:text-slate-900">Hohenschwangau 🏰</strong> living in <strong class="font-bold text-gray-200 light:text-slate-900">Grünau 🌄</strong>, I bridge academic systems engineering at <strong class="font-bold text-gray-200 light:text-slate-900">UAP (FH Upper Austria)</strong> with autonomous agent workflows and modern digital production.
           </p>
 
-          <!-- Entity Trust Pills (Modular Micro-Chips) -->
-          <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-6">
+          <!-- Row 4: Entity Trust Pills -->
+          <div class="col-span-2 min-[900px]:col-span-1 max-w-2xl flex flex-wrap items-center gap-2 sm:gap-2.5 mb-6">
             <a 
               href="https://www.fh-ooe.at/" 
               target="_blank" 
               rel="noopener noreferrer" 
               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium hover:border-brand-blue/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
-              title="University of Applied Sciences Upper Austria (rebranding to UAP)"
+              title="University of Applied Sciences Upper Austria (Technology Campus Wels)"
             >
               <span class="text-sm select-none">🏛️</span>
-              <span><strong>UAP / FH Upper Austria</strong> <span class="text-gray-400 group-hover:text-gray-300 font-normal">(Technology Campus Wels)</span></span>
+              <span><strong>FH Upper Austria</strong> <span class="text-gray-400 group-hover:text-gray-300 font-normal">(Prof.)</span></span>
             </a>
             
             <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium text-gray-300 shadow-sm" title="Doctorate (Dr. rer. nat.) - Technical University of Munich">
@@ -1118,15 +1132,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <span class="text-sm select-none">🎓</span>
               <span><strong>Uni Mannheim</strong> <span class="text-gray-400 font-normal">(B.Sc.)</span></span>
             </div>
-
-            <a 
-              href="/publications/" 
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium hover:border-domain-publications/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group" 
-              title="Peer-Reviewed Academic Publications & Proceedings"
-            >
-              <span class="text-sm select-none">📚</span>
-              <span><strong>30+ Publications</strong> <span class="text-gray-400 group-hover:text-gray-300 font-normal">(Peer-Reviewed)</span></span>
-            </a>
 
             <a 
               href="https://caddrive.com" 
@@ -1148,23 +1153,30 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <span><strong>Mentawise</strong></span>
             </a>
           </div>
-          
-          <div class="flex flex-wrap items-center gap-4">
+
+          <!-- Row 5: Contact & Social Buttons -->
+          <div id="hero-actions-row" class="col-span-2 min-[900px]:col-span-1 max-w-2xl flex flex-nowrap items-center gap-3 sm:gap-4 min-w-0">
             <a 
+              id="hero-contact-btn"
               href="#contact" 
-              class="px-6 py-3.5 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-extrabold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105"
+              aria-label="Get in Touch"
+              class="shrink-0 h-12 px-6 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-extrabold shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/30 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center whitespace-nowrap"
             >
-              Get in Touch
+              <span class="hero-cta-full">Get in Touch</span>
+              <span class="hero-cta-short hidden">Contact</span>
+              <svg class="hero-cta-icon hidden w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
             </a>
 
             <!-- Social Media Buttons -->
-            <div class="flex items-center space-x-3">
+            <div id="hero-social-group" class="flex flex-nowrap items-center gap-2.5 sm:gap-3 shrink-0">
               <!-- GitHub -->
               <a 
                 href="https://github.com/ghackenberg" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-blue/40 hover:bg-brand-blue/10 transition-all duration-300 hover:scale-110 shadow-sm" 
+                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-blue/40 hover:bg-brand-blue/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
                 aria-label="GitHub Profile"
               >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -1177,7 +1189,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 href="https://www.linkedin.com/in/georghackenberg/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-purple/40 hover:bg-brand-purple/10 transition-all duration-300 hover:scale-110 shadow-sm" 
+                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-purple/40 hover:bg-brand-purple/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
                 aria-label="LinkedIn Profile"
               >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -1190,7 +1202,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 href="https://twitter.com/georghackenberg" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-yellow/40 hover:bg-brand-yellow/10 transition-all duration-300 hover:scale-110 shadow-sm" 
+                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-yellow/40 hover:bg-brand-yellow/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
                 aria-label="Twitter Profile"
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -1203,7 +1215,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 href="https://youtube.com/@georghackenberg" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-green/40 hover:bg-brand-green/10 transition-all duration-300 hover:scale-110 shadow-sm" 
+                class="w-12 h-12 rounded-xl glass-card flex items-center justify-center text-gray-400 hover:text-gray-100 border border-element-border-medium hover:border-brand-green/40 hover:bg-brand-green/10 transition-all duration-300 hover:scale-110 shadow-sm shrink-0" 
                 aria-label="YouTube Channel"
               >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -1213,26 +1225,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </div>
           </div>
         </div>
-        
-        <div class="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
-          <div class="relative w-64 h-64 min-[360px]:w-72 min-[360px]:h-72 sm:w-96 sm:h-96 lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] group shrink-0">
-            <DepthPortrait
-              expressions={faceExpressions}
-              imageSrc={optimizedProfile.src}
-              depthSrc={optimizedDepth.src}
-              alt="Dr. Georg Hackenberg - Profile Headshot"
-              title="Dr. Georg Hackenberg"
-              class="w-full h-full"
-              intensity={0.08}
-              maxTilt={5}
-              trackMouse={false}
-              vignette={false}
-              idleAnimation={true}
-            />
-          </div>
-        </div>
-        
-      </div>
     </Container>
   </Section>
 
@@ -1246,7 +1238,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <h2 id="website-sections-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3 truncate min-w-0">
           Website <span class="heading-gradient-brand">Sections</span>
         </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Quickly access core content areas across technical writing, academic research, interactive presentations, university teaching, software engineering, and business services.
         </p>
       </div>
@@ -1333,7 +1325,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3 truncate min-w-0">
           Professional <span class="text-domain-interests">Interests</span>
         </h2>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Key scientific domains, technical focus areas, and engineering pursuits that guide my academic research, university teaching, and software platform development.
         </p>
       </div>
@@ -1453,7 +1445,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </svg>
           </a>
         </div>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Explore my latest insights, tutorials, and dev logs on software engineering, artificial intelligence, knowledge graphs, and system architectures.
         </p>
       </div>
@@ -1546,7 +1538,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </svg>
           </a>
         </div>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Peer-reviewed academic research papers, conference proceedings, and scientific journal articles across model-driven software and cyber-physical systems.
         </p>
       </div>
@@ -1641,7 +1633,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </svg>
           </a>
         </div>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Keynotes, interactive slide decks, and executive briefings with synchronized neural voiceovers exploring AI, architectures, and systems engineering.
         </p>
       </div>
@@ -1735,7 +1727,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </svg>
           </a>
         </div>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Higher education lectures, interactive curriculum modules, and hands-on computer science materials taught at UAP (FH Upper Austria).
         </p>
       </div>
@@ -1828,7 +1820,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </svg>
           </a>
         </div>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Selected software platforms, frameworks, and tools designed to optimize product engineering, knowledge graphs, and real-time physical simulation.
         </p>
       </div>
@@ -1922,7 +1914,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </svg>
           </a>
         </div>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Professional consulting and engineering services bridging sovereign artificial intelligence architectures, software systems, and digital publishing.
         </p>
       </div>
@@ -2014,7 +2006,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </svg>
           </a>
         </div>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Interactive knowledge graphs exploring cross-content relationships between articles, publications, projects, and courses rendered in real time.
         </p>
       </div>
@@ -2106,7 +2098,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </svg>
           </a>
         </div>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, software projects, university courses, and business services across core computer science domains.
         </p>
       </div>
@@ -2479,7 +2471,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         <h2 id="experience-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3 truncate min-w-0">
           Professional <span class="heading-gradient-brand">Experiences</span>
         </h2>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           A summary of my academic tenure, software engineering developments, and organizational leadership roles.
         </p>
       </div>
@@ -2499,7 +2491,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             <h2 id="contact-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3 truncate min-w-0">
               Get in <span class="heading-gradient-brand">Touch</span>
             </h2>
-            <p class="text-gray-400 text-sm md:text-base leading-relaxed font-normal">
+            <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
               Whether you want to discuss educational initiatives, collaborate on software architectures, explore knowledge graphs, or just say hello—feel free to reach out. I am always happy to share experiences!
             </p>
           </div>
@@ -2627,7 +2619,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           <h2 id="tech-stack-heading" class="text-2xl md:text-3xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
             Built with Cutting-Edge <span class="heading-gradient-brand">Technologies</span>
           </h2>
-          <p class="text-gray-400 text-sm md:text-base leading-relaxed font-normal">
+          <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
             This personal portfolio is engineered as a modern, high-performance web platform. Built using framework-agnostic compiler design, componentized styling systems, and agentic AI tooling to deliver optimized delivery speeds and visual quality.
           </p>
         </div>
@@ -2676,6 +2668,20 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 </Layout>
 
 <style>
+  #hero-portrait-wrapper {
+    width: 132px;
+    height: 132px;
+    aspect-ratio: 1 / 1;
+  }
+  @media (min-width: 900px) {
+    #hero-portrait-wrapper {
+      width: 100%;
+      max-width: 480px;
+      height: auto;
+      aspect-ratio: 1 / 1;
+    }
+  }
+
   /* Mobile Horizontal Card Carousel */
   .mobile-card-carousel {
     scrollbar-width: none;
@@ -3391,13 +3397,140 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     });
   }
 
+  function syncHeroResponsiveLayout(): void {
+    // Part A: Dynamic Portrait Scaling & Adaptive Visibility (< 56px)
+    const h1 = document.getElementById('hero-heading');
+    const portraitCell = document.getElementById('hero-portrait-cell');
+    const portraitWrapper = document.getElementById('hero-portrait-wrapper');
+
+    if (portraitWrapper && portraitCell && h1) {
+      // Ensure portrait cell is visible before measuring
+      portraitCell.style.display = '';
+      h1.classList.remove('col-span-2');
+
+      if (window.innerWidth >= 900) {
+        const cellWidth = Math.min(480, Math.round(portraitCell.getBoundingClientRect().width));
+        if (cellWidth > 0) {
+          portraitWrapper.style.width = `${cellWidth}px`;
+          portraitWrapper.style.height = `${cellWidth}px`;
+        }
+      } else {
+        const lh = parseFloat(window.getComputedStyle(h1).lineHeight) || 44;
+        const maxTwoLineHeight = lh * 2.35;
+        const minPortraitSize = 56;
+
+        // 1. Measure h1 height with minimum portrait size (56px)
+        portraitWrapper.style.width = `${minPortraitSize}px`;
+        portraitWrapper.style.height = `${minPortraitSize}px`;
+        const baseH1Height = Math.round(h1.getBoundingClientRect().height);
+
+        // If even with the minimum 56px portrait h1 wraps to > 2 lines, hide the portrait immediately
+        if (baseH1Height > maxTwoLineHeight) {
+          portraitCell.style.display = 'none';
+          h1.classList.add('col-span-2');
+        } else {
+          // The portrait may NEVER be taller than the rendered h1 element
+          const maxAllowedSize = baseH1Height;
+          portraitWrapper.style.width = `${maxAllowedSize}px`;
+          portraitWrapper.style.height = `${maxAllowedSize}px`;
+
+          if (h1.getBoundingClientRect().height <= maxTwoLineHeight) {
+            // Fits at full h1 height! Clamp strictly to current h1 height
+            const finalH1Height = Math.round(h1.getBoundingClientRect().height);
+            const clampedSize = Math.min(maxAllowedSize, finalH1Height);
+            portraitWrapper.style.width = `${clampedSize}px`;
+            portraitWrapper.style.height = `${clampedSize}px`;
+          } else {
+            // Binary search in [minPortraitSize, maxAllowedSize] for largest size that keeps h1 <= 2 lines
+            let low = minPortraitSize;
+            let high = maxAllowedSize;
+            let bestSize = minPortraitSize;
+
+            while (low <= high) {
+              const mid = Math.floor((low + high) / 2);
+              portraitWrapper.style.width = `${mid}px`;
+              portraitWrapper.style.height = `${mid}px`;
+              if (h1.getBoundingClientRect().height <= maxTwoLineHeight) {
+                bestSize = mid;
+                low = mid + 1;
+              } else {
+                high = mid - 1;
+              }
+            }
+
+            portraitWrapper.style.width = `${bestSize}px`;
+            portraitWrapper.style.height = `${bestSize}px`;
+            const finalH1Height = Math.round(h1.getBoundingClientRect().height);
+            const clampedSize = Math.min(bestSize, finalH1Height);
+            if (clampedSize >= minPortraitSize) {
+              portraitWrapper.style.width = `${clampedSize}px`;
+              portraitWrapper.style.height = `${clampedSize}px`;
+            } else {
+              portraitCell.style.display = 'none';
+              h1.classList.add('col-span-2');
+            }
+          }
+        }
+      }
+    }
+
+    // Part B: Adaptive #hero-contact-btn (Get in Touch -> Contact -> Icon Only)
+    const actionsRow = document.getElementById('hero-actions-row');
+    const contactBtn = document.getElementById('hero-contact-btn');
+    const socialGroup = document.getElementById('hero-social-group');
+
+    if (actionsRow && contactBtn && socialGroup) {
+      const textFull = contactBtn.querySelector<HTMLElement>('.hero-cta-full');
+      const textShort = contactBtn.querySelector<HTMLElement>('.hero-cta-short');
+      const icon = contactBtn.querySelector<HTMLElement>('.hero-cta-icon');
+
+      if (textFull && textShort && icon) {
+        const availableWidth = actionsRow.clientWidth;
+        const style = window.getComputedStyle(actionsRow);
+        const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
+        const socialWidth = socialGroup.offsetWidth;
+
+        const fits = (): boolean => contactBtn.offsetWidth + gap + socialWidth <= availableWidth + 1;
+
+        // Level 1: Full text ("Get in Touch")
+        textFull.classList.remove('hidden');
+        textShort.classList.add('hidden');
+        icon.classList.add('hidden');
+        contactBtn.classList.remove('w-12', 'px-0', 'px-4');
+        contactBtn.classList.add('px-6');
+
+        if (!fits()) {
+          // Level 2: Short text ("Contact")
+          textFull.classList.add('hidden');
+          textShort.classList.remove('hidden');
+          icon.classList.add('hidden');
+          contactBtn.classList.remove('w-12', 'px-0', 'px-6');
+          contactBtn.classList.add('px-4');
+
+          if (!fits()) {
+            // Level 3: Envelope Icon Only
+            textFull.classList.add('hidden');
+            textShort.classList.add('hidden');
+            icon.classList.remove('hidden');
+            contactBtn.classList.remove('px-6', 'px-4');
+            contactBtn.classList.add('w-12', 'px-0');
+          }
+        }
+      }
+    }
+  }
+
   function initSectionHeaderCtas(): void {
     updateSectionHeaderCtas();
 
     let resizeTimer: number | undefined;
     window.addEventListener('resize', () => {
+      syncHeroResponsiveLayout();
       if (resizeTimer) cancelAnimationFrame(resizeTimer);
-      resizeTimer = requestAnimationFrame(updateSectionHeaderCtas);
+      resizeTimer = requestAnimationFrame(() => {
+        updateSectionHeaderCtas();
+        syncHeroResponsiveLayout();
+      });
     });
 
     const observer = new MutationObserver((mutations) => {
@@ -3435,6 +3568,10 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   function setupPageScripts() {
     initCarousels();
     initSectionHeaderCtas();
+    syncHeroResponsiveLayout();
+    document.fonts?.ready?.then(() => {
+      syncHeroResponsiveLayout();
+    });
   }
 
   if (document.readyState === 'loading') {
