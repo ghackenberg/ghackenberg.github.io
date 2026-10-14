@@ -1,6 +1,7 @@
 ---
 title: "Digital twin and digital thread within the product lifecycle management"
 pubDate: "2024-01-01"
+icon: "./preview.jpg"
 book: "Procedia Computer Science 232, pp. 2875-2886"
 author: "Christine Lehner, Antonio Padovano, Christian Zehetner and <strong>Georg Hackenberg</strong>"
 abstract: |-

@@ -1,6 +1,7 @@
 ---
 title: "On modeling, discrete-event simulation, and optimization of spine layouts"
 pubDate: "2025-01-01"
+icon: "./preview.jpg"
 book: "Procedia CIRP 134, pp. 633-638"
 author: "Chiara Sammarco, Antonio Padovano and <strong>Georg Hackenberg</strong>"
 abstract: |-

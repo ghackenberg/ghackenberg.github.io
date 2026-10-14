@@ -1,6 +1,7 @@
 ---
 title: "Modellbasierte entwicklungsmethode für modulare maschinen und anlagen"
 pubDate: "2013-11-28"
+icon: "./preview.jpg"
 book: "Zeitschrift für wirtschaftlichen Fabrikbetrieb 108 (11), pp. 818-822"
 author: "Christoph Richter, <strong>Georg Hackenberg</strong> and Michael F Zäh"
 abstract: |-

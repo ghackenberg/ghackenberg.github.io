@@ -437,6 +437,30 @@ const postGalleryItems: GalleryItem[] = await Promise.all(
     })
 );
 
+const publicationGalleryItems: GalleryItem[] = await Promise.all(
+  sortedPublications
+    .filter(p => !!p.data.icon)
+    .map(async p => {
+      const opt = await getImage({
+        src: p.data.icon!,
+        format: "webp",
+        width: 480,
+        height: 270,
+        quality: 80
+      });
+      return {
+        id: `pub:${p.id}`,
+        title: p.data.title,
+        image: opt.src,
+        href: `/publications/${p.id}/`,
+        tagline: p.data.book || p.data.abstract,
+        pubDate: new Date(p.data.pubDate).valueOf(),
+        imageTitle: p.data.title,
+        imageDescription: `Publication preview: ${p.data.title}`
+      };
+    })
+);
+
 const projectGalleryItems: GalleryItem[] = await Promise.all(
   sortedProjects
     .filter(p => !!p.data.screenshot)
@@ -573,6 +597,7 @@ const interestGalleryItems: GalleryItem[] = professionalInterests.map(interest =
 // Interleave categories to alternate color and topic rhythms in the marquee
 const categoryBuckets = [
   postGalleryItems,
+  publicationGalleryItems,
   projectGalleryItems,
   courseGalleryItems,
   [...serviceGalleryItems, ...moduleGalleryItems],

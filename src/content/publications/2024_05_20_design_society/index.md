@@ -1,6 +1,7 @@
 ---
 title: "Learnings from developing a custom virtual assembly environment for mountability issues of cooling cabinets"
 pubDate: "2024-05-20"
+icon: "./preview.jpg"
 book: "Proceedings of the Design Society 4, pp. 583-592"
 author: "<strong>Georg Hackenberg</strong> and Christian Zehetner"
 abstract: |-

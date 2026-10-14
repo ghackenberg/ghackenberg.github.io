@@ -1,6 +1,7 @@
 ---
 title: "Model-based design of integrated transportation systems using approximate dynamic programming"
 pubDate: "2023-09-24"
+icon: "./preview.jpg"
 book: "2023 IEEE 26th International Conference on Intelligent Transportation Systems (ITSC), pp. 4443-4450"
 author: "Dominik Ascher, <strong>Georg Hackenberg</strong> and Sahin Albayrak"
 abstract: |-
