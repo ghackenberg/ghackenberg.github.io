@@ -1,6 +1,7 @@
 ---
 title: "From Conception to Refinement in Mechatronics Systems Engineering"
 pubDate: "2015-01-17"
+icon: "./examples.png"
 book: "Proceedings of the International Conference on Mechatronics and Robotics Engineering, Kuala Lumpur"
 author: "<strong>Georg Hackenberg</strong>, Christoph Richter and Michael F Zaeh"
 abstract: |-

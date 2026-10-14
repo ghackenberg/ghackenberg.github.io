@@ -1,6 +1,7 @@
 ---
 title: "Efficient impact analysis of changes in the requirements of manufacturing automation systems"
 pubDate: "2015-05-11"
+icon: "./preview.jpg"
 book: "IFAC-PapersOnLine 48 (3), pp. 1482-1489"
 author: "Sabine Teufl and <strong>Georg Hackenberg</strong>"
 abstract: |-

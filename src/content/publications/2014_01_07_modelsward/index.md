@@ -1,6 +1,7 @@
 ---
 title: "Supporting Concurrent Development of Requirements and Architecture: A Model-based Approach"
 pubDate: "2014-01-07"
+icon: "./preview.jpg"
 book: "Model-Driven Engineering and Software Development (MODELSWARD), 2nd International Conference on"
 author: "Andreas Vogelsang, Sebastian Eder, <strong>Georg Hackenberg</strong>, Maximilian Junker and Sabine Teufl"
 abstract: "A system’s requirements and its architecture are usually developed at least partly in parallel. This demands a continuous and automated assessment to confirm that the architecture conforms to its requirements. To enable such an assessment, the stepwise formalization of informal requirements has been proposed. However, there is no canonical set of artifacts and analysis techniques that has been evaluated for this task in practice yet. In this paper we propose an artifact model and a process that enables the continuous conformance assessment between requirements and architecture in a model-based context. We evaluate both in a development project with a group of students."

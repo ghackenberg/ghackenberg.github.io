@@ -1,6 +1,7 @@
 ---
 title: "GITHUB FOR PRODUCT DEVELOPMENT-HOW COULD THAT LOOK LIKE?"
 pubDate: "2023-07-24"
+icon: "./preview.jpg"
 book: "Proceedings of the Design Society 3, pp. 2055-2064"
 author: "<strong>Georg Hackenberg</strong>, Christian Zehetner and Dominik Frühwirth"
 abstract: |-

@@ -1,6 +1,7 @@
 ---
 title: "Next-Generation Design Tools for Intelligent Transportation Systems."
 pubDate: "2025-02-26"
+icon: "./preview.jpg"
 book: "MODELSWARD, pp. 234-241"
 author: "Dominik Ascher and <strong>Georg Hackenberg</strong>"
 abstract: |-

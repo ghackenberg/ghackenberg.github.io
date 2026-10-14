@@ -25,10 +25,7 @@ const initialRow2 = catalog.slice(12, 27);
 const initialRow3 = catalog.slice(27, 45);
 
 function getBadgeColor(href: string): string {
-  if (href.startsWith('/courses/')) return 'badge-new-yellow';
-  if (href.startsWith('/services/')) return 'badge-new-purple';
-  if (href.startsWith('/visualizations/') || href.startsWith('/interests/')) return 'badge-new-green';
-  return 'badge-new-blue';
+  return `badge-new-${getDomainFromHref(href)}`;
 }
 
 function getDomainFromHref(href: string): string {
@@ -390,10 +387,7 @@ function getDomainFromHref(href: string): string {
   }
 
   function getBadgeColor(href: string): string {
-    if (href.startsWith('/courses/')) return 'badge-new-yellow';
-    if (href.startsWith('/services/')) return 'badge-new-purple';
-    if (href.startsWith('/visualizations/') || href.startsWith('/interests/')) return 'badge-new-green';
-    return 'badge-new-blue';
+    return `badge-new-${getDomainFromHref(href)}`;
   }
 
   function getDomainFromHref(href: string): string {
@@ -480,8 +474,11 @@ function getDomainFromHref(href: string): string {
 
     const badge = card.querySelector<HTMLElement>('.gallery-badge');
     if (badge) {
-      badge.setAttribute('data-item-url', item.href);
-      badge.classList.remove('badge-new-blue', 'badge-new-yellow', 'badge-new-purple', 'badge-new-green');
+      Array.from(badge.classList).forEach(cls => {
+        if (cls.startsWith('badge-new-')) {
+          badge.classList.remove(cls);
+        }
+      });
       badge.classList.add(getBadgeColor(item.href));
 
       if (isOptedIn()) {

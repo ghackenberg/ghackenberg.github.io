@@ -12,7 +12,7 @@ Before prompting or generating images, inspect the specialized Level 3 specifica
 - **Style Index**: [`style-guidelines.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/style-guidelines.md)
 - **Brand DNA & Identity**: [`brand-dna.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/brand-dna.md) (Palette `#3b82f6`, `#f59e0b`, `#a855f7`, `#10b981`, slate canvas `#030712`, Disney/Pixar comic style, Georg Hackenberg identity).
 - **Diffusion Principles**: [`diffusion-conditioning.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/diffusion-conditioning.md) (Room DNA, layout-locking avoidance, FG/MG/BG zonation, 0% occlusion planar assets, relational asset graph).
-- **Archetype Guides**: [`archetypes/`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/) (`posts.md`, `presentations.md`, `courses.md`, `projects.md`, `services.md`, `service-modules.md`, `interests.md`).
+- **Archetype Guides**: [`archetypes/`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/) (`posts.md`, `presentations.md`, `courses.md`, `projects.md`, `services.md`, `service-modules.md`, `interests.md`, `publications.md`).
 
 ## 2. Visual Content Archetypes & Avatar Rules
 
@@ -25,6 +25,7 @@ Before prompting or generating images, inspect the specialized Level 3 specifica
 | **Services** | Executive Architecture Strategy Board | **Yes** (Executive Advisor) | [services.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/services.md) |
 | **Service Modules** | Iconic Cyber-Physical Module Artifact | **Strictly No Avatar** (Emblem) | [service-modules.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/service-modules.md) |
 | **Interests** | Conceptual Macro-Cosmos / Domain Realm | **Strictly No Avatar** (Macro Realm) | [interests.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/interests.md) |
+| **Publications** | Studio Sketchnote & Gouache-Marker Blueprint | **Strictly No Avatar** (Concept Sketch) | [publications.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/publications.md) |
 
 ## 3. Conditioning Protocol & Asset Graph
 - **Protagonist Anchor**: Pass Dr. Georg Hackenberg (`src/content/characters/georg/portrait.png`) as Anchor 1 in `ImagePaths` when an avatar is required.

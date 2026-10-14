@@ -1,6 +1,7 @@
 ---
 title: "Test-driven conceptual design of cyber-physical manufacturing systems"
 pubDate: "2018-11-14"
+icon: "./preview.jpg"
 book: "Technische Universität München"
 author: "<strong>Georg Hackenberg</strong>"
 abstract: |-

@@ -1,6 +1,7 @@
 ---
 title: "The passenger extension of the TRANSP-0 system design framework"
 pubDate: "2017-06-26"
+icon: "./preview.jpg"
 book: "2017 5th IEEE International Conference on Models and Technologies for Intelligent Transportation Systems (MT-ITS), pp. 256-261"
 author: "Dominik Ascher and <strong>Georg Hackenberg</strong>"
 abstract: |-

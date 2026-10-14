@@ -31,7 +31,7 @@ Every publication lives under `src/content/publications/<slug>/`:
       doi       = {10.1109/ICSE.2026.12345}
     }
   slides: "https://hackenberg.tech/presentations/2026_06_15_formal_verification/" # Optional link to presentation
-  icon: "paper" # Optional icon name
+  icon: "./preview.jpg" # Optional preview image (Astro image helper) or original diagram
   ```
 
 ## 2. Core Language & Metadata Rules
@@ -49,7 +49,14 @@ The markdown body of `index.md` can provide:
 - Links to artifact repositories, benchmark datasets, or replication packages.
 - High-level takeaways and industrial application contexts.
 
-## 4. Pre-Flight Validation
+## 4. Publication Preview Illustrations (`preview.jpg`)
+When a publication does not provide an original high-clarity diagram from the paper, generate a `16:9` `preview.jpg` following the **Publications Studio Sketchnote** archetype in [`archetypes/publications.md`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/publications.md) (`image-generation` skill).
+- **Format**: `AspectRatio: "16:9"` saved as `src/content/publications/<slug>/preview.jpg`.
+- **Aesthetic**: Expressive studio sketchnote and bold engineering concept drawing with charcoal double-outlines, cross-hatching, and soft translucent gouache-marker washes against a smooth, full-canvas atmospheric slate-blue background (`#1e293b` smoothly blending into `#2d4260`, strictly no circular center spotlight or halo ring).
+- **Ergonomics**: Strictly NO human avatars/figures, 2–4 dominant iconic symbols, at most 1–2 short uppercase technical labels.
+- **Zero Reference Image Rule**: Always generate with `ImagePaths: []` to avoid 2D layout locking and ensure unique, paper-specific spatial compositions.
+
+## 5. Pre-Flight Validation
 Ensure all referenced tags exist in `src/content/tags/` and check schema validation:
 ```powershell
 npm run typecheck

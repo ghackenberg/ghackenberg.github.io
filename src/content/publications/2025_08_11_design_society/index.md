@@ -1,6 +1,7 @@
 ---
 title: "First experiences from using CADdrive with digital LEGO for product design and systems engineering education"
 pubDate: "2025-08-11"
+icon: "./preview.jpg"
 book: "Proceedings of the Design Society 5, pp. 1823-1832"
 author: "<strong>Georg Hackenberg</strong> and Christian Zehetner"
 abstract: |-
