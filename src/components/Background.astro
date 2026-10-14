@@ -1,13 +1,130 @@
 ---
 // Background.astro
 // Clear vector-style night sky background with responsive day/night color schemes,
-// crescent moon, detailed sparkling starfield, shooting stars,
+// detailed sparkling starfield with intelligent responsive density control, shooting stars,
 // and smooth scroll/mouse parallax effects on celestial elements.
+
+interface Star {
+  id: number;
+  cx: number;
+  cy: number;
+  r: number;
+  opacity: number;
+  duration: number;
+  delay: number;
+  isHero: boolean;
+  heroSize: number;
+  tier: 'base' | 'md' | 'lg';
+}
+
+// PRNG for deterministic, reproducible SSR builds (Seed: 42)
+function mulberry32(seed: number) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const random = mulberry32(42);
+
+// Intelligent density tier configuration:
+// - Base tier: 60 stars (always rendered across mobile, tablet, desktop)
+// - Md tier: 45 stars (additional stars activated on tablets >= 768px)
+// - Lg tier: 45 stars (additional stars activated on desktops >= 1280px)
+// Total on mobile: 60 stars
+// Total on tablet: 105 stars
+// Total on desktop & ultrawide: 150 stars
+const TIERS: Array<{ name: 'base' | 'md' | 'lg'; count: number; heroModulo: number }> = [
+  { name: 'base', count: 60, heroModulo: 20 },
+  { name: 'md', count: 45, heroModulo: 15 },
+  { name: 'lg', count: 45, heroModulo: 15 }
+];
+
+const stars: Star[] = [];
+let starId = 0;
+
+for (const tierConfig of TIERS) {
+  for (let i = 0; i < tierConfig.count; i++) {
+    const cx = Number((random() * 100).toFixed(2));
+    const cy = Number((random() * 75).toFixed(2)); // upper 75% of sky
+    const delay = Number((random() * 6).toFixed(2));
+    const duration = Number((random() * 3.5 + 2.5).toFixed(2));
+    const isHero = i % tierConfig.heroModulo === 0;
+
+    if (isHero) {
+      const heroSize = Number((random() * 5 + 4).toFixed(2));
+      const opacity = Number((random() * 0.3 + 0.5).toFixed(2));
+      stars.push({
+        id: starId++,
+        cx,
+        cy,
+        r: 0,
+        opacity,
+        duration: Number((duration * 1.2).toFixed(2)),
+        delay,
+        isHero: true,
+        heroSize,
+        tier: tierConfig.name
+      });
+    } else {
+      const r = Number((random() * 0.8 + 0.4).toFixed(2));
+      const opacity = Number((random() * 0.35 + 0.4).toFixed(2));
+      stars.push({
+        id: starId++,
+        cx,
+        cy,
+        r,
+        opacity,
+        duration,
+        delay,
+        isHero: false,
+        heroSize: 0,
+        tier: tierConfig.name
+      });
+    }
+  }
+}
 ---
 <div class="background-container fixed inset-0 overflow-hidden pointer-events-none z-0 select-none">
-  <!-- Twinkling Stars -->
+  <!-- Twinkling Stars (SSR-rendered with intelligent responsive density) -->
   <svg id="bg-layer-stars" class="stars-svg absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-    <g id="sparkling-stars" class="transition-opacity duration-700"></g>
+    <g id="sparkling-stars">
+      {stars.map((star) => {
+        const tierClass = star.tier === 'md' ? 'star-density-md' : star.tier === 'lg' ? 'star-density-lg' : '';
+
+        if (star.isHero) {
+          return (
+            <svg
+              x={`${star.cx}%`}
+              y={`${star.cy}%`}
+              class={`overflow-visible ${tierClass}`}
+            >
+              <path
+                d={`M 0 -${star.heroSize} Q 0 0 ${star.heroSize} 0 Q 0 0 0 ${star.heroSize} Q 0 0 -${star.heroSize} 0 Q 0 0 0 -${star.heroSize} Z`}
+                fill="var(--star-color)"
+                opacity={star.opacity}
+                style={`transform-origin: center; transform-box: fill-box; animation: twinkle-hero ${star.duration}s infinite ease-in-out ${star.delay}s;`}
+              />
+            </svg>
+          );
+        }
+
+        return (
+          <circle
+            cx={`${star.cx}%`}
+            cy={`${star.cy}%`}
+            r={star.r}
+            fill="var(--star-color)"
+            opacity={star.opacity}
+            class={tierClass}
+            style={`transform-origin: center; transform-box: fill-box; animation: twinkle ${star.duration}s infinite ease-in-out ${star.delay}s;`}
+          />
+        );
+      })}
+    </g>
   </svg>
 
   <!-- Shooting Stars -->
@@ -20,7 +137,7 @@
 
 <style>
   :root {
-    --star-color: var(--color-brand-yellow);
+    --star-color: var(--color-text-heading);
   }
 
   :global(.light) {
@@ -43,7 +160,26 @@
   :global(.light) .stars-svg {
     opacity: 0.55;
   }
-  
+
+  /* Intelligent Responsive Density Tiers */
+  .star-density-md {
+    display: none;
+  }
+  .star-density-lg {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .star-density-md {
+      display: inline;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .star-density-lg {
+      display: inline;
+    }
+  }
 </style>
 
 <style is:global>
@@ -60,7 +196,6 @@
 </style>
 
 <style>
-
   /* Shooting Stars */
   .shooting-stars-container {
     pointer-events: none;
@@ -75,7 +210,7 @@
     position: absolute;
     width: 90px;
     height: 1.5px;
-    background: linear-gradient(to left, rgba(254, 249, 195, 0) 0%, rgba(254, 249, 195, 0.75) 100%);
+    background: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 100%);
     opacity: 0;
     pointer-events: none;
   }
@@ -120,6 +255,8 @@
 </style>
 
 <script>
+  let isInitialized = false;
+
   function initBackground() {
     const starsLayer = document.getElementById('bg-layer-stars');
     const shootingStarsLayer = document.getElementById('bg-layer-shooting-stars');
@@ -127,6 +264,21 @@
     if (!starsLayer && !shootingStarsLayer) {
       return;
     }
+
+    if (isInitialized) {
+      return;
+    }
+
+    // Only enable parallax on desktop devices with fine pointer (mouse).
+    // On mobile touch devices, JS-based parallax on fixed full-screen SVG layers fights with
+    // native asynchronous compositor scrolling and creates noticeable jitter/stutter.
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
+
+    if (isTouchDevice) {
+      return;
+    }
+
+    isInitialized = true;
 
     let targetScrollY = window.scrollY;
     let currentScrollY = window.scrollY;
@@ -151,7 +303,6 @@
       requestTick();
     };
 
-
     const requestTick = () => {
       if (!ticking) {
         requestAnimationFrame(updateFrame);
@@ -171,7 +322,7 @@
       const normMouseX = currentMouseX - 0.5;
       const normMouseY = currentMouseY - 0.5;
 
-      // 1. Celestial & Sky Parallax
+      // Celestial & Sky Parallax
       if (starsLayer) {
         starsLayer.style.transform = `translate3d(${normMouseX * 10}px, ${-currentScrollY * 0.035 + normMouseY * 10}px, 0)`;
       }
@@ -190,71 +341,11 @@
       }
     };
 
-    // Only enable parallax on desktop devices with fine pointer (mouse).
-    // On mobile touch devices, JS-based parallax on fixed full-screen SVG layers fights with
-    // native asynchronous compositor scrolling and creates noticeable jitter/stutter.
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-    if (!isTouchDevice) {
-      // Attach listeners only on desktop
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('mousemove', onMouseMove, { passive: true });
-
-      // Initial frame run
-      requestTick();
-    }
-
-    // High Density Night Sky Starfield Generator
-    const starsGroup = document.getElementById('sparkling-stars');
-    if (starsGroup) {
-      starsGroup.innerHTML = '';
-      const numStars = 140;
-      const starColor = 'var(--star-color)';
-
-      for (let i = 0; i < numStars; i++) {
-        const cx = Math.random() * 100; // percent
-        const cy = Math.random() * 75;  // upper 75% of sky
-        const color = starColor;
-        const delay = Math.random() * 6; // staggered delay
-        const duration = Math.random() * 3.5 + 2.5; // star twinkle speed
-        
-        const isHeroStar = i % 18 === 0;
-
-        if (isHeroStar) {
-          // 4-point sparkle star SVG path
-          const heroStar = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-          const size = Math.random() * 5 + 4;
-          heroStar.setAttribute('transform', `translate(${(cx / 100) * window.innerWidth}, ${(cy / 100) * window.innerHeight})`);
-          
-          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          path.setAttribute('d', `M 0 -${size} Q 0 0 ${size} 0 Q 0 0 0 ${size} Q 0 0 -${size} 0 Q 0 0 0 -${size} Z`);
-          path.setAttribute('fill', color);
-          path.setAttribute('opacity', (Math.random() * 0.3 + 0.5).toString());
-          
-          path.style.transformOrigin = 'center';
-          path.style.transformBox = 'fill-box';
-          path.style.animation = `twinkle-hero ${duration * 1.2}s infinite ease-in-out ${delay}s`;
-          
-          heroStar.appendChild(path);
-          starsGroup.appendChild(heroStar);
-        } else {
-          // Standard circular star
-          const r = Math.random() * 0.8 + 0.4; // 0.4px to 1.2px
-          const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          star.setAttribute('cx', `${cx}%`);
-          star.setAttribute('cy', `${cy}%`);
-          star.setAttribute('r', r.toString());
-          star.setAttribute('fill', color);
-          star.setAttribute('opacity', (Math.random() * 0.35 + 0.4).toString());
-          
-          star.style.transformOrigin = `${cx}% ${cy}%`;
-          star.style.transformBox = 'fill-box';
-          star.style.animation = `twinkle ${duration}s infinite ease-in-out ${delay}s`;
-          
-          starsGroup.appendChild(star);
-        }
-      }
-    }
+    // Initial frame run
+    requestTick();
   }
 
   // Initialize immediately
@@ -263,4 +354,3 @@
   // Re-run setup on View Transition navigation
   document.addEventListener('astro:page-load', initBackground);
 </script>
-
