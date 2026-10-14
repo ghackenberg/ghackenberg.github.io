@@ -94,8 +94,8 @@ Die folgende Architektur-Übersicht zeigt den qualitativen und quantitativen Unt
 | Dimension | Klassisches CSS Grid / Flexbox (`getBoundingClientRect`) | CSS Shapes (`shape-outside`) | Sub-Element `TreeWalker` + 2D-SDF-Pipeline (`hackenberg.tech`) |
 | :--- | :--- | :--- | :--- |
 | **Geometrische Auflösung** | Grobe Element-Box (`max-w-2xl`); ignoriert vorzeitige Zeilenumbrüche und verschenkt rechtsseitigen Freiraum. | Fließtext umfließt ein statisches Float-Bild; keine Rückkopplung der Textkontur an Canvas-Hintergründe. | Zeilenexakte `Range.getClientRects()`-Vermessung jedes Textknotens; präzises 1D-Intervall-Merging (`bands[]`). |
-| **Dynamische Objekt-Platzierung** | Starre Breakpoints (`md:`, `lg:`); führt auf Zwischenbreiten zu Sprüngen oder konservativ geschrumpften Bildern. | Nur für Inline-Floats nutzbar; kein globaler 2D-Kollisions-Solver für unabhängige UI-Layer. | Exakter 2D-Solver prüft konkurrierende Kandidaten (*Rechts-Mittig* vs. *Oben neben H1*) mit `+4px` Hysterese. |
-| **Hintergrund-Partikel & Konturschnitt** | Rechteckiger Ausschnitt oder Übermalen von Text (schlechter Kontrast und visuelle Unruhe). | Keine Schnittstelle zu HTML5 Canvas oder WebGL-Partikelsystemen. | Kontinuierliches 2D-SDF (`sdRoundRect`) mit polynomieller $C^1$-Verschmelzung (`smin`) und 32px Smoothstep-Fade. |
+| **Dynamische Objekt-Platzierung** | Starre Breakpoints (`md:`, `lg:`); führt auf Zwischenbreiten zu Sprüngen oder konservativ geschrumpften Bildern. | Nur für Inline-Floats nutzbar; kein globaler 2D-Kollisions-Solver für unabhängige UI-Layer. | Exakter 2D-Solver prüft konkurrierende Kandidaten (*Rechts-Mittig* vs. *Oben neben `<h1>`*) mit `+4px` Hysterese. |
+| **Hintergrund-Partikel & Konturschnitt** | Rechteckiger Ausschnitt oder Übermalen von Text (schlechter Kontrast und visuelle Unruhe). | Keine Schnittstelle zu HTML5 Canvas oder WebGL-Partikelsystemen. | Kontinuierliches 2D-SDF (`sdRoundRect`) mit polynomieller $C^1$-Verschmelzung (`smin`) und 32px-`smoothstep`-Fade. |
 | **Rendering-Effizienz (Canvas 2D)** | Einzelnes `ctx.fill()` pro Partikel erzeugt hunderte State-Changes pro Frame bei individueller Opazität. | Nicht anwendbar (rein deklaratives Text-Wrapping im Browser-Layout). | **10-Bucket Opacity Quantisierung** (`alphaBin = 0..9`) reduziert hunderte Punkte auf **maximal 10 Draw-Calls/Frame**. |
 | **Webfont- & First-Paint-Stabilität** | Anfällig für Flash of Unstyled Text (FOUT) und nachträgliche Geometrie-Sprünge beim Font-Swap. | Reflow bei Webfont-Ladevorgang verschiebt Zeilenumbrüche sichtbar. | Synchronisiertes Zwei-Barrieren-Gate (`document.fonts.ready` $\land$ `portrait:ready`) garantiert **CLS = 0**. |
 
@@ -117,7 +117,7 @@ Im Hero-Bereich unserer Startseite treffen fünf semantisch unterschiedliche Inh
 4. **Entity-Trust-Pills (`#hero-trust-pills`):** Flex-Wrap-Zeilen aus sechs abgerundeten Glassmorphism-Badges (*FH Upper Austria*, *TU Munich*, *RWTH Aachen*, *Uni Mannheim*, *CADdrive*, *Mentawise*).
 5. **Aktionsleiste (`#hero-actions-row`):** Primärer Call-to-Action-Button (`#hero-contact-btn`) neben vier quadratischen Social-Media-Schaltflächen (`#hero-social-group`).
 
-Verwendet man zur Kollisionsvermeidung die Standardmethode `Element.getBoundingClientRect()` auf den Block-Elementen `<h1>` und `<p>`, meldet der Browser für jeden Absatz konstant die volle CSS-Maximalbreite (`max-w-2xl`, also $672\text{ px}$). Auf einem typischen Tablet- oder kompakten Laptop-Viewport ($768\text{ px}$ bis $1150\text{ px}$) bleibt rechts neben dieser $672\text{ px}$ breiten Block-Box kaum Platz – obwohl in Wahrheit neben der kürzeren H1-Überschrift oder neben den umbrochenen Pill-Reihen hunderte Quadratpixel völlig frei wären.
+Verwendet man zur Kollisionsvermeidung die Standardmethode `Element.getBoundingClientRect()` auf den Block-Elementen `<h1>` und `<p>`, meldet der Browser für jeden Absatz konstant die volle CSS-Maximalbreite (`max-w-2xl`, also $672\text{ px}$). Auf einem typischen Tablet- oder kompakten Laptop-Viewport ($768\text{ px}$ bis $1150\text{ px}$) bleibt rechts neben dieser $672\text{ px}$ breiten Block-Box kaum Platz – obwohl in Wahrheit neben der kürzeren `<h1>`-Überschrift oder neben den umbrochenen Pill-Reihen hunderte Quadratpixel völlig frei wären.
 
 ![Vergleich zwischen starrer CSS Block-Bounding-Box und zeilenexakter TreeWalker-Kontur](./block_box_vs_treewalker_contour.svg "Block-Box vs. Sub-Element TreeWalker-Zeilenkontur")
 
@@ -163,7 +163,7 @@ Für die Trust-Pills (`#hero-trust-pills`) und die Aktionsleiste (`#hero-actions
 
 ### Schritt 2: 1D-Intervall-Merging zu horizontalen Konturbändern (`bands[]`)
 
-Weil eine einzelne visuelle Bildschirmzeile aus mehreren DOM-Textknoten bestehen kann (beispielsweise normaler Text gefolgt von einem `<strong>`-Knoten in derselben Zeile), liefert `rawRects` zunächst mehrere Teilrechtecke auf gleicher vertikaler Höhe. Wir sortieren `rawRects` aufsteigend nach `top` und verschmelzen vertikal überlappende Rechtecke zu disjunkten horizontalen Konturbändern `bands`:
+Weil eine einzelne visuelle Bildschirmzeile aus mehreren DOM-Textknoten bestehen kann (beispielsweise normaler Text gefolgt von einem `<strong>`-Knoten in derselben Zeile), liefert `rawRects` zunächst mehrere Teilrechtecke auf gleicher vertikaler Höhe. Wir sortieren `rawRects` aufsteigend nach `top` und verschmelzen vertikal überlappende Rechtecke zu disjunkten horizontalen Konturbändern `bands[]`:
 
 ```javascript
 rawRects.sort(function (a, b) { return a.top - b.top; });
@@ -194,23 +194,23 @@ Zwei Fragmente gelten genau dann als dieselbe visuelle Zeile (`isSameLine`), wen
 
 ## Wie berechnet der 2D-Optimierer die kollisionsfreie Porträt-Platzierung?
 
-Der 2D-Platzierungs-Optimierer ermittelt auf Basis der extrahierten Konturbänder `bands[]` in Echtzeit die größtmögliche, garantiert überlappungsfreie Quadratfläche für das WebGL-Porträt ([`DepthPortrait.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/DepthPortrait.astro)), indem er zwei geometrische Kandidatenpositionen (*Rechts-Mittig* vs. *Oben neben H1*) gegeneinander auswertet. Reicht auf schmalen Smartphones der horizontale Freiraum für keinen der beiden Kandidaten bis zur Mindesthöhe der H1-Überschrift aus, blendet der Solver das Porträt sauber aus.
+Der 2D-Platzierungs-Optimierer ermittelt auf Basis der extrahierten Konturbänder `bands[]` in Echtzeit die größtmögliche, garantiert überlappungsfreie Quadratfläche für das WebGL-Porträt ([`DepthPortrait.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/DepthPortrait.astro)), indem er zwei geometrische Kandidatenpositionen (*Rechts-Mittig* vs. *Oben neben `<h1>`*) gegeneinander auswertet. Reicht auf schmalen Smartphones der horizontale Freiraum für keinen der beiden Kandidaten bis zur Mindesthöhe der `<h1>`-Überschrift aus, blendet der Solver das Porträt sauber aus.
 
 ![2D Kollisionsfreier Porträt-Platzierungs-Solver mit Kandidat A Rechts-Mittig und Kandidat B Oben neben H1](./portrait_2d_placement_solver.svg "2D-Kollisions-Solver für das Hero-Porträt")
 
 ### Die Hindernisfunktion `maxRightInVerticalRange(yTop, yBottom)`
 
-Gegeben sei ein vertikales Zielintervall $[y_{\text{top}}, y_{\text{bottom}}]$ für das Porträtquadrat der Kantenlänge $S$. Um jede optische Berührung mit den Textzeilen auszuschließen, definieren wir einen Sicherheitsabstand von $\text{PORTRAIT\_GAP\_X} = 18\text{ px}$ horizontal und $\text{PORTRAIT\_GAP\_Y} = 6\text{ px}$ vertikal. Die Funktion `maxRightInVerticalRange` bestimmt die am weitesten nach rechts ragende Textkante innerhalb dieses vertikalen Korridors:
+Gegeben sei ein vertikales Zielintervall $[y_{\text{top}}, y_{\text{bottom}}]$ für das Porträtquadrat der Kantenlänge $S$. Um jede optische Berührung mit den Textzeilen auszuschließen, definieren wir einen Sicherheitsabstand von `PORTRAIT_GAP_X = 18` Pixeln horizontal und `PORTRAIT_GAP_Y = 6` Pixeln vertikal. Die Funktion `maxRightInVerticalRange` bestimmt die am weitesten nach rechts ragende Textkante innerhalb dieses vertikalen Korridors:
 
 $$\text{maxRight}(y_{\text{top}}, y_{\text{bottom}}) = \max \Big\{ b.\text{right} \;\Big|\; b \in \text{bands} \;\land\; b.\text{bottom} > y_{\text{top}} - 6 \;\land\; b.\text{top} < y_{\text{bottom}} + 6 \Big\}$$
 
-Daraus folgt unmittelbar die minimal zulässige linke Startkoordinate $\text{reqLeft}$ des Porträts im Intervall $[y_{\text{top}}, y_{\text{bottom}}]$:
+Daraus folgt unmittelbar die minimal zulässige linke Startkoordinate `reqLeft` des Porträts im Intervall $[y_{\text{top}}, y_{\text{bottom}}]$:
 
 $$\text{reqLeft}(y_{\text{top}}, y_{\text{bottom}}) = \text{maxRight}(y_{\text{top}}, y_{\text{bottom}}) + 18\text{ px}$$
 
 ### Wettbewerb der zwei Platzierungs-Kandidaten
 
-Der Solver in [`src/pages/index.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/index.astro#L1445-L1529) prüft nun zwei architektonisch sinnvolle Ankerpositionen innerhalb der Hero-Breite $W$ und Hero-Höhe $H$:
+Der Solver in [`src/pages/index.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/index.astro#L1445-L1529) prüft nun zwei architektonisch sinnvolle Ankerpositionen innerhalb der Hero-Breite $W$ (`gridWidth`) und Hero-Höhe $H$ (`gridHeight`):
 
 1. **Kandidat A – „Rechts-Mittig" (`sizeRightCenter`):**
    Auf Desktop- und breiten Tablet-Viewports soll das Porträt vertikal zentriert rechts neben dem gesamten Textblock schweben. Da eine größere Kantenlänge $S$ das vertikale Intervall $[(H - S)/2, (H + S)/2]$ aufweitet und dadurch potenziell längere Textzeilen in der Mitte einschließt, sucht der Solver absteigend ab $S_{\max} = \min(480, H)$ das größte Quadrat $S$, das kollisionsfrei in die verbleibende Breite passt:
@@ -229,14 +229,14 @@ Der Solver in [`src/pages/index.astro`](https://github.com/ghackenberg/ghackenbe
      }
    }
    ```
-2. **Kandidat B – „Oben neben H1" (`sizeTopRight`):**
-   Auf mittleren Viewports, auf denen der Fließtext bereits fast die gesamte Breite einnimmt, die kurze `<h1>`-Überschrift (`max-w-[21rem]`) rechts oben jedoch noch eine Nische frei lässt, kann das Porträt bündig auf Höhe der H1 (`[0, h1Height]`) sitzen. Seine Kantenlänge ist exakt auf die Höhe der Überschrift $H_{\text{h1}}$ normiert, sofern $\text{gridWidth} - \text{reqLeft}(0, H_{\text{h1}}) \ge H_{\text{h1}}$ erfüllt ist.
+2. **Kandidat B – „Oben neben `<h1>`" (`sizeTopRight`):**
+   Auf mittleren Viewports, auf denen der Fließtext bereits fast die gesamte Breite einnimmt, die kurze `<h1>`-Überschrift (`max-w-[21rem]`) rechts oben jedoch noch eine Nische frei lässt, kann das Porträt bündig auf Höhe der `<h1>` (`[0, h1Height]`) sitzen. Seine Kantenlänge ist exakt auf die Höhe der Überschrift `h1Height` ($H_{\text{h1}}$) normiert, sofern `gridWidth - reqLeft >= h1Height` erfüllt ist.
 
 ### Auswahlregel, Hysterese und automatische Zentrierung im Restraum
 
 Damit das Porträt niemals kleiner als die Hauptüberschrift wirkt, gilt die harte Untergrenze $S_{\min} = H_{\text{h1}}$. Zwischen beiden Kandidaten entscheidet der Solver zugunsten der zentrierten Hauptposition, sobald diese mindestens gleich groß oder innerhalb einer $4\text{ px}$-Rundungstoleranz liegt (`prefersCenter = sizeRightCenter + 4 >= sizeTopRight`). 
 
-Sobald Position und Größe $S^*$ feststehen, wird das Porträt im verbleibenden freien Korridor $[\text{reqLeft}, W]$ exakt mittig ausgerichtet:
+Sobald Position und Größe $S^*$ feststehen, wird das Porträt im verbleibenden freien Korridor zwischen `reqLeft` und $W$ (`gridWidth`) exakt mittig ausgerichtet:
 
 $$x_{\text{left}} = \text{round}\!\left(\text{reqLeft} + \frac{W - \text{reqLeft} - S^*}{2}\right)$$
 
@@ -269,7 +269,7 @@ Würde man die Distanz zum gesamten Textblock schlicht als hartes Minimum $\min_
 
 $$h = \frac{\max(k - |a - b|, 0)}{k}, \qquad \text{smin}(a, b, k) = \min(a, b) - \frac{1}{4} h^2 k$$
 
-In [`ReactiveDotGrid.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/ReactiveDotGrid.astro#L150-L185) bestimmen wir für jeden Punkt des $22\text{ px}$-Gitters die zwei kleinsten Distanzen $d_1 \le d_2$ zu allen um $\text{CLEARANCE\_X} = 16\text{ px}$ und $\text{CLEARANCE\_Y} = 14\text{ px}$ aufgeweiteten Zeilenbändern und verschmelzen sie mit Radius $k = 12$:
+In [`ReactiveDotGrid.astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/components/ReactiveDotGrid.astro#L150-L185) bestimmen wir für jeden Punkt des $22\text{ px}$-Gitters die zwei kleinsten Distanzen $d_1 \le d_2$ zu allen um `CLEARANCE_X = 16` Pixel und `CLEARANCE_Y = 14` Pixel aufgeweiteten Zeilenbändern und verschmelzen sie mit Radius $k = 12$:
 
 ```typescript
 let d1 = Infinity;
@@ -373,6 +373,6 @@ Die Verknüpfung von DOM-Text-Geometrie und analytischen 2D-Distanzfeldern zeigt
 
 1. **Sub-Element-Vermessung statt Block-Box-Verschnitt:** `document.createTreeWalker(el, NodeFilter.SHOW_TEXT)` in Kombination mit `Range.getClientRects()` erschließt die wahre Zeilenkontur von Fließtext und Überschriften.
 2. **1D-Intervall-Merging als robuste Geometrie-Brücke:** Das Zusammenführen einzelner Textknoten-Rechtecke über einen $35\,\%$-Überlappungs-Schwellenwert reduziert hunderte DOM-Fragmente auf wenige kompakte Konturbänder `bands[]`.
-3. **Deterministische 2D-Constraint-Optimierung statt starrer Breakpoints:** Ein expliziter Kandidaten-Solver (*Rechts-Mittig* vs. *Oben neben H1*) nutzt jeden freien Pixel über alle Viewport-Breiten hinweg kollisionsfrei aus.
+3. **Deterministische 2D-Constraint-Optimierung statt starrer Breakpoints:** Ein expliziter Kandidaten-Solver (*Rechts-Mittig* vs. *Oben neben `<h1>`*) nutzt jeden freien Pixel über alle Viewport-Breiten hinweg kollisionsfrei aus.
 4. **Analytische 2D-SDFs mit `smin`-Filleting:** Die Kombination aus `sdRoundRect` und Inigo Quilez' polynomieller `smin`-Funktion formt harte Treppenstufen in organisch fließende Freiräume um.
 5. **10-Bucket Opacity Batching & Font-Ready-Gates:** Die Quantisierung kontinuierlicher SDF-Opazitäten auf zehn Canvas-Draw-Calls pro Frame sowie das `document.fonts.ready`-Synchronisations-Gate verbinden mathematische Präzision mit 60-FPS-Effizienz und **CLS = 0**.

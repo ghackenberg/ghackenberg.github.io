@@ -112,6 +112,51 @@
   opacity: 0.8;
 }
 
+/* Inline Code Snippets (:not(pre) > code) */
+.prose-custom :not(pre) > code,
+.post-body :not(pre) > code,
+.service-content :not(pre) > code,
+.syllabus-content :not(pre) > code,
+.project-content :not(pre) > code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.86em;
+  font-weight: 600;
+  padding: 0.15rem 0.4rem;
+  margin: 0 0.05rem;
+  border-radius: 0.375rem;
+  background: rgba(148, 163, 184, 0.14);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  color: var(--color-text-heading);
+  word-break: break-word;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+:root.light .prose-custom :not(pre) > code,
+.light .prose-custom :not(pre) > code,
+:root.light .post-body :not(pre) > code,
+.light .post-body :not(pre) > code,
+:root.light .service-content :not(pre) > code,
+.light .service-content :not(pre) > code,
+:root.light .syllabus-content :not(pre) > code,
+.light .syllabus-content :not(pre) > code,
+:root.light .project-content :not(pre) > code,
+.light .project-content :not(pre) > code {
+  background: rgba(15, 23, 42, 0.065);
+  border-color: rgba(15, 23, 42, 0.14);
+  color: var(--color-text-heading);
+}
+
+.prose-custom a:not(.citation):not(.tag-chip) > code,
+.post-body a:not(.citation):not(.tag-chip) > code,
+.service-content a:not(.citation):not(.tag-chip) > code,
+.syllabus-content a:not(.citation):not(.tag-chip) > code,
+.project-content a:not(.citation):not(.tag-chip) > code {
+  color: inherit;
+  border-color: color-mix(in srgb, var(--color-current-domain, var(--color-domain-posts)) 35%, transparent);
+  background: color-mix(in srgb, var(--color-current-domain, var(--color-domain-posts)) 10%, transparent);
+}
+
 /* Central list typography rules for content cards and articles */
 .prose-custom ul,
 .post-body ul {
