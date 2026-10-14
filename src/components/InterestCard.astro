@@ -47,7 +47,7 @@ const optimizedImage = heroImg ? await getImage({
 
   <!-- Artwork Header -->
   {optimizedImage && (
-    <div class="relative w-full aspect-video overflow-hidden bg-slate-950">
+    <div class="relative w-full aspect-video shrink-0 grow-0 overflow-hidden bg-slate-950">
       <img 
         src={optimizedImage.src} 
         alt={heroDesc}
