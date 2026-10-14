@@ -123,7 +123,7 @@ Verwendet man zur Kollisionsvermeidung die Standardmethode `Element.getBoundingC
 
 Um diesen verschenkten Raum zurückzugewinnen, müssen wir die Ebene der CSS-Block-Container verlassen und die tatsächliche optische Belegung jeder einzelnen Textzeile und jedes Inline-Badges vermessen.
 
-## Wie extrahiert man zeilenexakte Text-Konturen mit TreeWalker und Range.getClientRects()?
+## Wie extrahiert man zeilenexakte Text-Konturen mit `TreeWalker` und `Range.getClientRects()`?
 
 Die zeilenexakte Extraktion einer Text-Kontur gelingt durch die Kombination des DOM-Iterators `document.createTreeWalker(el, NodeFilter.SHOW_TEXT)` mit der CSSOM-View-Methode `Range.getClientRects()`. Während der `TreeWalker` sämtliche Textknoten auch über verschachtelte Inline-Elemente (`<span>`, `<strong>`) hinweg traversiert, liefert ein darüber gelegtes `Range`-Objekt für jeden Zeilenumbruch ein separates, pixelgenaues Client-Rechteck der tatsächlich gerenderten Glyphen.
 
