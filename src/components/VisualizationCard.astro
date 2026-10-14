@@ -43,7 +43,7 @@ const cardId = href.replace(/^\/visualizations\//, '').replace(/\/$/, '') || tit
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
 
   <!-- Screenshot -->
-  <div class="aspect-video w-full overflow-hidden bg-gray-900 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
+  <div class="aspect-video w-full shrink-0 overflow-hidden bg-gray-900 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
     {screenshot && (
       <svg 
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 

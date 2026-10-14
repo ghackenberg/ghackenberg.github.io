@@ -1040,3 +1040,9 @@ html.has-filter-query [data-tag-count]:not(.is-synced) {
   color: var(--color-domain-publications) !important;
 }
 
+/* Section Header Rhythm */
+.section-header {
+  margin-bottom: clamp(2rem, 3.5vw, 2.5rem);
+}
+
+

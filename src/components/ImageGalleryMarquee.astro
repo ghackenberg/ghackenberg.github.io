@@ -43,11 +43,11 @@ function getDomainFromHref(href: string): string {
 }
 ---
 
-<Section id="gallery" border="top" padding="none" class="overflow-hidden pb-12 md:pb-16">
+<Section id="gallery" border="top" padding="standard" class="overflow-hidden">
   <!-- Section Header (Aligned to standard grid max-w-6xl) -->
-  <Container size="wide" padding="none" class="pt-12 md:pt-16 mb-8">
-    <div>
-      <h2 id="content-gallery-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+  <Container size="wide" padding="none">
+    <div class="section-header max-w-2xl">
+      <h2 id="content-gallery-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
         Content <span class="heading-gradient-brand">Gallery</span>
       </h2>
       <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
@@ -903,7 +903,8 @@ function getDomainFromHref(href: string): string {
           const dx = e.clientX - lastPointerX;
           const now = performance.now();
           const dt = Math.max((now - lastPointerTime) / 1000, 0.001);
-          pointerVelocity = dx / dt;
+          const instantVel = dx / dt;
+          pointerVelocity = pointerVelocity === 0 ? instantVel : (0.6 * instantVel + 0.4 * pointerVelocity);
           lastPointerX = e.clientX;
           lastPointerTime = now;
 
@@ -934,12 +935,13 @@ function getDomainFromHref(href: string): string {
 
       if (!isTap && (hasDragged || dragDistance > 12)) {
         suppressClickUntil = performance.now() + 300;
-        if (wasHorizontal && Math.abs(pointerVelocity) > 60) {
-          momentumVelocity = Math.max(-2000, Math.min(2000, pointerVelocity));
+        const idleSinceMove = performance.now() - lastPointerTime;
+        if (idleSinceMove < 120 && wasHorizontal && Math.abs(pointerVelocity) > 30) {
+          momentumVelocity = Math.max(-2800, Math.min(2800, pointerVelocity));
         }
       }
 
-      if (e.pointerType === 'mouse' && !isMouseOver && Math.abs(momentumVelocity) <= 5) {
+      if (e.pointerType === 'mouse' && !isMouseOver && Math.abs(momentumVelocity) <= 2) {
         if (interactionEndTimer !== null) {
           window.clearTimeout(interactionEndTimer);
           interactionEndTimer = null;
@@ -989,10 +991,10 @@ function getDomainFromHref(href: string): string {
       lastTime = timestamp;
 
       // Apply drag momentum glide if present
-      if (Math.abs(momentumVelocity) > 5) {
+      if (Math.abs(momentumVelocity) > 2) {
         const step = momentumVelocity * dt;
         applyScrollParallax(step, activeDragTrack || tracks[0]);
-        momentumVelocity *= Math.pow(0.88, dt * 60);
+        momentumVelocity *= Math.pow(0.955, dt * 60);
         interactionEndTime = 0;
       } else {
         if (momentumVelocity !== 0) {

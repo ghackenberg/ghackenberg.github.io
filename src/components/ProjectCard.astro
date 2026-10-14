@@ -68,7 +68,7 @@ const cardId = href.replace(/^\/projects\//, '').replace(/\/$/, '') || title;
   <div class="absolute top-0 right-0 w-32 h-32 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none group-hover:bg-domain-projects/10"></div>
   
   <!-- Card Header Banner (Preview or Placeholder) -->
-  <div class="aspect-video w-full overflow-hidden bg-gray-950 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
+  <div class="aspect-video w-full shrink-0 overflow-hidden bg-gray-950 flex items-center justify-center relative" style="transform: translate3d(0, 0, 0); backface-visibility: hidden; -webkit-backface-visibility: hidden;">
     {screenshot ? (
       <svg 
         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 

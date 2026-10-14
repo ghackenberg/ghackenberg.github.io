@@ -1242,9 +1242,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Website Navigation Section -->
   <Section id="site-navigation" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-10 max-w-2xl">
-
-        <h2 id="website-sections-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+      <div class="section-header max-w-2xl">
+        <h2 id="website-sections-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3 truncate min-w-0">
           Website <span class="heading-gradient-brand">Sections</span>
         </h2>
         <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
@@ -1252,54 +1251,77 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         </p>
       </div>
 
-      <!-- Responsive Grid Layout: 3 columns on desktop, 2 columns on tablet, 1 column on mobile -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {websiteSections.map(item => (
-          <a
-            href={item.href}
-            class={`group relative rounded-3xl p-6 sm:p-7 glass-card border border-element-border-medium transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden shadow-xl ${item.borderHover} ${item.glowShadow}`}
-          >
-            <!-- Ambient Background Radial Glow -->
-            <div class={`absolute -top-16 -right-16 w-40 h-40 rounded-full blur-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${item.radialGlow}`}></div>
+      <!-- Responsive Carousel/Grid Layout: 3 columns on desktop (>=lg), horizontal carousel on mobile/tablet (<lg) -->
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
 
-            <!-- Top Header: Emoji + Title + Pill Badge + Unread Counter -->
-            <div>
-              <div class="flex items-center justify-between gap-3 mb-4">
-                <div class="flex items-center gap-3">
-                  <span class="text-3xl sm:text-4xl select-none filter drop-shadow-sm transition-transform duration-300 group-hover:scale-110">
-                    {item.emoji}
-                  </span>
-                  <div>
-                    <h3 class="text-xl sm:text-2xl font-extrabold text-gray-100 group-hover:text-white light:group-hover:text-slate-950 tracking-tight transition-colors">
-                      {item.title}
-                    </h3>
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {websiteSections.map(item => (
+            <a
+              href={item.href}
+              class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto group relative rounded-3xl p-6 sm:p-7 glass-card border border-element-border-medium transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden ${item.borderHover} ${item.glowShadow} hover:shadow-xl`}
+            >
+              <!-- Ambient Background Radial Glow -->
+              <div class={`absolute -top-16 -right-16 w-40 h-40 rounded-full blur-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${item.radialGlow}`}></div>
+
+              <!-- Top Header: Emoji + Title + Pill Badge + Unread Counter -->
+              <div>
+                <div class="flex items-center justify-between gap-3 mb-4">
+                  <div class="flex items-center gap-3">
+                    <span class="text-4xl select-none filter drop-shadow-sm transition-transform duration-300 group-hover:scale-110">
+                      {item.emoji}
+                    </span>
+                    <div>
+                      <h3 class="text-2xl font-extrabold text-gray-100 group-hover:text-white light:group-hover:text-slate-950 tracking-tight transition-colors">
+                        {item.title}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-lg font-extrabold text-gray-300 group-hover:text-white light:group-hover:text-slate-950 transition-colors tabular-nums">
+                      {item.count}
+                    </span>
                   </div>
                 </div>
 
-                <div class="flex items-center gap-2 shrink-0">
-                  <span class="text-lg font-extrabold text-gray-300 group-hover:text-white light:group-hover:text-slate-950 transition-colors tabular-nums">
-                    {item.count}
-                  </span>
+                <!-- Body Description -->
+                <p class="text-gray-400 group-hover:text-gray-300 light:group-hover:text-slate-800 text-sm font-normal leading-relaxed mb-6 transition-colors">
+                  {item.description}
+                </p>
+              </div>
+
+              <!-- Footer: Action Button -->
+              <div class="pt-2">
+                <div class={`flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl border text-sm font-bold transition-all duration-200 ${item.buttonStyle}`}>
+                  <span>Read More</span>
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
                 </div>
               </div>
-
-              <!-- Body Description -->
-              <p class="text-gray-400 group-hover:text-gray-300 light:group-hover:text-slate-800 text-xs sm:text-sm font-normal leading-relaxed mb-6 transition-colors">
-                {item.description}
-              </p>
-            </div>
-
-            <!-- Footer: Action Button -->
-            <div class="pt-2">
-              <div class={`flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold transition-all duration-200 ${item.buttonStyle}`}>
-                <span>Read More</span>
-                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </div>
-            </div>
-          </a>
-        ))}
+            </a>
+          ))}
+        </div>
       </div>
     </Container>
   </Section>
@@ -1307,81 +1329,104 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Professional Interests Section -->
   <Section id="about" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12">
-        <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+      <div class="section-header max-w-2xl">
+        <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3 truncate min-w-0">
           Professional <span class="text-domain-interests">Interests</span>
         </h2>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Key scientific domains, technical focus areas, and engineering pursuits that guide my academic research, university teaching, and software platform development.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {professionalInterests.map(interest => (
-          <article 
-            class="glass-card preview-card relative rounded-2xl border border-domain-interests/20 hover:border-domain-interests/50 shadow-domain-interests/5 hover:shadow-domain-interests/15 group flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
-            data-card-id={interest.slug}
-            data-collection="interests"
-          >
-            <!-- Absolute overlay link for card clickability -->
-            <a href={`/interests/${interest.slug}/`} class="absolute inset-0 z-10" aria-label={`Explore ${interest.title}`}></a>
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
 
-            <!-- Artwork Header -->
-            <div class="relative w-full aspect-video overflow-hidden bg-slate-950">
-              <img 
-                src={interest.image} 
-                alt={`${interest.title} illustration`}
-                title={interest.title}
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                loading="lazy"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
-              <span 
-                class="unread-dot hidden badge-new badge-new-interests badge-corner-tr" 
-                data-item-url={`/interests/${interest.slug}/`}
-                title="Unread interest"
-              >UNREAD</span>
-            </div>
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
 
-            <!-- Content Body -->
-            <div class="preview-card-body p-6 flex flex-col flex-grow">
-              <h3 class="text-lg font-bold text-gray-100 mb-3 group-hover:text-domain-interests transition-colors">
-                {interest.title}
-              </h3>
-              <p class="text-gray-400 text-sm leading-relaxed font-normal mb-4">
-                {interest.description}
-              </p>
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-4 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {professionalInterests.map(interest => (
+            <article 
+              class="w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto glass-card preview-card relative rounded-2xl border border-domain-interests/20 hover:border-domain-interests/50 shadow-domain-interests/5 hover:shadow-domain-interests/15 group flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+              data-card-id={interest.slug}
+              data-collection="interests"
+            >
+              <!-- Absolute overlay link for card clickability -->
+              <a href={`/interests/${interest.slug}/`} class="absolute inset-0 z-10" aria-label={`Explore ${interest.title}`}></a>
 
-              {interest.tags && interest.tags.length > 0 && (
-                <div class="flex flex-wrap gap-1.5 mb-6 relative z-20">
-                  {interest.tags.map((tag) => (
-                    <a
-                      href={`/tags/${tag}/`}
-                      data-tag={tag}
-                      class="tag-chip tag-chip-rose inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
-                    >
-                      #{tag}
-                    </a>
-                  ))}
-                </div>
-              )}
-
-              <!-- Footer: Read More Button -->
-              <div class="pt-2 mt-auto">
-                <a
-                  href={`/interests/${interest.slug}/`}
-                  aria-label={`Read More: ${interest.title}`}
-                  class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-interests/12 hover:bg-domain-interests/25 border border-domain-interests/20 hover:border-domain-interests/45 text-domain-interests text-xs font-bold relative z-20 transition-all duration-200"
-                >
-                  <span>Read More</span>
-                  <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </a>
+              <!-- Artwork Header -->
+              <div class="relative w-full aspect-video shrink-0 grow-0 overflow-hidden bg-slate-950">
+                <img 
+                  src={interest.image} 
+                  alt={`${interest.title} illustration`}
+                  title={interest.title}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
+                <span 
+                  class="unread-dot hidden badge-new badge-new-interests badge-corner-tr" 
+                  data-item-url={`/interests/${interest.slug}/`}
+                  title="Unread interest"
+                >UNREAD</span>
               </div>
-            </div>
-          </article>
-        ))}
+
+              <!-- Content Body -->
+              <div class="preview-card-body p-6 flex flex-col flex-grow">
+                <h3 class="text-lg font-bold text-gray-100 mb-3 group-hover:text-domain-interests transition-colors">
+                  {interest.title}
+                </h3>
+                <p class="text-gray-400 text-sm leading-relaxed font-normal mb-4">
+                  {interest.description}
+                </p>
+
+                {interest.tags && interest.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 mb-6 relative z-20">
+                    {interest.tags.map((tag) => (
+                      <a
+                        href={`/tags/${tag}/`}
+                        data-tag={tag}
+                        class="tag-chip tag-chip-rose inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
+                      >
+                        #{tag}
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                <!-- Footer: Read More Button -->
+                <div class="pt-2 mt-auto">
+                  <a
+                    href={`/interests/${interest.slug}/`}
+                    aria-label={`Read More: ${interest.title}`}
+                    class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-interests/12 hover:bg-domain-interests/25 border border-domain-interests/20 hover:border-domain-interests/45 text-domain-interests text-xs font-bold relative z-20 transition-all duration-200"
+                  >
+                    <span>Read More</span>
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
 
 
@@ -1391,41 +1436,92 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Featured Blog Posts Section -->
   <Section id="latest-posts" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12 max-w-2xl">
-        <h2 id="latest-posts-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
-          Blog <span class="text-domain-posts">Posts</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="latest-posts-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 truncate min-w-0">
+            Blog <span class="text-domain-posts">Posts</span>
+          </h2>
+          <a
+            href="/posts/"
+            aria-label="Explore all Blog Posts"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-posts hover:bg-domain-posts/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-posts/20 hover:shadow-domain-posts/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Explore my latest insights, tutorials, and dev logs on software engineering, artificial intelligence, knowledge graphs, and system architectures.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedPosts.slice(0, 4).map((post, index) => (
-          <div class={index === 3 ? "hidden md:block lg:hidden h-full" : "h-full"}>
-            <PostCard
-              id={post.id}
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              icon={post.data.icon}
-              tags={post.data.tags}
-            />
-          </div>
-        ))}
-      </div>
-
-      <!-- Unified Section CTA Button placed under content -->
-      <div class="mt-12 md:mt-16 flex justify-center">
-        <a 
-          href="/posts/" 
-          class="px-8 py-4 rounded-2xl bg-domain-posts hover:bg-domain-posts/90 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-domain-posts/20 hover:shadow-domain-posts/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
         >
-          <span>Explore More Posts</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-        </a>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedPosts.slice(0, 5).map((post, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <PostCard
+                id={post.id}
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                icon={post.data.icon}
+                tags={post.data.tags}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/posts/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-posts/25 hover:border-domain-posts/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-posts/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-posts/15 border border-domain-posts/30 text-domain-posts flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                📝
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-posts/15 text-domain-posts border border-domain-posts/30 mb-3">
+                {posts.length} Articles Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Posts
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse the complete archive of technical articles, tutorials, and engineering dev logs.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-posts hover:bg-domain-posts/90 text-white text-xs font-bold shadow-lg shadow-domain-posts/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </Container>
   </Section>
@@ -1433,43 +1529,94 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Academic Publications Section -->
   <Section id="publications" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12 max-w-2xl">
-        <h2 id="publications-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
-          Reviewed <span class="text-domain-publications">Publications</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="publications-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 truncate min-w-0">
+            Reviewed <span class="text-domain-publications">Publications</span>
+          </h2>
+          <a
+            href="/publications/"
+            aria-label="Explore all Publications"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-publications hover:bg-domain-publications/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-publications/20 hover:shadow-domain-publications/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Peer-reviewed academic research papers, conference proceedings, and scientific journal articles across model-driven software and cyber-physical systems.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedPublications.slice(0, 4).map((pub, index) => (
-          <div class={index === 3 ? "hidden md:block lg:hidden h-full" : "h-full"}>
-            <PublicationCard
-              id={pub.id}
-              title={pub.data.title}
-              author={pub.data.author}
-              pubDate={pub.data.pubDate}
-              book={pub.data.book}
-              tags={pub.data.tags}
-              publisherUrl={pub.data.publisherUrl}
-              icon={pub.data.icon}
-            />
-          </div>
-        ))}
-      </div>
-
-      <!-- Unified Section CTA Button placed under content -->
-      <div class="mt-12 md:mt-16 flex justify-center">
-        <a 
-          href="/publications/" 
-          class="px-8 py-4 rounded-2xl bg-domain-publications hover:bg-domain-publications/90 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-domain-publications/20 hover:shadow-domain-publications/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
         >
-          <span>Explore More Publications</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-        </a>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedPublications.slice(0, 5).map((pub, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <PublicationCard
+                id={pub.id}
+                title={pub.data.title}
+                author={pub.data.author}
+                pubDate={pub.data.pubDate}
+                book={pub.data.book}
+                tags={pub.data.tags}
+                publisherUrl={pub.data.publisherUrl}
+                icon={pub.data.icon}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/publications/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-publications/25 hover:border-domain-publications/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-publications/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-publications/15 border border-domain-publications/30 text-domain-publications flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                📄
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-publications/15 text-domain-publications border border-domain-publications/30 mb-3">
+                {publications.length} Papers Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Publications
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse peer-reviewed journal papers, conference proceedings, and scientific research publications.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-publications hover:bg-domain-publications/90 text-white text-xs font-bold shadow-lg shadow-domain-publications/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </Container>
   </Section>
@@ -1477,42 +1624,93 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Interactive Presentations Section -->
   <Section id="presentations" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12 max-w-2xl">
-        <h2 id="presentations-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
-          Interactive <span class="text-domain-presentations">Presentations</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="presentations-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 truncate min-w-0">
+            Interactive <span class="text-domain-presentations">Presentations</span>
+          </h2>
+          <a
+            href="/presentations/"
+            aria-label="Explore all Presentations"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-presentations hover:bg-domain-presentations/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-presentations/20 hover:shadow-domain-presentations/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Keynotes, interactive slide decks, and executive briefings with synchronized neural voiceovers exploring AI, architectures, and systems engineering.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedPresentations.slice(0, 4).map((presentation, index) => (
-          <div class={index === 3 ? "hidden md:block lg:hidden h-full" : "h-full"}>
-            <PresentationCard
-              id={presentation.id}
-              title={presentation.data.title}
-              subtitle={presentation.data.subtitle}
-              description={presentation.data.description}
-              pubDate={presentation.data.pubDate}
-              icon={presentation.data.previewImage || presentation.data.icon}
-              tags={presentation.data.tags || []}
-            />
-          </div>
-        ))}
-      </div>
-
-      <!-- Unified Section CTA Button placed under content -->
-      <div class="mt-12 md:mt-16 flex justify-center">
-        <a 
-          href="/presentations/" 
-          class="px-8 py-4 rounded-2xl bg-domain-presentations hover:bg-domain-presentations/90 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-domain-presentations/20 hover:shadow-domain-presentations/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
         >
-          <span>Explore More Presentations</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-        </a>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedPresentations.slice(0, 5).map((presentation, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <PresentationCard
+                id={presentation.id}
+                title={presentation.data.title}
+                subtitle={presentation.data.subtitle}
+                description={presentation.data.description}
+                pubDate={presentation.data.pubDate}
+                icon={presentation.data.previewImage || presentation.data.icon}
+                tags={presentation.data.tags || []}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/presentations/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-presentations/25 hover:border-domain-presentations/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-presentations/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-presentations/15 border border-domain-presentations/30 text-domain-presentations flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                🎙️
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-presentations/15 text-domain-presentations border border-domain-presentations/30 mb-3">
+                {presentations.length} Keynotes Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Presentations
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse interactive slide decks, keynote briefings, and synchronized neural voiceovers.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-presentations hover:bg-domain-presentations/90 text-white text-xs font-bold shadow-lg shadow-domain-presentations/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </Container>
   </Section>
@@ -1520,41 +1718,92 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- University Courses Section -->
   <Section id="courses" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12 max-w-2xl">
-        <h2 id="courses-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
-          University <span class="text-domain-courses">Courses</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="courses-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 truncate min-w-0">
+            University <span class="text-domain-courses">Courses</span>
+          </h2>
+          <a
+            href="/courses/"
+            aria-label="Explore all Courses"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-courses hover:bg-domain-courses/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-courses/20 hover:shadow-domain-courses/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Higher education lectures, interactive curriculum modules, and hands-on computer science materials taught at UAP (FH Upper Austria).
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedCourses.slice(0, 4).map((course, index) => (
-          <div class={index === 3 ? "hidden md:block lg:hidden h-full" : "h-full"}>
-            <CourseCard
-              title={course.data.title}
-              description={course.data.description}
-              href={`/courses/${course.id}/`}
-              language={course.data.language}
-              screenshot={course.data.screenshot}
-              tags={course.data.tags}
-            />
-          </div>
-        ))}
-      </div>
-
-      <!-- Unified Section CTA Button placed under content -->
-      <div class="mt-12 md:mt-16 flex justify-center">
-        <a 
-          href="/courses/" 
-          class="px-8 py-4 rounded-2xl bg-domain-courses hover:bg-domain-courses/90 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-domain-courses/20 hover:shadow-domain-courses/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
         >
-          <span>Explore More Courses</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-        </a>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedCourses.slice(0, 5).map((course, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <CourseCard
+                title={course.data.title}
+                description={course.data.description}
+                href={`/courses/${course.id}/`}
+                language={course.data.language}
+                screenshot={course.data.screenshot}
+                tags={course.data.tags}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/courses/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-courses/25 hover:border-domain-courses/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-courses/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-courses/15 border border-domain-courses/30 text-domain-courses flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                🎓
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-courses/15 text-domain-courses border border-domain-courses/30 mb-3">
+                {courses.length} Courses Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Courses
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse higher education lecture modules, curriculum syllabi, and interactive exercises.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-courses hover:bg-domain-courses/90 text-white text-xs font-bold shadow-lg shadow-domain-courses/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </Container>
   </Section>
@@ -1562,42 +1811,93 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Software Projects Section -->
   <Section id="projects" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12 max-w-2xl">
-        <h2 id="software-projects-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
-          Software <span class="text-domain-projects">Projects</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="software-projects-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 truncate min-w-0">
+            Software <span class="text-domain-projects">Projects</span>
+          </h2>
+          <a
+            href="/projects/"
+            aria-label="Explore all Projects"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-projects hover:bg-domain-projects/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-projects/20 hover:shadow-domain-projects/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Selected software platforms, frameworks, and tools designed to optimize product engineering, knowledge graphs, and real-time physical simulation.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedProjects.slice(0, 4).map((project, index) => (
-          <div class={index === 3 ? "hidden md:block lg:hidden h-full" : "h-full"}>
-            <ProjectCard 
-              title={project.data.title}
-              trl={project.data.trl}
-              description={project.data.description}
-              href={`/projects/${project.id}/`}
-              tags={project.data.tags}
-              screenshot={project.data.screenshot}
-              screenshotLight={project.data.screenshotLight}
-            />
-          </div>
-        ))}
-      </div>
-
-      <!-- Unified Section CTA Button placed under content -->
-      <div class="mt-12 md:mt-16 flex justify-center">
-        <a 
-          href="/projects/" 
-          class="px-8 py-4 rounded-2xl bg-domain-projects hover:bg-domain-projects/90 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-domain-projects/20 hover:shadow-domain-projects/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
         >
-          <span>Explore More Projects</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-        </a>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedProjects.slice(0, 5).map((project, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <ProjectCard 
+                title={project.data.title}
+                trl={project.data.trl}
+                description={project.data.description}
+                href={`/projects/${project.id}/`}
+                tags={project.data.tags}
+                screenshot={project.data.screenshot}
+                screenshotLight={project.data.screenshotLight}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/projects/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-projects/25 hover:border-domain-projects/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-projects/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-projects/15 border border-domain-projects/30 text-domain-projects flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                🚀
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-projects/15 text-domain-projects border border-domain-projects/30 mb-3">
+                {projects.length} Projects Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Projects
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse open-source software platforms, engineering tools, and simulation frameworks.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-projects hover:bg-domain-projects/90 text-white text-xs font-bold shadow-lg shadow-domain-projects/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </Container>
   </Section>
@@ -1605,40 +1905,91 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Engineering Services Section -->
   <Section id="services" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12 max-w-2xl">
-        <h2 id="services-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
-          Engineering <span class="text-domain-services">Services</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="services-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 truncate min-w-0">
+            Engineering <span class="text-domain-services">Services</span>
+          </h2>
+          <a
+            href="/services/"
+            aria-label="Explore all Services"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-services hover:bg-domain-services/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-services/20 hover:shadow-domain-services/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Professional consulting and engineering services bridging sovereign artificial intelligence architectures, software systems, and digital publishing.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedServices.slice(0, 4).map((service, index) => (
-          <div class={index === 3 ? "hidden md:block lg:hidden h-full" : "h-full"}>
-            <ServiceCard
-              id={service.id}
-              title={service.data.title}
-              description={service.data.description}
-              tags={service.data.tags}
-              previewImage={service.data.previewImage}
-            />
-          </div>
-        ))}
-      </div>
-
-      <!-- Unified Section CTA Button placed under content -->
-      <div class="mt-12 md:mt-16 flex justify-center">
-        <a 
-          href="/services/" 
-          class="px-8 py-4 rounded-2xl bg-domain-services hover:bg-domain-services/90 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-domain-services/20 hover:shadow-domain-services/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
         >
-          <span>Explore More Services</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-        </a>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedServices.slice(0, 5).map((service, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <ServiceCard
+                id={service.id}
+                title={service.data.title}
+                description={service.data.description}
+                tags={service.data.tags}
+                previewImage={service.data.previewImage}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/services/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-services/25 hover:border-domain-services/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-services/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-services/15 border border-domain-services/30 text-domain-services flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                💼
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-services/15 text-domain-services border border-domain-services/30 mb-3">
+                {services.length} Offerings Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Services
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse professional engineering advisory, sovereign AI architectures, and media publishing systems.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-services hover:bg-domain-services/90 text-white text-xs font-bold shadow-lg shadow-domain-services/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </Container>
   </Section>
@@ -1646,40 +1997,91 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Content Visualizations Section -->
   <Section id="visualizations" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12 max-w-2xl">
-        <h2 id="visualizations-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
-          Content <span class="text-domain-visualizations">Visualizations</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="visualizations-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 truncate min-w-0">
+            Content <span class="text-domain-visualizations">Visualizations</span>
+          </h2>
+          <a
+            href="/visualizations/"
+            aria-label="Explore all Visualizations"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-visualizations hover:bg-domain-visualizations/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-visualizations/20 hover:shadow-domain-visualizations/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Interactive knowledge graphs exploring cross-content relationships between articles, publications, projects, and courses rendered in real time.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedVisualizations.slice(0, 4).map((vis, index) => (
-          <div class={index === 3 ? "hidden md:block lg:hidden h-full" : "h-full"}>
-            <VisualizationCard
-              title={vis.data.title}
-              description={vis.data.description}
-              href={`/visualizations/${vis.id}/`}
-              screenshot={vis.data.screenshot}
-              tags={vis.data.tags}
-            />
-          </div>
-        ))}
-      </div>
-
-      <!-- Unified Section CTA Button placed under content -->
-      <div class="mt-12 md:mt-16 flex justify-center">
-        <a 
-          href="/visualizations/" 
-          class="px-8 py-4 rounded-2xl bg-domain-visualizations hover:bg-domain-visualizations/90 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-domain-visualizations/20 hover:shadow-domain-visualizations/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
         >
-          <span>Explore More Visualizations</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-        </a>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedVisualizations.slice(0, 5).map((vis, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <VisualizationCard
+                title={vis.data.title}
+                description={vis.data.description}
+                href={`/visualizations/${vis.id}/`}
+                screenshot={vis.data.screenshot}
+                tags={vis.data.tags}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/visualizations/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-visualizations/25 hover:border-domain-visualizations/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-visualizations/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-visualizations/15 border border-domain-visualizations/30 text-domain-visualizations flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                📊
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-visualizations/15 text-domain-visualizations border border-domain-visualizations/30 mb-3">
+                {visualizations.length} Engines Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Visualizations
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse interactive knowledge graphs, real-time WebGL engines, and data visualizations.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-visualizations hover:bg-domain-visualizations/90 text-white text-xs font-bold shadow-lg shadow-domain-visualizations/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </Container>
   </Section>
@@ -1687,11 +2089,24 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Content Tags Section -->
   <Section id="content-tags" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-8 max-w-2xl">
-        <h2 id="content-tags-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
-          Content <span class="text-domain-tags">Tags</span>
-        </h2>
-        <p class="text-gray-400 text-sm md:text-base font-normal leading-relaxed">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="content-tags-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 truncate min-w-0">
+            Content <span class="text-domain-tags">Tags</span>
+          </h2>
+          <a
+            href="/tags/"
+            aria-label="Explore all Tags"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-tags hover:bg-domain-tags/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-tags/20 hover:shadow-domain-tags/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, software projects, university courses, and business services across core computer science domains.
         </p>
       </div>
@@ -2054,30 +2469,17 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
         </div>
       </div>
-
-      <!-- Unified Section CTA Button placed under content -->
-      <div class="mt-12 md:mt-16 flex justify-center">
-        <a 
-          href="/tags/" 
-          class="px-8 py-4 rounded-2xl bg-domain-tags hover:bg-domain-tags/90 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-domain-tags/20 hover:shadow-domain-tags/35 transition-all duration-300 flex items-center gap-3 hover:scale-105"
-        >
-          <span>Browse All Tags</span>
-          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-          </svg>
-        </a>
-      </div>
     </Container>
   </Section>
 
   <!-- Experience Section -->
   <Section id="experience" border="top" padding="standard">
     <Container size="wide" padding="none">
-      <div class="mb-12">
-        <h2 id="experience-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+      <div class="section-header max-w-2xl">
+        <h2 id="experience-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3 truncate min-w-0">
           Professional <span class="heading-gradient-brand">Experiences</span>
         </h2>
-        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal">
+        <p class="text-gray-400 text-sm md:text-base max-w-2xl font-normal leading-relaxed">
           A summary of my academic tenure, software engineering developments, and organizational leadership roles.
         </p>
       </div>
@@ -2093,12 +2495,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         
         <!-- Copywriting Left -->
         <div class="lg:col-span-5">
-          <h2 id="contact-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6">
-            Get in <span class="heading-gradient-brand">Touch</span>
-          </h2>
-          <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-8 font-normal">
-            Whether you want to discuss educational initiatives, collaborate on software architectures, explore knowledge graphs, or just say hello—feel free to reach out. I am always happy to share experiences!
-          </p>
+          <div class="section-header">
+            <h2 id="contact-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3 truncate min-w-0">
+              Get in <span class="heading-gradient-brand">Touch</span>
+            </h2>
+            <p class="text-gray-400 text-sm md:text-base leading-relaxed font-normal">
+              Whether you want to discuss educational initiatives, collaborate on software architectures, explore knowledge graphs, or just say hello—feel free to reach out. I am always happy to share experiences!
+            </p>
+          </div>
 
           <!-- Social Shortcuts -->
           <div class="flex items-center space-x-4">
@@ -2272,6 +2676,117 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 </Layout>
 
 <style>
+  /* Mobile Horizontal Card Carousel */
+  .mobile-card-carousel {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-card-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Equal height for all carousel items and cards */
+  .mobile-card-carousel > * {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    height: auto;
+  }
+  .mobile-card-carousel > div > :global(.preview-card) {
+    flex: 1 1 auto;
+    height: 100%;
+  }
+
+  :global(.preview-card) > :global(.aspect-video) {
+    flex: 0 0 auto !important;
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-card-carousel > .carousel-extra-item {
+      display: none !important;
+    }
+  }
+
+  .mobile-card-carousel a,
+  .mobile-card-carousel img {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Section Header Rhythm */
+  .section-header {
+    margin-bottom: clamp(2rem, 3.5vw, 2.5rem);
+  }
+
+  @media (max-width: 1023.98px) {
+    .carousel-stage {
+      overflow-x: clip;
+      margin-top: -1.25rem;
+      margin-bottom: -2.5rem;
+      margin-inline: -1.5rem;
+    }
+    .mobile-card-carousel {
+      padding-top: 1.25rem;
+      padding-bottom: 2.5rem;
+      padding-inline: 1.5rem;
+      scroll-padding-left: 1.5rem;
+      cursor: grab;
+      touch-action: pan-y pinch-zoom;
+      will-change: transform, scroll-position;
+    }
+    .mobile-card-carousel.is-dragging {
+      cursor: grabbing !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      scroll-snap-type: none !important;
+      scroll-behavior: auto !important;
+    }
+    .mobile-card-carousel.is-dragging * {
+      cursor: grabbing !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+    }
+
+    /* Left and right edge fade overlays in swipe mode */
+    .carousel-stage::before,
+    .carousel-stage::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: clamp(20px, 4vw, 48px);
+      z-index: 20;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .carousel-stage::before {
+      left: 0;
+      background: linear-gradient(to right, var(--color-bg-main) 0%, transparent 100%);
+    }
+    .carousel-stage::after {
+      right: 0;
+      background: linear-gradient(to left, var(--color-bg-main) 0%, transparent 100%);
+    }
+    .carousel-stage.at-start::before {
+      opacity: 0;
+    }
+    .carousel-stage.at-end::after {
+      opacity: 0;
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 1023.98px) {
+    .carousel-stage {
+      margin-inline: -2rem;
+    }
+    .mobile-card-carousel {
+      padding-inline: 2rem;
+      scroll-padding-left: 2rem;
+    }
+  }
+
   /* Profile Photo SVG Image Styling */
   .profile-svg-image {
     transform-origin: 50px 45px;
@@ -2384,4 +2899,548 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       });
     });
   }
+
+  // Interactive Carousel Controller for All 9 Homepage Sections (< lg)
+  function initCarousels() {
+    const stages = document.querySelectorAll<HTMLElement>('.carousel-stage');
+    stages.forEach(stage => {
+      if (stage.dataset.carouselInit === 'true') return;
+      stage.dataset.carouselInit = 'true';
+
+      const carousel = stage.querySelector<HTMLElement>('.mobile-card-carousel');
+      const prevBtn = stage.querySelector<HTMLButtonElement>('.carousel-prev');
+      const nextBtn = stage.querySelector<HTMLButtonElement>('.carousel-next');
+
+      if (!carousel) return;
+
+      let activeAnimationId: number | null = null;
+      let targetScrollLeft: number | null = null;
+      let virtualScroll = carousel.scrollLeft;
+
+      const stopAnimation = () => {
+        if (activeAnimationId !== null) {
+          cancelAnimationFrame(activeAnimationId);
+          activeAnimationId = null;
+        }
+        carousel.style.scrollSnapType = '';
+        carousel.style.scrollBehavior = '';
+      };
+
+      const applyVirtualScroll = (vs: number) => {
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        virtualScroll = vs;
+        if (vs < 0) {
+          carousel.scrollLeft = 0;
+          const overshoot = -vs;
+          carousel.style.transform = `translate3d(${overshoot}px, 0, 0)`;
+        } else if (vs > maxScroll) {
+          carousel.scrollLeft = maxScroll;
+          const overshoot = -(vs - maxScroll);
+          carousel.style.transform = `translate3d(${overshoot}px, 0, 0)`;
+        } else {
+          carousel.scrollLeft = vs;
+          if (carousel.style.transform !== '') {
+            carousel.style.transform = '';
+          }
+        }
+      };
+
+      const startBoundarySpring = (initVs: number, initV: number, wall: 'left' | 'right') => {
+        if (activeAnimationId !== null) {
+          cancelAnimationFrame(activeAnimationId);
+          activeAnimationId = null;
+        }
+
+        carousel.style.scrollSnapType = 'none';
+        carousel.style.scrollBehavior = 'auto';
+
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        const boundary = wall === 'left' ? 0 : maxScroll;
+
+        let vs = initVs;
+        let v = initV;
+        let lastTime = performance.now();
+
+        const k = 135;
+        const c = 21;
+
+        const frame = (now: number) => {
+          const dt = Math.min((now - lastTime) / 1000, 0.05);
+          lastTime = now;
+
+          const isOverLeft = vs < 0;
+          const isOverRight = vs > maxScroll;
+
+          if (!isOverLeft && !isOverRight) {
+            // In bounds, coasting toward the boundary wall
+            v *= Math.pow(0.94, dt * 60);
+            vs += v * dt;
+
+            // If velocity died out before crossing boundary or reversed direction away from wall
+            if ((wall === 'left' && (v >= 0 || Math.abs(v) < 5)) ||
+                (wall === 'right' && (v <= 0 || Math.abs(v) < 5))) {
+              if (Math.abs(vs - boundary) <= 2) {
+                applyVirtualScroll(boundary);
+                activeAnimationId = null;
+                targetScrollLeft = null;
+                carousel.style.transform = '';
+                carousel.style.scrollSnapType = '';
+                carousel.style.scrollBehavior = '';
+                updateControls();
+                return;
+              } else {
+                animateScrollTo(boundary);
+                return;
+              }
+            }
+          } else {
+            // Out of bounds: Hookean spring-damper engaged
+            let displacement = vs - boundary;
+
+            // Clamp max displacement magnitude to 95px for physical integrity
+            if (displacement < -95) {
+              displacement = -95;
+              vs = boundary - 95;
+              if (v < 0) v = 0;
+            } else if (displacement > 95) {
+              displacement = 95;
+              vs = boundary + 95;
+              if (v > 0) v = 0;
+            }
+
+            const accel = -k * displacement - c * v;
+            v += accel * dt;
+            vs += v * dt;
+
+            // Exit condition when spring settles
+            if (Math.abs(displacement) < 0.5 && Math.abs(v) < 4) {
+              applyVirtualScroll(boundary);
+              activeAnimationId = null;
+              targetScrollLeft = null;
+              carousel.style.transform = '';
+              carousel.style.scrollSnapType = '';
+              carousel.style.scrollBehavior = '';
+              updateControls();
+              return;
+            }
+          }
+
+          applyVirtualScroll(vs);
+          activeAnimationId = requestAnimationFrame(frame);
+        };
+
+        activeAnimationId = requestAnimationFrame(frame);
+      };
+
+      const animateScrollTo = (targetPos: number) => {
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        const boundedTarget = Math.max(0, Math.min(maxScroll, targetPos));
+        targetScrollLeft = boundedTarget;
+
+        if (activeAnimationId !== null) {
+          cancelAnimationFrame(activeAnimationId);
+          activeAnimationId = null;
+        }
+
+        carousel.style.scrollSnapType = 'none';
+        carousel.style.scrollBehavior = 'auto';
+
+        let lastTime = performance.now();
+        let currentPos = virtualScroll;
+
+        const frame = (now: number) => {
+          const dt = Math.min((now - lastTime) / 1000, 0.1);
+          lastTime = now;
+
+          // Exponential damping toward boundedTarget with 60fps equivalent factor (1 - 0.91^60dt)
+          const factor = 1 - Math.pow(0.91, dt * 60);
+          currentPos += (boundedTarget - currentPos) * factor;
+          applyVirtualScroll(currentPos);
+
+          if (Math.abs(boundedTarget - currentPos) > 0.5) {
+            activeAnimationId = requestAnimationFrame(frame);
+          } else {
+            applyVirtualScroll(boundedTarget);
+            activeAnimationId = null;
+            targetScrollLeft = null;
+            carousel.style.transform = '';
+            carousel.style.scrollSnapType = '';
+            carousel.style.scrollBehavior = '';
+            updateControls();
+          }
+        };
+
+        activeAnimationId = requestAnimationFrame(frame);
+      };
+
+      const getCardSnapPositions = (): number[] => {
+        const items = Array.from(carousel.children).filter(
+          (el) => (el as HTMLElement).offsetParent !== null
+        ) as HTMLElement[];
+        if (items.length === 0) return [0];
+        const padLeft = parseFloat(window.getComputedStyle(carousel).paddingLeft) || 0;
+        return items.map((item) => Math.max(0, item.offsetLeft - padLeft));
+      };
+
+      const updateControls = () => {
+        const scrollLeft = carousel.scrollLeft;
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+        if (targetScrollLeft !== null && Math.abs(scrollLeft - targetScrollLeft) < 4) {
+          targetScrollLeft = null;
+        }
+
+        if (scrollLeft <= 8) {
+          stage.classList.add('at-start');
+          if (prevBtn) {
+            prevBtn.classList.add('opacity-0', 'pointer-events-none');
+          }
+        } else {
+          stage.classList.remove('at-start');
+          if (prevBtn) {
+            prevBtn.classList.remove('opacity-0', 'pointer-events-none');
+          }
+        }
+
+        if (scrollLeft >= maxScroll - 8) {
+          stage.classList.add('at-end');
+          if (nextBtn) {
+            nextBtn.classList.add('opacity-0', 'pointer-events-none');
+          }
+        } else {
+          stage.classList.remove('at-end');
+          if (nextBtn) {
+            nextBtn.classList.remove('opacity-0', 'pointer-events-none');
+          }
+        }
+      };
+
+      const scrollToNextCard = () => {
+        const snapPositions = getCardSnapPositions();
+        const baseScroll = targetScrollLeft !== null ? targetScrollLeft : carousel.scrollLeft;
+        const nextPos = snapPositions.find((pos) => pos > baseScroll + 8);
+        if (nextPos !== undefined) {
+          animateScrollTo(nextPos);
+        } else {
+          animateScrollTo(carousel.scrollWidth - carousel.clientWidth);
+        }
+      };
+
+      const scrollToPrevCard = () => {
+        const snapPositions = getCardSnapPositions();
+        const baseScroll = targetScrollLeft !== null ? targetScrollLeft : carousel.scrollLeft;
+        const prevPos = [...snapPositions].reverse().find((pos) => pos < baseScroll - 8);
+        if (prevPos !== undefined) {
+          animateScrollTo(prevPos);
+        } else {
+          animateScrollTo(0);
+        }
+      };
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          scrollToPrevCard();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          scrollToNextCard();
+        });
+      }
+
+      carousel.addEventListener('scroll', () => {
+        if (carousel.style.transform === '') {
+          virtualScroll = carousel.scrollLeft;
+        }
+        updateControls();
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        if (carousel.style.transform === '') {
+          virtualScroll = carousel.scrollLeft;
+        }
+        updateControls();
+      }, { passive: true });
+
+      // Initial state
+      virtualScroll = carousel.scrollLeft;
+      updateControls();
+
+      // Prevent native HTML5 drag on child links and images
+      carousel.addEventListener('dragstart', (e: DragEvent) => {
+        e.preventDefault();
+      });
+
+      // Mouse drag-to-swipe gesture on desktop/tablets (< 1024px)
+      let isDown = false;
+      let hasDragged = false;
+      let startX = 0;
+      let startVirtualScroll = 0;
+      let currentDx = 0;
+      let lastMoveX = 0;
+      let lastMoveTime = 0;
+      let velocityPxPerSec = 0;
+      let suppressClickUntil = 0;
+
+      carousel.addEventListener('click', (e: MouseEvent) => {
+        if (performance.now() < suppressClickUntil || hasDragged) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, { capture: true });
+
+      carousel.addEventListener('mousedown', (e: MouseEvent) => {
+        if (e.button !== 0 || window.innerWidth >= 1024) return;
+        stopAnimation();
+        targetScrollLeft = null;
+        isDown = true;
+        hasDragged = false;
+        startX = e.clientX;
+        lastMoveX = e.clientX;
+        lastMoveTime = performance.now();
+        velocityPxPerSec = 0;
+        startVirtualScroll = virtualScroll;
+        currentDx = 0;
+      });
+
+      carousel.addEventListener('touchstart', () => {
+        stopAnimation();
+        if (carousel.style.transform !== '') {
+          carousel.style.transform = '';
+          virtualScroll = carousel.scrollLeft;
+        }
+      }, { passive: true });
+
+      const endDrag = () => {
+        if (!isDown) return;
+        const wasDragging = hasDragged;
+        isDown = false;
+        hasDragged = false;
+        carousel.classList.remove('is-dragging');
+
+        if (wasDragging) {
+          suppressClickUntil = performance.now() + 250;
+          const idleMs = performance.now() - lastMoveTime;
+          const v0 = idleMs < 120 ? velocityPxPerSec : 0;
+          const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+          // Natural physical stopping distance under friction (tau = 0.35s)
+          const projectedScroll = virtualScroll + v0 * 0.35;
+
+          const isLeftBoundary = projectedScroll < -15 || (virtualScroll < 0 && projectedScroll <= 0);
+          const isRightBoundary = projectedScroll > maxScroll + 15 || (virtualScroll > maxScroll && projectedScroll >= maxScroll);
+
+          if (isLeftBoundary) {
+            startBoundarySpring(virtualScroll, v0, 'left');
+            return;
+          }
+          if (isRightBoundary) {
+            startBoundarySpring(virtualScroll, v0, 'right');
+            return;
+          }
+
+          const snapPositions = getCardSnapPositions();
+          let targetPos: number;
+          if (snapPositions.length === 0) {
+            targetPos = carousel.scrollLeft;
+          } else {
+            // Find mathematically closest snap position to projectedScroll
+            targetPos = snapPositions.reduce((prev, curr) =>
+              Math.abs(curr - projectedScroll) < Math.abs(prev - projectedScroll) ? curr : prev
+            );
+
+            // If user swiped with significant velocity (> 180px/s) or dragged (> 40px),
+            // ensure it advances at least 1 card in the swipe direction if projectedScroll stayed on start card
+            if (v0 > 180 || currentDx < -40) {
+              const next = snapPositions.find((pos) => pos > startVirtualScroll + 8);
+              if (next !== undefined && targetPos <= startVirtualScroll) {
+                targetPos = next;
+              }
+            } else if (v0 < -180 || currentDx > 40) {
+              const prev = [...snapPositions].reverse().find((pos) => pos < startVirtualScroll - 8);
+              if (prev !== undefined && targetPos >= startVirtualScroll) {
+                targetPos = prev;
+              }
+            }
+          }
+
+          animateScrollTo(targetPos);
+        } else {
+          if (carousel.style.transform !== '') {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            const wall = virtualScroll < maxScroll / 2 ? 'left' : 'right';
+            startBoundarySpring(virtualScroll, 0, wall);
+          } else {
+            carousel.style.scrollSnapType = '';
+            carousel.style.scrollBehavior = '';
+          }
+        }
+      };
+
+      window.addEventListener('mouseup', endDrag);
+      window.addEventListener('blur', endDrag);
+
+      window.addEventListener('mousemove', (e: MouseEvent) => {
+        if (!isDown) return;
+        // Fail-safe: if primary button is no longer pressed, terminate drag immediately
+        if ((e.buttons & 1) === 0) {
+          endDrag();
+          return;
+        }
+
+        const now = performance.now();
+        const dt = Math.max((now - lastMoveTime) / 1000, 0.001);
+        const deltaX = e.clientX - lastMoveX;
+        lastMoveX = e.clientX;
+        lastMoveTime = now;
+
+        // Instantaneous scroll velocity in px/sec: moving mouse left (deltaX < 0) scrolls right (v > 0)
+        const instantV = -deltaX / dt;
+        velocityPxPerSec = velocityPxPerSec === 0 ? instantV : (0.6 * instantV + 0.4 * velocityPxPerSec);
+
+        currentDx = e.clientX - startX;
+        if (!hasDragged && Math.abs(currentDx) > 5) {
+          hasDragged = true;
+          carousel.classList.add('is-dragging');
+          carousel.style.scrollSnapType = 'none';
+          carousel.style.scrollBehavior = 'auto';
+        }
+
+        if (hasDragged) {
+          e.preventDefault();
+          const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+          const rawVirtualScroll = startVirtualScroll - currentDx;
+
+          if (rawVirtualScroll < 0) {
+            const excess = -rawVirtualScroll;
+            const damped = Math.min(110, Math.pow(excess, 0.8) * 1.8);
+            virtualScroll = -damped;
+          } else if (rawVirtualScroll > maxScroll) {
+            const excess = rawVirtualScroll - maxScroll;
+            const damped = Math.min(110, Math.pow(excess, 0.8) * 1.8);
+            virtualScroll = maxScroll + damped;
+          } else {
+            virtualScroll = rawVirtualScroll;
+          }
+
+          applyVirtualScroll(virtualScroll);
+        }
+      });
+    });
+  }
+
+  // Progressive Text Shortening ('Explore All' -> 'All' -> Arrow Only) for Section Header CTAs
+  function updateSectionHeaderCtas(): void {
+    const headers = document.querySelectorAll<HTMLElement>('.section-header');
+    headers.forEach((header) => {
+      const cta = header.querySelector<HTMLAnchorElement>('.section-header-cta');
+      if (!cta) return;
+
+      const row = cta.parentElement;
+      if (!row) return;
+
+      const h2 = row.querySelector<HTMLElement>('h2');
+      if (!h2) return;
+
+      const textFull = cta.querySelector<HTMLElement>('.cta-text-full');
+      const textShort = cta.querySelector<HTMLElement>('.cta-text-short');
+      if (!textFull || !textShort) return;
+
+      const style = window.getComputedStyle(row);
+      const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
+      const badge = row.querySelector<HTMLElement>('.dev-heading-badge');
+
+      // Helper to test if h2 natural width + cta + badge exceeds available row width
+      const isOverflowing = (): boolean => {
+        const availableWidth = row.clientWidth;
+        const h2NaturalWidth = h2.scrollWidth;
+        const ctaWidth = cta.offsetWidth;
+        const badgeWidth = badge ? gap + badge.offsetWidth : 0;
+        const requiredWidth = h2NaturalWidth + gap + ctaWidth + badgeWidth;
+        return requiredWidth > availableWidth + 2;
+      };
+
+      // 1. Level 1: Full text ("Explore All")
+      textFull.classList.remove('hidden');
+      textShort.classList.add('hidden');
+      cta.classList.remove('px-2.5', 'sm:px-3', 'px-3', 'sm:px-3.5');
+      cta.classList.add('px-4', 'sm:px-5');
+
+      if (!isOverflowing()) {
+        return;
+      }
+
+      // 2. Level 2: Short text ("All")
+      textFull.classList.add('hidden');
+      textShort.classList.remove('hidden');
+      cta.classList.remove('px-4', 'sm:px-5', 'px-2.5', 'sm:px-3');
+      cta.classList.add('px-3', 'sm:px-3.5');
+
+      if (!isOverflowing()) {
+        return;
+      }
+
+      // 3. Level 3: Icon-Only (Arrow SVG)
+      textFull.classList.add('hidden');
+      textShort.classList.add('hidden');
+      cta.classList.remove('px-4', 'sm:px-5', 'px-3', 'sm:px-3.5');
+      cta.classList.add('px-2.5', 'sm:px-3');
+    });
+  }
+
+  function initSectionHeaderCtas(): void {
+    updateSectionHeaderCtas();
+
+    let resizeTimer: number | undefined;
+    window.addEventListener('resize', () => {
+      if (resizeTimer) cancelAnimationFrame(resizeTimer);
+      resizeTimer = requestAnimationFrame(updateSectionHeaderCtas);
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      let shouldUpdate = false;
+      for (const m of mutations) {
+        if (m.type === 'childList') {
+          for (let i = 0; i < m.addedNodes.length; i++) {
+            const node = m.addedNodes[i];
+            if (node instanceof HTMLElement && (node.classList.contains('dev-heading-badge') || node.querySelector('.dev-heading-badge'))) {
+              shouldUpdate = true;
+              break;
+            }
+          }
+          if (shouldUpdate) break;
+          for (let i = 0; i < m.removedNodes.length; i++) {
+            const node = m.removedNodes[i];
+            if (node instanceof HTMLElement && (node.classList.contains('dev-heading-badge') || node.querySelector('.dev-heading-badge'))) {
+              shouldUpdate = true;
+              break;
+            }
+          }
+        }
+        if (shouldUpdate) break;
+      }
+      if (shouldUpdate) {
+        requestAnimationFrame(updateSectionHeaderCtas);
+      }
+    });
+
+    document.querySelectorAll('.section-header').forEach((header) => {
+      observer.observe(header, { childList: true, subtree: true });
+    });
+  }
+
+  function setupPageScripts() {
+    initCarousels();
+    initSectionHeaderCtas();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupPageScripts);
+  } else {
+    setupPageScripts();
+  }
+  document.addEventListener('astro:page-load', setupPageScripts);
 </script>

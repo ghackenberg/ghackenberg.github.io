@@ -1158,8 +1158,12 @@ const currentPath = Astro.url.pathname;
             ? ` <span class="text-zinc-400">|</span> <span class="${dropOffFromPrevious > 30 ? 'text-rose-300 font-bold' : 'text-zinc-300'}">${dropOffFromPrevious > 0 ? '🔻-' : '🔼+'}${Math.abs(dropOffFromPrevious)}%</span>`
             : '';
 
+        const nextSibling = el.nextElementSibling as HTMLElement | null;
+        const hasInlineCta = nextSibling && nextSibling.tagName === 'A';
+
         const badge = document.createElement('span');
-        badge.className = `dev-analytics-badge dev-heading-badge inline-flex items-center gap-1.5 ml-2.5 px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm align-middle my-auto leading-none ring-1 ring-black/20`;
+        const spacingClass = hasInlineCta ? 'shrink-0' : 'ml-2.5';
+        badge.className = `dev-analytics-badge dev-heading-badge inline-flex items-center gap-1.5 ${spacingClass} px-2.5 py-1 rounded-lg text-[11px] font-mono tracking-tight cursor-default select-none border border-zinc-400/90 bg-zinc-500 text-white shadow-lg shadow-black/25 backdrop-blur-sm align-middle my-auto leading-none ring-1 ring-black/20`;
         badge.title = `Heading #${id} retention: ${retentionRate}% (${visitors}/${totalPageVisitors} dwellers, ${events} dwell events)`;
 
         const labelText = dwell && visitors > 0
@@ -1167,7 +1171,11 @@ const currentPath = Astro.url.pathname;
           : `👁️ <span class="text-zinc-300">0/${totalPageVisitors}</span> <span class="text-zinc-300">(0%)</span>`;
         badge.innerHTML = labelText;
 
-        el.appendChild(badge);
+        if (hasInlineCta && nextSibling) {
+          nextSibling.insertAdjacentElement('afterend', badge);
+        } else {
+          el.appendChild(badge);
+        }
         this.createdBadges.push(badge);
       });
 
