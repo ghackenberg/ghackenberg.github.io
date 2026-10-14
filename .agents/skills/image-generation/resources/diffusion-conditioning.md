@@ -50,6 +50,11 @@ To achieve consistent perspective without the layout-locking trap, the repositor
 * **Anchor 2 (Environment)**: Matching pre-rendered focus variant (`src/content/environments/[id]/[variant].jpg`).
 * **Anchor 3 (Object - Optional)**: Clean, isolated, planar reference item (`src/content/objects/[id]/reference.jpg`).
 
+### Zero Spatial Slot Inversion (Left/Right Alignment Contract)
+* When conditioning on a pre-rendered environment focus variant (e.g., `workplace-focus.jpg` where the ergonomic chair slot `workstation-operator` is in the **center-left midground** and the single curved ultra-wide monitor is in the **center-right midground**), **NEVER** invert the left/right positions of the character and focal object in the text prompt.
+* Inverting left and right against the reference image causes the vision encoder to hallucinate a second duplicate object (e.g., painting a new monitor on the left to satisfy the text prompt while keeping the original monitor from the reference image in the background on the right).
+* Always match the exact `spatialPlacement` defined in the environment's `characterSlots`.
+
 ## 4. Central Visual Asset Library & Relational Graph
 
 All recurring visual entities are managed as typed Astro content collections with cross-references:
