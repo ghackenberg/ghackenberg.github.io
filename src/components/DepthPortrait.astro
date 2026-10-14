@@ -80,7 +80,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
   title={title}
   style="transform-style: preserve-3d; will-change: transform;"
 >
-  <!-- Fallback Static Image (rendered immediately, crossfaded once WebGL textures are ready) -->
+  <!-- Fallback Static Image (hidden by default when JS is enabled; shown only if WebGL is unsupported or fails) -->
   <img
     src={initialImageSrc}
     alt={alt}
@@ -89,16 +89,23 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
     height={height}
     loading={loading}
     fetchpriority={fetchpriority}
-    decoding="async"
-    class="depth-fallback-img w-full h-full object-contain pointer-events-none transition-opacity duration-700 select-none"
-    style={vignette ? "mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%);" : ""}
+    decoding={loading === "eager" ? "sync" : "async"}
+    class="depth-fallback-img absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
+    style={vignette ? "mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%); display: none;" : "display: none;"}
   />
 
   <!-- Interactive 3D WebGL Canvas -->
   <canvas 
-    class="depth-canvas absolute inset-0 w-full h-full pointer-events-none opacity-0 transition-opacity duration-700 select-none"
+    class="depth-canvas absolute inset-0 w-full h-full pointer-events-none select-none opacity-0"
     aria-hidden="true"
   ></canvas>
+
+  <noscript>
+    <style>
+      .depth-fallback-img { display: block !important; opacity: 1 !important; }
+      .depth-canvas { display: none !important; }
+    </style>
+  </noscript>
 </div>
 
 <script>
@@ -146,8 +153,34 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
 
       if (!canvas) return;
 
+      function markReady(targetContainer: HTMLElement) {
+        if (targetContainer.getAttribute('data-ready') === 'true') return;
+        targetContainer.setAttribute('data-ready', 'true');
+        targetContainer.dispatchEvent(new CustomEvent('portrait:ready', { bubbles: true }));
+        window.dispatchEvent(new CustomEvent('portrait:ready', { bubbles: true, detail: { id: targetContainer.id } }));
+      }
+
+      function showFallbackImage() {
+        if (canvas) {
+          canvas.style.display = 'none';
+        }
+        if (fallbackImg) {
+          fallbackImg.style.display = 'block';
+          fallbackImg.style.opacity = '1';
+          if (fallbackImg.complete) {
+            markReady(container);
+          } else {
+            fallbackImg.onload = () => markReady(container);
+            fallbackImg.onerror = () => markReady(container);
+          }
+        } else {
+          markReady(container);
+        }
+      }
+
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReducedMotion) {
+        showFallbackImage();
         return;
       }
 
@@ -157,10 +190,19 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
         premultipliedAlpha: false
       });
 
-      if (!gl) return;
+      if (!gl) {
+        showFallbackImage();
+        return;
+      }
 
       const glCtx = gl;
       const canvasEl = canvas;
+
+      // When WebGL is initialized successfully, ensure canvas is display: block and fallback is display: none
+      canvas.style.display = 'block';
+      if (fallbackImg) {
+        fallbackImg.style.display = 'none';
+      }
 
       // Vertex Shader
       const vsSource = `
@@ -363,16 +405,23 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
 
       const vs = createShader(glCtx, glCtx.VERTEX_SHADER, vsSource);
       const fs = createShader(glCtx, glCtx.FRAGMENT_SHADER, fsSource);
-      if (!vs || !fs) return;
+      if (!vs || !fs) {
+        showFallbackImage();
+        return;
+      }
 
       const program = glCtx.createProgram();
-      if (!program) return;
+      if (!program) {
+        showFallbackImage();
+        return;
+      }
       glCtx.attachShader(program, vs);
       glCtx.attachShader(program, fs);
       glCtx.linkProgram(program);
 
       if (!glCtx.getProgramParameter(program, glCtx.LINK_STATUS)) {
         console.warn('Program link failed:', glCtx.getProgramInfoLog(program));
+        showFallbackImage();
         return;
       }
 
@@ -785,15 +834,14 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
           animId = requestAnimationFrame(render);
         }
 
-        // Show canvas and smoothly crossfade
+        // Show canvas and signal readiness (no crossfade from fallback image)
         canvasEl.style.opacity = '1';
-        if (fallbackImg) {
-          fallbackImg.style.opacity = '0';
-        }
+        markReady(container);
 
         animId = requestAnimationFrame(render);
       }).catch(err => {
         console.warn('DepthPortrait texture load failed, using fallback:', err);
+        showFallbackImage();
       });
     });
   }
