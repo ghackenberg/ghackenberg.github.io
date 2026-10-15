@@ -94,6 +94,57 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
     style={vignette ? "mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%); -webkit-mask-image: radial-gradient(circle at 50% 30%, black 55%, transparent 95%); display: none;" : "display: none;"}
   />
 
+  <!-- First-Paint Progress Indicator for RGB + Depth Texture Load -->
+  <div
+    class="depth-loading-indicator absolute inset-0 z-20 flex items-center justify-center p-2 pointer-events-none select-none transition-opacity duration-200"
+    aria-hidden="true"
+  >
+    <div class="relative w-[76%] h-[76%] max-w-[148px] max-h-[148px] rounded-full bg-element-bg/80 border border-element-border backdrop-blur-md shadow-sm flex flex-col items-center justify-center p-3">
+      <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full -rotate-90">
+        <defs>
+          <linearGradient id={`depth-grad-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="var(--color-brand-blue)" />
+            <stop offset="100%" stop-color="var(--color-brand-purple)" />
+          </linearGradient>
+        </defs>
+        <circle
+          cx="50"
+          cy="50"
+          r="44"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3.5"
+          class="text-gray-700/35 light:text-slate-300/60"
+        />
+        <circle
+          class="depth-progress-ring"
+          cx="50"
+          cy="50"
+          r="44"
+          fill="none"
+          stroke={`url(#depth-grad-${id})`}
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-dasharray="276.46"
+          stroke-dashoffset="276.46"
+        />
+      </svg>
+      <span class="depth-progress-pct text-xs sm:text-sm font-extrabold font-mono text-gray-200 light:text-slate-800 tabular-nums leading-none mb-1.5">0%</span>
+      <div class="w-14 sm:w-16 flex items-center gap-1 text-[8px] font-mono text-gray-400 light:text-slate-500 leading-none mb-1">
+        <span class="w-6 shrink-0">RGB</span>
+        <div class="flex-1 h-1 rounded-full bg-gray-700/50 light:bg-slate-300/70 overflow-hidden">
+          <div class="depth-bar-rgb h-full bg-brand-blue w-0 transition-none"></div>
+        </div>
+      </div>
+      <div class="w-14 sm:w-16 flex items-center gap-1 text-[8px] font-mono text-gray-400 light:text-slate-500 leading-none">
+        <span class="w-6 shrink-0">DEP</span>
+        <div class="flex-1 h-1 rounded-full bg-gray-700/50 light:bg-slate-300/70 overflow-hidden">
+          <div class="depth-bar-depth h-full bg-brand-purple w-0 transition-none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Interactive 3D WebGL Canvas -->
   <canvas 
     class="depth-canvas absolute inset-0 w-full h-full pointer-events-none select-none opacity-0"
@@ -104,6 +155,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
     <style>
       .depth-fallback-img { display: block !important; opacity: 1 !important; }
       .depth-canvas { display: none !important; }
+      .depth-loading-indicator { display: none !important; }
     </style>
   </noscript>
 </div>
@@ -150,8 +202,25 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
 
       const canvas = container.querySelector<HTMLCanvasElement>('canvas.depth-canvas');
       const fallbackImg = container.querySelector<HTMLImageElement>('img.depth-fallback-img');
+      const loadingIndicator = container.querySelector<HTMLElement>('.depth-loading-indicator');
+      const progressRingEl = container.querySelector<SVGCircleElement>('.depth-progress-ring');
+      const progressPctEl = container.querySelector<HTMLElement>('.depth-progress-pct');
+      const barRgbEl = container.querySelector<HTMLElement>('.depth-bar-rgb');
+      const barDepthEl = container.querySelector<HTMLElement>('.depth-bar-depth');
 
       if (!canvas) return;
+
+      function hideLoadingIndicator(immediate = false) {
+        if (!loadingIndicator) return;
+        if (immediate) {
+          loadingIndicator.style.display = 'none';
+          return;
+        }
+        loadingIndicator.classList.add('opacity-0');
+        setTimeout(() => {
+          loadingIndicator.style.display = 'none';
+        }, 200);
+      }
 
       function markReady(targetContainer: HTMLElement) {
         if (targetContainer.getAttribute('data-ready') === 'true') return;
@@ -161,6 +230,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       }
 
       function showFallbackImage() {
+        hideLoadingIndicator(true);
         if (canvas) {
           canvas.style.display = 'none';
         }
@@ -467,25 +537,83 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       glCtx.uniform1i(uVignetteLoc, hasVignette ? 1 : 0);
       glCtx.uniform2f(uTexSizeLoc, 800.0, 800.0);
 
-      // Load texture helper
-      function loadTexture(glContext: WebGLRenderingContext, src: string): Promise<{ texture: WebGLTexture; width: number; height: number }> {
+      // Load texture helper (with optional XHR byte-stream progress tracking)
+      function loadTexture(
+        glContext: WebGLRenderingContext,
+        src: string,
+        onProgress?: (fraction: number) => void
+      ): Promise<{ texture: WebGLTexture; width: number; height: number }> {
         return new Promise((resolve, reject) => {
           const texture = glContext.createTexture();
           if (!texture) return reject(new Error('Failed to create texture'));
 
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.onload = () => {
+          const bindImgToWebGL = (img: HTMLImageElement) => {
             glContext.bindTexture(glContext.TEXTURE_2D, texture);
             glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_S, glContext.CLAMP_TO_EDGE);
             glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_T, glContext.CLAMP_TO_EDGE);
             glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_MIN_FILTER, glContext.LINEAR);
             glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_MAG_FILTER, glContext.LINEAR);
             glContext.texImage2D(glContext.TEXTURE_2D, 0, glContext.RGBA, glContext.RGBA, glContext.UNSIGNED_BYTE, img);
-            resolve({ texture, width: img.naturalWidth || 800, height: img.naturalHeight || 800 });
           };
-          img.onerror = reject;
-          img.src = src;
+
+          const loadDirectImage = () => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+              bindImgToWebGL(img);
+              onProgress?.(1.0);
+              resolve({ texture, width: img.naturalWidth || 800, height: img.naturalHeight || 800 });
+            };
+            img.onerror = reject;
+            img.src = src;
+          };
+
+          if (!onProgress) {
+            loadDirectImage();
+            return;
+          }
+
+          onProgress(0.05);
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', src, true);
+          xhr.responseType = 'blob';
+
+          xhr.onprogress = (e: ProgressEvent) => {
+            if (e.lengthComputable && e.total > 0) {
+              const ratio = Math.min(0.90, (e.loaded / e.total) * 0.90);
+              onProgress(Math.max(0.05, ratio));
+            } else if (e.loaded > 0) {
+              const ratio = Math.min(0.85, (1 - Math.exp(-e.loaded / 45000)) * 0.85);
+              onProgress(Math.max(0.05, ratio));
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300 && xhr.response instanceof Blob) {
+              onProgress(0.93);
+              const objUrl = URL.createObjectURL(xhr.response);
+              const img = new Image();
+              img.onload = () => {
+                URL.revokeObjectURL(objUrl);
+                bindImgToWebGL(img);
+                onProgress(1.0);
+                resolve({ texture, width: img.naturalWidth || 800, height: img.naturalHeight || 800 });
+              };
+              img.onerror = () => {
+                URL.revokeObjectURL(objUrl);
+                loadDirectImage();
+              };
+              img.src = objUrl;
+            } else {
+              loadDirectImage();
+            }
+          };
+
+          xhr.onerror = () => {
+            loadDirectImage();
+          };
+
+          xhr.send();
         });
       }
 
@@ -501,10 +629,50 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
       const exprMap = new Map<string, FacialExpressionConfig>();
       expressions.forEach(e => exprMap.set(e.id, e));
 
-      async function loadExpressionTextures(expr: FacialExpressionConfig): Promise<LoadedTexturePair> {
+      let rgbProg = 0;
+      let depthProg = 0;
+      const RING_CIRCUMFERENCE = 276.46;
+
+      function updateProgressUI() {
+        const total = (rgbProg + depthProg) * 0.5;
+        const pct = Math.min(100, Math.max(0, Math.round(total * 100)));
+        if (progressPctEl) {
+          progressPctEl.textContent = `${pct}%`;
+        }
+        if (progressRingEl) {
+          const offset = RING_CIRCUMFERENCE * (1 - total);
+          progressRingEl.style.strokeDashoffset = offset.toFixed(2);
+        }
+        if (barRgbEl) {
+          barRgbEl.style.width = `${Math.min(100, Math.round(rgbProg * 100))}%`;
+        }
+        if (barDepthEl) {
+          barDepthEl.style.width = `${Math.min(100, Math.round(depthProg * 100))}%`;
+        }
+      }
+
+      async function loadExpressionTextures(expr: FacialExpressionConfig, trackProgress = false): Promise<LoadedTexturePair> {
         const [imageRes, depthRes] = await Promise.all([
-          loadTexture(glCtx, expr.imageSrc),
-          loadTexture(glCtx, expr.depthSrc)
+          loadTexture(
+            glCtx,
+            expr.imageSrc,
+            trackProgress
+              ? (p) => {
+                  rgbProg = p;
+                  updateProgressUI();
+                }
+              : undefined
+          ),
+          loadTexture(
+            glCtx,
+            expr.depthSrc,
+            trackProgress
+              ? (p) => {
+                  depthProg = p;
+                  updateProgressUI();
+                }
+              : undefined
+          )
         ]);
         const pair: LoadedTexturePair = {
           imageTex: imageRes.texture,
@@ -516,14 +684,14 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
         return pair;
       }
 
-      // Load primary expression immediately for instant interactive render
-      loadExpressionTextures(expressions[0]).then(() => {
+      // Load primary expression immediately with progress tracking for instant interactive render
+      loadExpressionTextures(expressions[0], true).then(() => {
         // Preload remaining expressions in background when browser is idle
         const secondary = expressions.slice(1);
         if (secondary.length > 0) {
           const loadSecondary = () => {
             secondary.forEach(expr => {
-              loadExpressionTextures(expr).catch(err => {
+              loadExpressionTextures(expr, false).catch(err => {
                 console.warn('Secondary texture load failed:', err);
               });
             });
@@ -675,6 +843,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
         }
 
         resize();
+        drawScene();
         window.addEventListener('resize', resize, { passive: true });
 
         // Observe container size changes (e.g. Reveal.js slide transitions)
@@ -682,7 +851,7 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
           const ro = new ResizeObserver((entries) => {
             for (const entry of entries) {
               if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
-                resize();
+                 resize();
               }
             }
           });
@@ -834,8 +1003,9 @@ const id = `depth-portrait-${Math.random().toString(36).substring(2, 9)}`;
           animId = requestAnimationFrame(render);
         }
 
-        // Show canvas and signal readiness (no crossfade from fallback image)
+        // Show canvas immediately after drawScene() and fade out loading indicator
         canvasEl.style.opacity = '1';
+        hideLoadingIndicator(false);
         markReady(container);
 
         animId = requestAnimationFrame(render);

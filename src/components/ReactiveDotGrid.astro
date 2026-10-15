@@ -55,6 +55,9 @@ const {
         let dots = [];
         let width = 0;
         let height = 0;
+        let lastLatticeWidth = -1;
+        let lastLatticeHeight = -1;
+        let lastLatticeContour = null;
 
         let isVisible = false;
         let pointerActive = false;
@@ -65,18 +68,12 @@ const {
         let lastTimestamp = performance.now();
 
         let introStartTime = null;
-        let introComplete = prefersReducedMotion;
+        let introComplete = true;
         let isIntroActive = false;
 
         function startIntro() {
-          if (prefersReducedMotion) {
-            introComplete = true;
-            isIntroActive = false;
-            return;
-          }
-          introStartTime = performance.now();
-          introComplete = false;
-          isIntroActive = true;
+          introComplete = true;
+          isIntroActive = false;
           startAnimation();
         }
 
@@ -108,6 +105,11 @@ const {
           dots = [];
           if (width <= 0 || height <= 0) return;
 
+          const contourAttr = container.dataset.contour || '';
+          lastLatticeWidth = width;
+          lastLatticeHeight = height;
+          lastLatticeContour = contourAttr;
+
           const cols = Math.max(1, Math.floor((width - spacing) / spacing) + 1);
           const rows = Math.max(1, Math.floor((height - spacing) / spacing) + 1);
 
@@ -119,8 +121,6 @@ const {
 
           const outerCornerRadius = Math.min(56, Math.floor(Math.min(width, height) * 0.28));
           const pad = spacing * 0.35;
-
-          const contourAttr = container.dataset.contour;
           let contour = null;
           if (contourAttr) {
             try {
@@ -196,7 +196,7 @@ const {
                   energy: 0,
                   alphaFactor,
                   alphaBin,
-                  spawnDelay: (prefersReducedMotion || introComplete) ? 0 : Math.random() * 650
+                  spawnDelay: 0
                 });
               }
             }
@@ -234,7 +234,7 @@ const {
                   energy: 0,
                   alphaFactor: outerAlpha,
                   alphaBin,
-                  spawnDelay: (prefersReducedMotion || introComplete) ? 0 : Math.random() * 650
+                  spawnDelay: 0
                 });
               }
             }
@@ -452,7 +452,13 @@ const {
             height = h;
           }
 
-          if (sizeChanged || force) {
+          const currentContour = container.dataset.contour || '';
+          const latticeChanged =
+            width !== lastLatticeWidth ||
+            height !== lastLatticeHeight ||
+            currentContour !== lastLatticeContour;
+
+          if (sizeChanged || (force && latticeChanged)) {
             rebuildLattice();
             draw(performance.now());
           }
@@ -474,8 +480,6 @@ const {
         window.addEventListener('resize', function () { resize(); }, { passive: true });
         container.addEventListener('dotgrid:layout', function () {
           resize(true);
-          rebuildLattice();
-          draw(performance.now());
         });
         container.addEventListener('dotgrid:intro', function () {
           startIntro();

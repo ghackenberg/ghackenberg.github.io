@@ -1096,6 +1096,28 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     <!-- Hero Section -->
     <Section id="home" padding="standard">
       <Container size="wide" padding="none">
+        <style is:inline>
+          #hero-portrait-cell {
+            position: absolute;
+            right: 0;
+            z-index: 10;
+            pointer-events: auto;
+            display: flex;
+          }
+          #hero-portrait-wrapper {
+            aspect-ratio: 1 / 1;
+          }
+          @media (min-width: 480px) and (max-width: 767.98px) {
+            #hero-grid {
+              padding-top: 60px;
+            }
+          }
+          @media (max-width: 479.98px) {
+            #hero-grid {
+              padding-top: 174px;
+            }
+          }
+        </style>
         <div id="hero-grid" class="relative w-full">
           <!-- Full Hero Background L-Shaped Dot Grid Layer -->
           <div id="hero-dot-grid-layer" class="absolute inset-0 z-0 pointer-events-none">
@@ -1238,7 +1260,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           </div>
 
           <!-- Portrait Cell (dynamically positioned by syncHeroResponsiveLayout) -->
-          <div id="hero-portrait-cell" class="absolute right-0 z-10 pointer-events-auto opacity-0 transition-opacity duration-500" style="visibility: hidden;">
+          <div id="hero-portrait-cell" class="absolute right-0 z-10 pointer-events-auto" style="visibility: hidden;">
             <div id="hero-portrait-wrapper" class="relative z-10 aspect-square group shrink-0">
               <DepthPortrait
                 expressions={faceExpressions}
@@ -1263,6 +1285,19 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Hero Responsive Layout & Zero-Flicker First-Paint Init -->
   <script is:inline>
     (function () {
+      let isFontsReady = false;
+      let isPortraitReady = false;
+      let isPortraitRevealed = false;
+
+      let lastActionsWidth = -1;
+      let lastActionsFontsReady = false;
+      let lastPaddingTop = -1;
+      let lastLeft = -1;
+      let lastTop = -1;
+      let lastSize = -1;
+      let lastGridWidth = -1;
+      let lastContourJson = '';
+
       function syncHeroResponsiveLayout() {
         // 1. Adaptive #hero-contact-btn (Get in Touch -> Contact -> Icon Only)
         const actionsRow = document.getElementById('hero-actions-row');
@@ -1276,53 +1311,56 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
           if (textFull && textShort && icon) {
             const availableWidth = actionsRow.clientWidth;
-            const style = window.getComputedStyle(actionsRow);
-            const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
-            const socialWidth = socialGroup.offsetWidth;
+            if (availableWidth !== lastActionsWidth || isFontsReady !== lastActionsFontsReady) {
+              lastActionsWidth = availableWidth;
+              lastActionsFontsReady = isFontsReady;
 
-            const fits = function () {
-              return contactBtn.offsetWidth + gap + socialWidth <= availableWidth + 1;
-            };
+              const style = window.getComputedStyle(actionsRow);
+              const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
+              const socialWidth = socialGroup.offsetWidth;
 
-            // Level 1: Full text ("Get in Touch")
-            textFull.classList.remove('hidden');
-            textShort.classList.add('hidden');
-            icon.classList.add('hidden');
-            contactBtn.classList.remove('w-12', 'px-0', 'px-4');
-            contactBtn.classList.add('px-6');
+              const fits = function () {
+                return contactBtn.offsetWidth + gap + socialWidth <= availableWidth + 1;
+              };
 
-            if (!fits()) {
-              // Level 2: Short text ("Contact")
-              textFull.classList.add('hidden');
-              textShort.classList.remove('hidden');
+              // Level 1: Full text ("Get in Touch")
+              textFull.classList.remove('hidden');
+              textShort.classList.add('hidden');
               icon.classList.add('hidden');
-              contactBtn.classList.remove('w-12', 'px-0', 'px-6');
-              contactBtn.classList.add('px-4');
+              contactBtn.classList.remove('w-12', 'px-0', 'px-4');
+              contactBtn.classList.add('px-6');
 
               if (!fits()) {
-                // Level 3: Envelope Icon Only
+                // Level 2: Short text ("Contact")
                 textFull.classList.add('hidden');
-                textShort.classList.add('hidden');
-                icon.classList.remove('hidden');
-                contactBtn.classList.remove('px-6', 'px-4');
-                contactBtn.classList.add('w-12', 'px-0');
+                textShort.classList.remove('hidden');
+                icon.classList.add('hidden');
+                contactBtn.classList.remove('w-12', 'px-0', 'px-6');
+                contactBtn.classList.add('px-4');
+
+                if (!fits()) {
+                  // Level 3: Envelope Icon Only
+                  textFull.classList.add('hidden');
+                  textShort.classList.add('hidden');
+                  icon.classList.remove('hidden');
+                  contactBtn.classList.remove('px-6', 'px-4');
+                  contactBtn.classList.add('w-12', 'px-0');
+                }
               }
             }
           }
         }
 
-        // 2. Exact 2D Collision-Free Portrait Size & Position Solver
+        // 2. Exact 2D Collision-Free Portrait Size & Position Solver (Single-Pass Offset-Normalized)
         const heroGrid = document.getElementById('hero-grid');
         const h1 = document.getElementById('hero-heading');
         const portraitCell = document.getElementById('hero-portrait-cell');
         const portraitWrapper = document.getElementById('hero-portrait-wrapper');
 
         if (heroGrid && portraitWrapper && portraitCell && h1) {
-          // Ensure h1 styling is 100% pure CSS and invariant
-          h1.style.width = '';
-          h1.style.maxWidth = '';
-
           const gridRect = heroGrid.getBoundingClientRect();
+          const h1Rect = h1.getBoundingClientRect();
+          const contentOriginY = h1Rect.top;
           const rawRects = [];
 
           function collectLineRects(el) {
@@ -1338,8 +1376,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 const cr = clientRects[i];
                 if (cr.width < 2 || cr.height < 2) continue;
                 rawRects.push({
-                  top: cr.top - gridRect.top,
-                  bottom: cr.bottom - gridRect.top,
+                  top: cr.top - contentOriginY,
+                  bottom: cr.bottom - contentOriginY,
                   right: cr.right - gridRect.left
                 });
               }
@@ -1362,8 +1400,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                 const cr = child.getBoundingClientRect();
                 if (cr.width > 2 && cr.height > 2) {
                   rawRects.push({
-                    top: cr.top - gridRect.top,
-                    bottom: cr.bottom - gridRect.top,
+                    top: cr.top - contentOriginY,
+                    bottom: cr.bottom - contentOriginY,
                     right: cr.right - gridRect.left
                   });
                 }
@@ -1376,8 +1414,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               const cr = contactBtn.getBoundingClientRect();
               if (cr.width > 2 && cr.height > 2) {
                 rawRects.push({
-                  top: cr.top - gridRect.top,
-                  bottom: cr.bottom - gridRect.top,
+                  top: cr.top - contentOriginY,
+                  bottom: cr.bottom - contentOriginY,
                   right: cr.right - gridRect.left
                 });
               }
@@ -1389,8 +1427,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                   const cr = child.getBoundingClientRect();
                   if (cr.width > 2 && cr.height > 2) {
                     rawRects.push({
-                      top: cr.top - gridRect.top,
-                      bottom: cr.bottom - gridRect.top,
+                      top: cr.top - contentOriginY,
+                      bottom: cr.bottom - contentOriginY,
                       right: cr.right - gridRect.left
                     });
                   }
@@ -1425,9 +1463,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           // Exact 2D Collision-Free Solver
           const PORTRAIT_GAP_X = 18;
           const PORTRAIT_GAP_Y = 6;
+          const MIN_PORTRAIT_SIZE = 150; // Fixed 150px (the 2-line H1 height before the <768px breakpoint)
+          const TOP_BAND_GAP = 24;       // mb-6 spacing when portrait is completely above H1
 
           const gridWidth = Math.floor(gridRect.width);
-          const gridHeight = Math.floor(gridRect.height);
+          const contentHeight = bands.length > 0 ? Math.ceil(bands[bands.length - 1].bottom) : Math.floor(gridRect.height);
+          const h1Height = Math.round(h1Rect.height);
+          const targetTopSize = Math.max(MIN_PORTRAIT_SIZE, h1Height);
 
           function maxRightInVerticalRange(yTop, yBottom) {
             let maxR = 0;
@@ -1445,10 +1487,10 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           // Candidate 1: 'rechts mittig' (Right-Center)
           let sizeRightCenter = 0;
           let reqLeftRightCenter = 0;
-          const maxPossibleRightCenter = Math.min(480, gridHeight);
+          const maxPossibleRightCenter = Math.min(480, contentHeight);
           for (let S = maxPossibleRightCenter; S >= 1; S--) {
-            const yTop = (gridHeight - S) * 0.5;
-            const yBottom = (gridHeight + S) * 0.5;
+            const yTop = (contentHeight - S) * 0.5;
+            const yBottom = (contentHeight + S) * 0.5;
             const reqLeft = maxRightInVerticalRange(yTop, yBottom) + PORTRAIT_GAP_X;
             if (reqLeft + S <= gridWidth) {
               sizeRightCenter = S;
@@ -1457,108 +1499,121 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             }
           }
 
-          // Candidate 2: 'oben' (Top)
-          // When displayed at top, the head aligns with H1 and its vertical scale is determined by the H1 height.
-          const h1Height = Math.round(h1.getBoundingClientRect().height);
+          // Candidate 2: 'oben rechts neben H1' (Top-Beside-H1)
           const reqLeftBesideH1 = maxRightInVerticalRange(0, h1Height) + PORTRAIT_GAP_X;
           const availableWidthBesideH1 = gridWidth - reqLeftBesideH1;
+          const sizeTopRight = (availableWidthBesideH1 >= targetTopSize && h1Height > 0) ? targetTopSize : 0;
 
-          let sizeTopRight = 0;
-          let reqLeftTop = reqLeftBesideH1;
+          // 3-State Selection: 'right-center' -> 'top-beside-h1' -> 'top-above-h1'
+          let topExtension = 0;
+          let chosenSize = 0;
+          let leftPos = 0;
+          let topPos = 0;
 
-          // The head is displayed at the top and centered as long as the H1 height dominates the head size.
-          // When the page width dominates the head size rather than the H1 height (availableWidthBesideH1 < h1Height),
-          // hide the head (sizeTopRight = 0).
-          if (availableWidthBesideH1 >= h1Height && h1Height > 0) {
-            sizeTopRight = h1Height;
+          if (sizeRightCenter >= targetTopSize && (sizeRightCenter + 4 >= sizeTopRight) && h1Height > 0) {
+            // Mode 1: Right-Center
+            topExtension = 0;
+            chosenSize = sizeRightCenter;
+            leftPos = Math.round(reqLeftRightCenter + (gridWidth - reqLeftRightCenter - sizeRightCenter) * 0.5);
+            topPos = Math.round((contentHeight - sizeRightCenter) * 0.5);
+          } else if (sizeTopRight >= targetTopSize && h1Height > 0) {
+            // Mode 2: Top-Right Beside H1
+            // When H1 is 90px (<768px) and portrait is 150px, extend grid upward by (150 - 90) = 60px
+            // so the 150px portrait at topPos = 0 aligns its bottom flush with the bottom of H1!
+            topExtension = Math.max(0, targetTopSize - h1Height);
+            chosenSize = sizeTopRight;
+            leftPos = Math.round(reqLeftBesideH1 + (availableWidthBesideH1 - sizeTopRight) * 0.5);
+            topPos = 0;
+          } else if (h1Height > 0 && gridWidth > 0) {
+            // Mode 3: Top-Center Above H1
+            // When the 150px portrait no longer fits beside H1 (availableWidthBesideH1 < 150),
+            // extend grid above H1 by 150px + 24px gap = 174px and center the 150px portrait horizontally at topPos = 0!
+            chosenSize = Math.min(targetTopSize, gridWidth);
+            topExtension = chosenSize + TOP_BAND_GAP;
+            leftPos = Math.round((gridWidth - chosenSize) * 0.5);
+            topPos = 0;
           }
 
-          const minPortraitSize = h1Height;
-          // Prefer center if size is equal or within 4px rounding/wrapping jitter
-          const prefersCenter = (sizeRightCenter + 4 >= sizeTopRight);
-          const chosenSize = prefersCenter ? sizeRightCenter : sizeTopRight;
+          // Dirty-checked DOM style writes (zero layout thrashing on scroll/resize)
+          if (topExtension !== lastPaddingTop) {
+            lastPaddingTop = topExtension;
+            heroGrid.style.paddingTop = topExtension > 0 ? (topExtension + 'px') : '0px';
+          }
 
-          if (chosenSize < minPortraitSize || minPortraitSize <= 0) {
-            portraitCell.style.display = 'none';
-            portraitCell.style.visibility = 'hidden';
-            portraitCell.style.left = '';
-            portraitCell.style.right = '';
-            portraitCell.style.top = '';
-            portraitCell.style.bottom = '';
-            portraitCell.style.width = '';
-            portraitCell.style.height = '';
-            portraitWrapper.style.width = '';
-            portraitWrapper.style.height = '';
-          } else if (prefersCenter) {
-            const leftPos = Math.round(reqLeftRightCenter + (gridWidth - reqLeftRightCenter - sizeRightCenter) * 0.5);
-            const topPos = Math.round((gridHeight - sizeRightCenter) * 0.5);
-
-            portraitCell.style.display = '';
-            portraitCell.style.left = leftPos + 'px';
-            portraitCell.style.top = topPos + 'px';
-            portraitCell.style.right = 'auto';
-            portraitCell.style.bottom = 'auto';
-            portraitCell.style.width = sizeRightCenter + 'px';
-            portraitCell.style.height = sizeRightCenter + 'px';
-
-            portraitWrapper.style.width = sizeRightCenter + 'px';
-            portraitWrapper.style.height = sizeRightCenter + 'px';
-
-            if (isPortraitRevealed) {
-              portraitCell.style.visibility = 'visible';
-              portraitCell.classList.remove('opacity-0');
+          if (chosenSize <= 0) {
+            if (lastSize !== 0) {
+              lastSize = 0;
+              lastLeft = -1;
+              lastTop = -1;
+              portraitCell.style.display = 'none';
+              portraitCell.style.visibility = 'hidden';
+              portraitCell.style.left = '';
+              portraitCell.style.right = '';
+              portraitCell.style.top = '';
+              portraitCell.style.bottom = '';
+              portraitCell.style.width = '';
+              portraitCell.style.height = '';
+              portraitWrapper.style.width = '';
+              portraitWrapper.style.height = '';
             }
           } else {
-            const leftPosTop = Math.round(reqLeftTop + (availableWidthBesideH1 - sizeTopRight) * 0.5);
+            if (leftPos !== lastLeft || topPos !== lastTop || chosenSize !== lastSize) {
+              lastLeft = leftPos;
+              lastTop = topPos;
+              lastSize = chosenSize;
 
-            portraitCell.style.display = '';
-            portraitCell.style.left = leftPosTop + 'px';
-            portraitCell.style.top = '0px';
-            portraitCell.style.right = 'auto';
-            portraitCell.style.bottom = 'auto';
-            portraitCell.style.width = sizeTopRight + 'px';
-            portraitCell.style.height = sizeTopRight + 'px';
+              portraitCell.style.display = '';
+              portraitCell.style.left = leftPos + 'px';
+              portraitCell.style.top = topPos + 'px';
+              portraitCell.style.right = 'auto';
+              portraitCell.style.bottom = 'auto';
+              portraitCell.style.width = chosenSize + 'px';
+              portraitCell.style.height = chosenSize + 'px';
 
-            portraitWrapper.style.width = sizeTopRight + 'px';
-            portraitWrapper.style.height = sizeTopRight + 'px';
+              portraitWrapper.style.width = chosenSize + 'px';
+              portraitWrapper.style.height = chosenSize + 'px';
+            }
 
-            if (isPortraitRevealed) {
+            if (portraitCell.style.visibility !== 'visible') {
               portraitCell.style.visibility = 'visible';
+              portraitCell.style.opacity = '1';
               portraitCell.classList.remove('opacity-0');
             }
           }
 
-          // Update ReactiveDotGrid content contour
+          // Update ReactiveDotGrid content contour (shifted by topExtension)
           const dotGridLayer = document.getElementById('hero-dot-grid-layer');
           const dotGridEl = dotGridLayer ? dotGridLayer.querySelector('.reactive-dot-grid') : null;
 
           if (dotGridLayer && dotGridEl) {
-            dotGridLayer.style.display = '';
+            if (dotGridLayer.style.display === 'none') {
+              dotGridLayer.style.display = '';
+            }
             const contourData = bands.map(function (b) {
-              return [Math.round(b.top), Math.round(b.bottom), Math.ceil(b.right)];
+              return [Math.round(b.top + topExtension), Math.round(b.bottom + topExtension), Math.ceil(b.right)];
             });
-            dotGridEl.dataset.contour = JSON.stringify(contourData);
+            const contourJson = JSON.stringify(contourData);
             if (typeof window.__initReactiveDotGrids === 'function') {
               window.__initReactiveDotGrids();
             }
-            dotGridEl.dispatchEvent(new CustomEvent('dotgrid:layout'));
+            if (contourJson !== lastContourJson || gridWidth !== lastGridWidth) {
+              lastContourJson = contourJson;
+              lastGridWidth = gridWidth;
+              dotGridEl.dataset.contour = contourJson;
+              dotGridEl.dispatchEvent(new CustomEvent('dotgrid:layout'));
+            }
           }
         }
       }
 
-      let isFontsReady = false;
-      let isPortraitReady = false;
-      let isPortraitRevealed = false;
-
       function checkAndRevealPortrait() {
         if (isPortraitRevealed) return;
-        if (isFontsReady && isPortraitReady) {
-          isPortraitRevealed = true;
-          const portraitCell = document.getElementById('hero-portrait-cell');
-          if (portraitCell && portraitCell.style.display !== 'none') {
-            portraitCell.style.visibility = 'visible';
-            portraitCell.classList.remove('opacity-0');
-          }
+        isPortraitRevealed = true;
+        const portraitCell = document.getElementById('hero-portrait-cell');
+        if (portraitCell && portraitCell.style.display !== 'none') {
+          portraitCell.style.visibility = 'visible';
+          portraitCell.style.opacity = '1';
+          portraitCell.classList.remove('opacity-0');
         }
       }
 
@@ -1589,8 +1644,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         onPortraitReady();
       }
 
+      // Execute initial layout pass synchronously before First Paint
+      syncHeroResponsiveLayout();
+
       // Check font readiness
-      const isOutfitLoaded = document.fonts && typeof document.fonts.check === 'function' && document.fonts.check('800 60px Outfit');
+      const isOutfitLoaded = document.fonts && typeof document.fonts.check === 'function' &&
+        document.fonts.check('800 60px Outfit') &&
+        document.fonts.check('700 24px Outfit') &&
+        document.fonts.check('400 18px Outfit');
       if (isOutfitLoaded) {
         onFontsReady();
       } else if (document.fonts && document.fonts.ready) {
@@ -1609,9 +1670,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
       window.__syncHeroResponsiveLayout = function () {
         syncHeroResponsiveLayout();
-        if (isFontsReady && isPortraitReady && !isPortraitRevealed) {
-          checkAndRevealPortrait();
-        }
       };
     })();
   </script>
@@ -3065,6 +3123,16 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   }
   #hero-portrait-wrapper {
     aspect-ratio: 1 / 1;
+  }
+  @media (min-width: 480px) and (max-width: 767.98px) {
+    #hero-grid {
+      padding-top: 60px;
+    }
+  }
+  @media (max-width: 479.98px) {
+    #hero-grid {
+      padding-top: 174px;
+    }
   }
 
   /* Mobile Horizontal Card Carousel */
