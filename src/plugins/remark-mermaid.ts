@@ -408,7 +408,7 @@ export default function remarkMermaid() {
       const { darkSvg, lightSvg, contentUrl } = await renderMermaidDiagrams(code, filePath, title);
 
       const html = `
-<figure class="mermaid-diagram my-8 flex flex-col items-center w-full overflow-x-auto" role="figure" aria-label="${escapeHtml(title!)}" itemscope itemtype="https://schema.org/ImageObject" data-diagram-title="${escapeHtml(title!)}" data-diagram-caption="${escapeHtml(caption!)}">
+<figure class="mermaid-diagram my-8 flex flex-col items-center w-full overflow-x-auto" role="figure" aria-label="${escapeHtml(title!)}" data-diagram-title="${escapeHtml(title!)}" data-diagram-caption="${escapeHtml(caption!)}">
   <meta itemprop="contentUrl" content="${escapeHtml(contentUrl)}" />
   <meta itemprop="name" content="${escapeHtml(title!)}" />
   <meta itemprop="description" content="${escapeHtml(caption!)}" />

@@ -130,8 +130,13 @@ interface SchemaEntity {
   '@context'?: string;
   '@type'?: string | string[];
   '@id'?: string;
+  url?: string;
+  headline?: string;
+  name?: string;
+  description?: string;
   primaryImageOfPage?: { '@id': string };
   image?: Array<{ '@id': string }> | string | Array<string>;
+  '@graph'?: SchemaEntity[];
   [key: string]: JsonLdValue;
 }
 
@@ -382,33 +387,29 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
   let totalHtmlEnriched = 0;
   let totalImageObjectsCreated = 0;
 
+  const personEntity = {
+    '@type': 'Person',
+    '@id': 'https://hackenberg.tech/#person',
+    name: 'Dr. Georg Hackenberg',
+    url: 'https://hackenberg.tech',
+  };
+
+  const targetArticleTypes = new Set([
+    'Article',
+    'BlogPosting',
+    'TechArticle',
+    'ScholarlyArticle',
+    'Course',
+    'LearningResource',
+    'PresentationDigitalDocument',
+    'SoftwareApplication',
+    'SoftwareSourceCode',
+    'Service',
+  ]);
+
   for (const pageData of pageDataList) {
     const { htmlFile, canonicalPageUrl, images } = pageData;
     const slugRegistry = new PageSlugRegistry();
-
-    // Construct standard-compliant Schema.org ImageObject for each extracted image
-    const imageObjects = images.map((img) => {
-      const baseSlug = extractSemanticSlug(img.src, img.title);
-      const uniqueSlug = slugRegistry.getUniqueSlug(baseSlug);
-      const entityId = `${canonicalPageUrl}#image-${uniqueSlug}`;
-      const mimeType = getMimeType(img.url);
-
-      return {
-        '@context': 'https://schema.org',
-        '@type': 'ImageObject',
-        '@id': entityId,
-        url: entityId,
-        contentUrl: img.url,
-        name: img.title,
-        caption: img.caption,
-        description: img.caption,
-        encodingFormat: mimeType,
-        author: { '@id': 'https://hackenberg.tech/#person' },
-        creator: { '@id': 'https://hackenberg.tech/#person' },
-        copyrightHolder: { '@id': 'https://hackenberg.tech/#person' },
-        isPartOf: { '@id': canonicalPageUrl },
-      };
-    });
 
     let html = fs.readFileSync(htmlFile, 'utf8');
     const $ = cheerio.load(html);
@@ -428,18 +429,87 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       }
     }
 
-    // Link primary image and image collection if page contains Article, BlogPosting, TechArticle, or Course
-    const primaryImage = imageObjects[0];
-    const imageRefs = imageObjects.map((io) => ({ '@id': io['@id'] }));
-    const targetArticleTypes = new Set(['Article', 'BlogPosting', 'TechArticle', 'Course']);
-
+    const candidateNodes: SchemaEntity[] = [];
     for (const node of jsonLdData) {
       if (!node || typeof node !== 'object') continue;
+      candidateNodes.push(node);
+      if (Array.isArray(node['@graph'])) {
+        for (const graphNode of node['@graph']) {
+          if (graphNode && typeof graphNode === 'object') {
+            candidateNodes.push(graphNode as SchemaEntity);
+          }
+        }
+      }
+    }
+
+    // Ensure any physical hero/preview image declared on a target schema entity is included as the primary image
+    for (const node of candidateNodes) {
       const nodeType = node['@type'];
       const matches = Array.isArray(nodeType)
         ? nodeType.some((t: string) => targetArticleTypes.has(t))
         : typeof nodeType === 'string' && targetArticleTypes.has(nodeType);
-      if (matches) {
+      const isCurrentPageEntity = !node.url || node.url === canonicalPageUrl;
+      if (matches && isCurrentPageEntity && typeof node.image === 'string' && node.image.startsWith(SITE_ORIGIN)) {
+        const heroUrl = node.image.trim();
+        const relAssetPath = heroUrl.slice(SITE_ORIGIN.length).replace(/^\/+/, '');
+        const physicalHeroPath = path.join(distDir, relAssetPath);
+        if (fs.existsSync(physicalHeroPath) && !images.some((img) => img.url === heroUrl)) {
+          const heroTitle =
+            (typeof node.headline === 'string' && node.headline.trim()) ||
+            (typeof node.name === 'string' && node.name.trim()) ||
+            'Preview Image';
+          const heroCaption =
+            (typeof node.description === 'string' && node.description.trim()) ||
+            `${heroTitle} – preview image`;
+          images.unshift({
+            url: heroUrl,
+            src: heroUrl,
+            title: heroTitle,
+            caption: heroCaption,
+          });
+        }
+      }
+    }
+
+    // Construct standard-compliant Schema.org ImageObject for each extracted image
+    const imageObjects = images.map((img) => {
+      const baseSlug = extractSemanticSlug(img.src, img.title);
+      const uniqueSlug = slugRegistry.getUniqueSlug(baseSlug);
+      const entityId = `${canonicalPageUrl}#image-${uniqueSlug}`;
+      const mimeType = getMimeType(img.url);
+
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'ImageObject',
+        '@id': entityId,
+        url: entityId,
+        contentUrl: img.url,
+        name: img.title,
+        caption: img.caption,
+        description: img.caption,
+        encodingFormat: mimeType,
+        license: 'https://hackenberg.tech/impressum/#urheberrecht',
+        acquireLicensePage: 'https://hackenberg.tech/impressum/#kontakt',
+        creditText: 'Dr. Georg Hackenberg',
+        copyrightNotice: '© Dr. Georg Hackenberg. All rights reserved.',
+        author: { ...personEntity },
+        creator: { ...personEntity },
+        copyrightHolder: { ...personEntity },
+        isPartOf: { '@id': canonicalPageUrl },
+      };
+    });
+
+    // Link primary image and image collection for all target content schema types
+    const primaryImage = imageObjects[0];
+    const imageRefs = imageObjects.map((io) => ({ '@id': io['@id'] }));
+
+    for (const node of candidateNodes) {
+      const nodeType = node['@type'];
+      const matches = Array.isArray(nodeType)
+        ? nodeType.some((t: string) => targetArticleTypes.has(t))
+        : typeof nodeType === 'string' && targetArticleTypes.has(nodeType);
+      const isCurrentPageEntity = !node.url || node.url === canonicalPageUrl;
+      if (matches && isCurrentPageEntity) {
         node.primaryImageOfPage = { '@id': primaryImage['@id'] };
         node.image = imageRefs;
       }
