@@ -1107,12 +1107,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           #hero-portrait-wrapper {
             aspect-ratio: 1 / 1;
           }
-          @media (min-width: 480px) and (max-width: 767.98px) {
-            #hero-grid {
-              padding-top: 60px;
-            }
-          }
-          @media (max-width: 479.98px) {
+          @media (max-width: 767.98px) {
             #hero-grid {
               padding-top: 174px;
             }
@@ -1125,7 +1120,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           </div>
 
           <!-- Heading -->
-          <h1 id="hero-heading" class="relative z-10 text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6 leading-tight min-w-0 max-w-[21rem] md:max-w-2xl">
+          <h1 id="hero-heading" class="relative z-10 text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6 leading-tight min-w-0 max-w-2xl">
             Hi, I am <span class="heading-gradient-brand">Dr. Georg Hackenberg</span>
           </h1>
 
@@ -1484,51 +1479,56 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             return maxR;
           }
 
-          // Candidate 1: 'rechts mittig' (Right-Center)
-          let sizeRightCenter = 0;
-          let reqLeftRightCenter = 0;
-          const maxPossibleRightCenter = Math.min(480, contentHeight);
-          for (let S = maxPossibleRightCenter; S >= 1; S--) {
-            const yTop = (contentHeight - S) * 0.5;
-            const yBottom = (contentHeight + S) * 0.5;
-            const reqLeft = maxRightInVerticalRange(yTop, yBottom) + PORTRAIT_GAP_X;
-            if (reqLeft + S <= gridWidth) {
-              sizeRightCenter = S;
-              reqLeftRightCenter = reqLeft;
-              break;
-            }
-          }
+          const isSmallH1 = window.innerWidth < 768;
 
-          // Candidate 2: 'oben rechts neben H1' (Top-Beside-H1)
-          const reqLeftBesideH1 = maxRightInVerticalRange(0, h1Height) + PORTRAIT_GAP_X;
-          const availableWidthBesideH1 = gridWidth - reqLeftBesideH1;
-          const sizeTopRight = (availableWidthBesideH1 >= targetTopSize && h1Height > 0) ? targetTopSize : 0;
-
-          // 3-State Selection: 'right-center' -> 'top-beside-h1' -> 'top-above-h1'
           let topExtension = 0;
           let chosenSize = 0;
           let leftPos = 0;
           let topPos = 0;
 
-          if (sizeRightCenter >= targetTopSize && (sizeRightCenter + 4 >= sizeTopRight) && h1Height > 0) {
-            // Mode 1: Right-Center
-            topExtension = 0;
-            chosenSize = sizeRightCenter;
-            leftPos = Math.round(reqLeftRightCenter + (gridWidth - reqLeftRightCenter - sizeRightCenter) * 0.5);
-            topPos = Math.round((contentHeight - sizeRightCenter) * 0.5);
-          } else if (sizeTopRight >= targetTopSize && h1Height > 0) {
-            // Mode 2: Top-Right Beside H1
-            // When H1 is 90px (<768px) and portrait is 150px, extend grid upward by (150 - 90) = 60px
-            // so the 150px portrait at topPos = 0 aligns its bottom flush with the bottom of H1!
-            topExtension = Math.max(0, targetTopSize - h1Height);
-            chosenSize = sizeTopRight;
-            leftPos = Math.round(reqLeftBesideH1 + (availableWidthBesideH1 - sizeTopRight) * 0.5);
-            topPos = 0;
-          } else if (h1Height > 0 && gridWidth > 0) {
-            // Mode 3: Top-Center Above H1
-            // When the 150px portrait no longer fits beside H1 (availableWidthBesideH1 < 150),
-            // extend grid above H1 by 150px + 24px gap = 174px and center the 150px portrait horizontally at topPos = 0!
-            chosenSize = Math.min(targetTopSize, gridWidth);
+          if (!isSmallH1) {
+            // Candidate 1: 'rechts mittig' (Right-Center)
+            let sizeRightCenter = 0;
+            let reqLeftRightCenter = 0;
+            const maxPossibleRightCenter = Math.min(480, contentHeight);
+            for (let S = maxPossibleRightCenter; S >= 1; S--) {
+              const yTop = (contentHeight - S) * 0.5;
+              const yBottom = (contentHeight + S) * 0.5;
+              const reqLeft = maxRightInVerticalRange(yTop, yBottom) + PORTRAIT_GAP_X;
+              if (reqLeft + S <= gridWidth) {
+                sizeRightCenter = S;
+                reqLeftRightCenter = reqLeft;
+                break;
+              }
+            }
+
+            // Candidate 2: 'oben rechts neben H1' (Top-Beside-H1)
+            const reqLeftBesideH1 = maxRightInVerticalRange(0, h1Height) + PORTRAIT_GAP_X;
+            const availableWidthBesideH1 = gridWidth - reqLeftBesideH1;
+            const sizeTopRight = (availableWidthBesideH1 >= targetTopSize && h1Height > 0) ? targetTopSize : 0;
+
+            if (sizeRightCenter >= targetTopSize && (sizeRightCenter + 4 >= sizeTopRight) && h1Height > 0) {
+              // Mode 1: Right-Center
+              topExtension = 0;
+              chosenSize = sizeRightCenter;
+              leftPos = Math.round(reqLeftRightCenter + (gridWidth - reqLeftRightCenter - sizeRightCenter) * 0.5);
+              topPos = Math.round((contentHeight - sizeRightCenter) * 0.5);
+            } else if (sizeTopRight >= targetTopSize && h1Height > 0) {
+              // Mode 2: Top-Right Beside H1
+              topExtension = 0;
+              chosenSize = sizeTopRight;
+              leftPos = Math.round(reqLeftBesideH1 + (availableWidthBesideH1 - sizeTopRight) * 0.5);
+              topPos = 0;
+            } else if (gridWidth > 0) {
+              // Mode 3: Top-Center Above H1
+              chosenSize = Math.min(MIN_PORTRAIT_SIZE, gridWidth);
+              topExtension = chosenSize + TOP_BAND_GAP;
+              leftPos = Math.round((gridWidth - chosenSize) * 0.5);
+              topPos = 0;
+            }
+          } else if (gridWidth > 0) {
+            // Mode 3: Top-Center Above H1 (whenever H1 switches to smaller font < 768px)
+            chosenSize = Math.min(MIN_PORTRAIT_SIZE, gridWidth);
             topExtension = chosenSize + TOP_BAND_GAP;
             leftPos = Math.round((gridWidth - chosenSize) * 0.5);
             topPos = 0;
@@ -3124,12 +3124,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   #hero-portrait-wrapper {
     aspect-ratio: 1 / 1;
   }
-  @media (min-width: 480px) and (max-width: 767.98px) {
-    #hero-grid {
-      padding-top: 60px;
-    }
-  }
-  @media (max-width: 479.98px) {
+  @media (max-width: 767.98px) {
     #hero-grid {
       padding-top: 174px;
     }
