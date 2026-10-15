@@ -218,36 +218,20 @@ const pageJsonLd = [breadcrumbSchema, ...servicesJsonLd];
 
                   <!-- Info Body (Below) -->
                   <div class="preview-card-body flex flex-col flex-grow justify-between">
-                    <div class="space-y-3">
+                    <div>
                       <!-- Header -->
-                      <div>
-                        <h2 class="text-xl md:text-2xl font-extrabold text-gray-100 light:text-slate-900 tracking-tight leading-snug flex items-center gap-2 transition-colors group-hover:text-domain-services">
-                          <span>{service.data.title}</span>
-                        </h2>
-                      </div>
+                      <h2 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900 mb-2 tracking-tight leading-snug transition-colors group-hover:text-domain-services line-clamp-1 min-h-[1lh]" title={service.data.title}>
+                        <span>{service.data.title}</span>
+                      </h2>
 
                       <!-- Description -->
-                      <p class="text-gray-300 light:text-slate-600 text-sm md:text-base leading-relaxed font-normal">
+                      <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
                         {service.data.description}
                       </p>
-
-                      {service.data.tags && service.data.tags.length > 0 && (
-                        <div class="flex flex-wrap gap-2 pt-1 relative z-20">
-                          {service.data.tags.map((tag) => (
-                            <a
-                              href={`/tags/${tag}/`}
-                              data-tag={tag}
-                              class="tag-chip tag-chip-emerald inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
-                            >
-                              #{tag}
-                            </a>
-                          ))}
-                        </div>
-                      )}
                     </div>
 
                     <!-- Footer CTA Button -->
-                    <div class="pt-6 mt-auto w-full relative z-20">
+                    <div class="mt-auto pt-4 w-full relative z-20">
                       <a
                         href={`/services/${service.id}/`}
                         aria-label={`Read More: ${service.data.title}`}

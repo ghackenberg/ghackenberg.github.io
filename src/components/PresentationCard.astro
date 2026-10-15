@@ -15,6 +15,7 @@ interface Props {
   previewImage?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags?: string[];
   activeTag?: string | string[];
+  showTags?: boolean;
   featured?: boolean;
 }
 
@@ -29,12 +30,14 @@ const {
   previewImage,
   tags = [], 
   activeTag,
+  showTags,
   featured = false
 } = Astro.props;
 
 const displayDuration = duration ?? getPresentationDuration(id).text;
 
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
+const shouldShowTags = showTags ?? Boolean(activeTag);
 
 const rawImage = previewImage || icon;
 const isCoverObj = Boolean(rawImage && typeof rawImage === 'object' && 'src' in rawImage && rawImage.src);
@@ -136,7 +139,7 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
     </div>
 
     <!-- Title -->
-    <h2 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-presentations light:group-hover:text-domain-presentations transition-colors leading-snug">
+    <h2 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-presentations light:group-hover:text-domain-presentations transition-colors leading-snug line-clamp-2 min-h-[2lh]" title={title}>
       <a href={`/presentations/${id}/`} class="after:absolute after:inset-0 after:z-10">
         {title}
       </a>
@@ -144,29 +147,44 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
 
     <!-- Subtitle / Description -->
     {(subtitle || description) && (
-      <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3">
+      <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
         {subtitle || description}
       </p>
     )}
 
     <!-- Tags & Action Button Area -->
-    <div class="flex-grow flex flex-col mt-3">
-      <div class="flex flex-wrap gap-2 self-start">
-        {tags.map(tag => (
-          <a 
-            href={`/tags/${tag}/`}
-            data-tag={tag}
-            class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
-              isTagActive(tag) ? 'active-tag-match' : ''
-            }`}
-          >
-            #{tag}
-          </a>
-        ))}
-      </div>
+    {shouldShowTags && tags && tags.length > 0 ? (
+      <div class="flex-grow flex flex-col mt-3">
+        <div class="flex flex-wrap gap-2 self-start">
+          {tags.map(tag => (
+            <a 
+              href={`/tags/${tag}/`}
+              data-tag={tag}
+              class={`tag-chip tag-chip-blue inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+                isTagActive(tag) ? 'active-tag-match' : ''
+              }`}
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
 
-      <!-- Read More button — full width, pinned to bottom -->
-      <div class="mt-auto pt-6 w-full">
+        <!-- Read More button — full width, pinned to bottom -->
+        <div class="mt-auto pt-5 w-full">
+          <a 
+            href={`/presentations/${id}/`} 
+            aria-label={`Read More: ${title}`}
+            class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-presentations/12 hover:bg-domain-presentations/25 border border-domain-presentations/20 hover:border-domain-presentations/45 text-domain-presentations text-xs font-bold relative z-20 transition-all duration-200"
+          >
+            <span>Read More</span>
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    ) : (
+      <div class="mt-auto pt-4 w-full">
         <a 
           href={`/presentations/${id}/`} 
           aria-label={`Read More: ${title}`}
@@ -178,6 +196,6 @@ const imageContainerClass = "w-full aspect-video shrink-0 overflow-hidden border
           </svg>
         </a>
       </div>
-    </div>
+    )}
   </div>
 </article>

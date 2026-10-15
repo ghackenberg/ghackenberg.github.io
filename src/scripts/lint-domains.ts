@@ -169,7 +169,9 @@ const previewCardFiles = [
   'PublicationCard.astro',
   'ProjectCard.astro',
   'CourseCard.astro',
+  'CourseModuleCard.astro',
   'ServiceCard.astro',
+  'ServiceModuleCard.astro',
   'VisualizationCard.astro',
   'InterestCard.astro',
 ];
@@ -187,7 +189,7 @@ for (const cardFileName of previewCardFiles) {
   }
 }
 if (cardButtonViolations === 0) {
-  success('All preview cards use canonical centered "Read More" button blueprint.');
+  success('All 10 preview cards (including CourseModuleCard & ServiceModuleCard) use canonical centered "Read More" button blueprint.');
 }
 
 // 6. Heading gradient governance:
@@ -850,7 +852,99 @@ if (fs.existsSync(PUBLICATIONS_DIR)) {
   }
 }
 if (publicationDirViolations === 0) {
-  success('All publication directories in src/content/publications strictly start with YYYY_MM_DD_ matching their pubDate.');
+  success('All publication directories in src/content/publications strictly start with YYYY_MM-DD_ matching their pubDate.');
+}
+
+// 30. Preview Card Inventory, Deterministic Truncation & Option 3 Chip Gate
+const TWO_LINE_TITLE_CARDS = new Set([
+  'PostCard.astro',
+  'PresentationCard.astro',
+  'PublicationCard.astro',
+]);
+const ONE_LINE_TITLE_CARDS = new Set([
+  'CourseCard.astro',
+  'CourseModuleCard.astro',
+  'ServiceCard.astro',
+  'ServiceModuleCard.astro',
+  'InterestCard.astro',
+  'ProjectCard.astro',
+  'VisualizationCard.astro',
+]);
+let previewCardContractViolations = 0;
+
+// 30a. Dynamic discovery guard: ensure no component with `preview-card` in src/components/ is omitted from previewCardFiles
+for (const compFile of nonSlideComponentFiles) {
+  const baseName = path.basename(compFile);
+  if (baseName === 'CompactRelatedCard.astro' || baseName === 'AnalyticsDevOverlay.astro') continue;
+  const content = fs.readFileSync(compFile, 'utf8');
+  if (content.includes('preview-card') && !previewCardFiles.includes(baseName)) {
+    error(`Unregistered preview card component src/components/${baseName} detected. Add it to previewCardFiles in lint-domains.ts and enforce the SOTA truncation contract.`);
+    previewCardContractViolations++;
+  }
+}
+
+// 30b. Verify deterministic height reservation & Option 3 tag-chip gating across all 10 preview card components
+for (const cardFileName of previewCardFiles) {
+  const cardPath = path.join(COMPONENTS_DIR, cardFileName);
+  if (!fs.existsSync(cardPath)) continue;
+  const content = fs.readFileSync(cardPath, 'utf8');
+  const rel = path.relative(ROOT_DIR, cardPath).replace(/\\/g, '/');
+
+  if (TWO_LINE_TITLE_CARDS.has(cardFileName)) {
+    if (!content.includes('line-clamp-2 min-h-[2lh]')) {
+      error(`${rel} must enforce 2-line title height reservation (line-clamp-2 min-h-[2lh]).`);
+      previewCardContractViolations++;
+    }
+  } else if (ONE_LINE_TITLE_CARDS.has(cardFileName)) {
+    if (!content.includes('line-clamp-1 min-h-[1lh]')) {
+      error(`${rel} must enforce 1-line title height reservation (line-clamp-1 min-h-[1lh]).`);
+      previewCardContractViolations++;
+    }
+  }
+
+  if (cardFileName === 'PublicationCard.astro') {
+    if (!content.includes('line-clamp-1 min-h-[1lh]') || !content.includes('line-clamp-2 min-h-[2lh]')) {
+      error(`${rel} must enforce 1lh venue and 2lh title/author height reservation.`);
+      previewCardContractViolations++;
+    }
+  } else {
+    if (!content.includes('line-clamp-3 min-h-[3lh]')) {
+      error(`${rel} must enforce 3-line description height reservation (line-clamp-3 min-h-[3lh]).`);
+      previewCardContractViolations++;
+    }
+  }
+
+  if (content.includes('tag-chip') && !content.includes('shouldShowTags')) {
+    error(`${rel} contains .tag-chip without Option 3 shouldShowTags contextual visibility gate.`);
+    previewCardContractViolations++;
+  }
+}
+
+// 30c. Forbid display classes (block, inline-block, flex, inline-flex, grid) on the same element as line-clamp-* (which overrides display: -webkit-box)
+for (const file of websiteFiles) {
+  const content = fs.readFileSync(file, 'utf8');
+  const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
+  const lineClampClassMatches = content.match(/class="[^"]*\bline-clamp-[1-6]\b[^"]*"/g) || [];
+  for (const clsAttr of lineClampClassMatches) {
+    if (/\b(?:block|inline-block|flex|inline-flex|grid)\b/.test(clsAttr)) {
+      error(`${rel} has a display utility conflicting with line-clamp (overrides display: -webkit-box): ${clsAttr}`);
+      previewCardContractViolations++;
+    }
+  }
+}
+
+// 30d. Ensure project detail screenshot cards enforce 1-line title clamp
+if (fs.existsSync(projectDetailPage)) {
+  const content = fs.readFileSync(projectDetailPage, 'utf8');
+  const screenshotHeadingMatch = content.match(/<h3[^>]*id=\{`screenshot-title-\$\{index\}`\}[^>]*>/);
+  if (!screenshotHeadingMatch || !screenshotHeadingMatch[0].includes('line-clamp-1 min-h-[1lh]')) {
+    error('src/pages/projects/[slug].astro screenshot card titles must enforce line-clamp-1 min-h-[1lh].');
+    previewCardContractViolations++;
+  }
+}
+
+if (previewCardContractViolations === 0) {
+  success('All 10 preview card components and project screenshot cards enforce domain-appropriate 1lh/2lh title reservation, 3lh description reservation, conflict-free line-clamp CSS, and Option 3 chip gating.');
 }
 
 console.log('\n----------------------------------------');

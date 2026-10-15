@@ -56,42 +56,19 @@ const href = `/courses/${courseId}/${moduleSlug}/`;
 
   <!-- Info Body -->
   <div class="preview-card-body flex flex-col flex-grow justify-between text-left">
-    <div class="space-y-3">
-      <h3 class="text-base sm:text-lg font-bold leading-snug text-gray-100 group-hover:text-domain-courses light:group-hover:text-domain-courses transition-colors">
+    <div>
+      <h3 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-courses light:group-hover:text-domain-courses transition-colors leading-snug line-clamp-1 min-h-[1lh]" title={module.data.title}>
         {module.data.title}
       </h3>
-      <p class="text-gray-400 text-xs sm:text-sm leading-relaxed font-normal">
+      <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
         {module.data.description}
       </p>
-
-      {((module.data.tools && module.data.tools.length > 0) || (module.data.topics && module.data.topics.length > 0)) && (
-        <div class="space-y-2 pt-1">
-          {module.data.tools && module.data.tools.length > 0 && (
-            <div class="flex flex-wrap gap-1.5">
-              {module.data.tools.map((tool) => (
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
-                  🛠️ {tool}
-                </span>
-              ))}
-            </div>
-          )}
-          {module.data.topics && module.data.topics.length > 0 && (
-            <div class="flex flex-wrap gap-1.5">
-              {module.data.topics.slice(0, 3).map((topic) => (
-                <span class="text-[11px] text-gray-400 bg-element-bg px-2 py-0.5 rounded">
-                  • {topic}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
     </div>
 
-    <!-- Bottom pinned 'View Module' button -->
-    <div class="mt-auto pt-6 w-full">
+    <!-- Bottom pinned 'Read More' button -->
+    <div class="mt-auto pt-4 w-full">
       <span class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-200 bg-domain-courses/12 group-hover:bg-domain-courses/25 border border-domain-courses/20 group-hover:border-domain-courses/45 text-domain-courses">
-        <span>View Module</span>
+        <span>Read More</span>
         <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
         </svg>
