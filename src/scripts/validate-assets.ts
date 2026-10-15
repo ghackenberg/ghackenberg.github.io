@@ -282,15 +282,31 @@ type JsonLdValue =
   | { [key: string]: JsonLdValue }
   | JsonLdValue[];
 
+type PersonRef = {
+  '@type'?: string;
+  '@id'?: string;
+  name?: string;
+  url?: string;
+};
+
 interface SchemaEntity {
   '@context'?: string;
   '@type'?: string | string[];
   '@id'?: string;
+  url?: string;
   primaryImageOfPage?: { '@id': string };
   image?: Array<{ '@id': string }> | string | Array<string>;
   contentUrl?: string;
   name?: string;
   encodingFormat?: string;
+  license?: string;
+  acquireLicensePage?: string;
+  creditText?: string;
+  copyrightNotice?: string;
+  creator?: PersonRef;
+  author?: PersonRef;
+  copyrightHolder?: PersonRef;
+  '@graph'?: SchemaEntity[];
   [key: string]: JsonLdValue;
 }
 
@@ -311,6 +327,22 @@ for (const file of htmlFiles) {
     pageUrlPath += '/';
   }
   const canonicalPageUrl = `https://hackenberg.tech${pageUrlPath}`;
+
+  // Verify no HTML element has an incomplete Microdata itemtype="https://schema.org/ImageObject"
+  $('[itemtype*="ImageObject"]').each((_, el) => {
+    const $el = $(el);
+    const requiredMicrodataProps = ['license', 'acquireLicensePage', 'creditText', 'copyrightNotice'];
+    const missingMicrodata = requiredMicrodataProps.filter(
+      (prop) => $el.find(`[itemprop="${prop}"]`).length === 0
+    );
+    if (missingMicrodata.length > 0) {
+      console.error(
+        `[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} contains incomplete Microdata ImageObject missing: ${missingMicrodata.join(', ')}`
+      );
+      errorsCount++;
+      assertion5Errors++;
+    }
+  });
 
   const contentImages: string[] = [];
 
@@ -398,7 +430,7 @@ for (const file of htmlFiles) {
 
   totalImageObjectsVerified += imageObjects.length;
 
-  // Verify ImageObject fields
+  // Verify ImageObject fields (including Google Rich Results Image Metadata requirements)
   for (const io of imageObjects) {
     const id = typeof io['@id'] === 'string' ? io['@id'] : '';
     if (!id || !id.startsWith(canonicalPageUrl)) {
@@ -421,18 +453,68 @@ for (const file of htmlFiles) {
       errorsCount++;
       assertion5Errors++;
     }
+    if (typeof io.license !== 'string' || !io.license.trim()) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject (${id}) missing license`);
+      errorsCount++;
+      assertion5Errors++;
+    }
+    if (typeof io.acquireLicensePage !== 'string' || !io.acquireLicensePage.trim()) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject (${id}) missing acquireLicensePage`);
+      errorsCount++;
+      assertion5Errors++;
+    }
+    if (typeof io.creditText !== 'string' || !io.creditText.trim()) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject (${id}) missing creditText`);
+      errorsCount++;
+      assertion5Errors++;
+    }
+    if (typeof io.copyrightNotice !== 'string' || !io.copyrightNotice.trim()) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject (${id}) missing copyrightNotice`);
+      errorsCount++;
+      assertion5Errors++;
+    }
+    if (!io.creator || io.creator['@type'] !== 'Person' || !io.creator.name) {
+      console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} ImageObject (${id}) missing valid Person creator`);
+      errorsCount++;
+      assertion5Errors++;
+    }
   }
 
-  // If page contains Article, BlogPosting, TechArticle, or Course, verify primaryImageOfPage and image array
-  const targetTypes = new Set(['Article', 'BlogPosting', 'TechArticle', 'Course']);
+  // Verify primaryImageOfPage and image array on all target content schema types
+  const targetTypes = new Set([
+    'Article',
+    'BlogPosting',
+    'TechArticle',
+    'ScholarlyArticle',
+    'Course',
+    'LearningResource',
+    'PresentationDigitalDocument',
+    'SoftwareApplication',
+    'SoftwareSourceCode',
+    'Service',
+  ]);
+
+  const candidateNodes: SchemaEntity[] = [];
   for (const node of jsonLdData) {
     if (!node || typeof node !== 'object') continue;
+    candidateNodes.push(node);
+    if (Array.isArray(node['@graph'])) {
+      for (const graphNode of node['@graph']) {
+        if (graphNode && typeof graphNode === 'object') {
+          candidateNodes.push(graphNode as SchemaEntity);
+        }
+      }
+    }
+  }
+
+  for (const node of candidateNodes) {
     const nodeType = node['@type'];
     const matches = Array.isArray(nodeType)
       ? nodeType.some((t: string) => targetTypes.has(t))
       : typeof nodeType === 'string' && targetTypes.has(nodeType);
+    const isCurrentPageEntity = !node.url || node.url === canonicalPageUrl;
 
-    if (matches) {
+    if (matches && isCurrentPageEntity) {
       const primary = node.primaryImageOfPage;
       if (!primary || typeof primary['@id'] !== 'string') {
         console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} contains ${String(nodeType)} but lacks primaryImageOfPage in JSON-LD`);
