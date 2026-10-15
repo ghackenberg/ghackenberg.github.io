@@ -1826,30 +1826,16 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               </div>
 
               <!-- Content Body -->
-              <div class="preview-card-body p-6 flex flex-col flex-grow">
-                <h3 class="text-lg font-bold text-gray-100 mb-3 group-hover:text-domain-interests transition-colors">
+              <div class="preview-card-body flex flex-col flex-grow">
+                <h3 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-interests transition-colors leading-snug line-clamp-1 min-h-[1lh]" title={interest.title}>
                   {interest.title}
                 </h3>
-                <p class="text-gray-400 text-sm leading-relaxed font-normal mb-4">
+                <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
                   {interest.description}
                 </p>
 
-                {interest.tags && interest.tags.length > 0 && (
-                  <div class="flex flex-wrap gap-1.5 mb-6 relative z-20">
-                    {interest.tags.map((tag) => (
-                      <a
-                        href={`/tags/${tag}/`}
-                        data-tag={tag}
-                        class="tag-chip tag-chip-rose inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105"
-                      >
-                        #{tag}
-                      </a>
-                    ))}
-                  </div>
-                )}
-
                 <!-- Footer: Read More Button -->
-                <div class="pt-2 mt-auto">
+                <div class="mt-auto pt-4 w-full">
                   <a
                     href={`/interests/${interest.slug}/`}
                     aria-label={`Read More: ${interest.title}`}

@@ -54,37 +54,17 @@ const colorClasses = {
   
   <!-- Info Body (Below) -->
   <div class="preview-card-body flex flex-col flex-grow justify-between text-left">
-    <div class="space-y-3">
-      <div class="flex items-center gap-2">
-        <h3 class="text-base sm:text-lg font-bold leading-snug mt-0 flex items-center gap-2 text-gray-100 group-hover:text-domain-services light:group-hover:text-domain-services transition-colors">
-          <span>{module.data.title}</span>
-        </h3>
-      </div>
-      <p class="text-gray-400 text-xs sm:text-sm leading-relaxed font-normal">
+    <div>
+      <h3 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-services light:group-hover:text-domain-services transition-colors leading-snug line-clamp-1 min-h-[1lh]" title={module.data.title}>
+        <span>{module.data.title}</span>
+      </h3>
+      <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
         {module.data.description}
       </p>
-
-      <div class="flex flex-wrap gap-1.5 pt-1">
-        {module.data.duration && (
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
-            ⏱️ {module.data.duration}
-          </span>
-        )}
-        {module.data.format && (
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
-            ⚡ {module.data.format}
-          </span>
-        )}
-        {module.data.delivery && (
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wide uppercase border border-element-border-medium bg-element-bg text-gray-400">
-            📍 {module.data.delivery}
-          </span>
-        )}
-      </div>
     </div>
 
     <!-- Read more button — full width, pinned to bottom -->
-    <div class="mt-auto pt-6 w-full">
+    <div class="mt-auto pt-4 w-full">
       <span 
         class={`flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-200 ${colorClasses.cardBtnBg}`}
       >

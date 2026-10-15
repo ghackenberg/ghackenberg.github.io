@@ -308,11 +308,11 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
               <!-- Title & Description Area -->
               <div class="p-5 border-t border-element-border flex-grow flex flex-col justify-between">
                 <div>
-                  <h3 id={`screenshot-title-${index}`} class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans">
+                  <h3 id={`screenshot-title-${index}`} class="font-bold text-sm text-gray-100 light:text-gray-100 mb-1 group-hover:text-white light:group-hover:text-gray-50 transition-colors font-sans line-clamp-1 min-h-[1lh]" title={shot.title}>
                     {shot.title}
                   </h3>
                   {shot.description && (
-                    <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed font-sans">
+                    <p class="text-xs text-gray-400 line-clamp-2 min-h-[2lh] leading-relaxed font-sans">
                       {shot.description}
                     </p>
                   )}

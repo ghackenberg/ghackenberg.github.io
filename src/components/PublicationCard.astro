@@ -12,6 +12,7 @@ interface Props {
   tags?: string[];
   publisherUrl?: string;
   activeTag?: string | string[];
+  showTags?: boolean;
   icon?: ImageMetadata | { src: ImageMetadata; title?: string; description?: string } | string;
 }
 
@@ -23,10 +24,12 @@ const {
   book, 
   tags = [], 
   activeTag,
+  showTags,
   icon
 } = Astro.props;
 
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
+const shouldShowTags = showTags ?? Boolean(activeTag);
 
 type CoverImageObject = { src: ImageMetadata; title?: string; description?: string };
 
@@ -95,28 +98,28 @@ const optimizedIcon = iconImg && typeof iconImg === 'object' && !isSvg ? await g
 
     <!-- Book / Venue row -->
     {book && (
-      <div class="mb-2.5">
-        <span class="text-xs font-medium text-gray-400 light:text-slate-500 italic line-clamp-2 leading-relaxed" title={book}>
+      <div class="mb-2">
+        <span class="text-xs font-medium text-gray-400 light:text-slate-500 italic line-clamp-1 min-h-[1lh] leading-relaxed" title={book}>
           {book}
         </span>
       </div>
     )}
 
     <!-- Title -->
-    <h2 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-publications light:group-hover:text-domain-publications transition-colors leading-snug">
+    <h2 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-publications light:group-hover:text-domain-publications transition-colors leading-snug line-clamp-2 min-h-[2lh]" title={title}>
       <a href={`/publications/${id}/`} class="after:absolute after:inset-0 after:z-10">
         {title}
       </a>
     </h2>
 
     <!-- Authors -->
-    <p class="text-gray-300 light:text-slate-600 text-xs sm:text-sm font-normal mb-3 leading-relaxed">
+    <p class="text-gray-300 light:text-slate-600 text-xs sm:text-sm font-normal mb-3 leading-relaxed line-clamp-2 min-h-[2lh]">
       <span set:html={author} />
     </p>
 
     <!-- Tags & Action Button Area -->
-    <div class="flex-grow flex flex-col mt-auto pt-2">
-      {tags && tags.length > 0 && (
+    {shouldShowTags && tags && tags.length > 0 ? (
+      <div class="flex-grow flex flex-col mt-auto pt-2">
         <div class="flex flex-wrap gap-1.5 self-start">
           {tags.map(tag => (
             <a 
@@ -130,10 +133,23 @@ const optimizedIcon = iconImg && typeof iconImg === 'object' && !isSvg ? await g
             </a>
           ))}
         </div>
-      )}
 
-      <!-- Read more button — full width, pinned to bottom -->
-      <div class="mt-auto pt-5 w-full">
+        <!-- Read more button — full width, pinned to bottom -->
+        <div class="mt-auto pt-5 w-full">
+          <a 
+            href={`/publications/${id}/`} 
+            aria-label={`Read More: ${title}`}
+            class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-publications/12 hover:bg-domain-publications/25 border border-domain-publications/20 hover:border-domain-publications/45 text-domain-publications text-xs font-bold relative z-20 transition-all duration-200"
+          >
+            <span>Read More</span>
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    ) : (
+      <div class="mt-auto pt-4 w-full">
         <a 
           href={`/publications/${id}/`} 
           aria-label={`Read More: ${title}`}
@@ -145,6 +161,6 @@ const optimizedIcon = iconImg && typeof iconImg === 'object' && !isSvg ? await g
           </svg>
         </a>
       </div>
-    </div>
+    )}
   </div>
 </article>
