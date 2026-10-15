@@ -284,26 +284,25 @@ const minTagCount = Math.min(...tagCloudList.map(t => t.totalCount), 1);
 tagCloudList.forEach(t => {
   const ratio = maxTagCount > minTagCount ? (t.totalCount - minTagCount) / (maxTagCount - minTagCount) : 0.5;
   if (ratio > 0.75) {
-    t.fontSizeClass = "text-sm sm:text-lg md:text-xl";
+    t.fontSizeClass = "text-[13px] leading-tight sm:text-lg md:text-xl";
     t.fontWeightClass = "font-extrabold";
   } else if (ratio > 0.45) {
-    t.fontSizeClass = "text-xs sm:text-base md:text-lg";
+    t.fontSizeClass = "text-xs leading-tight sm:text-base md:text-lg";
     t.fontWeightClass = "font-bold";
   } else if (ratio > 0.2) {
-    t.fontSizeClass = "text-xs sm:text-sm md:text-base";
+    t.fontSizeClass = "text-[11px] leading-tight sm:text-sm md:text-base";
     t.fontWeightClass = "font-semibold";
   } else {
-    t.fontSizeClass = "text-[11px] sm:text-xs md:text-sm";
+    t.fontSizeClass = "text-[11px] leading-tight sm:text-xs md:text-sm";
     t.fontWeightClass = "font-medium";
   }
 });
 
 // Sort by total count descending
 const sortedByFreq = tagCloudList.slice().sort((a, b) => b.totalCount - a.totalCount || a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
-const top7Tags = sortedByFreq.slice(0, 7);
-const remainingTags = sortedByFreq.slice(7, 21);
-const overflowTags = sortedByFreq.slice(21);
+const visibleSlice = sortedByFreq.slice(0, 21);
 
+const overflowTags = sortedByFreq.slice(21);
 const restTagsCount = overflowTags.length;
 const overflowTagIds = new Set(overflowTags.map(t => t.id));
 
@@ -326,21 +325,9 @@ const restProjectsPct = restTotalContentCount > 0 ? Math.round((restProjectsCoun
 const restServicesPct = restTotalContentCount > 0 ? Math.round((restServicesCount / restTotalContentCount) * 100) : 0;
 const restVisPct = restTotalContentCount > 0 ? Math.round((restVisCount / restTotalContentCount) * 100) : 0;
 
-// Dynamic weight sizing for the remaining badge, capped to max tag weight
-const cappedRestWeight = Math.min(restTotalContentCount, maxTagCount);
-const restRatio = maxTagCount > minTagCount ? (cappedRestWeight - minTagCount) / (maxTagCount - minTagCount) : 0.5;
-let restFontSizeClass = "text-[11px] sm:text-xs md:text-sm";
-let restFontWeightClass = "font-medium";
-if (restRatio > 0.75) {
-  restFontSizeClass = "text-sm sm:text-lg md:text-xl";
-  restFontWeightClass = "font-extrabold";
-} else if (restRatio > 0.45) {
-  restFontSizeClass = "text-xs sm:text-base md:text-lg";
-  restFontWeightClass = "font-bold";
-} else if (restRatio > 0.2) {
-  restFontSizeClass = "text-xs sm:text-sm md:text-base";
-  restFontWeightClass = "font-semibold";
-}
+// Peripheral weight sizing for the remaining badge so it tapers naturally at the outer edge of the cloud
+const restFontSizeClass = "text-[11px] leading-tight sm:text-xs md:text-sm";
+const restFontWeightClass = "font-semibold";
 
 const professionalInterests = [
   {
@@ -2535,362 +2522,227 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         </p>
       </div>
 
-      <!-- Tag Cloud Glass Container -->
       <div class="glass-card rounded-3xl p-4 sm:p-8 md:p-10 border border-element-border-medium light:border-slate-200/80 shadow-2xl relative w-full">
-        <!-- Continuous Glass Cloud Text Flow -->
-        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-4">
-          
-          <!-- Top 7 Featured Highlighted Group (Sorted by Frequency Descending) -->
-          {top7Tags.map(tag => (
-            <div class="relative group/tag inline-block">
-              <!-- Tag Pill Link -->
-              <a
-                href={`/tags/${encodeURIComponent(tag.id)}/`}
-                class={`inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl border transition-all duration-300 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-domain-tags/15 border-domain-tags/40 hover:border-domain-tags/70 shadow-lg shadow-domain-tags/10 hover:shadow-domain-tags/25 text-white light:text-slate-900 hover:text-white light:hover:text-domain-tags hover:scale-105 whitespace-nowrap`}
+        <div
+          id="bin-packing-stage"
+          class="relative w-full flex flex-col items-center justify-center"
+          data-base-rest-tags={restTagsCount}
+          data-base-rest-items={restTotalContentCount}
+        >
+          <!-- Packed Rows Target Container -->
+          <div id="bin-packing-rows" class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 w-full">
+            {visibleSlice.map((tag, idx) => (
+              <div
+                class="bin-tag-node relative group/tag inline-block shrink-0"
+                data-rank={idx}
+                data-total={tag.totalCount}
               >
-                <span>#{tag.name}</span>
-                <span class="text-[10px] sm:text-[11px] font-extrabold px-1.5 sm:px-2 py-0.5 rounded-full bg-domain-tags/30 text-domain-tags border border-domain-tags/40">
-                  {tag.totalCount}
-                </span>
-              </a>
+                <a
+                  href={`/tags/${encodeURIComponent(tag.id)}/`}
+                  class={`bin-pill-link inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-lg sm:rounded-xl border transition-all duration-200 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-slate-900/60 light:bg-slate-100/80 border-element-border-medium light:border-slate-200 hover:border-domain-tags/45 text-gray-300 light:text-slate-700 hover:text-white light:hover:text-slate-900 hover:scale-105 whitespace-nowrap`}
+                >
+                  <span>#{tag.name}</span>
+                  <span class="text-[9px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.25 rounded-md bg-white/10 light:bg-slate-200 text-gray-400 light:text-slate-600">
+                    {tag.totalCount}
+                  </span>
+                </a>
 
-              <!-- Glass Hover Tooltip with Segmented Progress Bar -->
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-white/15 light:border-slate-200/80 shadow-2xl text-xs w-64 sm:w-72 pointer-events-none z-30 transition-all duration-200 transform animate-in fade-in zoom-in-95">
-                <!-- Tooltip Header -->
-                <div class="flex items-center justify-between text-gray-200 light:text-slate-900 font-bold text-xs">
-                  <span class="truncate">#{tag.name}</span>
-                  <span class="text-domain-tags text-[11px] font-extrabold">{tag.totalCount} item{tag.totalCount > 1 ? 's' : ''}</span>
+                <!-- Rich Hover Tooltip (Mouse only; hidden on touch viewports) -->
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-white/15 light:border-slate-200 shadow-2xl z-50 pointer-events-none min-w-[230px] sm:min-w-[260px] max-w-[300px] sm:max-w-[320px] transition-all">
+                  <div class="flex items-center justify-between gap-3 border-b border-element-border pb-2">
+                    <span class="text-xs sm:text-sm font-extrabold text-white light:text-slate-900 truncate">#{tag.name}</span>
+                    <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-domain-tags/20 text-domain-tags border border-domain-tags/30 whitespace-nowrap">
+                      {tag.totalCount} {tag.totalCount === 1 ? 'item' : 'items'}
+                    </span>
+                  </div>
+
+                  {tag.description && (
+                    <p class="text-[11px] text-gray-400 light:text-slate-600 line-clamp-2 leading-relaxed font-normal">
+                      {tag.description}
+                    </p>
+                  )}
+
+                  {tag.totalCount > 0 && (
+                    <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
+                      {tag.interestsCount > 0 && <div class="bg-domain-interests h-full" style={`width: ${tag.interestsPct}%`} title={`Interests: ${tag.interestsCount}`}></div>}
+                      {tag.postsCount > 0 && <div class="bg-domain-posts h-full" style={`width: ${tag.postsPct}%`} title={`Posts: ${tag.postsCount}`}></div>}
+                      {tag.pubsCount > 0 && <div class="bg-domain-publications h-full" style={`width: ${tag.pubsPct}%`} title={`Publications: ${tag.pubsCount}`}></div>}
+                      {tag.presCount > 0 && <div class="bg-domain-presentations h-full" style={`width: ${tag.presPct}%`} title={`Presentations: ${tag.presCount}`}></div>}
+                      {tag.coursesCount > 0 && <div class="bg-domain-courses h-full" style={`width: ${tag.coursesPct}%`} title={`Courses: ${tag.coursesCount}`}></div>}
+                      {tag.projectsCount > 0 && <div class="bg-domain-projects h-full" style={`width: ${tag.projectsPct}%`} title={`Projects: ${tag.projectsCount}`}></div>}
+                      {tag.servicesCount > 0 && <div class="bg-domain-services h-full" style={`width: ${tag.servicesPct}%`} title={`Services: ${tag.servicesCount}`}></div>}
+                      {tag.visCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${tag.visPct}%`} title={`Visualizations: ${tag.visCount}`}></div>}
+                    </div>
+                  )}
+
+                  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] sm:text-[11px] text-gray-300 light:text-slate-600 font-medium pt-0.5">
+                    {tag.interestsCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
+                        <span>{tag.interestsCount} {tag.interestsCount === 1 ? 'Interest' : 'Interests'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.interestsPct}%)</span>
+                      </span>
+                    )}
+                    {tag.postsCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-posts"></span>
+                        <span>{tag.postsCount} {tag.postsCount === 1 ? 'Post' : 'Posts'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.postsPct}%)</span>
+                      </span>
+                    )}
+                    {tag.pubsCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-publications"></span>
+                        <span>{tag.pubsCount} {tag.pubsCount === 1 ? 'Publication' : 'Publications'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
+                      </span>
+                    )}
+                    {tag.presCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-presentations"></span>
+                        <span>{tag.presCount} {tag.presCount === 1 ? 'Presentation' : 'Presentations'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.presPct}%)</span>
+                      </span>
+                    )}
+                    {tag.coursesCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-courses"></span>
+                        <span>{tag.coursesCount} {tag.coursesCount === 1 ? 'Course' : 'Courses'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.coursesPct}%)</span>
+                      </span>
+                    )}
+                    {tag.projectsCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-projects"></span>
+                        <span>{tag.projectsCount} {tag.projectsCount === 1 ? 'Project' : 'Projects'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
+                      </span>
+                    )}
+                    {tag.servicesCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-services"></span>
+                        <span>{tag.servicesCount} {tag.servicesCount === 1 ? 'Service' : 'Services'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
+                      </span>
+                    )}
+                    {tag.visCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
+                        <span>{tag.visCount} {tag.visCount === 1 ? 'Visualization' : 'Visualizations'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.visPct}%)</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
+              </div>
+            ))}
 
-                {tag.description && (
-                  <p class="text-[11px] text-gray-400 light:text-slate-600 line-clamp-2 leading-relaxed">
-                    {tag.description}
+            {restTagsCount > 0 && (
+              <div
+                id="bin-overflow-node"
+                class="relative group/tag inline-block shrink-0"
+              >
+                <a
+                  href="/tags/"
+                  class={`bin-pill-link inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-lg sm:rounded-xl border transition-all duration-200 ${restFontSizeClass} ${restFontWeightClass} bg-domain-tags/15 border-domain-tags/40 hover:border-domain-tags/80 shadow-md shadow-domain-tags/15 text-domain-tags hover:text-white light:hover:text-domain-tags hover:scale-105 whitespace-nowrap`}
+                >
+                  <span id="bin-overflow-label">+{restTagsCount} remaining</span>
+                  <span id="bin-overflow-count" class="text-[9px] sm:text-[10px] font-extrabold px-1.5 py-0.25 rounded-full bg-domain-tags/25 text-domain-tags border border-domain-tags/40">
+                    {restTotalContentCount}
+                  </span>
+                </a>
+
+                <!-- Rich Hover Tooltip for Overflow Pill (Mouse only; hidden on touch viewports) -->
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-white/15 light:border-slate-200 shadow-2xl z-50 pointer-events-none min-w-[230px] sm:min-w-[260px] max-w-[300px] sm:max-w-[320px] transition-all">
+                  <div class="flex items-center justify-between gap-3 border-b border-element-border pb-2">
+                    <span id="bin-overflow-tooltip-title" class="text-xs sm:text-sm font-extrabold text-white light:text-slate-900 truncate">+{restTagsCount} Remaining Tags</span>
+                    <span id="bin-overflow-tooltip-count" class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-domain-tags/20 text-domain-tags border border-domain-tags/30 whitespace-nowrap">
+                      {restTotalContentCount} {restTotalContentCount === 1 ? 'item' : 'items'}
+                    </span>
+                  </div>
+
+                  <p class="text-[11px] text-gray-400 light:text-slate-600 line-clamp-2 leading-relaxed font-normal">
+                    Browse the full topic taxonomy archive across all engineering and research domains.
                   </p>
-                )}
 
-                <!-- Multi-Color Segmented Progress Bar -->
-                <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
-                  {tag.interestsCount > 0 && (
-                    <div style={`width: ${tag.interestsPct}%`} class="bg-domain-interests h-full" title={`Interests: ${tag.interestsCount}`} />
+                  {restTotalContentCount > 0 && (
+                    <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
+                      {restInterestsCount > 0 && <div class="bg-domain-interests h-full" style={`width: ${restInterestsPct}%`} title={`Interests: ${restInterestsCount}`}></div>}
+                      {restPostsCount > 0 && <div class="bg-domain-posts h-full" style={`width: ${restPostsPct}%`} title={`Posts: ${restPostsCount}`}></div>}
+                      {restPubsCount > 0 && <div class="bg-domain-publications h-full" style={`width: ${restPubsPct}%`} title={`Publications: ${restPubsCount}`}></div>}
+                      {restPresCount > 0 && <div class="bg-domain-presentations h-full" style={`width: ${restPresPct}%`} title={`Presentations: ${restPresCount}`}></div>}
+                      {restCoursesCount > 0 && <div class="bg-domain-courses h-full" style={`width: ${restCoursesPct}%`} title={`Courses: ${restCoursesCount}`}></div>}
+                      {restProjectsCount > 0 && <div class="bg-domain-projects h-full" style={`width: ${restProjectsPct}%`} title={`Projects: ${restProjectsCount}`}></div>}
+                      {restServicesCount > 0 && <div class="bg-domain-services h-full" style={`width: ${restServicesPct}%`} title={`Services: ${restServicesCount}`}></div>}
+                      {restVisCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${restVisPct}%`} title={`Visualizations: ${restVisCount}`}></div>}
+                    </div>
                   )}
-                  {tag.postsCount > 0 && (
-                    <div style={`width: ${tag.postsPct}%`} class="bg-domain-posts h-full" title={`Posts: ${tag.postsCount}`} />
-                  )}
-                  {tag.pubsCount > 0 && (
-                    <div style={`width: ${tag.pubsPct}%`} class="bg-domain-publications h-full" title={`Publications: ${tag.pubsCount}`} />
-                  )}
-                  {tag.presCount > 0 && (
-                    <div style={`width: ${tag.presPct}%`} class="bg-domain-presentations h-full" title={`Presentations: ${tag.presCount}`} />
-                  )}
-                  {tag.coursesCount > 0 && (
-                    <div style={`width: ${tag.coursesPct}%`} class="bg-domain-courses h-full" title={`Courses: ${tag.coursesCount}`} />
-                  )}
-                  {tag.projectsCount > 0 && (
-                    <div style={`width: ${tag.projectsPct}%`} class="bg-domain-projects h-full" title={`Projects: ${tag.projectsCount}`} />
-                  )}
-                  {tag.servicesCount > 0 && (
-                    <div style={`width: ${tag.servicesPct}%`} class="bg-domain-services h-full" title={`Services: ${tag.servicesCount}`} />
-                  )}
-                  {tag.visCount > 0 && (
-                    <div style={`width: ${tag.visPct}%`} class="bg-domain-visualizations h-full" title={`Visualizations: ${tag.visCount}`} />
-                  )}
-                </div>
 
-                <!-- Responsive Legend Breakdown -->
-                <div class="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] text-gray-300 light:text-slate-600 font-medium">
-                  {tag.interestsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
-                      <span>{tag.interestsCount} Interest{tag.interestsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.interestsPct}%)</span>
-                    </span>
-                  )}
-                  {tag.postsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-posts"></span>
-                      <span>{tag.postsCount} Post{tag.postsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.postsPct}%)</span>
-                    </span>
-                  )}
-                  {tag.pubsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-publications"></span>
-                      <span>{tag.pubsCount} Publication{tag.pubsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
-                    </span>
-                  )}
-                  {tag.presCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-presentations"></span>
-                      <span>{tag.presCount} Presentation{tag.presCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.presPct}%)</span>
-                    </span>
-                  )}
-                  {tag.coursesCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-courses"></span>
-                      <span>{tag.coursesCount} Course{tag.coursesCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.coursesPct}%)</span>
-                    </span>
-                  )}
-                  {tag.projectsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-projects"></span>
-                      <span>{tag.projectsCount} Project{tag.projectsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
-                    </span>
-                  )}
-                  {tag.servicesCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-services"></span>
-                      <span>{tag.servicesCount} Service{tag.servicesCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
-                    </span>
-                  )}
-                  {tag.visCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
-                      <span>{tag.visCount} Visualization{tag.visCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.visPct}%)</span>
-                    </span>
-                  )}
+                  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] sm:text-[11px] text-gray-300 light:text-slate-600 font-medium pt-0.5">
+                    {restInterestsCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
+                        <span>{restInterestsCount} {restInterestsCount === 1 ? 'Interest' : 'Interests'}</span>
+                        <span class="text-gray-400 text-[10px]">({restInterestsPct}%)</span>
+                      </span>
+                    )}
+                    {restPostsCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-posts"></span>
+                        <span>{restPostsCount} {restPostsCount === 1 ? 'Post' : 'Posts'}</span>
+                        <span class="text-gray-400 text-[10px]">({restPostsPct}%)</span>
+                      </span>
+                    )}
+                    {restPubsCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-publications"></span>
+                        <span>{restPubsCount} {restPubsCount === 1 ? 'Publication' : 'Publications'}</span>
+                        <span class="text-gray-400 text-[10px]">({restPubsPct}%)</span>
+                      </span>
+                    )}
+                    {restPresCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-presentations"></span>
+                        <span>{restPresCount} {restPresCount === 1 ? 'Presentation' : 'Presentations'}</span>
+                        <span class="text-gray-400 text-[10px]">({restPresPct}%)</span>
+                      </span>
+                    )}
+                    {restCoursesCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-courses"></span>
+                        <span>{restCoursesCount} {restCoursesCount === 1 ? 'Course' : 'Courses'}</span>
+                        <span class="text-gray-400 text-[10px]">({restCoursesPct}%)</span>
+                      </span>
+                    )}
+                    {restProjectsCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-projects"></span>
+                        <span>{restProjectsCount} {restProjectsCount === 1 ? 'Project' : 'Projects'}</span>
+                        <span class="text-gray-400 text-[10px]">({restProjectsPct}%)</span>
+                      </span>
+                    )}
+                    {restServicesCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-services"></span>
+                        <span>{restServicesCount} {restServicesCount === 1 ? 'Service' : 'Services'}</span>
+                        <span class="text-gray-400 text-[10px]">({restServicesPct}%)</span>
+                      </span>
+                    )}
+                    {restVisCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
+                        <span>{restVisCount} {restVisCount === 1 ? 'Visualization' : 'Visualizations'}</span>
+                        <span class="text-gray-400 text-[10px]">({restVisPct}%)</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )}
+          </div>
 
-          <!-- Top 10 Remaining Tags Group (Sorted by Frequency Descending) -->
-          {remainingTags.map(tag => (
-            <div class="relative group/tag inline-block">
-              <!-- Tag Pill Link -->
-              <a
-                href={`/tags/${encodeURIComponent(tag.id)}/`}
-                class={`inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl border transition-all duration-300 ${tag.fontSizeClass} ${tag.fontWeightClass} bg-slate-900/60 light:bg-slate-100/80 border-element-border-medium light:border-slate-200 hover:border-domain-tags/40 text-gray-300 light:text-slate-700 hover:text-white light:hover:text-slate-900 hover:scale-105 whitespace-nowrap`}
-              >
-                <span>#{tag.name}</span>
-                <span class="text-[9px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.25 rounded-md bg-white/10 light:bg-slate-200 text-gray-400 light:text-slate-600">
-                  {tag.totalCount}
-                </span>
-              </a>
-
-              <!-- Glass Hover Tooltip with Segmented Progress Bar -->
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-element-border-medium light:border-slate-200/80 shadow-2xl text-xs w-64 sm:w-72 pointer-events-none z-30 transition-all duration-200 transform animate-in fade-in zoom-in-95">
-                <!-- Tooltip Header -->
-                <div class="flex items-center justify-between text-gray-200 light:text-slate-900 font-bold text-xs">
-                  <span class="truncate">#{tag.name}</span>
-                  <span class="text-domain-tags text-[11px] font-extrabold">{tag.totalCount} item{tag.totalCount > 1 ? 's' : ''}</span>
-                </div>
-
-                {tag.description && (
-                  <p class="text-[11px] text-gray-400 light:text-slate-600 line-clamp-2 leading-relaxed">
-                    {tag.description}
-                  </p>
-                )}
-
-                <!-- Multi-Color Segmented Progress Bar -->
-                <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
-                  {tag.interestsCount > 0 && (
-                    <div style={`width: ${tag.interestsPct}%`} class="bg-domain-interests h-full" title={`Interests: ${tag.interestsCount}`} />
-                  )}
-                  {tag.postsCount > 0 && (
-                    <div style={`width: ${tag.postsPct}%`} class="bg-domain-posts h-full" title={`Posts: ${tag.postsCount}`} />
-                  )}
-                  {tag.pubsCount > 0 && (
-                    <div style={`width: ${tag.pubsPct}%`} class="bg-domain-publications h-full" title={`Publications: ${tag.pubsCount}`} />
-                  )}
-                  {tag.presCount > 0 && (
-                    <div style={`width: ${tag.presPct}%`} class="bg-domain-presentations h-full" title={`Presentations: ${tag.presCount}`} />
-                  )}
-                  {tag.coursesCount > 0 && (
-                    <div style={`width: ${tag.coursesPct}%`} class="bg-domain-courses h-full" title={`Courses: ${tag.coursesCount}`} />
-                  )}
-                  {tag.projectsCount > 0 && (
-                    <div style={`width: ${tag.projectsPct}%`} class="bg-domain-projects h-full" title={`Projects: ${tag.projectsCount}`} />
-                  )}
-                  {tag.servicesCount > 0 && (
-                    <div style={`width: ${tag.servicesPct}%`} class="bg-domain-services h-full" title={`Services: ${tag.servicesCount}`} />
-                  )}
-                  {tag.visCount > 0 && (
-                    <div style={`width: ${tag.visPct}%`} class="bg-domain-visualizations h-full" title={`Visualizations: ${tag.visCount}`} />
-                  )}
-                </div>
-
-                <!-- Responsive Legend Breakdown -->
-                <div class="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] text-gray-300 light:text-slate-600 font-medium">
-                  {tag.interestsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
-                      <span>{tag.interestsCount} Interest{tag.interestsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.interestsPct}%)</span>
-                    </span>
-                  )}
-                  {tag.postsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-posts"></span>
-                      <span>{tag.postsCount} Post{tag.postsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.postsPct}%)</span>
-                    </span>
-                  )}
-                  {tag.pubsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-publications"></span>
-                      <span>{tag.pubsCount} Publication{tag.pubsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.pubsPct}%)</span>
-                    </span>
-                  )}
-                  {tag.presCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-presentations"></span>
-                      <span>{tag.presCount} Presentation{tag.presCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.presPct}%)</span>
-                    </span>
-                  )}
-                  {tag.coursesCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-courses"></span>
-                      <span>{tag.coursesCount} Course{tag.coursesCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.coursesPct}%)</span>
-                    </span>
-                  )}
-                  {tag.projectsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-projects"></span>
-                      <span>{tag.projectsCount} Project{tag.projectsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.projectsPct}%)</span>
-                    </span>
-                  )}
-                  {tag.servicesCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-services"></span>
-                      <span>{tag.servicesCount} Service{tag.servicesCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
-                    </span>
-                  )}
-                  {tag.visCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
-                      <span>{tag.visCount} Visualization{tag.visCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({tag.visPct}%)</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-
-          <!-- Group 3: Remaining Overflow Badge -->
-          {restTagsCount > 0 && (
-            <div class="relative group/tag inline-block">
-              <!-- Tag Pill Link -->
-              <a
-                href="/tags/"
-                class={`inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl border transition-all duration-300 ${restFontSizeClass} ${restFontWeightClass} bg-domain-tags/15 border-domain-tags/40 hover:border-domain-tags/70 shadow-lg shadow-domain-tags/15 text-domain-tags hover:text-white light:hover:text-domain-tags hover:scale-105 whitespace-nowrap`}
-              >
-                <span>+{restTagsCount} remaining</span>
-                <span class="text-[10px] sm:text-[11px] font-extrabold px-1.5 sm:px-2 py-0.5 rounded-full bg-domain-tags/25 text-domain-tags border border-domain-tags/40">
-                  {restTotalContentCount}
-                </span>
-              </a>
-
-              <!-- Glass Hover Tooltip with Segmented Progress Bar -->
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden md:group-hover/tag:flex md:group-focus-within/tag:flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-gray-950/90 light:bg-white/95 backdrop-blur-md border border-domain-tags/35 light:border-slate-200/80 shadow-2xl text-xs w-64 sm:w-72 pointer-events-none z-30 transition-all duration-200 transform animate-in fade-in zoom-in-95">
-                <!-- Tooltip Header -->
-                <div class="flex items-center justify-between text-gray-200 light:text-slate-900 font-bold text-xs">
-                  <span class="truncate">+{restTagsCount} Remaining Tags</span>
-                  <span class="text-domain-tags text-[11px] font-extrabold">{restTotalContentCount} items</span>
-                </div>
-
-                <!-- Multi-Color Segmented Progress Bar -->
-                <div class="w-full h-1.5 rounded-full bg-gray-800 light:bg-slate-200 overflow-hidden flex">
-                  {restInterestsCount > 0 && (
-                    <div style={`width: ${restInterestsPct}%`} class="bg-domain-interests h-full" title={`Interests: ${restInterestsCount}`} />
-                  )}
-                  {restPostsCount > 0 && (
-                    <div style={`width: ${restPostsPct}%`} class="bg-domain-posts h-full" title={`Posts: ${restPostsCount}`} />
-                  )}
-                  {restPubsCount > 0 && (
-                    <div style={`width: ${restPubsPct}%`} class="bg-domain-publications h-full" title={`Publications: ${restPubsCount}`} />
-                  )}
-                  {restPresCount > 0 && (
-                    <div style={`width: ${restPresPct}%`} class="bg-domain-presentations h-full" title={`Presentations: ${restPresCount}`} />
-                  )}
-                  {restCoursesCount > 0 && (
-                    <div style={`width: ${restCoursesPct}%`} class="bg-domain-courses h-full" title={`Courses: ${restCoursesCount}`} />
-                  )}
-                  {restProjectsCount > 0 && (
-                    <div style={`width: ${restProjectsPct}%`} class="bg-domain-projects h-full" title={`Projects: ${restProjectsCount}`} />
-                  )}
-                  {restServicesCount > 0 && (
-                    <div style={`width: ${restServicesPct}%`} class="bg-domain-services h-full" title={`Services: ${restServicesCount}`} />
-                  )}
-                  {restVisCount > 0 && (
-                    <div style={`width: ${restVisPct}%`} class="bg-domain-visualizations h-full" title={`Visualizations: ${restVisCount}`} />
-                  )}
-                </div>
-
-                <!-- Responsive Legend Breakdown -->
-                <div class="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] text-gray-300 light:text-slate-600 font-medium">
-                  {restInterestsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-interests"></span>
-                      <span>{restInterestsCount} Interest{restInterestsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restInterestsPct}%)</span>
-                    </span>
-                  )}
-                  {restPostsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-posts"></span>
-                      <span>{restPostsCount} Post{restPostsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restPostsPct}%)</span>
-                    </span>
-                  )}
-                  {restPubsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-publications"></span>
-                      <span>{restPubsCount} Publication{restPubsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restPubsPct}%)</span>
-                    </span>
-                  )}
-                  {restPresCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-presentations"></span>
-                      <span>{restPresCount} Presentation{restPresCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restPresPct}%)</span>
-                    </span>
-                  )}
-                  {restCoursesCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-courses"></span>
-                      <span>{restCoursesCount} Course{restCoursesCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restCoursesPct}%)</span>
-                    </span>
-                  )}
-                  {restProjectsCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-projects"></span>
-                      <span>{restProjectsCount} Project{restProjectsCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restProjectsPct}%)</span>
-                    </span>
-                  )}
-                  {restServicesCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-services"></span>
-                      <span>{restServicesCount} Service{restServicesCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restServicesPct}%)</span>
-                    </span>
-                  )}
-                  {restVisCount > 0 && (
-                    <span class="inline-flex items-center gap-1">
-                      <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
-                      <span>{restVisCount} Visualization{restVisCount !== 1 ? 's' : ''}</span>
-                      <span class="text-gray-400 text-[10px]">({restVisPct}%)</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
+          <!-- Hidden staging pool for tags that overflow the elliptical budget on narrow screens -->
+          <div id="bin-packing-pool" class="hidden" aria-hidden="true"></div>
         </div>
       </div>
     </Container>
@@ -3931,9 +3783,222 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     });
   }
 
+  // ==========================================================================
+  // 2D Elliptical Bin-Packing Tag Cloud Engine
+  // ==========================================================================
+  function initTagCloudEngines(): void {
+    const binStage = document.getElementById('bin-packing-stage');
+    const binRowsContainer = document.getElementById('bin-packing-rows');
+    const binPool = document.getElementById('bin-packing-pool');
+
+    if (!binStage || !binRowsContainer || !binPool || binStage.dataset.engineInit === 'true') {
+      return;
+    }
+    binStage.dataset.engineInit = 'true';
+
+    const allTagNodes = Array.from(
+      binStage.querySelectorAll<HTMLElement>('.bin-tag-node')
+    ).sort((a, b) => (parseInt(a.dataset.rank || '0', 10) - parseInt(b.dataset.rank || '0', 10)));
+
+    const overflowNode = document.getElementById('bin-overflow-node');
+    const overflowLabel = document.getElementById('bin-overflow-label');
+    const overflowCount = document.getElementById('bin-overflow-count');
+    const overflowTooltipTitle = document.getElementById('bin-overflow-tooltip-title');
+    const overflowTooltipCount = document.getElementById('bin-overflow-tooltip-count');
+
+    const baseRestTags = parseInt(binStage.dataset.baseRestTags || '0', 10) || 0;
+    const baseRestItems = parseInt(binStage.dataset.baseRestItems || '0', 10) || 0;
+
+    let lastPackedWidth = 0;
+    const runEllipticalBinPacking = () => {
+      const containerW = binStage.clientWidth;
+      if (containerW <= 0 || Math.abs(containerW - lastPackedWidth) < 2) return;
+      lastPackedWidth = containerW;
+
+      const isMobile = containerW < 460;
+      const gapPx = isMobile ? 6 : 10;
+      const effectiveW = Math.min(containerW, 920);
+
+      // 1. Temporarily place all nodes in a single flat flex container to measure exact pixel widths
+      binRowsContainer.innerHTML = '';
+      binRowsContainer.className = 'flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 w-full';
+      allTagNodes.forEach((node) => binRowsContainer.appendChild(node));
+      if (overflowNode) binRowsContainer.appendChild(overflowNode);
+
+      const measured = allTagNodes.map((node, idx) => ({
+        node,
+        rank: idx,
+        width: Math.ceil(node.getBoundingClientRect().width) || 95,
+        total: parseInt(node.dataset.total || '0', 10) || 0,
+        placed: false,
+      }));
+
+      const overflowW = overflowNode ? (Math.ceil(overflowNode.getBoundingClientRect().width) || 120) : 0;
+
+      // 2. Determine target elliptical row count R based on container width
+      const numRows = containerW < 380 ? 5 : containerW < 680 ? 6 : 5;
+      const midRow = (numRows - 1) / 2;
+      const minEnvelopeRatio = containerW < 420 ? 0.78 : 0.58;
+
+      interface EllipticalRow {
+        index: number;
+        u: number;
+        capacity: number;
+        usedWidth: number;
+        items: typeof measured;
+        hasOverflowBadge: boolean;
+      }
+
+      const rows: EllipticalRow[] = [];
+      for (let r = 0; r < numRows; r++) {
+        const u = midRow > 0 ? (r - midRow) / midRow : 0; // [-1, +1]
+        const ellipseFactor = minEnvelopeRatio + (1 - minEnvelopeRatio) * Math.sqrt(Math.max(0, 1 - 0.86 * u * u));
+        rows.push({
+          index: r,
+          u,
+          capacity: Math.floor(effectiveW * ellipseFactor),
+          usedWidth: 0,
+          items: [],
+          hasOverflowBadge: false,
+        });
+      }
+
+      // Reserve space in the bottom row (numRows - 1) for the +X remaining overflow pill
+      if (overflowNode) {
+        const lastRow = rows[numRows - 1];
+        lastRow.hasOverflowBadge = true;
+        lastRow.usedWidth = overflowW;
+      }
+
+      // Order rows from the center row outward: e.g. [2, 1, 3, 0, 4]
+      const centerOutwardRows = rows.slice().sort((a, b) => Math.abs(a.u) - Math.abs(b.u) || a.index - b.index);
+
+      const canFitInRow = (row: EllipticalRow, itemW: number): boolean => {
+        const needed = (row.items.length > 0 || row.hasOverflowBadge ? gapPx : 0) + itemW;
+        // Allow a single wide tag in a central row even if the tag itself is very wide on 320px screens
+        if (row.items.length === 0 && !row.hasOverflowBadge && itemW <= containerW) return true;
+        return row.usedWidth + needed <= row.capacity;
+      };
+
+      const addItemToRow = (row: EllipticalRow, item: (typeof measured)[number]) => {
+        const needed = (row.items.length > 0 || row.hasOverflowBadge ? gapPx : 0) + item.width;
+        row.items.push(item);
+        row.usedWidth += needed;
+        item.placed = true;
+      };
+
+      // 3. Phase 1: Place top-frequency tags (rank 0..6) into the central rows first so the largest pills anchor the center
+      const centralRows = centerOutwardRows.filter((r) => Math.abs(r.u) <= 0.72);
+      const coreItems = measured.filter((m) => m.rank < 7);
+
+      coreItems.forEach((core, cIdx) => {
+        if (cIdx === 0) {
+          // Place #1 tag directly in the dead-center row
+          addItemToRow(centerOutwardRows[0], core);
+          return;
+        }
+        // Find the central row with the most remaining capacity where core fits
+        const candidateRows = centralRows
+          .filter((r) => canFitInRow(r, core.width))
+          .sort((a, b) => (a.items.length - b.items.length) || ((b.capacity - b.usedWidth) - (a.capacity - a.usedWidth)));
+
+        if (candidateRows.length > 0) {
+          addItemToRow(candidateRows[0], core);
+        } else {
+          // Fallback to any row from center outward that fits
+          const anyRow = centerOutwardRows.find((r) => canFitInRow(r, core.width));
+          if (anyRow) addItemToRow(anyRow, core);
+        }
+      });
+
+      // 4. Phase 2: Best-Fit Subset-Sum Gap Filling across all rows from center outward
+      // Pair long tags with shorter tags so rows reach their elliptical target envelope without 1-pill gaps
+      centerOutwardRows.forEach((row) => {
+        let keepFilling = true;
+        while (keepFilling) {
+          const unplaced = measured.filter((m) => !m.placed && canFitInRow(row, m.width));
+          if (unplaced.length === 0) {
+            keepFilling = false;
+            break;
+          }
+          const remainingCap = row.capacity - row.usedWidth - (row.items.length > 0 || row.hasOverflowBadge ? gapPx : 0);
+          // Score candidates: balance frequency rank priority with how snugly they fill remainingCap
+          let bestCandidate = unplaced[0];
+          let bestScore = -Infinity;
+          for (const cand of unplaced) {
+            const fillRatio = remainingCap > 0 ? Math.min(1, cand.width / remainingCap) : 0.5;
+            const rankScore = 1 - cand.rank / measured.length;
+            // If row currently has only 1 pill, strongly reward picking a complementary pill to avoid 1-pill rows
+            const score = row.items.length === 1 ? (fillRatio * 0.65 + rankScore * 0.35) : (rankScore * 0.65 + fillRatio * 0.35);
+            if (score > bestScore) {
+              bestScore = score;
+              bestCandidate = cand;
+            }
+          }
+          addItemToRow(row, bestCandidate);
+        }
+      });
+
+      // 5. Phase 3: Arrange items inside each row in a center-heavy pendulum (largest in row center)
+      binRowsContainer.innerHTML = '';
+      binRowsContainer.className = 'flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 w-full';
+      binPool.innerHTML = '';
+
+      rows.forEach((row) => {
+        if (row.items.length === 0 && !row.hasOverflowBadge) return;
+        const rowEl = document.createElement('div');
+        rowEl.className = 'bin-cloud-row flex flex-nowrap items-center justify-center gap-1.5 sm:gap-2.5 w-full';
+
+        // Sort row items by rank ascending (most important first) then pendulum-interleave so peak is in row center
+        const sortedRowItems = row.items.slice().sort((a, b) => a.rank - b.rank);
+        const orderedRowItems: typeof sortedRowItems = [];
+        sortedRowItems.forEach((item, idx) => {
+          if (idx === 0) orderedRowItems.push(item);
+          else if (idx % 2 === 1) orderedRowItems.unshift(item);
+          else orderedRowItems.push(item);
+        });
+
+        orderedRowItems.forEach((item) => rowEl.appendChild(item.node));
+        if (row.hasOverflowBadge && overflowNode) {
+          rowEl.appendChild(overflowNode);
+        }
+        binRowsContainer.appendChild(rowEl);
+      });
+
+      // Move any unplaced tags to hidden pool & dynamically update the +X remaining badge and tooltip
+      const unplacedItems = measured.filter((m) => !m.placed);
+      let extraOverflowItemsSum = 0;
+      unplacedItems.forEach((item) => {
+        extraOverflowItemsSum += item.total;
+        binPool.appendChild(item.node);
+      });
+
+      const dynamicRestTags = baseRestTags + unplacedItems.length;
+      const dynamicRestItems = baseRestItems + extraOverflowItemsSum;
+
+      if (overflowLabel) overflowLabel.textContent = `+${dynamicRestTags} remaining`;
+      if (overflowCount) overflowCount.textContent = `${dynamicRestItems}`;
+      if (overflowTooltipTitle) overflowTooltipTitle.textContent = `+${dynamicRestTags} Remaining Tags`;
+      if (overflowTooltipCount) {
+        overflowTooltipCount.textContent = `${dynamicRestItems} ${dynamicRestItems === 1 ? 'item' : 'items'}`;
+      }
+    };
+
+    runEllipticalBinPacking();
+    const binResizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(runEllipticalBinPacking);
+    });
+    binResizeObserver.observe(binStage);
+    document.fonts?.ready?.then(() => {
+      lastPackedWidth = 0;
+      runEllipticalBinPacking();
+    });
+  }
+
   function setupPageScripts() {
     initCarousels();
     initSectionHeaderCtas();
+    initTagCloudEngines();
     window.__syncHeroResponsiveLayout?.();
     document.fonts?.ready?.then(() => {
       window.__syncHeroResponsiveLayout?.();
