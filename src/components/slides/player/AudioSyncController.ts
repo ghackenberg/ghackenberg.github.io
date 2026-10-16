@@ -983,39 +983,52 @@ export class AudioSyncController {
 
     if (structuralItems.length === 0) return;
 
-    structuralItems.sort((a, b) => a.start - b.start);
-
-    // Find all structural items that have started by currentSec
-    const triggered = structuralItems.filter(item => currentSec >= item.start);
-    if (triggered.length === 0) {
-      for (const item of structuralItems) {
-        item.el.classList.remove('is-active', 'is-dimmed', 'is-exited');
-      }
-      return;
+    // Group items by their nearest cued ancestor: spotlight (dimming) only competes among
+    // siblings. Otherwise a cued container (e.g. comparison table) would be dimmed as soon
+    // as one of its cued rows becomes active, dimming the whole table instead of earlier rows.
+    const groups = new Map<HTMLElement | null, typeof structuralItems>();
+    for (const item of structuralItems) {
+      const parent = item.el.parentElement?.closest<HTMLElement>('[data-cue], .cue-target') ?? null;
+      const group = groups.get(parent);
+      if (group) group.push(item);
+      else groups.set(parent, [item]);
     }
 
-    // The most recently triggered structural item is the active spotlight
-    const activeItem = triggered[triggered.length - 1];
+    for (const group of groups.values()) {
+      group.sort((a, b) => a.start - b.start);
 
-    for (const item of structuralItems) {
-      if (currentSec < item.start) {
-        item.el.classList.remove('is-active', 'is-dimmed', 'is-exited');
-      } else if (item.el === activeItem.el) {
-        if (item.end !== undefined && currentSec >= item.end && item.el.dataset.exit === 'hide') {
-          item.el.classList.remove('is-active', 'is-dimmed');
-          item.el.classList.add('is-exited');
-        } else {
-          item.el.classList.remove('is-dimmed', 'is-exited');
-          item.el.classList.add('is-active');
+      // Find all structural items of this group that have started by currentSec
+      const triggered = group.filter(item => currentSec >= item.start);
+      if (triggered.length === 0) {
+        for (const item of group) {
+          item.el.classList.remove('is-active', 'is-dimmed', 'is-exited');
         }
-      } else {
-        // Earlier triggered item: dimmed spotlight
-        if (item.end !== undefined && currentSec >= item.end && item.el.dataset.exit === 'hide') {
-          item.el.classList.remove('is-active', 'is-dimmed');
-          item.el.classList.add('is-exited');
+        continue;
+      }
+
+      // The most recently triggered structural item of the group is the active spotlight
+      const activeItem = triggered[triggered.length - 1];
+
+      for (const item of group) {
+        if (currentSec < item.start) {
+          item.el.classList.remove('is-active', 'is-dimmed', 'is-exited');
+        } else if (item.el === activeItem.el) {
+          if (item.end !== undefined && currentSec >= item.end && item.el.dataset.exit === 'hide') {
+            item.el.classList.remove('is-active', 'is-dimmed');
+            item.el.classList.add('is-exited');
+          } else {
+            item.el.classList.remove('is-dimmed', 'is-exited');
+            item.el.classList.add('is-active');
+          }
         } else {
-          item.el.classList.remove('is-exited');
-          item.el.classList.add('is-active', 'is-dimmed');
+          // Earlier triggered item: dimmed spotlight
+          if (item.end !== undefined && currentSec >= item.end && item.el.dataset.exit === 'hide') {
+            item.el.classList.remove('is-active', 'is-dimmed');
+            item.el.classList.add('is-exited');
+          } else {
+            item.el.classList.remove('is-exited');
+            item.el.classList.add('is-active', 'is-dimmed');
+          }
         }
       }
     }
