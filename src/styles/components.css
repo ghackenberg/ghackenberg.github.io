@@ -225,6 +225,75 @@ html {
   }
 }
 
+/* Preview Card Image Load Indicator (state classes set by @commons/client/preview-media) */
+.preview-media-loading,
+.preview-media-loaded {
+  position: relative;
+}
+
+.preview-media-loading img,
+.preview-media-loading image {
+  opacity: 0;
+}
+
+.preview-media-loaded img,
+.preview-media-loaded image {
+  opacity: 1;
+  transition-property: opacity, transform;
+  transition-duration: 0.6s, 0.5s;
+  transition-timing-function: ease-out;
+}
+
+/* Shimmer backdrop */
+.preview-media-loading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(148, 163, 184, 0.14) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: preview-media-shimmer 1.4s linear infinite;
+}
+
+/* Spinner */
+.preview-media-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: -0.875rem 0 0 -0.875rem;
+  box-sizing: border-box;
+  border: 2px solid rgba(148, 163, 184, 0.3);
+  border-top-color: rgba(148, 163, 184, 0.9);
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: preview-media-spin 0.8s linear infinite;
+}
+
+@keyframes preview-media-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@keyframes preview-media-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview-media-loading::before,
+  .preview-media-loading::after {
+    animation: none;
+  }
+  .preview-media-loaded img,
+  .preview-media-loaded image {
+    transition-duration: 0.01s, 0.5s;
+  }
+}
+
 /* Card Corner Ribbon Badges (Top-Right & Top-Left) */
 .badge-corner-tr,
 .badge-corner-tl {

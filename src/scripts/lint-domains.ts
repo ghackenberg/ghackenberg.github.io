@@ -875,7 +875,7 @@ let previewCardContractViolations = 0;
 // 30a. Dynamic discovery guard: ensure no component with `preview-card` in src/components/ is omitted from previewCardFiles
 for (const compFile of nonSlideComponentFiles) {
   const baseName = path.basename(compFile);
-  if (baseName === 'CompactRelatedCard.astro' || baseName === 'AnalyticsDevOverlay.astro') continue;
+  if (baseName === 'CompactRelatedCard.astro' || baseName === 'AnalyticsDevOverlay.astro' || baseName === 'PreviewMediaBoot.astro') continue;
   const content = fs.readFileSync(compFile, 'utf8');
   if (content.includes('preview-card') && !previewCardFiles.includes(baseName)) {
     error(`Unregistered preview card component src/components/${baseName} detected. Add it to previewCardFiles in lint-domains.ts and enforce the SOTA truncation contract.`);

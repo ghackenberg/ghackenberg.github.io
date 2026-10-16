@@ -1,0 +1,120 @@
+---
+/**
+ * Flicker-free load state for preview images. Must be rendered inside <head>.
+ *
+ * The script runs synchronously before the first image is parsed and observes DOM insertions.
+ * MutationObserver callbacks are delivered as microtasks, i.e. before the browser paints the
+ * newly parsed nodes. For every image host we therefore know *before first paint* whether the
+ * image is already available (`img.complete`):
+ *   - available (memory cache): nothing happens, the image is painted directly.
+ *   - not available: the host enters `preview-media-loading` (spinner, image hidden) and
+ *     switches to `preview-media-loaded` (smooth fade-in) on `load`/`error`.
+ *
+ * `window.armMediaHost(host, force)` is also used by the gallery to re-arm recycled cards.
+ */
+---
+
+<script is:inline>
+  (function () {
+    var MEDIA = 'img, svg image';
+    var SCOPED_MEDIA = '.preview-card img, .preview-card svg image, [data-media-host] img, [data-media-host] svg image';
+    var HOST = '[data-media-host], .aspect-video';
+    var LOADING = 'preview-media-loading';
+    var LOADED = 'preview-media-loaded';
+    var generations = new WeakMap();
+
+    // Returns true if the media is already available; otherwise registers `done` and returns false.
+    function watch(media, done) {
+      if (media instanceof HTMLImageElement) {
+        if (media.complete) {
+          return true;
+        }
+        media.addEventListener('load', done, { once: true });
+        media.addEventListener('error', done, { once: true });
+        return false;
+      }
+      // SVG <image> has no `complete`: probe with a detached Image (shares the memory cache)
+      var href = media.getAttribute('href') || media.getAttribute('xlink:href');
+      if (!href) {
+        return true;
+      }
+      var probe = new Image();
+      probe.src = href;
+      if (probe.complete) {
+        return true;
+      }
+      probe.addEventListener('load', done, { once: true });
+      probe.addEventListener('error', done, { once: true });
+      return false;
+    }
+
+    function arm(host, force) {
+      if (!force && host.hasAttribute('data-media-armed')) {
+        return;
+      }
+      var mediaList = Array.prototype.slice.call(host.querySelectorAll(MEDIA));
+      if (mediaList.length === 0) {
+        return;
+      }
+      host.setAttribute('data-media-armed', '');
+
+      var generation = (generations.get(host) || 0) + 1;
+      generations.set(host, generation);
+
+      // Hosts may contain light/dark variants: reveal as soon as any one of them is ready
+      var done = function () {
+        if (generations.get(host) === generation && host.classList.contains(LOADING)) {
+          host.classList.remove(LOADING);
+          host.classList.add(LOADED);
+        }
+      };
+
+      host.classList.remove(LOADED);
+      host.classList.add(LOADING);
+      var ready = false;
+      mediaList.forEach(function (media) {
+        if (watch(media, done)) {
+          ready = true;
+        }
+      });
+      if (ready) {
+        host.classList.remove(LOADING);
+      }
+    }
+
+    function scan(node) {
+      if (node.nodeType !== 1) {
+        return;
+      }
+      var hosts = [];
+      if (node.matches(SCOPED_MEDIA)) {
+        hosts.push(node.closest(HOST));
+      }
+      node.querySelectorAll(SCOPED_MEDIA).forEach(function (media) {
+        hosts.push(media.closest(HOST));
+      });
+      hosts.forEach(function (host) {
+        if (host) {
+          arm(host, false);
+        }
+      });
+    }
+
+    window.armMediaHost = arm;
+
+    var observer = new MutationObserver(function (records) {
+      records.forEach(function (record) {
+        record.addedNodes.forEach(scan);
+      });
+    });
+    observer.observe(document, { childList: true, subtree: true });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Flush pending records, then stop observing
+      observer.takeRecords().forEach(function (record) {
+        record.addedNodes.forEach(scan);
+      });
+      observer.disconnect();
+    });
+  })();
+</script>

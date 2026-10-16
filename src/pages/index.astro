@@ -1796,7 +1796,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <a href={`/interests/${interest.slug}/`} class="absolute inset-0 z-10" aria-label={`Explore ${interest.title}`}></a>
 
               <!-- Artwork Header -->
-              <div class="relative w-full aspect-video shrink-0 grow-0 overflow-hidden bg-slate-950">
+              <div class="relative w-full aspect-video shrink-0 grow-0 overflow-hidden bg-slate-950" data-media-host>
                 <img 
                   src={interest.image} 
                   alt={`${interest.title} illustration`}

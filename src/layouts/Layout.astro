@@ -30,6 +30,8 @@ import WhatsNewModal from "@components/WhatsNewModal.astro";
 import AnalyticsDevOverlay from "@components/dev/AnalyticsDevOverlay.astro";
 import DevStudioShell from "@components/dev/DevStudioShell.astro";
 import Notifications from "@components/Notifications.astro";
+import PreviewMediaBoot from "@components/PreviewMediaBoot.astro";
+import PreviewMediaLoader from "@components/PreviewMediaLoader.astro";
 import Telemetry from "@components/Telemetry.astro";
 
 const isDev = import.meta.env.DEV;
@@ -213,6 +215,9 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Flicker-free image load state (must run before any image is parsed) -->
+    <PreviewMediaBoot />
+
 
     <script is:inline>
       // Add no-transitions class to prevent theme transition animation on load
@@ -392,6 +397,9 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
 
     <!-- Notification & Badge Tracking -->
     <Notifications />
+
+    <!-- Preview card image load indicator -->
+    <PreviewMediaLoader />
 
     <!-- Telemetry & Semantic Tracking -->
     <Telemetry />

@@ -63,6 +63,7 @@ function getDomainFromHref(href: string): string {
           href={item.href}
           data-id={item.id}
           data-domain={getDomainFromHref(item.href)}
+          data-media-host
           class="gallery-card group relative w-64 sm:w-72 md:w-80 aspect-video shrink-0 rounded-2xl overflow-hidden glass-card border border-element-border-medium light:border-slate-200/80 hover:border-white/35 light:hover:border-brand-blue/60 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
         >
           <img
@@ -107,6 +108,7 @@ function getDomainFromHref(href: string): string {
           href={item.href}
           data-id={item.id}
           data-domain={getDomainFromHref(item.href)}
+          data-media-host
           class="gallery-card group relative w-52 sm:w-60 md:w-64 aspect-video shrink-0 rounded-xl overflow-hidden glass-card border border-element-border-medium light:border-slate-200/80 hover:border-white/35 light:hover:border-brand-blue/60 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
         >
           <img
@@ -146,6 +148,7 @@ function getDomainFromHref(href: string): string {
           href={item.href}
           data-id={item.id}
           data-domain={getDomainFromHref(item.href)}
+          data-media-host
           class="gallery-card group relative w-40 sm:w-48 md:w-52 aspect-video shrink-0 rounded-lg overflow-hidden glass-card border border-element-border-medium light:border-slate-200/80 hover:border-white/35 light:hover:border-brand-blue/60 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
         >
           <img
@@ -288,6 +291,7 @@ function getDomainFromHref(href: string): string {
 
 <script>
   import type { GalleryItem } from './ImageGalleryMarquee.astro';
+  import { armMediaHost } from '@commons/client/preview-media';
 
   interface TrackState {
     el: HTMLElement;
@@ -450,9 +454,14 @@ function getDomainFromHref(href: string): string {
 
     const img = card.querySelector<HTMLImageElement>('.gallery-card-img');
     if (img) {
+      const srcChanged = img.getAttribute('src') !== item.image;
       img.src = item.image;
       img.alt = item.imageDescription;
       img.title = item.imageTitle;
+      if (srcChanged) {
+        // Recycled card: show the load indicator again until the new image is available
+        armMediaHost(card);
+      }
     }
 
     const title = card.querySelector<HTMLElement>('.gallery-card-title');

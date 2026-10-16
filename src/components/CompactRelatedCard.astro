@@ -258,7 +258,7 @@ const cardId = id || href.replace(/^\/[^/]+\//, '').replace(/\/$/, '') || title;
   <a href={href} class="absolute inset-0 z-10" aria-label={title}></a>
 
   <!-- Left: Thumbnail / icon container -->
-  <div class="w-22 h-22 sm:w-28 sm:h-28 shrink-0 rounded-lg aspect-square overflow-hidden border border-element-border-medium bg-gray-900/60 light:bg-slate-100 flex items-center justify-center relative">
+  <div class="w-22 h-22 sm:w-28 sm:h-28 shrink-0 rounded-lg aspect-square overflow-hidden border border-element-border-medium bg-gray-900/60 light:bg-slate-100 flex items-center justify-center relative" data-media-host>
     {displayImgSrc ? (
       <img
         src={displayImgSrc}
