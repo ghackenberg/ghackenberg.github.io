@@ -288,7 +288,7 @@ const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
               data-screenshot-index={index}
             >
               <!-- Image Area -->
-              <div class="aspect-video w-full overflow-hidden relative bg-black/40">
+              <div class="aspect-video w-full overflow-hidden relative bg-black/40" data-media-host>
                 <img 
                   src={shot.src} 
                   alt={shot.description ? `${shot.title}: ${shot.description}` : `Screenshot von ${project.data.title} - ${shot.title}`}
