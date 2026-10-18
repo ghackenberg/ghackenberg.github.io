@@ -525,11 +525,13 @@ export async function getPlausiblePageScrollAndGoals(
 const GOAL_DETAIL_PROPERTIES: Record<string, { propKey: string; fieldName: string }> = {
   'File Download': { propKey: 'event:props:url', fieldName: 'url' },
   'Outbound Link: Click': { propKey: 'event:props:url', fieldName: 'url' },
-  'Section Viewed': { propKey: 'event:props:section_id', fieldName: 'section_id' },
+  'Section Viewed': { propKey: 'event:props:id', fieldName: 'id' },
   'Heading Viewed': { propKey: 'event:props:id', fieldName: 'id' },
+  'Card Viewed': { propKey: 'event:props:id', fieldName: 'id' },
+  'Card Clicked': { propKey: 'event:props:id', fieldName: 'id' },
   'Slide Viewed': { propKey: 'event:props:slide_number', fieldName: 'slide_number' },
   'High Intent: Copy Email': { propKey: 'event:props:location', fieldName: 'location' },
-  'High Intent: Copy BibTeX': { propKey: 'event:props:title', fieldName: 'title' },
+  'High Intent: Copy BibTeX': { propKey: 'event:props:id', fieldName: 'id' },
   'High Intent: Share Presentation': { propKey: 'event:props:slide_number', fieldName: 'slide_number' },
   'Filter Content': { propKey: 'event:props:value', fieldName: 'value' },
   'Notifications Action': { propKey: 'event:props:action', fieldName: 'action' },
@@ -553,11 +555,20 @@ async function enrichGoalWithDetails(
     : `event:goal==${conversion.goal}`;
 
   try {
-    const breakdown = await fetchBreakdown(mapping.propKey, period, filter, 'visitors', 10);
+    let breakdown = await fetchBreakdown(mapping.propKey, period, filter, 'visitors', 10);
+    let fieldName = mapping.fieldName;
+
+    if (breakdown.length === 0 && conversion.goal === 'Section Viewed') {
+      breakdown = await fetchBreakdown('event:props:section_id', period, filter, 'visitors', 10);
+      if (breakdown.length > 0) {
+        fieldName = 'section_id';
+      }
+    }
+
     if (breakdown.length > 0) {
       conversion.details = breakdown.map((item: PlausibleBreakdownRow) => ({
         property: mapping.fieldName,
-        value: String(item[mapping.fieldName] ?? item.value ?? '(unknown)'),
+        value: String(item[fieldName] ?? item[mapping.fieldName] ?? item.value ?? '(unknown)'),
         visitors: item.visitors || 0,
       }));
     }
