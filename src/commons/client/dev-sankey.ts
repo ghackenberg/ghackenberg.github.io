@@ -56,12 +56,26 @@ export interface DevSankeyGscQuery {
   position: number;
 }
 
+export interface DevSankeyScrollMilestone {
+  depth: number;
+  visitors: number;
+  percentageOfVisitors: number;
+  dropOffRateFromPrevious?: number;
+}
+
+export interface DevSankeyScrollFunnel {
+  milestones?: DevSankeyScrollMilestone[];
+  readThroughRate?: number | null;
+  medianScrollDepth?: number | null;
+}
+
 export interface DevSankeyPageContext {
   visitors?: number;
   pageviews?: number;
   visitDuration?: number | null;
   bounceRate?: number | null;
   gscQueries?: DevSankeyGscQuery[];
+  scrollFunnel?: DevSankeyScrollFunnel | null;
 }
 
 export type SankeyCardDensity = 'compact' | 'detailed';
@@ -951,6 +965,75 @@ export function renderVisitorFlowSankey(
             </div>`
           : '';
 
+      const funnel = context?.scrollFunnel;
+      const medStr =
+        funnel?.medianScrollDepth !== null && funnel?.medianScrollDepth !== undefined
+          ? `${Math.round(funnel.medianScrollDepth)}%`
+          : '--';
+      const readStr =
+        funnel?.readThroughRate !== null && funnel?.readThroughRate !== undefined
+          ? `${Math.round(funnel.readThroughRate)}%`
+          : '--';
+      const rawMilestones = [...(funnel?.milestones ?? [])].sort((a, b) => a.depth - b.depth);
+
+      const getReachPctAtDepth = (targetDepth: number): number => {
+        if (rawMilestones.length === 0) return 0;
+        if (targetDepth <= 0) return 100;
+        const exact = rawMilestones.find((m) => m.depth === targetDepth);
+        if (exact) {
+          return Math.min(100, Math.max(0, Math.round(exact.percentageOfVisitors)));
+        }
+        if (targetDepth === 100) {
+          const m90 = rawMilestones.find((m) => m.depth === 90);
+          return m90 ? Math.min(100, Math.max(0, Math.round(m90.percentageOfVisitors))) : 0;
+        }
+        const points = [
+          { depth: 0, pct: 100 },
+          ...rawMilestones.map((m) => ({
+            depth: m.depth,
+            pct: Math.min(100, Math.max(0, m.percentageOfVisitors)),
+          })),
+        ];
+        let lower = points[0];
+        let upper: { depth: number; pct: number } | null = null;
+        for (const pt of points) {
+          if (pt.depth <= targetDepth) lower = pt;
+          if (pt.depth >= targetDepth && !upper) upper = pt;
+        }
+        if (upper && upper.depth > lower.depth) {
+          const t = (targetDepth - lower.depth) / (upper.depth - lower.depth);
+          return Math.min(100, Math.max(0, Math.round(lower.pct + t * (upper.pct - lower.pct))));
+        }
+        return 0;
+      };
+
+      const scrollCheckpoints = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+      const svgPadL = 8;
+      const svgPadT = 6;
+      const svgPlotW = 304;
+      const svgPlotH = 44;
+      const scrollPts = scrollCheckpoints.map((d, idx) => {
+        const reachPct = getReachPctAtDepth(d);
+        const x = svgPadL + (idx / (scrollCheckpoints.length - 1)) * svgPlotW;
+        const y = svgPadT + (1 - reachPct / 100) * svgPlotH;
+        return { depth: d, reachPct, x, y };
+      });
+
+      const scrollLineD = `M ${scrollPts.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ')}`;
+      const scrollAreaD = `${scrollLineD} L ${scrollPts[scrollPts.length - 1].x.toFixed(1)} ${(svgPadT + svgPlotH).toFixed(1)} L ${scrollPts[0].x.toFixed(1)} ${(svgPadT + svgPlotH).toFixed(1)} Z`;
+      const scrollGridLinesHtml = [0.25, 0.5, 0.75]
+        .map((frac) => {
+          const gy = (svgPadT + frac * svgPlotH).toFixed(1);
+          return `<line x1="${svgPadL}" y1="${gy}" x2="${svgPadL + svgPlotW}" y2="${gy}" stroke="rgba(63, 63, 70, 0.5)" stroke-width="1" stroke-dasharray="2 2" />`;
+        })
+        .join('');
+      const scrollDotsHtml = scrollPts
+        .map(
+          (p) =>
+            `<circle class="sankey-scroll-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.3" fill="rgb(52, 211, 153)" stroke="rgb(9, 9, 11)" stroke-width="1"><title>Scroll depth ≥ ${p.depth}%: ${p.reachPct}% of readers</title></circle>`
+        )
+        .join('');
+
       return `
         <div
           data-sankey-center="true"
@@ -1010,7 +1093,30 @@ export function renderVisitorFlowSankey(
               </div>
             </div>
 
-            <!-- 3. FILE DOWNLOADS BAR + DETAIL ITEMS -->
+            <!-- 3. SCROLL DEPTH RETENTION LINE CHART (0%..100% in 10% steps) -->
+            <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="📜 Scroll Depth" data-ext-metrics="Med: ${medStr} · Read: ${readStr}">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-cyan-200">📜 Scroll Depth</span>
+                <span class="text-zinc-300">⭐ Med: <strong class="text-amber-300">${medStr}</strong> · Read: <strong class="text-emerald-300">${readStr}</strong></span>
+              </div>
+              <svg
+                class="sankey-scroll-line-svg w-full h-14 rounded bg-zinc-950 border border-zinc-800/90 overflow-visible"
+                viewBox="0 0 320 56"
+                preserveAspectRatio="none"
+                role="img"
+                aria-label="Scroll Depth Retention Line Chart (0% to 100% in 10% steps)"
+              >
+                ${scrollGridLinesHtml}
+                <path class="sankey-scroll-area-path" d="${scrollAreaD}" fill="rgba(34, 211, 238, 0.18)" />
+                <path class="sankey-scroll-line-path" d="${scrollLineD}" fill="none" stroke="rgb(34, 211, 238)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                ${scrollDotsHtml}
+              </svg>
+              <div class="flex items-center justify-between text-[9px] text-zinc-400 px-0.5 leading-none">
+                <span>0%</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50%</span><span>60</span><span>70</span><span>80</span><span>90</span><span>100%</span>
+              </div>
+            </div>
+
+            <!-- 4. FILE DOWNLOADS BAR + DETAIL ITEMS -->
             <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="📄 File Downloads" data-ext-metrics="${filePct}% (${formatVisitorCount(node.fileVis)})">
               <div class="flex items-center justify-between font-bold text-sky-200">
                 <span>📄 File Downloads</span>
@@ -1690,31 +1796,58 @@ export function renderVisitorFlowSankey(
         });
       });
 
-    //Deterministic 2x Canvas PNG Exporter (Taint-Free)
+    // Deterministic 2x WYSIWYG Canvas PNG Exporter (Taint-Free, Full DOM Text & Box Fidelity)
     const copySankeyPngToClipboard = async (): Promise<void> => {
       if (!stageEl) return;
       layoutRibbons();
 
-      const stageW = stageEl.offsetWidth;
       const stageH = stageEl.offsetHeight;
       const stageRect = stageEl.getBoundingClientRect();
-      if (stageW <= 0 || stageH <= 0 || stageRect.width <= 0) return;
+      if (stageH <= 0 || stageRect.width <= 0) return;
 
-      const toLocal = (el: Element): { x: number; y: number; w: number; h: number } => {
-        const r = el.getBoundingClientRect();
-        return {
-          x: r.left - stageRect.left,
-          y: r.top - stageRect.top,
-          w: r.width,
-          h: r.height,
-        };
+      const colRects = colEls.map((c) => c.getBoundingClientRect()).filter((r) => r.width > 0);
+      const minColLeft =
+        colRects.length > 0 ? Math.min(...colRects.map((r) => r.left)) : stageRect.left;
+      const maxColRight =
+        colRects.length > 0 ? Math.max(...colRects.map((r) => r.right)) : stageRect.right;
+
+      const contentW = Math.max(320, maxColRight - minColLeft);
+      const contentH = stageRect.height;
+
+      const toLocalRect = (r: DOMRect): { x: number; y: number; w: number; h: number } => ({
+        x: r.left - minColLeft,
+        y: r.top - stageRect.top,
+        w: r.width,
+        h: r.height,
+      });
+
+      const toLocal = (el: Element): { x: number; y: number; w: number; h: number } =>
+        toLocalRect(el.getBoundingClientRect());
+
+      const isVisibleInExport = (el: HTMLElement): boolean => {
+        if (el.closest('.vert-ind-top, .vert-ind-bot, [data-horiz-ind], .hidden, svg, style')) {
+          return false;
+        }
+        let cur: HTMLElement | null = el;
+        while (cur && cur !== stageEl) {
+          const st = window.getComputedStyle(cur);
+          if (
+            st.display === 'none' ||
+            st.visibility === 'hidden' ||
+            parseFloat(st.opacity || '1') === 0
+          ) {
+            return false;
+          }
+          cur = cur.parentElement;
+        }
+        return true;
       };
 
       const PAD_X = 24;
       const PAD_TOP = 54;
       const PAD_BOT = 24;
-      const logicalW = stageW + PAD_X * 2;
-      const logicalH = stageH + PAD_TOP + PAD_BOT;
+      const logicalW = contentW + PAD_X * 2;
+      const logicalH = contentH + PAD_TOP + PAD_BOT;
 
       const canvas = document.createElement('canvas');
       canvas.width = Math.round(logicalW * 2);
@@ -1737,8 +1870,8 @@ export function renderVisitorFlowSankey(
       ctx.fillStyle = 'rgb(244, 244, 245)';
       ctx.font = `bold 13px ${fontStack}`;
       ctx.textBaseline = 'middle';
-      const uniqueVisCount =
-        flow.uniqueVisitors ?? context?.visitors ?? flow.totalVisitors;
+      ctx.textAlign = 'left';
+      const uniqueVisCount = flow.uniqueVisitors ?? context?.visitors ?? flow.totalVisitors;
       ctx.fillText(
         `Visitor Flow Cockpit — ${normCurrent} (${period} · ${flow.totalVisitors} Views · ${uniqueVisCount} Visitors)`,
         PAD_X,
@@ -1756,23 +1889,10 @@ export function renderVisitorFlowSankey(
         ctx.fillRect(cb.x, cb.y, cb.w, cb.h);
       }
 
-      // 4. Draw column headers
-      const colHeaderEls = Array.from(
-        stageEl.querySelectorAll<HTMLElement>('[data-sankey-col-header]')
-      );
-      for (const hEl of colHeaderEls) {
-        const box = toLocal(hEl);
-        const text = (hEl.getAttribute('data-sankey-col-header') || '').toUpperCase();
-        ctx.font = `bold 11px ${fontStack}`;
-        ctx.fillStyle = 'rgb(228, 228, 231)';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(truncateCanvasText(ctx, text, box.w), box.x + box.w / 2, box.y + box.h / 2);
-      }
-      ctx.textAlign = 'left';
-
-      // 5. Draw SVG ribbons via Path2D
+      // 4. Draw SVG ribbons via Path2D (translated from stageRect.left to minColLeft)
       if (typeof Path2D !== 'undefined') {
+        ctx.save();
+        ctx.translate(stageRect.left - minColLeft, 0);
         for (const rEl of ribbonEls) {
           const d = rEl.getAttribute('d') || '';
           const fill = rEl.getAttribute('fill') || 'rgba(16, 185, 129, 0.42)';
@@ -1782,58 +1902,290 @@ export function renderVisitorFlowSankey(
             ctx.fill(p2d);
           }
         }
+        ctx.restore();
       }
 
-      // 6. Draw Page Cards (Neutral borders, no left-edge stripe)
-      for (const nEl of nodeEls) {
-        const nb = toLocal(nEl);
-        const isCenter = nEl.getAttribute('data-sankey-center') === 'true';
-        const title = nEl.getAttribute('data-node-title') || '';
-        const pathStr = nEl.getAttribute('data-node-path') || '';
-        const badge = nEl.getAttribute('data-node-badge') || '';
+      // 5. Walk all visible DOM elements inside columns to paint backgrounds, bars, thumbnails, borders, and dividers
+      const domElements = Array.from(stageEl.querySelectorAll<HTMLElement>('.sankey-col *'));
+      for (const el of domElements) {
+        if (!isVisibleInExport(el)) continue;
+        const b = toLocal(el);
+        if (b.w <= 0.5 || b.h <= 0.5) continue;
 
-        drawRoundedRectPath(ctx, nb.x, nb.y, nb.w, nb.h, isCenter ? 16 : 12);
-        ctx.fillStyle = 'rgba(24, 24, 27, 0.96)';
-        ctx.fill();
-        ctx.strokeStyle = isCenter ? 'rgba(113, 113, 122, 0.9)' : 'rgba(63, 63, 70, 0.9)';
-        ctx.lineWidth = 1.25;
-        ctx.stroke();
-
-        ctx.font = `bold 11px ${fontStack}`;
-        ctx.fillStyle = 'rgb(255, 255, 255)';
-        ctx.textBaseline = 'top';
-        ctx.fillText(truncateCanvasText(ctx, title, nb.w - 110), nb.x + 48, nb.y + 12);
-
-        if (density === 'detailed' || isCenter) {
-          ctx.font = `9.5px ${fontStack}`;
-          ctx.fillStyle = 'rgb(161, 161, 170)';
-          ctx.fillText(truncateCanvasText(ctx, pathStr, nb.w - 110), nb.x + 48, nb.y + 27);
+        const scrollerEl = el.closest<HTMLElement>('.sankey-col-scroll');
+        const scrollerBox = scrollerEl && scrollerEl !== el ? toLocal(scrollerEl) : null;
+        if (
+          scrollerBox &&
+          (b.y + b.h <= scrollerBox.y + 1 || b.y >= scrollerBox.y + scrollerBox.h - 1)
+        ) {
+          continue;
         }
 
-        ctx.font = `bold 10px ${fontStack}`;
-        ctx.textAlign = 'right';
-        ctx.fillStyle = 'rgb(244, 244, 245)';
-        ctx.fillText(badge, nb.x + nb.w - 12, nb.y + 14);
-        ctx.textAlign = 'left';
+        const style = window.getComputedStyle(el);
+        const bg = style.backgroundColor;
+        const hasBg = Boolean(bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)');
+        const barRgbAttr = el.getAttribute('data-bar-rgb');
+        const bt = parseFloat(style.borderTopWidth) || 0;
+        const bb = parseFloat(style.borderBottomWidth) || 0;
+        const bl = parseFloat(style.borderLeftWidth) || 0;
+        const br = parseFloat(style.borderRightWidth) || 0;
+        const isImg =
+          el instanceof HTMLImageElement && el.complete && (el.naturalWidth || 0) > 0;
 
-        // Draw progress & split bar tracks and fills inside card
-        const tracks = Array.from(nEl.querySelectorAll<HTMLElement>('.sankey-bar-track'));
-        for (const trEl of tracks) {
-          const tb = toLocal(trEl);
+        if (!hasBg && !barRgbAttr && bt <= 0 && bb <= 0 && !isImg) continue;
+
+        ctx.save();
+        if (scrollerBox) {
+          ctx.beginPath();
+          ctx.rect(scrollerBox.x, scrollerBox.y, scrollerBox.w, scrollerBox.h);
+          ctx.clip();
+        }
+
+        // If this is a bar fill inside a rounded bar track, clip to the parent track pill shape
+        const parentTrack = el.parentElement?.classList.contains('sankey-bar-track')
+          ? el.parentElement
+          : null;
+        if (parentTrack) {
+          const tb = toLocal(parentTrack);
           drawRoundedRectPath(ctx, tb.x, tb.y, tb.w, tb.h, tb.h / 2);
-          ctx.fillStyle = 'rgb(9, 9, 11)';
+          ctx.clip();
+        }
+
+        const radius = Math.min(b.w / 2, b.h / 2, parseFloat(style.borderTopLeftRadius) || 0);
+
+        if (hasBg || barRgbAttr) {
+          drawRoundedRectPath(ctx, b.x, b.y, b.w, b.h, radius);
+          ctx.fillStyle = barRgbAttr || bg;
           ctx.fill();
         }
 
-        const fills = Array.from(nEl.querySelectorAll<HTMLElement>('.sankey-bar-fill'));
-        for (const flEl of fills) {
-          const fb = toLocal(flEl);
-          if (fb.w <= 0.5) continue;
-          const barRgb = flEl.getAttribute('data-bar-rgb') || 'rgb(52, 211, 153)';
-          drawRoundedRectPath(ctx, fb.x, fb.y, fb.w, fb.h, fb.h / 2);
-          ctx.fillStyle = barRgb;
-          ctx.fill();
+        if (isImg) {
+          try {
+            drawRoundedRectPath(ctx, b.x, b.y, b.w, b.h, radius);
+            ctx.clip();
+            ctx.drawImage(el, b.x, b.y, b.w, b.h);
+          } catch {
+            // Ignore cross-origin or broken image draw errors
+          }
         }
+
+        if (bt > 0 && bb > 0 && bl > 0 && br > 0) {
+          if (style.borderTopStyle === 'dashed') {
+            ctx.setLineDash([4, 4]);
+          }
+          drawRoundedRectPath(ctx, b.x, b.y, b.w, b.h, radius);
+          ctx.strokeStyle = style.borderTopColor || 'rgba(63, 63, 70, 0.9)';
+          ctx.lineWidth = bt;
+          ctx.stroke();
+        } else if (bt > 0 && bb === 0) {
+          if (style.borderTopStyle === 'dashed') {
+            ctx.setLineDash([4, 4]);
+          }
+          ctx.beginPath();
+          ctx.moveTo(b.x, b.y);
+          ctx.lineTo(b.x + b.w, b.y);
+          ctx.strokeStyle = style.borderTopColor || 'rgba(63, 63, 70, 0.8)';
+          ctx.lineWidth = bt;
+          ctx.stroke();
+        } else if (bb > 0 && bt === 0) {
+          ctx.beginPath();
+          ctx.moveTo(b.x, b.y + b.h);
+          ctx.lineTo(b.x + b.w, b.y + b.h);
+          ctx.strokeStyle = style.borderBottomColor || 'rgba(63, 63, 70, 0.8)';
+          ctx.lineWidth = bb;
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      // 5b. Render inline SVG Scroll Depth Line Chart (.sankey-scroll-line-svg)
+      const scrollSvgEl = stageEl.querySelector<SVGSVGElement>('.sankey-scroll-line-svg');
+      if (scrollSvgEl) {
+        const sb = toLocal(scrollSvgEl);
+        if (sb.w > 1 && sb.h > 1) {
+          const scrollerEl = scrollSvgEl.closest<HTMLElement>('.sankey-col-scroll');
+          const scrollerBox = scrollerEl ? toLocal(scrollerEl) : null;
+          if (
+            !scrollerBox ||
+            (sb.y + sb.h > scrollerBox.y + 1 && sb.y < scrollerBox.y + scrollerBox.h - 1)
+          ) {
+            ctx.save();
+            if (scrollerBox) {
+              ctx.beginPath();
+              ctx.rect(scrollerBox.x, scrollerBox.y, scrollerBox.w, scrollerBox.h);
+              ctx.clip();
+            }
+
+            drawRoundedRectPath(ctx, sb.x, sb.y, sb.w, sb.h, 4);
+            ctx.fillStyle = 'rgb(9, 9, 11)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(39, 39, 42, 0.9)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Gridlines at 25%, 50%, 75%
+            ctx.save();
+            ctx.setLineDash([2, 2]);
+            ctx.strokeStyle = 'rgba(63, 63, 70, 0.5)';
+            ctx.lineWidth = 1;
+            for (const frac of [0.25, 0.5, 0.75]) {
+              const gy = sb.y + ((6 + frac * 44) / 56) * sb.h;
+              ctx.beginPath();
+              ctx.moveTo(sb.x + (8 / 320) * sb.w, gy);
+              ctx.lineTo(sb.x + (312 / 320) * sb.w, gy);
+              ctx.stroke();
+            }
+            ctx.restore();
+
+            const dotEls = Array.from(
+              scrollSvgEl.querySelectorAll<SVGCircleElement>('.sankey-scroll-dot')
+            );
+            const chartPts = dotEls.map((dot) => ({
+              x: sb.x + (parseFloat(dot.getAttribute('cx') || '0') / 320) * sb.w,
+              y: sb.y + (parseFloat(dot.getAttribute('cy') || '0') / 56) * sb.h,
+            }));
+
+            if (chartPts.length > 1) {
+              const baseBottomY = sb.y + (50 / 56) * sb.h;
+              ctx.beginPath();
+              ctx.moveTo(chartPts[0].x, baseBottomY);
+              for (const pt of chartPts) {
+                ctx.lineTo(pt.x, pt.y);
+              }
+              ctx.lineTo(chartPts[chartPts.length - 1].x, baseBottomY);
+              ctx.closePath();
+              ctx.fillStyle = 'rgba(34, 211, 238, 0.18)';
+              ctx.fill();
+
+              ctx.beginPath();
+              ctx.moveTo(chartPts[0].x, chartPts[0].y);
+              for (let i = 1; i < chartPts.length; i++) {
+                ctx.lineTo(chartPts[i].x, chartPts[i].y);
+              }
+              ctx.strokeStyle = 'rgb(34, 211, 238)';
+              ctx.lineWidth = 1.8;
+              ctx.lineCap = 'round';
+              ctx.lineJoin = 'round';
+              ctx.stroke();
+
+              for (const pt of chartPts) {
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, 2.2, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgb(52, 211, 153)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgb(9, 9, 11)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+              }
+            }
+
+            ctx.restore();
+          }
+        }
+      }
+
+      // 6. Walk all visible text nodes inside stageEl and draw them at their exact Range bounding rects
+      const walker = document.createTreeWalker(stageEl, NodeFilter.SHOW_TEXT);
+      let currentNode = walker.nextNode();
+      while (currentNode) {
+        const textNode = currentNode as Text;
+        currentNode = walker.nextNode();
+
+        const rawVal = textNode.nodeValue;
+        if (!rawVal || !rawVal.trim()) continue;
+
+        const parentEl = textNode.parentElement;
+        if (!parentEl || !isVisibleInExport(parentEl)) continue;
+
+        const range = document.createRange();
+        range.selectNodeContents(textNode);
+        const clientRects = range.getClientRects();
+        if (clientRects.length === 0) continue;
+
+        const rb = toLocalRect(range.getBoundingClientRect());
+        if (rb.w <= 0.5 || rb.h <= 0.5) continue;
+
+        const scrollerEl = parentEl.closest<HTMLElement>('.sankey-col-scroll');
+        const scrollerBox = scrollerEl ? toLocal(scrollerEl) : null;
+        if (
+          scrollerBox &&
+          (rb.y + rb.h <= scrollerBox.y + 1 || rb.y >= scrollerBox.y + scrollerBox.h - 1)
+        ) {
+          continue;
+        }
+
+        const style = window.getComputedStyle(parentEl);
+        let textStr = rawVal.replace(/\s+/g, ' ');
+        if (textNode === parentEl.firstChild) textStr = textStr.replace(/^\s+/, '');
+        if (textNode === parentEl.lastChild) textStr = textStr.replace(/\s+$/, '');
+        if (!textStr) continue;
+        if (style.textTransform === 'uppercase') {
+          textStr = textStr.toUpperCase();
+        }
+
+        ctx.save();
+        if (scrollerBox) {
+          ctx.beginPath();
+          ctx.rect(scrollerBox.x, scrollerBox.y, scrollerBox.w, scrollerBox.h);
+          ctx.clip();
+        }
+
+        const fontStyle =
+          style.fontStyle && style.fontStyle !== 'normal' ? `${style.fontStyle} ` : '';
+        const fontWeight = style.fontWeight || '400';
+        const fontSize = style.fontSize || '11px';
+        ctx.font = `${fontStyle}${fontWeight} ${fontSize} ${fontStack}`;
+        ctx.fillStyle = style.color || 'rgb(255, 255, 255)';
+        ctx.textBaseline = 'middle';
+
+        const pb = toLocal(parentEl);
+        const isTruncated =
+          style.textOverflow === 'ellipsis' ||
+          style.overflow === 'hidden' ||
+          style.overflowX === 'hidden';
+
+        if (isTruncated && pb.w > 0) {
+          ctx.beginPath();
+          ctx.rect(pb.x, pb.y - 2, pb.w, pb.h + 4);
+          ctx.clip();
+        }
+
+        if (clientRects.length > 1 && style.whiteSpace !== 'nowrap') {
+          // Multi-line wrapped text (e.g. empty column placeholder)
+          const words = textStr.trim().split(' ');
+          const lines: string[] = [];
+          let curLine = '';
+          const maxLineW = Math.max(40, rb.w + 8);
+          for (const w of words) {
+            const test = curLine ? `${curLine} ${w}` : w;
+            if (ctx.measureText(test).width > maxLineW && curLine) {
+              lines.push(curLine);
+              curLine = w;
+            } else {
+              curLine = test;
+            }
+          }
+          if (curLine) lines.push(curLine);
+
+          const lineH = rb.h / Math.max(1, lines.length);
+          const isCentered = style.textAlign === 'center';
+          ctx.textAlign = isCentered ? 'center' : 'left';
+          const anchorX = isCentered ? rb.x + rb.w / 2 : rb.x;
+          lines.forEach((line, idx) => {
+            ctx.fillText(line, anchorX, rb.y + lineH * (idx + 0.5));
+          });
+        } else {
+          let drawStr = textStr;
+          if (style.textOverflow === 'ellipsis' && pb.w > 0) {
+            const maxTextW = Math.max(0, pb.x + pb.w - rb.x);
+            drawStr = truncateCanvasText(ctx, textStr, maxTextW);
+          }
+          ctx.textAlign = 'left';
+          ctx.fillText(drawStr, rb.x, rb.y + rb.h / 2);
+        }
+
+        ctx.restore();
       }
 
       ctx.restore();
