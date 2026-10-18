@@ -25,6 +25,7 @@ All 10 preview card components and 2 inline preview card implementations in feed
 Every section on landing pages must satisfy semantic ID integrity:
 - Every `<section>` element MUST possess a unique, human-readable `id` (e.g. `<section id="featured-posts">`, `<section id="services">`).
 - Compliance is verified automatically during the build process (see `build-engineering`).
+- **Collapsible Homepage Sections**: `<Section id="..." collapsible>` plus a `<SectionToggle sectionId label collection? />` inside the header row (`.section-header` must precede the body; the hero uses the compact `.section-bar` pattern, the gallery's full-bleed viewport is wrapped as a second body; `contact` and `tech-stack` are not collapsible). Logic lives in `@commons/client/section-collapse` (wraps the body, `aria-expanded`/`inert`, hash/anchor auto-expand, publishes `html[data-collapsed-sections]` + `gh-section-collapse-change` so animations like the gallery marquee pause). Persistence only with opt-in key `gh_home_sections_v1` (first click shows `HomeLayoutConsent`, see `legal-compliance`; journey: `backlog/system/008-privacy-user-journey.md`); the "New" pill (collapsed only, dot below `sm`, count in `aria-label`) reuses the navbar read-state via `@commons/client/unread-counts`.
 
 ## 4. Layout Ergonomics & Perceptual Stability
 - **No Cumulative Layout Shifts (CLS)**: Interactive hover effects, badges, or filter buttons must never shift neighboring rows or mutate container dimensions.

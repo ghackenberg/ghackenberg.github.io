@@ -86,6 +86,32 @@
         </div>
       </div>
 
+      <!-- Section 1b: Homepage Layout (Opt-In, separate consent) -->
+      <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-element-border light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
+        <div class="flex items-start justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="text-base sm:text-lg font-bold text-gray-100 light:text-slate-900">Homepage Layout</h3>
+              <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-brand-blue/15 text-brand-blue border border-brand-blue/30 shrink-0">
+                100% Client-Side
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed">
+              Remembers which homepage sections you collapsed. Stored as a short list of section names under the key <code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-element-bg light:bg-slate-200/60 px-1.5 py-0.5 rounded">gh_home_sections_v1</code> in your browser (<code class="text-gray-200 light:text-slate-800 font-mono text-xs bg-element-bg light:bg-slate-200/60 px-1.5 py-0.5 rounded">localStorage</code>) &ndash; never transmitted. When you first collapse a section we ask once, without blocking the page, whether to remember it; &ldquo;Just this time&rdquo; stores nothing. Turning this off deletes the key. Without it, sections can still be collapsed, but only until you reload.
+            </p>
+          </div>
+
+          <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
+            <input type="checkbox" id="toggle-home-layout" class="sr-only peer">
+            <div class="w-10 sm:w-11 h-5.5 sm:h-6 bg-gray-700 light:bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 light:after:border-slate-200 after:border after:rounded-full after:h-4.5 sm:after:h-5 after:w-4.5 sm:after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+            <span class="sr-only">Remember my homepage layout</span>
+          </label>
+        </div>
+        <div class="pt-2 border-t border-element-border light:border-slate-200/70 text-xs sm:text-sm text-gray-400 light:text-slate-500">
+          Status: <span id="home-layout-status-text" class="text-gray-300 light:text-slate-700 font-medium">Disabled (No local storage)</span>
+        </div>
+      </div>
+
       <!-- Section 2: Plausible Web Analytics -->
       <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] light:bg-slate-50/90 border border-element-border light:border-slate-200/80 light:shadow-sm space-y-2.5 sm:space-y-3">
         <div class="space-y-1">
@@ -142,6 +168,7 @@
     const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
     const GALLERY_STORAGE_KEY = 'gh_gallery_impressions';
     const PLAUSIBLE_IGNORE_KEY = 'plausible_ignore';
+    const HOME_LAYOUT_KEY = 'gh_home_sections_v1';
 
     const backdrop = document.getElementById('privacy-modal-backdrop');
     const container = document.getElementById('privacy-modal-container');
@@ -149,8 +176,22 @@
     const toggleReadStatus = document.getElementById('toggle-read-status') as HTMLInputElement | null;
     const readingStatusText = document.getElementById('reading-status-text');
     const clearReadingDataBtn = document.getElementById('clear-reading-data-btn');
+    const toggleHomeLayout = document.getElementById('toggle-home-layout') as HTMLInputElement | null;
+    const homeLayoutStatusText = document.getElementById('home-layout-status-text');
     const toggleAnalyticsBtn = document.getElementById('toggle-analytics-optout-btn');
     const analyticsBadge = document.getElementById('analytics-badge');
+
+    // The existence of a valid homepage-layout key IS the consent (written only via the toggle below).
+    function isHomeLayoutEnabled() {
+      try {
+        const data = localStorage.getItem(HOME_LAYOUT_KEY);
+        if (data) {
+          const parsed = JSON.parse(data);
+          return !!(parsed && parsed.v === 1 && Array.isArray(parsed.collapsed));
+        }
+      } catch(e) {}
+      return false;
+    }
 
     function isNotificationsEnabled() {
       try {
@@ -191,7 +232,19 @@
         }
       }
 
-      // 2. Analytics opt-out
+      // 2. Homepage layout toggle
+      const layoutEnabled = isHomeLayoutEnabled();
+      if (toggleHomeLayout) {
+        toggleHomeLayout.checked = layoutEnabled;
+      }
+      if (homeLayoutStatusText) {
+        homeLayoutStatusText.textContent = layoutEnabled ? 'Enabled (Stored locally)' : 'Disabled (No local storage)';
+        homeLayoutStatusText.className = layoutEnabled
+          ? 'text-brand-blue font-medium'
+          : 'text-gray-400 light:text-slate-500 font-medium';
+      }
+
+      // 3. Analytics opt-out
       const optedOut = isAnalyticsOptedOut();
       if (toggleAnalyticsBtn) {
         toggleAnalyticsBtn.textContent = optedOut ? 'Re-enable analytics' : 'Opt out of analytics';
@@ -291,6 +344,22 @@
           localStorage.removeItem(GALLERY_STORAGE_KEY);
           window.dispatchEvent(new CustomEvent('gh-notifications-toggle', { detail: { enabled: false } }));
         }
+        updateModalUI();
+      });
+    }
+
+    // Toggle Homepage Layout persistence (own consent, independent from read tracking)
+    window.addEventListener('gh-home-layout-toggle', updateModalUI);
+    if (toggleHomeLayout) {
+      toggleHomeLayout.addEventListener('change', function() {
+        const shouldEnable = toggleHomeLayout.checked;
+        trackPrivacyEvent('Privacy Action', { action: 'toggle-home-layout', enabled: shouldEnable });
+        if (shouldEnable) {
+          localStorage.setItem(HOME_LAYOUT_KEY, JSON.stringify({ v: 1, collapsed: [] }));
+        } else {
+          localStorage.removeItem(HOME_LAYOUT_KEY);
+        }
+        window.dispatchEvent(new CustomEvent('gh-home-layout-toggle', { detail: { enabled: shouldEnable } }));
         updateModalUI();
       });
     }

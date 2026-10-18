@@ -1115,3 +1115,99 @@ html.has-filter-query [data-tag-count]:not(.is-synced) {
 }
 
 
+
+/* Collapsible Homepage Sections
+   NOTE: the `.is-collapsed` rules below must stay equivalent to the pre-paint boot style
+   injected by `src/pages/index.astro` (#section-collapse-boot), which uses #id selectors. */
+.section-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.section-collapse[data-state="closed"] {
+  grid-template-rows: 0fr;
+}
+.section-collapse > .section-collapse-inner {
+  min-height: 0;
+  overflow: hidden;
+  display: flow-root;
+}
+.section-collapse[data-state="open"]:not([data-animating]) > .section-collapse-inner {
+  overflow: visible;
+}
+.section-collapse[data-state="closed"] > .section-collapse-inner {
+  visibility: hidden;
+  transition: visibility 0s linear 0.3s;
+}
+section[data-collapsible].is-collapsed {
+  padding-block: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+section[data-collapsible].is-collapsed .section-header {
+  margin-bottom: 0;
+}
+section[data-collapsible].is-collapsed .section-header > div {
+  margin-bottom: 0;
+}
+section[data-collapsible].is-collapsed .section-header > p {
+  display: none;
+}
+.section-toggle-chevron {
+  transition: transform 0.25s ease;
+}
+.section-toggle[aria-expanded="false"] .section-toggle-chevron {
+  transform: rotate(-90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-collapse,
+  .section-collapse[data-state="closed"] > .section-collapse-inner,
+  .section-toggle-chevron {
+    transition: none;
+  }
+}
+/* Section bar (hero): slim title row that is only visible while the section is collapsed.
+   NOTE: keep equivalent to the boot style in src/pages/index.astro. The expanded-state toggle lives in the h1 row. */
+.section-bar {
+  display: none;
+  margin-bottom: 0;
+}
+section[data-collapsible].is-collapsed .section-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+.section-bar .section-bar-title {
+  display: flex;
+}
+/* Unread pill below sm: dot only (saves header width on phones) */
+@media (max-width: 639.98px) {
+  .section-toggle .badge-new[data-section-pill] {
+    width: 0.5rem;
+    height: 0.5rem;
+    min-width: 0.5rem;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+  }
+}
+/* Vertical axis: h2 carries pb-1 (descender room), so toggle and CTA get an equal bottom margin to center on the first text line */
+.section-header-cta,
+.section-toggle-group {
+  margin-bottom: 0.25rem;
+}
+.section-bar .section-toggle-group {
+  margin-bottom: 0;
+}
+/* Toggle size: 36px with the full nav, 44px (= burger button box) in burger mode (< --breakpoint-nav 1120px) */
+:root {
+  --section-toggle-size: 2.25rem;
+}
+@media (max-width: 1119.98px) {
+  :root {
+    --section-toggle-size: 2.75rem;
+  }
+}
+.section-toggle {
+  height: var(--section-toggle-size);
+  min-width: var(--section-toggle-size);
+}

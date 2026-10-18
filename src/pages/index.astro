@@ -3,6 +3,8 @@ import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
+import SectionToggle from "@components/SectionToggle.astro";
+import HomeLayoutConsent from "@components/HomeLayoutConsent.astro";
 import PostCard from "@components/PostCard.astro";
 import PublicationCard from "@components/PublicationCard.astro";
 import PresentationCard from "@components/PresentationCard.astro";
@@ -1081,7 +1083,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <main class="flex-grow w-full relative z-10">
     
     <!-- Hero Section -->
-    <Section id="home" padding="standard">
+    <Section id="home" padding="standard" collapsible>
       <Container size="wide" padding="none">
         <style is:inline>
           #hero-portrait-cell {
@@ -1099,17 +1101,42 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               padding-top: 174px;
             }
           }
+          /* h1 keeps max-w-2xl but never runs under the heading-row toggle on narrow screens */
+          #hero-heading {
+            max-width: min(42rem, calc(100% - var(--section-toggle-size) - 0.75rem));
+          }
+          /* Toggle cell: same font metrics as the h1, so 1lh == height of the first h1 line (centered by construction) */
+          .hero-toggle-cell .section-toggle {
+            pointer-events: auto;
+          }
+          .hero-toggle-cell .section-toggle-group {
+            margin-bottom: 0;
+          }
         </style>
+        <!-- Section bar: only visible while collapsed (slim title row); the expanded toggle lives in the h1 row below -->
+        <div class="section-header section-bar">
+          <span class="section-bar-title min-w-0 flex-col py-1 text-gray-100 light:text-slate-900">
+            <span class="block break-words text-[2rem] md:text-5xl font-extrabold tracking-tight leading-tight">Dr. Georg <span class="heading-gradient-brand">Hackenberg</span></span>
+            <span class="block break-words text-base md:text-xl font-semibold text-gray-400 light:text-slate-500 leading-snug">Professor for Industrial Informatics @ UAP</span>
+          </span>
+          <SectionToggle sectionId="home" label="Introduction" />
+        </div>
         <div id="hero-grid" class="relative w-full">
           <!-- Full Hero Background L-Shaped Dot Grid Layer -->
           <div id="hero-dot-grid-layer" class="absolute inset-0 z-0 pointer-events-none">
             <ReactiveDotGrid />
           </div>
 
-          <!-- Heading -->
-          <h1 id="hero-heading" class="relative z-10 text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6 leading-tight min-w-0 max-w-2xl">
-            Hi, I am <span class="heading-gradient-brand">Dr. Georg Hackenberg</span>
-          </h1>
+          <!-- Heading row: h1 + expanded-state toggle share one grid cell, so the toggle follows the h1 wherever the portrait solver places it -->
+          <div class="hero-heading-row relative z-20 grid grid-cols-1 mb-6">
+            <!-- Heading -->
+            <h1 id="hero-heading" class="col-start-1 row-start-1 relative z-10 text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight min-w-0">
+              Hi, I am <span class="heading-gradient-brand">Dr. Georg Hackenberg</span>
+            </h1>
+            <div class="hero-toggle-cell col-start-1 row-start-1 self-start justify-self-end relative z-20 flex items-center h-[1lh] pt-[0.027em] text-4xl md:text-6xl leading-tight pointer-events-none">
+              <SectionToggle sectionId="home" label="Introduction" />
+            </div>
+          </div>
 
           <!-- Subtitle -->
           <p id="hero-subtitle" class="max-w-2xl relative z-10 text-xl md:text-2xl font-bold text-gray-300 light:text-slate-700 mb-6 leading-normal tracking-wide">
@@ -1664,13 +1691,48 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   <!-- Animated Image Gallery Marquee (Full-Width Edge-to-Edge) -->
   <ImageGalleryMarquee catalog={galleryItems} />
 
+  <!-- Collapsible sections: pre-paint boot (reads the opt-in layout key; no consent => nothing is read/hidden). Must stay equivalent to `.is-collapsed` rules in components.css. -->
+  <noscript><style>.section-toggle-group { display: none !important; }</style></noscript>
+  <script is:inline>
+    (function () {
+      try {
+        var raw = localStorage.getItem('gh_home_sections_v1');
+        if (!raw) return;
+        var state = JSON.parse(raw);
+        if (!state || state.v !== 1 || !Array.isArray(state.collapsed) || state.collapsed.length === 0) return;
+        var ids = state.collapsed.filter(function (id) { return typeof id === 'string' && /^[a-z0-9-]+$/.test(id); });
+        document.documentElement.dataset.collapsedSections = ids.join(' ');
+        var css = '';
+        state.collapsed.forEach(function (id) {
+          if (typeof id !== 'string' || !/^[a-z0-9-]+$/.test(id)) return;
+          var s = 'section#' + id;
+          css += s + '{padding-block:clamp(1.25rem,2.5vw,1.75rem)}' +
+            s + ' .section-header,' + s + ' .section-header>div{margin-bottom:0}' +
+            s + ' .section-header>p{display:none}' +
+            s + ' .section-header~*,section#' + id + '>:not(.absolute)~:not(.absolute){height:0;overflow:hidden;visibility:hidden;margin:0;padding:0}' +
+            s + ' .section-bar{position:static;display:flex;align-items:center;gap:.75rem;width:100%}' +
+            s + ' .section-bar-title{display:flex}';
+        });
+        if (!css) return;
+        var style = document.createElement('style');
+        style.id = 'section-collapse-boot';
+        style.textContent = css;
+        document.head.appendChild(style);
+      } catch (e) {}
+    })();
+  </script>
+  <HomeLayoutConsent />
+
   <!-- Website Navigation Section -->
-  <Section id="site-navigation" border="top" padding="standard">
+  <Section id="site-navigation" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
-      <div class="section-header max-w-2xl">
-        <h2 id="website-sections-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-          Website <span class="heading-gradient-brand">Sections</span>
-        </h2>
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="website-sections-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 truncate min-w-0">
+            Website <span class="heading-gradient-brand">Sections</span>
+          </h2>
+          <SectionToggle sectionId="site-navigation" label="Website Sections" />
+        </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Quickly access core content areas across technical writing, academic research, interactive presentations, university teaching, software engineering, and business services.
         </p>
@@ -1752,12 +1814,15 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Professional Interests Section -->
-  <Section id="about" border="top" padding="standard">
+  <Section id="about" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
-      <div class="section-header max-w-2xl">
-        <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-          Professional <span class="text-domain-interests">Interests</span>
-        </h2>
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 truncate min-w-0">
+            Professional <span class="text-domain-interests">Interests</span>
+          </h2>
+          <SectionToggle sectionId="about" label="Professional Interests" collection="interests" />
+        </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Key scientific domains, technical focus areas, and engineering pursuits that guide my academic research, university teaching, and software platform development.
         </p>
@@ -1845,7 +1910,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Featured Blog Posts Section -->
-  <Section id="latest-posts" border="top" padding="standard">
+  <Section id="latest-posts" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
       <div class="section-header">
         <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
@@ -1863,6 +1928,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
+          <SectionToggle sectionId="latest-posts" label="Blog Posts" collection="posts" />
         </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Explore my latest insights, tutorials, and dev logs on software engineering, artificial intelligence, knowledge graphs, and system architectures.
@@ -1938,7 +2004,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Academic Publications Section -->
-  <Section id="publications" border="top" padding="standard">
+  <Section id="publications" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
       <div class="section-header">
         <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
@@ -1956,6 +2022,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
+          <SectionToggle sectionId="publications" label="Academic Publications" collection="publications" />
         </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Peer-reviewed academic research papers, conference proceedings, and scientific journal articles across model-driven software and cyber-physical systems.
@@ -2033,7 +2100,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Interactive Presentations Section -->
-  <Section id="presentations" border="top" padding="standard">
+  <Section id="presentations" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
       <div class="section-header">
         <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
@@ -2051,6 +2118,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
+          <SectionToggle sectionId="presentations" label="Presentations" collection="presentations" />
         </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Keynotes, interactive slide decks, and executive briefings with synchronized neural voiceovers exploring AI, architectures, and systems engineering.
@@ -2127,7 +2195,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- University Courses Section -->
-  <Section id="courses" border="top" padding="standard">
+  <Section id="courses" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
       <div class="section-header">
         <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
@@ -2145,6 +2213,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
+          <SectionToggle sectionId="courses" label="University Courses" collection="courses" />
         </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Higher education lectures, interactive curriculum modules, and hands-on computer science materials taught at UAP (FH Upper Austria).
@@ -2220,7 +2289,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Software Projects Section -->
-  <Section id="projects" border="top" padding="standard">
+  <Section id="projects" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
       <div class="section-header">
         <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
@@ -2238,6 +2307,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
+          <SectionToggle sectionId="projects" label="Software Projects" collection="projects" />
         </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Selected software platforms, frameworks, and tools designed to optimize product engineering, knowledge graphs, and real-time physical simulation.
@@ -2314,7 +2384,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Engineering Services Section -->
-  <Section id="services" border="top" padding="standard">
+  <Section id="services" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
       <div class="section-header">
         <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
@@ -2332,6 +2402,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
+          <SectionToggle sectionId="services" label="Services" collection="services" />
         </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Professional consulting and engineering services bridging sovereign artificial intelligence architectures, software systems, and digital publishing.
@@ -2406,7 +2477,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Content Visualizations Section -->
-  <Section id="visualizations" border="top" padding="standard">
+  <Section id="visualizations" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
       <div class="section-header">
         <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
@@ -2424,6 +2495,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
+          <SectionToggle sectionId="visualizations" label="Visualizations" collection="visualizations" />
         </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Interactive knowledge graphs exploring cross-content relationships between articles, publications, projects, and courses rendered in real time.
@@ -2498,7 +2570,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Content Tags Section -->
-  <Section id="content-tags" border="top" padding="standard">
+  <Section id="content-tags" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
       <div class="section-header">
         <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
@@ -2516,6 +2588,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
           </a>
+          <SectionToggle sectionId="content-tags" label="Content Tags" />
         </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           Explore a comprehensive index of topic tags connecting my technical blog posts, academic publications, software projects, university courses, and business services across core computer science domains.
@@ -2749,12 +2822,15 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   </Section>
 
   <!-- Experience Section -->
-  <Section id="experience" border="top" padding="standard">
+  <Section id="experience" border="top" padding="standard" collapsible>
     <Container size="wide" padding="none">
-      <div class="section-header max-w-2xl">
-        <h2 id="experience-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-          Professional <span class="heading-gradient-brand">Experiences</span>
-        </h2>
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="experience-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 truncate min-w-0">
+            Professional <span class="heading-gradient-brand">Experiences</span>
+          </h2>
+          <SectionToggle sectionId="experience" label="Professional Experiences" />
+        </div>
         <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
           A summary of my academic tenure, software engineering developments, and organizational leadership roles.
         </p>
@@ -3157,6 +3233,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 </style>
 
 <script>
+  import '@commons/client/section-collapse';
+
   // Copy to Clipboard logic for contact button
   const copyBtn = document.getElementById('copy-email-btn');
   const emailText = document.getElementById('email-text');
@@ -3692,13 +3770,14 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       const style = window.getComputedStyle(row);
       const gap = parseFloat(style.columnGap || style.gap || '12') || 12;
       const badge = row.querySelector<HTMLElement>('.dev-heading-badge');
+      const toggleGroup = row.querySelector<HTMLElement>('.section-toggle-group');
 
       // Helper to test if h2 natural width + cta + badge exceeds available row width
       const isOverflowing = (): boolean => {
         const availableWidth = row.clientWidth;
         const h2NaturalWidth = h2.scrollWidth;
         const ctaWidth = cta.offsetWidth;
-        const badgeWidth = badge ? gap + badge.offsetWidth : 0;
+        const badgeWidth = (badge ? gap + badge.offsetWidth : 0) + (toggleGroup ? gap + toggleGroup.offsetWidth : 0);
         const requiredWidth = h2NaturalWidth + gap + ctaWidth + badgeWidth;
         return requiredWidth > availableWidth + 2;
       };

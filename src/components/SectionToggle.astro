@@ -1,0 +1,49 @@
+---
+/**
+ * Chevron toggle (+ optional "New" pill) for collapsible landing-page sections.
+ * Place inside the section header row; behaviour lives in `@commons/client/section-collapse`.
+ * The pill is driven by the existing opt-in read state (navbar-consistent) and only
+ * appears on a collapsed section whose `collection` has unread content.
+ */
+export interface Props {
+  /** `id` of the surrounding `<Section collapsible>` */
+  sectionId: string;
+  /** Human-readable section name used for the accessible label */
+  label: string;
+  /** Content-manifest collection (posts, publications, ...) for the unread pill; omit for none */
+  collection?: string;
+}
+
+const { sectionId, label, collection } = Astro.props;
+
+const PILL_VARIANTS: Record<string, string> = {
+  courses: 'badge-new-yellow',
+  services: 'badge-new-purple',
+  publications: 'badge-new-purple',
+  visualizations: 'badge-new-green',
+  interests: 'badge-new-green'
+};
+const pillClass = collection ? (PILL_VARIANTS[collection] ?? 'badge-new-blue') : '';
+---
+
+<div class="section-toggle-group ml-auto shrink-0 flex items-center">
+  <button
+    type="button"
+    class="section-toggle inline-flex items-center gap-2 h-9 min-w-9 justify-center px-2.5 rounded-full border border-element-border-medium bg-element-bg/50 light:bg-white/70 text-gray-400 light:text-slate-600 hover:text-gray-100 light:hover:text-slate-900 hover:border-brand-blue/50 transition-colors duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue"
+    data-section-toggle
+    data-section-id={sectionId}
+    data-label={label}
+    data-collection={collection}
+    aria-expanded="true"
+    aria-controls={`${sectionId}-body`}
+    aria-label={`Collapse section ${label}`}
+    title={`Collapse section ${label}`}
+  >
+    {collection && (
+      <span class={`badge-new ${pillClass} hidden`} data-section-pill aria-hidden="true">New</span>
+    )}
+    <svg class="section-toggle-chevron w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>
+  </button>
+</div>

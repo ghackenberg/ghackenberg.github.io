@@ -1,0 +1,34 @@
+---
+/**
+ * Non-blocking consent prompt shown after the first collapse/expand click when the homepage
+ * layout may not be stored yet (no `gh_home_sections_v1` key). Positioned near the clicked
+ * toggle on >= sm, bottom snackbar on mobile (fixed => zero layout shift).
+ * Logic: `@commons/client/section-collapse`. Both choices share identical styling (no dark pattern).
+ * "Just this time" is remembered in memory only; nothing is written before "Remember".
+ */
+const choiceClass =
+  "flex-1 px-3 py-2 rounded-xl border border-element-border-medium light:border-slate-300 bg-element-bg/60 light:bg-white text-gray-100 light:text-slate-800 hover:border-brand-blue/50 transition-colors text-xs sm:text-sm font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue";
+---
+
+<div
+  id="home-layout-consent"
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="home-layout-consent-title"
+  aria-describedby="home-layout-consent-text"
+  tabindex="-1"
+  class="hidden fixed z-[105] bottom-3 inset-x-3 sm:inset-x-auto sm:bottom-auto sm:w-[24rem] p-4 rounded-2xl border border-element-border-medium bg-pane light:bg-white text-gray-100 light:text-slate-800 shadow-2xl light:shadow-slate-500/20 backdrop-blur-md focus:outline-none"
+>
+  <h2 id="home-layout-consent-title" class="text-sm sm:text-base font-bold mb-1">Remember your layout on this device?</h2>
+  <p id="home-layout-consent-text" class="text-xs sm:text-sm text-gray-400 light:text-slate-600 leading-relaxed mb-3">
+    To do so, we store the list of collapsed sections locally in your browser (<code class="font-mono text-xs">localStorage</code>) &ndash; no server transfer, revocable at any time.
+  </p>
+  <div class="flex gap-2 mb-3">
+    <button type="button" data-home-layout-action="remember" class={choiceClass}>Remember</button>
+    <button type="button" data-home-layout-action="decline" class={choiceClass}>Just this time</button>
+  </div>
+  <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-gray-400 light:text-slate-500">
+    <a href="/datenschutz/#home-layout" class="underline hover:text-brand-blue transition-colors">Privacy Policy</a>
+    <button type="button" data-home-layout-action="settings" data-open-privacy-modal class="underline hover:text-brand-blue transition-colors cursor-pointer">Privacy settings</button>
+  </div>
+</div>

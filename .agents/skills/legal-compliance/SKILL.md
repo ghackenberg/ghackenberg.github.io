@@ -32,6 +32,7 @@ To ensure complete compliance without intrusive cookie banners:
 - **Plausible Analytics**: Cookieless, privacy-friendly telemetry without storing personal data or tracking across devices.
 - **No External CDNs / Fonts**: All web fonts are strictly self-hosted via `@fontsource/*` (zero IP transfers to Google Fonts).
 - **Third-Party Embeds**: Interactive third-party embeds (YouTube, Vimeo, external frames) must provide a click-to-load placeholder or opt-in barrier before contacting external servers.
+- **localStorage Consent (§ 165 TKG 2021)**: Every non-essential key needs its own Privacy-Modal toggle and an entry in `src/pages/datenschutz.astro` (purpose, legal basis, retention, deletion). Current opt-in keys: `gh_site_notifications_v1` (+ `gh_content_manifest_cache`, `gh_gallery_impressions`) and `gh_home_sections_v1` (collapsed homepage sections; the key's existence is the consent, revoking deletes it, nothing is written without it).
 
 ## 5. Verification Gate
 Verify legal compliance and disclosures through the master release verification gate (see `build-engineering`).

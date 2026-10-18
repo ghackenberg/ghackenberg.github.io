@@ -7,6 +7,8 @@ export interface Props extends HTMLAttributes<"section"> {
   padding?: "standard" | "compact" | "large" | "none";
   border?: "top" | "bottom" | "both" | "none";
   class?: string;
+  /** Marks the section as collapsible (header must contain a SectionToggle) */
+  collapsible?: boolean;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
   padding = "standard",
   border = "none",
   class: className = "",
+  collapsible = false,
   ...restProps
 } = Astro.props;
 
@@ -32,7 +35,7 @@ const combinedClasses = [
 ].filter(Boolean).join(" ");
 ---
 
-<Tag id={id} data-page-section="true" class={combinedClasses} {...restProps}>
+<Tag id={id} data-page-section="true" data-collapsible={collapsible ? "true" : undefined} class={combinedClasses} {...restProps}>
   {(border === "top" || border === "both") && (
     <div class="absolute top-0 left-0 right-0 flex justify-center pointer-events-none select-none">
       <div class="w-full max-w-6xl container-fluid-gutter">

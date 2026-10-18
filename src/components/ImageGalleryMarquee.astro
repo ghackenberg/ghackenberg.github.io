@@ -1,6 +1,7 @@
 ---
 import Section from "@components/Section.astro";
 import Container from "@components/Container.astro";
+import SectionToggle from "@components/SectionToggle.astro";
 
 export interface GalleryItem {
   id: string;
@@ -40,13 +41,16 @@ function getDomainFromHref(href: string): string {
 }
 ---
 
-<Section id="gallery" border="top" padding="standard" class="overflow-hidden">
+<Section id="gallery" border="top" padding="standard" class="overflow-hidden" collapsible>
   <!-- Section Header (Aligned to standard grid max-w-6xl) -->
   <Container size="wide" padding="none">
-    <div class="section-header max-w-2xl">
-      <h2 id="content-gallery-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
-        Content <span class="heading-gradient-brand">Gallery</span>
-      </h2>
+    <div class="section-header">
+      <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+        <h2 id="content-gallery-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 truncate min-w-0">
+          Content <span class="heading-gradient-brand">Gallery</span>
+        </h2>
+        <SectionToggle sectionId="gallery" label="Content Gallery" />
+      </div>
       <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
         A multi-tier perspective preview across articles, interactive platforms, academic courses, business services, and scientific models.
       </p>
@@ -333,7 +337,14 @@ function getDomainFromHref(href: string): string {
     }, 1000);
   }
 
+  /** True while the homepage gallery section is collapsed (state published by section-collapse). */
+  function isGalleryCollapsed(): boolean {
+    return (' ' + (document.documentElement.dataset.collapsedSections ?? '') + ' ').includes(' gallery ');
+  }
+
   function recordSeen(id: string) {
+    // No impressions while the section is collapsed (nothing is actually visible)
+    if (isGalleryCollapsed()) return;
     inMemorySeenLedger[id] = Date.now();
     scheduleSaveLedger();
   }
@@ -772,6 +783,12 @@ function getDomainFromHref(href: string): string {
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange, { signal });
+    window.addEventListener('gh-section-collapse-change', () => {
+      if (!isGalleryCollapsed() && isInView && !isDocumentHidden && activeAnimationId === null) {
+        lastTime = null;
+        activeAnimationId = requestAnimationFrame(tick);
+      }
+    }, { signal });
     window.addEventListener('storage', refreshVisitedItemsCache, { signal, passive: true });
 
     // 2. Horizontal Scrolling: Apple Touchpad & Classic Mouse Wheel (with Shift or tilt)
@@ -985,8 +1002,8 @@ function getDomainFromHref(href: string): string {
     let lastTime: number | null = null;
 
     function tick(timestamp: number) {
-      // 1. Off-screen check: If the viewport is not visible, stop scheduling frames completely!
-      if (!isInView) {
+      // 1. Off-screen check: If the viewport is not visible (or its section is collapsed), stop scheduling frames completely!
+      if (!isInView || isGalleryCollapsed()) {
         activeAnimationId = null;
         return;
       }

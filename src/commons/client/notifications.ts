@@ -400,6 +400,7 @@ async function initNotifications() {
     if (isTracking) {
       try {
         localStorage.setItem(MANIFEST_CACHE_KEY, JSON.stringify(manifest));
+        window.dispatchEvent(new CustomEvent('gh-unread-updated'));
       } catch (e) {
         console.error('Failed to cache content manifest', e);
       }
