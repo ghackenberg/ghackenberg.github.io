@@ -602,135 +602,6 @@ for (let i = 0; i < maxBucketLen; i++) {
   }
 }
 
-const websiteSections = [
-  {
-    title: "Interests",
-    emoji: "🎯",
-    href: "/#about",
-    section: "interests",
-    count: interests.length,
-    unit: "Focus Areas",
-    description: "Specialized research domains across software architectures, computer simulation, artificial intelligence, and UX design.",
-    borderHover: "group-hover:border-domain-interests/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(244,63,94,0.25)]",
-    badgeStyle: "bg-domain-interests/10 text-domain-interests border-domain-interests/20",
-    buttonStyle: "bg-domain-interests/12 group-hover:bg-domain-interests/25 border-domain-interests/20 group-hover:border-domain-interests/45 text-domain-interests",
-    radialGlow: "bg-domain-interests/10"
-  },
-  {
-    title: "Posts",
-    emoji: "📝",
-    href: "/posts/",
-    section: "posts",
-    count: posts.length,
-    unit: "Articles",
-    description: "Technical articles, dev logs, and engineering insights on AI, systems, and web architectures.",
-    borderHover: "group-hover:border-domain-posts/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(139,92,246,0.25)]",
-    badgeStyle: "bg-domain-posts/10 text-domain-posts border-domain-posts/20",
-    buttonStyle: "bg-domain-posts/12 group-hover:bg-domain-posts/25 border-domain-posts/20 group-hover:border-domain-posts/45 text-domain-posts",
-    radialGlow: "bg-domain-posts/10"
-  },
-  {
-    title: "Publications",
-    emoji: "📄",
-    href: "/publications/",
-    section: "publications",
-    count: publications.length,
-    unit: "Publications",
-    description: "Peer-reviewed scientific papers, academic publications, and conference proceedings.",
-    borderHover: "group-hover:border-domain-publications/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(99,102,241,0.25)]",
-    badgeStyle: "bg-domain-publications/10 text-domain-publications border-domain-publications/20",
-    buttonStyle: "bg-domain-publications/12 group-hover:bg-domain-publications/25 border-domain-publications/20 group-hover:border-domain-publications/45 text-domain-publications",
-    radialGlow: "bg-domain-publications/10"
-  },
-  {
-    title: "Presentations",
-    emoji: "🎙️",
-    href: "/presentations/",
-    section: "presentations",
-    count: presentations.length,
-    unit: "Keynotes",
-    description: "Interactive slide decks, keynote presentations, and executive briefings with synchronized neural voiceovers.",
-    borderHover: "group-hover:border-domain-presentations/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(59,130,246,0.25)]",
-    badgeStyle: "bg-domain-presentations/10 text-domain-presentations border-domain-presentations/20",
-    buttonStyle: "bg-domain-presentations/12 group-hover:bg-domain-presentations/25 border-domain-presentations/20 group-hover:border-domain-presentations/45 text-domain-presentations",
-    radialGlow: "bg-domain-presentations/10"
-  },
-  {
-    title: "Courses",
-    emoji: "🎓",
-    href: "/courses/",
-    section: "courses",
-    count: courses.length,
-    unit: "Courses",
-    description: "University curriculum, interactive teaching modules, and hands-on computer science courses.",
-    borderHover: "group-hover:border-domain-courses/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(6,182,212,0.25)]",
-    badgeStyle: "bg-domain-courses/10 text-domain-courses border-domain-courses/20",
-    buttonStyle: "bg-domain-courses/12 group-hover:bg-domain-courses/25 border-domain-courses/20 group-hover:border-domain-courses/45 text-domain-courses",
-    radialGlow: "bg-domain-courses/10"
-  },
-  {
-    title: "Projects",
-    emoji: "🚀",
-    href: "/projects/",
-    section: "projects",
-    count: projects.length,
-    unit: "Projects",
-    description: "Open-source software repositories, production web applications, and developer tools.",
-    borderHover: "group-hover:border-domain-projects/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(20,184,166,0.25)]",
-    badgeStyle: "bg-domain-projects/10 text-domain-projects border-domain-projects/20",
-    buttonStyle: "bg-domain-projects/12 group-hover:bg-domain-projects/25 border-domain-projects/20 group-hover:border-domain-projects/45 text-domain-projects",
-    radialGlow: "bg-domain-projects/10"
-  },
-  {
-    title: "Services",
-    emoji: "💼",
-    href: "/services/",
-    section: "services",
-    count: services.length,
-    unit: "Offerings",
-    description: "Sovereign artificial intelligence architectures, agentic automation, and automated media publishing pipelines.",
-    borderHover: "group-hover:border-domain-services/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(16,185,129,0.25)]",
-    badgeStyle: "bg-domain-services/10 text-domain-services border-domain-services/20",
-    buttonStyle: "bg-domain-services/12 group-hover:bg-domain-services/25 border-domain-services/20 group-hover:border-domain-services/45 text-domain-services",
-    radialGlow: "bg-domain-services/10"
-  },
-  {
-    title: "Visualizations",
-    emoji: "📊",
-    href: "/visualizations/",
-    section: "visualizations",
-    count: visualizations.length,
-    unit: "Engines",
-    description: "Interactive network graph visualizations, WebGL engines, and 3D simulations.",
-    borderHover: "group-hover:border-domain-visualizations/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(234,179,8,0.25)]",
-    badgeStyle: "bg-domain-visualizations/10 text-domain-visualizations border-domain-visualizations/20",
-    buttonStyle: "bg-domain-visualizations/12 group-hover:bg-domain-visualizations/25 border-domain-visualizations/20 group-hover:border-domain-visualizations/45 text-domain-visualizations",
-    radialGlow: "bg-domain-visualizations/10"
-  },
-  {
-    title: "Tags",
-    emoji: "🏷️",
-    href: "/tags/",
-    section: "tags",
-    count: tagsCollection.length,
-    unit: "Topics",
-    description: "Taxonomy of research keywords, technologies, methodologies, and cross-domain concepts.",
-    borderHover: "group-hover:border-domain-tags/40",
-    glowShadow: "group-hover:shadow-[0_12px_35px_-10px_rgba(249,115,22,0.25)]",
-    badgeStyle: "bg-domain-tags/10 text-domain-tags border-domain-tags/20",
-    buttonStyle: "bg-domain-tags/12 group-hover:bg-domain-tags/25 border-domain-tags/20 group-hover:border-domain-tags/45 text-domain-tags",
-    radialGlow: "bg-domain-tags/10"
-  }
-];
-
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -1118,7 +989,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
 
           <!-- Bio -->
           <p id="hero-bio" class="max-w-2xl relative z-10 text-gray-400 text-base md:text-lg leading-relaxed mb-6 font-normal">
-            Welcome to my personal website! I explore and practice the frontier of <strong class="font-bold text-gray-200 light:text-slate-900">AI-augmented engineering</strong> and <strong class="font-bold text-gray-200 light:text-slate-900">cross-channel content creation</strong> across Web, LinkedIn, YouTube, and GitHub. As a computer science professor in <strong class="font-bold text-gray-200 light:text-slate-900">Wels 🏙️</strong> originally from <strong class="font-bold text-gray-200 light:text-slate-900">Hohenschwangau 🏰</strong> living in <strong class="font-bold text-gray-200 light:text-slate-900">Grünau 🌄</strong>, I bridge academic systems engineering at <strong class="font-bold text-gray-200 light:text-slate-900">UAP (FH Upper Austria)</strong> with autonomous agent workflows and modern digital production.
+            I explore and engineer the frontier of <strong class="font-bold text-gray-200 light:text-slate-900">agentic AI workflows</strong>, <strong class="font-bold text-gray-200 light:text-slate-900">industrial simulation</strong>, and <strong class="font-bold text-gray-200 light:text-slate-900">automated media publishing</strong>. Discover my latest technical articles, interactive slide-as-code keynotes, university courses at <strong class="font-bold text-gray-200 light:text-slate-900">UAP (FH Upper Austria)</strong>, and sovereign AI advisory services below.
           </p>
 
           <!-- Entity Trust Pills -->
@@ -1150,9 +1021,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </div>
 
             <a 
-              href="https://caddrive.com" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+              href="/projects/caddrive/" 
+              title="CADdrive – Cloud CAD Collaboration Case Study"
               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium hover:border-brand-blue/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
             >
               <span class="text-sm select-none">🚀</span>
@@ -1160,9 +1030,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             </a>
 
             <a 
-              href="https://mentawise.com" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+              href="/projects/mentawise/" 
+              title="Mentawise – Knowledge Graph Learning Platform Case Study"
               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card border border-element-border-medium hover:border-brand-purple/40 text-gray-300 hover:text-gray-100 transition-all duration-200 shadow-sm group"
             >
               <span class="text-sm select-none">🚀</span>
@@ -1660,96 +1529,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       };
     })();
   </script>
-
-  <!-- Animated Image Gallery Marquee (Full-Width Edge-to-Edge) -->
-  <ImageGalleryMarquee catalog={galleryItems} />
-
-  <!-- Website Navigation Section -->
-  <Section id="site-navigation" border="top" padding="standard">
-    <Container size="wide" padding="none">
-      <div class="section-header max-w-2xl">
-        <h2 id="website-sections-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-          Website <span class="heading-gradient-brand">Sections</span>
-        </h2>
-        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-          Quickly access core content areas across technical writing, academic research, interactive presentations, university teaching, software engineering, and business services.
-        </p>
-      </div>
-
-      <!-- Responsive Carousel/Grid Layout: 3 columns on desktop (>=lg), horizontal carousel on mobile/tablet (<lg) -->
-      <div class="carousel-stage at-start relative">
-        <!-- Navigation Buttons (< lg) -->
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
-          aria-label="Previous items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
-          aria-label="Next items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-
-        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
-          {websiteSections.map(item => (
-            <a
-              href={item.href}
-              class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto group relative rounded-3xl p-6 sm:p-7 glass-card border border-element-border-medium transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden ${item.borderHover} ${item.glowShadow} hover:shadow-xl`}
-            >
-              <!-- Ambient Background Radial Glow -->
-              <div class={`absolute -top-16 -right-16 w-40 h-40 rounded-full blur-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${item.radialGlow}`}></div>
-
-              <!-- Top Header: Emoji + Title + Pill Badge + Unread Counter -->
-              <div>
-                <div class="flex items-center justify-between gap-3 mb-4">
-                  <div class="flex items-center gap-3">
-                    <span class="text-4xl select-none filter drop-shadow-sm transition-transform duration-300 group-hover:scale-110">
-                      {item.emoji}
-                    </span>
-                    <div>
-                      <h3 class="text-2xl font-extrabold text-gray-100 group-hover:text-white light:group-hover:text-slate-950 tracking-tight transition-colors">
-                        {item.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-lg font-extrabold text-gray-300 group-hover:text-white light:group-hover:text-slate-950 transition-colors tabular-nums">
-                      {item.count}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Body Description -->
-                <p class="text-gray-400 group-hover:text-gray-300 light:group-hover:text-slate-800 text-sm font-normal leading-relaxed mb-6 transition-colors">
-                  {item.description}
-                </p>
-              </div>
-
-              <!-- Footer: Action Button -->
-              <div class="pt-2">
-                <div class={`flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl border text-sm font-bold transition-all duration-200 ${item.buttonStyle}`}>
-                  <span>Read More</span>
-                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-    </Container>
-  </Section>
 
   <!-- Professional Interests Section -->
   <Section id="about" border="top" padding="standard">
@@ -2747,6 +2526,9 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       </div>
     </Container>
   </Section>
+
+  <!-- Animated Image Gallery Marquee (Full-Width Edge-to-Edge) -->
+  <ImageGalleryMarquee catalog={galleryItems} />
 
   <!-- Experience Section -->
   <Section id="experience" border="top" padding="standard">
