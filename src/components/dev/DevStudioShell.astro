@@ -287,150 +287,130 @@ const { currentPath } = Astro.props;
     </aside>
   </main>
 
-  <!-- Fullview Cockpit Modal (Overlay on demand) -->
+  <!-- Fullscreen Visitor Flow Cockpit Modal -->
   <div
     id="dev-analytics-fullview"
-    class="hidden fixed inset-0 z-[100000] bg-zinc-500/95 backdrop-blur-xl text-white flex flex-col font-sans select-text overflow-hidden animate-in fade-in duration-150"
+    class="hidden fixed inset-0 z-[100000] bg-zinc-950 text-white flex flex-col font-sans select-none overflow-hidden animate-in fade-in duration-150"
   >
-    <header class="h-14 border-b border-zinc-400 bg-zinc-600/90 px-6 flex items-center justify-between shrink-0">
-      <div class="flex items-center gap-4">
-        <h2 class="text-base font-bold text-white flex items-center gap-2">
-          <span>📊</span> Analytics Cockpit
-        </h2>
-        <span id="dev-fullview-path" class="px-2.5 py-0.5 rounded-md bg-zinc-700 text-zinc-100 font-mono text-xs border border-zinc-500">/</span>
+    <header class="min-h-12 shrink-0 border-b border-zinc-800 bg-zinc-900 px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 font-mono text-xs z-30">
+      <!-- Left: Title, Status, Truncated Path Pill, Timeframe -->
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="font-bold text-white flex items-center gap-1.5 shrink-0">
+          <span>📊</span>
+          <span class="hidden md:inline">Flow Cockpit</span>
+          <span class="w-4 h-4 flex items-center justify-center shrink-0" title="Analytics Sync Status">
+            <svg id="dev-fullview-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-300 hidden" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <svg id="dev-fullview-check" class="w-3.5 h-3.5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+          </span>
+        </span>
+        <span
+          class="px-2 py-1 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-100 font-semibold truncate max-w-[160px] sm:max-w-[240px] lg:max-w-[320px]"
+        >
+          📍 <span id="dev-fullview-path">/</span>
+        </span>
+        <div class="inline-flex items-center rounded-lg bg-zinc-800 border border-zinc-700 p-0.5 shrink-0" role="group" aria-label="Timeframe">
+          <button type="button" data-period="7d" class="dev-period-btn px-2 py-0.5 rounded text-zinc-200 hover:text-white transition-colors cursor-pointer">7d</button>
+          <button type="button" data-period="28d" class="dev-period-btn bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 px-2 py-0.5 rounded transition-colors cursor-pointer">28d</button>
+          <button type="button" data-period="90d" class="dev-period-btn px-2 py-0.5 rounded text-zinc-200 hover:text-white transition-colors cursor-pointer">90d</button>
+        </div>
       </div>
-      <div class="flex items-center gap-3">
-        <a id="dev-fullview-plausible" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-xs text-zinc-100 hover:text-white font-mono border border-zinc-400/80 shadow-xs flex items-center gap-1.5">
-          <span>Open Plausible</span> ↗
+
+      <!-- Right: Compact Steppers + Density Switcher + Actions -->
+      <div class="flex flex-wrap items-center gap-1.5">
+        <!-- Compact Inflow Stepper -->
+        <div class="inline-flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5" title="Upstream Inflow Levels (1–5)">
+          <span class="text-zinc-300 font-bold pl-1.5 pr-0.5">⬅️<span class="hidden sm:inline ml-1">Inflow</span></span>
+          <button type="button" data-sankey-level-side="left" data-sankey-level-step="-1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Decrease inflow levels">−</button>
+          <span data-sankey-left-badge="true" class="min-w-[28px] text-center font-bold text-emerald-300">2L</span>
+          <button type="button" data-sankey-level-side="left" data-sankey-level-step="1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Increase inflow levels">+</button>
+        </div>
+
+        <!-- 2-Stage Density Switcher (Compact vs. Detailed) -->
+        <div class="inline-flex items-center gap-0.5 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5">
+          <button
+            type="button"
+            data-sankey-density="compact"
+            class="px-2 py-1 rounded font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            title="Compact: 1-line cards (Title + Visitors)"
+          >
+            Compact
+          </button>
+          <button
+            type="button"
+            data-sankey-density="detailed"
+            class="px-2 py-1 rounded font-bold bg-emerald-500/30 border border-emerald-400 text-emerald-200 transition-colors cursor-pointer"
+            title="Detailed: Title & Path above divider, Local 100% Flow & Action Bars below divider"
+          >
+            Detailed
+          </button>
+        </div>
+
+        <!-- Compact Outflow Stepper -->
+        <div class="inline-flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5" title="Downstream Outflow Levels (1–5)">
+          <span class="text-zinc-300 font-bold pl-1.5 pr-0.5">➡️<span class="hidden sm:inline ml-1">Outflow</span></span>
+          <button type="button" data-sankey-level-side="right" data-sankey-level-step="-1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Decrease outflow levels">−</button>
+          <span data-sankey-right-badge="true" class="min-w-[28px] text-center font-bold text-emerald-300">2R</span>
+          <button type="button" data-sankey-level-side="right" data-sankey-level-step="1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Increase outflow levels">+</button>
+        </div>
+
+        <button
+          type="button"
+          data-sankey-copy-png="true"
+          class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 font-bold cursor-pointer flex items-center gap-1 transition-colors"
+          title="Copy high-resolution PNG (2x) to clipboard"
+        >
+          <span>📋</span>
+          <span data-copy-png-label="true" class="hidden lg:inline">Copy PNG</span>
+        </button>
+
+        <button
+          id="dev-fullview-refresh"
+          type="button"
+          class="w-7 h-7 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 hover:text-white flex items-center justify-center font-bold cursor-pointer transition-colors"
+          title="Force refresh live data"
+          aria-label="Refresh Data"
+        >
+          ↻
+        </button>
+
+        <a
+          id="dev-fullview-plausible"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-7 h-7 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 hover:text-white flex items-center justify-center font-bold transition-colors"
+          title="Open in Plausible Dashboard"
+          aria-label="Open in Plausible"
+        >
+          ↗
         </a>
-        <button id="dev-collapse-btn" type="button" class="w-8 h-8 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center text-sm font-bold">
+
+        <button
+          id="dev-collapse-btn"
+          type="button"
+          class="w-7 h-7 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 hover:text-white flex items-center justify-center font-bold cursor-pointer transition-colors"
+          title="Close Cockpit (Esc)"
+          aria-label="Close Cockpit"
+        >
           ✕
         </button>
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto w-full">
-      <div class="max-w-7xl mx-auto p-6 space-y-8 w-full">
-        <!-- 1. Plausible Analytics Section -->
-        <section class="space-y-4">
-          <div class="flex items-center justify-between border-b border-zinc-400 pb-3">
-            <div class="flex items-center gap-2.5">
-              <span class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-500 flex items-center justify-center text-white font-bold text-xs">P</span>
-              <div>
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                  Plausible Analytics
-                  <span class="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-200 border border-zinc-500">Privacy-First Traffic</span>
-                </h3>
-                <p class="text-xs text-zinc-200 mt-0.5">Aggregated page visitors, views, bounce rate, and visit duration</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 font-mono">
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Unique Visitors</span>
-                <span>👤</span>
-              </div>
-              <div id="full-visitors" class="text-2xl font-bold text-white mt-2">--</div>
-            </div>
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Direct Entries</span>
-                <span>🚪</span>
-              </div>
-              <div id="full-entries" class="text-2xl font-bold text-white mt-2">--</div>
-            </div>
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Total Views</span>
-                <span>📄</span>
-              </div>
-              <div id="full-views" class="text-2xl font-bold text-white mt-2">--</div>
-            </div>
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Bounce Rate</span>
-                <span>↩️</span>
-              </div>
-              <div id="full-bounce" class="text-2xl font-bold text-amber-200 mt-2">--</div>
-            </div>
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Visit Duration</span>
-                <span>⏱️</span>
-              </div>
-              <div id="full-duration" class="text-2xl font-bold text-white mt-2">--</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 2. Google Search Console Section -->
-        <section class="space-y-4">
-          <div class="flex items-center justify-between border-b border-zinc-400 pb-3">
-            <div class="flex items-center gap-2.5">
-              <span class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-500 flex items-center justify-center text-white font-bold text-xs">G</span>
-              <div>
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                  Google Search Console
-                  <span class="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-200 border border-zinc-500">Organic Search</span>
-                </h3>
-                <p class="text-xs text-zinc-200 mt-0.5">Organic search visibility, clicks, impressions, and SERP ranking performance</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Search Clicks</span>
-                <span>🎯</span>
-              </div>
-              <div id="full-gsc-clicks" class="text-2xl font-bold text-emerald-300 mt-2">--</div>
-            </div>
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Impressions</span>
-                <span>👁️</span>
-              </div>
-              <div id="full-gsc-impr" class="text-2xl font-bold text-zinc-100 mt-2">--</div>
-            </div>
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Average CTR</span>
-                <span>📈</span>
-              </div>
-              <div id="full-gsc-ctr" class="text-2xl font-bold text-sky-200 mt-2">--</div>
-            </div>
-            <div class="p-4 rounded-xl bg-zinc-600/90 border border-zinc-400/80 shadow-xs">
-              <div class="text-xs text-zinc-200 flex items-center justify-between">
-                <span>Average Rank</span>
-                <span>🏆</span>
-              </div>
-              <div id="full-gsc-rank" class="text-2xl font-bold text-amber-200 mt-2">--</div>
-            </div>
-          </div>
-
-          <!-- Google Search Queries Table -->
-          <div class="p-5 rounded-2xl bg-zinc-600/90 border border-zinc-400/80 space-y-4 shadow-xs">
-            <div class="flex items-center justify-between border-b border-zinc-400 pb-3">
-              <div>
-                <h4 class="text-sm font-bold text-white">Top Search Queries</h4>
-                <p class="text-xs text-zinc-200 mt-0.5">Search queries bringing organic traffic to this specific URL</p>
-              </div>
-              <span id="full-queries-count" class="text-xs font-mono text-zinc-200 px-2 py-0.5 rounded bg-zinc-700 border border-zinc-500">0 queries</span>
-            </div>
-            <div id="full-queries-table" class="space-y-2 font-mono text-xs max-h-96 overflow-y-auto pr-1">
-              <span class="text-zinc-300 italic">Loading search queries...</span>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
+    <div id="full-visitor-flow-sankey" class="relative flex-1 min-h-0 w-full overflow-hidden bg-zinc-950 font-mono text-xs">
+      <div class="w-full h-full flex items-center justify-center text-zinc-400 italic">Loading visitor flow Sankey diagram...</div>
+    </div>
   </div>
 </div>
 
 <script>
+  import { renderVisitorFlowSankey, type DevSankeyData } from '@commons/client/dev-sankey';
+
   // Client-side DevStudio Controller
   interface ScrollMilestone {
     depth: number;
@@ -453,6 +433,7 @@ const { currentPath } = Astro.props;
         readThroughRate: number | null;
         medianScrollDepth: number | null;
       };
+      visitorFlow?: DevSankeyData;
     };
     gsc: {
       clicks: number;
@@ -645,11 +626,13 @@ const { currentPath } = Astro.props;
         });
       });
 
-      // Refresh button
-      document.getElementById('dev-analytics-refresh')?.addEventListener('click', () => {
+      // Refresh buttons (top bar & fullview cockpit)
+      const handleRefresh = () => {
         this.resetToLoadingState();
         this.fetchData(true, false);
-      });
+      };
+      document.getElementById('dev-analytics-refresh')?.addEventListener('click', handleRefresh);
+      document.getElementById('dev-fullview-refresh')?.addEventListener('click', handleRefresh);
 
       // Cockpit expand / collapse
       const openFullView = () => {
@@ -1386,11 +1369,15 @@ const { currentPath } = Astro.props;
     private resetToLoadingState(): void {
       this.currentData = null;
 
-      // Show HUD spinner, hide checkmark, dim metrics
+      // Show HUD & Fullview spinners, hide checkmarks, dim metrics
       const spinner = document.getElementById('dev-hud-spinner');
       const check = document.getElementById('dev-hud-check');
+      const fullSpinner = document.getElementById('dev-fullview-spinner');
+      const fullCheck = document.getElementById('dev-fullview-check');
       spinner?.classList.remove('hidden');
       check?.classList.add('hidden');
+      fullSpinner?.classList.remove('hidden');
+      fullCheck?.classList.add('hidden');
 
       const metricsContainer = document.getElementById('dev-analytics-metrics');
       metricsContainer?.classList.add('opacity-40');
@@ -1410,11 +1397,6 @@ const { currentPath } = Astro.props;
       set('hud-gsc-impr', '...');
       set('hud-gsc-ctr', '...');
       set('hud-gsc-rank', '...');
-      set('full-visitors', '...');
-      set('full-entries', '...');
-      set('full-views', '...');
-      set('full-bounce', '...');
-      set('full-duration', '...');
 
       // Fade out minimap funnel & median marker smoothly, show minimap track loader
       const svg = document.getElementById('dev-minimap-funnel-svg');
@@ -1437,25 +1419,15 @@ const { currentPath } = Astro.props;
         plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
       }
 
-      set('full-visitors', '...');
-      set('full-views', '...');
-      set('full-bounce', '...');
-      set('full-duration', '...');
-      set('full-gsc-clicks', '...');
-      set('full-gsc-impr', '...');
-      set('full-gsc-ctr', '...');
-      set('full-gsc-rank', '...');
-      set('full-queries-count', '...');
-
-      const queriesTableEl = document.getElementById('full-queries-table');
-      if (queriesTableEl) {
-        queriesTableEl.innerHTML = `
-          <div class="flex items-center gap-2 text-zinc-400 italic py-4 animate-pulse">
-            <svg class="w-4 h-4 animate-spin text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24">
+      const sankeyEl = document.getElementById('full-visitor-flow-sankey');
+      if (sankeyEl) {
+        sankeyEl.innerHTML = `
+          <div class="w-full h-full flex items-center justify-center gap-2 text-zinc-400 italic font-mono text-xs animate-pulse">
+            <svg class="w-4 h-4 animate-spin text-emerald-300 shrink-0" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
             </svg>
-            <span>Loading Google search queries...</span>
+            <span>Loading Plausible visitor flow stage...</span>
           </div>
         `;
       }
@@ -1467,9 +1439,13 @@ const { currentPath } = Astro.props;
 
       const spinner = document.getElementById('dev-hud-spinner');
       const check = document.getElementById('dev-hud-check');
+      const fullSpinner = document.getElementById('dev-fullview-spinner');
+      const fullCheck = document.getElementById('dev-fullview-check');
       if (!isBackgroundRevalidate) {
         spinner?.classList.remove('hidden');
         check?.classList.add('hidden');
+        fullSpinner?.classList.remove('hidden');
+        fullCheck?.classList.add('hidden');
       }
 
       try {
@@ -1534,10 +1510,13 @@ const { currentPath } = Astro.props;
 
         spinner?.classList.add('hidden');
         check?.classList.remove('hidden');
+        fullSpinner?.classList.add('hidden');
+        fullCheck?.classList.remove('hidden');
       } catch (err) {
         if (fetchId !== this.fetchCounter) return;
         console.error('[dev-studio] Failed to fetch metrics:', err);
         spinner?.classList.add('hidden');
+        fullSpinner?.classList.add('hidden');
         const metricsContainer = document.getElementById('dev-analytics-metrics');
         metricsContainer?.classList.remove('opacity-40');
       }
@@ -1570,40 +1549,31 @@ const { currentPath } = Astro.props;
       };
 
       set('dev-fullview-path', this.currentPath);
-      set('full-visitors', String(plausible.visitors ?? 0));
-      set('full-entries', String(plausible.entries ?? 0));
-      set('full-views', String(plausible.pageviews ?? 0));
-      set('full-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
-      set('full-duration', this.formatDuration(plausible.visitDuration));
-      set('full-gsc-clicks', String(gsc.clicks ?? 0));
-      set('full-gsc-impr', String(gsc.impressions ?? 0));
-      set('full-gsc-ctr', `${((gsc.ctr ?? 0) * 100).toFixed(1)}%`);
-      set('full-gsc-rank', gsc.position ? `#${gsc.position.toFixed(1)}` : '--');
+      const plausibleLink = document.getElementById('dev-fullview-plausible') as HTMLAnchorElement | null;
+      if (plausibleLink) {
+        plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
+      }
 
-      // Search Queries Table in cockpit
-      const queriesTableEl = document.getElementById('full-queries-table');
-      const queriesCountEl = document.getElementById('full-queries-count');
-      const queries = gsc.queries || [];
-      if (queriesCountEl) queriesCountEl.textContent = `${queries.length} queries`;
-      if (queriesTableEl) {
-        if (queries.length === 0) {
-          queriesTableEl.innerHTML = '<span class="text-zinc-300 italic">No search queries recorded.</span>';
-        } else {
-          queriesTableEl.innerHTML = queries
-            .map(
-              (q) => `
-              <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-700/80 border border-zinc-500/80 hover:bg-zinc-700 transition-colors">
-                <span class="text-zinc-100 font-medium truncate max-w-[60%]">${q.query}</span>
-                <div class="flex items-center gap-3 shrink-0">
-                  <span class="text-emerald-300 font-semibold" title="Clicks">${q.clicks} clicks</span>
-                  <span class="text-zinc-300" title="Impressions">${q.impressions} impr</span>
-                  <span class="text-amber-200 font-bold px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-600 text-[11px]" title="Average Rank">#${q.position.toFixed(1)}</span>
-                </div>
-              </div>
-            `
-            )
-            .join('');
-        }
+      // Fullscreen Visitor Flow Stage
+      const sankeyEl = document.getElementById('full-visitor-flow-sankey');
+      if (sankeyEl) {
+        renderVisitorFlowSankey(
+          sankeyEl,
+          this.currentPath,
+          plausible.visitorFlow,
+          (targetPath) => {
+            document.getElementById('dev-analytics-fullview')?.classList.add('hidden');
+            this.handleNavigation(targetPath, true);
+          },
+          this.currentPeriod,
+          {
+            visitors: plausible.visitors,
+            pageviews: plausible.pageviews,
+            visitDuration: plausible.visitDuration,
+            bounceRate: plausible.bounceRate,
+            gscQueries: gsc.queries,
+          }
+        );
       }
     }
 

@@ -164,53 +164,101 @@ const currentPath = Astro.url.pathname;
   </aside>
 
 
-  <!-- Integrated Full-Window Analytics Cockpit Overlay (No separate modals) -->
+  <!-- Integrated Fullscreen Visitor Flow Cockpit Overlay -->
   <div
     id="dev-analytics-fullview"
     role="dialog"
-    class="fixed inset-0 z-[10001] bg-zinc-500/98 backdrop-blur-2xl text-white hidden flex flex-col overflow-hidden font-sans select-text"
+    class="fixed inset-0 z-[10001] bg-zinc-950 text-white hidden flex flex-col overflow-hidden font-sans select-none"
     aria-label="Dev Analytics Cockpit"
   >
     <!-- Fullview Header Bar -->
-    <header class="h-14 shrink-0 border-b border-zinc-400 bg-zinc-600/90 px-6 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 font-bold text-white text-sm font-mono">
-          <span>📊 Dev Analytics Cockpit</span>
+    <header class="min-h-12 shrink-0 border-b border-zinc-800 bg-zinc-900 px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 font-mono text-xs z-30">
+      <!-- Left: Title, Status, Truncated Path Pill, Timeframe -->
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-1.5 font-bold text-white shrink-0">
+          <span>📊</span>
+          <span class="hidden md:inline">Flow Cockpit</span>
           <div class="w-4 h-4 flex items-center justify-center shrink-0">
-            <svg id="dev-fullview-spinner" class="w-4 h-4 animate-spin text-emerald-300 hidden" fill="none" viewBox="0 0 24 24">
+            <svg id="dev-fullview-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-300 hidden" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
             </svg>
-            <svg id="dev-fullview-check" class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <svg id="dev-fullview-check" class="w-3.5 h-3.5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
             </svg>
           </div>
-          <span id="dev-fullview-cache-badge" class="px-2 py-0.5 rounded text-[11px] bg-zinc-700 text-zinc-200 border border-zinc-500">LIVE</span>
+          <span id="dev-fullview-cache-badge" class="px-2 py-0.5 rounded text-[11px] bg-zinc-800 text-zinc-200 border border-zinc-700">LIVE</span>
         </div>
 
         <!-- Path pill -->
-        <div class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-700 border border-zinc-500 font-mono text-xs text-zinc-100">
+        <div class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-100 truncate max-w-[160px] sm:max-w-[240px] lg:max-w-[320px]">
           <span class="text-zinc-400">📍</span>
-          <span id="dev-fullview-path" class="font-semibold">{currentPath}</span>
+          <span id="dev-fullview-path" class="font-semibold truncate">{currentPath}</span>
         </div>
 
         <!-- Timeframe selector -->
-        <div class="flex items-center rounded-lg bg-zinc-700 border border-zinc-500 p-0.5 font-mono" role="group">
-          <button type="button" data-period="7d" class="dev-full-period-btn px-2.5 py-1 rounded text-xs transition-colors text-zinc-200 hover:text-white">7d</button>
-          <button type="button" data-period="28d" class="dev-full-period-btn active-period px-2.5 py-1 rounded text-xs transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300">28d</button>
-          <button type="button" data-period="90d" class="dev-full-period-btn px-2.5 py-1 rounded text-xs transition-colors text-zinc-200 hover:text-white">90d</button>
+        <div class="inline-flex items-center rounded-lg bg-zinc-800 border border-zinc-700 p-0.5 shrink-0" role="group" aria-label="Timeframe">
+          <button type="button" data-period="7d" class="dev-full-period-btn px-2 py-0.5 rounded transition-colors text-zinc-200 hover:text-white cursor-pointer">7d</button>
+          <button type="button" data-period="28d" class="dev-full-period-btn active-period px-2 py-0.5 rounded transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 cursor-pointer">28d</button>
+          <button type="button" data-period="90d" class="dev-full-period-btn px-2 py-0.5 rounded transition-colors text-zinc-200 hover:text-white cursor-pointer">90d</button>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
+      <!-- Right: Compact Steppers + Density Switcher + Actions -->
+      <div class="flex flex-wrap items-center gap-1.5">
+        <!-- Compact Inflow Stepper -->
+        <div class="inline-flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5" title="Upstream Inflow Levels (1–5)">
+          <span class="text-zinc-300 font-bold pl-1.5 pr-0.5">⬅️<span class="hidden sm:inline ml-1">Inflow</span></span>
+          <button type="button" data-sankey-level-side="left" data-sankey-level-step="-1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Decrease inflow levels">−</button>
+          <span data-sankey-left-badge="true" class="min-w-[28px] text-center font-bold text-emerald-300">2L</span>
+          <button type="button" data-sankey-level-side="left" data-sankey-level-step="1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Increase inflow levels">+</button>
+        </div>
+
+        <!-- 2-Stage Density Switcher (Compact vs. Detailed) -->
+        <div class="inline-flex items-center gap-0.5 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5">
+          <button
+            type="button"
+            data-sankey-density="compact"
+            class="px-2 py-1 rounded font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            title="Compact: 1-line cards (Title + Visitors)"
+          >
+            Compact
+          </button>
+          <button
+            type="button"
+            data-sankey-density="detailed"
+            class="px-2 py-1 rounded font-bold bg-emerald-500/30 border border-emerald-400 text-emerald-200 transition-colors cursor-pointer"
+            title="Detailed: Title & Path above divider, Local 100% Flow & Action Bars below divider"
+          >
+            Detailed
+          </button>
+        </div>
+
+        <!-- Compact Outflow Stepper -->
+        <div class="inline-flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5" title="Downstream Outflow Levels (1–5)">
+          <span class="text-zinc-300 font-bold pl-1.5 pr-0.5">➡️<span class="hidden sm:inline ml-1">Outflow</span></span>
+          <button type="button" data-sankey-level-side="right" data-sankey-level-step="-1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Decrease outflow levels">−</button>
+          <span data-sankey-right-badge="true" class="min-w-[28px] text-center font-bold text-emerald-300">2R</span>
+          <button type="button" data-sankey-level-side="right" data-sankey-level-step="1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Increase outflow levels">+</button>
+        </div>
+
+        <button
+          type="button"
+          data-sankey-copy-png="true"
+          class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 font-bold cursor-pointer flex items-center gap-1 transition-colors"
+          title="Copy high-resolution PNG (2x) to clipboard"
+        >
+          <span>📋</span><span class="hidden sm:inline">Copy PNG</span>
+        </button>
+
         <button
           id="dev-fullview-refresh"
           type="button"
-          class="p-2 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs transition-colors cursor-pointer"
+          class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white border border-zinc-700 transition-colors cursor-pointer"
           title="Force refresh live data"
           aria-label="Refresh"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
         </button>
@@ -220,179 +268,31 @@ const currentPath = Astro.url.pathname;
           href="https://plausible.io/hackenberg.tech"
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs text-xs font-mono transition-colors"
+          class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-700 font-bold transition-colors"
+          title="Open in Plausible Dashboard"
         >
-          <span>Plausible Dashboard ↗</span>
+          Plausible ↗
         </a>
 
         <!-- Collapse back into Top Bar Button -->
         <button
           id="dev-collapse-btn"
           type="button"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs text-xs font-mono transition-colors cursor-pointer"
+          class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-700 font-bold transition-colors cursor-pointer"
           title="Collapse back to top analytics bar (Esc)"
           aria-label="Collapse to bar"
         >
-          <span>🗗</span>
-          <span class="font-semibold">Collapse</span>
-          <kbd class="ml-1 px-1.5 py-0.2 rounded bg-zinc-700 text-[10px] text-zinc-300 border border-zinc-500">Esc</kbd>
+          <span>✕</span>
+          <kbd class="hidden sm:inline px-1 rounded bg-zinc-900 text-[10px] text-zinc-300 border border-zinc-700">Esc</kbd>
         </button>
       </div>
     </header>
 
-    <!-- Fullview Content Scroll Body -->
-    <main class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 w-full max-w-[1600px] mx-auto">
-      <!-- 1. KPI Cards Grid -->
-      <section id="fullview-kpis">
-        <h2 class="text-xs font-mono text-zinc-200 uppercase tracking-wider mb-3 font-semibold">Key Performance Indicators</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-3 font-mono">
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Visitors</div>
-            <div id="full-visitors" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">Plausible</div>
-          </div>
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Direct Entries</div>
-            <div id="full-entries" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">Landing visits</div>
-          </div>
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Pageviews</div>
-            <div id="full-views" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">Plausible</div>
-          </div>
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Bounce Rate</div>
-            <div id="full-bounce" class="text-xl font-bold text-amber-200 mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">Single-page</div>
-          </div>
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Visit Duration</div>
-            <div id="full-duration" class="text-xl font-bold text-white mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">Average</div>
-          </div>
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Search Clicks</div>
-            <div id="full-gsc-clicks" class="text-xl font-bold text-emerald-300 mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">Google Organic</div>
-          </div>
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Impressions</div>
-            <div id="full-gsc-impr" class="text-xl font-bold text-zinc-100 mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">SERP Views</div>
-          </div>
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Search CTR</div>
-            <div id="full-gsc-ctr" class="text-xl font-bold text-sky-200 mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">Click-through</div>
-          </div>
-          <div class="bg-zinc-600/90 border border-zinc-400/80 p-3.5 rounded-xl shadow-xs">
-            <div class="text-[11px] text-zinc-200">Avg Ranking</div>
-            <div id="full-gsc-rank" class="text-xl font-bold text-amber-200 mt-1">--</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">SERP Position</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 2. Two-Column Detailed Analytics Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Left Column: Engagement & Retention Funnel -->
-        <div class="space-y-6">
-          <!-- Scroll Funnel Card -->
-          <section id="fullview-scroll" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
-            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
-              <div>
-                <h3 class="text-sm font-bold text-white">Reader Scroll Depth Retention</h3>
-                <p class="text-xs text-zinc-200 mt-0.5">Drop-off progression across vertical reading milestones</p>
-              </div>
-              <div class="flex items-center gap-3 font-mono text-xs">
-                <div class="px-2.5 py-1 rounded bg-zinc-700 border border-zinc-500">
-                  <span class="text-zinc-300">Median:</span>
-                  <strong id="full-funnel-median" class="text-white ml-1">--</strong>
-                </div>
-                <div class="px-2.5 py-1 rounded bg-zinc-700 border border-zinc-500">
-                  <span class="text-zinc-300">Read-Through (≥90%):</span>
-                  <strong id="full-funnel-readthrough" class="text-emerald-300 ml-1">--</strong>
-                </div>
-              </div>
-            </div>
-
-            <!-- Milestone Progress Bars -->
-            <div id="full-funnel-bars" class="space-y-2.5 font-mono text-xs">
-              <span class="text-zinc-300 italic">No scroll depth events recorded for this path in selected period.</span>
-            </div>
-          </section>
-
-          <!-- Section Dwell Breakdown Card -->
-          <section id="fullview-sections" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
-            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
-              <div>
-                <h3 class="text-sm font-bold text-white">Page Sections & Dwell Times</h3>
-                <p class="text-xs text-zinc-200 mt-0.5">Unique readers who dwelled &ge; 2s on tracked sections</p>
-              </div>
-              <span id="full-sections-count" class="text-xs font-mono text-zinc-200 px-2 py-0.5 rounded bg-zinc-700 border border-zinc-500">0 sections</span>
-            </div>
-
-            <div id="full-sections-table" class="space-y-1.5 font-mono text-xs max-h-80 overflow-y-auto pr-1">
-              <span class="text-zinc-300 italic">No section dwell events recorded for this path.</span>
-            </div>
-          </section>
-        </div>
-
-        <!-- Right Column: Search Queries & Audience Tech -->
-        <div class="space-y-6">
-          <!-- Top Search Queries Card -->
-          <section id="fullview-queries" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
-            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
-              <div>
-                <h3 class="text-sm font-bold text-white">Google Search Queries</h3>
-                <p class="text-xs text-zinc-200 mt-0.5">Top organic search terms driving impressions and clicks</p>
-              </div>
-              <span id="full-queries-count" class="text-xs font-mono text-zinc-200 px-2 py-0.5 rounded bg-zinc-700 border border-zinc-500">0 queries</span>
-            </div>
-
-            <div id="full-queries-table" class="space-y-1.5 font-mono text-xs max-h-80 overflow-y-auto pr-1">
-              <span class="text-zinc-300 italic">No search queries recorded for this page in selected period.</span>
-            </div>
-          </section>
-
-          <!-- Audience & Technologies Card -->
-          <section id="fullview-tech" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
-            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
-              <div>
-                <h3 class="text-sm font-bold text-white">Audience Environment</h3>
-                <p class="text-xs text-zinc-200 mt-0.5">Client devices, browsers and operating systems</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 font-mono text-xs">
-              <div>
-                <div class="text-[11px] text-zinc-200 uppercase tracking-wide mb-2 font-semibold">Devices</div>
-                <div id="full-devices-list" class="space-y-1 text-zinc-100">
-                  <span class="text-zinc-300 italic">No device data</span>
-                </div>
-              </div>
-              <div>
-                <div class="text-[11px] text-zinc-200 uppercase tracking-wide mb-2 font-semibold">Operating Systems</div>
-                <div id="full-os-list" class="space-y-1 text-zinc-100">
-                  <span class="text-zinc-300 italic">No OS data</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Geographic Distribution Card -->
-          <section id="fullview-geo" class="bg-zinc-600/90 border border-zinc-400/80 rounded-2xl p-5 space-y-4 shadow-xs">
-            <div class="flex items-center justify-between border-b border-zinc-400/80 pb-3">
-              <div>
-                <h3 class="text-sm font-bold text-white">Geographic Distribution</h3>
-                <p class="text-xs text-zinc-200 mt-0.5">Top countries by unique visitor volume</p>
-              </div>
-            </div>
-            <div id="full-countries-list" class="flex flex-wrap gap-2 font-mono text-xs">
-              <span class="text-zinc-300 italic">No geographic data</span>
-            </div>
-          </section>
+    <!-- Fullscreen Visitor Flow Stage -->
+    <main class="flex-1 min-h-0 relative overflow-hidden">
+      <div id="full-visitor-flow-sankey" class="w-full h-full">
+        <div class="w-full h-full flex items-center justify-center text-zinc-400 italic text-xs font-mono">
+          Loading visitor flow stage...
         </div>
       </div>
     </main>
@@ -401,6 +301,8 @@ const currentPath = Astro.url.pathname;
 )}
 
 <script>
+  import { renderVisitorFlowSankey, type DevSankeyData } from '@commons/client/dev-sankey';
+
   interface SearchQuery {
     query: string;
     clicks: number;
@@ -444,6 +346,7 @@ const currentPath = Astro.url.pathname;
       bounceRate: number | null;
       visitDuration: number | null;
       scrollFunnel?: ScrollRetentionData;
+      visitorFlow?: DevSankeyData;
       tech?: {
         devices?: TechItem[];
         operatingSystems?: TechItem[];
@@ -938,164 +841,27 @@ const currentPath = Astro.url.pathname;
     }
 
     private renderFullView(data: DevOverlayData): void {
-      const { plausible, gsc, sections } = data;
+      const { plausible, gsc } = data;
 
-      // 1. KPI Cards
-      const setVal = (id: string, val: string) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-      };
-
-      setVal('full-visitors', String(plausible.visitors ?? 0));
-      setVal('full-entries', String(plausible.entries ?? 0));
-      setVal('full-views', String(plausible.pageviews ?? 0));
-      setVal('full-bounce', plausible.bounceRate !== null ? `${plausible.bounceRate}%` : '--');
-      setVal('full-duration', this.formatDuration(plausible.visitDuration));
-      setVal('full-gsc-clicks', String(gsc.clicks ?? 0));
-      setVal('full-gsc-impr', String(gsc.impressions ?? 0));
-      setVal('full-gsc-ctr', `${((gsc.ctr ?? 0) * 100).toFixed(1)}%`);
-      setVal('full-gsc-rank', gsc.position ? `#${gsc.position.toFixed(1)}` : '--');
-
-      // 2. Scroll Funnel
-      const funnel = plausible.scrollFunnel;
-      setVal('full-funnel-median', funnel?.medianScrollDepth != null ? `${funnel.medianScrollDepth}%` : '--');
-      setVal('full-funnel-readthrough', funnel?.readThroughRate != null ? `${funnel.readThroughRate}%` : '--');
-
-      const funnelBarsEl = document.getElementById('full-funnel-bars');
-      if (funnelBarsEl) {
-        if (!funnel || !funnel.milestones || funnel.milestones.length === 0) {
-          funnelBarsEl.innerHTML = '<span class="text-zinc-300 italic">No scroll depth events recorded for this path in period.</span>';
-        } else {
-          funnelBarsEl.innerHTML = funnel.milestones
-            .map((m) => {
-              const pct = Number(m.percentageOfVisitors.toFixed(1));
-              const dropOff = m.dropOffRateFromPrevious;
-
-              let barColor = 'bg-emerald-400';
-              if (pct >= 60) barColor = 'bg-emerald-400';
-              else if (pct >= 35) barColor = 'bg-sky-400';
-              else if (pct >= 15) barColor = 'bg-amber-400';
-              else barColor = 'bg-rose-400';
-
-              return `
-                <div class="p-2.5 rounded-xl bg-zinc-700/80 border border-zinc-500/80 space-y-1.5">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-white text-xs">Scroll Milestone ≥ ${m.depth}%</span>
-                    <div class="flex items-center gap-2">
-                      <span class="text-white font-semibold">${m.visitors} visitors</span>
-                      <span class="text-zinc-300">(${pct}%)</span>
-                      ${
-                        dropOff !== undefined && dropOff > 0
-                          ? `<span class="text-[10px] text-rose-300 font-semibold">🔻 -${dropOff}%</span>`
-                          : ''
-                      }
-                    </div>
-                  </div>
-                  <div class="w-full h-2 rounded-full bg-zinc-800/90 border border-zinc-600/50 overflow-hidden">
-                    <div class="h-full rounded-full ${barColor} transition-all duration-300" style="width: ${Math.min(100, pct)}%"></div>
-                  </div>
-                </div>
-              `;
-            })
-            .join('');
-        }
-      }
-
-      // 3. Section Dwell Breakdown
-      const sectionsTableEl = document.getElementById('full-sections-table');
-      const sectionsCountEl = document.getElementById('full-sections-count');
-      const sectionEntries = Object.entries(sections || {});
-
-      if (sectionsCountEl) {
-        sectionsCountEl.textContent = `${sectionEntries.length} sections tracked`;
-      }
-
-      if (sectionsTableEl) {
-        if (sectionEntries.length === 0) {
-          sectionsTableEl.innerHTML = '<span class="text-zinc-300 italic">No section dwell events recorded for this path.</span>';
-        } else {
-          const totalVisitors = plausible.visitors || 1;
-          sectionsTableEl.innerHTML = sectionEntries
-            .sort((a, b) => (b[1].visitors || 0) - (a[1].visitors || 0))
-            .map(([secId, s]) => {
-              const retPct = ((s.visitors / totalVisitors) * 100).toFixed(1);
-              return `
-                <div class="flex items-center justify-between p-2 rounded-lg bg-zinc-700/80 border border-zinc-500/80">
-                  <span class="font-semibold text-white truncate max-w-xs">#${secId}</span>
-                  <div class="flex items-center gap-3">
-                    <span class="text-zinc-200">${s.visitors} dwellers (${retPct}%)</span>
-                    <span class="text-zinc-400 text-[10px]">${s.events || s.visitors} events</span>
-                  </div>
-                </div>
-              `;
-            })
-            .join('');
-        }
-      }
-
-      // 4. Google Search Queries Table
-      const queriesTableEl = document.getElementById('full-queries-table');
-      const queriesCountEl = document.getElementById('full-queries-count');
-      const queries = gsc.queries || [];
-
-      if (queriesCountEl) {
-        queriesCountEl.textContent = `${queries.length} queries`;
-      }
-
-      if (queriesTableEl) {
-        if (queries.length === 0) {
-          queriesTableEl.innerHTML = '<span class="text-zinc-300 italic">No search queries recorded for this page in selected period.</span>';
-        } else {
-          queriesTableEl.innerHTML = queries
-            .map(
-              (q) => `
-              <div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-zinc-700/80 border border-zinc-500/80">
-                <span class="text-zinc-100 font-medium truncate" title="${q.query}">${q.query}</span>
-                <div class="flex items-center gap-2.5 shrink-0 text-xs">
-                  <span class="text-emerald-300 font-semibold">${q.clicks} clicks</span>
-                  <span class="text-zinc-400">|</span>
-                  <span class="text-zinc-200">${q.impressions} impr</span>
-                  <span class="text-zinc-400">|</span>
-                  <span class="text-amber-200 font-semibold">#${q.position.toFixed(1)}</span>
-                </div>
-              </div>
-            `
-            )
-            .join('');
-        }
-      }
-
-      // 5. Audience Technologies
-      const devicesListEl = document.getElementById('full-devices-list');
-      const osListEl = document.getElementById('full-os-list');
-      const devices = plausible.tech?.devices || [];
-      const os = plausible.tech?.operatingSystems || [];
-
-      if (devicesListEl) {
-        devicesListEl.innerHTML = devices.length > 0
-          ? devices.map(d => `<div class="flex justify-between py-0.5"><span>${d.name}</span><strong class="text-white">${d.percentage}% (${d.visitors})</strong></div>`).join('')
-          : '<span class="text-zinc-300 italic">No device data</span>';
-      }
-
-      if (osListEl) {
-        osListEl.innerHTML = os.length > 0
-          ? os.map(o => `<div class="flex justify-between py-0.5"><span>${o.name}</span><strong class="text-white">${o.percentage}% (${o.visitors})</strong></div>`).join('')
-          : '<span class="text-zinc-300 italic">No OS data</span>';
-      }
-
-      // 6. Geographic Distribution
-      const countriesListEl = document.getElementById('full-countries-list');
-      const countries = plausible.countries || [];
-
-      if (countriesListEl) {
-        countriesListEl.innerHTML = countries.length > 0
-          ? countries.map(c => `
-              <div class="px-2.5 py-1 rounded bg-zinc-700 border border-zinc-500 flex items-center gap-1.5">
-                <span class="font-bold text-white">${c.country}</span>
-                <span class="text-zinc-200">${c.percentage}% (${c.visitors})</span>
-              </div>
-            `).join('')
-          : '<span class="text-zinc-300 italic">No geographic data</span>';
+      const sankeyContainerEl = document.getElementById('full-visitor-flow-sankey');
+      if (sankeyContainerEl) {
+        renderVisitorFlowSankey(
+          sankeyContainerEl,
+          data.path || window.location.pathname,
+          plausible.visitorFlow,
+          (targetPath) => {
+            document.getElementById('dev-analytics-fullview')?.classList.add('hidden');
+            window.location.href = targetPath;
+          },
+          this.currentPeriod,
+          {
+            visitors: plausible.visitors,
+            pageviews: plausible.pageviews,
+            visitDuration: plausible.visitDuration,
+            bounceRate: plausible.bounceRate,
+            gscQueries: gsc.queries,
+          }
+        );
       }
     }
 

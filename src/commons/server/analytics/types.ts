@@ -18,6 +18,64 @@ export interface CardCtrMetric {
   ctr: number;
 }
 
+export interface VisitorFlowItem {
+  id: string;
+  label: string;
+  visitors: number;
+  percentage: number;
+  kind:
+    | 'entry_source'
+    | 'upstream_page'
+    | 'internal_next'
+    | 'pdf_download'
+    | 'outbound_link'
+    | 'bounce_exit';
+  href?: string;
+  isInternalPage?: boolean;
+  subItems?: Array<{
+    label: string;
+    visitors: number;
+    percentage: number;
+    href?: string;
+  }>;
+}
+
+export interface VisitorFlowChain {
+  flowId: string;
+  visitors: number;
+  steps: string[];
+}
+
+export interface PlausibleVisitorFlow {
+  totalVisitors: number;
+  uniqueVisitors?: number;
+  directEntries: number;
+  directEntryRate: number;
+  internalUpstreamVisitors: number;
+  internalUpstreamRate: number;
+  internalNextVisitors: number;
+  internalNextRate: number;
+  pdfDownloadVisitors: number;
+  pdfDownloadRate: number;
+  outboundLinkVisitors: number;
+  outboundLinkRate: number;
+  bounceOrExitVisitors: number;
+  bounceOrExitRate: number;
+  bounceVisitors?: number;
+  bounceRate?: number;
+  exitVisitors?: number;
+  exitRate?: number;
+  inboundSources: VisitorFlowItem[];
+  upstreamPages: VisitorFlowItem[];
+  downstreamPages: VisitorFlowItem[];
+  pdfDownloads: VisitorFlowItem[];
+  outboundLinks: VisitorFlowItem[];
+  chains?: VisitorFlowChain[];
+  stepActions?: Record<string, { fileVisitors: number; linkVisitors: number }>;
+  untrackedVisitors?: number;
+  untrackedRate?: number;
+}
+
 export interface DevOverlayPageData {
   path: string;
   period: string;
@@ -27,6 +85,11 @@ export interface DevOverlayPageData {
     pageviews: number;
     bounceRate: number | null;
     visitDuration: number | null;
+    scrollFunnel?: ScrollRetentionData;
+    goals?: PlausibleGoalConversion[];
+    tech?: TechBreakdown;
+    countries?: GeoDimensionMetric[];
+    visitorFlow?: PlausibleVisitorFlow;
   };
   gsc: {
     clicks: number;
@@ -118,6 +181,7 @@ export interface PlausiblePageMetrics {
   goals?: PlausibleGoalConversion[];
   tech?: TechBreakdown;
   countries?: GeoDimensionMetric[];
+  visitorFlow?: PlausibleVisitorFlow;
 }
 
 export interface UnifiedPageAudit {
