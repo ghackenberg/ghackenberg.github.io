@@ -159,9 +159,28 @@ const breadcrumbSchema = {
 
       <hr class="border-element-border" />
 
-      <!-- Section 5: E-Mail Inquiries -->
+      <!-- Section 5: Newsletter (Self-Hosted Listmonk & ALTCHA Proof-of-Work) -->
       <div class="space-y-3">
-        <h2 id="kontaktaufnahme" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">5. Kontaktaufnahme per E-Mail</h2>
+        <h2 id="newsletter" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">5. Newsletter-Versand (Selbstgehostetes Listmonk &amp; ALTCHA-Spamschutz)</h2>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          Wenn Sie sich auf unserer Website für den englischsprachigen E-Mail-Newsletter eintragen, verarbeiten wir Ihre E-Mail-Adresse ausschließlich zu dem Zweck, Sie in unregelmäßigen Abständen in englischer Sprache über neu veröffentlichte Fachartikel, interaktive Vorlesungsfolien, Lehrveranstaltungen und wissenschaftliche Publikationen zu informieren.
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          <strong>100 % Selbstgehostete Infrastruktur (Kein Drittanbieter-Cloud-Dienst):</strong> Für die Verwaltung der Abonnements und den E-Mail-Versand nutzen wir eine vollständig selbst betriebene Instanz der Open-Source-Software <strong>Listmonk</strong> (<code class="text-gray-300 font-mono text-xs">https://news.hackenberg.tech</code>) auf eigener Server-Infrastruktur innerhalb der Europäischen Union. Es erfolgt keinerlei Weitergabe Ihrer E-Mail-Adresse an externe Newsletter-Dienstleister oder US-Cloud-Anbieter. Wir verwenden im Newsletter kein Öffnungs- oder Klick-Tracking (keine Zählpixel, keine personalisierten Tracking-Links).
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          <strong>Lokaler Proof-of-Work-Spamschutz (ALTCHA):</strong> Zum Schutz unseres Anmeldeformulars vor automatisierten Bot-Angriffen setzen wir <strong>ALTCHA</strong> (<code class="text-gray-300 font-mono text-xs">news.hackenberg.tech/api/public/captcha/altcha</code>) ein. Vor dem Absenden löst Ihr Browser lokal eine kryptografische SHA-256-Rechenaufgabe (Proof-of-Work, maximale Komplexität <code class="text-gray-300 font-mono text-xs">300.000</code> Iterationen). Dieses Verfahren kommt vollständig ohne Cookies, ohne Geräte-Fingerprinting, ohne Verhaltensanalyse und ohne externe Drittanbieter-CAPTCHAs (wie Google reCAPTCHA) aus. Rechtsgrundlage für diesen technischen Missbrauchsschutz ist unser berechtigtes Interesse an der Sicherheit und Verfügbarkeit unserer Server-Infrastruktur (Art. 6 Abs. 1 lit. f DSGVO, § 165 Abs. 3 TKG 2021).
+        </p>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          <strong>Rechtsgrundlage &amp; jederzeitiger Widerruf:</strong> Der Versand des Newsletters erfolgt ausschließlich auf Grundlage Ihrer ausdrücklichen Einwilligung (Art. 6 Abs. 1 lit. a DSGVO i.V.m. § 174 TKG 2021). Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen und den Newsletter abbestellen – entweder über den in jeder Newsletter-E-Mail enthaltenen Abmeldelink oder durch eine kurze Nachricht an die oben genannte Kontaktadresse. Nach der Abmeldung wird Ihre E-Mail-Adresse unverzüglich aus dem Verteiler gelöscht.
+        </p>
+      </div>
+
+      <hr class="border-element-border" />
+
+      <!-- Section 6: E-Mail Inquiries -->
+      <div class="space-y-3">
+        <h2 id="kontaktaufnahme" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">6. Kontaktaufnahme per E-Mail</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
           Wenn Sie uns per E-Mail (z. B. für eine Projekt- oder Buchungsanfrage) kontaktieren, werden die von Ihnen gemachten Angaben (Name, E-Mail-Adresse sowie der Inhalt der Nachricht) zur Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert.
         </p>
@@ -172,9 +191,9 @@ const breadcrumbSchema = {
 
       <hr class="border-element-border" />
 
-      <!-- Section 6: User Rights -->
+      <!-- Section 7: User Rights -->
       <div class="space-y-3">
-        <h2 id="rechte" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">6. Ihre Rechte gemäß DSGVO</h2>
+        <h2 id="rechte" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">7. Ihre Rechte gemäß DSGVO</h2>
         <p class="text-gray-300 text-sm leading-relaxed">
           Ihnen stehen als betroffene Person bezüglich Ihrer bei uns verarbeiteten Daten folgende gesetzliche Rechte zu:
         </p>

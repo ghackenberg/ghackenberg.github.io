@@ -32,6 +32,63 @@ const neighborCache = new Map<string, NeighborCacheEntry>();
 const CACHE_TTL_MS = 2 * 60 * 1000;
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  if (context.url.pathname === '/__dev/listmonk/altcha') {
+    if (!import.meta.env.DEV) {
+      return next();
+    }
+    try {
+      const upstream = await fetch('https://news.hackenberg.tech/api/public/captcha/altcha', {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+      const body = await upstream.text();
+      return new Response(body, {
+        status: upstream.status,
+        headers: {
+          'Content-Type': upstream.headers.get('content-type') || 'application/json',
+          'Cache-Control': 'no-store',
+        },
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return new Response(JSON.stringify({ error: message }), {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+  }
+
+  if (context.url.pathname === '/__dev/listmonk/subscription') {
+    if (!import.meta.env.DEV) {
+      return next();
+    }
+    try {
+      const rawBody = await context.request.text();
+      const upstream = await fetch('https://news.hackenberg.tech/subscription/form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Origin: 'https://hackenberg.tech',
+        },
+        body: rawBody,
+      });
+      const body = await upstream.text();
+      return new Response(body, {
+        status: upstream.status,
+        headers: {
+          'Content-Type': upstream.headers.get('content-type') || 'text/html; charset=utf-8',
+          'Cache-Control': 'no-store',
+        },
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return new Response(JSON.stringify({ error: message }), {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+  }
+
   if (context.url.pathname === '/api/dev-analytics.json' || context.url.pathname === '/api/dev-analytics') {
     if (!import.meta.env.DEV) {
       return next();

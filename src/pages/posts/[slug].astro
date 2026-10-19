@@ -6,6 +6,7 @@ import Section from "@components/Section.astro";
 import RelatedContent from "@components/RelatedContent.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
+import NewsletterSignup from "@components/NewsletterSignup.astro";
 import { getCollection, render } from "astro:content";
 import { generateCitationLabel } from "@commons/shared/citations.js";
 import { getPostReadingTime } from "@commons/server/reading-time.js";
@@ -255,6 +256,8 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
         </div>
       )}
     </div>
+
+    <NewsletterSignup variant="card" />
     </Container>
   </Section>
 

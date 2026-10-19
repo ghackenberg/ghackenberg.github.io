@@ -33,6 +33,7 @@ import Notifications from "@components/Notifications.astro";
 import PreviewMediaBoot from "@components/PreviewMediaBoot.astro";
 import PreviewMediaLoader from "@components/PreviewMediaLoader.astro";
 import Telemetry from "@components/Telemetry.astro";
+import NewsletterSignup from "@components/NewsletterSignup.astro";
 
 const isDev = import.meta.env.DEV;
 
@@ -591,6 +592,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
       <!-- Footer -->
       <footer class="w-full glass-panel border-t !border-x-0 !border-b-0 border-element-border py-12 md:py-16 text-sm text-gray-400 mt-auto relative z-10">
         <Container as="div" size="wide" padding="none">
+          <NewsletterSignup variant="footer" />
           <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pb-10 border-b border-element-border">
             
             <!-- Brand Column -->

@@ -1,6 +1,7 @@
 ---
 // What's New Discovery Modal Component
 // Centered modal dialog, fully responsive, light- & dark-mode polished, matching PrivacyModal architecture
+import NewsletterSignup from '@components/NewsletterSignup.astro';
 ---
 
 <div 
@@ -62,6 +63,9 @@
     <div id="whats-new-list" class="flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 space-y-4">
       <!-- Activity Feed Items rendered by notifications.ts -->
     </div>
+
+    <!-- Compact Newsletter Subscription Bar -->
+    <NewsletterSignup variant="modal" />
 
     <!-- Footer (Sticky/Shrink-0) -->
     <div class="modal-footer shrink-0 px-4 sm:px-6 py-3 border-t border-element-border light:border-slate-200/80 flex items-center justify-between text-xs sm:text-sm text-gray-400 light:text-slate-500 bg-white/[0.02] light:bg-slate-50/50">
