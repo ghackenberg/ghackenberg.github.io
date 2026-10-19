@@ -1,0 +1,54 @@
+{{ define "header" }}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{{ .Data.Title }} - {{ .SiteName }}</title>
+    <meta name="description" content="{{ .Data.Description }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    {{ if .EnablePublicArchive }}
+        <link rel="alternate" type="application/rss+xml" title="{{ L.T "public.archiveTitle" }} - {{ .SiteName }}" href="{{ .RootURL }}/archive.xml" />
+    {{ end }}
+
+    <link href="/public/static/style.css?v={{ .AssetVersion }}" rel="stylesheet" type="text/css" />
+    <link href="/public/custom.css?v={{ .AssetVersion }}" rel="stylesheet" type="text/css" />
+    <script src="/public/custom.js?v={{ .AssetVersion }}" async defer></script>
+
+    {{ if ne .FaviconURL "" }}
+        <link rel="icon" href="{{ .FaviconURL }}" type="image/x-icon" />
+    {{ else }}
+        <link rel="icon" href="/public/static/favicon.png?v={{ .AssetVersion }}" type="image/png" />
+    {{ end }}
+</head>
+<body>
+<div class="full-container">
+    <div class="container wrap">
+        <header class="header">
+            <a href="https://hackenberg.tech" class="brand-lockup" rel="noopener noreferrer">
+                <span class="brand-badge">
+                    <span class="brand-gh">GH</span>
+                </span>
+                <span class="brand-text">
+                    <span class="brand-title">Dr. Georg Hackenberg</span>
+                    <span class="brand-subtitle">Professor for Industrial Informatics @ UAP (FH Upper Austria)</span>
+                </span>
+            </a>
+        </header>
+{{ end }}
+
+{{ define "footer" }}
+    </div>
+
+    <footer class="container">
+        <div class="footer-address">Dr. Georg Hackenberg &middot; Stelzhamerstrasse 23, 4600 Wels, Austria</div>
+        <div class="footer-links">
+            <a href="https://hackenberg.tech">hackenberg.tech</a> &middot;
+            <a href="https://hackenberg.tech/newsletters/">Newsletters</a> &middot;
+            <a href="https://hackenberg.tech/datenschutz/#newsletter">Privacy Policy</a> &middot;
+            <a href="https://hackenberg.tech/impressum/">Imprint</a>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
+{{ end }}

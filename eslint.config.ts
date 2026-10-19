@@ -16,16 +16,21 @@ export default defineConfig([
   },
   // Recommended Astro configuration
   ...eslintPluginAstro.configs.recommended,
-  // TypeScript configuration: set typescript parser for all TS files
+  // TypeScript configuration: set typescript parser for all TS/TSX files
   {
-    files: ['**/*.ts'],
+    files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: tsParser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
   },
   // Custom strict rules
   {
-    files: ['**/*.ts', '**/*.astro'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.astro'],
     plugins: {
       '@typescript-eslint': tseslint.plugin,
       'eslint-comments': eslintComments,
@@ -33,6 +38,9 @@ export default defineConfig([
     languageOptions: {
       parserOptions: {
         parser: tsParser,
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
     rules: {
@@ -61,7 +69,7 @@ export default defineConfig([
   },
   // 4. Path Alias Enforcement: disallow relative parent traversals into alias domains
   {
-    files: ['**/*.ts', '**/*.astro'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.astro'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -80,7 +88,7 @@ export default defineConfig([
   // 5. Architectural Boundaries: restrict cross-domain imports
   {
     // The web application and build plugins must not import from CLI scripts or MCP tools
-    files: ['src/**/*.ts', 'src/**/*.astro', 'astro.config.ts'],
+    files: ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.astro', 'astro.config.ts'],
     ignores: ['src/scripts/**', 'src/tools/**'],
     rules: {
       'no-restricted-imports': [

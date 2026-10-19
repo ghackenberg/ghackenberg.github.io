@@ -65,6 +65,8 @@ const EXCLUDED_HEX_FILES = new Set(
     'src/pages/_internal/icon.astro',
     'src/pages/posts/[slug]/og.png.ts',
     'src/pages/presentations/[slug]/print.astro',
+    'src/styles/listmonk.css',
+    'src/commons/server/email/email-theme.ts',
   ].map((p) => path.resolve(ROOT_DIR, p))
 );
 
@@ -72,7 +74,7 @@ const EXCLUDED_HEX_DIRS = ['src/components/dev'].map((p) =>
   path.resolve(ROOT_DIR, p)
 );
 
-const allSrcFiles = getFiles(SRC_DIR, ['.astro', '.ts', '.css']);
+const allSrcFiles = getFiles(SRC_DIR, ['.astro', '.ts', '.tsx', '.css']);
 const hexAuditFiles = allSrcFiles.filter((f) => {
   const resolved = path.resolve(f);
   return (

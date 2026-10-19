@@ -40,6 +40,8 @@ const DOMAIN_COMMAND_OWNERS: Record<string, string[]> = {
   'validate:architecture': ['build-engineering'],
   'validate:semantic-ids': ['build-engineering'],
   'lint:styles': ['presentation-authoring', 'build-engineering'],
+  'newsletter:build': ['newsletter-authoring', 'build-engineering'],
+  'newsletter:sync': ['newsletter-authoring', 'build-engineering'],
 };
 
 const BASH_PATTERNS = [

@@ -165,6 +165,7 @@ if (fs.existsSync(interestDetailPage)) {
 // 5. Preview cards must use canonical centered "Read More" button format
 const previewCardFiles = [
   'PostCard.astro',
+  'NewsletterCard.astro',
   'PresentationCard.astro',
   'PublicationCard.astro',
   'ProjectCard.astro',
@@ -858,6 +859,7 @@ if (publicationDirViolations === 0) {
 // 30. Preview Card Inventory, Deterministic Truncation & Option 3 Chip Gate
 const TWO_LINE_TITLE_CARDS = new Set([
   'PostCard.astro',
+  'NewsletterCard.astro',
   'PresentationCard.astro',
   'PublicationCard.astro',
 ]);

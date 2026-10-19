@@ -55,7 +55,52 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      LISTMONK_URL: ${{ secrets.LISTMONK_URL || 'https://news.hackenberg.tech' }}
+      LISTMONK_API_USER: ${{ secrets.LISTMONK_API_USER }}
+      LISTMONK_API_TOKEN: ${{ secrets.LISTMONK_API_TOKEN }}
+      LISTMONK_SSH_HOST: ${{ secrets.LISTMONK_SSH_HOST }}
+      LISTMONK_SSH_PORT: ${{ secrets.LISTMONK_SSH_PORT || '22' }}
+      LISTMONK_SSH_USER: ${{ secrets.LISTMONK_SSH_USER || 'root' }}
+      LISTMONK_DOCKER_DIR: ${{ secrets.LISTMONK_DOCKER_DIR || '/var/www/listmonk/hackenberg.tech' }}
+      LISTMONK_SSH_PRIVATE_KEY: ${{ secrets.LISTMONK_SSH_PRIVATE_KEY }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Checkout Repository for Newsletter Sync
+        if: env.LISTMONK_API_USER != '' && env.LISTMONK_API_TOKEN != ''
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js for Newsletter Sync
+        if: env.LISTMONK_API_USER != '' && env.LISTMONK_API_TOKEN != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Dependencies for Newsletter Sync
+        if: env.LISTMONK_API_USER != '' && env.LISTMONK_API_TOKEN != ''
+        run: npm ci
+
+      - name: Sync Newsletter Templates & Draft Campaigns to Listmonk
+        run: |
+          if [ -n "$LISTMONK_API_USER" ] && [ -n "$LISTMONK_API_TOKEN" ]; then
+            if [ -n "$LISTMONK_SSH_PRIVATE_KEY" ]; then
+              SSH_KEY_FILE="$(mktemp)"
+              printf "%s\n" "$LISTMONK_SSH_PRIVATE_KEY" > "$SSH_KEY_FILE"
+              chmod 600 "$SSH_KEY_FILE"
+              export LISTMONK_SSH_KEY_PATH="$SSH_KEY_FILE"
+              echo "LISTMONK_TEMP_SSH_KEY=$SSH_KEY_FILE" >> "$GITHUB_ENV"
+            fi
+            npm run newsletter:sync -- --all
+          else
+            echo "Listmonk credentials not configured in repository secrets — skipping newsletter sync."
+          fi
+
+      - name: Clean Up Temporary Listmonk SSH Key
+        if: always() && env.LISTMONK_TEMP_SSH_KEY != ''
+        run: rm -f "$LISTMONK_TEMP_SSH_KEY"
+
+

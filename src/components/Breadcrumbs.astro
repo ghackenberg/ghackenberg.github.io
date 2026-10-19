@@ -31,6 +31,7 @@ const SEGMENT_NAMES: Record<string, string> = {
   visualizations: "Visualizations",
   interests: "Interests",
   tags: "Tags",
+  newsletters: "Newsletters",
 };
 
 // Auto-infer domain from the first route segment if not explicitly provided
@@ -151,7 +152,7 @@ const activeTextClass = domainStyle ? domainStyle.activeText : activeAccent.acti
 const hoverClass = domainStyle ? domainStyle.hover : activeAccent.hover;
 ---
 
-<nav aria-label="Breadcrumb" class:list={["w-full max-w-full overflow-hidden mb-6 md:mb-8", className]}>
+<nav aria-label="Breadcrumb" class:list={["w-full max-w-full mb-6 md:mb-8", className]}>
   <ol class="inline-flex flex-nowrap items-center gap-1.5 sm:gap-2 max-w-full overflow-hidden px-3.5 py-2 rounded-2xl bg-element-bg border border-element-border text-xs text-gray-400 backdrop-blur-md shadow-sm">
     {breadcrumbs.map((item, index) => {
       const isLast = index === breadcrumbs.length - 1;

@@ -1,0 +1,473 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Navbar from '@components/Navbar.astro';
+import Container from '@components/Container.astro';
+import Section from '@components/Section.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import PostCard from '@components/PostCard.astro';
+import PresentationCard from '@components/PresentationCard.astro';
+import PublicationCard from '@components/PublicationCard.astro';
+import CourseCard from '@components/CourseCard.astro';
+import ProjectCard from '@components/ProjectCard.astro';
+import VisualizationCard from '@components/VisualizationCard.astro';
+import { getCollection, getEntries, render } from 'astro:content';
+import { formatDate } from '@commons/shared/format';
+
+export async function getStaticPaths() {
+  const issues = await getCollection('newsletters');
+  return issues.map((issue) => ({
+    params: { slug: issue.id },
+    props: { issue },
+  }));
+}
+
+const { issue } = Astro.props;
+const { Content } = await render(issue);
+
+const ogImage = issue.data.icon.src;
+
+const [
+  featuredPosts,
+  featuredPresentations,
+  featuredPublications,
+  featuredCourses,
+  featuredProjects,
+  featuredVisualizations,
+] = await Promise.all([
+  issue.data.featuredPosts.length > 0
+    ? getEntries(issue.data.featuredPosts)
+    : Promise.resolve([]),
+  issue.data.featuredPresentations.length > 0
+    ? getEntries(issue.data.featuredPresentations)
+    : Promise.resolve([]),
+  issue.data.featuredPublications.length > 0
+    ? getEntries(issue.data.featuredPublications)
+    : Promise.resolve([]),
+  issue.data.featuredCourses.length > 0
+    ? getEntries(issue.data.featuredCourses)
+    : Promise.resolve([]),
+  issue.data.featuredProjects.length > 0
+    ? getEntries(issue.data.featuredProjects)
+    : Promise.resolve([]),
+  issue.data.featuredVisualizations.length > 0
+    ? getEntries(issue.data.featuredVisualizations)
+    : Promise.resolve([]),
+]);
+
+const pageTitle = `Issue #${issue.data.issueNumber}: ${issue.data.title} | Dr. Georg Hackenberg`;
+const issueUrl = `https://hackenberg.tech/newsletters/${issue.id}/`;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://hackenberg.tech',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Newsletters',
+      item: 'https://hackenberg.tech/newsletters/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: issue.data.title,
+      item: issueUrl,
+    },
+  ],
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={issue.data.description}
+  image={ogImage}
+  type="article"
+  pubDate={issue.data.pubDate}
+  jsonLd={breadcrumbSchema}
+  lang="en"
+>
+  <Navbar />
+
+  <Section id="newsletter-content" padding="standard">
+    <Container size="reading" padding="none">
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Newsletters', href: '/newsletters/' },
+          { label: issue.data.title },
+        ]}
+        domain="posts"
+      />
+
+      <header class="mb-10">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <time class="text-sm font-semibold text-domain-posts" datetime={issue.data.pubDate.toISOString()}>
+            {formatDate(issue.data.pubDate, 'long', 'en-US')}
+          </time>
+          <span class="text-gray-500">•</span>
+          <span class="text-sm font-medium text-gray-400 light:text-slate-500">
+            Issue #{issue.data.issueNumber}
+          </span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
+          {issue.data.title}
+        </h1>
+      </header>
+
+      {issue.data.description && (
+        <aside class="mb-10 p-6 rounded-2xl bg-domain-posts/5 border border-domain-posts/20 text-gray-200 light:text-slate-900 shadow-sm" aria-label="Key Takeaways / Executive Summary">
+          <div class="text-xs font-bold text-domain-posts uppercase tracking-wider mb-2 flex items-center gap-2">
+            <span class="text-base">⚡</span>
+            <span>Key Takeaways / Executive Summary</span>
+          </div>
+          <p class="text-sm sm:text-base leading-relaxed text-gray-300 light:text-slate-800">
+            {issue.data.description}
+          </p>
+        </aside>
+      )}
+
+      <div class="post-body glass-card p-6 md:p-10 rounded-3xl border border-element-border relative overflow-hidden prose-custom">
+        <Content />
+      </div>
+    </Container>
+  </Section>
+
+  {featuredPosts.length > 0 && (
+    <Section id="featured-posts" border="top" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="mb-8 md:mb-12">
+          <h2 id="featured-posts-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            Featured <span class="text-domain-posts">Posts</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+            Technical blog posts and architectural deep-dives highlighted in this newsletter issue.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredPosts.map((post) => (
+            <PostCard
+              id={post.id}
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              icon={post.data.icon}
+              tags={post.data.tags}
+            />
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {featuredPresentations.length > 0 && (
+    <Section id="featured-presentations" border="top" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="mb-8 md:mb-12">
+          <h2 id="featured-presentations-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            Featured <span class="text-domain-presentations">Presentations</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+            Interactive Slide-as-Code presentations with synchronized neural voiceovers highlighted in this issue.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredPresentations.map((pres) => (
+            <PresentationCard
+              id={pres.id}
+              title={pres.data.title}
+              subtitle={pres.data.subtitle}
+              description={pres.data.description}
+              pubDate={pres.data.pubDate}
+              icon={pres.data.icon}
+              previewImage={pres.data.previewImage}
+              tags={pres.data.tags}
+            />
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {featuredPublications.length > 0 && (
+    <Section id="featured-publications" border="top" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="mb-8 md:mb-12">
+          <h2 id="featured-publications-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            Featured <span class="text-domain-publications">Publications</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+            Peer-reviewed conference proceedings and academic journal publications highlighted in this issue.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredPublications.map((pub) => (
+            <PublicationCard
+              id={pub.id}
+              title={pub.data.title}
+              author={pub.data.author}
+              pubDate={pub.data.pubDate}
+              book={pub.data.book}
+              tags={pub.data.tags}
+              publisherUrl={pub.data.publisherUrl}
+              icon={pub.data.icon}
+            />
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {featuredCourses.length > 0 && (
+    <Section id="featured-courses" border="top" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="mb-8 md:mb-12">
+          <h2 id="featured-courses-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            Featured <span class="text-domain-courses">Courses</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+            University syllabi, lecture modules, and laboratory repositories highlighted in this issue.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredCourses.map((course) => (
+            <CourseCard
+              title={course.data.title}
+              description={course.data.description}
+              href={`/courses/${course.id}/`}
+              language={course.data.language}
+              screenshot={course.data.screenshot}
+              tags={course.data.tags}
+            />
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {featuredProjects.length > 0 && (
+    <Section id="featured-projects" border="top" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="mb-8 md:mb-12">
+          <h2 id="featured-projects-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            Featured <span class="text-domain-projects">Projects</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+            Applied research prototypes and software engineering implementations highlighted in this issue.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredProjects.map((project) => (
+            <ProjectCard
+              title={project.data.title}
+              trl={project.data.trl}
+              description={project.data.description}
+              href={`/projects/${project.id}/`}
+              tags={project.data.tags}
+              screenshot={project.data.screenshot}
+              screenshotLight={project.data.screenshotLight}
+            />
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  {featuredVisualizations.length > 0 && (
+    <Section id="featured-visualizations" border="top" padding="standard">
+      <Container size="wide" padding="none">
+        <div class="mb-8 md:mb-12">
+          <h2 id="featured-visualizations-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            Featured <span class="text-domain-visualizations">Visualizations</span>
+          </h2>
+          <p class="text-gray-400 text-sm md:text-base max-w-2xl leading-relaxed font-normal">
+            Interactive network topologies and data visualizations highlighted in this issue.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredVisualizations.map((vis) => (
+            <VisualizationCard
+              title={vis.data.title}
+              description={vis.data.description}
+              href={`/visualizations/${vis.id}/`}
+              screenshot={vis.data.screenshot}
+              tags={vis.data.tags}
+            />
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
+</Layout>
+
+<style>
+  /* Local styling rules for post html contents rendering */
+  .post-body :global(h2) {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-text-heading);
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-bottom: 0.5rem;
+    transition: color 0.5s ease, border-color 0.5s ease;
+  }
+  .post-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .post-body :global(h3) {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--color-text-heading);
+    margin-top: 2.25rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    transition: color 0.5s ease;
+  }
+  .post-body :global(p) {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    color: var(--color-text-main);
+    font-size: 1.0625rem;
+    transition: color 0.5s ease;
+  }
+  .post-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .post-body :global(a:not(.citation):not(.tag-chip):not([class*="bg-"])) {
+    color: var(--color-current-domain, var(--color-domain-posts));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s;
+  }
+  .post-body :global(a:not(.citation):not(.tag-chip):not([class*="bg-"]):hover) {
+    opacity: 0.8;
+  }
+  .post-body :global(.citation) {
+    color: var(--color-domain-publications) !important;
+    background-color: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    text-decoration: none !important;
+  }
+  .post-body :global(.citation:hover) {
+    color: var(--color-domain-publications) !important;
+    background-color: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+    text-decoration: none !important;
+  }
+  :root.light .post-body :global(.citation),
+  .light .post-body :global(.citation) {
+    color: var(--color-domain-publications) !important;
+    background-color: rgba(79, 70, 229, 0.1);
+    border-color: rgba(79, 70, 229, 0.2);
+  }
+  :root.light .post-body :global(.citation:hover),
+  .light .post-body :global(.citation:hover) {
+    color: var(--color-domain-publications) !important;
+    background-color: rgba(79, 70, 229, 0.2);
+    border-color: rgba(79, 70, 229, 0.4);
+  }
+  .post-body :global(strong) {
+    color: var(--color-text-heading);
+    font-weight: 700;
+    transition: color 0.5s ease;
+  }
+  .post-body :global(img) {
+    border-radius: 1rem;
+    border: 1px solid var(--color-border-medium);
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .post-body :global(img:hover) {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.01);
+  }
+  :global(.light) .post-body :global(img:hover) {
+    border-color: rgba(15, 23, 42, 0.2);
+  }
+  .post-body :global(p > img:only-child),
+  .post-body :global(p > a:only-child > img) {
+    display: block;
+    margin: 2.5rem auto;
+  }
+  .post-body :global(iframe) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 1rem;
+    border: 1px solid var(--color-border-medium);
+    margin: 2.5rem auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    background: rgba(17, 24, 39, 0.4);
+    display: block;
+  }
+  :global(.light) .post-body :global(iframe) {
+    background: rgba(255, 255, 255, 0.4);
+  }
+  .post-body :global(pre) {
+    background: rgba(3, 7, 18, 0.6);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-main);
+  }
+  :global(.light) .post-body :global(pre) {
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--color-text-main);
+  }
+  .post-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    background: rgba(37, 49, 78, 0.25);
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border-subtle);
+  }
+  :global(.light) .post-body :global(table) {
+    background: rgba(15, 23, 42, 0.03);
+  }
+  .post-body :global(th) {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.875rem 1.25rem;
+    text-align: left;
+    font-weight: 700;
+    color: var(--color-text-heading);
+    border-bottom: 1px solid var(--color-border-medium);
+    transition: color 0.5s ease, border-color 0.5s ease;
+  }
+  :global(.light) .post-body :global(th) {
+    background: rgba(15, 23, 42, 0.05);
+  }
+  .post-body :global(td) {
+    padding: 0.875rem 1.25rem;
+    color: var(--color-text-main);
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: color 0.5s ease, border-color 0.5s ease;
+  }
+  .post-body :global(tr:last-child td) {
+    border-bottom: none;
+  }
+</style>

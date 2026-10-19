@@ -4,6 +4,8 @@
  * with zero cookies, zero tracking, and client-side SHA-256 Proof-of-Work spam protection.
  */
 
+import { trackEvent } from '@commons/client/telemetry';
+
 const LISTMONK_PROD_ORIGIN = 'https://news.hackenberg.tech';
 const LISTMONK_LIST_UUID = 'b38e9b53-59e6-4ab3-8a67-d047041a9e0e';
 const ALTCHA_TOKEN_TTL_MS = 4 * 60 * 1000; // Re-solve if older than 4 minutes
@@ -385,6 +387,8 @@ function wireNewsletterForm(form: HTMLFormElement): void {
       });
 
       if (res.ok) {
+        const location = form.getAttribute('data-newsletter-variant') || 'footer';
+        trackEvent('High Intent: Subscribe Newsletter', { location });
         showFeedback(
           'success',
           'Almost done! Please check your inbox and click the confirmation link to complete your subscription.'

@@ -18,7 +18,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run typecheck && astro build && npm run generate-assets",
+    "build": "npm run typecheck && astro build && npm run generate-assets && npm run newsletter:build",
     "postbuild": "npm run validate:semantic-ids && npm run validate:assets",
     "validate": "npm run lint && npm run typecheck && npm run validate:scripts && npm run validate:skills && npm run validate:slides:syntax && npm run validate:citations:syntax && npm run lint:styles && npm run lint:domains && npm run lint:colors && npm run lint:svgs && npm run validate:architecture",
     "verify": "npm run validate && npm run build",
@@ -52,6 +52,8 @@
     "lint:slide-typography": "tsx src/scripts/lint-slide-typography.ts",
     "lint:slide-density": "tsx src/scripts/lint-slide-density.ts",
     "migrate:svgs": "tsx src/scripts/migrate-adaptive-svgs.ts",
+    "newsletter:build": "tsx src/scripts/build-newsletters.ts",
+    "newsletter:sync": "tsx src/scripts/sync-newsletters.ts",
     "astro": "astro"
   },
   "dependencies": {
@@ -90,9 +92,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.1.1",
     "@types/cytoscape": "^3.21.9",
     "@types/d3": "^7.4.3",
     "@types/howler": "^2.2.13",
+    "@types/react": "^19.3.0",
     "cheerio": "^1.2.0",
     "chrome-launcher": "^1.2.1",
     "eslint": "^9.39.4",
@@ -102,6 +107,8 @@
     "mermaid": "^12.0.0",
     "puppeteer": "^25.0.4",
     "quickjs-wasi": "^2.2.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "tsx": "^4.23.15",
     "typescript-eslint": "^8.61.1"
   },

@@ -33,7 +33,7 @@ Mandatory across ALL content formats (posts, presentations, courses, services, c
 
 ## 3. Modular Skill Ecosystem (.agents/skills/)
 Operational domain logic, layout archetypes, schemas, and workflows are decoupled into on-demand skills under `.agents/skills/`. Before performing specialized tasks, inspect the corresponding `SKILL.md`:
-- **Content Creation**: `post-authoring`, `presentation-authoring`, `course-authoring`, `project-authoring`, `service-authoring`, `publication-authoring`, `visualization-authoring`.
+- **Content Creation**: `post-authoring`, `presentation-authoring`, `course-authoring`, `project-authoring`, `service-authoring`, `publication-authoring`, `visualization-authoring`, `newsletter-authoring`.
 - **Visuals & Schematics**: `svg-graphics`, `mermaid-diagrams`, `image-generation`.
 - **Cross-Cutting Standards**: `source-research`, `citation-management`, `tag-management`, `legal-compliance`.
 - **Site & Platform Engineering**: `site-curation`, `site-optimization`, `site-analytics`, `build-engineering`, `tool-engineering`.

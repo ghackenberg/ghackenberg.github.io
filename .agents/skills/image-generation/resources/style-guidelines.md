@@ -18,7 +18,7 @@ For deep specifications, consult the dedicated Level 3 modular reference documen
 
 ## 3. Visual Content Archetypes
 
-Every generated asset adheres to one of eight specialized visual archetypes:
+Every generated asset adheres to one of nine specialized visual archetypes:
 
 | Content Type | Visual Archetype | Avatar Rule | Detailed Guide |
 | :--- | :--- | :--- | :--- |
@@ -30,6 +30,7 @@ Every generated asset adheres to one of eight specialized visual archetypes:
 | **Service Modules** | Iconic Cyber-Physical Module Artifact | **Strictly No Avatar** (Emblem) | [archetypes/service-modules.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/service-modules.md) |
 | **Interests** | Conceptual Macro-Cosmos / Domain Realm | **Strictly No Avatar** (Macro Realm) | [archetypes/interests.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/interests.md) |
 | **Publications** | Studio Sketchnote & Gouache-Marker Blueprint | **Strictly No Avatar** (Concept Sketch) | [archetypes/publications.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/publications.md) |
+| **Newsletters** | Editorial Magazine Illustration / Tech Review Cover | **Strictly No Avatar** (Editorial Cover) | [archetypes/newsletters.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/newsletters.md) |
 
 ## 4. Generation & Review Protocol
 

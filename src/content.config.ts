@@ -591,6 +591,28 @@ const slides = defineCollection({
   }),
 });
 
+const newsletters = defineCollection({
+  loader: glob({
+    base: './src/content/newsletters',
+    pattern: '*/index.{md,mdx}',
+    generateId: ({ entry }) => entry.replace(/\/index\.(md|mdx)$/, '')
+  }),
+  schema: ({ image }) => z.object({
+    issueNumber: z.number().int().positive(),
+    title: z.string(),
+    subtitle: z.string().optional(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    icon: coverImageSchema({ image }),
+    featuredPosts: z.array(reference('posts')).default([]),
+    featuredPresentations: z.array(reference('presentations')).default([]),
+    featuredPublications: z.array(reference('publications')).default([]),
+    featuredCourses: z.array(reference('courses')).default([]),
+    featuredProjects: z.array(reference('projects')).default([]),
+    featuredVisualizations: z.array(reference('visualizations')).default([]),
+  }),
+});
+
 export const collections = {
   'linkedin-posts': linkedinPosts,
   'linkedin-profile': linkedinProfile,
@@ -614,7 +636,9 @@ export const collections = {
   'environments': environments,
   'presentations': presentations,
   'slides': slides,
+  'newsletters': newsletters,
 };
+
 
 
 
