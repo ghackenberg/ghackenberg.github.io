@@ -2,6 +2,7 @@ import { getConfig } from '../config.js';
 import { normalizePath } from '../services/normalizer.js';
 import type {
   PlausiblePageMetrics,
+  PlausibleDailyTrafficPoint,
   ScrollRetentionData,
   ScrollFunnelMilestone,
   PlausibleGoalConversion,
@@ -104,6 +105,64 @@ export async function fetchBreakdown(
     console.warn(`Failed to contact Plausible breakdown API (${property}): ${(err as Error).message}`);
     return [];
   }
+}
+
+/**
+ * Fetches daily traffic timeseries (visitors & pageviews) for a specific URL path.
+ */
+export async function getPlausiblePageTimeseries(
+  urlOrPath: string,
+  period: string = 'last_28_days'
+): Promise<PlausibleDailyTrafficPoint[]> {
+  const config = getConfig();
+  if (!config.plausible.apiKey) return [];
+
+  const canonicalPath = normalizePath(urlOrPath);
+  const { period: plausiblePeriod, date: plausibleDate } = resolvePlausibleParams(period);
+
+  const queryPathTimeseries = async (filterPath: string): Promise<PlausibleDailyTrafficPoint[]> => {
+    const url = new URL(`${config.plausible.host}/api/v1/stats/timeseries`);
+    url.searchParams.set('site_id', config.plausible.siteId);
+    url.searchParams.set('period', plausiblePeriod);
+    if (plausibleDate) {
+      url.searchParams.set('date', plausibleDate);
+    }
+    url.searchParams.set('metrics', 'visitors,pageviews');
+    url.searchParams.set('filters', `event:page==${filterPath}`);
+
+    try {
+      const res = await fetch(url.toString(), {
+        headers: {
+          Authorization: `Bearer ${config.plausible.apiKey}`,
+        },
+      });
+      if (!res.ok) return [];
+      const data = await res.json();
+      const rows = Array.isArray(data.results) ? data.results : [];
+      return rows.map((row: { date?: string; visitors?: number | null; pageviews?: number | null }) => ({
+        date: String(row.date || ''),
+        visitors: Number(row.visitors ?? 0),
+        pageviews: Number(row.pageviews ?? row.visitors ?? 0),
+      }));
+    } catch {
+      return [];
+    }
+  };
+
+  let points = await queryPathTimeseries(canonicalPath);
+  const sumViews = points.reduce((acc, p) => acc + p.pageviews, 0);
+  if (sumViews === 0 && canonicalPath !== '/') {
+    const alternativePath = canonicalPath.endsWith('/')
+      ? canonicalPath.slice(0, -1)
+      : `${canonicalPath}/`;
+    const altPoints = await queryPathTimeseries(alternativePath);
+    const altSum = altPoints.reduce((acc, p) => acc + p.pageviews, 0);
+    if (altSum > 0) {
+      points = altPoints;
+    }
+  }
+
+  return points;
 }
 
 /**
@@ -224,7 +283,7 @@ export async function getPlausiblePageMetrics(
     }
 
     // Fetch deep metrics concurrently
-    const [scrollAndGoals, tech, countries, visitorFlow] = await Promise.all([
+    const [scrollAndGoals, tech, countries, visitorFlow, timeseries] = await Promise.all([
       getPlausiblePageScrollAndGoals(canonicalPath, period, baseMetrics.visitors).catch(() => ({
         scrollFunnel: { milestones: [], readThroughRate: null, medianScrollDepth: null },
         goals: [],
@@ -243,6 +302,7 @@ export async function getPlausiblePageMetrics(
         baseMetrics.bounceRate,
         baseMetrics.pageviews
       ).catch(() => undefined),
+      getPlausiblePageTimeseries(canonicalPath, period).catch(() => []),
     ]);
 
     return {
@@ -252,6 +312,7 @@ export async function getPlausiblePageMetrics(
       tech,
       countries,
       visitorFlow,
+      timeseries,
     };
   } catch (err) {
     console.warn(`Failed to contact Plausible API: ${(err as Error).message}`);

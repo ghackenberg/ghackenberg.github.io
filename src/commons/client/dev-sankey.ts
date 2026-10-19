@@ -69,6 +69,12 @@ export interface DevSankeyScrollFunnel {
   medianScrollDepth?: number | null;
 }
 
+export interface DevSankeyDailyTrafficPoint {
+  date: string;
+  visitors: number;
+  pageviews: number;
+}
+
 export interface DevSankeyPageContext {
   visitors?: number;
   pageviews?: number;
@@ -76,6 +82,7 @@ export interface DevSankeyPageContext {
   bounceRate?: number | null;
   gscQueries?: DevSankeyGscQuery[];
   scrollFunnel?: DevSankeyScrollFunnel | null;
+  timeseries?: DevSankeyDailyTrafficPoint[];
 }
 
 export type SankeyCardDensity = 'compact' | 'detailed';
@@ -1030,8 +1037,71 @@ export function renderVisitorFlowSankey(
       const scrollDotsHtml = scrollPts
         .map(
           (p) =>
-            `<circle class="sankey-scroll-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.3" fill="rgb(52, 211, 153)" stroke="rgb(9, 9, 11)" stroke-width="1"><title>Scroll depth ≥ ${p.depth}%: ${p.reachPct}% of readers</title></circle>`
+            `<circle class="sankey-chart-dot sankey-scroll-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.3" fill="rgb(52, 211, 153)" stroke="rgb(9, 9, 11)" stroke-width="1"><title>Scroll depth ≥ ${p.depth}%: ${p.reachPct}% of readers</title></circle>`
         )
+        .join('');
+
+      // Daily Traffic Timeseries Line Chart (Views & Visitors over Period)
+      const rawTrafficSeries = context?.timeseries ?? [];
+      const peakViews =
+        rawTrafficSeries.length > 0 ? Math.max(...rawTrafficSeries.map((p) => p.pageviews)) : 0;
+      const peakVisitors =
+        rawTrafficSeries.length > 0 ? Math.max(...rawTrafficSeries.map((p) => p.visitors)) : 0;
+      const sumSeriesViews = rawTrafficSeries.reduce((acc, p) => acc + p.pageviews, 0);
+      const avgViews =
+        rawTrafficSeries.length > 0
+          ? String(Math.round((sumSeriesViews / rawTrafficSeries.length) * 10) / 10)
+          : '0';
+      const maxTrafficY = Math.max(1, peakViews, peakVisitors);
+
+      const trafficSeriesForPlot =
+        rawTrafficSeries.length >= 2
+          ? rawTrafficSeries
+          : rawTrafficSeries.length === 1
+            ? [rawTrafficSeries[0], rawTrafficSeries[0]]
+            : [
+                { date: '--', visitors: 0, pageviews: 0 },
+                { date: '--', visitors: 0, pageviews: 0 },
+              ];
+      const trafficDenom = Math.max(1, trafficSeriesForPlot.length - 1);
+      const trafficPts = trafficSeriesForPlot.map((pt, idx) => {
+        const x = svgPadL + (idx / trafficDenom) * svgPlotW;
+        const yViews =
+          svgPadT + (1 - Math.min(1, Math.max(0, pt.pageviews / maxTrafficY))) * svgPlotH;
+        const yVis =
+          svgPadT + (1 - Math.min(1, Math.max(0, pt.visitors / maxTrafficY))) * svgPlotH;
+        return {
+          date: pt.date,
+          visitors: pt.visitors,
+          pageviews: pt.pageviews,
+          x,
+          yViews,
+          yVis,
+        };
+      });
+
+      const trafficViewsLineD = `M ${trafficPts.map((p) => `${p.x.toFixed(1)} ${p.yViews.toFixed(1)}`).join(' L ')}`;
+      const trafficViewsAreaD = `${trafficViewsLineD} L ${trafficPts[trafficPts.length - 1].x.toFixed(1)} ${(svgPadT + svgPlotH).toFixed(1)} L ${trafficPts[0].x.toFixed(1)} ${(svgPadT + svgPlotH).toFixed(1)} Z`;
+      const trafficVisLineD = `M ${trafficPts.map((p) => `${p.x.toFixed(1)} ${p.yVis.toFixed(1)}`).join(' L ')}`;
+      const trafficDotsHtml = trafficPts
+        .map(
+          (p) =>
+            `<circle class="sankey-chart-dot" cx="${p.x.toFixed(1)}" cy="${p.yViews.toFixed(1)}" r="2" fill="rgb(52, 211, 153)" stroke="rgb(9, 9, 11)" stroke-width="0.8"><title>${escapeHtml(p.date || period)}: ${formatVisitorCount(p.pageviews)} Views · ${formatVisitorCount(p.visitors)} Visitors</title></circle>`
+        )
+        .join('');
+
+      const formatShortDate = (iso: string): string => {
+        const m = iso.match(/^\d{4}-(\d{2}-\d{2})/);
+        return m ? m[1] : iso || '--';
+      };
+      const trafficDateLabelsHtml = [0, 0.25, 0.5, 0.75, 1]
+        .map((f) => {
+          const i = Math.min(
+            trafficSeriesForPlot.length - 1,
+            Math.round(f * (trafficSeriesForPlot.length - 1))
+          );
+          return `<span>${escapeHtml(formatShortDate(trafficSeriesForPlot[i].date))}</span>`;
+        })
         .join('');
 
       return `
@@ -1093,22 +1163,46 @@ export function renderVisitorFlowSankey(
               </div>
             </div>
 
-            <!-- 3. SCROLL DEPTH RETENTION LINE CHART (0%..100% in 10% steps) -->
+            <!-- 3. DAILY TRAFFIC LINE CHART (Views & Visitors over Period) -->
+            <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="📈 Daily Traffic (${escapeHtml(period)})" data-ext-metrics="Peak: ${formatVisitorCount(peakViews)}v / ${formatVisitorCount(peakVisitors)}u · Avg: ${avgViews}v/d">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-emerald-300">📈 Daily Traffic (${escapeHtml(period)})</span>
+                <span class="text-zinc-300">Peak: <strong class="text-emerald-300">${formatVisitorCount(peakViews)}v</strong> / <strong class="text-sky-300">${formatVisitorCount(peakVisitors)}u</strong> · Avg: <strong class="text-white">${avgViews}v/d</strong></span>
+              </div>
+              <svg
+                class="sankey-inline-chart-svg sankey-traffic-line-svg w-full h-14 rounded bg-zinc-950 border border-zinc-800/90 overflow-visible"
+                viewBox="0 0 320 56"
+                preserveAspectRatio="none"
+                role="img"
+                aria-label="Daily Traffic Line Chart (${escapeHtml(period)})"
+              >
+                ${scrollGridLinesHtml}
+                <path class="sankey-chart-area" d="${trafficViewsAreaD}" fill="rgba(52, 211, 153, 0.18)" />
+                <path class="sankey-chart-line" d="${trafficVisLineD}" fill="none" stroke="rgb(56, 189, 248)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                <path class="sankey-chart-line" d="${trafficViewsLineD}" fill="none" stroke="rgb(52, 211, 153)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                ${trafficDotsHtml}
+              </svg>
+              <div class="flex items-center justify-between text-[9px] text-zinc-400 px-0.5 leading-none">
+                ${trafficDateLabelsHtml}
+              </div>
+            </div>
+
+            <!-- 4. SCROLL DEPTH RETENTION LINE CHART (0%..100% in 10% steps) -->
             <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="📜 Scroll Depth" data-ext-metrics="Med: ${medStr} · Read: ${readStr}">
               <div class="flex items-center justify-between text-xs">
                 <span class="font-bold text-cyan-200">📜 Scroll Depth</span>
                 <span class="text-zinc-300">⭐ Med: <strong class="text-amber-300">${medStr}</strong> · Read: <strong class="text-emerald-300">${readStr}</strong></span>
               </div>
               <svg
-                class="sankey-scroll-line-svg w-full h-14 rounded bg-zinc-950 border border-zinc-800/90 overflow-visible"
+                class="sankey-inline-chart-svg sankey-scroll-line-svg w-full h-14 rounded bg-zinc-950 border border-zinc-800/90 overflow-visible"
                 viewBox="0 0 320 56"
                 preserveAspectRatio="none"
                 role="img"
                 aria-label="Scroll Depth Retention Line Chart (0% to 100% in 10% steps)"
               >
                 ${scrollGridLinesHtml}
-                <path class="sankey-scroll-area-path" d="${scrollAreaD}" fill="rgba(34, 211, 238, 0.18)" />
-                <path class="sankey-scroll-line-path" d="${scrollLineD}" fill="none" stroke="rgb(34, 211, 238)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path class="sankey-chart-area sankey-scroll-area-path" d="${scrollAreaD}" fill="rgba(34, 211, 238, 0.18)" />
+                <path class="sankey-chart-line sankey-scroll-line-path" d="${scrollLineD}" fill="none" stroke="rgb(34, 211, 238)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 ${scrollDotsHtml}
               </svg>
               <div class="flex items-center justify-between text-[9px] text-zinc-400 px-0.5 leading-none">
@@ -1999,90 +2093,93 @@ export function renderVisitorFlowSankey(
         ctx.restore();
       }
 
-      // 5b. Render inline SVG Scroll Depth Line Chart (.sankey-scroll-line-svg)
-      const scrollSvgEl = stageEl.querySelector<SVGSVGElement>('.sankey-scroll-line-svg');
-      if (scrollSvgEl) {
-        const sb = toLocal(scrollSvgEl);
-        if (sb.w > 1 && sb.h > 1) {
-          const scrollerEl = scrollSvgEl.closest<HTMLElement>('.sankey-col-scroll');
-          const scrollerBox = scrollerEl ? toLocal(scrollerEl) : null;
-          if (
-            !scrollerBox ||
-            (sb.y + sb.h > scrollerBox.y + 1 && sb.y < scrollerBox.y + scrollerBox.h - 1)
-          ) {
-            ctx.save();
-            if (scrollerBox) {
-              ctx.beginPath();
-              ctx.rect(scrollerBox.x, scrollerBox.y, scrollerBox.w, scrollerBox.h);
-              ctx.clip();
+      // 5b. Render inline SVG Line Charts (.sankey-inline-chart-svg: Daily Traffic & Scroll Depth)
+      const inlineChartSvgs = Array.from(
+        stageEl.querySelectorAll<SVGSVGElement>('.sankey-inline-chart-svg')
+      );
+      for (const chartSvgEl of inlineChartSvgs) {
+        const sb = toLocal(chartSvgEl);
+        if (sb.w <= 1 || sb.h <= 1) continue;
+        const scrollerEl = chartSvgEl.closest<HTMLElement>('.sankey-col-scroll');
+        const scrollerBox = scrollerEl ? toLocal(scrollerEl) : null;
+        if (
+          scrollerBox &&
+          (sb.y + sb.h <= scrollerBox.y + 1 || sb.y >= scrollerBox.y + scrollerBox.h - 1)
+        ) {
+          continue;
+        }
+
+        ctx.save();
+        if (scrollerBox) {
+          ctx.beginPath();
+          ctx.rect(scrollerBox.x, scrollerBox.y, scrollerBox.w, scrollerBox.h);
+          ctx.clip();
+        }
+
+        drawRoundedRectPath(ctx, sb.x, sb.y, sb.w, sb.h, 4);
+        ctx.fillStyle = 'rgb(9, 9, 11)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(39, 39, 42, 0.9)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Gridlines at 25%, 50%, 75%
+        ctx.save();
+        ctx.setLineDash([2, 2]);
+        ctx.strokeStyle = 'rgba(63, 63, 70, 0.5)';
+        ctx.lineWidth = 1;
+        for (const frac of [0.25, 0.5, 0.75]) {
+          const gy = sb.y + ((6 + frac * 44) / 56) * sb.h;
+          ctx.beginPath();
+          ctx.moveTo(sb.x + (8 / 320) * sb.w, gy);
+          ctx.lineTo(sb.x + (312 / 320) * sb.w, gy);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        if (typeof Path2D !== 'undefined') {
+          ctx.save();
+          ctx.translate(sb.x, sb.y);
+          ctx.scale(sb.w / 320, sb.h / 56);
+          const pathEls = Array.from(chartSvgEl.querySelectorAll<SVGPathElement>('path'));
+          for (const pathEl of pathEls) {
+            const d = pathEl.getAttribute('d') || '';
+            if (!d) continue;
+            const p2d = new Path2D(d);
+            const fill = pathEl.getAttribute('fill');
+            const stroke = pathEl.getAttribute('stroke');
+            if (fill && fill !== 'none') {
+              ctx.fillStyle = fill;
+              ctx.fill(p2d);
             }
-
-            drawRoundedRectPath(ctx, sb.x, sb.y, sb.w, sb.h, 4);
-            ctx.fillStyle = 'rgb(9, 9, 11)';
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(39, 39, 42, 0.9)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            // Gridlines at 25%, 50%, 75%
-            ctx.save();
-            ctx.setLineDash([2, 2]);
-            ctx.strokeStyle = 'rgba(63, 63, 70, 0.5)';
-            ctx.lineWidth = 1;
-            for (const frac of [0.25, 0.5, 0.75]) {
-              const gy = sb.y + ((6 + frac * 44) / 56) * sb.h;
-              ctx.beginPath();
-              ctx.moveTo(sb.x + (8 / 320) * sb.w, gy);
-              ctx.lineTo(sb.x + (312 / 320) * sb.w, gy);
-              ctx.stroke();
-            }
-            ctx.restore();
-
-            const dotEls = Array.from(
-              scrollSvgEl.querySelectorAll<SVGCircleElement>('.sankey-scroll-dot')
-            );
-            const chartPts = dotEls.map((dot) => ({
-              x: sb.x + (parseFloat(dot.getAttribute('cx') || '0') / 320) * sb.w,
-              y: sb.y + (parseFloat(dot.getAttribute('cy') || '0') / 56) * sb.h,
-            }));
-
-            if (chartPts.length > 1) {
-              const baseBottomY = sb.y + (50 / 56) * sb.h;
-              ctx.beginPath();
-              ctx.moveTo(chartPts[0].x, baseBottomY);
-              for (const pt of chartPts) {
-                ctx.lineTo(pt.x, pt.y);
-              }
-              ctx.lineTo(chartPts[chartPts.length - 1].x, baseBottomY);
-              ctx.closePath();
-              ctx.fillStyle = 'rgba(34, 211, 238, 0.18)';
-              ctx.fill();
-
-              ctx.beginPath();
-              ctx.moveTo(chartPts[0].x, chartPts[0].y);
-              for (let i = 1; i < chartPts.length; i++) {
-                ctx.lineTo(chartPts[i].x, chartPts[i].y);
-              }
-              ctx.strokeStyle = 'rgb(34, 211, 238)';
-              ctx.lineWidth = 1.8;
+            if (stroke && stroke !== 'none') {
+              ctx.strokeStyle = stroke;
+              ctx.lineWidth = parseFloat(pathEl.getAttribute('stroke-width') || '1.8');
               ctx.lineCap = 'round';
               ctx.lineJoin = 'round';
-              ctx.stroke();
-
-              for (const pt of chartPts) {
-                ctx.beginPath();
-                ctx.arc(pt.x, pt.y, 2.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgb(52, 211, 153)';
-                ctx.fill();
-                ctx.strokeStyle = 'rgb(9, 9, 11)';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-              }
+              ctx.stroke(p2d);
             }
-
-            ctx.restore();
           }
+          ctx.restore();
         }
+
+        const dotEls = Array.from(
+          chartSvgEl.querySelectorAll<SVGCircleElement>('.sankey-chart-dot')
+        );
+        for (const dot of dotEls) {
+          const px = sb.x + (parseFloat(dot.getAttribute('cx') || '0') / 320) * sb.w;
+          const py = sb.y + (parseFloat(dot.getAttribute('cy') || '0') / 56) * sb.h;
+          const r = parseFloat(dot.getAttribute('r') || '2');
+          ctx.beginPath();
+          ctx.arc(px, py, r, 0, Math.PI * 2);
+          ctx.fillStyle = dot.getAttribute('fill') || 'rgb(52, 211, 153)';
+          ctx.fill();
+          ctx.strokeStyle = dot.getAttribute('stroke') || 'rgb(9, 9, 11)';
+          ctx.lineWidth = parseFloat(dot.getAttribute('stroke-width') || '1');
+          ctx.stroke();
+        }
+
+        ctx.restore();
       }
 
       // 6. Walk all visible text nodes inside stageEl and draw them at their exact Range bounding rects

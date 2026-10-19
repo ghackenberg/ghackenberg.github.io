@@ -76,6 +76,12 @@ export interface PlausibleVisitorFlow {
   untrackedRate?: number;
 }
 
+export interface PlausibleDailyTrafficPoint {
+  date: string;
+  visitors: number;
+  pageviews: number;
+}
+
 export interface DevOverlayPageData {
   path: string;
   period: string;
@@ -90,6 +96,7 @@ export interface DevOverlayPageData {
     tech?: TechBreakdown;
     countries?: GeoDimensionMetric[];
     visitorFlow?: PlausibleVisitorFlow;
+    timeseries?: PlausibleDailyTrafficPoint[];
   };
   gsc: {
     clicks: number;
@@ -182,6 +189,7 @@ export interface PlausiblePageMetrics {
   tech?: TechBreakdown;
   countries?: GeoDimensionMetric[];
   visitorFlow?: PlausibleVisitorFlow;
+  timeseries?: PlausibleDailyTrafficPoint[];
 }
 
 export interface UnifiedPageAudit {

@@ -347,6 +347,7 @@ const currentPath = Astro.url.pathname;
       visitDuration: number | null;
       scrollFunnel?: ScrollRetentionData;
       visitorFlow?: DevSankeyData;
+      timeseries?: Array<{ date: string; visitors: number; pageviews: number }>;
       tech?: {
         devices?: TechItem[];
         operatingSystems?: TechItem[];
@@ -861,6 +862,7 @@ const currentPath = Astro.url.pathname;
             bounceRate: plausible.bounceRate,
             gscQueries: gsc.queries,
             scrollFunnel: plausible.scrollFunnel,
+            timeseries: plausible.timeseries,
           }
         );
       }

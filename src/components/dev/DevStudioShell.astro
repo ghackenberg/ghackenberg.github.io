@@ -434,6 +434,7 @@ const { currentPath } = Astro.props;
         medianScrollDepth: number | null;
       };
       visitorFlow?: DevSankeyData;
+      timeseries?: Array<{ date: string; visitors: number; pageviews: number }>;
     };
     gsc: {
       clicks: number;
@@ -1573,6 +1574,7 @@ const { currentPath } = Astro.props;
             bounceRate: plausible.bounceRate,
             gscQueries: gsc.queries,
             scrollFunnel: plausible.scrollFunnel,
+            timeseries: plausible.timeseries,
           }
         );
       }
