@@ -422,28 +422,32 @@ function setStoredModelMode(mode: SankeyModelMode): void {
   }
 }
 
-function fetchMarkovNeighbor(
+function fetchNeighbor(
   targetPath: string,
   period: string,
+  mode: SankeyModelMode,
   onResolved: () => void
 ): void {
   const norm = normalizePath(targetPath);
-  const key = `${period}:${norm}`;
+  const key = `${mode}:${period}:${norm}`;
   if (markovNeighborCache.has(key) || inFlightMarkovNeighbors.has(key)) return;
 
   const p = (async (): Promise<DevSankeyData | null> => {
     try {
       const res = await fetch(
-        `/api/dev-analytics.json?path=${encodeURIComponent(norm)}&period=${encodeURIComponent(period)}&scope=markov`
+        `/api/dev-analytics.json?path=${encodeURIComponent(norm)}&period=${encodeURIComponent(period)}&scope=${encodeURIComponent(mode)}`
       );
       if (!res.ok) {
         markovNeighborCache.set(key, null);
         return null;
       }
-      const data = (await res.json()) as { markovFlow?: DevSankeyData | null };
-      const mf = data?.markovFlow ?? null;
-      markovNeighborCache.set(key, mf);
-      return mf;
+      const data = (await res.json()) as {
+        visitorFlow?: DevSankeyData | null;
+        markovFlow?: DevSankeyData | null;
+      };
+      const nf = mode === 'markov' ? (data?.markovFlow ?? null) : (data?.visitorFlow ?? null);
+      markovNeighborCache.set(key, nf);
+      return nf;
     } catch {
       markovNeighborCache.set(key, null);
       return null;
@@ -453,8 +457,8 @@ function fetchMarkovNeighbor(
   })();
 
   inFlightMarkovNeighbors.set(key, p);
-  void p.then((mf) => {
-    if (mf) {
+  void p.then((nf) => {
+    if (nf) {
       onResolved();
     }
   });
@@ -508,7 +512,7 @@ function buildMultiLevelSankeyGraph(
   rootFlow: DevSankeyData,
   leftLevels: number,
   rightLevels: number,
-  modelMode: SankeyModelMode = 'flow',
+  _modelMode: SankeyModelMode = 'flow',
   neighborLookup?: (path: string) => DevSankeyData | null | undefined,
   onMissingNeighbor?: (path: string) => void
 ): { columns: SankeyColumnModel[]; links: SankeyGraphLink[] } {
@@ -628,241 +632,157 @@ function buildMultiLevelSankeyGraph(
   centerNode.fileVis = rootFlow.pdfDownloadVisitors;
   centerNode.linkVis = rootFlow.outboundLinkVisitors;
 
-  if (modelMode === 'markov') {
-    // 1A. 1st-Order Markov Multi-Hop Folding (Upstream L1..L5 & Downstream L1..L5)
-    for (const u of rootFlow.upstreamPages) {
-      if (u.visitors <= 0) continue;
-      const uPath = normalizePath(u.href || u.label);
-      if (uPath === normCurrent) continue;
-      const upNode = upsertNode(-1, `page:${uPath}`, {
-        icon: '⬅️',
-        title: uPath,
-        path: uPath,
-        visitors: u.visitors,
-        kind: 'upstream_page',
-        href: uPath,
-        isInternalPage: true,
-      });
-      upsertLink(upNode, centerNode, u.visitors);
-    }
+  // 1. Multi-Hop Neighbor Folding (Upstream L1..L5 & Downstream L1..L5 for both Flow prev_page and Markov modes)
+  for (const u of rootFlow.upstreamPages) {
+    if (u.visitors <= 0) continue;
+    const uPath = normalizePath(u.href || u.label);
+    if (uPath === normCurrent) continue;
+    const upNode = upsertNode(-1, `page:${uPath}`, {
+      icon: '⬅️',
+      title: uPath,
+      path: uPath,
+      visitors: u.visitors,
+      kind: 'upstream_page',
+      href: uPath,
+      isInternalPage: true,
+    });
+    upsertLink(upNode, centerNode, u.visitors);
+  }
 
-    for (let c = -1; c >= -leftLevels; c--) {
-      const colNodes = columnsMap.get(c)!;
-      for (const upNode of colNodes.values()) {
-        const w = upNode.visitors;
-        const p = upNode.path;
-        const nb = neighborLookup?.(p);
+  for (let c = -1; c >= -leftLevels; c--) {
+    const colNodes = columnsMap.get(c)!;
+    for (const upNode of colNodes.values()) {
+      const w = upNode.visitors;
+      const p = upNode.path;
+      const nb = neighborLookup?.(p);
 
-        if (nb === undefined) {
-          onMissingNeighbor?.(p);
+      if (nb === undefined) {
+        onMissingNeighbor?.(p);
+        upNode.entryVis = w;
+        upNode.prevVis = 0;
+        continue;
+      }
+
+      if (nb && nb.totalVisitors > 0) {
+        const nbTotal = Math.max(1, nb.totalVisitors);
+        upNode.fileVis =
+          Math.round(w * Math.min(1, Math.max(0, nb.pdfDownloadVisitors / nbTotal)) * 100) / 100;
+        upNode.linkVis =
+          Math.round(w * Math.min(1, Math.max(0, nb.outboundLinkVisitors / nbTotal)) * 100) / 100;
+
+        const validUpstream = nb.upstreamPages.filter(
+          (item) => item.visitors > 0 && normalizePath(item.href || item.label) !== p
+        );
+        const sumNbUp = validUpstream.reduce((s, item) => s + item.visitors, 0);
+
+        if (sumNbUp <= 0) {
           upNode.entryVis = w;
           upNode.prevVis = 0;
-          continue;
-        }
+        } else {
+          const entryRatio = Math.min(1, Math.max(0, nb.directEntries / nbTotal));
+          upNode.entryVis = Math.round(w * entryRatio * 100) / 100;
+          upNode.prevVis = Math.max(0, Math.round((w - upNode.entryVis) * 100) / 100);
 
-        if (nb && nb.totalVisitors > 0) {
-          const nbTotal = Math.max(1, nb.totalVisitors);
-          upNode.fileVis =
-            Math.round(w * Math.min(1, Math.max(0, nb.pdfDownloadVisitors / nbTotal)) * 100) / 100;
-          upNode.linkVis =
-            Math.round(w * Math.min(1, Math.max(0, nb.outboundLinkVisitors / nbTotal)) * 100) / 100;
-
-          const validUpstream = nb.upstreamPages.filter(
-            (item) => item.visitors > 0 && normalizePath(item.href || item.label) !== p
-          );
-          const sumNbUp = validUpstream.reduce((s, item) => s + item.visitors, 0);
-
-          if (sumNbUp <= 0) {
-            upNode.entryVis = w;
-            upNode.prevVis = 0;
-          } else {
-            const entryRatio = Math.min(1, Math.max(0, nb.directEntries / nbTotal));
-            upNode.entryVis = Math.round(w * entryRatio * 100) / 100;
-            upNode.prevVis = Math.max(0, Math.round((w - upNode.entryVis) * 100) / 100);
-
-            if (c > -leftLevels && upNode.prevVis > 0) {
-              for (const prevItem of validUpstream) {
-                const pPath = normalizePath(prevItem.href || prevItem.label);
-                const edgeWeight =
-                  Math.round(upNode.prevVis * (prevItem.visitors / sumNbUp) * 100) / 100;
-                if (edgeWeight >= 0.2) {
-                  const prevNode = upsertNode(c - 1, `page:${pPath}`, {
-                    icon: '⬅️',
-                    title: pPath,
-                    path: pPath,
-                    visitors: edgeWeight,
-                    kind: 'upstream_page',
-                    href: pPath,
-                    isInternalPage: true,
-                  });
-                  upsertLink(prevNode, upNode, edgeWeight);
-                }
+          if (c > -leftLevels && upNode.prevVis > 0) {
+            for (const prevItem of validUpstream) {
+              const pPath = normalizePath(prevItem.href || prevItem.label);
+              const edgeWeight =
+                Math.round(upNode.prevVis * (prevItem.visitors / sumNbUp) * 100) / 100;
+              if (edgeWeight >= 0.2) {
+                const prevNode = upsertNode(c - 1, `page:${pPath}`, {
+                  icon: '⬅️',
+                  title: pPath,
+                  path: pPath,
+                  visitors: edgeWeight,
+                  kind: 'upstream_page',
+                  href: pPath,
+                  isInternalPage: true,
+                });
+                upsertLink(prevNode, upNode, edgeWeight);
               }
             }
           }
-        } else {
-          upNode.entryVis = w;
-          upNode.prevVis = 0;
         }
+      } else {
+        upNode.entryVis = w;
+        upNode.prevVis = 0;
       }
     }
+  }
 
-    for (const d of rootFlow.downstreamPages) {
-      if (d.visitors <= 0) continue;
-      const dPath = normalizePath(d.href || d.label);
-      if (dPath === normCurrent) continue;
-      const downNode = upsertNode(1, `page:${dPath}`, {
-        icon: '➡️',
-        title: dPath,
-        path: dPath,
-        visitors: d.visitors,
-        kind: 'internal_next',
-        href: dPath,
-        isInternalPage: true,
-      });
-      upsertLink(centerNode, downNode, d.visitors);
-    }
+  for (const d of rootFlow.downstreamPages) {
+    if (d.visitors <= 0) continue;
+    const dPath = normalizePath(d.href || d.label);
+    if (dPath === normCurrent) continue;
+    const downNode = upsertNode(1, `page:${dPath}`, {
+      icon: '➡️',
+      title: dPath,
+      path: dPath,
+      visitors: d.visitors,
+      kind: 'internal_next',
+      href: dPath,
+      isInternalPage: true,
+    });
+    upsertLink(centerNode, downNode, d.visitors);
+  }
 
-    for (let c = 1; c <= rightLevels; c++) {
-      const colNodes = columnsMap.get(c)!;
-      for (const downNode of colNodes.values()) {
-        const w = downNode.visitors;
-        const p = downNode.path;
-        const nb = neighborLookup?.(p);
+  for (let c = 1; c <= rightLevels; c++) {
+    const colNodes = columnsMap.get(c)!;
+    for (const downNode of colNodes.values()) {
+      const w = downNode.visitors;
+      const p = downNode.path;
+      const nb = neighborLookup?.(p);
 
-        if (nb === undefined) {
-          onMissingNeighbor?.(p);
+      if (nb === undefined) {
+        onMissingNeighbor?.(p);
+        downNode.exitVis = w;
+        downNode.nextVis = 0;
+        continue;
+      }
+
+      if (nb && nb.totalVisitors > 0) {
+        const nbTotal = Math.max(1, nb.totalVisitors);
+        downNode.fileVis =
+          Math.round(w * Math.min(1, Math.max(0, nb.pdfDownloadVisitors / nbTotal)) * 100) / 100;
+        downNode.linkVis =
+          Math.round(w * Math.min(1, Math.max(0, nb.outboundLinkVisitors / nbTotal)) * 100) / 100;
+
+        const validDownstream = nb.downstreamPages.filter(
+          (item) => item.visitors > 0 && normalizePath(item.href || item.label) !== p
+        );
+        const sumNbDown = validDownstream.reduce((s, item) => s + item.visitors, 0);
+
+        if (sumNbDown <= 0) {
           downNode.exitVis = w;
           downNode.nextVis = 0;
-          continue;
-        }
+        } else {
+          const nextRatio = Math.min(1, Math.max(0, nb.internalNextVisitors / nbTotal));
+          downNode.nextVis = Math.round(w * nextRatio * 100) / 100;
+          downNode.exitVis = Math.max(0, Math.round((w - downNode.nextVis) * 100) / 100);
 
-        if (nb && nb.totalVisitors > 0) {
-          const nbTotal = Math.max(1, nb.totalVisitors);
-          downNode.fileVis =
-            Math.round(w * Math.min(1, Math.max(0, nb.pdfDownloadVisitors / nbTotal)) * 100) / 100;
-          downNode.linkVis =
-            Math.round(w * Math.min(1, Math.max(0, nb.outboundLinkVisitors / nbTotal)) * 100) / 100;
-
-          const validDownstream = nb.downstreamPages.filter(
-            (item) => item.visitors > 0 && normalizePath(item.href || item.label) !== p
-          );
-          const sumNbDown = validDownstream.reduce((s, item) => s + item.visitors, 0);
-
-          if (sumNbDown <= 0) {
-            downNode.exitVis = w;
-            downNode.nextVis = 0;
-          } else {
-            const nextRatio = Math.min(1, Math.max(0, nb.internalNextVisitors / nbTotal));
-            downNode.nextVis = Math.round(w * nextRatio * 100) / 100;
-            downNode.exitVis = Math.max(0, Math.round((w - downNode.nextVis) * 100) / 100);
-
-            if (c < rightLevels && downNode.nextVis > 0) {
-              for (const nextItem of validDownstream) {
-                const nPath = normalizePath(nextItem.href || nextItem.label);
-                const edgeWeight =
-                  Math.round(downNode.nextVis * (nextItem.visitors / sumNbDown) * 100) / 100;
-                if (edgeWeight >= 0.2) {
-                  const nextNode = upsertNode(c + 1, `page:${nPath}`, {
-                    icon: '➡️',
-                    title: nPath,
-                    path: nPath,
-                    visitors: edgeWeight,
-                    kind: 'internal_next',
-                    href: nPath,
-                    isInternalPage: true,
-                  });
-                  upsertLink(downNode, nextNode, edgeWeight);
-                }
+          if (c < rightLevels && downNode.nextVis > 0) {
+            for (const nextItem of validDownstream) {
+              const nPath = normalizePath(nextItem.href || nextItem.label);
+              const edgeWeight =
+                Math.round(downNode.nextVis * (nextItem.visitors / sumNbDown) * 100) / 100;
+              if (edgeWeight >= 0.2) {
+                const nextNode = upsertNode(c + 1, `page:${nPath}`, {
+                  icon: '➡️',
+                  title: nPath,
+                  path: nPath,
+                  visitors: edgeWeight,
+                  kind: 'internal_next',
+                  href: nPath,
+                  isInternalPage: true,
+                });
+                upsertLink(downNode, nextNode, edgeWeight);
               }
             }
           }
-        } else {
-          downNode.exitVis = w;
-          downNode.nextVis = 0;
         }
-      }
-    }
-  } else {
-    // 1B. Pure Chain-Driven Multi-Level Traversal (L1..L5 Left & Right; each occurrence of normCurrent is a View)
-    const chains = rootFlow.chains ?? [];
-
-    for (const chain of chains) {
-      const steps = chain.steps.map((s) => normalizePath(s));
-      const vis = Math.max(0.1, Math.round(chain.visitors * 100) / 100);
-
-      for (let centerIdx = 0; centerIdx < steps.length; centerIdx++) {
-        if (steps[centerIdx] !== normCurrent) continue;
-
-        // Walk Left (Upstream: offset = -1 down to -leftLevels)
-        let currTargetNode = centerNode;
-        for (let offset = -1; offset >= -leftLevels; offset--) {
-          const stepIdx = centerIdx + offset;
-          if (stepIdx < 0) break;
-
-          const stepPath = steps[stepIdx];
-          const upNode = upsertNode(offset, `page:${stepPath}`, {
-            icon: '⬅️',
-            title: stepPath,
-            path: stepPath,
-            visitors: vis,
-            kind: 'upstream_page',
-            href: stepPath,
-            isInternalPage: true,
-          });
-
-          upsertLink(upNode, currTargetNode, vis);
-
-          if (stepIdx === 0) {
-            upNode.entryVis = Math.round((upNode.entryVis + vis) * 100) / 100;
-          } else {
-            upNode.prevVis = Math.round((upNode.prevVis + vis) * 100) / 100;
-          }
-
-          currTargetNode = upNode;
-        }
-
-        // Walk Right (Downstream: offset = +1 up to +rightLevels)
-        let currSourceNode = centerNode;
-        for (let offset = 1; offset <= rightLevels; offset++) {
-          const stepIdx = centerIdx + offset;
-          if (stepIdx >= steps.length) break;
-
-          const stepPath = steps[stepIdx];
-          const downNode = upsertNode(offset, `page:${stepPath}`, {
-            icon: '➡️',
-            title: stepPath,
-            path: stepPath,
-            visitors: vis,
-            kind: 'internal_next',
-            href: stepPath,
-            isInternalPage: true,
-          });
-
-          upsertLink(currSourceNode, downNode, vis);
-
-          if (stepIdx === steps.length - 1) {
-            downNode.exitVis = Math.round((downNode.exitVis + vis) * 100) / 100;
-          } else {
-            downNode.nextVis = Math.round((downNode.nextVis + vis) * 100) / 100;
-          }
-
-          currSourceNode = downNode;
-        }
-      }
-    }
-
-    // Attach step-level File Downloads & Outbound Links to side nodes
-    const stepActions = rootFlow.stepActions ?? {};
-    for (let c = -leftLevels; c <= rightLevels; c++) {
-      if (c === 0) continue;
-      const colNodes = columnsMap.get(c)!;
-      for (const node of colNodes.values()) {
-        const act = stepActions[node.path];
-        if (act) {
-          node.fileVis = Math.min(Math.round(node.visitors), Math.round(act.fileVisitors || 0));
-          node.linkVis = Math.min(Math.round(node.visitors), Math.round(act.linkVisitors || 0));
-        }
+      } else {
+        downNode.exitVis = w;
+        downNode.nextVis = 0;
       }
     }
   }
@@ -967,8 +887,11 @@ export function renderVisitorFlowSankey(
   let rightLevels = levels;
   let modelMode: SankeyModelMode = getStoredModelMode();
 
+  if (flow) {
+    markovNeighborCache.set(`flow:${period}:${normCurrent}`, flow);
+  }
   if (context?.markovFlow) {
-    markovNeighborCache.set(`${period}:${normCurrent}`, context.markovFlow);
+    markovNeighborCache.set(`markov:${period}:${normCurrent}`, context.markovFlow);
   }
 
   const syncTopBarButtons = (): void => {
@@ -1096,7 +1019,7 @@ export function renderVisitorFlowSankey(
       const emptySubtext =
         modelMode === 'markov'
           ? `No historical pageviews or transitions recorded for <span class="text-white font-bold">${escapeHtml(normCurrent)}</span> in the selected <span class="text-emerald-300 font-bold">${escapeHtml(period)}</span> window yet.`
-          : `No span-traced visitor flows (<code class="px-1 py-0.5 rounded bg-zinc-800 text-emerald-300">flow_id</code> / <code class="px-1 py-0.5 rounded bg-zinc-800 text-emerald-300">flow_step</code>) recorded for <span class="text-white font-bold">${escapeHtml(normCurrent)}</span> in the selected <span class="text-emerald-300 font-bold">${escapeHtml(period)}</span> window yet.`;
+          : `No step-traced internal page transitions (<code class="px-1 py-0.5 rounded bg-zinc-800 text-emerald-300">prev_page</code>) recorded for <span class="text-white font-bold">${escapeHtml(normCurrent)}</span> in the selected <span class="text-emerald-300 font-bold">${escapeHtml(period)}</span> window yet.`;
 
       container.innerHTML = `
         <div
@@ -1136,9 +1059,9 @@ export function renderVisitorFlowSankey(
       leftLevels,
       rightLevels,
       modelMode,
-      (p) => markovNeighborCache.get(`${period}:${normalizePath(p)}`),
+      (p) => markovNeighborCache.get(`${modelMode}:${period}:${normalizePath(p)}`),
       (p) => {
-        fetchMarkovNeighbor(p, period, () => {
+        fetchNeighbor(p, period, modelMode, () => {
           if (renderGenerationMap.get(container) === generation) {
             renderStageDom();
           }

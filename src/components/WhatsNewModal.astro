@@ -37,8 +37,6 @@
         <button
           id="whats-new-mark-read-btn"
           type="button"
-          data-track-event="Notifications Action"
-          data-track-action="mark-all-read"
           class="hidden h-8 sm:h-9 w-8 sm:w-auto px-0 sm:px-3.5 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-brand-blue/40 text-gray-300 light:text-slate-600 hover:text-brand-blue items-center justify-center gap-1.5 text-xs font-medium transition-all duration-200 cursor-pointer active:scale-95 shrink-0 shadow-sm"
           title="Mark all items as read"
         >
@@ -50,8 +48,6 @@
 
         <button 
           id="whats-new-close-btn"
-          data-track-event="Modal Closed"
-          data-track-modal="whats-new"
           class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-element-border-medium bg-element-bg/50 hover:bg-element-bg hover:border-element-border-high text-gray-400 hover:text-gray-100 light:hover:text-slate-900 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0"
           aria-label="Close Content Updates"
         >
@@ -88,8 +84,6 @@
 </div>
 
 <script>
-  import { trackEvent } from '@commons/client/telemetry';
-
   declare global {
   interface Window {
     openWhatsNewModal?: () => void;
@@ -105,10 +99,6 @@
   const container = document.getElementById('whats-new-modal-container');
   const closeBtn = document.getElementById('whats-new-close-btn');
 
-  function trackModalEvent(name: string, props?: Record<string, string | number | boolean>) {
-    trackEvent(name, props);
-  }
-
   function openModal() {
     if (typeof window.closePrivacyModal === 'function') {
       window.closePrivacyModal();
@@ -122,7 +112,6 @@
       container.classList.remove('scale-95');
       container.classList.add('scale-100');
       document.body.style.overflow = 'hidden';
-      trackModalEvent('Modal Opened', { modal: 'whats-new' });
     }
   }
 
@@ -133,7 +122,6 @@
       container.classList.remove('scale-100');
       container.classList.add('scale-95');
       document.body.style.overflow = '';
-      trackModalEvent('Modal Closed', { modal: 'whats-new' });
     }
   }
 
@@ -160,12 +148,7 @@
     if (backdrop) {
       backdrop.addEventListener('click', function(e) {
         const target = e.target as HTMLElement;
-        if (target && target.closest('a')) {
-          const anchor = target.closest('a') as HTMLAnchorElement;
-          trackModalEvent('Notifications Action', { action: 'click-feed-item', url: anchor.pathname || anchor.href });
-          closeModal();
-        } else if (target && target.closest('[data-open-privacy-modal]')) {
-          trackModalEvent('Notifications Action', { action: 'open-privacy-from-updates' });
+        if (target && (target.closest('a') || target.closest('[data-open-privacy-modal]'))) {
           closeModal();
         }
       });
@@ -177,7 +160,6 @@
       if (target && (target.closest('#whats-new-btn-desktop') || target.closest('#whats-new-btn-mobile') || target.closest('[data-open-whats-new-modal]'))) {
         e.preventDefault();
         e.stopPropagation();
-        trackModalEvent('Notifications Action', { action: 'open-updates-bell' });
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
           mobileMenu.classList.add('hidden');

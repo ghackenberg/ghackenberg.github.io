@@ -11,26 +11,6 @@ declare global {
   }
 }
 
-/**
- * Computes screen orientation (landscape or portrait).
- */
-export function getScreenOrientation(): string {
-  if (typeof window === 'undefined') return 'landscape';
-  return window.innerWidth >= window.innerHeight ? 'landscape' : 'portrait';
-}
-
-/**
- * Computes the responsive Tailwind breakpoint bucket for a given viewport width.
- */
-export function getScreenBucket(width: number): string {
-  if (width < 640) return 'xs (<640px)';
-  if (width < 768) return 'sm (640-767px)';
-  if (width < 1024) return 'md (768-1023px)';
-  if (width < 1280) return 'lg (1024-1279px)';
-  if (width < 1536) return 'xl (1280-1535px)';
-  return '2xl (>=1536px)';
-}
-
 function normalizeInternalPathname(rawPathname: string): string {
   const clean = (rawPathname || '/').split('?')[0].split('#')[0].trim() || '/';
   const withLeading = clean.startsWith('/') ? clean : `/${clean}`;
@@ -38,181 +18,30 @@ function normalizeInternalPathname(rawPathname: string): string {
   return withLeading.endsWith('/') ? withLeading : `${withLeading}/`;
 }
 
-function hashToSixCharBase36(seed: string): string {
-  let h1 = 2166136261;
-  let h2 = 16777619;
-  for (let i = 0; i < seed.length; i++) {
-    const ch = seed.charCodeAt(i);
-    h1 = Math.imul(h1 ^ ch, 16777619);
-    h2 = Math.imul(h2 ^ ch, 2166136261);
-  }
-  const combined = (Math.abs(h1) * 65536 + (Math.abs(h2) & 65535)) >>> 0;
-  return combined.toString(36).padStart(6, '0').slice(0, 6).toLowerCase();
-}
-
 /**
- * Computes the normalized internal referrer pathname if the visitor navigated
- * from another page on the same origin, or '(none)' for external/direct entries.
+ * Computes the normalized previous internal page pathname from `document.referrer`
+ * if the visitor navigated from another page on the same origin, or `'(entry)'`
+ * for direct/external entries and same-page reloads — using zero cookies,
+ * zero localStorage/sessionStorage, zero `window.name`, and zero session/user IDs.
  */
-export function getInternalReferrerPath(): string {
+export function getPreviousInternalPage(): string {
   if (typeof window === 'undefined' || typeof document === 'undefined' || !document.referrer) {
-    return '(none)';
+    return '(entry)';
   }
   try {
     const refUrl = new URL(document.referrer);
     if (refUrl.origin !== window.location.origin) {
-      return '(none)';
+      return '(entry)';
     }
-    return normalizeInternalPathname(refUrl.pathname || '/');
+    const refNorm = normalizeInternalPathname(refUrl.pathname || '/');
+    const curNorm = normalizeInternalPathname(window.location.pathname || '/');
+    if (refNorm === curNorm) {
+      return '(entry)';
+    }
+    return refNorm;
   } catch {
-    return '(none)';
+    return '(entry)';
   }
-}
-
-function readSpanFromNavigationApi(
-  currentNormPath: string
-): { flowId: string; stepInt: number } | null {
-  try {
-    const nav = window.navigation;
-    if (!nav || typeof nav.entries !== 'function') return null;
-
-    const allEntries = nav.entries();
-    if (!Array.isArray(allEntries) || allEntries.length === 0) return null;
-
-    const maxIdx =
-      typeof nav.currentEntry?.index === 'number'
-        ? nav.currentEntry.index
-        : allEntries.length - 1;
-    const activeSlice = allEntries.slice(0, maxIdx + 1);
-
-    const collapsedPaths: string[] = [];
-    let firstOriginEntryKey = '';
-
-    for (const entry of activeSlice) {
-      if (!entry?.url) continue;
-      try {
-        const parsed = new URL(entry.url, window.location.origin);
-        if (parsed.origin !== window.location.origin) continue;
-        if (!firstOriginEntryKey) {
-          firstOriginEntryKey = String(entry.key || entry.id || entry.url);
-        }
-        const normP = normalizeInternalPathname(parsed.pathname);
-        if (
-          collapsedPaths.length === 0 ||
-          collapsedPaths[collapsedPaths.length - 1] !== normP
-        ) {
-          collapsedPaths.push(normP);
-        }
-      } catch {
-        // ignore malformed entry URL
-      }
-    }
-
-    if (!firstOriginEntryKey) return null;
-
-    if (
-      collapsedPaths.length === 0 ||
-      collapsedPaths[collapsedPaths.length - 1] !== currentNormPath
-    ) {
-      collapsedPaths.push(currentNormPath);
-    }
-
-    const flowId = hashToSixCharBase36(firstOriginEntryKey);
-    return {
-      flowId,
-      stepInt: collapsedPaths.length,
-    };
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Computes the ephemeral tab navigation span (`flow_id`, `flow_step`)
- * using a monotonic step counter in the browser's ephemeral `window.name`
- * browsing-context property (with read-after-write verification), falling back
- * to `window.navigation.entries()` if `window.name` is blocked, or returning `null`
- * if neither mechanism is available — using zero cookies, zero localStorage, and zero sessionStorage.
- */
-export function getNavigationFlowSpan(): {
-  flowId: string;
-  flowStep: string;
-} | null {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  const currentNormPath = normalizeInternalPathname(window.location.pathname || '/');
-  const navApiSpan = readSpanFromNavigationApi(currentNormPath);
-
-  // 1. Primary: Monotonic step counter in ephemeral `window.name` (`gh_flow:<6charFlowId>:<stepInt>:<lastNormPath>`)
-  // with strict read-after-write verification to detect browsers/extensions blocking `window.name`.
-  try {
-    const prefix = 'gh_flow:';
-    const rawName = typeof window.name === 'string' ? window.name : '';
-    if (rawName.startsWith(prefix)) {
-      const rest = rawName.slice(prefix.length);
-      const firstColon = rest.indexOf(':');
-      const secondColon = firstColon > -1 ? rest.indexOf(':', firstColon + 1) : -1;
-      if (firstColon === 6 && secondColon > firstColon) {
-        const flowId = rest.slice(0, 6);
-        const parsedStep = parseInt(rest.slice(firstColon + 1, secondColon), 10);
-        const lastNormPath = normalizeInternalPathname(rest.slice(secondColon + 1));
-        if (/^[a-z0-9]{6}$/i.test(flowId) && Number.isFinite(parsedStep) && parsedStep >= 1) {
-          if (lastNormPath !== currentNormPath) {
-            const nextStepInt = parsedStep + 1;
-            const nextName = `${prefix}${flowId}:${nextStepInt}:${currentNormPath}`;
-            window.name = nextName;
-            if (window.name === nextName) {
-              return {
-                flowId,
-                flowStep: String(nextStepInt),
-              };
-            }
-          } else {
-            return {
-              flowId,
-              flowStep: String(parsedStep),
-            };
-          }
-        }
-      }
-    }
-
-    // Initialize `window.name` from `window.navigation.entries()` (if available)
-    // or from a random seed + `getInternalReferrerPath()`, then verify read-after-write.
-    let initFlowId = navApiSpan?.flowId || '';
-    let initStepInt = navApiSpan?.stepInt || 0;
-
-    if (!initFlowId || initStepInt < 1) {
-      const randomSeed = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-      initFlowId = hashToSixCharBase36(randomSeed);
-      const refPath = getInternalReferrerPath();
-      initStepInt = refPath !== '(none)' && refPath !== currentNormPath ? 2 : 1;
-    }
-
-    const nextName = `${prefix}${initFlowId}:${initStepInt}:${currentNormPath}`;
-    window.name = nextName;
-    if (window.name === nextName) {
-      return {
-        flowId: initFlowId,
-        flowStep: String(initStepInt),
-      };
-    }
-  } catch {
-    // Fall through to Navigation API fallback if window.name throws
-  }
-
-  // 2. Fallback: `window.navigation.entries()` when `window.name` is blocked
-  if (navApiSpan) {
-    return {
-      flowId: navApiSpan.flowId,
-      flowStep: String(navApiSpan.stepInt),
-    };
-  }
-
-  // 3. Neither `window.name` nor `window.navigation.entries()` is available/working
-  return null;
 }
 
 export interface TelemetryEventMap {
@@ -236,36 +65,6 @@ export interface TelemetryEventMap {
     key?: string;
     value?: string;
     path?: string;
-  };
-  'Notifications Action': {
-    action: 'mark-all-read' | 'dismiss-all' | string;
-  };
-  'Privacy Action': {
-    action: string;
-    opted_out?: boolean;
-    enabled?: boolean;
-    [key: string]: string | number | boolean | undefined;
-  };
-  'Modal Opened': {
-    modal: 'whats-new' | 'privacy' | string;
-  };
-  'Modal Closed': {
-    modal: 'whats-new' | 'privacy' | string;
-  };
-  'theme-changed': {
-    theme_setting: string;
-    theme_resolved: string;
-    theme_trigger: string;
-  };
-  'Breakpoint Changed': {
-    from: string;
-    to: string;
-    screen_orientation?: string;
-  };
-  'Orientation Changed': {
-    from: string;
-    to: string;
-    screen_bucket?: string;
   };
   'Audio Played': {
     presentation: string;
@@ -330,7 +129,7 @@ export function trackEvent(
 let isAnalyticsInitialized = false;
 
 /**
- * Initializes Plausible Analytics tracker and responsive viewport/theme listeners.
+ * Initializes Plausible Analytics tracker with consent-free internal referrer step tracking.
  */
 export function initAnalytics(): void {
   if (typeof window === 'undefined' || isAnalyticsInitialized) return;
@@ -350,86 +149,27 @@ export function initAnalytics(): void {
   }
 
   try {
+    if (typeof window.name === 'string' && window.name.startsWith('gh_flow:')) {
+      window.name = '';
+    }
+  } catch {
+    // Ignore window.name access restrictions
+  }
+
+  try {
     initPlausible({
       domain: 'hackenberg.tech',
       endpoint: 'https://analytics.mentawise.com/api/event',
       outboundLinks: true,
       fileDownloads: true,
-      formSubmissions: true,
       bindToWindow: true,
-      customProperties: () => {
-        const span = getNavigationFlowSpan();
-        const baseProps: Record<string, string> = {
-          theme_setting: document.documentElement.getAttribute('data-theme-setting') || 'system',
-          theme_resolved: document.documentElement.classList.contains('light') ? 'light' : 'dark',
-          screen_bucket: getScreenBucket(window.innerWidth),
-          screen_orientation: getScreenOrientation(),
-        };
-        if (span !== null) {
-          baseProps.flow_id = span.flowId;
-          baseProps.flow_step = span.flowStep;
-        }
-        return baseProps;
-      },
+      customProperties: () => ({
+        prev_page: getPreviousInternalPage(),
+      }),
     });
   } catch (err) {
     console.debug('[Telemetry] Failed to initialize Plausible tracker:', err);
   }
-
-  // Track theme toggle event when it changes dynamically
-  window.addEventListener('theme-changed', ((e: CustomEvent<{ themeSetting?: string; resolvedTheme?: string; trigger?: string }>) => {
-    trackEvent('theme-changed', {
-      theme_setting: e.detail?.themeSetting || 'system',
-      theme_resolved: e.detail?.resolvedTheme || 'dark',
-      theme_trigger: e.detail?.trigger || 'unknown',
-    });
-  }) as EventListener);
-
-  // Synchronize screen size and track breakpoint/orientation transitions
-  let currentBucket = getScreenBucket(window.innerWidth);
-  let currentOrientation = getScreenOrientation();
-  let resizeTimeout: number | undefined;
-
-  function handleResize() {
-    window.clearTimeout(resizeTimeout);
-    resizeTimeout = window.setTimeout(() => {
-      const newBucket = getScreenBucket(window.innerWidth);
-      const newOrientation = getScreenOrientation();
-      const bucketChanged = newBucket !== currentBucket;
-      const orientationChanged = newOrientation !== currentOrientation;
-
-      if (bucketChanged || orientationChanged) {
-        const prevBucket = currentBucket;
-        const prevOrientation = currentOrientation;
-
-        currentBucket = newBucket;
-        currentOrientation = newOrientation;
-
-        if (bucketChanged) {
-          trackEvent('Breakpoint Changed', {
-            from: prevBucket,
-            to: newBucket,
-            screen_orientation: newOrientation,
-          });
-        }
-        if (orientationChanged) {
-          trackEvent('Orientation Changed', {
-            from: prevOrientation,
-            to: newOrientation,
-            screen_bucket: newBucket,
-          });
-        }
-      }
-    }, 250);
-  }
-
-  window.addEventListener('resize', handleResize, { passive: true });
-  window.addEventListener('orientationchange', handleResize, { passive: true });
-  window.addEventListener('pageshow', (e: PageTransitionEvent) => {
-    if (e.persisted) {
-      getNavigationFlowSpan();
-    }
-  });
 }
 
 /**

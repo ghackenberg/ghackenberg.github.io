@@ -1,5 +1,3 @@
-import { trackEvent } from './telemetry';
-
 interface NotificationState {
   enabled: boolean;
   firstVisitTime: number;
@@ -331,8 +329,6 @@ function setupMarkAllAsRead(manifest: ContentManifest) {
   clone.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-
-    trackEvent('Notifications Action', { action: 'mark-all-read' });
 
     let state = getStorageState();
     if (!state || state.enabled !== true) return;

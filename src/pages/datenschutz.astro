@@ -98,10 +98,10 @@ const breadcrumbSchema = {
           Wir nutzen auf dieser Website <strong>Plausible Analytics</strong>, einen datenschutzfreundlichen Webanalysedienst der Plausible Insights OÜ (Västriku tn 2, Tartu 50403, Estland). Die Erfassung erfolgt über eine europäische Server-Instanz (<code class="text-gray-300 font-mono text-xs">analytics.mentawise.com</code>) auf Servern innerhalb der Europäischen Union.
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          Plausible Analytics verwendet <strong>keine Cookies</strong> und speichert keine dauerhaften Kennungen auf Ihrem Endgerät. Es werden keine personenbezogenen Daten erfasst, mit denen einzelne Besucher identifiziert oder über mehrere Tage bzw. Websites hinweg verfolgt werden können. IP-Adressen werden unmittelbar nach dem Zugriff kryptografisch mit einem täglich wechselnden Zufallswert (Salt) in einen Hash-Wert umgewandelt. Eine Rekonstruktion der ursprünglichen IP-Adresse ist technisch ausgeschlossen.
+          Plausible Analytics verwendet <strong>keine Cookies</strong>, nutzt für die Analyse weder <code class="text-gray-300 font-mono text-xs">localStorage</code> noch <code class="text-gray-300 font-mono text-xs">sessionStorage</code> und erzeugt oder liest keinerlei clientseitige Sitzungs- oder Nutzer-IDs auf Ihrem Endgerät. Es werden keine personenbezogenen Daten erfasst, mit denen einzelne Besucher identifiziert oder über mehrere Tage bzw. Websites hinweg verfolgt werden können. IP-Adressen werden unmittelbar nach dem Zugriff kryptografisch mit einem täglich wechselnden Zufallswert (Salt) in einen Hash-Wert umgewandelt. Eine Rekonstruktion der ursprünglichen IP-Adresse ist technisch ausgeschlossen.
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          Die Erfassung erfolgt ausschließlich zur statistischen Auswertung und Optimierung unseres Online-Angebots auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO). Zur bedarfsgerechten Gestaltung und ergonomischen Optimierung (z.&nbsp;B. zur Ermittlung von Lesefluss, Textverständlichkeit und responsiven Layouts) erfassen wir rein anonyme Kontext- und Interaktionsereignisse (wie grobe Bildschirmbreiten-Klassen, Scroll- und Lesefortschritt, Sektionsverweildauer, interne Seitenübergänge sowie Folienaufrufe in Präsentationen). Ein Browser-Fingerprinting oder eine Zuordnung zu individuellen Personen findet zu keinem Zeitpunkt statt.
+          Die Erfassung erfolgt ausschließlich zur statistischen Auswertung und Optimierung unseres Online-Angebots auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO). Zur bedarfsgerechten Gestaltung und inhaltlichen Optimierung (z.&nbsp;B. zur Ermittlung von Lesefluss und Textverständlichkeit) erfassen wir rein anonyme Inhalts- und Interaktionsereignisse (Scroll- und Lesefortschritt, Sektions- und Kartenaufrufe, interne Seitenübergänge über die unmittelbar zuvor besuchte eigene Unterseite <code class="text-gray-300 font-mono text-xs">prev_page</code> aus dem HTTP-/DOM-Referrer derselben Domain, Folienaufrufe in Präsentationen sowie Dateidownloads und Klicks auf weiterführende externe Links). Ein Browser-Fingerprinting oder eine Zuordnung zu individuellen Personen findet zu keinem Zeitpunkt statt.
         </p>
         <div class="p-4 rounded-2xl bg-white/[0.02] border border-element-border space-y-2">
           <p class="text-xs text-gray-300 font-semibold">Widerspruchsmöglichkeit (Opt-Out gem. Art. 21 DSGVO & CNIL-Richtlinie):</p>
@@ -123,12 +123,23 @@ const breadcrumbSchema = {
 
       <!-- Section 4: Local Storage & Read State / Gallery Ledger -->
       <div class="space-y-3">
-        <h2 id="local-storage" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">4. Lokale Speicherung im Browser (Local Storage, Lesestatus & Galerie-Rotation)</h2>
+        <h2 id="local-storage" class="text-xs font-extrabold uppercase tracking-widest text-brand-purple">4. Lokale Speicherung im Browser (Local Storage, Nutzereinstellungen & Komfortfunktionen)</h2>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          Um Ihnen das Wiederfinden neuer und ungelesener Beiträge zu erleichtern sowie eine abwechslungsreiche Rotation der interaktiven Bildergalerie auf der Startseite über wiederholte Besuche hinweg zu gewährleisten, bietet diese Website optionale lokale Komfortfunktionen.
+          Diese Website legt beim bloßen Aufruf keinerlei Einträge im lokalen Speicher (<code class="text-gray-300 font-mono text-xs">localStorage</code>) Ihres Browsers an. Eine lokale Speicherung auf Ihrem Endgerät erfolgt ausschließlich dann, wenn Sie selbst aktiv eine Funktion oder Einstellung auswählen (<strong>100 % Client-seitig</strong>, ohne Übermittlung an unsere Server oder Dritte):
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          <strong>100 % Client-seitig:</strong> Wenn Sie diese Funktion in den Privatsphäre-Einstellungen aktivieren, speichert Ihr Webbrowser folgende Daten ausschließlich lokal in Ihrem Endgerät (<code class="text-gray-300 font-mono text-xs">localStorage</code>):
+          <strong>Technisch erforderliche Funktionsspeicherung auf ausdrücklichen Nutzerwunsch (§ 165 Abs. 3 Z 2 TKG 2021, § 25 Abs. 2 Nr. 2 TDDDG):</strong>
+        </p>
+        <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs md:text-sm pl-2">
+          <li>
+            <code class="text-gray-300 font-mono text-xs">theme</code>: Speichert Ihre Darstellungspräferenz (<code class="text-gray-300 font-mono text-xs">'light'</code>, <code class="text-gray-300 font-mono text-xs">'dark'</code> oder <code class="text-gray-300 font-mono text-xs">'system'</code>) nur dann, wenn Sie aktiv den Farbschema-Umschalter in der Navigationsleiste betätigen.
+          </li>
+          <li>
+            <code class="text-gray-300 font-mono text-xs">plausible_ignore</code>: Speichert den Wert <code class="text-gray-300 font-mono text-xs">'true'</code>, wenn Sie der Web-Analyse in den Privatsphäre-Einstellungen widersprechen (Opt-Out) oder Ihr Browser ein automatisches <em>Global Privacy Control (GPC)</em>- bzw. <em>Do Not Track (DNT)</em>-Signal sendet.
+          </li>
+        </ul>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
+          <strong>Optionale Komfortfunktionen (Freiwilliges Opt-In):</strong> Um Ihnen das Wiederfinden neuer und ungelesener Beiträge zu erleichtern sowie eine abwechslungsreiche Rotation der interaktiven Bildergalerie auf der Startseite über wiederholte Besuche hinweg zu gewährleisten, können Sie in den Privatsphäre-Einstellungen optional lokale Komfortfunktionen aktivieren:
         </p>
         <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs md:text-sm pl-2">
           <li>
@@ -139,13 +150,10 @@ const breadcrumbSchema = {
           </li>
         </ul>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          Diese Daten verbleiben vollständig auf Ihrem Gerät und werden zu keinem Zeitpunkt an unsere Server oder an Dritte übermittelt.
+          Diese Komfortfunktionen sind standardmäßig <strong>deaktiviert</strong>. Ohne Ihre ausdrückliche Aktivierung werden keine Lesestände oder Galerie-Zeitstempel persistent gespeichert.
         </p>
         <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          <strong>Freiwilliges Opt-In:</strong> Diese Komfortfunktionen sind standardmäßig <strong>deaktiviert</strong>. Ohne Ihre ausdrückliche Aktivierung werden keine Lesestände oder Galerie-Zeitstempel persistent gespeichert (§ 25 Abs. 2 Nr. 2 TDDDG in Deutschland, § 165 Abs. 3 Z 2 TKG 2021 in Österreich, Art. 5 Abs. 3 ePrivacy-Richtlinie).
-        </p>
-        <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
-          <strong>Löschbarkeit & Deaktivierung:</strong> Sie können die lokalen Einstellungen jederzeit über das Schloss-Symbol in der Fußzeile („Privatsphäre“) mit einem einzigen Klick deaktivieren oder den gesamten lokalen Speicherstand rückstandslos bereinigen. Alternativ können Sie die Daten über die Browser-Funktion „Websitedaten / Cookies löschen“ entfernen.
+          <strong>Löschbarkeit & Deaktivierung:</strong> Sie können die lokalen Einstellungen jederzeit über das Schutzschild-Symbol in der Navigationsleiste („Privacy Settings“) mit einem einzigen Klick deaktivieren oder den gesamten lokalen Speicherstand rückstandslos bereinigen. Alternativ können Sie die Daten jederzeit über die Browser-Funktion „Websitedaten / Cookies löschen“ entfernen.
         </p>
       </div>
 

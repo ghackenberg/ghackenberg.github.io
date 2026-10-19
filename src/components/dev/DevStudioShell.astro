@@ -164,7 +164,7 @@ const { currentPath } = Astro.props;
           type="button"
           data-sankey-model="flow"
           class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 cursor-pointer"
-          title="Multi-hop span-tracing flow chains (flow_id + flow_step)"
+          title="Step-by-step internal page transitions (prev_page)"
         >
           Flow
         </button>
@@ -172,7 +172,7 @@ const { currentPath } = Astro.props;
           type="button"
           data-sankey-model="markov"
           class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white cursor-pointer"
-          title="1st-order Markov transitions & full historical page aggregates"
+          title="1st-order Markov session entry/exit transitions & full historical page aggregates"
         >
           Markov
         </button>

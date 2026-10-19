@@ -1,6 +1,7 @@
 import { defineMiddleware } from 'astro:middleware';
 import {
   getPlausiblePageMetrics,
+  getPlausibleFlowNeighbor,
   getPlausibleMarkovNeighbor,
   getPlausibleTopPages,
   getGscPagePerformance,
@@ -16,13 +17,18 @@ interface CacheEntry {
   data: DevOverlayPageData;
 }
 
-interface MarkovCacheEntry {
+interface NeighborCacheEntry {
   timestamp: number;
-  data: { path: string; period: string; markovFlow: PlausibleVisitorFlow | null };
+  data: {
+    path: string;
+    period: string;
+    visitorFlow?: PlausibleVisitorFlow | null;
+    markovFlow?: PlausibleVisitorFlow | null;
+  };
 }
 
 const cache = new Map<string, CacheEntry>();
-const markovCache = new Map<string, MarkovCacheEntry>();
+const neighborCache = new Map<string, NeighborCacheEntry>();
 const CACHE_TTL_MS = 2 * 60 * 1000;
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -49,19 +55,42 @@ export const onRequest = defineMiddleware(async (context, next) => {
         ]);
       }
 
-      if (scope === 'markov') {
-        const markovKey = `${targetPath}:${period}:markov`;
-        const cachedMarkov = markovCache.get(markovKey);
+      if (scope === 'flow' || scope === 'markov') {
+        const neighborKey = `${targetPath}:${period}:${scope}`;
+        const cachedNeighbor = neighborCache.get(neighborKey);
 
         if (force) {
-          markovCache.delete(markovKey);
-        } else if (cachedMarkov && Date.now() - cachedMarkov.timestamp < CACHE_TTL_MS) {
-          return new Response(JSON.stringify(cachedMarkov.data), {
+          neighborCache.delete(neighborKey);
+        } else if (cachedNeighbor && Date.now() - cachedNeighbor.timestamp < CACHE_TTL_MS) {
+          return new Response(JSON.stringify(cachedNeighbor.data), {
             status: 200,
             headers: {
               'Content-Type': 'application/json',
               'Cache-Control': 'no-store, no-cache, must-revalidate',
               'X-Analytics-Cache': 'HIT',
+            },
+          });
+        }
+
+        if (scope === 'flow') {
+          const visitorFlow = await withTimeout(
+            getPlausibleFlowNeighbor(targetPath, period),
+            5000
+          ).catch(() => null);
+
+          const flowPayload = {
+            path: targetPath,
+            period,
+            visitorFlow,
+          };
+          neighborCache.set(neighborKey, { timestamp: Date.now(), data: flowPayload });
+
+          return new Response(JSON.stringify(flowPayload), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-store, no-cache, must-revalidate',
+              'X-Analytics-Cache': 'MISS',
             },
           });
         }
@@ -76,7 +105,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
           period,
           markovFlow,
         };
-        markovCache.set(markovKey, { timestamp: Date.now(), data: markovPayload });
+        neighborCache.set(neighborKey, { timestamp: Date.now(), data: markovPayload });
 
         return new Response(JSON.stringify(markovPayload), {
           status: 200,
