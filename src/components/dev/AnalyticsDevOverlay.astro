@@ -6,7 +6,6 @@ interface Props {
 }
 
 const { isInsideFrame = false } = Astro.props;
-const currentPath = Astro.url.pathname;
 ---
 
 {!isInsideFrame && (
@@ -118,8 +117,64 @@ const currentPath = Astro.url.pathname;
         </div>
       </div>
 
-      <!-- Right: Action Controls, Toggles & Expand Button -->
+      <!-- Right: Model Switcher, Card Density Switcher, Action Controls, Toggles & Expand Button -->
       <div class="flex items-center gap-1.5 shrink-0">
+        <div
+          id="dev-sankey-model-group"
+          class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5 transition-opacity"
+          role="group"
+          aria-label="Flow Mathematical Model"
+        >
+          <button
+            type="button"
+            data-sankey-model="flow"
+            class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 cursor-pointer"
+            title="Multi-hop span-tracing flow chains (flow_id + flow_step)"
+          >
+            Flow
+          </button>
+          <button
+            type="button"
+            data-sankey-model="markov"
+            class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white cursor-pointer"
+            title="1st-order Markov transitions & full historical page aggregates"
+          >
+            Markov
+          </button>
+        </div>
+
+        <div
+          id="dev-sankey-levels-group"
+          class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5 transition-opacity"
+          role="group"
+          aria-label="Flow Depth Levels (1–5)"
+        >
+          <button
+            type="button"
+            data-sankey-level-delta="-1"
+            class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono font-bold leading-none transition-colors text-zinc-200 hover:text-white hover:bg-zinc-700/80 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+            title="Decrease Inflow & Outflow Steps (−)"
+            aria-label="Decrease Flow Levels"
+          >
+            −
+          </button>
+          <span
+            data-sankey-level-label="true"
+            class="px-1.5 text-[11px] font-mono font-bold leading-none text-white select-none"
+            title="Active Inflow & Outflow Depth (±1 to ±5 Steps)"
+          >
+            ±2
+          </span>
+          <button
+            type="button"
+            data-sankey-level-delta="1"
+            class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono font-bold leading-none transition-colors text-zinc-200 hover:text-white hover:bg-zinc-700/80 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+            title="Increase Inflow & Outflow Steps (+)"
+            aria-label="Increase Flow Levels"
+          >
+            +
+          </button>
+        </div>
 
         <!-- External Dashboard Quick Link (lg+) -->
         <a
@@ -135,6 +190,17 @@ const currentPath = Astro.url.pathname;
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
           </svg>
         </a>
+
+        <!-- Copy Flow Cockpit PNG Button -->
+        <button
+          type="button"
+          data-sankey-copy-png="true"
+          class="h-7 w-7 flex items-center justify-center rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs transition-colors text-xs leading-none cursor-pointer"
+          title="Copy Flow Cockpit PNG (2x) to Clipboard"
+          aria-label="Copy Flow Cockpit PNG"
+        >
+          📋
+        </button>
 
         <!-- Refresh Button -->
         <button
@@ -154,8 +220,8 @@ const currentPath = Astro.url.pathname;
           id="dev-expand-btn"
           type="button"
           class="h-7 w-7 flex items-center justify-center rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 font-mono text-xs transition-colors cursor-pointer shadow-xs leading-none font-bold"
-          title="Expand to Full-Window Analytics Cockpit"
-          aria-label="Expand Cockpit"
+          title="Toggle Full-Window Analytics Cockpit"
+          aria-label="Toggle Cockpit"
         >
           <span>⛶</span>
         </button>
@@ -164,138 +230,18 @@ const currentPath = Astro.url.pathname;
   </aside>
 
 
-  <!-- Integrated Fullscreen Visitor Flow Cockpit Overlay -->
+  <!-- Integrated Fullscreen Visitor Flow Cockpit Overlay (Below Top HUD Bar) -->
   <div
     id="dev-analytics-fullview"
     role="dialog"
-    class="fixed inset-0 z-[10001] bg-zinc-950 text-white hidden flex flex-col overflow-hidden font-sans select-none"
+    class="fixed top-11 inset-x-0 bottom-0 z-[10001] bg-zinc-500 text-white hidden flex flex-col overflow-hidden font-sans select-none"
     aria-label="Dev Analytics Cockpit"
   >
-    <!-- Fullview Header Bar -->
-    <header class="min-h-12 shrink-0 border-b border-zinc-800 bg-zinc-900 px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 font-mono text-xs z-30">
-      <!-- Left: Title, Status, Truncated Path Pill, Timeframe -->
-      <div class="flex items-center gap-2 min-w-0">
-        <div class="flex items-center gap-1.5 font-bold text-white shrink-0">
-          <span>📊</span>
-          <span class="hidden md:inline">Flow Cockpit</span>
-          <div class="w-4 h-4 flex items-center justify-center shrink-0">
-            <svg id="dev-fullview-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-300 hidden" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <svg id="dev-fullview-check" class="w-3.5 h-3.5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
-            </svg>
-          </div>
-          <span id="dev-fullview-cache-badge" class="px-2 py-0.5 rounded text-[11px] bg-zinc-800 text-zinc-200 border border-zinc-700">LIVE</span>
-        </div>
-
-        <!-- Path pill -->
-        <div class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-100 truncate max-w-[160px] sm:max-w-[240px] lg:max-w-[320px]">
-          <span class="text-zinc-400">📍</span>
-          <span id="dev-fullview-path" class="font-semibold truncate">{currentPath}</span>
-        </div>
-
-        <!-- Timeframe selector -->
-        <div class="inline-flex items-center rounded-lg bg-zinc-800 border border-zinc-700 p-0.5 shrink-0" role="group" aria-label="Timeframe">
-          <button type="button" data-period="7d" class="dev-full-period-btn px-2 py-0.5 rounded transition-colors text-zinc-200 hover:text-white cursor-pointer">7d</button>
-          <button type="button" data-period="28d" class="dev-full-period-btn active-period px-2 py-0.5 rounded transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 cursor-pointer">28d</button>
-          <button type="button" data-period="90d" class="dev-full-period-btn px-2 py-0.5 rounded transition-colors text-zinc-200 hover:text-white cursor-pointer">90d</button>
-        </div>
+    <div id="full-visitor-flow-sankey" class="relative flex-1 min-h-0 w-full h-full overflow-hidden bg-zinc-500 font-mono text-xs">
+      <div class="w-full h-full flex items-center justify-center text-zinc-100 italic text-xs font-mono">
+        Loading visitor flow stage...
       </div>
-
-      <!-- Right: Compact Steppers + Density Switcher + Actions -->
-      <div class="flex flex-wrap items-center gap-1.5">
-        <!-- Compact Inflow Stepper -->
-        <div class="inline-flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5" title="Upstream Inflow Levels (1–5)">
-          <span class="text-zinc-300 font-bold pl-1.5 pr-0.5">⬅️<span class="hidden sm:inline ml-1">Inflow</span></span>
-          <button type="button" data-sankey-level-side="left" data-sankey-level-step="-1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Decrease inflow levels">−</button>
-          <span data-sankey-left-badge="true" class="min-w-[28px] text-center font-bold text-emerald-300">2L</span>
-          <button type="button" data-sankey-level-side="left" data-sankey-level-step="1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Increase inflow levels">+</button>
-        </div>
-
-        <!-- 2-Stage Density Switcher (Compact vs. Detailed) -->
-        <div class="inline-flex items-center gap-0.5 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5">
-          <button
-            type="button"
-            data-sankey-density="compact"
-            class="px-2 py-1 rounded font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
-            title="Compact: 1-line cards (Title + Visitors)"
-          >
-            Compact
-          </button>
-          <button
-            type="button"
-            data-sankey-density="detailed"
-            class="px-2 py-1 rounded font-bold bg-emerald-500/30 border border-emerald-400 text-emerald-200 transition-colors cursor-pointer"
-            title="Detailed: Title & Path above divider, Local 100% Flow & Action Bars below divider"
-          >
-            Detailed
-          </button>
-        </div>
-
-        <!-- Compact Outflow Stepper -->
-        <div class="inline-flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5" title="Downstream Outflow Levels (1–5)">
-          <span class="text-zinc-300 font-bold pl-1.5 pr-0.5">➡️<span class="hidden sm:inline ml-1">Outflow</span></span>
-          <button type="button" data-sankey-level-side="right" data-sankey-level-step="-1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Decrease outflow levels">−</button>
-          <span data-sankey-right-badge="true" class="min-w-[28px] text-center font-bold text-emerald-300">2R</span>
-          <button type="button" data-sankey-level-side="right" data-sankey-level-step="1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Increase outflow levels">+</button>
-        </div>
-
-        <button
-          type="button"
-          data-sankey-copy-png="true"
-          class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 font-bold cursor-pointer flex items-center gap-1 transition-colors"
-          title="Copy high-resolution PNG (2x) to clipboard"
-        >
-          <span>📋</span><span class="hidden sm:inline">Copy PNG</span>
-        </button>
-
-        <button
-          id="dev-fullview-refresh"
-          type="button"
-          class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white border border-zinc-700 transition-colors cursor-pointer"
-          title="Force refresh live data"
-          aria-label="Refresh"
-        >
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-          </svg>
-        </button>
-
-        <a
-          id="dev-fullview-plausible"
-          href="https://plausible.io/hackenberg.tech"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-700 font-bold transition-colors"
-          title="Open in Plausible Dashboard"
-        >
-          Plausible ↗
-        </a>
-
-        <!-- Collapse back into Top Bar Button -->
-        <button
-          id="dev-collapse-btn"
-          type="button"
-          class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-700 font-bold transition-colors cursor-pointer"
-          title="Collapse back to top analytics bar (Esc)"
-          aria-label="Collapse to bar"
-        >
-          <span>✕</span>
-          <kbd class="hidden sm:inline px-1 rounded bg-zinc-900 text-[10px] text-zinc-300 border border-zinc-700">Esc</kbd>
-        </button>
-      </div>
-    </header>
-
-    <!-- Fullscreen Visitor Flow Stage -->
-    <main class="flex-1 min-h-0 relative overflow-hidden">
-      <div id="full-visitor-flow-sankey" class="w-full h-full">
-        <div class="w-full h-full flex items-center justify-center text-zinc-400 italic text-xs font-mono">
-          Loading visitor flow stage...
-        </div>
-      </div>
-    </main>
+    </div>
   </div>
 </div>
 )}
@@ -347,6 +293,7 @@ const currentPath = Astro.url.pathname;
       visitDuration: number | null;
       scrollFunnel?: ScrollRetentionData;
       visitorFlow?: DevSankeyData;
+      markovFlow?: DevSankeyData;
       timeseries?: Array<{ date: string; visitors: number; pageviews: number }>;
       tech?: {
         devices?: TechItem[];
@@ -560,20 +507,12 @@ const currentPath = Astro.url.pathname;
         });
       }
 
-      // Expand / Collapse buttons
+      // Expand / Collapse toggle button in Top Bar
       const expandBtn = document.getElementById('dev-expand-btn');
       if (expandBtn && !expandBtn.hasAttribute('data-bound')) {
         expandBtn.setAttribute('data-bound', 'true');
         expandBtn.addEventListener('click', () => {
-          this.openFullView();
-        });
-      }
-
-      const collapseBtn = document.getElementById('dev-collapse-btn');
-      if (collapseBtn && !collapseBtn.hasAttribute('data-bound')) {
-        collapseBtn.setAttribute('data-bound', 'true');
-        collapseBtn.addEventListener('click', () => {
-          this.closeFullView();
+          this.toggleFullView();
         });
       }
 
@@ -863,6 +802,7 @@ const currentPath = Astro.url.pathname;
             gscQueries: gsc.queries,
             scrollFunnel: plausible.scrollFunnel,
             timeseries: plausible.timeseries,
+            markovFlow: plausible.markovFlow,
           }
         );
       }

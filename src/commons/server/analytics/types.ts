@@ -96,6 +96,7 @@ export interface DevOverlayPageData {
     tech?: TechBreakdown;
     countries?: GeoDimensionMetric[];
     visitorFlow?: PlausibleVisitorFlow;
+    markovFlow?: PlausibleVisitorFlow;
     timeseries?: PlausibleDailyTrafficPoint[];
   };
   gsc: {
@@ -189,6 +190,7 @@ export interface PlausiblePageMetrics {
   tech?: TechBreakdown;
   countries?: GeoDimensionMetric[];
   visitorFlow?: PlausibleVisitorFlow;
+  markovFlow?: PlausibleVisitorFlow;
   timeseries?: PlausibleDailyTrafficPoint[];
 }
 

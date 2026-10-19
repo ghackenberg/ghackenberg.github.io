@@ -283,7 +283,7 @@ export async function getPlausiblePageMetrics(
     }
 
     // Fetch deep metrics concurrently
-    const [scrollAndGoals, tech, countries, visitorFlow, timeseries] = await Promise.all([
+    const [scrollAndGoals, tech, countries, visitorFlow, markovFlow, timeseries] = await Promise.all([
       getPlausiblePageScrollAndGoals(canonicalPath, period, baseMetrics.visitors).catch(() => ({
         scrollFunnel: { milestones: [], readThroughRate: null, medianScrollDepth: null },
         goals: [],
@@ -302,6 +302,14 @@ export async function getPlausiblePageMetrics(
         baseMetrics.bounceRate,
         baseMetrics.pageviews
       ).catch(() => undefined),
+      getPlausibleMarkovFlow(
+        canonicalPath,
+        period,
+        baseMetrics.visitors,
+        baseMetrics.entries,
+        baseMetrics.bounceRate,
+        baseMetrics.pageviews
+      ).catch(() => undefined),
       getPlausiblePageTimeseries(canonicalPath, period).catch(() => []),
     ]);
 
@@ -312,6 +320,7 @@ export async function getPlausiblePageMetrics(
       tech,
       countries,
       visitorFlow,
+      markovFlow,
       timeseries,
     };
   } catch (err) {
@@ -874,15 +883,13 @@ export async function getCardCtrBreakdown(
 export async function getPlausibleVisitorFlow(
   urlOrPath: string,
   period: string = 'last_28_days',
-  baseVisitors: number = 0,
-  baseEntries: number = 0,
+  _baseVisitors: number = 0,
+  _baseEntries: number = 0,
   _baseBounceRate: number | null = null,
-  basePageviews: number = 0
+  _basePageviews: number = 0
 ): Promise<PlausibleVisitorFlow> {
   const normPath = normalizePath(urlOrPath);
   const altPath = normPath !== '/' ? (normPath.endsWith('/') ? normPath.slice(0, -1) : `${normPath}/`) : null;
-  const totalViews = Math.max(basePageviews || baseVisitors, baseVisitors);
-  const totalVisitors = Math.max(1, totalViews);
 
   const fetchWithAlt = async (
     property: string,
@@ -906,17 +913,18 @@ export async function getPlausibleVisitorFlow(
     highIntentPdfDeckRaw,
     outboundLinksRaw,
   ] = await Promise.all([
-    fetchWithAlt('visit:source', (p) => `visit:entry_page==${p}`, 12),
-    fetchWithAlt('visit:source', (p) => `event:page==${p}`, 12),
+    fetchWithAlt('visit:source', (p) => `visit:entry_page==${p};event:props:flow_id!=(none)`, 12),
+    fetchWithAlt('visit:source', (p) => `event:page==${p};event:props:flow_id!=(none)`, 12),
     fetchWithAlt('event:props:flow_id', (p) => `event:page==${p}`, 200, 'visitors,events'),
-    fetchWithAlt('event:props:url', (p) => `event:goal==File Download;event:page==${p}`, 12),
-    fetchWithAlt('event:props:url', (p) => `event:name==High Intent: PDF Download;event:page==${p}`, 12),
-    fetchWithAlt('event:props:deck_id', (p) => `event:name==High Intent: PDF Download;event:page==${p}`, 12),
-    fetchWithAlt('event:props:url', (p) => `event:goal==Outbound Link: Click;event:page==${p}`, 15),
+    fetchWithAlt('event:props:url', (p) => `event:goal==File Download;event:page==${p};event:props:flow_id!=(none)`, 12),
+    fetchWithAlt('event:props:url', (p) => `event:name==High Intent: PDF Download;event:page==${p};event:props:flow_id!=(none)`, 12),
+    fetchWithAlt('event:props:deck_id', (p) => `event:name==High Intent: PDF Download;event:page==${p};event:props:flow_id!=(none)`, 12),
+    fetchWithAlt('event:props:url', (p) => `event:goal==Outbound Link: Click;event:page==${p};event:props:flow_id!=(none)`, 15),
   ]);
 
   // 1. Exact Span-Tracing Chain Reconstruction (`flow_id` -> `flow_step`, using `events` / Views)
   const flowIdVisitorsMap = new Map<string, number>();
+  let flowIdUniqueVisitorsSum = 0;
   let untrackedFromRows = 0;
   for (const row of flowIdsOnPageRaw) {
     const rawId = String(row.flow_id ?? row['event:props:flow_id'] ?? row.value ?? '').trim();
@@ -931,6 +939,9 @@ export async function getPlausibleVisitorFlow(
     ) {
       untrackedFromRows += vis;
       continue;
+    }
+    if (!flowIdVisitorsMap.has(rawId)) {
+      flowIdUniqueVisitorsSum += Math.max(1, row.visitors || 1);
     }
     flowIdVisitorsMap.set(rawId, Math.max(flowIdVisitorsMap.get(rawId) || 0, vis));
   }
@@ -1088,9 +1099,10 @@ export async function getPlausibleVisitorFlow(
     }
   }
 
-  // 2. Derive Upstream & Downstream Pages strictly from `chains` (each occurrence of `normPath` in a chain represents a View)
+  // 2. Derive Entry, Upstream, Downstream, Bounce & Exit strictly from `chains` (flow-context-only)
   const upstreamMap = new Map<string, number>();
   const downstreamMap = new Map<string, number>();
+  let chainEntryOnCurrentVisitors = 0;
   let chainUpstreamTotalVisitors = 0;
   let chainDownstreamTotalVisitors = 0;
   let chainExitOnCurrentVisitors = 0;
@@ -1101,7 +1113,9 @@ export async function getPlausibleVisitorFlow(
     for (let idx = 0; idx < chain.steps.length; idx++) {
       if (chain.steps[idx] !== normPath) continue;
 
-      if (idx > 0) {
+      if (idx === 0) {
+        chainEntryOnCurrentVisitors += chain.visitors;
+      } else {
         const prevPath = chain.steps[idx - 1];
         if (prevPath && prevPath !== normPath) {
           upstreamMap.set(prevPath, (upstreamMap.get(prevPath) || 0) + chain.visitors);
@@ -1126,12 +1140,18 @@ export async function getPlausibleVisitorFlow(
     }
   }
 
+  const trackedTotalViews = chainEntryOnCurrentVisitors + chainUpstreamTotalVisitors;
+  const denom = Math.max(1, trackedTotalViews);
+  const directEntries = chainEntryOnCurrentVisitors;
+  const directEntryRate =
+    trackedTotalViews > 0 ? Number(((directEntries / denom) * 100).toFixed(1)) : 0;
+
   const upstreamPages: VisitorFlowItem[] = Array.from(upstreamMap.entries())
     .map(([pathKey, visitors]) => ({
       id: `upstream:${pathKey}`,
       label: pathKey,
       visitors,
-      percentage: Number(((visitors / totalVisitors) * 100).toFixed(1)),
+      percentage: Number(((visitors / denom) * 100).toFixed(1)),
       kind: 'upstream_page' as const,
       href: pathKey,
       isInternalPage: true,
@@ -1144,7 +1164,7 @@ export async function getPlausibleVisitorFlow(
       id: `next:${pathKey}`,
       label: pathKey,
       visitors,
-      percentage: Number(((visitors / totalVisitors) * 100).toFixed(1)),
+      percentage: Number(((visitors / denom) * 100).toFixed(1)),
       kind: 'internal_next' as const,
       href: pathKey,
       isInternalPage: true,
@@ -1152,32 +1172,40 @@ export async function getPlausibleVisitorFlow(
     .sort((a, b) => b.visitors - a.visitors)
     .slice(0, 10);
 
-  // 3. Inbound External Sources (`visit:source` on `normPath`)
+  // 3. Inbound External Sources (`visit:source` on `normPath`, flow-tracked only)
   const activeSourceRows = entrySourcesRaw.length > 0 ? entrySourcesRaw : pageSourcesRaw;
   const inboundSources: VisitorFlowItem[] = [];
-  for (const row of activeSourceRows) {
-    const rawSource = String(row.source ?? row['visit:source'] ?? row.value ?? 'Direct').trim();
-    const visitors = row.visitors || 0;
-    if (visitors <= 0) continue;
-    const label = !rawSource || rawSource === '(none)' || rawSource === '(not set)' || rawSource === 'Direct / None' ? 'Direct' : rawSource;
-    const existing = inboundSources.find((s) => s.label === label);
-    if (existing) {
-      existing.visitors += visitors;
-      existing.percentage = Number(((existing.visitors / totalVisitors) * 100).toFixed(1));
-    } else {
-      inboundSources.push({
-        id: `source:${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-        label,
-        visitors,
-        percentage: Number(((visitors / totalVisitors) * 100).toFixed(1)),
-        kind: 'entry_source',
-        isInternalPage: false,
-      });
+  if (trackedTotalViews > 0 && directEntries > 0) {
+    for (const row of activeSourceRows) {
+      const rawSource = String(row.source ?? row['visit:source'] ?? row.value ?? 'Direct').trim();
+      const visitors = Math.min(directEntries, row.visitors || 0);
+      if (visitors <= 0) continue;
+      const label =
+        !rawSource ||
+        rawSource === '(none)' ||
+        rawSource === '(not set)' ||
+        rawSource === 'Direct / None'
+          ? 'Direct'
+          : rawSource;
+      const existing = inboundSources.find((s) => s.label === label);
+      if (existing) {
+        existing.visitors = Math.min(directEntries, existing.visitors + visitors);
+        existing.percentage = Number(((existing.visitors / denom) * 100).toFixed(1));
+      } else {
+        inboundSources.push({
+          id: `source:${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+          label,
+          visitors,
+          percentage: Number(((visitors / denom) * 100).toFixed(1)),
+          kind: 'entry_source',
+          isInternalPage: false,
+        });
+      }
     }
+    inboundSources.sort((a, b) => b.visitors - a.visitors);
   }
-  inboundSources.sort((a, b) => b.visitors - a.visitors);
 
-  // 4. PDF & File Downloads on Current Page
+  // 4. PDF & File Downloads on Current Page (flow-tracked only)
   const pdfMap = new Map<string, { label: string; visitors: number; href?: string }>();
   const formatFileLabel = (rawUrl: string): { key: string; label: string; href?: string } => {
     const cleaned = rawUrl.trim();
@@ -1197,26 +1225,28 @@ export async function getPlausibleVisitorFlow(
     }
   };
 
-  for (const row of [...fileDownloadsRaw, ...highIntentPdfUrlRaw]) {
-    const rawUrl = String(row.url ?? row['event:props:url'] ?? row.value ?? '').trim();
-    const vis = row.visitors || 0;
-    if (!rawUrl || rawUrl === '(none)' || rawUrl === '(not set)' || vis <= 0) continue;
-    const { key, label, href } = formatFileLabel(rawUrl);
-    const prev = pdfMap.get(key);
-    if (!prev || vis > prev.visitors) {
-      pdfMap.set(key, { label, visitors: vis, href });
-    }
-  }
-
-  if (pdfMap.size === 0 && highIntentPdfDeckRaw.length > 0) {
-    for (const row of highIntentPdfDeckRaw) {
-      const deckId = String(row.deck_id ?? row['event:props:deck_id'] ?? row.value ?? '').trim();
-      const vis = row.visitors || 0;
-      if (!deckId || deckId === '(none)' || deckId === '(not set)' || vis <= 0) continue;
-      const key = `${deckId.toLowerCase()}.pdf`;
+  if (trackedTotalViews > 0) {
+    for (const row of [...fileDownloadsRaw, ...highIntentPdfUrlRaw]) {
+      const rawUrl = String(row.url ?? row['event:props:url'] ?? row.value ?? '').trim();
+      const vis = Math.min(trackedTotalViews, row.visitors || 0);
+      if (!rawUrl || rawUrl === '(none)' || rawUrl === '(not set)' || vis <= 0) continue;
+      const { key, label, href } = formatFileLabel(rawUrl);
       const prev = pdfMap.get(key);
       if (!prev || vis > prev.visitors) {
-        pdfMap.set(key, { label: `${deckId}.pdf`, visitors: vis });
+        pdfMap.set(key, { label, visitors: vis, href });
+      }
+    }
+
+    if (pdfMap.size === 0 && highIntentPdfDeckRaw.length > 0) {
+      for (const row of highIntentPdfDeckRaw) {
+        const deckId = String(row.deck_id ?? row['event:props:deck_id'] ?? row.value ?? '').trim();
+        const vis = Math.min(trackedTotalViews, row.visitors || 0);
+        if (!deckId || deckId === '(none)' || deckId === '(not set)' || vis <= 0) continue;
+        const key = `${deckId.toLowerCase()}.pdf`;
+        const prev = pdfMap.get(key);
+        if (!prev || vis > prev.visitors) {
+          pdfMap.set(key, { label: `${deckId}.pdf`, visitors: vis });
+        }
       }
     }
   }
@@ -1226,7 +1256,7 @@ export async function getPlausibleVisitorFlow(
       id: `pdf:${key}`,
       label: item.label,
       visitors: item.visitors,
-      percentage: Number(((item.visitors / totalVisitors) * 100).toFixed(1)),
+      percentage: Number(((item.visitors / denom) * 100).toFixed(1)),
       kind: 'pdf_download' as const,
       href: item.href,
       isInternalPage: false,
@@ -1234,26 +1264,28 @@ export async function getPlausibleVisitorFlow(
     .sort((a, b) => b.visitors - a.visitors)
     .slice(0, 8);
 
-  // 5. Outbound Links on Current Page
+  // 5. Outbound Links on Current Page (flow-tracked only)
   const outboundMap = new Map<string, { label: string; visitors: number; href: string }>();
-  for (const row of outboundLinksRaw) {
-    const rawUrl = String(row.url ?? row['event:props:url'] ?? row.value ?? '').trim();
-    const vis = row.visitors || 0;
-    if (!rawUrl || rawUrl === '(none)' || rawUrl === '(not set)' || vis <= 0) continue;
-    let label = rawUrl;
-    try {
-      const parsed = new URL(rawUrl);
-      const shortPath = parsed.pathname && parsed.pathname !== '/' ? parsed.pathname : '';
-      label = `${parsed.hostname.replace(/^www\./, '')}${shortPath}`;
-      if (label.length > 38) {
-        label = `${label.slice(0, 35)}...`;
+  if (trackedTotalViews > 0) {
+    for (const row of outboundLinksRaw) {
+      const rawUrl = String(row.url ?? row['event:props:url'] ?? row.value ?? '').trim();
+      const vis = Math.min(trackedTotalViews, row.visitors || 0);
+      if (!rawUrl || rawUrl === '(none)' || rawUrl === '(not set)' || vis <= 0) continue;
+      let label = rawUrl;
+      try {
+        const parsed = new URL(rawUrl);
+        const shortPath = parsed.pathname && parsed.pathname !== '/' ? parsed.pathname : '';
+        label = `${parsed.hostname.replace(/^www\./, '')}${shortPath}`;
+        if (label.length > 38) {
+          label = `${label.slice(0, 35)}...`;
+        }
+      } catch {
+        // keep rawUrl
       }
-    } catch {
-      // keep rawUrl
-    }
-    const prev = outboundMap.get(rawUrl);
-    if (!prev || vis > prev.visitors) {
-      outboundMap.set(rawUrl, { label, visitors: vis, href: rawUrl });
+      const prev = outboundMap.get(rawUrl);
+      if (!prev || vis > prev.visitors) {
+        outboundMap.set(rawUrl, { label, visitors: vis, href: rawUrl });
+      }
     }
   }
 
@@ -1262,7 +1294,7 @@ export async function getPlausibleVisitorFlow(
       id: `outbound:${key}`,
       label: item.label,
       visitors: item.visitors,
-      percentage: Number(((item.visitors / totalVisitors) * 100).toFixed(1)),
+      percentage: Number(((item.visitors / denom) * 100).toFixed(1)),
       kind: 'outbound_link' as const,
       href: item.href,
       isInternalPage: false,
@@ -1270,10 +1302,7 @@ export async function getPlausibleVisitorFlow(
     .sort((a, b) => b.visitors - a.visitors)
     .slice(0, 8);
 
-  // 6. Compute Summary Totals & Rates relative to `totalViews` (`100% = Views`)
-  const directEntries = totalViews > 0 ? Math.min(totalViews, Math.max(0, baseEntries || 0)) : 0;
-  const directEntryRate = totalViews > 0 ? Number(((directEntries / totalVisitors) * 100).toFixed(1)) : 0;
-
+  // 6. Compute Summary Totals & Rates relative to `trackedTotalViews` (`100% = Flow-Tracked Views`)
   if (directEntries > 0 && inboundSources.length === 0) {
     inboundSources.push({
       id: 'source:direct',
@@ -1286,22 +1315,33 @@ export async function getPlausibleVisitorFlow(
   }
 
   const internalUpstreamVisitors =
-    totalViews > 0 ? Math.min(totalViews, chainUpstreamTotalVisitors) : 0;
+    trackedTotalViews > 0 ? Math.min(trackedTotalViews, chainUpstreamTotalVisitors) : 0;
   const internalUpstreamRate =
-    totalViews > 0 ? Number(((internalUpstreamVisitors / totalVisitors) * 100).toFixed(1)) : 0;
+    trackedTotalViews > 0 ? Number(((internalUpstreamVisitors / denom) * 100).toFixed(1)) : 0;
 
   const internalNextVisitors =
-    totalViews > 0 ? Math.min(totalViews, chainDownstreamTotalVisitors) : 0;
+    trackedTotalViews > 0 ? Math.min(trackedTotalViews, chainDownstreamTotalVisitors) : 0;
   const internalNextRate =
-    totalViews > 0 ? Number(((internalNextVisitors / totalVisitors) * 100).toFixed(1)) : 0;
+    trackedTotalViews > 0 ? Number(((internalNextVisitors / denom) * 100).toFixed(1)) : 0;
 
+  const currentStepAct = stepActions[normPath];
+  const rawPdfVis = Math.max(
+    currentStepAct?.fileVisitors || 0,
+    pdfDownloads.reduce((acc, item) => acc + item.visitors, 0)
+  );
   const pdfDownloadVisitors =
-    totalViews > 0 ? Math.min(totalViews, pdfDownloads.reduce((acc, item) => acc + item.visitors, 0)) : 0;
-  const pdfDownloadRate = totalViews > 0 ? Number(((pdfDownloadVisitors / totalVisitors) * 100).toFixed(1)) : 0;
+    trackedTotalViews > 0 ? Math.min(trackedTotalViews, rawPdfVis) : 0;
+  const pdfDownloadRate =
+    trackedTotalViews > 0 ? Number(((pdfDownloadVisitors / denom) * 100).toFixed(1)) : 0;
 
+  const rawLinkVis = Math.max(
+    currentStepAct?.linkVisitors || 0,
+    outboundLinks.reduce((acc, item) => acc + item.visitors, 0)
+  );
   const outboundLinkVisitors =
-    totalViews > 0 ? Math.min(totalViews, outboundLinks.reduce((acc, item) => acc + item.visitors, 0)) : 0;
-  const outboundLinkRate = totalViews > 0 ? Number(((outboundLinkVisitors / totalVisitors) * 100).toFixed(1)) : 0;
+    trackedTotalViews > 0 ? Math.min(trackedTotalViews, rawLinkVis) : 0;
+  const outboundLinkRate =
+    trackedTotalViews > 0 ? Number(((outboundLinkVisitors / denom) * 100).toFixed(1)) : 0;
 
   if (pdfDownloadVisitors > 0 || outboundLinkVisitors > 0) {
     const currAct = stepActions[normPath] || { fileVisitors: 0, linkVisitors: 0 };
@@ -1311,34 +1351,27 @@ export async function getPlausibleVisitorFlow(
   }
 
   const bounceVisitors =
-    totalViews > 0 ? Math.min(totalViews, chainBounceOnCurrentVisitors) : 0;
+    trackedTotalViews > 0 ? Math.min(trackedTotalViews, chainBounceOnCurrentVisitors) : 0;
   const exitVisitors =
-    totalViews > 0
-      ? Math.min(Math.max(0, totalViews - bounceVisitors), chainExitAfterPrevOnCurrentVisitors)
+    trackedTotalViews > 0
+      ? Math.min(Math.max(0, trackedTotalViews - bounceVisitors), chainExitAfterPrevOnCurrentVisitors)
       : 0;
   const bounceOrExitVisitors =
-    totalViews > 0 ? Math.min(totalViews, bounceVisitors + exitVisitors) : 0;
+    trackedTotalViews > 0 ? Math.min(trackedTotalViews, bounceVisitors + exitVisitors) : 0;
 
   const bounceOrExitRate =
-    totalViews > 0 ? Number(((bounceOrExitVisitors / totalVisitors) * 100).toFixed(1)) : 0;
+    trackedTotalViews > 0 ? Number(((bounceOrExitVisitors / denom) * 100).toFixed(1)) : 0;
   const bounceRate =
-    totalViews > 0 ? Number(((bounceVisitors / totalVisitors) * 100).toFixed(1)) : 0;
+    trackedTotalViews > 0 ? Number(((bounceVisitors / denom) * 100).toFixed(1)) : 0;
   const exitRate =
-    totalViews > 0 ? Number(((exitVisitors / totalVisitors) * 100).toFixed(1)) : 0;
+    trackedTotalViews > 0 ? Number(((exitVisitors / denom) * 100).toFixed(1)) : 0;
 
-  let trackedFlowViews = 0;
-  for (const vis of flowIdVisitorsMap.values()) {
-    trackedFlowViews += vis;
-  }
-  const rawUntracked =
-    untrackedFromRows > 0 ? untrackedFromRows : Math.max(0, totalViews - trackedFlowViews);
-  const untrackedVisitors = totalViews > 0 ? Math.min(totalViews, rawUntracked) : 0;
-  const untrackedRate =
-    totalViews > 0 ? Number(((untrackedVisitors / totalViews) * 100).toFixed(1)) : 0;
+  const trackedUniqueVisitors =
+    trackedTotalViews > 0 ? Math.min(trackedTotalViews, Math.max(1, flowIdUniqueVisitorsSum)) : 0;
 
   return {
-    totalVisitors: totalViews,
-    uniqueVisitors: baseVisitors,
+    totalVisitors: trackedTotalViews,
+    uniqueVisitors: trackedUniqueVisitors,
     directEntries,
     directEntryRate,
     internalUpstreamVisitors,
@@ -1362,9 +1395,513 @@ export async function getPlausibleVisitorFlow(
     outboundLinks,
     chains,
     stepActions,
-    untrackedVisitors,
-    untrackedRate,
+    untrackedVisitors: untrackedFromRows,
+    untrackedRate: 0,
   };
 }
+
+/**
+ * Fetches 1st-order Markov transition flow and full historical page aggregates (no `flow_id` filter)
+ * for a specific URL path.
+ */
+export async function getPlausibleMarkovFlow(
+  urlOrPath: string,
+  period: string = 'last_28_days',
+  baseVisitors: number = 0,
+  baseEntries: number | null = null,
+  baseBounceRate: number | null = null,
+  basePageviews: number = 0
+): Promise<PlausibleVisitorFlow> {
+  const normPath = normalizePath(urlOrPath);
+  const altPath =
+    normPath !== '/' ? (normPath.endsWith('/') ? normPath.slice(0, -1) : `${normPath}/`) : null;
+
+  const fetchWithAlt = async (
+    property: string,
+    buildFilter: (p: string) => string,
+    limit: number = 15,
+    metrics: string = 'visitors'
+  ): Promise<PlausibleBreakdownRow[]> => {
+    let rows = await fetchBreakdown(property, period, buildFilter(normPath), metrics, limit).catch(
+      () => []
+    );
+    if (rows.length === 0 && altPath) {
+      rows = await fetchBreakdown(property, period, buildFilter(altPath), metrics, limit).catch(
+        () => []
+      );
+    }
+    return rows;
+  };
+
+  const [
+    inboundSourcesRaw,
+    entryPagesForCurrentRaw,
+    exitPagesForCurrentRaw,
+    fileDownloadUrlsRaw,
+    highIntentPdfNamesRaw,
+    outboundLinkUrlsRaw,
+  ] = await Promise.all([
+    fetchWithAlt('visit:source', (p) => `event:page==${p}`, 12),
+    fetchWithAlt('visit:entry_page', (p) => `event:page==${p}`, 15),
+    fetchWithAlt('visit:exit_page', (p) => `event:page==${p}`, 20),
+    fetchWithAlt('event:props:url', (p) => `event:name==File Download;event:page==${p}`, 15),
+    fetchWithAlt(
+      'event:props:file',
+      (p) => `event:name==High Intent: PDF Download;event:page==${p}`,
+      15
+    ),
+    fetchWithAlt('event:props:url', (p) => `event:name==Outbound Link: Click;event:page==${p}`, 15),
+  ]);
+
+  const totalViews = Math.max(basePageviews || baseVisitors, baseVisitors);
+  const denom = Math.max(1, totalViews);
+
+  const extractInternalPages = (
+    rows: PlausibleBreakdownRow[],
+    fieldKeys: string[]
+  ): Map<string, number> => {
+    const map = new Map<string, number>();
+    for (const row of rows) {
+      let rawVal = '';
+      for (const k of fieldKeys) {
+        if (row[k] != null && String(row[k]).trim() !== '') {
+          rawVal = String(row[k]).trim();
+          break;
+        }
+      }
+      if (!rawVal && row.value != null) {
+        rawVal = String(row.value).trim();
+      }
+      const vis = row.visitors || row.events || 0;
+      if (
+        !rawVal ||
+        rawVal === '(none)' ||
+        rawVal === '(not set)' ||
+        rawVal === '(unknown)' ||
+        vis <= 0
+      ) {
+        continue;
+      }
+      if (
+        !rawVal.startsWith('/') &&
+        !rawVal.startsWith('http://') &&
+        !rawVal.startsWith('https://')
+      ) {
+        continue;
+      }
+      const pNorm = normalizePath(rawVal);
+      if (!pNorm || pNorm === normPath) continue;
+      map.set(pNorm, (map.get(pNorm) || 0) + vis);
+    }
+    return map;
+  };
+
+  const scaleItemsToTargetTotal = (
+    items: VisitorFlowItem[],
+    targetTotal: number,
+    denomVal: number
+  ): VisitorFlowItem[] => {
+    if (items.length === 0 || targetTotal <= 0) return [];
+    const sumRaw = items.reduce((s, x) => s + x.visitors, 0);
+    if (sumRaw <= 0) return [];
+    if (sumRaw === targetTotal) {
+      return items.map((item) => ({
+        ...item,
+        percentage: Number(((item.visitors / denomVal) * 100).toFixed(1)),
+      }));
+    }
+
+    const exactQuotas = items.map((item, idx) => {
+      const exact = (item.visitors / sumRaw) * targetTotal;
+      const floored = Math.floor(exact);
+      return { idx, item, exact, floored, remainder: exact - floored };
+    });
+
+    const currentSum = exactQuotas.reduce((s, q) => s + q.floored, 0);
+    let deficit = Math.max(0, Math.round(targetTotal - currentSum));
+
+    const sortedByRemainder = [...exactQuotas].sort((a, b) => b.remainder - a.remainder);
+    for (let i = 0; i < sortedByRemainder.length && deficit > 0; i++) {
+      sortedByRemainder[i].floored += 1;
+      deficit -= 1;
+    }
+
+    return exactQuotas
+      .map((q) => ({
+        ...q.item,
+        visitors: q.floored,
+        percentage: Number(((q.floored / denomVal) * 100).toFixed(1)),
+      }))
+      .filter((x) => x.visitors > 0);
+  };
+
+  const upstreamMap = extractInternalPages(entryPagesForCurrentRaw, [
+    'entry_page',
+    'visit:entry_page',
+  ]);
+  const downstreamMap = extractInternalPages(exitPagesForCurrentRaw, [
+    'exit_page',
+    'visit:exit_page',
+  ]);
+
+  let upstreamPages: VisitorFlowItem[] = Array.from(upstreamMap.entries())
+    .map(([pathKey, visitors]) => ({
+      id: `upstream:${pathKey}`,
+      label: pathKey,
+      visitors,
+      percentage: Number(((visitors / denom) * 100).toFixed(1)),
+      kind: 'upstream_page' as const,
+      href: pathKey,
+      isInternalPage: true,
+    }))
+    .sort((a, b) => b.visitors - a.visitors)
+    .slice(0, 8);
+
+  let downstreamPages: VisitorFlowItem[] = Array.from(downstreamMap.entries())
+    .map(([pathKey, visitors]) => ({
+      id: `next:${pathKey}`,
+      label: pathKey,
+      visitors,
+      percentage: Number(((visitors / denom) * 100).toFixed(1)),
+      kind: 'internal_next' as const,
+      href: pathKey,
+      isInternalPage: true,
+    }))
+    .sort((a, b) => b.visitors - a.visitors)
+    .slice(0, 8);
+
+  const sumUpstream = upstreamPages.reduce((acc, item) => acc + item.visitors, 0);
+  const sumDownstream = downstreamPages.reduce((acc, item) => acc + item.visitors, 0);
+
+  let directEntries: number;
+  let internalUpstreamVisitors: number;
+  if (upstreamPages.length === 0 || sumUpstream <= 0) {
+    directEntries = totalViews;
+    internalUpstreamVisitors = 0;
+    upstreamPages = [];
+  } else {
+    directEntries =
+      baseEntries !== null
+        ? Math.min(totalViews, Math.max(0, baseEntries))
+        : Math.max(0, totalViews - sumUpstream);
+    internalUpstreamVisitors = Math.max(0, totalViews - directEntries);
+    upstreamPages = scaleItemsToTargetTotal(upstreamPages, internalUpstreamVisitors, denom);
+  }
+
+  const directEntryRate =
+    totalViews > 0 ? Number(((directEntries / denom) * 100).toFixed(1)) : 0;
+  const internalUpstreamRate =
+    totalViews > 0 ? Number(((internalUpstreamVisitors / denom) * 100).toFixed(1)) : 0;
+
+  const bounceVisitors =
+    baseBounceRate !== null
+      ? Math.min(directEntries, Math.round((baseBounceRate / 100) * directEntries))
+      : 0;
+
+  let internalNextVisitors: number;
+  if (downstreamPages.length === 0 || sumDownstream <= 0) {
+    internalNextVisitors = 0;
+    downstreamPages = [];
+  } else {
+    internalNextVisitors = Math.min(Math.max(0, totalViews - bounceVisitors), sumDownstream);
+    downstreamPages = scaleItemsToTargetTotal(downstreamPages, internalNextVisitors, denom);
+  }
+
+  const internalNextRate =
+    totalViews > 0 ? Number(((internalNextVisitors / denom) * 100).toFixed(1)) : 0;
+
+  const exitVisitors = Math.max(0, totalViews - bounceVisitors - internalNextVisitors);
+  const bounceOrExitVisitors = bounceVisitors + exitVisitors;
+  const effectiveBounceRate =
+    totalViews > 0
+      ? Math.round((bounceOrExitVisitors / totalViews) * 100)
+      : (baseBounceRate ?? 0);
+  const bounceRate =
+    totalViews > 0 ? Number(((bounceVisitors / denom) * 100).toFixed(1)) : 0;
+  const exitRate =
+    totalViews > 0 ? Number(((exitVisitors / denom) * 100).toFixed(1)) : 0;
+
+  // Inbound External Sources
+  const inboundSources: VisitorFlowItem[] = [];
+  if (totalViews > 0) {
+    for (const row of inboundSourcesRaw) {
+      const rawSource = String(row.source ?? row['visit:source'] ?? row.value ?? 'Direct').trim();
+      const visitors = Math.min(totalViews, row.visitors || 0);
+      if (visitors <= 0) continue;
+      const label =
+        !rawSource ||
+        rawSource === '(none)' ||
+        rawSource === '(not set)' ||
+        rawSource === 'Direct / None'
+          ? 'Direct'
+          : rawSource;
+      const existing = inboundSources.find((s) => s.label === label);
+      if (existing) {
+        existing.visitors = Math.min(totalViews, existing.visitors + visitors);
+        existing.percentage = Number(((existing.visitors / denom) * 100).toFixed(1));
+      } else {
+        inboundSources.push({
+          id: `source:${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+          label,
+          visitors,
+          percentage: Number(((visitors / denom) * 100).toFixed(1)),
+          kind: 'entry_source',
+          isInternalPage: false,
+        });
+      }
+    }
+    inboundSources.sort((a, b) => b.visitors - a.visitors);
+  }
+
+  if (directEntries > 0 && inboundSources.length === 0) {
+    inboundSources.push({
+      id: 'source:direct',
+      label: 'Direct',
+      visitors: directEntries,
+      percentage: directEntryRate,
+      kind: 'entry_source',
+      isInternalPage: false,
+    });
+  }
+
+  // PDF & File Downloads
+  const pdfMap = new Map<string, { label: string; visitors: number; href?: string }>();
+  const formatFileLabel = (rawUrl: string): { key: string; label: string; href?: string } => {
+    const cleaned = rawUrl.trim();
+    try {
+      const parsed = new URL(cleaned, 'https://hackenberg.tech');
+      const parts = parsed.pathname.split('/').filter(Boolean);
+      const fileName = parts[parts.length - 1] || parsed.pathname;
+      return {
+        key: parsed.pathname.toLowerCase(),
+        label: decodeURIComponent(fileName),
+        href: parsed.pathname,
+      };
+    } catch {
+      const parts = cleaned.split('/').filter(Boolean);
+      const fileName = parts[parts.length - 1] || cleaned;
+      return { key: cleaned.toLowerCase(), label: fileName };
+    }
+  };
+
+  if (totalViews > 0) {
+    for (const row of [...fileDownloadUrlsRaw, ...highIntentPdfNamesRaw]) {
+      const rawUrl = String(
+        row.url ??
+          row['event:props:url'] ??
+          row.file ??
+          row['event:props:file'] ??
+          row.value ??
+          ''
+      ).trim();
+      const vis = Math.min(totalViews, row.visitors || 0);
+      if (!rawUrl || rawUrl === '(none)' || rawUrl === '(not set)' || vis <= 0) continue;
+      const { key, label, href } = formatFileLabel(rawUrl);
+      const prev = pdfMap.get(key);
+      if (!prev || vis > prev.visitors) {
+        pdfMap.set(key, { label, visitors: vis, href });
+      }
+    }
+  }
+
+  const pdfDownloads: VisitorFlowItem[] = Array.from(pdfMap.entries())
+    .map(([key, item]) => ({
+      id: `pdf:${key}`,
+      label: item.label,
+      visitors: item.visitors,
+      percentage: Number(((item.visitors / denom) * 100).toFixed(1)),
+      kind: 'pdf_download' as const,
+      href: item.href,
+      isInternalPage: false,
+    }))
+    .sort((a, b) => b.visitors - a.visitors)
+    .slice(0, 8);
+
+  const pdfDownloadVisitors =
+    totalViews > 0
+      ? Math.min(
+          totalViews,
+          pdfDownloads.reduce((acc, item) => acc + item.visitors, 0)
+        )
+      : 0;
+  const pdfDownloadRate =
+    totalViews > 0 ? Number(((pdfDownloadVisitors / denom) * 100).toFixed(1)) : 0;
+
+  // Outbound Links
+  const outboundMap = new Map<string, { label: string; visitors: number; href: string }>();
+  if (totalViews > 0) {
+    for (const row of outboundLinkUrlsRaw) {
+      const rawUrl = String(row.url ?? row['event:props:url'] ?? row.value ?? '').trim();
+      const vis = Math.min(totalViews, row.visitors || 0);
+      if (!rawUrl || rawUrl === '(none)' || rawUrl === '(not set)' || vis <= 0) continue;
+      let label = rawUrl;
+      try {
+        const parsed = new URL(rawUrl);
+        const shortPath = parsed.pathname && parsed.pathname !== '/' ? parsed.pathname : '';
+        label = `${parsed.hostname.replace(/^www\./, '')}${shortPath}`;
+        if (label.length > 38) {
+          label = `${label.slice(0, 35)}...`;
+        }
+      } catch {
+        // keep rawUrl
+      }
+      const prev = outboundMap.get(rawUrl);
+      if (!prev || vis > prev.visitors) {
+        outboundMap.set(rawUrl, { label, visitors: vis, href: rawUrl });
+      }
+    }
+  }
+
+  const outboundLinks: VisitorFlowItem[] = Array.from(outboundMap.entries())
+    .map(([key, item]) => ({
+      id: `outbound:${key}`,
+      label: item.label,
+      visitors: item.visitors,
+      percentage: Number(((item.visitors / denom) * 100).toFixed(1)),
+      kind: 'outbound_link' as const,
+      href: item.href,
+      isInternalPage: false,
+    }))
+    .sort((a, b) => b.visitors - a.visitors)
+    .slice(0, 8);
+
+  const outboundLinkVisitors =
+    totalViews > 0
+      ? Math.min(
+          totalViews,
+          outboundLinks.reduce((acc, item) => acc + item.visitors, 0)
+        )
+      : 0;
+  const outboundLinkRate =
+    totalViews > 0 ? Number(((outboundLinkVisitors / denom) * 100).toFixed(1)) : 0;
+
+  const stepActions: Record<string, { fileVisitors: number; linkVisitors: number }> = {};
+  if (pdfDownloadVisitors > 0 || outboundLinkVisitors > 0) {
+    stepActions[normPath] = {
+      fileVisitors: pdfDownloadVisitors,
+      linkVisitors: outboundLinkVisitors,
+    };
+  }
+
+  return {
+    totalVisitors: totalViews,
+    uniqueVisitors: Math.max(0, baseVisitors),
+    directEntries,
+    directEntryRate,
+    internalUpstreamVisitors,
+    internalUpstreamRate,
+    internalNextVisitors,
+    internalNextRate,
+    pdfDownloadVisitors,
+    pdfDownloadRate,
+    outboundLinkVisitors,
+    outboundLinkRate,
+    bounceOrExitVisitors,
+    bounceOrExitRate: effectiveBounceRate,
+    bounceVisitors,
+    bounceRate,
+    exitVisitors,
+    exitRate,
+    inboundSources,
+    upstreamPages,
+    downstreamPages,
+    pdfDownloads,
+    outboundLinks,
+    chains: [],
+    stepActions,
+    untrackedVisitors: 0,
+    untrackedRate: 0,
+  };
+}
+
+/**
+ * Fast-path helper for `?scope=markov`: fetches basic page aggregate (`visitors,pageviews,bounce_rate,entries`)
+ * and `getPlausibleMarkovFlow` for a single neighbor page.
+ */
+export async function getPlausibleMarkovNeighbor(
+  urlOrPath: string,
+  period: string = 'last_28_days'
+): Promise<PlausibleVisitorFlow | null> {
+  const config = getConfig();
+  if (!config.plausible.apiKey) return null;
+
+  const canonicalPath = normalizePath(urlOrPath);
+  const { period: plausiblePeriod, date: plausibleDate } = resolvePlausibleParams(period);
+
+  const fetchAggregate = async (filterPath: string) => {
+    const url = new URL(`${config.plausible.host}/api/v1/stats/aggregate`);
+    url.searchParams.set('site_id', config.plausible.siteId);
+    url.searchParams.set('period', plausiblePeriod);
+    if (plausibleDate) {
+      url.searchParams.set('date', plausibleDate);
+    }
+    url.searchParams.set('metrics', 'visitors,pageviews,bounce_rate');
+    url.searchParams.set('filters', `event:page==${filterPath}`);
+
+    try {
+      const res = await fetch(url.toString(), {
+        headers: {
+          Authorization: `Bearer ${config.plausible.apiKey}`,
+        },
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.results || {};
+    } catch {
+      return null;
+    }
+  };
+
+  const fetchEntries = async (filterPath: string) => {
+    const url = new URL(`${config.plausible.host}/api/v1/stats/aggregate`);
+    url.searchParams.set('site_id', config.plausible.siteId);
+    url.searchParams.set('period', plausiblePeriod);
+    if (plausibleDate) {
+      url.searchParams.set('date', plausibleDate);
+    }
+    url.searchParams.set('metrics', 'visitors');
+    url.searchParams.set('filters', `visit:entry_page==${filterPath}`);
+
+    try {
+      const res = await fetch(url.toString(), {
+        headers: {
+          Authorization: `Bearer ${config.plausible.apiKey}`,
+        },
+      });
+      if (!res.ok) return 0;
+      const data = await res.json();
+      return data.results?.visitors?.value ?? 0;
+    } catch {
+      return 0;
+    }
+  };
+
+  let [results, entries] = await Promise.all([
+    fetchAggregate(canonicalPath),
+    fetchEntries(canonicalPath),
+  ]);
+
+  if ((!results || results.pageviews?.value === 0) && canonicalPath !== '/') {
+    const alternativePath = canonicalPath.endsWith('/')
+      ? canonicalPath.slice(0, -1)
+      : `${canonicalPath}/`;
+    const [altResults, altEntries] = await Promise.all([
+      fetchAggregate(alternativePath),
+      fetchEntries(alternativePath),
+    ]);
+    if (altResults && (altResults.pageviews?.value ?? 0) > 0) {
+      results = altResults;
+      entries = altEntries;
+    }
+  }
+
+  const visitors = results?.visitors?.value ?? 0;
+  const pageviews = results?.pageviews?.value ?? 0;
+  const bounceRate =
+    results?.bounce_rate?.value != null ? Number(results.bounce_rate.value.toFixed(1)) : null;
+
+  return getPlausibleMarkovFlow(canonicalPath, period, visitors, entries ?? 0, bounceRate, pageviews);
+}
+
 
 

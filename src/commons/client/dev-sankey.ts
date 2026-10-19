@@ -83,9 +83,10 @@ export interface DevSankeyPageContext {
   gscQueries?: DevSankeyGscQuery[];
   scrollFunnel?: DevSankeyScrollFunnel | null;
   timeseries?: DevSankeyDailyTrafficPoint[];
+  markovFlow?: DevSankeyData | null;
 }
 
-export type SankeyCardDensity = 'compact' | 'detailed';
+export type SankeyModelMode = 'flow' | 'markov';
 
 interface SankeyPageMetadata {
   emoji: string;
@@ -163,11 +164,16 @@ interface SankeyColumnModel {
 
 const LEFT_LEVELS_STORAGE_KEY = 'gh_dev_sankey_left_levels';
 const RIGHT_LEVELS_STORAGE_KEY = 'gh_dev_sankey_right_levels';
-const DENSITY_STORAGE_KEY = 'gh_dev_sankey_density';
+const MODEL_MODE_STORAGE_KEY = 'gh_dev_sankey_model_mode';
+
+const STANDARD_RIBBON_RGBA = 'rgba(212, 212, 216, 0.42)';
+const STANDARD_RIBBON_HOVER_RGBA = 'rgba(244, 244, 245, 0.80)';
 
 const activeResizeObservers = new WeakMap<HTMLElement, ResizeObserver>();
 const renderGenerationMap = new WeakMap<HTMLElement, number>();
 const pageMetaCache = new Map<string, SankeyPageMetadata>();
+const markovNeighborCache = new Map<string, DevSankeyData | null>();
+const inFlightMarkovNeighbors = new Map<string, Promise<DevSankeyData | null>>();
 let isManifestPopulated = false;
 let inFlightManifestPromise: Promise<void> | null = null;
 
@@ -210,99 +216,51 @@ function normalizePath(rawPath: string): string {
 function resolvePageDomainTheme(rawPath: string): SankeyDomainTheme {
   const norm = normalizePath(rawPath);
 
+  let emoji = '🏠';
   if (norm.startsWith('/interests/')) {
-    return {
-      emoji: '🎯',
-      ribbonRgba: 'rgba(244, 63, 94, 0.42)',
-      ribbonHoverRgba: 'rgba(244, 63, 94, 0.78)',
-    };
-  }
-  if (norm.startsWith('/posts/')) {
-    return {
-      emoji: '✍️',
-      ribbonRgba: 'rgba(139, 92, 246, 0.42)',
-      ribbonHoverRgba: 'rgba(139, 92, 246, 0.78)',
-    };
-  }
-  if (norm.startsWith('/publications/')) {
-    return {
-      emoji: '📚',
-      ribbonRgba: 'rgba(99, 102, 241, 0.42)',
-      ribbonHoverRgba: 'rgba(99, 102, 241, 0.78)',
-    };
-  }
-  if (norm.startsWith('/presentations/')) {
-    return {
-      emoji: '🖥️',
-      ribbonRgba: 'rgba(59, 130, 246, 0.42)',
-      ribbonHoverRgba: 'rgba(59, 130, 246, 0.78)',
-    };
-  }
-  if (norm.startsWith('/courses/')) {
-    return {
-      emoji: '🎓',
-      ribbonRgba: 'rgba(6, 182, 212, 0.42)',
-      ribbonHoverRgba: 'rgba(6, 182, 212, 0.78)',
-    };
-  }
-  if (norm.startsWith('/projects/')) {
-    return {
-      emoji: '🚀',
-      ribbonRgba: 'rgba(20, 184, 166, 0.42)',
-      ribbonHoverRgba: 'rgba(20, 184, 166, 0.78)',
-    };
-  }
-  if (norm.startsWith('/services/')) {
-    return {
-      emoji: '💼',
-      ribbonRgba: 'rgba(16, 185, 129, 0.42)',
-      ribbonHoverRgba: 'rgba(16, 185, 129, 0.78)',
-    };
-  }
-  if (norm.startsWith('/visualizations/')) {
-    return {
-      emoji: '🌐',
-      ribbonRgba: 'rgba(234, 179, 8, 0.42)',
-      ribbonHoverRgba: 'rgba(234, 179, 8, 0.78)',
-    };
-  }
-  if (norm.startsWith('/tags/')) {
-    return {
-      emoji: '🏷️',
-      ribbonRgba: 'rgba(249, 115, 22, 0.42)',
-      ribbonHoverRgba: 'rgba(249, 115, 22, 0.78)',
-    };
-  }
-  if (norm === '/datenschutz/' || norm === '/privacy/') {
-    return {
-      emoji: '🛡️',
-      ribbonRgba: 'rgba(168, 85, 247, 0.42)',
-      ribbonHoverRgba: 'rgba(168, 85, 247, 0.78)',
-    };
-  }
-  if (norm === '/impressum/' || norm === '/imprint/') {
-    return {
-      emoji: '⚖️',
-      ribbonRgba: 'rgba(59, 130, 246, 0.42)',
-      ribbonHoverRgba: 'rgba(59, 130, 246, 0.78)',
-    };
+    emoji = '🎯';
+  } else if (norm.startsWith('/posts/')) {
+    emoji = '✍️';
+  } else if (norm.startsWith('/publications/')) {
+    emoji = '📚';
+  } else if (norm.startsWith('/presentations/')) {
+    emoji = '🖥️';
+  } else if (norm.startsWith('/courses/')) {
+    emoji = '🎓';
+  } else if (norm.startsWith('/projects/')) {
+    emoji = '🚀';
+  } else if (norm.startsWith('/services/')) {
+    emoji = '💼';
+  } else if (norm.startsWith('/visualizations/')) {
+    emoji = '🌐';
+  } else if (norm.startsWith('/tags/')) {
+    emoji = '🏷️';
+  } else if (norm === '/datenschutz/' || norm === '/privacy/') {
+    emoji = '🛡️';
+  } else if (norm === '/impressum/' || norm === '/imprint/') {
+    emoji = '⚖️';
   }
 
   return {
-    emoji: '🏠',
-    ribbonRgba: 'rgba(59, 130, 246, 0.42)',
-    ribbonHoverRgba: 'rgba(59, 130, 246, 0.78)',
+    emoji,
+    ribbonRgba: STANDARD_RIBBON_RGBA,
+    ribbonHoverRgba: STANDARD_RIBBON_HOVER_RGBA,
   };
 }
 
-function getColumnStripeBg(colIndex: number): { bg: string; headerColor: string } {
-  const dist = Math.abs(colIndex);
-  if (dist === 0) return { bg: 'rgb(52, 52, 58)', headerColor: 'text-white font-extrabold' };
-  if (dist === 1) return { bg: 'rgb(36, 36, 41)', headerColor: 'text-zinc-200 font-bold' };
-  if (dist === 2) return { bg: 'rgb(24, 24, 28)', headerColor: 'text-zinc-300 font-bold' };
-  if (dist === 3) return { bg: 'rgb(15, 15, 18)', headerColor: 'text-zinc-400 font-bold' };
-  return { bg: 'rgb(9, 9, 11)', headerColor: 'text-zinc-500 font-bold' };
+const COL_BG_CENTER_RGB: readonly [number, number, number] = [113, 113, 122]; // zinc-500 (Uniform stage & column background)
+const COL_BG_OUTER_RGB: readonly [number, number, number] = [113, 113, 122]; // zinc-500 (Uniform stage & column background)
+
+function getColumnStripeBg(
+  colIndex: number,
+  _leftLevels: number,
+  _rightLevels: number
+): { bg: string; headerColor: string } {
+  const [r, g, b] = COL_BG_CENTER_RGB;
+  const headerColor = colIndex === 0 ? 'text-white font-extrabold' : 'text-zinc-100 font-bold';
+  return { bg: `rgb(${r}, ${g}, ${b})`, headerColor };
 }
+
 
 function humanizeSlug(slug: string): string {
   return slug
@@ -446,22 +404,60 @@ function setStoredLevel(key: string, level: number): void {
   }
 }
 
-function getStoredDensity(): SankeyCardDensity {
+function getStoredModelMode(): SankeyModelMode {
   try {
-    const raw = localStorage.getItem(DENSITY_STORAGE_KEY);
-    if (raw === 'compact' || raw === 'detailed') return raw;
-    return 'detailed';
+    const raw = localStorage.getItem(MODEL_MODE_STORAGE_KEY);
+    if (raw === 'flow' || raw === 'markov') return raw;
+    return 'flow';
   } catch {
-    return 'detailed';
+    return 'flow';
   }
 }
 
-function setStoredDensity(density: SankeyCardDensity): void {
+function setStoredModelMode(mode: SankeyModelMode): void {
   try {
-    localStorage.setItem(DENSITY_STORAGE_KEY, density);
+    localStorage.setItem(MODEL_MODE_STORAGE_KEY, mode);
   } catch {
     // ignore storage errors
   }
+}
+
+function fetchMarkovNeighbor(
+  targetPath: string,
+  period: string,
+  onResolved: () => void
+): void {
+  const norm = normalizePath(targetPath);
+  const key = `${period}:${norm}`;
+  if (markovNeighborCache.has(key) || inFlightMarkovNeighbors.has(key)) return;
+
+  const p = (async (): Promise<DevSankeyData | null> => {
+    try {
+      const res = await fetch(
+        `/api/dev-analytics.json?path=${encodeURIComponent(norm)}&period=${encodeURIComponent(period)}&scope=markov`
+      );
+      if (!res.ok) {
+        markovNeighborCache.set(key, null);
+        return null;
+      }
+      const data = (await res.json()) as { markovFlow?: DevSankeyData | null };
+      const mf = data?.markovFlow ?? null;
+      markovNeighborCache.set(key, mf);
+      return mf;
+    } catch {
+      markovNeighborCache.set(key, null);
+      return null;
+    } finally {
+      inFlightMarkovNeighbors.delete(key);
+    }
+  })();
+
+  inFlightMarkovNeighbors.set(key, p);
+  void p.then((mf) => {
+    if (mf) {
+      onResolved();
+    }
+  });
 }
 
 function escapeHtml(raw: string): string {
@@ -511,7 +507,10 @@ function buildMultiLevelSankeyGraph(
   currentPath: string,
   rootFlow: DevSankeyData,
   leftLevels: number,
-  rightLevels: number
+  rightLevels: number,
+  modelMode: SankeyModelMode = 'flow',
+  neighborLookup?: (path: string) => DevSankeyData | null | undefined,
+  onMissingNeighbor?: (path: string) => void
 ): { columns: SankeyColumnModel[]; links: SankeyGraphLink[] } {
   const normCurrent = normalizePath(currentPath);
   const totalVisitors = Math.max(1, rootFlow.totalVisitors);
@@ -621,8 +620,7 @@ function buildMultiLevelSankeyGraph(
     isCenter: true,
   });
 
-  const inboundSum = rootFlow.inboundSources.reduce((sum, s) => sum + s.visitors, 0);
-  centerNode.entryVis = rootFlow.directEntries > 0 ? rootFlow.directEntries : inboundSum;
+  centerNode.entryVis = rootFlow.directEntries;
   centerNode.prevVis = rootFlow.internalUpstreamVisitors;
   centerNode.nextVis = rootFlow.internalNextVisitors;
   centerNode.bounceVis = rootFlow.bounceVisitors ?? 0;
@@ -630,84 +628,241 @@ function buildMultiLevelSankeyGraph(
   centerNode.fileVis = rootFlow.pdfDownloadVisitors;
   centerNode.linkVis = rootFlow.outboundLinkVisitors;
 
-  // 1. Pure Chain-Driven Multi-Level Traversal (L1..L5 Left & Right; each occurrence of normCurrent is a View)
-  const chains = rootFlow.chains ?? [];
+  if (modelMode === 'markov') {
+    // 1A. 1st-Order Markov Multi-Hop Folding (Upstream L1..L5 & Downstream L1..L5)
+    for (const u of rootFlow.upstreamPages) {
+      if (u.visitors <= 0) continue;
+      const uPath = normalizePath(u.href || u.label);
+      if (uPath === normCurrent) continue;
+      const upNode = upsertNode(-1, `page:${uPath}`, {
+        icon: '⬅️',
+        title: uPath,
+        path: uPath,
+        visitors: u.visitors,
+        kind: 'upstream_page',
+        href: uPath,
+        isInternalPage: true,
+      });
+      upsertLink(upNode, centerNode, u.visitors);
+    }
 
-  for (const chain of chains) {
-    const steps = chain.steps.map((s) => normalizePath(s));
-    const vis = Math.max(0.1, Math.round(chain.visitors * 100) / 100);
+    for (let c = -1; c >= -leftLevels; c--) {
+      const colNodes = columnsMap.get(c)!;
+      for (const upNode of colNodes.values()) {
+        const w = upNode.visitors;
+        const p = upNode.path;
+        const nb = neighborLookup?.(p);
 
-    for (let centerIdx = 0; centerIdx < steps.length; centerIdx++) {
-      if (steps[centerIdx] !== normCurrent) continue;
-
-      // Walk Left (Upstream: offset = -1 down to -leftLevels)
-      let currTargetNode = centerNode;
-      for (let offset = -1; offset >= -leftLevels; offset--) {
-        const stepIdx = centerIdx + offset;
-        if (stepIdx < 0) break;
-
-        const stepPath = steps[stepIdx];
-        const upNode = upsertNode(offset, `page:${stepPath}`, {
-          icon: '⬅️',
-          title: stepPath,
-          path: stepPath,
-          visitors: vis,
-          kind: 'upstream_page',
-          href: stepPath,
-          isInternalPage: true,
-        });
-
-        upsertLink(upNode, currTargetNode, vis);
-
-        if (stepIdx === 0) {
-          upNode.entryVis = Math.round((upNode.entryVis + vis) * 100) / 100;
-        } else {
-          upNode.prevVis = Math.round((upNode.prevVis + vis) * 100) / 100;
+        if (nb === undefined) {
+          onMissingNeighbor?.(p);
+          upNode.entryVis = w;
+          upNode.prevVis = 0;
+          continue;
         }
 
-        currTargetNode = upNode;
-      }
+        if (nb && nb.totalVisitors > 0) {
+          const nbTotal = Math.max(1, nb.totalVisitors);
+          upNode.fileVis =
+            Math.round(w * Math.min(1, Math.max(0, nb.pdfDownloadVisitors / nbTotal)) * 100) / 100;
+          upNode.linkVis =
+            Math.round(w * Math.min(1, Math.max(0, nb.outboundLinkVisitors / nbTotal)) * 100) / 100;
 
-      // Walk Right (Downstream: offset = +1 up to +rightLevels)
-      let currSourceNode = centerNode;
-      for (let offset = 1; offset <= rightLevels; offset++) {
-        const stepIdx = centerIdx + offset;
-        if (stepIdx >= steps.length) break;
+          const validUpstream = nb.upstreamPages.filter(
+            (item) => item.visitors > 0 && normalizePath(item.href || item.label) !== p
+          );
+          const sumNbUp = validUpstream.reduce((s, item) => s + item.visitors, 0);
 
-        const stepPath = steps[stepIdx];
-        const downNode = upsertNode(offset, `page:${stepPath}`, {
-          icon: '➡️',
-          title: stepPath,
-          path: stepPath,
-          visitors: vis,
-          kind: 'internal_next',
-          href: stepPath,
-          isInternalPage: true,
-        });
+          if (sumNbUp <= 0) {
+            upNode.entryVis = w;
+            upNode.prevVis = 0;
+          } else {
+            const entryRatio = Math.min(1, Math.max(0, nb.directEntries / nbTotal));
+            upNode.entryVis = Math.round(w * entryRatio * 100) / 100;
+            upNode.prevVis = Math.max(0, Math.round((w - upNode.entryVis) * 100) / 100);
 
-        upsertLink(currSourceNode, downNode, vis);
-
-        if (stepIdx === steps.length - 1) {
-          downNode.exitVis = Math.round((downNode.exitVis + vis) * 100) / 100;
+            if (c > -leftLevels && upNode.prevVis > 0) {
+              for (const prevItem of validUpstream) {
+                const pPath = normalizePath(prevItem.href || prevItem.label);
+                const edgeWeight =
+                  Math.round(upNode.prevVis * (prevItem.visitors / sumNbUp) * 100) / 100;
+                if (edgeWeight >= 0.2) {
+                  const prevNode = upsertNode(c - 1, `page:${pPath}`, {
+                    icon: '⬅️',
+                    title: pPath,
+                    path: pPath,
+                    visitors: edgeWeight,
+                    kind: 'upstream_page',
+                    href: pPath,
+                    isInternalPage: true,
+                  });
+                  upsertLink(prevNode, upNode, edgeWeight);
+                }
+              }
+            }
+          }
         } else {
-          downNode.nextVis = Math.round((downNode.nextVis + vis) * 100) / 100;
+          upNode.entryVis = w;
+          upNode.prevVis = 0;
         }
-
-        currSourceNode = downNode;
       }
     }
-  }
 
-  // Attach step-level File Downloads & Outbound Links to side nodes
-  const stepActions = rootFlow.stepActions ?? {};
-  for (let c = -leftLevels; c <= rightLevels; c++) {
-    if (c === 0) continue;
-    const colNodes = columnsMap.get(c)!;
-    for (const node of colNodes.values()) {
-      const act = stepActions[node.path];
-      if (act) {
-        node.fileVis = Math.min(Math.round(node.visitors), Math.round(act.fileVisitors || 0));
-        node.linkVis = Math.min(Math.round(node.visitors), Math.round(act.linkVisitors || 0));
+    for (const d of rootFlow.downstreamPages) {
+      if (d.visitors <= 0) continue;
+      const dPath = normalizePath(d.href || d.label);
+      if (dPath === normCurrent) continue;
+      const downNode = upsertNode(1, `page:${dPath}`, {
+        icon: '➡️',
+        title: dPath,
+        path: dPath,
+        visitors: d.visitors,
+        kind: 'internal_next',
+        href: dPath,
+        isInternalPage: true,
+      });
+      upsertLink(centerNode, downNode, d.visitors);
+    }
+
+    for (let c = 1; c <= rightLevels; c++) {
+      const colNodes = columnsMap.get(c)!;
+      for (const downNode of colNodes.values()) {
+        const w = downNode.visitors;
+        const p = downNode.path;
+        const nb = neighborLookup?.(p);
+
+        if (nb === undefined) {
+          onMissingNeighbor?.(p);
+          downNode.exitVis = w;
+          downNode.nextVis = 0;
+          continue;
+        }
+
+        if (nb && nb.totalVisitors > 0) {
+          const nbTotal = Math.max(1, nb.totalVisitors);
+          downNode.fileVis =
+            Math.round(w * Math.min(1, Math.max(0, nb.pdfDownloadVisitors / nbTotal)) * 100) / 100;
+          downNode.linkVis =
+            Math.round(w * Math.min(1, Math.max(0, nb.outboundLinkVisitors / nbTotal)) * 100) / 100;
+
+          const validDownstream = nb.downstreamPages.filter(
+            (item) => item.visitors > 0 && normalizePath(item.href || item.label) !== p
+          );
+          const sumNbDown = validDownstream.reduce((s, item) => s + item.visitors, 0);
+
+          if (sumNbDown <= 0) {
+            downNode.exitVis = w;
+            downNode.nextVis = 0;
+          } else {
+            const nextRatio = Math.min(1, Math.max(0, nb.internalNextVisitors / nbTotal));
+            downNode.nextVis = Math.round(w * nextRatio * 100) / 100;
+            downNode.exitVis = Math.max(0, Math.round((w - downNode.nextVis) * 100) / 100);
+
+            if (c < rightLevels && downNode.nextVis > 0) {
+              for (const nextItem of validDownstream) {
+                const nPath = normalizePath(nextItem.href || nextItem.label);
+                const edgeWeight =
+                  Math.round(downNode.nextVis * (nextItem.visitors / sumNbDown) * 100) / 100;
+                if (edgeWeight >= 0.2) {
+                  const nextNode = upsertNode(c + 1, `page:${nPath}`, {
+                    icon: '➡️',
+                    title: nPath,
+                    path: nPath,
+                    visitors: edgeWeight,
+                    kind: 'internal_next',
+                    href: nPath,
+                    isInternalPage: true,
+                  });
+                  upsertLink(downNode, nextNode, edgeWeight);
+                }
+              }
+            }
+          }
+        } else {
+          downNode.exitVis = w;
+          downNode.nextVis = 0;
+        }
+      }
+    }
+  } else {
+    // 1B. Pure Chain-Driven Multi-Level Traversal (L1..L5 Left & Right; each occurrence of normCurrent is a View)
+    const chains = rootFlow.chains ?? [];
+
+    for (const chain of chains) {
+      const steps = chain.steps.map((s) => normalizePath(s));
+      const vis = Math.max(0.1, Math.round(chain.visitors * 100) / 100);
+
+      for (let centerIdx = 0; centerIdx < steps.length; centerIdx++) {
+        if (steps[centerIdx] !== normCurrent) continue;
+
+        // Walk Left (Upstream: offset = -1 down to -leftLevels)
+        let currTargetNode = centerNode;
+        for (let offset = -1; offset >= -leftLevels; offset--) {
+          const stepIdx = centerIdx + offset;
+          if (stepIdx < 0) break;
+
+          const stepPath = steps[stepIdx];
+          const upNode = upsertNode(offset, `page:${stepPath}`, {
+            icon: '⬅️',
+            title: stepPath,
+            path: stepPath,
+            visitors: vis,
+            kind: 'upstream_page',
+            href: stepPath,
+            isInternalPage: true,
+          });
+
+          upsertLink(upNode, currTargetNode, vis);
+
+          if (stepIdx === 0) {
+            upNode.entryVis = Math.round((upNode.entryVis + vis) * 100) / 100;
+          } else {
+            upNode.prevVis = Math.round((upNode.prevVis + vis) * 100) / 100;
+          }
+
+          currTargetNode = upNode;
+        }
+
+        // Walk Right (Downstream: offset = +1 up to +rightLevels)
+        let currSourceNode = centerNode;
+        for (let offset = 1; offset <= rightLevels; offset++) {
+          const stepIdx = centerIdx + offset;
+          if (stepIdx >= steps.length) break;
+
+          const stepPath = steps[stepIdx];
+          const downNode = upsertNode(offset, `page:${stepPath}`, {
+            icon: '➡️',
+            title: stepPath,
+            path: stepPath,
+            visitors: vis,
+            kind: 'internal_next',
+            href: stepPath,
+            isInternalPage: true,
+          });
+
+          upsertLink(currSourceNode, downNode, vis);
+
+          if (stepIdx === steps.length - 1) {
+            downNode.exitVis = Math.round((downNode.exitVis + vis) * 100) / 100;
+          } else {
+            downNode.nextVis = Math.round((downNode.nextVis + vis) * 100) / 100;
+          }
+
+          currSourceNode = downNode;
+        }
+      }
+    }
+
+    // Attach step-level File Downloads & Outbound Links to side nodes
+    const stepActions = rootFlow.stepActions ?? {};
+    for (let c = -leftLevels; c <= rightLevels; c++) {
+      if (c === 0) continue;
+      const colNodes = columnsMap.get(c)!;
+      for (const node of colNodes.values()) {
+        const act = stepActions[node.path];
+        if (act) {
+          node.fileVis = Math.min(Math.round(node.visitors), Math.round(act.fileVisitors || 0));
+          node.linkVis = Math.min(Math.round(node.visitors), Math.round(act.linkVisitors || 0));
+        }
       }
     }
   }
@@ -801,26 +956,80 @@ export function renderVisitorFlowSankey(
   renderGenerationMap.set(container, generation);
 
   const normCurrent = normalizePath(currentPath);
+  const controlScope =
+    container.closest<HTMLElement>('#dev-studio-root') ??
+    container.closest<HTMLElement>('#dev-analytics-container') ??
+    container.closest<HTMLElement>('#dev-analytics-fullview') ??
+    container;
 
-  if (!flow || flow.totalVisitors <= 0) {
-    container.innerHTML = `
-      <div class="w-full h-full flex items-center justify-center p-8 bg-zinc-950 font-mono text-xs text-zinc-300">
-        <div class="p-6 rounded-xl bg-zinc-900 border border-zinc-700 text-center max-w-md">
-          No visitor flow transitions recorded for <span class="text-white font-bold">${escapeHtml(normCurrent)}</span> in the selected period.
-        </div>
-      </div>
-    `;
-    return;
+  let levels = getStoredLevel(LEFT_LEVELS_STORAGE_KEY, 2);
+  let leftLevels = levels;
+  let rightLevels = levels;
+  let modelMode: SankeyModelMode = getStoredModelMode();
+
+  if (context?.markovFlow) {
+    markovNeighborCache.set(`${period}:${normCurrent}`, context.markovFlow);
   }
 
-  let leftLevels = getStoredLevel(LEFT_LEVELS_STORAGE_KEY, 2);
-  let rightLevels = getStoredLevel(RIGHT_LEVELS_STORAGE_KEY, 2);
-  let density: SankeyCardDensity = getStoredDensity();
-  let shouldCenterStage = true;
-  let userCenterOffsetFromVpMid = 0;
-  let lastObservedViewportWidth = 0;
+  const syncTopBarButtons = (): void => {
+    controlScope
+      .querySelectorAll<HTMLButtonElement>('[data-sankey-model]')
+      .forEach((btn) => {
+        const mode = btn.getAttribute('data-sankey-model');
+        const isActive = mode === modelMode;
+        btn.className = isActive
+          ? 'h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 cursor-pointer'
+          : 'h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white cursor-pointer';
+      });
+    controlScope
+      .querySelectorAll<HTMLElement>('[data-sankey-level-label]')
+      .forEach((lbl) => {
+        lbl.textContent = `±${levels}`;
+      });
+    controlScope
+      .querySelectorAll<HTMLButtonElement>('[data-sankey-level-delta]')
+      .forEach((btn) => {
+        const delta = Number(btn.getAttribute('data-sankey-level-delta') || 0);
+        btn.disabled = (delta < 0 && levels <= 1) || (delta > 0 && levels >= 5);
+      });
+  };
+  syncTopBarButtons();
 
-  const controlScope = container.closest<HTMLElement>('#dev-analytics-fullview') ?? container;
+  const isSameActivePath =
+    container.getAttribute('data-sankey-active-path') === normCurrent &&
+    container.getAttribute('data-sankey-centered') === 'true';
+  let shouldCenterStage = !isSameActivePath;
+  let userCenterOffsetFromVpMid = isSameActivePath
+    ? parseFloat(container.getAttribute('data-sankey-user-offset') || '0') || 0
+    : 0;
+  if (!isSameActivePath) {
+    container.setAttribute('data-sankey-active-path', normCurrent);
+    container.setAttribute('data-sankey-centered', 'false');
+    container.setAttribute('data-sankey-user-offset', '0');
+  }
+  let lastObservedViewportWidth = 0;
+  let isProgrammaticScroll = false;
+  let isUserHorizScrollActive = false;
+  let userScrollEndTimer: number | null = null;
+
+  const clearUserHorizScrollActive = (): void => {
+    isUserHorizScrollActive = false;
+    if (userScrollEndTimer !== null) {
+      window.clearTimeout(userScrollEndTimer);
+      userScrollEndTimer = null;
+    }
+  };
+
+  const markUserHorizScrollActive = (durationMs: number = 250): void => {
+    isUserHorizScrollActive = true;
+    if (userScrollEndTimer !== null) {
+      window.clearTimeout(userScrollEndTimer);
+    }
+    userScrollEndTimer = window.setTimeout(() => {
+      isUserHorizScrollActive = false;
+      userScrollEndTimer = null;
+    }, durationMs);
+  };
 
   const ensureMultiHopDataAndRender = async (): Promise<void> => {
     if (renderGenerationMap.get(container) !== generation) return;
@@ -836,16 +1045,82 @@ export function renderVisitorFlowSankey(
       activeResizeObservers.delete(container);
     }
 
-    const prevViewportEl = container.querySelector<HTMLElement>('[data-sankey-scroll-viewport]');
-    const prevCenterColEl = container.querySelector<HTMLElement>('[data-sankey-col="0"]');
-    const prevCenterScreenX =
-      !shouldCenterStage &&
-      prevViewportEl &&
-      prevCenterColEl &&
-      prevViewportEl.clientWidth > 0
-        ? prevCenterColEl.getBoundingClientRect().left -
-          prevViewportEl.getBoundingClientRect().left
-        : null;
+    syncTopBarButtons();
+    const activeFlow = modelMode === 'markov' ? (context?.markovFlow ?? flow) : flow;
+
+    if (!activeFlow || activeFlow.totalVisitors <= 0) {
+      const onEmptyControlClick = (e: Event): void => {
+        if (renderGenerationMap.get(container) !== generation) return;
+        const target = e.target as HTMLElement | null;
+        const modelBtn = target?.closest<HTMLButtonElement>('[data-sankey-model]');
+        if (modelBtn) {
+          e.preventDefault();
+          const nextModel = modelBtn.getAttribute('data-sankey-model') as SankeyModelMode | null;
+          if ((nextModel === 'flow' || nextModel === 'markov') && nextModel !== modelMode) {
+            modelMode = nextModel;
+            setStoredModelMode(modelMode);
+            renderStageDom();
+          }
+          return;
+        }
+        const levelDeltaBtn = target?.closest<HTMLButtonElement>('[data-sankey-level-delta]');
+        if (levelDeltaBtn) {
+          e.preventDefault();
+          const delta = Number(levelDeltaBtn.getAttribute('data-sankey-level-delta') || 0);
+          const next = clampLevel(levels + delta);
+          if (next !== levels) {
+            levels = next;
+            leftLevels = levels;
+            rightLevels = levels;
+            setStoredLevel(LEFT_LEVELS_STORAGE_KEY, levels);
+            setStoredLevel(RIGHT_LEVELS_STORAGE_KEY, levels);
+            syncTopBarButtons();
+          }
+        }
+      };
+      const prevHandler = (
+        controlScope as HTMLElement & { __sankeyControlHandler?: (ev: Event) => void }
+      ).__sankeyControlHandler;
+      if (prevHandler) {
+        controlScope.removeEventListener('click', prevHandler);
+      }
+      (
+        controlScope as HTMLElement & { __sankeyControlHandler?: (ev: Event) => void }
+      ).__sankeyControlHandler = onEmptyControlClick;
+      controlScope.addEventListener('click', onEmptyControlClick);
+
+      const emptyHeadline =
+        modelMode === 'markov'
+          ? 'No Markov Page Traffic Recorded…'
+          : 'Waiting for Flow Telemetry…';
+      const emptySubtext =
+        modelMode === 'markov'
+          ? `No historical pageviews or transitions recorded for <span class="text-white font-bold">${escapeHtml(normCurrent)}</span> in the selected <span class="text-emerald-300 font-bold">${escapeHtml(period)}</span> window yet.`
+          : `No span-traced visitor flows (<code class="px-1 py-0.5 rounded bg-zinc-800 text-emerald-300">flow_id</code> / <code class="px-1 py-0.5 rounded bg-zinc-800 text-emerald-300">flow_step</code>) recorded for <span class="text-white font-bold">${escapeHtml(normCurrent)}</span> in the selected <span class="text-emerald-300 font-bold">${escapeHtml(period)}</span> window yet.`;
+
+      container.innerHTML = `
+        <div
+          class="w-full h-full flex items-center justify-center p-8 font-mono text-xs text-zinc-100 select-none"
+          style="background-color: rgb(${COL_BG_OUTER_RGB[0]}, ${COL_BG_OUTER_RGB[1]}, ${COL_BG_OUTER_RGB[2]});"
+        >
+          <div class="p-6 rounded-2xl bg-zinc-700/90 border border-zinc-400/80 text-center max-w-md shadow-xl flex flex-col items-center gap-4">
+            <div class="relative flex items-center justify-center w-14 h-14">
+              <span class="absolute inset-0 rounded-full bg-emerald-400/25 animate-ping"></span>
+              <span class="absolute inset-2 rounded-full bg-emerald-400/30 animate-pulse"></span>
+              <span class="relative w-8 h-8 rounded-full bg-zinc-800 border border-emerald-400/80 flex items-center justify-center text-sm shadow-md">📡</span>
+            </div>
+            <div class="space-y-1.5">
+              <div class="text-sm font-bold text-white tracking-wide">${emptyHeadline}</div>
+              <div class="text-xs text-zinc-200 leading-relaxed">
+                ${emptySubtext}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
     const prevScrollTopByCol = new Map<string, number>();
     container.querySelectorAll<HTMLElement>('[data-sankey-col]').forEach((colEl) => {
       const colKey = colEl.getAttribute('data-sankey-col');
@@ -857,26 +1132,19 @@ export function renderVisitorFlowSankey(
 
     const { columns, links } = buildMultiLevelSankeyGraph(
       normCurrent,
-      flow,
+      activeFlow,
       leftLevels,
-      rightLevels
+      rightLevels,
+      modelMode,
+      (p) => markovNeighborCache.get(`${period}:${normalizePath(p)}`),
+      (p) => {
+        fetchMarkovNeighbor(p, period, () => {
+          if (renderGenerationMap.get(container) === generation) {
+            renderStageDom();
+          }
+        });
+      }
     );
-
-    // Sync Cockpit Header Bar controls if present in controlScope
-    const leftBadgeEl = controlScope.querySelector<HTMLElement>('[data-sankey-left-badge]');
-    const rightBadgeEl = controlScope.querySelector<HTMLElement>('[data-sankey-right-badge]');
-    if (leftBadgeEl) leftBadgeEl.textContent = `${leftLevels}L`;
-    if (rightBadgeEl) rightBadgeEl.textContent = `${rightLevels}R`;
-
-    controlScope
-      .querySelectorAll<HTMLButtonElement>('[data-sankey-density]')
-      .forEach((btn) => {
-        const mode = btn.getAttribute('data-sankey-density');
-        const isActive = mode === density;
-        btn.className = isActive
-          ? 'px-2 py-1 rounded font-bold bg-emerald-500/30 border border-emerald-400 text-emerald-200 transition-colors cursor-pointer'
-          : 'px-2 py-1 rounded font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer';
-      });
 
     const renderMediaBox = (
       node: SankeyGraphNode,
@@ -884,20 +1152,19 @@ export function renderVisitorFlowSankey(
     ): string => {
       const thumbUrl = node.pageMeta?.image;
       if (thumbUrl) {
-        return `<img class="sankey-node-thumb ${sizeClass} object-cover rounded-lg border border-zinc-700 shrink-0" src="${escapeHtml(thumbUrl)}" alt="" loading="eager" />`;
+        return `<img class="sankey-node-thumb ${sizeClass} object-cover rounded-lg border border-zinc-400/80 shrink-0" src="${escapeHtml(thumbUrl)}" alt="" loading="eager" />`;
       }
-      return `<span class="sankey-node-emoji-box ${sizeClass} rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0" data-emoji="${escapeHtml(node.icon)}">${escapeHtml(node.icon)}</span>`;
+      return `<span class="sankey-node-emoji-box ${sizeClass} rounded-lg bg-zinc-700/90 border border-zinc-400/80 flex items-center justify-center shrink-0" data-emoji="${escapeHtml(node.icon)}">${escapeHtml(node.icon)}</span>`;
     };
 
     const renderCenterInspectorCard = (node: SankeyGraphNode): string => {
-      const totalViews = Math.max(1, flow.totalVisitors);
-      const uniqueVisitors =
-        flow.uniqueVisitors ?? context?.visitors ?? flow.totalVisitors;
+      const totalViews = Math.max(1, activeFlow.totalVisitors);
+      const uniqueVisitors = activeFlow.uniqueVisitors ?? activeFlow.totalVisitors;
       const entryVis = node.entryVis;
-      const prevVis = flow.internalUpstreamVisitors;
-      const nextVis = flow.internalNextVisitors;
-      const bounceVis = flow.bounceVisitors ?? 0;
-      const exitVis = flow.exitVisitors ?? 0;
+      const prevVis = activeFlow.internalUpstreamVisitors;
+      const nextVis = activeFlow.internalNextVisitors;
+      const bounceVis = activeFlow.bounceVisitors ?? 0;
+      const exitVis = activeFlow.exitVisitors ?? 0;
 
       const entryPct = Math.min(100, Math.round((entryVis / totalViews) * 100));
       const prevPct = Math.min(100, Math.round((prevVis / totalViews) * 100));
@@ -908,22 +1175,17 @@ export function renderVisitorFlowSankey(
       const filePct = Math.min(100, Math.round((node.fileVis / totalViews) * 100));
       const linkPct = Math.min(100, Math.round((node.linkVis / totalViews) * 100));
 
-      const untrackedVis = flow.untrackedVisitors ?? 0;
-      const untrackedPct = Math.min(
-        100,
-        Math.round(flow.untrackedRate ?? (untrackedVis / totalViews) * 100)
-      );
-
       const durationStr = formatDurationSeconds(context?.visitDuration);
 
-      const entrySources = flow.inboundSources.slice(0, 4);
+      const entrySources = activeFlow.inboundSources.slice(0, 4);
       const entrySourcesHtml =
         entrySources.length > 0
-          ? `<div class="flex flex-wrap gap-1 pt-1 border-t border-zinc-700/70">
+          ? `<div class="flex flex-wrap gap-1 pt-1 border-t border-zinc-500/70">
               ${entrySources
                 .map((s) => {
                   const cleanLabel = s.label === 'Direct / None' ? 'Direct' : s.label;
-                  return `<span class="sankey-ext-pill px-1.5 py-0.5 rounded bg-emerald-950/90 border border-emerald-500/30 text-emerald-200" title="Entry Source: ${escapeHtml(cleanLabel)} (${formatVisitorCount(s.visitors)} visitors)">${escapeHtml(cleanLabel)}: ${formatVisitorCount(s.visitors)}</span>`;
+                  const srcPct = Math.min(100, Math.round((s.visitors / totalViews) * 100));
+                  return `<span class="sankey-ext-pill px-1.5 py-0.5 rounded bg-emerald-950/70 border border-emerald-400/50 text-emerald-200" title="Entry Source: ${escapeHtml(cleanLabel)} — ${srcPct}% (${formatVisitorCount(s.visitors)} visitors)">${escapeHtml(cleanLabel)}: ${srcPct}%</span>`;
                 })
                 .join('')}
             </div>`
@@ -935,38 +1197,40 @@ export function renderVisitorFlowSankey(
           ? queries
               .map(
                 (q) => `
-                <div class="flex items-center justify-between text-zinc-200 bg-zinc-900/90 px-2 py-0.5 rounded">
+                <div class="flex items-center justify-between text-zinc-100 bg-zinc-800/75 px-2 py-0.5 rounded">
                   <span class="truncate pr-2" title="${escapeHtml(q.query)}">"${escapeHtml(q.query)}"</span>
                   <span class="shrink-0 text-emerald-300">${q.clicks}c · ${q.impressions}i · <strong class="text-amber-200">#${q.position.toFixed(1)}</strong></span>
                 </div>
               `
               )
               .join('')
-          : `<div class="text-zinc-400 italic text-[11px]">No organic search queries recorded in period</div>`;
+          : `<div class="text-zinc-300 italic text-[11px]">No organic search queries recorded in period</div>`;
 
       const fileItemsHtml =
-        flow.pdfDownloads.length > 0
-          ? `<div class="text-sky-100 pt-1 border-t border-zinc-700/70 space-y-0.5">
-              ${flow.pdfDownloads
+        activeFlow.pdfDownloads.length > 0
+          ? `<div class="text-sky-100 pt-1 border-t border-zinc-500/70 space-y-0.5">
+              ${activeFlow.pdfDownloads
                 .slice(0, 3)
                 .map((item) => {
                   const hasHref = Boolean(item.href);
                   const cls = hasHref ? 'cursor-pointer hover:underline' : '';
-                  return `<div class="truncate ${cls}" ${hasHref ? `data-external-href="${escapeHtml(item.href!)}"` : ''} title="File: ${escapeHtml(item.label)} (${formatVisitorCount(item.visitors)} visitors)">· ${escapeHtml(item.label)} (${formatVisitorCount(item.visitors)})</div>`;
+                  const itemPct = Math.min(100, Math.round((item.visitors / totalViews) * 100));
+                  return `<div class="truncate ${cls}" ${hasHref ? `data-external-href="${escapeHtml(item.href!)}"` : ''} title="File: ${escapeHtml(item.label)} — ${itemPct}% (${formatVisitorCount(item.visitors)} visitors)">· ${escapeHtml(item.label)} (${itemPct}%)</div>`;
                 })
                 .join('')}
             </div>`
           : '';
 
       const outboundItemsHtml =
-        flow.outboundLinks.length > 0
-          ? `<div class="text-purple-100 pt-1 border-t border-zinc-700/70 space-y-0.5">
-              ${flow.outboundLinks
+        activeFlow.outboundLinks.length > 0
+          ? `<div class="text-purple-100 pt-1 border-t border-zinc-500/70 space-y-0.5">
+              ${activeFlow.outboundLinks
                 .slice(0, 3)
                 .map((item) => {
                   const hasHref = Boolean(item.href);
                   const cls = hasHref ? 'cursor-pointer hover:underline' : '';
-                  return `<div class="truncate ${cls}" ${hasHref ? `data-external-href="${escapeHtml(item.href!)}"` : ''} title="Outbound Link: ${escapeHtml(item.href || item.label)} (${formatVisitorCount(item.visitors)} visitors)">↗ ${escapeHtml(item.label)} (${formatVisitorCount(item.visitors)})</div>`;
+                  const itemPct = Math.min(100, Math.round((item.visitors / totalViews) * 100));
+                  return `<div class="truncate ${cls}" ${hasHref ? `data-external-href="${escapeHtml(item.href!)}"` : ''} title="Outbound Link: ${escapeHtml(item.href || item.label)} — ${itemPct}% (${formatVisitorCount(item.visitors)} visitors)">↗ ${escapeHtml(item.label)} (${itemPct}%)</div>`;
                 })
                 .join('')}
             </div>`
@@ -1031,13 +1295,13 @@ export function renderVisitorFlowSankey(
       const scrollGridLinesHtml = [0.25, 0.5, 0.75]
         .map((frac) => {
           const gy = (svgPadT + frac * svgPlotH).toFixed(1);
-          return `<line x1="${svgPadL}" y1="${gy}" x2="${svgPadL + svgPlotW}" y2="${gy}" stroke="rgba(63, 63, 70, 0.5)" stroke-width="1" stroke-dasharray="2 2" />`;
+          return `<line x1="${svgPadL}" y1="${gy}" x2="${svgPadL + svgPlotW}" y2="${gy}" stroke="rgba(161, 161, 170, 0.35)" stroke-width="1" stroke-dasharray="2 2" />`;
         })
         .join('');
       const scrollDotsHtml = scrollPts
         .map(
           (p) =>
-            `<circle class="sankey-chart-dot sankey-scroll-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.3" fill="rgb(52, 211, 153)" stroke="rgb(9, 9, 11)" stroke-width="1"><title>Scroll depth ≥ ${p.depth}%: ${p.reachPct}% of readers</title></circle>`
+            `<circle class="sankey-chart-dot sankey-scroll-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.3" fill="rgb(52, 211, 153)" stroke="rgb(63, 63, 70)" stroke-width="1"><title>Scroll depth ≥ ${p.depth}%: ${p.reachPct}% of readers</title></circle>`
         )
         .join('');
 
@@ -1086,7 +1350,7 @@ export function renderVisitorFlowSankey(
       const trafficDotsHtml = trafficPts
         .map(
           (p) =>
-            `<circle class="sankey-chart-dot" cx="${p.x.toFixed(1)}" cy="${p.yViews.toFixed(1)}" r="2" fill="rgb(52, 211, 153)" stroke="rgb(9, 9, 11)" stroke-width="0.8"><title>${escapeHtml(p.date || period)}: ${formatVisitorCount(p.pageviews)} Views · ${formatVisitorCount(p.visitors)} Visitors</title></circle>`
+            `<circle class="sankey-chart-dot" cx="${p.x.toFixed(1)}" cy="${p.yViews.toFixed(1)}" r="2" fill="rgb(52, 211, 153)" stroke="rgb(63, 63, 70)" stroke-width="0.8"><title>${escapeHtml(p.date || period)}: ${formatVisitorCount(p.pageviews)} Views · ${formatVisitorCount(p.visitors)} Visitors</title></circle>`
         )
         .join('');
 
@@ -1112,7 +1376,7 @@ export function renderVisitorFlowSankey(
           data-node-path="${escapeHtml(node.path)}"
           data-node-badge="100% (${formatVisitorCount(totalViews)})"
           data-visitors="${totalViews}"
-          class="sankey-node sankey-card relative z-30 overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-500/90 px-3.5 py-3 flex flex-col gap-2 font-mono text-xs shrink-0 shadow-2xl transition-opacity"
+          class="sankey-node sankey-card relative z-30 overflow-hidden rounded-2xl bg-zinc-600/95 border-2 border-zinc-300 px-3.5 py-3 flex flex-col gap-2 font-mono text-xs shrink-0 shadow-xl transition-opacity"
         >
           <!-- Above Divider: Thumbnail/Emoji + Title & Path + 100% Views Badge -->
           <div class="flex items-center justify-between gap-2">
@@ -1120,43 +1384,43 @@ export function renderVisitorFlowSankey(
               ${renderMediaBox(node, 'w-9 h-9')}
               <div class="min-w-0 leading-tight">
                 <div class="font-bold text-white truncate" title="${escapeHtml(node.title)}">${escapeHtml(node.title)}</div>
-                <div class="text-xs text-zinc-400 truncate mt-0.5">${escapeHtml(node.path)}</div>
+                <div class="text-xs text-zinc-200 truncate mt-0.5">${escapeHtml(node.path)}</div>
               </div>
             </div>
-            <span class="px-2 py-0.5 rounded-md bg-zinc-800 border border-zinc-500 text-white font-bold shrink-0" title="100% (${formatVisitorCount(totalViews)} Views)">100% (${formatVisitorCount(totalViews)})</span>
+            <span class="px-2 py-0.5 rounded-md bg-zinc-700 border border-zinc-400 text-white font-bold shrink-0" title="100% (${formatVisitorCount(totalViews)} Views)">100% (${formatVisitorCount(totalViews)})</span>
           </div>
 
-          <div class="flex items-center justify-between px-2.5 py-1 rounded-lg bg-zinc-800/80 border border-zinc-700 text-zinc-300">
+          <div class="flex items-center justify-between px-2.5 py-1 rounded-lg bg-zinc-700/80 border border-zinc-400/70 text-zinc-100">
             <span>👤 Visitors: <strong class="text-white">${formatVisitorCount(uniqueVisitors)}</strong></span>
-            <span>⏱️ Avg Duration: <strong class="text-white">${durationStr}</strong></span>
+            <span>⏱️ <strong class="text-white">${durationStr}</strong></span>
           </div>
 
-          <div class="space-y-2 pt-1.5 border-t border-zinc-700/80">
+          <div class="space-y-2 pt-1.5 border-t border-zinc-400/60">
             <!-- 1. INFLOW SPLIT BAR (Entry vs. Prev) + Entry Sources & Google Search Queries -->
-            <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="🚪 Entry ${entryPct}% (${formatVisitorCount(entryVis)})" data-ext-metrics="⬅️ Prev ${prevPct}% (${formatVisitorCount(prevVis)})">
+            <div class="sankey-ext-block rounded-lg bg-zinc-700/75 border border-zinc-400/60 p-2 space-y-1.5" data-ext-header="🚪 Entry ${entryPct}%" data-ext-metrics="⬅️ Prev ${prevPct}%">
               <div class="flex items-center justify-between text-xs">
-                <span class="text-emerald-300 font-bold">🚪 Entry ${entryPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(entryVis)})</span></span>
-                <span class="text-amber-300 font-bold">⬅️ Prev ${prevPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(prevVis)})</span></span>
+                <span class="text-emerald-300 font-bold" title="Entry: ${entryPct}% (${formatVisitorCount(entryVis)})">🚪 Entry ${entryPct}%</span>
+                <span class="text-amber-300 font-bold" title="Prev: ${prevPct}% (${formatVisitorCount(prevVis)})">⬅️ Prev ${prevPct}%</span>
               </div>
-              <div class="sankey-bar-track w-full h-2 rounded-full bg-zinc-950 overflow-hidden flex gap-0.5">
+              <div class="sankey-bar-track w-full h-2 rounded-full bg-zinc-800/90 overflow-hidden flex gap-0.5" title="Entry: ${entryPct}% (${formatVisitorCount(entryVis)}) · Prev: ${prevPct}% (${formatVisitorCount(prevVis)})">
                 <div class="sankey-bar-fill h-full bg-emerald-400" data-bar-rgb="rgb(52, 211, 153)" style="width: ${entryPct}%"></div>
                 <div class="sankey-bar-fill h-full bg-amber-400" data-bar-rgb="rgb(251, 191, 36)" style="width: ${prevPct}%"></div>
               </div>
               ${entrySourcesHtml}
-              <div class="pt-1.5 border-t border-zinc-700/70 space-y-1">
+              <div class="pt-1.5 border-t border-zinc-500/70 space-y-1">
                 <div class="text-emerald-300 font-bold">🔍 Google Search Queries:</div>
                 ${queriesRowsHtml}
               </div>
             </div>
 
             <!-- 2. OUTFLOW & TERMINATION SPLIT BAR (Next vs. Bounce vs. Exit) -->
-            <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="➡️ Next ${nextPct}% (${formatVisitorCount(nextVis)})" data-ext-metrics="💥 Bounce ${bouncePct}% (${formatVisitorCount(bounceVis)}) · ↩️ Exit ${exitPct}% (${formatVisitorCount(exitVis)})">
+            <div class="sankey-ext-block rounded-lg bg-zinc-700/75 border border-zinc-400/60 p-2 space-y-1.5" data-ext-header="➡️ Next ${nextPct}%" data-ext-metrics="💥 Bounce ${bouncePct}% · ↩️ Exit ${exitPct}%">
               <div class="flex items-center justify-between gap-1 text-xs">
-                <span class="text-emerald-300 font-bold">➡️ Next ${nextPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(nextVis)})</span></span>
-                <span class="text-orange-300 font-bold">💥 Bounce ${bouncePct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(bounceVis)})</span></span>
-                <span class="text-rose-300 font-bold">↩️ Exit ${exitPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(exitVis)})</span></span>
+                <span class="text-emerald-300 font-bold" title="Next: ${nextPct}% (${formatVisitorCount(nextVis)})">➡️ Next ${nextPct}%</span>
+                <span class="text-orange-300 font-bold" title="Bounce: ${bouncePct}% (${formatVisitorCount(bounceVis)})">💥 Bounce ${bouncePct}%</span>
+                <span class="text-rose-300 font-bold" title="Exit: ${exitPct}% (${formatVisitorCount(exitVis)})">↩️ Exit ${exitPct}%</span>
               </div>
-              <div class="sankey-bar-track w-full h-2 rounded-full bg-zinc-950 overflow-hidden flex gap-0.5" title="Next: ${nextPct}% (${formatVisitorCount(nextVis)}) · Bounce: ${bouncePct}% (${formatVisitorCount(bounceVis)}) · Exit: ${exitPct}% (${formatVisitorCount(exitVis)})">
+              <div class="sankey-bar-track w-full h-2 rounded-full bg-zinc-800/90 overflow-hidden flex gap-0.5" title="Next: ${nextPct}% (${formatVisitorCount(nextVis)}) · Bounce: ${bouncePct}% (${formatVisitorCount(bounceVis)}) · Exit: ${exitPct}% (${formatVisitorCount(exitVis)})">
                 <div class="sankey-bar-fill h-full bg-emerald-400" data-bar-rgb="rgb(52, 211, 153)" style="width: ${nextPct}%"></div>
                 <div class="sankey-bar-fill h-full bg-orange-400" data-bar-rgb="rgb(251, 146, 60)" style="width: ${bouncePct}%"></div>
                 <div class="sankey-bar-fill h-full bg-rose-500" data-bar-rgb="rgb(244, 63, 94)" style="width: ${exitPct}%"></div>
@@ -1164,90 +1428,74 @@ export function renderVisitorFlowSankey(
             </div>
 
             <!-- 3. DAILY TRAFFIC LINE CHART (Views & Visitors over Period) -->
-            <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="📈 Daily Traffic (${escapeHtml(period)})" data-ext-metrics="Peak: ${formatVisitorCount(peakViews)}v / ${formatVisitorCount(peakVisitors)}u · Avg: ${avgViews}v/d">
+            <div class="sankey-ext-block rounded-lg bg-zinc-700/75 border border-zinc-400/60 p-2 space-y-1.5" data-ext-header="📈 Daily Traffic" data-ext-metrics="Peak: ${formatVisitorCount(peakViews)}v / ${formatVisitorCount(peakVisitors)}u · Avg: ${avgViews}v/d">
               <div class="flex items-center justify-between text-xs">
-                <span class="font-bold text-emerald-300">📈 Daily Traffic (${escapeHtml(period)})</span>
-                <span class="text-zinc-300">Peak: <strong class="text-emerald-300">${formatVisitorCount(peakViews)}v</strong> / <strong class="text-sky-300">${formatVisitorCount(peakVisitors)}u</strong> · Avg: <strong class="text-white">${avgViews}v/d</strong></span>
+                <span class="font-bold text-emerald-300">📈 Daily Traffic</span>
+                <span class="text-zinc-100">Peak: <strong class="text-emerald-300">${formatVisitorCount(peakViews)}v</strong> / <strong class="text-sky-300">${formatVisitorCount(peakVisitors)}u</strong> · Avg: <strong class="text-white">${avgViews}v/d</strong></span>
               </div>
               <svg
-                class="sankey-inline-chart-svg sankey-traffic-line-svg w-full h-14 rounded bg-zinc-950 border border-zinc-800/90 overflow-visible"
+                class="sankey-inline-chart-svg sankey-traffic-line-svg w-full h-14 rounded bg-zinc-800/85 border border-zinc-500/80 overflow-visible"
                 viewBox="0 0 320 56"
                 preserveAspectRatio="none"
                 role="img"
-                aria-label="Daily Traffic Line Chart (${escapeHtml(period)})"
+                aria-label="Daily Traffic Line Chart"
               >
                 ${scrollGridLinesHtml}
-                <path class="sankey-chart-area" d="${trafficViewsAreaD}" fill="rgba(52, 211, 153, 0.18)" />
+                <path class="sankey-chart-area" d="${trafficViewsAreaD}" fill="rgba(52, 211, 153, 0.22)" />
                 <path class="sankey-chart-line" d="${trafficVisLineD}" fill="none" stroke="rgb(56, 189, 248)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
                 <path class="sankey-chart-line" d="${trafficViewsLineD}" fill="none" stroke="rgb(52, 211, 153)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                 ${trafficDotsHtml}
               </svg>
-              <div class="flex items-center justify-between text-[9px] text-zinc-400 px-0.5 leading-none">
+              <div class="flex items-center justify-between text-[9px] text-zinc-200 px-0.5 leading-none">
                 ${trafficDateLabelsHtml}
               </div>
             </div>
 
             <!-- 4. SCROLL DEPTH RETENTION LINE CHART (0%..100% in 10% steps) -->
-            <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="📜 Scroll Depth" data-ext-metrics="Med: ${medStr} · Read: ${readStr}">
+            <div class="sankey-ext-block rounded-lg bg-zinc-700/75 border border-zinc-400/60 p-2 space-y-1.5" data-ext-header="📜 Scroll Depth" data-ext-metrics="Med: ${medStr} · Read: ${readStr}">
               <div class="flex items-center justify-between text-xs">
                 <span class="font-bold text-cyan-200">📜 Scroll Depth</span>
-                <span class="text-zinc-300">⭐ Med: <strong class="text-amber-300">${medStr}</strong> · Read: <strong class="text-emerald-300">${readStr}</strong></span>
+                <span class="text-zinc-100">⭐ Med: <strong class="text-amber-300">${medStr}</strong> · Read: <strong class="text-emerald-300">${readStr}</strong></span>
               </div>
               <svg
-                class="sankey-inline-chart-svg sankey-scroll-line-svg w-full h-14 rounded bg-zinc-950 border border-zinc-800/90 overflow-visible"
+                class="sankey-inline-chart-svg sankey-scroll-line-svg w-full h-14 rounded bg-zinc-800/85 border border-zinc-500/80 overflow-visible"
                 viewBox="0 0 320 56"
                 preserveAspectRatio="none"
                 role="img"
                 aria-label="Scroll Depth Retention Line Chart (0% to 100% in 10% steps)"
               >
                 ${scrollGridLinesHtml}
-                <path class="sankey-chart-area sankey-scroll-area-path" d="${scrollAreaD}" fill="rgba(34, 211, 238, 0.18)" />
+                <path class="sankey-chart-area sankey-scroll-area-path" d="${scrollAreaD}" fill="rgba(34, 211, 238, 0.22)" />
                 <path class="sankey-chart-line sankey-scroll-line-path" d="${scrollLineD}" fill="none" stroke="rgb(34, 211, 238)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 ${scrollDotsHtml}
               </svg>
-              <div class="flex items-center justify-between text-[9px] text-zinc-400 px-0.5 leading-none">
+              <div class="flex items-center justify-between text-[9px] text-zinc-200 px-0.5 leading-none">
                 <span>0%</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50%</span><span>60</span><span>70</span><span>80</span><span>90</span><span>100%</span>
               </div>
             </div>
 
-            <!-- 4. FILE DOWNLOADS BAR + DETAIL ITEMS -->
-            <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="📄 File Downloads" data-ext-metrics="${filePct}% (${formatVisitorCount(node.fileVis)})">
+            <!-- 5. FILE DOWNLOADS BAR + DETAIL ITEMS -->
+            <div class="sankey-ext-block rounded-lg bg-zinc-700/75 border border-zinc-400/60 p-2 space-y-1.5" data-ext-header="📄 File Downloads" data-ext-metrics="${filePct}%">
               <div class="flex items-center justify-between font-bold text-sky-200">
                 <span>📄 File Downloads</span>
-                <span class="text-white">${filePct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(node.fileVis)})</span></span>
+                <span class="text-white" title="${filePct}% (${formatVisitorCount(node.fileVis)} visitors)">${filePct}%</span>
               </div>
-              <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-950 overflow-hidden">
+              <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-800/90 overflow-hidden">
                 <div class="sankey-bar-fill h-full bg-sky-400 rounded-full" data-bar-rgb="rgb(56, 189, 248)" style="width: ${filePct}%"></div>
               </div>
               ${fileItemsHtml}
             </div>
 
-            <!-- 4. OUTBOUND LINKS BAR + DETAIL ITEMS -->
-            <div class="sankey-ext-block rounded-lg bg-zinc-800/60 border border-zinc-700/90 p-2 space-y-1.5" data-ext-header="↗ Outbound Links" data-ext-metrics="${linkPct}% (${formatVisitorCount(node.linkVis)})">
+            <!-- 6. OUTBOUND LINKS BAR + DETAIL ITEMS -->
+            <div class="sankey-ext-block rounded-lg bg-zinc-700/75 border border-zinc-400/60 p-2 space-y-1.5" data-ext-header="↗ Outbound Links" data-ext-metrics="${linkPct}%">
               <div class="flex items-center justify-between font-bold text-purple-200">
                 <span>↗ Outbound Links</span>
-                <span class="text-white">${linkPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(node.linkVis)})</span></span>
+                <span class="text-white" title="${linkPct}% (${formatVisitorCount(node.linkVis)} visitors)">${linkPct}%</span>
               </div>
-              <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-950 overflow-hidden">
+              <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-800/90 overflow-hidden">
                 <div class="sankey-bar-fill h-full bg-purple-400 rounded-full" data-bar-rgb="rgb(192, 132, 252)" style="width: ${linkPct}%"></div>
               </div>
               ${outboundItemsHtml}
-            </div>
-
-            <!-- 5. WITHOUT FLOW CONTEXT BAR -->
-            <div
-              class="sankey-ext-block rounded-lg bg-zinc-800/80 border border-zinc-700 p-2 space-y-1.5"
-              data-ext-header="❔ Without Flow Context"
-              data-ext-metrics="${untrackedPct}% (${formatVisitorCount(untrackedVis)})"
-              title="Pageviews without flow_id / flow_step (e.g. historical events prior to span-tracing rollout or browsers blocking window.name & Navigation API): ${formatVisitorCount(untrackedVis)} Views (${untrackedPct}%)"
-            >
-              <div class="flex items-center justify-between text-zinc-300">
-                <span class="font-bold">❔ Without Flow Context</span>
-                <span class="text-zinc-100 font-bold">${untrackedPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(untrackedVis)})</span></span>
-              </div>
-              <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-950 overflow-hidden">
-                <div class="sankey-bar-fill h-full bg-zinc-400 rounded-full" data-bar-rgb="rgb(161, 161, 170)" style="width: ${untrackedPct}%"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -1258,32 +1506,7 @@ export function renderVisitorFlowSankey(
       const pctStr = `${Math.round(node.percentage)}% (${formatVisitorCount(node.visitors)})`;
       const isClickable = Boolean(node.isInternalPage && node.href);
       const cursorClass = isClickable ? 'cursor-pointer' : 'cursor-default';
-
-      if (density === 'compact') {
-        return `
-          <div
-            data-node-id="${escapeHtml(node.id)}"
-            data-node-title="${escapeHtml(node.title)}"
-            data-node-path="${escapeHtml(node.path)}"
-            data-node-badge="${pctStr}"
-            data-col-index="${colIndex}"
-            data-visitors="${node.visitors}"
-            data-internal-href="${isClickable ? escapeHtml(node.href!) : ''}"
-            title="${escapeHtml(node.title)} (${escapeHtml(node.path)}) — ${formatVisitorCount(node.visitors)} Views (${node.percentage}%)"
-            class="sankey-node sankey-card relative z-30 overflow-hidden rounded-xl bg-zinc-900/95 border border-zinc-700/90 px-3 h-[52px] flex items-center justify-between gap-2 font-mono text-xs shrink-0 shadow-lg hover:border-zinc-400 transition-colors ${cursorClass}"
-          >
-            <div class="flex items-center gap-2 min-w-0">
-              ${renderMediaBox(node, 'w-7 h-7')}
-              <span class="font-bold text-white truncate">${escapeHtml(node.title)}</span>
-            </div>
-            <span class="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-600 text-zinc-100 font-bold shrink-0">${pctStr}</span>
-          </div>
-        `;
-      }
-
       const totalLocal = Math.max(1, node.visitors);
-      const filePct = Math.min(100, Math.round(((node.fileVis || 0) / totalLocal) * 100));
-      const linkPct = Math.min(100, Math.round(((node.linkVis || 0) / totalLocal) * 100));
 
       let flowSplitBarHtml = '';
       if (colIndex < 0) {
@@ -1291,19 +1514,11 @@ export function renderVisitorFlowSankey(
         const prevLocalPct = Math.max(0, 100 - entryLocalPct);
         flowSplitBarHtml = `
           <div
-            class="sankey-ext-block space-y-1"
-            data-ext-header="🚪 Entry ${entryLocalPct}% (${formatVisitorCount(node.entryVis)})"
-            data-ext-metrics="⬅️ Prev ${prevLocalPct}% (${formatVisitorCount(node.prevVis)})"
-            title="Of the ${formatVisitorCount(node.visitors)} views passing through ${escapeHtml(node.path)} at this step: ${entryLocalPct}% (${formatVisitorCount(node.entryVis)}) started their session here (Entry), and ${prevLocalPct}% (${formatVisitorCount(node.prevVis)}) came from an earlier internal page (Prev)."
+            class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-800/90 overflow-hidden flex gap-0.5"
+            title="🚪 Entry ${entryLocalPct}% (${formatVisitorCount(node.entryVis)}) · ⬅️ Prev ${prevLocalPct}% (${formatVisitorCount(node.prevVis)})"
           >
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-emerald-300 font-semibold">🚪 Entry ${entryLocalPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(node.entryVis)})</span></span>
-              <span class="text-amber-300 font-semibold">⬅️ Prev ${prevLocalPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(node.prevVis)})</span></span>
-            </div>
-            <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-950 overflow-hidden flex gap-0.5">
-              <div class="sankey-bar-fill h-full bg-emerald-400" data-bar-rgb="rgb(52, 211, 153)" style="width: ${entryLocalPct}%"></div>
-              <div class="sankey-bar-fill h-full bg-amber-400" data-bar-rgb="rgb(251, 191, 36)" style="width: ${prevLocalPct}%"></div>
-            </div>
+            <div class="sankey-bar-fill h-full bg-emerald-400" data-bar-rgb="rgb(52, 211, 153)" style="width: ${entryLocalPct}%"></div>
+            <div class="sankey-bar-fill h-full bg-amber-400" data-bar-rgb="rgb(251, 191, 36)" style="width: ${prevLocalPct}%"></div>
           </div>
         `;
       } else {
@@ -1311,56 +1526,14 @@ export function renderVisitorFlowSankey(
         const exitLocalPct = Math.max(0, 100 - nextLocalPct);
         flowSplitBarHtml = `
           <div
-            class="sankey-ext-block space-y-1"
-            data-ext-header="➡️ Next ${nextLocalPct}% (${formatVisitorCount(node.nextVis)})"
-            data-ext-metrics="↩️ Exit ${exitLocalPct}% (${formatVisitorCount(node.exitVis)})"
-            title="Of the ${formatVisitorCount(node.visitors)} views landing on ${escapeHtml(node.path)} at this step: ${nextLocalPct}% (${formatVisitorCount(node.nextVis)}) navigated to a further page (Next), and ${exitLocalPct}% (${formatVisitorCount(node.exitVis)}) exited here (Exit)."
+            class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-800/90 overflow-hidden flex gap-0.5"
+            title="➡️ Next ${nextLocalPct}% (${formatVisitorCount(node.nextVis)}) · ↩️ Exit ${exitLocalPct}% (${formatVisitorCount(node.exitVis)})"
           >
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-emerald-300 font-semibold">➡️ Next ${nextLocalPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(node.nextVis)})</span></span>
-              <span class="text-rose-300 font-semibold">↩️ Exit ${exitLocalPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(node.exitVis)})</span></span>
-            </div>
-            <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-950 overflow-hidden flex gap-0.5">
-              <div class="sankey-bar-fill h-full bg-emerald-400" data-bar-rgb="rgb(52, 211, 153)" style="width: ${nextLocalPct}%"></div>
-              <div class="sankey-bar-fill h-full bg-rose-500" data-bar-rgb="rgb(244, 63, 94)" style="width: ${exitLocalPct}%"></div>
-            </div>
+            <div class="sankey-bar-fill h-full bg-emerald-400" data-bar-rgb="rgb(52, 211, 153)" style="width: ${nextLocalPct}%"></div>
+            <div class="sankey-bar-fill h-full bg-rose-500" data-bar-rgb="rgb(244, 63, 94)" style="width: ${exitLocalPct}%"></div>
           </div>
         `;
       }
-
-      const actionsBarsHtml = `
-        <div class="grid grid-cols-2 gap-2 pt-0.5">
-          <div
-            class="sankey-ext-block space-y-1"
-            data-ext-header="📄 Files"
-            data-ext-metrics="${filePct}% (${formatVisitorCount(node.fileVis)})"
-            title="${filePct}% (${formatVisitorCount(node.fileVis)} of ${formatVisitorCount(node.visitors)}) downloaded at least one file on this page"
-          >
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-sky-200">📄 Files</span>
-              <span class="text-white font-semibold">${filePct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(node.fileVis)})</span></span>
-            </div>
-            <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-950 overflow-hidden">
-              <div class="sankey-bar-fill h-full bg-sky-400 rounded-full" data-bar-rgb="rgb(56, 189, 248)" style="width: ${filePct}%"></div>
-            </div>
-          </div>
-
-          <div
-            class="sankey-ext-block space-y-1"
-            data-ext-header="↗ Links"
-            data-ext-metrics="${linkPct}% (${formatVisitorCount(node.linkVis)})"
-            title="${linkPct}% (${formatVisitorCount(node.linkVis)} of ${formatVisitorCount(node.visitors)}) clicked at least one external link on this page"
-          >
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-purple-200">↗ Links</span>
-              <span class="text-white font-semibold">${linkPct}% <span class="text-zinc-400 font-normal">(${formatVisitorCount(node.linkVis)})</span></span>
-            </div>
-            <div class="sankey-bar-track w-full h-1.5 rounded-full bg-zinc-950 overflow-hidden">
-              <div class="sankey-bar-fill h-full bg-purple-400 rounded-full" data-bar-rgb="rgb(192, 132, 252)" style="width: ${linkPct}%"></div>
-            </div>
-          </div>
-        </div>
-      `;
 
       return `
         <div
@@ -1372,35 +1545,26 @@ export function renderVisitorFlowSankey(
           data-visitors="${node.visitors}"
           data-internal-href="${isClickable ? escapeHtml(node.href!) : ''}"
           title="${escapeHtml(node.title)} (${escapeHtml(node.path)}) — ${formatVisitorCount(node.visitors)} Views (${node.percentage}%)"
-          class="sankey-node sankey-card relative z-30 overflow-hidden rounded-xl bg-zinc-900/95 border border-zinc-700/90 px-3 py-2.5 flex flex-col font-mono text-xs shrink-0 shadow-lg hover:border-zinc-400 transition-colors ${cursorClass}"
+          class="sankey-node sankey-card relative z-30 overflow-hidden rounded-xl bg-zinc-600/95 border border-zinc-400/80 px-3 py-2 flex flex-col gap-1.5 font-mono text-xs shrink-0 shadow-md hover:border-zinc-200 transition-colors ${cursorClass}"
         >
-          <!-- Above Divider: Emoji/Thumb + Title & URL Path + Views Badge -->
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
-              ${renderMediaBox(node, 'w-8 h-8')}
-              <div class="min-w-0 leading-tight">
-                <div class="font-bold text-white truncate">${escapeHtml(node.title)}</div>
-                <div class="text-zinc-400 truncate mt-0.5">${escapeHtml(node.path)}</div>
-              </div>
+              ${renderMediaBox(node, 'w-7 h-7')}
+              <span class="font-bold text-white truncate">${escapeHtml(node.title)}</span>
             </div>
-            <span class="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-600 text-white font-bold shrink-0">${pctStr}</span>
+            <span class="px-1.5 py-0.5 rounded bg-zinc-700 border border-zinc-400/80 text-white font-bold shrink-0">${pctStr}</span>
           </div>
-
-          <!-- Below Divider: Local 100% Flow Split Bar + File & Link Conversion Bars -->
-          <div class="pt-2 mt-2 border-t border-zinc-700/80 space-y-2">
-            ${flowSplitBarHtml}
-            ${actionsBarsHtml}
-          </div>
+          ${flowSplitBarHtml}
         </div>
       `;
     };
 
-    const sideColWidth = density === 'compact' ? 'w-[295px]' : 'w-[355px]';
+    const sideColWidth = 'w-[308px]';
 
     const columnsHtml = columns
       .map((col) => {
         const widthClass = col.isCenter ? 'w-[420px]' : sideColWidth;
-        const stripe = getColumnStripeBg(col.colIndex);
+        const stripe = getColumnStripeBg(col.colIndex, leftLevels, rightLevels);
 
         const cardsHtml =
           col.nodes.length > 0
@@ -1414,21 +1578,21 @@ export function renderVisitorFlowSankey(
             : col.colIndex < 0
               ? `
                 <div
-                  class="sankey-empty-col p-3.5 rounded-xl bg-zinc-900/60 border border-dashed border-zinc-700 text-center font-mono text-xs text-zinc-400"
+                  class="sankey-empty-col p-3.5 rounded-xl bg-zinc-600/80 border border-dashed border-zinc-400/80 text-center font-mono text-xs text-zinc-200"
                   data-empty-title="No recorded upstream steps at level ${col.colIndex}"
                   data-empty-sub="Session entries are shown inside the page card"
                 >
-                  <div class="font-bold text-zinc-300 mb-1">No recorded upstream steps at level ${col.colIndex}</div>
+                  <div class="font-bold text-white mb-1">No recorded upstream steps at level ${col.colIndex}</div>
                   <div class="text-[10px] leading-relaxed">Session entries are shown directly inside the page card.</div>
                 </div>
               `
               : `
                 <div
-                  class="sankey-empty-col p-3.5 rounded-xl bg-zinc-900/60 border border-dashed border-zinc-700 text-center font-mono text-xs text-zinc-400"
+                  class="sankey-empty-col p-3.5 rounded-xl bg-zinc-600/80 border border-dashed border-zinc-400/80 text-center font-mono text-xs text-zinc-200"
                   data-empty-title="No recorded downstream steps at level +${col.colIndex}"
                   data-empty-sub="Bounces and exits are shown inside the page card"
                 >
-                  <div class="font-bold text-zinc-300 mb-1">No recorded downstream steps at level +${col.colIndex}</div>
+                  <div class="font-bold text-white mb-1">No recorded downstream steps at level +${col.colIndex}</div>
                   <div class="text-[10px] leading-relaxed">Bounces and exits are shown directly inside the page card.</div>
                 </div>
               `;
@@ -1440,14 +1604,6 @@ export function renderVisitorFlowSankey(
             style="background-color: ${stripe.bg};"
             class="sankey-col relative ${widthClass} h-full px-5 py-3 flex flex-col shrink-0 transition-colors"
           >
-            <div
-              class="text-xs font-mono uppercase tracking-wider ${stripe.headerColor} mb-2.5 text-center shrink-0 truncate"
-              data-sankey-col-header="${escapeHtml(col.header)}"
-              title="${escapeHtml(col.header)}"
-            >
-              ${escapeHtml(col.header)}
-            </div>
-
             <!-- Column Scroll Wrapper with Top & Bottom Overflow Indicators -->
             <div class="relative flex-1 min-h-0 flex flex-col overflow-hidden">
               <!-- TOP VERTICAL OVERFLOW INDICATOR -->
@@ -1458,7 +1614,7 @@ export function renderVisitorFlowSankey(
                 <button
                   type="button"
                   data-col-scroll-dir="-1"
-                  class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-zinc-800/95 hover:bg-zinc-700 border border-emerald-400/70 text-emerald-200 font-mono text-xs font-bold shadow-lg cursor-pointer"
+                  class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-zinc-600/95 hover:bg-zinc-700 border border-zinc-300 text-white font-mono text-xs font-bold shadow-lg cursor-pointer"
                 >
                   <span class="vert-ind-top-count">▲ +1 above</span>
                 </button>
@@ -1482,7 +1638,7 @@ export function renderVisitorFlowSankey(
                 <button
                   type="button"
                   data-col-scroll-dir="1"
-                  class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-zinc-800/95 hover:bg-zinc-700 border border-emerald-400/70 text-emerald-200 font-mono text-xs font-bold shadow-lg cursor-pointer"
+                  class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-zinc-600/95 hover:bg-zinc-700 border border-zinc-300 text-white font-mono text-xs font-bold shadow-lg cursor-pointer"
                 >
                   <span class="vert-ind-bot-count">▼ +1 more</span>
                 </button>
@@ -1520,16 +1676,19 @@ export function renderVisitorFlowSankey(
           display: none;
         }
       </style>
-      <div class="relative w-full h-full overflow-hidden bg-zinc-950 select-none">
+      <div
+        class="relative w-full h-full overflow-hidden select-none"
+        style="background-color: rgb(${COL_BG_OUTER_RGB[0]}, ${COL_BG_OUTER_RGB[1]}, ${COL_BG_OUTER_RGB[2]});"
+      >
         <!-- LEFT HORIZONTAL SCROLL INDICATOR -->
         <div
           data-horiz-ind="left"
-          class="hidden absolute left-0 top-0 bottom-0 w-20 z-40 pointer-events-none flex items-center justify-start pl-3 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent"
+          class="hidden absolute left-0 top-0 bottom-0 w-20 z-40 pointer-events-none flex items-center justify-start pl-3"
         >
           <button
             type="button"
             data-horiz-scroll-dir="-1"
-            class="pointer-events-auto px-2.5 py-2 rounded-xl bg-zinc-800/95 hover:bg-zinc-700 border border-emerald-400/70 text-emerald-200 font-mono text-xs font-bold shadow-xl flex items-center gap-1.5 cursor-pointer"
+            class="pointer-events-auto px-2.5 py-2 rounded-xl bg-zinc-600/95 hover:bg-zinc-700 border border-zinc-300 text-white font-mono text-xs font-bold shadow-xl flex items-center gap-1.5 cursor-pointer"
           >
             <span>◀</span>
             <span data-horiz-ind-label="left">+1 col</span>
@@ -1539,12 +1698,12 @@ export function renderVisitorFlowSankey(
         <!-- RIGHT HORIZONTAL SCROLL INDICATOR -->
         <div
           data-horiz-ind="right"
-          class="hidden absolute right-0 top-0 bottom-0 w-20 z-40 pointer-events-none flex items-center justify-end pr-3 bg-gradient-to-l from-zinc-950 via-zinc-950/80 to-transparent"
+          class="hidden absolute right-0 top-0 bottom-0 w-20 z-40 pointer-events-none flex items-center justify-end pr-3"
         >
           <button
             type="button"
             data-horiz-scroll-dir="1"
-            class="pointer-events-auto px-2.5 py-2 rounded-xl bg-zinc-800/95 hover:bg-zinc-700 border border-emerald-400/70 text-emerald-200 font-mono text-xs font-bold shadow-xl flex items-center gap-1.5 cursor-pointer"
+            class="pointer-events-auto px-2.5 py-2 rounded-xl bg-zinc-600/95 hover:bg-zinc-700 border border-zinc-300 text-white font-mono text-xs font-bold shadow-xl flex items-center gap-1.5 cursor-pointer"
           >
             <span data-horiz-ind-label="right">+1 col</span>
             <span>▶</span>
@@ -1554,7 +1713,7 @@ export function renderVisitorFlowSankey(
         <!-- Horizontal Scroll Container (Full-bleed borderless column stripes) -->
         <div
           data-sankey-scroll-viewport="true"
-          class="sankey-no-scrollbar w-full h-full overflow-x-auto overflow-y-hidden scroll-smooth"
+          class="sankey-no-scrollbar w-full h-full overflow-x-auto overflow-y-hidden"
           style="scrollbar-width: none; -ms-overflow-style: none;"
         >
           <div
@@ -1589,16 +1748,23 @@ export function renderVisitorFlowSankey(
     const nodeEls = Array.from(container.querySelectorAll<HTMLElement>('.sankey-node'));
     const colEls = Array.from(container.querySelectorAll<HTMLElement>('.sankey-col'));
 
-    const applyStageHorizontalPadding = (vpW: number): void => {
-      if (!stageEl || vpW <= 0) return;
+    const applyStageHorizontalPadding = (vpW: number): number => {
+      if (!stageEl || vpW <= 0) return 0;
       const centerW = 420;
-      const sideW = density === 'compact' ? 295 : 355;
+      const sideW = 308;
       const leftColsW = leftLevels * sideW;
-      const rightColsW = rightLevels * sideW;
-      const padLeft = Math.max(0, Math.round(vpW / 2 - leftColsW - centerW / 2));
-      const padRight = Math.max(0, Math.round(vpW / 2 - rightColsW - centerW / 2));
-      stageEl.style.paddingLeft = `${padLeft}px`;
-      stageEl.style.paddingRight = `${padRight}px`;
+      const basePad = Math.max(0, Math.round(vpW / 2 - leftColsW - centerW / 2));
+      const extraOffsetPad = Math.ceil(Math.abs(userCenterOffsetFromVpMid));
+      const symPad =
+        basePad > 0
+          ? basePad + extraOffsetPad
+          : Math.max(
+              0,
+              Math.round(vpW / 2 + Math.abs(userCenterOffsetFromVpMid) - leftColsW - centerW / 2)
+            );
+      stageEl.style.paddingLeft = `${symPad}px`;
+      stageEl.style.paddingRight = `${symPad}px`;
+      return symPad;
     };
 
     const syncUserCenterOffsetFromVpMid = (): void => {
@@ -1609,6 +1775,10 @@ export function renderVisitorFlowSankey(
       const vpRect = scrollViewportEl.getBoundingClientRect();
       userCenterOffsetFromVpMid =
         cRect.left + cRect.width / 2 - (vpRect.left + vpRect.width / 2);
+      container.setAttribute(
+        'data-sankey-user-offset',
+        String(Math.round(userCenterOffsetFromVpMid))
+      );
     };
 
     const updateColumnVerticalIndicators = (colWrapper: HTMLElement): void => {
@@ -1658,12 +1828,24 @@ export function renderVisitorFlowSankey(
       const vpRect = scrollViewportEl.getBoundingClientRect();
       let hiddenLeft = 0;
       let hiddenRight = 0;
+      let leftEdgeBg = `rgb(${COL_BG_OUTER_RGB[0]}, ${COL_BG_OUTER_RGB[1]}, ${COL_BG_OUTER_RGB[2]})`;
+      let rightEdgeBg = leftEdgeBg;
 
       colEls.forEach((col) => {
         const r = col.getBoundingClientRect();
+        const bg = col.getAttribute('data-col-bg') || leftEdgeBg;
         if (r.left < vpRect.left - 20) hiddenLeft++;
         if (r.right > vpRect.right + 20) hiddenRight++;
+        if (r.left <= vpRect.left + 8 && r.right >= vpRect.left) {
+          leftEdgeBg = bg;
+        }
+        if (r.left <= vpRect.right && r.right >= vpRect.right - 8) {
+          rightEdgeBg = bg;
+        }
       });
+
+      leftInd.style.background = `linear-gradient(to right, ${leftEdgeBg} 20%, transparent 100%)`;
+      rightInd.style.background = `linear-gradient(to left, ${rightEdgeBg} 20%, transparent 100%)`;
 
       if (scrollViewportEl.scrollLeft > 10 && hiddenLeft > 0) {
         leftInd.classList.remove('hidden');
@@ -1726,7 +1908,7 @@ export function renderVisitorFlowSankey(
         }
       }
 
-      const totalRootVisitors = Math.max(1, flow.totalVisitors);
+      const totalRootVisitors = Math.max(1, activeFlow.totalVisitors);
       const RIBBON_GAP = 2.5;
 
       const outgoingSlotMap = new Map<string, { yCenter: number; thickness: number }>();
@@ -1870,9 +2052,37 @@ export function renderVisitorFlowSankey(
 
     // Wire horizontal scroll and overflow buttons
     scrollViewportEl?.addEventListener(
+      'wheel',
+      () => {
+        markUserHorizScrollActive(250);
+      },
+      { passive: true }
+    );
+    scrollViewportEl?.addEventListener(
+      'touchmove',
+      () => {
+        markUserHorizScrollActive(250);
+      },
+      { passive: true }
+    );
+    scrollViewportEl?.addEventListener(
+      'pointerdown',
+      () => {
+        markUserHorizScrollActive(250);
+      },
+      { passive: true }
+    );
+
+    scrollViewportEl?.addEventListener(
       'scroll',
       () => {
-        syncUserCenterOffsetFromVpMid();
+        if (
+          isUserHorizScrollActive &&
+          !isProgrammaticScroll &&
+          scrollViewportEl.clientWidth === lastObservedViewportWidth
+        ) {
+          syncUserCenterOffsetFromVpMid();
+        }
         updateHorizontalIndicators();
         requestAnimationFrame(layoutRibbons);
       },
@@ -1885,6 +2095,7 @@ export function renderVisitorFlowSankey(
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
+          markUserHorizScrollActive(450);
           const dir = Number(btn.getAttribute('data-horiz-scroll-dir') || 1);
           scrollViewportEl?.scrollBy({ left: dir * 350, behavior: 'smooth' });
         });
@@ -1919,7 +2130,11 @@ export function renderVisitorFlowSankey(
         toLocalRect(el.getBoundingClientRect());
 
       const isVisibleInExport = (el: HTMLElement): boolean => {
-        if (el.closest('.vert-ind-top, .vert-ind-bot, [data-horiz-ind], .hidden, svg, style')) {
+        if (
+          el.closest(
+            '.vert-ind-top, .vert-ind-bot, [data-horiz-ind], .sankey-col-stepper, [data-sankey-level-side], .hidden, svg, style'
+          )
+        ) {
           return false;
         }
         let cur: HTMLElement | null = el;
@@ -1952,22 +2167,24 @@ export function renderVisitorFlowSankey(
       ctx.scale(2, 2);
       const fontStack = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
 
-      // 1. Outer dark background
+      const outerBgRgb = `rgb(${COL_BG_OUTER_RGB[0]}, ${COL_BG_OUTER_RGB[1]}, ${COL_BG_OUTER_RGB[2]})`;
+
+      // 1. Outer medium-gray background
       drawRoundedRectPath(ctx, 0, 0, logicalW, logicalH, 14);
-      ctx.fillStyle = 'rgb(9, 9, 11)';
+      ctx.fillStyle = outerBgRgb;
       ctx.fill();
-      ctx.strokeStyle = 'rgba(82, 82, 91, 0.8)';
+      ctx.strokeStyle = 'rgba(161, 161, 170, 0.9)';
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
       // 2. Title header
-      ctx.fillStyle = 'rgb(244, 244, 245)';
+      ctx.fillStyle = 'rgb(255, 255, 255)';
       ctx.font = `bold 13px ${fontStack}`;
       ctx.textBaseline = 'middle';
       ctx.textAlign = 'left';
-      const uniqueVisCount = flow.uniqueVisitors ?? context?.visitors ?? flow.totalVisitors;
+      const uniqueVisCount = activeFlow.uniqueVisitors ?? activeFlow.totalVisitors;
       ctx.fillText(
-        `Visitor Flow Cockpit — ${normCurrent} (${period} · ${flow.totalVisitors} Views · ${uniqueVisCount} Visitors)`,
+        `Visitor Flow Cockpit — ${normCurrent} (${period} · ${activeFlow.totalVisitors} Views · ${uniqueVisCount} Visitors)`,
         PAD_X,
         26
       );
@@ -1978,7 +2195,7 @@ export function renderVisitorFlowSankey(
       // 3. Draw full-bleed column background stripes
       for (const colEl of colEls) {
         const cb = toLocal(colEl);
-        const bg = colEl.getAttribute('data-col-bg') || 'rgb(24, 24, 28)';
+        const bg = colEl.getAttribute('data-col-bg') || outerBgRgb;
         ctx.fillStyle = bg;
         ctx.fillRect(cb.x, cb.y, cb.w, cb.h);
       }
@@ -1989,7 +2206,7 @@ export function renderVisitorFlowSankey(
         ctx.translate(stageRect.left - minColLeft, 0);
         for (const rEl of ribbonEls) {
           const d = rEl.getAttribute('d') || '';
-          const fill = rEl.getAttribute('fill') || 'rgba(16, 185, 129, 0.42)';
+          const fill = rEl.getAttribute('fill') || STANDARD_RIBBON_RGBA;
           if (d && d !== 'M 0 0') {
             const p2d = new Path2D(d);
             ctx.fillStyle = fill;
@@ -2068,7 +2285,7 @@ export function renderVisitorFlowSankey(
             ctx.setLineDash([4, 4]);
           }
           drawRoundedRectPath(ctx, b.x, b.y, b.w, b.h, radius);
-          ctx.strokeStyle = style.borderTopColor || 'rgba(63, 63, 70, 0.9)';
+          ctx.strokeStyle = style.borderTopColor || 'rgba(161, 161, 170, 0.9)';
           ctx.lineWidth = bt;
           ctx.stroke();
         } else if (bt > 0 && bb === 0) {
@@ -2078,14 +2295,14 @@ export function renderVisitorFlowSankey(
           ctx.beginPath();
           ctx.moveTo(b.x, b.y);
           ctx.lineTo(b.x + b.w, b.y);
-          ctx.strokeStyle = style.borderTopColor || 'rgba(63, 63, 70, 0.8)';
+          ctx.strokeStyle = style.borderTopColor || 'rgba(161, 161, 170, 0.8)';
           ctx.lineWidth = bt;
           ctx.stroke();
         } else if (bb > 0 && bt === 0) {
           ctx.beginPath();
           ctx.moveTo(b.x, b.y + b.h);
           ctx.lineTo(b.x + b.w, b.y + b.h);
-          ctx.strokeStyle = style.borderBottomColor || 'rgba(63, 63, 70, 0.8)';
+          ctx.strokeStyle = style.borderBottomColor || 'rgba(161, 161, 170, 0.8)';
           ctx.lineWidth = bb;
           ctx.stroke();
         }
@@ -2117,16 +2334,16 @@ export function renderVisitorFlowSankey(
         }
 
         drawRoundedRectPath(ctx, sb.x, sb.y, sb.w, sb.h, 4);
-        ctx.fillStyle = 'rgb(9, 9, 11)';
+        ctx.fillStyle = 'rgb(39, 39, 42)';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(39, 39, 42, 0.9)';
+        ctx.strokeStyle = 'rgba(113, 113, 122, 0.9)';
         ctx.lineWidth = 1;
         ctx.stroke();
 
         // Gridlines at 25%, 50%, 75%
         ctx.save();
         ctx.setLineDash([2, 2]);
-        ctx.strokeStyle = 'rgba(63, 63, 70, 0.5)';
+        ctx.strokeStyle = 'rgba(161, 161, 170, 0.35)';
         ctx.lineWidth = 1;
         for (const frac of [0.25, 0.5, 0.75]) {
           const gy = sb.y + ((6 + frac * 44) / 56) * sb.h;
@@ -2174,7 +2391,7 @@ export function renderVisitorFlowSankey(
           ctx.arc(px, py, r, 0, Math.PI * 2);
           ctx.fillStyle = dot.getAttribute('fill') || 'rgb(52, 211, 153)';
           ctx.fill();
-          ctx.strokeStyle = dot.getAttribute('stroke') || 'rgb(9, 9, 11)';
+          ctx.strokeStyle = dot.getAttribute('stroke') || 'rgb(39, 39, 42)';
           ctx.lineWidth = parseFloat(dot.getAttribute('stroke-width') || '1');
           ctx.stroke();
         }
@@ -2300,38 +2517,31 @@ export function renderVisitorFlowSankey(
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
-      const levelBtn = target.closest<HTMLButtonElement>('[data-sankey-level-side]');
-      if (levelBtn) {
+      const levelDeltaBtn = target.closest<HTMLButtonElement>('[data-sankey-level-delta]');
+      if (levelDeltaBtn) {
         e.preventDefault();
         e.stopPropagation();
-        const side = levelBtn.getAttribute('data-sankey-level-side');
-        const step = Number(levelBtn.getAttribute('data-sankey-level-step') || 0);
-        if (side === 'left') {
-          const next = clampLevel(leftLevels + step);
-          if (next !== leftLevels) {
-            leftLevels = next;
-            setStoredLevel(LEFT_LEVELS_STORAGE_KEY, leftLevels);
-            renderStageDom();
-          }
-        } else if (side === 'right') {
-          const next = clampLevel(rightLevels + step);
-          if (next !== rightLevels) {
-            rightLevels = next;
-            setStoredLevel(RIGHT_LEVELS_STORAGE_KEY, rightLevels);
-            renderStageDom();
-          }
+        const delta = Number(levelDeltaBtn.getAttribute('data-sankey-level-delta') || 0);
+        const next = clampLevel(levels + delta);
+        if (next !== levels) {
+          levels = next;
+          leftLevels = levels;
+          rightLevels = levels;
+          setStoredLevel(LEFT_LEVELS_STORAGE_KEY, levels);
+          setStoredLevel(RIGHT_LEVELS_STORAGE_KEY, levels);
+          renderStageDom();
         }
         return;
       }
 
-      const densityBtn = target.closest<HTMLButtonElement>('[data-sankey-density]');
-      if (densityBtn) {
+      const modelBtn = target.closest<HTMLButtonElement>('[data-sankey-model]');
+      if (modelBtn) {
         e.preventDefault();
         e.stopPropagation();
-        const nextMode = densityBtn.getAttribute('data-sankey-density') as SankeyCardDensity | null;
-        if ((nextMode === 'compact' || nextMode === 'detailed') && nextMode !== density) {
-          density = nextMode;
-          setStoredDensity(density);
+        const nextModel = modelBtn.getAttribute('data-sankey-model') as SankeyModelMode | null;
+        if ((nextModel === 'flow' || nextModel === 'markov') && nextModel !== modelMode) {
+          modelMode = nextModel;
+          setStoredModelMode(modelMode);
           renderStageDom();
         }
         return;
@@ -2341,21 +2551,41 @@ export function renderVisitorFlowSankey(
       if (copyBtn) {
         e.preventDefault();
         e.stopPropagation();
-        const labelSpan = copyBtn.querySelector<HTMLElement>('[data-copy-png-label]') ?? copyBtn;
-        labelSpan.textContent = '⏳ Rendering...';
+        const labelSpan = copyBtn.querySelector<HTMLElement>('[data-copy-png-label]');
+        if (labelSpan) {
+          labelSpan.textContent = '⏳ Rendering...';
+        } else {
+          copyBtn.textContent = '⏳';
+        }
         void (async () => {
           try {
             await copySankeyPngToClipboard();
-            labelSpan.textContent = '✓ PNG Copied!';
+            if (labelSpan) {
+              labelSpan.textContent = '✓ PNG Copied!';
+            } else {
+              copyBtn.textContent = '✓';
+            }
             copyBtn.classList.add('text-emerald-300', 'border-emerald-400');
             setTimeout(() => {
-              labelSpan.textContent = 'Copy PNG';
+              if (labelSpan) {
+                labelSpan.textContent = 'Copy PNG';
+              } else {
+                copyBtn.textContent = '📋';
+              }
               copyBtn.classList.remove('text-emerald-300', 'border-emerald-400');
             }, 2000);
           } catch {
-            labelSpan.textContent = '⚠️ Copy Failed';
+            if (labelSpan) {
+              labelSpan.textContent = '⚠️ Copy Failed';
+            } else {
+              copyBtn.textContent = '⚠️';
+            }
             setTimeout(() => {
-              labelSpan.textContent = 'Copy PNG';
+              if (labelSpan) {
+                labelSpan.textContent = 'Copy PNG';
+              } else {
+                copyBtn.textContent = '📋';
+              }
             }, 2000);
           }
         })();
@@ -2493,11 +2723,20 @@ export function renderVisitorFlowSankey(
     });
 
     const positionHorizontalStage = (): void => {
-      if (!scrollViewportEl) return;
+      if (!scrollViewportEl || !stageEl) return;
       const vpW = scrollViewportEl.clientWidth;
       if (vpW <= 0) return;
 
-      applyStageHorizontalPadding(vpW);
+      clearUserHorizScrollActive();
+
+      if (shouldCenterStage) {
+        userCenterOffsetFromVpMid = 0;
+        container.setAttribute('data-sankey-user-offset', '0');
+        container.setAttribute('data-sankey-centered', 'true');
+        shouldCenterStage = false;
+      }
+
+      const symPad = applyStageHorizontalPadding(vpW);
       lastObservedViewportWidth = vpW;
 
       const centerColEl = container.querySelector<HTMLElement>('[data-sankey-col="0"]');
@@ -2505,26 +2744,20 @@ export function renderVisitorFlowSankey(
 
       const prevBehavior = scrollViewportEl.style.scrollBehavior;
       scrollViewportEl.style.scrollBehavior = 'auto';
+      isProgrammaticScroll = true;
 
-      if (!shouldCenterStage && prevCenterScreenX !== null) {
-        const newCenterScreenX = centerColEl.getBoundingClientRect().left;
-        const deltaX = newCenterScreenX - prevCenterScreenX;
-        if (Math.abs(deltaX) > 0.5) {
-          scrollViewportEl.scrollLeft = Math.max(0, Math.round(scrollViewportEl.scrollLeft + deltaX));
-        }
-      } else {
-        const colLeft = centerColEl.offsetLeft;
-        const colW = centerColEl.offsetWidth;
-        if (scrollViewportEl.scrollWidth > vpW) {
-          scrollViewportEl.scrollLeft = Math.max(0, Math.round(colLeft - (vpW - colW) / 2));
-        } else {
-          scrollViewportEl.scrollLeft = 0;
-        }
-        shouldCenterStage = false;
-      }
+      const centerW = 420;
+      const sideW = 308;
+      const leftColsW = leftLevels * sideW;
+      const colCenterInStage = symPad + leftColsW + centerW / 2;
+      const targetViewportCenterX = vpW / 2 + userCenterOffsetFromVpMid;
+      const targetScrollLeft = Math.max(0, Math.round(colCenterInStage - targetViewportCenterX));
 
+      scrollViewportEl.scrollLeft = targetScrollLeft;
       scrollViewportEl.style.scrollBehavior = prevBehavior;
-      syncUserCenterOffsetFromVpMid();
+      requestAnimationFrame(() => {
+        isProgrammaticScroll = false;
+      });
     };
 
     positionHorizontalStage();
@@ -2545,23 +2778,51 @@ export function renderVisitorFlowSankey(
         if (scrollViewportEl) {
           const newVpW = scrollViewportEl.clientWidth;
           if (newVpW > 0 && newVpW !== lastObservedViewportWidth) {
+            clearUserHorizScrollActive();
+            if (shouldCenterStage) {
+              userCenterOffsetFromVpMid = 0;
+              container.setAttribute('data-sankey-user-offset', '0');
+              container.setAttribute('data-sankey-centered', 'true');
+              shouldCenterStage = false;
+            }
             const hadPrevWidth = lastObservedViewportWidth > 0;
+            if (!hadPrevWidth) {
+              userCenterOffsetFromVpMid = 0;
+            }
             lastObservedViewportWidth = newVpW;
-            applyStageHorizontalPadding(newVpW);
+            const symPad = applyStageHorizontalPadding(newVpW);
 
             const centerColEl = container.querySelector<HTMLElement>('[data-sankey-col="0"]');
             if (centerColEl) {
               const prevBehavior = scrollViewportEl.style.scrollBehavior;
               scrollViewportEl.style.scrollBehavior = 'auto';
-              const colLeft = centerColEl.offsetLeft;
-              const colW = centerColEl.offsetWidth;
-              const targetOffset = hadPrevWidth ? userCenterOffsetFromVpMid : 0;
-              const targetScrollLeft = Math.round(
-                colLeft + colW / 2 - (newVpW / 2 + targetOffset)
+              isProgrammaticScroll = true;
+              const centerW = 420;
+              const sideW = 308;
+              const leftColsW = leftLevels * sideW;
+              const colCenterInStage = symPad + leftColsW + centerW / 2;
+              const targetScrollLeft = Math.max(
+                0,
+                Math.round(colCenterInStage - (newVpW / 2 + userCenterOffsetFromVpMid))
               );
-              scrollViewportEl.scrollLeft = Math.max(0, targetScrollLeft);
+              scrollViewportEl.scrollLeft = targetScrollLeft;
               scrollViewportEl.style.scrollBehavior = prevBehavior;
-              syncUserCenterOffsetFromVpMid();
+              requestAnimationFrame(() => {
+                if (scrollViewportEl && scrollViewportEl.clientWidth === newVpW) {
+                  const reVerifySymPad = applyStageHorizontalPadding(newVpW);
+                  const reVerifyCenter = reVerifySymPad + leftColsW + centerW / 2;
+                  const reVerifyScrollLeft = Math.max(
+                    0,
+                    Math.round(reVerifyCenter - (newVpW / 2 + userCenterOffsetFromVpMid))
+                  );
+                  if (Math.abs(scrollViewportEl.scrollLeft - reVerifyScrollLeft) > 1) {
+                    scrollViewportEl.scrollLeft = reVerifyScrollLeft;
+                  }
+                }
+                isProgrammaticScroll = false;
+                layoutRibbons();
+                updateHorizontalIndicators();
+              });
             }
           }
         }

@@ -41,11 +41,11 @@ const { currentPath } = Astro.props;
       <div class="h-4 w-px bg-zinc-400 mx-0.5 shrink-0"></div>
 
       <!-- Device Mode Selector -->
-      <div class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5" role="group" aria-label="Device Mode">
+      <div id="dev-device-selector-group" class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5 transition-opacity" role="group" aria-label="Device Mode">
         <button
           type="button"
           data-device="full"
-          class="dev-device-btn h-full px-2.5 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300"
+          class="dev-device-btn h-full px-2.5 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 cursor-pointer"
           title="Full Window (100% Width)"
         >
           <span>🖥️</span> <span>Full</span>
@@ -55,7 +55,7 @@ const { currentPath } = Astro.props;
           data-device="iphone"
           data-w="393"
           data-h="852"
-          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white cursor-pointer"
           title="Smartphone (iPhone: 393 × 852)"
         >
           <span>📲</span> <span class="hidden sm:inline">Phone</span>
@@ -65,7 +65,7 @@ const { currentPath } = Astro.props;
           data-device="ipad"
           data-w="820"
           data-h="1180"
-          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white cursor-pointer"
           title="Tablet (iPad: 820 × 1180)"
         >
           <span>📱</span> <span class="hidden sm:inline">Tablet</span>
@@ -75,7 +75,7 @@ const { currentPath } = Astro.props;
           data-device="macbook"
           data-w="1280"
           data-h="800"
-          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white"
+          class="dev-device-btn h-full px-2 flex items-center gap-1 rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white cursor-pointer"
           title="Laptop (MacBook: 1280 × 800)"
         >
           <span>💻</span> <span class="hidden sm:inline">Laptop</span>
@@ -86,7 +86,7 @@ const { currentPath } = Astro.props;
       <button
         id="dev-btn-rotate"
         type="button"
-        class="hidden h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none"
+        class="hidden h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-all text-xs leading-none cursor-pointer"
         title="Rotate Orientation (Portrait ↔ Landscape)"
       >
         🔄
@@ -152,260 +152,250 @@ const { currentPath } = Astro.props;
       </div>
     </div>
 
-    <!-- Right Controls: Refresh, Expand Cockpit -->
+    <!-- Right Controls: Model Switcher, Plausible Link, Copy PNG, Refresh, Split View, Expand Flow -->
     <div class="flex items-center gap-1.5 shrink-0 pl-1">
+      <div
+        id="dev-sankey-model-group"
+        class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5 transition-opacity"
+        role="group"
+        aria-label="Flow Mathematical Model"
+      >
+        <button
+          type="button"
+          data-sankey-model="flow"
+          class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 cursor-pointer"
+          title="Multi-hop span-tracing flow chains (flow_id + flow_step)"
+        >
+          Flow
+        </button>
+        <button
+          type="button"
+          data-sankey-model="markov"
+          class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono leading-none transition-colors text-zinc-200 hover:text-white cursor-pointer"
+          title="1st-order Markov transitions & full historical page aggregates"
+        >
+          Markov
+        </button>
+      </div>
+
+      <div
+        id="dev-sankey-levels-group"
+        class="h-7 flex items-center rounded-lg bg-zinc-600/90 border border-zinc-400/80 p-0.5 transition-opacity"
+        role="group"
+        aria-label="Flow Depth Levels (1–5)"
+      >
+        <button
+          type="button"
+          data-sankey-level-delta="-1"
+          class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono font-bold leading-none transition-colors text-zinc-200 hover:text-white hover:bg-zinc-700/80 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+          title="Decrease Inflow & Outflow Steps (−)"
+          aria-label="Decrease Flow Levels"
+        >
+          −
+        </button>
+        <span
+          data-sankey-level-label="true"
+          class="px-1.5 text-[11px] font-mono font-bold leading-none text-white select-none"
+          title="Active Inflow & Outflow Depth (±1 to ±5 Steps)"
+        >
+          ±2
+        </span>
+        <button
+          type="button"
+          data-sankey-level-delta="1"
+          class="h-full px-2 flex items-center justify-center rounded-md text-[11px] font-mono font-bold leading-none transition-colors text-zinc-200 hover:text-white hover:bg-zinc-700/80 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+          title="Increase Inflow & Outflow Steps (+)"
+          aria-label="Increase Flow Levels"
+        >
+          +
+        </button>
+      </div>
+
+      <a
+        id="dev-fullview-plausible"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none"
+        title="Open current page in Plausible Dashboard"
+        aria-label="Open in Plausible"
+      >
+        ↗
+      </a>
+
+      <button
+        type="button"
+        data-sankey-copy-png="true"
+        class="h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none cursor-pointer"
+        title="Copy Flow Cockpit PNG (2x) to Clipboard"
+        aria-label="Copy Flow Cockpit PNG"
+      >
+        📋
+      </button>
+
       <button
         id="dev-analytics-refresh"
         type="button"
-        class="h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none"
+        class="h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none cursor-pointer"
         title="Force Refresh Live Metrics (Bypass Cache)"
       >
         ↻
       </button>
 
       <button
+        id="dev-split-btn"
+        type="button"
+        class="hidden h-7 px-2 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center gap-1 transition-colors text-[11px] font-mono leading-none cursor-pointer"
+        title="Toggle Docked Split View (Website + Flow Cockpit)"
+      >
+        <span>◫</span><span class="hidden xl:inline">Split</span>
+      </button>
+
+      <button
         id="dev-expand-btn"
         type="button"
-        class="h-7 w-7 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center justify-center transition-colors text-xs leading-none font-bold"
-        title="Open Full Analytics Cockpit"
+        class="h-7 px-2 rounded-lg bg-zinc-600 hover:bg-zinc-700 text-zinc-100 hover:text-white border border-zinc-400/80 shadow-xs flex items-center gap-1 transition-colors text-[11px] font-mono leading-none cursor-pointer"
+        title="Toggle Full-Width Flow Cockpit"
       >
-        ⤢
+        <span>⤢</span><span class="hidden sm:inline">Flow</span>
       </button>
     </div>
   </header>
 
   <!-- Studio Stage & Workspace (below Top Bar) -->
   <main id="dev-studio-stage" class="relative flex-1 w-full h-[calc(100vh-2.75rem)] overflow-hidden bg-zinc-500 flex flex-row">
-    <!-- Viewport Area (Full Window or Scaled Device Frame) -->
-    <div class="flex-1 h-full relative overflow-hidden flex items-center justify-center">
-      <!-- FULL WINDOW MODE CONTAINER -->
-      <div id="dev-stage-full" class="w-full h-full relative overflow-hidden bg-zinc-500">
-        <iframe
-          id="dev-iframe-full"
-          src="about:blank"
-          data-src={currentPath}
-          class="w-full h-full border-none block"
-          title="Website Preview"
-        ></iframe>
-      </div>
+    <!-- 1. Left / Main Website Preview + Docked Scroll-Minimap Group -->
+    <div id="dev-preview-group" class="h-full relative overflow-hidden flex flex-row shrink-0" style="width: 100%;">
+      <!-- Viewport Area (Full Window or Scaled Device Frame) -->
+      <div class="flex-1 h-full relative overflow-hidden flex items-center justify-center">
+        <!-- FULL WINDOW MODE CONTAINER -->
+        <div id="dev-stage-full" class="w-full h-full relative overflow-hidden bg-zinc-500">
+          <iframe
+            id="dev-iframe-full"
+            src="about:blank"
+            data-src={currentPath}
+            class="w-full h-full border-none block"
+            title="Website Preview"
+          ></iframe>
+        </div>
 
-      <!-- DEVICE SIMULATION MODE CONTAINER (Centered Phone / Tablet / Laptop Frame) -->
-      <div id="dev-stage-device" class="hidden w-full h-full relative flex items-center justify-center p-4 overflow-hidden">
-        <!-- Outer Scaled Bounding Box -->
-        <div id="dev-device-outer-box" class="relative flex items-center justify-center transition-all duration-150">
-          <!-- Physical Device Bezel -->
-          <div
-            id="dev-device-bezel"
-            class="relative rounded-[38px] p-3 bg-zinc-800 border-2 border-zinc-600 shadow-2xl shadow-zinc-950/40 flex items-center justify-center transition-all duration-150"
-          >
-            <!-- Iframe Device Screen -->
+        <!-- DEVICE SIMULATION MODE CONTAINER (Centered Phone / Tablet / Laptop Frame) -->
+        <div id="dev-stage-device" class="hidden w-full h-full relative flex items-center justify-center p-4 overflow-hidden">
+          <!-- Outer Scaled Bounding Box -->
+          <div id="dev-device-outer-box" class="relative flex items-center justify-center transition-all duration-150">
+            <!-- Physical Device Bezel -->
             <div
-              id="dev-device-screen"
-              class="relative overflow-hidden rounded-[26px] bg-zinc-700 shadow-inner"
-              style="width: 393px; height: 852px;"
+              id="dev-device-bezel"
+              class="relative rounded-[38px] p-3 bg-zinc-800 border-2 border-zinc-600 shadow-2xl shadow-zinc-950/40 flex items-center justify-center transition-all duration-150"
             >
-              <iframe
-                id="dev-iframe-device"
-                src="about:blank"
-                class="w-full h-full border-none block"
-                title="Device Viewport"
-              ></iframe>
+              <!-- Iframe Device Screen -->
+              <div
+                id="dev-device-screen"
+                class="relative overflow-hidden rounded-[26px] bg-zinc-700 shadow-inner"
+                style="width: 393px; height: 852px;"
+              >
+                <iframe
+                  id="dev-iframe-device"
+                  src="about:blank"
+                  class="w-full h-full border-none block"
+                  title="Device Viewport"
+                ></iframe>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- DOCKED RIGHT SCROLL-MINIMAP (Persistent across ALL view modes!) -->
-    <aside
-      id="dev-minimap"
-      class="w-12 h-full shrink-0 border-l border-zinc-400 bg-zinc-500 flex flex-col relative z-40 select-none overflow-hidden"
-      aria-label="Scroll Retention Minimap"
-    >
-      <!-- Minimap Track Container (Full Window Height, Edge-to-Edge, No Rounded Corners) -->
-      <div id="dev-minimap-track" class="flex-1 relative w-full h-full cursor-pointer overflow-hidden">
-        <!-- Dynamic SVG Funnel Silhouette -->
-        <svg
-          id="dev-minimap-funnel-svg"
-          class="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="dev-funnel-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#10b981" stop-opacity="0.85" />
-              <stop offset="25%" stop-color="#06b6d4" stop-opacity="0.80" />
-              <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.75" />
-              <stop offset="75%" stop-color="#f97316" stop-opacity="0.70" />
-              <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.65" />
-            </linearGradient>
-          </defs>
-          <path id="dev-minimap-funnel-path" d="" fill="url(#dev-funnel-grad)" />
-          <path id="dev-minimap-funnel-stroke" d="" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
-        </svg>
-
-        <!-- Milestone Lines & Reach Labels Overlay -->
-        <div id="dev-minimap-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-300 transition-opacity duration-300"></div>
-
-        <!-- Median Scroll Depth Marker (Exact Depth Position) -->
-        <div
-          id="dev-minimap-median-marker"
-          class="hidden absolute left-0 right-0 z-35 pointer-events-none flex items-center justify-center"
-          style="top: 0%; transform: translateY(-50%); transition: top 450ms cubic-bezier(0.25, 1, 0.5, 1), opacity 300ms ease;"
-        >
-          <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
-          <span
-            id="dev-minimap-median-badge"
-            class="relative z-10 px-1.5 py-0.5 rounded text-[8px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
+      <!-- DOCKED RIGHT SCROLL-MINIMAP (Always attached to the right edge of the Website Preview!) -->
+      <aside
+        id="dev-minimap"
+        class="w-12 h-full shrink-0 border-l border-zinc-400 bg-zinc-500 flex flex-col relative z-40 select-none overflow-hidden"
+        aria-label="Scroll Retention Minimap"
+      >
+        <!-- Minimap Track Container (Full Window Height, Edge-to-Edge, No Rounded Corners) -->
+        <div id="dev-minimap-track" class="flex-1 relative w-full h-full cursor-pointer overflow-hidden">
+          <!-- Dynamic SVG Funnel Silhouette -->
+          <svg
+            id="dev-minimap-funnel-svg"
+            class="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
           >
-            ⭐ Med
-          </span>
-        </div>
+            <defs>
+              <linearGradient id="dev-funnel-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.85" />
+                <stop offset="25%" stop-color="#06b6d4" stop-opacity="0.80" />
+                <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.75" />
+                <stop offset="75%" stop-color="#f97316" stop-opacity="0.70" />
+                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.65" />
+              </linearGradient>
+            </defs>
+            <path id="dev-minimap-funnel-path" d="" fill="url(#dev-funnel-grad)" />
+            <path id="dev-minimap-funnel-stroke" d="" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+          </svg>
 
-        <!-- Minimap Track Loading Indicator (Circular spinner like HUD bar) -->
-        <div
-          id="dev-minimap-loader"
-          class="hidden absolute inset-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 z-20"
-        >
-          <div class="w-7 h-7 bg-zinc-600 border border-zinc-400 shadow-md flex items-center justify-center backdrop-blur-sm">
-            <svg class="w-4 h-4 animate-spin text-emerald-300" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
+          <!-- Milestone Lines & Reach Labels Overlay -->
+          <div id="dev-minimap-milestones" class="absolute inset-0 pointer-events-none text-[8px] font-mono text-zinc-300 transition-opacity duration-300"></div>
+
+          <!-- Median Scroll Depth Marker (Exact Depth Position) -->
+          <div
+            id="dev-minimap-median-marker"
+            class="hidden absolute left-0 right-0 z-35 pointer-events-none flex items-center justify-center"
+            style="top: 0%; transform: translateY(-50%); transition: top 450ms cubic-bezier(0.25, 1, 0.5, 1), opacity 300ms ease;"
+          >
+            <div class="absolute inset-x-0 h-px bg-amber-400/90 shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
+            <span
+              id="dev-minimap-median-badge"
+              class="relative z-10 px-1.5 py-0.5 rounded text-[8px] font-mono leading-none bg-amber-950/95 text-amber-300 border border-amber-500/80 font-bold shadow-md"
+            >
+              ⭐ Med
+            </span>
+          </div>
+
+          <!-- Minimap Track Loading Indicator (Circular spinner like HUD bar) -->
+          <div
+            id="dev-minimap-loader"
+            class="hidden absolute inset-0 pointer-events-none flex items-center justify-center transition-opacity duration-300 z-20"
+          >
+            <div class="w-7 h-7 bg-zinc-600 border border-zinc-400 shadow-md flex items-center justify-center backdrop-blur-sm">
+              <svg class="w-4 h-4 animate-spin text-emerald-300" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Draggable Viewport Thumb (Edge-to-Edge, Sharp Corners) -->
+          <div
+            id="dev-minimap-thumb"
+            class="absolute left-0 right-0 bg-white/25 hover:bg-white/35 border-y border-white/70 shadow-sm backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
+            style="top: 0px; height: 48px;"
+          >
+            <div class="w-4 h-0.5 bg-white/80 pointer-events-none"></div>
           </div>
         </div>
-
-        <!-- Draggable Viewport Thumb (Edge-to-Edge, Sharp Corners) -->
-        <div
-          id="dev-minimap-thumb"
-          class="absolute left-0 right-0 bg-white/25 hover:bg-white/35 border-y border-white/70 shadow-sm backdrop-blur-sm cursor-grab active:cursor-grabbing transition-colors z-30 flex items-center justify-center select-none"
-          style="top: 0px; height: 48px;"
-        >
-          <div class="w-4 h-0.5 bg-white/80 pointer-events-none"></div>
-        </div>
-      </div>
-    </aside>
-  </main>
-
-  <!-- Fullscreen Visitor Flow Cockpit Modal -->
-  <div
-    id="dev-analytics-fullview"
-    class="hidden fixed inset-0 z-[100000] bg-zinc-950 text-white flex flex-col font-sans select-none overflow-hidden animate-in fade-in duration-150"
-  >
-    <header class="min-h-12 shrink-0 border-b border-zinc-800 bg-zinc-900 px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 font-mono text-xs z-30">
-      <!-- Left: Title, Status, Truncated Path Pill, Timeframe -->
-      <div class="flex items-center gap-2 min-w-0">
-        <span class="font-bold text-white flex items-center gap-1.5 shrink-0">
-          <span>📊</span>
-          <span class="hidden md:inline">Flow Cockpit</span>
-          <span class="w-4 h-4 flex items-center justify-center shrink-0" title="Analytics Sync Status">
-            <svg id="dev-fullview-spinner" class="w-3.5 h-3.5 animate-spin text-emerald-300 hidden" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <svg id="dev-fullview-check" class="w-3.5 h-3.5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
-            </svg>
-          </span>
-        </span>
-        <span
-          class="px-2 py-1 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-100 font-semibold truncate max-w-[160px] sm:max-w-[240px] lg:max-w-[320px]"
-        >
-          📍 <span id="dev-fullview-path">/</span>
-        </span>
-        <div class="inline-flex items-center rounded-lg bg-zinc-800 border border-zinc-700 p-0.5 shrink-0" role="group" aria-label="Timeframe">
-          <button type="button" data-period="7d" class="dev-period-btn px-2 py-0.5 rounded text-zinc-200 hover:text-white transition-colors cursor-pointer">7d</button>
-          <button type="button" data-period="28d" class="dev-period-btn bg-zinc-200 text-zinc-900 font-bold shadow-xs border border-zinc-300 px-2 py-0.5 rounded transition-colors cursor-pointer">28d</button>
-          <button type="button" data-period="90d" class="dev-period-btn px-2 py-0.5 rounded text-zinc-200 hover:text-white transition-colors cursor-pointer">90d</button>
-        </div>
-      </div>
-
-      <!-- Right: Compact Steppers + Density Switcher + Actions -->
-      <div class="flex flex-wrap items-center gap-1.5">
-        <!-- Compact Inflow Stepper -->
-        <div class="inline-flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5" title="Upstream Inflow Levels (1–5)">
-          <span class="text-zinc-300 font-bold pl-1.5 pr-0.5">⬅️<span class="hidden sm:inline ml-1">Inflow</span></span>
-          <button type="button" data-sankey-level-side="left" data-sankey-level-step="-1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Decrease inflow levels">−</button>
-          <span data-sankey-left-badge="true" class="min-w-[28px] text-center font-bold text-emerald-300">2L</span>
-          <button type="button" data-sankey-level-side="left" data-sankey-level-step="1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Increase inflow levels">+</button>
-        </div>
-
-        <!-- 2-Stage Density Switcher (Compact vs. Detailed) -->
-        <div class="inline-flex items-center gap-0.5 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5">
-          <button
-            type="button"
-            data-sankey-density="compact"
-            class="px-2 py-1 rounded font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
-            title="Compact: 1-line cards (Title + Visitors)"
-          >
-            Compact
-          </button>
-          <button
-            type="button"
-            data-sankey-density="detailed"
-            class="px-2 py-1 rounded font-bold bg-emerald-500/30 border border-emerald-400 text-emerald-200 transition-colors cursor-pointer"
-            title="Detailed: Title & Path above divider, Local 100% Flow & Action Bars below divider"
-          >
-            Detailed
-          </button>
-        </div>
-
-        <!-- Compact Outflow Stepper -->
-        <div class="inline-flex items-center gap-1 bg-zinc-800 border border-zinc-700 rounded-lg p-0.5" title="Downstream Outflow Levels (1–5)">
-          <span class="text-zinc-300 font-bold pl-1.5 pr-0.5">➡️<span class="hidden sm:inline ml-1">Outflow</span></span>
-          <button type="button" data-sankey-level-side="right" data-sankey-level-step="-1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Decrease outflow levels">−</button>
-          <span data-sankey-right-badge="true" class="min-w-[28px] text-center font-bold text-emerald-300">2R</span>
-          <button type="button" data-sankey-level-side="right" data-sankey-level-step="1" class="w-6 h-6 rounded bg-zinc-900 hover:bg-zinc-700 text-zinc-200 font-bold flex items-center justify-center cursor-pointer" title="Increase outflow levels">+</button>
-        </div>
-
-        <button
-          type="button"
-          data-sankey-copy-png="true"
-          class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 font-bold cursor-pointer flex items-center gap-1 transition-colors"
-          title="Copy high-resolution PNG (2x) to clipboard"
-        >
-          <span>📋</span>
-          <span data-copy-png-label="true" class="hidden lg:inline">Copy PNG</span>
-        </button>
-
-        <button
-          id="dev-fullview-refresh"
-          type="button"
-          class="w-7 h-7 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 hover:text-white flex items-center justify-center font-bold cursor-pointer transition-colors"
-          title="Force refresh live data"
-          aria-label="Refresh Data"
-        >
-          ↻
-        </button>
-
-        <a
-          id="dev-fullview-plausible"
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-7 h-7 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 hover:text-white flex items-center justify-center font-bold transition-colors"
-          title="Open in Plausible Dashboard"
-          aria-label="Open in Plausible"
-        >
-          ↗
-        </a>
-
-        <button
-          id="dev-collapse-btn"
-          type="button"
-          class="w-7 h-7 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 hover:text-white flex items-center justify-center font-bold cursor-pointer transition-colors"
-          title="Close Cockpit (Esc)"
-          aria-label="Close Cockpit"
-        >
-          ✕
-        </button>
-      </div>
-    </header>
-
-    <div id="full-visitor-flow-sankey" class="relative flex-1 min-h-0 w-full overflow-hidden bg-zinc-950 font-mono text-xs">
-      <div class="w-full h-full flex items-center justify-center text-zinc-400 italic">Loading visitor flow Sankey diagram...</div>
+      </aside>
     </div>
-  </div>
+
+    <!-- 2. Draggable Vertical Resizer Bar (Shown ONLY in 'split' mode) -->
+    <div
+      id="dev-split-resizer"
+      class="hidden w-1.5 h-full shrink-0 bg-zinc-400/80 hover:bg-emerald-300 active:bg-emerald-300 border-x border-zinc-500 cursor-col-resize transition-colors flex items-center justify-center z-40 select-none"
+      title="Drag to resize Website Preview / Flow Cockpit split (double-click to reset 50/50)"
+    >
+      <div class="w-0.5 h-8 rounded-full bg-zinc-600 pointer-events-none"></div>
+    </div>
+
+    <!-- 3. Visitor Flow Cockpit Pane (Shown in 'split' or 'maximized' mode) -->
+    <div
+      id="dev-analytics-fullview"
+      class="hidden flex-1 min-w-0 h-full bg-zinc-500 text-white flex flex-col font-sans select-none overflow-hidden z-30"
+    >
+      <div id="full-visitor-flow-sankey" class="relative flex-1 min-h-0 w-full h-full overflow-hidden bg-zinc-500 font-mono text-xs">
+        <div class="w-full h-full flex items-center justify-center text-zinc-100 italic">Loading visitor flow Sankey diagram...</div>
+      </div>
+    </div>
+  </main>
 </div>
 
 <script>
@@ -434,6 +424,7 @@ const { currentPath } = Astro.props;
         medianScrollDepth: number | null;
       };
       visitorFlow?: DevSankeyData;
+      markovFlow?: DevSankeyData;
       timeseries?: Array<{ date: string; visitors: number; pageviews: number }>;
     };
     gsc: {
@@ -454,7 +445,13 @@ const { currentPath } = Astro.props;
     opacity: number;
   }
 
+  const ULTRA_WIDE_BREAKPOINT_PX = 2048;
+  const DEFAULT_SPLIT_RATIO = 0.50; // 50% Website Preview + Minimap (left), 50% Flow Cockpit (right)
+  const MIN_PREVIEW_WIDTH_PX = 420;
+  const MIN_COCKPIT_WIDTH_PX = 520;
+
   type DevicePreset = 'full' | 'iphone' | 'ipad' | 'macbook';
+  type CockpitLayoutMode = 'hidden' | 'split' | 'maximized';
 
   class DevStudioManager {
     private currentPeriod: string = '28d';
@@ -465,6 +462,12 @@ const { currentPath } = Astro.props;
     private deviceHeight: number = 852;
     private isDraggingThumb: boolean = false;
     private fetchCounter: number = 0;
+
+    // 3-Mode Workspace Layout & Split-Ratio State
+    private layoutMode: CockpitLayoutMode = 'hidden';
+    private splitRatio: number = DEFAULT_SPLIT_RATIO;
+    private userExplicitlyClosedSplit: boolean = false;
+    private previousModeBeforeMax: CockpitLayoutMode = 'hidden';
 
     // In-memory & session caching
     private pageCache: Map<string, DevOverlayData> = new Map();
@@ -494,6 +497,11 @@ const { currentPath } = Astro.props;
           this.deviceWidth = 1280;
           this.deviceHeight = 800;
         }
+      }
+
+      const savedRatio = parseFloat(localStorage.getItem('gh_dev_studio_split_ratio') || '');
+      if (!isNaN(savedRatio) && savedRatio >= 0.25 && savedRatio <= 0.75) {
+        this.splitRatio = savedRatio;
       }
     }
 
@@ -530,6 +538,7 @@ const { currentPath } = Astro.props;
       this.setupIframeLoadListeners();
       this.setupDeviceControls();
       this.setupMinimapInteraction();
+      this.setupSplitResizer();
       this.updatePeriodButtonsUI();
 
       // Ensure full iframe src on top-level initialization
@@ -549,6 +558,10 @@ const { currentPath } = Astro.props;
       }
 
       this.applyDeviceMode(this.activeDevice);
+
+      // Initialize 3-Mode Workspace Layout based on viewport width
+      const initialMode: CockpitLayoutMode = window.innerWidth >= ULTRA_WIDE_BREAKPOINT_PX ? 'split' : 'hidden';
+      this.applyLayoutMode(initialMode, false);
 
       // Check for cached initial data to eliminate cold-start flicker
       const cached = this.getCachedData(this.currentPath, this.currentPeriod);
@@ -580,9 +593,9 @@ const { currentPath } = Astro.props;
         this.fetchData(false, false);
       }
 
-      // Recalculate layout on window resize
+      // Recalculate workspace mode & auto-fit scale on window resize
       window.addEventListener('resize', () => {
-        this.updateAutoFitScale();
+        this.handleWindowResize();
       });
     }
 
@@ -627,28 +640,61 @@ const { currentPath } = Astro.props;
         });
       });
 
-      // Refresh buttons (top bar & fullview cockpit)
-      const handleRefresh = () => {
+      // Refresh button (top HUD bar)
+      document.getElementById('dev-analytics-refresh')?.addEventListener('click', () => {
         this.resetToLoadingState();
         this.fetchData(true, false);
-      };
-      document.getElementById('dev-analytics-refresh')?.addEventListener('click', handleRefresh);
-      document.getElementById('dev-fullview-refresh')?.addEventListener('click', handleRefresh);
-
-      // Cockpit expand / collapse
-      const openFullView = () => {
-        document.getElementById('dev-analytics-fullview')?.classList.remove('hidden');
-        if (this.currentData) this.renderFullView(this.currentData);
-      };
-      document.getElementById('dev-expand-btn')?.addEventListener('click', openFullView);
-      document.getElementById('dev-collapse-btn')?.addEventListener('click', () => {
-        document.getElementById('dev-analytics-fullview')?.classList.add('hidden');
       });
 
-      // Escape key closes modal
+      // Split View toggle button (Top HUD Bar, visible on ultra-wide >= 2048px)
+      document.getElementById('dev-split-btn')?.addEventListener('click', () => {
+        if (this.layoutMode === 'split') {
+          this.applyLayoutMode('hidden', true);
+        } else {
+          this.applyLayoutMode('split', true);
+        }
+      });
+
+      // Full-Width Flow Cockpit toggle button (Top HUD Bar)
+      document.getElementById('dev-expand-btn')?.addEventListener('click', () => {
+        if (this.layoutMode === 'maximized') {
+          const fallback: CockpitLayoutMode =
+            window.innerWidth >= ULTRA_WIDE_BREAKPOINT_PX && !this.userExplicitlyClosedSplit
+              ? 'split'
+              : 'hidden';
+          this.applyLayoutMode(fallback, true);
+        } else {
+          this.applyLayoutMode('maximized', true);
+        }
+      });
+
+      // Auto-open Flow Cockpit if user clicks Flow | Markov or [ − | ±N | + ] while Flow Cockpit is hidden
+      const autoOpenOnSankeyCtrl = (e: Event) => {
+        const target = e.target as HTMLElement | null;
+        if (
+          (target?.closest('[data-sankey-model]') || target?.closest('[data-sankey-level-delta]')) &&
+          this.layoutMode === 'hidden'
+        ) {
+          const nextMode: CockpitLayoutMode =
+            window.innerWidth >= ULTRA_WIDE_BREAKPOINT_PX ? 'split' : 'maximized';
+          this.applyLayoutMode(nextMode, true);
+        }
+      };
+      document.getElementById('dev-sankey-model-group')?.addEventListener('click', autoOpenOnSankeyCtrl);
+      document.getElementById('dev-sankey-levels-group')?.addEventListener('click', autoOpenOnSankeyCtrl);
+
+      // Escape key restores split view (from maximized on ultra-wide) or hides cockpit
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          document.getElementById('dev-analytics-fullview')?.classList.add('hidden');
+          if (
+            this.layoutMode === 'maximized' &&
+            window.innerWidth >= ULTRA_WIDE_BREAKPOINT_PX &&
+            this.previousModeBeforeMax === 'split'
+          ) {
+            this.applyLayoutMode('split', true);
+          } else if (this.layoutMode !== 'hidden') {
+            this.applyLayoutMode('hidden', true);
+          }
         }
       });
 
@@ -691,6 +737,178 @@ const { currentPath } = Astro.props;
             activeIfr.contentWindow.postMessage({ type: 'dev-studio-popstate', url: newFullUrl }, '*');
           }
         }
+      });
+    }
+
+    private applyLayoutMode(mode: CockpitLayoutMode, userInitiated: boolean = true): void {
+      const isUltraWide = window.innerWidth >= ULTRA_WIDE_BREAKPOINT_PX;
+      let targetMode: CockpitLayoutMode = mode;
+      if (targetMode === 'split' && !isUltraWide) {
+        targetMode = 'maximized';
+      }
+
+      if (userInitiated) {
+        if (targetMode === 'hidden' && isUltraWide) {
+          this.userExplicitlyClosedSplit = true;
+        } else if (targetMode === 'split') {
+          this.userExplicitlyClosedSplit = false;
+        }
+      }
+
+      if (targetMode === 'maximized' && this.layoutMode !== 'maximized') {
+        this.previousModeBeforeMax = this.layoutMode;
+      }
+
+      const wasHidden = this.layoutMode === 'hidden';
+      this.layoutMode = targetMode;
+
+      const previewGroup = document.getElementById('dev-preview-group');
+      const splitResizer = document.getElementById('dev-split-resizer');
+      const cockpitPane = document.getElementById('dev-analytics-fullview');
+      const splitBtn = document.getElementById('dev-split-btn');
+      const expandBtn = document.getElementById('dev-expand-btn');
+      const deviceGroup = document.getElementById('dev-device-selector-group');
+      const rotateBtn = document.getElementById('dev-btn-rotate');
+      const modelGroup = document.getElementById('dev-sankey-model-group');
+      const levelsGroup = document.getElementById('dev-sankey-levels-group');
+
+      // Toggle ultra-wide button visibility
+      if (isUltraWide) {
+        splitBtn?.classList.remove('hidden');
+      } else {
+        splitBtn?.classList.add('hidden');
+      }
+
+      // Apply 3-mode pane visibility and widths
+      if (targetMode === 'hidden') {
+        previewGroup?.classList.remove('hidden');
+        if (previewGroup) previewGroup.style.width = '100%';
+        splitResizer?.classList.add('hidden');
+        cockpitPane?.classList.add('hidden');
+      } else if (targetMode === 'split') {
+        previewGroup?.classList.remove('hidden');
+        if (previewGroup) previewGroup.style.width = `${(this.splitRatio * 100).toFixed(2)}%`;
+        splitResizer?.classList.remove('hidden');
+        cockpitPane?.classList.remove('hidden');
+      } else {
+        // 'maximized'
+        previewGroup?.classList.add('hidden');
+        splitResizer?.classList.add('hidden');
+        cockpitPane?.classList.remove('hidden');
+      }
+
+      // Update active button styling in Top HUD Bar
+      const setBtnActive = (btn: HTMLElement | null, active: boolean) => {
+        if (!btn) return;
+        if (active) {
+          btn.classList.add('bg-zinc-200', 'text-zinc-900', 'font-bold', 'shadow-xs', 'border-zinc-300');
+          btn.classList.remove('bg-zinc-600', 'text-zinc-100', 'border-zinc-400/80');
+        } else {
+          btn.classList.remove('bg-zinc-200', 'text-zinc-900', 'font-bold', 'shadow-xs', 'border-zinc-300');
+          btn.classList.add('bg-zinc-600', 'text-zinc-100', 'border-zinc-400/80');
+        }
+      };
+      setBtnActive(splitBtn, targetMode === 'split');
+      setBtnActive(expandBtn, targetMode === 'maximized');
+
+      // Dim Device Mode Selector when Website Preview is hidden ('maximized'), and dim Model/Levels Controls when Flow Cockpit is hidden ('hidden')
+      deviceGroup?.classList.toggle('opacity-50', targetMode === 'maximized');
+      rotateBtn?.classList.toggle('opacity-50', targetMode === 'maximized');
+      modelGroup?.classList.toggle('opacity-50', targetMode === 'hidden');
+      levelsGroup?.classList.toggle('opacity-50', targetMode === 'hidden');
+
+      // Recalculate device frame scale and minimap thumb
+      this.updateAutoFitScale();
+      this.renderMinimapThumb();
+
+      // If cockpit just became visible and we have data, ensure Sankey renders at live dimensions
+      if (wasHidden && targetMode !== 'hidden' && this.currentData) {
+        this.renderFullView(this.currentData);
+      }
+    }
+
+    private handleWindowResize(): void {
+      const isUltraWide = window.innerWidth >= ULTRA_WIDE_BREAKPOINT_PX;
+      const splitBtn = document.getElementById('dev-split-btn');
+
+      if (isUltraWide) {
+        splitBtn?.classList.remove('hidden');
+      } else {
+        splitBtn?.classList.add('hidden');
+      }
+
+      if (!isUltraWide && this.layoutMode === 'split') {
+        this.applyLayoutMode('hidden', false);
+        return;
+      }
+
+      if (isUltraWide && this.layoutMode === 'hidden' && !this.userExplicitlyClosedSplit) {
+        this.applyLayoutMode('split', false);
+        return;
+      }
+
+      this.updateAutoFitScale();
+      this.renderMinimapThumb();
+    }
+
+    private setupSplitResizer(): void {
+      const resizer = document.getElementById('dev-split-resizer');
+      const stage = document.getElementById('dev-studio-stage');
+      const previewGroup = document.getElementById('dev-preview-group');
+      if (!resizer || !stage || !previewGroup) return;
+
+      let isResizing = false;
+
+      resizer.addEventListener('pointerdown', (e: PointerEvent) => {
+        if (e.button !== 0 || this.layoutMode !== 'split') return;
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+        document.querySelectorAll('iframe').forEach((ifr) => {
+          ifr.style.pointerEvents = 'none';
+        });
+        e.preventDefault();
+      });
+
+      window.addEventListener('pointermove', (e: PointerEvent) => {
+        if (!isResizing) return;
+        const rect = stage.getBoundingClientRect();
+        const totalW = rect.width;
+        if (totalW <= 0) return;
+
+        const minRatioByPx = MIN_PREVIEW_WIDTH_PX / totalW;
+        const maxRatioByPx = (totalW - MIN_COCKPIT_WIDTH_PX) / totalW;
+        const minRatio = Math.max(0.22, minRatioByPx);
+        const maxRatio = Math.min(0.78, maxRatioByPx);
+
+        const rawRatio = (e.clientX - rect.left) / totalW;
+        this.splitRatio = Math.max(minRatio, Math.min(maxRatio, rawRatio));
+        previewGroup.style.width = `${(this.splitRatio * 100).toFixed(2)}%`;
+        this.updateAutoFitScale();
+      });
+
+      const stopResizing = () => {
+        if (!isResizing) return;
+        isResizing = false;
+        document.body.style.cursor = '';
+        document.querySelectorAll('iframe').forEach((ifr) => {
+          ifr.style.pointerEvents = 'auto';
+        });
+        try {
+          localStorage.setItem('gh_dev_studio_split_ratio', this.splitRatio.toFixed(4));
+        } catch {}
+      };
+
+      window.addEventListener('pointerup', stopResizing);
+      window.addEventListener('pointercancel', stopResizing);
+
+      resizer.addEventListener('dblclick', () => {
+        if (this.layoutMode !== 'split') return;
+        this.splitRatio = DEFAULT_SPLIT_RATIO;
+        previewGroup.style.width = `${(this.splitRatio * 100).toFixed(2)}%`;
+        this.updateAutoFitScale();
+        try {
+          localStorage.setItem('gh_dev_studio_split_ratio', String(DEFAULT_SPLIT_RATIO));
+        } catch {}
       });
     }
 
@@ -767,6 +985,12 @@ const { currentPath } = Astro.props;
             this.deviceWidth = parseInt(w, 10);
             this.deviceHeight = parseInt(h, 10);
           }
+          // If user clicks a device preset while Flow Cockpit is maximized, restore preview visibility
+          if (this.layoutMode === 'maximized') {
+            const restoreMode: CockpitLayoutMode =
+              window.innerWidth >= ULTRA_WIDE_BREAKPOINT_PX ? 'split' : 'hidden';
+            this.applyLayoutMode(restoreMode, true);
+          }
           if (dev) {
             this.applyDeviceMode(dev);
           }
@@ -775,6 +999,11 @@ const { currentPath } = Astro.props;
 
       // Rotate Button (Portrait ↔ Landscape)
       document.getElementById('dev-btn-rotate')?.addEventListener('click', () => {
+        if (this.layoutMode === 'maximized') {
+          const restoreMode: CockpitLayoutMode =
+            window.innerWidth >= ULTRA_WIDE_BREAKPOINT_PX ? 'split' : 'hidden';
+          this.applyLayoutMode(restoreMode, true);
+        }
         const temp = this.deviceWidth;
         this.deviceWidth = this.deviceHeight;
         this.deviceHeight = temp;
@@ -863,20 +1092,20 @@ const { currentPath } = Astro.props;
     }
 
     private updateAutoFitScale(): void {
-      if (this.activeDevice === 'full') return;
+      if (this.activeDevice === 'full' || this.layoutMode === 'maximized') return;
 
-      const stage = document.getElementById('dev-studio-stage');
+      const previewGroup = document.getElementById('dev-preview-group');
       const outerBox = document.getElementById('dev-device-outer-box');
       const bezel = document.getElementById('dev-device-bezel');
-      if (!stage || !outerBox || !bezel) return;
+      if (!previewGroup || !outerBox || !bezel) return;
 
       // Bezel adds padding: 24px + 4px border = 28px
       const totalDeviceW = this.deviceWidth + 28;
       const totalDeviceH = this.deviceHeight + 28;
 
-      // Stage width minus right-docked minimap (48px) and stage padding/margin (48px)
-      const availW = Math.max(280, stage.clientWidth - 48 - 48);
-      const availH = Math.max(280, stage.clientHeight - 48);
+      // Preview group width minus right-docked minimap (48px) and padding (32px)
+      const availW = Math.max(240, previewGroup.clientWidth - 48 - 32);
+      const availH = Math.max(240, previewGroup.clientHeight - 32);
 
       const scaleW = availW / totalDeviceW;
       const scaleH = availH / totalDeviceH;
@@ -1370,15 +1599,11 @@ const { currentPath } = Astro.props;
     private resetToLoadingState(): void {
       this.currentData = null;
 
-      // Show HUD & Fullview spinners, hide checkmarks, dim metrics
+      // Show HUD spinner, hide checkmark, dim metrics
       const spinner = document.getElementById('dev-hud-spinner');
       const check = document.getElementById('dev-hud-check');
-      const fullSpinner = document.getElementById('dev-fullview-spinner');
-      const fullCheck = document.getElementById('dev-fullview-check');
       spinner?.classList.remove('hidden');
       check?.classList.add('hidden');
-      fullSpinner?.classList.remove('hidden');
-      fullCheck?.classList.add('hidden');
 
       const metricsContainer = document.getElementById('dev-analytics-metrics');
       metricsContainer?.classList.add('opacity-40');
@@ -1413,8 +1638,7 @@ const { currentPath } = Astro.props;
       this.currentFunnelPoints = null;
       this.currentGradientStops = null;
 
-      // Reset Cockpit modal
-      set('dev-fullview-path', this.currentPath);
+      // Reset Cockpit pane
       const plausibleLink = document.getElementById('dev-fullview-plausible') as HTMLAnchorElement | null;
       if (plausibleLink) {
         plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
@@ -1423,7 +1647,7 @@ const { currentPath } = Astro.props;
       const sankeyEl = document.getElementById('full-visitor-flow-sankey');
       if (sankeyEl) {
         sankeyEl.innerHTML = `
-          <div class="w-full h-full flex items-center justify-center gap-2 text-zinc-400 italic font-mono text-xs animate-pulse">
+          <div class="w-full h-full flex items-center justify-center gap-2 text-zinc-100 italic font-mono text-xs animate-pulse">
             <svg class="w-4 h-4 animate-spin text-emerald-300 shrink-0" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
@@ -1440,13 +1664,9 @@ const { currentPath } = Astro.props;
 
       const spinner = document.getElementById('dev-hud-spinner');
       const check = document.getElementById('dev-hud-check');
-      const fullSpinner = document.getElementById('dev-fullview-spinner');
-      const fullCheck = document.getElementById('dev-fullview-check');
       if (!isBackgroundRevalidate) {
         spinner?.classList.remove('hidden');
         check?.classList.add('hidden');
-        fullSpinner?.classList.remove('hidden');
-        fullCheck?.classList.add('hidden');
       }
 
       try {
@@ -1511,13 +1731,10 @@ const { currentPath } = Astro.props;
 
         spinner?.classList.add('hidden');
         check?.classList.remove('hidden');
-        fullSpinner?.classList.add('hidden');
-        fullCheck?.classList.remove('hidden');
       } catch (err) {
         if (fetchId !== this.fetchCounter) return;
         console.error('[dev-studio] Failed to fetch metrics:', err);
         spinner?.classList.add('hidden');
-        fullSpinner?.classList.add('hidden');
         const metricsContainer = document.getElementById('dev-analytics-metrics');
         metricsContainer?.classList.remove('opacity-40');
       }
@@ -1544,18 +1761,12 @@ const { currentPath } = Astro.props;
 
     private renderFullView(data: DevOverlayData): void {
       const { plausible, gsc } = data;
-      const set = (id: string, val: string) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-      };
-
-      set('dev-fullview-path', this.currentPath);
       const plausibleLink = document.getElementById('dev-fullview-plausible') as HTMLAnchorElement | null;
       if (plausibleLink) {
         plausibleLink.href = `https://plausible.io/hackenberg.tech?page=${encodeURIComponent(this.currentPath)}`;
       }
 
-      // Fullscreen Visitor Flow Stage
+      // Visitor Flow Stage (Docked Split or Maximized)
       const sankeyEl = document.getElementById('full-visitor-flow-sankey');
       if (sankeyEl) {
         renderVisitorFlowSankey(
@@ -1563,7 +1774,6 @@ const { currentPath } = Astro.props;
           this.currentPath,
           plausible.visitorFlow,
           (targetPath) => {
-            document.getElementById('dev-analytics-fullview')?.classList.add('hidden');
             this.handleNavigation(targetPath, true);
           },
           this.currentPeriod,
@@ -1575,6 +1785,7 @@ const { currentPath } = Astro.props;
             gscQueries: gsc.queries,
             scrollFunnel: plausible.scrollFunnel,
             timeseries: plausible.timeseries,
+            markovFlow: plausible.markovFlow,
           }
         );
       }

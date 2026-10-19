@@ -1,12 +1,14 @@
 import { defineMiddleware } from 'astro:middleware';
 import {
   getPlausiblePageMetrics,
+  getPlausibleMarkovNeighbor,
   getPlausibleTopPages,
   getGscPagePerformance,
   getSectionDwellBreakdown,
   getCardCtrBreakdown,
   normalizePath,
   type DevOverlayPageData,
+  type PlausibleVisitorFlow,
 } from '@commons/server/analytics/index.js';
 
 interface CacheEntry {
@@ -14,7 +16,13 @@ interface CacheEntry {
   data: DevOverlayPageData;
 }
 
+interface MarkovCacheEntry {
+  timestamp: number;
+  data: { path: string; period: string; markovFlow: PlausibleVisitorFlow | null };
+}
+
 const cache = new Map<string, CacheEntry>();
+const markovCache = new Map<string, MarkovCacheEntry>();
 const CACHE_TTL_MS = 2 * 60 * 1000;
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -29,10 +37,57 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const path = headerPath || context.url.searchParams.get('path') || '/';
     const period = headerPeriod || context.url.searchParams.get('period') || '28d';
     const force = context.url.searchParams.get('_t');
+    const scope = context.url.searchParams.get('scope');
 
     try {
-
       const targetPath = normalizePath(path);
+
+      function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+        return Promise.race([
+          promise,
+          new Promise<T>((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms)),
+        ]);
+      }
+
+      if (scope === 'markov') {
+        const markovKey = `${targetPath}:${period}:markov`;
+        const cachedMarkov = markovCache.get(markovKey);
+
+        if (force) {
+          markovCache.delete(markovKey);
+        } else if (cachedMarkov && Date.now() - cachedMarkov.timestamp < CACHE_TTL_MS) {
+          return new Response(JSON.stringify(cachedMarkov.data), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-store, no-cache, must-revalidate',
+              'X-Analytics-Cache': 'HIT',
+            },
+          });
+        }
+
+        const markovFlow = await withTimeout(
+          getPlausibleMarkovNeighbor(targetPath, period),
+          5000
+        ).catch(() => null);
+
+        const markovPayload = {
+          path: targetPath,
+          period,
+          markovFlow,
+        };
+        markovCache.set(markovKey, { timestamp: Date.now(), data: markovPayload });
+
+        return new Response(JSON.stringify(markovPayload), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-store, no-cache, must-revalidate',
+            'X-Analytics-Cache': 'MISS',
+          },
+        });
+      }
+
       const cacheKey = `${targetPath}:${period}`;
       const cached = cache.get(cacheKey);
 
@@ -47,13 +102,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
             'X-Analytics-Cache': 'HIT',
           },
         });
-      }
-
-      function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-        return Promise.race([
-          promise,
-          new Promise<T>((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms)),
-        ]);
       }
 
       const [plausibleRes, gscRes, sectionsRes, cardsRes, pagesRes] = await Promise.allSettled([
