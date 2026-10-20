@@ -54,17 +54,22 @@ function copyContentAssets(): AstroIntegration {
     hooks: {
       'astro:server:setup': ({ server }) => {
         const pluginsDir = path.resolve('src/plugins').replace(/\\/g, '/');
+        const contentDir = path.resolve('src/content').replace(/\\/g, '/');
         server.watcher.add(pluginsDir);
-        const invalidateContentCacheOnPluginChange = (changedPath: string) => {
+        server.watcher.add(contentDir);
+        const invalidateContentCacheOnAssetOrPluginChange = (changedPath: string) => {
           const normPath = path.resolve(changedPath).replace(/\\/g, '/');
-          if (normPath.startsWith(`${pluginsDir}/`)) {
+          if (
+            normPath.startsWith(`${pluginsDir}/`) ||
+            (normPath.startsWith(`${contentDir}/`) && normPath.toLowerCase().endsWith('.svg'))
+          ) {
             fs.rmSync(path.resolve('.astro/data-store.json'), { force: true });
             void server.restart();
           }
         };
-        server.watcher.on('change', invalidateContentCacheOnPluginChange);
-        server.watcher.on('add', invalidateContentCacheOnPluginChange);
-        server.watcher.on('unlink', invalidateContentCacheOnPluginChange);
+        server.watcher.on('change', invalidateContentCacheOnAssetOrPluginChange);
+        server.watcher.on('add', invalidateContentCacheOnAssetOrPluginChange);
+        server.watcher.on('unlink', invalidateContentCacheOnAssetOrPluginChange);
 
         server.middlewares.use(
           (req: IncomingMessage, res: ServerResponse, next: () => void) => {
