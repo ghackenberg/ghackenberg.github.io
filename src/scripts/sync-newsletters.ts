@@ -66,6 +66,24 @@ interface ListmonkCampaignResponse {
   data: ListmonkCampaignRecord;
 }
 
+type ListmonkSettingValue =
+  | string
+  | number
+  | boolean
+  | null
+  | ListmonkSettingValue[]
+  | { [key: string]: ListmonkSettingValue };
+
+interface ListmonkSettingsResponse {
+  data: Record<string, ListmonkSettingValue>;
+}
+
+const DESIRED_LISTMONK_SETTINGS: Record<string, string> = {
+  'app.site_name': 'Dr. Georg Hackenberg',
+  'app.root_url': 'https://news.hackenberg.tech',
+  'app.favicon_url': 'https://hackenberg.tech/favicon-32x32.png',
+};
+
 interface CliOptions {
   syncAll: boolean;
   syncTemplates: boolean;
@@ -127,6 +145,33 @@ function getAuthConfig(): { baseUrl: string; authHeader: string } {
 function computeFileSha256(filePath: string): string {
   const content = fs.readFileSync(filePath);
   return crypto.createHash('sha256').update(content).digest('hex');
+}
+
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  maxAttempts = 10,
+  delayMs = 1000
+): Promise<Response> {
+  let lastError: Error | undefined;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const res = await fetch(url, init);
+      if (res.status === 502 || res.status === 503 || res.status === 504) {
+        if (attempt < maxAttempts) {
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+          continue;
+        }
+      }
+      return res;
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error(String(err));
+      if (attempt < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+  }
+  throw lastError || new Error(`Request to ${url} failed after ${maxAttempts} attempts`);
 }
 
 function syncStaticTemplatesViaSsh(
@@ -296,6 +341,68 @@ function syncStaticTemplatesViaSsh(
   );
 }
 
+async function syncGeneralSettings(baseUrl: string, authHeader: string): Promise<void> {
+  console.log('[Listmonk Sync] Auditing general settings via GET /api/settings...');
+  const getRes = await fetchWithRetry(`${baseUrl}/api/settings`, {
+    method: 'GET',
+    headers: {
+      Authorization: authHeader,
+      Accept: 'application/json',
+    },
+  });
+
+  if (!getRes.ok) {
+    const errText = await getRes.text();
+    throw new Error(`GET /api/settings failed (${getRes.status}): ${errText}`);
+  }
+
+  const parsed = (await getRes.json()) as ListmonkSettingsResponse;
+  const currentSettings = parsed.data || {};
+  const changedKeys: string[] = [];
+
+  for (const [key, desiredValue] of Object.entries(DESIRED_LISTMONK_SETTINGS)) {
+    if (currentSettings[key] !== desiredValue) {
+      changedKeys.push(`${key}: "${String(currentSettings[key] ?? '')}" -> "${desiredValue}"`);
+    }
+  }
+
+  if (changedKeys.length === 0) {
+    console.log(
+      '✔ Listmonk general settings (app.site_name, app.root_url, app.favicon_url) are already up-to-date.'
+    );
+    return;
+  }
+
+  console.log(
+    `[Listmonk Sync] Updating general settings via PUT /api/settings (${changedKeys.join(', ')})...`
+  );
+
+  const updatedSettings = {
+    ...currentSettings,
+    ...DESIRED_LISTMONK_SETTINGS,
+  };
+
+  const putRes = await fetchWithRetry(`${baseUrl}/api/settings`, {
+    method: 'PUT',
+    headers: {
+      Authorization: authHeader,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(updatedSettings),
+  });
+
+  if (!putRes.ok) {
+    const errText = await putRes.text();
+    throw new Error(`PUT /api/settings failed (${putRes.status}): ${errText}`);
+  }
+
+  // Wait briefly in case Listmonk hot-reloads after settings update
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  console.log(`✔ Updated Listmonk general settings on ${baseUrl}.`);
+}
+
 async function syncTemplates(baseUrl: string, authHeader: string): Promise<void> {
   const rootDir = process.cwd();
   const emailTemplatesDir = path.resolve(
@@ -325,8 +432,10 @@ async function syncTemplates(baseUrl: string, authHeader: string): Promise<void>
 
   syncStaticTemplatesViaSsh(staticEmailFilePaths, publicShell);
 
+  await syncGeneralSettings(baseUrl, authHeader);
+
   console.log('[Listmonk Sync] Fetching existing templates from GET /api/templates...');
-  const getRes = await fetch(`${baseUrl}/api/templates`, {
+  const getRes = await fetchWithRetry(`${baseUrl}/api/templates`, {
     method: 'GET',
     headers: {
       Authorization: authHeader,
@@ -354,7 +463,7 @@ async function syncTemplates(baseUrl: string, authHeader: string): Promise<void>
     `[Listmonk Sync] Updating default campaign template #${defaultTemplate.id} ("${defaultTemplate.name}")...`
   );
 
-  const putRes = await fetch(`${baseUrl}/api/templates/${defaultTemplate.id}`, {
+  const putRes = await fetchWithRetry(`${baseUrl}/api/templates/${defaultTemplate.id}`, {
     method: 'PUT',
     headers: {
       Authorization: authHeader,
@@ -383,7 +492,7 @@ async function syncTemplates(baseUrl: string, authHeader: string): Promise<void>
 }
 
 async function resolveTargetListId(baseUrl: string, authHeader: string): Promise<number> {
-  const res = await fetch(`${baseUrl}/api/lists?per_page=all`, {
+  const res = await fetchWithRetry(`${baseUrl}/api/lists?per_page=all`, {
     method: 'GET',
     headers: {
       Authorization: authHeader,
@@ -413,7 +522,7 @@ async function fetchExistingCampaigns(
   baseUrl: string,
   authHeader: string
 ): Promise<ListmonkCampaignRecord[]> {
-  const res = await fetch(`${baseUrl}/api/campaigns?per_page=all`, {
+  const res = await fetchWithRetry(`${baseUrl}/api/campaigns?per_page=all`, {
     method: 'GET',
     headers: {
       Authorization: authHeader,
@@ -481,7 +590,7 @@ async function syncIssueRecord(
     console.log(
       `[Listmonk Sync] Updating existing draft campaign #${existing.id} for "${issue.slug}"...`
     );
-    const putRes = await fetch(`${baseUrl}/api/campaigns/${existing.id}`, {
+    const putRes = await fetchWithRetry(`${baseUrl}/api/campaigns/${existing.id}`, {
       method: 'PUT',
       headers: {
         Authorization: authHeader,
@@ -506,7 +615,7 @@ async function syncIssueRecord(
   }
 
   console.log(`[Listmonk Sync] Creating new draft campaign for "${issue.slug}"...`);
-  const postRes = await fetch(`${baseUrl}/api/campaigns`, {
+  const postRes = await fetchWithRetry(`${baseUrl}/api/campaigns`, {
     method: 'POST',
     headers: {
       Authorization: authHeader,

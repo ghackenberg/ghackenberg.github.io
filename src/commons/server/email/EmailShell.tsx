@@ -54,7 +54,7 @@ export function EmailShell({
                       )}
                     </div>
                     <div style={emailStyles.brandSubtitle}>
-                      Professor for Industrial Informatics @ UAP (FH Upper Austria)
+                      Professor for Industrial Informatics @ UAP
                     </div>
                   </td>
                 </tr>

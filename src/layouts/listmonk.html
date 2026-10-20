@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>{{ .Data.Title }} - {{ .SiteName }}</title>
+    <title>{{ if and .Data.Title (ne .Data.Title "listmonk") }}{{ .Data.Title }} | {{ else }}Newsletter | {{ end }}{{ .SiteName }}</title>
     <meta name="description" content="{{ .Data.Description }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
@@ -30,7 +30,7 @@
                 </span>
                 <span class="brand-text">
                     <span class="brand-title">Dr. Georg Hackenberg</span>
-                    <span class="brand-subtitle">Professor for Industrial Informatics @ UAP (FH Upper Austria)</span>
+                    <span class="brand-subtitle">Professor for Industrial Informatics @ UAP</span>
                 </span>
             </a>
         </header>
