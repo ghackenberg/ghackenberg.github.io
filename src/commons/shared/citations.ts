@@ -6,6 +6,58 @@ export interface CitationRef {
 }
 
 /**
+ * Canonical regular expression matching both single `[@id]` and multi-source
+ * `[@id1; @id2; @id3]` in-text citation brackets (supporting `;` or `,` separators).
+ * Capture group 1 contains the inner key list after the initial `@`.
+ */
+export const CITATION_GROUP_REGEX = /\[@([a-zA-Z0-9_-]+(?:\s*[;,]\s*@[a-zA-Z0-9_-]+)*)\]/g;
+
+const EXACT_CITATION_GROUP_REGEX = /^\[@([a-zA-Z0-9_-]+(?:\s*[;,]\s*@[a-zA-Z0-9_-]+)*)\]$/;
+
+/**
+ * Parses the inner capture group (or full bracket string) of a citation group
+ * into an ordered array of individual reference IDs.
+ */
+export function parseCitationGroup(rawInner: string): string[] {
+  const cleaned = rawInner.trim().replace(/^\[|\]$/g, '');
+  return cleaned
+    .split(/\s*[;,]\s*/)
+    .map((token) => token.trim().replace(/^@/, ''))
+    .filter((key) => key.length > 0);
+}
+
+/**
+ * Extracts all cited reference IDs from a Markdown/MDX document string,
+ * supporting both single `[@id]` and multi-source `[@id1; @id2]` brackets.
+ */
+export function extractCitedKeys(content: string): string[] {
+  const keys: string[] = [];
+  for (const match of content.matchAll(CITATION_GROUP_REGEX)) {
+    keys.push(...parseCitationGroup(match[1]));
+  }
+  return keys;
+}
+
+/**
+ * Finds any malformed `[@...]` citation patterns in Markdown/MDX prose
+ * (excluding fenced code blocks and inline code spans) that do not conform
+ * to the canonical `[@id]` or `[@id1; @id2]` grammar.
+ */
+export function findMalformedCitations(content: string): string[] {
+  const withoutCode = content
+    .replace(/`{3,}[\s\S]*?`{3,}/g, ' ')
+    .replace(/`[^`\r\n]+`/g, ' ');
+  const malformed: string[] = [];
+  for (const match of withoutCode.matchAll(/\[@[^\r\n\]]*\]?/g)) {
+    const token = match[0];
+    if (!EXACT_CITATION_GROUP_REGEX.test(token)) {
+      malformed.push(token);
+    }
+  }
+  return malformed;
+}
+
+/**
  * Generates an alphanumeric citation label (e.g., Agg24, Cor09, ISO24)
  * following classic BibTeX-alpha style.
  */

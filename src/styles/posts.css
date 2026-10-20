@@ -7,22 +7,29 @@
 @variant light {
   .service-content h2,
   .service-content h3,
+  .service-content h4,
   .service-content strong,
   .service-content b,
   .service-content p:first-of-type,
   .syllabus-content h2,
   .syllabus-content h3,
+  .syllabus-content h4,
   .syllabus-content strong,
   .syllabus-content b,
   .post-body h2,
   .post-body h3,
+  .post-body h4,
   .post-body strong,
   .post-body b,
   .post-body th,
   .project-content h2,
   .project-content h3,
+  .project-content h4,
   .project-content strong,
-  .project-content b {
+  .project-content b,
+  .prose-custom h2,
+  .prose-custom h3,
+  .prose-custom h4 {
     color: var(--color-text-heading) !important;
   }
 
@@ -98,6 +105,15 @@
   color: var(--color-text-heading);
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
+}
+.prose-custom h4 {
+  font-size: 1.0625rem !important; /* 17px - standard sub-subsection headings */
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--color-text-heading);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Central link typography rules for prose articles */

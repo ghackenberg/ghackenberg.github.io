@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { extractCitedKeys, findMalformedCitations } from '@commons/shared/citations.js';
 import {
   computeSlideStyleHash,
   computePresentationDeckHash,
@@ -341,7 +342,11 @@ function validateSlides() {
 
       // 1c. Validate slide references integrity (mandatory citation tags)
       if (Array.isArray(parsedFm.references) && parsedFm.references.length > 0) {
-        const citedRefs = [...content.matchAll(/\[@([a-zA-Z0-9_\-]+)\]/g)].map(m => m[1]);
+        const citedRefs = extractCitedKeys(content);
+        for (const bad of findMalformedCitations(content)) {
+          console.error(`  ❌ [${slideFile}] Malformed citation syntax "${bad}". Use "[@id]" or "[@id1; @id2]".`);
+          totalErrors++;
+        }
         for (const ref of parsedFm.references) {
           if (!ref.id) {
             console.error(`  ❌ [${slideFile}] Slide reference "${ref.title}" is missing mandatory "id".`);

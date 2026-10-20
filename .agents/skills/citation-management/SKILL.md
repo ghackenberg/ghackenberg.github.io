@@ -43,17 +43,18 @@ references:
 ```
 
 ## 2. In-Text Semantic Citation Contract
-- **Semantic Tag Syntax**: Always cite using `[@id]` in Markdown or MDX prose (e.g. `wie bereits von [@vaswani-2017-attention] gezeigt`).
-- **Strictly Prohibited**: Never hardcode numeric indices (`[1]`) or manual keys (`[Vas17]`) in body text.
-- **Build-Time Compilation**: The remark plugin `remarkCitations` transforms `[@id]` into:
+- **Semantic Tag Syntax**: Always cite using `[@id]` for single sources (e.g. `wie bereits von [@vaswani-2017-attention] gezeigt`) or `[@id1; @id2]` for multi-source citation groups separated by `;` or `,` (e.g. `[@jimenez-2024-swebench; @yang-2024-sweagent]` or `[@jimenez-2024-swebench; @xie-2024-osworld; @wang-2025-openhands]`).
+- **Strictly Prohibited**: Never hardcode numeric indices (`[1]`), manual keys (`[Vas17]`), or unprefixed keys inside a group (`[@id1; id2]`) in body text.
+- **Build-Time Compilation**: The remark plugin [`src/plugins/remark-citations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/remark-citations.ts) (sharing canonical parser utilities from [`src/commons/shared/citations.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/shared/citations.ts)) transforms single `[@id]` and multi-source `[@id1; @id2]` groups into:
   - Alphanumeric BibTeX-Alpha labels (e.g. `[Vas17]`).
-  - Interactive anchor jumps in blog posts (`#ref-vaswani-2017-attention`).
-  - Interactive reference detail modals in slide decks (`data-open-reference="vaswani-2017-attention"`).
+  - Individual interactive anchor jumps in blog posts (`#ref-vaswani-2017-attention`).
+  - Individual interactive reference detail modal triggers in slide decks (`data-open-reference="vaswani-2017-attention"`).
 
 ## 3. The 100% Bidirectional Parity Gate
-Every document supporting references must satisfy two strict invariant rules:
-1. **Zero Undefined Citations**: Every `[@id]` used in the Markdown/MDX body must match an entry declared in `references:`.
-2. **Zero Orphan References**: Every entry declared in `references:` must be cited at least once in the document body via `[@id]`.
+Every document supporting references must satisfy three strict invariant rules:
+1. **Zero Undefined Citations**: Every key in `[@id]` or `[@id1; @id2]` used in the Markdown/MDX body must match an entry declared in `references:`.
+2. **Zero Orphan References**: Every entry declared in `references:` must be cited at least once in the document body via `[@id]` or `[@id1; @id2]`.
+3. **Zero Malformed Citation Brackets**: Every `[@...]` occurrence in prose must conform to the canonical citation grammar (`/\[@([a-zA-Z0-9_-]+(?:\s*[;,]\s*@[a-zA-Z0-9_-]+)*)\]/g`).
 
 ## 4. Deep-Link, DOI & Primary Author Accuracy Contract
 - **Deep URLs Mandatory**: Every cited article, paper, report, or guide must link to the specific target page or DOI (`https://doi.org/...`).

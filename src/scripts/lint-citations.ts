@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import * as cheerio from 'cheerio';
+import { extractCitedKeys, findMalformedCitations } from '@commons/shared/citations.js';
 
 const CACHE_DIR = path.resolve('.cache');
 const CACHE_FILE = path.join(CACHE_DIR, 'citations-cache.json');
@@ -449,11 +450,19 @@ function extractReferencesFromFile(filePath: string, category: string): { refs: 
 
   const errors: string[] = [];
   const relPath = path.relative(process.cwd(), filePath).replace(/\\/g, '/');
-  const citedKeys = [...content.matchAll(/\[@([a-zA-Z0-9_\-]+)\]/g)].map(m => m[1]);
+  const citedKeys = extractCitedKeys(content);
+  for (const bad of findMalformedCitations(content)) {
+    errors.push(`[${relPath}] Malformed citation syntax "${bad}" in content. Use "[@id]" or "[@id1; @id2]".`);
+  }
 
   try {
     const parsed = YAML.parse(match[1]);
-    if (!parsed || !Array.isArray(parsed.references)) return { refs: [], errors: [] };
+    if (!parsed || !Array.isArray(parsed.references)) {
+      for (const key of citedKeys) {
+        errors.push(`[${relPath}] Citation "[@${key}]" used in content but not declared in frontmatter.`);
+      }
+      return { refs: [], errors };
+    }
 
     const refs: CitationRef[] = parsed.references.map((r: CitationRef) => ({
       id: r.id,

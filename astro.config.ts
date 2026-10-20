@@ -23,7 +23,12 @@ import { fileURLToPath } from 'node:url';
 import { buildSitemapMetadata } from '@plugins/sitemap-config.js';
 import { validateAndEnrichImageSitemaps } from '@plugins/image-sitemap.js';
 import YAML from 'yaml';
-import { generateCitationLabel, type CitationRef } from '@commons/shared/citations.js';
+import {
+  CITATION_GROUP_REGEX,
+  generateCitationLabel,
+  parseCitationGroup,
+  type CitationRef,
+} from '@commons/shared/citations.js';
 import { getFileContentHash } from '@commons/server/content-hash.js';
 
 const mimeTypes: Record<string, string> = {
@@ -333,11 +338,15 @@ function vitePreSlideCues(): VitePlugin {
       }
 
       // 1. Transform citations: [@refId] into interactive slide citation button badges
-      const CITE_REGEX = /\[@([a-zA-Z0-9_\-]+)\]/g;
-      const bodyWithCitations = body.replace(CITE_REGEX, (_, refId) => {
+      const CITE_REGEX = new RegExp(CITATION_GROUP_REGEX.source, 'g');
+      const bodyWithCitations = body.replace(CITE_REGEX, (_, rawGroup: string) => {
+        return parseCitationGroup(rawGroup)
+          .map((refId) => {
         const ref = references.find((r) => r.id === refId) || { id: refId };
         const label = generateCitationLabel(ref);
-        return `<button type='button' data-open-reference='${refId}' class='slide-citation-badge inline-flex items-center font-mono text-purple-400 light:text-purple-700 hover:text-purple-300 font-bold align-baseline px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 cursor-pointer transition-colors' title='Referenz ansehen: ${label}'>[${label}]</button>`;
+            return `<button type='button' data-open-reference='${refId}' class='slide-citation-badge inline-flex items-center font-mono text-purple-400 light:text-purple-700 hover:text-purple-300 font-bold align-baseline px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 cursor-pointer transition-colors' title='Referenz ansehen: ${label}'>[${label}]</button>`;
+          })
+          .join(' ');
       });
 
       // 2. Transform slide cues

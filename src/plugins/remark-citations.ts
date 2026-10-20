@@ -1,7 +1,12 @@
 import type { Root, Text, Html } from 'mdast';
 import type { VFile } from 'vfile';
 import type { Node, Parent } from 'unist';
-import { generateCitationLabel, type CitationRef } from '@commons/shared/citations.js';
+import {
+  CITATION_GROUP_REGEX,
+  generateCitationLabel,
+  parseCitationGroup,
+  type CitationRef,
+} from '@commons/shared/citations.js';
 
 interface AstroFrontmatterFile {
   astro?: {
@@ -13,13 +18,12 @@ interface AstroFrontmatterFile {
 }
 
 /**
- * Remark plugin to transform [@id] in Markdown AST into clickable citation links.
+ * Remark plugin to transform [@id] and [@id1; @id2] in Markdown AST into clickable citation links.
  * In blog posts: <a href="#ref-id" class="citation ...">[Label]</a>
  * In slides: <button type="button" data-ref-id="id" class="slide-citation-badge ...">[Label]</button>
  */
 export default function remarkCitations() {
   return function transformer(tree: Root, file: VFile) {
-    const CITE_REGEX = /\[@([a-zA-Z0-9_\-]+)\]/g;
     const frontmatter = (file?.data as AstroFrontmatterFile | undefined)?.astro?.frontmatter || {};
     const references: CitationRef[] = Array.isArray(frontmatter.references) ? frontmatter.references : [];
     const filePath = file?.history?.[0] || '';
@@ -29,9 +33,9 @@ export default function remarkCitations() {
       const nodes: (Text | Html)[] = [];
       let lastIndex = 0;
       let match: RegExpExecArray | null;
-      CITE_REGEX.lastIndex = 0;
+      const citeRegex = new RegExp(CITATION_GROUP_REGEX.source, 'g');
 
-      while ((match = CITE_REGEX.exec(text)) !== null) {
+      while ((match = citeRegex.exec(text)) !== null) {
         if (match.index > lastIndex) {
           nodes.push({
             type: 'text',
@@ -39,23 +43,23 @@ export default function remarkCitations() {
           });
         }
 
-        const refId = match[1];
-        const ref = references.find((r) => r.id === refId) || { id: refId };
-        const label = generateCitationLabel(ref);
+        const refIds = parseCitationGroup(match[1]);
+        const renderedBadges = refIds.map((refId) => {
+          const ref = references.find((r) => r.id === refId) || { id: refId };
+          const label = generateCitationLabel(ref);
 
-        if (isSlide) {
-          nodes.push({
-            type: 'html',
-            value: `<button type="button" data-open-reference="${refId}" class="slide-citation-badge inline-flex items-center font-mono text-domain-publications hover:text-domain-publications font-bold align-baseline px-1.5 py-0.5 rounded bg-domain-publications/10 hover:bg-domain-publications/20 border border-domain-publications/20 cursor-pointer transition-colors" title="Referenz ansehen: ${label}">[${label}]</button>`,
-          });
-        } else {
-          nodes.push({
-            type: 'html',
-            value: `<a href="#ref-${refId}" class="citation" title="Quelle [${label}] anzeigen">[${label}]</a>`,
-          });
-        }
+          if (isSlide) {
+            return `<button type="button" data-open-reference="${refId}" class="slide-citation-badge inline-flex items-center font-mono text-domain-publications hover:text-domain-publications font-bold align-baseline px-1.5 py-0.5 rounded bg-domain-publications/10 hover:bg-domain-publications/20 border border-domain-publications/20 cursor-pointer transition-colors" title="Referenz ansehen: ${label}">[${label}]</button>`;
+          }
+          return `<a href="#ref-${refId}" class="citation" title="Quelle [${label}] anzeigen">[${label}]</a>`;
+        });
 
-        lastIndex = CITE_REGEX.lastIndex;
+        nodes.push({
+          type: 'html',
+          value: renderedBadges.join(' '),
+        });
+
+        lastIndex = citeRegex.lastIndex;
       }
 
       if (lastIndex < text.length) {

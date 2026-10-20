@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
+import { CITATION_GROUP_REGEX } from '@commons/shared/citations.js';
 
 interface PostFrontmatter {
   title?: string;
@@ -47,7 +48,7 @@ function stripFourBacktickBlocks(markdown: string): string {
 
 function countAnswerFirstWords(text: string): number {
   const cleaned = text
-    .replace(/\[@([a-zA-Z0-9_-]+)\]/g, '')
+    .replace(CITATION_GROUP_REGEX, '')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, (_, label: string) => label)
     .replace(/\$[^$]+\$/g, 'MATH')
     .replace(/`[^`]+`/g, 'CODE')
