@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import sharp from 'sharp';
 import YAML from 'yaml';
+import { getFileContentHash } from '@commons/server/content-hash';
 import type {
   NewsletterFeaturedItem,
   NewsletterIssueEmailProps,
@@ -158,11 +158,12 @@ function resolveFeaturedItem(
   };
 }
 
-async function encodeIssueHeroImage(
+function resolveIssueHeroImageUrl(
   slug: string,
   issueDir: string,
+  rootDir: string,
   icon?: RawNewsletterIcon
-): Promise<string> {
+): string {
   const relImgPath = icon?.src || icon?.image;
   if (!relImgPath) {
     throw new Error(
@@ -177,16 +178,18 @@ async function encodeIssueHeroImage(
     );
   }
 
-  try {
-    const resizedBuffer = await sharp(absImgPath)
-      .resize({ width: 600, withoutEnlargement: true })
-      .jpeg({ quality: 80, mozjpeg: true })
-      .toBuffer();
-    return `data:image/jpeg;base64,${resizedBuffer.toString('base64')}`;
-  } catch {
-    const rawBuffer = fs.readFileSync(absImgPath);
-    return `data:image/jpeg;base64,${rawBuffer.toString('base64')}`;
+  const distIssueDir = path.resolve(rootDir, 'dist', 'newsletters', slug);
+  if (fs.existsSync(distIssueDir)) {
+    const matchedFile = fs
+      .readdirSync(distIssueDir)
+      .find((f) => /^preview-[a-zA-Z0-9_-]+\.jpe?g$/i.test(f));
+    if (matchedFile) {
+      return `https://hackenberg.tech/newsletters/${slug}/${matchedFile}`;
+    }
   }
+
+  const hash = getFileContentHash(absImgPath);
+  return `https://hackenberg.tech/newsletters/${slug}/preview-${hash}.jpg`;
 }
 
 /**
@@ -236,7 +239,12 @@ export async function loadNewsletterIssue(
       ? frontmatter.pubDate
       : new Date(String(frontmatter.pubDate));
 
-  const heroImageSrc = await encodeIssueHeroImage(slug, issueDir, frontmatter.icon);
+  const heroImageSrc = resolveIssueHeroImageUrl(
+    slug,
+    issueDir,
+    rootDir,
+    frontmatter.icon
+  );
   const heroImageTitle = frontmatter.icon.title || frontmatter.title;
   const heroImageAlt =
     frontmatter.icon.description ||

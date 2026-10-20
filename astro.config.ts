@@ -86,7 +86,7 @@ function copyContentAssets(): AstroIntegration {
               }
             }
 
-            const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services|presentations|talks)\/(.+)$/);
+            const match = req.url?.match(/^\/(posts|publications|visualizations|courses|services|presentations|talks|newsletters)\/(.+)$/);
             if (match) {
               const [, collection, rest] = match;
               const cleanRest = rest.split('?')[0];
@@ -111,7 +111,7 @@ function copyContentAssets(): AstroIntegration {
       },
       'astro:build:done': async ({ dir }) => {
         const outDir = fileURLToPath(dir);
-        const collections = ['posts', 'publications', 'visualizations', 'courses', 'services', 'projects', 'interests', 'presentations'];
+        const collections = ['posts', 'publications', 'visualizations', 'courses', 'services', 'projects', 'interests', 'presentations', 'newsletters'];
         const graphicsCssPath = path.resolve('src/styles/graphics.css');
         const graphicsCss = fs.existsSync(graphicsCssPath) ? fs.readFileSync(graphicsCssPath, 'utf8') : '';
 
@@ -481,6 +481,9 @@ function buildImageIndex(): void {
           } else if (norm.includes('src/content/visualizations/')) {
             const match = norm.match(/src\/content\/visualizations\/([^/]+)/);
             targetDir = match ? `visualizations/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'visualizations';
+          } else if (norm.includes('src/content/newsletters/')) {
+            const match = norm.match(/src\/content\/newsletters\/([^/]+)/);
+            targetDir = match ? `newsletters/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'newsletters';
           } else if (norm.includes('src/content/objects/')) {
             const match = norm.match(/src\/content\/objects\/([^/]+)/);
             targetDir = match ? `objects/${match[1].replace(/[<>:"/\\|?*]/g, '_')}` : 'objects';
@@ -619,6 +622,11 @@ function getSemanticAssetPath(assetInfo: { names?: string[]; originalFileName?: 
       const visSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
       return visSlug ? `visualizations/${visSlug}/[name]-[hash][extname]` : `visualizations/[name]-[hash][extname]`;
     }
+    if (searchPath.includes('src/content/newsletters/') || searchPath.includes('/newsletters/')) {
+      const match = searchPath.match(/(?:src\/content\/)?newsletters\/([^/]+)/);
+      const newsSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
+      return newsSlug ? `newsletters/${newsSlug}/[name]-[hash][extname]` : `newsletters/[name]-[hash][extname]`;
+    }
     if (searchPath.includes('src/content/objects/') || searchPath.includes('/objects/')) {
       const match = searchPath.match(/(?:src\/content\/)?objects\/([^/]+)/);
       const objSlug = match ? match[1].replace(/[<>:"/\\|?*]/g, '_') : '';
@@ -734,6 +742,10 @@ export default defineConfig({
         presentations: (item) => {
           const pathname = new URL(item.url).pathname;
           return pathname.startsWith('/presentations/') || pathname === '/presentations' ? item : undefined;
+        },
+        newsletters: (item) => {
+          const pathname = new URL(item.url).pathname;
+          return pathname.startsWith('/newsletters/') || pathname === '/newsletters' ? item : undefined;
         },
       },
     }),

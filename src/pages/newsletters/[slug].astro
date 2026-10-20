@@ -56,6 +56,32 @@ const [
 
 const pageTitle = `Issue #${issue.data.issueNumber}: ${issue.data.title} | Dr. Georg Hackenberg`;
 const issueUrl = `https://hackenberg.tech/newsletters/${issue.id}/`;
+const schemaImage = ogImage?.src ? new URL(ogImage.src, Astro.site).href : undefined;
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${issueUrl}#article`,
+  headline: issue.data.title,
+  description: issue.data.description,
+  image: schemaImage,
+  url: issueUrl,
+  datePublished: issue.data.pubDate.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Dr. Georg Hackenberg',
+    url: 'https://hackenberg.tech',
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'Dr. Georg Hackenberg',
+    url: 'https://hackenberg.tech',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': issueUrl,
+  },
+};
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -89,7 +115,7 @@ const breadcrumbSchema = {
   image={ogImage}
   type="article"
   pubDate={issue.data.pubDate}
-  jsonLd={breadcrumbSchema}
+  jsonLd={[articleSchema, breadcrumbSchema]}
   lang="en"
 >
   <Navbar />

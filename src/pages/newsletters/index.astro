@@ -33,7 +33,13 @@ const breadcrumbSchema = {
 };
 ---
 
-<Layout title={pageTitle} description={pageDescription} jsonLd={breadcrumbSchema} lang="en">
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  image={sortedIssues[0]?.data.icon.src}
+  jsonLd={breadcrumbSchema}
+  lang="en"
+>
   <Navbar />
 
   <Container size="wide">

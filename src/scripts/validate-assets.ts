@@ -251,6 +251,12 @@ for (const imgFile of rasterImages) {
     );
     errorsCount++;
     unhashedImagesCount++;
+  } else if (/^assets\/preview-/i.test(relPath)) {
+    console.error(
+      `[validate-assets] ❌ Assertion 4 Failed: Content preview image leaked into dist/assets/ instead of co-located collection folder: ${relPath}`
+    );
+    errorsCount++;
+    unhashedImagesCount++;
   } else {
     hashedRasterImagesCount++;
   }

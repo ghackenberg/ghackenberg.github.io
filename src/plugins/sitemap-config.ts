@@ -194,6 +194,7 @@ export function buildSitemapMetadata(): {
     services: [],
     visualizations: [],
     presentations: [],
+    newsletters: [],
   };
   const postTagDates = new Map<string, Date[]>();
   const publicationTagDates = new Map<string, Date[]>();
@@ -446,6 +447,35 @@ export function buildSitemapMetadata(): {
     }
   }
 
+  // 7b. Newsletters
+  const newslettersDir = path.join(contentBase, 'newsletters');
+  if (fs.existsSync(newslettersDir)) {
+    const newsletterFolders = fs.readdirSync(newslettersDir);
+    for (const folder of newsletterFolders) {
+      const folderPath = path.join(newslettersDir, folder);
+      if (!fs.statSync(folderPath).isDirectory()) continue;
+      const mdFile = path.join(folderPath, 'index.md');
+      const mdxFile = path.join(folderPath, 'index.mdx');
+      const targetFile = fs.existsSync(mdFile) ? mdFile : fs.existsSync(mdxFile) ? mdxFile : null;
+      if (!targetFile) continue;
+
+      const content = fs.readFileSync(targetFile, 'utf8');
+      const frontmatter = parseSimpleFrontmatter(content);
+      const gitDate = getLatestGitDate(`src/content/newsletters/${folder}`, gitMap);
+      const fileMtime = fs.statSync(targetFile).mtime;
+
+      const date = resolveItemDate(folder, frontmatter.pubDate, gitDate, fileMtime);
+      allDates.push(date);
+      sectionDates.newsletters.push(date);
+
+      metaMap.set(`/newsletters/${folder}/`, {
+        lastmod: date,
+        changefreq: 'monthly',
+        priority: 0.7,
+      });
+    }
+  }
+
   // 8. Static / Legal Pages
   const impressumPath = path.resolve('src/pages/impressum.astro');
   const impressumDate = getLatestGitDate('src/pages/impressum.astro', gitMap) || (fs.existsSync(impressumPath) ? fs.statSync(impressumPath).mtime : new Date());
@@ -484,6 +514,7 @@ export function buildSitemapMetadata(): {
   const servicesMaxDate = getMaxDate(sectionDates.services);
   const visualizationsMaxDate = getMaxDate(sectionDates.visualizations);
   const presentationsMaxDate = getMaxDate(sectionDates.presentations);
+  const newslettersMaxDate = getMaxDate(sectionDates.newsletters);
 
   metaMap.set('/posts/', { lastmod: postsMaxDate, changefreq: 'weekly', priority: 0.8 });
   metaMap.set('/courses/', { lastmod: coursesMaxDate, changefreq: 'weekly', priority: 0.8 });
@@ -492,6 +523,7 @@ export function buildSitemapMetadata(): {
   metaMap.set('/services/', { lastmod: servicesMaxDate, changefreq: 'weekly', priority: 0.8 });
   metaMap.set('/visualizations/', { lastmod: visualizationsMaxDate, changefreq: 'weekly', priority: 0.8 });
   metaMap.set('/presentations/', { lastmod: presentationsMaxDate, changefreq: 'weekly', priority: 0.8 });
+  metaMap.set('/newsletters/', { lastmod: newslettersMaxDate, changefreq: 'weekly', priority: 0.8 });
 
   function getMetadataForPath(rawPathname: string): PageMetadata {
     let pathname = rawPathname;
@@ -523,6 +555,7 @@ export function buildSitemapMetadata(): {
     if (pathname.startsWith('/services/')) return { lastmod: servicesMaxDate, changefreq: 'monthly', priority: 0.7 };
     if (pathname.startsWith('/presentations/')) return { lastmod: presentationsMaxDate, changefreq: 'monthly', priority: 0.7 };
     if (pathname.startsWith('/visualizations/')) return { lastmod: visualizationsMaxDate, changefreq: 'monthly', priority: 0.7 };
+    if (pathname.startsWith('/newsletters/')) return { lastmod: newslettersMaxDate, changefreq: 'monthly', priority: 0.7 };
 
     return {
       lastmod: maxSiteDate,
