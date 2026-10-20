@@ -5,6 +5,7 @@ import puppeteer, { type Browser } from 'puppeteer';
 import {
   auditSlideTypography,
   type PresentationTypographyReport,
+  type TypographyAuditResult,
 } from '@commons/server/slide-typography.js';
 
 const PORT = 4324;
@@ -29,7 +30,6 @@ function createStaticServer(): http.Server {
   return http.createServer((req, res) => {
     const urlPath = (req.url || '/').split('?')[0];
 
-    // Serve presentation assets directly from src/content/presentations if available
     const presMatch = urlPath.match(/^\/presentations\/(.+)$/);
     if (presMatch) {
       const srcPath = path.resolve('src/content/presentations', presMatch[1]);
@@ -65,22 +65,28 @@ function createStaticServer(): http.Server {
 
 function parseCliArgs(): {
   targetPresentation?: string;
+  targetSlide?: string;
   maxRatio: number;
   minSize: number;
   failOnWarning: boolean;
 } {
   const args = process.argv.slice(2);
   let targetPresentation: string | undefined;
+  let targetSlide: string | undefined;
   let maxRatio = 0.85;
   let minSize = 18;
   let failOnWarning = false;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === '--presentation' && i + 1 < args.length) {
+    if ((arg === '--presentation' || arg === '--deck') && i + 1 < args.length) {
       targetPresentation = args[++i];
-    } else if (arg.startsWith('--presentation=')) {
+    } else if (arg.startsWith('--presentation=') || arg.startsWith('--deck=')) {
       targetPresentation = arg.split('=')[1];
+    } else if (arg === '--slide' && i + 1 < args.length) {
+      targetSlide = args[++i];
+    } else if (arg.startsWith('--slide=')) {
+      targetSlide = arg.split('=')[1];
     } else if (arg === '--max-ratio' && i + 1 < args.length) {
       maxRatio = parseFloat(args[++i]) || 0.85;
     } else if (arg.startsWith('--max-ratio=')) {
@@ -94,11 +100,23 @@ function parseCliArgs(): {
     }
   }
 
-  return { targetPresentation, maxRatio, minSize, failOnWarning };
+  return { targetPresentation, targetSlide, maxRatio, minSize, failOnWarning };
+}
+
+function matchesSlide(slide: TypographyAuditResult, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  const sNum = String(slide.slideNumber).trim().toLowerCase();
+  const sId = String(slide.slideId).trim().toLowerCase();
+  const qNum = parseInt(q, 10);
+  const slideNumInt = parseInt(sNum, 10);
+  if (!isNaN(qNum) && !isNaN(slideNumInt) && qNum === slideNumInt) {
+    return true;
+  }
+  return sNum === q || sId === q || sId.startsWith(`${q}_`);
 }
 
 async function run(): Promise<void> {
-  const { targetPresentation, maxRatio, minSize, failOnWarning } = parseCliArgs();
+  const { targetPresentation, targetSlide, maxRatio, minSize, failOnWarning } = parseCliArgs();
 
   console.log('\n🔍 SLIDE TYPOGRAPHY LINTER: Visual Hierarchy & Readability Audit');
   console.log(`Thresholds: Max Ratio = ${(maxRatio * 100).toFixed(0)}% of Slide Title | Min Primary Font Size = ${minSize}px`);
@@ -176,32 +194,70 @@ async function run(): Promise<void> {
           minFontSizeThreshold: minSize,
         });
         reports.push(report);
-        totalSlidesScanned += report.totalSlides;
-        totalWarnings += report.warningsCount;
-        totalTooLarge += report.tooLargeCount;
-        totalTooSmall += report.tooSmallCount;
 
-        if (report.warningsCount === 0) {
-          console.log(
-            `   ✅ All ${report.results.length} slides with titles (${report.totalSlides} total) maintain healthy typography.\n`
-          );
-        } else {
-          for (const warning of report.results.filter((r) => r.isWarning)) {
-            for (const w of warning.warnings) {
-              if (w.type === 'TOO_LARGE') {
-                console.log(
-                  `   ⚠️  [WARN: TOO LARGE] Slide ${warning.slideNumber} (${warning.slideId}): Content text in ${w.element} (${w.fontSize}px) >= ${(maxRatio * 100).toFixed(0)}% of Slide Title (${warning.titleFontSize}px) [Ratio: ${w.ratio}x]`
-                );
-                console.log(`         Preview: "${w.previewText}"`);
-              } else if (w.type === 'TOO_SMALL') {
-                console.log(
-                  `   ⚠️  [WARN: TOO SMALL] Slide ${warning.slideNumber} (${warning.slideId}): Primary text in ${w.element} (${w.fontSize}px) is below readable threshold (${w.threshold}px) after scaling`
-                );
-                console.log(`         Preview: "${w.previewText}"`);
+        if (targetSlide) {
+          const matchedSlides = report.results.filter((s) => matchesSlide(s, targetSlide));
+          if (matchedSlides.length === 0) {
+            console.log(`   ℹ️  No titled slide matching "--slide=${targetSlide}" found in ${deck}.\n`);
+            continue;
+          }
+
+          for (const slide of matchedSlides) {
+            totalSlidesScanned += 1;
+            totalWarnings += slide.warnings.length;
+            if (slide.isTooLargeWarning) totalTooLarge += 1;
+            if (slide.isTooSmallWarning) totalTooSmall += 1;
+
+            console.log(
+              `   🔎 Detailed Typography Audit for Slide ${slide.slideNumber} (${slide.slideId}) — "${slide.slideTitle}":`
+            );
+            console.log(`      • Slide Title Font Size:      ${slide.titleFontSize}px`);
+            console.log(
+              `      • Largest Content Font Size:  ${slide.maxContentFontSize}px (${(slide.ratio * 100).toFixed(1)}% of title, max ${(maxRatio * 100).toFixed(0)}%) in ${slide.largestElement}`
+            );
+            console.log(
+              `      • Smallest Primary Font Size: ${slide.minContentFontSize}px (min ${minSize}px) in ${slide.smallestElement}`
+            );
+            if (slide.warnings.length === 0) {
+              console.log(`      ✅ Healthy typographic hierarchy and readability.`);
+            } else {
+              for (const w of slide.warnings) {
+                if (w.type === 'TOO_LARGE') {
+                  console.log(
+                    `      ⚠️  [WARN: TOO LARGE] Content text in ${w.element} (${w.fontSize}px) >= ${(maxRatio * 100).toFixed(0)}% of Slide Title (${slide.titleFontSize}px) [Ratio: ${w.ratio}x]`
+                  );
+                  console.log(`               Preview: "${w.previewText}"`);
+                } else if (w.type === 'TOO_SMALL') {
+                  console.log(
+                    `      ⚠️  [WARN: TOO SMALL] Primary text in ${w.element} (${w.fontSize}px) is below readable threshold (${w.threshold}px) after scaling`
+                  );
+                  console.log(`               Preview: "${w.previewText}"`);
+                }
               }
             }
+            console.log('');
           }
-          console.log('');
+        } else {
+          totalSlidesScanned += report.totalSlides;
+          totalWarnings += report.warningsCount;
+          totalTooLarge += report.tooLargeCount;
+          totalTooSmall += report.tooSmallCount;
+
+          if (report.warningsCount === 0) {
+            console.log(
+              `   ✅ All ${report.results.length} slides with titles (${report.totalSlides} total) maintain healthy typography.\n`
+            );
+          } else {
+            for (const warning of report.results.filter((r) => r.isWarning)) {
+              const types = warning.warnings.map((w) => w.type).join(', ');
+              console.log(
+                `   ⚠️  Slide ${warning.slideNumber} (${warning.slideId}): ${warning.warnings.length} warning(s) [${types}] (Title: ${warning.titleFontSize}px | Max: ${warning.maxContentFontSize}px | Min: ${warning.minContentFontSize}px)`
+              );
+            }
+            console.log(
+              `   ℹ️  Run "npm run lint:slide-typography -- --presentation=${deck} --slide=<num>" for detailed element paths & previews.\n`
+            );
+          }
         }
       } catch (err) {
         console.error(
@@ -227,7 +283,7 @@ async function run(): Promise<void> {
   if (totalWarnings === 0) {
     console.log('✅ All slides maintain healthy typographic hierarchy and comfortable reading size.');
   } else {
-    console.log(`⚠️  ${totalWarnings} slide(s) have typographic warnings.`);
+    console.log('⚠️  Some slides violated typographic hierarchy or minimum font size constraints.');
   }
   console.log('==================================================\n');
 

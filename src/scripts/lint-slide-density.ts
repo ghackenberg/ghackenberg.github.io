@@ -5,6 +5,7 @@ import puppeteer, { type Browser } from 'puppeteer';
 import {
   auditSlideDensity,
   type PresentationDensityReport,
+  type SlideDensityResult,
 } from '@commons/server/slide-density.js';
 
 const distDir = path.resolve('dist');
@@ -28,7 +29,6 @@ function createStaticServer(): http.Server {
   return http.createServer((req, res) => {
     const urlPath = (req.url || '/').split('?')[0];
 
-    // Serve presentation assets directly from src/content/presentations if available
     const presMatch = urlPath.match(/^\/presentations\/(.+)$/);
     if (presMatch) {
       const srcPath = path.resolve('src/content/presentations', presMatch[1]);
@@ -89,6 +89,7 @@ function startServer(initialPort = 4324): Promise<{ server: http.Server; port: n
 
 interface CliArgs {
   targetPresentation?: string;
+  targetSlide?: string;
   threshold?: number;
   failOnWarning: boolean;
 }
@@ -96,15 +97,20 @@ interface CliArgs {
 function parseCliArgs(): CliArgs {
   const args = process.argv.slice(2);
   let targetPresentation: string | undefined;
+  let targetSlide: string | undefined;
   let threshold: number | undefined;
   let failOnWarning = false;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === '--presentation' && i + 1 < args.length) {
+    if ((arg === '--presentation' || arg === '--deck') && i + 1 < args.length) {
       targetPresentation = args[++i];
-    } else if (arg.startsWith('--presentation=')) {
+    } else if (arg.startsWith('--presentation=') || arg.startsWith('--deck=')) {
       targetPresentation = arg.split('=')[1];
+    } else if (arg === '--slide' && i + 1 < args.length) {
+      targetSlide = args[++i];
+    } else if (arg.startsWith('--slide=')) {
+      targetSlide = arg.split('=')[1];
     } else if (arg === '--threshold' && i + 1 < args.length) {
       const val = parseFloat(args[++i]);
       if (!isNaN(val)) threshold = val;
@@ -116,11 +122,23 @@ function parseCliArgs(): CliArgs {
     }
   }
 
-  return { targetPresentation, threshold, failOnWarning };
+  return { targetPresentation, targetSlide, threshold, failOnWarning };
+}
+
+function matchesSlide(slide: SlideDensityResult, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  const sNum = String(slide.slideNumber).trim().toLowerCase();
+  const sId = String(slide.slideId).trim().toLowerCase();
+  const qNum = parseInt(q, 10);
+  const slideNumInt = parseInt(sNum, 10);
+  if (!isNaN(qNum) && !isNaN(slideNumInt) && qNum === slideNumInt) {
+    return true;
+  }
+  return sNum === q || sId === q || sId.startsWith(`${q}_`);
 }
 
 async function run(): Promise<void> {
-  const { targetPresentation, threshold, failOnWarning } = parseCliArgs();
+  const { targetPresentation, targetSlide, threshold, failOnWarning } = parseCliArgs();
 
   console.log('\n📊 SLIDE CONTENT DENSITY LINTER: Container Filling Audit');
   console.log('Auditing presentations in: src/content/presentations\n');
@@ -194,25 +212,64 @@ async function run(): Promise<void> {
           defaultThreshold: threshold,
         });
         reports.push(report);
-        totalSlidesScanned += report.totalSlides;
-        totalContainersScanned += report.totalContainersScanned;
-        totalWarnings += report.warningsCount;
 
-        if (report.warningsCount === 0) {
-          console.log('   ✅ All content containers are well-filled.\n');
-        } else {
-          for (const slide of report.results) {
-            for (const warning of slide.warnings) {
-              const titlePart = warning.containerTitle ? ` ("${warning.containerTitle}")` : '';
+        if (targetSlide) {
+          const matchedSlides = report.results.filter((s) => matchesSlide(s, targetSlide));
+          if (matchedSlides.length === 0) {
+            console.log(`   ℹ️  No container-based slide matching "--slide=${targetSlide}" found in ${deck}.\n`);
+            continue;
+          }
+
+          for (const slide of matchedSlides) {
+            totalSlidesScanned += 1;
+            totalContainersScanned += slide.containers.length;
+            totalWarnings += slide.warnings.length;
+
+            console.log(
+              `   🔎 Detailed Audit for Slide ${slide.slideNumber} (${slide.slideId})${slide.slideTitle ? ` — "${slide.slideTitle}"` : ''}:`
+            );
+            for (const c of slide.containers) {
+              const titlePart = c.containerTitle ? ` ("${c.containerTitle}")` : '';
+              const statusIcon = c.isWarning ? '⚠️  [WARN]' : '✅ [OK]  ';
+              const scaleInfo =
+                c.contentScale !== undefined
+                  ? ` | --content-scale: ${c.contentScale.toFixed(2)} (~${c.effectiveBodyFontPx}px body)`
+                  : '';
               console.log(
-                `   ⚠️  [WARN] Slide ${slide.slideNumber} (${slide.slideId}): ${warning.containerType}${titlePart} is underfilled: Fill ratio ${Math.round(warning.fillRatio * 100)}% (Used: ${warning.usedHeight}px / Avail: ${warning.availableHeight}px) [Threshold: ${Math.round(warning.threshold * 100)}%]`
+                `      ${statusIcon} ${c.containerType}${titlePart}: Fill ${Math.round(c.fillRatio * 100)}% (Used: ${c.usedHeight}px / Avail: ${c.availableHeight}px) [Threshold: ${Math.round(c.threshold * 100)}%]${scaleInfo}`
               );
-              if (warning.previewSnippet) {
-                console.log(`         Preview: "${warning.previewSnippet}"`);
+              if (c.previewSnippet) {
+                console.log(`               Preview: "${c.previewSnippet}"`);
+              }
+              if (c.isWarning && c.remediationHint) {
+                console.log(`               💡 Hint: ${c.remediationHint}`);
               }
             }
+            console.log('');
           }
-          console.log('');
+        } else {
+          totalSlidesScanned += report.totalSlides;
+          totalContainersScanned += report.totalContainersScanned;
+          totalWarnings += report.warningsCount;
+
+          if (report.warningsCount === 0) {
+            console.log('   ✅ All content containers are well-filled.\n');
+          } else {
+            for (const slide of report.results) {
+              if (slide.warnings.length === 0) continue;
+              const minFill = Math.min(...slide.warnings.map((w) => Math.round(w.fillRatio * 100)));
+              const targetThresh = Math.round(slide.warnings[0].threshold * 100);
+              const strategyTag = slide.warnings[0].remediationStrategy
+                ? ` [${slide.warnings[0].remediationStrategy}]`
+                : '';
+              console.log(
+                `   ⚠️  Slide ${slide.slideNumber} (${slide.slideId}): ${slide.warnings.length}/${slide.containers.length} container(s) underfilled (min: ${minFill}% < ${targetThresh}%)${strategyTag}`
+              );
+            }
+            console.log(
+              `   ℹ️  Run "npm run lint:slide-density -- --presentation=${deck} --slide=<num>" for detailed container metrics & remediation hints.\n`
+            );
+          }
         }
       } catch (err) {
         console.error(

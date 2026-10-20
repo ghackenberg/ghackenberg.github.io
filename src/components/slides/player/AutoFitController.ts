@@ -7,7 +7,7 @@
  */
 
 export interface AutoFitOptions {
-  minScale?: number;      // Default 0 (uncapped downward scaling)
+  minScale?: number;      // Default 0.25 (prevents 0px invisible collapse)
   maxScale?: number;      // Default 2.50 (uncapped container-driven scaling)
   minClearance?: number;  // Minimum unscaled clearance to bottom border (default: 8px)
   iterations?: number;    // Binary search steps (default: 8)
@@ -18,7 +18,7 @@ export class AutoFitController {
 
   constructor(options?: AutoFitOptions) {
     this.options = {
-      minScale: options?.minScale ?? 0,
+      minScale: options?.minScale ?? 0.25,
       maxScale: options?.maxScale ?? 2.50,
       minClearance: options?.minClearance ?? 8,
       iterations: options?.iterations ?? 8,
@@ -33,12 +33,29 @@ export class AutoFitController {
     // Check for direct scroll overflow
     if (card.scrollHeight > card.clientHeight + 1) return false;
 
-    // Check inner scroll container if present (e.g. .bento-hyphens, .code-scroll-area)
+    // Check inner scroll container if present (e.g. .bento-hyphens, .code-scroll-area, .metric-stat-hero)
     const scrollableChild = card.querySelector<HTMLElement>(
-      '.bento-hyphens, .code-scroll-area, .overflow-y-auto, .overflow-auto'
+      '.bento-hyphens, .code-scroll-area, .metric-stat-hero, .overflow-y-auto, .overflow-auto'
     );
     if (scrollableChild && scrollableChild.scrollHeight > scrollableChild.clientHeight + 1) {
       return false;
+    }
+
+    // Specific geometry check for MetricStat cards (Used in both Pass 1 and Pass 2)
+    if (card.classList.contains('metric-stat-card')) {
+      const heroEl = card.querySelector<HTMLElement>('.metric-stat-hero');
+      const valueRow = card.querySelector<HTMLElement>('.metric-stat-value-row');
+      const labelEl = card.querySelector<HTMLElement>('.metric-stat-label');
+      if (heroEl && valueRow && labelEl) {
+        if (heroEl.scrollHeight > heroEl.clientHeight + 1) return false;
+        if (valueRow.scrollWidth > heroEl.clientWidth + 1) return false;
+        if (labelEl.scrollWidth > labelEl.clientWidth + 1) return false;
+
+        const labelStyle = window.getComputedStyle(labelEl);
+        const labelMarginTop = parseFloat(labelStyle.marginTop) || 0;
+        const heroContentH = valueRow.offsetHeight + labelMarginTop + labelEl.offsetHeight;
+        if (heroContentH + 16 > heroEl.clientHeight) return false;
+      }
     }
 
     // Check horizontal and vertical overflow for code blocks and pre elements
@@ -135,6 +152,8 @@ export class AutoFitController {
     const clientH = card.clientHeight;
     if (clientH <= 0) return;
 
+    card.style.removeProperty('--metric-scale');
+
     const minScale = this.options.minScale;
     const maxScale = this.options.maxScale;
     const iterations = this.options.iterations;
@@ -168,6 +187,10 @@ export class AutoFitController {
 
   public fitCards(cards: HTMLElement[]): void {
     if (cards.length === 0) return;
+
+    for (const card of cards) {
+      card.style.removeProperty('--metric-scale');
+    }
 
     const minScale = this.options.minScale;
     const maxScale = this.options.maxScale;
@@ -205,6 +228,96 @@ export class AutoFitController {
 
     for (const card of cards) {
       card.style.setProperty('--content-scale', best.toFixed(3), 'important');
+    }
+  }
+
+  /**
+   * Pass 2 for MetricStat cards:
+   * Keeps --content-scale fixed for normal text (.metric-stat-badge, .metric-stat-sublabel)
+   * and finds a unified --metric-scale >= --content-scale across all MetricStat cards on the slide
+   * for the hero metric number (.metric-stat-value, .metric-stat-unit) and KPI name (.metric-stat-label).
+   */
+  public fitMetricCards(metricCards: HTMLElement[]): void {
+    if (metricCards.length === 0) return;
+
+    const baseScale = parseFloat(metricCards[0].style.getPropertyValue('--content-scale')) || 1;
+    const maxScale = this.options.maxScale;
+    if (baseScale >= maxScale) return;
+
+    // Determine allowed line count per metric card label so single-word/multi-column KPI labels don't awkwardly wrap
+    const maxLinesPerCard = metricCards.map((card) => {
+      const labelEl = card.querySelector<HTMLElement>('.metric-stat-label');
+      if (!labelEl) return 1;
+      const text = (labelEl.textContent || '').trim();
+      if (!text.includes(' ')) return 1;
+      if (metricCards.length > 1) {
+        const labelStyle = window.getComputedStyle(labelEl);
+        const lh = parseFloat(labelStyle.lineHeight) || (parseFloat(labelStyle.fontSize) || 32) * 1.25;
+        const baseLines = lh > 0 ? Math.max(1, Math.round(labelEl.offsetHeight / lh)) : 1;
+        return baseLines;
+      }
+      return 2;
+    });
+
+    const checkMetricCardFits = (card: HTMLElement, idx: number): boolean => {
+      if (!this.checkCardFits(card)) return false;
+
+      const heroEl = card.querySelector<HTMLElement>('.metric-stat-hero');
+      const valueRow = card.querySelector<HTMLElement>('.metric-stat-value-row');
+      const labelEl = card.querySelector<HTMLElement>('.metric-stat-label');
+      if (!heroEl || !valueRow || !labelEl) return true;
+
+      if (heroEl.scrollHeight > heroEl.clientHeight + 1) return false;
+      if (valueRow.scrollWidth > heroEl.clientWidth + 1) return false;
+      if (labelEl.scrollWidth > labelEl.clientWidth + 1) return false;
+
+      const labelStyle = window.getComputedStyle(labelEl);
+      const labelFontSize = parseFloat(labelStyle.fontSize) || 0;
+      const lineHeight = parseFloat(labelStyle.lineHeight) || labelFontSize * 1.25;
+      if (lineHeight > 0) {
+        const lineCount = Math.round(labelEl.offsetHeight / lineHeight);
+        if (lineCount > maxLinesPerCard[idx]) return false;
+      }
+
+      const labelMarginTop = parseFloat(labelStyle.marginTop) || 0;
+      const heroContentH = valueRow.offsetHeight + labelMarginTop + labelEl.offsetHeight;
+      if (heroContentH + 24 > heroEl.clientHeight) return false;
+
+      return true;
+    };
+
+    const checkAllMetricsFit = (scale: number): boolean => {
+      for (const card of metricCards) {
+        card.style.setProperty('--metric-scale', scale.toFixed(3), 'important');
+      }
+      for (let i = 0; i < metricCards.length; i++) {
+        if (!checkMetricCardFits(metricCards[i], i)) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    if (checkAllMetricsFit(maxScale)) {
+      return;
+    }
+
+    let low = baseScale;
+    let high = maxScale;
+    let best = baseScale;
+
+    for (let i = 0; i < this.options.iterations; i++) {
+      const mid = (low + high) / 2;
+      if (checkAllMetricsFit(mid)) {
+        best = mid;
+        low = mid;
+      } else {
+        high = mid;
+      }
+    }
+
+    for (const card of metricCards) {
+      card.style.setProperty('--metric-scale', best.toFixed(3), 'important');
     }
   }
 
@@ -375,8 +488,10 @@ export class AutoFitController {
     const rows = Array.from(table.querySelectorAll<HTMLElement>('.table-row-item, .slide-table-tr'));
     if (rows.length === 0) return;
 
+    // Reset scale before initial geometry readings so re-fits (e.g. on slide navigation) are idempotent
+    table.style.setProperty('--content-scale', '1', 'important');
+
     const header = table.querySelector<HTMLElement>('.table-header-grid, thead');
-    const headerH = header ? header.offsetHeight : 50;
     const caption = table.querySelector<HTMLElement>('.slide-table-caption');
     const captionH = caption ? caption.offsetHeight : 0;
 
@@ -384,15 +499,7 @@ export class AutoFitController {
     const padTop = parseFloat(tableStyle.paddingTop) || (isSlideTable ? 0 : 24);
     const padBottom = parseFloat(tableStyle.paddingBottom) || (isSlideTable ? 0 : 24);
 
-    const availH = table.clientHeight - headerH - captionH - padTop - padBottom;
-    if (availH <= 0) return;
-
-    // Available target height per row
-    const targetRowH = availH / rows.length;
-
-    // Available height for cell content (subtracting row padding ~24px)
-    const rowPad = isSlideTable ? 16 : 24;
-    const maxCellH = Math.max(36, targetRowH - rowPad);
+    if (table.clientHeight <= 0) return;
 
     // Container-driven uncapped scaling for tables
     const maxTableScale = this.options.maxScale;
@@ -413,14 +520,46 @@ export class AutoFitController {
       if (table.scrollHeight > table.clientHeight + 1) return false;
       if (table.scrollWidth > table.clientWidth + 1) return false;
 
+      const currentHeaderH = header ? header.offsetHeight : 50;
+      if (header) {
+        if (header.scrollWidth > header.clientWidth + 2) return false;
+        const hCells = Array.from(header.children) as HTMLElement[];
+        for (const hc of hCells) {
+          if (hc.scrollWidth > hc.clientWidth + 2) return false;
+        }
+      }
+
+      const currentAvailH = table.clientHeight - currentHeaderH - captionH - padTop - padBottom;
+      if (currentAvailH <= 0) return false;
+
+      const currentTargetRowH = currentAvailH / rows.length;
+
+      const currentRowPad = isSlideTable ? 16 : Math.max(24, Math.round(32 * scale));
+
       for (const row of rows) {
-        if (row.scrollWidth > row.clientWidth + 1) return false;
-        if (targetRowH > 0 && row.scrollHeight > targetRowH + 6) return false;
+        // Inline highlight markers (padding: 0.14em 0.45em; box-decoration-break: clone) add up to ~16px
+        // visual paint box overhang on wrapped lines inside grid cells; check cells directly with 18px tolerance
+        if (row.scrollWidth > row.clientWidth + 18) return false;
+        if (currentTargetRowH > 0 && row.scrollHeight > Math.max(row.clientHeight, currentTargetRowH) + 2) return false;
+
+        const currentMaxCellH = Math.max(24, currentTargetRowH - currentRowPad);
+
+        const col0Title = row.querySelector<HTMLElement>('.table-row-title');
+        const col0Cell = row.querySelector<HTMLElement>('.table-col-discipline');
+        if (col0Title && col0Cell) {
+          if (col0Title.scrollWidth > col0Title.clientWidth + 1) return false;
+          const titleStyle = window.getComputedStyle(col0Title);
+          const titleLh = parseFloat(titleStyle.lineHeight) || (parseFloat(titleStyle.fontSize) || 30) * 1.15;
+          const titleWords = (col0Title.textContent || '').trim().split(/\s+/).length;
+          const maxAllowedTitleLines = Math.min(2, titleWords);
+          if (titleLh > 0 && Math.round(col0Title.offsetHeight / titleLh) > maxAllowedTitleLines) return false;
+        }
+
         const cells = Array.from(row.querySelectorAll<HTMLElement>('[data-cell], .comp-table-cell, .table-cell, .slide-table-td'));
         for (const cell of cells) {
-          // Allow subpixel inline badge padding tolerance on wrapped text cells (up to 12px)
-          if (cell.scrollWidth > cell.clientWidth + 12) return false;
-          if (maxCellH > 0 && cell.scrollHeight > maxCellH + 4) return false;
+          // Allow inline highlight badge padding overhang on wrapped text cells (up to 18px)
+          if (cell.scrollWidth > cell.clientWidth + 18) return false;
+          if (currentMaxCellH > 0 && cell.scrollHeight > currentMaxCellH + 2) return false;
         }
       }
       return true;
@@ -556,28 +695,53 @@ export class AutoFitController {
         let bestScale = solveOptimalScale();
         let bestRatios = [...ratios];
 
-        // Step 2: Outer Optimization via Bottleneck-driven Coordinate Descent (max 3 rounds)
+        // Step 2: Outer Optimization via Bottleneck-driven Coordinate Descent (max 6 rounds)
         if (bestScale < maxTableScale - 0.02) {
-          for (let outerRound = 0; outerRound < 3; outerRound++) {
+          for (let outerRound = 0; outerRound < 6; outerRound++) {
+            applyColWidths(bestRatios);
             // Test at a scale slightly above bestScale to identify the limiting bottleneck column
             const probeScale = Math.min(maxTableScale, bestScale + 0.06);
             table.style.setProperty('--content-scale', probeScale.toFixed(3), 'important');
 
+            const probeHeaderH = header ? header.offsetHeight : 50;
+            const probeAvailH = Math.max(1, table.clientHeight - probeHeaderH - captionH - padTop - padBottom);
+            const probeTargetRowH = probeAvailH / rows.length;
+            const probeRowPad = isSlideTable ? 16 : Math.max(24, Math.round(32 * probeScale));
+            const probeMaxCellH = Math.max(24, probeTargetRowH - probeRowPad);
+
             // Calculate stress metric per column: height ratio + horizontal penalty
+            const colStresses: number[] = [];
             let maxStress = -1;
-            let minStress = Infinity;
             let bottleneckCol = -1;
-            let slackCol = -1;
 
             for (let c = 0; c < colCount; c++) {
               let colMaxH = 0;
               let hasHorizOverflow = false;
 
+              if (headerCells[c] && headerCells[c].scrollWidth > headerCells[c].clientWidth + 2) {
+                hasHorizOverflow = true;
+              }
+
               for (const row of rows) {
                 const cell = row.children[c] as HTMLElement | undefined;
                 if (!cell) continue;
-                if (cell.scrollWidth > cell.clientWidth + 12) {
+                if (cell.scrollWidth > cell.clientWidth + 18) {
                   hasHorizOverflow = true;
+                }
+                if (c === 0) {
+                  const col0Title = cell.querySelector<HTMLElement>('.table-row-title');
+                  if (col0Title) {
+                    if (col0Title.scrollWidth > col0Title.clientWidth + 1) {
+                      hasHorizOverflow = true;
+                    }
+                    const titleStyle = window.getComputedStyle(col0Title);
+                    const titleLh = parseFloat(titleStyle.lineHeight) || (parseFloat(titleStyle.fontSize) || 30) * 1.15;
+                    const titleWords = (col0Title.textContent || '').trim().split(/\s+/).length;
+                    const maxAllowedTitleLines = Math.min(2, titleWords);
+                    if (titleLh > 0 && Math.round(col0Title.offsetHeight / titleLh) > maxAllowedTitleLines) {
+                      hasHorizOverflow = true;
+                    }
+                  }
                 }
                 if (cell.scrollHeight > colMaxH) {
                   colMaxH = cell.scrollHeight;
@@ -585,47 +749,51 @@ export class AutoFitController {
               }
 
               // Stress: cell height relative to target max height + heavy penalty if overflowing
-              const stress = (colMaxH / maxCellH) + (hasHorizOverflow ? 10.0 : 0);
+              const stress = (colMaxH / probeMaxCellH) + (hasHorizOverflow ? 10.0 : 0);
+              colStresses.push(stress);
 
-              if (stress > maxStress) {
+              if (stress > maxStress && bestRatios[c] < maxColumnRatio - 0.008) {
                 maxStress = stress;
                 bottleneckCol = c;
               }
-              if (stress < minStress) {
-                minStress = stress;
-                slackCol = c;
+            }
+
+            if (bottleneckCol === -1) break;
+
+            // Sort potential slack columns by lowest stress that still have budget above minColumnRatio
+            const slackCandidates = Array.from({ length: colCount }, (_, c) => c)
+              .filter(c => c !== bottleneckCol && bestRatios[c] > minColumnRatio + 0.008 && (maxStress - colStresses[c]) >= 0.12)
+              .sort((a, b) => colStresses[a] - colStresses[b]);
+
+            if (slackCandidates.length === 0) break;
+
+            let improvedInRound = false;
+            for (const slackCol of slackCandidates) {
+              const stepDelta = 0.035;
+              const maxAdd = maxColumnRatio - bestRatios[bottleneckCol];
+              const maxSub = bestRatios[slackCol] - minColumnRatio;
+              const transfer = Math.min(stepDelta, Math.max(0, maxAdd), Math.max(0, maxSub));
+
+              if (transfer < 0.008) continue;
+
+              const candidateRatios = [...bestRatios];
+              candidateRatios[bottleneckCol] += transfer;
+              candidateRatios[slackCol] -= transfer;
+              const projectedCandidate = projectRatios(candidateRatios);
+
+              applyColWidths(projectedCandidate);
+              const candidateScale = solveOptimalScale();
+
+              if (candidateScale > bestScale + 0.003) {
+                bestScale = candidateScale;
+                bestRatios = projectedCandidate;
+                improvedInRound = true;
+                break;
               }
             }
 
-            // If bottleneck and slack are identical or difference is negligible, equilibrium reached
-            if (bottleneckCol === -1 || slackCol === -1 || bottleneckCol === slackCol || (maxStress - minStress) < 0.12) {
+            if (!improvedInRound || bestScale >= maxTableScale) {
               break;
-            }
-
-            // Transfer budget delta from slack column to bottleneck column
-            const stepDelta = 0.035;
-            const maxAdd = maxColumnRatio - bestRatios[bottleneckCol];
-            const maxSub = bestRatios[slackCol] - minColumnRatio;
-            const transfer = Math.min(stepDelta, Math.max(0, maxAdd), Math.max(0, maxSub));
-
-            if (transfer < 0.008) {
-              break; // Constraints reached
-            }
-
-            const candidateRatios = [...bestRatios];
-            candidateRatios[bottleneckCol] += transfer;
-            candidateRatios[slackCol] -= transfer;
-            const projectedCandidate = projectRatios(candidateRatios);
-
-            applyColWidths(projectedCandidate);
-            const candidateScale = solveOptimalScale();
-
-            if (candidateScale > bestScale + 0.005) {
-              bestScale = candidateScale;
-              bestRatios = projectedCandidate;
-              if (bestScale >= maxTableScale) break; // Maximum achievable scale reached!
-            } else {
-              break; // No further improvement
             }
           }
         }
@@ -652,6 +820,7 @@ export class AutoFitController {
       slideEl.style.setProperty('visibility', 'hidden', 'important');
     }
 
+    slideEl.classList.add('is-autofitting');
     try {
       // 1. Fit comparison and slide tables at the individual cell or table level
       const tables = slideEl.querySelectorAll<HTMLElement>(
@@ -663,43 +832,55 @@ export class AutoFitController {
       const pipelines = slideEl.querySelectorAll<HTMLElement>('.pipeline-container, .pipeline-container-vertical');
       pipelines.forEach((pipeline) => this.fitPipeline(pipeline));
 
-      // 3. Fit remaining individual cards (excluding tables and pipeline steps already handled)
+      // 3a. Fit code containers uniformly across all code windows on the slide
+      const codeCards = Array.from(
+        slideEl.querySelectorAll<HTMLElement>('.code-container-root')
+      );
+      if (codeCards.length > 0) {
+        this.fitCards(codeCards);
+      }
+
+      // 3b. Pass 1: Fit remaining individual cards jointly with unified content scale across the slide
       const allCards = Array.from(
         slideEl.querySelectorAll<HTMLElement>(
-          '.bento-card-root, .metric-stat-card, .code-container-root, .speaker-profile-card, [data-autofit]:not(.comparison-table-container):not(.slide-table-container):not(.step-row):not(.step-card)'
+          '.bento-card-root, .metric-stat-card, .speaker-profile-card, [data-autofit]:not(.comparison-table-container):not(.slide-table-container):not(.step-row):not(.step-card):not(.code-container-root)'
         )
       );
 
-      // Fit all cards on the slide jointly with unified content scale across the slide
       if (allCards.length > 0) {
         this.fitCards(allCards);
       }
 
-      // Typographic hierarchy audit (dev-mode warning)
+      // 4. Pass 2: Separate unified scaling for MetricStat hero numbers and KPI names
       const slideTitleEl = slideEl.querySelector('.slide-title');
-      if (slideTitleEl) {
-        const titleSize = parseFloat(window.getComputedStyle(slideTitleEl).fontSize) || 0;
-        if (titleSize > 0) {
-          let maxContentSize = 0;
-          const candidateSelector =
-            'h2, h3, h4, h5, h6, p, li, pre, code, .metric-stat-value, .comp-table-cell, .table-row-title, .bento-card-title, .formula-box-content, .step-title';
-          const contentCandidates = slideEl.querySelectorAll<HTMLElement>(candidateSelector);
-          for (const el of contentCandidates) {
-            if (el.closest('.slide-header, .slide-number-badge, .slide-footer')) continue;
-            if (!el.textContent?.trim()) continue;
-            const size = parseFloat(window.getComputedStyle(el).fontSize) || 0;
-            if (size > maxContentSize) {
-              maxContentSize = size;
-            }
+      const titleSize = slideTitleEl ? (parseFloat(window.getComputedStyle(slideTitleEl).fontSize) || 0) : 0;
+      const metricCards = allCards.filter((c) => c.classList.contains('metric-stat-card'));
+      if (metricCards.length > 0) {
+        this.fitMetricCards(metricCards);
+      }
+
+      // Typographic hierarchy audit (dev-mode warning)
+      if (slideTitleEl && titleSize > 0) {
+        let maxContentSize = 0;
+        const candidateSelector =
+          'h2, h3, h4, h5, h6, p, li, pre, code, .comp-table-cell, .table-row-title, .bento-card-title, .formula-box-content, .step-title';
+        const contentCandidates = slideEl.querySelectorAll<HTMLElement>(candidateSelector);
+        for (const el of contentCandidates) {
+          if (el.closest('.slide-header, .slide-number-badge, .slide-footer, .metric-stat-hero')) continue;
+          if (!el.textContent?.trim()) continue;
+          const size = parseFloat(window.getComputedStyle(el).fontSize) || 0;
+          if (size > maxContentSize) {
+            maxContentSize = size;
           }
-          if (maxContentSize >= titleSize) {
-            console.warn(
-              `[Slide Typography Warning] Slide "${slideTitleEl.textContent?.trim()}": Content font size (${maxContentSize.toFixed(1)}px) >= Title font size (${titleSize.toFixed(1)}px)`
-            );
-          }
+        }
+        if (maxContentSize >= titleSize) {
+          console.warn(
+            `[Slide Typography Warning] Slide "${slideTitleEl.textContent?.trim()}": Content font size (${maxContentSize.toFixed(1)}px) >= Title font size (${titleSize.toFixed(1)}px)`
+          );
         }
       }
     } finally {
+      slideEl.classList.remove('is-autofitting');
       if (isHidden) {
         slideEl.style.removeProperty('display');
         slideEl.style.removeProperty('visibility');

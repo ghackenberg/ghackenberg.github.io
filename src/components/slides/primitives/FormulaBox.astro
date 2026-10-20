@@ -63,7 +63,8 @@ if (formula) {
   .formula-box {
     --effective-formula-accent: var(--card-accent, var(--slide-accent, var(--color-slide-accent-blue)));
     --card-accent: var(--effective-formula-accent);
-    padding: var(--slide-space-element, 1rem) !important;
+    padding: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1)) !important;
+    gap: calc(var(--slide-space-tight, 0.5rem) * var(--content-scale, 1)) !important;
   }
   .formula-box-label {
     font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;

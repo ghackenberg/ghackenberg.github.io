@@ -24,12 +24,12 @@ const elementId = explicitId;
   class={`code-container-root code-container-card w-full h-full rounded-3xl border border-slate-700/80 bg-slate-900 text-slate-100 shadow-2xl overflow-hidden flex flex-col font-mono min-h-0 ${className}`}
 >
   <!-- Editor Top Bar -->
-  <div class="px-8 py-4 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between shrink-0">
-    <div class="flex items-center gap-2.5">
-      <span class="w-3.5 h-3.5 rounded-full bg-callout-caution inline-block"></span>
-      <span class="w-3.5 h-3.5 rounded-full bg-callout-warning inline-block"></span>
-      <span class="w-3.5 h-3.5 rounded-full bg-callout-tip inline-block"></span>
-      <span class="text-sm text-slate-400 ml-4 font-sans font-semibold tracking-wide" set:html={renderSlideCues(filename)} />
+  <div class="px-8 py-4 bg-slate-950/90 border-b border-slate-800 flex items-center justify-between shrink-0 min-w-0">
+    <div class="flex items-center gap-2.5 min-w-0 w-full">
+      <span class="w-3.5 h-3.5 rounded-full bg-callout-caution inline-block shrink-0"></span>
+      <span class="w-3.5 h-3.5 rounded-full bg-callout-warning inline-block shrink-0"></span>
+      <span class="w-3.5 h-3.5 rounded-full bg-callout-tip inline-block shrink-0"></span>
+      <span class="code-container-title text-slate-300 ml-4 font-sans font-semibold tracking-wide truncate min-w-0 flex-1" set:html={renderSlideCues(filename, { escapeHtml: true })} />
     </div>
   </div>
 
@@ -42,6 +42,11 @@ const elementId = explicitId;
 <style>
   .code-container-root {
     --scale: var(--content-scale, 1);
+  }
+  .code-container-root .code-container-title {
+    font-size: var(--slide-font-heading, 1.90rem) !important;
+    line-height: 1.35 !important;
+    white-space: nowrap;
   }
   .code-container-root :global(pre.astro-code),
   .code-container-root :global(pre) {

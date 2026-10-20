@@ -952,6 +952,24 @@ function validateSlides() {
         totalErrors++;
       }
 
+      // 4d. CodeContainer Filename Slug & Extension Enforcement (voiceover cues permitted)
+      const codeContainerTags = bodyWithoutCode.match(/<CodeContainer\b[^>]*>/g) || [];
+      for (const ccTag of codeContainerTags) {
+        const fnMatch = ccTag.match(/\bfilename\s*=\s*["']([^"']*)["']/);
+        if (fnMatch) {
+          const rawFilename = fnMatch[1];
+          const cleanFilename = rawFilename
+            .replace(/\{cue:[a-zA-Z0-9_-]+\}|\{\/cue(?::[a-zA-Z0-9_-]+)?\}/g, '')
+            .trim();
+          if (!/^[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z0-9]+$/.test(cleanFilename)) {
+            console.error(
+              `  ❌ [${slideFile}] Invalid <CodeContainer> filename "${rawFilename}". Window frame titles must strictly contain only a <slug>-style filename and file extension (e.g. "prompt-template.xml", optional {cue:...} wrapper allowed).`
+            );
+            totalErrors++;
+          }
+        }
+      }
+
       // 4c. Monochrome Icon & Zero-Emoji Enforcement
       const emojiMatch = content.match(/\p{Extended_Pictographic}/u);
       if (emojiMatch) {

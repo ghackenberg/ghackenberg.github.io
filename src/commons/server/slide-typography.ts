@@ -155,7 +155,7 @@ export async function auditSlideTypography(
           // Exclude monumental statistics (.metric-stat-value, .metric-stat-unit),
           // pipeline step numbers (.step-num-badge, .step-circle),
           // and math formulas (KaTeX, .formula-box-formula).
-          const isStatNumber = !!el.closest('.metric-stat-value, .metric-stat-unit');
+          const isStatNumber = !!el.closest('.metric-stat-value, .metric-stat-unit, .metric-stat-label');
           const isStepBadge = !!el.closest('.step-num-badge, .step-circle');
           const isMathFormula =
             el.classList.contains('katex-mathml') ||

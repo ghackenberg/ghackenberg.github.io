@@ -481,7 +481,6 @@ const currentDeckId = presentationId || talkId || "presentation";
     // AutoFit Controller
     const autoFit = new AutoFitController();
     window.autoFit = autoFit;
-    autoFit.fitAll(revealRoot);
 
     // UI Elements
     const btnPlayPause = document.getElementById('btn-play-pause');
@@ -1347,7 +1346,6 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
       updateFullscreenIcons();
       deck.layout();
-      autoFit.fitAll(document.getElementById('reveal-root'));
       const idx = deck.getIndices().h;
       const currentSlide = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[idx];
       if (currentSlide) {
@@ -1538,6 +1536,8 @@ const currentDeckId = presentationId || talkId || "presentation";
       } else {
         audioSync.setSlideIndex(0, { entryMode: 'full', shouldPlay: false });
       }
+      const initialSlideEl = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[0];
+      if (initialSlideEl) autoFit.fitSlide(initialSlideEl);
     }
 
     // Popstate navigation support (browser back/forward button)
@@ -1882,6 +1882,17 @@ const currentDeckId = presentationId || talkId || "presentation";
     opacity: 0;
     transform: translateY(24px) scale(0.97);
     pointer-events: none;
+  }
+
+  /* Suppress transitions & transforms during synchronous AutoFit measurement or immediate full-slide reveal */
+  .reveal .slides section.is-autofitting,
+  .reveal .slides section.is-autofitting * {
+    transition: none !important;
+    transform: none !important;
+  }
+  .reveal .slides [data-cue].is-immediate,
+  .reveal .slides .cue-target.is-immediate {
+    transition: none !important;
   }
 
   /* Active cue state: fully visible & in position (Fade-In Result) */

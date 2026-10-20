@@ -19,7 +19,7 @@ const {
   class={`callout-box p-6 lg:p-7 rounded-2xl border shadow-lg flex flex-col gap-2.5 shrink-0 transition-colors duration-300 ${className}`}
 >
   {title && (
-    <div class="flex items-center gap-3 mb-2">
+    <div class="flex items-center gap-3">
       <h4 class="font-black text-2xl lg:text-3xl tracking-tight leading-snug" set:html={renderSlideCues(title)} />
     </div>
   )}
@@ -34,8 +34,8 @@ const {
     background-color: color-mix(in srgb, var(--effective-callout-accent) 12%, transparent) !important;
     border-color: color-mix(in srgb, var(--effective-callout-accent) 35%, transparent) !important;
     color: color-mix(in srgb, var(--effective-callout-accent) 35%, white) !important;
-    padding: var(--slide-space-element, 1rem) var(--slide-space-block, 2rem) !important;
-    gap: var(--slide-space-tight, 0.5rem) !important;
+    padding: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1)) calc(var(--slide-space-block, 2rem) * var(--content-scale, 1)) !important;
+    gap: calc(var(--slide-space-tight, 0.5rem) * var(--content-scale, 1)) !important;
   }
   .callout-box h4 {
     color: var(--effective-callout-accent) !important;
@@ -62,4 +62,3 @@ const {
     margin-top: 0 !important;
   }
 </style>
-

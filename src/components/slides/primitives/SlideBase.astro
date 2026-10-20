@@ -1,4 +1,4 @@
----
+﻿---
 import { renderSlideCues } from '@commons/shared/slide-cues';
 import { resolveAccentName, getCycleAccent, type SlideAccent } from '@commons/shared/accent-system';
 
@@ -164,7 +164,7 @@ const isNotFirstSlide = num > 1 && !isSection;
   .slide-base-frame :global(ul:not([class*="space-y-"])) {
     display: flex;
     flex-direction: column;
-    gap: var(--slide-space-block, 2rem);
+    gap: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1));
   }
 
   .slide-base-frame :global(li) {

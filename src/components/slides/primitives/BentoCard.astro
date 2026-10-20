@@ -33,19 +33,19 @@ const elementId = explicitId;
 
   <!-- Header -->
   {(title || subtitle) && (
-    <div class="mb-8 shrink-0">
+    <div class="bento-card-header shrink-0">
       {title && (
         <h3 class="text-3xl lg:text-4xl xl:text-[40px] font-black tracking-tight leading-tight" set:html={renderSlideCues(title)} />
       )}
 
       {subtitle && (
-        <p class="bento-card-subtitle text-xl lg:text-2xl text-[var(--color-slide-text-subtle)] mt-2 font-normal" set:html={renderSlideCues(subtitle)} />
+        <p class="bento-card-subtitle text-xl lg:text-2xl text-[var(--color-slide-text-subtle)] font-normal" set:html={renderSlideCues(subtitle)} />
       )}
     </div>
   )}
 
   <!-- Body Content -->
-  <div class="flex-1 min-h-0 text-[var(--color-slide-text)] text-xl lg:text-2xl gap-8 leading-relaxed flex flex-col justify-start bento-hyphens">
+  <div class="bento-card-body flex-1 min-h-0 text-[var(--color-slide-text)] text-xl lg:text-2xl leading-relaxed flex flex-col justify-start bento-hyphens">
     <slot />
   </div>
 </div>
@@ -63,6 +63,9 @@ const elementId = explicitId;
   .bento-card-root .bento-top-bar {
     background-color: var(--resolved-card-accent);
   }
+  .bento-card-root .bento-card-header {
+    margin-bottom: calc(var(--slide-space-block, 2rem) * var(--content-scale, 1));
+  }
   .bento-card-root h3 {
     color: var(--resolved-card-accent);
     font-size: calc(var(--slide-font-card-title, 2.35rem) * var(--content-scale, 1)) !important;
@@ -71,6 +74,10 @@ const elementId = explicitId;
   .bento-card-root .bento-card-subtitle {
     font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;
     line-height: 1.35 !important;
+    margin-top: calc(var(--slide-space-tight, 0.5rem) * var(--content-scale, 1));
+  }
+  .bento-card-root .bento-card-body {
+    gap: calc(var(--slide-space-block, 2rem) * var(--content-scale, 1));
   }
   .bento-card-root :global(mark),
   .bento-card-root :global(.highlight-marker) {
@@ -103,7 +110,7 @@ const elementId = explicitId;
   .bento-hyphens :global(ul) {
     display: flex;
     flex-direction: column;
-    gap: var(--slide-space-block, 2rem);
+    gap: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1));
     justify-content: space-around;
   }
   .bento-hyphens :global(li) {
@@ -113,7 +120,7 @@ const elementId = explicitId;
   .bento-hyphens :global(p) {
     font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1));
     line-height: 1.55;
-    margin-bottom: var(--slide-space-block, 2rem);
+    margin: 0;
   }
   .bento-card-root :global(p:last-child),
   .bento-card-root :global(ul:last-child) {

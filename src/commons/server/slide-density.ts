@@ -9,6 +9,10 @@ export interface ContainerDensityResult {
   threshold: number;       // e.g. 0.50 (50%)
   isWarning: boolean;      // true if fillRatio < threshold
   previewSnippet?: string; // brief text snippet of content
+  contentScale?: number;   // effective --content-scale factor
+  effectiveBodyFontPx?: number; // rendered body font size in px (~28 * contentScale)
+  remediationStrategy?: 'SHORTEN_BOTTLENECK' | 'EXPAND_UNDERFILLED' | 'SHORTEN_BOTTLENECK_OR_EXPAND_TARGET' | 'CHECK_WIDTH_OR_EXPAND';
+  remediationHint?: string; // actionable guidance for the coding agent
 }
 
 export interface SlideDensityResult {
@@ -114,7 +118,7 @@ export async function auditSlideDensity(
           } else if (containerType === 'CodeContainer') {
             threshold = 0.45;
           } else if (containerType === 'BentoCard') {
-            threshold = 0.80;
+            threshold = 0.95;
           } else if (containerType === 'Pipeline') {
             // If the step card has a graphic area or image, use 0.40 threshold
             const hasGraphic =
@@ -336,6 +340,9 @@ export async function auditSlideDensity(
               ? parseFloat(Math.min(1.0, usedHeight / availableHeight).toFixed(2))
               : 1.0;
           const isWarning = fillRatio < threshold;
+          const rawScale = parseFloat(style.getPropertyValue('--content-scale')) || 1.0;
+          const contentScale = Math.round(rawScale * 1000) / 1000;
+          const effectiveBodyFontPx = Math.round(28 * contentScale * 10) / 10;
 
           containersOnSlide.push({
             containerType,
@@ -346,10 +353,45 @@ export async function auditSlideDensity(
             threshold,
             isWarning,
             previewSnippet,
+            contentScale,
+            effectiveBodyFontPx,
           });
         }
 
         if (containersOnSlide.length > 0) {
+          const resolveGroup = (t: string) =>
+            t === 'CodeContainer' ? 'code' : t === 'Pipeline' ? 'pipeline' : t === 'Table' ? 'table' : 'cards';
+
+          for (const c of containersOnSlide) {
+            if (!c.isWarning) continue;
+            const group = resolveGroup(c.containerType);
+            const siblings = containersOnSlide.filter((s) => s !== c && resolveGroup(s.containerType) === group);
+            const bottleneck = siblings.length > 0 ? [...siblings].sort((a, b) => b.fillRatio - a.fillRatio)[0] : undefined;
+            const scale = c.contentScale ?? 1.0;
+            const fontPx = c.effectiveBodyFontPx ?? 28.0;
+            const targetLabel = c.containerTitle ? `${c.containerType} ("${c.containerTitle}")` : c.containerType;
+
+            if (bottleneck && bottleneck.fillRatio >= 0.92 && bottleneck.fillRatio > c.fillRatio + 0.03) {
+              const bnLabel = bottleneck.containerTitle
+                ? `${bottleneck.containerType} ("${bottleneck.containerTitle}", ${Math.round(bottleneck.fillRatio * 100)}% full)`
+                : `${bottleneck.containerType} (${Math.round(bottleneck.fillRatio * 100)}% full)`;
+
+              if (scale < 1.05) {
+                c.remediationStrategy = 'SHORTEN_BOTTLENECK';
+                c.remediationHint = `[SHORTEN_BOTTLENECK] Effective font size is relatively small (--content-scale: ${scale.toFixed(2)}, ~${fontPx}px body). Do NOT expand ${targetLabel}. Instead: (1) SHORTEN/CONDENSE the limiting sibling ${bnLabel}, OR (2) SHIFT column/row ratio (e.g. SplitSlide ratio="35/65"|"40/60"|"50/50"|"60/40"|"65/35" or grid spans) to give ${bnLabel} more width and ${targetLabel} less width so AutoFit can scale up --content-scale.`;
+              } else if (scale >= 1.20) {
+                c.remediationStrategy = 'EXPAND_UNDERFILLED';
+                c.remediationHint = `[EXPAND_UNDERFILLED] Effective font size is already generous (--content-scale: ${scale.toFixed(2)}, ~${fontPx}px body), while sibling ${bnLabel} caps scaling. Either: (1) EXPAND/ENRICH ${targetLabel} (or add a structured takeaway/sublabel), OR (2) SHIFT column/row ratio to allocate narrower width to ${targetLabel} and wider width to ${bnLabel}.`;
+              } else {
+                c.remediationStrategy = 'SHORTEN_BOTTLENECK_OR_EXPAND_TARGET';
+                c.remediationHint = `[SHORTEN_OR_EXPAND] Shared --content-scale is moderate (${scale.toFixed(2)}, ~${fontPx}px body) and capped by sibling ${bnLabel}. Choose contextually: (A) SHIFT column/row ratio (e.g. SplitSlide ratio) to give ${bnLabel} more width, (B) SHORTEN ${bnLabel} if it has redundant prose/trailing text, OR (C) EXPAND ${targetLabel} if it lacks structural depth.`;
+              }
+            } else {
+              c.remediationStrategy = 'CHECK_WIDTH_OR_EXPAND';
+              c.remediationHint = `[CHECK_WIDTH_OR_EXPAND] No fuller vertical sibling bottleneck (--content-scale: ${scale.toFixed(2)}, ~${fontPx}px body). Scaling is either constrained by horizontal width (long unbreakable token/formula/title line) or insufficient vertical content in ${targetLabel}.`;
+            }
+          }
+
           const warningsOnSlide = containersOnSlide.filter((c) => c.isWarning);
           results.push({
             slideNumber,

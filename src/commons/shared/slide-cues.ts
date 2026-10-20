@@ -6,11 +6,18 @@
  * Transforms {cue:id}text{/cue} into <mark> tags,
  * and standalone {cue:id} into <span class="cue-target"> tags.
  */
-export function renderSlideCues(text: string | undefined | null): string {
+export function renderSlideCues(
+  text: string | undefined | null,
+  options?: { escapeHtml?: boolean }
+): string {
   if (!text) return '';
 
+  const baseText = options?.escapeHtml
+    ? text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    : text;
+
   // 1. Matched span highlights: {cue:id}text{/cue}
-  let result = text.replace(
+  let result = baseText.replace(
     /\{cue:([a-zA-Z0-9_-]+)\}([\s\S]*?)\{\/cue(?::[a-zA-Z0-9_-]+)?\}/g,
     (_, cueId, content) => {
       return `<mark data-cue="${cueId}" class="highlight-marker font-semibold rounded-[0.38em]">${content}</mark>`;

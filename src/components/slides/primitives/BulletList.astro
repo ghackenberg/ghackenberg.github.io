@@ -16,10 +16,10 @@ interface Props {
 const { items = [], class: className = "" } = Astro.props;
 ---
 
-<ul class={`bullet-list flex flex-col justify-around gap-6 ${className}`}>
+<ul class={`bullet-list flex flex-col justify-start gap-6 ${className}`}>
   {items.map((item, idx) => {
     return (
-      <li class="flex items-start gap-4">
+      <li class="bullet-list-item flex items-start gap-4">
         <span class="bullet-badge w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shrink-0 shadow-md">
           <SlideIcon name={item.icon} class="w-7 h-7" />
         </span>
@@ -30,7 +30,7 @@ const { items = [], class: className = "" } = Astro.props;
             </div>
           )}
           {item.desc && (
-            <p class="text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed mt-2 font-normal" set:html={renderSlideCues(item.desc)} />
+            <p class="bullet-desc text-slate-300 light:text-slate-600 text-xl lg:text-2xl leading-relaxed font-normal" set:html={renderSlideCues(item.desc)} />
           )}
           <slot name={`item-${idx}`} />
         </div>
@@ -42,7 +42,10 @@ const { items = [], class: className = "" } = Astro.props;
 
 <style>
   .bullet-list {
-    gap: var(--slide-space-element, 1rem) !important;
+    gap: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1)) !important;
+  }
+  .bullet-list-item {
+    gap: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1)) !important;
   }
   .bullet-badge {
     width: calc(3.5rem * var(--content-scale, 1)) !important;
@@ -59,6 +62,6 @@ const { items = [], class: className = "" } = Astro.props;
   .bullet-list p {
     font-size: calc(var(--slide-font-body, 1.75rem) * var(--content-scale, 1)) !important;
     line-height: 1.45 !important;
+    margin-top: calc(var(--slide-space-tight, 0.5rem) * var(--content-scale, 1)) !important;
   }
 </style>
-

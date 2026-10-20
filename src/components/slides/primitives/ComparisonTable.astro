@@ -38,6 +38,10 @@ const authorColWidthsStyle = columnRatios && columnRatios.length > 0
   ? `--col-widths: ${columnRatios.map(r => `${r}fr`).join(' ')};`
   : undefined;
 
+function nonBreakingHyphens(text: string): string {
+  return text.replace(/-/g, '\u2011');
+}
+
 const accentBars: Record<string, string> = {
   blue: 'bg-[var(--color-slide-accent-blue)]',
   cyan: 'bg-[var(--color-slide-accent-cyan)]',
@@ -104,11 +108,11 @@ function resolveRowAccent(idx: number): string {
         >
           <!-- Col 1: Disziplin -->
           <div class="comp-table-cell table-col-discipline flex items-center gap-4 min-w-0" data-cell>
-            <div class={`w-2.5 rounded-full shrink-0 table-accent-bar ${accentBars[accent] || accentBars.blue}`}></div>
+            <div class={`w-2.5 rounded-full shrink-0 self-stretch my-1 table-accent-bar ${accentBars[accent] || accentBars.blue}`}></div>
             <div class="flex flex-col min-w-0">
-              <h3 class={`table-row-title font-black tracking-tight leading-none ${accentTitles[accent] || accentTitles.blue}`} set:html={renderSlideCues(row.title)} />
+              <h3 class={`table-row-title font-black tracking-tight leading-none no-hyphens ${accentTitles[accent] || accentTitles.blue}`} set:html={renderSlideCues(nonBreakingHyphens(row.title))} />
               {row.subtitle && (
-                <span class="table-row-subtitle text-slate-400 light:text-slate-500 font-medium leading-tight mt-1 truncate" set:html={renderSlideCues(row.subtitle)} />
+                <span class="table-row-subtitle text-slate-400 light:text-slate-500 font-medium leading-tight mt-1 no-hyphens" set:html={renderSlideCues(row.subtitle)} />
               )}
             </div>
           </div>
@@ -152,11 +156,11 @@ function resolveRowAccent(idx: number): string {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: var(--slide-space-element, 1rem) !important;
+    gap: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1)) !important;
   }
   .comparison-table-container .table-accent-bar {
     flex-shrink: 0 !important;
-    height: calc(3.5rem * var(--content-scale, 1));
+    min-height: calc(3.25rem * var(--content-scale, 1));
   }
   .comp-table-cell.table-col-discipline .table-row-title {
     font-size: calc(var(--slide-font-heading, 1.90rem) * var(--content-scale, 1)) !important;
@@ -186,8 +190,8 @@ function resolveRowAccent(idx: number): string {
     font-size: calc(var(--slide-font-meta, 1.35rem) * var(--content-scale, 1)) !important;
   }
   .comparison-table-container .table-row-item {
-    padding-top: var(--slide-space-element, 1rem);
-    padding-bottom: var(--slide-space-element, 1rem);
+    padding-top: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1));
+    padding-bottom: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1));
     gap: var(--slide-space-block, 2rem);
   }
 

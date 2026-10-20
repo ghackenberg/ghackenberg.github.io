@@ -33,7 +33,6 @@ const colClass = colClasses[cols] || 'grid-cols-2';
 <style>
   .card-grid {
     width: 100%;
-    /* Aligned with BulletList spacing between bullet points (independent of --content-scale) */
-    gap: var(--slide-space-element, 1rem) !important;
+    gap: calc(var(--slide-space-element, 1rem) * var(--content-scale, 1)) !important;
   }
 </style>

@@ -71,3 +71,11 @@ Consult [`src/content/presentations/GUIDELINES.md`](https://github.com/ghackenbe
 ## 5. Style Isolation & DOM ID Integrity
 - `src/pages/presentations/[slug]/print.astro` MUST only import `theme.css` and `slides.css` (enforced by `npm run lint:styles`).
 - **Never assign `cue` as an HTML `id`**: Slides share a single DOM in Reveal.js. Always use `data-cue="cue-id"`, never duplicate `id="cue-id"` across slides.
+
+## 6. Visual Density & Typography Audit (`lint:slide-density` & `lint:slide-typography`)
+Before Phase 2 export, audit rendered 1080p typography (`npm run lint:slide-typography`) and container fill ratios (`npm run lint:slide-density`, `BentoCard` threshold $\ge 95\%$):
+- **Sibling Bottleneck Resolution**: Because sibling cards on a slide share a unified `--content-scale`, an underfilled card ($<95\%$) is usually constrained by a $100\%$-full sibling bottleneck card. Follow the linter's `💡 Hint` in [`src/commons/server/slide-density.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/slide-density.ts):
+  1. **Layout Ratio Redistribution (Zero Text Change)**: On `<SplitSlide ratio="35/65"|"40/60"|"50/50"|"60/40"|"65/35" />` or `<StoryHeroSlide />`, shifting more column/row width to the $100\%$-full bottleneck card reduces its line wraps (freeing vertical height) while narrowing the underfilled card increases its line wraps, equalizing both cards without altering text.
+  2. **`[SHORTEN_BOTTLENECK]` (`--content-scale < 1.05`, body $<29.4\text{px}$)**: Font size is relatively small. **Condense/shorten the $100\%$-full sibling bottleneck** (or shift column ratio toward the bottleneck) so AutoFit scales up `--content-scale` for the whole slide.
+  3. **`[EXPAND_UNDERFILLED]` (`--content-scale >= 1.20`, body $\ge 33.6\text{px}$)**: Font size is already large and close to the $85\%$ title hierarchy cap. **Expand/enrich the underfilled container** (or narrow its column ratio) rather than shrinking the sibling.
+  4. **`[SHORTEN_OR_EXPAND]` (`1.05 <= --content-scale < 1.20`)**: Evaluate contextually whether shifting column/row ratio, condensing redundant text in the bottleneck, or adding substantive depth to the underfilled card best serves the slide's pedagogy.
