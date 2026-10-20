@@ -55,12 +55,14 @@ Every document supporting references must satisfy two strict invariant rules:
 1. **Zero Undefined Citations**: Every `[@id]` used in the Markdown/MDX body must match an entry declared in `references:`.
 2. **Zero Orphan References**: Every entry declared in `references:` must be cited at least once in the document body via `[@id]`.
 
-## 4. Deep-Link & Anti-Shallow URL Contract
-- **Deep URLs Mandatory**: Every cited article, paper, report, or guide must link to the specific target page or DOI.
+## 4. Deep-Link, DOI & Primary Author Accuracy Contract
+- **Deep URLs Mandatory**: Every cited article, paper, report, or guide must link to the specific target page or DOI (`https://doi.org/...`).
 - **No Bare Domain Roots**: Never use root URLs like `openai.com/` or `anthropic.com/`. Bare domains are only permitted if the domain itself is the official standard or specification being cited (e.g. `https://zod.dev` or `https://modelcontextprotocol.io`).
+- **Exact Co-Author & DOI Verification**: Always verify exact author names (e.g. `Levine, John and Herkula, Tobias` on RFC 8058) and DOIs against Crossref or the primary document via `npm run lint:citations` so no mismatched DOI or HTTP 404 enters the repository.
 
-## 5. Reference Section Layout
-- **No Horizontal Divider**: Never place `---` or divider lines immediately before the `## Referenzen` heading or list.
+## 5. Reference Section Layout & Tabular CSS Subgrid
+- **No Horizontal Divider**: Never place `---` or divider lines immediately before the `## References` / `## Referenzen` heading or list.
+- **Tabular Two-Column CSS Subgrid (`src/pages/posts/[slug].astro`)**: Blog post references are rendered automatically by [`src/pages/posts/[slug].astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/posts/%5Bslug%5D.astro) using a two-column CSS Grid (`<ol class="grid grid-cols-[max-content_1fr] gap-x-3 sm:gap-x-4 gap-y-4">`) where each `<li class="col-span-2 grid grid-cols-subgrid items-baseline">` places the `[Key]` badge (`justify-self-start`) in column 1 and the bibliography text in column 2. This guarantees that variable-width BibTeX-Alpha keys (`[W3C23]` vs `[GBC+16]`) align to the widest badge and wrapped lines never drift under the badge column.
 
 ## 6. Pre-Flight Validation Tools
 Run fast syntax and remote content checks:
@@ -68,7 +70,7 @@ Run fast syntax and remote content checks:
   ```powershell
   npm run validate:citations:syntax
   ```
-- **Phase 2 (Remote HTTP Keyword & Author Linter)**:
+- **Phase 2 (Remote HTTP Keyword, DOI & Author Linter)**:
   ```powershell
   npm run lint:citations
   ```

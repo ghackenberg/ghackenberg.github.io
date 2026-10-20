@@ -29,8 +29,9 @@ const DOMAIN_COMMAND_OWNERS: Record<string, string[]> = {
   'export:slides-thumbs': ['presentation-authoring'],
 
   'validate:citations:syntax': ['citation-management', 'presentation-authoring', 'post-authoring'],
-  'lint:citations': ['citation-management'],
+  'lint:citations': ['citation-management', 'post-authoring'],
   'lint:citations:ci': ['citation-management', 'build-engineering'],
+  'lint:posts': ['post-authoring', 'build-engineering'],
 
   'lighthouse': ['site-optimization'],
   'mcp:analytics': ['site-analytics', 'tool-engineering'],

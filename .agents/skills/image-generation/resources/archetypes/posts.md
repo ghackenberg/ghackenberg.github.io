@@ -1,30 +1,29 @@
-# Visual Archetype: Blog Posts (`preview.jpg`)
+# Visual Archetype: Blog Posts (`hero.jpg`)
 
-Blog post previews capture hands-on engineering, software experiments, and systems architecture breakthroughs.
+Blog post hero illustrations showcase the concrete technical architecture, mathematical model, or software system under investigation without repetitive portrait staging.
 
-## Visual Archetype: In-the-Lab / Engineering Scene
+## Visual Archetype: Technical Artifact / Workstation & Whiteboard Close-Up
 
-A lived-in, authentic engineering workshop or modern timber home office where technical innovation happens.
+A focused, close-up engineering composition set inside the Grünau im Almtal timber home office (`home-office-almtal`) that highlights the post's specific algorithm, protocol, or data structure on a curved ultra-wide workstation monitor, drafting desk, or magnetic whiteboard.
 
-## Avatar & Staging Rules
-* **Avatar Inclusion**: **Yes** (Dr. Georg Hackenberg as hands-on engineer/author).
-* **Role**: Author actively immersed in research, coding, or system verification.
-* **Attire**: Friendly casual knit sweater (petrol blue, royal blue, heather grey) or dark slate tech pullover. Never a formal business suit or tie in home-office scenes.
-* **Staging**: Seated at the workstation desk or standing at the whiteboard, turning warmly three-quarters toward the viewer with a genuine smile, hands naturally near the keyboard or marker.
+## Avatar & Asset Uniqueness Rules
+* **Avatar Inclusion**: **Strictly No Avatar** (`ImagePaths: []`). Do not include Dr. Georg Hackenberg or any human characters in blog post `hero.jpg` illustrations unless explicitly requested by the user for a personal milestone post.
+* **Why No Avatar**: Avoiding repetitive human portraits across sequential engineering posts prevents visual monotony on `/posts` and keeps 100% of the visual bandwidth on the technical subject matter.
+* **Strict Cryptographic Uniqueness**: Never copy or reuse an existing image from another post or presentation. Every post's `hero.jpg` must be freshly generated via the `image-generator` subagent (enforced via SHA-256 hash uniqueness in `src/scripts/lint-posts.ts`).
 
 ## Camera Framing & Cinematographic Zonation
-* **Perspective**: Dynamic three-quarters eye-level perspective or medium shot.
-* **Foreground (FG)**: Nearest desk edge, mechanical keyboard, mouse, succulent plant, and signature `almtal-ceramic-mug`.
-* **Midground (MG)**: Primary focal target — in `home-office-almtal/workplace-focus.jpg`, Dr. Georg Hackenberg sits in the **center-left midground** in the grey ergonomic swivel chair while the **single curved ultra-wide monitor sits in the center-right midground** displaying article-specific code or architecture schematics (matching the exact `workplace-focus.jpg` geometry so no second monitor is hallucinated).
-* **Background (BG)**: Horizontal pine timber walls with subtle dark woodgrain ink lines, rear magnetic whiteboard with flowcharts, framed `almtal-abstract-painting` on the left wall, and a floor-to-ceiling panoramic window framing alpine peaks and pine forests.
+* **Perspective**: Close-up three-quarters perspective on the primary technical surface (curved ultra-wide monitor, magnetic whiteboard on a pine timber wall, or architectural drafting table).
+* **Foreground (FG)**: Tactile engineering desk props framing the lower edge—black mechanical keyboard, precision aluminum ruler, dark slate notebook, dry-erase markers, small potted succulent, or signature `almtal-ceramic-mug`.
+* **Midground (MG)**: Primary focal target (70%+ of frame area) — the curved ultra-wide monitor or magnetic whiteboard displaying crisp, readable topic-specific schematics (e.g., JSON-LD `ImageObject` graphs, elliptical bin-packing chords, Markov transition matrices, or SHA-256 register pipelines) with vibrant brand accents.
+* **Background (BG)**: Warm horizontal honey-pine timber slats (`#f59e0b`) with delicate dark woodgrain ink lines and a soft glimpse of twilight alpine peaks and pine forests through the panoramic window.
 
 ## Environment & Palette
-* **Environment**: `home-office-almtal` (or outdoor technical thinking on `terrace-almtal`).
-* **Palette**: Dark slate foundation (`#030712`), warm honey pine timber (`#f59e0b`), alpine meadow green (`#10b981`), and Deep Work Brand Blue (`#3b82f6`).
-* **Format & Aspect Ratio**: `AspectRatio: "16:9"`, saved as `preview.jpg` in `src/content/posts/[post_id]/preview.jpg`.
+* **Environment**: `home-office-almtal` (Grünau im Almtal timber architecture, rendered directly from prompt description with `ImagePaths: []`).
+* **Palette**: Dark slate foundation (`#030712`), warm honey pine timber (`#f59e0b`), Deep Work Brand Blue (`#3b82f6`), emerald green (`#10b981`), and royal purple (`#a855f7`).
+* **Format & Aspect Ratio**: `AspectRatio: "16:9"`, saved as `src/content/posts/<slug>/hero.jpg` and referenced in frontmatter as `icon.src: "./hero.jpg"`.
 
-## Canonical Prompt Template
+## Canonical Prompt Template (`ImagePaths: []`)
 
 ```text
-Dynamic three-quarters eye-level perspective inside a contemporary timber home office in Grünau im Almtal (Wolf Haus architecture). In the center-left midground, Dr. Georg Hackenberg (early 40s, neatly groomed styled dark brown hair with silver temple highlights, neatly trimmed full beard, warm genuine smile, wearing a casual petrol blue knit sweater) is seated in the modern grey ergonomic swivel chair at his height-adjustable standing desk, turning warmly three-quarters towards the viewer while working on a software engineering project. In the center-right midground on the desk, the single curved ultra-wide monitor displays [article-specific code / architecture diagrams / technical visual]. Foreground desk edge features a black mechanical keyboard, mouse, small potted succulent, and an ALMTAL ceramic mug. In the background, warm horizontal pine timber walls with delicate dark woodgrain ink lines, a framed modern abstract art painting on the left, a centered magnetic whiteboard with architectural flowcharts, and a massive floor-to-ceiling panoramic window revealing snow-capped alpine mountains and dense pine forests. Stylized Disney/Pixar comic-book vector illustration, crisp dark ink outlines, bold cel shading, dark slate palette (#030712) with vibrant brand blue (#3b82f6) and emerald green (#10b981) accents. 16:9 aspect ratio.
+Close-up three-quarters perspective of an engineering workstation desk (or magnetic whiteboard on a horizontal honey-pine timber wall) inside a contemporary timber office in Grünau im Almtal. Strictly no human characters or people in the scene. In the center midground, a large curved ultra-wide monitor (or magnetic whiteboard) displays a crisp, detailed technical schematic of [article-specific algorithm / architecture / mathematical formula with 2–3 short readable labels]. In the foreground desk edge, a black mechanical keyboard, precision aluminum calipers or drafting pen, a small green succulent, and a dark matte ceramic mug sit on the warm wood surface. In the background, horizontal pine timber walls with dark ink woodgrain lines and a panoramic window revealing twilight snow-capped alpine peaks. Stylized Disney/Pixar comic-book vector illustration, crisp dark ink outlines, bold cel shading, deep slate background (#030712) with vibrant brand blue (#3b82f6), emerald green (#10b981), and warm amber (#f59e0b) accents. 16:9 aspect ratio.
 ```

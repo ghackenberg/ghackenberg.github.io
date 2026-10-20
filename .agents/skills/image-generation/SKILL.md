@@ -18,7 +18,7 @@ Before prompting or generating images, inspect the specialized Level 3 specifica
 
 | Content Type | Visual Archetype | Avatar Rule | Setting & Guidance |
 | :--- | :--- | :--- | :--- |
-| **Posts** | In-the-Lab / Engineering Scene | **Yes** (Hands-on Engineer) | [posts.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/posts.md) |
+| **Posts** | Technical Artifact / Workstation Close-Up | **Strictly No Avatar** (Artifact Focus) | [posts.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/posts.md) |
 | **Presentations** | Keynote Beamer Stage / Pipeline / Hero | **Yes / No** (Context-specific) | [presentations.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/presentations.md) |
 | **Courses** | Academic Lecture & Lab Blackboard | **Strictly No Avatar** (Didactic) | [courses.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/courses.md) |
 | **Projects** | Isometric Tech Workbench Showcase | **Strictly No Avatar** (Product) | [projects.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/projects.md) |
@@ -28,10 +28,12 @@ Before prompting or generating images, inspect the specialized Level 3 specifica
 | **Publications** | Studio Sketchnote & Gouache-Marker Blueprint | **Strictly No Avatar** (Concept Sketch) | [publications.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/publications.md) |
 | **Newsletters** | Editorial Magazine Illustration / Tech Review Cover | **Strictly No Avatar** (Editorial Cover) | [newsletters.md](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/.agents/skills/image-generation/resources/archetypes/newsletters.md) |
 
-## 3. Conditioning Protocol & Asset Graph
-- **Protagonist Anchor**: Pass Dr. Georg Hackenberg (`src/content/characters/georg/portrait.png`) as Anchor 1 in `ImagePaths` when an avatar is required.
+## 3. Conditioning Protocol & Asset Uniqueness
+- **Blog Posts (`hero.jpg`)**: Default to **Strictly No Avatar** (`ImagePaths: []`), focusing 100% on the technical blueprint, ultra-wide monitor schematic, or magnetic whiteboard inside the Grünau im Almtal timber environment so each post card is visually distinct.
+- **Zero Image Duplication Across Posts**: Never copy or reuse an existing `hero.jpg` or `preview.jpg` from another post or presentation. Every post's `icon.src` is audited for cryptographic SHA-256 uniqueness by `lint-posts.ts`.
+- **Protagonist Anchor (When Required)**: Pass Dr. Georg Hackenberg (`src/content/characters/georg/portrait.png`) as Anchor 1 in `ImagePaths` only for archetypes that explicitly require an avatar (e.g. Services or Keynote Title Slides).
 - **The 2D Layout-Locking Trap**: Never pass a wide-angle room overview photo (`reference.jpg`) into `ImagePaths` when requesting a novel perspective. This locks the 2D layout and causes duplicate floating artifacts.
-- **Focus Variants (Mandatory)**: Inspect `src/content/environments/[id]/` and pass the specific pre-rendered focus variant (`[variant].jpg`) as Anchor 2.
+- **Focus Variants**: When conditioning on an environment with an avatar, inspect `src/content/environments/[id]/` and pass the specific pre-rendered focus variant (`[variant].jpg`) as Anchor 2.
 - **Object Isolation**: Reference objects in `src/content/objects/` must be 100% planar, isolated, and free of foreground occlusion.
 
 ## 4. Key Staging Contracts
@@ -40,4 +42,4 @@ Before prompting or generating images, inspect the specialized Level 3 specifica
 - **Story Hero Cards (`StoryHeroSlide.astro`)**: Aspect ratio 4:3, narrative stage framing.
 
 ## 5. Procedural User Review Gate
-**MANDATORY**: Always present the exact prompt, aspect ratio, and list of reference `ImagePaths` to the user for explicit approval before calling `generate_image`. Never call the tool unannounced.
+**MANDATORY**: Align on the visual strategy and prompt framing with the user (e.g. during the `/grill-me` gate) before calling `generate_image`.
