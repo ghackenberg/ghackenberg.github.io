@@ -53,6 +53,19 @@ function copyContentAssets(): AstroIntegration {
     name: 'copy-content-assets',
     hooks: {
       'astro:server:setup': ({ server }) => {
+        const pluginsDir = path.resolve('src/plugins').replace(/\\/g, '/');
+        server.watcher.add(pluginsDir);
+        const invalidateContentCacheOnPluginChange = (changedPath: string) => {
+          const normPath = path.resolve(changedPath).replace(/\\/g, '/');
+          if (normPath.startsWith(`${pluginsDir}/`)) {
+            fs.rmSync(path.resolve('.astro/data-store.json'), { force: true });
+            void server.restart();
+          }
+        };
+        server.watcher.on('change', invalidateContentCacheOnPluginChange);
+        server.watcher.on('add', invalidateContentCacheOnPluginChange);
+        server.watcher.on('unlink', invalidateContentCacheOnPluginChange);
+
         server.middlewares.use(
           (req: IncomingMessage, res: ServerResponse, next: () => void) => {
             if (req.url === '/styles/graphics.css' || req.url?.startsWith('/styles/graphics.css?')) {

@@ -134,8 +134,19 @@ function run(): void {
 
   const violations: string[] = [];
   const imageHashes = new Map<string, string>();
+  const seenPubDates = new Map<string, string>();
   let universalChecked = 0;
   let strictGeoChecked = 0;
+
+  for (const dirName of postDirs) {
+    const dirPrefixMatch = dirName.match(/^(\d{4})_(\d{2})_(\d{2})_/);
+    if (dirPrefixMatch && targetSlugFilter && !dirName.includes(targetSlugFilter)) {
+      const dirDate = `${dirPrefixMatch[1]}-${dirPrefixMatch[2]}-${dirPrefixMatch[3]}`;
+      if (dirDate >= MODERN_DATE_PREFIX_CUTOFF && !seenPubDates.has(dirDate)) {
+        seenPubDates.set(dirDate, dirName);
+      }
+    }
+  }
 
   for (const dirName of postDirs) {
     if (targetSlugFilter && !dirName.includes(targetSlugFilter)) {
@@ -189,6 +200,14 @@ function run(): void {
         violations.push(
           `[${relPath}] Directory "${dirName}" does not match frontmatter pubDate "${pubDateStr}" (expected prefix "${expectedPrefix}").`
         );
+      }
+      const existingDateOwner = seenPubDates.get(pubDateStr);
+      if (existingDateOwner && existingDateOwner !== dirName) {
+        violations.push(
+          `[${relPath}] Duplicate pubDate "${pubDateStr}" shared with "${existingDateOwner}". Modern posts must have a unique chronological pubDate (use max(today, latest_post_pubDate + 1 day)).`
+        );
+      } else {
+        seenPubDates.set(pubDateStr, dirName);
       }
     }
 

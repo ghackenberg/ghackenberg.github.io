@@ -30,6 +30,9 @@ let errorsCount = 0;
 let totalSections = 0;
 let totalCheckedIds = 0;
 
+const UNCOMPILED_CITATION_REGEX = /\[@[a-zA-Z0-9_-]+[^\]]*\]/;
+const UNCOMPILED_SLIDE_CUE_REGEX = /\{cue:[a-zA-Z0-9_-]+/;
+
 for (const file of htmlFiles) {
   const content = fs.readFileSync(file, 'utf8');
   const $ = cheerio.load(content);
@@ -116,6 +119,27 @@ for (const file of htmlFiles) {
       errorsCount++;
     }
   });
+
+  // 4. Uncompiled Markdown / AST Token Guard (visible text outside script, style, code, pre, svg, figcaption, and transcript cards)
+  const $bodyClone = $('body').clone();
+  $bodyClone.find('script, style, code, pre, svg, figcaption, .timeline-slide-entry').remove();
+  const visibleText = $bodyClone.text();
+
+  const rawCitationMatch = visibleText.match(UNCOMPILED_CITATION_REGEX);
+  if (rawCitationMatch) {
+    console.error(
+      `[validate-semantic-ids] ❌ Uncompiled citation token "${rawCitationMatch[0]}" found in visible text of ${relPath}`
+    );
+    errorsCount++;
+  }
+
+  const rawCueMatch = visibleText.match(UNCOMPILED_SLIDE_CUE_REGEX);
+  if (rawCueMatch) {
+    console.error(
+      `[validate-semantic-ids] ❌ Uncompiled slide cue token "${rawCueMatch[0]}" found in visible text of ${relPath}`
+    );
+    errorsCount++;
+  }
 }
 
 console.log(`\n[validate-semantic-ids] Scan summary:`);

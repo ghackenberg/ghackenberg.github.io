@@ -8,9 +8,9 @@ description: Research, interview, structure, write, and optimize long-form techn
 This skill governs the end-to-end authoring, multi-agent review, and GEO/AIO optimization of long-form technical articles in `src/content/posts/`.
 
 ## 1. Directory Structure & Schema
-Every post lives in its own directory under `src/content/posts/<slug>/` where `<slug>` starts with `YYYY_MM_DD_` matching `pubDate`:
+Every post lives in its own directory under `src/content/posts/<slug>/` where `<slug>` starts with `YYYY_MM_DD_` matching `pubDate` (new posts must default `pubDate` to `max(today, latest_post_pubDate + 1 day)` so no two modern posts share the exact same `pubDate`):
 - File: `src/content/posts/<slug>/index.md` or `index.mdx` (MDX if embedding interactive components).
-- Hero Image: `src/content/posts/<slug>/hero.jpg` (must be uniquely generated per post; duplicate image SHA-256 hashes across posts are blocked by `npm run lint:posts`).
+- Hero Image: `src/content/posts/<slug>/hero.jpg` (must be uniquely generated per post; duplicate image SHA-256 hashes and duplicate modern `pubDate` values across posts are blocked by `npm run lint:posts`).
 - Frontmatter schema (`src/content.config.ts`):
   ```yaml
   title: "Sovereign Newsletter-as-Code with React Email, Listmonk & ALTCHA PoW"
@@ -38,9 +38,9 @@ Every post lives in its own directory under `src/content/posts/<slug>/` where `<
 
 ## 2. Autonomous End-to-End Post Pipeline
 When tasked with creating one or more blog posts, the Control Plane executes a structured 6-stage autonomous workflow (see `agent-orchestration`):
-1. **Git Delta Topic Discovery & SOTA Reconnaissance**: Inspect recent repository commits, architectural subsystems, and primary academic literature (`source-research`) to identify concrete engineering innovations, quantitative metrics, and mathematical invariants.
-2. **Compact Alignment Gate (`/grill-me`)**: Present a high-density alignment briefing to the user (language, dates/slugs, thesis & section arc, visual strategy, and Golden Slice structure) to lock all parameters upfront without assumptions.
-3. **Unique Technical `hero.jpg` Generation (Strictly No Avatar)**: Dispatch the `image-generator` subagent with `ImagePaths: []` (`AspectRatio: "16:9"`) to render a unique close-up technical artifact (monitor, magnetic whiteboard, or hardware workbench) in the Grünau im Almtal timber office (see `image-generation`). Never copy or reuse an existing image from another post.
+1. **Git Delta Topic Discovery & SOTA Reconnaissance**: Inspect recent repository commits, architectural subsystems, and primary academic literature (`source-research`) to identify concrete engineering innovations, quantitative metrics, and mathematical invariants. Determine the next chronological `pubDate` via `max(today, latest_post_pubDate + 1 day)` (incrementing by `+1 day` per post when batch-authoring) so every post has a unique `pubDate`.
+2. **Compact Alignment Gate (`/grill-me`)**: Present a high-density alignment briefing to the user (language, unique chronological dates/slugs, thesis & section arc, visual strategy, and Golden Slice structure) to lock all parameters upfront without assumptions.
+3. **Unique Technical `hero.jpg` Generation (Strictly No Avatar)**: Dispatch the `image-generator` subagent with `ImagePaths: []` (`AspectRatio: "16:9"`) to render a unique close-up technical artifact (monitor, magnetic whiteboard, or hardware workbench) in the Grünau im Almtal timber office (see `image-generation`). Note that `image-generator` writes output images to the brain artifact folder (`<appDataDir>\brain\<conversation-id>\`), which must then be copied to `src/content/posts/<slug>/hero.jpg` by the Author subagent. Never copy or reuse an existing image from another post.
 4. **Independent Author Subagent Drafting**: Dispatch a dedicated Author subagent per post with exact line-level code references, verified primary citations, and strict GEO/AIO formatting constraints.
 5. **Independent 3-Persona Visitor Review & Primary-Source Fact-Check**: Automatically dispatch an independent Reviewer subagent (separate from the Author) that audits the draft through three critical visitor personas plus a primary-source audit:
    - **Persona A (CTO / Principal Architect)**: Evaluates architectural trade-offs, failure modes, and decision clarity.

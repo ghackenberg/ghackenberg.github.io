@@ -4,6 +4,7 @@ import path from 'node:path';
 const ROOT_DIR = process.cwd();
 const STYLES_DIR = path.join(ROOT_DIR, 'src', 'styles');
 const PRINT_ASTRO_PATH = path.join(ROOT_DIR, 'src', 'pages', 'presentations', '[slug]', 'print.astro');
+const POST_SLUG_ASTRO_PATH = path.join(ROOT_DIR, 'src', 'pages', 'posts', '[slug].astro');
 
 let errorCount = 0;
 
@@ -43,13 +44,49 @@ if (fs.existsSync(themeCssPath)) {
   }
 }
 
-// 3. Validate posts.css does not double-import diagrams.css
+// 3. Validate posts.css does not double-import diagrams.css and defines complete heading hierarchy (h2, h3, h4)
 const postsCssPath = path.join(STYLES_DIR, 'posts.css');
 if (fs.existsSync(postsCssPath)) {
   const content = fs.readFileSync(postsCssPath, 'utf8');
   if (content.includes('diagrams.css')) {
     error('src/styles/posts.css should not import diagrams.css directly (centralized in theme.css).');
   }
+  const requiredProseHeadings = [
+    { level: 'h2', regex: /^\.prose-custom\s+h2\s*\{/m },
+    { level: 'h3', regex: /^\.prose-custom\s+h3\s*\{/m },
+    { level: 'h4', regex: /^\.prose-custom\s+h4\s*\{/m },
+  ];
+  let proseHeadingsOk = true;
+  for (const { level, regex } of requiredProseHeadings) {
+    if (!regex.test(content)) {
+      error(`src/styles/posts.css is missing typography rule block for ".prose-custom ${level}"`);
+      proseHeadingsOk = false;
+    }
+  }
+  if (proseHeadingsOk) {
+    success('src/styles/posts.css defines complete heading hierarchy (.prose-custom h2, h3, h4).');
+  }
+}
+
+if (fs.existsSync(POST_SLUG_ASTRO_PATH)) {
+  const postAstroContent = fs.readFileSync(POST_SLUG_ASTRO_PATH, 'utf8');
+  const requiredPostScopedHeadings = [
+    { level: 'h2', regex: /:global\(h2\)\s*\{/ },
+    { level: 'h3', regex: /:global\(h3\)\s*\{/ },
+    { level: 'h4', regex: /:global\(h4\)\s*\{/ },
+  ];
+  let postScopedHeadingsOk = true;
+  for (const { level, regex } of requiredPostScopedHeadings) {
+    if (!regex.test(postAstroContent)) {
+      error(`src/pages/posts/[slug].astro is missing scoped typography rule for ":global(${level})"`);
+      postScopedHeadingsOk = false;
+    }
+  }
+  if (postScopedHeadingsOk) {
+    success('src/pages/posts/[slug].astro defines complete heading hierarchy (:global(h2), :global(h3), :global(h4)).');
+  }
+} else {
+  error('Missing required post template: src/pages/posts/[slug].astro');
 }
 
 // 4. Validate global.css composition
