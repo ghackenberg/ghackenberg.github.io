@@ -228,7 +228,7 @@ In [`src/content/presentations/tts-lexicon.json`](https://github.com/ghackenberg
 }
 ```
 
-Das Node.js-Buildskript [`generate-presentation-audio.js`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/scripts/generate-presentation-audio.js) wendet diese Ersetzungen deterministisch an, bevor der Text an die Synthese übergeben wird. Der Markdown-Quelltext bleibt für Menschen und barrierefreie Screenreader semantisch sauber.
+Das Node.js-Buildskript [`generate-presentation-audio.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/generate-presentation-audio.ts) wendet diese Ersetzungen deterministisch an, bevor der Text an die Synthese übergeben wird. Der Markdown-Quelltext bleibt für Menschen und barrierefreie Screenreader semantisch sauber.
 
 ### 3. Akustische Wortgrenzen-Synthese (Edge TTS)
 
@@ -281,7 +281,7 @@ Damit Agenten auf Anhieb produktionsreife Folien generieren, sind in den Entwick
 
 ### Das automatisierte Qualitätsgate: `validate-slides.js`
 
-Vor jedem Git-Commit oder Production-Build analysiert [`scripts/validate-slides.js`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/scripts/validate-slides.js) den gesamten Präsentationsbestand. Das Skript bricht den Build mit einem Fehlercode ab, falls eine der folgenden Bedingungen verletzt wird:
+Vor jedem Git-Commit oder Production-Build analysiert [`src/scripts/validate-slides.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/scripts/validate-slides.ts) den gesamten Präsentationsbestand. Das Skript bricht den Build mit einem Fehlercode ab, falls eine der folgenden Bedingungen verletzt wird:
 
 1. **Frontmatter-Parität:** Fehlt `title`, `voiceover` oder `notes`?
 2. **Cue-Integrität:** Wurde im Voiceover ein `{cue:step-02}` deklariert, der im JSX-Body nicht existiert (oder umgekehrt)?

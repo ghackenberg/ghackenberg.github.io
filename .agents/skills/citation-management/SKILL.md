@@ -66,14 +66,16 @@ Every document supporting references must satisfy three strict invariant rules:
 - **Tabular Two-Column CSS Subgrid (`src/pages/posts/[slug].astro`)**: Blog post references are rendered automatically by [`src/pages/posts/[slug].astro`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/pages/posts/%5Bslug%5D.astro) using a two-column CSS Grid (`<ol class="grid grid-cols-[max-content_1fr] gap-x-3 sm:gap-x-4 gap-y-4">`) where each `<li class="col-span-2 grid grid-cols-subgrid items-baseline">` places the `[Key]` badge (`justify-self-start`) in column 1 and the bibliography text in column 2. This guarantees that variable-width BibTeX-Alpha keys (`[W3C23]` vs `[GBC+16]`) align to the widest badge and wrapped lines never drift under the badge column.
 
 ## 6. Pre-Flight Validation Tools
-Run fast syntax and remote content checks:
+Run fast syntax and remote content checks (pass an optional `<slug>` or `--file <path>` argument to scope validation to a single post or presentation during authoring):
 - **Phase 1 (Syntax & Parity Gate, <200ms)**:
   ```powershell
   npm run validate:citations:syntax
+  npm run validate:citations:syntax -- <slug>
   ```
 - **Phase 2 (Remote HTTP Keyword, DOI & Author Linter)**:
   ```powershell
   npm run lint:citations
+  npm run lint:citations -- <slug>
   ```
 - **Phase 3 (CI Mode)**:
   ```powershell

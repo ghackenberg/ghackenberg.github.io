@@ -67,13 +67,13 @@ Reine Klick- oder Impression-Zahlen reichen in modernen Multi-Agenten-Pipelines 
 
 | Optimierungs-Dimension | Klassischer SEO-Workflow | Agentenbasierte MCP-Pipeline |
 | :--- | :--- | :--- |
-| **Datenerfassung** | Manuelle Inspektion separater Dashboards (GSC vs. Analytics) | Automatisierte Normalisierung und Join via [`aggregator.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/scripts/mcp-unified-analytics/src/services/aggregator.ts) |
+| **Datenerfassung** | Manuelle Inspektion separater Dashboards (GSC vs. Analytics) | Automatisierte Normalisierung und Join via [`aggregator.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/analytics/services/aggregator.ts) |
 | **Striking Distance** | Statische Keyword-Listen ohne Verweildauer-Kontext | Dynamische Heuristik für Positionen 4–15 gekoppelt mit CTR-Prüfung |
 | **User Resonance** | Hohe Absprungraten werden oft ignoriert | Automatische Detektion von „Hidden Champions“ (>300s Lesezeit bei geringer Sichtbarkeit) |
-| **AIO-Qualitätssicherung** | Hoffen auf KI-Zitate nach dem Deployment | Lokale Vorab-Prüfung vor dem Commit via [`aio-evaluator.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/scripts/mcp-unified-analytics/src/services/aio-evaluator.ts) |
+| **AIO-Qualitätssicherung** | Hoffen auf KI-Zitate nach dem Deployment | Lokale Vorab-Prüfung vor dem Commit via [`aio-evaluator.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/analytics/services/aio-evaluator.ts) |
 | **Durchlaufzeit** | Mehrere Tage Abstimmung zwischen Marketing und Dev | Unter 5 Minuten vom Audit bis zum verifizierten Pull Request |
 
-Die Implementierung in [`opportunities.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/scripts/mcp-unified-analytics/src/services/opportunities.ts) filtert gezielt nach vier Mustern:
+Die Implementierung in [`opportunities.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/commons/server/analytics/services/opportunities.ts) filtert gezielt nach vier Mustern:
 
 1. **Striking-Distance-Chancen (Position 4–15)**: Artikel, die Google bereits auf den ersten beiden Suchergebnisseiten platziert, deren Snippets aber noch unzureichende Klickraten erzeugen.
 2. **Hidden Champions**: Inhalte mit außergewöhnlich hoher Lesezeit (> 5 Minuten) und geringer Absprungrate, die in Suchmaschinen noch unter dem Radar fliegen und durch stärkere interne Verlinkung gestützt werden müssen.
@@ -105,7 +105,7 @@ In den darauffolgenden Optimierungsiterationen stießen wir auf einen fundamenta
 * **Die GEO-Anforderung**: Generative Engines (Perplexity, ChatGPT Search, Gemini) bevorzugen tabellarische Vergleiche disproportional gegenüber Fließtext (+37% Zitationshebel laut KDD-2024-Studie).
 * **Das mobile Layout-Problem**: Auf Smartphones führten 4- bis 5-spaltige Markdown-Tabellen zum horizontalen Ausbrechen des Viewports oder zu unleserlich zusammengequetschten Spalten.
 
-**Die architektonische Lösung**: Statt Tabellen künstlich zu verknappen, entwickelten wir ein build-zeitliches Rehype-Plugin ([`src/plugins/rehype-responsive-tables.js`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-responsive-tables.js)) in Astro. Das Plugin wickelt jede Markdown-Tabelle zur Build-Zeit automatisch in einen Container (`<div class="table-responsive-wrapper">`). Gekoppelt mit horizontalem Touch-Scrollen (`overflow-x: auto; min-width: 580px;`) und abgestimmtem Dark- und Light-Mode-Styling bleiben Tabellen auf mobilen Geräten flüssig wischbar, während die semantische DOM-Struktur für KI-Parser vollständig erhalten bleibt.
+**Die architektonische Lösung**: Statt Tabellen künstlich zu verknappen, entwickelten wir ein build-zeitliches Rehype-Plugin ([`src/plugins/rehype-responsive-tables.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/rehype-responsive-tables.ts)) in Astro. Das Plugin wickelt jede Markdown-Tabelle zur Build-Zeit automatisch in einen Container (`<div class="table-responsive-wrapper">`). Gekoppelt mit horizontalem Touch-Scrollen (`overflow-x: auto; min-width: 580px;`) und abgestimmtem Dark- und Light-Mode-Styling bleiben Tabellen auf mobilen Geräten flüssig wischbar, während die semantische DOM-Struktur für KI-Parser vollständig erhalten bleibt.
 
 ## Welche Hebel erschließen Folgeiterationen mit der erweiterten Tool-Suite?
 

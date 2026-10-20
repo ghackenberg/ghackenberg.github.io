@@ -513,6 +513,22 @@ async function run(): Promise<void> {
   console.log('🔍 CITATION LINTER: Systematic Reference Verification & In-Text Parity Audit');
   console.log('='.repeat(80));
 
+  const rawArgs = process.argv.slice(2);
+  let targetSlugFilter: string | null = null;
+  for (let i = 0; i < rawArgs.length; i++) {
+    if (rawArgs[i] === '--file' && i + 1 < rawArgs.length) {
+      targetSlugFilter = rawArgs[i + 1].replace(/\\/g, '/');
+      break;
+    }
+    if (!rawArgs[i].startsWith('--')) {
+      targetSlugFilter = rawArgs[i].replace(/\\/g, '/');
+      break;
+    }
+  }
+  if (targetSlugFilter) {
+    console.log(`🎯 Filtering citation audit to paths matching: "${targetSlugFilter}"`);
+  }
+
   const cache = loadCache();
   const allRefs: CitationRef[] = [];
   const allCitationErrors: string[] = [];
@@ -525,6 +541,7 @@ async function run(): Promise<void> {
       const parentDir = 'parentPath' in e && typeof e.parentPath === 'string' ? e.parentPath : presBase;
       if (e.isFile() && e.name.endsWith('.mdx') && parentDir.includes('slides')) {
         const fullPath = path.join(parentDir, e.name);
+        if (targetSlugFilter && !path.relative(process.cwd(), fullPath).replace(/\\/g, '/').includes(targetSlugFilter)) continue;
         const { refs, errors } = extractReferencesFromFile(fullPath, 'Presentation Slide');
         allRefs.push(...refs);
         allCitationErrors.push(...errors);
@@ -540,6 +557,7 @@ async function run(): Promise<void> {
       const parentDir = 'parentPath' in e && typeof e.parentPath === 'string' ? e.parentPath : postsBase;
       if (e.isFile() && (e.name === 'index.md' || e.name === 'index.mdx')) {
         const fullPath = path.join(parentDir, e.name);
+        if (targetSlugFilter && !path.relative(process.cwd(), fullPath).replace(/\\/g, '/').includes(targetSlugFilter)) continue;
         const { refs, errors } = extractReferencesFromFile(fullPath, 'Blog Post');
         allRefs.push(...refs);
         allCitationErrors.push(...errors);

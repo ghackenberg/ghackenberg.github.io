@@ -232,7 +232,7 @@ function run(): void {
       }
     }
 
-    // 1a(iii) Zero file:/// URLs or relative markdown links to repo code (src/, .agents/)
+    // 1a(iii) Zero file:/// URLs or relative markdown links to repo code (src/, .agents/), and verify canonical GitHub main paths exist on disk
     if (/file:\/\/\//i.test(bodyWithoutFourTicks)) {
       violations.push(`[${relPath}] Contains forbidden "file:///" URL. Use canonical GitHub URLs on main.`);
     }
@@ -240,6 +240,24 @@ function run(): void {
       violations.push(
         `[${relPath}] Contains relative markdown link to repository source ("src/" or ".agents/"). Use canonical GitHub URLs on main.`
       );
+    }
+
+    const githubLinkRegex =
+      /https:\/\/github\.com\/ghackenberg\/ghackenberg\.github\.io\/(?:blob|tree)\/main\/([^)#?\s"'>]+)/g;
+    for (const match of bodyWithoutFourTicks.matchAll(githubLinkRegex)) {
+      const rawSubPath = match[1].replace(/[.,;:]+$/, '');
+      let repoSubPath = rawSubPath;
+      try {
+        repoSubPath = decodeURIComponent(rawSubPath);
+      } catch {
+        // Keep rawSubPath if decodeURIComponent fails
+      }
+      const resolvedRepoPath = path.resolve(ROOT_DIR, repoSubPath);
+      if (!fs.existsSync(resolvedRepoPath)) {
+        violations.push(
+          `[${relPath}] Canonical GitHub link points to non-existent repository path "${repoSubPath}" (${match[0]}).`
+        );
+      }
     }
 
     // 1a(iv) No --- horizontal rule immediately before ## References or ## Referenzen

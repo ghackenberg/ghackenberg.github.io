@@ -40,7 +40,7 @@ Every post lives in its own directory under `src/content/posts/<slug>/` where `<
 When tasked with creating one or more blog posts, the Control Plane executes a structured 6-stage autonomous workflow (see `agent-orchestration`):
 1. **Git Delta Topic Discovery & SOTA Reconnaissance**: Inspect recent repository commits, architectural subsystems, and primary academic literature (`source-research`) to identify concrete engineering innovations, quantitative metrics, and mathematical invariants. Determine the next chronological `pubDate` via `max(today, latest_post_pubDate + 1 day)` (incrementing by `+1 day` per post when batch-authoring) so every post has a unique `pubDate`.
 2. **Compact Alignment Gate (`/grill-me`)**: Present a high-density alignment briefing to the user (language, unique chronological dates/slugs, thesis & section arc, visual strategy, and Golden Slice structure) to lock all parameters upfront without assumptions.
-3. **Unique Technical `hero.jpg` Generation (Strictly No Avatar)**: Dispatch the `image-generator` subagent with `ImagePaths: []` (`AspectRatio: "16:9"`) to render a unique close-up technical artifact (monitor, magnetic whiteboard, or hardware workbench) in the Grünau im Almtal timber office (see `image-generation`). Note that `image-generator` writes output images to the brain artifact folder (`<appDataDir>\brain\<conversation-id>\`), which must then be copied to `src/content/posts/<slug>/hero.jpg` by the Author subagent. Never copy or reuse an existing image from another post.
+3. **Unique Technical `hero.jpg` Generation (Strictly No Avatar, Single-Surface & Macro-Label Rule)**: Dispatch the `image-generator` subagent with `ImagePaths: []` (`AspectRatio: "16:9"`) to render a unique close-up technical artifact in the Grünau im Almtal timber office (see `image-generation`). Prompt for **either** a single curved ultra-wide monitor **or** a magnetic whiteboard—never both simultaneously—and restrict in-screen text to 1–2 large uppercase headers with clean color-coded geometric nodes (no tiny node labels or axis numbers). Note that `image-generator` writes output images to the brain artifact folder (`<appDataDir>\brain\<conversation-id>\`), which must then be copied to `src/content/posts/<slug>/hero.jpg` by the Author subagent. Never copy or reuse an existing image from another post.
 4. **Independent Author Subagent Drafting**: Dispatch a dedicated Author subagent per post with exact line-level code references, verified primary citations, and strict GEO/AIO formatting constraints.
 5. **Independent 3-Persona Visitor Review & Primary-Source Fact-Check**: Automatically dispatch an independent Reviewer subagent (separate from the Author) that audits the draft through three critical visitor personas plus a primary-source audit:
    - **Persona A (CTO / Principal Architect)**: Evaluates architectural trade-offs, failure modes, and decision clarity.
@@ -54,13 +54,13 @@ Every modern post (`pubDate >= 2026-10-16`) is deterministically audited by `npm
 - **Section-Level Answer-First Paragraphs**: Immediately below every `##` heading (excluding `## References` / `## Referenzen`), place a standalone **40–55 word** Answer-First paragraph (tolerance: 38–58 words) that directly answers or defines the section's core mechanism before diving into prose, lists, or code.
 - **Question-Framed Headings**: Formulate at least 1–2 `##` headings per post as explicit natural-language engineering questions ending with `?` (e.g. `## How Does Our Three-Phase Heuristic Solve Elliptical Row Assignment?`).
 - **Mermaid Complexity Cap ($\le 5$ Nodes)**: Every `mermaid` block must include a YAML frontmatter block with distinct `title` and `caption`, zero raw HTML tags (`<br>`, `<span>`, `<div>`), and **at most 5 distinct nodes** (see `mermaid-diagrams`). Escalate complex graphs to inline SVG (`svg-graphics`).
-- **Canonical GitHub Code Links**: Always link to repository source files using canonical GitHub URLs on `main` (`https://github.com/ghackenberg/ghackenberg.github.io/blob/main/...`). Never use `file:///` or relative `src/` paths.
+- **Canonical GitHub Code Links & Disk Existence Check**: Always link to repository source files using canonical GitHub URLs on `main` (`https://github.com/ghackenberg/ghackenberg.github.io/blob/main/...`). Never use `file:///` or relative `src/` paths. `npm run lint:posts` automatically decodes and verifies that every linked `blob/main/...` or `tree/main/...` repository path exists on disk.
 
 ## 4. Mandatory Pre-Flight Validation
-Before reporting completion, Author and Verification agents must run all three pre-flight checks in Windows PowerShell:
+Before reporting completion, Author and Verification agents must run all three pre-flight checks in Windows PowerShell (passing `<slug>` for fast targeted iteration before the full gate):
 ```powershell
-npm run lint:posts
-npm run validate:citations:syntax
-npm run lint:citations
+npm run lint:posts -- <slug>
+npm run validate:citations:syntax -- <slug>
+npm run lint:citations -- <slug>
 ```
 For full production release, follow the master verification gate (see `build-engineering`).

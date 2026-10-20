@@ -133,7 +133,7 @@ flowchart TB
 
 ## 3. Die technische Umsetzung: Unser Remark-Plugin
 
-Um die statische Generierung nahtlos in Astros Build-Prozess einzubinden, haben wir ein maßgeschneidertes Remark-Plugin ([`src/plugins/remark-mermaid.js`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/remark-mermaid.js)) entwickelt.
+Um die statische Generierung nahtlos in Astros Build-Prozess einzubinden, haben wir ein maßgeschneidertes Remark-Plugin ([`src/plugins/remark-mermaid.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/plugins/remark-mermaid.ts)) entwickelt.
 
 Da Mermaid auf Standard-DOM-APIs (insbesondere `getBBox()` und SVG-Font-Metriken) angewiesen ist, reicht reines Node.js ohne Rendering-Engine nicht aus. Statt jedoch externe CLI-Tools mit separaten Binaries aufzurufen, nutzen wir das im Projekt bereits vorhandene **Puppeteer**:
 
@@ -170,7 +170,7 @@ sequenceDiagram
 
 ## 4. Konfiguration in Astros Markdown-Pipeline
 
-Seit den neuesten Astro-Versionen werden Markdown-Plugins direkt über das Unified-Ökosystem [@titus-2024-unified] übergeben. In unserer [`astro.config.mjs`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.mjs) fügt sich das Plugin wie folgt ein:
+Seit den neuesten Astro-Versionen werden Markdown-Plugins direkt über das Unified-Ökosystem [@titus-2024-unified] übergeben. In unserer [`astro.config.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/astro.config.ts) fügt sich das Plugin wie folgt ein:
 
 ```javascript
 import { defineConfig } from 'astro/config';

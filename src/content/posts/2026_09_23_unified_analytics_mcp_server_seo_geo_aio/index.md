@@ -448,7 +448,7 @@ Der Unified Analytics MCP Server filtert, gruppiert und bewertet die Rohdaten be
 Um den MCP Server nahtlos in moderne Multi-Agenten-Umgebungen wie Antigravity oder Claude Code einzubinden, haben wir die Architektur auf zwei Pfeilern aufgesetzt:
 
 1. **Standardisiertes Package-Management:**  
-   Über ein dediziertes Setup-Skript in unserer Root-[`package.json`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/package.json) wird der MCP-Server in [`scripts/mcp-unified-analytics/`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/scripts/mcp-unified-analytics) sauber gebaut und global im System verlinkt:
+   Über ein dediziertes Setup-Skript in unserer Root-[`package.json`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/package.json) wird der MCP-Server in [`src/tools/unified-analytics.ts`](https://github.com/ghackenberg/ghackenberg.github.io/blob/main/src/tools/unified-analytics.ts) sauber gebaut und global im System verlinkt:
    ````bash
    npm run setup:mcp
    ````
