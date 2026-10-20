@@ -123,8 +123,8 @@
     <g transform="translate(245, 12)">
       <rect width="230" height="60" rx="6" fill="var(--svg-card)" stroke="var(--svg-node-green-border)" stroke-width="1"/>
       <text x="15" y="20" fill="var(--svg-text-primary)" font-family="'Outfit', 'Inter', sans-serif" font-size="10" font-weight="bold">Route Tracking Logic:</text>
-      <text x="15" y="38" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500">• If pathname is a list (e.g. /posts), mark section read</text>
-      <text x="15" y="50" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="500">• If pathname is detail (e.g. /posts/slug), mark item read</text>
+      <text x="12" y="38" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="8.5" font-weight="500">• If pathname is a list (e.g. /posts), mark section read</text>
+      <text x="12" y="50" fill="var(--svg-text-secondary)" font-family="'Outfit', 'Inter', sans-serif" font-size="8.5" font-weight="500">• If pathname is detail (/posts/slug), mark item read</text>
     </g>
 
     <!-- Async Sync Details -->

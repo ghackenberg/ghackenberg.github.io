@@ -185,7 +185,8 @@
   </g>
 
   <!-- Bottom Legend Banner -->
-  <rect x="40" y="580" width="920" height="60" rx="8" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1"/>
+  <rect x="40" y="580" width="920" height="68" rx="8" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1"/>
   <text x="60" y="605" fill="var(--svg-text-primary)" font-size="11.5" font-weight="700">Technischer Vorteil des hybriden Ansatzes:</text>
-  <text x="60" y="624" fill="var(--svg-text-secondary)" font-size="11">Reine Vektorsuche scheitert häufig an exakten IDs, Artikelnummern und Code-Tokens. Durch die Kombination von BM25 mit dichter Vektorsuche und Cross-Encoder-Reranking erreicht Open WebUI höchste Treffergenauigkeit bei minimalem Rauschen.</text>
+  <text x="60" y="620" fill="var(--svg-text-secondary)" font-size="10.5">Reine Vektorsuche scheitert häufig an exakten IDs, Artikelnummern und Code-Tokens. Durch die Kombination von BM25 mit</text>
+  <text x="60" y="636" fill="var(--svg-text-secondary)" font-size="10.5">dichter Vektorsuche und Cross-Encoder-Reranking erreicht Open WebUI höchste Treffergenauigkeit bei minimalem Rauschen.</text>
 </svg>

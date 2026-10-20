@@ -30,6 +30,7 @@ Use system sans-serif fonts consistent with site typography:
   - Secondary Metadata / Subtitle: `font-size="11"` or `12"`, `font-weight="400"`.
   - Badges / Status Pills: `font-size="10"`, `font-weight="600"`.
 - **Text Alignment**: Use `text-anchor="middle"` for centered node labels, `dominant-baseline="central"` or `dominant-baseline="middle"` for vertical centering.
+- **Horizontal Character-Width Budget**: In `Outfit`/`Inter`, average proportional character advance is $\approx 0.56 \times \text{font-size}$ (up to $\approx 0.62 \times \text{font-size}$ for uppercase/bold or `letter-spacing`). Ensure every `<text>` element maintains at least `12px–14px` horizontal padding inside its enclosing `<rect>` container (`x_left + text_width <= rect_right - 12`). Never place multi-sentence paragraphs inside a single unwrapped `<text>` node; split long descriptions across stacked `<text>` lines. Enforced deterministically by `npm run lint:svgs`.
 
 ## 4. Brand Color Tokens & Node Archetypes
 All colors and visual archetypes are centralized in `src/styles/graphics.css`. Every SVG imports these tokens to guarantee seamless dark/light theme switching:
@@ -82,7 +83,7 @@ Inline and standalone SVGs must import the centralized stylesheet. Hardcoded `#.
 ## 7. Clean Output & Linting Checklist
 1. Import `@import url('/styles/graphics.css');` inside `<defs><style>`.
 2. Zero hardcoded hex colors (`#...`) in `fill` or `stroke` attributes on graphical elements (enforced by `npm run lint:svgs`).
-3. Text blocks use explicit `x` and `y` baseline coordinates without overlapping.
+3. Text blocks use explicit `x` and `y` baseline coordinates without overlapping or exceeding their enclosing `<rect>` or root `viewBox` horizontal bounds (enforced by `npm run lint:svgs`).
 4. Node rectangles use rounded corners (`rx="6"` to `rx="10"`).
 5. All elements have distinct IDs or semantic class names.
 6. Run `npm run lint:svgs` to guarantee compliance.
