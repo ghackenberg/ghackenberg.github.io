@@ -970,9 +970,20 @@ const currentDeckId = presentationId || talkId || "presentation";
       } catch (e) {}
     }
 
+    // Ensure target slide is fitted before first paint and queue adjacent slides
+    const ensureSlideFitted = (index: number) => {
+      const slides = document.querySelectorAll<HTMLElement>('.reveal .slides > section');
+      const target = slides[index];
+      if (target) {
+        autoFit.fitSlide(target);
+      }
+      autoFit.schedulePriorityQueue(revealRoot, index);
+    };
+
     // Instantiate Audio Controller
     const audioSync = new AudioSyncController(slidesData, {
       onSlideChange: (index) => {
+        ensureSlideFitted(index);
         if (deck.getIndices().h !== index) {
           deck.slide(index);
         }
@@ -1039,6 +1050,7 @@ const currentDeckId = presentationId || talkId || "presentation";
     // Reveal Slide Changed Event
     deck.on('slidechanged', () => {
       const idx = deck.getIndices().h;
+      ensureSlideFitted(idx);
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
       updateActiveSlideInList(idx);
       updateReferencesButton(idx);
@@ -1067,8 +1079,6 @@ const currentDeckId = presentationId || talkId || "presentation";
       } else {
         audioSync.updateSlideIntroState();
       }
-      const currentSlide = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[idx];
-      autoFit.fitSlide(currentSlide);
     });
 
     // Initialize references button for initial slide
@@ -1098,10 +1108,14 @@ const currentDeckId = presentationId || talkId || "presentation";
     });
     btnPrev?.addEventListener('click', () => {
       audioSync.unlockAudioSession();
+      const prevIdx = Math.max(0, deck.getIndices().h - 1);
+      ensureSlideFitted(prevIdx);
       deck.prev();
     });
     btnNext?.addEventListener('click', () => {
       audioSync.unlockAudioSession();
+      const nextIdx = Math.min(slidesData.length - 1, deck.getIndices().h + 1);
+      ensureSlideFitted(nextIdx);
       deck.next();
     });
     btnPrevCue?.addEventListener('click', () => {
@@ -1120,6 +1134,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         const slideIdxStr = item.getAttribute('data-slide-index');
         if (slideIdxStr !== null) {
           const targetIdx = parseInt(slideIdxStr, 10);
+          ensureSlideFitted(targetIdx);
           deck.slide(targetIdx);
           // Only auto-close on mobile (< 1024px) where drawer overlays the slide
           if (window.innerWidth < 1024) {
@@ -1210,6 +1225,7 @@ const currentDeckId = presentationId || talkId || "presentation";
       audioSync.unlockAudioSession();
       const targetIdx = e.detail?.index;
       if (typeof targetIdx === 'number' && targetIdx >= 0) {
+        ensureSlideFitted(targetIdx);
         deck.slide(targetIdx);
         if (e.detail?.autoPlay && !audioSync.getIsPlaying()) {
           audioSync.play();
@@ -1229,13 +1245,20 @@ const currentDeckId = presentationId || talkId || "presentation";
       closeDrawer();
     }
 
-    // Auto-adapt Reveal scale whenever slide canvas viewport resizes
+    // Auto-adapt Reveal scale whenever slide canvas viewport actually resizes
     if (revealRoot && typeof ResizeObserver !== 'undefined') {
+      let lastWidth = revealRoot.clientWidth;
+      let lastHeight = revealRoot.clientHeight;
       const ro = new ResizeObserver(() => {
+        const w = revealRoot.clientWidth;
+        const h = revealRoot.clientHeight;
+        if (Math.abs(w - lastWidth) < 1 && Math.abs(h - lastHeight) < 1) return;
+        lastWidth = w;
+        lastHeight = h;
         deck.layout();
+        autoFit.invalidateAll(revealRoot);
         const idx = deck.getIndices().h;
-        const currentSlide = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[idx];
-        autoFit.fitSlide(currentSlide);
+        ensureSlideFitted(idx);
       });
       ro.observe(revealRoot);
     }
@@ -1523,21 +1546,38 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
     }
 
-    if (initSlideIdx !== 0) {
-      deck.slide(initSlideIdx);
-      if (cueParam) {
-        audioSync.setSlideIndex(initSlideIdx, { targetCue: cueParam, shouldPlay: false });
+    const finalizeInitialReveal = () => {
+      ensureSlideFitted(initSlideIdx);
+      if (initSlideIdx !== 0) {
+        deck.slide(initSlideIdx);
+        if (cueParam) {
+          audioSync.setSlideIndex(initSlideIdx, { targetCue: cueParam, shouldPlay: false });
+        } else {
+          audioSync.setSlideIndex(initSlideIdx, { entryMode: 'full', shouldPlay: false });
+        }
       } else {
-        audioSync.setSlideIndex(initSlideIdx, { entryMode: 'full', shouldPlay: false });
+        if (cueParam) {
+          audioSync.setSlideIndex(0, { targetCue: cueParam, shouldPlay: false });
+        } else {
+          audioSync.setSlideIndex(0, { entryMode: 'full', shouldPlay: false });
+        }
       }
+
+      // Dismiss loading indicator & reveal deck smoothly only after initial layout + fonts are settled
+      if (revealRoot) revealRoot.classList.add('deck-ready');
+      if (deckLoader) {
+        deckLoader.classList.add('opacity-0');
+        setTimeout(() => deckLoader.remove(), 350);
+      }
+    };
+
+    if (document.fonts && document.fonts.ready) {
+      Promise.race([
+        document.fonts.ready,
+        new Promise((resolve) => setTimeout(resolve, 600))
+      ]).then(finalizeInitialReveal);
     } else {
-      if (cueParam) {
-        audioSync.setSlideIndex(0, { targetCue: cueParam, shouldPlay: false });
-      } else {
-        audioSync.setSlideIndex(0, { entryMode: 'full', shouldPlay: false });
-      }
-      const initialSlideEl = document.querySelectorAll<HTMLElement>('.reveal .slides > section')[0];
-      if (initialSlideEl) autoFit.fitSlide(initialSlideEl);
+      finalizeInitialReveal();
     }
 
     // Popstate navigation support (browser back/forward button)
@@ -1548,6 +1588,7 @@ const currentDeckId = presentationId || talkId || "presentation";
       if (sParam) {
         const sIdx = parseInt(sParam, 10) - 1;
         if (!isNaN(sIdx) && sIdx >= 0 && sIdx < slidesData.length) {
+          ensureSlideFitted(sIdx);
           if (deck.getIndices().h !== sIdx) {
             deck.slide(sIdx);
           }
@@ -1559,6 +1600,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         }
       } else {
         if (deck.getIndices().h !== 0) {
+          ensureSlideFitted(0);
           deck.slide(0);
           audioSync.setSlideIndex(0, { entryMode: 'full', shouldPlay: false });
         }
@@ -1590,13 +1632,6 @@ const currentDeckId = presentationId || talkId || "presentation";
         console.warn('Failed to copy share link', err);
       }
     });
-
-    // Dismiss loading indicator & reveal deck smoothly
-    if (revealRoot) revealRoot.classList.add('deck-ready');
-    if (deckLoader) {
-      deckLoader.classList.add('opacity-0');
-      setTimeout(() => deckLoader.remove(), 350);
-    }
   });
 </script>
 

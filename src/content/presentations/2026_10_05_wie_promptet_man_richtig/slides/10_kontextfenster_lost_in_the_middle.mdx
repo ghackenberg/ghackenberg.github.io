@@ -40,10 +40,10 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       {
         icon: "trending-down",
         title: "U-Kurven-Effekt",
-        desc: "Dokumente in der Mitte langer Prompts erleiden eine {cue:hl-abfall-mitte}signifikante Verschlechterung der Extraktionsgenauigkeit{/cue}. Transformer-Aufmerksamkeitsgewichte konzentrieren sich asymmetrisch auf die Randpositionen, wodurch zentrale Schlüsseldaten verloren gehen."
+        desc: "Dokumente in der Mitte langer Prompts erleiden eine {cue:hl-abfall-mitte}signifikante Verschlechterung der Extraktionsgenauigkeit{/cue}. Transformer-Aufmerksamkeitsgewichte konzentrieren sich stark auf die Randpositionen."
       }
     ]} />
-    Trotz großer Kontextweiten sinkt die Retrieval-Rate im mittleren Drittel drastisch ab: Große Kontextfenster ersetzen keine semantische Vorfilterung.
+    Trotz großer Kontextweiten sinkt die Trefferrate in der Mitte ab: Große Kontextfenster ersetzen keine semantische Vorfilterung.
   </BentoCard>
 
   <BentoCard slot="right" cue="col-architektur" title="Architektonische Konsequenzen">

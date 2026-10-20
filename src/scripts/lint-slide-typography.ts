@@ -104,15 +104,18 @@ function parseCliArgs(): {
 }
 
 function matchesSlide(slide: TypographyAuditResult, query: string): boolean {
-  const q = query.trim().toLowerCase();
+  const parts = query.split(',').map((p) => p.trim().toLowerCase()).filter(Boolean);
   const sNum = String(slide.slideNumber).trim().toLowerCase();
   const sId = String(slide.slideId).trim().toLowerCase();
-  const qNum = parseInt(q, 10);
   const slideNumInt = parseInt(sNum, 10);
-  if (!isNaN(qNum) && !isNaN(slideNumInt) && qNum === slideNumInt) {
-    return true;
-  }
-  return sNum === q || sId === q || sId.startsWith(`${q}_`);
+
+  return parts.some((q) => {
+    const qNum = parseInt(q, 10);
+    if (!isNaN(qNum) && !isNaN(slideNumInt) && qNum === slideNumInt) {
+      return true;
+    }
+    return sNum === q || sId === q || sId.startsWith(`${q}_`);
+  });
 }
 
 async function run(): Promise<void> {

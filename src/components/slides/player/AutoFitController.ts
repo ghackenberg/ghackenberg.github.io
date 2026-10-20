@@ -15,6 +15,10 @@ export interface AutoFitOptions {
 
 export class AutoFitController {
   private options: Required<AutoFitOptions>;
+  private fittedGeneration = 0;
+  private priorityQueue: HTMLElement[] = [];
+  private queueTimer: ReturnType<typeof setTimeout> | number | null = null;
+  private usingIdleCallback = false;
 
   constructor(options?: AutoFitOptions) {
     this.options = {
@@ -23,6 +27,99 @@ export class AutoFitController {
       minClearance: options?.minClearance ?? 8,
       iterations: options?.iterations ?? 8,
     };
+  }
+
+  public isSlideFitted(slideEl: HTMLElement | null): boolean {
+    if (!slideEl) return false;
+    return slideEl.dataset.fittedGen === String(this.fittedGeneration);
+  }
+
+  public invalidateAll(deckEl?: HTMLElement | null): void {
+    this.fittedGeneration++;
+    this.clearQueueTimer();
+    this.priorityQueue = [];
+    if (deckEl) {
+      deckEl.querySelectorAll<HTMLElement>('.reveal .slides > section, .slides > section').forEach((s) => {
+        delete s.dataset.fittedGen;
+      });
+    }
+  }
+
+  private clearQueueTimer(): void {
+    if (this.queueTimer !== null) {
+      if (this.usingIdleCallback && typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
+        (window as Window & { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(this.queueTimer as number);
+      } else {
+        clearTimeout(this.queueTimer as ReturnType<typeof setTimeout>);
+      }
+      this.queueTimer = null;
+      this.usingIdleCallback = false;
+    }
+  }
+
+  /**
+   * Pre-calculates slide layouts in priority order around activeIndex:
+   * [activeIndex (sync), activeIndex + 1, activeIndex - 1, activeIndex + 2, activeIndex - 2, ...]
+   */
+  public schedulePriorityQueue(deckEl: HTMLElement | null, activeIndex: number): void {
+    if (!deckEl) return;
+    this.clearQueueTimer();
+
+    const slides = Array.from(
+      deckEl.querySelectorAll<HTMLElement>('.reveal .slides > section, .slides > section')
+    );
+    if (slides.length === 0) return;
+
+    const clampedActive = Math.max(0, Math.min(slides.length - 1, activeIndex));
+    // Always ensure the active slide is fitted synchronously before paint
+    if (slides[clampedActive] && !this.isSlideFitted(slides[clampedActive])) {
+      this.fitSlide(slides[clampedActive]);
+    }
+
+    const ordered: HTMLElement[] = [];
+    for (let offset = 1; offset < slides.length; offset++) {
+      const nextIdx = clampedActive + offset;
+      const prevIdx = clampedActive - offset;
+      if (nextIdx < slides.length && !this.isSlideFitted(slides[nextIdx])) {
+        ordered.push(slides[nextIdx]);
+      }
+      if (prevIdx >= 0 && !this.isSlideFitted(slides[prevIdx])) {
+        ordered.push(slides[prevIdx]);
+      }
+    }
+
+    this.priorityQueue = ordered;
+    if (this.priorityQueue.length > 0) {
+      this.scheduleNextQueueSlice();
+    }
+  }
+
+  private scheduleNextQueueSlice(): void {
+    if (this.priorityQueue.length === 0) return;
+    const step = () => {
+      this.queueTimer = null;
+      this.usingIdleCallback = false;
+      while (this.priorityQueue.length > 0) {
+        const nextSlide = this.priorityQueue.shift()!;
+        if (!this.isSlideFitted(nextSlide)) {
+          this.fitSlide(nextSlide);
+          break;
+        }
+      }
+      if (this.priorityQueue.length > 0) {
+        this.scheduleNextQueueSlice();
+      }
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      this.usingIdleCallback = true;
+      this.queueTimer = (
+        window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number }
+      ).requestIdleCallback(step, { timeout: 60 });
+    } else {
+      this.usingIdleCallback = false;
+      this.queueTimer = setTimeout(step, 16);
+    }
   }
 
   public checkCardFits(card: HTMLElement): boolean {
@@ -84,6 +181,14 @@ export class AutoFitController {
     if (tableWrapper) {
       if (tableWrapper.scrollWidth > tableWrapper.clientWidth + 2) return false;
       if (tableWrapper.scrollHeight > tableWrapper.clientHeight + 1) return false;
+    }
+
+    // Check horizontal overflow in BarChart row headers (labels + sublabels + values must never clip or truncate)
+    const barHeaders = card.querySelectorAll<HTMLElement>('.bar-chart-header, .chart-label-text');
+    if (barHeaders.length > 0) {
+      for (const header of barHeaders) {
+        if (header.scrollWidth > header.clientWidth + 2) return false;
+      }
     }
 
     // Check clearance to bottom edge in unscaled canvas coordinates
@@ -811,8 +916,9 @@ export class AutoFitController {
     table.style.setProperty('--content-scale', finalScale.toFixed(3), 'important');
   }
 
-  public fitSlide(slideEl: HTMLElement | null): void {
+  public fitSlide(slideEl: HTMLElement | null, force = false): void {
     if (!slideEl) return;
+    if (!force && this.isSlideFitted(slideEl)) return;
 
     const isHidden = window.getComputedStyle(slideEl).display === 'none';
     if (isHidden) {
@@ -879,6 +985,7 @@ export class AutoFitController {
           );
         }
       }
+      slideEl.dataset.fittedGen = String(this.fittedGeneration);
     } finally {
       slideEl.classList.remove('is-autofitting');
       if (isHidden) {
@@ -890,7 +997,9 @@ export class AutoFitController {
 
   public fitAll(deckEl: HTMLElement | null): void {
     if (!deckEl) return;
+    this.clearQueueTimer();
+    this.priorityQueue = [];
     const slides = deckEl.querySelectorAll<HTMLElement>('.reveal .slides > section');
-    slides.forEach((slide) => this.fitSlide(slide));
+    slides.forEach((slide) => this.fitSlide(slide, true));
   }
 }

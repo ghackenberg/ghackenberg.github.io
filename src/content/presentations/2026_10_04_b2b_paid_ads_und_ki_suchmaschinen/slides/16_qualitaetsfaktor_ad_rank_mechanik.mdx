@@ -56,32 +56,32 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       max={250}
       items={[
         {
-          label: "Quality Score 10 (Exzellent)",
+          label: "Score 10",
           value: 50,
-          formattedValue: "-50% Rabatt",
-          sublabel: "Optimale Suchabsichtsdeckung und exzellente Landingpage-Erfahrung",
+          formattedValue: "-50 %",
+          sublabel: "Exzellente Relevanz",
         },
         {
-          label: "Quality Score 7 (Baseline)",
+          label: "Score 7",
           value: 100,
-          formattedValue: "100% Basis",
-          sublabel: "Industriestandard ohne algorithmischen Gebotsaufschlag",
+          formattedValue: "100 %",
+          sublabel: "Neutrale Baseline",
         },
         {
-          label: "Quality Score 5 (Mittelmäßig)",
+          label: "Score 5",
           value: 140,
-          formattedValue: "+40% Aufschlag",
-          sublabel: "Schwache Klickrate erfordert spürbaren monetären Mehraufwand",
+          formattedValue: "+40 %",
+          sublabel: "Schwache Klickrate",
         },
         {
-          label: "Quality Score 3 (Schlecht)",
+          label: "Score 3",
           value: 233,
-          formattedValue: "+133% Strafe",
-          sublabel: "Gravierende Diskrepanz zwischen Anzeigentext, Suchbegriff und Zielseite",
+          formattedValue: "+133 %",
+          sublabel: "Hohe Diskrepanz",
         }
       ]}
     />
-    Ein niedriger Qualitätsfaktor zwingt Werbetreibende zu drastischen Gebotserhöhungen, um überhaupt sichtbar zu bleiben. Relevanzoptimierung schützt das B2B-Budget vor algorithmischer Entwertung.
+    Konsequente Relevanzoptimierung halbiert die effektiven Klickkosten nachhaltig und schützt das B2B-Mediabudget vor algorithmischer Entwertung.
   </BentoCard>
 
   <BentoCard
@@ -90,24 +90,24 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
     title="Auktionsmathematik [@varian-2007-position-auctions]"
   >
     <CalloutBox type="statement" title="Ad Rank = Gebot × Qualitätsfaktor">
-      Auktionsgewinn durch Relevanz: {cue:hl-adrank-formel}Der Rang errechnet sich aus dem Maximalgebot multipliziert mit dem Qualitätsfaktor{/cue}.
+      {cue:hl-adrank-formel}Der Rang errechnet sich aus dem Maximalgebot multipliziert mit dem Qualitätsfaktor{/cue}.
     </CalloutBox>
     <BulletList
       items={[
         {
           icon: "cpu",
           title: "Preisfindung für den tatsächlichen CPC",
-          desc: "Zur Wahrung des Rangs gilt: {cue:hl-adrank-cpc}den Ad Rank des Nächstplatzierten dividiert durch die eigene Qualität übersteigen{/cue}."
+          desc: "Für den Rang gilt: {cue:hl-adrank-cpc}den Ad Rank des Nächstplatzierten dividiert durch die eigene Qualität übersteigen{/cue}."
         },
         {
           icon: "check",
           title: "Der Relevanz-Rabatt",
-          desc: "Hohe Landingpage-Qualität: {cue:hl-adrank-rabatt}Ein hoher Qualitätsfaktor halbiert die effektiven Klickkosten bei gleicher Position{/cue}."
+          desc: "{cue:hl-adrank-rabatt}Ein hoher Qualitätsfaktor halbiert die effektiven Klickkosten bei gleicher Position{/cue}."
         },
         {
           icon: "alert",
           title: "Die Strafsteuer für Irrelevanz",
-          desc: "Vernachlässigte Relevanz: {cue:hl-adrank-strafe}zu einer massiven algorithmischen Strafsteuer von über hundert Prozent führt{/cue}."
+          desc: "Mangelnde Relevanz {cue:hl-adrank-strafe}zu einer massiven algorithmischen Strafsteuer von über hundert Prozent führt{/cue}."
         }
       ]}
     />

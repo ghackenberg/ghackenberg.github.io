@@ -130,21 +130,21 @@ function computeSsrBarRounding(value: number) {
         class="bar-chart-row flex flex-col gap-2 w-full transition-opacity duration-300"
       >
         <!-- Row Header: Label & Formatted Value -->
-        <div class="flex justify-between items-baseline text-lg lg:text-xl font-bold">
-          <div class="chart-label-text flex items-center gap-2 min-w-0 pr-4">
+        <div class="bar-chart-header flex justify-between items-baseline gap-3 text-lg lg:text-xl font-bold w-full">
+          <div class="chart-label-text flex items-baseline gap-2 min-w-0 pr-2 whitespace-nowrap">
             {isLabelHighlight ? (
-              <mark data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
+              <mark data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em] shrink-0">
                 {item.label}
               </mark>
             ) : (
-              <span class="truncate">{item.label}</span>
+              <span class="chart-main-label shrink-0">{item.label}</span>
             )}
             {item.sublabel && (
-              <span class="chart-sublabel-text text-sm text-slate-400 font-normal">({item.sublabel})</span>
+              <span class="chart-sublabel-text text-sm text-slate-400 font-normal shrink-0">({item.sublabel})</span>
             )}
           </div>
 
-          <div class={`chart-value-text font-mono text-xl lg:text-2xl font-black shrink-0 ${colorStyle.text}`}>
+          <div class={`chart-value-text font-mono text-xl lg:text-2xl font-black shrink-0 whitespace-nowrap ${colorStyle.text}`}>
             {isValueHighlight ? (
               <mark data-cue={cueId} class="highlight-marker inline-block font-semibold rounded-[0.38em]">
                 {formattedVal}

@@ -35,7 +35,7 @@ import SlideTable from '../../../../components/slides/primitives/SlideTable.astr
 >
   <BentoCard slot="left" cue="col-bluf-bad" title="Vorher: Werblicher Floskeltext">
     <CalloutBox type="alert" title="{cue:hl-bluf-bad-callout}45 Wörter ohne eine einzige Kennzahl{/cue}">
-      *„In der heutigen dynamischen Welt des modernen Maschinenbaus stehen Konstrukteure vor nie dagewesenen Herausforderungen. Als führender Partner entwickeln wir stets maßgeschneiderte, zukunftssichere Antriebslösungen höchster Güteklasse...“* [@google-2023-information-gain]
+      *„In der heutigen dynamischen Welt des Maschinenbaus stehen Konstrukteure vor großen Herausforderungen. Als führender Partner entwickeln wir maßgeschneiderte, zukunftssichere Antriebslösungen...“* [@google-2023-information-gain]
     </CalloutBox>
 
     <BulletList items={[
@@ -54,7 +54,7 @@ import SlideTable from '../../../../components/slides/primitives/SlideTable.astr
 
   <BentoCard slot="right" cue="col-bluf-good" title="Nachher: BLUF-Direktantwort & Tabelle">
     <CalloutBox type="statement" title="{cue:hl-bluf-good-callout}Antwort im 1. Satz + strukturierte Tabelle{/cue}">
-      „Das Planetengetriebe PG-40 liefert 120 Nm Nenndrehmoment bei &lt; 3 arcmin Verdrehspiel und 97 % Wirkungsgrad.“
+      „Planetengetriebe PG-40: 120 Nm, &lt; 3 arcmin, η = 97 %.“
     </CalloutBox>
 
     <SlideTable
@@ -70,12 +70,12 @@ import SlideTable from '../../../../components/slides/primitives/SlideTable.astr
       {
         icon: "target",
         title: "Sofortiger Information Gain",
-        desc: "Liefert {cue:hl-bluf-good-exact}exakte Kennzahlen innerhalb der ersten fünfundzwanzig Token{/cue}."
+        desc: "Liefert dem Retrieval-Modell {cue:hl-bluf-good-exact}exakte Kennzahlen innerhalb der ersten 25 Token{/cue}."
       },
       {
         icon: "check",
         title: "Strukturierte Extraktion",
-        desc: "{cue:hl-bluf-good-table}Tabellarische Spezifikation wird eins zu eins in KI-Antworten übernommen{/cue}."
+        desc: "{cue:hl-bluf-good-table}Direkte Übernahme der Tabelle in KI-Antworten{/cue}."
       }
     ]} />
   </BentoCard>

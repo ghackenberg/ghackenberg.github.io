@@ -33,32 +33,32 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   slideNumber="14"
   totalSlides="48"
 >
-  <BentoCard slot="left" cue="chart-nivellierung" title="Produktivitätsgewinn nach Skill-Level [@brynjolfsson-2023-generative-ai]">
+  <BentoCard slot="left" cue="chart-nivellierung" title="Produktivitätsgewinn nach Skill-Level">
     <BarChart
       unit="%"
       items={[
-        { label: "Einsteiger / Geringer Skill", value: 34, cue: "hl-skill-low", sublabel: "Schnelle Problemlösung und Überbrückung fehlender Praxiserfahrung" },
-        { label: "Durchschnittliche Erfahrung", value: 14, cue: "hl-skill-mid", sublabel: "Solide Effizienzgewinne bei wiederkehrenden Routineaufgaben" },
-        { label: "Senior-Experten", value: 2, cue: "hl-skill-high", sublabel: "Marginale Beschleunigung; implizites Erfahrungswissen übersteigt Modellfähigkeit" }
+        { label: "Einsteiger", value: 34, cue: "hl-skill-low", sublabel: "Geringer Skill" },
+        { label: "Erfahrene", value: 14, cue: "hl-skill-mid", sublabel: "Routine-Aufgaben" },
+        { label: "Senioren", value: 2, cue: "hl-skill-high", sublabel: "Domänenwissen" }
       ]}
     />
-    Die NBER-Feldstudie demonstriert den empirischen Equalizer-Effekt: Generative KI hebt vor allem das Leistungsniveau leistungsschwächerer Mitarbeiter auf den Median an, während Top-Experten ihre Produktivität primär durch Spezialisierung und Validierung halten.
+    Die NBER-Feldstudie [@brynjolfsson-2023-generative-ai] belegt den empirischen Equalizer-Effekt: Generative KI hebt vor allem das Leistungsniveau leistungsschwächerer Mitarbeiter auf den Median an, während Top-Experten ihre Produktivität primär durch Spezialisierung und kritische Ergebnisvalidierung halten.
   </BentoCard>
 
-  <BentoCard slot="right" cue="col-konsequenz" title="Der 'Equalizer'-Effekt im Unternehmen">
+  <BentoCard slot="right" cue="col-konsequenz" title="Der 'Equalizer'-Effekt">
     <CalloutBox type="statement" title="Wissenstransfer">
-      Prompts kodifizieren Expertenwissen und {cue:hl-wissenstransfer}übertragen Best Practices sofort auf Neueinsteiger{/cue} im operativen Tagesgeschäft.
+      Prompts kodifizieren Expertenwissen und {cue:hl-wissenstransfer}übertragen Best Practices sofort auf Neueinsteiger{/cue}.
     </CalloutBox>
     <BulletList items={[
       {
         icon: "trending-up",
         title: "Kompression der Lernkurve",
-        desc: "Die Anlernzeit sinkt signifikant, da Modelle {cue:hl-onboarding-zeit}die Einarbeitungszeit neuer Fachkräfte drastisch verkürzen{/cue} und implizites Domänenwissen abrufbar machen."
+        desc: "Die Anlernzeit sinkt signifikant, da Modelle {cue:hl-onboarding-zeit}die Einarbeitungszeit neuer Fachkräfte drastisch verkürzen{/cue}."
       },
       {
         icon: "shield",
         title: "Standardisierung des Outputs",
-        desc: "Heterogene Arbeitsqualitäten werden durch {cue:hl-standard-templates}unternehmensweit einheitliche Prompt-Vorlagen{/cue} zuverlässig auf ein hohes Qualitätsniveau angeglichen."
+        desc: "Heterogene Qualitäten werden durch {cue:hl-standard-templates}unternehmensweit einheitliche Prompt-Vorlagen{/cue} zuverlässig angeglichen."
       }
     ]} />
   </BentoCard>

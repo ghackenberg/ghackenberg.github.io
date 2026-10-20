@@ -23,26 +23,26 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   subtitle={frontmatter.subtitle}
   slideNumber="08"
   totalSlides="10"
-  ratio="40/60"
+  ratio="50/50"
 >
   <BentoCard slot="left" cue="col-audio" title="Die Synthese-Pipeline">
     <CalloutBox type="statement" title="Edge TTS & Lexikon">
-      {cue:hl-sync-audio}Präzise Aussprache{/cue} technischer Akronyme und Anglizismen.
+      {cue:hl-sync-audio}Präzise Aussprache{/cue} technischer Akronyme und Fachbegriffe im Build-Prozess.
     </CalloutBox>
     <BulletList items={[
-      { icon: "document", title: "Phonetische Normalisierung", desc: "tts-lexicon.json korrigiert {cue:hl-sync-lexicon}R-A-G, Schema.org und Zero-Click{/cue}." },
-      { icon: "zap", title: "Subsekunden-Wortgrenzen", desc: "Edge TTS liefert {cue:hl-sync-words}millimetergenaue Zeitstempel{/cue} für jedes gesprochene Wort." },
-      { icon: "database", title: "Inkrementeller SHA-Cache", desc: "Unveränderte Folien werden dank {cue:hl-sync-cache}inkrementellem Hash-Cache{/cue} übersprungen." }
+      { icon: "document", title: "Phonetische Normalisierung", desc: "tts-lexicon.json korrigiert {cue:hl-sync-lexicon}R-A-G, Schema.org und Zero-Click{/cue} vor der Synthese." },
+      { icon: "zap", title: "Subsekunden-Wortgrenzen", desc: "Edge TTS liefert {cue:hl-sync-words}millimetergenaue Zeitstempel{/cue} für jedes einzelne gesprochene Wort." },
+      { icon: "database", title: "Inkrementeller SHA-Cache", desc: "Unveränderte Folien werden dank {cue:hl-sync-cache}inkrementellem Hash-Cache{/cue} beim Build übersprungen." }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-sync" title="Der AudioSyncController">
     <CalloutBox type="fact" title="60fps Client-Side Controller">
-      {cue:hl-sync-controller}requestAnimationFrame steuert die visuelle Regie{/cue} im DOM.
+      {cue:hl-sync-controller}requestAnimationFrame steuert die visuelle Regie{/cue} synchron im Browser-DOM.
     </CalloutBox>
     <BulletList items={[
-      { icon: "check", title: "Spotlight-State-Machine", desc: "Wechselt Klassen dynamisch von {cue:hl-sync-state}data-cue-active zu data-cue-past{/cue}." },
-      { icon: "check", title: "Kinetische Highlighter-Wellen", desc: "Animiert {cue:hl-sync-kinetic}farbige Textmarker unter Schriftzeilen{/cue} passend zum Sprechtempo." },
+      { icon: "check", title: "Spotlight-State-Machine", desc: "Wechselt DOM-Klassen dynamisch von {cue:hl-sync-state}data-cue-active zu data-cue-past{/cue} zur Laufzeit." },
+      { icon: "check", title: "Kinetische Highlighter-Wellen", desc: "Animiert {cue:hl-sync-kinetic}farbige Textmarker unter Schriftzeilen{/cue} flüssig passend zum Sprechtempo." },
       { icon: "check", title: "2-Phasen Title-Hook Protokoll", desc: "Garantiert {cue:hl-sync-hook}12 bis 20 Wörter Orientierungszeit{/cue} vor dem ersten optischen Cue-Trigger." }
     ]} />
   </BentoCard>

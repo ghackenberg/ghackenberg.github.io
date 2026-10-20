@@ -176,20 +176,31 @@ const renderedSlides = await Promise.all(
     <script>
       import { AutoFitController } from "@components/slides/player/AutoFitController";
 
-      // 1. Remove intro states from all slides
-      document.querySelectorAll('.is-intro-state').forEach((el) => {
-        el.classList.remove('is-intro-state');
-      });
+      async function initPrintSlides() {
+        // 1. Remove intro states from all slides
+        document.querySelectorAll('.is-intro-state').forEach((el) => {
+          el.classList.remove('is-intro-state');
+        });
 
-      // 2. Run AutoFitController across all cards to match live player typography scale
-      const autoFit = new AutoFitController();
+        // 2. Wait for all web fonts and KaTeX math fonts to settle before measuring
+        if (document.fonts && document.fonts.ready) {
+          await Promise.race([
+            document.fonts.ready,
+            new Promise((resolve) => setTimeout(resolve, 1500))
+          ]);
+        }
 
-      document.querySelectorAll<HTMLElement>('.print-slide-page').forEach((page) => {
-        autoFit.fitSlide(page);
-      });
+        // 3. Run AutoFitController across all cards to match live player typography scale
+        const autoFit = new AutoFitController();
+        document.querySelectorAll<HTMLElement>('.print-slide-page').forEach((page) => {
+          autoFit.fitSlide(page, true);
+        });
 
-      // 3. Mark document ready for Puppeteer PDF export
-      document.documentElement.setAttribute('data-print-ready', 'true');
+        // 4. Mark document ready for Puppeteer PDF export & linters
+        document.documentElement.setAttribute('data-print-ready', 'true');
+      }
+
+      void initPrintSlides();
     </script>
   </body>
 </html>

@@ -218,7 +218,7 @@ export async function auditSlideDensity(
               // Measure actual content elements instead of outer flex wrapper containers
               const contentEls = Array.from(
                 bodyEl.querySelectorAll<HTMLElement>(
-                  'p, li, .bar-chart-row, tr, .table-row-item, h4, h5, pre, code, .formula-box, .callout-box, .metric-stat-card, blockquote, img, svg'
+                  'p, li, .bar-chart-row, tr, .table-row-item, h4, h5, pre, code, .formula-box, .callout-box, .metric-stat-card, .speaker-profile-card, blockquote, img, svg'
                 )
               ).filter((el) => {
                 if (el.tagName.toLowerCase() === 'svg' && (el.closest('.bullet-badge') || el.closest('button'))) {
@@ -388,7 +388,7 @@ export async function auditSlideDensity(
               }
             } else {
               c.remediationStrategy = 'CHECK_WIDTH_OR_EXPAND';
-              c.remediationHint = `[CHECK_WIDTH_OR_EXPAND] No fuller vertical sibling bottleneck (--content-scale: ${scale.toFixed(2)}, ~${fontPx}px body). Scaling is either constrained by horizontal width (long unbreakable token/formula/title line) or insufficient vertical content in ${targetLabel}.`;
+              c.remediationHint = `[CHECK_WIDTH_OR_EXPAND] No fuller vertical sibling bottleneck (--content-scale: ${scale.toFixed(2)}, ~${fontPx}px body). Scaling stopped because at the next scale step a line or title wraps (+1lh jump exceeds Avail) or hits a horizontal width limit. Slightly SHORTEN the wrapping line/title so it scales smoothly to 95-100%, OR EXPAND text across cards so the extra line fits.`;
             }
           }
 
