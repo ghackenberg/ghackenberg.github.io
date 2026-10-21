@@ -7,7 +7,9 @@ export type { SlideReference };
 interface SlideMeta {
   id: string;
   title: string;
+  subtitle?: string;
   slideLayout?: string;
+  voiceover?: string;
   audioUrl?: string;
   durationSec?: number;
   cues?: SlideCueMap;
@@ -167,6 +169,86 @@ const currentDeckId = presentationId || talkId || "presentation";
         </div>
       </div>
     </div>
+
+    <!-- Voice Transcript Sidebar (Right side: side-by-side when space permits on desktop lg+, overlay drawer on tablet or when both sidebars are open) -->
+    <aside
+      id="transcript-drawer"
+      class="hidden md:flex drawer-closed bg-slate-900/95 light:bg-white/95 lg:bg-slate-900 lg:light:bg-slate-50 border-l border-slate-800 light:border-slate-200 z-40 flex-col shadow-2xl lg:shadow-none select-none shrink-0"
+      aria-label="Voice transcript"
+      aria-hidden="true"
+    >
+      <div class="w-72 sm:w-80 max-w-[85vw] h-full flex flex-col">
+        <!-- Drawer Header -->
+        <div class="p-4 border-b border-slate-800 light:border-slate-200 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <svg class="w-5 h-5 text-domain-presentations shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+            <h2 class="font-bold text-xs uppercase tracking-wider text-slate-200 light:text-slate-800 truncate">Voice Transcript</h2>
+            <span id="transcript-drawer-badge" class="text-xs font-mono px-2 py-0.5 rounded-full bg-slate-800 light:bg-slate-100 text-slate-400 light:text-slate-500 font-bold ml-0.5 shrink-0">
+              01
+            </span>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button
+              id="btn-copy-transcript"
+              type="button"
+              class="w-8 h-8 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-400 hover:text-slate-200 light:text-slate-500 light:hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
+              title="Copy voice transcript"
+              aria-label="Copy voice transcript"
+            >
+              <svg id="icon-copy-transcript" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <svg id="icon-copied-transcript" class="w-4 h-4 text-callout-tip hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+            <button
+              id="btn-close-transcript-drawer"
+              type="button"
+              class="w-8 h-8 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-400 hover:text-slate-200 light:text-slate-500 light:hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
+              title="Close (T)"
+              aria-label="Close voice transcript"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Per-Slide Voice Transcript Content (Scrollable) -->
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar min-h-0 select-text" id="transcript-drawer-content">
+          {slides.map((slide, idx) => (
+            <div
+              data-transcript-slide={idx}
+              class={idx === 0 ? "space-y-3" : "hidden space-y-3"}
+            >
+              <div class="pb-2.5 border-b border-slate-800/80 light:border-slate-200/80">
+                <div class="text-xs sm:text-sm font-bold text-slate-100 light:text-slate-900 leading-snug">
+                  {slide.title || `Slide ${idx + 1}`}
+                </div>
+                {slide.subtitle && (
+                  <div class="text-[11px] sm:text-xs text-slate-400 light:text-slate-500 mt-1 leading-relaxed">
+                    {slide.subtitle}
+                  </div>
+                )}
+              </div>
+              {slide.voiceover ? (
+                <p class="text-xs sm:text-sm text-slate-300 light:text-slate-700 leading-relaxed whitespace-pre-line">
+                  {slide.voiceover}
+                </p>
+              ) : (
+                <p class="text-xs italic text-slate-500">
+                  No spoken transcript for this slide.
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </aside>
   </div>
 
   <!-- Audio & Slide Navigation Control Bar -->
@@ -265,7 +347,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         1.0x
       </button>
 
-      <!-- Slide List Drawer Toggle (ESC) - Hidden on mobile & small screens (< md) where Transcript serves as overview -->
+      <!-- Slide List Drawer Toggle (ESC) -->
       <button
         id="btn-overview"
         class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 items-center justify-center transition-colors cursor-pointer"
@@ -274,6 +356,18 @@ const currentDeckId = presentationId || talkId || "presentation";
       >
         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- Voice Transcript Sidebar Toggle (T) -->
+      <button
+        id="btn-transcript"
+        class="hidden md:flex w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 items-center justify-center transition-colors cursor-pointer"
+        title="Voice transcript (T)"
+        aria-label="Toggle voice transcript"
+      >
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
         </svg>
       </button>
 
@@ -548,20 +642,75 @@ const currentDeckId = presentationId || talkId || "presentation";
     const timeTotal = document.getElementById('time-total');
     const slideIndexLabel = document.getElementById('slide-index-label');
 
-    // Drawer Elements
+    // Drawer Elements (Left: Slide Overview, Right: Voice Transcript)
     const slideListDrawer = document.getElementById('slide-list-drawer');
     const slideListBackdrop = document.getElementById('slide-list-backdrop');
     const slideListContainer = document.getElementById('slide-list-items');
     const btnCloseDrawer = document.getElementById('btn-close-drawer');
     const slideListItems = document.querySelectorAll<HTMLButtonElement>('.slide-list-item');
 
+    const btnTranscript = document.getElementById('btn-transcript');
+    const transcriptDrawer = document.getElementById('transcript-drawer');
+    const transcriptDrawerBadge = document.getElementById('transcript-drawer-badge');
+    const transcriptDrawerContent = document.getElementById('transcript-drawer-content');
+    const btnCloseTranscriptDrawer = document.getElementById('btn-close-transcript-drawer');
+    const btnCopyTranscript = document.getElementById('btn-copy-transcript');
+    const iconCopyTranscript = document.getElementById('icon-copy-transcript');
+    const iconCopiedTranscript = document.getElementById('icon-copied-transcript');
+    const transcriptSlideBlocks = document.querySelectorAll<HTMLElement>('[data-transcript-slide]');
+
     let isDrawerOpen = false;
+    let isTranscriptOpen = false;
+    let lastOpenedDrawer: 'overview' | 'transcript' = 'overview';
 
     // In-memory user preference during current page visit (zero storage / strict privacy)
     let userDrawerPreference: 'open' | 'closed' | null = null;
+    let userTranscriptPreference: 'open' | 'closed' | null = null;
 
     const setDrawerPreference = (pref: 'open' | 'closed') => {
       userDrawerPreference = pref;
+    };
+
+    const setTranscriptPreference = (pref: 'open' | 'closed') => {
+      userTranscriptPreference = pref;
+    };
+
+    // Synchronize whether open sidebars dock side-by-side or overlay the slide stage
+    // so the central slide never shrinks too small when both sidebars are open.
+    const syncDrawersLayoutMode = () => {
+      const anyOpen = isDrawerOpen || isTranscriptOpen;
+      const bothOpen = isDrawerOpen && isTranscriptOpen;
+      const wrapperWidth = (deckWrapper as HTMLElement | null)?.clientWidth || window.innerWidth;
+      // Dock a single sidebar at >= 1024px; dock both sidebars only when wrapper >= 1600px (leaving >= 960px for the slide)
+      const shouldOverlay = window.innerWidth < 1024 || (bothOpen && wrapperWidth < 1600);
+
+      deckWrapper?.classList.toggle('drawers-overlay', shouldOverlay);
+
+      if (slideListBackdrop) {
+        if (anyOpen && shouldOverlay) {
+          slideListBackdrop.classList.remove('opacity-0', 'pointer-events-none');
+          slideListBackdrop.classList.add('opacity-100', 'pointer-events-auto');
+        } else {
+          slideListBackdrop.classList.remove('opacity-100', 'pointer-events-auto');
+          slideListBackdrop.classList.add('opacity-0', 'pointer-events-none');
+        }
+      }
+    };
+
+    const updateActiveTranscript = (currentIndex: number) => {
+      if (transcriptDrawerBadge) {
+        transcriptDrawerBadge.textContent = String(currentIndex + 1).padStart(2, '0');
+      }
+      transcriptSlideBlocks.forEach((block, idx) => {
+        if (idx === currentIndex) {
+          block.classList.remove('hidden');
+        } else {
+          block.classList.add('hidden');
+        }
+      });
+      if (transcriptDrawerContent) {
+        transcriptDrawerContent.scrollTop = 0;
+      }
     };
 
     const scrollActiveSlideIntoView = (activeItem: HTMLElement | null, smooth = true) => {
@@ -593,17 +742,15 @@ const currentDeckId = presentationId || talkId || "presentation";
     const openDrawer = (shouldScroll = true) => {
       if (!slideListDrawer || window.innerWidth < 768) return;
       isDrawerOpen = true;
+      lastOpenedDrawer = 'overview';
       slideListDrawer.classList.remove('drawer-closed');
       slideListDrawer.classList.add('drawer-open');
       slideListDrawer.setAttribute('aria-hidden', 'false');
 
-      if (slideListBackdrop && window.innerWidth < 1024) {
-        slideListBackdrop.classList.remove('opacity-0', 'pointer-events-none');
-        slideListBackdrop.classList.add('opacity-100', 'pointer-events-auto');
-      }
-
       btnOverview?.classList.add('bg-domain-presentations', 'text-white');
       btnOverview?.classList.remove('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
+
+      syncDrawersLayoutMode();
 
       if (shouldScroll) {
         const activeItem = document.querySelector<HTMLElement>('.slide-list-item[data-active="true"]');
@@ -626,13 +773,10 @@ const currentDeckId = presentationId || talkId || "presentation";
       slideListDrawer.classList.add('drawer-closed');
       slideListDrawer.setAttribute('aria-hidden', 'true');
 
-      if (slideListBackdrop) {
-        slideListBackdrop.classList.remove('opacity-100', 'pointer-events-auto');
-        slideListBackdrop.classList.add('opacity-0', 'pointer-events-none');
-      }
-
       btnOverview?.classList.remove('bg-domain-presentations', 'text-white');
       btnOverview?.classList.add('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
+
+      syncDrawersLayoutMode();
     };
 
     const toggleDrawer = (isUserExplicit = true) => {
@@ -642,6 +786,43 @@ const currentDeckId = presentationId || talkId || "presentation";
       } else {
         if (isUserExplicit) setDrawerPreference('open');
         openDrawer(true);
+      }
+    };
+
+    const openTranscriptDrawer = () => {
+      if (!transcriptDrawer || window.innerWidth < 768) return;
+      isTranscriptOpen = true;
+      lastOpenedDrawer = 'transcript';
+      transcriptDrawer.classList.remove('drawer-closed');
+      transcriptDrawer.classList.add('drawer-open');
+      transcriptDrawer.setAttribute('aria-hidden', 'false');
+
+      btnTranscript?.classList.add('bg-domain-presentations', 'text-white');
+      btnTranscript?.classList.remove('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
+
+      syncDrawersLayoutMode();
+    };
+
+    const closeTranscriptDrawer = () => {
+      if (!transcriptDrawer) return;
+      isTranscriptOpen = false;
+      transcriptDrawer.classList.remove('drawer-open');
+      transcriptDrawer.classList.add('drawer-closed');
+      transcriptDrawer.setAttribute('aria-hidden', 'true');
+
+      btnTranscript?.classList.remove('bg-domain-presentations', 'text-white');
+      btnTranscript?.classList.add('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
+
+      syncDrawersLayoutMode();
+    };
+
+    const toggleTranscriptDrawer = (isUserExplicit = true) => {
+      if (isTranscriptOpen) {
+        if (isUserExplicit) setTranscriptPreference('closed');
+        closeTranscriptDrawer();
+      } else {
+        if (isUserExplicit) setTranscriptPreference('open');
+        openTranscriptDrawer();
       }
     };
 
@@ -989,6 +1170,7 @@ const currentDeckId = presentationId || talkId || "presentation";
         }
         if (slideIndexLabel) slideIndexLabel.textContent = String(index + 1);
         updateActiveSlideInList(index);
+        updateActiveTranscript(index);
         updateReferencesButton(index);
         updateUrlState(index, audioSync.getActiveCue());
         if (progressBar) progressBar.style.width = '0%';
@@ -1053,6 +1235,7 @@ const currentDeckId = presentationId || talkId || "presentation";
       ensureSlideFitted(idx);
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
       updateActiveSlideInList(idx);
+      updateActiveTranscript(idx);
       updateReferencesButton(idx);
       updateUrlState(idx, audioSync.getActiveCue());
 
@@ -1149,9 +1332,52 @@ const currentDeckId = presentationId || talkId || "presentation";
       setDrawerPreference('closed');
       closeDrawer();
     });
+
+    btnTranscript?.addEventListener('click', () => toggleTranscriptDrawer(true));
+    btnCloseTranscriptDrawer?.addEventListener('click', () => {
+      setTranscriptPreference('closed');
+      closeTranscriptDrawer();
+    });
+
+    btnCopyTranscript?.addEventListener('click', async () => {
+      const idx = deck.getIndices().h;
+      const textToCopy = slidesData[idx]?.voiceover || '';
+      if (!textToCopy) return;
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        if (iconCopyTranscript && iconCopiedTranscript) {
+          iconCopyTranscript.classList.add('hidden');
+          iconCopiedTranscript.classList.remove('hidden');
+          setTimeout(() => {
+            iconCopyTranscript.classList.remove('hidden');
+            iconCopiedTranscript.classList.add('hidden');
+          }, 2000);
+        }
+      } catch {
+        // Ignore clipboard errors
+      }
+    });
+
     slideListBackdrop?.addEventListener('click', () => {
-      setDrawerPreference('closed');
-      closeDrawer();
+      if (window.innerWidth < 1024) {
+        if (isDrawerOpen) {
+          setDrawerPreference('closed');
+          closeDrawer();
+        }
+        if (isTranscriptOpen) {
+          setTranscriptPreference('closed');
+          closeTranscriptDrawer();
+        }
+      } else if (isDrawerOpen && isTranscriptOpen) {
+        // On desktop in dual-drawer overlay mode, clicking backdrop closes the most recently opened drawer
+        if (lastOpenedDrawer === 'transcript') {
+          setTranscriptPreference('closed');
+          closeTranscriptDrawer();
+        } else {
+          setDrawerPreference('closed');
+          closeDrawer();
+        }
+      }
     });
 
     // References Button & Modal Listeners
@@ -1198,26 +1424,8 @@ const currentDeckId = presentationId || talkId || "presentation";
 
     btnJumpToTranscriptFromModal?.addEventListener('click', () => {
       closeReferencesModal();
-      if (isFullscreenActive()) {
-        if (document.fullscreenElement && document.exitFullscreen) {
-          document.exitFullscreen().catch(() => {});
-        } else if (webkitDoc.webkitFullscreenElement && webkitDoc.webkitExitFullscreen) {
-          webkitDoc.webkitExitFullscreen();
-        }
-        if (isPseudoFullscreen()) {
-          togglePseudoFullscreen(false);
-        }
-      }
-      setTimeout(() => {
-        const idx = deck.getIndices().h;
-        const slide = slidesData[idx];
-        if (slide) {
-          const targetEl = document.getElementById(`transcript-${slide.id}`);
-          if (targetEl) {
-            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }
-      }, 60);
+      setTranscriptPreference('open');
+      openTranscriptDrawer();
     });
 
     // Listen for external jump-to-slide events (e.g. from the Transcript Timeline Feed)
@@ -1275,8 +1483,9 @@ const currentDeckId = presentationId || talkId || "presentation";
         }, 120);
       }
 
-      if (window.innerWidth < 768 && isDrawerOpen) {
-        closeDrawer();
+      if (window.innerWidth < 768) {
+        if (isDrawerOpen) closeDrawer();
+        if (isTranscriptOpen) closeTranscriptDrawer();
       }
       const isDesktop = window.innerWidth >= 1024;
       if (isDesktop !== prevIsDesktop) {
@@ -1286,13 +1495,20 @@ const currentDeckId = presentationId || talkId || "presentation";
           if (userDrawerPreference !== 'closed' && !isDrawerOpen) {
             openDrawer(false);
           }
+          if (userTranscriptPreference === 'open' && !isTranscriptOpen) {
+            openTranscriptDrawer();
+          }
         } else {
-          // Auto-close overlay drawer when resizing to mobile/tablet so it doesn't cover stage
+          // Auto-close overlay drawers when resizing to mobile/tablet so they don't cover stage
           if (isDrawerOpen) {
             closeDrawer();
           }
+          if (isTranscriptOpen) {
+            closeTranscriptDrawer();
+          }
         }
       }
+      syncDrawersLayoutMode();
     });
 
     // Speed Cycle: 1.0x -> 1.25x -> 1.5x -> 1.0x
@@ -1312,6 +1528,7 @@ const currentDeckId = presentationId || talkId || "presentation";
 
     const updateFullscreenIcons = () => {
       syncModalPlacement();
+      syncDrawersLayoutMode();
       const isFs = isFullscreenActive();
       const iconEnter = document.getElementById('icon-fullscreen-enter');
       const iconExit = document.getElementById('icon-fullscreen-exit');
@@ -1469,6 +1686,13 @@ const currentDeckId = presentationId || talkId || "presentation";
           e.stopPropagation();
           e.stopImmediatePropagation();
           toggleDrawer();
+        }
+      } else if (e.key === 't' || e.key === 'T') {
+        if (window.innerWidth >= 768) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          toggleTranscriptDrawer(true);
         }
       } else if (e.key === 'r' || e.key === 'R') {
         e.preventDefault();
@@ -1705,12 +1929,14 @@ const currentDeckId = presentationId || talkId || "presentation";
   }
 
   /* Suppress layout transitions while window is being resized */
-  .slide-deck-wrapper.is-resizing #slide-list-drawer {
+  .slide-deck-wrapper.is-resizing #slide-list-drawer,
+  .slide-deck-wrapper.is-resizing #transcript-drawer {
     transition: none !important;
   }
 
-  /* Globally guarantee that closed drawer has zero width, zero opacity and is completely invisible */
-  #slide-list-drawer.drawer-closed {
+  /* Globally guarantee that closed drawers have zero width, zero opacity and are completely invisible */
+  #slide-list-drawer.drawer-closed,
+  #transcript-drawer.drawer-closed {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -1723,9 +1949,10 @@ const currentDeckId = presentationId || talkId || "presentation";
     overflow: hidden !important;
   }
 
-  /* Slide List Sidebar / Drawer Styles */
+  /* Slide List & Voice Transcript Sidebars / Drawers Styles */
   @media (min-width: 1024px) {
-    #slide-list-drawer {
+    #slide-list-drawer,
+    #transcript-drawer {
       position: relative;
       transform: none !important;
       transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease;
@@ -1737,20 +1964,60 @@ const currentDeckId = presentationId || talkId || "presentation";
       pointer-events: auto;
       border-right-width: 1px;
     }
+    #transcript-drawer.drawer-open {
+      width: 20rem; /* 320px */
+      opacity: 1;
+      visibility: visible !important;
+      pointer-events: auto;
+      border-left-width: 1px;
+    }
     #slide-list-drawer.drawer-closed {
       width: 0 !important;
       border-right-width: 0 !important;
       overflow: hidden;
     }
-    #slide-list-backdrop {
+    #transcript-drawer.drawer-closed {
+      width: 0 !important;
+      border-left-width: 0 !important;
+      overflow: hidden;
+    }
+    .slide-deck-wrapper:not(.drawers-overlay) #slide-list-backdrop {
       display: none !important;
+    }
+    .slide-deck-wrapper.drawers-overlay #slide-list-backdrop {
+      display: block !important;
+    }
+
+    /* When both sidebars are open and container width would squeeze the central slide too small,
+       render both sidebars as overlays so the slide in the middle retains full comfort width */
+    .slide-deck-wrapper.drawers-overlay #slide-list-drawer {
+      position: absolute !important;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 20rem;
+      max-width: 85%;
+      z-index: 40;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    }
+    .slide-deck-wrapper.drawers-overlay #transcript-drawer {
+      position: absolute !important;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 20rem;
+      max-width: 85%;
+      z-index: 40;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
     }
   }
 
   @media (max-width: 767px) {
     #slide-list-drawer,
+    #transcript-drawer,
     #slide-list-backdrop,
-    #btn-overview {
+    #btn-overview,
+    #btn-transcript {
       display: none !important;
       visibility: hidden !important;
       opacity: 0 !important;
@@ -1777,6 +2044,27 @@ const currentDeckId = presentationId || talkId || "presentation";
     }
     #slide-list-drawer.drawer-closed {
       transform: translateX(-100%);
+      width: 0 !important;
+    }
+
+    #transcript-drawer {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 20rem;
+      max-width: 85%;
+      z-index: 40;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #transcript-drawer.drawer-open {
+      transform: translateX(0);
+      opacity: 1;
+      visibility: visible !important;
+      pointer-events: auto;
+    }
+    #transcript-drawer.drawer-closed {
+      transform: translateX(100%);
       width: 0 !important;
     }
   }
@@ -1893,7 +2181,10 @@ const currentDeckId = presentationId || talkId || "presentation";
     .slide-deck-wrapper.is-pseudo-fullscreen #label-play-pause,
     .slide-deck-wrapper:fullscreen #btn-overview,
     .slide-deck-wrapper:-webkit-full-screen #btn-overview,
-    .slide-deck-wrapper.is-pseudo-fullscreen #btn-overview {
+    .slide-deck-wrapper.is-pseudo-fullscreen #btn-overview,
+    .slide-deck-wrapper:fullscreen #btn-transcript,
+    .slide-deck-wrapper:-webkit-full-screen #btn-transcript,
+    .slide-deck-wrapper.is-pseudo-fullscreen #btn-transcript {
       display: none !important;
     }
   }

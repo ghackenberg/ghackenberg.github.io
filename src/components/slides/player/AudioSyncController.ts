@@ -57,7 +57,9 @@ export interface SlideReference {
 export interface SlideData {
   id: string;
   title?: string;
+  subtitle?: string;
   slideLayout?: string;
+  voiceover?: string;
   audioUrl?: string;
   durationSec?: number;
   cues?: SlideCueMap;
