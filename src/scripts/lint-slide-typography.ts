@@ -121,8 +121,8 @@ function matchesSlide(slide: TypographyAuditResult, query: string): boolean {
 async function run(): Promise<void> {
   const { targetPresentation, targetSlide, maxRatio, minSize, failOnWarning } = parseCliArgs();
 
-  console.log('\n🔍 SLIDE TYPOGRAPHY LINTER: Visual Hierarchy & Readability Audit');
-  console.log(`Thresholds: Max Ratio = ${(maxRatio * 100).toFixed(0)}% of Slide Title | Min Primary Font Size = ${minSize}px`);
+  console.log('\n🔍 SLIDE TYPOGRAPHY LINTER: Visual Hierarchy, Readability & Single-Line Header Audit');
+  console.log(`Thresholds: Max Ratio = ${(maxRatio * 100).toFixed(0)}% of Slide Title | Min Primary Font Size = ${minSize}px | Max Header Width = 1600px (title) / 1824px (subtitle)`);
   console.log('Auditing presentations in: src/content/presentations\n');
 
   if (!fs.existsSync(distDir)) {
@@ -167,6 +167,7 @@ async function run(): Promise<void> {
   let totalWarnings = 0;
   let totalTooLarge = 0;
   let totalTooSmall = 0;
+  let totalHeaderOverflow = 0;
   const reports: PresentationTypographyReport[] = [];
 
   try {
@@ -210,6 +211,7 @@ async function run(): Promise<void> {
             totalWarnings += slide.warnings.length;
             if (slide.isTooLargeWarning) totalTooLarge += 1;
             if (slide.isTooSmallWarning) totalTooSmall += 1;
+            if (slide.isHeaderOverflowWarning) totalHeaderOverflow += 1;
 
             console.log(
               `   🔎 Detailed Typography Audit for Slide ${slide.slideNumber} (${slide.slideId}) — "${slide.slideTitle}":`
@@ -222,10 +224,15 @@ async function run(): Promise<void> {
               `      • Smallest Primary Font Size: ${slide.minContentFontSize}px (min ${minSize}px) in ${slide.smallestElement}`
             );
             if (slide.warnings.length === 0) {
-              console.log(`      ✅ Healthy typographic hierarchy and readability.`);
+              console.log(`      ✅ Healthy typographic hierarchy, readability, and single-line header fit.`);
             } else {
               for (const w of slide.warnings) {
-                if (w.type === 'TOO_LARGE') {
+                if (w.type === 'HEADER_OVERFLOW') {
+                  console.log(
+                    `      ⚠️  [WARN: HEADER OVERFLOW] ${w.element} exceeds single-line header width (${w.scrollWidth}px > ${w.maxWidth}px)`
+                  );
+                  console.log(`               Preview: "${w.previewText}"`);
+                } else if (w.type === 'TOO_LARGE') {
                   console.log(
                     `      ⚠️  [WARN: TOO LARGE] Content text in ${w.element} (${w.fontSize}px) >= ${(maxRatio * 100).toFixed(0)}% of Slide Title (${slide.titleFontSize}px) [Ratio: ${w.ratio}x]`
                   );
@@ -245,14 +252,17 @@ async function run(): Promise<void> {
           totalWarnings += report.warningsCount;
           totalTooLarge += report.tooLargeCount;
           totalTooSmall += report.tooSmallCount;
+          totalHeaderOverflow += report.headerOverflowCount;
 
           if (report.warningsCount === 0) {
             console.log(
-              `   ✅ All ${report.results.length} slides with titles (${report.totalSlides} total) maintain healthy typography.\n`
+              `   ✅ All ${report.results.length} slides with titles (${report.totalSlides} total) maintain healthy typography & single-line headers.\n`
             );
           } else {
             for (const warning of report.results.filter((r) => r.isWarning)) {
-              const types = warning.warnings.map((w) => w.type).join(', ');
+              const types = warning.warnings.map((w) =>
+                w.type === 'HEADER_OVERFLOW' ? `${w.type}(${w.element}:${w.scrollWidth}px)` : w.type
+              ).join(', ');
               console.log(
                 `   ⚠️  Slide ${warning.slideNumber} (${warning.slideId}): ${warning.warnings.length} warning(s) [${types}] (Title: ${warning.titleFontSize}px | Max: ${warning.maxContentFontSize}px | Min: ${warning.minContentFontSize}px)`
               );
@@ -282,11 +292,13 @@ async function run(): Promise<void> {
   console.log('Audit Summary:');
   console.log(`  Total presentations scanned: ${decksToAudit.length}`);
   console.log(`  Total slides scanned: ${totalSlidesScanned}`);
-  console.log(`  Total warnings detected: ${totalWarnings} (Too Large: ${totalTooLarge}, Too Small: ${totalTooSmall})`);
+  console.log(
+    `  Total warnings detected: ${totalWarnings} (Header Overflow: ${totalHeaderOverflow}, Too Large: ${totalTooLarge}, Too Small: ${totalTooSmall})`
+  );
   if (totalWarnings === 0) {
-    console.log('✅ All slides maintain healthy typographic hierarchy and comfortable reading size.');
+    console.log('✅ All slides maintain healthy typographic hierarchy, single-line headers, and comfortable reading size.');
   } else {
-    console.log('⚠️  Some slides violated typographic hierarchy or minimum font size constraints.');
+    console.log('⚠️  Some slides violated typographic hierarchy, header single-line fit, or minimum font size constraints.');
   }
   console.log('==================================================\n');
 

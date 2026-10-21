@@ -1,4 +1,4 @@
-﻿---
+---
 import { renderSlideCues } from '@commons/shared/slide-cues';
 import { resolveAccentName, getCycleAccent, type SlideAccent } from '@commons/shared/accent-system';
 
@@ -60,7 +60,7 @@ const isNotFirstSlide = num > 1 && !isSection;
         </div>
       )}
 
-      <div class="slide-header-content w-fit max-w-[1600px]">
+      <div class="slide-header-content w-fit max-w-[1824px]">
         <h1 class="slide-title text-5xl lg:text-6xl xl:text-[62px] font-black tracking-tight text-slate-100 light:text-slate-900 leading-[1.12]">
           {title}
         </h1>
@@ -125,12 +125,12 @@ const isNotFirstSlide = num > 1 && !isSection;
     line-height: 1.12 !important;
   }
   .slide-base-frame :global(.slide-subtitle) {
-    font-size: var(--slide-font-card-title, 2.35rem) !important;
+    font-size: var(--slide-font-subtitle, 2.35rem) !important;
     line-height: 1.35 !important;
   }
   .slide-base-frame :global(.slide-number-badge),
   .slide-base-frame :global(.slide-number-badge span) {
-    font-size: var(--slide-font-card-title, 2.35rem) !important;
+    font-size: var(--slide-font-subtitle, 2.35rem) !important;
     line-height: 1.2 !important;
   }
   .slide-base-frame :global(.slide-footer),
@@ -680,15 +680,25 @@ const isNotFirstSlide = num > 1 && !isSection;
     transition: opacity 0.4s ease-in, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Slide Title & Subtitle Truncation & Independent Alignment Transitions */
+  /* Slide Title & Subtitle Single-Line Alignment Transitions */
   .slide-title,
   .slide-subtitle {
     width: fit-content;
     max-width: 1600px;
+  }
+  .slide-subtitle {
+    max-width: 1824px;
     white-space: nowrap !important;
     text-wrap: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    transform-origin: top left;
+    transform: translateX(0);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .slide-title {
+    white-space: nowrap !important;
+    text-wrap: nowrap !important;
+
+
     transform-origin: top left;
     transform: translateX(0);
     transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);

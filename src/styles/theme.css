@@ -94,6 +94,7 @@
   --slide-font-hero-value: 7rem;    /* 112.0px: Monumental metric stat value */
   --slide-font-hero-unit: 3.5rem;   /*  56.0px: Monumental metric stat unit */
   --slide-font-title: 3.875rem;     /*  62.0px: Slide H1 header title */
+  --slide-font-subtitle: 2.35rem;   /* ~37.6px: Slide header subtitle */
   --slide-font-card-title: 2.35rem; /* ~37.6px: Card H3 titles */
   --slide-font-heading: 1.90rem;    /* ~30.4px: Item H4/strong titles, formula values, row titles */
   --slide-font-body: 1.75rem;       /*  28.0px: Primary body text, list desc, table cells, bar labels, code */

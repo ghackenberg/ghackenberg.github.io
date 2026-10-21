@@ -1,11 +1,13 @@
 import type { Page } from 'puppeteer';
 
 export interface TypographyWarning {
-  type: 'TOO_LARGE' | 'TOO_SMALL';
+  type: 'TOO_LARGE' | 'TOO_SMALL' | 'HEADER_OVERFLOW';
   element: string;
   fontSize: number;
   threshold: number;
   ratio?: number;
+  scrollWidth?: number;
+  maxWidth?: number;
   previewText: string;
 }
 
@@ -26,6 +28,7 @@ export interface TypographyAuditResult {
   smallestPreviewText: string;
   isTooLargeWarning: boolean;
   isTooSmallWarning: boolean;
+  isHeaderOverflowWarning: boolean;
   isWarning: boolean;
   warnings: TypographyWarning[];
 }
@@ -36,12 +39,14 @@ export interface PresentationTypographyReport {
   warningsCount: number;
   tooLargeCount: number;
   tooSmallCount: number;
+  headerOverflowCount: number;
   results: TypographyAuditResult[];
 }
 
 export interface SlideTypographyOptions {
   maxRatioThreshold?: number; // default: 0.85 (85% of slide title)
   minFontSizeThreshold?: number; // default: 18 (18px for primary reading content)
+  maxHeaderWidthThreshold?: number; // default: 1600 (1600px single-line fit for header title & subtitle)
 }
 
 /**
@@ -49,6 +54,7 @@ export interface SlideTypographyOptions {
  * Ensures healthy visual hierarchy:
  * 1. Content elements do not overpower slide titles (ratio < maxRatioThreshold).
  * 2. Primary reading text remains readable after content scaling (fontSize >= minFontSizeThreshold).
+ * 3. Slide header title and subtitle fit on a single line within maxHeaderWidthThreshold (1600px).
  */
 export async function auditSlideTypography(
   page: Page,
@@ -57,12 +63,13 @@ export async function auditSlideTypography(
 ): Promise<PresentationTypographyReport> {
   const maxRatioThreshold = options.maxRatioThreshold ?? 0.85;
   const minFontSizeThreshold = options.minFontSizeThreshold ?? 18;
+  const maxHeaderWidthThreshold = options.maxHeaderWidthThreshold ?? 1600;
 
   // Ensure window.__name is defined in browser context in case tsx / esbuild inlines helper references
   await page.evaluate('window.__name = window.__name || function(f) { return f; };');
 
   const evaluated = await page.evaluate(
-    (maxRatioLimit: number, minSizeLimit: number): {
+    (maxRatioLimit: number, minSizeLimit: number, maxHeaderWidthLimit: number): {
       totalSlides: number;
       results: TypographyAuditResult[];
     } => {
@@ -110,6 +117,38 @@ export async function auditSlideTypography(
         const titleFontSize = parseFloat(window.getComputedStyle(titleEl).fontSize) || 0;
         if (titleFontSize <= 0) {
           continue;
+        }
+
+        // === AUDIT 0: Header Title & Subtitle Single-Line Fit (<= 1600px) ===
+        const headerOverflowWarnings: TypographyWarning[] = [];
+        const headerElements = Array.from(
+          slideEl.querySelectorAll<HTMLElement>('.slide-header .slide-title, .slide-header .slide-subtitle')
+        );
+        for (const hEl of headerElements) {
+          const hStyle = window.getComputedStyle(hEl);
+          const hFontSize = parseFloat(hStyle.fontSize) || 0;
+          const hLineHeight = parseFloat(hStyle.lineHeight) || hFontSize * 1.25;
+          const scrollW = Math.round(hEl.scrollWidth);
+          const offsetH = Math.round(hEl.offsetHeight);
+          const isTitle = hEl.classList.contains('slide-title');
+          const effectiveLimit = isTitle ? maxHeaderWidthLimit : 1824;
+          const exceedsWidth = scrollW > effectiveLimit + 2;
+          const wrapsMultipleLines = offsetH > hLineHeight * 1.45;
+
+          if (exceedsWidth || wrapsMultipleLines) {
+            const label = isTitle
+              ? '<h1.slide-title>'
+              : '<p.slide-subtitle>';
+            headerOverflowWarnings.push({
+              type: 'HEADER_OVERFLOW',
+              element: label,
+              fontSize: parseFloat(hFontSize.toFixed(1)),
+              threshold: effectiveLimit,
+              scrollWidth: scrollW,
+              maxWidth: effectiveLimit,
+              previewText: (hEl.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 100),
+            });
+          }
         }
 
         const mainStage =
@@ -220,7 +259,8 @@ export async function auditSlideTypography(
         const maxAllowedSize = titleFontSize * maxRatioLimit;
         const isTooLargeWarning = maxRatio >= maxRatioLimit;
         const isTooSmallWarning = minContentFontSize > 0 && minContentFontSize < minSizeLimit;
-        const isWarning = isTooLargeWarning || isTooSmallWarning;
+        const isHeaderOverflowWarning = headerOverflowWarnings.length > 0;
+        const isWarning = isTooLargeWarning || isTooSmallWarning || isHeaderOverflowWarning;
 
         const largestElement = getElementPath(largestEl);
         const smallestElement = getElementPath(smallestEl);
@@ -231,7 +271,7 @@ export async function auditSlideTypography(
           ? (smallestEl.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80)
           : '';
 
-        const warnings: TypographyWarning[] = [];
+        const warnings: TypographyWarning[] = [...headerOverflowWarnings];
         if (isTooLargeWarning) {
           warnings.push({
             type: 'TOO_LARGE',
@@ -252,16 +292,20 @@ export async function auditSlideTypography(
           });
         }
 
-        const offendingElement = isTooLargeWarning
-          ? largestElement
-          : isTooSmallWarning
-            ? smallestElement
-            : 'none';
-        const previewText = isTooLargeWarning
-          ? largestPreviewText
-          : isTooSmallWarning
-            ? smallestPreviewText
-            : '';
+        const offendingElement = isHeaderOverflowWarning
+          ? headerOverflowWarnings[0].element
+          : isTooLargeWarning
+            ? largestElement
+            : isTooSmallWarning
+              ? smallestElement
+              : 'none';
+        const previewText = isHeaderOverflowWarning
+          ? headerOverflowWarnings[0].previewText
+          : isTooLargeWarning
+            ? largestPreviewText
+            : isTooSmallWarning
+              ? smallestPreviewText
+              : '';
 
         results.push({
           slideNumber,
@@ -280,6 +324,7 @@ export async function auditSlideTypography(
           smallestPreviewText,
           isTooLargeWarning,
           isTooSmallWarning,
+          isHeaderOverflowWarning,
           isWarning,
           warnings,
         });
@@ -291,12 +336,14 @@ export async function auditSlideTypography(
       };
     },
     maxRatioThreshold,
-    minFontSizeThreshold
+    minFontSizeThreshold,
+    maxHeaderWidthThreshold
   );
 
   const warningsCount = evaluated.results.filter((r) => r.isWarning).length;
   const tooLargeCount = evaluated.results.filter((r) => r.isTooLargeWarning).length;
   const tooSmallCount = evaluated.results.filter((r) => r.isTooSmallWarning).length;
+  const headerOverflowCount = evaluated.results.filter((r) => r.isHeaderOverflowWarning).length;
 
   return {
     presentation: presentationSlug,
@@ -304,6 +351,7 @@ export async function auditSlideTypography(
     warningsCount,
     tooLargeCount,
     tooSmallCount,
+    headerOverflowCount,
     results: evaluated.results,
   };
 }
