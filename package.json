@@ -74,7 +74,6 @@
     "cytoscape": "^3.34.3",
     "d3": "^7.9.0",
     "dotenv": "^18.0.5",
-    "edge-tts-universal": "^1.4.0",
     "googleapis": "^172.0.0",
     "graphology": "^0.26.0",
     "graphology-layout-forceatlas2": "^0.10.1",

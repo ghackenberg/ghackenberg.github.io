@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { UniversalCommunicate } from 'edge-tts-universal';
+import { EdgeTtsCommunicate } from '@commons/server/edge-tts.js';
 
 /**
  * Extracts YAML frontmatter fields from markdown/mdx content
@@ -316,7 +316,7 @@ async function generateAllPresentationAudio(): Promise<void> {
       console.log(`  ▶ Synthesizing audio for: ${slideId} (voice: ${selectedVoice})...`);
 
       try {
-        const communicate = new UniversalCommunicate(spokenText, {
+        const communicate = new EdgeTtsCommunicate(spokenText, {
           voice: selectedVoice,
           rate: '+0%',
           pitch: '+0Hz',
