@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" width="100%" height="auto" role="img" aria-label="Three-Tier Content-Addressable Build Cache Architecture across Branding, Edge-TTS Audio, and Slide PDFs">
+  <defs>
+    <style>
+      @import url('/styles/graphics.css');
+    </style>
+
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-blue-border)" />
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-purple-border)" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-amber-border)" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--svg-node-green-border)" />
+    </marker>
+  </defs>
+
+  <!-- Outer Canvas Frame -->
+  <rect id="canvas-bg" width="880" height="440" rx="14" fill="var(--svg-bg)" stroke="var(--svg-border)" stroke-width="1.5" />
+
+  <!-- Top Header Banner -->
+  <g id="header-bar">
+    <text x="440" y="25" fill="var(--svg-text-primary)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="700" letter-spacing="0.06em" text-anchor="middle">THREE-TIER CONTENT-ADDRESSABLE BUILD CACHE PIPELINE (.CACHE/*)</text>
+    <text x="440" y="42" fill="var(--svg-text-secondary)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="11" font-weight="400" text-anchor="middle">Deterministic synthesis, out-of-tree Constructive Trace storage, Vite dev middleware, and CI split restore/save</text>
+    <line x1="24" y1="52" x2="856" y2="52" stroke="var(--svg-line)" stroke-width="1" />
+  </g>
+
+  <!-- COLUMN 1: Pure Source Inputs + Deterministic Synthesizers -->
+  <g id="col-synthesizers" transform="translate(24, 62)">
+    <rect width="272" height="354" rx="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.5" />
+    <rect x="14" y="10" width="244" height="20" rx="4" fill="var(--svg-pill-bg)" />
+    <text x="136" y="24" fill="var(--svg-text-primary)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" letter-spacing="0.05em" text-anchor="middle">1. SOURCE &amp; SYNTHESIS ENGINES</text>
+
+    <!-- Tier 1 Engine: Branding -->
+    <g id="tier1-engine" transform="translate(14, 40)">
+      <rect width="244" height="92" rx="8" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+      <text x="122" y="19" fill="var(--svg-node-blue-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">Tier 1: branding-assets.ts</text>
+      <text x="122" y="36" fill="var(--svg-node-blue-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Inputs: og.astro + icon.astro + self</text>
+      <text x="122" y="52" fill="var(--svg-node-blue-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Park-Miller LCG (seed = 42, 140 stars)</text>
+      <text x="122" y="68" fill="var(--svg-node-blue-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Base64 WOFF2 SVG + 127.0.0.1:0 capture</text>
+      <text x="122" y="83" fill="var(--svg-node-blue-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" text-anchor="middle">Byte-equal guard: safeWriteIfChanged()</text>
+    </g>
+
+    <!-- Tier 2 Engine: Edge-TTS -->
+    <g id="tier2-engine" transform="translate(14, 142)">
+      <rect width="244" height="96" rx="8" fill="var(--svg-node-purple-bg)" stroke="var(--svg-node-purple-border)" stroke-width="1.5" />
+      <text x="122" y="19" fill="var(--svg-node-purple-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">Tier 2: edge-tts.ts (Zero-Dep)</text>
+      <text x="122" y="36" fill="var(--svg-node-purple-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Inputs: slides/*.mdx + tts-lexicon.json</text>
+      <text x="122" y="52" fill="var(--svg-node-purple-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Sec-MS-GEC v2: Win epoch + 300s bucket</text>
+      <text x="122" y="68" fill="var(--svg-node-purple-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Pre-seeded SHA-256 + cs64Digest token</text>
+      <text x="122" y="84" fill="var(--svg-node-purple-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" text-anchor="middle">RFC 6455 WS + HTTP 403 Date skew retry</text>
+    </g>
+
+    <!-- Tier 3 Engine: Slide PDF -->
+    <g id="tier3-engine" transform="translate(14, 248)">
+      <rect width="244" height="92" rx="8" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.5" />
+      <text x="122" y="19" fill="var(--svg-node-amber-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">Tier 3: slide-fingerprint.ts</text>
+      <text x="122" y="36" fill="var(--svg-node-amber-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Inputs: visual MDX + images + theme CSS</text>
+      <text x="122" y="52" fill="var(--svg-node-amber-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">extractSlideVisualContent() early cutoff</text>
+      <text x="122" y="68" fill="var(--svg-node-amber-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">export-slides-pdf.ts (1920x1080 @ 2x)</text>
+      <text x="122" y="83" fill="var(--svg-node-amber-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" text-anchor="middle">Local --if-ci: 0s skip • CI: dirty decks</text>
+    </g>
+  </g>
+
+  <!-- COLUMN 2: Out-of-Tree Content-Addressable Store (.cache/*) -->
+  <g id="col-cache-store" transform="translate(322, 62)">
+    <rect width="248" height="354" rx="10" fill="var(--svg-card-alt)" stroke="var(--svg-node-green-border)" stroke-width="1.5" stroke-dasharray="6,4" />
+    <rect x="14" y="10" width="220" height="20" rx="4" fill="var(--svg-node-green-bg)" />
+    <text x="124" y="24" fill="var(--svg-node-green-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" letter-spacing="0.05em" text-anchor="middle">2. OUT-OF-TREE STORE (.CACHE/*)</text>
+
+    <!-- Tier 1 Store -->
+    <g id="tier1-store" transform="translate(14, 40)">
+      <rect width="220" height="92" rx="8" fill="var(--svg-card)" stroke="var(--svg-node-blue-border)" stroke-width="1.4" />
+      <text x="110" y="20" fill="var(--svg-node-blue-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">.cache/branding/</text>
+      <text x="110" y="38" fill="var(--svg-text-secondary)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">.manifest.json (SHA-256 inputHash)</text>
+      <text x="110" y="54" fill="var(--svg-text-muted)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">og-share-preview.png (1200x630)</text>
+      <text x="110" y="70" fill="var(--svg-text-muted)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">favicon.svg + 6 PWA/Apple PNGs</text>
+      <text x="110" y="84" fill="var(--svg-node-green-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle">8 files • 0.65 MiB cached</text>
+    </g>
+
+    <!-- Tier 2 Store -->
+    <g id="tier2-store" transform="translate(14, 142)">
+      <rect width="220" height="96" rx="8" fill="var(--svg-card)" stroke="var(--svg-node-purple-border)" stroke-width="1.4" />
+      <text x="110" y="20" fill="var(--svg-node-purple-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">.cache/slides-audio/&lt;id&gt;/</text>
+      <text x="110" y="38" fill="var(--svg-text-secondary)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">.cache.json (per-slide MD5 map)</text>
+      <text x="110" y="54" fill="var(--svg-text-muted)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">189x &lt;slideId&gt;.mp3 (24kHz 48kbps)</text>
+      <text x="110" y="70" fill="var(--svg-text-muted)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">189x &lt;slideId&gt;.cues.json timings</text>
+      <text x="110" y="86" fill="var(--svg-node-green-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle">383 files • 42.40 MiB cached</text>
+    </g>
+
+    <!-- Tier 3 Store -->
+    <g id="tier3-store" transform="translate(14, 248)">
+      <rect width="220" height="92" rx="8" fill="var(--svg-card)" stroke="var(--svg-node-amber-border)" stroke-width="1.4" />
+      <text x="110" y="20" fill="var(--svg-node-amber-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">.cache/slides-pdf/&lt;id&gt;/</text>
+      <text x="110" y="38" fill="var(--svg-text-secondary)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">.visual-cache.json (SHA-256 deckHash)</text>
+      <text x="110" y="54" fill="var(--svg-text-muted)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">slides-dark.pdf &amp; slides-light.pdf</text>
+      <text x="110" y="70" fill="var(--svg-text-muted)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">.audit-cache-&lt;platform&gt;.json</text>
+      <text x="110" y="84" fill="var(--svg-node-green-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle">20 files • 184.70 MiB cached</text>
+    </g>
+  </g>
+
+  <!-- COLUMN 3: Delivery Surfaces (Dev Server, SSG dist/, GitHub Actions) -->
+  <g id="col-delivery" transform="translate(596, 62)">
+    <rect width="260" height="354" rx="10" fill="var(--svg-card)" stroke="var(--svg-border)" stroke-width="1.5" />
+    <rect x="14" y="10" width="232" height="20" rx="4" fill="var(--svg-pill-bg)" />
+    <text x="130" y="24" fill="var(--svg-text-primary)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" letter-spacing="0.05em" text-anchor="middle">3. DEV, SSG &amp; CI SURFACES</text>
+
+    <!-- Surface A: Vite Dev Middleware -->
+    <g id="surface-dev" transform="translate(14, 40)">
+      <rect width="232" height="92" rx="8" fill="var(--svg-node-blue-bg)" stroke="var(--svg-node-blue-border)" stroke-width="1.5" />
+      <text x="116" y="19" fill="var(--svg-node-blue-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">astro:server:setup (Dev)</text>
+      <text x="116" y="37" fill="var(--svg-node-blue-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Streams .cache/branding &amp; audio</text>
+      <text x="116" y="53" fill="var(--svg-node-blue-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Matches 8-char MD5 URLs live</text>
+      <text x="116" y="69" fill="var(--svg-node-blue-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">302 Redirects slides-*.pdf to</text>
+      <text x="116" y="83" fill="var(--svg-node-blue-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle">/presentations/&lt;id&gt;/print/?theme=*</text>
+    </g>
+
+    <!-- Surface B: Production SSG dist/ -->
+    <g id="surface-ssg" transform="translate(14, 142)">
+      <rect width="232" height="96" rx="8" fill="var(--svg-node-green-bg)" stroke="var(--svg-node-green-border)" stroke-width="1.5" />
+      <text x="116" y="19" fill="var(--svg-node-green-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">astro:build:done (dist/)</text>
+      <text x="116" y="37" fill="var(--svg-node-green-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Emits content-hashed immutable URLs:</text>
+      <text x="116" y="53" fill="var(--svg-node-green-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">og-share-preview-&lt;md5:8&gt;.png</text>
+      <text x="116" y="69" fill="var(--svg-node-green-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">audio/&lt;slideId&gt;-&lt;md5:8&gt;.mp3</text>
+      <text x="116" y="85" fill="var(--svg-node-green-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" text-anchor="middle">Prunes dist/_internal/ scaffold</text>
+    </g>
+
+    <!-- Surface C: GitHub Actions Split Cache -->
+    <g id="surface-ci" transform="translate(14, 248)">
+      <rect width="232" height="92" rx="8" fill="var(--svg-node-amber-bg)" stroke="var(--svg-node-amber-border)" stroke-width="1.5" />
+      <text x="116" y="19" fill="var(--svg-node-amber-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="10.5" font-weight="700" text-anchor="middle">deploy.yml Split Cache</text>
+      <text x="116" y="37" fill="var(--svg-node-amber-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">actions/cache/restore@v4 prefixes</text>
+      <text x="116" y="53" fill="var(--svg-node-amber-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">Restores prior .cache/* on key miss</text>
+      <text x="116" y="69" fill="var(--svg-node-amber-subtext)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="9" text-anchor="middle">actions/cache/save@v4 with always()</text>
+      <text x="116" y="83" fill="var(--svg-node-amber-text)" font-family="Outfit, Inter, system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="600" text-anchor="middle">Preserves partial progress on timeout</text>
+    </g>
+  </g>
+
+  <!-- Horizontal Connectors: Column 1 -> Column 2 -->
+  <path id="conn-c1-t1" d="M 282 148 L 334 148" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-blue)" />
+  <path id="conn-c1-t2" d="M 282 252 L 334 252" fill="none" stroke="var(--svg-node-purple-border)" stroke-width="2" marker-end="url(#arr-purple)" />
+  <path id="conn-c1-t3" d="M 282 356 L 334 356" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2" marker-end="url(#arr-amber)" />
+
+  <!-- Horizontal Connectors: Column 2 -> Column 3 -->
+  <path id="conn-c2-t1" d="M 556 148 L 608 148" fill="none" stroke="var(--svg-node-blue-border)" stroke-width="2" marker-end="url(#arr-blue)" />
+  <path id="conn-c2-t2" d="M 556 252 L 608 252" fill="none" stroke="var(--svg-node-green-border)" stroke-width="2" marker-end="url(#arr-green)" />
+  <path id="conn-c2-t3" d="M 556 356 L 608 356" fill="none" stroke="var(--svg-node-amber-border)" stroke-width="2" marker-end="url(#arr-amber)" />
+</svg>
