@@ -14,9 +14,33 @@ import "@fontsource/outfit/500.css";
 import "@fontsource/outfit/600.css";
 import "@fontsource/outfit/700.css";
 import "@fontsource/outfit/800.css";
+import "@fontsource/outfit/900.css";
 import "@fontsource/caveat/400.css";
 import "@fontsource/caveat/600.css";
 import "@fontsource/caveat/700.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/jetbrains-mono/600.css";
+import "@fontsource/jetbrains-mono/700.css";
+import outfit400Woff2 from "@fontsource/outfit/files/outfit-latin-400-normal.woff2?url";
+import outfit500Woff2 from "@fontsource/outfit/files/outfit-latin-500-normal.woff2?url";
+import outfit700Woff2 from "@fontsource/outfit/files/outfit-latin-700-normal.woff2?url";
+import outfit800Woff2 from "@fontsource/outfit/files/outfit-latin-800-normal.woff2?url";
+import outfit900Woff2 from "@fontsource/outfit/files/outfit-latin-900-normal.woff2?url";
+import jetbrainsMono400Woff2 from "@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2?url";
+import jetbrainsMono600Woff2 from "@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2?url";
+import jetbrainsMono700Woff2 from "@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2?url";
+
+const criticalFontCss = `
+  @font-face { font-family: 'Outfit'; font-style: normal; font-display: block; font-weight: 400; src: url('${outfit400Woff2}') format('woff2'); }
+  @font-face { font-family: 'Outfit'; font-style: normal; font-display: block; font-weight: 500; src: url('${outfit500Woff2}') format('woff2'); }
+  @font-face { font-family: 'Outfit'; font-style: normal; font-display: block; font-weight: 700; src: url('${outfit700Woff2}') format('woff2'); }
+  @font-face { font-family: 'Outfit'; font-style: normal; font-display: block; font-weight: 800; src: url('${outfit800Woff2}') format('woff2'); }
+  @font-face { font-family: 'Outfit'; font-style: normal; font-display: block; font-weight: 900; src: url('${outfit900Woff2}') format('woff2'); }
+  @font-face { font-family: 'JetBrains Mono'; font-style: normal; font-display: block; font-weight: 400; src: url('${jetbrainsMono400Woff2}') format('woff2'); }
+  @font-face { font-family: 'JetBrains Mono'; font-style: normal; font-display: block; font-weight: 600; src: url('${jetbrainsMono600Woff2}') format('woff2'); }
+  @font-face { font-family: 'JetBrains Mono'; font-style: normal; font-display: block; font-weight: 700; src: url('${jetbrainsMono700Woff2}') format('woff2'); }
+`;
 import KaTeXStyles from "@components/KaTeXStyles.astro";
 
 export async function getStaticPaths() {
@@ -54,6 +78,7 @@ const renderedSlides = await Promise.all(
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>{presentation.data.title} - Handout Druckansicht</title>
+    <style is:inline set:html={criticalFontCss} />
     <KaTeXStyles />
     <script is:inline>
       const params = new URLSearchParams(window.location.search);

@@ -16,6 +16,7 @@ function getHtmlFiles(dir: string): string[] {
   return files;
 }
 
+const verbose = process.argv.includes('--verbose');
 const distDir = path.resolve('dist');
 const htmlFiles = getHtmlFiles(distDir);
 
@@ -24,7 +25,9 @@ if (htmlFiles.length === 0) {
   process.exit(1);
 }
 
-console.log(`[validate-semantic-ids] Auditing ${htmlFiles.length} HTML files in dist/...`);
+if (verbose) {
+  console.log(`[validate-semantic-ids] Auditing ${htmlFiles.length} HTML files in dist/...`);
+}
 
 let errorsCount = 0;
 let totalSections = 0;
@@ -142,15 +145,19 @@ for (const file of htmlFiles) {
   }
 }
 
-console.log(`\n[validate-semantic-ids] Scan summary:`);
-console.log(`  - Files scanned: ${htmlFiles.length}`);
-console.log(`  - Checked IDs:   ${totalCheckedIds}`);
-console.log(`  - Sections:      ${totalSections}`);
+if (verbose || errorsCount > 0) {
+  console.log(`\n[validate-semantic-ids] Scan summary:`);
+  console.log(`  - Files scanned: ${htmlFiles.length}`);
+  console.log(`  - Checked IDs:   ${totalCheckedIds}`);
+  console.log(`  - Sections:      ${totalSections}`);
+}
 
 if (errorsCount > 0) {
   console.error(`\n[validate-semantic-ids] 💥 Validation failed with ${errorsCount} semantic ID / structure error(s).`);
   process.exit(1);
 } else {
-  console.log(`\n[validate-semantic-ids] ✅ All HTML pages have valid unique IDs, semantic <Section> components, and heading IDs!`);
+  console.log(
+    `✅ [validate-semantic-ids] All ${htmlFiles.length} HTML files (${totalCheckedIds} IDs, ${totalSections} sections) passed semantic ID & structure checks.`
+  );
   process.exit(0);
 }

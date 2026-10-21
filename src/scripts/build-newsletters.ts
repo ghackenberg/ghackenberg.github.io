@@ -34,6 +34,7 @@ function cleanupLegacyDistArtifacts(rootDir: string): void {
 }
 
 async function buildNewsletters(): Promise<void> {
+  const verbose = process.argv.includes('--verbose');
   const rootDir = process.cwd();
   const buildListmonkDir = path.resolve(rootDir, '.build', 'listmonk');
   const emailTemplatesDir = path.join(buildListmonkDir, 'email-templates');
@@ -42,7 +43,9 @@ async function buildNewsletters(): Promise<void> {
   fs.mkdirSync(emailTemplatesDir, { recursive: true });
   fs.mkdirSync(issuesDir, { recursive: true });
 
-  console.log('[Newsletter Build] Compiling React Email Listmonk templates...');
+  if (verbose) {
+    console.log('[Newsletter Build] Compiling React Email Listmonk templates...');
+  }
 
   const [staticTemplates, campaignHtml] = await Promise.all([
     renderAllListmonkStaticTemplates(),
@@ -53,36 +56,44 @@ async function buildNewsletters(): Promise<void> {
     const content = staticTemplates[filename];
     const outPath = path.join(emailTemplatesDir, filename);
     fs.writeFileSync(outPath, content, 'utf-8');
-    console.log(
-      `  ✔ .build/listmonk/email-templates/${filename} (${content.length} bytes)`
-    );
+    if (verbose) {
+      console.log(
+        `  ✔ .build/listmonk/email-templates/${filename} (${content.length} bytes)`
+      );
+    }
   }
 
   const campaignPath = path.join(emailTemplatesDir, 'campaign-default.html');
   fs.writeFileSync(campaignPath, campaignHtml, 'utf-8');
-  console.log(
-    `  ✔ .build/listmonk/email-templates/campaign-default.html (${campaignHtml.length} bytes)`
-  );
+  if (verbose) {
+    console.log(
+      `  ✔ .build/listmonk/email-templates/campaign-default.html (${campaignHtml.length} bytes)`
+    );
+    console.log('[Newsletter Build] Compiling Listmonk public web shell & static assets...');
+  }
 
-  console.log('[Newsletter Build] Compiling Listmonk public web shell & static assets...');
-  const shellAssets = compileListmonkPublicShell(rootDir);
-  console.log(
-    `  ✔ .build/listmonk/public-templates/index.html (${fs.statSync(shellAssets.indexHtmlPath).size} bytes)`
-  );
-  console.log(
-    `  ✔ .build/listmonk/public-static/style.css (${fs.statSync(shellAssets.styleCssPath).size} bytes)`
-  );
-  console.log(
-    `  ✔ .build/listmonk/public-static/logo.svg (${fs.statSync(shellAssets.logoSvgPath).size} bytes)`
-  );
-  console.log(
-    `  ✔ .build/listmonk/public-static/favicon.png (${fs.statSync(shellAssets.faviconPngPath).size} bytes)`
-  );
+  const shellAssets = await compileListmonkPublicShell(rootDir);
+  if (verbose) {
+    console.log(
+      `  ✔ .build/listmonk/public-templates/index.html (${fs.statSync(shellAssets.indexHtmlPath).size} bytes)`
+    );
+    console.log(
+      `  ✔ .build/listmonk/public-static/style.css (${fs.statSync(shellAssets.styleCssPath).size} bytes)`
+    );
+    console.log(
+      `  ✔ .build/listmonk/public-static/logo.svg (${fs.statSync(shellAssets.logoSvgPath).size} bytes)`
+    );
+    console.log(
+      `  ✔ .build/listmonk/public-static/favicon.png (${fs.statSync(shellAssets.faviconPngPath).size} bytes)`
+    );
+  }
 
   cleanupLegacyDistArtifacts(rootDir);
 
   const issues = await loadAllNewsletterIssues(rootDir);
-  console.log(`[Newsletter Build] Compiling ${issues.length} newsletter issue(s)...`);
+  if (verbose) {
+    console.log(`[Newsletter Build] Compiling ${issues.length} newsletter issue(s)...`);
+  }
 
   for (const issue of issues) {
     const { html, campaignBodyHtml, plainText } = await renderNewsletterIssueEmail(issue);
@@ -94,12 +105,16 @@ async function buildNewsletters(): Promise<void> {
     fs.writeFileSync(campaignFragmentPath, campaignBodyHtml, 'utf-8');
     fs.writeFileSync(issueTxtPath, plainText, 'utf-8');
 
-    console.log(
-      `  ✔ Issue #${issue.issueNumber} (${issue.slug}): ${html.length}B standalone HTML, ${campaignBodyHtml.length}B campaign body HTML, ${plainText.length}B TXT (${issue.featuredItems.length} featured items)`
-    );
+    if (verbose) {
+      console.log(
+        `  ✔ Issue #${issue.issueNumber} (${issue.slug}): ${html.length}B standalone HTML, ${campaignBodyHtml.length}B campaign body HTML, ${plainText.length}B TXT (${issue.featuredItems.length} featured items)`
+      );
+    }
   }
 
-  console.log('[Newsletter Build] Done!');
+  console.log(
+    `✅ [Newsletter Build] Compiled ${LISTMONK_STATIC_TEMPLATE_FILENAMES.length + 1} Listmonk templates, public web shell & ${issues.length} newsletter issue(s).`
+  );
 }
 
 buildNewsletters().catch((err: Error) => {

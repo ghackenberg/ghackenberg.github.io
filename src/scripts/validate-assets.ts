@@ -19,6 +19,7 @@ function getHtmlFiles(dir: string): string[] {
   return files;
 }
 
+const verbose = process.argv.includes('--verbose');
 const distDir = path.resolve('dist');
 
 if (!fs.existsSync(distDir)) {
@@ -51,7 +52,9 @@ if (htmlFiles.length === 0) {
   process.exit(1);
 }
 
-console.log(`[validate-assets] Auditing ${htmlFiles.length} HTML files in dist/...`);
+if (verbose) {
+  console.log(`[validate-assets] Auditing ${htmlFiles.length} HTML files in dist/...`);
+}
 
 let errorsCount = 0;
 let totalCheckedAttributes = 0;
@@ -226,7 +229,6 @@ function isWhitelistedRasterImage(relPath: string): boolean {
     'favicon-16x16.png',
     'favicon-32x32.png',
     'apple-touch-icon.png',
-    'default-icon.png',
     'icon-192x192.png',
     'icon-512x512.png',
     'icon-512x512-maskable.png',
@@ -541,24 +543,26 @@ for (const file of htmlFiles) {
   }
 }
 
-console.log(`\n[validate-assets] Scan summary:`);
-console.log(`  - Scanned HTML files:            ${htmlFiles.length}`);
-console.log(`  - Checked attributes:            ${totalCheckedAttributes}`);
-console.log(`  - Checked asset references:      ${totalAssetRefsChecked}`);
-console.log(`  - Scanned raster images:         ${rasterImages.length} (${hashedRasterImagesCount} hashed, ${whitelistedRasterImagesCount} whitelisted)`);
-console.log(`  - Scanned audio files:           ${audioFiles.length} (${hashedAudioCount} hashed)`);
-console.log(`  - Zero _astro references:        CONFIRMED (0 forbidden references)`);
-console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount - unhashedAudioCount - assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'}`);
-console.log(`  - Strict image hashing:          ${unhashedImagesCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
-console.log(`  - Strict audio hashing:          ${unhashedAudioCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
-console.log(`  - ImageObject JSON-LD parity:    ${assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'} (${totalImageObjectsVerified} ImageObjects across ${pagesWithImagesChecked} pages)`);
+if (verbose || errorsCount > 0) {
+  console.log(`\n[validate-assets] Scan summary:`);
+  console.log(`  - Scanned HTML files:            ${htmlFiles.length}`);
+  console.log(`  - Checked attributes:            ${totalCheckedAttributes}`);
+  console.log(`  - Checked asset references:      ${totalAssetRefsChecked}`);
+  console.log(`  - Scanned raster images:         ${rasterImages.length} (${hashedRasterImagesCount} hashed, ${whitelistedRasterImagesCount} whitelisted)`);
+  console.log(`  - Scanned audio files:           ${audioFiles.length} (${hashedAudioCount} hashed)`);
+  console.log(`  - Zero _astro references:        CONFIRMED (0 forbidden references)`);
+  console.log(`  - 100% asset existence parity:   ${errorsCount - unhashedImagesCount - unhashedAudioCount - assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'}`);
+  console.log(`  - Strict image hashing:          ${unhashedImagesCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+  console.log(`  - Strict audio hashing:          ${unhashedAudioCount === 0 ? 'CONFIRMED' : 'FAILED'}`);
+  console.log(`  - ImageObject JSON-LD parity:    ${assertion5Errors === 0 ? 'CONFIRMED' : 'FAILED'} (${totalImageObjectsVerified} ImageObjects across ${pagesWithImagesChecked} pages)`);
+}
 
 if (errorsCount > 0) {
   console.error(`\n[validate-assets] 💥 Validation failed with ${errorsCount} asset integrity error(s).`);
   process.exit(1);
 } else {
-  console.log(`\n[validate-assets] ✅ Build output passed all asset integrity checks!`);
+  console.log(
+    `✅ [validate-assets] All ${htmlFiles.length} HTML pages, ${rasterImages.length} images, ${audioFiles.length} audio files & ${totalImageObjectsVerified} ImageObjects passed asset integrity checks.`
+  );
   process.exit(0);
 }
-
-

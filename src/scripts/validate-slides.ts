@@ -6,6 +6,7 @@ import { extractCitedKeys, findMalformedCitations } from '@commons/shared/citati
 import {
   computeSlideStyleHash,
   computePresentationDeckHash,
+  getSlidePdfCacheDir,
   loadVisualCache
 } from '@commons/server/slide-fingerprint.js';
 
@@ -100,6 +101,7 @@ function extractCleanText(voiceover: string): string {
  */
 function validateSlides() {
   const isSyntaxOnly = process.argv.includes('--syntax-only') || process.argv.includes('--structure-only');
+  const verbose = process.argv.includes('--verbose');
 
   const presentationsBase = path.resolve('src/content/presentations');
   if (!fs.existsSync(presentationsBase)) {
@@ -107,7 +109,7 @@ function validateSlides() {
     return;
   }
 
-  if (isSyntaxOnly) {
+  if (isSyntaxOnly && verbose) {
     console.log('[Slide Validator] Running in SYNTAX-ONLY mode: Skipping audio files, TTS hashes, thumbnails, and PDF checks.\n');
   }
 
@@ -219,7 +221,9 @@ function validateSlides() {
       .filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
       .sort();
 
-    console.log(`\n[Slide Validator] Checking presentation: "${presentationFolder}" (${slideFiles.length} slides)`);
+    if (verbose) {
+      console.log(`\n[Slide Validator] Checking presentation: "${presentationFolder}" (${slideFiles.length} slides)`);
+    }
 
     const activeSlideIds = new Set<string>();
 
@@ -1131,9 +1135,9 @@ function validateSlides() {
     process.exit(1);
   } else {
     if (isSyntaxOnly) {
-      console.log(`\n[Slide Validator] Passed! All ${totalSlides} slides have valid frontmatter, cues, highlights, and structure (${totalWarnings} warning(s)).\n`);
+      console.log(`✅ [Slide Validator] All ${totalSlides} slides passed syntax, cue & structure checks (${totalWarnings} warning(s)).`);
     } else {
-      console.log(`\n[Slide Validator] Passed! All ${totalSlides} slides, audio assets, cues, and PDF handouts are valid and up-to-date (${totalWarnings} warning(s)).\n`);
+      console.log(`✅ [Slide Validator] All ${totalSlides} slides, audio assets, cues & PDF handouts are valid (${totalWarnings} warning(s)).`);
     }
   }
 }

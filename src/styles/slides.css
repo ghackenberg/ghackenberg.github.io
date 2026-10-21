@@ -7,7 +7,7 @@
 .citation {
   --citation-accent: var(--card-accent, var(--step-accent, var(--color-domain-publications)));
   display: inline;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   vertical-align: baseline;
   padding: 0.08em 0.35em;

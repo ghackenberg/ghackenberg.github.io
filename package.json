@@ -18,7 +18,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run typecheck && astro build && npm run export:slides -- --if-ci && npm run generate-assets && npm run newsletter:build",
+    "build": "astro build && npm run export:slides -- --if-ci && npm run newsletter:build",
     "postbuild": "npm run validate:semantic-ids && npm run validate:assets && npm run lint:slide-typography -- --fail-on-warning && npm run lint:slide-density -- --fail-on-warning",
     "validate": "npm run lint && npm run typecheck && npm run validate:scripts && npm run validate:skills && npm run validate:slides:syntax && npm run validate:citations:syntax && npm run lint:posts && npm run lint:styles && npm run lint:domains && npm run lint:colors && npm run lint:svgs && npm run validate:architecture",
     "verify": "npm run validate && npm run build",
@@ -64,6 +64,7 @@
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource/caveat": "^5.3.0",
     "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.3.0",
     "@fontsource/outfit": "^5.2.8",
     "@modelcontextprotocol/sdk": "^1.31.0",
     "@octokit/core": "^7.0.6",

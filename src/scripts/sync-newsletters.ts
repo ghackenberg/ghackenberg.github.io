@@ -428,7 +428,7 @@ async function syncTemplates(baseUrl: string, authHeader: string): Promise<void>
   const campaignPath = path.join(emailTemplatesDir, 'campaign-default.html');
   fs.writeFileSync(campaignPath, campaignHtml, 'utf-8');
 
-  const publicShell = compileListmonkPublicShell(rootDir);
+  const publicShell = await compileListmonkPublicShell(rootDir);
 
   syncStaticTemplatesViaSsh(staticEmailFilePaths, publicShell);
 

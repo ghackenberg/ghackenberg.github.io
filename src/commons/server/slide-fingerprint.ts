@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import type { PresentationTypographyReport } from './slide-typography.js';
+import type { PresentationDensityReport } from './slide-density.js';
 
-const ENGINE_VERSION = 'v1.1';
+export const ENGINE_VERSION = 'v1.2';
 
 /**
  * Recursively retrieves all files in a directory matching extensions
@@ -210,6 +212,63 @@ export function saveVisualCache(presentationFolder: string, cache: VisualCache):
   const cacheDir = getSlidePdfCacheDir(presentationFolder);
   fs.mkdirSync(cacheDir, { recursive: true });
   const cachePath = path.join(cacheDir, '.visual-cache.json');
+  const content = JSON.stringify(cache, null, 2) + '\n';
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    try {
+      fs.writeFileSync(cachePath, content, 'utf8');
+      return;
+    } catch (err) {
+      if (attempt === 6) throw err;
+      const waitMs = 250 * attempt;
+      const start = Date.now();
+      while (Date.now() - start < waitMs) { /* busy wait for synchronous safety */ }
+    }
+  }
+}
+
+export interface SlideAuditCache {
+  version: string;
+  platform: string;
+  styleHash: string;
+  deckHash: string;
+  typography?: {
+    maxRatio: number;
+    minSize: number;
+    report: PresentationTypographyReport;
+  };
+  density?: {
+    threshold: number;
+    report: PresentationDensityReport;
+  };
+}
+
+/**
+ * Loads the platform-specific visual audit cache for a presentation
+ */
+export function loadSlideAuditCache(presentationFolder: string): SlideAuditCache | null {
+  const cachePath = path.join(
+    getSlidePdfCacheDir(presentationFolder),
+    `.audit-cache-${process.platform}.json`
+  );
+  if (!fs.existsSync(cachePath)) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(cachePath, 'utf8')) as SlideAuditCache;
+    if (parsed.version !== ENGINE_VERSION || parsed.platform !== process.platform) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Saves the platform-specific visual audit cache for a presentation
+ */
+export function saveSlideAuditCache(presentationFolder: string, cache: SlideAuditCache): void {
+  const cacheDir = getSlidePdfCacheDir(presentationFolder);
+  fs.mkdirSync(cacheDir, { recursive: true });
+  const cachePath = path.join(cacheDir, `.audit-cache-${process.platform}.json`);
   const content = JSON.stringify(cache, null, 2) + '\n';
   for (let attempt = 1; attempt <= 6; attempt++) {
     try {

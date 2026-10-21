@@ -1070,7 +1070,7 @@ html.has-filter-query [data-tag-count]:not(.is-synced) {
 /* Central Citation Link Typography (Domain: Publications) */
 .citation {
   display: inline;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   vertical-align: baseline;
   padding: 0.08em 0.35em;

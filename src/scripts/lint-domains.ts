@@ -40,6 +40,7 @@ const SRC_DIR = path.resolve(ROOT_DIR, 'src');
 const PAGES_DIR = path.resolve(SRC_DIR, 'pages');
 const COMPONENTS_DIR = path.resolve(SRC_DIR, 'components');
 
+const verbose = process.argv.includes('--verbose');
 let errorCount = 0;
 
 function error(msg: string): void {
@@ -48,10 +49,14 @@ function error(msg: string): void {
 }
 
 function success(msg: string): void {
-  console.log(`✅ [lint:domains] ${msg}`);
+  if (verbose) {
+    console.log(`✅ [lint:domains] ${msg}`);
+  }
 }
 
-console.log('🔍 [lint:domains] Auditing domain token integrity and design system rules...\n');
+if (verbose) {
+  console.log('🔍 [lint:domains] Auditing domain token integrity and design system rules...\n');
+}
 
 function getAstroFiles(dir: string): string[] {
   const files: string[] = [];
@@ -948,11 +953,13 @@ if (previewCardContractViolations === 0) {
   success('All 10 preview card components and project screenshot cards enforce domain-appropriate 1lh/2lh title reservation, 3lh description reservation, conflict-free line-clamp CSS, and Option 3 chip gating.');
 }
 
-console.log('\n----------------------------------------');
+if (verbose || errorCount > 0) {
+  console.log('\n----------------------------------------');
+}
 if (errorCount > 0) {
   console.error(`💥 [lint:domains] Failed with ${errorCount} error(s).`);
   process.exit(1);
 } else {
-  console.log('✨ [lint:domains] Domain architecture validation passed with 0 errors.');
+  console.log('✅ [lint:domains] All 30 domain token integrity & design system rules passed (0 errors).');
   process.exit(0);
 }

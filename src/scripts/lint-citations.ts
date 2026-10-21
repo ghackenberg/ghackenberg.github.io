@@ -509,9 +509,14 @@ function extractReferencesFromFile(filePath: string, category: string): { refs: 
  * Main linter execution
  */
 async function run(): Promise<void> {
-  console.log('='.repeat(80));
-  console.log('🔍 CITATION LINTER: Systematic Reference Verification & In-Text Parity Audit');
-  console.log('='.repeat(80));
+  const verbose = process.argv.includes('--verbose');
+  const isSyntaxOnly = process.argv.includes('--syntax-only');
+
+  if (verbose) {
+    console.log('='.repeat(80));
+    console.log('🔍 CITATION LINTER: Systematic Reference Verification & In-Text Parity Audit');
+    console.log('='.repeat(80));
+  }
 
   const rawArgs = process.argv.slice(2);
   let targetSlugFilter: string | null = null;
@@ -525,7 +530,7 @@ async function run(): Promise<void> {
       break;
     }
   }
-  if (targetSlugFilter) {
+  if (targetSlugFilter && verbose) {
     console.log(`🎯 Filtering citation audit to paths matching: "${targetSlugFilter}"`);
   }
 
@@ -565,33 +570,38 @@ async function run(): Promise<void> {
     }
   }
 
-  console.log(`Found ${allRefs.length} structured references across repository.`);
-  if (allCitationErrors.length > 0) {
-    console.log(`\n❌ In-Text Citation Discrepancies Found (${allCitationErrors.length}):`);
-    allCitationErrors.forEach((err) => console.log(`   - ${err}`));
-  } else {
-    console.log(`✅ 100% In-Text Citation Parity: All references are cited with [@id] in content!`);
+  if (verbose) {
+    console.log(`Found ${allRefs.length} structured references across repository.`);
+    if (allCitationErrors.length > 0) {
+      console.log(`\n❌ In-Text Citation Discrepancies Found (${allCitationErrors.length}):`);
+      allCitationErrors.forEach((err) => console.log(`   - ${err}`));
+    } else {
+      console.log(`✅ 100% In-Text Citation Parity: All references are cited with [@id] in content!`);
+    }
+    console.log('-'.repeat(80));
   }
-  console.log('-'.repeat(80));
-
-  const isSyntaxOnly = process.argv.includes('--syntax-only');
 
   if (isSyntaxOnly) {
-    console.log('\n[Citation Linter] Running in SYNTAX-ONLY mode: Skipping remote network resolution.');
-    console.log('='.repeat(80));
-    console.log('AUDIT SUMMARY:');
-    console.log(`  Total References Scanned: ${allRefs.length}`);
-    console.log(`  In-Text Citation Errors:  ${allCitationErrors.length}`);
     if (allCitationErrors.length > 0) {
-      console.log('\nIN-TEXT CITATION ERRORS:');
+      console.error(`\n❌ [Citation Linter] Found ${allCitationErrors.length} in-text citation error(s):`);
       for (const err of allCitationErrors) {
-        console.log(`  ❌ ${err}`);
+        console.error(`  - ${err}`);
       }
-      console.log('='.repeat(80));
       process.exit(1);
     }
-    console.log('  Status:                   ✅ 100% Valid syntax & in-text parity (0 errors)');
-    console.log('='.repeat(80));
+    if (verbose) {
+      console.log('\n[Citation Linter] Running in SYNTAX-ONLY mode: Skipping remote network resolution.');
+      console.log('='.repeat(80));
+      console.log('AUDIT SUMMARY:');
+      console.log(`  Total References Scanned: ${allRefs.length}`);
+      console.log(`  In-Text Citation Errors:  ${allCitationErrors.length}`);
+      console.log('  Status:                   ✅ 100% Valid syntax & in-text parity (0 errors)');
+      console.log('='.repeat(80));
+    } else {
+      console.log(
+        `✅ [Citation Linter] All ${allRefs.length} references across posts & slides have 100% in-text citation parity (0 errors).`
+      );
+    }
     return;
   }
 
@@ -601,34 +611,37 @@ async function run(): Promise<void> {
 
   for (let i = 0; i < allRefs.length; i++) {
     const ref = allRefs[i];
-    console.log(`\n[${i + 1}/${allRefs.length}] ${ref.category}: ${ref.sourceFile}`);
-    console.log(`  Type: ${ref.type.toUpperCase()}`);
-    console.log(`  URL:  ${ref.url}`);
-    if (ref.doi) console.log(`  DOI:  ${ref.doi}`);
-
     const isRefresh = process.argv.includes('--refresh');
     const remote = await resolveCitation(ref, cache, isRefresh);
 
-    console.log('\n  --- LOCAL DATA ---');
-    console.log(`  Title:   ${ref.title}`);
-    console.log(`  Author:  ${ref.author}`);
-    console.log(`  Year:    ${ref.year ?? 'N/A'}`);
-    if (ref.booktitle) console.log(`  Book:    ${ref.booktitle}`);
-    if (ref.journal) console.log(`  Journal: ${ref.journal}`);
-    if (ref.publisher) console.log(`  Pub:     ${ref.publisher}`);
-    if (ref.siteName) console.log(`  Site:    ${ref.siteName}`);
+    const lines: string[] = [];
+    lines.push(`\n[${i + 1}/${allRefs.length}] ${ref.category}: ${ref.sourceFile}`);
+    lines.push(`  Type: ${ref.type.toUpperCase()}`);
+    lines.push(`  URL:  ${ref.url}`);
+    if (ref.doi) lines.push(`  DOI:  ${ref.doi}`);
 
-    console.log('\n  --- REMOTE SOURCE DATA (' + (remote.remoteSourceType || 'HTTP Direct') + ') ---');
+    lines.push('\n  --- LOCAL DATA ---');
+    lines.push(`  Title:   ${ref.title}`);
+    lines.push(`  Author:  ${ref.author}`);
+    lines.push(`  Year:    ${ref.year ?? 'N/A'}`);
+    if (ref.booktitle) lines.push(`  Book:    ${ref.booktitle}`);
+    if (ref.journal) lines.push(`  Journal: ${ref.journal}`);
+    if (ref.publisher) lines.push(`  Pub:     ${ref.publisher}`);
+    if (ref.siteName) lines.push(`  Site:    ${ref.siteName}`);
+
+    lines.push('\n  --- REMOTE SOURCE DATA (' + (remote.remoteSourceType || 'HTTP Direct') + ') ---');
+    let isRefIssue = false;
+
     if (remote.status >= 200 && remote.status < 400) {
-      console.log(`  Status:  HTTP ${remote.status} OK`);
-      console.log(`  Title:   ${remote.remoteTitle || '(Not extracted)'}`);
+      lines.push(`  Status:  HTTP ${remote.status} OK`);
+      lines.push(`  Title:   ${remote.remoteTitle || '(Not extracted)'}`);
       if (remote.remoteH1 && remote.remoteH1 !== remote.remoteTitle) {
-        console.log(`  H1:      ${remote.remoteH1}`);
+        lines.push(`  H1:      ${remote.remoteH1}`);
       }
-      console.log(`  Authors: ${remote.remoteAuthors ? remote.remoteAuthors.join(', ') : (remote.authorFoundInBody ? '✅ Detected in page body' : '(Not extracted)')}`);
-      console.log(`  Year:    ${remote.remoteYear ?? '(Not extracted)'}`);
-      if (remote.remoteVenue) console.log(`  Venue:   ${remote.remoteVenue}`);
-      if (remote.contentSnippet) console.log(`  Snippet: "${remote.contentSnippet}..."`);
+      lines.push(`  Authors: ${remote.remoteAuthors ? remote.remoteAuthors.join(', ') : (remote.authorFoundInBody ? '✅ Detected in page body' : '(Not extracted)')}`);
+      lines.push(`  Year:    ${remote.remoteYear ?? '(Not extracted)'}`);
+      if (remote.remoteVenue) lines.push(`  Venue:   ${remote.remoteVenue}`);
+      if (remote.contentSnippet) lines.push(`  Snippet: "${remote.contentSnippet}..."`);
 
       // Content verification metrics
       const titleOverlap = remote.remoteTitle ? calculateTokenOverlap(ref.title, remote.remoteTitle) : 0;
@@ -638,50 +651,62 @@ async function run(): Promise<void> {
       const isShallow = isShallowRootUrl(ref.url, ref.title);
 
       if (isShallow && (ref.type === 'online' || ref.type === 'article') && extractKeywords(ref.title).length >= 3) {
-        console.log(`  VERDICT: ⚠️ WARNING: Shallow root URL ("${ref.url}"). An exact deep link to the cited publication is required!`);
+        lines.push(`  VERDICT: ⚠️ WARNING: Shallow root URL ("${ref.url}"). An exact deep link to the cited publication is required!`);
         warnCount++;
+        isRefIssue = true;
       } else if (bestTitleOverlap >= 0.5) {
-        console.log(`  VERDICT: ✅ FULL MATCH (Title Overlap: ${(bestTitleOverlap * 100).toFixed(0)}%, Body Keywords: ${(kwCoverage * 100).toFixed(0)}%)`);
+        lines.push(`  VERDICT: ✅ FULL MATCH (Title Overlap: ${(bestTitleOverlap * 100).toFixed(0)}%, Body Keywords: ${(kwCoverage * 100).toFixed(0)}%)`);
         verifiedCount++;
       } else if (kwCoverage >= 0.5 || (remote.authorFoundInBody && kwCoverage >= 0.3) || bestTitleOverlap >= 0.25) {
-        console.log(`  VERDICT: ✅ CONTENT MATCH (Body Keywords: ${(kwCoverage * 100).toFixed(0)}% [${remote.keywordsFound ?? 0}/${remote.keywordsCount ?? 0}], Title Overlap: ${(bestTitleOverlap * 100).toFixed(0)}%)`);
+        lines.push(`  VERDICT: ✅ CONTENT MATCH (Body Keywords: ${(kwCoverage * 100).toFixed(0)}% [${remote.keywordsFound ?? 0}/${remote.keywordsCount ?? 0}], Title Overlap: ${(bestTitleOverlap * 100).toFixed(0)}%)`);
         verifiedCount++;
       } else if (remote.remoteSourceType?.includes('Bot') || remote.remoteSourceType?.includes('Shield') || remote.remoteSourceType?.includes('Challenge')) {
-        console.log(`  VERDICT: 🛡️ REACHABLE (Bot-protected domain)`);
+        lines.push(`  VERDICT: 🛡️ REACHABLE (Bot-protected domain)`);
         verifiedCount++;
       } else if (remote.remoteTitle) {
-        console.log(`  VERDICT: ⚠️ WARNING: Low title and content overlap (Title: ${(bestTitleOverlap * 100).toFixed(0)}%, Body Keywords: ${(kwCoverage * 100).toFixed(0)}%)`);
+        lines.push(`  VERDICT: ⚠️ WARNING: Low title and content overlap (Title: ${(bestTitleOverlap * 100).toFixed(0)}%, Body Keywords: ${(kwCoverage * 100).toFixed(0)}%)`);
         warnCount++;
+        isRefIssue = true;
       } else {
-        console.log(`  VERDICT: ℹ️ REACHABLE (HTTP ${remote.status} OK)`);
+        lines.push(`  VERDICT: ℹ️ REACHABLE (HTTP ${remote.status} OK)`);
         verifiedCount++;
       }
     } else {
-      console.log(`  Status:  ❌ FAILED (${remote.error || 'HTTP ' + remote.status})`);
+      lines.push(`  Status:  ❌ FAILED (${remote.error || 'HTTP ' + remote.status})`);
       errorCount++;
+      isRefIssue = true;
     }
 
-    console.log('-'.repeat(80));
+    lines.push('-'.repeat(80));
+    if (verbose || isRefIssue) {
+      console.log(lines.join('\n'));
+    }
   }
 
   saveCache(cache);
 
-  console.log('\n' + '='.repeat(80));
-  console.log('AUDIT SUMMARY:');
-  console.log(`  Total References Checked: ${allRefs.length}`);
-  console.log(`  Verified / Match:         ${verifiedCount}`);
-  console.log(`  Warnings:                 ${warnCount}`);
-  console.log(`  Errors / Broken URLs:     ${errorCount}`);
-  console.log(`  In-Text Citation Errors:  ${allCitationErrors.length}`);
-  if (allCitationErrors.length > 0) {
-    console.log('\nIN-TEXT CITATION ERRORS:');
-    for (const err of allCitationErrors) {
-      console.log(`  ❌ ${err}`);
-    }
-  }
-  console.log('='.repeat(80));
-
   const totalErrors = errorCount + allCitationErrors.length;
+  if (verbose || totalErrors > 0 || warnCount > 0) {
+    console.log('\n' + '='.repeat(80));
+    console.log('AUDIT SUMMARY:');
+    console.log(`  Total References Checked: ${allRefs.length}`);
+    console.log(`  Verified / Match:         ${verifiedCount}`);
+    console.log(`  Warnings:                 ${warnCount}`);
+    console.log(`  Errors / Broken URLs:     ${errorCount}`);
+    console.log(`  In-Text Citation Errors:  ${allCitationErrors.length}`);
+    if (allCitationErrors.length > 0) {
+      console.log('\nIN-TEXT CITATION ERRORS:');
+      for (const err of allCitationErrors) {
+        console.log(`  ❌ ${err}`);
+      }
+    }
+    console.log('='.repeat(80));
+  } else {
+    console.log(
+      `✅ [Citation Linter] All ${allRefs.length} references verified (${verifiedCount} remote matches, 100% in-text parity, 0 errors).`
+    );
+  }
+
   if (process.argv.includes('--ci') && totalErrors > 0) {
     process.exit(1);
   }

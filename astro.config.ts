@@ -29,7 +29,8 @@ import {
   parseCitationGroup,
   type CitationRef,
 } from '@commons/shared/citations.js';
-import { getFileContentHash } from '@commons/server/content-hash.js';
+import { getFileContentHash, getHashedFilename } from '@commons/server/content-hash.js';
+import { BRANDING_CACHE_DIR, ensureBrandingAssets } from '@commons/server/branding-assets.js';
 
 const mimeTypes: Record<string, string> = {
   '.pdf': 'application/pdf',
@@ -83,6 +84,37 @@ function copyContentAssets(): AstroIntegration {
             }
 
             const cleanUrl = (req.url || '').split('?')[0].split('#')[0];
+
+            // Dev server middleware for hashed default OG image and cached branding icons
+            if (/^\/assets\/branding\/og-share-preview-[a-f0-9]{8}\.png$/.test(cleanUrl)) {
+              const filePath = path.join(BRANDING_CACHE_DIR, 'og-share-preview.png');
+              if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                res.writeHead(200, { 'Content-Type': 'image/png' });
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
+
+            if (cleanUrl === '/favicon.svg') {
+              const filePath = path.join(BRANDING_CACHE_DIR, 'favicon.svg');
+              if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
+
+            const brandingIconMatch = cleanUrl.match(
+              /^\/(favicon-16x16|favicon-32x32|apple-touch-icon|icon-192x192|icon-512x512|icon-512x512-maskable)\.png$/
+            );
+            if (brandingIconMatch) {
+              const filePath = path.join(BRANDING_CACHE_DIR, `${brandingIconMatch[1]}.png`);
+              if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                res.writeHead(200, { 'Content-Type': 'image/png' });
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
 
             // Dev server middleware for hashed presentation audio assets
             const presHashedMatch = cleanUrl.match(/^\/presentations\/([^/]+)\/(audio)\/(.+)-([a-f0-9]{8})\.(mp3)$/);
@@ -288,6 +320,30 @@ function copyContentAssets(): AstroIntegration {
           };
           copyMermaid(mermaidExportsDir);
         }
+
+        // Copy cached branding & OG assets into dist/ and remove _internal/
+        const { ogImagePath, iconFiles } = await ensureBrandingAssets();
+        const ogHash = getFileContentHash(ogImagePath);
+        const ogDestPath = path.join(
+          outDir,
+          'assets',
+          'branding',
+          getHashedFilename('og-share-preview.png', ogHash)
+        );
+        fs.mkdirSync(path.dirname(ogDestPath), { recursive: true });
+        fs.copyFileSync(ogImagePath, ogDestPath);
+
+        for (const iconFile of iconFiles) {
+          const srcIconPath = path.join(BRANDING_CACHE_DIR, iconFile);
+          if (fs.existsSync(srcIconPath)) {
+            fs.copyFileSync(srcIconPath, path.join(outDir, iconFile));
+          }
+        }
+
+        const internalOutDir = path.join(outDir, '_internal');
+        if (fs.existsSync(internalOutDir)) {
+          fs.rmSync(internalOutDir, { recursive: true, force: true });
+        }
       },
     },
   };
@@ -389,6 +445,7 @@ function vitePreSlideCues(): VitePlugin {
 }
 
 const isBuild = process.argv.includes('build');
+const isVerboseBuild = process.argv.includes('--verbose');
 const viteLogger = createLogger();
 if (isBuild) {
   const originalWarn = viteLogger.warn.bind(viteLogger);
@@ -399,6 +456,43 @@ if (isBuild) {
   viteLogger.warnOnce = (msg, options) => {
     viteLogger.warn(msg, options);
   };
+
+  if (!isVerboseBuild) {
+    viteLogger.info = () => {};
+    const ansiRegex = new RegExp('\\u001b\\[[0-9;]*m', 'g');
+    const noisyBuildLineRegex =
+      /^\s*(?:\d{2}:\d{2}:\d{2}\s+)?(?:(?:├─|└─|▶)\s+\/|generating static routes\s*$|optimizing static images\s*$|generating optimized images\s*$)|^\s*(?:\([^)]+\)\s*)+$/i;
+    const originalStdoutWrite = process.stdout.write.bind(process.stdout);
+    process.stdout.write = ((
+      chunk: Uint8Array | string,
+      encodingOrCb?: BufferEncoding | ((err?: Error | null) => void),
+      cb?: (err?: Error | null) => void
+    ): boolean => {
+      const str = typeof chunk === 'string' ? chunk : Buffer.from(chunk).toString('utf8');
+      const lines = str.split('\n');
+      const keptLines = lines.filter((line, idx) => {
+        if (idx === lines.length - 1 && line === '') return true;
+        const clean = line.replace(ansiRegex, '');
+        return !noisyBuildLineRegex.test(clean);
+      });
+      if (
+        keptLines.length === 0 ||
+        (keptLines.length === 1 && keptLines[0] === '' && str.length > 0)
+      ) {
+        const callback = typeof encodingOrCb === 'function' ? encodingOrCb : cb;
+        if (callback) callback();
+        return true;
+      }
+      const filtered = keptLines.join('\n');
+      if (typeof encodingOrCb === 'function') {
+        return originalStdoutWrite(filtered, encodingOrCb);
+      }
+      if (encodingOrCb !== undefined) {
+        return originalStdoutWrite(filtered, encodingOrCb, cb);
+      }
+      return originalStdoutWrite(filtered);
+    }) as typeof process.stdout.write;
+  }
 }
 
 function getSemanticScriptPath(chunkInfo: { name: string; facadeModuleId?: string | null }): string {

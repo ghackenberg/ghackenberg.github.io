@@ -37,8 +37,21 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Install German Hyphenation & Locale Dictionaries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends hyphen-de hunspell-de-de locales
+
       - name: Validate Code Quality & Integrity
         run: npm run validate
+
+      - name: Cache Branding & OG Assets
+        uses: actions/cache@v4
+        with:
+          path: .cache/branding
+          key: branding-assets-${{ hashFiles('src/pages/_internal/**', 'src/commons/server/branding-assets.ts') }}
+          restore-keys: |
+            branding-assets-
 
       - name: Cache Presentation Audio & Cue Timings
         uses: actions/cache@v4
@@ -52,7 +65,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/slides-pdf
-          key: slides-pdf-${{ hashFiles('src/content/presentations/**/slides/**', 'src/content/presentations/**/images/**', 'src/content/presentations/**/index.md', 'src/components/slides/**', 'src/styles/slides.css', 'src/styles/theme.css') }}
+          key: slides-pdf-${{ hashFiles('src/content/presentations/**/slides/**', 'src/content/presentations/**/images/**', 'src/content/presentations/**/index.md', 'src/components/slides/**', 'src/styles/slides.css', 'src/styles/theme.css', 'src/layouts/Layout.astro', 'src/pages/presentations/[slug]/print.astro') }}
           restore-keys: |
             slides-pdf-
 

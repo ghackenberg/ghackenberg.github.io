@@ -101,6 +101,7 @@
   --slide-font-meta: 1.35rem;       /* ~21.6px: Table headers, captions, subtitles, meta labels */
 
   --font-sans: "Outfit", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --breakpoint-nav: 1120px;
 }
 

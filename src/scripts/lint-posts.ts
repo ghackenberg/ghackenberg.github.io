@@ -116,7 +116,10 @@ function countMermaidNodes(mermaidBody: string): number {
 }
 
 function run(): void {
-  console.log('🔍 [lint:posts] Auditing blog posts for structural, asset, Mermaid, and GEO/AIO compliance...\n');
+  const verbose = process.argv.includes('--verbose');
+  if (verbose) {
+    console.log('🔍 [lint:posts] Auditing blog posts for structural, asset, Mermaid, and GEO/AIO compliance...\n');
+  }
 
   if (!fs.existsSync(POSTS_DIR)) {
     console.error(`❌ [lint:posts] Posts directory not found at ${POSTS_DIR}`);

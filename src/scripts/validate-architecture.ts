@@ -9,6 +9,7 @@ import path from 'node:path';
 
 const ROOT_DIR = process.cwd();
 const SRC_DIR = path.resolve(ROOT_DIR, 'src');
+const verbose = process.argv.includes('--verbose');
 
 const ALLOWED_SRC_SUBDIRS = new Set([
   'assets',
@@ -39,10 +40,14 @@ function error(msg: string): void {
 }
 
 function success(msg: string): void {
-  console.log(`✅ [validate:architecture] ${msg}`);
+  if (verbose) {
+    console.log(`✅ [validate:architecture] ${msg}`);
+  }
 }
 
-console.log('🔍 [validate:architecture] Auditing architectural constraints and directory rules...\n');
+if (verbose) {
+  console.log('🔍 [validate:architecture] Auditing architectural constraints and directory rules...\n');
+}
 
 // 1. Check for legacy/forbidden directories in repository root
 for (const dirName of FORBIDDEN_ROOT_DIRS) {
@@ -146,10 +151,9 @@ if (overviewDomainErrors === 0) {
 }
 
 // 6. Summary and exit code
-console.log('');
 if (errorCount > 0) {
-  console.error(`💥 [validate:architecture] Validation failed with ${errorCount} error(s).`);
+  console.error(`\n💥 [validate:architecture] Validation failed with ${errorCount} error(s).`);
   process.exit(1);
 } else {
-  console.log('🎉 [validate:architecture] All architectural gates passed successfully!');
+  console.log('✅ [validate:architecture] All architectural gates passed (0 errors).');
 }

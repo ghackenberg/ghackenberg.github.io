@@ -21,7 +21,8 @@ import outfit800Woff2 from "@fontsource/outfit/files/outfit-latin-800-normal.wof
 import type { ImageMetadata } from "astro";
 import KaTeXStyles from "@components/KaTeXStyles.astro";
 import { getImage } from "astro:assets";
-import defaultOgImage from "@assets/branding/og-share-preview.png";
+import { ensureBrandingAssets } from "@commons/server/branding-assets";
+import { getFileContentHash, getHashedFilename } from "@commons/server/content-hash";
 import Background from "@components/Background.astro";
 import Container from "@components/Container.astro";
 import JsonLd from "@components/JsonLd.astro";
@@ -82,16 +83,11 @@ const activeDomain = VALID_DOMAINS.includes(firstSegment) ? firstSegment : undef
 // Build canonical URL
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-// Optimize default OG image at build time
-const optimizedDefaultOgImage = await getImage({
-  src: defaultOgImage,
-  format: 'jpeg',
-  width: 1200,
-  height: 630,
-  quality: 85
-});
-
-let resolvedImageSrc: string = optimizedDefaultOgImage.src;
+// Resolve default OG image from .cache/branding/ with content hash
+const { ogImagePath } = await ensureBrandingAssets();
+const defaultOgHash = getFileContentHash(ogImagePath);
+const defaultOgImageSrc = `/assets/branding/${getHashedFilename('og-share-preview.png', defaultOgHash)}`;
+let resolvedImageSrc: string = defaultOgImageSrc;
 
 if (image) {
   let targetImage: string | ImageMetadata = image as string | ImageMetadata;
@@ -102,8 +98,8 @@ if (image) {
     resolvedImageSrc = targetImage;
   } else if (typeof targetImage === 'object' && targetImage !== null && 'src' in targetImage) {
     if (targetImage.format === 'svg') {
-      // SVGs are not supported for Open Graph / Twitter cards across platforms; fall back to optimized default
-      resolvedImageSrc = optimizedDefaultOgImage.src;
+      // SVGs are not supported for Open Graph / Twitter cards across platforms; fall back to default
+      resolvedImageSrc = defaultOgImageSrc;
     } else {
       try {
         const optimizedCustomImage = await getImage({

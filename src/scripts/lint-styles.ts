@@ -5,6 +5,7 @@ const ROOT_DIR = process.cwd();
 const STYLES_DIR = path.join(ROOT_DIR, 'src', 'styles');
 const PRINT_ASTRO_PATH = path.join(ROOT_DIR, 'src', 'pages', 'presentations', '[slug]', 'print.astro');
 const POST_SLUG_ASTRO_PATH = path.join(ROOT_DIR, 'src', 'pages', 'posts', '[slug].astro');
+const verbose = process.argv.includes('--verbose');
 
 let errorCount = 0;
 
@@ -14,10 +15,14 @@ function error(msg: string) {
 }
 
 function success(msg: string) {
-  console.log(`✅ [lint:styles] ${msg}`);
+  if (verbose) {
+    console.log(`✅ [lint:styles] ${msg}`);
+  }
 }
 
-console.log('🔍 [lint:styles] Validating modular stylesheet architecture...');
+if (verbose) {
+  console.log('🔍 [lint:styles] Validating modular stylesheet architecture...');
+}
 
 // 1. Check existence of modular stylesheets
 const requiredStyles = ['theme.css', 'diagrams.css', 'slides.css', 'posts.css', 'components.css', 'global.css', 'graphics.css'];
@@ -188,7 +193,7 @@ for (const { file, forbidden } of domainRules) {
 }
 
 if (errorCount === 0) {
-  console.log('🎉 [lint:styles] All stylesheet architectural boundaries validated successfully.');
+  console.log('✅ [lint:styles] All stylesheet architectural boundaries validated (0 errors).');
   process.exit(0);
 } else {
   console.error(`💥 [lint:styles] Failed with ${errorCount} boundary violation(s).`);

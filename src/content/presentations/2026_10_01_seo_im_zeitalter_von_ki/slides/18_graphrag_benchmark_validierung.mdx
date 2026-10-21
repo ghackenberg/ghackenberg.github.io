@@ -37,49 +37,49 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
   ratio="50/50"
 >
   <BentoCard slot="left" cue="col-graphrag-benchmarks" title="Wissenschaftliche Benchmark-Ergebnisse">
-    <CalloutBox type="takeaway" title="{cue:hl-callout-winrate-stats}72–83 % Win-Rate gegen Vector-only RAG{/cue}">
-      Edge et al. [@edge-2024-graphrag] (Microsoft Research / arXiv:2404.16130)
+    <CalloutBox type="takeaway" title="{cue:hl-callout-winrate-stats}72–83 % Win-Rate vs. Vector-RAG{/cue}">
+      Edge et al. [@edge-2024-graphrag], Microsoft Research
     </CalloutBox>
 
     <BulletList items={[
       {
         icon: "target",
-        title: "Comprehensiveness (Vollständigkeit)",
-        desc: "Mit bis zu 83 % Win-Rate: {cue:hl-bench-comprehensive}deckt GraphRAG alle relevanten Aspekte ohne Datenlücken ab{/cue}."
+        title: "Maximale Vollständigkeit",
+        desc: "Mit 83 % Win-Rate {cue:hl-bench-comprehensive}deckt GraphRAG alle relevanten Aspekte lückenlos ab{/cue}."
       },
       {
         icon: "sparkles",
-        title: "Diversity (Perspektivenvielfalt)",
-        desc: "Mit 78–82 % Win-Rate: {cue:hl-bench-diversity}die Perspektivenvielfalt mit über achtzig Prozent Win-Rate den Tunnelblick naiver Vektoren bricht{/cue}."
+        title: "Breite Perspektivenvielfalt",
+        desc: "Mit 82 % Win-Rate {cue:hl-bench-diversity}bricht Perspektivenvielfalt den Vektor-Tunnelblick{/cue}."
       },
       {
         icon: "check",
         title: "Expertise & Relevanz",
-        desc: "Fachgutachter bestätigen, dass {cue:hl-bench-empowerment}Antworten von Fachprüfern als deutlich fundierter bewertet werden{/cue}."
+        desc: "Im Blindtest werden {cue:hl-bench-empowerment}Antworten von Fachprüfern als fundierter bewertet{/cue}."
       }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-graphrag-b2b" title="Strategischer Mehrwert im B2B">
-    <CalloutBox type="statement" title="{cue:hl-callout-b2b-rfp}Systemfragen statt Stichwortsuche im Einkauf{/cue}">
-      Ingenieure und B2B-Käufer fragen nach Systemvergleichen, Normen und Audit-Konformität.
+    <CalloutBox type="statement" title="{cue:hl-callout-b2b-rfp}Systemfragen statt Stichwortsuche{/cue}">
+      Fokus auf Normen & Systemarchitektur.
     </CalloutBox>
 
     <BulletList items={[
       {
         icon: "shield",
-        title: "Ganzheitliche Systemvergleiche",
-        desc: "Kaufentscheider fordern Marktübersichten: {cue:hl-b2b-system-compare}liefert die KI komplette Technologieübersichten ohne Informationslücken{/cue}."
+        title: "Komplette Systemvergleiche",
+        desc: "Im B2B-Einkauf {cue:hl-b2b-system-compare}liefert die KI komplette Systemübersichten ohne Lücken{/cue}."
       },
       {
         icon: "database",
-        title: "Strukturierte Ausschreibungen (RFPs)",
-        desc: "Komplexe Zertifizierungsfragen: {cue:hl-b2b-rfp-chains}komplexe Ausschreibungen und Lieferkettenfragen verlässlich gelöst werden{/cue}."
+        title: "Strukturierte RFPs & Audits",
+        desc: "Damit können {cue:hl-b2b-rfp-chains}komplexe Ausschreibungen und Lieferketten gelöst werden{/cue}."
       },
       {
         icon: "arrow",
-        title: "Brücke zu Kosten & Limitationen",
-        desc: "Vorschau auf Systemgrenzen: {cue:hl-b2b-cost-bridge}Dieser Qualitätsgewinn erfordert im Gegenzug erhebliche Rechen- und Tokenbudgets{/cue}!"
+        title: "Kosten & Systemgrenzen",
+        desc: "{cue:hl-b2b-cost-bridge}Dieser Qualitätsgewinn erfordert jedoch hohe Rechen- und Tokenbudgets{/cue}!"
       }
     ]} />
   </BentoCard>

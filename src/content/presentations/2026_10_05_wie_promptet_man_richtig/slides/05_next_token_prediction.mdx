@@ -34,7 +34,7 @@ import FormulaBox from '../../../../components/slides/primitives/FormulaBox.astr
     <CalloutBox type="statement" title="Autoregressiver Loop: Token für Token">
       Das Modell maximiert fortlaufend {cue:hl-token-formel}die Plausibilität des Folge-Tokens{/cue}.
     </CalloutBox>
-    In jedem Generierungsschritt berechnet das neurale Netzwerk eine Wahrscheinlichkeitsverteilung über das gesamte Vokabular und wählt das nächste Token deterministisch oder stochastisch aus.
+    In jedem Schritt berechnet das Netz eine Verteilung über das gesamte Vokabular und wählt das nächste Token deterministisch oder stochastisch.
   </BentoCard>
 
   <BentoCard slot="right" cue="col-erklaerung" title="Konsequenzen für das Prompting">

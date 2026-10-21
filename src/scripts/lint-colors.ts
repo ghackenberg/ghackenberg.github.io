@@ -14,6 +14,7 @@ import path from 'node:path';
 
 const ROOT_DIR = process.cwd();
 const SRC_DIR = path.resolve(ROOT_DIR, 'src');
+const verbose = process.argv.includes('--verbose');
 
 let errorCount = 0;
 
@@ -23,10 +24,14 @@ function error(msg: string): void {
 }
 
 function success(msg: string): void {
-  console.log(`✅ [lint:colors] ${msg}`);
+  if (verbose) {
+    console.log(`✅ [lint:colors] ${msg}`);
+  }
 }
 
-console.log('🔍 [lint:colors] Auditing color token governance and architectural integrity...\n');
+if (verbose) {
+  console.log('🔍 [lint:colors] Auditing color token governance and architectural integrity...\n');
+}
 
 /**
  * Recursively retrieves all files matching given extensions in a directory.
@@ -48,7 +53,9 @@ function getFiles(dir: string, extensions: string[]): string[] {
 // ============================================================================
 // Rule 1: No Hardcoded Hex Colors
 // ============================================================================
-console.log('Auditing Rule 1: No Hardcoded Hex Colors...');
+if (verbose) {
+  console.log('Auditing Rule 1: No Hardcoded Hex Colors...');
+}
 
 const EXCLUDED_HEX_FILES = new Set(
   [
@@ -110,7 +117,9 @@ if (rule1Violations === 0) {
 // ============================================================================
 // Rule 2: No Deprecated Legacy Classes
 // ============================================================================
-console.log('Auditing Rule 2: No Deprecated Legacy Classes...');
+if (verbose) {
+  console.log('Auditing Rule 2: No Deprecated Legacy Classes...');
+}
 
 const DEPRECATED_CLASSES = [
   { name: 'border-white/5', pattern: /\bborder-white\/5\b/ },
@@ -148,7 +157,9 @@ if (rule2Violations === 0) {
 // ============================================================================
 // Rule 3: No Ad-hoc Tailwind Palette Bypasses in Content & Components
 // ============================================================================
-console.log('Auditing Rule 3: No Ad-hoc Tailwind Palette Bypasses...');
+if (verbose) {
+  console.log('Auditing Rule 3: No Ad-hoc Tailwind Palette Bypasses...');
+}
 
 const RAW_PALETTE_REGEX = /\b(?:[a-zA-Z0-9_-]+:)*(?:text|bg|border|from|to|via|ring|outline|fill|stroke)-(?:rose|pink|fuchsia|purple|violet|indigo|blue|sky|cyan|teal|emerald|green|lime|yellow|amber|orange|red)-(?:50|100|200|300|400|500|600|700|800|900|950)(?:\/\d+)?\b/g;
 
@@ -196,7 +207,9 @@ if (rule3Violations === 0) {
 // ============================================================================
 // Rule 4: Domain Metadata Purity in src/commons/shared/domain-themes.ts
 // ============================================================================
-console.log('Auditing Rule 4: Domain Metadata Purity...');
+if (verbose) {
+  console.log('Auditing Rule 4: Domain Metadata Purity...');
+}
 
 const DOMAIN_THEMES_PATH = path.resolve(SRC_DIR, 'commons', 'shared', 'domain-themes.ts');
 let rule4Violations = 0;
@@ -243,7 +256,9 @@ if (rule4Violations === 0) {
 // ============================================================================
 // Rule 5: Card Architecture Token Integrity
 // ============================================================================
-console.log('Auditing Rule 5: Card Architecture Token Integrity...');
+if (verbose) {
+  console.log('Auditing Rule 5: Card Architecture Token Integrity...');
+}
 
 let rule5Violations = 0;
 
@@ -309,7 +324,9 @@ if (rule5Violations === 0) {
 // ============================================================================
 // Rule 6: Presentation Slide Accent Governance
 // ============================================================================
-console.log('Auditing Rule 6: Presentation Slide Accent Governance...');
+if (verbose) {
+  console.log('Auditing Rule 6: Presentation Slide Accent Governance...');
+}
 
 let rule6Violations = 0;
 
@@ -529,9 +546,11 @@ if (rule6Violations === 0) {
 // ============================================================================
 // Final Evaluation
 // ============================================================================
-console.log('----------------------------------------------------------------------');
+if (verbose || errorCount > 0) {
+  console.log('----------------------------------------------------------------------');
+}
 if (errorCount === 0) {
-  console.log('🎉 [lint:colors] All color token governance checks passed successfully with 0 errors.');
+  console.log('✅ [lint:colors] All 6 color token governance rules passed (0 errors).');
   process.exit(0);
 } else {
   console.error(`💥 [lint:colors] Color token governance audit failed with ${errorCount} total violation(s).`);

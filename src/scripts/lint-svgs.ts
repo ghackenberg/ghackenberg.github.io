@@ -396,7 +396,10 @@ function lintSvg(filePath: string): boolean {
 }
 
 function run(): void {
-  console.log('🔍 [lint:svgs] Scanning SVGs across content collections (posts, courses, services, projects, presentations, talks, publications)...');
+  const verbose = process.argv.includes('--verbose');
+  if (verbose) {
+    console.log('🔍 [lint:svgs] Scanning SVGs across content collections (posts, courses, services, projects, presentations, talks, publications)...');
+  }
   const allSvgs = getAllContentSvgs();
 
   for (const svgFile of allSvgs) {
@@ -412,8 +415,7 @@ function run(): void {
     process.exit(1);
   }
 
-  console.log(`✅ [lint:svgs] Validated ${allSvgs.length} SVG(s) across target collections (design tokens + horizontal <text> bounds).`);
-  console.log('🎉 [lint:svgs] All SVGs adhere to centralized graphics design tokens and text bounding boxes (0 errors).');
+  console.log(`✅ [lint:svgs] Validated ${allSvgs.length} SVG(s) across target collections (design tokens + horizontal <text> bounds, 0 errors).`);
 }
 
 run();
