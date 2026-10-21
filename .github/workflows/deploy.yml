@@ -37,40 +37,59 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Install German Hyphenation & Locale Dictionaries
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends hyphen-de hunspell-de-de locales
-
-      - name: Validate Code Quality & Integrity
-        run: npm run validate
-
-      - name: Cache Branding & OG Assets
-        uses: actions/cache@v4
+      - name: Restore Branding & OG Assets Cache
+        id: cache-branding
+        uses: actions/cache/restore@v4
         with:
           path: .cache/branding
           key: branding-assets-${{ hashFiles('src/pages/_internal/**', 'src/commons/server/branding-assets.ts') }}
           restore-keys: |
             branding-assets-
 
-      - name: Cache Presentation Audio & Cue Timings
-        uses: actions/cache@v4
+      - name: Restore Presentation Audio & Cue Timings Cache
+        id: cache-audio
+        uses: actions/cache/restore@v4
         with:
           path: .cache/slides-audio
           key: slides-audio-${{ hashFiles('src/content/presentations/**/slides/**', 'src/content/presentations/tts-lexicon.json') }}
           restore-keys: |
             slides-audio-
 
-      - name: Cache Presentation PDF Handouts
-        uses: actions/cache@v4
+      - name: Restore Presentation PDF Handouts Cache
+        id: cache-pdf
+        uses: actions/cache/restore@v4
         with:
           path: .cache/slides-pdf
           key: slides-pdf-${{ hashFiles('src/content/presentations/**/slides/**', 'src/content/presentations/**/images/**', 'src/content/presentations/**/index.md', 'src/components/slides/**', 'src/styles/slides.css', 'src/styles/theme.css', 'src/layouts/Layout.astro', 'src/pages/presentations/[slug]/print.astro') }}
           restore-keys: |
             slides-pdf-
 
+      - name: Validate Code Quality & Integrity
+        run: npm run validate
+
       - name: Build Astro Site, Export Presentation PDFs & Validate Semantic Artifacts
         run: npm run build
+
+      - name: Save Branding & OG Assets Cache
+        if: always() && steps.cache-branding.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/branding
+          key: ${{ steps.cache-branding.outputs.cache-primary-key }}
+
+      - name: Save Presentation Audio & Cue Timings Cache
+        if: always() && steps.cache-audio.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/slides-audio
+          key: ${{ steps.cache-audio.outputs.cache-primary-key }}
+
+      - name: Save Presentation PDF Handouts Cache
+        if: always() && steps.cache-pdf.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/slides-pdf
+          key: ${{ steps.cache-pdf.outputs.cache-primary-key }}
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
@@ -131,5 +150,3 @@ jobs:
       - name: Clean Up Temporary Listmonk SSH Key
         if: always() && env.LISTMONK_TEMP_SSH_KEY != ''
         run: rm -f "$LISTMONK_TEMP_SSH_KEY"
-
-

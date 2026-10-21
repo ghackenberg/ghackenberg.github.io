@@ -55,23 +55,23 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       {
         icon: "trending-down",
         title: "Kausalitäts- und Kontext-Blindheit",
-        desc: "Vektoren verwechseln thematische Nähe mit Logik: {cue:hl-vector-causality}Kooperation und gerichtliche Klage liegen im Vektorraum oft gefährlich nah beieinander{/cue}."
+        desc: "{cue:hl-vector-causality}Kooperation und gerichtliche Klage liegen im Vektorraum nah beieinander{/cue}."
       },
       {
         icon: "cross",
         title: "Isolierte Textfragmente",
-        desc: "Naives 500-Token-Chunking bewirkt, dass {cue:hl-vector-fragments}wichtige Provenienz- und Kontextstrukturen verloren gehen{/cue}."
+        desc: "Beim 500-Token-Chunking {cue:hl-vector-fragments}gehen wichtige Provenienz- und Kontextstrukturen verloren{/cue}."
       },
       {
         icon: "alert",
         title: "Statistische Unschärfe",
-        desc: "Marcus [@marcus-2020-neurosymbolic] belegt, dass {cue:hl-vector-stochastic}rein statistische Wahrscheinlichkeiten keine logische Widerspruchsfreiheit garantieren{/cue}."
+        desc: "Marcus [@marcus-2020-neurosymbolic]: {cue:hl-vector-stochastic}Statistische Wahrscheinlichkeiten garantieren keine Logik{/cue}."
       }
     ]} />
   </BentoCard>
 
   <BentoCard slot="right" cue="col-multihop-b2b" title="Das Multi-Hop-Problem im B2B">
-    <CalloutBox type="takeaway" title="{cue:hl-callout-multihop-example}Wenn ein Kunde nach IEC-zertifizierten Komponenten eines Zulieferers fragt{/cue}">
+    <CalloutBox type="takeaway" title="{cue:hl-callout-multihop-example}Anfrage nach IEC-zertifizierten Komponenten{/cue}">
       [Anfrage] → [Zulieferer X] --(liefert)--> [Komponente Y] --(Norm)--> [IEC 62109]
     </CalloutBox>
 
@@ -79,17 +79,17 @@ import BulletList from '../../../../components/slides/primitives/BulletList.astr
       {
         icon: "arrow",
         title: "Relationale Schlussfolgerungskette",
-        desc: "B2B-Fragen erfordern Ketten: {cue:hl-multihop-chain}eine relationale Schlussfolgerungskette über mehrere Dokumente hinweg{/cue}."
+        desc: "Erfordert {cue:hl-multihop-chain}eine relationale Schlussfolgerungskette über mehrere Dokumente{/cue}."
       },
       {
         icon: "cross",
         title: "Vektorsuche scheitert an Kanten",
-        desc: "Weil Vektoren keine Kanten kennen: {cue:hl-multihop-failure}kann diese Kanten nicht prüfen und rät ins Blaue hinein{/cue}."
+        desc: "Vektorsuche {cue:hl-multihop-failure}kann relationale Kanten nicht prüfen und rät ins Blaue hinein{/cue}."
       },
       {
         icon: "check",
         title: "Die Notwendigkeit von Graphen",
-        desc: "Pan et al. [@pan-2024-unifying-llm-kg] zeigen: {cue:hl-multihop-solution}Wir brauchen symbolische Wissensgraphen als verlässliches Fundament{/cue}."
+        desc: "Pan et al. [@pan-2024-unifying-llm-kg]: {cue:hl-multihop-solution}Symbolische Wissensgraphen als verlässliches Fundament{/cue}."
       }
     ]} />
   </BentoCard>
