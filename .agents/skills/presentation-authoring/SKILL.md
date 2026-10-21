@@ -13,8 +13,7 @@ Every presentation lives in its own directory under `src/content/presentations/<
 - `index.md`: Deck-level frontmatter (`title`, `description`, `date`, `category`, `language`, `previewImage`, `authors`).
 - `slides/`: Ordered slide files (`01_titelfolie.mdx`, `02_agenda.mdx`, etc.).
 - `audio/`: Generated Edge-TTS MP3 files and word-level `.cues.json` manifests.
-- `.visual-cache.json`: Deterministic SHA-256 visual fingerprints (`styleHash` + `slideVisualHash` + `deckHash`).
-- `slides-dark.pdf` / `slides-light.pdf`: Generated export handouts.
+- `.cache/slides-pdf/<id>/`: Git-ignored CI/local cache containing `slides-dark.pdf`, `slides-light.pdf`, and `.visual-cache.json` (deterministic SHA-256 `styleHash` + `deckHash`).
 
 ## 2. Two-Phase Generation Protocol & The Golden Slice Checkpoint
 Follow the Universal Content Lifecycle in `AGENTS.md` (SOTA Reconnaissance $\rightarrow$ Alignment Gate $\rightarrow$ Golden Slice $\rightarrow$ Controlled Backtracking).

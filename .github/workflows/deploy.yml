@@ -40,7 +40,15 @@ jobs:
       - name: Validate Code Quality & Integrity
         run: npm run validate
 
-      - name: Build Astro Site & Validate Semantic Artifacts
+      - name: Cache Presentation PDF Handouts
+        uses: actions/cache@v4
+        with:
+          path: .cache/slides-pdf
+          key: slides-pdf-${{ hashFiles('src/content/presentations/**/slides/**', 'src/content/presentations/**/images/**', 'src/content/presentations/**/index.md', 'src/components/slides/**', 'src/styles/slides.css', 'src/styles/theme.css') }}
+          restore-keys: |
+            slides-pdf-
+
+      - name: Build Astro Site, Export Presentation PDFs & Validate Semantic Artifacts
         run: npm run build
 
       - name: Upload Pages Artifact

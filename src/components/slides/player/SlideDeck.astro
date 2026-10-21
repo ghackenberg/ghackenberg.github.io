@@ -470,7 +470,8 @@ const currentDeckId = presentationId || talkId || "presentation";
             data-pdf-dark={pdfDarkUrl || pdfUrl}
             data-pdf-light={pdfLightUrl}
             data-deck-id={currentDeckId}
-            download={`Presentation_${currentDeckId}.pdf`}
+            download={import.meta.env.DEV ? undefined : `Presentation_${currentDeckId}.pdf`}
+            target={import.meta.env.DEV ? "_blank" : undefined}
             class={`h-8 sm:h-9 bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-300 light:text-slate-700 border border-transparent light:border-slate-300 flex items-center justify-center transition-colors cursor-pointer ${
               pdfLightUrl && (pdfDarkUrl || pdfUrl) ? 'w-7 sm:w-8 rounded-l-lg' : 'w-8 h-8 sm:w-9 sm:h-9 rounded-lg'
             }`}
@@ -506,7 +507,8 @@ const currentDeckId = presentationId || talkId || "presentation";
                 <a
                   id="menu-item-pdf-dark"
                   href={pdfDarkUrl || pdfUrl}
-                  download={`Presentation_${currentDeckId}_Dark.pdf`}
+                  download={import.meta.env.DEV ? undefined : `Presentation_${currentDeckId}_Dark.pdf`}
+                  target={import.meta.env.DEV ? "_blank" : undefined}
                   class="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 light:hover:bg-slate-100 text-slate-200 light:text-slate-800 transition-colors cursor-pointer"
                 >
                   <div class="flex items-center gap-2">
@@ -518,7 +520,8 @@ const currentDeckId = presentationId || talkId || "presentation";
                 <a
                   id="menu-item-pdf-light"
                   href={pdfLightUrl}
-                  download={`Presentation_${currentDeckId}_Light.pdf`}
+                  download={import.meta.env.DEV ? undefined : `Presentation_${currentDeckId}_Light.pdf`}
+                  target={import.meta.env.DEV ? "_blank" : undefined}
                   class="flex items-center justify-between px-2.5 py-2 rounded-lg hover:bg-slate-800 light:hover:bg-slate-100 text-slate-200 light:text-slate-800 transition-colors cursor-pointer"
                 >
                   <div class="flex items-center gap-2">
@@ -1834,12 +1837,16 @@ const currentDeckId = presentationId || talkId || "presentation";
 
       if (isLight && pdfLight) {
         btnDownloadPdf.href = pdfLight;
-        btnDownloadPdf.setAttribute('download', `Presentation_${deckId}_Light.pdf`);
+        if (!pdfLight.includes('/print/')) {
+          btnDownloadPdf.setAttribute('download', `Presentation_${deckId}_Light.pdf`);
+        }
         btnDownloadPdf.title = 'Download PDF handout (Light mode / print-friendly)';
         btnDownloadPdf.setAttribute('aria-label', 'Download PDF handout (Light mode)');
       } else if (pdfDark) {
         btnDownloadPdf.href = pdfDark;
-        btnDownloadPdf.setAttribute('download', `Presentation_${deckId}_Dark.pdf`);
+        if (!pdfDark.includes('/print/')) {
+          btnDownloadPdf.setAttribute('download', `Presentation_${deckId}_Dark.pdf`);
+        }
         btnDownloadPdf.title = 'Download PDF handout (Dark mode)';
         btnDownloadPdf.setAttribute('aria-label', 'Download PDF handout (Dark mode)');
       }

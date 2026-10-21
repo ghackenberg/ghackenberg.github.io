@@ -135,6 +135,11 @@ function auditAssetUrl(rawUrl: string, htmlFileRelPath: string, tagName: string,
   const relativeToDist = decodedPath.replace(/^\/+/, '');
   const physicalPath = path.join(distDir, relativeToDist);
 
+  const isCi = process.env.CI === 'true' || process.argv.includes('--ci');
+  if (!isCi && /^\/presentations\/[^/]+\/slides-(dark|light)\.pdf$/.test(cleanPath) && !fs.existsSync(physicalPath)) {
+    return;
+  }
+
   if (!fs.existsSync(physicalPath)) {
     console.error(
       `[validate-assets] ❌ Assertion 3 Failed: Missing physical asset "${rawUrl}" referenced in ${htmlFileRelPath} (<${tagName} ${attrName}="...">)`

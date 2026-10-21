@@ -5,6 +5,7 @@ import puppeteer from 'puppeteer';
 import {
   computeSlideStyleHash,
   computePresentationDeckHash,
+  getSlidePdfCacheDir,
   loadVisualCache,
   saveVisualCache,
   type VisualCache,
@@ -65,6 +66,19 @@ function createStaticServer(): http.Server {
   });
 }
 
+function copyCachedPdfsToDist(presentationFolder: string, darkPdfPath: string, lightPdfPath: string): void {
+  const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
+  if (!fs.existsSync(distPresentationPath)) {
+    fs.mkdirSync(distPresentationPath, { recursive: true });
+  }
+  if (fs.existsSync(darkPdfPath)) {
+    fs.copyFileSync(darkPdfPath, path.join(distPresentationPath, 'slides-dark.pdf'));
+  }
+  if (fs.existsSync(lightPdfPath)) {
+    fs.copyFileSync(lightPdfPath, path.join(distPresentationPath, 'slides-light.pdf'));
+  }
+}
+
 async function exportAllPresentationsToPdf(): Promise<void> {
   const presentationsBase = path.resolve('src/content/presentations');
   if (!fs.existsSync(presentationsBase)) {
@@ -78,6 +92,72 @@ async function exportAllPresentationsToPdf(): Promise<void> {
   }
 
   const force = process.argv.includes('--force');
+  const ifCi = process.argv.includes('--if-ci');
+  const isCi = process.env.CI === 'true' || process.argv.includes('--ci');
+
+  const presentationFolders = fs.readdirSync(presentationsBase).filter((folder) =>
+    fs.statSync(path.join(presentationsBase, folder)).isDirectory()
+  );
+
+  if (ifCi && !isCi) {
+    // In local builds (npm run build / npm run verify), do not launch Puppeteer.
+    // Copy any already-cached PDFs if present and return immediately.
+    for (const presentationFolder of presentationFolders) {
+      const cacheDir = getSlidePdfCacheDir(presentationFolder);
+      const darkOutPdfPath = path.join(cacheDir, 'slides-dark.pdf');
+      const lightOutPdfPath = path.join(cacheDir, 'slides-light.pdf');
+      copyCachedPdfsToDist(presentationFolder, darkOutPdfPath, lightOutPdfPath);
+    }
+    console.log('[PDF Exporter] Local build detected (--if-ci): skipped Puppeteer PDF rendering (0s).');
+    return;
+  }
+
+  const styleHash = computeSlideStyleHash();
+
+  interface DeckExportTask {
+    presentationFolder: string;
+    deckHash: string;
+    cache: VisualCache;
+    darkOutPdfPath: string;
+    lightOutPdfPath: string;
+  }
+
+  const dirtyTasks: DeckExportTask[] = [];
+
+  for (const presentationFolder of presentationFolders) {
+    const cacheDir = getSlidePdfCacheDir(presentationFolder);
+    fs.mkdirSync(cacheDir, { recursive: true });
+
+    const { deckHash } = computePresentationDeckHash(presentationFolder, styleHash);
+    let cache: VisualCache | null = loadVisualCache(presentationFolder);
+    if (!cache) {
+      cache = { version: 'v1.0', styleHash: '', deckHash: '', slides: {} };
+    }
+
+    const darkOutPdfPath = path.join(cacheDir, 'slides-dark.pdf');
+    const lightOutPdfPath = path.join(cacheDir, 'slides-light.pdf');
+
+    const pdfsExist = fs.existsSync(darkOutPdfPath) && fs.existsSync(lightOutPdfPath);
+    const isUpToDate = !force && pdfsExist && cache.deckHash === deckHash;
+
+    if (isUpToDate) {
+      copyCachedPdfsToDist(presentationFolder, darkOutPdfPath, lightOutPdfPath);
+      console.log(`  ✓ PDFs for "${presentationFolder}" are up to date (cache hit: ${deckHash.slice(0, 10)}...).`);
+    } else {
+      dirtyTasks.push({
+        presentationFolder,
+        deckHash,
+        cache,
+        darkOutPdfPath,
+        lightOutPdfPath,
+      });
+    }
+  }
+
+  if (dirtyTasks.length === 0) {
+    console.log('[PDF Exporter] All presentation PDFs are up to date (100% cache hit).');
+    return;
+  }
 
   const server = createStaticServer();
   await new Promise((resolve) => server.listen(PORT, '127.0.0.1', () => resolve(true)));
@@ -88,93 +168,63 @@ async function exportAllPresentationsToPdf(): Promise<void> {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
-  const presentationFolders = fs.readdirSync(presentationsBase);
-  const styleHash = computeSlideStyleHash();
-
   try {
-    for (const presentationFolder of presentationFolders) {
-      const presentationPath = path.join(presentationsBase, presentationFolder);
-      if (!fs.statSync(presentationPath).isDirectory()) continue;
+    for (const task of dirtyTasks) {
+      const { presentationFolder, deckHash, cache, darkOutPdfPath, lightOutPdfPath } = task;
 
-      const { deckHash } = computePresentationDeckHash(presentationFolder, styleHash);
-      let cache: VisualCache | null = loadVisualCache(presentationFolder);
-      if (!cache) {
-        cache = { version: 'v1.0', styleHash: '', deckHash: '', slides: {} };
-      }
+      // 1. Dark Mode PDF
+      const darkPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=dark`;
+      console.log(`[PDF Exporter] Rendering Dark Mode PDF for "${presentationFolder}"...`);
+      const darkPage = await browser.newPage();
+      await darkPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
 
-      const darkOutPdfPath = path.join(presentationPath, 'slides-dark.pdf');
-      const lightOutPdfPath = path.join(presentationPath, 'slides-light.pdf');
-
-      const pdfsExist = fs.existsSync(darkOutPdfPath) && fs.existsSync(lightOutPdfPath);
-      const isUpToDate = !force && pdfsExist && cache.deckHash === deckHash;
-
-      if (isUpToDate) {
-        console.log(`  ✓ PDFs for "${presentationFolder}" are up to date (deck hash hit: ${deckHash.slice(0, 10)}...).`);
+      const darkResponse = await darkPage.goto(darkPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+      if (!darkResponse || !darkResponse.ok()) {
+        console.warn(`  ⚠️ Could not load dark print page for ${presentationFolder} (status: ${darkResponse?.status()}). Skipping.`);
       } else {
-        // 1. Dark Mode PDF
-        const darkPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=dark`;
-        console.log(`[PDF Exporter] Rendering Dark Mode PDF for "${presentationFolder}"...`);
-        const darkPage = await browser.newPage();
-        await darkPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
-
-        const darkResponse = await darkPage.goto(darkPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
-        if (!darkResponse || !darkResponse.ok()) {
-          console.warn(`  ⚠️ Could not load dark print page for ${presentationFolder} (status: ${darkResponse?.status()}). Skipping.`);
-        } else {
-          await darkPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
-          await darkPage.evaluateHandle('document.fonts.ready');
-          await darkPage.pdf({
-            path: darkOutPdfPath,
-            printBackground: true,
-            preferCSSPageSize: true,
-            width: '1920px',
-            height: '1080px',
-            margin: { top: 0, right: 0, bottom: 0, left: 0 },
-          });
-
-          const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
-          if (fs.existsSync(distPresentationPath)) {
-            fs.copyFileSync(darkOutPdfPath, path.join(distPresentationPath, 'slides-dark.pdf'));
-          }
-
-          console.log(`  ✓ Successfully generated Dark Mode PDF: ${darkOutPdfPath}`);
-        }
-        await darkPage.close();
-
-        // 2. Light Mode PDF
-        const lightPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=light`;
-        console.log(`[PDF Exporter] Rendering Light Mode PDF for "${presentationFolder}"...`);
-        const lightPage = await browser.newPage();
-        await lightPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
-
-        const lightResponse = await lightPage.goto(lightPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
-        if (!lightResponse || !lightResponse.ok()) {
-          console.warn(`  ⚠️ Could not load light print page for ${presentationFolder} (status: ${lightResponse?.status()}). Skipping.`);
-        } else {
-          await lightPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
-          await lightPage.evaluateHandle('document.fonts.ready');
-          await lightPage.pdf({
-            path: lightOutPdfPath,
-            printBackground: true,
-            preferCSSPageSize: true,
-            width: '1920px',
-            height: '1080px',
-            margin: { top: 0, right: 0, bottom: 0, left: 0 },
-          });
-
-          const distPresentationPath = path.join(distDir, 'presentations', presentationFolder);
-          if (fs.existsSync(distPresentationPath)) {
-            fs.copyFileSync(lightOutPdfPath, path.join(distPresentationPath, 'slides-light.pdf'));
-          }
-
-          console.log(`  ✓ Successfully generated Light Mode PDF: ${lightOutPdfPath}`);
-        }
-        await lightPage.close();
-
-        cache.deckHash = deckHash;
-        cache.styleHash = styleHash;
-        saveVisualCache(presentationFolder, cache);
+        await darkPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
+        await darkPage.evaluateHandle('document.fonts.ready');
+        await darkPage.pdf({
+          path: darkOutPdfPath,
+          printBackground: true,
+          preferCSSPageSize: true,
+          width: '1920px',
+          height: '1080px',
+          margin: { top: 0, right: 0, bottom: 0, left: 0 },
+        });
+        console.log(`  ✓ Successfully generated Dark Mode PDF: ${darkOutPdfPath}`);
       }
+      await darkPage.close();
+
+      // 2. Light Mode PDF
+      const lightPrintUrl = `http://127.0.0.1:${PORT}/presentations/${presentationFolder}/print/?theme=light`;
+      console.log(`[PDF Exporter] Rendering Light Mode PDF for "${presentationFolder}"...`);
+      const lightPage = await browser.newPage();
+      await lightPage.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
+
+      const lightResponse = await lightPage.goto(lightPrintUrl, { waitUntil: 'networkidle0', timeout: 60000 });
+      if (!lightResponse || !lightResponse.ok()) {
+        console.warn(`  ⚠️ Could not load light print page for ${presentationFolder} (status: ${lightResponse?.status()}). Skipping.`);
+      } else {
+        await lightPage.waitForSelector('[data-print-ready="true"]', { timeout: 15000 });
+        await lightPage.evaluateHandle('document.fonts.ready');
+        await lightPage.pdf({
+          path: lightOutPdfPath,
+          printBackground: true,
+          preferCSSPageSize: true,
+          width: '1920px',
+          height: '1080px',
+          margin: { top: 0, right: 0, bottom: 0, left: 0 },
+        });
+        console.log(`  ✓ Successfully generated Light Mode PDF: ${lightOutPdfPath}`);
+      }
+      await lightPage.close();
+
+      copyCachedPdfsToDist(presentationFolder, darkOutPdfPath, lightOutPdfPath);
+
+      cache.deckHash = deckHash;
+      cache.styleHash = styleHash;
+      saveVisualCache(presentationFolder, cache);
     }
   } finally {
     await browser.close();

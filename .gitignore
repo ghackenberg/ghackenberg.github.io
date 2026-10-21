@@ -37,3 +37,8 @@ lighthouse-reports/
 # decoupled social media files
 temp-social-media-tools/
 
+
+# generated presentation PDFs, thumbnails, and visual cache
+src/content/presentations/**/slides*.pdf
+src/content/presentations/**/.visual-cache.json
+src/content/presentations/**/thumbnails/

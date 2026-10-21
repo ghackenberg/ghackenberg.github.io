@@ -97,6 +97,15 @@ function copyContentAssets(): AstroIntegration {
               }
             }
 
+            // Dev server middleware: redirect presentation PDF requests directly to live /print/ route
+            const presPdfMatch = cleanUrl.match(/^\/presentations\/([^/]+)\/slides-(dark|light)\.pdf$/);
+            if (presPdfMatch) {
+              const [, presId, theme] = presPdfMatch;
+              res.writeHead(302, { Location: `/presentations/${presId}/print/?theme=${theme}` });
+              res.end();
+              return;
+            }
+
             // Dev server middleware for hashed presentation preview image
             const presPreviewMatch = cleanUrl.match(/^\/presentations\/([^/]+)\/preview-([a-f0-9]{8})\.jpg$/);
             if (presPreviewMatch) {

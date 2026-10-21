@@ -184,10 +184,17 @@ export interface VisualCache {
 }
 
 /**
+ * Returns the cache directory for a presentation's rendered PDFs and visual fingerprint
+ */
+export function getSlidePdfCacheDir(presentationFolder: string): string {
+  return path.resolve('.cache/slides-pdf', presentationFolder);
+}
+
+/**
  * Loads the visual cache for a presentation
  */
 export function loadVisualCache(presentationFolder: string): VisualCache | null {
-  const cachePath = path.resolve('src/content/presentations', presentationFolder, '.visual-cache.json');
+  const cachePath = path.join(getSlidePdfCacheDir(presentationFolder), '.visual-cache.json');
   if (!fs.existsSync(cachePath)) return null;
   try {
     return JSON.parse(fs.readFileSync(cachePath, 'utf8'));
@@ -200,7 +207,9 @@ export function loadVisualCache(presentationFolder: string): VisualCache | null 
  * Saves the visual cache for a presentation
  */
 export function saveVisualCache(presentationFolder: string, cache: VisualCache): void {
-  const cachePath = path.resolve('src/content/presentations', presentationFolder, '.visual-cache.json');
+  const cacheDir = getSlidePdfCacheDir(presentationFolder);
+  fs.mkdirSync(cacheDir, { recursive: true });
+  const cachePath = path.join(cacheDir, '.visual-cache.json');
   const content = JSON.stringify(cache, null, 2) + '\n';
   for (let attempt = 1; attempt <= 6; attempt++) {
     try {

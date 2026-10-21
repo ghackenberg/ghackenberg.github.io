@@ -78,10 +78,8 @@ const renderedSlides = await Promise.all(
   })
 );
 
-// Check if slides-dark.pdf or slides-light.pdf exist for download button
+// Presentation preview image and PDF handout URLs (in dev mode, link directly to live print routes)
 const presentationDir = path.resolve("src/content/presentations", presentation.id);
-const pdfDarkPath = path.join(presentationDir, "slides-dark.pdf");
-const pdfLightPath = path.join(presentationDir, "slides-light.pdf");
 const previewPath = path.join(presentationDir, "preview.jpg");
 
 let previewUrl: string | undefined = undefined;
@@ -90,15 +88,14 @@ if (fs.existsSync(previewPath)) {
   previewUrl = `/presentations/${presentation.id}/${getHashedFilename('preview.jpg', previewHash)}`;
 }
 
-const pdfDarkUrl = fs.existsSync(pdfDarkPath) 
-  ? `/presentations/${presentation.id}/slides-dark.pdf` 
-  : undefined;
-
-const pdfLightUrl = fs.existsSync(pdfLightPath) 
-  ? `/presentations/${presentation.id}/slides-light.pdf` 
-  : undefined;
-
-const pdfDownloadUrl = pdfDarkUrl || pdfLightUrl;
+const isDev = import.meta.env.DEV;
+const pdfDarkUrl = isDev
+  ? `/presentations/${presentation.id}/print/?theme=dark`
+  : `/presentations/${presentation.id}/slides-dark.pdf`;
+const pdfLightUrl = isDev
+  ? `/presentations/${presentation.id}/print/?theme=light`
+  : `/presentations/${presentation.id}/slides-light.pdf`;
+const pdfDownloadUrl = pdfDarkUrl;
 
 const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\}/g, "") : "");
 

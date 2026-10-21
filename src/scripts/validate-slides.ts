@@ -1083,10 +1083,12 @@ function validateSlides() {
       }
     }
 
-    // 8. PDF Handouts & Visual Fingerprint Cache Integrity Gate
-    if (!isSyntaxOnly) {
-      const pdfDarkPath = path.join(presentationPath, 'slides-dark.pdf');
-      const pdfLightPath = path.join(presentationPath, 'slides-light.pdf');
+    // 8. PDF Handouts & Visual Fingerprint Cache Integrity Gate (CI only)
+    const isCi = process.env.CI === 'true' || process.argv.includes('--ci');
+    if (!isSyntaxOnly && isCi) {
+      const cacheDir = getSlidePdfCacheDir(presentationFolder);
+      const pdfDarkPath = path.join(cacheDir, 'slides-dark.pdf');
+      const pdfLightPath = path.join(cacheDir, 'slides-light.pdf');
 
       if (!fs.existsSync(pdfDarkPath)) {
         console.error(`  ❌ [pdf] Missing Dark Mode PDF handout: "slides-dark.pdf". Run "npm run export:slides".`);
