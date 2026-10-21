@@ -130,7 +130,7 @@ To understand how WebMCP operates under the hood, we must examine the normative 
 
 The specification extends the standard DOM `Document` interface with a `[SameObject]` attribute `modelContext` of type `ModelContext`, accessible only within a `[SecureContext]` (HTTPS or `localhost`) on `Window` realms [@walderman-2026-webmcp]:
 
-```webidl
+```typescript
 // Normative WebIDL from W3C WebMCP Specification (Walderman et al., 2026, Sections 4.1–4.3)
 partial interface Document {
   [SecureContext, SameObject] readonly attribute ModelContext modelContext;

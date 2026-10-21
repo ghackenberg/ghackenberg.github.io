@@ -870,6 +870,11 @@ export default defineConfig({
     imageSitemapEnforcer(),
   ],
   markdown: {
+    shikiConfig: {
+      langAlias: {
+        webidl: 'typescript',
+      },
+    },
     processor: unified({
       remarkPlugins: [remarkMath, remarkValidateImages, remarkMermaid, remarkSlideCues, remarkCitations],
       rehypePlugins: [rehypeKatex, rehypeResponsiveTables, rehypeCallouts, rehypeInlineSvg],
