@@ -31,7 +31,7 @@ All public pages must provide valid JSON-LD scripts:
 - **Breadcrumb Navigation**: `BreadcrumbList` on all hierarchical detail pages.
 
 ## 4. Performance & Core Web Vitals
-- **Image Compression & WebP**: All rendered slide previews and thumbnails use modern WebP format with offscreen 0-diff protection.
+- **Image Compression & WebP**: All rendered slide previews and imagery use modern WebP format.
 - **Font Subsetting**: Web fonts are served locally via `@fontsource/inter`, `@fontsource/outfit`, and `@fontsource/caveat` with zero external Google Fonts network hops.
 - **Performance Audits**: Run local Lighthouse checks to verify scores $>95$:
   ```powershell

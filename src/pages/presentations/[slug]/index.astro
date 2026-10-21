@@ -39,11 +39,10 @@ const renderedSlides = await Promise.all(
     const { Content } = await render(slide);
     const slideBase = path.basename(slide.id);
 
-    // Check if audio file, cues file, and thumbnail exist
+    // Check if audio file and cues file exist
     const presentationDir = path.resolve("src/content/presentations", presentation.id);
     const audioFilePath = path.join(presentationDir, "audio", `${slideBase}.mp3`);
     const cuesFilePath = path.join(presentationDir, "audio", `${slideBase}.cues.json`);
-    const thumbPath = path.join(presentationDir, "thumbnails", `${slideBase}.webp`);
 
     let audioUrl = undefined;
     let durationSec = undefined;
@@ -51,12 +50,6 @@ const renderedSlides = await Promise.all(
       const hash = getFileContentHash(audioFilePath);
       audioUrl = `/presentations/${presentation.id}/audio/${getHashedFilename(`${slideBase}.mp3`, hash)}`;
       durationSec = getMp3Duration(audioFilePath);
-    }
-
-    let thumbnailUrl = undefined;
-    if (fs.existsSync(thumbPath)) {
-      const hash = getFileContentHash(thumbPath);
-      thumbnailUrl = `/presentations/${presentation.id}/thumbnails/${getHashedFilename(`${slideBase}.webp`, hash)}`;
     }
 
     let cues: Record<string, number> = {};
@@ -77,7 +70,6 @@ const renderedSlides = await Promise.all(
       voiceover: slide.data.voiceover,
       notes: slide.data.notes,
       references: slide.data.references || [],
-      thumbnailUrl,
       audioUrl,
       durationSec,
       cues,
@@ -144,7 +136,6 @@ const schemaGraph: JsonLdNode[] = [
         "name": s.title || `Slide ${s.number}`,
         ...(cleanSub ? { "headline": cleanSub } : {}),
         ...(cleanVoice ? { "text": cleanVoice } : {}),
-        ...(s.thumbnailUrl ? { "image": `https://hackenberg.tech${s.thumbnailUrl}` } : {}),
         ...(s.references && s.references.length > 0
           ? {
               "citation": s.references.map((ref) => ({

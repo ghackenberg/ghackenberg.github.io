@@ -34,7 +34,6 @@
     "audio:presentations": "tsx src/scripts/generate-presentation-audio.ts",
     "audio:talks": "tsx src/scripts/generate-presentation-audio.ts",
     "export:slides": "tsx src/scripts/export-slides-pdf.ts",
-    "export:slides-thumbs": "tsx src/scripts/generate-slide-thumbnails.ts",
     "validate:slides": "tsx src/scripts/validate-slides.ts",
     "validate:slides:syntax": "tsx src/scripts/validate-slides.ts --syntax-only",
     "validate:skills": "tsx src/scripts/validate-skills.ts",

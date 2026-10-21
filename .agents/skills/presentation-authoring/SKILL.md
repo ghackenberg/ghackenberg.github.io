@@ -1,6 +1,6 @@
 ---
 name: presentation-authoring
-description: Author, modify, or export Slide-as-Code presentations, synchronize voiceovers with cues, generate Edge-TTS audio, and render 0-diff thumbnails and PDF handouts.
+description: Author, modify, or export Slide-as-Code presentations, synchronize voiceovers with cues, generate Edge-TTS audio, and render PDF handouts.
 ---
 
 # Presentation Authoring (Slide-as-Code Engine)
@@ -13,7 +13,6 @@ Every presentation lives in its own directory under `src/content/presentations/<
 - `index.md`: Deck-level frontmatter (`title`, `description`, `date`, `category`, `language`, `previewImage`, `authors`).
 - `slides/`: Ordered slide files (`01_titelfolie.mdx`, `02_agenda.mdx`, etc.).
 - `audio/`: Generated Edge-TTS MP3 files and word-level `.cues.json` manifests.
-- `thumbnails/`: Generated 16:9 WebP slide thumbnails.
 - `.visual-cache.json`: Deterministic SHA-256 visual fingerprints (`styleHash` + `slideVisualHash` + `deckHash`).
 - `slides-dark.pdf` / `slides-light.pdf`: Generated export handouts.
 
@@ -31,22 +30,18 @@ Follow the Universal Content Lifecycle in `AGENTS.md` (SOTA Reconnaissance $\rig
      ```powershell
      npm run validate:slides:syntax ; npm run validate:citations:syntax
      ```
-  3. **DO NOT** generate TTS audio, thumbnails, or PDFs during text iteration!
+  3. **DO NOT** generate TTS audio or PDFs during text iteration!
 - **Phase 2 (Heavy Build & Release)**:
   Once the text is explicitly frozen (*"Text steht"*):
   1. Synthesize speaker audio & cue timestamps:
      ```powershell
      npm run audio:presentations
      ```
-  2. Render 16:9 thumbnails (with offscreen 0-diff pixel protection):
-     ```powershell
-     npm run export:slides-thumbs
-     ```
-  3. Render PDF handouts (Dark & Light mode):
+  2. Render PDF handouts (Dark & Light mode):
      ```powershell
      npm run export:slides
      ```
-  4. Follow the master release verification gate (see `build-engineering`).
+  3. Follow the master release verification gate (see `build-engineering`).
 
 ## 3. The 5-Point Cue Pre-Flight Checklist
 Before finalizing any `.mdx` slide, enforce these 5 mandatory cue rules:

@@ -478,7 +478,6 @@ const SUBPAGE_HEADING_CHECKS = [
   { file: path.resolve(PAGES_DIR, 'courses', '[slug].astro'), expected: 'Course <span class="text-domain-courses">Modules</span>' },
   { file: path.resolve(PAGES_DIR, 'projects', '[slug].astro'), expected: 'Project <span class="text-domain-projects">Screenshots</span>' },
   { file: path.resolve(PAGES_DIR, 'services', '[slug].astro'), expected: 'Service <span class="text-domain-services">Modules</span>' },
-  { file: path.resolve(PAGES_DIR, 'presentations', '[slug]', 'index.astro'), expected: 'Full <span class="text-domain-presentations">Transcript</span>' },
 ];
 let subpageHeadingViolations = 0;
 for (const check of SUBPAGE_HEADING_CHECKS) {
@@ -492,7 +491,7 @@ for (const check of SUBPAGE_HEADING_CHECKS) {
   }
 }
 if (subpageHeadingViolations === 0) {
-  success('All subpage section headings (Course Modules, Project Screenshots, Service Modules, Full Transcript) contain canonical solid domain highlights.');
+  success('All subpage section headings (Course Modules, Project Screenshots, Service Modules) contain canonical solid domain highlights.');
 }
 
 // 18. Services Page and Card Color Purity: src/pages/services.astro must not contain purple classes

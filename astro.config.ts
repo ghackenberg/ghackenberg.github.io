@@ -84,8 +84,8 @@ function copyContentAssets(): AstroIntegration {
 
             const cleanUrl = (req.url || '').split('?')[0].split('#')[0];
 
-            // Dev server middleware for hashed presentation assets (thumbnails & audio)
-            const presHashedMatch = cleanUrl.match(/^\/presentations\/([^/]+)\/(thumbnails|audio)\/(.+)-([a-f0-9]{8})\.(webp|mp3)$/);
+            // Dev server middleware for hashed presentation audio assets
+            const presHashedMatch = cleanUrl.match(/^\/presentations\/([^/]+)\/(audio)\/(.+)-([a-f0-9]{8})\.(mp3)$/);
             if (presHashedMatch) {
               const [, presId, type, slideBase, , ext] = presHashedMatch;
               const filePath = path.resolve('src/content/presentations', presId, type, `${slideBase}.${ext}`);
@@ -149,22 +149,7 @@ function copyContentAssets(): AstroIntegration {
               const id = presDir.name;
               const currentPresDir = path.join(srcDir, id);
 
-              // 1. Thumbnails: Copy each thumbnails/${slideId}.webp as thumbnails/${slideId}-${hash}.webp
-              const thumbsDir = path.join(currentPresDir, 'thumbnails');
-              if (fs.existsSync(thumbsDir)) {
-                for (const thumbFile of fs.readdirSync(thumbsDir)) {
-                  if (thumbFile.endsWith('.webp')) {
-                    const fullThumbPath = path.join(thumbsDir, thumbFile);
-                    const hash = getFileContentHash(fullThumbPath);
-                    const slideId = path.basename(thumbFile, '.webp');
-                    const destPath = path.join(outDir, 'presentations', id, 'thumbnails', `${slideId}-${hash}.webp`);
-                    fs.mkdirSync(path.dirname(destPath), { recursive: true });
-                    fs.copyFileSync(fullThumbPath, destPath);
-                  }
-                }
-              }
-
-              // 2. Audio: Copy each audio/${slideId}.mp3 as audio/${slideId}-${hash}.mp3
+              // 1. Audio: Copy each audio/${slideId}.mp3 as audio/${slideId}-${hash}.mp3
               const audioDir = path.join(currentPresDir, 'audio');
               if (fs.existsSync(audioDir)) {
                 for (const audioFile of fs.readdirSync(audioDir)) {
@@ -179,7 +164,7 @@ function copyContentAssets(): AstroIntegration {
                 }
               }
 
-              // 3. Preview: If preview.jpg exists, copy as preview-${hash}.jpg
+              // 2. Preview: If preview.jpg exists, copy as preview-${hash}.jpg
               const previewPath = path.join(currentPresDir, 'preview.jpg');
               if (fs.existsSync(previewPath)) {
                 const hash = getFileContentHash(previewPath);
@@ -188,13 +173,13 @@ function copyContentAssets(): AstroIntegration {
                 fs.copyFileSync(previewPath, destPath);
               }
 
-              // 4. PDFs, SVGs, and other non-raster/non-audio canonical files
+              // 3. PDFs, SVGs, and other non-raster/non-audio canonical files
               const copyOtherPresFiles = (current: string, rel = '') => {
                 for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
                   const fullPath = path.join(current, entry.name);
                   const entryRel = path.join(rel, entry.name);
                   if (entry.isDirectory()) {
-                    if (entry.name === 'thumbnails' || entry.name === 'audio') {
+                    if (entry.name === 'audio') {
                       continue;
                     }
                     copyOtherPresFiles(fullPath, entryRel);
@@ -210,7 +195,7 @@ function copyContentAssets(): AstroIntegration {
                       continue;
                     }
 
-                    // Do not copy raw unhashed thumbnails, raw audio, or raw raster images!
+                    // Do not copy raw audio or raw raster images!
                     if (/\.(png|jpe?g|webp|avif|gif|mp3)$/i.test(entry.name)) {
                       continue;
                     }

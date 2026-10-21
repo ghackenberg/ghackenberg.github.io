@@ -1098,7 +1098,7 @@ function validateSlides() {
       }
 
       const styleHash = computeSlideStyleHash();
-      const { deckHash, slideHashes } = computePresentationDeckHash(presentationFolder, styleHash);
+      const { deckHash } = computePresentationDeckHash(presentationFolder, styleHash);
       const visualCache = loadVisualCache(presentationFolder);
 
       if (!visualCache) {
@@ -1119,45 +1119,6 @@ function validateSlides() {
             `  ❌ [pdf] Presentation visual content or assets were modified since PDF export (deck hash mismatch). Run "npm run export:slides".`
           );
           totalErrors++;
-        }
-      }
-
-      // 9. Slide WebP Thumbnails Existence & Freshness Check
-      const thumbnailsDir = path.join(presentationPath, 'thumbnails');
-      if (!fs.existsSync(thumbnailsDir)) {
-        console.error(`  ❌ [thumbnail] Missing "thumbnails/" directory for "${presentationFolder}". Run "npm run export:slides-thumbs".`);
-        totalErrors++;
-      } else {
-        // Check each active slide has a thumbnail and matches fingerprint
-        for (const slideId of activeSlideIds) {
-          const thumbPath = path.join(thumbnailsDir, `${slideId}.webp`);
-          if (!fs.existsSync(thumbPath)) {
-            console.error(`  ❌ [thumbnail] Missing thumbnail for slide "${slideId}": "thumbnails/${slideId}.webp". Run "npm run export:slides-thumbs".`);
-            totalErrors++;
-          } else if (visualCache && visualCache.slides[slideId] !== slideHashes[slideId]) {
-            console.error(`  ❌ [thumbnail] Slide "${slideId}" visual content was modified since thumbnail export (fingerprint mismatch). Run "npm run export:slides-thumbs".`);
-            totalErrors++;
-          }
-        }
-
-        // Check for orphan thumbnails
-        const thumbFiles = fs.readdirSync(thumbnailsDir).filter(f => f.endsWith('.webp'));
-        for (const tFile of thumbFiles) {
-          const tId = tFile.replace(/\.webp$/, '');
-          if (!activeSlideIds.has(tId)) {
-            console.error(`  ❌ [thumbnail-orphan] Orphaned thumbnail "thumbnails/${tFile}" has no matching slide in "slides/". Run "npm run export:slides-thumbs" or delete the file.`);
-            totalErrors++;
-          }
-        }
-
-        // Check for orphan cache entries
-        if (visualCache && visualCache.slides) {
-          for (const cachedId of Object.keys(visualCache.slides)) {
-            if (!activeSlideIds.has(cachedId)) {
-              console.error(`  ❌ [cache-orphan] Orphaned slide entry "${cachedId}" in ".visual-cache.json" has no matching slide in "slides/". Run "npm run export:slides-thumbs".`);
-              totalErrors++;
-            }
-          }
         }
       }
     }

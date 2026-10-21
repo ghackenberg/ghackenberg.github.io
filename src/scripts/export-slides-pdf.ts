@@ -2,7 +2,6 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import puppeteer from 'puppeteer';
-import { generateSlideThumbnailsForPresentation } from './generate-slide-thumbnails.js';
 import {
   computeSlideStyleHash,
   computePresentationDeckHash,
@@ -176,9 +175,6 @@ async function exportAllPresentationsToPdf(): Promise<void> {
         cache.styleHash = styleHash;
         saveVisualCache(presentationFolder, cache);
       }
-
-      // 3. WebP Slide Thumbnails (increments & checks pixels)
-      await generateSlideThumbnailsForPresentation(browser, PORT, presentationFolder, force);
     }
   } finally {
     await browser.close();
