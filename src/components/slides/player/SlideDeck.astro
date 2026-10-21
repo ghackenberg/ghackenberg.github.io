@@ -41,12 +41,11 @@ const currentDeckId = presentationId || talkId || "presentation";
       title="Close"
     ></div>
 
-    <!-- Slide List Sidebar (Side-by-side on desktop lg+, overlay drawer on tablet md to <lg, disabled on mobile <md) -->
+    <!-- Slide List Sidebar (Side-by-side on desktop lg+, overlay drawer on tablet md to <lg) -->
     <aside
       id="slide-list-drawer"
-      class="hidden md:flex drawer-closed bg-slate-900/95 light:bg-white/95 lg:bg-slate-900 lg:light:bg-slate-50 border-r border-slate-800 light:border-slate-200 z-40 flex-col shadow-2xl lg:shadow-none select-none shrink-0"
+      class="flex drawer-closed bg-slate-900/95 light:bg-white/95 lg:bg-slate-900 lg:light:bg-slate-50 border-r border-slate-800 light:border-slate-200 z-40 flex-col shadow-2xl lg:shadow-none select-none shrink-0"
       aria-label="Slide overview"
-      aria-hidden="true"
     >
       <div class="w-72 sm:w-80 max-w-[85vw] h-full flex flex-col">
         <!-- Drawer Header -->
@@ -173,9 +172,8 @@ const currentDeckId = presentationId || talkId || "presentation";
     <!-- Voice Transcript Sidebar (Right side: side-by-side when space permits on desktop lg+, overlay drawer on tablet or when both sidebars are open) -->
     <aside
       id="transcript-drawer"
-      class="hidden md:flex drawer-closed bg-slate-900/95 light:bg-white/95 lg:bg-slate-900 lg:light:bg-slate-50 border-l border-slate-800 light:border-slate-200 z-40 flex-col shadow-2xl lg:shadow-none select-none shrink-0"
+      class="flex drawer-closed bg-slate-900/95 light:bg-white/95 lg:bg-slate-900 lg:light:bg-slate-50 border-l border-slate-800 light:border-slate-200 z-40 flex-col shadow-2xl lg:shadow-none select-none shrink-0"
       aria-label="Voice transcript"
-      aria-hidden="true"
     >
       <div class="w-72 sm:w-80 max-w-[85vw] h-full flex flex-col">
         <!-- Drawer Header -->
@@ -194,7 +192,7 @@ const currentDeckId = presentationId || talkId || "presentation";
               id="btn-copy-transcript"
               type="button"
               class="w-8 h-8 rounded-lg bg-slate-800 light:bg-slate-100 hover:bg-slate-700 light:hover:bg-slate-200 text-slate-400 hover:text-slate-200 light:text-slate-500 light:hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
-              title="Copy voice transcript"
+              title="Copy voice transcript of current slide"
               aria-label="Copy voice transcript"
             >
               <svg id="icon-copy-transcript" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,25 +216,42 @@ const currentDeckId = presentationId || talkId || "presentation";
           </div>
         </div>
 
-        <!-- Per-Slide Voice Transcript Content (Scrollable) -->
-        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar min-h-0 select-text" id="transcript-drawer-content">
+        <!-- Scrollable Per-Slide Voice Transcript List (All slides visible in DOM for 100% crawler indexability) -->
+        <div class="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar min-h-0 select-text" id="transcript-drawer-content">
           {slides.map((slide, idx) => (
-            <div
+            <article
               data-transcript-slide={idx}
-              class={idx === 0 ? "space-y-3" : "hidden space-y-3"}
+              data-active={idx === 0 ? "true" : undefined}
+              class={`transcript-slide-item rounded-xl p-3 border transition-all duration-200 cursor-pointer space-y-2 ${
+                idx === 0
+                  ? "bg-domain-presentations/12 border-domain-presentations/45 shadow-sm"
+                  : "bg-slate-800/30 light:bg-white border-slate-800/80 light:border-slate-200/80 hover:border-slate-700 light:hover:border-slate-300 opacity-75 hover:opacity-100"
+              }`}
             >
-              <div class="pb-2.5 border-b border-slate-800/80 light:border-slate-200/80">
-                <div class="text-xs sm:text-sm font-bold text-slate-100 light:text-slate-900 leading-snug">
-                  {slide.title || `Slide ${idx + 1}`}
-                </div>
-                {slide.subtitle && (
-                  <div class="text-[11px] sm:text-xs text-slate-400 light:text-slate-500 mt-1 leading-relaxed">
-                    {slide.subtitle}
+              <div class="flex items-start gap-2 pb-2 border-b border-slate-800/70 light:border-slate-200/70">
+                <span
+                  data-transcript-badge
+                  class={`font-mono text-[11px] px-1.5 py-0.5 rounded-md font-bold shrink-0 mt-0.5 ${
+                    idx === 0
+                      ? "bg-domain-presentations/25 text-domain-presentations"
+                      : "bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600"
+                  }`}
+                >
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="text-xs font-bold text-slate-100 light:text-slate-900 leading-snug">
+                    {slide.title || `Slide ${idx + 1}`}
                   </div>
-                )}
+                  {slide.subtitle && (
+                    <div class="text-[11px] text-slate-400 light:text-slate-500 mt-0.5 leading-snug">
+                      {slide.subtitle}
+                    </div>
+                  )}
+                </div>
               </div>
               {slide.voiceover ? (
-                <p class="text-xs sm:text-sm text-slate-300 light:text-slate-700 leading-relaxed whitespace-pre-line">
+                <p class="text-xs text-slate-200 light:text-slate-700 leading-relaxed whitespace-pre-line">
                   {slide.voiceover}
                 </p>
               ) : (
@@ -244,7 +259,32 @@ const currentDeckId = presentationId || talkId || "presentation";
                   No spoken transcript for this slide.
                 </p>
               )}
-            </div>
+              {slide.references && slide.references.length > 0 && (
+                <ul class="pt-1.5 border-t border-slate-800/60 light:border-slate-200/60 space-y-1">
+                  {slide.references.map((ref) => (
+                    <li class="text-[11px] text-slate-400 light:text-slate-600 leading-snug flex items-baseline gap-1.5">
+                      <span class="text-domain-publications font-mono font-bold shrink-0">•</span>
+                      <span class="min-w-0">
+                        <span class="font-semibold text-slate-300 light:text-slate-800">{ref.author}</span>
+                        {ref.year && <span> ({ref.year})</span>}:{" "}
+                        {ref.url ? (
+                          <a
+                            href={ref.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="italic text-domain-publications hover:underline"
+                          >
+                            {ref.title}
+                          </a>
+                        ) : (
+                          <span class="italic">{ref.title}</span>
+                        )}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </article>
           ))}
         </div>
       </div>
@@ -553,6 +593,8 @@ const currentDeckId = presentationId || talkId || "presentation";
     transition: 'fade',
     transitionSpeed: 'fast',
     embedded: true,
+    viewDistance: 999,
+    mobileViewDistance: 999,
     mouseWheel: false,
     touch: true,
     scrollActivationWidth: 0
@@ -562,6 +604,14 @@ const currentDeckId = presentationId || talkId || "presentation";
   deck.initialize().then(() => {
     const revealRoot = document.getElementById('reveal-root');
     const deckLoader = document.getElementById('deck-loader');
+
+    // Keep all slide sections accessible in the DOM tree for crawlers & indexers
+    const clearRevealAriaHidden = () => {
+      revealRoot?.querySelectorAll<HTMLElement>('.slides > section[aria-hidden]').forEach((sec) => {
+        sec.removeAttribute('aria-hidden');
+      });
+    };
+    clearRevealAriaHidden();
 
     // Unhide any already-loaded slide images immediately to prevent false skeleton flashes
     revealRoot?.querySelectorAll<HTMLImageElement>('img').forEach(img => {
@@ -697,19 +747,47 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
     };
 
+    const scrollActiveTranscriptIntoView = (activeItem: HTMLElement | null, smooth = true) => {
+      const listEl = transcriptDrawerContent || document.getElementById('transcript-drawer-content');
+      if (!listEl || !activeItem) return;
+      const listRect = listEl.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
+
+      if (listRect.height === 0 || itemRect.height === 0) return;
+
+      const delta = itemRect.top - (listRect.top + 12);
+      if (Math.abs(delta) > 4) {
+        listEl.scrollTo({
+          top: Math.max(0, listEl.scrollTop + delta),
+          behavior: smooth ? 'smooth' : 'auto',
+        });
+      }
+    };
+
     const updateActiveTranscript = (currentIndex: number) => {
       if (transcriptDrawerBadge) {
         transcriptDrawerBadge.textContent = String(currentIndex + 1).padStart(2, '0');
       }
+      let activeBlockEl: HTMLElement | null = null;
       transcriptSlideBlocks.forEach((block, idx) => {
+        const badge = block.querySelector('[data-transcript-badge]');
         if (idx === currentIndex) {
-          block.classList.remove('hidden');
+          block.setAttribute('data-active', 'true');
+          block.className = 'transcript-slide-item rounded-xl p-3 border transition-all duration-200 cursor-pointer space-y-2 bg-domain-presentations/12 border-domain-presentations/45 shadow-sm';
+          if (badge) {
+            badge.className = 'font-mono text-[11px] px-1.5 py-0.5 rounded-md font-bold shrink-0 mt-0.5 bg-domain-presentations/25 text-domain-presentations';
+          }
+          activeBlockEl = block;
         } else {
-          block.classList.add('hidden');
+          block.removeAttribute('data-active');
+          block.className = 'transcript-slide-item rounded-xl p-3 border transition-all duration-200 cursor-pointer space-y-2 bg-slate-800/30 light:bg-white border-slate-800/80 light:border-slate-200/80 hover:border-slate-700 light:hover:border-slate-300 opacity-75 hover:opacity-100';
+          if (badge) {
+            badge.className = 'font-mono text-[11px] px-1.5 py-0.5 rounded-md font-bold shrink-0 mt-0.5 bg-slate-800 light:bg-slate-200/80 text-slate-400 light:text-slate-600';
+          }
         }
       });
-      if (transcriptDrawerContent) {
-        transcriptDrawerContent.scrollTop = 0;
+      if (isTranscriptOpen && activeBlockEl) {
+        scrollActiveTranscriptIntoView(activeBlockEl, true);
       }
     };
 
@@ -745,7 +823,6 @@ const currentDeckId = presentationId || talkId || "presentation";
       lastOpenedDrawer = 'overview';
       slideListDrawer.classList.remove('drawer-closed');
       slideListDrawer.classList.add('drawer-open');
-      slideListDrawer.setAttribute('aria-hidden', 'false');
 
       btnOverview?.classList.add('bg-domain-presentations', 'text-white');
       btnOverview?.classList.remove('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
@@ -771,7 +848,6 @@ const currentDeckId = presentationId || talkId || "presentation";
       isDrawerOpen = false;
       slideListDrawer.classList.remove('drawer-open');
       slideListDrawer.classList.add('drawer-closed');
-      slideListDrawer.setAttribute('aria-hidden', 'true');
 
       btnOverview?.classList.remove('bg-domain-presentations', 'text-white');
       btnOverview?.classList.add('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
@@ -789,18 +865,29 @@ const currentDeckId = presentationId || talkId || "presentation";
       }
     };
 
-    const openTranscriptDrawer = () => {
+    const openTranscriptDrawer = (shouldScroll = true) => {
       if (!transcriptDrawer || window.innerWidth < 768) return;
       isTranscriptOpen = true;
       lastOpenedDrawer = 'transcript';
       transcriptDrawer.classList.remove('drawer-closed');
       transcriptDrawer.classList.add('drawer-open');
-      transcriptDrawer.setAttribute('aria-hidden', 'false');
 
       btnTranscript?.classList.add('bg-domain-presentations', 'text-white');
       btnTranscript?.classList.remove('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
 
       syncDrawersLayoutMode();
+
+      if (shouldScroll) {
+        const activeItem = document.querySelector<HTMLElement>('.transcript-slide-item[data-active="true"]');
+        if (activeItem) {
+          scrollActiveTranscriptIntoView(activeItem, false);
+          setTimeout(() => {
+            if (isTranscriptOpen) {
+              scrollActiveTranscriptIntoView(activeItem, true);
+            }
+          }, 320);
+        }
+      }
     };
 
     const closeTranscriptDrawer = () => {
@@ -808,7 +895,6 @@ const currentDeckId = presentationId || talkId || "presentation";
       isTranscriptOpen = false;
       transcriptDrawer.classList.remove('drawer-open');
       transcriptDrawer.classList.add('drawer-closed');
-      transcriptDrawer.setAttribute('aria-hidden', 'true');
 
       btnTranscript?.classList.remove('bg-domain-presentations', 'text-white');
       btnTranscript?.classList.add('bg-slate-800', 'light:bg-slate-100', 'text-slate-300', 'light:text-slate-700');
@@ -1231,6 +1317,7 @@ const currentDeckId = presentationId || talkId || "presentation";
 
     // Reveal Slide Changed Event
     deck.on('slidechanged', () => {
+      clearRevealAriaHidden();
       const idx = deck.getIndices().h;
       ensureSlideFitted(idx);
       if (slideIndexLabel) slideIndexLabel.textContent = String(idx + 1);
@@ -1322,6 +1409,22 @@ const currentDeckId = presentationId || talkId || "presentation";
           // Only auto-close on mobile (< 1024px) where drawer overlays the slide
           if (window.innerWidth < 1024) {
             closeDrawer();
+          }
+        }
+      });
+    });
+
+    // Transcript Card Click Listeners (Jump to Slide)
+    transcriptSlideBlocks.forEach((block) => {
+      block.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement)?.closest('a')) return;
+        audioSync.unlockAudioSession();
+        const slideIdxStr = block.getAttribute('data-transcript-slide');
+        if (slideIdxStr !== null) {
+          const targetIdx = parseInt(slideIdxStr, 10);
+          if (!isNaN(targetIdx) && deck.getIndices().h !== targetIdx) {
+            ensureSlideFitted(targetIdx);
+            deck.slide(targetIdx);
           }
         }
       });
@@ -1864,7 +1967,9 @@ const currentDeckId = presentationId || talkId || "presentation";
     opacity: 1 !important;
   }
   .reveal:not(.ready) .slides > section:not(:first-child) {
-    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
   }
 
   /* Reveal custom styling inside Astro component */
@@ -1934,11 +2039,10 @@ const currentDeckId = presentationId || talkId || "presentation";
     transition: none !important;
   }
 
-  /* Globally guarantee that closed drawers have zero width, zero opacity and are completely invisible */
+  /* Globally guarantee that closed drawers have zero width and zero opacity while remaining in the DOM render tree for crawlers */
   #slide-list-drawer.drawer-closed,
   #transcript-drawer.drawer-closed {
     opacity: 0 !important;
-    visibility: hidden !important;
     pointer-events: none !important;
     width: 0 !important;
     min-width: 0 !important;
@@ -1960,14 +2064,12 @@ const currentDeckId = presentationId || talkId || "presentation";
     #slide-list-drawer.drawer-open {
       width: 20rem; /* 320px */
       opacity: 1;
-      visibility: visible !important;
       pointer-events: auto;
       border-right-width: 1px;
     }
     #transcript-drawer.drawer-open {
       width: 20rem; /* 320px */
       opacity: 1;
-      visibility: visible !important;
       pointer-events: auto;
       border-left-width: 1px;
     }
@@ -2014,7 +2116,17 @@ const currentDeckId = presentationId || talkId || "presentation";
 
   @media (max-width: 767px) {
     #slide-list-drawer,
-    #transcript-drawer,
+    #transcript-drawer {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+    }
     #slide-list-backdrop,
     #btn-overview,
     #btn-transcript {

@@ -1,8 +1,11 @@
 import { getCollection } from "astro:content";
 
+const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\}/g, "").trim() : "");
+
 export async function GET() {
   const posts = await getCollection("posts");
   const presentations = await getCollection("presentations");
+  const allSlides = await getCollection("slides");
   const publications = await getCollection("publications");
   const courses = await getCollection("courses");
   const projects = await getCollection("projects");
@@ -69,13 +72,31 @@ Dr. rer. nat. Georg Hermann Richard Hackenberg is a Full Professor for Industria
   for (const pres of sortedPresentations) {
     const rawDate = pres.data.pubDate instanceof Date ? pres.data.pubDate.toISOString().split('T')[0] : (pres.data.pubDate || '');
     const tags = pres.data.tags ? pres.data.tags.join(', ') : '';
+    const deckSlides = allSlides
+      .filter((s) => s.id.startsWith(pres.id))
+      .sort((a, b) => a.id.localeCompare(b.id));
+
     output += `### ${pres.data.title}\n`;
     output += `- URL: https://hackenberg.tech/presentations/${pres.id}/\n`;
     if (pres.data.subtitle) output += `- Subtitle: ${pres.data.subtitle}\n`;
     output += `- Date: ${rawDate}\n`;
     if (tags) output += `- Tags: ${tags}\n`;
     if (pres.data.description) output += `- Summary: ${pres.data.description}\n`;
-    output += `\n${pres.body}\n\n---\n\n`;
+    if (pres.body) output += `\n${pres.body}\n`;
+
+    if (deckSlides.length > 0) {
+      output += `\n#### Spoken Transcript & Slide Sequence (${deckSlides.length} Slides)\n\n`;
+      deckSlides.forEach((slide, idx) => {
+        const slideNum = String(idx + 1).padStart(2, '0');
+        const cleanSub = stripCues(slide.data.subtitle || '');
+        const cleanVoice = stripCues(slide.data.voiceover || '');
+        output += `##### Slide ${slideNum}: ${slide.data.title}${cleanSub ? ` — ${cleanSub}` : ''}\n`;
+        if (cleanVoice) {
+          output += `${cleanVoice}\n\n`;
+        }
+      });
+    }
+    output += `---\n\n`;
   }
 
   output += `## 5. University Courses & Educational Content\n\n`;
