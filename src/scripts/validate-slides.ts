@@ -204,7 +204,7 @@ function validateSlides() {
     const slidesDir = path.join(presentationPath, 'slides');
     if (!fs.existsSync(slidesDir)) continue;
 
-    const audioDir = path.join(presentationPath, 'audio');
+    const audioDir = path.resolve('.cache/slides-audio', presentationFolder);
     const cacheFile = path.join(audioDir, '.cache.json');
     let audioCache: Record<string, string> = {};
     if (fs.existsSync(cacheFile)) {
@@ -1048,7 +1048,7 @@ function validateSlides() {
         // Verify that audio is up-to-date with current spoken text via MD5 hash
         const cleanText = extractCleanText(voiceoverText);
         const spokenText = applyLexicon(cleanText, lexicon);
-        const normalizedVo = voiceoverText.replace(/\r\n/g, '\n').trim();
+        const normalizedVo = voiceoverText.replace(/\s+/g, ' ').trim();
         const expectedHash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}:${normalizedVo}`).digest('hex');
         if (audioCache[slideId] !== expectedHash) {
           console.error(

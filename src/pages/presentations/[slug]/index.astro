@@ -13,6 +13,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { getFileContentHash, getHashedFilename } from "@commons/server/content-hash.js";
 import { getMp3Duration } from "@commons/server/audio-metadata.js";
+import { ensureSlideAudio } from "@commons/server/edge-tts.js";
 import { getPresentationDuration } from "@commons/server/reading-time.js";
 import { formatDate } from "@commons/shared/format";
 
@@ -25,7 +26,6 @@ export async function getStaticPaths() {
 }
 
 const { presentation } = Astro.props;
-const durationInfo = getPresentationDuration(presentation.id, { lang: presentation.data.lang });
 
 // Load all slides for this presentation, sorted by filename
 const allSlides = await getCollection("slides");
@@ -39,10 +39,12 @@ const renderedSlides = await Promise.all(
     const { Content } = await render(slide);
     const slideBase = path.basename(slide.id);
 
-    // Check if audio file and cues file exist
-    const presentationDir = path.resolve("src/content/presentations", presentation.id);
-    const audioFilePath = path.join(presentationDir, "audio", `${slideBase}.mp3`);
-    const cuesFilePath = path.join(presentationDir, "audio", `${slideBase}.cues.json`);
+    // Ensure audio and word-level cues exist in .cache/slides-audio/ (synthesizes on-the-fly on cache miss)
+    const { mp3Path: audioFilePath, cuesPath: cuesFilePath } = await ensureSlideAudio(
+      presentation.id,
+      slideBase,
+      slide.data.voiceover || ""
+    );
 
     let audioUrl = undefined;
     let durationSec = undefined;
@@ -77,6 +79,8 @@ const renderedSlides = await Promise.all(
     };
   })
 );
+
+const durationInfo = getPresentationDuration(presentation.id, { lang: presentation.data.lang });
 
 // Presentation preview image and PDF handout URLs (in dev mode, link directly to live print routes)
 const presentationDir = path.resolve("src/content/presentations", presentation.id);

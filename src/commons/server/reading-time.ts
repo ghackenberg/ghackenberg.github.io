@@ -141,7 +141,7 @@ export function getPresentationDuration(presentationId: string, _options?: Prese
 
   const presentationDir = path.resolve(process.cwd(), 'src/content/presentations', presentationId);
   const slidesDir = path.join(presentationDir, 'slides');
-  const audioDir = path.join(presentationDir, 'audio');
+  const audioDir = path.resolve(process.cwd(), '.cache/slides-audio', presentationId);
 
   // Count slides
   let slideCount = 0;

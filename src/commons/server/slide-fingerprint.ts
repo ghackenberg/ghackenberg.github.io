@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
-const ENGINE_VERSION = 'v1.0';
+const ENGINE_VERSION = 'v1.1';
 
 /**
  * Recursively retrieves all files in a directory matching extensions

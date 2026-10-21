@@ -148,6 +148,12 @@ const renderedSlides = await Promise.all(
         opacity: 1 !important;
         pointer-events: auto !important;
       }
+      .print-slide-page .story-image-skeleton {
+        display: none !important;
+      }
+      .print-slide-page img {
+        opacity: 1 !important;
+      }
 
       /* Dark mode card contrast overrides matching live player */
       html:not(.light) .bento-card-object .bg-blue-50,

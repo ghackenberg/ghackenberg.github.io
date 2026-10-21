@@ -87,8 +87,8 @@ function copyContentAssets(): AstroIntegration {
             // Dev server middleware for hashed presentation audio assets
             const presHashedMatch = cleanUrl.match(/^\/presentations\/([^/]+)\/(audio)\/(.+)-([a-f0-9]{8})\.(mp3)$/);
             if (presHashedMatch) {
-              const [, presId, type, slideBase, , ext] = presHashedMatch;
-              const filePath = path.resolve('src/content/presentations', presId, type, `${slideBase}.${ext}`);
+              const [, presId, , slideBase, , ext] = presHashedMatch;
+              const filePath = path.resolve('.cache/slides-audio', presId, `${slideBase}.${ext}`);
               if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
                 const contentType = mimeTypes[`.${ext}`] || 'application/octet-stream';
                 res.writeHead(200, { 'Content-Type': contentType });
@@ -159,7 +159,7 @@ function copyContentAssets(): AstroIntegration {
               const currentPresDir = path.join(srcDir, id);
 
               // 1. Audio: Copy each audio/${slideId}.mp3 as audio/${slideId}-${hash}.mp3
-              const audioDir = path.join(currentPresDir, 'audio');
+              const audioDir = path.resolve('.cache/slides-audio', id);
               if (fs.existsSync(audioDir)) {
                 for (const audioFile of fs.readdirSync(audioDir)) {
                   if (audioFile.endsWith('.mp3')) {

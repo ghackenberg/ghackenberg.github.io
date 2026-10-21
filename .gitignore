@@ -42,3 +42,4 @@ temp-social-media-tools/
 src/content/presentations/**/slides*.pdf
 src/content/presentations/**/.visual-cache.json
 src/content/presentations/**/thumbnails/
+src/content/presentations/**/audio/

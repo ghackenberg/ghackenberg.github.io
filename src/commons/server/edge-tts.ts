@@ -1,5 +1,7 @@
 import crypto from 'node:crypto';
+import fs from 'node:fs';
 import https from 'node:https';
+import path from 'node:path';
 import type { Duplex } from 'node:stream';
 
 const BASE_HOST = 'speech.platform.bing.com';
@@ -605,4 +607,349 @@ export class EdgeTtsCommunicate {
       yield chunk;
     }
   }
+}
+
+export interface TtsLexicon {
+  acronyms: Record<string, string>;
+  phonetics: Record<string, string>;
+}
+
+export const GENERATOR_VERSION = 'v5-florian-minimal';
+
+export function getSlideAudioCacheDir(presentationId: string): string {
+  return path.resolve('.cache/slides-audio', presentationId);
+}
+
+let cachedLexicon: TtsLexicon | null = null;
+
+export function loadTtsLexicon(): TtsLexicon {
+  if (cachedLexicon) return cachedLexicon;
+  const lexiconPath = path.resolve('src/content/presentations/tts-lexicon.json');
+  if (fs.existsSync(lexiconPath)) {
+    try {
+      cachedLexicon = JSON.parse(fs.readFileSync(lexiconPath, 'utf8')) as TtsLexicon;
+      return cachedLexicon;
+    } catch {
+      // Fallback to empty lexicon
+    }
+  }
+  cachedLexicon = { acronyms: {}, phonetics: {} };
+  return cachedLexicon;
+}
+
+export function applyLexicon(text: string, lexicon: Partial<TtsLexicon>): string {
+  if (!text) return '';
+  let result = text;
+  const allMappings: Record<string, string> = {
+    ...(lexicon.phonetics || {}),
+    ...(lexicon.acronyms || {}),
+  };
+  const sortedKeys = Object.keys(allMappings).sort((a, b) => b.length - a.length);
+  for (const term of sortedKeys) {
+    const replacement = allMappings[term];
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'gu');
+    result = result.replace(regex, replacement);
+  }
+  return result;
+}
+
+function normalizeWord(w?: string): string {
+  return (w || '').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+}
+
+interface WordBoundary {
+  offsetSec: number;
+  durationSec: number;
+  text: string;
+}
+
+function findAnchorWordBoundary(
+  targetWord: string | undefined,
+  seedIndex: number,
+  wordBoundaries: WordBoundary[]
+): number {
+  if (!targetWord || wordBoundaries.length === 0) {
+    return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
+  }
+  const targetNorm = normalizeWord(targetWord);
+  if (!targetNorm) {
+    return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
+  }
+  const minIdx = Math.max(0, seedIndex - 12);
+  const maxIdx = Math.min(wordBoundaries.length, seedIndex + 30);
+  let bestIdx = -1;
+  let minDistance = Infinity;
+
+  for (let i = minIdx; i < maxIdx; i++) {
+    const boundaryNorm = normalizeWord(wordBoundaries[i].text);
+    if (boundaryNorm === targetNorm) {
+      const dist = Math.abs(i - seedIndex);
+      if (dist < minDistance) {
+        minDistance = dist;
+        bestIdx = i;
+      }
+    }
+  }
+  if (bestIdx !== -1) return bestIdx;
+
+  for (let i = minIdx; i < maxIdx; i++) {
+    const boundaryNorm = normalizeWord(wordBoundaries[i].text);
+    if (boundaryNorm && (targetNorm.startsWith(boundaryNorm) || boundaryNorm.startsWith(targetNorm))) {
+      const dist = Math.abs(i - seedIndex);
+      if (dist < minDistance) {
+        minDistance = dist;
+        bestIdx = i;
+      }
+    }
+  }
+  if (bestIdx !== -1) return bestIdx;
+
+  return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
+}
+
+interface CueExtraction {
+  id: string;
+  startWordIndex: number;
+  endWordIndex?: number;
+  wordAfter?: string;
+  wordBefore?: string;
+}
+
+export function extractCuesAndCleanText(rawVoiceover: string): {
+  cleanText: string;
+  cues: CueExtraction[];
+} {
+  const tagRegex = /\{cue:([a-zA-Z0-9_-]+)\}|\{\/cue\}/g;
+  let cleanText = '';
+  const cues: CueExtraction[] = [];
+  const openSpans: CueExtraction[] = [];
+
+  let lastIndex = 0;
+  let currentWordCount = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = tagRegex.exec(rawVoiceover)) !== null) {
+    const textBefore = rawVoiceover.slice(lastIndex, match.index);
+    if (textBefore) {
+      cleanText += textBefore;
+      const words = textBefore.trim().split(/\s+/).filter(Boolean);
+      currentWordCount += words.length;
+    }
+    lastIndex = tagRegex.lastIndex;
+
+    if (match[0].startsWith('{cue:')) {
+      const id = match[1];
+      const textAfter = rawVoiceover.slice(lastIndex).replace(/\{cue:[^}]+\}|\{\/cue\}/g, '').trim();
+      const firstWord =
+        textAfter.split(/\s+/)[0]?.replace(/^[^\p{L}\p{N}]+/gu, '').replace(/[^\p{L}\p{N}]+$/gu, '') || '';
+      const cueObj: CueExtraction = {
+        id,
+        startWordIndex: currentWordCount,
+        wordAfter: firstWord,
+      };
+      cues.push(cueObj);
+      openSpans.push(cueObj);
+    } else if (match[0] === '{/cue}') {
+      const lastSpan = openSpans.pop();
+      if (lastSpan) {
+        lastSpan.endWordIndex = currentWordCount;
+        const cleanBefore = cleanText.trim();
+        const lastWord =
+          cleanBefore.split(/\s+/).pop()?.replace(/^[^\p{L}\p{N}]+/gu, '').replace(/[^\p{L}\p{N}]+$/gu, '') || '';
+        lastSpan.wordBefore = lastWord;
+      }
+    }
+  }
+
+  const trailingText = rawVoiceover.slice(lastIndex);
+  if (trailingText) {
+    cleanText += trailingText;
+  }
+
+  cleanText = cleanText.replace(/\s+/g, ' ').trim();
+  return { cleanText, cues };
+}
+
+function safeWriteJson<T>(filePath: string, data: T): void {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+      return;
+    } catch (e) {
+      if (attempt === 3) throw e;
+      const end = Date.now() + 150;
+      while (Date.now() < end) {}
+    }
+  }
+}
+
+function safeWriteBuffer(filePath: string, buffer: Buffer): void {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      fs.writeFileSync(filePath, buffer);
+      return;
+    } catch (e) {
+      if (attempt === 3) throw e;
+      const end = Date.now() + 200;
+      while (Date.now() < end) {}
+    }
+  }
+}
+
+// Concurrency semaphore (max 2 parallel Edge-TTS WebSocket requests)
+let activeSynthesisCount = 0;
+const synthesisWaitQueue: Array<() => void> = [];
+
+async function withSynthesisSemaphore<T>(fn: () => Promise<T>): Promise<T> {
+  if (activeSynthesisCount >= 2) {
+    await new Promise<void>((resolve) => synthesisWaitQueue.push(resolve));
+  }
+  activeSynthesisCount++;
+  try {
+    return await fn();
+  } finally {
+    activeSynthesisCount--;
+    const next = synthesisWaitQueue.shift();
+    if (next) next();
+  }
+}
+
+const presentationAudioCaches = new Map<string, Record<string, string>>();
+const inFlightSlideSyntheses = new Map<string, Promise<{ mp3Path: string; cuesPath: string; synthesized: boolean }>>();
+
+export function getPresentationAudioCache(presentationId: string): Record<string, string> {
+  const existing = presentationAudioCaches.get(presentationId);
+  if (existing) return existing;
+  const audioDir = getSlideAudioCacheDir(presentationId);
+  const cacheFile = path.join(audioDir, '.cache.json');
+  let cache: Record<string, string> = {};
+  if (fs.existsSync(cacheFile)) {
+    try {
+      cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8')) as Record<string, string>;
+    } catch {
+      cache = {};
+    }
+  }
+  presentationAudioCaches.set(presentationId, cache);
+  return cache;
+}
+
+export function savePresentationAudioCache(presentationId: string, cache: Record<string, string>): void {
+  const audioDir = getSlideAudioCacheDir(presentationId);
+  fs.mkdirSync(audioDir, { recursive: true });
+  const cacheFile = path.join(audioDir, '.cache.json');
+  presentationAudioCaches.set(presentationId, cache);
+  safeWriteJson(cacheFile, cache);
+}
+
+export async function ensureSlideAudio(
+  presentationId: string,
+  slideId: string,
+  rawVoiceover: string,
+  options?: { force?: boolean; voice?: string }
+): Promise<{ mp3Path: string; cuesPath: string; synthesized: boolean }> {
+  const audioDir = getSlideAudioCacheDir(presentationId);
+  fs.mkdirSync(audioDir, { recursive: true });
+
+  const mp3Path = path.join(audioDir, `${slideId}.mp3`);
+  const cuesPath = path.join(audioDir, `${slideId}.cues.json`);
+
+  if (!rawVoiceover.trim()) {
+    return { mp3Path, cuesPath, synthesized: false };
+  }
+
+  const lexicon = loadTtsLexicon();
+  const { cleanText, cues } = extractCuesAndCleanText(rawVoiceover);
+  const spokenText = applyLexicon(cleanText, lexicon);
+  const normalizedVo = rawVoiceover.replace(/\s+/g, ' ').trim();
+  const hash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}:${normalizedVo}`).digest('hex');
+
+  const cache = getPresentationAudioCache(presentationId);
+  const force = Boolean(options?.force);
+
+  if (!force && cache[slideId] === hash && fs.existsSync(mp3Path) && fs.existsSync(cuesPath)) {
+    return { mp3Path, cuesPath, synthesized: false };
+  }
+
+  const flightKey = `${presentationId}/${slideId}:${hash}`;
+  const existingFlight = inFlightSlideSyntheses.get(flightKey);
+  if (existingFlight) {
+    return existingFlight;
+  }
+
+  const taskPromise = withSynthesisSemaphore(async () => {
+    const selectedVoice = options?.voice || 'de-DE-FlorianMultilingualNeural';
+    console.log(`  ▶ [Edge-TTS] Synthesizing audio for ${presentationId}/${slideId} (${selectedVoice})...`);
+
+    const communicate = new EdgeTtsCommunicate(spokenText, {
+      voice: selectedVoice,
+      rate: '+0%',
+      pitch: '+0Hz',
+    });
+
+    const audioChunks: Buffer[] = [];
+    const wordBoundaries: WordBoundary[] = [];
+
+    for await (const chunk of communicate.stream()) {
+      if (chunk.type === 'audio' && chunk.data) {
+        audioChunks.push(Buffer.from(chunk.data));
+      } else if (chunk.type === 'WordBoundary') {
+        const sec = (chunk.offset || 0) / 10000000;
+        const dur = (chunk.duration || 0) / 10000000;
+        wordBoundaries.push({ offsetSec: sec, durationSec: dur, text: chunk.text || '' });
+      }
+    }
+
+    if (audioChunks.length > 0) {
+      const finalAudioBuffer = Buffer.concat(audioChunks);
+      safeWriteBuffer(mp3Path, finalAudioBuffer);
+
+      const cuesMap: Record<string, { start: number; duration?: number; end?: number }> = {};
+      for (const cue of cues) {
+        if (wordBoundaries.length === 0) {
+          cuesMap[cue.id] = { start: 0, duration: 0.5 };
+          continue;
+        }
+        const targetAfter = cue.wordAfter ? applyLexicon(cue.wordAfter, lexicon).trim().split(/\s+/)[0] : '';
+        const startIndex = findAnchorWordBoundary(targetAfter, cue.startWordIndex, wordBoundaries);
+        const startBoundary = wordBoundaries[startIndex];
+        const startSec = Number(startBoundary.offsetSec.toFixed(2));
+
+        if (cue.endWordIndex !== undefined) {
+          const targetBefore = cue.wordBefore ? applyLexicon(cue.wordBefore, lexicon).trim().split(/\s+/).pop() : '';
+          const endIndex = Math.max(
+            startIndex,
+            findAnchorWordBoundary(targetBefore, cue.endWordIndex - 1, wordBoundaries)
+          );
+          const endBoundary = wordBoundaries[endIndex];
+          const endSec = Number(((endBoundary.offsetSec || 0) + (endBoundary.durationSec || 0)).toFixed(2));
+          const durationSec = Number(Math.max(0.1, endSec - startSec).toFixed(2));
+          cuesMap[cue.id] = {
+            start: startSec,
+            duration: durationSec,
+            end: endSec,
+          };
+        } else {
+          cuesMap[cue.id] = {
+            start: startSec,
+          };
+        }
+      }
+
+      safeWriteJson(cuesPath, cuesMap);
+      cache[slideId] = hash;
+      savePresentationAudioCache(presentationId, cache);
+      console.log(
+        `    ✓ [Edge-TTS] Saved ${slideId}.mp3 (${(finalAudioBuffer.length / 1024).toFixed(1)} KB) and ${Object.keys(cuesMap).length} cues.`
+      );
+    }
+
+    return { mp3Path, cuesPath, synthesized: true };
+  }).finally(() => {
+    inFlightSlideSyntheses.delete(flightKey);
+  });
+
+  inFlightSlideSyntheses.set(flightKey, taskPromise);
+  return taskPromise;
 }

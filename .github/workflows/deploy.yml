@@ -40,6 +40,14 @@ jobs:
       - name: Validate Code Quality & Integrity
         run: npm run validate
 
+      - name: Cache Presentation Audio & Cue Timings
+        uses: actions/cache@v4
+        with:
+          path: .cache/slides-audio
+          key: slides-audio-${{ hashFiles('src/content/presentations/**/slides/**', 'src/content/presentations/tts-lexicon.json') }}
+          restore-keys: |
+            slides-audio-
+
       - name: Cache Presentation PDF Handouts
         uses: actions/cache@v4
         with:

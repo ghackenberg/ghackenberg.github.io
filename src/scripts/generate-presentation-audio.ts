@@ -1,11 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import crypto from 'node:crypto';
-import { EdgeTtsCommunicate } from '@commons/server/edge-tts.js';
+import {
+  ensureSlideAudio,
+  getSlideAudioCacheDir,
+  getPresentationAudioCache,
+  savePresentationAudioCache,
+} from '@commons/server/edge-tts.js';
 
-/**
- * Extracts YAML frontmatter fields from markdown/mdx content
- */
 function parseFrontmatter(content: string): Record<string, string> {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
@@ -49,199 +50,6 @@ function parseFrontmatter(content: string): Record<string, string> {
   return result;
 }
 
-interface TtsLexicon {
-  acronyms: Record<string, string>;
-  phonetics: Record<string, string>;
-}
-
-/**
- * Loads the central TTS pronunciation and acronym lexicon
- */
-function loadTtsLexicon(): TtsLexicon {
-  const lexiconPath = path.resolve('src/content/presentations/tts-lexicon.json');
-  if (fs.existsSync(lexiconPath)) {
-    try {
-      return JSON.parse(fs.readFileSync(lexiconPath, 'utf8'));
-    } catch (e) {
-      console.warn('[Audio Generator] Warning: Could not parse tts-lexicon.json:', e);
-    }
-  }
-  return { acronyms: {}, phonetics: {} };
-}
-
-/**
- * Transforms clean text into pronunciation-optimized text for TTS synthesis.
- */
-function applyLexicon(text: string, lexicon: Partial<TtsLexicon>): string {
-  if (!text) return '';
-  let result = text;
-
-  const allMappings = {
-    ...(lexicon.phonetics || {}),
-    ...(lexicon.acronyms || {}),
-  };
-
-  const sortedKeys = Object.keys(allMappings).sort((a, b) => b.length - a.length);
-
-  for (const term of sortedKeys) {
-    const replacement = allMappings[term];
-    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'gu');
-    result = result.replace(regex, replacement);
-  }
-
-  return result;
-}
-
-function normalizeWord(w?: string): string {
-  return (w || '').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
-}
-
-interface WordBoundary {
-  offsetSec: number;
-  durationSec: number;
-  text: string;
-}
-
-function findAnchorWordBoundary(targetWord: string | undefined, seedIndex: number, wordBoundaries: WordBoundary[]): number {
-  if (!targetWord || wordBoundaries.length === 0) {
-    return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
-  }
-
-  const targetNorm = normalizeWord(targetWord);
-  if (!targetNorm) {
-    return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
-  }
-
-  const minIdx = Math.max(0, seedIndex - 12);
-  const maxIdx = Math.min(wordBoundaries.length, seedIndex + 30);
-
-  let bestIdx = -1;
-  let minDistance = Infinity;
-
-  // 1. Exact match on normalized word
-  for (let i = minIdx; i < maxIdx; i++) {
-    const boundaryNorm = normalizeWord(wordBoundaries[i].text);
-    if (boundaryNorm === targetNorm) {
-      const dist = Math.abs(i - seedIndex);
-      if (dist < minDistance) {
-        minDistance = dist;
-        bestIdx = i;
-      }
-    }
-  }
-
-  if (bestIdx !== -1) {
-    return bestIdx;
-  }
-
-  // 2. Prefix or substring match for compound/hyphenated tokens
-  for (let i = minIdx; i < maxIdx; i++) {
-    const boundaryNorm = normalizeWord(wordBoundaries[i].text);
-    if (boundaryNorm && (targetNorm.startsWith(boundaryNorm) || boundaryNorm.startsWith(targetNorm))) {
-      const dist = Math.abs(i - seedIndex);
-      if (dist < minDistance) {
-        minDistance = dist;
-        bestIdx = i;
-      }
-    }
-  }
-
-  if (bestIdx !== -1) {
-    return bestIdx;
-  }
-
-  // 3. Fallback to seed index
-  return Math.min(Math.max(0, seedIndex), wordBoundaries.length - 1);
-}
-
-interface CueExtraction {
-  id: string;
-  startWordIndex: number;
-  endWordIndex?: number;
-  wordAfter?: string;
-  wordBefore?: string;
-}
-
-function extractCuesAndCleanText(rawVoiceover: string): {
-  cleanText: string;
-  cues: CueExtraction[];
-} {
-  const tagRegex = /\{cue:([a-zA-Z0-9_-]+)\}|\{\/cue\}/g;
-  let cleanText = '';
-  const cues: CueExtraction[] = [];
-  const openSpans: CueExtraction[] = [];
-
-  let lastIndex = 0;
-  let currentWordCount = 0;
-  let match: RegExpExecArray | null;
-
-  while ((match = tagRegex.exec(rawVoiceover)) !== null) {
-    const textBefore = rawVoiceover.slice(lastIndex, match.index);
-    if (textBefore) {
-      cleanText += textBefore;
-      const words = textBefore.trim().split(/\s+/).filter(Boolean);
-      currentWordCount += words.length;
-    }
-    lastIndex = tagRegex.lastIndex;
-
-    if (match[0].startsWith('{cue:')) {
-      const id = match[1];
-      const textAfter = rawVoiceover.slice(lastIndex).replace(/\{cue:[^}]+\}|\{\/cue\}/g, '').trim();
-      const firstWord = textAfter.split(/\s+/)[0]?.replace(/^[^\p{L}\p{N}]+/gu, '').replace(/[^\p{L}\p{N}]+$/gu, '') || '';
-      const cueObj: CueExtraction = {
-        id,
-        startWordIndex: currentWordCount,
-        wordAfter: firstWord,
-      };
-      cues.push(cueObj);
-      openSpans.push(cueObj);
-    } else if (match[0] === '{/cue}') {
-      const lastSpan = openSpans.pop();
-      if (lastSpan) {
-        lastSpan.endWordIndex = currentWordCount;
-        const cleanBefore = cleanText.trim();
-        const lastWord = cleanBefore.split(/\s+/).pop()?.replace(/^[^\p{L}\p{N}]+/gu, '').replace(/[^\p{L}\p{N}]+$/gu, '') || '';
-        lastSpan.wordBefore = lastWord;
-      }
-    }
-  }
-
-  const trailingText = rawVoiceover.slice(lastIndex);
-  if (trailingText) {
-    cleanText += trailingText;
-  }
-
-  cleanText = cleanText.replace(/\s+/g, ' ').trim();
-  return { cleanText, cues };
-}
-
-function safeWriteJson<T>(filePath: string, data: T): void {
-  for (let attempt = 0; attempt < 4; attempt++) {
-    try {
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-      return;
-    } catch (e) {
-      if (attempt === 3) throw e;
-      const end = Date.now() + 150;
-      while (Date.now() < end) {}
-    }
-  }
-}
-
-function safeWriteBuffer(filePath: string, buffer: Buffer): void {
-  for (let attempt = 0; attempt < 4; attempt++) {
-    try {
-      fs.writeFileSync(filePath, buffer);
-      return;
-    } catch (e) {
-      if (attempt === 3) throw e;
-      const end = Date.now() + 200;
-      while (Date.now() < end) {}
-    }
-  }
-}
-
 async function generateAllPresentationAudio(): Promise<void> {
   const presentationsBase = path.resolve('src/content/presentations');
   if (!fs.existsSync(presentationsBase)) {
@@ -250,6 +58,11 @@ async function generateAllPresentationAudio(): Promise<void> {
   }
 
   const presentationFolders = fs.readdirSync(presentationsBase);
+  const forceFlag = process.argv.includes('--force') || process.argv.includes('-f');
+  const slideArg = process.argv.find((a) => a.startsWith('--slide='));
+  const targetSlide = slideArg ? slideArg.replace('--slide=', '') : null;
+  const voiceArg = process.argv.find((a) => a.startsWith('--voice='));
+  const selectedVoice = voiceArg ? voiceArg.replace('--voice=', '') : 'de-DE-FlorianMultilingualNeural';
 
   for (const presentationFolder of presentationFolders) {
     const presentationPath = path.join(presentationsBase, presentationFolder);
@@ -258,33 +71,14 @@ async function generateAllPresentationAudio(): Promise<void> {
     const slidesDir = path.join(presentationPath, 'slides');
     if (!fs.existsSync(slidesDir)) continue;
 
-    const audioDir = path.join(presentationPath, 'audio');
+    const audioDir = getSlideAudioCacheDir(presentationFolder);
     fs.mkdirSync(audioDir, { recursive: true });
-
-    const cacheFile = path.join(audioDir, '.cache.json');
-    let cache: Record<string, string> = {};
-    if (fs.existsSync(cacheFile)) {
-      try {
-        cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-      } catch {
-        cache = {};
-      }
-    }
 
     const slideFiles = fs.readdirSync(slidesDir)
       .filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
       .sort();
 
     console.log(`\n[Audio Generator] Processing presentation: "${presentationFolder}" (${slideFiles.length} slides)`);
-
-    const forceFlag = process.argv.includes('--force') || process.argv.includes('-f');
-    const slideArg = process.argv.find((a) => a.startsWith('--slide='));
-    const targetSlide = slideArg ? slideArg.replace('--slide=', '') : null;
-    const voiceArg = process.argv.find((a) => a.startsWith('--voice='));
-    const selectedVoice = voiceArg ? voiceArg.replace('--voice=', '') : 'de-DE-FlorianMultilingualNeural';
-
-    const lexicon = loadTtsLexicon();
-    const GENERATOR_VERSION = 'v5-florian-minimal';
 
     for (const slideFile of slideFiles) {
       const slideId = slideFile.replace(/\.(md|mdx)$/, '');
@@ -301,92 +95,18 @@ async function generateAllPresentationAudio(): Promise<void> {
         continue;
       }
 
-      const { cleanText, cues } = extractCuesAndCleanText(voiceover);
-      const spokenText = applyLexicon(cleanText, lexicon);
-
-      const normalizedVo = voiceover.replace(/\r\n/g, '\n').trim();
-      const hash = crypto.createHash('md5').update(`${GENERATOR_VERSION}:${spokenText}:${normalizedVo}`).digest('hex');
-      const mp3Path = path.join(audioDir, `${slideId}.mp3`);
-      const cuesPath = path.join(audioDir, `${slideId}.cues.json`);
-
-      if (!forceFlag && cache[slideId] === hash && fs.existsSync(mp3Path) && fs.existsSync(cuesPath)) {
-        continue;
-      }
-
-      console.log(`  ▶ Synthesizing audio for: ${slideId} (voice: ${selectedVoice})...`);
-
       try {
-        const communicate = new EdgeTtsCommunicate(spokenText, {
+        await ensureSlideAudio(presentationFolder, slideId, voiceover, {
+          force: forceFlag,
           voice: selectedVoice,
-          rate: '+0%',
-          pitch: '+0Hz',
         });
-
-        const audioChunks: Buffer[] = [];
-        const wordBoundaries: WordBoundary[] = [];
-
-        for await (const chunk of communicate.stream()) {
-          if (chunk.type === 'audio' && chunk.data) {
-            audioChunks.push(Buffer.from(chunk.data));
-          } else if (chunk.type === 'WordBoundary') {
-            const sec = (chunk.offset || 0) / 10000000;
-            const dur = (chunk.duration || 0) / 10000000;
-            wordBoundaries.push({ offsetSec: sec, durationSec: dur, text: chunk.text || '' });
-          }
-        }
-
-        if (audioChunks.length === 0) {
-          console.warn(`    ⚠️ No audio chunks returned for ${slideId}`);
-          continue;
-        }
-
-        const finalAudioBuffer = Buffer.concat(audioChunks);
-        safeWriteBuffer(mp3Path, finalAudioBuffer);
-
-        const cuesMap: Record<string, { start: number; duration?: number; end?: number }> = {};
-        for (const cue of cues) {
-          if (wordBoundaries.length === 0) {
-            cuesMap[cue.id] = { start: 0, duration: 0.5 };
-            continue;
-          }
-          const targetAfter = cue.wordAfter ? applyLexicon(cue.wordAfter, lexicon).trim().split(/\s+/)[0] : '';
-          const startIndex = findAnchorWordBoundary(targetAfter, cue.startWordIndex, wordBoundaries);
-          const startBoundary = wordBoundaries[startIndex];
-          const startSec = Number(startBoundary.offsetSec.toFixed(2));
-
-          if (cue.endWordIndex !== undefined) {
-            const targetBefore = cue.wordBefore ? applyLexicon(cue.wordBefore, lexicon).trim().split(/\s+/).pop() : '';
-            const endIndex = Math.max(
-              startIndex,
-              findAnchorWordBoundary(targetBefore, cue.endWordIndex - 1, wordBoundaries)
-            );
-            const endBoundary = wordBoundaries[endIndex];
-            const endSec = Number(((endBoundary.offsetSec || 0) + (endBoundary.durationSec || 0)).toFixed(2));
-            const durationSec = Number(Math.max(0.1, endSec - startSec).toFixed(2));
-            cuesMap[cue.id] = {
-              start: startSec,
-              duration: durationSec,
-              end: endSec,
-            };
-          } else {
-            cuesMap[cue.id] = {
-              start: startSec,
-            };
-          }
-        }
-
-        safeWriteJson(cuesPath, cuesMap);
-
-        cache[slideId] = hash;
-        safeWriteJson(cacheFile, cache);
-
-        console.log(`    ✓ Saved: ${slideId}.mp3 (${(finalAudioBuffer.length / 1024).toFixed(1)} KB) and ${Object.keys(cuesMap).length} cues.`);
       } catch (err) {
         console.error(`    ❌ Failed to synthesize audio for ${slideId}:`, err);
       }
     }
 
     if (!targetSlide) {
+      const cache = getPresentationAudioCache(presentationFolder);
       const activeSlideIds = new Set(slideFiles.map((f) => f.replace(/\.(md|mdx)$/, '')));
       const audioFiles = fs.readdirSync(audioDir);
       for (const file of audioFiles) {
@@ -402,15 +122,18 @@ async function generateAllPresentationAudio(): Promise<void> {
         }
       }
 
+      let cacheModified = false;
       for (const cachedId of Object.keys(cache)) {
         if (!activeSlideIds.has(cachedId)) {
           delete cache[cachedId];
+          cacheModified = true;
           console.log(`  🗑️ Pruned orphaned cache entry: ${cachedId}`);
         }
       }
+      if (cacheModified) {
+        savePresentationAudioCache(presentationFolder, cache);
+      }
     }
-
-    safeWriteJson(cacheFile, cache);
   }
 
   console.log('\n[Audio Generator] Done.');

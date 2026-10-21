@@ -12,7 +12,7 @@ Every presentation lives in its own directory under `src/content/presentations/<
 - `<id>` format: `YYYY_MM_DD_kebab_case_title` (e.g. `2026_10_05_wie_promptet_man_richtig`).
 - `index.md`: Deck-level frontmatter (`title`, `description`, `date`, `category`, `language`, `previewImage`, `authors`).
 - `slides/`: Ordered slide files (`01_titelfolie.mdx`, `02_agenda.mdx`, etc.).
-- `audio/`: Generated Edge-TTS MP3 files and word-level `.cues.json` manifests.
+- `.cache/slides-audio/<id>/`: Git-ignored CI/local cache containing generated Edge-TTS `.mp3` files, `.cues.json` word-level manifests, and `.cache.json` hashes (synthesized on-the-fly during page render).
 - `.cache/slides-pdf/<id>/`: Git-ignored CI/local cache containing `slides-dark.pdf`, `slides-light.pdf`, and `.visual-cache.json` (deterministic SHA-256 `styleHash` + `deckHash`).
 
 ## 2. Two-Phase Generation Protocol & The Golden Slice Checkpoint
