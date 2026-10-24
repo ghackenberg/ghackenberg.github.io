@@ -589,92 +589,157 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
       <footer class="w-full glass-panel border-t !border-x-0 !border-b-0 border-element-border py-12 md:py-16 text-sm text-gray-400 mt-auto relative z-10">
         <Container as="div" size="wide" padding="none">
           <NewsletterSignup variant="footer" />
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 pt-10 pb-10 border-t border-b border-element-border">
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[minmax(0,3.6fr)_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,2.6fr)] gap-8 md:gap-10 xl:gap-8 pt-10 pb-10 border-t border-b border-element-border">
             
             <!-- Brand Column -->
-            <div class="md:col-span-5 flex flex-col space-y-4">
+            <div class="col-span-1 xl:col-auto flex flex-col space-y-4">
               <a href="/" class="flex items-center space-x-3 group self-start">
                 <span class="w-10 h-10 rounded-lg border border-element-border-medium bg-element-bg/50 group-hover:border-brand-blue/40 group-hover:bg-element-bg flex items-center justify-center transition-all duration-200 shadow-sm shrink-0">
                   <span class="text-base font-extrabold tracking-tight heading-gradient-brand group-hover:opacity-80 transition-opacity">
                     GH
                   </span>
                 </span>
-                <div class="flex flex-col leading-tight">
+                <div class="flex flex-col leading-tight min-w-0">
                   <span class="font-semibold text-sm text-gray-300 tracking-wide group-hover:text-gray-100 transition-colors">
                     Dr. Georg Hackenberg
                   </span>
-                  <span class="text-xs text-gray-400 font-normal tracking-normal group-hover:text-gray-300 transition-colors">
+                  <span class="text-xs text-gray-400 font-normal tracking-normal group-hover:text-gray-300 transition-colors whitespace-nowrap">
                     Professor for Industrial Informatics @ UAP
                   </span>
                 </div>
               </a>
-              <p class="text-xs text-gray-500 leading-relaxed max-w-sm">
+              <p class="text-xs text-gray-500 leading-relaxed">
                 Full Professor for Industrial Informatics & enterprise software architect bridging academic systems engineering with sovereign agentic AI workflows, cyber-physical simulation, and digital content creation. Founder of CADdrive and Mentawise.
               </p>
             </div>
             
-            <!-- Navigation Column -->
-            <div class="md:col-span-3 flex flex-col space-y-3">
-              <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Navigation</span>
-              <ul class="space-y-2 text-xs">
-                <li>
-                  <a href="/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Home</a>
-                </li>
-                <li>
-                  <a href="/posts/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Posts</a>
-                </li>
-                <li>
-                  <a href="/publications/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Publications</a>
-                </li>
-                <li>
-                  <a href="/presentations/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Presentations</a>
-                </li>
-                <li>
-                  <a href="/courses/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Courses</a>
-                </li>
-                <li>
-                  <a href="/projects/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Projects</a>
-                </li>
-                <li>
-                  <a href="/services/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Services</a>
-                </li>
-                <li>
-                  <a href="/visualizations/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Visualizations</a>
-                </li>
-                <li>
-                  <a href="/newsletters/" class="hover:text-brand-blue hover:translate-x-1 transition-all inline-block">Newsletters</a>
-                </li>
-              </ul>
-            </div>
-            
-            <!-- Contact/Institution & Profiles Column -->
-            <div class="md:col-span-4 flex flex-col space-y-5">
-              <div>
-                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Contact & Institution</span>
-                <p class="text-xs text-gray-500 leading-relaxed mt-2.5">
-                  UAP – University of Applied Sciences Upper Austria<br />
-                  Technology Campus Wels<br />
-                  Stelzhamerstrasse 23, 4600 Wels, Austria
-                </p>
-                <a 
-                  href="mailto:georg.hackenberg@fh-wels.at" 
-                  class="text-xs text-brand-blue hover:text-brand-blue/80 hover:underline select-all font-mono inline-block mt-2"
-                >
-                  georg.hackenberg@fh-wels.at
-                </a>
+            <!-- Navigation & Profiles Wrapper (stacked on < xl, dissolved via contents on xl) -->
+            <div class="col-span-1 flex flex-col space-y-6 xl:contents">
+              <!-- Pages Column -->
+              <div class="flex flex-col space-y-2 xl:space-y-3">
+                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Pages</span>
+                <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs xl:flex-col xl:space-y-2 xl:gap-0">
+                  <li>
+                    <a href="/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Home</a>
+                  </li>
+                  <li>
+                    <a href="/about/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">About</a>
+                  </li>
+                  <li>
+                    <a href="/contact/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Contact</a>
+                  </li>
+                  <li>
+                    <a href="/impressum/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Impressum</a>
+                  </li>
+                  <li>
+                    <a href="/datenschutz/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Datenschutz</a>
+                  </li>
+                </ul>
               </div>
 
-              <!-- Research Profiles & Channels -->
+              <!-- Catalogs Column -->
+              <div class="flex flex-col space-y-2 xl:space-y-3">
+                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Catalogs</span>
+                <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs xl:flex-col xl:space-y-2 xl:gap-0">
+                  <li>
+                    <a href="/posts/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Posts</a>
+                  </li>
+                  <li>
+                    <a href="/publications/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Publications</a>
+                  </li>
+                  <li>
+                    <a href="/presentations/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Presentations</a>
+                  </li>
+                  <li>
+                    <a href="/courses/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Courses</a>
+                  </li>
+                  <li>
+                    <a href="/projects/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Projects</a>
+                  </li>
+                  <li>
+                    <a href="/services/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Services</a>
+                  </li>
+                  <li>
+                    <a href="/visualizations/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Visualizations</a>
+                  </li>
+                  <li>
+                    <a href="/newsletters/" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block">Newsletters</a>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Profiles Column -->
+              <div class="flex flex-col space-y-2 xl:space-y-3">
+                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px]">Profiles</span>
+                <ul class="flex flex-wrap gap-x-3 gap-y-1.5 text-xs xl:flex-col xl:space-y-2 xl:gap-0">
+                  <li>
+                    <a href="https://github.com/ghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block" aria-label="GitHub">GitHub</a>
+                  </li>
+                  <li>
+                    <a href="https://www.linkedin.com/in/georghackenberg/" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block" aria-label="LinkedIn">LinkedIn</a>
+                  </li>
+                  <li>
+                    <a href="https://youtube.com/@georghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block" aria-label="YouTube">YouTube</a>
+                  </li>
+                  <li>
+                    <a href="https://scholar.google.com/citations?user=WS9Q3eYAAAAJ" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block" aria-label="Google Scholar">Google Scholar</a>
+                  </li>
+                  <li>
+                    <a href="https://orcid.org/0000-0003-3913-4148" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block" aria-label="ORCID">ORCID</a>
+                  </li>
+                  <li>
+                    <a href="https://www.wikidata.org/wiki/Q141537961" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors xl:hover:translate-x-1 xl:transition-all inline-block" aria-label="Wikidata">Wikidata</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <!-- Contact & Offices Column -->
+            <div class="col-span-1 md:col-span-2 xl:col-auto flex flex-col gap-4 pt-6 border-t border-element-border/50 md:grid md:grid-cols-3 md:gap-6 md:pt-8 xl:flex xl:flex-col xl:gap-4 xl:pt-0 xl:border-t-0">
+              <!-- Direct Contact Channels -->
               <div>
-                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">Profiles & Research</span>
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-400 mt-2.5">
-                  <a href="https://github.com/ghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="GitHub">GitHub</a>
-                  <a href="https://www.linkedin.com/in/georghackenberg/" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="LinkedIn">LinkedIn</a>
-                  <a href="https://youtube.com/@georghackenberg" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="YouTube">YouTube</a>
-                  <a href="https://scholar.google.com/citations?user=WS9Q3eYAAAAJ" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="Google Scholar">Scholar</a>
-                  <a href="https://orcid.org/0000-0003-3913-4148" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="ORCID">ORCID</a>
-                  <a href="https://www.wikidata.org/wiki/Q141537961" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue transition-colors" aria-label="Wikidata">Wikidata</a>
+                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider md:pt-[6px] flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0"></span>
+                  <span>Direct Contact</span>
+                </span>
+                <div class="flex flex-col space-y-1 mt-1.5">
+                  <a 
+                    href="mailto:georg.hackenberg@fh-wels.at" 
+                    class="text-xs text-brand-blue hover:text-brand-blue/80 hover:underline select-all font-mono inline-block"
+                  >
+                    georg.hackenberg@fh-wels.at
+                  </a>
+                  <a 
+                    href="tel:+436648048444066" 
+                    class="text-xs text-gray-300 hover:text-brand-blue font-mono select-all inline-block"
+                  >
+                    +43 664 80484 44066
+                  </a>
                 </div>
+              </div>
+
+              <!-- University Office -->
+              <div>
+                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-blue shrink-0"></span>
+                  <span>University Office</span>
+                </span>
+                <p class="text-xs text-gray-500 leading-relaxed mt-1">
+                  FH Upper Austria &bull; Campus Wels<br />
+                  Stelzhamerstrasse 23, 4600 Wels, Austria
+                </p>
+              </div>
+
+              <!-- Business Office -->
+              <div>
+                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-purple shrink-0"></span>
+                  <span>Business Office</span>
+                </span>
+                <p class="text-xs text-gray-500 leading-relaxed mt-1">
+                  Dr. Georg Hackenberg (IT-Dienstleister)<br />
+                  Edthof 13a, 4645 Grünau im Almtal, Austria
+                </p>
               </div>
             </div>
             
