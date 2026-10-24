@@ -1,0 +1,57 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/Navbar.astro";
+import Container from "@components/Container.astro";
+import Section from "@components/Section.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import Timeline from "@components/Timeline.astro";
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://hackenberg.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "About",
+      "item": "https://hackenberg.tech/about/"
+    }
+  ]
+};
+---
+
+<Layout
+  title="About Dr. Georg Hackenberg - Professor, Software Architect & Researcher"
+  description="Discover the academic background, software engineering leadership, and career timeline of Dr. Georg Hackenberg."
+  jsonLd={breadcrumbSchema}
+>
+  <Navbar />
+
+  <main class="w-full">
+    <!-- Biography & Career Timeline Section -->
+    <Section id="about" padding="standard">
+      <Container size="wide" padding="none">
+        <Breadcrumbs class="mb-6" />
+
+        <!-- Standard Level-1 Page Header -->
+        <div class="mb-12">
+          <h1 id="about-heading" class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-4">
+            About <span class="heading-gradient-brand">Georg</span>
+          </h1>
+          <p id="about-subheading" class="text-gray-400 text-base md:text-lg max-w-3xl font-normal leading-relaxed">
+            Professor for Industrial Informatics at the University of Applied Sciences Upper Austria (FH OÖ Campus Wels), software engineer, and researcher bridging industrial systems and agentic software.
+          </p>
+        </div>
+
+        <!-- Career & Academic Timeline -->
+        <Timeline />
+      </Container>
+    </Section>
+  </main>
+</Layout>

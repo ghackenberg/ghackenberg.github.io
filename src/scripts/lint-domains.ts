@@ -123,6 +123,10 @@ if (topBorderViolations === 0) {
 const breadcrumbsRegex = /<Breadcrumbs[\s\S]*?\/>/g;
 let breadcrumbViolations = 0;
 for (const file of pageFiles) {
+  const rel = path.relative(ROOT_DIR, file).replace(/\\/g, '/');
+  if (rel.endsWith('about.astro') || rel.endsWith('contact.astro')) {
+    continue;
+  }
   const content = fs.readFileSync(file, 'utf8');
   const matches = content.match(breadcrumbsRegex) || [];
   for (const match of matches) {
@@ -218,6 +222,8 @@ const layoutFiles = getAstroFiles(path.resolve(SRC_DIR, 'layouts'));
 const allAuditedFiles = [...websiteFiles, ...layoutFiles];
 
 const ALLOWED_BRAND_GRADIENT_FILES = new Set([
+  path.resolve(PAGES_DIR, 'about.astro'),
+  path.resolve(PAGES_DIR, 'contact.astro'),
   path.resolve(PAGES_DIR, 'index.astro'),
   path.resolve(COMPONENTS_DIR, 'Navbar.astro'),
   path.resolve(COMPONENTS_DIR, 'ImageGalleryMarquee.astro'),

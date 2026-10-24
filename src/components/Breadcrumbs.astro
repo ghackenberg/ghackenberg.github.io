@@ -111,44 +111,51 @@ const DOMAIN_STYLES: Record<ContentDomain, { activeText: string; hover: string; 
 };
 
 // Brand accent highlights for active leaf item and hover states (fallback when no domain is present)
-const ACCENT_STYLES: Record<string, { activeText: string; hover: string }> = {
+const ACCENT_STYLES: Record<string, { activeText: string; hover: string; badge: string }> = {
   blue: {
     activeText: "text-brand-blue",
-    hover: "hover:text-brand-blue"
+    hover: "hover:text-brand-blue",
+    badge: "bg-brand-blue/10 text-brand-blue border-brand-blue/20",
   },
   purple: {
     activeText: "text-brand-purple",
-    hover: "hover:text-brand-purple"
+    hover: "hover:text-brand-purple",
+    badge: "bg-brand-purple/10 text-brand-purple border-brand-purple/20",
   },
   yellow: {
     activeText: "text-brand-yellow",
-    hover: "hover:text-brand-yellow"
+    hover: "hover:text-brand-yellow",
+    badge: "bg-brand-yellow/10 text-brand-yellow border-brand-yellow/20",
   },
   green: {
     activeText: "text-brand-green",
-    hover: "hover:text-brand-green"
+    hover: "hover:text-brand-green",
+    badge: "bg-brand-green/10 text-brand-green border-brand-green/20",
   },
   emerald: {
     activeText: "text-domain-services",
-    hover: "hover:text-domain-services"
+    hover: "hover:text-domain-services",
+    badge: "bg-domain-services/10 text-domain-services border-domain-services/20",
   },
   cyan: {
     activeText: "text-domain-courses",
-    hover: "hover:text-domain-courses"
+    hover: "hover:text-domain-courses",
+    badge: "bg-domain-courses/10 text-domain-courses border-domain-courses/20",
   },
   indigo: {
     activeText: "text-domain-publications",
-    hover: "hover:text-domain-publications"
+    hover: "hover:text-domain-publications",
+    badge: "bg-domain-publications/10 text-domain-publications border-domain-publications/20",
   },
   violet: {
     activeText: "text-domain-posts",
-    hover: "hover:text-domain-posts"
-  }
+    hover: "hover:text-domain-posts",
+    badge: "bg-domain-posts/10 text-domain-posts border-domain-posts/20",
+  },
 };
 
 const domainStyle = resolvedDomain ? DOMAIN_STYLES[resolvedDomain] : undefined;
 const activeAccent = ACCENT_STYLES[accentColor] || ACCENT_STYLES.blue;
-const activeTextClass = domainStyle ? domainStyle.activeText : activeAccent.activeText;
 const hoverClass = domainStyle ? domainStyle.hover : activeAccent.hover;
 ---
 
@@ -192,10 +199,8 @@ const hoverClass = domainStyle ? domainStyle.hover : activeAccent.hover;
           {isLast ? (
             <span 
               class:list={[
-                "font-semibold block truncate min-w-0 max-w-full sm:max-w-[360px] md:max-w-[520px] lg:max-w-[680px]",
-                domainStyle 
-                  ? `px-2 py-0.5 rounded-md border text-xs ${domainStyle.badge}` 
-                  : activeTextClass
+                "font-semibold block truncate min-w-0 max-w-full sm:max-w-[360px] md:max-w-[520px] lg:max-w-[680px] px-2 py-0.5 rounded-md border text-xs",
+                domainStyle ? domainStyle.badge : activeAccent.badge
               ]}
               aria-current="page"
               title={item.label}
