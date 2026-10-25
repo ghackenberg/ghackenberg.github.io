@@ -222,8 +222,6 @@ const layoutFiles = getAstroFiles(path.resolve(SRC_DIR, 'layouts'));
 const allAuditedFiles = [...websiteFiles, ...layoutFiles];
 
 const ALLOWED_BRAND_GRADIENT_FILES = new Set([
-  path.resolve(PAGES_DIR, 'about.astro'),
-  path.resolve(PAGES_DIR, 'contact.astro'),
   path.resolve(PAGES_DIR, 'index.astro'),
   path.resolve(COMPONENTS_DIR, 'Navbar.astro'),
   path.resolve(COMPONENTS_DIR, 'ImageGalleryMarquee.astro'),
