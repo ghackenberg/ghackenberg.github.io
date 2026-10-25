@@ -235,56 +235,56 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
       if (nameLower.includes('fh oö') || nameLower.includes('fh upper austria')) {
         svgContent = `
           <defs>
-            <linearGradient id="fhGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-fhGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="crimson" />
               <stop offset="100%" stop-color="darkred" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#fhGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-fhGrad)" />
           <text x="50" y="65" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="44" fill="white" text-anchor="middle" letter-spacing="-3">FH</text>
         `;
       } else if (nameLower.includes('reply')) {
         svgContent = `
           <defs>
-            <linearGradient id="replyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-replyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="coral" />
               <stop offset="100%" stop-color="orangered" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#replyGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-replyGrad)" />
           <text x="50" y="66" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="48" fill="white" text-anchor="middle">R</text>
         `;
       } else if (nameLower.includes('münchen') || nameLower.includes('tum') || nameLower.includes('munich')) {
         svgContent = `
           <defs>
-            <linearGradient id="tumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-tumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="steelblue" />
               <stop offset="100%" stop-color="navy" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#tumGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-tumGrad)" />
           <text x="50" y="64" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="34" fill="white" text-anchor="middle" letter-spacing="-1">TUM</text>
         `;
       } else if (nameLower.includes('epfl')) {
         svgContent = `
           <defs>
-            <linearGradient id="epflGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-epflGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="red" />
               <stop offset="100%" stop-color="darkred" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#epflGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-epflGrad)" />
           <text x="50" y="63" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="32" fill="white" text-anchor="middle" letter-spacing="-2">EPFL</text>
         `;
       } else if (nameLower.includes('fraunhofer')) {
         svgContent = `
           <defs>
-            <linearGradient id="fraunhoferGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-fraunhoferGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="mediumseagreen" />
               <stop offset="100%" stop-color="seagreen" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#fraunhoferGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-fraunhoferGrad)" />
           <g stroke="white" stroke-width="4" stroke-linecap="round" fill="none">
             <path d="M30 70 C30 50, 50 30, 70 30" />
             <path d="M40 70 C40 55, 55 40, 70 40" />
@@ -295,34 +295,34 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
       } else if (nameLower.includes('rwth') || nameLower.includes('aachen')) {
         svgContent = `
           <defs>
-            <linearGradient id="rwthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-rwthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="mediumblue" />
               <stop offset="100%" stop-color="navy" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#rwthGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-rwthGrad)" />
           <text x="50" y="63" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="30" fill="white" text-anchor="middle" letter-spacing="-1.5">RWTH</text>
         `;
       } else if (nameLower.includes('siemens')) {
         svgContent = `
           <defs>
-            <linearGradient id="siemensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-siemensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="teal" />
               <stop offset="100%" stop-color="darkslategray" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#siemensGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-siemensGrad)" />
           <text x="50" y="66" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="900" font-size="52" fill="white" text-anchor="middle" letter-spacing="-2">S</text>
         `;
       } else if (nameLower.includes('mannheim')) {
         svgContent = `
           <defs>
-            <linearGradient id="mannheimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-mannheimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="navy" />
               <stop offset="100%" stop-color="midnightblue" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#mannheimGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-mannheimGrad)" />
           <path d="M30 45 L50 35 L70 45 L70 65 L30 65 Z" fill="none" stroke="gold" stroke-width="4" stroke-linejoin="round" />
           <path d="M40 65 L40 55 L60 55 L60 65" fill="none" stroke="gold" stroke-width="4" />
           <text x="50" y="82" font-family="'Outfit', 'Inter', system-ui, sans-serif" font-weight="800" font-size="14" fill="gold" text-anchor="middle">UNI MA</text>
@@ -330,12 +330,12 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
       } else {
         svgContent = `
           <defs>
-            <linearGradient id="defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="exp-${index}-defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="gray" />
               <stop offset="100%" stop-color="darkslategray" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" rx="24" fill="url(#defaultGrad)" />
+          <rect width="100" height="100" rx="24" fill="url(#exp-${index}-defaultGrad)" />
           <path d="M50 25 L80 40 L50 55 L20 40 Z" fill="none" stroke="white" stroke-width="4" />
           <path d="M30 45 V65 C30 70, 50 75, 50 75 C50 75, 70 70, 70 65 V45" fill="none" stroke="white" stroke-width="4" />
         `;
@@ -356,12 +356,12 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
               style="height: 104px;"
             >
               <defs>
-                <linearGradient id="dash-grad-top" x1="0" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
+                <linearGradient id="exp-dash-grad-top" x1="0" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color="rgba(255, 255, 255, 0.8)" />
                   <stop offset="100%" stop-color={colors[group.color as keyof typeof colors] || 'var(--color-brand-blue)'} />
                 </linearGradient>
               </defs>
-              <line x1="1" y1="0" x2="1" y2="100%" stroke="url(#dash-grad-top)" stroke-width="2" stroke-dasharray="4,4" />
+              <line x1="1" y1="0" x2="1" y2="100%" stroke="url(#exp-dash-grad-top)" stroke-width="2" stroke-dasharray="4,4" />
             </svg>
           )}
           <div 
@@ -377,12 +377,12 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
               style="height: 104px;"
             >
               <defs>
-                <linearGradient id="dash-grad-bottom" x1="0" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
+                <linearGradient id="exp-dash-grad-bottom" x1="0" y1="0" x2="0" y2="100%" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color={colors[group.color as keyof typeof colors] || 'var(--color-brand-blue)'} />
                   <stop offset="100%" stop-color="rgba(255, 255, 255, 0.8)" />
                 </linearGradient>
               </defs>
-              <line x1="1" y1="0" x2="1" y2="100%" stroke="url(#dash-grad-bottom)" stroke-width="2" stroke-dasharray="4,4" />
+              <line x1="1" y1="0" x2="1" y2="100%" stroke="url(#exp-dash-grad-bottom)" stroke-width="2" stroke-dasharray="4,4" />
             </svg>
           )}
 
@@ -465,18 +465,19 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
 
 <script>
   function updateLifelineGradients() {
-    const container = document.querySelector('[data-timeline-container]');
-    if (!container) return;
+    const containers = document.querySelectorAll('[data-timeline-container]');
+    if (!containers || containers.length === 0) return;
     const colors = {
       blue: 'var(--color-brand-blue)',
       yellow: 'var(--color-brand-yellow)',
       purple: 'var(--color-brand-purple)',
       green: 'var(--color-brand-green)'
     };
-    const cards = container.querySelectorAll('.glass-card');
-    cards.forEach((card, cardIndex) => {
-      const segment = card.querySelector('[data-lifeline-segment]') as HTMLElement;
-      if (!segment) return;
+    containers.forEach((container) => {
+      const cards = container.querySelectorAll('.glass-card');
+      cards.forEach((card, cardIndex) => {
+        const segment = card.querySelector('[data-lifeline-segment]') as HTMLElement;
+        if (!segment) return;
 
       const dots = card.querySelectorAll('[data-role-dot]');
       const cardRect = card.getBoundingClientRect();
@@ -576,7 +577,8 @@ function getFallbackGradient(groupColor: string, rolesCount: number, isFirstCard
       // Apply the gradient
       segment.style.background = `linear-gradient(to bottom, ${stops.join(', ')})`;
     });
-  }
+  });
+}
 
   // Run on DOM load and Astro page load
   document.addEventListener('DOMContentLoaded', updateLifelineGradients);

@@ -4,6 +4,7 @@ import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import EducationTimeline from "@components/EducationTimeline.astro";
 import Timeline from "@components/Timeline.astro";
 
 const breadcrumbSchema = {
@@ -50,7 +51,10 @@ const breadcrumbSchema = {
         </div>
 
         <!-- Career & Academic Timeline -->
-        <Timeline />
+        <div class="space-y-12">
+          <EducationTimeline />
+          <Timeline />
+        </div>
       </Container>
     </Section>
   </main>

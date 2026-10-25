@@ -325,14 +325,14 @@ const moreItems = [
         <!-- Contact CTA Button (Far Right of Actions Group) -->
         <a 
           href="/contact/" 
-          class={`relative px-3.5 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-1.5 shadow-sm ml-2 ${
+          class={`group relative px-3.5 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-1.5 shadow-sm ml-2 active:scale-95 ${
             isContactActive 
-              ? "bg-brand-blue text-white shadow-brand-blue/30 shadow-md ring-2 ring-brand-blue/50" 
-              : "bg-brand-blue/10 hover:bg-brand-blue/20 text-brand-blue border border-brand-blue/30 hover:border-brand-blue/50"
+              ? "bg-brand-blue hover:bg-brand-blue/90 text-white shadow-brand-blue/30 shadow-md ring-2 ring-brand-blue/50" 
+              : "bg-brand-blue/15 hover:bg-brand-blue text-brand-blue hover:text-white border border-brand-blue/30 hover:border-brand-blue hover:shadow-md hover:shadow-brand-blue/25"
           }`}
         >
           <span>Contact</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>
         </a>
@@ -512,14 +512,14 @@ const moreItems = [
     <div class="pt-3 border-t border-element-border/50 mt-2">
       <a
         href="/contact/"
-        class={`w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm ${
+        class={`group w-full py-2.5 px-4 rounded-xl text-center font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-sm active:scale-95 ${
           isContactActive
-            ? "bg-brand-blue text-white shadow-brand-blue/30 shadow-md ring-2 ring-brand-blue/50"
-            : "bg-brand-blue/15 hover:bg-brand-blue/25 text-brand-blue border border-brand-blue/30"
+            ? "bg-brand-blue hover:bg-brand-blue/90 text-white shadow-brand-blue/30 shadow-md ring-2 ring-brand-blue/50"
+            : "bg-brand-blue/15 hover:bg-brand-blue text-brand-blue hover:text-white border border-brand-blue/30 hover:border-brand-blue hover:shadow-md hover:shadow-brand-blue/25"
         }`}
       >
         <span>Contact</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
         </svg>
       </a>

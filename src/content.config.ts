@@ -261,6 +261,20 @@ const experiences = defineCollection({
   }),
 });
 
+const degrees = defineCollection({
+  loader: glob({ base: './src/content/degrees', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    degree: z.string(),
+    program: z.string(),
+    institution: z.string(),
+    startYear: z.number(),
+    endYear: z.number().nullable().optional(),
+    location: z.string().optional(),
+    color: z.enum(['blue', 'yellow', 'purple', 'green']).default('blue'),
+    order: z.number().optional(),
+  }),
+});
+
 const projects = defineCollection({
   loader: glob({
     base: './src/content/projects',
@@ -624,6 +638,7 @@ export const collections = {
   'publications': publications,
   'visualizations': visualizations,
   'experiences': experiences,
+  'degrees': degrees,
   'projects': projects,
   'courses': courses,
   'course-modules': courseModules,

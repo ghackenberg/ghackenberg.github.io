@@ -591,9 +591,9 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
           <NewsletterSignup variant="footer" />
           
           <!-- Minimalist Footer Single-Bar (Variant 1A) -->
-          <div class="flex flex-col lg:flex-row items-center justify-between gap-6 text-xs text-text-subtle">
+          <div class="flex flex-col min-[1100px]:flex-row items-center justify-between gap-6 text-xs text-text-subtle">
             <!-- Left: Copyright & Colophon -->
-            <div class="flex flex-col items-center lg:items-start gap-1">
+            <div class="flex flex-col items-center min-[1100px]:items-start gap-1 shrink-0 whitespace-nowrap">
               <p class="text-gray-400 light:text-slate-600 font-medium">&copy; {new Date().getFullYear()} Dr. Georg Hackenberg. All rights reserved.</p>
               <p class="text-xs text-text-subtle">
                 Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Astro</a>, <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-text-subtle hover:text-brand-blue underline underline-offset-2 decoration-gray-600 light:decoration-slate-400 transition-colors font-medium">Tailwind CSS</a> &amp; <a href="https://antigravity.google" target="_blank" rel="noopener noreferrer" class="font-semibold heading-gradient-brand hover:opacity-80 transition-opacity">Antigravity</a>
@@ -601,7 +601,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
             </div>
 
             <!-- Center: External Profiles (6 glass icon buttons) -->
-            <div class="flex items-center gap-2" aria-label="External Profiles">
+            <div class="flex items-center gap-2 shrink-0" aria-label="External Profiles">
               <a 
                 href="https://github.com/ghackenberg" 
                 target="_blank" 
@@ -677,7 +677,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
             </div>
 
             <!-- Right: Legal, AI Feeds & Back-to-top -->
-            <div class="flex flex-wrap items-center justify-center lg:justify-end gap-x-4 gap-y-2">
+            <div class="flex flex-wrap items-center justify-center min-[1100px]:justify-end gap-x-4 gap-y-2 whitespace-nowrap">
               <a href="/impressum/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Impressum</a>
               <a href="/datenschutz/" class="text-text-subtle hover:text-brand-blue/80 transition-colors">Datenschutz</a>
               <span class="opacity-30 select-none" aria-hidden="true">|</span>
