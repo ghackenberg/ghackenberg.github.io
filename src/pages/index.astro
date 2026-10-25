@@ -23,10 +23,6 @@ import profileClosedMouthImage from "@assets/avatar/comic-profile-head-closed-mo
 import profileClosedMouthDepthImage from "@assets/avatar/comic-profile-head-closed-mouth-depth.png";
 import profileClosedMouthBlinkImage from "@assets/avatar/comic-profile-head-closed-mouth-blink.png";
 import profileClosedMouthBlinkDepthImage from "@assets/avatar/comic-profile-head-closed-mouth-blink-depth.png";
-import interestSoftwareImg from "@content/interests/software-engineering/preview.jpg";
-import interestSimulationImg from "@content/interests/computer-simulation/preview.jpg";
-import interestAiImg from "@content/interests/artificial-intelligence/preview.jpg";
-import interestUxImg from "@content/interests/user-experience/preview.jpg";
 import { getCollection } from "astro:content";
 import { calculateTagCounts } from "@commons/shared/graph-payload.js";
 
@@ -320,81 +316,6 @@ const restVisPct = restTotalContentCount > 0 ? Math.round((restVisCount / restTo
 // Peripheral weight sizing for the remaining badge so it tapers naturally at the outer edge of the cloud
 const restFontSizeClass = "text-[11px] leading-tight sm:text-xs md:text-sm";
 const restFontWeightClass = "font-semibold";
-
-const optimizedInterestSoftware = await getImage({ src: interestSoftwareImg, format: "webp", width: 800, quality: 85 });
-const optimizedInterestSimulation = await getImage({ src: interestSimulationImg, format: "webp", width: 800, quality: 85 });
-const optimizedInterestAi = await getImage({ src: interestAiImg, format: "webp", width: 800, quality: 85 });
-const optimizedInterestUx = await getImage({ src: interestUxImg, format: "webp", width: 800, quality: 85 });
-
-const professionalInterests = [
-  {
-    slug: "software-engineering",
-    icon: "💻",
-    title: "Software Engineering",
-    image: optimizedInterestSoftware.src,
-    imageTitle: "Research domain: Software Engineering",
-    imageDescription: "Focus area in Software Engineering: Architectures & Web Platforms.",
-    description: "My passion lies in crafting high-performance, type-safe software. From modern web architectures with Astro and TypeScript to scalable industrial platforms, I love building robust systems from the ground up.",
-    tags: [
-      "software-engineering",
-      "software-architecture",
-      "web-development",
-      "typescript",
-      "systems-engineering",
-      "open-source"
-    ]
-  },
-  {
-    slug: "computer-simulation",
-    icon: "🎓",
-    title: "Computer Simulation",
-    image: optimizedInterestSimulation.src,
-    imageTitle: "Research domain: Computer Simulation",
-    imageDescription: "Focus area in Computer Simulation: Systems & Layout Modeling.",
-    description: "I am fascinated by modeling complex physical and industrial systems. Combining discrete-event simulation and optimization algorithms, I design smart factory layouts, logistics workflows, and resource models.",
-    tags: [
-      "simulation",
-      "optimization",
-      "manufacturing-systems",
-      "factory-layout",
-      "systems-engineering"
-    ]
-  },
-  {
-    slug: "artificial-intelligence",
-    icon: "🎯",
-    title: "Artificial Intelligence",
-    image: optimizedInterestAi.src,
-    imageTitle: "Research domain: Artificial Intelligence",
-    imageDescription: "Focus area in Artificial Intelligence: Generative AI & Agent Systems.",
-    description: "I actively explore local LLMs, agentic AI, and knowledge graphs. I enjoy developing autonomous reasoning engines, semantic search tools, and intelligent agent workflows to unlock new scientific insights.",
-    tags: [
-      "artificial-intelligence",
-      "generative-ai",
-      "agentic-ai",
-      "machine-learning",
-      "enterprise-ai",
-      "mcp"
-    ]
-  },
-  {
-    slug: "user-experience",
-    icon: "🖥️",
-    title: "User Experience",
-    image: optimizedInterestUx.src,
-    imageTitle: "Research domain: User Experience",
-    imageDescription: "Focus area in User Experience: Human-Machine Interfaces & 3D Web.",
-    description: "Designing interfaces that feel seamless and delightful is essential. I explore interactive 3D visualizations, WebGL graph engines, and modern component systems that bridge human creativity and computational power.",
-    tags: [
-      "user-experience",
-      "human-computer-interaction",
-      "webgl",
-      "data-visualization",
-      "design-systems",
-      "user-interfaces"
-    ]
-  }
-];
 
 const personSchema = {
   "@context": "https://schema.org",
@@ -1277,93 +1198,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       };
     })();
   </script>
-
-  <!-- Professional Interests Section -->
-  <Section id="about" border="top" padding="standard">
-    <Container size="wide" padding="none">
-      <div class="section-header max-w-2xl">
-        <h2 id="professional-interests-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 mb-3 truncate min-w-0">
-          Professional <span class="text-domain-interests">Interests</span>
-        </h2>
-        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-          Key scientific domains, technical focus areas, and engineering pursuits that guide my academic research, university teaching, and software platform development.
-        </p>
-      </div>
-
-      <div class="carousel-stage at-start relative">
-        <!-- Navigation Buttons (< lg) -->
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
-          aria-label="Previous items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-blue/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
-          aria-label="Next items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-
-        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-4 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
-          {professionalInterests.map(interest => (
-            <article 
-              class="w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto glass-card preview-card relative rounded-2xl border border-domain-interests/20 hover:border-domain-interests/50 shadow-domain-interests/5 hover:shadow-domain-interests/15 group flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
-              data-card-id={interest.slug}
-              data-collection="interests"
-            >
-              <!-- Absolute overlay link for card clickability -->
-              <a href={`/interests/${interest.slug}/`} class="absolute inset-0 z-10" aria-label={`Explore ${interest.title}`}></a>
-
-              <!-- Artwork Header -->
-              <div class="relative w-full aspect-video shrink-0 grow-0 overflow-hidden bg-slate-950" data-media-host>
-                <img 
-                  src={interest.image} 
-                  alt={`${interest.title} illustration`}
-                  title={interest.title}
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
-                <span 
-                  class="unread-dot hidden badge-new badge-new-interests badge-corner-tr" 
-                  data-item-url={`/interests/${interest.slug}/`}
-                  title="Unread interest"
-                >UNREAD</span>
-              </div>
-
-              <!-- Content Body -->
-              <div class="preview-card-body flex flex-col flex-grow">
-                <h3 class="text-base sm:text-lg font-bold text-gray-100 mb-2 group-hover:text-domain-interests transition-colors leading-snug line-clamp-1 min-h-[1lh]" title={interest.title}>
-                  {interest.title}
-                </h3>
-                <p class="text-gray-400 light:text-slate-600 text-sm mb-3 leading-relaxed font-normal line-clamp-3 min-h-[3lh]">
-                  {interest.description}
-                </p>
-
-                <!-- Footer: Read More Button -->
-                <div class="mt-auto pt-4 w-full">
-                  <span class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-interests/12 hover:bg-domain-interests/25 border border-domain-interests/20 hover:border-domain-interests/45 text-domain-interests text-xs font-bold transition-all duration-200">
-                    <span>Read More</span>
-                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
-                  </span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </Container>
-  </Section>
 
   <!-- Featured Blog Posts Section -->
   <Section id="latest-posts" border="top" padding="standard">
