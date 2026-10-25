@@ -778,13 +778,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
               id="hero-contact-btn"
               href="/contact/" 
               aria-label="Get in Touch"
-              class="shrink-0 h-12 px-6 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white font-extrabold shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/30 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center whitespace-nowrap"
+              class="shrink-0 h-12 px-6 rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white font-extrabold shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/30 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center gap-2 whitespace-nowrap"
             >
-              <span class="hero-cta-full">Get in Touch</span>
-              <span class="hero-cta-short hidden">Contact</span>
-              <svg class="hero-cta-icon hidden w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg class="hero-cta-icon w-4 h-4 shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
               </svg>
+              <span class="hero-cta-full">Get in Touch</span>
+              <span class="hero-cta-short hidden">Contact</span>
             </a>
           </div>
 
@@ -859,7 +859,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             // Level 1: Full text ("About Me" & "Get in Touch")
             if (contactFull) contactFull.classList.remove('hidden');
             if (contactShort) contactShort.classList.add('hidden');
-            if (contactIcon) contactIcon.classList.add('hidden');
             if (contactBtn) {
               contactBtn.classList.remove('w-12', 'px-0', 'px-4');
               contactBtn.classList.add('px-6');
