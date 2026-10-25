@@ -12,6 +12,7 @@ import ServiceCard from "@components/ServiceCard.astro";
 import VisualizationCard from "@components/VisualizationCard.astro";
 import NewsletterCard from "@components/NewsletterCard.astro";
 import DepthPortrait from "@components/DepthPortrait.astro";
+import ReactiveDotGrid from "@components/ReactiveDotGrid.astro";
 import { getImage } from "astro:assets";
 import profileImage from "@assets/avatar/comic-profile-head.png";
 import profileDepthImage from "@assets/avatar/comic-profile-head-depth.png";
@@ -738,6 +739,11 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
           }
         </style>
         <div id="hero-grid" class="relative w-full">
+          <!-- Full Hero Background L-Shaped Dot Grid Layer -->
+          <div id="hero-dot-grid-layer" class="absolute inset-0 z-0 pointer-events-none">
+            <ReactiveDotGrid />
+          </div>
+
           <!-- Heading -->
           <h1 id="hero-heading" class="relative z-10 text-4xl md:text-6xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-6 leading-tight min-w-0 max-w-2xl">
             Dr. Georg <span class="heading-gradient-brand">Hackenberg</span>
@@ -818,6 +824,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
       let lastLeft = -1;
       let lastTop = -1;
       let lastSize = -1;
+      let lastGridWidth = -1;
+      let lastContourJson = '';
 
       function syncHeroResponsiveLayout() {
         // 1. Adaptive Hero CTA Buttons (#hero-about-btn & #hero-contact-btn)
@@ -1090,6 +1098,29 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
             }
           }
 
+          // Update ReactiveDotGrid content contour (shifted by topExtension)
+          const dotGridLayer = document.getElementById('hero-dot-grid-layer');
+          const dotGridEl = dotGridLayer ? dotGridLayer.querySelector('.reactive-dot-grid') : null;
+
+          if (dotGridLayer && dotGridEl) {
+            if (dotGridLayer.style.display === 'none') {
+              dotGridLayer.style.display = '';
+            }
+            const contourData = bands.map(function (b) {
+              return [Math.round(b.top + topExtension), Math.round(b.bottom + topExtension), Math.ceil(b.right)];
+            });
+            const contourJson = JSON.stringify(contourData);
+            if (typeof window.__initReactiveDotGrids === 'function') {
+              window.__initReactiveDotGrids();
+            }
+            if (contourJson !== lastContourJson || gridWidth !== lastGridWidth) {
+              lastContourJson = contourJson;
+              lastGridWidth = gridWidth;
+              dotGridEl.dataset.contour = contourJson;
+              dotGridEl.dispatchEvent(new CustomEvent('dotgrid:layout'));
+            }
+          }
+
 
         }
       }
@@ -1109,6 +1140,11 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
         if (isFontsReady) return;
         isFontsReady = true;
         syncHeroResponsiveLayout();
+        const dotGridLayer = document.getElementById('hero-dot-grid-layer');
+        const dotGridEl = dotGridLayer ? dotGridLayer.querySelector('.reactive-dot-grid') : null;
+        if (dotGridEl) {
+          dotGridEl.dispatchEvent(new CustomEvent('dotgrid:intro'));
+        }
         checkAndRevealPortrait();
       }
 
@@ -2914,6 +2950,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
   declare global {
     interface Window {
       __syncHeroResponsiveLayout?: () => void;
+      __initReactiveDotGrids?: () => void;
     }
   }
 
