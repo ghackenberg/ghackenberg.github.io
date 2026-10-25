@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildVisualizationSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -58,56 +59,15 @@ const payload = await buildGraphPayload({
   getImage
 });
 
-const visUrl = `https://hackenberg.tech/visualizations/${vis.id}/`;
 
-const webAppSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "@id": `${visUrl}#visualization`,
-  "name": title,
-  "description": description || `${title} interactive visualization by Dr. Georg Hackenberg.`,
-  "url": visUrl,
-  "applicationCategory": "DataVisualizationApplication",
-  "operatingSystem": "Any",
-  "author": {
-    "@id": "https://hackenberg.tech/#person"
-  },
-  "isPartOf": {
-    "@id": "https://hackenberg.tech/visualizations/#collectionpage"
-  }
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Visualizations",
-      "item": "https://hackenberg.tech/visualizations/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": title,
-      "item": visUrl
-    }
-  ]
-};
+const vizSchema = buildVisualizationSchema({ visualization: vis, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
-  title={`${title} | Dr. Georg Hackenberg`} 
+  title={`${title} | Dr. Georg Hackenberg`}
   description={description || `An interactive network diagram mapping the connections between posts, publications, presentations, courses, projects, services, and topic tags on Dr. Georg Hackenberg's website using ${title}.`}
   image={screenshot || optimizedScreenshot?.src}
-  jsonLd={[webAppSchema, breadcrumbSchema]}
+  jsonLd={vizSchema}
 >
   <Navbar />
 

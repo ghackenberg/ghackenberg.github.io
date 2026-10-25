@@ -231,7 +231,8 @@ const RELATION_PROPERTIES = new Set([
   'subjectOf',
   'worksFor',
   'alumniOf',
-  'recognizedBy'
+  'recognizedBy',
+  'about'
 ]);
 
 const wikidataCandidates: WikidataCandidate[] = [];
@@ -313,21 +314,34 @@ for (const fullPath of auditedFiles) {
       return;
     }
 
-    const topLevelItems: JsonLdValue[] = Array.isArray(parsed) ? parsed : [parsed];
+    // Gate 1: Enforce single root object with @context and @graph
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+      addViolation(1, 'Invalid JSON-LD Root', relPath, 'Root JSON-LD element must be a single object (not a top-level array or primitive).');
+      return;
+    }
 
-    for (const item of topLevelItems) {
-      if (typeof item !== 'object' || item === null || Array.isArray(item)) {
-        addViolation(1, 'Invalid JSON-LD Root', relPath, 'Top-level JSON-LD item must be an object.');
+    const rootObj = parsed as JsonLdNode;
+    const ctx = rootObj['@context'];
+    const hasValidCtx = typeof ctx === 'string' && /^https?:\/\/schema\.org\/?$/i.test(ctx.trim());
+    if (!hasValidCtx) {
+      addViolation(1, 'Missing @context', relPath, `Root JSON-LD object must declare "@context": "https://schema.org" (found: ${JSON.stringify(ctx)}).`);
+    }
+
+    if (!Array.isArray(rootObj['@graph'])) {
+      addViolation(1, 'Missing @graph Array', relPath, 'Root JSON-LD object must declare an "@graph" array containing all page nodes.');
+      return;
+    }
+
+    for (const sub of rootObj['@graph']) {
+      if (typeof sub !== 'object' || sub === null || Array.isArray(sub)) {
+        addViolation(1, 'Invalid @graph Item', relPath, 'Items in "@graph" must be objects.');
         continue;
       }
-      const itemObj = item as JsonLdNode;
-      const ctx = itemObj['@context'];
-      const hasValidCtx = typeof ctx === 'string' && /^https?:\/\/schema\.org\/?$/i.test(ctx.trim());
-      if (!hasValidCtx) {
-        addViolation(1, 'Missing @context', relPath, `Top-level JSON-LD object must declare "@context": "https://schema.org" (found: ${JSON.stringify(ctx)}).`);
+      const subObj = sub as JsonLdNode;
+      if ('@context' in subObj) {
+        addViolation(1, 'Redundant @context in @graph', relPath, `Node with @id "${subObj['@id'] || 'anonymous'}" inside "@graph" must not redundantly declare "@context".`);
       }
-
-      extractNodesFromTree(itemObj, relPath, pageNodes);
+      extractNodesFromTree(subObj, relPath, pageNodes);
     }
   });
 
@@ -386,7 +400,7 @@ function extractNodesFromTree(root: JsonLdNode, relPath: string, collector: Json
 // Gate 1: URL / URI Field Validation
 // -------------------------------------------------------------
 function validateUriFields(node: JsonLdNode, relPath: string) {
-  const URI_FIELDS = ['@id', 'url', 'sameAs', 'image', 'item', 'codeRepository'];
+  const URI_FIELDS = ['@id', 'url', 'sameAs', 'image', 'item', 'codeRepository', 'contentUrl'];
 
   for (const field of URI_FIELDS) {
     if (!(field in node)) continue;
@@ -684,7 +698,24 @@ for (const [relPath, pageData] of pageEntitiesMap.entries()) {
     }
   }
 
-  // 5. Domain overview pages
+  // 5. Legal pages (impressum/index.html & datenschutz/index.html)
+  else if (normPath === 'impressum/index.html') {
+    if (!nodesById.has('https://hackenberg.tech/impressum/#webpage') || !nodeTypes.has('WebPage')) {
+      addViolation(5, 'Gate 5: Missing Legal WebPage', normPath, 'Impressum page must define WebPage ("https://hackenberg.tech/impressum/#webpage").');
+    }
+    if (!nodeTypes.has('BreadcrumbList')) {
+      addViolation(5, 'Gate 5: Missing BreadcrumbList', normPath, 'Impressum page must define a BreadcrumbList.');
+    }
+  } else if (normPath === 'datenschutz/index.html') {
+    if (!nodesById.has('https://hackenberg.tech/datenschutz/#webpage') || !nodeTypes.has('WebPage')) {
+      addViolation(5, 'Gate 5: Missing Legal WebPage', normPath, 'Datenschutz page must define WebPage ("https://hackenberg.tech/datenschutz/#webpage").');
+    }
+    if (!nodeTypes.has('BreadcrumbList')) {
+      addViolation(5, 'Gate 5: Missing BreadcrumbList', normPath, 'Datenschutz page must define a BreadcrumbList.');
+    }
+  }
+
+  // 6. Domain overview pages
   const OVERVIEW_ROUTES: Record<string, string> = {
     'posts/index.html': 'https://hackenberg.tech/posts/#collectionpage',
     'publications/index.html': 'https://hackenberg.tech/publications/#collectionpage',
@@ -701,9 +732,12 @@ for (const [relPath, pageData] of pageEntitiesMap.entries()) {
     if (!nodesById.has(expectedId) || !nodeTypes.has('CollectionPage')) {
       addViolation(5, 'Gate 5: Missing Overview CollectionPage', normPath, `Overview page must define CollectionPage with @id "${expectedId}".`);
     }
+    if (!nodeTypes.has('BreadcrumbList')) {
+      addViolation(5, 'Gate 5: Missing BreadcrumbList', normPath, `Overview page "${normPath}" must define a BreadcrumbList.`);
+    }
   }
 
-  // 6. Detail pages
+  // 7. Detail pages
   const DETAIL_SPECS: Array<{
     pattern: RegExp;
     primaryTypes: string[];
@@ -720,6 +754,17 @@ for (const [relPath, pageData] of pageEntitiesMap.entries()) {
     { pattern: /^tags\/[^/]+\/index\.html$/, primaryTypes: ['CollectionPage', 'ItemPage'], domainName: 'tags' }
   ];
 
+  const ARTIFACT_DOMAINS = new Set([
+    'posts',
+    'publications',
+    'presentations',
+    'courses',
+    'projects',
+    'services',
+    'newsletters',
+    'visualizations'
+  ]);
+
   for (const spec of DETAIL_SPECS) {
     if (spec.pattern.test(normPath)) {
       if (!nodeTypes.has('BreadcrumbList')) {
@@ -729,6 +774,36 @@ for (const [relPath, pageData] of pageEntitiesMap.entries()) {
       if (!hasPrimary) {
         addViolation(5, 'Gate 5: Missing Primary Entity', normPath, `Detail page for domain "${spec.domainName}" must define one of primary types [${spec.primaryTypes.join(', ')}].`);
       }
+
+      // Check bidirectional "about" reference to DefinedTerms
+      if (ARTIFACT_DOMAINS.has(spec.domainName)) {
+        const primaryNode = pageData.nodes.find((n) => {
+          const t = n['@type'];
+          const tList = Array.isArray(t) ? t : t ? [t] : [];
+          return spec.primaryTypes.some((pt) => tList.includes(pt));
+        });
+
+        if (primaryNode) {
+          const about = primaryNode['about'];
+          const aboutList = Array.isArray(about) ? about : about ? [about] : [];
+          const hasTagRef = aboutList.some((item) => {
+            if (typeof item === 'object' && item !== null && typeof (item as JsonLdNode)['@id'] === 'string') {
+              return /^https:\/\/hackenberg\.tech\/tags\/[^/]+\/#term$/.test((item as JsonLdNode)['@id'] as string);
+            }
+            return false;
+          });
+
+          if (!hasTagRef) {
+            addViolation(
+              5,
+              'Gate 5: Missing Tag "about" Reference',
+              normPath,
+              `Primary entity in domain "${spec.domainName}" must define "about" linking at least one topic tag (https://hackenberg.tech/tags/.../#term).`
+            );
+          }
+        }
+      }
+
       break;
     }
   }
@@ -862,7 +937,6 @@ async function verifyExternalAuthorities() {
       return false;
     }
 
-    // Check each audited node
     for (const { node, relPath } of allAuditedNodes) {
       const rawType = node['@type'];
       const types = Array.isArray(rawType) ? rawType : rawType ? [rawType] : [];
@@ -880,14 +954,10 @@ async function verifyExternalAuthorities() {
           addViolation(6, 'Gate 6a: Invalid Schema.org Property', relPath, `Property "${key}" is not defined in Schema.org.`);
         } else if (types.length > 0) {
           const isValid = isPropertyValidForClass(key, types);
-          // Allow recognized project/domain conventions:
-          // - primaryImageOfPage enforced on page content nodes by asset governance
-          // - instructor on Course
-          // - isPartOf / hasPart on Service
           const isAllowedExtension =
             key === 'primaryImageOfPage' ||
             (key === 'instructor' && types.includes('Course')) ||
-            ((key === 'isPartOf' || key === 'hasPart') && types.includes('Service'));
+            ((key === 'isPartOf' || key === 'hasPart' || key === 'about') && types.includes('Service'));
 
           if (!isValid && !isAllowedExtension) {
             addViolation(
@@ -1152,7 +1222,6 @@ async function verifyExternalAuthorities() {
         const authors = (data.message?.author || []).map((a) => a.family || a.name || '');
         const hasAuthorHackenberg = authors.some((a) => /Hackenberg/i.test(a));
         const title = data.message?.title?.[0];
-        // If publisher has no authors indexed (e.g. SCITEPRESS), verify valid resolution
         const valid = authors.length > 0 ? hasAuthorHackenberg : Boolean(title);
         cache.crossref[doi] = { valid, hasAuthorHackenberg, title };
       } else {

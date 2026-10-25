@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildPublicationSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -52,63 +53,9 @@ const seoDescription = cleanAbstract.length > 156
   ? `${cleanAbstract.substring(0, 153)}...` 
   : cleanAbstract || `Academic research publication by Dr. Georg Hackenberg: "${pub.data.title}"`;
 
-const pubUrl = `https://hackenberg.tech/publications/${pub.id}/`;
 
-const iconSrc = typeof pub.data.icon === 'object' && pub.data.icon !== null && 'src' in pub.data.icon ? pub.data.icon.src : pub.data.icon;
 
-const scholarlyArticleSchema = {
-  "@context": "https://schema.org",
-  "@type": "ScholarlyArticle",
-  "@id": `${pubUrl}#article`,
-  "headline": pub.data.title,
-  "name": pub.data.title,
-  "url": pubUrl,
-  "author": pub.data.author.split(/,| and /).map(a => {
-    const trimmed = a.trim();
-    const isGeorg = /Georg Hackenberg/i.test(trimmed);
-    return isGeorg
-      ? { "@id": "https://hackenberg.tech/#person" }
-      : { "@type": "Person", "name": trimmed };
-  }),
-  "isPartOf": [
-    { "@id": "https://hackenberg.tech/publications/#collectionpage" },
-    ...(pub.data.book ? [{ "@type": "Periodical", "name": pub.data.book }] : [])
-  ],
-  "datePublished": pub.data.pubDate.toISOString(),
-  "description": cleanAbstract || `${pub.data.title} - Academic publication by ${pub.data.author}.`,
-  "image": iconSrc ? new URL(iconSrc, Astro.site).href : undefined,
-  "sameAs": pub.data.publisherUrl || undefined,
-  "mainEntityOfPage": {
-    "@id": pubUrl
-  }
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Publications",
-      "item": "https://hackenberg.tech/publications/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": pub.data.title,
-      "item": pubUrl
-    }
-  ]
-};
-
-const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
+const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
@@ -118,7 +65,7 @@ const pubJsonLd = [scholarlyArticleSchema, breadcrumbSchema];
   type="article"
   pubDate={pub.data.pubDate}
   tags={pub.data.tags}
-  jsonLd={pubJsonLd}
+  jsonLd={publicationSchema}
 >
   <Navbar />
 

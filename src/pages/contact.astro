@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildContactPageSchemas } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -18,73 +19,13 @@ const {
 
 const profiles = (await getCollection("profiles")).sort((a, b) => a.data.order - b.data.order);
 
-const contactPageSchema = {
-  "@context": "https://schema.org",
-  "@type": "ContactPage",
-  "@id": "https://hackenberg.tech/contact/#contactpage",
-  "url": "https://hackenberg.tech/contact/",
-  "name": "Contact Dr. Georg Hackenberg",
-  "isPartOf": { "@id": "https://hackenberg.tech/#website" },
-  "mainEntity": { "@id": "https://hackenberg.tech/#person" }
-};
-
-const personContactSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": "https://hackenberg.tech/#person",
-  "email": "georg.hackenberg@fh-wels.at",
-  "telephone": "+43 664 80484 44066",
-  "sameAs": profiles.map((p) => p.data.url),
-  "workLocation": [
-    {
-      "@type": "Place",
-      "name": "University Faculty Office (Campus Wels)",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Stelzhamerstraße 23",
-        "addressLocality": "Wels",
-        "postalCode": "4600",
-        "addressCountry": "AT"
-      }
-    },
-    {
-      "@type": "Place",
-      "name": "Business Headquarters (Grünau im Almtal)",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Im Dorf 17",
-        "addressLocality": "Grünau im Almtal",
-        "postalCode": "4645",
-        "addressCountry": "AT"
-      }
-    }
-  ]
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Contact",
-      "item": "https://hackenberg.tech/contact/"
-    }
-  ]
-};
+const pageJsonLd = buildContactPageSchemas({ profiles });
 ---
 
 <Layout
   title="Contact Dr. Georg Hackenberg - Campus Wels, FH Upper Austria"
   description="Get in touch with Dr. Georg Hackenberg for research initiatives, industry collaborations, university teaching, and speaking inquiries."
-  jsonLd={[contactPageSchema, personContactSchema, breadcrumbSchema]}
+  jsonLd={pageJsonLd}
 >
   <Navbar />
 

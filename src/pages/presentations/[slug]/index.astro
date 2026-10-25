@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildPresentationSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -80,7 +81,25 @@ const renderedSlides = await Promise.all(
   })
 );
 
+const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\}/g, "") : "");
+
 const durationInfo = getPresentationDuration(presentation.id, { lang: presentation.data.lang });
+
+const presentationSchemas = buildPresentationSchema({
+  presentation,
+  slides: renderedSlides.map((s) => ({
+    number: s.number,
+    title: s.title || `Slide ${s.number}`,
+    audioUrl: s.audioUrl,
+    durationSec: s.durationSec
+  })),
+  durationInfo: {
+    minutes: durationInfo.minutes,
+    formatted: durationInfo.text
+  },
+  references: renderedSlides.flatMap((s) => s.references),
+  siteUrl: Astro.site?.origin || "https://hackenberg.tech"
+});
 
 // Presentation preview image and PDF handout URLs (in dev mode, link directly to live print routes)
 const presentationDir = path.resolve("src/content/presentations", presentation.id);
@@ -101,66 +120,6 @@ const pdfLightUrl = isDev
   : `/presentations/${presentation.id}/slides-light.pdf`;
 const pdfDownloadUrl = pdfDarkUrl;
 
-const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\}/g, "") : "");
-
-type JsonLdValue = string | number | boolean | null | undefined | { [key: string]: JsonLdValue } | JsonLdValue[];
-type JsonLdNode = Record<string, JsonLdValue>;
-
-const fullSpokenTranscript = renderedSlides
-  .map((s) => stripCues(s.voiceover || "").trim())
-  .filter(Boolean)
-  .join("\n\n");
-
-// Schema.org: PresentationDigitalDocument with full per-slide transcript & citations
-const schemaGraph: JsonLdNode[] = [
-  {
-    "@type": "PresentationDigitalDocument",
-    "@id": `https://hackenberg.tech/presentations/${presentation.id}/#presentation`,
-    "name": presentation.data.title,
-    "headline": presentation.data.subtitle || presentation.data.title,
-    "description": presentation.data.description,
-    ...(previewUrl ? { "image": `https://hackenberg.tech${previewUrl}` } : {}),
-    "author": {
-      "@id": "https://hackenberg.tech/#person"
-    },
-    "isPartOf": {
-      "@id": "https://hackenberg.tech/presentations/#collectionpage"
-    },
-    "datePublished": presentation.data.pubDate.toISOString(),
-    "inLanguage": presentation.data.lang,
-    "url": `https://hackenberg.tech/presentations/${presentation.id}/`,
-    ...(fullSpokenTranscript ? { "text": fullSpokenTranscript } : {}),
-    "hasPart": renderedSlides.map((s) => {
-      const cleanSub = stripCues(s.subtitle || "").trim();
-      const cleanVoice = stripCues(s.voiceover || "").trim();
-      const slideNode: JsonLdNode = {
-        "@type": "CreativeWork",
-        "@id": `https://hackenberg.tech/presentations/${presentation.id}/#slide-${s.number}`,
-        "position": s.number,
-        "name": s.title || `Slide ${s.number}`,
-        ...(cleanSub ? { "headline": cleanSub } : {}),
-        ...(cleanVoice ? { "text": cleanVoice } : {}),
-        ...(s.references && s.references.length > 0
-          ? {
-              "citation": s.references.map((ref) => ({
-                "@type": "CreativeWork",
-                "name": ref.title,
-                "author": ref.author,
-                ...(ref.year ? { "datePublished": String(ref.year) } : {}),
-                ...(ref.url ? { "url": ref.url } : {})
-              }))
-            }
-          : {})
-      };
-      return slideNode;
-    })
-  }
-];
-
-const presentationSchema = {
-  "@context": "https://schema.org",
-  "@graph": schemaGraph
-};
 
 const previewImg = previewUrl || presentation.data.previewImage || presentation.data.icon;
 ---
@@ -169,7 +128,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
   title={`${presentation.data.title} | Keynote Dr. Georg Hackenberg`}
   description={presentation.data.description || `${presentation.data.title} - Interactive presentation by Dr. Georg Hackenberg`}
   image={previewImg}
-  jsonLd={presentationSchema}
+  jsonLd={presentationSchemas}
   lang={presentation.data.lang}
   hasMath={true}
 >

@@ -418,7 +418,11 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       if (rawText) {
         try {
           const parsed = JSON.parse(rawText);
-          jsonLdData = Array.isArray(parsed) ? parsed : [parsed];
+          if (parsed && typeof parsed === 'object' && Array.isArray(parsed['@graph'])) {
+            jsonLdData = parsed['@graph'];
+          } else {
+            jsonLdData = Array.isArray(parsed) ? parsed : [parsed];
+          }
         } catch (err) {
           console.warn(`[image-enforcer] Failed to parse JSON-LD in ${htmlFile}:`, err);
           jsonLdData = [];
@@ -476,7 +480,6 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       const mimeType = getMimeType(img.url);
 
       return {
-        '@context': 'https://schema.org',
         '@type': 'ImageObject',
         '@id': entityId,
         url: entityId,
@@ -524,8 +527,15 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       return true;
     });
 
-    // Append ImageObject nodes to JSON-LD array
-    const enrichedJsonLd = [...filteredNodes, ...imageObjects];
+    // Clean redundant @context and wrap into single root @graph
+    const cleanNodes = filteredNodes.map((n: SchemaEntity) => {
+      const { '@context': _ctx, ...rest } = n;
+      return rest;
+    });
+    const enrichedJsonLd = {
+      '@context': 'https://schema.org',
+      '@graph': [...cleanNodes, ...imageObjects]
+    };
     const jsonString = JSON.stringify(enrichedJsonLd, null, 2);
 
     const scriptRegex = /<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/i;

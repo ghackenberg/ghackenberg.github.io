@@ -6,7 +6,31 @@ interface Props {
 }
 
 const { schema } = Astro.props;
-const jsonLdString = JSON.stringify(schema, null, 2);
+
+function collectNodes(item: JsonValue, nodes: Array<Record<string, JsonValue>>) {
+  if (!item || typeof item !== 'object') return;
+  if (Array.isArray(item)) {
+    for (const sub of item) collectNodes(sub, nodes);
+    return;
+  }
+  const obj = item as Record<string, JsonValue>;
+  if (Array.isArray(obj['@graph'])) {
+    for (const sub of obj['@graph']) collectNodes(sub, nodes);
+    return;
+  }
+  const { '@context': _ctx, ...cleanNode } = obj;
+  nodes.push(cleanNode);
+}
+
+const flatNodes: Array<Record<string, JsonValue>> = [];
+collectNodes(schema as JsonValue, flatNodes);
+
+const rootSchema = {
+  '@context': 'https://schema.org',
+  '@graph': flatNodes
+};
+
+const jsonLdString = JSON.stringify(rootSchema, null, 2);
 ---
 
 <script type="application/ld+json" is:inline set:html={jsonLdString} />

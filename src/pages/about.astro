@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildAboutPageSchemas } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -9,144 +10,16 @@ import Timeline from "@components/Timeline.astro";
 import { getCollection } from "astro:content";
 
 const degrees = await getCollection("degrees");
-const sortedDegrees = degrees.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
-
 const experiences = await getCollection("experiences");
-const activeExperiences = experiences
-  .filter((e) => e.data.endYear === null)
-  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
-const OFFICIAL_ORG_LABELS: Record<string, { name: string; isEducational?: boolean }> = {
-  'https://www.wikidata.org/wiki/Q1388312': { name: 'University of Applied Sciences Upper Austria', isEducational: true },
-  'https://www.wikidata.org/wiki/Q157808': { name: 'Technical University of Munich', isEducational: true },
-  'https://www.wikidata.org/wiki/Q273263': { name: 'RWTH Aachen University', isEducational: true },
-  'https://www.wikidata.org/wiki/Q317070': { name: 'University of Mannheim', isEducational: true },
-  'https://www.wikidata.org/wiki/Q2145077': { name: 'Reply' },
-  'https://www.wikidata.org/wiki/Q262760': { name: 'EPFL', isEducational: true },
-  'https://www.wikidata.org/wiki/Q1451984': { name: 'Fraunhofer FIT' },
-  'https://www.wikidata.org/wiki/Q81230': { name: 'Siemens' }
-};
+const aboutSchemas = buildAboutPageSchemas({ degrees, experiences });
 
-interface OrgSchema {
-  '@context': string;
-  '@type': string;
-  '@id': string;
-  name: string;
-  url?: string;
-  [key: string]: string | undefined;
-}
-
-const orgMap = new Map<string, OrgSchema>();
-
-for (const d of sortedDegrees) {
-  const id = d.data.institutionId;
-  if (id && !orgMap.has(id)) {
-    const meta = OFFICIAL_ORG_LABELS[id];
-    orgMap.set(id, {
-      "@context": "https://schema.org",
-      "@type": meta?.isEducational ? "EducationalOrganization" : "Organization",
-      "@id": id,
-      "name": meta?.name || d.data.institution,
-      ...(d.data.institutionUrl ? { "url": d.data.institutionUrl } : {})
-    });
-  }
-}
-
-for (const e of experiences) {
-  const id = e.data.organizationId;
-  if (id && !orgMap.has(id)) {
-    const meta = OFFICIAL_ORG_LABELS[id];
-    orgMap.set(id, {
-      "@context": "https://schema.org",
-      "@type": meta?.isEducational ? "EducationalOrganization" : "Organization",
-      "@id": id,
-      "name": meta?.name || e.data.company,
-      ...(e.data.organizationUrl ? { "url": e.data.organizationUrl } : {})
-    });
-  }
-}
-
-const distinctOrgs = Array.from(orgMap.values());
-
-const pastOrgIds = new Set<string>();
-for (const d of sortedDegrees) {
-  if (d.data.institutionId) pastOrgIds.add(d.data.institutionId);
-}
-for (const e of experiences) {
-  if (e.data.endYear !== null && e.data.organizationId) {
-    pastOrgIds.add(e.data.organizationId);
-  }
-}
-const alumniOfList = Array.from(pastOrgIds).map((id) => ({ "@id": id }));
-
-const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": "https://hackenberg.tech/#person",
-  "name": "Dr. Georg Hackenberg",
-  "givenName": "Georg",
-  "familyName": "Hackenberg",
-  "honorificPrefix": "Dr.",
-  "jobTitle": "Professor for Industrial Informatics",
-  "url": "https://hackenberg.tech/",
-  "worksFor": [
-    {
-      "@id": "https://www.wikidata.org/wiki/Q1388312"
-    }
-  ],
-  "hasOccupation": activeExperiences.map((e) => ({
-    "@type": "Occupation",
-    "name": e.data.title,
-    ...(e.data.occupationalCategory ? { "occupationalCategory": e.data.occupationalCategory } : {})
-  })),
-  "alumniOf": alumniOfList,
-  "hasCredential": sortedDegrees.map((d) => ({
-    "@type": "EducationalOccupationalCredential",
-    "credentialCategory": "degree",
-    "name": `${d.data.degree} in ${d.data.program}`,
-    ...(d.data.institutionId ? { "recognizedBy": { "@id": d.data.institutionId } } : {
-      "recognizedBy": {
-        "@type": "EducationalOrganization",
-        "name": d.data.institution
-      }
-    })
-  }))
-};
-
-const profilePageSchema = {
-  "@context": "https://schema.org",
-  "@type": "ProfilePage",
-  "@id": "https://hackenberg.tech/about/#profilepage",
-  "url": "https://hackenberg.tech/about/",
-  "name": "About Dr. Georg Hackenberg",
-  "isPartOf": { "@id": "https://hackenberg.tech/#website" },
-  "mainEntity": { "@id": "https://hackenberg.tech/#person" }
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "About",
-      "item": "https://hackenberg.tech/about/"
-    }
-  ]
-};
 ---
 
 <Layout
   title="About Dr. Georg Hackenberg - Professor, Software Architect & Researcher"
   description="Discover the academic background, software engineering leadership, and career timeline of Dr. Georg Hackenberg."
-  jsonLd={[profilePageSchema, personSchema, ...distinctOrgs, breadcrumbSchema]}
+  jsonLd={aboutSchemas}
 >
   <Navbar />
 

@@ -420,7 +420,11 @@ for (const file of htmlFiles) {
   try {
     const rawText = $script.text().trim();
     const parsed = JSON.parse(rawText);
-    jsonLdData = Array.isArray(parsed) ? parsed : [parsed];
+    if (parsed && typeof parsed === 'object' && Array.isArray(parsed['@graph'])) {
+      jsonLdData = parsed['@graph'];
+    } else {
+      jsonLdData = Array.isArray(parsed) ? parsed : [parsed];
+    }
   } catch (err) {
     console.error(`[validate-assets] ❌ Assertion 5 Failed: Page ${relPath} has unparseable JSON-LD:`, err);
     errorsCount++;

@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildProjectSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -48,69 +49,16 @@ const optimizedScreenshots = await Promise.all(
 
 const repoName = project.data.repoName;
 const repoUrl = repoName ? `https://github.com/ghackenberg/${repoName}` : undefined;
-const tech = project.data.tags?.[0] ?? "Web";
 
-const projectUrl = `https://hackenberg.tech/projects/${project.id}/`;
 
-const softwareAppSchema = {
-  "@context": "https://schema.org",
-  "@type": ["SoftwareApplication", "SoftwareSourceCode"],
-  "@id": `${projectUrl}#software`,
-  "name": project.data.title,
-  "headline": project.data.title,
-  "description": project.data.description,
-  "image": optimizedMainScreenshot?.src ? new URL(optimizedMainScreenshot.src, Astro.site).href : undefined,
-  "url": projectUrl,
-  "sameAs": project.data.href,
-  "applicationCategory": "Software",
-  "operatingSystem": "Cross-platform",
-  "runtimePlatform": "Cross-platform",
-  "programmingLanguage": tech,
-  "author": {
-    "@id": "https://hackenberg.tech/#person"
-  },
-  "creator": {
-    "@id": "https://hackenberg.tech/#person"
-  },
-  "isPartOf": {
-    "@id": "https://hackenberg.tech/projects/#collectionpage"
-  },
-  "codeRepository": repoUrl
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Projects",
-      "item": "https://hackenberg.tech/projects/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": project.data.title,
-      "item": projectUrl
-    }
-  ]
-};
-
-const projectJsonLd = [softwareAppSchema, breadcrumbSchema];
+const projectSchema = buildProjectSchema({ project, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
   title={`${project.data.title} | Dr. Georg Hackenberg`} 
   description={project.data.description}
   image={project.data.screenshot || optimizedMainScreenshot?.src}
-  jsonLd={projectJsonLd}
+  jsonLd={projectSchema}
 >
   <Navbar />
 

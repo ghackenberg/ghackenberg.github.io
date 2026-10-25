@@ -14,31 +14,13 @@ const pageTitle = 'Email Newsletters | Dr. Georg Hackenberg';
 const pageDescription =
   'Archive of English-language engineering and research newsletter dispatches covering blog posts, presentations, courses, projects, visualizations, and publications.';
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: 'https://hackenberg.tech',
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Newsletters',
-      item: 'https://hackenberg.tech/newsletters/',
-    },
-  ],
-};
 ---
 
 <Layout
   title={pageTitle}
   description={pageDescription}
   image={sortedIssues[0]?.data.icon.src}
-  jsonLd={[buildCollectionPageSchema("newsletters", sortedIssues.map((n) => ({ id: `https://hackenberg.tech/newsletters/${n.id}/#article` }))), breadcrumbSchema]}
+  jsonLd={buildCollectionPageSchema("newsletters", sortedIssues.map((n) => ({ id: `https://hackenberg.tech/newsletters/${n.id}/#article` })))}
   lang="en"
 >
   <Navbar />

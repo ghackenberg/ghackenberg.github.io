@@ -32,24 +32,6 @@ const optimizedFirstScreenshot = firstCourseScreenshotImg ? await getImage({
   quality: 80
 }) : null;
 
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Courses",
-      "item": "https://hackenberg.tech/courses/"
-    }
-  ]
-};
 ---
 
 <Layout 
@@ -57,7 +39,7 @@ const breadcrumbSchema = {
   description="Explore university course materials, lecture slides, and GitHub repositories on software engineering and industrial informatics by Dr. Georg Hackenberg."
   image={firstCourseScreenshot}
   preloadImage={optimizedFirstScreenshot?.src}
-  jsonLd={[buildCollectionPageSchema("courses", courses.map((c) => ({ id: `https://hackenberg.tech/courses/${c.id}/#course` }))), breadcrumbSchema]}
+  jsonLd={buildCollectionPageSchema("courses", courses.map((c) => ({ id: `https://hackenberg.tech/courses/${c.id}/#course` })))}
   lang="en"
 >
   <Navbar />

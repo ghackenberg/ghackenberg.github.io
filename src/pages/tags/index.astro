@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildTagsOverviewSchemas } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
@@ -47,60 +48,13 @@ const tagStats = tags.map((tag) => {
 // Sort tags alphabetically by title
 const sortedTags = tagStats.sort((a, b) => a.title.localeCompare(b.title));
 
-const collectionPageSchema = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "@id": "https://hackenberg.tech/tags/#collectionpage",
-  "url": "https://hackenberg.tech/tags/",
-  "name": "Content Tags",
-  "description": "Topical directory and semantic knowledge taxonomy connecting research, publications, and projects.",
-  "isPartOf": { "@id": "https://hackenberg.tech/#website" },
-  "author": { "@id": "https://hackenberg.tech/#person" },
-  "mainEntity": {
-    "@type": "ItemList",
-    "itemListElement": sortedTags.map((tag, idx) => ({
-      "@type": "ListItem",
-      "position": idx + 1,
-      "item": {
-        "@id": `https://hackenberg.tech/tags/${tag.id}/#collectionpage`
-      }
-    }))
-  }
-};
-
-const personTagsSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": "https://hackenberg.tech/#person",
-  "knowsAbout": sortedTags.map((t) => ({
-    "@id": `https://hackenberg.tech/tags/${t.id}/#term`
-  }))
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Tags",
-      "item": "https://hackenberg.tech/tags/"
-    }
-  ]
-};
+const tagsJsonLd = buildTagsOverviewSchemas({ tags: sortedTags });
 ---
 
 <Layout
   title="Content Tags & Topic Index | Dr. Georg Hackenberg"
   description="Explore the comprehensive knowledge index connecting technical blog posts, scientific publications, software projects, university courses, and business services by Dr. Georg Hackenberg."
-  jsonLd={[collectionPageSchema, personTagsSchema, breadcrumbSchema]}
+  jsonLd={tagsJsonLd}
 >
   <Navbar />
 

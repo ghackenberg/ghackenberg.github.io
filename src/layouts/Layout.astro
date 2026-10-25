@@ -61,6 +61,7 @@ interface Props {
   preloadImage?: string;
   jsonLd?: Record<string, JsonLdValue> | Array<Record<string, JsonLdValue>>;
   lang?: string;
+  breadcrumbParentTitle?: string;
 }
 
 const { 
@@ -73,7 +74,8 @@ const {
   hasMath = false,
   preloadImage,
   jsonLd,
-  lang = "en"
+  lang = "en",
+  breadcrumbParentTitle
 } = Astro.props;
 
 // Determine active domain from the first URL path segment
@@ -187,7 +189,9 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
         "item": canonicalURL.href
       });
     } else {
-      const segName = SEGMENT_NAMES[seg] || decodeURIComponent(seg).replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      const segName = (idx === 1 && pathnameSegments.length === 3 && breadcrumbParentTitle)
+        ? breadcrumbParentTitle
+        : (SEGMENT_NAMES[seg] || decodeURIComponent(seg).replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()));
       breadcrumbElements.push({
         "@type": "ListItem",
         "position": idx + 2,

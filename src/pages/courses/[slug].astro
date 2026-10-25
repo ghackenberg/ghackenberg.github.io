@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildCourseSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -27,63 +28,8 @@ const courseModules = allCourseModules
 
 const repoUrl = course.data.repoName ? `https://github.com/ghackenberg/${course.data.repoName}` : undefined;
 
-const courseUrl = `https://hackenberg.tech/courses/${course.id}/`;
 
-const courseSchema = {
-  "@context": "https://schema.org",
-  "@type": "Course",
-  "@id": `${courseUrl}#course`,
-  "name": course.data.title,
-  "description": course.data.description || `${course.data.title} taught by Dr. Georg Hackenberg.`,
-  "image": course.data.screenshot ? new URL(course.data.screenshot.src.src, Astro.site).href : undefined,
-  "url": courseUrl,
-  "provider": {
-    "@id": "https://www.wikidata.org/wiki/Q1388312"
-  },
-  "instructor": {
-    "@id": "https://hackenberg.tech/#person"
-  },
-  "isPartOf": {
-    "@id": "https://hackenberg.tech/courses/#collectionpage"
-  },
-  ...(courseModules.length > 0
-    ? {
-        "hasPart": courseModules.map((m) => ({
-          "@id": `https://hackenberg.tech/courses/${course.id}/${m.id.split('/').pop()}/#module`
-        }))
-      }
-    : {}),
-  "inLanguage": course.data.language,
-  "educationalCredentialAwarded": "Academic Course Credit",
-  "teaches": course.data.learningGoals ? course.data.learningGoals.join(", ") : undefined
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Courses",
-      "item": "https://hackenberg.tech/courses/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": course.data.title,
-      "item": courseUrl
-    }
-  ]
-};
-
-const courseJsonLd = [courseSchema, breadcrumbSchema];
+const courseSchema = buildCourseSchema({ course, modules: courseModules, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
@@ -91,7 +37,7 @@ const courseJsonLd = [courseSchema, breadcrumbSchema];
   description={course.data.description}
   image={course.data.screenshot}
   tags={course.data.tags}
-  jsonLd={courseJsonLd}
+  jsonLd={courseSchema}
   lang={course.data.language || 'de'}
 >
   <Navbar />

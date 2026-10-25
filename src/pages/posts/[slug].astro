@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildPostSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -62,76 +63,11 @@ try {
 
 const hasMath = rawContent.includes("$$") || /\$[^\$\s][^\$]*\$/.test(rawContent);
 
-const postUrl = `https://hackenberg.tech/posts/${post.id}/`;
 
 const iconSrc = post.data.icon?.src;
 const isSvgIcon = iconSrc?.format === "svg";
 const ogImage = isSvgIcon ? `/posts/${post.id}/og.png` : iconSrc;
-const schemaImage = isSvgIcon 
-  ? new URL(`/posts/${post.id}/og.png`, Astro.site).href
-  : (iconSrc?.src ? new URL(iconSrc.src, Astro.site).href : undefined);
-
-const blogPostingSchema = {
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "@id": `${postUrl}#article`,
-  "headline": post.data.title,
-  "description": seoDescription,
-  "image": schemaImage,
-  "url": postUrl,
-  "datePublished": post.data.pubDate.toISOString(),
-  "author": {
-    "@id": "https://hackenberg.tech/#person"
-  },
-  "publisher": {
-    "@id": "https://hackenberg.tech/#person"
-  },
-  "isPartOf": {
-    "@id": "https://hackenberg.tech/posts/#collectionpage"
-  },
-  "keywords": post.data.tags ? post.data.tags.join(", ") : undefined,
-  "mainEntityOfPage": {
-    "@id": postUrl
-  },
-  ...(post.data.references && post.data.references.length > 0
-    ? {
-        "citation": post.data.references.map((ref) => ({
-          "@type": "CreativeWork",
-          "name": ref.title,
-          "author": ref.author,
-          ...(ref.year ? { "datePublished": String(ref.year) } : {}),
-          ...(ref.url ? { "url": ref.url } : {})
-        }))
-      }
-    : {})
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Posts",
-      "item": "https://hackenberg.tech/posts/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": post.data.title,
-      "item": postUrl
-    }
-  ]
-};
-
-const postJsonLd = [blogPostingSchema, breadcrumbSchema];
+const postSchemas = buildPostSchema({ post, readingTime, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
 
 <Layout 
@@ -142,7 +78,7 @@ const postJsonLd = [blogPostingSchema, breadcrumbSchema];
   pubDate={post.data.pubDate}
   tags={post.data.tags}
   hasMath={hasMath}
-  jsonLd={postJsonLd}
+  jsonLd={postSchemas}
   lang={post.data.lang || "de"}
 >
   <Navbar />

@@ -47,31 +47,8 @@ const optimizedServices = await Promise.all(
 
 const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewImage;
 
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://hackenberg.tech"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Services",
-      "item": "https://hackenberg.tech/services/"
-    }
-  ]
-};
+const pageJsonLd = buildCollectionPageSchema("services", sortedServices.map((s) => ({ id: `https://hackenberg.tech/services/${s.id}/#service` })));
 
-const collectionPageSchema = buildCollectionPageSchema(
-  "services",
-  sortedServices.map((s) => ({ id: `https://hackenberg.tech/services/${s.id}/#service` }))
-);
-
-const pageJsonLd = [breadcrumbSchema, collectionPageSchema];
 ---
 
 <Layout 

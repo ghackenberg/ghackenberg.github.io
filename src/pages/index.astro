@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { buildWebsiteSchema, buildNavigationSchema } from "@commons/server/json-ld";
 import Navbar from "@components/Navbar.astro";
 import Container from "@components/Container.astro";
 import Section from "@components/Section.astro";
@@ -26,7 +27,6 @@ import profileClosedMouthBlinkImage from "@assets/avatar/comic-profile-head-clos
 import profileClosedMouthBlinkDepthImage from "@assets/avatar/comic-profile-head-closed-mouth-blink-depth.png";
 import { getCollection } from "astro:content";
 import { calculateTagCounts } from "@commons/shared/graph-payload.js";
-import { CONTENT_DOMAINS, DOMAIN_METADATA } from "@commons/shared/domain-themes";
 
 const optimizedProfile = await getImage({
   src: profileImage,
@@ -318,61 +318,7 @@ const restNewslettersPct = restTotalContentCount > 0 ? Math.round((restNewslette
 const restFontSizeClass = "text-[11px] leading-tight sm:text-xs md:text-sm";
 const restFontWeightClass = "font-semibold";
 
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": "https://hackenberg.tech/#website",
-  "url": "https://hackenberg.tech/",
-  "name": "Dr. Georg Hackenberg",
-  "description": "Personal website of Dr. Georg Hackenberg, Professor for Industrial Informatics, digital entrepreneur, and software engineer.",
-  "publisher": { "@id": "https://hackenberg.tech/#person" },
-  "hasPart": [
-    { "@id": "https://hackenberg.tech/about/#profilepage" },
-    { "@id": "https://hackenberg.tech/contact/#contactpage" },
-    ...CONTENT_DOMAINS.map((domain) => ({
-      "@id": `https://hackenberg.tech/${domain}/#collectionpage`
-    }))
-  ]
-};
-
-const siteNavigationSchema = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "@id": "https://hackenberg.tech/#navigation",
-  "name": "Main Navigation",
-  "itemListElement": [
-    {
-      "@type": "SiteNavigationElement",
-      "position": 1,
-      "name": "Home",
-      "description": "Homepage of Dr. Georg Hackenberg",
-      "url": "https://hackenberg.tech/"
-    },
-    {
-      "@type": "SiteNavigationElement",
-      "position": 2,
-      "name": "About",
-      "description": "Academic background, software engineering leadership, and career timeline",
-      "url": "https://hackenberg.tech/about/"
-    },
-    ...CONTENT_DOMAINS.map((domain, idx) => ({
-      "@type": "SiteNavigationElement",
-      "position": idx + 3,
-      "name": DOMAIN_METADATA[domain].label,
-      "description": DOMAIN_METADATA[domain].navDescription || DOMAIN_METADATA[domain].label,
-      "url": `https://hackenberg.tech/${domain}/`
-    })),
-    {
-      "@type": "SiteNavigationElement",
-      "position": CONTENT_DOMAINS.length + 3,
-      "name": "Contact",
-      "description": "Direct contact details, office locations, and university affiliation",
-      "url": "https://hackenberg.tech/contact/"
-    }
-  ]
-};
-
-const homeJsonLd = [websiteSchema, siteNavigationSchema];
+const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
 ---
 
 <Layout 
