@@ -13,8 +13,8 @@ const presentations = await getCollection("presentations");
 const courses = await getCollection("courses");
 const projects = await getCollection("projects");
 const services = await getCollection("services");
-const visualizations = await getCollection("visualizations");
 const newsletters = await getCollection("newsletters");
+const visualizations = await getCollection("visualizations");
 
 // Compute counts for each tag
 const tagStats = tags.map((tag) => {
@@ -24,9 +24,9 @@ const tagStats = tags.map((tag) => {
   const courseCount = courses.filter((c) => c.data.tags && c.data.tags.includes(tag.id)).length;
   const projCount = projects.filter((p) => p.data.tags && p.data.tags.includes(tag.id)).length;
   const serviceCount = services.filter((s) => s.data.tags && s.data.tags.includes(tag.id)).length;
-  const visCount = visualizations.filter((v) => v.data.tags && v.data.tags.includes(tag.id)).length;
   const newsletterCount = newsletters.filter((n) => n.data.tags && n.data.tags.includes(tag.id)).length;
-  const total = postCount + pubCount + presCount + courseCount + projCount + serviceCount + visCount + newsletterCount;
+  const visCount = visualizations.filter((v) => v.data.tags && v.data.tags.includes(tag.id)).length;
+  const total = postCount + pubCount + presCount + courseCount + projCount + serviceCount + newsletterCount + visCount;
 
   return {
     id: tag.id,
@@ -38,8 +38,8 @@ const tagStats = tags.map((tag) => {
     courseCount,
     projCount,
     serviceCount,
-    visCount,
     newsletterCount,
+    visCount,
     total,
   };
 });
@@ -162,16 +162,16 @@ const breadcrumbSchema = {
                 <span>{tag.serviceCount} Service{tag.serviceCount !== 1 ? 's' : ''}</span>
               </span>
             )}
-            {tag.visCount > 0 && (
-              <span class="inline-flex items-center gap-1 text-domain-visualizations">
-                <span class="w-1.5 h-1.5 rounded-full bg-domain-visualizations"></span>
-                <span>{tag.visCount} Visualization{tag.visCount !== 1 ? 's' : ''}</span>
-              </span>
-            )}
             {tag.newsletterCount > 0 && (
               <span class="inline-flex items-center gap-1 text-domain-newsletters">
                 <span class="w-1.5 h-1.5 rounded-full bg-domain-newsletters"></span>
                 <span>{tag.newsletterCount} Newsletter{tag.newsletterCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
+            {tag.visCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-domain-visualizations">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-visualizations"></span>
+                <span>{tag.visCount} Visualization{tag.visCount !== 1 ? 's' : ''}</span>
               </span>
             )}
           </div>

@@ -537,17 +537,17 @@ const websiteSchema = {
     },
     {
       "@type": "WebPage",
-      "@id": "https://hackenberg.tech/visualizations/",
-      "url": "https://hackenberg.tech/visualizations/",
-      "name": "Visualizations",
-      "description": "Interactive data visualizations, WebGL simulations, and graph network engines."
-    },
-    {
-      "@type": "WebPage",
       "@id": "https://hackenberg.tech/newsletters/",
       "url": "https://hackenberg.tech/newsletters/",
       "name": "Newsletters",
       "description": "Archive of technical newsletters covering software architecture, agentic AI, and system engineering."
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://hackenberg.tech/visualizations/",
+      "url": "https://hackenberg.tech/visualizations/",
+      "name": "Visualizations",
+      "description": "Interactive data visualizations, WebGL simulations, and graph network engines."
     },
     {
       "@type": "WebPage",
@@ -631,16 +631,16 @@ const siteNavigationSchema = {
     {
       "@type": "SiteNavigationElement",
       "position": 9,
-      "name": "Visualizations",
-      "description": "Interactive data visualizations and graph network engines",
-      "url": "https://hackenberg.tech/visualizations/"
+      "name": "Newsletters",
+      "description": "Archive of technical newsletters and updates",
+      "url": "https://hackenberg.tech/newsletters/"
     },
     {
       "@type": "SiteNavigationElement",
       "position": 10,
-      "name": "Newsletters",
-      "description": "Archive of technical newsletters and updates",
-      "url": "https://hackenberg.tech/newsletters/"
+      "name": "Visualizations",
+      "description": "Interactive data visualizations and graph network engines",
+      "url": "https://hackenberg.tech/visualizations/"
     },
     {
       "@type": "SiteNavigationElement",
@@ -1749,98 +1749,6 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     </Container>
   </Section>
 
-  <!-- Content Visualizations Section -->
-  <Section id="visualizations" border="top" padding="standard">
-    <Container size="wide" padding="none">
-      <div class="section-header">
-        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
-          <h2 id="visualizations-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 truncate min-w-0">
-            Content <span class="text-domain-visualizations">Visualizations</span>
-          </h2>
-          <a
-            href="/visualizations/"
-            aria-label="Explore all Visualizations"
-            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-visualizations hover:bg-domain-visualizations/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-visualizations/20 hover:shadow-domain-visualizations/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
-          >
-            <span class="cta-text-full">Explore All</span>
-            <span class="cta-text-short hidden">All</span>
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
-          </a>
-        </div>
-        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
-          Interactive knowledge graphs exploring cross-content relationships between articles, publications, projects, and courses rendered in real time.
-        </p>
-      </div>
-
-      <div class="carousel-stage at-start relative">
-        <!-- Navigation Buttons (< lg) -->
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
-          aria-label="Previous items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
-          aria-label="Next items"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-
-        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
-          {sortedVisualizations.slice(0, 5).map((vis, index) => (
-            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
-              <VisualizationCard
-                title={vis.data.title}
-                description={vis.data.description}
-                href={`/visualizations/${vis.id}/`}
-                screenshot={vis.data.screenshot}
-                tags={vis.data.tags}
-              />
-            </div>
-          ))}
-          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
-            <a
-              href="/visualizations/"
-              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-visualizations/25 hover:border-domain-visualizations/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
-            >
-              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-visualizations/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div class="w-16 h-16 rounded-2xl bg-domain-visualizations/15 border border-domain-visualizations/30 text-domain-visualizations flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
-                📊
-              </div>
-              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-visualizations/15 text-domain-visualizations border border-domain-visualizations/30 mb-3">
-                {visualizations.length} Engines Total
-              </span>
-              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
-                Explore All Visualizations
-              </h3>
-              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
-                Browse interactive knowledge graphs, real-time WebGL engines, and data visualizations.
-              </p>
-              <div class="w-full pt-2 flex justify-center">
-                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-visualizations hover:bg-domain-visualizations/90 text-white text-xs font-bold shadow-lg shadow-domain-visualizations/20 transition-all duration-200">
-                  <span>View Archive</span>
-                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </div>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-    </Container>
-  </Section>
-
   <!-- Email Newsletters Section -->
   <Section id="newsletters" border="top" padding="standard">
     <Container size="wide" padding="none">
@@ -1934,6 +1842,98 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
     </Container>
   </Section>
 
+  <!-- Content Visualizations Section -->
+  <Section id="visualizations" border="top" padding="standard">
+    <Container size="wide" padding="none">
+      <div class="section-header">
+        <div class="flex flex-nowrap items-center gap-3 sm:gap-4 mb-3 min-w-0">
+          <h2 id="visualizations-heading" class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 leading-tight pb-1 truncate min-w-0">
+            Content <span class="text-domain-visualizations">Visualizations</span>
+          </h2>
+          <a
+            href="/visualizations/"
+            aria-label="Explore all Visualizations"
+            class="section-header-cta shrink-0 whitespace-nowrap px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-domain-visualizations hover:bg-domain-visualizations/90 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-lg shadow-domain-visualizations/20 hover:shadow-domain-visualizations/35 transition-all duration-300 inline-flex items-center gap-2 hover:scale-105"
+          >
+            <span class="cta-text-full">Explore All</span>
+            <span class="cta-text-short hidden">All</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+        <p class="text-gray-400 text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+          Interactive knowledge graphs exploring cross-content relationships between articles, publications, projects, and courses rendered in real time.
+        </p>
+      </div>
+
+      <div class="carousel-stage at-start relative">
+        <!-- Navigation Buttons (< lg) -->
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-prev absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden opacity-0 pointer-events-none"
+          aria-label="Previous items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="carousel-nav-btn carousel-next absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full glass-card bg-slate-900/85 light:bg-white/90 border border-element-border-medium hover:border-brand-primary/50 text-gray-200 light:text-slate-800 hover:text-white shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 cursor-pointer lg:hidden"
+          aria-label="Next items"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+
+        <div class="mobile-card-carousel flex items-stretch lg:grid lg:grid-cols-3 gap-5 lg:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
+          {sortedVisualizations.slice(0, 5).map((vis, index) => (
+            <div class={`w-[82vw] max-w-[340px] sm:w-[360px] lg:w-auto shrink-0 snap-start self-stretch h-auto ${index >= 3 ? 'carousel-extra-item lg:hidden' : ''}`}>
+              <VisualizationCard
+                title={vis.data.title}
+                description={vis.data.description}
+                href={`/visualizations/${vis.id}/`}
+                screenshot={vis.data.screenshot}
+                tags={vis.data.tags}
+              />
+            </div>
+          ))}
+          <div class="w-[82vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start self-stretch h-auto carousel-extra-item lg:hidden">
+            <a
+              href="/visualizations/"
+              class="preview-card glass-card group relative rounded-2xl p-8 border border-domain-visualizations/25 hover:border-domain-visualizations/60 flex flex-col items-center justify-center text-center h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl cursor-pointer"
+            >
+              <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-domain-visualizations/15 blur-3xl pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="w-16 h-16 rounded-2xl bg-domain-visualizations/15 border border-domain-visualizations/30 text-domain-visualizations flex items-center justify-center text-3xl mb-5 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                📊
+              </div>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-domain-visualizations/15 text-domain-visualizations border border-domain-visualizations/30 mb-3">
+                {visualizations.length} Engines Total
+              </span>
+              <h3 class="text-2xl font-extrabold text-gray-100 light:text-slate-900 mb-3 tracking-tight">
+                Explore All Visualizations
+              </h3>
+              <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-[240px]">
+                Browse interactive knowledge graphs, real-time WebGL engines, and data visualizations.
+              </p>
+              <div class="w-full pt-2 flex justify-center">
+                <div class="flex items-center justify-center gap-2 w-full max-w-[200px] px-4 py-2 rounded-lg bg-domain-visualizations hover:bg-domain-visualizations/90 text-white text-xs font-bold shadow-lg shadow-domain-visualizations/20 transition-all duration-200">
+                  <span>View Archive</span>
+                  <svg class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
   <!-- Content Tags Section -->
   <Section id="content-tags" border="top" padding="standard">
     <Container size="wide" padding="none">
@@ -2007,8 +2007,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                       {tag.coursesCount > 0 && <div class="bg-domain-courses h-full" style={`width: ${tag.coursesPct}%`} title={`Courses: ${tag.coursesCount}`}></div>}
                       {tag.projectsCount > 0 && <div class="bg-domain-projects h-full" style={`width: ${tag.projectsPct}%`} title={`Projects: ${tag.projectsCount}`}></div>}
                       {tag.servicesCount > 0 && <div class="bg-domain-services h-full" style={`width: ${tag.servicesPct}%`} title={`Services: ${tag.servicesCount}`}></div>}
-                      {tag.visCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${tag.visPct}%`} title={`Visualizations: ${tag.visCount}`}></div>}
                       {tag.newslettersCount > 0 && <div class="bg-domain-newsletters h-full" style={`width: ${tag.newslettersPct}%`} title={`Newsletters: ${tag.newslettersCount}`}></div>}
+                      {tag.visCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${tag.visPct}%`} title={`Visualizations: ${tag.visCount}`}></div>}
                     </div>
                   )}
 
@@ -2055,18 +2055,18 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                         <span class="text-gray-400 text-[10px]">({tag.servicesPct}%)</span>
                       </span>
                     )}
-                    {tag.visCount > 0 && (
-                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
-                        <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
-                        <span>{tag.visCount} {tag.visCount === 1 ? 'Visualization' : 'Visualizations'}</span>
-                        <span class="text-gray-400 text-[10px]">({tag.visPct}%)</span>
-                      </span>
-                    )}
                     {tag.newslettersCount > 0 && (
                       <span class="inline-flex items-center gap-1 whitespace-nowrap">
                         <span class="w-2 h-2 rounded-full bg-domain-newsletters"></span>
                         <span>{tag.newslettersCount} {tag.newslettersCount === 1 ? 'Newsletter' : 'Newsletters'}</span>
                         <span class="text-gray-400 text-[10px]">({tag.newslettersPct}%)</span>
+                      </span>
+                    )}
+                    {tag.visCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
+                        <span>{tag.visCount} {tag.visCount === 1 ? 'Visualization' : 'Visualizations'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.visPct}%)</span>
                       </span>
                     )}
                   </div>
@@ -2110,8 +2110,8 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                       {restCoursesCount > 0 && <div class="bg-domain-courses h-full" style={`width: ${restCoursesPct}%`} title={`Courses: ${restCoursesCount}`}></div>}
                       {restProjectsCount > 0 && <div class="bg-domain-projects h-full" style={`width: ${restProjectsPct}%`} title={`Projects: ${restProjectsCount}`}></div>}
                       {restServicesCount > 0 && <div class="bg-domain-services h-full" style={`width: ${restServicesPct}%`} title={`Services: ${restServicesCount}`}></div>}
-                      {restVisCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${restVisPct}%`} title={`Visualizations: ${restVisCount}`}></div>}
                       {restNewslettersCount > 0 && <div class="bg-domain-newsletters h-full" style={`width: ${restNewslettersPct}%`} title={`Newsletters: ${restNewslettersCount}`}></div>}
+                      {restVisCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${restVisPct}%`} title={`Visualizations: ${restVisCount}`}></div>}
                     </div>
                   )}
 
@@ -2158,18 +2158,18 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                         <span class="text-gray-400 text-[10px]">({restServicesPct}%)</span>
                       </span>
                     )}
-                    {restVisCount > 0 && (
-                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
-                        <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
-                        <span>{restVisCount} {restVisCount === 1 ? 'Visualization' : 'Visualizations'}</span>
-                        <span class="text-gray-400 text-[10px]">({restVisPct}%)</span>
-                      </span>
-                    )}
                     {restNewslettersCount > 0 && (
                       <span class="inline-flex items-center gap-1 whitespace-nowrap">
                         <span class="w-2 h-2 rounded-full bg-domain-newsletters"></span>
                         <span>{restNewslettersCount} {restNewslettersCount === 1 ? 'Newsletter' : 'Newsletters'}</span>
                         <span class="text-gray-400 text-[10px]">({restNewslettersPct}%)</span>
+                      </span>
+                    )}
+                    {restVisCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
+                        <span>{restVisCount} {restVisCount === 1 ? 'Visualization' : 'Visualizations'}</span>
+                        <span class="text-gray-400 text-[10px]">({restVisPct}%)</span>
                       </span>
                     )}
                   </div>

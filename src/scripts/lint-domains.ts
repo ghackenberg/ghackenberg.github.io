@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { CONTENT_DOMAINS } from '@commons/shared/domain-themes';
 
 /**
  * Domain Integrity & Design System Linter
@@ -33,6 +34,8 @@ import path from 'node:path';
  * 27. Content Frontmatter Date Standard: Frontmatter pubDate in posts, presentations, and publications must strictly match /^\d{4}-\d{2}-\d{2}$/
  * 28. UI Date Formatting Uniformity: PostCard, PresentationCard, PublicationCard, and CompactRelatedCard must use formatDate and no raw toLocaleDateString or unformatted pubDate
  * 29. Publication Directory Date Standard: Publication directories in src/content/publications must strictly start with YYYY_MM_DD_ matching their frontmatter pubDate
+ * 30. Preview Card Architectural Contract & Gating: 1lh/2lh title reservations, 3lh description reservations, conflict-free line-clamp CSS, and Option 3 chip gating
+ * 31. Canonical Domain Sequence: index.astro, tags/[tag].astro, tags/index.astro, and overview configurations strictly adhere to CONTENT_DOMAINS order
  */
 
 const ROOT_DIR = process.cwd();
@@ -229,9 +232,9 @@ for (const file of allAuditedFiles) {
 }
 
 // Verify homepage specifically does not use any heading gradients on domain-specific sections
-const indexFile = path.resolve(PAGES_DIR, 'index.astro');
-if (fs.existsSync(indexFile)) {
-  const indexContent = fs.readFileSync(indexFile, 'utf8');
+const indexPageFile = path.resolve(PAGES_DIR, 'index.astro');
+if (fs.existsSync(indexPageFile)) {
+  const indexContent = fs.readFileSync(indexPageFile, 'utf8');
   const domainSectionHeadings = [
     'Blog Posts',
     'Software Projects',
@@ -298,8 +301,8 @@ const OVERVIEW_PAGES_CONFIG = [
   { file: 'src/pages/courses/index.astro', domain: 'courses' },
   { file: 'src/pages/projects/index.astro', domain: 'projects' },
   { file: 'src/pages/services.astro', domain: 'services' },
-  { file: 'src/pages/visualizations/index.astro', domain: 'visualizations' },
   { file: 'src/pages/newsletters/index.astro', domain: 'newsletters' },
+  { file: 'src/pages/visualizations/index.astro', domain: 'visualizations' },
   { file: 'src/pages/tags/index.astro', domain: 'tags' },
 ];
 
@@ -571,8 +574,8 @@ if (fs.existsSync(TAG_PAGE_FILE)) {
     'University <span class="text-domain-courses">Courses</span>',
     'Software <span class="text-domain-projects">Projects</span>',
     'Business <span class="text-domain-services">Services</span>',
-    'Content <span class="text-domain-visualizations">Visualizations</span>',
     'Email <span class="text-domain-newsletters">Newsletters</span>',
+    'Content <span class="text-domain-visualizations">Visualizations</span>',
   ];
   for (const highlight of expectedHighlights) {
     if (!content.includes(highlight)) {
@@ -942,6 +945,113 @@ if (previewCardContractViolations === 0) {
   success('All 10 preview card components and project screenshot cards enforce domain-appropriate 1lh/2lh title reservation, 3lh description reservation, conflict-free line-clamp CSS, and Option 3 chip gating.');
 }
 
+// 31. Canonical Domain Sequence Enforcement
+// Ensures index.astro, tags/[tag].astro, tags/index.astro, and OVERVIEW_PAGES_CONFIG strictly follow CONTENT_DOMAINS order
+let domainSequenceViolations = 0;
+
+// 31a. OVERVIEW_PAGES_CONFIG order
+const overviewDomains = OVERVIEW_PAGES_CONFIG.map((c) => c.domain);
+for (let i = 0; i < CONTENT_DOMAINS.length; i++) {
+  if (overviewDomains[i] !== CONTENT_DOMAINS[i]) {
+    error(`OVERVIEW_PAGES_CONFIG[${i}] domain "${overviewDomains[i]}" does not match canonical CONTENT_DOMAINS[${i}] "${CONTENT_DOMAINS[i]}".`);
+    domainSequenceViolations++;
+  }
+}
+
+// 31b. index.astro domain sections sequence
+const indexFile = path.resolve(PAGES_DIR, 'index.astro');
+if (fs.existsSync(indexFile)) {
+  const indexContent = fs.readFileSync(indexFile, 'utf8');
+  const expectedIndexSectionIds = [
+    'latest-posts',
+    'publications',
+    'presentations',
+    'courses',
+    'projects',
+    'services',
+    'newsletters',
+    'visualizations',
+    'content-tags'
+  ];
+  let lastIndex = -1;
+  for (const secId of expectedIndexSectionIds) {
+    const secTag = `<Section id="${secId}"`;
+    const curIndex = indexContent.indexOf(secTag);
+    if (curIndex === -1) {
+      error(`src/pages/index.astro is missing required section: ${secTag}`);
+      domainSequenceViolations++;
+    } else if (curIndex < lastIndex) {
+      error(`src/pages/index.astro section "${secId}" appears out of canonical order.`);
+      domainSequenceViolations++;
+    } else {
+      lastIndex = curIndex;
+    }
+  }
+}
+
+// 31c. tags/[tag].astro domain sections sequence
+const tagDetailPage = path.resolve(PAGES_DIR, 'tags', '[tag].astro');
+if (fs.existsSync(tagDetailPage)) {
+  const tagDetailContent = fs.readFileSync(tagDetailPage, 'utf8');
+  const expectedTagSectionIds = [
+    'blog-posts',
+    'publications',
+    'presentations',
+    'courses',
+    'projects',
+    'services',
+    'newsletters',
+    'visualizations'
+  ];
+  let lastIndex = -1;
+  for (const secId of expectedTagSectionIds) {
+    const divTag = `<div id="${secId}"`;
+    const curIndex = tagDetailContent.indexOf(divTag);
+    if (curIndex === -1) {
+      error(`src/pages/tags/[tag].astro is missing required section div: ${divTag}`);
+      domainSequenceViolations++;
+    } else if (curIndex < lastIndex) {
+      error(`src/pages/tags/[tag].astro section div "${secId}" appears out of canonical order.`);
+      domainSequenceViolations++;
+    } else {
+      lastIndex = curIndex;
+    }
+  }
+}
+
+// 31d. tags/index.astro card badges sequence
+const tagsOverviewPage = path.resolve(PAGES_DIR, 'tags', 'index.astro');
+if (fs.existsSync(tagsOverviewPage)) {
+  const tagsOverviewContent = fs.readFileSync(tagsOverviewPage, 'utf8');
+  const expectedBadges = [
+    '{tag.postCount > 0 && (',
+    '{tag.pubCount > 0 && (',
+    '{tag.presCount > 0 && (',
+    '{tag.courseCount > 0 && (',
+    '{tag.projCount > 0 && (',
+    '{tag.serviceCount > 0 && (',
+    '{tag.newsletterCount > 0 && (',
+    '{tag.visCount > 0 && ('
+  ];
+  let lastIndex = -1;
+  for (const badge of expectedBadges) {
+    const curIndex = tagsOverviewContent.indexOf(badge);
+    if (curIndex === -1) {
+      error(`src/pages/tags/index.astro is missing required count badge: ${badge}`);
+      domainSequenceViolations++;
+    } else if (curIndex < lastIndex) {
+      error(`src/pages/tags/index.astro badge "${badge}" appears out of canonical order.`);
+      domainSequenceViolations++;
+    } else {
+      lastIndex = curIndex;
+    }
+  }
+}
+
+if (domainSequenceViolations === 0) {
+  success('Canonical domain sequence (Rule 31) strictly enforced across index.astro, tags/[tag].astro, tags/index.astro, and OVERVIEW_PAGES_CONFIG.');
+}
+
 if (verbose || errorCount > 0) {
   console.log('\n----------------------------------------');
 }
@@ -949,6 +1059,6 @@ if (errorCount > 0) {
   console.error(`💥 [lint:domains] Failed with ${errorCount} error(s).`);
   process.exit(1);
 } else {
-  console.log('✅ [lint:domains] All 30 domain token integrity & design system rules passed (0 errors).');
+  console.log('✅ [lint:domains] All 31 domain token integrity & design system rules passed (0 errors).');
   process.exit(0);
 }

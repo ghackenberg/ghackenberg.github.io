@@ -1,6 +1,6 @@
 import { Network, type Options, type Node as VisNode, type Edge as VisEdge } from 'vis-network';
 import { DataSet } from 'vis-data';
-import { GRAPH_COLORS } from '@commons/shared/graph-payload';
+import { GRAPH_COLORS, GRAPH_GROUP_NAMES } from '@commons/shared/graph-payload';
 import { getThemeTokens } from '@commons/shared/domain-themes';
 
 function getVisNodeColors(isLight: boolean) {
@@ -83,7 +83,7 @@ const engine: VisNetworkEngine = {
 
     const colors = getVisNodeColors(isLight);
     const themeTokens = getThemeTokens(isLight);
-    const groupNames = ['Tag', 'Post', 'Publication', 'Presentation', 'Course', 'Project', 'Service', 'Interest', 'Visualization', 'Newsletter'];
+    const groupNames = GRAPH_GROUP_NAMES;
     const groupColors = GRAPH_COLORS[isLight ? 'light' : 'dark'];
 
     // Initialize with randomized coordinates. Avoid Vis.js native group styling issues by omitting group
@@ -332,8 +332,8 @@ const engine: VisNetworkEngine = {
           targetPath.startsWith('/projects') ||
           targetPath.startsWith('/courses') ||
           targetPath.startsWith('/services') ||
-          targetPath.startsWith('/visualizations') ||
           targetPath.startsWith('/newsletters') ||
+          targetPath.startsWith('/visualizations') ||
           targetPath.startsWith('/tags')
         ) {
           const targetUrl = new URL(targetPath, window.location.origin);
@@ -466,10 +466,10 @@ const engine: VisNetworkEngine = {
       const courses = (this.nodes || []).filter(n => n.group === 4);
       const projects = (this.nodes || []).filter(n => n.group === 5);
       const services = (this.nodes || []).filter(n => n.group === 6);
-      const visualizations = (this.nodes || []).filter(n => n.group === 7);
-      const newsletters = (this.nodes || []).filter(n => n.group === 8);
+      const newsletters = (this.nodes || []).filter(n => n.group === 7);
+      const visualizations = (this.nodes || []).filter(n => n.group === 8);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, visualizations, newsletters];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, newsletters, visualizations];
 
       const isMobile = window.innerWidth < 768;
       const heightFactor = 45;

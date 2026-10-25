@@ -62,8 +62,8 @@
   --color-accent-5: #3b82f6; /* 5: Blue (217°)           - Courses */
   --color-accent-6: #526bf4; /* 6: Royal Blue (231°)     - Projects */
   --color-accent-7: #6366f1; /* 7: Indigo (239°)         - Services */
-  --color-accent-8: #7c5bf3; /* 8: Indigo-Violet (253°)  - Visualizations */
-  --color-accent-9: #9353f7; /* 9: Violet (264°)         - Newsletters */
+  --color-accent-8: #7c5bf3; /* 8: Indigo-Violet (253°)  - Newsletters */
+  --color-accent-9: #9353f7; /* 9: Violet (264°)         - Visualizations */
   --color-accent-10: #a855f7; /* 10: Purple (271°)       - Tags */
 
   /* Presentation Slide Design Tokens (mapped to canonical accent palette) */

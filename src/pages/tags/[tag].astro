@@ -21,8 +21,8 @@ export async function getStaticPaths() {
   const projects = await getCollection("projects");
   const courses = await getCollection("courses");
   const services = await getCollection("services");
-  const visualizations = await getCollection("visualizations");
   const newsletters = await getCollection("newsletters");
+  const visualizations = await getCollection("visualizations");
 
   return tags.map((tag) => {
     const relatedPosts = posts
@@ -52,12 +52,12 @@ export async function getStaticPaths() {
       .filter((s) => s.data.tags && s.data.tags.includes(tag.id))
       .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
-    const relatedVis = visualizations
-      .filter((v) => v.data.tags && v.data.tags.includes(tag.id));
-
     const relatedNewsletters = newsletters
       .filter((n) => n.data.tags && n.data.tags.includes(tag.id))
       .sort((a, b) => b.data.issueNumber - a.data.issueNumber);
+
+    const relatedVis = visualizations
+      .filter((v) => v.data.tags && v.data.tags.includes(tag.id));
 
     return {
       params: { tag: tag.id },
@@ -69,8 +69,8 @@ export async function getStaticPaths() {
         courses: relatedCourses,
         projects: relatedProjects,
         services: relatedServices,
-        visualizations: relatedVis,
         newsletters: relatedNewsletters,
+        visualizations: relatedVis,
       },
     };
   });
@@ -84,12 +84,12 @@ interface Props {
   courses: CollectionEntry<"courses">[];
   projects: CollectionEntry<"projects">[];
   services: CollectionEntry<"services">[];
-  visualizations: CollectionEntry<"visualizations">[];
   newsletters: CollectionEntry<"newsletters">[];
+  visualizations: CollectionEntry<"visualizations">[];
 }
 
-const { tag, posts, publications, presentations, courses, projects, services, visualizations, newsletters } = Astro.props;
-const totalCount = posts.length + publications.length + presentations.length + courses.length + projects.length + services.length + visualizations.length + newsletters.length;
+const { tag, posts, publications, presentations, courses, projects, services, newsletters, visualizations } = Astro.props;
+const totalCount = posts.length + publications.length + presentations.length + courses.length + projects.length + services.length + newsletters.length + visualizations.length;
 
 // Page sizes divisible by 1, 2, and 3 for responsive grid harmony (1 col mobile, 2 col tablet, 3 col desktop)
 const POSTS_PER_PAGE = 6;
@@ -469,34 +469,7 @@ const breadcrumbSchema = {
         </div>
       )}
 
-      <!-- 7. Content Visualizations -->
-      {visualizations && visualizations.length > 0 && (
-        <div id="visualizations">
-          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
-            <h2 id="visualizations-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
-              <span>Content <span class="text-domain-visualizations">Visualizations</span></span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-visualizations/20 text-domain-visualizations border border-domain-visualizations/30 ml-2">
-                {visualizations.length}
-              </span>
-            </h2>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {visualizations.map((vis) => (
-              <VisualizationCard
-                title={vis.data.title}
-                description={vis.data.description}
-                href={`/visualizations/${vis.id}/`}
-                screenshot={vis.data.screenshot}
-                tags={vis.data.tags}
-                activeTag={tag.id}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <!-- 8. Email Newsletters -->
+      <!-- 7. Email Newsletters -->
       {newsletters && newsletters.length > 0 && (
         <div id="newsletters">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
@@ -518,6 +491,33 @@ const breadcrumbSchema = {
                 pubDate={issue.data.pubDate}
                 icon={issue.data.icon}
                 tags={issue.data.tags}
+                activeTag={tag.id}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- 8. Content Visualizations -->
+      {visualizations && visualizations.length > 0 && (
+        <div id="visualizations">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-element-border">
+            <h2 id="visualizations-heading" class="text-2xl font-bold tracking-tight text-gray-100 flex items-center gap-2.5">
+              <span>Content <span class="text-domain-visualizations">Visualizations</span></span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-domain-visualizations/20 text-domain-visualizations border border-domain-visualizations/30 ml-2">
+                {visualizations.length}
+              </span>
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {visualizations.map((vis) => (
+              <VisualizationCard
+                title={vis.data.title}
+                description={vis.data.description}
+                href={`/visualizations/${vis.id}/`}
+                screenshot={vis.data.screenshot}
+                tags={vis.data.tags}
                 activeTag={tag.id}
               />
             ))}

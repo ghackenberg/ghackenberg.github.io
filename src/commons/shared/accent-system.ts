@@ -57,6 +57,7 @@ export const ACCENT_NAME_TO_NUMBER: Record<string, AccentNumber> = {
   services: 7,
 
   orange: 8,
+  newsletters: 8,
   visualizations: 8,
 
   amber: 9,

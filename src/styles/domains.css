@@ -7,8 +7,8 @@
   --color-domain-courses: var(--color-accent-5);        /* 5: Blue */
   --color-domain-projects: var(--color-accent-6);       /* 6: Royal Blue */
   --color-domain-services: var(--color-accent-7);       /* 7: Indigo */
-  --color-domain-visualizations: var(--color-accent-8); /* 8: Indigo-Violet */
-  --color-domain-newsletters: var(--color-accent-9);    /* 9: Violet */
+  --color-domain-newsletters: var(--color-accent-8);    /* 8: Indigo-Violet */
+  --color-domain-visualizations: var(--color-accent-9); /* 9: Violet */
   --color-domain-tags: var(--color-accent-10);          /* 10: Purple */
 }
 
@@ -19,8 +19,8 @@
   --color-domain-courses: var(--color-accent-5);
   --color-domain-projects: var(--color-accent-6);
   --color-domain-services: var(--color-accent-7);
-  --color-domain-visualizations: var(--color-accent-8);
-  --color-domain-newsletters: var(--color-accent-9);
+  --color-domain-newsletters: var(--color-accent-8);
+  --color-domain-visualizations: var(--color-accent-9);
   --color-domain-tags: var(--color-accent-10);
 }
 
@@ -97,27 +97,27 @@
   background-image: linear-gradient(to right, #4f46e5, #6540e2);
 }
 
-.heading-gradient-domain-visualizations {
+.heading-gradient-domain-newsletters {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   background-image: linear-gradient(to right, #7c5bf3, #9353f7);
 }
 
-:root.light .heading-gradient-domain-visualizations,
-.light .heading-gradient-domain-visualizations {
+:root.light .heading-gradient-domain-newsletters,
+.light .heading-gradient-domain-newsletters {
   background-image: linear-gradient(to right, #6540e2, #7c3aed);
 }
 
-.heading-gradient-domain-newsletters {
+.heading-gradient-domain-visualizations {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   background-image: linear-gradient(to right, #9353f7, #a855f7);
 }
 
-:root.light .heading-gradient-domain-newsletters,
-.light .heading-gradient-domain-newsletters {
+:root.light .heading-gradient-domain-visualizations,
+.light .heading-gradient-domain-visualizations {
   background-image: linear-gradient(to right, #7c3aed, #9333ea);
 }
 
@@ -188,21 +188,21 @@
   background-image: linear-gradient(to right, #4f46e5, #6540e2);
 }
 
-.bg-gradient-domain-visualizations {
-  background-image: linear-gradient(to right, #7c5bf3, #9353f7);
-}
-
-:root.light .bg-gradient-domain-visualizations,
-.light .bg-gradient-domain-visualizations {
-  background-image: linear-gradient(to right, #6540e2, #7c3aed);
-}
-
 .bg-gradient-domain-newsletters {
-  background-image: linear-gradient(to right, #9353f7, #a855f7);
+  background-image: linear-gradient(to right, #7c5bf3, #9353f7);
 }
 
 :root.light .bg-gradient-domain-newsletters,
 .light .bg-gradient-domain-newsletters {
+  background-image: linear-gradient(to right, #6540e2, #7c3aed);
+}
+
+.bg-gradient-domain-visualizations {
+  background-image: linear-gradient(to right, #9353f7, #a855f7);
+}
+
+:root.light .bg-gradient-domain-visualizations,
+.light .bg-gradient-domain-visualizations {
   background-image: linear-gradient(to right, #7c3aed, #9333ea);
 }
 
@@ -228,8 +228,8 @@
 [data-domain="courses"], .domain-scope-courses { --color-current-domain: var(--color-domain-courses); }
 [data-domain="projects"], .domain-scope-projects { --color-current-domain: var(--color-domain-projects); }
 [data-domain="services"], .domain-scope-services { --color-current-domain: var(--color-domain-services); }
-[data-domain="visualizations"], .domain-scope-visualizations { --color-current-domain: var(--color-domain-visualizations); }
 [data-domain="newsletters"], .domain-scope-newsletters { --color-current-domain: var(--color-domain-newsletters); }
+[data-domain="visualizations"], .domain-scope-visualizations { --color-current-domain: var(--color-domain-visualizations); }
 [data-domain="tags"], .domain-scope-tags { --color-current-domain: var(--color-domain-tags); }
 
 /* All prose links and plain hyperlinks in content */
