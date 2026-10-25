@@ -862,7 +862,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 title={post.data.title}
                 description={post.data.description}
                 pubDate={post.data.pubDate}
-                icon={post.data.icon}
+                image={post.data.image}
                 tags={post.data.tags}
               />
             </div>
@@ -953,12 +953,12 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
               <PublicationCard
                 id={pub.id}
                 title={pub.data.title}
-                author={pub.data.author}
+                authors={pub.data.authors}
                 pubDate={pub.data.pubDate}
                 book={pub.data.book}
                 tags={pub.data.tags}
                 publisherUrl={pub.data.publisherUrl}
-                icon={pub.data.icon}
+                image={pub.data.image}
               />
             </div>
           ))}
@@ -1051,7 +1051,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 subtitle={presentation.data.subtitle}
                 description={presentation.data.description}
                 pubDate={presentation.data.pubDate}
-                icon={presentation.data.previewImage || presentation.data.icon}
+                image={presentation.data.image}
                 tags={presentation.data.tags || []}
               />
             </div>
@@ -1143,8 +1143,8 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 title={course.data.title}
                 description={course.data.description}
                 href={`/courses/${course.id}/`}
-                language={course.data.language}
-                screenshot={course.data.screenshot}
+                inLanguage={course.data.inLanguage}
+                image={course.data.image}
                 tags={course.data.tags}
               />
             </div>
@@ -1238,8 +1238,8 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 description={project.data.description}
                 href={`/projects/${project.id}/`}
                 tags={project.data.tags}
-                screenshot={project.data.screenshot}
-                screenshotLight={project.data.screenshotLight}
+                image={project.data.image}
+                imageLight={project.data.imageLight}
               />
             </div>
           ))}
@@ -1331,7 +1331,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 title={service.data.title}
                 description={service.data.description}
                 tags={service.data.tags}
-                previewImage={service.data.previewImage}
+                image={service.data.image}
               />
             </div>
           ))}
@@ -1424,7 +1424,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 title={issue.data.title}
                 description={issue.data.description}
                 pubDate={issue.data.pubDate}
-                icon={issue.data.icon}
+                image={issue.data.image}
               />
             </div>
           ))}
@@ -1515,7 +1515,7 @@ const homeJsonLd = [buildWebsiteSchema(), buildNavigationSchema()];
                 title={vis.data.title}
                 description={vis.data.description}
                 href={`/visualizations/${vis.id}/`}
-                screenshot={vis.data.screenshot}
+                image={vis.data.image}
                 tags={vis.data.tags}
               />
             </div>

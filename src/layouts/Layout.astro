@@ -61,6 +61,7 @@ interface Props {
   preloadImage?: string;
   jsonLd?: Record<string, JsonLdValue> | Array<Record<string, JsonLdValue>>;
   lang?: string;
+  inLanguage?: string;
   breadcrumbParentTitle?: string;
 }
 
@@ -74,9 +75,12 @@ const {
   hasMath = false,
   preloadImage,
   jsonLd,
-  lang = "en",
+  lang,
+  inLanguage,
   breadcrumbParentTitle
 } = Astro.props;
+
+const htmlLang = inLanguage || lang || "en";
 
 // Determine active domain from the first URL path segment
 const pathname = Astro.url.pathname;
@@ -210,7 +214,7 @@ if (!hasBreadcrumbList && pathnameSegments.length > 0) {
 ---
 
 <!DOCTYPE html>
-<html lang={lang} class="scroll-smooth">
+<html lang={htmlLang} class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

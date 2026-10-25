@@ -7,7 +7,7 @@ tags: ["data-visualization", "hyperkit-software", "industrial-informatics", "jav
 accentColor: "blue"
 order: 5
 repoName: "welding-analytics"
-screenshot:
+image:
   src: "./screenshot.png"
   title: "Welding Process Diagnostics Dashboard"
   description: "Synchronous multi-panel view displaying electrical voltage and current timeseries alongside dynamic arc phase cyclograms and probability density functions."

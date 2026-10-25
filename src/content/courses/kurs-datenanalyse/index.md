@@ -8,8 +8,8 @@ learningGoals:
   - "Visualisierung von Messdaten und Interpretation von statistischen Analysen."
 terms:
   - "Summer Term 2025"
-language: "de"
-screenshot:
+inLanguage: "de"
+image:
   src: "./preview.jpg"
   title: "Datenanalyse und SQL: Relationale Schemata & Analyse-Pipeline"
   description: "Orthogonale Schautafel einer Datenpipeline mit relationalen Datenbankschemata, SQL-Aggregations- und Filtertrichter sowie analytischen Metrik- und Trendkarten"

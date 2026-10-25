@@ -7,7 +7,7 @@ tags: ["data-visualization", "factory-layout", "manufacturing-systems", "open-so
 accentColor: "blue"
 order: 4
 repoName: "spineml"
-screenshot:
+image:
   src: "./salabim.png"
   title: "SpineML: 3D Factory Simulation with Salabim"
   description: "Discrete-event 3D animation showing gantry robot material transport, buffer stations, and machining cells."

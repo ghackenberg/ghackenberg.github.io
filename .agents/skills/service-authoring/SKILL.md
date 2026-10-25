@@ -22,7 +22,7 @@ ctaText: "Beratungsgespräch vereinbaren"
 tags:
   - software-architektur
   - prompt-engineering
-previewImage:
+image:
   src: "./preview.png"
   title: "Serviceübersicht KI-Agenten"
   description: "Visuelle Darstellung moderner KI-Agenten-Architekturen"
@@ -58,7 +58,7 @@ methodologyPhases:
   - title: "Phase 3: Integration & Security Audit"
     description: "End-to-End Verifikation im Ziel-Client."
 order: 1
-previewImage:
+image:
   src: "./preview.png"
   title: "Modulübersicht MCP-Server"
   description: "Diagramm einer standardisierten MCP-Architektur"

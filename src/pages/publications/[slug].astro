@@ -9,6 +9,7 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import TagChip from "@components/TagChip.astro";
 import { getCollection } from "astro:content";
 import { formatDate } from "@commons/shared/format";
+import { formatAuthorsHtml } from "@commons/shared/authors";
 
 export async function getStaticPaths() {
   const pubs = await getCollection("publications");
@@ -61,11 +62,11 @@ const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.ori
 <Layout 
   title={`${pub.data.title} | Dr. Georg Hackenberg`} 
   description={seoDescription}
-  image={pub.data.icon}
+  image={pub.data.image}
   type="article"
   pubDate={pub.data.pubDate}
   tags={pub.data.tags}
-  jsonLd={publicationSchema}
+  jsonLd={[publicationSchema]}
 >
   <Navbar />
 
@@ -88,7 +89,7 @@ const publicationSchema = buildPublicationSchema({ pub, siteUrl: Astro.site?.ori
       </h1>
 
       <p class="text-gray-300 text-base md:text-lg mb-4 font-normal">
-        <span set:html={pub.data.author} />
+        <span set:html={formatAuthorsHtml(pub.data.authors)} />
       </p>
 
       <p class="text-gray-400 text-sm mb-6 font-normal italic">

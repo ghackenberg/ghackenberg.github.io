@@ -472,6 +472,25 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
       }
     }
 
+    // Determine the primary entity ID on this page (e.g. #article, #presentation, #course, etc.)
+    let primaryPageEntityId = canonicalPageUrl;
+    for (const node of candidateNodes) {
+      const nodeType = node['@type'];
+      const matches = Array.isArray(nodeType)
+        ? nodeType.some((t: string) => targetArticleTypes.has(t) || t === 'WebPage' || t === 'ProfilePage' || t === 'CollectionPage' || t === 'ContactPage' || t === 'WebSite')
+        : typeof nodeType === 'string' && (targetArticleTypes.has(nodeType) || nodeType === 'WebPage' || nodeType === 'ProfilePage' || nodeType === 'CollectionPage' || nodeType === 'ContactPage' || nodeType === 'WebSite');
+      if (matches && typeof node['@id'] === 'string' && node['@id'].startsWith(canonicalPageUrl)) {
+        primaryPageEntityId = node['@id'];
+        break;
+      }
+    }
+    if (primaryPageEntityId === canonicalPageUrl) {
+      const fallbackNode = candidateNodes.find((n) => n['@type'] !== 'ImageObject' && n['@type'] !== 'BreadcrumbList' && typeof n['@id'] === 'string' && n['@id'].startsWith(canonicalPageUrl));
+      if (fallbackNode && typeof fallbackNode['@id'] === 'string') {
+        primaryPageEntityId = fallbackNode['@id'];
+      }
+    }
+
     // Construct standard-compliant Schema.org ImageObject for each extracted image
     const imageObjects = images.map((img) => {
       const baseSlug = extractSemanticSlug(img.src, img.title);
@@ -495,7 +514,7 @@ export async function validateAndEnrichImageSitemaps(): Promise<void> {
         author: personRef,
         creator: personRef,
         copyrightHolder: personRef,
-        isPartOf: { '@id': canonicalPageUrl },
+        isPartOf: { '@id': primaryPageEntityId },
       };
     });
 

@@ -1,7 +1,7 @@
 ---
 title: "Vis.js: Physics-Based Network Graph"
 description: "Interact with dynamic topic clusters and relational data through tactile drag-and-drop physics and spring-mass damping powered by Vis.js."
-screenshot:
+image:
   src: "./vis-network.png"
   title: "Vis.js Interactive Particle Network"
   description: "Two-dimensional node network with dynamic data clusters and fine interconnecting edges rendered on a dark background"

@@ -265,7 +265,7 @@ const currentDeckId = presentationId || talkId || "presentation";
                     <li class="text-[11px] text-slate-400 light:text-slate-600 leading-snug flex items-baseline gap-1.5">
                       <span class="text-domain-publications font-mono font-bold shrink-0">•</span>
                       <span class="min-w-0">
-                        <span class="font-semibold text-slate-300 light:text-slate-800">{ref.author}</span>
+                        <span class="font-semibold text-slate-300 light:text-slate-800">{ref.authors ? ref.authors.map(a => a.name).join(', ') : ref.author}</span>
                         {ref.year && <span> ({ref.year})</span>}:{" "}
                         {ref.url ? (
                           <a
@@ -990,7 +990,7 @@ const currentDeckId = presentationId || talkId || "presentation";
             ${ref.type ? `<span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-element-bg light:bg-slate-200 text-text-subtle light:text-slate-700 border border-element-border-medium light:border-slate-300">${escapeHtml(ref.type)}</span>` : ''}
           </div>
           <div class="text-xs sm:text-sm text-gray-300 light:text-slate-600 leading-relaxed pl-2.5 border-l-2 border-domain-publications/50">
-            <span class="font-bold text-white light:text-slate-900">${escapeHtml(ref.author)}</span>
+            <span class="font-bold text-white light:text-slate-900">${escapeHtml(ref.authors ? ref.authors.map(a => a.name).join(', ') : (ref.author || ''))}</span>
             ${ref.year ? `<span class="text-text-subtle light:text-slate-500"> (${escapeHtml(String(ref.year))})</span>` : ''}:
             <span class="italic text-gray-200 light:text-slate-800"> "${escapeHtml(ref.title)}"</span>.
             <span class="text-text-subtle light:text-slate-500 block sm:inline">${pubDetails}</span>

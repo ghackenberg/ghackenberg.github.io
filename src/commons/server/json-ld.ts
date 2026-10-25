@@ -1,5 +1,6 @@
 import { DOMAIN_METADATA, CONTENT_DOMAINS, type ContentDomain } from '@commons/shared/domain-themes';
 import type { CollectionEntry } from 'astro:content';
+import type { AuthorEntry } from '@commons/shared/authors';
 
 export const PERSON_ID = 'https://hackenberg.tech/#person';
 export const WEBSITE_ID = 'https://hackenberg.tech/#website';
@@ -7,6 +8,10 @@ export const NAVIGATION_ID = 'https://hackenberg.tech/#navigation';
 
 export const PERSON_REF = { '@id': PERSON_ID };
 export const WEBSITE_REF = { '@id': WEBSITE_ID };
+
+export type JsonLdPrimitive = string | number | boolean | null | undefined;
+export type JsonLdValue = JsonLdPrimitive | { [key: string]: JsonLdValue } | JsonLdValue[];
+export type JsonLdNode = Record<string, JsonLdValue>;
 
 export const OFFICIAL_ORG_LABELS: Record<string, { name: string; isEducational?: boolean }> = {
   'https://www.wikidata.org/wiki/Q1388312': { name: 'University of Applied Sciences Upper Austria', isEducational: true },
@@ -18,6 +23,34 @@ export const OFFICIAL_ORG_LABELS: Record<string, { name: string; isEducational?:
   'https://www.wikidata.org/wiki/Q1451984': { name: 'Fraunhofer FIT' },
   'https://www.wikidata.org/wiki/Q81230': { name: 'Siemens' }
 };
+
+export function getCanonicalEntityId(domain: string, slug: string, siteUrl = 'https://hackenberg.tech'): string {
+  const cleanSlug = slug.replace(/^\/|\/$/g, '');
+  const url = `${siteUrl}/${domain}/${cleanSlug}/`;
+  switch (domain) {
+    case 'posts':
+    case 'publications':
+    case 'newsletters':
+      return `${url}#article`;
+    case 'presentations':
+      return `${url}#presentation`;
+    case 'courses':
+      return `${url}#course`;
+    case 'course-modules':
+      return `${url}#module`;
+    case 'projects':
+      return `${url}#software`;
+    case 'services':
+    case 'modules':
+      return `${url}#service`;
+    case 'visualizations':
+      return `${url}#application`;
+    case 'tags':
+      return `${url}#term`;
+    default:
+      return `${url}#webpage`;
+  }
+}
 
 export function buildTagAboutRefs(tags?: string[]) {
   return tags?.length ? tags.map((t) => ({ '@id': `https://hackenberg.tech/tags/${t}/#term` })) : undefined;
@@ -54,11 +87,12 @@ export interface CollectionItem {
 
 export function buildCollectionPageSchema(
   domain: ContentDomain,
-  items: Array<CollectionItem | string>
+  items: Array<CollectionItem | string>,
+  siteUrl = 'https://hackenberg.tech'
 ) {
   const meta = DOMAIN_METADATA[domain];
-  const url = `https://hackenberg.tech/${domain}/`;
-  const id = `https://hackenberg.tech/${domain}/#collectionpage`;
+  const url = `${siteUrl}/${domain}/`;
+  const id = `${siteUrl}/${domain}/#collectionpage`;
 
   return {
     '@type': 'CollectionPage',
@@ -74,7 +108,7 @@ export function buildCollectionPageSchema(
         const rawId = typeof item === 'string' ? item : item.id;
         const targetId = rawId.startsWith('http')
           ? rawId
-          : `https://hackenberg.tech/${domain}/${rawId}/`;
+          : getCanonicalEntityId(domain, rawId, siteUrl);
         return {
           '@type': 'ListItem',
           position: idx + 1,
@@ -100,27 +134,29 @@ export function buildAboutPageSchemas(params: {
   const orgMap = new Map<string, Record<string, string | undefined>>();
 
   for (const d of sortedDegrees) {
-    const id = d.data.institutionId;
+    const org = d.data.organization;
+    const id = org?.id;
     if (id && !orgMap.has(id)) {
       const meta = OFFICIAL_ORG_LABELS[id];
       orgMap.set(id, {
         '@type': meta?.isEducational ? 'EducationalOrganization' : 'Organization',
         '@id': id,
-        name: meta?.name || d.data.institution,
-        ...(d.data.institutionUrl ? { url: d.data.institutionUrl } : {})
+        name: meta?.name || org.name,
+        ...(org.url ? { url: org.url } : {})
       });
     }
   }
 
   for (const e of experiences) {
-    const id = e.data.organizationId;
+    const org = e.data.organization;
+    const id = org?.id;
     if (id && !orgMap.has(id)) {
       const meta = OFFICIAL_ORG_LABELS[id];
       orgMap.set(id, {
         '@type': meta?.isEducational ? 'EducationalOrganization' : 'Organization',
         '@id': id,
-        name: meta?.name || e.data.company,
-        ...(e.data.organizationUrl ? { url: e.data.organizationUrl } : {})
+        name: meta?.name || org.name,
+        ...(org.url ? { url: org.url } : {})
       });
     }
   }
@@ -129,11 +165,11 @@ export function buildAboutPageSchemas(params: {
 
   const pastOrgIds = new Set<string>();
   for (const d of sortedDegrees) {
-    if (d.data.institutionId) pastOrgIds.add(d.data.institutionId);
+    if (d.data.organization?.id) pastOrgIds.add(d.data.organization.id);
   }
   for (const e of experiences) {
-    if (e.data.endYear !== null && e.data.organizationId) {
-      pastOrgIds.add(e.data.organizationId);
+    if (e.data.endYear !== null && e.data.organization?.id) {
+      pastOrgIds.add(e.data.organization.id);
     }
   }
   const alumniOfList = Array.from(pastOrgIds).map((id) => ({ '@id': id }));
@@ -162,12 +198,12 @@ export function buildAboutPageSchemas(params: {
       '@type': 'EducationalOccupationalCredential',
       credentialCategory: 'degree',
       name: `${d.data.degree} in ${d.data.program}`,
-      ...(d.data.institutionId
-        ? { recognizedBy: { '@id': d.data.institutionId } }
+      ...(d.data.organization?.id
+        ? { recognizedBy: { '@id': d.data.organization.id } }
         : {
             recognizedBy: {
               '@type': 'EducationalOrganization',
-              name: d.data.institution
+              name: d.data.organization.name
             }
           })
     }))
@@ -315,30 +351,76 @@ export function buildCitationList(
   references?: Array<{
     id: string;
     title: string;
-    authors?: string[];
+    authors?: Array<string | AuthorEntry>;
+    author?: string;
     year?: number;
     venue?: string;
+    booktitle?: string;
+    journal?: string;
+    publisher?: string;
     doi?: string;
     url?: string;
+    isbn?: string;
   }>
 ) {
   if (!references || references.length === 0) return [];
   return references.map((ref) => {
     const doiClean = ref.doi ? ref.doi.replace(/^https?:\/\/(dx\.)?doi\.org\//i, '') : undefined;
     const itemUrl = doiClean ? `https://doi.org/${doiClean}` : ref.url;
+
+    let schemaType = 'CreativeWork';
+    if (ref.journal || ref.booktitle || ref.venue || ref.doi) {
+      schemaType = 'ScholarlyArticle';
+    } else if (ref.isbn || (ref.publisher && !ref.url)) {
+      schemaType = 'Book';
+    } else if (ref.url && (!ref.authors || ref.authors.length === 0)) {
+      schemaType = 'WebPage';
+    }
+
+    let authorList: Array<JsonLdNode> = [];
+    if (ref.authors && Array.isArray(ref.authors) && ref.authors.length > 0) {
+      authorList = ref.authors.map((a) => {
+        if (typeof a === 'string') {
+          const trimmed = a.trim();
+          const isGeorg = /Georg Hackenberg/i.test(trimmed);
+          return isGeorg ? PERSON_REF : { '@type': 'Person', name: trimmed };
+        }
+        if (a && typeof a === 'object') {
+          const isGeorg =
+            a.id === PERSON_ID ||
+            a.orcid === '0000-0002-0096-2484' ||
+            /Georg Hackenberg/i.test(a.name);
+          if (isGeorg) return PERSON_REF;
+          const authorType = a.type || 'Person';
+          const sameAs = a.orcid ? `https://orcid.org/${a.orcid}` : a.wikidata ? a.wikidata : undefined;
+          return {
+            '@type': authorType,
+            name: a.name,
+            ...(a.id ? { '@id': a.id } : {}),
+            ...(a.url ? { url: a.url } : {}),
+            ...(sameAs && sameAs !== a.id && sameAs !== a.url ? { sameAs } : {})
+          };
+        }
+        return { '@type': 'Person', name: String(a) };
+      });
+    } else if (ref.author) {
+      authorList = ref.author.split(/,| and /).map((a) => {
+        const trimmed = a.trim();
+        const isGeorg = /Georg Hackenberg/i.test(trimmed);
+        return isGeorg ? PERSON_REF : { '@type': 'Person', name: trimmed };
+      });
+    }
+
+    const venueName = ref.venue || ref.booktitle || ref.journal;
+
     return {
-      '@type': 'CreativeWork',
+      '@type': schemaType,
       name: ref.title,
-      ...(ref.authors?.length
-        ? {
-            author: ref.authors.map((a) => {
-              const isGeorg = /Georg Hackenberg/i.test(a);
-              return isGeorg ? PERSON_REF : { '@type': 'Person', name: a };
-            })
-          }
-        : {}),
+      ...(authorList.length > 0 ? { author: authorList } : {}),
       ...(ref.year ? { datePublished: String(ref.year) } : {}),
-      ...(ref.venue ? { isPartOf: { '@type': 'Periodical', name: ref.venue } } : {}),
+      ...(venueName ? { isPartOf: { '@type': 'Periodical', name: venueName } } : {}),
+      ...(ref.publisher ? { publisher: { '@type': 'Organization', name: ref.publisher } } : {}),
+      ...(ref.isbn ? { isbn: ref.isbn } : {}),
       ...(itemUrl ? { url: itemUrl } : {})
     };
   });
@@ -351,7 +433,7 @@ export function buildPostSchema(params: {
 }) {
   const { post, readingTime, siteUrl = 'https://hackenberg.tech' } = params;
   const postUrl = `${siteUrl}/posts/${post.id}/`;
-  const iconSrc = extractImageSrc(post.data.icon);
+  const iconSrc = extractImageSrc(post.data.image);
 
   const citations = buildCitationList(post.data.references);
 
@@ -362,7 +444,7 @@ export function buildPostSchema(params: {
     name: post.data.title,
     description: post.data.description,
     url: postUrl,
-    inLanguage: post.data.lang || 'de',
+    inLanguage: post.data.inLanguage || 'de',
     timeRequired: `PT${readingTime.minutes}M`,
     wordCount: readingTime.words,
     datePublished: post.data.pubDate.toISOString(),
@@ -373,10 +455,7 @@ export function buildPostSchema(params: {
     },
     about: buildTagAboutRefs(post.data.tags),
     ...(citations.length > 0 ? { citation: citations } : {}),
-    image: iconSrc ? new URL(iconSrc, siteUrl).href : undefined,
-    mainEntityOfPage: {
-      '@id': postUrl
-    }
+    image: iconSrc ? new URL(iconSrc, siteUrl).href : undefined
   };
 
   return blogPostingSchema;
@@ -389,33 +468,46 @@ export function buildPublicationSchema(params: {
   const { pub, siteUrl = 'https://hackenberg.tech' } = params;
   const pubUrl = `${siteUrl}/publications/${pub.id}/`;
   const cleanAbstract = pub.data.abstract ? pub.data.abstract.replace(/\s+/g, ' ').trim() : '';
-  const iconSrc = typeof pub.data.icon === 'object' && pub.data.icon !== null && 'src' in pub.data.icon
-    ? (pub.data.icon as { src: string }).src
-    : (pub.data.icon as string | undefined);
+  const imageSrc = extractImageSrc(pub.data.image);
 
-  const scholarlyArticleSchema = {
+  const mappedAuthors = pub.data.authors.map((a) => {
+    const isGeorg =
+      a.id === PERSON_ID ||
+      a.orcid === '0000-0002-0096-2484' ||
+      /Georg Hackenberg/i.test(a.name);
+    if (isGeorg) return PERSON_REF;
+    return {
+      '@type': a.type || 'Person',
+      name: a.name,
+      ...(a.id ? { '@id': a.id } : {}),
+      ...(a.orcid ? { sameAs: `https://orcid.org/${a.orcid}` } : a.wikidata ? { sameAs: a.wikidata } : a.url ? { url: a.url } : {})
+    };
+  });
+
+  const authorPlain = pub.data.authors.map((a) => a.name).join(', ');
+
+  const sameAsList: string[] = [];
+  if (pub.data.publisherUrl) sameAsList.push(pub.data.publisherUrl);
+  // Publication doi from schema
+  const pubEntry = pub.data as { doi?: string };
+  if (pubEntry.doi) sameAsList.push(`https://doi.org/${pubEntry.doi}`);
+
+  const scholarlyArticleSchema: JsonLdNode = {
     '@type': 'ScholarlyArticle',
     '@id': `${pubUrl}#article`,
     headline: pub.data.title,
     name: pub.data.title,
     url: pubUrl,
-    author: pub.data.author.split(/,| and /).map((a) => {
-      const trimmed = a.trim();
-      const isGeorg = /Georg Hackenberg/i.test(trimmed);
-      return isGeorg ? PERSON_REF : { '@type': 'Person', name: trimmed };
-    }),
+    author: mappedAuthors,
     isPartOf: [
       { '@id': 'https://hackenberg.tech/publications/#collectionpage' },
       ...(pub.data.book ? [{ '@type': 'Periodical', name: pub.data.book }] : [])
     ],
     datePublished: pub.data.pubDate.toISOString(),
-    description: cleanAbstract || `${pub.data.title} - Academic publication by ${pub.data.author}.`,
+    description: cleanAbstract || `${pub.data.title} - Academic publication by ${authorPlain}.`,
     about: buildTagAboutRefs(pub.data.tags),
-    image: iconSrc ? new URL(iconSrc, siteUrl).href : undefined,
-    sameAs: pub.data.publisherUrl || undefined,
-    mainEntityOfPage: {
-      '@id': pubUrl
-    }
+    image: imageSrc ? new URL(imageSrc, siteUrl).href : undefined,
+    ...(sameAsList.length === 1 ? { sameAs: sameAsList[0] } : sameAsList.length > 1 ? { sameAs: sameAsList } : {})
   };
 
   return scholarlyArticleSchema;
@@ -423,24 +515,26 @@ export function buildPublicationSchema(params: {
 
 export function buildPresentationSchema(params: {
   presentation: CollectionEntry<'presentations'>;
-  slides: Array<{ number: number; title: string; audioUrl?: string; durationSec?: number }>;
+  slides: Array<{ number: number; title: string; audioUrl?: string; durationSec?: number; transcript?: string }>;
   durationInfo: { minutes: number; formatted: string };
-  references?: Array<{ id: string; title: string; authors?: string[]; year?: number; venue?: string; doi?: string; url?: string }>;
+  references?: Array<{ id: string; title: string; authors?: Array<string | AuthorEntry>; year?: number; venue?: string; doi?: string; url?: string }>;
   siteUrl?: string;
 }) {
   const { presentation, slides, durationInfo, references, siteUrl = 'https://hackenberg.tech' } = params;
   const presUrl = `${siteUrl}/presentations/${presentation.id}/`;
   const citations = buildCitationList(references);
+  const imageSrc = extractImageSrc(presentation.data.image);
 
   const presentationDocSchema = {
     '@type': 'PresentationDigitalDocument',
     '@id': `${presUrl}#presentation`,
     name: presentation.data.title,
     headline: presentation.data.title,
+    ...(presentation.data.subtitle ? { alternativeHeadline: presentation.data.subtitle } : {}),
     description: presentation.data.description,
     url: presUrl,
     datePublished: presentation.data.pubDate.toISOString(),
-    inLanguage: presentation.data.lang || 'en',
+    inLanguage: presentation.data.inLanguage || 'en',
     timeRequired: `PT${durationInfo.minutes}M`,
     author: PERSON_REF,
     publisher: PERSON_REF,
@@ -448,6 +542,8 @@ export function buildPresentationSchema(params: {
       '@id': 'https://hackenberg.tech/presentations/#collectionpage'
     },
     about: buildTagAboutRefs(presentation.data.tags),
+    ...(imageSrc ? { image: new URL(imageSrc, siteUrl).href } : {}),
+    ...(presentation.data.audience ? { audience: { '@type': 'Audience', audienceType: presentation.data.audience } } : {}),
     encoding: [
       {
         '@type': 'MediaObject',
@@ -476,15 +572,13 @@ export function buildPresentationSchema(params: {
               '@id': `${presUrl}#audio-slide-${s.number}`,
               contentUrl: `${siteUrl}${s.audioUrl}`,
               encodingFormat: 'audio/mpeg',
-              ...(s.durationSec ? { duration: `PT${Math.round(s.durationSec)}S` } : {})
+              ...(s.durationSec ? { duration: `PT${Math.round(s.durationSec)}S` } : {}),
+              ...(s.transcript ? { transcript: s.transcript } : {})
             }
           }
         : {})
     })),
-    ...(citations.length > 0 ? { citation: citations } : {}),
-    mainEntityOfPage: {
-      '@id': presUrl
-    }
+    ...(citations.length > 0 ? { citation: citations } : {})
   };
 
   return presentationDocSchema;
@@ -497,7 +591,7 @@ export function buildCourseSchema(params: {
 }) {
   const { course, modules, siteUrl = 'https://hackenberg.tech' } = params;
   const courseUrl = `${siteUrl}/courses/${course.id}/`;
-  const resolvedImage = extractImageSrc(course.data.screenshot);
+  const resolvedImage = extractImageSrc(course.data.image);
 
   const courseSchema = {
     '@type': 'Course',
@@ -521,9 +615,24 @@ export function buildCourseSchema(params: {
           }))
         }
       : {}),
-    inLanguage: course.data.language,
+    inLanguage: course.data.inLanguage,
     educationalCredentialAwarded: 'Academic Course Credit',
-    teaches: course.data.learningGoals ? course.data.learningGoals.join(', ') : undefined
+    teaches: course.data.learningGoals ? course.data.learningGoals.join(', ') : undefined,
+    ...(course.data.prerequisites && course.data.prerequisites.length > 0
+      ? { coursePrerequisites: course.data.prerequisites.join(', ') }
+      : {}),
+    ...(course.data.targetAudience
+      ? { audience: { '@type': 'Audience', audienceType: course.data.targetAudience } }
+      : {}),
+    ...(course.data.terms && course.data.terms.length > 0
+      ? {
+          hasCourseInstance: course.data.terms.map((term) => ({
+            '@type': 'CourseInstance',
+            name: term,
+            courseMode: 'onsite'
+          }))
+        }
+      : {})
   };
 
   return courseSchema;
@@ -537,6 +646,7 @@ export function buildCourseModuleSchema(params: {
   const { parentCourse, module, siteUrl = 'https://hackenberg.tech' } = params;
   const moduleSlug = module.id.split('/').pop();
   const moduleUrl = `${siteUrl}/courses/${parentCourse.id}/${moduleSlug}/`;
+  const resolvedImage = extractImageSrc(module.data.image);
 
   const moduleCourseSchema = {
     '@type': 'LearningResource',
@@ -544,12 +654,20 @@ export function buildCourseModuleSchema(params: {
     name: module.data.title,
     description: module.data.description,
     learningResourceType: 'Course Module',
+    position: module.data.order,
+    ...(module.data.competencies && module.data.competencies.length > 0
+      ? { teaches: module.data.competencies.join(', ') }
+      : {}),
+    ...(module.data.topics && module.data.topics.length > 0
+      ? { keywords: module.data.topics.join(', ') }
+      : {}),
     isPartOf: {
       '@id': `${siteUrl}/courses/${parentCourse.id}/#course`
     },
     about: buildTagAboutRefs(parentCourse.data.tags),
-    inLanguage: parentCourse.data.language,
-    url: moduleUrl
+    inLanguage: parentCourse.data.inLanguage,
+    url: moduleUrl,
+    ...(resolvedImage ? { image: new URL(resolvedImage, siteUrl).href } : {})
   };
 
   return moduleCourseSchema;
@@ -565,6 +683,7 @@ export function buildProjectSchema(params: {
   const repoName = project.data.repoName;
   const repoUrl = repoName ? `https://github.com/ghackenberg/${repoName}` : undefined;
   const tech = project.data.tags?.[0] ?? 'Web';
+  const resolvedImage = mainScreenshotUrl || extractImageSrc(project.data.image);
 
   const softwareAppSchema = {
     '@type': ['SoftwareApplication', 'SoftwareSourceCode'],
@@ -572,13 +691,21 @@ export function buildProjectSchema(params: {
     name: project.data.title,
     headline: project.data.title,
     description: project.data.description,
-    image: mainScreenshotUrl ? new URL(mainScreenshotUrl, siteUrl).href : undefined,
+    image: resolvedImage ? new URL(resolvedImage, siteUrl).href : undefined,
     url: projectUrl,
     sameAs: project.data.href,
     applicationCategory: 'Software',
     operatingSystem: 'Cross-platform',
     runtimePlatform: 'Cross-platform',
-    programmingLanguage: tech,
+    programmingLanguage: project.data.tags || [tech],
+    ...((project.data as { features?: Array<{ title: string }> }).features &&
+    (project.data as { features?: Array<{ title: string }> }).features!.length > 0
+      ? {
+          featureList: (project.data as { features?: Array<{ title: string }> })
+            .features!.map((f) => f.title)
+            .join(', ')
+        }
+      : {}),
     author: PERSON_REF,
     creator: PERSON_REF,
     isPartOf: {
@@ -598,7 +725,7 @@ export function buildServiceSchema(params: {
 }) {
   const { service, modules, siteUrl = 'https://hackenberg.tech' } = params;
   const serviceUrl = `${siteUrl}/services/${service.id}/`;
-  const imageSrc = extractImageSrc(service.data.previewImage);
+  const imageSrc = extractImageSrc(service.data.image);
 
   const serviceSchema = {
     '@type': 'Service',
@@ -613,6 +740,12 @@ export function buildServiceSchema(params: {
       '@id': 'https://hackenberg.tech/services/#collectionpage'
     },
     about: buildTagAboutRefs(service.data.tags),
+    ...(service.data.targetAudience && service.data.targetAudience.length > 0
+      ? { audience: { '@type': 'Audience', audienceType: service.data.targetAudience.join(', ') } }
+      : {}),
+    ...(service.data.keyOutcomes && service.data.keyOutcomes.length > 0
+      ? { serviceOutput: service.data.keyOutcomes.join(', ') }
+      : {}),
     ...(modules.length > 0
       ? {
           hasPart: modules.map((m) => ({
@@ -633,6 +766,7 @@ export function buildServiceModuleSchema(params: {
   const { parentService, module, siteUrl = 'https://hackenberg.tech' } = params;
   const moduleSlug = module.id.split('/').pop();
   const moduleUrl = `${siteUrl}/services/${parentService.id}/${moduleSlug}/`;
+  const imageSrc = extractImageSrc(module.data.image);
 
   const serviceModuleSchema = {
     '@type': 'Service',
@@ -645,7 +779,14 @@ export function buildServiceModuleSchema(params: {
     isPartOf: {
       '@id': `${siteUrl}/services/${parentService.id}/#service`
     },
-    about: buildTagAboutRefs(parentService.data.tags)
+    about: buildTagAboutRefs(parentService.data.tags),
+    ...(imageSrc ? { image: new URL(imageSrc, siteUrl).href } : {}),
+    ...(parentService.data.targetAudience && parentService.data.targetAudience.length > 0
+      ? { audience: { '@type': 'Audience', audienceType: parentService.data.targetAudience.join(', ') } }
+      : {}),
+    ...(module.data.outputs && module.data.outputs.length > 0
+      ? { serviceOutput: module.data.outputs.join(', ') }
+      : {})
   };
 
   return serviceModuleSchema;
@@ -658,6 +799,7 @@ export function buildNewsletterIssueSchema(params: {
 }) {
   const { issue, mentions, siteUrl = 'https://hackenberg.tech' } = params;
   const issueUrl = `${siteUrl}/newsletters/${issue.id}/`;
+  const imageSrc = extractImageSrc(issue.data.image);
 
   const newsletterSchema = {
     '@type': 'Article',
@@ -666,6 +808,7 @@ export function buildNewsletterIssueSchema(params: {
     name: issue.data.title,
     description: issue.data.description,
     url: issueUrl,
+    inLanguage: 'en',
     datePublished: issue.data.pubDate.toISOString(),
     author: PERSON_REF,
     publisher: PERSON_REF,
@@ -673,9 +816,7 @@ export function buildNewsletterIssueSchema(params: {
       '@id': 'https://hackenberg.tech/newsletters/#collectionpage'
     },
     about: buildTagAboutRefs(issue.data.tags),
-    mainEntityOfPage: {
-      '@id': issueUrl
-    },
+    ...(imageSrc ? { image: new URL(imageSrc, siteUrl).href } : {}),
     ...(mentions && mentions.length > 0 ? { mentions } : {})
   };
 
@@ -688,6 +829,7 @@ export function buildVisualizationSchema(params: {
 }) {
   const { visualization, siteUrl = 'https://hackenberg.tech' } = params;
   const vizUrl = `${siteUrl}/visualizations/${visualization.id}/`;
+  const imageSrc = extractImageSrc(visualization.data.image);
 
   const vizSchema = {
     '@type': ['SoftwareApplication', 'WebApplication'],
@@ -697,15 +839,14 @@ export function buildVisualizationSchema(params: {
     description: visualization.data.description,
     url: vizUrl,
     applicationCategory: 'DataVisualization',
+    operatingSystem: 'Any modern browser with WebGL',
     author: PERSON_REF,
     creator: PERSON_REF,
     isPartOf: {
       '@id': 'https://hackenberg.tech/visualizations/#collectionpage'
     },
     about: buildTagAboutRefs(visualization.data.tags),
-    mainEntityOfPage: {
-      '@id': vizUrl
-    }
+    ...(imageSrc ? { image: new URL(imageSrc, siteUrl).href } : {})
   };
 
   return vizSchema;

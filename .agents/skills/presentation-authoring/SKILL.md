@@ -10,7 +10,7 @@ This skill governs the creation, modification, validation, and release of intera
 ## 1. Directory Structure & Naming
 Every presentation lives in its own directory under `src/content/presentations/<id>/`:
 - `<id>` format: `YYYY_MM_DD_kebab_case_title` (e.g. `2026_10_05_wie_promptet_man_richtig`).
-- `index.md`: Deck-level frontmatter (`title`, `description`, `date`, `category`, `language`, `previewImage`, `authors`).
+- `index.md`: Deck-level frontmatter (`title`, `description`, `date`, `category`, `inLanguage`, `image`, `authors`).
 - `slides/`: Ordered slide files (`01_titelfolie.mdx`, `02_agenda.mdx`, etc.).
 - `.cache/slides-audio/<id>/`: Git-ignored CI/local cache containing generated Edge-TTS `.mp3` files, `.cues.json` word-level manifests, and `.cache.json` hashes (synthesized on-the-fly during page render).
 - `.cache/slides-pdf/<id>/`: Git-ignored CI/local cache containing `slides-dark.pdf`, `slides-light.pdf`, and `.visual-cache.json` (deterministic SHA-256 `styleHash` + `deckHash`).

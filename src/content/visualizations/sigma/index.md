@@ -1,7 +1,7 @@
 ---
 title: "Sigma.js: ForceAtlas2 Network Graph"
 description: "Navigate large-scale semantic networks with high-performance WebGL rendering and multi-threaded ForceAtlas2 physics offloaded to background web workers."
-screenshot:
+image:
   src: "./sigma.png"
   title: "Sigma ForceAtlas2 Graph Layout"
   description: "Large-scale network graph layout with organically distributed content clusters and delicate edges rendered on a dark background"

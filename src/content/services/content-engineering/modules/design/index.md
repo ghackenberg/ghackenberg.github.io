@@ -20,7 +20,7 @@ methodologyPhases:
     description: "Standardizing vector schematics, flowchart notation, and component symbology."
 order: 3
 pubDate: 2026-09-11
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Design Systems"
   description: "Modulare 3D-Architektur einer Design-System-Engine mit Design-Tokens, Farbpaletten, typografischer Skalierung und UI-Komponenten"

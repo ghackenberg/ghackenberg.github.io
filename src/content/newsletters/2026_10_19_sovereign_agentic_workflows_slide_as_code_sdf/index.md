@@ -13,7 +13,7 @@ tags:
   - typescript
   - computer-graphics
   - content-engineering
-icon:
+image:
   src: ./preview.jpg
   title: "Issue #1 Cover — Sovereign Agentic Workflows, Slide-as-Code & Real-Time Web Geometry"
   description: "Editorial magazine cover illustration depicting a central multi-agent orchestrator hub, a Slide-as-Code presentation deck with neural audio waves, and a 2D Signed Distance Field geometric contour grid."

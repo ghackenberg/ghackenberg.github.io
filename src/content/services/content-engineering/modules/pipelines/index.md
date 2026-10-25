@@ -20,7 +20,7 @@ methodologyPhases:
     description: "Auditing page load metrics, eliminating render-blocking scripts, and verifying Core Web Vitals."
 order: 4
 pubDate: 2026-09-11
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Publishing Pipelines"
   description: "Automatisierte 3D-Publishing-Pipeline mit strukturierter Dateneinspeisung, Validierungsprozessor und Bereitstellung optimierter Web-Artefakte"

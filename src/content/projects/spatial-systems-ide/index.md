@@ -7,7 +7,7 @@ repoName: "Spatial-Systems-IDE"
 tags: ["mechatronic-systems", "systems-engineering", "manufacturing-systems", "java", "simulation", "open-source", "software-systems"]
 accentColor: "blue"
 order: 5
-screenshot:
+image:
   src: "./screenshot.png"
   title: "Spatial Systems IDE: Integrierte Modellierung mechatronischer Systeme"
   description: "Umfassende DockFX-Entwicklungsumgebung mit Komponenten-Hierarchie, 3D-Geometrieansicht, Zustandsautomaten und Disziplin-Schnittstellen"

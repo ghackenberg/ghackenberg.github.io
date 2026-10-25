@@ -22,7 +22,7 @@ for (const post of posts) {
 }
 const allTags = Array.from(tagsSet).sort();
 
-const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
+const pagePreviewImage = posts.find(p => p.data.image)?.data.image;
 
 ---
 
@@ -93,7 +93,7 @@ const pagePreviewImage = posts.find(p => p.data.icon)?.data.icon;
                   title={post.data.title}
                   description={post.data.description}
                   pubDate={post.data.pubDate}
-                  icon={post.data.icon}
+                  image={post.data.image}
                   tags={post.data.tags}
                 />
               </div>

@@ -12,6 +12,8 @@ interface Props {
   activeTag?: string | string[];
   showTags?: boolean;
   accentColor?: 'blue' | 'yellow' | 'purple' | 'green';
+  image?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  imageLight?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   screenshot?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   screenshotLight?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
 }
@@ -25,6 +27,8 @@ const {
   activeTag, 
   showTags,
   accentColor: _accentColor = 'green',
+  image,
+  imageLight,
   screenshot,
   screenshotLight
 } = Astro.props;
@@ -32,15 +36,17 @@ const {
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 const shouldShowTags = showTags ?? Boolean(activeTag);
 
-const isScreenshotObj = Boolean(screenshot && typeof screenshot === 'object' && 'src' in screenshot && screenshot.src);
-const screenshotImg = isScreenshotObj ? (screenshot as { src: ImageMetadata }).src : (screenshot as ImageMetadata | undefined);
-const screenshotTitle = isScreenshotObj ? (screenshot as { title: string }).title : title;
-const screenshotDesc = isScreenshotObj ? (screenshot as { description: string }).description : (description ? `${title} – ${description}` : `Showcase and project preview for ${title}`);
+const effScreenshot = image || screenshot;
+const effScreenshotLight = imageLight || screenshotLight;
+const isScreenshotObj = Boolean(effScreenshot && typeof effScreenshot === 'object' && 'src' in effScreenshot && effScreenshot.src);
+const screenshotImg = isScreenshotObj ? (effScreenshot as { src: ImageMetadata }).src : (effScreenshot as ImageMetadata | undefined);
+const screenshotTitle = isScreenshotObj ? (effScreenshot as { title: string }).title : title;
+const screenshotDesc = isScreenshotObj ? (effScreenshot as { description: string }).description : (description ? `${title} – ${description}` : `Showcase and project preview for ${title}`);
 
-const isScreenshotLightObj = Boolean(screenshotLight && typeof screenshotLight === 'object' && 'src' in screenshotLight && screenshotLight.src);
-const screenshotLightImg = isScreenshotLightObj ? (screenshotLight as { src: ImageMetadata }).src : (screenshotLight as ImageMetadata | undefined);
-const screenshotLightTitle = isScreenshotLightObj ? (screenshotLight as { title: string }).title : `${title} (Light Mode)`;
-const screenshotLightDesc = isScreenshotLightObj ? (screenshotLight as { description: string }).description : (description ? `${title} – ${description} (Light Theme)` : `Showcase and project preview for ${title} in light mode`);
+const isScreenshotLightObj = Boolean(effScreenshotLight && typeof effScreenshotLight === 'object' && 'src' in effScreenshotLight && effScreenshotLight.src);
+const screenshotLightImg = isScreenshotLightObj ? (effScreenshotLight as { src: ImageMetadata }).src : (effScreenshotLight as ImageMetadata | undefined);
+const screenshotLightTitle = isScreenshotLightObj ? (effScreenshotLight as { title: string }).title : `${title} (Light Mode)`;
+const screenshotLightDesc = isScreenshotLightObj ? (effScreenshotLight as { description: string }).description : (description ? `${title} – ${description} (Light Theme)` : `Showcase and project preview for ${title} in light mode`);
 
 const optimizedScreenshot = screenshotImg ? await getImage({
   src: screenshotImg,

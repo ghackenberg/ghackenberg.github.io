@@ -32,7 +32,7 @@ const { module, parentService } = Astro.props;
 const { Content } = await render(module);
 
 
-const activePreviewImage = module.data.previewImage || parentService.data.previewImage;
+const activePreviewImage = module.data.image || parentService.data.image;
 
 const moduleSchema = buildServiceModuleSchema({ parentService, module, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---

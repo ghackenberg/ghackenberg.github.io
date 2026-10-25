@@ -21,6 +21,7 @@ export interface RawNewsletterFrontmatter {
   description?: string;
   issueNumber?: number;
   pubDate?: string | Date;
+  image?: RawNewsletterIcon;
   icon?: RawNewsletterIcon;
   featuredPosts?: string[];
   featuredPresentations?: string[];
@@ -211,7 +212,9 @@ export async function loadNewsletterIssue(
   const { yamlBlock, markdownBody } = splitMarkdownFrontmatter(rawContent);
   const frontmatter = YAML.parse(yamlBlock) as RawNewsletterFrontmatter;
 
-  if (!frontmatter.title || !frontmatter.description || !frontmatter.issueNumber || !frontmatter.pubDate || !frontmatter.icon) {
+  const effImage = frontmatter.image || frontmatter.icon;
+
+  if (!frontmatter.title || !frontmatter.description || !frontmatter.issueNumber || !frontmatter.pubDate || !effImage) {
     throw new Error(
       `Newsletter issue "${slug}" is missing required frontmatter fields (title, description, issueNumber, pubDate, icon).`
     );
@@ -243,12 +246,12 @@ export async function loadNewsletterIssue(
     slug,
     issueDir,
     rootDir,
-    frontmatter.icon
+    effImage
   );
-  const heroImageTitle = frontmatter.icon.title || frontmatter.title;
+  const heroImageTitle = effImage.title || frontmatter.title;
   const heroImageAlt =
-    frontmatter.icon.description ||
-    frontmatter.icon.caption ||
+    effImage.description ||
+    effImage.caption ||
     frontmatter.description;
 
   return {

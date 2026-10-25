@@ -23,7 +23,7 @@ const itemTags = courses.map(c => (c.data.tags || []).map(t => t.toLowerCase()))
 
 // Find the first course's screenshot to preload for LCP
 const firstCourse = courses[0];
-const firstCourseScreenshot = firstCourse?.data.screenshot;
+const firstCourseScreenshot = firstCourse?.data.image;
 const firstCourseScreenshotImg = firstCourseScreenshot ? (typeof firstCourseScreenshot === 'object' && 'src' in firstCourseScreenshot ? firstCourseScreenshot.src : firstCourseScreenshot) : null;
 const optimizedFirstScreenshot = firstCourseScreenshotImg ? await getImage({
   src: firstCourseScreenshotImg,
@@ -115,14 +115,14 @@ const optimizedFirstScreenshot = firstCourseScreenshotImg ? await getImage({
                 data-desc={(course.data.description || "").toLowerCase()}
                 data-goals={goalsJoined}
                 data-tags={(course.data.tags || []).join(" ").toLowerCase()}
-                data-lang={course.data.language}
+                data-lang={course.data.inLanguage}
               >
                 <CourseCard
                   title={course.data.title}
                   description={course.data.description}
                   href={`/courses/${course.id}/`}
-                  language={course.data.language}
-                  screenshot={course.data.screenshot}
+                  inLanguage={course.data.inLanguage}
+                  image={course.data.image}
                   tags={course.data.tags}
                 />
               </div>

@@ -25,8 +25,8 @@ const optimizedServices = await Promise.all(
   sortedServices.map(async (service) => {
     let optimizedImageSrc = undefined;
 
-    if (service.data.previewImage) {
-      const img = service.data.previewImage.src;
+    if (service.data.image) {
+      const img = service.data.image.src;
       const optimized = await getImage({
         src: img,
         format: "webp",
@@ -45,7 +45,7 @@ const optimizedServices = await Promise.all(
 
 
 
-const firstServiceImage = services.find(s => s.data.previewImage)?.data.previewImage;
+const firstServiceImage = services.find(s => s.data.image)?.data.image;
 
 const pageJsonLd = buildCollectionPageSchema("services", sortedServices.map((s) => ({ id: `https://hackenberg.tech/services/${s.id}/#service` })));
 
@@ -122,10 +122,10 @@ const pageJsonLd = buildCollectionPageSchema("services", sortedServices.map((s) 
 
                   <!-- Preview Image Column (Top) -->
                   <div class="w-full aspect-video shrink-0 relative overflow-hidden bg-slate-950 border-b border-element-border">
-                    {service.data.previewImage && (() => {
-                      const img = service.data.previewImage.src;
-                      const title = service.data.previewImage.title;
-                      const desc = service.data.previewImage.description;
+                    {service.data.image && (() => {
+                      const img = service.data.image.src;
+                      const title = service.data.image.title;
+                      const desc = service.data.image.description;
                       return (
                       <svg 
                         class="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-500 z-0 pointer-events-none" 

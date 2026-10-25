@@ -25,7 +25,7 @@ for (const presentation of presentations) {
 const allTags = Array.from(tagsSet).sort();
 const itemTags = presentations.map(p => (p.data.tags || []).map(t => t.toLowerCase()));
 
-const pagePreviewImage = presentations.find(t => t.data.previewImage || t.data.icon)?.data.previewImage || presentations.find(t => t.data.previewImage || t.data.icon)?.data.icon;
+const pagePreviewImage = presentations.find(t => t.data.image)?.data.image;
 
 ---
 
@@ -100,7 +100,7 @@ const pagePreviewImage = presentations.find(t => t.data.previewImage || t.data.i
                   subtitle={presentation.data.subtitle}
                   description={presentation.data.description}
                   pubDate={presentation.data.pubDate}
-                  icon={presentation.data.previewImage || presentation.data.icon}
+                  image={presentation.data.image}
                   tags={presentation.data.tags || []}
                 />
               </div>

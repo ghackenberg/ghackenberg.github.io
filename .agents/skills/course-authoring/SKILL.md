@@ -26,7 +26,7 @@ Every course resides in its own directory under `src/content/courses/<course-id>
   tags:
     - software-architektur
     - clean-code
-  screenshot:
+  image:
     src: "./preview.jpg"
     title: "Kursübersicht"
     description: "Vorschau des Vorlesungsmaterials für Software Engineering"

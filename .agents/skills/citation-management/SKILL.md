@@ -14,7 +14,8 @@ Every cited work must be declared in the YAML frontmatter `references:` array. T
 references:
   - id: "vaswani-2017-attention" # Kebab-case semantic key (author-year-keyword)
     type: "inproceedings" # inproceedings | article | book | online | misc
-    author: "Vaswani, Ashish et al."
+    authors:
+      - name: "Ashish Vaswani"
     title: "Attention Is All You Need"
     booktitle: "Advances in Neural Information Processing Systems (NeurIPS 2017)"
     year: 2017
@@ -24,7 +25,10 @@ references:
 
   - id: "bostock-2011-d3"
     type: "article"
-    author: "Bostock, Michael and Ogievetsky, Vadim and Heer, Jeffrey"
+    authors:
+      - name: "Michael Bostock"
+      - name: "Vadim Ogievetsky"
+      - name: "Jeffrey Heer"
     title: "D3: Data-Driven Documents"
     journal: "IEEE Transactions on Visualization and Computer Graphics"
     year: 2011
@@ -35,7 +39,9 @@ references:
 
   - id: "mcp-specification-2024"
     type: "online"
-    author: "Anthropic"
+    authors:
+      - name: "Anthropic"
+        type: "Organization"
     title: "Model Context Protocol Specification"
     year: 2024
     siteName: "Model Context Protocol"

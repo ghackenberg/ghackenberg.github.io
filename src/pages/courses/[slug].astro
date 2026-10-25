@@ -35,10 +35,10 @@ const courseSchema = buildCourseSchema({ course, modules: courseModules, siteUrl
 <Layout 
   title={`${course.data.title} | Dr. Georg Hackenberg`} 
   description={course.data.description}
-  image={course.data.screenshot}
+  image={course.data.image}
   tags={course.data.tags}
   jsonLd={courseSchema}
-  lang={course.data.language || 'de'}
+  lang={course.data.inLanguage || 'de'}
 >
   <Navbar />
 
@@ -73,10 +73,10 @@ const courseSchema = buildCourseSchema({ course, modules: courseModules, siteUrl
       )}
 
       <div class="flex flex-wrap items-center gap-3 mt-6">
-        {course.data.language && (
+        {course.data.inLanguage && (
           <span class="px-4 py-2.5 rounded-xl text-xs font-bold bg-element-bg border border-element-border text-gray-200 flex items-center space-x-2">
             <span>🌐</span>
-            <span>{course.data.language === 'de' ? 'German' : 'English'}</span>
+            <span>{course.data.inLanguage === 'de' ? 'German' : 'English'}</span>
           </span>
         )}
 

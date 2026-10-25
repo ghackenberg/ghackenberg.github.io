@@ -4,7 +4,7 @@ description: "Engineering resilient, maintainable software systems through domai
 order: 1
 ctaText: "Inquire about Software Engineering"
 pubDate: 2026-10-08
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Serviceübersicht: Software Engineering"
   description: "Dr. Georg Hackenberg präsentiert die Architektur und Methodik robuster Softwaresysteme im Beratungsgespräch am Campus Wels"

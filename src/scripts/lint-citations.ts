@@ -483,6 +483,29 @@ function extractReferencesFromFile(filePath: string, category: string): { refs: 
     }));
 
     // In-text citation validation
+    for (const rawRef of parsed.references) {
+      if (Array.isArray(rawRef.authors)) {
+        for (const a of rawRef.authors) {
+          if (typeof a === 'object' && a !== null) {
+            if (!a.name || typeof a.name !== 'string' || !a.name.trim()) {
+              errors.push(`[${relPath}] Reference "${rawRef.id}" has an author missing a non-empty "name".`);
+            }
+            if (a.id && (typeof a.id !== 'string' || !/^https?:\/\//i.test(a.id))) {
+              errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "id": "${a.id}". Must be a valid absolute HTTP(S) URL.`);
+            }
+            if (a.url && (typeof a.url !== 'string' || !/^https?:\/\//i.test(a.url))) {
+              errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "url": "${a.url}". Must be a valid absolute HTTP(S) URL.`);
+            }
+            if (a.orcid && (typeof a.orcid !== 'string' || !/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/.test(a.orcid))) {
+              errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "orcid": "${a.orcid}". Must match standard 16-character format.`);
+            }
+            if (a.wikidata && (typeof a.wikidata !== 'string' || !/^(https:\/\/www\.wikidata\.org\/wiki\/)?Q\d+$/.test(a.wikidata))) {
+              errors.push(`[${relPath}] Reference "${rawRef.id}" author "${a.name}" has invalid "wikidata": "${a.wikidata}". Must be QID or Wikidata URL.`);
+            }
+          }
+        }
+      }
+    }
     for (const ref of refs) {
       if (!ref.id) {
         errors.push(`[${relPath}] Reference "${ref.title}" is missing mandatory "id" in frontmatter.`);

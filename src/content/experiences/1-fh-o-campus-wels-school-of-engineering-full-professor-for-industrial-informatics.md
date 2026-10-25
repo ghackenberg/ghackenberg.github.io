@@ -1,6 +1,5 @@
 ---
 title: "Full Professor for Industrial Informatics"
-company: "FH OÖ Campus Wels | School of Engineering"
 employmentType: "Full-time"
 startMonth: 10
 startYear: 2019
@@ -9,8 +8,10 @@ endYear: null
 location: "Linz-Wels-Steyr Area"
 color: "yellow"
 order: 0
-organizationId: "https://www.wikidata.org/wiki/Q1388312"
-organizationUrl: "https://www.fh-ooe.at/"
+organization:
+  name: "FH OÖ Campus Wels | School of Engineering"
+  id: "https://www.wikidata.org/wiki/Q1388312"
+  url: "https://www.fh-ooe.at/"
 occupationalCategory: "25-1021.00"
 ---
 

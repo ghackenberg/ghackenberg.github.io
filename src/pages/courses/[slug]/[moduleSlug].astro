@@ -36,7 +36,7 @@ const { module, parentCourse } = Astro.props;
 const { Content } = await render(module);
 
 
-const activePreviewImage = module.data.previewImage || parentCourse.data.screenshot;
+const activePreviewImage = module.data.image || parentCourse.data.image;
 
 const moduleSchema = buildCourseModuleSchema({ parentCourse, module, siteUrl: Astro.site?.origin || "https://hackenberg.tech" });
 ---
@@ -48,7 +48,7 @@ const moduleSchema = buildCourseModuleSchema({ parentCourse, module, siteUrl: As
   tags={parentCourse.data.tags}
   breadcrumbParentTitle={parentCourse.data.title}
   jsonLd={moduleSchema}
-  lang={parentCourse.data.language || 'de'}
+  inLanguage={parentCourse.data.inLanguage || 'de'}
 >
   <Navbar />
 
@@ -85,7 +85,7 @@ const moduleSchema = buildCourseModuleSchema({ parentCourse, module, siteUrl: As
           <div class="px-4 py-2.5 rounded-xl bg-element-bg border border-element-border flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">
             <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Language</span>
             <span class="text-xs font-bold mt-0.5 text-gray-200 light:text-slate-800">
-              {parentCourse.data.language === 'de' ? 'German' : 'English'}
+              {parentCourse.data.inLanguage === 'de' ? 'German' : 'English'}
             </span>
           </div>
           <div class="px-4 py-2.5 rounded-xl bg-element-bg border border-element-border flex flex-col justify-center min-h-[50px] light:bg-slate-50 light:border-slate-200">

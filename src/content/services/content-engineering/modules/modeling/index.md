@@ -20,7 +20,7 @@ methodologyPhases:
     description: "Implementing automated build-time schema validation fixtures and typecheck constraints."
 order: 1
 pubDate: 2026-09-11
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Content Modeling"
   description: "Isometrische 3D-Architektur strukturierter Datenschemata mit Schema-Validierungsschicht und persistenter Datenbasis"

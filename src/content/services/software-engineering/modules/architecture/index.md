@@ -5,7 +5,7 @@ description: "Domain-driven architectural design, structural decomposition, boun
 ctaText: "Inquire about Software Architecture"
 order: 2
 pubDate: 2026-10-08
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Clean Architecture & Ports"
   description: "Physisches Schichtenmodell der Hexagonalen Architektur mit zentralem Domänenkern und entkoppelten Adapter-Schnittstellen"

@@ -8,8 +8,8 @@ learningGoals:
   - "Regelungsentwurf und Stabilitätsanalyse mechatronischer Systeme."
 terms:
   - "Winter Term 2025/26"
-language: "de"
-screenshot:
+inLanguage: "de"
+image:
   src: "./preview.jpg"
   title: "Systems Engineering: Black-Box/White-Box & Test Harness"
   description: "Orthogonale Schautafel des Systems Engineerings mit Test Suite, Systemgrenze als Black-Box- und White-Box-Modell, Schnittstellen-Ports und Test Harness"

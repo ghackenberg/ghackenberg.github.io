@@ -19,7 +19,7 @@ methodologyPhases:
   - title: "Throughput Benchmarking"
     description: "Benchmarking latency, time-to-first-token (TTFT), and throughput under simulated concurrent loads."
 order: 1
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Model Serving & Inferenz"
   description: "Hochperformantes 3D-Beschleunigermodul für Inferenz-Serving mit dynamischem Token-Batching und gestreamten Ausgabekanälen"

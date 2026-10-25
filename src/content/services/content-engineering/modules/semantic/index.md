@@ -20,7 +20,7 @@ methodologyPhases:
     description: "Testing structured data against schema validators and verifying crawlability for search engines."
 order: 5
 pubDate: 2026-09-11
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: Semantic Optimization"
   description: "3D-Architektur semantischer Optimierung mit Prismenkern zur Projektion vernetzter Wissensgraphen und Vektoreinbettungen"

@@ -1,4 +1,5 @@
 import { getCollection } from "astro:content";
+import { formatAuthorsPlain } from "@commons/shared/authors";
 
 const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\}/g, "").trim() : "");
 
@@ -31,7 +32,7 @@ export async function GET() {
   const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
 
   const degreeLines = sortedDegrees
-    .map((d) => `- ${d.data.degree} in ${d.data.program} - ${d.data.institution} (${d.data.startYear}-${d.data.endYear})`)
+    .map((d) => `- ${d.data.degree} in ${d.data.program} - ${d.data.organization.name} (${d.data.startYear}-${d.data.endYear})`)
     .join("\n");
   const profileLines = sortedProfiles
     .map((p) => `- ${p.data.name} (${p.data.handle}): ${p.data.url}`)
@@ -78,7 +79,7 @@ ${profileLines}
     output += `### ${pub.data.title}\n`;
     output += `- URL: https://hackenberg.tech/publications/${pub.id}/\n`;
     output += `- Date/Venue: ${pubDateStr}${pub.data.book ? ` (${pub.data.book})` : ''}\n`;
-    output += `- Authors: ${pub.data.author}\n`;
+    output += `- Authors: ${formatAuthorsPlain(pub.data.authors)}\n`;
     if (pub.data.abstract) output += `- Abstract: ${pub.data.abstract}\n`;
     if (pub.data.bibtex) output += `\n\`\`\`bibtex\n${pub.data.bibtex}\n\`\`\`\n`;
     output += `\n${pub.body}\n\n---\n\n`;
@@ -120,7 +121,7 @@ ${profileLines}
     output += `### ${course.data.title}\n`;
     output += `- URL: https://hackenberg.tech/courses/${course.id}/\n`;
     output += `- Repository: ${course.data.repoName}\n`;
-    output += `- Language: ${course.data.language}\n`;
+    output += `- Language: ${course.data.inLanguage}\n`;
     if (course.data.description) output += `- Description: ${course.data.description}\n`;
     if (course.data.learningGoals && course.data.learningGoals.length > 0) {
       output += `- Learning Goals:\n  * ${course.data.learningGoals.join('\n  * ')}\n`;

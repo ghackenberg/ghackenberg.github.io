@@ -153,6 +153,8 @@ interface RawEntity {
     description?: string;
     pubDate?: string | Date;
     tags?: string[];
+    image?: ImageSource;
+    imageLight?: ImageSource;
     icon?: ImageSource;
     screenshot?: ImageSource;
     screenshotLight?: ImageSource;
@@ -324,7 +326,7 @@ export async function buildGraphPayload(options: {
   for (const post of options.posts) {
     const path = `/posts/${post.id}/`;
     let imageSrc: string | undefined = undefined;
-    const postImg = extractImageSrc(post.data.icon);
+    const postImg = extractImageSrc(post.data.image || post.data.icon);
     if (postImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: postImg, format: "webp", width: 240, quality: 75 });
@@ -375,7 +377,7 @@ export async function buildGraphPayload(options: {
   for (const pres of options.presentations || []) {
     const path = `/presentations/${pres.id}/`;
     let imageSrc: string | undefined = undefined;
-    const presImg = extractImageSrc(pres.data.previewImage || pres.data.icon);
+    const presImg = extractImageSrc(pres.data.image || pres.data.previewImage || pres.data.icon);
     if (presImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: presImg, format: "webp", width: 240, quality: 75 });
@@ -406,7 +408,7 @@ export async function buildGraphPayload(options: {
   for (const course of options.courses) {
     const path = `/courses/${course.id}/`;
     let imageSrc: string | undefined = undefined;
-    const courseImg = extractImageSrc(course.data.screenshot);
+    const courseImg = extractImageSrc(course.data.image || course.data.screenshot);
     if (courseImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: courseImg, format: "webp", width: 240, quality: 75 });
@@ -437,7 +439,7 @@ export async function buildGraphPayload(options: {
   for (const project of options.projects) {
     const path = `/projects/${project.id}/`;
     let imageSrc: string | undefined = undefined;
-    const projectImg = extractImageSrc(project.data.screenshot || project.data.screenshotLight);
+    const projectImg = extractImageSrc(project.data.image || project.data.screenshot || project.data.imageLight || project.data.screenshotLight);
     if (projectImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: projectImg, format: "webp", width: 240, quality: 75 });
@@ -468,7 +470,7 @@ export async function buildGraphPayload(options: {
   for (const service of options.services) {
     const path = `/services/${service.id}/`;
     let imageSrc: string | undefined = undefined;
-    const serviceImg = extractImageSrc(service.data.previewImage);
+    const serviceImg = extractImageSrc(service.data.image || service.data.previewImage);
     if (serviceImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: serviceImg, format: "webp", width: 240, quality: 75 });
@@ -499,7 +501,7 @@ export async function buildGraphPayload(options: {
   for (const nl of options.newsletters || []) {
     const path = `/newsletters/${nl.id}/`;
     let imageSrc: string | undefined = undefined;
-    const nlImg = extractImageSrc(nl.data.icon);
+    const nlImg = extractImageSrc(nl.data.image || nl.data.icon);
     if (nlImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: nlImg, format: "webp", width: 240, quality: 75 });
@@ -530,7 +532,7 @@ export async function buildGraphPayload(options: {
   for (const vis of options.visualizations || []) {
     const path = `/visualizations/${vis.id}/`;
     let imageSrc: string | undefined = undefined;
-    const visImg = extractImageSrc(vis.data.screenshot);
+    const visImg = extractImageSrc(vis.data.image || vis.data.screenshot);
     if (visImg && options.getImage) {
       try {
         const opt = await options.getImage({ src: visImg, format: "webp", width: 240, quality: 75 });

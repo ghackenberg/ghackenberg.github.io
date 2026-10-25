@@ -8,8 +8,8 @@ learningGoals:
   - "Praktische Problemlösung und Automatisierung von Alltagsaufgaben durch eigene Skripte."
 terms:
   - "Winter Term 2025/26"
-language: "de"
-screenshot:
+inLanguage: "de"
+image:
   src: "./preview.jpg"
   title: "Python-Programmierung: Skripting & modulare Datenverarbeitung"
   description: "Orthogonale Schautafel einer modularen Python-Pipeline mit Datenstruktur-Containern, Funktionsausführungsblock und Terminalausgabe"

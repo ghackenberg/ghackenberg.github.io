@@ -26,7 +26,7 @@ for (const project of projects) {
 const allTags = Array.from(tagsSet).sort();
 const itemTags = sortedProjects.map(p => (p.data.tags || []).map(t => t.toLowerCase()));
 const allTrls = Array.from(new Set(sortedProjects.map(p => p.data.trl))).sort((a, b) => b - a);
-const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data.screenshot;
+const firstProjectScreenshot = sortedProjects.find(p => p.data.image)?.data.image;
 
 ---
 
@@ -112,8 +112,8 @@ const firstProjectScreenshot = sortedProjects.find(p => p.data.screenshot)?.data
                   href={`/projects/${project.id}/`}
                   tags={project.data.tags}
                   accentColor={project.data.accentColor}
-                  screenshot={project.data.screenshot}
-                  screenshotLight={project.data.screenshotLight}
+                  image={project.data.image}
+                  imageLight={project.data.imageLight}
                 />
               </div>
             );

@@ -26,7 +26,7 @@ export async function getStaticPaths() {
 const { issue } = Astro.props;
 const { Content } = await render(issue);
 
-const ogImage = issue.data.icon.src;
+const ogImage = issue.data.image.src;
 
 const [
   featuredPosts,
@@ -155,7 +155,7 @@ const newsletterSchema = buildNewsletterIssueSchema({
               title={post.data.title}
               description={post.data.description}
               pubDate={post.data.pubDate}
-              icon={post.data.icon}
+              image={post.data.image}
               tags={post.data.tags}
             />
           ))}
@@ -184,8 +184,8 @@ const newsletterSchema = buildNewsletterIssueSchema({
               subtitle={pres.data.subtitle}
               description={pres.data.description}
               pubDate={pres.data.pubDate}
-              icon={pres.data.icon}
-              previewImage={pres.data.previewImage}
+              image={pres.data.image}
+              image={pres.data.image}
               tags={pres.data.tags}
             />
           ))}
@@ -211,12 +211,12 @@ const newsletterSchema = buildNewsletterIssueSchema({
             <PublicationCard
               id={pub.id}
               title={pub.data.title}
-              author={pub.data.author}
+              authors={pub.data.authors}
               pubDate={pub.data.pubDate}
               book={pub.data.book}
               tags={pub.data.tags}
               publisherUrl={pub.data.publisherUrl}
-              icon={pub.data.icon}
+              image={pub.data.image}
             />
           ))}
         </div>
@@ -242,8 +242,8 @@ const newsletterSchema = buildNewsletterIssueSchema({
               title={course.data.title}
               description={course.data.description}
               href={`/courses/${course.id}/`}
-              language={course.data.language}
-              screenshot={course.data.screenshot}
+              inLanguage={course.data.inLanguage}
+              image={course.data.image}
               tags={course.data.tags}
             />
           ))}
@@ -272,8 +272,8 @@ const newsletterSchema = buildNewsletterIssueSchema({
               description={project.data.description}
               href={`/projects/${project.id}/`}
               tags={project.data.tags}
-              screenshot={project.data.screenshot}
-              screenshotLight={project.data.screenshotLight}
+              image={project.data.image}
+              imageLight={project.data.imageLight}
             />
           ))}
         </div>
@@ -299,7 +299,7 @@ const newsletterSchema = buildNewsletterIssueSchema({
               title={vis.data.title}
               description={vis.data.description}
               href={`/visualizations/${vis.id}/`}
-              screenshot={vis.data.screenshot}
+              image={vis.data.image}
               tags={vis.data.tags}
             />
           ))}

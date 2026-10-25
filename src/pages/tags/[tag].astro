@@ -113,7 +113,7 @@ function getPageNumbers(current: number, total: number): (number | string)[] {
 }
 
 // Determine preview image if available
-const previewImage = posts.find((p) => p.data.icon)?.data.icon;
+const previewImage = posts.find((p) => p.data.image)?.data.image;
 
 
 const items = [
@@ -182,7 +182,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                     title={post.data.title}
                     description={post.data.description}
                     pubDate={post.data.pubDate}
-                    icon={post.data.icon}
+                    image={post.data.image}
                     tags={post.data.tags}
                     activeTag={tag.id}
                   />
@@ -269,13 +269,13 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                   <PublicationCard
                     id={pub.id}
                     title={pub.data.title}
-                    author={pub.data.author}
+                    authors={pub.data.authors}
                     pubDate={pub.data.pubDate}
                     book={pub.data.book}
                     tags={pub.data.tags}
                     publisherUrl={pub.data.publisherUrl}
                     activeTag={tag.id}
-                    icon={pub.data.icon}
+                    image={pub.data.image}
                   />
                 </div>
               );
@@ -360,7 +360,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                 subtitle={pres.data.subtitle}
                 description={pres.data.description}
                 pubDate={pres.data.pubDate instanceof Date ? pres.data.pubDate : new Date(pres.data.pubDate || '')}
-                previewImage={pres.data.previewImage}
+                image={pres.data.image}
                 tags={pres.data.tags}
                 activeTag={tag.id}
               />
@@ -387,8 +387,8 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                 title={course.data.title}
                 description={course.data.description}
                 href={`/courses/${course.id}/`}
-                language={course.data.language}
-                screenshot={course.data.screenshot}
+                inLanguage={course.data.inLanguage}
+                image={course.data.image}
                 tags={course.data.tags}
                 activeTag={tag.id}
               />
@@ -419,8 +419,8 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                 tags={project.data.tags}
                 activeTag={tag.id}
                 accentColor={project.data.accentColor}
-                screenshot={project.data.screenshot}
-                screenshotLight={project.data.screenshotLight}
+                image={project.data.image}
+                imageLight={project.data.imageLight}
               />
             ))}
           </div>
@@ -447,7 +447,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                 description={service.data.description}
                 tags={service.data.tags}
                 activeTag={tag.id}
-                previewImage={service.data.previewImage}
+                image={service.data.image}
                 ctaText="Read More"
               />
             ))}
@@ -475,7 +475,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                 title={issue.data.title}
                 description={issue.data.description}
                 pubDate={issue.data.pubDate}
-                icon={issue.data.icon}
+                image={issue.data.image}
                 tags={issue.data.tags}
                 activeTag={tag.id}
               />
@@ -502,7 +502,7 @@ const tagJsonLd = buildTagDetailSchemas({ tag, items });
                 title={vis.data.title}
                 description={vis.data.description}
                 href={`/visualizations/${vis.id}/`}
-                screenshot={vis.data.screenshot}
+                image={vis.data.image}
                 tags={vis.data.tags}
                 activeTag={tag.id}
               />

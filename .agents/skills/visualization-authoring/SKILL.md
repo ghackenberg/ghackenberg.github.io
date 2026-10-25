@@ -14,7 +14,7 @@ Every visualization entry lives under `src/content/visualizations/<slug>/`:
   ```yaml
   title: "Three.js: 3D Force-Directed Graph"
   description: "GPU-accelerated force-directed 3D network visualization leveraging Three.js WebGL rendering and spatial force simulation."
-  screenshot:
+  image:
     src: "./preview.png"
     title: "3D Force Graph Preview"
     description: "Orbital perspective of interconnected 3D nodes and glowing edge lines on a dark canvas"

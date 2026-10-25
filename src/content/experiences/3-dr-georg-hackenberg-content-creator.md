@@ -1,6 +1,5 @@
 ---
 title: "Content Creator"
-company: "Dr. Georg Hackenberg"
 employmentType: "Self-employed"
 startMonth: 7
 startYear: 2023
@@ -9,6 +8,10 @@ endYear: null
 location: "Remote"
 color: "green"
 order: 2
+organization:
+  name: "Dr. Georg Hackenberg"
+  id: "https://hackenberg.tech/#organization"
+  url: "https://hackenberg.tech/"
 occupationalCategory: "27-3042.00"
 ---
 

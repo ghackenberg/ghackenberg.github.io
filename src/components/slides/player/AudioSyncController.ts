@@ -39,7 +39,8 @@ export interface SlideReference {
   id?: string;
   label?: string;
   type: string;
-  author: string;
+  author?: string;
+  authors?: Array<{ name: string; type?: string; id?: string; orcid?: string; wikidata?: string; url?: string }>;
   title: string;
   year?: number;
   url?: string;

@@ -1,7 +1,7 @@
 ---
 title: "Cytoscape.js: Semantic Network Graph"
 description: "Analyze semantic connections across publications, projects, and topics using Cytoscape.js and Compound Spring-Embedder (CoSE) layout physics directly in the browser."
-screenshot:
+image:
   src: "./cytoscape.png"
   title: "Cytoscape Force-Directed Network"
   description: "Planar 2D network diagram displaying centered data hubs and colored interconnects on a dark slate background"

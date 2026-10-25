@@ -83,7 +83,7 @@ const renderedSlides = await Promise.all(
 
 const stripCues = (text: string) => (text ? text.replace(/\{(\/)?cue(?::[^}]+)?\}/g, "") : "");
 
-const durationInfo = getPresentationDuration(presentation.id, { lang: presentation.data.lang });
+const durationInfo = getPresentationDuration(presentation.id, { lang: presentation.data.inLanguage });
 
 const presentationSchemas = buildPresentationSchema({
   presentation,
@@ -91,7 +91,8 @@ const presentationSchemas = buildPresentationSchema({
     number: s.number,
     title: s.title || `Slide ${s.number}`,
     audioUrl: s.audioUrl,
-    durationSec: s.durationSec
+    durationSec: s.durationSec,
+    transcript: stripCues(s.voiceover || '') || undefined
   })),
   durationInfo: {
     minutes: durationInfo.minutes,
@@ -121,15 +122,15 @@ const pdfLightUrl = isDev
 const pdfDownloadUrl = pdfDarkUrl;
 
 
-const previewImg = previewUrl || presentation.data.previewImage || presentation.data.icon;
+const previewImg = previewUrl || presentation.data.image;
 ---
 
 <Layout
   title={`${presentation.data.title} | Keynote Dr. Georg Hackenberg`}
   description={presentation.data.description || `${presentation.data.title} - Interactive presentation by Dr. Georg Hackenberg`}
   image={previewImg}
-  jsonLd={presentationSchemas}
-  lang={presentation.data.lang}
+  jsonLd={[presentationSchemas]}
+  lang={presentation.data.inLanguage}
   hasMath={true}
 >
   <Navbar />
@@ -152,7 +153,7 @@ const previewImg = previewUrl || presentation.data.previewImage || presentation.
         <div class="max-w-4xl">
           <div class="flex flex-wrap items-center gap-3 mb-4">
             <time datetime={presentation.data.pubDate.toISOString()} class="text-sm font-semibold text-domain-presentations">
-              {formatDate(presentation.data.pubDate, 'long', presentation.data.lang === "de" ? "de-AT" : "en-US")}
+              {formatDate(presentation.data.pubDate, 'long', presentation.data.inLanguage === "de" ? "de-AT" : "en-US")}
             </time>
             <span class="text-gray-500">•</span>
             <span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400">

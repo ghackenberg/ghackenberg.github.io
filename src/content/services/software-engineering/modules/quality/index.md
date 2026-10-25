@@ -5,7 +5,7 @@ description: "Comprehensive test engineering hierarchies, Test-Driven Developmen
 ctaText: "Inquire about Quality Assurance"
 order: 5
 pubDate: 2026-10-08
-previewImage:
+image:
   src: "./preview.jpg"
   title: "Architektur: 3D-Testpyramide & Qualitätssicherung"
   description: "Gestufte 3D-Testpyramide mit Unit-Test-Basis, Integrations-Kopplern und optischem E2E-Prüfstrahl zur Testautomatisierung"

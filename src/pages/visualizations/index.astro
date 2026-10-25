@@ -20,7 +20,7 @@ for (const vis of visualizations) {
 const allTags = Array.from(tagsSet).sort();
 const itemTags = visualizations.map(v => (v.data.tags || []).map(t => t.toLowerCase()));
 
-const firstVisScreenshot = visualizations.find(v => v.data.screenshot)?.data.screenshot;
+const firstVisScreenshot = visualizations.find(v => v.data.image)?.data.image;
 
 ---
 
@@ -87,7 +87,7 @@ const firstVisScreenshot = visualizations.find(v => v.data.screenshot)?.data.scr
                   title={vis.data.title}
                   description={vis.data.description}
                   href={`/visualizations/${vis.id}/`}
-                  screenshot={vis.data.screenshot}
+                  image={vis.data.image}
                   tags={vis.data.tags}
                 />
               </div>

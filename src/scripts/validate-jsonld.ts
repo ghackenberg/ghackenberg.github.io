@@ -285,7 +285,6 @@ function saveAuthorityCache(cache: AuthorityCache) {
 for (const fullPath of auditedFiles) {
   const relPath = path.relative(DIST_DIR, fullPath).replace(/\\/g, '/');
   const canonicalUrl = `https://hackenberg.tech/${relPath.replace(/\/index\.html$/, '/').replace(/^index\.html$/, '')}`;
-  definedEntityIds.add(canonicalUrl);
 
   const htmlContent = fs.readFileSync(fullPath, 'utf8');
   const $ = cheerio.load(htmlContent);
@@ -352,11 +351,11 @@ for (const fullPath of auditedFiles) {
   });
 }
 
-function extractNodesFromTree(root: JsonLdNode, relPath: string, collector: JsonLdNode[]) {
+function extractNodesFromTree(root: JsonLdNode, relPath: string, collector: JsonLdNode[], parentProp?: string) {
   if (Array.isArray(root['@graph'])) {
     for (const sub of root['@graph']) {
       if (typeof sub === 'object' && sub !== null && !Array.isArray(sub)) {
-        extractNodesFromTree(sub as JsonLdNode, relPath, collector);
+        extractNodesFromTree(sub as JsonLdNode, relPath, collector, parentProp);
       }
     }
     return;
@@ -373,7 +372,7 @@ function extractNodesFromTree(root: JsonLdNode, relPath: string, collector: Json
     addViolation(1, 'Missing @type', relPath, `Node with @id "${node['@id'] || 'anonymous'}" must declare a valid "@type".`);
   }
 
-  checkAnonymousEntityClones(node, relPath);
+  checkAnonymousEntityClones(node, relPath, parentProp);
   trackNodeProperties(node, relPath);
   collectGate6Candidates(node, relPath);
 
@@ -387,11 +386,11 @@ function extractNodesFromTree(root: JsonLdNode, relPath: string, collector: Json
     if (Array.isArray(value)) {
       for (const elem of value) {
         if (typeof elem === 'object' && elem !== null && !Array.isArray(elem)) {
-          extractNodesFromTree(elem as JsonLdNode, relPath, collector);
+          extractNodesFromTree(elem as JsonLdNode, relPath, collector, key);
         }
       }
     } else if (typeof value === 'object' && value !== null) {
-      extractNodesFromTree(value as JsonLdNode, relPath, collector);
+      extractNodesFromTree(value as JsonLdNode, relPath, collector, key);
     }
   }
 }
@@ -497,7 +496,7 @@ function inspectRelationField(relProp: string, value: JsonLdValue | undefined, r
 // -------------------------------------------------------------
 // Gate 3: No Anonymous Entity Clones (Blank-Node Trap)
 // -------------------------------------------------------------
-function checkAnonymousEntityClones(node: JsonLdNode, relPath: string) {
+function checkAnonymousEntityClones(node: JsonLdNode, relPath: string, parentProp?: string) {
   const hasId = typeof node['@id'] === 'string' && node['@id'].trim() !== '';
   if (hasId) return;
 
@@ -530,7 +529,7 @@ function checkAnonymousEntityClones(node: JsonLdNode, relPath: string) {
       'ContactPage'
     ]);
 
-    if (PRIMARY_ENTITIES.has(type)) {
+    if (PRIMARY_ENTITIES.has(type) && parentProp !== 'citation') {
       addViolation(3, 'Gate 3: Anonymous Primary Entity', relPath, `Primary entity of type "${type}" must declare an "@id".`);
     }
   }
@@ -805,6 +804,30 @@ for (const [relPath, pageData] of pageEntitiesMap.entries()) {
       }
 
       break;
+    }
+  }
+
+  // 8. Citation completeness check for any entity defining citations
+  for (const n of pageData.nodes) {
+    if (n.citation) {
+      const citations = Array.isArray(n.citation) ? n.citation : [n.citation];
+      for (const cit of citations) {
+        if (typeof cit === 'object' && cit !== null) {
+          const citObj = cit as JsonLdNode;
+          const name = typeof citObj.name === 'string' ? citObj.name.trim() : '';
+          if (!name) {
+            addViolation(5, 'Gate 5: Incomplete Citation', normPath, 'Citation element missing required non-empty "name" property.');
+          }
+          const hasAuthor = citObj.author && (Array.isArray(citObj.author) ? citObj.author.length > 0 : true);
+          if (!hasAuthor) {
+            addViolation(5, 'Gate 5: Incomplete Citation', normPath, `Citation "${name || 'unknown'}" missing required "author" property.`);
+          }
+          const hasUrl = typeof citObj.url === 'string' && citObj.url.trim().length > 0;
+          if (!hasUrl) {
+            addViolation(5, 'Gate 5: Incomplete Citation', normPath, `Citation "${name || 'unknown'}" missing required "url" property.`);
+          }
+        }
+      }
     }
   }
 }

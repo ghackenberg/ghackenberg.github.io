@@ -15,7 +15,12 @@ Every publication lives under `src/content/publications/<slug>/`:
   title: "Formal Verification of Distributed Agent Protocols"
   pubDate: "2026-06-15"
   book: "IEEE International Conference on Software Engineering (ICSE 2026)"
-  author: "Georg Hackenberg, John Doe, Jane Smith"
+  authors:
+    - name: "Georg Hackenberg"
+      id: "https://hackenberg.tech/#person"
+      orcid: "0000-0002-0096-2484"
+    - name: "John Doe"
+    - name: "Jane Smith"
   abstract: "This paper presents a formal verification framework for asynchronous multi-agent coordination..."
   tags:
     - software-architektur
@@ -31,7 +36,7 @@ Every publication lives under `src/content/publications/<slug>/`:
       doi       = {10.1109/ICSE.2026.12345}
     }
   slides: "https://hackenberg.tech/presentations/2026_06_15_formal_verification/" # Optional link to presentation
-  icon: "./preview.jpg" # Optional preview image (Astro image helper) or original diagram
+  image: "./preview.jpg" # Optional preview image (Astro image helper) or original diagram
   ```
 
 ## 2. Core Language & Metadata Rules

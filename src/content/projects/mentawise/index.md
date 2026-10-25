@@ -6,7 +6,7 @@ href: "https://mentawise.com"
 tags: ["collaborative-software", "data-visualization", "graph-database", "knowledge-graphs", "knowledge-management", "mind-mapping", "saas"]
 accentColor: "blue"
 order: 2
-screenshot:
+image:
   src: "./mentawise-graph.png"
   title: "Mentawise: Radialer Fokusgraph & Wissensnetzwerk"
   description: "Interaktive Web-Oberfläche mit radialem Wissensgraphen, zentriertem Fokus-Knoten, konzentrischen Nachbarschaftsebenen und Detail-Inspektor"

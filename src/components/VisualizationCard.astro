@@ -7,6 +7,7 @@ interface Props {
   description: string;
   href: string;
   engineId?: string;
+  image?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   screenshot?: ImageMetadata | { src: ImageMetadata; title: string; description: string };
   tags?: string[];
   activeTag?: string | string[];
@@ -17,6 +18,7 @@ const {
   title, 
   description, 
   href, 
+  image,
   screenshot,
   tags = [],
   activeTag,
@@ -26,10 +28,11 @@ const {
 const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
 const shouldShowTags = showTags ?? Boolean(activeTag);
 
-const isScreenshotObj = Boolean(screenshot && typeof screenshot === 'object' && 'src' in screenshot && screenshot.src);
-const screenshotImg = isScreenshotObj ? (screenshot as { src: ImageMetadata }).src : (screenshot as ImageMetadata | undefined);
-const screenshotTitle = isScreenshotObj ? (screenshot as { title: string }).title : title;
-const screenshotDesc = isScreenshotObj ? (screenshot as { description: string }).description : (description ? `${title} – ${description}` : `Interactive network diagram preview for ${title}`);
+const effImg = image || screenshot;
+const isScreenshotObj = Boolean(effImg && typeof effImg === 'object' && 'src' in effImg && effImg.src);
+const screenshotImg = isScreenshotObj ? (effImg as { src: ImageMetadata }).src : (effImg as ImageMetadata | undefined);
+const screenshotTitle = isScreenshotObj ? (effImg as { title: string }).title : title;
+const screenshotDesc = isScreenshotObj ? (effImg as { description: string }).description : (description ? `${title} – ${description}` : `Interactive network diagram preview for ${title}`);
 
 const optimizedScreenshot = screenshotImg ? await getImage({
   src: screenshotImg,

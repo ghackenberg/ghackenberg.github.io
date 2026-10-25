@@ -42,7 +42,7 @@ const processedRoles = await Promise.all(experiences.map(async (entry) => {
   return {
     id: entry.id,
     title: entry.data.title,
-    company: entry.data.company,
+    company: entry.data.organization.name,
     employmentType: entry.data.employmentType,
     startMonth,
     startYear,

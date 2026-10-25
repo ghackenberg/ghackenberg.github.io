@@ -16,7 +16,7 @@ tags:
   - "product-design"
   - "python"
   - "software-architecture"
-screenshot:
+image:
   src: "./voxel_model.png"
   title: "AgentBrick: Discrete 3D Voxel Model"
   description: "Volumetric coordinate discretization mapping conversational concepts into discrete voxel cells for physical brick placement."

@@ -19,7 +19,7 @@ const pageDescription =
 <Layout
   title={pageTitle}
   description={pageDescription}
-  image={sortedIssues[0]?.data.icon.src}
+  image={sortedIssues[0]?.data.image.src}
   jsonLd={buildCollectionPageSchema("newsletters", sortedIssues.map((n) => ({ id: `https://hackenberg.tech/newsletters/${n.id}/#article` })))}
   lang="en"
 >
@@ -56,7 +56,7 @@ const pageDescription =
             title={issue.data.title}
             description={issue.data.description}
             pubDate={issue.data.pubDate}
-            icon={issue.data.icon}
+            image={issue.data.image}
             tags={issue.data.tags}
           />
         ))}

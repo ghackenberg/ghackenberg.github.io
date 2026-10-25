@@ -22,7 +22,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 
-const mainScreenshotImg = project.data.screenshot?.src;
+const mainScreenshotImg = project.data.image?.src;
 const optimizedMainScreenshot = mainScreenshotImg ? await getImage({
   src: mainScreenshotImg,
   format: 'webp',
@@ -57,7 +57,7 @@ const projectSchema = buildProjectSchema({ project, siteUrl: Astro.site?.origin 
 <Layout 
   title={`${project.data.title} | Dr. Georg Hackenberg`} 
   description={project.data.description}
-  image={project.data.screenshot || optimizedMainScreenshot?.src}
+  image={project.data.image || optimizedMainScreenshot?.src}
   jsonLd={projectSchema}
 >
   <Navbar />
