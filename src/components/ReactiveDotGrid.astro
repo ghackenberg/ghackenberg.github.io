@@ -355,16 +355,28 @@ const {
               const rFactor = 0.65 + 0.35 * dot.alphaFactor;
               const r = (baseRadius + (activeRadius - baseRadius) * totalEnergy) * rFactor * dotScale;
 
-              // Brand blue to brand purple blend
-              const red = isLight
-                ? Math.round(37 + (147 - 37) * totalEnergy)
-                : Math.round(59 + (168 - 59) * totalEnergy);
-              const green = isLight
-                ? Math.round(99 + (51 - 99) * totalEnergy)
-                : Math.round(130 + (85 - 130) * totalEnergy);
-              const blue = isLight
-                ? Math.round(235 + (234 - 235) * totalEnergy)
-                : 247;
+              // 4-stop Aurora gradient blend (Emerald -> Cyan -> Blue -> Purple)
+              const auroraStopsDark = [
+                [16, 185, 129],
+                [6, 182, 212],
+                [59, 130, 246],
+                [168, 85, 247]
+              ];
+              const auroraStopsLight = [
+                [5, 150, 105],
+                [8, 145, 178],
+                [37, 99, 235],
+                [147, 51, 234]
+              ];
+              const stops = isLight ? auroraStopsLight : auroraStopsDark;
+              const pos = totalEnergy * 3;
+              const idx = Math.min(2, Math.floor(pos));
+              const t = pos - idx;
+              const c1 = stops[idx];
+              const c2 = stops[idx + 1];
+              const red = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+              const green = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+              const blue = Math.round(c1[2] + (c2[2] - c1[2]) * t);
               const baseAlpha = (isLight ? 0.24 : 0.28) * dot.alphaFactor;
               const addAlpha = (isLight ? 0.66 : 0.62) * dot.alphaFactor;
               const alpha = (baseAlpha + addAlpha * totalEnergy * dotScale).toFixed(3);
