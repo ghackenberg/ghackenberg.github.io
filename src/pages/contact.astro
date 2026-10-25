@@ -48,7 +48,7 @@ const contactPageSchema = {
     "@id": "https://hackenberg.tech/#person",
     "name": "Dr. Georg Hackenberg",
     "email": "georg.hackenberg@fh-wels.at",
-    "telephone": "+43 5 0804 43240",
+    "telephone": "+43 664 80484 44066",
     "url": "https://hackenberg.tech",
     "sameAs": profiles.map((p) => p.data.url)
   }
@@ -77,9 +77,18 @@ const contactPageSchema = {
           </p>
         </div>
 
-        <div class="space-y-8 md:space-y-10">
-          <!-- Dual-Identity Location Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 w-full">
+        <div class="space-y-16">
+          <div>
+            <div class="mb-8">
+              <h2 id="office-locations-heading" class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
+                Office <span class="text-brand-blue">Locations</span>
+              </h2>
+              <p id="office-locations-subheading" class="text-gray-400 text-base md:text-lg max-w-3xl font-normal leading-relaxed">
+                University faculty office at Technology Campus Wels and registered business headquarters in Grünau im Almtal, Upper Austria.
+              </p>
+            </div>
+            <!-- Dual-Identity Location Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 w-full">
           <!-- Card 1: University Office (Wels) -->
           <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border hover:border-brand-blue/30 relative overflow-hidden hover:shadow-xl hover:shadow-brand-blue/5 transition-all duration-300 flex flex-col justify-between h-full">
             <div class="flex-1">
@@ -384,9 +393,19 @@ const contactPageSchema = {
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Direct Communications (Web, Email, Telephone) -->
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8 w-full">
+        <div>
+          <div class="mb-8">
+            <h2 id="direct-channels-heading" class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
+              Direct <span class="text-brand-blue">Channels</span>
+            </h2>
+            <p id="direct-channels-subheading" class="text-gray-400 text-base md:text-lg max-w-3xl font-normal leading-relaxed">
+              Official web domain, institutional email, and direct telephone line for academic, consulting, and speaking inquiries.
+            </p>
+          </div>
+          <!-- Direct Communications (Web, Email, Telephone) -->
+          <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8 w-full">
             <!-- Card 1: Web Platform -->
             <div class="glass-card p-6 md:p-8 rounded-3xl border border-element-border hover:border-brand-blue/30 relative overflow-hidden hover:shadow-xl hover:shadow-brand-blue/5 transition-all duration-300 flex flex-col sm:flex-row xl:flex-col sm:items-center xl:items-stretch justify-between gap-6 xl:gap-0 h-full w-full">
               <div class="flex-1 min-w-0">
@@ -507,7 +526,17 @@ const contactPageSchema = {
               </div>
             </div>
           </div>
+        </div>
 
+        <div>
+          <div class="mb-8">
+            <h2 id="external-profiles-heading" class="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-100 light:text-slate-900 mb-3">
+              External <span class="text-brand-blue">Profiles</span>
+            </h2>
+            <p id="external-profiles-subheading" class="text-gray-400 text-base md:text-lg max-w-3xl font-normal leading-relaxed">
+              Open-source repositories, professional social networks, academic citation indexes, and persistent researcher identifiers.
+            </p>
+          </div>
           <!-- External Profiles -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {profiles.map(profile => (
@@ -569,7 +598,8 @@ const contactPageSchema = {
           ))}
         </div>
       </div>
-    </Container>
+    </div>
+  </Container>
   </Section>
   </main>
 </Layout>
