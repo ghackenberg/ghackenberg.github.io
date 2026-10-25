@@ -128,12 +128,12 @@ const breadcrumbSchema = {
           { label: 'Newsletters', href: '/newsletters/' },
           { label: issue.data.title },
         ]}
-        domain="posts"
+        domain="newsletters"
       />
 
       <header class="mb-10">
         <div class="flex flex-wrap items-center gap-3 mb-4">
-          <time class="text-sm font-semibold text-domain-posts" datetime={issue.data.pubDate.toISOString()}>
+          <time class="text-sm font-semibold text-domain-newsletters" datetime={issue.data.pubDate.toISOString()}>
             {formatDate(issue.data.pubDate, 'long', 'en-US')}
           </time>
           <span class="text-gray-500">•</span>
@@ -148,8 +148,8 @@ const breadcrumbSchema = {
       </header>
 
       {issue.data.description && (
-        <aside class="mb-10 p-6 rounded-2xl bg-domain-posts/5 border border-domain-posts/20 text-gray-200 light:text-slate-900 shadow-sm" aria-label="Key Takeaways / Executive Summary">
-          <div class="text-xs font-bold text-domain-posts uppercase tracking-wider mb-2 flex items-center gap-2">
+        <aside class="mb-10 p-6 rounded-2xl bg-domain-newsletters/5 border border-domain-newsletters/20 text-gray-200 light:text-slate-900 shadow-sm" aria-label="Key Takeaways / Executive Summary">
+          <div class="text-xs font-bold text-domain-newsletters uppercase tracking-wider mb-2 flex items-center gap-2">
             <span class="text-base">⚡</span>
             <span>Key Takeaways / Executive Summary</span>
           </div>
@@ -386,7 +386,7 @@ const breadcrumbSchema = {
     margin-bottom: 0;
   }
   .post-body :global(a:not(.citation):not(.tag-chip):not([class*="bg-"])) {
-    color: var(--color-current-domain, var(--color-domain-posts));
+    color: var(--color-current-domain, var(--color-domain-newsletters));
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: opacity 0.2s;

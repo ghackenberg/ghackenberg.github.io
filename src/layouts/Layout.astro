@@ -78,7 +78,7 @@ const {
 // Determine active domain from the first URL path segment
 const pathname = Astro.url.pathname;
 const firstSegment = pathname.split('/').filter(Boolean)[0] || '';
-const VALID_DOMAINS = ['posts', 'courses', 'publications', 'presentations', 'projects', 'services', 'visualizations', 'interests', 'tags'];
+const VALID_DOMAINS = ['posts', 'courses', 'publications', 'presentations', 'projects', 'services', 'visualizations', 'interests', 'tags', 'newsletters'];
 const activeDomain = VALID_DOMAINS.includes(firstSegment) ? firstSegment : undefined;
 
 // Build canonical URL

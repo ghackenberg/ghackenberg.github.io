@@ -22,6 +22,7 @@ const isProjectsActive = isActive("/projects/");
 const isServicesActive = isActive("/services/");
 const isVisualizationsActive = isActive("/visualizations/");
 const isNewslettersActive = isActive("/newsletters/");
+const isTagsActive = isActive("/tags/");
 
 // Desktop navigation items (Canonical sequence of direct items)
 const directNavItems = [
@@ -33,7 +34,8 @@ const directNavItems = [
   { label: "Projects", href: "/projects/", id: "projects", priority: 6, active: isProjectsActive },
   { label: "Services", href: "/services/", id: "services", priority: 7, active: isServicesActive },
   { label: "Visualizations", href: "/visualizations/", id: "visualizations", priority: 8, active: isVisualizationsActive },
-  { label: "Newsletters", href: "/newsletters/", id: "newsletters", priority: 9, active: isNewslettersActive }
+  { label: "Newsletters", href: "/newsletters/", id: "newsletters", priority: 9, active: isNewslettersActive },
+  { label: "Tags", href: "/tags/", id: "tags", priority: 10, active: isTagsActive }
 ];
 
 // All site pages for mobile menu
@@ -46,7 +48,8 @@ const mobileNavItems = [
   { label: "Projects", href: "/projects/", id: "projects", active: isProjectsActive },
   { label: "Services", href: "/services/", id: "services", active: isServicesActive },
   { label: "Visualizations", href: "/visualizations/", id: "visualizations", active: isVisualizationsActive },
-  { label: "Newsletters", href: "/newsletters/", id: "newsletters", active: isNewslettersActive }
+  { label: "Newsletters", href: "/newsletters/", id: "newsletters", active: isNewslettersActive },
+  { label: "Tags", href: "/tags/", id: "tags", active: isTagsActive }
 ];
 
 let activePriority = 0;
@@ -59,6 +62,7 @@ else if (isProjectsActive) activePriority = 6;
 else if (isServicesActive) activePriority = 7;
 else if (isVisualizationsActive) activePriority = 8;
 else if (isNewslettersActive) activePriority = 9;
+else if (isTagsActive) activePriority = 10;
 
 const moreItems = [
   {
@@ -116,6 +120,13 @@ const moreItems = [
     description: "Curated updates & engineering insights",
     domain: "newsletters",
     priority: 9
+  },
+  {
+    label: "Tags",
+    href: "/tags/",
+    description: "Topic taxonomy & cross-domain index",
+    domain: "tags",
+    priority: 10
   }
 ];
 ---
@@ -125,7 +136,7 @@ const moreItems = [
     id="site-header"
     class="transition-all duration-300 w-full py-4 relative"
     data-nav-mode="desktop"
-    data-nav-count="9"
+    data-nav-count="10"
     data-active-priority={activePriority}
   >
     <!-- Background frosted glass layer (separated from header to avoid backdrop-root clipping on dropdown menus) -->
@@ -259,6 +270,12 @@ const moreItems = [
                         {item.domain === "newsletters" && (
                           <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                          </svg>
+                        )}
+                        {item.domain === "tags" && (
+                          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
                           </svg>
                         )}
                       </div>
@@ -424,20 +441,20 @@ const moreItems = [
 
           var availableWidth = containerWidth - brandWidth - actionsWidth - minLogoGap - navActionsGap;
 
-          // Calibrated baseline item widths (About, Posts, Publications, Presentations, Courses, Projects, Services, Visualizations, Newsletters)
-          var itemWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90];
+          // Calibrated baseline item widths (About, Posts, Publications, Presentations, Courses, Projects, Services, Visualizations, Newsletters, Tags)
+          var itemWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90, 44];
           var gap = 16;
           var moreWidth = 60;
 
-          // Needed width for count = 9 (all 9 items shown, More ▾ is hidden)
-          var sum9 = 0;
-          for (var i = 0; i < 9; i++) sum9 += itemWidths[i];
-          var needed9 = sum9 + 8 * gap;
+          // Needed width for count = 10 (all 10 items shown, More ▾ is hidden)
+          var sum10 = 0;
+          for (var i = 0; i < 10; i++) sum10 += itemWidths[i];
+          var needed10 = sum10 + 9 * gap;
 
-          // Needed width for count = k (1..8, items 1..k + More ▾ trigger)
-          var needed = { 9: needed9 };
+          // Needed width for count = k (1..9, items 1..k + More ▾ trigger)
+          var needed = { 10: needed10 };
           var runningSum = 0;
-          for (var k = 1; k <= 8; k++) {
+          for (var k = 1; k <= 9; k++) {
             runningSum += itemWidths[k - 1];
             needed[k] = runningSum + k * gap + moreWidth;
           }
@@ -447,10 +464,10 @@ const moreItems = [
           } else {
             header.setAttribute('data-nav-mode', 'desktop');
             var chosen = 1;
-            if (availableWidth >= needed[9]) {
-              chosen = 9;
+            if (availableWidth >= needed[10]) {
+              chosen = 10;
             } else {
-              for (var c = 8; c >= 1; c--) {
+              for (var c = 9; c >= 1; c--) {
                 if (availableWidth >= needed[c]) {
                   chosen = c;
                   break;
@@ -468,7 +485,7 @@ const moreItems = [
 
             var menu = document.getElementById('more-dropdown-menu');
             if (menu && moreTrigger && container) {
-              var mWidth = (chosen >= 6 && chosen <= 8) ? 320 : 560;
+              var mWidth = (chosen >= 7 && chosen <= 9) ? 320 : 560;
               var tRect = moreTrigger.getBoundingClientRect();
               var cRect = container.getBoundingClientRect();
               var dLeft = tRect.right - mWidth;
@@ -607,12 +624,12 @@ const moreItems = [
 
     const activePriority = parseInt(header.getAttribute('data-active-priority') || '0', 10);
 
-    // Query all 9 direct items in canonical sequence
+    // Query all 10 direct items in canonical sequence
     const itemIds = [
       'about', 'posts', 'publications', 'presentations',
-      'courses', 'projects', 'services', 'visualizations', 'newsletters'
+      'courses', 'projects', 'services', 'visualizations', 'newsletters', 'tags'
     ];
-    const fallbackWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90];
+    const fallbackWidths = [68, 46, 92, 102, 62, 62, 62, 102, 90, 44];
     const minLogoGap = 40; // 2.5rem minimum gap between logo and navigation
     const navActionsGap = 20;
     const gap = 16;
@@ -623,8 +640,8 @@ const moreItems = [
       const moreMenu = document.getElementById('more-dropdown-menu');
       if (!moreMenu || !moreTrigger || !container) return;
 
-      const currentCount = parseInt(header.getAttribute('data-nav-count') || '9', 10);
-      const menuWidth = (currentCount >= 6 && currentCount <= 8) ? 320 : 560;
+      const currentCount = parseInt(header.getAttribute('data-nav-count') || '10', 10);
+      const menuWidth = (currentCount >= 7 && currentCount <= 9) ? 320 : 560;
 
       const triggerRect = moreTrigger.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
@@ -663,14 +680,14 @@ const moreItems = [
         );
 
         // Compute needed widths:
-        // Count 9: all 9 items shown, More ▾ trigger is hidden
-        const sum9 = measuredWidths.reduce((a, b) => a + b, 0);
-        const needed9 = sum9 + 8 * gap;
+        // Count 10: all 10 items shown, More ▾ trigger is hidden
+        const sum10 = measuredWidths.reduce((a, b) => a + b, 0);
+        const needed10 = sum10 + 9 * gap;
 
-        // Count 1..8: items 1..k + More ▾ trigger
-        const needed: Record<number, number> = { 9: needed9 };
+        // Count 1..9: items 1..k + More ▾ trigger
+        const needed: Record<number, number> = { 10: needed10 };
         let runningSum = 0;
-        for (let k = 1; k <= 8; k++) {
+        for (let k = 1; k <= 9; k++) {
           runningSum += measuredWidths[k - 1];
           needed[k] = runningSum + k * gap + measuredMoreWidth;
         }
@@ -682,10 +699,10 @@ const moreItems = [
           nextMode = 'burger';
         } else {
           nextMode = 'desktop';
-          if (availableWidth >= needed[9]) {
-            nextCount = 9;
+          if (availableWidth >= needed[10]) {
+            nextCount = 10;
           } else {
-            for (let c = 8; c >= 1; c--) {
+            for (let c = 9; c >= 1; c--) {
               if (availableWidth >= needed[c]) {
                 nextCount = c;
                 break;
@@ -885,8 +902,8 @@ const moreItems = [
     display: none !important;
   }
 
-  /* When all 9 items fit directly in the bar, More ▾ is HIDDEN */
-  #site-header[data-nav-count="9"] #more-dropdown-container {
+  /* When all 10 items fit directly in the bar, More ▾ is HIDDEN */
+  #site-header[data-nav-count="10"] #more-dropdown-container {
     display: none !important;
   }
 
@@ -908,6 +925,7 @@ const moreItems = [
   #site-header[data-nav-count="1"] [data-nav-priority="7"],
   #site-header[data-nav-count="1"] [data-nav-priority="8"],
   #site-header[data-nav-count="1"] [data-nav-priority="9"],
+  #site-header[data-nav-count="1"] [data-nav-priority="10"],
 
   #site-header[data-nav-count="2"] [data-nav-priority="3"],
   #site-header[data-nav-count="2"] [data-nav-priority="4"],
@@ -916,6 +934,7 @@ const moreItems = [
   #site-header[data-nav-count="2"] [data-nav-priority="7"],
   #site-header[data-nav-count="2"] [data-nav-priority="8"],
   #site-header[data-nav-count="2"] [data-nav-priority="9"],
+  #site-header[data-nav-count="2"] [data-nav-priority="10"],
 
   #site-header[data-nav-count="3"] [data-nav-priority="4"],
   #site-header[data-nav-count="3"] [data-nav-priority="5"],
@@ -923,30 +942,47 @@ const moreItems = [
   #site-header[data-nav-count="3"] [data-nav-priority="7"],
   #site-header[data-nav-count="3"] [data-nav-priority="8"],
   #site-header[data-nav-count="3"] [data-nav-priority="9"],
+  #site-header[data-nav-count="3"] [data-nav-priority="10"],
 
   #site-header[data-nav-count="4"] [data-nav-priority="5"],
   #site-header[data-nav-count="4"] [data-nav-priority="6"],
   #site-header[data-nav-count="4"] [data-nav-priority="7"],
   #site-header[data-nav-count="4"] [data-nav-priority="8"],
   #site-header[data-nav-count="4"] [data-nav-priority="9"],
+  #site-header[data-nav-count="4"] [data-nav-priority="10"],
 
   #site-header[data-nav-count="5"] [data-nav-priority="6"],
   #site-header[data-nav-count="5"] [data-nav-priority="7"],
   #site-header[data-nav-count="5"] [data-nav-priority="8"],
   #site-header[data-nav-count="5"] [data-nav-priority="9"],
+  #site-header[data-nav-count="5"] [data-nav-priority="10"],
 
   #site-header[data-nav-count="6"] [data-nav-priority="7"],
   #site-header[data-nav-count="6"] [data-nav-priority="8"],
   #site-header[data-nav-count="6"] [data-nav-priority="9"],
+  #site-header[data-nav-count="6"] [data-nav-priority="10"],
 
   #site-header[data-nav-count="7"] [data-nav-priority="8"],
   #site-header[data-nav-count="7"] [data-nav-priority="9"],
+  #site-header[data-nav-count="7"] [data-nav-priority="10"],
 
-  #site-header[data-nav-count="8"] [data-nav-priority="9"] {
+  #site-header[data-nav-count="8"] [data-nav-priority="9"],
+  #site-header[data-nav-count="8"] [data-nav-priority="10"],
+
+  #site-header[data-nav-count="9"] [data-nav-priority="10"] {
     display: none !important;
   }
 
   /* In More ▾ Mega-Menu, only show items that are NOT shown directly in top bar (priority <= nav-count are hidden) */
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="2"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="3"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="4"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="5"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="6"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="7"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="8"],
+  #site-header[data-nav-count="9"] #more-dropdown-menu [data-more-priority="9"],
+
   #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="2"],
   #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="3"],
   #site-header[data-nav-count="8"] #more-dropdown-menu [data-more-priority="4"],
@@ -984,15 +1020,15 @@ const moreItems = [
     display: none !important;
   }
 
-  /* Dynamic sizing of More dropdown: 1 column (320px) when 1..3 items overflow (counts 6, 7, 8); 2 columns (560px) when 4..8 items overflow */
-  #site-header[data-nav-count="6"] #more-dropdown-menu,
+  /* Dynamic sizing of More dropdown: 1 column (320px) when 1..3 items overflow (counts 7, 8, 9); 2 columns (560px) when 4..9 items overflow */
   #site-header[data-nav-count="7"] #more-dropdown-menu,
-  #site-header[data-nav-count="8"] #more-dropdown-menu {
+  #site-header[data-nav-count="8"] #more-dropdown-menu,
+  #site-header[data-nav-count="9"] #more-dropdown-menu {
     width: 320px !important;
   }
-  #site-header[data-nav-count="6"] #more-items-container,
   #site-header[data-nav-count="7"] #more-items-container,
-  #site-header[data-nav-count="8"] #more-items-container {
+  #site-header[data-nav-count="8"] #more-items-container,
+  #site-header[data-nav-count="9"] #more-items-container {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
   }
 

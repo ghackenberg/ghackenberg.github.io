@@ -8,8 +8,9 @@
   --color-domain-courses: var(--color-accent-5);        /* 5: Orchid */
   --color-domain-projects: var(--color-accent-6);       /* 6: Mauve-Rose */
   --color-domain-services: var(--color-accent-7);       /* 7: Warm Coral */
-  --color-domain-visualizations: var(--color-accent-8); /* 8: Amber-Orange */
-  --color-domain-tags: var(--color-accent-9);           /* 9: Amber */
+  --color-domain-visualizations: var(--color-accent-8); /* 8: Terracotta-Orange */
+  --color-domain-newsletters: var(--color-accent-9);    /* 9: Warm Amber-Orange */
+  --color-domain-tags: var(--color-accent-10);          /* 10: Amber */
 }
 
 :root.light, .light {
@@ -21,7 +22,8 @@
   --color-domain-projects: var(--color-accent-6);
   --color-domain-services: var(--color-accent-7);
   --color-domain-visualizations: var(--color-accent-8);
-  --color-domain-tags: var(--color-accent-9);
+  --color-domain-newsletters: var(--color-accent-9);
+  --color-domain-tags: var(--color-accent-10);
 }
 
 /* Domain-Specific Heading Gradient Utilities */
@@ -101,23 +103,35 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #e67c6b, #f08c3a);
+  background-image: linear-gradient(to right, #e67c6b, #ed8748);
 }
 
 :root.light .heading-gradient-domain-services,
 .light .heading-gradient-domain-services {
-  background-image: linear-gradient(to right, #c2410c, #ea580c);
+  background-image: linear-gradient(to right, #c2410c, #d9480f);
 }
 
 .heading-gradient-domain-visualizations {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #f08c3a, #f59e0b);
+  background-image: linear-gradient(to right, #ed8748, #f29325);
 }
 
 :root.light .heading-gradient-domain-visualizations,
 .light .heading-gradient-domain-visualizations {
+  background-image: linear-gradient(to right, #d9480f, #ea580c);
+}
+
+.heading-gradient-domain-newsletters {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #f29325, #f59e0b);
+}
+
+:root.light .heading-gradient-domain-newsletters,
+.light .heading-gradient-domain-newsletters {
   background-image: linear-gradient(to right, #ea580c, #d97706);
 }
 
@@ -189,20 +203,29 @@
 }
 
 .bg-gradient-domain-services {
-  background-image: linear-gradient(to right, #e67c6b, #f08c3a);
+  background-image: linear-gradient(to right, #e67c6b, #ed8748);
 }
 
 :root.light .bg-gradient-domain-services,
 .light .bg-gradient-domain-services {
-  background-image: linear-gradient(to right, #c2410c, #ea580c);
+  background-image: linear-gradient(to right, #c2410c, #d9480f);
 }
 
 .bg-gradient-domain-visualizations {
-  background-image: linear-gradient(to right, #f08c3a, #f59e0b);
+  background-image: linear-gradient(to right, #ed8748, #f29325);
 }
 
 :root.light .bg-gradient-domain-visualizations,
 .light .bg-gradient-domain-visualizations {
+  background-image: linear-gradient(to right, #d9480f, #ea580c);
+}
+
+.bg-gradient-domain-newsletters {
+  background-image: linear-gradient(to right, #f29325, #f59e0b);
+}
+
+:root.light .bg-gradient-domain-newsletters,
+.light .bg-gradient-domain-newsletters {
   background-image: linear-gradient(to right, #ea580c, #d97706);
 }
 
@@ -230,6 +253,7 @@
 [data-domain="projects"], .domain-scope-projects { --color-current-domain: var(--color-domain-projects); }
 [data-domain="services"], .domain-scope-services { --color-current-domain: var(--color-domain-services); }
 [data-domain="visualizations"], .domain-scope-visualizations { --color-current-domain: var(--color-domain-visualizations); }
+[data-domain="newsletters"], .domain-scope-newsletters { --color-current-domain: var(--color-domain-newsletters); }
 [data-domain="tags"], .domain-scope-tags { --color-current-domain: var(--color-domain-tags); }
 
 /* All prose links and plain hyperlinks in content */

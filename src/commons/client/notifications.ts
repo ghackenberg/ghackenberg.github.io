@@ -38,56 +38,62 @@ interface FeedItem {
 
 const STORAGE_KEY = 'gh_site_notifications_v1';
 const MANIFEST_CACHE_KEY = 'gh_content_manifest_cache';
-const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests'];
+const SECTIONS = ['posts', 'presentations', 'courses', 'projects', 'services', 'publications', 'visualizations', 'interests', 'newsletters'];
 
 const SECTION_CONFIG: Record<string, { label: string; badgeClass: string; icon: string; actionText: string }> = {
   posts: { 
     label: 'Post', 
-    badgeClass: 'bg-blue-500/15 text-blue-400 light:text-blue-700 border border-blue-500/25',
+    badgeClass: 'bg-domain-posts/15 text-domain-posts border border-domain-posts/30',
     icon: '📝',
     actionText: 'Read Post'
   },
   publications: { 
     label: 'Publication', 
-    badgeClass: 'bg-purple-500/15 text-purple-400 light:text-purple-700 border border-purple-500/25',
+    badgeClass: 'bg-domain-publications/15 text-domain-publications border border-domain-publications/30',
     icon: '📄',
     actionText: 'View Publication'
   },
   presentations: { 
     label: 'Presentation', 
-    badgeClass: 'bg-blue-500/15 text-blue-400 light:text-blue-700 border border-blue-500/25',
+    badgeClass: 'bg-domain-presentations/15 text-domain-presentations border border-domain-presentations/30',
     icon: '📊',
     actionText: 'View Presentation'
   },
   courses: { 
     label: 'Course', 
-    badgeClass: 'bg-amber-500/15 text-amber-400 light:text-amber-700 border border-amber-500/25',
+    badgeClass: 'bg-domain-courses/15 text-domain-courses border border-domain-courses/30',
     icon: '🎓',
     actionText: 'Explore Course'
   },
   projects: { 
     label: 'Project', 
-    badgeClass: 'bg-blue-500/15 text-blue-400 light:text-blue-700 border border-blue-500/25',
+    badgeClass: 'bg-domain-projects/15 text-domain-projects border border-domain-projects/30',
     icon: '💻',
     actionText: 'Open Project'
   },
   services: { 
     label: 'Service', 
-    badgeClass: 'bg-purple-500/15 text-purple-400 light:text-purple-700 border border-purple-500/25',
+    badgeClass: 'bg-domain-services/15 text-domain-services border border-domain-services/30',
     icon: '⚙️',
     actionText: 'View Service'
   },
   visualizations: { 
     label: 'Visualization', 
-    badgeClass: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-700 border border-emerald-500/25',
+    badgeClass: 'bg-domain-visualizations/15 text-domain-visualizations border border-domain-visualizations/30',
     icon: '📈',
     actionText: 'Open Tool'
   },
   interests: { 
     label: 'Interest', 
-    badgeClass: 'bg-emerald-500/15 text-emerald-400 light:text-emerald-700 border border-emerald-500/25',
+    badgeClass: 'bg-domain-interests/15 text-domain-interests border border-domain-interests/30',
     icon: '💡',
     actionText: 'Explore Interest'
+  },
+  newsletters: {
+    label: 'Newsletter',
+    badgeClass: 'bg-domain-newsletters/15 text-domain-newsletters border border-domain-newsletters/30',
+    icon: '✉️',
+    actionText: 'Read Newsletter'
   }
 };
 
@@ -191,9 +197,14 @@ function hideAllIndicators() {
 }
 
 function getUnreadBadgeClass(section: string): string {
-  if (section === 'courses') return 'badge-new-yellow';
-  if (section === 'services' || section === 'publications') return 'badge-new-purple';
-  if (section === 'visualizations' || section === 'interests') return 'badge-new-green';
+  if (section === 'posts') return 'badge-new-violet';
+  if (section === 'publications') return 'badge-new-indigo';
+  if (section === 'presentations') return 'badge-new-blue';
+  if (section === 'courses') return 'badge-new-cyan';
+  if (section === 'projects') return 'badge-new-teal';
+  if (section === 'services') return 'badge-new-emerald';
+  if (section === 'visualizations') return 'badge-new-yellow';
+  if (section === 'interests') return 'badge-new-rose';
   return 'badge-new-blue';
 }
 
@@ -233,7 +244,7 @@ function renderActivityFeed(items: FeedItem[], isTracking: boolean, unreadCount:
   if (unreadCount === 0) {
     listEl.innerHTML = `
       <div class="py-16 px-6 text-center glass-card rounded-3xl border border-element-border-medium light:border-slate-200/80 p-8 max-w-lg mx-auto shadow-xl">
-        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-emerald-500/15 text-emerald-400 light:text-emerald-600 flex items-center justify-center border border-emerald-500/30 shadow-inner">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-brand-blue/15 text-brand-blue flex items-center justify-center border border-brand-blue/30 shadow-inner">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>

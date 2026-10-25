@@ -12,6 +12,7 @@ export type ContentDomain =
   | 'projects'
   | 'services'
   | 'visualizations'
+  | 'newsletters'
   | 'tags';
 
 export interface DomainColorTokens {
@@ -152,15 +153,31 @@ export const DOMAIN_METADATA: Record<ContentDomain, DomainMetadata> = {
     emoji: '📊',
     cssVar: '--color-domain-visualizations',
     colors: {
-      dark: '#f08c3a',
-      light: '#ea580c',
+      dark: '#ed8748',
+      light: '#d9480f',
     },
     headingGradientClass: 'heading-gradient-domain-visualizations',
     bgGradientClass: 'bg-gradient-domain-visualizations',
     badgeClasses: 'bg-domain-visualizations/10 text-domain-visualizations border-domain-visualizations/20',
     borderHoverClass: 'hover:border-domain-visualizations/40',
-    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(240,140,58,0.25)]',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(237,135,72,0.25)]',
     radialGlowClass: 'bg-domain-visualizations/10',
+  },
+  newsletters: {
+    id: 'newsletters',
+    label: 'Newsletters',
+    emoji: '✉️',
+    cssVar: '--color-domain-newsletters',
+    colors: {
+      dark: '#f29325',
+      light: '#ea580c',
+    },
+    headingGradientClass: 'heading-gradient-domain-newsletters',
+    bgGradientClass: 'bg-gradient-domain-newsletters',
+    badgeClasses: 'bg-domain-newsletters/10 text-domain-newsletters border-domain-newsletters/20',
+    borderHoverClass: 'hover:border-domain-newsletters/40',
+    glowShadowClass: 'group-hover:shadow-[0_12px_35px_-10px_rgba(242,147,37,0.25)]',
+    radialGlowClass: 'bg-domain-newsletters/10',
   },
   tags: {
     id: 'tags',
@@ -189,6 +206,7 @@ export const CONTENT_DOMAINS: readonly ContentDomain[] = [
   'projects',
   'services',
   'visualizations',
+  'newsletters',
   'tags',
 ] as const;
 

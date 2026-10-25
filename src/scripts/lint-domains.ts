@@ -142,7 +142,7 @@ if (breadcrumbViolations === 0) {
 }
 
 // 3. Detail pages must use neutral <TagChip /> and not hardcoded colored tag chips
-const detailPageRegex = /[\\/](?:posts|courses|publications|presentations|projects|services|interests|visualizations)[\\/].*\[.*\]\.astro$/;
+const detailPageRegex = /[\\/](?:posts|courses|publications|presentations|projects|services|interests|visualizations|newsletters)[\\/].*\[.*\]\.astro$/;
 const hardcodedTagChipRegex = /\btag-chip-(?:rose|violet|blue|cyan|indigo|yellow|green|emerald|purple|teal|orange)\b/;
 let detailTagChipViolations = 0;
 for (const file of pageFiles) {
@@ -310,6 +310,7 @@ const OVERVIEW_PAGES_CONFIG = [
   { file: 'src/pages/projects/index.astro', domain: 'projects' },
   { file: 'src/pages/services.astro', domain: 'services' },
   { file: 'src/pages/visualizations/index.astro', domain: 'visualizations' },
+  { file: 'src/pages/newsletters/index.astro', domain: 'newsletters' },
   { file: 'src/pages/tags/index.astro', domain: 'tags' },
 ];
 
@@ -327,7 +328,7 @@ for (const { file, domain } of OVERVIEW_PAGES_CONFIG) {
   }
 }
 if (overviewHeadingViolations === 0) {
-  success('All 8 overview pages contain canonical solid domain highlights (<span class="text-domain-*">).');
+  success('All 9 overview pages contain canonical solid domain highlights (<span class="text-domain-*">).');
 }
 
 // 11. Graph visualization engines must use GRAPH_COLORS and zero private color arrays
@@ -624,6 +625,7 @@ const HOVER_TITLE_CHECKS = [
   { file: path.resolve(COMPONENTS_DIR, 'CourseModuleCard.astro'), expected: 'group-hover:text-domain-courses' },
   { file: path.resolve(COMPONENTS_DIR, 'PostCard.astro'), expected: 'group-hover:text-domain-posts' },
   { file: path.resolve(COMPONENTS_DIR, 'PresentationCard.astro'), expected: 'group-hover:text-domain-presentations' },
+  { file: path.resolve(COMPONENTS_DIR, 'NewsletterCard.astro'), expected: 'group-hover:text-domain-newsletters' },
 ];
 let hoverTitleViolations = 0;
 for (const check of HOVER_TITLE_CHECKS) {
