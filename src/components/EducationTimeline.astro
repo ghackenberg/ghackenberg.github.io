@@ -48,17 +48,17 @@ const roleDotColors = {
 };
 
 const roleTitleColors = {
-  blue: 'group-hover/role:text-brand-primary',
-  yellow: 'group-hover/role:text-brand-primary',
-  purple: 'group-hover/role:text-brand-primary',
-  green: 'group-hover/role:text-brand-primary'
+  blue: 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary',
+  yellow: 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary',
+  purple: 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary',
+  green: 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary'
 };
 
 const institutionTitleColors = {
-  blue: 'group-hover:text-brand-primary',
-  yellow: 'group-hover:text-brand-primary',
-  purple: 'group-hover:text-brand-primary',
-  green: 'group-hover:text-brand-primary'
+  blue: 'group-hover:text-brand-primary light:group-hover:text-brand-primary',
+  yellow: 'group-hover:text-brand-primary light:group-hover:text-brand-primary',
+  purple: 'group-hover:text-brand-primary light:group-hover:text-brand-primary',
+  green: 'group-hover:text-brand-primary light:group-hover:text-brand-primary'
 };
 
 const colors = {
@@ -201,7 +201,7 @@ function getFallbackGradient(groupColor: string, isFirstCard: boolean = false, i
               </div>
               
               <div class="min-w-0">
-                <h3 class={`text-lg md:text-xl font-bold text-gray-100 light:text-slate-900 tracking-tight mb-1 ${institutionTitleColors[colorKey as keyof typeof institutionTitleColors] || 'group-hover:text-brand-primary'} transition-colors duration-200`}>
+                <h3 class={`text-lg md:text-xl font-bold text-gray-100 light:text-slate-900 tracking-tight mb-1 ${institutionTitleColors[colorKey as keyof typeof institutionTitleColors] || 'group-hover:text-brand-primary light:group-hover:text-brand-primary'} transition-colors duration-200`}>
                   {entry.institution}
                 </h3>
                 <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs font-semibold text-gray-400">
@@ -232,7 +232,7 @@ function getFallbackGradient(groupColor: string, isFirstCard: boolean = false, i
                 ></span>
                 
                 <div class="w-full min-w-0">
-                  <h4 class={`text-base font-bold text-gray-100 light:text-slate-900 mb-1 ${roleTitleColors[colorKey as keyof typeof roleTitleColors] || 'group-hover/role:text-brand-primary'} transition-colors duration-200`}>
+                  <h4 class={`text-base font-bold text-gray-100 light:text-slate-900 mb-1 ${roleTitleColors[colorKey as keyof typeof roleTitleColors] || 'group-hover/role:text-brand-primary light:group-hover/role:text-brand-primary'} transition-colors duration-200`}>
                     {entry.degree}
                   </h4>
                   <div class="flex flex-wrap gap-x-3 gap-y-1 items-center text-xs text-gray-400 light:text-slate-600 font-semibold mb-3">
