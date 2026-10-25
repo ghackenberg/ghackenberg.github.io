@@ -82,7 +82,8 @@ export const GRAPH_GROUP_NAMES = [
   'Project',
   'Service',
   'Interest',
-  'Visualization'
+  'Visualization',
+  'Newsletter'
 ] as const;
 
 export const GRAPH_COLORS = {
@@ -95,7 +96,8 @@ export const GRAPH_COLORS = {
     DOMAIN_METADATA.projects.colors.dark,       // 5: Project
     DOMAIN_METADATA.services.colors.dark,       // 6: Service
     DOMAIN_METADATA.interests.colors.dark,      // 7: Interest
-    DOMAIN_METADATA.visualizations.colors.dark  // 8: Visualization
+    DOMAIN_METADATA.visualizations.colors.dark,  // 8: Visualization
+    DOMAIN_METADATA.newsletters.colors.dark      // 9: Newsletter
   ],
   light: [
     DOMAIN_METADATA.tags.colors.light,           // 0: Tag
@@ -106,7 +108,8 @@ export const GRAPH_COLORS = {
     DOMAIN_METADATA.projects.colors.light,       // 5: Project
     DOMAIN_METADATA.services.colors.light,       // 6: Service
     DOMAIN_METADATA.interests.colors.light,      // 7: Interest
-    DOMAIN_METADATA.visualizations.colors.light  // 8: Visualization
+    DOMAIN_METADATA.visualizations.colors.light, // 8: Visualization
+    DOMAIN_METADATA.newsletters.colors.light     // 9: Newsletter
   ]
 };
 
@@ -119,6 +122,7 @@ export interface TagCounts {
   services: Record<string, number>;
   interests: Record<string, number>;
   visualizations: Record<string, number>;
+  newsletters: Record<string, number>;
   allTags: string[];
 }
 
@@ -182,6 +186,7 @@ export function calculateTagCounts(options: {
   services: RawEntity[];
   interests?: RawEntity[];
   visualizations?: RawEntity[];
+  newsletters?: RawEntity[];
 }): TagCounts {
   const tagPosts: Record<string, number> = {};
   options.posts.forEach(p => {
@@ -255,6 +260,15 @@ export function calculateTagCounts(options: {
     }
   });
 
+  const tagNewsletters: Record<string, number> = {};
+  (options.newsletters || []).forEach(n => {
+    if (n.data.tags) {
+      new Set(n.data.tags).forEach(t => {
+        tagNewsletters[t] = (tagNewsletters[t] || 0) + 1;
+      });
+    }
+  });
+
   const allTags = Array.from(new Set([
     ...Object.keys(tagPosts),
     ...Object.keys(tagPubs),
@@ -263,7 +277,8 @@ export function calculateTagCounts(options: {
     ...Object.keys(tagProjects),
     ...Object.keys(tagServices),
     ...Object.keys(tagInterests),
-    ...Object.keys(tagVis)
+    ...Object.keys(tagVis),
+    ...Object.keys(tagNewsletters)
   ]));
 
   return {
@@ -275,6 +290,7 @@ export function calculateTagCounts(options: {
     services: tagServices,
     interests: tagInterests,
     visualizations: tagVis,
+    newsletters: tagNewsletters,
     allTags
   };
 }
@@ -288,6 +304,7 @@ export async function buildGraphPayload(options: {
   services: RawEntity[];
   interests?: RawEntity[];
   visualizations?: RawEntity[];
+  newsletters?: RawEntity[];
   tags: RawTag[];
   getImage?: typeof getImage;
 }): Promise<EnginePayloads> {
@@ -306,7 +323,8 @@ export async function buildGraphPayload(options: {
       (tagCounts.projects[tag] || 0) +
       (tagCounts.services[tag] || 0) +
       (tagCounts.interests[tag] || 0) +
-      (tagCounts.visualizations[tag] || 0);
+      (tagCounts.visualizations[tag] || 0) +
+      (tagCounts.newsletters[tag] || 0);
 
     const tagEntry = tagMap.get(tag);
     const title = tagEntry?.data.title ?? tag;
@@ -521,6 +539,67 @@ export async function buildGraphPayload(options: {
     });
     if (interest.data.tags) {
       interest.data.tags.forEach(tag => {
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
+      });
+    }
+  }
+
+  // Group 8: Visualizations
+  for (const vis of options.visualizations || []) {
+    const path = `/visualizations/${vis.id}/`;
+    let imageSrc: string | undefined = undefined;
+    const visImg = extractImageSrc(vis.data.screenshot);
+    if (visImg && options.getImage) {
+      try {
+        const opt = await options.getImage({ src: visImg, format: "webp", width: 240, quality: 75 });
+        imageSrc = opt.src;
+      } catch (e) { 
+        console.warn("Failed to optimize visualization screenshot", e);
+      }
+    }
+    visNodes.push({
+      id: path,
+      name: vis.data.title,
+      size: 1.1,
+      group: 8,
+      typeLabel: "Visualization",
+      description: vis.data.description,
+      image: imageSrc,
+      tags: vis.data.tags ? vis.data.tags.slice(0, 3) : []
+    });
+    if (vis.data.tags) {
+      vis.data.tags.forEach(tag => {
+        visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
+      });
+    }
+  }
+
+  // Group 9: Newsletters
+  for (const nl of options.newsletters || []) {
+    const path = `/newsletters/${nl.id}/`;
+    let imageSrc: string | undefined = undefined;
+    const nlImg = extractImageSrc(nl.data.icon);
+    if (nlImg && options.getImage) {
+      try {
+        const opt = await options.getImage({ src: nlImg, format: "webp", width: 240, quality: 75 });
+        imageSrc = opt.src;
+      } catch (e) { 
+        console.warn("Failed to optimize newsletter icon", e);
+      }
+    }
+    visNodes.push({
+      id: path,
+      name: nl.data.title,
+      size: 1.1,
+      group: 9,
+      typeLabel: "Newsletter",
+      description: nl.data.description,
+      date: nl.data.pubDate ? formatDate(nl.data.pubDate, "short") : undefined,
+      image: imageSrc,
+      tags: nl.data.tags ? nl.data.tags.slice(0, 3) : []
+    });
+    if (nl.data.tags) {
+      nl.data.tags.forEach(tag => {
         visConnections.push({ sourceId: path, targetId: `/tags/${encodeURIComponent(tag)}/` });
       });
     }

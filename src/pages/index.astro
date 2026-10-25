@@ -183,7 +183,7 @@ const profiles = await getCollection("profiles");
 const sortedProfiles = profiles.sort((a, b) => a.data.order - b.data.order);
 
 // Calculate tags and graph payload for the home page Vis.js Network
-const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, interests, visualizations });
+const tagCounts = calculateTagCounts({ posts, publications, presentations, projects, courses, services, interests, visualizations, newsletters });
 const tagInterests = tagCounts.interests;
 const tagPosts = tagCounts.posts;
 const tagPubs = tagCounts.publications;
@@ -192,6 +192,7 @@ const tagCourses = tagCounts.courses;
 const tagProjects = tagCounts.projects;
 const tagServices = tagCounts.services;
 const tagVisualizations = tagCounts.visualizations;
+const tagNewsletters = tagCounts.newsletters;
 const allTags = tagCounts.allTags;
 
 interface TagCloudItem {
@@ -207,6 +208,7 @@ interface TagCloudItem {
   projectsCount: number;
   servicesCount: number;
   visCount: number;
+  newslettersCount: number;
   interestsPct: number;
   postsPct: number;
   pubsPct: number;
@@ -215,6 +217,7 @@ interface TagCloudItem {
   projectsPct: number;
   servicesPct: number;
   visPct: number;
+  newslettersPct: number;
   fontSizeClass: string;
   fontWeightClass: string;
 }
@@ -228,7 +231,8 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const projectsCount = tagProjects[tagId] || 0;
   const servicesCount = tagServices[tagId] || 0;
   const visCount = tagVisualizations[tagId] || 0;
-  const totalCount = interestsCount + postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount + visCount;
+  const newslettersCount = tagNewsletters[tagId] || 0;
+  const totalCount = interestsCount + postsCount + pubsCount + presCount + coursesCount + projectsCount + servicesCount + visCount + newslettersCount;
   
   const interestsPct = totalCount > 0 ? Math.round((interestsCount / totalCount) * 100) : 0;
   const postsPct = totalCount > 0 ? Math.round((postsCount / totalCount) * 100) : 0;
@@ -238,6 +242,7 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
   const projectsPct = totalCount > 0 ? Math.round((projectsCount / totalCount) * 100) : 0;
   const servicesPct = totalCount > 0 ? Math.round((servicesCount / totalCount) * 100) : 0;
   const visPct = totalCount > 0 ? Math.round((visCount / totalCount) * 100) : 0;
+  const newslettersPct = totalCount > 0 ? Math.round((newslettersCount / totalCount) * 100) : 0;
 
   const tagEntry = tagMap.get(tagId);
   const name = tagEntry?.data.title ?? tagId;
@@ -256,6 +261,7 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     projectsCount,
     servicesCount,
     visCount,
+    newslettersCount,
     interestsPct,
     postsPct,
     pubsPct,
@@ -264,6 +270,7 @@ const tagCloudList: TagCloudItem[] = allTags.map(tagId => {
     projectsPct,
     servicesPct,
     visPct,
+    newslettersPct,
     fontSizeClass: "text-xs sm:text-sm",
     fontWeightClass: "font-medium",
   };
@@ -305,7 +312,8 @@ const restCoursesCount = courses.filter(c => c.data.tags?.some(t => overflowTagI
 const restProjectsCount = projects.filter(p => p.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restServicesCount = services.filter(s => s.data.tags?.some(t => overflowTagIds.has(t))).length;
 const restVisCount = visualizations.filter(v => v.data.tags?.some(t => overflowTagIds.has(t))).length;
-const restTotalContentCount = restInterestsCount + restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount + restVisCount;
+const restNewslettersCount = newsletters.filter(n => n.data.tags?.some(t => overflowTagIds.has(t))).length;
+const restTotalContentCount = restInterestsCount + restPostsCount + restPubsCount + restPresCount + restCoursesCount + restProjectsCount + restServicesCount + restVisCount + restNewslettersCount;
 
 const restInterestsPct = restTotalContentCount > 0 ? Math.round((restInterestsCount / restTotalContentCount) * 100) : 0;
 const restPostsPct = restTotalContentCount > 0 ? Math.round((restPostsCount / restTotalContentCount) * 100) : 0;
@@ -315,6 +323,7 @@ const restCoursesPct = restTotalContentCount > 0 ? Math.round((restCoursesCount 
 const restProjectsPct = restTotalContentCount > 0 ? Math.round((restProjectsCount / restTotalContentCount) * 100) : 0;
 const restServicesPct = restTotalContentCount > 0 ? Math.round((restServicesCount / restTotalContentCount) * 100) : 0;
 const restVisPct = restTotalContentCount > 0 ? Math.round((restVisCount / restTotalContentCount) * 100) : 0;
+const restNewslettersPct = restTotalContentCount > 0 ? Math.round((restNewslettersCount / restTotalContentCount) * 100) : 0;
 
 // Peripheral weight sizing for the remaining badge so it tapers naturally at the outer edge of the cloud
 const restFontSizeClass = "text-[11px] leading-tight sm:text-xs md:text-sm";
@@ -2013,6 +2022,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                       {tag.projectsCount > 0 && <div class="bg-domain-projects h-full" style={`width: ${tag.projectsPct}%`} title={`Projects: ${tag.projectsCount}`}></div>}
                       {tag.servicesCount > 0 && <div class="bg-domain-services h-full" style={`width: ${tag.servicesPct}%`} title={`Services: ${tag.servicesCount}`}></div>}
                       {tag.visCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${tag.visPct}%`} title={`Visualizations: ${tag.visCount}`}></div>}
+                      {tag.newslettersCount > 0 && <div class="bg-domain-newsletters h-full" style={`width: ${tag.newslettersPct}%`} title={`Newsletters: ${tag.newslettersCount}`}></div>}
                     </div>
                   )}
 
@@ -2073,6 +2083,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                         <span class="text-gray-400 text-[10px]">({tag.visPct}%)</span>
                       </span>
                     )}
+                    {tag.newslettersCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-newsletters"></span>
+                        <span>{tag.newslettersCount} {tag.newslettersCount === 1 ? 'Newsletter' : 'Newsletters'}</span>
+                        <span class="text-gray-400 text-[10px]">({tag.newslettersPct}%)</span>
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -2116,6 +2133,7 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                       {restProjectsCount > 0 && <div class="bg-domain-projects h-full" style={`width: ${restProjectsPct}%`} title={`Projects: ${restProjectsCount}`}></div>}
                       {restServicesCount > 0 && <div class="bg-domain-services h-full" style={`width: ${restServicesPct}%`} title={`Services: ${restServicesCount}`}></div>}
                       {restVisCount > 0 && <div class="bg-domain-visualizations h-full" style={`width: ${restVisPct}%`} title={`Visualizations: ${restVisCount}`}></div>}
+                      {restNewslettersCount > 0 && <div class="bg-domain-newsletters h-full" style={`width: ${restNewslettersPct}%`} title={`Newsletters: ${restNewslettersCount}`}></div>}
                     </div>
                   )}
 
@@ -2174,6 +2192,13 @@ const homeJsonLd = [personSchema, websiteSchema, profilePageSchema, faqSchema, s
                         <span class="w-2 h-2 rounded-full bg-domain-visualizations"></span>
                         <span>{restVisCount} {restVisCount === 1 ? 'Visualization' : 'Visualizations'}</span>
                         <span class="text-gray-400 text-[10px]">({restVisPct}%)</span>
+                      </span>
+                    )}
+                    {restNewslettersCount > 0 && (
+                      <span class="inline-flex items-center gap-1 whitespace-nowrap">
+                        <span class="w-2 h-2 rounded-full bg-domain-newsletters"></span>
+                        <span>{restNewslettersCount} {restNewslettersCount === 1 ? 'Newsletter' : 'Newsletters'}</span>
+                        <span class="text-gray-400 text-[10px]">({restNewslettersPct}%)</span>
                       </span>
                     )}
                   </div>

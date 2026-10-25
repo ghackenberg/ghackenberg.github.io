@@ -4,6 +4,15 @@ title: "Sovereign Agentic Workflows, Slide-as-Code & Real-Time Web Geometry"
 subtitle: "Architecture notes and recent deep-dives from hackenberg.tech"
 description: "Inaugural engineering dispatch covering reliable multi-agent control planes, Slide-as-Code lecture engines with neural voiceovers, and line-exact 2D Signed Distance Field hero typography."
 pubDate: 2026-10-19
+tags:
+  - agentic-ai
+  - software-architecture
+  - prompt-engineering
+  - astro
+  - web-development
+  - typescript
+  - computer-graphics
+  - content-engineering
 icon:
   src: ./preview.jpg
   title: "Issue #1 Cover — Sovereign Agentic Workflows, Slide-as-Code & Real-Time Web Geometry"

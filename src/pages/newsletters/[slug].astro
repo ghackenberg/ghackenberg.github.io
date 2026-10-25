@@ -10,6 +10,7 @@ import PublicationCard from '@components/PublicationCard.astro';
 import CourseCard from '@components/CourseCard.astro';
 import ProjectCard from '@components/ProjectCard.astro';
 import VisualizationCard from '@components/VisualizationCard.astro';
+import TagChip from '@components/TagChip.astro';
 import { getCollection, getEntries, render } from 'astro:content';
 import { formatDate } from '@commons/shared/format';
 
@@ -117,6 +118,7 @@ const breadcrumbSchema = {
   pubDate={issue.data.pubDate}
   jsonLd={[articleSchema, breadcrumbSchema]}
   lang="en"
+  tags={issue.data.tags}
 >
   <Navbar />
 
@@ -145,6 +147,14 @@ const breadcrumbSchema = {
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
           {issue.data.title}
         </h1>
+
+        {issue.data.tags && issue.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {issue.data.tags.map((tag) => (
+              <TagChip tag={tag} />
+            ))}
+          </div>
+        )}
       </header>
 
       {issue.data.description && (

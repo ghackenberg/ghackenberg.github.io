@@ -144,10 +144,13 @@ const engine: D3Engine = {
       if (
         d.id.startsWith('/posts/') ||
         d.id.startsWith('/publications/') ||
+        d.id.startsWith('/presentations/') ||
         d.id.startsWith('/projects/') ||
         d.id.startsWith('/courses/') ||
         d.id.startsWith('/services/') ||
         d.id.startsWith('/interests/') ||
+        d.id.startsWith('/visualizations/') ||
+        d.id.startsWith('/newsletters/') ||
         d.id.startsWith('/tags/')
       ) {
         window.location.href = d.id;
@@ -307,8 +310,10 @@ const engine: D3Engine = {
       const projects = this.nodes.filter(n => n.group === 5);
       const services = this.nodes.filter(n => n.group === 6);
       const interests = this.nodes.filter(n => n.group === 7);
+      const visualizations = this.nodes.filter(n => n.group === 8);
+      const newsletters = this.nodes.filter(n => n.group === 9);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, interests, visualizations, newsletters];
       const isMobile = this.width < 768 || window.innerWidth < 768;
 
       const padX = Math.max(40, this.width * 0.08);

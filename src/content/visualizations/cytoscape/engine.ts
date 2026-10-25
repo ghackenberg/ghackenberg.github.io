@@ -82,10 +82,13 @@ const engine: CytoscapeEngine = {
       if (
         id.startsWith('/posts/') ||
         id.startsWith('/publications/') ||
+        id.startsWith('/presentations/') ||
         id.startsWith('/projects/') ||
         id.startsWith('/courses/') ||
         id.startsWith('/services/') ||
         id.startsWith('/interests/') ||
+        id.startsWith('/visualizations/') ||
+        id.startsWith('/newsletters/') ||
         id.startsWith('/tags/')
       ) {
         window.location.href = id;
@@ -149,8 +152,10 @@ const engine: CytoscapeEngine = {
       const projects = nodes.filter((n: NodeSingular) => n.data('group') === 5);
       const services = nodes.filter((n: NodeSingular) => n.data('group') === 6);
       const interests = nodes.filter((n: NodeSingular) => n.data('group') === 7);
+      const visualizations = nodes.filter((n: NodeSingular) => n.data('group') === 8);
+      const newsletters = nodes.filter((n: NodeSingular) => n.data('group') === 9);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, interests, visualizations, newsletters];
       const pos: Record<string, { x: number; y: number }> = {};
       const isMobile = width < 768 || window.innerWidth < 768;
       

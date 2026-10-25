@@ -10,6 +10,9 @@ interface Props {
   description: string;
   pubDate: Date;
   icon: ImageMetadata | { src: ImageMetadata; title: string; description: string };
+  tags?: (string | { id: string })[];
+  activeTag?: string | string[];
+  showTags?: boolean;
 }
 
 const {
@@ -19,7 +22,14 @@ const {
   description,
   pubDate,
   icon,
+  tags: rawTags = [],
+  activeTag,
+  showTags,
 } = Astro.props;
+
+const tags: string[] = (rawTags || []).map((t) => (typeof t === 'string' ? t : t.id));
+const isTagActive = (t: string) => (!activeTag ? false : Array.isArray(activeTag) ? activeTag.includes(t) : activeTag === t);
+const shouldShowTags = Boolean(showTags || (activeTag && (Array.isArray(activeTag) ? activeTag.length > 0 : activeTag.trim().length > 0)));
 
 const isCoverObj = Boolean(icon && typeof icon === 'object' && 'src' in icon && icon.src);
 const iconImg = isCoverObj ? (icon as { src: ImageMetadata }).src : (icon as ImageMetadata | undefined);
@@ -41,7 +51,7 @@ const imageContainerClass =
   "w-full aspect-video shrink-0 overflow-hidden border-b border-element-border-medium bg-gray-900 flex items-center justify-center relative z-10";
 ---
 
-<article class={articleClass} data-card-id={id} data-collection="newsletters">
+<article class={articleClass} data-card-id={id} data-collection="newsletters" data-tags={tags.join(',')}>
   <!-- Visual header panel -->
   <div class={imageContainerClass}>
     <a href={`/newsletters/${id}/`} class="absolute inset-0 z-20" aria-hidden="true" tabindex="-1"></a>
@@ -92,18 +102,50 @@ const imageContainerClass =
       {description}
     </p>
 
-    <!-- Read more button -->
-    <div class="mt-auto pt-4 w-full">
-      <a
-        href={`/newsletters/${id}/`}
-        aria-label={`Read More: ${title}`}
-        class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-newsletters/12 hover:bg-domain-newsletters/25 border border-domain-newsletters/20 hover:border-domain-newsletters/45 text-domain-newsletters text-xs font-bold relative z-20 transition-all duration-200"
-      >
-        <span>Read More</span>
-        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-        </svg>
-      </a>
-    </div>
+    <!-- Tags & Action Button Area -->
+    {shouldShowTags && tags && tags.length > 0 ? (
+      <div class="flex-grow flex flex-col mt-3">
+        <div class="flex flex-wrap gap-2 self-start">
+          {tags.map((tag) => (
+            <a
+              href={`/tags/${tag}/`}
+              data-tag={tag}
+              class={`tag-chip tag-chip-newsletters inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border relative z-20 hover:scale-105 ${
+                isTagActive(tag) ? 'active-tag-match' : ''
+              }`}
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+
+        <!-- Read more button — full width, pinned to bottom -->
+        <div class="mt-auto pt-5 w-full">
+          <a
+            href={`/newsletters/${id}/`}
+            aria-label={`Read More: ${title}`}
+            class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-newsletters/12 hover:bg-domain-newsletters/25 border border-domain-newsletters/20 hover:border-domain-newsletters/45 text-domain-newsletters text-xs font-bold relative z-20 transition-all duration-200"
+          >
+            <span>Read More</span>
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    ) : (
+      <div class="mt-auto pt-4 w-full">
+        <a
+          href={`/newsletters/${id}/`}
+          aria-label={`Read More: ${title}`}
+          class="flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-domain-newsletters/12 hover:bg-domain-newsletters/25 border border-domain-newsletters/20 hover:border-domain-newsletters/45 text-domain-newsletters text-xs font-bold relative z-20 transition-all duration-200"
+        >
+          <span>Read More</span>
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </div>
+    )}
   </div>
 </article>

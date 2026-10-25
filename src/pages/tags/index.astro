@@ -15,6 +15,7 @@ const courses = await getCollection("courses");
 const projects = await getCollection("projects");
 const services = await getCollection("services");
 const visualizations = await getCollection("visualizations");
+const newsletters = await getCollection("newsletters");
 
 // Compute counts for each tag
 const tagStats = tags.map((tag) => {
@@ -26,7 +27,8 @@ const tagStats = tags.map((tag) => {
   const projCount = projects.filter((p) => p.data.tags && p.data.tags.includes(tag.id)).length;
   const serviceCount = services.filter((s) => s.data.tags && s.data.tags.includes(tag.id)).length;
   const visCount = visualizations.filter((v) => v.data.tags && v.data.tags.includes(tag.id)).length;
-  const total = interestCount + postCount + pubCount + presCount + courseCount + projCount + serviceCount + visCount;
+  const newsletterCount = newsletters.filter((n) => n.data.tags && n.data.tags.includes(tag.id)).length;
+  const total = interestCount + postCount + pubCount + presCount + courseCount + projCount + serviceCount + visCount + newsletterCount;
 
   return {
     id: tag.id,
@@ -40,6 +42,7 @@ const tagStats = tags.map((tag) => {
     projCount,
     serviceCount,
     visCount,
+    newsletterCount,
     total,
   };
 });
@@ -172,6 +175,12 @@ const breadcrumbSchema = {
               <span class="inline-flex items-center gap-1 text-domain-visualizations">
                 <span class="w-1.5 h-1.5 rounded-full bg-domain-visualizations"></span>
                 <span>{tag.visCount} Visualization{tag.visCount !== 1 ? 's' : ''}</span>
+              </span>
+            )}
+            {tag.newsletterCount > 0 && (
+              <span class="inline-flex items-center gap-1 text-domain-newsletters">
+                <span class="w-1.5 h-1.5 rounded-full bg-domain-newsletters"></span>
+                <span>{tag.newsletterCount} Newsletter{tag.newsletterCount !== 1 ? 's' : ''}</span>
               </span>
             )}
           </div>

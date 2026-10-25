@@ -572,7 +572,7 @@ if (fs.existsSync(TAG_PAGE_FILE)) {
     error('src/pages/tags/[tag].astro must not contain legacy brand-* classes. Sections must use canonical domain-* tokens.');
     tagPageViolations++;
   }
-  if (/\b(?:All Interests|All Posts|All Publications|All Presentations|All Courses|All Projects|All Services|All Visualizations)\b/i.test(content)) {
+  if (/\b(?:All Interests|All Posts|All Publications|All Presentations|All Courses|All Projects|All Services|All Visualizations|All Newsletters)\b/i.test(content)) {
     error('src/pages/tags/[tag].astro must not contain "All xxx" links.');
     tagPageViolations++;
   }
@@ -589,6 +589,7 @@ if (fs.existsSync(TAG_PAGE_FILE)) {
     'Software <span class="text-domain-projects">Projects</span>',
     'Business <span class="text-domain-services">Services</span>',
     'Content <span class="text-domain-visualizations">Visualizations</span>',
+    'Email <span class="text-domain-newsletters">Newsletters</span>',
   ];
   for (const highlight of expectedHighlights) {
     if (!content.includes(highlight)) {

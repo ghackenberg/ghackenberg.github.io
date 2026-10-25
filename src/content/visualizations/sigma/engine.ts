@@ -100,10 +100,13 @@ const engine: SigmaEngine = {
       if (
         node.startsWith('/posts/') ||
         node.startsWith('/publications/') ||
+        node.startsWith('/presentations/') ||
         node.startsWith('/projects/') ||
         node.startsWith('/courses/') ||
         node.startsWith('/services/') ||
         node.startsWith('/interests/') ||
+        node.startsWith('/visualizations/') ||
+        node.startsWith('/newsletters/') ||
         node.startsWith('/tags/')
       ) {
         window.location.href = node;
@@ -190,8 +193,10 @@ const engine: SigmaEngine = {
       const projects = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 5);
       const services = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 6);
       const interests = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 7);
+      const visualizations = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 8);
+      const newsletters = nodes.filter(n => this.graph?.getNodeAttribute(n, 'group') === 9);
 
-      const categories = [posts, publications, presentations, tags, courses, projects, services, interests];
+      const categories = [posts, publications, presentations, tags, courses, projects, services, interests, visualizations, newsletters];
       const isMobile = window.innerWidth < 768;
 
       if (isMobile) {

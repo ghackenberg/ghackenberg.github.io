@@ -559,6 +559,7 @@ const newsletters = defineCollection({
     description: z.string(),
     pubDate: z.coerce.date(),
     icon: coverImageSchema({ image }),
+    tags: z.array(tagReference).default([]),
     featuredPosts: z.array(reference('posts')).default([]),
     featuredPresentations: z.array(reference('presentations')).default([]),
     featuredPublications: z.array(reference('publications')).default([]),
